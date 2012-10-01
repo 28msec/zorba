@@ -5,11 +5,14 @@ module namespace module2 = "http://www.zorba-xquery.com/module2";
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
+
 import module namespace module1 = "http://www.zorba-xquery.com/module1" at "test1_mod1.xqlib";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
+
 declare collection module2:coll as node()*;
+
 
 declare variable $module2:coll as xs:QName := xs:QName("module2:coll");
 

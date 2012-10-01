@@ -67,7 +67,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool isDeterministic() const { return false; }
 
@@ -86,7 +86,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
+  unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   CODEGEN_DECL();
 };

@@ -17,7 +17,6 @@
 
 #include "context/dynamic_context.h"
 
-#include "compiler/expression/var_expr.h"
 #include "compiler/codegen/plan_visitor.h"
 
 #include "runtime/api/plan_wrapper.h"
@@ -34,11 +33,17 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-DocIndexer::DocIndexer(ulong numColumns, PlanIterator* plan, var_expr* var)
+DocIndexer::DocIndexer(
+    bool general,
+    csize numColumns,
+    PlanIterator* plan,
+    store::Item* varName)
   :
+  theIsGeneral(general),
   theNumColumns(numColumns),
   theIndexerPlan(plan),
-  theNodeVar(var)
+  theNodeVarName(varName),
+  theNodeVarId(1)
 {
 }
 
@@ -60,11 +65,11 @@ void DocIndexer::setup(CompilerCB* ccb)
 {
   if (thePlanWrapper == NULL)
   {
-    thePlanWrapper = new PlanWrapper(theIndexerPlan, ccb, NULL, NULL);
+    thePlanWrapper = new PlanWrapper(theIndexerPlan, ccb, NULL, NULL, 0, false, 0);
 
     theDctx = static_cast<PlanWrapper*>(thePlanWrapper.getp())->dctx();
 
-    theDctx->declare_variable(theNodeVar->get_unique_id());
+    theDctx->declare_variable(theNodeVarId);
 
     thePlanWrapper->open();
   }
@@ -79,50 +84,84 @@ void DocIndexer::createIndexEntries(
     store::IndexDelta& delta)
 {
   store::Item_t tmp = docNode;
-  theDctx->set_variable(theNodeVar->get_unique_id(),
-                        theNodeVar->get_name(),
-                        QueryLoc::null,
-                        tmp);
+  theDctx->set_variable(theNodeVarId, theNodeVarName, QueryLoc::null, tmp);
 
-  csize numEntries = delta.size();
   store::Item_t domainNode;
-  store::IndexKey* key = NULL;
 
   try
   {
-    while (thePlanWrapper->next(domainNode))
+    if (theIsGeneral)
     {
-      key = new store::IndexKey(theNumColumns);
-
-      //std::cout << domainNode.getp() << "  " << key << std::endl;
-
-      for (csize i = 0; i < theNumColumns; ++i)
+      if (thePlanWrapper->next(domainNode))
       {
-        if (!thePlanWrapper->next((*key)[i]))
-          throw ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
-          ERROR_PARAMS(ZED(IncompleteKeyInIndexRefresh)));
+        store::Item_t key;
+        bool more = true;
+
+        while (more)
+        {
+          assert(domainNode->isNode());
+
+          while ((more = thePlanWrapper->next(key)))
+          {
+            if (key->isNode())
+            {
+              domainNode.transfer(key);
+              break;
+            }
+
+            store::Item_t node = domainNode;
+            delta.addGeneralPair(node, key);
+          }
+        }
       }
+    }
+    else
+    {
+      store::IndexKey* key = NULL;
+
+      //std::cout << "Computing value index delta" << std::endl;
+
+      try
+      {
+        while (thePlanWrapper->next(domainNode))
+        {
+          key = new store::IndexKey(theNumColumns);
+
+          for (csize i = 0; i < theNumColumns; ++i)
+          {
+            if (!thePlanWrapper->next((*key)[i]))
+            {
+              throw ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+              ERROR_PARAMS(ZED(IncompleteKeyInIndexRefresh)));
+            }
+          }
       
-      delta.resize(numEntries + 1);
-      delta[numEntries].first.transfer(domainNode); 
-      delta[numEntries].second = key;
-      key = NULL;
-      ++numEntries;
+          /*
+          std::cout << "[ node: " << domainNode.getp()
+                    << " , key: " << key
+                    << " , keyval: " << (*key)[0]->getStringValue()
+                    << " ]" << std::endl;
+          */
+          delta.addValuePair(domainNode, key);
+          key = NULL;
+        }
+
+        //std::cout << std::endl;
+      }
+      catch(...)
+      {
+        if (key != NULL)
+          delete key;
+
+        throw;
+      }
     }
   }
   catch(...)
   {
-    if (key != NULL)
-      delete key;
+    delta.clear();
 
-    for (ulong i = 0; i < delta.size(); ++i)
-    {
-      delete delta[i].second;
-    }
-
-    theDctx->unset_variable(theNodeVar->get_unique_id(),
-                            theNodeVar->get_name(),
-                            QueryLoc::null);
+    theDctx->unset_variable(theNodeVarId, theNodeVarName, QueryLoc::null);
 
     thePlanWrapper->reset();
 
@@ -131,9 +170,7 @@ void DocIndexer::createIndexEntries(
 
   //std::cout << std::endl << std::endl;
 
-  theDctx->unset_variable(theNodeVar->get_unique_id(),
-                          theNodeVar->get_name(),
-                          QueryLoc::null);
+  theDctx->unset_variable(theNodeVarId, theNodeVarName, QueryLoc::null);
 
   thePlanWrapper->reset();
 }

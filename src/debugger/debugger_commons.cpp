@@ -166,7 +166,7 @@ DebuggerCommons::serialize(::zorba::serialization::Archiver& ar)
   if (ar.is_serializing_out())
   {
     ar.set_is_temp_field(true);
-    int s = (int)theBreakableIDs.size();
+    csize s = theBreakableIDs.size();
     ar & s;
     ar.set_is_temp_field(false);
 
@@ -183,13 +183,13 @@ DebuggerCommons::serialize(::zorba::serialization::Archiver& ar)
   else
   {
     ar.set_is_temp_field(true);
-    int s;
+    csize s;
     ar & s;
     ar.set_is_temp_field(false);
 
     std::pair<QueryLoc, unsigned int> p;
 
-    for (int i = 0; i < s; ++i)
+    for (csize i = 0; i < s; ++i)
     {
       ar & p.first;
       ar & p.second;

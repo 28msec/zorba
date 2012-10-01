@@ -90,7 +90,7 @@ typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
 class IndexSpecification
 {
 public:
-  ulong                          theNumKeyColumns;
+  csize                          theNumKeyColumns;
   std::vector<store::Item_t>     theKeyTypes;
   std::vector<std::string>       theCollations;
   long                           theTimezone;
@@ -126,14 +126,14 @@ public:
     theIsGeneral = theIsUnique = theIsSorted = theIsTemp = theIsThreadSafe = false;
   }
 
-  void resize(ulong numColumns)
+  void resize(csize numColumns)
   {
     theNumKeyColumns = numColumns;
     theKeyTypes.resize(numColumns);
     theCollations.resize(numColumns);
   }
 
-  ulong getNumColumns() const { return theNumKeyColumns; }
+  csize getNumColumns() const { return theNumKeyColumns; }
 
   long getTimezone() const { return theTimezone; }
 };
@@ -145,14 +145,38 @@ public:
 class IndexKey : public ItemVector
 {
 public:
-  IndexKey(ulong size = 0) : ItemVector(size) {}
+  IndexKey(csize size = 0) : ItemVector(size) {}
 };
 
 
 /**************************************************************************//**
-  An index delta is a set of [domain-node, associated-key] pairs.
+  A index delta is a set of [domain-node, associated-key(s)] pairs.
 *******************************************************************************/
-typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
+class IndexDelta
+{
+public:
+  typedef std::pair<Item_t, IndexKey*> ValuePair;
+
+  typedef std::vector<ValuePair> ValueDelta;
+
+  typedef std::pair<Item_t, Item_t> GeneralPair;
+
+  typedef std::vector<GeneralPair> GeneralDelta;
+
+protected:
+  ValueDelta       theValueDelta;
+  GeneralDelta     theGeneralDelta;
+
+public:
+  void addValuePair(Item_t& node, IndexKey* key);
+
+  void addGeneralPair(Item_t& node, Item_t& key);
+
+  void clear();
+
+protected:
+  IndexDelta() {}
+};
 
 
 /***************************************************************************//**
@@ -388,7 +412,7 @@ public:
   /**
    *  Return the number of columns in the jeys of this index.
    */
-  virtual ulong getNumColumns() const = 0;
+  virtual csize getNumColumns() const = 0;
 
   /**
    * Return the timezone that is used when comparing date-time related items
@@ -399,7 +423,7 @@ public:
    *  Return pointer to the collator used by this index when comparing items at
    *  its i-th column (return NULL if no collator is used for the i-th column).
    */
-  virtual const XQPCollator* getCollator(ulong i) const = 0;
+  virtual const XQPCollator* getCollator(csize i) const = 0;
 
   /**
    * Create an index condition (see class IndexCondition below)
@@ -409,7 +433,7 @@ public:
   /**
    * Returns the number of entries in the index
    */
-  virtual ulong size() const = 0;
+  virtual csize size() const = 0;
 
   /**
    * Returns all keys stored in this index
@@ -423,18 +447,34 @@ public:
    * The index wil take the ownership of the key if it was not already in the
    * index.
    *
+   * NOTE: this method is needed here because it is invoked from the
+   * UDFunctionCallIterator to implement the function cache.
+   *
    * @error ZDDY0035 if a key with more than one item is inserted into
    *  a general index
    */
   virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
+
+  virtual bool remove(
+      const store::IndexKey* key,
+      const store::Item_t& item,
+      bool all = false) = 0;
 };
 
 
 
 /*******************************************************************************
- An abstract class that provides a callback method for the store to call in order
- to perform index maintenance.  The method computes [domain_item, associated-key]
- pairs for a given node that has some relationship to the domain expression.
+  An abstract class that provides a callback method for the store to call during
+  index maintenance. The method computes [domain_node, associated-key] pairs for
+  a given node that has some relationship to the domain expression.
+
+  Instances of IndexEntryCreator are created by the ApplyIterator for each
+  incrementally-maintenable index that needs maintenance. Such an instance is
+  stored inside the IndexDecl of the associated index, so that it can be
+  reused every time the index needs maintenance.
+
+  A concrete implementation of this class is provided in 
+  runtime/index/doc_indexer.h
 ********************************************************************************/
 class IndexEntryCreator : public SimpleRCObject
 {

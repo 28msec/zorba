@@ -44,8 +44,9 @@ TypeIdentifier::~TypeIdentifier()
 
 IdentTypes::kind_t TypeIdentifier::getKind() const
 {
-    return m_kind;
+  return m_kind;
 }
+
 
 IdentTypes::quantifier_t TypeIdentifier::getQuantifier() const
 {
@@ -197,6 +198,51 @@ TypeIdentifier_t TypeIdentifier::createAnyNodeType(IdentTypes::quantifier_t quan
 
   return ti;
 }
+
+
+TypeIdentifier_t TypeIdentifier::createStructuredItemType(IdentTypes::quantifier_t q)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::STRUCTURED_ITEM_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+
+
+#ifdef ZORBA_WITH_JSON
+
+TypeIdentifier_t TypeIdentifier::createJSONItemType(IdentTypes::quantifier_t q)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::JSON_ITEM_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+
+
+TypeIdentifier_t TypeIdentifier::createJSONObjectType(IdentTypes::quantifier_t q)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::JSON_OBJECT_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+
+
+TypeIdentifier_t TypeIdentifier::createJSONArrayType(IdentTypes::quantifier_t q)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::JSON_ARRAY_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+
+
+#endif
 
 
 TypeIdentifier_t TypeIdentifier::createItemType(IdentTypes::quantifier_t quantifier)

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="EN" xml:lang="EN">
   <head>
     <meta name="generator" content="HTML Tidy for Windows (vers 14 February 2006), see www.w3.org"/>
@@ -6,7 +5,138 @@
     <title>XQuery 1.0 and XPath 2.0 Functions and Operators (Second
 Edition)</title>
     <style type="text/css">
- /**/ code { font-family: monospace; } div.constraint, div.issue, div.note, div.notice { margin-left: 2em; } div.issue p.title { margin-left: -2em; } ol.enumar { list-style-type: decimal; } ol.enumla { list-style-type: lower-alpha; } ol.enumlr { list-style-type: lower-roman; } ol.enumua { list-style-type: upper-alpha; } ol.enumur { list-style-type: upper-roman; } li p { margin-top: 0.3em; margin-bottom: 0.3em; } sup small { font-style: italic; color: #8F8F8F; } div.exampleInner pre { margin-left: 1em; margin-top: 0em; margin-bottom: 0em} div.exampleOuter {border: 4px double gray; margin: 0em; padding: 0em} div.exampleInner { background-color: #d5dee3; border-top-width: 4px; border-top-style: double; border-top-color: #d3d3d3; border-bottom-width: 4px; border-bottom-style: double; border-bottom-color: #d3d3d3; padding: 4px; margin: 0em } div.exampleWrapper { margin: 4px } div.exampleHeader { font-weight: bold; margin: 4px} div.issue { border-bottom-color: black; border-bottom-style: solid; border-bottom-width: 1pt; margin-bottom: 20pt; } th.issue-toc-head { border-bottom-color: black; border-bottom-style: solid; border-bottom-width: 1pt; } div.schemaComp { border: 4px double gray; margin: 0em 1em; padding: 0em; } div.compHeader { margin: 4px; font-weight: bold; } span.schemaComp { background-color: white; color: #A52A2A; } div.compBody { border-top-width: 4px; border-top-style: double; border-top-color: #d3d3d3; padding: 4px; margin: 0em; } div.exampleInner { background-color: #d5dee3; color: black; border-top-width: 4px; border-top-style: double; border-top-color: #d3d3d3; border-bottom-width: 4px; border-bottom-style: double; border-bottom-color: #d3d3d3; padding: 4px; margin-bottom: 4px; } div.issueBody { margin-left: 0.25in; } code.function { font-weight: bold; } code.return-type { font-style: italic; } code.return-varies { font-weight: bold; font-style: italic; } code.type { font-style: italic; } code.as { font-style: normal; } code.arg { } code.strikeout { text-decoration: line-through; } p.table.footnote { font-size: 8pt; } table.casting { font-size: x-small; } table.hierarchy { font-size: x-small; } td.castY { background-color: #7FFF7F; color: black; } td.castN { background-color: #FF7F7F; color: black; } td.castM { background-color: white; color: black; } td.castOther { background-color: yellow; color: black; } span.cancast:hover { background-color: #ffa; color: black; } div.protoref { margin-left: 0.5in; text-indent: -0.5in; } /**/ 
+/**/
+code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+div.issue
+p.title        { margin-left: -2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+li p           { margin-top: 0.3em;
+                 margin-bottom: 0.3em; }
+
+sup small      { font-style: italic;
+                 color: #8F8F8F;
+               }
+    
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   border-top-width: 4px;
+                   border-top-style: double;
+                   border-top-color: #d3d3d3;
+                   border-bottom-width: 4px;
+                   border-bottom-style: double;
+                   border-bottom-color: #d3d3d3;
+                   padding: 4px; margin: 0em }
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+
+div.issue { border-bottom-color: black;
+            border-bottom-style: solid;
+            border-bottom-width: 1pt;
+            margin-bottom: 20pt;
+}
+
+th.issue-toc-head { border-bottom-color: black;
+                    border-bottom-style: solid;
+                    border-bottom-width: 1pt;
+}
+
+      
+div.schemaComp  { border: 4px double gray;
+                  margin: 0em 1em;
+                  padding: 0em;
+                }
+div.compHeader  { margin: 4px;
+                  font-weight: bold;
+                }
+span.schemaComp { background-color: white;
+                  color: #A52A2A;
+                }
+div.compBody    { border-top-width: 4px;
+                  border-top-style: double;
+                  border-top-color: #d3d3d3;
+                  padding: 4px;
+                  margin: 0em;
+                }
+
+div.exampleInner { background-color: #d5dee3;
+                   color: black;
+                   border-top-width: 4px;
+                   border-top-style: double;
+                   border-top-color: #d3d3d3;
+                   border-bottom-width: 4px;
+                   border-bottom-style: double;
+                   border-bottom-color: #d3d3d3;
+                   padding: 4px;
+                   margin-bottom: 4px;
+                 }
+
+div.issueBody    { margin-left: 0.25in;
+                 }
+
+code.function    { font-weight: bold;
+                 }
+code.return-type { font-style: italic;
+                 }
+code.return-varies { font-weight: bold;
+                   font-style: italic;
+                 }
+code.type        { font-style: italic;
+                 }
+code.as          { font-style: normal;
+                 }
+code.arg         {
+                 }
+code.strikeout   { text-decoration: line-through;
+                 }
+p.table.footnote { font-size: 8pt;
+                 }
+
+table.casting    { font-size: x-small;
+                 }
+table.hierarchy  { font-size: x-small;
+                 }
+
+td.castY         { background-color: #7FFF7F;
+                   color: black;
+                 }
+
+td.castN         { background-color: #FF7F7F;
+                   color: black;
+                 }
+
+td.castM         { background-color: white;
+                   color: black;
+                 }
+
+td.castOther     { background-color: yellow;
+                   color: black;
+                 }
+
+span.cancast:hover { background-color: #ffa;
+                   color: black;
+                 }
+
+div.protoref     { margin-left: 0.5in;
+                   text-indent: -0.5in;
+                 }
+
+/**/
 </style>
     <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-REC.css"/>
   </head>
@@ -59,10 +189,10 @@ some normative corrections.</p>
 XML</a> and <a href="http://www.w3.org/TR/2010/REC-xpath-functions-20101214/xpath-functions-diff-from-REC20070123.html">Change
 markings relative to first edition</a>.</p>
       <p class="copyright">
-        <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> Â© 2010 <a href="http://www.w3.org/">
+        <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2010 <a href="http://www.w3.org/">
           <acronym title="World Wide Web Consortium">W3C</acronym>
         </a>
-        <sup>Â®</sup>
+        <sup>®</sup>
 (<a href="http://www.csail.mit.edu/">
           <acronym title="Massachusetts Institute of Technology">MIT</acronym>
         </a>, <a href="http://www.ercim.eu/">
@@ -895,7 +1025,7 @@ features:</p>
           <ul>
             <li>
               <p>It is <a title="implementation-defined" class="termref" href="#implementation-defined">
-                  <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                  <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
                 </a> which version of Unicode is supported, but it
 is recommended that the most recent version of Unicode be used.</p>
             </li>
@@ -1720,8 +1850,8 @@ environment that invokes the function library.</p>
             <dd>
               <p>Most of the functions in the core library have the property that
 calling the same function twice within an <a title="execution scope" class="termref" href="#execution-scope">
-                  <span class="arrow">Â·</span>execution
-scope<span class="arrow">Â·</span>
+                  <span class="arrow">·</span>execution
+scope<span class="arrow">·</span>
                 </a> with the same arguments
 returns the same result: these functions are said to be
 <b>stable</b>. This category includes a number of functions such as
@@ -2191,13 +2321,13 @@ derived from the error <code>xs:QName</code>. An error
 be returned as the <code>xs:anyURI</code> NS#LP. The method by
 which the <code>xs:anyURI</code> or <code>xs:QName</code> is
 returned to the external processing environment is <a title="implementation dependent" class="termref" href="#implementation-dependent">
-            <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+            <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
           </a>.</p>
         <p>If an invocation provides <code>$description</code> and
 <code>$error-object</code>, then these values may also be returned
 to the external processing environment. The method by which these
 values are provided to the external environment is <a title="implementation dependent" class="termref" href="#implementation-dependent">
-            <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+            <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
           </a>.</p>
         <div class="note">
           <p class="prefix">
@@ -2222,7 +2352,7 @@ empty sequence it is assumed to be the <code>xs:QName</code>
 constructed by:</p>
         <div class="exampleInner">
           <pre>
- fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000') 
+ fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000')
 </pre>
         </div>
         <div class="div2">
@@ -2272,12 +2402,12 @@ result of the function. In addition, the inputs
 <code>$value</code>, converted to an <code>xs:string</code>, and
 <code>$label</code> may be directed to a trace data set. The
 destination of the trace output is <a title="implementation-defined" class="termref" href="#implementation-defined">
-            <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+            <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
           </a>. The format of the trace output is <a title="implementation dependent" class="termref" href="#implementation-dependent">
-            <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+            <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
           </a>. The ordering of output from invocations of
 the <code>fn:trace()</code> function is <a title="implementation dependent" class="termref" href="#implementation-dependent">
-            <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+            <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
           </a>.</p>
         <div class="div2">
           <h3>
@@ -2423,7 +2553,7 @@ supported:</p>
                 <code class="return-type">xs:float?</code>
               </div>
               <p>Implementations <a title="may" class="termref" href="#may">
-                  <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                  <span class="arrow">·</span>may<span class="arrow">·</span>
                 </a> return negative zero for
 <code>xs:float("-0.0E0")</code>. <a href="#xmlschema-2">[XML Schema
 Part 2: Datatypes Second Edition]</a> does not distinguish between
@@ -2437,7 +2567,7 @@ the values positive zero and negative zero.</p>
                 <code class="return-type">xs:double?</code>
               </div>
               <p>Implementations <a title="may" class="termref" href="#may">
-                  <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                  <span class="arrow">·</span>may<span class="arrow">·</span>
                 </a> return negative zero for
 <code>xs:double("-0.0E0").</code>
                 <a href="#xmlschema-2">[XML
@@ -2931,13 +3061,13 @@ as follows using a cast expression (this requires that the default
 element/type namespace is no namespace):</p>
           <div class="exampleInner">
             <pre>
- 17 cast as apple 
+17 cast as apple
 </pre>
           </div>
           <p>The following shows the use of the constructor function:</p>
           <div class="exampleInner">
             <pre>
- declare default function namespace ""; apple(17) 
+declare default function namespace ""; apple(17)
 </pre>
           </div>
         </div>
@@ -3190,7 +3320,7 @@ integer)</code>
 types. Consider the following example:</p>
           <div class="exampleInner">
             <pre>
- op:operation(xs:int, xs:double) =&gt; op:operation(xs:double, xs:double) 
+op:operation(xs:int, xs:double) =&gt; op:operation(xs:double, xs:double)
 </pre>
           </div>
           <p>For this operation, <code>xs:int</code> must be converted to
@@ -3210,7 +3340,7 @@ and a maximum value of 100. He may then derive
 permitted set of values to, say, 36, 48 and 60.</p>
           <div class="exampleInner">
             <pre>
- op:operation(fenceHeight, xs:integer) =&gt; op:operation(xs:integer, xs:integer) 
+op:operation(fenceHeight, xs:integer) =&gt; op:operation(xs:integer, xs:integer)
 </pre>
           </div>
           <p>
@@ -3219,14 +3349,13 @@ permitted set of values to, say, 36, 48 and 60.</p>
 its base type <code>xs:integer</code>.</p>
           <p>On overflow and underflow situations during arithmetic
 operations conforming implementations <a title="must" class="termref" href="#must">
-              <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
-            </a> behave as
-follows:</p>
+              <span class="arrow">·</span>must<span class="arrow">·</span>
+            </a> behave as follows:</p>
           <ul>
             <li>
               <p>For <code>xs:float</code> and <code>xs:double</code> operations,
 overflow behavior <a title="must" class="termref" href="#must">
-                  <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
+                  <span class="arrow">·</span>must<span class="arrow">·</span>
                 </a> be conformant with <a href="#ieee754">[IEEE
 754-1985]</a>. This specification allows the following options:</p>
               <ul>
@@ -3245,7 +3374,7 @@ number.</p>
             <li>
               <p>For <code>xs:float</code> and <code>xs:double</code> operations,
 underflow behavior <a title="must" class="termref" href="#must">
-                  <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
+                  <span class="arrow">·</span>must<span class="arrow">·</span>
                 </a> be conformant with <a href="#ieee754">[IEEE
 754-1985]</a>. This specification allows the following options:</p>
               <ul>
@@ -3263,30 +3392,29 @@ exponent.</p>
             <li>
               <p>For <code>xs:decimal</code> operations, overflow behavior
 <a title="must" class="termref" href="#must">
-                  <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
-                </a> raise an
-error [<a href="#ERRFOAR0002" title="err:FOAR0002">err:FOAR0002</a>]. On underflow, <code>0.0</code>
-must be returned.</p>
+                  <span class="arrow">·</span>must<span class="arrow">·</span>
+                </a> raise an error
+[<a href="#ERRFOAR0002" title="err:FOAR0002">err:FOAR0002</a>]. On
+underflow, <code>0.0</code> must be returned.</p>
             </li>
             <li>
               <p>For <code>xs:integer</code> operations, implementations that
 support limited-precision integer operations <a title="must" class="termref" href="#must">
-                  <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
-                </a> select from
-the following options:</p>
+                  <span class="arrow">·</span>must<span class="arrow">·</span>
+                </a> select from the following options:</p>
               <ul>
                 <li>
                   <p>They <a title="may" class="termref" href="#may">
-                      <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                      <span class="arrow">·</span>may<span class="arrow">·</span>
                     </a> choose to
 always raise an error [<a href="#ERRFOAR0002" title="err:FOAR0002">err:FOAR0002</a>].</p>
                 </li>
                 <li>
                   <p>They <a title="may" class="termref" href="#may">
-                      <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                      <span class="arrow">·</span>may<span class="arrow">·</span>
                     </a> provide an
 <a title="implementation-defined" class="termref" href="#implementation-defined">
-                      <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                      <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
                     </a> mechanism that allows users to choose between
 raising an error and returning a result that is modulo the largest
 representable integer value. See <a href="#ISO10967">[ISO
@@ -3328,11 +3456,11 @@ if either argument is <code>NaN</code>, the result is
 <code>NaN</code>.</p>
           <p>For <code>xs:decimal</code> values the number of digits of
 precision returned by the numeric operators is <a title="implementation-defined" class="termref" href="#implementation-defined">
-              <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
-            </a>. If the number of digits in the result
-exceeds the number of digits that the implementation supports, the
-result is truncated or rounded in an <a title="implementation-defined" class="termref" href="#implementation-defined">
-              <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+              <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
+            </a>. If the number of digits in the result exceeds
+the number of digits that the implementation supports, the result
+is truncated or rounded in an <a title="implementation-defined" class="termref" href="#implementation-defined">
+              <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
             </a> manner.</p>
           <div class="div3">
             <h4>
@@ -3494,9 +3622,9 @@ the correct sign.</p>
             </div>
             <p>The implementation may adopt a different algorithm provided that
 it is equivalent to this formulation in all cases where <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                <span class="arrow">Â·</span>implementation-dependent<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-dependent<span class="arrow">·</span>
               </a> or <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a> behavior does not affect the outcome, for
 example, the implementation-defined precision of the result of
 <code>xs:decimal</code> division.</p>
@@ -4300,7 +4428,7 @@ xs:normalizedString</td>
           <p>They also apply to user-defined types derived by restriction
 from the above types.</p>
           <p>It is <a title="implementation-defined" class="termref" href="#implementation-defined">
-              <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+              <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
             </a> which version of <a href="#Unicode4">[The
 Unicode Standard]</a> is supported, but it is recommended that the
 most recent version of Unicode be used.</p>
@@ -4392,7 +4520,7 @@ character, an error is raised [<a href="#ERRFOCH0001" title="err:FOCH0001">err:F
                 <li>
                   <p>
                     <code>fn:codepoints-to-string((2309, 2358, 2378, 2325))</code>
-returns "à¤…à¤¶à¥Šà¤•"</p>
+returns "अशॊक"</p>
                 </li>
               </ul>
             </div>
@@ -4418,7 +4546,7 @@ string or the empty sequence, the empty sequence is returned.</p>
               <ul>
                 <li>
                   <p>
-                    <code>fn:string-to-codepoints("ThÃ©rÃ¨se")</code> returns the
+                    <code>fn:string-to-codepoints("Thérèse")</code> returns the
 sequence (84, 104, 233, 114, 232, 115, 101)</p>
                 </li>
               </ul>
@@ -4676,26 +4804,25 @@ values.</p>
                 </li>
                 <li>
                   <p>
-                    <code>fn:compare('Strasse', 'StraÃŸe')</code> returns 0 if and
+                    <code>fn:compare('Strasse', 'Straße')</code> returns 0 if and
 only if the default collation includes provisions that equate "ss"
-and the (German) character "ÃŸ" ("sharp-s"). (Otherwise, the
+and the (German) character "ß" ("sharp-s"). (Otherwise, the
 returned value depends on the semantics of the default
 collation.)</p>
                 </li>
                 <li>
                   <p>
-                    <code>fn:compare('Strasse', 'StraÃŸe', 'deutsch')</code> returns
+                    <code>fn:compare('Strasse', 'Straße', 'deutsch')</code> returns
 0 if the collation identified by the relative URI constructed from
 the <code>string</code> value "deutsch" includes provisions that
-equate "ss" and the (German) character "ÃŸ" ("sharp-s").
-(Otherwise, the returned value depends on the semantics of that
-collation.)</p>
+equate "ss" and the (German) character "ß" ("sharp-s"). (Otherwise,
+the returned value depends on the semantics of that collation.)</p>
                 </li>
                 <li>
                   <p>
-                    <code>fn:compare('Strassen', 'StraÃŸe')</code> returns 1 if the
+                    <code>fn:compare('Strassen', 'Straße')</code> returns 1 if the
 default collation includes provisions that treat differences
-between "ss" and the (German) character "ÃŸ" ("sharp-s") with less
+between "ss" and the (German) character "ß" ("sharp-s") with less
 strength than the differences between the base characters, such as
 the final "n".</p>
                 </li>
@@ -4952,7 +5079,9 @@ be applied to the <code>xs:string</code> returned by
 <code>fn:concat</code>. The following XQuery:</p>
               <div class="exampleInner">
                 <pre>
- let $v1 := "I plan to go to Mu" let $v2 := "?nchen in September" return concat($v1, $v2) 
+let $v1 := "I plan to go to Mu"
+let $v2 := "?nchen in September"
+return concat($v1, $v2)
 </pre>
               </div>
               <p>where the "?" represents either the actual Unicode character
@@ -4966,13 +5095,15 @@ however, it is normalized in NFD. .</p>
               <p>However, the following XQuery:</p>
               <div class="exampleInner">
                 <pre>
- let $v1 := "I plan to go to Mu" let $v2 := "?nchen in September" return normalize-unicode(concat($v1, $v2)) 
+let $v1 := "I plan to go to Mu"
+let $v2 := "?nchen in September"
+return normalize-unicode(concat($v1, $v2))
 </pre>
               </div>
               <p>where the "?" represents either the actual Unicode character
 COMBINING DIARESIS (Unicode codepoint U+0308) or "&amp;#x0308;",
 will return:</p>
-              <p>"I plan to go to MÃ¼nchen in September"</p>
+              <p>"I plan to go to München in September"</p>
               <p>This returned result is normalized in NFC.</p>
             </div>
             <div class="div4">
@@ -5049,7 +5180,12 @@ wind!"</code>.</p>
                   <p>Assume a document:</p>
                   <div class="exampleInner">
                     <pre>
- &lt;doc&gt; &lt;chap&gt; &lt;section&gt; &lt;/section&gt; &lt;/chap&gt; &lt;/doc&gt; 
+&lt;doc&gt;
+  &lt;chap&gt;
+    &lt;section&gt;
+    &lt;/section&gt;
+  &lt;/chap&gt;
+&lt;/doc&gt;
 </pre>
                   </div>
                   <p>with the <code>&lt;section&gt;</code> as the context node, the
@@ -5439,17 +5575,16 @@ zero-length string, no normalization is performed and
               </li>
             </ul>
             <p>Conforming implementations <a title="must" class="termref" href="#must">
-                <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
-              </a> support normalization form "NFC" and
-<a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                <span class="arrow">·</span>must<span class="arrow">·</span>
+              </a> support normalization form "NFC" and <a title="may" class="termref" href="#may">
+                <span class="arrow">·</span>may<span class="arrow">·</span>
               </a> support
 normalization forms "NFD", "NFKC", "NFKD", "FULLY-NORMALIZED". They
 <a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                <span class="arrow">·</span>may<span class="arrow">·</span>
               </a> also support
 other normalization forms with <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a> semantics. If the effective value of the
 <code>$normalizationForm</code> is other than one of the values
 supported by the implementation, then an error is raised [<a href="#ERRFOCH0003" title="err:FOCH0003">err:FOCH0003</a>].</p>
@@ -5499,7 +5634,7 @@ which will not round trip; there are others.</p>
 (e.g. titlecase). In cases such as Turkish, a simple translation
 should be used first.</p>
               <p>Results may violate user expectations (in Quebec, for example,
-the standard uppercase equivalent of "Ã¨" is "Ãˆ", while in
+the standard uppercase equivalent of "è" is "È", while in
 metropolitan France it is more commonly "E"; only one of these is
 supported by the functions as defined).</p>
               <p>Many characters of class Ll lack uppercase equivalents in the
@@ -5563,7 +5698,7 @@ upper-case letter which will not round trip; there are others.</p>
 (e.g. titlecase). In cases such as Turkish, a simple translation
 should be used first.</p>
               <p>Results may violate user expectations (in Quebec, for example,
-the standard uppercase equivalent of "Ã¨" is "Ãˆ", while in
+the standard uppercase equivalent of "è" is "È", while in
 metropolitan France it is more commonly "E"; only one of these is
 supported by the functions as defined).</p>
               <p>Many characters of class Ll lack uppercase equivalents in the
@@ -5711,7 +5846,7 @@ delimiters have been encoded.</p>
                 <li>
                   <p>
                     <code>concat("http://www.example.com/",
-encode-for-uri("~bÃ©bÃ©"))</code> returns
+encode-for-uri("~bébé"))</code> returns
 <code>"http://www.example.com/~b%C3%A9b%C3%A9"</code>.</p>
                 </li>
                 <li>
@@ -5783,7 +5918,7 @@ returns
                 </li>
                 <li>
                   <p>
-                    <code>fn:iri-to-uri ("http://www.example.com/~bÃ©bÃ©")</code>
+                    <code>fn:iri-to-uri ("http://www.example.com/~bébé")</code>
 returns <code>"http://www.example.com/~b%C3%A9b%C3%A9"</code>.</p>
                 </li>
               </ul>
@@ -5835,7 +5970,7 @@ Angeles#ocean"</code>.</p>
                   <p>
                     <code>fn:escape-html-uri ("javascript:if
 (navigator.browserLanguage == 'fr')
-window.open('http://www.example.com/~bÃ©bÃ©');") returns
+window.open('http://www.example.com/~bébé');") returns
 "javascript:if (navigator.browserLanguage == 'fr')
 window.open('http://www.example.com/~b%C3%A9b%C3%A9');"</code>.</p>
                 </li>
@@ -5880,10 +6015,10 @@ sequence of the collation units corresponding to
 <code>$arg1</code>. The characters in <code>$arg1</code> that match
 are the characters corresponding to these collation units.</p>
           <p>This rule may occasionally lead to surprises. For example,
-consider a collation that treats "Jaeger" and "JÃ¤ger" as equal. It
-might do this by treating "Ã¤" as representing two collation units,
+consider a collation that treats "Jaeger" and "Jäger" as equal. It
+might do this by treating "ä" as representing two collation units,
 in which case the expression <a href="#func-contains">
-              <code>fn:contains("JÃ¤ger", "eg")</code>
+              <code>fn:contains("Jäger", "eg")</code>
             </a> will
 return <code>true</code>. Alternatively, a collation might treat
 "ae" as a single collation unit, in which case the expression
@@ -5934,7 +6069,7 @@ collation units. Such a collation may cause the function to fail,
 or to give unexpected results or it may be rejected as an
 unsuitable argument. The ability to decompose strings into
 collation units is an <a title="implementation-defined" class="termref" href="#implementation-defined">
-              <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+              <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
             </a> property of the collation.</p>
           <table summary="Function/operator summary" border="1">
             <thead>
@@ -6066,7 +6201,7 @@ determined according to the rules in <a href="#collations">
 Collations</b>
               </a>. If the specified collation does not support
 collation units an error <a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                <span class="arrow">·</span>may<span class="arrow">·</span>
               </a> be raised [<a href="#ERRFOCH0004" title="err:FOCH0004">err:FOCH0004</a>].</p>
             <div class="div4">
               <h5>
@@ -6194,7 +6329,7 @@ determined according to the rules in <a href="#collations">
 Collations</b>
               </a>. If the specified collation does not support
 collation units an error <a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                <span class="arrow">·</span>may<span class="arrow">·</span>
               </a> be raised [<a href="#ERRFOCH0004" title="err:FOCH0004">err:FOCH0004</a>].</p>
             <div class="div4">
               <h5>
@@ -6327,7 +6462,7 @@ determined according to the rules in <a href="#collations">
 Collations</b>
               </a>. If the specified collation does not support
 collation units an error <a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                <span class="arrow">·</span>may<span class="arrow">·</span>
               </a> be raised [<a href="#ERRFOCH0004" title="err:FOCH0004">err:FOCH0004</a>].</p>
             <div class="div4">
               <h5>
@@ -6458,7 +6593,7 @@ determined according to the rules in <a href="#collations">
 Collations</b>
               </a> If the specified collation does not support
 collation units an error <a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                <span class="arrow">·</span>may<span class="arrow">·</span>
               </a> be raised [<a href="#ERRFOCH0004" title="err:FOCH0004">err:FOCH0004</a>].</p>
             <div class="div4">
               <h5>
@@ -6583,7 +6718,7 @@ determined according to the rules in <a href="#collations">
 Collations</b>
               </a> If the specified collation does not support
 collation units an error <a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                <span class="arrow">·</span>may<span class="arrow">·</span>
               </a> be raised [<a href="#ERRFOCH0004" title="err:FOCH0004">err:FOCH0004</a>].</p>
             <div class="div4">
               <h5>
@@ -7148,7 +7283,12 @@ true</p>
               <p>Given the source document:</p>
               <div class="exampleInner">
                 <pre>
- &lt;poem author="Wilhelm Busch"&gt; Kaum hat dies der Hahn gesehen, FÃ¤ngt er auch schon an zu krÃ¤hen: Â«Kikeriki! Kikikerikih!!Â» Tak, tak, tak! - da kommen sie. &lt;/poem&gt; 
+&lt;poem author="Wilhelm Busch"&gt; 
+Kaum hat dies der Hahn gesehen,
+Fängt er auch schon an zu krähen:
+«Kikeriki! Kikikerikih!!»
+Tak, tak, tak! - da kommen sie.
+&lt;/poem&gt;
 </pre>
               </div>
               <p>the following function calls produce the following results, with
@@ -7156,13 +7296,13 @@ the <code>poem</code> element as the context node:</p>
               <ul>
                 <li>
                   <p>
-                    <code>fn:matches(., "Kaum.*krÃ¤hen")</code> returns
+                    <code>fn:matches(., "Kaum.*krähen")</code> returns
 <code>false</code>
                   </p>
                 </li>
                 <li>
                   <p>
-                    <code>fn:matches(., "Kaum.*krÃ¤hen", "s")</code> returns
+                    <code>fn:matches(., "Kaum.*krähen", "s")</code> returns
 <code>true</code>
                   </p>
                 </li>
@@ -7343,7 +7483,7 @@ position in the <code>$input</code>, then the match that is chosen
 is the one matched by the first alternative. For example:</p>
             <div class="exampleInner">
               <pre>
- fn:replace("abcd", "(ab)|(a)", "[1=$1][2=$2]") returns "[1=ab][2=]cd" 
+ fn:replace("abcd", "(ab)|(a)", "[1=$1][2=$2]") returns "[1=ab][2=]cd"
 </pre>
             </div>
             <p>An error is raised [<a href="#ERRFORX0002" title="err:FORX0002">err:FORX0002</a>] if the value of
@@ -7512,7 +7652,7 @@ both match at the same position in the <code>$input</code> string,
 then the match that is chosen is the first. For example:</p>
             <div class="exampleInner">
               <pre>
- fn:tokenize("abracadabra", "(ab)|(a)") returns ("", "r", "c", "d", "r", "") 
+ fn:tokenize("abracadabra", "(ab)|(a)") returns ("", "r", "c", "d", "r", "")
 </pre>
             </div>
             <p>An error is raised [<a href="#ERRFORX0002" title="err:FORX0002">err:FORX0002</a>] if the value of
@@ -8011,27 +8151,27 @@ Precision</h4>
 Schema Part 2: Datatypes Second Edition]</a> extends the basic
 <a href="#ISO8601">[ISO 8601]</a> lexical representations, such as
 YYYY-MM-DDThh:mm:ss.s for dateTime, by allowing a preceding minus
-sign, more than four digits to represent the year field â€” no
-maximum is specified â€” and an unlimited number of digits for
+sign, more than four digits to represent the year field — no
+maximum is specified — and an unlimited number of digits for
 fractional seconds. Leap seconds are not supported.</p>
             <p>All <em>minimally conforming</em> processors <a title="must" class="termref" href="#must">
-                <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
+                <span class="arrow">·</span>must<span class="arrow">·</span>
               </a> support
 positive year values with a minimum of 4 digits (i.e., YYYY) and a
 minimum fractional second precision of 1 millisecond or three
 digits (i.e., s.sss). However, <em>conforming</em> processors
 <a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                <span class="arrow">·</span>may<span class="arrow">·</span>
               </a> set larger
 <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a> limits on the maximum number of digits they
 support in these two situations. Processors <a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
-              </a> also choose to support the year 0000 and
-years with negative values. The results of operations on dates that
-cross the year 0000 are <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>may<span class="arrow">·</span>
+              </a> also choose to support the year 0000 and years
+with negative values. The results of operations on dates that cross
+the year 0000 are <a title="implementation-defined" class="termref" href="#implementation-defined">
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a>.</p>
             <p>A processor that limits the number of digits in date and time
 datatype representations may encounter overflow and underflow
@@ -8040,11 +8180,11 @@ conditions when it tries to execute the functions in <a href="#dateTime-arithmet
 Dates and Times</b>
               </a>. In these situations, the processor
 <a title="must" class="termref" href="#must">
-                <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
-              </a> return P0M
-or PT0S in case of duration underflow and 00:00:00 in case of time
+                <span class="arrow">·</span>must<span class="arrow">·</span>
+              </a> return P0M or
+PT0S in case of duration underflow and 00:00:00 in case of time
 underflow. It <a title="must" class="termref" href="#must">
-                <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
+                <span class="arrow">·</span>must<span class="arrow">·</span>
               </a> raise an error [<a href="#ERRFODT0001" title="err:FODT0001">err:FODT0001</a>] in case of overflow.</p>
             <p>The value spaces of the two totally ordered subtypes of
 <code>xs:duration</code> described in <a href="#duration-subtypes">
@@ -8061,11 +8201,11 @@ functions in <a href="#duration-arithmetic">
 Operators on Durations</b>
               </a>. In these situations the processor
 <a title="must" class="termref" href="#must">
-                <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
-              </a> return zero
-in case of numeric underflow and P0M or PT0S in case of duration
+                <span class="arrow">·</span>must<span class="arrow">·</span>
+              </a> return zero in
+case of numeric underflow and P0M or PT0S in case of duration
 underflow. It <a title="must" class="termref" href="#must">
-                <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
+                <span class="arrow">·</span>must<span class="arrow">·</span>
               </a> raise an error [<a href="#ERRFODT0002" title="err:FODT0002">err:FODT0002</a>] in case of overflow.</p>
           </div>
         </div>
@@ -8097,9 +8237,9 @@ missing, properties are represented by the empty sequence. This
 value is referred to as the <em>local</em> value in that the value
 is in the given timezone. Before comparing or subtracting
 <code>xs:dateTime</code> values, this local value <a title="must" class="termref" href="#must">
-              <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
-            </a> be
-translated or <em>normalized</em> to UTC.</p>
+              <span class="arrow">·</span>must<span class="arrow">·</span>
+            </a> be translated
+or <em>normalized</em> to UTC.</p>
           <p>For <code>xs:time</code>, <code>"00:00:00"</code> and
 <code>"24:00:00"</code> are alternate lexical forms for the same
 value, whose canonical representation is <code>"00:00:00"</code>.
@@ -8180,10 +8320,10 @@ year, 2 months, one would write: P1Y2M. One could also indicate a
 are allowed provided they conform to the following:</p>
               <p>If the number of years or months in any expression equals zero
 (0), the number and its corresponding designator <a title="may" class="termref" href="#may">
-                  <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                  <span class="arrow">·</span>may<span class="arrow">·</span>
                 </a> be omitted.
 However, at least one number and its designator <a title="must" class="termref" href="#must">
-                  <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
+                  <span class="arrow">·</span>must<span class="arrow">·</span>
                 </a> be present.
 For example, P1347Y and P1347M are allowed; P-1347M is not allowed,
 although -P1347M is allowed. P1Y2MT is not allowed. Also, P24YM is
@@ -8217,7 +8357,7 @@ form is calculated using the absolute value of the duration and a
 negative sign is prepended to it. If a component has the value zero
 (0), then the number and the designator for that component
 <a title="must" class="termref" href="#must">
-                  <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
+                  <span class="arrow">·</span>must<span class="arrow">·</span>
                 </a> be omitted.
 However, if the value is zero (0) months, the canonical form is
 "P0M".</p>
@@ -8270,26 +8410,25 @@ conform to the following:</p>
                   <p>If the number of days, hours, minutes, or seconds in any
 expression equals zero (0), the number and its corresponding
 designator <a title="may" class="termref" href="#may">
-                      <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                      <span class="arrow">·</span>may<span class="arrow">·</span>
                     </a> be omitted.
 However, at least one number and its designator <a title="must" class="termref" href="#must">
-                      <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
+                      <span class="arrow">·</span>must<span class="arrow">·</span>
                     </a> be
 present.</p>
                 </li>
                 <li>
                   <p>The seconds part <a title="may" class="termref" href="#may">
-                      <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                      <span class="arrow">·</span>may<span class="arrow">·</span>
                     </a> have a decimal fraction.</p>
                 </li>
                 <li>
                   <p>The designator 'T' <a title="must" class="termref" href="#must">
-                      <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
-                    </a> be absent if and only if all of the time
-items are absent. The designator 'P' <a title="must" class="termref" href="#must">
-                      <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
-                    </a> always be
-present.</p>
+                      <span class="arrow">·</span>must<span class="arrow">·</span>
+                    </a> be absent if and only if all of the time items
+are absent. The designator 'P' <a title="must" class="termref" href="#must">
+                      <span class="arrow">·</span>must<span class="arrow">·</span>
+                    </a> always be present.</p>
                 </li>
               </ul>
               <p>For example, P13D, PT47H, P3DT2H, -PT35.89S and P4DT251M are all
@@ -8805,7 +8944,11 @@ zero-length duration, no instance of
             <p>The semantics of this function are:</p>
             <div class="exampleInner">
               <pre>
- xs:yearMonthDuration($arg1) div xs:yearMonthDuration('P1M') eq xs:yearMonthDuration($arg2) div xs:yearMonthDuration('P1M') and xs:dayTimeDuration($arg1) div xs:dayTimeDuration('PT1S') eq xs:dayTimeDuration($arg2) div xs:dayTimeDuration('PT1S') 
+xs:yearMonthDuration($arg1) div xs:yearMonthDuration('P1M')  eq
+xs:yearMonthDuration($arg2) div xs:yearMonthDuration('P1M')
+    and
+xs:dayTimeDuration($arg1) div xs:dayTimeDuration('PT1S')  eq
+xs:dayTimeDuration($arg2) div xs:dayTimeDuration('PT1S')
 </pre>
             </div>
             <p>that is, the function returns <code>true</code> if the months
@@ -12789,7 +12932,8 @@ Terminology</a>
 be achieved by writing:</p>
               <div class="exampleInner">
                 <pre>
- if (contains($qname, ":")) then fn:resolve-QName($qname, $element) else fn:QName("", $qname) 
+ if (contains($qname, ":")) then fn:resolve-QName($qname, $element) else
+                            fn:QName("", $qname)
 </pre>
               </div>
               <p>If the requirement is to construct an <code>xs:QName</code>
@@ -13393,7 +13537,18 @@ the value of the quantity child of the first line-item is
 <code>5.0</code>.</p>
         <div class="exampleInner">
           <pre>
- &lt;PurchaseOrder&gt; &lt;line-item&gt; &lt;description&gt; ... &lt;/description&gt; &lt;price&gt; ... &lt;/price&gt; &lt;quantity&gt;5.0&lt;/quantity&gt; ... &lt;/line-item&gt; &lt;line-item&gt; ... &lt;/line-item&gt; ... &lt;/PurchaseOrder&gt; 
+&lt;PurchaseOrder&gt;
+  &lt;line-item&gt;
+    &lt;description&gt; ... &lt;/description&gt;
+    &lt;price&gt; ... &lt;/price&gt;
+    &lt;quantity&gt;5.0&lt;/quantity&gt;
+      ...
+  &lt;/line-item&gt;
+  &lt;line-item&gt;
+      ...
+  &lt;/line-item&gt;
+      ...
+&lt;/PurchaseOrder&gt;
 </pre>
         </div>
         <div class="div2">
@@ -13633,7 +13788,7 @@ interpreted as the zero-length string.</p>
 the value of the XPath expression:</p>
           <div class="exampleInner">
             <pre>
- (ancestor-or-self::*/@xml:lang)[last()] 
+(ancestor-or-self::*/@xml:lang)[last()]
 </pre>
           </div>
           <p>If this expression returns an empty sequence, the function
@@ -13868,14 +14023,32 @@ Examples</h4>
 <a href="#xquery">[XQuery 1.0: An XML Query Language]</a> as:</p>
             <div class="exampleInner">
               <pre>
- let $i := &lt;tool&gt;wrench&lt;/tool&gt; let $o := &lt;order&gt; {$i} &lt;quantity&gt;5&lt;/quantity&gt; &lt;/order&gt; let $odoc := document {$o} let $newi := $o/tool 
+let $i := &lt;tool&gt;wrench&lt;/tool&gt;
+let $o := &lt;order&gt; {$i} &lt;quantity&gt;5&lt;/quantity&gt; &lt;/order&gt;
+let $odoc := document {$o}
+let $newi := $o/tool
 </pre>
             </div>
             <p>Or they could be defined in <a href="#xslt20">[XSL
 Transformations (XSLT) Version 2.0]</a> as:</p>
             <div class="exampleInner">
               <pre>
- &lt;xsl:variable name="i" as="element()"&gt; &lt;tool&gt;wrench&lt;/tool&gt; &lt;/xsl:variable&gt; &lt;xsl:variable name="o" as="element()"&gt; &lt;order&gt; &lt;xsl:copy-of select="$i"/&gt; &lt;quantity&gt;5&lt;/quantity&gt; &lt;/order&gt; &lt;/xsl:variable&gt; &lt;xsl:variable name="odoc"&gt; &lt;xsl:copy-of select="$o"/&gt; &lt;/xsl:variable&gt; &lt;xsl:variable name="newi" select="$o/tool"/&gt; 
+&lt;xsl:variable name="i" as="element()"&gt;
+  &lt;tool&gt;wrench&lt;/tool&gt;
+&lt;/xsl:variable&gt;
+
+&lt;xsl:variable name="o" as="element()"&gt;
+  &lt;order&gt;
+    &lt;xsl:copy-of select="$i"/&gt;
+    &lt;quantity&gt;5&lt;/quantity&gt;
+  &lt;/order&gt;
+&lt;/xsl:variable&gt;
+
+&lt;xsl:variable name="odoc"&gt;
+  &lt;xsl:copy-of select="$o"/&gt;
+&lt;/xsl:variable&gt;
+
+&lt;xsl:variable name="newi" select="$o/tool"/&gt;
 </pre>
             </div>
             <ul>
@@ -13989,7 +14162,7 @@ empty.</td>
                 <td>Returns a sequence in which all but one of a set of duplicate
 values, based on value equality, have been deleted. The order in
 which the distinct values are returned is <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                    <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+                    <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
                   </a>.</td>
               </tr>
               <tr>
@@ -14398,7 +14571,7 @@ function returns <code>false</code>.</p>
 <code>eq</code> operator is not defined for their types, are
 considered to be distinct. The order in which the sequence of
 values is returned is <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
               </a>.</p>
             <p>The static type of the result is a sequence of prime types as
 defined in <a href="http://www.w3.org/TR/xquery-semantics/#sec_fn_distinct_node_vals">Section
@@ -14429,7 +14602,7 @@ context for the purpose of comparison. Note that
 timezones are different.</p>
             <p>Which value of a set of values that compare equal is returned is
 <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
               </a>.</p>
             <p>If the input sequence contains values of different numeric types
 that differ from each other by small amounts, then the
@@ -14440,7 +14613,7 @@ input contains three values <var>A</var>, <var>B</var>, and
 but <code>A ne C</code>, then the number of items in the result of
 the function (as well as the choice of which items are returned) is
 <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                <span class="arrow">Â·</span>implementation-dependent<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-dependent<span class="arrow">·</span>
               </a>, subject only to the constraints that (a) no
 two items in the result sequence compare equal to each other, and
 (b) every input item that does not appear in the result sequence
@@ -14449,7 +14622,10 @@ sequence.</p>
             <p>For example, this arises when computing:</p>
             <div class="exampleInner">
               <pre>
- distinct-values( (xs:float('1.0'), xs:decimal('1.0000000000100000000001', xs:double( '1.00000000001')) 
+      distinct-values(
+         (xs:float('1.0'),
+          xs:decimal('1.0000000000100000000001',
+          xs:double( '1.00000000001'))
 </pre>
             </div>
             <p>because the values of type <code>xs:float</code> and
@@ -14468,7 +14644,12 @@ sequence.</p>
                   <p>The following query:</p>
                   <div class="exampleInner">
                     <pre>
- let $x as xs:untypedAtomic* := (xs:untypedAtomic("cherry"), xs:untypedAtomic("bar"), xs:untypedAtomic("bar")) return fn:distinct-values ($x) 
+let $x as xs:untypedAtomic*
+    := (xs:untypedAtomic("cherry"),
+        xs:untypedAtomic("bar"),
+        xs:untypedAtomic("bar"))
+return fn:distinct-values ($x)
+                                    
 </pre>
                   </div>
                   <p>returns a sequence containing two items of type
@@ -14742,13 +14923,14 @@ number of items indicated by the value of <code>$length</code>.</p>
             <p>In the two-argument case, returns:</p>
             <div class="exampleInner">
               <pre>
- $sourceSeq[fn:round($startingLoc) le position()] 
+$sourceSeq[fn:round($startingLoc) le position()]
 </pre>
             </div>
             <p>In the three-argument case, returns:</p>
             <div class="exampleInner">
               <pre>
- $sourceSeq[fn:round($startingLoc) le position() and position() lt fn:round($startingLoc) + fn:round($length)] 
+$sourceSeq[fn:round($startingLoc) le position() 
+    and position() lt fn:round($startingLoc) + fn:round($length)]
 </pre>
             </div>
             <div class="note">
@@ -14816,7 +14998,7 @@ fn:unordered</h4>
             </div>
             <p>Summary: Returns the items of <code>$sourceSeq</code> in an
 <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
               </a> order.</p>
             <div class="note">
               <p class="prefix">
@@ -15221,7 +15403,9 @@ is <code>false</code>; it does not raise an error.</p>
                 <a name="func-deep-equal-examples" id="func-deep-equal-examples"/>15.3.1.1 Examples</h5>
               <div class="exampleInner">
                 <pre>
- let $at := &lt;attendees&gt; &lt;name last='Parker' first='Peter'/&gt; &lt;name last='Barker' first='Bob'/&gt; &lt;name last='Parker' first='Peter'/&gt; &lt;/attendees&gt; 
+let $at := &lt;attendees&gt; &lt;name last='Parker'
+                                first='Peter'/&gt; &lt;name last='Barker' first='Bob'/&gt;
+                                &lt;name last='Parker' first='Peter'/&gt; &lt;/attendees&gt;
 </pre>
               </div>
               <ul>
@@ -15614,7 +15798,7 @@ months.</p>
 of every other item in the input sequence. If there are two or more
 such items, then the specific item whose value is returned is
 <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
               </a>.</p>
             <p>The following rules are applied to the input sequence:</p>
             <ul>
@@ -15675,7 +15859,9 @@ Collations</b>
 expression:</p>
             <div class="exampleInner">
               <pre>
- if (every $v in $c satisfies $c[1] ge $v) then $c[1] else fn:max(fn:subsequence($c, 2)) 
+   if (every $v in $c satisfies $c[1] ge $v)
+   then $c[1] 
+   else fn:max(fn:subsequence($c, 2))
 </pre>
             </div>
             <p>evaluated with <code>$collation</code> as the default collation
@@ -15754,7 +15940,7 @@ default collation.</p>
 every other item in the input sequence. If there are two or more
 such items, then the specific item whose value is returned is
 <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
               </a>.</p>
             <p>The following rules are applied to the input sequence:</p>
             <ul>
@@ -15815,7 +16001,9 @@ Collations</b>
 expression:</p>
             <div class="exampleInner">
               <pre>
- if (every $v in $c satisfies $c[1] le $v) then $c[1] else fn:min(fn:subsequence($c, 2)) 
+   if (every $v in $c satisfies $c[1] le $v) 
+   then $c[1] 
+   else fn:min(fn:subsequence($c, 2))
 </pre>
             </div>
             <p>evaluated with <code>$collation</code> as the default collation
@@ -15862,7 +16050,7 @@ Examples</h5>
 return either positive or negative zero. <a href="#xmlschema-2">[XML Schema Part 2: Datatypes Second Edition]</a>
 does not distinguish between the values positive zero and negative
 zero. The result is <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                      <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+                      <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
                     </a>.</p>
                 </li>
                 <li>
@@ -15950,7 +16138,12 @@ includes at least one xs:double will be an xs:double.</p>
 signature, is the result of the expression:</p>
             <div class="exampleInner">
               <pre>
- if (fn:count($c) eq 0) then $zero else if (fn:count($c) eq 1) then $c[1] else $c[1] + fn:sum(subsequence($c, 2)) 
+if (fn:count($c) eq 0) then
+    $zero
+else if (fn:count($c) eq 1) then
+    $c[1]
+else
+    $c[1] + fn:sum(subsequence($c, 2))
 </pre>
             </div>
             <p>where <code>$c</code> is the converted sequence.</p>
@@ -15983,7 +16176,10 @@ Examples</h5>
               <p>Assume:</p>
               <div class="exampleInner">
                 <pre>
- $d1 = xs:yearMonthDuration("P20Y") $d2 = xs:yearMonthDuration("P10M") $seq1 = ($d1, $d2) $seq3 = (3, 4, 5) 
+$d1 = xs:yearMonthDuration("P20Y")
+$d2 = xs:yearMonthDuration("P10M")
+$seq1 = ($d1, $d2)
+$seq3 = (3, 4, 5)
 </pre>
               </div>
               <ul>
@@ -16240,7 +16436,8 @@ an <code>xs:NCName</code>), it is ignored. Formally, the candidate
 the expression:</p>
                     <div class="exampleInner">
                       <pre>
- for $s in $arg return fn:tokenize(fn:normalize-space($s), ' ') [. castable as xs:IDREF] 
+for $s in $arg return fn:tokenize(fn:normalize-space($s), ' ')
+                 [. castable as xs:IDREF]
 </pre>
                     </div>
                   </li>
@@ -16374,7 +16571,7 @@ the candidate <code>ID</code> values are the strings in the
 sequence</p>
                     <div class="exampleInner">
                       <pre>
- $arg[. castable as xs:NCName] 
+$arg[. castable as xs:NCName]
 </pre>
                     </div>
                   </li>
@@ -16450,7 +16647,7 @@ node.</p>
 string, an error is raised [<a href="#ERRFODC0005" title="err:FODC0005">err:FODC0005</a>].</p>
             <p>The URI may include a fragment identifier.</p>
             <p>By default, this function is <a title="stable" class="termref" href="#stable">
-                <span class="arrow">Â·</span>stable<span class="arrow">Â·</span>
+                <span class="arrow">·</span>stable<span class="arrow">·</span>
               </a>. Two calls on this function return the same
 document node if the same URI Reference (after resolution to an
 absolute URI Reference) is supplied to both calls. Thus, the
@@ -16458,7 +16655,7 @@ following expression (if it does not raise an error) will always be
 true:</p>
             <div class="exampleInner">
               <pre>
- doc("foo.xml") is doc("foo.xml") 
+doc("foo.xml") is doc("foo.xml")
 </pre>
             </div>
             <p>However, for performance reasons, implementations may provide a
@@ -16501,7 +16698,7 @@ machinery for locating resources and turning their contents into
 document nodes within the XPath data model. Both the set of
 resources that are reachable, and the mechanisms by which those
 resources are parsed and validated, are <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
               </a>.</p>
             <p>One possible processing model for this function is as follows.
 The resource identified by the URI Reference is retrieved. If the
@@ -16516,7 +16713,7 @@ error is raised [<a href="#ERRFODC0002" title="err:FODC0002">err:FODC0002</a>]. 
 function is the document node at the root of the resulting tree.
 This tree is then optionally validated against a schema.</p>
             <p>Various aspects of this processing are <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a>. Implementations may provide external
 configuration options that allow any aspect of the processing to be
 controlled by the user. In particular:</p>
@@ -16534,7 +16731,7 @@ constructed from non-XML resources, under user control.</p>
               </li>
               <li>
                 <p>It is <a title="implementation-defined" class="termref" href="#implementation-defined">
-                    <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                    <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
                   </a> whether DTD validation and/or schema
 validation is applied to the source document.</p>
               </li>
@@ -16586,8 +16783,8 @@ applied by the implementation of <a href="#func-doc">
                 <code>fn:doc($uri)</code>
               </a> within the same
 <a title="execution scope" class="termref" href="#execution-scope">
-                <span class="arrow">Â·</span>execution
-scope<span class="arrow">Â·</span>
+                <span class="arrow">·</span>execution
+scope<span class="arrow">·</span>
               </a> must return a document node.
 However, if non-stable processing has been selected for the
 <a href="#func-doc">
@@ -16644,14 +16841,14 @@ static context. If <code>$arg</code> is not a valid
             <p>If <code>$arg</code> is the empty sequence, the function behaves
 as if it had been called without an argument. See above.</p>
             <p>By default, this function is <a title="stable" class="termref" href="#stable">
-                <span class="arrow">Â·</span>stable<span class="arrow">Â·</span>
+                <span class="arrow">·</span>stable<span class="arrow">·</span>
               </a>. This means that repeated calls on the
 function with the same argument will return the same result.
 However, for performance reasons, implementations may provide a
 user option to evaluate the function without a guarantee of
 stability. The manner in which any such option is provided is
 <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a>. If the user has not selected such an option,
 a call to this function must either return a stable result or must
 raise an error: [<a href="#ERRFODC0003" title="err:FODC0003">err:FODC0003</a>].</p>
@@ -16786,7 +16983,7 @@ an <code>xs:NCName</code>), it is ignored. Formally, the candidate
 the expression:</p>
                     <div class="exampleInner">
                       <pre>
- for $s in $arg return fn:tokenize(fn:normalize-space($s), ' ')[. castable as xs:IDREF] 
+for $s in $arg return fn:tokenize(fn:normalize-space($s), ' ')[. castable as xs:IDREF]
 </pre>
                     </div>
                   </li>
@@ -16954,11 +17151,11 @@ Components</a>
 evaluation of a query or transformation in which
 <code>fn:current-dateTime()</code> is executed. This function is
 <a title="stable" class="termref" href="#stable">
-              <span class="arrow">Â·</span>stable<span class="arrow">Â·</span>
-            </a>. The
-precise instant during the query or transformation represented by
-the value of <code>fn:current-dateTime()</code> is <a title="implementation dependent" class="termref" href="#implementation-dependent">
-              <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+              <span class="arrow">·</span>stable<span class="arrow">·</span>
+            </a>. The precise
+instant during the query or transformation represented by the value
+of <code>fn:current-dateTime()</code> is <a title="implementation dependent" class="termref" href="#implementation-dependent">
+              <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
             </a>.</p>
           <div class="div3">
             <h4>
@@ -16991,11 +17188,11 @@ This is an <code>xs:date</code> (with timezone) that is current at
 some time during the evaluation of a query or transformation in
 which <code>fn:current-date()</code> is executed. This function is
 <a title="stable" class="termref" href="#stable">
-              <span class="arrow">Â·</span>stable<span class="arrow">Â·</span>
-            </a>. The
-precise instant during the query or transformation represented by
-the value of <code>fn:current-date()</code> is <a title="implementation dependent" class="termref" href="#implementation-dependent">
-              <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+              <span class="arrow">·</span>stable<span class="arrow">·</span>
+            </a>. The precise
+instant during the query or transformation represented by the value
+of <code>fn:current-date()</code> is <a title="implementation dependent" class="termref" href="#implementation-dependent">
+              <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
             </a>.</p>
           <div class="div3">
             <h4>
@@ -17026,11 +17223,11 @@ This is an <code>xs:time</code> (with timezone) that is current at
 some time during the evaluation of a query or transformation in
 which <code>fn:current-time()</code> is executed. This function is
 <a title="stable" class="termref" href="#stable">
-              <span class="arrow">Â·</span>stable<span class="arrow">Â·</span>
-            </a>. The
-precise instant during the query or transformation represented by
-the value of <code>fn:current-time()</code> is <a title="implementation dependent" class="termref" href="#implementation-dependent">
-              <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+              <span class="arrow">·</span>stable<span class="arrow">·</span>
+            </a>. The precise
+instant during the query or transformation represented by the value
+of <code>fn:current-time()</code> is <a title="implementation dependent" class="termref" href="#implementation-dependent">
+              <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
             </a>.</p>
           <div class="div3">
             <h4>
@@ -19162,7 +19359,7 @@ raised.</p>
             <p>For <code>xs:anyURI</code>, the extent to which an
 implementation validates the lexical form of <code>xs:anyURI</code>
 is <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
               </a>.</p>
             <p>If the cast fails for any other reason, error [<a href="#ERRFORG0001" title="err:FORG0001">err:FORG0001</a>] is
 raised.</p>
@@ -19364,7 +19561,7 @@ characters in <em>TYM</em> and all the characters except the first
                 <p>In all other cases, <em>TV</em> is the <a href="#xmlschema-2">[XML Schema Part 2: Datatypes Second Edition]</a>
 canonical representation of <em>SV</em>. For datatypes that do not
 have a canonical lexical representation defined an <a title="implementation dependent" class="termref" href="#implementation-dependent">
-                    <span class="arrow">Â·</span>implementation dependent<span class="arrow">Â·</span>
+                    <span class="arrow">·</span>implementation dependent<span class="arrow">·</span>
                   </a> canonical representation may be used.</p>
               </li>
             </ul>
@@ -19409,7 +19606,7 @@ zero, or negative zero, then <em>TV</em> is the
 <code>NaN</code>, positive zero, or negative zero respectively.</p>
                     </li>
                     <li>
-                      <p>otherwise, <em>SV</em> can be expressed in the form <code>m Ã—
+                      <p>otherwise, <em>SV</em> can be expressed in the form <code>m ×
 2^e</code> where the mantissa <code>m</code> and exponent
 <code>e</code> are signed <code>xs:integer</code>s whose value
 range is defined in <a href="#xmlschema-2">[XML Schema Part 2:
@@ -19442,7 +19639,7 @@ zero depending on the sign of <code>M</code>
                         </li>
                         <li>
                           <p>otherwise, <em>TV</em> is the <code>xs:float</code> value
-<code>M Ã— 2^E</code>.</p>
+<code>M × 2^E</code>.</p>
                         </li>
                       </ul>
                     </li>
@@ -19474,7 +19671,7 @@ xs:untypedAtomic</b>
                   <b>Note:</b>
                 </p>
                 <p>Implementations <a title="may" class="termref" href="#may">
-                    <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                    <span class="arrow">·</span>may<span class="arrow">·</span>
                   </a> return negative zero for <code>"-0.0E0" cast
 as xs:float</code>. <a href="#xmlschema-2">[XML Schema Part 2:
 Datatypes Second Edition]</a> does not distinguish between the
@@ -19506,12 +19703,12 @@ zero, or negative zero, then <em>TV</em> is the
 <code>NaN</code>, positive zero, or negative zero respectively.</p>
                     </li>
                     <li>
-                      <p>otherwise, <em>SV</em> can be expressed in the form <code>m Ã—
+                      <p>otherwise, <em>SV</em> can be expressed in the form <code>m ×
 2^e</code> where the mantissa <code>m</code> and exponent
 <code>e</code> are signed <code>xs:integer</code> values whose
 value range is defined in <a href="#xmlschema-2">[XML Schema Part
 2: Datatypes Second Edition]</a>, and <em>TV</em> is the
-<code>xs:double</code> value <code>m Ã— 2^e</code>.</p>
+<code>xs:double</code> value <code>m × 2^e</code>.</p>
                     </li>
                   </ul>
                 </li>
@@ -19542,7 +19739,7 @@ xs:untypedAtomic</b>
                   <b>Note:</b>
                 </p>
                 <p>Implementations <a title="may" class="termref" href="#may">
-                    <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                    <span class="arrow">·</span>may<span class="arrow">·</span>
                   </a> return negative zero for <code>"-0.0E0" cast
 as xs:double</code>. <a href="#xmlschema-2">[XML Schema Part 2:
 Datatypes Second Edition]</a> does not distinguish between the
@@ -19573,7 +19770,7 @@ values are equally close, then the one that is closest to zero is
 chosen. If <em>SV</em> is too large to be accommodated as an
 <code>xs:decimal</code>, (see <a href="#xmlschema-2">[XML Schema
 Part 2: Datatypes Second Edition]</a> for <a title="implementation-defined" class="termref" href="#implementation-defined">
-                      <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                      <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
                     </a> limits on numeric values) an error is raised
 [<a href="#ERRFOCA0001" title="err:FOCA0001">err:FOCA0001</a>]. If
 <em>SV</em> is one of the special <code>xs:float</code> or
@@ -19620,7 +19817,7 @@ Casting <code>3.124E1</code> returns <code>31</code>. If
 <em>SV</em> is too large to be accommodated as an integer, (see
 <a href="#xmlschema-2">[XML Schema Part 2: Datatypes Second
 Edition]</a> for <a title="implementation-defined" class="termref" href="#implementation-defined">
-                      <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                      <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
                     </a> limits on numeric values) an error is raised
 [<a href="#ERRFOCA0003" title="err:FOCA0003">err:FOCA0003</a>]. If
 <em>SV</em> is one of the special <code>xs:float</code> or
@@ -19736,22 +19933,65 @@ this document. Thus, the functions below assume that they are
 correct and do no range checking on them.</p>
             <div class="exampleInner">
               <pre>
- declare function eg:convertYearToString($year as xs:integer) as xs:string { let $plusMinus := if ($year &gt;= 0) then "" else "-" let $yearString := fn:abs($year) cast as xs:string let $length := fn:string-length($yearString) return if ($length = 1) then fn:concat($plusMinus, "000", $yearString) else if ($length = 2) then fn:concat($plusMinus, "00", $yearString) else if ($length = 3) then fn:concat($plusMinus, "0", $yearString) else fn:concat($plusMinus, $yearString) } 
+declare function eg:convertYearToString($year as xs:integer) as xs:string
+{
+   let $plusMinus := if ($year &gt;= 0) then "" else "-"
+   let $yearString := fn:abs($year) cast as xs:string
+   let $length := fn:string-length($yearString)
+   return
+     if ($length = 1)  then fn:concat($plusMinus, "000", $yearString)
+     else
+     if ($length = 2)  then fn:concat($plusMinus, "00", $yearString)
+       else
+       if ($length = 3)  then fn:concat($plusMinus, "0", $yearString)
+       else fn:concat($plusMinus, $yearString)
+}
+                    
 </pre>
             </div>
             <div class="exampleInner">
               <pre>
- declare function eg:convertTo2CharString($value as xs:integer) as xs:string { let $string := $value cast as xs:string return if (fn:string-length($string) = 1) then fn:concat("0", $string) else $string } 
+declare function eg:convertTo2CharString($value as xs:integer) as xs:string
+{
+   let $string := $value cast as xs:string
+   return 
+     if (fn:string-length($string) = 1) then fn:concat("0", $string)
+     else $string
+}
+                    
 </pre>
             </div>
             <div class="exampleInner">
               <pre>
- declare function eg:convertSecondsToString($seconds as xs:decimal) as xs:string { let $string := $seconds cast as xs:string let $intLength := fn:string-length(($seconds cast as xs:integer) cast as xs:string) return if ($intLength = 1) then fn:concat("0", $string) else $string } 
+declare function eg:convertSecondsToString($seconds as xs:decimal) as xs:string
+{
+   let $string := $seconds cast as xs:string
+   let $intLength := fn:string-length(($seconds cast as xs:integer) cast as xs:string)
+   return 
+     if ($intLength = 1) then fn:concat("0", $string)
+     else $string
+}
+                    
 </pre>
             </div>
             <div class="exampleInner">
               <pre>
- declare function eg:convertTZtoString($tz as xs:dayTimeDuration?) as xs:string { if (empty($tz)) then "" else if ($tz eq xs:dayTimeDuration('PT0S')) then "Z" else let $tzh := fn:hours-from-duration($tz) let $tzm := fn:minutes-from-duration($tz) let $plusMinus := if ($tzh &gt;= 0) then "+" else "-" let $tzhString := eg:convertTo2CharString(fn:abs($tzh)) let $tzmString := eg:convertTo2CharString(fn:abs($tzm)) return fn:concat($plusMinus, $tzhString, ":", $tzmString) } 
+declare function eg:convertTZtoString($tz as xs:dayTimeDuration?) as xs:string
+{
+   if (empty($tz)) 
+     then ""
+   else if ($tz eq xs:dayTimeDuration('PT0S'))
+     then "Z"
+   else 
+     let $tzh := fn:hours-from-duration($tz)
+     let $tzm := fn:minutes-from-duration($tz)
+     let $plusMinus := if ($tzh &gt;= 0) then "+" else "-"
+     let $tzhString := eg:convertTo2CharString(fn:abs($tzh))
+     let $tzmString := eg:convertTo2CharString(fn:abs($tzm))
+     return fn:concat($plusMinus, $tzhString, ":", $tzmString)
+}
+
+                    
 </pre>
             </div>
             <p>Conversion from primitive types to date and time types follows
@@ -20446,8 +20686,8 @@ Last Call Working Draft. Available at: <a href="http://www.w3.org/TR/2005/WD-cha
             </dt>
             <dd>
               <div>ISO (International Organization for Standardization).
-<em>ISO/IEC 10967-1:1994, Information technologyâ€”Language
-Independent Arithmeticâ€”Part 1: Integer and floating point
+<em>ISO/IEC 10967-1:1994, Information technology—Language
+Independent Arithmetic—Part 1: Integer and floating point
 arithmetic</em> [Geneva]: International Organization for
 Standardization, 1994. Available from: <a href="http://www.iso.org/">http://www.iso.org/</a>
               </div>
@@ -20464,7 +20704,7 @@ publication of new versions. See <a href="http://www.unicode.org/standard/versio
 for the latest version and additional information on versions of
 the standard and of the Unicode Character Database. The version of
 Unicode to be used is <a title="implementation-defined" class="termref" href="#implementation-defined">
-                  <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                  <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
                 </a>, but implementations are recommended to use
 the latest Unicode version; currently, Version 4.0.00,
 Addison-Wesley, 2003 ISBN 0-321-18578-1</div>
@@ -21618,13 +21858,32 @@ argument.</p>
             <p>XSLT implementation</p>
             <div class="exampleInner">
               <pre>
- &lt;xsl:function name="eg:if-empty" as="xs:anyAtomicType*"&gt; &lt;xsl:param name="node" as="node()?"/&gt; &lt;xsl:param name="value" as="xs:anyAtomicType"/&gt; &lt;xsl:choose&gt; &lt;xsl:when test="$node and $node/child::node()"&gt; &lt;xsl:sequence select="fn:data($node)"/&gt; &lt;/xsl:when&gt; &lt;xsl:otherwise&gt; &lt;xsl:sequence select="$value"/&gt; &lt;/xsl:otherwise&gt; &lt;/xsl:choose&gt; &lt;/xsl:function&gt; 
+&lt;xsl:function name="eg:if-empty" as="xs:anyAtomicType*"&gt;
+  &lt;xsl:param name="node" as="node()?"/&gt;
+  &lt;xsl:param name="value" as="xs:anyAtomicType"/&gt;
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="$node and $node/child::node()"&gt;
+      &lt;xsl:sequence select="fn:data($node)"/&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:sequence select="$value"/&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:function&gt;
 </pre>
             </div>
             <p>XQuery implementation</p>
             <div class="exampleInner">
               <pre>
- declare function eg:if-empty ( $node as node()?, $value as xs:anyAtomicType) as xs:anyAtomicType* { if ($node and $node/child::node()) then fn:data($node) else $value } 
+declare function eg:if-empty (
+  $node as node()?,
+  $value as xs:anyAtomicType) as xs:anyAtomicType* 
+{
+  if ($node and $node/child::node())
+            then fn:data($node)
+            else $value
+}
+                    
 </pre>
             </div>
           </div>
@@ -21663,13 +21922,32 @@ argument.</p>
             <p>XSLT implementation</p>
             <div class="exampleInner">
               <pre>
- &lt;xsl:function name="eg:if-absent"&gt; &lt;xsl:param name="node" as="node()?"/&gt; &lt;xsl:param name="value" as="xs:anyAtomicType"/&gt; &lt;xsl:choose&gt; &lt;xsl:when test="$node"&gt; &lt;xsl:sequence select="fn:data($node)"/&gt; &lt;/xsl:when&gt; &lt;xsl:otherwise&gt; &lt;xsl:sequence select="$value"/&gt; &lt;/xsl:otherwise&gt; &lt;/xsl:choose&gt; &lt;/xsl:function&gt; 
+&lt;xsl:function name="eg:if-absent"&gt;
+  &lt;xsl:param name="node" as="node()?"/&gt;
+  &lt;xsl:param name="value" as="xs:anyAtomicType"/&gt;
+  &lt;xsl:choose&gt;
+    &lt;xsl:when test="$node"&gt;
+      &lt;xsl:sequence select="fn:data($node)"/&gt;
+    &lt;/xsl:when&gt;
+    &lt;xsl:otherwise&gt;
+      &lt;xsl:sequence select="$value"/&gt;
+    &lt;/xsl:otherwise&gt;
+  &lt;/xsl:choose&gt;
+&lt;/xsl:function&gt;
 </pre>
             </div>
             <p>XQuery implementation</p>
             <div class="exampleInner">
               <pre>
- declare function eg:if-absent ( $node as node()?, $value as xs:anyAtomicType) as xs:anyAtomicType* { if ($node) then fn:data($node) else $value } 
+declare function eg:if-absent (
+  $node as node()?,
+  $value as xs:anyAtomicType) as xs:anyAtomicType* 
+{
+  if ($node)
+    then fn:data($node)
+    else $value
+}
+                    
 </pre>
             </div>
           </div>
@@ -21713,13 +21991,24 @@ items in $arg1 and $arg2, in an undefined order.</p>
             <p>XSLT implementation</p>
             <div class="exampleInner">
               <pre>
- xsl:function name="eg:value-union" as="xs:anyAtomicType*"&gt; &lt;xsl:param name="arg1" as="xs:anyAtomicType*"/&gt; &lt;xsl:param name="arg2" as="xs:anyAtomicType*"/&gt; &lt;xsl:sequence select="fn:distinct-values(($arg1, $arg2))"/&gt; &lt;/xsl:function&gt; 
+xsl:function name="eg:value-union" as="xs:anyAtomicType*"&gt;
+  &lt;xsl:param name="arg1" as="xs:anyAtomicType*"/&gt;
+  &lt;xsl:param name="arg2" as="xs:anyAtomicType*"/&gt;
+  &lt;xsl:sequence
+     select="fn:distinct-values(($arg1, $arg2))"/&gt; 
+&lt;/xsl:function&gt;
 </pre>
             </div>
             <p>XQuery implementation</p>
             <div class="exampleInner">
               <pre>
- declare function eg:value-union ( $arg1 as xs:anyAtomicType*, $arg2 as xs:anyAtomicType*) as xs:anyAtomicType* { fn:distinct-values(($arg1, $arg2)) } 
+declare function eg:value-union (
+  $arg1 as xs:anyAtomicType*,
+  $arg2 as xs:anyAtomicType*) as xs:anyAtomicType* 
+{
+  fn:distinct-values(($arg1, $arg2))
+}
+                    
 </pre>
             </div>
           </div>
@@ -21759,13 +22048,24 @@ order.</p>
             <p>XSLT implementation&gt;</p>
             <div class="exampleInner">
               <pre>
- &lt;xsl:function name="eg:value-intersect" as="xs:anyAtomicType*"&gt; &lt;xsl:param name="arg1" as="xs:anyAtomicType*"/&gt; &lt;xsl:param name="arg2" as="xs:anyAtomicType*"/&gt; &lt;xsl:sequence select="fn:distinct-values($arg1[.=$arg2])"/&gt; &lt;/xsl:function&gt; 
+&lt;xsl:function name="eg:value-intersect" as="xs:anyAtomicType*"&gt;
+  &lt;xsl:param name="arg1" as="xs:anyAtomicType*"/&gt;
+  &lt;xsl:param name="arg2" as="xs:anyAtomicType*"/&gt;
+  &lt;xsl:sequence 
+     select="fn:distinct-values($arg1[.=$arg2])"/&gt;
+&lt;/xsl:function&gt;
 </pre>
             </div>
             <p>XQuery implementation</p>
             <div class="exampleInner">
               <pre>
- declare function eg:value-intersect ( $arg1 as xs:anyAtomicType*, $arg2 as xs:anyAtomicType* ) as xs:anyAtomicType* { fn:distinct-values($arg1[.=$arg2]) } 
+declare function eg:value-intersect (
+  $arg1 as xs:anyAtomicType*,
+  $arg2 as xs:anyAtomicType* ) as xs:anyAtomicType* 
+{
+  fn:distinct-values($arg1[.=$arg2])
+}
+                    
 </pre>
             </div>
           </div>
@@ -21805,13 +22105,23 @@ order.</p>
             <p>XSLT implementation</p>
             <div class="exampleInner">
               <pre>
- &lt;xsl:function name="eg:value-except" as="xs:anyAtomicType*"&gt; &lt;xsl:param name="arg1" as="xs:anyAtomicType*"/&gt; &lt;xsl:param name="arg2" as="xs:anyAtomicType*"/&gt; &lt;xsl:sequence select="fn:distinct-values($arg1[not(.=$arg2)])"/&gt; &lt;/xsl:function&gt; 
+&lt;xsl:function name="eg:value-except" as="xs:anyAtomicType*"&gt;
+  &lt;xsl:param name="arg1" as="xs:anyAtomicType*"/&gt;
+  &lt;xsl:param name="arg2" as="xs:anyAtomicType*"/&gt;
+  &lt;xsl:sequence
+     select="fn:distinct-values($arg1[not(.=$arg2)])"/&gt;
+&lt;/xsl:function&gt;
 </pre>
             </div>
             <p>XQuery implementation</p>
             <div class="exampleInner">
               <pre>
- declare function eg:value-except ( $arg1 as xs:anyAtomicType*, $arg2 as xs:anyAtomicType*) as xs:anyAtomicType* { fn:distinct-values($arg1[not(.=$arg2)]) } 
+declare function eg:value-except (
+  $arg1 as xs:anyAtomicType*,
+  $arg2 as xs:anyAtomicType*) as xs:anyAtomicType* 
+{
+  fn:distinct-values($arg1[not(.=$arg2)])
+}
 </pre>
             </div>
           </div>
@@ -21846,13 +22156,24 @@ empty sequence is returned.</p>
           <p>XSLT implementation</p>
           <div class="exampleInner">
             <pre>
- &lt;xsl:function name="eg:index-of-node" as="xs:integer*"&gt; &lt;xsl:param name="sequence" as="node()*"/&gt; &lt;xsl:param name="srch" as="node()"/&gt; &lt;xsl:for-each select="$sequence"&gt; &lt;xsl:if test=". is $srch"&gt; &lt;xsl:sequence select="position()"/&gt; &lt;/xsl:if&gt; &lt;/xsl:for-each&gt; &lt;/xsl:function&gt; 
+&lt;xsl:function name="eg:index-of-node" as="xs:integer*"&gt;
+  &lt;xsl:param name="sequence" as="node()*"/&gt;
+  &lt;xsl:param name="srch" as="node()"/&gt;
+  &lt;xsl:for-each select="$sequence"&gt;
+    &lt;xsl:if test=". is $srch"&gt;
+       &lt;xsl:sequence select="position()"/&gt;
+    &lt;/xsl:if&gt;
+  &lt;/xsl:for-each&gt;
+&lt;/xsl:function&gt;
 </pre>
           </div>
           <p>XQuery implementation</p>
           <div class="exampleInner">
             <pre>
- declare function eg:index-of-node($sequence as node()*, $srch as node()) as xs:integer* { for $n at $i in $sequence where ($n is $srch) return $i } 
+declare function eg:index-of-node($sequence as node()*, $srch as node()) as xs:integer* 
+{
+  for $n at $i in $sequence where ($n is $srch) return $i
+}
 </pre>
           </div>
         </div>
@@ -21875,13 +22196,26 @@ together.</p>
           <p>XSLT implementation</p>
           <div class="exampleInner">
             <pre>
- &lt;xsl:function name="eg:string-pad" as="xs:string"&gt; &lt;xsl:param name="padString" as="xs:string?"/&gt; &lt;xsl:param name="padCount" as="xs:integer"/&gt; &lt;xsl:sequence select="fn:string-join((for $i in 1 to $padCount return $padString), '')"/&gt; &lt;/xsl:function&gt; 
+&lt;xsl:function name="eg:string-pad" as="xs:string"&gt;
+  &lt;xsl:param name="padString" as="xs:string?"/&gt;
+  &lt;xsl:param name="padCount" as="xs:integer"/&gt;
+  &lt;xsl:sequence select="fn:string-join((for $i in 1 to $padCount 
+                                    return $padString), '')"/&gt;
+ &lt;/xsl:function&gt;
+                
 </pre>
           </div>
           <p>XQuery implementation</p>
           <div class="exampleInner">
             <pre>
- declare function eg:string-pad ( $padString as xs:string?, $padCount as xs:integer) as xs:string { fn:string-join((for $i in 1 to $padCount return $padString), "") } 
+declare function eg:string-pad (
+  $padString as xs:string?,
+  $padCount as xs:integer) as xs:string 
+{
+   fn:string-join((for $i in 1 to $padCount return $padString), "")
+}
+
+                
 </pre>
           </div>
           <p>This returns the zero-length string if <code>$padString</code>
@@ -21906,19 +22240,30 @@ preserving the first occurrence of each node.</p>
           <p>XPath</p>
           <div class="exampleInner">
             <pre>
- $arg[empty(subsequence($arg, 1, position()-1) intersect .)] 
+$arg[empty(subsequence($arg, 1, position()-1) intersect .)]
+                
 </pre>
           </div>
           <p>XSLT implementation</p>
           <div class="exampleInner">
             <pre>
- &lt;xsl:function name="eg:distinct-nodes-stable" as="node()*"&gt; &lt;xsl:param name="arg" as="node()*"/&gt; &lt;xsl:sequence select="$arg[empty(subsequence($arg, 1, position()-1) intersect .)]"/&gt; &lt;/xsl:function&gt; 
+&lt;xsl:function name="eg:distinct-nodes-stable" as="node()*"&gt;
+  &lt;xsl:param name="arg" as="node()*"/&gt;
+  &lt;xsl:sequence 
+    select="$arg[empty(subsequence($arg, 1, position()-1) intersect .)]"/&gt; &lt;/xsl:function&gt;
+                
 </pre>
           </div>
           <p>XQuery implementation</p>
           <div class="exampleInner">
             <pre>
- declare function distinct-nodes-stable ($arg as node()*) as node()* { for $a at $apos in $arg let $before_a := fn:subsequence($arg, 1, $apos - 1) where every $ba in $before_a satisfies not($ba is $a) return $a } 
+declare function distinct-nodes-stable ($arg as node()*) as node()* 
+{ 
+   for $a at $apos in $arg 
+   let $before_a := fn:subsequence($arg, 1, $apos - 1) 
+   where every $ba in $before_a satisfies not($ba is $a) 
+   return $a 
+}
 </pre>
           </div>
         </div>
@@ -21929,14 +22274,14 @@ preserving the first occurrence of each node.</p>
 Implementation-Defined Features (Non-Normative)</h2>
         <p>This appendix provides a summary of features defined in this
 specification whose effect is explicitly <a title="implementation-defined" class="termref" href="#implementation-defined">
-            <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+            <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
           </a>. The conformance rules require vendors to
 provide documentation that explains how these choices have been
 exercised.</p>
         <ol class="enumar">
           <li>
             <p>The destination of the trace output is <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a>. See <a href="#func-trace">
                 <b>4 The Trace
 Function</b>
@@ -21945,10 +22290,9 @@ Function</b>
           <li>
             <p>For <code>xs:integer</code> operations, implementations that
 support limited-precision integer operations <a title="must" class="termref" href="#must">
-                <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
-              </a> either raise
-an error [<a href="#ERRFOAR0002" title="err:FOAR0002">err:FOAR0002</a>] or provide an <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>must<span class="arrow">·</span>
+              </a> either raise an error [<a href="#ERRFOAR0002" title="err:FOAR0002">err:FOAR0002</a>] or provide an <a title="implementation-defined" class="termref" href="#implementation-defined">
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a> mechanism that allows users to choose between
 raising an error and returning a result that is modulo the largest
 representable integer value. See <a href="#op.numeric">
@@ -21959,10 +22303,10 @@ Operators on Numeric Values</b>
           <li>
             <p>For <code>xs:decimal</code> values the number of digits of
 precision returned by the numeric operators is <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a>. See <a href="#op.numeric">
-                <b>6.2 Operators
-on Numeric Values</b>
+                <b>6.2 Operators on
+Numeric Values</b>
               </a>. See also <a href="#casting-to-decimal">
                 <b>17.1.3.3 Casting to xs:decimal</b>
               </a> and
@@ -21976,7 +22320,7 @@ xs:integer</b>
             <p>If the number of digits in the result of a numeric operation
 exceeds the number of digits that the implementation supports, the
 result is truncated or rounded in an <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a> manner. See <a href="#op.numeric">
                 <b>6.2
 Operators on Numeric Values</b>
@@ -21991,7 +22335,7 @@ xs:integer</b>
           </li>
           <li>
             <p>It is <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a> which version of Unicode is supported by the
 features defined in this specification, but it is recommended that
 the most recent version of Unicode be used. See <a href="#string-types">
@@ -22003,22 +22347,22 @@ the most recent version of Unicode be used. See <a href="#string-types">
                 <b>7.4.6
 fn:normalize-unicode</b>
               </a>, conforming implementations <a title="must" class="termref" href="#must">
-                <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
+                <span class="arrow">·</span>must<span class="arrow">·</span>
               </a> support
 normalization form "NFC" and <a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                <span class="arrow">·</span>may<span class="arrow">·</span>
               </a> support normalization forms "NFD", "NFKC",
 "NFKD", "FULLY-NORMALIZED". They <a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                <span class="arrow">·</span>may<span class="arrow">·</span>
               </a> also support other normalization forms with
 <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a> semantics.</p>
           </li>
           <li>
             <p>The ability to decompose strings into collation units suitable
 for substring matching is an <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a> property of a collation. See <a href="#substring.functions">
                 <b>7.5 Functions Based on Substring
 Matching</b>
@@ -22026,16 +22370,16 @@ Matching</b>
           </li>
           <li>
             <p>All <em>minimally conforming</em> processors <a title="must" class="termref" href="#must">
-                <span class="arrow">Â·</span>must<span class="arrow">Â·</span>
+                <span class="arrow">·</span>must<span class="arrow">·</span>
               </a> support year
 values with a minimum of 4 digits (i.e., YYYY) and a minimum
 fractional second precision of 1 millisecond or three digits (i.e.,
 s.sss). However, <em>conforming processors</em>
               <a title="may" class="termref" href="#may">
-                <span class="arrow">Â·</span>may<span class="arrow">Â·</span>
+                <span class="arrow">·</span>may<span class="arrow">·</span>
               </a> set larger
 <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a> limits on the maximum number of digits they
 support in these two situations. See <a href="#date-time-duration-conformance">
                 <b>10.1.1 Limits and
@@ -22055,7 +22399,7 @@ xs:untypedAtomic</b>
             <p>Various aspects of the processing provided by <a href="#func-doc">
                 <b>15.5.4 fn:doc</b>
               </a> are <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a>. Implementations may provide external
 configuration options that allow any aspect of the processing to be
 controlled by the user.</p>
@@ -22063,7 +22407,7 @@ controlled by the user.</p>
           <li>
             <p>The manner in which implementations provide options to weaken
 the <a title="stable" class="termref" href="#stable">
-                <span class="arrow">Â·</span>stable<span class="arrow">Â·</span>
+                <span class="arrow">·</span>stable<span class="arrow">·</span>
               </a>
 characteristic of <a href="#func-collection">
                 <b>15.5.6
@@ -22072,7 +22416,7 @@ fn:collection</b>
                 <b>15.5.4
 fn:doc</b>
               </a> are <a title="implementation-defined" class="termref" href="#implementation-defined">
-                <span class="arrow">Â·</span>implementation-defined<span class="arrow">Â·</span>
+                <span class="arrow">·</span>implementation-defined<span class="arrow">·</span>
               </a>.</p>
           </li>
         </ol>
@@ -25091,7 +25435,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:NOTATION</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-NOTATION-equal">13.1.1</a>)</div>
+(§<a href="#func-NOTATION-equal">13.1.1</a>)</div>
           <div class="protoref">
             <a href="#func-QName">
               <code>fn:QName</code>
@@ -25102,7 +25446,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:QName</code>
-(Â§<a href="#func-QName">11.1.2</a>)</div>
+(§<a href="#func-QName">11.1.2</a>)</div>
           <div class="protoref">
             <a href="#func-QName-equal">
               <code>op:QName-equal</code>
@@ -25113,7 +25457,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:QName</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-QName-equal">11.2.1</a>)</div>
+(§<a href="#func-QName-equal">11.2.1</a>)</div>
           <div class="protoref">
             <a href="#func-abs">
               <code>fn:abs</code>
@@ -25121,7 +25465,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric?</code>)<code> as </code>
             <code>numeric?</code>
-(Â§<a href="#func-abs">6.4.1</a>)</div>
+(§<a href="#func-abs">6.4.1</a>)</div>
           <div class="protoref">
             <a href="#func-add-dayTimeDuration-to-date">
               <code>op:add-dayTimeDuration-to-date</code>
@@ -25132,7 +25476,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration</code>)<code> as </code>
             <code>xs:date</code>
-(Â§<a href="#func-add-dayTimeDuration-to-date">10.8.9</a>)</div>
+(§<a href="#func-add-dayTimeDuration-to-date">10.8.9</a>)</div>
           <div class="protoref">
             <a href="#func-add-dayTimeDuration-to-dateTime">
               <code>op:add-dayTimeDuration-to-dateTime</code>
@@ -25143,7 +25487,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration</code>)<code> as </code>
             <code>xs:dateTime</code>
-(Â§<a href="#func-add-dayTimeDuration-to-dateTime">10.8.5</a>)</div>
+(§<a href="#func-add-dayTimeDuration-to-dateTime">10.8.5</a>)</div>
           <div class="protoref">
             <a href="#func-add-dayTimeDuration-to-time">
               <code>op:add-dayTimeDuration-to-time</code>
@@ -25154,7 +25498,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration</code>)<code> as </code>
             <code>xs:time</code>
-(Â§<a href="#func-add-dayTimeDuration-to-time">10.8.12</a>)</div>
+(§<a href="#func-add-dayTimeDuration-to-time">10.8.12</a>)</div>
           <div class="protoref">
             <a href="#func-add-dayTimeDurations">
               <code>op:add-dayTimeDurations</code>
@@ -25165,7 +25509,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration</code>)<code> as </code>
             <code>xs:dayTimeDuration</code>
-(Â§<a href="#func-add-dayTimeDurations">10.6.6</a>)</div>
+(§<a href="#func-add-dayTimeDurations">10.6.6</a>)</div>
           <div class="protoref">
             <a href="#func-add-yearMonthDuration-to-date">
               <code>op:add-yearMonthDuration-to-date</code>
@@ -25176,7 +25520,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:yearMonthDuration</code>)<code> as </code>
             <code>xs:date</code>
-(Â§<a href="#func-add-yearMonthDuration-to-date">10.8.8</a>)</div>
+(§<a href="#func-add-yearMonthDuration-to-date">10.8.8</a>)</div>
           <div class="protoref">
             <a href="#func-add-yearMonthDuration-to-dateTime">
               <code>op:add-yearMonthDuration-to-dateTime</code>
@@ -25187,7 +25531,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:yearMonthDuration</code>)<code> as </code>
             <code>xs:dateTime</code>
-(Â§<a href="#func-add-yearMonthDuration-to-dateTime">10.8.4</a>)</div>
+(§<a href="#func-add-yearMonthDuration-to-dateTime">10.8.4</a>)</div>
           <div class="protoref">
             <a href="#func-add-yearMonthDurations">
               <code>op:add-yearMonthDurations</code>
@@ -25198,7 +25542,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:yearMonthDuration</code>)<code> as </code>
             <code>xs:yearMonthDuration</code>
-(Â§<a href="#func-add-yearMonthDurations">10.6.1</a>)</div>
+(§<a href="#func-add-yearMonthDurations">10.6.1</a>)</div>
           <div class="protoref">
             <a href="#func-adjust-date-to-timezone">
               <code>fn:adjust-date-to-timezone</code>
@@ -25206,7 +25550,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:date?</code>)<code> as </code>
             <code>xs:date?</code>
-(Â§<a href="#func-adjust-date-to-timezone">10.7.2</a>)</div>
+(§<a href="#func-adjust-date-to-timezone">10.7.2</a>)</div>
           <div class="protoref">
             <a href="#func-adjust-date-to-timezone">
               <code>fn:adjust-date-to-timezone</code>
@@ -25217,7 +25561,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration?</code>)<code> as </code>
             <code>xs:date?</code>
-(Â§<a href="#func-adjust-date-to-timezone">10.7.2</a>)</div>
+(§<a href="#func-adjust-date-to-timezone">10.7.2</a>)</div>
           <div class="protoref">
             <a href="#func-adjust-dateTime-to-timezone">
               <code>fn:adjust-dateTime-to-timezone</code>
@@ -25225,7 +25569,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime?</code>)<code> as </code>
             <code>xs:dateTime?</code>
-(Â§<a href="#func-adjust-dateTime-to-timezone">10.7.1</a>)</div>
+(§<a href="#func-adjust-dateTime-to-timezone">10.7.1</a>)</div>
           <div class="protoref">
             <a href="#func-adjust-dateTime-to-timezone">
               <code>fn:adjust-dateTime-to-timezone</code>
@@ -25236,7 +25580,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration?</code>)<code> as </code>
             <code>xs:dateTime?</code>
-(Â§<a href="#func-adjust-dateTime-to-timezone">10.7.1</a>)</div>
+(§<a href="#func-adjust-dateTime-to-timezone">10.7.1</a>)</div>
           <div class="protoref">
             <a href="#func-adjust-time-to-timezone">
               <code>fn:adjust-time-to-timezone</code>
@@ -25244,7 +25588,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:time?</code>)<code> as </code>
             <code>xs:time?</code>
-(Â§<a href="#func-adjust-time-to-timezone">10.7.3</a>)</div>
+(§<a href="#func-adjust-time-to-timezone">10.7.3</a>)</div>
           <div class="protoref">
             <a href="#func-adjust-time-to-timezone">
               <code>fn:adjust-time-to-timezone</code>
@@ -25255,7 +25599,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration?</code>)<code> as </code>
             <code>xs:time?</code>
-(Â§<a href="#func-adjust-time-to-timezone">10.7.3</a>)</div>
+(§<a href="#func-adjust-time-to-timezone">10.7.3</a>)</div>
           <div class="protoref">
             <a href="#func-avg">
               <code>fn:avg</code>
@@ -25263,13 +25607,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:anyAtomicType*</code>)<code> as </code>
             <code>xs:anyAtomicType?</code>
-(Â§<a href="#func-avg">15.4.2</a>)</div>
+(§<a href="#func-avg">15.4.2</a>)</div>
           <div class="protoref">
             <a href="#func-base-uri">
               <code>fn:base-uri</code>
             </a>()<code> as </code>
             <code>xs:anyURI?</code>
-(Â§<a href="#func-base-uri">2.5</a>)</div>
+(§<a href="#func-base-uri">2.5</a>)</div>
           <div class="protoref">
             <a href="#func-base-uri">
               <code>fn:base-uri</code>
@@ -25277,7 +25621,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()?</code>)<code> as </code>
             <code>xs:anyURI?</code>
-(Â§<a href="#func-base-uri">2.5</a>)</div>
+(§<a href="#func-base-uri">2.5</a>)</div>
           <div class="protoref">
             <a href="#func-base64Binary-equal">
               <code>op:base64Binary-equal</code>
@@ -25288,7 +25632,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:base64Binary</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-base64Binary-equal">12.1.2</a>)</div>
+(§<a href="#func-base64Binary-equal">12.1.2</a>)</div>
           <div class="protoref">
             <a href="#func-boolean">
               <code>fn:boolean</code>
@@ -25296,7 +25640,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-boolean">15.1.1</a>)</div>
+(§<a href="#func-boolean">15.1.1</a>)</div>
           <div class="protoref">
             <a href="#func-boolean-equal">
               <code>op:boolean-equal</code>
@@ -25307,7 +25651,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:boolean</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-boolean-equal">9.2.1</a>)</div>
+(§<a href="#func-boolean-equal">9.2.1</a>)</div>
           <div class="protoref">
             <a href="#func-boolean-greater-than">
               <code>op:boolean-greater-than</code>
@@ -25318,7 +25662,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:boolean</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-boolean-greater-than">9.2.3</a>)</div>
+(§<a href="#func-boolean-greater-than">9.2.3</a>)</div>
           <div class="protoref">
             <a href="#func-boolean-less-than">
               <code>op:boolean-less-than</code>
@@ -25329,7 +25673,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:boolean</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-boolean-less-than">9.2.2</a>)</div>
+(§<a href="#func-boolean-less-than">9.2.2</a>)</div>
           <div class="protoref">
             <a href="#func-ceiling">
               <code>fn:ceiling</code>
@@ -25337,7 +25681,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric?</code>)<code> as </code>
             <code>numeric?</code>
-(Â§<a href="#func-ceiling">6.4.2</a>)</div>
+(§<a href="#func-ceiling">6.4.2</a>)</div>
           <div class="protoref">
             <a href="#func-codepoint-equal">
               <code>fn:codepoint-equal</code>
@@ -25348,7 +25692,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:boolean?</code>
-(Â§<a href="#func-codepoint-equal">7.3.3</a>)</div>
+(§<a href="#func-codepoint-equal">7.3.3</a>)</div>
           <div class="protoref">
             <a href="#func-codepoints-to-string">
               <code>fn:codepoints-to-string</code>
@@ -25356,13 +25700,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:integer*</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-codepoints-to-string">7.2.1</a>)</div>
+(§<a href="#func-codepoints-to-string">7.2.1</a>)</div>
           <div class="protoref">
             <a href="#func-collection">
               <code>fn:collection</code>
             </a>()<code> as </code>
             <code>node()*</code>
-(Â§<a href="#func-collection">15.5.6</a>)</div>
+(§<a href="#func-collection">15.5.6</a>)</div>
           <div class="protoref">
             <a href="#func-collection">
               <code>fn:collection</code>
@@ -25370,7 +25714,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>node()*</code>
-(Â§<a href="#func-collection">15.5.6</a>)</div>
+(§<a href="#func-collection">15.5.6</a>)</div>
           <div class="protoref">
             <a href="#func-compare">
               <code>fn:compare</code>
@@ -25381,7 +25725,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-compare">7.3.2</a>)</div>
+(§<a href="#func-compare">7.3.2</a>)</div>
           <div class="protoref">
             <a href="#func-compare">
               <code>fn:compare</code>
@@ -25395,7 +25739,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-compare">7.3.2</a>)</div>
+(§<a href="#func-compare">7.3.2</a>)</div>
           <div class="protoref">
             <a href="#func-concat">
               <code>fn:concat</code>
@@ -25407,7 +25751,7 @@ and Operators Alphabetically</h3>
             <code>xs:anyAtomicType?</code>,
 <span class="varargs">...</span>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-concat">7.4.1</a>)</div>
+(§<a href="#func-concat">7.4.1</a>)</div>
           <div class="protoref">
             <a href="#func-concatenate">
               <code>op:concatenate</code>
@@ -25418,7 +25762,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>item()*</code>
-(Â§<a href="#func-concatenate">15.1.2</a>)</div>
+(§<a href="#func-concatenate">15.1.2</a>)</div>
           <div class="protoref">
             <a href="#func-contains">
               <code>fn:contains</code>
@@ -25429,7 +25773,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-contains">7.5.1</a>)</div>
+(§<a href="#func-contains">7.5.1</a>)</div>
           <div class="protoref">
             <a href="#func-contains">
               <code>fn:contains</code>
@@ -25443,7 +25787,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-contains">7.5.1</a>)</div>
+(§<a href="#func-contains">7.5.1</a>)</div>
           <div class="protoref">
             <a href="#func-count">
               <code>fn:count</code>
@@ -25451,25 +25795,25 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>xs:integer</code>
-(Â§<a href="#func-count">15.4.1</a>)</div>
+(§<a href="#func-count">15.4.1</a>)</div>
           <div class="protoref">
             <a href="#func-current-date">
               <code>fn:current-date</code>
             </a>()<code> as </code>
             <code>xs:date</code>
-(Â§<a href="#func-current-date">16.4</a>)</div>
+(§<a href="#func-current-date">16.4</a>)</div>
           <div class="protoref">
             <a href="#func-current-dateTime">
               <code>fn:current-dateTime</code>
             </a>()<code> as </code>
             <code>xs:dateTime</code>
-(Â§<a href="#func-current-dateTime">16.3</a>)</div>
+(§<a href="#func-current-dateTime">16.3</a>)</div>
           <div class="protoref">
             <a href="#func-current-time">
               <code>fn:current-time</code>
             </a>()<code> as </code>
             <code>xs:time</code>
-(Â§<a href="#func-current-time">16.5</a>)</div>
+(§<a href="#func-current-time">16.5</a>)</div>
           <div class="protoref">
             <a href="#func-data">
               <code>fn:data</code>
@@ -25477,7 +25821,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>xs:anyAtomicType*</code>
-(Â§<a href="#func-data">2.4</a>)</div>
+(§<a href="#func-data">2.4</a>)</div>
           <div class="protoref">
             <a href="#func-date-equal">
               <code>op:date-equal</code>
@@ -25488,7 +25832,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:date</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-date-equal">10.4.9</a>)</div>
+(§<a href="#func-date-equal">10.4.9</a>)</div>
           <div class="protoref">
             <a href="#func-date-greater-than">
               <code>op:date-greater-than</code>
@@ -25499,7 +25843,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:date</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-date-greater-than">10.4.11</a>)</div>
+(§<a href="#func-date-greater-than">10.4.11</a>)</div>
           <div class="protoref">
             <a href="#func-date-less-than">
               <code>op:date-less-than</code>
@@ -25510,7 +25854,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:date</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-date-less-than">10.4.10</a>)</div>
+(§<a href="#func-date-less-than">10.4.10</a>)</div>
           <div class="protoref">
             <a href="#func-dateTime">
               <code>fn:dateTime</code>
@@ -25521,7 +25865,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:time?</code>)<code> as </code>
             <code>xs:dateTime?</code>
-(Â§<a href="#func-dateTime">5.2</a>)</div>
+(§<a href="#func-dateTime">5.2</a>)</div>
           <div class="protoref">
             <a href="#func-dateTime-equal">
               <code>op:dateTime-equal</code>
@@ -25532,7 +25876,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-dateTime-equal">10.4.6</a>)</div>
+(§<a href="#func-dateTime-equal">10.4.6</a>)</div>
           <div class="protoref">
             <a href="#func-dateTime-greater-than">
               <code>op:dateTime-greater-than</code>
@@ -25543,7 +25887,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-dateTime-greater-than">10.4.8</a>)</div>
+(§<a href="#func-dateTime-greater-than">10.4.8</a>)</div>
           <div class="protoref">
             <a href="#func-dateTime-less-than">
               <code>op:dateTime-less-than</code>
@@ -25554,7 +25898,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-dateTime-less-than">10.4.7</a>)</div>
+(§<a href="#func-dateTime-less-than">10.4.7</a>)</div>
           <div class="protoref">
             <a href="#func-day-from-date">
               <code>fn:day-from-date</code>
@@ -25562,7 +25906,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:date?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-day-from-date">10.5.16</a>)</div>
+(§<a href="#func-day-from-date">10.5.16</a>)</div>
           <div class="protoref">
             <a href="#func-day-from-dateTime">
               <code>fn:day-from-dateTime</code>
@@ -25570,7 +25914,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-day-from-dateTime">10.5.9</a>)</div>
+(§<a href="#func-day-from-dateTime">10.5.9</a>)</div>
           <div class="protoref">
             <a href="#func-dayTimeDuration-greater-than">
               <code>op:dayTimeDuration-greater-than</code>
@@ -25581,7 +25925,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-dayTimeDuration-greater-than">10.4.4</a>)</div>
+(§<a href="#func-dayTimeDuration-greater-than">10.4.4</a>)</div>
           <div class="protoref">
             <a href="#func-dayTimeDuration-less-than">
               <code>op:dayTimeDuration-less-than</code>
@@ -25592,7 +25936,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-dayTimeDuration-less-than">10.4.3</a>)</div>
+(§<a href="#func-dayTimeDuration-less-than">10.4.3</a>)</div>
           <div class="protoref">
             <a href="#func-days-from-duration">
               <code>fn:days-from-duration</code>
@@ -25600,7 +25944,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:duration?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-days-from-duration">10.5.3</a>)</div>
+(§<a href="#func-days-from-duration">10.5.3</a>)</div>
           <div class="protoref">
             <a href="#func-deep-equal">
               <code>fn:deep-equal</code>
@@ -25611,7 +25955,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-deep-equal">15.3.1</a>)</div>
+(§<a href="#func-deep-equal">15.3.1</a>)</div>
           <div class="protoref">
             <a href="#func-deep-equal">
               <code>fn:deep-equal</code>
@@ -25625,13 +25969,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>string</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-deep-equal">15.3.1</a>)</div>
+(§<a href="#func-deep-equal">15.3.1</a>)</div>
           <div class="protoref">
             <a href="#func-default-collation">
               <code>fn:default-collation</code>
             </a>()<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-default-collation">16.7</a>)</div>
+(§<a href="#func-default-collation">16.7</a>)</div>
           <div class="protoref">
             <a href="#func-distinct-values">
               <code>fn:distinct-values</code>
@@ -25639,7 +25983,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:anyAtomicType*</code>)<code> as </code>
             <code>xs:anyAtomicType*</code>
-(Â§<a href="#func-distinct-values">15.1.6</a>)</div>
+(§<a href="#func-distinct-values">15.1.6</a>)</div>
           <div class="protoref">
             <a href="#func-distinct-values">
               <code>fn:distinct-values</code>
@@ -25650,7 +25994,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:anyAtomicType*</code>
-(Â§<a href="#func-distinct-values">15.1.6</a>)</div>
+(§<a href="#func-distinct-values">15.1.6</a>)</div>
           <div class="protoref">
             <a href="#func-divide-dayTimeDuration">
               <code>op:divide-dayTimeDuration</code>
@@ -25661,7 +26005,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:double</code>)<code> as </code>
             <code>xs:dayTimeDuration</code>
-(Â§<a href="#func-divide-dayTimeDuration">10.6.9</a>)</div>
+(§<a href="#func-divide-dayTimeDuration">10.6.9</a>)</div>
           <div class="protoref">
             <a href="#func-divide-dayTimeDuration-by-dayTimeDuration">
               <code>op:divide-dayTimeDuration-by-dayTimeDuration</code>
@@ -25672,7 +26016,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration</code>)<code> as </code>
             <code>xs:decimal</code>
-(Â§<a href="#func-divide-dayTimeDuration-by-dayTimeDuration">10.6.10</a>)</div>
+(§<a href="#func-divide-dayTimeDuration-by-dayTimeDuration">10.6.10</a>)</div>
           <div class="protoref">
             <a href="#func-divide-yearMonthDuration">
               <code>op:divide-yearMonthDuration</code>
@@ -25683,7 +26027,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:double</code>)<code> as </code>
             <code>xs:yearMonthDuration</code>
-(Â§<a href="#func-divide-yearMonthDuration">10.6.4</a>)</div>
+(§<a href="#func-divide-yearMonthDuration">10.6.4</a>)</div>
           <div class="protoref">
             <a href="#func-divide-yearMonthDuration-by-yearMonthDuration">
               <code>op:divide-yearMonthDuration-by-yearMonthDuration</code>
@@ -25694,7 +26038,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:yearMonthDuration</code>)<code> as </code>
             <code>xs:decimal</code>
-(Â§<a href="#func-divide-yearMonthDuration-by-yearMonthDuration">10.6.5</a>)</div>
+(§<a href="#func-divide-yearMonthDuration-by-yearMonthDuration">10.6.5</a>)</div>
           <div class="protoref">
             <a href="#func-doc">
               <code>fn:doc</code>
@@ -25702,7 +26046,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>document-node()?</code>
-(Â§<a href="#func-doc">15.5.4</a>)</div>
+(§<a href="#func-doc">15.5.4</a>)</div>
           <div class="protoref">
             <a href="#func-doc-available">
               <code>fn:doc-available</code>
@@ -25710,7 +26054,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-doc-available">15.5.5</a>)</div>
+(§<a href="#func-doc-available">15.5.5</a>)</div>
           <div class="protoref">
             <a href="#func-document-uri">
               <code>fn:document-uri</code>
@@ -25718,7 +26062,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()?</code>)<code> as </code>
             <code>xs:anyURI?</code>
-(Â§<a href="#func-document-uri">2.6</a>)</div>
+(§<a href="#func-document-uri">2.6</a>)</div>
           <div class="protoref">
             <a href="#func-duration-equal">
               <code>op:duration-equal</code>
@@ -25729,7 +26073,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:duration</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-duration-equal">10.4.5</a>)</div>
+(§<a href="#func-duration-equal">10.4.5</a>)</div>
           <div class="protoref">
             <a href="#func-element-with-id">
               <code>fn:element-with-id</code>
@@ -25737,7 +26081,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string*</code>)<code> as </code>
             <code>element()*</code>
-(Â§<a href="#func-element-with-id">15.5.7</a>)</div>
+(§<a href="#func-element-with-id">15.5.7</a>)</div>
           <div class="protoref">
             <a href="#func-element-with-id">
               <code>fn:element-with-id</code>
@@ -25748,7 +26092,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()</code>)<code> as </code>
             <code>element()*</code>
-(Â§<a href="#func-element-with-id">15.5.7</a>)</div>
+(§<a href="#func-element-with-id">15.5.7</a>)</div>
           <div class="protoref">
             <a href="#func-empty">
               <code>fn:empty</code>
@@ -25756,7 +26100,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-empty">15.1.4</a>)</div>
+(§<a href="#func-empty">15.1.4</a>)</div>
           <div class="protoref">
             <a href="#func-encode-for-uri">
               <code>fn:encode-for-uri</code>
@@ -25764,7 +26108,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-encode-for-uri">7.4.10</a>)</div>
+(§<a href="#func-encode-for-uri">7.4.10</a>)</div>
           <div class="protoref">
             <a href="#func-ends-with">
               <code>fn:ends-with</code>
@@ -25775,7 +26119,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-ends-with">7.5.3</a>)</div>
+(§<a href="#func-ends-with">7.5.3</a>)</div>
           <div class="protoref">
             <a href="#func-ends-with">
               <code>fn:ends-with</code>
@@ -25789,13 +26133,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-ends-with">7.5.3</a>)</div>
+(§<a href="#func-ends-with">7.5.3</a>)</div>
           <div class="protoref">
             <a href="#func-error">
               <code>fn:error</code>
             </a>()<code> as </code>
             <code>none</code>
-(Â§<a href="#func-error">3</a>)</div>
+(§<a href="#func-error">3</a>)</div>
           <div class="protoref">
             <a href="#func-error">
               <code>fn:error</code>
@@ -25803,7 +26147,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:QName</code>)<code> as </code>
             <code>none</code>
-(Â§<a href="#func-error">3</a>)</div>
+(§<a href="#func-error">3</a>)</div>
           <div class="protoref">
             <a href="#func-error">
               <code>fn:error</code>
@@ -25814,7 +26158,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>none</code>
-(Â§<a href="#func-error">3</a>)</div>
+(§<a href="#func-error">3</a>)</div>
           <div class="protoref">
             <a href="#func-error">
               <code>fn:error</code>
@@ -25828,7 +26172,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>none</code>
-(Â§<a href="#func-error">3</a>)</div>
+(§<a href="#func-error">3</a>)</div>
           <div class="protoref">
             <a href="#func-escape-html-uri">
               <code>fn:escape-html-uri</code>
@@ -25836,7 +26180,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-escape-html-uri">7.4.12</a>)</div>
+(§<a href="#func-escape-html-uri">7.4.12</a>)</div>
           <div class="protoref">
             <a href="#func-exactly-one">
               <code>fn:exactly-one</code>
@@ -25844,7 +26188,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>item()</code>
-(Â§<a href="#func-exactly-one">15.2.3</a>)</div>
+(§<a href="#func-exactly-one">15.2.3</a>)</div>
           <div class="protoref">
             <a href="#func-except">
               <code>op:except</code>
@@ -25855,7 +26199,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()*</code>)<code> as </code>
             <code>node()*</code>
-(Â§<a href="#func-except">15.3.4</a>)</div>
+(§<a href="#func-except">15.3.4</a>)</div>
           <div class="protoref">
             <a href="#func-exists">
               <code>fn:exists</code>
@@ -25863,13 +26207,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-exists">15.1.5</a>)</div>
+(§<a href="#func-exists">15.1.5</a>)</div>
           <div class="protoref">
             <a href="#func-false">
               <code>fn:false</code>
             </a>()<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-false">9.1.2</a>)</div>
+(§<a href="#func-false">9.1.2</a>)</div>
           <div class="protoref">
             <a href="#func-floor">
               <code>fn:floor</code>
@@ -25877,7 +26221,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric?</code>)<code> as </code>
             <code>numeric?</code>
-(Â§<a href="#func-floor">6.4.3</a>)</div>
+(§<a href="#func-floor">6.4.3</a>)</div>
           <div class="protoref">
             <a href="#func-gDay-equal">
               <code>op:gDay-equal</code>
@@ -25888,7 +26232,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:gDay</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-gDay-equal">10.4.19</a>)</div>
+(§<a href="#func-gDay-equal">10.4.19</a>)</div>
           <div class="protoref">
             <a href="#func-gMonth-equal">
               <code>op:gMonth-equal</code>
@@ -25899,7 +26243,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:gMonth</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-gMonth-equal">10.4.18</a>)</div>
+(§<a href="#func-gMonth-equal">10.4.18</a>)</div>
           <div class="protoref">
             <a href="#func-gMonthDay-equal">
               <code>op:gMonthDay-equal</code>
@@ -25910,7 +26254,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:gMonthDay</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-gMonthDay-equal">10.4.17</a>)</div>
+(§<a href="#func-gMonthDay-equal">10.4.17</a>)</div>
           <div class="protoref">
             <a href="#func-gYear-equal">
               <code>op:gYear-equal</code>
@@ -25921,7 +26265,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:gYear</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-gYear-equal">10.4.16</a>)</div>
+(§<a href="#func-gYear-equal">10.4.16</a>)</div>
           <div class="protoref">
             <a href="#func-gYearMonth-equal">
               <code>op:gYearMonth-equal</code>
@@ -25932,7 +26276,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:gYearMonth</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-gYearMonth-equal">10.4.15</a>)</div>
+(§<a href="#func-gYearMonth-equal">10.4.15</a>)</div>
           <div class="protoref">
             <a href="#func-hexBinary-equal">
               <code>op:hexBinary-equal</code>
@@ -25943,7 +26287,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:hexBinary</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-hexBinary-equal">12.1.1</a>)</div>
+(§<a href="#func-hexBinary-equal">12.1.1</a>)</div>
           <div class="protoref">
             <a href="#func-hours-from-dateTime">
               <code>fn:hours-from-dateTime</code>
@@ -25951,7 +26295,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-hours-from-dateTime">10.5.10</a>)</div>
+(§<a href="#func-hours-from-dateTime">10.5.10</a>)</div>
           <div class="protoref">
             <a href="#func-hours-from-duration">
               <code>fn:hours-from-duration</code>
@@ -25959,7 +26303,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:duration?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-hours-from-duration">10.5.4</a>)</div>
+(§<a href="#func-hours-from-duration">10.5.4</a>)</div>
           <div class="protoref">
             <a href="#func-hours-from-time">
               <code>fn:hours-from-time</code>
@@ -25967,7 +26311,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:time?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-hours-from-time">10.5.18</a>)</div>
+(§<a href="#func-hours-from-time">10.5.18</a>)</div>
           <div class="protoref">
             <a href="#func-id">
               <code>fn:id</code>
@@ -25975,7 +26319,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string*</code>)<code> as </code>
             <code>element()*</code>
-(Â§<a href="#func-id">15.5.2</a>)</div>
+(§<a href="#func-id">15.5.2</a>)</div>
           <div class="protoref">
             <a href="#func-id">
               <code>fn:id</code>
@@ -25986,7 +26330,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()</code>)<code> as </code>
             <code>element()*</code>
-(Â§<a href="#func-id">15.5.2</a>)</div>
+(§<a href="#func-id">15.5.2</a>)</div>
           <div class="protoref">
             <a href="#func-idref">
               <code>fn:idref</code>
@@ -25994,7 +26338,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string*</code>)<code> as </code>
             <code>node()*</code>
-(Â§<a href="#func-idref">15.5.3</a>)</div>
+(§<a href="#func-idref">15.5.3</a>)</div>
           <div class="protoref">
             <a href="#func-idref">
               <code>fn:idref</code>
@@ -26005,13 +26349,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()</code>)<code> as </code>
             <code>node()*</code>
-(Â§<a href="#func-idref">15.5.3</a>)</div>
+(§<a href="#func-idref">15.5.3</a>)</div>
           <div class="protoref">
             <a href="#func-implicit-timezone">
               <code>fn:implicit-timezone</code>
             </a>()<code> as </code>
             <code>xs:dayTimeDuration</code>
-(Â§<a href="#func-implicit-timezone">16.6</a>)</div>
+(§<a href="#func-implicit-timezone">16.6</a>)</div>
           <div class="protoref">
             <a href="#func-in-scope-prefixes">
               <code>fn:in-scope-prefixes</code>
@@ -26019,7 +26363,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>element()</code>)<code> as </code>
             <code>xs:string*</code>
-(Â§<a href="#func-in-scope-prefixes">11.2.6</a>)</div>
+(§<a href="#func-in-scope-prefixes">11.2.6</a>)</div>
           <div class="protoref">
             <a href="#func-index-of">
               <code>fn:index-of</code>
@@ -26030,7 +26374,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:anyAtomicType</code>)<code> as </code>
             <code>xs:integer*</code>
-(Â§<a href="#func-index-of">15.1.3</a>)</div>
+(§<a href="#func-index-of">15.1.3</a>)</div>
           <div class="protoref">
             <a href="#func-index-of">
               <code>fn:index-of</code>
@@ -26044,7 +26388,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:integer*</code>
-(Â§<a href="#func-index-of">15.1.3</a>)</div>
+(§<a href="#func-index-of">15.1.3</a>)</div>
           <div class="protoref">
             <a href="#func-insert-before">
               <code>fn:insert-before</code>
@@ -26058,7 +26402,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>item()*</code>
-(Â§<a href="#func-insert-before">15.1.7</a>)</div>
+(§<a href="#func-insert-before">15.1.7</a>)</div>
           <div class="protoref">
             <a href="#func-intersect">
               <code>op:intersect</code>
@@ -26069,7 +26413,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()*</code>)<code> as </code>
             <code>node()*</code>
-(Â§<a href="#func-intersect">15.3.3</a>)</div>
+(§<a href="#func-intersect">15.3.3</a>)</div>
           <div class="protoref">
             <a href="#func-iri-to-uri">
               <code>fn:iri-to-uri</code>
@@ -26077,7 +26421,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-iri-to-uri">7.4.11</a>)</div>
+(§<a href="#func-iri-to-uri">7.4.11</a>)</div>
           <div class="protoref">
             <a href="#func-is-same-node">
               <code>op:is-same-node</code>
@@ -26088,7 +26432,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-is-same-node">14.6</a>)</div>
+(§<a href="#func-is-same-node">14.6</a>)</div>
           <div class="protoref">
             <a href="#func-lang">
               <code>fn:lang</code>
@@ -26096,7 +26440,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-lang">14.5</a>)</div>
+(§<a href="#func-lang">14.5</a>)</div>
           <div class="protoref">
             <a href="#func-lang">
               <code>fn:lang</code>
@@ -26107,19 +26451,19 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-lang">14.5</a>)</div>
+(§<a href="#func-lang">14.5</a>)</div>
           <div class="protoref">
             <a href="#func-last">
               <code>fn:last</code>
             </a>()<code> as </code>
             <code>xs:integer</code>
-(Â§<a href="#func-last">16.2</a>)</div>
+(§<a href="#func-last">16.2</a>)</div>
           <div class="protoref">
             <a href="#func-local-name">
               <code>fn:local-name</code>
             </a>()<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-local-name">14.2</a>)</div>
+(§<a href="#func-local-name">14.2</a>)</div>
           <div class="protoref">
             <a href="#func-local-name">
               <code>fn:local-name</code>
@@ -26127,7 +26471,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-local-name">14.2</a>)</div>
+(§<a href="#func-local-name">14.2</a>)</div>
           <div class="protoref">
             <a href="#func-local-name-from-QName">
               <code>fn:local-name-from-QName</code>
@@ -26135,7 +26479,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:QName?</code>)<code> as </code>
             <code>xs:NCName?</code>
-(Â§<a href="#func-local-name-from-QName">11.2.3</a>)</div>
+(§<a href="#func-local-name-from-QName">11.2.3</a>)</div>
           <div class="protoref">
             <a href="#func-lower-case">
               <code>fn:lower-case</code>
@@ -26143,7 +26487,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-lower-case">7.4.8</a>)</div>
+(§<a href="#func-lower-case">7.4.8</a>)</div>
           <div class="protoref">
             <a href="#func-matches">
               <code>fn:matches</code>
@@ -26154,7 +26498,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-matches">7.6.2</a>)</div>
+(§<a href="#func-matches">7.6.2</a>)</div>
           <div class="protoref">
             <a href="#func-matches">
               <code>fn:matches</code>
@@ -26168,7 +26512,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-matches">7.6.2</a>)</div>
+(§<a href="#func-matches">7.6.2</a>)</div>
           <div class="protoref">
             <a href="#func-max">
               <code>fn:max</code>
@@ -26176,7 +26520,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:anyAtomicType*</code>)<code> as </code>
             <code>xs:anyAtomicType?</code>
-(Â§<a href="#func-max">15.4.3</a>)</div>
+(§<a href="#func-max">15.4.3</a>)</div>
           <div class="protoref">
             <a href="#func-max">
               <code>fn:max</code>
@@ -26187,7 +26531,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>string</code>)<code> as </code>
             <code>xs:anyAtomicType?</code>
-(Â§<a href="#func-max">15.4.3</a>)</div>
+(§<a href="#func-max">15.4.3</a>)</div>
           <div class="protoref">
             <a href="#func-min">
               <code>fn:min</code>
@@ -26195,7 +26539,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:anyAtomicType*</code>)<code> as </code>
             <code>xs:anyAtomicType?</code>
-(Â§<a href="#func-min">15.4.4</a>)</div>
+(§<a href="#func-min">15.4.4</a>)</div>
           <div class="protoref">
             <a href="#func-min">
               <code>fn:min</code>
@@ -26206,7 +26550,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>string</code>)<code> as </code>
             <code>xs:anyAtomicType?</code>
-(Â§<a href="#func-min">15.4.4</a>)</div>
+(§<a href="#func-min">15.4.4</a>)</div>
           <div class="protoref">
             <a href="#func-minutes-from-dateTime">
               <code>fn:minutes-from-dateTime</code>
@@ -26214,7 +26558,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-minutes-from-dateTime">10.5.11</a>)</div>
+(§<a href="#func-minutes-from-dateTime">10.5.11</a>)</div>
           <div class="protoref">
             <a href="#func-minutes-from-duration">
               <code>fn:minutes-from-duration</code>
@@ -26222,7 +26566,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:duration?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-minutes-from-duration">10.5.5</a>)</div>
+(§<a href="#func-minutes-from-duration">10.5.5</a>)</div>
           <div class="protoref">
             <a href="#func-minutes-from-time">
               <code>fn:minutes-from-time</code>
@@ -26230,7 +26574,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:time?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-minutes-from-time">10.5.19</a>)</div>
+(§<a href="#func-minutes-from-time">10.5.19</a>)</div>
           <div class="protoref">
             <a href="#func-month-from-date">
               <code>fn:month-from-date</code>
@@ -26238,7 +26582,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:date?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-month-from-date">10.5.15</a>)</div>
+(§<a href="#func-month-from-date">10.5.15</a>)</div>
           <div class="protoref">
             <a href="#func-month-from-dateTime">
               <code>fn:month-from-dateTime</code>
@@ -26246,7 +26590,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-month-from-dateTime">10.5.8</a>)</div>
+(§<a href="#func-month-from-dateTime">10.5.8</a>)</div>
           <div class="protoref">
             <a href="#func-months-from-duration">
               <code>fn:months-from-duration</code>
@@ -26254,7 +26598,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:duration?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-months-from-duration">10.5.2</a>)</div>
+(§<a href="#func-months-from-duration">10.5.2</a>)</div>
           <div class="protoref">
             <a href="#func-multiply-dayTimeDuration">
               <code>op:multiply-dayTimeDuration</code>
@@ -26265,7 +26609,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:double</code>)<code> as </code>
             <code>xs:dayTimeDuration</code>
-(Â§<a href="#func-multiply-dayTimeDuration">10.6.8</a>)</div>
+(§<a href="#func-multiply-dayTimeDuration">10.6.8</a>)</div>
           <div class="protoref">
             <a href="#func-multiply-yearMonthDuration">
               <code>op:multiply-yearMonthDuration</code>
@@ -26276,13 +26620,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:double</code>)<code> as </code>
             <code>xs:yearMonthDuration</code>
-(Â§<a href="#func-multiply-yearMonthDuration">10.6.3</a>)</div>
+(§<a href="#func-multiply-yearMonthDuration">10.6.3</a>)</div>
           <div class="protoref">
             <a href="#func-name">
               <code>fn:name</code>
             </a>()<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-name">14.1</a>)</div>
+(§<a href="#func-name">14.1</a>)</div>
           <div class="protoref">
             <a href="#func-name">
               <code>fn:name</code>
@@ -26290,13 +26634,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-name">14.1</a>)</div>
+(§<a href="#func-name">14.1</a>)</div>
           <div class="protoref">
             <a href="#func-namespace-uri">
               <code>fn:namespace-uri</code>
             </a>()<code> as </code>
             <code>xs:anyURI</code>
-(Â§<a href="#func-namespace-uri">14.3</a>)</div>
+(§<a href="#func-namespace-uri">14.3</a>)</div>
           <div class="protoref">
             <a href="#func-namespace-uri">
               <code>fn:namespace-uri</code>
@@ -26304,7 +26648,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()?</code>)<code> as </code>
             <code>xs:anyURI</code>
-(Â§<a href="#func-namespace-uri">14.3</a>)</div>
+(§<a href="#func-namespace-uri">14.3</a>)</div>
           <div class="protoref">
             <a href="#func-namespace-uri-for-prefix">
               <code>fn:namespace-uri-for-prefix</code>
@@ -26315,7 +26659,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>element()</code>)<code> as </code>
             <code>xs:anyURI?</code>
-(Â§<a href="#func-namespace-uri-for-prefix">11.2.5</a>)</div>
+(§<a href="#func-namespace-uri-for-prefix">11.2.5</a>)</div>
           <div class="protoref">
             <a href="#func-namespace-uri-from-QName">
               <code>fn:namespace-uri-from-QName</code>
@@ -26323,7 +26667,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:QName?</code>)<code> as </code>
             <code>xs:anyURI?</code>
-(Â§<a href="#func-namespace-uri-from-QName">11.2.4</a>)</div>
+(§<a href="#func-namespace-uri-from-QName">11.2.4</a>)</div>
           <div class="protoref">
             <a href="#func-nilled">
               <code>fn:nilled</code>
@@ -26331,7 +26675,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()?</code>)<code> as </code>
             <code>xs:boolean?</code>
-(Â§<a href="#func-nilled">2.2</a>)</div>
+(§<a href="#func-nilled">2.2</a>)</div>
           <div class="protoref">
             <a href="#func-node-after">
               <code>op:node-after</code>
@@ -26342,7 +26686,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-node-after">14.8</a>)</div>
+(§<a href="#func-node-after">14.8</a>)</div>
           <div class="protoref">
             <a href="#func-node-before">
               <code>op:node-before</code>
@@ -26353,7 +26697,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-node-before">14.7</a>)</div>
+(§<a href="#func-node-before">14.7</a>)</div>
           <div class="protoref">
             <a href="#func-node-name">
               <code>fn:node-name</code>
@@ -26361,13 +26705,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()?</code>)<code> as </code>
             <code>xs:QName?</code>
-(Â§<a href="#func-node-name">2.1</a>)</div>
+(§<a href="#func-node-name">2.1</a>)</div>
           <div class="protoref">
             <a href="#func-normalize-space">
               <code>fn:normalize-space</code>
             </a>()<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-normalize-space">7.4.5</a>)</div>
+(§<a href="#func-normalize-space">7.4.5</a>)</div>
           <div class="protoref">
             <a href="#func-normalize-space">
               <code>fn:normalize-space</code>
@@ -26375,7 +26719,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-normalize-space">7.4.5</a>)</div>
+(§<a href="#func-normalize-space">7.4.5</a>)</div>
           <div class="protoref">
             <a href="#func-normalize-unicode">
               <code>fn:normalize-unicode</code>
@@ -26383,7 +26727,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-normalize-unicode">7.4.6</a>)</div>
+(§<a href="#func-normalize-unicode">7.4.6</a>)</div>
           <div class="protoref">
             <a href="#func-normalize-unicode">
               <code>fn:normalize-unicode</code>
@@ -26394,7 +26738,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-normalize-unicode">7.4.6</a>)</div>
+(§<a href="#func-normalize-unicode">7.4.6</a>)</div>
           <div class="protoref">
             <a href="#func-not">
               <code>fn:not</code>
@@ -26402,13 +26746,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-not">9.3.1</a>)</div>
+(§<a href="#func-not">9.3.1</a>)</div>
           <div class="protoref">
             <a href="#func-number">
               <code>fn:number</code>
             </a>()<code> as </code>
             <code>xs:double</code>
-(Â§<a href="#func-number">14.4</a>)</div>
+(§<a href="#func-number">14.4</a>)</div>
           <div class="protoref">
             <a href="#func-number">
               <code>fn:number</code>
@@ -26416,7 +26760,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:anyAtomicType?</code>)<code> as </code>
             <code>xs:double</code>
-(Â§<a href="#func-number">14.4</a>)</div>
+(§<a href="#func-number">14.4</a>)</div>
           <div class="protoref">
             <a href="#func-numeric-add">
               <code>op:numeric-add</code>
@@ -26427,7 +26771,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric</code>)<code> as </code>
             <code>numeric</code>
-(Â§<a href="#func-numeric-add">6.2.1</a>)</div>
+(§<a href="#func-numeric-add">6.2.1</a>)</div>
           <div class="protoref">
             <a href="#func-numeric-divide">
               <code>op:numeric-divide</code>
@@ -26438,7 +26782,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric</code>)<code> as </code>
             <code>numeric</code>
-(Â§<a href="#func-numeric-divide">6.2.4</a>)</div>
+(§<a href="#func-numeric-divide">6.2.4</a>)</div>
           <div class="protoref">
             <a href="#func-numeric-equal">
               <code>op:numeric-equal</code>
@@ -26449,7 +26793,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-numeric-equal">6.3.1</a>)</div>
+(§<a href="#func-numeric-equal">6.3.1</a>)</div>
           <div class="protoref">
             <a href="#func-numeric-greater-than">
               <code>op:numeric-greater-than</code>
@@ -26460,7 +26804,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-numeric-greater-than">6.3.3</a>)</div>
+(§<a href="#func-numeric-greater-than">6.3.3</a>)</div>
           <div class="protoref">
             <a href="#func-numeric-integer-divide">
               <code>op:numeric-integer-divide</code>
@@ -26471,7 +26815,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric</code>)<code> as </code>
             <code>xs:integer</code>
-(Â§<a href="#func-numeric-integer-divide">6.2.5</a>)</div>
+(§<a href="#func-numeric-integer-divide">6.2.5</a>)</div>
           <div class="protoref">
             <a href="#func-numeric-less-than">
               <code>op:numeric-less-than</code>
@@ -26482,7 +26826,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-numeric-less-than">6.3.2</a>)</div>
+(§<a href="#func-numeric-less-than">6.3.2</a>)</div>
           <div class="protoref">
             <a href="#func-numeric-mod">
               <code>op:numeric-mod</code>
@@ -26493,7 +26837,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric</code>)<code> as </code>
             <code>numeric</code>
-(Â§<a href="#func-numeric-mod">6.2.6</a>)</div>
+(§<a href="#func-numeric-mod">6.2.6</a>)</div>
           <div class="protoref">
             <a href="#func-numeric-multiply">
               <code>op:numeric-multiply</code>
@@ -26504,7 +26848,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric</code>)<code> as </code>
             <code>numeric</code>
-(Â§<a href="#func-numeric-multiply">6.2.3</a>)</div>
+(§<a href="#func-numeric-multiply">6.2.3</a>)</div>
           <div class="protoref">
             <a href="#func-numeric-subtract">
               <code>op:numeric-subtract</code>
@@ -26515,7 +26859,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric</code>)<code> as </code>
             <code>numeric</code>
-(Â§<a href="#func-numeric-subtract">6.2.2</a>)</div>
+(§<a href="#func-numeric-subtract">6.2.2</a>)</div>
           <div class="protoref">
             <a href="#func-numeric-unary-minus">
               <code>op:numeric-unary-minus</code>
@@ -26523,7 +26867,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric</code>)<code> as </code>
             <code>numeric</code>
-(Â§<a href="#func-numeric-unary-minus">6.2.8</a>)</div>
+(§<a href="#func-numeric-unary-minus">6.2.8</a>)</div>
           <div class="protoref">
             <a href="#func-numeric-unary-plus">
               <code>op:numeric-unary-plus</code>
@@ -26531,7 +26875,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric</code>)<code> as </code>
             <code>numeric</code>
-(Â§<a href="#func-numeric-unary-plus">6.2.7</a>)</div>
+(§<a href="#func-numeric-unary-plus">6.2.7</a>)</div>
           <div class="protoref">
             <a href="#func-one-or-more">
               <code>fn:one-or-more</code>
@@ -26539,13 +26883,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>item()+</code>
-(Â§<a href="#func-one-or-more">15.2.2</a>)</div>
+(§<a href="#func-one-or-more">15.2.2</a>)</div>
           <div class="protoref">
             <a href="#func-position">
               <code>fn:position</code>
             </a>()<code> as </code>
             <code>xs:integer</code>
-(Â§<a href="#func-position">16.1</a>)</div>
+(§<a href="#func-position">16.1</a>)</div>
           <div class="protoref">
             <a href="#func-prefix-from-QName">
               <code>fn:prefix-from-QName</code>
@@ -26553,7 +26897,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:QName?</code>)<code> as </code>
             <code>xs:NCName?</code>
-(Â§<a href="#func-prefix-from-QName">11.2.2</a>)</div>
+(§<a href="#func-prefix-from-QName">11.2.2</a>)</div>
           <div class="protoref">
             <a href="#func-remove">
               <code>fn:remove</code>
@@ -26564,7 +26908,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:integer</code>)<code> as </code>
             <code>item()*</code>
-(Â§<a href="#func-remove">15.1.8</a>)</div>
+(§<a href="#func-remove">15.1.8</a>)</div>
           <div class="protoref">
             <a href="#func-replace">
               <code>fn:replace</code>
@@ -26578,7 +26922,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-replace">7.6.3</a>)</div>
+(§<a href="#func-replace">7.6.3</a>)</div>
           <div class="protoref">
             <a href="#func-replace">
               <code>fn:replace</code>
@@ -26595,7 +26939,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-replace">7.6.3</a>)</div>
+(§<a href="#func-replace">7.6.3</a>)</div>
           <div class="protoref">
             <a href="#func-resolve-QName">
               <code>fn:resolve-QName</code>
@@ -26606,7 +26950,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>element()</code>)<code> as </code>
             <code>xs:QName?</code>
-(Â§<a href="#func-resolve-QName">11.1.1</a>)</div>
+(§<a href="#func-resolve-QName">11.1.1</a>)</div>
           <div class="protoref">
             <a href="#func-resolve-uri">
               <code>fn:resolve-uri</code>
@@ -26614,7 +26958,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:anyURI?</code>
-(Â§<a href="#func-resolve-uri">8.1</a>)</div>
+(§<a href="#func-resolve-uri">8.1</a>)</div>
           <div class="protoref">
             <a href="#func-resolve-uri">
               <code>fn:resolve-uri</code>
@@ -26625,7 +26969,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:anyURI?</code>
-(Â§<a href="#func-resolve-uri">8.1</a>)</div>
+(§<a href="#func-resolve-uri">8.1</a>)</div>
           <div class="protoref">
             <a href="#func-reverse">
               <code>fn:reverse</code>
@@ -26633,13 +26977,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>item()*</code>
-(Â§<a href="#func-reverse">15.1.9</a>)</div>
+(§<a href="#func-reverse">15.1.9</a>)</div>
           <div class="protoref">
             <a href="#func-root">
               <code>fn:root</code>
             </a>()<code> as </code>
             <code>node()</code>
-(Â§<a href="#func-root">14.9</a>)</div>
+(§<a href="#func-root">14.9</a>)</div>
           <div class="protoref">
             <a href="#func-root">
               <code>fn:root</code>
@@ -26647,7 +26991,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()?</code>)<code> as </code>
             <code>node()?</code>
-(Â§<a href="#func-root">14.9</a>)</div>
+(§<a href="#func-root">14.9</a>)</div>
           <div class="protoref">
             <a href="#func-round">
               <code>fn:round</code>
@@ -26655,7 +26999,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric?</code>)<code> as </code>
             <code>numeric?</code>
-(Â§<a href="#func-round">6.4.4</a>)</div>
+(§<a href="#func-round">6.4.4</a>)</div>
           <div class="protoref">
             <a href="#func-round-half-to-even">
               <code>fn:round-half-to-even</code>
@@ -26663,7 +27007,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>numeric?</code>)<code> as </code>
             <code>numeric?</code>
-(Â§<a href="#func-round-half-to-even">6.4.5</a>)</div>
+(§<a href="#func-round-half-to-even">6.4.5</a>)</div>
           <div class="protoref">
             <a href="#func-round-half-to-even">
               <code>fn:round-half-to-even</code>
@@ -26674,7 +27018,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:integer</code>)<code> as </code>
             <code>numeric?</code>
-(Â§<a href="#func-round-half-to-even">6.4.5</a>)</div>
+(§<a href="#func-round-half-to-even">6.4.5</a>)</div>
           <div class="protoref">
             <a href="#func-seconds-from-dateTime">
               <code>fn:seconds-from-dateTime</code>
@@ -26682,7 +27026,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime?</code>)<code> as </code>
             <code>xs:decimal?</code>
-(Â§<a href="#func-seconds-from-dateTime">10.5.12</a>)</div>
+(§<a href="#func-seconds-from-dateTime">10.5.12</a>)</div>
           <div class="protoref">
             <a href="#func-seconds-from-duration">
               <code>fn:seconds-from-duration</code>
@@ -26690,7 +27034,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:duration?</code>)<code> as </code>
             <code>xs:decimal?</code>
-(Â§<a href="#func-seconds-from-duration">10.5.6</a>)</div>
+(§<a href="#func-seconds-from-duration">10.5.6</a>)</div>
           <div class="protoref">
             <a href="#func-seconds-from-time">
               <code>fn:seconds-from-time</code>
@@ -26698,7 +27042,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:time?</code>)<code> as </code>
             <code>xs:decimal?</code>
-(Â§<a href="#func-seconds-from-time">10.5.20</a>)</div>
+(§<a href="#func-seconds-from-time">10.5.20</a>)</div>
           <div class="protoref">
             <a href="#func-starts-with">
               <code>fn:starts-with</code>
@@ -26709,7 +27053,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-starts-with">7.5.2</a>)</div>
+(§<a href="#func-starts-with">7.5.2</a>)</div>
           <div class="protoref">
             <a href="#func-starts-with">
               <code>fn:starts-with</code>
@@ -26723,19 +27067,19 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-starts-with">7.5.2</a>)</div>
+(§<a href="#func-starts-with">7.5.2</a>)</div>
           <div class="protoref">
             <a href="#func-static-base-uri">
               <code>fn:static-base-uri</code>
             </a>()<code> as </code>
             <code>xs:anyURI?</code>
-(Â§<a href="#func-static-base-uri">16.8</a>)</div>
+(§<a href="#func-static-base-uri">16.8</a>)</div>
           <div class="protoref">
             <a href="#func-string">
               <code>fn:string</code>
             </a>()<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-string">2.3</a>)</div>
+(§<a href="#func-string">2.3</a>)</div>
           <div class="protoref">
             <a href="#func-string">
               <code>fn:string</code>
@@ -26743,7 +27087,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-string">2.3</a>)</div>
+(§<a href="#func-string">2.3</a>)</div>
           <div class="protoref">
             <a href="#func-string-join">
               <code>fn:string-join</code>
@@ -26754,13 +27098,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-string-join">7.4.2</a>)</div>
+(§<a href="#func-string-join">7.4.2</a>)</div>
           <div class="protoref">
             <a href="#func-string-length">
               <code>fn:string-length</code>
             </a>()<code> as </code>
             <code>xs:integer</code>
-(Â§<a href="#func-string-length">7.4.4</a>)</div>
+(§<a href="#func-string-length">7.4.4</a>)</div>
           <div class="protoref">
             <a href="#func-string-length">
               <code>fn:string-length</code>
@@ -26768,7 +27112,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:integer</code>
-(Â§<a href="#func-string-length">7.4.4</a>)</div>
+(§<a href="#func-string-length">7.4.4</a>)</div>
           <div class="protoref">
             <a href="#func-string-to-codepoints">
               <code>fn:string-to-codepoints</code>
@@ -26776,7 +27120,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:integer*</code>
-(Â§<a href="#func-string-to-codepoints">7.2.2</a>)</div>
+(§<a href="#func-string-to-codepoints">7.2.2</a>)</div>
           <div class="protoref">
             <a href="#func-subsequence">
               <code>fn:subsequence</code>
@@ -26787,7 +27131,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:double</code>)<code> as </code>
             <code>item()*</code>
-(Â§<a href="#func-subsequence">15.1.10</a>)</div>
+(§<a href="#func-subsequence">15.1.10</a>)</div>
           <div class="protoref">
             <a href="#func-subsequence">
               <code>fn:subsequence</code>
@@ -26801,7 +27145,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:double</code>)<code> as </code>
             <code>item()*</code>
-(Â§<a href="#func-subsequence">15.1.10</a>)</div>
+(§<a href="#func-subsequence">15.1.10</a>)</div>
           <div class="protoref">
             <a href="#func-substring">
               <code>fn:substring</code>
@@ -26812,7 +27156,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:double</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-substring">7.4.3</a>)</div>
+(§<a href="#func-substring">7.4.3</a>)</div>
           <div class="protoref">
             <a href="#func-substring">
               <code>fn:substring</code>
@@ -26826,7 +27170,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:double</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-substring">7.4.3</a>)</div>
+(§<a href="#func-substring">7.4.3</a>)</div>
           <div class="protoref">
             <a href="#func-substring-after">
               <code>fn:substring-after</code>
@@ -26837,7 +27181,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-substring-after">7.5.5</a>)</div>
+(§<a href="#func-substring-after">7.5.5</a>)</div>
           <div class="protoref">
             <a href="#func-substring-after">
               <code>fn:substring-after</code>
@@ -26851,7 +27195,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-substring-after">7.5.5</a>)</div>
+(§<a href="#func-substring-after">7.5.5</a>)</div>
           <div class="protoref">
             <a href="#func-substring-before">
               <code>fn:substring-before</code>
@@ -26862,7 +27206,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-substring-before">7.5.4</a>)</div>
+(§<a href="#func-substring-before">7.5.4</a>)</div>
           <div class="protoref">
             <a href="#func-substring-before">
               <code>fn:substring-before</code>
@@ -26876,7 +27220,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-substring-before">7.5.4</a>)</div>
+(§<a href="#func-substring-before">7.5.4</a>)</div>
           <div class="protoref">
             <a href="#func-subtract-dateTimes">
               <code>op:subtract-dateTimes</code>
@@ -26887,7 +27231,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime</code>)<code> as </code>
             <code>xs:dayTimeDuration</code>
-(Â§<a href="#func-subtract-dateTimes">10.8.1</a>)</div>
+(§<a href="#func-subtract-dateTimes">10.8.1</a>)</div>
           <div class="protoref">
             <a href="#func-subtract-dates">
               <code>op:subtract-dates</code>
@@ -26898,7 +27242,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:date</code>)<code> as </code>
             <code>xs:dayTimeDuration</code>
-(Â§<a href="#func-subtract-dates">10.8.2</a>)</div>
+(§<a href="#func-subtract-dates">10.8.2</a>)</div>
           <div class="protoref">
             <a href="#func-subtract-dayTimeDuration-from-date">
               <code>op:subtract-dayTimeDuration-from-date</code>
@@ -26909,7 +27253,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration</code>)<code> as </code>
             <code>xs:date</code>
-(Â§<a href="#func-subtract-dayTimeDuration-from-date">10.8.11</a>)</div>
+(§<a href="#func-subtract-dayTimeDuration-from-date">10.8.11</a>)</div>
           <div class="protoref">
             <a href="#func-subtract-dayTimeDuration-from-dateTime">
               <code>op:subtract-dayTimeDuration-from-dateTime</code>
@@ -26920,7 +27264,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration</code>)<code> as </code>
             <code>xs:dateTime</code>
-(Â§<a href="#func-subtract-dayTimeDuration-from-dateTime">10.8.7</a>)</div>
+(§<a href="#func-subtract-dayTimeDuration-from-dateTime">10.8.7</a>)</div>
           <div class="protoref">
             <a href="#func-subtract-dayTimeDuration-from-time">
               <code>op:subtract-dayTimeDuration-from-time</code>
@@ -26931,7 +27275,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration</code>)<code> as </code>
             <code>xs:time</code>
-(Â§<a href="#func-subtract-dayTimeDuration-from-time">10.8.13</a>)</div>
+(§<a href="#func-subtract-dayTimeDuration-from-time">10.8.13</a>)</div>
           <div class="protoref">
             <a href="#func-subtract-dayTimeDurations">
               <code>op:subtract-dayTimeDurations</code>
@@ -26942,7 +27286,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dayTimeDuration</code>)<code> as </code>
             <code>xs:dayTimeDuration</code>
-(Â§<a href="#func-subtract-dayTimeDurations">10.6.7</a>)</div>
+(§<a href="#func-subtract-dayTimeDurations">10.6.7</a>)</div>
           <div class="protoref">
             <a href="#func-subtract-times">
               <code>op:subtract-times</code>
@@ -26953,7 +27297,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:time</code>)<code> as </code>
             <code>xs:dayTimeDuration</code>
-(Â§<a href="#func-subtract-times">10.8.3</a>)</div>
+(§<a href="#func-subtract-times">10.8.3</a>)</div>
           <div class="protoref">
             <a href="#func-subtract-yearMonthDuration-from-date">
               <code>op:subtract-yearMonthDuration-from-date</code>
@@ -26964,7 +27308,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:yearMonthDuration</code>)<code> as </code>
             <code>xs:date</code>
-(Â§<a href="#func-subtract-yearMonthDuration-from-date">10.8.10</a>)</div>
+(§<a href="#func-subtract-yearMonthDuration-from-date">10.8.10</a>)</div>
           <div class="protoref">
             <a href="#func-subtract-yearMonthDuration-from-dateTime">
               <code>op:subtract-yearMonthDuration-from-dateTime</code>
@@ -26975,7 +27319,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:yearMonthDuration</code>)<code> as </code>
             <code>xs:dateTime</code>
-(Â§<a href="#func-subtract-yearMonthDuration-from-dateTime">10.8.6</a>)</div>
+(§<a href="#func-subtract-yearMonthDuration-from-dateTime">10.8.6</a>)</div>
           <div class="protoref">
             <a href="#func-subtract-yearMonthDurations">
               <code>op:subtract-yearMonthDurations</code>
@@ -26986,7 +27330,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:yearMonthDuration</code>)<code> as </code>
             <code>xs:yearMonthDuration</code>
-(Â§<a href="#func-subtract-yearMonthDurations">10.6.2</a>)</div>
+(§<a href="#func-subtract-yearMonthDurations">10.6.2</a>)</div>
           <div class="protoref">
             <a href="#func-sum">
               <code>fn:sum</code>
@@ -26994,7 +27338,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:anyAtomicType*</code>)<code> as </code>
             <code>xs:anyAtomicType</code>
-(Â§<a href="#func-sum">15.4.5</a>)</div>
+(§<a href="#func-sum">15.4.5</a>)</div>
           <div class="protoref">
             <a href="#func-sum">
               <code>fn:sum</code>
@@ -27005,7 +27349,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:anyAtomicType?</code>)<code> as </code>
             <code>xs:anyAtomicType?</code>
-(Â§<a href="#func-sum">15.4.5</a>)</div>
+(§<a href="#func-sum">15.4.5</a>)</div>
           <div class="protoref">
             <a href="#func-time-equal">
               <code>op:time-equal</code>
@@ -27016,7 +27360,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:time</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-time-equal">10.4.12</a>)</div>
+(§<a href="#func-time-equal">10.4.12</a>)</div>
           <div class="protoref">
             <a href="#func-time-greater-than">
               <code>op:time-greater-than</code>
@@ -27027,7 +27371,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:time</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-time-greater-than">10.4.14</a>)</div>
+(§<a href="#func-time-greater-than">10.4.14</a>)</div>
           <div class="protoref">
             <a href="#func-time-less-than">
               <code>op:time-less-than</code>
@@ -27038,7 +27382,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:time</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-time-less-than">10.4.13</a>)</div>
+(§<a href="#func-time-less-than">10.4.13</a>)</div>
           <div class="protoref">
             <a href="#func-timezone-from-date">
               <code>fn:timezone-from-date</code>
@@ -27046,7 +27390,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:date?</code>)<code> as </code>
             <code>xs:dayTimeDuration?</code>
-(Â§<a href="#func-timezone-from-date">10.5.17</a>)</div>
+(§<a href="#func-timezone-from-date">10.5.17</a>)</div>
           <div class="protoref">
             <a href="#func-timezone-from-dateTime">
               <code>fn:timezone-from-dateTime</code>
@@ -27054,7 +27398,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime?</code>)<code> as </code>
             <code>xs:dayTimeDuration?</code>
-(Â§<a href="#func-timezone-from-dateTime">10.5.13</a>)</div>
+(§<a href="#func-timezone-from-dateTime">10.5.13</a>)</div>
           <div class="protoref">
             <a href="#func-timezone-from-time">
               <code>fn:timezone-from-time</code>
@@ -27062,7 +27406,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:time?</code>)<code> as </code>
             <code>xs:dayTimeDuration?</code>
-(Â§<a href="#func-timezone-from-time">10.5.21</a>)</div>
+(§<a href="#func-timezone-from-time">10.5.21</a>)</div>
           <div class="protoref">
             <a href="#func-to">
               <code>op:to</code>
@@ -27073,7 +27417,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:integer</code>)<code> as </code>
             <code>xs:integer*</code>
-(Â§<a href="#func-to">15.5.1</a>)</div>
+(§<a href="#func-to">15.5.1</a>)</div>
           <div class="protoref">
             <a href="#func-tokenize">
               <code>fn:tokenize</code>
@@ -27084,7 +27428,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:string*</code>
-(Â§<a href="#func-tokenize">7.6.4</a>)</div>
+(§<a href="#func-tokenize">7.6.4</a>)</div>
           <div class="protoref">
             <a href="#func-tokenize">
               <code>fn:tokenize</code>
@@ -27098,7 +27442,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:string*</code>
-(Â§<a href="#func-tokenize">7.6.4</a>)</div>
+(§<a href="#func-tokenize">7.6.4</a>)</div>
           <div class="protoref">
             <a href="#func-trace">
               <code>fn:trace</code>
@@ -27109,7 +27453,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>item()*</code>
-(Â§<a href="#func-trace">4</a>)</div>
+(§<a href="#func-trace">4</a>)</div>
           <div class="protoref">
             <a href="#func-translate">
               <code>fn:translate</code>
@@ -27123,13 +27467,13 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-translate">7.4.9</a>)</div>
+(§<a href="#func-translate">7.4.9</a>)</div>
           <div class="protoref">
             <a href="#func-true">
               <code>fn:true</code>
             </a>()<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-true">9.1.1</a>)</div>
+(§<a href="#func-true">9.1.1</a>)</div>
           <div class="protoref">
             <a href="#func-union">
               <code>op:union</code>
@@ -27140,7 +27484,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>node()*</code>)<code> as </code>
             <code>node()*</code>
-(Â§<a href="#func-union">15.3.2</a>)</div>
+(§<a href="#func-union">15.3.2</a>)</div>
           <div class="protoref">
             <a href="#func-unordered">
               <code>fn:unordered</code>
@@ -27148,7 +27492,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>item()*</code>
-(Â§<a href="#func-unordered">15.1.11</a>)</div>
+(§<a href="#func-unordered">15.1.11</a>)</div>
           <div class="protoref">
             <a href="#func-upper-case">
               <code>fn:upper-case</code>
@@ -27156,7 +27500,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:string?</code>)<code> as </code>
             <code>xs:string</code>
-(Â§<a href="#func-upper-case">7.4.7</a>)</div>
+(§<a href="#func-upper-case">7.4.7</a>)</div>
           <div class="protoref">
             <a href="#func-year-from-date">
               <code>fn:year-from-date</code>
@@ -27164,7 +27508,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:date?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-year-from-date">10.5.14</a>)</div>
+(§<a href="#func-year-from-date">10.5.14</a>)</div>
           <div class="protoref">
             <a href="#func-year-from-dateTime">
               <code>fn:year-from-dateTime</code>
@@ -27172,7 +27516,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:dateTime?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-year-from-dateTime">10.5.7</a>)</div>
+(§<a href="#func-year-from-dateTime">10.5.7</a>)</div>
           <div class="protoref">
             <a href="#func-yearMonthDuration-greater-than">
               <code>op:yearMonthDuration-greater-than</code>
@@ -27183,7 +27527,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:yearMonthDuration</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-yearMonthDuration-greater-than">10.4.2</a>)</div>
+(§<a href="#func-yearMonthDuration-greater-than">10.4.2</a>)</div>
           <div class="protoref">
             <a href="#func-yearMonthDuration-less-than">
               <code>op:yearMonthDuration-less-than</code>
@@ -27194,7 +27538,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:yearMonthDuration</code>)<code> as </code>
             <code>xs:boolean</code>
-(Â§<a href="#func-yearMonthDuration-less-than">10.4.1</a>)</div>
+(§<a href="#func-yearMonthDuration-less-than">10.4.1</a>)</div>
           <div class="protoref">
             <a href="#func-years-from-duration">
               <code>fn:years-from-duration</code>
@@ -27202,7 +27546,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>xs:duration?</code>)<code> as </code>
             <code>xs:integer?</code>
-(Â§<a href="#func-years-from-duration">10.5.1</a>)</div>
+(§<a href="#func-years-from-duration">10.5.1</a>)</div>
           <div class="protoref">
             <a href="#func-zero-or-one">
               <code>fn:zero-or-one</code>
@@ -27210,7 +27554,7 @@ and Operators Alphabetically</h3>
             <code> as </code>
             <code>item()*</code>)<code> as </code>
             <code>item()?</code>
-(Â§<a href="#func-zero-or-one">15.2.1</a>)</div>
+(§<a href="#func-zero-or-one">15.2.1</a>)</div>
         </div>
       </div>
     </div>

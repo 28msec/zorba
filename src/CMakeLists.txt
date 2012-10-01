@@ -35,6 +35,7 @@ ENDIF(NOT ZORBA_WITH_DEBUGGER)
 
 # mappings.xml is only a helper xml file => don't generate any code for it
 LIST(REMOVE_ITEM SPEC_FILES "mappings.xml")
+LIST(REMOVE_ITEM SPEC_FILES "mappings-no-jsoniq.xml")
 
 # sort the list such that all generated files are equal on all systems
 LIST(SORT SPEC_FILES)
@@ -60,9 +61,7 @@ ENDFOREACH(SPEC_FILE)
 # Next, add the files to be compiled into the library
 #
 
-MESSAGE(STATUS  "PRECOMPILED HEADERS: " ${ZORBA_PRECOMPILED_HEADERS})
 SET(ZORBA_PRECOMPILED_HEADERS OFF CACHE BOOL "Activate Zorba precompiled headers.")
-MESSAGE(STATUS  "PRECOMPILED HEADERS: " ${ZORBA_PRECOMPILED_HEADERS})
 
 SET(ZORBA_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS api API_SRCS)
@@ -218,6 +217,7 @@ FOREACH (SRCS ${ZORBA_STORE_IMPL_SRCS})
   LIST(APPEND STORE_SRCS ${ZORBA_STORE_DIR}/${SRCS})
 ENDFOREACH (SRCS ${ZORBA_STORE_IMPL_SRCS})
 
+LIST(APPEND requiredlibs ${requiredlibs-store})
 #
 # Build the Zorba SHARED library
 #

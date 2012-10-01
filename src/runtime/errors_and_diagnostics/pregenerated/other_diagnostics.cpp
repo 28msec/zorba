@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +34,17 @@
 namespace zorba {
 
 // <ReadLineIterator>
-ReadLineIterator::class_factory<ReadLineIterator>
-ReadLineIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ReadLineIterator)
+
+void ReadLineIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ReadLineIterator, PlanIteratorState>*)this);
+}
 
 
-void ReadLineIterator::accept(PlanIterVisitor& v) const {
+void ReadLineIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -56,11 +62,19 @@ ReadLineIterator::~ReadLineIterator() {}
 
 
 // <PrintIterator>
-PrintIterator::class_factory<PrintIterator>
-PrintIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(PrintIterator)
+
+void PrintIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<PrintIterator, PlanIteratorState>*)this);
+
+    ar & thePrintToConsole;
+}
 
 
-void PrintIterator::accept(PlanIterVisitor& v) const {
+void PrintIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -78,11 +92,22 @@ PrintIterator::~PrintIterator() {}
 
 
 // <FunctionTraceIterator>
-FunctionTraceIterator::class_factory<FunctionTraceIterator>
-FunctionTraceIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FunctionTraceIterator)
+
+void FunctionTraceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>*)this);
+
+    ar & theFunctionName;
+    ar & theFunctionLocation;
+    ar & theFunctionCallLocation;
+    ar & theFunctionArity;
+}
 
 
-void FunctionTraceIterator::accept(PlanIterVisitor& v) const {
+void FunctionTraceIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

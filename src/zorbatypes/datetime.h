@@ -23,21 +23,32 @@
 #include "zorbatypes/timezone.h"
 #include "zorbatypes/duration.h"
 
-#include "zorbaserialization/class_serializer.h"
-
 #include "util/ascii_util.h"
 
 
 namespace zorba
 {
 
+class DateTime;
+
+
+namespace serialization 
+{
+  class Archiver;
+  void operator&(Archiver& ar, DateTime& obj);
+}
+
+
+
 class InvalidTimezoneException : public std::exception
 {
 };
-  
 
-class DateTime : ::zorba::serialization::SerializeBaseClass
+
+class DateTime
 {
+  friend void serialization::operator&(serialization::Archiver& ar, DateTime& obj);
+
 public:
       
   /** Available facets for the DateTime class */
@@ -259,11 +270,6 @@ protected:
         long& minute,
         long& seconds,
         long& frac_seconds);
-
-public:
-  SERIALIZABLE_CLASS(DateTime)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(DateTime)
-  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   DateTime();

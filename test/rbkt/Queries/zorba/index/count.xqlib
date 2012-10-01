@@ -11,17 +11,20 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
 declare collection def:user as node()*;
 
+
 declare variable $def:user := xs:QName("def:user");
  
 declare %ann:automatic %ann:unique %ann:value-equality index def:user-by-uid
   on nodes dml:collection(xs:QName("def:user"))
   by xs:string(@uid) as xs:string;
 
+
 declare variable $def:user-by-uid := xs:QName("def:user-by-uid");
  
 declare %ann:automatic %ann:value-range index def:user-by-uid-range
   on nodes dml:collection(xs:QName("def:user"))
   by xs:string(@uid) as xs:string;
+
 
 declare variable $def:user-by-uid-range := xs:QName("def:user-by-uid-range");
 
@@ -30,6 +33,7 @@ declare %ann:manual %ann:general-range index def:user-by-uid-general-range
   by xs:string(@uid) as xs:string;
 
 declare variable $def:user-by-uid-general-range := xs:QName("def:user-by-uid-general-range");
+
 
 declare %ann:sequential function def:init()
 {
@@ -57,6 +61,7 @@ declare function def:count-user()
   count(index_dml:probe-index-point-value(xs:QName("def:user-by-uid"), "1"))
 };
 
+
 declare function def:count-user-range()
 {
   count(
@@ -65,6 +70,7 @@ declare function def:count-user-range()
     "1", "4", fn:true(), fn:true(), fn:true(), fn:true())
   )
 };
+
 
 declare function def:count-user-general-range()
 {

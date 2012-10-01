@@ -67,7 +67,7 @@ StaticallyKnownCollection::~StaticallyKnownCollection()
 ********************************************************************************/
 void StaticallyKnownCollection::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (SimpleRCObject*)this);
+  //serialize_baseclass(ar, (SimpleRCObject*)this);
     
   ar & theName;
   ar & theAnnotations;

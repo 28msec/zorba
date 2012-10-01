@@ -19,6 +19,7 @@
 #include "simple_iterator_factory.h"
 #include "node_iterators.h"
 #include "simple_temp_seq.h"
+#include "simple_lazy_temp_seq.h"
 #include "simple_index.h"
 #include "simple_index_value.h"
 #include "simple_index_general.h"
@@ -83,9 +84,12 @@ store::IndexProbeIterator* SimpleIteratorFactory::createIndexProbeIterator(
 /*******************************************************************************
 
 ********************************************************************************/
-store::TempSeqIterator* SimpleIteratorFactory::createTempSeqIterator()
+store::TempSeqIterator* SimpleIteratorFactory::createTempSeqIterator(bool lazy)
 {
-  return new SimpleTempSeqIter();
+  if (lazy)
+    return new SimpleLazyTempSeqIter();
+  else
+     return new SimpleTempSeqIter();
 }
 
 

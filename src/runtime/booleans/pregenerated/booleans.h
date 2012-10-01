@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsSameNodeIterator,
     NaryBaseIterator<IsSameNodeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IsSameNodeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   IsSameNodeIterator(
     static_context* sctx,
@@ -79,11 +75,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeBeforeIterator,
     NaryBaseIterator<NodeBeforeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<NodeBeforeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   NodeBeforeIterator(
     static_context* sctx,
@@ -113,11 +105,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeAfterIterator,
     NaryBaseIterator<NodeAfterIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<NodeAfterIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   NodeAfterIterator(
     static_context* sctx,

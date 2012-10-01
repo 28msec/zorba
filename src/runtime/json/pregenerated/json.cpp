@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,17 @@
 namespace zorba {
 
 // <JSONParseInternal>
-JSONParseInternal::class_factory<JSONParseInternal>
-JSONParseInternal::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONParseInternal)
+
+void JSONParseInternal::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONParseInternal, PlanIteratorState>*)this);
+}
 
 
-void JSONParseInternal::accept(PlanIterVisitor& v) const {
+void JSONParseInternal::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -55,11 +61,17 @@ JSONParseInternal::~JSONParseInternal() {}
 
 
 // <JSONSerializeInternal>
-JSONSerializeInternal::class_factory<JSONSerializeInternal>
-JSONSerializeInternal::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(JSONSerializeInternal)
+
+void JSONSerializeInternal::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONSerializeInternal, PlanIteratorState>*)this);
+}
 
 
-void JSONSerializeInternal::accept(PlanIterVisitor& v) const {
+void JSONSerializeInternal::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,17 @@
 namespace zorba {
 
 // <FnZorbaParseXmlFragmentIterator>
-FnZorbaParseXmlFragmentIterator::class_factory<FnZorbaParseXmlFragmentIterator>
-FnZorbaParseXmlFragmentIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnZorbaParseXmlFragmentIterator)
+
+void FnZorbaParseXmlFragmentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnZorbaParseXmlFragmentIterator, FnZorbaParseXmlFragmentIteratorState>*)this);
+}
 
 
-void FnZorbaParseXmlFragmentIterator::accept(PlanIterVisitor& v) const {
+void FnZorbaParseXmlFragmentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -60,6 +66,42 @@ void FnZorbaParseXmlFragmentIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
 // </FnZorbaParseXmlFragmentIterator>
+
+
+// <FnParseXmlFragmentIterator>
+SERIALIZABLE_CLASS_VERSIONS(FnParseXmlFragmentIterator)
+
+void FnParseXmlFragmentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnParseXmlFragmentIterator, FnParseXmlFragmentIteratorState>*)this);
+}
+
+
+void FnParseXmlFragmentIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnParseXmlFragmentIterator::~FnParseXmlFragmentIterator() {}
+
+FnParseXmlFragmentIteratorState::FnParseXmlFragmentIteratorState() {}
+
+FnParseXmlFragmentIteratorState::~FnParseXmlFragmentIteratorState() {}
+
+
+void FnParseXmlFragmentIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+// </FnParseXmlFragmentIterator>
 
 
 

@@ -121,7 +121,15 @@ bool FnStringIterator::nextImpl(store::Item_t& result, PlanState& planState) con
           ERROR_LOC( loc ) );
     }
     state->hasOutput = true;
-    inVal->getStringValue2(strval);
+    try
+    {
+      inVal->getStringValue2(strval);
+    }
+    catch (ZorbaException& e)
+    {
+      set_source(e, loc);
+      throw;
+    }
     GENV_ITEMFACTORY->createString(result, strval);
     STACK_PUSH(true, state);
   }
@@ -160,7 +168,7 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         itemNode->getTypedValue(result, state->theTypedValueIter);
       }
-      catch (XQueryException& e)
+      catch (ZorbaException& e)
       {
 				set_source(e, loc);
 				throw;
@@ -191,6 +199,13 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       STACK_PUSH(true, state);
     }
+#ifdef ZORBA_WITH_JSON
+    else if (result->isJSONItem())
+    {
+			RAISE_ERROR(jerr::JNTY0004, loc,
+      ERROR_PARAMS(result->isJSONObject() ? "object" : "array"));
+    }
+#endif
     else //(result->isFunction())
     {
 			RAISE_ERROR(err::FOTY0013, loc,

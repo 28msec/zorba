@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,7 +42,7 @@ protected:
   ulong                   theVisitId;
 
 public:
-  UDFNode(user_function* udf) 
+  UDFNode(user_function* udf)
     :
     theUDF(udf),
     theVisitId(0)
@@ -71,30 +71,42 @@ public:
 
 
 /******************************************************************************
-  UDFGraph represents the call-graph among all the UDFs that may be invoked 
+  UDFGraph represents the call-graph among all the UDFs that may be invoked
   during the evaluation of a given expr E. We call this graph the "call-graph
   of E".
 
-  theExpr    : The expr whose call graph is represented by "this".
-  theNodes   : Maps a user_function ptr to the node that represents that udf in
-               the graph.
-  theRoot    : A "dummy" udf node representing theExpr 
-  theVisitId : During a traversal of the graph, we need to know if we reach at
-               a node that we have visited already in the same traversal. This
-               is done as follows: Every time we start a new traversal, we 
-               increment theVisitId, and pass its value to the traversal 
-               method(s). Each node has a "visit id" data member. When a
-               traversal reaches a node, we check whether the visit id of the
-               node is == to the traversal visit id. If true, we know that the
-               node has been visited already by the current traversal. Otherwise,
-               we set its visit id to the visit id of the traversal.   
+  The graph is built right after translation is done and before optimization
+  starts (see XQueryCompiler::optimize() in src/compiler/api/compiler_api.cpp)
+
+  theExpr:
+  --------
+  The expr whose call graph is represented by "this".
+
+  theNodes:
+  ---------
+  Maps a user_function ptr to the node that represents that udf in the graph.
+
+  theRoot:
+  --------
+  A "dummy" udf node representing theExpr
+
+  theVisitId:
+  -----------
+  During a traversal of the graph, we need to know if we reach at a node that
+  we have visited already in the same traversal. This is done as follows: Every
+  time we start a new traversal, we increment theVisitId, and pass its value to
+  the traversal method(s). Each node has a "visit id" data member. When a
+  traversal reaches a node, we check whether the visit id of the node is == to
+  the traversal visit id. If true, we know that the node has been visited already
+  by the current traversal. Otherwise, we set its visit id to the visit id of
+  the traversal.
 *******************************************************************************/
-class UDFGraph 
+class UDFGraph
 {
   typedef HashMap<user_function*, UDFNode*, UDFHashMapCmp> UDFMap;
 
 protected:
-  expr_t     theExpr;
+  expr     * theExpr;
   UDFMap     theNodes;
   UDFNode  * theRoot;
   ulong      theVisitId;

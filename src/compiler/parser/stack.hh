@@ -1,10 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Stack handling for Bison parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -38,13 +36,10 @@
 #include <deque>
 
 
-/* Line 1067 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 namespace zorba {
 
-/* Line 1067 of lalr1.cc  */
-#line 48 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/stack.hh"
+/* Line 1149 of lalr1.cc  */
+#line 43 "/home/jsoniq/zorba/debug/src/compiler/parser/stack.hh"
   template <class T, class S = std::deque<T> >
   class stack
   {
@@ -131,13 +126,10 @@ namespace zorba {
     unsigned int range_;
   };
 
-/* Line 1153 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // zorba
 
-/* Line 1153 of lalr1.cc  */
-#line 141 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/stack.hh"
+/* Line 1235 of lalr1.cc  */
+#line 133 "/home/jsoniq/zorba/debug/src/compiler/parser/stack.hh"
 
 #endif // not BISON_STACK_HH[]dnl
 

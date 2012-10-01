@@ -1,0 +1,1 @@
+{ "serialized XML" : { "pre-type" : "node()", "pre-value" : "<a>\n  <b>text<c>more text</c>\n  </b>\n</a>" } }

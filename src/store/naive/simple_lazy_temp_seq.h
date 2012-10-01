@@ -35,25 +35,38 @@ typedef rchandle<class SimpleLazyTempSeq> SimpleLazyTempSeq_t;
 
 
 /*******************************************************************************
-  theIterator    : The input iterator that produces the items to be buffered by
-                   "this" temp sequence.
-  theCopy        : Whether or not to copy the items returned by theIterator 
-                   before buffering them in "this" temp sequence.
-  theMatFinished : Set to true when theIterator returns its last item.
-  thePurgedUpTo  : The number of items that have been purged from the buffer so
-                   far.
 
-  theItems       : Vector storing the buffered items.
+  theIterator :
+  -------------
+  The input iterator that produces the items to be cached by "this" temp sequence.
+
+  theMatFinished :
+  ----------------
+  Set to true when theIterator returns its last item.
+
+  thePurgedUpTo :
+  ---------------
+  The number of items that have been purged from the buffer so far.
+
+  theItems :
+  ----------
+  Vector storing the cached items.
 ********************************************************************************/
 class SimpleLazyTempSeq : public store::TempSeq 
 {
  private:
   store::Iterator_t          theIterator;
-  bool                       theCopy;
+
   bool                       theMatFinished;
+
   xs_long                    thePurgedUpTo;
   
-  std::vector<store::Item_t> theItems;
+  std::vector<store::Item*>  theItems; // ref-counting is done manually
+
+ private:
+  void clear();
+
+  void matNextItem();
 
  public:
   SimpleLazyTempSeq() { }
@@ -62,38 +75,34 @@ class SimpleLazyTempSeq : public store::TempSeq
 
   virtual ~SimpleLazyTempSeq();
 
+  // Store API
+
+  bool isLazy() const { return true; }
+
+  bool empty();
+
+  xs_integer getSize() const;
+
   void init(const store::Iterator_t& iter);
 
   void append(const store::Iterator_t& iter);
 
   void purge();
 
-  void purgeUpTo(xs_integer upTo);
+  void purgeUpTo(xs_integer pos);
 
-  bool empty();
+  void getItem(xs_integer pos, store::Item_t& result);
 
-  void getItem(xs_integer position, store::Item_t& result);
-
-  bool containsItem(xs_integer position);
-
-  xs_integer getSize() const;
+  bool containsItem(xs_integer pos);
 
   store::Iterator_t getIterator() const;
-
-  store::Iterator_t getIterator(
-      xs_integer startPos,
-      xs_integer endPos,
-      bool streaming = false) const;
-
- private:
-  void matNextItem();
 };
  
  
 /*******************************************************************************
 
 ********************************************************************************/
-class SimpleLazyTempSeqIter : public store::Iterator 
+class SimpleLazyTempSeqIter : public store::TempSeqIterator
 {
  private:
   SimpleLazyTempSeq_t  theTempSeq;
@@ -103,16 +112,27 @@ class SimpleLazyTempSeqIter : public store::Iterator
   xs_long              theEndPos;
 
  public:
+  SimpleLazyTempSeqIter();
+
   SimpleLazyTempSeqIter(
-      const SimpleLazyTempSeq* aTempSeq,
-      xs_integer aStartPos,
-      xs_integer aEndPos);
+      const SimpleLazyTempSeq* tempSeq,
+      xs_integer startPos,
+      xs_integer endPos);
 
   virtual ~SimpleLazyTempSeqIter();
 
+  // Store API
+
+  void init(const store::TempSeq_t& seq);
+
+  void init(const store::TempSeq_t& seq, xs_integer startPos, xs_integer endPos);
+
   void open();
+
   bool next(store::Item_t& result);
+
   void reset();
+
   void close();
 };
 

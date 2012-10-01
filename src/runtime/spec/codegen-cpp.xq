@@ -91,12 +91,9 @@ declare function local:process($doc,
             local:create-functions($iter, $function),
             $gen:newline,
 
-            local:propagate($function),
-
             if (exists($iter/@preprocessorGuard))
             then
-              concat($gen:newline, "#endif
-")
+              concat($gen:newline, "#endif", $gen:newline)
             else 
               ""
             )
@@ -273,9 +270,14 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
           ($gen:newline,
            if (exists($iter/@preprocessorGuard))
            then
-             concat($gen:newline, $iter/@preprocessorGuard, "
-")
+             concat($gen:newline, $iter/@preprocessorGuard, $gen:newline)
            else 
+             "",
+           $gen:newline, $gen:newline, gen:indent(2),
+           if (exists($sig/@preprocessorGuard))
+           then
+            concat($gen:newline, $sig/@preprocessorGuard, $gen:newline)
+           else
              "",
            $gen:indent,
            '{', $gen:newline, $gen:indent, $gen:indent,
@@ -295,8 +297,6 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
            else
              ""
            ,
-           $gen:newline, $gen:newline, gen:indent(2),
-
            'DECL_WITH_KIND(sctx, ',
              concat(
               local:function-name($function),
@@ -329,19 +329,24 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
                       else
                         '',
                       $gen:newline, gen:indent(4)
-                    ),
+                      ),
                   local:create-zorba-type($sig/zorba:output, $mapping)
                 ), ''),
               '),', $gen:newline, gen:indent(4), 
               'FunctionConsts::', gen:function-kind($sig) ,');',
               $gen:newline, $gen:newline, $gen:indent,
             '}', $gen:newline, $gen:newline,
-            if (exists($iter/@preprocessorGuard))
+            if (exists($sig/@preprocessorGuard))
             then
-              concat($gen:newline, "#endif
-")
-            else 
-              ""
+             concat($gen:newline, "#endif", $gen:newline)
+            else
+              "",
+
+             if (exists($iter/@preprocessorGuard))
+             then
+               concat($gen:newline, "#endif", $gen:newline)
+             else 
+               ""
             ),
         ''),
       '')

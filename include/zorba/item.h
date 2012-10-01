@@ -147,6 +147,21 @@ public:
   Item
   getType() const;
 
+#ifdef ZORBA_WITH_JSON
+
+  /**
+   * \brief Check if the Item is a JSON Item, that is, part of the JSONiq
+   * data model.
+   *
+   * Note that this function is available for all types of Items.
+   *
+   * @return true if the Item is a JSON Item, false otherwise.
+   */
+  bool
+  isJSONItem() const;
+
+#endif /* ZORBA_WITH_JSON */
+
   /** \brief Get the atomization value of the Item.
    *
    * The atomization value is the value that is returned by atomization 
@@ -351,6 +366,63 @@ public:
   int
   getNodeKind() const;
 
+#ifdef ZORBA_WITH_JSON
+
+  /** \brief Get the kind of this (JSON) Item.
+   *
+   * Note that this function is only available for JSON Items, that is, Items
+   * which return true from isJSONItem().
+   *
+   * @return the kind of this JSON item
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON).
+   */
+  store::StoreConsts::JSONItemKind
+  getJSONItemKind() const;
+
+  /** \brief Get the size of a JSON Array.
+   *
+   * Note that this function is only available for JSON Arrays.
+   *
+   * @return Item the size of the array.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Array).
+   */
+  uint64_t
+  getArraySize() const;
+
+  /** \brief Returns the item in the JSON array at the specified index.
+   *
+   * Note that this function is only available for JSON Arrays.
+   *
+   * @param aIndex the index in the array.
+   * @return Item the indexed Item.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Array).
+   */
+  Item
+  getArrayValue(uint32_t aIndex) const;
+
+  /** \brief Get the keys of a JSON Object.
+   *
+   * Note that this function is only available for JSON Objects.
+   *
+   * @return Iterator_t an iterator on the keys of the object.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Object).
+   */
+  Iterator_t
+  getObjectKeys() const;
+
+  /** \brief Returns the value with the given name from a JSON Object.
+   *
+   * Note that this function is only available for JSON Objects.
+   *
+   * @param aName the name of the value in the Object to return.
+   * @return Item the named value from the Object.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Object).
+   */
+  Item
+  getObjectValue(String aName) const;
+
+#endif /* ZORBA_WITH_JSON */
+
   /**
    * Checks whether the item's content is streamable.
    *
@@ -358,6 +430,15 @@ public:
    */
   bool
   isStreamable() const;
+
+  /**
+   * Checks whether the item's streamable content is arbitrarily
+   * (forward anb backward) seekable.
+   *
+   * @return true only if it is.
+   */
+  bool
+  isSeekable() const;
 
   /**
    * Gets an istream for the item's content.

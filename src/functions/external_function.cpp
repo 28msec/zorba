@@ -40,7 +40,7 @@ external_function::external_function(
     static_context* modSctx,
     const zstring& ns,
     const signature& sig,
-    short scriptingType,
+    unsigned short scriptingType,
     ExternalFunction* impl) 
   :
   function(sig, FunctionConsts::FN_UNKNOWN),

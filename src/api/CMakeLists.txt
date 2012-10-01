@@ -49,6 +49,7 @@ SET(API_SRCS
     fileimpl.cpp
     serializerimpl.cpp
     base64impl.cpp
+    base64_streambuf.cpp
     uriimpl.cpp
     uriresolverimpl.cpp
     uri_resolver_wrappers.cpp
@@ -56,6 +57,7 @@ SET(API_SRCS
     zorba_functions.cpp
     annotationimpl.cpp
     auditimpl.cpp
+    streambuf.cpp
     transcode_streambuf.cpp
     )
 

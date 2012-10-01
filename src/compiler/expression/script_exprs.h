@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,26 +17,12 @@
 #ifndef ZORBA_COMPILER_SCRIPT_EXPRS
 #define ZORBA_COMPILER_SCRIPT_EXPRS
 
-#include <string>
 #include <vector>
-
-#include <zorba/store_consts.h>
 
 #include "compiler/expression/expr_base.h"
 
-#include "zorbautils/checked_vector.h"
 
-#include "zorbatypes/schema_types.h"
-
-#include "diagnostics/xquery_diagnostics.h"
-
-#include "context/static_context.h"
-
-#include "types/typeimpl.h"
-
-#include "store/api/item.h"
-
-namespace zorba 
+namespace zorba
 {
 
 class expr_visitor;
@@ -108,7 +94,7 @@ class exit_catcher_expr;
   contrast, the grammar allows only the last operand to be simple; all the other
   operands must be sequential or vacuous.
 
-  EXCEPTION: At the top level, a Program consists of 0 or more statements 
+  EXCEPTION: At the top level, a Program consists of 0 or more statements
   followed by an expr, which may be updating. In the case of a "normal" program,
   we can wrap this expr with an apply_expr and model the Program as a block
   expr. However, this does not work in the case of eval-updating. The solution
@@ -117,28 +103,26 @@ class exit_catcher_expr;
 ********************************************************************************/
 class block_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
 protected:
-  checked_vector<expr_t> theArgs;
+  std::vector<expr*> theArgs;
 
-public:
-  SERIALIZABLE_CLASS(block_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(block_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
+protected:
   block_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       bool allowLastUpdating,
-      std::vector<expr_t>& seq,
+      std::vector<expr*>& seq,
       std::vector<var_expr*>* assignedVars);
 
+public:
   ~block_expr();
 
-  void add_at(csize pos, const expr_t& arg);
+  void add_at(csize pos, expr* arg);
 
   csize size() const { return theArgs.size(); }
 
@@ -146,7 +130,7 @@ public:
 
   expr* operator[](csize i) { return theArgs[i]; }
 
-  expr_t clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -155,7 +139,7 @@ public:
 private:
   void compute_scripting_kind();
 
-  void compute_scripting_kind2(    
+  void compute_scripting_kind2(
       std::vector<var_expr*>* assignedVars,
       bool allowLastUpdating) ;
 };
@@ -164,38 +148,36 @@ private:
 /*******************************************************************************
   ApplyStatement ::= ExprSimple ";"
 ********************************************************************************/
-class apply_expr : public expr 
+class apply_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
 private:
-  expr_t theExpr;
+  expr * theExpr;
   bool   theDiscardXDM;
 
-public:
-  SERIALIZABLE_CLASS(apply_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(apply_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
+protected:
   apply_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& inExpr,
+      expr* inExpr,
       bool discardXDM);
 
-  expr* get_expr() const { return theExpr.getp(); }
+public:
+  expr* get_expr() const { return theExpr;}
 
   bool discardsXDM() const { return theDiscardXDM; }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -208,7 +190,7 @@ public:
 
   Annotation ::= "%" EQName ("(" Literal ("," Literal)* ")")?
 
-  VarDecl ::= "variable" "$" VarName TypeDeclaration? 
+  VarDecl ::= "variable" "$" VarName TypeDeclaration?
               ((":=" VarValue) | ("external" (":=" VarDefaultValue)?))
 
   For Local Var:
@@ -217,9 +199,9 @@ public:
   VarDeclExpr ::= ("local" Annotation*)? "variable" "$" VarName TypeDeclaration?
                   (":=" ExprSingle)?
 
-  var_decl_expr is used to declare block-local and prolog variables (including 
+  var_decl_expr is used to declare block-local and prolog variables (including
   the context item, if it is declared in the prolog). During runtime, the
-  associated iterator creates in the local dynamic context a binding between 
+  associated iterator creates in the local dynamic context a binding between
   the variable id and the variable value. If the declaration includes an
   initializing expr, the iterator computes the initExpr and stores the resulting
   value inside this binding.
@@ -227,36 +209,34 @@ public:
   Note: the init expr must be non-updating. For global vars, it must also be
   non-sequential.
 ********************************************************************************/
-class var_decl_expr : public expr 
+class var_decl_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
 protected:
-  var_expr_t theVarExpr;
-  expr_t     theInitExpr;
+  var_expr * theVarExpr;
+  expr     * theInitExpr;
 
-public:
-  SERIALIZABLE_CLASS(var_decl_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(var_decl_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
+protected:
   var_decl_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const var_expr_t& varExpr,
-      const expr_t& initExpr);
+      var_expr* varExpr,
+      expr* initExpr);
 
+public:
   ~var_decl_expr();
 
-  var_expr* get_var_expr() const { return theVarExpr.getp(); }
+  var_expr* get_var_expr() const { return theVarExpr; }
 
-  expr* get_init_expr() const { return theInitExpr.getp(); }
+  expr* get_init_expr() const { return theInitExpr; }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -271,40 +251,38 @@ public:
   The RHS of the assignment must be a non-updating expr.
 
   var_set_expr is used to assign a value to a prolog or block-local var. During
-  runtime, the function computes theExpr and stores the resulting value inside 
+  runtime, the function computes theExpr and stores the resulting value inside
   the appropriate dynamic ctx (global or local), at the location that is identified
   by the variable id.
 ********************************************************************************/
-class var_set_expr : public expr 
+class var_set_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
 protected:
-  var_expr_t theVarExpr;
-  expr_t     theExpr;
+  var_expr * theVarExpr;
+  expr     * theExpr;
 
-public:
-  SERIALIZABLE_CLASS(var_set_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(var_set_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
+protected:
   var_set_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const var_expr_t& varExpr,
-      const expr_t& setExpr);
+      var_expr* varExpr,
+      expr* setExpr);
 
+public:
   ~var_set_expr();
 
-  var_expr* get_var_expr() const { return theVarExpr.getp(); }
+  var_expr* get_var_expr() const { return theVarExpr; }
 
-  expr* get_expr() const { return theExpr.getp(); }
+  expr* get_expr() const { return theExpr; }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -315,37 +293,38 @@ public:
 /*******************************************************************************
   ExitExpr ::= "exit" "with" ExprSingle
 ********************************************************************************/
-class exit_expr : public expr 
+class exit_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
 private:
-  expr_t               theExpr;
+  expr               * theExpr;
 
   exit_catcher_expr  * theCatcherExpr;
 
-public:
-  SERIALIZABLE_CLASS(exit_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
+protected:
+  exit_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      const QueryLoc& loc,
+      expr* inExpr);
 
 public:
-  exit_expr(static_context* sctx, const QueryLoc& loc, const expr_t& inExpr);
-
   ~exit_expr();
 
-  expr* get_expr() const { return theExpr.getp(); }
+  expr* get_expr() const { return theExpr; }
 
   void setCatcherExpr(exit_catcher_expr* e) { theCatcherExpr = e; }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -362,59 +341,58 @@ public:
   -------------
   All the exit_exprs that appear in the body of the udf.
 ********************************************************************************/
-class exit_catcher_expr : public expr 
+class exit_catcher_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
 private:
-  expr_t             theExpr;
+  expr             * theExpr;
 
   std::vector<expr*> theExitExprs;
 
-public:
-  SERIALIZABLE_CLASS(exit_catcher_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_catcher_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
+protected:
   exit_catcher_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
-      const expr_t& inExpr,
+      expr* inExpr,
       std::vector<expr*>& exitExprs);
 
+public:
   ~exit_catcher_expr();
 
-  expr* get_expr() const { return theExpr.getp(); }
+  expr* get_expr() const { return theExpr; }
 
-  std::vector<expr*>::const_iterator exitExprsBegin() const 
+  std::vector<expr*>::const_iterator exitExprsBegin() const
   {
-    return theExitExprs.begin(); 
+    return theExitExprs.begin();
   }
 
-  std::vector<expr*>::const_iterator exitExprsEnd() const 
+  std::vector<expr*>::const_iterator exitExprsEnd() const
   {
-    return theExitExprs.end(); 
+    return theExitExprs.end();
   }
 
   void removeExitExpr(const expr* exitExpr);
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class flowctl_expr : public expr 
+class flowctl_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
@@ -424,58 +402,51 @@ public:
 protected:
   enum action theAction;
 
-public:
-  SERIALIZABLE_CLASS(flowctl_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(flowctl_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
+protected:
+  flowctl_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, enum action action);
 
 public:
-  flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action);
-
   enum action get_action() const { return theAction; }
 
-  expr_t clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 
 /*******************************************************************************
-	WhileExpr ::= "while" "(" Expr ")" Statement
+  WhileExpr ::= "while" "(" Expr ")" Statement
 
   theBody : It is a block_expr, whose 1st child is the following expr:
             if (cond_expr) then () else break
             The subsequent children are what it generated by the Statement.
 ********************************************************************************/
-class while_expr : public expr 
+class while_expr : public expr
 {
+  friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
 protected:
-  expr_t theBody;
+  expr* theBody;
+
+protected:
+  while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr* body);
 
 public:
-  SERIALIZABLE_CLASS(while_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(while_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  while_expr(static_context* sctx, const QueryLoc& loc, expr_t body);
-
-  expr* get_body() const { return theBody.getp(); }
+  expr* get_body() const { return theBody; }
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
+  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
-	std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 };
 
 

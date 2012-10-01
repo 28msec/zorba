@@ -18,11 +18,14 @@
 %module(directors="1") zorba_api
 
 
-TSRMLS_FETCH(); 
+TSRMLS_FETCH();
 
-%include "std_string.i"
+//%include "std_string.i"
 %include "std_pair.i"
 %include "exception.i"
+%include "carrays.i"
+%apply (char *STRING, size_t LENGTH) { (const char aStream[], size_t aLen) }
+%rename(opEquals) operator=;
 
 #ifndef SWIGRUBY
 %include "std_vector.i"
@@ -54,6 +57,7 @@ namespace std {
 
 %{  // Implementations
 
+#include "Config.h"
 
 #include <string>
 #include <sstream>
@@ -83,7 +87,11 @@ namespace std {
   class ZorbaException;
   class XmlDataManager;
   class StaticCollectionManager;
+  class Store;
+  class InMemoryStore;
 
+  #include "ZorbaIOStream.h"
+  #include "ZorbaStreamBuffer.h"
   #include "SerializationOptions.h"
   #include "TypeIdentifier.h"
   #include "Item.h"
@@ -99,6 +107,9 @@ namespace std {
   #include "StaticCollectionManager.h"
   #include "DocumentManager.h"
   #include "XmlDataManager.h"
+  #include "DiagnosticHandler.h"
+  #include "Store.h"
+  
 %}
 
 #ifndef SWIGRUBY
@@ -109,7 +120,8 @@ namespace std {
 
 /* %include "various.i" required for mapping to Java byte[]*/
 
-//%include "ZorbaStreamProxy.i"
+%include "ZorbaIOStream.i"
+%include "ZorbaStreamBuffer.i"
 %include "SerializationOptions.i"
 %include "TypeIdentifier.i"
 %include "Item.i"

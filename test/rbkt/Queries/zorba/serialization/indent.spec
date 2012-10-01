@@ -1,1 +1,1 @@
-Serialization: --indent
+Serialization: indent=yes

@@ -38,13 +38,12 @@ namespace zorba
 class static_context;
 
 class expr;
-typedef rchandle<expr> expr_t;
 
 class wrapper_expr;
-typedef rchandle<wrapper_expr> wrapper_expr_t;
 
 class expr_visitor;
 
+class CompilerCB;
 
 enum expr_kind_t
 {
@@ -85,7 +84,7 @@ enum expr_kind_t
   order_expr_kind,
 
 #ifndef ZORBA_NO_FULL_TEXT
-	ft_expr_kind,
+  ft_expr_kind,
 #endif /* ZORBA_NO_FULL_TEXT */
 
   delete_expr_kind,
@@ -108,6 +107,12 @@ enum expr_kind_t
   wrapper_expr_kind,
   function_trace_expr_kind,
 
+#ifdef ZORBA_WITH_JSON
+  json_direct_object_expr_kind,
+  json_object_expr_kind,
+  json_array_expr_kind,
+#endif
+
   unknown_expr_kind
 };
 
@@ -115,7 +120,7 @@ enum expr_kind_t
 /*******************************************************************************
   Base class for the expression tree node hierarchy
 ********************************************************************************/
-class expr : public SimpleRCObject
+class expr
 {
   friend class expr_iterator_data;
   friend class ExprIterator;
@@ -126,9 +131,7 @@ class expr : public SimpleRCObject
   friend class function_trace_expr;
 
 public:
-  typedef rchandle<expr> expr_t;
-
-  typedef std::map<const expr *, expr_t> substitution_t;
+  typedef std::map<const expr *, expr*> substitution_t;
 
   typedef substitution_t::iterator subst_iter_t;
 
@@ -145,7 +148,8 @@ public:
     CONTAINS_RECURSIVE_CALL = 12,
     PROPAGATES_INPUT_NODES  = 14,
     WILL_BE_SERIALIZED      = 16,
-    MUST_COPY_NODES         = 18
+    MUST_COPY_NODES         = 18,
+    CONTAINS_PRAGMA         = 20
   } Annotationkey;
 
   typedef enum
@@ -159,44 +163,47 @@ public:
     CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
     PROPAGATES_INPUT_NODES_MASK   = 0xC000,
     WILL_BE_SERIALIZED_MASK       = 0x30000,
-    MUST_COPY_NODES_MASK          = 0xC0000
+    MUST_COPY_NODES_MASK          = 0xC0000,
+    CONTAINS_PRAGMA_MASK          = 0x300000
   } AnnotationMask;
 
 
 protected:
-  static expr_t      iter_end_expr;
-  static expr_t    * iter_done;
+  static expr*      iter_end_expr;
+  static expr*    * iter_done;
 
 protected:
   static_context   * theSctx;
 
   QueryLoc           theLoc;
 
-  short              theKind;
-  short              theScriptingKind;
+  unsigned short     theKind;
+  unsigned short     theScriptingKind;
 
   xqtref_t           theType;
 
-  ulong              theFlags1;
+  uint32_t           theFlags1;
 
   FreeVars           theFreeVars;
 
+  CompilerCB  *const theCCB;
+
 public:
-  static bool is_sequential(short theScriptingKind);
+  static bool is_sequential(unsigned short theScriptingKind);
 
   static void checkSimpleExpr(const expr* e);
 
   static void checkNonUpdating(const expr* e);
 
-public:
-  SERIALIZABLE_ABSTRACT_CLASS(expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(expr, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
+protected:
+  expr(CompilerCB*, static_context*, const QueryLoc&, expr_kind_t);
+
+  expr() : theSctx(NULL), theFlags1(0), theCCB(NULL) {}
 
 public:
-  expr(static_context*, const QueryLoc&, expr_kind_t);
-
   virtual ~expr();
+
+  CompilerCB* get_ccb() {return theCCB;}
 
   expr_kind_t get_expr_kind() const { return static_cast<expr_kind_t>(theKind); }
 
@@ -208,11 +215,11 @@ public:
 
   TypeManager* get_type_manager() const;
 
-  ulong getFlags() const { return theFlags1; }
+  uint32_t getFlags() const { return theFlags1; }
 
-  void setFlags(ulong flags) { theFlags1 = flags; }
+  void setFlags(uint32_t flags) { theFlags1 = flags; }
 
-  short get_scripting_detail() const { return theScriptingKind; }
+  unsigned short get_scripting_detail() const { return theScriptingKind; }
 
   bool is_updating() const;
 
@@ -234,9 +241,11 @@ public:
 
   xqtref_t get_return_type();
 
-  expr_t clone() const;
+  expr* clone() const;
 
-  virtual expr_t clone(substitution_t& substitution) const;
+  expr* clone(substitution_t&) const;
+
+  virtual expr* cloneImpl(substitution_t& substitution) const;
 
   virtual void accept(expr_visitor& v) = 0;
 
@@ -313,6 +322,13 @@ public:
 
   bool willBeSerialized() const;
 
+  // Annotation : containsPragma
+  BoolAnnotationValue getContainsPragma() const;
+
+  void setContainsPragma(BoolAnnotationValue v);
+
+  bool containsPragma() const;
+
   // Annotation : free vars
   const FreeVars& getFreeVars() const { return theFreeVars; }
 
@@ -324,7 +340,7 @@ public:
 
   bool is_nondeterministic() const;
 
-  void replace_expr(const expr* oldExpr, const expr* newExpr);
+  void replace_expr(expr* oldExpr, expr* newExpr);
 
   bool contains_expr(const expr* e) const;
 

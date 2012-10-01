@@ -21,11 +21,14 @@
 #include <zorba/tokenizer.h>
 #include <zorba/zorba_string.h>
 
+#include "api/unmarshaller.h"
 #include "diagnostics/assert.h"
 #include "store/api/store.h"
 #include "system/globalenv.h"
 #include "zorbamisc/ns_consts.h"
 #include "zorbautils/locale.h"
+
+#include "ft_util.h"
 
 using namespace zorba::locale;
 
@@ -38,22 +41,9 @@ Tokenizer::~Tokenizer() {
 }
 
 bool Tokenizer::find_lang_attribute( Item const &item, iso639_1::type *lang ) {
-  bool found_lang = false;
-  if ( item.getNodeKind() == store::StoreConsts::elementNode ) {
-    Iterator_t i( item.getAttributes() );
-    i->open();
-    for ( Item attr; i->next( attr ); ) {
-      Item qname;
-      if ( attr.getNodeName( qname ) &&
-          qname.getLocalName() == "lang" && qname.getNamespace() == XML_NS ) {
-        *lang = locale::find_lang( attr.getStringValue().c_str() );
-        found_lang = true;
-        break;
-      }
-    }
-    i->close();
-  }
-  return found_lang;
+  return zorba::find_lang_attribute(
+    *Unmarshaller::getInternalItem( item ), lang
+  );
 }
 
 void Tokenizer::item( Item const &item, bool entering ) {

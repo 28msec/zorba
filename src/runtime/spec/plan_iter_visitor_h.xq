@@ -64,11 +64,9 @@ declare %ann:nondeterministic function local:process-file($file, $type as xs:str
   let $doc := fn:parse-xml(file:read-text($file))/zorba:iterators
 
   return string-join(for $iter in $doc//zorba:iterator return 
-  if(fn:not($iter/@generateVisitor) or $iter/@generateVisitor eq "true") then
     if(fn:not($iter/@name = "")) then
       local:process-iter($iter, $type)
     else ()
-  else ()
   ,$gen:newline)
 };
 

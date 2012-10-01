@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,9 +63,9 @@ PlanIter_t fn_zorba_fetch_content_type::codegen(
 
 void populate_context_fetch(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content,
         (createQName("http://www.zorba-xquery.com/modules/fetch","","content"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -77,9 +77,9 @@ void populate_context_fetch(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content_binary,
         (createQName("http://www.zorba-xquery.com/modules/fetch","","content-binary"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -90,9 +90,9 @@ void populate_context_fetch(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content_type,
         (createQName("http://www.zorba-xquery.com/modules/fetch","","content-type"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<zorba:source>
+  <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+
+<zorba:header>
+    <zorba:include  form="Quoted">store/api/index.h</zorba:include>
+</zorba:header>
+
+<!--
+/*******************************************************************************
+*******************************************************************************/
+-->
+<zorba:iterator name="IndexKeysIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+      keys($iindexName as xs:QName) as ()
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="keys" 
+        prefix="zorba-store-indexes-static-dml">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+    
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+    <zorba:state>
+      <zorba:member type="store::Index::KeyIterator_t" name="theIter"/>
+      <zorba:member type="store::Index*" name="theIndex"/>
+    </zorba:state>
+
+    <zorba:member type="store::NsBindings" name="theNSBindings" brief=""/>
+
+</zorba:iterator>
+
+</zorba:iterators>
+

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(Base64DecodeIterator,
     NaryBaseIterator<Base64DecodeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<Base64DecodeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   Base64DecodeIterator(
     static_context* sctx,
@@ -79,11 +75,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(Base64EncodeIterator,
     NaryBaseIterator<Base64EncodeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<Base64EncodeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   Base64EncodeIterator(
     static_context* sctx,

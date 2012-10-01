@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,9 +53,9 @@ PlanIter_t fn_zorba_util_print::codegen(
 
 void populate_context_other_diagnostics(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, op_zorba_read_line,
         (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","read-line"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
@@ -64,9 +64,9 @@ void populate_context_other_diagnostics(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_util_print,
         (createQName("http://www.zorba-xquery.com/zorba/util-functions","","print"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 

@@ -33,6 +33,7 @@ The following packages are mandatory to build the core part of Zorba.
 
 - Libxml2 2.2.16 or later (http://xmlsoft.org/)
 - Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)
+- libUUID (non-Mac, non-Windows only; http://linux.die.net/man/3/libuuid)
 
 \subsection recommended_core_zorba Recommended for Core Zorba
 

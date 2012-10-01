@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,11 +61,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SeededRandomIterator,
     NaryBaseIterator<SeededRandomIterator, SeededRandomIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<SeededRandomIterator, SeededRandomIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   SeededRandomIterator(
     static_context* sctx,
@@ -112,11 +108,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RandomIterator,
     NaryBaseIterator<RandomIterator, RandomIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<RandomIterator, RandomIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   RandomIterator(
     static_context* sctx,
@@ -146,11 +138,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(UuidIterator,
     NaryBaseIterator<UuidIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<UuidIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   UuidIterator(
     static_context* sctx,

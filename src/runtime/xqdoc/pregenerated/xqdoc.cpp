@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,34 +32,18 @@
 
 namespace zorba {
 
-// <XQDocIterator>
-XQDocIterator::class_factory<XQDocIterator>
-XQDocIterator::g_class_factory;
+// <XQDocContentIterator>
+SERIALIZABLE_CLASS_VERSIONS(XQDocContentIterator)
 
-
-void XQDocIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
+void XQDocContentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<XQDocContentIterator, PlanIteratorState>*)this);
 }
 
-XQDocIterator::~XQDocIterator() {}
 
-// </XQDocIterator>
-
-
-// <XQDocContentIterator>
-XQDocContentIterator::class_factory<XQDocContentIterator>
-XQDocContentIterator::g_class_factory;
-
-
-void XQDocContentIterator::accept(PlanIterVisitor& v) const {
+void XQDocContentIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

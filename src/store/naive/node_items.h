@@ -20,36 +20,35 @@
 #include <stack>
 #include <vector>
 
+#include <store/api/item.h>
+
+#include <diagnostics/assert.h>
 #include <zorba/config.h>
 #include <zorba/error.h>
+#ifndef ZORBA_NO_FULL_TEXT
+#include <zorba/locale.h>
+#include <zorba/tokenizer.h>
+#endif /* ZORBA_NO_FULL_TEXT */
+#include <zorbatypes/zstring.h>
+#include <zorbautils/fatal.h>
+#include <zorbautils/hashfun.h>
 
-#include "store_defs.h"
-#include "shared_types.h"
-#include "text_node_content.h"
+#ifndef ZORBA_NO_FULL_TEXT
+#include "ft_token_store.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 #include "item_vector.h"
-#include "ordpath.h"
 #include "nsbindings.h" // TODO remove by introducing explicit destructors
+#include "ordpath.h"
+#include "shared_types.h"
+#include "store.h"
+#include "store_defs.h"
+#include "text_node_content.h"
 #include "tree_id.h"
-#include "simple_store.h"
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
 #include "hashmap_nodep.h"
-#endif
-
-#ifndef ZORBA_NO_FULL_TEXT
-#include <zorba/locale.h>
-#include <zorba/tokenizer.h>
-#include "ft_token_store.h"
-#endif /* ZORBA_NO_FULL_TEXT */
-
-#include "store/api/item.h"
-
-#include "diagnostics/assert.h"
-#include "zorbautils/fatal.h"
-#include "zorbautils/hashfun.h"
-
-#include "zorbatypes/zstring.h"
+#endif /* EMBEDED_TYPE */
 
 
 namespace zorba
@@ -188,6 +187,8 @@ public:
   ~XmlTree() { theRootNode = 0; }
 
   void free();
+
+  void destroy() throw();
 
   long getRefCount() const { return theRefCount; }
 
@@ -386,6 +387,8 @@ protected:
 #endif
 
 private:
+  void setTreeInternal(const XmlTree* t);
+
   void setTree(const XmlTree* t);
 
   void destroyInternal(bool removeType);
@@ -434,20 +437,9 @@ public:
   bool equals(
       const store::Item* other,
       long timezone = 0,
-      const XQPCollator* aCollation = 0) const
-  {
-    assert(!isConnectorNode());
-    return this == other;
-  }
+      const XQPCollator* aCollation = 0) const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
-  {
-    assert(!isConnectorNode());
-    XmlNode* node = const_cast<XmlNode*>(this);
-    return hashfun::h32((void*)(&node), sizeof(node), FNV_32_INIT);
-  }
-
-  inline long compare2(const XmlNode* other) const;
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   void getBaseURI(zstring& uri) const
   {
@@ -523,6 +515,8 @@ public:
   GuideNode* getDataGuide() const { return getTree()->getDataGuide(); }
 #endif
 
+  inline long compare2(const XmlNode* other) const;
+
   virtual XmlNode* copyInternal(
       InternalNode* rootParent,
       InternalNode* parent,
@@ -551,6 +545,8 @@ public:
   void resetHaveReference() { theFlags &= ~HaveReference; }
 
   bool isConnectorNode() const { return (theFlags & IsConnectorNode) != 0; }
+
+  virtual void unregisterReferencesToDeletedSubtree();
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t getTokens( 
@@ -838,6 +834,8 @@ public:
 
   void finalizeNode();
 
+  virtual void unregisterReferencesToDeletedSubtree();
+
 protected:
   csize findChild(const XmlNode* child) const;
 
@@ -1035,10 +1033,9 @@ public:
   void resetInSubstGroup() { theFlags &= ~IsInSubstGroup; }
 
 #ifndef EMBEDED_TYPE
+  void assertInvariants() const;
   bool haveType() const { return (theFlags & HaveType) != 0; }
-
   void setHaveType() { theFlags |= HaveType; }
-
   void resetHaveType() { theFlags &= ~HaveType; }
 #endif
 
@@ -1209,6 +1206,7 @@ public:
   bool isBaseUri() const      { return (theFlags & IsBaseUri) != 0; }
 
 #ifndef EMBEDED_TYPE
+  void assertInvariants() const;
   bool haveType() const       { return (theFlags & HaveType) != 0; }
   void setHaveType()          { theFlags |= HaveType; }
   void resetHaveType()        { theFlags &= ~HaveType; }
@@ -1557,8 +1555,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      ulong tree1 = this->getTreeId();
-      ulong tree2 = other->getTreeId();
+      TreeId tree1 = this->getTreeId();
+      TreeId tree2 = other->getTreeId();
 
       if (tree1 < tree2)
         return -1;

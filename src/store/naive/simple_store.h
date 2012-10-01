@@ -16,11 +16,11 @@
 #ifndef ZORBA_SIMPLE_STORE
 #define ZORBA_SIMPLE_STORE
 
-#include "store/naive/store.h"
+#include "store.h"
 
-#include "store/naive/node_factory.h"
-#include "store/naive/pul_primitive_factory.h"
-#include "store/naive/tree_id_generator.h"
+#include "node_factory.h"
+#include "pul_primitive_factory.h"
+#include "tree_id_generator.h"
 
 namespace zorba {
 namespace simplestore {
@@ -63,7 +63,7 @@ public:
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
       const store::Item_t& aNodeType,
-      bool aDynamicCollection = false);
+      bool isDynamic);
 
 protected:
   SimpleStore();
@@ -71,7 +71,7 @@ protected:
   virtual ~SimpleStore();
   
   void init();
-  
+
   void shutdown(bool soft);
 
   NodeFactory* createNodeFactory() const;
@@ -98,7 +98,9 @@ protected:
 
   void destroyTreeIdGeneratorFactory(TreeIdGeneratorFactory* g) const;
 
-  bool unregisterNode(XmlNode* node);
+  bool unregisterReferenceToUnusedNode(XmlNode* node);
+
+  bool unregisterReferenceToDeletedNode(XmlNode* node);
 
   //
   // Store api methods
@@ -108,9 +110,15 @@ protected:
 
   bool hasReference(const store::Item* node);
 
-  bool getNodeByReference(
-      store::Item_t& result,
-      const zstring& reference);
+  bool assignReference(const store::Item* node, const zstring& reference);
+
+  bool getNodeByReference(store::Item_t& result, const zstring& reference);
+
+#ifdef ZORBA_WITH_JSON
+  store::Item_t parseJSON(
+      std::istream& stream,
+      internal::diagnostic::location* relative_error_loc);
+#endif
 };
 
 } // namespace store

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,9 @@ PlanIter_t fn_put::codegen(
 
 void populate_context_fnput(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_put,
         (createQName("http://www.w3.org/2005/xpath-functions","","put"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 

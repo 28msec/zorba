@@ -19,6 +19,8 @@
 
 #include <iostream>
 
+#include <zorba/internal/ztd.h>
+
 #include "unicode_util.h"
 #include "utf8_util.h"
 
@@ -40,12 +42,14 @@ inline std::ostream& operator<<( std::ostream &o, version v ) {
   return o << version_string_of[ v ];
 }
 
-////////// "James Clark notation" universal name functions ////////////////////
+////////// XML name handing ///////////////////////////////////////////////////
 
 /**
  * Attempts to extract the local name from a "universal name".
  * See: http://www.jclark.com/xml/xmlns.htm
  *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
  * @param uname The universal name.
  * @param local A pointer to the string to receive the local name.
  * @return Returns \c true only if the extraction was successful.
@@ -64,6 +68,8 @@ bool clark_localname( InputStringType const &uname, OutputStringType *local ) {
  * Attempts to extract the URI from a "universal name".
  * See: http://www.jclark.com/xml/xmlns.htm
  *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
  * @param uname The universal name.
  * @param uri A pointer to the string to receive the URI.
  * @return Returns \c true only if the extraction was successful.
@@ -80,18 +86,48 @@ bool clark_uri( InputStringType const &uname, OutputStringType *uri ) {
   return false;
 }
 
+/**
+ * Splits an XML name at a \c : if present.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam PrefixStringType The output prefix string type.
+ * @tparam LocalStringType The output local string type.
+ * @param name The XML name to be split.
+ * @param prefix The prefix is put here, if any.
+ * @param local The local name is put here.
+ * @return If \a name contains a \c : and either \a prefix or \a local strings
+ * become empty, returns \c false; otherwise returns \a true.
+ */
+template<class InputStringType,class PrefixStringType,class LocalStringType>
+inline bool split_name( InputStringType const &name, PrefixStringType *prefix,
+                        LocalStringType *local ) {
+  typename InputStringType::size_type const colon = name.find( ':' );
+  if ( colon != InputStringType::npos ) {
+    prefix->assign( name, 0, colon );
+    local->assign( name, colon + 1, LocalStringType::npos );
+    return !( prefix->empty() || local->empty() );
+  } else {
+    prefix->clear();
+    *local = name;
+    return true;
+  }
+}
+
 ////////// Character validity /////////////////////////////////////////////////
 
 /**
  * Checks whether the given code-point is valid for the given XML version.
  *
+ * @tparam CodePointType The integral Unicode code-point type.
  * @param v The XML version to use.
  * @return Returns \c true only if the code-point is valid.
  */
-template<class CodePointType>
-inline bool is_valid( CodePointType c, version v = v1_0 ) {
+template<typename CodePointType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_integral<CodePointType>::value,
+                        bool>::type
+is_valid( CodePointType c, version v = v1_0 ) {
   //
-  // See "Extensible Markup Language (XML) 1.0 (Fifth Edition)", and
+  // See "Extensible Markup Language (XML) 1.0 (Fifth Edition)" and
   // "Extensible Markup Language (XML) 1.1 (Second Edition)", section 2.2,
   // "Characters", [2] Char.
   //
@@ -196,7 +232,7 @@ int parse_entity( char const *ref, unicode::code_point *c );
 /**
  * Parses an XML entity reference.
  *
- * @tparam StringType The type of the input string.
+ * @tparam StringType The input string type.
  * @param ref The string pointing to the start of the entity reference.
  * @param c A pointer to the code-point result.
  * @return If successful, returns the number of characters parsed; otherwise
@@ -211,7 +247,7 @@ int parse_entity( StringType const &ref, unicode::code_point *c ) {
  * Parses an XML entity reference and appends the UTF-8 encoding of the
  * resulting code-point to the given string.
  *
- * @tparam StringType The type of the output string.
+ * @tparam StringType The output string type.
  * @param ref The C string pointing to the start of the entity reference.
  * @param out A string to append to.
  * @return If successful, returns the number of characters parsed; otherwise
@@ -230,8 +266,8 @@ int parse_entity( char const *ref, StringType *out ) {
  * Parses an XML entity reference and appends the UTF-8 encoding of the
  * resulting code-point to the given string.
  *
- * @tparam InputStringType The type of the input string.
- * @tparam OutputStringType The type of the output string.
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
  * @param ref The string pointing to the start of the entity reference.
  * @param out A string to append to.
  * @return If successful, returns the number of characters parsed; otherwise

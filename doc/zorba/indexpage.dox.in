@@ -55,6 +55,8 @@
   - \ref xqddf
   - <a href="scripting_spec.html">XQuery Scripting Extension</a> (also see our \ref scripting_tutorial "Tutorial")
   - \ref options_and_annotations
+  - <a href="XQueryforJSON.html">JSONiq for JSON users</a>
+  - <a href="JSONforXQuery.html">JSONiq for XQuery users</a>
 
 \section tutorials Tutorials
   - \ref web_crawler_tutorial

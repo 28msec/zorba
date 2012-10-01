@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,11 +51,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionNameIterator,
     NaryBaseIterator<FunctionNameIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FunctionNameIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FunctionNameIterator(
     static_context* sctx,
@@ -87,11 +83,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionArityIterator,
     NaryBaseIterator<FunctionArityIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FunctionArityIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FunctionArityIterator(
     static_context* sctx,
@@ -124,11 +116,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(PartialApplyIterator,
     NaryBaseIterator<PartialApplyIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<PartialApplyIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   PartialApplyIterator(
     static_context* sctx,

@@ -73,12 +73,16 @@ PlanState::~PlanState()
   class PlanIterator
 ********************************************************************************/
 
-void PlanIterator::serialize(::zorba::serialization::Archiver &ar)
+SERIALIZE_INTERNAL_METHOD(PlanIterator)
+
+
+void PlanIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  ar & theStateOffset;
   ar & loc;
-  if(ar.dont_allow_delay_for_plan_sctx)
+
+  if (ar.dont_allow_delay_for_plan_sctx)
     ar.dont_allow_delay();
+
   ar & theSctx;
 }
 

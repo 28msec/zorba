@@ -29,7 +29,9 @@
 #include "util/string_util.h"
 #include "util/uri_util.h"
 #include "util/utf8_util.h"
+
 #include "zorbautils/string_util.h"
+#include "zorbautils/checked_vector.h"
 
 
 using namespace std;

@@ -28,8 +28,6 @@
 #include "context/dynamic_context.h"
 #include "context/static_context_consts.h"
 
-#include "compiler/expression/var_expr.h"
-
 #include "runtime/introspection/sctx.h"
 
 #include "functions/function.h"
@@ -141,7 +139,7 @@ bool InscopeVariablesIterator::nextImpl(
 
   while (state->thePosition < state->theVariables.size())
   {
-    aResult = state->theVariables[state->thePosition]->get_name();
+    aResult = state->theVariables[state->thePosition]->getName();
     STACK_PUSH(true, state);
     ++state->thePosition;
   }

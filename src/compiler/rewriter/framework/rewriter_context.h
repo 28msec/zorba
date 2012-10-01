@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,8 +25,9 @@
 #include "util/dynamic_bitset.h"
 
 #include "compiler/expression/var_expr.h"
+#include "compiler/expression/expr_manager.h"
 
-namespace zorba 
+namespace zorba
 {
 
 class user_function;
@@ -45,7 +46,7 @@ typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
   theVarIdMap:
   ------------
   Maps a var_expr to its unique "prefix" id. The "prefix" id has the following
-  property: for 2 vars v1 and v2, v1 is defined before v2 if and only if 
+  property: for 2 vars v1 and v2, v1 is defined before v2 if and only if
   prefix-id(v1) < prefix-id(v2). See index_flwor_vars() function in
   tools/expr_tools.cpp for more details.
 
@@ -66,15 +67,17 @@ typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
 
   theFlworStack:
   --------------
-  The current "in-scope" flwor exprs, ie., flwor exprs that the rule has 
+  The current "in-scope" flwor exprs, ie., flwor exprs that the rule has
   entered but not exited yet.
 ********************************************************************************/
-class RewriterContext 
+class RewriterContext
 {
 public:
   CompilerCB                 * theCCB;
 
-  expr_t                       theRoot;
+  ExprManager                * theEM;
+
+  expr                       * theRoot;
 
   user_function              * theUDF;
 
@@ -87,13 +90,13 @@ public:
   VarIdMap                   * theVarIdMap;
   IdVarMap                   * theIdVarMap;
   ExprVarsMap                * theExprVarsMap;
-  std::vector<expr_t>          theFlworStack;
+  std::vector<expr*>           theFlworStack;
   std::vector<bool>            theInReturnClause;
 
 public:
   RewriterContext(
       CompilerCB* cb,
-      const expr_t& root,
+      expr* root,
       user_function* udf,
       const zstring& msg,
       bool orderedMode);
@@ -102,11 +105,11 @@ public:
 
   CompilerCB* getCompilerCB() const { return theCCB; }
 
-  expr_t getRoot();
+  expr* getRoot();
 
-  void setRoot(expr_t root);
+  void setRoot(expr* root);
 
-  rchandle<var_expr> createTempVar(
+  var_expr* createTempVar(
       static_context* sctx,
       const QueryLoc& loc,
       var_expr::var_kind kind);
@@ -126,7 +129,7 @@ struct UDFCallChain
   UDFCallChain(fo_expr* caller, UDFCallChain* prevCaller)
     :
     theFo(caller),
-    thePrev(prevCaller) 
+    thePrev(prevCaller)
   {
   }
 };

@@ -79,7 +79,7 @@ public:
 
     /**
      * This member-function is called whenever an item that is being tokenized
-     * is entered or exited.
+     * is entered or exited.  The default implementation does nothing.
      *
      * @param item The item being entered or exited.
      * @param entering If \c true, the item is being entered; if \c false, the

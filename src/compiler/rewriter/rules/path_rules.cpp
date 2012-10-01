@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,20 +21,20 @@
 #include "compiler/expression/path_expr.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 RULE_REWRITE_PRE(EliminateExtraneousPathSteps)
 {
   relpath_expr* re = dynamic_cast<relpath_expr *>(node);
-  if (re != NULL) 
+  if (re != NULL)
   {
     csize numSteps = re->size();
-    
-    for (csize i = 0; i < numSteps - 1; i++) 
+
+    for (csize i = 0; i < numSteps - 1; i++)
     {
       axis_step_expr* axisStep = dynamic_cast<axis_step_expr*>((*re)[i]);
-      
+
       if (axisStep != NULL &&
           axisStep->getAxis() == axis_kind_descendant_or_self &&
           axisStep->getTest()->getTestKind() == match_anykind_test)
@@ -51,7 +51,7 @@ RULE_REWRITE_PRE(EliminateExtraneousPathSteps)
       }
     }
 
-    if (numSteps == 1) 
+    if (numSteps == 1)
     {
       return (*re) [0];
     }

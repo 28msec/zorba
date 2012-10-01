@@ -132,13 +132,6 @@ private:
     throw XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS( oss.str() ) ); \
   } while (0)
 
-#define ZORBA_ERROR_VAR_LOC_OSS(ERROR_VAR,LOC,MSG)                      \
-  do {                                                                  \
-    std::ostringstream oss;                                             \
-    oss << MSG;                                                         \
-    throw XQUERY_EXCEPTION_VAR( ERROR_VAR, ERROR_PARAMS(oss.str()), ERROR_LOC(LOC) ); \
-  } while (0)
-
 } // namespace zorba
 
 #endif /* ZORBA_XQUERY_DIAGNOSTICS_H */

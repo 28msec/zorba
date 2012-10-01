@@ -39,7 +39,7 @@ public:
 
   store::IndexProbeIterator* createIndexProbeIterator(const store::Index_t& index);
 
-  store::TempSeqIterator* createTempSeqIterator();
+  store::TempSeqIterator* createTempSeqIterator(bool lazy);
 };
 
 }

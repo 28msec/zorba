@@ -17,11 +17,15 @@
 #ifndef ZORBA_BINARY_SERIALIZATION_ARCHIVER
 #define ZORBA_BINARY_SERIALIZATION_ARCHIVER
 
-#include "util/hashmap32.h"
 #include <stack>
 
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/plan_settings.h"
+#include "zorbaserialization/archiver_consts.h"
+
+#include "zorbatypes/zstring.h"
+
+#include "zorbautils/hashfun.h"
 
 namespace zorba
 {
@@ -37,12 +41,11 @@ class SerializationCallback;
 
 template <class T, class V, class C> class HashMap;
  
+
 namespace serialization
 {
 
-#define FIELD_IS_SIMPLE   true
-#define FIELD_IS_CLASS    true
-
+class archive_field;
 class ClassSerializer;
 
 
@@ -68,222 +71,6 @@ class ClassSerializer;
   Each field has a unique id.
 
 ********************************************************************************/
-
-
-/*******************************************************************************
-
-  ARCHIVE_FIELD_NORMAL:
-  ---------------------
-  A field of kind NORMAL or PTR acts as the root of a tree of fields representing
-  the serialization of a concrete obj. If the kind is PTR, then the obj was 
-  serialized when a pointer to it was encountered. In this case, during 
-  deserialization, the archiver will allocate the obj on the heap and fill-in
-  its data members. If the kind is NORMAL, then the obj was serialized when the 
-  objitself was encountered (e.g., the object was an embedded data member of 
-  another obj, or was residing on the program stack). In this case, during 
-  deserialization, the object exists already (in an uninitialized state) and a
-  reference to it is given to the archiver, which will fill-in the obj's data.
-
-  ARCHIVE_FIELD_PTR:
-  ------------------
-  See comment for ARCHIVE_FIELD_NORMAL.
-
-  ARCHIVE_FIELD_REFERENCING:
-  --------------------------
-  A field A that references another field B (of kind NORMAL or PTR), where both
-  A and B represent the "same" object. 
-
-  ARCHIVE_FIELD_BASECLASS:
-  ------------------------
-  A field representing a "partial" class object: If an obj O belongs to a 
-  concrete class C and C is a subclass of a base class B, then a field of 
-  BASECLASS kind is created to represent the serialization of the data members
-  of B. This field is placed as the 1st child of the NORMAL or PTR field that 
-  represents the serialization of O, and the children of the BASECALSS field
-  represent the serializations of B's data members. If B itself is a subclass
-  of another class A, then the 1st child of the B BASECLASS field is another
-  BASECLASS field representing class A, etc.
-
-  ARCHIVE_FIELD_NULL:
-  -------------------
-  A field representing a NULL pointer.
-
-********************************************************************************/
-enum ArchiveFieldKind
-{
-  ARCHIVE_FIELD_NORMAL,
-  ARCHIVE_FIELD_PTR,
-  ARCHIVE_FIELD_NULL,
-  ARCHIVE_FIELD_BASECLASS,
-  ARCHIVE_FIELD_REFERENCING
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-enum ENUM_ALLOW_DELAY  
-{
-  ALLOW_DELAY,
-  DONT_ALLOW_DELAY,
-  SERIALIZE_NOW
-};
-
-
-/*******************************************************************************
-  theId :
-  -------
-  The unique id of the field. Not initialized by constructor.
-
-  theIsSimple:
-  ------------
-  Whether this field represents a "simple" obj or a "compound" obj. 
-
-  theIsClass:
-  -----------
-  Whether this field represents a class obj or not. Class objs are always 
-  considered as "compound", so if theIsClass is true, theIsSimple is false. 
-  However, the reverse is not true: a non-class obj may be simple or compound.
-  For example, an std::vector<> is a compound, non-class obj.
-
-  theKind:
-  --------
-  The kind of the field. See ArchiveFieldKind enum above.
-
-  theTypeName:
-  ------------
-
-  theTypeNamePosInPool:
-  ---------------------
-  The position of theTypeName string within the string pool. The string pool
-  is created after the fields tree has been fully built and just before we
-  start actually writting stuff out to "disk". theTypeName string is copied
-  into the string pool only if theKind is PTR and theIsClass is true.
-
-  theValue:
-  ---------
-
-  theValuePosInPool:
-  ------------------
-  The position of theValue string within the string pool. The string pool
-  is created after the fields tree has been fully built and just before we
-  start actually writting stuff out to "disk". theValue string is copied
-  into the string pool only if theKind is PTR or NORMAL.
-
-  thePtr :
-  --------
-  Pointer to the obj represented by this field. NULL for FIELD_REFERENCING and
-  FIELD_NULL fields.
-
-  theReferredField:
-  -----------------
-
-  referencing:
-  ------------
-
-  theOrder:
-  ---------
-  Order in the tree. Not initialized by constructor.
-
-  theLevel:
-  ---------
-  The level of this field, i.e., the nuber of fields in the path from this
-  field to the root. The root is at level 0.
-
-  theNextSibling:
-  ---------------
-  The right sibling of this field (if any).
-
-  theFirstChild:
-  --------------
-  The 1st child of this field (if any).
-
-  theLastChild:
-  -------------
-  The last child of this field (if any).
-
-  theParent:
-  ----------
-  The parent field in the fields tree.
-
-  theOnlyForEval:
-  ---------------
-
-  theAllowDelay2:
-  ---------------
-
-  theBytesSaved:
-  --------------
-
-  theObjectsSaved:
-  ----------------
-
-  The following data members are serialized:
-
-  1. theTypeName  : only if theKind is PTR and theIsClass is true.
-  2. theValue     : except if theKind is REFERENCING or NULL
-  3. theReferedId : only if theKind is REFERENCING
-  4. theKind
-  5. theId
-********************************************************************************/
-class archive_field
-{
-public:
-  unsigned int                 theId;
-
-  bool                         theIsSimple;
-  bool                         theIsClass;
-
-  enum ArchiveFieldKind        theKind;
-
-  char                       * theTypeName;
-  unsigned int                 theTypeNamePosInPool;
-
-  const char                 * theValue;
-  unsigned int                 theValuePosInPool;
-
-  union
-  {
-    const SerializeBaseClass * assoc_class_ptr;
-    const void               * assoc_ptr;
-  };
-
-  class archive_field        * theReferredField;
-  unsigned int                 referencing;
-
-  unsigned int                 theOrder;
-
-  unsigned int                 theLevel;
-
-  class archive_field        * theNextSibling;
-  class archive_field        * theFirstChild;
-  class archive_field        * theLastChild;
-  class archive_field        * theParent;
-
-  int                          theOnlyForEval;
-
-  ENUM_ALLOW_DELAY             theAllowDelay2;
-
-#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
-  unsigned int                 theBytesSaved;
-  unsigned int                 theObjectsSaved;
-#endif
-
-public:
-  archive_field(
-      const char* type,
-      bool is_simple,
-      bool is_class, 
-      const void* value,
-      const void* assoc_ptr,
-      enum ArchiveFieldKind kind,
-      archive_field* refered,
-      int only_for_eval,
-      ENUM_ALLOW_DELAY allow_delay,
-      unsigned int level);
-
-  ~archive_field();
-};
 
 
 /*******************************************************************************
@@ -339,52 +126,26 @@ class Archiver
 {
   friend class ClassSerializer;
 
-  struct SIMPLE_HASHOUT_FIELD
-  {
-    std::string    type;
-    const void   * ptr;
-
-    SIMPLE_HASHOUT_FIELD() {}
-
-    SIMPLE_HASHOUT_FIELD(const char* typestr, const void* ptrptr)
-    {
-      type = typestr;
-
-      if (type[type.length()-1] == '*')
-        type.resize(type.length()-1);
-
-      ptr = ptrptr;
-    }
-  };
-
-  class SimpleHashoutFieldCompare
+  class FieldCompare
   {
   public: 
-    uint32_t hash(const SIMPLE_HASHOUT_FIELD& f) const
+    uint32_t hash(const void* f) const
     {
-      uint32_t h = 0;
-      h = hashfun::h32(f.type);
-      h = hashfun::h32((void*)&f.ptr, sizeof(void*), h);
-      return h;
+      return hashfun::h32((void*)&f, sizeof(void*));
     }
 
-    bool equal(const SIMPLE_HASHOUT_FIELD& f1, const SIMPLE_HASHOUT_FIELD& f2) const
+    bool equal(const void* f1, const void* f2) const
     {
-      if (f1.ptr == f2.ptr && f1.type == f2.type)
-        return true;
-      else
-        return false;
+      return (f1 == f2);
     }
   };
 
-  typedef HashMap<SIMPLE_HASHOUT_FIELD, 
-                  archive_field*,
-                  SimpleHashoutFieldCompare> SimpleFieldMap;
+  typedef HashMap<const void*, archive_field*, FieldCompare> FieldMap;
 
 protected:
-  std::string                   theArchiveName;
+  zstring                       theArchiveName;
 
-  std::string                   theArchiveInfo;
+  zstring                       theArchiveInfo;
 
   unsigned long                 theArchiveVersion;
 
@@ -397,6 +158,8 @@ protected:
   std::stack<unsigned int>      limit_temp_level_stack;
 
 
+  CompilerCB                  * theCompilerCB;
+
   int                           theFieldCounter;
 
   archive_field               * theRootField;
@@ -405,9 +168,9 @@ protected:
 
   unsigned int                  theCurrentLevel;
 
-  SimpleFieldMap              * theNonClassFieldsMap;
+  FieldMap                    * theNonClassFieldsMap;
 
-  hash64map<archive_field*>   * theClassFieldsMap;
+  FieldMap                    * theClassFieldsMap;
 
   int                           theOnlyForEval;
 
@@ -437,6 +200,10 @@ public:
 
   virtual ~Archiver();
 
+  void set_ccb(CompilerCB* ccb) { theCompilerCB = ccb; }
+
+  CompilerCB* get_ccb() const { return theCompilerCB; }
+
   bool is_serializing_out() { return theSerializingOut; }
 
   void set_loading_hardcoded_objects(bool v) { loading_hardcoded_objects = v; }
@@ -451,18 +218,15 @@ public:
   // Methods used during serialization only
   //
 
-  bool add_simple_field( 
-      const char* type, 
-      const char* value,
-      const void* orig_ptr,
-      enum ArchiveFieldKind field_treat);
+  void add_simple_temp_field(TypeCode type, const void* ptr);
+
+  bool add_simple_ptr_field(TypeCode type, const void* ptr);
 
   bool add_compound_field( 
-      const char* type,
+      TypeCode type,
       bool is_class,
-      const void* info,
       const void* ptr,
-      enum ArchiveFieldKind field_treat);
+      ArchiveFieldKind kind);
 
   void add_end_compound_field();
 
@@ -473,61 +237,32 @@ public:
   //
   // Methods used during de-serialization only
   //
-  bool read_next_field( 
-      char** type, 
-      std::string* value,
-      int* id, 
-      bool* is_simple, 
-      bool* is_class,
-      enum ArchiveFieldKind* field_treat,
-      int* referencing);
+  void read_next_compound_field( 
+      bool is_class,
+      ArchiveFieldKind& field_kind,
+      TypeCode& type, 
+      int& id,
+      int& referencing);
+
+  void read_next_simple_temp_field(TypeCode type, void* obj);
+
+  void read_next_simple_ptr_field(TypeCode type, void** obj);
 
   void read_end_current_level();
 
-  virtual bool read_next_field_impl(
-      char** type, 
-      std::string* value,
-      int* id, 
-      bool* is_simple, 
-      bool* is_class,
-      enum ArchiveFieldKind* field_treat,
-      int* referencing) = 0;
-
-  virtual void read_end_current_level_impl() = 0;
-
-  void check_simple_field(
-      bool retval, 
-      const char* type,
-      const char* required_type, 
-      bool is_simple, 
-      enum ArchiveFieldKind field_treat,
-      enum ArchiveFieldKind required_field_treat,
-      int id);
-
   void check_nonclass_field(
-      bool retval, 
-      const char* type,
-      const char* required_type, 
-      bool is_simple, 
-      bool is_class, 
-      enum ArchiveFieldKind field_treat,
-      enum ArchiveFieldKind required_field_treat,
+      ArchiveFieldKind field_kind,
+      ArchiveFieldKind required_field_kind,
       int id);
 
   void check_class_field(
-      bool retval, 
-      const char* type,
-      const char* required_type, 
-      bool is_simple, 
-      bool is_class, 
-      enum ArchiveFieldKind field_treat,
-      enum ArchiveFieldKind required_field_treat,
+      TypeCode type,
+      TypeCode required_type, 
+      ArchiveFieldKind field_kind,
+      ArchiveFieldKind required_field_kind,
       int id);
 
-  void register_reference(
-      int id, 
-      enum ArchiveFieldKind field_treat,
-      const void* ptr);
+  void register_reference(int id, ArchiveFieldKind field_kind, const void* ptr);
 
   void* get_reference_value(int refid);
 
@@ -577,9 +312,9 @@ protected:
   // Methods used during serialization only
   //
 
-  archive_field* lookup_nonclass_field(const char* type, const void* ptr);
+  archive_field* lookup_non_class_field(const void* ptr);
 
-  archive_field* lookup_class_field(const SerializeBaseClass* ptr);
+  archive_field* lookup_class_field(const void* ptr);
 
   void prepare_serialize_out();
 
@@ -617,19 +352,20 @@ protected:
   // Methods used during de-serialization only
   //
 
-  virtual void read_archive_description(
-      std::string* archive_name,
-      std::string* archive_info,
-      int* archive_version, 
-      int* nr_ids)
-  {
-    *archive_name = theArchiveName;
-    *archive_info = theArchiveInfo;
-    *archive_version = theArchiveVersion;
-    *nr_ids = this->theFieldCounter;
-  }
-
   void root_tag_is_read();
+
+  virtual void read_next_compound_field_impl(
+      bool is_class,
+      ArchiveFieldKind& field_kind,
+      TypeCode& type,
+      int& id, 
+      int& referencing) = 0;
+
+  virtual void read_next_simple_temp_field_impl(TypeCode type, void* obj) = 0;
+
+  virtual void read_next_simple_ptr_field_impl(TypeCode type, void** obj) = 0;
+
+  virtual void read_end_current_level_impl() = 0;
 
 public:
   void register_item(store::Item* i);

@@ -27,19 +27,22 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 StringPool::~StringPool() 
 {
-  ulong count = 0;
-  ulong n = (ulong)theHashTab.size();
-  for (ulong i = 0; i < n; i++)
+  csize count = 0;
+  csize n = theHashTab.size();
+
+  for (csize i = 0; i < n; ++i)
   {
     if (theHashTab[i].theItem.is_shared())
     {
-      //std::cerr << "ID: " << i << "   Referenced URI: " << theHashTab[i].theItem << std::endl;
+      std::cerr << "ID: " << i << " Referenced URI: " << theHashTab[i].theItem << std::endl;
       //delete theHashTab[i].theString.getp();
-      count ++;
+      count++;
     }
   }
-  if (count>0) {
-      throw ZORBA_EXCEPTION(zerr::ZSTR0065_STRINGS_IN_POOL, ERROR_PARAMS(count));
+
+  if (count > 0)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0065_STRINGS_IN_POOL, ERROR_PARAMS(count));
   }
 }
 

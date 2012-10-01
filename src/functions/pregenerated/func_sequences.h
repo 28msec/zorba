@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -319,7 +319,7 @@ public:
 
   xqtref_t getReturnType(const fo_expr* caller) const;
 
-  bool isMap(ulong producer) const { return producer == 0; }
+  bool isMap(csize producer) const { return producer == 0; }
 
   bool propagatesDistinctNodes(csize producer) const { return producer == 0; }
 

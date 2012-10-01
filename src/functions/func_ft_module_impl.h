@@ -49,6 +49,26 @@ public:
 };
 
 
+//full-text:tokenize_nodes
+class full_text_tokenize_nodes : public function
+{
+public:
+  full_text_tokenize_nodes(const signature& sig,
+                           FunctionConsts::FunctionKind kind) : 
+    function(sig, kind)
+  {
+
+  }
+
+  // Mark the function as accessing the dyn ctx so that it won't be
+  // const-folded. We must prevent const-folding because the function
+  // uses the store to get access to the tokenizer provider.
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 //full-text:tokenizer-properties
 class full_text_tokenizer_properties : public function
 {

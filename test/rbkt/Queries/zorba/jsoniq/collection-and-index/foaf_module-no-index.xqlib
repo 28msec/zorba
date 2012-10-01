@@ -1,0 +1,54 @@
+
+module namespace foaf = "http://www.w3.org/TestModules/foaf";
+
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare variable $foaf:network:= xs:QName("foaf:network");
+
+declare collection foaf:network as object()*;
+
+
+(:
+  Create and populate the collection, and then create the indexes
+:)
+
+declare %ann:sequential function foaf:create-db()
+{
+  ddl:create($foaf:network);
+
+  dml:insert($foaf:network, (
+    {
+      "name" : "James T. Kirk",
+      "age" : 30,
+      "gender" : "male",
+      "friends" : [ "Mister Spock", "Scotty", "Jean-Luc Picard"]
+    },
+    
+    {
+      "name" : "Jean-Luc Picard",
+      "age" : 40,
+      "gender" : "male",
+      "friends" : [ "James T. Kirk", "Lieutenant Commander Data", "Beverly Crusher" ]
+    },
+    
+    {
+      "name" : "Beverly Crusher",
+      "age" : 38,
+      "gender" : "female",
+      "friends" : [ "Jean-Luc Picard", "Ensign Crusher" ]
+    },
+    
+    {
+      "name" : "Lieutenant Commander Data",
+      "age" : 100,
+      "gender" : "positronic matrix",
+      "friends" : [ "Geordi La Forge" ]
+    }
+  ));
+
+};

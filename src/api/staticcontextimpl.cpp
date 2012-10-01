@@ -73,7 +73,8 @@ namespace zorba {
 ********************************************************************************/
 StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
   :
-  theMaxVarId(2),
+  theCompilerCB(NULL),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -98,7 +99,8 @@ StaticContextImpl::StaticContextImpl(
     DiagnosticHandler* aDiagnosticHandler)
   :
   theCtx(aCtx),
-  theMaxVarId(2),
+  theCompilerCB(NULL),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -120,7 +122,8 @@ StaticContextImpl::StaticContextImpl(
 StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   :
   StaticContext(),
-  theMaxVarId(2),
+  theCompilerCB(NULL),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aStaticContext.theDiagnosticHandler),
   theUserDiagnosticHandler(aStaticContext.theUserDiagnosticHandler),
   theCollectionMgr(0)
@@ -151,6 +154,11 @@ StaticContextImpl::~StaticContextImpl()
   {
     delete theCollectionMgr;
   }
+
+  theCtx = NULL;
+
+  if (theCompilerCB)
+    delete theCompilerCB;
 }
 
 
@@ -936,7 +944,7 @@ void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 {
   xqtref_t xqType = NULL;
-  if (type != NULL) 
+  if (type != NULL)
   {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
@@ -1015,6 +1023,8 @@ void StaticContextImpl::loadProlog(
     const String& prolog,
     const Zorba_CompilerHints_t& hints)
 {
+  ZORBA_ASSERT(theCompilerCB == NULL);
+
   // Create and compile an internal query whose prolog is the given prolog and
   // its body is just the emtpy sequence expression: "()".
   XQueryImpl impl;
@@ -1023,7 +1033,9 @@ void StaticContextImpl::loadProlog(
   // Copy theSctxMap of the internal query into "this". When "this" is then passed
   // as an input to a user query Q, theSctxMap of Q will be initialized as a copy
   // of this->theSctxMap.
-  theSctxMap = impl.theCompilerCB->theSctxMap;
+  //theSctxMap = impl.theCompilerCB->theSctxMap;
+  theCompilerCB = impl.theCompilerCB;
+  impl.theCompilerCB = NULL;
 }
 
 
@@ -1486,7 +1498,7 @@ StaticContextImpl::invoke(
     // The same is true for this sctx
     Iterator_t lIter = impl->iterator();
     return new InvokeItemSequence(impl.release(), lIter, const_cast<StaticContextImpl*>(this));
-  } 
+  }
   catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
@@ -1531,28 +1543,37 @@ void
 StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
 {
   ZORBA_TRY
-  std::vector<var_expr_t> lVars;
-  theCtx->getVariables(lVars, true, false, true);
+  std::vector<VarInfo*> vars;
+  theCtx->getVariables(vars, true, false, true);
 
-  std::vector<var_expr_t>::const_iterator lIte = lVars.begin();
-  std::vector<var_expr_t>::const_iterator lEnd = lVars.end();
-  std::vector<store::Item_t> lExVars;
+  std::vector<VarInfo*>::const_iterator ite = vars.begin();
+  std::vector<VarInfo*>::const_iterator end = vars.end();
+  std::vector<store::Item_t> extVars;
 
-  for (; lIte != lEnd; ++lIte) 
-  { 
-    lExVars.push_back(lIte->getp()->get_name());        
+  for (; ite != end; ++ite)
+  {
+    zstring varName = (*ite)->getName()->getStringValue();
+
+    if (varName == static_context::DOT_VAR_NAME ||
+        varName == static_context::DOT_POS_VAR_NAME ||
+        varName == static_context::DOT_SIZE_VAR_NAME)
+      continue;
+
+    extVars.push_back((*ite)->getName());        
   }
 
-  Iterator_t vIter = new VectorIterator(lExVars, theDiagnosticHandler);
+  Iterator_t vIter = new VectorIterator(extVars, theDiagnosticHandler);
   aVarsIter = vIter; 
   ZORBA_CATCH
 }
+
 
 Item
 StaticContextImpl::fetch(const String& aURI) const
 {
   return fetch(aURI, "SOME_CONTENT", "UTF-8");
 }
+
 
 Item
 StaticContextImpl::fetch(

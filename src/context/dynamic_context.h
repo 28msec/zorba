@@ -18,7 +18,9 @@
 #define ZORBA_DYNAMIC_CONTEXT_H
 
 #include <zorba/external_function_parameter.h>
-#include "zorbautils/hashmap_zstring_nonserializable.h"
+
+#include "zorbautils/hashmap_zstring.h"
+#include "zorbautils/hashmap_itemp.h"
 
 #include "common/shared_types.h"
 
@@ -52,6 +54,9 @@ class dynamic_context
   friend class DebugIterator;
 
 public:
+
+  static enum  ID_VARS { IDVAR_CONTEXT_ITEM=1, IDVAR_CONTEXT_ITEM_POSITION, IDVAR_CONTEXT_ITEM_SIZE, MAX_IDVARS_RESERVED  } IDVARS_RESERVED;
+
   struct VarValue
   {
     typedef enum
@@ -101,9 +106,9 @@ protected:
     void*       func_param;
   };
 
-  typedef HashMapZString<dctx_value_t> ValueMap;
+  ZSTRING_HASH_MAP(dctx_value_t, ValueMap);
 
-  typedef ItemPointerHashMap<store::Index_t> IndexMap;
+  ITEM_PTR_HASH_MAP(store::Index_t, IndexMap);
 
   typedef std::map<const zstring,const zstring> EnvVarMap;
 
@@ -120,6 +125,8 @@ protected:
   ValueMap                   * keymap;
 
   IndexMap                   * theAvailableIndices;
+
+  IndexMap                   * theAvailableMaps;
 
     //MODIFY
   EnvVarMap                  * theEnvironmentVariables;
@@ -201,6 +208,14 @@ public:
   void bindIndex(store::Item* qname, store::Index_t& index);
 
   void unbindIndex(store::Item* qname);
+
+  store::Index* getMap(store::Item* qname) const;
+
+  void bindMap(store::Item* qname, store::Index_t& index);
+
+  void unbindMap(store::Item* qname);
+
+  void getMapNames(std::vector<store::Item_t>& names) const;
 
   /**
    * Lists all active integrity constraints.

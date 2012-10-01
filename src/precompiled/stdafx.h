@@ -16,7 +16,6 @@
  */
  
 #ifdef STDAFX
-
   #include <fstream>
   #include <iostream>
   #include <stdexcept>
@@ -25,11 +24,8 @@
   #include <memory>
 
   #include <sstream>
-  #include <xfwrap>
-  #include <xfwrap1>
   #include <istream>
   #include <cstdio>
-  #include <xxshared>
   #include <crtdefs.h>
   #include <map>
   #include <set>
@@ -63,7 +59,6 @@
   #include "zorbatypes/rclock.h"
   #include "zorbatypes/schema_types.h"
   #include "zorbatypes/timezone.h"
-  #include "zorbatypes/transcoder.h"
   #include "zorbatypes/URI.h"
   #include "zorbatypes/xerces_xmlcharray.h"
   #include "zorbatypes/zorbatypes_decl.h"
@@ -72,10 +67,8 @@
   #include "zorbautils/hashfun.h"
   #include "zorbautils/hashmap.h"
   #include "zorbautils/hashmap_itemp.h"
-  #include "zorbautils/hashmap_str_obj.h"
   #include "zorbautils/hashmap_zstring.h"
   #include "zorbautils/hashset.h"
-  #include "zorbautils/hashset_itemh.h"
   #include "zorbautils/latch.h"
   #include "zorbautils/locale.h"
   #include "zorbautils/lock.h"

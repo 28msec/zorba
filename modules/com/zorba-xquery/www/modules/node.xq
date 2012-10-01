@@ -164,3 +164,16 @@ declare function node:level(
 declare function node:least-common-ancestor(
   $node1 as node(),
   $node2 as node()) as node()? external;
+
+(:~
+ : Return a deep copy of every given node according to the properties
+ : specified in the static context of the invoking module.
+ :
+ : Please note that a copy of a node is parentless.
+ :
+ : @param $input the node to copy
+ :
+ : @return a deep copy of every node in the input sequence or the empty sequence if
+ :   $input is the empty sequence.
+ :)
+declare function node:copy($input as node()*) as node()* external;

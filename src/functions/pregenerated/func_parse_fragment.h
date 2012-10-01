@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,23 @@ public:
     function(sig, kind)
   {
 
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:parse-xml-fragment
+class fn_parse_xml_fragment_3_0 : public function
+{
+public:
+  fn_parse_xml_fragment_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool accessesDynCtx() const { return true; }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,27 +23,27 @@
 #include "compiler/expression/function_item_expr.h"
 
 #include "functions/signature.h"
-#include "functions/function.h"
+#include "functions/udf.h"
 
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 
 
-FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar) 
+FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
   :
   store::Item(store::Item::FUNCTION)
 {
 }
-   
+
 
 FunctionItem::FunctionItem(
-    CompilerCB* ccb, 
+    CompilerCB* ccb,
     static_context* sctx,
     function_item_expr* expr,
     const std::vector<PlanIter_t>& varValues)
@@ -51,24 +51,32 @@ FunctionItem::FunctionItem(
   store::Item(store::Item::FUNCTION),
   theCCB(ccb),
   theSctx(sctx),
-  theExpr(expr),
+  theLoc(expr->get_loc()),
+  theQName(expr->get_qname()),
+  theFunction(expr->get_function()),
+  theArity(expr->get_arity()),
   theVariableValues(varValues)
-{ 
+{
+  assert(theFunction->isUdf());
 }
 
-  
+
 FunctionItem::FunctionItem(
-    CompilerCB* ccb, 
+    CompilerCB* ccb,
     static_context* sctx,
     function_item_expr* expr)
   :
   store::Item(store::Item::FUNCTION),
   theCCB(ccb),
   theSctx(sctx),
-  theExpr(expr)
-{ 
+  theLoc(expr->get_loc()),
+  theQName(expr->get_qname()),
+  theFunction(expr->get_function()),
+  theArity(expr->get_arity())
+{
+  assert(theFunction->isUdf());
 }
-  
+
 
 FunctionItem::~FunctionItem()
 {
@@ -78,25 +86,35 @@ void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theCCB;
   ar & theSctx;
-  ar & theExpr;
+  ar & theLoc;
+  ar & theQName;
+  ar & theArity;
+  ar & theFunction;
   ar & theVariableValues;
+
+  if (ar.is_serializing_out())
+  {
+    uint32_t planStateSize;
+    (void)static_cast<user_function*>(theFunction.getp())->
+    getPlan(planStateSize);
+  }
 }
 
-const store::Item_t FunctionItem::getFunctionName() const 
+const store::Item_t FunctionItem::getFunctionName() const
 {
-  return theExpr->get_qname();
+  return theQName;
 }
 
 
-uint32_t FunctionItem::getArity() const 
+uint32_t FunctionItem::getArity() const
 {
-  return theExpr->get_arity();
+  return theArity;
 }
 
 
 const signature& FunctionItem::getSignature() const
 {
-  return theExpr->get_function()->getSignature();
+  return theFunction->getSignature();
 }
 
 
@@ -104,26 +122,28 @@ const std::vector<PlanIter_t>& FunctionItem::getVariables() const
 {
   return theVariableValues;
 }
-  
- 
+
+
 PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args) const
-{ 
-  PlanIter_t res = theExpr->get_function()->codegen(theCCB,
+{
+  expr* dummy = theCCB->theEM->create_function_item_expr(theSctx, theLoc);
+
+  PlanIter_t udfCallIterator = theFunction->codegen(theCCB,
                                                     theSctx,
-                                                    theExpr->get_loc(),
+                                                    theLoc,
                                                     args,
-                                                    *theExpr);
+                                                    *dummy);
 
-  static_cast<UDFunctionCallIterator*>(res.getp())->setDynamic();
+  static_cast<UDFunctionCallIterator*>(udfCallIterator.getp())->setDynamic();
 
-  return res;
+  return udfCallIterator;
 }
-   
-    
+
+
 zstring FunctionItem::show() const
 {
   std::ostringstream lRes;
-  if (getFunctionName() != NULL) 
+  if (getFunctionName() != NULL)
   {
     lRes << getFunctionName()->getStringValue() << "#" << getArity();
   }
@@ -131,10 +151,10 @@ zstring FunctionItem::show() const
   {
     lRes << "inline function";
   }
-  lRes << " (" << theExpr->get_loc() << ")";
+  lRes << " (" << theLoc << ")";
   return lRes.str();
 }
-  
+
 
 } //namespace zorba
 /* vim:set et sw=2 ts=2: */

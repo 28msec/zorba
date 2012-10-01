@@ -59,6 +59,7 @@ The following table shows the supported features:
 
 
 This is the W3C XQuery 1.0 conformance summary:
+ In generating the report we used Zorba version 2.5 that can be downloaded from https://launchpad.net/zorba/trunk/2.5 and XQTS version 'current' (XQTS taken from W3C CVS as of 2012-01-12). 
 <table bgcolor="lightcyan">
   <tr>
     <td>W3C XQuery 1.0 features</td>
@@ -73,18 +74,18 @@ This is the W3C XQuery 1.0 conformance summary:
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Minimal Conformance</td>
     <td align="center" bgcolor="palegreen">17497/17499<br />99.99%</td>
-    <td align="center" bgcolor="palegreen">17497/17499<br />99.99%</td>
+    <td align="center" bgcolor="palegreen">17495/17499<br />99.98%</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Optional Features</td>
-    <td align="center" bgcolor="palegreen">538/540<br />99.63%</td>
-    <td align="center" bgcolor="palegreen">538/540<br />99.63%</td>
+    <td align="center" bgcolor="palegreen">539/540<br />99.81%</td>
+    <td align="center" bgcolor="palegreen">539/540<br />99.81%</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Schema Import Feature</td>
-    <td align="center" bgcolor="palegreen">178/179<br />
+    <td align="center" bgcolor="mediumseagreen">179/179<br />
     </td>
-    <td align="center" bgcolor="palegreen">178/179<br />
+    <td align="center" bgcolor="mediumseagreen">179/179<br />
     </td>
   </tr>
   <tr bgcolor="lightcyan">
@@ -145,7 +146,7 @@ This is the W3C XQuery 1.0 conformance summary:
     <td align="center" bgcolor="mediumseagreen">21/21<br />100%</td>
   </tr>
   <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">FunctX -- A Collection of Functions</td>
+    <td bgcolor="lightcyan">FunctX -- A Collection Of Functions</td>
     <td align="center" bgcolor="mediumseagreen">1127/1127<br />100%</td>
     <td align="center" bgcolor="mediumseagreen">1127/1127<br />100%</td>
   </tr>
@@ -179,6 +180,7 @@ The following table shows the supported features:
 </table>
 
 This is the W3C XQuery Update Facility 1.0 conformance summary:
+ In generating the report we used Zorba version 2.5 that can be downloaded from https://launchpad.net/zorba/trunk/2.5 and XQUTS version 'current' (XQUTS version taken from CVS as of 2012-01-12). 
 <table bgcolor="lightcyan">
   <tr>
     <td>W3C XQuery Update Facility 1.0 feature</td>
@@ -215,14 +217,14 @@ This is the W3C XQuery Update Facility 1.0 conformance summary:
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Optional Features</td>
-    <td align="center" bgcolor="palegreen">99/126<br />78.57%</td>
-    <td align="center" bgcolor="palegreen">99/126<br />78.57%</td>
+    <td align="center" bgcolor="palegreen">97/126<br />76.98%</td>
+    <td align="center" bgcolor="palegreen">97/126<br />76.98%</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  Revalidation</td>
-    <td align="center" bgcolor="mediumseagreen">77/77<br />
+    <td align="center" bgcolor="palegreen">76/77<br />
     </td>
-    <td align="center" bgcolor="mediumseagreen">77/77<br />
+    <td align="center" bgcolor="palegreen">76/77<br />
     </td>
   </tr>
   <tr bgcolor="lightcyan">
@@ -241,9 +243,9 @@ This is the W3C XQuery Update Facility 1.0 conformance summary:
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">  fn:put applied to nodes other than document and element nodes</td>
-    <td align="center" bgcolor="mediumseagreen">8/8<br />
+    <td align="center" bgcolor="palegreen">7/8<br />
     </td>
-    <td align="center" bgcolor="mediumseagreen">8/8<br />
+    <td align="center" bgcolor="palegreen">7/8<br />
     </td>
   </tr>
   <tr bgcolor="lightcyan">
@@ -331,6 +333,8 @@ The following table shows the supported features:
 </table>
 
 This is the W3C XQuery and XPath Full Text 1.0 conformance summary:
+In generating the report we used Zorba version 2.5 that can be downloaded from https://launchpad.net/zorba/trunk/2.5 and XQFTTS version 'current' (XQFTTS taken from W3C CVS as of 2012-01-12). 
+
 <table bgcolor="lightcyan">
   <tr>
     <td>W3C XQuery and XPath Full Text 1.0 features</td>
@@ -344,7 +348,7 @@ This is the W3C XQuery and XPath Full Text 1.0 conformance summary:
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Minimal Conformance</td>
-    <td align="center" bgcolor="palegreen">385/429<br />89.74%</td>
+    <td align="center" bgcolor="palegreen">384/429<br />89.51%</td>
     <td align="center" bgcolor="palegreen">374/429<br />87.18%</td>
   </tr>
   <tr bgcolor="lightcyan">
@@ -354,8 +358,8 @@ This is the W3C XQuery and XPath Full Text 1.0 conformance summary:
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Use Cases</td>
-    <td align="center" bgcolor="palegreen">121/135<br />89.63%</td>
-    <td align="center" bgcolor="palegreen">103/135<br />76.3%</td>
+    <td align="center" bgcolor="palegreen">120/135<br />88.89%</td>
+    <td align="center" bgcolor="palegreen">102/135<br />75.56%</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">Consistency in XQFTTS Catalog</td>

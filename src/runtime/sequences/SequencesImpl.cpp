@@ -36,7 +36,7 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/util/iterator_impl.h"
-#include "runtime/util/handle_hashset_item_value.h"
+#include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "system/globalenv.h"
@@ -48,9 +48,9 @@
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 #include "store/api/pul.h"
-#include "store/util/hashset_node_handle.h"
 
 #include "context/static_context.h"
+#include "context/dynamic_context.h"
 
 
 namespace zorba {

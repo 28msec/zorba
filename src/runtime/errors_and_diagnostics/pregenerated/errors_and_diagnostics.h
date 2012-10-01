@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ErrorIterator,
     NaryBaseIterator<ErrorIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ErrorIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ErrorIterator(
     static_context* sctx,
@@ -77,6 +73,7 @@ public:
   store::Item_t theTagItem; //
   uint32_t theIndex; //
   std::ostream* theOS; //
+  rchandle<serializer> theSerializer; //
 
   TraceIteratorState();
 
@@ -94,11 +91,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TraceIterator,
     NaryBaseIterator<TraceIterator, TraceIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<TraceIterator, TraceIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   TraceIterator(
     static_context* sctx,

@@ -39,11 +39,11 @@ public:
 class Timeout : public Runnable 
 {
 private:
-  long           theTimeout;
+  unsigned long  theTimeout;
   StateWrapper   theWrapper;
 
 public:
-  Timeout(long aTimeout, const StateWrapper& aWrapper);
+  Timeout(unsigned long aTimeout, const StateWrapper& aWrapper);
 
   virtual void run();
   // Note: this method is not allowd to throw an exception!

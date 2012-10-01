@@ -93,6 +93,17 @@ public:
 
 
 template <class IterType, class StateType>
+void BinaryBaseIterator<IterType, StateType>::serialize_internal(
+    ::zorba::serialization::Archiver& ar)
+{
+  if (ar.is_serialize_base_class()) 
+    ar.set_serialize_base_class(false);
+
+  BinaryBaseIterator<IterType, StateType>::serialize(ar);
+}
+
+
+template <class IterType, class StateType>
 void
 BinaryBaseIterator<IterType, StateType>::openImpl(
     PlanState& planState,

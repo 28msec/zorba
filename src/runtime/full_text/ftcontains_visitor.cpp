@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -377,7 +377,7 @@ ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
       if ( ::fabs( weight ) > 1000.0 )
         throw XQUERY_EXCEPTION(
           err::FTDY0016, ERROR_PARAMS( weight ),
-          ERROR_LOC( w->get_weight_expr()->get_loc() )
+          ERROR_LOC( (*w->get_weight_expr())->get_loc() )
         );
     } else {
       weight = 1.0;
@@ -446,7 +446,7 @@ void V::end_visit( ftwords &w ) {
     }
   }
   catch ( XQueryException &e ) {
-    set_source( e, w.get_value_expr()->get_loc() );
+    set_source( e, w.get_value_iter()->loc );
     throw;
   }
   END_VISIT( ftwords );

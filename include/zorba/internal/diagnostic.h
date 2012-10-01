@@ -42,7 +42,7 @@ namespace diagnostic {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %location hold the file location of an error.
+ * A %location holds the file location of an error.
  */
 class ZORBA_DLL_PUBLIC location {
 public:
@@ -71,21 +71,17 @@ public:
    * Constructs a %location.
    *
    * @param file The name of the file where the error occurred.
-   * @param line The line number of the file where the expression that
-   *  raises the error begins.
+   * @param line The line number of the file where the expression that raises
+   * the error begins.
    * @param column The column number, if any, of the file where the expression
-   *  that raises the error begins.
-   * @param line_end The end line number, if any, of the file where the expression
-   *  causing the error ends.
-   * @param column_end The end column number, if any, of the file where 
-   *  the xpression causing the error ends.
+   * that raises the error begins.
+   * @param line_end The end line number, if any, of the file where the
+   * expression causing the error ends.
+   * @param column_end The end column number, if any, of the file where the
+   * xpression causing the error ends.
    */
-  location(
-      char const *file,
-      line_type line,
-      column_type column = 0,
-      line_type line_end = 0,
-      column_type column_end = 0) :
+  location( char const *file, line_type line, column_type column = 0,
+            line_type line_end = 0, column_type column_end = 0 ) :
     file_( file ), line_( line ), column_( column ),
     line_end_( line_end ), column_end_( column_end )
   {
@@ -97,19 +93,16 @@ public:
    * @tparam StringType The string type for \a file.
    * @param file The name of the file where the error occurred.
    * @param line The line number of the file where the error occurred.
-   * @param column The column number, if any, of the file where the error occurred.
-   * @param line_end The end line number, if any, of the file where the expression
-   *  causing the error ends.
-   * @param column_end The end column number, if any, of the file where 
-   *  the xpression causing the error ends.
+   * @param column The column number, if any, of the file where the error
+   * occurred.
+   * @param line_end The end line number, if any, of the file where the
+   * expression causing the error ends.
+   * @param column_end The end column number, if any, of the file where the
+   * xpression causing the error ends.
    */
   template<class StringType>
-  location(
-      StringType const &file,
-      line_type line,
-      column_type column = 0,
-      line_type line_end = 0,
-      column_type column_end = 0) :
+  location( StringType const &file, line_type line, column_type column = 0,
+            line_type line_end = 0, column_type column_end = 0 ) :
     file_( file.c_str() ), line_( line ), column_( column ),
     line_end_( line_end ), column_end_( column_end )
   {
@@ -189,12 +182,8 @@ public:
    * @param column_end The column number, if any, where the error ends.
    * occurred.
    */
-  void set(
-      char const *file,
-      line_type line,
-      column_type column = 0,
-      line_type line_end = 0,
-      column_type column_end = 0) {
+  void set( char const *file, line_type line, column_type column = 0,
+            line_type line_end = 0, column_type column_end = 0 ) {
     file_ = file;
     line_ = line;
     column_ = column;

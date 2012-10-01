@@ -84,7 +84,7 @@ xqtref_t fn_data::getReturnType(const fo_expr* caller) const
   if (TypeOps::is_subtype(tm, *argType, *RTM.ANY_ATOMIC_TYPE_STAR, loc))
     return argType; // includes () case
 
-  TypeConstants::quantifier_t q = TypeOps::quantifier(*argType);
+  TypeConstants::quantifier_t q = argType->get_quantifier();
 
   if (argType->type_kind() == XQType::NODE_TYPE_KIND)
   {
