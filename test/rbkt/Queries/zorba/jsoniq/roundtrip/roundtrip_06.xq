@@ -2,7 +2,7 @@ let $enc := jn:encode-for-roundtrip(
     {
       'comment' : comment { "a comment" },
       'document' : document { <a/> } ,
-      'pi' : processing-instruction target { "an instauction" },
+      'pi' : processing-instruction target { "an instruction" },
       'text' : text { "some text" }
     }
   )
