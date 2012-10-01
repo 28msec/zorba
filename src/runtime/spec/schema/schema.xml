@@ -99,7 +99,7 @@
     </zorba:signature>
 
     <zorba:methods>
-      <zorba:mustCopyInputNodes value="false"/>
+      <zorba:mustCopyInputNodes/>
     </zorba:methods>
 
   </zorba:function>

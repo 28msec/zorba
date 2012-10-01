@@ -255,7 +255,6 @@ public:
   function_trace_expr* create_function_trace_expr(expr* aExpr);
 
   eval_expr* create_eval_expr(
-      CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
       expr* e,

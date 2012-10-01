@@ -587,7 +587,9 @@ expr* MarkNodeCopyProps::apply(
   {
     if (rCtx.theCCB->theConfig.for_serialization_only)
     {
+      // Serialization may or may not be a "node-id-sesitive" op.
       static_context* sctx = node->get_sctx();
+
       if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
           sctx->inherit_mode() == StaticContextConsts::inherit_ns)
       {
@@ -603,6 +605,8 @@ expr* MarkNodeCopyProps::apply(
     }
     else
     {
+      // We have to assume that the result of the "node" expr will be used in a
+      // "node-id-sesitive" op, so it must consist of standalone trees.  
       std::vector<expr*> sources;
       UDFCallChain dummyUdfCaller;
       theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
@@ -801,10 +805,21 @@ void MarkNodeCopyProps::applyInternal(
 
   case castable_expr_kind:
   case cast_expr_kind:
-  case instanceof_expr_kind:
-  case name_cast_expr_kind:
   case promote_expr_kind:
+  case instanceof_expr_kind:
   case treat_expr_kind:
+  {
+    if (node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
+    {
+      cast_or_castable_base_expr* e = static_cast<cast_or_castable_base_expr*>(node);
+
+      markForSerialization(e->get_input());
+    }
+
+    break;
+  }
+
+  case name_cast_expr_kind:
   case order_expr_kind:
   case wrapper_expr_kind:
   case function_trace_expr_kind:
@@ -926,7 +941,7 @@ void MarkNodeCopyProps::applyInternal(
     // Conservatively assume that, when executed, the eval query will apply
     // a "node-id-sensitive" operation on each of the in-scope variables, so
     // these variables must be bound to statndalone trees.
-    csize numEvalVars = e->var_count();
+    csize numEvalVars = e->num_vars();
 
     for (csize i = 0; i < numEvalVars; ++i)
     {
@@ -939,22 +954,7 @@ void MarkNodeCopyProps::applyInternal(
       theSourceFinder->findNodeSources(arg, &udfCaller, sources);
       markSources(sources);
     }
-#if 1
-    std::vector<VarInfo*> globalVars;
-    node->get_sctx()->getVariables(globalVars, false, true);
 
-    FOR_EACH(std::vector<VarInfo*>, ite, globalVars)
-    {
-      var_expr* globalVar = (*ite)->getVar();
-
-      if (globalVar == NULL)
-        continue;
-
-      std::vector<expr*> sources;
-      theSourceFinder->findNodeSources(globalVar, &udfCaller, sources);
-      markSources(sources);
-    }
-#endif
     break;
   }
 
@@ -1154,7 +1154,6 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
     case var_expr::pos_var:
     case var_expr::score_var:
     case var_expr::count_var:
-    case var_expr::eval_var:
     default:
     {
       ZORBA_ASSERT(false);
@@ -1314,7 +1313,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
   {
     eval_expr* e = static_cast<eval_expr*>(node);
 
-    csize numVars = e->var_count();
+    csize numVars = e->num_vars();
 
     for (csize i = 0; i < numVars; ++i)
     {
@@ -1325,16 +1324,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
       markForSerialization(arg);
     }
-#if 1
-    std::vector<VarInfo*> globalVars;
-    e->get_sctx()->getVariables(globalVars, true, true);
 
-    FOR_EACH(std::vector<VarInfo*>, ite, globalVars)
-    {
-      var_expr* globalVar = (*ite)->getVar();
-      markForSerialization(globalVar);
-    }
-#endif
     return;
   }
 
