@@ -1060,8 +1060,13 @@ void MarkNodeCopyProps::markSources(const std::vector<expr*>& sources)
   tree if N had been copied inot that tree.
 
   To enforce the above restriction, this method looks for expressions under
-  "node" that may extract descendant nodes out of their input nodes, and which
-  nodes may be propagated in the result of the "node" expr. It then marks such
+  "node" that constructor new nodes or receive nodes as input, and may propagate
+  such nodes into the result of the "node" expr. It then marks such expr as
+  "forSerialization".
+
+
+extract descendant nodes out of their input nodes, and which
+  nodes may be propagated in the  It then marks such
   exprs as "unsafe", in order to make sure that their input trees will be
   standalone. 
 ********************************************************************************/
@@ -1092,7 +1097,6 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
     case var_expr::win_var:
     case var_expr::wincond_out_var:
     case var_expr::wincond_in_var:
-    case var_expr::groupby_var:
     case var_expr::non_groupby_var:
     {
       if (!e->willBeSerialized())
@@ -1106,6 +1110,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
     case var_expr::copy_var:
     case var_expr::catch_var:
     {
+      e->setWillBeSerialized(ANNOTATION_TRUE);
       return;
     }
 
@@ -1144,6 +1149,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
       return;
     }
 
+    case var_expr::groupby_var:
     case var_expr::wincond_in_pos_var:
     case var_expr::wincond_out_pos_var:
     case var_expr::pos_var:
@@ -1305,21 +1311,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
   case eval_expr_kind:
   {
-    eval_expr* e = static_cast<eval_expr*>(node);
-
-    csize numVars = e->num_vars();
-
-    for (csize i = 0; i < numVars; ++i)
-    {
-      expr* arg = e->get_arg_expr(i);
-
-      if (arg == NULL)
-        continue;
-
-      markForSerialization(arg);
-    }
-
-    return;
+    break;
   }
 
   case debugger_expr_kind:
