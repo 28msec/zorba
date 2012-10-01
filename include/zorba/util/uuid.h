@@ -242,6 +242,7 @@ inline bool operator>=( uuid const &u1, uuid const &u2 ) {
  * @param u The UUID to emit.
  * @return Returns \a os.
  */
+ZORBA_DLL_PUBLIC
 std::ostream& operator<<( std::ostream &os, uuid const &u );
 
 ///////////////////////////////////////////////////////////////////////////////
