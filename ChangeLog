@@ -22,6 +22,7 @@ New Features:
   * new xqDoc feature; reporting collections and indexes
   * new xqDoc function parameter to enable/disable xqDoc generation of certain
     components
+  * Adding new external module read-pdf, it converts PDF documents to text or rendered images.
 
 Optimizations:
   * Improved memory management for compiler expressions (no more ref counting)
@@ -134,7 +135,6 @@ Bug Fixes/Other Changes:
   * The XML plan serialization format is not supported anymore
 
 
->>>>>>> MERGE-SOURCE
 version 2.5
 
 New Features:
