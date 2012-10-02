@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.5.  */
+/* A Bison parser, made by GNU Bison 2.6.2.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2011 Free Software Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,15 +30,19 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/**
+ ** \file /home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.hpp
+ ** Define the zorba::parser class.
+ */
+
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef PARSER_HEADER_H
-# define PARSER_HEADER_H
+#ifndef ZORBA_HOME_COLEA_XQUERY_BZR_BUGS2_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
+# define ZORBA_HOME_COLEA_XQUERY_BZR_BUGS2_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
 
 /* "%code requires" blocks.  */
-
-/* Line 35 of lalr1.cc  */
-#line 35 "/home/dagraf/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+/* Line 36 of lalr1.cc  */
+#line 35 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -82,9 +86,8 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 
-
-/* Line 35 of lalr1.cc  */
-#line 88 "/home/dagraf/zorba/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 36 of lalr1.cc  */
+#line 91 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -97,24 +100,10 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 # define YYDEBUG 1
 #endif
 
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 1
-#endif
-
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
-#endif
-
 
 namespace zorba {
-
-/* Line 35 of lalr1.cc  */
-#line 118 "/home/dagraf/zorba/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 36 of lalr1.cc  */
+#line 107 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -124,9 +113,8 @@ namespace zorba {
 #ifndef YYSTYPE
     union semantic_type
     {
-
-/* Line 35 of lalr1.cc  */
-#line 155 "/home/dagraf/zorba/sandbox/src/compiler/parser/xquery_parser.y"
+/* Line 36 of lalr1.cc  */
+#line 155 "/home/colea/xquery_bzr/bugs2/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -148,9 +136,8 @@ namespace zorba {
     ft_anyall_mode::type ft_anyall_value;
 
 
-
-/* Line 35 of lalr1.cc  */
-#line 154 "/home/dagraf/zorba/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 36 of lalr1.cc  */
+#line 141 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -603,16 +590,14 @@ namespace zorba {
     /// For a rule, its LHS.
     static const unsigned short int yyr1_[];
     /// For a rule, its RHS length.
-    static const unsigned char yyr2_[];
-
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
-    /// For a symbol, its name in clear.
-    static const char* const yytname_[];
-#endif
+    static const unsigned char yyr2_[]; 
 
     /// Convert the symbol name \a n to a form suitable for a diagnostic.
     static std::string yytnamerr_ (const char *n);
 
+
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
     typedef short int rhs_number_type;
@@ -668,10 +653,9 @@ namespace zorba {
   };
 
 } // zorba
-
-/* Line 35 of lalr1.cc  */
-#line 674 "/home/dagraf/zorba/build/src/compiler/parser/xquery_parser.hpp"
-
+/* Line 36 of lalr1.cc  */
+#line 658 "/home/colea/xquery_bzr/bugs2/build/src/compiler/parser/xquery_parser.hpp"
 
 
-#endif /* ! defined PARSER_HEADER_H */
+
+#endif /* !ZORBA_HOME_COLEA_XQUERY_BZR_BUGS2_BUILD_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP  */

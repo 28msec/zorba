@@ -72,6 +72,8 @@ public:
   virtual ~JSONDecodeFromRoundtripIterator();
 
 public:
+  static void extractChildOfKind(const store::Item_t& aParent, const store::NodeKind& aKind, store::Item_t& aChild);
+  bool decodeNode(const store::Item_t& aSerializedNode, const store::NodeKind& aKind, store::Item_t& aResult) const;
   bool decodeXDM(const store::Item_t& anObj, store::Item_t& aResult, JSONDecodeFromRoundtripIteratorState* aState) const;
   bool decodeObject(const store::Item_t& anObj, store::Item_t& aResult, JSONDecodeFromRoundtripIteratorState* aState) const;
   bool decodeArray(const store::Item_t& anArray, store::Item_t& aResult, JSONDecodeFromRoundtripIteratorState* aState) const;

@@ -356,7 +356,7 @@ void GroupByIterator::matVarsAndGroupBy(
 {
   store::Item_t temp;
 
-  GroupTuple* groupTuple = new GroupTuple();
+  std::auto_ptr<GroupTuple> groupTuple(new GroupTuple());
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
 
   csize numVars = theGroupingSpecs.size();
@@ -383,7 +383,7 @@ void GroupByIterator::matVarsAndGroupBy(
 
   std::vector<store::TempSeq_t>* nonGroupTuple = NULL;
 
-  if (groupMap->get(groupTuple, nonGroupTuple)) 
+  if (groupMap->get(groupTuple.get(), nonGroupTuple))
   {
     assert(nonGroupTuple != NULL);
 
@@ -396,8 +396,6 @@ void GroupByIterator::matVarsAndGroupBy(
 
       theNonGroupingSpecs[i].theInput->reset(aPlanState);
     }
-
-    delete groupTuple;
   }
   else
   {
@@ -416,7 +414,7 @@ void GroupByIterator::matVarsAndGroupBy(
       theNonGroupingSpecs[i].theInput->reset(aPlanState);
     }
 
-    groupMap->insert(groupTuple, nonGroupTuple);
+    groupMap->insert(groupTuple.release(), nonGroupTuple);
   }
 }
 

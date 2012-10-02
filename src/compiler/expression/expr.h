@@ -202,8 +202,8 @@ class cast_or_castable_base_expr : public expr
   friend class expr;
 
 protected:
-  expr*   theInputExpr;
-  xqtref_t theTargetType;
+  expr     * theInputExpr;
+  xqtref_t   theTargetType;
 
 protected:
   cast_or_castable_base_expr(
@@ -333,17 +333,20 @@ public:
   1. Let "input sequence" be the result of theInputExpr, and "output sequence"
      be the result of the promote_expr.
 
-  2. Raise error if the cardinality of the input sequence is not compatible with
+  2. The input sequence is assumed to be mepty or consist of atomic items only.
+
+  4. theTargetType is always a subtype of xs:anyAtomicType*
+
+  5. Raise error if the cardinality of the input sequence is not compatible with
      the quantifier of theTargetType.
 
-  3. For each item I in the input sequence, let F(I) be the result of the
+  6. For each item I in the input sequence, let F(I) be the result of the
      function defined as follows:
 
      - Let "actual type" be the dynamic type of I, and "target type" be the prime
        type of theTargetType.
-     - If the target type is the NONE type, F(I) = error, else
+     - If the target type is the NONE type, F(I) = raise error, else
      - If the actual type is a subtype of the target type, F(I) = I, else
-     - If the target type is not an atomic type, F(I) = error, else
      - If the actual type is untypedAtomic and the target type is not QName,
        F(I) = cast(I, target type), else
      - If the actual type is (subtype of) decimal and the target type is float,
@@ -352,7 +355,7 @@ public:
        F(I) = cast(I, target type), else
      - If the actual type is anyURI and the target type is string,
        F(I) = cast(I, string), else
-     - F(I) = error
+     - F(I) = raise error
 
   4. Put F(I) in the output sequence.
 
@@ -1084,16 +1087,21 @@ public:
   --------
   The expr that computes the query string to be evaluated by eval.
 
-  theVars:
-  --------
-  There is one "eval" var (of kind var_expr::eval_var) for each var that is in
-  scope where the call to the eval function appears at.
+  theOuterVarNames:
+  -----------------
+  The names of all the in-scope variables at the place where the call to the
+  eval function appears at.
+
+  theOuterVarTypes:
+  -----------------
+  The types of all the in-scope variables at the place where the call to the
+  eval function appears at.
 
   theArgs:
   --------
-  The domain expr of each eval var. Initially, the domain expr of an eval var
-  is always another var. However, that other var may be later inlined, so in
-  general, the domain expr of an eval var may be any expr.
+  For each in-scope var, the vector contains an expr that returns the value of
+  the var. The expr is either a reference to the var itself, or the domain expr
+  of that var, if that var was inlined.
 
   theInnerScriptingKind:
   ----------------------
@@ -1109,17 +1117,20 @@ class eval_expr : public namespace_context_base_expr
   friend class ExprManager;
 
 protected:
-  expr*                      theExpr;
+  expr                      * theExpr;
 
-  std::vector<var_expr*>     theVars;
-  std::vector<expr*>         theArgs;
+  std::vector<store::Item_t>  theOuterVarNames;
+
+  std::vector<xqtref_t>       theOuterVarTypes;
+
+  std::vector<expr*>          theArgs;
 
   expr_script_kind_t          theInnerScriptingKind;
+
   bool                        theDoNodeCopy;
 
 protected:
   eval_expr(
-      CompilerCB* creating_ccb,
       CompilerCB* ccb,
       static_context* sctx,
       const QueryLoc& loc,
@@ -1132,14 +1143,17 @@ public:
 
   expr* get_arg_expr(csize i) { return theArgs[i]; }
 
-  csize var_count() const { return theVars.size(); }
+  csize num_vars() const { return theOuterVarNames.size(); }
 
-  const var_expr* get_var(csize i) const { return theVars[i]; }
+  const std::vector<store::Item_t>& get_var_names() const { return theOuterVarNames; }
 
-  void add_var(var_expr* var, expr* arg)
+  const std::vector<xqtref_t>& get_var_types() const { return theOuterVarTypes; }
+
+  void add_var(var_expr* var)
   {
-    theVars.push_back(var);
-    theArgs.push_back(arg);
+    theOuterVarNames.push_back(var->get_name());
+    theOuterVarTypes.push_back(var->get_return_type());
+    theArgs.push_back(var);
   }
 
   expr_script_kind_t get_inner_scripting_kind() const;
@@ -1185,7 +1199,7 @@ private:
   expr*                      theExpr;
   checked_vector<var_expr*>  theVars;
   std::vector<expr*>         theArgs;
-  bool                        theIsVarDeclaration;
+  bool                       theIsVarDeclaration;
 
 protected:
   debugger_expr(

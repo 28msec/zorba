@@ -529,14 +529,13 @@ function_trace_expr* ExprManager::create_function_trace_expr(expr* aExpr)
 
 
 eval_expr* ExprManager::create_eval_expr(
-    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     expr* e,
     expr_script_kind_t scriptingKind,
     namespace_context* nsCtx)
 {
-  CREATE_AND_RETURN_EXPR(eval_expr, ccb, sctx, loc, e, scriptingKind, nsCtx);
+  CREATE_AND_RETURN_EXPR(eval_expr, sctx, loc, e, scriptingKind, nsCtx);
 }
 
 #ifdef ZORBA_WITH_DEBUGGER

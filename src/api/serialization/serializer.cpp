@@ -123,10 +123,10 @@ serializer::emitter::emitter(
   :
   ser(the_serializer),
   tr(the_stream),
-  previous_item(INVALID_ITEM),
+  thePreviousItemKind(INVALID_ITEM),
   theChildIters(8),
   theFirstFreeChildIter(0),
-  isFirstElementNode(true),
+  theIsFirstElementNode(true),
   theEmitAttributes(aEmitAttributes)
 {
   for (ulong i = 0; i < 8; i++)
@@ -445,7 +445,7 @@ void serializer::emitter::emit_item(store::Item* item)
 
   if (item->isAtomic())
   {
-    if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
+    if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";
 
     if (item->isStreamable())
@@ -453,7 +453,7 @@ void serializer::emitter::emit_item(store::Item* item)
     else
       emit_expanded_string(item->getStringValue().c_str(), item->getStringValue().size());
 
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
   }
   else if (!theEmitAttributes 
         && item->getNodeKind() == store::StoreConsts::attributeNode)
@@ -479,7 +479,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   {
     emit_node_children(item, depth);
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
@@ -489,10 +489,10 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
     const zstring& prefix = qnameItem->getPrefix();
     const zstring& local = qnameItem->getLocalName();
 
-    if (isFirstElementNode)
+    if (theIsFirstElementNode)
     {
       emit_doctype(local);
-      isFirstElementNode = false;
+      theIsFirstElementNode = false;
     }
     else if (ser->indent && depth == 0)
     {
@@ -504,7 +504,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
     else
       tr << "<" << prefix << ":" << local;
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     bool should_remove_binding = emit_bindings(item, depth);
 
@@ -525,7 +525,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
       tr << "/>";
     }
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
@@ -547,7 +547,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
 
     tr << "\"";
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
@@ -558,14 +558,15 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
 
     emit_text_node(item, text);
 
+    // Put a space between consecutive text nodes (or a text node and an
+    // atomic item), unless the text node contains whitespace only.
     if (!ascii::is_whitespace(text.c_str()))
     {
-      // ignore whitespace text nodes when doing indentation
-      previous_item = PREVIOUS_ITEM_WAS_TEXT;
+      thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
     }
     else
     {
-      previous_item = PREVIOUS_ITEM_WAS_NODE;
+      thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
     }
 
     break;
@@ -573,7 +574,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   case store::StoreConsts::commentNode:
   {
     tr << "<!--" << item->getStringValue() << "-->";
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
@@ -581,7 +582,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   {
     tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
@@ -741,19 +742,17 @@ int serializer::emitter::emit_node_children(
 ********************************************************************************/
 bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
 {
-  // emit namespace bindings
   store::NsBindings nsBindings;
+
   if (depth == 0)
   {
     item->getNamespaceBindings(nsBindings);
   }
   else
   {
-    //item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
     item->getNamespaceBindings(nsBindings);
 
     store::Item* nodeName = item->getNodeName();
-
     const zstring& prefix = nodeName->getPrefix();
     const zstring& nsuri = nodeName->getNamespace();
     if (prefix.empty() && nsuri.empty())
@@ -789,18 +788,17 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
           }
           else if (ser->undeclare_prefixes == PARAMETER_VALUE_YES)
           {
-            tr << " xmlns";
-            if (nsBindings[i].first.size() > 0)
-              tr << ":" <<  nsBindings[i].first;
-            tr << "=\"\"";
+            tr << " xmlns:" <<  nsBindings[i].first << "=\"\"";
           }
         }
       }
       else
       {
         tr << " xmlns";
+
         if (!nsBindings[i].first.empty())
           tr << ":" <<  nsBindings[i].first;
+
         tr << "=\"" << nsBindings[i].second << "\"";
       }
     }
@@ -841,11 +839,11 @@ bool serializer::emitter::haveBinding(std::pair<zstring, zstring>& nsBinding) co
 ********************************************************************************/
 bool serializer::emitter::havePrefix(const zstring& pre) const
 {
-  for (unsigned long i = 0; i < theBindings.size(); ++i)
+  for (csize i = 0; i < theBindings.size(); ++i)
   {
     const store::NsBindings& nsBindings = theBindings[i];
 
-    for (unsigned long j = 0; j < nsBindings.size(); ++j)
+    for (csize j = 0; j < nsBindings.size(); ++j)
     {
       if (nsBindings[j].first == pre)
         return true;
@@ -956,14 +954,12 @@ serializer::json_emitter::json_emitter(
   serializer* the_serializer,
   std::ostream& the_stream)
   : emitter(the_serializer, the_stream),
-    theXMLStringStream(nullptr),
     theMultipleItems(false)
 {
 }
 
 serializer::json_emitter::~json_emitter()
 {
-  delete theXMLStringStream;
 }
 
 void serializer::json_emitter::emit_item(store::Item *item)
@@ -1117,26 +1113,9 @@ void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_jsoniq_xdm_node(
-    store::Item* item,
-    int)
+void serializer::json_emitter::emit_jsoniq_xdm_node(store::Item*, int)
 {
-  if (true) {
-    // It could be useful to have some form of serialization of nested XML nodes
-    // (if only for debugging purposes). However as this is not (yet?) specified
-    // we throw an error here.
-    throw XQUERY_EXCEPTION(jerr::JNSE0014);
-  }
-  if (!theXMLEmitter) {
-    theXMLStringStream = new std::stringstream();
-    ser->attach_transcoder(*theXMLStringStream);
-    theXMLEmitter = new serializer::xml_emitter(ser, *theXMLStringStream);
-  }
-  theXMLEmitter->emit_item(item);
-  zstring xml(theXMLStringStream->str());
-  theXMLStringStream->str("");
-
-  emit_json_string(xml);
+  throw XQUERY_EXCEPTION(jerr::JNSE0014);
 }
 
 
@@ -1159,18 +1138,17 @@ serializer::hybrid_emitter::hybrid_emitter(
   serializer* the_serializer,
   std::ostream& the_stream,
   bool aEmitAttributes)
-  :
-    emitter(the_serializer, the_stream),
+  : json_emitter(the_serializer, the_stream),
     theEmitterState(JESTATE_UNDETERMINED),
     theXMLEmitter(new xml_emitter(the_serializer, the_stream, aEmitAttributes)),
-    theJSONEmitter(new json_emitter(the_serializer, the_stream))
+    theNestedXMLStringStream(nullptr)
 {
 }
 
 serializer::hybrid_emitter::~hybrid_emitter()
 {
+  delete theNestedXMLStringStream;
   delete theXMLEmitter;
-  delete theJSONEmitter;
 }
 
 void serializer::hybrid_emitter::emit_declaration()
@@ -1181,7 +1159,7 @@ void serializer::hybrid_emitter::emit_item(store::Item *item)
 {
   if (item->isJSONItem()) {
     theEmitterState = JESTATE_JDM;
-    theJSONEmitter->emit_item(item);
+    json_emitter::emit_item(item);
   }
   else {
     if (theEmitterState == JESTATE_UNDETERMINED) {
@@ -1197,7 +1175,7 @@ void serializer::hybrid_emitter::emit_end()
   switch(theEmitterState)
   {
     case JESTATE_JDM:
-      theJSONEmitter->emit_end();
+      json_emitter::emit_end();
       return;
     case JESTATE_XDM:
     default:
@@ -1205,6 +1183,22 @@ void serializer::hybrid_emitter::emit_end()
   }
 }
 
+void serializer::hybrid_emitter::emit_jsoniq_xdm_node(
+    store::Item* item,
+    int)
+{
+  if (! theNestedXMLEmitter) {
+    theNestedXMLStringStream = new std::stringstream();
+    ser->attach_transcoder(*theNestedXMLStringStream);
+    theNestedXMLEmitter
+        = new serializer::xml_emitter(ser, *theNestedXMLStringStream);
+  }
+  theNestedXMLEmitter->emit_item(item);
+  zstring xml(theNestedXMLStringStream->str());
+  theNestedXMLStringStream->str("");
+
+  emit_json_string(xml);
+}
 
 #endif /* ZORBA_WITH_JSON */
 
@@ -1410,10 +1404,10 @@ void serializer::html_emitter::emit_node(
 
     unsigned closed_parent_tag = 0;
 
-    if (isFirstElementNode)
+    if (theIsFirstElementNode)
     {
       emit_doctype(qname);
-      isFirstElementNode = false;
+      theIsFirstElementNode = false;
     }
 
     // If a meta element has been added to the head element as described above,
@@ -1429,7 +1423,7 @@ void serializer::html_emitter::emit_node(
 
     tr << "<" << qname;
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     bool should_remove_binding = emit_bindings(item, depth);
 
@@ -1489,7 +1483,7 @@ void serializer::html_emitter::emit_node(
       }
     }
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
@@ -1516,7 +1510,7 @@ void serializer::html_emitter::emit_node(
       tr << "\"";
     }
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
@@ -1548,21 +1542,21 @@ void serializer::html_emitter::emit_node(
       tr << item->getStringValue();  // no character expansion
     }
 
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
     break;
   }
   case store::StoreConsts::commentNode:
   {
     tr << "<!--" << item->getStringValue() << "-->";
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
     break;
   }
   case store::StoreConsts::piNode:
   {
     tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
     break;
   }
   default:
@@ -1605,10 +1599,10 @@ void serializer::xhtml_emitter::emit_node(
     const store::Item* element_parent = item->getParent();
     unsigned closed_parent_tag = 0;
 
-    if (isFirstElementNode)
+    if (theIsFirstElementNode)
     {
       emit_doctype(item->getNodeName()->getStringValue());
-      isFirstElementNode = false;
+      theIsFirstElementNode = false;
     }
 
     // If a meta element has been added to the head element as described above
@@ -1628,7 +1622,7 @@ void serializer::xhtml_emitter::emit_node(
 
     tr << "<" << nodename;
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     // If there is a head element, and the include-content-type parameter has
     // the value yes, the HTML output method MUST add a meta element as the
@@ -1701,7 +1695,7 @@ void serializer::xhtml_emitter::emit_node(
         tr << ">" << "</" << nodename << ">";
     }
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else
   {
@@ -1820,11 +1814,11 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
     unsigned long namespaces_emited = 0;
     store::NsBindings::size_type ns_size = 0;
 
-    if (isFirstElementNode)
+    if (theIsFirstElementNode)
     {
       // TODO: emit doctype declaration
       // emit_doctype(qname->getLocalName());
-      isFirstElementNode = false;
+      theIsFirstElementNode = false;
     }
 
     if (theSAX2ContentHandler)
@@ -2058,16 +2052,14 @@ void serializer::text_emitter::emit_item(store::Item* item)
 #ifdef ZORBA_WITH_JSON
   if (item->isJSONItem())
   {
-    throw ZORBA_EXCEPTION(
-        jerr::JNSE0022,
-        ERROR_PARAMS("text", item->getType()->getStringValue())
-      );
+    throw ZORBA_EXCEPTION(jerr::JNSE0022,
+    ERROR_PARAMS("text", item->getType()->getStringValue()));
   }
 #endif
 
   if (item->isAtomic())
   {
-    if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
+    if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";
 
     if (item->isStreamable())
@@ -2075,13 +2067,12 @@ void serializer::text_emitter::emit_item(store::Item* item)
     else
       tr << item->getStringValue();
 
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    throw XQUERY_EXCEPTION(
-      err::SENR0001, ERROR_PARAMS( item->getStringValue(), ZED( AttributeNode ) )
-    );
+    throw XQUERY_EXCEPTION(err::SENR0001,
+    ERROR_PARAMS(item->getStringValue(), ZED( AttributeNode)));
   }
   else
   {
@@ -2101,28 +2092,28 @@ void serializer::text_emitter::emit_node(const store::Item* item, int depth)
   }
   else if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     emit_node_children(item, depth);
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode )
   {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::textNode)
   {
     tr << item->getStringValue();
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
   }
   else if (item->getNodeKind() == store::StoreConsts::commentNode)
   {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::piNode )
   {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else
   {
