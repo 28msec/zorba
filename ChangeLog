@@ -12,12 +12,11 @@ New Features:
   * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the
     beginning of the XML document (requested in bug #1016606).
   * Roundtripping of JSON items has been moved from the serializer to encoding functions.
+  * Added uuid to public API.
   * Best-effort serialization of atomic values in JSON items.
   * Positional pagination support for index probes 
   * Recognize the {http://www.zorba-xquery.com/extensions}no-copy pragma to avoid
     copying nodes before insertion into a collection.
-  * Recognize the no-copy pragma to avoid copying nodes before insertion into
-    a collection.
   * Added createUntypedAtomic to API's ItemFactory.
   * new xqDoc feature; reporting collections and indexes
   * new xqDoc function parameter to enable/disable xqDoc generation of certain
