@@ -125,11 +125,6 @@ public:
 
 /*******************************************************************************
 
-  theIsInUnsafeContext:
-  ---------------------
-  If true, it indicates that an expr E1 satisfies a condition that makes a
-  sub-expr E2 of E1 be unsafe, even though E2 by itself is safe.
-
 ********************************************************************************/
 class MarkNodeCopyProps : public RewriteRule
 {
@@ -140,13 +135,10 @@ protected:
 
   UdfCalls         theProcessedUDFCalls;
 
-  bool             theIsInUnsafeContext;
-
 public:
   MarkNodeCopyProps()
     :
-    RewriteRule(RewriteRule::MarkNodeCopyProps, "MarkNodeCopyProps"),
-    theIsInUnsafeContext(false)
+    RewriteRule(RewriteRule::MarkNodeCopyProps, "MarkNodeCopyProps")
   {
   }
 
@@ -156,6 +148,8 @@ protected:
   void applyInternal(RewriterContext& rCtx, expr* node, UDFCallChain& udfCaller);
 
   void markSources(const std::vector<expr*>& sources);
+
+  void markInUnsafeContext(expr* node);
 };
 
 

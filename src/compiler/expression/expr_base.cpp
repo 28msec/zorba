@@ -541,6 +541,30 @@ bool expr::containsRecursiveCall() const
 /*******************************************************************************
 
 ********************************************************************************/
+BoolAnnotationValue expr::getInUnsafeContext() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & IN_UNSAFE_CONTEXT_MASK) >> IN_UNSAFE_CONTEXT);
+}
+
+
+void expr::setInUnsafeContext(BoolAnnotationValue v)
+{
+  theFlags1 &= ~IN_UNSAFE_CONTEXT_MASK;
+  theFlags1 |= (v << IN_UNSAFE_CONTEXT);
+}
+
+
+bool expr::inUnsafeContext() const
+{
+  BoolAnnotationValue v = getInUnsafeContext();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 BoolAnnotationValue expr::getContainsPragma() const
 {
   return (BoolAnnotationValue)
