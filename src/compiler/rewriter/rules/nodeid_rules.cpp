@@ -590,10 +590,10 @@ expr* MarkNodeCopyProps::apply(
       // Serialization may or may not be a "node-id-sesitive" op.
       static_context* sctx = node->get_sctx();
 
-      if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
-          sctx->inherit_mode() == StaticContextConsts::inherit_ns)
+      if (sctx->preserve_mode() == StaticContextConsts::preserve_ns)
       {
-        markForSerialization(rCtx.theRoot);
+        if (sctx->inherit_mode() == StaticContextConsts::inherit_ns)
+          markForSerialization(rCtx.theRoot);
       }
       else
       {
@@ -1066,9 +1066,24 @@ void MarkNodeCopyProps::markSources(const std::vector<expr*>& sources)
 
 
 /*******************************************************************************
-  The purpose of this method is to find patrh exprs that are inside the subtree
-  of "node" and which return nodes that may propagated in the result of the
-  "node" expr.
+  This method is called only if the result of the query is going to be used
+  for serialization only, and the copy-namespaces mode is [preserve inherit].
+
+  In this case, the result of the query should not contain any shared node N,
+  because if N was reached via a referencing tree, then serializing N will
+  miss the namespace bindings that N would have inherited from the referencing
+  tree if N had been copied inot that tree.
+
+  To enforce the above restriction, this method looks for expressions under
+  "node" that constructor new nodes or receive nodes as input, and may propagate
+  such nodes into the result of the "node" expr. It then marks such expr as
+  "forSerialization".
+
+
+extract descendant nodes out of their input nodes, and which
+  nodes may be propagated in the  It then marks such
+  exprs as "unsafe", in order to make sure that their input trees will be
+  standalone. 
 ********************************************************************************/
 void MarkNodeCopyProps::markForSerialization(expr* node)
 {
@@ -1097,7 +1112,6 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
     case var_expr::win_var:
     case var_expr::wincond_out_var:
     case var_expr::wincond_in_var:
-    case var_expr::groupby_var:
     case var_expr::non_groupby_var:
     {
       if (!e->willBeSerialized())
@@ -1111,6 +1125,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
     case var_expr::copy_var:
     case var_expr::catch_var:
     {
+      e->setWillBeSerialized(ANNOTATION_TRUE);
       return;
     }
 
@@ -1149,6 +1164,7 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
       return;
     }
 
+    case var_expr::groupby_var:
     case var_expr::wincond_in_pos_var:
     case var_expr::wincond_out_pos_var:
     case var_expr::pos_var:
@@ -1247,7 +1263,6 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
     return;
   }
 
-  case promote_expr_kind:
   case treat_expr_kind:
   case order_expr_kind:
   case wrapper_expr_kind:
@@ -1311,40 +1326,16 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
   case eval_expr_kind:
   {
-    eval_expr* e = static_cast<eval_expr*>(node);
-
-    csize numVars = e->num_vars();
-
-    for (csize i = 0; i < numVars; ++i)
-    {
-      expr* arg = e->get_arg_expr(i);
-
-      if (arg == NULL)
-        continue;
-
-      markForSerialization(arg);
-    }
-
-    return;
+    break;
   }
 
   case debugger_expr_kind:
   {
-    break;
+    break;  // ????
   }
 
   case dynamic_function_invocation_expr_kind:
   {
-    dynamic_function_invocation_expr* e =
-    static_cast<dynamic_function_invocation_expr*>(node);
-
-    const std::vector<expr*>& args = e->get_args();
-
-    FOR_EACH(std::vector<expr*>, ite, args)
-    {
-      markForSerialization((*ite));
-    }
-
     break;
   }
 
@@ -1354,13 +1345,12 @@ void MarkNodeCopyProps::markForSerialization(expr* node)
 
     user_function* udf = static_cast<user_function*>(e->get_function());
 
-    UDFCallChain dummyUdfCaller;
-
     markForSerialization(udf->getBody());
 
     return;
   }
 
+  case promote_expr_kind:
   case castable_expr_kind:
   case cast_expr_kind:
   case instanceof_expr_kind:
