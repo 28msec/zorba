@@ -847,7 +847,9 @@ void MarkNodeCopyProps::applyInternal(
   {
     if (node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
     {
-      markInUnsafeContext(node);
+      cast_or_castable_base_expr* e = static_cast<cast_or_castable_base_expr*>(node);
+
+      markInUnsafeContext(e->get_input());
     }
 
     break;
