@@ -26,7 +26,7 @@
 #include <time.h>
 #endif
 
-#define ZORBA_TEST_PLAN_SERIALIZATION
+//#define ZORBA_TEST_PLAN_SERIALIZATION
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files

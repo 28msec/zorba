@@ -1048,6 +1048,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   }
 
   ar & theModuleNamespace;
+  ar & theImportedBuiltinModules;
 
   ar & theBaseUriInfo;
 
@@ -2657,6 +2658,10 @@ void static_context::get_functions(
           {
             if (f->isBuiltin())
             {
+              // Skip builtin functions that (a) are fn functions, or (b) are fn or
+              // zorba operators (i.e., non user visible), or (c) their containing
+              // module has not been imported.
+
               assert(sctx->is_global_root_sctx());
 
               const zstring& ns = f->getName()->getNamespace();
