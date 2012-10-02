@@ -587,16 +587,29 @@ expr* MarkNodeCopyProps::apply(
   {
     if (rCtx.theCCB->theConfig.for_serialization_only)
     {
-      // Serialization may or may not be a "node-id-sesitive" op.
+      // Serialization may or may not be a "safe" op.
       static_context* sctx = node->get_sctx();
 
       if (sctx->preserve_mode() == StaticContextConsts::preserve_ns)
       {
         if (sctx->inherit_mode() == StaticContextConsts::inherit_ns)
-          markForSerialization(rCtx.theRoot);
+        {
+          // In this case, the result of the query should not contain any shared
+          // node N, because if N was reached via a referencing tree, then
+          // serializing N will miss the namespace bindings that N would have
+          // inherited from the referencing tree if N had been copied into that
+          // tree. (On the other hand it is ok if the query result contains nodes
+          // which are not shared but have shared descendants). To handle this,
+          // we set theIsInUnsafeContext so that any exprs that (a) extract nodes
+          // out of input nodes and (b) may propagate the extracted nodes to the
+          // query result will be considered as unsafe and thus require that 
+          // their input trees are standalone.
+          theIsInUnsafeContext = true;
+        }
       }
       else
       {
+        // In this case serialization is always unsafe.
         std::vector<expr*> sources;
         UDFCallChain dummyUdfCaller;
         theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
@@ -605,8 +618,8 @@ expr* MarkNodeCopyProps::apply(
     }
     else
     {
-      // We have to assume that the result of the "node" expr will be used in a
-      // "node-id-sesitive" op, so it must consist of standalone trees.  
+      // We have to assume that the result of the "node" expr will be used in an
+      // unsafe op, so it must consist of standalone trees.  
       std::vector<expr*> sources;
       UDFCallChain dummyUdfCaller;
       theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
@@ -639,11 +652,25 @@ void MarkNodeCopyProps::applyInternal(
     expr* node,
     UDFCallChain& udfCaller)
 {
+  TypeManager* tm = node->get_type_manager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  bool savedIsInUnsafeContext = theIsInUnsafeContext;
+
+  if (theIsInUnsafeContext)
+  {
+    xqtref_t retType = node->get_return_type();
+
+    if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR))
+      theIsInUnsafeContext = false;
+  }
+
   switch (node->get_expr_kind())
   {
   case const_expr_kind:
   case var_expr_kind:
   {
+    theIsInUnsafeContext = savedIsInUnsafeContext;
     return;
   }
 
@@ -705,7 +732,7 @@ void MarkNodeCopyProps::applyInternal(
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);
 
-    if (e->willBeSerialized())
+    if (theIsInUnsafeContext)
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
@@ -736,15 +763,8 @@ void MarkNodeCopyProps::applyInternal(
 
     applyInternal(rCtx, (*e)[0], udfCaller);
 
+    theIsInUnsafeContext = savedIsInUnsafeContext;
     return;
-  }
-
-  case gflwor_expr_kind:
-  case flwor_expr_kind:
-  case if_expr_kind:
-  case trycatch_expr_kind:
-  {
-    break;
   }
 
   case fo_expr_kind:
@@ -803,21 +823,12 @@ void MarkNodeCopyProps::applyInternal(
     break;
   }
 
-  case castable_expr_kind:
-  case cast_expr_kind:
+  case gflwor_expr_kind:
+  case flwor_expr_kind:
+  case if_expr_kind:
+  case trycatch_expr_kind:
+
   case promote_expr_kind:
-  case instanceof_expr_kind:
-  case treat_expr_kind:
-  {
-    if (node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
-    {
-      cast_or_castable_base_expr* e = static_cast<cast_or_castable_base_expr*>(node);
-
-      markForSerialization(e->get_input());
-    }
-
-    break;
-  }
 
   case name_cast_expr_kind:
   case order_expr_kind:
@@ -825,6 +836,19 @@ void MarkNodeCopyProps::applyInternal(
   case function_trace_expr_kind:
   case extension_expr_kind:
   {
+    break;
+  }
+
+  case castable_expr_kind:
+  case cast_expr_kind:
+  case instanceof_expr_kind:
+  case treat_expr_kind:
+  {
+    if (node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
+    {
+      theIsInUnsafeContext = true;
+    }
+
     break;
   }
 
@@ -947,9 +971,6 @@ void MarkNodeCopyProps::applyInternal(
     {
       expr* arg = e->get_arg_expr(i);
 
-      if (arg == NULL)
-        continue;
-
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(arg, &udfCaller, sources);
       markSources(sources);
@@ -1007,6 +1028,7 @@ void MarkNodeCopyProps::applyInternal(
 
     applyInternal(rCtx, udf->getBody(), dummyUdfCaller);
 
+    theIsInUnsafeContext = savedIsInUnsafeContext;
     return;
   }
 
@@ -1026,6 +1048,9 @@ void MarkNodeCopyProps::applyInternal(
     }
     iter.next();
   }
+
+
+  theIsInUnsafeContext = savedIsInUnsafeContext;
 
   return;
 }
@@ -1062,329 +1087,6 @@ void MarkNodeCopyProps::markSources(const std::vector<expr*>& sources)
     }
     }
   }
-}
-
-
-/*******************************************************************************
-  This method is called only if the result of the query is going to be used
-  for serialization only, and the copy-namespaces mode is [preserve inherit].
-
-  In this case, the result of the query should not contain any shared node N,
-  because if N was reached via a referencing tree, then serializing N will
-  miss the namespace bindings that N would have inherited from the referencing
-  tree if N had been copied inot that tree.
-
-  To enforce the above restriction, this method looks for expressions under
-  "node" that constructor new nodes or receive nodes as input, and may propagate
-  such nodes into the result of the "node" expr. It then marks such expr as
-  "forSerialization".
-
-
-extract descendant nodes out of their input nodes, and which
-  nodes may be propagated in the  It then marks such
-  exprs as "unsafe", in order to make sure that their input trees will be
-  standalone. 
-********************************************************************************/
-void MarkNodeCopyProps::markForSerialization(expr* node)
-{
-  TypeManager* tm = node->get_type_manager();
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-  xqtref_t retType = node->get_return_type();
-
-  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR))
-    return;
-
-  switch (node->get_expr_kind())
-  {
-  case const_expr_kind:
-  {
-    return;
-  }
-  case var_expr_kind:
-  {
-    var_expr* e = static_cast<var_expr*>(node);
-
-    switch (e->get_kind())
-    {
-    case var_expr::for_var:
-    case var_expr::let_var:
-    case var_expr::win_var:
-    case var_expr::wincond_out_var:
-    case var_expr::wincond_in_var:
-    case var_expr::non_groupby_var:
-    {
-      if (!e->willBeSerialized())
-      {
-        e->setWillBeSerialized(ANNOTATION_TRUE);
-        markForSerialization(e->get_domain_expr());
-      }
-      return;
-    }
-
-    case var_expr::copy_var:
-    case var_expr::catch_var:
-    {
-      e->setWillBeSerialized(ANNOTATION_TRUE);
-      return;
-    }
-
-    case var_expr::arg_var:
-    {
-      e->setWillBeSerialized(ANNOTATION_TRUE);
-      return;
-    }
-
-    case var_expr::prolog_var:
-    case var_expr::local_var:
-    {
-      if (!e->willBeSerialized())
-      {
-        e->setWillBeSerialized(ANNOTATION_TRUE);
-
-        std::vector<expr*>::const_iterator ite = e->setExprsBegin();
-        std::vector<expr*>::const_iterator end = e->setExprsEnd();
-
-        for (; ite != end; ++ite)
-        {
-          expr* setExpr = *ite;
-
-          if (setExpr->get_expr_kind() == var_decl_expr_kind)
-          {
-            markForSerialization(static_cast<var_decl_expr*>(setExpr)->get_init_expr());
-          }
-          else
-          {
-            assert(setExpr->get_expr_kind() == var_set_expr_kind);
-
-            markForSerialization(static_cast<var_set_expr*>(setExpr)->get_expr());
-          }
-        }
-      }
-      return;
-    }
-
-    case var_expr::groupby_var:
-    case var_expr::wincond_in_pos_var:
-    case var_expr::wincond_out_pos_var:
-    case var_expr::pos_var:
-    case var_expr::score_var:
-    case var_expr::count_var:
-    default:
-    {
-      ZORBA_ASSERT(false);
-      return;
-    }
-    }
-  }
-
-  case doc_expr_kind:
-  case elem_expr_kind:
-  case attr_expr_kind:
-  case text_expr_kind:
-  case pi_expr_kind:
-  {
-    break;
-  }
-
-#ifdef ZORBA_WITH_JSON
-  case json_object_expr_kind:
-  case json_direct_object_expr_kind:
-  case json_array_expr_kind:
-  {
-    break;
-  }
-#endif
-
-  case relpath_expr_kind:
-  {
-    relpath_expr* e = static_cast<relpath_expr *>(node);
-    e->setWillBeSerialized(ANNOTATION_TRUE);
-    markForSerialization((*e)[0]);
-    return;
-  }
-
-  case gflwor_expr_kind:
-  case flwor_expr_kind:
-  {
-    flwor_expr* e = static_cast<flwor_expr *>(node);
-    e->setWillBeSerialized(ANNOTATION_TRUE);
-    markForSerialization(e->get_return_expr());
-    return;
-  }
-
-  case if_expr_kind:
-  case trycatch_expr_kind:
-  {
-    break;
-  }
-
-  case fo_expr_kind:
-  {
-    fo_expr* e = static_cast<fo_expr *>(node);
-    function* f = e->get_func();
-
-    e->setWillBeSerialized(ANNOTATION_TRUE);
-
-    if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
-    {
-      user_function* udf = static_cast<user_function*>(f);
-      expr* body = udf->getBody();
-
-      if (!body->willBeSerialized())
-      {
-        markForSerialization(body);
-      }
-
-      std::vector<var_expr*>::const_iterator ite = udf->getArgVars().begin();
-      std::vector<var_expr*>::const_iterator end = udf->getArgVars().end();
-      for (; ite != end; ++ite)
-      {
-        expr* argVar = (*ite);
-        if (argVar->willBeSerialized())
-        {
-          expr* argExpr = e->get_arg(ite - udf->getArgVars().begin());
-          markForSerialization(argExpr);
-        }
-      }
-    } // f->isUdf()
-    else
-    {
-      csize numArgs = e->num_args();
-      for (csize i = 0; i < numArgs; ++i)
-      {
-        if (f->propagatesInputNodes(e, i))
-        {
-          markForSerialization(e->get_arg(i));
-        }
-      }
-    }
-
-    return;
-  }
-
-  case treat_expr_kind:
-  case order_expr_kind:
-  case wrapper_expr_kind:
-  case function_trace_expr_kind:
-  case extension_expr_kind:
-  {
-    break;
-  }
-
-  case validate_expr_kind:
-  {
-    node->setWillBeSerialized(ANNOTATION_TRUE);
-    return;
-  }
-
-  case transform_expr_kind:
-  {
-    transform_expr* e = static_cast<transform_expr *>(node);
-    e->setWillBeSerialized(ANNOTATION_TRUE);
-    markForSerialization(e->getReturnExpr());
-    return;
-  }
-
-  case block_expr_kind:
-  {
-    block_expr* e = static_cast<block_expr *>(node);
-    e->setWillBeSerialized(ANNOTATION_TRUE);
-    expr* lastChild = (*e)[e->size()-1];
-    markForSerialization(lastChild);
-    return;
-  }
-
-  case var_decl_expr_kind:
-  case var_set_expr_kind:
-  {
-    return;
-  }
-
-  case apply_expr_kind:
-  {
-    break;
-  }
-
-  case exit_catcher_expr_kind:
-  {
-    exit_catcher_expr* e = static_cast<exit_catcher_expr*>(node);
-
-    std::vector<expr*>::const_iterator ite = e->exitExprsBegin();
-    std::vector<expr*>::const_iterator end = e->exitExprsEnd();
-
-    for (; ite != end; ++ite)
-    {
-      exit_expr* ex = static_cast<exit_expr*>(*ite);
-
-      markForSerialization(ex->get_expr());
-    }
-
-    break;
-  }
-
-
-  case eval_expr_kind:
-  {
-    break;
-  }
-
-  case debugger_expr_kind:
-  {
-    break;  // ????
-  }
-
-  case dynamic_function_invocation_expr_kind:
-  {
-    break;
-  }
-
-  case function_item_expr_kind:
-  {
-    function_item_expr* e = static_cast<function_item_expr*>(node);
-
-    user_function* udf = static_cast<user_function*>(e->get_function());
-
-    markForSerialization(udf->getBody());
-
-    return;
-  }
-
-  case promote_expr_kind:
-  case castable_expr_kind:
-  case cast_expr_kind:
-  case instanceof_expr_kind:
-  case name_cast_expr_kind:
-  case axis_step_expr_kind:
-  case match_expr_kind:
-  case delete_expr_kind:
-  case rename_expr_kind:
-  case insert_expr_kind:
-  case replace_expr_kind:
-  case while_expr_kind:
-  case flowctl_expr_kind:
-  case exit_expr_kind:
-#ifndef ZORBA_NO_FULL_TEXT
-  case ft_expr_kind:
-#endif
-  default:
-    ZORBA_ASSERT(false);
-  }
-
-  node->setWillBeSerialized(ANNOTATION_TRUE);
-
-  ExprIterator iter(node);
-  while(!iter.done())
-  {
-    expr* child = (**iter);
-    if (child != NULL)
-    {
-      markForSerialization(child);
-    }
-    iter.next();
-  }
-
-  return;
 }
 
 

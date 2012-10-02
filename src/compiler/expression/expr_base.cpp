@@ -541,30 +541,6 @@ bool expr::containsRecursiveCall() const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue expr::getWillBeSerialized() const
-{
-  return (BoolAnnotationValue)
-         ((theFlags1 & WILL_BE_SERIALIZED_MASK) >> WILL_BE_SERIALIZED);
-}
-
-
-void expr::setWillBeSerialized(BoolAnnotationValue v)
-{
-  theFlags1 &= ~WILL_BE_SERIALIZED_MASK;
-  theFlags1 |= (v << WILL_BE_SERIALIZED);
-}
-
-
-bool expr::willBeSerialized() const
-{
-  BoolAnnotationValue v = getWillBeSerialized();
-  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 BoolAnnotationValue expr::getContainsPragma() const
 {
   return (BoolAnnotationValue)
