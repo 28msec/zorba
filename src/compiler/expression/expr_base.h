@@ -147,8 +147,9 @@ public:
     UNFOLDABLE              = 10,
     CONTAINS_RECURSIVE_CALL = 12,
     PROPAGATES_INPUT_NODES  = 14,
-    MUST_COPY_NODES         = 16,
-    CONTAINS_PRAGMA         = 18
+    IN_UNSAFE_CONTEXT       = 16,
+    MUST_COPY_NODES         = 18,
+    CONTAINS_PRAGMA         = 20
   } Annotationkey;
 
   typedef enum
@@ -161,8 +162,9 @@ public:
     UNFOLDABLE_MASK               = 0xC00,
     CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
     PROPAGATES_INPUT_NODES_MASK   = 0xC000,
-    MUST_COPY_NODES_MASK          = 0x30000,
-    CONTAINS_PRAGMA_MASK          = 0xC0000
+    IN_UNSAFE_CONTEXT_MASK        = 0x30000,
+    MUST_COPY_NODES_MASK          = 0xC0000,
+    CONTAINS_PRAGMA_MASK          = 0x300000
   } AnnotationMask;
 
 
@@ -312,6 +314,13 @@ public:
   BoolAnnotationValue getMustCopyNodes() const;
 
   void setMustCopyNodes(BoolAnnotationValue v);
+
+  // Annotation : inUnsafeContext
+  BoolAnnotationValue getInUnsafeContext() const;
+
+  void setInUnsafeContext(BoolAnnotationValue v);
+
+  bool inUnsafeContext() const;
 
   // Annotation : containsPragma
   BoolAnnotationValue getContainsPragma() const;

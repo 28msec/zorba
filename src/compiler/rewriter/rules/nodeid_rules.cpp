@@ -600,11 +600,11 @@ expr* MarkNodeCopyProps::apply(
           // inherited from the referencing tree if N had been copied into that
           // tree. (On the other hand it is ok if the query result contains nodes
           // which are not shared but have shared descendants). To handle this,
-          // we set theIsInUnsafeContext so that any exprs that (a) extract nodes
+          // we call markInUnsafeContext() so that any exprs that (a) extract nodes
           // out of input nodes and (b) may propagate the extracted nodes to the
           // query result will be considered as unsafe and thus require that 
           // their input trees are standalone.
-          theIsInUnsafeContext = true;
+          markInUnsafeContext(node);
         }
       }
       else
@@ -652,25 +652,11 @@ void MarkNodeCopyProps::applyInternal(
     expr* node,
     UDFCallChain& udfCaller)
 {
-  TypeManager* tm = node->get_type_manager();
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-  bool savedIsInUnsafeContext = theIsInUnsafeContext;
-
-  if (theIsInUnsafeContext)
-  {
-    xqtref_t retType = node->get_return_type();
-
-    if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR))
-      theIsInUnsafeContext = false;
-  }
-
   switch (node->get_expr_kind())
   {
   case const_expr_kind:
   case var_expr_kind:
   {
-    theIsInUnsafeContext = savedIsInUnsafeContext;
     return;
   }
 
@@ -692,7 +678,8 @@ void MarkNodeCopyProps::applyInternal(
 
     static_context* sctx = e->get_sctx();
 
-    if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
+    if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
+        sctx->inherit_mode() == StaticContextConsts::inherit_ns)
     {
       csize numPairs = e->num_pairs();
       for (csize i = 0; i < numPairs; ++i)
@@ -717,7 +704,8 @@ void MarkNodeCopyProps::applyInternal(
 
     static_context* sctx = e->get_sctx();
 
-    if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
+    if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
+        sctx->inherit_mode() == StaticContextConsts::inherit_ns)
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(e->get_expr(), &udfCaller, sources);
@@ -732,7 +720,7 @@ void MarkNodeCopyProps::applyInternal(
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);
 
-    if (theIsInUnsafeContext)
+    if (e->inUnsafeContext())
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
@@ -750,6 +738,7 @@ void MarkNodeCopyProps::applyInternal(
 
         if (axisKind != axis_kind_child &&
             axisKind != axis_kind_descendant &&
+            axisKind != axis_kind_descendant_or_self &&
             axisKind != axis_kind_self &&
             axisKind != axis_kind_attribute)
         {
@@ -758,12 +747,24 @@ void MarkNodeCopyProps::applyInternal(
           markSources(sources);
           break;
         }
+        else
+        {
+          match_expr* matchExpr = axisExpr->getTest();
+
+          if (matchExpr->getTypeName() != NULL &&
+              node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
+          {
+            std::vector<expr*> sources;
+            theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
+            markSources(sources);
+            break;
+          }
+        }
       }
     }
 
     applyInternal(rCtx, (*e)[0], udfCaller);
 
-    theIsInUnsafeContext = savedIsInUnsafeContext;
     return;
   }
 
@@ -846,7 +847,9 @@ void MarkNodeCopyProps::applyInternal(
   {
     if (node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
     {
-      theIsInUnsafeContext = true;
+      cast_or_castable_base_expr* e = static_cast<cast_or_castable_base_expr*>(node);
+
+      markInUnsafeContext(e->get_input());
     }
 
     break;
@@ -895,7 +898,8 @@ void MarkNodeCopyProps::applyInternal(
 
     static_context* sctx = e->get_sctx();
 
-    if (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns)
+    if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
+        sctx->inherit_mode() == StaticContextConsts::inherit_ns)
     {
       std::vector<copy_clause*>::const_iterator ite = e->begin();
       std::vector<copy_clause*>::const_iterator end = e->end();
@@ -1028,7 +1032,6 @@ void MarkNodeCopyProps::applyInternal(
 
     applyInternal(rCtx, udf->getBody(), dummyUdfCaller);
 
-    theIsInUnsafeContext = savedIsInUnsafeContext;
     return;
   }
 
@@ -1048,9 +1051,6 @@ void MarkNodeCopyProps::applyInternal(
     }
     iter.next();
   }
-
-
-  theIsInUnsafeContext = savedIsInUnsafeContext;
 
   return;
 }
@@ -1087,6 +1087,316 @@ void MarkNodeCopyProps::markSources(const std::vector<expr*>& sources)
     }
     }
   }
+}
+
+
+/*******************************************************************************
+  This method is called when an expr E1 satisfies a condition that may make a
+  sub-expr E2 of E1 be unsafe, even though E2 by itself is safe. 
+
+  This method marks as being in "unsafe context" any expr that may produce
+  nodes which may be propagated into the result of E1.
+********************************************************************************/
+void MarkNodeCopyProps::markInUnsafeContext(expr* node)
+{
+  TypeManager* tm = node->get_type_manager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  xqtref_t retType = node->get_return_type();
+
+  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR))
+    return;
+
+  switch (node->get_expr_kind())
+  {
+  case const_expr_kind:
+  {
+    return;
+  }
+  case var_expr_kind:
+  {
+    var_expr* e = static_cast<var_expr*>(node);
+
+    switch (e->get_kind())
+    {
+    case var_expr::for_var:
+    case var_expr::let_var:
+    case var_expr::win_var:
+    case var_expr::wincond_out_var:
+    case var_expr::wincond_in_var:
+    case var_expr::non_groupby_var:
+    {
+      if (!e->inUnsafeContext())
+      {
+        e->setInUnsafeContext(ANNOTATION_TRUE);
+        markInUnsafeContext(e->get_domain_expr());
+      }
+      return;
+    }
+
+    case var_expr::copy_var:
+    case var_expr::catch_var:
+    {
+      e->setInUnsafeContext(ANNOTATION_TRUE);
+      return;
+    }
+
+    case var_expr::arg_var:
+    {
+      e->setInUnsafeContext(ANNOTATION_TRUE);
+      return;
+    }
+
+    case var_expr::prolog_var:
+    case var_expr::local_var:
+    {
+      if (!e->inUnsafeContext())
+      {
+        e->setInUnsafeContext(ANNOTATION_TRUE);
+
+        std::vector<expr*>::const_iterator ite = e->setExprsBegin();
+        std::vector<expr*>::const_iterator end = e->setExprsEnd();
+
+        for (; ite != end; ++ite)
+        {
+          expr* setExpr = *ite;
+
+          if (setExpr->get_expr_kind() == var_decl_expr_kind)
+          {
+            markInUnsafeContext(static_cast<var_decl_expr*>(setExpr)->get_init_expr());
+          }
+          else
+          {
+            assert(setExpr->get_expr_kind() == var_set_expr_kind);
+
+            markInUnsafeContext(static_cast<var_set_expr*>(setExpr)->get_expr());
+          }
+        }
+      }
+      return;
+    }
+
+    case var_expr::groupby_var:
+    case var_expr::wincond_in_pos_var:
+    case var_expr::wincond_out_pos_var:
+    case var_expr::pos_var:
+    case var_expr::score_var:
+    case var_expr::count_var:
+    default:
+    {
+      ZORBA_ASSERT(false);
+      return;
+    }
+    }
+  }
+
+  case doc_expr_kind:
+  case elem_expr_kind:
+  case attr_expr_kind:
+  case text_expr_kind:
+  case pi_expr_kind:
+  {
+    break;
+  }
+
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind:
+  case json_direct_object_expr_kind:
+  case json_array_expr_kind:
+  {
+    break;
+  }
+#endif
+
+  case relpath_expr_kind:
+  {
+    relpath_expr* e = static_cast<relpath_expr *>(node);
+    e->setInUnsafeContext(ANNOTATION_TRUE);
+    markInUnsafeContext((*e)[0]);
+    return;
+  }
+
+  case gflwor_expr_kind:
+  case flwor_expr_kind:
+  {
+    flwor_expr* e = static_cast<flwor_expr *>(node);
+    e->setInUnsafeContext(ANNOTATION_TRUE);
+    markInUnsafeContext(e->get_return_expr());
+    return;
+  }
+
+  case if_expr_kind:
+  case trycatch_expr_kind:
+  {
+    break;
+  }
+
+  case fo_expr_kind:
+  {
+    fo_expr* e = static_cast<fo_expr *>(node);
+    function* f = e->get_func();
+
+    e->setInUnsafeContext(ANNOTATION_TRUE);
+
+    if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
+    {
+      user_function* udf = static_cast<user_function*>(f);
+      expr* body = udf->getBody();
+
+      if (!body->inUnsafeContext())
+      {
+        markInUnsafeContext(body);
+      }
+
+      std::vector<var_expr*>::const_iterator ite = udf->getArgVars().begin();
+      std::vector<var_expr*>::const_iterator end = udf->getArgVars().end();
+      for (; ite != end; ++ite)
+      {
+        expr* argVar = (*ite);
+        if (argVar->inUnsafeContext())
+        {
+          expr* argExpr = e->get_arg(ite - udf->getArgVars().begin());
+          markInUnsafeContext(argExpr);
+        }
+      }
+    } // f->isUdf()
+    else
+    {
+      csize numArgs = e->num_args();
+      for (csize i = 0; i < numArgs; ++i)
+      {
+        if (f->propagatesInputNodes(e, i))
+        {
+          markInUnsafeContext(e->get_arg(i));
+        }
+      }
+    }
+
+    return;
+  }
+
+  case treat_expr_kind:
+  case order_expr_kind:
+  case wrapper_expr_kind:
+  case function_trace_expr_kind:
+  case extension_expr_kind:
+  {
+    break;
+  }
+
+  case validate_expr_kind:
+  {
+    node->setInUnsafeContext(ANNOTATION_TRUE);
+    return;
+  }
+
+  case transform_expr_kind:
+  {
+    transform_expr* e = static_cast<transform_expr *>(node);
+    e->setInUnsafeContext(ANNOTATION_TRUE);
+    markInUnsafeContext(e->getReturnExpr());
+    return;
+  }
+
+  case block_expr_kind:
+  {
+    block_expr* e = static_cast<block_expr *>(node);
+    e->setInUnsafeContext(ANNOTATION_TRUE);
+    expr* lastChild = (*e)[e->size()-1];
+    markInUnsafeContext(lastChild);
+    return;
+  }
+
+  case var_decl_expr_kind:
+  case var_set_expr_kind:
+  {
+    return;
+  }
+
+  case apply_expr_kind:
+  {
+    break;
+  }
+
+  case exit_catcher_expr_kind:
+  {
+    exit_catcher_expr* e = static_cast<exit_catcher_expr*>(node);
+
+    std::vector<expr*>::const_iterator ite = e->exitExprsBegin();
+    std::vector<expr*>::const_iterator end = e->exitExprsEnd();
+
+    for (; ite != end; ++ite)
+    {
+      exit_expr* ex = static_cast<exit_expr*>(*ite);
+
+      markInUnsafeContext(ex->get_expr());
+    }
+
+    break;
+  }
+
+
+  case eval_expr_kind:
+  {
+    break;
+  }
+
+  case debugger_expr_kind:
+  {
+    break;  // ????
+  }
+
+  case dynamic_function_invocation_expr_kind:
+  {
+    break;
+  }
+
+  case function_item_expr_kind:
+  {
+    function_item_expr* e = static_cast<function_item_expr*>(node);
+
+    user_function* udf = static_cast<user_function*>(e->get_function());
+
+    markInUnsafeContext(udf->getBody());
+
+    return;
+  }
+
+  case promote_expr_kind:
+  case castable_expr_kind:
+  case cast_expr_kind:
+  case instanceof_expr_kind:
+  case name_cast_expr_kind:
+  case axis_step_expr_kind:
+  case match_expr_kind:
+  case delete_expr_kind:
+  case rename_expr_kind:
+  case insert_expr_kind:
+  case replace_expr_kind:
+  case while_expr_kind:
+  case flowctl_expr_kind:
+  case exit_expr_kind:
+#ifndef ZORBA_NO_FULL_TEXT
+  case ft_expr_kind:
+#endif
+  default:
+    ZORBA_ASSERT(false);
+  }
+
+  node->setInUnsafeContext(ANNOTATION_TRUE);
+
+  ExprIterator iter(node);
+  while(!iter.done())
+  {
+    expr* child = (**iter);
+    if (child != NULL)
+    {
+      markInUnsafeContext(child);
+    }
+    iter.next();
+  }
+
+  return;
 }
 
 
