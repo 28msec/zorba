@@ -35,6 +35,7 @@ Optimizations:
   * Optimize positional predicates involving inequality (convert them to subsequence)
   * Optimize positional predicate that is in CNF with other predicates.
   * Optimized runtime group iterator based on latest group-by semantics.
+  * Removed two unnecessary steps from optimizer.
 
 Bug Fixes/Other Changes:
   * Fixed bug #1006960 (taking construction mode into account during no-copy rule)

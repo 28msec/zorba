@@ -1048,7 +1048,6 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   }
 
   ar & theModuleNamespace;
-  ar & theImportedBuiltinModules;
 
   ar & theBaseUriInfo;
 
