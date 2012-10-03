@@ -435,12 +435,12 @@ bool CopyNamespacesModeIterator::nextImpl(
   PlanIteratorState* state;
   zstring inherit, preserve;
 
-  if (theSctx->inherit_mode() == StaticContextConsts::inherit_ns)
+  if (theSctx->inherit_ns())
     inherit = "inherit";
   else
     inherit = "no-inherit";
 
-  if (theSctx->preserve_mode() == StaticContextConsts::preserve_ns)
+  if (theSctx->preserve_ns())
     preserve = "preserve";
   else
     preserve = "no-preserve";

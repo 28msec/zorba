@@ -102,11 +102,9 @@ void DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
   theTypePreserve =
     (theSctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
 
-  theNsPreserve =
-    (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
+  theNsPreserve = theSctx->preserve_ns();
 
-  theNsInherit =
-    (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
+  theNsInherit = theSctx->inherit_ns();
 }
 
 
@@ -293,11 +291,9 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
   theTypePreserve =
     (theSctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
 
-  theNsPreserve =
-    (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
+  theNsPreserve = theSctx->preserve_ns();
 
-  theNsInherit =
-    (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
+  theNsInherit = theSctx->inherit_ns();
 }
 
 

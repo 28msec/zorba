@@ -590,9 +590,9 @@ expr* MarkNodeCopyProps::apply(
       // Serialization may or may not be a "safe" op.
       static_context* sctx = node->get_sctx();
 
-      if (sctx->preserve_mode() == StaticContextConsts::preserve_ns)
+      if (sctx->preserve_ns())
       {
-        if (sctx->inherit_mode() == StaticContextConsts::inherit_ns)
+        if (sctx->inherit_ns())
         {
           // In this case, the result of the query should not contain any shared
           // node N, because if N was reached via a referencing tree, then
@@ -678,8 +678,7 @@ void MarkNodeCopyProps::applyInternal(
 
     static_context* sctx = e->get_sctx();
 
-    if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
-        sctx->inherit_mode() == StaticContextConsts::inherit_ns)
+    if (sctx->preserve_ns() && sctx->inherit_ns())
     {
       csize numPairs = e->num_pairs();
       for (csize i = 0; i < numPairs; ++i)
@@ -704,8 +703,7 @@ void MarkNodeCopyProps::applyInternal(
 
     static_context* sctx = e->get_sctx();
 
-    if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
-        sctx->inherit_mode() == StaticContextConsts::inherit_ns)
+    if (sctx->preserve_ns() && sctx->inherit_ns())
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(e->get_expr(), &udfCaller, sources);
@@ -881,8 +879,8 @@ void MarkNodeCopyProps::applyInternal(
         (e->get_expr_kind() == insert_expr_kind ||
          (e->get_expr_kind() == replace_expr_kind &&
           static_cast<replace_expr*>(e)->getType() == store::UpdateConsts::NODE)) &&
-        (sctx->inherit_mode() != StaticContextConsts::no_inherit_ns ||
-         sctx->preserve_mode() != StaticContextConsts::no_preserve_ns))
+        sctx->inherit_ns() &&
+        sctx->preserve_ns())
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(e->getSourceExpr(), &udfCaller, sources);
@@ -898,8 +896,7 @@ void MarkNodeCopyProps::applyInternal(
 
     static_context* sctx = e->get_sctx();
 
-    if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
-        sctx->inherit_mode() == StaticContextConsts::inherit_ns)
+    if (sctx->preserve_ns() && sctx->inherit_ns())
     {
       std::vector<copy_clause*>::const_iterator ite = e->begin();
       std::vector<copy_clause*>::const_iterator end = e->end();

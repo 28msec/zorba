@@ -1254,8 +1254,9 @@ bool JSONObjectInsertIterator::nextImpl(
 
   copymode.set(true,
                theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-               theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-               theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+               theSctx->preserve_ns(),
+               theSctx->inherit_ns());
+
   if (content->isNode() || content->isJSONItem())
   {
     content = content->copy(NULL, copymode);
@@ -1298,8 +1299,8 @@ bool JSONArrayInsertIterator::nextImpl(
 
   copymode.set(true, 
                theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-               theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-               theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+               theSctx->preserve_ns(),
+               theSctx->inherit_ns());
 
   while (consumeNext(member, theChildren[2].getp(), planState))
   {
@@ -1346,8 +1347,8 @@ bool JSONArrayAppendIterator::nextImpl(
 
   copymode.set(true, 
                theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-               theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-               theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+               theSctx->preserve_ns(),
+               theSctx->inherit_ns());
 
   while (consumeNext(member, theChildren[1].getp(), planState))
   {
@@ -1479,9 +1480,9 @@ bool JSONReplaceValueIterator::nextImpl(
   if (theCopyInput && (newValue->isNode() || newValue->isJSONItem()))
   {
     copymode.set(true, 
-      theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-      theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-      theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+                 theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+                 theSctx->preserve_ns(),
+                 theSctx->inherit_ns());
 
     newValue = newValue->copy(NULL, copymode);
   }
