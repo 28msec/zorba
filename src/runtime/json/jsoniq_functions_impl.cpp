@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -67,6 +67,72 @@ const zstring VALUE_KEY("value");
 const char * OPTIONS_KEY_PREFIX = "prefix";
 const char * OPTIONS_KEY_SER_PARAMS = "serialization-parameters";
 
+const char * SEQTYPE_ANYNODE  = "node()";
+const char * SEQTYPE_COMMENT  = "comment()";
+const char * SEQTYPE_DOCUMENT = "document-node()";
+const char * SEQTYPE_ELEMENT  = "element()";
+const char * SEQTYPE_PROCINST = "processing-instruction()";
+const char * SEQTYPE_TEXT     = "text()";
+
+const char * kind2str(const store::NodeKind& aKind)
+{
+  // we do not support attibutes and namespaces as they cannot be serialized
+  switch (aKind)
+  {
+  case store::StoreConsts::anyNode:      return SEQTYPE_ANYNODE;
+  case store::StoreConsts::commentNode:  return SEQTYPE_COMMENT;
+  case store::StoreConsts::documentNode: return SEQTYPE_DOCUMENT;
+  case store::StoreConsts::elementNode:  return SEQTYPE_ELEMENT;
+  case store::StoreConsts::piNode:       return SEQTYPE_PROCINST;
+  case store::StoreConsts::textNode:     return SEQTYPE_TEXT;
+  default: return "";
+  }
+}
+
+bool str2kind(const zstring& aString, store::NodeKind& aKind)
+{
+  switch(aString.at(0))
+  {
+  case 'c':
+    if (aString == SEQTYPE_COMMENT)
+    {
+      aKind = store::StoreConsts::commentNode;
+      return true;
+    }
+    break;
+  case 'd':
+    if (aString == SEQTYPE_DOCUMENT)
+    {
+      aKind = store::StoreConsts::documentNode;
+      return true;
+    }
+    break;
+  case 'e':
+  case 'n': // "node()" maps to element for backwards compatibility
+    if (aString == SEQTYPE_ELEMENT || aString == SEQTYPE_ANYNODE)
+    {
+      aKind = store::StoreConsts::elementNode;
+      return true;
+    }
+    break;
+  case 'p':
+    if (aString == SEQTYPE_PROCINST)
+    {
+      aKind = store::StoreConsts::piNode;
+      return true;
+    }
+    break;
+  case 't':
+    if (aString == SEQTYPE_TEXT)
+    {
+      aKind = store::StoreConsts::textNode;
+      return true;
+    }
+    break;
+  }
+  return false;
+}
+
 /*******************************************************************************
   json:decode-from-roundtrip($items as json-item()*,
                              $options as object()) as structured-item()*
@@ -97,6 +163,82 @@ parseQName(store::Item_t& aResult,
   }
 }
 
+void
+JSONDecodeFromRoundtripIterator::extractChildOfKind(
+  const store::Item_t& aParent,
+  const store::NodeKind& aKind,
+  store::Item_t& aChild)
+{
+  store::Iterator_t lIt = aParent->getChildren();
+  bool lFound = false;
+  lIt->open();
+  while (! lFound && lIt->next(aChild))
+  {
+    lFound = aChild->getNodeKind() == aKind;
+  }
+  lIt->close();
+  ZORBA_ASSERT(lFound);
+}
+
+bool
+JSONDecodeFromRoundtripIterator::decodeNode(
+  const store::Item_t& aSerializedNode,
+  const store::NodeKind& aKind,
+  store::Item_t& aResult) const
+{
+  store::LoadProperties lProperties;
+  lProperties.setStoreDocument(false);
+  store::Item_t lDoc;
+  zstring lXmlString;
+  switch (aKind)
+  {
+  case store::StoreConsts::commentNode:
+  case store::StoreConsts::piNode:
+  case store::StoreConsts::textNode:
+    {
+      // we have to wrap these 3 node kinds, so we cannot care about streams
+      aSerializedNode->getStringValue2(lXmlString);
+      lXmlString = "<a>" + lXmlString + "</a>";
+      std::istringstream lStream(lXmlString.c_str());
+      lDoc = GENV.getStore().loadDocument("", "", lStream, lProperties);
+    }
+    break;
+  default:
+    if (aSerializedNode->isStreamable())
+    {
+      lDoc = GENV.getStore().loadDocument(
+            "", "", aSerializedNode->getStream(), lProperties);
+    }
+    else
+    {
+      aSerializedNode->getStringValue2(lXmlString);
+      std::istringstream lStream(lXmlString.c_str());
+      lDoc = GENV.getStore().loadDocument("", "", lStream, lProperties);
+    }
+    break;
+  }
+  if (aKind == store::StoreConsts::documentNode)
+  {
+    aResult = lDoc;
+  }
+  else
+  {
+    store::Item_t lRootElem;
+    extractChildOfKind(lDoc, store::StoreConsts::elementNode, lRootElem);
+    if (aKind == store::StoreConsts::elementNode)
+    {
+      // if we needed an element we're done
+      aResult = lRootElem;
+    }
+    else
+    {
+      // otherwise we have to pass through the wrapper that we've created
+      extractChildOfKind(lRootElem, aKind, aResult);
+    }
+  }
+  return true;
+}
+
 bool
 JSONDecodeFromRoundtripIterator::decodeXDM(
   const store::Item_t& anObj,
@@ -125,32 +267,10 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
 
   zstring lTypeNameString;
   lTypeValueItem->getStringValue2(lTypeNameString);
-  if (lTypeNameString == "node()")
+  store::NodeKind lNodeKind;
+  if (str2kind(lTypeNameString, lNodeKind))
   {
-    store::LoadProperties lProperties;
-    lProperties.setStoreDocument(false);
-    store::Item_t lDoc;
-    if (lValueValueItem->isStreamable())
-    {
-      lDoc = GENV.getStore().loadDocument(
-            "", "", lValueValueItem->getStream(), lProperties);
-    }
-    else
-    {
-      zstring lXmlString;
-      lValueValueItem->getStringValue2(lXmlString);
-      std::istringstream lStream(lXmlString.c_str());
-      lDoc = GENV.getStore().loadDocument("", "", lStream, lProperties);
-    }
-    store::Iterator_t lIt = lDoc->getChildren();
-    bool lFound = false;
-    lIt->open();
-    while (! lFound && lIt->next(aResult))
-    {
-       lFound = aResult->getNodeKind() == store::StoreConsts::elementNode;
-    }
-    lIt->close();
-    ZORBA_ASSERT(lFound);
+    return decodeNode(lValueValueItem, lNodeKind, aResult);
   }
   else
   {
@@ -184,8 +304,8 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
                                 &lTmpNsCtx,
                                 loc);
     }
+    return true;
   }
-  return true;
 }
 
 bool
@@ -478,23 +598,12 @@ JSONEncodeForRoundtripIterator::encodeNode(
     store::Item_t& aResult,
     JSONEncodeForRoundtripIteratorState* aState) const
 {
-  if (aNode->getNodeKind() != store::StoreConsts::elementNode)
-  {
-    // this is a temporary solution until we decide if/how we encode
-    // node kinds
-    RAISE_ERROR(
-      zerr::ZXQP0004_NOT_IMPLEMENTED,
-      loc,
-      ERROR_PARAMS(store::StoreConsts::toString(aNode->getNodeKind()))
-    );
-  }
-
   std::vector<store::Item_t> names(2);
   std::vector<store::Item_t> values(2);
 
   {
     zstring typeKey = aState->thePrefix + TYPE_KEY;
-    zstring typeValue = "node()";
+    zstring typeValue = kind2str(aNode->getNodeKind());
     GENV_ITEMFACTORY->createString(names.at(0), typeKey);
     GENV_ITEMFACTORY->createString(values.at(0), typeValue);
   }

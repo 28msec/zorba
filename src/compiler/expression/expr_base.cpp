@@ -541,23 +541,23 @@ bool expr::containsRecursiveCall() const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue expr::getWillBeSerialized() const
+BoolAnnotationValue expr::getInUnsafeContext() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & WILL_BE_SERIALIZED_MASK) >> WILL_BE_SERIALIZED);
+         ((theFlags1 & IN_UNSAFE_CONTEXT_MASK) >> IN_UNSAFE_CONTEXT);
 }
 
 
-void expr::setWillBeSerialized(BoolAnnotationValue v)
+void expr::setInUnsafeContext(BoolAnnotationValue v)
 {
-  theFlags1 &= ~WILL_BE_SERIALIZED_MASK;
-  theFlags1 |= (v << WILL_BE_SERIALIZED);
+  theFlags1 &= ~IN_UNSAFE_CONTEXT_MASK;
+  theFlags1 |= (v << IN_UNSAFE_CONTEXT);
 }
 
 
-bool expr::willBeSerialized() const
+bool expr::inUnsafeContext() const
 {
-  BoolAnnotationValue v = getWillBeSerialized();
+  BoolAnnotationValue v = getInUnsafeContext();
   return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
 }
 

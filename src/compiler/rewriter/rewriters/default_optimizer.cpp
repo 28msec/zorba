@@ -109,12 +109,8 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   /*
  repeat2:
 
-  // This rule has been merged into the PartialEval rule
-  //driverExprSimplify.rewrite(rCtx);
-
   //
   driverMarkFreeVars.rewrite(rCtx);
-
   //
   driverEliminateVars.rewrite(rCtx);
 
@@ -182,8 +178,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       driverMarkExpr.rewrite(rCtx);
     }
   }
-
-  // formatSparqlXml getSparqlResult optional matches
 
   // Index Joins
   if (Properties::instance()->inferJoins())
