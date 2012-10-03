@@ -525,20 +525,15 @@ public:
 class CopyNamespacesDecl : public parsenode
 {
 protected:
-  StaticContextConsts::preserve_mode_t preserve_mode;
-  StaticContextConsts::inherit_mode_t inherit_mode;
+  bool thePreserveNamespaces;
+  bool theInheritNamespaces;
 
 public:
-  CopyNamespacesDecl(
-    const QueryLoc&,
-    StaticContextConsts::preserve_mode_t preserve_mode,
-    StaticContextConsts::inherit_mode_t  inherit_mode);
+  CopyNamespacesDecl(const QueryLoc&, bool preserve_ns, bool inherit_ns);
 
-  StaticContextConsts::preserve_mode_t get_preserve_mode() const
-  { return preserve_mode; }
+  bool preserve_ns() const { return thePreserveNamespaces; }
 
-  StaticContextConsts::inherit_mode_t  get_inherit_mode() const
-  { return inherit_mode; }
+  bool inherit_ns() const { return theInheritNamespaces; }
 
   void accept(parsenode_visitor&) const;
 };
