@@ -936,43 +936,8 @@ void MarkNodeCopyProps::applyInternal(
   case flowctl_expr_kind:
   case exit_expr_kind:
   case exit_catcher_expr_kind:
-  {
-    break;
-  }
-
   case block_expr_kind:
   {
-    block_expr* e = static_cast<block_expr *>(node);
-
-    if (e->is_sequential())
-    {
-      csize numChildren = e->size();
-      bool haveUpdates = false;
-
-      for (csize i = numChildren; i > 0; --i)
-      {
-        expr* child = (*e)[i-1];
-
-        if (haveUpdates)
-        {
-          std::vector<expr*> sources;
-          theSourceFinder->findNodeSources(child, &udfCaller, sources);
-          markSources(sources);
-        }
-        else
-        {
-          short scriptingKind = child->get_scripting_detail();
-
-          if (scriptingKind & APPLYING_EXPR ||
-              scriptingKind & EXITING_EXPR ||
-              scriptingKind & SEQUENTIAL_FUNC_EXPR)
-          {
-            haveUpdates = true;
-          }
-        }
-      }
-    }
-
     break;
   }
 
