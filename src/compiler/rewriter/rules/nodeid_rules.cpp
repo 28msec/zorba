@@ -870,19 +870,33 @@ void MarkNodeCopyProps::applyInternal(
   case replace_expr_kind:
   {
     update_expr_base* e = static_cast<update_expr_base*>(node);
+    expr_kind_t kind = e->get_expr_kind();
 
-    std::vector<expr*> sources;
-    theSourceFinder->findNodeSources(e->getTargetExpr(), &udfCaller, sources);
-    markSources(sources);
+    // The target node cannot be a shared node because the update would be seen
+    // by multiple trees. For updates that delete nodes (delete and replace), the
+    // whole tree must be standalone because we have to sum up the reference
+    // counts of all the nodes in the delete subtree and that won't work if the
+    // deleted subtree contains shared nodes.
+    if (kind == replace_expr_kind || kind == delete_expr_kind)
+    {
+      std::vector<expr*> sources;
+      theSourceFinder->findNodeSources(e->getTargetExpr(), &udfCaller, sources);
+      markSources(sources);
+    }
+    else
+    {
+      markInUnsafeContext(node);
+    }
 
     static_context* sctx = e->get_sctx();
 
+    // TODO: apply no-copy rule to insert and replace updates
     if (e->getSourceExpr() != NULL &&
-        (e->get_expr_kind() == insert_expr_kind ||
-         (e->get_expr_kind() == replace_expr_kind &&
+        (kind == insert_expr_kind ||
+         (kind == replace_expr_kind &&
           static_cast<replace_expr*>(e)->getType() == store::UpdateConsts::NODE)) &&
-        (sctx->inherit_mode() != StaticContextConsts::no_inherit_ns ||
-         sctx->preserve_mode() != StaticContextConsts::no_preserve_ns))
+        (sctx->inherit_mode() == StaticContextConsts::inherit_ns &&
+         sctx->preserve_mode() == StaticContextConsts::preserve_ns))
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(e->getSourceExpr(), &udfCaller, sources);
