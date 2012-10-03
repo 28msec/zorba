@@ -761,7 +761,7 @@ materialize_clause::materialize_clause(
 flwor_clause* materialize_clause::clone(expr::substitution_t& subst) const
 {
   // we will reach here under the following scenario:
-  // 1. We do plan seriazation
+  // 1. We do plan serialization
   // 2. getPlan is called on udf A; this causes a mat clause to be created
   //    during the codegen on A's body
   // 3. getPlan is called on udf B, which invokes A, and A's body is

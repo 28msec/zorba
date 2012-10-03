@@ -882,6 +882,9 @@ bool begin_visit(flwor_expr& v)
 
   if (v.is_sequential())
   {
+    pragma* pr = 0;
+    theCCB->lookup_pragma(&v, "materialize", pr);
+
     if (!isGeneral)
     {
       if (v.has_sequential_clauses())
@@ -924,19 +927,22 @@ bool begin_visit(flwor_expr& v)
         }
       }
 
-      // Note: a materialize clause may exist already in case plan serialization
-      // is on (see comment in materialize_clause::clone)
-      if (!isGeneral &&
-          v.get_return_expr()->is_sequential() &&
-          v.get_clause(numClauses-1)->get_kind() != flwor_clause::materialize_clause &&
-          (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
+      if (pr)
       {
-        materialize_clause* mat =
-        theCCB->theEM->create_materialize_clause(v.get_sctx(),
-                                            v.get_return_expr()->get_loc());
+        // Note: a materialize clause may exist already in case plan serialization
+        // is on (see comment in materialize_clause::clone)
+        if (!isGeneral &&
+            v.get_return_expr()->is_sequential() &&
+            v.get_clause(numClauses-1)->get_kind() != flwor_clause::materialize_clause &&
+            (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
+        {
+          materialize_clause* mat =
+          theCCB->theEM->create_materialize_clause(v.get_sctx(),
+                                              v.get_return_expr()->get_loc());
 
-        v.add_clause(mat);
-        ++numClauses;
+          v.add_clause(mat);
+          ++numClauses;
+        }
       }
     } // !isGeneral
 
@@ -967,7 +973,7 @@ bool begin_visit(flwor_expr& v)
               ++numForClauses;
           }
 
-          if (c->get_expr()->is_sequential())
+          if (pr && c->get_expr()->is_sequential())
           {
             if (k == flwor_clause::for_clause ||
                 k == flwor_clause::window_clause ||

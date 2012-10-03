@@ -46,7 +46,8 @@ SimpleCollection::SimpleCollection(
   theName(aName),
   theIsDynamic(isDynamic),
   theAnnotations(aAnnotations),
-  theNodeType(aNodeType)
+  theNodeType(aNodeType),
+  theVersion(0)
 {
   theId = GET_STORE().createCollectionId();
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
@@ -60,7 +61,8 @@ SimpleCollection::SimpleCollection(
 SimpleCollection::SimpleCollection()
   : 
   theIsDynamic(false),
-  theNodeType(NULL)
+  theNodeType(NULL),
+  theVersion(0)
 {
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
 }
@@ -167,6 +169,8 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
   else
 #endif
     node->setCollection(this, pos);
+
+  ++theVersion;
 }
 
 
@@ -275,6 +279,8 @@ xs_integer SimpleCollection::addNodes(
     theXmlTrees[targetPos + i].transfer(items[i]);
   }
 
+  ++theVersion;
+
   return xs_integer(targetPos);
 }
 
@@ -332,6 +338,7 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
 
     csize pos = to_xs_unsignedInt(position);
     theXmlTrees.erase(theXmlTrees.begin() + pos);
+    ++theVersion;
     return true;
   }
   else
@@ -382,6 +389,7 @@ bool SimpleCollection::removeNode(xs_integer position)
     }
 
     theXmlTrees.erase(theXmlTrees.begin() + pos);
+    ++theVersion;
     return true;
   }
 }
@@ -440,6 +448,7 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
       theXmlTrees.erase(theXmlTrees.begin() + pos);
     }
 
+    ++theVersion;
     return xs_integer(last - pos);
   }
 }
@@ -630,11 +639,14 @@ void SimpleCollection::CollectionIter::skip()
 ********************************************************************************/
 void SimpleCollection::CollectionIter::open()
 {
-  SYNC_CODE(theCollection->theLatch.rlock();)
+  //SYNC_CODE(theCollection->theLatch.rlock();)
   theHaveLock = true;
 
   theIterator = theCollection->theXmlTrees.begin();
   theEnd = theCollection->theXmlTrees.end();
+
+  theVersion = theCollection->theVersion;
+
   skip();
 }
 
@@ -644,6 +656,12 @@ void SimpleCollection::CollectionIter::open()
 ********************************************************************************/
 bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
+  if (theVersion != theCollection->theVersion)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZDDY0037_CONCURRENT_MODIFICATION,
+    ERROR_PARAMS(theCollection->getName()->getStringValue()));
+  }
+
   if (!theHaveLock) 
   {
     throw ZORBA_EXCEPTION(zerr::ZDDY0019_COLLECTION_ITERATOR_NOT_OPEN,
@@ -670,6 +688,9 @@ void SimpleCollection::CollectionIter::reset()
 {
   theIterator = theCollection->theXmlTrees.begin();
   theEnd = theCollection->theXmlTrees.end();
+
+  theVersion = theCollection->theVersion;
+
   skip();
 }
 
@@ -681,7 +702,7 @@ void SimpleCollection::CollectionIter::close()
 {
   assert(theHaveLock);
   theHaveLock = false;
-  SYNC_CODE(theCollection->theLatch.unlock();)
+  //SYNC_CODE(theCollection->theLatch.unlock();)
 }
 
 } // namespace simplestore

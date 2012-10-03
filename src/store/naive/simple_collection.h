@@ -55,6 +55,7 @@ public:
     checked_vector<store::Item_t>::iterator theEnd;
     bool                                    theHaveLock;
     xs_integer                              theSkip;
+    ulong                                   theVersion;
 
   public:
     CollectionIter(SimpleCollection* collection, 
@@ -82,6 +83,7 @@ protected:
   const std::vector<store::Annotation_t> theAnnotations;
 
   store::Item_t                          theNodeType;
+  ulong                                  theVersion;
 
   SYNC_CODE(Latch                        theLatch;)
 

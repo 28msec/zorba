@@ -375,6 +375,7 @@ extern entry const dict_en[] = {
   { "ZDDY0034", "\"$1\": index range-value probe has search keys with incompatible types" },
   { "ZDDY0035", "\"$1\": index inserting more than one key not allowed for general index" },
   { "ZDDY0036", "attempt to delete non-root node from collection \"$1\"" },
+  { "ZDDY0037", "\"$1\": collection was modified while reading" },
   { "ZDST0001", "\"$1\": collection already declared" },
   { "ZDST0002", "\"$1\": collection already imported into module \"$2\"" },
   { "ZDST0003", "\"$1\": collection declaration not allowed in main module" },

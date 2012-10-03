@@ -2208,6 +2208,10 @@
       <value>attempt to delete non-root node from collection "$1"</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0037" name="CONCURRENT_MODIFICATION">
+      <value>"$1": collection was modified while reading</value>
+    </diagnostic>
+
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">
       <value>"$1": collection already declared</value>
     </diagnostic>
