@@ -1344,30 +1344,22 @@ EmptyOrderDecl :
 CopyNamespacesDecl :
     DECLARE COPY_NAMESPACES  PRESERVE  COMMA  INHERIT
     {
-      $$ = new CopyNamespacesDecl(LOC(@$),
-                                  StaticContextConsts::preserve_ns,
-                                  StaticContextConsts::inherit_ns);
+      $$ = new CopyNamespacesDecl(LOC(@$), true, true);
     }
   |
     DECLARE COPY_NAMESPACES  PRESERVE  COMMA  NO_INHERIT
     {
-      $$ = new CopyNamespacesDecl(LOC(@$),
-                                  StaticContextConsts::preserve_ns,
-                                  StaticContextConsts::no_inherit_ns);
+      $$ = new CopyNamespacesDecl(LOC(@$), true, false);
     }
   |
     DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  INHERIT
     {
-      $$ = new CopyNamespacesDecl(LOC(@$),
-                                  StaticContextConsts::no_preserve_ns,
-                                  StaticContextConsts::inherit_ns);
+      $$ = new CopyNamespacesDecl(LOC(@$), false, true);
     }
   |
     DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  NO_INHERIT
     {
-      $$ = new CopyNamespacesDecl(LOC(@$),
-                                  StaticContextConsts::no_preserve_ns,
-                                  StaticContextConsts::no_inherit_ns);
+      $$ = new CopyNamespacesDecl(LOC(@$), false, false);
     }
 ;
 

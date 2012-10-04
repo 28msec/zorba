@@ -12,16 +12,16 @@ New Features:
   * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the
     beginning of the XML document (requested in bug #1016606).
   * Roundtripping of JSON items has been moved from the serializer to encoding functions.
+  * Added uuid to public API.
   * Best-effort serialization of atomic values in JSON items.
   * Positional pagination support for index probes 
   * Recognize the {http://www.zorba-xquery.com/extensions}no-copy pragma to avoid
     copying nodes before insertion into a collection.
-  * Recognize the no-copy pragma to avoid copying nodes before insertion into
-    a collection.
   * Added createUntypedAtomic to API's ItemFactory.
   * new xqDoc feature; reporting collections and indexes
   * new xqDoc function parameter to enable/disable xqDoc generation of certain
     components
+  * Adding new external module read-pdf, it converts PDF documents to text or rendered images.
 
 Optimizations:
   * Improved memory management for compiler expressions (no more ref counting)
@@ -35,12 +35,14 @@ Optimizations:
   * Optimize positional predicates involving inequality (convert them to subsequence)
   * Optimize positional predicate that is in CNF with other predicates.
   * Optimized runtime group iterator based on latest group-by semantics.
+  * Removed two unnecessary steps from optimizer.
 
 Bug Fixes/Other Changes:
   * Fixed bug #1006960 (taking construction mode into account during no-copy rule)
   * Fixed bug #950621 (Removed two-arg version of fn:parse-xml(); use XML module
     function xml:parse() instead)
   * Fixed bug #867227 (Improved error message for missing commas)
+  * Fixed memory leak during runtime group-by"
   * Fixed bug #1024033 and #1023170 (segfaults in parse-xml:parse())
   * Fixed bug #898792 (Dynamically computed strings can now be cast to xs:QName)
   * Fixed bug in determining the IsId property of constructed attribute nodes
@@ -132,7 +134,6 @@ Bug Fixes/Other Changes:
   * The XML plan serialization format is not supported anymore
 
 
->>>>>>> MERGE-SOURCE
 version 2.5
 
 New Features:

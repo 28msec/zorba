@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 #include <zorba/config.h>
+#include <zorba/util/uuid.h>
 
 #include <cstdio>                       /* for sprintf(3) */
 
@@ -29,8 +30,6 @@
 #else
 # error "Unsupported operating system for generating UUIDs"
 #endif
-
-#include "uuid.h"
 
 using namespace std;
 

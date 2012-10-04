@@ -2677,8 +2677,8 @@ void* begin_visit(const CopyNamespacesDecl& v)
 void end_visit(const CopyNamespacesDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-  theSctx->set_inherit_mode(v.get_inherit_mode ());
-  theSctx->set_preserve_mode(v.get_preserve_mode ());
+  theSctx->set_inherit_ns(v.inherit_ns());
+  theSctx->set_preserve_ns(v.preserve_ns());
 }
 
 

@@ -47,8 +47,8 @@ bool fn_zorba_node_copy::mustCopyInputNodes(expr* fo, csize input) const
 {
   static_context* lSctx = fo->get_sctx();
   return
-    lSctx->preserve_mode() == StaticContextConsts::no_preserve_ns ||
-    lSctx->construction_mode() == StaticContextConsts::cons_strip;
+    (lSctx->preserve_ns() == false ||
+     lSctx->construction_mode() == StaticContextConsts::cons_strip);
 }
  
 } /* namespace zorba */
