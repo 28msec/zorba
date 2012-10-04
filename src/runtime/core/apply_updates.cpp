@@ -200,7 +200,7 @@ void apply_updates(
     // Apply updates
     pul->setValidator(&validator);
     pul->setICChecker(&icChecker);
-    bool inherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns);
+    bool inherit = sctx->inherit_ns();
     pul->applyUpdates(inherit);
 
     // Rebuild the indices that must be rebuilt from scratch

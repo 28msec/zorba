@@ -399,13 +399,15 @@ TryCatchIterator::bindErrorVars(
         LetVarConstIter lErrorObjVarIterEnd = lIter->second.end();
 	      std::vector<store::Item_t> eObjs;
 
-	      if ( UserException const *ue = dynamic_cast<UserException const*>( &e ) ) {
+	      if ( UserException const *ue = dynamic_cast<UserException const*>( &e ) )
+        {
 	      	UserException::error_object_type const &eo = ue->error_object();
 	      	if ( !eo.empty() )
 	      		convert_error_object( eo, &eObjs );
 	      }
 
-        for ( ; lErrorObjVarIter != lErrorObjVarIterEnd; lErrorObjVarIter++ ) {
+        for ( ; lErrorObjVarIter != lErrorObjVarIterEnd; lErrorObjVarIter++ )
+        {
           store::Iterator_t lErrorObjIter = eObjs.empty() ?
 	      		new ItemIterator() : new ItemIterator(eObjs);
           lErrorObjIter->open();
@@ -604,10 +606,11 @@ TryCatchIterator::closeImpl(PlanState& planState)
 {
   theChild->close(planState);
 
-  std::vector<TryCatchIterator::CatchClause>::iterator lIter = theCatchClauses.begin();
-  std::vector<TryCatchIterator::CatchClause>::iterator lEnd = theCatchClauses.end();
+  std::vector<CatchClause>::iterator lIter = theCatchClauses.begin();
+  std::vector<CatchClause>::iterator lEnd = theCatchClauses.end();
 
-  for ( ; lIter != lEnd; ++lIter ) {
+  for ( ; lIter != lEnd; ++lIter )
+  {
     ( *lIter ).catch_expr->close(planState);
   }
 
@@ -619,9 +622,10 @@ void TryCatchIterator::accept(PlanIterVisitor &v) const
 {
   v.beginVisit(*this);
   theChild->accept ( v );
-  std::vector<TryCatchIterator::CatchClause>::const_iterator lIter = theCatchClauses.begin();
-  std::vector<TryCatchIterator::CatchClause>::const_iterator lEnd = theCatchClauses.end();
-  for ( ; lIter != lEnd; ++lIter ) {
+  std::vector<CatchClause>::const_iterator lIter = theCatchClauses.begin();
+  std::vector<CatchClause>::const_iterator lEnd = theCatchClauses.end();
+  for ( ; lIter != lEnd; ++lIter )
+  {
     ( *lIter ).catch_expr->accept ( v );
   }
   v.endVisit(*this);

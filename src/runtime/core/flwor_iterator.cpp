@@ -1456,7 +1456,7 @@ void FLWORIterator::materializeGroupTuple(
 {
   ZORBA_ASSERT(theGroupByClause);
 
-  GroupTuple* groupTuple = new GroupTuple();
+  std::auto_ptr<GroupTuple> groupTuple(new GroupTuple());
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
 
   std::vector<GroupingSpec> groupSpecs = theGroupByClause->theGroupingSpecs;
@@ -1480,7 +1480,7 @@ void FLWORIterator::materializeGroupTuple(
   std::vector<store::TempSeq_t>* nongroupVarSequences = 0;
   csize numNonGroupingSpecs = nongroupingSpecs.size();
 
-  if (groupMap->get(groupTuple, nongroupVarSequences))
+  if (groupMap->get(groupTuple.get(), nongroupVarSequences))
   {
     for (csize i = 0; i < numNonGroupingSpecs; ++i)
     {
@@ -1491,8 +1491,6 @@ void FLWORIterator::materializeGroupTuple(
 
       nongroupingSpecs[i].reset(planState);
     }
-
-    delete groupTuple;
   }
   else
   {
@@ -1510,7 +1508,7 @@ void FLWORIterator::materializeGroupTuple(
       nongroupingSpecs[i].reset(planState);
     }
 
-    groupMap->insert(groupTuple, nongroupVarSequences);
+    groupMap->insert(groupTuple.release(), nongroupVarSequences);
   }
 }
 

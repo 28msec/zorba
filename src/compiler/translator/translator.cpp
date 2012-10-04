@@ -2677,8 +2677,8 @@ void* begin_visit(const CopyNamespacesDecl& v)
 void end_visit(const CopyNamespacesDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-  theSctx->set_inherit_mode(v.get_inherit_mode ());
-  theSctx->set_preserve_mode(v.get_preserve_mode ());
+  theSctx->set_inherit_ns(v.inherit_ns());
+  theSctx->set_preserve_ns(v.preserve_ns());
 }
 
 
@@ -10787,13 +10787,13 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           scriptingKind = SEQUENTIAL_FUNC_EXPR;
         }
 
-        eval_expr* evalExpr =
-        theExprManager->create_eval_expr(theCCB,
-                                         theRootSctx,
-                                         loc,
-                                         foExpr->get_arg(0),
-                                         scriptingKind,
-                                         theNSCtx);
+        eval_expr* evalExpr = theExprManager->
+        create_eval_expr(theRootSctx,
+                         loc,
+                         foExpr->get_arg(0),
+                         scriptingKind,
+                         theNSCtx);
+
         resultExpr = evalExpr;
 
         std::vector<VarInfo*> inscopeVars;
@@ -10803,22 +10803,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         for (csize i = 0; i < numVars; ++i)
         {
-          var_expr* ve = inscopeVars[i]->getVar();
-
-          var_expr* evalVar = create_var(loc,
-                                         ve->get_name(),
-                                         var_expr::eval_var,
-                                         ve->get_return_type());
-
-          // At this point, the domain expr of an eval var is always another var.
-          // However, that other var may be later inlined, so in general, the domain
-          // expr of an eval var may be any expr.
-          expr* valueExpr = NULL;
-
-          if (ve->get_kind() != var_expr::prolog_var)
-            valueExpr = ve;
-
-          evalExpr->add_var(evalVar, valueExpr);
+          evalExpr->add_var(inscopeVars[i]->getVar());
         }
 
         break;
@@ -10870,7 +10855,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         }
 
         // create a flwor with LETs to hold the parameters
-        flwor_expr* flworExpr = theExprManager->create_flwor_expr(theRootSctx, loc, false);
+        flwor_expr* flworExpr = theExprManager->
+        create_flwor_expr(theRootSctx, loc, false);
 
         // wrap function's QName
         expr* qnameExpr = wrap_in_type_promotion(arguments[0],
@@ -10931,8 +10917,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                     GET_BUILTIN_FUNCTION(FN_LOCAL_NAME_FROM_QNAME_1),
                     temp_vars[0]);
 
-        localExpr =
-        theExprManager->create_fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
+        localExpr = theExprManager->
+        create_fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
 
         // qnameExpr := concat("Q{",
         //                     namespaceExpr,
@@ -10946,61 +10932,33 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         concat_args.push_back(localExpr);
         concat_args.push_back(theExprManager->create_const_expr(theRootSctx, loc, query_params));
 
-        qnameExpr = theExprManager->create_fo_expr(theRootSctx,
-                                                   loc,
-                                                   GET_BUILTIN_FUNCTION(FN_CONCAT_N),
-                                                   concat_args);
+        qnameExpr = theExprManager->
+        create_fo_expr(theRootSctx,
+                       loc,
+                       GET_BUILTIN_FUNCTION(FN_CONCAT_N),
+                       concat_args);
 
-        eval_expr* evalExpr =
-        theExprManager->create_eval_expr(theCCB,
-                                         theRootSctx,
-                                         loc,
-                                         qnameExpr,
-                                         scriptingKind,
-                                         theNSCtx);
+        eval_expr* evalExpr = theExprManager->
+        create_eval_expr(theRootSctx,
+                         loc,
+                         qnameExpr,
+                         scriptingKind,
+                         theNSCtx);
 
         flworExpr->set_return_expr(evalExpr);
         resultExpr = flworExpr;
 
-#if 0
-        std::vector<VarInfo*> inscopeVars;
-        theSctx->getVariables(inscopeVars);
-
-        csize numVars = inscopeVars.size();
-
-        for (csize i = 0; i < numVars; ++i)
-        {
-          var_expr* ve = inscopeVars[i]->getVar();
-
-          if (ve->get_kind() == var_expr::prolog_var)
-            continue;
-
-          var_expr* evalVar = create_var(loc,
-                                         ve->get_name(),
-                                         var_expr::eval_var,
-                                         ve->get_return_type());
-
-          expr* valueExpr = ve;
-          evalExpr->add_var(evalVar, valueExpr);
-        }
-#endif
-
         for (csize i = 0; i < temp_vars.size(); ++i)
         {
-          var_expr* evalVar = create_var(loc,
-                                          temp_vars[i]->get_name(),
-                                          var_expr::eval_var,
-                                          temp_vars[i]->get_return_type());
-
-          expr* valueExpr = temp_vars[i];
-          evalExpr->add_var(evalVar, valueExpr);
+          evalExpr->add_var(temp_vars[i]);
         }
 
         break;
       }
 
-      default: {}
-
+      default: 
+      {
+      }
     } // switch
 
     f->processPragma(resultExpr, theScopedPragmas);
