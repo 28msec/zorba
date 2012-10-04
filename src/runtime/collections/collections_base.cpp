@@ -52,8 +52,8 @@ void getCopyMode(store::CopyMode& copyMode, const static_context* sctx)
 {
   copyMode.set(true, 
                sctx->construction_mode() == StaticContextConsts::cons_preserve,
-               sctx->preserve_mode() == StaticContextConsts::preserve_ns,
-               sctx->inherit_mode() == StaticContextConsts::inherit_ns);
+               sctx->preserve_ns(),
+               sctx->inherit_ns());
 }
 
 } /* namespace zorba */

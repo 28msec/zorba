@@ -1168,7 +1168,7 @@ expr* trycatch_expr::cloneImpl(substitution_t& subst) const
     lTryCatch->add_catch_expr((*lIter)->clone(subst));
   }
 
-  for (uint32_t i = 0; i < clause_count(); ++i)
+  for (csize i = 0; i < clause_count(); ++i)
   {
     lTryCatch->add_clause(theCatchClauses[i]->clone(subst));
   }
@@ -1181,7 +1181,6 @@ expr* trycatch_expr::cloneImpl(substitution_t& subst) const
 
 ********************************************************************************/
 eval_expr::eval_expr(
-    CompilerCB* creating_ccb,
     CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -1189,7 +1188,7 @@ eval_expr::eval_expr(
     expr_script_kind_t scriptingKind,
     namespace_context* nsCtx)
   :
-  namespace_context_base_expr(creating_ccb, sctx, loc, eval_expr_kind, nsCtx),
+  namespace_context_base_expr(ccb, sctx, loc, eval_expr_kind, nsCtx),
   theExpr(e),
   theInnerScriptingKind(scriptingKind),
   theDoNodeCopy(false)
@@ -1225,20 +1224,25 @@ void eval_expr::compute_scripting_kind()
 
 expr* eval_expr::cloneImpl(substitution_t& s) const
 {
-  eval_expr* new_eval = theCCB->theEM->create_eval_expr(
-                                               NULL,
-                                               theSctx,
-                                               theLoc,
-                                               theExpr->clone(s),
-                                               theInnerScriptingKind,
-                                               theNSCtx.getp());
+  eval_expr* new_eval = theCCB->theEM->
+  create_eval_expr(theSctx,
+                   theLoc,
+                   theExpr->clone(s),
+                   theInnerScriptingKind,
+                   theNSCtx.getp());
+
   new_eval->setNodeCopy(theDoNodeCopy);
 
-  for (csize i = 0; i < theVars.size(); ++i)
+  new_eval->theOuterVarNames = theOuterVarNames;
+  new_eval->theOuterVarTypes = theOuterVarTypes;
+
+  csize numVars = theOuterVarNames.size();
+
+  new_eval->theArgs.resize(numVars);
+
+  for (csize i = 0; i < numVars; ++i)
   {
-    var_expr* cloneVar = dynamic_cast<var_expr*>(theVars[i]->clone(s));
-    assert(cloneVar != NULL);
-    new_eval->add_var(cloneVar, (theArgs[i] ? theArgs[i]->clone(s) : NULL));
+    new_eval->theArgs[i] = theArgs[i]->clone(s);
   }
 
   return new_eval;
