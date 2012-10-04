@@ -868,16 +868,30 @@ void MarkNodeCopyProps::applyInternal(
   case replace_expr_kind:
   {
     update_expr_base* e = static_cast<update_expr_base*>(node);
+    expr_kind_t kind = e->get_expr_kind();
 
-    std::vector<expr*> sources;
-    theSourceFinder->findNodeSources(e->getTargetExpr(), &udfCaller, sources);
-    markSources(sources);
+    // The target node cannot be a shared node because the update would be seen
+    // by multiple trees. For updates that delete nodes (delete and replace), the
+    // whole tree must be standalone because we have to sum up the reference
+    // counts of all the nodes in the delete subtree and that won't work if the
+    // deleted subtree contains shared nodes.
+    if (kind == replace_expr_kind || kind == delete_expr_kind)
+    {
+      std::vector<expr*> sources;
+      theSourceFinder->findNodeSources(e->getTargetExpr(), &udfCaller, sources);
+      markSources(sources);
+    }
+    else
+    {
+      markInUnsafeContext(node);
+    }
 
     static_context* sctx = e->get_sctx();
 
+    // TODO: apply no-copy rule to insert and replace updates
     if (e->getSourceExpr() != NULL &&
-        (e->get_expr_kind() == insert_expr_kind ||
-         (e->get_expr_kind() == replace_expr_kind &&
+        (kind == insert_expr_kind ||
+         (kind == replace_expr_kind &&
           static_cast<replace_expr*>(e)->getType() == store::UpdateConsts::NODE)) &&
         sctx->inherit_ns() &&
         sctx->preserve_ns())
@@ -919,43 +933,8 @@ void MarkNodeCopyProps::applyInternal(
   case flowctl_expr_kind:
   case exit_expr_kind:
   case exit_catcher_expr_kind:
-  {
-    break;
-  }
-
   case block_expr_kind:
   {
-    block_expr* e = static_cast<block_expr *>(node);
-
-    if (e->is_sequential())
-    {
-      csize numChildren = e->size();
-      bool haveUpdates = false;
-
-      for (csize i = numChildren; i > 0; --i)
-      {
-        expr* child = (*e)[i-1];
-
-        if (haveUpdates)
-        {
-          std::vector<expr*> sources;
-          theSourceFinder->findNodeSources(child, &udfCaller, sources);
-          markSources(sources);
-        }
-        else
-        {
-          short scriptingKind = child->get_scripting_detail();
-
-          if (scriptingKind & APPLYING_EXPR ||
-              scriptingKind & EXITING_EXPR ||
-              scriptingKind & SEQUENTIAL_FUNC_EXPR)
-          {
-            haveUpdates = true;
-          }
-        }
-      }
-    }
-
     break;
   }
 
