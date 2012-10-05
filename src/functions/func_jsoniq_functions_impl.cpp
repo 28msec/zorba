@@ -41,9 +41,7 @@ bool op_zorba_json_array_insert::mustCopyInputNodes(expr* fo, csize producer) co
 {
   static_context* sctx = fo->get_sctx();
 
-  if (producer == 2 &&
-      (sctx->preserve_ns() ||
-       sctx->construction_mode() != StaticContextConsts::cons_preserve))
+  if (producer == 2 && sctx->preserve_ns() && sctx->inherit_ns())
   {
     return true;
   }
@@ -57,7 +55,7 @@ bool op_zorba_json_array_insert::mustCopyInputNodes(expr* fo, csize producer) co
 ********************************************************************************/
 bool op_zorba_json_object_insert::mustCopyInputNodes(expr* fo, csize producer) const
 {
-  if (producer == 2 && fo->get_sctx()->preserve_ns())
+  if (producer == 2 && fo->get_sctx()->preserve_ns() && fo->get_sctx()->inherit_ns())
   {
     return true;
   }
@@ -73,9 +71,7 @@ bool op_zorba_json_replace_value::mustCopyInputNodes(expr* fo, csize producer) c
 {
   static_context* sctx = fo->get_sctx();
 
-  if (producer == 2 &&
-      (sctx->preserve_ns() ||
-       sctx->construction_mode() != StaticContextConsts::cons_preserve))
+  if (producer == 2 && sctx->preserve_ns() && sctx->inherit_ns())
   {
     return true;
   }
@@ -105,9 +101,7 @@ bool op_zorba_json_array_append::mustCopyInputNodes(expr* fo, csize producer) co
 {
   static_context* sctx = fo->get_sctx();
 
-  if (producer == 2 &&
-      (sctx->preserve_ns() ||
-       sctx->construction_mode() != StaticContextConsts::cons_preserve))
+  if (producer == 2 && sctx->preserve_ns() && sctx->inherit_ns())
   {
     return true;
   }
