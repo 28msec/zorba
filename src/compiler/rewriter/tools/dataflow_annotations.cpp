@@ -808,13 +808,13 @@ SourceFinder::~SourceFinder()
 ********************************************************************************/
 void SourceFinder::findNodeSources(
     expr* node,
-    UDFCallChain* udfCaller,
+    fo_expr* udfCaller,
     std::vector<expr*>& sources)
 {
   theStartingUdf = NULL;
 
-  if (udfCaller->theFo)
-    theStartingUdf = static_cast<user_function*>(udfCaller->theFo->get_func());
+  if (udfCaller)
+    theStartingUdf = static_cast<user_function*>(udfCaller->get_func());
 
   findNodeSourcesRec(node, sources, theStartingUdf);
 
@@ -822,43 +822,13 @@ void SourceFinder::findNodeSources(
   {
     expr* source = sources[i];
 
-    if (source->get_expr_kind() == var_expr_kind)
-    {
-      var_expr* varExpr = static_cast<var_expr*>(source);
+    ZORBA_ASSERT(source->get_expr_kind() == doc_expr_kind ||
+                 source->get_expr_kind() == elem_expr_kind);
 
-      ZORBA_ASSERT(udfCaller != NULL);
-      ZORBA_ASSERT(varExpr->get_kind() == var_expr::arg_var);
+    user_function* udf = theSourceUdfMap.find(source)->second;
 
-      sources.erase(sources.begin() + i);
-      --i;
-
-      // Note: If this method is called to find the sources of an expr within the
-      // body of a function_item, then udfCaller->theFo will be NULL.
-      while(udfCaller->theFo && varExpr->get_udf() != udfCaller->theFo->get_func())
-      {
-        udfCaller = udfCaller->thePrev;
-      }
-
-      if (udfCaller->theFo)
-      {
-        fo_expr* foExpr = udfCaller->theFo;
-        expr* foArg = foExpr->get_arg(varExpr->get_param_pos());
-        std::vector<expr*> argSources;
-        findNodeSources(foArg, udfCaller->thePrev, argSources);
-
-        sources.insert(sources.end(), argSources.begin(), argSources.end());
-      }
-    }
-    else
-    {
-      ZORBA_ASSERT(source->get_expr_kind() == doc_expr_kind ||
-                   source->get_expr_kind() == elem_expr_kind);
-
-      user_function* udf = theSourceUdfMap.find(source)->second;
-
-      if (udf)
-        udf->invalidatePlan();
-    }
+    if (udf)
+      udf->invalidatePlan();
   }
 }
 
@@ -946,9 +916,6 @@ void SourceFinder::findNodeSourcesRec(
 
     case var_expr::arg_var:
     {
-      if (std::find(sources.begin(), sources.end(), node) == sources.end())
-        sources.push_back(node);
-
       std::vector<expr*>* varSources = new std::vector<expr*>;
 
       if (theVarSourcesMap.insert(VarSourcesPair(e, varSources)).second == false)
@@ -1127,15 +1094,8 @@ void SourceFinder::findNodeSourcesRec(
         {
           // must do this before calling findNodeSourcesRec in order to break
           // recursion cycle
-          if (ite == theUdfSourcesMap.end())
-          {
-            udfSources = new std::vector<expr*>;
-            theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources));
-          }
-          else
-          {
-            udfSources = (*ite).second;
-          }
+          udfSources = new std::vector<expr*>;
+          theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources));
 
           findNodeSourcesRec(udf->getBody(), *udfSources, udf);
 
@@ -1160,18 +1120,22 @@ void SourceFinder::findNodeSourcesRec(
         {
           expr* source = (*udfSources)[i];
 
-          if (source->get_expr_kind() == var_expr_kind)
-          {
-            var_expr* argVar = static_cast<var_expr*>(source);
-            ZORBA_ASSERT(argVar->get_kind() == var_expr::arg_var);
-            expr* argExpr = e->get_arg(argVar->get_param_pos());
+          if (std::find(sources.begin(), sources.end(), source) == sources.end())
+            sources.push_back(source);
+        }
 
-            findNodeSourcesRec(argExpr, sources, currentUdf);
-          }
-          else
+        // if an arg var of this udf has been marked as a source before, it
+        // means that that var is consumed in some unsafe operation, so we
+        // now have to find the sources of the arg expr and mark them.
+        csize numArgs = e->num_args();
+
+        for (csize i = 0; i < numArgs; ++i)
+        {
+          var_expr* argVar = udf->getArgVar(i);
+
+          if (theVarSourcesMap.find(argVar) != theVarSourcesMap.end())
           {
-            if (std::find(sources.begin(), sources.end(), source) == sources.end())
-              sources.push_back(source);
+            findNodeSourcesRec(e->get_arg(i), sources, currentUdf);
           }
         }
       } // not recursive call
