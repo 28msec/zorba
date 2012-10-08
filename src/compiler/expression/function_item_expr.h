@@ -48,6 +48,7 @@ protected:
   dynamic_function_invocation_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* anExpr,
       const std::vector<expr*>& args);
@@ -58,8 +59,6 @@ public:
   const std::vector<expr*>& get_args() const { return theArgs; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -116,6 +115,7 @@ protected:
   function_item_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       const store::Item* aQName,
       function* f,
@@ -124,6 +124,7 @@ protected:
   function_item_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc);
 
 public:
@@ -142,8 +143,6 @@ public:
   const std::vector<expr*>& get_vars() const;
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
