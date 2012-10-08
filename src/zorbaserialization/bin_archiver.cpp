@@ -137,7 +137,7 @@ BinArchiver::~BinArchiver()
 BinArchiver::BinArchiver(std::ostream* os)
   :
   Archiver(true),
-  theStringPool(1024, false, false),
+  theStringPool(1024, false),
   theFirstBinaryString(0)
 {
   this->is = NULL;
