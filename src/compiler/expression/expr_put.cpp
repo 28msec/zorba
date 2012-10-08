@@ -40,6 +40,7 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/pragma.h"
 #include "compiler/parser/parse_constants.h"
 
 #include "diagnostics/assert.h"
@@ -434,6 +435,7 @@ ostream& flwor_expr::put(ostream& os) const
   END_PUT();
 }
 
+
 ostream& promote_expr::put(ostream& os) const
 {
   os << indent << "promote_expr " << theTargetType->toString()
@@ -442,17 +444,19 @@ ostream& promote_expr::put(ostream& os) const
   END_PUT();
 }
 
-ostream& trycatch_expr::put( ostream& os) const
+
+ostream& trycatch_expr::put(ostream& os) const
 {
   BEGIN_PUT( trycatch_expr );
 
   theTryExpr->put(os);
 
-  ulong numClauses = (ulong)theCatchClauses.size();
+  csize numClauses = theCatchClauses.size();
 
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
-    catch_clause* cc = theCatchClauses[i];
+    // TODO: print the error codes and vars of the catch clause
+    //catch_clause* cc = theCatchClauses[i];
     os << indent << "CATCH ";
     os << "\n";
     theCatchExprs[i]->put(os);
@@ -461,20 +465,28 @@ ostream& trycatch_expr::put( ostream& os) const
   return os;
 }
 
+
 ostream& eval_expr::put(ostream& os) const
 {
   BEGIN_PUT( eval_expr );
-  for (ulong i = 0; i < theArgs.size(); i++)
+
+  for (csize i = 0; i < theArgs.size(); i++)
   {
-    os << indent << "using $" << theVars[i]->get_name()->getStringValue() << " := [";
-    os << endl << inc_indent;
+    os << indent << "using $"
+       << theOuterVarNames[i]->getStringValue()
+       << " := [" << endl << inc_indent;
+
     if (theArgs[i])
       theArgs[i]->put(os);
+
     os << dec_indent << indent << "]" << endl;
   }
-  theExpr->put (os);
+
+  theExpr->put(os);
+
   END_PUT();
 }
+
 
 ostream& function_trace_expr::put(ostream& os) const
 {

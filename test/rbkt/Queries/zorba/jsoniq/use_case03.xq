@@ -1,6 +1,6 @@
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
-import module namespace j = "http://www.jsoniq.org/functions";
+import module namespace j = "http://jsoniq.org/functions";
 
 ddl:create(xs:QName("sales"));
 ddl:create(xs:QName("products"));

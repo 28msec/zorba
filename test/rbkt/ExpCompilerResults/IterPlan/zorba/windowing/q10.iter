@@ -17,7 +17,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="seq">
+  <CtxVarDeclareIterator varid="4" varname="seq">
     <FnDocIterator>
       <SingletonIterator value="xs:string(person_events.xml)"/>
     </FnDocIterator>
@@ -31,18 +31,18 @@ Iterator tree for main query:
             <WindowVariable name="w">
               <NodeSortIterator distinct="true" ascending="true">
                 <flwor::FLWORIterator>
-                  <ForVariable name="$$dot">
+                  <ForVariable name="$$context-item">
                     <NodeDistinctIterator allow-atomics="false" check-only="false">
                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
                         <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                          <CtxVarIterator varid="2" varname="seq" varkind="global"/>
+                          <CtxVarIterator varid="4" varname="seq" varkind="global"/>
                         </TreatIterator>
                       </ChildAxisIterator>
                     </NodeDistinctIterator>
                   </ForVariable>
-                  <ForVariable name="$$dot">
+                  <ForVariable name="$$context-item">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
-                      <ForVarIterator varname="$$dot"/>
+                      <ForVarIterator varname="$$context-item"/>
                     </ChildAxisIterator>
                   </ForVariable>
                   <WhereClause>
@@ -51,7 +51,7 @@ Iterator tree for main query:
                         <PromoteIterator type="xs:anyAtomicType">
                           <FnDataIterator>
                             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill allowed="0">
-                              <ForVarIterator varname="$$dot"/>
+                              <ForVarIterator varname="$$context-item"/>
                             </ChildAxisIterator>
                           </FnDataIterator>
                         </PromoteIterator>
@@ -60,7 +60,7 @@ Iterator tree for main query:
                     </FnBooleanIterator>
                   </WhereClause>
                   <ReturnClause>
-                    <ForVarIterator varname="$$dot"/>
+                    <ForVarIterator varname="$$context-item"/>
                   </ReturnClause>
                 </flwor::FLWORIterator>
               </NodeSortIterator>
@@ -95,7 +95,7 @@ Iterator tree for main query:
           </flwor::WindowIterator>
           <FnBooleanIterator>
             <flwor::FLWORIterator>
-              <ForVariable name="$$dot">
+              <ForVariable name="$$context-item">
                 <LetVarIterator varname="w"/>
               </ForVariable>
               <WhereClause>
@@ -104,7 +104,7 @@ Iterator tree for main query:
                     <PromoteIterator type="xs:anyAtomicType">
                       <FnDataIterator>
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                          <ForVarIterator varname="$$dot"/>
+                          <ForVarIterator varname="$$context-item"/>
                         </ChildAxisIterator>
                       </FnDataIterator>
                     </PromoteIterator>
@@ -113,7 +113,7 @@ Iterator tree for main query:
                 </FnBooleanIterator>
               </WhereClause>
               <ReturnClause>
-                <ForVarIterator varname="$$dot"/>
+                <ForVarIterator varname="$$context-item"/>
               </ReturnClause>
             </flwor::FLWORIterator>
           </FnBooleanIterator>

@@ -880,6 +880,14 @@ zorba::Item ItemFactoryImpl::createTextNode(Item parent, String content)
   return &*lItem;
 }
 
+zorba::Item ItemFactoryImpl::createUntypedAtomic(const String& value)
+{
+  store::Item_t lItem;
+  zstring &lValue = Unmarshaller::getInternalString(value);
+  theItemFactory->createUntypedAtomic(lItem, lValue);
+  return &*lItem;
+}
+
 #ifdef ZORBA_WITH_JSON
 
 zorba::Item ItemFactoryImpl::createJSONNull()

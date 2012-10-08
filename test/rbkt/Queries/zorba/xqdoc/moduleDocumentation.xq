@@ -63,7 +63,7 @@ declare %ann:sequential function local:testXQDoc() as xs:string?
                 ($moduleUri = "http://www.functx.com/") or
                 ($moduleUri = "http://www.w3.org/2005/xqt-errors") or
                 ($moduleUri = "http://www.zorba-xquery.com/errors") or
-                ($moduleUri = "http://www.jsoniq.org/errors") or
+                ($moduleUri = "http://jsoniq.org/errors") or
                 ($moduleUri = "http://www.zorba-xquery.com/warnings")) then ()
             else(
             local:test-module($xqdoc),

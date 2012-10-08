@@ -89,6 +89,8 @@ protected:
   }
 
 public:
+  virtual ~flwor_clause();
+
   const QueryLoc& get_loc() const { return theLocation; }
 
   ClauseKind get_kind() const { return theKind; }
@@ -702,7 +704,7 @@ public:
 
   void get_vars_defined(std::vector<var_expr*>& varExprs) const;
 
-  expr* clone(substitution_t& substitution) const;
+  expr* cloneImpl(substitution_t& substitution) const;
 
   // The following 5 methods are for the simple flwor only. They should be
   // removed eventually.

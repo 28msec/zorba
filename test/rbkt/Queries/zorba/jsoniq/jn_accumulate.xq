@@ -1,4 +1,4 @@
-import module namespace libjn = "http://www.jsoniq.org/function-library";
+import module namespace libjn = "http://jsoniq.org/function-library";
 
 declare variable $xdoc :=
 <nodes>
@@ -6,11 +6,10 @@ declare variable $xdoc :=
 <node>20</node>
 </nodes>;
 
-variable $obj :=  
-libjn:accumulate( 
-  for $node at $pos in $xdoc//node 
-  return { concat("n", $pos) : $node } 
+variable $obj :=
+libjn:accumulate(
+  for $node at $pos in $xdoc//node
+  return { concat("n", $pos) : $node }
 );
 
-$obj
-
+jn:encode-for-roundtrip($obj, { "prefix" : "" })

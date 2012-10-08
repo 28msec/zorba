@@ -84,14 +84,14 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       modified = true;
   }
 
+  // PathSimplification
+  if (driverPathSimplify.rewrite(rCtx))
+    modified = true;
+
  repeat1:
 
   // TypeRules
   if (driverTypeRules.rewrite(rCtx))
-    modified = true;
-
-  // PathSimplification
-  if (driverPathSimplify.rewrite(rCtx))
     modified = true;
 
   // FoldRules
@@ -106,14 +106,11 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     goto repeat1;
   }
 
+  /*
  repeat2:
-
-  // This rule has been merged into the PartialEval rule
-  //driverExprSimplify.rewrite(rCtx);
 
   //
   driverMarkFreeVars.rewrite(rCtx);
-
   //
   driverEliminateVars.rewrite(rCtx);
 
@@ -125,6 +122,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     //std::cout << "TYPES MODIFIED 2 !!!" << std::endl << std::endl;
     goto repeat2;
   }
+  */
 
   //
   driverMarkProducerNodeProps.rewrite(rCtx);
@@ -180,8 +178,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       driverMarkExpr.rewrite(rCtx);
     }
   }
-
-  // formatSparqlXml getSparqlResult optional matches
 
   // Index Joins
   if (Properties::instance()->inferJoins())

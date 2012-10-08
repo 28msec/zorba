@@ -184,6 +184,10 @@
         <value>Cannot atomize and/or cast value of type $2 to a string.</value>
       </entry>
 
+      <entry key="MultiValuedGroupingKey">
+        <value>atomization of grouping variable produces more than one item</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPTY0018">
@@ -1919,6 +1923,22 @@
       <value>"$1": item to load is not a node</value>
     </diagnostic>
 
+    <diagnostic code="ZAPI0023" name="NON_ATOMIC_CONTEXT_SIZE_VALUE">
+      <value>non-atomic value can not be assigned to the context size</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0024" name="NON_INTEGER_CONTEXT_SIZE_VALUE">
+      <value>"$1": wrong type for context size value (must be integer)</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0025" name="NON_ATOMIC_CONTEXT_POSITION_VALUE">
+      <value>non-atomic value can not be assigned to the context position</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0026" name="NON_INTEGER_CONTEXT_POSITION_VALUE">
+      <value>"$1": wrong type for context position value (must be integer)</value>
+    </diagnostic>
+
     <diagnostic code="ZAPI0027" name="CANNOT_UPDATE_DCTX_WITH_ITERATORS">
       <value>cannot update dynamic context with iterators</value>
     </diagnostic>
@@ -2651,22 +2671,13 @@
       jsoniq-serialization-multiple-items is set to no.
       </comment>
 
-      <value>Cannot serialize multiple top-level items as JSON</value>
-    </diagnostic>
-
-    <diagnostic code="JNSE0013" if="defined(ZORBA_WITH_JSON)">
-      <comment>It is a dynamic error to serialize an atomic value not
-      supported by JSON or a node with the JSON output method and with
-      the jsoniq-serialization-extensions serialization parameter
-      set to false.</comment>
-
-      <value>Cannot serialize value as JSON: $1</value>
+      <value>can not serialize multiple top-level items as JSON</value>
     </diagnostic>
 
     <diagnostic code="JNSE0014" if="defined(ZORBA_WITH_JSON)">
-      <comment>It is a dynamic error to serialize a function with the
+      <comment>It is a dynamic error to serialize a function or a node with the
       JSON output method.</comment>
-      <value>Cannot serialize a function item as JSON</value>
+      <value>can not serialize a node or function item as JSON</value>
     </diagnostic>
 
     <diagnostic code="JNSE0022" if="defined(ZORBA_WITH_JSON)">
@@ -2707,26 +2718,25 @@
       <value>The content of an insert expression must evaluate to a sequence of objects.</value>
     </diagnostic>
     
+    <diagnostic code="JNTY0023" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a type error if the prefix is not a string or if the 
+        serialization parameters are not an element.</comment>
+      <value>$1: value of "$2" is not a $3</value>
+    </diagnostic>
+
     <!--////////// JSONIQ ///////////////////////////////////////////-->
 
-    <diagnostic code="JNTY0003" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0024" if="defined(ZORBA_WITH_JSON)">
       <comment>objects or arrays don't have a string value</comment>
-
       <value>$1 items do not have string value</value>
     </diagnostic>
 
-    <diagnostic code="JSDY0040" if="defined(ZORBA_WITH_JSON)">
-      <comment>parser errors raised by the JSONIQLoader</comment>
-      <value>$1</value>
-    </diagnostic>
-
-    <diagnostic code="JSDY0020" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0020" if="defined(ZORBA_WITH_JSON)">
       <comment>parser error for invalid option type</comment>
       <value>$1: invalid option type for option $2 (expected $3)</value>
     </diagnostic>
 
-
-    <diagnostic code="JSDY0021" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNDY0021" if="defined(ZORBA_WITH_JSON)">
       <comment>parser error raised by jn:parse-json</comment>
       <value>$1</value>
     </diagnostic>
@@ -2805,10 +2815,6 @@
 
     <entry key="AtomizationHasMoreThanOneValue">
       <value>atomization has more than one value</value>
-    </entry>
-
-    <entry key="AtomizationOfGroupByMakesMoreThanOneItem">
-      <value>atomization of groupby variable produces more than one item</value>
     </entry>
 
     <entry key="AttributeName">
@@ -2999,6 +3005,10 @@
       <value>element name</value>
     </entry>
 
+    <entry key="ElementNode">
+      <value>element node</value>
+    </entry>
+
     <entry key="EmptyPath">
       <value>empty path</value>
     </entry>
@@ -3097,10 +3107,6 @@
 
     <entry key="GoodValuesAreYesNoOmit">
       <value>valid values are: yes, no, omit</value>
-    </entry>
-
-    <entry key="GroupByVarHasMoreThanOneItem_2">
-      <value>"$2": value of groupby variable has more than one item</value>
     </entry>
 
     <entry key="HexBinaryMustBeEven">

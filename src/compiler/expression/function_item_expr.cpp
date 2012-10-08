@@ -56,7 +56,7 @@ void dynamic_function_invocation_expr::compute_scripting_kind()
 }
 
 
-expr* dynamic_function_invocation_expr::clone(substitution_t& s) const
+expr* dynamic_function_invocation_expr::cloneImpl(substitution_t& s) const
 {
   checked_vector<expr*> lNewArgs;
   for (checked_vector<expr*>::const_iterator lIter = theArgs.begin();
@@ -144,7 +144,7 @@ void function_item_expr::compute_scripting_kind()
 }
 
 
-expr* function_item_expr::clone(substitution_t& s) const
+expr* function_item_expr::cloneImpl(substitution_t& s) const
 {
   std::auto_ptr<function_item_expr> lNewExpr(
       theCCB->theEM->create_function_item_expr(theSctx,

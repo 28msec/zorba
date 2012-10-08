@@ -78,7 +78,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t &) const;
+  expr* cloneImpl(substitution_t &) const;
 
   void accept(expr_visitor&);
 
@@ -135,7 +135,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t &) const;
+  expr* cloneImpl(substitution_t &) const;
 
   void accept(expr_visitor&);
 
@@ -213,7 +213,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t &) const;
+  expr* cloneImpl(substitution_t &) const;
 
   void accept(expr_visitor&);
 

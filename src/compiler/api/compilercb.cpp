@@ -223,5 +223,48 @@ static_context* CompilerCB::getStaticContext(int c)
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
+void CompilerCB::add_pragma(const expr* e, pragma* p)
+{
+  thePragmas.insert(std::make_pair(e, p));
+}
+
+
+void
+CompilerCB::lookup_pragmas(const expr* e, std::vector<pragma*>& pragmas) const
+{
+  pragmas.clear();
+
+  std::pair<PragmaMapIter, PragmaMapIter> lRange = thePragmas.equal_range(e);
+  while (lRange.first != lRange.second)
+  {
+    pragmas.push_back(lRange.first->second);
+    ++lRange.first;
+  }
+}
+
+bool
+CompilerCB::lookup_pragma(
+    const expr* e,
+    const zstring& localname,
+    pragma*& p) const
+{
+  std::pair<PragmaMapIter, PragmaMapIter> lRange = thePragmas.equal_range(e);
+  while (lRange.first != lRange.second)
+  {
+    if (lRange.first->second->theQName->getLocalName() == localname)
+    {
+      p = lRange.first->second;
+      return true;
+    }
+    ++lRange.first;
+  }
+  return false;
+}
+
+
+
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

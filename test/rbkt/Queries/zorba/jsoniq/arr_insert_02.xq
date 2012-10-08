@@ -1,4 +1,4 @@
-import module namespace j = "http://www.jsoniq.org/functions";
+import module namespace j = "http://jsoniq.org/functions";
 
 variable $a1 := [ 1, 4, 5 ];
 variable $a2 := [ 1, 2, 5 ];

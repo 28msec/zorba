@@ -59,6 +59,7 @@ SET(API_SRCS
     auditimpl.cpp
     streambuf.cpp
     transcode_streambuf.cpp
+    uuid.cpp
     )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

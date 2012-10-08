@@ -29,6 +29,7 @@
 // without having the definition of static_context availble.
 # include "context/static_context.h"
 #endif
+#include "compiler/expression/pragma.h"
 
 #include "zorbaserialization/class_serializer.h"
 
@@ -101,6 +102,13 @@ class static_context;
   ---------------------
   A counter used to create unique names for temporary (query-specific) indexes
   created to perform hashjoins (see rewriter/rules/index_join_rule.cpp).
+
+  thePragmas:
+  -------------
+  A multimap from expr* to pragma such that not every expression needs
+  to keep it's own list of pragmas. Since the expr* pointer is only valid
+  until codegen finished, the pragmas can only be used in the compiler.
+
 
   theConfig.lib_module :
   ----------------------
@@ -191,6 +199,10 @@ public:
 
   ExprManager       * const theEM;
 
+  typedef std::multimap<const expr*, pragma*>  PragmaMap;
+  typedef PragmaMap::const_iterator            PragmaMapIter;
+  PragmaMap                                    thePragmas;
+
 public:
   SERIALIZABLE_CLASS(CompilerCB);
   CompilerCB(::zorba::serialization::Archiver& ar);
@@ -220,6 +232,17 @@ public:
   ExprManager* getExprManager() const { return theEM; }
 
   MemoryManager& getMemoryManager() const { return theEM->getMemory(); }
+
+  //
+  // Pragmas
+  //
+  void add_pragma(const expr* e, pragma* p);
+
+  void
+  lookup_pragmas(const expr* e, std::vector<pragma*>& pragmas) const;
+
+  bool
+  lookup_pragma(const expr* e, const zstring& localname, pragma*&) const;
 
 };
 

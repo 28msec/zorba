@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include "expr_manager.h"
 
 #include "mem_manager.h"
@@ -29,6 +30,7 @@
 #include "script_exprs.h"
 #include "update_exprs.h"
 #include "json_exprs.h"
+#include "pragma.h"
 
 namespace zorba
 {
@@ -151,6 +153,15 @@ ExprManager::~ExprManager()
     clause->~copy_clause();
     // new (clause) NullCopyClause();
   }
+
+  for(std::vector<pragma*>::iterator iter = thePragmas.begin();
+      iter != thePragmas.end();
+      ++iter)
+  {
+    pragma* pragma = *iter;
+    pragma->~pragma();
+    // new (clause) NullCopyClause();
+  }
 }
 
 
@@ -181,6 +192,12 @@ void ExprManager::reg(catch_clause* clause)
 void ExprManager::reg(copy_clause* clause)
 {
   theCopyClauses.push_back(clause);
+}
+
+
+void ExprManager::reg(pragma* pragma)
+{
+  thePragmas.push_back(pragma);
 }
 
 
@@ -512,14 +529,13 @@ function_trace_expr* ExprManager::create_function_trace_expr(expr* aExpr)
 
 
 eval_expr* ExprManager::create_eval_expr(
-    CompilerCB* ccb,
     static_context* sctx,
     const QueryLoc& loc,
     expr* e,
     expr_script_kind_t scriptingKind,
     namespace_context* nsCtx)
 {
-  CREATE_AND_RETURN_EXPR(eval_expr, ccb, sctx, loc, e, scriptingKind, nsCtx);
+  CREATE_AND_RETURN_EXPR(eval_expr, sctx, loc, e, scriptingKind, nsCtx);
 }
 
 #ifdef ZORBA_WITH_DEBUGGER
@@ -937,6 +953,13 @@ flwor_expr* ExprManager::create_flwor_expr(
       static_context* sctx, const QueryLoc& loc, bool general)
 {
   CREATE_AND_RETURN_EXPR(flwor_expr, sctx, loc, general);
+}
+
+pragma* ExprManager::create_pragma(
+    const store::Item_t& name,
+    const zstring& lit)
+{
+  CREATE_AND_RETURN(pragma, name, lit);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

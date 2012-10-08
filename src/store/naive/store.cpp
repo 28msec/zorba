@@ -86,7 +86,7 @@ const ulong Store::DEFAULT_INTEGRITY_CONSTRAINT_SET_SIZE = 32;
 const char* Store::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* Store::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
 const char* Store::ZXSE_URI = "http://www.zorba-xquery.com/zorba/schema-extensions";
-const char* Store::JS_URI = "http://www.jsoniq.org/types";
+const char* Store::JS_URI = "http://jsoniq.org/types";
 
 const ulong Store::XML_URI_LEN = sizeof(Store::XML_URI);
 

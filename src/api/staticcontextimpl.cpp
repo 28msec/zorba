@@ -74,7 +74,7 @@ namespace zorba {
 StaticContextImpl::StaticContextImpl(DiagnosticHandler* aDiagnosticHandler)
   :
   theCompilerCB(NULL),
-  theMaxVarId(2),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -100,7 +100,7 @@ StaticContextImpl::StaticContextImpl(
   :
   theCtx(aCtx),
   theCompilerCB(NULL),
-  theMaxVarId(2),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aDiagnosticHandler),
   theUserDiagnosticHandler(true),
   theCollectionMgr(0)
@@ -123,7 +123,7 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   :
   StaticContext(),
   theCompilerCB(NULL),
-  theMaxVarId(2),
+  theMaxVarId(dynamic_context::MAX_IDVARS_RESERVED),
   theDiagnosticHandler(aStaticContext.theDiagnosticHandler),
   theUserDiagnosticHandler(aStaticContext.theUserDiagnosticHandler),
   theCollectionMgr(0)
@@ -558,12 +558,17 @@ StaticContextImpl::setBoundarySpacePolicy( boundary_space_mode_t mode )
 boundary_space_mode_t
 StaticContextImpl::getBoundarySpacePolicy( ) const
 {
-  try {
+  try 
+  {
     return theCtx->boundary_space_mode()==StaticContextConsts::preserve_space?
       preserve_space:strip_space;
-  } catch (ZorbaException const& e) {
+  }
+  catch (ZorbaException const& e)
+  {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  } catch (std::exception const& e) {
+  }
+  catch (std::exception const& e)
+  {
     ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
   }
   return preserve_space;
@@ -571,34 +576,39 @@ StaticContextImpl::getBoundarySpacePolicy( ) const
 
 
 bool
-StaticContextImpl::setCopyNamespacesMode( preserve_mode_t preserve,
-                                          inherit_mode_t inherit )
+StaticContextImpl::setCopyNamespacesMode(
+    preserve_mode_t preserve,
+    inherit_mode_t inherit)
 {
   ZORBA_TRY
-    if ( preserve == preserve_ns )
-      theCtx->set_preserve_mode(StaticContextConsts::preserve_ns);
+  {
+    if (preserve == preserve_ns)
+      theCtx->set_preserve_ns(true);
     else
-      theCtx->set_preserve_mode(StaticContextConsts::no_preserve_ns);
+      theCtx->set_preserve_ns(false);
 
-    if ( inherit == inherit_ns )
-      theCtx->set_inherit_mode(StaticContextConsts::inherit_ns);
+    if (inherit == inherit_ns)
+      theCtx->set_inherit_ns(true);
     else
-      theCtx->set_inherit_mode(StaticContextConsts::no_inherit_ns);
+      theCtx->set_inherit_ns(true);
+
     return true;
+  }
   ZORBA_CATCH
   return false;
 }
 
 
 void
-StaticContextImpl::getCopyNamespacesMode( preserve_mode_t& preserve,
-                                          inherit_mode_t& inherit ) const
+StaticContextImpl::getCopyNamespacesMode(
+    preserve_mode_t& preserve,
+    inherit_mode_t& inherit) const
 {
   ZORBA_TRY
-    preserve = theCtx->preserve_mode()==StaticContextConsts::preserve_ns?
-                    preserve_ns:no_preserve_ns;
-    inherit = theCtx->inherit_mode()==StaticContextConsts::inherit_ns?
-                    inherit_ns:no_inherit_ns;
+  {
+    preserve = (theCtx->preserve_ns() ? preserve_ns : no_preserve_ns);
+    inherit = (theCtx->inherit_ns() ? inherit_ns : no_inherit_ns);
+  }
   ZORBA_CATCH
 }
 
@@ -1552,7 +1562,11 @@ StaticContextImpl::getExternalVariables(Iterator_t& aVarsIter) const
 
   for (; ite != end; ++ite)
   {
-    if ((*ite)->getName()->getStringValue() == static_context::DOT_VAR_NAME)
+    zstring varName = (*ite)->getName()->getStringValue();
+
+    if (varName == static_context::DOT_VAR_NAME ||
+        varName == static_context::DOT_POS_VAR_NAME ||
+        varName == static_context::DOT_SIZE_VAR_NAME)
       continue;
 
     extVars.push_back((*ite)->getName());        

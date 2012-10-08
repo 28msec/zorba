@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ public:
 
   }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
 
   CODEGEN_DECL();
 };

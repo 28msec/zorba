@@ -113,7 +113,10 @@ cxx_api_changes_test3(Zorba* aZorba)
     varsIte->close();
 
     if (lVars.size() != 2)
+    {
+      std::cout << "Expected 2 variables but got " << lVars.size() << std::endl;
       return false;
+    }
 
     std::vector<Item>::iterator lIte = lVars.begin();
     std::vector<Item>::iterator lEnd = lVars.end();

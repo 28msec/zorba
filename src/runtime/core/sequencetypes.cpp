@@ -386,7 +386,7 @@ void PromoteIterator::serialize(::zorba::serialization::Archiver& ar)
 
 bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem;
+  store::Item_t item;
   store::Item_t temp;
 
   const TypeManager* tm = theSctx->get_typemanager();
@@ -394,7 +394,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (!consumeNext(lItem, theChild.getp(), planState))
+  if (!consumeNext(item, theChild.getp(), planState))
   {
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
@@ -411,9 +411,9 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     }
 
     // catch exceptions to add/change the error location
-    if (! GenericCast::promote(result, lItem, thePromoteType, tm, loc))
+    if (! GenericCast::promote(result, item, thePromoteType, tm, loc))
     {
-      zstring valueType = tm->create_value_type(lItem)->toSchemaString();
+      zstring valueType = tm->create_value_type(item)->toSchemaString();
       raiseError(valueType);
     }
 
@@ -423,9 +423,9 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     do
     {
-      if (! GenericCast::promote(result, lItem, thePromoteType, tm, loc))
+      if (! GenericCast::promote(result, item, thePromoteType, tm, loc))
       {
-        zstring valueType = tm->create_value_type(lItem)->toSchemaString();
+        zstring valueType = tm->create_value_type(item)->toSchemaString();
         raiseError(valueType);
       }
       else
@@ -433,7 +433,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         STACK_PUSH(true, state);
       }
     }
-    while (consumeNext(lItem, theChild.getp(), planState));
+    while (consumeNext(item, theChild.getp(), planState));
   }
 
   STACK_END(state);
@@ -714,6 +714,12 @@ void TreatIterator::raiseError(const zstring& valueType) const
   case PATH_DOT:
   {
     RAISE_ERROR_NO_PARAMS(err::XPTY0020, loc);
+    break;
+  }
+  case MULTI_VALUED_GROUPING_KEY:
+  {
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(XPTY0004_MultiValuedGroupingKey)));
     break;
   }
 #ifdef ZORBA_WITH_JSON

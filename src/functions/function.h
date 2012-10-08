@@ -39,6 +39,7 @@ namespace zorba
 class fo_expr;
 class CompilerCB;
 class expr;
+class pragma;
 
 
 /*******************************************************************************
@@ -223,6 +224,10 @@ public:
   {
     return NULL;
   }
+
+  virtual void processPragma(
+      expr* expr,
+      const std::vector<pragma*>& pragmas) const { return; }
 
   virtual PlanIter_t codegen(
       CompilerCB* cb,

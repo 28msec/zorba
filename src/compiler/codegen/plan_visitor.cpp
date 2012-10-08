@@ -2074,23 +2074,35 @@ void end_visit(eval_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  csize numVars = v.var_count();
+  csize numVars = v.num_vars();
 
   checked_vector<PlanIter_t> args;
   args.reserve(numVars+1);
 
-  std::vector<store::Item_t> varNames(numVars);
-  std::vector<xqtref_t> varTypes(numVars);
   std::vector<int> isGlobalVar(numVars);
 
-  for (csize i = 0; i < numVars; ++i)
+  for (csize i = numVars; i > 0; --i)
   {
-    varNames[i] = v.get_var(i)->get_name();
-    varTypes[i] = v.get_var(i)->get_type();
-    isGlobalVar[i] = (v.get_arg_expr(i) == NULL);
+    isGlobalVar[i-1] = false;
 
-    if (!isGlobalVar[i])
+    expr* arg = v.get_arg_expr(i-1);
+
+    if (arg->get_expr_kind() == var_expr_kind)
+    {
+      var_expr* varArg = static_cast<var_expr*>(arg);
+
+      if (varArg->get_kind() == var_expr::prolog_var)
+        isGlobalVar[i-1] = true;
+    }
+
+    if (!isGlobalVar[i-1])
+    {
       args.push_back(pop_itstack());
+    }
+    else
+    {
+      pop_itstack();
+    }
   }
 
   args.push_back(pop_itstack());
@@ -2102,8 +2114,8 @@ void end_visit(eval_expr& v)
   push_itstack(new EvalIterator(sctx,
                                 qloc,
                                 args,
-                                varNames,
-                                varTypes,
+                                v.get_var_names(),
+                                v.get_var_types(),
                                 isGlobalVar,
                                 v.get_inner_scripting_kind(),
                                 localBindings,

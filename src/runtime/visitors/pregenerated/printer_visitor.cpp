@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -406,146 +406,6 @@ void PrinterVisitor::endVisit ( const ZorbaIndexOfIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ZorbaIndexOfIterator>
-
-
-// <ZorbaInsertNodesIterator>
-void PrinterVisitor::beginVisit ( const ZorbaInsertNodesIterator& a) {
-  thePrinter.startBeginVisit("ZorbaInsertNodesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaInsertNodesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaInsertNodesIterator>
-
-
-// <ZorbaInsertNodesFirstIterator>
-void PrinterVisitor::beginVisit ( const ZorbaInsertNodesFirstIterator& a) {
-  thePrinter.startBeginVisit("ZorbaInsertNodesFirstIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaInsertNodesFirstIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaInsertNodesFirstIterator>
-
-
-// <ZorbaInsertNodesLastIterator>
-void PrinterVisitor::beginVisit ( const ZorbaInsertNodesLastIterator& a) {
-  thePrinter.startBeginVisit("ZorbaInsertNodesLastIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaInsertNodesLastIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaInsertNodesLastIterator>
-
-
-// <ZorbaInsertNodesBeforeIterator>
-void PrinterVisitor::beginVisit ( const ZorbaInsertNodesBeforeIterator& a) {
-  thePrinter.startBeginVisit("ZorbaInsertNodesBeforeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaInsertNodesBeforeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaInsertNodesBeforeIterator>
-
-
-// <ZorbaInsertNodesAfterIterator>
-void PrinterVisitor::beginVisit ( const ZorbaInsertNodesAfterIterator& a) {
-  thePrinter.startBeginVisit("ZorbaInsertNodesAfterIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaInsertNodesAfterIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaInsertNodesAfterIterator>
-
-
-// <ZorbaApplyInsertNodesIterator>
-void PrinterVisitor::beginVisit ( const ZorbaApplyInsertNodesIterator& a) {
-  thePrinter.startBeginVisit("ZorbaApplyInsertNodesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaApplyInsertNodesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaApplyInsertNodesIterator>
-
-
-// <ZorbaApplyInsertNodesFirstIterator>
-void PrinterVisitor::beginVisit ( const ZorbaApplyInsertNodesFirstIterator& a) {
-  thePrinter.startBeginVisit("ZorbaApplyInsertNodesFirstIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaApplyInsertNodesFirstIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaApplyInsertNodesFirstIterator>
-
-
-// <ZorbaApplyInsertNodesLastIterator>
-void PrinterVisitor::beginVisit ( const ZorbaApplyInsertNodesLastIterator& a) {
-  thePrinter.startBeginVisit("ZorbaApplyInsertNodesLastIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaApplyInsertNodesLastIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaApplyInsertNodesLastIterator>
-
-
-// <ZorbaApplyInsertNodesBeforeIterator>
-void PrinterVisitor::beginVisit ( const ZorbaApplyInsertNodesBeforeIterator& a) {
-  thePrinter.startBeginVisit("ZorbaApplyInsertNodesBeforeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaApplyInsertNodesBeforeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaApplyInsertNodesBeforeIterator>
-
-
-// <ZorbaApplyInsertNodesAfterIterator>
-void PrinterVisitor::beginVisit ( const ZorbaApplyInsertNodesAfterIterator& a) {
-  thePrinter.startBeginVisit("ZorbaApplyInsertNodesAfterIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaApplyInsertNodesAfterIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaApplyInsertNodesAfterIterator>
 
 
 // <ZorbaDeleteNodesIterator>
@@ -1963,6 +1823,36 @@ void PrinterVisitor::endVisit ( const JSONSerializeInternal& ) {
 }
 // </JSONSerializeInternal>
 
+#ifdef ZORBA_WITH_JSON
+// <JSONDecodeFromRoundtripIterator>
+void PrinterVisitor::beginVisit ( const JSONDecodeFromRoundtripIterator& a) {
+  thePrinter.startBeginVisit("JSONDecodeFromRoundtripIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONDecodeFromRoundtripIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONDecodeFromRoundtripIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
+// <JSONEncodeForRoundtripIterator>
+void PrinterVisitor::beginVisit ( const JSONEncodeForRoundtripIterator& a) {
+  thePrinter.startBeginVisit("JSONEncodeForRoundtripIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONEncodeForRoundtripIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONEncodeForRoundtripIterator>
+
+#endif
 #ifdef ZORBA_WITH_JSON
 // <JSONParseIterator>
 void PrinterVisitor::beginVisit ( const JSONParseIterator& a) {
@@ -4739,20 +4629,6 @@ void PrinterVisitor::endVisit ( const DecodeURIIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DecodeURIIterator>
-
-
-// <XQDocIterator>
-void PrinterVisitor::beginVisit ( const XQDocIterator& a) {
-  thePrinter.startBeginVisit("XQDocIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const XQDocIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </XQDocIterator>
 
 
 // <XQDocContentIterator>

@@ -1,6 +1,6 @@
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="g">
+  <CtxVarDeclareIterator varid="4" varname="g">
     <SingletonIterator value="xs:integer(3)"/>
   </CtxVarDeclareIterator>
   <flwor::FLWORIterator>
@@ -18,7 +18,7 @@ Iterator tree for main query:
       </NumArithIterator_ModOperation>
     </ForVariable>
     <LetVariable name="foo" materialize="true">
-      <CtxVarIterator varid="2" varname="g" varkind="global"/>
+      <CtxVarIterator varid="4" varname="g" varkind="global"/>
     </LetVariable>
     <LetVariable name="$$opt_temp_0" materialize="true">
       <HoistIterator>

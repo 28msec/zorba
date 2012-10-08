@@ -37,9 +37,6 @@ namespace zorba {
   --------
   rchandle to the internal static_context obj that is wrapped by "this".
 
-  theSctxMap :
-  ------------
-
   theMaxVarId :
   -------------
   If loadProlog() is called on "this", the compiler will store in theMaxVarId
@@ -63,19 +60,17 @@ class StaticContextImpl : public StaticContext
   friend class XQueryImpl;   // needed for accessing theSctxMap
 
 protected:
-  static_context_t                    theCtx;
+  static_context_t                      theCtx;
 
-  CompilerCB                        * theCompilerCB;
+  CompilerCB                          * theCompilerCB;
 
-  //std::map<csize, static_context_t>   theSctxMap;
+  ulong                                 theMaxVarId;
 
-  ulong                               theMaxVarId;
-
-  DiagnosticHandler                 * theDiagnosticHandler;
-  bool                                theUserDiagnosticHandler;
+  DiagnosticHandler                   * theDiagnosticHandler;
+  bool                                  theUserDiagnosticHandler;
 
   // allow for lazy creation
-  mutable StaticCollectionManagerImpl* theCollectionMgr;
+  mutable StaticCollectionManagerImpl * theCollectionMgr;
 
 private:
   StaticContextImpl(const StaticContextImpl&);

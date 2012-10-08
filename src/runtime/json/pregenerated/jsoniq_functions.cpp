@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,88 @@
 
 namespace zorba {
 
+#ifdef ZORBA_WITH_JSON
+// <JSONDecodeFromRoundtripIterator>
+SERIALIZABLE_CLASS_VERSIONS(JSONDecodeFromRoundtripIterator)
+
+void JSONDecodeFromRoundtripIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONDecodeFromRoundtripIterator, JSONDecodeFromRoundtripIteratorState>*)this);
+}
+
+
+void JSONDecodeFromRoundtripIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONDecodeFromRoundtripIterator::~JSONDecodeFromRoundtripIterator() {}
+
+JSONDecodeFromRoundtripIteratorState::JSONDecodeFromRoundtripIteratorState() {}
+
+JSONDecodeFromRoundtripIteratorState::~JSONDecodeFromRoundtripIteratorState() {}
+
+
+void JSONDecodeFromRoundtripIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void JSONDecodeFromRoundtripIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </JSONDecodeFromRoundtripIterator>
+
+#endif
+#ifdef ZORBA_WITH_JSON
+// <JSONEncodeForRoundtripIterator>
+SERIALIZABLE_CLASS_VERSIONS(JSONEncodeForRoundtripIterator)
+
+void JSONEncodeForRoundtripIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONEncodeForRoundtripIterator, JSONEncodeForRoundtripIteratorState>*)this);
+}
+
+
+void JSONEncodeForRoundtripIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONEncodeForRoundtripIterator::~JSONEncodeForRoundtripIterator() {}
+
+JSONEncodeForRoundtripIteratorState::JSONEncodeForRoundtripIteratorState() {}
+
+JSONEncodeForRoundtripIteratorState::~JSONEncodeForRoundtripIteratorState() {}
+
+
+void JSONEncodeForRoundtripIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void JSONEncodeForRoundtripIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </JSONEncodeForRoundtripIterator>
+
+#endif
 #ifdef ZORBA_WITH_JSON
 // <JSONParseIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONParseIterator)

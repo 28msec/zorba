@@ -262,6 +262,7 @@ bool test_unresolved_schema_uri(Zorba* aZorba)
   return false;
 }
 
+
 bool test_deny_internal_module_access(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
@@ -284,6 +285,7 @@ bool test_deny_internal_module_access(Zorba* aZorba)
   }
   return false;
 }
+
 
 bool test_deny_external_module_access(Zorba* aZorba)
 {

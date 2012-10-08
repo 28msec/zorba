@@ -185,8 +185,8 @@ uint32_t GroupTupleCmp::hash(GroupTuple* t) const
 {
   uint32_t hash = 0;
 
-  std::vector<store::Item_t>::const_iterator ite = t->theTypedValues.begin();
-  std::vector<store::Item_t>::const_iterator end = t->theTypedValues.end();
+  std::vector<store::Item_t>::const_iterator ite = t->theItems.begin();
+  std::vector<store::Item_t>::const_iterator end = t->theItems.end();
   std::vector<GroupingSpec>::const_iterator ite2 = theGroupingSpecs->begin();
 
   for (; ite != end; ++ite, ++ite2)
@@ -203,12 +203,11 @@ uint32_t GroupTupleCmp::hash(GroupTuple* t) const
 
 bool GroupTupleCmp::equal(const GroupTuple* t1, const GroupTuple* t2) const
 {
-  assert(theGroupingSpecs->size() == t1->theTypedValues.size());
-  assert(t2->theTypedValues.size() == t1->theTypedValues.size());
+  assert(theGroupingSpecs->size() == t1->theItems.size());
 
-  std::vector<store::Item_t>::const_iterator end1 = t1->theTypedValues.end();
-  std::vector<store::Item_t>::const_iterator iter1 = t1->theTypedValues.begin();
-  std::vector<store::Item_t>::const_iterator iter2 = t2->theTypedValues.begin();
+  std::vector<store::Item_t>::const_iterator end1 = t1->theItems.end();
+  std::vector<store::Item_t>::const_iterator iter1 = t1->theItems.begin();
+  std::vector<store::Item_t>::const_iterator iter2 = t2->theItems.begin();
   std::vector<GroupingSpec>::const_iterator iter3 = theGroupingSpecs->begin();
 
   while (iter1 != end1)
