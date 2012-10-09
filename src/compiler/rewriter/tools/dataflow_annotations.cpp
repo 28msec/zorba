@@ -943,6 +943,9 @@ void SourceFinder::findNodeSourcesRec(
         {
           expr* setExpr = *ite2;
 
+          if (setExpr->get_udf() != NULL && !setExpr->get_udf()->isOptimized())
+            continue;
+
           if (setExpr->get_expr_kind() == var_decl_expr_kind)
           {
             findNodeSourcesRec(static_cast<var_decl_expr*>(setExpr)->get_init_expr(),
