@@ -8,9 +8,12 @@ New Features:
 Optimizations:
 
 Bug Fixes/Other Changes:
-  * Fixed mustcopyInputNodes() method of no-copy, and jsoniq functions.
+  * Fixed mustCopyInputNodes() method of no-copy, and jsoniq functions.
   * Fixed bug #1062093 (bug in var reference iterators with an associated
     position that is negative)
+  * Fixed bug #1061222 (bad message for errors in index key type declaration) 
+  * Fixed bug #1021492 (while computeing the "sources" of a prolog var, skip
+    any var-setting exprs that appear in non-used (and non-optimized) functions). 
 
 
 version 2.7
