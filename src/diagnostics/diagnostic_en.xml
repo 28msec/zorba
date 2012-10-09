@@ -2257,7 +2257,29 @@
     </diagnostic>
 
     <diagnostic code="ZDST0027" name="INDEX_BAD_KEY_TYPE">
-      <value>"$1": index bad key type</value>
+
+      <value>"$1": $2</value>
+
+      <entry key="NO_KEY_TYPE_DECL">
+        <value>value index missing key type declaration</value>
+      </entry>
+
+      <entry key="NON_SPECIFIC_KEY_TYPE_DECL">
+        <value>value index can not have xs:untypedAtomic or xs:anyAtomicType in key type declaration</value>
+      </entry>
+
+      <entry key="MULTI_VALUED_KEY_TYPE_DECL">
+        <value>value index can not have a key type declaration with * or + quantifier</value>
+      </entry>
+
+      <entry key="NON_ATOMIC_KEY_TYPE">
+        <value>index has non-atomic key type declaration</value>
+      </entry>
+
+      <entry key="NON_ORDERED_KEY_TYPE">
+        <value>range index can not have type $3 in key type declaration</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="ZDST0028" name="INDEX_NOT_DETERMINISTIC">
