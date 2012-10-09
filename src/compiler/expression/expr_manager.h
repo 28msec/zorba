@@ -284,7 +284,9 @@ public:
       expr* aChild);
 #endif
 
-  function_trace_expr* create_function_trace_expr(expr* aExpr);
+  function_trace_expr* create_function_trace_expr(
+      user_function* udf,
+      expr* aExpr);
 
   eval_expr* create_eval_expr(
       static_context* sctx,

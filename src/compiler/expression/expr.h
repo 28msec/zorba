@@ -1087,7 +1087,9 @@ protected:
       const QueryLoc& loc,
       expr* aChild);
 
-  function_trace_expr(expr* aExpr);
+  function_trace_expr(
+      user_function* udf,
+      expr* aExpr);
 
 public:
   virtual ~function_trace_expr();

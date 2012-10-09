@@ -1137,11 +1137,11 @@ function_trace_expr::function_trace_expr(
 }
 
 
-function_trace_expr::function_trace_expr(expr* aExpr)
+function_trace_expr::function_trace_expr(user_function* udf, expr* aExpr)
   :
   expr(aExpr->get_ccb(),
        aExpr->get_sctx(),
-       aExpr->get_udf(),
+       udf,
        aExpr->get_loc(),
        function_trace_expr_kind),
   theExpr(aExpr),

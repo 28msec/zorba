@@ -103,6 +103,13 @@ function_item_expr::~function_item_expr()
 }
 
 
+user_function* function_item_expr::get_function() const 
+{
+  assert(theFunction->isUdf());
+  return static_cast<user_function*>(theFunction.getp());
+}
+
+
 void function_item_expr::add_variable(expr* var)
 {
   theScopedVariables.push_back(var);

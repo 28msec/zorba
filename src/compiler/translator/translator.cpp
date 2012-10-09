@@ -11308,7 +11308,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
       foArgs[i] = argVar;
     }
 
-    expr* body = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, fn, foArgs);
+    expr* body = theExprManager->create_fo_expr(theRootSctx, udf, loc, fn, foArgs);
 
     udf->setArgVars(udfArgs);
     udf->setBody(body);
@@ -11343,9 +11343,51 @@ void* begin_visit(const InlineFunction& v)
 
   push_scope();
 
-  function_item_expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc);
+  function_item_expr* fiExpr = 
+  theExprManager->create_function_item_expr(theRootSctx, theUDF, loc);
 
   push_nodestack(fiExpr);
+
+  // Translate the return tyoe
+  xqtref_t returnType = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  if (v.getReturnType() != 0)
+  {
+    v.getReturnType()->accept(*this);
+    returnType = pop_tstack();
+  }
+
+  // Translate the type declarations for the function params
+  rchandle<ParamList> params = v.getParamList();
+  std::vector<xqtref_t> paramTypes;
+
+  if (params != 0)
+  {
+    std::vector<rchandle<Param> >::const_iterator lIt = params->begin();
+    for(; lIt != params->end(); ++lIt)
+    {
+      const Param* param = lIt->getp();
+      const SequenceType* paramType = param->get_typedecl();
+      if (paramType == 0)
+      {
+        paramTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+      }
+      else
+      {
+        paramType->accept(*this);
+        paramTypes.push_back(pop_tstack());
+      }
+    }
+  }
+
+  // Create the udf obj.
+  user_function_t udf(new user_function(loc,
+                                        signature(0, paramTypes, returnType),
+                                        NULL,
+                                        SIMPLE_EXPR,
+                                        theCCB));
+  fiExpr->set_function(udf);
+
+  theUDF = udf;
 
   flwor_expr* flwor = NULL;
 
@@ -11357,7 +11399,6 @@ void* begin_visit(const InlineFunction& v)
   // let $xN as TN := _xN
   //
   // where each _xi is an arg var.
-  rchandle<ParamList> params = v.getParamList();
   if (params)
   {
     params->accept(*this);
@@ -11417,17 +11458,23 @@ void end_visit(const InlineFunction& v, void* aState)
 
   std::vector<var_expr*> argVars;
 
-  // Get the return tyoe
-  xqtref_t returnType = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-  if(v.getReturnType() != 0)
-  {
-    returnType = pop_tstack();
-  }
-
-  // Get the inline function body and wrap it in appropriate type op.
+  // Get the inline function body.
   expr* body = pop_nodestack();
   ZORBA_ASSERT(body != 0);
 
+  // Get the flwor expr that defines the arg vars
+  flwor_expr* flwor = static_cast<flwor_expr*>(pop_nodestack());
+
+  // Get the function item
+  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(
+                               theNodeStack.top());
+  assert(fiExpr != NULL);
+
+  user_function* udf = fiExpr->get_function();
+
+  xqtref_t returnType = udf->getSignature().returnType();
+
+  // Wrap the body in appropriate type op.
   if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
   {
     body = wrap_in_type_promotion(body, returnType, PromoteIterator::TYPE_PROMOTION);
@@ -11438,8 +11485,6 @@ void end_visit(const InlineFunction& v, void* aState)
   }
 
   // Make the body be the return expr of the flwor that binds the function params.
-  flwor_expr* flwor = static_cast<flwor_expr*>(pop_nodestack());
-
   if (flwor != NULL)
   {
     flwor->set_return_expr(body);
@@ -11464,53 +11509,22 @@ void end_visit(const InlineFunction& v, void* aState)
   {
     RewriterContext rCtx(theCCB,
                          body,
-                         NULL,
+                         theUDF,
                          "Inline function",
                          (theSctx->ordering_mode() == StaticContextConsts::ordered));
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     body = rCtx.getRoot();
   }
 
-  // Translate the type declarations for the function params
-  std::vector<xqtref_t> paramTypes;
-  rchandle<ParamList> params = v.getParamList();
-  if (params != 0)
-  {
-    std::vector<rchandle<Param> >::const_iterator lIt = params->begin();
-    for(; lIt != params->end(); ++lIt)
-    {
-      const Param* param = lIt->getp();
-      const SequenceType* paramType = param->get_typedecl();
-      if(paramType == 0)
-      {
-        paramTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-      }
-      else
-      {
-        paramType->accept(*this);
-        paramTypes.push_back(pop_tstack());
-      }
-    }
-  }
-
-  // Create the udf obj.
-  user_function_t udf(new user_function(loc,
-                                        signature(0, paramTypes, returnType),
-                                        body,
-                                        body->get_scripting_detail(),
-                                        theCCB));
+  udf->setBody(body);
+  udf->setScriptingKind(body->get_scripting_detail());
   udf->setArgVars(argVars);
   udf->setOptimized(true);
 
-  // Get the function_item_expr and set its function to the udf created above.
-  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(
-                               theNodeStack.top());
-  assert(fiExpr != NULL);
-
-  fiExpr->set_function(udf);
-
   // pop the scope.
   pop_scope();
+
+  theUDF = fiExpr->get_udf();
 }
 
 

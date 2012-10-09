@@ -104,9 +104,9 @@ class function_item_expr: public expr
   friend class ExprManager;
 
 private:
-  store::Item_t        theQName;
-  function_t           theFunction;
-  uint32_t             theArity;
+  store::Item_t       theQName;
+  function_t          theFunction;
+  uint32_t            theArity;
   std::vector<expr*>  theScopedVariables;
 
 public:
@@ -134,7 +134,7 @@ public:
 
   void set_function(user_function_t& udf);
 
-  function* get_function() const { return theFunction.getp(); }
+  user_function* get_function() const;
 
   const store::Item_t& get_qname() const { return theQName; }
 

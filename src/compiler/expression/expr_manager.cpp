@@ -495,10 +495,11 @@ function_trace_expr* ExprManager::create_function_trace_expr(
 #endif
 
 function_trace_expr* ExprManager::create_function_trace_expr(
+    user_function* udf,
     expr* aExpr)
 {
   //this function gets the ExprManager from the expression it recieves.
-  function_trace_expr* e = new (theMemoryMgr) function_trace_expr(aExpr);
+  function_trace_expr* e = new (theMemoryMgr) function_trace_expr(udf, aExpr);
   reg(e);
   return e;
 }
