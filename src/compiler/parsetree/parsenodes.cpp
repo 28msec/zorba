@@ -5694,7 +5694,7 @@ void LiteralFunctionItem::accept(parsenode_visitor& v) const
 void InlineFunction::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (theReturnType);
+  //ACCEPT (theReturnType);
   //ACCEPT (theParamList);
   ACCEPT (theEnclosedExpr);
   END_VISITOR ();

@@ -82,15 +82,9 @@ class SourceFinder
   typedef std::map<user_function*, std::vector<expr*>* > UdfSourcesMap;
   typedef std::pair<user_function*, std::vector<expr*>* > UdfSourcesPair;
 
-  typedef std::map<expr*, user_function*> SourceUdfMap;
-  typedef std::pair<expr*, user_function*> SourceUdfMapPair;
-
 protected:
   VarSourcesMap            theVarSourcesMap;
   UdfSourcesMap            theUdfSourcesMap;
-  SourceUdfMap             theSourceUdfMap;
-
-  user_function          * theStartingUdf;
 
 protected:
   void findNodeSourcesRec(

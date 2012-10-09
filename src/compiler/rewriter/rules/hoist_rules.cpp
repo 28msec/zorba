@@ -358,6 +358,12 @@ static expr* try_hoisting(
     return NULL;
   }
 
+  const QueryLoc& loc = e->get_loc();
+  static_context* sctx = e->get_sctx();
+  user_function* udf = e->get_udf();
+
+  assert(udf == rCtx.theUDF);
+
   std::map<const expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
   const DynamicBitset& varset = fvme->second;
@@ -384,7 +390,7 @@ static expr* try_hoisting(
         const catch_clause* clause = (*trycatch)[i];
 
         catch_clause::var_map_t& trycatchVars =
-          const_cast<catch_clause*>(clause)->get_vars();
+        const_cast<catch_clause*>(clause)->get_vars();
 
         catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
         catch_clause::var_map_t::const_iterator end = trycatchVars.end();
@@ -473,18 +479,15 @@ static expr* try_hoisting(
   // var: $$temp := op:hoist(e) (b) we place the $$temp declaration right after
   // variable V, and (c) we replace e with op:unhoist($$temp).
 
-  var_expr* letvar(rCtx.createTempVar(e->get_sctx(), e->get_loc(), var_expr::let_var));
+  var_expr* letvar(rCtx.createTempVar(sctx, loc, var_expr::let_var));
 
-  expr* hoisted = rCtx.theEM->create_fo_expr(e->get_sctx(),
-                               e->get_loc(),
-                               GET_BUILTIN_FUNCTION(OP_HOIST_1),
-                               e);
+  expr* hoisted = rCtx.theEM->
+  create_fo_expr(sctx, udf, loc, GET_BUILTIN_FUNCTION(OP_HOIST_1), e);
 
   hoisted->setFlags(e->getFlags());
   letvar->setFlags(e->getFlags());
 
-  let_clause* flref(
-    rCtx.theEM->create_let_clause(e->get_sctx(), e->get_loc(), letvar, hoisted));
+  let_clause* flref(rCtx.theEM->create_let_clause(sctx, loc, letvar, hoisted));
 
   letvar->set_flwor_clause(flref);
 
@@ -492,7 +495,7 @@ static expr* try_hoisting(
   {
     if (step->theExpr == NULL)
     {
-      step->theExpr= rCtx.theEM->create_flwor_expr(e->get_sctx(), e->get_loc(), false);
+      step->theExpr= rCtx.theEM->create_flwor_expr(sctx, udf, loc, false);
     }
     static_cast<flwor_expr*>(step->theExpr)->add_clause(flref);
   }
@@ -507,19 +510,19 @@ static expr* try_hoisting(
 
     trycatch_expr* trycatchExpr = static_cast<trycatch_expr*>(step->theExpr);
 
-    flwor_expr* flwor = rCtx.theEM->create_flwor_expr(e->get_sctx(), e->get_loc(), false);
+    flwor_expr* flwor = rCtx.theEM->create_flwor_expr(sctx, udf, loc, false);
     flwor->add_clause(flref);
     flwor->set_return_expr(trycatchExpr->get_try_expr());
 
     trycatchExpr->set_try_expr(flwor);
   }
 
-  expr* unhoisted = rCtx.theEM->create_fo_expr(e->get_sctx(),
-                                 e->get_loc(),
-                                 GET_BUILTIN_FUNCTION(OP_UNHOIST_1),
-                                 rCtx.theEM->create_wrapper_expr(e->get_sctx(),
-                                                  e->get_loc(),
-                                                  letvar));
+  expr* unhoisted = rCtx.theEM->
+  create_fo_expr(sctx,
+                 udf,
+                 loc,
+                 GET_BUILTIN_FUNCTION(OP_UNHOIST_1),
+                 rCtx.theEM->create_wrapper_expr(sctx, udf, loc, letvar));
   unhoisted->setFlags(e->getFlags());
 
   return unhoisted;
