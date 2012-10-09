@@ -28,18 +28,18 @@ ECHO "xqj_test.bat: Compile Java API ..."
 "@Java_JAVAC_EXECUTABLE@" -source 1.6 -target 1.6 -d tck "%JAVA_LOAD_PATH%\*.java"
 
 ECHO "xqj_test.bat: Creating API JAR..."
-cd tck
+pushd tck
 "@Java_JAR_EXECUTABLE@" -cf "zorba_api.jar" org
-cd..
+popd
 RD /S /Q "%XQJ_LOAD_PATH%\tck\org"
 
 ECHO "xqj_test.bat: Compile XQJ API ..."
 "@Java_JAVAC_EXECUTABLE@" -source 1.6 -target 1.6 -cp tck\xqjapi.jar;tck\zorba_api.jar -d tck *.java
 
 ECHO "xqj_test.bat: Creating XQJ JAR..."
-cd tck
+pushd tck
 "@Java_JAR_EXECUTABLE@" -cf "zorba_xqj.jar" org
-cd..
+popd
 RD /S /Q "%XQJ_LOAD_PATH%\tck\org"
 
 ECHO "xqj_test.bat: Compiling Managers Tests..."

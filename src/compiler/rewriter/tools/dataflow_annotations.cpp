@@ -811,12 +811,12 @@ void SourceFinder::findNodeSources(
     fo_expr* udfCaller,
     std::vector<expr*>& sources)
 {
-  theStartingUdf = NULL;
+  user_function* startingUdf = NULL;
 
   if (udfCaller)
-    theStartingUdf = static_cast<user_function*>(udfCaller->get_func());
+    startingUdf = static_cast<user_function*>(udfCaller->get_func());
 
-  findNodeSourcesRec(node, sources, theStartingUdf);
+  findNodeSourcesRec(node, sources, startingUdf);
 
   for (csize i = 0; i < sources.size(); ++i)
   {
@@ -825,7 +825,7 @@ void SourceFinder::findNodeSources(
     ZORBA_ASSERT(source->get_expr_kind() == doc_expr_kind ||
                  source->get_expr_kind() == elem_expr_kind);
 
-    user_function* udf = theSourceUdfMap.find(source)->second;
+    user_function* udf = source->get_udf();
 
     if (udf)
       udf->invalidatePlan();
@@ -999,8 +999,6 @@ void SourceFinder::findNodeSourcesRec(
     if (std::find(sources.begin(), sources.end(), node) == sources.end())
     {
       sources.push_back(node);
-
-      theSourceUdfMap.insert(SourceUdfMapPair(node, currentUdf));
     }
 
     std::vector<expr*> enclosedExprs;

@@ -40,7 +40,7 @@
   
 FIND_PACKAGE (Java COMPONENTS Development)
 
-IF (Java_Development_FOUND)
+IF (Java_JAVAC_EXECUTABLE)
 
   # TESTING...
   SET (XQJ_LOAD_PATH "${CMAKE_BINARY_DIR}/swig/xqj")
@@ -126,6 +126,6 @@ IF (Java_Development_FOUND)
     INSTALL(FILES ${XQJAPI_JAR_FILE} DESTINATION share/xqj COMPONENT "XQJ_SWIG")
   ENDIF(NOT WIN32)
   
-ELSEIF (Java_Development_FOUND)
+ELSEIF (Java_JAVAC_EXECUTABLE)
   MESSAGE ( STATUS "SWIG Java: Not generating XQJ API because JNI headers not found.")
-ENDIF (Java_Development_FOUND)
+ENDIF (Java_JAVAC_EXECUTABLE)

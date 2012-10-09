@@ -44,8 +44,11 @@ public:
   void serialize( serialization::Archiver& );
 
   virtual ft_visit_result::type accept( ftnode_visitor& ) = 0;
-  virtual ftnode_t clone( expr::substitution_t& ) const = 0;
+
+  virtual ftnode_t clone(user_function*, expr::substitution_t& ) const = 0;
+
   QueryLoc const& get_loc() const { return loc_; }
+
   virtual std::ostream& put( std::ostream& ) const = 0;
 
 protected:
@@ -85,7 +88,7 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ft_case_mode::type get_mode() const { return mode_; }
   std::ostream& put( std::ostream& ) const;
 
@@ -107,7 +110,7 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ft_diacritics_mode::type get_mode() const { return mode_; }
   std::ostream& put( std::ostream& ) const;
 
@@ -130,7 +133,7 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   rchandle<QName> const& get_qname() const { return qname_; }
   zstring const& get_val() const { return val_; }
   std::ostream& put( std::ostream& ) const;
@@ -159,7 +162,7 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   locale::iso639_1::type get_language() const { return lang_; }
   std::ostream& put( std::ostream& ) const;
 
@@ -181,7 +184,7 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ft_stem_mode::type get_mode() const { return mode_; }
   std::ostream& put( std::ostream& ) const;
 
@@ -207,7 +210,7 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   zstring const& get_uri() const { return uri_; }
   list_t const& get_list() const { return list_; }
   ft_stop_words_unex::type get_mode() const { return mode_; }
@@ -246,7 +249,7 @@ public:
   ~ftstop_word_option();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ft_stop_words_mode::type get_mode() const { return mode_; }
   list_t const& get_stop_words() const { return stop_words_; }
   std::ostream& put( std::ostream& ) const;
@@ -273,7 +276,7 @@ public:
   ~ftthesaurus_id();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   zstring const& get_uri() const { return uri_; }
   zstring const& get_relationship() const { return relationship_; }
   ftrange const* get_levels() const { return levels_; }
@@ -310,7 +313,7 @@ public:
   }
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   bool no_thesaurus() const { return no_thesaurus_; }
   std::ostream& put( std::ostream& ) const;
 
@@ -334,7 +337,7 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ft_wild_card_mode::type get_mode() const { return mode_; }
   std::ostream& put( std::ostream& ) const;
 
@@ -355,7 +358,7 @@ public:
   ftmatch_options( QueryLoc const& );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
 
   ftcase_option const* get_case_option() const {
     return case_option_.getp();
@@ -462,7 +465,7 @@ public:
   ftweight( QueryLoc const&, expr* const &weight_expr );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   expr** get_weight_expr() { return &weight_expr_; }
   PlanIter_t get_weight_iter() const { return weight_iter_; }
   std::ostream& put( std::ostream& ) const;
@@ -501,7 +504,7 @@ public:
   ~ftprimary_with_options();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ftprimary const* get_primary() const { return primary_; }
   ftweight* get_weight() { return weight_; }
   ftmatch_options const* get_match_options() const { return match_options_; }
@@ -543,7 +546,7 @@ public:
   ~ftextension_selection();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   rchandle<PragmaList> const& get_pragmas() const { return pragmas_; }
   ftselection const* get_ftselection() const { return ftselection_; }
   std::ostream& put( std::ostream& ) const;
@@ -570,7 +573,7 @@ public:
   ~ftselection();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ftpos_filter_list_t const& get_ftpos_filter_list() const { return list_; }
   ftnode const* get_ftor() const { return ftor_; };
   std::ostream& put( std::ostream& ) const;
@@ -595,7 +598,7 @@ public:
   ~ftwords_times();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ftwords const* get_words() const { return ftwords_; }
   ftrange const* get_times() const { return fttimes_; }
   std::ostream& put( std::ostream& ) const;
@@ -627,7 +630,7 @@ public:
   ftcontent_filter( QueryLoc const&, ft_content_mode::type );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ft_content_mode::type get_mode() const { return mode_; }
   std::ostream& put( std::ostream& ) const;
 
@@ -646,7 +649,7 @@ public:
   ~ftdistance_filter();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ftrange const* get_range() const { return range_; }
   ft_unit::type get_unit() const { return unit_; }
   std::ostream& put( std::ostream& ) const;
@@ -666,7 +669,7 @@ public:
   ftorder_filter( QueryLoc const& );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   std::ostream& put( std::ostream& ) const;
 };
 
@@ -680,7 +683,7 @@ public:
   ftscope_filter( QueryLoc const&, ft_scope::type, ft_big_unit::type );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ft_scope::type get_scope() const { return scope_; }
   ft_big_unit::type get_unit() const { return unit_; }
   std::ostream& put( std::ostream& ) const;
@@ -700,7 +703,7 @@ public:
   ftwindow_filter( QueryLoc const&, expr* const&, ft_unit::type );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ft_unit::type get_unit() const { return unit_; }
   expr** get_window_expr() { return &window_expr_; }
   PlanIter_t get_window_iter() const { return window_iter_; }
@@ -751,7 +754,7 @@ public:
   ftand( QueryLoc const&, ftnode_list_t& );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   std::ostream& put( std::ostream& ) const;
 };
 
@@ -765,7 +768,7 @@ public:
   ftmild_not( QueryLoc const&, ftnode_list_t& );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   std::ostream& put( std::ostream& ) const;
 };
 
@@ -779,7 +782,7 @@ public:
   ftor( QueryLoc const&, ftnode_list_t& );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   std::ostream& put( std::ostream& ) const;
 };
 
@@ -794,7 +797,7 @@ public:
   ~ftunary_not();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   ftnode const* get_subnode() const { return subnode_; }
   std::ostream& put( std::ostream& ) const;
 
@@ -818,7 +821,7 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   expr** get_expr1() { return &expr1_; }
   expr** get_expr2() { return &expr2_; }
   PlanIter_t get_plan_iter1() const { return iter1_; }
@@ -853,7 +856,7 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_t clone( expr::substitution_t& ) const;
+  ftnode_t clone(user_function*, expr::substitution_t& ) const;
   expr** get_value_expr() { return &value_expr_; }
   PlanIter_t get_value_iter() const { return value_iter_; }
   ft_anyall_mode::type get_mode() const { return mode_; }

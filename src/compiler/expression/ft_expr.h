@@ -29,6 +29,7 @@ namespace zorba {
  */
 class ftcontains_expr : public expr
 {
+  friend class expr;
   friend class ExprIterator;
   friend class ExprManager;
 
@@ -36,6 +37,7 @@ protected:
   ftcontains_expr(
     CompilerCB* ccb,
     static_context*,
+    user_function*,
     QueryLoc const&,
     expr* range,
     ftnode *ftselection,
@@ -43,8 +45,6 @@ protected:
   );
 
 public:
-  expr* cloneImpl( substitution_t& ) const;
-
   void compute_scripting_kind();
 
   expr* get_range() const { return range_; }
