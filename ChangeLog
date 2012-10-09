@@ -11,6 +11,7 @@ Bug Fixes/Other Changes:
   * Fixed mustcopyInputNodes() method of no-copy, and jsoniq functions.
   * Fixed bug #1062093 (bug in var reference iterators with an associated
     position that is negative)
+  * Fixed bug #1061222 (bad message for errors in index key type declaration)
 
 
 version 2.7
