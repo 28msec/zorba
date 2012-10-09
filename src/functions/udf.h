@@ -171,6 +171,8 @@ public:
 
   expr* getBody() const;
 
+  void setScriptingKind(unsigned short k);
+
   void setArgVars(std::vector<var_expr*>& args);
 
   const std::vector<var_expr*>& getArgVars() const;

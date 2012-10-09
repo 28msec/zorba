@@ -116,25 +116,6 @@ public:
 };
 
 
-/*******************************************************************************
-
-********************************************************************************/
-struct UDFCallChain
-{
-  fo_expr      * theFo;
-  UDFCallChain * thePrev;
-
-  UDFCallChain() : theFo(NULL), thePrev(NULL) {}
-
-  UDFCallChain(fo_expr* caller, UDFCallChain* prevCaller)
-    :
-    theFo(caller),
-    thePrev(prevCaller)
-  {
-  }
-};
-
-
 }
 
 #endif /* ZORBA_REWRITER_CONTEXT_H */

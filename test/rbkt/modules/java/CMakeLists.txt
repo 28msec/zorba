@@ -19,7 +19,7 @@
 COMPARE_VERSION_STRINGS (${CMAKE_VERSION} "2.8.6" RESULT)
 IF (${RESULT} GREATER -1)
   FIND_PACKAGE (Java COMPONENTS Development)
-  IF (Java_Development_FOUND)
+  IF (Java_JAVAC_EXECUTABLE)
     INCLUDE (UseJava)
 
     # Declare two "different" jars, for testing
@@ -32,5 +32,5 @@ IF (${RESULT} GREATER -1)
     DECLARE_ZORBA_JAR(FILE ${JavaTest_JAR_FILE} TARGET JavaTest TEST_ONLY)
     DECLARE_ZORBA_JAR(FILE ${JavaTest2_JAR_FILE} TARGET JavaTest2 TEST_ONLY)
 
-  ENDIF (Java_Development_FOUND)
+  ENDIF (Java_JAVAC_EXECUTABLE)
 ENDIF (${RESULT} GREATER -1)

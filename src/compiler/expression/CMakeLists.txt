@@ -14,6 +14,7 @@
 SET(EXPRESSION_SRCS
     expr_consts.cpp
     expr_base.cpp
+    expr_clone.cpp
     expr_iter.cpp
     expr_type.cpp
     expr.cpp

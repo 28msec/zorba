@@ -70,11 +70,12 @@ std::string var_expr::decode_var_kind(enum var_kind k)
 var_expr::var_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     var_kind k,
     store::Item* name)
   :
-  expr(ccb, sctx, loc, var_expr_kind),
+  expr(ccb, sctx, udf, loc, var_expr_kind),
   theUniqueId(0),
   theVarKind(k),
   theName(name),
@@ -82,7 +83,6 @@ var_expr::var_expr(
   theFlworClause(NULL),
   theCopyClause(NULL),
   theParamPos(0),
-  theUDF(NULL),
   theVarInfo(NULL),
   theIsExternal(false),
   theIsPrivate(false),
@@ -98,7 +98,7 @@ var_expr::var_expr(
 /*******************************************************************************
 
 ********************************************************************************/
-var_expr::var_expr(const var_expr& source)
+var_expr::var_expr(user_function* udf, const var_expr& source)
   :
   expr(source),
   theUniqueId(0),
@@ -108,13 +108,13 @@ var_expr::var_expr(const var_expr& source)
   theFlworClause(NULL),
   theCopyClause(NULL),
   theParamPos(source.theParamPos),
-  theUDF(source.theUDF),
   theVarInfo(NULL),
   theIsExternal(source.theIsExternal),
   theIsPrivate(source.theIsPrivate),
   theIsMutable(source.theIsMutable),
   theHasInitializer(source.theHasInitializer)
 {
+  theUDF = udf;
 }
 
 
@@ -331,20 +331,6 @@ bool var_expr::is_context_item() const
 void var_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-expr* var_expr::cloneImpl(expr::substitution_t& subst) const
-{
-  expr::subst_iter_t i = subst.find(this);
-
-  if (i == subst.end())
-    return const_cast<var_expr*>(this);
-
-  return i->second;
 }
 
 

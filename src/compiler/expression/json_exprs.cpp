@@ -33,10 +33,11 @@ DEF_EXPR_ACCEPT(json_direct_object_expr)
 json_array_expr::json_array_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     expr* content)
   :
-  expr(ccb, sctx, loc, json_array_expr_kind),
+  expr(ccb, sctx, udf, loc, json_array_expr_kind),
   theContentExpr(content)
 {
   compute_scripting_kind();
@@ -60,15 +61,6 @@ void json_array_expr::compute_scripting_kind()
 }
 
 
-expr* json_array_expr::cloneImpl(substitution_t& subst) const
-{
-  return theCCB->theEM->
-         create_json_array_expr(theSctx,
-                                get_loc(),
-                                theContentExpr->clone(subst));
-}
-
-
 /*******************************************************************************
   SimpleObjectUnion ::= "{|" Expr? "|}"
 
@@ -79,11 +71,12 @@ expr* json_array_expr::cloneImpl(substitution_t& subst) const
 json_object_expr::json_object_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     expr* content,
     bool accumulate)
   :
-  expr(ccb, sctx, loc, json_object_expr_kind),
+  expr(ccb, sctx, udf, loc, json_object_expr_kind),
   theContentExpr(content),
   theAccumulate(accumulate)
 {
@@ -108,17 +101,6 @@ void json_object_expr::compute_scripting_kind()
 }
 
 
-expr* json_object_expr::cloneImpl(substitution_t& subst) const
-{
-  return theCCB->theEM->
-         create_json_object_expr(theSctx,
-                                 get_loc(),
-                                 (theContentExpr ?
-                                  theContentExpr->clone(subst) : NULL),
-                                 theAccumulate);
-}
-
-
 /*******************************************************************************
   DirectObjectConstructor ::= "{" PairConstructor ("," PairConstructor )* "}"
 
@@ -130,11 +112,12 @@ expr* json_object_expr::cloneImpl(substitution_t& subst) const
 json_direct_object_expr::json_direct_object_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     std::vector<expr*>& names,
     std::vector<expr*>& values)
   :
-  expr(ccb, sctx, loc, json_direct_object_expr_kind)
+  expr(ccb, sctx, udf, loc, json_direct_object_expr_kind)
 {
   assert(names.size() == values.size());
 
@@ -172,33 +155,6 @@ void json_direct_object_expr::compute_scripting_kind()
     theScriptingKind &= ~SIMPLE_EXPR;
 
   checkScriptingKind();
-}
-
-
-expr* json_direct_object_expr::cloneImpl(substitution_t& subst) const
-{
-  std::vector<expr*> names;
-  std::vector<expr*> values;
-
-  names.reserve(theNames.size());
-  values.reserve(theValues.size());
-
-  std::vector<expr*>::const_iterator ite = theNames.begin();
-  std::vector<expr*>::const_iterator end = theNames.end();
-  for (; ite != end; ++ite)
-  {
-    names.push_back((*ite)->clone(subst));
-  }
-
-  ite = theValues.begin();
-  end = theValues.end();
-  for (; ite != end; ++ite)
-  {
-    values.push_back((*ite)->clone(subst));
-  }
-
-  return theCCB->theEM->
-         create_json_direct_object_expr(theSctx, get_loc(), names, values);
 }
 
 
