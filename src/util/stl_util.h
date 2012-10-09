@@ -44,13 +44,13 @@ using internal::ztd::less;
  * A less-verbose way to iterate over a constant sequence.
  */
 #define FOR_EACH(TYPE,IT,SEQ) \
-  for ( TYPE::const_iterator IT = (SEQ).begin(); IT != (SEQ).end(); ++IT )
+  for ( TYPE::const_iterator IT = (SEQ).begin(), IT##_end = (SEQ).end(); IT != IT##_end; ++IT )
 
 /**
  * A less-verbose way to iterate over a mutable sequence.
  */
 #define MUTATE_EACH(TYPE,IT,SEQ) \
-  for ( TYPE::iterator IT = (SEQ).begin(); IT != (SEQ).end(); ++IT )
+  for ( TYPE::iterator IT = (SEQ).begin(), IT##_end = (SEQ).end(); IT != IT##_end; ++IT )
 
 ///////////////////////////////////////////////////////////////////////////////
 
