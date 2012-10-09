@@ -173,7 +173,11 @@ protected:
   static expr*    * iter_done;
 
 protected:
+  CompilerCB * const theCCB;
+
   static_context   * theSctx;
+
+  user_function    * theUDF;
 
   QueryLoc           theLoc;
 
@@ -186,8 +190,6 @@ protected:
 
   FreeVars           theFreeVars;
 
-  CompilerCB  *const theCCB;
-
 public:
   static bool is_sequential(unsigned short theScriptingKind);
 
@@ -196,24 +198,26 @@ public:
   static void checkNonUpdating(const expr* e);
 
 protected:
-  expr(CompilerCB*, static_context*, const QueryLoc&, expr_kind_t);
+  expr(CompilerCB*, static_context*, user_function*, const QueryLoc&, expr_kind_t);
 
-  expr() : theSctx(NULL), theFlags1(0), theCCB(NULL) {}
+  expr() : theCCB(NULL), theSctx(NULL), theUDF(NULL), theFlags1(0) {}
 
 public:
   virtual ~expr();
 
-  CompilerCB* get_ccb() {return theCCB;}
+  CompilerCB* get_ccb() { return theCCB; }
+
+  static_context* get_sctx() const { return theSctx; }
+
+  TypeManager* get_type_manager() const;
+
+  user_function* get_udf() const { return theUDF; }
 
   expr_kind_t get_expr_kind() const { return static_cast<expr_kind_t>(theKind); }
 
   const QueryLoc& get_loc() const { return theLoc; }
 
   void set_loc(const QueryLoc& loc) { theLoc = loc; }
-
-  static_context* get_sctx() const { return theSctx; }
-
-  TypeManager* get_type_manager() const;
 
   uint32_t getFlags() const { return theFlags1; }
 
@@ -241,11 +245,9 @@ public:
 
   xqtref_t get_return_type();
 
-  expr* clone() const;
+  expr* clone(user_function* udf) const;
 
-  expr* clone(substitution_t&) const;
-
-  virtual expr* cloneImpl(substitution_t& substitution) const;
+  expr* clone(user_function* udf, substitution_t& subst) const;
 
   virtual void accept(expr_visitor& v) = 0;
 

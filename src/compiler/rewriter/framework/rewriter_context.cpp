@@ -92,7 +92,7 @@ var_expr* RewriterContext::createTempVar(
   std::string varname = ss.str();
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
-  var_expr* var = theEM->create_var_expr(sctx, loc, kind, qname);
+  var_expr* var = theEM->create_var_expr(sctx, theUDF, loc, kind, qname);
 
   return var;
 }

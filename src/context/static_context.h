@@ -42,6 +42,7 @@
 
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/hashmap_itemp.h"
+#include "zorbautils/checked_vector.h"
 
 #include "common/shared_types.h"
 

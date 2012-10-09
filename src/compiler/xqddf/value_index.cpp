@@ -468,6 +468,10 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   var_expr* dot = getDomainVariable();
   var_expr* pos = getDomainPositionVariable();
   static_context* sctx = domainExpr->get_sctx();
+  user_function* udf = domainExpr->get_udf();
+
+  assert(theIsTemp || udf == NULL);
+
   const QueryLoc& dotloc = dot->get_loc();
 
   csize numKeys = theKeyExprs.size();
@@ -477,17 +481,17 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // Clone the domain expr.
   //
   expr::substitution_t subst;
-  expr* newdom = domainExpr->clone(subst);
+  expr* newdom = domainExpr->clone(udf, subst);
 
   //
   // Clone the domain variable and the domain pos variable. These vars are
   // referenced by the key exprs.
   //
   var_expr* newdot = theCCB->theEM->
-  create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
+  create_var_expr(sctx, udf, dotloc, dot->get_kind(), dot->get_name());
 
   var_expr* newpos = theCCB->theEM->
-  create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
+  create_var_expr(sctx, udf, dotloc, pos->get_kind(), pos->get_name());
 
   //
   // Create for clause (this has to be done here so that the cloned dot var gets
@@ -496,8 +500,8 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   //
   // for $newdot at $newpos in new_domain_expr
   //
-  for_clause* fc =
-    theCCB->theEM->create_for_clause(sctx, dotloc, newdot, newdom, newpos);
+  for_clause* fc = theCCB->theEM->
+  create_for_clause(sctx, dotloc, newdot, newdom, newpos);
 
   //
   // Clone the key exprs, replacing their references to the 2 domain variables
@@ -509,7 +513,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
     subst[dot] = newdot;
     subst[pos] = newpos;
 
-    clonedExprs[i+1] = theKeyExprs[i]->clone(subst);
+    clonedExprs[i+1] = theKeyExprs[i]->clone(udf, subst);
   }
 
   //
@@ -519,7 +523,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr)
   //
 
-  expr* domainVarExpr(theCCB->theEM->create_wrapper_expr(sctx, loc, newdot));
+  expr* domainVarExpr(theCCB->theEM->create_wrapper_expr(sctx, udf, loc, newdot));
 
   clonedExprs[0] = domainVarExpr;
 
@@ -532,9 +536,9 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 
   ZORBA_ASSERT(f != NULL);
 
-  fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, loc, f, clonedExprs);
+  fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, udf, loc, f, clonedExprs);
 
-  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, loc, false);
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc, false);
   flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 
@@ -602,6 +606,9 @@ DocIndexer* IndexDecl::getDocIndexer(
   var_expr* pos = getDomainPositionVariable();
 
   static_context* sctx = domainExpr->get_sctx();
+  user_function* udf = domainExpr->get_udf();
+
+  assert(udf == NULL);
 
   const QueryLoc& dotloc = dot->get_loc();
 
@@ -613,14 +620,14 @@ DocIndexer* IndexDecl::getDocIndexer(
   // during the apply-updates.
   //
 
-  var_expr* docVar = theCCB->theEM->create_var_expr(sctx,
-                                                    dot->get_loc(),
-                                                    var_expr::prolog_var,
-                                                    docVarName);
+  var_expr* docVar = theCCB->theEM->
+  create_var_expr(sctx, udf, dot->get_loc(), var_expr::prolog_var, docVarName);
+
   docVar->set_unique_id(1);
   ulong nextVarId = 2;
 
-  expr* wrapperExpr = theCCB->theEM->create_wrapper_expr(sctx, dot->get_loc(), docVar);
+  expr* wrapperExpr = theCCB->theEM->
+  create_wrapper_expr(sctx, udf, dot->get_loc(), docVar);
 
   docVar->set_type(domainExpr->get_return_type());
 
@@ -628,17 +635,17 @@ DocIndexer* IndexDecl::getDocIndexer(
 
   subst[theDomainSourceExprs[0]] = wrapperExpr;
 
-  expr* newdom = domainExpr->clone(subst);
+  expr* newdom = domainExpr->clone(udf, subst);
 
   //
   // Clone the domain variable and the domain pos variable. These vars are
   // referenced by the key exprs.
   //
   var_expr* newdot = theCCB->theEM->
-  create_var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
+  create_var_expr(sctx, udf, dotloc, dot->get_kind(), dot->get_name());
 
   var_expr* newpos = theCCB->theEM->
-  create_var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
+  create_var_expr(sctx, udf, dotloc, pos->get_kind(), pos->get_name());
 
   //
   // Create for clause (this has to be done here so that the cloned dot var gets
@@ -647,8 +654,8 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // for $newdot at $newpos in new_domain_expr
   //
-  for_clause* fc =
-    theCCB->theEM->create_for_clause(sctx, dotloc, newdot, newdom, newpos);
+  for_clause* fc = theCCB->theEM->
+  create_for_clause(sctx, dotloc, newdot, newdom, newpos);
 
   //
   // Clone the key exprs, replacing their references to the 2 domain variables
@@ -660,7 +667,7 @@ DocIndexer* IndexDecl::getDocIndexer(
     subst[dot] = newdot;
     subst[pos] = newpos;
 
-    clonedExprs[i+1] = theKeyExprs[i]->clone(subst);
+    clonedExprs[i+1] = theKeyExprs[i]->clone(udf, subst);
   }
 
   //
@@ -670,7 +677,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr)
   //
 
-  expr* domainVarExpr = theCCB->theEM->create_wrapper_expr(sctx, loc, newdot);
+  expr* domainVarExpr = theCCB->theEM->create_wrapper_expr(sctx, udf, loc, newdot);
 
   clonedExprs[0] = domainVarExpr;
 
@@ -683,9 +690,9 @@ DocIndexer* IndexDecl::getDocIndexer(
 
   ZORBA_ASSERT(f != NULL);
 
-  fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, loc, f, clonedExprs);
+  fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, udf, loc, f, clonedExprs);
 
-  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, loc, false);
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc, false);
   flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 
