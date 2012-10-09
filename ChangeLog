@@ -15,7 +15,6 @@ Bug Fixes/Other Changes:
   * Fixed bug #1021492 (while computeing the "sources" of a prolog var, skip
     any var-setting exprs that appear in non-used (and non-optimized) functions). 
 
-
 version 2.7
 
 New Features:

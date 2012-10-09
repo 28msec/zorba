@@ -4660,7 +4660,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       if (!index->isGeneral())
       {
         RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
-        ERROR_PARAMS(index->getName()->getStringValue()));
+        ERROR_PARAMS(index->getName()->getStringValue(),
+                     ZED(ZDST0027_NO_KEY_TYPE_DECL)));
       }
     }
     else
@@ -4672,15 +4673,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       if (!TypeOps::is_subtype(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_STAR, kloc))
       {
         RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
-        ERROR_PARAMS(index->getName()->getStringValue()));
-      }
-
-      if (!index->isGeneral() &&
-          (TypeOps::is_equal(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_ONE, kloc) ||
-           TypeOps::is_equal(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE, kloc)))
-      {
-        RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
-        ERROR_PARAMS(index->getName()->getStringValue()));
+        ERROR_PARAMS(index->getName()->getStringValue(),
+                     ZED(ZDST0027_NON_ATOMIC_KEY_TYPE)));
       }
 
       if (!index->isGeneral() &&
@@ -4688,7 +4682,17 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
           quant != TypeConstants::QUANT_QUESTION)
       {
         RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
-        ERROR_PARAMS(index->getName()->getStringValue()));
+        ERROR_PARAMS(index->getName()->getStringValue(),
+                     ZED(ZDST0027_MULTI_VALUED_KEY_TYPE_DECL)));
+      }
+
+      if (!index->isGeneral() &&
+          (TypeOps::is_equal(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_ONE, kloc) ||
+           TypeOps::is_equal(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE, kloc)))
+      {
+        RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
+        ERROR_PARAMS(index->getName()->getStringValue(),
+                     ZED(ZDST0027_NON_SPECIFIC_KEY_TYPE_DECL)));
       }
 
       if (index->getMethod() == IndexDecl::TREE &&
@@ -4704,7 +4708,9 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
            TypeOps::is_subtype(tm, *ptype, *theRTM.GDAY_TYPE_ONE, kloc)))
       {
         RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
-        ERROR_PARAMS(index->getName()->getStringValue()));
+        ERROR_PARAMS(index->getName()->getStringValue(),
+                     ZED(ZDST0027_NON_ORDERED_KEY_TYPE),
+                     ptype->toSchemaString()));
       }
 
       keyExpr = wrap_in_type_match(keyExpr,
