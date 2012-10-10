@@ -97,7 +97,7 @@ public:
 
   void findNodeSources(
       expr* inExpr,
-      UDFCallChain* udfChain,
+      fo_expr* udfCaller,
       std::vector<expr*>& sources);
 
   void findLocalNodeSources(

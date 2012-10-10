@@ -611,8 +611,7 @@ expr* MarkNodeCopyProps::apply(
       {
         // In this case serialization is always unsafe.
         std::vector<expr*> sources;
-        UDFCallChain dummyUdfCaller;
-        theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
+        theSourceFinder->findNodeSources(rCtx.theRoot, NULL, sources);
         markSources(sources);
       }
     }
@@ -621,13 +620,11 @@ expr* MarkNodeCopyProps::apply(
       // We have to assume that the result of the "node" expr will be used in an
       // unsafe op, so it must consist of standalone trees.  
       std::vector<expr*> sources;
-      UDFCallChain dummyUdfCaller;
-      theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
+      theSourceFinder->findNodeSources(rCtx.theRoot, NULL, sources);
       markSources(sources);
     }
 
-    UDFCallChain dummyUdfCaller;
-    applyInternal(rCtx, node, dummyUdfCaller);
+    applyInternal(rCtx, node, NULL);
   }
   catch (...)
   {
@@ -650,7 +647,7 @@ expr* MarkNodeCopyProps::apply(
 void MarkNodeCopyProps::applyInternal(
     RewriterContext& rCtx,
     expr* node,
-    UDFCallChain& udfCaller)
+    fo_expr* udfCaller)
 {
   switch (node->get_expr_kind())
   {
@@ -684,7 +681,7 @@ void MarkNodeCopyProps::applyInternal(
       for (csize i = 0; i < numPairs; ++i)
       {
         std::vector<expr*> sources;
-        theSourceFinder->findNodeSources(e->get_value_expr(i), &udfCaller, sources);
+        theSourceFinder->findNodeSources(e->get_value_expr(i), udfCaller, sources);
         markSources(sources);
       }
     }
@@ -706,7 +703,7 @@ void MarkNodeCopyProps::applyInternal(
     if (sctx->preserve_ns() && sctx->inherit_ns())
     {
       std::vector<expr*> sources;
-      theSourceFinder->findNodeSources(e->get_expr(), &udfCaller, sources);
+      theSourceFinder->findNodeSources(e->get_expr(), udfCaller, sources);
       markSources(sources);
     }
 
@@ -721,7 +718,7 @@ void MarkNodeCopyProps::applyInternal(
     if (e->inUnsafeContext())
     {
       std::vector<expr*> sources;
-      theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
+      theSourceFinder->findNodeSources((*e)[0],  udfCaller, sources);
       markSources(sources);
     }
     else
@@ -741,7 +738,7 @@ void MarkNodeCopyProps::applyInternal(
             axisKind != axis_kind_attribute)
         {
           std::vector<expr*> sources;
-          theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
+          theSourceFinder->findNodeSources((*e)[0],  udfCaller, sources);
           markSources(sources);
           break;
         }
@@ -753,7 +750,7 @@ void MarkNodeCopyProps::applyInternal(
               node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
           {
             std::vector<expr*> sources;
-            theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
+            theSourceFinder->findNodeSources((*e)[0],  udfCaller, sources);
             markSources(sources);
             break;
           }
@@ -775,33 +772,30 @@ void MarkNodeCopyProps::applyInternal(
     {
       user_function* udf = static_cast<user_function*>(f);
 
-      UdfCalls::iterator ite = theProcessedUDFCalls.find(e);
+      UdfSet::iterator ite = theProcessedUDFs.find(udf);
 
-      if (ite == theProcessedUDFCalls.end())
+      if (ite == theProcessedUDFs.end())
       {
-        theProcessedUDFCalls.insert(e);
+        theProcessedUDFs.insert(udf);
 
-        UDFCallChain nextUdfCall(e, &udfCaller);
-
-        applyInternal(rCtx, udf->getBody(), nextUdfCall);
+        applyInternal(rCtx, udf->getBody(), e);
       }
-      else
-      {
-        csize numArgs = e->num_args();
-        for (csize i = 0; i < numArgs; ++i)
-        {
-          var_expr* argVar = udf->getArgVar(i);
 
-          // if an arg var of this udf has been marked as a source before, it
-          // means that that var is consumed in some "nodeid-sesitive" operation,
-          // so we now have to find the sources of the arg expr and mark them.
-          if (theSourceFinder->theVarSourcesMap.find(argVar) !=
-              theSourceFinder->theVarSourcesMap.end())
-          {
-            std::vector<expr*> sources;
-            theSourceFinder->findNodeSources(e->get_arg(i), &udfCaller, sources);
-            markSources(sources);
-          }
+      // if an arg var of this udf has been marked as a source before, it
+      // means that that var is consumed in some unsafe operation, so we
+      // now have to find the sources of the arg expr and mark them.
+      csize numArgs = e->num_args();
+
+      for (csize i = 0; i < numArgs; ++i)
+      {
+        var_expr* argVar = udf->getArgVar(i);
+
+        if (theSourceFinder->theVarSourcesMap.find(argVar) !=
+            theSourceFinder->theVarSourcesMap.end())
+        {
+          std::vector<expr*> sources;
+          theSourceFinder->findNodeSources(e->get_arg(i), udfCaller, sources);
+          markSources(sources);
         }
       }
     } // f->isUdf()
@@ -813,7 +807,7 @@ void MarkNodeCopyProps::applyInternal(
         if (f->mustCopyInputNodes(e, i))
         {
           std::vector<expr*> sources;
-          theSourceFinder->findNodeSources(e->get_arg(i), &udfCaller, sources);
+          theSourceFinder->findNodeSources(e->get_arg(i), udfCaller, sources);
           markSources(sources);
         }
       }
@@ -857,7 +851,7 @@ void MarkNodeCopyProps::applyInternal(
   {
     validate_expr* e = static_cast<validate_expr *>(node);
     std::vector<expr*> sources;
-    theSourceFinder->findNodeSources(e->get_expr(), &udfCaller, sources);
+    theSourceFinder->findNodeSources(e->get_expr(), udfCaller, sources);
     markSources(sources);
     break;
   }
@@ -878,7 +872,7 @@ void MarkNodeCopyProps::applyInternal(
     if (kind == replace_expr_kind || kind == delete_expr_kind)
     {
       std::vector<expr*> sources;
-      theSourceFinder->findNodeSources(e->getTargetExpr(), &udfCaller, sources);
+      theSourceFinder->findNodeSources(e->getTargetExpr(), udfCaller, sources);
       markSources(sources);
     }
     else
@@ -897,7 +891,7 @@ void MarkNodeCopyProps::applyInternal(
         sctx->preserve_ns())
     {
       std::vector<expr*> sources;
-      theSourceFinder->findNodeSources(e->getSourceExpr(), &udfCaller, sources);
+      theSourceFinder->findNodeSources(e->getSourceExpr(), udfCaller, sources);
       markSources(sources);
     }
 
@@ -918,7 +912,7 @@ void MarkNodeCopyProps::applyInternal(
       for (; ite != end; ++ite)
       {
         std::vector<expr*> sources;
-        theSourceFinder->findNodeSources((*ite)->getExpr(), &udfCaller, sources);
+        theSourceFinder->findNodeSources((*ite)->getExpr(), udfCaller, sources);
         markSources(sources);
       }
     }
@@ -952,7 +946,7 @@ void MarkNodeCopyProps::applyInternal(
       expr* arg = e->get_arg_expr(i);
 
       std::vector<expr*> sources;
-      theSourceFinder->findNodeSources(arg, &udfCaller, sources);
+      theSourceFinder->findNodeSources(arg, udfCaller, sources);
       markSources(sources);
     }
 
@@ -970,7 +964,7 @@ void MarkNodeCopyProps::applyInternal(
     ftcontains_expr* e = static_cast<ftcontains_expr*>(node);
 
     std::vector<expr*> sources;
-    theSourceFinder->findNodeSources(e->get_range(), &udfCaller, sources);
+    theSourceFinder->findNodeSources(e->get_range(), udfCaller, sources);
     markSources(sources);
 
     break;
@@ -991,7 +985,7 @@ void MarkNodeCopyProps::applyInternal(
     FOR_EACH(std::vector<expr*>, ite, args)
     {
       std::vector<expr*> sources;
-      theSourceFinder->findNodeSources((*ite), &udfCaller, sources);
+      theSourceFinder->findNodeSources((*ite), udfCaller, sources);
       markSources(sources);
     }
 
@@ -1004,9 +998,7 @@ void MarkNodeCopyProps::applyInternal(
 
     user_function* udf = static_cast<user_function*>(e->get_function());
 
-    UDFCallChain dummyUdfCaller;
-
-    applyInternal(rCtx, udf->getBody(), dummyUdfCaller);
+    applyInternal(rCtx, udf->getBody(), NULL);
 
     return;
   }
