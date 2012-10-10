@@ -812,12 +812,27 @@ void MarkNodeCopyProps::applyInternal(
         }
       }
 
-      if (node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
+      FunctionConsts::FunctionKind fkind = f->getKind();
+
+      switch (fkind)
       {
-        if (f->getKind() == FunctionConsts::FN_DATA_1)
+      case FunctionConsts::FN_DATA_1:
+      case FunctionConsts::FN_NILLED_1:
+      {
+        if (node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
         {
           markInUnsafeContext(e->get_arg(0));
-        }
+        } 
+        break;
+      }
+      case FunctionConsts::FN_BASE_URI_1:
+      case FunctionConsts::FN_ROOT_1:
+      {
+        markInUnsafeContext(e->get_arg(0));
+        break;
+      }
+      default:
+        break;
       }
     }
 
