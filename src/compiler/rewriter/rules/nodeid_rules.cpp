@@ -585,7 +585,7 @@ expr* MarkNodeCopyProps::apply(
 
   try
   {
-    if (rCtx.theCCB->theConfig.for_serialization_only)
+    if (rCtx.theForSerializationOnly)
     {
       // Serialization may or may not be a "safe" op.
       static_context* sctx = node->get_sctx();
@@ -809,6 +809,14 @@ void MarkNodeCopyProps::applyInternal(
           std::vector<expr*> sources;
           theSourceFinder->findNodeSources(e->get_arg(i), udfCaller, sources);
           markSources(sources);
+        }
+      }
+
+      if (node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
+      {
+        if (f->getKind() == FunctionConsts::FN_DATA_1)
+        {
+          markInUnsafeContext(e->get_arg(0));
         }
       }
     }
