@@ -166,9 +166,7 @@ DocumentManagerImpl::availableDocuments() const
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(
-        theDocNamespace,
-        "available-documents");
+    Item lQName = theFactory->createQName(theDocNamespace, "available-documents");
 
     std::vector<ItemSequence_t> lArgs;
 
