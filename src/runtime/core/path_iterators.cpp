@@ -1788,7 +1788,7 @@ bool PrecedingReverseAxisIterator::nextImpl(
           // We have traversed all the subtrees of the node D that is at the
           // top of theCurrentPath. Return D to the caller, if it satifies the
           // node test, and then pop D from theCurrentPath.
-          if (nameOrKindTest(theSctx, state->topNode(), loc))
+          if (!getNextContextNode && nameOrKindTest(theSctx, state->topNode(), loc))
           {
             result = state->topNode();
             STACK_PUSH(true, state);
