@@ -1875,6 +1875,8 @@ bool FollowingAxisIterator::nextImpl(
       ancestor = ancestor->getParent();
     }
 
+    std::reverse(state->theAncestorPath.begin(), state->theAncestorPath.end());
+
     // For each ancestor A of the current context node N and for each child C
     // of A such as C is to the right of the next ancestor AC in the ancestor
     // path (note: AC is a child of A), traverse the subtree rooted at C.
@@ -1886,7 +1888,7 @@ bool FollowingAxisIterator::nextImpl(
       ancestor = state->theAncestorPath.back();
       state->theAncestorPath.pop_back();
 
-      state->theAncestorChildren->init(ancestor, state->theAncestorPath.back());
+      state->theAncestorChildren->init(state->theAncestorPath.back().getp(), ancestor);
       state->theAncestorChildren->open();
 
       // For each child C of A such that C is to the right of AC ...
