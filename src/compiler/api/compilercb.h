@@ -195,6 +195,8 @@ public:
 
   uint32_t                  theTempIndexCounter;
 
+  ulong                     theNextVisitId;
+
   config                    theConfig;
 
   ExprManager       * const theEM;

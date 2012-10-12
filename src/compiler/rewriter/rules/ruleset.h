@@ -145,11 +145,11 @@ public:
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 
 protected:
-  void applyInternal(RewriterContext& rCtx, expr* node, fo_expr* udfCaller);
+  void applyInternal(expr* node, bool deferred);
 
   void markSources(const std::vector<expr*>& sources);
 
-  void markInUnsafeContext(expr* node);
+  void findSourcesForNodeExtractors(expr* node);
 };
 
 

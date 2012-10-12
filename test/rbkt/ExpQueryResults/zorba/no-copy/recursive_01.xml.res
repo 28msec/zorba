@@ -1,0 +1,2 @@
+<book><author/><title/></book>
+

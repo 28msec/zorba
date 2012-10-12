@@ -134,7 +134,8 @@ expr::expr(
   theUDF(udf),
   theLoc(loc),
   theKind(k),
-  theFlags1(0)
+  theFlags1(0),
+  theVisitId(0)
 {
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
@@ -505,30 +506,6 @@ void expr::setContainsRecursiveCall(BoolAnnotationValue v)
 bool expr::containsRecursiveCall() const
 {
   BoolAnnotationValue v = getContainsRecursiveCall();
-  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-BoolAnnotationValue expr::getInUnsafeContext() const
-{
-  return (BoolAnnotationValue)
-         ((theFlags1 & IN_UNSAFE_CONTEXT_MASK) >> IN_UNSAFE_CONTEXT);
-}
-
-
-void expr::setInUnsafeContext(BoolAnnotationValue v)
-{
-  theFlags1 &= ~IN_UNSAFE_CONTEXT_MASK;
-  theFlags1 |= (v << IN_UNSAFE_CONTEXT);
-}
-
-
-bool expr::inUnsafeContext() const
-{
-  BoolAnnotationValue v = getInUnsafeContext();
   return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
 }
 

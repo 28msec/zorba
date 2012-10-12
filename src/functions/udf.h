@@ -128,7 +128,7 @@ private:
   bool                        theIsLeaf;
 
   std::vector<user_function*> theMutuallyRecursiveUDFs;
-  std::vector<expr*>          theRecursiveCalls;
+  std::vector<fo_expr*>       theRecursiveCalls;
 
   bool                        theIsOptimized;
 
@@ -183,9 +183,9 @@ public:
       const std::vector<user_function*>& udfs,
       const std::vector<user_function*>::const_iterator& cycle);
 
-  void addRecursiveCall(expr* call);
+  void addRecursiveCall(fo_expr* call);
 
-  const std::vector<expr*>& getRecursiveCalls() const { return theRecursiveCalls; }
+  const std::vector<fo_expr*>& getRecursiveCalls() const { return theRecursiveCalls; }
 
   bool isMutuallyRecursiveWith(const user_function* udf);
 
