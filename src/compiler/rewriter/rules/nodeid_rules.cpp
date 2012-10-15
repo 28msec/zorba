@@ -847,6 +847,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
       }
       case FunctionConsts::FN_BASE_URI_1:
       case FunctionConsts::FN_ROOT_1:
+      // TODO: node-before, node-after
       {
         findSourcesForNodeExtractors(e->get_arg(0));
         break;

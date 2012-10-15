@@ -724,6 +724,16 @@ PlanIter_t fn_exactly_one_noraise::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
+bool fn_deep_equal::mustCopyInputNodes(expr* fo, csize producer) const
+{
+  return (producer < 2 &&
+          fo->get_sctx()->construction_mode() == StaticContextConsts::cons_strip);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t fn_union::codegen(
     CompilerCB* /*cb*/,
     static_context* sctx,
