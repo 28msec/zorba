@@ -46,13 +46,16 @@
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
 
-#include "store/api/pul.h"
-#include "store/api/item.h"
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
-#include "store/api/copymode.h"
+#include <store/api/pul.h>
+#include <store/api/item.h>
+#include <store/api/item_factory.h>
+#include <store/api/store.h>
+#include <store/api/copymode.h>
 
+#include <util/uri_util.h>
 #include <zorba/store_consts.h>
+#include <zorbatypes/URI.h>
+
 
 namespace zorba {
 
@@ -1597,6 +1600,141 @@ bool JSONBoxIterator::nextImpl(
   STACK_END(state);
 }
 
+/**
+ * Utility method for jn:json-doc(). Given an input string,
+ * use a few heuristics to create a valid URI, assuming that the input might
+ * be an absolute or relative filesystem path, etc.
+ */
+static zstring normalizeInput(zstring const& aUri, static_context* aSctx,
+                              QueryLoc const& loc)
+{
+  zstring const aBaseUri = aSctx->get_base_uri();
+  zstring lResolvedURI;
+
+  try
+  {
+    // To support the very common (if technically incorrect) use
+    // case of users passing local filesystem paths to fn:doc(),
+    // we use the following heuristic: IF the base URI has a file:
+    // scheme AND the incoming URI has no scheme, we will assume
+    // the incoming URI is actually a filesystem path.  QQQ For
+    // the moment, we assume any "unknown" schemes are probably
+    // Windows drive letters.
+    if ((uri::get_scheme(aUri) == uri::none ||
+         uri::get_scheme(aUri) == uri::unknown) &&
+        uri::get_scheme(aBaseUri) == uri::file)
+    {
+      // Ok, we assume it's a filesystem path. First normalize it.
+      zstring lNormalizedPath =
+        fs::get_normalized_path(aUri, zstring(""));
+      // QQQ For now, get_normalized_path() doesn't do what we
+      // want when base URI represents a file. So, when the
+      // normalized path is relative, we pretend it's a relative
+      // URI and resolve it as such.
+      if (fs::is_absolute(lNormalizedPath))
+      {
+        URI::encode_file_URI(lNormalizedPath, lResolvedURI);
+      }
+      else
+      {
+#ifdef WIN32
+        ascii::replace_all(lNormalizedPath, '\\', '/');
+#endif
+        lResolvedURI = aSctx->resolve_relative_uri(lNormalizedPath, true);
+      }
+    }
+    else
+    {
+      // We do NOT assume it's a filesystem path; just resolve it.
+      lResolvedURI = aSctx->resolve_relative_uri(aUri, true);
+    }
+  }
+  catch (ZorbaException& e)
+  {
+    if (e.diagnostic() == err::XQST0046)
+      // the value of a URILiteral is of nonzero length and is not in the
+      // lexical space of xs:anyURI.
+      e.set_diagnostic(err::FODC0005);
+    else
+      e.set_diagnostic(err::FODC0002);
+
+    set_source(e, loc);
+    throw;
+  }
+
+  return lResolvedURI;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t uriItem;
+  JSONDocIteratorState* state;
+  zstring uriString;
+  zstring lErrorMessage;
+  internal::StreamResource* lStreamResource;
+  zstring lNormUri;
+  DEFAULT_STACK_INIT(JSONDocIteratorState, state, planState);
+
+  if (consumeNext(uriItem, theChildren[0].getp(), planState))
+  {
+    uriItem->getStringValue2(uriString);
+    // Normalize input to handle filesystem paths, etc.
+    lNormUri = normalizeInput(uriString, theSctx, loc);
+
+    // Resolve URI to a stream
+    state->theResource = theSctx->resolve_uri(
+        lNormUri,
+        internal::EntityData::DOCUMENT,
+        lErrorMessage);
+
+    lStreamResource =
+        dynamic_cast<internal::StreamResource*>(state->theResource.get());
+    if (lStreamResource == NULL) {
+      throw XQUERY_EXCEPTION(
+          err::FODC0002,
+          ERROR_PARAMS(uriString, lErrorMessage),
+          ERROR_LOC(loc));
+    }
+
+    state->theStream = lStreamResource->getStream();
+    if (state->theStream == NULL) {
+      throw XQUERY_EXCEPTION(
+          err::FODC0002,
+          ERROR_PARAMS( uriString ),
+          ERROR_LOC(loc));
+    }
+
+    while (true)
+    {
+      try
+      {
+        result = GENV_STORE.parseJSON(*state->theStream, 0);
+      }
+      catch (zorba::XQueryException& e)
+      {
+        // rethrow with JNDY0021
+        XQueryException xq = XQUERY_EXCEPTION(
+            jerr::JNDY0021,
+            ERROR_PARAMS(e.what()),
+            ERROR_LOC(loc));
+
+        // use location of e in case of literal string
+        throw xq;
+      }
+      if (result != NULL)
+      {
+        STACK_PUSH(true, state);
+      } else {
+        break;
+      }
+    }
+  }
+  
+  STACK_END(state);
+}
 
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

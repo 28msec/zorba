@@ -9,6 +9,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
+<zorba:header>
+  <zorba:include form="Angle-bracket">context/uri_resolver.h</zorba:include>
+</zorba:header>
+  
 <!--
 /*******************************************************************************
 ********************************************************************************/
@@ -377,6 +381,34 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONDocIterator">
+  
+  <zorba:description author="Zorba Team">jn:json-doc</zorba:description>
+  
+  <zorba:function>
+    
+    <zorba:signature localname="json-doc" prefix="fn-jsoniq">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>json-item()*</zorba:output>
+    </zorba:signature>
+    
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
+    
+  </zorba:function>
+  
+  <zorba:state>
+    <zorba:member type="std::auto_ptr&lt;internal::Resource&gt;" name="theResource" brief=""/>
+    <zorba:member type="std::istream*" name="theStream" brief=""/>
+  </zorba:state>
+  
+</zorba:iterator>
 
 <!--
 /*******************************************************************************
@@ -658,5 +690,6 @@
     </zorba:function>
 
 </zorba:iterator>
+
 
 </zorba:iterators>

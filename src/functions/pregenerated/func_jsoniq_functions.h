@@ -236,6 +236,25 @@ public:
   CODEGEN_DECL();
 };
 #endif
+
+
+//fn-jsoniq:json-doc
+class fn_jsoniq_json_doc : public function
+{
+public:
+  fn_jsoniq_json_doc(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool isSource() const { return true; }
+
+  CODEGEN_DECL();
+};
 #ifdef ZORBA_WITH_JSON
 
 //op-zorba:json-item-accessor
