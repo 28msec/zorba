@@ -1707,6 +1707,8 @@ bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           ERROR_LOC(loc));
     }
 
+    state->theGotOne = false;
+
     while (true)
     {
       try
@@ -1726,7 +1728,16 @@ bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       }
       if (result != NULL)
       {
-        STACK_PUSH(true, state);
+        if (!state->theGotOne)
+        {
+          state->theGotOne = true;
+          STACK_PUSH(true, state);
+        } else {
+          RAISE_ERROR(
+              jerr::JNDY0021,
+              loc,
+              ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
+        }
       } else {
         break;
       }

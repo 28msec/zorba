@@ -406,6 +406,7 @@
   <zorba:state>
     <zorba:member type="std::auto_ptr&lt;internal::Resource&gt;" name="theResource" brief=""/>
     <zorba:member type="std::istream*" name="theStream" brief=""/>
+    <zorba:member type="bool" name="theGotOne" brief=""/>
   </zorba:state>
   
 </zorba:iterator>

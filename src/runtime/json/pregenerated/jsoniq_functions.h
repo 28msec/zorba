@@ -467,6 +467,7 @@ class JSONDocIteratorState : public PlanIteratorState
 public:
   std::auto_ptr<internal::Resource> theResource; //
   std::istream* theStream; //
+  bool theGotOne; //
 
   JSONDocIteratorState();
 
