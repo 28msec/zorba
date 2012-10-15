@@ -126,22 +126,22 @@ function* binary_arith_func::specialize(
     switch (theKind)
     {
     case FunctionConsts::OP_ADD_2:
-      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_ADD_2);
+      f1 = BUILTIN_FUNC(OP_NUMERIC_ADD_2);
       break;
     case FunctionConsts::OP_SUBTRACT_2:
-      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_SUBTRACT_2);
+      f1 = BUILTIN_FUNC(OP_NUMERIC_SUBTRACT_2);
       break;
     case FunctionConsts::OP_MULTIPLY_2:
-      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_MULTIPLY_2);
+      f1 = BUILTIN_FUNC(OP_NUMERIC_MULTIPLY_2);
       break;
     case FunctionConsts::OP_DIVIDE_2:
-      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_DIVIDE_2);
+      f1 = BUILTIN_FUNC(OP_NUMERIC_DIVIDE_2);
       break;
     case FunctionConsts::OP_INTEGER_DIVIDE_2:
-      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_INTEGER_DIVIDE_2);
+      f1 = BUILTIN_FUNC(OP_NUMERIC_INTEGER_DIVIDE_2);
       break;
     case FunctionConsts::OP_MOD_2:
-      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_MOD_2);
+      f1 = BUILTIN_FUNC(OP_NUMERIC_MOD_2);
       break;
     default:
       ZORBA_ASSERT(false);

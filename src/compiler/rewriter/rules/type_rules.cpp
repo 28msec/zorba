@@ -323,9 +323,9 @@ RULE_REWRITE_POST(SpecializeOperations)
             TypeOps::is_subtype(tm, *lenType, *rtm.INTEGER_TYPE_ONE, lenLoc))
         {
           if (fnKind == FunctionConsts::FN_SUBSTRING_3)
-            fo->set_func(GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_3));
+            fo->set_func(BUILTIN_FUNC(OP_SUBSTRING_INT_3));
           else
-            fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3));
+            fo->set_func(BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3));
 
           fo->set_arg(1, posExpr);
           fo->set_arg(1, lenExpr);
@@ -334,9 +334,9 @@ RULE_REWRITE_POST(SpecializeOperations)
       else if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE, posLoc))
       {
         if (fnKind == FunctionConsts::FN_SUBSTRING_2)
-          fo->set_func(GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_2));
+          fo->set_func(BUILTIN_FUNC(OP_SUBSTRING_INT_2));
         else
-          fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2));
+          fo->set_func(BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2));
 
         fo->set_arg(1, posExpr);
       }

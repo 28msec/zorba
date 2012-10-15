@@ -33,4 +33,13 @@ bool fn_zorba_schema_schema_type::mustCopyInputNodes(expr* fo, csize producer) c
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+bool fn_zorba_schema_is_validated::mustCopyInputNodes(expr* fo, csize producer) const 
+{
+  return (fo->get_sctx()->construction_mode() == StaticContextConsts::cons_strip);
+}
+
+
 }

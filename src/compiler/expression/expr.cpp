@@ -109,7 +109,7 @@ if_expr::if_expr(
     create_fo_expr(sctx,
                    udf,
                    loc,
-                   GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
+                   BUILTIN_FUNC(FN_BOOLEAN_1),
                    condExpr);
 
     condExpr = boolExpr;

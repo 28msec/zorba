@@ -48,7 +48,7 @@ private:
 
 
 
-#define GET_BUILTIN_FUNCTION(func_code) \
+#define BUILTIN_FUNC(func_code) \
 BuiltinFunctionLibrary::getFunction(FunctionConsts::func_code)
 
 

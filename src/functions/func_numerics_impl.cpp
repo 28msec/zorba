@@ -34,16 +34,16 @@ namespace zorba
   switch (kind)                                                   \
   {                                                               \
   case FunctionConsts::OP_NUMERIC_ADD_2:                          \
-    return GET_BUILTIN_FUNCTION(OP_NUMERIC_ADD_##type##_2);       \
+    return BUILTIN_FUNC(OP_NUMERIC_ADD_##type##_2);       \
                                                                   \
   case FunctionConsts::OP_NUMERIC_SUBTRACT_2:                     \
-    return GET_BUILTIN_FUNCTION(OP_NUMERIC_SUBTRACT_##type##_2);  \
+    return BUILTIN_FUNC(OP_NUMERIC_SUBTRACT_##type##_2);  \
                                                                   \
  case FunctionConsts::OP_NUMERIC_MULTIPLY_2:                      \
-   return GET_BUILTIN_FUNCTION(OP_NUMERIC_MULTIPLY_##type##_2);   \
+   return BUILTIN_FUNC(OP_NUMERIC_MULTIPLY_##type##_2);   \
                                                                   \
  case FunctionConsts::OP_NUMERIC_DIVIDE_2:                        \
-   return GET_BUILTIN_FUNCTION(OP_NUMERIC_DIVIDE_##type##_2);     \
+   return BUILTIN_FUNC(OP_NUMERIC_DIVIDE_##type##_2);     \
                                                                   \
  default:                                                         \
    ZORBA_ASSERT(false);                                           \
@@ -586,14 +586,14 @@ function* single_numeric_func::specialize(
   {
     if (TypeOps::is_subtype(tm, *argType, *rtm.DOUBLE_TYPE_ONE))
     {
-      return GET_BUILTIN_FUNCTION(OP_DOUBLE_UNARY_PLUS_1);
+      return BUILTIN_FUNC(OP_DOUBLE_UNARY_PLUS_1);
     }
   }
   else if (getKind() == FunctionConsts::OP_UNARY_MINUS_1)
   {
     if (TypeOps::is_subtype(tm, *argType, *rtm.DOUBLE_TYPE_ONE))
     {
-      return GET_BUILTIN_FUNCTION(OP_DOUBLE_UNARY_MINUS_1);
+      return BUILTIN_FUNC(OP_DOUBLE_UNARY_MINUS_1);
     }
   }
 

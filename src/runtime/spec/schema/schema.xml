@@ -81,18 +81,6 @@
   <zorba:description author="Zorba Team">iterator backing the schema-type function</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="schema-type" prefix="fn-zorba-util">
-      <zorba:param>item()</zorba:param>
-      <zorba:output>xs:QName?</zorba:output>
-    </zorba:signature>
-
-    <zorba:methods>
-      <zorba:mustCopyInputNodes value="false"/>
-    </zorba:methods>
-
-  </zorba:function>
-
-  <zorba:function>
     <zorba:signature localname="schema-type" prefix="fn-zorba-schema">
       <zorba:param>item()</zorba:param>
       <zorba:output>xs:QName?</zorba:output>
@@ -121,7 +109,7 @@
     </zorba:signature>
 
     <zorba:methods>
-      <zorba:mustCopyInputNodes value="false"/>
+      <zorba:mustCopyInputNodes/>
     </zorba:methods>
 
   </zorba:function>
