@@ -280,7 +280,7 @@ void user_function::addMutuallyRecursiveUDFs(
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::addRecursiveCall(expr* call)
+void user_function::addRecursiveCall(fo_expr* call)
 {
   assert(theBodyExpr != NULL);
 

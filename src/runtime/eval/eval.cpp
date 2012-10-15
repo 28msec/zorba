@@ -166,6 +166,8 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     // Compile
     state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId);
 
+    planState.theCompilerCB->theNextVisitId = evalCCB->theNextVisitId + 1;
+
     // Set the values for the (explicit) external vars of the eval query
     setExternalVariables(evalCCB, importSctx, evalSctx, evalDctx);
 

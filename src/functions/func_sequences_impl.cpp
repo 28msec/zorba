@@ -724,6 +724,16 @@ PlanIter_t fn_exactly_one_noraise::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
+bool fn_deep_equal::mustCopyInputNodes(expr* fo, csize producer) const
+{
+  return (producer < 2 &&
+          fo->get_sctx()->construction_mode() == StaticContextConsts::cons_strip);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t fn_union::codegen(
     CompilerCB* /*cb*/,
     static_context* sctx,
@@ -845,32 +855,32 @@ function* fn_sum::specialize(
   if (TypeOps::is_subtype(tm, *argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_1) :
-            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_2));
+            BUILTIN_FUNC(OP_SUM_DOUBLE_1) :
+            BUILTIN_FUNC(OP_SUM_DOUBLE_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.DOUBLE_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_1) :
-            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_2));
+            BUILTIN_FUNC(OP_SUM_DOUBLE_1) :
+            BUILTIN_FUNC(OP_SUM_DOUBLE_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.FLOAT_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(OP_SUM_FLOAT_1) :
-            GET_BUILTIN_FUNCTION(OP_SUM_FLOAT_2));
+            BUILTIN_FUNC(OP_SUM_FLOAT_1) :
+            BUILTIN_FUNC(OP_SUM_FLOAT_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.INTEGER_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(OP_SUM_INTEGER_1) :
-            GET_BUILTIN_FUNCTION(OP_SUM_INTEGER_2));
+            BUILTIN_FUNC(OP_SUM_INTEGER_1) :
+            BUILTIN_FUNC(OP_SUM_INTEGER_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.DECIMAL_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(OP_SUM_DECIMAL_1) :
-            GET_BUILTIN_FUNCTION(OP_SUM_DECIMAL_2));
+            BUILTIN_FUNC(OP_SUM_DECIMAL_1) :
+            BUILTIN_FUNC(OP_SUM_DECIMAL_2));
   }
   else
   {

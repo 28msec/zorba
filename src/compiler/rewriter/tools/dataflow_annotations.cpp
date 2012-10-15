@@ -806,15 +806,9 @@ SourceFinder::~SourceFinder()
   If "node" is inside a UDF, "udfCaller" contains the fo expr that invoked that
   UDF.
 ********************************************************************************/
-void SourceFinder::findNodeSources(
-    expr* node,
-    fo_expr* udfCaller,
-    std::vector<expr*>& sources)
+void SourceFinder::findNodeSources(expr* node, std::vector<expr*>& sources)
 {
-  user_function* startingUdf = NULL;
-
-  if (udfCaller)
-    startingUdf = static_cast<user_function*>(udfCaller->get_func());
+  user_function* startingUdf = node->get_udf();
 
   findNodeSourcesRec(node, sources, startingUdf);
 
@@ -914,16 +908,6 @@ void SourceFinder::findNodeSourcesRec(
       return;
     }
 
-    case var_expr::arg_var:
-    {
-      std::vector<expr*>* varSources = new std::vector<expr*>;
-
-      if (theVarSourcesMap.insert(VarSourcesPair(e, varSources)).second == false)
-        delete varSources;
-
-      return;
-    }
-
     case var_expr::prolog_var:
     case var_expr::local_var:
     {
@@ -942,6 +926,9 @@ void SourceFinder::findNodeSourcesRec(
         for (; ite2 != end2; ++ite2)
         {
           expr* setExpr = *ite2;
+
+          if (setExpr->get_udf() != NULL && !setExpr->get_udf()->isOptimized())
+            continue;
 
           if (setExpr->get_expr_kind() == var_decl_expr_kind)
           {
@@ -983,6 +970,13 @@ void SourceFinder::findNodeSourcesRec(
       return;
     }
 
+    case var_expr::arg_var:
+    {
+      theVarSourcesMap.insert(VarSourcesPair(e, NULL));
+
+      return;
+    }
+
     case var_expr::eval_var:
     default:
     {
@@ -991,6 +985,92 @@ void SourceFinder::findNodeSourcesRec(
     }
 
     break;
+  }
+
+  case fo_expr_kind:
+  {
+    fo_expr* e = static_cast<fo_expr *>(node);
+    function* f = e->get_func();
+
+    if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
+    {
+      user_function* udf = static_cast<user_function*>(f);
+
+      bool recursive = (currentUdf ? currentUdf->isMutuallyRecursiveWith(udf) : false);
+
+      if (recursive)
+      {
+        currentUdf->addRecursiveCall(e);
+      }
+      else
+      {
+        UdfSourcesMap::iterator ite = theUdfSourcesMap.find(udf);
+
+        std::vector<expr*>* udfSources;
+
+        if (ite == theUdfSourcesMap.end())
+        {
+          // must do this before calling findNodeSourcesRec in order to break
+          // recursion cycle
+          udfSources = new std::vector<expr*>;
+          theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources));
+
+          findNodeSourcesRec(udf->getBody(), *udfSources, udf);
+
+          if (udf->isRecursive())
+          {
+            std::vector<fo_expr*>::const_iterator ite = udf->getRecursiveCalls().begin();
+            std::vector<fo_expr*>::const_iterator end = udf->getRecursiveCalls().end();
+            for (; ite != end; ++ite)
+            {
+              findNodeSourcesRec((*ite), *udfSources, NULL);
+            }
+          }
+        }
+        else
+        {
+          udfSources = (*ite).second;
+        }
+
+        csize numUdfSources = udfSources->size();
+
+        for (csize i = 0; i < numUdfSources; ++i)
+        {
+          expr* source = (*udfSources)[i];
+
+          if (std::find(sources.begin(), sources.end(), source) == sources.end())
+            sources.push_back(source);
+        }
+
+        // if an arg var of this udf has been marked as a source before, it
+        // means that that var is consumed in some unsafe operation, so we
+        // now have to find the sources of the arg exprs and mark them.
+        csize numArgs = e->num_args();
+
+        for (csize i = 0; i < numArgs; ++i)
+        {
+          var_expr* argVar = udf->getArgVar(i);
+
+          if (theVarSourcesMap.find(argVar) != theVarSourcesMap.end())
+          {
+            findNodeSourcesRec(e->get_arg(i), sources, currentUdf);
+          }
+        }
+      } // not recursive call
+    } // f->isUdf()
+    else
+    {
+      csize numArgs = e->num_args();
+      for (csize i = 0; i < numArgs; ++i)
+      {
+        if (f->propagatesInputNodes(e, i))
+        {
+          findNodeSourcesRec(e->get_arg(i), sources, currentUdf);
+        }
+      }
+    }
+
+    return;
   }
 
   case doc_expr_kind:
@@ -1065,92 +1145,6 @@ void SourceFinder::findNodeSourcesRec(
   case trycatch_expr_kind:
   {
     break;
-  }
-
-  case fo_expr_kind:
-  {
-    fo_expr* e = static_cast<fo_expr *>(node);
-    function* f = e->get_func();
-
-    if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
-    {
-      user_function* udf = static_cast<user_function*>(f);
-
-      bool recursive = (currentUdf ? currentUdf->isMutuallyRecursiveWith(udf) : false);
-
-      if (recursive)
-      {
-        currentUdf->addRecursiveCall(node);
-      }
-      else
-      {
-        UdfSourcesMap::iterator ite = theUdfSourcesMap.find(udf);
-
-        std::vector<expr*>* udfSources;
-
-        if (ite == theUdfSourcesMap.end())
-        {
-          // must do this before calling findNodeSourcesRec in order to break
-          // recursion cycle
-          udfSources = new std::vector<expr*>;
-          theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources));
-
-          findNodeSourcesRec(udf->getBody(), *udfSources, udf);
-
-          if (udf->isRecursive())
-          {
-            std::vector<expr*>::const_iterator ite = udf->getRecursiveCalls().begin();
-            std::vector<expr*>::const_iterator end = udf->getRecursiveCalls().end();
-            for (; ite != end; ++ite)
-            {
-              findNodeSourcesRec((*ite), *udfSources, NULL);
-            }
-          }
-        }
-        else
-        {
-          udfSources = (*ite).second;
-        }
-
-        csize numUdfSources = udfSources->size();
-
-        for (csize i = 0; i < numUdfSources; ++i)
-        {
-          expr* source = (*udfSources)[i];
-
-          if (std::find(sources.begin(), sources.end(), source) == sources.end())
-            sources.push_back(source);
-        }
-
-        // if an arg var of this udf has been marked as a source before, it
-        // means that that var is consumed in some unsafe operation, so we
-        // now have to find the sources of the arg expr and mark them.
-        csize numArgs = e->num_args();
-
-        for (csize i = 0; i < numArgs; ++i)
-        {
-          var_expr* argVar = udf->getArgVar(i);
-
-          if (theVarSourcesMap.find(argVar) != theVarSourcesMap.end())
-          {
-            findNodeSourcesRec(e->get_arg(i), sources, currentUdf);
-          }
-        }
-      } // not recursive call
-    } // f->isUdf()
-    else
-    {
-      csize numArgs = e->num_args();
-      for (csize i = 0; i < numArgs; ++i)
-      {
-        if (f->propagatesInputNodes(e, i))
-        {
-          findNodeSourcesRec(e->get_arg(i), sources, currentUdf);
-        }
-      }
-    }
-
-    return;
   }
 
   case promote_expr_kind:
