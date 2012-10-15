@@ -636,7 +636,7 @@
 
     <zorba:methods>
       <zorba:accessesDynCtx returnValue="true"/>
-      <zorba:mustCopyInputNodes value="false"/>
+      <zorba:mustCopyInputNodes/>
     </zorba:methods>
 
   </zorba:function>

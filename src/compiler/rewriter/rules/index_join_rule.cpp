@@ -491,7 +491,7 @@ static void rewriteJoin(
   create_fo_expr(sctx,
                  udf,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_CREATE_INTERNAL_INDEX_2),
+                 BUILTIN_FUNC(OP_CREATE_INTERNAL_INDEX_2),
                  qnameExpr,
                  buildExpr);
 
@@ -637,7 +637,7 @@ static void rewriteJoin(
     create_fo_expr(sctx,
                    udf,
                    loc,
-                   GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N),
+                   BUILTIN_FUNC(FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N),
                    qnameExpr,
                    const_cast<expr*>(predInfo.theOuterOp));
     
@@ -645,7 +645,7 @@ static void rewriteJoin(
     create_fo_expr(sctx,
                    udf,
                    loc,
-                   GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1),
+                   BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_ASC_1),
                    probeExpr);
   }
   else
@@ -654,7 +654,7 @@ static void rewriteJoin(
     create_fo_expr(sctx,
                    udf,
                    loc,
-                   GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N),
+                   BUILTIN_FUNC(FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N),
                    qnameExpr,
                    const_cast<expr*>(predInfo.theOuterOp));
   }

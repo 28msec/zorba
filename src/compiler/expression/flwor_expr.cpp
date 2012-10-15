@@ -510,7 +510,7 @@ flwor_wincond::flwor_wincond(
       create_fo_expr(theCondExpr->get_sctx(),
                      theCondExpr->get_udf(),
                      theCondExpr->get_loc(),
-                     GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
+                     BUILTIN_FUNC(FN_BOOLEAN_1),
                      theCondExpr);
     }
   }

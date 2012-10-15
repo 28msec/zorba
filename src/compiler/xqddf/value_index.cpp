@@ -275,7 +275,7 @@ void IndexDecl::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 void IndexDecl::analyze(CompilerCB* ccb)
 {
   store::Item_t dotQName;
-  GENV_ITEMFACTORY->createQName(dotQName, "", "", "$$dot");
+  GENV_ITEMFACTORY->createQName(dotQName, "", "", static_context::DOT_VAR_NAME);
   expr* dotVar = NULL;
 
   // Get the var_expr representing the context item, if it is defined
@@ -293,8 +293,6 @@ void IndexDecl::analyze(CompilerCB* ccb)
                       varExprs,
                       dotVar);
 
-  varExprs.clear();
-
   std::vector<expr*> keySources;
 
   csize numKeys = theKeyExprs.size();
@@ -308,6 +306,8 @@ void IndexDecl::analyze(CompilerCB* ccb)
   // Check constraints on the key exprs
   for (csize i = 0; i < numKeys; ++i)
   {
+    varExprs.clear();
+
     analyzeExprInternal(theKeyExprs[i],
                         theSourceNames,
                         keySources,
@@ -530,9 +530,9 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   function* f = NULL;
 
   if (theIsGeneral)
-    f = GET_BUILTIN_FUNCTION(OP_GENERAL_INDEX_ENTRY_BUILDER_N);
+    f = BUILTIN_FUNC(OP_GENERAL_INDEX_ENTRY_BUILDER_N);
   else
-    f = GET_BUILTIN_FUNCTION(OP_VALUE_INDEX_ENTRY_BUILDER_N);
+    f = BUILTIN_FUNC(OP_VALUE_INDEX_ENTRY_BUILDER_N);
 
   ZORBA_ASSERT(f != NULL);
 
@@ -684,9 +684,9 @@ DocIndexer* IndexDecl::getDocIndexer(
   function* f = NULL;
 
   if (theIsGeneral)
-    f = GET_BUILTIN_FUNCTION(OP_GENERAL_INDEX_ENTRY_BUILDER_N);
+    f = BUILTIN_FUNC(OP_GENERAL_INDEX_ENTRY_BUILDER_N);
   else
-    f = GET_BUILTIN_FUNCTION(OP_VALUE_INDEX_ENTRY_BUILDER_N);
+    f = BUILTIN_FUNC(OP_VALUE_INDEX_ENTRY_BUILDER_N);
 
   ZORBA_ASSERT(f != NULL);
 
