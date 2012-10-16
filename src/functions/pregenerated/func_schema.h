@@ -59,23 +59,6 @@ public:
 };
 
 
-//fn-zorba-util:schema-type
-class fn_zorba_util_schema_type : public function
-{
-public:
-  fn_zorba_util_schema_type(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-
-
 //fn-zorba-schema:schema-type
 class fn_zorba_schema_schema_type : public function
 {
@@ -104,7 +87,7 @@ public:
 
   }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
 
   CODEGEN_DECL();
 };

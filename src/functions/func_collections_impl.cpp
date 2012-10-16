@@ -401,6 +401,7 @@ zorba::static_collections_dml_apply_insert_nodes_last::processPragma(
   processPragmaInternal(e, p);
 }
 
+
 PlanIter_t static_collections_dml_apply_insert_nodes_last::codegen(
     CompilerCB* cb,
     static_context* sctx,

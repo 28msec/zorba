@@ -482,7 +482,7 @@ static expr* try_hoisting(
   var_expr* letvar(rCtx.createTempVar(sctx, loc, var_expr::let_var));
 
   expr* hoisted = rCtx.theEM->
-  create_fo_expr(sctx, udf, loc, GET_BUILTIN_FUNCTION(OP_HOIST_1), e);
+  create_fo_expr(sctx, udf, loc, BUILTIN_FUNC(OP_HOIST_1), e);
 
   hoisted->setFlags(e->getFlags());
   letvar->setFlags(e->getFlags());
@@ -521,7 +521,7 @@ static expr* try_hoisting(
   create_fo_expr(sctx,
                  udf,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_UNHOIST_1),
+                 BUILTIN_FUNC(OP_UNHOIST_1),
                  rCtx.theEM->create_wrapper_expr(sctx, udf, loc, letvar));
   unhoisted->setFlags(e->getFlags());
 

@@ -137,7 +137,7 @@ static expr* execute(
                               error::ZorbaError::toString(lErrorCode).c_str());
     expr* err_expr = rCtx.theEM->create_fo_expr(node->get_sctx_id(),
                                   loc,
-                                  GET_BUILTIN_FUNCTION(FN_ERROR_2),
+                                  BUILTIN_FUNC(FN_ERROR_2),
                                   rCtx.theEM->create_const_expr(node->get_sctx_id(), loc, qname),
                                   rCtx.theEM->create_const_expr(node->get_sctx_id(), loc, e.theDescription));
     err_expr->setUnfoldable(ANNOTATION_TRUE_FIXED);
@@ -877,7 +877,7 @@ static expr* partial_eval_logic(
       arg = rCtx.theEM->create_fo_expr(sctx,
                                        udf,
                                        LOC(fo),
-                                       GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
+                                       BUILTIN_FUNC(FN_BOOLEAN_1),
                                        arg);
 
       arg = expr_tools::fix_annotations(arg);
@@ -947,7 +947,7 @@ static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
              create_fo_expr(sctx,
                             udf,
                             fo.get_loc(),
-                            GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                            BUILTIN_FUNC(FN_EMPTY_1),
                             count_expr->get_arg(0)));
     }
     else if (ival == 1)
@@ -956,7 +956,7 @@ static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
              create_fo_expr(sctx,
                             udf,
                             fo.get_loc(),
-                            GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
+                            BUILTIN_FUNC(OP_EXACTLY_ONE_NORAISE_1),
                             count_expr->get_arg(0)));
     }
     else
@@ -970,14 +970,14 @@ static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
       create_fo_expr(sctx,
                      udf,
                      LOC(count_expr),
-                     GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
+                     BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3),
                      args));
 
       return expr_tools::fix_annotations(rCtx.theEM->
       create_fo_expr(sctx,
                      udf,
                      fo.get_loc(),
-                     GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
+                     BUILTIN_FUNC(OP_EXACTLY_ONE_NORAISE_1),
                      subseq_expr));
     }
   }

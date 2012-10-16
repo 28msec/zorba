@@ -64,14 +64,6 @@ BoolAnnotationValue fn_data::ignoresDuplicateNodes(expr* fo, csize input) const
 }
 
 
-bool fn_data::mustCopyInputNodes(expr* fo, csize input) const
-{
-  static_context* sctx = fo->get_sctx();
-
-  return (sctx->construction_mode() != StaticContextConsts::cons_preserve);
-}
-
-
 xqtref_t fn_data::getReturnType(const fo_expr* caller) const
 {
   const QueryLoc& loc = caller->get_loc();

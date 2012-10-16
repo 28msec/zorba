@@ -49,6 +49,8 @@ RewriterContext::RewriterContext(
   theIdVarMap(NULL),
   theExprVarsMap(NULL)
 {
+  theForSerializationOnly = theCCB->theConfig.for_serialization_only;
+
   if (msg.empty())
   {
     if (udf != NULL)

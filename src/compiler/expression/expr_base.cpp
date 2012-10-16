@@ -1166,7 +1166,7 @@ xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
   create_fo_expr(input->get_sctx(),
                  theUDF,
                  QueryLoc::null,
-                 GET_BUILTIN_FUNCTION(OP_CONCATENATE_N));
+                 BUILTIN_FUNC(OP_CONCATENATE_N));
 
   expr::substitution_t subst;
   subst[input] = emptyExpr;

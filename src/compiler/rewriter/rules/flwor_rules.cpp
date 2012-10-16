@@ -541,7 +541,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         create_fo_expr(sctx,
                        udf,
                        whereCond->get_loc(),
-                       GET_BUILTIN_FUNCTION(OP_AND_N),
+                       BUILTIN_FUNC(OP_AND_N),
                        whereExpr,
                        whereCond);
       }
@@ -1384,7 +1384,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
           create_fo_expr(sctx,
                          udf,
                          whereExpr->get_loc(),
-                         GET_BUILTIN_FUNCTION(OP_AND_N),
+                         BUILTIN_FUNC(OP_AND_N),
                          whereExpr,
                          condExpr);
 
@@ -1513,7 +1513,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                   BUILTIN_FUNC(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
                    domainExpr,
                    posExpr);
     break;
@@ -1533,7 +1533,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3),
                    args);
     break;
   }
@@ -1550,7 +1550,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_NUMERIC_SUBTRACT_INTEGER_2),
+                   BUILTIN_FUNC(OP_NUMERIC_SUBTRACT_INTEGER_2),
                    posExpr,
                    oneExpr2);
 
@@ -1563,7 +1563,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3),
                    args);
     break;
   }
@@ -1574,7 +1574,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2),
                    domainExpr,
                    posExpr);
     break;
@@ -1589,7 +1589,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_NUMERIC_ADD_INTEGER_2),
+                   BUILTIN_FUNC(OP_NUMERIC_ADD_INTEGER_2),
                    posExpr,
                    oneExpr);
 
@@ -1597,7 +1597,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2),
                    domainExpr,
                    posExpr);
     break;
