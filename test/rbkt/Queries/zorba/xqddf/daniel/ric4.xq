@@ -14,8 +14,8 @@ ic_ddl:activate($xqddf-test:ric1);
 },
 
 {
-for $i in fn:doc("auction.xml")//item
-return $i/name
+  for $i in fn:doc("auction.xml")//item
+  return $i/name
 },
 
 {
@@ -26,9 +26,17 @@ return $i/name
 {
 for $i in fn:doc("auction.xml")//item
 return 
-    {{$i/name},
-    {dml:insert-nodes($xqddf-test:blue-collection, (copy $copyi := $i modify () return $copyi));},
-    {dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));}}
+  {
+    { $i/name },
+    { dml:insert-nodes($xqddf-test:blue-collection,
+                       (copy $copyi := $i modify () return $copyi));
+      ()
+    },
+    { dml:insert-nodes($xqddf-test:white-collection,
+                       (copy $copyi := $i modify () return $copyi));
+      ()
+    }
+  }
 },
 
 {
@@ -41,6 +49,7 @@ dml:delete-nodes(dml:collection($xqddf-test:white-collection)[1]);
 
 replace value of node dml:collection($xqddf-test:blue-collection)[1]/name 
         with "gaze wages proving english ";
+()
 },
 
 {

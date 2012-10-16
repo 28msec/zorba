@@ -401,7 +401,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         --numClauses;
         --i;
 
-        flwor.compute_return_type(true, NULL);
+        bool mod = false;
+        flwor.compute_return_type(mod);
       }
     }
     else if (c->get_kind() == flwor_clause::let_clause)

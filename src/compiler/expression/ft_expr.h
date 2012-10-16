@@ -48,7 +48,7 @@ public:
   void compute_scripting_kind();
 
   expr* get_range() const { return range_; }
-  ftnode_t get_ftselection() const { return ftselection_; }
+  ftnode_t get_ftselection() const;
   expr* get_ignore() const { return ftignore_; }
 
   void accept( expr_visitor& );

@@ -45,6 +45,7 @@ class flwor_expr;
 ********************************************************************************/
 class flwor_clause
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprIterator;
   friend class ExprManager;
@@ -139,6 +140,7 @@ public:
 ********************************************************************************/
 class forletwin_clause : public flwor_clause
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprManager;
   friend class ExprIterator;
@@ -221,6 +223,7 @@ public:
 ********************************************************************************/
 class let_clause : public forletwin_clause
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprManager;
   friend class ExprIterator;
@@ -263,6 +266,7 @@ public:
 ********************************************************************************/
 class window_clause : public forletwin_clause
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprManager;
   friend class ExprIterator;
@@ -343,6 +347,7 @@ public:
 ********************************************************************************/
 class flwor_wincond
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprManager;
   friend class ExprIterator;
@@ -436,6 +441,7 @@ public:
 ********************************************************************************/
 class group_clause : public flwor_clause
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprManager;
   friend class ExprIterator;
@@ -514,6 +520,7 @@ public:
 ********************************************************************************/
 class orderby_clause : public flwor_clause
 {
+  friend class expr;
   friend class ExprIterator;
   friend class ExprManager;
   friend class flwor_expr;
