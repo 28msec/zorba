@@ -792,9 +792,6 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
             std::vector<fo_expr*>::const_iterator end = udf->getRecursiveCalls().end();
             for (; ite != end; ++ite)
             {
-              user_function* recursiveUdf = 
-              static_cast<user_function*>((*ite)->get_func());
-
               applyInternal(*ite, true);
             }
           }

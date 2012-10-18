@@ -316,60 +316,14 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     fo_expr* e = static_cast<fo_expr*>(this);
 
-    const function* func = e->get_func();
     /*
       const user_function* udf = dynamic_cast<const user_function*>(func);
 
       if (udf != NULL)
       return udf->getUDFReturnType(sctx);
     */
-    FunctionConsts::FunctionKind funcKind = func->getKind();
 
-    switch (funcKind)
-    {
-    case FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1:
-    {
-      const store::Item* qname = e->theArgs[0]->getQName(theSctx);
-
-      if (qname != NULL)
-      {
-        const StaticallyKnownCollection* collection = theSctx->lookup_collection(qname);
-        if (collection != NULL)
-        {
-          newType = collection->getCollectionType();
-        }
-        else
-        {
-          RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, get_loc(),
-          ERROR_PARAMS(qname->getStringValue()));
-        }
-      }
-      break;
-    }
-    case FunctionConsts::FN_SUBSEQUENCE_3:
-    {
-      const_expr* lenExpr = dynamic_cast<const_expr*>(e->theArgs[2]);
-
-      if (lenExpr != NULL)
-      {
-        store::Item* val = lenExpr->get_val();
-        xs_double len = val->getDoubleValue();
-        if (len == 1.0)
-        {
-          newType = tm->create_type(*e->theArgs[0]->get_return_type(),
-                                    TypeConstants::QUANT_QUESTION);
-        }
-      }
-      break;
-    }
-    default:
-      break;
-    }
-
-    if (newType == NULL)
-    {
-      newType = e->theFunction->getReturnType(e);
-    }
+    newType = e->theFunction->getReturnType(e);
 
     break;
   }
