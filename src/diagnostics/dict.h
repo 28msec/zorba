@@ -17,8 +17,6 @@
 #ifndef ZORBA_DIAGNOSTIC_DICT_H
 #define ZORBA_DIAGNOSTIC_DICT_H
 
-#include "diagnostics/dict_zed_keys.h"
-
 namespace zorba {
 namespace diagnostic {
 namespace dict {
@@ -42,7 +40,7 @@ namespace dict {
  * \endcode
  * \hideinitializer
  */
-#define ZED(DICT_KEY) ZED_##DICT_KEY
+#define ZED(DICT_KEY) ZED_PREFIX #DICT_KEY
 
 /**
  * Looks up the given key in the language dictionary.
