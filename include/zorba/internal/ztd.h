@@ -84,7 +84,7 @@ public:
  * \internal
  * This namespace is used only to bundle the implementation details for
  * implementing \c has_insertion_operator<T>.
- * This implementation is based on http://stackoverflow.com/questions/4434569/
+ * This implementation is based on http://stackoverflow.com/q/4434569/
  */
 namespace has_insertion_operator_impl {
   typedef char no;

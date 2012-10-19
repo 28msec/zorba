@@ -353,7 +353,7 @@ le0( IntType n ) {
 // warning-free.
 //
 // Note: the use of "!!" is to work around a compiler problem on Windows;
-// see: http://stackoverflow.com/questions/9285657/sfinae-differentiation-between-signed-and-unsigned
+// see http://stackoverflow.com/q/9285657
 //
 
 template<typename N1,typename N2> inline
