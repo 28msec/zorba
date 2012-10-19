@@ -171,8 +171,8 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   BoolAnnotationValue saveUnfoldable = node->getUnfoldable();
   BoolAnnotationValue saveContainsRecursiveCall = node->getContainsRecursiveCall();
 
-  // By default, an expr is discardable, foldable, and does not contain
-  // recursive calls
+  // By default, an expr is discardable, foldable,  does not contain recursive
+  // calls, and returns constructed nodes.
   BoolAnnotationValue curNonDiscardable = ANNOTATION_FALSE;
   BoolAnnotationValue curUnfoldable = ANNOTATION_FALSE;
   BoolAnnotationValue curContainsRecursiveCall = ANNOTATION_FALSE;
@@ -185,12 +185,14 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     fo_expr* fo = static_cast<fo_expr *>(node);
     function* f = fo->get_func();
 
-    if (f->isUdf())
+    if (f->isUdf() && !theIsLocal)
     {
       user_function* udf = static_cast<user_function*>(f);
 
       if (!udf->isOptimized())
       {
+        // we can be here in case of mutually recursive udfs or during plan
+        // serialization and udf was not callable by the main program
         udf->optimize();
       }
 
@@ -283,17 +285,24 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         fo_expr* fo = static_cast<fo_expr *>(node);
         function* f = fo->get_func();
 
-        bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
-
-        // Do not fold functions that always require access to the dynamic context,
-        // or may need to access the implicit timezone (which is also in the dynamic
-        // constext).
-        if (isErrorFunc ||
-            f->accessesDynCtx() ||
-            maybe_needs_implicit_timezone(fo) ||
-            !f->isDeterministic())
+        if (f->isUdf() && theIsLocal)
         {
-          curUnfoldable = ANNOTATION_TRUE_FIXED;
+          curUnfoldable = saveUnfoldable;
+        }
+        else
+        {
+          bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
+
+          // Do not fold functions that always require access to the dynamic context,
+          // or may need to access the implicit timezone (which is also in the dynamic
+          // constext).
+          if (isErrorFunc ||
+              f->accessesDynCtx() ||
+              maybe_needs_implicit_timezone(fo) ||
+              !f->isDeterministic())
+          {
+            curUnfoldable = ANNOTATION_TRUE_FIXED;
+          }
         }
 
         break;
@@ -560,6 +569,7 @@ RULE_REWRITE_PRE(FoldConst)
   return NULL;
 }
 
+
 RULE_REWRITE_POST(FoldConst)
 {
   return NULL;
@@ -647,28 +657,38 @@ RULE_REWRITE_PRE(PartialEval)
     xqtref_t argType = arg->get_return_type();
     xqtref_t targetType = cbe->get_target_type();
 
-    if (TypeOps::is_subtype(tm, *argType, *targetType, node->get_loc()))
+    try
     {
-      return rCtx.theEM->create_const_expr(sctx, udf, LOC(node), true);
-    }
-    else if (node->get_expr_kind() == instanceof_expr_kind)
-    {
-      instanceof_expr* ioExpr = static_cast<instanceof_expr*>(node);
-
-      if (ioExpr->getCheckPrimeOnly())
+      if (TypeOps::is_subtype(tm, *argType, *targetType, node->get_loc()))
       {
-        argType = TypeOps::prime_type(tm, *argType);
-        targetType = TypeOps::prime_type(tm, *targetType);
+        return rCtx.theEM->create_const_expr(sctx, udf, LOC(node), true);
       }
+      else if (node->get_expr_kind() == instanceof_expr_kind)
+      {
+        instanceof_expr* ioExpr = static_cast<instanceof_expr*>(node);
 
-      return (TypeOps::intersect_type(*argType, *targetType, tm) ==
-              GENV_TYPESYSTEM.NONE_TYPE ?
-              rCtx.theEM->create_const_expr(sctx, udf, LOC(node), false) :
-              NULL);
+        if (ioExpr->getCheckPrimeOnly())
+        {
+          argType = TypeOps::prime_type(tm, *argType);
+          targetType = TypeOps::prime_type(tm, *targetType);
+        }
+
+        return (TypeOps::intersect_type(*argType, *targetType, tm) ==
+                GENV_TYPESYSTEM.NONE_TYPE ?
+                rCtx.theEM->create_const_expr(sctx, udf, LOC(node), false) :
+                NULL);
+      }
+      else
+      {
+        return NULL;
+      }
     }
-    else
+    catch (XQueryException& e)
     {
-      return NULL;
+      if (e.diagnostic() == err::XPTY0004)
+        return NULL;
+
+      throw;
     }
   }
 

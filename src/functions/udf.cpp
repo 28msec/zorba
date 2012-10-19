@@ -297,7 +297,8 @@ void user_function::addRecursiveCall(fo_expr* call)
 ********************************************************************************/
 bool user_function::isRecursive() const
 {
-  assert(isOptimized());
+  // recursiveness is established before any optimization is done
+  // assert(isOptimized());
   assert(theBodyExpr != NULL);
   return !theMutuallyRecursiveUDFs.empty();
 }
@@ -308,7 +309,8 @@ bool user_function::isRecursive() const
 ********************************************************************************/
 bool user_function::isMutuallyRecursiveWith(const user_function* udf)
 {
-  assert(isOptimized());
+  // recursiveness is established before any optimization is done
+  // assert(isOptimized());
   assert(theBodyExpr != NULL);
 
   if (std::find(theMutuallyRecursiveUDFs.begin(),
@@ -331,6 +333,9 @@ bool user_function::accessesDynCtx() const
               << getName()->getStringValue() << std::endl;
     assert(isOptimized());
   }
+
+  if (theBodyExpr != NULL)
+    return theBodyExpr->isUnfoldable();
 
   return testFlag(FunctionConsts::AccessesDynCtx);
 }

@@ -14,6 +14,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1061222 (bad message for errors in index key type declaration)
   * Fixed bug #1065175 (preceding::node()[1] returns wrong results)
   * Fixed bug #1065321 (following:text() doesn't return results in doc order)
+  * Fixed bug #1067706 (wrong const folding in mutually recursive udfs)
   * Fixed bug #1021492 (while computeing the "sources" of a prolog var, skip
     any var-setting exprs that appear in non-used (and non-optimized) functions). 
 

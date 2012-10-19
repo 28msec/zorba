@@ -116,8 +116,6 @@ public:
 
   ~UDFGraph();
 
-  void build(const expr* e);
-
   void optimizeUDFs(CompilerCB* ccb);
 
   void inferDeterminism();
@@ -125,6 +123,8 @@ public:
   void display(std::ostream& o);
 
 protected:
+  void build(const expr* e);
+
   void build(const expr* curExpr, std::vector<user_function*>& callChain);
 
   void addEdge(user_function* caller, user_function* callee);
