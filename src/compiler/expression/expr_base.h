@@ -147,9 +147,8 @@ public:
     UNFOLDABLE              = 10,
     CONTAINS_RECURSIVE_CALL = 12,
     PROPAGATES_INPUT_NODES  = 14,
-    WILL_BE_SERIALIZED      = 16,
-    MUST_COPY_NODES         = 18,
-    CONTAINS_PRAGMA         = 20
+    MUST_COPY_NODES         = 16,
+    CONTAINS_PRAGMA         = 18
   } Annotationkey;
 
   typedef enum
@@ -162,9 +161,8 @@ public:
     UNFOLDABLE_MASK               = 0xC00,
     CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
     PROPAGATES_INPUT_NODES_MASK   = 0xC000,
-    WILL_BE_SERIALIZED_MASK       = 0x30000,
-    MUST_COPY_NODES_MASK          = 0xC0000,
-    CONTAINS_PRAGMA_MASK          = 0x300000
+    MUST_COPY_NODES_MASK          = 0x30000,
+    CONTAINS_PRAGMA_MASK          = 0xC0000
   } AnnotationMask;
 
 
@@ -173,11 +171,16 @@ protected:
   static expr*    * iter_done;
 
 protected:
+  CompilerCB * const theCCB;
+
   static_context   * theSctx;
+
+  user_function    * theUDF;
 
   QueryLoc           theLoc;
 
   unsigned short     theKind;
+
   unsigned short     theScriptingKind;
 
   xqtref_t           theType;
@@ -186,7 +189,7 @@ protected:
 
   FreeVars           theFreeVars;
 
-  CompilerCB  *const theCCB;
+  int                theVisitId;
 
 public:
   static bool is_sequential(unsigned short theScriptingKind);
@@ -196,24 +199,26 @@ public:
   static void checkNonUpdating(const expr* e);
 
 protected:
-  expr(CompilerCB*, static_context*, const QueryLoc&, expr_kind_t);
+  expr(CompilerCB*, static_context*, user_function*, const QueryLoc&, expr_kind_t);
 
-  expr() : theSctx(NULL), theFlags1(0), theCCB(NULL) {}
+  expr() : theCCB(NULL), theSctx(NULL), theUDF(NULL), theFlags1(0) {}
 
 public:
   virtual ~expr();
 
-  CompilerCB* get_ccb() {return theCCB;}
+  CompilerCB* get_ccb() { return theCCB; }
+
+  static_context* get_sctx() const { return theSctx; }
+
+  TypeManager* get_type_manager() const;
+
+  user_function* get_udf() const { return theUDF; }
 
   expr_kind_t get_expr_kind() const { return static_cast<expr_kind_t>(theKind); }
 
   const QueryLoc& get_loc() const { return theLoc; }
 
   void set_loc(const QueryLoc& loc) { theLoc = loc; }
-
-  static_context* get_sctx() const { return theSctx; }
-
-  TypeManager* get_type_manager() const;
 
   uint32_t getFlags() const { return theFlags1; }
 
@@ -241,11 +246,9 @@ public:
 
   xqtref_t get_return_type();
 
-  expr* clone() const;
+  expr* clone(user_function* udf) const;
 
-  expr* clone(substitution_t&) const;
-
-  virtual expr* cloneImpl(substitution_t& substitution) const;
+  expr* clone(user_function* udf, substitution_t& subst) const;
 
   virtual void accept(expr_visitor& v) = 0;
 
@@ -315,13 +318,6 @@ public:
 
   void setMustCopyNodes(BoolAnnotationValue v);
 
-  // Annotation : willBeSerialized
-  BoolAnnotationValue getWillBeSerialized() const;
-
-  void setWillBeSerialized(BoolAnnotationValue v);
-
-  bool willBeSerialized() const;
-
   // Annotation : containsPragma
   BoolAnnotationValue getContainsPragma() const;
 
@@ -335,6 +331,13 @@ public:
   FreeVars& getFreeVars() { return theFreeVars; }
 
   void setFreeVars(FreeVars& s);
+
+  //
+  void setVisitId(int id) { theVisitId = id; }
+
+  bool isVisited(int id) const { return theVisitId == id; }
+
+  int getVisitId() const { return theVisitId; }
 
   bool is_constant() const;
 

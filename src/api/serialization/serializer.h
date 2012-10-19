@@ -216,9 +216,9 @@ protected:
      * @param aEmitAttributes If true, attributes are emitted.
      */
     emitter(
-        serializer* the_serializer, 
-        std::ostream& the_stream,
-        bool aEmitAttributes = false);
+        serializer* serializer, 
+        std::ostream& stream,
+        bool emitAttributes = false);
 
     /**
      * Outputs the start of the serialized document, which, depending on
@@ -329,13 +329,13 @@ protected:
       INVALID_ITEM,
       PREVIOUS_ITEM_WAS_TEXT,
       PREVIOUS_ITEM_WAS_NODE
-    }                                     previous_item;
+    }                                     thePreviousItemKind;
 
     std::vector<store::ChildrenIterator*> theChildIters;
     ulong                                 theFirstFreeChildIter;
     store::AttributesIterator           * theAttrIter;
 
-    bool                                  isFirstElementNode;
+    bool                                  theIsFirstElementNode;
     bool                                  theEmitAttributes;
   };
 
@@ -359,9 +359,6 @@ protected:
 
   protected:
     virtual void emit_doctype(const zstring& elementName);
-
-  protected:
-    bool theEmitAttributes;
   };
 
   ///////////////////////////////////////////////////////////
@@ -385,32 +382,28 @@ protected:
 
     virtual void emit_end();
 
-  private:
+  protected:
 
     /**
      * Outputs a JSON item. This method is called both for top-level JSON
      * items as well as any items within a JSON object or array, so it may
      * output simple typed values differently than standard XML serialization.
      */
-    void emit_json_item(store::Item* item, int depth);
+    virtual void emit_json_item(store::Item* item, int depth);
 
-    void emit_json_object(store::Item* object, int depth);
+    virtual void emit_json_object(store::Item* object, int depth);
 
-    void emit_json_array(store::Item* array, int depth);
+    virtual void emit_json_array(store::Item* array, int depth);
 
-    void emit_json_value(store::Item* value, int depth);
+    virtual void emit_jsoniq_xdm_node(store::Item *item, int depth);
 
-    void emit_jsoniq_xdm_node(store::Item *item, int depth);
-
-    void emit_json_string(zstring const &string);
+    virtual void emit_json_string(zstring const &string);
 
     store::Item_t theJSONiqValueName;
     store::Item_t theTypeName;
     store::Item_t theValueName;
     store::Item_t theJSONiqXDMNodeName;
 
-    rchandle<emitter> theXMLEmitter;
-    std::stringstream* theXMLStringStream;
     bool theMultipleItems;
   };
 
@@ -421,7 +414,7 @@ protected:
   //                                                       //
   ///////////////////////////////////////////////////////////
 
-  class hybrid_emitter : public emitter
+  class hybrid_emitter : public json_emitter
   {
   public:
     hybrid_emitter(
@@ -437,15 +430,20 @@ protected:
 
     virtual void emit_end();
 
+  protected:
+    virtual void emit_jsoniq_xdm_node(store::Item* item, int);
+
   private:
     enum JSONiqEmitterState {
       JESTATE_UNDETERMINED,
       JESTATE_JDM,
       JESTATE_XDM
-    }                           theEmitterState;
+    }                        theEmitterState;
 
-    serializer::xml_emitter*        theXMLEmitter;
-    serializer::json_emitter*       theJSONEmitter;
+    serializer::xml_emitter* theXMLEmitter;
+
+    rchandle<emitter> theNestedXMLEmitter;
+    std::stringstream* theNestedXMLStringStream;
   };
 
 #endif /* ZORBA_WITH_JSON */

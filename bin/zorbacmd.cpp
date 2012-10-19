@@ -888,14 +888,23 @@ compileAndExecute(
 
       timing.startTimer(TimingInfo::UNLOAD_TIMER, i);
 
-      DocumentManager* lMgr = store->getDocumentManager();
-      ItemSequence_t lSeq = lMgr->availableDocuments();
-      Iterator_t lIter = lSeq->getIterator();
+      DocumentManager* docMgr = store->getDocumentManager();
+      ItemSequence_t docsSeq = docMgr->availableDocuments();
+      Iterator_t lIter = docsSeq->getIterator();
       lIter->open();
-      Item lURI;
-      while (lIter->next(lURI)) 
+      Item uri;
+      std::vector<Item> docURIs;
+      while (lIter->next(uri)) 
       {
-        lMgr->remove(lURI.getStringValue());
+        docURIs.push_back(uri);
+      }
+      lIter->close();
+
+      size_t numDocs = docURIs.size();
+
+      for (size_t k = 0; k < numDocs; ++k)
+      {
+        docMgr->remove(docURIs[k].getStringValue());
       }
 
       timing.stopTimer(TimingInfo::UNLOAD_TIMER, i);

@@ -85,6 +85,8 @@ public:
 
   int                          m_tempvarCounter;
 
+  bool                         theForSerializationOnly;
+
   bool                         theIsInOrderedMode;
 
   VarIdMap                   * theVarIdMap;
@@ -109,29 +111,12 @@ public:
 
   void setRoot(expr* root);
 
+  void setForSerializationOnly(bool v) { theForSerializationOnly = v; }
+
   var_expr* createTempVar(
       static_context* sctx,
       const QueryLoc& loc,
       var_expr::var_kind kind);
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-struct UDFCallChain
-{
-  fo_expr      * theFo;
-  UDFCallChain * thePrev;
-
-  UDFCallChain() : theFo(NULL), thePrev(NULL) {}
-
-  UDFCallChain(fo_expr* caller, UDFCallChain* prevCaller)
-    :
-    theFo(caller),
-    thePrev(prevCaller)
-  {
-  }
 };
 
 

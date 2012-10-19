@@ -45,12 +45,13 @@ protected:
 
 public:
   update_expr_base(
-    CompilerCB* ccb,
-    static_context* sctx,
-    const QueryLoc&,
-    expr_kind_t kind,
-    expr* targetExpr,
-    expr* sourceExpr);
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      expr_kind_t kind,
+      expr* targetExpr,
+      expr* sourceExpr);
 
   expr* getTargetExpr() const { return theTargetExpr; }
 
@@ -75,40 +76,17 @@ protected:
 
 protected:
   insert_expr(
-    CompilerCB* ccb,
-    static_context* sctx,
-    const QueryLoc&,
-    store::UpdateConsts::InsertType,
-    expr* aSourceExpr,
-    expr* aTargetExpr);
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      store::UpdateConsts::InsertType,
+      expr* aSourceExpr,
+      expr* aTargetExpr);
 
 public:
   store::UpdateConsts::InsertType getType() const { return theType; }
   
-  expr* cloneImpl(substitution_t& s) const;
-
-  void accept(expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class delete_expr : public update_expr_base
-{
-  friend class ExprIterator;
-  friend class expr;
-  friend class ExprManager;
-
-
-protected:
-  delete_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr*);
-
-public:
-  expr* cloneImpl(substitution_t& s) const;
-
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
@@ -129,18 +107,44 @@ protected:
 
 protected:
   replace_expr(
-    CompilerCB* ccb,
-    static_context* sctx,
-    const QueryLoc&,
-    store::UpdateConsts::ReplaceType aType,
-    expr*,
-    expr*);
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      store::UpdateConsts::ReplaceType aType,
+      expr*,
+      expr*);
 
 public:
   store::UpdateConsts::ReplaceType getType() const { return theType; }
 
   expr* getReplaceExpr() const { return theSourceExpr; }
 
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class delete_expr : public update_expr_base
+{
+  friend class ExprIterator;
+  friend class expr;
+  friend class ExprManager;
+
+
+protected:
+  delete_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      expr*);
+
+public:
   expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
@@ -162,14 +166,13 @@ protected:
   rename_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*,
       expr*);
 
 public:
 	expr* getNameExpr() const { return theSourceExpr; }
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -206,7 +209,7 @@ public:
 
   expr* getExpr() const { return theExpr; }
 
-  copy_clause* clone(expr::substitution_t& s) const;
+  copy_clause* clone(user_function* udf, expr::substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -224,7 +227,11 @@ protected:
   expr                     * theReturnExpr;
 
 protected:
-  transform_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc);
+  transform_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc);
 
 public:
   expr* getModifyExpr() const { return theModifyExpr; }
@@ -248,8 +255,6 @@ public:
   csize size() const { return theCopyClauses.size(); }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

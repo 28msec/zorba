@@ -64,17 +64,15 @@ declare %ann:sequential function local:collapseNodesSameName(
   {
   }
 
-  if($e) then
-    if(empty($c)) then
-    { 
-      element  {$n }  { attribute {"L"} {$label}, $ca}
-    }
+  if($e)
+  then
+    if(empty($c))
+    then
+      element { $n } { attribute {"L"} {$label}, $ca }
     else
-      element {$n } { attribute {"L"} {$label}, $ca, $cc }
+      element { $n } { attribute {"L"} {$label}, $ca, $cc }
   else 
-  {
-    attribute {$n} {$label}
-  }
+    attribute { $n } {$label}
 };
 
 

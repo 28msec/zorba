@@ -220,6 +220,15 @@ unsigned short user_function::getScriptingKind() const
 /*******************************************************************************
 
 ********************************************************************************/
+void user_function::setScriptingKind(unsigned short k)
+{
+  theScriptingKind = k;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void user_function::setBody(expr* body)
 {
   theBodyExpr = body;
@@ -271,7 +280,7 @@ void user_function::addMutuallyRecursiveUDFs(
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::addRecursiveCall(expr* call)
+void user_function::addRecursiveCall(fo_expr* call)
 {
   assert(theBodyExpr != NULL);
 

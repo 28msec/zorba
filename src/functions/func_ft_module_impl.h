@@ -33,17 +33,20 @@ namespace zorba
 class full_text_tokenize_node : public function
 {
 public:
-  full_text_tokenize_node(const signature& sig,
-                          FunctionConsts::FunctionKind kind) : 
+  full_text_tokenize_node(
+      const signature& sig,
+      FunctionConsts::FunctionKind kind)
+    :
     function(sig, kind)
   {
-
   }
 
   // Mark the function as accessing the dyn ctx so that it won't be
   // const-folded. We must prevent const-folding because the function
   // uses the store to get access to the tokenizer provider.
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };
@@ -53,17 +56,20 @@ public:
 class full_text_tokenize_nodes : public function
 {
 public:
-  full_text_tokenize_nodes(const signature& sig,
-                           FunctionConsts::FunctionKind kind) : 
+  full_text_tokenize_nodes(
+     const signature& sig,
+     FunctionConsts::FunctionKind kind)
+    : 
     function(sig, kind)
   {
-
   }
 
   // Mark the function as accessing the dyn ctx so that it won't be
   // const-folded. We must prevent const-folding because the function
   // uses the store to get access to the tokenizer provider.
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -73,11 +79,12 @@ public:
 class full_text_tokenizer_properties : public function
 {
 public:
-  full_text_tokenizer_properties(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_tokenizer_properties(
+      const signature& sig,
+      FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
-
   }
 
   // Mark the function as accessing the dyn ctx so that it won't be
@@ -93,11 +100,12 @@ public:
 class full_text_current_compare_options : public function
 {
 public:
-  full_text_current_compare_options(const signature& sig, FunctionConsts::FunctionKind kind)
+  full_text_current_compare_options(
+      const signature& sig,
+      FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();

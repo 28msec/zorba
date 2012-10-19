@@ -386,7 +386,7 @@ void PromoteIterator::serialize(::zorba::serialization::Archiver& ar)
 
 bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem;
+  store::Item_t item;
   store::Item_t temp;
 
   const TypeManager* tm = theSctx->get_typemanager();
@@ -394,7 +394,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (!consumeNext(lItem, theChild.getp(), planState))
+  if (!consumeNext(item, theChild.getp(), planState))
   {
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
@@ -411,9 +411,9 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     }
 
     // catch exceptions to add/change the error location
-    if (! GenericCast::promote(result, lItem, thePromoteType, tm, loc))
+    if (! GenericCast::promote(result, item, thePromoteType, tm, loc))
     {
-      zstring valueType = tm->create_value_type(lItem)->toSchemaString();
+      zstring valueType = tm->create_value_type(item)->toSchemaString();
       raiseError(valueType);
     }
 
@@ -423,9 +423,9 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     do
     {
-      if (! GenericCast::promote(result, lItem, thePromoteType, tm, loc))
+      if (! GenericCast::promote(result, item, thePromoteType, tm, loc))
       {
-        zstring valueType = tm->create_value_type(lItem)->toSchemaString();
+        zstring valueType = tm->create_value_type(item)->toSchemaString();
         raiseError(valueType);
       }
       else
@@ -433,7 +433,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         STACK_PUSH(true, state);
       }
     }
-    while (consumeNext(lItem, theChild.getp(), planState));
+    while (consumeNext(item, theChild.getp(), planState));
   }
 
   STACK_END(state);
@@ -468,7 +468,7 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_NoReturnTypePromote_234),
+    ERROR_PARAMS(ZED(XPTY0004_FuncReturn),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
@@ -477,14 +477,14 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_NoParamTypePromote_234),
+    ERROR_PARAMS(ZED(XPTY0004_FuncParam),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
   case TYPE_PROMOTION:
   {
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23), valueType, targetType));
+    ERROR_PARAMS(ZED(XPTY0004_TypePromotion), valueType, targetType));
     break;
   }
 #ifdef ZORBA_WITH_JSON
@@ -670,7 +670,7 @@ void TreatIterator::raiseError(const zstring& valueType) const
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_NoReturnTypePromote_234),
+    ERROR_PARAMS(ZED(XPTY0004_FuncReturn),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
@@ -679,14 +679,14 @@ void TreatIterator::raiseError(const zstring& valueType) const
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_NoParamTypePromote_234),
+    ERROR_PARAMS(ZED(XPTY0004_FuncParam),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
   case TYPE_MATCH:
   {
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_NoTreatAs_23), valueType, targetType));
+    ERROR_PARAMS(ZED(XPTY0004_TypeMatch), valueType, targetType));
     break;
   }
   case TREAT_EXPR:
@@ -742,7 +742,8 @@ void TreatIterator::raiseError(const zstring& valueType) const
   }
   case JSONIQ_OBJECT_UPDATE_CONTENT:
   {
-    RAISE_ERROR(jerr::JNUP0019, loc, ERROR_PARAMS(valueType));
+    RAISE_ERROR(jerr::JNUP0019, loc,
+    ERROR_PARAMS(ZED(JNUP0019), valueType));
     break;
   }
   case JSONIQ_ARRAY_UPDATE_TARGET:

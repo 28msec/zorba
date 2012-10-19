@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -362,18 +362,18 @@ void EmptyOrderDecl::accept( parsenode_visitor &v ) const
   [20] InheritMode ::=  "inherit" | "no-inherit"
 ********************************************************************************/
 CopyNamespacesDecl::CopyNamespacesDecl(
-    const QueryLoc& loc_,
-    StaticContextConsts::preserve_mode_t _preserve_mode,
-    StaticContextConsts::inherit_mode_t  _inherit_mode)
+    const QueryLoc& loc,
+    bool preserve_ns,
+    bool inherit_ns)
   :
-  parsenode(loc_),
-  preserve_mode(_preserve_mode),
-  inherit_mode(_inherit_mode)
+  parsenode(loc),
+  thePreserveNamespaces(preserve_ns),
+  theInheritNamespaces(inherit_ns)
 {
 }
 
 
-void CopyNamespacesDecl::accept( parsenode_visitor &v ) const
+void CopyNamespacesDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -913,7 +913,7 @@ CollectionDecl::CollectionDecl(
     rchandle<AnnotationListParsenode> aAnnotations,
     SequenceType* aTypeDecl)
   :
-  parsenode(aLoc),
+  XQDocumentable(aLoc),
   theName(aName),
   theTypeDecl(aTypeDecl),
   theAnnotations(aAnnotations)
@@ -953,7 +953,7 @@ AST_IndexDecl::AST_IndexDecl(
     IndexKeyList* key,
     rchandle<AnnotationListParsenode> aAnnotations)
   :
-  parsenode(loc),
+  XQDocumentable(loc),
   theName(name),
   theDomainExpr(domainExpr),
   theKey(key),
@@ -1906,7 +1906,7 @@ void OrderSpecList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   std::vector<rchandle<OrderSpec> >::const_iterator it = spec_hv.begin();
-  for (; it!=spec_hv.end(); ++it) 
+  for (; it!=spec_hv.end(); ++it)
   {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -2144,7 +2144,7 @@ void SwitchCaseClauseList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   std::vector<rchandle<SwitchCaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
-  for (; it!=clause_hv.rend(); ++it) 
+  for (; it!=clause_hv.rend(); ++it)
   {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -3545,7 +3545,8 @@ ArgList::ArgList(
   const QueryLoc& loc_)
 :
   parsenode(loc_)
-{}
+{
+}
 
 
 //-ArgList::
@@ -3639,7 +3640,7 @@ void DirElemContentList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
-  std::vector<rchandle<DirElemContent> >::const_reverse_iterator it = 
+  std::vector<rchandle<DirElemContent> >::const_reverse_iterator it =
   dir_content_hv.rbegin();
 
   const DirElemContent* lPrev = 0;
@@ -3756,7 +3757,7 @@ void QuoteAttrContentList::accept( parsenode_visitor &v ) const
   std::vector<rchandle<QuoteAttrValueContent> >::const_reverse_iterator it =
   quot_atval_content_hv.rbegin();
 
-  for (; it!=quot_atval_content_hv.rend(); ++it) 
+  for (; it!=quot_atval_content_hv.rend(); ++it)
   {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -3783,7 +3784,7 @@ void AposAttrContentList::accept( parsenode_visitor &v ) const
   std::vector<rchandle<AposAttrValueContent> >::const_reverse_iterator it =
   apos_atval_content_hv.rbegin();
 
-  for (; it!=apos_atval_content_hv.rend(); ++it) 
+  for (; it!=apos_atval_content_hv.rend(); ++it)
   {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -4873,7 +4874,7 @@ void CatchListExpr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   std::vector<rchandle<CatchExpr> >::const_reverse_iterator it = theCatchExprs.rbegin();
-  for (; it!=theCatchExprs.rend(); ++it) 
+  for (; it!=theCatchExprs.rend(); ++it)
   {
     ACCEPT_CHK(*it);
   }
@@ -4888,7 +4889,7 @@ void CatchExpr::accept( parsenode_visitor &v ) const
 
   for(NameTestList::const_iterator i = theNameTests.begin();
       i != theNameTests.end();
-      ++i) 
+      ++i)
   {
     ACCEPT(*i);
   }
@@ -5693,7 +5694,7 @@ void LiteralFunctionItem::accept(parsenode_visitor& v) const
 void InlineFunction::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (theReturnType);
+  //ACCEPT (theReturnType);
   //ACCEPT (theParamList);
   ACCEPT (theEnclosedExpr);
   END_VISITOR ();
@@ -5709,7 +5710,7 @@ void TypeList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   std::vector<rchandle<SequenceType> >::const_iterator it = theTypes.begin();
-  for (; it!=theTypes.end(); ++it) 
+  for (; it!=theTypes.end(); ++it)
   {
     const parsenode* e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -5799,7 +5800,7 @@ JSONDirectObjectConstructor::~JSONDirectObjectConstructor()
 }
 
 
-csize JSONDirectObjectConstructor::numPairs() const 
+csize JSONDirectObjectConstructor::numPairs() const
 {
   return thePairs->size();
 }
@@ -5879,20 +5880,13 @@ void JSON_Test::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONObjectInsertExpr::JSONObjectInsertExpr(
     const QueryLoc& loc,
-    const exprnode* contentExpr,
-    const exprnode* targetExpr)
+    const rchandle<exprnode>& contentExpr,
+    const rchandle<exprnode>& targetExpr)
   :
   exprnode(loc),
   theContentExpr(contentExpr),
   theTargetExpr(targetExpr)
 {
-}
-
-
-JSONObjectInsertExpr::~JSONObjectInsertExpr()
-{
-  delete theContentExpr;
-  delete theTargetExpr;
 }
 
 
@@ -5910,23 +5904,15 @@ void JSONObjectInsertExpr::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONArrayInsertExpr::JSONArrayInsertExpr(
     const QueryLoc& loc,
-    exprnode* valueExpr,
-    exprnode* targetExpr,
-    exprnode* posExpr)
+    const rchandle<exprnode>& valueExpr,
+    const rchandle<exprnode>& targetExpr,
+    const rchandle<exprnode>& posExpr)
   :
   exprnode(loc),
   theTargetExpr(targetExpr),
   thePositionExpr(posExpr),
   theValueExpr(valueExpr)
 {
-}
-
-
-JSONArrayInsertExpr::~JSONArrayInsertExpr()
-{
-  delete theValueExpr;
-  delete theTargetExpr;
-  delete thePositionExpr;
 }
 
 
@@ -5945,20 +5931,13 @@ void JSONArrayInsertExpr::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONArrayAppendExpr::JSONArrayAppendExpr(
     const QueryLoc& loc,
-    exprnode* valueExpr,
-    exprnode* targetExpr)
+    const rchandle<exprnode>& valueExpr,
+    const rchandle<exprnode>& targetExpr)
   :
   exprnode(loc),
   theTargetExpr(targetExpr),
   theValueExpr(valueExpr)
 {
-}
-
-
-JSONArrayAppendExpr::~JSONArrayAppendExpr()
-{
-  delete theValueExpr;
-  delete theTargetExpr;
 }
 
 
@@ -5976,20 +5955,13 @@ void JSONArrayAppendExpr::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONDeleteExpr::JSONDeleteExpr(
     const QueryLoc& loc,
-    exprnode* targetExpr,
-    exprnode* selectorExpr)
+    const rchandle<exprnode>& targetExpr,
+    const rchandle<exprnode>& selectorExpr)
   :
   exprnode(loc),
   theTargetExpr(targetExpr),
   theSelectorExpr(selectorExpr)
 {
-}
-
-
-JSONDeleteExpr::~JSONDeleteExpr()
-{
-  delete theTargetExpr;
-  delete theSelectorExpr;
 }
 
 
@@ -6007,23 +5979,15 @@ void JSONDeleteExpr::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONReplaceExpr::JSONReplaceExpr(
     const QueryLoc& loc,
-    exprnode* targetExpr,
-    exprnode* selectorExpr,
-    exprnode* valueExpr)
+    const rchandle<exprnode>& targetExpr,
+    const rchandle<exprnode>& selectorExpr,
+    const rchandle<exprnode>& valueExpr)
   :
   exprnode(loc),
   theTargetExpr(targetExpr),
   theSelectorExpr(selectorExpr),
   theValueExpr(valueExpr)
 {
-}
-
-
-JSONReplaceExpr::~JSONReplaceExpr()
-{
-  delete theTargetExpr;
-  delete theSelectorExpr;
-  delete theValueExpr;
 }
 
 
@@ -6042,23 +6006,15 @@ void JSONReplaceExpr::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONRenameExpr::JSONRenameExpr(
     const QueryLoc& loc,
-    exprnode* targetExpr,
-    exprnode* nameExpr,
-    exprnode* newNameExpr)
+    const rchandle<exprnode>& targetExpr,
+    const rchandle<exprnode>& nameExpr,
+    const rchandle<exprnode>& newNameExpr)
   :
   exprnode(loc),
   theTargetExpr(targetExpr),
   theNameExpr(nameExpr),
   theNewNameExpr(newNameExpr)
 {
-}
-
-
-JSONRenameExpr::~JSONRenameExpr()
-{
-  delete theTargetExpr;
-  delete theNameExpr;
-  delete theNewNameExpr;
 }
 
 

@@ -189,6 +189,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
   const QueryLoc& loc = node->get_loc();
   static_context* sctx = node->get_sctx();
+  user_function* udf = node->get_udf();
+
+  assert(udf == rCtx.theUDF);
 
   flwor_expr* flworp = static_cast<flwor_expr *>(node);
   flwor_expr& flwor = *flworp;
@@ -253,10 +256,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
           if_expr* ifExpr = rCtx.theEM->
           create_if_expr(sctx,
+                         udf,
                          loc,
                          whereExpr,
                          flworp,
-                         rCtx.theEM->create_seq(sctx, loc));
+                         rCtx.theEM->create_seq(sctx, udf, loc));
           
           fix_if_annotations(ifExpr);
           
@@ -328,20 +332,20 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       {
         if (! fc->is_allowing_empty())
         {
-          return rCtx.theEM->create_seq(sctx, LOC(node));
+          return rCtx.theEM->create_seq(sctx, udf, LOC(node));
         }
         else
         {
           if (pvar != NULL)
           {
             expr* constExpr = rCtx.theEM->
-            create_const_expr(sctx, loc, xs_integer::zero());
+            create_const_expr(sctx, udf, loc, xs_integer::zero());
 
             MODIFY(subst_vars(rCtx, node, pvar, constExpr));
             fc->set_pos_var(NULL);
           }
 
-          expr* emptyExpr = rCtx.theEM->create_seq(sctx, LOC(node));
+          expr* emptyExpr = rCtx.theEM->create_seq(sctx, udf, LOC(node));
           MODIFY(subst_vars(rCtx, node, var, emptyExpr));
           substitute = true;
         }
@@ -356,7 +360,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
               ! fc->is_allowing_empty())
           {
             expr* constExpr = rCtx.theEM->
-            create_const_expr(sctx, loc, xs_integer::one());
+            create_const_expr(sctx, udf, loc, xs_integer::one());
 
             MODIFY(subst_vars(rCtx, node, pvar, constExpr));
             fc->set_pos_var(NULL);
@@ -448,7 +452,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         MODIFY(flwor.remove_clause(i));
         const QueryLoc& loc = var->get_loc();
         var_expr* fvar = rCtx.theEM->
-        create_var_expr(sctx, loc, var_expr::for_var, var->get_name());
+        create_var_expr(sctx, udf, loc, var_expr::for_var, var->get_name());
 
         fvar->getFreeVars().insert(fvar);
 
@@ -534,8 +538,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       {
         whereCond = rCtx.theEM->
         create_fo_expr(sctx,
+                       udf,
                        whereCond->get_loc(),
-                       GET_BUILTIN_FUNCTION(OP_AND_N),
+                       BUILTIN_FUNC(OP_AND_N),
                        whereExpr,
                        whereCond);
       }
@@ -550,7 +555,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       subst_vars(rCtx,
                  flworp,
                  static_cast<count_clause*>(clause)->get_var(),
-                 rCtx.theEM->create_const_expr(sctx, loc, xs_integer::one()));
+                 rCtx.theEM->create_const_expr(sctx, udf, loc, xs_integer::one()));
 
       flwor.remove_clause(0);
       continue;
@@ -577,10 +582,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     if_expr* ifExpr = rCtx.theEM->
     create_if_expr(sctx,
+                   udf,
                    whereCond->get_loc(),
                    whereCond,
                    result,
-                   rCtx.theEM->create_seq(sctx, whereCond->get_loc()));
+                   rCtx.theEM->create_seq(sctx, udf, whereCond->get_loc()));
 
     fix_if_annotations(ifExpr);
 
@@ -1319,6 +1325,9 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   flwor_expr* flwor = static_cast<flwor_expr*>(node);
 
   static_context* sctx = flwor->get_sctx();
+  user_function* udf = node->get_udf();
+
+  assert(udf == rCtx.theUDF);
 
   // "for $x in ... return if (ce) then te else ()" -->
   // "for $x in ... where ce return te"
@@ -1372,8 +1381,9 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
         {
           expr* newWhereExpr = rCtx.theEM->
           create_fo_expr(sctx,
+                         udf,
                          whereExpr->get_loc(),
-                         GET_BUILTIN_FUNCTION(OP_AND_N),
+                         BUILTIN_FUNC(OP_AND_N),
                          whereExpr,
                          condExpr);
 
@@ -1484,6 +1494,9 @@ static void rewrite_positional_pred(
     CompareConsts::CompareType& compKind)
 {
   static_context* sctx = flworExpr->get_sctx();
+  user_function* udf = flworExpr->get_udf();
+
+  assert(udf == rCtx.theUDF);
 
   for_clause* forClause = posVar->get_for_clause();
   expr* domainExpr = forClause->get_expr();
@@ -1497,8 +1510,9 @@ static void rewrite_positional_pred(
   {
     result = rCtx.theEM->
     create_fo_expr(sctx,
+                   udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                   BUILTIN_FUNC(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
                    domainExpr,
                    posExpr);
     break;
@@ -1507,7 +1521,7 @@ static void rewrite_positional_pred(
   case CompareConsts::VALUE_LESS_EQUAL:
   {
     expr* oneExpr = rCtx.theEM->
-    create_const_expr(sctx, domainExpr->get_loc(), xs_integer(1));
+      create_const_expr(sctx, udf, domainExpr->get_loc(), xs_integer(1));
 
     std::vector<expr*> args(3);
     args[0] = domainExpr;
@@ -1516,8 +1530,9 @@ static void rewrite_positional_pred(
 
     result = rCtx.theEM->
     create_fo_expr(sctx,
+                   udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3),
                    args);
     break;
   }
@@ -1525,15 +1540,16 @@ static void rewrite_positional_pred(
   case CompareConsts::VALUE_LESS:
   {
     expr* oneExpr1 = rCtx.theEM->
-    create_const_expr(sctx, domainExpr->get_loc(), xs_integer(1));
+    create_const_expr(sctx, udf, domainExpr->get_loc(), xs_integer(1));
 
     expr* oneExpr2 = rCtx.theEM->
-    create_const_expr(sctx, domainExpr->get_loc(), xs_integer(1));
+    create_const_expr(sctx, udf, domainExpr->get_loc(), xs_integer(1));
 
     posExpr = rCtx.theEM->
     create_fo_expr(sctx,
+                   udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_NUMERIC_SUBTRACT_INTEGER_2),
+                   BUILTIN_FUNC(OP_NUMERIC_SUBTRACT_INTEGER_2),
                    posExpr,
                    oneExpr2);
 
@@ -1544,8 +1560,9 @@ static void rewrite_positional_pred(
     
     result = rCtx.theEM->
     create_fo_expr(sctx,
+                   udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3),
                    args);
     break;
   }
@@ -1554,8 +1571,9 @@ static void rewrite_positional_pred(
   {
     result = rCtx.theEM->
     create_fo_expr(sctx,
+                   udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2),
                    domainExpr,
                    posExpr);
     break;
@@ -1564,19 +1582,21 @@ static void rewrite_positional_pred(
   case CompareConsts::VALUE_GREATER:
   {
     expr* oneExpr = rCtx.theEM->
-    create_const_expr(sctx, domainExpr->get_loc(), xs_integer(1));
+    create_const_expr(sctx, udf, domainExpr->get_loc(), xs_integer(1));
 
     posExpr = rCtx.theEM->
     create_fo_expr(sctx,
+                   udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_NUMERIC_ADD_INTEGER_2),
+                   BUILTIN_FUNC(OP_NUMERIC_ADD_INTEGER_2),
                    posExpr,
                    oneExpr);
 
     result = rCtx.theEM->
     create_fo_expr(sctx,
+                   udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2),
                    domainExpr,
                    posExpr);
     break;

@@ -1,0 +1,504 @@
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="4" varname="input-context1"/>
+  <CtxVarDeclareIterator varid="5" varname="input-context2"/>
+  <OrIterator>
+    <AndIterator>
+      <NodeAfterIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="0">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="0">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+      </NodeAfterIterator>
+      <NodeAfterIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="1">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="1">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+      </NodeAfterIterator>
+      <NodeAfterIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="2">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="2">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+      </NodeAfterIterator>
+    </AndIterator>
+    <AndIterator>
+      <NodeBeforeIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="0">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="0">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+      </NodeBeforeIterator>
+      <NodeBeforeIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="1">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="1">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+      </NodeBeforeIterator>
+      <NodeBeforeIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="4" varname="input-context1" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,works)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="2">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+        <TreatIterator quant="?">
+          <NodeDistinctIterator allow-atomics="false" check-only="false">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeDistinctIterator allow-atomics="false" check-only="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="$$context-item">
+                      <NodeDistinctIterator allow-atomics="false" check-only="false">
+                        <flwor::FLWORIterator>
+                          <ForVariable name="$$context-item">
+                            <NodeDistinctIterator allow-atomics="false" check-only="false">
+                              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                                <CtxVarIterator varid="5" varname="input-context2" varkind="global"/>
+                              </TreatIterator>
+                            </NodeDistinctIterator>
+                          </ForVariable>
+                          <ReturnClause>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,staff)" typename="*" nill allowed="0" target_position="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </ChildAxisIterator>
+                          </ReturnClause>
+                        </flwor::FLWORIterator>
+                      </NodeDistinctIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,employee)" typename="*" nill allowed="0" target_position="2">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </NodeDistinctIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,empnum)" typename="*" nill allowed="0" target_position="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </NodeDistinctIterator>
+        </TreatIterator>
+      </NodeBeforeIterator>
+    </AndIterator>
+  </OrIterator>
+</SequentialIterator>
+

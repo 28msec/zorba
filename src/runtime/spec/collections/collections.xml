@@ -284,6 +284,7 @@
 
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getReturnType/>
         <zorba:isSource returnValue="true"/>
         <zorba:producesDistinctNodes returnValue="YES"/>
         <zorba:producesSortedNodes returnValue="YES"/>

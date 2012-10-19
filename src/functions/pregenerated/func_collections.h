@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,6 +145,8 @@ public:
   }
 
   bool accessesDynCtx() const { return true; }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool isSource() const { return true; }
 

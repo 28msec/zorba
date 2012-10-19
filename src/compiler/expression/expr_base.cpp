@@ -19,7 +19,6 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/flwor_expr.h"
-#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr_visitor.h"
@@ -123,13 +122,20 @@ void expr::checkSimpleExpr(const expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr_kind_t k)
+expr::expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc,
+    expr_kind_t k)
   :
+  theCCB(ccb),
   theSctx(sctx),
+  theUDF(udf),
   theLoc(loc),
   theKind(k),
   theFlags1(0),
-  theCCB(ccb)
+  theVisitId(0)
 {
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
@@ -233,40 +239,6 @@ void expr::checkScriptingKind() const
   if (theScriptingKind & UPDATING_EXPR)
     assert(theScriptingKind == UPDATING_EXPR);
 #endif
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-expr* expr::clone() const
-{
-  substitution_t subst;
-  return clone(subst);
-}
-
-
-expr* expr::clone(substitution_t& subst) const
-{
-  expr* lNewExpr = cloneImpl(subst);
-
-  if (containsPragma())
-  {
-    lNewExpr->setContainsPragma(ANNOTATION_TRUE);
-    std::vector<pragma*> lPragmas;
-    theCCB->lookup_pragmas(this, lPragmas);
-    for (size_t i = 0; i < lPragmas.size(); ++i)
-    {
-      theCCB->add_pragma(lNewExpr, lPragmas[i]);
-    }
-  }
-  return lNewExpr;
-}
-
-
-expr* expr::cloneImpl(substitution_t& subst) const
-{
-  throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_LOC(get_loc()));
 }
 
 
@@ -534,30 +506,6 @@ void expr::setContainsRecursiveCall(BoolAnnotationValue v)
 bool expr::containsRecursiveCall() const
 {
   BoolAnnotationValue v = getContainsRecursiveCall();
-  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-BoolAnnotationValue expr::getWillBeSerialized() const
-{
-  return (BoolAnnotationValue)
-         ((theFlags1 & WILL_BE_SERIALIZED_MASK) >> WILL_BE_SERIALIZED);
-}
-
-
-void expr::setWillBeSerialized(BoolAnnotationValue v)
-{
-  theFlags1 &= ~WILL_BE_SERIALIZED_MASK;
-  theFlags1 |= (v << WILL_BE_SERIALIZED);
-}
-
-
-bool expr::willBeSerialized() const
-{
-  BoolAnnotationValue v = getWillBeSerialized();
   return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
 }
 
@@ -1212,13 +1160,18 @@ const store::Item* expr::getQName(static_context* sctx) const
 ********************************************************************************/
 xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
 {
-  expr* emptyExpr = theCCB->theEM->create_fo_expr(input->get_sctx(),
-                                 QueryLoc::null,
-                                 GET_BUILTIN_FUNCTION(OP_CONCATENATE_N));
+  assert(input->get_udf() == theUDF);
+
+  expr* emptyExpr = theCCB->theEM->
+  create_fo_expr(input->get_sctx(),
+                 theUDF,
+                 QueryLoc::null,
+                 BUILTIN_FUNC(OP_CONCATENATE_N));
+
   expr::substitution_t subst;
   subst[input] = emptyExpr;
 
-  expr* cloneExpr = clone(subst);
+  expr* cloneExpr = clone(theUDF, subst);
 
   return cloneExpr->get_return_type();
 }

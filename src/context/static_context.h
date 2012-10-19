@@ -42,6 +42,7 @@
 
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/hashmap_itemp.h"
+#include "zorbautils/checked_vector.h"
 
 #include "common/shared_types.h"
 
@@ -634,9 +635,9 @@ protected:
 
   StaticContextConsts::construction_mode_t   theConstructionMode;
 
-  StaticContextConsts::inherit_mode_t        theInheritMode;
+  bool                                       theInheritNamespaces;
 
-  StaticContextConsts::preserve_mode_t       thePreserveMode;
+  bool                                       thePreserveNamespaces;
 
   StaticContextConsts::ordering_mode_t       theOrderingMode;
 
@@ -1038,13 +1039,13 @@ public:
 
   void set_construction_mode(StaticContextConsts::construction_mode_t v);
 
-  StaticContextConsts::inherit_mode_t inherit_mode() const;
+  bool inherit_ns() const;
 
-  void set_inherit_mode(StaticContextConsts::inherit_mode_t v);
+  void set_inherit_ns(bool v);
 
-  StaticContextConsts::preserve_mode_t preserve_mode() const;
+  bool preserve_ns() const;
 
-  void set_preserve_mode(StaticContextConsts::preserve_mode_t v);
+  void set_preserve_ns(bool);
 
   StaticContextConsts::ordering_mode_t ordering_mode() const;
 

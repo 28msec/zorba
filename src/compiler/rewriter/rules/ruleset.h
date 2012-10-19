@@ -128,14 +128,12 @@ public:
 ********************************************************************************/
 class MarkNodeCopyProps : public RewriteRule
 {
-  typedef std::set<fo_expr*> UdfCalls;
-  //typedef std::vector<fo_expr*> UdfCalls;
+  typedef std::set<user_function*> UdfSet;
 
 protected:
   SourceFinder   * theSourceFinder;
 
-  UdfCalls         theProcessedUDFCalls;
-  //UdfCalls       theUdfCallPath;
+  UdfSet           theProcessedUDFs;
 
 public:
   MarkNodeCopyProps()
@@ -147,11 +145,11 @@ public:
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 
 protected:
-  void applyInternal(RewriterContext& rCtx, expr* node, UDFCallChain& udfCaller);
+  void applyInternal(expr* node, bool deferred);
 
   void markSources(const std::vector<expr*>& sources);
 
-  void markForSerialization(expr* node);
+  void findSourcesForNodeExtractors(expr* node);
 };
 
 

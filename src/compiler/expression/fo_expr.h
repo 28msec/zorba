@@ -45,12 +45,24 @@ protected:
 public:
 
 protected:
-  static fo_expr* create_seq(CompilerCB* ccb, static_context* sctx, const QueryLoc&);
+  static fo_expr* create_seq(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&);
 
 protected:
   fo_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc,
+    const function* f);
+
+  fo_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const function* f,
     expr* arg);
@@ -58,6 +70,7 @@ protected:
   fo_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const function* f,
     expr* arg1,
@@ -66,6 +79,7 @@ protected:
   fo_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const function* f,
     const std::vector<expr*>& args);
@@ -94,8 +108,6 @@ public:
   void remove_arg(csize i);
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

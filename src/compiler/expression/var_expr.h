@@ -89,10 +89,6 @@ class VarInfo;
   For arg vars, it is the position, within the param list, of parameter that is
   bound to this arg var.
 
-  theUDF:
-  -------
-  For arg vars, the corresponding UDF.
-
   theSetExprs:
   ------------
   For global and local vars, this vector contains a pointer to the var_decl_expr
@@ -124,7 +120,7 @@ public:
   {
     unknown_var = 0,
 
-    eval_var,
+    eval_var,  // TODO: remove (it is used only in the debugger_expr)
 
     for_var,
     let_var,
@@ -165,8 +161,6 @@ protected:
 
   csize                 theParamPos;
 
-  user_function       * theUDF;
-
   std::vector<expr*>    theSetExprs;
 
   VarInfo             * theVarInfo;
@@ -186,11 +180,12 @@ protected:
   var_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       var_kind k,
       store::Item* name);
 
-  var_expr(const var_expr& source);
+  var_expr(user_function* udf, const var_expr& source);
 
   virtual ~var_expr();
 
@@ -249,10 +244,6 @@ public:
 
   void set_param_pos(csize pos) { theParamPos = pos; }
 
-  user_function* get_udf() const { return theUDF; }
-
-  void set_udf(const user_function* udf) { theUDF = const_cast<user_function*>(udf); }
-
   void add_set_expr(expr* e) { theSetExprs.push_back(e); }
 
   void remove_set_expr(expr* e);
@@ -268,8 +259,6 @@ public:
   bool is_context_item() const;
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 

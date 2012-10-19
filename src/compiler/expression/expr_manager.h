@@ -31,6 +31,7 @@ namespace zorba
 
 class CompilerCB;
 
+
 class ExprManager
 {
 private:
@@ -75,6 +76,7 @@ public:
 public:
   if_expr* create_if_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* cond_expr,
       expr* then_expr,
@@ -82,12 +84,14 @@ public:
 
   order_expr* create_order_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       order_expr::order_type_t,
       expr*);
 
   validate_expr* create_validate_expr(
       static_context*,
+      user_function* udf,
       const QueryLoc&,
       ParseConstants::validation_mode_t,
       const store::Item_t& aTypeName,
@@ -96,12 +100,14 @@ public:
 
   cast_expr* create_cast_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*,
       xqtref_t);
 
   treat_expr* create_treat_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* input,
       const xqtref_t& type,
@@ -112,6 +118,7 @@ public:
 
   promote_expr* create_promote_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* input,
       const xqtref_t& type,
@@ -120,12 +127,14 @@ public:
 
   castable_expr* create_castable_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*,
       xqtref_t);
 
   instanceof_expr* create_instanceof_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*,
       xqtref_t,
@@ -133,6 +142,7 @@ public:
 
   name_cast_expr* create_name_cast_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*,
       const namespace_context*,
@@ -140,12 +150,14 @@ public:
 
   doc_expr* create_doc_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr* content,
       bool copyNodes);
 
   elem_expr* create_elem_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr* qnameExpr,
       expr* attrs,
@@ -155,6 +167,7 @@ public:
 
   elem_expr* create_elem_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr* qnameExpr,
       expr* content,
@@ -163,64 +176,76 @@ public:
 
   attr_expr* create_attr_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* aQNameExpr,
       expr* aValueExpr);
 
   text_expr* create_text_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       text_expr::text_constructor_type,
       expr*);
 
   pi_expr* create_pi_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*,
       expr*);
 
   const_expr* create_const_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       zstring& sval);
 
   const_expr* create_const_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       const std::string& sval);
 
   const_expr* create_const_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       const char* sval);
 
   const_expr* create_const_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       xs_integer);
 
   const_expr* create_const_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       xs_decimal);
 
   const_expr* create_const_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       xs_double);
 
   const_expr* create_const_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       xs_boolean);
 
   const_expr* create_const_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       store::Item_t);
 
   const_expr* create_const_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       const char* ns,
       const char* pre,
@@ -228,10 +253,12 @@ public:
 
   extension_expr* create_extension_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&);
 
   extension_expr* create_extension_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*);
 
@@ -239,24 +266,31 @@ public:
 
   trycatch_expr* create_trycatch_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr* tryExpr);
 
   wrapper_expr* create_wrapper_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* wrapped);
 
+#if 0
   function_trace_expr* create_function_trace_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* aChild);
+#endif
 
-  function_trace_expr* create_function_trace_expr(expr* aExpr);
+  function_trace_expr* create_function_trace_expr(
+      user_function* udf,
+      expr* aExpr);
 
   eval_expr* create_eval_expr(
-      CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* e,
       expr_script_kind_t scriptingKind,
@@ -265,6 +299,7 @@ public:
 #ifdef ZORBA_WITH_DEBUGGER
   debugger_expr* create_debugger_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* aChild,
       namespace_context* nsCtx,
@@ -275,11 +310,12 @@ public:
 
   var_expr* create_var_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       var_expr::var_kind k,
       store::Item* name);
 
-  var_expr* create_var_expr(const var_expr& source);
+  var_expr* create_var_expr(user_function* udf, const var_expr& source);
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -287,17 +323,20 @@ public:
 
   json_array_expr* create_json_array_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* content);
 
   json_object_expr* create_json_object_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* content,
       bool accumulate);
 
   json_direct_object_expr* create_json_direct_object_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       std::vector<expr*>& names,
       std::vector<expr*>& values);
@@ -308,6 +347,7 @@ public:
 
   insert_expr* create_insert_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       store::UpdateConsts::InsertType,
       expr* aSourceExpr,
@@ -315,11 +355,13 @@ public:
 
   delete_expr* create_delete_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*);
 
   replace_expr* create_replace_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       store::UpdateConsts::ReplaceType aType,
       expr*,
@@ -327,6 +369,7 @@ public:
 
   rename_expr* create_rename_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*,
       expr*);
@@ -335,10 +378,12 @@ public:
 
   transform_expr* create_transform_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc);
 
   block_expr* create_block_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       bool allowLastUpdating,
       std::vector<expr*>& seq,
@@ -346,61 +391,79 @@ public:
 
   apply_expr* create_apply_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* inExpr,
       bool discardXDM);
 
   var_decl_expr* create_var_decl_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       var_expr* varExpr,
       expr* initExpr);
 
   var_set_expr* create_var_set_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       var_expr* varExpr,
       expr* setExpr);
 
   exit_expr* create_exit_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* inExpr);
 
   exit_catcher_expr* create_exit_catcher_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* inExpr,
       std::vector<expr*>& exitExprs);
 
   flowctl_expr* create_flowctl_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       flowctl_expr::action action);
 
   while_expr* create_while_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* body);
 
 ////////////////////////////////////////////////////////////////////////////////
 
-  relpath_expr* create_relpath_expr(static_context* sctx, const QueryLoc& loc);
+  relpath_expr* create_relpath_expr(
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc);
 
-  axis_step_expr* create_axis_step_expr(static_context* sctx, const QueryLoc&);
+  axis_step_expr* create_axis_step_expr(
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&);
 
-  match_expr* create_match_expr(static_context* sctx, const QueryLoc&);
+  match_expr* create_match_expr(
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&);
 
 ////////////////////////////////////////////////////////////////////////////////
 
   dynamic_function_invocation_expr* create_dynamic_function_invocation_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* anExpr,
       const std::vector<expr*>& args);
 
   function_item_expr* create_function_item_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       const store::Item* aQName,
       function* f,
@@ -408,10 +471,12 @@ public:
 
   function_item_expr* create_function_item_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc);
 
   ftcontains_expr* create_ftcontains_expr(
       static_context*,
+      user_function* udf,
       QueryLoc const&,
       expr* range,
       ftnode *ftselection,
@@ -420,16 +485,21 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
   //this calls the static create_seq within fo_expr
-  fo_expr* create_seq(static_context* sctx, const QueryLoc &);
+  fo_expr* create_seq(
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc &);
 
   fo_expr* create_fo_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       const function* f,
       expr* arg);
 
   fo_expr* create_fo_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       const function* f,
       expr* arg1,
@@ -437,12 +507,14 @@ public:
 
   fo_expr* create_fo_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       const function* f,
       const std::vector<expr*>& args);
 
   fo_expr* create_fo_expr(
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const function* f);
 
@@ -511,6 +583,7 @@ public:
 
   flwor_expr* create_flwor_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       bool general);
  
@@ -525,17 +598,20 @@ public:
 
 json_array_expr* create_json_array_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* content);
 
 json_object_expr* create_json_object_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* content,
       bool accumulate);
 
 json_direct_object_expr* create_json_direct_object_expr(
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       std::vector<expr*>& names,
       std::vector<expr*>& values);
