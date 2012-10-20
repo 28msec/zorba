@@ -212,6 +212,10 @@ public:
 
   unsigned short getScriptingKind() const;
 
+  bool dereferencesNodes() const;
+
+  bool constructsNodes() const;
+
   bool accessesDynCtx() const;
 
   bool mustCopyInputNodes(expr* fo, csize input) const;

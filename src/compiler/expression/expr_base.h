@@ -148,7 +148,9 @@ public:
     CONTAINS_RECURSIVE_CALL = 12,
     PROPAGATES_INPUT_NODES  = 14,
     MUST_COPY_NODES         = 16,
-    CONTAINS_PRAGMA         = 18
+    CONTAINS_PRAGMA         = 18,
+    CONSTRUCTS_NODES        = 20,
+    DEREFERENCES_NODES      = 22
   } Annotationkey;
 
   typedef enum
@@ -162,7 +164,9 @@ public:
     CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
     PROPAGATES_INPUT_NODES_MASK   = 0xC000,
     MUST_COPY_NODES_MASK          = 0x30000,
-    CONTAINS_PRAGMA_MASK          = 0xC0000
+    CONTAINS_PRAGMA_MASK          = 0xC0000,
+    CONSTRUCTS_NODES_MASK         = 0x300000,
+    DEREFERENCES_NODES_MASK       = 0xC00000
   } AnnotationMask;
 
 
@@ -325,6 +329,20 @@ public:
 
   bool containsPragma() const;
 
+  // Annotation : constructsNodes
+  BoolAnnotationValue getConstructsNodes() const;
+
+  void setConstructsNodes(BoolAnnotationValue v);
+
+  bool constructsNodes() const;
+
+  // Annotation : dereferencesNodes
+  BoolAnnotationValue getDereferencesNodes() const;
+
+  void setDereferencesNodes(BoolAnnotationValue v);
+
+  bool dereferencesNodes() const;
+
   // Annotation : free vars
   const FreeVars& getFreeVars() const { return theFreeVars; }
 
@@ -346,8 +364,6 @@ public:
   void replace_expr(expr* oldExpr, expr* newExpr);
 
   bool contains_expr(const expr* e) const;
-
-  bool contains_node_construction() const;
 
   void get_exprs_of_kind(
       expr_kind_t kind,

@@ -535,6 +535,56 @@ bool expr::containsPragma() const
 
 
 /*******************************************************************************
+  This annotation tells whether any nodes may be constructed during the
+  evaluation of the expr.
+********************************************************************************/
+BoolAnnotationValue expr::getConstructsNodes() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & CONSTRUCTS_NODES_MASK) >> CONSTRUCTS_NODES);
+}
+
+
+void expr::setConstructsNodes(BoolAnnotationValue v)
+{
+  theFlags1 &= ~CONSTRUCTS_NODES_MASK;
+  theFlags1 |= (v << CONSTRUCTS_NODES);
+}
+
+
+bool expr::constructsNodes() const
+{
+  BoolAnnotationValue v = getConstructsNodes();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+  This annotation tells whether any nodes may be dereferenced during the
+  evaluation of the expr.
+********************************************************************************/
+BoolAnnotationValue expr::getDereferencesNodes() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & DEREFERENCES_NODES_MASK) >> DEREFERENCES_NODES);
+}
+
+
+void expr::setDereferencesNodes(BoolAnnotationValue v)
+{
+  theFlags1 &= ~DEREFERENCES_NODES_MASK;
+  theFlags1 |= (v << DEREFERENCES_NODES);
+}
+
+
+bool expr::dereferencesNodes() const
+{
+  BoolAnnotationValue v = getDereferencesNodes();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
   This annotation tells whether the expr must produce nodes that belong to
   "standalone" trees or not. A tree is standalone if it does not contain
   references to other trees. Such references are created when the optimizer
@@ -623,40 +673,6 @@ bool expr::contains_expr(const expr* e) const
     iter.next();
   }
 
-  return false;
-}
-
-
-/*******************************************************************************
-  Check if the expr tree rooted at e contains any node-constructor expr. If so,
-  e cannot be hoisted.
-********************************************************************************/
-bool expr::contains_node_construction() const
-{
-  expr_kind_t kind = get_expr_kind();
-
-  if (kind == elem_expr_kind ||
-      kind == attr_expr_kind ||
-      kind == text_expr_kind ||
-      kind == doc_expr_kind  ||
-      kind == pi_expr_kind)
-  {
-    return true;
-  }
-
-  ExprConstIterator iter(this);
-  while(!iter.done())
-  {
-    const expr* ce = iter.get_expr();
-    if (ce)
-    {
-      if (ce->contains_node_construction())
-      {
-        return true;
-      }
-    }
-    iter.next();
-  }
   return false;
 }
 

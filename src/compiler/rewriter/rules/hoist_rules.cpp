@@ -353,7 +353,7 @@ static expr* try_hoisting(
     const ExprVarsMap& freevarMap,
     struct PathHolder* path)
 {
-  if (non_hoistable(e) || e->contains_node_construction())
+  if (non_hoistable(e) || e->constructsNodes())
   {
     return NULL;
   }
