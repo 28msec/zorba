@@ -84,8 +84,18 @@ protected:
 ********************************************************************************/
 class MarkExprs : public RewriteRule
 {
+protected:
+  bool theIsLocal;
+
 public:
-  MarkExprs() : RewriteRule(RewriteRule::MarkExprs, "MarkExprs") {}
+  MarkExprs(bool local = false)
+    :
+    RewriteRule(RewriteRule::MarkExprs, "MarkExprs"),
+    theIsLocal(local)
+  {
+  }
+
+  void setLocal(bool v) { theIsLocal = v; }
 
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
