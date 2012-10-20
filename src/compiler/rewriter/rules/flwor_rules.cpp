@@ -753,10 +753,13 @@ static bool safe_to_fold_single_use(
 {
   TypeManager* tm = var->get_type_manager();
 
+  if (flwor.dereferencesNodes() && var->get_domain_expr()->constructsNodes())
+    return false;
+
   bool declared = false;
   expr* referencingExpr = NULL;
 
-  bool hasNodeConstr = var->get_domain_expr()->contains_node_construction();
+  //bool hasNodeConstr = var->get_domain_expr()->contains_node_construction();
 
   csize numClauses = flwor.num_clauses();
 
@@ -974,7 +977,7 @@ static bool safe_to_fold_single_use(
     return false;
 
   bool found = false;
-  return !var_in_try_or_loop(var, referencingExpr, false, hasNodeConstr, found);
+  return !var_in_try_or_loop(var, referencingExpr, false, false, found);
 }
 
 

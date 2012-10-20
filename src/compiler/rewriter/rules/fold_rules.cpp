@@ -170,12 +170,16 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   BoolAnnotationValue saveNonDiscardable = node->getNonDiscardable();
   BoolAnnotationValue saveUnfoldable = node->getUnfoldable();
   BoolAnnotationValue saveContainsRecursiveCall = node->getContainsRecursiveCall();
+  BoolAnnotationValue saveConstructsNodes = node->getConstructsNodes();
+  BoolAnnotationValue saveDereferencesNodes = node->getDereferencesNodes();
 
   // By default, an expr is discardable, foldable,  does not contain recursive
   // calls, and returns constructed nodes.
   BoolAnnotationValue curNonDiscardable = ANNOTATION_FALSE;
   BoolAnnotationValue curUnfoldable = ANNOTATION_FALSE;
   BoolAnnotationValue curContainsRecursiveCall = ANNOTATION_FALSE;
+  BoolAnnotationValue curConstructsNodes = ANNOTATION_FALSE;
+  BoolAnnotationValue curDereferencesNodes = ANNOTATION_FALSE;
 
   // Process udfs: If the current expr is a udf invocation, optimize the udf
   // body, if not optimized already, and determine whether the invocation is
@@ -222,6 +226,12 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
     if (childExpr->containsRecursiveCall())
       curContainsRecursiveCall = ANNOTATION_TRUE;
+
+    if (childExpr->constructsNodes())
+      curConstructsNodes = ANNOTATION_TRUE;
+
+    if (childExpr->dereferencesNodes())
+      curDereferencesNodes = ANNOTATION_TRUE;
 
     iter.next();
   }
@@ -349,6 +359,81 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     }
   }
 
+  if (saveDereferencesNodes != ANNOTATION_TRUE_FIXED)
+  {
+    switch (node->get_expr_kind())
+    {
+    case fo_expr_kind:
+    {
+      fo_expr* fo = static_cast<fo_expr *>(node);
+      function* f = fo->get_func();
+
+      if (!f->isUdf())
+      {
+        if (f->getKind() == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
+          curDereferencesNodes = ANNOTATION_TRUE;
+      }
+      else if (theIsLocal)
+      {
+        curDereferencesNodes = saveDereferencesNodes;
+      }
+      else if (static_cast<user_function*>(f)->dereferencesNodes())
+      {
+        curDereferencesNodes = ANNOTATION_TRUE;
+      }
+      
+      break;
+    }
+    
+    default:
+    {
+      break;
+    }
+    }
+  }
+
+  if (saveConstructsNodes != ANNOTATION_TRUE_FIXED)
+  {
+    switch (node->get_expr_kind())
+    {
+    case fo_expr_kind:
+    {
+      fo_expr* fo = static_cast<fo_expr *>(node);
+      function* f = fo->get_func();
+
+      if (f->isUdf() && theIsLocal)
+      {
+        curConstructsNodes = saveConstructsNodes;
+      }
+      else
+      {
+        if (f->isUdf() &&
+            static_cast<user_function*>(f)->constructsNodes())
+        {
+          curConstructsNodes = ANNOTATION_TRUE;
+        }
+      }
+      
+      break;
+    }
+    
+    case elem_expr_kind:
+    case attr_expr_kind:
+    case text_expr_kind:
+    case pi_expr_kind:
+    case doc_expr_kind:
+    {
+      curConstructsNodes = ANNOTATION_TRUE_FIXED;
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+    }
+  }
+
   if (saveNonDiscardable != curNonDiscardable &&
       saveNonDiscardable != ANNOTATION_TRUE_FIXED)
   {
@@ -367,6 +452,20 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
       saveContainsRecursiveCall != ANNOTATION_TRUE_FIXED)
   {
     node->setContainsRecursiveCall(curContainsRecursiveCall);
+    modified = true;
+  }
+
+  if (saveConstructsNodes != curConstructsNodes &&
+      saveConstructsNodes != ANNOTATION_TRUE_FIXED)
+  {
+    node->setConstructsNodes(curConstructsNodes);
+    modified = true;
+  }
+
+  if (saveDereferencesNodes != curDereferencesNodes &&
+      saveDereferencesNodes != ANNOTATION_TRUE_FIXED)
+  {
+    node->setDereferencesNodes(curDereferencesNodes);
     modified = true;
   }
 

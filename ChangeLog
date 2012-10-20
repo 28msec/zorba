@@ -9,6 +9,8 @@ Optimizations:
 
 Bug Fixes/Other Changes:
   * Fixed mustCopyInputNodes() method of no-copy, and jsoniq functions.
+  * Fixed bug #868640 (Node lifetime is shorter than expected due to let
+    variable inlining)
   * Fixed bug #1062093 (bug in var reference iterators with an associated
     position that is negative)
   * Fixed bug #1061222 (bad message for errors in index key type declaration)
