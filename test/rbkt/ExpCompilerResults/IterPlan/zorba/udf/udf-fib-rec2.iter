@@ -1,6 +1,6 @@
 Iterator tree for const-folded expr:
 <UDFunctionCallIterator cached="true">
-  <SingletonIterator value="xs:integer(100)"/>
+  <SingletonIterator value="xs:integer(10)"/>
 </UDFunctionCallIterator>
 
 Iterator tree for local:fib:
@@ -41,5 +41,5 @@ Iterator tree for local:fib:
 </flwor::FLWORIterator>
 
 Iterator tree for main query:
-<SingletonIterator value="xs:integer(3736710778780434371)"/>
+<SingletonIterator value="xs:integer(55)"/>
 
