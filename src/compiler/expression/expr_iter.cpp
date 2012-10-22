@@ -40,7 +40,7 @@ namespace zorba
 
 #define EXPR_ITER_BEGIN() switch (theState) { case 0:
 
-#define EXPR_ITER_END()   theCurrentChild = expr::iter_done; }
+#define EXPR_ITER_END()   theIsDone = true; }
 
 #define EXPR_ITER_NEXT(subExprHandle)                               \
 do                                                                  \
@@ -48,10 +48,7 @@ do                                                                  \
   theState = __LINE__;                                              \
   theCurrentChild = reinterpret_cast<expr**>(&(subExprHandle));     \
                                                                     \
-  if ((subExprHandle) != NULL)                                      \
-  {                                                                 \
-    return;                                                         \
-  }                                                                 \
+  return;                                                           \
                                                                     \
 case __LINE__:;                                                     \
                                                                     \
@@ -64,10 +61,7 @@ do                                                                  \
   theState = __LINE__;                                              \
   theCurrentChild = (subExprHandleP);                               \
                                                                     \
-  if (*(subExprHandleP) != NULL)                                    \
-  {                                                                 \
-    return;                                                         \
-  }                                                                 \
+  return;                                                           \
                                                                     \
 case __LINE__:;                                                     \
                                                                     \
@@ -79,7 +73,8 @@ ExprIterator::ExprIterator(expr* e)
   :
   theExpr(e),
   theCurrentChild(NULL),
-  theState(0)
+  theState(0),
+  theIsDone(false)
 {
 #ifndef ZORBA_NO_FULL_TEXT
   if (e->get_expr_kind() == ft_expr_kind)
@@ -210,12 +205,14 @@ void ExprIterator::next()
 
   case relpath_expr_kind:
   {
-    relpath_expr* pathExpr = static_cast<relpath_expr*>(theExpr);
-
     EXPR_ITER_BEGIN();
 
-    theArgsIter = pathExpr->theSteps.begin();
-    theArgsEnd = pathExpr->theSteps.end();
+    {
+      relpath_expr* pathExpr = static_cast<relpath_expr*>(theExpr);
+      theArgsIter = pathExpr->theSteps.begin();
+      theArgsEnd = pathExpr->theSteps.end();
+    }
+
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {
       EXPR_ITER_NEXT(*theArgsIter);
@@ -239,15 +236,13 @@ void ExprIterator::next()
 
   case match_expr_kind:
   {
-    EXPR_ITER_BEGIN();
-    EXPR_ITER_END();
+    theIsDone = true;
     break;
   }
 
   case var_expr_kind:
   {
-    EXPR_ITER_BEGIN();
-    EXPR_ITER_END();
+    theIsDone = true;
     break;
   }
 
@@ -265,8 +260,7 @@ void ExprIterator::next()
 
   case const_expr_kind:
   {
-    EXPR_ITER_BEGIN();
-    EXPR_ITER_END();
+    theIsDone = true;
     break;
   }
 
@@ -323,7 +317,8 @@ void ExprIterator::next()
 
     EXPR_ITER_BEGIN();
 
-    EXPR_ITER_NEXT(docExpr->theContent);
+    if (docExpr->theContent)
+      EXPR_ITER_NEXT(docExpr->theContent);
 
     EXPR_ITER_END();
     break;
@@ -336,8 +331,12 @@ void ExprIterator::next()
     EXPR_ITER_BEGIN();
 
     EXPR_ITER_NEXT(elemExpr->theQNameExpr);
-    EXPR_ITER_NEXT(elemExpr->theAttrs);
-    EXPR_ITER_NEXT(elemExpr->theContent);
+
+    if (elemExpr->theAttrs)
+      EXPR_ITER_NEXT(elemExpr->theAttrs);
+
+    if (elemExpr->theContent)
+      EXPR_ITER_NEXT(elemExpr->theContent);
 
     EXPR_ITER_END();
     break;
@@ -350,7 +349,9 @@ void ExprIterator::next()
     EXPR_ITER_BEGIN();
 
     EXPR_ITER_NEXT(attrExpr->theQNameExpr);
-    EXPR_ITER_NEXT(attrExpr->theValueExpr);
+
+    if (attrExpr->theValueExpr)
+      EXPR_ITER_NEXT(attrExpr->theValueExpr);
 
     EXPR_ITER_END();
     break;
@@ -388,7 +389,8 @@ void ExprIterator::next()
 
     EXPR_ITER_BEGIN();
 
-    EXPR_ITER_NEXT(e->theContentExpr);
+    if (e->theContentExpr)
+        EXPR_ITER_NEXT(e->theContentExpr);
 
     EXPR_ITER_END();
     break;
@@ -400,7 +402,8 @@ void ExprIterator::next()
 
     EXPR_ITER_BEGIN();
 
-    EXPR_ITER_NEXT(e->theContentExpr);
+    if (e->theContentExpr)
+        EXPR_ITER_NEXT(e->theContentExpr);
 
     EXPR_ITER_END();
     break;
@@ -638,8 +641,12 @@ void ExprIterator::next()
   case var_decl_expr_kind:
   {
     var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theExpr);
+
     EXPR_ITER_BEGIN();
-    EXPR_ITER_NEXT(varDeclExpr->theInitExpr);
+
+    if (varDeclExpr->theInitExpr)
+      EXPR_ITER_NEXT(varDeclExpr->theInitExpr);
+
     EXPR_ITER_END();
     break;
   }
@@ -655,8 +662,7 @@ void ExprIterator::next()
 
   case flowctl_expr_kind:
   {
-    EXPR_ITER_BEGIN();
-    EXPR_ITER_END();
+    theIsDone = true;
     break;
   }
 
@@ -709,10 +715,12 @@ void ExprIterator::next()
     theFTSelectionExprsEnd = theFTSelectionExprs.end();
     for (; theFTSelectionExprsIter != theFTSelectionExprsEnd; ++theFTSelectionExprsIter)
     {
-      EXPR_ITER_NEXT2(*theFTSelectionExprsIter);
+      if (**theFTSelectionExprsIter)
+        EXPR_ITER_NEXT2(*theFTSelectionExprsIter);
     }
 
-    EXPR_ITER_NEXT(ftExpr->ftignore_);
+    if (ftExpr->ftignore_)
+      EXPR_ITER_NEXT(ftExpr->ftignore_);
 
     EXPR_ITER_END();
     break;

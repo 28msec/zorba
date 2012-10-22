@@ -122,6 +122,19 @@ void expr::checkSimpleExpr(const expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
+expr::expr() 
+  :
+  theCCB(NULL),
+  theSctx(NULL),
+  theUDF(NULL),
+  theFlags1(0)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 expr::expr(
     CompilerCB* ccb,
     static_context* sctx,
@@ -142,6 +155,8 @@ expr::expr(
   // This is the default. The constructors for certain exprs set different values.
   setNonDiscardable(ANNOTATION_FALSE);
   setUnfoldable(ANNOTATION_FALSE);
+  setConstructsNodes(ANNOTATION_FALSE);
+  setDereferencesNodes(ANNOTATION_FALSE);
 }
 
 

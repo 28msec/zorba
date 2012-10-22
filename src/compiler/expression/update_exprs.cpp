@@ -52,6 +52,8 @@ update_expr_base::update_expr_base(
   theSourceExpr(sourceExpr)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 

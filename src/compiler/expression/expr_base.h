@@ -17,6 +17,8 @@
 #ifndef ZORBA_COMPILER_EXPR_BASE
 #define ZORBA_COMPILER_EXPR_BASE
 
+#include <map>
+
 #include <zorba/config.h>
 
 #include "common/shared_types.h"
@@ -27,7 +29,7 @@
 
 #include "functions/function_consts.h"
 
-#include "types/typeimpl.h"
+//#include "types/typeimpl.h"
 
 #include "context/static_context_consts.h"
 
@@ -135,7 +137,7 @@ public:
 
   typedef substitution_t::iterator subst_iter_t;
 
-  typedef std::set<const var_expr *> FreeVars;
+  typedef std::set<var_expr *> FreeVars;
 
   typedef enum
   {
@@ -205,7 +207,7 @@ public:
 protected:
   expr(CompilerCB*, static_context*, user_function*, const QueryLoc&, expr_kind_t);
 
-  expr() : theCCB(NULL), theSctx(NULL), theUDF(NULL), theFlags1(0) {}
+  expr();
 
 public:
   virtual ~expr();
