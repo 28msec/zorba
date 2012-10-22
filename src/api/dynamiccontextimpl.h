@@ -151,7 +151,7 @@ public:
   getExternalFunctionParam(const String& aName, void*&) const;
 
   virtual bool
-  addExternalFunctionParameter(const String& aName, ExternalFunctionParameter* aParam);
+  addExternalFunctionParameter(const String& aName, ExternalFunctionParameter* aParam) const;
 
   virtual ExternalFunctionParameter*
   getExternalFunctionParameter(const String& aName) const;
