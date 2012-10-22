@@ -29,6 +29,7 @@
 #include "runtime/base/binarybase.h"
 #include "runtime/base/noarybase.h"
 #include "runtime/base/narybase.h"
+#include <context/uri_resolver.h>
 
 
 namespace zorba {
@@ -456,6 +457,51 @@ public:
 };
 
 #endif
+
+/**
+ * jn:json-doc
+ * Author: Zorba Team
+ */
+class JSONDocIteratorState : public PlanIteratorState
+{
+public:
+  std::auto_ptr<internal::Resource> theResource; //
+  std::istream* theStream; //
+  bool theGotOne; //
+
+  JSONDocIteratorState();
+
+  ~JSONDocIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONDocIterator : public NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONDocIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONDocIterator,
+    NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONDocIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONDocIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
 
 #ifdef ZORBA_WITH_JSON
 /**
