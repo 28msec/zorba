@@ -261,15 +261,17 @@ typedef enum
 
 typedef enum
 {
-  DoDistinct    = 1,   // Used by fn:zore-or-one and fn:exaclty-one
-  SkipCodeGen   = 2,
-  isDeterministic = 4,
-  isPrivate = 8,
-  isBuiltin = 16,
-  isUDF = 32,
+  DoDistinct           = 1,   // Used by fn:zore-or-one and fn:exaclty-one
+  SkipCodeGen          = 2,
+  isDeterministic      = 4,
+  isPrivate            = 8,
+  isBuiltin            = 16,
+  isUDF                = 32,
   propagatesInputNodes = 64,
-  mustCopyInputNodes = 128,
-  AccessesDynCtx = 256
+  mustCopyInputNodes   = 128,
+  AccessesDynCtx       = 256,
+  ConstructsNodes      = 512,
+  DereferencesNodes    = 1024
 } AnnotationFlags;
 
 };

@@ -26,6 +26,8 @@ declare variable $emp-city := $auctions:PersonCity;
 
   index_dml:refresh-index($emp-id);
   (: don't refresh the emp-city index manually because it's done automatically :)
+
+  ()
 }
 ,
 "
@@ -44,6 +46,7 @@ return <person id = "{$x/@id}">{$x/name}</person>
 ,
 {
   dml:insert-nodes($auctions:auctions, doc("auctions2.xml"));
+  ()
 }
 ,
 "

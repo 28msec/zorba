@@ -88,6 +88,13 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   if (driverPathSimplify.rewrite(rCtx))
     modified = true;
 
+  if (rCtx.theUDF != NULL)
+  {
+    RuleOnceDriver<MarkExprs> driverMarkLocalExprs;
+    driverMarkLocalExprs.getRule()->setLocal(true);
+    driverMarkLocalExprs.rewrite(rCtx);
+  }
+
  repeat1:
 
   // TypeRules

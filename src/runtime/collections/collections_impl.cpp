@@ -367,12 +367,14 @@ void ZorbaCollectionIteratorState::reset(PlanState& planState)
   }
 }
 
+
 bool ZorbaCollectionIterator::isCountOptimizable() const
 {
   // if ref is passed to the collections function, count cannot be 
   // optimized anymore.
   return theChildren.size() <= 2;
 }
+
 
 bool ZorbaCollectionIterator::nextImpl(
     store::Item_t& result,
@@ -402,11 +404,13 @@ bool ZorbaCollectionIterator::nextImpl(
     store::Item_t lSkipItem;
     consumeNext(lSkipItem, theChildren[(lRefPassed ? 2 : 1)].getp(), planState);
     lSkip = lSkipItem->getIntegerValue(); 
+
     // negative skip is not allowed
     if (lSkip < xs_integer::zero())
     {
       lSkip = xs_integer::zero();
     }
+
     if (!lRefPassed)
     {
       state->theIterator = collection->getIterator(lSkip);

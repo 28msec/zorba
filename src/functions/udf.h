@@ -128,7 +128,7 @@ private:
   bool                        theIsLeaf;
 
   std::vector<user_function*> theMutuallyRecursiveUDFs;
-  std::vector<expr*>          theRecursiveCalls;
+  std::vector<fo_expr*>       theRecursiveCalls;
 
   bool                        theIsOptimized;
 
@@ -171,6 +171,8 @@ public:
 
   expr* getBody() const;
 
+  void setScriptingKind(unsigned short k);
+
   void setArgVars(std::vector<var_expr*>& args);
 
   const std::vector<var_expr*>& getArgVars() const;
@@ -181,9 +183,9 @@ public:
       const std::vector<user_function*>& udfs,
       const std::vector<user_function*>::const_iterator& cycle);
 
-  void addRecursiveCall(expr* call);
+  void addRecursiveCall(fo_expr* call);
 
-  const std::vector<expr*>& getRecursiveCalls() const { return theRecursiveCalls; }
+  const std::vector<fo_expr*>& getRecursiveCalls() const { return theRecursiveCalls; }
 
   bool isMutuallyRecursiveWith(const user_function* udf);
 
@@ -209,6 +211,10 @@ public:
   // The next 6 methods are virtual methods of class function, which are redefined here
 
   unsigned short getScriptingKind() const;
+
+  bool dereferencesNodes() const;
+
+  bool constructsNodes() const;
 
   bool accessesDynCtx() const;
 

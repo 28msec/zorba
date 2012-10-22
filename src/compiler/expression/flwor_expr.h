@@ -45,6 +45,7 @@ class flwor_expr;
 ********************************************************************************/
 class flwor_clause
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprIterator;
   friend class ExprManager;
@@ -105,7 +106,9 @@ public:
 
   virtual var_expr* get_score_var() const { return NULL; }
 
-  virtual flwor_clause* clone(expr::substitution_t& substitution) const = 0;
+  virtual flwor_clause* clone(
+      user_function* udf,
+      expr::substitution_t& substitution) const = 0;
 };
 
 
@@ -137,6 +140,7 @@ public:
 ********************************************************************************/
 class forletwin_clause : public flwor_clause
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprManager;
   friend class ExprIterator;
@@ -207,7 +211,7 @@ public:
 
   void set_score_var(var_expr* v);
 
-  flwor_clause* clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -219,6 +223,7 @@ public:
 ********************************************************************************/
 class let_clause : public forletwin_clause
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprManager;
   friend class ExprIterator;
@@ -247,7 +252,7 @@ public:
 
   bool lazyEval() const { return theLazyEval; }
 
-  flwor_clause* clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -261,6 +266,7 @@ public:
 ********************************************************************************/
 class window_clause : public forletwin_clause
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprManager;
   friend class ExprIterator;
@@ -303,7 +309,7 @@ public:
 
   bool lazyEval() const { return theLazyEval; }
 
-  flwor_clause* clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -341,6 +347,7 @@ public:
 ********************************************************************************/
 class flwor_wincond
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprManager;
   friend class ExprIterator;
@@ -354,10 +361,16 @@ public:
     var_expr* next;
 
     vars();
+
     ~vars();
+
     void set_flwor_clause(flwor_clause* c);
 
-    void clone(ExprManager* mgr, vars& cloneVars, expr::substitution_t& subst) const;
+    void clone(
+      ExprManager* mgr,
+      user_function* udf,
+      vars& cloneVars,
+      expr::substitution_t& subst) const;
 
     std::ostream& put(std::ostream&) const;
   };
@@ -394,7 +407,7 @@ public:
 
   void set_flwor_clause(flwor_clause *);
 
-  flwor_wincond* clone(expr::substitution_t& substitution) const;
+  flwor_wincond* clone(user_function* udf, expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -428,6 +441,7 @@ public:
 ********************************************************************************/
 class group_clause : public flwor_clause
 {
+  friend class expr;
   friend class flwor_expr;
   friend class ExprManager;
   friend class ExprIterator;
@@ -484,7 +498,7 @@ public:
 
   expr* get_input_for_nongroup_var(const var_expr* var);
 
-  flwor_clause* clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -506,6 +520,7 @@ public:
 ********************************************************************************/
 class orderby_clause : public flwor_clause
 {
+  friend class expr;
   friend class ExprIterator;
   friend class ExprManager;
   friend class flwor_expr;
@@ -552,7 +567,7 @@ public:
 
   void set_column_expr(csize i, expr* e) { theOrderingExprs[i] = e; }
 
-  flwor_clause* clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -572,7 +587,7 @@ class materialize_clause : public flwor_clause
   materialize_clause(static_context* sctx, CompilerCB* ccb, const QueryLoc& loc);
 
 public:
-  flwor_clause* clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -597,7 +612,7 @@ public:
 
   var_expr* get_var() const { return theVarExpr; }
 
-  flwor_clause* clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 };
 
 
@@ -619,7 +634,7 @@ public:
 
   void set_expr(expr* where);
 
-  flwor_clause* clone(expr::substitution_t& substitution) const;
+  flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 };
 
 
@@ -665,7 +680,12 @@ protected:
   expr          * theReturnExpr;
 
 protected:
-  flwor_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, bool general);
+  flwor_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      bool general);
 
 public:
   bool is_general() const { return theIsGeneral; }
@@ -702,9 +722,7 @@ public:
 
   long defines_variable(const var_expr* v) const;
 
-  void get_vars_defined(std::vector<var_expr*>& varExprs) const;
-
-  expr* cloneImpl(substitution_t& substitution) const;
+  void get_vars(expr::FreeVars& vars) const;
 
   // The following 5 methods are for the simple flwor only. They should be
   // removed eventually.

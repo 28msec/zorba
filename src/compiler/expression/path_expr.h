@@ -59,7 +59,11 @@ protected:
   std::vector<expr*> theSteps;
 
 protected:
-  relpath_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc);
+  relpath_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc);
 
 public:
   size_t size() const { return theSteps.size(); }
@@ -77,8 +81,6 @@ public:
   std::vector<expr*>::const_iterator end() const { return theSteps.end(); }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t &) const;
 
   void accept(expr_visitor&);
 
@@ -113,7 +115,11 @@ public:
   static bool is_reverse_axis(axis_kind_t kind);
 
 protected:
-  axis_step_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&);
+  axis_step_expr(
+     CompilerCB* ccb,
+     static_context* sctx,
+     user_function* udf,
+     const QueryLoc&);
 
 public:
   axis_kind_t getAxis() const { return theAxis; }
@@ -134,8 +140,6 @@ public:
   void setTest(match_expr* v);
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t &) const;
 
   void accept(expr_visitor&);
 
@@ -177,7 +181,11 @@ protected:
   bool              theNilledAllowed;
 
 protected:
-  match_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&);
+  match_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&);
 
 public:
   match_test_t getTestKind() const { return theTestKind; }
@@ -212,8 +220,6 @@ public:
   store::StoreConsts::NodeKind getNodeKind() const;
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t &) const;
 
   void accept(expr_visitor&);
 

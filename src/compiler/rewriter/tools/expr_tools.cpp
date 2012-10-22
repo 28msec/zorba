@@ -48,15 +48,21 @@ static void set_bit(var_expr*, const VarIdMap&, DynamicBitset&, bool);
 /*******************************************************************************
 
 ********************************************************************************/
-bool count_variable_uses_rec(
+bool count_var_uses_rec(
     const expr* e,
     const var_expr* var,
     int limit,
+    std::vector<const expr*>* path,
     int& count)
 {
   if (limit > 0 && count >= limit)
   {
     return false;
+  }
+
+  if (path && count == 0)
+  {
+    path->push_back(e);
   }
 
   if (e == var)
@@ -69,21 +75,29 @@ bool count_variable_uses_rec(
   {
     const if_expr* ifExpr = static_cast<const if_expr*>(e);
 
-    int thenCount = 0;
-    int elseCount = 0;
-
-    if (!count_variable_uses_rec(ifExpr->get_cond_expr(), var, limit, count))
-        return false;
-
-    if (!count_variable_uses_rec(ifExpr->get_then_expr(), var, limit, thenCount))
+    if (!count_var_uses_rec(ifExpr->get_cond_expr(), var, limit, path, count))
     {
-      count = thenCount;
+      assert(count > 0);
       return false;
     }
 
-    if (!count_variable_uses_rec(ifExpr->get_else_expr(), var, limit, elseCount))
+    int thenCount = 0;
+    std::vector<const expr*>* thenPath = (count == 0 ? path : NULL);
+
+    if (!count_var_uses_rec(ifExpr->get_then_expr(), var, limit, thenPath, thenCount))
+    {
+      count = thenCount;
+      assert(count > 0);
+      return false;
+    }
+
+    int elseCount = 0;
+    std::vector<const expr*>* elsePath = (count == 0 ? path : NULL);
+
+    if (!count_var_uses_rec(ifExpr->get_else_expr(), var, limit, elsePath, elseCount))
     {
       count = elseCount;
+      assert(count > 0);
       return false;
     }
 
@@ -94,11 +108,19 @@ bool count_variable_uses_rec(
     ExprConstIterator iter(e);
     while (!iter.done())
     {
-      if (!count_variable_uses_rec(iter.get_expr(), var, limit, count))
+      if (!count_var_uses_rec(iter.get_expr(), var, limit, path, count))
+      {
+        assert(count > 0);
         return false;
+      }
 
       iter.next();
     }
+  }
+
+  if (path && count == 0)
+  {
+    path->pop_back();
   }
 
   return true;
@@ -108,11 +130,15 @@ bool count_variable_uses_rec(
 /*******************************************************************************
 
 ********************************************************************************/
-int count_variable_uses(const expr* root, const var_expr* var, int limit = 0)
+int count_variable_uses(
+    const expr* root,
+    const var_expr* var,
+    int limit,
+    std::vector<const expr*>* path)
 {
   int count = 0;
 
-  count_variable_uses_rec(root, var, limit, count);
+  count_var_uses_rec(root, var, limit, path, count);
 
   return count;
 }
