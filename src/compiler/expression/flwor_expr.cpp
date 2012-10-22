@@ -1093,53 +1093,97 @@ long flwor_expr::defines_variable(const var_expr* v) const
 }
 
 
-/*******************************************************************************
-  Put in the given vector the var_exprs for the variables defined by this flwor
-  expr.
-********************************************************************************/
-void flwor_expr::get_vars_defined(std::vector<var_expr*>& varExprs) const
+/*****************************************************************************
+  Returns a set containing all the variables defined by the clauses of this
+  flwor expr.
+******************************************************************************/
+void flwor_expr::get_vars(expr::FreeVars& vars) const
 {
-  csize numClauses = theClauses.size();
+  csize numClauses = num_clauses();
 
   for (csize i = 0; i < numClauses; ++i)
   {
-    const flwor_clause* c = theClauses[i];
+    const flwor_clause& c = *get_clause(i);
 
-    if (c->get_kind() == flwor_clause::for_clause)
+    switch (c.get_kind())
     {
-      const for_clause* fc = static_cast<const for_clause *>(c);
+    case flwor_clause::for_clause:
+    {
+      const for_clause* fc = static_cast<const for_clause *>(&c);
 
-      varExprs.push_back(fc->get_var());
+      vars.insert(fc->get_var());
 
-      if (fc->get_pos_var())
-        varExprs.push_back(fc->get_pos_var());
+      if (fc->get_pos_var() != NULL)
+        vars.insert(fc->get_pos_var());
+
+      break;
     }
-    else if (c->get_kind() == flwor_clause::let_clause)
+    case flwor_clause::let_clause:
     {
-      const let_clause* lc = static_cast<const let_clause *>(c);
-
-      varExprs.push_back(lc->get_var());
+      const let_clause* lc = static_cast<const let_clause *>(&c);
+      vars.insert(lc->get_var());
+      break;
     }
-    else if (c->get_kind() == flwor_clause::window_clause)
+    case flwor_clause::window_clause:
     {
-      const window_clause* wc = static_cast<const window_clause *>(c);
+      const window_clause* wc = static_cast<const window_clause *>(&c);
 
-      varExprs.push_back(wc->get_var());
+      vars.insert(wc->get_var());
 
-      const flwor_wincond* startCond = wc->get_win_start();
-      const flwor_wincond* stopCond = wc->get_win_stop();
-      const flwor_wincond::vars& startVars = startCond->get_out_vars();
-      const flwor_wincond::vars& stopVars = stopCond->get_out_vars();
+      if (wc->get_win_start() != NULL)
+      {
+        const flwor_wincond* cond = wc->get_win_start();
+        const flwor_wincond::vars& condvars = cond->get_out_vars();
 
-      if (startVars.posvar) varExprs.push_back(startVars.posvar);
-      if (startVars.curr) varExprs.push_back(startVars.curr);
-      if (startVars.prev) varExprs.push_back(startVars.prev);
-      if (startVars.next) varExprs.push_back(startVars.next);
+        if (condvars.posvar != NULL) vars.insert(condvars.posvar);
+        if (condvars.curr != NULL) vars.insert(condvars.curr);
+        if (condvars.prev != NULL) vars.insert(condvars.prev);
+        if (condvars.next != NULL) vars.insert(condvars.next);
+      }
 
-      if (stopVars.posvar) varExprs.push_back(stopVars.posvar);
-      if (stopVars.curr) varExprs.push_back(stopVars.curr);
-      if (stopVars.prev) varExprs.push_back(stopVars.prev);
-      if (stopVars.next) varExprs.push_back(stopVars.next);
+      if (wc->get_win_stop() != NULL)
+      {
+        const flwor_wincond* cond = wc->get_win_stop();
+        const flwor_wincond::vars& condvars = cond->get_out_vars();
+
+        if (condvars.posvar != NULL) vars.insert(condvars.posvar);
+        if (condvars.curr != NULL) vars.insert(condvars.curr);
+        if (condvars.prev != NULL) vars.insert(condvars.prev);
+        if (condvars.next != NULL) vars.insert(condvars.next);
+      }
+
+      break;
+    }
+    case flwor_clause::group_clause:
+    {
+      const group_clause* gc = static_cast<const group_clause *>(&c);
+
+      flwor_clause::rebind_list_t::const_iterator ite = gc->beginGroupVars();
+      flwor_clause::rebind_list_t::const_iterator end = gc->endGroupVars();
+
+      for (; ite != end; ++ite)
+      {
+        vars.insert((*ite).second);
+      }
+
+      ite = gc->beginNonGroupVars();
+      end = gc->endNonGroupVars();
+
+      for (; ite != end; ++ite)
+      {
+        vars.insert((*ite).second);
+      }
+
+      break;
+    }
+    case flwor_clause::count_clause:
+    {
+      const count_clause* cc = static_cast<const count_clause *>(&c);
+      vars.insert(cc->get_var());
+      break;
+    }
+    default:
+      break;
     }
   }
 }

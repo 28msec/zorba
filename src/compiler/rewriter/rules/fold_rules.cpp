@@ -236,130 +236,12 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     iter.next();
   }
 
-  // Certain exprs are nondiscardable independently from their children.
-  if (saveNonDiscardable != ANNOTATION_TRUE_FIXED)
+  if (node->is_sequential())
   {
-    if (node->is_sequential())
-    {
-      curNonDiscardable = ANNOTATION_TRUE_FIXED;
-    }
-    else
-    {
-      switch (node->get_expr_kind())
-      {
-      case fo_expr_kind:
-      {
-        fo_expr* fo = static_cast<fo_expr *>(node);
-        function* f = fo->get_func();
-
-        bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
-
-        if (f->getKind() == FunctionConsts::FN_TRACE_2 ||
-            isErrorFunc)
-        {
-          curNonDiscardable = ANNOTATION_TRUE_FIXED;
-        }
-
-        break;
-      }
-
-      case cast_expr_kind:
-      case treat_expr_kind:
-      case promote_expr_kind:
-      {
-        curNonDiscardable = ANNOTATION_TRUE_FIXED;
-        break;
-      }
-
-      default:
-      {
-        break;
-      }
-      }
-    }
+    curNonDiscardable = ANNOTATION_TRUE_FIXED;
+    curUnfoldable = ANNOTATION_TRUE_FIXED;
   }
-
-  // Certain exprs are unfoldable independently from their children
-  if (saveUnfoldable != ANNOTATION_TRUE_FIXED)
-  {
-    if (node->is_sequential())
-    {
-      curUnfoldable = ANNOTATION_TRUE_FIXED;
-    }
-    else
-    {
-      switch (node->get_expr_kind())
-      {
-      case fo_expr_kind:
-      {
-        fo_expr* fo = static_cast<fo_expr *>(node);
-        function* f = fo->get_func();
-
-        if (f->isUdf() && theIsLocal)
-        {
-          curUnfoldable = saveUnfoldable;
-        }
-        else
-        {
-          bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
-
-          // Do not fold functions that always require access to the dynamic context,
-          // or may need to access the implicit timezone (which is also in the dynamic
-          // constext).
-          if (isErrorFunc ||
-              f->accessesDynCtx() ||
-              maybe_needs_implicit_timezone(fo) ||
-              !f->isDeterministic())
-          {
-            curUnfoldable = ANNOTATION_TRUE_FIXED;
-          }
-        }
-
-        break;
-      }
-
-      case var_expr_kind:
-      {
-        var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
-
-        if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
-          curUnfoldable = ANNOTATION_TRUE_FIXED;
-
-        break;
-      }
-
-      // Node constructors are unfoldable because if a node constructor is inside
-      // a loop, then it will create a different xml tree every time it is invoked,
-      // even if the constructor itself is "constant" (i.e. does not reference any
-      // varialbes)
-      case elem_expr_kind:
-      case attr_expr_kind:
-      case text_expr_kind:
-      case pi_expr_kind:
-      case doc_expr_kind:
-      {
-        curUnfoldable = ANNOTATION_TRUE_FIXED;
-        break;
-      }
-
-      case delete_expr_kind:
-      case insert_expr_kind:
-      case rename_expr_kind:
-      case replace_expr_kind:
-      {
-        curUnfoldable = ANNOTATION_TRUE_FIXED;
-        break;
-      }
-
-      default:
-      {
-        break;
-      }
-      }
-    }
-  }
-
-  if (saveDereferencesNodes != ANNOTATION_TRUE_FIXED)
+  else
   {
     switch (node->get_expr_kind())
     {
@@ -367,63 +249,62 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     {
       fo_expr* fo = static_cast<fo_expr *>(node);
       function* f = fo->get_func();
-
+        
       if (!f->isUdf())
       {
-        if (f->getKind() == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
+        if (FunctionConsts::FN_ERROR_0 <= f->getKind() &&
+            f->getKind() <= FunctionConsts::FN_TRACE_2)
+        {
+          curNonDiscardable = ANNOTATION_TRUE_FIXED;
+          curUnfoldable = ANNOTATION_TRUE_FIXED;
+        }
+        else if (f->getKind() == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
+        {
           curDereferencesNodes = ANNOTATION_TRUE;
+        }
+
+        // Do not fold functions that always require access to the dynamic context,
+        // or may need to access the implicit timezone (which is also in the dynamic
+        // constext).
+        if (saveUnfoldable != ANNOTATION_TRUE_FIXED &&
+            (f->accessesDynCtx() ||
+             maybe_needs_implicit_timezone(fo) ||
+             !f->isDeterministic()))
+        {
+          curUnfoldable = ANNOTATION_TRUE_FIXED;
+        }
       }
       else if (theIsLocal)
       {
+        curUnfoldable = saveUnfoldable;
         curDereferencesNodes = saveDereferencesNodes;
-      }
-      else if (static_cast<user_function*>(f)->dereferencesNodes())
-      {
-        curDereferencesNodes = ANNOTATION_TRUE;
-      }
-      
-      break;
-    }
-    
-    default:
-    {
-      break;
-    }
-    }
-  }
-
-  if (saveConstructsNodes != ANNOTATION_TRUE_FIXED)
-  {
-    switch (node->get_expr_kind())
-    {
-    case fo_expr_kind:
-    {
-      fo_expr* fo = static_cast<fo_expr *>(node);
-      function* f = fo->get_func();
-
-      if (f->isUdf() && theIsLocal)
-      {
         curConstructsNodes = saveConstructsNodes;
       }
       else
       {
-        if (f->isUdf() &&
-            static_cast<user_function*>(f)->constructsNodes())
+        if (saveUnfoldable != ANNOTATION_TRUE_FIXED &&
+            (f->accessesDynCtx() || !f->isDeterministic()))
         {
-          curConstructsNodes = ANNOTATION_TRUE;
+          curUnfoldable = ANNOTATION_TRUE_FIXED;
         }
+
+        if (static_cast<user_function*>(f)->dereferencesNodes())
+          curDereferencesNodes = ANNOTATION_TRUE;
+
+        if (static_cast<user_function*>(f)->constructsNodes())
+          curConstructsNodes = ANNOTATION_TRUE;
       }
       
       break;
     }
     
-    case elem_expr_kind:
-    case attr_expr_kind:
-    case text_expr_kind:
-    case pi_expr_kind:
-    case doc_expr_kind:
+    case var_expr_kind:
     {
-      curConstructsNodes = ANNOTATION_TRUE_FIXED;
+      var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
+        
+      if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
+        curUnfoldable = ANNOTATION_TRUE_FIXED;
+    
       break;
     }
 
@@ -493,7 +374,7 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo)
              fkind == FunctionConsts::FN_MIN_2 ||
              fkind == FunctionConsts::FN_MAX_1 ||
              fkind == FunctionConsts::FN_MAX_2)
-            && TypeOps::maybe_date_time(tm, *TypeOps::prime_type(tm, *type0))) );
+            && TypeOps::maybe_date_time(tm, *type0)) );
 }
 
 
