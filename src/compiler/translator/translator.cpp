@@ -3478,7 +3478,7 @@ void* begin_visit(const VFO_DeclList& v)
         ns == XQUERY_MATH_FN_NS)
     {
       RAISE_ERROR(err::XQST0045, func_decl->get_location(),
-      ERROR_PARAMS(qnameItem->getLocalName()));
+      ERROR_PARAMS(qnameItem->getLocalName(), ZED(FUNCTION), ns));
     }
 
     if (! theModuleNamespace.empty() && ns != theModuleNamespace)
@@ -4121,8 +4121,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
     if (AnnotationInternal::lookup(lExpandedQName) == AnnotationInternal::zann_end)
     {
       RAISE_ERROR(err::XQST0045, loc,
-      ERROR_PARAMS( "%" + ("\"" + lExpandedQName->getNamespace() + "\""
-                    + ":" + lExpandedQName->getLocalName())));
+      ERROR_PARAMS(lExpandedQName->getLocalName(), ZED(ANNOTATION), annotNS));
     }
 
     //recognised = true;
