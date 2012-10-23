@@ -46,7 +46,11 @@ namespace zorba
 namespace expr_tools
 {
 
-int count_variable_uses(const expr* root, const var_expr* var, int limit);
+int count_variable_uses(
+    const expr* root,
+    const var_expr* var,
+    int limit,
+    std::vector<const expr*>* path);
 
 
 /*******************************************************************************

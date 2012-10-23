@@ -122,6 +122,19 @@ void expr::checkSimpleExpr(const expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
+expr::expr() 
+  :
+  theCCB(NULL),
+  theSctx(NULL),
+  theUDF(NULL),
+  theFlags1(0)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 expr::expr(
     CompilerCB* ccb,
     static_context* sctx,
@@ -134,13 +147,16 @@ expr::expr(
   theUDF(udf),
   theLoc(loc),
   theKind(k),
-  theFlags1(0)
+  theFlags1(0),
+  theVisitId(0)
 {
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
   // This is the default. The constructors for certain exprs set different values.
   setNonDiscardable(ANNOTATION_FALSE);
   setUnfoldable(ANNOTATION_FALSE);
+  setConstructsNodes(ANNOTATION_FALSE);
+  setDereferencesNodes(ANNOTATION_FALSE);
 }
 
 
@@ -512,30 +528,6 @@ bool expr::containsRecursiveCall() const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue expr::getInUnsafeContext() const
-{
-  return (BoolAnnotationValue)
-         ((theFlags1 & IN_UNSAFE_CONTEXT_MASK) >> IN_UNSAFE_CONTEXT);
-}
-
-
-void expr::setInUnsafeContext(BoolAnnotationValue v)
-{
-  theFlags1 &= ~IN_UNSAFE_CONTEXT_MASK;
-  theFlags1 |= (v << IN_UNSAFE_CONTEXT);
-}
-
-
-bool expr::inUnsafeContext() const
-{
-  BoolAnnotationValue v = getInUnsafeContext();
-  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 BoolAnnotationValue expr::getContainsPragma() const
 {
   return (BoolAnnotationValue)
@@ -553,6 +545,56 @@ void expr::setContainsPragma(BoolAnnotationValue v)
 bool expr::containsPragma() const
 {
   BoolAnnotationValue v = getContainsPragma();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+  This annotation tells whether any nodes may be constructed during the
+  evaluation of the expr.
+********************************************************************************/
+BoolAnnotationValue expr::getConstructsNodes() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & CONSTRUCTS_NODES_MASK) >> CONSTRUCTS_NODES);
+}
+
+
+void expr::setConstructsNodes(BoolAnnotationValue v)
+{
+  theFlags1 &= ~CONSTRUCTS_NODES_MASK;
+  theFlags1 |= (v << CONSTRUCTS_NODES);
+}
+
+
+bool expr::constructsNodes() const
+{
+  BoolAnnotationValue v = getConstructsNodes();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+  This annotation tells whether any nodes may be dereferenced during the
+  evaluation of the expr.
+********************************************************************************/
+BoolAnnotationValue expr::getDereferencesNodes() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & DEREFERENCES_NODES_MASK) >> DEREFERENCES_NODES);
+}
+
+
+void expr::setDereferencesNodes(BoolAnnotationValue v)
+{
+  theFlags1 &= ~DEREFERENCES_NODES_MASK;
+  theFlags1 |= (v << DEREFERENCES_NODES);
+}
+
+
+bool expr::dereferencesNodes() const
+{
+  BoolAnnotationValue v = getDereferencesNodes();
   return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
 }
 
@@ -646,40 +688,6 @@ bool expr::contains_expr(const expr* e) const
     iter.next();
   }
 
-  return false;
-}
-
-
-/*******************************************************************************
-  Check if the expr tree rooted at e contains any node-constructor expr. If so,
-  e cannot be hoisted.
-********************************************************************************/
-bool expr::contains_node_construction() const
-{
-  expr_kind_t kind = get_expr_kind();
-
-  if (kind == elem_expr_kind ||
-      kind == attr_expr_kind ||
-      kind == text_expr_kind ||
-      kind == doc_expr_kind  ||
-      kind == pi_expr_kind)
-  {
-    return true;
-  }
-
-  ExprConstIterator iter(this);
-  while(!iter.done())
-  {
-    const expr* ce = iter.get_expr();
-    if (ce)
-    {
-      if (ce->contains_node_construction())
-      {
-        return true;
-      }
-    }
-    iter.next();
-  }
   return false;
 }
 
@@ -1189,7 +1197,7 @@ xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
   create_fo_expr(input->get_sctx(),
                  theUDF,
                  QueryLoc::null,
-                 GET_BUILTIN_FUNCTION(OP_CONCATENATE_N));
+                 BUILTIN_FUNC(OP_CONCATENATE_N));
 
   expr::substitution_t subst;
   subst[input] = emptyExpr;

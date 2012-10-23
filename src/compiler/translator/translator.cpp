@@ -717,7 +717,7 @@ TranslatorImpl(
   xquery_fns_def_dot.set(FunctionConsts::FN_PATH_0);
 
 
-  op_concatenate = GET_BUILTIN_FUNCTION(OP_CONCATENATE_N);
+  op_concatenate = BUILTIN_FUNC(OP_CONCATENATE_N);
   assert(op_concatenate != NULL);
 
   if (rootTranslator == NULL)
@@ -1489,7 +1489,7 @@ expr* wrap_in_atomization(expr* e)
   return theExprManager->create_fo_expr(theRootSctx,
                                         theUDF,
                                         e->get_loc(),
-                                        GET_BUILTIN_FUNCTION(FN_DATA_1),
+                                        BUILTIN_FUNC(FN_DATA_1),
                                         e);
 }
 
@@ -1555,7 +1555,7 @@ fo_expr* wrap_in_enclosed_expr(expr* contentExpr, const QueryLoc& loc)
   return theExprManager->create_fo_expr(theRootSctx,
                                         theUDF,
                                         loc,
-                                        GET_BUILTIN_FUNCTION(OP_ENCLOSED_1),
+                                        BUILTIN_FUNC(OP_ENCLOSED_1),
                                         contentExpr);
 }
 
@@ -1568,7 +1568,7 @@ expr* wrap_in_bev(expr * e)
   fo_expr* fo = theExprManager->create_fo_expr(theRootSctx,
                                                theUDF,
                                                e->get_loc(),
-                                               GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
+                                               BUILTIN_FUNC(FN_BOOLEAN_1),
                                                e);
   return fo;
 }
@@ -1764,7 +1764,7 @@ flwor_expr* wrap_expr_in_flwor(
     create_fo_expr(theRootSctx,
                    theUDF,
                    loc,
-                   GET_BUILTIN_FUNCTION(FN_COUNT_1),
+                   BUILTIN_FUNC(FN_COUNT_1),
                    lcInputSeq->get_var());
 
     normalize_fo(countExpr);
@@ -2030,7 +2030,7 @@ void collect_flwor_vars (
 ********************************************************************************/
 void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
 {
-  function* varGet = GET_BUILTIN_FUNCTION(OP_VAR_GET_1);
+  function* varGet = BUILTIN_FUNC(OP_VAR_GET_1);
 
   expr* initExpr = b.theExpr;
   var_expr* varExpr = b.theVar;
@@ -4587,7 +4587,7 @@ void* begin_visit(const IndexKeyList& v)
     create_fo_expr(theRootSctx,
                    theUDF,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_CHECK_DISTINCT_NODES_1),
+                   BUILTIN_FUNC(OP_CHECK_DISTINCT_NODES_1),
                    domainExpr);
   }
 
@@ -4600,7 +4600,10 @@ void* begin_visit(const IndexKeyList& v)
   // if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
   {
     RewriterContext rCtx(theCCB, domainExpr, NULL, msg, false);
+    rCtx.setForSerializationOnly(false);
+
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+
     domainExpr = rCtx.getRoot();
 
     if (theCCB->theConfig.optimize_cb != NULL)
@@ -4729,7 +4732,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      keyExpr->get_loc(),
-                     GET_BUILTIN_FUNCTION(FN_DISTINCT_VALUES_1),
+                     BUILTIN_FUNC(FN_DISTINCT_VALUES_1),
                      keyExpr);
     }
 
@@ -4763,7 +4766,9 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     // if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
     {
       RewriterContext rCtx(theCCB, keyExpr, NULL, msg.str(), false);
+
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+
       keyExpr = rCtx.getRoot();
 
       if (theCCB->theConfig.optimize_cb != NULL)
@@ -4873,12 +4878,12 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     create_fo_expr(theRootSctx,
                    theUDF,
                    loc,
-                   GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                   BUILTIN_FUNC(FN_QNAME_2),
                    uriStrExpr,
                    qnameStrExpr);
 
     // dc:collection(xs:QName("example:coll1"))
-    function* fn_collection = GET_BUILTIN_FUNCTION(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -4955,11 +4960,11 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     create_fo_expr(theRootSctx,
                    theUDF,
                    loc,
-                   GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                   BUILTIN_FUNC(FN_QNAME_2),
                    uriStrExpr, qnameStrExpr);
     
     // dc:collection(xs:QName("org:employees"))
-    function* fn_collection = GET_BUILTIN_FUNCTION(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -5056,12 +5061,12 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     create_fo_expr(theRootSctx,
                    theUDF,
                    loc,
-                   GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                   BUILTIN_FUNC(FN_QNAME_2),
                    uriStrExpr,
                    qnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fn_collection = GET_BUILTIN_FUNCTION(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -5138,12 +5143,12 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     create_fo_expr(theRootSctx,
                    theUDF,
                    loc,
-                   GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                   BUILTIN_FUNC(FN_QNAME_2),
                    toUriStrExpr,
                    toQnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* toFnCollection = GET_BUILTIN_FUNCTION(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* toFnCollection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(toFnCollection != NULL);
     std::vector<expr*> toArgColl;
     toArgColl.push_back(toQnameExpr);
@@ -5187,12 +5192,12 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     create_fo_expr(theRootSctx,
                    theUDF,
                    loc,
-                   GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                   BUILTIN_FUNC(FN_QNAME_2),
                    fromUriStrExpr,
                    fromQnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fromFnCollection = GET_BUILTIN_FUNCTION(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fromFnCollection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fromFnCollection != NULL);
     std::vector<expr*> fromArgColl;
     fromArgColl.push_back(fromQnameExpr);
@@ -5317,7 +5322,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(FN_EXISTS_1),
+                     BUILTIN_FUNC(FN_EXISTS_1),
                      uniKeyExpr);
 
       // every ... satisfies evTestExpr
@@ -5325,7 +5330,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(FN_NOT_1),
+                     BUILTIN_FUNC(FN_NOT_1),
                      existsExpr);
 
       evFlworExpr->add_where(fnNotExpr);
@@ -5334,7 +5339,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                     BUILTIN_FUNC(FN_EMPTY_1),
                      evFlworExpr);
 
       // functx:are-distinct-values( $x/@id )
@@ -5344,7 +5349,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(FN_DISTINCT_VALUES_1),
+                     BUILTIN_FUNC(FN_DISTINCT_VALUES_1),
                      atomizedUniKeyExpr);
       
       // count($sec)
@@ -5352,7 +5357,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(FN_COUNT_1),
+                     BUILTIN_FUNC(FN_COUNT_1),
                      atomizedUniKeyExpr);
 
       // count(distinct-values($sec))
@@ -5360,7 +5365,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(FN_COUNT_1),
+                     BUILTIN_FUNC(FN_COUNT_1),
                      distinctValuesExpr);
 
       // countDV = countSec
@@ -5368,7 +5373,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(OP_EQUAL_2),
+                     BUILTIN_FUNC(OP_EQUAL_2),
                      countDVExpr,
                      countSecExpr);
 
@@ -5377,7 +5382,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(OP_AND_N),
+                     BUILTIN_FUNC(OP_AND_N),
                      everyExpr,
                      equalExpr);
 
@@ -5417,7 +5422,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(FN_NOT_1),
+                     BUILTIN_FUNC(FN_NOT_1),
                      evTestExpr);
 
       // where not( exists($x/sale gt 0) )
@@ -5428,7 +5433,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                     BUILTIN_FUNC(FN_EMPTY_1),
                      evFlworExpr);
 
       body = emptyExpr;
@@ -5457,7 +5462,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2),
+                     BUILTIN_FUNC(OP_VALUE_EQUAL_2),
                      toKeyExpr,
                      fromKeyExpr);
 
@@ -5472,14 +5477,14 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(FN_EXISTS_1),
+                     BUILTIN_FUNC(FN_EXISTS_1),
                      someFlworExpr);
       // fn:not()
       fo_expr* evFnNotExpr = theExprManager->
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(FN_NOT_1),
+                     BUILTIN_FUNC(FN_NOT_1),
                      fnExistsExpr);
 
       evFlworExpr->add_where(evFnNotExpr);
@@ -5489,7 +5494,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                     BUILTIN_FUNC(FN_EMPTY_1),
                      evFlworExpr);
 
 
@@ -7387,7 +7392,7 @@ void* begin_visit(const SwitchExpr& v)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(OP_ATOMIC_VALUES_EQUIVALENT_2),
+                     BUILTIN_FUNC(OP_ATOMIC_VALUES_EQUIVALENT_2),
                      sv,
                      operandExpr);
       
@@ -7404,7 +7409,7 @@ void* begin_visit(const SwitchExpr& v)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(OP_OR_N),
+                     BUILTIN_FUNC(OP_OR_N),
                      condOperands);
     }
 
@@ -7878,7 +7883,7 @@ void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
   {
     fo_expr* uw = theExprManager->create_fo_expr(theRootSctx, theUDF,
                                        v.get_expr()->get_location(),
-                                       GET_BUILTIN_FUNCTION(FN_NOT_1),
+                                       BUILTIN_FUNC(FN_NOT_1),
                                        testExpr);
     testExpr = uw;
   }
@@ -7900,8 +7905,8 @@ void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
   fo_expr* quant = theExprManager->create_fo_expr(theRootSctx, theUDF,
                                         loc,
                                         v.get_qmode() == ParseConstants::quant_every ?
-                                        GET_BUILTIN_FUNCTION(FN_EMPTY_1) :
-                                        GET_BUILTIN_FUNCTION(FN_EXISTS_1),
+                                        BUILTIN_FUNC(FN_EMPTY_1) :
+                                        BUILTIN_FUNC(FN_EXISTS_1),
                                         flworExpr);
   push_nodestack(quant);
 }
@@ -8016,7 +8021,7 @@ void end_visit(const OrExpr& v, void* /*visit_state*/)
     args.push_back(e1);
   }
 
-  fo_expr* fo = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, GET_BUILTIN_FUNCTION(OP_OR_N), args);
+  fo_expr* fo = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), args);
 
   push_nodestack(fo);
 }
@@ -8081,7 +8086,7 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
     args.push_back(e1);
   }
 
-  fo_expr* fo = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, GET_BUILTIN_FUNCTION(OP_AND_N), args);
+  fo_expr* fo = CREATE(fo)(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_AND_N), args);
 
   push_nodestack(fo);
 }
@@ -8113,22 +8118,22 @@ void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
     switch (v.get_gencomp()->get_type())
     {
     case ParseConstants::op_eq:
-      f = GET_BUILTIN_FUNCTION(OP_EQUAL_2);
+      f = BUILTIN_FUNC(OP_EQUAL_2);
       break;
     case ParseConstants::op_ne:
-      f = GET_BUILTIN_FUNCTION(OP_NOT_EQUAL_2);
+      f = BUILTIN_FUNC(OP_NOT_EQUAL_2);
       break;
     case ParseConstants::op_lt:
-      f = GET_BUILTIN_FUNCTION(OP_LESS_2);
+      f = BUILTIN_FUNC(OP_LESS_2);
       break;
     case ParseConstants::op_le:
-     f = GET_BUILTIN_FUNCTION(OP_LESS_EQUAL_2);
+     f = BUILTIN_FUNC(OP_LESS_EQUAL_2);
      break;
     case ParseConstants::op_gt:
-      f = GET_BUILTIN_FUNCTION(OP_GREATER_2);
+      f = BUILTIN_FUNC(OP_GREATER_2);
       break;
     case ParseConstants::op_ge:
-      f = GET_BUILTIN_FUNCTION(OP_GREATER_EQUAL_2);
+      f = BUILTIN_FUNC(OP_GREATER_EQUAL_2);
       break;
     }
   }
@@ -8137,22 +8142,22 @@ void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
     switch (v.get_valcomp()->get_type())
     {
     case ParseConstants::op_val_eq:
-      f = GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2);
+      f = BUILTIN_FUNC(OP_VALUE_EQUAL_2);
       break;
     case ParseConstants::op_val_ne:
-      f = GET_BUILTIN_FUNCTION(OP_VALUE_NOT_EQUAL_2);
+      f = BUILTIN_FUNC(OP_VALUE_NOT_EQUAL_2);
       break;
     case ParseConstants::op_val_lt:
-      f = GET_BUILTIN_FUNCTION(OP_VALUE_LESS_2);
+      f = BUILTIN_FUNC(OP_VALUE_LESS_2);
       break;
     case ParseConstants::op_val_le:
-     f = GET_BUILTIN_FUNCTION(OP_VALUE_LESS_EQUAL_2);
+     f = BUILTIN_FUNC(OP_VALUE_LESS_EQUAL_2);
      break;
     case ParseConstants::op_val_gt:
-      f = GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_2);
+      f = BUILTIN_FUNC(OP_VALUE_GREATER_2);
       break;
     case ParseConstants::op_val_ge:
-      f = GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_EQUAL_2);
+      f = BUILTIN_FUNC(OP_VALUE_GREATER_EQUAL_2);
       break;
     }
   }
@@ -8161,13 +8166,13 @@ void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
     switch (v.get_nodecomp()->get_type())
     {
     case ParseConstants::op_is:
-      f = GET_BUILTIN_FUNCTION(OP_IS_SAME_NODE_2);
+      f = BUILTIN_FUNC(OP_IS_SAME_NODE_2);
       break;
     case ParseConstants::op_precedes:
-      f = GET_BUILTIN_FUNCTION(OP_NODE_BEFORE_2);
+      f = BUILTIN_FUNC(OP_NODE_BEFORE_2);
       break;
     case ParseConstants::op_follows:
-      f = GET_BUILTIN_FUNCTION(OP_NODE_AFTER_2);
+      f = BUILTIN_FUNC(OP_NODE_AFTER_2);
       break;
     }
   }
@@ -8246,7 +8251,7 @@ void end_visit(const RangeExpr& v, void* /*visit_state*/)
   expr* e1 = pop_nodestack();
   expr* e2 = pop_nodestack();
 
-  fo_expr* e = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, GET_BUILTIN_FUNCTION(OP_TO_2), e2, e1);
+  fo_expr* e = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_TO_2), e2, e1);
 
   normalize_fo(e);
 
@@ -8275,10 +8280,10 @@ void end_visit(const AdditiveExpr& v, void* /*visit_state*/)
   switch (v.get_add_op())
   {
   case ParseConstants::op_plus:
-    func = GET_BUILTIN_FUNCTION(OP_ADD_2);
+    func = BUILTIN_FUNC(OP_ADD_2);
     break;
   case ParseConstants::op_minus:
-    func = GET_BUILTIN_FUNCTION(OP_SUBTRACT_2);
+    func = BUILTIN_FUNC(OP_SUBTRACT_2);
     break;
   }
 
@@ -8310,16 +8315,16 @@ void end_visit(const MultiplicativeExpr& v, void* /*visit_state*/)
   switch (v.get_mult_op())
   {
   case ParseConstants::op_mul:
-    f = GET_BUILTIN_FUNCTION(OP_MULTIPLY_2);
+    f = BUILTIN_FUNC(OP_MULTIPLY_2);
     break;
   case ParseConstants::op_div:
-    f = GET_BUILTIN_FUNCTION(OP_DIVIDE_2);
+    f = BUILTIN_FUNC(OP_DIVIDE_2);
     break;
   case ParseConstants::op_idiv:
-    f = GET_BUILTIN_FUNCTION(OP_INTEGER_DIVIDE_2);
+    f = BUILTIN_FUNC(OP_INTEGER_DIVIDE_2);
     break;
   case ParseConstants::op_mod:
-    f = GET_BUILTIN_FUNCTION(OP_MOD_2);
+    f = BUILTIN_FUNC(OP_MOD_2);
     break;
   }
 
@@ -8349,7 +8354,7 @@ void end_visit(const UnionExpr& v, void* /*visit_state*/)
 
   fo_expr* foExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
                                 loc,
-                                GET_BUILTIN_FUNCTION(OP_UNION_2),
+                                BUILTIN_FUNC(OP_UNION_2),
                                 e2,
                                 e1);
 
@@ -8359,7 +8364,7 @@ void end_visit(const UnionExpr& v, void* /*visit_state*/)
   // and duplicate elimi
   push_nodestack(theExprManager->create_fo_expr(theRootSctx, theUDF,
                              loc,
-                             GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1),
+                             BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_ASC_1),
                              foExpr));
 }
 
@@ -8385,10 +8390,10 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
   switch (v.get_intex_op())
   {
   case ParseConstants::op_intersect:
-    f = GET_BUILTIN_FUNCTION(OP_INTERSECT_2);
+    f = BUILTIN_FUNC(OP_INTERSECT_2);
     break;
   case ParseConstants::op_except:
-    f = GET_BUILTIN_FUNCTION(OP_EXCEPT_2);
+    f = BUILTIN_FUNC(OP_EXCEPT_2);
     break;
   }
 
@@ -8398,7 +8403,7 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
 
   push_nodestack(theExprManager->create_fo_expr(theRootSctx, theUDF,
                              loc,
-                             GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1),
+                             BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_ASC_1),
                              foExpr));
 }
 
@@ -8582,8 +8587,8 @@ void end_visit(const UnaryExpr& v, void* /*visit_state*/)
   fo_expr* foExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
                                 loc,
                                 (v.get_signlist()->get_sign() ?
-                                 GET_BUILTIN_FUNCTION(OP_UNARY_PLUS_1) :
-                                 GET_BUILTIN_FUNCTION(OP_UNARY_MINUS_1)),
+                                 BUILTIN_FUNC(OP_UNARY_PLUS_1) :
+                                 BUILTIN_FUNC(OP_UNARY_MINUS_1)),
                                 e1);
   normalize_fo(foExpr);
 
@@ -9012,7 +9017,7 @@ void* begin_visit(const PathExpr& v)
 
     fo_expr* fnroot = theExprManager->create_fo_expr(theRootSctx, theUDF,
                                    loc,
-                                   GET_BUILTIN_FUNCTION(FN_ROOT_1),
+                                   BUILTIN_FUNC(FN_ROOT_1),
                                    ctx_path_expr);
     normalize_fo(fnroot);
 
@@ -9069,7 +9074,7 @@ void end_visit(const PathExpr& v, void* /*visit_state*/)
     fo_expr* checkExpr =
       theExprManager->create_fo_expr(theRootSctx, theUDF,
                   arg2->get_loc(),
-                  GET_BUILTIN_FUNCTION(OP_EITHER_NODES_OR_ATOMICS_1),
+                  BUILTIN_FUNC(OP_EITHER_NODES_OR_ATOMICS_1),
                   arg2);
 
     push_nodestack(checkExpr);
@@ -9920,12 +9925,12 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
     var_expr* posVar = dotClause->get_pos_var();
     var_expr* dotVar = dotClause->get_var();
 
-    if (expr_tools::count_variable_uses(predExpr, posVar, 1) == 0 &&
-        expr_tools::count_variable_uses(predExpr, dotVar, 1) == 0)
+    if (expr_tools::count_variable_uses(predExpr, posVar, 1, NULL) == 0 &&
+        expr_tools::count_variable_uses(predExpr, dotVar, 1, NULL) == 0)
     {
       flworExpr->remove_clause(2);
 
-      if (expr_tools::count_variable_uses(predExpr, sizeVar, 1) == 0)
+      if (expr_tools::count_variable_uses(predExpr, sizeVar, 1, NULL) == 0)
       {
         expr* sourceExpr = sourceClause->get_expr();
 
@@ -9933,7 +9938,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
         create_fo_expr(sourceExpr->get_sctx(),
                        theUDF,
                        sourceExpr->get_loc(),
-                       GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                       BUILTIN_FUNC(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
                        sourceExpr,
                        predExpr);
 
@@ -9947,7 +9952,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
         create_fo_expr(sourceExpr->get_sctx(),
                        theUDF,
                        sourceExpr->get_loc(),
-                       GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                       BUILTIN_FUNC(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
                        sourceExpr,
                        predExpr);
 
@@ -9969,7 +9974,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
       create_fo_expr(theRootSctx,
                      theUDF,
                      loc,
-                     GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2),
+                     BUILTIN_FUNC(OP_VALUE_EQUAL_2),
                      lookup_ctx_var(DOT_POS_VARNAME, loc),
                      predvar);
 
@@ -10018,7 +10023,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   create_instanceof_expr(theRootSctx, theUDF, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
 
   condExpr = theExprManager->
-  create_fo_expr(theRootSctx, theUDF, loc, GET_BUILTIN_FUNCTION(OP_OR_N), condOperands);
+  create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), condOperands);
 
   // If so: return $dot if the value of the pred expr is equal to the value
   // of $dot_pos var, otherwise return the empty seq.
@@ -10026,7 +10031,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   create_fo_expr(theRootSctx,
                  theUDF,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2),
+                 BUILTIN_FUNC(OP_VALUE_EQUAL_2),
                  lookup_ctx_var(DOT_POS_VARNAME, loc),
                  predvar);
 
@@ -10183,7 +10188,7 @@ void end_visit(const StringConcatExpr& v, void* /* visit_state */)
   if(right->get_expr_kind() == fo_expr_kind)
   {
     fo_expr* lFoExpr = dynamic_cast<fo_expr*>(right);
-    if(lFoExpr->get_func() == GET_BUILTIN_FUNCTION(FN_CONCAT_N))
+    if(lFoExpr->get_func() == BUILTIN_FUNC(FN_CONCAT_N))
     {
       rightLeafIsConcatExpr = true;
       csize i = 0;
@@ -10203,7 +10208,7 @@ void end_visit(const StringConcatExpr& v, void* /* visit_state */)
   theExprManager->create_fo_expr(theRootSctx,
                                  theUDF,
                                  loc,
-                                 GET_BUILTIN_FUNCTION(FN_CONCAT_N),
+                                 BUILTIN_FUNC(FN_CONCAT_N),
                                  concat_args);
   push_nodestack(concat);
 }
@@ -10542,7 +10547,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         arguments.push_back(theExprManager->
                             create_const_expr(theRootSctx, theUDF, loc, xs_integer::one()));
 
-        function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
+        function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
 
         fo_expr* foExpr = theExprManager->
         create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
@@ -10557,7 +10562,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         arguments.push_back(theExprManager->
                             create_const_expr(theRootSctx, theUDF, loc, xs_integer(2)));
 
-        function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
+        function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2);
 
         fo_expr* foExpr = theExprManager->
         create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
@@ -10581,9 +10586,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           if (TypeOps::is_subtype(tm, *posType, *theRTM.INTEGER_TYPE_STAR, loc))
           {
             if (f->getKind() == FunctionConsts::FN_SUBSTRING_2)
-              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_2);
+              f = BUILTIN_FUNC(OP_SUBSTRING_INT_2);
             else
-              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
+              f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2);
           }
         }
         else
@@ -10594,9 +10599,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
               TypeOps::is_subtype(tm, *lenType, *theRTM.INTEGER_TYPE_STAR, loc))
           {
             if (f->getKind() == FunctionConsts::FN_SUBSTRING_3)
-              f = GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_3);
+              f = BUILTIN_FUNC(OP_SUBSTRING_INT_3);
             else
-              f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
+              f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
           }
         }
 
@@ -10625,7 +10630,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         case 0:
         {
           arguments.push_back(DOT_REF);
-          f = GET_BUILTIN_FUNCTION(FN_NUMBER_1);
+          f = BUILTIN_FUNC(FN_NUMBER_1);
           break;
         }
         case 1:
@@ -10700,13 +10705,13 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         normExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
                                loc,
-                               GET_BUILTIN_FUNCTION(FN_NORMALIZE_SPACE_1),
+                               BUILTIN_FUNC(FN_NORMALIZE_SPACE_1),
                                flworVarExpr);
         normalize_fo(normExpr);
 
         tokenExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
                                 loc,
-                                GET_BUILTIN_FUNCTION(FN_TOKENIZE_2),
+                                BUILTIN_FUNC(FN_TOKENIZE_2),
                                 normExpr,
                                 constExpr);
         normalize_fo(tokenExpr);
@@ -10721,20 +10726,20 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case FunctionConsts::FN_IDREF_1:
       {
         arguments.insert(arguments.begin(), DOT_REF);
-        f = GET_BUILTIN_FUNCTION(FN_IDREF_2);
+        f = BUILTIN_FUNC(FN_IDREF_2);
         break;
       }
       case FunctionConsts::FN_LANG_1:
       {
         arguments.insert(arguments.begin(), DOT_REF);
-        f = GET_BUILTIN_FUNCTION(FN_LANG_2);
+        f = BUILTIN_FUNC(FN_LANG_2);
         break;
       }
       case FunctionConsts::FN_RESOLVE_URI_1:
       {
         zstring baseUri = theSctx->get_base_uri();
         arguments.insert(arguments.begin(), theExprManager->create_const_expr(theRootSctx, theUDF, loc, baseUri));
-        f = GET_BUILTIN_FUNCTION(FN_RESOLVE_URI_2);
+        f = BUILTIN_FUNC(FN_RESOLVE_URI_2);
         break;
       }
       case FunctionConsts::FN_CONCAT_N:
@@ -11059,24 +11064,24 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         expr* namespaceExpr =
         theExprManager->create_fo_expr(theRootSctx, theUDF,
                     loc,
-                    GET_BUILTIN_FUNCTION(FN_NAMESPACE_URI_FROM_QNAME_1),
+                    BUILTIN_FUNC(FN_NAMESPACE_URI_FROM_QNAME_1),
                     temp_vars[0]);
 
         namespaceExpr =
         theExprManager->create_fo_expr(theRootSctx, theUDF,
                     loc,
-                    GET_BUILTIN_FUNCTION(FN_STRING_1),
+                    BUILTIN_FUNC(FN_STRING_1),
                     namespaceExpr);
 
         // Expanded QName's local name
         expr* localExpr =
         theExprManager->create_fo_expr(theRootSctx, theUDF,
                     loc,
-                    GET_BUILTIN_FUNCTION(FN_LOCAL_NAME_FROM_QNAME_1),
+                    BUILTIN_FUNC(FN_LOCAL_NAME_FROM_QNAME_1),
                     temp_vars[0]);
 
         localExpr = theExprManager->
-        create_fo_expr(theRootSctx, theUDF, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
+        create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(FN_STRING_1), localExpr);
 
         // qnameExpr := concat("Q{",
         //                     namespaceExpr,
@@ -11093,7 +11098,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         qnameExpr = theExprManager->
         create_fo_expr(theRootSctx, theUDF,
                        loc,
-                       GET_BUILTIN_FUNCTION(FN_CONCAT_N),
+                       BUILTIN_FUNC(FN_CONCAT_N),
                        concat_args);
 
         eval_expr* evalExpr = theExprManager->
@@ -11203,15 +11208,15 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
     if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
     {
-      func = GET_BUILTIN_FUNCTION(FN_JSONIQ_MEMBER_2);
+      func = BUILTIN_FUNC(FN_JSONIQ_MEMBER_2);
     }
     else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
     {
-      func = GET_BUILTIN_FUNCTION(FN_JSONIQ_VALUE_2);
+      func = BUILTIN_FUNC(FN_JSONIQ_VALUE_2);
     }
     else
     {
-      func = GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
+      func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
     }
 
     accessorExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
@@ -11717,7 +11722,7 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
   create_fo_expr(theRootSctx,
                  theUDF,
                  valueExpr->get_loc(),
-                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_BOX_1),
+                 BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
                  valueExpr);
 
   push_nodestack(valueExpr);
@@ -13470,7 +13475,7 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
   expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx, theUDF,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_OBJECT_INSERT_2),
+                 BUILTIN_FUNC(OP_ZORBA_JSON_OBJECT_INSERT_2),
                  args);
 
   push_nodestack(updExpr);
@@ -13521,7 +13526,7 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
   fo_expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx, theUDF,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_INSERT_3),
+                 BUILTIN_FUNC(OP_ZORBA_JSON_ARRAY_INSERT_3),
                  args);
 
   normalize_fo(updExpr);
@@ -13561,7 +13566,7 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
   fo_expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx, theUDF,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_ARRAY_APPEND_2),
+                 BUILTIN_FUNC(OP_ZORBA_JSON_ARRAY_APPEND_2),
                  targetExpr,
                  contentExpr);
 
@@ -13617,7 +13622,7 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
   fo_expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx, theUDF,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_DELETE_2),
+                 BUILTIN_FUNC(OP_ZORBA_JSON_DELETE_2),
                  targetExpr,
                  selExpr);
 
@@ -13663,13 +13668,13 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
 
   args[2] = theExprManager->create_fo_expr(theRootSctx, theUDF,
                                            valueExpr->get_loc(),
-                                           GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_BOX_1),
+                                           BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
                                            valueExpr);
 
   fo_expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx, theUDF,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_REPLACE_VALUE_3),
+                 BUILTIN_FUNC(OP_ZORBA_JSON_REPLACE_VALUE_3),
                  args);
 
   push_nodestack(updExpr);
@@ -13718,7 +13723,7 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
   fo_expr* updExpr = theExprManager->
   create_fo_expr(theRootSctx, theUDF,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_ZORBA_JSON_RENAME_3),
+                 BUILTIN_FUNC(OP_ZORBA_JSON_RENAME_3),
                  args);
 
   push_nodestack(updExpr);

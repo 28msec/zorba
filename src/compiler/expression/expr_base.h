@@ -17,6 +17,8 @@
 #ifndef ZORBA_COMPILER_EXPR_BASE
 #define ZORBA_COMPILER_EXPR_BASE
 
+#include <map>
+
 #include <zorba/config.h>
 
 #include "common/shared_types.h"
@@ -27,7 +29,7 @@
 
 #include "functions/function_consts.h"
 
-#include "types/typeimpl.h"
+//#include "types/typeimpl.h"
 
 #include "context/static_context_consts.h"
 
@@ -135,7 +137,7 @@ public:
 
   typedef substitution_t::iterator subst_iter_t;
 
-  typedef std::set<const var_expr *> FreeVars;
+  typedef std::set<var_expr *> FreeVars;
 
   typedef enum
   {
@@ -147,9 +149,10 @@ public:
     UNFOLDABLE              = 10,
     CONTAINS_RECURSIVE_CALL = 12,
     PROPAGATES_INPUT_NODES  = 14,
-    IN_UNSAFE_CONTEXT       = 16,
-    MUST_COPY_NODES         = 18,
-    CONTAINS_PRAGMA         = 20
+    MUST_COPY_NODES         = 16,
+    CONTAINS_PRAGMA         = 18,
+    CONSTRUCTS_NODES        = 20,
+    DEREFERENCES_NODES      = 22
   } Annotationkey;
 
   typedef enum
@@ -162,9 +165,10 @@ public:
     UNFOLDABLE_MASK               = 0xC00,
     CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
     PROPAGATES_INPUT_NODES_MASK   = 0xC000,
-    IN_UNSAFE_CONTEXT_MASK        = 0x30000,
-    MUST_COPY_NODES_MASK          = 0xC0000,
-    CONTAINS_PRAGMA_MASK          = 0x300000
+    MUST_COPY_NODES_MASK          = 0x30000,
+    CONTAINS_PRAGMA_MASK          = 0xC0000,
+    CONSTRUCTS_NODES_MASK         = 0x300000,
+    DEREFERENCES_NODES_MASK       = 0xC00000
   } AnnotationMask;
 
 
@@ -182,6 +186,7 @@ protected:
   QueryLoc           theLoc;
 
   unsigned short     theKind;
+
   unsigned short     theScriptingKind;
 
   xqtref_t           theType;
@@ -189,6 +194,8 @@ protected:
   uint32_t           theFlags1;
 
   FreeVars           theFreeVars;
+
+  int                theVisitId;
 
 public:
   static bool is_sequential(unsigned short theScriptingKind);
@@ -200,7 +207,7 @@ public:
 protected:
   expr(CompilerCB*, static_context*, user_function*, const QueryLoc&, expr_kind_t);
 
-  expr() : theCCB(NULL), theSctx(NULL), theUDF(NULL), theFlags1(0) {}
+  expr();
 
 public:
   virtual ~expr();
@@ -317,19 +324,26 @@ public:
 
   void setMustCopyNodes(BoolAnnotationValue v);
 
-  // Annotation : inUnsafeContext
-  BoolAnnotationValue getInUnsafeContext() const;
-
-  void setInUnsafeContext(BoolAnnotationValue v);
-
-  bool inUnsafeContext() const;
-
   // Annotation : containsPragma
   BoolAnnotationValue getContainsPragma() const;
 
   void setContainsPragma(BoolAnnotationValue v);
 
   bool containsPragma() const;
+
+  // Annotation : constructsNodes
+  BoolAnnotationValue getConstructsNodes() const;
+
+  void setConstructsNodes(BoolAnnotationValue v);
+
+  bool constructsNodes() const;
+
+  // Annotation : dereferencesNodes
+  BoolAnnotationValue getDereferencesNodes() const;
+
+  void setDereferencesNodes(BoolAnnotationValue v);
+
+  bool dereferencesNodes() const;
 
   // Annotation : free vars
   const FreeVars& getFreeVars() const { return theFreeVars; }
@@ -338,6 +352,13 @@ public:
 
   void setFreeVars(FreeVars& s);
 
+  //
+  void setVisitId(int id) { theVisitId = id; }
+
+  bool isVisited(int id) const { return theVisitId == id; }
+
+  int getVisitId() const { return theVisitId; }
+
   bool is_constant() const;
 
   bool is_nondeterministic() const;
@@ -345,8 +366,6 @@ public:
   void replace_expr(expr* oldExpr, expr* newExpr);
 
   bool contains_expr(const expr* e) const;
-
-  bool contains_node_construction() const;
 
   void get_exprs_of_kind(
       expr_kind_t kind,

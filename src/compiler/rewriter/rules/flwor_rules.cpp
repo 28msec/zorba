@@ -40,13 +40,14 @@
 namespace zorba
 {
 
-static void 
-collect_flw_vars(const flwor_expr&, expr::FreeVars&);
-
 static bool is_trivial_expr(const expr*);
 
 static bool 
-safe_to_fold_single_use(var_expr*, TypeConstants::quantifier_t, const flwor_expr&);
+safe_to_fold_single_use(
+    var_expr*,
+    TypeConstants::quantifier_t,
+    const flwor_expr&,
+    const std::vector<const expr*>&);
 
 static bool 
 var_in_try_or_loop(const var_expr*, const expr*, bool, bool, bool&);
@@ -89,12 +90,12 @@ static void fix_if_annotations(if_expr* ifExpr)
 class SubstVars : public PrePostRewriteRule
 {
 protected:
-  const var_expr     * theVarExpr;
+  var_expr           * theVarExpr;
   expr               * theSubstExpr;
   std::vector<expr*>   thePath;
 
 public:
-  SubstVars(const var_expr* var, expr* subst)
+  SubstVars(var_expr* var, expr* subst)
     :
     PrePostRewriteRule(RewriteRule::SubstVars, "SubstVars"),
     theVarExpr(var),
@@ -146,7 +147,7 @@ RULE_REWRITE_POST(SubstVars)
 expr* subst_vars(
     const RewriterContext& rCtx0,
     expr* root,
-    const var_expr* var,
+    var_expr* var,
     expr* subst)
 {
   RewriterContext rCtx(rCtx0.getCompilerCB(),
@@ -242,7 +243,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         const expr::FreeVars& whereVars = whereExpr->getFreeVars();
 
         if (myVars.empty())
-          collect_flw_vars(flwor, myVars);
+          flwor.get_vars(myVars);
 
         expr::FreeVars diff;
         std::set_intersection(myVars.begin(),
@@ -252,7 +253,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
                               std::inserter(diff, diff.begin()));
         if (diff.empty())
         {
-          flwor.remove_where_clause();
+          flwor.remove_clause(i);
 
           if_expr* ifExpr = rCtx.theEM->
           create_if_expr(sctx,
@@ -294,7 +295,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       for(; ite != end; ++ite)
       {
         var_expr* var = ite->second;
-        int uses = expr_tools::count_variable_uses(&flwor, var, 2);
+        int uses = expr_tools::count_variable_uses(&flwor, var, 1, NULL);
 
         if (uses == 0 && !ite->first->isNonDiscardable())
         {
@@ -313,10 +314,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       var_expr* var = fc->get_var();
       TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
       ulong domainCount = domainType->max_card();
-      const var_expr* pvar = fc->get_pos_var();
+      var_expr* pvar = fc->get_pos_var();
 
       if (pvar != NULL &&
-          expr_tools::count_variable_uses(&flwor, pvar, 1) == 0)
+          expr_tools::count_variable_uses(&flwor, pvar, 1, NULL) == 0)
       {
         fc->set_pos_var(NULL);
         pvar = NULL;
@@ -367,7 +368,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           }
         }
 
-        int uses = expr_tools::count_variable_uses(&flwor, var, 2);
+        std::vector<const expr*> refpath(16);
+        int uses = expr_tools::count_variable_uses(&flwor, var, 2, &refpath);
 
         if (uses > 1 &&
             is_trivial_expr(domainExpr) &&
@@ -381,7 +383,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
                  (domainQuant == TypeConstants::QUANT_ONE || i == numClauses -1) &&
                  ((is_trivial_expr(domainExpr) &&
                    domainQuant == TypeConstants::QUANT_ONE) ||
-                  safe_to_fold_single_use(var, domainQuant, flwor)))
+                  safe_to_fold_single_use(var, domainQuant, flwor, refpath)))
         {
           subst_vars(rCtx, node, var, domainExpr);
           substitute = true;
@@ -416,7 +418,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (domainExpr->is_sequential())
         continue;
 
-      int uses = expr_tools::count_variable_uses(&flwor, var, 2);
+      std::vector<const expr*> refpath(16);
+      int uses = expr_tools::count_variable_uses(&flwor, var, 2, &refpath);
 
       if (uses > 1 && is_trivial_expr(domainExpr))
       {
@@ -425,7 +428,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       }
       else if (uses == 1 &&
                (is_trivial_expr(domainExpr) ||
-                safe_to_fold_single_use(var, TypeConstants::QUANT_ONE, flwor)))
+                safe_to_fold_single_use(var, TypeConstants::QUANT_ONE, flwor, refpath)))
       {
         subst_vars(rCtx, node, var, domainExpr);
         substitute = true;
@@ -540,7 +543,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         create_fo_expr(sctx,
                        udf,
                        whereCond->get_loc(),
-                       GET_BUILTIN_FUNCTION(OP_AND_N),
+                       BUILTIN_FUNC(OP_AND_N),
                        whereExpr,
                        whereCond);
       }
@@ -606,100 +609,6 @@ RULE_REWRITE_POST(EliminateUnusedLetVars)
 }
 
 
-/*****************************************************************************
-  Returns a set containing all the variables defined by the clauses of a flwor
-  expr.
-******************************************************************************/
-static void collect_flw_vars(const flwor_expr& flwor, expr::FreeVars& vars)
-{
-  for (csize i = 0; i < flwor.num_clauses(); ++i)
-  {
-    const flwor_clause& c = *flwor.get_clause(i);
-
-    switch (c.get_kind())
-    {
-    case flwor_clause::for_clause:
-    {
-      const for_clause* fc = static_cast<const for_clause *>(&c);
-
-      vars.insert(fc->get_var());
-
-      if (fc->get_pos_var() != NULL)
-        vars.insert(fc->get_pos_var());
-
-      break;
-    }
-    case flwor_clause::let_clause:
-    {
-      const let_clause* lc = static_cast<const let_clause *>(&c);
-      vars.insert(lc->get_var());
-      break;
-    }
-    case flwor_clause::window_clause:
-    {
-      const window_clause* wc = static_cast<const window_clause *>(&c);
-
-      vars.insert(wc->get_var());
-
-      if (wc->get_win_start() != NULL)
-      {
-        const flwor_wincond* cond = wc->get_win_start();
-        const flwor_wincond::vars& condvars = cond->get_out_vars();
-
-        if (condvars.posvar != NULL) vars.insert(condvars.posvar);
-        if (condvars.curr != NULL) vars.insert(condvars.curr);
-        if (condvars.prev != NULL) vars.insert(condvars.prev);
-        if (condvars.next != NULL) vars.insert(condvars.next);
-      }
-
-      if (wc->get_win_stop() != NULL)
-      {
-        const flwor_wincond* cond = wc->get_win_stop();
-        const flwor_wincond::vars& condvars = cond->get_out_vars();
-
-        if (condvars.posvar != NULL) vars.insert(condvars.posvar);
-        if (condvars.curr != NULL) vars.insert(condvars.curr);
-        if (condvars.prev != NULL) vars.insert(condvars.prev);
-        if (condvars.next != NULL) vars.insert(condvars.next);
-      }
-
-      break;
-    }
-    case flwor_clause::group_clause:
-    {
-      const group_clause* gc = static_cast<const group_clause *>(&c);
-
-      flwor_clause::rebind_list_t::const_iterator ite = gc->beginGroupVars();
-      flwor_clause::rebind_list_t::const_iterator end = gc->endGroupVars();
-
-      for (; ite != end; ++ite)
-      {
-        vars.insert((*ite).second);
-      }
-
-      ite = gc->beginNonGroupVars();
-      end = gc->endNonGroupVars();
-
-      for (; ite != end; ++ite)
-      {
-        vars.insert((*ite).second);
-      }
-
-      break;
-    }
-    case flwor_clause::count_clause:
-    {
-      const count_clause* cc = static_cast<const count_clause *>(&c);
-      vars.insert(cc->get_var());
-      break;
-    }
-    default:
-      break;
-    }
-  }
-}
-
-
 /******************************************************************************
 
 ******************************************************************************/
@@ -749,15 +658,16 @@ static bool is_trivial_expr(const expr* e)
 static bool safe_to_fold_single_use(
     var_expr* var,
     TypeConstants::quantifier_t varQuant,
-    const flwor_expr& flwor)
+    const flwor_expr& flwor,
+    const std::vector<const expr*>& refpath)
 {
   TypeManager* tm = var->get_type_manager();
 
+  if (flwor.dereferencesNodes() && var->get_domain_expr()->constructsNodes())
+    return false;
+
   bool declared = false;
   expr* referencingExpr = NULL;
-
-  bool hasNodeConstr = var->get_domain_expr()->contains_node_construction();
-
   csize numClauses = flwor.num_clauses();
 
   for (csize i = 0; i < numClauses && referencingExpr == NULL; ++i)
@@ -786,7 +696,7 @@ static bool safe_to_fold_single_use(
         return false;
 
       // If X is referenced in the current FOR clause .....
-      if (expr_tools::count_variable_uses(domExpr, var, 1) == 1)
+      if (std::find(refpath.begin(), refpath.end(), domExpr) != refpath.end())
       {
         referencingExpr = domExpr;
         break;
@@ -812,7 +722,7 @@ static bool safe_to_fold_single_use(
 
       assert(varQuant == TypeConstants::QUANT_ONE);
 
-      if (expr_tools::count_variable_uses(clause->get_expr(), var, 1) == 1)
+      if (std::find(refpath.begin(), refpath.end(), clause->get_expr()) != refpath.end())
       {
         referencingExpr = clause->get_expr();
         break;
@@ -834,7 +744,7 @@ static bool safe_to_fold_single_use(
 
       for (; ite != end; ++ite)
       {
-        if (expr_tools::count_variable_uses(*ite, var, 1) == 1)
+        if (std::find(refpath.begin(), refpath.end(), *ite) != refpath.end())
         {
           referencingExpr = *ite;
           break;
@@ -858,7 +768,7 @@ static bool safe_to_fold_single_use(
       for (; ite != end; ++ite)
       {
         expr* inputExpr = ite->first;
-        if (expr_tools::count_variable_uses(inputExpr, var, 1) == 1)
+        if (std::find(refpath.begin(), refpath.end(), inputExpr) != refpath.end())
         {
           referencingExpr = inputExpr;
           break;
@@ -871,7 +781,7 @@ static bool safe_to_fold_single_use(
       for (; ite != end; ++ite)
       {
         expr* inputExpr = ite->first;
-        if (expr_tools::count_variable_uses(inputExpr, var, 1) == 1)
+        if (std::find(refpath.begin(), refpath.end(), inputExpr) != refpath.end())
         {
           referencingExpr = inputExpr;
           break;
@@ -897,7 +807,7 @@ static bool safe_to_fold_single_use(
       if (domExpr->is_sequential())
         return false;
 
-      if (expr_tools::count_variable_uses(domExpr, var, 1) == 1)
+      if (std::find(refpath.begin(), refpath.end(), domExpr) != refpath.end())
       {
         referencingExpr = domExpr;
         break;
@@ -906,13 +816,13 @@ static bool safe_to_fold_single_use(
       if (domExpr->get_return_type()->max_card() > 1)
         return false;
 
-      if (expr_tools::count_variable_uses(startExpr, var, 1) == 1)
+      if (std::find(refpath.begin(), refpath.end(), startExpr) != refpath.end())
       {
         referencingExpr = domExpr;
         break;
       }
 
-      if (expr_tools::count_variable_uses(stopExpr, var, 1) == 1)
+      if (std::find(refpath.begin(), refpath.end(), stopExpr) != refpath.end())
       {
         referencingExpr = domExpr;
         break;
@@ -942,7 +852,7 @@ static bool safe_to_fold_single_use(
     if (retExpr->is_sequential())
       return false;
 
-    if (expr_tools::count_variable_uses(retExpr, var, 1) == 1)
+    if (std::find(refpath.begin(), refpath.end(), retExpr) != refpath.end())
     {
       if (varQuant != TypeConstants::QUANT_ONE)
       {
@@ -974,7 +884,7 @@ static bool safe_to_fold_single_use(
     return false;
 
   bool found = false;
-  return !var_in_try_or_loop(var, referencingExpr, false, hasNodeConstr, found);
+  return !var_in_try_or_loop(var, referencingExpr, false, false, found);
 }
 
 
@@ -1383,7 +1293,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
           create_fo_expr(sctx,
                          udf,
                          whereExpr->get_loc(),
-                         GET_BUILTIN_FUNCTION(OP_AND_N),
+                         BUILTIN_FUNC(OP_AND_N),
                          whereExpr,
                          condExpr);
 
@@ -1432,7 +1342,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
           expr* arg = andExpr->get_arg(i);
 
           if (is_positional_pred(flwor, clausePos, arg, posVar, posExpr, compKind) &&
-              expr_tools::count_variable_uses(flwor, posVar, 2) <= 1)
+              expr_tools::count_variable_uses(flwor, posVar, 2, NULL) <= 1)
           {
             rewrite_positional_pred(rCtx, flwor, posVar, posExpr, compKind);
 
@@ -1454,7 +1364,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
       else
       {
         if (is_positional_pred(flwor, clausePos, whereExpr, posVar, posExpr, compKind) &&
-            expr_tools::count_variable_uses(flwor, posVar, 2) <= 1)
+            expr_tools::count_variable_uses(flwor, posVar, 2, NULL) <= 1)
         {
           rewrite_positional_pred(rCtx, flwor, posVar, posExpr, compKind);
 
@@ -1512,7 +1422,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                   BUILTIN_FUNC(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
                    domainExpr,
                    posExpr);
     break;
@@ -1532,7 +1442,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3),
                    args);
     break;
   }
@@ -1549,7 +1459,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_NUMERIC_SUBTRACT_INTEGER_2),
+                   BUILTIN_FUNC(OP_NUMERIC_SUBTRACT_INTEGER_2),
                    posExpr,
                    oneExpr2);
 
@@ -1562,7 +1472,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3),
                    args);
     break;
   }
@@ -1573,7 +1483,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2),
                    domainExpr,
                    posExpr);
     break;
@@ -1588,7 +1498,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_NUMERIC_ADD_INTEGER_2),
+                   BUILTIN_FUNC(OP_NUMERIC_ADD_INTEGER_2),
                    posExpr,
                    oneExpr);
 
@@ -1596,7 +1506,7 @@ static void rewrite_positional_pred(
     create_fo_expr(sctx,
                    udf,
                    domainExpr->get_loc(),
-                   GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2),
+                   BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2),
                    domainExpr,
                    posExpr);
     break;

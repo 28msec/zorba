@@ -274,7 +274,7 @@ bool UDFGraph::inferDeterminism(UDFNode* node, ulong visit)
 
   bool deterministic = true;
 
-  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  for (csize i = 0; i < node->theChildren.size(); ++i)
   {
     if (inferDeterminism(node->theChildren[i], visit) == false)
       deterministic = false;
@@ -330,7 +330,7 @@ void UDFGraph::display(std::ostream& o, UDFNode* node)
 
   o << inc_indent;
 
-  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  for (csize i = 0; i < node->theChildren.size(); ++i)
   {
     display(o, node->theChildren[i]);
   }

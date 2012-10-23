@@ -109,7 +109,7 @@ if_expr::if_expr(
     create_fo_expr(sctx,
                    udf,
                    loc,
-                   GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
+                   BUILTIN_FUNC(FN_BOOLEAN_1),
                    condExpr);
 
     condExpr = boolExpr;
@@ -334,6 +334,8 @@ cast_expr::cast_expr(
 {
   assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
          type->get_quantifier() == TypeConstants::QUANT_QUESTION);
+
+  setNonDiscardable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -362,6 +364,7 @@ treat_expr::treat_expr(
   theCheckPrime(check_prime),
   theQName(qname)
 {
+  setNonDiscardable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -385,6 +388,8 @@ promote_expr::promote_expr(
   assert(TypeOps::is_subtype(sctx->get_typemanager(),
                              *type,
                              *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
+
+  setNonDiscardable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -494,6 +499,9 @@ doc_expr::doc_expr(
   theCopyInputNodes(copyNodes)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
+  setConstructsNodes(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -530,7 +538,12 @@ elem_expr::elem_expr(
 {
   compute_scripting_kind();
 
+  // Node constructors are unfoldable because if a node constructor is inside
+  // a loop, then it will create a different xml tree every time it is invoked,
+  // even if the constructor itself is "constant" (i.e. does not reference any
+  // varialbes)
   setUnfoldable(ANNOTATION_TRUE_FIXED);
+  setConstructsNodes(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -553,6 +566,7 @@ elem_expr::elem_expr(
   compute_scripting_kind();
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
+  setConstructsNodes(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -600,6 +614,7 @@ attr_expr::attr_expr(
   compute_scripting_kind();
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
+  setConstructsNodes(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -658,6 +673,7 @@ text_expr::text_expr(
   compute_scripting_kind();
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
+  setConstructsNodes(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -690,6 +706,7 @@ pi_expr::pi_expr(
   compute_scripting_kind();
 
   setUnfoldable(ANNOTATION_TRUE_FIXED);
+  setConstructsNodes(ANNOTATION_TRUE_FIXED);
 }
 
 

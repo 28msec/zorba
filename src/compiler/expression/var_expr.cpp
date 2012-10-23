@@ -90,8 +90,6 @@ var_expr::var_expr(
   theHasInitializer(false)
 {
   compute_scripting_kind();
-
-  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 

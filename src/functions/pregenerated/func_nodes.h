@@ -179,6 +179,8 @@ public:
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
   CODEGEN_DECL();
 };
 

@@ -23,6 +23,8 @@
 #include "util/cxx_util.h"
 #include "util/stl_util.h"
 
+#include "system/globalenv.h"
+
 #include "ft_stop_words_set.h"
 #include "ft_token_matcher.h"
 #include "ft_util.h"

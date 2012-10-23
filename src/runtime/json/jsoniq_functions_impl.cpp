@@ -46,13 +46,18 @@
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
 
-#include "store/api/pul.h"
-#include "store/api/item.h"
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
-#include "store/api/copymode.h"
+#include <runtime/util/doc_uri_heuristics.h>
 
+#include <store/api/pul.h>
+#include <store/api/item.h>
+#include <store/api/item_factory.h>
+#include <store/api/store.h>
+#include <store/api/copymode.h>
+
+#include <util/uri_util.h>
 #include <zorba/store_consts.h>
+#include <zorbatypes/URI.h>
+
 
 namespace zorba {
 
@@ -1597,6 +1602,87 @@ bool JSONBoxIterator::nextImpl(
   STACK_END(state);
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t uriItem;
+  JSONDocIteratorState* state;
+  zstring uriString;
+  zstring lErrorMessage;
+  internal::StreamResource* lStreamResource;
+  zstring lNormUri;
+  DEFAULT_STACK_INIT(JSONDocIteratorState, state, planState);
+
+  if (consumeNext(uriItem, theChildren[0].getp(), planState))
+  {
+    uriItem->getStringValue2(uriString);
+    // Normalize input to handle filesystem paths, etc.
+    normalizeInputUri(uriString, theSctx, loc, &lNormUri);
+
+    // Resolve URI to a stream
+    state->theResource = theSctx->resolve_uri(
+        lNormUri,
+        internal::EntityData::DOCUMENT,
+        lErrorMessage);
+
+    lStreamResource =
+        dynamic_cast<internal::StreamResource*>(state->theResource.get());
+    if (lStreamResource == NULL) {
+      throw XQUERY_EXCEPTION(
+          err::FODC0002,
+          ERROR_PARAMS(uriString, lErrorMessage),
+          ERROR_LOC(loc));
+    }
+
+    state->theStream = lStreamResource->getStream();
+    if (state->theStream == NULL) {
+      throw XQUERY_EXCEPTION(
+          err::FODC0002,
+          ERROR_PARAMS( uriString ),
+          ERROR_LOC(loc));
+    }
+
+    state->theGotOne = false;
+
+    while (true)
+    {
+      try
+      {
+        result = GENV_STORE.parseJSON(*state->theStream, 0);
+      }
+      catch (zorba::XQueryException& e)
+      {
+        // rethrow with JNDY0021
+        XQueryException xq = XQUERY_EXCEPTION(
+            jerr::JNDY0021,
+            ERROR_PARAMS(e.what()),
+            ERROR_LOC(loc));
+
+        // use location of e in case of literal string
+        throw xq;
+      }
+      if (result != NULL)
+      {
+        if (!state->theGotOne)
+        {
+          state->theGotOne = true;
+          STACK_PUSH(true, state);
+        } else {
+          RAISE_ERROR(
+              jerr::JNDY0021,
+              loc,
+              ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
+        }
+      } else {
+        break;
+      }
+    }
+  }
+  
+  STACK_END(state);
+}
 
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

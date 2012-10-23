@@ -1,0 +1,49 @@
+Iterator tree for const-folded expr:
+<UDFunctionCallIterator>
+  <FnConcatIterator/>
+</UDFunctionCallIterator>
+
+Iterator tree for local:recursion:
+<flwor::FLWORIterator>
+  <LetVariable name="param" materialize="true">
+    <LetVarIterator varname="param"/>
+  </LetVariable>
+  <ReturnClause>
+    <IfThenElseIterator>
+      <FnBooleanIterator>
+        <LetVarIterator varname="param"/>
+      </FnBooleanIterator>
+      <UDFunctionCallIterator>
+        <FnConcatIterator/>
+      </UDFunctionCallIterator>
+      <SingletonIterator value="xs:boolean(false)"/>
+    </IfThenElseIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+
+Iterator tree for const-folded expr:
+<SingletonIterator value="xs:boolean(false)"/>
+
+Iterator tree for main query:
+<UDFunctionCallIterator>
+  <TreatIterator type="[NodeXQType elementNode content=[UserDefinedXQType   Content@http://foo.com/schemas/schema isComplex emptyContent base:[XQType ANY_TYPE_KIND*] ]]" quant="?">
+    <ValidateIterator>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(http://foo.com/schemas/schema,d,Content)"/>
+        <AttributeIterator qname="xs:QName(,,id)">
+          <SingletonIterator value="xs:string(foo)"/>
+        </AttributeIterator>
+      </ElementIterator>
+    </ValidateIterator>
+  </TreatIterator>
+</UDFunctionCallIterator>
+
+Iterator tree for local:recursion:
+<IfThenElseIterator>
+  <FnBooleanIterator>
+    <LetVarIterator varname="param"/>
+  </FnBooleanIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</IfThenElseIterator>
+
