@@ -47,9 +47,9 @@ PREPOST_RULE(RefactorPredFLWOR);
 
 PREPOST_RULE(MergeFLWOR);
 
-PREPOST_RULE(EliminateExtraneousPathSteps);
+  //PREPOST_RULE(MarkFreeVars);
 
-PREPOST_RULE(MarkFreeVars);
+PREPOST_RULE(EliminateExtraneousPathSteps);
 
 PREPOST_RULE(InlineFunctions);
 
@@ -100,6 +100,22 @@ public:
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
+#if 1
+/*******************************************************************************
+
+********************************************************************************/
+class MarkFreeVars : public RewriteRule
+{
+public:
+  MarkFreeVars()
+    :
+    RewriteRule(RewriteRule::MarkFreeVars, "MarkFreeVars")
+  {
+  }
+
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+#endif
 
 /*******************************************************************************
 

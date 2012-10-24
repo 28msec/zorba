@@ -110,16 +110,32 @@ void DataflowAnnotationsComputer::compute(expr* e)
   case while_expr_kind:         // TODO
     break;
 
-  case wrapper_expr_kind:
-    compute_wrapper_expr(static_cast<wrapper_expr *>(e));
+  case promote_expr_kind:
+  case castable_expr_kind:
+  case instanceof_expr_kind:
+  {
+    default_walk(e);
+    cast_or_castable_base_expr* ue = static_cast<cast_or_castable_base_expr*>(e);
+    PROPOGATE_SORTED_NODES(ue->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(ue->get_input(), e);
     break;
+  }
+
+  case wrapper_expr_kind:
+  {
+    default_walk(e);
+    wrapper_expr* ue = static_cast<wrapper_expr*>(e);
+    PROPOGATE_SORTED_NODES(ue->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(ue->get_input(), e);
+    break;
+  }
 
   case function_trace_expr_kind:
   {
     default_walk(e);
-    function_trace_expr* fte = static_cast<function_trace_expr*>(e);
-    PROPOGATE_SORTED_NODES(fte->get_expr(), e);
-    PROPOGATE_DISTINCT_NODES(fte->get_expr(), e);
+    function_trace_expr* ue = static_cast<function_trace_expr*>(e);
+    PROPOGATE_SORTED_NODES(ue->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(ue->get_input(), e);
     break;
   }
 
@@ -136,10 +152,6 @@ void DataflowAnnotationsComputer::compute(expr* e)
     compute_trycatch_expr(static_cast<trycatch_expr *>(e));
     break;
 
-  case promote_expr_kind:
-    compute_promote_expr(static_cast<promote_expr *>(e));
-    break;
-
   case if_expr_kind:
     compute_if_expr(static_cast<if_expr *>(e));
     break;
@@ -148,16 +160,8 @@ void DataflowAnnotationsComputer::compute(expr* e)
     compute_fo_expr(static_cast<fo_expr *>(e));
     break;
 
-  case instanceof_expr_kind:
-    compute_instanceof_expr(static_cast<instanceof_expr *>(e));
-    break;
-
   case treat_expr_kind:
     compute_treat_expr(static_cast<treat_expr *>(e));
-    break;
-
-  case castable_expr_kind:
-    compute_castable_expr(static_cast<castable_expr *>(e));
     break;
 
   case cast_expr_kind:
@@ -336,17 +340,6 @@ void DataflowAnnotationsComputer::compute_block_expr(block_expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute_wrapper_expr(wrapper_expr* e)
-{
-  default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_expr(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_expr(), e);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void DataflowAnnotationsComputer::compute_var_expr(var_expr* e)
 {
   if (!generic_compute(e))
@@ -451,17 +444,6 @@ void DataflowAnnotationsComputer::compute_trycatch_expr(trycatch_expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute_promote_expr(promote_expr* e)
-{
-  default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_input(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_input(), e);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void DataflowAnnotationsComputer::compute_if_expr(if_expr* e)
 {
   default_walk(e);
@@ -540,17 +522,6 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute_instanceof_expr(instanceof_expr *e)
-{
-  default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_input(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_input(), e);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void DataflowAnnotationsComputer::compute_treat_expr(treat_expr *e)
 {
   default_walk(e);
@@ -559,17 +530,6 @@ void DataflowAnnotationsComputer::compute_treat_expr(treat_expr *e)
     PROPOGATE_SORTED_NODES(e->get_input(), e);
     PROPOGATE_DISTINCT_NODES(e->get_input(), e);
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void DataflowAnnotationsComputer::compute_castable_expr(castable_expr *e)
-{
-  default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_input(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_input(), e);
 }
 
 
@@ -601,8 +561,8 @@ void DataflowAnnotationsComputer::compute_validate_expr(validate_expr* e)
   default_walk(e);
   if (!generic_compute(e))
   {
-    PROPOGATE_SORTED_NODES(e->get_expr(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_expr(), e);
+    PROPOGATE_SORTED_NODES(e->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
   }
 }
 

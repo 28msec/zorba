@@ -25,6 +25,9 @@
 #include "compiler/expression/pragma.h"
 #include "compiler/api/compilercb.h"
 
+#include "zorbamisc/ns_consts.h"
+
+
 namespace zorba
 {
 

@@ -736,9 +736,9 @@ static bool expandVars(
   {
     wrapper_expr* wrapper = reinterpret_cast<wrapper_expr*>(subExpr);
 
-    if (wrapper->get_expr()->get_expr_kind() == var_expr_kind)
+    if (wrapper->get_input()->get_expr_kind() == var_expr_kind)
     {
-      var_expr* var = reinterpret_cast<var_expr*>(wrapper->get_expr());
+      var_expr* var = reinterpret_cast<var_expr*>(wrapper->get_input());
       long varid = -1;
 
       if (rCtx.theVarIdMap->find(var) != rCtx.theVarIdMap->end())

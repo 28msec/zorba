@@ -40,6 +40,7 @@
 #include "zorba/internal/diagnostic.h"
 
 #include "context/static_context.h"
+#include "context/namespace_context.h"
 
 #include "types/casting.h"
 #include "types/typeimpl.h"

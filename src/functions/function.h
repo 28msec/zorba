@@ -145,6 +145,8 @@ public:
       resetFlag(FunctionConsts::isPrivate);
   }
 
+  bool isComparisonFunction() const { return testFlag(FunctionConsts::IsComparison); }
+
   bool isDeterministic() const
   {
     // Note: For udfs, the flag is set before the udf is optimized (see call
@@ -200,8 +202,6 @@ public:
   {
     return ArithmeticConsts::UNKNOWN;
   }
-
-  virtual bool isComparisonFunction() const { return false; }
 
   virtual bool isValueComparisonFunction() const { return false; }
 

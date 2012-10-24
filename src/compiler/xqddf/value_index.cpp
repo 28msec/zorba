@@ -29,6 +29,7 @@
 #include "compiler/expression/script_exprs.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
+#include "compiler/expression/expr_manager.h"
 #include "compiler/codegen/plan_visitor.h"
 
 #include "runtime/base/plan_iterator.h"

@@ -124,7 +124,6 @@ enum expr_kind_t
 ********************************************************************************/
 class expr
 {
-  friend class expr_iterator_data;
   friend class ExprIterator;
   friend class forletwin_clause;
   friend class for_clause;

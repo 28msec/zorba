@@ -564,7 +564,7 @@ static bool non_hoistable(const expr* e)
       k == axis_step_expr_kind ||
       k == match_expr_kind ||
       (k == wrapper_expr_kind &&
-       non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
+       non_hoistable(static_cast<const wrapper_expr*>(e)->get_input())) ||
       is_already_hoisted(e) ||
       is_enclosed_expr(e) ||
       e->containsRecursiveCall() ||

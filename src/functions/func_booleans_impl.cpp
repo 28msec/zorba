@@ -47,9 +47,8 @@ public:
     :
     function(sig, kind)
   {
+    setFlag(FunctionConsts::IsComparison);
   }
-
-  bool isComparisonFunction() const { return true; }
 
   virtual const char* comparison_name() const { return ""; }
 

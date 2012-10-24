@@ -51,7 +51,7 @@ class flwor_clause
   friend class ExprManager;
 
 public:
-  typedef std::vector<std::pair<expr*, var_expr*> > rebind_list_t;
+  typedef var_rebind_list_t rebind_list_t;
 
   typedef enum
   {
@@ -97,8 +97,6 @@ public:
   ClauseKind get_kind() const { return theKind; }
 
   flwor_expr* get_flwor_expr() const { return theFlworExpr; }
-
-  virtual expr* get_expr() const { return NULL; }
 
   virtual void set_expr(expr* v) { }
 
@@ -271,11 +269,8 @@ class window_clause : public forletwin_clause
   friend class ExprManager;
   friend class ExprIterator;
 
-public:
-  typedef enum { tumbling_window, sliding_window } window_t;
-
 protected:
-  window_t         theWindowKind;
+  WindowKind       theWindowKind;
   flwor_wincond  * theWinStartCond;
   flwor_wincond  * theWinStopCond;
   bool             theLazyEval;
@@ -285,7 +280,7 @@ protected:
         static_context* sctx,
         CompilerCB* ccb,
         const QueryLoc& loc,
-        window_t winKind,
+        WindowKind winKind,
         var_expr* varExpr,
         expr* domainExpr,
         flwor_wincond* winStart,
@@ -295,7 +290,7 @@ protected:
 public:
   ~window_clause();
 
-  window_t get_winkind() const { return theWindowKind; }
+  WindowKind get_winkind() const { return theWindowKind; }
 
   flwor_wincond* get_win_start() const { return theWinStartCond; }
 
@@ -310,6 +305,32 @@ public:
   bool lazyEval() const { return theLazyEval; }
 
   flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+struct flwor_wincond_vars
+{
+  var_expr* posvar;
+  var_expr* curr;
+  var_expr* prev;
+  var_expr* next;
+
+  flwor_wincond_vars();
+
+  ~flwor_wincond_vars();
+
+  void set_flwor_clause(flwor_clause* c);
+
+  void clone(
+      ExprManager* mgr,
+      user_function* udf,
+      flwor_wincond_vars& cloneVars,
+      expr::substitution_t& subst) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -353,27 +374,7 @@ class flwor_wincond
   friend class ExprIterator;
 
 public:
-  struct vars
-  {
-    var_expr* posvar;
-    var_expr* curr;
-    var_expr* prev;
-    var_expr* next;
-
-    vars();
-
-    ~vars();
-
-    void set_flwor_clause(flwor_clause* c);
-
-    void clone(
-      ExprManager* mgr,
-      user_function* udf,
-      vars& cloneVars,
-      expr::substitution_t& subst) const;
-
-    std::ostream& put(std::ostream&) const;
-  };
+  typedef flwor_wincond_vars vars;
 
 protected:
   bool         theIsOnly;
@@ -456,7 +457,7 @@ protected:
       CompilerCB* ccb,
       const QueryLoc& loc,
       const rebind_list_t& gvars,
-      rebind_list_t ngvars,
+      const rebind_list_t& ngvars,
       const std::vector<std::string>& collations);
 
 public:

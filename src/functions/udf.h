@@ -19,11 +19,13 @@
 
 #include "functions/function.h"
 
-#include "compiler/expression/expr_base.h"
+//#include "compiler/expression/expr_base.h"
 
 
 namespace zorba
 {
+
+  class expr;
 
   namespace store
   {
