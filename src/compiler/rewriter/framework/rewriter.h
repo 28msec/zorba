@@ -29,12 +29,10 @@ class Rewriter : public SimpleRCObject
 {
 public:
   Rewriter() {}
+
   virtual ~Rewriter() { }
 
   virtual bool rewrite(RewriterContext& rCtx) = 0;
-
-protected:
-  CompilerCB::config::opt_level_t theOptLevel;
 };
 
 }

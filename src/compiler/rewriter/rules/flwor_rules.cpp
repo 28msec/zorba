@@ -23,6 +23,7 @@
 #include "compiler/rewriter/tools/expr_tools.h"
 
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr.h"
 
@@ -239,19 +240,22 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
       if (clause->get_kind() == flwor_clause::where_clause)
       {
-        whereExpr = clause->get_expr();
+        whereExpr = static_cast<where_clause*>(clause)->get_expr();
         const expr::FreeVars& whereVars = whereExpr->getFreeVars();
 
-        if (myVars.empty())
-          flwor.get_vars(myVars);
+        csize k = 0;
+        expr::FreeVars::const_iterator ite = whereVars.begin();
+        expr::FreeVars::const_iterator end = whereVars.end();
+        for (; ite != end; ++ite)
+        {
+          flwor_clause* vc = (*ite)->get_flwor_clause();
+          if (vc != NULL && vc->get_flwor_expr() == flworp)
+            break;
 
-        expr::FreeVars diff;
-        std::set_intersection(myVars.begin(),
-                              myVars.end(),
-                              whereVars.begin(),
-                              whereVars.end(),
-                              std::inserter(diff, diff.begin()));
-        if (diff.empty())
+          ++k;
+        }
+
+        if (k == whereVars.size())
         {
           flwor.remove_clause(i);
 
@@ -522,7 +526,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     }
     else if (clause->get_kind() == flwor_clause::where_clause)
     {
-      expr* whereExpr = clause->get_expr();
+      expr* whereExpr = static_cast<where_clause*>(clause)->get_expr();
 
       //TODO: Consider case where both whereExpr and whereCond ar AND ops
       if (whereCond == NULL)
@@ -638,7 +642,7 @@ static bool is_trivial_expr(const expr* e)
   }
   case wrapper_expr_kind:
   {
-    return is_trivial_expr(static_cast<const wrapper_expr*>(e)->get_expr());
+    return is_trivial_expr(static_cast<const wrapper_expr*>(e)->get_input());
   }
   default:
     return false;
@@ -709,10 +713,6 @@ static bool safe_to_fold_single_use(
           domExpr->get_return_type()->max_card() >= 2)
         return false;
 
-      // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
-      //if (hasNodeConstr && fc.get_expr()->contains_node_construction())
-      //  return false;
-
       break;
     }
     case flwor_clause::where_clause:
@@ -722,9 +722,11 @@ static bool safe_to_fold_single_use(
 
       assert(varQuant == TypeConstants::QUANT_ONE);
 
-      if (std::find(refpath.begin(), refpath.end(), clause->get_expr()) != refpath.end())
+      expr* whereExpr = static_cast<const where_clause*>(clause)->get_expr();
+
+      if (std::find(refpath.begin(), refpath.end(), whereExpr) != refpath.end())
       {
-        referencingExpr = clause->get_expr();
+        referencingExpr = whereExpr;
         break;
       }
 
@@ -1324,7 +1326,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
       if (clause->get_kind() != flwor_clause::where_clause)
         continue;
 
-      expr* whereExpr = clause->get_expr();
+      expr* whereExpr = static_cast<where_clause*>(clause)->get_expr();
 
       expr* posExpr = NULL;
       var_expr* posVar = NULL;
@@ -1807,24 +1809,22 @@ RULE_REWRITE_PRE(MergeFLWOR)
   {
     bool merge = false;
     flwor_expr* nestedFlwor = NULL;
-    ulong numNestedClauses;
+    csize numNestedClauses;
 
     flwor_clause* c = flwor->get_clause(i);
 
-    expr* domainExpr = c->get_expr();
-
-    if (domainExpr != NULL &&
-        domainExpr->get_expr_kind() == flwor_expr_kind &&
-        !domainExpr->is_sequential())
+    if (c->get_kind() == flwor_clause::let_clause)
     {
-      nestedFlwor = static_cast<flwor_expr*>(c->get_expr());
-      numNestedClauses = nestedFlwor->num_clauses();
+      expr* domainExpr = static_cast<let_clause*>(c)->get_expr();
 
-      if (c->get_kind() == flwor_clause::let_clause)
+      if (domainExpr->get_expr_kind() == flwor_expr_kind &&
+          !domainExpr->is_sequential())
       {
+        nestedFlwor = static_cast<flwor_expr*>(domainExpr);
+        numNestedClauses = nestedFlwor->num_clauses();
         merge = true;
 
-        for (ulong j = 0; j < numNestedClauses; ++j)
+        for (csize j = 0; j < numNestedClauses; ++j)
         {
           flwor_clause* nestedClause = nestedFlwor->get_clause(j);
           flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
@@ -1832,7 +1832,7 @@ RULE_REWRITE_PRE(MergeFLWOR)
           if (nestedClauseKind == flwor_clause::for_clause)
           {
             xqtref_t nestedDomainType =
-              nestedClause->get_expr()->get_return_type();
+            static_cast<for_clause*>(nestedClause)->get_expr()->get_return_type();
 
             if (nestedDomainType->get_quantifier() != TypeConstants::QUANT_ONE)
             {
@@ -1847,12 +1847,20 @@ RULE_REWRITE_PRE(MergeFLWOR)
           }
         }
       }
-      else if (c->get_kind() == flwor_clause::for_clause &&
-               c->get_pos_var() == NULL)
+    }
+    else if (c->get_kind() == flwor_clause::for_clause &&
+             static_cast<for_clause*>(c)->get_pos_var() == NULL)
+    {
+      expr* domainExpr = static_cast<for_clause*>(c)->get_expr();
+
+      if (domainExpr->get_expr_kind() == flwor_expr_kind &&
+          !domainExpr->is_sequential())
       {
+        nestedFlwor = static_cast<flwor_expr*>(domainExpr);
+        numNestedClauses = nestedFlwor->num_clauses();
         merge = true;
 
-        for (ulong j = 0; j < numNestedClauses; ++j)
+        for (csize j = 0; j < numNestedClauses; ++j)
         {
           flwor_clause* nestedClause = nestedFlwor->get_clause(j);
           flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();

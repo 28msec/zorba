@@ -271,7 +271,8 @@ typedef enum
   mustCopyInputNodes   = 128,
   AccessesDynCtx       = 256,
   ConstructsNodes      = 512,
-  DereferencesNodes    = 1024
+  DereferencesNodes    = 1024,
+  IsComparison         = 2048
 } AnnotationFlags;
 
 };

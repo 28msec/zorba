@@ -188,7 +188,7 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
   {
     wrapper_expr* wrapper = reinterpret_cast<wrapper_expr*>(e);
 
-    if (wrapper->get_expr() == oldVar)
+    if (wrapper->get_input() == oldVar)
     {
       wrapper->set_expr(newVar);
       return;

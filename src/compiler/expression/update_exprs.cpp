@@ -18,6 +18,7 @@
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "compiler/api/compilercb.h"
 

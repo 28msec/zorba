@@ -25,6 +25,7 @@
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -111,7 +112,7 @@ void forletwin_clause::set_var(var_expr* v)
                           theDomainExpr->get_loc(),
                           theDomainExpr,
                           varType,
-                          TreatIterator::TYPE_MATCH);
+                          TREAT_TYPE_MATCH);
       }
     }
   }
@@ -180,7 +181,7 @@ for_clause::for_clause(
                             loc,
                             domainExpr,
                             declaredType,
-                            TreatIterator::TYPE_MATCH);
+                            TREAT_TYPE_MATCH);
 
           set_expr(domainExpr);
         }
@@ -307,7 +308,7 @@ let_clause::let_clause(
                           loc,
                           domainExpr,
                           declaredType,
-                          TreatIterator::TYPE_MATCH);
+                          TREAT_TYPE_MATCH);
 
         set_expr(domainExpr);
       }
@@ -370,7 +371,7 @@ window_clause::window_clause(
     static_context* sctx,
     CompilerCB* ccb,
     const QueryLoc& loc,
-    window_t winKind,
+    WindowKind winKind,
     var_expr* varExpr,
     expr* domainExpr,
     flwor_wincond* winStart,
@@ -412,7 +413,7 @@ window_clause::window_clause(
                           loc,
                           domainExpr,
                           varType,
-                          TreatIterator::TYPE_MATCH);
+                          TREAT_TYPE_MATCH);
 
         set_expr(domainExpr);
       }
@@ -523,7 +524,7 @@ flwor_wincond::~flwor_wincond()
 }
 
 
-flwor_wincond::vars::vars()
+flwor_wincond_vars::flwor_wincond_vars()
   :
   posvar(NULL),
   curr(NULL),
@@ -533,13 +534,13 @@ flwor_wincond::vars::vars()
 }
 
 
-flwor_wincond::vars::~vars()
+flwor_wincond_vars::~flwor_wincond_vars()
 {
 //  set_flwor_clause(NULL);
 }
 
 
-void flwor_wincond::vars::set_flwor_clause(flwor_clause* c)
+void flwor_wincond_vars::set_flwor_clause(flwor_clause* c)
 {
   if (posvar != NULL) posvar->set_flwor_clause(c);
   if (curr != NULL) curr->set_flwor_clause(c);
@@ -548,7 +549,7 @@ void flwor_wincond::vars::set_flwor_clause(flwor_clause* c)
 }
 
 
-void flwor_wincond::vars::clone(
+void flwor_wincond_vars::clone(
     ExprManager* mgr,
     user_function* udf,
     flwor_wincond::vars& cloneVars,
@@ -619,7 +620,7 @@ group_clause::group_clause(
      CompilerCB* ccb,
      const QueryLoc& loc,
      const rebind_list_t& gvars,
-     rebind_list_t ngvars,
+     const rebind_list_t& ngvars,
      const std::vector<std::string>& collations)
   :
   flwor_clause(sctx, ccb, loc, flwor_clause::group_clause),
@@ -808,6 +809,8 @@ count_clause::count_clause(
   flwor_clause(sctx, ccb, loc, flwor_clause::count_clause),
   theVarExpr(var)
 {
+  if (theVarExpr != NULL)
+    theVarExpr->set_flwor_clause(this);
 }
 
 

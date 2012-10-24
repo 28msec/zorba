@@ -154,9 +154,9 @@ wrapper_expr::put(std::ostream& os) const
   get_expr()->put(os);
   return os;
 #else
-  if (get_expr()->get_expr_kind() == var_expr_kind)
+  if (get_input()->get_expr_kind() == var_expr_kind)
   {
-    const var_expr* varExpr = static_cast<const var_expr*>(get_expr());
+    const var_expr* varExpr = static_cast<const var_expr*>(get_input());
 
     BEGIN_PUT_NO_EOL(var_ref) ;
     put_qname(varExpr->get_name(), os);
@@ -165,8 +165,8 @@ wrapper_expr::put(std::ostream& os) const
   }
   else
   {
-    BEGIN_PUT( wrapper_expr );
-    get_expr()->put(os);
+    BEGIN_PUT(wrapper_expr);
+    get_input()->put(os);
     END_PUT();
   }
 #endif
@@ -440,7 +440,7 @@ ostream& promote_expr::put(ostream& os) const
 {
   os << indent << "promote_expr " << theTargetType->toString()
      << expr_addr (this) << " [\n" << inc_indent;
-  theInputExpr->put(os);
+  theInput->put(os);
   END_PUT();
 }
 
@@ -491,7 +491,7 @@ ostream& eval_expr::put(ostream& os) const
 ostream& function_trace_expr::put(ostream& os) const
 {
   BEGIN_PUT(function_trace_expr);
-  theExpr->put(os);
+  theInput->put(os);
   END_PUT();
 }
 
@@ -599,28 +599,28 @@ ostream& dynamic_function_invocation_expr::put(ostream& os) const
 ostream& instanceof_expr::put( ostream& os) const
 {
   BEGIN_PUT1( instanceof_expr, theTargetType->toString() );
-  theInputExpr->put(os);
+  theInput->put(os);
   END_PUT();
 }
 
 ostream& treat_expr::put( ostream& os) const
 {
   BEGIN_PUT1( treat_expr, theTargetType->toString() );
-  theInputExpr->put(os);
+  theInput->put(os);
   END_PUT();
 }
 
 ostream& castable_expr::put( ostream& os) const
 {
   BEGIN_PUT1( castable_expr, theTargetType->toString() );
-  theInputExpr->put(os);
+  theInput->put(os);
   END_PUT();
 }
 
 ostream& cast_expr::put( ostream& os) const
 {
   BEGIN_PUT1( cast_expr, theTargetType->toString() );
-  theInputExpr->put(os);
+  theInput->put(os);
   END_PUT();
 }
 
@@ -643,7 +643,7 @@ ostream& validate_expr::put(ostream& os) const
   case ParseConstants::val_typename: os << "typename\n"; break;
   default: os << "??\n";
   }
-  theExpr->put(os) << endl;
+  theInput->put(os) << endl;
   END_PUT();
 }
 
@@ -796,16 +796,16 @@ ostream& const_expr::put(ostream& os) const
 
 ostream& order_expr::put(ostream& os) const
 {
-  os << indent << "order_expr" << expr_addr (this) << "\n" << inc_indent
+  os << indent << "order_expr" << expr_addr(this) << "\n" << inc_indent
      << indent << "[ ";
 
   switch (theType)
   {
-  case ordered: os << "ordered\n"; break;
-  case unordered: os << "unordered\n"; break;
+  case doc_ordered: os << "ordered\n"; break;
+  case doc_unordered: os << "unordered\n"; break;
   default: os << "??\n";
   }
-  theExpr->put(os) << endl;
+  theInput->put(os) << endl;
   END_PUT();
 }
 

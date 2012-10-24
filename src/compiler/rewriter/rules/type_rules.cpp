@@ -188,7 +188,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
                                            node->get_loc(),
                                            arg,
                                            target_type,
-                                           TreatIterator::TYPE_MATCH,
+                                           TREAT_TYPE_MATCH,
                                            false); // do not check the prime types
     }
 
@@ -268,7 +268,7 @@ RULE_REWRITE_POST(SpecializeOperations)
                               argExpr->get_loc(),
                               argExpr,
                               rtm.DOUBLE_TYPE_STAR,
-                              PromoteIterator::FUNC_PARAM,
+                              PROMOTE_FUNC_PARAM,
                               replacement->getName());
 
           fo->set_arg(0, promoteExpr);
@@ -570,7 +570,7 @@ static expr* wrap_in_num_promotion(
                                          arg->get_loc(),
                                          arg,
                                          t,
-                                         PromoteIterator::FUNC_PARAM,
+                                         PROMOTE_FUNC_PARAM,
                                          fn->getName());
 }
 

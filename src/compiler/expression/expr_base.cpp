@@ -20,6 +20,7 @@
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
+#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/expression/expr_manager.h"
@@ -155,6 +156,7 @@ expr::expr(
   // This is the default. The constructors for certain exprs set different values.
   setNonDiscardable(ANNOTATION_FALSE);
   setUnfoldable(ANNOTATION_FALSE);
+  setContainsRecursiveCall(ANNOTATION_FALSE);
   setConstructsNodes(ANNOTATION_FALSE);
   setDereferencesNodes(ANNOTATION_FALSE);
 }
@@ -766,8 +768,7 @@ const var_expr* expr::get_var() const
 
   while (kind == wrapper_expr_kind)
   {
-    const wrapper_expr* wrapperExpr = static_cast<const wrapper_expr*>(currExpr);
-    currExpr = wrapperExpr->get_expr();
+    currExpr = static_cast<const wrapper_expr*>(currExpr)->get_input();
     kind = currExpr->get_expr_kind();
   }
 
@@ -834,14 +835,14 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
   case order_expr_kind:
   {
-    const order_expr* orderExpr = static_cast<const order_expr *>(this);
-    return orderExpr->get_expr()->is_map_internal(e, found);
+    return static_cast<const order_expr*>(this)->get_input()->
+           is_map_internal(e, found);
   }
 
   case wrapper_expr_kind:
   {
-    const wrapper_expr* wrapperExpr = static_cast<const wrapper_expr *>(this);
-    return wrapperExpr->get_expr()->is_map_internal(e, found);
+    return static_cast<const wrapper_expr*>(this)->get_input()->
+           is_map_internal(e, found);
   }
 
   case const_expr_kind:
@@ -896,7 +897,9 @@ bool expr::is_map_internal(const expr* e, bool& found) const
         if (found)
           break;
 
-        if (clause->get_expr()->is_map_internal(e, found) && found)
+        const for_clause* fc = static_cast<const for_clause*>(clause);
+
+        if (fc->get_expr()->is_map_internal(e, found) && found)
         {
           break;
         }
@@ -908,12 +911,25 @@ bool expr::is_map_internal(const expr* e, bool& found) const
         break;
       }
       case flwor_clause::let_clause:
+      {
+        if (found)
+          break;
+
+        const let_clause* lc = static_cast<const let_clause*>(clause);
+
+        if (lc->get_expr()->contains_expr(e))
+          return false;
+
+        break;
+      }
       case flwor_clause::where_clause:
       {
         if (found)
           break;
 
-        if (clause->get_expr()->contains_expr(e))
+        const where_clause* wc = static_cast<const where_clause*>(clause);
+
+        if (wc->get_expr()->contains_expr(e))
           return false;
 
         break;
@@ -923,10 +939,11 @@ bool expr::is_map_internal(const expr* e, bool& found) const
         if (found)
           break;
 
-        if (clause->get_expr()->contains_expr(e))
+        const window_clause* wc = static_cast<const window_clause*>(clause);
+
+        if (wc->get_expr()->contains_expr(e))
           return false;
 
-        const window_clause* wc = static_cast<const window_clause*>(clause);
         flwor_wincond* startCond = wc->get_win_start();
         flwor_wincond* stopCond = wc->get_win_stop();
 

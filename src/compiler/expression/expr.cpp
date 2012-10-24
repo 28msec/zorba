@@ -174,12 +174,12 @@ order_expr::order_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    order_type_t type,
-    expr* inExpr)
+    DocOrderMode type,
+    expr* input)
   :
   expr(ccb, sctx, udf, loc, order_expr_kind),
-  theType(type),
-  theExpr(inExpr)
+  theInput(input),
+  theType(type)
 {
   compute_scripting_kind();
 }
@@ -187,7 +187,7 @@ order_expr::order_expr(
 
 void order_expr::compute_scripting_kind()
 {
-  theScriptingKind = theExpr->get_scripting_detail();
+  theScriptingKind = theInput->get_scripting_detail();
 
   if (is_vacuous())
     theScriptingKind = SIMPLE_EXPR;
@@ -204,14 +204,14 @@ validate_expr::validate_expr(
     const QueryLoc& loc,
     enum ParseConstants::validation_mode_t mode,
     const store::Item_t& typeName,
-    expr* inExpr,
+    expr* input,
     rchandle<TypeManager> typemgr)
   :
   expr(ccb, sctx, udf, loc, validate_expr_kind),
+  theInput(input),
   theMode(mode),
   theTypeName(typeName),
-  theTypeMgr(typemgr),
-  theExpr(inExpr)
+  theTypeMgr(typemgr)
 {
   compute_scripting_kind();
 }
@@ -219,9 +219,9 @@ validate_expr::validate_expr(
 
 void validate_expr::compute_scripting_kind()
 {
-  checkNonUpdating(theExpr);
+  checkNonUpdating(theInput);
 
-  theScriptingKind = theExpr->get_scripting_detail();
+  theScriptingKind = theInput->get_scripting_detail();
 
   if (is_vacuous())
     theScriptingKind = SIMPLE_EXPR;
@@ -266,7 +266,7 @@ cast_or_castable_base_expr::cast_or_castable_base_expr(
     const xqtref_t& type)
   :
   expr(ccb, sctx, udf, loc, kind),
-  theInputExpr(input),
+  theInput(input),
   theTargetType(type)
 {
   assert(type != NULL);
@@ -290,9 +290,9 @@ void cast_or_castable_base_expr::set_target_type(xqtref_t target)
 
 void cast_or_castable_base_expr::compute_scripting_kind()
 {
-  checkNonUpdating(theInputExpr);
+  checkNonUpdating(theInput);
 
-  theScriptingKind = theInputExpr->get_scripting_detail();
+  theScriptingKind = theInput->get_scripting_detail();
 
   if (is_vacuous())
     theScriptingKind = SIMPLE_EXPR;
@@ -355,7 +355,7 @@ treat_expr::treat_expr(
     const QueryLoc& loc,
     expr* inputExpr,
     const xqtref_t& type,
-    TreatIterator::ErrorKind err,
+    TreatErrorKind err,
     bool check_prime,
     store::Item* qname)
   :
@@ -378,7 +378,7 @@ promote_expr::promote_expr(
     const QueryLoc& loc,
     expr* input,
     const xqtref_t& type,
-    PromoteIterator::ErrorKind err,
+    PromoteErrorKind err,
     store::Item* qname)
   :
   cast_base_expr(ccb, sctx, udf, loc, promote_expr_kind, input, type),
@@ -663,7 +663,7 @@ text_expr::text_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    text_constructor_type type_arg,
+    TextConstructorType type_arg,
     expr* content)
   :
   expr(ccb, sctx, udf, loc, text_expr_kind),
@@ -743,10 +743,10 @@ wrapper_expr::wrapper_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    expr* wrapped)
+    expr* input)
   :
   expr(ccb, sctx, udf, loc, wrapper_expr_kind),
-  theWrappedExpr(wrapped)
+  theInput(input)
 {
   compute_scripting_kind();
 }
@@ -754,7 +754,7 @@ wrapper_expr::wrapper_expr(
 
 void wrapper_expr::compute_scripting_kind()
 {
-  theScriptingKind = theWrappedExpr->get_scripting_detail();
+  theScriptingKind = theInput->get_scripting_detail();
 }
 
 
@@ -1105,6 +1105,14 @@ void eval_expr::compute_scripting_kind()
 }
 
 
+void eval_expr::add_var(var_expr* var)
+{
+  theOuterVarNames.push_back(var->get_name());
+  theOuterVarTypes.push_back(var->get_return_type());
+  theArgs.push_back(var);
+}
+
+
 #ifdef ZORBA_WITH_DEBUGGER
 /*******************************************************************************
 
@@ -1131,6 +1139,13 @@ void debugger_expr::compute_scripting_kind()
   theScriptingKind = theExpr->get_scripting_detail();
 }
 
+
+void debugger_expr::add_var(var_expr* var, expr* arg)
+{
+  theVars.push_back(var);
+  theArgs.push_back(arg);
+}
+
 #endif
 
 
@@ -1142,10 +1157,10 @@ function_trace_expr::function_trace_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    expr* aChild)
+    expr* input)
   :
-  expr(ccb, sctx, udf, loc, aChild->get_expr_kind()),
-  theExpr(aChild),
+  expr(ccb, sctx, udf, loc, function_trace_expr_kind),
+  theInput(input),
   theFunctionArity(0)
 {
   bool modified;
@@ -1154,14 +1169,14 @@ function_trace_expr::function_trace_expr(
 }
 
 
-function_trace_expr::function_trace_expr(user_function* udf, expr* aExpr)
+function_trace_expr::function_trace_expr(user_function* udf, expr* input)
   :
-  expr(aExpr->get_ccb(),
-       aExpr->get_sctx(),
+  expr(input->get_ccb(),
+       input->get_sctx(),
        udf,
-       aExpr->get_loc(),
+       input->get_loc(),
        function_trace_expr_kind),
-  theExpr(aExpr),
+  theInput(input),
   theFunctionArity(0)
 {
   bool modified;
@@ -1177,7 +1192,7 @@ function_trace_expr::~function_trace_expr()
 
 void function_trace_expr::compute_scripting_kind()
 {
-  theScriptingKind = theExpr->get_scripting_detail();
+  theScriptingKind = theInput->get_scripting_detail();
 }
 
 

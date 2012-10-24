@@ -17,6 +17,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/expr_manager.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"

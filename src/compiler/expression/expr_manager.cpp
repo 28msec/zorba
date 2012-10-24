@@ -179,7 +179,7 @@ order_expr* ExprManager::create_order_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    order_expr::order_type_t order,
+    DocOrderMode order,
     expr* exp)
 {
   CREATE_AND_RETURN_EXPR(order_expr, sctx, udf, loc, order, exp);
@@ -216,7 +216,7 @@ treat_expr* ExprManager::create_treat_expr(
     const QueryLoc& loc,
     expr* treated,
     const xqtref_t& type,
-    TreatIterator::ErrorKind err,
+    TreatErrorKind err,
     bool check_prime,
     store::Item* qname)
 {
@@ -231,7 +231,7 @@ promote_expr* ExprManager::create_promote_expr(
     const QueryLoc& loc,
     expr* promoted,
     const xqtref_t& type,
-    PromoteIterator::ErrorKind err,
+    PromoteErrorKind err,
     store::Item* qname)
 {
   CREATE_AND_RETURN_EXPR(promote_expr, sctx, udf, loc, promoted, type, err, qname);
@@ -329,7 +329,7 @@ text_expr* ExprManager::create_text_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    text_expr::text_constructor_type textType,
+    TextConstructorType textType,
     expr* text)
 {
   CREATE_AND_RETURN_EXPR(text_expr, sctx, udf, loc, textType, text);
@@ -538,10 +538,15 @@ var_expr* ExprManager::create_var_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    var_expr::var_kind k,
+    ulong varKind,
     store::Item* name)
 {
-  CREATE_AND_RETURN_EXPR(var_expr, sctx, udf, loc, k, name);
+  CREATE_AND_RETURN_EXPR(var_expr,
+                         sctx,
+                         udf,
+                         loc,
+                         static_cast<var_expr::var_kind>(varKind),
+                         name);
 }
 
 
@@ -729,7 +734,7 @@ flowctl_expr* ExprManager::create_flowctl_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    flowctl_expr::action action)
+    FlowCtlAction action)
 {
   CREATE_AND_RETURN_EXPR(flowctl_expr, sctx, udf, loc, action);
 }
@@ -908,7 +913,7 @@ let_clause* ExprManager::create_let_clause(
 window_clause* ExprManager::create_window_clause(
     static_context* sctx,
     const QueryLoc& loc,
-    window_clause::window_t winKind,
+    WindowKind winKind,
     var_expr* varExpr,
     expr* domainExpr,
     flwor_wincond* winStart,
@@ -935,7 +940,7 @@ group_clause* ExprManager::create_group_clause(
     static_context* sctx,
     const QueryLoc& loc,
     const flwor_clause::rebind_list_t& gvars,
-    flwor_clause::rebind_list_t ngvars,
+    const flwor_clause::rebind_list_t& ngvars,
     const std::vector<std::string>& collations)
 {
   CREATE_AND_RETURN(group_clause, sctx, theCCB,  loc, gvars, ngvars, collations);

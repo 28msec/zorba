@@ -19,17 +19,37 @@
 #define ZORBA_COMPILER_EXPRMANAGER_H
 
 #include "expr_classes.h"
-#include "expr.h"
-#include "script_exprs.h"
-#include "flwor_expr.h"
-#include "ftnode.h"
-
+#include "expr_consts.h"
+#include "expr_utils.h"
 #include "mem_manager.h"
+
+#include "compiler/parser/parse_constants.h"
+
+#include "zorbatypes/schema_types.h"
+
+#include "store/api/update_consts.h"
+
 
 namespace zorba
 {
 
 class CompilerCB;
+class expr;
+class var_expr;
+class catch_clause;
+class pragma;
+class flwor_clause;
+class flwor_wincond;
+class copy_clause;
+class window_clause;
+class group_clause;
+class where_clause;
+class count_clause;
+class orderby_clause;
+class materialize_clause;
+struct flwor_wincond_vars;
+class ftnode;
+
 
 
 class ExprManager
@@ -86,7 +106,7 @@ public:
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      order_expr::order_type_t,
+      DocOrderMode,
       expr*);
 
   validate_expr* create_validate_expr(
@@ -111,7 +131,7 @@ public:
       const QueryLoc& loc,
       expr* input,
       const xqtref_t& type,
-      TreatIterator::ErrorKind err,
+      TreatErrorKind err,
       bool check_prime = true,
       store::Item* qnname = NULL);
 
@@ -122,7 +142,7 @@ public:
       const QueryLoc& loc,
       expr* input,
       const xqtref_t& type,
-      PromoteIterator::ErrorKind err,
+      PromoteErrorKind err,
       store::Item* qname);
 
   castable_expr* create_castable_expr(
@@ -185,7 +205,7 @@ public:
       static_context* sctx,
       user_function* udf,
       const QueryLoc&,
-      text_expr::text_constructor_type,
+      TextConstructorType,
       expr*);
 
   pi_expr* create_pi_expr(
@@ -312,7 +332,7 @@ public:
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      var_expr::var_kind k,
+      ulong varKind,
       store::Item* name);
 
   var_expr* create_var_expr(user_function* udf, const var_expr& source);
@@ -427,7 +447,7 @@ public:
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      flowctl_expr::action action);
+      FlowCtlAction action);
 
   while_expr* create_while_expr(
       static_context* sctx,
@@ -479,7 +499,7 @@ public:
       user_function* udf,
       QueryLoc const&,
       expr* range,
-      ftnode *ftselection,
+      ftnode* ftselection,
       expr* ftignore);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -539,7 +559,7 @@ public:
   window_clause* create_window_clause(
       static_context* sctx,
       const QueryLoc& loc,
-      window_clause::window_t winKind,
+      WindowKind winKind,
       var_expr* varExpr,
       expr* domainExpr,
       flwor_wincond* winStart,
@@ -549,15 +569,15 @@ public:
   flwor_wincond* create_flwor_wincond(
       static_context* sctx,
       bool isOnly,
-      const flwor_wincond::vars& in_vars,
-      const flwor_wincond::vars& out_vars,
+      const flwor_wincond_vars& in_vars,
+      const flwor_wincond_vars& out_vars,
       expr* cond);
 
   group_clause* create_group_clause(
       static_context* sctx,
       const QueryLoc& loc,
-      const flwor_clause::rebind_list_t& gvars,
-      flwor_clause::rebind_list_t ngvars,
+      const var_rebind_list_t& gvars,
+      const var_rebind_list_t& ngvars,
       const std::vector<std::string>& collations);
 
   orderby_clause * create_orderby_clause (

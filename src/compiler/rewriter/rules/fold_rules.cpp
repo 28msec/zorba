@@ -51,8 +51,6 @@
 
 namespace zorba {
 
-static void remove_wincond_vars(const flwor_wincond*, expr::FreeVars&);
-
 static bool standalone_expr(expr*);
 
 static bool already_folded(expr*, RewriterContext&);
@@ -236,83 +234,81 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     iter.next();
   }
 
+  switch (node->get_expr_kind())
+  {
+  case fo_expr_kind:
+  {
+    fo_expr* fo = static_cast<fo_expr *>(node);
+    function* f = fo->get_func();
+        
+    if (!f->isUdf())
+    {
+      if (FunctionConsts::FN_ERROR_0 <= f->getKind() &&
+          f->getKind() <= FunctionConsts::FN_TRACE_2)
+      {
+        curNonDiscardable = ANNOTATION_TRUE_FIXED;
+        curUnfoldable = ANNOTATION_TRUE_FIXED;
+      }
+      else if (f->getKind() == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
+      {
+        curDereferencesNodes = ANNOTATION_TRUE;
+      }
+      
+      // Do not fold functions that always require access to the dynamic context,
+      // or may need to access the implicit timezone (which is also in the dynamic
+      // constext).
+      if (saveUnfoldable != ANNOTATION_TRUE_FIXED &&
+          (f->accessesDynCtx() ||
+           maybe_needs_implicit_timezone(fo) ||
+           !f->isDeterministic()))
+      {
+        curUnfoldable = ANNOTATION_TRUE_FIXED;
+      }
+    }
+    else if (theIsLocal)
+    {
+      curUnfoldable = saveUnfoldable;
+      curDereferencesNodes = saveDereferencesNodes;
+      curConstructsNodes = saveConstructsNodes;
+    }
+    else
+    {
+      if (saveUnfoldable != ANNOTATION_TRUE_FIXED &&
+          (f->accessesDynCtx() || !f->isDeterministic()))
+      {
+        curUnfoldable = ANNOTATION_TRUE_FIXED;
+      }
+      
+      if (static_cast<user_function*>(f)->dereferencesNodes())
+        curDereferencesNodes = ANNOTATION_TRUE;
+      
+      if (static_cast<user_function*>(f)->constructsNodes())
+        curConstructsNodes = ANNOTATION_TRUE;
+    }
+    
+    break;
+  }
+  
+  case var_expr_kind:
+  {
+    var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
+    
+    if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
+      curUnfoldable = ANNOTATION_TRUE_FIXED;
+    
+    break;
+  }
+  
+  default:
+  {
+    break;
+  }
+  }
+
   if (node->is_sequential())
   {
     curNonDiscardable = ANNOTATION_TRUE_FIXED;
     curUnfoldable = ANNOTATION_TRUE_FIXED;
-  }
-  else
-  {
-    switch (node->get_expr_kind())
-    {
-    case fo_expr_kind:
-    {
-      fo_expr* fo = static_cast<fo_expr *>(node);
-      function* f = fo->get_func();
-        
-      if (!f->isUdf())
-      {
-        if (FunctionConsts::FN_ERROR_0 <= f->getKind() &&
-            f->getKind() <= FunctionConsts::FN_TRACE_2)
-        {
-          curNonDiscardable = ANNOTATION_TRUE_FIXED;
-          curUnfoldable = ANNOTATION_TRUE_FIXED;
-        }
-        else if (f->getKind() == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
-        {
-          curDereferencesNodes = ANNOTATION_TRUE;
-        }
-
-        // Do not fold functions that always require access to the dynamic context,
-        // or may need to access the implicit timezone (which is also in the dynamic
-        // constext).
-        if (saveUnfoldable != ANNOTATION_TRUE_FIXED &&
-            (f->accessesDynCtx() ||
-             maybe_needs_implicit_timezone(fo) ||
-             !f->isDeterministic()))
-        {
-          curUnfoldable = ANNOTATION_TRUE_FIXED;
-        }
-      }
-      else if (theIsLocal)
-      {
-        curUnfoldable = saveUnfoldable;
-        curDereferencesNodes = saveDereferencesNodes;
-        curConstructsNodes = saveConstructsNodes;
-      }
-      else
-      {
-        if (saveUnfoldable != ANNOTATION_TRUE_FIXED &&
-            (f->accessesDynCtx() || !f->isDeterministic()))
-        {
-          curUnfoldable = ANNOTATION_TRUE_FIXED;
-        }
-
-        if (static_cast<user_function*>(f)->dereferencesNodes())
-          curDereferencesNodes = ANNOTATION_TRUE;
-
-        if (static_cast<user_function*>(f)->constructsNodes())
-          curConstructsNodes = ANNOTATION_TRUE;
-      }
-      
-      break;
-    }
-    
-    case var_expr_kind:
-    {
-      var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
-        
-      if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
-        curUnfoldable = ANNOTATION_TRUE_FIXED;
-    
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
-    }
   }
 
   if (saveNonDiscardable != curNonDiscardable &&
@@ -382,131 +378,76 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo)
   For each expr E, collect all the variables that are referenced directly by E
   and its subexpressions.
 ********************************************************************************/
-
-RULE_REWRITE_PRE(MarkFreeVars)
-{
-  return NULL;
-}
-
-RULE_REWRITE_POST(MarkFreeVars)
+expr* MarkFreeVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
   expr::FreeVars& freevars = node->getFreeVars();
 
   freevars.clear();
 
-  if (node->get_expr_kind() == var_expr_kind)
+  switch (node->get_expr_kind())
+  {
+  case var_expr_kind:
   {
     var_expr* v = static_cast<var_expr *>(node);
     freevars.insert(v);
+
+    break;
   }
-  else
+  // Get the free vars of each child expr and add them to the free vars of the
+  // parent. But in case of a flwor expr, do not add any variables defined by
+  // the flwor expr itself
+
+  case flwor_expr_kind:
+  case gflwor_expr_kind:
   {
-    // Get the free vars of each child expr and add them to the free vars of the
-    // parent.
+    flwor_expr* flwor = static_cast<flwor_expr *> (node);
+
     ExprIterator iter(node);
     while (!iter.done())
     {
       expr* e = **iter;
+        
+      apply(rCtx, e, modified);
 
+      const expr::FreeVars& kfv = e->getFreeVars();
+
+      expr::FreeVars::const_iterator ite = kfv.begin();
+      expr::FreeVars::const_iterator end = kfv.end();
+      for (; ite != end; ++ite)
+      {
+        flwor_clause* c = (*ite)->get_flwor_clause();
+        if (c != NULL && c->get_flwor_expr() == flwor)
+          continue;
+        
+        freevars.insert(*ite);
+      }
+      
+      iter.next();
+    }
+
+    break;
+  }
+  default:
+  {
+    ExprIterator iter(node);
+
+    while (!iter.done())
+    {
+      expr* e = **iter;
+
+      apply(rCtx, e, modified);
+        
       const expr::FreeVars& kfv = e->getFreeVars();
       std::copy(kfv.begin(),
                 kfv.end(),
                 inserter(freevars, freevars.begin()));
-
+      
       iter.next();
     }
-
-    // For a flwor expr, remove the vars defined by the flwor expr itself from
-    // the flwor free vars .
-    if (node->get_expr_kind() == flwor_expr_kind ||
-        node->get_expr_kind() == gflwor_expr_kind)
-    {
-      flwor_expr* flwor = dynamic_cast<flwor_expr *> (node);
-      for (flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
-           i != flwor->clause_end();
-           ++i)
-      {
-        const flwor_clause* c = *i;
-
-        if (c->get_kind() == flwor_clause::for_clause)
-        {
-          const for_clause* fc = static_cast<const for_clause *>(c);
-
-          freevars.erase(fc->get_var());
-          if (fc->get_pos_var() != NULL)
-            freevars.erase(fc->get_pos_var());
-        }
-        else if (c->get_kind() == flwor_clause::let_clause)
-        {
-          const let_clause* lc = static_cast<const let_clause *>(c);
-
-          freevars.erase(lc->get_var());
-        }
-        else if (c->get_kind() == flwor_clause::window_clause)
-        {
-          const window_clause* wc = static_cast<const window_clause *>(c);
-
-          freevars.erase(wc->get_var());
-
-          flwor_wincond* startCond = wc->get_win_start();
-          flwor_wincond* stopCond = wc->get_win_stop();
-
-          if (startCond != NULL)
-            remove_wincond_vars(startCond, freevars);
-
-          if (stopCond != NULL)
-            remove_wincond_vars(stopCond, freevars);
-        }
-        else if (c->get_kind() == flwor_clause::group_clause)
-        {
-          const group_clause* gc = static_cast<const group_clause *>(c);
-
-          const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-          csize numGroupVars = gvars.size();
-
-          for (csize i = 0; i < numGroupVars; ++i)
-          {
-            freevars.erase(gvars[i].second);
-          }
-
-          const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-          csize numNonGroupVars = ngvars.size();
-
-          for (csize i = 0; i < numNonGroupVars; ++i)
-          {
-            freevars.erase(ngvars[i].second);
-          }
-        }
-        else if (c->get_kind() == flwor_clause::count_clause)
-        {
-          const count_clause* cc = static_cast<const count_clause *>(c);
-
-          freevars.erase(cc->get_var());
-        }
-      }
-    }
+  }
   }
 
   return NULL;
-}
-
-
-static void remove_wincond_vars(
-    const flwor_wincond* cond,
-    expr::FreeVars& freevars)
-{
-  const flwor_wincond::vars& inVars = cond->get_in_vars();
-  const flwor_wincond::vars& outVars = cond->get_out_vars();
-
-  freevars.erase(inVars.posvar);
-  freevars.erase(inVars.curr);
-  freevars.erase(inVars.prev);
-  freevars.erase(inVars.next);
-
-  freevars.erase(outVars.posvar);
-  freevars.erase(outVars.curr);
-  freevars.erase(outVars.prev);
-  freevars.erase(outVars.next);
 }
 
 
@@ -1014,7 +955,7 @@ static expr* partial_eval_return_clause(
 
       if (c->get_kind() == flwor_clause::for_clause)
       {
-        return c->get_expr();
+        return static_cast<for_clause*>(c)->get_expr();
       }
       else
       {
