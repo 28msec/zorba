@@ -460,12 +460,23 @@ bool begin_visit(function_item_expr& v)
 void end_visit(function_item_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  store::Item_t lQName = v.get_qname();
-  store::Item_t lFItem;
+  
+  DynamicFunctionInfo* fnInfo = v.get_dynamic_fn_info();
+  fnInfo->theCCB = theCCB;
+  fnInfo->theSctx = sctx;
+  fnInfo->theLoc = qloc;
+  fnInfo->theFunction = v.get_function();
+  fnInfo->theQName = v.get_qname();
+  fnInfo->theArity = v.get_arity();
+  
+  // store::Item_t lFItem;
+  /*
   std::vector<PlanIter_t> scopedVarsValues;
   std::vector<store::Item_t> scopedVarsNames;
+  std::vector<int> isGlobalVar;
+  */
 
-  bool isInline = (lQName == 0);
+  bool isInline = (v.get_qname() == NULL);
 
   if (!isInline)
   {
@@ -475,43 +486,50 @@ void end_visit(function_item_expr& v)
   else
   {
     // inline function
-
     size_t lSize = v.get_scoped_vars_values().size();
     
     for (size_t i = 0; i < lSize; ++i)
     {
+      // if (!v.get_is_global_var()[i])
+      {
+        PlanIter_t varIter = NULL;
+        PlanIter_t enclosedIter = NULL;
+        
+        if (!v.get_is_global_var()[i])
+        {
+          varIter = pop_itstack();
+          enclosedIter = varIter;
+          // varIter = new MaterializeIterator(sctx, v.get_loc(), varIter);
+          fnInfo->theScopedVarsIterators.push_back(varIter);
+        }
+        
+        store::Item* var_qname = NULL;
+        if (dynamic_cast<LetVarIterator*>(varIter.getp()) != NULL)
+          var_qname = dynamic_cast<LetVarIterator*>(varIter.getp())->getVarName(); 
+        else if (dynamic_cast<ForVarIterator*>(varIter.getp()) != NULL)
+          var_qname = dynamic_cast<ForVarIterator*>(varIter.getp())->getVarName();
+        else
+          var_qname = v.get_scoped_vars_names()[i].getp();
+        
+        std::cerr << "--> PlanVisitor function_item_expr: var name: " << v.get_scoped_vars_names()[i]->show() 
+            << " global: " << v.get_is_global_var()[i]
+            << " with iter: " 
+            << (enclosedIter.getp()?enclosedIter->toString() : "NULL");
+        if (dynamic_cast<LetVarIterator*>(enclosedIter.getp()) != NULL)
+          std::cerr << " var name: " << dynamic_cast<LetVarIterator*>(enclosedIter.getp())->getVarName()->show(); 
+        else if (dynamic_cast<ForVarIterator*>(enclosedIter.getp()) != NULL)
+          std::cerr << " var name: " << dynamic_cast<ForVarIterator*>(enclosedIter.getp())->getVarName()->show();
+        else
+          std::cerr << " var name (from the expr, not the iterator): " << (var_qname? var_qname->show() : "NULL");
+        std::cerr << std::endl;
+      }
     }
     
-    for (size_t i = 0; i < lSize; ++i)
-    {
-      PlanIter_t varIter = pop_itstack();
-      scopedVarsValues.push_back(new MaterializeIterator(sctx, v.get_loc(), varIter));
-      scopedVarsNames.push_back(v.get_scoped_vars_names()[i]);
-      
-      
-      store::Item* var_qname = NULL;
-      if (dynamic_cast<LetVarIterator*>(varIter.getp()) != NULL)
-        var_qname = dynamic_cast<LetVarIterator*>(varIter.getp())->getVarName(); 
-      else if (dynamic_cast<ForVarIterator*>(varIter.getp()) != NULL)
-        var_qname = dynamic_cast<ForVarIterator*>(varIter.getp())->getVarName();
-      else
-        var_qname = v.get_scoped_vars_names()[i].getp();
-      
-      std::cerr << "--> PlanVisitor function_item_expr: var name: " << v.get_scoped_vars_names()[i]->show() << " with iter: " << varIter->toString();
-      if (dynamic_cast<LetVarIterator*>(varIter.getp()) != NULL)
-        std::cerr << " var name: " << dynamic_cast<LetVarIterator*>(varIter.getp())->getVarName()->show(); 
-      else if (dynamic_cast<ForVarIterator*>(varIter.getp()) != NULL)
-        std::cerr << " var name: " << dynamic_cast<ForVarIterator*>(varIter.getp())->getVarName()->show();
-      else
-        std::cerr << " var name (from the expr, not the iterator): " << (var_qname? var_qname->show() : "NULL");
-      std::cerr << std::endl;
-    }
-    
-    reverse(scopedVarsValues.begin(), scopedVarsValues.end());
+    reverse(fnInfo->theScopedVarsIterators.begin(), fnInfo->theScopedVarsIterators.end());
     // lFItem = new FunctionItem(NULL,/*theCCB, sctx, &v, */lVariableValues); // TODO
   }
 
-  push_itstack(new DynamicFunctionIterator(sctx, qloc, theCCB, &v, scopedVarsNames, scopedVarsValues));
+  push_itstack(new DynamicFunctionIterator(sctx, qloc, fnInfo));
 }
 
 
@@ -852,9 +870,7 @@ void general_var_codegen(const var_expr& var)
   case var_expr::arg_var:
   {
     ZORBA_ASSERT(arg_var_iter_map != NULL);
-    PlanIter_t iter;
-    // if (arg_var_iter_map != NULL)
-      iter = base_var_codegen(var, *arg_var_iter_map);
+    PlanIter_t iter = base_var_codegen(var, *arg_var_iter_map);
     push_itstack(iter);
     break;
   }
@@ -3550,6 +3566,11 @@ PlanIter_t result()
 #ifndef NDEBUG
   if (!itstack.empty())
   {
+    std::cout << "Plan_visitor partial iterator tree:\n";
+    XMLIterPrinter vp(std::cout);
+    print_iter_plan(vp, res);
+    std::cout<< std::endl;
+    
     std::cout << "\nPlan_visitor stack still contains "
               << itstack.size() << " entries: " << std::endl;
     while (!itstack.empty())

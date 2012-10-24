@@ -158,7 +158,10 @@ wrapper_expr::put(std::ostream& os) const
 
     BEGIN_PUT_NO_EOL(var_ref) ;
     put_qname(varExpr->get_name(), os);
-    os << expr_addr(varExpr) << " ]" << endl;
+    os << expr_addr(varExpr);
+    os << " kind=" << var_expr::decode_var_kind(varExpr->get_kind()); // TODO: remove this info
+    os << " uniqueId=" << varExpr->get_unique_id(); // TODO: remove this info
+    os << " ]" << endl;
     return os;
   }
   else
@@ -186,6 +189,11 @@ ostream& var_expr::put(ostream& os) const
   {
     os << " name=";
     put_qname(get_name(), os);
+  }
+  
+  if (get_kind() == prolog_var)
+  {
+    os << " uniqueId=" << theUniqueId;
   }
 
 #if VERBOSE
@@ -546,25 +554,30 @@ std::ostream& function_item_expr::put(std::ostream& os) const
 {
   os << indent << "funtion_item_expr " << expr_addr(this) << inc_indent;
 
-  if (theQName != NULL)
+  if (theDynamicFunctionInfo->theQName != NULL)
   {
-    os << " " << theQName->getStringValue() << "/" << theArity;
+    os << " " << theDynamicFunctionInfo->theQName->getStringValue() 
+       << "/" << theDynamicFunctionInfo->theArity;
     os << dec_indent << endl;
     return os;
   }
   else
   {
-    os << " inline udf (" << theFunction.getp() << ") [\n";
-    if (theFunction.getp() != NULL)
-        reinterpret_cast<const user_function*>(theFunction.getp())->getBody()->put(os);
+    os << " inline udf (" << theDynamicFunctionInfo->theFunction.getp() << ") [\n";
     
-    for (ulong i = 0; i < theScopedVarsValues.size(); i++)
+    for (ulong i = 0; i < theDynamicFunctionInfo->theScopedVarsValues.size(); i++)
     {
-      os << indent << "using $" << theScopedVarsNames[i]->getStringValue() << " := [";
+      os << indent << "using $" 
+         << theDynamicFunctionInfo->theScopedVarsNames[i]->getStringValue() 
+         << (theDynamicFunctionInfo->theIsGlobalVar[i] ? " global=1" : "") << " := [";
       os << endl << inc_indent;
-      theScopedVarsValues[i]->put(os);
+      if (theDynamicFunctionInfo->theScopedVarsValues[i])
+        theDynamicFunctionInfo->theScopedVarsValues[i]->put(os);
       os << dec_indent << indent << "]" << endl;
     }
+    
+    if (theDynamicFunctionInfo->theFunction.getp() != NULL)
+      reinterpret_cast<const user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody()->put(os);
     
     END_PUT();
   }
@@ -770,7 +783,7 @@ ostream& const_expr::put(ostream& os) const
   BEGIN_PUT_NO_EOL( const_expr );
   if (theValue->isFunction())
   {
-    os << "function item [ " << theValue->show() << " ]";
+    os << "function item [ " << theValue->show() << " ]";    
   }
   else
   {

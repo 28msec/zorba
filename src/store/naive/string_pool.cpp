@@ -33,7 +33,8 @@ StringPool::~StringPool()
   {
     if (theHashTab[i].theItem.is_shared())
     {
-      //std::cerr << "ID: " << i << "   Referenced URI: " << theHashTab[i].theItem << std::endl;
+      // TODO: revert the change on the next line
+      std::cerr << "=====ID: " << i << "   Referenced URI: " << theHashTab[i].theItem << std::endl;
       //delete theHashTab[i].theString.getp();
       count ++;
     }

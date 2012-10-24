@@ -1413,7 +1413,7 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
 
   // Create the dynamic call body
   
-  function_item_expr* fiExpr = new function_item_expr(theRootSctx, loc);
+  function_item_expr* fiExpr = new function_item_expr(theRootSctx, NULL, loc);
   push_nodestack(fiExpr);
 
   
@@ -1431,17 +1431,22 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
   for_clause_t fnItem_lc = wrap_in_forclause(theExpr, NULL);
   var_expr_t fnItem_var = fnItem_lc->get_var();
   fnItem_flwor->add_clause(fnItem_lc);
-  fiExpr->add_variable(fnItem_var, fnItem_var->get_name());
+  var_expr_t inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
+  fiExpr->add_variable(fnItem_var, inner_subst_var, fnItem_var->get_name(), 0 /*var is not global*/);
+  
+  std::cerr << "--> subst_var: " << inner_subst_var->toString() << std::endl;
   
   
   // bind the function item variable in the inner flwor
   flwor_expr_t inner_flwor = new flwor_expr(theRootSctx, loc, false);
-  var_expr_t inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::arg_var);
-  var_expr_t inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::let_var);
-  let_clause_t inner_lc = wrap_in_letclause(&*inner_arg_var, inner_subst_var);
+  var_expr_t inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::let_var);
+  // var_expr_t inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::let_var);
+  // var_expr_t inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
+  // let_clause_t inner_lc = wrap_in_letclause(&*inner_arg_var, inner_subst_var);
+  // let_clause_t inner_lc = wrap_in_letclause(inner_arg_var);
   inner_arg_var->set_param_pos(inner_flwor->num_clauses());
   // inner_arg_var->set_type(fn_arg_var->get_return_type());
-  inner_flwor->add_clause(inner_lc);
+  // inner_flwor->add_clause(inner_lc);
 
 
   // Handle parameters. For each parameter, a let binding is added to the inner flwor.
@@ -1461,7 +1466,12 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
 
     arguments.push_back(new wrapper_expr(theRootSctx, loc, subst_var));
   }
-
+  
+  if (inner_flwor->num_clauses() == 0)
+  {
+    delete inner_flwor.release();
+    inner_flwor = NULL;
+  }
   
   expr_t body = new dynamic_function_invocation_expr(
                 theRootSctx,
@@ -11112,7 +11122,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     fn = udf;
   }
 
-  expr_t fiExpr = new function_item_expr(theRootSctx, loc, fn->getName(), fn, arity);
+  expr_t fiExpr = new function_item_expr(theRootSctx, NULL, loc, fn->getName(), fn, arity);
 
   push_nodestack(fiExpr.getp());
 }
@@ -11142,8 +11152,9 @@ void* begin_visit(const InlineFunction& v)
 
   push_scope();
 
-  function_item_expr* fiExpr = new function_item_expr(theRootSctx, loc);
-
+  // function_item_expr* fiExpr = new function_item_expr(theRootSctx, NULL, loc);
+  function_item_expr* fiExpr = new function_item_expr(theSctx, theSctx, loc);
+    
   push_nodestack(fiExpr);
 
   flwor_expr_t flwor;
@@ -11176,28 +11187,29 @@ void* begin_visit(const InlineFunction& v)
     var_expr* varExpr = (*ite)->getVar();
     var_expr::var_kind kind = varExpr->get_kind();
     
-    std::cerr << "--> eval_expr inscope var " << (ite-scopedVars.begin()) << ": " << varExpr->toString();
+    std::cerr << "--> InlineFunction inscope var " << (ite-scopedVars.begin()) << ": " << varExpr->toString();
 
-    if (kind == var_expr::prolog_var || kind == var_expr::local_var)
+    if (/*kind == var_expr::prolog_var || */kind == var_expr::local_var)
     {
       continue;
     }
 
     store::Item_t qname = varExpr->get_name();
 
-    var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
-    var_expr_t subst_var = bind_var(loc, qname, var_expr::let_var);
-
-    let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
-
-    arg_var->set_param_pos(flwor->num_clauses());
-    arg_var->set_type(varExpr->get_return_type());
+    // var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
+    var_expr_t subst_var = bind_var(loc, qname, var_expr::prolog_var);
+    // let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
+    // arg_var->set_param_pos(flwor->num_clauses());
+    // arg_var->set_type(varExpr->get_return_type());
 
     // TODO: this could probably be done lazily in some cases
     //lc->setLazyEval(true);
-    flwor->add_clause(lc);
+    
+    // flwor->add_clause(lc);
 
-    fiExpr->add_variable(varExpr, varExpr->get_name());
+    fiExpr->add_variable(((kind == var_expr::prolog_var)? NULL:varExpr), subst_var, varExpr->get_name(), (kind == var_expr::prolog_var) /*var is global if it's a prolog var*/);
+    
+    std::cerr << "--> subst_var: " << subst_var->toString() << std::endl;
 
     // ???? What about inscope vars that are hidden by param vars ???
   }
@@ -11252,6 +11264,8 @@ void end_visit(const InlineFunction& v, void* aState)
   }
 
   create_inline_function(body, flwor, paramTypes, returnType, loc, theCCB);
+  
+  std::cerr << "--> the scoped sctx: " << theSctx->toString() << std::endl;
 
   // pop the scope.
   pop_scope();

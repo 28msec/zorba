@@ -959,5 +959,36 @@ dynamic_context::getExternalFunctionParameter(const std::string& aName) const
 }
 
 
+/*******************************************************************************
+ Debugging info
+********************************************************************************/
+#ifndef NDEBUG
+std::string dynamic_context::toString()
+{
+  std::stringstream ss;
+  
+  ss << "dynamic_context: " << this;
+  dynamic_context* parent = getParent();
+  while (parent != NULL)
+  {
+    ss << " -> " << parent;
+    parent = parent->getParent();
+  }
+  ss << std::endl;
+  
+  for (csize i=0; i < theVarValues.size(); i++)
+  {
+    ss << "    var[" << i << "]: ";
+    if (theVarValues[i].hasItemValue())
+      ss << theVarValues[i].theValue.item->toString();
+    else if (theVarValues[i].hasSeqValue())
+      ss << theVarValues[i].theValue.temp_seq->toString();
+    ss << std::endl;
+  }
+  
+  return ss.str();
+}
+#endif
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -101,7 +101,7 @@ public:
 
   ~UDFunctionCallIteratorState();
 
-  void open(PlanState& planState, user_function* udf);
+  void open(PlanState& planState, user_function* udf, bool theIsDynamic, store::ItemHandle<FunctionItem>& theFunctionItem);
 
   void reset(PlanState& planState);
 };

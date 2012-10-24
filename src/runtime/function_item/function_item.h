@@ -42,13 +42,19 @@ public: // TODO: not public
 
   CompilerCB                  * theCCB;
   static_context              * theSctx;
-  const QueryLoc                theLoc;
+  static_context_t              theScopedSctx;
+  QueryLoc                      theLoc;
   function_t                    theFunction;
   store::Item_t                 theQName;
   uint32_t                      theArity;
 
+  std::vector<expr_t>           theScopedVarsValues;
+  std::vector<var_expr_t>       theSubstVarsValues;
   std::vector<store::Item_t>    theScopedVarsNames;
   std::vector<PlanIter_t>       theScopedVarsIterators;
+  std::vector<int>              theIsGlobalVar;
+  
+  store::NsBindings             theLocalBindings; // TODO: not sure these are needed, to check
 
 public:
   SERIALIZABLE_CLASS(DynamicFunctionInfo)
@@ -56,11 +62,11 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFunctionInfo(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc,
-                      function_t function, store::Item_t qname, uint32_t arity,
-                      std::vector<store::Item_t>& varsNames,
-                      std::vector<PlanIter_t>& varsIterators);
-
+  DynamicFunctionInfo(const static_context_t& scoped_sctx, const QueryLoc& loc, function_t function, store::Item_t qname, uint32_t arity);
+  
+  virtual ~DynamicFunctionInfo();
+  
+  void add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal);
 };
 
 
@@ -76,10 +82,14 @@ public:
 class FunctionItem : public store::Item, public zorba::serialization::SerializeBaseClass
 {
 protected:
-  const DynamicFunctionInfo_t     theDynamicFunctionInfo;
-  
+  DynamicFunctionInfo_t           theDynamicFunctionInfo;
+
   std::vector<store::Iterator_t>  theVariablesValues;
   
+  std::auto_ptr<CompilerCB>       theCCB;
+  
+  std::auto_ptr<dynamic_context>  theDctx;
+
   SYNC_CODE(mutable RCLock        theRCLock;)
 
 public:
@@ -88,20 +98,26 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo, 
-               const std::vector<store::Iterator_t>& varsValues);
+  FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
+               const std::vector<store::Iterator_t>& varsValues,
+               CompilerCB* ccb,
+               dynamic_context* dctx);
 
   FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo);
 
-  ~FunctionItem();
+  virtual ~FunctionItem();
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+      
+  dynamic_context* getDctx() const { return theDctx.get(); }
 
   store::Iterator_t getVariableValue(const store::Item_t& variableQName);
-  
+
   const std::vector<PlanIter_t>& getVariablesIterators() const;
-  
+
   const std::vector<store::Iterator_t>& getVariablesValues() const;
+
+  store::Iterator_t getVariableValue(unsigned int i) const;
 
   PlanIter_t getImplementation(std::vector<PlanIter_t>& args);
 

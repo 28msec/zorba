@@ -127,6 +127,9 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
         dctx->set_variable(theVarId, theVarName, loc, planIter);
       }
     }
+    
+    std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
+    std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
   }
 
   STACK_END(state);
@@ -426,7 +429,9 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   dynamic_context* dctx = (theIsLocal ?
                            planState.theLocalDynCtx :
                            planState.theGlobalDynCtx);
-
+  
+  std::cerr << "--> CtxVarIterator used dctx: " << dctx->toString();
+  
   CtxVarState* state;
   DEFAULT_STACK_INIT(CtxVarState, state, planState);
 
@@ -791,7 +796,7 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
   else if (dynamic_cast<PlanIteratorWrapper*>(it.getp()) != NULL)
     std::cerr << dynamic_cast<PlanIteratorWrapper*>(it.getp())->theIterator->getId();
   else
-    std::cerr << it->toString();
+    std::cerr << (it.getp()?it->toString() : "NULL");
   std::cerr << " state: " << state << " (" << (void*)planState.theBlock << " + " << (void*)theStateOffset << ")"
       << std::endl;
 }

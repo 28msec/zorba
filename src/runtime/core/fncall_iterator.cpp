@@ -126,7 +126,7 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 /*******************************************************************************
   Called by the openImpl method of UDFunctionCallIterator.
 ********************************************************************************/
-void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
+void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf, bool theIsDynamic, store::ItemHandle<FunctionItem>& theFunctionItem)
 {
   thePlan = udf->getPlan(planState.theCompilerCB, thePlanStateSize).getp();
 
@@ -135,9 +135,13 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
   // Must allocate new dctx, as child of the "current" dctx, because the udf
   // may be a recursive udf with local block vars, all of which have the same
   // dynamic-context id, but they are distinct vars.
-  theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
+  
+  if (!theIsDynamic)
+    theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
+  else
+    theLocalDCtx = new dynamic_context(theFunctionItem->getDctx());
 
-  thePlanState = new PlanState(planState.theGlobalDynCtx,
+  thePlanState = new PlanState(theIsDynamic ? theFunctionItem->getDctx() : planState.theGlobalDynCtx,
                                theLocalDCtx,
                                thePlanStateSize,
                                planState.theStackDepth + 1,
@@ -145,6 +149,8 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
 
   std::cerr << "--> UDFunctionCallIteratorState::open() " << this << " new theBlock: " << (void*)thePlanState->theBlock << " + " << (void*)thePlanState->theBlockSize
       << " for new PlanState: " << thePlanState << " for PlanIterator: " << thePlan->getId() << " = " << thePlan->getClassName() << std::endl;
+  std::cerr << "    the PlanState: " << thePlanState << std::endl;
+  // std::cerr << " has theGlobalDynCtx: " << thePlanState->theGlobalDynCtx->toString();
 
   thePlanState->theCompilerCB = planState.theCompilerCB;
 #ifdef ZORBA_WITH_DEBUGGER
@@ -333,6 +339,14 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
   else
   {
+    std::cerr << "--> " << toString() << " theSctx: " << theSctx->toString();
+    /*
+    std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
+    std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
+    
+    std::cerr << "--> fnItem dctx: " << theFunctionItem->getDctx()->toString();
+    */
+    
     theStateOffset = offset;
 
     state = new (planState.theBlock + offset) UDFunctionCallIteratorState();
@@ -348,7 +362,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   // Create the plan for the udf body (if not done already) and allocate
   // the plan state (but not the state block) and dynamic context.
-  state->open(planState, theUDF);
+  state->open(planState, theUDF, theIsDynamic, theFunctionItem);
 
   // if the results of the function should be cached (prereq: atomic in and out)
   // this functions stores an index in the dynamic context that contains
@@ -369,14 +383,6 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   std::vector<var_expr_t>::const_iterator argVarsIte = theUDF->getArgVars().begin();
   std::vector<ArgVarRefs>::const_iterator argsRefsIte = argsRefs.begin();
 
-  // std::vector<store::Iterator_t> fnItemWrappers;
-  // std::vector<PlanIter_t> fnItemVariables;
-  if (theIsDynamic)
-  {
-    // fnItemVariables = theFunctionItem->getVariables();
-    // fnItemWrappers = theFunctionItem->getVariableWrappers();
-  }
-
   for (csize i=0; argsIte != argsEnd; ++argsIte, ++argWrapsIte, ++argsRefsIte, ++i, ++argVarsIte)
   {
     const ArgVarRefs& argVarRefs = (*argsRefsIte);
@@ -386,19 +392,19 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
       if (theIsDynamic)
       {
         // (*argWrapsIte) = theFunctionItem->getVariableValue(theUDF->getArgVars()[i]->get_name());
-        
-        (*argWrapsIte) = theFunctionItem->getVariablesValues()[i];
-        
+        if (i < theFunctionItem->getVariablesValues().size())
+          (*argWrapsIte) = theFunctionItem->getVariableValue(i);
+
         if ((*argWrapsIte) != NULL)
           (*argWrapsIte)->reset();
-        
-        
+
+
         std::cerr << "--> UDFunctionCallIterator::openImpl() argsIte: " << (*argsIte)->toString()
             << " var: " << theUDF->getArgVars()[i]->toString();
-        if (theFunctionItem->getVariablesValues().size() > 0)
+        if (i < theFunctionItem->getVariablesValues().size())
         {
           std::cerr << "    fnItem var iterator: " << theFunctionItem->getVariablesIterators()[i]->toString()
-                    << " var value: " << theFunctionItem->getVariablesValues()[i]->toString()
+                    << " var value: " << (theFunctionItem->getVariableValue(i)?theFunctionItem->getVariableValue(i)->toString() : "NULL")
                     << " wrapper: " << (*argWrapsIte);
         }
         std::cerr << std::endl;
@@ -483,7 +489,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     {
       const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
       const std::vector<store::Iterator_t>& argWrappers = state->theArgWrappers;
-
+      
       for (size_t i = 0; i < argsRefs.size(); ++i)
       {
         const ArgVarRefs& argVarRefs = argsRefs[i];
@@ -497,7 +503,8 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
         }
         else
         {
-          argWrapper = argWrappers[i];
+          if (i < argWrappers.size())
+            argWrapper = argWrappers[i];
         }
 
         ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();

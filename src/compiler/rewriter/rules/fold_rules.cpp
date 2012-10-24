@@ -308,6 +308,14 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         
         break;
       }
+      
+      // Do not fold function item expressions yet as they can access prolog 
+      // vars. It could probably be optimized though.
+      case function_item_expr_kind:
+      {
+        curUnfoldable = ANNOTATION_TRUE_FIXED;
+        break;
+      }
 
       // Node constructors are unfoldable because if a node constructor is inside
       // a loop, then it will create a different xml tree every time it is invoked,

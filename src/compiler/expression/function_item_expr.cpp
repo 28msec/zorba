@@ -16,9 +16,7 @@
 #include "stdafx.h"
 
 #include "compiler/expression/function_item_expr.h"
-
 #include "compiler/expression/var_expr.h"
-
 #include "compiler/expression/expr_visitor.h"
 
 #include "functions/function.h"
@@ -82,15 +80,19 @@ DEF_EXPR_ACCEPT (function_item_expr)
 
 function_item_expr::function_item_expr(
     static_context* sctx,
+    const static_context_t& scopedSctx,
     const QueryLoc& loc,
     const store::Item* aQName,
     function* f,
     uint32_t aArity)
 	:
   expr(sctx, loc, function_item_expr_kind),
-  theQName(const_cast<store::Item*>(aQName)),
-  theFunction(f),
-  theArity(aArity)
+  theDynamicFunctionInfo(new DynamicFunctionInfo(
+                         scopedSctx,
+                         loc,
+                         f,
+                         const_cast<store::Item*>(aQName),
+                         aArity))
 {
   assert(f != NULL);
   compute_scripting_kind();
@@ -99,12 +101,16 @@ function_item_expr::function_item_expr(
 
 function_item_expr::function_item_expr(
     static_context* sctx,
+    const static_context_t& scopedSctx,
     const QueryLoc& loc)
 	:
   expr(sctx, loc, function_item_expr_kind),
-  theQName(0),
-  theFunction(NULL),
-  theArity(0)
+  theDynamicFunctionInfo(new DynamicFunctionInfo(
+                         scopedSctx,
+                         loc,
+                         NULL,
+                         NULL,
+                         0))
 {
   theScriptingKind = SIMPLE_EXPR;
 }
@@ -115,48 +121,16 @@ function_item_expr::~function_item_expr()
 }
 
 
-void function_item_expr::add_variable(expr* var, const store::Item_t& name)
+void function_item_expr::add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal)
 {
-  theScopedVarsValues.push_back(var);
-  theScopedVarsNames.push_back(name);
+  theDynamicFunctionInfo->add_variable(var, substVar, name, isGlobal);
 }
-
-
-const std::vector<expr_t>& function_item_expr::get_scoped_vars_values() const
-{
-  return theScopedVarsValues;
-}
-
-
-const std::vector<store::Item_t>& function_item_expr::get_scoped_vars_names() const
-{
-  return theScopedVarsNames;
-}
-
-
-/*
-bool function_item_expr::replace_variable(var_expr_t replacement)
-{
-  bool res = false;
-
-  for (csize i = 0; i<theScopedVariables.size(); i++)
-  {
-    var_expr* scopedVar = dynamic_cast<var_expr*>(theScopedVariables[i].getp());
-    if (scopedVar != NULL && replacement->get_name()->equals(scopedVar->get_name()))
-    {
-      theScopedVariables[i] = replacement;
-      res = true;
-    }
-  }
-  return res;
-}
-*/
 
 
 void function_item_expr::set_function(user_function_t& udf)
 {
-  theFunction = udf;
-  theArity = udf->getArity();
+  theDynamicFunctionInfo->theFunction = udf;
+  theDynamicFunctionInfo->theArity = udf->getArity();
   // compute_scripting_kind();
 }
 
@@ -172,18 +146,24 @@ expr_t function_item_expr::clone(substitution_t& s) const
 {
   std::auto_ptr<function_item_expr> lNewExpr(
       new function_item_expr(theSctx,
+                             theDynamicFunctionInfo->theScopedSctx,
                              get_loc(),
-                             theFunction->getName(),
-                             theFunction.getp(),
-                             theArity)
+                             theDynamicFunctionInfo->theFunction->getName(),
+                             theDynamicFunctionInfo->theFunction.getp(),
+                             theDynamicFunctionInfo->theArity)
   );
 
-  std::vector<expr_t> lNewVariables;
-  std::vector<expr_t>::const_iterator valIter = theScopedVarsValues.begin();
-  std::vector<store::Item_t>::const_iterator nameIter = theScopedVarsNames.begin();
-  for ( ; valIter != theScopedVarsValues.end(); ++valIter, ++nameIter)
+  std::vector<expr_t>::const_iterator varIter = theDynamicFunctionInfo->theScopedVarsValues.begin();
+  std::vector<var_expr_t>::const_iterator substVarIter = theDynamicFunctionInfo->theSubstVarsValues.begin();
+  std::vector<store::Item_t>::const_iterator nameIter = theDynamicFunctionInfo->theScopedVarsNames.begin();
+  std::vector<int>::const_iterator isGlobalIter = theDynamicFunctionInfo->theIsGlobalVar.begin();
+  for ( ; varIter != theDynamicFunctionInfo->theScopedVarsValues.end(); ++varIter, ++substVarIter, ++nameIter, ++isGlobalIter)
   {
-    lNewExpr->add_variable((*valIter)->clone(s), (*nameIter));
+    lNewExpr->add_variable(
+                           (*varIter).getp() != NULL ? (*varIter)->clone(s) : NULL,
+                           (*substVarIter).getp() != NULL ? static_cast<var_expr*>((*substVarIter)->clone(s).getp()) : NULL,  
+                           *nameIter, 
+                           *isGlobalIter);
   }
 
   return lNewExpr.release();

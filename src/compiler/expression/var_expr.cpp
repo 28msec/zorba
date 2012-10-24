@@ -134,7 +134,7 @@ var_expr::~var_expr()
 ********************************************************************************/
 void var_expr::set_var_info(VarInfo* v)
 {
-  assert(theVarInfo == NULL);
+  // assert(theVarInfo == NULL); TODO: this assertion is not correct. It is sometimes necessary to delete the varinfo
   theVarInfo = v;
 }
 

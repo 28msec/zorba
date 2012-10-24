@@ -23,6 +23,9 @@
 
 #include "store/naive/shared_types.h"
 
+#include "runtime/function_item/function_item.h"
+
+
 namespace zorba {
 
 /*******************************************************************************
@@ -100,16 +103,13 @@ class function_item_expr: public expr
   friend class ExprIterator;
   friend class expr;
 
-private:
-  store::Item_t               theQName;
-	function_t                  theFunction;
-  uint32_t                    theArity;
-  std::vector<expr_t>         theScopedVarsValues;
-  std::vector<store::Item_t>  theScopedVarsNames;
-
+protected:
+  DynamicFunctionInfo_t       theDynamicFunctionInfo;
+  
 public:
 	function_item_expr(
       static_context* sctx,
+      const static_context_t& scopedSctx,
       const QueryLoc& loc,
       const store::Item* aQName,
       function* f,
@@ -117,23 +117,32 @@ public:
 
   function_item_expr(
       static_context* sctx,
+      const static_context_t& scopedSctx,
       const QueryLoc& loc);
 
-  ~function_item_expr();
+  virtual ~function_item_expr();
+  
+  DynamicFunctionInfo* get_dynamic_fn_info() { return theDynamicFunctionInfo; }
+  
+  void release_dynamic_fn_info() { theDynamicFunctionInfo = NULL; }
 
-  void add_variable(expr* var, const store::Item_t& name);
+  void add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal);
 
-  const std::vector<expr_t>& get_scoped_vars_values() const;
+  const std::vector<expr_t>& get_scoped_vars_values() const { return theDynamicFunctionInfo->theScopedVarsValues; }
+  
+  const std::vector<var_expr_t>& get_subst_vars_values() const { return theDynamicFunctionInfo->theSubstVarsValues; }
 
-  const std::vector<store::Item_t>& get_scoped_vars_names() const;
+  const std::vector<store::Item_t>& get_scoped_vars_names() const { return theDynamicFunctionInfo->theScopedVarsNames; }
+  
+  const std::vector<int>& get_is_global_var() const { return theDynamicFunctionInfo->theIsGlobalVar; }
 
   void set_function(user_function_t& udf);
 
-	function* get_function() const { return theFunction.getp(); }
+  function* get_function() const { return theDynamicFunctionInfo->theFunction.getp(); }
 
-  const store::Item_t& get_qname() const { return theQName; }
+  const store::Item_t& get_qname() const { return theDynamicFunctionInfo->theQName; }
 
-  uint32_t get_arity() const { return theArity; }
+  uint32_t get_arity() const { return theDynamicFunctionInfo->theArity; }
 
   void compute_scripting_kind();
 

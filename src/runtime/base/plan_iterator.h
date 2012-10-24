@@ -259,9 +259,11 @@ public:
     stateOffset = offset;
     offset += StateTraitsImpl<T>::getStateSize();
 
+    /*
     std::cerr << "--> createState() " << ((void*)(planState.theBlock + stateOffset))
         << " (" << (void*)planState.theBlock << " + " << (void*)stateOffset << ")"
         << " for " << typeid( T ).name() << std::endl;
+    */
 
     new (planState.theBlock + stateOffset)T();
   }
@@ -537,7 +539,8 @@ public:
 
   void open(PlanState& planState, uint32_t& offset)
   {
-    std::cerr << "--> openImpl() " << toString() << std::endl;
+    // std::cerr << "--> openImpl() " << toString() << std::endl;
+    
     static_cast<IterType*>(this)->openImpl(planState, offset);
 #ifndef NDEBUG
     // do this after openImpl because the state is created there
@@ -550,9 +553,11 @@ public:
 
   void reset(PlanState& planState) const
   {
+    /*
     std::cerr << "--> resetImpl() " << toString()
         << " on state: " << (void*)(planState.theBlock + theStateOffset)
         << " (" << (void*)(planState.theBlock) << " + " << (void*)theStateOffset << ")" << std::endl;
+    */
 #ifndef NDEBUG
     PlanIteratorState* lState =
     StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);

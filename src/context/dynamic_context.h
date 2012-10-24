@@ -235,6 +235,14 @@ public:
 
   ExternalFunctionParameter* getExternalFunctionParameter(
       const std::string& aName) const;
+  
+#ifndef NDEBUG
+  /**
+   * Prints debugging information regarding this dynamic context. Currently
+   * shows the list of declared variables.
+   */ 
+  std::string toString();
+#endif  
 
 protected:
   bool lookup_once(const std::string& key, dctx_value_t& val) const

@@ -157,7 +157,11 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     std::vector<var_expr_t> outerVars;
     ulong maxOuterVarId;
     importOuterEnv(planState, importSctx, evalDctx, outerVars, maxOuterVarId);
-
+    
+    std::cerr << "--> importSctx: " << importSctx->toString();
+    std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
+    std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
+    
     // If we are here after a reet, we must set state->thePlanWrapper to NULL
     // before reseting the state->thePlan. Otherwise, the current state->thePlan
     // will be destroyed first, and then we will attempt to close it when 
@@ -168,7 +172,9 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId);
 
     // Set the values for the (explicit) external vars of the eval query
-    setExternalVariables(evalCCB, importSctx, evalSctx, evalDctx);
+    setExternalVariables(evalCCB, importSctx, evalDctx);
+    
+    std::cerr << "--> evalDctx: " << evalDctx->toString();
 
     // Execute
     state->thePlanWrapper = new PlanWrapper(state->thePlan,
@@ -332,7 +338,6 @@ void EvalIterator::importOuterEnv(
 void EvalIterator::setExternalVariables(
     CompilerCB* ccb,
     static_context* importSctx,
-    static_context* evalSctx,
     dynamic_context* evalDctx) const
 {
   std::vector<VarInfo*> innerVars;

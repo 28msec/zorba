@@ -99,16 +99,26 @@ public:
   DynamicFunctionIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      CompilerCB* ccb,
-      function_item_expr* expr,
-      std::vector<store::Item_t>& scopedVarsNames,
-      std::vector<PlanIter_t>& scopedVarsValues);
+      DynamicFunctionInfo* fnInfo);
 
   virtual ~DynamicFunctionIterator() {}
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  
+private:  
+  void importOuterEnv(
+      PlanState& planState,
+      static_context* importSctx,
+      dynamic_context* evalDctx,
+      std::vector<var_expr_t>& outerVars,
+      ulong& maxOuterVarId) const;
+  
+  void setExternalVariables(
+      CompilerCB* ccb,
+      static_context* importSctx,
+      dynamic_context* evalDctx) const;
 };
 
 

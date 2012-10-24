@@ -281,6 +281,11 @@ public:
    */
   virtual zstring
   show() const;
+  
+  /** Method to print to content of the Item. Added for uniformity.
+   */
+  virtual zstring
+  toString() const;
 
   /* -------------------  Methods for AtomicValues ------------------------------ */
 

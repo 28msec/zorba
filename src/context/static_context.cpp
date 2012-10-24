@@ -4236,5 +4236,37 @@ void static_context::clear_base_uri()
     theBaseUriInfo = new BaseUriInfo;
 }
 
+/***************************************************************************//**
+
+********************************************************************************/
+#ifndef NDEBUG
+std::string static_context::toString()
+{
+  std::stringstream ss;
+  
+  ss << "static_context: " << this;
+  static_context* parent = theParent;
+  while (parent != NULL)
+  {
+    ss << " -> " << parent;
+    parent = parent->theParent;
+  }
+  ss << std::endl;
+  
+  std::vector<VarInfo*> vars;
+  getVariables(vars, false, false, false);
+  for (csize i=0; i < vars.size(); i++)
+  {
+    ss << "    var[" << i << "]: " << vars[i]->getName()->show() << " (" << std::hex << vars[i]->getVar() << ")";
+    ss << " " << var_expr::decode_var_kind((var_expr::var_kind)vars[i]->getKind()) << " id: " << vars[i]->getId();
+    // ss << " from sctx: " << this;
+    ss << std::endl;
+  }
+  
+  return ss.str();
+}
+#endif
+
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
