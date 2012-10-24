@@ -118,7 +118,7 @@ ENDMACRO (MANGLE_URI)
 #              information; see below
 #       TEST_ONLY - (optional) Module is for testcases only and should not
 #              be installed
-#       DEPENDS - (optional) List of targets the module depends on
+#       TARGET_DEPENDS - (optional) List of targets the module depends on
 #
 # CONFIG_FILES - any files specific here will be copied to
 # CMAKE_CURRENT_BINARY_DIR using CONFIGURE_FILE(). They may contain
@@ -137,7 +137,7 @@ ENDMACRO (MANGLE_URI)
 # file enough to deduce the URI and version?
 MACRO (DECLARE_ZORBA_MODULE)
   # Parse and validate arguments
-  PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES;EXTRA_SOURCES;CONFIG_FILES;DEPENDS"
+  PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES;EXTRA_SOURCES;CONFIG_FILES;TARGET_DEPENDS"
     "URI;FILE;VERSION" "TEST_ONLY" ${ARGN})
   IF (NOT MODULE_FILE)
     MESSAGE (FATAL_ERROR "'FILE' argument is required for ZORBA_DECLARE_MODULE()")
@@ -269,8 +269,8 @@ MACRO (DECLARE_ZORBA_MODULE)
     # the module *URI*'s final component.
     SET(module_lib_target "modlib${num_zorba_modules}_${module_name}")
     ADD_LIBRARY(${module_lib_target} SHARED ${SRC_FILES})
-    IF (MODULE_DEPENDS)
-      ADD_DEPENDENCIES(${module_lib_target} ${MODULE_DEPENDS})
+    IF (MODULE_TARGET_DEPENDS)
+      ADD_DEPENDENCIES(${module_lib_target} ${MODULE_TARGET_DEPENDS})
     ENDIF()
     GET_FILENAME_COMPONENT(module_filewe "${module_filename}" NAME_WE)
     IF (MODULE_VERSION)
