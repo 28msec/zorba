@@ -1,0 +1,29 @@
+import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';
+
+declare namespace resolver = 'http://www.zorba-xquery.com/modules/xqxq/url-resolver';
+
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:enable "f:hof";
+
+declare function resolver:url-resolver($namespace as xs:string, $entity as xs:string) {
+  if($namespace = 'http://test' and $entity = 'schema')
+  then 
+    doc('test.xsd')
+  else 
+    ()
+};
+
+variable $contextQueryID := xqxq:prepare-main-module(
+  "import schema namespace test = 'http://test';
+  declare variable $cwd as xs:anyURI external;
+  validate { doc(resolve-uri('test.xml', $cwd)) }",
+  resolver:url-resolver#2, ());
+xqxq:bind-variable($contextQueryID, fn:QName("", "cwd"), resolve-uri("."));
+variable $contextItem := xqxq:evaluate($contextQueryID);
+
+variable $queryID := xqxq:prepare-main-module(
+  "import schema namespace test = 'http://test'; //*:test",
+  resolver:url-resolver#2, ());
+xqxq:bind-context-item($queryID, $contextItem);
+xqxq:evaluate($queryID)
