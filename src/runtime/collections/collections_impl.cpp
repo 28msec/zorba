@@ -346,6 +346,7 @@ ZorbaCollectionIteratorState::~ZorbaCollectionIteratorState()
 void ZorbaCollectionIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
+  theIteratorOpened = false;
   theIterator = NULL;
 }
 
