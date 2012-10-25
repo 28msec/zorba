@@ -41,19 +41,41 @@ PREPOST_RULE(SpecializeOperations);
 
 PREPOST_RULE(EliminateTypeEnforcingOperations);
 
-PREPOST_RULE(EliminateUnusedLetVars);
-
 PREPOST_RULE(RefactorPredFLWOR);
 
 PREPOST_RULE(MergeFLWOR);
-
-  //PREPOST_RULE(MarkFreeVars);
 
 PREPOST_RULE(EliminateExtraneousPathSteps);
 
 PREPOST_RULE(InlineFunctions);
 
 PREPOST_RULE(PartialEval);
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class EliminateUnusedLetVars : public PrePostRewriteRule
+{
+protected:
+  flwor_expr                * theFlwor;
+  std::vector<const expr*>    theRefPath;
+
+public:
+  EliminateUnusedLetVars()
+    :
+    PrePostRewriteRule(RewriteRule::EliminateUnusedLetVars, "EliminateUnusedLetVars")
+  {
+    theRefPath.reserve(32);
+  }
+
+protected:
+  expr* rewritePre(expr* node, RewriterContext& rCtx);
+
+  expr* rewritePost(expr* node, RewriterContext& rCtx);
+
+  bool safe_to_fold_var(csize varClausePos, int& numRefs);
+};
 
 
 /*******************************************************************************

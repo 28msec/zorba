@@ -508,6 +508,7 @@ static bool already_folded(expr* e, RewriterContext& rCtx)
 {
   if (e->get_expr_kind () == const_expr_kind)
     return true;
+
   if (e->get_expr_kind () != fo_expr_kind)
     return false;
 

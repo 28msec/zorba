@@ -1860,10 +1860,19 @@ void flwor_codegen(const flwor_expr& flworExpr)
         std::vector<PlanIter_t>& posVarRefs =
         clauseVarMap->theVarRebinds[1]->theOutputVarRefs;
 
-        forletClauses.push_back(flwor::ForLetClause(var->get_name(),
-                                                    varRefs,
-                                                    posVarRefs,
-                                                    domainIter));
+        if (!posVarRefs.empty())
+        {
+          forletClauses.push_back(flwor::ForLetClause(var->get_name(),
+                                                      varRefs,
+                                                      posVarRefs,
+                                                      domainIter));
+        }
+        else
+        {
+          forletClauses.push_back(flwor::ForLetClause(var->get_name(),
+                                                      varRefs,
+                                                      domainIter));
+        }
       }
       else
       {
