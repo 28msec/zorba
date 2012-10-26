@@ -81,7 +81,7 @@ bool count_var_uses_rec(
       return false;
     }
 
-    int thenCount = 0;
+    int thenCount = count;
     std::vector<const expr*>* thenPath = (count == 0 ? path : NULL);
 
     if (!count_var_uses_rec(ifExpr->get_then_expr(), var, limit, thenPath, thenCount))
@@ -91,7 +91,7 @@ bool count_var_uses_rec(
       return false;
     }
 
-    int elseCount = 0;
+    int elseCount = count;
     std::vector<const expr*>* elsePath = (count == 0 ? path : NULL);
 
     if (!count_var_uses_rec(ifExpr->get_else_expr(), var, limit, elsePath, elseCount))
@@ -101,7 +101,7 @@ bool count_var_uses_rec(
       return false;
     }
 
-    count += (thenCount > elseCount ? thenCount : elseCount);
+    count = (thenCount > elseCount ? thenCount : elseCount);
   }
   else
   {

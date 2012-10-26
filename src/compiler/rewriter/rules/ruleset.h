@@ -64,7 +64,8 @@ protected:
 public:
   EliminateUnusedLetVars()
     :
-    PrePostRewriteRule(RewriteRule::EliminateUnusedLetVars, "EliminateUnusedLetVars")
+    PrePostRewriteRule(RewriteRule::EliminateUnusedLetVars, "EliminateUnusedLetVars"),
+    theFlwor(NULL)
   {
     theRefPath.reserve(32);
   }
@@ -75,29 +76,24 @@ protected:
   expr* rewritePost(expr* node, RewriterContext& rCtx);
 
   bool safe_to_fold_var(csize varClausePos, int& numRefs);
+
+  bool var_in_try_or_loop(const std::vector<const expr*>& path);
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class FoldConst : public PrePostRewriteRule
+class FoldConst : public RewriteRule
 {
-protected:
-  bool  theFoldExpensiveOps;
-
 public:
-  FoldConst(bool fold_expensive_ops)
+  FoldConst()
     :
-    PrePostRewriteRule(RewriteRule::FoldConst, "FoldConst"),
-    theFoldExpensiveOps(fold_expensive_ops)
+    RewriteRule(RewriteRule::FoldConst, "FoldConst")
   {
   }
 
-protected:
-  expr* rewritePre(expr* node, RewriterContext& rCtx);
-
-  expr* rewritePost(expr* node, RewriterContext& rCtx);
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 

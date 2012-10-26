@@ -51,11 +51,9 @@
 
 namespace zorba {
 
-static bool standalone_expr(expr*);
+static bool execute(CompilerCB*, expr* node, store::Item_t& result);
 
-static bool already_folded(expr*, RewriterContext&);
-
-static expr* partial_eval_fo (RewriterContext&, fo_expr*);
+static expr* partial_eval_fo(RewriterContext&, fo_expr*);
 
 static expr* partial_eval_logic(fo_expr*, bool, RewriterContext&);
 
@@ -64,86 +62,6 @@ static expr* partial_eval_eq(RewriterContext&, fo_expr&);
 static expr* partial_eval_return_clause(flwor_expr*, bool&, RewriterContext&);
 
 static bool maybe_needs_implicit_timezone(const fo_expr* fo);
-
-
-/*******************************************************************************
-
-********************************************************************************/
-static expr* execute(
-    CompilerCB* compilercb,
-    expr* node,
-    std::vector<store::Item_t>& result)
-{
-  ulong nextVarId = 1;
-  PlanIter_t plan = codegen("const-folded expr", node, compilercb, nextVarId);
-
-  QueryLoc loc = LOC (node);
-  store::Item_t item;
-
-  CompilerCB expr_ccb(*compilercb);
-  expr_ccb.theRootSctx = node->get_sctx();
-
-  try
-  {
-    //std::cout << "Const folding expr : " << std::endl;
-    //node->put(std::cout);
-    //std::cout << std::endl;
-
-    PlanWrapperHolder pw(new PlanWrapper(plan,
-                                         &expr_ccb,
-                                         0,      // dynamic ctx
-                                         NULL,   // xquery
-                                         0,      // stack depth
-                                         expr_ccb.theHaveTimeout,
-                                         expr_ccb.theTimeout));
-    for (;;)
-    {
-      if (!pw->next(item))
-      {
-        break;
-      }
-
-      if (item->isError())
-      {
-        node->setUnfoldable(ANNOTATION_TRUE_FIXED);
-        node->setNonDiscardable(ANNOTATION_TRUE_FIXED);
-        return node;
-      }
-
-      result.push_back(item);
-    }
-
-    return NULL;
-  }
-  catch (ZorbaException const&)
-  {
-    node->setUnfoldable(ANNOTATION_TRUE_FIXED);
-    node->setNonDiscardable(ANNOTATION_TRUE_FIXED);
-    return node;
-    // TODO:
-    // we had to disable folding of errors because the FnErrorIterator
-    // was erroneously used. It always raises a ZorbaUserError (which is not correct).
-#if 0
-    Error lErrorCode = e.theErrorCode;
-    QueryLoc loc;
-    loc.setLineBegin(e.theQueryLine);
-    loc.setColumnBegin(e.theQueryColumn);
-    store::Item_t qname;
-    ITEM_FACTORY->createQName(qname,
-                              "http://www.w3.org/2005/xqt-errors",
-                              "err",
-                              error::ZorbaError::toString(lErrorCode).c_str());
-    expr* err_expr = rCtx.theEM->create_fo_expr(node->get_sctx_id(),
-                                  loc,
-                                  BUILTIN_FUNC(FN_ERROR_2),
-                                  rCtx.theEM->create_const_expr(node->get_sctx_id(), loc, qname),
-                                  rCtx.theEM->create_const_expr(node->get_sctx_id(), loc, e.theDescription));
-    err_expr->setUnfoldable(ANNOTATION_TRUE_FIXED);
-    err_expr->setNonDiscardable(ANNOTATION_TRUE_FIXED);
-    return err_expr;
-#endif
-  }
-}
 
 
 /*******************************************************************************
@@ -457,65 +375,158 @@ expr* MarkFreeVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
   fn:concatenate expr, if no item is returned by the evaluation of the const
   expr.
 ********************************************************************************/
-
-RULE_REWRITE_PRE(FoldConst)
+expr* FoldConst::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
-  xqtref_t rtype = node->get_return_type();
+  expr_kind_t k = node->get_expr_kind();
+  xqtref_t rtype = node->get_return_type(); // DO NOT MOVE THIS !!!!
 
-  if (standalone_expr(node) &&
-      ! already_folded(node, rCtx) &&
-      node->getFreeVars().empty() &&
-      ! node->isUnfoldable() &&
-      rtype->max_card() <= 1)
+  switch (k)
   {
-    std::vector<store::Item_t> result;
-    expr* folded = execute(rCtx.getCompilerCB(), node, result);
-    if (folded == NULL)
-    {
-      ZORBA_ASSERT (result.size () <= 1);
+  case const_expr_kind:
+  case match_expr_kind:
+  case axis_step_expr_kind:
+  {
+    break;
+  }
+  case fo_expr_kind:
+  {
+    fo_expr* fo = static_cast<fo_expr*>(node);
 
-      if (result.size () == 1)
+    if (fo->get_func()->getKind() == FunctionConsts::OP_CONCATENATE_N &&
+        fo->num_args() == 0)
+      break;
+  }
+   
+  default:
+  {
+    if (node->getFreeVars().empty() &&
+        ! node->isUnfoldable() &&
+        rtype->max_card() <= 1)
+    {
+      store::Item_t result;
+      bool folded = execute(rCtx.getCompilerCB(), node, result);
+
+      if (folded)
       {
-        folded = rCtx.theEM->
-        create_const_expr(node->get_sctx(), node->get_udf(), LOC(node), result[0]);
-      }
-      else
-      {
-        folded  = rCtx.theEM->
-        create_seq(node->get_sctx(), node->get_udf(), LOC(node));
+        expr* foldedExpr;
+
+        if (result)
+        {
+          foldedExpr = rCtx.theEM->
+          create_const_expr(node->get_sctx(), node->get_udf(), LOC(node), result);
+        }
+        else
+        {
+          foldedExpr  = rCtx.theEM->
+          create_seq(node->get_sctx(), node->get_udf(), LOC(node));
+        }
+
+        modified = true;
+        return foldedExpr;
       }
     }
-    return folded;
+
+    break;
   }
+  }
+
+  ExprIterator iter(node);
+
+  while (!iter.done())
+  {
+    expr* new_e = apply(rCtx, **iter, modified);
+    if (new_e != NULL)
+    {
+      **iter = new_e;
+    }
+    
+    iter.next();
+  }
+
   return NULL;
 }
 
 
-RULE_REWRITE_POST(FoldConst)
+/*******************************************************************************
+
+********************************************************************************/
+static bool execute(
+    CompilerCB* compilercb,
+    expr* node,
+    store::Item_t& result)
 {
-  return NULL;
-}
+  ulong nextVarId = 1;
+  PlanIter_t plan = codegen("const-folded expr", node, compilercb, nextVarId);
 
+  QueryLoc loc = LOC (node);
+  store::Item_t item;
 
-static bool standalone_expr(expr* e)
-{
-  expr_kind_t k = e->get_expr_kind();
-  return k != match_expr_kind && k != axis_step_expr_kind;
-}
+  CompilerCB expr_ccb(*compilercb);
+  expr_ccb.theRootSctx = node->get_sctx();
 
+  try
+  {
+    //std::cout << "Const folding expr : " << std::endl;
+    //node->put(std::cout);
+    //std::cout << std::endl;
 
-static bool already_folded(expr* e, RewriterContext& rCtx)
-{
-  if (e->get_expr_kind () == const_expr_kind)
+    PlanWrapperHolder pw(new PlanWrapper(plan,
+                                         &expr_ccb,
+                                         0,      // dynamic ctx
+                                         NULL,   // xquery
+                                         0,      // stack depth
+                                         expr_ccb.theHaveTimeout,
+                                         expr_ccb.theTimeout));
+    if (pw->next(item))
+    {
+      if (item->isError())
+      {
+        node->setUnfoldable(ANNOTATION_TRUE_FIXED);
+        node->setNonDiscardable(ANNOTATION_TRUE_FIXED);
+        return false;
+      }
+
+      result.transfer(item);
+
+      ZORBA_ASSERT(!pw->next(item));
+    }
+    else
+    {
+      result = NULL;
+    }
+
     return true;
-
-  if (e->get_expr_kind () != fo_expr_kind)
+  }
+  catch (ZorbaException const&)
+  {
+    node->setUnfoldable(ANNOTATION_TRUE_FIXED);
+    node->setNonDiscardable(ANNOTATION_TRUE_FIXED);
     return false;
 
-  const fo_expr* fo = dynamic_cast<fo_expr*>(e);
-
-  return (fo->get_func()->getKind() == FunctionConsts::OP_CONCATENATE_N &&
-          fo->num_args() == 0);
+    // TODO:
+    // we had to disable folding of errors because the FnErrorIterator
+    // was erroneously used. It always raises a ZorbaUserError (which is not correct).
+#if 0
+    Error lErrorCode = e.theErrorCode;
+    QueryLoc loc;
+    loc.setLineBegin(e.theQueryLine);
+    loc.setColumnBegin(e.theQueryColumn);
+    store::Item_t qname;
+    ITEM_FACTORY->createQName(qname,
+                              "http://www.w3.org/2005/xqt-errors",
+                              "err",
+                              error::ZorbaError::toString(lErrorCode).c_str());
+    expr* err_expr = rCtx.theEM->
+    create_fo_expr(node->get_sctx_id(),
+                   loc,
+                   BUILTIN_FUNC(FN_ERROR_2),
+                   rCtx.theEM->create_const_expr(node->get_sctx(), loc, qname),
+                   rCtx.theEM->create_const_expr(node->get_sctx(), loc, e.theDescription));
+    err_expr->setUnfoldable(ANNOTATION_TRUE_FIXED);
+    err_expr->setNonDiscardable(ANNOTATION_TRUE_FIXED);
+    return err_expr;
+#endif
+  }
 }
 
 
