@@ -897,7 +897,7 @@ bool begin_visit(flwor_expr& v)
           {
             ++numForClauses;
 
-            const for_clause* fc = static_cast<const for_clause*>(c);
+            const forlet_clause* fc = static_cast<const forlet_clause*>(c);
 
             if (fc->get_expr()->is_sequential())
             {
@@ -910,7 +910,7 @@ bool begin_visit(flwor_expr& v)
           }
           else if (c->get_kind() == flwor_clause::let_clause)
           {
-            const let_clause* lc = static_cast<const let_clause*>(c);
+            const forlet_clause* lc = static_cast<const forlet_clause*>(c);
 
             if (lc->get_expr()->is_sequential())
             {
@@ -1061,20 +1061,12 @@ bool begin_visit(flwor_expr& v)
     {
 
     case flwor_clause::for_clause:
-    {
-      visit_flwor_clause(c, isGeneral);
-
-      const for_clause* fc = reinterpret_cast<const for_clause*>(c);
-      fc->get_expr()->accept(*this);
-      break;
-    }
-
     case flwor_clause::let_clause:
     {
       visit_flwor_clause(c, isGeneral);
 
-      const for_clause* fc = reinterpret_cast<const for_clause*>(c);
-      fc->get_expr()->accept(*this);
+      const forlet_clause* flc = reinterpret_cast<const forlet_clause*>(c);
+      flc->get_expr()->accept(*this);
       break;
     }
 

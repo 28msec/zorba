@@ -122,20 +122,23 @@ void forletwin_clause::set_var(var_expr* v)
 /*******************************************************************************
 
 ********************************************************************************/
-for_clause::for_clause(
+forlet_clause::forlet_clause(
     static_context* sctx,
     CompilerCB* ccb,
     const QueryLoc& loc,
+    flwor_clause::ClauseKind kind,
     var_expr* varExpr,
     expr* domainExpr,
     var_expr* posVarExpr,
     var_expr* scoreVarExpr,
-    bool isAllowingEmpty)
+    bool isAllowingEmpty,
+    bool lazy)
   :
-  forletwin_clause(sctx, ccb, loc, flwor_clause::for_clause, varExpr, domainExpr),
+  forletwin_clause(sctx, ccb, loc, kind, varExpr, domainExpr),
   thePosVarExpr(posVarExpr),
   theScoreVarExpr(scoreVarExpr),
-  theAllowingEmpty(isAllowingEmpty)
+  theAllowingEmpty(isAllowingEmpty),
+  theLazyEval(lazy)
 {
   if (thePosVarExpr != NULL)
     thePosVarExpr->set_flwor_clause(this);
@@ -149,9 +152,10 @@ for_clause::for_clause(
     TypeManager* tm = sctx->get_typemanager();
 
     xqtref_t declaredType = varExpr->get_type();
+
     if (declaredType != NULL)
     {
-      if (declaredType->is_empty())
+      if (kind == flwor_clause::for_clause && declaredType->is_empty())
       {
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(ZED(BadType_23o), "empty-sequence"));
@@ -159,20 +163,19 @@ for_clause::for_clause(
 
       xqtref_t domainType = domainExpr->get_return_type();
 
-      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *declaredType, loc))
+      if (!TypeOps::is_equal(tm, *rtm.ITEM_TYPE_STAR, *declaredType, loc))
       {
-        declaredType = tm->create_type(*declaredType, TypeConstants::QUANT_STAR);
+        if (kind == flwor_clause::for_clause)
+          declaredType = tm->create_type(*declaredType, domainType->get_quantifier());
 
         if (!TypeOps::is_subtype(tm, *domainType, *declaredType, loc))
         {
           xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
+
           if (TypeOps::is_equal(tm, *varType, *rtm.NONE_TYPE, loc))
           {
             RAISE_ERROR(err::XPTY0004, loc,
-            ERROR_PARAMS(ZED(BadType_23o),
-                         *domainType,
-                         ZED(NoTreatAs_4),
-                         *declaredType));
+            ERROR_PARAMS(ZED(BadType_23o), *domainType, ZED(NoTreatAs_4), *declaredType));
           }
 
           domainExpr = theCCB->theEM->
@@ -191,7 +194,7 @@ for_clause::for_clause(
 }
 
 
-for_clause::~for_clause()
+forlet_clause::~forlet_clause()
 {
   if (thePosVarExpr != NULL)
     thePosVarExpr->set_flwor_clause(NULL);
@@ -201,19 +204,19 @@ for_clause::~for_clause()
 }
 
 
-var_expr* for_clause::get_pos_var() const
+var_expr* forlet_clause::get_pos_var() const
 {
   return thePosVarExpr;
 }
 
 
-var_expr* for_clause::get_score_var() const
+var_expr* forlet_clause::get_score_var() const
 {
   return theScoreVarExpr;
 }
 
 
-void for_clause::set_pos_var(var_expr* v)
+void forlet_clause::set_pos_var(var_expr* v)
 {
   thePosVarExpr = v;
   if (thePosVarExpr != NULL)
@@ -221,7 +224,7 @@ void for_clause::set_pos_var(var_expr* v)
 }
 
 
-void for_clause::set_score_var(var_expr* v)
+void forlet_clause::set_score_var(var_expr* v)
 {
   theScoreVarExpr = v;
   if (theScoreVarExpr != NULL)
@@ -229,7 +232,7 @@ void for_clause::set_score_var(var_expr* v)
 }
 
 
-flwor_clause* for_clause::clone(user_function* udf, expr::substitution_t& subst) const
+flwor_clause* forlet_clause::clone(user_function* udf, expr::substitution_t& subst) const
 {
   expr* domainCopy = theDomainExpr->clone(udf, subst);
 
@@ -245,123 +248,31 @@ flwor_clause* for_clause::clone(user_function* udf, expr::substitution_t& subst)
   }
 
   var_expr* scorevarCopy = NULL;
-  var_expr* score_var_ptr = theScoreVarExpr;
-  if (score_var_ptr)
+  if (theScoreVarExpr)
   {
-    scorevarCopy = theCCB->theEM->create_var_expr(udf, *score_var_ptr);
-    subst[score_var_ptr] = scorevarCopy;
+    scorevarCopy = theCCB->theEM->create_var_expr(udf, *theScoreVarExpr);
+    subst[theScoreVarExpr] = scorevarCopy;
   }
 
-  return theCCB->theEM->create_for_clause(theContext,
-                                          get_loc(),
-                                          varCopy,
-                                          domainCopy,
-                                          posvarCopy,
-                                          scorevarCopy,
-                                          theAllowingEmpty);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-let_clause::let_clause(
-    static_context* sctx,
-    CompilerCB* ccb,
-    const QueryLoc& loc,
-    var_expr* varExpr,
-    expr* domainExpr,
-    bool lazy)
-  :
-  forletwin_clause(sctx, ccb, loc, flwor_clause::let_clause, varExpr, domainExpr),
-  theScoreVarExpr(NULL),
-  theLazyEval(lazy)
-{
-  if (theScoreVarExpr != NULL)
-    theScoreVarExpr->set_flwor_clause(this);
-
-  if (varExpr != NULL && sctx != NULL)
+  if (theKind == flwor_clause::for_clause)
   {
-    RootTypeManager& rtm = GENV_TYPESYSTEM;
-    TypeManager* tm = sctx->get_typemanager();
-
-    xqtref_t declaredType = varExpr->get_type();
-
-    if (declaredType != NULL)
-    {
-      xqtref_t domainType = domainExpr->get_return_type();
-
-      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *declaredType, loc) &&
-          !TypeOps::is_subtype(tm, *domainType, *declaredType, loc))
-      {
-        xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
-
-        if (TypeOps::is_equal(tm, *varType, *rtm.NONE_TYPE, loc))
-        {
-          RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED(BadType_23o), *domainType, ZED(NoTreatAs_4), *declaredType));
-        }
-
-        domainExpr = theCCB->theEM->
-        create_treat_expr(sctx,
-                          domainExpr->get_udf(),
-                          loc,
-                          domainExpr,
-                          declaredType,
-                          TREAT_TYPE_MATCH);
-
-        set_expr(domainExpr);
-      }
-    }
+    return theCCB->theEM->create_for_clause(theContext,
+                                            get_loc(),
+                                            varCopy,
+                                            domainCopy,
+                                            posvarCopy,
+                                            scorevarCopy,
+                                            theAllowingEmpty);
+  }
+  else
+  {
+    return theCCB->theEM->create_let_clause(theContext,
+                                            get_loc(),
+                                            varCopy,
+                                            domainCopy,
+                                            theLazyEval);
   }
 }
-
-
-let_clause::~let_clause()
-{
-  if (theScoreVarExpr != NULL)
-    theScoreVarExpr->set_flwor_clause(NULL);
-}
-
-
-var_expr* let_clause::get_score_var() const
-{
-  return theScoreVarExpr;
-}
-
-
-void let_clause::set_score_var(var_expr* v)
-{
-  theScoreVarExpr = v;
-  if (theScoreVarExpr != NULL)
-    theScoreVarExpr->set_flwor_clause(this);
-}
-
-
-flwor_clause* let_clause::clone(user_function* udf, expr::substitution_t& subst) const
-{
-  expr* domainCopy = theDomainExpr->clone(udf, subst);
-
-  var_expr* varCopy = theCCB->theEM->create_var_expr(udf, *theVarExpr);
-  subst[theVarExpr] = varCopy;
-
-#if 0
-  var_expr* scorevarCopy = NULL;
-  var_expr* score_var_ptr = theScoreVarExpr;
-  if (score_var_ptr)
-  {
-    scorevarCopy = theCCB->theEM->create_var_expr(*score_var_ptr);
-    subst->get(score_var_ptr) = scorevarCopy;
-  }
-#endif
-
-  return theCCB->theEM->create_let_clause(theContext,
-                                          get_loc(),
-                                          varCopy,
-                                          domainCopy,
-                                          theLazyEval);
-}
-
 
 
 /*******************************************************************************

@@ -294,7 +294,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     flwor_clause* c = theFlwor->get_clause(i);
 
-    if (c->get_kind() == flwor_clause::group_clause)
+    switch (c->get_kind())
+    {
+    case flwor_clause::group_clause:
     {
       group_clause* gc = static_cast<group_clause *>(c);
 
@@ -313,8 +315,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           end = gc->endNonGroupVars();
         }
       }
+
+      break;
     }
-    else if (c->get_kind() == flwor_clause::for_clause)
+    case flwor_clause::for_clause:
     {
       for_clause* fc = static_cast<for_clause *>(c);
 
@@ -362,7 +366,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           --numClauses;
           --i;
 
-          theFlwor->compute_return_type(true, NULL);
+          theFlwor->compute_return_type(false, NULL);
         }
       }
       // FOR clause with cardinality 0 or 1
@@ -388,11 +392,13 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           --numClauses;
           --i;
 
-          theFlwor->compute_return_type(true, NULL);
+          theFlwor->compute_return_type(false, NULL);
         }
       }
+
+      break;
     }
-    else if (c->get_kind() == flwor_clause::let_clause)
+    case flwor_clause::let_clause:
     {
       let_clause* lc = static_cast<let_clause *>(c);
       var_expr* var = lc->get_var();
@@ -411,20 +417,13 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       }
       else if (domainQuant == TypeConstants::QUANT_ONE)
       {
-        MODIFY(theFlwor->remove_clause(i));
-        const QueryLoc& loc = var->get_loc();
-        var_expr* fvar = rCtx.theEM->
-        create_var_expr(sctx, udf, loc, var_expr::for_var, var->get_name());
-
-        fvar->getFreeVars().insert(fvar);
-
-        for_clause* fc = rCtx.theEM->
-        create_for_clause(sctx, loc, fvar, domainExpr);
-
-        theFlwor->add_clause(i, fc);
-
-        subst_vars(rCtx, node, var, fvar);
+        lc->set_kind(flwor_clause::for_clause);
+        var->set_kind(var_expr::for_var);
+        modified = true;
       }
+    }
+    default:
+      break;
     }
   }
 
@@ -1380,7 +1379,7 @@ static void rewrite_positional_pred(
 
   assert(udf == rCtx.theUDF);
 
-  for_clause* forClause = posVar->get_for_clause();
+  for_clause* forClause = posVar->get_forlet_clause();
   expr* domainExpr = forClause->get_expr();
 
   fo_expr* result;
@@ -1628,7 +1627,7 @@ static bool is_positional_pred(
     }
     }
 
-    for_clause* forClause = posVar->get_for_clause();
+    for_clause* forClause = posVar->get_forlet_clause();
 
     if (forClause->is_allowing_empty())
       return false;

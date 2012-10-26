@@ -1619,12 +1619,11 @@ expr* wrap_in_dos_and_dupelim(expr* expr, bool atomics, bool reverse = false)
   Create a LET clause for the given LET variable "lv", with the given expr "e" as
   its defining expression.
 ********************************************************************************/
-let_clause* wrap_in_letclause(expr* e, var_expr* lv)
+forlet_clause* wrap_in_letclause(expr* e, var_expr* lv)
 {
   assert (lv->get_kind () == var_expr::let_var);
 
-  return theExprManager->
-  create_let_clause(theRootSctx, e->get_loc(), lv, e);
+  return theExprManager->create_let_clause(theRootSctx, e->get_loc(), lv, e);
 }
 
 
@@ -1633,7 +1632,7 @@ let_clause* wrap_in_letclause(expr* e, var_expr* lv)
   local sctx obj. Then, create a LET clause for this new var_expr, with the given
   expr "e" as its defining expression.
 ********************************************************************************/
-let_clause* wrap_in_letclause(
+forlet_clause* wrap_in_letclause(
     expr* e,
     const QueryLoc& loc,
     const QName* qname)
@@ -1647,7 +1646,7 @@ let_clause* wrap_in_letclause(
   this new var_expr, with the given expr "e" as its defining expression. NOTE:
   the internal var is not registered in the sctx.
 ********************************************************************************/
-let_clause* wrap_in_letclause(expr* e)
+forlet_clause* wrap_in_letclause(expr* e)
 {
   return wrap_in_letclause(e, create_temp_var(e->get_loc(), var_expr::let_var));
 }
@@ -1657,7 +1656,7 @@ let_clause* wrap_in_letclause(expr* e)
   Create a FOR clause for the given FOR variable "fv" and its associated POS var
   "pv" (pv may be NULL). Use the given expr "e" as the defining expr for "fv".
 ********************************************************************************/
-for_clause* wrap_in_forclause(expr* e, var_expr* fv, var_expr* pv)
+forlet_clause* wrap_in_forclause(expr* e, var_expr* fv, var_expr* pv)
 {
   assert(fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
@@ -1665,8 +1664,7 @@ for_clause* wrap_in_forclause(expr* e, var_expr* fv, var_expr* pv)
     assert(pv->get_kind() == var_expr::pos_var);
   }
 
-  return theExprManager->
-  create_for_clause(theRootSctx, e->get_loc(), fv, e, pv);
+  return theExprManager->create_for_clause(theRootSctx, e->get_loc(), fv, e, pv);
 }
 
 
@@ -1676,7 +1674,7 @@ for_clause* wrap_in_forclause(expr* e, var_expr* fv, var_expr* pv)
   Then, create a FOR clause for these new var_exprs, with the given expr as the
   defining expression of the FOR var.
 ********************************************************************************/
-for_clause* wrap_in_forclause(
+forlet_clause* wrap_in_forclause(
     expr* expr,
     const QueryLoc& loc,
     const QName* fv_qname,
@@ -1693,7 +1691,7 @@ for_clause* wrap_in_forclause(
   this new var_expr, with the given expr as its defining expression. NOTE:
   the internal var is not registered in the sctx.
 ********************************************************************************/
-for_clause* wrap_in_forclause(expr* expr, bool add_posvar)
+forlet_clause* wrap_in_forclause(expr* expr, bool add_posvar)
 {
   var_expr* fv = create_temp_var(expr->get_loc(), var_expr::for_var);
 
@@ -1769,13 +1767,13 @@ flwor_expr* wrap_expr_in_flwor(
 
     normalize_fo(countExpr);
 
-    let_clause* lcLast = wrap_in_letclause(countExpr, loc, LAST_IDX_VARNAME);
+    forlet_clause* lcLast = wrap_in_letclause(countExpr, loc, LAST_IDX_VARNAME);
 
     // Iterate over the input seq
     for_clause* fcDot = wrap_in_forclause(lcInputSeq->get_var(),
-                                           loc,
-                                           DOT_VARNAME,
-                                           DOT_POS_VARNAME);
+                                          loc,
+                                          DOT_VARNAME,
+                                          DOT_POS_VARNAME);
     flworExpr->add_clause(lcInputSeq);
     flworExpr->add_clause(lcLast);
     flworExpr->add_clause(fcDot);
@@ -1784,9 +1782,9 @@ flwor_expr* wrap_expr_in_flwor(
   {
     // Iterate over the input seq
     for_clause* fcDot = wrap_in_forclause(inputExpr,
-                                           loc,
-                                           DOT_VARNAME,
-                                           DOT_POS_VARNAME);
+                                          loc,
+                                          DOT_VARNAME,
+                                          DOT_POS_VARNAME);
     flworExpr->add_clause(fcDot);
   }
 

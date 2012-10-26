@@ -30,9 +30,6 @@ namespace zorba
 class ExprManager;
 
 class order_modifier;
-class flwor_clause;
-class for_clause;
-class let_clause;
 class window_clause;
 class flwor_wincond;
 class orderby_clause;
@@ -95,6 +92,8 @@ public:
   const QueryLoc& get_loc() const { return theLocation; }
 
   ClauseKind get_kind() const { return theKind; }
+
+  void set_kind(ClauseKind k) { theKind = k; }
 
   flwor_expr* get_flwor_expr() const { return theFlworExpr; }
 
@@ -172,7 +171,7 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class for_clause : public forletwin_clause
+class forlet_clause : public forletwin_clause
 {
   friend class flwor_expr;
   friend class ExprManager;
@@ -182,24 +181,31 @@ protected:
   var_expr    * thePosVarExpr;
   var_expr    * theScoreVarExpr;
   bool          theAllowingEmpty;
+  bool          theLazyEval;
 
 protected:
-  for_clause(
+  forlet_clause(
         static_context* sctx,
         CompilerCB* ccb,
         const QueryLoc& loc,
+        flwor_clause::ClauseKind kind,
         var_expr* varExpr,
         expr* domainExpr,
-        var_expr* posVarExpr = NULL,
-        var_expr* scoreVarExpr = NULL,
-        bool isOuter = false);
+        var_expr* posVarExpr,
+        var_expr* scoreVarExpr,
+        bool isOuter,
+        bool lazy);
 
 public:
-  ~for_clause();
+  ~forlet_clause();
 
   bool is_allowing_empty() const { return theAllowingEmpty; }
 
   void set_allowing_empty(bool allowing_empty) { theAllowingEmpty = allowing_empty; }
+
+  void setLazyEval(bool v) { theLazyEval = v; }
+
+  bool lazyEval() const { return theLazyEval; }
 
   var_expr* get_pos_var() const;
 
@@ -208,47 +214,6 @@ public:
   void set_pos_var(var_expr* v);
 
   void set_score_var(var_expr* v);
-
-  flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
-
-  std::ostream& put(std::ostream&) const;
-};
-
-
-/***************************************************************************//**
-  theScoreVarExpr :
-  theLazyEval     : Whether the window var can be materilized lazily or not.
-********************************************************************************/
-class let_clause : public forletwin_clause
-{
-  friend class expr;
-  friend class flwor_expr;
-  friend class ExprManager;
-  friend class ExprIterator;
-
-protected:
-  var_expr  * theScoreVarExpr;
-  bool        theLazyEval;
-
-protected:
-  let_clause(
-        static_context* sctx,
-        CompilerCB* ccb,
-        const QueryLoc& loc,
-        var_expr* varExpr,
-        expr* domainExpr,
-        bool lazy = false);
-
-public:
-  ~let_clause();
-
-  var_expr* get_score_var() const;
-
-  void set_score_var(var_expr* v);
-
-  void setLazyEval(bool v) { theLazyEval = v; }
-
-  bool lazyEval() const { return theLazyEval; }
 
   flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 

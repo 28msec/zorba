@@ -96,8 +96,10 @@ class fo_expr;
 class var_expr;
 class flwor_clause;
 class forletwin_clause;
-class for_clause;
-class let_clause;
+class forlet_clause;
+
+typedef forlet_clause for_clause;
+typedef forlet_clause let_clause;
 
 class ItemVariableIterator;
 typedef rchandle<ItemVariableIterator> ItemVariableIterator_t;

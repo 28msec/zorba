@@ -485,7 +485,7 @@ static expr* try_hoisting(
   create_fo_expr(sctx, udf, loc, BUILTIN_FUNC(OP_HOIST_1), e);
 
   hoisted->setFlags(e->getFlags());
-  letvar->setFlags(e->getFlags());
+  //letvar->setFlags(e->getFlags());
 
   let_clause* flref(rCtx.theEM->create_let_clause(sctx, loc, letvar, hoisted));
 

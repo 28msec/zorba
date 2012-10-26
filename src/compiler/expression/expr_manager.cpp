@@ -885,7 +885,7 @@ fo_expr* ExprManager::create_fo_expr(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-for_clause* ExprManager::create_for_clause(
+forlet_clause* ExprManager::create_for_clause(
     static_context* sctx,
     const QueryLoc& loc,
     var_expr* varExpr,
@@ -894,19 +894,26 @@ for_clause* ExprManager::create_for_clause(
     var_expr* scoreVarExpr,
     bool isOuter)
 {
-  CREATE_AND_RETURN(for_clause,
-          sctx, theCCB, loc, varExpr, domainExpr, posVarExpr, scoreVarExpr, isOuter);
+  CREATE_AND_RETURN(forlet_clause,
+                    sctx, theCCB, loc,
+                    flwor_clause::for_clause,
+                    varExpr, domainExpr, posVarExpr, scoreVarExpr,
+                    isOuter, false);
 }
 
 
-let_clause* ExprManager::create_let_clause(
+forlet_clause* ExprManager::create_let_clause(
     static_context* sctx,
     const QueryLoc& loc,
     var_expr* varExpr,
     expr* domainExpr,
     bool lazy)
 {
-  CREATE_AND_RETURN(let_clause, sctx, theCCB, loc, varExpr, domainExpr, lazy);
+  CREATE_AND_RETURN(forlet_clause,
+                    sctx, theCCB, loc,
+                    flwor_clause::let_clause,
+                    varExpr, domainExpr, NULL, NULL,
+                    false, lazy);
 }
 
 
@@ -921,7 +928,9 @@ window_clause* ExprManager::create_window_clause(
     bool lazy)
 {
   CREATE_AND_RETURN(window_clause,
-          sctx, theCCB, loc, winKind, varExpr, domainExpr, winStart, winStop, lazy);
+                    sctx, theCCB, loc,
+                    winKind, varExpr, domainExpr, winStart, winStop,
+                    lazy);
 }
 
 
