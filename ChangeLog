@@ -6,8 +6,7 @@ version 2.8
 New Features:
 
 Optimizations:
-  * Optimized the MarkExpr and EliminateFlworVariables rules of the optimizer
-  * Optimized the MarkFreeVars optimizer rule
+  * Various optimizations in the implementation of the optimizer rules.
 
 Bug Fixes/Other Changes:
   * Fixed mustCopyInputNodes() method of no-copy, and jsoniq functions.
