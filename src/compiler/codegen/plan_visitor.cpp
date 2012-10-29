@@ -1080,10 +1080,10 @@ bool begin_visit(flwor_expr& v)
       flwor_wincond* stopCond = wc->get_win_stop();
 
       if (startCond)
-        startCond->get_cond()->accept(*this);
+        startCond->get_expr()->accept(*this);
 
       if (stopCond)
-        stopCond->get_cond()->accept(*this);
+        stopCond->get_expr()->accept(*this);
 
       wc->get_expr()->accept(*this);
 

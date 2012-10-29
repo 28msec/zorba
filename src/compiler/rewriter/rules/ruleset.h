@@ -58,8 +58,8 @@ PREPOST_RULE(PartialEval);
 class EliminateUnusedLetVars : public PrePostRewriteRule
 {
 protected:
-  flwor_expr                * theFlwor;
-  std::vector<const expr*>    theRefPath;
+  flwor_expr           * theFlwor;
+  std::vector<expr**>    theRefs;
 
 public:
   EliminateUnusedLetVars()
@@ -67,7 +67,7 @@ public:
     PrePostRewriteRule(RewriteRule::EliminateUnusedLetVars, "EliminateUnusedLetVars"),
     theFlwor(NULL)
   {
-    theRefPath.reserve(32);
+    theRefs.reserve(32);
   }
 
 protected:
@@ -75,9 +75,21 @@ protected:
 
   expr* rewritePost(expr* node, RewriterContext& rCtx);
 
-  bool safe_to_fold_var(csize varClausePos, int& numRefs);
+  bool safe_to_fold_var(csize varPos, int& numRefs);
 
-  bool var_in_try_or_loop(const std::vector<const expr*>& path);
+  bool safe_to_fold_var_rec(
+      expr* node,
+      csize varPos,
+      var_expr* var,
+      bool unsafe,
+      bool isSafeVar,
+      int& numRefs);
+
+  void subst_vars(
+      const RewriterContext& rCtx,
+      var_expr* var,
+      expr* subst,
+      int numRefs);
 };
 
 

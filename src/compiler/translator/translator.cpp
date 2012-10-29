@@ -6257,7 +6257,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     {
       group_clause* gc = static_cast<group_clause*>(curClause);
 
-      csize numGVars = gc->getNumGroupingVars();
+      csize numGVars = gc->numGroupingVars();
 
       for (csize i = 0; i < numGVars; ++i)
         pop_scope();

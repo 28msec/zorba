@@ -101,8 +101,6 @@ public:
 
   virtual var_expr* get_pos_var() const { return NULL; }
 
-  virtual var_expr* get_score_var() const { return NULL; }
-
   virtual flwor_clause* clone(
       user_function* udf,
       expr::substitution_t& substitution) const = 0;
@@ -161,6 +159,8 @@ public:
   void set_expr(expr* v);
 
   expr* get_expr() const { return theDomainExpr; }
+
+  expr** get_expr_ref() { return &theDomainExpr; }
 
   var_expr* get_var() const { return theVarExpr; }
 
@@ -361,9 +361,9 @@ protected:
 public:
   ~flwor_wincond();
 
-  expr* get_cond() const { return theCondExpr; }
+  expr* get_expr() const { return theCondExpr; }
 
-  void set_cond(expr* cond) { theCondExpr = cond; }
+  void set_expr(expr* cond) { theCondExpr = cond; }
 
   bool is_only() const { return theIsOnly; }
 
@@ -430,9 +430,9 @@ public:
 
   const std::vector<std::string>& get_collations() const { return theCollations; }
 
-  csize getNumGroupingVars() const { return theGroupVars.size(); }
+  csize numGroupingVars() const { return theGroupVars.size(); }
 
-  csize getNumNonGroupingVars() const { return theNonGroupVars.size(); }
+  csize numNonGroupingVars() const { return theNonGroupVars.size(); }
 
   const rebind_list_t& get_grouping_vars() const { return theGroupVars; }
 
@@ -463,6 +463,10 @@ public:
   expr* get_input_for_group_var(const var_expr* var);
 
   expr* get_input_for_nongroup_var(const var_expr* var);
+
+  expr** get_gexpr_ref(csize i) { return &(theGroupVars[i].first); }
+
+  expr** get_ngexpr_ref(csize i) { return &(theNonGroupVars[i].first); }
 
   flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 
@@ -531,6 +535,8 @@ public:
 
   expr* get_column_expr(csize i) const { return theOrderingExprs[i]; }
 
+  expr** get_expr_ref(csize i) { return &theOrderingExprs[i]; }
+
   void set_column_expr(csize i, expr* e) { theOrderingExprs[i] = e; }
 
   flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
@@ -598,6 +604,8 @@ class where_clause : public flwor_clause
 public:
   expr* get_expr() const { return theWhereExpr; }
 
+  expr** get_expr_ref() { return &theWhereExpr; }
+
   void set_expr(expr* where);
 
   flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
@@ -659,6 +667,8 @@ public:
   void set_general(bool v) { theIsGeneral = true; }
 
   expr* get_return_expr() const { return theReturnExpr; }
+
+  expr** get_return_expr_ref() { return &theReturnExpr; }
 
   void set_return_expr(expr* e)
   {

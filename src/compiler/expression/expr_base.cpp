@@ -955,10 +955,10 @@ bool expr::is_map_internal(const expr* e, bool& found) const
         flwor_wincond* startCond = wc->get_win_start();
         flwor_wincond* stopCond = wc->get_win_stop();
 
-        if (startCond && startCond->get_cond()->contains_expr(e))
+        if (startCond && startCond->get_expr()->contains_expr(e))
           return false;
 
-        if (stopCond && stopCond->get_cond()->contains_expr(e))
+        if (stopCond && stopCond->get_expr()->contains_expr(e))
           return false;
 
         break;
