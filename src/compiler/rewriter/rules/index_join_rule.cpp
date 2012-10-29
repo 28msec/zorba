@@ -286,7 +286,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     return false;
 
   // The expr that defines the inner var must not depend on the outer var.
-  expr* innerDomainExpr = predInfo.theInnerVar->get_for_clause()->get_expr();
+  expr* innerDomainExpr = predInfo.theInnerVar->get_forlet_clause()->get_expr();
   if (checkVarDependency(rCtx, innerDomainExpr, outerVarId))
     return false;
 
@@ -457,7 +457,7 @@ static void rewriteJoin(
   const QueryLoc& loc = predInfo.thePredicate->get_loc();
   static_context* sctx = predInfo.thePredicate->get_sctx();
   user_function* udf = predInfo.thePredicate->get_udf();
-  for_clause* fc = predInfo.theInnerVar->get_for_clause();
+  for_clause* fc = predInfo.theInnerVar->get_forlet_clause();
 
   assert(udf == rCtx.theUDF);
 

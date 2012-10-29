@@ -315,10 +315,18 @@ void expr::clear_annotations()
     setIgnoresDuplicateNodes(ANNOTATION_UNKNOWN);
 
   if (getNonDiscardable() != ANNOTATION_TRUE_FIXED)
-    setNonDiscardable(ANNOTATION_UNKNOWN);
+    setNonDiscardable(ANNOTATION_FALSE);
 
   if (getUnfoldable() != ANNOTATION_TRUE_FIXED)
-    setUnfoldable(ANNOTATION_UNKNOWN);
+    setUnfoldable(ANNOTATION_FALSE);
+
+  setContainsRecursiveCall(ANNOTATION_FALSE);
+
+  if (getConstructsNodes() != ANNOTATION_TRUE_FIXED)
+    setConstructsNodes(ANNOTATION_FALSE);
+
+  if (getDereferencesNodes() != ANNOTATION_TRUE_FIXED)
+    setDereferencesNodes(ANNOTATION_FALSE);
 
   //theFlags1 = 0;
   //setNonDiscardable(ANNOTATION_FALSE);
@@ -897,7 +905,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
         if (found)
           break;
 
-        const for_clause* fc = static_cast<const for_clause*>(clause);
+        const forlet_clause* fc = static_cast<const forlet_clause*>(clause);
 
         if (fc->get_expr()->is_map_internal(e, found) && found)
         {
@@ -915,7 +923,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
         if (found)
           break;
 
-        const let_clause* lc = static_cast<const let_clause*>(clause);
+        const forlet_clause* lc = static_cast<const forlet_clause*>(clause);
 
         if (lc->get_expr()->contains_expr(e))
           return false;
@@ -947,10 +955,10 @@ bool expr::is_map_internal(const expr* e, bool& found) const
         flwor_wincond* startCond = wc->get_win_start();
         flwor_wincond* stopCond = wc->get_win_stop();
 
-        if (startCond && startCond->get_cond()->contains_expr(e))
+        if (startCond && startCond->get_expr()->contains_expr(e))
           return false;
 
-        if (stopCond && stopCond->get_cond()->contains_expr(e))
+        if (stopCond && stopCond->get_expr()->contains_expr(e))
           return false;
 
         break;

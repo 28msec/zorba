@@ -30,9 +30,6 @@ namespace zorba
 class ExprManager;
 
 class order_modifier;
-class flwor_clause;
-class for_clause;
-class let_clause;
 class window_clause;
 class flwor_wincond;
 class orderby_clause;
@@ -96,13 +93,13 @@ public:
 
   ClauseKind get_kind() const { return theKind; }
 
+  void set_kind(ClauseKind k) { theKind = k; }
+
   flwor_expr* get_flwor_expr() const { return theFlworExpr; }
 
   virtual void set_expr(expr* v) { }
 
   virtual var_expr* get_pos_var() const { return NULL; }
-
-  virtual var_expr* get_score_var() const { return NULL; }
 
   virtual flwor_clause* clone(
       user_function* udf,
@@ -163,6 +160,8 @@ public:
 
   expr* get_expr() const { return theDomainExpr; }
 
+  expr** get_expr_ref() { return &theDomainExpr; }
+
   var_expr* get_var() const { return theVarExpr; }
 
   void set_var(var_expr* v);
@@ -172,7 +171,7 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class for_clause : public forletwin_clause
+class forlet_clause : public forletwin_clause
 {
   friend class flwor_expr;
   friend class ExprManager;
@@ -182,24 +181,31 @@ protected:
   var_expr    * thePosVarExpr;
   var_expr    * theScoreVarExpr;
   bool          theAllowingEmpty;
+  bool          theLazyEval;
 
 protected:
-  for_clause(
+  forlet_clause(
         static_context* sctx,
         CompilerCB* ccb,
         const QueryLoc& loc,
+        flwor_clause::ClauseKind kind,
         var_expr* varExpr,
         expr* domainExpr,
-        var_expr* posVarExpr = NULL,
-        var_expr* scoreVarExpr = NULL,
-        bool isOuter = false);
+        var_expr* posVarExpr,
+        var_expr* scoreVarExpr,
+        bool isOuter,
+        bool lazy);
 
 public:
-  ~for_clause();
+  ~forlet_clause();
 
   bool is_allowing_empty() const { return theAllowingEmpty; }
 
   void set_allowing_empty(bool allowing_empty) { theAllowingEmpty = allowing_empty; }
+
+  void setLazyEval(bool v) { theLazyEval = v; }
+
+  bool lazyEval() const { return theLazyEval; }
 
   var_expr* get_pos_var() const;
 
@@ -208,47 +214,6 @@ public:
   void set_pos_var(var_expr* v);
 
   void set_score_var(var_expr* v);
-
-  flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
-
-  std::ostream& put(std::ostream&) const;
-};
-
-
-/***************************************************************************//**
-  theScoreVarExpr :
-  theLazyEval     : Whether the window var can be materilized lazily or not.
-********************************************************************************/
-class let_clause : public forletwin_clause
-{
-  friend class expr;
-  friend class flwor_expr;
-  friend class ExprManager;
-  friend class ExprIterator;
-
-protected:
-  var_expr  * theScoreVarExpr;
-  bool        theLazyEval;
-
-protected:
-  let_clause(
-        static_context* sctx,
-        CompilerCB* ccb,
-        const QueryLoc& loc,
-        var_expr* varExpr,
-        expr* domainExpr,
-        bool lazy = false);
-
-public:
-  ~let_clause();
-
-  var_expr* get_score_var() const;
-
-  void set_score_var(var_expr* v);
-
-  void setLazyEval(bool v) { theLazyEval = v; }
-
-  bool lazyEval() const { return theLazyEval; }
 
   flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 
@@ -396,9 +361,9 @@ protected:
 public:
   ~flwor_wincond();
 
-  expr* get_cond() const { return theCondExpr; }
+  expr* get_expr() const { return theCondExpr; }
 
-  void set_cond(expr* cond) { theCondExpr = cond; }
+  void set_expr(expr* cond) { theCondExpr = cond; }
 
   bool is_only() const { return theIsOnly; }
 
@@ -465,9 +430,9 @@ public:
 
   const std::vector<std::string>& get_collations() const { return theCollations; }
 
-  csize getNumGroupingVars() const { return theGroupVars.size(); }
+  csize numGroupingVars() const { return theGroupVars.size(); }
 
-  csize getNumNonGroupingVars() const { return theNonGroupVars.size(); }
+  csize numNonGroupingVars() const { return theNonGroupVars.size(); }
 
   const rebind_list_t& get_grouping_vars() const { return theGroupVars; }
 
@@ -498,6 +463,10 @@ public:
   expr* get_input_for_group_var(const var_expr* var);
 
   expr* get_input_for_nongroup_var(const var_expr* var);
+
+  expr** get_gexpr_ref(csize i) { return &(theGroupVars[i].first); }
+
+  expr** get_ngexpr_ref(csize i) { return &(theNonGroupVars[i].first); }
 
   flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
 
@@ -566,6 +535,8 @@ public:
 
   expr* get_column_expr(csize i) const { return theOrderingExprs[i]; }
 
+  expr** get_expr_ref(csize i) { return &theOrderingExprs[i]; }
+
   void set_column_expr(csize i, expr* e) { theOrderingExprs[i] = e; }
 
   flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
@@ -633,6 +604,8 @@ class where_clause : public flwor_clause
 public:
   expr* get_expr() const { return theWhereExpr; }
 
+  expr** get_expr_ref() { return &theWhereExpr; }
+
   void set_expr(expr* where);
 
   flwor_clause* clone(user_function* udf, expr::substitution_t& substitution) const;
@@ -694,6 +667,8 @@ public:
   void set_general(bool v) { theIsGeneral = true; }
 
   expr* get_return_expr() const { return theReturnExpr; }
+
+  expr** get_return_expr_ref() { return &theReturnExpr; }
 
   void set_return_expr(expr* e)
   {

@@ -440,8 +440,8 @@ static expr* try_hoisting(
       // cannot be hoisted.
       for (i = step->clauseCount - 1; i >= 0; --i)
       {
-        const forletwin_clause* flc =
-        static_cast<const forletwin_clause*>(flwor->get_clause(i));
+        const forlet_clause* flc =
+        static_cast<const forlet_clause*>(flwor->get_clause(i));
 
         if (flc->get_expr()->is_sequential())
         {
@@ -485,7 +485,7 @@ static expr* try_hoisting(
   create_fo_expr(sctx, udf, loc, BUILTIN_FUNC(OP_HOIST_1), e);
 
   hoisted->setFlags(e->getFlags());
-  letvar->setFlags(e->getFlags());
+  //letvar->setFlags(e->getFlags());
 
   let_clause* flref(rCtx.theEM->create_let_clause(sctx, loc, letvar, hoisted));
 

@@ -38,7 +38,7 @@ public:
   {
     ADD_RULE(MarkExprs);
     ADD_RULE(MarkFreeVars);
-    ADD_RULE(FoldConst(false));
+    ADD_RULE(FoldConst);
     ADD_RULE(PartialEval);
     ADD_RULE(RefactorPredFLWOR);
     ADD_RULE(EliminateUnusedLetVars);

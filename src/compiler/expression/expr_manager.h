@@ -39,6 +39,7 @@ class var_expr;
 class catch_clause;
 class pragma;
 class flwor_clause;
+class forlet_clause;
 class flwor_wincond;
 class copy_clause;
 class window_clause;
@@ -540,7 +541,7 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-  for_clause* create_for_clause(
+  forlet_clause* create_for_clause(
       static_context* sctx,
       const QueryLoc& loc,
       var_expr* varExpr,
@@ -549,7 +550,7 @@ public:
       var_expr* scoreVarExpr = NULL,
       bool isOuter = false);
 
-  let_clause* create_let_clause(
+  forlet_clause* create_let_clause(
       static_context* sctx,
       const QueryLoc& loc,
       var_expr* varExpr,

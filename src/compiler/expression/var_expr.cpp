@@ -284,9 +284,12 @@ forletwin_clause* var_expr::get_forletwin_clause() const
 /*******************************************************************************
 
 ********************************************************************************/
-for_clause* var_expr::get_for_clause() const
+forlet_clause* var_expr::get_forlet_clause() const
 {
-  return dynamic_cast<for_clause*>(theFlworClause);
+  assert(theFlworClause->get_kind() == flwor_clause::for_clause ||
+         theFlworClause->get_kind() == flwor_clause::let_clause);
+
+  return static_cast<forlet_clause*>(theFlworClause);
 }
 
 

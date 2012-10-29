@@ -41,13 +41,9 @@ PREPOST_RULE(SpecializeOperations);
 
 PREPOST_RULE(EliminateTypeEnforcingOperations);
 
-PREPOST_RULE(EliminateUnusedLetVars);
-
 PREPOST_RULE(RefactorPredFLWOR);
 
 PREPOST_RULE(MergeFLWOR);
-
-  //PREPOST_RULE(MarkFreeVars);
 
 PREPOST_RULE(EliminateExtraneousPathSteps);
 
@@ -59,23 +55,57 @@ PREPOST_RULE(PartialEval);
 /*******************************************************************************
 
 ********************************************************************************/
-class FoldConst : public PrePostRewriteRule
+class EliminateUnusedLetVars : public PrePostRewriteRule
 {
 protected:
-  bool  theFoldExpensiveOps;
+  flwor_expr           * theFlwor;
+  std::vector<expr**>    theRefs;
 
 public:
-  FoldConst(bool fold_expensive_ops)
+  EliminateUnusedLetVars()
     :
-    PrePostRewriteRule(RewriteRule::FoldConst, "FoldConst"),
-    theFoldExpensiveOps(fold_expensive_ops)
+    PrePostRewriteRule(RewriteRule::EliminateUnusedLetVars, "EliminateUnusedLetVars"),
+    theFlwor(NULL)
   {
+    theRefs.reserve(32);
   }
 
 protected:
   expr* rewritePre(expr* node, RewriterContext& rCtx);
 
   expr* rewritePost(expr* node, RewriterContext& rCtx);
+
+  bool safe_to_fold_var(csize varPos, int& numRefs);
+
+  bool safe_to_fold_var_rec(
+      expr* node,
+      csize varPos,
+      var_expr* var,
+      bool unsafe,
+      bool isSafeVar,
+      int& numRefs);
+
+  void subst_vars(
+      const RewriterContext& rCtx,
+      var_expr* var,
+      expr* subst,
+      int numRefs);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class FoldConst : public RewriteRule
+{
+public:
+  FoldConst()
+    :
+    RewriteRule(RewriteRule::FoldConst, "FoldConst")
+  {
+  }
+
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 

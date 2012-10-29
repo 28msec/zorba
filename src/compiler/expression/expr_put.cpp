@@ -204,61 +204,37 @@ ostream& var_expr::put(ostream& os) const
 
 ostream& for_clause::put(ostream& os) const
 {
-#if VERBOSE
-  BEGIN_PUT( FOR );
-
-  theVarExpr->put(os);
-  PUT_SUB( "AT", thePosVarExpr );
-  PUT_SUB( "SCORE", theScoreVarExpr );
-
-  PUT_SUB("IN", theDomainExpr);
-
-#else
-  os << indent << "FOR" << expr_addr(this) << " ";
-
-  put_qname(theVarExpr->get_name(), os);
-
-  os << expr_addr(theVarExpr);
-
-  if (thePosVarExpr != NULL)
+  if (theKind == flwor_clause::for_clause)
   {
-    os << " AT ";
-    put_qname(thePosVarExpr->get_name(), os);
-    os << expr_addr(thePosVarExpr);
+    os << indent << "FOR" << expr_addr(this) << " ";
+
+    put_qname(theVarExpr->get_name(), os);
+
+    os << expr_addr(theVarExpr);
+
+    if (thePosVarExpr != NULL)
+    {
+      os << " AT ";
+      put_qname(thePosVarExpr->get_name(), os);
+      os << expr_addr(thePosVarExpr);
+    }
   }
-  os << endl << indent << "[\n" << inc_indent;
+  else
+  {
+    os << indent << "LET" << expr_addr(this) << " ";
 
+    put_qname(theVarExpr->get_name(), os);
+
+    os << expr_addr(theVarExpr);
+  }
+
+  os << endl << indent << "[\n" << inc_indent;
+    
   theDomainExpr->put(os);
-#endif
 
   END_PUT();
 }
 
-
-ostream& let_clause::put(ostream& os) const
-{
-#if VERBOSE
-  BEGIN_PUT(LET);
-
-  theVarExpr->put(os);
-  PUT_SUB("SCORE", theScoreVarExpr);
-
-  PUT_SUB(":=", theDomainExpr);
-
-#else
-  os << indent << "LET" << expr_addr(this) << " ";
-
-  put_qname(theVarExpr->get_name(), os);
-
-  os << expr_addr(theVarExpr);
-
-  os << endl << indent << "[\n" << inc_indent;
-
-  theDomainExpr->put(os);
-#endif
-
-  END_PUT();
-}
 
 ostream& window_clause::put(ostream& os) const
 {

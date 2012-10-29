@@ -126,8 +126,7 @@ class expr
 {
   friend class ExprIterator;
   friend class forletwin_clause;
-  friend class for_clause;
-  friend class let_clause;
+  friend class forlet_clause;
   friend class where_clause;
   friend class function_trace_expr;
 
