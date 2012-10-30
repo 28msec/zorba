@@ -88,56 +88,59 @@ static void fix_if_annotations(if_expr* ifExpr)
   Replace all references to theVarExpr inside the root expr of a given rCtx
   with theSubstExpr
 ******************************************************************************/
-class SubstVars : public PrePostRewriteRule
+class SubstVars : public RewriteRule
 {
 protected:
   var_expr           * theVarExpr;
   expr               * theSubstExpr;
-  std::vector<expr*>   thePath;
+  //std::vector<expr*>   thePath;
 
 public:
   SubstVars(var_expr* var, expr* subst)
     :
-    PrePostRewriteRule(RewriteRule::SubstVars, "SubstVars"),
+    RewriteRule(RewriteRule::SubstVars, "SubstVars"),
     theVarExpr(var),
     theSubstExpr(subst)
   {
   }
 
-protected:
-  expr* rewritePre(expr* node, RewriterContext& rCtx);
-  expr* rewritePost(expr* node, RewriterContext& rCtx);
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 
-RULE_REWRITE_PRE(SubstVars)
+expr* SubstVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
-  thePath.push_back(node);
+  //thePath.push_back(node);
 
-  if (node == theVarExpr)
+  ExprIterator iter(node);
+
+  while (!iter.done())
   {
-    std::vector<expr*>::iterator ite = thePath.begin();
-    std::vector<expr*>::iterator end = thePath.end();
-    for (; ite != end; ++ite)
+    if (**iter == theVarExpr)
     {
-      expr::FreeVars& vars = (*ite)->getFreeVars();
-      vars.erase(theVarExpr);
-      vars.insert(theSubstExpr->getFreeVars().begin(),
-                  theSubstExpr->getFreeVars().end());
+#if 0
+      std::vector<expr*>::iterator ite = thePath.begin();
+      std::vector<expr*>::iterator end = thePath.end();
+      for (; ite != end; ++ite)
+      {
+        expr::FreeVars& vars = (*ite)->getFreeVars();
+        vars.erase(theVarExpr);
+        vars.insert(theSubstExpr->getFreeVars().begin(),
+                    theSubstExpr->getFreeVars().end());
+      }
+#endif
+      **iter = theSubstExpr;
+      modified = true;
+    }
+    else
+    {
+      apply(rCtx, **iter, modified);
     }
 
-    return theSubstExpr;
+    iter.next();
   }
-  else
-  {
-    return NULL;
-  }
-}
 
-
-RULE_REWRITE_POST(SubstVars)
-{
-  thePath.pop_back();
+  //thePath.pop_back();
   return NULL;
 }
 
@@ -1041,7 +1044,12 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
           if (condExpr->get_function_kind() == FunctionConsts::OP_AND_N)
           {
             fo_expr* foCondExpr = static_cast<fo_expr*>(condExpr);
-            foWhereExpr->add_args(foCondExpr->get_args());
+
+            for (csize i = 0; i < foCondExpr->num_args(); ++i)
+            {
+              foWhereExpr->add_arg(foCondExpr->get_arg(i));
+              expr_tools::fix_annotations(foWhereExpr, foCondExpr->get_arg(i));
+            }
           }
           else
           {
@@ -1559,185 +1567,184 @@ static bool is_positional_pred(
 /******************************************************************************
 
 *******************************************************************************/
-RULE_REWRITE_PRE(MergeFLWOR)
+expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
-  flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
-
-  if (flwor == NULL)
-    return NULL;
-
-  bool modified = false;
-
-  // Try to merge an inner flwor that appears in the return clause of the
-  // outer flwor.
-  if (flwor->get_return_expr()->get_expr_kind() == flwor_expr_kind &&
-      !flwor->get_return_expr()->is_sequential())
+  if (node->get_expr_kind() == flwor_expr_kind ||
+      node->get_expr_kind() == gflwor_expr_kind)
   {
-    // TODO: If the return clause is sequential, we can still do the merge,
-    // but we must keep both the outer and the inner materialize clauses.
+    flwor_expr* flwor = static_cast<flwor_expr *>(node);
 
-    flwor_expr* returnFlwor = static_cast<flwor_expr*>(flwor->get_return_expr());
-
-    // If the outer flwor is not general, and it contains where, groupby, or
-    // orderby clauses, we cannot merge because for/let clauses cannot appear
-    // after where, groupby, or orderby clauses,
-    if (!flwor->is_general())
+    // Try to merge an inner flwor that appears in the return clause of the
+    // outer flwor.
+    if (flwor->get_return_expr()->get_expr_kind() == flwor_expr_kind &&
+        !flwor->get_return_expr()->is_sequential())
     {
-      csize numClauses = flwor->num_clauses();
+      // TODO: If the return clause is sequential, we can still do the merge,
+      // but we must keep both the outer and the inner materialize clauses.
+
+      flwor_expr* returnFlwor = static_cast<flwor_expr*>(flwor->get_return_expr());
+
+      // If the outer flwor is not general, and it contains where, groupby, or
+      // orderby clauses, we cannot merge because for/let clauses cannot appear
+      // after where, groupby, or orderby clauses,
+      if (!flwor->is_general())
+      {
+        csize numClauses = flwor->num_clauses();
+        
+        for (csize i = 0; i < numClauses; ++i)
+        {
+          const flwor_clause* c = flwor->get_clause(i);
+          
+          if (c->get_kind() == flwor_clause::where_clause ||
+              c->get_kind() == flwor_clause::group_clause ||
+              c->get_kind() == flwor_clause::order_clause)
+          {
+            goto next1;
+          }
+        }
+      }
+      
+      csize numClauses = returnFlwor->num_clauses();
 
       for (csize i = 0; i < numClauses; ++i)
       {
-        const flwor_clause* c = flwor->get_clause(i);
-
-        if (c->get_kind() == flwor_clause::where_clause ||
-            c->get_kind() == flwor_clause::group_clause ||
+        const flwor_clause* c = returnFlwor->get_clause(i);
+        
+        if (c->get_kind() == flwor_clause::group_clause ||
             c->get_kind() == flwor_clause::order_clause)
         {
           goto next1;
         }
       }
-    }
-
-    csize numClauses = returnFlwor->num_clauses();
-
-    for (csize i = 0; i < numClauses; ++i)
-    {
-      const flwor_clause* c = returnFlwor->get_clause(i);
-
-      if (c->get_kind() == flwor_clause::group_clause ||
-          c->get_kind() == flwor_clause::order_clause)
+      
+      for (csize i = 0; i < numClauses; ++i)
       {
-        goto next1;
+        flwor->add_clause(returnFlwor->get_clause(i));
       }
+      
+      flwor->set_return_expr(returnFlwor->get_return_expr());
+      
+      modified = true;
     }
-
+    
+  next1:
+    
+    csize numClauses = flwor->num_clauses();
+    
+    // Try to merge an inner flwor that appears in a for/let clause of the outer
+    // flwor.
     for (csize i = 0; i < numClauses; ++i)
     {
-      flwor->add_clause(returnFlwor->get_clause(i));
-    }
-
-    flwor->set_return_expr(returnFlwor->get_return_expr());
-
-    modified = true;
-  }
-
- next1:
-
-  csize numClauses = flwor->num_clauses();
-
-  // Try to merge an inner flwor that appears in a for/let clause of the outer
-  // flwor.
-  for (csize i = 0; i < numClauses; ++i)
-  {
-    bool merge = false;
-    flwor_expr* nestedFlwor = NULL;
-    csize numNestedClauses;
-
-    flwor_clause* c = flwor->get_clause(i);
-
-    if (c->get_kind() == flwor_clause::let_clause)
-    {
-      expr* domainExpr = static_cast<let_clause*>(c)->get_expr();
-
-      if (domainExpr->get_expr_kind() == flwor_expr_kind &&
-          !domainExpr->is_sequential())
+      bool merge = false;
+      flwor_expr* nestedFlwor = NULL;
+      csize numNestedClauses;
+      
+      flwor_clause* c = flwor->get_clause(i);
+      
+      if (c->get_kind() == flwor_clause::let_clause)
       {
-        nestedFlwor = static_cast<flwor_expr*>(domainExpr);
-        numNestedClauses = nestedFlwor->num_clauses();
-        merge = true;
-
-        for (csize j = 0; j < numNestedClauses; ++j)
+        expr* domainExpr = static_cast<let_clause*>(c)->get_expr();
+        
+        if (domainExpr->get_expr_kind() == flwor_expr_kind &&
+            !domainExpr->is_sequential())
         {
-          flwor_clause* nestedClause = nestedFlwor->get_clause(j);
-          flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
-
-          if (nestedClauseKind == flwor_clause::for_clause)
+          nestedFlwor = static_cast<flwor_expr*>(domainExpr);
+          numNestedClauses = nestedFlwor->num_clauses();
+          merge = true;
+          
+          for (csize j = 0; j < numNestedClauses; ++j)
           {
-            xqtref_t nestedDomainType =
-            static_cast<for_clause*>(nestedClause)->get_expr()->get_return_type();
-
-            if (nestedDomainType->get_quantifier() != TypeConstants::QUANT_ONE)
+            flwor_clause* nestedClause = nestedFlwor->get_clause(j);
+            flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
+            
+            if (nestedClauseKind == flwor_clause::for_clause)
+            {
+              xqtref_t nestedDomainType =
+                static_cast<for_clause*>(nestedClause)->get_expr()->get_return_type();
+              
+              if (nestedDomainType->get_quantifier() != TypeConstants::QUANT_ONE)
+              {
+                merge = false;
+                break;
+              }
+            }
+            else if (nestedClauseKind != flwor_clause::let_clause)
             {
               merge = false;
               break;
             }
           }
-          else if (nestedClauseKind != flwor_clause::let_clause)
-          {
-            merge = false;
-            break;
-          }
         }
       }
-    }
-    else if (c->get_kind() == flwor_clause::for_clause &&
-             static_cast<for_clause*>(c)->get_pos_var() == NULL)
-    {
-      expr* domainExpr = static_cast<for_clause*>(c)->get_expr();
-
-      if (domainExpr->get_expr_kind() == flwor_expr_kind &&
-          !domainExpr->is_sequential())
+      else if (c->get_kind() == flwor_clause::for_clause &&
+               static_cast<for_clause*>(c)->get_pos_var() == NULL)
       {
-        nestedFlwor = static_cast<flwor_expr*>(domainExpr);
-        numNestedClauses = nestedFlwor->num_clauses();
-        merge = true;
+        expr* domainExpr = static_cast<for_clause*>(c)->get_expr();
 
+        if (domainExpr->get_expr_kind() == flwor_expr_kind &&
+            !domainExpr->is_sequential())
+        {
+          nestedFlwor = static_cast<flwor_expr*>(domainExpr);
+          numNestedClauses = nestedFlwor->num_clauses();
+          merge = true;
+
+          for (csize j = 0; j < numNestedClauses; ++j)
+          {
+            flwor_clause* nestedClause = nestedFlwor->get_clause(j);
+            flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
+            
+            if (nestedClauseKind != flwor_clause::let_clause &&
+                nestedClauseKind != flwor_clause::for_clause)
+            {
+#if 1
+              // temp hack until we have an optimized general flwor
+              if (nestedClauseKind == flwor_clause::where_clause &&
+                  i == numClauses-1 &&
+                  flwor->get_where() == NULL &&
+                  nestedFlwor->get_return_expr()->get_var() != NULL)
+              {
+                continue;
+              }
+#endif
+              merge = false;
+              break;
+            }
+          }
+        }
+    }
+      
+      if (merge)
+      {
         for (csize j = 0; j < numNestedClauses; ++j)
         {
           flwor_clause* nestedClause = nestedFlwor->get_clause(j);
-          flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
-
-          if (nestedClauseKind != flwor_clause::let_clause &&
-              nestedClauseKind != flwor_clause::for_clause)
-          {
 #if 1
-            // temp hack until we have an optimized general flwor
-            if (nestedClauseKind == flwor_clause::where_clause &&
-                i == numClauses-1 &&
-                flwor->get_where() == NULL &&
-                nestedFlwor->get_return_expr()->get_var() != NULL)
-            {
-              continue;
-            }
+          if (nestedClause->get_kind() == flwor_clause::where_clause)
+            flwor->add_clause(i+j+1, nestedClause);
+          else
 #endif
-            merge = false;
-            break;
-          }
+            flwor->add_clause(i+j, nestedClause);
         }
+        
+        c->set_expr(nestedFlwor->get_return_expr());
+        
+        numClauses += numNestedClauses;
+        i += numNestedClauses;
+        
+        modified = true;
       }
-    }
-
-    if (merge)
-    {
-      for (ulong j = 0; j < numNestedClauses; ++j)
-      {
-        flwor_clause* nestedClause = nestedFlwor->get_clause(j);
-#if 1
-        if (nestedClause->get_kind() == flwor_clause::where_clause)
-          flwor->add_clause(i+j+1, nestedClause);
-        else
-#endif
-          flwor->add_clause(i+j, nestedClause);
-      }
-
-      c->set_expr(nestedFlwor->get_return_expr());
-
-      numClauses += numNestedClauses;
-      i += numNestedClauses;
-
-      modified = true;
     }
   }
 
-  return (modified ? node : NULL);
-}
+  ExprIterator iter(node);
 
+  while (!iter.done())
+  {
+    apply(rCtx, **iter, modified);
 
-/******************************************************************************
+    iter.next();
+  }
 
-*******************************************************************************/
-RULE_REWRITE_POST(MergeFLWOR)
-{
   return NULL;
 }
 
