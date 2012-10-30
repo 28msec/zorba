@@ -43,8 +43,6 @@ PREPOST_RULE(EliminateTypeEnforcingOperations);
 
 PREPOST_RULE(RefactorPredFLWOR);
 
-PREPOST_RULE(MergeFLWOR);
-
 PREPOST_RULE(EliminateExtraneousPathSteps);
 
 PREPOST_RULE(InlineFunctions);
@@ -90,6 +88,22 @@ protected:
       var_expr* var,
       expr* subst,
       int numRefs);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class MergeFLWOR : public RewriteRule
+{
+public:
+  MergeFLWOR()
+    :
+    RewriteRule(RewriteRule::MergeFLWOR, "MergeFLWOR")
+  {
+  }
+
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 
