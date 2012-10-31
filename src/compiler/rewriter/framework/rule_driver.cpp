@@ -89,7 +89,8 @@ bool RuleMajorDriver::rewrite(RewriterContext& rCtx)
           rCtx.getRoot()->put(std::cout) << std::endl;
         }
 
-        if ((*i)->getKind() != RewriteRule::MarkExprs)
+        if ((*i)->getKind() != RewriteRule::MarkExprs &&
+            (*i)->getKind() != RewriteRule::FoldConst)
           break;
       }
     }
