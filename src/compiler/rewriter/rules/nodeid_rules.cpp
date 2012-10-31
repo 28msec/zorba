@@ -527,10 +527,9 @@ expr* MarkProducerNodeProps::apply(
 ********************************************************************************/
 RULE_REWRITE_PRE(EliminateNodeOps)
 {
-  fo_expr* fo = dynamic_cast<fo_expr *>(node);
-
-  if (fo != NULL)
+  if (node->get_expr_kind() == fo_expr_kind)
   {
+    fo_expr* fo = static_cast<fo_expr*>(node);
     const function* f = fo->get_func();
 
     // ????

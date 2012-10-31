@@ -620,9 +620,10 @@ attr_expr::attr_expr(
 
 const store::Item* attr_expr::getQName() const
 {
-  const_expr* qnExpr =  dynamic_cast<const_expr*>(theQNameExpr);
-  if (qnExpr != 0)
-    return qnExpr->get_val();
+  if (theQNameExpr->get_expr_kind() == const_expr_kind)
+  {
+    return static_cast<const_expr*>(theQNameExpr)->get_val();
+  }
 
   return 0;
 }

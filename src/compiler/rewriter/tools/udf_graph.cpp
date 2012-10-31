@@ -105,12 +105,13 @@ void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain
     if (kind == fo_expr_kind)
     {
       const fo_expr* fo = static_cast<const fo_expr*>(curExpr);
-      udf = dynamic_cast<user_function*>(fo->get_func());
+      if (fo->get_func()->isUdf())
+        udf = static_cast<user_function*>(fo->get_func());
     }
     else
     {
       const function_item_expr* fi = static_cast<const function_item_expr*>(curExpr);
-      udf = dynamic_cast<user_function*>(fi->get_function());
+      udf = static_cast<user_function*>(fi->get_function());
     }
 
     if (udf != NULL)

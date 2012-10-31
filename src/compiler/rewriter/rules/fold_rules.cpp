@@ -572,13 +572,15 @@ static bool execute(
 RULE_REWRITE_PRE(PartialEval)
 {
   TypeManager* tm = node->get_type_manager();
-
   static_context* sctx = node->get_sctx();
 
-  // if node is a castable or instance-of expr
-  const castable_base_expr* cbe = NULL;
-  if ((cbe = dynamic_cast<const castable_base_expr *>(node)) != NULL)
+  switch (node->get_expr_kind())
   {
+  case instanceof_expr_kind:
+  case castable_expr_kind:
+  {
+    const castable_base_expr* cbe = static_cast<const castable_base_expr*>(node);
+
     user_function* udf = node->get_udf();
     assert(udf == rCtx.theUDF);
 
@@ -623,16 +625,18 @@ RULE_REWRITE_PRE(PartialEval)
 
       throw;
     }
-  }
 
-  switch (node->get_expr_kind())
-  {
+    break;
+  }
   case if_expr_kind:
   {
-    if_expr* ite = dynamic_cast<if_expr *> (node);
-    const const_expr* cond = dynamic_cast<const const_expr*>(ite->get_cond_expr());
-    if (cond != NULL)
+    if_expr* ite = static_cast<if_expr *> (node);
+    expr* condExpr = ite->get_cond_expr();
+
+    if (condExpr->get_expr_kind() == const_expr_kind)
     {
+      const const_expr* cond = static_cast<const const_expr*>(condExpr);
+
       return (cond->get_val()->getBooleanValue() ?
               ite->get_then_expr() :
               ite->get_else_expr());
@@ -642,7 +646,7 @@ RULE_REWRITE_PRE(PartialEval)
 
   case fo_expr_kind:
   {
-    return partial_eval_fo(rCtx, dynamic_cast<fo_expr *>(node));
+    return partial_eval_fo(rCtx, static_cast<fo_expr *>(node));
   }
 
   default:
@@ -651,6 +655,7 @@ RULE_REWRITE_PRE(PartialEval)
 
   return NULL;
 }
+
 
 RULE_REWRITE_POST(PartialEval)
 {
@@ -785,10 +790,11 @@ static expr* partial_eval_logic(
   for (csize i = 0; i < numArgs; ++i)
   {
     const expr* arg = fo->get_arg(i);
-    const const_expr* constArg = NULL;
 
-    if ((constArg = dynamic_cast<const const_expr*>(arg)) != NULL)
+    if (arg->get_expr_kind() == const_expr_kind)
     {
+      const const_expr* constArg = static_cast<const const_expr*>(arg);
+
       if (constArg->get_val()->getEBV() == shortcircuit_val)
       {
         return rCtx.theEM->
@@ -812,7 +818,7 @@ static expr* partial_eval_logic(
   if (nonConst1 < 0)
   {
     // All args are constant exprs
-    return rCtx.theEM->create_const_expr(sctx, udf, LOC(fo), (xs_boolean) !shortcircuit_val);
+    return rCtx.theEM->create_const_expr(sctx, udf, LOC(fo), (xs_boolean)!shortcircuit_val);
   }
 
   if (nonConst2 < 0)
@@ -864,10 +870,15 @@ static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 
   for (i = 0; i < 2; i++)
   {
-    if (NULL != (val_expr = dynamic_cast<const_expr*>(fo.get_arg(i))) &&
-        NULL != (count_expr = dynamic_cast<fo_expr*>(fo.get_arg(1-i))) &&
-        count_expr->get_func()->getKind() == FunctionConsts::FN_COUNT_1)
-      break;
+    if (fo.get_arg(i)->get_expr_kind() == const_expr_kind &&
+        fo.get_arg(1-i)->get_expr_kind() == fo_expr_kind)
+    {
+      val_expr = static_cast<const_expr*>(fo.get_arg(i));
+      count_expr = static_cast<fo_expr*>(fo.get_arg(1-i));
+
+      if (count_expr->get_func()->getKind() == FunctionConsts::FN_COUNT_1)
+        break;
+    }
   }
 
   if (i == 2)

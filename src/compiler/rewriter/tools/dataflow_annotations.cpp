@@ -346,8 +346,8 @@ void DataflowAnnotationsComputer::compute_var_expr(var_expr* e)
   {
     if (e->get_kind() == var_expr::let_var)
     {
-      PROPOGATE_SORTED_NODES(e->get_forletwin_clause()->get_expr(), e);
-      PROPOGATE_DISTINCT_NODES(e->get_forletwin_clause()->get_expr(), e);
+      PROPOGATE_SORTED_NODES(e->get_forlet_clause()->get_expr(), e);
+      PROPOGATE_DISTINCT_NODES(e->get_forlet_clause()->get_expr(), e);
     }
   }
 }
@@ -594,8 +594,8 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
 
     for (csize i = 1; i < num_steps; ++i)
     {
-      axis_step_expr* ase = dynamic_cast<axis_step_expr *>((*e)[i]);
-      assert(ase != NULL);
+      assert((*e)[i]->get_expr_kind() == axist_step_expr_kind);
+      axis_step_expr* ase = static_cast<axis_step_expr *>((*e)[i]);
 
       reverse_axes = reverse_axes || ase->is_reverse_axis();
 

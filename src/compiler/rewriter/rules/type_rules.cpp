@@ -67,7 +67,7 @@ RULE_REWRITE_POST(InferUDFTypes)
     return NULL;
 
   fo_expr* fo = static_cast<fo_expr*>(node);
-  user_function* udf = dynamic_cast<user_function*>(fo->get_func());
+  user_function* udf = static_cast<user_function*>(fo->get_func());
 
   if (udf == NULL)
     return NULL;
@@ -103,7 +103,9 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  if (node->get_expr_kind() == fo_expr_kind)
+  switch (node->get_expr_kind())
+  {
+  case fo_expr_kind:
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
 
@@ -145,13 +147,15 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
       return NULL;
     }
+
+    break;
   }
-
-  cast_base_expr* pe = NULL;
-
-  // Note: the if cond is true for promote_expr, treat_expr, and cast_expr
-  if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL)
+  case cast_expr_kind:
+  case promote_expr_kind:
+  case treat_expr_kind:
   {
+    cast_base_expr* pe = static_cast<cast_base_expr*>(node);
+
     expr* arg = pe->get_input();
     xqtref_t arg_type = arg->get_return_type();
     xqtref_t target_type = pe->get_target_type();
@@ -205,6 +209,9 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     }
 
     return NULL;
+  }
+  default:
+    break;
   }
 
   return NULL;

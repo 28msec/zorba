@@ -1168,10 +1168,10 @@ const store::Item* expr::getQName(static_context* sctx) const
 
   TypeManager* tm = sctx->get_typemanager();
 
-  const const_expr* qnameExpr = dynamic_cast<const const_expr*>(this);
-
-  if (qnameExpr != NULL)
+  if (get_expr_kind() == const_expr_kind)
   {
+    const const_expr* qnameExpr = static_cast<const const_expr*>(this);
+
     xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
 
     if (TypeOps::is_subtype(tm, *valueType, *rtm.QNAME_TYPE_ONE, get_loc()))
@@ -1192,10 +1192,10 @@ const store::Item* expr::getQName(static_context* sctx) const
         dataExpr->get_func()->getKind() == FunctionConsts::FN_DATA_1)
     {
       argExpr = dataExpr->get_arg(0);
-      const const_expr* qnameExpr = dynamic_cast<const const_expr*>(argExpr);
 
-      if (qnameExpr != NULL)
+      if (argExpr->get_expr_kind() == const_expr_kind)
       {
+        const const_expr* qnameExpr = static_cast<const const_expr*>(argExpr);
         xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
 
         if (TypeOps::is_subtype(tm, *valueType, *rtm.QNAME_TYPE_ONE, get_loc()))

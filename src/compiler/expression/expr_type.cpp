@@ -309,7 +309,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     fo_expr* e = static_cast<fo_expr*>(this);
 
     /*
-      const user_function* udf = dynamic_cast<const user_function*>(func);
+      const user_function* udf = static_cast<const user_function*>(func);
 
       if (udf != NULL)
       return udf->getUDFReturnType(sctx);
