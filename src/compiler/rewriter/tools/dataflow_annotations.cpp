@@ -594,7 +594,7 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
 
     for (csize i = 1; i < num_steps; ++i)
     {
-      assert((*e)[i]->get_expr_kind() == axist_step_expr_kind);
+      assert((*e)[i]->get_expr_kind() == axis_step_expr_kind);
       axis_step_expr* ase = static_cast<axis_step_expr *>((*e)[i]);
 
       reverse_axes = reverse_axes || ase->is_reverse_axis();
