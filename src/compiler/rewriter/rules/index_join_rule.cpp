@@ -823,7 +823,7 @@ static bool findFlworForVar(
     if (rCtx.theFlworStack[i]->get_expr_kind() == trycatch_expr_kind)
       return false;
 
-    assert(rCtx.theFlworStack[i] == flwor_expr_kind);
+    assert(rCtx.theFlworStack[i]->get_expr_kind() == flwor_expr_kind);
 
     flworExpr = static_cast<flwor_expr*>(rCtx.theFlworStack[i]);
 
