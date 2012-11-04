@@ -190,7 +190,7 @@ ostream& var_expr::put(ostream& os) const
     os << " name=";
     put_qname(get_name(), os);
   }
-  
+
   if (get_kind() == prolog_var)
   {
     os << " uniqueId=" << theUniqueId;
@@ -556,7 +556,7 @@ std::ostream& function_item_expr::put(std::ostream& os) const
 
   if (theDynamicFunctionInfo->theQName != NULL)
   {
-    os << " " << theDynamicFunctionInfo->theQName->getStringValue() 
+    os << " " << theDynamicFunctionInfo->theQName->getStringValue()
        << "/" << theDynamicFunctionInfo->theArity;
     os << dec_indent << endl;
     return os;
@@ -564,21 +564,29 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   else
   {
     os << " inline udf (" << theDynamicFunctionInfo->theFunction.getp() << ") [\n";
-    
+
+    const signature& sig = get_function()->getSignature();
+    std::vector<xqtref_t> paramTypes;
+    for (csize i=0; i < sig.paramCount(); i++)
+      paramTypes.push_back(sig[i]);
+    xqtref_t funcType = get_type_manager()->create_function_type(paramTypes, sig.returnType(), TypeConstants::QUANT_ONE);
+
+    os << indent << "type: " << funcType->toString() << std::endl;
+
     for (ulong i = 0; i < theDynamicFunctionInfo->theScopedVarsValues.size(); i++)
     {
-      os << indent << "using $" 
-         << theDynamicFunctionInfo->theScopedVarsNames[i]->getStringValue() 
+      os << indent << "using $"
+         << theDynamicFunctionInfo->theScopedVarsNames[i]->getStringValue()
          << (theDynamicFunctionInfo->theIsGlobalVar[i] ? " global=1" : "") << " := [";
       os << endl << inc_indent;
       if (theDynamicFunctionInfo->theScopedVarsValues[i])
         theDynamicFunctionInfo->theScopedVarsValues[i]->put(os);
       os << dec_indent << indent << "]" << endl;
     }
-    
+
     if (theDynamicFunctionInfo->theFunction.getp() != NULL)
       reinterpret_cast<const user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody()->put(os);
-    
+
     END_PUT();
   }
 }
@@ -783,7 +791,7 @@ ostream& const_expr::put(ostream& os) const
   BEGIN_PUT_NO_EOL( const_expr );
   if (theValue->isFunction())
   {
-    os << "function item [ " << theValue->show() << " ]";    
+    os << "function item [ " << theValue->show() << " ]";
   }
   else
   {

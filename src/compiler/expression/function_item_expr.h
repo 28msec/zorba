@@ -47,11 +47,15 @@ protected:
   std::vector<expr_t>    theArgs;
 
 public:
+  xqtref_t               theCoercionTargetType;
+
+public:
   dynamic_function_invocation_expr(
       static_context* sctx,
       const QueryLoc& loc,
       const expr_t& anExpr,
-      const std::vector<expr_t>& args);
+      const std::vector<expr_t>& args,
+      xqtref_t coercionTargetType = NULL);
 
 	const expr_t get_function() const { return theExpr; }
 
@@ -105,7 +109,7 @@ class function_item_expr: public expr
 
 protected:
   DynamicFunctionInfo_t       theDynamicFunctionInfo;
-  
+
 public:
 	function_item_expr(
       static_context* sctx,
@@ -121,19 +125,17 @@ public:
       const QueryLoc& loc);
 
   virtual ~function_item_expr();
-  
+
   DynamicFunctionInfo* get_dynamic_fn_info() { return theDynamicFunctionInfo; }
-  
-  void release_dynamic_fn_info() { theDynamicFunctionInfo = NULL; }
 
   void add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal);
 
   const std::vector<expr_t>& get_scoped_vars_values() const { return theDynamicFunctionInfo->theScopedVarsValues; }
-  
+
   const std::vector<var_expr_t>& get_subst_vars_values() const { return theDynamicFunctionInfo->theSubstVarsValues; }
 
   const std::vector<store::Item_t>& get_scoped_vars_names() const { return theDynamicFunctionInfo->theScopedVarsNames; }
-  
+
   const std::vector<int>& get_is_global_var() const { return theDynamicFunctionInfo->theIsGlobalVar; }
 
   void set_function(user_function_t& udf);

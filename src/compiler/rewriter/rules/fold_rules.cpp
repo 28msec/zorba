@@ -90,7 +90,7 @@ static expr_t execute (
     //std::cout << "Const folding expr : " << std::endl;
     //node->put(std::cout);
     //std::cout << std::endl;
-    
+
     PlanWrapperHolder pw(new PlanWrapper(plan,
                                          &expr_ccb,
                                          0,      // dynamic ctx
@@ -202,7 +202,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     }
   }
 
-  // Process the subexprs of the current expr. If any of the children is 
+  // Process the subexprs of the current expr. If any of the children is
   // nondiscardable, unfoldable, or contains recursive calls, then the current
   // expr is also nondiscardable, unfoldable, or contains recursive calls.
   ExprConstIterator iter(node);
@@ -229,7 +229,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   {
     if (node->is_sequential())
     {
-      curNonDiscardable = ANNOTATION_TRUE_FIXED; 
+      curNonDiscardable = ANNOTATION_TRUE_FIXED;
     }
     else
     {
@@ -239,18 +239,18 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
       {
         fo_expr* fo = static_cast<fo_expr *>(node);
         function* f = fo->get_func();
-          
+
         bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
-          
+
         if (f->getKind() == FunctionConsts::FN_TRACE_2 ||
             isErrorFunc)
         {
           curNonDiscardable = ANNOTATION_TRUE_FIXED;
         }
-        
+
         break;
       }
-        
+
       case cast_expr_kind:
       case treat_expr_kind:
       case promote_expr_kind:
@@ -258,7 +258,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         curNonDiscardable = ANNOTATION_TRUE_FIXED;
         break;
       }
-        
+
       default:
       {
         break;
@@ -272,7 +272,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   {
     if (node->is_sequential())
     {
-      curUnfoldable = ANNOTATION_TRUE_FIXED; 
+      curUnfoldable = ANNOTATION_TRUE_FIXED;
     }
     else
     {
@@ -295,21 +295,21 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         {
           curUnfoldable = ANNOTATION_TRUE_FIXED;
         }
-      
+
         break;
       }
-      
+
       case var_expr_kind:
       {
         var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
 
         if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
           curUnfoldable = ANNOTATION_TRUE_FIXED;
-        
+
         break;
       }
-      
-      // Do not fold function item expressions yet as they can access prolog 
+
+      // Do not fold function item expressions yet as they can access prolog
       // vars. It could probably be optimized though.
       case function_item_expr_kind:
       {
@@ -330,7 +330,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         curUnfoldable = ANNOTATION_TRUE_FIXED;
         break;
       }
-  
+
       case delete_expr_kind:
       case insert_expr_kind:
       case rename_expr_kind:
@@ -744,7 +744,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
         {
           return new const_expr(fo->get_sctx(), fo->get_loc(), true);
         }
-        else if (argQuant == TypeConstants::QUANT_ONE || 
+        else if (argQuant == TypeConstants::QUANT_ONE ||
                  argQuant == TypeConstants::QUANT_PLUS)
         {
           return new const_expr(fo->get_sctx(), fo->get_loc(), false);
@@ -756,7 +756,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
         {
           return new const_expr(fo->get_sctx(), fo->get_loc(), false);
         }
-        else if (argQuant == TypeConstants::QUANT_ONE || 
+        else if (argQuant == TypeConstants::QUANT_ONE ||
                  argQuant == TypeConstants::QUANT_PLUS)
         {
           return new const_expr(fo->get_sctx(), fo->get_loc(), true);
@@ -988,7 +988,7 @@ static expr_t partial_eval_return_clause(flwor_expr* flworExpr, bool& modified)
     {
       modified = true;
 
-      expr_t newRet = 
+      expr_t newRet =
       new const_expr(returnExpr->get_sctx(), returnExpr->get_loc(), 1);
 
       flworExpr->set_return_expr(newRet);
@@ -999,7 +999,7 @@ static expr_t partial_eval_return_clause(flwor_expr* flworExpr, bool& modified)
 
   if (returnExpr->get_expr_kind() == flwor_expr_kind)
   {
-    expr_t newRet = 
+    expr_t newRet =
     partial_eval_return_clause(static_cast<flwor_expr*>(returnExpr),  modified);
 
     if (newRet.getp() != returnExpr)
@@ -1031,8 +1031,8 @@ RULE_REWRITE_POST(InlineFunctions)
     const user_function* udf = dynamic_cast<const user_function *>(fo->get_func());
     expr_t body;
 
-    if (NULL != udf && 
-        //!udf->isSequential() && 
+    if (NULL != udf &&
+        //!udf->isSequential() &&
         (NULL != (body = udf->getBody())) &&
         !udf->isExiting() &&
         udf->isLeaf())
@@ -1064,7 +1064,7 @@ RULE_REWRITE_POST(InlineFunctions)
           dummy->setFunctionLocation(udf->getLoc());
           return dummy;
         }
-        else 
+        else
         {
           return body;
         }

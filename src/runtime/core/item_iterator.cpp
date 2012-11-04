@@ -135,6 +135,14 @@ DynamicFunctionIterator::DynamicFunctionIterator(
 {
 }
 
+DynamicFunctionIterator::~DynamicFunctionIterator()
+{
+  /*
+  std::cerr << "--> ~DynamicFunctionIterator(): (static_context) theDynamicFunctionInfo: " << theDynamicFunctionInfo.getp()
+      << " (" << theDynamicFunctionInfo->getRefCount() << ")" << std::endl;
+  */
+}
+
 bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
@@ -142,7 +150,7 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   varsValues.resize(theChildren.size());
-  
+
   /*
   for (csize i=0; i<theChildren.size(); i++)
   {
@@ -153,13 +161,13 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
       if (dynamic_cast<const MaterializeIterator*>(theChildren[i].getp()) != NULL)
         varsValues[i] = const_cast<MaterializeIterator*>(
           dynamic_cast<const MaterializeIterator*>(theChildren[i].getp()))->getSequenceIterator(planState);
-      
+
       // else varsValues[i] = theChildren[i];
     }
   }
   */
-  
-  
+
+
   // This portion is taken from the eval iterator
   {
     // Create the "import" sctx. The importOuterEnv() method (called below) will
@@ -172,7 +180,7 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     static_context* evalSctx = importSctx->create_child_context();
 
     // Create the ccb for the eval query
-    
+
     std::auto_ptr<CompilerCB> evalCCB;
     evalCCB.reset(new CompilerCB(*planState.theCompilerCB));
     evalCCB->theRootSctx = evalSctx;
@@ -184,49 +192,52 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     std::auto_ptr<dynamic_context> evalDctx;
     evalDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
     // state->dctx.reset(evalDctx);
-    
+
     /*
     std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
     std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
     */
-    std::cerr << "--> " << toString() << " theSctx: " << theSctx->toString();
-    std::cerr << "--> " << toString() << " importSctx: " << importSctx->toString();
-    
+
+    // std::cerr << "--> " << toString() << " theSctx: " << theSctx->toString();
+    // std::cerr << "--> " << toString() << " importSctx: " << importSctx->toString();
+
     // Import the outer environment.
     std::vector<var_expr_t> outerVars;
     ulong maxOuterVarId;
     importOuterEnv(planState, importSctx, evalDctx.get(), outerVars, maxOuterVarId);
-    
+
     // Set the values for the (explicit) external vars of the eval query
     setExternalVariables(evalCCB.get(), importSctx, evalDctx.get());
-    
+
     std::cerr << "--> " << toString() << ": creating function item with params: " << std::endl;
     for (csize i=0; i<theChildren.size(); i++)
     {
-      std::cerr << "    " 
+      std::cerr << "    "
           << (theDynamicFunctionInfo->theScopedVarsNames[i].getp() ?
           theDynamicFunctionInfo->theScopedVarsNames[i]->show()
         : "")
           << ": " << (varsValues[i] ? varsValues[i]->toString() : "NULL") << std::endl;
     }
-    
+
+    /*
     std::cerr << "--> evalSctx: " << evalSctx->toString();
     std::cerr << "--> evalDctx: " << evalDctx->toString();
     std::cerr << "--> evalDctx parent: " << evalDctx->getParent()->toString();
-    
+    */
+
     // std::cerr << "--> the body before: " << static_cast<user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody()->toString() << std::endl;
-    
-    
+
+
     result = new FunctionItem(theDynamicFunctionInfo, varsValues, evalCCB.release(), evalDctx.release());
   }
-  
+
   STACK_PUSH ( result != NULL, state );
   STACK_END (state);
 }
 
 
 /********************************************************************************
- 
+
   These functions are copied from the EvalIterator -- maybe they could be shared.
 
 ********************************************************************************/
@@ -243,7 +254,7 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   (d) For each of the non-global outer vars, places its value into the eval dctx.
       The var value is represented as a PlanIteratorWrapper over the subplan that
       evaluates the domain expr of the eval var.
-  (e) Computes the max var id of all the var values set in steps (c) and (d). 
+  (e) Computes the max var id of all the var values set in steps (c) and (d).
       This max varid will be passed to the compiler of the eval query so that
       the varids that will be generated for the eval query will not conflict with
       the varids of the outer vars and the outer-query global vars.
@@ -332,7 +343,7 @@ void DynamicFunctionIterator::importOuterEnv(
       evalDctx->add_variable(maxOuterVarId, iter);
 
       ve->set_unique_id(maxOuterVarId);
-      
+
       if (theDynamicFunctionInfo->theSubstVarsValues[i].getp() != NULL
           &&
           theDynamicFunctionInfo->theSubstVarsValues[i]->get_unique_id() == 0)
@@ -348,12 +359,29 @@ void DynamicFunctionIterator::importOuterEnv(
       static_context* outerSctx = importSctx->get_parent();
 
       VarInfo* outerGlobalVar = outerSctx->lookup_var(theDynamicFunctionInfo->theScopedVarsNames[i]);
-      ZORBA_ASSERT(outerGlobalVar);
-      
-      std::cerr << "--> importOuterEnv(): outerSctx: " << outerSctx->toString() << std::endl;
 
-      ulong outerGlobalVarId = outerGlobalVar->getId();
-      
+      ulong outerGlobalVarId;
+
+      if (outerGlobalVar)
+      {
+        outerGlobalVarId = outerGlobalVar->getId();
+      }
+      else if (outerGlobalVar == NULL)
+      {
+        // std::cerr << "--> searching for var: " << theDynamicFunctionInfo->theScopedVarsNames[i]->toString() << std::endl;
+        for (csize j=0; j<theDynamicFunctionInfo->theSubstVarsValues.size(); j++)
+        {
+          // std::cerr << "    substVar: " << (theDynamicFunctionInfo->theSubstVarsValues[j].getp() ?
+          //     theDynamicFunctionInfo->theSubstVarsValues[j]->toString() : "NULL");
+          if (theDynamicFunctionInfo->theSubstVarsValues[j]->get_name()->equals(theDynamicFunctionInfo->theScopedVarsNames[i].getp()))
+            outerGlobalVarId = theDynamicFunctionInfo->theSubstVarsValues[j]->get_unique_id();
+        }
+      }
+
+      // ZORBA_ASSERT(outerGlobalVar);
+
+      // std::cerr << "--> importOuterEnv(): outerSctx: " << outerSctx->toString() << std::endl;
+
       if (theDynamicFunctionInfo->theSubstVarsValues[i].getp() != NULL
           &&
           theDynamicFunctionInfo->theSubstVarsValues[i]->get_unique_id() == 0)
@@ -364,10 +392,12 @@ void DynamicFunctionIterator::importOuterEnv(
 
       ve->set_unique_id(outerGlobalVarId);
     }
-    
-    std::cerr << "--> importOuterEnv(): updated id for subst_var: " 
-              << (theDynamicFunctionInfo->theSubstVarsValues[i].getp() ?
-                                      theDynamicFunctionInfo->theSubstVarsValues[i]->toString() : "NULL\n");
+
+    /*
+    std::cerr << "--> importOuterEnv(): updated id for subst_var: "
+      << (theDynamicFunctionInfo->theSubstVarsValues[i].getp()
+      ? theDynamicFunctionInfo->theSubstVarsValues[i]->toString() : "NULL\n");
+    */
 
     importSctx->bind_var(ve, loc, err::XQST0049);
   }

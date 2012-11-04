@@ -539,7 +539,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_FULL_TEXT_FN_NS ||
 #endif /* ZORBA_NO_FULL_TEXT */
             ns == ZORBA_XML_FN_NS);
-  } 
+  }
   else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)
   {
     return true;
@@ -685,6 +685,12 @@ static_context::static_context()
   theAllWarningsErrors(false),
   theFeatures(0)
 {
+  /*
+  std::cerr << "--> creating static_context(): " << this;
+  if (theParent)
+    std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
+  std::cerr << std::endl;
+  */
 }
 
 
@@ -735,6 +741,13 @@ static_context::static_context(static_context* parent)
 {
   if (theParent != NULL)
     RCHelper::addReference(theParent);
+
+  /*
+  std::cerr << "--> creating static_context(): " << this;
+  if (theParent)
+    std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
+  std::cerr << std::endl;
+  */
 }
 
 
@@ -782,6 +795,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theAllWarningsErrors(false),
   theFeatures(0)
 {
+  // std::cerr << "--> created static_context(): " << this << std::endl;
 }
 
 
@@ -874,6 +888,13 @@ static_context::~static_context()
   if (theBaseUriInfo)
     delete theBaseUriInfo;
 
+  /*
+  std::cerr << "--> deleting ~static_context(): " << this;
+  if (theParent)
+    std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
+  std::cerr << std::endl;
+  */
+
   if (theParent)
     RCHelper::removeReference(theParent);
 }
@@ -918,12 +939,12 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       ERROR_PARAMS(ZED(NoSerializationCallbackForDocColMod)));
     }
 
-    if (lNumURIMappers) 
+    if (lNumURIMappers)
     {
-      for (size_t i = 0; i < lNumURIMappers; ++i) 
+      for (size_t i = 0; i < lNumURIMappers; ++i)
       {
         zorba::URIMapper* lURIMapper = lCallback->getURIMapper(i);
-        if (!lURIMapper) 
+        if (!lURIMapper)
         {
           throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS(ZED(NoModuleURIResolver)));
@@ -933,12 +954,12 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       }
     }
 
-    if (lNumURLResolvers) 
+    if (lNumURLResolvers)
     {
-      for (size_t i = 0; i < lNumURLResolvers; ++i) 
+      for (size_t i = 0; i < lNumURLResolvers; ++i)
       {
         zorba::URLResolver* lURLResolver = lCallback->getURLResolver(i);
-        if (!lURLResolver) 
+        if (!lURLResolver)
         {
           throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS(ZED(NoModuleURIResolver)));
@@ -1724,7 +1745,7 @@ void static_context::apply_url_resolvers(
         }
         catch (const std::exception& e)
         {
-          if (oErrorMessage.empty()) 
+          if (oErrorMessage.empty())
           {
             // Really no point in saving anything more than the first message
             oErrorMessage = e.what();
@@ -2412,7 +2433,7 @@ void static_context::bind_fn(
 
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = 
+      theFunctionArityMap =
       new FunctionArityMap(HashMapItemPointerCmp(0, NULL), 16, false);
     }
 
@@ -2477,7 +2498,7 @@ void static_context::unbind_fn(
 
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = 
+      theFunctionArityMap =
       new FunctionArityMap(HashMapItemPointerCmp(0, NULL), 16, false);
     }
 
@@ -2536,7 +2557,7 @@ function* static_context::lookup_fn(
       {
         if (fi.theIsDisabled && skipDisabled)
           return NULL;
-        
+
         return f;
       }
 
@@ -2587,7 +2608,7 @@ function* static_context::lookup_local_fn(
     {
       if (fi.theIsDisabled && skipDisabled)
         return NULL;
-        
+
       return f;
     }
 
@@ -4099,7 +4120,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       {
         if (theImportedPrivateVariablesMap == NULL)
         {
-          theImportedPrivateVariablesMap = 
+          theImportedPrivateVariablesMap =
           new VariableMap(HashMapItemPointerCmp(0, NULL), 8, false);
         }
 
@@ -4109,7 +4130,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 
         if (!theImportedPrivateVariablesMap->insert(ve->get_name(), vi))
         {
-          RAISE_ERROR(err::XQST0049, loc, 
+          RAISE_ERROR(err::XQST0049, loc,
           ERROR_PARAMS(ve->get_name()->getStringValue()));
         }
       }
@@ -4139,7 +4160,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   {
     if (theFunctionArityMap == NULL)
     {
-      theFunctionArityMap = 
+      theFunctionArityMap =
       new FunctionArityMap(HashMapItemPointerCmp(0, NULL),
                            (ulong)module->theFunctionArityMap->capacity(),
                            false);
@@ -4243,7 +4264,7 @@ void static_context::clear_base_uri()
 std::string static_context::toString()
 {
   std::stringstream ss;
-  
+
   ss << "static_context: " << this;
   static_context* parent = theParent;
   while (parent != NULL)
@@ -4252,7 +4273,7 @@ std::string static_context::toString()
     parent = parent->theParent;
   }
   ss << std::endl;
-  
+
   std::vector<VarInfo*> vars;
   getVariables(vars, false, false, false);
   for (csize i=0; i < vars.size(); i++)
@@ -4262,7 +4283,7 @@ std::string static_context::toString()
     // ss << " from sctx: " << this;
     ss << std::endl;
   }
-  
+
   return ss.str();
 }
 #endif

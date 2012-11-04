@@ -35,7 +35,7 @@
 // TODO: debugging purposes
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/item_iterator.h"
-
+#include "types/typeops.h"
 
 namespace zorba
 {
@@ -187,6 +187,32 @@ bool DynamicFnCallIterator::nextImpl(
 
   std::cerr << "--> dynamic fncall nextImpl(): " << theId << " theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariablesIterators().size() << std::endl;
 
+  if (theCoercionTargetType.getp())
+  {
+    const TypeManager* tm = theSctx->get_typemanager();
+
+    xqtref_t fnItemType = tm->create_value_type(fnItem, loc);
+    std::cerr << "--> dynamic fncall nextImpl(): " << theId << std::endl
+              << "    fnItemType: " << fnItemType->toString() << std::endl
+              << "    coercionType: " << (theCoercionTargetType.getp()? theCoercionTargetType->toString() : "NULL") << std::endl;
+
+    if (theCoercionTargetType.getp())
+    {
+      std::cerr << "    fnItemType subtype of coercionType? " << TypeOps::is_subtype(tm, *fnItemType, *theCoercionTargetType, loc) << std::endl;
+      std::cerr << "    coercionType subtype of fnItemType? " << TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc) << std::endl;
+    }
+
+    if (!TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc))
+    {
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
+                theCoercionTargetType->toSchemaString(),
+                fnItemType->toSchemaString()));
+    }
+
+  }
+
+
   if (theChildren.size() - 1 != fnItem->getArity())
   {
     // TODO: customize error message and take into account partial application
@@ -215,8 +241,8 @@ bool DynamicFnCallIterator::nextImpl(
     *ite = *ite2;
   }
   */
-  
-  
+
+
   ite2 = theChildren.begin();
   end2 = theChildren.end();
   ++ite2;
@@ -230,7 +256,7 @@ bool DynamicFnCallIterator::nextImpl(
     // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
     *ite = *ite2;
   }
-  
+
   state->thePlan = fnItem->getImplementation(argIters);
 
   std::cerr << "--> dynamic fncall: opening thePlan: " << state->thePlan->toString() << std::endl;

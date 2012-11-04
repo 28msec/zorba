@@ -221,17 +221,17 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
 #if 1
     // Set the return type of the function to the type of its body. But do not
     // do it if the body type is a user-defined type because the udf may be
-    // used in another module which does not import the schema that describes 
+    // used in another module which does not import the schema that describes
     // this user-defined type.
     xqtref_t bodyType = body->get_return_type();
     xqtref_t declaredType = udf->getSignature().returnType();
-    
+
     bool udt = (bodyType->type_kind() == XQType::USER_DEFINED_KIND);
 
     if (bodyType->type_kind() == XQType::NODE_TYPE_KIND)
     {
       const NodeXQType* nodeType = static_cast<const NodeXQType*>(bodyType.getp());
-        
+
       xqtref_t contentType = nodeType->get_content_type();
 
       udt = (contentType->type_kind() == XQType::USER_DEFINED_KIND);
@@ -241,6 +241,7 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
          !TypeOps::is_equal(tm, *bodyType, *declaredType, body->get_loc()) &&
          TypeOps::is_subtype(tm, *bodyType, *declaredType, body->get_loc()))
     {
+      udf->getSignature().setNonOptimizedReturnType(declaredType);
       udf->getSignature().returnType() = bodyType;
       if (!udf->isLeaf())
       {

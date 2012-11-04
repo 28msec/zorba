@@ -970,6 +970,9 @@ void push_scope()
 ********************************************************************************/
 void pop_scope()
 {
+  // std::cerr << "--> pop_scope(): popping static_context: " << theSctx << " (" << theSctx->getRefCount() << ")"
+  //          << " parent: " << theSctx->get_parent() << " (" << theSctx->get_parent()->getRefCount() << ")" << std::endl;
+
 #ifdef ZORBA_WITH_DEBUGGER
   if (theCCB->theDebuggerCommons != NULL)
   {
@@ -1374,6 +1377,8 @@ void create_inline_function(expr_t body, flwor_expr_t flwor, const std::vector<x
     }
   }
 
+  /* TODO: optimizing the HoF here is a very bad idea. This code can be safely removed
+           anyways because the UDF optimization should take care of it.
   if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
   {
     RewriterContext rCtx(theCCB,
@@ -1384,6 +1389,7 @@ void create_inline_function(expr_t body, flwor_expr_t flwor, const std::vector<x
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     body = rCtx.getRoot();
   }
+  */
 
   // Create the udf obj.
   user_function_t udf(new user_function(loc,
@@ -1402,21 +1408,20 @@ void create_inline_function(expr_t body, flwor_expr_t flwor, const std::vector<x
 }
 
 
-expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc, CompilerCB* theCCB)
+expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc, CompilerCB* theCCB, bool is_func_return = false)
 {
   const FunctionXQType* func_type = static_cast<const FunctionXQType*>(targetType.getp());
-  
-  // std::cerr << "--> targetType: " << targetType->toString() << std::endl;
+
+  std::cerr << "--> targetType: " << targetType->toString() << std::endl;
   // std::cerr << "----------- Argument to coercion ---------------\n";
   // std::cerr << theExpr->toString() << std::endl;
   // std::cerr << "------------------------------------------------\n";
 
   // Create the dynamic call body
-  
+
   function_item_expr* fiExpr = new function_item_expr(theRootSctx, NULL, loc);
   push_nodestack(fiExpr);
 
-  
   // Get the in-scope vars of the scope before opening the new scope for the
   // function devl
   /*
@@ -1425,7 +1430,6 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
   push_scope();
   */
 
-  
   // handle the function item expression
   flwor_expr_t fnItem_flwor = new flwor_expr(theRootSctx, loc, false);
   for_clause_t fnItem_lc = wrap_in_forclause(theExpr, NULL);
@@ -1433,10 +1437,9 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
   fnItem_flwor->add_clause(fnItem_lc);
   var_expr_t inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
   fiExpr->add_variable(fnItem_var, inner_subst_var, fnItem_var->get_name(), 0 /*var is not global*/);
-  
-  std::cerr << "--> subst_var: " << inner_subst_var->toString() << std::endl;
-  
-  
+
+  // std::cerr << "--> subst_var: " << inner_subst_var->toString() << std::endl;
+
   // bind the function item variable in the inner flwor
   flwor_expr_t inner_flwor = new flwor_expr(theRootSctx, loc, false);
   var_expr_t inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::let_var);
@@ -1453,31 +1456,33 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
   std::vector<expr_t> arguments;    // Arguments to the dynamic function call
   for(unsigned i = 0; i<func_type->get_number_params(); i++)
   {
-    xqtref_t param_type = func_type->operator[](i);
+    xqtref_t paramType = func_type->operator[](i);
 
     var_expr_t arg_var = create_temp_var(loc, var_expr::arg_var);
     var_expr_t subst_var = bind_var(loc, arg_var->get_name(), var_expr::let_var);
     let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
     arg_var->set_param_pos(inner_flwor->num_clauses());
-    arg_var->set_type(param_type);
+    arg_var->set_type(paramType);
 
     inner_flwor->add_clause(lc);
 
+
+
     arguments.push_back(new wrapper_expr(theRootSctx, loc, subst_var));
   }
-  
+
   if (inner_flwor->num_clauses() == 0)
   {
-    delete inner_flwor.release();
     inner_flwor = NULL;
   }
-  
+
   expr_t body = new dynamic_function_invocation_expr(
                 theRootSctx,
                 loc,
                 new wrapper_expr(theRootSctx, loc, inner_subst_var),
-                arguments);
+                arguments,
+                is_func_return ? NULL : targetType);
 
   create_inline_function(body, inner_flwor, func_type->get_param_types(), func_type->get_return_type(), loc, theCCB);
 
@@ -1587,7 +1592,7 @@ void normalize_fo(fo_expr* foExpr)
           // std::cerr << "--> coerce argument argExpr: " << argExpr->toString() << std::endl;
           argExpr = wrap_in_coercion(paramType, argExpr, loc, theCCB);
         }
-        
+
         argExpr = wrap_in_type_match(argExpr,
                                      paramType,
                                      loc,
@@ -3840,7 +3845,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     // Wrap in coercion if the return type is a function item
     if (returnType->type_kind() == XQType::FUNCTION_TYPE_KIND)
     {
-      body = wrap_in_coercion(returnType, body, loc, theCCB);
+      body = wrap_in_coercion(returnType, body, loc, theCCB, true);
     }
 
     // If function has any params, they have been wraped in a flwor expr. Set the
@@ -10720,7 +10725,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         for (csize i = 0; i < numVars; ++i)
         {
           var_expr* ve = inscopeVars[i]->getVar();
-          
+
           std::cerr << "--> eval_expr inscope var " << i << ": " << ve->toString();
 
           var_expr_t evalVar = create_var(loc,
@@ -11069,6 +11074,9 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 
   rchandle<QName> qname = v.getQName();
   uint32_t arity = 0;
+  store::Item_t qnameItem;
+  xqtref_t type;
+  user_function* udf = NULL;
 
   try
   {
@@ -11083,22 +11091,89 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   // Get function implementation
   function* fn = lookup_fn(qname, arity, loc);
 
+  expand_function_qname(qnameItem, qname, loc);
+
   // raise XPST0017 if function could not be found
-  if (fn == 0)
+  if (fn == NULL)
   {
-    RAISE_ERROR(err::XPST0017, loc,
-    ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), arity));
+    // Check if this is a call to a type constructor function
+    type = CTX_TM->create_named_type(qnameItem,
+                                     TypeConstants::QUANT_QUESTION,
+                                     loc);
+
+    if (type == NULL ||
+        arity != 1 ||
+        TypeOps::is_equal(CTX_TM, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION, loc) ||
+        TypeOps::is_equal(CTX_TM, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
+    {
+      RAISE_ERROR(err::XPST0017, loc,
+                    ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), arity));
+    }
+
+    udf = new user_function(loc,
+                            signature(qnameItem, GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, type),
+                            NULL, // no body for now
+                            SIMPLE_EXPR,
+                            theCCB);
+  }
+  else // fn != NULL
+  {
+    // validate the number of parameters on certain functions
+    switch (fn->getKind())
+    {
+      case FunctionConsts::FN_NUMBER_0:
+      case FunctionConsts::FN_NUMBER_1:
+      {
+        if (arity != 0 && arity != 1)
+          RAISE_ERROR(err::XPST0017, loc, ERROR_PARAMS("fn:number", ZED(FunctionUndeclared_3), arity));
+        break;
+      }
+      case FunctionConsts::FN_STATIC_BASE_URI_0:
+      {
+        if (arity != 0)
+          RAISE_ERROR(err::XPST0017, loc, ERROR_PARAMS("fn:static-base-uri", ZED(FunctionUndeclared_3), arity));
+        break;
+      }
+      case FunctionConsts::FN_CONCAT_N:
+      {
+        if (arity < 2)
+          RAISE_ERROR(err::XPST0017, loc, ERROR_PARAMS("concat", ZED(FunctionUndeclared_3), arity));
+        break;
+      }
+      default:
+        // otherwise function is valid by default
+        break;
+    }
+
+    //  Check if it is a zorba builtin function, and if so,
+    // make sure that the module it belongs to has been imported.
+    const zstring& fn_ns = qnameItem->getNamespace();
+    if (fn->isBuiltin() &&
+        fn_ns != static_context::W3C_FN_NS &&
+#ifdef ZORBA_WITH_JSON
+        fn_ns != static_context::JSONIQ_FN_NS &&
+#endif
+        fn_ns != XQUERY_MATH_FN_NS &&
+        fn_ns != theModuleNamespace)
+    {
+      if (! theSctx->is_imported_builtin_module(fn_ns))
+      {
+        RAISE_ERROR(err::XPST0017, loc,
+        ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), arity));
+      }
+    }
   }
 
   // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it
   // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
-  if (!fn->isUdf())
+  if (udf != NULL || !fn->isUdf())
   {
-    user_function* udf = new user_function(loc,
-                                           fn->getSignature(),
-                                           NULL, // no body for now
-                                           fn->getScriptingKind(),
-                                           theCCB);
+    if (udf == NULL)
+      udf = new user_function(loc,
+                              fn->getSignature(),
+                              NULL, // no body for now
+                              fn->getScriptingKind(),
+                              theCCB);
 
     std::vector<expr_t> foArgs(arity);
     std::vector<var_expr_t> udfArgs(arity);
@@ -11114,7 +11189,11 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
       foArgs[i] = argVar.getp();
     }
 
-    expr_t body = new fo_expr(theRootSctx, loc, fn, foArgs);
+    expr_t body;
+    if (fn == NULL) // we have a typecast function call
+      body = create_cast_expr(loc, foArgs[0], type, true);
+    else
+      body = new fo_expr(theRootSctx, loc, fn, foArgs);
 
     udf->setArgVars(udfArgs);
     udf->setBody(body);
@@ -11153,8 +11232,12 @@ void* begin_visit(const InlineFunction& v)
   push_scope();
 
   // function_item_expr* fiExpr = new function_item_expr(theRootSctx, NULL, loc);
-  function_item_expr* fiExpr = new function_item_expr(theSctx, theSctx, loc);
-    
+  // function_item_expr* fiExpr = new function_item_expr(theRootSctx, theSctx, loc);
+  // static_context_t scopedSctx = theSctx->create_child_context();
+  function_item_expr* fiExpr = new function_item_expr(theRootSctx, NULL, loc);
+
+  // std::cerr << "--> function_item_expr static_context theSctx: " << theSctx << " scopedSctx: " << scopedSctx.getp() << std::endl;
+
   push_nodestack(fiExpr);
 
   flwor_expr_t flwor;
@@ -11186,7 +11269,7 @@ void* begin_visit(const InlineFunction& v)
   {
     var_expr* varExpr = (*ite)->getVar();
     var_expr::var_kind kind = varExpr->get_kind();
-    
+
     std::cerr << "--> InlineFunction inscope var " << (ite-scopedVars.begin()) << ": " << varExpr->toString();
 
     if (/*kind == var_expr::prolog_var || */kind == var_expr::local_var)
@@ -11197,18 +11280,24 @@ void* begin_visit(const InlineFunction& v)
     store::Item_t qname = varExpr->get_name();
 
     // var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
-    var_expr_t subst_var = bind_var(loc, qname, var_expr::prolog_var);
+    var_expr_t subst_var;
+
+    if (kind != var_expr::prolog_var)
+      subst_var = bind_var(loc, qname, var_expr::prolog_var);
+    else
+      subst_var = varExpr;
+
     // let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
     // arg_var->set_param_pos(flwor->num_clauses());
     // arg_var->set_type(varExpr->get_return_type());
 
     // TODO: this could probably be done lazily in some cases
     //lc->setLazyEval(true);
-    
+
     // flwor->add_clause(lc);
 
     fiExpr->add_variable(((kind == var_expr::prolog_var)? NULL:varExpr), subst_var, varExpr->get_name(), (kind == var_expr::prolog_var) /*var is global if it's a prolog var*/);
-    
+
     std::cerr << "--> subst_var: " << subst_var->toString() << std::endl;
 
     // ???? What about inscope vars that are hidden by param vars ???
@@ -11264,8 +11353,8 @@ void end_visit(const InlineFunction& v, void* aState)
   }
 
   create_inline_function(body, flwor, paramTypes, returnType, loc, theCCB);
-  
-  std::cerr << "--> the scoped sctx: " << theSctx->toString() << std::endl;
+
+  // std::cerr << "--> the scoped sctx: " << theSctx->toString() << std::endl;
 
   // pop the scope.
   pop_scope();
@@ -13125,7 +13214,9 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
     lRetXQType = pop_tstack();
   }
 
-  TypeConstants::quantifier_t lQuant = TypeConstants::QUANT_STAR;
+  // TODO:
+  // TypeConstants::quantifier_t lQuant = TypeConstants::QUANT_STAR;
+  TypeConstants::quantifier_t lQuant = TypeConstants::QUANT_ONE;
   theTypeStack.push (GENV_TYPESYSTEM.create_function_type(
     lParamXQTypes, lRetXQType, lQuant));
 }

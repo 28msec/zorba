@@ -43,23 +43,27 @@ SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 ********************************************************************************/
 DynamicFunctionInfo::DynamicFunctionInfo(const static_context_t& scopedSctx,
                                          const QueryLoc& loc,
-                                         function_t function, 
-                                         store::Item_t qname, 
+                                         function_t function,
+                                         store::Item_t qname,
                                          uint32_t arity)
   :
   theCCB(NULL),
   theSctx(NULL),
-  theScopedSctx(scopedSctx),          
+  theScopedSctx(scopedSctx),
   theLoc(loc),
   theFunction(function),
   theQName(qname),
   theArity(arity)
 {
-}    
+}
 
 
 DynamicFunctionInfo::~DynamicFunctionInfo()
 {
+  /*
+  std::cerr << "--> ~DynamicFunctionInfo(): static_context: " << theScopedSctx.getp() << " ("
+      << (theScopedSctx.getp()?theScopedSctx->getRefCount() : -1) << ")" << std::endl;
+  */
 }
 
 
@@ -133,6 +137,10 @@ FunctionItem::FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo)
 
 FunctionItem::~FunctionItem()
 {
+  /*
+  std::cerr << "--> ~FunctionItem(): (static_context) theDynamicFunctionInfo: " << theDynamicFunctionInfo.getp()
+      << " (" << theDynamicFunctionInfo->getRefCount() << ")" << std::endl;
+  */
 }
 
 
@@ -198,20 +206,20 @@ PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args)
   expr_t dummy = new function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc);
 
   /*
-  PlanIter_t udfCallIterator = 
+  PlanIter_t udfCallIterator =
       theDynamicFunctionInfo->theFunction->codegen(theDynamicFunctionInfo->theCCB,
                                                    theDynamicFunctionInfo->theSctx,
                                                    theDynamicFunctionInfo->theLoc,
                                                    args,
                                                    *dummy.getp());
   */
-  PlanIter_t udfCallIterator = 
+  PlanIter_t udfCallIterator =
       theDynamicFunctionInfo->theFunction->codegen(theCCB.get(),
                                                    theCCB->theRootSctx,
                                                    theDynamicFunctionInfo->theLoc,
                                                    args,
                                                    *dummy.getp());
-  
+
   UDFunctionCallIterator* udfIter = static_cast<UDFunctionCallIterator*>(udfCallIterator.getp());
   udfIter->setDynamic();
   udfIter->setFunctionItem(this);

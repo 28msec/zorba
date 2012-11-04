@@ -460,7 +460,7 @@ bool begin_visit(function_item_expr& v)
 void end_visit(function_item_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  
+
   DynamicFunctionInfo* fnInfo = v.get_dynamic_fn_info();
   fnInfo->theCCB = theCCB;
   fnInfo->theSctx = sctx;
@@ -468,7 +468,7 @@ void end_visit(function_item_expr& v)
   fnInfo->theFunction = v.get_function();
   fnInfo->theQName = v.get_qname();
   fnInfo->theArity = v.get_arity();
-  
+
   // store::Item_t lFItem;
   /*
   std::vector<PlanIter_t> scopedVarsValues;
@@ -487,14 +487,14 @@ void end_visit(function_item_expr& v)
   {
     // inline function
     size_t lSize = v.get_scoped_vars_values().size();
-    
+
     for (size_t i = 0; i < lSize; ++i)
     {
       // if (!v.get_is_global_var()[i])
       {
         PlanIter_t varIter = NULL;
         PlanIter_t enclosedIter = NULL;
-        
+
         if (!v.get_is_global_var()[i])
         {
           varIter = pop_itstack();
@@ -502,21 +502,21 @@ void end_visit(function_item_expr& v)
           // varIter = new MaterializeIterator(sctx, v.get_loc(), varIter);
           fnInfo->theScopedVarsIterators.push_back(varIter);
         }
-        
+
         store::Item* var_qname = NULL;
         if (dynamic_cast<LetVarIterator*>(varIter.getp()) != NULL)
-          var_qname = dynamic_cast<LetVarIterator*>(varIter.getp())->getVarName(); 
+          var_qname = dynamic_cast<LetVarIterator*>(varIter.getp())->getVarName();
         else if (dynamic_cast<ForVarIterator*>(varIter.getp()) != NULL)
           var_qname = dynamic_cast<ForVarIterator*>(varIter.getp())->getVarName();
         else
           var_qname = v.get_scoped_vars_names()[i].getp();
-        
-        std::cerr << "--> PlanVisitor function_item_expr: var name: " << v.get_scoped_vars_names()[i]->show() 
+
+        std::cerr << "--> PlanVisitor function_item_expr: var name: " << v.get_scoped_vars_names()[i]->show()
             << " global: " << v.get_is_global_var()[i]
-            << " with iter: " 
+            << " with iter: "
             << (enclosedIter.getp()?enclosedIter->toString() : "NULL");
         if (dynamic_cast<LetVarIterator*>(enclosedIter.getp()) != NULL)
-          std::cerr << " var name: " << dynamic_cast<LetVarIterator*>(enclosedIter.getp())->getVarName()->show(); 
+          std::cerr << " var name: " << dynamic_cast<LetVarIterator*>(enclosedIter.getp())->getVarName()->show();
         else if (dynamic_cast<ForVarIterator*>(enclosedIter.getp()) != NULL)
           std::cerr << " var name: " << dynamic_cast<ForVarIterator*>(enclosedIter.getp())->getVarName()->show();
         else
@@ -524,7 +524,7 @@ void end_visit(function_item_expr& v)
         std::cerr << std::endl;
       }
     }
-    
+
     reverse(fnInfo->theScopedVarsIterators.begin(), fnInfo->theScopedVarsIterators.end());
     // lFItem = new FunctionItem(NULL,/*theCCB, sctx, &v, */lVariableValues); // TODO
   }
@@ -557,7 +557,7 @@ void end_visit(dynamic_function_invocation_expr& v)
 
   argIters[0] = pop_itstack();
 
-  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters));
+  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, v.theCoercionTargetType));
 }
 
 
@@ -2142,7 +2142,7 @@ void end_visit(eval_expr& v)
     varNames[i] = v.get_var(i)->get_name();
     varTypes[i] = v.get_var(i)->get_type();
     isGlobalVar[i] = (v.get_arg_expr(i) == NULL);
-    
+
     std::cerr << "--> PlanVisitor eval_expr: var name: " << varNames[i]->show();
     if (!isGlobalVar[i])
     {
@@ -3570,7 +3570,7 @@ PlanIter_t result()
     XMLIterPrinter vp(std::cout);
     print_iter_plan(vp, res);
     std::cout<< std::endl;
-    
+
     std::cout << "\nPlan_visitor stack still contains "
               << itstack.size() << " entries: " << std::endl;
     while (!itstack.empty())

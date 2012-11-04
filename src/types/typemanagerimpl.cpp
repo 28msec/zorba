@@ -741,13 +741,17 @@ xqtref_t TypeManagerImpl::create_value_type(
     const FunctionItem* lFItem = static_cast<const FunctionItem*>(item);
     const signature& lSig = lFItem->getSignature();
     const xqtref_t& lRetType = lSig.returnType();
+    const xqtref_t& lNonOptimizedRetType = lSig.getNonOptimizedReturnType();
     std::vector<xqtref_t> lParamTypes;
     for (uint32_t i = 0; i < lSig.paramCount(); ++i)
     {
       lParamTypes.push_back(lSig[i]);
     }
 
-    return new FunctionXQType(this, lParamTypes, lRetType, quant);
+    return new FunctionXQType(this,
+                              lParamTypes,
+                              lNonOptimizedRetType.getp() ? lNonOptimizedRetType : lRetType,
+                              quant);
   }
 
   else

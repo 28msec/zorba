@@ -22,7 +22,7 @@
 #include "runtime/base/narybase.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 /*******************************************************************************
@@ -52,7 +52,10 @@ public:
 ********************************************************************************/
 class DynamicFnCallIterator : public NaryBaseIterator<DynamicFnCallIterator,
                                                       DynamicFnCallIteratorState>
-{ 
+{
+public:
+  xqtref_t  theCoercionTargetType;
+
 public:
   SERIALIZABLE_CLASS(DynamicFnCallIterator);
 
@@ -68,9 +71,11 @@ public:
   DynamicFnCallIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& args)
+        std::vector<PlanIter_t>& args,
+        xqtref_t coercionTargetType = NULL)
     :
-    NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>(sctx, loc, args)
+    NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>(sctx, loc, args),
+    theCoercionTargetType(coercionTargetType)
   {
   }
 
@@ -93,5 +98,5 @@ public:
  * Local variables:
  * mode: c++
  * End:
- */ 
+ */
 /* vim:set et sw=2 ts=2: */

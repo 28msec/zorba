@@ -101,20 +101,20 @@ public:
       const QueryLoc& loc,
       DynamicFunctionInfo* fnInfo);
 
-  virtual ~DynamicFunctionIterator() {}
+  virtual ~DynamicFunctionIterator();
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-private:  
+
+private:
   void importOuterEnv(
       PlanState& planState,
       static_context* importSctx,
       dynamic_context* evalDctx,
       std::vector<var_expr_t>& outerVars,
       ulong& maxOuterVarId) const;
-  
+
   void setExternalVariables(
       CompilerCB* ccb,
       static_context* importSctx,

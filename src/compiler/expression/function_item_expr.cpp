@@ -33,11 +33,13 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
     static_context* sctx,
     const QueryLoc& loc,
     const expr_t& anExpr,
-    const std::vector<expr_t>& args)
+    const std::vector<expr_t>& args,
+    xqtref_t coercionTargetType)
   :
   expr(sctx, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
-  theArgs(args)
+  theArgs(args),
+  theCoercionTargetType(coercionTargetType)
 {
   assert(anExpr != 0);
   compute_scripting_kind();
@@ -118,6 +120,10 @@ function_item_expr::function_item_expr(
 
 function_item_expr::~function_item_expr()
 {
+  /*
+  std::cerr << "--> ~function_item_expr(): (static_context) theDynamicFunctionInfo: " << theDynamicFunctionInfo.getp()
+      << " (" << theDynamicFunctionInfo->getRefCount() << ")" << std::endl;
+  */
 }
 
 
@@ -161,8 +167,8 @@ expr_t function_item_expr::clone(substitution_t& s) const
   {
     lNewExpr->add_variable(
                            (*varIter).getp() != NULL ? (*varIter)->clone(s) : NULL,
-                           (*substVarIter).getp() != NULL ? static_cast<var_expr*>((*substVarIter)->clone(s).getp()) : NULL,  
-                           *nameIter, 
+                           (*substVarIter).getp() != NULL ? static_cast<var_expr*>((*substVarIter)->clone(s).getp()) : NULL,
+                           *nameIter,
                            *isGlobalIter);
   }
 
