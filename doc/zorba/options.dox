@@ -86,6 +86,13 @@ DTD validation when parsing resources retrieved by
 <a href="http://www.w3.org/TR/xpath-functions-30/#func-doc">fn:doc</a>. DTD 
 validation is disabled by default.
 </li>
+<li><b>http-uri-resolution:</b> When resolving URIs for schema and module
+import statements, Zorba always first attempts to map the URI to a local
+filesystem location (see \ref builtin_uri_resolver). As a fallback, Zorba
+will then by default attempt to use HTTP, HTTPS, or FTP (depending on the
+URI scheme) to download the resource from the internet. The local name
+<tt>http-uri-resolution</tt> can be used to enable or disable this network
+fallback. By default it is enabled.
 </ul>
 
 
