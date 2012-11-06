@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@
 #include "system/globalenv.h"
 
 
+#include "api/serialization/serializer.h"
 
 namespace zorba {
 
@@ -95,7 +96,7 @@ void TraceIteratorState::init(PlanState& planState) {
   theTagItem = NULL;
   theIndex = 0;
   theOS = 0;
-  theSerializer = std::auto_ptr<serializer>(0);
+  theSerializer = NULL;
 }
 
 void TraceIteratorState::reset(PlanState& planState) {
@@ -103,7 +104,7 @@ void TraceIteratorState::reset(PlanState& planState) {
   theTagItem = NULL;
   theIndex = 0;
   theOS = 0;
-  theSerializer = std::auto_ptr<serializer>(0);
+  theSerializer = NULL;
 }
 // </TraceIterator>
 

@@ -119,7 +119,9 @@ bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 }
 
 
-bool BasicItemFactory::createStructuralAnyURI(store::Item_t& result, zstring& value)
+bool BasicItemFactory::createStructuralAnyURI(
+    store::Item_t& result,
+    zstring& value)
 {
   result =  new StructuralAnyUriItem(value);
   return true;
@@ -134,16 +136,7 @@ bool BasicItemFactory::createStructuralAnyURI(
     const OrdPath& ordPath)
 {
   ZORBA_FATAL(nodeKind,"Unexpected node kind");
-  std::ostringstream stream;
-  stream   << "zorba:"
-           << collectionId << "."
-           << treeId << "."
-           << static_cast<int>(nodeKind) << "."
-           << ordPath.serialize();
-  zstring uri = stream.str();
-
-  theUriPool->insert(uri);
-  result = new StructuralAnyUriItem(uri, collectionId, treeId, nodeKind, ordPath);
+  result = new StructuralAnyUriItem(collectionId, treeId, nodeKind, ordPath);
   return true;
 }
 
@@ -2120,6 +2113,34 @@ bool BasicItemFactory::createJSONArray(
       
       array->push_back(item);
     }
+  }
+
+  return true;
+}
+
+
+bool BasicItemFactory::createJSONArray(
+    store::Item_t& result,
+    store::Item_t& item1,
+    store::Item_t& item2,
+    const store::Iterator_t& source,
+    const store::CopyMode& copymode)
+{
+  result = new json::SimpleJSONArray();
+
+  json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(result.getp());
+
+  array->push_back(item1);
+  array->push_back(item2);
+  
+  store::Item_t item;
+
+  while (source->next(item))
+  {
+    if (copymode.theDoCopy && (item->isNode() || item->isJSONItem()))
+      item = item->copy(NULL, copymode);
+      
+    array->push_back(item);
   }
 
   return true;

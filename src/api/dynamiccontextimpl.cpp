@@ -303,8 +303,8 @@ bool DynamicContextImpl::setVariable(
         TypeOps::is_equal(tm, *itemType, *rtm.STRING_TYPE_ONE, QueryLoc::null) &&
         (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
     {
-      throw XQUERY_EXCEPTION(err::FOCH0001, 
-      ERROR_PARAMS(zstring("#x") + 
+      throw XQUERY_EXCEPTION(err::FOCH0001,
+      ERROR_PARAMS(zstring("#x") +
       BUILD_STRING(std::uppercase << std::hex
                    << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
     }
@@ -401,6 +401,96 @@ bool DynamicContextImpl::setContextItem(const Item& inValue)
 /****************************************************************************//**
 
 ********************************************************************************/
+bool DynamicContextImpl::setContextSize(const Item& inValue)
+{
+  try
+  {
+    store::Item* value = Unmarshaller::getInternalItem(inValue);
+
+    if (!value->isAtomic())
+    {
+      throw ZORBA_EXCEPTION(zerr::ZAPI0023_NON_ATOMIC_CONTEXT_SIZE_VALUE);
+    }
+
+    store::SchemaTypeCode typeCode = value->getTypeCode();
+
+    if (typeCode < store::XS_INTEGER || typeCode > store::XS_POSITIVE_INTEGER)
+    {
+      xqtref_t type = GENV_TYPESYSTEM.create_value_type(value);
+
+      throw ZORBA_EXCEPTION(zerr::ZAPI0024_NON_INTEGER_CONTEXT_SIZE_VALUE,
+      ERROR_PARAMS(type->toSchemaString()));
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e);
+    return false;
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e.what());
+    return false;
+  }
+  catch (...)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler);
+    return false;
+  }
+
+  String varName = Unmarshaller::newString(static_context::DOT_SIZE_VAR_NAME);
+  return setVariable(varName, inValue);
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setContextPosition(const Item& inValue)
+{
+  try
+  {
+    store::Item* value = Unmarshaller::getInternalItem(inValue);
+
+    if (!value->isAtomic())
+    {
+      throw ZORBA_EXCEPTION(zerr::ZAPI0025_NON_ATOMIC_CONTEXT_POSITION_VALUE);
+    }
+
+    store::SchemaTypeCode typeCode = value->getTypeCode();
+
+    if (typeCode < store::XS_INTEGER || typeCode > store::XS_POSITIVE_INTEGER)
+    {
+      xqtref_t type = GENV_TYPESYSTEM.create_value_type(value);
+
+      throw ZORBA_EXCEPTION(zerr::ZAPI0026_NON_INTEGER_CONTEXT_POSITION_VALUE,
+      ERROR_PARAMS(type->toSchemaString()));
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e);
+    return false;
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler, e.what());
+    return false;
+  }
+  catch (...)
+  {
+    ZorbaImpl::notifyError(theQuery->theDiagnosticHandler);
+    return false;
+  }
+
+  String varName = Unmarshaller::newString(static_context::DOT_POS_VAR_NAME);
+  return setVariable(varName, inValue);
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
 bool DynamicContextImpl::getContextItem(Item& outValue) const
 {
   String varName;
@@ -408,6 +498,44 @@ bool DynamicContextImpl::getContextItem(Item& outValue) const
   ZORBA_DCTX_TRY
   {
     varName = Unmarshaller::newString(static_context::DOT_VAR_NAME);
+  }
+  ZORBA_DCTX_CATCH
+
+  Iterator_t dummy;
+
+  return getVariable("", varName, outValue, dummy);
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::getContextSize(Item& outValue) const
+{
+  String varName;
+
+  ZORBA_DCTX_TRY
+  {
+    varName = Unmarshaller::newString(static_context::DOT_SIZE_VAR_NAME);
+  }
+  ZORBA_DCTX_CATCH
+
+  Iterator_t dummy;
+
+  return getVariable("", varName, outValue, dummy);
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::getContextPosition(Item& outValue) const
+{
+  String varName;
+
+  ZORBA_DCTX_TRY
+  {
+    varName = Unmarshaller::newString(static_context::DOT_POS_VAR_NAME);
   }
   ZORBA_DCTX_CATCH
 
@@ -587,7 +715,7 @@ bool DynamicContextImpl::getExternalFunctionParam(
 bool
 DynamicContextImpl::addExternalFunctionParameter (
     const String& aName,
-    ExternalFunctionParameter* aValue )
+    ExternalFunctionParameter* aValue ) const
 {
   ZORBA_DCTX_TRY
   {
@@ -618,7 +746,7 @@ DynamicContextImpl::getExternalFunctionParameter ( const String& aName ) const
 /****************************************************************************//**
 
 ********************************************************************************/
-bool 
+bool
 DynamicContextImpl::isBoundExternalVariable(const String& aNamespace, const String& aLocalname) const
 {
   ZORBA_DCTX_TRY
@@ -645,6 +773,8 @@ DynamicContextImpl::isBoundContextItem() const
   ZORBA_DCTX_CATCH
   return false;
 }
+
+
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

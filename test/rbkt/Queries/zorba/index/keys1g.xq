@@ -17,10 +17,12 @@ return
       <foo id="{$i - 1}" string="true"/>
   );
 
-let $keys := index_dml:keys(xs:QName("keys-lib:FooIdx-general"))
-let $attr := $keys[1]/self::*:key/*:attribute/@*:value
+let $keys :=
+  for $key in index_dml:keys(xs:QName("keys-lib:FooIdx-general"))
+  let $attr := $key/self::*:key/*:attribute
+  order by xs:string($attr/@*:type), xs:long($attr/@*:value)
+  return $key
 return
-  <keys>{
+  <keys count="{ count($keys) }">{
     $keys
   }</keys>
-

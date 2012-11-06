@@ -396,10 +396,10 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 {                         \
   BEGIN MODE_SHEBANG;     \
 }
-%}  
+%}
 
 
-%% 
+%%
 
 
   /*______________________________________________________________________
@@ -408,11 +408,11 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |
    |  Accepts the "#!/path/interpreter" unix script shebang string
    |______________________________________________________________________*/
-   
+
 <MODE_SHEBANG>{
 "#!".*[\n]  { return token::SHEBANG; }
 .|[\n]      { BEGIN INITIAL; yyless(0); }
-}   
+}
 
 
   /*______________________________________________________________________
@@ -432,6 +432,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "+" { return token::PLUS; }
 "/" { return token::SLASH; }
 "//" { return token::SLASH_SLASH; }
+"!" { return token::BANG; }
 "@" { return token::AT_SIGN; }
 ")" { return token::RPAR; }
 "*" { return token::STAR; }
@@ -1148,6 +1149,7 @@ std::string start_state(int state)
   switch (state)
   {
     case INITIAL: return "INITIAL";
+    case MODE_SHEBANG: return "MODE_SHEBANG";
     case INITIAL_ACCUMULATOR: return "INITIAL_ACCUMULATOR";
     case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
     case MODE_ELEM_COMP_CONSTR: return "MODE_ELEM_COMP_CONSTR";

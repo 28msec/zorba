@@ -78,21 +78,37 @@ public:
 
   - Syntax:
 
-  GroupingSpec ::= "$" VarName ("collation" URILiteral)?
+  GroupSpec ::= "$" VarName (TypeDeclaration? ":=" ExprSingle)?
+                ("collation" URILiteral)?
+
+  NOTE: For every group spec that has a binding expression, a let variable will
+  be created and placed before the groupby clause. 
+
 
   - Data Members:
 
-  theInput     : A ForVarIter or LetVarIter referencing the FOR/LET variable
-                 corresponding to this grouping variable in the input tuple 
-                 stream.
-  theVarRefs   : All references of this grouping variable in the output tuple
-                 stream.
-  theCollation : The collation to use when comparing values of this grouping
-                 var (if the values are of type xs:string or subtype).
-  theCollator  : Pointer to the collator obj corresponding to theCollation.
-                 The pointer is assigned by the OrderByClause::open() method.
-                 Note: no need to delete theCollator in ~OrderSpec() because
-                 the obj is managed by the collation cache.
+  theInput:
+  ---------
+  A subplan computing the expression that corresponds to this group spec. For
+  each input tuple stream, the value of this expression will be used in deciding
+  the group where the input tuple stream belongs to. It is also the value to be
+  assigned to the group-by variable in the output tuple stream. This value is
+  guaranteed to be an atomic value.
+
+  theVarRefs:
+  -----------
+  All references of this group-by variable in the output tuple stream.
+
+  theCollation:
+  -------------
+  The collation to use when comparing values of this group-by var (if the values
+  are of type xs:string or subtype).
+
+  theCollator:
+  ------------
+  Pointer to the collator obj corresponding to theCollation. The pointer is
+  assigned by the OrderByClause::open() method. Note: no need to delete
+  theCollator in ~OrderSpec() because the obj is managed by the collation cache.
 ********************************************************************************/
 class GroupingSpec : public ::zorba::serialization::SerializeBaseClass
 {
@@ -138,9 +154,14 @@ public:
 /***************************************************************************//**
   Wrapper for a NonGroupingSpec.
 
-  theInput   : A ForVarIter or LetVarIter referencing the FOR/LET variable
-               corresponding to this non-grouping var in the input tuple stream.
-  theVarRefs : All references to this non-grouping var in the output tuple stream.
+  theInput:
+  ---------
+  A ForVarIter or LetVarIter referencing the FOR/LET variable corresponding to
+  this non-group-by var in the input tuple stream.
+
+  theVarRefs:
+  -----------
+  All references to this non-group-by var in the output tuple stream.
 ********************************************************************************/
 class NonGroupingSpec : public ::zorba::serialization::SerializeBaseClass
 {
@@ -179,7 +200,7 @@ public:
 
 /***************************************************************************//**
   Each tuple it in the input tuple stream is assigned to a group based on the
-  typed values of the items to which the grouping variables are bound in it.
+  values of the items to which the group-by variables are bound in it.
 
   For each such group G, there is a GroupTuple T, which stores the typed values
   that define the group. Let itg be the 1st tuple in the input tuple stream that
@@ -195,7 +216,6 @@ class GroupTuple
 {
 public:
   std::vector<store::Item_t> theItems;
-  std::vector<store::Item_t> theTypedValues;    
 };
 
 

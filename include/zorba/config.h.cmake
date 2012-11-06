@@ -52,6 +52,7 @@
 #cmakedefine ZORBA_HAVE_SYS_TYPES_H
 #cmakedefine ZORBA_HAVE_USTRING_H
 #cmakedefine ZORBA_HAVE_UTYPES_H
+#cmakedefine ZORBA_HAVE_UUID_H
 
 // Platform functions
 #cmakedefine ZORBA_HAVE_CLOCKGETTIME_FUNCTION
@@ -145,6 +146,16 @@ typedef __int64 int64_t;
 # define ZORBA_TR1_NS std::tr1
 #else
 # define ZORBA_TR1_NS std
+#endif
+
+////////// GCC diagnostics ////////////////////////////////////////////////////
+
+#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 460)
+# define GCC_GREATER_EQUAL_460 1
+#endif
+
+#if defined( GCC_GREATER_EQUAL_460 ) || defined( __llvm__ )
+# define GCC_PRAGMA_DIAGNOSTIC_PUSH 1
 #endif
 
 ////////// Zorba //////////////////////////////////////////////////////////////

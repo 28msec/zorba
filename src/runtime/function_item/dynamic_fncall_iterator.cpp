@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- #include "stdafx.h"
+#include "stdafx.h"
 
 #include "diagnostics/util_macros.h"
 
@@ -29,13 +29,10 @@
 #include "store/api/item_factory.h"
 
 #include "types/root_typemanager.h"
+#include "types/casting.h"
 
 #include "system/globalenv.h"
 
-// TODO: debugging purposes
-#include "runtime/core/var_iterators.h"
-#include "runtime/core/item_iterator.h"
-#include "types/typeops.h"
 
 namespace zorba
 {
@@ -145,19 +142,29 @@ bool DynamicFnCallIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t item;
-  store::Item_t funcItem;
+  store::Item_t targetItem;
+#ifdef ZORBA_WITH_JSON
+  store::Item_t selectorItem1;
+  store::Item_t selectorItem2;
+  store::Item_t selectorItem3;
+  bool isObjectNav;
+  bool selectorError;
+#endif
   FunctionItem* fnItem;
   std::vector<PlanIter_t> argIters;
   std::vector<PlanIter_t>::iterator ite;
   std::vector<PlanIter_t>::const_iterator ite2;
   std::vector<PlanIter_t>::const_iterator end2;
 
+  TypeManager* tm = theSctx->get_typemanager();
+
   DynamicFnCallIteratorState* state;
+
   DEFAULT_STACK_INIT(DynamicFnCallIteratorState, state, planState);
 
   // first child must return exactly one item which is a function item
   // otherwise XPTY0004 is raised
-  if (!consumeNext(funcItem, theChildren[0], planState))
+  if (!consumeNext(targetItem, theChildren[0], planState))
   {
     RAISE_ERROR(err::XPTY0004, loc,
     ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
@@ -165,116 +172,208 @@ bool DynamicFnCallIterator::nextImpl(
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
 
-  if (consumeNext(item, theChildren[0], planState))
+  if (targetItem->isFunction())
   {
-    RAISE_ERROR(err::XPTY0004, loc,
-    ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion),
-                 GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
-  }
+    if (consumeNext(item, theChildren[0], planState))
+    {
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion),
+                   GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
+    }
 
-  if (!funcItem->isFunction())
-  {
-    const TypeManager* tm = theSctx->get_typemanager();
-    xqtref_t type = tm->create_value_type(funcItem);
+    fnItem = static_cast<FunctionItem*>(targetItem.getp());
 
-    RAISE_ERROR(err::XPTY0004, loc,
-    ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
-                type->toSchemaString(),
-                GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
-  }
-
-  fnItem = static_cast<FunctionItem*>(funcItem.getp());
-
-  std::cerr << "--> dynamic fncall nextImpl(): " << theId << " theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariablesIterators().size() << std::endl;
-
-  if (theCoercionTargetType.getp())
-  {
-    const TypeManager* tm = theSctx->get_typemanager();
-
-    xqtref_t fnItemType = tm->create_value_type(fnItem, loc);
-    std::cerr << "--> dynamic fncall nextImpl(): " << theId << std::endl
-              << "    fnItemType: " << fnItemType->toString() << std::endl
-              << "    coercionType: " << (theCoercionTargetType.getp()? theCoercionTargetType->toString() : "NULL") << std::endl;
+    std::cerr << "--> dynamic fncall nextImpl(): " << theId << " theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariablesIterators().size() << std::endl;
 
     if (theCoercionTargetType.getp())
     {
-      std::cerr << "    fnItemType subtype of coercionType? " << TypeOps::is_subtype(tm, *fnItemType, *theCoercionTargetType, loc) << std::endl;
-      std::cerr << "    coercionType subtype of fnItemType? " << TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc) << std::endl;
+      const TypeManager* tm = theSctx->get_typemanager();
+
+      xqtref_t fnItemType = tm->create_value_type(fnItem, loc);
+      std::cerr << "--> dynamic fncall nextImpl(): " << theId << std::endl
+                << "    fnItemType: " << fnItemType->toString() << std::endl
+                << "    coercionType: " << (theCoercionTargetType.getp()? theCoercionTargetType->toString() : "NULL") << std::endl;
+
+      if (theCoercionTargetType.getp())
+      {
+        std::cerr << "    fnItemType subtype of coercionType? " << TypeOps::is_subtype(tm, *fnItemType, *theCoercionTargetType, loc) << std::endl;
+        std::cerr << "    coercionType subtype of fnItemType? " << TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc) << std::endl;
+      }
+
+      if (!TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc))
+      {
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
+                  theCoercionTargetType->toSchemaString(),
+                  fnItemType->toSchemaString()));
+      }
+
     }
 
-    if (!TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc))
+
+    if (theChildren.size() - 1 != fnItem->getArity())
     {
-      RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
-                theCoercionTargetType->toSchemaString(),
-                fnItemType->toSchemaString()));
+      // TODO: customize error message and take into account partial application
+      RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
     }
 
+    // argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
+    argIters.resize(theChildren.size() - 1);
+
+    ite = argIters.begin();
+
+    /*
+    ite2 = fnItem->getVariablesIterators().begin();
+    end2 = fnItem->getVariablesIterators().end();
+    for (; ite2 != end2; ++ite2, ++ite)
+    {
+      std::cerr << "--> dynamic fncall: var argIter: " << (*ite2)->getId() << " = " << (*ite2)->getClassName() << std::endl;
+      if (dynamic_cast<LetVarIterator*>(ite2->getp()))
+        std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
+      if (dynamic_cast<ForVarIterator*>(ite2->getp()))
+        std::cerr << "-->                 argIter is ForVarIterator with varName: " << dynamic_cast<ForVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
+      if (dynamic_cast<SingletonIterator*>(ite2->getp()))
+        std::cerr << "-->                 argIter is SingletonIterator with value: " << dynamic_cast<SingletonIterator*>(ite2->getp())->getValue()->show() << std::endl;
+
+      // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
+      *ite = *ite2;
+    }
+    */
+
+    ite2 = theChildren.begin();
+    end2 = theChildren.end();
+    ++ite2;
+
+    for (; ite2 != end2; ++ite2, ++ite)
+    {
+      std::cerr << "--> dynamic fncall: child argIter: " << (*ite2)->getId() << " = " << (*ite2)->getClassName() << std::endl;
+      if (dynamic_cast<LetVarIterator*>(ite2->getp()))
+        std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
+
+      // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
+      *ite = *ite2;
+    }
+
+    /*
+    ite2 = fnItem->getVariables().begin();
+    end2 = fnItem->getVariables().end();
+
+    for(; ite2 != end2; ++ite2, ++ite)
+    {
+      *ite = *ite2;
+    }
+    */
+
+    state->thePlan = fnItem->getImplementation(argIters);
+
+    std::cerr << "--> dynamic fncall: opening thePlan: " << state->thePlan->toString() << std::endl;
+
+    // must be opened after vars and params are set
+    state->thePlan->open(planState, state->theUDFStateOffset);
+    state->theIsOpen = true;
+
+    while(consumeNext(result, state->thePlan, planState))
+    {
+      STACK_PUSH(true, state);
+    }
+
+    // need to close here early in case the plan is completely
+    // consumed. Otherwise, the plan would still be opened
+    // if destroyed from the state's destructor.
+    state->thePlan->close(planState);
+    state->theIsOpen = false;
   }
-
-
-  if (theChildren.size() - 1 != fnItem->getArity())
+#ifdef ZORBA_WITH_JSON
+  else if (targetItem->isJSONObject() || targetItem->isJSONArray())
   {
-    // TODO: customize error message and take into account partial application
-    RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
-  }
+    if (theChildren.size() != 2)
+    {
+      RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
+    }
 
-  // argIters.resize(theChildren.size() - 1 + fnItem->getVariablesIterators().size());
-  argIters.resize(theChildren.size() - 1);
-  ite = argIters.begin();
+    isObjectNav = targetItem->isJSONObject();
+    selectorError = false;
 
+    if (!consumeNext(selectorItem1, theChildren[1], planState))
+    {
+      selectorError = true;
+    }
+    else
+    {
+      try
+      {
+        if (selectorItem1->isNode())
+        {
+          store::Iterator_t iter;
 
-  ite2 = fnItem->getVariablesIterators().begin();
-  end2 = fnItem->getVariablesIterators().end();
-  /*
-  for (; ite2 != end2; ++ite2, ++ite)
-  {
-    std::cerr << "--> dynamic fncall: var argIter: " << (*ite2)->getId() << " = " << (*ite2)->getClassName() << std::endl;
-    if (dynamic_cast<LetVarIterator*>(ite2->getp()))
-      std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
-    if (dynamic_cast<ForVarIterator*>(ite2->getp()))
-      std::cerr << "-->                 argIter is ForVarIterator with varName: " << dynamic_cast<ForVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
-    if (dynamic_cast<SingletonIterator*>(ite2->getp()))
-      std::cerr << "-->                 argIter is SingletonIterator with value: " << dynamic_cast<SingletonIterator*>(ite2->getp())->getValue()->show() << std::endl;
+          selectorItem1->getTypedValue(selectorItem2, iter);
 
-    // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
-    *ite = *ite2;
-  }
-  */
+          if (iter != NULL)
+          {
+            if (!iter->next(selectorItem2) || iter->next(item))
+            {
+              selectorError = true;
+            }
+          }
+        }
+        else
+        {
+          selectorItem2.transfer(selectorItem1);
+        }
 
+        if (!selectorError)
+        {
+          if (!selectorItem2->isAtomic())
+          {
+            selectorError = true;
+          }
+          else
+          {
+            store::SchemaTypeCode selectorType =
+            (isObjectNav ? store::XS_STRING : store::XS_INTEGER);
 
-  ite2 = theChildren.begin();
-  end2 = theChildren.end();
-  ++ite2;
+            selectorError = ! GenericCast::castToAtomic(selectorItem3,
+                                                        selectorItem2,
+                                                        selectorType,
+                                                        tm,
+                                                        NULL,
+                                                        loc);
+          }
+        }
+      }
+      catch (...)
+      {
+        selectorError = true;
+      }
+    }
 
-  for(; ite2 != end2; ++ite2, ++ite)
-  {
-    std::cerr << "--> dynamic fncall: child argIter: " << (*ite2)->getId() << " = " << (*ite2)->getClassName() << std::endl;
-    if (dynamic_cast<LetVarIterator*>(ite2->getp()))
-      std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
+    if (selectorError)
+    {
+      item = (selectorItem1 == NULL ? selectorItem2 : selectorItem1);
 
-    // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
-    *ite = *ite2;
-  }
+      zstring selectorType = tm->create_value_type(item)->toSchemaString();
 
-  state->thePlan = fnItem->getImplementation(argIters);
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(XPTY0004_JSONIQ_SELECTOR), selectorType));
+    }
 
-  std::cerr << "--> dynamic fncall: opening thePlan: " << state->thePlan->toString() << std::endl;
+    if (isObjectNav)
+      result = targetItem->getObjectValue(selectorItem3);
+    else
+      result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
 
-  // must be opened after vars and params are set
-  state->thePlan->open(planState, state->theUDFStateOffset);
-  state->theIsOpen = true;
-
-  while(consumeNext(result, state->thePlan, planState))
-  {
     STACK_PUSH(true, state);
   }
+#endif
+  else
+  {
+    xqtref_t type = tm->create_value_type(targetItem);
 
-  // need to close here early in case the plan is completely
-  // consumed. Otherwise, the plan would still be opened
-  // if destroyed from the state's destructor.
-  state->thePlan->close(planState);
-  state->theIsOpen = false;
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
+                 type->toSchemaString(),
+                 GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
+  }
 
   STACK_END(state);
 };

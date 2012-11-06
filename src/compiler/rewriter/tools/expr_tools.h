@@ -47,16 +47,16 @@ namespace expr_tools
 {
 
 int count_variable_uses(
-    const expr* root, 
-    const var_expr* var, 
-    RewriterContext* rCtx, 
-    int limit);
+    expr* root,
+    var_expr* var,
+    int limit,
+    std::vector<expr**>* path);
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t fix_annotations(expr* new_expr, const expr* old_expr = NULL);
+expr* fix_annotations(expr* new_expr, const expr* old_expr = NULL);
 
 
 /*******************************************************************************

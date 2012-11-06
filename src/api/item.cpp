@@ -233,6 +233,7 @@ String Item::getStringValue() const
   return String((const char*)0);
 }
 
+
 int32_t Item::getIntValue() const
 {
   ITEM_TRY
@@ -245,6 +246,7 @@ int32_t Item::getIntValue() const
   return 0;
 }
 
+
 uint32_t Item::getUnsignedIntValue() const
 {
   ITEM_TRY
@@ -252,18 +254,6 @@ uint32_t Item::getUnsignedIntValue() const
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return m_item->getUnsignedIntValue();
-
-  ITEM_CATCH
-  return 0;
-}
-
-double Item::getDoubleValue() const
-{
-  ITEM_TRY
-
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-
-    return m_item->getDoubleValue().getNumber();
 
   ITEM_CATCH
   return 0;
@@ -281,6 +271,19 @@ xs_long Item::getLongValue() const
   ITEM_CATCH
   return 0;
 
+}
+
+
+double Item::getDoubleValue() const
+{
+  ITEM_TRY
+
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getDoubleValue().getNumber();
+
+  ITEM_CATCH
+  return 0;
 }
 
 
@@ -486,6 +489,7 @@ Item::getJSONItemKind() const
   return store::StoreConsts::jsonItem;
 }
 
+
 uint64_t
 Item::getArraySize() const
 {
@@ -494,8 +498,9 @@ Item::getArraySize() const
 
     return to_xs_long(m_item->getArraySize());
   ITEM_CATCH
-  return NULL;
+  return 0;
 }
+
 
 Item
 Item::getArrayValue(uint32_t aIndex) const
@@ -508,6 +513,7 @@ Item::getArrayValue(uint32_t aIndex) const
   return Item();
 }
 
+
 Iterator_t
 Item::getObjectKeys() const
 {
@@ -519,6 +525,7 @@ Item::getObjectKeys() const
   ITEM_CATCH
   return NULL;
 }
+
 
 Item
 Item::getObjectValue(String aName) const

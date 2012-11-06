@@ -471,7 +471,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       RAISE_ERROR(err::XPDY0002, loc,
       ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
     }
-  } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
+  } // if (theTargetPosIter != NULL && theTargetLenIter == NULL && theInfLen == false)
 
   else if (theTargetPosIter != NULL)
   {
@@ -505,7 +505,9 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (startPos <= Integer(0))
     {
-      len += startPos - Integer(1);
+      if (!theInfLen)
+        len += startPos - Integer(1);
+
       startPos = 1;
     }
 
@@ -950,7 +952,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (!consumeNext(posItem, theTargetPosIter, planState))
     {
-      ZORBA_ASSERT(false);
+      goto done;
     }
 
     startPos = posItem->getIntegerValue();
@@ -985,7 +987,9 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
       if (startPos <= Integer(0))
       {
-        len += startPos - Integer(1);
+        if (!theInfLen)
+          len += startPos - Integer(1);
+
         startPos = 1;
       }
 
@@ -1034,6 +1038,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
+ done:
   STACK_END(state);
 }
 

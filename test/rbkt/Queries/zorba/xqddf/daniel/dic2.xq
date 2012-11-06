@@ -22,8 +22,13 @@ return $i/name
 {
 for $i in fn:doc("auction.xml")//item
 return 
-    {{$i/name},
-    {dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));}}
+  {
+    { $i/name },
+    { dml:insert-nodes($xqddf-test:white-collection,
+                       (copy $copyi := $i modify () return $copyi));
+      ()
+    }
+  }
 },
 {
 <newline> a

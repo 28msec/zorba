@@ -277,7 +277,6 @@ enum TypeCode
   TYPE_InsertIterator,
 
 #ifdef ZORBA_WITH_JSON
-  TYPE_JSONObjectInsertIterator,
   TYPE_JSONObjectIterator,
   TYPE_JSONDirectObjectIterator,
   TYPE_JSONArrayIterator,

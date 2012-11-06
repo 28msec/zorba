@@ -56,12 +56,12 @@ SERIALIZABLE_CLASS_VERSIONS(user_function)
 user_function::user_function(
     const QueryLoc& loc,
     const signature& sig,
-    expr_t expr_body,
+    expr* expr_body,
     unsigned short scriptingKind,
     CompilerCB* ccb)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
-//theCCB(ccb),
+  theCCB(ccb),
   theLoc(loc),
   theScriptingKind(scriptingKind),
   theBodyExpr(expr_body),
@@ -110,12 +110,12 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   if (ar.is_serializing_out())
   {
     uint32_t planStateSize;
-    getPlan(ar.get_ccb(), planStateSize);
+    getPlan(planStateSize);
     ZORBA_ASSERT(thePlan != NULL);
 
-    computeResultCaching(ar.get_ccb()->theXQueryDiagnostics);
+    computeResultCaching(theCCB->theXQueryDiagnostics);
 
-    if (ar.get_ccb()->theHasEval)
+    if (theCCB->theHasEval)
     {
       SourceFinder sourceFinder;
       std::vector<expr*> sources;
@@ -148,7 +148,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
         }
 
         invalidatePlan();
-        getPlan(ar.get_ccb(), planStateSize);
+        getPlan(planStateSize);
         ZORBA_ASSERT(thePlan != NULL);
       }
     }
@@ -160,7 +160,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   }
 
   serialize_baseclass(ar, (function*)this);
-  //ar & theCCB;
+  ar & theCCB;
   //ar & theLoc;
   ar & theScriptingKind;
   //ar & theBodyExpr;
@@ -219,7 +219,16 @@ unsigned short user_function::getScriptingKind() const
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::setBody(const expr_t& body)
+void user_function::setScriptingKind(unsigned short k)
+{
+  theScriptingKind = k;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void user_function::setBody(expr* body)
 {
   theBodyExpr = body;
 }
@@ -230,14 +239,14 @@ void user_function::setBody(const expr_t& body)
 ********************************************************************************/
 expr* user_function::getBody() const
 {
-  return theBodyExpr.getp();
+  return theBodyExpr;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::setArgVars(std::vector<var_expr_t>& args)
+void user_function::setArgVars(std::vector<var_expr*>& args)
 {
   theArgVars = args;
 }
@@ -246,7 +255,7 @@ void user_function::setArgVars(std::vector<var_expr_t>& args)
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<var_expr_t>& user_function::getArgVars() const
+const std::vector<var_expr*>& user_function::getArgVars() const
 {
   return theArgVars;
 }
@@ -270,7 +279,7 @@ void user_function::addMutuallyRecursiveUDFs(
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::addRecursiveCall(expr* call)
+void user_function::addRecursiveCall(fo_expr* call)
 {
   assert(theBodyExpr != NULL);
 
@@ -287,7 +296,8 @@ void user_function::addRecursiveCall(expr* call)
 ********************************************************************************/
 bool user_function::isRecursive() const
 {
-  assert(isOptimized());
+  // recursiveness is established before any optimization is done
+  // assert(isOptimized());
   assert(theBodyExpr != NULL);
   return !theMutuallyRecursiveUDFs.empty();
 }
@@ -298,7 +308,8 @@ bool user_function::isRecursive() const
 ********************************************************************************/
 bool user_function::isMutuallyRecursiveWith(const user_function* udf)
 {
-  assert(isOptimized());
+  // recursiveness is established before any optimization is done
+  // assert(isOptimized());
   assert(theBodyExpr != NULL);
 
   if (std::find(theMutuallyRecursiveUDFs.begin(),
@@ -313,6 +324,44 @@ bool user_function::isMutuallyRecursiveWith(const user_function* udf)
 /*******************************************************************************
 
 ********************************************************************************/
+bool user_function::dereferencesNodes() const
+{
+  if (!isOptimized())
+  {
+    std::cerr << "dereferencesNodes invoked on non-optimized UDF"
+              << getName()->getStringValue() << std::endl;
+    assert(isOptimized());
+  }
+
+  if (theBodyExpr != NULL)
+    return theBodyExpr->dereferencesNodes();
+
+  return testFlag(FunctionConsts::DereferencesNodes);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool user_function::constructsNodes() const
+{
+  if (!isOptimized())
+  {
+    std::cerr << "constructNodes invoked on non-optimized UDF"
+              << getName()->getStringValue() << std::endl;
+    assert(isOptimized());
+  }
+
+  if (theBodyExpr != NULL)
+    return theBodyExpr->constructsNodes();
+
+  return testFlag(FunctionConsts::ConstructsNodes);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool user_function::accessesDynCtx() const
 {
   if (!isOptimized())
@@ -321,6 +370,9 @@ bool user_function::accessesDynCtx() const
               << getName()->getStringValue() << std::endl;
     assert(isOptimized());
   }
+
+  if (theBodyExpr != NULL)
+    return theBodyExpr->isUnfoldable();
 
   return testFlag(FunctionConsts::AccessesDynCtx);
 }
@@ -391,12 +443,12 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::optimize(CompilerCB* ccb)
+void user_function::optimize()
 {
   ZORBA_ASSERT(theBodyExpr);
 
   if (!theIsOptimized &&
-      ccb->theConfig.opt_level > CompilerCB::config::O0)
+      theCCB->theConfig.opt_level > CompilerCB::config::O0)
   {
     // Set the Optimized flag in advance to prevent an infinte loop (for
     // recursive functions, an optimization could be attempted again)
@@ -404,9 +456,9 @@ void user_function::optimize(CompilerCB* ccb)
 
     csize numParams = theArgVars.size();
 
-    expr_t body = getBody();
+    expr* body = getBody();
 
-    RewriterContext rctx(ccb,
+    RewriterContext rctx(theCCB,
                          body,
                          this,
                          zstring(),
@@ -414,7 +466,14 @@ void user_function::optimize(CompilerCB* ccb)
 
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
     body = rctx.getRoot();
+
     setBody(body);
+
+    if (theBodyExpr->dereferencesNodes())
+      setFlag(FunctionConsts::DereferencesNodes);
+
+    if (theBodyExpr->constructsNodes())
+      setFlag(FunctionConsts::ConstructsNodes);
 
     if (theBodyExpr->isUnfoldable())
       setFlag(FunctionConsts::AccessesDynCtx);
@@ -434,15 +493,15 @@ void user_function::optimize(CompilerCB* ccb)
       thePropagatesInputNodes[i] = 1;
     }
 
-    if (ccb->theConfig.optimize_cb != NULL)
+    if (theCCB->theConfig.optimize_cb != NULL)
     {
       if (getName())
       {
-        ccb->theConfig.optimize_cb(body, getName()->getStringValue().c_str());
+        theCCB->theConfig.optimize_cb(body, getName()->getStringValue().c_str());
       }
       else
       {
-        ccb->theConfig.optimize_cb(body, "inline function");
+        theCCB->theConfig.optimize_cb(body, "inline function");
       }
     }
   }
@@ -462,11 +521,11 @@ void user_function::invalidatePlan()
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
+PlanIter_t user_function::getPlan(uint32_t& planStateSize)
 {
   if (thePlan == NULL)
   {
-    optimize(ccb);
+    optimize();
 
     csize numArgs = theArgVars.size();
 
@@ -492,7 +551,7 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb, uint32_t& planStateSize)
                               "inline function" :
                               lName->getStringValue().c_str()),
                              &*theBodyExpr,
-                             ccb,
+                             theCCB,
                              nextVarId,
                              &argVarToRefsMap);
 

@@ -30,8 +30,7 @@ namespace zorba {
 class FragmentIStream : public std::istream
 {
 public:
-  static const unsigned int BUFFER_SIZE = 4096;
-  static const unsigned int LOOKAHEAD_BYTES = 3; // lookahead fetching is implemented, but currently not used
+  static const unsigned int DEFAULT_BUFFER_SIZE = 4096;
   static const unsigned int PARSED_NODES_BATCH_SIZE = 1024;
   
   // names of these states are orientative
@@ -44,7 +43,8 @@ public:
 public:
   std::istringstream* theIss;
   std::istream* theStream;
-  char* theBuffer;
+  StreamReleaser theStreamReleaser;
+  std::vector<char> theBuffer;
   unsigned long bytes_in_buffer;
   unsigned long current_offset;
   int current_element_depth;
@@ -64,7 +64,7 @@ public:
     std::istream(NULL),
     theIss(NULL),
     theStream(NULL),
-    theBuffer(NULL),
+    theStreamReleaser(nullptr),
     bytes_in_buffer(0),
     current_offset(0),
     current_element_depth(0),
@@ -83,17 +83,29 @@ public:
   {
     return reached_eof && current_offset >= bytes_in_buffer;
   }
+  
+  StreamReleaser getStreamReleaser()
+  {
+    return theStreamReleaser;
+  }
+  
+  void setStreamReleaser(StreamReleaser aReleaser)
+  {
+    theStreamReleaser = aReleaser;
+  }
 
   void reset()
   {
-    if (theBuffer)
-    {
-      delete[] theBuffer;
-    }
+    theBuffer.clear();
 
     if (theIss)
     {
       delete theIss;
+    }
+    
+    if (theStreamReleaser)
+    {
+      theStreamReleaser(theStream);
     }
 
     if (ctxt)
@@ -104,7 +116,6 @@ public:
 
     theIss = NULL;
     theStream = NULL;
-    theBuffer = NULL;
     bytes_in_buffer = 0;
     current_offset = 0;
     current_element_depth = 0;
@@ -117,7 +128,7 @@ public:
     children = NULL;
     only_one_doc_node = false;
   }
-
+  
   virtual ~FragmentIStream()
   {
     reset();

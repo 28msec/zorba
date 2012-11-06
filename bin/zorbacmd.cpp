@@ -39,6 +39,9 @@
 #include <zorba/xquery_functions.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/serialization_callback.h>
+#include <zorba/audit.h>
+#include <zorba/audit_scoped.h>
+
 #include <zorba/store_manager.h>
 
 //#define DO_AUDIT
@@ -65,6 +68,8 @@
 #if ZORBACMD_LOAD_SYSTEM_PROPERTIES
 #  include "system/properties.h"
 #endif
+
+//#define DO_AUDIT
 
 using namespace zorba;
 namespace zorbatm = zorba::time;
@@ -180,6 +185,35 @@ bool populateStaticContext(
       return false;
     }
   }
+
+#ifdef DO_AUDIT
+  zorba::audit::Provider* lAuditProvider = zorba->getAuditProvider();
+  zorba::audit::Configuration* config = lAuditProvider->createConfiguration();
+  std::vector<zorba::String> property_names;
+  zorba::audit::Configuration::getPropertyNames(property_names);
+
+  bool lIsStatic;
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/parse-duration");
+  assert(lIsStatic);
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/translation-duration");
+  assert(lIsStatic);
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/optimization-duration");
+  assert(lIsStatic);
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/codegeneration-duration");
+  assert(lIsStatic);
+
+  zorba::audit::Event* event = lAuditProvider->createEvent(config);
+
+  sctx->setAuditEvent(event);
+#endif // DO_AUDIT
 
 #ifndef ZORBA_NO_FULL_TEXT
   {
@@ -854,14 +888,23 @@ compileAndExecute(
 
       timing.startTimer(TimingInfo::UNLOAD_TIMER, i);
 
-      DocumentManager* lMgr = store->getDocumentManager();
-      ItemSequence_t lSeq = lMgr->availableDocuments();
-      Iterator_t lIter = lSeq->getIterator();
+      DocumentManager* docMgr = store->getDocumentManager();
+      ItemSequence_t docsSeq = docMgr->availableDocuments();
+      Iterator_t lIter = docsSeq->getIterator();
       lIter->open();
-      Item lURI;
-      while (lIter->next(lURI)) 
+      Item uri;
+      std::vector<Item> docURIs;
+      while (lIter->next(uri)) 
       {
-        lMgr->remove(lURI.getStringValue());
+        docURIs.push_back(uri);
+      }
+      lIter->close();
+
+      size_t numDocs = docURIs.size();
+
+      for (size_t k = 0; k < numDocs; ++k)
+      {
+        docMgr->remove(docURIs[k].getStringValue());
       }
 
       timing.stopTimer(TimingInfo::UNLOAD_TIMER, i);

@@ -21,7 +21,7 @@
 #include "shared_types.h"
 
 #include "store/api/pul.h"
-#include "store/naive/simple_index.h"
+#include "simple_index.h"
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"
@@ -583,6 +583,11 @@ public:
       store::Item_t& target,
       std::vector<store::Item_t>& names,
       std::vector<store::Item_t>& values);
+
+  virtual void addJSONObjectInsert(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& content);
 
   virtual void addJSONObjectDelete(
       const QueryLoc* aQueryLoc,

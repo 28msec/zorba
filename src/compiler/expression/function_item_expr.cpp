@@ -16,8 +16,11 @@
 #include "stdafx.h"
 
 #include "compiler/expression/function_item_expr.h"
-#include "compiler/expression/var_expr.h"
+// TODO: remove or add back?
+// #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_visitor.h"
+
+#include "compiler/api/compilercb.h"
 
 #include "functions/function.h"
 #include "functions/udf.h"
@@ -30,13 +33,15 @@ DEF_EXPR_ACCEPT (dynamic_function_invocation_expr)
 
 
 dynamic_function_invocation_expr::dynamic_function_invocation_expr(
+    CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
-    const expr_t& anExpr,
+    expr* anExpr,
     const std::vector<expr_t>& args,
     xqtref_t coercionTargetType)
   :
-  expr(sctx, loc, dynamic_function_invocation_expr_kind),
+  expr(ccb, sctx, udf, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
   theArgs(args),
   theCoercionTargetType(coercionTargetType)
@@ -56,23 +61,6 @@ void dynamic_function_invocation_expr::compute_scripting_kind()
 }
 
 
-expr_t dynamic_function_invocation_expr::clone(substitution_t& s) const
-{
-  checked_vector<expr_t> lNewArgs;
-  for (checked_vector<expr_t>::const_iterator lIter = theArgs.begin();
-       lIter != theArgs.end();
-       ++lIter)
-  {
-    lNewArgs.push_back((*lIter)->clone(s));
-  }
-
-  return new dynamic_function_invocation_expr(theSctx,
-                                              get_loc(),
-                                              theExpr->clone(s),
-                                              lNewArgs);
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -81,19 +69,20 @@ DEF_EXPR_ACCEPT (function_item_expr)
 
 
 function_item_expr::function_item_expr(
+    CompilerCB* ccb,
     static_context* sctx,
-    const static_context_t& scopedSctx,
+    user_function* udf,
     const QueryLoc& loc,
     const store::Item* aQName,
     function* f,
     uint32_t aArity)
-	:
-  expr(sctx, loc, function_item_expr_kind),
+  :
+  expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
                          scopedSctx,
                          loc,
                          f,
-                         const_cast<store::Item*>(aQName),
+                         aQName,
                          aArity))
 {
   assert(f != NULL);
@@ -102,11 +91,12 @@ function_item_expr::function_item_expr(
 
 
 function_item_expr::function_item_expr(
+    CompilerCB* ccb,
     static_context* sctx,
-    const static_context_t& scopedSctx,
+    user_function* udf,
     const QueryLoc& loc)
-	:
-  expr(sctx, loc, function_item_expr_kind),
+  :
+  expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
                          scopedSctx,
                          loc,
@@ -133,6 +123,13 @@ void function_item_expr::add_variable(expr* var, var_expr* substVar, const store
 }
 
 
+user_function* function_item_expr::get_function() const 
+{
+  assert(theFunction->isUdf());
+  return static_cast<user_function*>(theFunction.getp());
+}
+
+
 void function_item_expr::set_function(user_function_t& udf)
 {
   theDynamicFunctionInfo->theFunction = udf;
@@ -148,6 +145,7 @@ void function_item_expr::compute_scripting_kind()
 }
 
 
+/* TODO: remove? seems it's not needed anymore
 expr_t function_item_expr::clone(substitution_t& s) const
 {
   std::auto_ptr<function_item_expr> lNewExpr(
@@ -174,7 +172,7 @@ expr_t function_item_expr::clone(substitution_t& s) const
 
   return lNewExpr.release();
 }
-
+*/
 
 }//end of namespace
 /* vim:set et sw=2 ts=2: */

@@ -32,12 +32,155 @@
 
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/var_expr.h"
 #include "compiler/expression/path_expr.h"
 
 #include "types/typeops.h"
 
 namespace zorba
 {
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_unordered::getReturnType(const fo_expr* caller) const
+{
+  return caller->get_arg(0)->get_return_type();
+}
+
+
+BoolAnnotationValue fn_unordered::ignoresSortedNodes(expr* fo, csize input) const
+{
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_unordered::ignoresDuplicateNodes(expr* fo, csize input) const
+{
+  return fo->getIgnoresDuplicateNodes();
+}
+
+
+PlanIter_t fn_unordered::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ) const
+{
+  return argv[0];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_exactly_one_noraise::getReturnType(const fo_expr* caller) const
+{
+  TypeManager* tm = caller->get_type_manager();
+
+  xqtref_t srcType = caller->get_arg(0)->get_return_type();
+
+  if (theRaiseError)
+    return TypeOps::prime_type(tm, *srcType);
+  else
+    return function::getReturnType(caller);
+}
+
+
+PlanIter_t fn_exactly_one_noraise::codegen(
+    CompilerCB* aCb,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    expr& aAnn) const
+{
+  return new FnExactlyOneIterator(aSctx,
+                                  aLoc,
+                                  aArgs,
+                                  theRaiseError,
+                                  testFlag(FunctionConsts::DoDistinct));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_union::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
+{
+  return new FnConcatIterator(sctx, loc, argv);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_intersect::ignoresSortedNodes(expr* fo, csize input) const 
+{
+  if (input == 0)
+    return fo->getIgnoresSortedNodes();
+  
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_intersect::ignoresDuplicateNodes(expr* fo, csize input) const 
+{
+  if (input == 0)
+    return fo->getIgnoresDuplicateNodes();
+
+  return ANNOTATION_TRUE;
+}
+
+
+PlanIter_t fn_intersect::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
+{
+  return new HashSemiJoinIterator(sctx, loc, argv);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_except::ignoresSortedNodes(expr* fo, csize input) const 
+{
+  if (input == 0)
+    return fo->getIgnoresSortedNodes();
+  
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_except::ignoresDuplicateNodes(expr* fo, csize input) const 
+{
+  if (input == 0)
+    return fo->getIgnoresDuplicateNodes();
+  
+  return ANNOTATION_TRUE;
+}
+
+
+PlanIter_t fn_except::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
+{
+  // TODO: use SortAntiJoinIterator when available (trac ticket 254)
+  return new HashSemiJoinIterator(sctx, loc, argv, true);
+}
 
 
 /*******************************************************************************
@@ -545,16 +688,19 @@ PlanIter_t fn_count::codegen(
     ZorbaCollectionIterator& collection =
     static_cast<ZorbaCollectionIterator&>(*argv[0]);
 
-    return new CountCollectionIterator(
-                 sctx,
-                 loc,
-                 collection.getChildren(),
-                 (
-                   collection.isDynamic()
-                     ? CountCollectionIterator::ZORBADYNAMIC
-                     : CountCollectionIterator::ZORBASTATIC
-                 )
-               );
+    if (collection.isCountOptimizable())
+    {
+      return new CountCollectionIterator(
+                   sctx,
+                   loc,
+                   collection.getChildren(),
+                   (
+                     collection.isDynamic()
+                       ? CountCollectionIterator::ZORBADYNAMIC
+                       : CountCollectionIterator::ZORBASTATIC
+                   )
+                 );
+    }
   }
   else if (typeid(FnCollectionIterator) == counted_type)
   {
@@ -572,7 +718,7 @@ PlanIter_t fn_count::codegen(
       = static_cast<ProbeIndexPointValueIterator&>(*argv[0]);
 
     return new ProbeIndexPointValueIterator(
-        sctx, loc, lIter.getChildren(), true);
+        sctx, loc, lIter.getChildren(), true, lIter.hasSkip());
   }
   else if (typeid(ProbeIndexRangeValueIterator) == counted_type)
   {
@@ -580,7 +726,7 @@ PlanIter_t fn_count::codegen(
       = static_cast<ProbeIndexRangeValueIterator&>(*argv[0]);
 
     return new ProbeIndexRangeValueIterator(
-        sctx, loc, lIter.getChildren(), true);
+        sctx, loc, lIter.getChildren(), true, lIter.hasSkip());
   }
   else if (typeid(ProbeIndexPointGeneralIterator) == counted_type)
   {
@@ -601,32 +747,6 @@ PlanIter_t fn_count::codegen(
   
   // fallback
   return new FnCountIterator(sctx, loc, argv);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-BoolAnnotationValue fn_unordered::ignoresSortedNodes(expr* fo, csize input) const
-{
-  return ANNOTATION_TRUE;
-}
-
-
-BoolAnnotationValue fn_unordered::ignoresDuplicateNodes(expr* fo, csize input) const
-{
-  return fo->getIgnoresDuplicateNodes();
-}
-
-
-PlanIter_t fn_unordered::codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    expr& ) const
-{
-  return argv[0];
 }
 
 
@@ -692,85 +812,10 @@ BoolAnnotationValue fn_one_or_more::ignoresDuplicateNodes(expr* fo, csize input)
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_exactly_one_noraise::getReturnType(const fo_expr* caller) const
+bool fn_deep_equal::mustCopyInputNodes(expr* fo, csize producer) const
 {
-  TypeManager* tm = caller->get_type_manager();
-
-  xqtref_t srcType = caller->get_arg(0)->get_return_type();
-
-  if (theRaiseError)
-    return TypeOps::prime_type(tm, *srcType);
-  else
-    return function::getReturnType(caller);
-}
-
-
-PlanIter_t fn_exactly_one_noraise::codegen(
-    CompilerCB* aCb,
-    static_context* aSctx,
-    const QueryLoc& aLoc,
-    std::vector<PlanIter_t>& aArgs,
-    expr& aAnn) const
-{
-  return new FnExactlyOneIterator(aSctx,
-                                  aLoc,
-                                  aArgs,
-                                  theRaiseError,
-                                  testFlag(FunctionConsts::DoDistinct));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t fn_union::codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    expr& ann) const
-{
-  return new FnConcatIterator(sctx, loc, argv);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t fn_intersect::codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    expr& ann) const
-{
-#if 0  // we can't access PRODUCES_* from the inputs, must rethink
-  bool distinct = ann.get_annotation (Annotations::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL;
-  bool sort = ann.get_annotation (Annotations::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VAL;
-
-  std::vector<PlanIter_t> inputs;
-  for (std::vector<PlanIter_t>::iterator i = argv.begin ();
-       i != argv.end (); i++)
-    inputs.push_back (new NodeSortIterator (loc, *i, true, distinct, false));
-  return new SortSemiJoinIterator(loc, inputs);
-#endif
-
-  return new HashSemiJoinIterator(sctx, loc, argv);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t fn_except::codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    expr& ann) const
-{
-  // TODO: use SortAntiJoinIterator when available (trac ticket 254)
-  return new HashSemiJoinIterator(sctx, loc, argv, true);
+  return (producer < 2 &&
+          fo->get_sctx()->construction_mode() == StaticContextConsts::cons_strip);
 }
 
 
@@ -844,32 +889,32 @@ function* fn_sum::specialize(
   if (TypeOps::is_subtype(tm, *argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_1) :
-            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_2));
+            BUILTIN_FUNC(OP_SUM_DOUBLE_1) :
+            BUILTIN_FUNC(OP_SUM_DOUBLE_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.DOUBLE_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_1) :
-            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_2));
+            BUILTIN_FUNC(OP_SUM_DOUBLE_1) :
+            BUILTIN_FUNC(OP_SUM_DOUBLE_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.FLOAT_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(OP_SUM_FLOAT_1) :
-            GET_BUILTIN_FUNCTION(OP_SUM_FLOAT_2));
+            BUILTIN_FUNC(OP_SUM_FLOAT_1) :
+            BUILTIN_FUNC(OP_SUM_FLOAT_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.INTEGER_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(OP_SUM_INTEGER_1) :
-            GET_BUILTIN_FUNCTION(OP_SUM_INTEGER_2));
+            BUILTIN_FUNC(OP_SUM_INTEGER_1) :
+            BUILTIN_FUNC(OP_SUM_INTEGER_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.DECIMAL_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(OP_SUM_DECIMAL_1) :
-            GET_BUILTIN_FUNCTION(OP_SUM_DECIMAL_2));
+            BUILTIN_FUNC(OP_SUM_DECIMAL_1) :
+            BUILTIN_FUNC(OP_SUM_DECIMAL_2));
   }
   else
   {

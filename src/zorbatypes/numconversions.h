@@ -69,6 +69,26 @@ xs_long to_xs_long( xs_nonNegativeInteger const &i );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 /**
+ * Converts an \c xs:integer value to an \c xs:unsignedByte.
+ *
+ * @param i The \c xs:integer value to convert.
+ * @return Returns said value.
+ * @throws std::range_error if the \c xs:integer value can not be accurately
+ * represented as an \c xs:unsignedByte.
+ */
+xs_unsignedByte to_xs_unsignedByte( xs_integer const &i );
+
+/**
+ * Converts an \c xs:integer value to an \c xs:unsignedShort.
+ *
+ * @param i The \c xs:integer value to convert.
+ * @return Returns said value.
+ * @throws std::range_error if the \c xs:integer value can not be accurately
+ * represented as an \c xs:unsignedShort.
+ */
+xs_unsignedShort to_xs_unsignedShort( xs_integer const &i );
+
+/**
  * Converts an \c xs:integer value to an \c xs:unsignedInt.
  *
  * @param i The \c xs:integer value to convert.

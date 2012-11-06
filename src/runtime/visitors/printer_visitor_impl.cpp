@@ -57,8 +57,8 @@
 #include "runtime/misc/materialize.h"
 #include "runtime/scripting/scripting.h"
 #include "runtime/json/json_constructors.h"
-#include "runtime/json/jsoniq_functions_impl.h"
 #include "runtime/collections/collections_impl.h"
+#include "runtime/collections/collections.h"
 
 #include "functions/udf.h"
 
@@ -769,8 +769,8 @@ void PrinterVisitor::beginVisitFlworForVariable(
 
   std::ostringstream str;
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
 #ifndef NDEBUG
     str << varRefs[i]->getId();
@@ -1045,8 +1045,8 @@ void PrinterVisitor::beginVisitNonGroupVariable(const std::vector<LetVarIter_t>&
 
   std::ostringstream str;
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
     if (i < numRefs-1)
@@ -1077,8 +1077,8 @@ void PrinterVisitor::beginVisitWindowVariable(
 
   std::ostringstream str;
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
     if (i < numRefs-1)
@@ -1100,17 +1100,17 @@ void PrinterVisitor::endVisitWindowVariable()
 
 
 void PrinterVisitor::beginVisitWinCondVariable(
-    const std::string& varName,
+    const zstring& varName,
     const std::vector<PlanIter_t>& varRefs)
 {
   thePrinter.startBeginVisit("WinCondVariable", theId);
 
-  thePrinter.addAttribute("name", varName);
+  thePrinter.addAttribute("name", varName.str());
 
   std::ostringstream str;
 
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
+  csize numRefs = varRefs.size();
+  for (csize i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
     if (i < numRefs-1)
@@ -1325,7 +1325,6 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   PRINTER_VISITOR_DEFINITION(JSONObjectIterator)
   PRINTER_VISITOR_DEFINITION(JSONArrayIterator)
   PRINTER_VISITOR_DEFINITION(JSONDirectObjectIterator)
-  PRINTER_VISITOR_DEFINITION(JSONObjectInsertIterator)
 #endif
 
   PRINTER_VISITOR_DEFINITION (EmptyIterator)
@@ -1463,10 +1462,68 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   PRINTER_VISITOR_DEFINITION(RefreshIndexIterator);
   PRINTER_VISITOR_DEFINITION(ValueIndexEntryBuilderIterator);
   PRINTER_VISITOR_DEFINITION(GeneralIndexEntryBuilderIterator);
-  PRINTER_VISITOR_DEFINITION(ProbeIndexPointValueIterator);
   PRINTER_VISITOR_DEFINITION(ProbeIndexPointGeneralIterator);
-  PRINTER_VISITOR_DEFINITION(ProbeIndexRangeValueIterator);
   PRINTER_VISITOR_DEFINITION(ProbeIndexRangeGeneralIterator);
+
+#define PRINTER_INDEX_PROBE_VISITOR_DEFINITION(class)                \
+  void PrinterVisitor::beginVisit ( const class& a )                 \
+  {                                                                  \
+    thePrinter.startBeginVisit(#class, ++theId);                     \
+    if (a.isCountOnly())                                             \
+    {                                                                \
+      thePrinter.addAttribute("count", "true");                      \
+    }                                                                \
+    if (a.hasSkip())                                                 \
+    {                                                                \
+      thePrinter.addAttribute("skip", "true");                       \
+    }                                                                \
+    printCommons(  &a, theId );                                      \
+    thePrinter.endBeginVisit( theId);                                \
+  }                                                                  \
+  void PrinterVisitor::endVisit ( const class& )                     \
+  {                                                                  \
+    thePrinter.startEndVisit();                                      \
+    thePrinter.endEndVisit();                                        \
+  }
+
+  PRINTER_INDEX_PROBE_VISITOR_DEFINITION(ProbeIndexPointValueIterator);
+  PRINTER_INDEX_PROBE_VISITOR_DEFINITION(ProbeIndexRangeValueIterator);
+
+#undef PRINTER_INDEX_PROBE_VISITOR_DEFINITION
+
+#define PRINTER_INSERT_NODES_VISITOR_DEFINITION(class)               \
+  void PrinterVisitor::beginVisit ( const class& a )                 \
+  {                                                                  \
+    thePrinter.startBeginVisit(#class, ++theId);                     \
+    if (a.isDynamic())                                               \
+    {                                                                \
+      thePrinter.addAttribute("is-dynamic", "true");                 \
+    }                                                                \
+    if (a.needToCopy())                                              \
+    {                                                                \
+      thePrinter.addAttribute("need-to-copy", "true");               \
+    }                                                                \
+    printCommons(  &a, theId );                                      \
+    thePrinter.endBeginVisit( theId);                                \
+  }                                                                  \
+  void PrinterVisitor::endVisit ( const class& )                     \
+  {                                                                  \
+    thePrinter.startEndVisit();                                      \
+    thePrinter.endEndVisit();                                        \
+  }
+
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesFirstIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesLastIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesBeforeIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesAfterIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesFirstIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesLastIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesBeforeIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesAfterIterator);
+
+#undef PRINTER_INSERT_NODES_VISITOR_DEFINITION
 
   PRINTER_VISITOR_DEFINITION(DynamicFnCallIterator);
 

@@ -115,24 +115,28 @@ bool GenericArithIterator<Operation>::nextImpl(
   {
     if (this->consumeNext(n1, this->theChild1.getp(), planState))
     {
-      status = compute(result,
-                       planState.theLocalDynCtx,
-                       this->theSctx->get_typemanager(),
-                       this->loc,
-                       n0,
-                       n1);
-      /*
-      if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
-          this->consumeNext(n1, this->theChild1.getp(), planState))
+      if (n0->getTypeCode() != store::JS_NULL &&
+          n1->getTypeCode() != store::JS_NULL)
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( NoSeqAsArithOp ) ),
-          ERROR_LOC( this->loc )
-        );
+        status = compute(result,
+                         planState.theLocalDynCtx,
+                         this->theSctx->get_typemanager(),
+                         this->loc,
+                         n0,
+                         n1);
+        /*
+        if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
+            this->consumeNext(n1, this->theChild1.getp(), planState))
+        {
+          throw XQUERY_EXCEPTION(
+            err::XPTY0004,
+            ERROR_PARAMS( ZED( NoSeqAsArithOp ) ),
+            ERROR_LOC( this->loc )
+          );
+        }
+        */
+        STACK_PUSH ( status, state );
       }
-      */
-      STACK_PUSH ( status, state );
     }
   }
 

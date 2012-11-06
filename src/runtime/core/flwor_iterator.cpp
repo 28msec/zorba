@@ -391,17 +391,17 @@ void MaterializeClause::accept(PlanIterVisitor& v) const
 {
   v.beginVisitMaterializeClause();
 
-  ulong numVars = (ulong)theInputForVars.size();
+  csize numVars = theInputForVars.size();
 
-  for (ulong i = 0; i < numVars; ++i)
+  for (csize i = 0; i < numVars; ++i)
   {
     v.beginVisitMaterializeVariable(true, theInputForVars[i], theOutputForVarsRefs[i]);
     v.endVisitMaterializeVariable();
   }
 
-  numVars = (ulong)theInputLetVars.size();
+  numVars = theInputLetVars.size();
 
-  for (ulong i = 0; i < numVars; ++i)
+  for (csize i = 0; i < numVars; ++i)
   {
     v.beginVisitMaterializeVariable(false, theInputLetVars[i], theOutputLetVarsRefs[i]);
     v.endVisitMaterializeVariable();
@@ -576,14 +576,14 @@ void GroupByClause::accept(PlanIterVisitor& v) const
 {
   v.beginVisitGroupByClause();
 
-  ulong numSpecs = (ulong)theGroupingSpecs.size();
-  for (ulong i = 0; i < numSpecs; ++i)
+  csize numSpecs = theGroupingSpecs.size();
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theGroupingSpecs[i].accept(v);
   }
 
-  numSpecs = (ulong)theNonGroupingSpecs.size();
-  for (ulong i = 0; i < numSpecs; ++i)
+  numSpecs = theNonGroupingSpecs.size();
+  for (csize i = 0; i < numSpecs; ++i)
   {
     theNonGroupingSpecs[i].accept(v);
   }
@@ -599,14 +599,14 @@ uint32_t GroupByClause::getStateSizeOfSubtree() const
 {
   uint32_t size = 0;
 
-  ulong numSpecs = (ulong)theGroupingSpecs.size();
-  for (ulong i = 0; i < numSpecs; ++i)
+  csize numSpecs = theGroupingSpecs.size();
+  for (csize i = 0; i < numSpecs; ++i)
   {
     size += theGroupingSpecs[i].getStateSizeOfSubtree();
   }
-
-  numSpecs = (ulong)theNonGroupingSpecs.size();
-  for (ulong i = 0; i < numSpecs; ++i)
+  
+  numSpecs = theNonGroupingSpecs.size();
+  for (csize i = 0; i < numSpecs; ++i)
   {
     size += theNonGroupingSpecs[i].getStateSizeOfSubtree();
   }
@@ -1470,9 +1470,8 @@ void FLWORIterator::materializeGroupTuple(
 {
   ZORBA_ASSERT(theGroupByClause);
 
-  GroupTuple* groupTuple = new GroupTuple();
+  std::auto_ptr<GroupTuple> groupTuple(new GroupTuple());
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
-  std::vector<store::Item_t>& groupTupleValues = groupTuple->theTypedValues;
 
   std::vector<GroupingSpec> groupSpecs = theGroupByClause->theGroupingSpecs;
   std::vector<GroupingSpec>::iterator specIter = groupSpecs.begin();
@@ -1482,41 +1481,8 @@ void FLWORIterator::materializeGroupTuple(
   {
     groupTupleItems.push_back(NULL);
     store::Item_t& tupleItem = groupTupleItems.back();
-
-    groupTupleValues.push_back(NULL);
-    store::Item_t& tupleValue = groupTupleValues.back();
-
-    bool status = consumeNext(tupleItem, specIter->theInput, planState);
-
-    if (status)
-    {
-      store::Iterator_t typedValueIter;
-
-      tupleItem->getTypedValue(tupleValue, typedValueIter);
-
-      if (typedValueIter != NULL)
-      {
-        typedValueIter->open();
-        if (typedValueIter->next(tupleValue))
-        {
-          store::Item_t temp;
-          if (typedValueIter->next(temp))
-          {
-            RAISE_ERROR(err::XPTY0004, theGroupByClause->theLocation,
-            ERROR_PARAMS(ZED(SingletonExpected_2o),
-                         ZED(AtomizationHasMoreThanOneValue)));
-          }
-        }
-      }
-
-      // check that there are no more values for the current grouping column
-      store::Item_t temp;
-      if (consumeNext(temp, specIter->theInput, planState))
-      {
-        RAISE_ERROR(err::XPTY0004, theGroupByClause->theLocation,
-        ERROR_PARAMS(ZED(SingletonExpected_2o)));
-      }
-    }
+    
+    consumeNext(tupleItem, specIter->theInput, planState);
 
     specIter->reset(planState);
     ++specIter;
@@ -1528,7 +1494,7 @@ void FLWORIterator::materializeGroupTuple(
   std::vector<store::TempSeq_t>* nongroupVarSequences = 0;
   csize numNonGroupingSpecs = nongroupingSpecs.size();
 
-  if (groupMap->get(groupTuple, nongroupVarSequences))
+  if (groupMap->get(groupTuple.get(), nongroupVarSequences))
   {
     for (csize i = 0; i < numNonGroupingSpecs; ++i)
     {
@@ -1539,8 +1505,6 @@ void FLWORIterator::materializeGroupTuple(
 
       nongroupingSpecs[i].reset(planState);
     }
-
-    delete groupTuple;
   }
   else
   {
@@ -1558,7 +1522,7 @@ void FLWORIterator::materializeGroupTuple(
       nongroupingSpecs[i].reset(planState);
     }
 
-    groupMap->insert(groupTuple, nongroupVarSequences);
+    groupMap->insert(groupTuple.release(), nongroupVarSequences);
   }
 }
 
@@ -1656,7 +1620,7 @@ void FLWORIterator::rebindGroupTuple(
   GroupTuple* groupTuple = (*groupMapIter).first;
   std::vector<store::Item_t>::iterator groupKeyIter = groupTuple->theItems.begin();
 
-  std::vector<GroupingSpec> groupSpecs = theGroupByClause->theGroupingSpecs;
+  std::vector<GroupingSpec>& groupSpecs = theGroupByClause->theGroupingSpecs;
   std::vector<GroupingSpec>::const_iterator specIter = groupSpecs.begin();
   std::vector<GroupingSpec>::const_iterator specEnd = groupSpecs.end();
 

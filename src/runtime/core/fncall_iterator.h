@@ -47,14 +47,20 @@ class StaticContextImpl;
 
   thePlanState:
   -------------
-  The plan state to run thePlan with. The PlanState obj is created during
-  UDFunctionCallIterator::openImpl(), but the actual state block is created an
-  initialized the 1st time that UDFunctionCallIterator::nextImpl() is called
+  The plan state to run thePlan with. The PlanState obj is created during 
+  UDFunctionCallIterator::openImpl(), but the actual state block is created and
+  initialized the 1st time that UDFunctionCallIterator::nextImpl() is called 
   (at that time open() is invoked on thePlan).
 
   thePlanStateSize:
   -----------------
   The size of the plan state block.
+
+  theLocalDCtx:
+  -------------
+  The dynamic context for this udf call. It is where the values of the udf's
+  local block-variables are stored.  It is created during 
+  UDFunctionCallIterator::openImpl(),
 
   thePlanOpen:
   ------------
@@ -63,9 +69,9 @@ class StaticContextImpl;
   theArgWrappers:
   ---------------
   For each argument of this function call, theArgWrappers stores a plan iterator
-  wrapper over the sub plan that computes the arg expr. This wrapping is needed
-  because the body plan and the arg sub plans operate in different plan states.
-  Note: Withinh the function body, there may exist more than one references to
+  wrapper over the sub plan that computes the arg expr. This wrapping is needed 
+  because the udf-body plan and the arg sub plans operate in different plan states. 
+  Note: Withinh the function body, there may exist more than one references to 
   an arg var V, but these references are "mutually exclusive", ie, at most one
   of the references will actually be reached during each particular execution of
   the body. So, it is never the case that the arg expr will have more than one
@@ -78,10 +84,10 @@ class StaticContextImpl;
   should be done. The cache is owned by the UDF itself and shared across
   all function invocations.
 
-  theCacheHits:
+  theArgValues:
   -------------
   If caching is used, this vector contains the results of all arguments
-  of the function evaluation. It's used to bind the variables if the
+  of the function evaluation. It's used to bind the arg variables if the
   cache didn't give a result in order to avoid duplicate evaluation of
   the arguments.
 ********************************************************************************/
@@ -173,12 +179,12 @@ protected:
     PlanState& planState,
     UDFunctionCallIteratorState* state,
     store::Item_t& result,
-    std::vector<store::Item_t>& aKey) const;
+    std::vector<store::Item_t>& argValues) const;
 
   void insertCacheEntry(
     UDFunctionCallIteratorState* state,
-    std::vector<store::Item_t>& aKey,
-    store::Item_t& aValue) const;
+    std::vector<store::Item_t>& argValues,
+    store::Item_t& udfValue) const;
 };
 
 

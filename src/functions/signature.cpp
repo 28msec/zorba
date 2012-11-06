@@ -50,6 +50,23 @@ signature::signature(
 
 signature::signature(
     const store::Item_t& name,
+    const xqtref_t& paramType1,
+    const xqtref_t& paramType2,
+    bool variadic,
+    const xqtref_t& returnType)
+  :
+  theQName(name),
+  theNonOptimizedReturnType(NULL),
+  theIsVariadic(variadic)
+{
+  theTypes.push_back(returnType);
+  theTypes.push_back(paramType1);
+  theTypes.push_back(paramType2);
+}
+
+
+signature::signature(
+    const store::Item_t& name,
     const xqtref_t& returnType)
   :
   theQName(name),

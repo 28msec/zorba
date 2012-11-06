@@ -68,11 +68,12 @@ public:
     (NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>*)this);
   }
 
+public:
   DynamicFnCallIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& args,
-        xqtref_t coercionTargetType = NULL)
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& args,
+      xqtref_t coercionTargetType = NULL)
     :
     NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>(sctx, loc, args),
     theCoercionTargetType(coercionTargetType)

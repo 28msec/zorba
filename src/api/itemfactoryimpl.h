@@ -263,6 +263,9 @@ namespace zorba {
         Item   parent,
         String content);
 
+      virtual Item
+      createUntypedAtomic(const String& value);
+
 #ifdef ZORBA_WITH_JSON
       virtual Item
       createJSONNull();
@@ -277,6 +280,9 @@ namespace zorba {
       createJSONArray(std::vector<Item>& aItems);
 
 #endif /* ZORBA_WITH_JSON */
+
+      virtual Item
+      createUserTypedAtomicItem(Item& aBaseItem, Item& aTypeName);
 
     protected:
       store::ItemFactory* theItemFactory;

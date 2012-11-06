@@ -21,6 +21,7 @@
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/api/compilercb.h"
 
 #include "types/typeops.h"
 
@@ -67,12 +68,14 @@ std::string var_expr::decode_var_kind(enum var_kind k)
 
 ********************************************************************************/
 var_expr::var_expr(
+    CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     var_kind k,
     store::Item* name)
   :
-  expr(sctx, loc, var_expr_kind),
+  expr(ccb, sctx, udf, loc, var_expr_kind),
   theUniqueId(0),
   theVarKind(k),
   theName(name),
@@ -80,7 +83,6 @@ var_expr::var_expr(
   theFlworClause(NULL),
   theCopyClause(NULL),
   theParamPos(0),
-  theUDF(NULL),
   theVarInfo(NULL),
   theIsExternal(false),
   theIsPrivate(false),
@@ -88,15 +90,13 @@ var_expr::var_expr(
   theHasInitializer(false)
 {
   compute_scripting_kind();
-
-  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-var_expr::var_expr(const var_expr& source)
+var_expr::var_expr(user_function* udf, const var_expr& source)
   :
   expr(source),
   theUniqueId(0),
@@ -106,13 +106,13 @@ var_expr::var_expr(const var_expr& source)
   theFlworClause(NULL),
   theCopyClause(NULL),
   theParamPos(source.theParamPos),
-  theUDF(source.theUDF),
   theVarInfo(NULL),
   theIsExternal(source.theIsExternal),
   theIsPrivate(source.theIsPrivate),
   theIsMutable(source.theIsMutable),
   theHasInitializer(source.theHasInitializer)
 {
+  theUDF = udf;
 }
 
 
@@ -124,6 +124,7 @@ var_expr::~var_expr()
   if (theVarInfo)
   {
     assert(theVarKind == prolog_var);
+    assert(theVarInfo->getName() != NULL);
     theVarInfo->clearVar();
   }
 }
@@ -276,23 +277,30 @@ expr* var_expr::get_domain_expr() const
 ********************************************************************************/
 forletwin_clause* var_expr::get_forletwin_clause() const
 {
-  return dynamic_cast<forletwin_clause*>(theFlworClause);
+  assert(theFlworClause->get_kind() == flwor_clause::for_clause ||
+         theFlworClause->get_kind() == flwor_clause::let_clause ||
+         theFlworClause->get_kind() == flwor_clause::window_clause);
+
+  return static_cast<forletwin_clause*>(theFlworClause);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-for_clause* var_expr::get_for_clause() const
+forlet_clause* var_expr::get_forlet_clause() const
 {
-  return dynamic_cast<for_clause*>(theFlworClause);
+  assert(theFlworClause->get_kind() == flwor_clause::for_clause ||
+         theFlworClause->get_kind() == flwor_clause::let_clause);
+
+  return static_cast<forlet_clause*>(theFlworClause);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void var_expr::remove_set_expr(expr* e) 
+void var_expr::remove_set_expr(expr* e)
 {
   assert(theVarKind == local_var || theVarKind == prolog_var);
 
@@ -328,20 +336,6 @@ bool var_expr::is_context_item() const
 void var_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-expr::expr_t var_expr::clone(expr::substitution_t& subst) const
-{
-  expr::subst_iter_t i = subst.find(this);
-
-  if (i == subst.end())
-    return const_cast<var_expr*>(this);
-
-  return i->second;
 }
 
 

@@ -34,10 +34,10 @@ catch *
 
 dml:collection($u:auctions1)
 ,
-idml:probe-index-point-value($u:PersonId1, "1")
+idml:probe-index-point-value($u:PersonId1, "1")/.
 ,
-idml:probe-index-point-value($u:PersonId1, "3")
+idml:probe-index-point-value($u:PersonId1, "3")/.
 ,
-idml:probe-index-point-value($u:PersonId1, "5")
+idml:probe-index-point-value($u:PersonId1, "5")/.
 ,
 dml:collection($u:auctions2)

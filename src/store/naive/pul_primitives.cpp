@@ -164,8 +164,11 @@ void UpdDelete::apply()
     theParent->deleteChild(*this);
   }
   
-  static_cast<zorba::simplestore::XmlNode*>(theTarget.getp())
+  if (theTarget->isNode())
+  {
+    static_cast<zorba::simplestore::XmlNode*>(theTarget.getp())
         ->unregisterReferencesToDeletedSubtree();
+  }
 }
 
 
@@ -993,9 +996,24 @@ void UpdDeleteCollection::apply()
 
   for (uint64_t i = 0; i < size; ++i)
   {
-    XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(xs_integer(i)).getp());
-    XmlTree* tree = root->getTree();
-    if (tree->getRefCount() > 1)
+    long lRefCount = 0;
+    store::Item* lItem = collection->nodeAt(xs_integer(i)).getp();
+    if (lItem->isNode())
+    {
+      assert(dynamic_cast<XmlNode*>(lItem));
+      XmlNode* lNode = static_cast<XmlNode*>(lItem);
+      lRefCount = lNode->getTree()->getRefCount();
+#ifdef ZORBA_WITH_JSON
+    }
+    else if (lItem->isJSONItem())
+    {
+      assert(dynamic_cast<json::JSONItem*>(lItem));
+      json::JSONItem* lJSONItem = static_cast<json::JSONItem*>(lItem);
+      lRefCount = lJSONItem->getRefCount();
+#endif
+    }
+
+    if (lRefCount > 1)
     {
       RAISE_ERROR(zerr::ZDDY0015_COLLECTION_BAD_DESTROY_NODES, theLoc,
       ERROR_PARAMS(collection->getName()->getStringValue()));

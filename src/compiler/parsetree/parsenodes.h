@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -211,6 +211,7 @@ class QVarInDecl;
 class QVarInDeclList;
 class RangeExpr;
 class RelativePathExpr;
+class SimpleMapExpr;
 class RenameExpr;
 class ReplaceExpr;
 class RevalidationDecl;
@@ -524,20 +525,15 @@ public:
 class CopyNamespacesDecl : public parsenode
 {
 protected:
-  StaticContextConsts::preserve_mode_t preserve_mode;
-  StaticContextConsts::inherit_mode_t inherit_mode;
+  bool thePreserveNamespaces;
+  bool theInheritNamespaces;
 
 public:
-  CopyNamespacesDecl(
-    const QueryLoc&,
-    StaticContextConsts::preserve_mode_t preserve_mode,
-    StaticContextConsts::inherit_mode_t  inherit_mode);
+  CopyNamespacesDecl(const QueryLoc&, bool preserve_ns, bool inherit_ns);
 
-  StaticContextConsts::preserve_mode_t get_preserve_mode() const
-  { return preserve_mode; }
+  bool preserve_ns() const { return thePreserveNamespaces; }
 
-  StaticContextConsts::inherit_mode_t  get_inherit_mode() const
-  { return inherit_mode; }
+  bool inherit_ns() const { return theInheritNamespaces; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -825,7 +821,7 @@ public:
 
   rchandle<parsenode> operator[](int k) const { return theDecls[k]; }
 
-  std::vector<rchandle<parsenode> >::const_iterator begin() const 
+  std::vector<rchandle<parsenode> >::const_iterator begin() const
   {
     return theDecls.begin();
   }
@@ -1250,7 +1246,7 @@ public:
 
   [*] CollectionTypeDecl ::= KindTest OccurenceIndicator?
 ********************************************************************************/
-class CollectionDecl : public parsenode
+class CollectionDecl : public XQDocumentable
 {
 protected:
   rchandle<QName>                             theName;
@@ -1295,7 +1291,7 @@ public:
 
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 *******************************************************************************/
-class AST_IndexDecl : public parsenode
+class AST_IndexDecl : public XQDocumentable
 {
 protected:
   rchandle<QName>                   theName;
@@ -2241,7 +2237,7 @@ public:
 
 
 /*******************************************************************************
-  GroupSpec ::= "$" VarName 
+  GroupSpec ::= "$" VarName
                 (TypeDeclaration? ":=" ExprSingle)?
                 ("collation" URILiteral)?
 ********************************************************************************/
@@ -3397,11 +3393,10 @@ protected:
   bool sign;
 
 public:
-  SignList(
-    const QueryLoc&,
-    bool _sign);
+  SignList(const QueryLoc&, bool sign);
 
   bool get_sign() const { return sign; }
+
   void negate() { sign = !sign; }
 
   void accept(parsenode_visitor&) const;
@@ -3409,7 +3404,7 @@ public:
 
 
 /*******************************************************************************
-  [82] ValueExpr ::= ValidateExpr | PathExpr | ExtensionExpr
+  [82] ValueExpr ::= ValidateExpr | SimpleMapExpr | ExtensionExpr
 ********************************************************************************/
 
 
@@ -3510,6 +3505,35 @@ public:
 
 
 /*******************************************************************************
+  SimpleMapExpr :: PathExpr |
+                   SimpleMapExpr "!" PathExpr
+
+  This creates a left-deep tree of SimpleMapExpr nodes: the right child of each
+  such node is a PathExpr, and the left child is another SimpleMapExpr except
+  from the left-most SimpleMapExpr node, whose left chils is a PathExpr.
+********************************************************************************/
+class SimpleMapExpr : public exprnode
+{
+protected:
+  rchandle<exprnode> left_expr_h;
+  rchandle<exprnode> right_expr_h;
+
+public:
+  SimpleMapExpr(
+    const QueryLoc&,
+    rchandle<exprnode>,
+    rchandle<exprnode>
+  );
+
+  rchandle<exprnode> get_left_expr() const { return left_expr_h; }
+
+  rchandle<exprnode> get_right_expr() const { return right_expr_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
 
   [91] PathExpr ::= ("/" RelativePathExpr?) |
                     ("//" RelativePathExpr) |
@@ -3602,9 +3626,9 @@ public:
 
   enum ParseConstants::steptype_t get_step_type() const { return step_type; }
 
-  rchandle<exprnode> get_step_expr() const { return step_expr_h; }
+  exprnode* get_step_expr() const { return step_expr_h.getp(); }
 
-  rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
+  exprnode* get_relpath_expr() const { return relpath_expr_h.getp(); }
 
   bool is_implicit() const { return is_implicit_b; }
 
@@ -3638,11 +3662,11 @@ public:
     rchandle<ReverseStep>,
     rchandle<PredicateList>);
 
-  rchandle<ForwardStep> get_forward_step() const { return forward_step_h; }
+  ForwardStep* get_forward_step() const { return forward_step_h.getp(); }
 
-  rchandle<ReverseStep> get_reverse_step() const { return reverse_step_h; }
+  ReverseStep* get_reverse_step() const { return reverse_step_h.getp(); }
 
-  rchandle<PredicateList> get_predicate_list() const { return predicate_list_h; }
+  PredicateList* get_predicate_list() const { return predicate_list_h.getp(); }
 
   enum ParseConstants::axis_kind_t get_axis_kind() const;
 
@@ -3670,11 +3694,11 @@ public:
     const QueryLoc&,
     rchandle<AbbrevForwardStep>);
 
-  rchandle<ForwardAxis> get_forward_axis() const { return theForwardAxis; }
+  ForwardAxis* get_forward_axis() const { return theForwardAxis.getp(); }
 
-  rchandle<parsenode> get_node_test() const { return node_test_h; }
+  parsenode* get_node_test() const { return node_test_h.getp(); }
 
-  rchandle<AbbrevForwardStep> get_abbrev_step() const { return theAbbrevStep; }
+  AbbrevForwardStep* get_abbrev_step() const { return theAbbrevStep.getp(); }
 
   enum ParseConstants::axis_kind_t get_axis_kind() const;
 
@@ -6403,14 +6427,14 @@ private:
 
 ////////// FTPosFilter & derived classes //////////////////////////////////////
 
-class FTPosFilter : public parsenode 
+class FTPosFilter : public parsenode
 {
 protected:
   FTPosFilter( QueryLoc const &loc ) : parsenode( loc ) { }
 };
 
 
-class FTContent : public FTPosFilter 
+class FTContent : public FTPosFilter
 {
 public:
   FTContent(
@@ -6427,7 +6451,7 @@ private:
 };
 
 
-class FTDistance : public FTPosFilter 
+class FTDistance : public FTPosFilter
 {
 public:
   FTDistance(
@@ -6448,7 +6472,7 @@ private:
 };
 
 
-class FTOrder : public FTPosFilter 
+class FTOrder : public FTPosFilter
 {
 public:
   FTOrder( QueryLoc const& );
@@ -6457,7 +6481,7 @@ public:
 };
 
 
-class FTScope : public FTPosFilter 
+class FTScope : public FTPosFilter
 {
 public:
   FTScope(
@@ -6478,7 +6502,7 @@ private:
 };
 
 
-class FTWindow : public FTPosFilter 
+class FTWindow : public FTPosFilter
 {
 public:
   FTWindow(
@@ -6606,7 +6630,7 @@ private:
 
 public:
   JSON_Test(
-      const QueryLoc& loc, 
+      const QueryLoc& loc,
       store::StoreConsts::JSONItemKind jt);
 
   store::StoreConsts::JSONItemKind get_kind() const { return jt_; }
@@ -6621,18 +6645,14 @@ public:
 class JSONObjectInsertExpr : public exprnode
 {
 protected:
-  const JSONPairList * thePairs;
-  const exprnode     * theTargetExpr;
+  rchandle<exprnode> theContentExpr;
+  rchandle<exprnode> theTargetExpr;
 
 public:
   JSONObjectInsertExpr(
     const QueryLoc& loc,
-    const JSONPairList* pairs,
-    const exprnode* targetExpr);
-
-  ~JSONObjectInsertExpr();
-
-  csize numPairs() const { return thePairs->size(); }
+    const rchandle<exprnode>& contentExpr,
+    const rchandle<exprnode>& targetExpr);
 
   void accept(parsenode_visitor&) const;
 };
@@ -6644,18 +6664,16 @@ public:
 class JSONArrayInsertExpr : public exprnode
 {
 protected:
-  const exprnode* theTargetExpr;
-  const exprnode* thePositionExpr;
-  const exprnode* theValueExpr;
+  rchandle<exprnode> theTargetExpr;
+  rchandle<exprnode> thePositionExpr;
+  rchandle<exprnode> theValueExpr;
 
 public:
   JSONArrayInsertExpr(
     const QueryLoc& loc,
-    exprnode* valueExpr,
-    exprnode* targetExpr,
-    exprnode* posExpr);
-
-  ~JSONArrayInsertExpr();
+    const rchandle<exprnode>& valueExpr,
+    const rchandle<exprnode>& targetExpr,
+    const rchandle<exprnode>& posExpr);
 
   void accept(parsenode_visitor&) const;
 };
@@ -6667,16 +6685,14 @@ public:
 class JSONArrayAppendExpr : public exprnode
 {
 protected:
-  const exprnode* theTargetExpr;
-  const exprnode* theValueExpr;
+  rchandle<exprnode> theTargetExpr;
+  rchandle<exprnode> theValueExpr;
 
 public:
   JSONArrayAppendExpr(
     const QueryLoc& loc,
-    exprnode* targetExpr,
-    exprnode* valueExpr);
-
-  ~JSONArrayAppendExpr();
+    const rchandle<exprnode>& targetExpr,
+    const rchandle<exprnode>& valueExpr);
 
   void accept(parsenode_visitor&) const;
 };
@@ -6688,16 +6704,14 @@ public:
 class JSONDeleteExpr : public exprnode
 {
 protected:
-  const exprnode* theTargetExpr;
-  const exprnode* theSelectorExpr;
+  rchandle<exprnode> theTargetExpr;
+  rchandle<exprnode> theSelectorExpr;
 
 public:
   JSONDeleteExpr(
     const QueryLoc& loc,
-    exprnode* targetExpr,
-    exprnode* selectorExpr);
-
-  ~JSONDeleteExpr();
+    const rchandle<exprnode>& targetExpr,
+    const rchandle<exprnode>& selectorExpr);
 
   void accept(parsenode_visitor&) const;
 };
@@ -6709,18 +6723,16 @@ public:
 class JSONReplaceExpr : public exprnode
 {
 protected:
-  const exprnode* theTargetExpr;
-  const exprnode* theSelectorExpr;
-  const exprnode* theValueExpr;
+  rchandle<exprnode> theTargetExpr;
+  rchandle<exprnode> theSelectorExpr;
+  rchandle<exprnode> theValueExpr;
 
 public:
   JSONReplaceExpr(
     const QueryLoc& loc,
-    exprnode* targetExpr,
-    exprnode* nameExpr,
-    exprnode* newNameExpr);
-
-  ~JSONReplaceExpr();
+    const rchandle<exprnode>& targetExpr,
+    const rchandle<exprnode>& nameExpr,
+    const rchandle<exprnode>& newNameExpr);
 
   void accept(parsenode_visitor&) const;
 };
@@ -6732,18 +6744,16 @@ public:
 class JSONRenameExpr : public exprnode
 {
 protected:
-  const exprnode* theTargetExpr;
-  const exprnode* theNameExpr;
-  const exprnode* theNewNameExpr;
+  rchandle<exprnode> theTargetExpr;
+  rchandle<exprnode> theNameExpr;
+  rchandle<exprnode> theNewNameExpr;
 
 public:
   JSONRenameExpr(
     const QueryLoc& loc,
-    exprnode* targetExpr,
-    exprnode* nameExpr,
-    exprnode* newNameExpr);
-
-  ~JSONRenameExpr();
+    const rchandle<exprnode>& targetExpr,
+    const rchandle<exprnode>& nameExpr,
+    const rchandle<exprnode>& newNameExpr);
 
   void accept(parsenode_visitor&) const;
 };

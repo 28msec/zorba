@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,10 +16,11 @@
 #include "stdafx.h"
 #include "compiler/expression/json_exprs.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/api/compilercb.h"
 
 #ifdef ZORBA_WITH_JSON
 
-namespace zorba 
+namespace zorba
 {
 
 DEF_EXPR_ACCEPT(json_array_expr)
@@ -30,18 +31,20 @@ DEF_EXPR_ACCEPT(json_direct_object_expr)
  JSONArrayConstructor ::= "[" Expr? "]"
 ********************************************************************************/
 json_array_expr::json_array_expr(
+    CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
-    const expr_t& content)
+    expr* content)
   :
-  expr(sctx, loc, json_array_expr_kind),
+  expr(ccb, sctx, udf, loc, json_array_expr_kind),
   theContentExpr(content)
 {
   compute_scripting_kind();
 }
 
 
-void json_array_expr::compute_scripting_kind() 
+void json_array_expr::compute_scripting_kind()
 {
   if (theContentExpr)
   {
@@ -55,14 +58,6 @@ void json_array_expr::compute_scripting_kind()
   {
     theScriptingKind = SIMPLE_EXPR;
   }
-}
-
-
-expr_t json_array_expr::clone(substitution_t& subst) const
-{
-  return new json_array_expr(theSctx,
-                             get_loc(),
-                             theContentExpr->clone(subst));
 }
 
 
@@ -74,12 +69,14 @@ expr_t json_array_expr::clone(substitution_t& subst) const
   The Expr must return a sequence of zero or more objects
 ********************************************************************************/
 json_object_expr::json_object_expr(
+    CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
-    const expr_t& content,
+    expr* content,
     bool accumulate)
   :
-  expr(sctx, loc, json_object_expr_kind),
+  expr(ccb, sctx, udf, loc, json_object_expr_kind),
   theContentExpr(content),
   theAccumulate(accumulate)
 {
@@ -87,7 +84,7 @@ json_object_expr::json_object_expr(
 }
 
 
-void json_object_expr::compute_scripting_kind() 
+void json_object_expr::compute_scripting_kind()
 {
   if (theContentExpr)
   {
@@ -101,17 +98,6 @@ void json_object_expr::compute_scripting_kind()
   {
     theScriptingKind = SIMPLE_EXPR;
   }
-}
-
-
-expr_t json_object_expr::clone(substitution_t& subst) const
-{
-  return new json_object_expr(theSctx,
-                              get_loc(),
-                              (theContentExpr ?
-                               theContentExpr->clone(subst) :
-                               NULL),
-                              theAccumulate);
 }
 
 
@@ -124,12 +110,14 @@ expr_t json_object_expr::clone(substitution_t& subst) const
   The 2nd ExprSingle must contain exactly one item of any kind.
 ********************************************************************************/
 json_direct_object_expr::json_direct_object_expr(
+    CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
-    std::vector<expr_t>& names,
-    std::vector<expr_t>& values)
+    std::vector<expr*>& names,
+    std::vector<expr*>& values)
   :
-  expr(sctx, loc, json_direct_object_expr_kind)
+  expr(ccb, sctx, udf, loc, json_direct_object_expr_kind)
 {
   assert(names.size() == values.size());
 
@@ -140,12 +128,12 @@ json_direct_object_expr::json_direct_object_expr(
 }
 
 
-void json_direct_object_expr::compute_scripting_kind() 
+void json_direct_object_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
 
-  std::vector<expr_t>::const_iterator ite = theNames.begin();
-  std::vector<expr_t>::const_iterator end = theNames.end();
+  std::vector<expr*>::const_iterator ite = theNames.begin();
+  std::vector<expr*>::const_iterator end = theNames.end();
   for (; ite != end; ++ite)
   {
     theScriptingKind |= (*ite)->get_scripting_detail();
@@ -167,32 +155,6 @@ void json_direct_object_expr::compute_scripting_kind()
     theScriptingKind &= ~SIMPLE_EXPR;
 
   checkScriptingKind();
-}
-
-
-expr_t json_direct_object_expr::clone(substitution_t& subst) const
-{
-  std::vector<expr_t> names;
-  std::vector<expr_t> values;
-
-  names.reserve(theNames.size());
-  values.reserve(theValues.size());
-
-  std::vector<expr_t>::const_iterator ite = theNames.begin();
-  std::vector<expr_t>::const_iterator end = theNames.end();
-  for (; ite != end; ++ite)
-  {
-    names.push_back((*ite)->clone(subst));
-  }
-
-  ite = theValues.begin();
-  end = theValues.end();
-  for (; ite != end; ++ite)
-  {
-    values.push_back((*ite)->clone(subst));
-  }
-
-  return new json_direct_object_expr(theSctx, get_loc(), names, values);
 }
 
 

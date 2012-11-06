@@ -22,6 +22,7 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "functions/signature.h"
 #include "functions/udf.h"
@@ -88,7 +89,7 @@ void DynamicFunctionInfo::serialize(::zorba::serialization::Archiver& ar)
   {
     uint32_t planStateSize;
     (void)static_cast<user_function*>(theFunction.getp())->
-      getPlan(theCCB, planStateSize);
+    getPlan(planStateSize);
   }
 }
 
@@ -203,7 +204,7 @@ store::Iterator_t FunctionItem::getVariableValue(const store::Item_t& variableQN
 
 PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args)
 {
-  expr_t dummy = new function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc);
+  expr* dummy = new function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc);
 
   /*
   PlanIter_t udfCallIterator =
@@ -223,7 +224,6 @@ PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args)
   UDFunctionCallIterator* udfIter = static_cast<UDFunctionCallIterator*>(udfCallIterator.getp());
   udfIter->setDynamic();
   udfIter->setFunctionItem(this);
-
   return udfCallIterator;
 }
 

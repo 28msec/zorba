@@ -28,7 +28,7 @@
 #include "system/properties.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 class FoldRules : public RuleMajorDriver
@@ -36,11 +36,9 @@ class FoldRules : public RuleMajorDriver
 public:
   FoldRules()
   {
-    //ADD_RULE(MarkExpensiveOps);
-    // Most rules try to update the freevars annotations, but for now let's stay on the safe side
     ADD_RULE(MarkExprs);
     ADD_RULE(MarkFreeVars);
-    ADD_RULE(FoldConst(false));
+    ADD_RULE(FoldConst);
     ADD_RULE(PartialEval);
     ADD_RULE(RefactorPredFLWOR);
     ADD_RULE(EliminateUnusedLetVars);
@@ -65,7 +63,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
 
   SingletonRuleMajorDriver<EliminateTypeEnforcingOperations> driverTypeRules;
   SingletonRuleMajorDriver<EliminateExtraneousPathSteps> driverPathSimplify;
-  //SingletonRuleMajorDriver<ReplaceExprWithConstantOneWhenPossible> driverExprSimplify;
   RuleOnceDriver<EliminateUnusedLetVars> driverEliminateVars;
   RuleOnceDriver<MarkProducerNodeProps> driverMarkProducerNodeProps;
   RuleOnceDriver<MarkConsumerNodeProps> driverMarkConsumerNodeProps;
@@ -84,14 +81,21 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       modified = true;
   }
 
+  // PathSimplification
+  if (driverPathSimplify.rewrite(rCtx))
+    modified = true;
+
+  if (rCtx.theUDF != NULL)
+  {
+    RuleOnceDriver<MarkExprs> driverMarkLocalExprs;
+    driverMarkLocalExprs.getRule()->setLocal(true);
+    driverMarkLocalExprs.rewrite(rCtx);
+  }
+
  repeat1:
 
   // TypeRules
   if (driverTypeRules.rewrite(rCtx))
-    modified = true;
-
-  // PathSimplification
-  if (driverPathSimplify.rewrite(rCtx))
     modified = true;
 
   // FoldRules
@@ -106,14 +110,11 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     goto repeat1;
   }
 
+  /*
  repeat2:
-
-  // This rule has been merged into the PartialEval rule
-  //driverExprSimplify.rewrite(rCtx);
 
   //
   driverMarkFreeVars.rewrite(rCtx);
-
   //
   driverEliminateVars.rewrite(rCtx);
 
@@ -125,6 +126,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     //std::cout << "TYPES MODIFIED 2 !!!" << std::endl << std::endl;
     goto repeat2;
   }
+  */
 
   //
   driverMarkProducerNodeProps.rewrite(rCtx);
@@ -160,7 +162,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     HoistRule rule;
     bool local_modified = false;
 
-    expr_t e = rule.apply(rCtx, rCtx.getRoot().getp(), local_modified);
+    expr* e = rule.apply(rCtx, rCtx.getRoot(), local_modified);
 
     if (e != rCtx.getRoot())
       rCtx.setRoot(e);
@@ -170,7 +172,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     {
       modified = true;
 
-      if (Properties::instance()->printIntermediateOpt()) 
+      if (Properties::instance()->printIntermediateOpt())
       {
         std::cout << "After hoisting : " << std::endl;
         rCtx.getRoot()->put(std::cout) << std::endl;
@@ -180,8 +182,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       driverMarkExpr.rewrite(rCtx);
     }
   }
-
-  // formatSparqlXml getSparqlResult optional matches
 
   // Index Joins
   if (Properties::instance()->inferJoins())
@@ -211,9 +211,9 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
                                          freeset,
                                          *rCtx.theExprVarsMap);
 
-      local_modified = false; 
+      local_modified = false;
 
-      expr_t e = rule.apply(rCtx, rCtx.getRoot().getp(), local_modified);
+      expr* e = rule.apply(rCtx, rCtx.getRoot(), local_modified);
 
       if (e != rCtx.getRoot())
         rCtx.setRoot(e);
@@ -222,7 +222,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       {
         modified = true;
 
-        if (Properties::instance()->printIntermediateOpt()) 
+        if (Properties::instance()->printIntermediateOpt())
         {
           std::cout << "After index join : " << std::endl;
           rCtx.getRoot()->put(std::cout) << std::endl;

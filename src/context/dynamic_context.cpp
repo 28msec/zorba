@@ -891,7 +891,7 @@ bool dynamic_context::getExternalFunctionParam(
 ********************************************************************************/
 bool dynamic_context::addExternalFunctionParameter(
    const std::string& aName,
-   ExternalFunctionParameter* aValue)
+   ExternalFunctionParameter* aValue) const
 {
   if (!keymap)
   {

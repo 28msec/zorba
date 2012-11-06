@@ -54,6 +54,15 @@ class dynamic_context
   friend class DebugIterator;
 
 public:
+
+  static enum ID_VARS 
+  {
+    IDVAR_CONTEXT_ITEM=1,
+    IDVAR_CONTEXT_ITEM_POSITION,
+    IDVAR_CONTEXT_ITEM_SIZE,
+    MAX_IDVARS_RESERVED
+  } IDVARS_RESERVED;
+
   struct VarValue
   {
     typedef enum
@@ -66,8 +75,8 @@ public:
 
     union
     {
-      store::Item*     item;
-      store::TempSeq*  temp_seq;
+      store::Item     * item;
+      store::TempSeq  * temp_seq;
     }           theValue;
 
     ValueState  theState;
@@ -99,8 +108,8 @@ protected:
       ext_func_param_typed 
     } val_type_t;
 
-    val_type_t  type;
-    void*       func_param;
+    val_type_t    type;
+    void        * func_param;
   };
 
   ZSTRING_HASH_MAP(dctx_value_t, ValueMap);
@@ -113,19 +122,20 @@ protected:
   dynamic_context            * theParent;
 
   store::Item_t                theCurrentDateTime;
+
   long                         theTimezone;
 
   store::Item_t                theDefaultCollectionUri;
 
   std::vector<VarValue>        theVarValues;
 
-  ValueMap                   * keymap;
+  mutable ValueMap                   * keymap;
 
   IndexMap                   * theAvailableIndices;
 
   IndexMap                   * theAvailableMaps;
 
-    //MODIFY
+  //MODIFY
   EnvVarMap                  * theEnvironmentVariables;
 
 public:
@@ -231,7 +241,7 @@ public:
 
   bool addExternalFunctionParameter(
      const std::string& aName,
-     ExternalFunctionParameter* aValue);
+     ExternalFunctionParameter* aValue) const;
 
   ExternalFunctionParameter* getExternalFunctionParameter(
       const std::string& aName) const;

@@ -16,10 +16,10 @@
 #ifndef ZORBA_SIMPLESTORE_COLLECTION
 #define ZORBA_SIMPLESTORE_COLLECTION
 
-#include "shared_types.h"
-
 #include "store/api/collection.h"
 
+#include "shared_types.h"
+#include "tree_id.h"
 
 namespace zorba { namespace simplestore {
 
@@ -54,7 +54,9 @@ public:
 
   zorba::xs_integer size() const  = 0;
 
-  zorba::store::Iterator_t getIterator(const xs_integer& aSkip) = 0;
+  zorba::store::Iterator_t getIterator(
+      const xs_integer& aSkip, 
+      const zstring& aStart) = 0;
 
   virtual zorba::store::Item_t nodeAt(xs_integer position) = 0;
 
@@ -87,7 +89,7 @@ public:
 
   virtual ulong getId() const = 0;
 
-  virtual ulong createTreeId() = 0;
+  virtual TreeId createTreeId() = 0;
 
   /*********************** Indices ********************************************/
   static void getIndexes(

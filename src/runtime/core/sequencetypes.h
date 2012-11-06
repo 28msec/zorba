@@ -24,6 +24,8 @@
 
 #include "types/typeconstants.h"
 
+#include "compiler/expression/expr_consts.h"
+
 namespace zorba 
 {
 
@@ -143,22 +145,10 @@ class PromoteIterator : public UnaryBaseIterator<PromoteIterator,
 {
   friend class PrinterVisitor;
 
-public:
-  typedef enum
-  {
-    FUNC_RETURN,
-    FUNC_PARAM,
-    TYPE_PROMOTION,
-    JSONIQ_PAIR_NAME,
-    JSONIQ_ARRAY_SELECTOR,
-    JSONIQ_OBJECT_SELECTOR,
-    JSONIQ_SELECTOR
-  } ErrorKind;
-
 private:
   xqtref_t                    thePromoteType;
   TypeConstants::quantifier_t theQuantifier;
-  ErrorKind                   theErrorKind;
+  PromoteErrorKind            theErrorKind;
   store::Item_t								theQName; 
 
 public:
@@ -174,7 +164,7 @@ public:
       const QueryLoc& loc,
       PlanIter_t& child,
       const xqtref_t& promoteType,
-      ErrorKind err,
+      PromoteErrorKind err,
       store::Item_t qname = NULL);
 
   ~PromoteIterator();
@@ -203,29 +193,11 @@ class TreatIterator : public UnaryBaseIterator<TreatIterator,
 {
   friend class PrinterVisitor;
 
-public:
-  typedef enum
-  {
-    FUNC_RETURN,
-    FUNC_PARAM,
-    TYPE_MATCH,
-    TREAT_EXPR,
-    INDEX_DOMAIN,
-    INDEX_KEY,
-    PATH_STEP,
-    PATH_DOT,
-    JSONIQ_VALUE,
-    JSONIQ_UPDATE_TARGET,
-    JSONIQ_OBJECT_UPDATE_TARGET,
-    JSONIQ_ARRAY_UPDATE_TARGET,
-    JSONIQ_OBJECT_UPDATE_VALUE
-  } ErrorKind;
-
 private:
   xqtref_t                    theTreatType;
   TypeConstants::quantifier_t theQuantifier;
   bool                        theCheckPrime;
-  ErrorKind                   theErrorKind;
+  TreatErrorKind              theErrorKind;
   store::Item_t								theQName;
 
 public:
@@ -242,7 +214,7 @@ public:
       PlanIter_t& child,
       const xqtref_t& treatType,
       bool check_prime,
-      ErrorKind errorKind,
+      TreatErrorKind errorKind,
       store::Item_t qname);
 
   void accept(PlanIterVisitor& v) const;

@@ -109,8 +109,20 @@ public:
   virtual bool
   setContextItem(const Item& inValue);
 
+  virtual bool 
+  setContextSize(const Item& inValue);
+
+  virtual bool
+  setContextPosition(const Item& inValue);
+
   virtual bool
   getContextItem(Item& outValue) const;
+
+  virtual bool
+  getContextSize(Item& outValue) const;
+
+  virtual bool
+  getContextPosition(Item& outValue) const;
 
   virtual bool
   setCurrentDateTime(const Item& aDateTimeItem);
@@ -139,7 +151,7 @@ public:
   getExternalFunctionParam(const String& aName, void*&) const;
 
   virtual bool
-  addExternalFunctionParameter(const String& aName, ExternalFunctionParameter* aParam);
+  addExternalFunctionParameter(const String& aName, ExternalFunctionParameter* aParam) const;
 
   virtual ExternalFunctionParameter*
   getExternalFunctionParameter(const String& aName) const;

@@ -106,8 +106,6 @@ public:
   FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo);
 
   virtual ~FunctionItem();
-
-  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
       
   dynamic_context* getDctx() const { return theDctx.get(); }
 
