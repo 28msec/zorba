@@ -922,7 +922,7 @@ protected:
 ********************************************************************************/
 csize computeCapacity(csize size) const
 {
-  return size + 32 + size / (5 - 10 * (theLoadFactor - 0.7)) ;
+  return size + 32 + static_cast<csize>(size / (5 - 10 * (theLoadFactor - 0.7)));
 }
 
 

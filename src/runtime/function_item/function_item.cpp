@@ -21,6 +21,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "functions/signature.h"
 #include "functions/udf.h"

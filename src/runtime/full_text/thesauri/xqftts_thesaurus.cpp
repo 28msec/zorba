@@ -34,6 +34,8 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/dict.h"
 
+#include "system/globalenv.h"
+
 #include "xqftts_thesaurus.h"
 
 using namespace std;

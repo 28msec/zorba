@@ -448,31 +448,34 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
       for (size_t i = 0; i < argsRefs.size(); ++i)
       {
-        const ArgVarRefs& argVarRefs = argsRefs[i];
-        store::Iterator_t argWrapper;
-        if (state->theCache)
+        if (argWraps[i] != NULL)
         {
-          std::vector<store::Item_t> lParam(1, lKey[i]);
-          state->theArgValues.push_back(GENV_STORE.createTempSeq(lParam));
-          argWrapper = state->theArgValues.back()->getIterator();
-          argWrapper->open();
-        }
-        else
-        {
-          argWrapper = argWraps[i];
-        }
-
-        ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
-        ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
-
-        for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
-        {
-          const LetVarIter_t& argRef = (*argVarRefsIte);
-          assert(argRef != NULL);
-
-          if (argRef != NULL)
+          const ArgVarRefs& argVarRefs = argsRefs[i];
+          store::Iterator_t argWrapper;
+          if (state->theCache)
           {
-            argRef->bind(argWrapper, *state->thePlanState);
+            std::vector<store::Item_t> lParam(1, lKey[i]);
+            state->theArgValues.push_back(GENV_STORE.createTempSeq(lParam));
+            argWrapper = state->theArgValues.back()->getIterator();
+            argWrapper->open();
+          }
+          else
+          {
+            argWrapper = argWraps[i];
+          }
+
+          ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
+          ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
+
+          for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
+          {
+            const LetVarIter_t& argRef = (*argVarRefsIte);
+            assert(argRef != NULL);
+            
+            if (argRef != NULL)
+            {
+              argRef->bind(argWrapper, *state->thePlanState);
+            }
           }
         }
       }

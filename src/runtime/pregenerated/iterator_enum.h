@@ -162,6 +162,7 @@
   TYPE_JSONArrayMemberIterator,
   TYPE_JSONArrayMembersIterator,
   TYPE_JSONArrayFlattenIterator,
+  TYPE_JSONDocIterator,
   TYPE_JSONItemAccessorIterator,
   TYPE_JSONNullIterator,
   TYPE_JSONIsNullIterator,
