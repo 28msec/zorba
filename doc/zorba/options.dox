@@ -67,8 +67,9 @@ Zorba specific features presented in the following are declared in this namespac
 <li><b>scripting:</b> This local name can be used to enable or disable the 
 Zorba Scripting Extension. Per default, the feature is enabled.
 </li>
-<li><b>xqddf:</b> The <tt>xqddf</tt> local name refers to the Zorba specific
-XQuery Data Definition Facility. The feature is enabled by default.
+<li><b>ddl:</b> The <tt>ddl</tt> local name refers to the static
+(language-level) Data Description Language portion of the \ref xqddf.
+The feature is enabled by default.
 </li>
 <li><b>trace:</b> The 
 <a href="http://www.w3.org/TR/xpath-functions-30/#func-trace">fn:trace</a> 
