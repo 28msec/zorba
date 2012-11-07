@@ -90,8 +90,6 @@ var_expr::var_expr(
   theHasInitializer(false)
 {
   compute_scripting_kind();
-
-  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -279,16 +277,23 @@ expr* var_expr::get_domain_expr() const
 ********************************************************************************/
 forletwin_clause* var_expr::get_forletwin_clause() const
 {
-  return dynamic_cast<forletwin_clause*>(theFlworClause);
+  assert(theFlworClause->get_kind() == flwor_clause::for_clause ||
+         theFlworClause->get_kind() == flwor_clause::let_clause ||
+         theFlworClause->get_kind() == flwor_clause::window_clause);
+
+  return static_cast<forletwin_clause*>(theFlworClause);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-for_clause* var_expr::get_for_clause() const
+forlet_clause* var_expr::get_forlet_clause() const
 {
-  return dynamic_cast<for_clause*>(theFlworClause);
+  assert(theFlworClause->get_kind() == flwor_clause::for_clause ||
+         theFlworClause->get_kind() == flwor_clause::let_clause);
+
+  return static_cast<forlet_clause*>(theFlworClause);
 }
 
 

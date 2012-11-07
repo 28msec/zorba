@@ -19,11 +19,13 @@
 
 #include "functions/function.h"
 
-#include "compiler/expression/expr_base.h"
+//#include "compiler/expression/expr_base.h"
 
 
 namespace zorba
 {
+
+  class expr;
 
   namespace store
   {
@@ -211,6 +213,10 @@ public:
   // The next 6 methods are virtual methods of class function, which are redefined here
 
   unsigned short getScriptingKind() const;
+
+  bool dereferencesNodes() const;
+
+  bool constructsNodes() const;
 
   bool accessesDynCtx() const;
 

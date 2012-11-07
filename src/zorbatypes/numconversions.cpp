@@ -70,6 +70,28 @@ xs_long to_xs_long( xs_nonNegativeInteger const &i ) {
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
+xs_unsignedByte to_xs_unsignedByte( xs_integer const &i ) {
+#ifdef ZORBA_WITH_BIG_INTEGER
+  zstring const temp( i.toString() );
+  return ztd::aton<xs_unsignedByte>( temp.c_str() );
+#else
+  if ( i.is_xs_unsignedByte() )
+    return static_cast<xs_unsignedByte>( i.value_ );
+  throw RANGE_ERROR( i, "xs:unsignedByte" );
+#endif /* ZORBA_WITH_BIG_INTEGER */
+}
+
+xs_unsignedShort to_xs_unsignedShort( xs_integer const &i ) {
+#ifdef ZORBA_WITH_BIG_INTEGER
+  zstring const temp( i.toString() );
+  return ztd::aton<xs_unsignedShort>( temp.c_str() );
+#else
+  if ( i.is_xs_unsignedShort() )
+    return static_cast<xs_unsignedShort>( i.value_ );
+  throw RANGE_ERROR( i, "xs:unsignedShort" );
+#endif /* ZORBA_WITH_BIG_INTEGER */
+}
+
 xs_unsignedInt to_xs_unsignedInt( xs_integer const &i ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   zstring const temp( i.toString() );

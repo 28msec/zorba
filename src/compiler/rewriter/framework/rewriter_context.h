@@ -107,7 +107,7 @@ public:
 
   CompilerCB* getCompilerCB() const { return theCCB; }
 
-  expr* getRoot();
+  expr* getRoot() const;
 
   void setRoot(expr* root);
 

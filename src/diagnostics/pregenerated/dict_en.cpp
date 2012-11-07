@@ -219,7 +219,7 @@ extern entry const dict_en[] = {
   { "XQST0038", "multiple default collation declarations" },
   { "XQST0039", "\"$1\": duplicate parameter name" },
   { "XQST0040", "\"$1\": non-distinct expanded attribute QName" },
-  { "XQST0045", "\"$1\": invalid function or annotation namespace" },
+  { "XQST0045", "\"$1\": $2 declared in reserved namespace${ 3}" },
   { "XQST0046", "${\"1\": }invalid URI literal${: 2}" },
   { "XQST0047", "\"$1\": duplicate target namespace" },
   { "XQST0048", "\"$1\": not in library namespace" },
@@ -510,6 +510,7 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "ZXQP8403", "thesaurus data error${: 1}" },
 #endif
+  { "~ANNOTATION", "annotation" },
   { "~AllMatchesHasExcludes", "AllMatches contains StringExclude" },
   { "~AlreadySpecified", "already specified" },
   { "~ArithOpNotDefinedBetween_23", "arithmetic operation not defined between types \"$2\" and \"$3\"" },
@@ -587,6 +588,7 @@ extern entry const dict_en[] = {
   { "~FTST0009_BadStopWordsLang", "for current stop words" },
   { "~FTST0009_BadThesaurusLang", "for given thesaurus" },
   { "~FTST0009_BadTokenizerLang", "for current tokenizer" },
+  { "~FUNCTION", "function" },
   { "~FileNotFoundOrReadable", "file not found or readable" },
   { "~FnNilledArgNotNode", "fn:nilled() argument not a node" },
   { "~FnOnlyInXQueryVersion_3", "function only available in XQuery $3" },

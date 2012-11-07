@@ -19,6 +19,7 @@
 
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "compiler/api/compilercb.h"
 

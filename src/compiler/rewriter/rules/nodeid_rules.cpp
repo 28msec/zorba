@@ -122,7 +122,7 @@ expr* MarkConsumerNodeProps::apply(
 
     order_expr* orderExpr = static_cast<order_expr *>(node);
 
-    rCtx.theIsInOrderedMode = (orderExpr->get_type() == order_expr::ordered ?
+    rCtx.theIsInOrderedMode = (orderExpr->get_type() == doc_ordered ?
                                true : false);
     break;
   }
@@ -278,17 +278,17 @@ expr* MarkConsumerNodeProps::apply(
 
   case wrapper_expr_kind :
   {
-    wrapper_expr* we = static_cast<wrapper_expr *>(node);
-    pushdown_ignores_sorted_nodes(node, we->get_expr());
-    pushdown_ignores_duplicate_nodes(node, we->get_expr());
+    wrapper_expr* e = static_cast<wrapper_expr *>(node);
+    pushdown_ignores_sorted_nodes(node, e->get_input());
+    pushdown_ignores_duplicate_nodes(node, e->get_input());
     break;
   }
 
   case function_trace_expr_kind :
   {
-    function_trace_expr* fte = static_cast<function_trace_expr*>(node);
-    pushdown_ignores_sorted_nodes(node, fte->get_expr());
-    pushdown_ignores_duplicate_nodes(node, fte->get_expr());
+    function_trace_expr* e = static_cast<function_trace_expr *>(node);
+    pushdown_ignores_sorted_nodes(node, e->get_input());
+    pushdown_ignores_duplicate_nodes(node, e->get_input());
     break;
   }
 
@@ -527,10 +527,9 @@ expr* MarkProducerNodeProps::apply(
 ********************************************************************************/
 RULE_REWRITE_PRE(EliminateNodeOps)
 {
-  fo_expr* fo = dynamic_cast<fo_expr *>(node);
-
-  if (fo != NULL)
+  if (node->get_expr_kind() == fo_expr_kind)
   {
+    fo_expr* fo = static_cast<fo_expr*>(node);
     const function* f = fo->get_func();
 
     // ????
@@ -792,9 +791,6 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
             std::vector<fo_expr*>::const_iterator end = udf->getRecursiveCalls().end();
             for (; ite != end; ++ite)
             {
-              user_function* recursiveUdf = 
-              static_cast<user_function*>((*ite)->get_func());
-
               applyInternal(*ite, true);
             }
           }
@@ -895,7 +891,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
   {
     validate_expr* e = static_cast<validate_expr *>(node);
     std::vector<expr*> sources;
-    theSourceFinder->findNodeSources(e->get_expr(), sources);
+    theSourceFinder->findNodeSources(e->get_input(), sources);
     markSources(sources);
     break;
   }
