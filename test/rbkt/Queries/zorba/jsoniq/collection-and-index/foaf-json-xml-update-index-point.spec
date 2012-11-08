@@ -1,1 +1,1 @@
-Serialization: method=json jsoniq-multiple-items=appended jsoniq-extensions=yes
+Serialization: method=json-xml-hybrid jsoniq-multiple-items=appended jsoniq-extensions=yes
