@@ -524,6 +524,8 @@ private:
 
   friend xs_int to_xs_int( INTEGER_IMPL_LL const& );
   friend xs_long to_xs_long( INTEGER_IMPL_LL const& );
+  friend xs_unsignedByte to_xs_unsignedByte( INTEGER_IMPL_LL const& );
+  friend xs_unsignedShort to_xs_unsignedShort( INTEGER_IMPL_LL const& );
   friend xs_unsignedInt to_xs_unsignedInt( INTEGER_IMPL_LL const& );
   friend xs_unsignedLong to_xs_unsignedLong( INTEGER_IMPL_LL const& );
 

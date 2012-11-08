@@ -38,7 +38,7 @@ namespace json
 *******************************************************************************/
 store::Item* JSONNull::getType() const
 {
-  return GET_STORE().JDM_NULL_QNAME;
+  return GET_STORE().JS_NULL_QNAME;
 }
 
 
@@ -50,7 +50,7 @@ bool JSONNull::equals(
     long /* timezone */,
     const XQPCollator* /* collation */) const
 {
-  return other->getTypeCode() == store::JDM_NULL;
+  return other->getTypeCode() == store::JS_NULL;
 }
 
 
@@ -196,7 +196,7 @@ void JSONItem::assertInvariant() const
 *******************************************************************************/
 store::Item* JSONObject::getType() const
 {
-  return GET_STORE().JDM_OBJECT_QNAME;
+  return GET_STORE().JS_OBJECT_QNAME;
 }
 
 
@@ -284,7 +284,7 @@ bool SimpleJSONObject::add(
     bool accumulate)
 {
   ASSERT_INVARIANT();
-  zstring lName = aName->getStringValue();
+  const char* lName = aName->getStringValue().c_str();
 
   Keys::iterator ite = theKeys.find(lName);
 
@@ -300,7 +300,7 @@ bool SimpleJSONObject::add(
     }
     
     csize lPosition = thePairs.size();
-    theKeys.insert(lName, lPosition);
+    theKeys.insert(std::make_pair(lName, lPosition));
     thePairs.push_back(std::make_pair(aName.getp(), lValue));
     aName->addReference();
     lValue->addReference();
@@ -310,7 +310,7 @@ bool SimpleJSONObject::add(
   }
   else if (accumulate)
   {
-    csize lPosition = ite.getValue();
+    csize lPosition = ite->second;
 
     assert(thePairs[lPosition].first->getStringValue() == lName);
 
@@ -351,15 +351,16 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
 {
   ASSERT_INVARIANT();
 
-  zstring lName = aName->getStringValue();
-  csize lPosition = 0;
+  const char* lName = aName->getStringValue().c_str();
   store::Item_t lValue;
 
-  if (!theKeys.get(lName, lPosition))
+  Keys::iterator lIter = theKeys.find(lName);
+  if (lIter == theKeys.end())
   {
     ASSERT_INVARIANT();
     return 0;
   }
+  csize lPosition = lIter->second;
   
   store::Item* lKey;
 
@@ -377,7 +378,7 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
   lValue->removeReference();
 
   thePairs.erase(thePairs.begin() + lPosition);
-  theKeys.erase(lName);
+  theKeys.erase(lIter);
 
   if (lPosition < thePairs.size())
   {
@@ -385,10 +386,10 @@ store::Item_t SimpleJSONObject::remove(const store::Item_t& aName)
     Keys::iterator lKeysEnd = theKeys.end();
     for (; lKeysIte != lKeysEnd; ++lKeysIte)
     {
-      csize lPos = lKeysIte.getValue();
+      csize lPos = lKeysIte->second;
       if (lPos > lPosition)
       {
-        lKeysIte.setValue(lPos - 1);
+        lKeysIte->second = lPos - 1;
       }
     }
   }
@@ -406,14 +407,15 @@ store::Item_t SimpleJSONObject::setValue(
     const store::Item_t& aValue)
 {
   ASSERT_INVARIANT();
-  zstring lName = aName->getStringValue();
-  csize lPosition = 0;
+  const char* lName = aName->getStringValue().c_str();
 
-  if (!theKeys.get(lName, lPosition))
+  Keys::const_iterator lIter = theKeys.find(lName);
+  if (lIter == theKeys.end())
   {
     ASSERT_INVARIANT();
-    return NULL;
+    return 0;
   }
+  csize lPosition = lIter->second;
 
   assert(thePairs[lPosition].first->getStringValue() == lName);
 
@@ -455,10 +457,11 @@ bool SimpleJSONObject::rename(
     const store::Item_t& aNewName)
 {
   ASSERT_INVARIANT();
-  zstring lName = aName->getStringValue();
-  zstring lNewName = aNewName->getStringValue();
+  const char* lName = aName->getStringValue().c_str();
+  const char* lNewName = aNewName->getStringValue().c_str();
 
-  if (theKeys.exists(lNewName))
+  Keys::const_iterator lIter = theKeys.find(lNewName);
+  if (lIter != theKeys.end())
   {
     ASSERT_INVARIANT();
     return false;
@@ -472,14 +475,14 @@ bool SimpleJSONObject::rename(
     return false;
   }
 
-  csize lPosition = ite.getValue();
+  csize lPosition = ite->second;
   assert(thePairs[lPosition].first->getStringValue() == lName);
   
   thePairs[lPosition].first->removeReference();
   aNewName->addReference();
   thePairs[lPosition].first = aNewName.getp();
   theKeys.erase(ite);
-  theKeys.insert(lNewName, lPosition);
+  theKeys.insert(std::make_pair(lNewName, lPosition));
 
   ASSERT_INVARIANT();
   return true;
@@ -514,7 +517,7 @@ void SimpleJSONObject::setCollectionTreeInfo(CollectionTreeInfo* aTree)
 zstring SimpleJSONObject::getStringValue() const
 {
   ASSERT_INVARIANT();
-  throw ZORBA_EXCEPTION(jerr::JNTY0003, ERROR_PARAMS("object"));
+  throw ZORBA_EXCEPTION(jerr::JNTY0024, ERROR_PARAMS("object"));
 }
 
 
@@ -554,13 +557,15 @@ void SimpleJSONObject::getTypedValue(store::Item_t& val, store::Iterator_t& iter
 store::Item_t SimpleJSONObject::getObjectValue(const store::Item_t& aKey) const
 {
   ASSERT_INVARIANT();
-  zstring lName = aKey->getStringValue();
+  const char* lName = aKey->getStringValue().c_str();
 
-  csize lPosition = 0;
-  if (!theKeys.get(lName, lPosition))
+  Keys::const_iterator lIter = theKeys.find(lName);
+
+  if (lIter == theKeys.end())
   {
     return NULL;
   }
+  csize lPosition = lIter->second;
 
   assert(thePairs[lPosition].first->equals(aKey));
   return thePairs[lPosition].second;
@@ -587,15 +592,15 @@ void SimpleJSONObject::assertInvariant() const
   JSONItem::assertInvariant();
   assert(theKeys.size() == thePairs.size());
 
-  for(Keys::iterator lIter = theKeys.begin();
+  for(Keys::const_iterator lIter = theKeys.begin();
       lIter != theKeys.end();
       ++lIter)
   {
-    csize lPosition = lIter.getValue();
+    csize lPosition = lIter->second;
     assert(lPosition < thePairs.size());
     assert(thePairs[lPosition].first != NULL);
     assert(thePairs[lPosition].first->isAtomic());
-    assert(thePairs[lPosition].first->getStringValue() == lIter.getKey());
+    assert(thePairs[lPosition].first->getStringValue() == lIter->first);
     assert(thePairs[lPosition].second != NULL);
   }
 }
@@ -722,7 +727,7 @@ void SimpleJSONObject::KeyIterator::close()
 *******************************************************************************/
 store::Item* JSONArray::getType() const
 {
-  return GET_STORE().JDM_ARRAY_QNAME;
+  return GET_STORE().JS_ARRAY_QNAME;
 }
 
 
@@ -1078,7 +1083,7 @@ store::Item* SimpleJSONArray::copy(
 zstring SimpleJSONArray::getStringValue() const
 {
   ASSERT_INVARIANT();
-  throw ZORBA_EXCEPTION(jerr::JNTY0003, ERROR_PARAMS("array"));
+  throw ZORBA_EXCEPTION(jerr::JNTY0024, ERROR_PARAMS("array"));
 }
 
 

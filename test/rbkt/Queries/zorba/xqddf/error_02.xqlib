@@ -1,0 +1,16 @@
+module namespace error = "http://www.example.com/error";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+
+declare collection error:collection as node()*;
+
+declare variable $error:coll := xs:QName("error:collection");
+
+
+declare %an:automatic %an:value-range index error:index
+on nodes dml:collection(xs:QName("error:collection"))
+by xs:hexBinary(@id) as xs:hexBinary;

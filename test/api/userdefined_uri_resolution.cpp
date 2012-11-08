@@ -46,7 +46,7 @@ class MySchemaURIMapper : public URIMapper
       return;
     }
     if(aUri == "http://www.zorba-xquery.com/helloworld") {
-      oUris.push_back("http://zorba-xquery.com/tutorials/helloworld.xsd");
+      oUris.push_back("http://www.zorba-xquery.com/tutorials/helloworld.xsd");
     }
   }
 };
@@ -262,6 +262,7 @@ bool test_unresolved_schema_uri(Zorba* aZorba)
   return false;
 }
 
+
 bool test_deny_internal_module_access(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
@@ -284,6 +285,7 @@ bool test_deny_internal_module_access(Zorba* aZorba)
   }
   return false;
 }
+
 
 bool test_deny_external_module_access(Zorba* aZorba)
 {

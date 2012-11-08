@@ -105,12 +105,13 @@ void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain
     if (kind == fo_expr_kind)
     {
       const fo_expr* fo = static_cast<const fo_expr*>(curExpr);
-      udf = dynamic_cast<user_function*>(fo->get_func());
+      if (fo->get_func()->isUdf())
+        udf = static_cast<user_function*>(fo->get_func());
     }
     else
     {
       const function_item_expr* fi = static_cast<const function_item_expr*>(curExpr);
-      udf = dynamic_cast<user_function*>(fi->get_function());
+      udf = static_cast<user_function*>(fi->get_function());
     }
 
     if (udf != NULL)
@@ -274,7 +275,7 @@ bool UDFGraph::inferDeterminism(UDFNode* node, ulong visit)
 
   bool deterministic = true;
 
-  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  for (csize i = 0; i < node->theChildren.size(); ++i)
   {
     if (inferDeterminism(node->theChildren[i], visit) == false)
       deterministic = false;
@@ -330,7 +331,7 @@ void UDFGraph::display(std::ostream& o, UDFNode* node)
 
   o << inc_indent;
 
-  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  for (csize i = 0; i < node->theChildren.size(); ++i)
   {
     display(o, node->theChildren[i]);
   }

@@ -7,3 +7,11 @@ let $doc := document { <ns:doc/> }/*:doc,
     $f := $a//@ns:f
 return
   ( path($doc), path($b), path($d), path($f) )
+
+(:
+let 
+    $a := <a><b/><b><c/></b><ns:e/></a>,
+    $b := $a/b[c]
+return
+  ( path($b) )
+:)

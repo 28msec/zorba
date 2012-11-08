@@ -1,6 +1,6 @@
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="coll">
+  <CtxVarDeclareIterator varid="4" varname="coll">
     <SingletonIterator value="xs:QName(,,collection)"/>
   </CtxVarDeclareIterator>
   <SequentialIterator>
@@ -8,7 +8,7 @@ Iterator tree for main query:
       <ZorbaCreateCollectionIterator>
         <PromoteIterator type="xs:QName">
           <FnDataIterator>
-            <CtxVarIterator varid="2" varname="coll" varkind="global"/>
+            <CtxVarIterator varid="4" varname="coll" varkind="global"/>
           </FnDataIterator>
         </PromoteIterator>
       </ZorbaCreateCollectionIterator>
@@ -16,7 +16,7 @@ Iterator tree for main query:
     <CountCollectionIterator>
       <PromoteIterator type="xs:QName">
         <FnDataIterator>
-          <CtxVarIterator varid="2" varname="coll" varkind="global"/>
+          <CtxVarIterator varid="4" varname="coll" varkind="global"/>
         </FnDataIterator>
       </PromoteIterator>
     </CountCollectionIterator>

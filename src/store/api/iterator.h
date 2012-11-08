@@ -171,7 +171,8 @@ class IndexProbeIterator : public Iterator
 public:
   virtual ~IndexProbeIterator() { }
 
-  virtual void init(const IndexCondition_t& cond) = 0;
+  virtual void init(const IndexCondition_t& cond,
+                    const xs_integer& aSkip = xs_integer::zero()) = 0;
 
   virtual void open() = 0;
   

@@ -37,8 +37,6 @@ PLAN_ITER_VISITOR (AndIterator);
   PLAN_ITER_VISITOR (JSONObjectIterator);
 
   PLAN_ITER_VISITOR (JSONDirectObjectIterator);
-
-  PLAN_ITER_VISITOR (JSONObjectInsertIterator);
 #endif
 
   PLAN_ITER_VISITOR (UDFunctionCallIterator);

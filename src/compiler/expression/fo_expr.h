@@ -45,12 +45,24 @@ protected:
 public:
 
 protected:
-  static fo_expr* create_seq(CompilerCB* theExpMan, static_context* sctx, const QueryLoc &);
+  static fo_expr* create_seq(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&);
 
 protected:
   fo_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc,
+    const function* f);
+
+  fo_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const function* f,
     expr* arg);
@@ -58,6 +70,7 @@ protected:
   fo_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const function* f,
     expr* arg1,
@@ -66,6 +79,7 @@ protected:
   fo_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const function* f,
     const std::vector<expr*>& args);
@@ -91,9 +105,9 @@ public:
 
   void add_args(const std::vector<expr*>& args);
 
-  void compute_scripting_kind();
+  void remove_arg(csize i);
 
-  expr* clone(substitution_t& s) const;
+  void compute_scripting_kind();
 
   void accept(expr_visitor&);
 
@@ -103,30 +117,6 @@ private:
   fo_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, const function* f);
 };
 
-
-////////// The following expressions in the AST "decay" into an fo_expr ///////
-
-typedef fo_expr additive_expr;
-
-typedef fo_expr and_expr;
-
-typedef fo_expr comparison_expr;
-
-typedef fo_expr enclosed_expr;
-
-typedef fo_expr intersect_except_expr;
-
-typedef fo_expr multiplicative_expr;
-
-typedef fo_expr or_expr;
-
-typedef fo_expr quantified_expr;
-
-typedef fo_expr range_expr;
-
-typedef fo_expr unary_expr;
-
-typedef fo_expr union_expr;
 
 } // namespace zorba
 

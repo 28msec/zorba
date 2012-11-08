@@ -475,6 +475,9 @@ bool TypeOps::is_subtype(
   CHECK_IN_SCOPE(tm, subtype, loc);
   CHECK_IN_SCOPE(tm, supertype, loc);
 
+  if (&subtype == &supertype)
+    return true;
+
   if (subtype.type_kind() == XQType::NONE_KIND)
     return true;
 

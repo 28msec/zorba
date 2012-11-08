@@ -432,6 +432,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "+" { return token::PLUS; }
 "/" { return token::SLASH; }
 "//" { return token::SLASH_SLASH; }
+"!" { return token::BANG; }
 "@" { return token::AT_SIGN; }
 ")" { return token::RPAR; }
 "*" { return token::STAR; }

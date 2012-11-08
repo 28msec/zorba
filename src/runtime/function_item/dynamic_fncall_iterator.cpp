@@ -29,6 +29,7 @@
 #include "store/api/item_factory.h"
 
 #include "types/root_typemanager.h"
+#include "types/casting.h"
 
 #include "system/globalenv.h"
 
@@ -141,12 +142,21 @@ bool DynamicFnCallIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t item;
-  store::Item_t funcItem;
+  store::Item_t targetItem;
+#ifdef ZORBA_WITH_JSON
+  store::Item_t selectorItem1;
+  store::Item_t selectorItem2;
+  store::Item_t selectorItem3;
+  bool isObjectNav;
+  bool selectorError;
+#endif
   FunctionItem* fnItem;
   std::vector<PlanIter_t> argIters;
   std::vector<PlanIter_t>::iterator ite;
   std::vector<PlanIter_t>::const_iterator ite2;
   std::vector<PlanIter_t>::const_iterator end2;
+
+  TypeManager* tm = theSctx->get_typemanager();
 
   DynamicFnCallIteratorState* state;
 
@@ -154,7 +164,7 @@ bool DynamicFnCallIterator::nextImpl(
 
   // first child must return exactly one item which is a function item
   // otherwise XPTY0004 is raised
-  if (!consumeNext(funcItem, theChildren[0], planState))
+  if (!consumeNext(targetItem, theChildren[0], planState))
   {
     RAISE_ERROR(err::XPTY0004, loc, 
     ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
@@ -162,63 +172,146 @@ bool DynamicFnCallIterator::nextImpl(
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
 
-  if (consumeNext(item, theChildren[0], planState))
+  if (targetItem->isFunction())
   {
-    RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion),
-                 GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
-  }
+    if (consumeNext(item, theChildren[0], planState))
+    {
+      RAISE_ERROR(err::XPTY0004, loc, 
+      ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion),
+                   GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
+    }
 
-  if (!funcItem->isFunction())
+    fnItem = static_cast<FunctionItem*>(targetItem.getp());
+
+    argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
+
+    ite = argIters.begin();
+
+    ite2 = theChildren.begin();
+    end2 = theChildren.end();
+    ++ite2;
+
+    for (; ite2 != end2; ++ite2, ++ite)
+    {
+      *ite = *ite2;
+    }
+
+    ite2 = fnItem->getVariables().begin();
+    end2 = fnItem->getVariables().end();
+
+    for(; ite2 != end2; ++ite2, ++ite) 
+    {
+      *ite = *ite2;
+    }
+    
+    state->thePlan = fnItem->getImplementation(argIters);
+    
+    // must be opened after vars and params are set
+    state->thePlan->open(planState, state->theUDFStateOffset);
+    state->theIsOpen = true;
+    
+    while(consumeNext(result, state->thePlan, planState)) 
+    {
+      STACK_PUSH(true, state);
+    }
+
+    // need to close here early in case the plan is completely
+    // consumed. Otherwise, the plan would still be opened
+    // if destroyed from the state's destructor.
+    state->thePlan->close(planState);
+    state->theIsOpen = false;
+  }
+#ifdef ZORBA_WITH_JSON
+  else if (targetItem->isJSONObject() || targetItem->isJSONArray())
   {
-    const TypeManager* tm = theSctx->get_typemanager();
-    xqtref_t type = tm->create_value_type(funcItem);
+    if (theChildren.size() != 2)
+    {
+      RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
+    }
+
+    isObjectNav = targetItem->isJSONObject();
+    selectorError = false;
+
+    if (!consumeNext(selectorItem1, theChildren[1], planState))
+    {
+      selectorError = true;
+    }
+    else
+    {
+      try
+      {
+        if (selectorItem1->isNode())
+        {
+          store::Iterator_t iter;
+          
+          selectorItem1->getTypedValue(selectorItem2, iter);
+
+          if (iter != NULL)
+          {
+            if (!iter->next(selectorItem2) || iter->next(item))
+            {
+              selectorError = true;
+            }
+          }
+        }
+        else
+        {
+          selectorItem2.transfer(selectorItem1);
+        }
+
+        if (!selectorError)
+        {
+          if (!selectorItem2->isAtomic())
+          {
+            selectorError = true;
+          }
+          else
+          {
+            store::SchemaTypeCode selectorType = 
+            (isObjectNav ? store::XS_STRING : store::XS_INTEGER);
+
+            selectorError = ! GenericCast::castToAtomic(selectorItem3,
+                                                        selectorItem2,
+                                                        selectorType,
+                                                        tm,
+                                                        NULL,
+                                                        loc);
+          }
+        }
+      }
+      catch (...)
+      {
+        selectorError = true;
+      }
+    }
+      
+    if (selectorError)
+    {
+      item = (selectorItem1 == NULL ? selectorItem2 : selectorItem1);
+
+      zstring selectorType = tm->create_value_type(item)->toSchemaString();
+
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(XPTY0004_JSONIQ_SELECTOR), selectorType));
+    }
+
+    if (isObjectNav)
+      result = targetItem->getObjectValue(selectorItem3);
+    else
+      result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
+
+    STACK_PUSH(true, state);
+  }
+#endif
+  else
+  {
+    xqtref_t type = tm->create_value_type(targetItem);
 
     RAISE_ERROR(err::XPTY0004, loc, 
     ERROR_PARAMS(ZED(XPTY0004_TypePromotion),
                  type->toSchemaString(),
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
-
-  fnItem = static_cast<FunctionItem*>(funcItem.getp());
-
-  argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
-
-  ite = argIters.begin();
-
-  ite2 = theChildren.begin();
-  end2 = theChildren.end();
-  ++ite2;
-
-  for (; ite2 != end2; ++ite2, ++ite)
-  {
-    *ite = *ite2;
-  }
-
-  ite2 = fnItem->getVariables().begin();
-  end2 = fnItem->getVariables().end();
-
-  for(; ite2 != end2; ++ite2, ++ite) 
-  {
-    *ite = *ite2;
-  }
-
-  state->thePlan = fnItem->getImplementation(argIters);
-
-  // must be opened after vars and params are set
-  state->thePlan->open(planState, state->theUDFStateOffset);
-  state->theIsOpen = true;
-  
-  while(consumeNext(result, state->thePlan, planState)) 
-  {
-    STACK_PUSH(true, state);
-  }
-
-  // need to close here early in case the plan is completely
-  // consumed. Otherwise, the plan would still be opened
-  // if destroyed from the state's destructor.
-  state->thePlan->close(planState);
-  state->theIsOpen = false;
 
   STACK_END(state);
 };

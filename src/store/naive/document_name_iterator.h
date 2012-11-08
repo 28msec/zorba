@@ -23,66 +23,70 @@ namespace zorba {
 
   namespace simplestore {
 
-    /*******************************************************************************
-    ********************************************************************************/
-    template < typename T >
-    class DocumentNameIterator : public store::Iterator
+/*******************************************************************************
+
+********************************************************************************/
+template < typename T >
+class DocumentNameIterator : public store::Iterator
+{
+private:
+  T&                   theItems;
+  typename T::iterator theIterator;
+  bool                 theOpened;
+    
+public:
+  DocumentNameIterator(const T& aItems)
+    :
+    theItems(*const_cast<T*>(&aItems)),
+    theOpened(false)
+  {
+  }
+  
+  virtual ~DocumentNameIterator()
+  {
+    close();
+  }
+    
+  virtual void open()
+  {
+    theIterator = theItems.begin();
+    theOpened = true;
+  }
+    
+  virtual bool next(store::Item_t& aResult)
+  {
+    if (theIterator == theItems.end())
     {
-    private:
-      T&                   theItems;
-      typename T::iterator theIterator;
-      bool                 theOpened;
+      aResult = NULL;
+      return false;
+    }
+    else
+    {
+      zstring lUri = (*theIterator).first;
+      GENV_ITEMFACTORY->createString(aResult, lUri);
+      ++theIterator;
+      return true;
+    }
+  }
+  
+  virtual void reset()
+  {
+    theIterator = theItems.begin();
+  }
+  
+  virtual void close()
+  {
+    if (!theOpened)
+    {
+      return;
+    }
     
-    public:
-      DocumentNameIterator(const T& aItems)
-        : theItems(*const_cast<T*>(&aItems)),
-          theOpened(false)
-      {
-      }
+    theOpened = false;
+  }
+};
     
-      virtual ~DocumentNameIterator()
-      {
-        close();
-      }
-    
-      virtual void open()
-      {
-        theIterator = theItems.begin();
-        theOpened = true;
-      }
-    
-      virtual bool next(store::Item_t& aResult)
-      {
-        if (theIterator == theItems.end())
-        {
-          aResult = NULL;
-          return false;
-        }
-        else
-        {
-          zstring lUri = (*theIterator).first;
-          GENV_ITEMFACTORY->createString(aResult, lUri);
-          ++theIterator;
-          return true;
-        }
-      }
-    
-      virtual void reset()
-      {
-        theIterator = theItems.begin();
-      }
-    
-      virtual void close()
-      {
-        if (!theOpened) {
-          return;
-        }
 
-        theOpened = false;
-      }
-    };
-
-  } // namespace store
+} // namespace store
 } // namespace zorba
 
 

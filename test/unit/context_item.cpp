@@ -172,6 +172,43 @@ int test_3(zorba::Zorba* zorba)
   return 2;
 }
 
+/*
+int test_4(zorba::Zorba* zorba)
+{
+  std::string queryString = "1+1";
+
+  try
+  {
+    zorba::StaticContext_t sctx = zorba->createStaticContext();
+
+    zorba::TypeIdentifier_t element = 
+    zorba::TypeIdentifier::createElementType("http://zorba-xquery.org",
+                                             false,
+                                             "zorba.org",
+                                             false,
+                                             zorba::TypeIdentifier::createAnyNodeType());
+
+    zorba::TypeIdentifier_t document = 
+    zorba::TypeIdentifier::createDocumentType(element);
+
+    sctx->setContextItemStaticType(document);
+
+    zorba::XQuery_t query = zorba->compileQuery(queryString, sctx);
+
+    query->execute(std::cout);
+    query->close();
+  }
+  catch( zorba::ZorbaException ex )
+  {
+    std::cerr << "exception thrown" << std::endl;
+    std::cerr << ex.what() << std::endl;
+    return 1;
+  }
+
+  return 0;
+}
+*/
+
 int context_item(int argc, char* argv[]) 
 {
   void* store = zorba::StoreManager::getStore();
@@ -179,15 +216,22 @@ int context_item(int argc, char* argv[])
 
   zorba::Properties::load(0, NULL);
 
-  int result1 = test_1(zorba);
+  int result1 = 0;
+  result1 = test_1(zorba);
 
-  int result2 = test_2(zorba);
+  int result2 = 0;
+  result2 = test_2(zorba);
 
-  int result3 = test_3(zorba);
+  int result3 = 0;
+  result3 = test_3(zorba);
+
+  int result4 = 0;
+  //result4 = test_4(zorba);
 
   zorba->shutdown();
   zorba::StoreManager::shutdownStore(store);
-  return result1 + result2 + result3;
+
+  return result1 + result2 + result3 + result4;
 }
 
 /* vim:set et sw=2 ts=2: */

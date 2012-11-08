@@ -22,7 +22,7 @@ xquery version "1.0";
  : sections 1.7 (Functions) and 1.10 (Update Primitives). JSONiq extends
  : the XQuery specification to also deal with JSON data natively. See
  :
- :     http://www.jsoniq.org/
+ :     http://jsoniq.org/
  :
  : for details.
  :
@@ -31,18 +31,119 @@ xquery version "1.0";
  :
  : @author Markos Zaharioudakis, Matthias Brantner, Ghislain Fourny
  :)
-module namespace jn = "http://www.jsoniq.org/functions";
+module namespace jn = "http://jsoniq.org/functions";
 
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
-declare namespace jdm = "http://www.jsoniq.org/";
-
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-
-declare namespace jerr = "http://www.jsoniq.org/errors";
+declare namespace jerr = "http://jsoniq.org/errors";
+declare namespace js = "http://jsoniq.org/types";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
+
+
+(:~
+ : This function decodes non-JSON types previously encoded with
+ : jn:encode-for-roundtrip.
+ : Calling this version of the function is equivalent to calling the
+ : 2 argument version of the function with the second argument
+ :
+ :   { "prefix" : "Q{http://jsoniq.org/roundtrip}" }
+ :
+ : @param $items the items to be decoded.
+ : @return the decoded items.
+ :)
+declare function jn:decode-from-roundtrip(
+    $items as item()*) as item()* external;
+
+
+(:~
+ : This function decodes non-JSON types previously encoded with
+ : jn:encode-for-roundtrip.
+ : The $options parameter contains options for the decoding process.
+ : Currently the only supported option is "prefix". It specifies the prefix
+ : that determines if this function decodes an item.
+ :
+ : Example:
+ :   jn:decode-from-roundtrip(
+ :     { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } },
+ :     { "prefix" : "pre-" }
+ :   )
+ : returns the same instance that would be constructed by
+ :   { "nan" : xs:double("NaN") }
+ :
+ : So
+ :   let $decoded := jn:decode-from-roundtrip(
+ :           { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } },
+ :           { "prefix" : "pre-" }
+ :       )
+ :   let $nan := $decoded("nan")
+ :   return
+ :       ($nan instance of xs:double, $nan)
+ : returns
+ :   true NaN
+ :
+ : @param $items the items to be decoded.
+ : @param $options the decoding options.
+ :
+ : @error jerr:JNTY0023 if $options("prefix") is not a string
+ :
+ : @return the decoded items.
+ :)
+declare function jn:decode-from-roundtrip(
+    $items as item()*,
+    $options as object()) as item()* external;
+
+
+(:~
+ : This function recursively encodes non-JSON types in such a way that they
+ : can be serialized as JSON while keeping roundtrip capability.
+ : Calling this version of the function is equivalent to calling the
+ : 2 argument version of the function with the second argument
+ :
+ :  {
+ :    "prefix" : "Q{http://jsoniq.org/roundtrip}"
+ :    "serialization-parameters" : <serialization-parameters xmlns="http://www.w3.org/2010/xslt-xquery-serialization"/>
+ :  }
+ :
+ : Note: The computations are made with respect to the static context of the
+ : caller, so that the schema type definitions are available.
+ :
+ : @param $items the items to be encoded.
+ : @return the encoded items.
+ :)
+declare function jn:encode-for-roundtrip(
+    $items as item()*) as item()* external;
+
+
+(:~
+ : This function recursively encodes non-JSON types in such a way that they
+ : can be serialized as JSON while keeping roundtrip capability.
+ :
+ : Note: The computations are made with respect to the static context of the
+ : caller, so that the schema type definitions are available.
+ :
+ : Example:
+ :   jn:encode-for-roundtrip(
+ :     { "nan" : xs:double("NaN") },
+ :     { "prefix" : "pre-" }
+ :   )
+ : returns
+ :   { "nan" : { "pre-type" : "xs:double", "pre-value" : "NaN" } }
+ :
+ : @param $items the items to be encoded.
+ : @param $options the encoding options.
+ :
+ : @error jerr:JNTY0023 if $options("prefix") is not a string or
+          $options("serialization-parameters") is not an element node
+ : @error err:XQDY0027 if $options("serialization-parameters") is not a valid
+ :        serialization-parameters element
+ : @return the encoded items.
+ :)
+declare function jn:encode-for-roundtrip(
+    $items as item()*,
+    $options as object()) as item()* external;
 
 
 (:~
@@ -56,7 +157,7 @@ declare option ver:module-version "1.0";
  :
  : @return A sequence of JSON Object or Array item.
  :
- : @error jerr:JSDY0040 if the given string is not valid JSON.
+ : @error jerr:JNDY0021 if the given string is not valid JSON.
  :)
 declare function jn:parse-json($j as xs:string?) as json-item()* external;
 
@@ -71,10 +172,10 @@ declare function jn:parse-json($j as xs:string?) as json-item()* external;
  :   <li>jsoniq-multiple-top-level-items: allow parsing of sequences of JSON Objects and Arrays (boolean; default: true)</li>
  : </ul>
  :
- : @error jerr:JSDY0040 if the given string is not valid JSON or 
- :   if jsoniq-multiple-top-level-items is false and there is additionalx
+ : @error jerr:JNDY0021 if the given string is not valid JSON or
+ :   if jsoniq-multiple-top-level-items is false and there is additional
  :   content after the first JSON Object or Array.
- : @error jerr:JSDY0041 if the value for the option
+ : @error jerr:JNTY0020 if the value for the option
  :   jsoniq-multiple-top-level-items is not of type xs:boolean.
  :
  : @return a sequence of JSON Object or Array item.
@@ -180,3 +281,22 @@ declare function jn:flatten($a as array()) as item()* external;
  : @error jerr:JNDY0003 if there is a pair collision.
  :)
 declare function jn:object($o as object()*) as object() external;
+
+(:~
+ : Returns the JSON null.
+ :
+ : @return The JSON null.
+ :)
+declare function jn:null() as js:null external;
+
+(:~
+ : Tests whether the supplied atomic item is a JSON null.
+ :
+ : @param An atomic item.
+ :
+ : @return true if the item is of type js:null.
+ :)
+declare function jn:is-null($i as xs:anyAtomicType) as xs:boolean external;
+
+
+

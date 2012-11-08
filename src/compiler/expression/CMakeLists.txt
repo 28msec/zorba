@@ -14,6 +14,7 @@
 SET(EXPRESSION_SRCS
     expr_consts.cpp
     expr_base.cpp
+    expr_clone.cpp
     expr_iter.cpp
     expr_type.cpp
     expr.cpp
@@ -27,6 +28,7 @@ SET(EXPRESSION_SRCS
     script_exprs.cpp
     update_exprs.cpp
     function_item_expr.cpp
+    pragma.cpp
     mem_manager.cpp
     expr_manager.cpp)
 

@@ -100,8 +100,8 @@ void root_static_context::init()
   set_default_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
 
   set_construction_mode(StaticContextConsts::cons_preserve);
-  set_inherit_mode(StaticContextConsts::inherit_ns);
-  set_preserve_mode(StaticContextConsts::preserve_ns);
+  set_inherit_ns(true);
+  set_preserve_ns(true);
 
   set_ordering_mode(StaticContextConsts::ordered);
 

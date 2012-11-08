@@ -136,10 +136,8 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
 
   typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
-                true : false);
-  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
-               true : false);
+  nsPreserve = theSctx->preserve_ns();
+  nsInherit = theSctx->inherit_ns();
 
   lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
   
@@ -395,10 +393,8 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   
   typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
-                true : false);
-  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
-               true : false);
+  nsPreserve = theSctx->preserve_ns();
+  nsInherit = theSctx->inherit_ns();
 
   lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
 
@@ -684,8 +680,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   if (!consumeNext(lNewname, theChild1, aPlanState))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
+    throw XQUERY_EXCEPTION(err::XPTY0004,
       ERROR_PARAMS( ZED( EmptySeqNoCastToQName ) ),
       ERROR_LOC( loc )
     );
@@ -693,8 +688,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   if (consumeNext(temp, theChild1, aPlanState))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
+    throw XQUERY_EXCEPTION(err::XPTY0004,
       ERROR_PARAMS( ZED( SeqNoCastToQName ) ),
       ERROR_LOC( loc )
     );
@@ -839,10 +833,8 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
-                true : false);
-  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
-               true : false);
+  nsPreserve = theSctx->preserve_ns();
+  nsInherit = theSctx->inherit_ns();
 
   copymode.set(true, typePreserve, nsPreserve, nsInherit);
 

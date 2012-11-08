@@ -296,7 +296,7 @@ bool JSONDirectObjectIterator::nextImpl(store::Item_t& result, PlanState& planSt
     store::CopyMode copymode;
     copymode.set(true,
                  (theSctx->construction_mode() == StaticContextConsts::cons_preserve),
-                 (theSctx->preserve_mode() == StaticContextConsts::preserve_ns),
+                 theSctx->preserve_ns(),
                  true);
 
     for (csize i = 0; i < numPairs; ++i)

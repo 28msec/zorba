@@ -42,9 +42,13 @@ DEF_EXPR_ACCEPT (match_expr)
   RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 
 ********************************************************************************/
-relpath_expr::relpath_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc)
+relpath_expr::relpath_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc)
   :
-  expr(ccb, sctx, loc, relpath_expr_kind)
+  expr(ccb, sctx, udf, loc, relpath_expr_kind)
 {
   theScriptingKind = SIMPLE_EXPR;
 }
@@ -100,28 +104,18 @@ void relpath_expr::compute_scripting_kind()
 }
 
 
-expr* relpath_expr::clone(substitution_t& subst) const
-{
-  std::auto_ptr<relpath_expr> re(theCCB->theEM->create_relpath_expr(theSctx, get_loc()));
-
-  for (unsigned i = 0; i < size(); ++i)
-  {
-    re->add_back((*this)[i]->clone(subst));
-  }
-
-  return re.release();
-}
-
-
-
 /*******************************************************************************
 
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
-axis_step_expr::axis_step_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc)
+axis_step_expr::axis_step_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc)
   :
-  expr(ccb, sctx, loc, axis_step_expr_kind),
+  expr(ccb, sctx, udf, loc, axis_step_expr_kind),
   theReverseOrder(false)
 {
   compute_scripting_kind();
@@ -148,16 +142,6 @@ void axis_step_expr::compute_scripting_kind()
 }
 
 
-expr* axis_step_expr::clone(substitution_t& subst) const
-{
-  axis_step_expr* ae = theCCB->theEM->create_axis_step_expr(theSctx, get_loc());
-  ae->setAxis(getAxis());
-  ae->setTest(getTest());
-  ae->theReverseOrder = theReverseOrder;
-  return ae;
-}
-
-
 /*******************************************************************************
 
   [78] NodeTest ::= KindTest | NameTest
@@ -170,9 +154,13 @@ expr* axis_step_expr::clone(substitution_t& subst) const
                      PITest | CommentTest | TextTest | AnyKindTest
 
 ********************************************************************************/
-match_expr::match_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc)
+match_expr::match_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc)
   :
-  expr(ccb, sctx, loc, match_expr_kind),
+  expr(ccb, sctx, udf, loc, match_expr_kind),
   theDocTestKind(match_no_test),
   theWildKind(match_no_wild),
   theQName(NULL),
@@ -217,20 +205,6 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
 void match_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-expr* match_expr::clone(substitution_t& subst) const
-{
-  match_expr* me = theCCB->theEM->create_match_expr(theSctx, get_loc());
-  me->setTestKind(getTestKind());
-  me->setDocTestKind(getDocTestKind());
-  me->setWildName(getWildName());
-  me->setWildKind(getWildKind());
-  me->setQName(getQName());
-  me->setTypeName(getTypeName());
-  me->setNilledAllowed(getNilledAllowed());
-  return me;
 }
 
 

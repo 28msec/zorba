@@ -1,2 +1,2 @@
-(: test for parser error jerr:JSDY0021 :)
+(: test for parser error jerr:JNDY0021 :)
 jn:parse-json('"a" : true }{ "b" : false }')
