@@ -540,25 +540,25 @@ typedef INTEGER_IMPL_ULL UInteger;
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( char c ) :
-  value_( static_cast<long>( c ) )
+  value_( static_cast<value_type>( c ) )
 {
 }
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( signed char c ) :
-  value_( static_cast<long>( c ) )
+  value_( static_cast<value_type>( c ) )
 {
 }
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( short n ) :
-  value_( static_cast<long>( n ) )
+  value_( static_cast<value_type>( n ) )
 {
 }
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( int n ) :
-  value_( static_cast<long>( n ) )
+  value_( static_cast<value_type>( n ) )
 {
 }
 
@@ -578,19 +578,19 @@ inline INTEGER_IMPL(I)::IntegerImpl( long long n ) :
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( unsigned char c ) :
-  value_( static_cast<long>( c ) )
+  value_( static_cast<value_type>( c ) )
 {
 }
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( unsigned short n ) :
-  value_( static_cast<long>( n ) )
+  value_( static_cast<value_type>( n ) )
 {
 }
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( unsigned int n ) :
-  value_( static_cast<long>( n ) )
+  value_( static_cast<value_type>( n ) )
 {
 }
 
