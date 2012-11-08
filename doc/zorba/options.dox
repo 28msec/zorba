@@ -94,6 +94,11 @@ will then by default attempt to use HTTP, HTTPS, or FTP (depending on the
 URI scheme) to download the resource from the internet. The local name
 <tt>http-uri-resolution</tt> can be used to enable or disable this network
 fallback. By default it is enabled.
+\note Because XQuery options must appear in queries after import statements,
+unfortunately the <tt>http-uri-resolution</tt> option can have no effect if
+it is specified inside query text. It must be specified using the C++ API
+or a Zorba command-line option. An error will be raised if this option is
+specified inside query text to avoid confusion.
 </ul>
 
 
