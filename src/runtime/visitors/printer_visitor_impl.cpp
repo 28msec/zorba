@@ -1514,6 +1514,7 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   PRINTER_VISITOR_DEFINITION(DynamicFnCallIterator);
 
   PRINTER_VISITOR_DEFINITION(EvalIterator);
+  PRINTER_VISITOR_DEFINITION(MatchIterator);
 
   PRINTER_VISITOR_DEFINITION(MaterializeIterator);
 

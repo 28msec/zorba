@@ -441,6 +441,29 @@ ostream& eval_expr::put(ostream& os) const
 }
 
 
+ostream& expr_match_expr::put(ostream& os) const
+{
+  BEGIN_PUT(expr_match_expr);
+
+  for (csize i = 0; i < theArgs.size(); i++)
+  {
+    os << indent << "using $"
+       << theOuterVarNames[i]->getStringValue()
+       << " := [" << endl << inc_indent;
+
+    if (theArgs[i])
+      theArgs[i]->put(os);
+
+    os << dec_indent << indent << "]" << endl;
+  }
+
+  theExpr->put(os);
+  theViewExpr->put(os);
+
+  END_PUT();
+}
+
+
 ostream& function_trace_expr::put(ostream& os) const
 {
   BEGIN_PUT(function_trace_expr);

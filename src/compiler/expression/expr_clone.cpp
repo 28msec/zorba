@@ -731,6 +731,37 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
 
     break;
   }
+  case expr_match_expr_kind:
+  {
+    const expr_match_expr* e = static_cast<const expr_match_expr*>(this);
+
+    newExpr = theCCB->theEM->
+    create_expr_match_expr(theSctx,
+                           udf,
+                           theLoc,
+                           e->theExpr->clone(udf, subst),
+                           e->theViewExpr->clone(udf, subst),
+                           e->theInnerScriptingKind,
+                           e->theNSCtx.getp());
+
+    expr_match_expr* newEval = static_cast<expr_match_expr*>(newExpr);
+
+    newEval->setNodeCopy(e->theDoNodeCopy);
+
+    newEval->theOuterVarNames = e->theOuterVarNames;
+    newEval->theOuterVarTypes = e->theOuterVarTypes;
+
+    csize numVars = e->theOuterVarNames.size();
+
+    newEval->theArgs.resize(numVars);
+
+    for (csize i = 0; i < numVars; ++i)
+    {
+      newEval->theArgs[i] = e->theArgs[i]->clone(udf, subst);
+    }
+
+    break;
+  }
   case wrapper_expr_kind:
   {
     const wrapper_expr* e = static_cast<const wrapper_expr*>(this);

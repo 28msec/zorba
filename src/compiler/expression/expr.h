@@ -1217,6 +1217,42 @@ public:
 };
 
 
+/***************************************************************************//**
+
+********************************************************************************/
+class expr_match_expr : public eval_expr
+{
+  friend class ExprIterator;
+  friend class expr;
+  friend class ExprManager;
+
+protected:
+  expr   * theViewExpr;
+
+protected:
+  expr_match_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr* query,
+      expr* view,
+      expr_script_kind_t scriptingKind,
+      namespace_context* nsCtx);
+
+public:
+  void compute_scripting_kind();
+
+  expr* get_query_expr() const { return theExpr; }
+
+  expr* get_view_expr() const { return theViewExpr; }
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
 #ifdef ZORBA_WITH_DEBUGGER
 /***************************************************************************//**
   debugger expression

@@ -67,6 +67,7 @@ namespace zorba
   class flowctl_expr;
 
   class eval_expr;
+  class expr_match_expr;
   class debugger_expr;
   class function_trace_expr;
   class wrapper_expr;

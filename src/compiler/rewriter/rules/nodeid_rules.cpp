@@ -462,6 +462,7 @@ expr* MarkConsumerNodeProps::apply(
   case exit_expr_kind :       // TODO
 
   case eval_expr_kind :       // TODO
+  case expr_match_expr_kind : // TODO
   case debugger_expr_kind :   // TODO
   case dynamic_function_invocation_expr_kind : // TODO
   case function_item_expr_kind : // TODO
@@ -969,6 +970,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
   }
 
   case eval_expr_kind:
+  case expr_match_expr_kind:
   {
     eval_expr* e = static_cast<eval_expr*>(node);
 
@@ -1379,6 +1381,7 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
 
 
   case eval_expr_kind:
+  case expr_match_expr_kind:
   {
     break;
   }

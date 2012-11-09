@@ -2132,6 +2132,71 @@ void end_visit(eval_expr& v)
                                 false));
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool begin_visit(expr_match_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(expr_match_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  csize numVars = v.num_vars();
+
+  checked_vector<PlanIter_t> args;
+  args.reserve(numVars+2);
+
+  std::vector<int> isGlobalVar(numVars);
+
+  for (csize i = numVars; i > 0; --i)
+  {
+    isGlobalVar[i-1] = false;
+
+    expr* arg = v.get_arg_expr(i-1);
+
+    if (arg->get_expr_kind() == var_expr_kind)
+    {
+      var_expr* varArg = static_cast<var_expr*>(arg);
+
+      if (varArg->get_kind() == var_expr::prolog_var)
+        isGlobalVar[i-1] = true;
+    }
+
+    if (!isGlobalVar[i-1])
+    {
+      args.push_back(pop_itstack());
+    }
+    else
+    {
+      pop_itstack();
+    }
+  }
+
+  args.push_back(pop_itstack());
+  args.push_back(pop_itstack());
+
+  reverse(args.begin(), args.end());
+
+  store::NsBindings localBindings;
+  v.getNSCtx()->getAllBindings(localBindings);
+
+  push_itstack(new MatchIterator(sctx,
+                                 qloc,
+                                 args,
+                                 v.get_var_names(),
+                                 v.get_var_types(),
+                                 isGlobalVar,
+                                 v.get_inner_scripting_kind(),
+                                 localBindings,
+                                 v.getNodeCopy()));
+}
+
+
 #ifdef ZORBA_WITH_DEBUGGER
 bool begin_visit(debugger_expr& v)
 {

@@ -41,6 +41,7 @@ typedef enum
   FN_HEAD_1,
   FN_TAIL_1,
 
+  FN_ZORBA_MATCH_2,
   FN_ZORBA_EVAL_1,
   FN_ZORBA_EVAL_N_1,
   FN_ZORBA_EVAL_U_1,

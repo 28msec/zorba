@@ -143,6 +143,46 @@ private:
 };
 
 
+/****************************************************************************//**
+  The 1st child iterator computes the ast string, the 2nd child iterator computes
+  the query string, and the next N child iterators compute the value of each of 
+  the non-global outer variables
+********************************************************************************/
+class MatchIterator : public NaryBaseIterator<MatchIterator, EvalIteratorState>
+{ 
+protected:
+  std::vector<store::Item_t>  theOuterVarNames;
+
+  std::vector<xqtref_t>       theOuterVarTypes;
+
+  std::vector<int>            theIsGlobalVar;
+
+  expr_script_kind_t          theScriptingKind;
+
+  store::NsBindings           theLocalBindings;
+
+  bool                        theDoNodeCopy;
+
+public:
+  MatchIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& children,
+      const std::vector<store::Item_t>& varNames,
+      const std::vector<xqtref_t>& varTypes,
+      const std::vector<int>& isGlobalVar,
+      expr_script_kind_t scriptingKind,
+      const store::NsBindings& localBindings,
+      bool doNodeCopy);
+
+  ~MatchIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

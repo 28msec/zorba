@@ -917,6 +917,27 @@ nextclause:
     return;
   }
 
+  case expr_match_expr_kind:
+  {
+    expr_match_expr* matchExpr = static_cast<expr_match_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(matchExpr->theExpr);
+    EXPR_ITER_NEXT(matchExpr->theViewExpr);
+
+    theArgsIter = matchExpr->theArgs.begin();
+    theArgsEnd = matchExpr->theArgs.end();
+    for (; theArgsIter != theArgsEnd; ++theArgsIter)
+    {
+      EXPR_ITER_NEXT(*theArgsIter);
+    }
+
+    EXPR_ITER_END();
+    return;
+  }
+
+
 #ifdef ZORBA_WITH_DEBUGGER
   case debugger_expr_kind:
   {

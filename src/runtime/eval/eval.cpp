@@ -18,6 +18,7 @@
 #include <sstream>
 
 #include "store/api/temp_seq.h"
+#include "store/api/item_factory.h"
 
 #include "runtime/eval/eval.h"
 
@@ -462,6 +463,66 @@ PlanIter_t EvalIterator::compile(
 
 
 NARY_ACCEPT(EvalIterator);
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//                                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/********************************************************************************
+
+********************************************************************************/
+MatchIterator::MatchIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& children,
+      const std::vector<store::Item_t>& varNames,
+      const std::vector<xqtref_t>& varTypes,
+      const std::vector<int>& isGlobalVar,
+      expr_script_kind_t scriptingKind,
+      const store::NsBindings& localBindings,
+      bool doNodeCopy)
+  :
+  NaryBaseIterator<MatchIterator, EvalIteratorState>(sctx, loc, children),
+  theOuterVarNames(varNames),
+  theOuterVarTypes(varTypes),
+  theIsGlobalVar(isGlobalVar),
+  theScriptingKind(scriptingKind),
+  theLocalBindings(localBindings),
+  theDoNodeCopy(doNodeCopy)
+{
+}
+
+
+/********************************************************************************
+
+********************************************************************************/
+MatchIterator::~MatchIterator()
+{
+}
+
+
+/********************************************************************************
+
+********************************************************************************/
+bool MatchIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  bool res = false;
+
+  EvalIteratorState* state;
+  DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
+
+  GENV_ITEMFACTORY->createBoolean(result, res);
+  STACK_PUSH(true, state);
+
+  STACK_END(state);
+}
+
+
+NARY_ACCEPT(MatchIterator);
 
 
 }
