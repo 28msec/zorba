@@ -180,6 +180,14 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+private:
+  void importOuterEnv(
+      PlanState& planState,
+      CompilerCB* evalCCB,
+      static_context* importSctx) const;
+
+  expr* compile(CompilerCB* ccb, const zstring& query) const;
 };
 
 

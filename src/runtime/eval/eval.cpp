@@ -32,6 +32,7 @@
 #include "compiler/api/compiler_api.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_manager.h"
+#include "compiler/rewriter/tools/expr_tools.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
@@ -511,14 +512,156 @@ MatchIterator::~MatchIterator()
 bool MatchIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool res = false;
+  store::Item_t queryItem;
+  store::Item_t viewItem;
+  expr* queryExpr;
+  expr* viewExpr;
+  expr::substitution_t subst;
+  CompilerCB* queryCCB = NULL;
+  CompilerCB* viewCCB = NULL;
 
   EvalIteratorState* state;
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
 
-  GENV_ITEMFACTORY->createBoolean(result, res);
+  CONSUME(queryItem, 0);
+  CONSUME(viewItem, 1);
+
+  try
+  {
+    static_context* importSctx = theSctx->create_child_context();
+    static_context* querySctx = importSctx->create_child_context();
+    static_context* viewSctx = importSctx->create_child_context();
+
+    queryCCB = new CompilerCB(*planState.theCompilerCB);
+    queryCCB->theRootSctx = querySctx;
+    queryCCB->theConfig.for_serialization_only = !theDoNodeCopy;
+    (queryCCB->theSctxMap)[1] = querySctx;
+
+    viewCCB = new CompilerCB(*planState.theCompilerCB);
+    viewCCB->theRootSctx = viewSctx;
+    viewCCB->theConfig.for_serialization_only = !theDoNodeCopy;
+    (viewCCB->theSctxMap)[1] = viewSctx;
+
+    queryExpr = compile(queryCCB, queryItem->getStringValue());
+    viewExpr = compile(viewCCB, viewItem->getStringValue());
+
+    res = expr_tools::test_expr_match(queryExpr, viewExpr, subst);
+
+    GENV_ITEMFACTORY->createBoolean(result, res);
+
+    delete queryCCB;
+    delete viewCCB;
+  }
+  catch (...)
+  {
+    delete queryCCB;
+    delete viewCCB;
+
+    throw;
+  }
+
   STACK_PUSH(true, state);
 
   STACK_END(state);
+}
+
+
+/********************************************************************************
+  This method imports a static environment from the quter query into
+  the eval query.
+********************************************************************************/
+void MatchIterator::importOuterEnv(
+    PlanState& planState,
+    CompilerCB* evalCCB,
+    static_context* importSctx) const
+{
+  // Import the outer vars: for each outer var, create a declaration inside
+  // the importSctx.
+
+  csize numOuterVars = theOuterVarNames.size();
+
+  for (csize i = 0; i < numOuterVars; ++i)
+  {
+    var_expr* ve = evalCCB->theEM->create_var_expr(importSctx,
+                                                   NULL,
+                                                   loc,
+                                                   var_expr::prolog_var,
+                                                   theOuterVarNames[i].getp());
+
+    ve->set_type(theOuterVarTypes[i]);
+
+    importSctx->bind_var(ve, loc, err::XQST0049);
+  }
+
+  // Import the outer-query ns bindings
+
+  store::NsBindings::const_iterator ite = theLocalBindings.begin();
+  store::NsBindings::const_iterator end = theLocalBindings.end();
+
+  for (; ite != end; ++ite)
+  {
+    importSctx->bind_ns(ite->first, ite->second, loc);
+  }
+}
+
+
+
+/********************************************************************************
+
+********************************************************************************/
+expr* MatchIterator::compile(CompilerCB* ccb, const zstring& query) const
+{
+  std::stringstream os;
+  os.write(query.data(), (std::streamsize)query.size());
+
+  XQueryCompiler compiler(ccb);
+
+  std::stringstream evalname;
+  evalname << "eval@" << loc.getFilename()
+           << "-" << loc.getLineBegin()
+           << "-" << loc.getColumnBegin();
+
+  std::string lName = evalname.str();
+
+  parsenode_t ast = compiler.parse(os, lName);
+
+  rchandle<MainModule> mm = ast.dyn_cast<MainModule>();
+  if (mm == NULL)
+  {
+    RAISE_ERROR(err::XPST0003, loc,
+    ERROR_PARAMS(ZED(XPST0003_ModuleDeclNotInMain)));
+  }
+
+  expr* rootExpr = compiler.normalize(ast);
+  rootExpr = compiler.optimize(rootExpr);
+
+  if (theScriptingKind == SIMPLE_EXPR)
+  {
+    if (ccb->isSequential())
+    {
+      RAISE_ERROR(zerr::XSST0004, loc, ERROR_PARAMS("eval"));
+    }
+    else if (ccb->isUpdating())
+    {
+      RAISE_ERROR(err::XUST0001, loc, ERROR_PARAMS(ZED(XUST0001_UDF_2), "eval"));
+    }
+  }
+  else if (theScriptingKind == UPDATING_EXPR)
+  {
+    if (ccb->isSequential())
+    {
+      RAISE_ERROR(zerr::XSST0003, loc, ERROR_PARAMS("eval_u"));
+    }
+  }
+  else // sequential
+  {
+    if (ccb->isUpdating())
+    {
+      RAISE_ERROR(zerr::XSST0002, loc, ERROR_PARAMS("eval_s"));
+    }
+  }
+
+  return rootExpr;
 }
 
 
