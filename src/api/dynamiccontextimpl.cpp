@@ -715,7 +715,7 @@ bool DynamicContextImpl::getExternalFunctionParam(
 bool
 DynamicContextImpl::addExternalFunctionParameter (
     const String& aName,
-    ExternalFunctionParameter* aValue )
+    ExternalFunctionParameter* aValue ) const
 {
   ZORBA_DCTX_TRY
   {

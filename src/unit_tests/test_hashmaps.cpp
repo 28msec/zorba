@@ -27,7 +27,7 @@ public:
   static uint32_t hash(uint64_t key)
   {
 #if 1
-    return key;
+    return static_cast<uint32_t>(key);
 #else
     char buf[9];
     buf[0] = (unsigned char)(key>>56);

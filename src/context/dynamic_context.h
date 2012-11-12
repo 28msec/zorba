@@ -129,7 +129,7 @@ protected:
 
   std::vector<VarValue>        theVarValues;
 
-  ValueMap                   * keymap;
+  mutable ValueMap                   * keymap;
 
   IndexMap                   * theAvailableIndices;
 
@@ -241,7 +241,7 @@ public:
 
   bool addExternalFunctionParameter(
      const std::string& aName,
-     ExternalFunctionParameter* aValue);
+     ExternalFunctionParameter* aValue) const;
 
   ExternalFunctionParameter* getExternalFunctionParameter(
       const std::string& aName) const;

@@ -377,7 +377,7 @@
        <code>http://www.w3.org/2001/XMLSchema-instance</code>,
        <code>http://www.w3.org/2005/xpath-functions</code>.
       </comment>
-      <value>"$1": invalid function or annotation namespace</value>
+      <value>"$1": $2 declared in reserved namespace${ 3}</value>
     </diagnostic>
 
     <diagnostic code="XQST0046">
@@ -1808,7 +1808,11 @@
     </diagnostic>
 
     <diagnostic code="ZXQP0060" name="OPTION_NOT_KNOWN">
-      <value>"$1": unkown option</value>
+      <value>"$1": unknown option</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP0061" name="DISABLE_HTTP_OPTION_IN_QUERY">
+      <value>"$1": this option cannot be specified in a query, it must be set via C++ API or command-line parameter</value>
     </diagnostic>
 
     <diagnostic code="ZXQP8401" name="THESAURUS_VERSION_MISMATCH"
@@ -4007,6 +4011,14 @@
 
     <entry key="JSON_UNEXPECTED_EXTRA_CONTENT">
       <value>unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)</value>
+    </entry>
+
+    <entry key="FUNCTION">
+      <value>function</value>
+    </entry>
+
+    <entry key="ANNOTATION">
+      <value>annotation</value>
     </entry>
 
   </subvalues>

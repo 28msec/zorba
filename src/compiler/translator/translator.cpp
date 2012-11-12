@@ -3334,6 +3334,12 @@ void* begin_visit(const VFO_DeclList& v)
       if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
         RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
+      if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_FEATURE_NS &&
+          value == "http-uri-resolution")
+      {
+        RAISE_ERROR(zerr::ZXQP0061_DISABLE_HTTP_OPTION_IN_QUERY, loc,
+                    ERROR_PARAMS(value));
+      }
       theSctx->bind_option(qnameItem, value, opt_decl->get_location());
 
       if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_OPTIM_NS &&
@@ -3476,7 +3482,7 @@ void* begin_visit(const VFO_DeclList& v)
         ns == XQUERY_MATH_FN_NS)
     {
       RAISE_ERROR(err::XQST0045, func_decl->get_location(),
-      ERROR_PARAMS(qnameItem->getLocalName()));
+      ERROR_PARAMS(qnameItem->getLocalName(), ZED(FUNCTION), ns));
     }
 
     if (! theModuleNamespace.empty() && ns != theModuleNamespace)
@@ -4119,8 +4125,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
     if (AnnotationInternal::lookup(lExpandedQName) == AnnotationInternal::zann_end)
     {
       RAISE_ERROR(err::XQST0045, loc,
-      ERROR_PARAMS( "%" + ("\"" + lExpandedQName->getNamespace() + "\""
-                    + ":" + lExpandedQName->getLocalName())));
+      ERROR_PARAMS(lExpandedQName->getLocalName(), ZED(ANNOTATION), annotNS));
     }
 
     //recognised = true;
