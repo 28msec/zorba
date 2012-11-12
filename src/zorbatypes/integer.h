@@ -581,23 +581,31 @@ inline INTEGER_IMPL(I)::IntegerImpl( long long n ) :
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( unsigned char c ) :
-  value_( static_cast<long>( c ) )
+  value_( static_cast<long>( (unsigned long)c ) )
 {
 }
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( unsigned short n ) :
-  value_( static_cast<long>( n ) )
+  value_( static_cast<long>( (unsigned long)n ) )
 {
 }
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+#if ZORBA_SIZEOF_INT != ZORBA_SIZEOF_LONG
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( unsigned int n ) :
+  value_( static_cast<long>( (unsigned long)n ) )
+{
+}
+#endif /* ZORBA_SIZEOF_INT == ZORBA_SIZEOF_LONG */
+#else /* ZORBA_WITH_BIG_INTEGER */
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( unsigned int n ) :
-  value_( static_cast<long>( n ) )
+  value_( static_cast<value_type>( n ) )
 {
 }
 
-#ifndef ZORBA_WITH_BIG_INTEGER
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( unsigned long n ) :
   value_( static_cast<value_type>( n ) )
