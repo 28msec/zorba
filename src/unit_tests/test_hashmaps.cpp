@@ -9,7 +9,7 @@
 #include "util/hashmap32.h"
 #include "util/hashmap.h"
 #include "util/unordered_map.h"
-
+#include "util/hash/hash.h"
 
 namespace zorba {
 
@@ -27,7 +27,7 @@ public:
   static uint32_t hash(uint64_t key)
   {
 #if 1
-    return key;
+    return static_cast<uint32_t>(key);
 #else
     char buf[9];
     buf[0] = (unsigned char)(key>>56);
