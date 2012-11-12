@@ -42,6 +42,8 @@ class HTTPURLResolver : public internal::URLResolver
 {
 public:
 
+  static bool isHTTPScheme(zstring const& aUrl);
+
   virtual Resource* resolveURL(zstring const& aUrl,
     EntityData const* aEntityData);
 };
