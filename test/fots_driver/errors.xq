@@ -19,14 +19,18 @@
  : @author Sorin Nasoi
  :)
 
-module namespace err = "http://www.zorba-xquery.com/fots-driver/errors";
+module namespace err =
+  "http://www.zorba-xquery.com/fots-driver/errors";
 
 (:~
  : Errors namespace URI.
 :)
-declare variable $err:errNS as xs:string := "http://www.zorba-xquery.com/fots-driver/errors";
+declare variable $err:errNS as xs:string :=
+  "http://www.zorba-xquery.com/fots-driver/errors";
 
 (:~
- : xs:QName with namespace URI="http://www.w3.org/2010/09/qt-fots-catalog/errors" and local name "err:errNA"
+ : xs:QName with
+ : namespace URI = "http://www.w3.org/2010/09/qt-fots-catalog/errors"
+ : and local name "err:errNA"
 :)
 declare variable $err:errNA as xs:QName := fn:QName($err:errNS, "check:errNA");

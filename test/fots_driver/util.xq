@@ -19,18 +19,25 @@
  : @author Sorin Nasoi
  :)
 
-module namespace util = "http://www.zorba-xquery.com/fots-driver/util";
+module namespace util =
+  "http://www.zorba-xquery.com/fots-driver/util";
 
-import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+import schema namespace output =
+  "http://www.w3.org/2010/xslt-xquery-serialization";
 
-import module namespace file  = "http://expath.org/ns/file";
+import module namespace file  =
+  "http://expath.org/ns/file";
 
-import module namespace fots-err = "http://www.zorba-xquery.com/fots-driver/errors" at "errors.xq";
+import module namespace fots-err =
+  "http://www.zorba-xquery.com/fots-driver/errors" at "errors.xq";
 
-declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace fots = "http://www.w3.org/2010/09/qt-fots-catalog";
+declare namespace err =
+  "http://www.w3.org/2005/xqt-errors";
+declare namespace fots =
+  "http://www.w3.org/2010/09/qt-fots-catalog";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann =
+  "http://www.zorba-xquery.com/annotations";
 
 
 (:~
@@ -54,7 +61,8 @@ declare namespace ann = "http://www.zorba-xquery.com/annotations";
   </output:serialization-parameters>;
   
 (:~
- : Retrieve the value of from the given node that is either given as text node or in a file attribute.
+ : Retrieve the value of from the given node that is either given as text node
+ : or in a file attribute.
  :
  : @param $case test-case element.
  : @param $path the path of the test-set.
@@ -87,17 +95,15 @@ declare %ann:nondeterministic function util:get-value(
 declare function util:parent-folder(
   $path   as xs:string
 ) as xs:anyURI {
-  xs:anyURI(fn:substring-before($path, file:base-name($path)))
+  xs:anyURI(fn:substring-before($path,
+                                file:base-name($path)))
 };
 
 declare function util:serialize-result(
   $result    as item()*
 ) as xs:string* {
-  for $res in $result
-    return
-    if($res instance of node())
-    then fn:serialize($res, $util:serParamXml)
-    else fn:string($res)
+util:serialize-result($result,
+                      $util:serParamXml)
 };
 
 declare function util:serialize-result(
@@ -107,6 +113,7 @@ declare function util:serialize-result(
   for $res in $result
   return
    if($res instance of node())
-   then fn:serialize($result, $SerParams)
+   then fn:serialize($res,
+                     $SerParams)
    else fn:string($res)
 };
