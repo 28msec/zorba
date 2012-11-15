@@ -22,14 +22,22 @@ namespace zorba {
 
 class XQueryException;
 
-class ErrorPrinter {
+class ZORBA_DLL_PUBLIC ErrorPrinter {
 
   public:
 
+    /**
+     * Generates an error message out of an XQuery exception.
+     *
+     * @param aException The exception.
+     * @param aOut       Stream to which the error message is written to.
+     * @param aAsXml     Error message in XML format?
+     * @param aIndet     Error message indented?
+     */
     static std::ostream&
     print(
-      const XQueryException& lException,
-      std::ostream&          lOut,
+      const XQueryException& aException,
+      std::ostream&          aOut,
       bool                   aAsXml,
       bool                   aIndent);
 

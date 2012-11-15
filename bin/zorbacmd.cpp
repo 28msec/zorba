@@ -41,6 +41,7 @@
 #include <zorba/serialization_callback.h>
 #include <zorba/audit.h>
 #include <zorba/audit_scoped.h>
+#include <zorba/util/error_printer.h>
 
 #include <zorba/store_manager.h>
 
@@ -51,7 +52,6 @@
 #include <zorba/audit_scoped.h>
 #endif
 
-#include "error_printer.h"
 #include "util.h"
 #include "path_util.h"
 

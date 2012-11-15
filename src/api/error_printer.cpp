@@ -23,7 +23,7 @@
 #include <zorba/zorba_string.h>
 
 #include "zorba/util/uri.h"
-#include "error_printer.h"
+#include <zorba/util/error_printer.h>
 
 namespace zorba {
 
