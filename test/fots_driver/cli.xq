@@ -43,6 +43,12 @@ declare variable $testSetPrefixes as xs:string external := "";
 (:~ name/criteria for the test cases :)
 declare variable $testCasePrefixes as xs:string external := "";
 
+(:~ name for the test set :)
+declare variable $testSetName as xs:string external := "";
+
+(:~ name for the test case :)
+declare variable $testCaseName as xs:string external := "";
+
 (:~ Enable or disable verbose output :)
 declare variable $verbose as xs:string external := "true";
 
@@ -88,11 +94,11 @@ declare function local:usage() as xs:string
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-sets -e testSetPrefixes:=prod,app",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-cases -e testSetPrefixes:=prod-Literal",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-matching-test-cases -e pattern:=catch",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -e verbose:=false -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-cases -e testSetPrefixes:=prod-Literal -e testCasePrefixes:=Literal -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-cases -e assertType:=assert-count -e testSetPrefixes:=fn-innermost -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-cases -e assertType:=assert-count -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-case -e assertType:=assert-count -e testSetName:=fn-innermost -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-case -e assertType:=assert-count -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-and-report -o report.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=report -e failuresFilePath:=failures.xml -e verbose:=false -o report.xml --indent",
     ""
@@ -140,24 +146,25 @@ case "run-test-sets"
   return d:run-fots($fotsPath,
                     $fotsZorbaManifestPath,
                     d:list-test-sets($fotsPath,
-                              local:tokenize(trace($testSetPrefixes,
-                                            "'testSetPrefixes' was set to: "))),
-                    trace('',"'testCasePrefixes' was set to: "),
+                                     local:tokenize(trace($testSetPrefixes,
+                                       "'testSetPrefixes' was set to: "))),
+                    d:list-test-cases($fotsPath,
+                                      local:tokenize($testSetPrefixes),
+                                      local:tokenize(trace($testCasePrefixes,
+                                        "'$testCasePrefixes' was set to: "))),
                     $exceptedTestCases,
                     $exceptedTestSets,
                     $assertType,
                     xs:boolean($verbose),
                     xs:boolean($showResult))
-case "run-test-cases"
+case "run-test-case"
   return d:run-fots($fotsPath,
                     $fotsZorbaManifestPath,
-                    local:tokenize(trace($testSetPrefixes,
-                                        "'testSetPrefixes' was set to: ")),
-                    local:tokenize(trace($testCasePrefixes,
-                                        "'testCasePrefixes' was set to: ")),
+                    trace($testSetName,"'testSetName' was set to: "),
+                    trace($testCaseName,"'testCaseName' was set to: "),
                     $exceptedTestCases,
                     $exceptedTestSets,
-                    $assertType,
+                    trace($assertType,"'assertType' was set to: "),
                     xs:boolean($verbose),
                     xs:boolean($showResult))
 case "run-and-report"

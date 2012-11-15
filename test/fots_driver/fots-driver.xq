@@ -75,7 +75,7 @@ declare %ann:nondeterministic function driver:list-test-sets(
 (:~
  : Loops through the given test sets and returns the corresponding test cases.
  : @param $fotsPath path to the FOTS catalog file.
- : @param $testSetPrefixes name/criteria for the test sets 
+ : @param $testSetPrefixes name/criteria for the test sets
  : (empty string means all).
  : @return available FOTS test cases.
  :)
@@ -96,6 +96,32 @@ declare %ann:nondeterministic function driver:list-test-cases(
         for $testSet in $doc/fots:catalog/fots:test-set[starts-with(@name, $prefix)]
         let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
         return data($testSetDoc//fots:test-case/@name)
+};
+
+(:~
+ : Loops through the given test sets and returns the corresponding test cases.
+ : @param $fotsPath path to the FOTS catalog file.
+ : @param $testSetPrefixes name/criteria for the test sets
+ : (empty string means all).
+ : @param $testCasePrefixes name/criteria for the test cases
+ : (empty string means all).
+ : @return available FOTS test cases.
+ :)
+declare %ann:nondeterministic function driver:list-test-cases(
+  $fotsPath         as xs:string,
+  $testSetPrefixes  as xs:string*,
+  $testCasePrefixes as xs:string*
+) as xs:string* {
+  let $doc := doc(resolve-uri($fotsPath)),
+      $baseUri:= resolve-uri(util:parent-folder($fotsPath)),
+      $testCaseNames := driver:list-test-cases($fotsPath, $testSetPrefixes)
+  return
+    for $prefix in $testCasePrefixes
+    return
+      for $name in $testCaseNames
+      where starts-with($name,
+                        $prefix)
+      return $name
 };
 
 (:~
