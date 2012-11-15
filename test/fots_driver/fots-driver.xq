@@ -433,80 +433,70 @@ declare %ann:sequential function driver:test(
 try {
 {
   variable $queryName := trace(data($case/@name),
-                              "processing test case :"),
-           $depMet := env:check-dependencies($deps,
-                                             $FOTSZorbaManifest);
+                              "processing test case :");
+ 
+  variable $test := util:get-value($case,
+                                   $testSetBaseURI,
+                                   "test");
+  variable $enableHOF := env:enable-HOF-feature(($deps, $case//fots:dependency),
+                                                $test);
+  variable $query := string-join((env:add-xquery-30(($deps, $case//fots:dependency),
+                                                   $test),
+                                  env:decl-def-elem-namespace($env,
+                                                              $case/fots:environment),
+                                  env:decl-base-uri($env,
+                                                    $case/fots:environment),
+                                  env:decl-namespaces($env,
+                                                      $case,
+                                                      $testSetBaseURI),
+                                  $enableHOF,
+                                  env:decl-decimal-formats(($env/fots:decimal-format,
+                                                           $case/fots:environment/fots:decimal-format)),
+                                  env:add-var-decl($env,
+                                                   $case),
+                                  $test
+                                  ),"&#xA;"),
+           $xqxqQuery := driver:create-XQXQ-query($query,
+                                                  $case,
+                                                  $env,
+                                                  $envBaseURI,
+                                                  $testSetBaseURI),
+           $startDateTime := datetime:current-dateTime (),
+           $result := driver:xqxq-invoke($xqxqQuery,
+                                         $case,
+                                         $showResult,
+                                         $testSetBaseURI),
+           $duration := (datetime:current-dateTime () - $startDateTime);
 
-  if(exists($depMet))
-  then driver:not-applicable($case,
-                             $env,
-                             string-join($depMet,''),
-                             $verbose)
-  else
-  {
-   variable $test := util:get-value($case,
-                                    $testSetBaseURI,
-                                    "test");
-   variable $enableHOF := env:enable-HOF-feature(($deps, $case//fots:dependency),
-                                                 $test);
-   variable $query := string-join((env:add-xquery-30(($deps, $case//fots:dependency),
-                                                    $test),
-                                   env:decl-def-elem-namespace($env,
-                                                               $case/fots:environment),
-                                   env:decl-base-uri($env,
-                                                     $case/fots:environment),
-                                   env:decl-namespaces($env,
-                                                       $case,
-                                                       $testSetBaseURI),
-                                   $enableHOF,
-                                   env:decl-decimal-formats(($env/fots:decimal-format,
-                                                            $case/fots:environment/fots:decimal-format)),
-                                   env:add-var-decl($env,
-                                                    $case),
-                                   $test
-                                   ),"&#xA;"),
-            $xqxqQuery := driver:create-XQXQ-query($query,
-                                                   $case,
-                                                   $env,
-                                                   $envBaseURI,
-                                                   $testSetBaseURI),
-            $startDateTime := datetime:current-dateTime (),
-            $result := driver:xqxq-invoke($xqxqQuery,
-                                          $case,
-                                          $showResult,
-                                          $testSetBaseURI),
-            $duration := (datetime:current-dateTime () - $startDateTime);
-
-            if(empty($result))
-            then driver:pass($case,
-                             $result,
-                             $xqxqQuery,
-                             $env,
-                             (),
-                             $duration,
-                             $verbose)
+           if(empty($result))
+           then driver:pass($case,
+                            $result,
+                            $xqxqQuery,
+                            $env,
+                            (),
+                            $duration,
+                            $verbose)
 
 (: if the exact error code was not found, report the test as 'Pass' 
    with an attribute correctError=false :)
-            else if(exists($result) and
-                    contains(string-join($result,''), "Expected error:") and
-                    contains(string-join($result,''), "Found error:"))
-            then driver:pass($case,
-                             $result,
-                             $xqxqQuery,
-                             $env,
-                             $result,
-                             $duration,
-                             $verbose)
-            else
-              driver:fail($case,
-                          $result,
-                          $xqxqQuery,
-                          $testSetName,
-                          $env,
-                          $duration,
-                          $verbose)
-  }
+           else if(exists($result) and
+                   contains(string-join($result,''), "Expected error:") and
+                   contains(string-join($result,''), "Found error:"))
+           then driver:pass($case,
+                            $result,
+                            $xqxqQuery,
+                            $env,
+                            $result,
+                            $duration,
+                            $verbose)
+           else
+             driver:fail($case,
+                         $result,
+                         $xqxqQuery,
+                         $testSetName,
+                         $env,
+                         $duration,
+                         $verbose)
 }
 } catch * {
   driver:fail($case, 
