@@ -30,9 +30,12 @@
 
 #include "types/root_typemanager.h"
 #include "types/casting.h"
+#include "types/typeops.h"
 
 #include "system/globalenv.h"
 
+// TODO: remove, used for debugging purposes
+#include "runtime/core/var_iterators.h"
 
 namespace zorba
 {
@@ -253,16 +256,6 @@ bool DynamicFnCallIterator::nextImpl(
       // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
       *ite = *ite2;
     }
-
-    /*
-    ite2 = fnItem->getVariables().begin();
-    end2 = fnItem->getVariables().end();
-
-    for(; ite2 != end2; ++ite2, ++ite)
-    {
-      *ite = *ite2;
-    }
-    */
 
     state->thePlan = fnItem->getImplementation(argIters);
 

@@ -148,7 +148,7 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf,
                                planState.theMaxStackDepth);
 
   std::cerr << "--> UDFunctionCallIteratorState::open() " << this << " new theBlock: " << (void*)thePlanState->theBlock << " + " << (void*)thePlanState->theBlockSize
-      << " for new PlanState: " << thePlanState << " for PlanIterator: " << thePlan->getId() << " = " << thePlan->getClassName() << std::endl;
+            << " for new PlanState: " << thePlanState << " for PlanIterator: " << thePlan->getId() << " = " << thePlan->getClassName() << std::endl;
   std::cerr << "    the PlanState: " << thePlanState << std::endl;
   // std::cerr << " has theGlobalDynCtx: " << thePlanState->theGlobalDynCtx->toString();
 
@@ -382,7 +382,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   std::vector<store::Iterator_t>::iterator argWrapsIte = state->theArgWrappers.begin();
 
   const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
-  std::vector<var_expr_t>::const_iterator argVarsIte = theUDF->getArgVars().begin();
+  std::vector<var_expr*>::const_iterator argVarsIte = theUDF->getArgVars().begin();
   std::vector<ArgVarRefs>::const_iterator argsRefsIte = argsRefs.begin();
 
   for (csize i=0; argsIte != argsEnd; ++argsIte, ++argWrapsIte, ++argsRefsIte, ++i, ++argVarsIte)
@@ -397,9 +397,9 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
         if (i < theFunctionItem->getVariablesValues().size())
           (*argWrapsIte) = theFunctionItem->getVariableValue(i);
 
+
         if ((*argWrapsIte) != NULL)
           (*argWrapsIte)->reset();
-
 
         std::cerr << "--> UDFunctionCallIterator::openImpl() argsIte: " << (*argsIte)->toString()
             << " var: " << theUDF->getArgVars()[i]->toString();
@@ -490,11 +490,11 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     if (!lCacheHit)
     {
       const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
-      const std::vector<store::Iterator_t>& argWrappers = state->theArgWrappers;
+      const std::vector<store::Iterator_t>& argWraps = state->theArgWrappers;
 
       for (size_t i = 0; i < argsRefs.size(); ++i)
       {
-        if (argWraps[i] != NULL)
+        // if (argWraps[i] != NULL)
         {
           const ArgVarRefs& argVarRefs = argsRefs[i];
           store::Iterator_t argWrapper;
@@ -507,7 +507,8 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
           }
           else
           {
-            argWrapper = argWraps[i];
+            if (i < argWraps.size())
+              argWrapper = argWraps[i];
           }
 
           ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
@@ -517,7 +518,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
           {
             const LetVarIter_t& argRef = (*argVarRefsIte);
             assert(argRef != NULL);
-            
+
             if (argRef != NULL)
             {
               argRef->bind(argWrapper, *state->thePlanState);

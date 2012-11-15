@@ -232,7 +232,7 @@ ostream& forlet_clause::put(ostream& os) const
   }
 
   os << endl << indent << "[\n" << inc_indent;
-    
+
   theDomainExpr->put(os);
 
   END_PUT();
@@ -533,7 +533,7 @@ ostream& ftcontains_expr::put( ostream &os ) const
 
 std::ostream& function_item_expr::put(std::ostream& os) const
 {
-  os << indent << "funtion_item_expr " << expr_addr(this) << inc_indent;
+  os << indent << "funtion_item_expr" << expr_addr(this) << inc_indent;
 
   if (theDynamicFunctionInfo->theQName != NULL)
   {
@@ -544,7 +544,7 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   }
   else
   {
-    os << " inline udf (" << theDynamicFunctionInfo->theFunction.getp() << ") [\n";
+    os << " inline udf (" << theDynamicFunctionInfo->theFunction << ") [\n";
 
     const signature& sig = get_function()->getSignature();
     std::vector<xqtref_t> paramTypes;
@@ -552,6 +552,7 @@ std::ostream& function_item_expr::put(std::ostream& os) const
       paramTypes.push_back(sig[i]);
     xqtref_t funcType = get_type_manager()->create_function_type(paramTypes, sig.returnType(), TypeConstants::QUANT_ONE);
 
+    // TODO: remove type
     os << indent << "type: " << funcType->toString() << std::endl;
 
     for (ulong i = 0; i < theDynamicFunctionInfo->theScopedVarsValues.size(); i++)
@@ -565,8 +566,8 @@ std::ostream& function_item_expr::put(std::ostream& os) const
       os << dec_indent << indent << "]" << endl;
     }
 
-    if (theDynamicFunctionInfo->theFunction.getp() != NULL)
-      reinterpret_cast<const user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody()->put(os);
+    if (theDynamicFunctionInfo->theFunction != NULL)
+      static_cast<user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody()->put(os);
 
     END_PUT();
   }

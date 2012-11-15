@@ -42,18 +42,17 @@ public: // TODO: not public
 
   CompilerCB                  * theCCB;
   static_context              * theSctx;
-  static_context_t              theScopedSctx;
   QueryLoc                      theLoc;
   function_t                    theFunction;
   store::Item_t                 theQName;
   uint32_t                      theArity;
 
-  std::vector<expr_t>           theScopedVarsValues;
-  std::vector<var_expr_t>       theSubstVarsValues;
+  std::vector<expr*>            theScopedVarsValues;
+  std::vector<var_expr*>        theSubstVarsValues;
   std::vector<store::Item_t>    theScopedVarsNames;
   std::vector<PlanIter_t>       theScopedVarsIterators;
   std::vector<int>              theIsGlobalVar;
-  
+
   store::NsBindings             theLocalBindings; // TODO: not sure these are needed, to check
 
 public:
@@ -62,10 +61,10 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFunctionInfo(const static_context_t& scoped_sctx, const QueryLoc& loc, function_t function, store::Item_t qname, uint32_t arity);
-  
+  DynamicFunctionInfo(const QueryLoc& loc, function* func, store::Item_t qname, uint32_t arity);
+
   virtual ~DynamicFunctionInfo();
-  
+
   void add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal);
 };
 
@@ -82,12 +81,12 @@ public:
 class FunctionItem : public store::Item, public zorba::serialization::SerializeBaseClass
 {
 protected:
+  std::auto_ptr<CompilerCB>       theCCB;
+
   DynamicFunctionInfo_t           theDynamicFunctionInfo;
 
   std::vector<store::Iterator_t>  theVariablesValues;
-  
-  std::auto_ptr<CompilerCB>       theCCB;
-  
+
   std::auto_ptr<dynamic_context>  theDctx;
 
   SYNC_CODE(mutable RCLock        theRCLock;)
@@ -106,7 +105,9 @@ public:
   FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo);
 
   virtual ~FunctionItem();
-      
+
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+
   dynamic_context* getDctx() const { return theDctx.get(); }
 
   store::Iterator_t getVariableValue(const store::Item_t& variableQName);

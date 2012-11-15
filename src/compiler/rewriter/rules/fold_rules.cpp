@@ -158,7 +158,7 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
     function* f = fo->get_func();
-        
+
     if (!f->isUdf())
     {
       if (FunctionConsts::FN_ERROR_0 <= f->getKind() &&
@@ -171,7 +171,7 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
       {
         curDereferencesNodes = ANNOTATION_TRUE;
       }
-      
+
       // Do not fold functions that always require access to the dynamic context,
       // or may need to access the implicit timezone (which is also in the dynamic
       // constext).
@@ -196,27 +196,36 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
       {
         curUnfoldable = ANNOTATION_TRUE_FIXED;
       }
-      
+
       if (static_cast<user_function*>(f)->dereferencesNodes())
         curDereferencesNodes = ANNOTATION_TRUE;
-      
+
       if (static_cast<user_function*>(f)->constructsNodes())
         curConstructsNodes = ANNOTATION_TRUE;
     }
-    
+
     break;
   }
-  
+
   case var_expr_kind:
   {
     var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
-    
+
     if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
       curUnfoldable = ANNOTATION_TRUE_FIXED;
-    
+
     break;
   }
-  
+
+  // Do not fold function item expressions yet as they can access prolog
+  // vars. It could probably be optimized though.
+  case function_item_expr_kind:
+  {
+    curUnfoldable = ANNOTATION_TRUE_FIXED;
+    break;
+  }
+
+
   default:
   {
     break;
@@ -324,7 +333,7 @@ expr* MarkFreeVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
     while (!iter.done())
     {
       expr* e = **iter;
-        
+
       apply(rCtx, e, modified);
 
       const expr::FreeVars& kfv = e->getFreeVars();
@@ -336,10 +345,10 @@ expr* MarkFreeVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
         flwor_clause* c = (*ite)->get_flwor_clause();
         if (c != NULL && c->get_flwor_expr() == flwor)
           continue;
-        
+
         freevars.insert(*ite);
       }
-      
+
       iter.next();
     }
 
@@ -354,12 +363,12 @@ expr* MarkFreeVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
       expr* e = **iter;
 
       apply(rCtx, e, modified);
-        
+
       const expr::FreeVars& kfv = e->getFreeVars();
       std::copy(kfv.begin(),
                 kfv.end(),
                 inserter(freevars, freevars.begin()));
-      
+
       iter.next();
     }
   }
@@ -396,7 +405,7 @@ expr* FoldConst::apply(RewriterContext& rCtx, expr* node, bool& modified)
         fo->num_args() == 0)
       break;
   }
-   
+
   default:
   {
     if (node->getFreeVars().empty() &&
@@ -439,7 +448,7 @@ expr* FoldConst::apply(RewriterContext& rCtx, expr* node, bool& modified)
     {
       **iter = new_e;
     }
-    
+
     iter.next();
   }
 
@@ -1061,12 +1070,12 @@ RULE_REWRITE_POST(InlineFunctions)
 
         function_trace_expr* dummy = rCtx.theEM->
         create_function_trace_expr(fo->get_udf(), body);
-        
+
         dummy->setFunctionName(udf->getName());
         dummy->setFunctionArity((unsigned int)udf->getArgVars().size());
         dummy->setFunctionCallLocation(node->get_loc());
         dummy->setFunctionLocation(udf->getLoc());
-        
+
         return dummy;
       }
     }

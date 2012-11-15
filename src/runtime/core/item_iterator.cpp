@@ -20,6 +20,7 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/expr_manager.h"
 #include "functions/udf.h"
 
 #include "context/dynamic_context.h"
@@ -202,9 +203,8 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     // std::cerr << "--> " << toString() << " importSctx: " << importSctx->toString();
 
     // Import the outer environment.
-    std::vector<var_expr_t> outerVars;
     ulong maxOuterVarId;
-    importOuterEnv(planState, importSctx, evalDctx.get(), outerVars, maxOuterVarId);
+    importOuterEnv(planState, evalCCB.get(), importSctx, evalDctx.get(), maxOuterVarId);
 
     // Set the values for the (explicit) external vars of the eval query
     setExternalVariables(evalCCB.get(), importSctx, evalDctx.get());
@@ -216,7 +216,7 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
           << (theDynamicFunctionInfo->theScopedVarsNames[i].getp() ?
           theDynamicFunctionInfo->theScopedVarsNames[i]->show()
         : "")
-          << ": " << (varsValues[i] ? varsValues[i]->toString() : "NULL") << std::endl;
+          << ": " << (varsValues[i].getp() ? varsValues[i]->toString() : "NULL") << std::endl;
     }
 
     /*
@@ -261,9 +261,9 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 ********************************************************************************/
 void DynamicFunctionIterator::importOuterEnv(
     PlanState& planState,
+    CompilerCB* evalCCB,
     static_context* importSctx,
     dynamic_context* evalDctx,
-    std::vector<var_expr_t>& outerVars,
     ulong& maxOuterVarId) const
 {
   maxOuterVarId = 1;
@@ -321,18 +321,15 @@ void DynamicFunctionIterator::importOuterEnv(
 
   csize numOuterVars = theDynamicFunctionInfo->theScopedVarsNames.size();
 
-  outerVars.resize(numOuterVars);
-
   for (csize i = 0; i < numOuterVars; ++i)
   {
-    var_expr_t ve = new var_expr(importSctx,
-                                 loc,
-                                 var_expr::prolog_var,
-                                 theDynamicFunctionInfo->theScopedVarsNames[i].getp());
+    var_expr* ve = evalCCB->theEM->create_var_expr(importSctx,
+                                                   NULL,
+                                                   loc,
+                                                   var_expr::prolog_var,
+                                                   theDynamicFunctionInfo->theScopedVarsNames[i].getp());
 
     // ve->set_type(theOuterVarTypes[i]); TODO: get types
-
-    outerVars[i] = ve;
 
     if (!theDynamicFunctionInfo->theIsGlobalVar[i])
     {
@@ -344,7 +341,7 @@ void DynamicFunctionIterator::importOuterEnv(
 
       ve->set_unique_id(maxOuterVarId);
 
-      if (theDynamicFunctionInfo->theSubstVarsValues[i].getp() != NULL
+      if (theDynamicFunctionInfo->theSubstVarsValues[i] != NULL
           &&
           theDynamicFunctionInfo->theSubstVarsValues[i]->get_unique_id() == 0)
       {
@@ -382,7 +379,7 @@ void DynamicFunctionIterator::importOuterEnv(
 
       // std::cerr << "--> importOuterEnv(): outerSctx: " << outerSctx->toString() << std::endl;
 
-      if (theDynamicFunctionInfo->theSubstVarsValues[i].getp() != NULL
+      if (theDynamicFunctionInfo->theSubstVarsValues[i] != NULL
           &&
           theDynamicFunctionInfo->theSubstVarsValues[i]->get_unique_id() == 0)
       {
@@ -393,11 +390,9 @@ void DynamicFunctionIterator::importOuterEnv(
       ve->set_unique_id(outerGlobalVarId);
     }
 
-    /*
-    std::cerr << "--> importOuterEnv(): updated id for subst_var: "
-      << (theDynamicFunctionInfo->theSubstVarsValues[i].getp()
-      ? theDynamicFunctionInfo->theSubstVarsValues[i]->toString() : "NULL\n");
-    */
+    // std::cerr << "--> importOuterEnv(): updated id for subst_var: "
+    //  << (theDynamicFunctionInfo->theSubstVarsValues[i].getp()
+    //  ? theDynamicFunctionInfo->theSubstVarsValues[i]->toString() : "NULL\n");
 
     importSctx->bind_var(ve, loc, err::XQST0049);
   }

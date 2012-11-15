@@ -56,7 +56,14 @@ RewriterContext::RewriterContext(
     if (udf != NULL)
     {
       theMessage = "Optimizing UDF ";
-      theMessage += udf->getName()->getStringValue();
+      if (udf->getName())
+        theMessage += udf->getName()->getStringValue();
+      else
+      {
+        std::stringstream ss;
+        ss << udf->getLoc();
+        theMessage += "inline function (" + ss.str() + ")";
+      }
     }
   }
 }

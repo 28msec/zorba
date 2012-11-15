@@ -480,14 +480,15 @@ public:
       user_function* udf,
       const QueryLoc& loc,
       expr* anExpr,
-      const std::vector<expr*>& args);
+      const std::vector<expr*>& args,
+      xqtref_t coercionTargetType);
 
   function_item_expr* create_function_item_expr(
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      const store::Item* aQName,
       function* f,
+      store::Item* aQName,
       uint32_t aArity);
 
   function_item_expr* create_function_item_expr(
@@ -607,7 +608,7 @@ public:
       user_function* udf,
       const QueryLoc& loc,
       bool general);
- 
+
   pragma* create_pragma(
       const store::Item_t&,
       const zstring&);

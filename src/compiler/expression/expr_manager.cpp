@@ -787,9 +787,10 @@ ExprManager::create_dynamic_function_invocation_expr(
     user_function* udf,
     const QueryLoc& loc,
     expr* anExpr,
-    const std::vector<expr*>& args)
+    const std::vector<expr*>& args,
+    xqtref_t coercionTargetType)
 {
-  CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, udf, loc, anExpr, args);
+  CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, udf, loc, anExpr, args, coercionTargetType);
 }
 
 
@@ -797,11 +798,11 @@ function_item_expr* ExprManager::create_function_item_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    const store::Item* aQName,
     function* f,
+    store::Item* aQName,
     uint32_t aArity)
 {
-  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, aQName, f, aArity);
+  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, f, aQName, aArity);
 }
 
 

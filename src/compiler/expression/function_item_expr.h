@@ -46,11 +46,11 @@ class dynamic_function_invocation_expr : public expr
 protected:
   expr                * theExpr;
   std::vector<expr*>    theArgs;
-  
+
   // TODO: must be protected
 public:
   xqtref_t               theCoercionTargetType;
-  
+
 
 protected:
   dynamic_function_invocation_expr(
@@ -60,7 +60,7 @@ protected:
       const QueryLoc& loc,
       expr* anExpr,
       const std::vector<expr*>& args,
-      xqtref_t coercionTargetType = NULL);
+      xqtref_t coercionTargetType);
 
 public:
   const expr* get_function() const { return theExpr; }
@@ -121,8 +121,8 @@ protected:
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      const store::Item* aQName,
       function* f,
+      store::Item* aQName,
       uint32_t aArity);
 
   function_item_expr(
@@ -133,21 +133,22 @@ protected:
 
   virtual ~function_item_expr();
 
+public:
   DynamicFunctionInfo* get_dynamic_fn_info() { return theDynamicFunctionInfo; }
 
   void add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal);
 
-  const std::vector<expr_t>& get_scoped_vars_values() const { return theDynamicFunctionInfo->theScopedVarsValues; }
+  const std::vector<expr*>& get_scoped_vars_values() const { return theDynamicFunctionInfo->theScopedVarsValues; }
 
-  const std::vector<var_expr_t>& get_subst_vars_values() const { return theDynamicFunctionInfo->theSubstVarsValues; }
+  const std::vector<var_expr*>& get_subst_vars_values() const { return theDynamicFunctionInfo->theSubstVarsValues; }
 
   const std::vector<store::Item_t>& get_scoped_vars_names() const { return theDynamicFunctionInfo->theScopedVarsNames; }
 
   const std::vector<int>& get_is_global_var() const { return theDynamicFunctionInfo->theIsGlobalVar; }
 
-  void set_function(user_function_t& udf);
+  void set_function(user_function* udf);
 
-  user_function* get_function() const { return theDynamicFunctionInfo->theFunction.getp(); }
+  function* get_function() const { return theDynamicFunctionInfo->theFunction; }
 
   const store::Item_t& get_qname() const { return theDynamicFunctionInfo->theQName; }
 

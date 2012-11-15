@@ -30,6 +30,10 @@
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
 
+// TODO: delete, debugging purposes
+#include "runtime/visitors/printer_visitor_api.h"
+#include "runtime/visitors/iterprinter.h"
+
 
 namespace zorba
 {
@@ -42,17 +46,15 @@ SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 /*******************************************************************************
 
 ********************************************************************************/
-DynamicFunctionInfo::DynamicFunctionInfo(const static_context_t& scopedSctx,
-                                         const QueryLoc& loc,
-                                         function_t function,
+DynamicFunctionInfo::DynamicFunctionInfo(const QueryLoc& loc,
+                                         function* func,
                                          store::Item_t qname,
                                          uint32_t arity)
   :
   theCCB(NULL),
   theSctx(NULL),
-  theScopedSctx(scopedSctx),
   theLoc(loc),
-  theFunction(function),
+  theFunction(func),
   theQName(qname),
   theArity(arity)
 {
@@ -77,7 +79,6 @@ void DynamicFunctionInfo::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theCCB;
   ar & theSctx;
-  ar & theScopedSctx;
   // ar & theLoc; TODO
   ar & theQName;
   ar & theArity;
@@ -88,8 +89,7 @@ void DynamicFunctionInfo::serialize(::zorba::serialization::Archiver& ar)
   if (ar.is_serializing_out())
   {
     uint32_t planStateSize;
-    (void)static_cast<user_function*>(theFunction.getp())->
-    getPlan(planStateSize);
+    (void)static_cast<user_function*>(theFunction.getp())->getPlan(planStateSize);
   }
 }
 
@@ -118,9 +118,9 @@ FunctionItem::FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
                            dynamic_context* dctx)
   :
   store::Item(store::Item::FUNCTION),
+  theCCB(ccb),
   theDynamicFunctionInfo(dynamicFunctionInfo),
   theVariablesValues(varsValues),
-  theCCB(ccb),
   theDctx(dctx)
 {
   assert(theDynamicFunctionInfo->theFunction->isUdf());
@@ -204,7 +204,7 @@ store::Iterator_t FunctionItem::getVariableValue(const store::Item_t& variableQN
 
 PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args)
 {
-  expr* dummy = new function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc);
+  expr* dummy = theCCB->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc);
 
   /*
   PlanIter_t udfCallIterator =
@@ -212,14 +212,21 @@ PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args)
                                                    theDynamicFunctionInfo->theSctx,
                                                    theDynamicFunctionInfo->theLoc,
                                                    args,
-                                                   *dummy.getp());
+                                                   *dummy);
   */
   PlanIter_t udfCallIterator =
       theDynamicFunctionInfo->theFunction->codegen(theCCB.get(),
                                                    theCCB->theRootSctx,
                                                    theDynamicFunctionInfo->theLoc,
                                                    args,
-                                                   *dummy.getp());
+                                                   *dummy);
+
+  /*
+  std::cerr << "Iterator tree for dynamic function call:\n";
+  XMLIterPrinter vp(std::cerr);
+  print_iter_plan(vp, udfCallIterator);
+  std::cerr << std::endl;
+  */
 
   UDFunctionCallIterator* udfIter = static_cast<UDFunctionCallIterator*>(udfCallIterator.getp());
   udfIter->setDynamic();

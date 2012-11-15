@@ -16,8 +16,6 @@
 #include "stdafx.h"
 
 #include "compiler/expression/function_item_expr.h"
-// TODO: remove or add back?
-// #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_visitor.h"
 
 #include "compiler/api/compilercb.h"
@@ -38,7 +36,7 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
     user_function* udf,
     const QueryLoc& loc,
     expr* anExpr,
-    const std::vector<expr_t>& args,
+    const std::vector<expr*>& args,
     xqtref_t coercionTargetType)
   :
   expr(ccb, sctx, udf, loc, dynamic_function_invocation_expr_kind),
@@ -73,13 +71,12 @@ function_item_expr::function_item_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    const store::Item* aQName,
     function* f,
+    store::Item* aQName,
     uint32_t aArity)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
-                         scopedSctx,
                          loc,
                          f,
                          aQName,
@@ -98,7 +95,6 @@ function_item_expr::function_item_expr(
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
-                         scopedSctx,
                          loc,
                          NULL,
                          NULL,
@@ -123,17 +119,11 @@ void function_item_expr::add_variable(expr* var, var_expr* substVar, const store
 }
 
 
-user_function* function_item_expr::get_function() const 
-{
-  assert(theFunction->isUdf());
-  return static_cast<user_function*>(theFunction.getp());
-}
-
-
-void function_item_expr::set_function(user_function_t& udf)
+void function_item_expr::set_function(user_function* udf)
 {
   theDynamicFunctionInfo->theFunction = udf;
   theDynamicFunctionInfo->theArity = udf->getArity();
+  theDynamicFunctionInfo->theQName = udf->getName();
   // compute_scripting_kind();
 }
 
@@ -144,35 +134,6 @@ void function_item_expr::compute_scripting_kind()
   theScriptingKind = SIMPLE_EXPR;
 }
 
-
-/* TODO: remove? seems it's not needed anymore
-expr_t function_item_expr::clone(substitution_t& s) const
-{
-  std::auto_ptr<function_item_expr> lNewExpr(
-      new function_item_expr(theSctx,
-                             theDynamicFunctionInfo->theScopedSctx,
-                             get_loc(),
-                             theDynamicFunctionInfo->theFunction->getName(),
-                             theDynamicFunctionInfo->theFunction.getp(),
-                             theDynamicFunctionInfo->theArity)
-  );
-
-  std::vector<expr_t>::const_iterator varIter = theDynamicFunctionInfo->theScopedVarsValues.begin();
-  std::vector<var_expr_t>::const_iterator substVarIter = theDynamicFunctionInfo->theSubstVarsValues.begin();
-  std::vector<store::Item_t>::const_iterator nameIter = theDynamicFunctionInfo->theScopedVarsNames.begin();
-  std::vector<int>::const_iterator isGlobalIter = theDynamicFunctionInfo->theIsGlobalVar.begin();
-  for ( ; varIter != theDynamicFunctionInfo->theScopedVarsValues.end(); ++varIter, ++substVarIter, ++nameIter, ++isGlobalIter)
-  {
-    lNewExpr->add_variable(
-                           (*varIter).getp() != NULL ? (*varIter)->clone(s) : NULL,
-                           (*substVarIter).getp() != NULL ? static_cast<var_expr*>((*substVarIter)->clone(s).getp()) : NULL,
-                           *nameIter,
-                           *isGlobalIter);
-  }
-
-  return lNewExpr.release();
-}
-*/
 
 }//end of namespace
 /* vim:set et sw=2 ts=2: */

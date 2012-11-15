@@ -1360,18 +1360,18 @@ fo_expr* create_empty_seq(const QueryLoc& loc)
 /*******************************************************************************
 
 ********************************************************************************/
-void create_inline_function(expr_t body, flwor_expr_t flwor, const std::vector<xqtref_t>& paramTypes, xqtref_t returnType, const QueryLoc& loc, CompilerCB* theCCB)
+void create_inline_function(expr* body, flwor_expr* flwor, const std::vector<xqtref_t>& paramTypes, xqtref_t returnType, const QueryLoc& loc, CompilerCB* theCCB)
 {
-  std::vector<var_expr_t> argVars;
+  std::vector<var_expr*> argVars;
 
+  // Wrap the body in appropriate type op.
   if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
   {
-    body = wrap_in_atomization(body);
-    body = wrap_in_type_promotion(body, returnType, PromoteIterator::TYPE_PROMOTION);
+    body = wrap_in_type_promotion(body, returnType, PROMOTE_TYPE_PROMOTION);
   }
   else
   {
-    body = wrap_in_type_match(body, returnType, loc, TreatIterator::TYPE_MATCH);
+    body = wrap_in_type_match(body, returnType, loc, TREAT_TYPE_MATCH);
   }
 
   if (flwor != NULL)
@@ -1411,21 +1411,21 @@ void create_inline_function(expr_t body, flwor_expr_t flwor, const std::vector<x
   // Create the udf obj.
   user_function_t udf(new user_function(loc,
                                         signature(0, paramTypes, returnType),
-                                        body.getp(),
+                                        body,
                                         body->get_scripting_detail(),
                                         theCCB));
   udf->setArgVars(argVars);
-  udf->setOptimized(true);
+  udf->setOptimized(true); // TODO: this should not be set here
+
 
   // Get the function_item_expr and set its function to the udf created above.
-  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(theNodeStack.top().getp());
+  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(theNodeStack.top());
   assert(fiExpr != NULL);
-
   fiExpr->set_function(udf);
 }
 
 
-expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc, CompilerCB* theCCB, bool is_func_return = false)
+expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, CompilerCB* theCCB, bool is_func_return = false)
 {
   const FunctionXQType* func_type = static_cast<const FunctionXQType*>(targetType.getp());
 
@@ -1436,7 +1436,7 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
 
   // Create the dynamic call body
 
-  function_item_expr* fiExpr = new function_item_expr(theRootSctx, NULL, loc);
+  function_item_expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc);
   push_nodestack(fiExpr);
 
   // Get the in-scope vars of the scope before opening the new scope for the
@@ -1448,20 +1448,20 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
   */
 
   // handle the function item expression
-  flwor_expr_t fnItem_flwor = new flwor_expr(theRootSctx, loc, false);
-  for_clause_t fnItem_lc = wrap_in_forclause(theExpr, NULL);
-  var_expr_t fnItem_var = fnItem_lc->get_var();
+  flwor_expr* fnItem_flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
+  for_clause* fnItem_lc = wrap_in_forclause(theExpr, NULL);
+  var_expr* fnItem_var = fnItem_lc->get_var();
   fnItem_flwor->add_clause(fnItem_lc);
-  var_expr_t inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
+  var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
   fiExpr->add_variable(fnItem_var, inner_subst_var, fnItem_var->get_name(), 0 /*var is not global*/);
 
   // std::cerr << "--> subst_var: " << inner_subst_var->toString() << std::endl;
 
   // bind the function item variable in the inner flwor
-  flwor_expr_t inner_flwor = new flwor_expr(theRootSctx, loc, false);
-  var_expr_t inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::let_var);
-  // var_expr_t inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::let_var);
-  // var_expr_t inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
+  flwor_expr* inner_flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
+  var_expr* inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::let_var);
+  // var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::let_var);
+  // var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
   // let_clause_t inner_lc = wrap_in_letclause(&*inner_arg_var, inner_subst_var);
   // let_clause_t inner_lc = wrap_in_letclause(inner_arg_var);
   inner_arg_var->set_param_pos(inner_flwor->num_clauses());
@@ -1470,23 +1470,21 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
 
 
   // Handle parameters. For each parameter, a let binding is added to the inner flwor.
-  std::vector<expr_t> arguments;    // Arguments to the dynamic function call
+  std::vector<expr*> arguments;    // Arguments to the dynamic function call
   for(unsigned i = 0; i<func_type->get_number_params(); i++)
   {
     xqtref_t paramType = func_type->operator[](i);
 
-    var_expr_t arg_var = create_temp_var(loc, var_expr::arg_var);
-    var_expr_t subst_var = bind_var(loc, arg_var->get_name(), var_expr::let_var);
-    let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
+    var_expr* arg_var = create_temp_var(loc, var_expr::arg_var);
+    var_expr* subst_var = bind_var(loc, arg_var->get_name(), var_expr::let_var);
+    let_clause* lc = wrap_in_letclause(&*arg_var, subst_var);
 
     arg_var->set_param_pos(inner_flwor->num_clauses());
     arg_var->set_type(paramType);
 
     inner_flwor->add_clause(lc);
 
-
-
-    arguments.push_back(new wrapper_expr(theRootSctx, loc, subst_var));
+    arguments.push_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, subst_var));
   }
 
   if (inner_flwor->num_clauses() == 0)
@@ -1494,10 +1492,11 @@ expr_t wrap_in_coercion(xqtref_t targetType, expr_t theExpr, const QueryLoc& loc
     inner_flwor = NULL;
   }
 
-  expr_t body = new dynamic_function_invocation_expr(
+  expr* body = theExprManager->create_dynamic_function_invocation_expr(
                 theRootSctx,
+                theUDF,
                 loc,
-                new wrapper_expr(theRootSctx, loc, inner_subst_var),
+                theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, inner_subst_var),
                 arguments,
                 is_func_return ? NULL : targetType);
 
@@ -11425,7 +11424,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   theExprManager->create_dynamic_function_invocation_expr(theRootSctx, theUDF,
                                                           loc,
                                                           sourceExpr,
-                                                          arguments);
+                                                          arguments,
+                                                          NULL);
   push_nodestack(dynFuncInvocation);
 }
 
@@ -11566,15 +11566,20 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
       foArgs[i] = argVar;
     }
 
-    expr* body = theExprManager->create_fo_expr(theRootSctx, udf, loc, fn, foArgs);
+    expr* body;
+    if (fn == NULL) // we have a typecast function call
+      body = theExprManager->create_cast_expr(theRootSctx, udf, loc, foArgs[0], type);
+    else
+      body = theExprManager->create_fo_expr(theRootSctx, udf, loc, fn != NULL? fn : udf, foArgs);
 
     udf->setArgVars(udfArgs);
     udf->setBody(body);
+    udf->setOptimized(true); // TODO: this is needed because otherwise the optimizer would get into an infinte cycle
 
     fn = udf;
   }
 
-  expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, fn->getName(), fn, arity);
+  expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, fn, fn->getName(), arity);
 
   push_nodestack(fiExpr);
 }
@@ -11645,8 +11650,6 @@ void* begin_visit(const InlineFunction& v)
                                         theCCB));
   fiExpr->set_function(udf);
 
-  theUDF = udf;
-
   flwor_expr* flwor = NULL;
 
   // Handle function parameters. Translation of the params, if any, results to
@@ -11660,7 +11663,6 @@ void* begin_visit(const InlineFunction& v)
   if (params)
   {
     params->accept(*this);
-
     flwor = static_cast<flwor_expr*>(pop_nodestack());
   }
   else
@@ -11687,7 +11689,7 @@ void* begin_visit(const InlineFunction& v)
     store::Item_t qname = varExpr->get_name();
 
     // var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
-    var_expr_t subst_var;
+    var_expr* subst_var;
 
     if (kind != var_expr::prolog_var)
       subst_var = bind_var(loc, qname, var_expr::prolog_var);
@@ -11734,7 +11736,7 @@ void end_visit(const InlineFunction& v, void* aState)
   ZORBA_ASSERT(body != 0);
 
   // Make the body be the return expr of the flwor that binds the function params.
-  flwor_expr_t flwor = pop_nodestack().cast<flwor_expr>();
+  flwor_expr* flwor = static_cast<flwor_expr*>(pop_nodestack());
 
   // Translate the type declarations for the function params
   std::vector<xqtref_t> paramTypes;
@@ -11765,7 +11767,11 @@ void end_visit(const InlineFunction& v, void* aState)
   // pop the scope.
   pop_scope();
 
+  /* TODO:
+  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(theNodeStack.top());
+  assert(fiExpr != NULL);
   theUDF = fiExpr->get_udf();
+  */
 }
 
 
