@@ -233,23 +233,32 @@ void apply_updates(
   }
   catch (XQueryException& e)
   {
-    if (e.has_source() && (e.diagnostic() == err::XUDY0021))
-    {
-      throw XQUERY_EXCEPTION(err::XUDY0021, ERROR_PARAMS(e.what(), ZED(XUDY0021_AppliedAt), loc));
+    if ( e.has_source() ) {
+      if ( e.diagnostic() == err::XUDY0021
+        || e.diagnostic() == err::XUDY0024
+        || e.diagnostic() == zerr::ZDDY0013_COLLECTION_BAD_DESTROY_INDEXES
+        || e.diagnostic() == zerr::ZDDY0014_COLLECTION_BAD_DESTROY_ICS
+        || e.diagnostic() == zerr::ZDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES
+        || e.diagnostic() == zerr::ZSTR0002_INDEX_DOES_NOT_EXIST
+      )
+        throw XQUERY_EXCEPTION(
+          err::XUDY0021,
+          ERROR_PARAMS( e.what(), ZED(XUDY0021_AppliedAt), loc ),
+          ERROR_LOC( e )
+        );
     }
     else
     {
       // exception raised by the store doesn't have a store location
       // hence, we add the location of the apply expression
       set_source(e, loc);
-      throw;
     }
+    throw;
   }
 }
 
 
 UNARY_ACCEPT(ApplyIterator);
-
 
 
 } // namespace zorba
