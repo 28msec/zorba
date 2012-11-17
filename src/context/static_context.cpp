@@ -3460,11 +3460,13 @@ void static_context::bind_option(
   {
     theOptionMap->insert(qname2, option);
   }
-
 }
 
-store::Item_t
-static_context::parse_and_expand_qname(
+
+/***************************************************************************//**
+
+********************************************************************************/
+store::Item_t static_context::parse_and_expand_qname(
     const zstring& value,
     const char* default_ns,
     const QueryLoc& loc) const
@@ -3502,7 +3504,7 @@ void static_context::process_warning_option(
 
   std::vector<store::Item_t>::iterator lIter;
 
-  if ( name == "error" )
+  if (name == "error")
   {
     if ( lQName->getLocalName() == "all" )
     {
@@ -3513,11 +3515,12 @@ void static_context::process_warning_option(
           lIter != theWarningsAreErrors.end();
           ++lIter )
     {
-      if ( lQName->equals( (*lIter) ) )
+      if (lQName->equals((*lIter)))
       {
         return;
       }
     }
+
     theWarningsAreErrors.push_back( lQName );
   }
   else if ( name == "disable" )
