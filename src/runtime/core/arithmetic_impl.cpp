@@ -527,9 +527,9 @@ bool SubtractOperation::compute<store::XS_DATETIME,store::XS_DATETIME>(
     d.reset(i0->getDateTimeValue().subtractDateTime(&i1->getDateTimeValue(),
                                                     dctx->get_implicit_timezone()));
   }
-  catch (InvalidTimezoneException const&) 
+  catch (InvalidTimezoneException const &e) 
   {
-    throw XQUERY_EXCEPTION(err::FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -550,9 +550,9 @@ bool SubtractOperation::compute<store::XS_DATE,store::XS_DATE>(
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
                                                 dctx->get_implicit_timezone()));
   }
-  catch (InvalidTimezoneException const&)
+  catch (InvalidTimezoneException const &e)
   {
-    throw XQUERY_EXCEPTION(err::FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -573,9 +573,9 @@ bool SubtractOperation::compute<store::XS_TIME,store::XS_TIME>(
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
                                                 dctx->get_implicit_timezone()));
   }
-  catch (InvalidTimezoneException const&)
+  catch (InvalidTimezoneException const &e)
   {
-    throw XQUERY_EXCEPTION(err::FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
