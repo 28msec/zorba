@@ -71,12 +71,8 @@ declare %ann:sequential function eval:result(
       <expected-result>{$expResult}</expected-result>
       {
         if($showResult)
-        then <result>{$result}</result>
-        else ()
-      }
-      {
-        if($showResult)
-        then <errors>{$err}</errors>
+        then (<result>{$result}</result>,
+              <errors>{$err}</errors>)
         else ()
       }
     </out>
@@ -102,10 +98,7 @@ declare %ann:sequential function eval:error(
     let $err := eval:error-code($code,
                                 $errorDescription,
                                 $expResult)
-    return
-      if(empty($err))
-      then ()
-      else $err
+    return $err
   else
     concat("Expected error &#xA;",
           data($expResult/@code),
@@ -221,24 +214,19 @@ declare %private %ann:sequential function eval:assert-any-of(
   $errorDescription as xs:string?,
   $showResult       as xs:boolean
 ) as xs:string? {
-  let $emptyResults := for $tmp in $expResult/*
-                       return empty(eval:check-assertion($result,
-                                                         $tmp,
-                                                         $code,
-                                                         $errorDescription,
-                                                         $showResult)),
-      $results := for $tmp in $expResult/*
-                  return eval:check-assertion($result,
-                                              $tmp,
-                                              $code,
-                                              $errorDescription,
-                                              $showResult)
-  return 
-    if (some $result in $emptyResults satisfies $result)
-    then ()
-    else concat("&#xA;Assert-any-of returned: ",
-                string-join(util:serialize-result($results),
-                ' '))
+  let $results :=
+    for $tmp in $expResult/*
+    return <result>{
+      for $r in eval:check-assertion($result,
+                                     $tmp,
+                                     $code,
+                                     $errorDescription,
+                                     $showResult)
+      return <item>{$r}</item>
+    } </result>
+  where every $result in $results satisfies $result/item
+  return concat("&#xA;Assert-any-of returned: ",
+                string-join(util:serialize-result($results/data(item)), ' '))
 };
 
 (: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_all-of :)

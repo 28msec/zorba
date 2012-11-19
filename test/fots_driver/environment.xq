@@ -86,11 +86,7 @@ declare function env:set-context-item(
   $env        as element(fots:environment)?,
   $envBaseURI as xs:anyURI?
 ) as xs:string? {
-  if(empty($env))
-  then ()
-  else if(data($env/@name) = 'empty')
-  then ()
-  else if (exists($env/fots:source[@role = "."]))
+  if (exists($env/fots:source[@role = "."]))
   then string-join((env:declare-context-item($env, $envBaseURI),
                    'xqxq:bind-context-item($queryID, $contextItem);')
                    ,"&#xA;")

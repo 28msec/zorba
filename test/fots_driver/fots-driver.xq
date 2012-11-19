@@ -197,9 +197,9 @@ declare %ann:sequential function driver:run-fots(
 ) as element(fots:test-cases) {
   try {
   let $FOTSCatalog := doc(trace(resolve-uri($FOTSCatalogFilePath), 
-                              "The path to FOTS catalog.xml was set to: ")),
+                              "Path to FOTS catalog.xml was set to: ")),
       $FOTSZorbaManifest := doc(trace(resolve-uri($FOTSZorbaManifestPath),
-                                    "The path to FOTSZorbaManifest was set to:"))
+                                    "Path to FOTSZorbaManifest was set to:"))
   return driver:run($FOTSCatalog,
                     resolve-uri(util:parent-folder($FOTSCatalogFilePath)),
                     $FOTSZorbaManifest,
@@ -565,7 +565,7 @@ declare  %private %ann:sequential function driver:not-applicable(
       
       insert node
         <info>
-          { $env }
+          {$env}
         </info>
       as last into $tmp;
       
@@ -623,9 +623,9 @@ declare  %private %ann:sequential function driver:pass(
 
       insert node
         <info>
-          { $env }
-          <query>{ $zorbaQuery }</query>
-          {$result}
+          {$env}
+          <query>{$zorbaQuery}</query>
+          <actual-result>{$result}</actual-result>
         </info>
       as last into $tmp;
 
@@ -678,9 +678,9 @@ declare %private %ann:sequential function driver:fail(
       
       insert node
         <info>
-          { $env }
-          <query>{ $zorbaQuery }</query>
-          {$result}
+          {$env}
+          <query>{$zorbaQuery}</query>
+          <actual-result>{$result}</actual-result>
         </info>
       as last into $tmp;
       
