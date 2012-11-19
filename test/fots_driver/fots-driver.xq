@@ -479,7 +479,9 @@ try {
                                   env:decl-decimal-formats(($env/fots:decimal-format,
                                                            $case/fots:environment/fots:decimal-format)),
                                   env:add-var-decl($env,
-                                                   $case),
+                                                   $case,
+                                                   $envBaseURI,
+                                                   $testSetBaseURI),
                                   $test
                                   ),"&#xA;"),
            $xqxqQuery := driver:create-XQXQ-query($query,

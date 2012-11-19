@@ -64,14 +64,20 @@ declare function env:get-environment (
  : Adds the variable declarations.
  : @param $env environment.
  : @param $case test case.
+ : @param $envBaseURI the relative URI for the environment.
+ : @param $testSetBaseURI the URI of the test set.
  : @return the variable declarations.
  :)
 declare %ann:nondeterministic function env:add-var-decl(
-  $env      as element(fots:environment)?,
-  $case     as element(fots:test-case)
+  $env            as element(fots:environment)?,
+  $case           as element(fots:test-case),
+  $envBaseURI     as xs:anyURI,
+  $testSetBaseURI as xs:anyURI
 ) as xs:string? {
   concat( env:var-decl-with-value($env,
-                                  $case/fots:environment),
+                                  $envBaseURI),
+          env:var-decl-with-value($case/fots:environment,
+                                  $testSetBaseURI),
           env:var-decl-without-value($env,
                                      $case/fots:environment))
 };
@@ -122,16 +128,22 @@ declare function env:set-variables(
       concat('xqxq:bind-variable( $queryID, xs:QName("', $srcName, '")', ', ',
              $srcValues[$index], ');'),
       for $param in $env/fots:param
-      let $select:= data($param/@select)
+      let $select:= $param/@select
       let $varValue := if(starts-with($select, "'") and ends-with($select, "'"))
                       then  concat('"',
-                                  resolve-uri($env/fots:source[@uri = translate($param/@select, "'", "")]/@file, $envBaseURI),
+                                  resolve-uri($env/fots:source[@uri = translate($select, "'", "")]/@file, $envBaseURI),
                                   '"')
                       else $select
-      let $varName := data($param/@name)
+      let $varName := $param/@name
+      where (exists($select) and
+(: if there is an attribute 'declared' set to true, this means that the variable
+   is declared within the 'test' itself :)
+             exists($param[@declared="true"]))
       return
-        concat('xqxq:bind-variable( $queryID, xs:QName("', data($param/@name),
-                '")', ', ', $varValue, ');'))
+        concat('xqxq:bind-variable( $queryID, xs:QName("',
+               $param/@name,
+               '")', ', ',
+               $varValue, ');'))
     , "&#xA;")
 };
 
@@ -236,17 +248,29 @@ declare %private function env:get-schema-import (
 
 declare %private function env:var-decl-with-value(
   $env      as element(fots:environment)?,
-  $envCase  as element(fots:environment)?
+  $baseURI  as xs:anyURI
 ) as xs:string? {
   string-join(
-    for $param in ($env/fots:param, $envCase/fots:param)
-    where exists(data($param/@select)) and
-                not(starts-with(data($param/@select),"'"))
-                and empty(data($param[@declared="true"]))
+    for $param in $env/fots:param
+    let $select := $param/@select
+    let $file := $env/fots:source[@uri = translate($select, "'", "")]/@file
+    let $type := $param/@as
+    let $varValue := if(starts-with($select, "'") and ends-with($select, "'"))
+                     then  concat('"',
+                                 resolve-uri($file, $baseURI),
+                                 '"')
+                     else $select
+    where (exists($select) and
+(: if there is an attribute 'declared' set to true, this means that the variable
+   is declared within the 'test' itself so no additional variable declaration
+   is needed :)
+           empty($param[@declared="true"]))
     return concat("declare variable $",
-                  data($param/@name),
+                  $param/@name,
+                  ((concat(" as ", $type)))[$type],
                   " := ",
-                  data($param/@select),";")
+                  $varValue,
+                  ";")
    ," ")
 };
 
@@ -256,17 +280,19 @@ declare %private function env:var-decl-without-value(
 ) as xs:string? {
   string-join(
     (for $param in ($env/fots:param, $envCase/fots:param)
-     where (empty(data($param/@select)) or
-            (exists(data($param/@select)) and 
-            starts-with(data($param/@select),"'")))
-            and empty(data($param[@declared="true"]))
+     let $select := $param/@select
+     let $type := $param/@as
+     where (empty($select) and
+            empty($param[@declared="true"]))
      return concat("declare variable $",
-                   data($param/@name),
+                   $param/@name,
+                   ((concat(" as ", $type)))[$type],
                    " external;"),
      for $source in ($env/fots:source, $envCase/fots:source)
-     where starts-with(data($source/@role),"$")
+     let $role := $source/@role
+     where starts-with($role,"$")
      return concat("declare variable ",
-                   data($source/@role),
+                   $role,
                    " external;"))
    ," ")
 };
