@@ -19,18 +19,10 @@
 #include "common/common.h"
 #include "shared_types.h"
 #include "store/api/item.h"
+#include "util/json_parser.h"
 
 namespace zorba
 {
-
-namespace internal 
-{
-namespace diagnostic 
-{
-  class location;
-}
-}
-
 
 namespace simplestore
 {
@@ -40,19 +32,19 @@ namespace json
 
 class JSONLoader
 {
-protected:
-  std::istream                   & in;
-  internal::diagnostic::location * theRelativeLoc;
-
 public:
-  JSONLoader(
-    std::istream& s,
-    internal::diagnostic::location* relative_error_loc);
+  typedef zorba::json::location location;
+
+  JSONLoader(std::istream& s, location* relative_error_loc);
 
   ~JSONLoader();
 
   store::Item_t
   next( );
+
+protected:
+  std::istream  & in;
+  location      * theRelativeLoc;
 
 private:
   template<typename T>

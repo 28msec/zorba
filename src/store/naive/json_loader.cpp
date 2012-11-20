@@ -38,7 +38,7 @@ namespace json
 *******************************************************************************/
 JSONLoader::JSONLoader(
     std::istream& s,
-    internal::diagnostic::location* relative_error_loc
+    location* relative_error_loc
   )
   : in(s),
     theRelativeLoc(relative_error_loc)
