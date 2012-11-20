@@ -41,24 +41,188 @@ declare variable $env:hof as xs:string :=
       "declare option op:enable 'f:hof';"),
     "&#xA;");
 
+
 (:~
- : Retrieves the environment from a test-set/catalog given an environment name.
- : @param $catalog FOTS catalog file.
- : @param $testSet test set.
- : @param $envName name of the environment.
- : @return the environment with the given name.
+ : If there is a dependency on XQuery 3.0 and there is at least one HOF
+ : function in the test, return the strings for enabling the HOF feature.
+ :
+ : @param $deps the dependencies of the test set and test case
+ : @param $test the Query test.
+ : @return the strings for enabling the HOF feature
  :)
-declare function env:get-environment (
-  $catalog,
-  $testSet  as element (fots:test-set),
-  $envName  as xs:string
-) as element(fots:environment)? {
-  let $envTestSet := $testSet/test-set//environment[@name = $envName]
+declare function env:enable-HOF-feature(
+  $deps as element(fots:dependency)*,
+  $test as xs:string
+) as xs:string? 
+{
+  let $depSpec := string-join(distinct-values( for $dep in $deps
+                                               where $dep[@type="spec"]
+                                               return data($dep/@value)),""),
+      $depFeature := string-join(distinct-values(for $dep in $deps
+                                                 where $dep[@type="feature"]
+                                                 return data($dep/@value)),"")
   return
-    if (empty($envTestSet))
-    then $catalog/catalog//environment[@name = $envName]
-    else $envTestSet
+    if ((contains($depSpec,"XQ30") or contains($depSpec,"XP30")) and
+         contains($depFeature,"higherOrderFunctions"))
+    then $env:hof else ()
 };
+
+
+(:~
+ : Check if an XQuery version declaration needs to be added.
+ :
+ : @param $deps the dependencies of the test set and test case.
+ : @param $test the Query test.
+ : @return the XQuery version declaration.
+ :)
+declare function env:add-xquery-30(
+  $deps as element(fots:dependency)*,
+  $test as xs:string
+) as xs:string? 
+{
+  let $dependencies := string-join(distinct-values(for $dep in $deps
+                                                   where $dep[@type="spec"]
+                                                   return data($dep/@value)),"")
+  return
+    if ((contains($dependencies,"XQ30") or contains($dependencies,"XP30")) and
+        not(contains($test, "xquery version ")))
+    then 'xquery version "3.0";'
+    else ()
+};
+
+
+(:~
+ : Sets the declared default element namespace.
+ :
+ : @param $env the environment of the catalog/test-set (given with 'ref').
+ : @param $envCase the environment of the test-case.
+ : @return the declare default element namespace.
+ :)
+declare function env:decl-def-elem-namespace(
+  $env      as element(fots:environment)?,
+  $envCase  as element(fots:environment)?
+) as xs:string? 
+{
+  for $ns in ($env/fots:namespace, $envCase/fots:namespace)
+  where $ns[@prefix=""]
+  return concat('declare default element namespace "',
+                 data($ns/@uri),
+                '";')
+};
+
+
+(:~
+ : Adds the declare namespace statements.
+ :
+ : @param $env the environment of the catalog/test-set (given with 'ref').
+ : @param $case the test-case.
+ : @param $testSetBaseURI the URI of the test set file.
+ : @return the declare namespace statements.
+ :)
+declare %ann:nondeterministic function env:decl-namespaces(
+  $env            as element(fots:environment)?,
+  $case           as element(fots:test-case),
+  $testSetBaseURI as xs:anyURI
+) as xs:string? 
+{
+  string-join(
+    for $ns in ($env/fots:namespace, $case/fots:environment/fots:namespace)
+    where not($ns[@prefix=""]) and 
+          not(env:is-schema-prefix-bound(data($ns/@prefix),
+                                        $case,
+                                        $testSetBaseURI))
+    return concat('declare namespace ',
+                  data($ns/@prefix),
+                  ' = "',
+                  data($ns/@uri),
+                  '";')
+              ," ")
+};
+
+
+(:~
+ : Return true if the prefix will be bound to a schema in the Query
+ : It's a bug in the FOTS if this function returns true: TODO report to W3C
+ :)
+declare %private %ann:nondeterministic function env:is-schema-prefix-bound(
+  $prefix         as xs:string,
+  $case           as element(fots:test-case),
+  $testSetBaseURI as xs:anyURI
+) as xs:boolean 
+{
+  contains(util:get-value($case,
+                          $testSetBaseURI,
+                          "test"),
+            concat("import schema namespace ",
+                  $prefix))
+};
+
+
+(:~
+ : Returns the the declare base-uri prolog statement.
+ :
+ : @param $env the environment of the catalog/test-set (given with 'ref').
+ : @param $envCase the environment of the test-case.
+ : @return the declare base-uri prolog statement.
+ :)
+declare function env:decl-base-uri(
+  $env      as element(fots:environment)?,
+  $envCase  as element(fots:environment)?
+) as xs:string? 
+{
+  for $baseURI in ($env/fots:static-base-uri, $envCase/fots:static-base-uri)
+  return concat("declare base-uri '",
+                 data($baseURI/@uri),
+                "';")
+};
+
+
+(:~
+ : Add the decimal format declarations.
+ :
+ : @param $decimal-formats decimal formats.
+ : @return the decimal formats declarations.
+ :)
+declare function env:decl-decimal-formats(
+  $decimal-formats as element(fots:decimal-format)*
+) as xs:string* 
+{
+  if(empty($decimal-formats))
+  then ()
+  else
+    for $tmp in $decimal-formats
+    let $default := if(exists($tmp/@name))
+                    then ()
+                    else "default"
+    let $name :=  if(exists($tmp/@name))
+                  then data($tmp/@name)
+                  else ()
+    return
+      string-join(("declare", 
+                    $default,
+                    "decimal-format",
+                    $name,
+                    env:set-properties($tmp),
+                    ";"),' ')
+};
+
+
+declare %private function env:set-properties(
+  $decimal-format as element(fots:decimal-format)
+) as xs:string* 
+{
+  for $att in $decimal-format/attribute::*
+  let $name := node-name($att)
+  let $value := data($att)
+  return
+    if(exists(index-of(("decimal-separator", "grouping-separator", "infinity",
+                        "minus-sign", "NaN", "percent", "per-mille",
+                        "zero-digit", "digit", "pattern-separator"),
+                        xs:string($name))))
+    then concat($name, '="' , $value, '"')
+    else ()
+};
+
 
 (:~
  : Adds the variable declarations.
@@ -73,7 +237,8 @@ declare %ann:nondeterministic function env:add-var-decl(
   $case           as element(fots:test-case),
   $envBaseURI     as xs:anyURI,
   $testSetBaseURI as xs:anyURI
-) as xs:string? {
+) as xs:string? 
+{
   concat( env:var-decl-with-value($env,
                                   $envBaseURI),
           env:var-decl-with-value($case/fots:environment,
@@ -81,6 +246,62 @@ declare %ann:nondeterministic function env:add-var-decl(
           env:var-decl-without-value($env,
                                      $case/fots:environment))
 };
+
+
+declare %private function env:var-decl-with-value(
+  $env      as element(fots:environment)?,
+  $baseURI  as xs:anyURI
+) as xs:string? 
+{
+  string-join(
+    for $param in $env/fots:param
+    let $select := $param/@select
+    let $file := $env/fots:source[@uri = translate($select, "'", "")]/@file
+    let $type := $param/@as
+    let $varValue := if(starts-with($select, "'") and ends-with($select, "'"))
+                     then  concat('"',
+                                 resolve-uri($file, $baseURI),
+                                 '"')
+                     else $select
+    where (exists($select) and
+(: if there is an attribute 'declared' set to true, this means that the variable
+   is declared within the 'test' itself so no additional variable declaration
+   is needed :)
+           empty($param[@declared="true"]))
+    return concat("declare variable $",
+                  $param/@name,
+                  ((concat(" as ", $type)))[$type],
+                  " := ",
+                  $varValue,
+                  ";")
+   ," ")
+};
+
+
+declare %private function env:var-decl-without-value(
+  $env      as element(fots:environment)?,
+  $envCase  as element(fots:environment)?
+) as xs:string? 
+{
+  string-join(
+    (for $param in ($env/fots:param, $envCase/fots:param)
+     let $select := $param/@select
+     let $type := $param/@as
+     where (empty($select) and
+            empty($param[@declared="true"]))
+     return concat("declare variable $",
+                   $param/@name,
+                   ((concat(" as ", $type)))[$type],
+                   " external;"),
+     for $source in ($env/fots:source, $envCase/fots:source)
+     let $role := $source/@role
+     where starts-with($role,"$")
+     return concat("declare variable ",
+                   $role,
+                   " external;"))
+   ," ")
+};
+
 
 (:~
  : Returns the string for setting the context item if needed.
@@ -99,6 +320,27 @@ declare function env:set-context-item(
   else ()
 };
 
+
+declare %private function env:declare-context-item(
+  $env        as element(fots:environment)?,
+  $envBaseURI as xs:anyURI?
+) as xs:string 
+{
+  let $ciURI := resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
+  return
+  if(empty($env/fots:source[@validation = "strict"]))
+  then concat('variable $contextItem := doc("', $ciURI, '");')
+  else string-join(
+    ("&#xA;",
+     "variable $contextItemQuery := xqxq:prepare-main-module('",
+     env:get-schema-import($env),
+     concat('validate { doc("', $ciURI, '")', "}',", " "),
+           "resolver:url-resolver#2, ());",
+           "variable $contextItem := xqxq:evaluate($contextItemQuery);")
+   ,"&#xA;")
+};
+
+
 (:~
  : Returns the strings for variable binding in XQXQ.
  :
@@ -109,7 +351,8 @@ declare function env:set-context-item(
 declare function env:set-variables(
   $env        as element(fots:environment)?,
   $envBaseURI as xs:anyURI
-) as xs:string? {
+) as xs:string? 
+{
   if(empty($env))
   then ()
   else
@@ -147,86 +390,11 @@ declare function env:set-variables(
     , "&#xA;")
 };
 
-(:~
- : Adds the declare namespace statements.
- :
- : @param $env the environment of the catalog/test-set (given with 'ref').
- : @param $case the test-case.
- : @param $testSetBaseURI the URI of the test set file.
- : @return the declare namespace statements.
- :)
-declare %ann:nondeterministic function env:decl-namespaces(
-  $env            as element(fots:environment)?,
-  $case           as element(fots:test-case),
-  $testSetBaseURI as xs:anyURI
-) as xs:string? {
-  string-join(
-    for $ns in ($env/fots:namespace, $case/fots:environment/fots:namespace)
-    where not($ns[@prefix=""]) and 
-          not(env:is-schema-prefix-bound(data($ns/@prefix),
-                                        $case,
-                                        $testSetBaseURI))
-    return concat('declare namespace ',
-                  data($ns/@prefix),
-                  ' = "',
-                  data($ns/@uri),
-                  '";')
-              ," ")
-};
-
-(:~
- : Sets the declared default element namespace.
- :
- : @param $env the environment of the catalog/test-set (given with 'ref').
- : @param $envCase the environment of the test-case.
- : @return the declare default element namespace.
- :)
-declare function env:decl-def-elem-namespace(
-  $env      as element(fots:environment)?,
-  $envCase  as element(fots:environment)?
-) as xs:string? {
-  for $ns in ($env/fots:namespace, $envCase/fots:namespace)
-  where $ns[@prefix=""]
-  return concat('declare default element namespace "',
-                 data($ns/@uri),
-                '";')
-};
-
-(:~
- : Returns the the declare base-uri prolog statement.
- :
- : @param $env the environment of the catalog/test-set (given with 'ref').
- : @param $envCase the environment of the test-case.
- : @return the declare base-uri prolog statement.
- :)
-declare function env:decl-base-uri(
-  $env      as element(fots:environment)?,
-  $envCase  as element(fots:environment)?
-) as xs:string? {
-  for $baseURI in ($env/fots:static-base-uri, $envCase/fots:static-base-uri)
-  return concat("declare base-uri '",
-                 data($baseURI/@uri),
-                "';")
-};
-(:~
- : Return true if the prefix will be bound to a schema in the Query
- : It's a bug in the FOTS if this function returns true: TODO report to W3C
- :)
-declare %private %ann:nondeterministic function env:is-schema-prefix-bound(
-  $prefix         as xs:string,
-  $case           as element(fots:test-case),
-  $testSetBaseURI as xs:anyURI
-) as xs:boolean {
-  contains(util:get-value($case,
-                          $testSetBaseURI,
-                          "test"),
-            concat("import schema namespace ",
-                  $prefix))
-};
 
 declare %private function env:get-schema-import (
   $env  as element(fots:environment)?
-) as xs:string {
+) as xs:string 
+{
   if (empty($env))
   then ""
   else
@@ -246,74 +414,6 @@ declare %private function env:get-schema-import (
                   '";&#xA;')
 };
 
-declare %private function env:var-decl-with-value(
-  $env      as element(fots:environment)?,
-  $baseURI  as xs:anyURI
-) as xs:string? {
-  string-join(
-    for $param in $env/fots:param
-    let $select := $param/@select
-    let $file := $env/fots:source[@uri = translate($select, "'", "")]/@file
-    let $type := $param/@as
-    let $varValue := if(starts-with($select, "'") and ends-with($select, "'"))
-                     then  concat('"',
-                                 resolve-uri($file, $baseURI),
-                                 '"')
-                     else $select
-    where (exists($select) and
-(: if there is an attribute 'declared' set to true, this means that the variable
-   is declared within the 'test' itself so no additional variable declaration
-   is needed :)
-           empty($param[@declared="true"]))
-    return concat("declare variable $",
-                  $param/@name,
-                  ((concat(" as ", $type)))[$type],
-                  " := ",
-                  $varValue,
-                  ";")
-   ," ")
-};
-
-declare %private function env:var-decl-without-value(
-  $env      as element(fots:environment)?,
-  $envCase  as element(fots:environment)?
-) as xs:string? {
-  string-join(
-    (for $param in ($env/fots:param, $envCase/fots:param)
-     let $select := $param/@select
-     let $type := $param/@as
-     where (empty($select) and
-            empty($param[@declared="true"]))
-     return concat("declare variable $",
-                   $param/@name,
-                   ((concat(" as ", $type)))[$type],
-                   " external;"),
-     for $source in ($env/fots:source, $envCase/fots:source)
-     let $role := $source/@role
-     where starts-with($role,"$")
-     return concat("declare variable ",
-                   $role,
-                   " external;"))
-   ," ")
-};
-
-declare %private function env:declare-context-item(
-  $env        as element(fots:environment)?,
-  $envBaseURI as xs:anyURI?
-) as xs:string {
-  let $ciURI := resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
-  return
-  if(empty($env/fots:source[@validation = "strict"]))
-  then concat('variable $contextItem := doc("', $ciURI, '");')
-  else string-join(
-    ("&#xA;",
-     "variable $contextItemQuery := xqxq:prepare-main-module('",
-     env:get-schema-import($env),
-     concat('validate { doc("', $ciURI, '")', "}',", " "),
-           "resolver:url-resolver#2, ());",
-           "variable $contextItem := xqxq:evaluate($contextItemQuery);")
-   ,"&#xA;")
-};
 
 (:~
  : Returns the XQXQ URL resolver declaration.
@@ -395,50 +495,6 @@ declare function env:resolver(
     "&#xA;")
 };
 
-(:~
- : Check if an XQuery version declaration needs to be added.
- :
- : @param $deps the dependencies of the test set and test case.
- : @param $test the Query test.
- : @return the XQuery version declaration.
- :)
-declare function env:add-xquery-30(
-  $deps as element(fots:dependency)*,
-  $test as xs:string
-) as xs:string? {
-  let $dependencies := string-join(distinct-values(for $dep in $deps
-                                                   where $dep[@type="spec"]
-                                                   return data($dep/@value)),"")
-  return
-    if ((contains($dependencies,"XQ30") or contains($dependencies,"XP30")) and
-        not(contains($test, "xquery version ")))
-    then 'xquery version "3.0";'
-    else ()
-};
-
-(:~
- : If there is a dependency on XQuery 3.0 and there is at least one HOF
- : function in the test, return the strings for enabling the HOF feature.
- :
- : @param $deps the dependencies of the test set and test case
- : @param $test the Query test.
- : @return the strings for enabling the HOF feature
- :)
-declare function env:enable-HOF-feature(
-  $deps as element(fots:dependency)*,
-  $test as xs:string
-) as xs:string? {
-  let $depSpec := string-join(distinct-values( for $dep in $deps
-                                               where $dep[@type="spec"]
-                                               return data($dep/@value)),""),
-      $depFeature := string-join(distinct-values(for $dep in $deps
-                                                 where $dep[@type="feature"]
-                                                 return data($dep/@value)),"")
-  return
-    if ((contains($depSpec,"XQ30") or contains($depSpec,"XP30")) and
-         contains($depFeature,"higherOrderFunctions"))
-    then $env:hof else ()
-};
 
 (:~
  : Checks the dependencies according to the Zorba manifest.
@@ -451,7 +507,8 @@ declare function env:enable-HOF-feature(
 declare function env:check-dependencies(
   $deps           as element(fots:dependency)*,
   $zorbaManifest
-) as xs:string* {
+) as xs:string* 
+{
   if(empty($deps))
   then ()
   else
@@ -474,45 +531,23 @@ declare function env:check-dependencies(
       else ()
 };
 
-declare %private function env:set-properties(
-  $decimal-format as element(fots:decimal-format)
-) as xs:string* {
-  for $att in $decimal-format/attribute::*
-  let $name := node-name($att)
-  let $value := data($att)
-  return
-    if(exists(index-of(("decimal-separator", "grouping-separator", "infinity",
-                        "minus-sign", "NaN", "percent", "per-mille",
-                        "zero-digit", "digit", "pattern-separator"),
-                        xs:string($name))))
-    then concat($name, '="' , $value, '"')
-    else ()
-};
 
 (:~
- : Add the decimal format declarations.
- :
- : @param $decimal-formats decimal formats.
- : @return the decimal formats declarations.
+ : Retrieves the environment from a test-set/catalog given an environment name.
+ : @param $catalog FOTS catalog file.
+ : @param $testSet test set.
+ : @param $envName name of the environment.
+ : @return the environment with the given name.
  :)
-declare function env:decl-decimal-formats(
-  $decimal-formats as element(fots:decimal-format)*
-) as xs:string* {
-  if(empty($decimal-formats))
-  then ()
-  else
-    for $tmp in $decimal-formats
-    let $default := if(exists($tmp/@name))
-                    then ()
-                    else "default"
-    let $name :=  if(exists($tmp/@name))
-                  then data($tmp/@name)
-                  else ()
-    return
-      string-join(("declare", 
-                    $default,
-                    "decimal-format",
-                    $name,
-                    env:set-properties($tmp),
-                    ";"),' ')
+declare function env:get-environment (
+  $catalog,
+  $testSet  as element (fots:test-set),
+  $envName  as xs:string
+) as element(fots:environment)? 
+{
+  let $envTestSet := $testSet/test-set//environment[@name = $envName]
+  return
+    if (empty($envTestSet))
+    then $catalog/catalog//environment[@name = $envName]
+    else $envTestSet
 };
