@@ -51,43 +51,45 @@ public:
   void reset();
 
   void close() {}
-  
+
 #ifndef NDEBUG
   virtual std::string toString() const;
-#endif    
+#endif
 };
 
 /*******************************************************************************
-  
+
 ********************************************************************************/
-class PlanStoreIteratorWrapper : public PlanIterator
+class PlanStateIteratorWrapper : public PlanIterator
 {
-protected:  
-  const store::Iterator_t   theIterator;
-  PlanState               * thePlanState;
-  
-public:  
+protected:
+  const PlanIterator * theIterator;
+  PlanState          * theStateBlock;
+
+public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanStoreIteratorWrapper);
-  
-  PlanStoreIteratorWrapper(zorba::serialization::Archiver& ar);
-  
+
+  PlanStateIteratorWrapper(zorba::serialization::Archiver& ar);
+
   void serialize(::zorba::serialization::Archiver& ar);
-  
-public:  
-  PlanStoreIteratorWrapper(const store::Iterator_t& iterator);
-  
-  virtual ~PlanStoreIteratorWrapper();
-  
+
+public:
+  PlanStateIteratorWrapper(const PlanIterator* iterator, PlanState& planState);
+
+  virtual ~PlanStateIteratorWrapper();
+
   virtual void accept(PlanIterVisitor& v) const;
-  
+
   virtual void open(PlanState& planState, uint32_t& offset) {}
-  
+
+  virtual bool produceNext(store::Item_t& result, PlanState& planState) const;
+
   virtual bool next(store::Item_t&);
-  
+
   virtual void reset(PlanState& planState) const;
-  
+
   virtual void close(PlanState& planState) {}
-  
+
   virtual uint32_t getStateSize() const { return 0; }
 
   virtual uint32_t getStateSizeOfSubtree() const { return 0; }

@@ -4204,6 +4204,20 @@ public:
 
   ulong size() const { return (ulong)arg_hv.size (); }
 
+  bool has_placeholder() const;
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [133]     ArgumentPlaceholder      ::=      "?"
+********************************************************************************/
+class ArgumentPlaceholder : public exprnode
+{
+public:
+  ArgumentPlaceholder(const QueryLoc& loc_) : exprnode(loc_) { };
+
   void accept(parsenode_visitor&) const;
 };
 

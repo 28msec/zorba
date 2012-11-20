@@ -113,26 +113,30 @@ FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
 
 
 FunctionItem::FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
-                           const std::vector<store::Iterator_t>& varsValues,
+                           const std::vector<store::Iterator_t>& varsValues, // TODO: remove this param
                            CompilerCB* ccb,
                            dynamic_context* dctx)
   :
   store::Item(store::Item::FUNCTION),
   theCCB(ccb),
   theDynamicFunctionInfo(dynamicFunctionInfo),
-  theVariablesValues(varsValues),
+  theArity(dynamicFunctionInfo->theArity),
+  // theArgumentsValues(varsValues), // TODO: remove this initalization, varsValues is always empty
   theDctx(dctx)
 {
   assert(theDynamicFunctionInfo->theFunction->isUdf());
+  theArgumentsValues.resize(theDynamicFunctionInfo->theArity);
 }
 
 
 FunctionItem::FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo)
   :
   store::Item(store::Item::FUNCTION),
-  theDynamicFunctionInfo(dynamicFunctionInfo)
+  theDynamicFunctionInfo(dynamicFunctionInfo),
+  theArity(dynamicFunctionInfo->theArity)
 {
   assert(theDynamicFunctionInfo->theFunction->isUdf());
+  theArgumentsValues.resize(theDynamicFunctionInfo->theArity);
 }
 
 
@@ -148,7 +152,7 @@ FunctionItem::~FunctionItem()
 void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
 {
   // ar & theDynamicFunctionInfo;
-  ar & theVariablesValues;
+  ar & theArgumentsValues;
 }
 
 
@@ -160,7 +164,7 @@ const store::Item_t FunctionItem::getFunctionName() const
 
 uint32_t FunctionItem::getArity() const
 {
-  return theDynamicFunctionInfo->theArity;
+  return theArity;
 }
 
 
@@ -176,12 +180,12 @@ const std::vector<PlanIter_t>& FunctionItem::getVariablesIterators() const
 }
 
 
-const std::vector<store::Iterator_t>& FunctionItem::getVariablesValues() const
+const std::vector<PlanIter_t>& FunctionItem::getArgumentsValues() const
 {
-  return theVariablesValues;
+  return theArgumentsValues;
 }
 
-
+/*
 store::Iterator_t FunctionItem::getVariableValue(unsigned int i) const
 {
   if (i < theVariablesValues.size())
@@ -189,37 +193,68 @@ store::Iterator_t FunctionItem::getVariableValue(unsigned int i) const
   else
     return NULL;
 }
+*/
 
-
-store::Iterator_t FunctionItem::getVariableValue(const store::Item_t& variableQName)
+void FunctionItem::setArgumentValue(unsigned int pos, const PlanIter_t& value)
 {
-  for (csize i=0; i<theDynamicFunctionInfo->theScopedVarsNames.size(); i++)
-    if (theDynamicFunctionInfo->theScopedVarsNames[i].getp() != NULL)
-      if (theDynamicFunctionInfo->theScopedVarsNames[i]->equals(variableQName))
-        return theVariablesValues[i];
+  theArity--;
 
-  return NULL;
+  // find the pos-th NULL value and fill it
+  for (unsigned int i=0; i<theArgumentsValues.size(); i++)
+    if (theArgumentsValues[i] == NULL)
+    {
+      if (pos == 0)
+      {
+        theArgumentsValues[i] = value;
+        return;
+      }
+      else
+        pos--;
+    }
+
+  assert(false);
 }
 
-
-PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args)
+PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChildren)
 {
+  std::vector<PlanIter_t> args;
+  args.resize(theArgumentsValues.size());
+
+  std::vector<PlanIter_t>::iterator argsIte = args.begin();
+  std::vector<PlanIter_t>::iterator ite = theArgumentsValues.begin();
+  std::vector<PlanIter_t>::const_iterator ite2 = dynChildren.begin();
+  ++ite2; // skip the first child because it's the function item
+
+  for( ; argsIte != args.end(); ++argsIte, ++ite)
+  {
+    if (*ite != NULL)
+    {
+      *argsIte = *ite;
+    }
+    else
+    {
+      *argsIte = *ite2;
+      ++ite2;
+    }
+  }
+
   expr* dummy = theCCB->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc);
 
-  /*
+
   PlanIter_t udfCallIterator =
       theDynamicFunctionInfo->theFunction->codegen(theDynamicFunctionInfo->theCCB,
                                                    theDynamicFunctionInfo->theSctx,
                                                    theDynamicFunctionInfo->theLoc,
                                                    args,
                                                    *dummy);
-  */
+  /* TODO: remove this code and also clean-up the code in item_iterator.cpp
   PlanIter_t udfCallIterator =
       theDynamicFunctionInfo->theFunction->codegen(theCCB.get(),
                                                    theCCB->theRootSctx,
                                                    theDynamicFunctionInfo->theLoc,
                                                    args,
                                                    *dummy);
+  */
 
   /*
   std::cerr << "Iterator tree for dynamic function call:\n";

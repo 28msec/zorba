@@ -1447,12 +1447,14 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
   push_scope();
   */
 
+
   // handle the function item expression
   flwor_expr* fnItem_flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
-  for_clause* fnItem_lc = wrap_in_forclause(theExpr, NULL);
-  var_expr* fnItem_var = fnItem_lc->get_var();
-  fnItem_flwor->add_clause(fnItem_lc);
-  var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
+  for_clause* fnItem_fc = wrap_in_forclause(theExpr, NULL);
+  var_expr* fnItem_var = fnItem_fc->get_var();
+  fnItem_flwor->add_clause(fnItem_fc);
+  // var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
+  var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::hof_var);
   fiExpr->add_variable(fnItem_var, inner_subst_var, fnItem_var->get_name(), 0 /*var is not global*/);
 
   // std::cerr << "--> subst_var: " << inner_subst_var->toString() << std::endl;
@@ -1460,10 +1462,8 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
   // bind the function item variable in the inner flwor
   flwor_expr* inner_flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
   var_expr* inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::let_var);
-  // var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::let_var);
-  // var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
-  // let_clause_t inner_lc = wrap_in_letclause(&*inner_arg_var, inner_subst_var);
-  // let_clause_t inner_lc = wrap_in_letclause(inner_arg_var);
+
+
   inner_arg_var->set_param_pos(inner_flwor->num_clauses());
   // inner_arg_var->set_type(fn_arg_var->get_return_type());
   // inner_flwor->add_clause(inner_lc);
@@ -11324,6 +11324,22 @@ void end_visit(const ArgList& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
+  ArgumentPlaceholder := "?"
+********************************************************************************/
+void* begin_visit(const ArgumentPlaceholder& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const ArgumentPlaceholder& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+  push_nodestack(theExprManager->create_argument_placeholder_expr(theRootSctx, theUDF, loc));
+}
+
+
+/*******************************************************************************
   PostfixExpr ::= PrimaryExpr (Predicate | ArgumentList)*
 
   ArgumentList ::= "(" (Argument ("," Argument)*)? ")"
@@ -11356,6 +11372,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     {
       arguments.push_back(pop_nodestack());
     }
+
+    std::reverse(arguments.begin(), arguments.end());
   }
 
   // Get the function item expr
@@ -11556,6 +11574,19 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     std::vector<expr*> foArgs(arity);
     std::vector<var_expr*> udfArgs(arity);
 
+    if (fn != NULL && xquery_fns_def_dot.test(fn->getKind()))
+    {
+      // arguments.push_back(DOT_REF);
+      var_expr* argVar = create_temp_var(loc, var_expr::arg_var);
+
+      argVar->set_param_pos(0);
+
+      udfArgs.push_back(argVar);
+      foArgs.push_back(DOT_REF);
+
+      fn = lookup_fn(qname, 1, loc);
+    }
+
     for (ulong i = 0; i < arity; ++i)
     {
       var_expr* argVar = create_temp_var(loc, var_expr::arg_var);
@@ -11688,21 +11719,11 @@ void* begin_visit(const InlineFunction& v)
 
     store::Item_t qname = varExpr->get_name();
 
-    // var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
     var_expr* subst_var;
-
     if (kind != var_expr::prolog_var)
       subst_var = bind_var(loc, qname, var_expr::prolog_var);
     else
       subst_var = varExpr;
-
-    // let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
-    // arg_var->set_param_pos(flwor->num_clauses());
-    // arg_var->set_type(varExpr->get_return_type());
-    // TODO: this could probably be done lazily in some cases
-    //lc->setLazyEval(true);
-
-    // flwor->add_clause(lc);
 
     fiExpr->add_variable(((kind == var_expr::prolog_var)? NULL:varExpr), subst_var, varExpr->get_name(), (kind == var_expr::prolog_var) /*var is global if it's a prolog var*/);
 

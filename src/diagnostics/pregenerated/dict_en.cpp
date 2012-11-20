@@ -250,6 +250,7 @@ extern entry const dict_en[] = {
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
   { "XQTY0030", "validate argument must be exactly one document or element node" },
   { "XQTY0086", "typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve" },
+  { "XQTY0105", "element constructor must not contain a function item" },
   { "XSST0001", "\"$1\": function cannot be declared as both updating and sequential" },
   { "XSST0002", "\"$1\": function declared sequential but has updating body" },
   { "XSST0003", "\"$1\": function declared updating but has sequential body" },

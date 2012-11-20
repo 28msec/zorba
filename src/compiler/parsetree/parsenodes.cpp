@@ -3563,6 +3563,22 @@ void ArgList::accept( parsenode_visitor &v ) const
 }
 
 
+bool ArgList::has_placeholder() const
+{
+  for (unsigned int i=0; i<arg_hv.size(); i++)
+    if (dynamic_cast<ArgumentPlaceholder*>(arg_hv[i].getp()) != NULL)
+      return true;
+
+  return false;
+}
+
+void ArgumentPlaceholder::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
 // [94] Constructor
 // ----------------
 

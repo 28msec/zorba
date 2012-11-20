@@ -724,6 +724,12 @@ nextclause:
     return;
   }
 
+  case argument_placeholder_expr_kind:
+  {
+    theIsDone = true;
+    return;
+  }
+
   case insert_expr_kind:
   {
     insert_expr* insExpr = static_cast<insert_expr*>(theExpr);

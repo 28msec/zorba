@@ -255,6 +255,8 @@ enum TypeCode
 
   TYPE_DynamicFnCallIterator,
 
+  TYPE_ArgumentPlaceholderIterator,
+
   TYPE_CountCollectionIterator,
   TYPE_ZorbaCollectionIteratorHelper_1,
   TYPE_ZorbaCollectionIteratorHelper_2,

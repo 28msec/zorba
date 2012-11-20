@@ -57,6 +57,9 @@
 
 // TODO: decide if it is really needed
 #include "compiler/expression/var_expr.h"
+// TODO: remove, used for debugging purposes
+#include "runtime/visitors/printer_visitor_api.h"
+#include "runtime/visitors/iterprinter.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -151,6 +154,12 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf,
             << " for new PlanState: " << thePlanState << " for PlanIterator: " << thePlan->getId() << " = " << thePlan->getClassName() << std::endl;
   std::cerr << "    the PlanState: " << thePlanState << std::endl;
   // std::cerr << " has theGlobalDynCtx: " << thePlanState->theGlobalDynCtx->toString();
+  /*
+  std::cerr << "Iterator tree for dynamic function call:\n";
+  XMLIterPrinter vp(std::cerr);
+  print_iter_plan(vp, thePlan);
+  std::cerr << std::endl;
+  */
 
   thePlanState->theCompilerCB = planState.theCompilerCB;
 #ifdef ZORBA_WITH_DEBUGGER
@@ -366,6 +375,10 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   // the plan state (but not the state block) and dynamic context.
   state->open(planState, theUDF, theIsDynamic, theFunctionItem);
 
+
+  std::cerr << "--> " << this->toString() << " finished opening state" << std::endl;
+
+
   // if the results of the function should be cached (prereq: atomic in and out)
   // this functions stores an index in the dynamic context that contains
   // the cached results. The name of the index is the name of the function.
@@ -393,23 +406,25 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
     {
       if (theIsDynamic)
       {
-        // (*argWrapsIte) = theFunctionItem->getVariableValue(theUDF->getArgVars()[i]->get_name());
+        /*
         if (i < theFunctionItem->getVariablesValues().size())
           (*argWrapsIte) = theFunctionItem->getVariableValue(i);
 
-
         if ((*argWrapsIte) != NULL)
           (*argWrapsIte)->reset();
+        */
 
-        std::cerr << "--> UDFunctionCallIterator::openImpl() argsIte: " << (*argsIte)->toString()
+        std::cerr << "--> " << this->toString() << " openImpl() argsIte: " << (*argsIte)->toString()
             << " var: " << theUDF->getArgVars()[i]->toString();
-        if (i < theFunctionItem->getVariablesValues().size())
+
+        if (i < theFunctionItem->getArgumentsValues().size())
         {
-          std::cerr << "    fnItem var iterator: " << theFunctionItem->getVariablesIterators()[i]->toString()
-                    << " var value: " << (theFunctionItem->getVariableValue(i)?theFunctionItem->getVariableValue(i)->toString() : "NULL")
-                    << " wrapper: " << (*argWrapsIte);
+          // std::cerr << "    fnItem var iterator: " << (theFunctionItem->getVariablesIterators()[i].getp() ?
+          //    theFunctionItem->getVariablesIterators()[i]->toString() : "NULL");
+          // std::cerr << "    var value: " << (theFunctionItem->getArgumentsValue(i)?theFunctionItem->getArgumentValue(i)->toString() : "NULL");
+          // std::cerr << " wrapper: " << ( (*argWrapsIte) != NULL ? argWrapsIte->getp() : 0);
         }
-        std::cerr << std::endl;
+        //std::cerr << std::endl;
       }
 
       if ((*argWrapsIte) == NULL)

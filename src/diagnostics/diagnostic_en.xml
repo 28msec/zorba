@@ -238,6 +238,13 @@
       </comment>
       <value>typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve</value>
     </diagnostic>
+    
+    <diagnostic code="XQTY0105">
+      <comment>
+        It is a type error if the content sequence in an element constructor contains a function item.
+      </comment>
+      <value>element constructor must not contain a function item</value>
+    </diagnostic>
 
     <diagnostic code="XQST0009">
       <comment>

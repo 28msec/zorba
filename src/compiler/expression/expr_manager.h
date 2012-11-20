@@ -483,6 +483,11 @@ public:
       const std::vector<expr*>& args,
       xqtref_t coercionTargetType);
 
+  argument_placeholder_expr* create_argument_placeholder_expr(
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc);
+
   function_item_expr* create_function_item_expr(
       static_context* sctx,
       user_function* udf,

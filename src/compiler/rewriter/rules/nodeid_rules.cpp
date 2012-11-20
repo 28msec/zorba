@@ -464,6 +464,7 @@ expr* MarkConsumerNodeProps::apply(
   case eval_expr_kind :       // TODO
   case debugger_expr_kind :   // TODO
   case dynamic_function_invocation_expr_kind : // TODO
+  case argument_placeholder_expr_kind :
   case function_item_expr_kind : // TODO
   {
     ExprIterator iter(node);
@@ -601,7 +602,7 @@ expr* MarkNodeCopyProps::apply(
           // which are not shared but have shared descendants). To handle this,
           // we call markInUnsafeContext() so that any exprs that (a) extract nodes
           // out of input nodes and (b) may propagate the extracted nodes to the
-          // query result will be considered as unsafe and thus require that 
+          // query result will be considered as unsafe and thus require that
           // their input trees are standalone.
           findSourcesForNodeExtractors(node);
         }
@@ -617,7 +618,7 @@ expr* MarkNodeCopyProps::apply(
     else
     {
       // We have to assume that the result of the "node" expr will be used in an
-      // unsafe op, so it must consist of standalone trees.  
+      // unsafe op, so it must consist of standalone trees.
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(rCtx.theRoot, sources);
       markSources(sources);
@@ -652,6 +653,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
   {
   case const_expr_kind:
   case var_expr_kind:
+  case argument_placeholder_expr_kind:
   {
     return;
   }
@@ -742,7 +744,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
       else
       {
         match_expr* matchExpr = axisExpr->getTest();
-        
+
         if (matchExpr->getTypeName() != NULL &&
             sctx->construction_mode() == StaticContextConsts::cons_strip)
         {
@@ -838,7 +840,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
         if (sctx->construction_mode() == StaticContextConsts::cons_strip)
         {
           findSourcesForNodeExtractors(e->get_arg(0));
-        } 
+        }
         break;
       }
       case FunctionConsts::FN_BASE_URI_1:
@@ -1102,8 +1104,8 @@ void MarkNodeCopyProps::markSources(const std::vector<expr*>& sources)
   node contains shared subtrees), but unsafe on shared nodes.  Let E1 be such
   an expr. Instead of considering E1 as an unsafe expr uncondiftionally, we
   "transfer" its conditional unsafeness to each expr E2 such that E2 contributes
-  nodes into E1's input, and E2 extracts such nodes from other nodes (and as a 
-  result, the nodes that E2 propagates to E1 may be shared nodes). 
+  nodes into E1's input, and E2 extracts such nodes from other nodes (and as a
+  result, the nodes that E2 propagates to E1 may be shared nodes).
 ********************************************************************************/
 void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
 {
@@ -1118,6 +1120,7 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
   switch (node->get_expr_kind())
   {
   case const_expr_kind:
+  case argument_placeholder_expr_kind:
   {
     return;
   }
@@ -1156,6 +1159,7 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
 
     case var_expr::prolog_var:
     case var_expr::local_var:
+    case var_expr::hof_var:
     {
       if (!e->isVisited(1))
       {
@@ -1248,7 +1252,7 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
       theSourceFinder->findNodeSources((*e)[0], sources);
       markSources(sources);
     }
-  
+
     return;
   }
 

@@ -45,7 +45,7 @@ public: // TODO: not public
   QueryLoc                      theLoc;
   function_t                    theFunction;
   store::Item_t                 theQName;
-  uint32_t                      theArity;
+  unsigned int                  theArity;
 
   std::vector<expr*>            theScopedVarsValues;
   std::vector<var_expr*>        theSubstVarsValues;
@@ -85,7 +85,11 @@ protected:
 
   DynamicFunctionInfo_t           theDynamicFunctionInfo;
 
-  std::vector<store::Iterator_t>  theVariablesValues;
+  unsigned int                    theArity;   // The arity of the function
+                                              // item will decrease when a
+                                              // partial application is used.
+
+  std::vector<PlanIter_t>         theArgumentsValues;
 
   std::auto_ptr<dynamic_context>  theDctx;
 
@@ -110,19 +114,22 @@ public:
 
   dynamic_context* getDctx() const { return theDctx.get(); }
 
-  store::Iterator_t getVariableValue(const store::Item_t& variableQName);
-
   const std::vector<PlanIter_t>& getVariablesIterators() const;
 
-  const std::vector<store::Iterator_t>& getVariablesValues() const;
+  const std::vector<PlanIter_t>& getArgumentsValues() const;
 
-  store::Iterator_t getVariableValue(unsigned int i) const;
+  // store::Iterator_t getVariableValue(unsigned int i) const;
 
-  PlanIter_t getImplementation(std::vector<PlanIter_t>& args);
+  void setArgumentValue(unsigned int pos, const PlanIter_t& value);
+
+  // The getImplementation function assumes the args vector comes from a
+  // DynamicFnCallIterator, and as such, the first element of args is
+  // the function item itself, so it will be skipped.
+  PlanIter_t getImplementation(const std::vector<PlanIter_t>& args);
 
   const store::Item_t getFunctionName() const;
 
-  uint32_t getArity() const;
+  unsigned int getArity() const;
 
   const signature& getSignature() const;
 

@@ -132,6 +132,16 @@ void* begin_visit(const ArgList& n)
 
 DEFAULT_END_VISIT (ArgList)
 
+
+void * begin_visit(const ArgumentPlaceholder& n)
+{
+  os << "?";
+  return 0;
+}
+
+DEFAULT_END_VISIT (ArgumentPlaceholder)
+
+
 DEFAULT_BEGIN_VISIT (AtomicType)
 
 
@@ -1664,7 +1674,7 @@ DEFAULT_END_VISIT (ReverseAxis);
       n.get_right_expr()->accept(*this);
       return 0;
     }
-    DEFAULT_END_VISIT(StringConcatExpr);   
+    DEFAULT_END_VISIT(StringConcatExpr);
 
     void* begin_visit(const TreatExpr& n)
     {
@@ -1915,17 +1925,17 @@ DEFAULT_END_VISIT (ReverseAxis);
       return 0;
     }
     DEFAULT_END_VISIT (AnyFunctionTest);
-    
+
     void* begin_visit(const TypedFunctionTest& n)
     {
       os << "function (";
-      n.getArgumentTypes()->accept(*this); 
+      n.getArgumentTypes()->accept(*this);
       os << ") as ";
-      n.getReturnType()->accept(*this); 
-      return 0; 
+      n.getReturnType()->accept(*this);
+      return 0;
     }
     DEFAULT_END_VISIT (TypedFunctionTest);
-    
+
     void* begin_visit(const TypeList& n)
     {
       for (size_t i = 0; i < n.size(); ++i)

@@ -76,6 +76,9 @@ XQueryErrorCode XQTY0030( "XQTY0030" );
 XQueryErrorCode XQTY0086( "XQTY0086" );
 
 
+XQueryErrorCode XQTY0105( "XQTY0105" );
+
+
 XQueryErrorCode XQST0009( "XQST0009" );
 
 

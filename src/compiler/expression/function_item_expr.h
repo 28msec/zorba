@@ -29,6 +29,32 @@
 namespace zorba {
 
 /*******************************************************************************
+  [133]     ArgumentPlaceholder      ::=      "?"
+********************************************************************************/
+class argument_placeholder_expr : public expr
+{
+  friend class ExprIterator;
+  friend class expr;
+  friend class ExprManager;
+
+protected:
+  argument_placeholder_expr(CompilerCB* ccb, static_context* sctx, user_function* udf, const QueryLoc& loc)
+    :
+    expr(ccb, sctx, udf, loc, argument_placeholder_expr_kind)
+  {
+    compute_scripting_kind();
+  }
+
+public:
+  void compute_scripting_kind();
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream& os) const;
+};
+
+
+/*******************************************************************************
 
   [121] FilterExpr ::= PrimaryExpr (Predicate | DynamicFunctionInvocation)*
 
@@ -50,7 +76,6 @@ protected:
   // TODO: must be protected
 public:
   xqtref_t               theCoercionTargetType;
-
 
 protected:
   dynamic_function_invocation_expr(

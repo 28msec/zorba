@@ -61,46 +61,53 @@ std::string PlanIteratorWrapper::toString() const
   ss << this << " = PlanStoreIteratorWrapper iterator: " << theIterator->toString();
   return ss.str();
 }
-#endif    
+#endif
 
 
 /*******************************************************************************
   class PlanStoreIteratorWrapper
 ********************************************************************************/
-SERIALIZE_INTERNAL_METHOD(PlanStoreIteratorWrapper)
+SERIALIZE_INTERNAL_METHOD(PlanStateIteratorWrapper)
 
-void PlanStoreIteratorWrapper::serialize(::zorba::serialization::Archiver& ar)
+void PlanStateIteratorWrapper::serialize(::zorba::serialization::Archiver& ar)
 {
   PlanIterator::serialize(ar);
 }
-    
-PlanStoreIteratorWrapper::PlanStoreIteratorWrapper(const store::Iterator_t& iter) 
+
+PlanStateIteratorWrapper::PlanStateIteratorWrapper(const PlanIterator* iter, PlanState& state)
   :
   PlanIterator(NULL, QueryLoc()),
-  theIterator(iter)
+  theIterator(iter),
+  theStateBlock(&state)
 {
 }
 
 
-PlanStoreIteratorWrapper::~PlanStoreIteratorWrapper()
+PlanStateIteratorWrapper::~PlanStateIteratorWrapper()
 {
 }
 
 
-bool PlanStoreIteratorWrapper::next(store::Item_t& result)
+bool PlanStateIteratorWrapper::produceNext(store::Item_t& result, PlanState& planState) const
 {
-  return theIterator->next(result);
+  return theIterator->produceNext(result, *theStateBlock);
 }
 
 
-void PlanStoreIteratorWrapper::reset(PlanState& planState) const
+bool PlanStateIteratorWrapper::next(store::Item_t& result)
 {
-  theIterator->reset();
+  return PlanIterator::consumeNext(result, theIterator, *theStateBlock);
 }
 
 
-void PlanStoreIteratorWrapper::accept(PlanIterVisitor& v) const 
-{                                               
+void PlanStateIteratorWrapper::reset(PlanState& planState) const
+{
+  theIterator->reset(*theStateBlock);
+}
+
+
+void PlanStateIteratorWrapper::accept(PlanIterVisitor& v) const
+{
 }
 
 

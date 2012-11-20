@@ -188,7 +188,7 @@ ostream& var_expr::put(ostream& os) const
     put_qname(get_name(), os);
   }
 
-  if (get_kind() == prolog_var)
+  if (get_kind() == prolog_var || get_kind() == hof_var)
   {
     os << " uniqueId=" << theUniqueId;
   }
@@ -507,7 +507,7 @@ ostream& if_expr::put(ostream& os) const
 ostream& fo_expr::put(ostream& os) const
 {
   const store::Item* qname = theFunction->getName();
-  BEGIN_PUT_MSG( qname->getStringValue() << "/" << num_args() );
+  BEGIN_PUT_MSG( qname->getStringValue() << "#" << num_args() );
   csize numArgs = num_args();
 
   for (csize i = 0; i < numArgs; ++i)
@@ -538,7 +538,7 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   if (theDynamicFunctionInfo->theQName != NULL)
   {
     os << " " << theDynamicFunctionInfo->theQName->getStringValue()
-       << "/" << theDynamicFunctionInfo->theArity;
+       << "#" << theDynamicFunctionInfo->theArity;
     os << dec_indent << endl;
     return os;
   }
@@ -584,6 +584,14 @@ ostream& dynamic_function_invocation_expr::put(ostream& os) const
     theArgs[i]->put(os);
 
   END_PUT();
+}
+
+
+ostream& argument_placeholder_expr::put(ostream& os) const
+{
+  BEGIN_PUT_NO_EOL( argument_placeholder_expr );
+  os << "? ]\n";
+  return os;
 }
 
 

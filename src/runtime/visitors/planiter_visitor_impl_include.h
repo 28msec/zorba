@@ -174,6 +174,7 @@ class CreateInternalIndexIterator;
 class DeleteIndexIterator;
 
 class DynamicFnCallIterator;
+class ArgumentPlaceholderIterator;
 
 class EvalIterator;
 

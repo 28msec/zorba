@@ -27,7 +27,7 @@
 namespace zorba {
 
 
-DEF_EXPR_ACCEPT (dynamic_function_invocation_expr)
+DEF_EXPR_ACCEPT (dynamic_function_invocation_expr);
 
 
 dynamic_function_invocation_expr::dynamic_function_invocation_expr(
@@ -63,7 +63,19 @@ void dynamic_function_invocation_expr::compute_scripting_kind()
 
 ********************************************************************************/
 
-DEF_EXPR_ACCEPT (function_item_expr)
+DEF_EXPR_ACCEPT (argument_placeholder_expr);
+
+void argument_placeholder_expr::compute_scripting_kind()
+{
+  theScriptingKind = SIMPLE_EXPR;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+
+DEF_EXPR_ACCEPT (function_item_expr);
 
 
 function_item_expr::function_item_expr(

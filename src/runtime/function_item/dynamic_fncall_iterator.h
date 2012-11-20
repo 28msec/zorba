@@ -21,9 +21,43 @@
 
 #include "runtime/base/narybase.h"
 
+#include "runtime/base/noarybase.h"
+
 
 namespace zorba
 {
+
+/*******************************************************************************
+
+********************************************************************************/
+class ArgumentPlaceholderIterator: public NoaryBaseIterator<ArgumentPlaceholderIterator,PlanIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(ArgumentPlaceholderIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ArgumentPlaceholderIterator,
+                                   NoaryBaseIterator<ArgumentPlaceholderIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NoaryBaseIterator<ArgumentPlaceholderIterator, PlanIteratorState>*)this);
+  }
+
+public:
+   ArgumentPlaceholderIterator(
+      static_context* sctx,
+      const QueryLoc& loc)
+    :
+    NoaryBaseIterator<ArgumentPlaceholderIterator, PlanIteratorState>(sctx, loc)
+  {
+  }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const { return false; };
+};
+
 
 /*******************************************************************************
 
@@ -53,8 +87,9 @@ public:
 class DynamicFnCallIterator : public NaryBaseIterator<DynamicFnCallIterator,
                                                       DynamicFnCallIteratorState>
 {
-public:
-  xqtref_t  theCoercionTargetType;
+protected:
+  bool theIsPartialApply;
+  xqtref_t theCoercionTargetType;
 
 public:
   SERIALIZABLE_CLASS(DynamicFnCallIterator);
@@ -73,9 +108,11 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& args,
+      bool isPartialApply,
       xqtref_t coercionTargetType = NULL)
     :
     NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>(sctx, loc, args),
+    theIsPartialApply(isPartialApply),
     theCoercionTargetType(coercionTargetType)
   {
   }

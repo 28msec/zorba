@@ -213,7 +213,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     }
     case var_expr::prolog_var:
     {
-      // For const global vars, their type is set in 
+      // For const global vars, their type is set in
       // translator::end_visit(const GlobalVarDecl& v, void*)
       break;
     }
@@ -221,6 +221,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     case var_expr::catch_var: // TODO
     case var_expr::arg_var:
     case var_expr::eval_var:
+    case var_expr::hof_var:
     {
       break;
     }
@@ -564,6 +565,12 @@ void expr::compute_return_type(bool deep, bool* modified)
   case dynamic_function_invocation_expr_kind:
   {
     theType = rtm.ITEM_TYPE_STAR; // TODO
+    return;
+  }
+
+  case argument_placeholder_expr_kind:
+  {
+    theType = rtm.ITEM_TYPE_STAR;
     return;
   }
 

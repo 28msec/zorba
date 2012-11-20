@@ -21,6 +21,7 @@
 #include "runtime/function_item/function_item.h"
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "context/dynamic_context.h"
@@ -36,13 +37,19 @@
 
 // TODO: remove, used for debugging purposes
 #include "runtime/core/var_iterators.h"
+#include "runtime/visitors/printer_visitor_api.h"
+#include "runtime/visitors/iterprinter.h"
 
 namespace zorba
 {
 
 
-SERIALIZABLE_CLASS_VERSIONS(DynamicFnCallIterator)
+SERIALIZABLE_CLASS_VERSIONS(ArgumentPlaceholderIterator)
 
+NOARY_ACCEPT(ArgumentPlaceholderIterator)
+
+
+SERIALIZABLE_CLASS_VERSIONS(DynamicFnCallIterator)
 
 
 /*******************************************************************************
@@ -154,10 +161,10 @@ bool DynamicFnCallIterator::nextImpl(
   bool selectorError;
 #endif
   FunctionItem* fnItem;
-  std::vector<PlanIter_t> argIters;
-  std::vector<PlanIter_t>::iterator ite;
-  std::vector<PlanIter_t>::const_iterator ite2;
-  std::vector<PlanIter_t>::const_iterator end2;
+  // std::vector<PlanIter_t> argIters;
+  // std::vector<PlanIter_t>::iterator ite;
+  std::vector<PlanIter_t>::const_iterator ite;
+  // std::vector<PlanIter_t>::const_iterator end2;
 
   TypeManager* tm = theSctx->get_typemanager();
 
@@ -220,61 +227,84 @@ bool DynamicFnCallIterator::nextImpl(
       RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
     }
 
-    // argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
-    argIters.resize(theChildren.size() - 1);
-
-    ite = argIters.begin();
-
-    /*
-    ite2 = fnItem->getVariablesIterators().begin();
-    end2 = fnItem->getVariablesIterators().end();
-    for (; ite2 != end2; ++ite2, ++ite)
+    if (theIsPartialApply)
     {
-      std::cerr << "--> dynamic fncall: var argIter: " << (*ite2)->getId() << " = " << (*ite2)->getClassName() << std::endl;
-      if (dynamic_cast<LetVarIterator*>(ite2->getp()))
-        std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
-      if (dynamic_cast<ForVarIterator*>(ite2->getp()))
-        std::cerr << "-->                 argIter is ForVarIterator with varName: " << dynamic_cast<ForVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
-      if (dynamic_cast<SingletonIterator*>(ite2->getp()))
-        std::cerr << "-->                 argIter is SingletonIterator with value: " << dynamic_cast<SingletonIterator*>(ite2->getp())->getValue()->show() << std::endl;
+      // argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
+      // argIters.resize(theChildren.size() - 1);
+      // ite = argIters.begin();
 
-      // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
-      *ite = *ite2;
-    }
-    */
+      /*
+      ite2 = fnItem->getVariablesIterators().begin();
+      end2 = fnItem->getVariablesIterators().end();
+      for (; ite2 != end2; ++ite2, ++ite)
+      {
+        std::cerr << "--> dynamic fncall: var argIter: " << (*ite2)->getId() << " = " << (*ite2)->getClassName() << std::endl;
+        if (dynamic_cast<LetVarIterator*>(ite2->getp()))
+          std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
+        if (dynamic_cast<ForVarIterator*>(ite2->getp()))
+          std::cerr << "-->                 argIter is ForVarIterator with varName: " << dynamic_cast<ForVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
+        if (dynamic_cast<SingletonIterator*>(ite2->getp()))
+          std::cerr << "-->                 argIter is SingletonIterator with value: " << dynamic_cast<SingletonIterator*>(ite2->getp())->getValue()->show() << std::endl;
 
-    ite2 = theChildren.begin();
-    end2 = theChildren.end();
-    ++ite2;
+        // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
+        *ite = *ite2;
+      }
+      */
 
-    for (; ite2 != end2; ++ite2, ++ite)
-    {
-      std::cerr << "--> dynamic fncall: child argIter: " << (*ite2)->getId() << " = " << (*ite2)->getClassName() << std::endl;
-      if (dynamic_cast<LetVarIterator*>(ite2->getp()))
-        std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
+      ite = theChildren.begin();
+      ++ite;
+      for (unsigned int pos=0; ite != theChildren.end(); ++ite)
+      {
+        if (dynamic_cast<ArgumentPlaceholderIterator*>(ite->getp()) == NULL)
+        {
+          PlanIter_t value = new PlanStateIteratorWrapper((*ite), planState);
+          fnItem->setArgumentValue(pos, value);
+        }
+        else
+          pos++;
 
-      // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
-      *ite = *ite2;
-    }
+        std::cerr << "--> dynamic fncall: child argIter: " << (*ite)->getId() << " = " << (*ite)->getClassName() << std::endl;
+        if (dynamic_cast<LetVarIterator*>(ite->getp()))
+          std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite->getp())->getVarName()->getStringValue() << std::endl;
 
-    state->thePlan = fnItem->getImplementation(argIters);
+        // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
+        // *ite = *ite2;
+      }
 
-    std::cerr << "--> dynamic fncall: opening thePlan: " << state->thePlan->toString() << std::endl;
-
-    // must be opened after vars and params are set
-    state->thePlan->open(planState, state->theUDFStateOffset);
-    state->theIsOpen = true;
-
-    while(consumeNext(result, state->thePlan, planState))
-    {
+      result = fnItem;
       STACK_PUSH(true, state);
     }
+    else
+    {
+      // state->thePlan = fnItem->getImplementation(argIters);
+      state->thePlan = fnItem->getImplementation(theChildren);
 
-    // need to close here early in case the plan is completely
-    // consumed. Otherwise, the plan would still be opened
-    // if destroyed from the state's destructor.
-    state->thePlan->close(planState);
-    state->theIsOpen = false;
+      std::cerr << "--> dynamic fncall: opening thePlan: " << state->thePlan->toString() << std::endl;
+
+      // must be opened after vars and params are set
+      state->thePlan->open(planState, state->theUDFStateOffset);
+      state->theIsOpen = true;
+
+      {
+        std::cerr << "Iterator tree for dynamic function call:\n";
+        XMLIterPrinter vp(std::cerr);
+        print_iter_plan(vp, state->thePlan);
+        std::cerr << std::endl;
+      }
+
+
+      while(consumeNext(result, state->thePlan, planState))
+      {
+        STACK_PUSH(true, state);
+      }
+
+      // need to close here early in case the plan is completely
+      // consumed. Otherwise, the plan would still be opened
+      // if destroyed from the state's destructor.
+      state->thePlan->close(planState);
+      state->theIsOpen = false;
+    } // if (theIsPartialApply)
+
   }
 #ifdef ZORBA_WITH_JSON
   else if (targetItem->isJSONObject() || targetItem->isJSONArray())

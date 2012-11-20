@@ -353,6 +353,11 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                                             e->theCoercionTargetType);
     break;
   }
+  case argument_placeholder_expr_kind:
+  {
+    newExpr = theCCB->theEM->create_argument_placeholder_expr(theSctx, udf, theLoc);
+    break;
+  }
   case function_item_expr_kind:
   {
     const function_item_expr* e = static_cast<const function_item_expr*>(this);

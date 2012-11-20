@@ -4494,18 +4494,40 @@ FunctionCall :
         }
     |   FUNCTION_NAME LPAR ArgList RPAR
         {
-            $$ = new FunctionCall(
-                LOC(@$),
-                static_cast<QName*>($1),
-                dynamic_cast<ArgList*>($3)
-            );
+            ArgList* argList = dynamic_cast<ArgList*>($3);
+
+            if (argList->has_placeholder())
+            {
+                $$ = new DynamicFunctionInvocation(LOC (@$),
+                           new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), new Integer(argList->size())), argList);
+            }
+            else
+            {
+                $$ = new FunctionCall(
+                    LOC(@$),
+                    static_cast<QName*>($1),
+                    argList
+                );
+            }
         }
 
     ;
 
 // [91a]
 ArgList :
-        ExprSingle
+        HOOK
+        {
+            ArgList *al = new ArgList( LOC(@$) );
+            al->push_back(new ArgumentPlaceholder(LOC(@$)));
+            $$ = al;
+        }
+    |   ArgList COMMA HOOK
+        {
+            if ( ArgList *al = dynamic_cast<ArgList*>($1) )
+                al->push_back( new ArgumentPlaceholder(LOC(@$)) );
+            $$ = $1;
+        }
+    |   ExprSingle
         {
             ArgList *al = new ArgList( LOC(@$) );
             al->push_back( $1 );

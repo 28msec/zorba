@@ -62,6 +62,8 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode XQTY0030;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQTY0086;
 
+extern ZORBA_DLL_PUBLIC XQueryErrorCode XQTY0105;
+
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0009;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0012;

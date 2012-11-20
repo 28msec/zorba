@@ -794,6 +794,16 @@ ExprManager::create_dynamic_function_invocation_expr(
 }
 
 
+argument_placeholder_expr*
+ExprManager::create_argument_placeholder_expr(
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc)
+{
+  CREATE_AND_RETURN_EXPR(argument_placeholder_expr, sctx, udf, loc);
+}
+
+
 function_item_expr* ExprManager::create_function_item_expr(
     static_context* sctx,
     user_function* udf,

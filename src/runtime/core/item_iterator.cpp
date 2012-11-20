@@ -150,7 +150,8 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   std::vector<store::Iterator_t> varsValues;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  varsValues.resize(theChildren.size());
+  // varsValues.resize(theChildren.size());
+  varsValues.resize(theDynamicFunctionInfo->theArity);
 
   /*
   for (csize i=0; i<theChildren.size(); i++)
@@ -214,9 +215,9 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     {
       std::cerr << "    "
           << (theDynamicFunctionInfo->theScopedVarsNames[i].getp() ?
-          theDynamicFunctionInfo->theScopedVarsNames[i]->show()
-        : "")
-          << ": " << (varsValues[i].getp() ? varsValues[i]->toString() : "NULL") << std::endl;
+              theDynamicFunctionInfo->theScopedVarsNames[i]->show() : "")
+          // << ": " << (varsValues[i].getp() ? varsValues[i]->toString() : "NULL")
+          << std::endl;
     }
 
     /*

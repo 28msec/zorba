@@ -353,6 +353,7 @@ PLAN_ITER_VISITOR (AndIterator);
   PLAN_ITER_VISITOR(DeleteIndexIterator);
 
   PLAN_ITER_VISITOR(DynamicFnCallIterator);
+  PLAN_ITER_VISITOR(ArgumentPlaceholderIterator);
 
   PLAN_ITER_VISITOR(EvalIterator);
 

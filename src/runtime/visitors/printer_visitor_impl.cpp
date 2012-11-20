@@ -1249,7 +1249,10 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
     {
       thePrinter.addAttribute("cached", "true");
     }
-    thePrinter.addAttribute("function", a.theUDF->getSignature().getName()->getStringValue().str());
+    if (a.theUDF->getSignature().getName() != NULL)
+      thePrinter.addAttribute("function", a.theUDF->getSignature().getName()->getStringValue().str());
+    else
+      thePrinter.addAttribute("function", "inline function");
     printCommons(  &a, theId );
     thePrinter.endBeginVisit( theId);
   }
@@ -1526,6 +1529,7 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
 #undef PRINTER_INSERT_NODES_VISITOR_DEFINITION
 
   PRINTER_VISITOR_DEFINITION(DynamicFnCallIterator);
+  PRINTER_VISITOR_DEFINITION(ArgumentPlaceholderIterator);
 
   PRINTER_VISITOR_DEFINITION(EvalIterator);
 

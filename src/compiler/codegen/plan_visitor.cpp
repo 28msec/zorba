@@ -479,12 +479,7 @@ void end_visit(function_item_expr& v)
 
   bool isInline = (v.get_qname() == NULL);
 
-  if (!isInline)
-  {
-    // literal function item
-    // lFItem = new FunctionItem(NULL/*theCCB, sctx, &v*/); // TODO
-  }
-  else
+  if (isInline)
   {
     // inline function
     size_t lSize = v.get_scoped_vars_values().size();
@@ -500,7 +495,6 @@ void end_visit(function_item_expr& v)
         {
           varIter = pop_itstack();
           enclosedIter = varIter;
-          // varIter = new MaterializeIterator(sctx, v.get_loc(), varIter);
           fnInfo->theScopedVarsIterators.push_back(varIter);
         }
 
@@ -526,8 +520,7 @@ void end_visit(function_item_expr& v)
       }
     }
 
-    reverse(fnInfo->theScopedVarsIterators.begin(), fnInfo->theScopedVarsIterators.end());
-    // lFItem = new FunctionItem(NULL,/*theCCB, sctx, &v, */lVariableValues); // TODO
+    std::reverse(fnInfo->theScopedVarsIterators.begin(), fnInfo->theScopedVarsIterators.end());
   }
 
   push_itstack(new DynamicFunctionIterator(sctx, qloc, fnInfo));
@@ -551,16 +544,40 @@ void end_visit(dynamic_function_invocation_expr& v)
 
   std::vector<PlanIter_t> argIters(numArgs);
 
-  for (size_t i = 1; i < numArgs; ++i)
+  bool isPartialApply = false;
+
+  // the arguments are reversed on the stack
+  for (size_t i = 0; i < numArgs-1; ++i)
   {
+    if (v.get_args()[i]->get_expr_kind() == argument_placeholder_expr_kind)
+      isPartialApply = true;
+
     argIters[i] = pop_itstack();
   }
 
-  argIters[0] = pop_itstack();
+  argIters[numArgs-1] = pop_itstack();
 
-  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, v.theCoercionTargetType));
+  std::reverse(argIters.begin(), argIters.end());
+
+  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, isPartialApply, v.theCoercionTargetType));
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool begin_visit(argument_placeholder_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(argument_placeholder_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t it = new ArgumentPlaceholderIterator(sctx, qloc);
+  push_itstack(it);
+}
 
 /***************************************************************************//**
 
@@ -891,6 +908,7 @@ void general_var_codegen(const var_expr& var)
   }
 
   case var_expr::prolog_var:
+  case var_expr::hof_var:
   {
     push_itstack(new CtxVarIterator(sctx,
                                     qloc,

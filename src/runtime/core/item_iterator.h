@@ -80,7 +80,7 @@ public:
 /*******************************************************************************
   An iterator that creates and returns dynamic function items
 ********************************************************************************/
-class DynamicFunctionIterator : public NaryBaseIterator<DynamicFunctionIterator,
+class DynamicFunctionIterator : public NaryBaseIterator<DynamicFunctionIterator,  // TODO: change to Noary
                                                    PlanIteratorState>
 {
 protected:
