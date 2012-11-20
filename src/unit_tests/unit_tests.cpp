@@ -73,7 +73,7 @@ void initializeTestList()
   libunittests["unordered_set"] = test_unordered_set;
 #endif /* ZORBA_HAVE_UNORDERED_SET */
 
-  //  libunittests["hashmaps"] = test_hashmaps;
+  libunittests["hashmaps"] = test_hashmaps;
 
   libunittests["uri"] = runUriTest;
 

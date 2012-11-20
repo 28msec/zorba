@@ -1064,7 +1064,7 @@
       <comment>
        Invalid timezone value.
       </comment>
-      <value>"$1": invalid timezone value</value>
+      <value>"$1": invalid timezone value (in seconds)</value>
     </diagnostic>
 
     <diagnostic code="FOFI0001">
