@@ -466,8 +466,8 @@ try {
                                    "test");
   variable $enableHOF := env:enable-HOF-feature(($deps, $case//fots:dependency),
                                                 $test);
-  variable $query := string-join((env:add-xquery-30(($deps, $case//fots:dependency),
-                                                   $test),
+  variable $query := string-join((env:add-xquery-version-decl(($deps, $case//fots:dependency),
+                                                               $test),
                                   env:decl-def-elem-namespace($env,
                                                               $case/fots:environment),
                                   env:decl-base-uri($env,

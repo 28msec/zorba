@@ -75,7 +75,7 @@ declare function env:enable-HOF-feature(
  : @param $test the Query test.
  : @return the XQuery version declaration.
  :)
-declare function env:add-xquery-30(
+declare function env:add-xquery-version-decl(
   $deps as element(fots:dependency)*,
   $test as xs:string
 ) as xs:string? 
@@ -87,6 +87,9 @@ declare function env:add-xquery-30(
     if ((contains($dependencies,"XQ30") or contains($dependencies,"XP30")) and
         not(contains($test, "xquery version ")))
     then 'xquery version "3.0";'
+    else if(contains($dependencies,"XQ10") and
+            not(contains($test, "xquery version ")))
+    then 'xquery version "1.0";'
     else ()
 };
 
@@ -258,7 +261,9 @@ declare %private function env:var-decl-with-value(
     let $select := $param/@select
     let $file := $env/fots:source[@uri = translate($select, "'", "")]/@file
     let $type := $param/@as
-    let $varValue := if(starts-with($select, "'") and ends-with($select, "'"))
+    let $varValue := if(starts-with($select, "'") and
+                        ends-with($select, "'") and
+                        exists($file))
                      then  concat('"',
                                  resolve-uri($file, $baseURI),
                                  '"')
@@ -372,11 +377,14 @@ declare function env:set-variables(
              $srcValues[$index], ');'),
       for $param in $env/fots:param
       let $select:= $param/@select
-      let $varValue := if(starts-with($select, "'") and ends-with($select, "'"))
-                      then  concat('"',
-                                  resolve-uri($env/fots:source[@uri = translate($select, "'", "")]/@file, $envBaseURI),
-                                  '"')
-                      else $select
+      let $file := $env/fots:source[@uri = translate($select, "'", "")]/@file
+      let $varValue := if(starts-with($select, "'") and
+                          ends-with($select, "'") and
+                          exists($file))
+                       then  concat('"',
+                                   resolve-uri($file, $envBaseURI),
+                                   '"')
+                       else $select
       let $varName := $param/@name
       where (exists($select) and
 (: if there is an attribute 'declared' set to true, this means that the variable
