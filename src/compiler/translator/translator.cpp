@@ -8521,9 +8521,9 @@ expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCa
       assert(castLiteral != NULL || ! isCast);
 
       if (isCast)
-        return theExprManager->create_const_expr(theRootSctx, theUDF, loc, castLiteral);
+        return CREATE(const)(theRootSctx, theUDF, loc, castLiteral);
       else
-        return theExprManager->create_const_expr(theRootSctx, theUDF, loc, castLiteral != NULL);
+        return CREATE(const)(theRootSctx, theUDF, loc, castLiteral != NULL);
     }
     else
     {
@@ -8531,27 +8531,26 @@ expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCa
                             GENV_TYPESYSTEM.QNAME_TYPE_ONE :
                             GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
 
-      // when casting to type T, where T is QName or subtype of, and the input
-      // is not a const expr, then the input MUST be of type T or subtype of.
       if (isCast)
-        // This was previously a treat_expr() with TYPE_MATCH. It was changed to
-        // cast_expr() in order to allow dynamically computed strings to be cast
-        // to xs:QName.
-        return theExprManager->
-               create_cast_expr(theRootSctx, theUDF, loc, wrap_in_atomization(node), qnameType);
+        return CREATE(cast)(theRootSctx,
+                            theUDF,
+                            loc,
+                            wrap_in_atomization(node),
+                            qnameType);
       else
-        return theExprManager->
-               create_instanceof_expr(theRootSctx, theUDF, loc, node, qnameType);
+        return CREATE(castable)(theRootSctx,
+                                theUDF,
+                                loc,
+                                wrap_in_atomization(node),
+                                qnameType);
     }
   }
   else
   {
     if (isCast)
-      return theExprManager->
-             create_cast_expr(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
+      return CREATE(cast)(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
     else
-      return theExprManager->
-             create_castable_expr(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
+      return CREATE(castable)(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
   }
 }
 

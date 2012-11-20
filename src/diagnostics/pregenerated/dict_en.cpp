@@ -50,7 +50,7 @@ extern entry const dict_en[] = {
   { "FODF1310", "\"$1\": invalid fn:format-number() picture string$2" },
   { "FODT0001", "overflow/underflow in date/time operation" },
   { "FODT0002", "overflow/underflow in duration operation" },
-  { "FODT0003", "\"$1\": invalid timezone value" },
+  { "FODT0003", "\"$1\": invalid timezone value (in seconds)" },
   { "FOER0000", "unidentifier error" },
   { "FOFI0001", "\"$1\": not castable to xs:language" },
   { "FOFI0002", "invalid argument in format-integer: $1" },
