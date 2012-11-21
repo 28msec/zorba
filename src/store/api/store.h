@@ -369,7 +369,8 @@ public:
   /* ------------------------ JSON ------------------------------------------*/
   virtual Item_t parseJSON(
       std::istream& stream,
-      json::location* relative_error_loc
+      json::location* relative_error_loc,
+      bool strip_top_level_array = false
     ) = 0;
 #endif /* ZORBA_WITH_JSON */
 };

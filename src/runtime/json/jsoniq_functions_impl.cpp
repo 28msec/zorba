@@ -746,6 +746,7 @@ JSONParseIteratorState::init(PlanState& aState)
 {
   PlanIteratorState::init(aState);
   theAllowMultiple = true; // default
+  theStripTopLevelArray = false;
   theInputStream = 0;
   theGotOne = false;
 }
@@ -768,29 +769,33 @@ JSONParseIteratorState::~JSONParseIteratorState()
   }
 }
 
-void
-JSONParseIterator::processOptions(
-    const store::Item_t& aOptions,
-    bool& aAllowMultiple) const
+bool JSONParseIterator::processBooleanOption( store::Item_t const &options,
+                                              char const *option_name,
+                                              bool *option_value ) const
 {
-  store::Item_t lOptionName, lOptionValue;
+  store::Item_t i_option_name;
+  zstring z_option_name( option_name );
+  GENV_ITEMFACTORY->createString( i_option_name, z_option_name );
+  store::Item_t i_option_value = options->getObjectValue( i_option_name );
 
-  zstring s("jsoniq-multiple-top-level-items");
-  GENV_ITEMFACTORY->createString(lOptionName, s);
-  lOptionValue = aOptions->getObjectValue(lOptionName);
-
-  if (lOptionValue != NULL)
-  {
-    store::SchemaTypeCode lType = lOptionValue->getTypeCode();
-    if (!TypeOps::is_subtype(lType, store::XS_BOOLEAN))
-    {
-      const TypeManager* tm = theSctx->get_typemanager();
-      xqtref_t lType = tm->create_value_type(lOptionValue, loc);
-      RAISE_ERROR(jerr::JNTY0020, loc,
-      ERROR_PARAMS(lType->toSchemaString(), s, "xs:boolean"));
+  if ( i_option_value ) {
+    store::SchemaTypeCode const option_type = i_option_value->getTypeCode();
+    if ( !TypeOps::is_subtype( option_type, store::XS_BOOLEAN ) ) {
+      TypeManager const *const tm = theSctx->get_typemanager();
+      xqtref_t const option_type = tm->create_value_type( i_option_value, loc );
+      RAISE_ERROR(
+        jerr::JNTY0020, loc,
+        ERROR_PARAMS(
+          option_type->toSchemaString(),
+          z_option_name,
+          "xs:boolean"
+        )
+      );
     }
-    aAllowMultiple = lOptionValue->getBooleanValue();
+    *option_value = i_option_value->getBooleanValue();
+    return true;
   }
+  return false;
 }
 
 bool
@@ -809,7 +814,12 @@ JSONParseIterator::nextImpl(
     {
       store::Item_t lOptions;
       consumeNext(lOptions, theChildren[1].getp(), planState);
-      processOptions(lOptions, state->theAllowMultiple);
+      processBooleanOption(
+        lOptions, "jsoniq-multiple-top-level-items", &state->theAllowMultiple
+      );
+      processBooleanOption(
+        lOptions, "jsoniq-strip-top-level-array", &state->theStripTopLevelArray
+      );
     }
 
     if (lInput->isStreamable())
@@ -831,7 +841,9 @@ JSONParseIterator::nextImpl(
         // streamable string or non-literal string
         if (state->theInput != NULL || theRelativeLocation == QueryLoc::null)
         {
-          result = GENV_STORE.parseJSON(*state->theInputStream, 0);
+          result = GENV_STORE.parseJSON(
+            *state->theInputStream, nullptr, state->theStripTopLevelArray
+          );
         }
         else
         {
@@ -839,7 +851,9 @@ JSONParseIterator::nextImpl(
           // parser such that it can give better error locations.
           json::location lLoc;
           lLoc = ERROR_LOC(theRelativeLocation);
-          result = GENV_STORE.parseJSON(*state->theInputStream, &lLoc);
+          result = GENV_STORE.parseJSON(
+            *state->theInputStream, &lLoc, state->theStripTopLevelArray
+          );
         }
       }
       catch (zorba::XQueryException& e)

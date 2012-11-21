@@ -35,7 +35,9 @@ class JSONLoader
 public:
   typedef zorba::json::location location;
 
-  JSONLoader(std::istream& s, location* relative_error_loc);
+  JSONLoader( std::istream& s,
+              location* relative_error_loc,
+              bool strip_array = false );
 
   ~JSONLoader();
 
@@ -45,6 +47,7 @@ public:
 protected:
   std::istream  & in;
   location      * theRelativeLoc;
+  bool          strip_array_;
 
 private:
   template<typename T>

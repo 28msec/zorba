@@ -117,7 +117,8 @@ protected:
 #ifdef ZORBA_WITH_JSON
   store::Item_t parseJSON(
       std::istream& stream,
-      internal::diagnostic::location* relative_error_loc);
+      zorba::json::location* relative_error_loc,
+      bool strip_top_level_array = false);
 #endif
 };
 

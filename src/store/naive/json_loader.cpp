@@ -38,10 +38,12 @@ namespace json
 *******************************************************************************/
 JSONLoader::JSONLoader(
     std::istream& s,
-    location* relative_error_loc
+    location* relative_error_loc,
+    bool strip_array
   )
   : in(s),
-    theRelativeLoc(relative_error_loc)
+    theRelativeLoc(relative_error_loc),
+    strip_array_( strip_array )
 {
 }
 
@@ -127,13 +129,15 @@ JSONLoader::next( )
     }
 
     token lToken;
+    token::type outer_most_type = token::none;
 
     while (lParser.next(&lToken))
     {
       switch (lToken.get_type())
       {
         case token::begin_array:
-          lStack.push_back(new SimpleJSONArray());
+          if ( !outer_most_type && !strip_array_ )
+            lStack.push_back(new SimpleJSONArray());
           break;
 
         case token::begin_object:
@@ -141,6 +145,8 @@ JSONLoader::next( )
           break;
 
         case token::end_array:
+          if ( lStack.empty() && strip_array_ )
+            break;
         case token::end_object:
           {
             store::Item_t lItem = lStack.back();
@@ -166,7 +172,8 @@ JSONLoader::next( )
             store::Item_t lValue;
             zstring s = lToken.get_value();
             lFactory.createString(lValue, s);
-
+            if ( lStack.empty() )
+              return lValue;
             addValue(lStack, lValue);
             break;
           }
@@ -176,6 +183,8 @@ JSONLoader::next( )
             zstring s = lToken.get_value();
             lFactory.createJSONNumber(lValue, s);
             // todo check return type
+            if ( lStack.empty() )
+              return lValue;
             addValue(lStack, lValue);
             break;
           }
@@ -183,6 +192,8 @@ JSONLoader::next( )
           {
             store::Item_t lValue;
             lFactory.createBoolean(lValue, false);
+            if ( lStack.empty() )
+              return lValue;
             addValue(lStack, lValue);
             break;
           }
@@ -190,6 +201,8 @@ JSONLoader::next( )
           {
             store::Item_t lValue;
             lFactory.createBoolean(lValue, true);
+            if ( lStack.empty() )
+              return lValue;
             addValue(lStack, lValue);
             break;
           }
@@ -197,13 +210,17 @@ JSONLoader::next( )
           {
             store::Item_t lValue;
             lFactory.createJSONNull(lValue);
+            if ( lStack.empty() )
+              return lValue;
             addValue(lStack, lValue);
             break;
           }
         default:
           assert(false);
-      }
-    }
+      } // switch
+      if ( !outer_most_type )
+        outer_most_type = lToken.get_type();
+    } // while
     return lRootItem;
   }
   catch (zorba::json::unterminated_string& e)
@@ -304,4 +321,3 @@ JSONLoader::cast(const JSONItem_t& j)
  * End:
  */
 /* vim:set et sw=2 ts=2: */
-

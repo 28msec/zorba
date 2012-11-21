@@ -425,9 +425,10 @@ bool SimpleStore::unregisterReferenceToDeletedNode(XmlNode* node)
 ********************************************************************************/
 store::Item_t SimpleStore::parseJSON(
     std::istream& stream,
-    internal::diagnostic::location* relative_error_loc)
+    zorba::json::location* relative_error_loc,
+    bool strip_top_level_array)
 {
-  json::JSONLoader lLoader(stream, relative_error_loc);
+  json::JSONLoader lLoader(stream, relative_error_loc, strip_top_level_array);
   return lLoader.next();
 }
 #endif /* ZORBA_WITH_JSON */

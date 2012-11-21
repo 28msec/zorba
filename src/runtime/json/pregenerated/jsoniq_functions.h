@@ -148,6 +148,7 @@ class JSONParseIteratorState : public PlanIteratorState
 {
 public:
   bool theAllowMultiple; //
+  bool theStripTopLevelArray; //
   store::Item_t theInput; //
   std::istream* theInputStream; //
   bool theGotOne; //
@@ -185,7 +186,7 @@ public:
   virtual ~JSONParseIterator();
 
 public:
-  void processOptions(const store::Item_t& aOptions, bool& aAllowMultiple) const;
+  bool processBooleanOption(const store::Item_t& options, char const* option_name, bool* option_value) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

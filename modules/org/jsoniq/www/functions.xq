@@ -170,6 +170,7 @@ declare function jn:parse-json($j as xs:string?) as json-item()* external;
  : Allowed options are
  : <ul>
  :   <li>jsoniq-multiple-top-level-items: allow parsing of sequences of JSON Objects and Arrays (boolean; default: true)</li>
+ :   <li>jsoniq-strip-top-level-array: if the top-level JSON item is an array, strip it and return its elements as multiple top-level items (boolean; default: false)</li>
  : </ul>
  :
  : @error jerr:JNDY0021 if the given string is not valid JSON or
