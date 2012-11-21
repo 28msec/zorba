@@ -5820,24 +5820,36 @@ class DynamicFunctionInvocation: public exprnode
 {
 private:
   rchandle<exprnode> thePrimaryExpr;
-  rchandle<ArgList>     theArgList;
+  rchandle<ArgList>  theArgList;
+  bool               theNormalizeArgs;      // This is set to true when known
+                                            // literal functions are partially
+                                            // applied, requiring known arguments
+                                            // to be wrapped in type matches.
 
 public:
   DynamicFunctionInvocation(
     const QueryLoc& loc_,
-    rchandle<exprnode> aPrimaryExpr
-  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(0){}
+    rchandle<exprnode> aPrimaryExpr,
+    bool normalizeArgs_
+  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(0),
+     theNormalizeArgs(normalizeArgs_)
+  {}
 
   DynamicFunctionInvocation(
     const QueryLoc& loc_,
     rchandle<exprnode> aPrimaryExpr,
-    rchandle<ArgList> aArgList
-  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(aArgList){}
+    rchandle<ArgList> aArgList,
+    bool normalizeArgs_
+  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(aArgList),
+     theNormalizeArgs(normalizeArgs_)
+  {}
 
   rchandle<exprnode> getPrimaryExpr() const { return thePrimaryExpr; }
   rchandle<ArgList> getArgList() const { return theArgList; }
 
-    void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
+
+  bool normalizeArgs() const { return theNormalizeArgs; }
 };
 
 

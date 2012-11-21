@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "stdafx.h"
 
 #include "runtime/function_item/function_item_iter.h"
@@ -57,7 +57,7 @@ FunctionNameIterator::nextImpl(
 
   lFunctionItem = static_cast<FunctionItem*>(lFItem.getp());
 
-  if (lFunctionItem->getFunctionName()) 
+  if (lFunctionItem->getFunctionName())
   {
     // non-inline function
     r = lFunctionItem->getFunctionName();
@@ -93,26 +93,6 @@ FunctionArityIterator::nextImpl(
   lInt = Integer(lFunctionItem->getArity());
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(r, lInt), state);
-
-  STACK_END(state);
-}
-
-/*******************************************************************************
-
- ******************************************************************************/
-bool
-PartialApplyIterator::nextImpl(
-    store::Item_t& r,
-    PlanState& planState) const
-{
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  throw XQUERY_EXCEPTION(
-    zerr::ZXQP0004_NOT_IMPLEMENTED,
-    ERROR_PARAMS( "fn:partial-apply()" ),
-    ERROR_LOC( loc )
-  );
 
   STACK_END(state);
 }

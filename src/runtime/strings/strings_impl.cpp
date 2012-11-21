@@ -172,7 +172,7 @@ bool StringToCodepointsIterator::nextImpl(
       }
       state->theResult.clear();
       state->theResult.push_back( utf8::next_char( p ) );
-      
+
       GENV_ITEMFACTORY->createInteger(
         result,
         Integer(state->theResult[0])
@@ -329,19 +329,30 @@ bool ConcatStrIterator::nextImpl(
 
   for(; iter != end;  ++iter )
   {
-    if (consumeNext(lItem, *iter, planState))
+    try
     {
-      lResStream << lItem->getStringValue();
-
       if (consumeNext(lItem, *iter, planState))
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( NoSeqForConcat ) ),
-          ERROR_LOC( loc )
-        );
+        lResStream << lItem->getStringValue();
+
+        if (consumeNext(lItem, *iter, planState))
+        {
+          throw XQUERY_EXCEPTION(
+            err::XPTY0004,
+            ERROR_PARAMS( ZED( NoSeqForConcat ) ),
+            ERROR_LOC( loc )
+          );
+        }
       }
     }
+    catch (ZorbaException const& e)
+    {
+      if (e.diagnostic() == err::FOTY0013)
+        throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS(e.what()), ERROR_LOC( loc ));
+      else
+        throw;
+    }
+
   }
 
   tmp = lResStream.str();

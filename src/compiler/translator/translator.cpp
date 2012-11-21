@@ -1516,13 +1516,102 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
 /*******************************************************************************
 
 ********************************************************************************/
+expr* normalize_fo_arg(csize i, expr* argExpr, const function* func, TypeManager* tm, const QueryLoc& loc)
+{
+  xqtref_t paramType;
+
+  const signature& sign = func->getSignature();
+
+  if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
+  {
+    if (i == 0)
+      paramType = sign[i];
+    else
+      paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+  }
+  else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N)
+  {
+    if (i <= 1)
+      paramType = sign[i];
+    else
+      paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+  }
+  else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
+  {
+    if (i == 0)
+      paramType = sign[i];
+    else if (i % 6 == 1 || i % 6 == 2)
+      paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+    else
+      paramType = theRTM.BOOLEAN_TYPE_ONE;
+  }
+  else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
+  {
+    if (i <= 1)
+      paramType = sign[i];
+    else if (i % 6 == 2 || i % 6 == 3)
+      paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+    else
+      paramType = theRTM.BOOLEAN_TYPE_ONE;
+  }
+  else if (func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N ||
+           func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N_N ||
+           func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_U_N ||
+           func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_S_N)
+  {
+    if (i == 0)
+      paramType = sign[i];
+    else
+      paramType = NULL; // Nothing to check as the target function is not known
+  }
+  else
+  {
+    paramType = sign[i];
+  }
+
+    // A NULL value for the parameter's type to signal that no type promotion
+    // or match should be added. This is used by the reflection:invoke() function,
+  if (paramType != NULL)
+  {
+    if (TypeOps::is_subtype(tm,
+        *paramType,
+        *theRTM.ANY_ATOMIC_TYPE_STAR,
+        loc))
+    {
+      argExpr = wrap_in_type_promotion(argExpr,
+                                       paramType,
+                                       PROMOTE_FUNC_PARAM,
+                                       func->getName());
+    }
+    else
+    {
+      if (paramType->type_kind() == XQType::FUNCTION_TYPE_KIND)
+      {
+          // function coercion
+          // std::cerr << "--> coerce argument argExpr: " << argExpr->toString() << std::endl;
+        argExpr = wrap_in_coercion(paramType, argExpr, loc, theCCB);
+      }
+
+      argExpr = wrap_in_type_match(argExpr,
+                                   paramType,
+                                   loc,
+                                   TREAT_FUNC_PARAM,
+                                   func->getName());
+    }
+  }
+
+  return argExpr;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void normalize_fo(fo_expr* foExpr)
 {
   const QueryLoc& loc = foExpr->get_loc();
 
   TypeManager* tm = foExpr->get_type_manager();
-
-  const signature& sign = foExpr->get_signature();
 
   csize n = foExpr->num_args();
 
@@ -1562,85 +1651,7 @@ void normalize_fo(fo_expr* foExpr)
   {
     expr* argExpr = foExpr->get_arg(i);
 
-    xqtref_t paramType;
-
-    if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
-    {
-      if (i == 0)
-        paramType = sign[i];
-      else
-        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
-    }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N)
-    {
-      if (i <= 1)
-        paramType = sign[i];
-      else
-        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
-    }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
-    {
-      if (i == 0)
-        paramType = sign[i];
-      else if (i % 6 == 1 || i % 6 == 2)
-        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
-      else
-        paramType = theRTM.BOOLEAN_TYPE_ONE;
-    }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
-    {
-      if (i <= 1)
-        paramType = sign[i];
-      else if (i % 6 == 2 || i % 6 == 3)
-        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
-      else
-        paramType = theRTM.BOOLEAN_TYPE_ONE;
-    }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N ||
-             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N_N ||
-             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_U_N ||
-             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_S_N)
-    {
-      if (i == 0)
-        paramType = sign[i];
-      else
-        paramType = NULL; // Nothing to check as the target function is not known
-    }
-    else
-    {
-      paramType = sign[i];
-    }
-
-    // A NULL value for the parameter's type to signal that no type promotion
-    // or match should be added. This is used by the reflection:invoke() function,
-    if (paramType != NULL)
-    {
-      if (TypeOps::is_subtype(tm,
-                              *paramType,
-                              *theRTM.ANY_ATOMIC_TYPE_STAR,
-                              loc))
-      {
-        argExpr = wrap_in_type_promotion(argExpr,
-                                         paramType,
-                                         PROMOTE_FUNC_PARAM,
-                                         func->getName());
-      }
-      else
-      {
-        if (paramType->type_kind() == XQType::FUNCTION_TYPE_KIND)
-        {
-          // function coercion
-          // std::cerr << "--> coerce argument argExpr: " << argExpr->toString() << std::endl;
-          argExpr = wrap_in_coercion(paramType, argExpr, loc, theCCB);
-        }
-
-        argExpr = wrap_in_type_match(argExpr,
-                                     paramType,
-                                     loc,
-                                     TREAT_FUNC_PARAM,
-                                     func->getName());
-      }
-    }
+    argExpr = normalize_fo_arg(i, argExpr, func, tm, loc);
 
     foExpr->set_arg(i, argExpr);
   }
@@ -11379,6 +11390,18 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   // Get the function item expr
   expr* sourceExpr = pop_nodestack();
   ZORBA_ASSERT(sourceExpr != 0);
+
+  if (v.normalizeArgs() && dynamic_cast<function_item_expr*>(sourceExpr) != NULL)
+  {
+    function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(sourceExpr);
+    const function* fn = fiExpr->get_function();
+
+    // TODO: if arity of the function is different from the arguments count, raise an error
+
+    for (csize i=0; i<arguments.size(); i++)
+      if (dynamic_cast<ArgumentPlaceholder*>(arguments[i]) == NULL)
+        arguments[i] = normalize_fo_arg(i, arguments[i], fn, fiExpr->get_type_manager(), loc);
+  }
 
 #ifdef ZORBA_WITH_JSON
   TypeManager* tm = sourceExpr->get_type_manager();

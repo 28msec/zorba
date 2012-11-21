@@ -511,7 +511,7 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
     while (state->theRemaining > 0 && CONSUME(result, 0))
     {
       state->theRemaining--;
-      
+
       STACK_PUSH(true, state);
     }
   }
@@ -1849,12 +1849,12 @@ bool FnEnvironmentVariableIterator::nextImpl(store::Item_t& result, PlanState& p
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(item, theChildren[0].getp(),planState);  
-  
+  consumeNext(item, theChildren[0].getp(),planState);
+
   item->getStringValue2(varname);
   result = planState.theLocalDynCtx->get_environment_variable(varname);
   STACK_PUSH(result!=NULL, state);
-    
+
   STACK_END(state);
 }
 
@@ -1866,7 +1866,7 @@ bool FnAvailableEnvironmentVariablesIterator::nextImpl(store::Item_t& result, Pl
   store::Iterator_t lIte;
   FnAvailableEnvironmentVariablesIteratorState* state;
   DEFAULT_STACK_INIT(FnAvailableEnvironmentVariablesIteratorState, state, planState);
-    
+
   state->theIterator = planState.theLocalDynCtx->available_environment_variables();
 
   state->theIterator->open();
@@ -1889,12 +1889,12 @@ void FnAvailableEnvironmentVariablesIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
   theIterator = 0;
 }
- 
+
 /*******************************************************************************
   14.8.5 fn:unparsed-text
 ********************************************************************************/
 /**
-  * Utility method for fn:unparsed-text() and fn:unparsed-text-available(). 
+  * Utility method for fn:unparsed-text() and fn:unparsed-text-available().
   */
 static void readDocument(
   zstring const& aUri,
@@ -1915,7 +1915,7 @@ static void readDocument(
 
   internal::StreamResource* lStreamResource =
     dynamic_cast<internal::StreamResource*>(lResource.get());
-    
+
   if (lStreamResource == NULL)
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
@@ -1923,7 +1923,7 @@ static void readDocument(
   StreamReleaser lStreamReleaser = lStreamResource->getStreamReleaser();
   std::unique_ptr<std::istream, StreamReleaser> lStream(lStreamResource->getStream(), lStreamReleaser);
 
-  lStreamResource->setStreamReleaser(nullptr);  
+  lStreamResource->setStreamReleaser(nullptr);
 
   //check if encoding is needed
   if (transcode::is_necessary(aEncoding.c_str()))
@@ -1979,7 +1979,7 @@ bool FnUnparsedTextIterator::nextImpl(store::Item_t& result, PlanState& planStat
 /*******************************************************************************
   14.8.7 fn:unparsed-text-available
 ********************************************************************************/
-   
+
 bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t unparsedText;
@@ -1990,7 +1990,7 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-    
+
   if (!consumeNext(uriItem, theChildren[0].getp(), planState))
   {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, false), state);
@@ -2014,7 +2014,7 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, !(unparsedText.isNull()) ), state);
-    
+
   STACK_END(state);
 }
 
@@ -2048,13 +2048,13 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   {
     STACK_PUSH(false, state);
   }
-  
+
   if (theChildren.size() == 2)
   {
     consumeNext(encodingItem, theChildren[1].getp(), planState);
     encodingItem->getStringValue2(encodingString);
   }
-  
+
   //Normalize input to handle filesystem paths, etc.
   uriItem->getStringValue2(uriString);
   normalizeInputUri(uriString, theSctx, loc, &lNormUri);
@@ -2068,7 +2068,7 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
 
   if (state->theStreamResource == NULL)
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));
-  
+
   lStreamReleaser = state->theStreamResource->getStreamReleaser();
   state->theStream = new std::unique_ptr<std::istream, StreamReleaser> (state->theStreamResource->getStream(), lStreamReleaser);
   state->theStreamResource->setStreamReleaser(nullptr);

@@ -4266,11 +4266,11 @@ FilterExpr :
      }
   |  FilterExpr LPAR RPAR
      {
-       $$ = new DynamicFunctionInvocation(LOC (@$), $1);
+       $$ = new DynamicFunctionInvocation(LOC (@$), $1, false);
      }
   |  FilterExpr LPAR ArgList RPAR
      {
-       $$ = new DynamicFunctionInvocation(LOC (@$), $1, dynamic_cast<ArgList*>($3));
+       $$ = new DynamicFunctionInvocation(LOC (@$), $1, dynamic_cast<ArgList*>($3), false);
      }
 ;
 
@@ -4499,7 +4499,9 @@ FunctionCall :
             if (argList->has_placeholder())
             {
                 $$ = new DynamicFunctionInvocation(LOC (@$),
-                           new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), new Integer(argList->size())), argList);
+                           new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), new Integer(argList->size())),
+                           argList,
+                           true);
             }
             else
             {

@@ -119,7 +119,6 @@
   TYPE_TokenizeStringIterator,
   TYPE_FunctionNameIterator,
   TYPE_FunctionArityIterator,
-  TYPE_PartialApplyIterator,
   TYPE_ActivateICIterator,
   TYPE_DeactivateICIterator,
   TYPE_CheckICIterator,

@@ -376,9 +376,6 @@ namespace zorba {
     void beginVisit( const FunctionArityIterator& );
     void endVisit  ( const FunctionArityIterator& );
 
-    void beginVisit( const PartialApplyIterator& );
-    void endVisit  ( const PartialApplyIterator& );
-
     void beginVisit( const ActivateICIterator& );
     void endVisit  ( const ActivateICIterator& );
 

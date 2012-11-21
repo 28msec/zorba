@@ -68,21 +68,6 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 };
 
 
-//fn:partial-apply
-class fn_partial_apply_3_0 : public function
-{
-public:
-  fn_partial_apply_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
-  }
-
-  CODEGEN_DECL();
-};
-
-
 } //namespace zorba
 
 
