@@ -55,7 +55,9 @@
 #include <store/api/store.h>
 #include <store/api/copymode.h>
 
-#include <util/uri_util.h>
+#include "util/uri_util.h"
+#include "util/json_parser.h"
+
 #include <zorba/store_consts.h>
 #include <zorbatypes/URI.h>
 
@@ -835,7 +837,7 @@ JSONParseIterator::nextImpl(
         {
           // pass the query location of the StringLiteral to the JSON
           // parser such that it can give better error locations.
-          zorba::internal::diagnostic::location lLoc;
+          json::location lLoc;
           lLoc = ERROR_LOC(theRelativeLocation);
           result = GENV_STORE.parseJSON(*state->theInputStream, &lLoc);
         }
@@ -1686,6 +1688,6 @@ bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 } /* namespace zorba */
-/* vim:set et sw=2 ts=2: */
 
 #endif /* ZORBA_WITH_JSON */
+/* vim:set et sw=2 ts=2: */
