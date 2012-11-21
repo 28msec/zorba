@@ -26,16 +26,12 @@
 #include "runtime/full_text/stemmer.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
+#ifdef ZORBA_WITH_JSON
+#include "util/json_parser.h"
+#endif /* ZORBA_WITH_JSON */
+
 namespace zorba 
 { 
-
-namespace internal 
-{
-namespace diagnostic 
-{
-  class location;
-}
-}
 
 SYNC_CODE(class Lock;)
 
@@ -370,11 +366,12 @@ public:
 #endif /* ZORBA_NO_FULL_TEXT */
 
 #ifdef ZORBA_WITH_JSON
+  /* ------------------------ JSON ------------------------------------------*/
   virtual Item_t parseJSON(
       std::istream& stream,
-      internal::diagnostic::location* relative_error_loc
+      json::location* relative_error_loc
     ) = 0;
-#endif
+#endif /* ZORBA_WITH_JSON */
 };
 
 } // namespace store
