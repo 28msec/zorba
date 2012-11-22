@@ -18,6 +18,7 @@
 #include "runtime/function_item/function_item.h"
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/base/plan_iterator.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/var_expr.h"
@@ -185,6 +186,12 @@ const std::vector<PlanIter_t>& FunctionItem::getArgumentsValues() const
   return theArgumentsValues;
 }
 
+
+bool FunctionItem::isArgumentApplied(unsigned int pos) const
+{
+  return (theArgumentsValues[pos].getp() != NULL);
+}
+
 /*
 store::Iterator_t FunctionItem::getVariableValue(unsigned int i) const
 {
@@ -230,6 +237,7 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
     if (*ite != NULL)
     {
       *argsIte = *ite;
+      static_cast<PlanStateIteratorWrapper*>(ite->getp())->reset();
     }
     else
     {

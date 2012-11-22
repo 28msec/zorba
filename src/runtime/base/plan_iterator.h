@@ -313,7 +313,7 @@ public:
   int                theId;
   int getId() const  { return theId;}
   void setId(int id) { theId = id;}
-  std::string toString() const { std::stringstream ss; ss << getId() << " = " << getClassName(); return ss.str(); }
+  virtual std::string toString() const { std::stringstream ss; ss << getId() << " = " << getClassName(); return ss.str(); }
 #endif
 
 public:
@@ -540,7 +540,7 @@ public:
   void open(PlanState& planState, uint32_t& offset)
   {
     // std::cerr << "--> openImpl() " << toString() << std::endl;
-    
+
     static_cast<IterType*>(this)->openImpl(planState, offset);
 #ifndef NDEBUG
     // do this after openImpl because the state is created there

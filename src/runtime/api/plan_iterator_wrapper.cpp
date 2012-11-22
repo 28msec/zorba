@@ -1,4 +1,4 @@
-  /*
+/*
  * Copyright 2006-2008 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,7 +58,7 @@ void PlanIteratorWrapper::reset()
 std::string PlanIteratorWrapper::toString() const
 {
   std::stringstream ss;
-  ss << this << " = PlanStoreIteratorWrapper iterator: " << theIterator->toString();
+  ss << " = PlanIteratorWrapper iterator: " << theIterator->toString();
   return ss.str();
 }
 #endif
@@ -67,7 +67,7 @@ std::string PlanIteratorWrapper::toString() const
 /*******************************************************************************
   class PlanStoreIteratorWrapper
 ********************************************************************************/
-SERIALIZE_INTERNAL_METHOD(PlanStateIteratorWrapper)
+SERIALIZE_INTERNAL_METHOD(PlanStateIteratorWrapper);
 
 void PlanStateIteratorWrapper::serialize(::zorba::serialization::Archiver& ar)
 {
@@ -100,6 +100,12 @@ bool PlanStateIteratorWrapper::next(store::Item_t& result)
 }
 
 
+void PlanStateIteratorWrapper::reset() const
+{
+  theIterator->reset(*theStateBlock);
+}
+
+
 void PlanStateIteratorWrapper::reset(PlanState& planState) const
 {
   theIterator->reset(*theStateBlock);
@@ -109,6 +115,16 @@ void PlanStateIteratorWrapper::reset(PlanState& planState) const
 void PlanStateIteratorWrapper::accept(PlanIterVisitor& v) const
 {
 }
+
+
+#ifndef NDEBUG
+std::string PlanStateIteratorWrapper::toString() const
+{
+  std::stringstream ss;
+  ss << getId() << " = PlanStateIteratorWrapper iterator: " << theIterator->toString();
+  return ss.str();
+}
+#endif
 
 
 } /* namespace zorba */

@@ -1492,13 +1492,16 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
     inner_flwor = NULL;
   }
 
+  // clone the target type and change the quantifier
+  xqtref_t coercionTargetType = theExpr->get_type_manager()->create_type(*targetType, TypeConstants::QUANT_ONE);
+
   expr* body = theExprManager->create_dynamic_function_invocation_expr(
                 theRootSctx,
                 theUDF,
                 loc,
                 theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, inner_subst_var),
                 arguments,
-                is_func_return ? NULL : targetType);
+                is_func_return ? NULL : coercionTargetType);
 
   create_inline_function(body, inner_flwor, func_type->get_param_types(), func_type->get_return_type(), loc, theCCB);
 
@@ -11391,15 +11394,15 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   expr* sourceExpr = pop_nodestack();
   ZORBA_ASSERT(sourceExpr != 0);
 
-  if (v.normalizeArgs() && dynamic_cast<function_item_expr*>(sourceExpr) != NULL)
+  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(sourceExpr);
+  if (v.normalizeArgs() && fiExpr != NULL)
   {
-    function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(sourceExpr);
     const function* fn = fiExpr->get_function();
 
     // TODO: if arity of the function is different from the arguments count, raise an error
 
     for (csize i=0; i<arguments.size(); i++)
-      if (dynamic_cast<ArgumentPlaceholder*>(arguments[i]) == NULL)
+      if (dynamic_cast<argument_placeholder_expr*>(arguments[i]) == NULL)
         arguments[i] = normalize_fo_arg(i, arguments[i], fn, fiExpr->get_type_manager(), loc);
   }
 

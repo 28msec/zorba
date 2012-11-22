@@ -86,6 +86,8 @@ public:
 
   virtual bool next(store::Item_t&);
 
+  virtual void reset() const;
+
   virtual void reset(PlanState& planState) const;
 
   virtual void close(PlanState& planState) {}
@@ -94,6 +96,9 @@ public:
 
   virtual uint32_t getStateSizeOfSubtree() const { return 0; }
 
+#ifndef NDEBUG
+  virtual std::string toString() const;
+#endif
 };
 
 

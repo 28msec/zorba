@@ -193,22 +193,26 @@ bool DynamicFnCallIterator::nextImpl(
 
     fnItem = static_cast<FunctionItem*>(targetItem.getp());
 
-    std::cerr << "--> dynamic fncall nextImpl(): " << theId << " theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariablesIterators().size() << std::endl;
+    std::cerr << "--> " << this->toString() << " nextImpl() theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariablesIterators().size() << std::endl;
 
     if (theCoercionTargetType.getp())
     {
       const TypeManager* tm = theSctx->get_typemanager();
 
       xqtref_t fnItemType = tm->create_value_type(fnItem, loc);
+
+      /*
       std::cerr << "--> dynamic fncall nextImpl(): " << theId << std::endl
                 << "    fnItemType: " << fnItemType->toString() << std::endl
                 << "    coercionType: " << (theCoercionTargetType.getp()? theCoercionTargetType->toString() : "NULL") << std::endl;
-
       if (theCoercionTargetType.getp())
       {
         std::cerr << "    fnItemType subtype of coercionType? " << TypeOps::is_subtype(tm, *fnItemType, *theCoercionTargetType, loc) << std::endl;
         std::cerr << "    coercionType subtype of fnItemType? " << TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc) << std::endl;
+        std::cerr << "    fnItem subtype of coercionType? " << TypeOps::is_subtype(tm, fnItem, *theCoercionTargetType, loc) << std::endl;
+        std::cerr << "    fnItem treatable as coercionType? " << TypeOps::is_treatable(tm, fnItem, *theCoercionTargetType, loc) << std::endl;
       }
+      */
 
       if (!TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc))
       {
@@ -258,6 +262,7 @@ bool DynamicFnCallIterator::nextImpl(
         if (dynamic_cast<ArgumentPlaceholderIterator*>(ite->getp()) == NULL)
         {
           PlanIter_t value = new PlanStateIteratorWrapper((*ite), planState);
+          std::cerr << "--> created PlanStateIteratorWrapper: " << value->toString() << std::endl;
           fnItem->setArgumentValue(pos, value);
         }
         else

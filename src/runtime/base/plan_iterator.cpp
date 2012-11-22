@@ -157,7 +157,7 @@ bool PlanIterator::consumeNext(
 
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
-    std::cout << "next (" << iter->theId << " = " << iter->getClassName() << ") -> ?"
+    std::cout << "next (" << iter->toString() << ") -> ?"
         << " on state: " << (void*)(planState.theBlock + iter->theStateOffset)
         << " (" << (void*)(planState.theBlock) << " + " << (void*)iter->theStateOffset << ")"
         << std::endl;
@@ -168,7 +168,8 @@ bool PlanIterator::consumeNext(
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
     // std::cout << "next (" << iter << " = " << typeid (*iter).name()
-    std::cout << "next (" << iter->theId << " = " << iter->getClassName()
+    // std::cout << "next (" << iter->theId << " = " << iter->getClassName()
+    std::cout << "next (" << iter->toString()
               << ") -> "
               << "status: " << status << " -> "
               << ((status && result != NULL) ? result->show().c_str() : "null")

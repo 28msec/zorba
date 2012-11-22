@@ -91,6 +91,8 @@ protected:
 
   std::vector<PlanIter_t>         theArgumentsValues;
 
+
+
   std::auto_ptr<dynamic_context>  theDctx;
 
   SYNC_CODE(mutable RCLock        theRCLock;)
@@ -121,6 +123,10 @@ public:
   // store::Iterator_t getVariableValue(unsigned int i) const;
 
   void setArgumentValue(unsigned int pos, const PlanIter_t& value);
+
+  // This function will return true if the pos-th argument of the function
+  // has been partially applied, i.e. theArgumentsValues[pos] is not NULL
+  bool isArgumentApplied(unsigned int pos) const;
 
   // The getImplementation function assumes the args vector comes from a
   // DynamicFnCallIterator, and as such, the first element of args is
