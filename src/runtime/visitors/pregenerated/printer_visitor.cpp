@@ -3272,6 +3272,20 @@ void PrinterVisitor::endVisit ( const FnZorbaParseXmlFragmentIterator& ) {
 // </FnZorbaParseXmlFragmentIterator>
 
 
+// <FnZorbaCanonicalizeIterator>
+void PrinterVisitor::beginVisit ( const FnZorbaCanonicalizeIterator& a) {
+  thePrinter.startBeginVisit("FnZorbaCanonicalizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnZorbaCanonicalizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnZorbaCanonicalizeIterator>
+
+
 // <FnParseXmlFragmentIterator>
 void PrinterVisitor::beginVisit ( const FnParseXmlFragmentIterator& a) {
   thePrinter.startBeginVisit("FnParseXmlFragmentIterator", ++theId);

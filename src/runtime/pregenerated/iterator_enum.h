@@ -253,6 +253,7 @@
   TYPE_FormatNumberIterator,
   TYPE_FormatIntegerIterator,
   TYPE_FnZorbaParseXmlFragmentIterator,
+  TYPE_FnZorbaCanonicalizeIterator,
   TYPE_FnParseXmlFragmentIterator,
   TYPE_FnParseXmlIterator,
   TYPE_FnSerializeIterator,

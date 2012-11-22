@@ -418,3 +418,17 @@ declare function parse-xml:parse-xml-fragment(
   return 
     parse-xml:parse($xml-string, $new_options)
 };
+
+(:~
+ : canonicalize a given XML.
+ :
+ : @param $xml-string the XML as string.
+ :
+ : @return the canonicalized XML as string.
+ :
+ : @error s:CANO0001 invalid input.
+ :)
+declare function parse-xml:canonicalize(
+  $xml-string as xs:string
+  ) as xs:string external;
+

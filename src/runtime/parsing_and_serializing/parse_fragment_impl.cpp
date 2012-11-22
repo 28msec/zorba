@@ -32,6 +32,10 @@
 #include "types/schema/schema.h"
 #include "types/schema/validate.h"
 
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include <libxml/xmlreader.h>
+#include <libxml/c14n.h>
 
 namespace zorba
 {
@@ -306,6 +310,49 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
   STACK_END(state);
 }
 
+/*******************************************************************************
+  14.9.1.1 fn-zorba-xml:canonicalize
+********************************************************************************/
+bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  zstring lDocString;
+  xmlDocPtr lDoc;
+  xmlChar* lResult;
+
+  FnZorbaCanonicalizeIteratorState* state;
+  DEFAULT_STACK_INIT(FnZorbaCanonicalizeIteratorState, state, planState);
+  if (consumeNext(result, theChildren[0].getp(), planState))
+  {
+    try
+    {
+      result->getStringValue2(lDocString);
+      lDoc = xmlReadMemory(lDocString.c_str(), lDocString.size(), "input.xml", NULL, XML_PARSE_NOERROR);
+      
+      if (!lDoc)
+      {
+        zstring lErrorMsg;
+        lErrorMsg = "\"" + lDocString + "\"";
+        throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("parse-xml:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
+      }
+    
+      xmlC14NDocDumpMemory(lDoc, NULL, XML_C14N_1_1, NULL, 1, &lResult);
+      lDocString = zstring((char*)lResult);    
+      xmlFree(lResult);
+      xmlFreeDoc(lDoc);
+    }
+    catch ( std::exception const& e)
+    {
+      throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("parse-xml:canonicalize()", e.what() ), ERROR_LOC(loc));
+    }
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, lDocString), state);
+  }
+  STACK_END(state);
+}
+
+void FnZorbaCanonicalizeIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+}
 
 /*******************************************************************************
   14.9.2 fn:parse-xml-fragment
