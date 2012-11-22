@@ -7,6 +7,7 @@ New Features:
   * (bug #1039284) Implemented jn:json-doc().
   * (bug #867363) Added http-uri-resolution feature to disable HTTP
 	when resolving URIs.
+  * Added noncore couchbase module for handling data in a couchbase server.
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
