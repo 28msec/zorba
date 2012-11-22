@@ -42,6 +42,13 @@ namespace serialization
 
 class InvalidTimezoneException : public std::exception
 {
+public:
+  InvalidTimezoneException( int tz_seconds ) : tz_seconds_( tz_seconds ) { }
+
+  int get_tz_seconds() const { return tz_seconds_; }
+
+private:
+  int tz_seconds_;
 };
 
 

@@ -29,6 +29,8 @@
 #include <typeinfo>
 #include <string.h>
 
+#include <zorba/util/time.h>
+
 #include "zorbaserialization/archiver_consts.h"
 
 namespace zorba

@@ -50,7 +50,7 @@ extern entry const dict_en[] = {
   { "FODF1310", "\"$1\": invalid fn:format-number() picture string$2" },
   { "FODT0001", "overflow/underflow in date/time operation" },
   { "FODT0002", "overflow/underflow in duration operation" },
-  { "FODT0003", "\"$1\": invalid timezone value" },
+  { "FODT0003", "\"$1\": invalid timezone value (in seconds)" },
   { "FOER0000", "unidentifier error" },
   { "FOFI0001", "\"$1\": not castable to xs:language" },
   { "FOFI0002", "invalid argument in format-integer: $1" },
@@ -498,7 +498,8 @@ extern entry const dict_en[] = {
   { "ZXQP0039", "\"$1\": invalid version specification" },
   { "ZXQP0040", "\"$1\": function invokes a nondeterministic function but is missing the nondeterministic annotation" },
   { "ZXQP0050", "\"$1\": feature not available" },
-  { "ZXQP0060", "\"$1\": unkown option" },
+  { "ZXQP0060", "\"$1\": unknown option" },
+  { "ZXQP0061", "\"$1\": this option cannot be specified in a query, it must be set via C++ API or command-line parameter" },
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "ZXQP8401", "\"$1\": wrong WordNet file version; should be \"$2\"" },
 #endif

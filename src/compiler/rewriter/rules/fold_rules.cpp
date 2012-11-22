@@ -743,8 +743,8 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     {
       bool modified = false;
       expr* newArg = partial_eval_return_clause(static_cast<flwor_expr*>(arg),
-                                                 modified,
-                                                 rCtx);
+                                                modified,
+                                                rCtx);
 
       if (newArg != arg)
         fo->set_arg(0, newArg);
