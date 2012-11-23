@@ -604,7 +604,7 @@ uint32_t GroupByClause::getStateSizeOfSubtree() const
   {
     size += theGroupingSpecs[i].getStateSizeOfSubtree();
   }
-  
+
   numSpecs = theNonGroupingSpecs.size();
   for (csize i = 0; i < numSpecs; ++i)
   {
@@ -1255,6 +1255,7 @@ bool FLWORIterator::bindVariable(
 
     store::TempSeq_t tmpSeq = iterState->theTempSeqs[varNo].getp();
 
+    /*
     std::cerr << "--> binding var: " << flc.theVarName << " to tempSequence: " << tmpSeq->toString() << " varNo: " << varNo;
     PlanIteratorWrapper* piw = dynamic_cast<PlanIteratorWrapper*>(iterState->theTempSeqIters[varNo].getp());
     if (piw != NULL)
@@ -1262,14 +1263,16 @@ bool FLWORIterator::bindVariable(
     else
       std::cerr << " iter: " << iterState->theTempSeqIters[varNo]->toString();
     std::cerr << std::endl;
-
+    */
 
     tmpSeq->init(iterState->theTempSeqIters[varNo]);
 
+    /*
     std::cerr << "--> binding to var: " << flc.theVarName << " tempSeq: "
         << tmpSeq.getp() << " " << tmpSeq->toString()
         << " theVarRefs count: " << flc.theVarRefs.size()
         << std::endl;
+    */
 
     std::vector<PlanIter_t>::const_iterator viter = flc.theVarRefs.begin();
     std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
@@ -1481,7 +1484,7 @@ void FLWORIterator::materializeGroupTuple(
   {
     groupTupleItems.push_back(NULL);
     store::Item_t& tupleItem = groupTupleItems.back();
-    
+
     consumeNext(tupleItem, specIter->theInput, planState);
 
     specIter->reset(planState);

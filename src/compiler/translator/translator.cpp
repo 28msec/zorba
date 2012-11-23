@@ -11752,9 +11752,20 @@ void* begin_visit(const InlineFunction& v)
 
     var_expr* subst_var;
     if (kind != var_expr::prolog_var)
-      subst_var = bind_var(loc, qname, var_expr::prolog_var);
+    {
+      try {
+        subst_var = bind_var(loc, qname, var_expr::prolog_var);
+      } catch(XQueryException& e) {
+        if (e.diagnostic() == err::XQST0049)
+          continue;
+        else
+          throw;
+      }
+    }
     else
+    {
       subst_var = varExpr;
+    }
 
     fiExpr->add_variable(((kind == var_expr::prolog_var)? NULL:varExpr), subst_var, varExpr->get_name(), (kind == var_expr::prolog_var) /*var is global if it's a prolog var*/);
 

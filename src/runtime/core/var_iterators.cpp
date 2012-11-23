@@ -793,6 +793,7 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
 
   state->theSourceIter = it;
 
+  /*
   std::cerr << "--> LetVarIterator::bind() " << theId << " name: " << theVarName->show() << " theSourceIter: " ;
   if (dynamic_cast<PlanIterator*>(it.getp()) != NULL)
     std::cerr << dynamic_cast<PlanIterator*>(it.getp())->getId();
@@ -802,6 +803,7 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
     std::cerr << (it.getp()?it->toString() : "NULL");
   std::cerr << " state: " << state << " (" << (void*)planState.theBlock << " + " << (void*)theStateOffset << ")"
       << std::endl;
+  */
 }
 
 
@@ -815,9 +817,11 @@ void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
 
   state->theTempSeq = value;
 
+  /*
   std::cerr << "--> LetVarIterator::bind() " << theId << " name: " << theVarName->show() << " tempSequence: " << value->toString()
       << " state: " << state << " (" << (void*)planState.theBlock << " + " << (void*)theStateOffset << ")"
       << std::endl;
+  */
 
   if (theTargetPosIter == NULL)
   {
@@ -831,7 +835,7 @@ void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
         state->theTempSeqIter = GENV_STORE.getIteratorFactory()->
                                 createTempSeqIterator(false);
 
-      std::cerr << "    state->theTempSeqIter: " << state->theTempSeqIter->toString() << std::endl;
+      // std::cerr << "    state->theTempSeqIter: " << state->theTempSeqIter->toString() << std::endl;
 
       state->theTempSeqIter->init(value);
       state->theTempSeqIter->open();

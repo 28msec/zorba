@@ -3718,6 +3718,7 @@ PlanIter_t codegen(
 {
   plan_visitor c(ccb, nextDynamicVarId, arg_var_map);
 
+  /*
   std::cerr << "------------------- codegen: -------------------\n";
   if (dynamic_cast<function_item_expr*>(root) != NULL)
     std::cerr << "--> function_item_expr " << root->get_loc() << std::endl;
@@ -3725,11 +3726,13 @@ PlanIter_t codegen(
   std::cerr << std::endl;
   std::cerr << root->toString() << std::endl;
   std::cerr << "------------------------------------------------\n";
+  */
 
 
   root->accept(c);
   PlanIter_t result = c.result();
 
+  /*
   std::cerr << "--> arg_var_map: " << arg_var_map << " size: " << (arg_var_map==NULL?0 : arg_var_map->size()) << " iterators: ";
   if (arg_var_map != NULL)
   {
@@ -3743,6 +3746,7 @@ PlanIter_t codegen(
     }
   }
   std::cerr << std::endl << "------------------------------------------------\n";
+  */
 
 
   if (result != NULL &&
