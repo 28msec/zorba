@@ -243,7 +243,7 @@ void apply_updates(
         || e.diagnostic() == zerr::ZDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES
         || e.diagnostic() == zerr::ZDDY0023_INDEX_DOES_NOT_EXIST
         || e.diagnostic() == zerr::ZSTR0060_RANGE_EXCEPTION
-        || e.diagnostic() == jerr::JNUP0006)
+        || e.diagnostic() == jerr::JNUP0006 )
       {
         throw XQUERY_EXCEPTION(
           err::XUDY0021,
