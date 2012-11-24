@@ -17,8 +17,8 @@
 #ifndef ZORBA_QUERY_LOC_H
 #define ZORBA_QUERY_LOC_H
 
+#include <zorba/internal/ztd.h>
 #include "zorbatypes/zstring.h"
-
 
 namespace zorba {
 
@@ -26,6 +26,8 @@ namespace serialization
 {
   class Archiver;
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * Class to save the query location of zorba elements that correspond to a code
@@ -36,6 +38,7 @@ namespace serialization
  */
 class QueryLoc 
 {
+  typedef zorba::internal::ztd::explicit_bool explicit_bool;
 public:
   static QueryLoc null;
 
@@ -79,21 +82,30 @@ public:
  
   bool equals(const QueryLoc& loc) const;
 
-  bool operator==(const QueryLoc& loc) const
-  {
-    return equals(loc);    
-  }
-  
-  bool operator<(const QueryLoc& loc) const
-  {
-    return theLineBegin < loc.getLineBegin();
+  operator explicit_bool::type() const {
+    return explicit_bool::value_of( !equals( null ) );
   }
 };
 
+inline bool operator==( QueryLoc const &q1, QueryLoc const &q2 ) {
+  return q1.equals( q2 );
+}
+
+inline bool operator!=( QueryLoc const &q1, QueryLoc const &q2 ) {
+  return !(q1 == q2);
+}
+
+inline bool operator<( QueryLoc const &q1, QueryLoc const &q2 ) {
+  return q1.getLineBegin()  <  q2.getLineBegin()
+      || (q1.getLineBegin() == q2.getLineBegin()
+          && q1.getColumnBegin() < q2.getColumnBegin());
+}
 
 std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc);
 
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
 
-#endif
+#endif /* ZORBA_QUERY_LOC_H */
 /* vim:set et sw=2 ts=2: */
