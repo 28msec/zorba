@@ -48,10 +48,11 @@ static void set_bit(var_expr*, const VarIdMap&, DynamicBitset&, bool);
 /*******************************************************************************
 
 ********************************************************************************/
-bool count_variable_uses_rec(
-    const expr* e,
-    const var_expr* var,
+bool count_var_uses_rec(
+    expr* e,
+    var_expr* var,
     int limit,
+    std::vector<expr**>* path,
     int& count)
 {
   if (limit > 0 && count >= limit)
@@ -67,35 +68,84 @@ bool count_variable_uses_rec(
 
   if (e->get_expr_kind() == if_expr_kind)
   {
+    ExprIterator iter(e);
     const if_expr* ifExpr = static_cast<const if_expr*>(e);
 
-    int thenCount = 0;
-    int elseCount = 0;
+    if (path && count == 0)
+      path->push_back(*iter);
 
-    if (!count_variable_uses_rec(ifExpr->get_cond_expr(), var, limit, count))
-        return false;
+    bool done = !count_var_uses_rec(ifExpr->get_cond_expr(), var, limit, path, count);
+    if (done)
+    {
+      assert(count > 0);
+      return false;
+    }
 
-    if (!count_variable_uses_rec(ifExpr->get_then_expr(), var, limit, thenCount))
+    if (path && count == 0)
+      path->pop_back();
+
+    iter.next();
+
+    if (path && count == 0)
+      path->push_back(*iter);
+
+    int thenCount = count;
+    std::vector<expr**>* thenPath = (count == 0 ? path : NULL);
+    
+    done = !count_var_uses_rec(ifExpr->get_then_expr(), var, limit, thenPath, thenCount);
+    if (done)
     {
       count = thenCount;
+      assert(count > 0);
       return false;
     }
 
-    if (!count_variable_uses_rec(ifExpr->get_else_expr(), var, limit, elseCount))
+    if (path && count == 0)
+      path->pop_back();
+
+    iter.next();
+
+    if (path && count == 0)
+      path->push_back(*iter);
+
+    int elseCount = count;
+    std::vector<expr**>* elsePath = (count == 0 ? path : NULL);
+
+    done = !count_var_uses_rec(ifExpr->get_else_expr(), var, limit, elsePath, elseCount);
+    if (done)
     {
       count = elseCount;
+      assert(count > 0);
       return false;
     }
 
-    count += (thenCount > elseCount ? thenCount : elseCount);
+    if (path && count == 0)
+      path->pop_back();
+
+    count = (thenCount > elseCount ? thenCount : elseCount);
   }
   else
   {
-    ExprConstIterator iter(e);
+    ExprIterator iter(e);
     while (!iter.done())
     {
-      if (!count_variable_uses_rec(iter.get_expr(), var, limit, count))
+      if (path && count == 0)
+      {
+        path->push_back(*iter);
+      }
+
+      bool done = ! count_var_uses_rec(**iter, var, limit, path, count);
+
+      if (done)
+      {
+        assert(count > 0);
         return false;
+      }
+
+      if (path && count == 0)
+      {
+        path->pop_back();
+      }
 
       iter.next();
     }
@@ -108,11 +158,15 @@ bool count_variable_uses_rec(
 /*******************************************************************************
 
 ********************************************************************************/
-int count_variable_uses(const expr* root, const var_expr* var, int limit = 0)
+int count_variable_uses(
+    expr* root,
+    var_expr* var,
+    int limit,
+    std::vector<expr**>* path)
 {
   int count = 0;
 
-  count_variable_uses_rec(root, var, limit, count);
+  count_var_uses_rec(root, var, limit, path, count);
 
   return count;
 }
@@ -162,7 +216,7 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
   {
     wrapper_expr* wrapper = reinterpret_cast<wrapper_expr*>(e);
 
-    if (wrapper->get_expr() == oldVar)
+    if (wrapper->get_input() == oldVar)
     {
       wrapper->set_expr(newVar);
       return;
@@ -352,7 +406,7 @@ static void add_wincond_vars(
   add_var(inVars.prev, numVars, varidmap, idvarmap);
   add_var(inVars.next, numVars, varidmap, idvarmap);
 
-  index_flwor_vars(cond->get_cond(), numVars, varidmap, idvarmap);
+  index_flwor_vars(cond->get_expr(), numVars, varidmap, idvarmap);
 
   add_var(outVars.posvar, numVars, varidmap, idvarmap);
   add_var(outVars.curr, numVars, varidmap, idvarmap);

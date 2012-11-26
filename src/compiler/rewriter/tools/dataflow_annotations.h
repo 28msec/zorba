@@ -38,15 +38,12 @@ public:
 private:
   void compute_var_decl_expr(var_decl_expr* e);
   void compute_block_expr(block_expr* e);
-  void compute_wrapper_expr(wrapper_expr* e);
   void compute_var_expr(var_expr* e);
   void compute_var_set_expr(var_set_expr* e);
   void compute_flwor_expr(flwor_expr* e);
   void compute_trycatch_expr(trycatch_expr* e);
-  void compute_promote_expr(promote_expr* e);
   void compute_if_expr(if_expr* e);
   void compute_fo_expr(fo_expr* e);
-  void compute_instanceof_expr(instanceof_expr* e);
   void compute_treat_expr(treat_expr* e);
   void compute_castable_expr(castable_expr* e);
   void compute_cast_expr(cast_expr* e);
@@ -83,8 +80,8 @@ class SourceFinder
   typedef std::pair<user_function*, std::vector<expr*>* > UdfSourcesPair;
 
 protected:
-  VarSourcesMap            theVarSourcesMap;
-  UdfSourcesMap            theUdfSourcesMap;
+  VarSourcesMap   theVarSourcesMap;
+  UdfSourcesMap   theUdfSourcesMap;
 
 protected:
   void findNodeSourcesRec(
@@ -95,14 +92,9 @@ protected:
 public:
   ~SourceFinder();
 
-  void findNodeSources(
-      expr* inExpr,
-      fo_expr* udfCaller,
-      std::vector<expr*>& sources);
+  void findNodeSources(expr* inExpr, std::vector<expr*>& sources);
 
-  void findLocalNodeSources(
-      expr* inExpr,
-      std::vector<expr*>& sources);
+  void findLocalNodeSources(expr* inExpr, std::vector<expr*>& sources);
 };
 
 

@@ -278,6 +278,8 @@ declare %an:sequential function xqdoc2html:copy-xhtml-requisites(
       xqdoc2html:copy-files($xhtmlRequisitesPath, $cssPath    ,"css");
 
       file:create-directory($schemasPath);
+
+      ()
     }
 };
 
@@ -693,11 +695,11 @@ declare %private %an:sequential function xqdoc2html:copy-example(
       fn:not(fn:matches($exampleSource, $search-queries))) then
     file:write( $exampleDestination,
                 xqdoc2html:create-xhtml-wrapper($exampleContent,"xquery"),
-                $xqdoc2html:serParamXhtml)
+                $xqdoc2html:serParamXhtml);
   else if (fn:matches($exampleContent, "output", "i")) then
     file:write( $exampleDestination,
                 xqdoc2html:create-xhtml-wrapper($exampleContent,"xquery"),
-                $xqdoc2html:serParamXhtml)
+                $xqdoc2html:serParamXhtml);
   else
     let $specSource := fn:replace($exampleSource, "[.]xq$", ".spec")
     return

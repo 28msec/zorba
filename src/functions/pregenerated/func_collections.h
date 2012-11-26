@@ -146,6 +146,8 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
   bool isSource() const { return true; }
 
   FunctionConsts::AnnotationValue producesDistinctNodes() const 

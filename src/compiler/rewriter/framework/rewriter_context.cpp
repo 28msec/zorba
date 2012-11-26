@@ -49,6 +49,8 @@ RewriterContext::RewriterContext(
   theIdVarMap(NULL),
   theExprVarsMap(NULL)
 {
+  theForSerializationOnly = theCCB->theConfig.for_serialization_only;
+
   if (msg.empty())
   {
     if (udf != NULL)
@@ -70,7 +72,7 @@ RewriterContext::~RewriterContext()
 }
 
 
-expr* RewriterContext::getRoot()
+expr* RewriterContext::getRoot() const
 {
   return theRoot;
 }

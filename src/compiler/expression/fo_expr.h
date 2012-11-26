@@ -118,30 +118,6 @@ private:
 };
 
 
-////////// The following expressions in the AST "decay" into an fo_expr ///////
-
-typedef fo_expr additive_expr;
-
-typedef fo_expr and_expr;
-
-typedef fo_expr comparison_expr;
-
-typedef fo_expr enclosed_expr;
-
-typedef fo_expr intersect_except_expr;
-
-typedef fo_expr multiplicative_expr;
-
-typedef fo_expr or_expr;
-
-typedef fo_expr quantified_expr;
-
-typedef fo_expr range_expr;
-
-typedef fo_expr unary_expr;
-
-typedef fo_expr union_expr;
-
 } // namespace zorba
 
 #endif

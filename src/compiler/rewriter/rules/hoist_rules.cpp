@@ -353,7 +353,7 @@ static expr* try_hoisting(
     const ExprVarsMap& freevarMap,
     struct PathHolder* path)
 {
-  if (non_hoistable(e) || e->contains_node_construction())
+  if (non_hoistable(e) || e->constructsNodes())
   {
     return NULL;
   }
@@ -440,8 +440,8 @@ static expr* try_hoisting(
       // cannot be hoisted.
       for (i = step->clauseCount - 1; i >= 0; --i)
       {
-        const forletwin_clause* flc =
-        static_cast<const forletwin_clause*>(flwor->get_clause(i));
+        const forlet_clause* flc =
+        static_cast<const forlet_clause*>(flwor->get_clause(i));
 
         if (flc->get_expr()->is_sequential())
         {
@@ -482,10 +482,10 @@ static expr* try_hoisting(
   var_expr* letvar(rCtx.createTempVar(sctx, loc, var_expr::let_var));
 
   expr* hoisted = rCtx.theEM->
-  create_fo_expr(sctx, udf, loc, GET_BUILTIN_FUNCTION(OP_HOIST_1), e);
+  create_fo_expr(sctx, udf, loc, BUILTIN_FUNC(OP_HOIST_1), e);
 
   hoisted->setFlags(e->getFlags());
-  letvar->setFlags(e->getFlags());
+  //letvar->setFlags(e->getFlags());
 
   let_clause* flref(rCtx.theEM->create_let_clause(sctx, loc, letvar, hoisted));
 
@@ -521,7 +521,7 @@ static expr* try_hoisting(
   create_fo_expr(sctx,
                  udf,
                  loc,
-                 GET_BUILTIN_FUNCTION(OP_UNHOIST_1),
+                 BUILTIN_FUNC(OP_UNHOIST_1),
                  rCtx.theEM->create_wrapper_expr(sctx, udf, loc, letvar));
   unhoisted->setFlags(e->getFlags());
 
@@ -564,7 +564,7 @@ static bool non_hoistable(const expr* e)
       k == axis_step_expr_kind ||
       k == match_expr_kind ||
       (k == wrapper_expr_kind &&
-       non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
+       non_hoistable(static_cast<const wrapper_expr*>(e)->get_input())) ||
       is_already_hoisted(e) ||
       is_enclosed_expr(e) ||
       e->containsRecursiveCall() ||

@@ -93,30 +93,42 @@ ZORBA_SET_TEST_PROPERTY(bin/zorba_option PASS_REGULAR_EXPRESSION "value")
 # test the --uri-path, --lib-path, and --module-path args.
 # Use the versioning tests as they utilize test modules already.
 SET (_testdir
-  "${CMAKE_CURRENT_SOURCE_DIR}/../test/rbkt/Queries/zorba/versioning")
+  "${CMAKE_CURRENT_SOURCE_DIR}/../test/rbkt/Queries/zorba")
 SET (_uridir "${CMAKE_BINARY_DIR}/TEST_URI_PATH")
 SET (_libdir "${CMAKE_BINARY_DIR}/TEST_LIB_PATH")
-ZORBA_ADD_TEST(bin/zorba_uri_path_1 zorbacmd -f -q "${_testdir}/import1.xq"
+ZORBA_ADD_TEST(bin/zorba_uri_path_1 zorbacmd
+  -f -q "${_testdir}/versioning/import1.xq"
   --uri-path "${_uridir}")
 ZORBA_SET_TEST_PROPERTY(bin/zorba_uri_path_1
   PASS_REGULAR_EXPRESSION "hello, v2")
 
-ZORBA_ADD_TEST(bin/zorba_uri_path_2 zorbacmd -f -q "${_testdir}/external1.xq"
+ZORBA_ADD_TEST(bin/zorba_uri_path_2 zorbacmd
+  -f -q "${_testdir}/versioning/external1.xq"
   --uri-path "${_uridir}")
 ZORBA_SET_TEST_PROPERTY(bin/zorba_uri_path_2
   PASS_REGULAR_EXPRESSION "ZXQP0008")
 
-ZORBA_ADD_TEST(bin/zorba_uri_path_3 zorbacmd -f -q "${_testdir}/external1.xq"
+ZORBA_ADD_TEST(bin/zorba_uri_path_3 zorbacmd
+  -f -q "${_testdir}/versioning/external1.xq"
   --uri-path "${_uridir}" --lib-path "${_libdir}")
 ZORBA_SET_TEST_PROPERTY(bin/zorba_uri_path_3
   PASS_REGULAR_EXPRESSION "hello, v2")
+
+# test the --disable-http-resolution flag, using the corresponding test query
+# from rbkt/zorba/uris/disable-http and a timeout.
+ZORBA_ADD_TEST(bin/zorba_disable_http_download zorbacmd
+  -f -q "${_testdir}/uris/disable-http.xq" --disable-http-resolution)
+ZORBA_SET_TEST_PROPERTY(bin/zorba_disable_http_download
+  PASS_REGULAR_EXPRESSION "XQST0059")
+ZORBA_SET_TEST_PROPERTY(bin/zorba_disable_http_download TIMEOUT 5)
 
 IF(WIN32)
   SET(PATH_SEP ";")
 ELSE(WIN32)
   SET(PATH_SEP ":")
 ENDIF(WIN32)
-ZORBA_ADD_TEST(bin/zorba_module_path_1 zorbacmd -f -q "${_testdir}/external1.xq"
+ZORBA_ADD_TEST(bin/zorba_module_path_1 zorbacmd
+  -f -q "${_testdir}/versioning/external1.xq"
   --module-path "${_libdir}${PATH_SEP}${_uridir}")
 ZORBA_SET_TEST_PROPERTY(bin/zorba_module_path_1
   PASS_REGULAR_EXPRESSION "hello, v2")

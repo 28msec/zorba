@@ -1507,7 +1507,9 @@ StaticContextImpl::invoke(
     // contains a reference to the query in order to do cleanup work.
     // The same is true for this sctx
     Iterator_t lIter = impl->iterator();
-    return new InvokeItemSequence(impl.release(), lIter, const_cast<StaticContextImpl*>(this));
+    return new InvokeItemSequence(impl.release(),
+                                  lIter,
+                                  const_cast<StaticContextImpl*>(this));
   }
   catch (ZorbaException const& e)
   {

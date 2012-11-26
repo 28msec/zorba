@@ -36,11 +36,9 @@ class FoldRules : public RuleMajorDriver
 public:
   FoldRules()
   {
-    //ADD_RULE(MarkExpensiveOps);
-    // Most rules try to update the freevars annotations, but for now let's stay on the safe side
     ADD_RULE(MarkExprs);
     ADD_RULE(MarkFreeVars);
-    ADD_RULE(FoldConst(false));
+    ADD_RULE(FoldConst);
     ADD_RULE(PartialEval);
     ADD_RULE(RefactorPredFLWOR);
     ADD_RULE(EliminateUnusedLetVars);
@@ -65,7 +63,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
 
   SingletonRuleMajorDriver<EliminateTypeEnforcingOperations> driverTypeRules;
   SingletonRuleMajorDriver<EliminateExtraneousPathSteps> driverPathSimplify;
-  //SingletonRuleMajorDriver<ReplaceExprWithConstantOneWhenPossible> driverExprSimplify;
   RuleOnceDriver<EliminateUnusedLetVars> driverEliminateVars;
   RuleOnceDriver<MarkProducerNodeProps> driverMarkProducerNodeProps;
   RuleOnceDriver<MarkConsumerNodeProps> driverMarkConsumerNodeProps;
@@ -87,6 +84,13 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   // PathSimplification
   if (driverPathSimplify.rewrite(rCtx))
     modified = true;
+
+  if (rCtx.theUDF != NULL)
+  {
+    RuleOnceDriver<MarkExprs> driverMarkLocalExprs;
+    driverMarkLocalExprs.getRule()->setLocal(true);
+    driverMarkLocalExprs.rewrite(rCtx);
+  }
 
  repeat1:
 

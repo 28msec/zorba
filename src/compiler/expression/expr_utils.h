@@ -22,6 +22,9 @@
 namespace zorba 
 {
 
+class expr;
+class var_expr;
+
 /******************************************************************************
   Used by the orderspecs of an order by clause, and by the keyspecs of an
   index declaration.
@@ -46,6 +49,11 @@ public:
   }
 };
 
+
+/******************************************************************************
+
+********************************************************************************/
+typedef std::vector<std::pair<expr*, var_expr*> > var_rebind_list_t;
 
 }
 #endif

@@ -24,6 +24,7 @@
 #include "compiler/expression/json_exprs.h"
 #include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftnode.h"
 #include "compiler/expression/expr_manager.h"
 
 #include "compiler/api/compilercb.h"
@@ -462,7 +463,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                          theLoc,
                          e->get_valmode(),
                          const_cast<store::Item*>(e->get_type_name()),
-                         e->get_expr()->clone(udf, subst),
+                         e->get_input()->clone(udf, subst),
                          e->get_typemgr());
 
     break;
@@ -502,7 +503,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                       udf,
                       theLoc,
                       e->get_type(),
-                      e->get_expr()->clone(udf, subst));
+                      e->get_input()->clone(udf, subst));
     break;
   }
 #ifndef ZORBA_NO_FULL_TEXT
@@ -734,9 +735,9 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
   {
     const wrapper_expr* e = static_cast<const wrapper_expr*>(this);
 
-    expr* wrappedClone = e->theWrappedExpr->clone(udf, subst);
+    expr* wrappedClone = e->theInput->clone(udf, subst);
 
-    if (e->theWrappedExpr->get_expr_kind() == var_expr_kind &&
+    if (e->theInput->get_expr_kind() == var_expr_kind &&
         wrappedClone->get_expr_kind() != var_expr_kind)
     {
       newExpr = wrappedClone;
@@ -753,7 +754,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
     const function_trace_expr* e = static_cast<const function_trace_expr*>(this);
 
     function_trace_expr* cloneExpr = theCCB->theEM->
-    create_function_trace_expr(udf, e->theExpr->clone(udf, subst));
+    create_function_trace_expr(udf, e->theInput->clone(udf, subst));
 
     cloneExpr->theFunctionName = e->theFunctionName;
     cloneExpr->theFunctionLocation = e->theFunctionLocation;

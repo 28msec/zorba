@@ -71,5 +71,11 @@ void ftcontains_expr::compute_scripting_kind()
 }
 
 
+ftnode_t ftcontains_expr::get_ftselection() const
+{
+  return ftselection_;
+}
+
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

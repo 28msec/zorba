@@ -20,8 +20,13 @@
 
 #include "compiler/expression/expr_consts.h"
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
+
 #include "compiler/expression/pragma.h"
 #include "compiler/api/compilercb.h"
+
+#include "zorbamisc/ns_consts.h"
+
 
 namespace zorba
 {
@@ -63,6 +68,39 @@ processPragmaInternal(zorba::expr* e, const std::vector<zorba::pragma*>& p)
 /*******************************************************************************
 
 ********************************************************************************/
+xqtref_t static_collections_dml_collection::getReturnType(const fo_expr* caller) const
+{
+  if (getName()->getNamespace() ==
+      static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS)
+  {
+    return theSignature.returnType();
+  }
+
+  static_context* sctx = caller->get_sctx();
+
+  const store::Item* qname = caller->get_arg(0)->getQName(sctx);
+
+  if (qname != NULL)
+  {
+    const StaticallyKnownCollection* collection = sctx->lookup_collection(qname);
+
+    if (collection != NULL)
+    {
+      return collection->getCollectionType();
+    }
+    else
+    {
+      RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, caller->get_loc(),
+      ERROR_PARAMS(qname->getStringValue()));
+    }
+  }
+  else
+  {
+    return theSignature.returnType();
+  }
+}
+
+
 PlanIter_t static_collections_dml_collection::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -139,13 +177,13 @@ PlanIter_t static_collections_ddl_delete::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-void
-zorba::static_collections_dml_insert_nodes::processPragma(
+void zorba::static_collections_dml_insert_nodes::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
+
 
 PlanIter_t static_collections_dml_insert_nodes::codegen(
     CompilerCB* cb,
@@ -365,6 +403,7 @@ zorba::static_collections_dml_apply_insert_nodes_last::processPragma(
 {
   processPragmaInternal(e, p);
 }
+
 
 PlanIter_t static_collections_dml_apply_insert_nodes_last::codegen(
     CompilerCB* cb,

@@ -67,7 +67,7 @@ RULE_REWRITE_POST(InferUDFTypes)
     return NULL;
 
   fo_expr* fo = static_cast<fo_expr*>(node);
-  user_function* udf = dynamic_cast<user_function*>(fo->get_func());
+  user_function* udf = static_cast<user_function*>(fo->get_func());
 
   if (udf == NULL)
     return NULL;
@@ -103,7 +103,9 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  if (node->get_expr_kind() == fo_expr_kind)
+  switch (node->get_expr_kind())
+  {
+  case fo_expr_kind:
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
 
@@ -145,13 +147,15 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
       return NULL;
     }
+
+    break;
   }
-
-  cast_base_expr* pe = NULL;
-
-  // Note: the if cond is true for promote_expr, treat_expr, and cast_expr
-  if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL)
+  case cast_expr_kind:
+  case promote_expr_kind:
+  case treat_expr_kind:
   {
+    cast_base_expr* pe = static_cast<cast_base_expr*>(node);
+
     expr* arg = pe->get_input();
     xqtref_t arg_type = arg->get_return_type();
     xqtref_t target_type = pe->get_target_type();
@@ -188,7 +192,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
                                            node->get_loc(),
                                            arg,
                                            target_type,
-                                           TreatIterator::TYPE_MATCH,
+                                           TREAT_TYPE_MATCH,
                                            false); // do not check the prime types
     }
 
@@ -205,6 +209,9 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     }
 
     return NULL;
+  }
+  default:
+    break;
   }
 
   return NULL;
@@ -268,7 +275,7 @@ RULE_REWRITE_POST(SpecializeOperations)
                               argExpr->get_loc(),
                               argExpr,
                               rtm.DOUBLE_TYPE_STAR,
-                              PromoteIterator::FUNC_PARAM,
+                              PROMOTE_FUNC_PARAM,
                               replacement->getName());
 
           fo->set_arg(0, promoteExpr);
@@ -323,9 +330,9 @@ RULE_REWRITE_POST(SpecializeOperations)
             TypeOps::is_subtype(tm, *lenType, *rtm.INTEGER_TYPE_ONE, lenLoc))
         {
           if (fnKind == FunctionConsts::FN_SUBSTRING_3)
-            fo->set_func(GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_3));
+            fo->set_func(BUILTIN_FUNC(OP_SUBSTRING_INT_3));
           else
-            fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3));
+            fo->set_func(BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3));
 
           fo->set_arg(1, posExpr);
           fo->set_arg(1, lenExpr);
@@ -334,9 +341,9 @@ RULE_REWRITE_POST(SpecializeOperations)
       else if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE, posLoc))
       {
         if (fnKind == FunctionConsts::FN_SUBSTRING_2)
-          fo->set_func(GET_BUILTIN_FUNCTION(OP_SUBSTRING_INT_2));
+          fo->set_func(BUILTIN_FUNC(OP_SUBSTRING_INT_2));
         else
-          fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2));
+          fo->set_func(BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2));
 
         fo->set_arg(1, posExpr);
       }
@@ -570,7 +577,7 @@ static expr* wrap_in_num_promotion(
                                          arg->get_loc(),
                                          arg,
                                          t,
-                                         PromoteIterator::FUNC_PARAM,
+                                         PROMOTE_FUNC_PARAM,
                                          fn->getName());
 }
 

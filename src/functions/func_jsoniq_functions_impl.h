@@ -30,6 +30,11 @@ namespace zorba
 void populate_context_jsoniq_functions_impl(static_context* sctx);
 
 
+/*******************************************************************************
+  jn:object($objs as object()*) as object()
+
+  It performs object construction by unioning the input objects.
+********************************************************************************/
 class jn_object : public function
 {
 public:
@@ -39,7 +44,7 @@ public:
   {
   }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };

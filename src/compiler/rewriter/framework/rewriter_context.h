@@ -85,6 +85,8 @@ public:
 
   int                          m_tempvarCounter;
 
+  bool                         theForSerializationOnly;
+
   bool                         theIsInOrderedMode;
 
   VarIdMap                   * theVarIdMap;
@@ -105,9 +107,11 @@ public:
 
   CompilerCB* getCompilerCB() const { return theCCB; }
 
-  expr* getRoot();
+  expr* getRoot() const;
 
   void setRoot(expr* root);
+
+  void setForSerializationOnly(bool v) { theForSerializationOnly = v; }
 
   var_expr* createTempVar(
       static_context* sctx,

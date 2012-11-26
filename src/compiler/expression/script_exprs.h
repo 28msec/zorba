@@ -390,11 +390,8 @@ class flowctl_expr : public expr
   friend class ExprIterator;
   friend class expr;
 
-public:
-  enum action { BREAK, CONTINUE };
-
 protected:
-  enum action theAction;
+  FlowCtlAction theAction;
 
 protected:
   flowctl_expr(
@@ -402,10 +399,10 @@ protected:
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      enum action action);
+      FlowCtlAction action);
 
 public:
-  enum action get_action() const { return theAction; }
+  FlowCtlAction get_action() const { return theAction; }
 
   void compute_scripting_kind();
 

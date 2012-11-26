@@ -26,7 +26,7 @@
 #include "functions/function.h"
 
 #include "diagnostics/assert.h"
-
+#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba
 {
@@ -401,7 +401,7 @@ flowctl_expr::flowctl_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    enum action action)
+    FlowCtlAction action)
   :
   expr(ccb, sctx, udf, loc, flowctl_expr_kind),
   theAction(action)
