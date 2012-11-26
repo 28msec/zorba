@@ -30,7 +30,8 @@ namespace zorba {
       scripting   = 4,
       hof         = 8,
       trace       = 16,
-      dtd         = 32
+      dtd         = 32,
+      http_resolution = 64,
     };
 
     bool kind_for( char const*, kind& );

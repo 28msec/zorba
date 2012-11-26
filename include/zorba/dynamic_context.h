@@ -284,7 +284,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    *  false otherwise.
    */
   virtual bool
-  addExternalFunctionParameter ( const String& aName, ExternalFunctionParameter* aParam ) = 0;
+  addExternalFunctionParameter ( const String& aName, ExternalFunctionParameter* aParam ) const = 0;
 
   /** \brief Get the value of a pair that was registered using
    *         the addExternalFunctionParam method. This can

@@ -105,14 +105,6 @@ void expr::compute_return_type(bool deep, bool* modified)
     break;
   }
 
-  case order_expr_kind:
-  {
-    order_expr* e = static_cast<order_expr*>(this);
-
-    newType = e->theExpr->get_return_type();
-    break;
-  }
-
   case validate_expr_kind:
   {
     theType = rtm.ANY_NODE_TYPE_ONE;
@@ -317,7 +309,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     fo_expr* e = static_cast<fo_expr*>(this);
 
     /*
-      const user_function* udf = dynamic_cast<const user_function*>(func);
+      const user_function* udf = static_cast<const user_function*>(func);
 
       if (udf != NULL)
       return udf->getUDFReturnType(sctx);
@@ -332,7 +324,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     cast_expr* e = static_cast<cast_expr*>(this);
 
-    xqtref_t argType = e->theInputExpr->get_return_type();
+    xqtref_t argType = e->theInput->get_return_type();
     TypeConstants::quantifier_t argQuant = argType->get_quantifier();
     TypeConstants::quantifier_t targetQuant = e->theTargetType->get_quantifier();
 
@@ -378,7 +370,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     promote_expr* e = static_cast<promote_expr*>(this);
 
-    xqtref_t in_type = e->theInputExpr->get_return_type();
+    xqtref_t in_type = e->theInput->get_return_type();
     xqtref_t in_ptype = TypeOps::prime_type(tm, *in_type);
     xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
@@ -490,7 +482,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     switch (e->type)
     {
-    case text_expr::text_constructor:
+    case text_constructor:
     {
       xqtref_t t = e->get_text()->get_return_type();
 
@@ -504,7 +496,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       break;
     }
 
-    case text_expr::comment_constructor:
+    case comment_constructor:
       nodeKind = store::StoreConsts::commentNode;
       break;
 
@@ -702,15 +694,19 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case function_trace_expr_kind:
   {
-    function_trace_expr* e = static_cast<function_trace_expr*>(this);
-    newType = e->theExpr->get_return_type();
+    newType = static_cast<function_trace_expr*>(this)->theInput->get_return_type();
+    break;
+  }
+
+  case order_expr_kind:
+  {
+    newType = static_cast<order_expr*>(this)->theInput->get_return_type();
     break;
   }
 
   case wrapper_expr_kind:
   {
-    wrapper_expr* e = static_cast<wrapper_expr*>(this);
-    newType = e->theWrappedExpr->get_return_type();
+    newType = static_cast<wrapper_expr*>(this)->theInput->get_return_type();
     break;
   }
 

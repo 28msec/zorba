@@ -29,6 +29,7 @@
 #include "compiler/expression/script_exprs.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
+#include "compiler/expression/expr_manager.h"
 #include "compiler/codegen/plan_visitor.h"
 
 #include "runtime/base/plan_iterator.h"
@@ -284,7 +285,7 @@ void IndexDecl::analyze(CompilerCB* ccb)
   if (var)
     dotVar = var->getVar();
 
-  std::vector<var_expr*> varExprs;
+  expr::FreeVars varExprs;
 
   // Check constraints on the domain expr
   analyzeExprInternal(getDomainExpr(),
@@ -365,7 +366,7 @@ void IndexDecl::analyzeExprInternal(
     expr* e,
     std::vector<store::Item*>& sourceNames,
     std::vector<expr*>& sourceExprs,
-    std::vector<var_expr*>& varExprs,
+    FreeVars& varExprs,
     expr* dotVar)
 {
   if (e->get_expr_kind() == fo_expr_kind)
@@ -411,12 +412,12 @@ void IndexDecl::analyzeExprInternal(
 
     ZORBA_ASSERT(varExpr->get_kind() == var_expr::local_var);
 
-    varExprs.push_back(varExpr);
+    varExprs.insert(varExpr);
   }
   else if (e->get_expr_kind() == flwor_expr_kind ||
            e->get_expr_kind() == gflwor_expr_kind)
   {
-    static_cast<const flwor_expr*>(e)->get_vars_defined(varExprs);
+    static_cast<const flwor_expr*>(e)->get_vars(varExprs);
   }
   else if (e->get_expr_kind() == var_expr_kind)
   {
@@ -427,7 +428,7 @@ void IndexDecl::analyzeExprInternal(
     }
 
     if (e != getDomainVariable() &&
-        std::find(varExprs.begin(), varExprs.end(), e) == varExprs.end())
+        varExprs.find(static_cast<var_expr*>(e)) == varExprs.end())
     {
       RAISE_ERROR(zerr::ZDST0031_INDEX_HAS_FREE_VARS,  e->get_loc(),
       ERROR_PARAMS(theName->getStringValue()));

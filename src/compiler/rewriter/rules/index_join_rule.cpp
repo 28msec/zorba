@@ -286,7 +286,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     return false;
 
   // The expr that defines the inner var must not depend on the outer var.
-  expr* innerDomainExpr = predInfo.theInnerVar->get_for_clause()->get_expr();
+  expr* innerDomainExpr = predInfo.theInnerVar->get_forlet_clause()->get_expr();
   if (checkVarDependency(rCtx, innerDomainExpr, outerVarId))
     return false;
 
@@ -430,8 +430,8 @@ static bool checkVarDependency(
   std::vector<ulong> varidSet;
   bitset.getSet(varidSet);
 
-  ulong numVars = (ulong)varidSet.size();
-  for (ulong i = 0; i < numVars; ++i)
+  csize numVars = varidSet.size();
+  for (csize i = 0; i < numVars; ++i)
   {
     const var_expr* var = (*rCtx.theIdVarMap)[varidSet[i]];
     curExpr = var->get_forletwin_clause()->get_expr();
@@ -457,7 +457,7 @@ static void rewriteJoin(
   const QueryLoc& loc = predInfo.thePredicate->get_loc();
   static_context* sctx = predInfo.thePredicate->get_sctx();
   user_function* udf = predInfo.thePredicate->get_udf();
-  for_clause* fc = predInfo.theInnerVar->get_for_clause();
+  for_clause* fc = predInfo.theInnerVar->get_forlet_clause();
 
   assert(udf == rCtx.theUDF);
 
@@ -736,9 +736,9 @@ static bool expandVars(
   {
     wrapper_expr* wrapper = reinterpret_cast<wrapper_expr*>(subExpr);
 
-    if (wrapper->get_expr()->get_expr_kind() == var_expr_kind)
+    if (wrapper->get_input()->get_expr_kind() == var_expr_kind)
     {
-      var_expr* var = reinterpret_cast<var_expr*>(wrapper->get_expr());
+      var_expr* var = reinterpret_cast<var_expr*>(wrapper->get_input());
       long varid = -1;
 
       if (rCtx.theVarIdMap->find(var) != rCtx.theVarIdMap->end())
@@ -756,7 +756,7 @@ static bool expandVars(
       {
         if (var->get_kind() == var_expr::let_var)
         {
-          wrapper->set_expr(var->get_forletwin_clause()->get_expr());
+          wrapper->set_expr(var->get_forlet_clause()->get_expr());
 
           return expandVars(rCtx, wrapper, outerVarId, maxVarId);
         }
@@ -767,7 +767,7 @@ static bool expandVars(
 #else
           // TODO: to expand a FOR var, we must make sure that the expr is a
           // map w.r.t. that var.
-          wrapper->set_expr(var->get_forletwin_clause()->get_expr());
+          wrapper->set_expr(var->get_forlet_clause()->get_expr());
 
           return expandVars(rCtx, wrapper, outerVarId, maxVarId);
 #endif
@@ -823,9 +823,9 @@ static bool findFlworForVar(
     if (rCtx.theFlworStack[i]->get_expr_kind() == trycatch_expr_kind)
       return false;
 
-    flworExpr = dynamic_cast<flwor_expr*>(rCtx.theFlworStack[i]);
+    assert(rCtx.theFlworStack[i]->get_expr_kind() == flwor_expr_kind);
 
-    assert(flworExpr != NULL);
+    flworExpr = static_cast<flwor_expr*>(rCtx.theFlworStack[i]);
 
     if (i < numFlwors - 1 &&
         rCtx.theInReturnClause[i] == true &&

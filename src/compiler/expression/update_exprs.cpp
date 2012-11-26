@@ -18,6 +18,7 @@
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -52,6 +53,8 @@ update_expr_base::update_expr_base(
   theSourceExpr(sourceExpr)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 

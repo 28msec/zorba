@@ -72,7 +72,7 @@ RewriterContext::~RewriterContext()
 }
 
 
-expr* RewriterContext::getRoot()
+expr* RewriterContext::getRoot() const
 {
   return theRoot;
 }

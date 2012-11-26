@@ -29,19 +29,21 @@
 // without having the definition of static_context availble.
 # include "context/static_context.h"
 #endif
+
 #include "compiler/expression/pragma.h"
 
 #include "zorbaserialization/class_serializer.h"
 
-#include "compiler/expression/mem_manager.h"
-#include "compiler/expression/expr_manager.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 #ifdef ZORBA_WITH_DEBUGGER
 class DebuggerCommons;
 #endif
 class static_context;
+class ExprManager;
+
 
 /*******************************************************************************
   There is one CompilerCB per query plus one CompilerCB per invocation of an
@@ -232,8 +234,6 @@ public:
   static_context* getStaticContext(int id);
 
   ExprManager* getExprManager() const { return theEM; }
-
-  MemoryManager& getMemoryManager() const { return theEM->getMemory(); }
 
   //
   // Pragmas

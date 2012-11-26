@@ -20,13 +20,17 @@
 #include <zorba/locale.h>
 
 #include "common/shared_types.h"
+
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/ftnode_classes.h"
 #include "compiler/parser/ft_types.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenodes.h"
+
 #include "runtime/base/plan_iterator.h"
+
 #include "util/cxx_util.h"
+
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
 

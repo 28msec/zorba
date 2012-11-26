@@ -24,7 +24,7 @@ namespace zorba
 
 class flwor_clause;
 class forletwin_clause;
-class for_clause;
+class forlet_clause;
 class copy_clause;
 class var_expr;
 class VarInfo;
@@ -230,7 +230,7 @@ public:
 
   forletwin_clause* get_forletwin_clause() const;
 
-  for_clause* get_for_clause() const;
+  forlet_clause* get_forlet_clause() const;
 
   copy_clause* get_copy_clause() const { return theCopyClause; }
 
