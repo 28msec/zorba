@@ -33,6 +33,7 @@
 
 #include "system/globalenv.h"
 
+#include "util/fs_util.h"
 #include "zorbautils/fatal.h"
 
 #include "common/shared_types.h"
@@ -247,9 +248,11 @@ void apply_updates(
         || d == zerr::ZSTR0060_RANGE_EXCEPTION )
       {
         try {
+          QueryLoc loc2( loc );
+          loc2.setFilename( fs::base_name( loc.getFilename() ) );
           throw XQUERY_EXCEPTION(
             err::XUDY0021,
-            ERROR_PARAMS( e.what(), ZED( XUDY0021_AppliedAt ), loc ),
+            ERROR_PARAMS( e.what(), ZED( XUDY0021_AppliedAt ), loc2 ),
             ERROR_LOC( e )
           );
         }
