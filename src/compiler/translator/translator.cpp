@@ -1572,8 +1572,8 @@ expr* normalize_fo_arg(csize i, expr* argExpr, const function* func, TypeManager
     paramType = sign[i];
   }
 
-    // A NULL value for the parameter's type to signal that no type promotion
-    // or match should be added. This is used by the reflection:invoke() function,
+  // A NULL value for the parameter's type to signal that no type promotion
+  // or match should be added. This is used by the reflection:invoke() function,
   if (paramType != NULL)
   {
     if (TypeOps::is_subtype(tm,
@@ -1590,9 +1590,9 @@ expr* normalize_fo_arg(csize i, expr* argExpr, const function* func, TypeManager
     {
       if (paramType->type_kind() == XQType::FUNCTION_TYPE_KIND)
       {
-          // function coercion
-          // std::cerr << "--> coerce argument argExpr: " << argExpr->toString() << std::endl;
-        argExpr = wrap_in_coercion(paramType, argExpr, loc, theCCB);
+        // function coercion
+        // std::cerr << "--> coerce argument argExpr: " << argExpr->toString() << std::endl;
+        // argExpr = wrap_in_coercion(paramType, argExpr, loc, theCCB);
       }
 
       argExpr = wrap_in_type_match(argExpr,
@@ -10720,13 +10720,13 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   if (fn_ns == static_context::W3C_FN_NS)
   {
-    // Some special processing is required for certain "fn" functions
     if (f == NULL)
     {
       RAISE_ERROR(err::XPST0017, loc,
       ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
     }
 
+    // Special processing for certain "fn" functions
     switch (f->getKind())
     {
       case FunctionConsts::FN_HEAD_1:
@@ -11312,6 +11312,38 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           evalExpr->add_var(temp_vars[i]);
         }
 
+        break;
+      } // case FunctionConsts::FN_ZORBA_INVOKE_N:
+      
+      case FunctionConsts::FN_MAP_2:
+      {
+        /*
+           map(function, sequence)
+           
+           is rewritten internally as:
+        
+           for $item in $sequence
+           return dynamic_function_invocation[ $function, $item ]
+        */
+        
+        flwor_expr* flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
+        for_clause* seq_fc = wrap_in_forclause(arguments[1], NULL);
+        flwor->add_clause(seq_fc);
+        
+        std::vector<expr*> fncall_args;
+        fncall_args.push_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()));
+        
+        expr* dynamic_fncall = theExprManager->create_dynamic_function_invocation_expr(
+            theRootSctx,
+            theUDF,
+            loc,
+            arguments[0],
+            fncall_args,
+            NULL);
+        
+        flwor->set_return_expr(dynamic_fncall);
+        
+        resultExpr = flwor;
         break;
       }
 

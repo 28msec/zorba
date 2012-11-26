@@ -166,12 +166,17 @@ void DynamicFnCallIterator::closeImpl(PlanState& planState)
     destroyState(planState, theStateOffset);
   }
   */
+  
+  NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>::
+  closeImpl(planState);
 
+  /*
   DynamicFnCallIteratorState* state =
   StateTraitsImpl<DynamicFnCallIteratorState>::getState(planState, theStateOffset);
 
   StateTraitsImpl<DynamicFnCallIteratorState>::
   destroyState(planState, theStateOffset);
+  */
 
   /*
   if (state->thePlan)
@@ -203,8 +208,8 @@ bool DynamicFnCallIterator::nextImpl(
   FunctionItem* fnItem;
   // std::vector<PlanIter_t> argIters;
   // std::vector<PlanIter_t>::iterator ite;
-  std::vector<PlanIter_t>::const_iterator ite;
   // std::vector<PlanIter_t>::const_iterator end2;
+  std::vector<PlanIter_t>::const_iterator ite;
 
   TypeManager* tm = theSctx->get_typemanager();
 

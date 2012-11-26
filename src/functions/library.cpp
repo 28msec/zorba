@@ -76,6 +76,7 @@
 #endif /* ZORBA_NO_FULL_TEXT */
 
 #include "functions/func_function_item_iter.h"
+#include "functions/func_hof_impl.h"
 
 #include "zorbaserialization/archiver.h"
 
@@ -145,6 +146,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_sequences_impl(sctx);
   populate_context_xqdoc(sctx);
   populate_context_function_item_iter(sctx);
+  populate_context_hof_impl(sctx);
   populate_context_documents(sctx);
   populate_context_maps(sctx);
 
