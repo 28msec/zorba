@@ -506,6 +506,7 @@ void end_visit(function_item_expr& v)
         else
           var_qname = v.get_scoped_vars_names()[i].getp();
 
+        /*
         std::cerr << "--> PlanVisitor function_item_expr: var name: " << v.get_scoped_vars_names()[i]->show()
             << " global: " << v.get_is_global_var()[i]
             << " with iter: "
@@ -517,6 +518,7 @@ void end_visit(function_item_expr& v)
         else
           std::cerr << " var name (from the expr, not the iterator): " << (var_qname? var_qname->show() : "NULL");
         std::cerr << std::endl;
+        */
       }
     }
 
@@ -799,7 +801,7 @@ void general_var_codegen(const var_expr& var)
 
   bool isForVar = false;
 
-  std::cerr << "--> general_var_codegen() on var: " << var.toString();
+  // std::cerr << "--> general_var_codegen() on var: " << var.toString();
 
   switch (var.get_kind())
   {
@@ -1525,9 +1527,6 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
     ZORBA_ASSERT(clauseVarMap->theClause == &c);
   }
 
-
-  std::cerr << "--> gflwor_codegen() on clause nr: " << currentClause << std::endl;
-
   //
   // WHERE
   //
@@ -1776,8 +1775,6 @@ void flwor_codegen(const flwor_expr& flworExpr)
   for (int it = numClauses - 1; it >= 0; --it)
   {
     const flwor_clause& c = *flworExpr.get_clause(it);
-
-    std::cerr << "--> flwor_codegen() on clause nr: " << it << std::endl;
 
     FlworClauseVarMap_t clauseVarMap;
 

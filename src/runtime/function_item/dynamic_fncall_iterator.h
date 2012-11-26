@@ -126,6 +126,8 @@ public:
   void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void closeImpl(PlanState& planState);
 };
 
 

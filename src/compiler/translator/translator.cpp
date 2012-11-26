@@ -1429,7 +1429,7 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
 {
   const FunctionXQType* func_type = static_cast<const FunctionXQType*>(targetType.getp());
 
-  std::cerr << "--> targetType: " << targetType->toString() << std::endl;
+  // std::cerr << "--> targetType: " << targetType->toString() << std::endl;
   // std::cerr << "----------- Argument to coercion ---------------\n";
   // std::cerr << theExpr->toString() << std::endl;
   // std::cerr << "------------------------------------------------\n";
@@ -1453,8 +1453,8 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
   for_clause* fnItem_fc = wrap_in_forclause(theExpr, NULL);
   var_expr* fnItem_var = fnItem_fc->get_var();
   fnItem_flwor->add_clause(fnItem_fc);
-  // var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
   var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::hof_var);
+  // var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
   fiExpr->add_variable(fnItem_var, inner_subst_var, fnItem_var->get_name(), 0 /*var is not global*/);
 
   // std::cerr << "--> subst_var: " << inner_subst_var->toString() << std::endl;
@@ -11741,7 +11741,7 @@ void* begin_visit(const InlineFunction& v)
     var_expr* varExpr = (*ite)->getVar();
     var_expr::var_kind kind = varExpr->get_kind();
 
-    std::cerr << "--> InlineFunction inscope var " << (ite-scopedVars.begin()) << ": " << varExpr->toString();
+    // std::cerr << "--> InlineFunction inscope var " << (ite-scopedVars.begin()) << ": " << varExpr->toString();
 
     if (/*kind == var_expr::prolog_var || */kind == var_expr::local_var)
     {
@@ -11754,7 +11754,8 @@ void* begin_visit(const InlineFunction& v)
     if (kind != var_expr::prolog_var)
     {
       try {
-        subst_var = bind_var(loc, qname, var_expr::prolog_var);
+        subst_var = bind_var(loc, qname, var_expr::hof_var);
+        // subst_var = bind_var(loc, qname, var_expr::prolog_var);
       } catch(XQueryException& e) {
         if (e.diagnostic() == err::XQST0049)
           continue;
@@ -11769,7 +11770,7 @@ void* begin_visit(const InlineFunction& v)
 
     fiExpr->add_variable(((kind == var_expr::prolog_var)? NULL:varExpr), subst_var, varExpr->get_name(), (kind == var_expr::prolog_var) /*var is global if it's a prolog var*/);
 
-    std::cerr << "--> subst_var: " << subst_var->toString() << std::endl;
+    // std::cerr << "--> subst_var: " << subst_var->toString() << std::endl;
 
     // ???? What about inscope vars that are hidden by param vars ???
   }

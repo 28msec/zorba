@@ -147,6 +147,46 @@ void DynamicFnCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 /*******************************************************************************
 
 ********************************************************************************/
+void DynamicFnCallIterator::closeImpl(PlanState& planState)
+{
+  /*
+  if (!theIsDynamic)
+  {
+    NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
+    closeImpl(planState);
+  }
+  else
+  {
+    // NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
+    // closeImpl(planState);
+
+    std::cerr << "--> destroying planState: " << (void*)&planState << std::endl;
+
+    StateTraitsImpl<UDFunctionCallIteratorState>::
+    destroyState(planState, theStateOffset);
+  }
+  */
+
+  DynamicFnCallIteratorState* state =
+  StateTraitsImpl<DynamicFnCallIteratorState>::getState(planState, theStateOffset);
+
+  StateTraitsImpl<DynamicFnCallIteratorState>::
+  destroyState(planState, theStateOffset);
+
+  /*
+  if (state->thePlan)
+  {
+    state->thePlan->close(planState);
+    state->theIsOpen = false;
+  }
+  */
+
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool DynamicFnCallIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -193,12 +233,10 @@ bool DynamicFnCallIterator::nextImpl(
 
     fnItem = static_cast<FunctionItem*>(targetItem.getp());
 
-    std::cerr << "--> " << this->toString() << " nextImpl() theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariablesIterators().size() << std::endl;
+    // std::cerr << "--> " << this->toString() << " nextImpl() theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariablesIterators().size() << std::endl;
 
     if (theCoercionTargetType.getp())
     {
-      const TypeManager* tm = theSctx->get_typemanager();
-
       xqtref_t fnItemType = tm->create_value_type(fnItem, loc);
 
       /*
@@ -262,15 +300,17 @@ bool DynamicFnCallIterator::nextImpl(
         if (dynamic_cast<ArgumentPlaceholderIterator*>(ite->getp()) == NULL)
         {
           PlanIter_t value = new PlanStateIteratorWrapper((*ite), planState);
-          std::cerr << "--> created PlanStateIteratorWrapper: " << value->toString() << std::endl;
+          // std::cerr << "--> created PlanStateIteratorWrapper: " << value->toString() << std::endl;
           fnItem->setArgumentValue(pos, value);
         }
         else
           pos++;
 
+        /*
         std::cerr << "--> dynamic fncall: child argIter: " << (*ite)->getId() << " = " << (*ite)->getClassName() << std::endl;
         if (dynamic_cast<LetVarIterator*>(ite->getp()))
           std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite->getp())->getVarName()->getStringValue() << std::endl;
+        */
 
         // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
         // *ite = *ite2;
@@ -284,28 +324,36 @@ bool DynamicFnCallIterator::nextImpl(
       // state->thePlan = fnItem->getImplementation(argIters);
       state->thePlan = fnItem->getImplementation(theChildren);
 
-      std::cerr << "--> dynamic fncall: opening thePlan: " << state->thePlan->toString() << std::endl;
+      std::cerr << "--> " << toString() << " got implementation." << std::endl;
+
+      // std::cerr << "--> dynamic fncall: opening thePlan: " << state->thePlan->toString() << std::endl;
 
       // must be opened after vars and params are set
       state->thePlan->open(planState, state->theUDFStateOffset);
       state->theIsOpen = true;
 
       {
+        /*
         std::cerr << "Iterator tree for dynamic function call:\n";
         XMLIterPrinter vp(std::cerr);
         print_iter_plan(vp, state->thePlan);
         std::cerr << std::endl;
+        */
       }
 
 
-      while(consumeNext(result, state->thePlan, planState))
+      while (consumeNext(result, state->thePlan, planState))
       {
         STACK_PUSH(true, state);
       }
 
+      std::cerr << "--> " << toString() << " finished consuming items." << std::endl;
+
       // need to close here early in case the plan is completely
       // consumed. Otherwise, the plan would still be opened
       // if destroyed from the state's destructor.
+
+
       state->thePlan->close(planState);
       state->theIsOpen = false;
     } // if (theIsPartialApply)

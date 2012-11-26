@@ -537,11 +537,13 @@ PlanIter_t user_function::getPlan(uint32_t& planStateSize)
     {
       argVarToRefsMap.put((uint64_t)&*theArgVars[i], &theArgVarsRefs[i]);
 
+      /*
       std::cerr << "--> argVars: " << theArgVars[i]->toString()
           << "    argVarsRefs: " << theArgVarsRefs[i].size();
       for (csize j=0; j<theArgVarsRefs[i].size(); j++)
         std::cerr << " " << theArgVarsRefs[i][j].getp();
       std::cerr << std::endl;
+      */
     }
 
     ulong nextVarId = 1;
@@ -555,6 +557,7 @@ PlanIter_t user_function::getPlan(uint32_t& planStateSize)
                              nextVarId,
                              &argVarToRefsMap);
 
+    /*
     for (csize i=0; i<numArgs; ++i)
     {
       std::cerr << "--> argVars: " << theArgVars[i]->toString()
@@ -563,6 +566,7 @@ PlanIter_t user_function::getPlan(uint32_t& planStateSize)
         std::cerr << " " << theArgVarsRefs[i][j]->getId() << " = " << theArgVarsRefs[i][j]->getClassName() ;
       std::cerr << std::endl;
     }
+    */
   }
 
   planStateSize = thePlanStateSize;

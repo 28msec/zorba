@@ -89,9 +89,9 @@
 
 namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
+SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator);
 
-SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator)
+SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator);
 
 
 
@@ -117,6 +117,8 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
   if (thePlanOpen)
     thePlan->close(*thePlanState);
+
+  std::cerr << "--> deleting PlanState: " << thePlanState << std::endl;
 
   if (thePlanState != NULL)
     delete thePlanState;
@@ -150,10 +152,16 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf,
                                planState.theStackDepth + 1,
                                planState.theMaxStackDepth);
 
+  std::cerr << "--> created PlanState: " << thePlanState << std::endl;
+
+  /*
   std::cerr << "--> UDFunctionCallIteratorState::open() " << this << " new theBlock: " << (void*)thePlanState->theBlock << " + " << (void*)thePlanState->theBlockSize
             << " for new PlanState: " << thePlanState << " for PlanIterator: " << thePlan->getId() << " = " << thePlan->getClassName() << std::endl;
   std::cerr << "    the PlanState: " << thePlanState << std::endl;
+  */
+
   // std::cerr << " has theGlobalDynCtx: " << thePlanState->theGlobalDynCtx->toString();
+
   /*
   std::cerr << "Iterator tree for dynamic function call:\n";
   XMLIterPrinter vp(std::cerr);
@@ -349,15 +357,6 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
   else
   {
-    //std::cerr << "--> " << toString() << " theSctx: " << theSctx->toString();
-
-    /*
-    std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
-    std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
-
-    std::cerr << "--> fnItem dctx: " << theFunctionItem->getDctx()->toString();
-    */
-
     theStateOffset = offset;
 
     state = new (planState.theBlock + offset) UDFunctionCallIteratorState();
@@ -376,7 +375,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   state->open(planState, theUDF, theIsDynamic, theFunctionItem);
 
 
-  std::cerr << "--> " << this->toString() << " finished opening state" << std::endl;
+  // std::cerr << "--> " << this->toString() << " finished opening state" << std::endl;
 
 
   // if the results of the function should be cached (prereq: atomic in and out)
@@ -414,8 +413,10 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
           (*argWrapsIte)->reset();
         */
 
+        /*
         std::cerr << "--> " << this->toString() << " openImpl() argsIte: " << (*argsIte)->toString()
             << " var: " << theUDF->getArgVars()[i]->toString();
+        */
 
         if (i < theFunctionItem->getArgumentsValues().size())
         {
@@ -469,6 +470,11 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
   }
   else
   {
+    // NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
+    // closeImpl(planState);
+
+    std::cerr << "--> destroying planState: " << (void*)&planState << std::endl;
+
     StateTraitsImpl<UDFunctionCallIteratorState>::
     destroyState(planState, theStateOffset);
   }

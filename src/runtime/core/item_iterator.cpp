@@ -210,6 +210,7 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     // Set the values for the (explicit) external vars of the eval query
     setExternalVariables(evalCCB.get(), importSctx, evalDctx.get());
 
+    /*
     std::cerr << "--> " << toString() << ": creating function item with params: " << std::endl;
     for (csize i=0; i<theChildren.size(); i++)
     {
@@ -219,6 +220,7 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
           // << ": " << (varsValues[i].getp() ? varsValues[i]->toString() : "NULL")
           << std::endl;
     }
+    */
 
     /*
     std::cerr << "--> evalSctx: " << evalSctx->toString();
@@ -327,7 +329,7 @@ void DynamicFunctionIterator::importOuterEnv(
     var_expr* ve = evalCCB->theEM->create_var_expr(importSctx,
                                                    NULL,
                                                    loc,
-                                                   var_expr::prolog_var,
+                                                   var_expr::hof_var,
                                                    theDynamicFunctionInfo->theScopedVarsNames[i].getp());
 
     // ve->set_type(theOuterVarTypes[i]); TODO: get types
