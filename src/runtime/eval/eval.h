@@ -133,6 +133,7 @@ private:
   void setExternalVariables(
       CompilerCB* ccb,
       static_context* importSctx,
+      static_context* evalSctx,
       dynamic_context* evalDctx) const;
 
   PlanIter_t compile(

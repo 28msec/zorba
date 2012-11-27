@@ -158,11 +158,6 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     ulong maxOuterVarId;
     importOuterEnv(planState, evalCCB, importSctx, evalDctx, maxOuterVarId);
 
-    // TODO: remove debug info
-    std::cerr << "--> importSctx: " << importSctx->toString();
-    std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
-    std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
-
     // If we are here after a reset, we must set state->thePlanWrapper to NULL
     // before reseting the state->thePlan. Otherwise, the current state->thePlan
     // will be destroyed first, and then we will attempt to close it when
@@ -175,10 +170,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     planState.theCompilerCB->theNextVisitId = evalCCB->theNextVisitId + 1;
 
     // Set the values for the (explicit) external vars of the eval query
-    setExternalVariables(evalCCB, importSctx, evalDctx);
-
-    // TODO: remove
-    std::cerr << "--> evalDctx: " << evalDctx->toString();
+    setExternalVariables(evalCCB, importSctx, evalSctx, evalDctx);
 
     // Execute
     state->thePlanWrapper = new PlanWrapper(state->thePlan,
@@ -217,7 +209,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   (d) For each of the non-global outer vars, places its value into the eval dctx.
       The var value is represented as a PlanIteratorWrapper over the subplan that
       evaluates the domain expr of the eval var.
-  (e) Computes the max var id of all the var values set in steps (c) and (d).
+  (e) Computes the max var id of all the var values set in steps (c) and (d). 
       This max varid will be passed to the compiler of the eval query so that
       the varids that will be generated for the eval query will not conflict with
       the varids of the outer vars and the outer-query global vars.
@@ -339,6 +331,7 @@ void EvalIterator::importOuterEnv(
 void EvalIterator::setExternalVariables(
     CompilerCB* ccb,
     static_context* importSctx,
+    static_context* evalSctx,
     dynamic_context* evalDctx) const
 {
   std::vector<VarInfo*> innerVars;

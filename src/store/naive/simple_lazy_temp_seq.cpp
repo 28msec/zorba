@@ -309,6 +309,7 @@ SimpleLazyTempSeqIter::SimpleLazyTempSeqIter()
 
 /*******************************************************************************
 ********************************************************************************/
+#ifndef NDEBUG
 std::string SimpleLazyTempSeq::toString() const
 {
   std::stringstream result;
@@ -324,6 +325,7 @@ std::string SimpleLazyTempSeq::toString() const
   
   return result.str();
 }
+#endif
 
 
 /*******************************************************************************

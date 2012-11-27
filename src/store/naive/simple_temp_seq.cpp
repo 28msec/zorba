@@ -206,6 +206,7 @@ bool SimpleTempSeq::containsItem(xs_integer position)
 
 /*******************************************************************************
 ********************************************************************************/
+#ifndef NDEBUG
 std::string SimpleTempSeq::toString() const
 {
   std::stringstream result;
@@ -221,14 +222,17 @@ std::string SimpleTempSeq::toString() const
   
   return result.str();
 }
+#endif
 
 
 /*******************************************************************************
 ********************************************************************************/
+#ifndef NDEBUG
 zstring SimpleTempSeq::show() const
 {
   return toString();
 }
+#endif
 
 
 /*******************************************************************************
@@ -357,6 +361,7 @@ void SimpleTempSeqIter::close()
 /*******************************************************************************
 
 ********************************************************************************/ 
+#ifndef NDEBUG
 std::string SimpleTempSeqIter::toString() const
 {
   std::stringstream ss;
@@ -367,6 +372,7 @@ std::string SimpleTempSeqIter::toString() const
     ss << "NULL";
   return ss.str();
 }
+#endif
 
 
 } // namespace store
