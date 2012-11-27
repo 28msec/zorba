@@ -118,7 +118,7 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
   if (thePlanOpen)
     thePlan->close(*thePlanState);
 
-  std::cerr << "--> deleting PlanState: " << thePlanState << std::endl;
+  // std::cerr << "--> deleting PlanState: " << thePlanState << std::endl;
 
   if (thePlanState != NULL)
     delete thePlanState;
@@ -152,7 +152,7 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf,
                                planState.theStackDepth + 1,
                                planState.theMaxStackDepth);
 
-  std::cerr << "--> created PlanState: " << thePlanState << std::endl;
+  // std::cerr << "--> created PlanState: " << thePlanState << std::endl;
 
   /*
   std::cerr << "--> UDFunctionCallIteratorState::open() " << this << " new theBlock: " << (void*)thePlanState->theBlock << " + " << (void*)thePlanState->theBlockSize
@@ -473,7 +473,7 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
     // NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
     // closeImpl(planState);
 
-    std::cerr << "--> destroying planState: " << (void*)&planState << std::endl;
+    // std::cerr << "--> destroying planState: " << (void*)&planState << std::endl;
 
     StateTraitsImpl<UDFunctionCallIteratorState>::
     destroyState(planState, theStateOffset);
@@ -785,7 +785,7 @@ void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
         throw ZORBA_EXCEPTION(
           zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS(
-                ZED( NoExternalFunction ),
+                ZED( NoExternalFunction_2 ),
                 BUILD_STRING( '{', theNamespace, '}', lLocalname )
                 )
         );
