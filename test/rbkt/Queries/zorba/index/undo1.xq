@@ -57,7 +57,10 @@ return <person id = "{$x/@id}">{$x/name}</person>
     }
     catch *
     {
-      <exception>{$err:code} : {$err:description}</exception>
+      let $msg1 := substring-before($err:description, " (applied")
+      let $msg2 := substring-after($err:description, "undo1.xq")
+      let $msg3 := concat($msg1, " (applied at undo1.xq", $msg2)
+      return <exception>{ $err:code } : { $msg3 }</exception>
     }
 
     ,

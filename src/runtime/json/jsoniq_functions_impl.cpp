@@ -1176,7 +1176,7 @@ JSONItemAccessorIterator::nextImpl(
       xqtref_t type = tm->create_value_type(selector, loc);
 
       RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_23),
+      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
                    type->toSchemaString(),
                    GENV_TYPESYSTEM.INTEGER_TYPE_ONE->toSchemaString()));
     }
@@ -1194,7 +1194,7 @@ JSONItemAccessorIterator::nextImpl(
       xqtref_t type = tm->create_value_type(selector, loc);
 
       RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_23),
+      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
                    type->toSchemaString(),
                    GENV_TYPESYSTEM.STRING_TYPE_ONE->toSchemaString()));
     }
