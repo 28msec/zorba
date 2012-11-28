@@ -72,16 +72,65 @@ declare %ann:nondeterministic function driver:list-test-sets(
         return data($testSet/@name)
 };
 
+declare %private function driver:matches-dependency(
+  $dependencies as element(fots:dependency)*,
+  $filter       as xs:string
+) as xs:boolean {
+  let $filter := tokenize($filter, '_')
+  let $depValue := $filter[1]
+  let $depSatisfied as xs:string := if(exists($filter[2]) and
+                                    ($filter[2] = 'true' or $filter[2]='false'))
+                                    then $filter[2]
+                                    else 'true'
+  return
+    if(xs:boolean($depSatisfied))
+
+    (: $depSatisfied = 'true' :)
+    then (exists($dependencies[@value = $depValue and
+                               @satisfied = $depSatisfied]) or
+          exists($dependencies[@value = $depValue and empty(@satisfied)]))
+
+    (: $depSatisfied = 'false' :)
+    else  exists($dependencies[@value = $depValue and
+                               @satisfied = $depSatisfied])
+};
+
+(:~
+ : Loops through the given test set and returns the test cases that have the
+ : given dependencies defined.
+ : @param $testSet test set document.
+ : @param $dependency defined dependency
+ : (empty string means all test cases).
+ : @return matching test case names.
+ :)
+declare %private function driver:list-test-cases(
+  $testSetDoc as document-node(),
+  $dependency as xs:string*
+) as xs:string* {
+  if(string-join($dependency,'') = '')
+  then $testSetDoc//fots:test-case/@name
+  else  for $testCase in $testSetDoc//fots:test-case
+        let $cond := driver:matches-dependency(($testSetDoc/fots:test-set/fots:dependency,
+                                                $testCase/fots:dependency),
+                                               $dependency)
+        where $cond
+        return$testCase/@name
+  
+};
+
 (:~
  : Loops through the given test sets and returns the corresponding test cases.
  : @param $fotsPath path to the FOTS catalog file.
  : @param $testSetPrefixes name/criteria for the test sets
- : (empty string means all).
+ : (empty string means all test cases).
+ : @param $dependency type of dependency that has to be met
+ : (empty string means all test cases).
  : @return available FOTS test cases.
  :)
 declare %ann:nondeterministic function driver:list-test-cases(
   $fotsPath         as xs:string,
-  $testSetPrefixes  as xs:string*
+  $testSetPrefixes  as xs:string*,
+  $dependency       as xs:string*
 ) as xs:string* {
   let $doc := doc(resolve-uri($fotsPath)),
       $baseUri:= resolve-uri(util:parent-folder($fotsPath))
@@ -90,31 +139,36 @@ declare %ann:nondeterministic function driver:list-test-cases(
     then
       for $testSet in $doc/fots:catalog/fots:test-set
       let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
-      return data($testSetDoc//fots:test-case/@name)
+      return driver:list-test-cases($testSetDoc, $dependency)
     else
       for $prefix in $testSetPrefixes
         for $testSet in $doc/fots:catalog/fots:test-set[starts-with(@name, $prefix)]
         let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
-        return data($testSetDoc//fots:test-case/@name)
+        return driver:list-test-cases($testSetDoc, $dependency)
 };
 
 (:~
  : Loops through the given test sets and returns the corresponding test cases.
  : @param $fotsPath path to the FOTS catalog file.
  : @param $testSetPrefixes name/criteria for the test sets
- : (empty string means all).
+ : (empty string means all test cases).
  : @param $testCasePrefixes name/criteria for the test cases
- : (empty string means all).
+ : (empty string means all test cases).
+ : @param $dependency type of dependency that has to be met
+ : (empty string means all test cases).
  : @return available FOTS test cases.
  :)
 declare %ann:nondeterministic function driver:list-test-cases(
   $fotsPath         as xs:string,
   $testSetPrefixes  as xs:string*,
-  $testCasePrefixes as xs:string*
+  $testCasePrefixes as xs:string*,
+  $dependency       as xs:string*
 ) as xs:string* {
   let $doc := doc(resolve-uri($fotsPath)),
       $baseUri:= resolve-uri(util:parent-folder($fotsPath)),
-      $testCaseNames := driver:list-test-cases($fotsPath, $testSetPrefixes)
+      $testCaseNames := driver:list-test-cases($fotsPath,
+                                               $testSetPrefixes,
+                                               $dependency)
   return
     for $prefix in $testCasePrefixes
     return
@@ -197,9 +251,9 @@ declare %ann:sequential function driver:run-fots(
 ) as element(fots:test-cases) {
   try {
   let $FOTSCatalog := doc(trace(resolve-uri($FOTSCatalogFilePath), 
-                              "Path to FOTS catalog.xml was set to: ")),
+                              "Path to FOTS catalog.xml set to: ")),
       $FOTSZorbaManifest := doc(trace(resolve-uri($FOTSZorbaManifestPath),
-                                    "Path to FOTSZorbaManifest was set to:"))
+                                    "Path to FOTSZorbaManifest set to:"))
   return driver:run($FOTSCatalog,
                     resolve-uri(util:parent-folder($FOTSCatalogFilePath)),
                     $FOTSZorbaManifest,
@@ -207,8 +261,8 @@ declare %ann:sequential function driver:run-fots(
                     $testCasePrefixes,
                     $exceptedTestCases,
                     $exceptedTestSets,
-                    trace($assert,          "The filter for 'assert name' was set to: "),
-                    trace($verbose,         "'Verbose' parameter was set to: "),
+                    trace($assert,          "The filter for 'assert name' set to: "),
+                    trace($verbose,         "'Verbose' parameter set to: "),
                     $showResult)
   }
   catch * {
