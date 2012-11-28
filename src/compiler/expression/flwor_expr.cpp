@@ -788,7 +788,6 @@ flwor_expr::flwor_expr(
     bool general)
   :
   expr(ccb, sctx, udf, loc, (general ? gflwor_expr_kind : flwor_expr_kind)),
-  theIsGeneral(general),
   theHasSequentialClauses(false),
   theReturnExpr(NULL)
 {

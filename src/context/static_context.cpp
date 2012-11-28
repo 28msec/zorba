@@ -3127,13 +3127,23 @@ store::Iterator_t static_context::index_names() const
 ********************************************************************************/
 void static_context::get_index_decls(std::vector<IndexDecl*>& decls) const
 {
-  IndexMap::iterator ite = theIndexMap->begin();
-  IndexMap::iterator end = theIndexMap->end();
+  const static_context* sctx = this;
 
-  for (; ite != end; ++ite)
+  while (sctx != NULL)
   {
-    IndexDecl* decl = ite.getValue().getp();
-    decls.push_back(decl);
+    if (sctx->theIndexMap)
+    {
+      IndexMap::iterator ite = sctx->theIndexMap->begin();
+      IndexMap::iterator end = sctx->theIndexMap->end();
+      
+      for (; ite != end; ++ite)
+      {
+        IndexDecl* decl = ite.getValue().getp();
+        decls.push_back(decl);
+      }
+    }
+
+    sctx = sctx->theParent;
   }
 }
 

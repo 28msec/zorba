@@ -1694,36 +1694,29 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
             flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
             
             if (nestedClauseKind != flwor_clause::let_clause &&
-                nestedClauseKind != flwor_clause::for_clause)
+                nestedClauseKind != flwor_clause::for_clause &&
+                nestedClauseKind != flwor_clause::where_clause)
             {
-#if 1
-              // temp hack until we have an optimized general flwor
-              if (nestedClauseKind == flwor_clause::where_clause &&
-                  i == numClauses-1 &&
-                  flwor->get_where() == NULL &&
-                  nestedFlwor->get_return_expr()->get_var() != NULL)
-              {
-                continue;
-              }
-#endif
               merge = false;
               break;
             }
           }
         }
-    }
+      }
       
       if (merge)
       {
         for (csize j = 0; j < numNestedClauses; ++j)
         {
           flwor_clause* nestedClause = nestedFlwor->get_clause(j);
-#if 1
-          if (nestedClause->get_kind() == flwor_clause::where_clause)
-            flwor->add_clause(i+j+1, nestedClause);
-          else
-#endif
-            flwor->add_clause(i+j, nestedClause);
+          flwor->add_clause(i+j, nestedClause);
+
+          if (!flwor->is_general() &&
+              nestedClause->get_kind() == flwor_clause::where_clause &&
+              i != numClauses - 1)
+          {
+            flwor->set_general(true);
+          }
         }
         
         c->set_expr(nestedFlwor->get_return_expr());

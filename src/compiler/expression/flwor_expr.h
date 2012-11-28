@@ -648,7 +648,6 @@ public:
   typedef std::vector<flwor_clause*> clause_list_t;
 
 protected:
-  bool            theIsGeneral;
   bool            theHasSequentialClauses;
   clause_list_t   theClauses;
   expr          * theReturnExpr;
@@ -662,9 +661,9 @@ protected:
       bool general);
 
 public:
-  bool is_general() const { return theIsGeneral; }
+  bool is_general() const { return get_expr_kind() == gflwor_expr_kind; }
 
-  void set_general(bool v) { theIsGeneral = true; }
+  void set_general(bool v) { theKind = (v ? gflwor_expr_kind : flwor_expr_kind); }
 
   expr* get_return_expr() const { return theReturnExpr; }
 
