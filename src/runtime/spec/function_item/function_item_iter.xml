@@ -64,4 +64,57 @@
     </zorba:function>
   
   </zorba:iterator>
+  
+  <!--
+  /*******************************************************************************
+    fn:map-pairs
+  ********************************************************************************/
+  -->
+  <zorba:iterator name="FnMapPairs">
+    <zorba:description author="Zorba Team">
+      Applies the function item $f to successive pairs of items taken one from $seq1 and one from $seq2, returning the concatenation of the resulting sequences in order.
+    </zorba:description>
+
+    <zorba:function generateDECL="false">
+      <zorba:signature localname="map-pairs" prefix="fn" version="3.0">
+        <zorba:param>function()*</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+  
+  </zorba:iterator>
+  
+  <!--
+  /*******************************************************************************
+    fn:fold-left
+    fn:fold-right
+  ********************************************************************************/
+  -->
+  <zorba:iterator name="FnFoldLeft">
+    <zorba:description author="Zorba Team">
+      Processes the supplied sequence from left to right or right to left, applying the supplied function repeatedly to each item in turn, together with an accumulated result value.
+    </zorba:description>
+
+    <zorba:function generateDECL="false">
+      <zorba:signature localname="fold-left" prefix="fn" version="3.0">
+        <zorba:param>function()*</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+    
+    <zorba:function generateDECL="false">
+      <zorba:signature localname="fold-right" prefix="fn" version="3.0">
+        <zorba:param>function()*</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+  
+  </zorba:iterator>
+  
 </zorba:iterators>

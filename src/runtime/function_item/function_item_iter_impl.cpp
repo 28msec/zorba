@@ -97,5 +97,69 @@ FunctionArityIterator::nextImpl(
   STACK_END(state);
 }
 
+
+/*******************************************************************************
+
+ ******************************************************************************/
+bool
+FnMapPairs::nextImpl(
+    store::Item_t& r,
+    PlanState& planState) const
+{
+  store::Item_t lFItem;
+  FunctionItem* lFunctionItem = 0;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lFItem, theChildren[0], planState);
+
+  // function signature guarantees that
+  ZORBA_ASSERT(lFItem->isFunction());
+
+  lFunctionItem = static_cast<FunctionItem*>(lFItem.getp());
+
+  if (lFunctionItem->getFunctionName())
+  {
+    // non-inline function
+    r = lFunctionItem->getFunctionName();
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+ ******************************************************************************/
+bool
+FnFoldLeft::nextImpl(
+    store::Item_t& r,
+    PlanState& planState) const
+{
+  store::Item_t lFItem;
+  FunctionItem* lFunctionItem = 0;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lFItem, theChildren[0], planState);
+
+  // function signature guarantees that
+  ZORBA_ASSERT(lFItem->isFunction());
+
+  lFunctionItem = static_cast<FunctionItem*>(lFItem.getp());
+
+  if (lFunctionItem->getFunctionName())
+  {
+    // non-inline function
+    r = lFunctionItem->getFunctionName();
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END(state);
+}
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

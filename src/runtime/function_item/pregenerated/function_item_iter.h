@@ -101,6 +101,70 @@ public:
 };
 
 
+/**
+ * 
+ *      Applies the function item $f to successive pairs of items taken one from $seq1 and one from $seq2, returning the concatenation of the resulting sequences in order.
+ *    
+ * Author: Zorba Team
+ */
+class FnMapPairs : public NaryBaseIterator<FnMapPairs, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnMapPairs);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnMapPairs,
+    NaryBaseIterator<FnMapPairs, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FnMapPairs(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnMapPairs, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnMapPairs();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      Processes the supplied sequence from left to right or right to left, applying the supplied function repeatedly to each item in turn, together with an accumulated result value.
+ *    
+ * Author: Zorba Team
+ */
+class FnFoldLeft : public NaryBaseIterator<FnFoldLeft, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnFoldLeft);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnFoldLeft,
+    NaryBaseIterator<FnFoldLeft, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FnFoldLeft(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnFoldLeft, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnFoldLeft();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

@@ -68,6 +68,51 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 };
 
 
+//fn:map-pairs
+class fn_map_pairs_3_0 : public function
+{
+public:
+  fn_map_pairs_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:fold-left
+class fn_fold_left_3_0 : public function
+{
+public:
+  fn_fold_left_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:fold-right
+class fn_fold_right_3_0 : public function
+{
+public:
+  fn_fold_right_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

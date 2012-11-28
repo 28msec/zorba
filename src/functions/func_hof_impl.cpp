@@ -22,6 +22,7 @@
 
 #include "functions/function.h"
 #include "functions/function_impl.h"
+#include "functions/func_function_item_iter.h"
 
 #include "system/globalenv.h"
 
@@ -36,7 +37,7 @@ class fn_map : public function
 {
 public:
   fn_map(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
+    :
     function(sig, kind)
   {
 
@@ -44,10 +45,36 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  PlanIter_t codegen(CompilerCB* cb,                        
-                     static_context* sctx,                  
-                     const QueryLoc& loc,                   
-                     std::vector<PlanIter_t>& argv,         
+  PlanIter_t codegen(CompilerCB* cb,
+                     static_context* sctx,
+                     const QueryLoc& loc,
+                     std::vector<PlanIter_t>& argv,
+                     expr& ann) const
+  {
+    return NULL;
+  }
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class fn_filter : public function
+{
+public:
+  fn_filter(const signature& sig, FunctionConsts::FunctionKind kind)
+    :
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  PlanIter_t codegen(CompilerCB* cb,
+                     static_context* sctx,
+                     const QueryLoc& loc,
+                     std::vector<PlanIter_t>& argv,
                      expr& ann) const
   {
     return NULL;
@@ -60,21 +87,91 @@ public:
 ********************************************************************************/
 void populate_context_hof_impl(static_context* sctx)
 {
-  std::vector<xqtref_t> args;
-  args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-  
-  xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
-      args,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      TypeConstants::QUANT_ONE);
-                                       
-  DECL_WITH_KIND(sctx, fn_map,
-        (createQName(static_context::W3C_FN_NS, "", "map"), 
-        hofParamType, 
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
-        FunctionConsts::FN_MAP_2);
-  
+  {
+    std::vector<xqtref_t> args;
+    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+
+    xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
+                   args,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   TypeConstants::QUANT_ONE);
+
+    DECL_WITH_KIND(sctx,
+                   fn_map,
+                   (createQName(static_context::W3C_FN_NS, "", "map"),
+                   hofParamType,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+                   FunctionConsts::FN_MAP_2);
+  }
+
+  {
+    std::vector<xqtref_t> args;
+    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+
+    xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
+                   args,
+                   GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
+                   TypeConstants::QUANT_ONE);
+
+    DECL_WITH_KIND(sctx,
+                   fn_filter,
+                   (createQName(static_context::W3C_FN_NS, "", "filter"),
+                   hofParamType,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+                   FunctionConsts::FN_FILTER_2);
+  }
+
+  {
+    std::vector<xqtref_t> args;
+    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+
+    xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
+                   args,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   TypeConstants::QUANT_ONE);
+
+    DECL_WITH_KIND(sctx,
+                   fn_map_pairs_3_0,
+                   (createQName(static_context::W3C_FN_NS, "", "map-pairs"),
+                   hofParamType,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+                   FunctionConsts::FN_MAP_PAIRS_3);
+  }
+
+  {
+    std::vector<xqtref_t> args;
+    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+
+    xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
+                   args,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   TypeConstants::QUANT_ONE);
+
+    DECL_WITH_KIND(sctx,
+                   fn_fold_left_3_0,
+                   (createQName(static_context::W3C_FN_NS, "", "fold-left"),
+                   hofParamType,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+                   FunctionConsts::FN_FOLD_LEFT_3);
+
+    DECL_WITH_KIND(sctx,
+                   fn_fold_right_3_0,
+                   (createQName(static_context::W3C_FN_NS, "", "fold-right"),
+                   hofParamType,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+                   FunctionConsts::FN_FOLD_RIGHT_3);
+  }
+
 }
 
 }

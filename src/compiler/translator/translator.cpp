@@ -1444,8 +1444,8 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
   /*
   std::vector<VarInfo*> scopedVars;
   theSctx->getVariables(scopedVars);
-  push_scope();
   */
+  push_scope();
 
 
   // handle the function item expression
@@ -1453,8 +1453,8 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
   for_clause* fnItem_fc = wrap_in_forclause(theExpr, NULL);
   var_expr* fnItem_var = fnItem_fc->get_var();
   fnItem_flwor->add_clause(fnItem_fc);
-  var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::hof_var);
-  // var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
+  var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
+  // var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::hof_var);
   fiExpr->add_variable(fnItem_var, inner_subst_var, fnItem_var->get_name(), 0 /*var is not global*/);
 
   // std::cerr << "--> subst_var: " << inner_subst_var->toString() << std::endl;
@@ -1510,7 +1510,9 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
   theExpr = fnItem_flwor;
 
   // pop the scope.
-  // pop_scope();
+  pop_scope();
+
+  // std::cerr << "--> wrapped expr: " << theExpr->toString();
 
   return theExpr;
 }
@@ -1592,7 +1594,7 @@ expr* normalize_fo_arg(csize i, expr* argExpr, const function* func, TypeManager
       {
         // function coercion
         // std::cerr << "--> coerce argument argExpr: " << argExpr->toString() << std::endl;
-        // argExpr = wrap_in_coercion(paramType, argExpr, loc, theCCB);
+        argExpr = wrap_in_coercion(paramType, argExpr, loc, theCCB);
       }
 
       argExpr = wrap_in_type_match(argExpr,
@@ -11314,38 +11316,79 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         break;
       } // case FunctionConsts::FN_ZORBA_INVOKE_N:
-      
+
       case FunctionConsts::FN_MAP_2:
       {
         /*
            map(function, sequence)
-           
+
            is rewritten internally as:
-        
+
            for $item in $sequence
            return dynamic_function_invocation[ $function, $item ]
         */
-        
+
         flwor_expr* flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
-        for_clause* seq_fc = wrap_in_forclause(arguments[1], NULL);
+        for_clause* seq_fc = wrap_in_forclause(foExpr->get_arg(1), false);
         flwor->add_clause(seq_fc);
-        
+
         std::vector<expr*> fncall_args;
         fncall_args.push_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()));
-        
+
         expr* dynamic_fncall = theExprManager->create_dynamic_function_invocation_expr(
             theRootSctx,
             theUDF,
             loc,
-            arguments[0],
+            foExpr->get_arg(0),
             fncall_args,
             NULL);
-        
+
         flwor->set_return_expr(dynamic_fncall);
-        
+
         resultExpr = flwor;
         break;
       }
+
+      case FunctionConsts::FN_FILTER_2:
+      {
+        /*
+           filter(function, sequence)
+
+           is rewritten internally as:
+
+           for $item in $sequence
+           return
+             if (dynamic_function_invocation[ $function, $item])
+             then $item
+             else ()
+        */
+
+        flwor_expr* flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
+        for_clause* seq_fc = wrap_in_forclause(foExpr->get_arg(1), true);
+        flwor->add_clause(seq_fc);
+
+        std::vector<expr*> fncall_args;
+        fncall_args.push_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()));
+
+        expr* dynamic_fncall = theExprManager->create_dynamic_function_invocation_expr(
+            theRootSctx,
+            theUDF,
+            loc,
+            foExpr->get_arg(0),
+            fncall_args,
+            NULL);
+
+        expr* if_expr = theExprManager->create_if_expr(theRootSctx, theUDF, loc,
+            dynamic_fncall,
+            theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()),
+            create_empty_seq(loc));
+
+        flwor->set_return_expr(if_expr);
+
+        resultExpr = flwor;
+        break;
+      }
+
 
       default:
       {

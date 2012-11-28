@@ -1380,6 +1380,34 @@ void PrinterVisitor::endVisit ( const FunctionArityIterator& ) {
 // </FunctionArityIterator>
 
 
+// <FnMapPairs>
+void PrinterVisitor::beginVisit ( const FnMapPairs& a) {
+  thePrinter.startBeginVisit("FnMapPairs", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnMapPairs& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnMapPairs>
+
+
+// <FnFoldLeft>
+void PrinterVisitor::beginVisit ( const FnFoldLeft& a) {
+  thePrinter.startBeginVisit("FnFoldLeft", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnFoldLeft& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnFoldLeft>
+
+
 // <ActivateICIterator>
 void PrinterVisitor::beginVisit ( const ActivateICIterator& a) {
   thePrinter.startBeginVisit("ActivateICIterator", ++theId);

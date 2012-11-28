@@ -119,6 +119,8 @@
   TYPE_TokenizeStringIterator,
   TYPE_FunctionNameIterator,
   TYPE_FunctionArityIterator,
+  TYPE_FnMapPairs,
+  TYPE_FnFoldLeft,
   TYPE_ActivateICIterator,
   TYPE_DeactivateICIterator,
   TYPE_CheckICIterator,

@@ -91,6 +91,62 @@ FunctionArityIterator::~FunctionArityIterator() {}
 // </FunctionArityIterator>
 
 
+// <FnMapPairs>
+SERIALIZABLE_CLASS_VERSIONS(FnMapPairs)
+
+void FnMapPairs::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnMapPairs, PlanIteratorState>*)this);
+}
+
+
+void FnMapPairs::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnMapPairs::~FnMapPairs() {}
+
+// </FnMapPairs>
+
+
+// <FnFoldLeft>
+SERIALIZABLE_CLASS_VERSIONS(FnFoldLeft)
+
+void FnFoldLeft::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnFoldLeft, PlanIteratorState>*)this);
+}
+
+
+void FnFoldLeft::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnFoldLeft::~FnFoldLeft() {}
+
+// </FnFoldLeft>
+
+
 
 }
 
