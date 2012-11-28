@@ -20,12 +20,17 @@
 #include "compiler/rewriter/rewriters/common_rewriter.h"
 #include "compiler/rewriter/rewriters/default_optimizer.h"
 #include "compiler/rewriter/tools/expr_tools.h"
+#include "compiler/xqddf/value_index.h"
 //#include "compiler/rewriter/tools/udf_graph.h"
 #include "compiler/api/compilercb.h"
 
 #include "functions/udf.h"
 
 #include "system/properties.h"
+
+#include "context/static_context.h"
+
+#include "store/api/store.h"
 
 
 namespace zorba
@@ -181,6 +186,36 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       RuleOnceDriver<MarkExprs> driverMarkExpr;
       driverMarkExpr.rewrite(rCtx);
     }
+  }
+
+  if (Properties::instance()->useIndexes())
+  {
+    bool local_modified = false;
+
+    static_context* sctx = rCtx.theRoot->get_sctx();
+
+    std::vector<IndexDecl*> indexDecls;
+    sctx->get_index_decls(indexDecls);
+
+    std::vector<IndexDecl*>::const_iterator ite = indexDecls.begin();
+    std::vector<IndexDecl*>::const_iterator end = indexDecls.end();
+    for (; ite != end; ++ite)
+    {
+      store::Index* idx = GENV_STORE.getIndex((*ite)->getName());
+
+      if (idx != NULL)
+      {
+        IndexMatchingRule rule(*ite);
+
+        expr* e = rule.apply(rCtx, rCtx.getRoot(), local_modified);
+
+        if (e != rCtx.getRoot())
+          rCtx.setRoot(e);
+      }
+    }
+
+    if (local_modified)
+      modified = true;
   }
 
   // Index Joins

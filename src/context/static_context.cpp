@@ -3113,12 +3113,28 @@ IndexDecl* static_context::lookup_index(const store::Item* qname) const
 }
 
 
-/***************************************************************************//**
+/*******************************************************************************
 
 ********************************************************************************/
 store::Iterator_t static_context::index_names() const
 {
   return new SctxMapIterator<IndexDecl>(this, &static_context::index_map);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::get_index_decls(std::vector<IndexDecl*>& decls) const
+{
+  IndexMap::iterator ite = theIndexMap->begin();
+  IndexMap::iterator end = theIndexMap->end();
+
+  for (; ite != end; ++ite)
+  {
+    IndexDecl* decl = ite.getValue().getp();
+    decls.push_back(decl);
+  }
 }
 
 

@@ -361,6 +361,8 @@ public:
 
   void analyze(CompilerCB* ccb);
 
+  expr* getViewExpr(CompilerCB* ccb);
+
   expr* getBuildExpr(CompilerCB* ccb, const QueryLoc& loc);
 
   PlanIterator* getBuildPlan(CompilerCB* ccb, const QueryLoc& loc);

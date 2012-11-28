@@ -445,6 +445,143 @@ void IndexDecl::analyzeExprInternal(
 
 
 /******************************************************************************
+  Create the expression that represents the index as a view.
+ 
+  For now, this is done for value indexes only
+
+  for $newdot at $newpos in cloned_domain_expr
+  return value-index-entry-builder($$newdot, cloned_key1_expr, ..., cloned_keyN_expr)
+*******************************************************************************/
+expr* IndexDecl::getViewExpr(CompilerCB* ccb)
+{
+  theDomainClause = NULL;
+
+  expr* domainExpr = getDomainExpr();
+  var_expr* dot = getDomainVariable();
+  var_expr* pos = getDomainPositionVariable();
+  static_context* sctx = domainExpr->get_sctx();
+  user_function* udf = domainExpr->get_udf();
+
+  assert(theIsTemp || udf == NULL);
+
+  const QueryLoc& domloc = domainExpr->get_loc();
+
+  // Clone the domain expr, the domain variable, and the domain pos variable.
+  // These 2 vars are referenced by the key exprs..
+  expr::substitution_t subst;
+  expr* newdom = domainExpr->clone(udf, subst);
+
+  var_expr* newdot = theCCB->theEM->
+  create_var_expr(sctx, udf, domloc, dot->get_kind(), dot->get_name());
+
+  var_expr* newpos = theCCB->theEM->
+  create_var_expr(sctx, udf, domloc, pos->get_kind(), pos->get_name());
+
+  //
+  // Create for clause (this has to be done here so that the cloned dot var gets
+  // associated with the cloned domain expr; this is needed before cloning the
+  // key expr) :
+  //
+  // for $newdot at $newpos in new_domain_expr
+  //
+  for_clause* fc = theCCB->theEM->
+  create_for_clause(sctx, domloc, newdot, newdom, newpos);
+
+  //
+  // Create flwor expr:
+  //
+  // for $newdot at $newpos in new_domain_expr
+  // return $newdot
+  //
+
+  expr* returnExpr = theCCB->theEM->create_wrapper_expr(sctx, udf, domloc, newdot);
+
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, domloc, false);
+  flworExpr->set_return_expr(returnExpr);
+  flworExpr->add_clause(fc);
+
+  //
+  // Handle the key exprs
+  //
+  // for $newdot at $newpos in new_domain_expr
+  // let $key_1 := new_key_expr_1
+  // .....
+  // let $key_N := new_key_expr_N
+  // where $key_1 eq $arg_1 and ... and $key_N eq $arg_N
+  // return $newdot
+  //
+  function* compFunc = BUILTIN_FUNC(OP_EQUAL_2);
+  std::vector<expr*> predExprs;
+  csize numKeys = theKeyExprs.size();
+
+  for (csize i = 0; i < numKeys; ++i)
+  {
+    // clone the key expr
+    subst.clear();
+    subst[dot] = newdot;
+    subst[pos] = newpos;
+
+    expr* keyClone = theKeyExprs[i]->clone(udf, subst);
+
+    const QueryLoc& keyloc = keyClone->get_loc();
+
+    // create the LET clause
+    std::string localName = "$$key_" + ztd::to_string(i);
+    store::Item_t keyVarName;
+    GENV_ITEMFACTORY->createQName(keyVarName, "", "", localName);
+
+    var_expr* keyVar = theCCB->theEM->
+    create_var_expr(sctx, udf, keyloc, var_expr::let_var, keyVarName);
+
+    let_clause* lc = theCCB->theEM->create_let_clause(sctx, keyloc, keyVar, keyClone);
+
+    flworExpr->add_clause(lc);
+
+    // create the predicate
+    expr* op1 = theCCB->theEM->create_wrapper_expr(sctx, udf, keyloc, keyVar);
+
+    localName = "$$arg_" + ztd::to_string(i);
+    store::Item_t argVarName;
+    GENV_ITEMFACTORY->createQName(argVarName, "", "", localName);
+
+    expr* op2 = theCCB->theEM->
+    create_var_expr(sctx, udf, keyloc, var_expr::arg_var, keyVarName);
+
+    expr* pred = theCCB->theEM->
+    create_fo_expr(sctx, udf, keyloc, compFunc, op1, op2);
+
+    predExprs.push_back(pred);
+  }
+
+  expr* whereExpr;
+
+  if (predExprs.size() > 1)
+  {
+    whereExpr = theCCB->theEM->
+    create_fo_expr(sctx, udf, domloc, BUILTIN_FUNC(OP_AND_N), predExprs);
+  }
+  else
+  {
+    whereExpr = predExprs[0];
+  }
+
+  where_clause* wc = theCCB->theEM->
+  create_where_clause(sctx, whereExpr->get_loc(), whereExpr);
+
+  flworExpr->add_clause(wc);
+
+  if (ccb->theConfig.optimize_cb != NULL)
+  {
+    std::string msg = "view expr for index " + theName->getStringValue().str();
+
+    ccb->theConfig.optimize_cb(flworExpr, msg);
+  }
+
+  return flworExpr;
+}
+
+
+/******************************************************************************
   Create the expression that "builds" the index, if not done already. The expr
   to build is the following, for value and general indexes, respectively:
 

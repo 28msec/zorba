@@ -29,6 +29,7 @@ namespace zorba
 
 
 class SourceFinder;
+class IndexDecl;
 
 
 PREPOST_RULE(EchoNodes);
@@ -245,6 +246,25 @@ public:
   IndexJoinRule() : RewriteRule(RewriteRule::IndexJoin, "IndexJoin") {}
 
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class IndexMatchingRule : public RewriteRule
+{
+protected:
+  IndexDecl  * theIndexDecl;
+  bool         theDoTrace;
+
+public:
+  IndexMatchingRule(IndexDecl* decl);
+
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
+
+protected:
+  expr* matchIndex(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 

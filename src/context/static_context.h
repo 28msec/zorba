@@ -951,6 +951,8 @@ public:
 
   IndexDecl* lookup_index(const store::Item* qname) const;
 
+  void get_index_decls(std::vector<IndexDecl*>& decls) const;
+
   store::Iterator_t index_names() const;
 
 
