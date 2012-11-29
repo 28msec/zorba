@@ -26,7 +26,6 @@
 
 #include "util/ascii_util.h"
 #include "util/mem_streambuf.h"
-#include "util/string_util.h"
 
 #include "jsonml_array.h"
 #include "snelson.h"
@@ -104,17 +103,9 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
       ZORBA_ASSERT( false );
   }
   catch ( json::illegal_character const &e ) {
-    char const c = e.get_char();
-    string c_as_string;
-    if ( ascii::is_print( c ) )
-      c_as_string = c;
-    else
-      c_as_string = BUILD_STRING(
-        "#x" << uppercase << hex << (static_cast<unsigned>( c ) & 0xFF)
-      );
     throw XQUERY_EXCEPTION(
       zerr::ZJPE0001_ILLEGAL_CHARACTER,
-      ERROR_PARAMS( c_as_string ),
+      ERROR_PARAMS( ascii::printable_char( e.get_char() ) ),
       ERROR_LOC( e.get_loc() )
     );
   }

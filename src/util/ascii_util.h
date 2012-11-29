@@ -17,11 +17,14 @@
 #ifndef ZORBA_STRING_UTIL_ASCII_UTIL_H
 #define ZORBA_STRING_UTIL_ASCII_UTIL_H
 
+// standard
 #include <algorithm>
 #include <cctype>
 #include <cstddef>
 #include <cstring>
 
+// local
+#include "omanip.h"
 #include "stl_util.h"
 
 namespace zorba {
@@ -965,6 +968,19 @@ inline void skip_whitespace( char const *s, size_type s_len, size_type *pos ) {
 }
 
 ////////// Miscellaneous //////////////////////////////////////////////////////
+
+/**
+ * Prints the given character in a printable way: if \c is_print(c) is \c true,
+ * prints \a c as-is; otherwise prints \c #x followed by the hexadecimal value
+ * of the character.
+ *
+ * @param o The ostream to print to.
+ * @param c The \c char to print.
+ * @return Returns \a o.
+ */
+std::ostream& printable_char( std::ostream &o, char c );
+
+DEF_OMANIP1( printable_char, char )
 
 /**
  * Reverses the characters in a string.
