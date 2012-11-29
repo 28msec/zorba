@@ -56,7 +56,6 @@
 #include <store/api/copymode.h>
 
 #include "util/uri_util.h"
-#include "util/json_parser.h"
 
 #include <zorba/store_consts.h>
 #include <zorbatypes/URI.h>
