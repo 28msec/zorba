@@ -50,6 +50,7 @@ loader::stack_element::stack_element( type t ) : type_( t ) {
       object_ = new json_object_type;
       break;
     default:
+      key_ = nullptr;
       break;
   }
 }
