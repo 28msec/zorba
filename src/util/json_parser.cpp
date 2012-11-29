@@ -103,7 +103,12 @@ illegal_codepoint::~illegal_codepoint() throw() {
 }
 
 illegal_escape::illegal_escape( location const &loc, char c ) :
-  exception( loc, BUILD_STRING( "\"\\", c, "\": illegal character escape" ) ),
+  exception(
+    loc,
+    BUILD_STRING(
+      "\"\\", ascii::printable_char( c ), "\": illegal character escape"
+    )
+  ),
   esc_( c )
 {
 }
@@ -151,9 +156,7 @@ unterminated_string::~unterminated_string() throw() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-token::token() :
-  type_( none )
-{
+token::token() : type_( none ) {
 }
 
 ostream& operator<<( ostream &o, token::type tt ) {
