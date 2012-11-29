@@ -73,12 +73,12 @@ declare %ann:sequential function reporting:run-and-report(
 try {
   {
     variable $FOTSCatalog := doc(trace(resolve-uri($FOTSCatalogFilePath), 
-                                "Path to FOTS catalog.xml was set to: "));
+                                "Path to FOTS catalog.xml set to: "));
 
     variable $catalogBaseURI := resolve-uri(util:parent-folder($FOTSCatalogFilePath));
 
     variable $FOTSZorbaManifest := doc(trace(resolve-uri($FOTSZorbaManifestPath),
-                                      "Path to FOTSZorbaManifest was set to:"));
+                                      "Path to FOTSZorbaManifest set to:"));
 
     variable $failures := <fots:FOTS-test-suite-result>{
                           ( $FOTSZorbaManifest//fots:implementation,
@@ -154,7 +154,7 @@ declare %ann:nondeterministic function reporting:report(
       variable $failures := parse-xml(file:read-text($pathFailures));
 
       variable $FOTSCatalog := doc(trace(resolve-uri($FOTSCatalogFilePath),
-                                  "Path to FOTS catalog.xml was set to: "));
+                                  "Path to FOTS catalog.xml set to: "));
 
       variable $catalogBaseURI := resolve-uri(util:parent-folder($FOTSCatalogFilePath));
 
