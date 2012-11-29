@@ -76,7 +76,7 @@ void XQueryException::set_source( char const *uri,
                                   line_type line,
                                   column_type col,
                                   line_type line_end,
-                                  column_type col_end) {
+                                  column_type col_end ) {
   source_loc_.set( uri, line, col, line_end, col_end );
 }
 
