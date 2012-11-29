@@ -840,7 +840,7 @@ JSONParseIterator::nextImpl(
     }
 
     state->loader_ = new json::loader(
-      *state->theInputStream, state->theAllowMultiple, lStripTopLevelArray
+      *state->theInputStream, true, lStripTopLevelArray
     );
 
     if ( state->theInput == NULL && theRelativeLocation ) {
@@ -1663,7 +1663,7 @@ bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     }
 
     state->theGotOne = false;
-    state->loader_ = new json::loader( *state->theStream );
+    state->loader_ = new json::loader( *state->theStream, true );
 
     while ( state->loader_->next( &result ) )
     {
