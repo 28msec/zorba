@@ -123,6 +123,11 @@ bool XercSchemaValidator::checkContent (XMLElementDecl* const elemDecl
     //  to do to validate it.
     //
     // the top of the type stack always knows best...
+    if ( fTypeStack->empty() )
+    {
+        emitError(XMLValid::DatatypeValidationFailure, elemDecl->getFullName());
+    }
+
     ComplexTypeInfo* currType = fTypeStack->pop();
 
     const SchemaElementDecl::ModelTypes modelType = (currType)
@@ -171,7 +176,7 @@ bool XercSchemaValidator::checkContent (XMLElementDecl* const elemDecl
                                                       , fGrammarResolver
                                                       , fGrammarResolver->getStringPool()
                                                       , indexFailingChild
-													  , getScanner()->getMemoryManager());
+                                                      , getScanner()->getMemoryManager());
             }
 
             if(!result) {
@@ -194,7 +199,7 @@ bool XercSchemaValidator::checkContent (XMLElementDecl* const elemDecl
             XMLCh* value = fDatatypeBuffer.getRawBuffer();
             XMLCh* elemDefaultValue = ((SchemaElementDecl*) elemDecl)->getDefaultValue();
 
-			if (fCurrentDatatypeValidator)
+            if (fCurrentDatatypeValidator)
             {
                 if (fNil)
                 {
@@ -364,7 +369,7 @@ void XercSchemaValidator::reset()
 {
     fTrailingSeenNonWhiteSpace.flags = 0;
     fSeenId = false;
-	fTypeStack->removeAllElements();
+    fTypeStack->removeAllElements();
     delete fXsiType;
     fXsiType = 0;
     fCurrentDatatypeValidator = 0;
@@ -561,7 +566,7 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
 
     fErrorOccurred = false;
 
-    if (fXsiType) 
+    if (fXsiType)
     {
         // handle "xsi:type" right here
         DatatypeValidator *xsiTypeDV = 0;
@@ -1085,7 +1090,7 @@ void XercSchemaValidator::preContentValidation(bool,
                     }
                     catch (const XMLException& excep) {
                         fSchemaErrorReporter.emitError(excep, curGroup.getLocator());
-					}
+                    }
                 }
 
                 if (curGroup.getCheckElementConsistency())
@@ -1686,7 +1691,7 @@ XercSchemaValidator::checkNameAndTypeOK(SchemaGrammar* const currentGrammar,
     int baseFlags = baseElemDecl->getMiscFlags();
 
     if (((baseFlags & SchemaSymbols::XSD_NILLABLE) == 0) &&
-		((derivedFlags & SchemaSymbols::XSD_NILLABLE) != 0)) {
+        ((derivedFlags & SchemaSymbols::XSD_NILLABLE) != 0)) {
         ThrowXMLwithMemMgr1(RuntimeException, XMLExcepts::PD_NameTypeOK2, derivedName, fMemoryManager);
     }
 
@@ -1809,7 +1814,7 @@ XercSchemaValidator::checkTypesOK(const SchemaElementDecl* const derivedElemDecl
             DatatypeValidator* bDV = baseElemDecl->getDatatypeValidator();
 
             if (bInfo || bDV == 0 ||
-				!bDV->isSubstitutableBy(derivedElemDecl->getDatatypeValidator())) {
+                !bDV->isSubstitutableBy(derivedElemDecl->getDatatypeValidator())) {
                 ThrowXMLwithMemMgr1(RuntimeException, XMLExcepts::PD_NameTypeOK5, derivedElemName, fMemoryManager);
             }
 
@@ -2163,7 +2168,7 @@ XercSchemaValidator::checkRecurseUnordered(SchemaGrammar* const currentGrammar,
         // didn't find a match.
         if (!matched) {
 
-	        codeToThrow = XMLExcepts::PD_RecurseUnordered;
+            codeToThrow = XMLExcepts::PD_RecurseUnordered;
             break;
         }
     }
@@ -2173,7 +2178,7 @@ XercSchemaValidator::checkRecurseUnordered(SchemaGrammar* const currentGrammar,
         for (XMLSize_t j=0; j < baseCount; j++) {
             if (!foundIt[j] && baseNodes->elementAt(j)->getMinTotalRange()) {
 
-	            codeToThrow = XMLExcepts::PD_RecurseUnordered;
+                codeToThrow = XMLExcepts::PD_RecurseUnordered;
                 break;
             }
         }
@@ -2229,7 +2234,7 @@ XercSchemaValidator::checkMapAndSum(SchemaGrammar* const currentGrammar,
 
         // didn't find a match.
         if (!matched) {
-	        ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_MapAndSum, fMemoryManager);
+            ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_MapAndSum, fMemoryManager);
         }
     }
 
@@ -2309,6 +2314,11 @@ int XercSchemaValidator::checkContent (XMLElementDecl* const elemDecl
     //  to do to validate it.
     //
     // the top of the type stack always knows best...
+    if ( fTypeStack->empty() )
+    {
+        emitError(XMLValid::DatatypeValidationFailure, elemDecl->getFullName());
+    }
+
     ComplexTypeInfo* currType = fTypeStack->pop();
 
     const SchemaElementDecl::ModelTypes modelType = (currType)
@@ -2383,7 +2393,7 @@ int XercSchemaValidator::checkContent (XMLElementDecl* const elemDecl
             XMLCh* value = fDatatypeBuffer.getRawBuffer();
             XMLCh* elemDefaultValue = ((SchemaElementDecl*) elemDecl)->getDefaultValue();
 
-			if (fCurrentDatatypeValidator)
+            if (fCurrentDatatypeValidator)
             {
                 if (fNil)
                 {
@@ -2549,7 +2559,7 @@ void XercSchemaValidator::reset()
 {
     fTrailing = false;
     fSeenId = false;
-	fTypeStack->removeAllElements();
+    fTypeStack->removeAllElements();
     delete fXsiType;
     fXsiType = 0;
     fCurrentDatatypeValidator = 0;
@@ -2742,7 +2752,7 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
 
     fErrorOccurred = false;
 
-    if (fXsiType) 
+    if (fXsiType)
     {
         // handle "xsi:type" right here
         DatatypeValidator *xsiTypeDV = 0;
@@ -2752,43 +2762,43 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
         if (uri != XMLElementDecl::fgInvalidElemId &&
             uri != XMLElementDecl::fgPCDataElemId &&
             uri != XMLContentModel::gEpsilonFakeId &&
-            uri != XMLContentModel::gEOCFakeId) 
+            uri != XMLContentModel::gEOCFakeId)
         {
             // retrieve Grammar for the uri
             const XMLCh* uriStr = getScanner()->getURIText(uri);
             //std::cout << "      xsv: fXsiType: " << zorba::StrX(localPart) << " @ " << zorba::StrX(uriStr) << "\n"; std::cout.flush();
             SchemaGrammar* sGrammar = (SchemaGrammar*) fGrammarResolver->getGrammar(uriStr);
-            if (!sGrammar) 
+            if (!sGrammar)
             {
 
                 // Check built-in simple types
-                if (XMLString::equals(uriStr, SchemaSymbols::fgURI_SCHEMAFORSCHEMA)) 
+                if (XMLString::equals(uriStr, SchemaSymbols::fgURI_SCHEMAFORSCHEMA))
                 {
                     xsiTypeDV = fGrammarResolver->getDatatypeValidator(uriStr, localPart);
 
-                    if (!xsiTypeDV) 
+                    if (!xsiTypeDV)
                     {
                         emitError(XMLValid::BadXsiType, fXsiType->getRawName());
                         fErrorOccurred = true;
                     }
-                    else 
+                    else
                     {
                         if (elemTypeInfo || (fCurrentDatatypeValidator
-                                && !fCurrentDatatypeValidator->isSubstitutableBy(xsiTypeDV))) 
+                                && !fCurrentDatatypeValidator->isSubstitutableBy(xsiTypeDV)))
                         {
                             // the type is not derived from ancestor
                             emitError(XMLValid::NonDerivedXsiType, fXsiType->getRawName(), elemDef->getFullName());
                             fErrorOccurred = true;
                         }
-                        else 
+                        else
                         {
                             // the type is derived from ancestor
-                            if (((SchemaElementDecl*)elemDef)->getBlockSet() == SchemaSymbols::XSD_RESTRICTION) 
+                            if (((SchemaElementDecl*)elemDef)->getBlockSet() == SchemaSymbols::XSD_RESTRICTION)
                             {
                                 emitError(XMLValid::NoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
                                 fErrorOccurred = true;
                             }
-                            if (elemDef->hasAttDefs()) 
+                            if (elemDef->hasAttDefs())
                             {
                                 // if we have an attribute but xsi:type's type is simple, we have a problem...
                                 emitError(XMLValid::NonDerivedXsiType, fXsiType->getRawName(), elemDef->getFullName());
@@ -2798,28 +2808,28 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                         fCurrentDatatypeValidator = xsiTypeDV;
                     }
                 }
-                else 
+                else
                 {
                     // Grammar not found
                     emitError(XMLValid::GrammarNotFound, uriStr);
                     fErrorOccurred = true;
                 }
             }
-            else if (sGrammar->getGrammarType() != Grammar::SchemaGrammarType) 
+            else if (sGrammar->getGrammarType() != Grammar::SchemaGrammarType)
             {
                 emitError(XMLValid::GrammarNotFound, uriStr);
                 fErrorOccurred = true;
             }
-            else 
+            else
             {
                 // retrieve complexType registry and DatatypeValidator registry
                 RefHashTableOf<ComplexTypeInfo>* complexTypeRegistry = sGrammar->getComplexTypeRegistry();
-                if (!complexTypeRegistry) 
+                if (!complexTypeRegistry)
                 {
                     emitError(XMLValid::BadXsiType, fXsiType->getRawName());
                     fErrorOccurred = true;
                 }
-                else 
+                else
                 {
                     // retrieve the typeInfo specified in xsi:type
                     XMLBuffer aBuffer(1023, fMemoryManager);
@@ -2828,10 +2838,10 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                     aBuffer.append(localPart);
                     ComplexTypeInfo* typeInfo = complexTypeRegistry->get(aBuffer.getRawBuffer());
 
-                    if (typeInfo) 
+                    if (typeInfo)
                     {
                         // typeInfo is found
-                        if (typeInfo->getAbstract()) 
+                        if (typeInfo->getAbstract())
                         {
                             emitError(XMLValid::NoAbstractInXsiType, aBuffer.getRawBuffer());
                             fErrorOccurred = true;
@@ -2841,22 +2851,22 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                             if (elemTypeInfo)
                             {
                                 ComplexTypeInfo* tempType = typeInfo;
-                                while (tempType) 
+                                while (tempType)
                                 {
                                     if (tempType == elemTypeInfo)
                                         break;
                                     tempType = tempType->getBaseComplexTypeInfo();
                                 }
 
-                                if (!tempType) 
+                                if (!tempType)
                                 {
                                     emitError(XMLValid::NonDerivedXsiType, fXsiType->getRawName(), elemDef->getFullName());
                                     fErrorOccurred = true;
                                 }
-                                else 
+                                else
                                 {
                                     int derivationMethod = typeInfo->getDerivedBy();
-                                    if ((((SchemaElementDecl*)elemDef)->getBlockSet() & derivationMethod) != 0) 
+                                    if ((((SchemaElementDecl*)elemDef)->getBlockSet() & derivationMethod) != 0)
                                     {
                                         emitError(XMLValid::NoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
                                         fErrorOccurred = true;
@@ -2866,7 +2876,7 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                             else
                             {
                                 // if the original type is a simple type, check derivation ok.
-                                if (fCurrentDatatypeValidator && !fCurrentDatatypeValidator->isSubstitutableBy(typeInfo->getDatatypeValidator())) 
+                                if (fCurrentDatatypeValidator && !fCurrentDatatypeValidator->isSubstitutableBy(typeInfo->getDatatypeValidator()))
                                 {
                                     // the type is not derived from ancestor
                                     emitError(XMLValid::NonDerivedXsiType, fXsiType->getRawName(), elemDef->getFullName());
@@ -2887,29 +2897,29 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                         // typeInfo not found
                         xsiTypeDV = fGrammarResolver->getDatatypeValidator(uriStr, localPart);
 
-                        if (!xsiTypeDV) 
+                        if (!xsiTypeDV)
                         {
                             emitError(XMLValid::BadXsiType, fXsiType->getRawName());
                             fErrorOccurred = true;
                         }
-                        else 
+                        else
                         {
-                            if (fCurrentDatatypeValidator && !fCurrentDatatypeValidator->isSubstitutableBy(xsiTypeDV)) 
+                            if (fCurrentDatatypeValidator && !fCurrentDatatypeValidator->isSubstitutableBy(xsiTypeDV))
                             {
                                 // the type is not derived from ancestor
                                 emitError(XMLValid::NonDerivedXsiType, fXsiType->getRawName(), elemDef->getFullName());
                                 fErrorOccurred = true;
                             }
-                            else 
+                            else
                             {
                                 // the type is derived from ancestor
-                                if (((SchemaElementDecl*)elemDef)->getBlockSet() == SchemaSymbols::XSD_RESTRICTION) 
+                                if (((SchemaElementDecl*)elemDef)->getBlockSet() == SchemaSymbols::XSD_RESTRICTION)
                                 {
                                     emitError(XMLValid::NoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
                                     fErrorOccurred = true;
                                 }
-                                
-                                if (elemDef->hasAttDefs()) 
+
+                                if (elemDef->hasAttDefs())
                                 {
                                     // if we have an attribute but xsi:type's type is simple, we have a problem...
                                     emitError(XMLValid::NonDerivedXsiType, fXsiType->getRawName(), elemDef->getFullName());
@@ -2927,13 +2937,13 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
         delete fXsiType;
         fXsiType = 0;
     }
-    else 
+    else
     {
         //
         // xsi:type was not specified...
         // If the corresponding type is abstract, detect an error
         //
-        if (elemTypeInfo && elemTypeInfo->getAbstract()) 
+        if (elemTypeInfo && elemTypeInfo->getAbstract())
         {
             emitError(XMLValid::NoUseAbstractType, elemDef->getFullName());
             fErrorOccurred = true;
@@ -2944,7 +2954,7 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
     // Check whether this element is abstract.  If so, an error
     //
     int miscFlags = ((SchemaElementDecl*)elemDef)->getMiscFlags();
-    if ((miscFlags & SchemaSymbols::XSD_ABSTRACT) != 0) 
+    if ((miscFlags & SchemaSymbols::XSD_ABSTRACT) != 0)
     {
         emitError(XMLValid::NoDirectUseAbstractElement, elemDef->getFullName());
         fErrorOccurred = true;
@@ -2953,7 +2963,7 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
     //
     // Check whether this element allows Nillable
     //
-    if (fNil && (miscFlags & SchemaSymbols::XSD_NILLABLE) == 0 ) 
+    if (fNil && (miscFlags & SchemaSymbols::XSD_NILLABLE) == 0 )
     {
         fNil = false;
         emitError(XMLValid::NillNotAllowed, elemDef->getFullName());
@@ -2980,7 +2990,7 @@ void XercSchemaValidator::validateProcessorStipulatedTypeName(const   XMLElement
         if (uri != XMLElementDecl::fgInvalidElemId &&
             uri != XMLElementDecl::fgPCDataElemId &&
             uri != XMLContentModel::gEpsilonFakeId &&
-            uri != XMLContentModel::gEOCFakeId) 
+            uri != XMLContentModel::gEOCFakeId)
         {
             // retrieve Grammar for the uri
             const XMLCh* uriStr = getScanner()->getURIText(uri);
@@ -3035,10 +3045,10 @@ void XercSchemaValidator::validateProcessorStipulatedTypeName(const   XMLElement
                     aBuffer.append(localPart);
                     ComplexTypeInfo* typeInfo = complexTypeRegistry->get(aBuffer.getRawBuffer());
 
-                    if (typeInfo) 
+                    if (typeInfo)
                     {
                         // typeInfo is found
-                        if (typeInfo->getAbstract()) 
+                        if (typeInfo->getAbstract())
                         {
                             emitError(XMLValid::NoAbstractInXsiType, aBuffer.getRawBuffer());
                             fErrorOccurred = true;
@@ -3047,7 +3057,7 @@ void XercSchemaValidator::validateProcessorStipulatedTypeName(const   XMLElement
                         {
                             {
                                 // if the original type is a simple type, check derivation ok.
-                                if (fCurrentDatatypeValidator && !fCurrentDatatypeValidator->isSubstitutableBy(typeInfo->getDatatypeValidator())) 
+                                if (fCurrentDatatypeValidator && !fCurrentDatatypeValidator->isSubstitutableBy(typeInfo->getDatatypeValidator()))
                                 {
                                     // the type is not derived from ancestor
                                     emitError(XMLValid::NonDerivedXsiType, fXsiType->getRawName(), elemDef->getFullName());
@@ -3171,7 +3181,7 @@ void XercSchemaValidator::preContentValidation(bool,
             //  3) That for any notation types, that their lists
             //      of possible values refer to declared notations.
             //
-            if (curElem.hasAttDefs()) 
+            if (curElem.hasAttDefs())
             {
                 XMLAttDefList& attDefList = curElem.getAttDefList();
                 bool seenId = false;
@@ -3260,7 +3270,7 @@ void XercSchemaValidator::preContentValidation(bool,
         }
 
         //  For each complex type info, check the Unique Particle Attribution
-        if (getScanner()->getValidationSchemaFullChecking()) 
+        if (getScanner()->getValidationSchemaFullChecking())
         {
             RefHashTableOf<ComplexTypeInfo>* complexTypeRegistry = sGrammar.getComplexTypeRegistry();
 
@@ -3276,20 +3286,20 @@ void XercSchemaValidator::preContentValidation(bool,
             RefHashTableOf<XercesGroupInfo>* groupInfoRegistry = sGrammar.getGroupInfoRegistry();
             RefHashTableOfEnumerator<XercesGroupInfo> groupEnum(groupInfoRegistry, false, fMemoryManager);
 
-            while (groupEnum.hasMoreElements()) 
+            while (groupEnum.hasMoreElements())
             {
 
                 XercesGroupInfo& curGroup = groupEnum.nextElement();
                 XercesGroupInfo* baseGroup = curGroup.getBaseGroup();
 
-                if (baseGroup) 
+                if (baseGroup)
                 {
-                    try 
+                    try
                     {
                         checkParticleDerivationOk(&sGrammar, curGroup.getContentSpec(), curGroup.getScope(),
                                                   baseGroup->getContentSpec(), baseGroup->getScope());
                     }
-                    catch (const XMLException& excep) 
+                    catch (const XMLException& excep)
                     {
                         fSchemaErrorReporter.emitError(excep, curGroup.getLocator());
                     }
@@ -3347,7 +3357,7 @@ void XercSchemaValidator::normalizeWhiteSpace(DatatypeValidator* dV, const XMLCh
     const XMLCh* srcPtr = value;
     XMLReader* fCurReader = getReaderMgr()->getCurrentReader();
 
-    if ((wsFacet==DatatypeValidator::COLLAPSE) && fTrailing) 
+    if ((wsFacet==DatatypeValidator::COLLAPSE) && fTrailing)
     {
         nextCh = *srcPtr;
         if (!fCurReader->isWhitespace(nextCh))
@@ -3408,19 +3418,19 @@ void XercSchemaValidator::normalizeWhiteSpace(DatatypeValidator* dV, const XMLCh
 // ---------------------------------------------------------------------------
 void XercSchemaValidator::checkRefElementConsistency(SchemaGrammar* const currentGrammar,
                                                  const ComplexTypeInfo* const curTypeInfo,
-                                                 const XercesGroupInfo* const curGroup) 
+                                                 const XercesGroupInfo* const curGroup)
 {
 
     unsigned int elemCount = (curTypeInfo) ? curTypeInfo->elementCount() : curGroup->elementCount();
     int elemScope = (curTypeInfo) ? curTypeInfo->getScopeDefined() : curGroup->getScope();
     XSDLocator* typeInfoLocator = (curTypeInfo) ? curTypeInfo->getLocator() : curGroup->getLocator();
 
-    for (unsigned int i=0; i < elemCount; i++) 
+    for (unsigned int i=0; i < elemCount; i++)
     {
 
         const SchemaElementDecl* elemDecl = (curTypeInfo) ? curTypeInfo->elementAt(i) : curGroup->elementAt(i);
 
-        if (elemDecl->isGlobalDecl()) 
+        if (elemDecl->isGlobalDecl())
         {
 
             unsigned int elemURI = elemDecl->getURI();
@@ -3430,23 +3440,23 @@ void XercSchemaValidator::checkRefElementConsistency(SchemaGrammar* const curren
 
             if (other
                 && (elemDecl->getComplexTypeInfo() != other->getComplexTypeInfo() ||
-                    elemDecl->getDatatypeValidator() != other->getDatatypeValidator())) 
+                    elemDecl->getDatatypeValidator() != other->getDatatypeValidator()))
             {
                 fSchemaErrorReporter.emitError(XMLErrs::DuplicateElementDeclaration,
                                                XMLUni::fgXMLErrDomain, typeInfoLocator, elemName, 0, 0, 0, fMemoryManager);
                 continue;
             }
 
-            RefHash2KeysTableOf<ElemVector>* validSubsGroups = 
+            RefHash2KeysTableOf<ElemVector>* validSubsGroups =
                 currentGrammar->getValidSubstitutionGroups();
-            ValueVectorOf<SchemaElementDecl*>* subsElements = 
+            ValueVectorOf<SchemaElementDecl*>* subsElements =
                 validSubsGroups->get(elemName, elemURI);
 
-            if (subsElements) 
+            if (subsElements)
             {
                 unsigned subsElemSize = subsElements->size();
 
-                for (unsigned int j=0; j < subsElemSize; j++) 
+                for (unsigned int j=0; j < subsElemSize; j++)
                 {
                     SchemaElementDecl* subsElem = subsElements->elementAt(j);
                     const XMLCh* subsElemName = subsElem->getBaseName();
@@ -3455,11 +3465,11 @@ void XercSchemaValidator::checkRefElementConsistency(SchemaGrammar* const curren
 
                     if (other
                         && (subsElem->getComplexTypeInfo() != other->getComplexTypeInfo()
-                            || subsElem->getDatatypeValidator() != other->getDatatypeValidator())) 
+                            || subsElem->getDatatypeValidator() != other->getDatatypeValidator()))
                     {
                         fSchemaErrorReporter.emitError(XMLErrs::DuplicateElementDeclaration,
-                                                       XMLUni::fgXMLErrDomain, 
-                                                       typeInfoLocator, elemName, 
+                                                       XMLUni::fgXMLErrDomain,
+                                                       typeInfoLocator, elemName,
                                                        0, 0, 0, fMemoryManager);
                     }
                 }
@@ -3472,7 +3482,7 @@ void XercSchemaValidator::checkRefElementConsistency(SchemaGrammar* const curren
 //  XercSchemaValidator: Particle Derivation Checking
 // ---------------------------------------------------------------------------
 void XercSchemaValidator::checkParticleDerivation(SchemaGrammar* const currentGrammar,
-                                              const ComplexTypeInfo* const curTypeInfo) 
+                                              const ComplexTypeInfo* const curTypeInfo)
 {
     ComplexTypeInfo* baseTypeInfo = 0;
     ContentSpecNode* curSpecNode = 0;
@@ -3481,21 +3491,21 @@ void XercSchemaValidator::checkParticleDerivation(SchemaGrammar* const currentGr
         && ((baseTypeInfo = curTypeInfo->getBaseComplexTypeInfo()) != 0)
         && ((curSpecNode = curTypeInfo->getContentSpec()) != 0)) {
 
-        try 
+        try
         {
             checkParticleDerivationOk(currentGrammar, curSpecNode,
                                       curTypeInfo->getScopeDefined(),
                                       baseTypeInfo->getContentSpec(),
                                       baseTypeInfo->getScopeDefined(), baseTypeInfo);
         }
-        catch (const XMLException& excep) 
+        catch (const XMLException& excep)
         {
             fSchemaErrorReporter.emitError(excep, curTypeInfo->getLocator());
         }
     }
 }
 
-ContentSpecNode* XercSchemaValidator::getNonUnaryGroup(ContentSpecNode* const pNode) 
+ContentSpecNode* XercSchemaValidator::getNonUnaryGroup(ContentSpecNode* const pNode)
 {
     int pNodeType = (pNode->getType() & 0x0f);
     if (pNodeType == ContentSpecNode::Leaf
@@ -3517,7 +3527,7 @@ void XercSchemaValidator::checkParticleDerivationOk(SchemaGrammar* const aGramma
                                                 ContentSpecNode* const baseNode,
                                                 const int baseScope,
                                                 const ComplexTypeInfo* const baseInfo,
-                                                const bool toCheckOccurence) 
+                                                const bool toCheckOccurence)
 {
     // Check for pointless occurrences of all, choice, sequence.  The result is
     // the contentspec which is not pointless. If the result is a non-pointless
@@ -3537,14 +3547,14 @@ void XercSchemaValidator::checkParticleDerivationOk(SchemaGrammar* const aGramma
 
     if ((curNodeType & 0x0f) == ContentSpecNode::Sequence ||
         (curNodeType & 0x0f) == ContentSpecNode::Choice ||
-        curNodeType == ContentSpecNode::All) 
+        curNodeType == ContentSpecNode::All)
     {
         curSpecNode = checkForPointlessOccurrences(curSpecNode, curNodeType, &curVector);
     }
 
     if ((baseNodeType & 0x0f) == ContentSpecNode::Sequence ||
         (baseNodeType & 0x0f) == ContentSpecNode::Choice ||
-        baseNodeType == ContentSpecNode::All) 
+        baseNodeType == ContentSpecNode::All)
     {
         baseSpecNode = checkForPointlessOccurrences(baseSpecNode, baseNodeType, &baseVector);
     }
@@ -3552,15 +3562,15 @@ void XercSchemaValidator::checkParticleDerivationOk(SchemaGrammar* const aGramma
     curNodeType = curSpecNode->getType();
     baseNodeType = baseSpecNode->getType();
 
-    switch (curNodeType & 0x0f) 
+    switch (curNodeType & 0x0f)
     {
     case ContentSpecNode::Leaf:
         {
-            switch (baseNodeType & 0x0f) 
+            switch (baseNodeType & 0x0f)
             {
             case ContentSpecNode::Leaf:
                 {
-                    checkNameAndTypeOK(aGrammar, curSpecNode, derivedScope, baseSpecNode, 
+                    checkNameAndTypeOK(aGrammar, curSpecNode, derivedScope, baseSpecNode,
                                        baseScope, baseInfo);
                     return;
                 }
@@ -3590,7 +3600,7 @@ void XercSchemaValidator::checkParticleDerivationOk(SchemaGrammar* const aGramma
     case ContentSpecNode::Any_Other:
     case ContentSpecNode::Any_NS:
         {
-            switch (baseNodeType & 0x0f) 
+            switch (baseNodeType & 0x0f)
             {
             case ContentSpecNode::Any:
             case ContentSpecNode::Any_Other:
@@ -3604,25 +3614,25 @@ void XercSchemaValidator::checkParticleDerivationOk(SchemaGrammar* const aGramma
             case ContentSpecNode::All:
             case ContentSpecNode::Leaf:
                 {
-                    ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_ForbiddenRes1, 
+                    ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_ForbiddenRes1,
                                        fMemoryManager);
                 }
             default:
                 {
-                    ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_InvalidContentType, 
+                    ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_InvalidContentType,
                                        fMemoryManager);
                 }
             }
         }
     case ContentSpecNode::All:
         {
-            switch (baseNodeType & 0x0f) 
+            switch (baseNodeType & 0x0f)
             {
             case ContentSpecNode::Any:
             case ContentSpecNode::Any_Other:
             case ContentSpecNode::Any_NS:
                 {
-                    checkNSRecurseCheckCardinality(aGrammar, curSpecNode, &curVector, 
+                    checkNSRecurseCheckCardinality(aGrammar, curSpecNode, &curVector,
                                                    derivedScope, baseSpecNode, toCheckOccurence);
                     return;
                 }
@@ -3636,19 +3646,19 @@ void XercSchemaValidator::checkParticleDerivationOk(SchemaGrammar* const aGramma
             case ContentSpecNode::Sequence:
             case ContentSpecNode::Leaf:
                 {
-                    ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_ForbiddenRes2, 
+                    ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_ForbiddenRes2,
                                        fMemoryManager);
                 }
             default:
                 {
-                    ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_InvalidContentType, 
+                    ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_InvalidContentType,
                                        fMemoryManager);
                 }
             }
         }
     case ContentSpecNode::Choice:
         {
-            switch (baseNodeType & 0x0f) 
+            switch (baseNodeType & 0x0f)
             {
             case ContentSpecNode::Any:
             case ContentSpecNode::Any_Other:
@@ -3677,7 +3687,7 @@ void XercSchemaValidator::checkParticleDerivationOk(SchemaGrammar* const aGramma
         }
     case ContentSpecNode::Sequence:
         {
-            switch (baseNodeType & 0x0f) 
+            switch (baseNodeType & 0x0f)
             {
             case ContentSpecNode::Any:
             case ContentSpecNode::Any_Other:
@@ -3720,17 +3730,17 @@ void XercSchemaValidator::checkParticleDerivationOk(SchemaGrammar* const aGramma
 ContentSpecNode*
 XercSchemaValidator::checkForPointlessOccurrences(ContentSpecNode* const specNode,
                                               const ContentSpecNode::NodeTypes nodeType,
-                                              ValueVectorOf<ContentSpecNode*>* const nodes) 
+                                              ValueVectorOf<ContentSpecNode*>* const nodes)
 {
     ContentSpecNode* rightNode = specNode->getSecond();
     int min = specNode->getMinOccurs();
     int max = specNode->getMaxOccurs();
 
-    if (!rightNode) 
+    if (!rightNode)
     {
         gatherChildren(nodeType, specNode->getFirst(), nodes);
 
-        if (nodes->size() == 1 && min == 1 && max == 1) 
+        if (nodes->size() == 1 && min == 1 && max == 1)
         {
             return nodes->elementAt(0);
         }
@@ -3746,9 +3756,9 @@ XercSchemaValidator::checkForPointlessOccurrences(ContentSpecNode* const specNod
 
 void XercSchemaValidator::gatherChildren(const ContentSpecNode::NodeTypes parentNodeType,
                                     ContentSpecNode* const specNode,
-                                    ValueVectorOf<ContentSpecNode*>* const nodes) 
+                                    ValueVectorOf<ContentSpecNode*>* const nodes)
 {
-    if (!specNode) 
+    if (!specNode)
     {
         return;
     }
@@ -3761,25 +3771,25 @@ void XercSchemaValidator::gatherChildren(const ContentSpecNode::NodeTypes parent
     if (nodeType == ContentSpecNode::Leaf ||
         (nodeType & 0x0f) == ContentSpecNode::Any ||
         (nodeType & 0x0f) == ContentSpecNode::Any_NS ||
-        (nodeType & 0x0f) == ContentSpecNode::Any_Other) 
+        (nodeType & 0x0f) == ContentSpecNode::Any_Other)
     {
         nodes->addElement(specNode);
     }
-    else if (min !=1 || max != 1) 
+    else if (min !=1 || max != 1)
     {
         nodes->addElement(specNode);
     }
-    else if (!rightNode) 
+    else if (!rightNode)
     {
         gatherChildren(nodeType, specNode->getFirst(), nodes);
     }
-    else if ((parentNodeType & 0x0f) == (nodeType & 0x0f)) 
+    else if ((parentNodeType & 0x0f) == (nodeType & 0x0f))
     {
 
         gatherChildren(nodeType, specNode->getFirst(), nodes);
         gatherChildren(nodeType, rightNode, nodes);
     }
-    else 
+    else
     {
         nodes->addElement(specNode);
     }
@@ -3788,19 +3798,19 @@ void XercSchemaValidator::gatherChildren(const ContentSpecNode::NodeTypes parent
 void
 XercSchemaValidator::checkNSCompat(const ContentSpecNode* const derivedSpecNode,
                                const ContentSpecNode* const baseSpecNode,
-                               const bool toCheckOccurence) 
+                               const bool toCheckOccurence)
 {
     // check Occurrence ranges
     if (toCheckOccurence &&
         !isOccurrenceRangeOK(derivedSpecNode->getMinOccurs(), derivedSpecNode->getMaxOccurs(),
-                             baseSpecNode->getMinOccurs(), baseSpecNode->getMaxOccurs())) 
+                             baseSpecNode->getMinOccurs(), baseSpecNode->getMaxOccurs()))
     {
         ThrowXMLwithMemMgr1(RuntimeException, XMLExcepts::PD_OccurRangeE,
                   derivedSpecNode->getElement()->getLocalPart(), fMemoryManager);
     }
 
     // check wildcard subset
-    if (!wildcardEltAllowsNamespace(baseSpecNode, derivedSpecNode->getElement()->getURI())) 
+    if (!wildcardEltAllowsNamespace(baseSpecNode, derivedSpecNode->getElement()->getURI()))
     {
         ThrowXMLwithMemMgr1(RuntimeException, XMLExcepts::PD_NSCompat1,
                   derivedSpecNode->getElement()->getLocalPart(), fMemoryManager);
@@ -3809,27 +3819,27 @@ XercSchemaValidator::checkNSCompat(const ContentSpecNode* const derivedSpecNode,
 
 bool
 XercSchemaValidator::wildcardEltAllowsNamespace(const ContentSpecNode* const baseSpecNode,
-                                            const unsigned int derivedURI) 
+                                            const unsigned int derivedURI)
 {
     ContentSpecNode::NodeTypes nodeType = baseSpecNode->getType();
 
-    if ((nodeType & 0x0f) == ContentSpecNode::Any) 
+    if ((nodeType & 0x0f) == ContentSpecNode::Any)
     {
         return true;
     }
 
     unsigned int baseURI = baseSpecNode->getElement()->getURI();
 
-    if ((nodeType & 0x0f) == ContentSpecNode::Any_NS) 
+    if ((nodeType & 0x0f) == ContentSpecNode::Any_NS)
     {
-        if (derivedURI == baseURI) 
+        if (derivedURI == baseURI)
         {
            return true;
         }
     }
-    else 
+    else
     { // must be ANY_OTHER
-        if (derivedURI != baseURI && derivedURI != getScanner()->getEmptyNamespaceId()) 
+        if (derivedURI != baseURI && derivedURI != getScanner()->getEmptyNamespaceId())
         {
             return true;
         }
@@ -3844,7 +3854,7 @@ XercSchemaValidator::checkNameAndTypeOK(SchemaGrammar* const currentGrammar,
                                     const int derivedScope,
                                     const ContentSpecNode* const baseSpecNode,
                                     const int baseScope,
-                                    const ComplexTypeInfo* const baseInfo) 
+                                    const ComplexTypeInfo* const baseInfo)
 {
 
     if (derivedSpecNode->getMaxOccurs() == 0)
@@ -3853,7 +3863,7 @@ XercSchemaValidator::checkNameAndTypeOK(SchemaGrammar* const currentGrammar,
     unsigned int derivedURI = derivedSpecNode->getElement()->getURI();
 
     // case of mixed complex types with attributes only
-    if (derivedURI == XMLElementDecl::fgPCDataElemId) 
+    if (derivedURI == XMLElementDecl::fgPCDataElemId)
     {
         return;
     }
@@ -3861,12 +3871,12 @@ XercSchemaValidator::checkNameAndTypeOK(SchemaGrammar* const currentGrammar,
     SchemaGrammar* aGrammar = currentGrammar;
     const XMLCh* schemaURI = fGrammarResolver->getStringPool()->getValueForId(derivedURI);
 
-    if (derivedURI != getScanner()->getEmptyNamespaceId()) 
+    if (derivedURI != getScanner()->getEmptyNamespaceId())
     {
         aGrammar= (SchemaGrammar*) fGrammarResolver->getGrammar(schemaURI);
     }
 
-    if (!aGrammar) 
+    if (!aGrammar)
     { //something is wrong
         return;
     }
@@ -3875,29 +3885,29 @@ XercSchemaValidator::checkNameAndTypeOK(SchemaGrammar* const currentGrammar,
 
     SchemaElementDecl* derivedElemDecl = findElement(derivedScope, derivedURI, derivedName, aGrammar);
 
-    if (!derivedElemDecl) 
+    if (!derivedElemDecl)
     {
         return;
     }
 
-	const XMLCh* baseName = baseSpecNode->getElement()->getLocalPart();
-	unsigned int baseURI = baseSpecNode->getElement()->getURI();
+    const XMLCh* baseName = baseSpecNode->getElement()->getLocalPart();
+    unsigned int baseURI = baseSpecNode->getElement()->getURI();
     bool subsGroup = false;
 
-    if (!XMLString::equals(derivedName, baseName) || derivedURI != baseURI) 
+    if (!XMLString::equals(derivedName, baseName) || derivedURI != baseURI)
     {
         // Check if derived is substitutable for base.
         //
         SchemaElementDecl* e = derivedElemDecl->getSubstitutionGroupElem ();
 
         for (; e != 0; e = e->getSubstitutionGroupElem ()) {
-            if (XMLString::equals(e->getBaseName (), baseName) && e->getURI () == baseURI) 
+            if (XMLString::equals(e->getBaseName (), baseName) && e->getURI () == baseURI)
             {
                 break;
             }
         }
 
-        if (e == 0) 
+        if (e == 0)
         {
             ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_NameTypeOK1, fMemoryManager);
         }
@@ -3906,7 +3916,7 @@ XercSchemaValidator::checkNameAndTypeOK(SchemaGrammar* const currentGrammar,
     }
 
     if (!isOccurrenceRangeOK(derivedSpecNode->getMinOccurs(), derivedSpecNode->getMaxOccurs(),
-                             baseSpecNode->getMinOccurs(), baseSpecNode->getMaxOccurs())) 
+                             baseSpecNode->getMinOccurs(), baseSpecNode->getMaxOccurs()))
     {
         ThrowXMLwithMemMgr1(RuntimeException, XMLExcepts::PD_OccurRangeE, derivedName, fMemoryManager);
     }
@@ -3914,7 +3924,7 @@ XercSchemaValidator::checkNameAndTypeOK(SchemaGrammar* const currentGrammar,
     SchemaElementDecl* baseElemDecl =
         findElement(baseScope, baseURI, baseName, aGrammar, baseInfo);
 
-    if (!baseElemDecl) 
+    if (!baseElemDecl)
     {
         return;
     }
@@ -3923,7 +3933,7 @@ XercSchemaValidator::checkNameAndTypeOK(SchemaGrammar* const currentGrammar,
     int baseFlags = baseElemDecl->getMiscFlags();
 
     if (((baseFlags & SchemaSymbols::XSD_NILLABLE) == 0) &&
-		((derivedFlags & SchemaSymbols::XSD_NILLABLE) != 0)) 
+        ((derivedFlags & SchemaSymbols::XSD_NILLABLE) != 0))
     {
         ThrowXMLwithMemMgr1(RuntimeException, XMLExcepts::PD_NameTypeOK2, derivedName, fMemoryManager);
     }
@@ -3933,7 +3943,7 @@ XercSchemaValidator::checkNameAndTypeOK(SchemaGrammar* const currentGrammar,
 
     if (baseDefVal && (baseFlags & SchemaSymbols::XSD_FIXED) != 0 &&
         ((derivedFlags & SchemaSymbols::XSD_FIXED) == 0 ||
-         !XMLString::equals(derivedDefVal, baseDefVal))) 
+         !XMLString::equals(derivedDefVal, baseDefVal)))
     {
         ThrowXMLwithMemMgr1(RuntimeException, XMLExcepts::PD_NameTypeOK3, derivedName, fMemoryManager);
     }
@@ -3941,7 +3951,7 @@ XercSchemaValidator::checkNameAndTypeOK(SchemaGrammar* const currentGrammar,
     int derivedBlockSet = derivedElemDecl->getBlockSet();
     int baseBlockSet = baseElemDecl->getBlockSet();
 
-    if ((derivedBlockSet & baseBlockSet) != baseBlockSet) 
+    if ((derivedBlockSet & baseBlockSet) != baseBlockSet)
     {
         ThrowXMLwithMemMgr1(RuntimeException, XMLExcepts::PD_NameTypeOK4, derivedName, fMemoryManager);
     }
@@ -3958,13 +3968,13 @@ SchemaElementDecl*
 XercSchemaValidator::findElement(const int scope, const unsigned int uriIndex,
                              const XMLCh* const name,
                              SchemaGrammar* const grammar,
-                             const ComplexTypeInfo* const typeInfo) 
+                             const ComplexTypeInfo* const typeInfo)
 {
     // check for element at given scope first
     SchemaElementDecl* elemDecl = (SchemaElementDecl*) grammar->getElemDecl(uriIndex, name, 0, scope);
 
     // if not found, check at global scope
-    if (!elemDecl) 
+    if (!elemDecl)
     {
         elemDecl = (SchemaElementDecl*)
             grammar->getElemDecl(uriIndex, name, 0, Grammar::TOP_LEVEL_SCOPE);
@@ -3974,12 +3984,12 @@ XercSchemaValidator::findElement(const int scope, const unsigned int uriIndex,
 
             const ComplexTypeInfo* baseInfo = typeInfo;
 
-            while (baseInfo) 
+            while (baseInfo)
             {
                 elemDecl = (SchemaElementDecl*)
                     grammar->getElemDecl(uriIndex, name, 0, baseInfo->getScopeDefined());
 
-                if (elemDecl) 
+                if (elemDecl)
                 {
                    break;
                 }
@@ -3996,32 +4006,32 @@ void
 XercSchemaValidator::checkICRestriction(const SchemaElementDecl* const derivedElemDecl,
                                    const SchemaElementDecl* const baseElemDecl,
                                    const XMLCh* const derivedElemName,
-                                   const XMLCh* const baseElemName) 
+                                   const XMLCh* const baseElemName)
 {
     // REVIST - need to get more clarification
     unsigned int derivedICCount = derivedElemDecl->getIdentityConstraintCount();
     unsigned int baseICCount = baseElemDecl->getIdentityConstraintCount();
 
-    if (derivedICCount > baseICCount) 
+    if (derivedICCount > baseICCount)
     {
         ThrowXMLwithMemMgr2(RuntimeException, XMLExcepts::PD_NameTypeOK6, derivedElemName, baseElemName, fMemoryManager);
     }
 
-    for (unsigned int i=0; i < derivedICCount; i++) 
+    for (unsigned int i=0; i < derivedICCount; i++)
     {
         bool found = false;
         IdentityConstraint* ic= derivedElemDecl->getIdentityConstraintAt(i);
 
-        for (unsigned int j=0; j < baseICCount; j++) 
+        for (unsigned int j=0; j < baseICCount; j++)
         {
-            if (*ic == *(baseElemDecl->getIdentityConstraintAt(j))) 
+            if (*ic == *(baseElemDecl->getIdentityConstraintAt(j)))
             {
                 found = true;
                 break;
             }
         }
 
-        if (!found) 
+        if (!found)
         {
             ThrowXMLwithMemMgr2(RuntimeException, XMLExcepts::PD_NameTypeOK7, derivedElemName, baseElemName, fMemoryManager);
         }
@@ -4031,11 +4041,11 @@ XercSchemaValidator::checkICRestriction(const SchemaElementDecl* const derivedEl
 void
 XercSchemaValidator::checkTypesOK(const SchemaElementDecl* const derivedElemDecl,
                               const SchemaElementDecl* const baseElemDecl,
-                              const XMLCh* const derivedElemName) 
+                              const XMLCh* const derivedElemName)
 {
     SchemaElementDecl::ModelTypes baseType = baseElemDecl->getModelType();
 
-    if (baseType == SchemaElementDecl::Any) 
+    if (baseType == SchemaElementDecl::Any)
     {
         return;
     }
@@ -4043,19 +4053,19 @@ XercSchemaValidator::checkTypesOK(const SchemaElementDecl* const derivedElemDecl
     ComplexTypeInfo* rInfo = derivedElemDecl->getComplexTypeInfo();
     ComplexTypeInfo* bInfo = baseElemDecl->getComplexTypeInfo();
 
-    if (derivedElemDecl->getModelType() == SchemaElementDecl::Simple) 
+    if (derivedElemDecl->getModelType() == SchemaElementDecl::Simple)
     {
-        if (baseType != SchemaElementDecl::Simple) 
+        if (baseType != SchemaElementDecl::Simple)
         {
             ThrowXMLwithMemMgr1(RuntimeException, XMLExcepts::PD_NameTypeOK5, derivedElemName, fMemoryManager);
         }
 
-        if (!rInfo) 
+        if (!rInfo)
         {
             DatatypeValidator* bDV = baseElemDecl->getDatatypeValidator();
 
             if (bInfo || bDV == 0 ||
-                !bDV->isSubstitutableBy(derivedElemDecl->getDatatypeValidator())) 
+                !bDV->isSubstitutableBy(derivedElemDecl->getDatatypeValidator()))
             {
                 ThrowXMLwithMemMgr1(RuntimeException, XMLExcepts::PD_NameTypeOK5, derivedElemName, fMemoryManager);
             }
@@ -4067,16 +4077,16 @@ XercSchemaValidator::checkTypesOK(const SchemaElementDecl* const derivedElemDecl
     if (rInfo == bInfo)
         return;
 
-    for (; rInfo && rInfo != bInfo; rInfo = rInfo->getBaseComplexTypeInfo()) 
+    for (; rInfo && rInfo != bInfo; rInfo = rInfo->getBaseComplexTypeInfo())
     {
-        if (rInfo->getDerivedBy() != SchemaSymbols::XSD_RESTRICTION) 
+        if (rInfo->getDerivedBy() != SchemaSymbols::XSD_RESTRICTION)
         {
             rInfo = 0;
             break;
         }
     }
 
-    if (!rInfo) 
+    if (!rInfo)
     {
         ThrowXMLwithMemMgr1(RuntimeException, XMLExcepts::PD_NameTypeOK5, derivedElemName, fMemoryManager);
     }
@@ -4089,7 +4099,7 @@ XercSchemaValidator::checkRecurseAsIfGroup(SchemaGrammar* const currentGrammar,
                                        const ContentSpecNode* const baseSpecNode,
                                        const int baseScope,
                                        ValueVectorOf<ContentSpecNode*>* const baseNodes,
-                                       const ComplexTypeInfo* const baseInfo) 
+                                       const ComplexTypeInfo* const baseInfo)
 {
     ContentSpecNode::NodeTypes baseType = baseSpecNode->getType();
     bool toLax = false;
@@ -4098,7 +4108,7 @@ XercSchemaValidator::checkRecurseAsIfGroup(SchemaGrammar* const currentGrammar,
     ContentSpecNode derivedGroupNode(baseType, derivedSpecNodeIn, 0, false, true, fMemoryManager);
     const ContentSpecNode* const derivedSpecNode = &derivedGroupNode;
 
-    if ((baseSpecNode->getType() & 0x0f) == ContentSpecNode::Choice) 
+    if ((baseSpecNode->getType() & 0x0f) == ContentSpecNode::Choice)
     {
         toLax = true;
     }
@@ -4108,7 +4118,7 @@ XercSchemaValidator::checkRecurseAsIfGroup(SchemaGrammar* const currentGrammar,
     //             baseSpecNode, baseScope, baseNodes, baseInfo, toLax);
 
     if (!isOccurrenceRangeOK(derivedSpecNode->getMinOccurs(), derivedSpecNode->getMaxOccurs(),
-                             baseSpecNode->getMinOccurs(), baseSpecNode->getMaxOccurs())) 
+                             baseSpecNode->getMinOccurs(), baseSpecNode->getMaxOccurs()))
     {
         ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_Recurse1, fMemoryManager);
     }
@@ -4121,22 +4131,22 @@ XercSchemaValidator::checkRecurseAsIfGroup(SchemaGrammar* const currentGrammar,
     {
         bool matched = false;
 
-        for (unsigned int j = current; j < count2; j++) 
+        for (unsigned int j = current; j < count2; j++)
         {
             ContentSpecNode* baseNode = baseNodes->elementAt(j);
             current++;
 
             bool bDoBreak=false;    // workaround for Borland bug with 'break' in 'catch'
-            try 
+            try
             {
                 checkParticleDerivationOk(currentGrammar, derivedSpecNodeIn,
                                           derivedScope, baseNode, baseScope, baseInfo);
                 matched = true;
                 break;
             }
-            catch(const XMLException&) 
+            catch(const XMLException&)
             {
-                if (!toLax && baseNode->getMinTotalRange()) 
+                if (!toLax && baseNode->getMinTotalRange())
                 {
                     bDoBreak=true;
                 }
@@ -4147,7 +4157,7 @@ XercSchemaValidator::checkRecurseAsIfGroup(SchemaGrammar* const currentGrammar,
         }
 
         // did not find a match
-        if (!matched) 
+        if (!matched)
         {
             codeToThrow = XMLExcepts::PD_Recurse2;
         }
@@ -4157,11 +4167,11 @@ XercSchemaValidator::checkRecurseAsIfGroup(SchemaGrammar* const currentGrammar,
     // in case of Sequence or All
     if (!toLax && codeToThrow == XMLExcepts::NoError &&
         (true || (baseType & 0x0f) == ContentSpecNode::All ||
-         derivedSpecNodeIn->getElement()->getURI() != XMLElementDecl::fgPCDataElemId)) 
+         derivedSpecNodeIn->getElement()->getURI() != XMLElementDecl::fgPCDataElemId))
     {
-        for (unsigned int j = current; j < count2; j++) 
+        for (unsigned int j = current; j < count2; j++)
         {
-            if (baseNodes->elementAt(j)->getMinTotalRange() * baseSpecNode->getMinOccurs()) 
+            if (baseNodes->elementAt(j)->getMinTotalRange() * baseSpecNode->getMinOccurs())
             { //!emptiable
                 codeToThrow =  XMLExcepts::PD_Recurse2;
                 break;
@@ -4169,7 +4179,7 @@ XercSchemaValidator::checkRecurseAsIfGroup(SchemaGrammar* const currentGrammar,
         }
     }
 
-    if (codeToThrow != XMLExcepts::NoError) 
+    if (codeToThrow != XMLExcepts::NoError)
     {
         ThrowXMLwithMemMgr(RuntimeException, codeToThrow, fMemoryManager);
     }
@@ -4184,10 +4194,10 @@ XercSchemaValidator::checkRecurse(SchemaGrammar* const currentGrammar,
                               const int baseScope,
                               ValueVectorOf<ContentSpecNode*>* const baseNodes,
                               const ComplexTypeInfo* const baseInfo,
-                              const bool toLax) 
+                              const bool toLax)
 {
     if (!isOccurrenceRangeOK(derivedSpecNode->getMinOccurs(), derivedSpecNode->getMaxOccurs(),
-                             baseSpecNode->getMinOccurs(), baseSpecNode->getMaxOccurs())) 
+                             baseSpecNode->getMinOccurs(), baseSpecNode->getMaxOccurs()))
     {
         ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_Recurse1, fMemoryManager);
     }
@@ -4198,17 +4208,17 @@ XercSchemaValidator::checkRecurse(SchemaGrammar* const currentGrammar,
     unsigned int count2= baseNodes->size();
     unsigned int current = 0;
 
-    for (unsigned int i=0; i<count1; i++) 
+    for (unsigned int i=0; i<count1; i++)
     {
         bool matched = false;
 
-        for (unsigned int j = current; j < count2; j++) 
+        for (unsigned int j = current; j < count2; j++)
         {
             ContentSpecNode* baseNode = baseNodes->elementAt(j);
             current++;
 
             bool bDoBreak=false;    // workaround for Borland bug with 'break' in 'catch'
-            try 
+            try
             {
 
                 checkParticleDerivationOk(currentGrammar, derivedNodes->elementAt(i),
@@ -4216,9 +4226,9 @@ XercSchemaValidator::checkRecurse(SchemaGrammar* const currentGrammar,
                 matched = true;
                 break;
             }
-            catch(const XMLException&) 
+            catch(const XMLException&)
             {
-                if (!toLax && baseNode->getMinTotalRange()) 
+                if (!toLax && baseNode->getMinTotalRange())
                 {
                     bDoBreak=true;
                 }
@@ -4229,7 +4239,7 @@ XercSchemaValidator::checkRecurse(SchemaGrammar* const currentGrammar,
         }
 
         // did not find a match
-        if (!matched) 
+        if (!matched)
         {
             codeToThrow = XMLExcepts::PD_Recurse2;
             break;
@@ -4238,11 +4248,11 @@ XercSchemaValidator::checkRecurse(SchemaGrammar* const currentGrammar,
 
     // Now, see if there are some elements in the base we didn't match up
     // in case of Sequence or All
-    if (!toLax && codeToThrow == XMLExcepts::NoError) 
+    if (!toLax && codeToThrow == XMLExcepts::NoError)
     {
-        for (unsigned int j = current; j < count2; j++) 
+        for (unsigned int j = current; j < count2; j++)
         {
-            if (baseNodes->elementAt(j)->getMinTotalRange()) 
+            if (baseNodes->elementAt(j)->getMinTotalRange())
             { //!emptiable
                 codeToThrow =  XMLExcepts::PD_Recurse2;
                 break;
@@ -4250,23 +4260,23 @@ XercSchemaValidator::checkRecurse(SchemaGrammar* const currentGrammar,
         }
     }
 
-    if (codeToThrow != XMLExcepts::NoError) 
+    if (codeToThrow != XMLExcepts::NoError)
     {
         ThrowXMLwithMemMgr(RuntimeException, codeToThrow, fMemoryManager);
     }
 }
 
 void XercSchemaValidator::checkNSSubset(const ContentSpecNode* const derivedSpecNode,
-                                    const ContentSpecNode* const baseSpecNode) 
+                                    const ContentSpecNode* const baseSpecNode)
 {
     // check Occurrence ranges
     if (!isOccurrenceRangeOK(derivedSpecNode->getMinOccurs(), derivedSpecNode->getMaxOccurs(),
-                             baseSpecNode->getMinOccurs(), baseSpecNode->getMaxOccurs())) 
+                             baseSpecNode->getMinOccurs(), baseSpecNode->getMaxOccurs()))
     {
         ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_NSSubset1, fMemoryManager);
     }
 
-    if (!isWildCardEltSubset(derivedSpecNode, baseSpecNode)) 
+    if (!isWildCardEltSubset(derivedSpecNode, baseSpecNode))
     {
         ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_NSSubset2, fMemoryManager);
     }
@@ -4392,7 +4402,7 @@ XercSchemaValidator::checkRecurseUnordered(SchemaGrammar* const currentGrammar,
         // didn't find a match.
         if (!matched) {
 
-	        codeToThrow = XMLExcepts::PD_RecurseUnordered;
+            codeToThrow = XMLExcepts::PD_RecurseUnordered;
             break;
         }
     }
@@ -4402,7 +4412,7 @@ XercSchemaValidator::checkRecurseUnordered(SchemaGrammar* const currentGrammar,
         for (unsigned int j=0; j < baseCount; j++) {
             if (!foundIt[j] && baseNodes->elementAt(j)->getMinTotalRange()) {
 
-	            codeToThrow = XMLExcepts::PD_RecurseUnordered;
+                codeToThrow = XMLExcepts::PD_RecurseUnordered;
                 break;
             }
         }
@@ -4458,7 +4468,7 @@ XercSchemaValidator::checkMapAndSum(SchemaGrammar* const currentGrammar,
 
         // didn't find a match.
         if (!matched) {
-	        ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_MapAndSum, fMemoryManager);
+            ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::PD_MapAndSum, fMemoryManager);
         }
     }
 
