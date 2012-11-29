@@ -54,6 +54,22 @@ loader::stack_element::stack_element( type t ) : type_( t ) {
   }
 }
 
+void loader::stack_element::destroy() {
+  switch ( type_ ) {
+    case array_type:
+      delete array_;
+      break;
+    case object_type:
+      delete object_;
+      break;
+    case key_type:
+      key_->removeReference();
+      break;
+    default:
+      break;
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 loader::loader( istream &is, bool allow_multiple, bool strip_top_level_array ) :
@@ -65,26 +81,13 @@ loader::loader( istream &is, bool allow_multiple, bool strip_top_level_array ) :
 
 loader::~loader() {
   while ( !stack_.empty() ) {
-    stack_element const top( stack_.top() );
-    switch ( top.type_ ) {
-      case stack_element::array_type:
-        delete top.array_;
-        break;
-      case stack_element::object_type:
-        delete top.object_;
-        break;
-      case stack_element::key_type:
-        top.key_->removeReference();
-        break;
-      default:
-        break;
-    }
+    stack_.top().destroy();
     stack_.pop();
-  } // while
+  }
 }
 
 void loader::add_value( store::Item_t const &value ) {
-  stack_element const top( stack_.top() );
+  stack_element top( stack_.top() );
   switch ( top.type_ ) {
     case stack_element::array_type:
       top.array_->push_back( value );
@@ -108,7 +111,7 @@ void loader::add_value( store::Item_t const &value ) {
       assert( top2.type_ == stack_element::object_type );
       top2.object_->keys_.push_back( top.key_ );
       top2.object_->values_.push_back( value );
-      top.key_->removeReference();
+      top.destroy();
       break;
     }
     default:
@@ -137,7 +140,7 @@ bool loader::next( store::Item_t *result ) {
           if ( stack_.empty() && strip_top_level_array_ )
             continue;
         case '}': {
-          stack_element const top( stack_.top() );
+          stack_element top( stack_.top() );
           stack_.pop();
           switch ( top.type_ ) {
             case stack_element::array_type:
@@ -151,6 +154,7 @@ bool loader::next( store::Item_t *result ) {
             default:
               assert( false );
           } // switch
+          top.destroy();
           break;
         }
         case ':':

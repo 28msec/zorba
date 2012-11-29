@@ -97,6 +97,7 @@ private:
     };
 
     stack_element( type = no_type );
+    void destroy();
   };
 
   typedef std::stack<stack_element> stack_type;
@@ -110,8 +111,7 @@ private:
     // references.
     //
     stack_.push( stack_element() );
-    new( &stack_.top() ) stack_element( t );
-    return stack_.top();
+    return *new( &stack_.top() ) stack_element( t );
   }
 
   parser parser_;
