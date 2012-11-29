@@ -54,6 +54,12 @@ loader::stack_element::stack_element( type t ) : type_( t ) {
   }
 }
 
+/**
+ * Destroys a %stack_element.  We have this as an ordinary member function
+ * rather than a destructor so that popping the stack and destroying an element
+ * are distinct operations and can be called independently which comes in
+ * handy.
+ */
 void loader::stack_element::destroy() {
   switch ( type_ ) {
     case array_type:
