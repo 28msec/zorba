@@ -15,6 +15,9 @@
  */
 
 #include "stdafx.h"
+
+#include <iomanip>
+
 #include "diagnostics/assert.h"
 
 #include "ascii_util.h"
@@ -23,7 +26,6 @@
 #include "utf8_util.h"
 
 #define DEBUG_JSON_PARSER 0
-
 #if DEBUG_JSON_PARSER
 # include "indent.h"
 #endif /* DEBUG_JSON_PARSER */
@@ -78,8 +80,18 @@ char const* exception::what() const throw() {
   return message_.c_str();
 }
 
+static std::string printable_char( char c ) {
+  if ( ascii::is_print( c ) )
+    return std::string( 1, c );
+  return BUILD_STRING(
+    "#x" << uppercase << hex << (static_cast<unsigned>( c ) & 0xFF)
+  );
+}
+
 illegal_character::illegal_character( location const &loc, char c ) :
-  exception( loc, BUILD_STRING( '\'', c, "': illegal character" ) ),
+  exception(
+    loc, BUILD_STRING( '\'', printable_char( c ), "': illegal character" )
+  ),
   c_( c )
 {
 }
