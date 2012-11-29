@@ -186,49 +186,61 @@ bool loader::next( store::Item_t *result ) {
   catch ( json::illegal_character const &e ) {
     throw XQUERY_EXCEPTION(
       jerr::JNDY0021,
-      ERROR_PARAMS( e.what() ),
+      ERROR_PARAMS(
+        ZED( JNDY0021_IllegalCharacter_2 ),
+        ascii::printable_char( e.get_char() )
+      ),
       ERROR_LOC( e.get_loc() )
     );
   }
   catch ( json::illegal_codepoint const &e ) {
     throw XQUERY_EXCEPTION(
       jerr::JNDY0021,
-      ERROR_PARAMS( e.what() ),
+      ERROR_PARAMS(
+        ZED( JNDY0021_IllegalCodepoint_2 ),
+        e.get_codepoint()
+      ),
       ERROR_LOC( e.get_loc() )
     );
   }
   catch ( json::illegal_escape const &e ) {
     throw XQUERY_EXCEPTION(
       jerr::JNDY0021,
-      ERROR_PARAMS( e.what() ),
+      ERROR_PARAMS(
+        ZED( JNDY0021_IllegalEscape_2 ),
+        ascii::printable_char( e.get_escape() )
+      ),
       ERROR_LOC( e.get_loc() )
     );
   }
   catch ( json::illegal_literal const &e ) {
     throw XQUERY_EXCEPTION(
       jerr::JNDY0021,
-      ERROR_PARAMS( e.what() ),
+      ERROR_PARAMS( ZED( JNDY0021_IllegalLiteral ) ),
       ERROR_LOC( e.get_loc() )
     );
   }
   catch ( json::illegal_number const &e ) {
     throw XQUERY_EXCEPTION(
       jerr::JNDY0021,
-      ERROR_PARAMS( e.what() ),
+      ERROR_PARAMS( ZED( JNDY0021_IllegalNumber ) ),
       ERROR_LOC( e.get_loc() )
     );
   }
   catch ( json::unexpected_token const &e ) {
     throw XQUERY_EXCEPTION(
       jerr::JNDY0021,
-      ERROR_PARAMS( e.what() ),
+      ERROR_PARAMS(
+        ZED( JNDY0021_UnexpectedToken_2 ),
+        e.get_token()
+      ),
       ERROR_LOC( e.get_loc() )
     );
   }
   catch ( json::unterminated_string const &e ) {
     throw XQUERY_EXCEPTION(
       jerr::JNDY0021,
-      ERROR_PARAMS( e.what() ),
+      ERROR_PARAMS( ZED( JNDY0021_UnterminatedString ) ),
       ERROR_LOC( e.get_loc() )
     );
   }

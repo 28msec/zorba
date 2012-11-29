@@ -855,9 +855,10 @@ JSONParseIterator::nextImpl(
 
     while ( state->loader_->next( &result ) ) {
       if ( !state->theAllowMultiple && state->theGotOne ) {
-        RAISE_ERROR(
-          jerr::JNDY0021, loc,
-          ERROR_PARAMS( ZED( JSON_UNEXPECTED_EXTRA_CONTENT ) )
+        throw XQUERY_EXCEPTION(
+          jerr::JNDY0021,
+          ERROR_PARAMS( ZED( JNDY0021_UnexpectedExtraContent ) ),
+          ERROR_LOC( loc )
         );
       }
       state->theGotOne = true;
@@ -1675,7 +1676,7 @@ bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         RAISE_ERROR(
             jerr::JNDY0021,
             loc,
-            ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
+            ERROR_PARAMS(ZED(JNDY0021_UnexpectedExtraContent)));
       }
     }
   }

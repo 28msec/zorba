@@ -2651,7 +2651,7 @@
 
   <namespace prefix="jerr">
 
-    <!--////////// JSONiq ///////////////////////////////////////////-->
+    <!--////////// JSONiq //////////////////////////////////////////////////-->
 
     <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.</comment>
@@ -2807,8 +2807,6 @@
       <value>$1: value of "$2" is not a $3</value>
     </diagnostic>
 
-    <!--////////// JSONIQ ///////////////////////////////////////////-->
-
     <diagnostic code="JNTY0024" if="defined(ZORBA_WITH_JSON)">
       <comment>objects or arrays don't have a string value</comment>
       <value>$1 items do not have string value</value>
@@ -2822,7 +2820,32 @@
     <diagnostic code="JNDY0021" if="defined(ZORBA_WITH_JSON)">
       <comment>parser error raised by jn:parse-json</comment>
       <value>$1</value>
+      <entry key="IllegalCharacter_2">
+        <value>'$2': illegal JSON character</value>
+      </entry>
+      <entry key="IllegalCodepoint_2">
+        <value>"$2": illegal Unicode code-point</value>
+      </entry>
+      <entry key="IllegalEscape_2">
+        <value>'\\$2': illegal JSON character escape</value>
+      </entry>
+      <entry key="IllegalLiteral">
+        <value>illegal JSON literal</value>
+      </entry>
+      <entry key="IllegalNumber">
+        <value>illegal JSON number</value>
+      </entry>
+      <entry key="UnexpectedToken_2">
+        <value>"$2": unexpected JSON token</value>
+      </entry>
+      <entry key="UnterminatedString">
+        <value>unterminated JSON string</value>
+      </entry>
+      <entry key="UnexpectedExtraContent">
+        <value>unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)</value>
+      </entry>
     </diagnostic>
+
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->
@@ -4049,39 +4072,6 @@
       <value>: a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family</value>
     </entry>
     
-
-    <entry key="JSON_ILLEGAL_CHARACTER">
-      <value>'$2': illegal JSON character${ at 3}</value>
-    </entry>
-
-    <entry key="JSON_ILLEGAL_CODEPOINT">
-      <value>"$2": illegal Unicode code-point${ at 3}</value>
-    </entry>
-
-    <entry key="JSON_ILLEGAL_ESCAPE">
-      <value>'\\$2': illegal JSON character escape${ at 3}</value>
-    </entry>
-
-    <entry key="JSON_ILLEGAL_LITERAL">
-      <value>illegal JSON literal${ at 2}</value>
-    </entry>
-
-    <entry key="JSON_ILLEGAL_NUMBER">
-      <value>illegal JSON number${ at 2}</value>
-    </entry>
-
-    <entry key="JSON_UNEXPECTED_TOKEN">
-      <value>"$2": unexpected JSON token${ at 3}</value>
-    </entry>
-
-    <entry key="JSON_UNTERMINATED_STRING">
-      <value>unterminated JSON string${ at 2}</value>
-    </entry>
-
-    <entry key="JSON_UNEXPECTED_EXTRA_CONTENT">
-      <value>unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)</value>
-    </entry>
-
     <entry key="FUNCTION">
       <value>function</value>
     </entry>
