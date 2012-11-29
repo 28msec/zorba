@@ -840,7 +840,7 @@ JSONParseIterator::nextImpl(
     }
 
     state->loader_ = new json::loader(
-      *state->theInputStream, lStripTopLevelArray
+      *state->theInputStream, state->theAllowMultiple, lStripTopLevelArray
     );
 
     if ( state->theInput == NULL && theRelativeLocation ) {

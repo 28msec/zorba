@@ -35,7 +35,6 @@ namespace json {
 
 class loader {
 public:
-  //typedef zorba::json::location location;
   typedef parser::line_type line_type;
   typedef parser::column_type column_type;
 
@@ -43,10 +42,17 @@ public:
    * Constructs a %loader.
    *
    * @param is The istream to read from.
-   * @param strip_array If \a true, strips the top-level array, if any.
+   * @param allow_multiple If \c true, allow multiple top-level JSON items to
+   * be returned.
+   * @param strip_top_level_array If \c true, strips the top-level array, if
+   * any.
    */
-  loader( std::istream &is, bool strip_array = false );
+  loader( std::istream &is, bool allow_multiple = false,
+          bool strip_top_level_array = false );
 
+  /**
+   * Destroys this %loader.
+   */
   ~loader();
 
   /**

@@ -56,8 +56,8 @@ loader::stack_element::stack_element( type t ) : type_( t ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-loader::loader( istream &is, bool strip_top_level_array ) :
-  parser_( is ),
+loader::loader( istream &is, bool allow_multiple, bool strip_top_level_array ) :
+  parser_( is, allow_multiple ),
   strip_top_level_array_( strip_top_level_array ),
   stripped_top_level_array_( false )
 {
@@ -150,7 +150,7 @@ bool loader::next( store::Item_t *result ) {
               break;
             default:
               assert( false );
-          }
+          } // switch
           break;
         }
         case ':':
