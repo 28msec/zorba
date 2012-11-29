@@ -7,6 +7,8 @@ New Features:
   * (bug #1039284) Implemented jn:json-doc().
   * (bug #867363) Added http-uri-resolution feature to disable HTTP
 	when resolving URIs.
+  * Can now specify jsoniq-strip-top-level-array option to parse-json() to
+    strip the top-level array from JSON streams.
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
