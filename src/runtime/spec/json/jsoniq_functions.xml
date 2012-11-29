@@ -178,7 +178,6 @@
 
   <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
     <zorba:member type="bool" name="theAllowMultiple" brief=""/>
-    <zorba:member type="bool" name="theStripTopLevelArray" brief=""/>
     <zorba:member type="store::Item_t" name="theInput" brief=""/>
     <zorba:member type="std::istream*" name="theInputStream" brief=""/>
     <zorba:member type="bool" name="theGotOne"/>
@@ -407,10 +406,11 @@
     
   </zorba:function>
   
-  <zorba:state>
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
     <zorba:member type="std::auto_ptr&lt;internal::Resource&gt;" name="theResource" brief=""/>
     <zorba:member type="std::istream*" name="theStream" brief=""/>
     <zorba:member type="bool" name="theGotOne" brief=""/>
+    <zorba:member type="json::loader*" name="loader_" brief=""/>
   </zorba:state>
   
 </zorba:iterator>

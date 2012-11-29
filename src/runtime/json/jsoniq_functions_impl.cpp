@@ -748,7 +748,6 @@ JSONParseIteratorState::init(PlanState& aState)
 {
   PlanIteratorState::init(aState);
   theAllowMultiple = true; // default
-  theStripTopLevelArray = false;
   theInputStream = nullptr;
   theGotOne = false;
   loader_ = nullptr;
@@ -762,6 +761,7 @@ JSONParseIteratorState::reset(PlanState& aState)
     delete theInputStream;
     theInputStream = nullptr;
   }
+  theGotOne = false;
   delete loader_;
   loader_ = nullptr;
 }
@@ -809,6 +809,7 @@ JSONParseIterator::nextImpl(
   PlanState& planState) const
 {
   store::Item_t lInput;
+  bool lStripTopLevelArray = false;
 
   JSONParseIteratorState* state;
   DEFAULT_STACK_INIT(JSONParseIteratorState, state, planState);
@@ -823,7 +824,7 @@ JSONParseIterator::nextImpl(
         lOptions, "jsoniq-multiple-top-level-items", &state->theAllowMultiple
       );
       processBooleanOption(
-        lOptions, "jsoniq-strip-top-level-array", &state->theStripTopLevelArray
+        lOptions, "jsoniq-strip-top-level-array", &lStripTopLevelArray
       );
     }
 
@@ -839,7 +840,9 @@ JSONParseIterator::nextImpl(
         new std::stringstream( lInput->getStringValue().c_str() );
     }
 
-    state->loader_ = new json::loader( *state->theInputStream, state->theStripTopLevelArray );
+    state->loader_ = new json::loader(
+      *state->theInputStream, lStripTopLevelArray
+    );
 
     if ( state->theInput == NULL && theRelativeLocation ) {
       // pass the query location of the StringLiteral to the JSON
@@ -1597,6 +1600,30 @@ bool JSONBoxIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
+
+void
+JSONDocIteratorState::init(PlanState& aState)
+{
+  PlanIteratorState::init(aState);
+  theStream = nullptr;
+  theGotOne = false;
+  loader_ = nullptr;
+}
+
+void
+JSONDocIteratorState::reset(PlanState& aState)
+{
+  PlanIteratorState::reset(aState);
+  theGotOne = false;
+  delete loader_;
+  loader_ = nullptr;
+}
+
+JSONDocIteratorState::~JSONDocIteratorState()
+{
+  delete loader_;
+}
+
 bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t uriItem;
@@ -1637,40 +1664,19 @@ bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     }
 
     state->theGotOne = false;
+    state->loader_ = new json::loader( *state->theStream );
 
-    while (true)
+    while ( state->loader_->next( &result ) )
     {
-      try
+      if (!state->theGotOne)
       {
-#if 0
-        result = GENV_STORE.parseJSON(*state->theStream, 0);
-#endif
-      }
-      catch (zorba::XQueryException& e)
-      {
-        // rethrow with JNDY0021
-        XQueryException xq = XQUERY_EXCEPTION(
-            jerr::JNDY0021,
-            ERROR_PARAMS(e.what()),
-            ERROR_LOC(loc));
-
-        // use location of e in case of literal string
-        throw xq;
-      }
-      if (result != NULL)
-      {
-        if (!state->theGotOne)
-        {
-          state->theGotOne = true;
-          STACK_PUSH(true, state);
-        } else {
-          RAISE_ERROR(
-              jerr::JNDY0021,
-              loc,
-              ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
-        }
+        state->theGotOne = true;
+        STACK_PUSH(true, state);
       } else {
-        break;
+        RAISE_ERROR(
+            jerr::JNDY0021,
+            loc,
+            ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
       }
     }
   }

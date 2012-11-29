@@ -149,7 +149,6 @@ class JSONParseIteratorState : public PlanIteratorState
 {
 public:
   bool theAllowMultiple; //
-  bool theStripTopLevelArray; //
   store::Item_t theInput; //
   std::istream* theInputStream; //
   bool theGotOne; //
@@ -471,6 +470,7 @@ public:
   std::auto_ptr<internal::Resource> theResource; //
   std::istream* theStream; //
   bool theGotOne; //
+  json::loader* loader_; //
 
   JSONDocIteratorState();
 
