@@ -3334,6 +3334,12 @@ void* begin_visit(const VFO_DeclList& v)
       if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
         RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
+      if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_FEATURE_NS &&
+          value == "http-uri-resolution")
+      {
+        RAISE_ERROR(zerr::ZXQP0061_DISABLE_HTTP_OPTION_IN_QUERY, loc,
+                    ERROR_PARAMS(value));
+      }
       theSctx->bind_option(qnameItem, value, opt_decl->get_location());
 
       if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_OPTIM_NS &&
@@ -6322,7 +6328,7 @@ void* begin_visit(const ForClause& v)
   if (v.has_allowing_empty())
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_OuterForClause11)));
+      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_OuterForClause30)));
 
     theFlworClausesStack.push_back(NULL);
   }
@@ -6541,7 +6547,7 @@ void* begin_visit(const WindowClause& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_WindowClause11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_WindowClause30)));
 
   return no_state;
 }
@@ -7251,7 +7257,7 @@ void* begin_visit(const CountClause& v)
   TRACE_VISIT ();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_CountClause11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_CountClause30)));
 
   return no_state;
 }
@@ -7315,7 +7321,7 @@ void* begin_visit(const SwitchExpr& v)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_SwitchExpr11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_SwitchExpr30)));
   }
 
   v.get_switch_expr()->accept(*this);
@@ -7725,7 +7731,7 @@ void* begin_visit(const TryExpr& v)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_TryCatchExpr11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_TryCatchExpr30)));
   }
 
   theTryStack.push_back(&v);
@@ -8515,9 +8521,9 @@ expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCa
       assert(castLiteral != NULL || ! isCast);
 
       if (isCast)
-        return theExprManager->create_const_expr(theRootSctx, theUDF, loc, castLiteral);
+        return CREATE(const)(theRootSctx, theUDF, loc, castLiteral);
       else
-        return theExprManager->create_const_expr(theRootSctx, theUDF, loc, castLiteral != NULL);
+        return CREATE(const)(theRootSctx, theUDF, loc, castLiteral != NULL);
     }
     else
     {
@@ -8525,27 +8531,26 @@ expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCa
                             GENV_TYPESYSTEM.QNAME_TYPE_ONE :
                             GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
 
-      // when casting to type T, where T is QName or subtype of, and the input
-      // is not a const expr, then the input MUST be of type T or subtype of.
       if (isCast)
-        // This was previously a treat_expr() with TYPE_MATCH. It was changed to
-        // cast_expr() in order to allow dynamically computed strings to be cast
-        // to xs:QName.
-        return theExprManager->
-               create_cast_expr(theRootSctx, theUDF, loc, wrap_in_atomization(node), qnameType);
+        return CREATE(cast)(theRootSctx,
+                            theUDF,
+                            loc,
+                            wrap_in_atomization(node),
+                            qnameType);
       else
-        return theExprManager->
-               create_instanceof_expr(theRootSctx, theUDF, loc, node, qnameType);
+        return CREATE(castable)(theRootSctx,
+                                theUDF,
+                                loc,
+                                wrap_in_atomization(node),
+                                qnameType);
     }
   }
   else
   {
     if (isCast)
-      return theExprManager->
-             create_cast_expr(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
+      return CREATE(cast)(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
     else
-      return theExprManager->
-             create_castable_expr(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
+      return CREATE(castable)(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
   }
 }
 

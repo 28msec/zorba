@@ -20,7 +20,7 @@ offers a highly flexible API for extending the built-in mechanisms,
 which will allow you to resolve URIs from queries in almost any way
 imaginable to handle application-specific problems.
 
-\section builtin Zorba's Built-in URI Resolver
+\section builtin_uri_resolver Zorba's Built-in URI Resolver
 
 XQuery itself offers an approach to locating resources via the "at"
 clause in <code>import module</code> and <code>import schema</code>
@@ -143,8 +143,9 @@ order:
 
 If, after searching all URI path directories, no match is found for
 a given URI, Zorba will by default fall back to interpretting the URI
-as a URL and loading the resource via HTTP (assuming the URI
-has the http: scheme).
+as a URL and loading the resource via HTTP / HTTPS / FTP (depending on
+the URI scheme). This behaviour can be defeated by disabling the
+<tt>http-uri-resolution</tt> Zorba option (see \ref options_features).
 
 \section libpath Zorba's Library Path
 

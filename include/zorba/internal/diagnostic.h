@@ -70,15 +70,16 @@ public:
   /**
    * Constructs a %location.
    *
-   * @param file The name of the file where the error occurred.
-   * @param line The line number of the file where the expression that raises
-   * the error begins.
+   * @param file The name of the file where the expression causing the error
+   * occurred.
+   * @param line The line number of the file where the expression causing the
+   * error begins.
    * @param column The column number, if any, of the file where the expression
-   * that raises the error begins.
+   * causing the error begins.
    * @param line_end The end line number, if any, of the file where the
    * expression causing the error ends.
    * @param column_end The end column number, if any, of the file where the
-   * xpression causing the error ends.
+   * expression causing the error ends.
    */
   location( char const *file, line_type line, column_type column = 0,
             line_type line_end = 0, column_type column_end = 0 ) :
