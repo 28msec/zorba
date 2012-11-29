@@ -980,6 +980,7 @@ inline void skip_whitespace( char const *s, size_type s_len, size_type *pos ) {
  */
 std::ostream& printable_char( std::ostream &o, char c );
 
+// An ostream manipulator version of the above.
 DEF_OMANIP1( printable_char, char )
 
 /**
