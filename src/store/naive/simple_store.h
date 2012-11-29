@@ -113,13 +113,6 @@ protected:
   bool assignReference(const store::Item* node, const zstring& reference);
 
   bool getNodeByReference(store::Item_t& result, const zstring& reference);
-
-#ifdef ZORBA_WITH_JSON
-  store::Item_t parseJSON(
-      std::istream& stream,
-      zorba::json::location* relative_error_loc,
-      bool strip_top_level_array = false);
-#endif
 };
 
 } // namespace store

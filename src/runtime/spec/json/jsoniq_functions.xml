@@ -11,6 +11,7 @@
 
 <zorba:header>
   <zorba:include form="Angle-bracket">context/uri_resolver.h</zorba:include>
+  <zorba:include form="Quoted">runtime/json/json_loader.h</zorba:include>
 </zorba:header>
   
 <!--
@@ -181,6 +182,7 @@
     <zorba:member type="store::Item_t" name="theInput" brief=""/>
     <zorba:member type="std::istream*" name="theInputStream" brief=""/>
     <zorba:member type="bool" name="theGotOne"/>
+    <zorba:member type="json::loader*" name="loader_" brief=""/>
   </zorba:state>
 
   <zorba:constructor>

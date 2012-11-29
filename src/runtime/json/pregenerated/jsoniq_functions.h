@@ -30,6 +30,7 @@
 #include "runtime/base/noarybase.h"
 #include "runtime/base/narybase.h"
 #include <context/uri_resolver.h>
+#include "runtime/json/json_loader.h"
 
 
 namespace zorba {
@@ -152,6 +153,7 @@ public:
   store::Item_t theInput; //
   std::istream* theInputStream; //
   bool theGotOne; //
+  json::loader* loader_; //
 
   JSONParseIteratorState();
 

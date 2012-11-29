@@ -35,10 +35,6 @@
 #include <zorba/util/uuid.h>
 #include "zorbautils/string_util.h"
 
-#ifdef ZORBA_WITH_JSON
-#include "json_loader.h"
-#endif
-
 
 namespace zorba
 {
@@ -418,20 +414,6 @@ bool SimpleStore::unregisterReferenceToDeletedNode(XmlNode* node)
   }
 }
 
-
-#ifdef ZORBA_WITH_JSON
-/*******************************************************************************
-
-********************************************************************************/
-store::Item_t SimpleStore::parseJSON(
-    std::istream& stream,
-    zorba::json::location* relative_error_loc,
-    bool strip_top_level_array)
-{
-  json::JSONLoader lLoader(stream, relative_error_loc, strip_top_level_array);
-  return lLoader.next();
-}
-#endif /* ZORBA_WITH_JSON */
 
 } // namespace simplestore
 } // namespace zorba

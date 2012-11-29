@@ -26,10 +26,6 @@
 #include "runtime/full_text/stemmer.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#ifdef ZORBA_WITH_JSON
-#include "util/json_parser.h"
-#endif /* ZORBA_WITH_JSON */
-
 namespace zorba 
 { 
 
@@ -364,15 +360,6 @@ public:
   virtual TokenizerProvider const* getTokenizerProvider() const = 0;
 
 #endif /* ZORBA_NO_FULL_TEXT */
-
-#ifdef ZORBA_WITH_JSON
-  /* ------------------------ JSON ------------------------------------------*/
-  virtual Item_t parseJSON(
-      std::istream& stream,
-      json::location* relative_error_loc,
-      bool strip_top_level_array = false
-    ) = 0;
-#endif /* ZORBA_WITH_JSON */
 };
 
 } // namespace store

@@ -61,6 +61,8 @@
 #include <zorba/store_consts.h>
 #include <zorbatypes/URI.h>
 
+#include "json_loader.h"
+
 
 namespace zorba {
 
@@ -747,26 +749,28 @@ JSONParseIteratorState::init(PlanState& aState)
   PlanIteratorState::init(aState);
   theAllowMultiple = true; // default
   theStripTopLevelArray = false;
-  theInputStream = 0;
+  theInputStream = nullptr;
   theGotOne = false;
+  loader_ = nullptr;
 }
 
 void
 JSONParseIteratorState::reset(PlanState& aState)
 {
   PlanIteratorState::reset(aState);
-  if (theInput == NULL && theInputStream)
-  {
+  if (theInput == NULL) {
     delete theInputStream;
+    theInputStream = nullptr;
   }
+  delete loader_;
+  loader_ = nullptr;
 }
 
 JSONParseIteratorState::~JSONParseIteratorState()
 {
-  if (theInput == NULL && theInputStream)
-  {
+  if (theInput == NULL)
     delete theInputStream;
-  }
+  delete loader_;
 }
 
 bool JSONParseIterator::processBooleanOption( store::Item_t const &options,
@@ -783,13 +787,14 @@ bool JSONParseIterator::processBooleanOption( store::Item_t const &options,
     if ( !TypeOps::is_subtype( option_type, store::XS_BOOLEAN ) ) {
       TypeManager const *const tm = theSctx->get_typemanager();
       xqtref_t const option_type = tm->create_value_type( i_option_value, loc );
-      RAISE_ERROR(
-        jerr::JNTY0020, loc,
+      throw XQUERY_EXCEPTION(
+        jerr::JNTY0020,
         ERROR_PARAMS(
           option_type->toSchemaString(),
           z_option_name,
           "xs:boolean"
-        )
+        ),
+        ERROR_LOC( loc )
       );
     }
     *option_value = i_option_value->getBooleanValue();
@@ -830,63 +835,33 @@ JSONParseIterator::nextImpl(
     else
     {
       // will be deleted in the state
-      state->theInputStream = new std::stringstream(
-          lInput->getStringValue().c_str());
+      state->theInputStream =
+        new std::stringstream( lInput->getStringValue().c_str() );
     }
 
-    while (true)
-    {
-      try
-      {
-        // streamable string or non-literal string
-        if (state->theInput != NULL || theRelativeLocation == QueryLoc::null)
-        {
-          result = GENV_STORE.parseJSON(
-            *state->theInputStream, nullptr, state->theStripTopLevelArray
-          );
-        }
-        else
-        {
-          // pass the query location of the StringLiteral to the JSON
-          // parser such that it can give better error locations.
-          json::location lLoc;
-          lLoc = ERROR_LOC(theRelativeLocation);
-          result = GENV_STORE.parseJSON(
-            *state->theInputStream, &lLoc, state->theStripTopLevelArray
-          );
-        }
-      }
-      catch (zorba::XQueryException& e)
-      {
-        // rethrow with JNDY0021
-        XQueryException xq = XQUERY_EXCEPTION(
-            jerr::JNDY0021,
-            ERROR_PARAMS(e.what()),
-            ERROR_LOC(loc));
+    state->loader_ = new json::loader( *state->theInputStream, state->theStripTopLevelArray );
 
-        // use location of e in case of literal string
-        if (!(theRelativeLocation == QueryLoc::null)) set_source(xq, e);
-        throw xq;
-      }
+    if ( state->theInput == NULL && theRelativeLocation ) {
+      // pass the query location of the StringLiteral to the JSON
+      // parser such that it can give better error locations.
+      state->loader_->set_loc(
+        theRelativeLocation.getFilename().c_str(),
+        theRelativeLocation.getLineBegin(),
+        theRelativeLocation.getColumnBegin()
+      );
+    }
 
-      if (result != NULL)
-      {
-        if (!state->theAllowMultiple && state->theGotOne)
-        {
-          RAISE_ERROR(jerr::JNDY0021, loc,
-          ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
-        }
-        state->theGotOne = true;
-        STACK_PUSH(true, state);
-        continue;
+    while ( state->loader_->next( &result ) ) {
+      if ( !state->theAllowMultiple && state->theGotOne ) {
+        RAISE_ERROR(
+          jerr::JNDY0021, loc,
+          ERROR_PARAMS( ZED( JSON_UNEXPECTED_EXTRA_CONTENT ) )
+        );
       }
-      else
-      {
-        break;
-      }
+      state->theGotOne = true;
+      STACK_PUSH( true, state );
     }
   }
-
   STACK_END(state);
 }
 
@@ -1667,7 +1642,9 @@ bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       try
       {
+#if 0
         result = GENV_STORE.parseJSON(*state->theStream, 0);
+#endif
       }
       catch (zorba::XQueryException& e)
       {
