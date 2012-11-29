@@ -501,8 +501,7 @@ public:
    * Constructs a %parser on the given istream.
    *
    * @param in The istream to read from.
-   * @param allow_multiple If \c true, allow multiple top-level JSON
-   * item
+   * @param allow_multiple If \c true, allow multiple top-level JSON items.
    */
   parser( std::istream &in, bool allow_multiple = false );
 
