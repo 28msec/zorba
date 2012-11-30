@@ -511,7 +511,7 @@ public:
     std::swap( storage_, p.storage_ );
   }
 
-  operator explicit_bool() const throw() {
+  operator explicit_bool::type() const throw() {
     return explicit_bool::value_of( get() );
   }
 
