@@ -160,7 +160,7 @@ public:
    *
    * @return Returns \c true only if this %location has been set.
    */
-  operator explicit_bool() const {
+  operator explicit_bool::type() const {
     return explicit_bool::value_of( line_ );
   }
 
