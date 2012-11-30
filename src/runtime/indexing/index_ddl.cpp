@@ -258,7 +258,7 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
     );
   }
 
-  buildPlan = indexDecl->getBuildPlan(ccb, loc); 
+  buildPlan = indexDecl->getBuildPlan(loc); 
   
   planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL, 0, false, 0); 
 
@@ -387,7 +387,7 @@ bool RefreshIndexIterator::nextImpl(
     );
   }
 
-  buildPlan = indexDecl->getBuildPlan(ccb, loc); 
+  buildPlan = indexDecl->getBuildPlan(loc); 
   
   planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL, 0, false, 0); 
 

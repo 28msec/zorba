@@ -46,7 +46,7 @@ namespace zorba
 namespace expr_tools
 {
 
-bool test_expr_match(expr* query, expr* ast, expr::substitution_t& subst);
+bool match_exact(expr* query, expr* ast, expr::substitution_t& subst);
 
 
 int count_variable_uses(

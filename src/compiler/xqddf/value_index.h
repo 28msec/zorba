@@ -359,15 +359,15 @@ public:
 
   const expr* getDomainSourceExpr(csize i) const { return theDomainSourceExprs[i]; }
 
-  void analyze(CompilerCB* ccb);
+  void analyze();
 
-  expr* getViewExpr(CompilerCB* ccb);
+  expr* getViewExpr();
 
-  expr* getBuildExpr(CompilerCB* ccb, const QueryLoc& loc);
+  expr* getBuildExpr(const QueryLoc& loc);
 
-  PlanIterator* getBuildPlan(CompilerCB* ccb, const QueryLoc& loc);
+  PlanIterator* getBuildPlan(const QueryLoc& loc);
 
-  DocIndexer* getDocIndexer(CompilerCB* ccb, const QueryLoc& loc);
+  DocIndexer* getDocIndexer(const QueryLoc& loc);
 
   std::string toString();
 

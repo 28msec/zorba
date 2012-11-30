@@ -273,7 +273,7 @@ void IndexDecl::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
   XQDDF spec. This method is called from the translator, after the domain and
   key exprs have been translated and optimized.
 *******************************************************************************/
-void IndexDecl::analyze(CompilerCB* ccb)
+void IndexDecl::analyze()
 {
   store::Item_t dotQName;
   GENV_ITEMFACTORY->createQName(dotQName, "", "", static_context::DOT_VAR_NAME);
@@ -341,12 +341,12 @@ void IndexDecl::analyze(CompilerCB* ccb)
   {
     // Have to do this here (rather than during runtime) so that we don't have to
     // serialize the index exprs.
-    (void)getDocIndexer(ccb, theLocation);
+    (void)getDocIndexer(theLocation);
   }
 
   // Have to do this here (rather than during runtime) so that we don't have to
   // serialize the index exprs.
-  (void)getBuildPlan(ccb, theLocation);
+  (void)getBuildPlan(theLocation);
 }
 
 
@@ -452,7 +452,7 @@ void IndexDecl::analyzeExprInternal(
   for $newdot at $newpos in cloned_domain_expr
   return value-index-entry-builder($$newdot, cloned_key1_expr, ..., cloned_keyN_expr)
 *******************************************************************************/
-expr* IndexDecl::getViewExpr(CompilerCB* ccb)
+expr* IndexDecl::getViewExpr()
 {
   theDomainClause = NULL;
 
@@ -570,11 +570,11 @@ expr* IndexDecl::getViewExpr(CompilerCB* ccb)
 
   flworExpr->add_clause(wc);
 
-  if (ccb->theConfig.optimize_cb != NULL)
+  if (theCCB->theConfig.optimize_cb != NULL)
   {
     std::string msg = "view expr for index " + theName->getStringValue().str();
 
-    ccb->theConfig.optimize_cb(flworExpr, msg);
+    theCCB->theConfig.optimize_cb(flworExpr, msg);
   }
 
   return flworExpr;
@@ -595,7 +595,7 @@ expr* IndexDecl::getViewExpr(CompilerCB* ccb)
   then populates the index by creating entries out of the items returned by
   this expr.
 *******************************************************************************/
-expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
+expr* IndexDecl::getBuildExpr(const QueryLoc& loc)
 {
   if (theBuildExpr != NULL)
     return theBuildExpr;
@@ -682,11 +682,11 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 
   theBuildExpr = flworExpr;
 
-  if (ccb->theConfig.optimize_cb != NULL)
+  if (theCCB->theConfig.optimize_cb != NULL)
   {
     std::string msg = "build expr for index " + theName->getStringValue().str();
 
-    ccb->theConfig.optimize_cb(theBuildExpr, msg);
+    theCCB->theConfig.optimize_cb(theBuildExpr, msg);
   }
 
   return theBuildExpr;
@@ -696,15 +696,15 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIterator* IndexDecl::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
+PlanIterator* IndexDecl::getBuildPlan(const QueryLoc& loc)
 {
   if (theBuildPlan != NULL)
     return theBuildPlan.getp();
 
-  expr* buildExpr = getBuildExpr(ccb, loc);
+  expr* buildExpr = getBuildExpr(loc);
 
   ulong nextVarId = 1;
-  theBuildPlan = codegen("index", buildExpr, ccb, nextVarId);
+  theBuildPlan = codegen("index", buildExpr, theCCB, nextVarId);
 
   return theBuildPlan.getp();
 }
@@ -714,9 +714,7 @@ PlanIterator* IndexDecl::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
   Called from ApplyIterator::nextImpl before it actually starts applying the
   updates.
 ********************************************************************************/
-DocIndexer* IndexDecl::getDocIndexer(
-    CompilerCB* ccb,
-    const QueryLoc& loc)
+DocIndexer* IndexDecl::getDocIndexer(const QueryLoc& loc)
 {
   if (theDocIndexer != NULL)
     return theDocIndexer.getp();
@@ -834,11 +832,11 @@ DocIndexer* IndexDecl::getDocIndexer(
   flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 
-  if (ccb->theConfig.optimize_cb != NULL)
+  if (theCCB->theConfig.optimize_cb != NULL)
   {
     std::string msg = "entry-creator expr for index " + theName->getStringValue().str();
 
-    ccb->theConfig.optimize_cb(flworExpr, msg);
+    theCCB->theConfig.optimize_cb(flworExpr, msg);
   }
 
   theDocIndexerExpr = flworExpr;
@@ -846,7 +844,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // Generate the runtime plan for theDocIndexerExpr
   //
-  theDocIndexerPlan = codegen("doc indexer", flworExpr, ccb, nextVarId);
+  theDocIndexerPlan = codegen("doc indexer", flworExpr, theCCB, nextVarId);
 
   //
   // Create theDocIndexer obj

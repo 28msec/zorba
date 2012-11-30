@@ -48,8 +48,166 @@ static void set_bit(var_expr*, const VarIdMap&, DynamicBitset&, bool);
 /*******************************************************************************
 
 ********************************************************************************/
-bool test_expr_match(expr* query, expr* ast, expr::substitution_t& subst)
+bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
 {
+  if (query == view)
+    return true;
+
+  if (query->get_expr_kind() != view->get_expr_kind())
+  {
+    if (query->get_expr_kind() == var_expr_kind)
+    {
+      var_expr* qe = static_cast<var_expr*>(query);
+
+      if (qe->get_kind() != var_expr::let_var)
+        return false;
+
+      return match_exact(qe->get_domain_expr(), view, subst);
+    }
+    else if (view->get_expr_kind() == var_expr_kind)
+    {
+      var_expr* ve = static_cast<var_expr*>(view);
+
+      switch (ve->get_kind())
+      {
+      case var_expr::for_var:
+      {
+        expr::substitution_t::iterator ite = subst.find(view);
+
+        if (ite != subst.end())
+        {
+          return match_exact(query, ite->second, subst);
+        }
+        else
+        {
+          subst[view] = query;
+          return true;
+        }
+      }
+      case var_expr::let_var:
+      {
+        return match_exact(query, ve->get_domain_expr(), subst);
+      }
+      case var_expr::pos_var:
+      {
+        return false;
+      }
+      case var_expr::win_var:
+      case var_expr::wincond_out_var:
+      case var_expr::wincond_out_pos_var:
+      case var_expr::wincond_in_var:
+      case var_expr::wincond_in_pos_var:
+      case var_expr::groupby_var:
+      case var_expr::non_groupby_var:
+      case var_expr::count_var:
+      {
+        ZORBA_ASSERT(false); // TODO
+      }
+      case var_expr::score_var:
+      case var_expr::prolog_var:
+      case var_expr::local_var:
+      case var_expr::copy_var:
+      case var_expr::catch_var:
+      case var_expr::arg_var:
+      case var_expr::eval_var:
+      {
+        ZORBA_ASSERT(false);
+      }
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
+      }
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  switch (query->get_expr_kind())
+  {
+  case var_expr_kind:
+  {
+    var_expr* qe = static_cast<var_expr*>(query);
+    var_expr* ve = static_cast<var_expr*>(view);
+
+    var_expr::var_kind qkind = qe->get_kind();
+    var_expr::var_kind vkind = ve->get_kind();
+
+    if (qkind != vkind)
+    {
+      if (qkind == var_expr::let_var)
+      {
+        return match_exact(qe->get_domain_expr(), view, subst);
+      }
+
+      return false;
+    }
+
+    break;
+  }
+  case fo_expr_kind:
+  {
+    fo_expr* qe = static_cast<fo_expr*>(query);
+    fo_expr* ve = static_cast<fo_expr*>(view);
+
+    if (qe->get_func() != ve->get_func())
+      return false;
+
+    break;
+  }
+  case relpath_expr_kind:
+  {
+    relpath_expr* qe = static_cast<relpath_expr*>(query);
+    relpath_expr* ve = static_cast<relpath_expr*>(view);
+
+    csize vnumSteps = ve->size();
+    csize qnumSteps = qe->size();
+    csize numSteps = (vnumSteps < qnumSteps ? vnumSteps : qnumSteps);
+
+    for (csize i = numSteps-1; i > 0; --i)
+    {
+      axis_step_expr* qstep = static_cast<axis_step_expr*>((*qe)[i]);
+      axis_step_expr* vstep = static_cast<axis_step_expr*>((*ve)[i]);
+
+      if (qstep->getAxis() != vstep->getAxis())
+        return false;
+
+      match_expr* qtest = qstep->getTest();
+      match_expr* vtest = vstep->getTest();
+
+      if (!qtest->matches(vtest))
+        return false;
+    }
+
+    if (vnumSteps < qnumSteps)
+    {
+    }
+    else if (vnumSteps < qnumSteps)
+    {
+    }
+    else
+    {
+      return match_exact((*qe)[0], (*ve)[0], subst);
+    }
+
+    break;
+  }
+#if 0
+  case fo_expr_kind:
+  {
+    fo_expr* qe = static_cast<fo_expr*>(query);
+    fo_expr* ve = static_cast<fo_expr*>(view);
+    break;
+  }
+#endif
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
+
   return false;
 }
 

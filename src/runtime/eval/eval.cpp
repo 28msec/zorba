@@ -545,7 +545,7 @@ bool MatchIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     queryExpr = compile(queryCCB, queryItem->getStringValue());
     viewExpr = compile(viewCCB, viewItem->getStringValue());
 
-    res = expr_tools::test_expr_match(queryExpr, viewExpr, subst);
+    res = expr_tools::match_exact(queryExpr, viewExpr, subst);
 
     GENV_ITEMFACTORY->createBoolean(result, res);
 

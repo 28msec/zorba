@@ -256,6 +256,7 @@ class IndexMatchingRule : public RewriteRule
 {
 protected:
   IndexDecl  * theIndexDecl;
+  expr       * theViewExpr;
   bool         theDoTrace;
 
 public:

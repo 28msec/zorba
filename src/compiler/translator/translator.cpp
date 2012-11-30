@@ -4509,7 +4509,7 @@ void end_visit(const AST_IndexDecl& v, void* /*visit_state*/)
   IndexDecl_t index = theIndexDecl;
   theIndexDecl = NULL;
 
-  index->analyze(theCCB);
+  index->analyze();
 
   // Register the index in the sctx of the current module. Raise error if such
   // a binding exists already in the sctx.
@@ -9680,7 +9680,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
         matchExpr->setWildKind(match_all_wild);
         break;
       }
-      case ParseConstants::wild_elem:
+      case ParseConstants::wild_elem: // pre:*
       {
         matchExpr->setWildKind(match_name_wild);
         matchExpr->setWildName(wildcard->getNsOrPrefix());
@@ -9701,16 +9701,16 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
         }
 
         theSctx->expand_qname(qnItem,
-            ns,
-            prefix,
-            localname,
-            wildcard->get_location());
+                              ns,
+                              prefix,
+                              localname,
+                              wildcard->get_location());
 
         matchExpr->setQName(qnItem);
 
         break;
       }
-      case ParseConstants::wild_prefix:
+      case ParseConstants::wild_prefix: // *:name
       {
         matchExpr->setWildKind(match_prefix_wild);
         matchExpr->setWildName(wildcard->getLocalName());
@@ -12942,8 +12942,8 @@ void end_visit(const AnyKindTest& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*>(peek_nodestk_or_null());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(peek_nodestk_or_null());
+
   if (axisExpr != NULL)
   {
     match_expr* me = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
@@ -13091,19 +13091,16 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-
   SchemaElementTest ::= "schema-element" "(" ElementDeclaration ")"
 
   ElementDeclaration ::= ElementName
-
 ********************************************************************************/
 void* begin_visit(const SchemaElementTest& v)
 {
   TRACE_VISIT();
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
   rchandle<QName> elemName = v.get_elem();
   ZORBA_ASSERT(elemName != NULL);
 
@@ -13130,8 +13127,7 @@ void* begin_visit(const SchemaElementTest& v)
     theTypeStack.push(seqmatch);
   }
 #else /* ZORBA_NO_XMLSCHEMA */
-  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc,
-  ERROR_PARAMS(ZED(XMLSchema)));
+  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc, ERROR_PARAMS(ZED(XMLSchema)));
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }
@@ -13143,6 +13139,11 @@ void end_visit(const SchemaElementTest& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+  AttributeTest ::= "attribute" "(" (AttribNameOrWildcard ("," TypeName)?)? ")"
+
+  AttribNameOrWildcard ::= AttributeName | "*"
+********************************************************************************/
 void* begin_visit(const AttributeTest& v)
 {
   TRACE_VISIT();
@@ -13176,17 +13177,14 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
 
     if (contentType == NULL)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPST0008,
-        ERROR_PARAMS( typeNameItem->getStringValue(), ZED( AttributeName ) ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPST0008, loc,
+      ERROR_PARAMS(typeNameItem->getStringValue(), ZED(AttributeName)));
     }
   }
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*> (peek_nodestk_or_null());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*> (peek_nodestk_or_null());
+
   if (axisExpr != NULL)
   {
     match_expr* match = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
@@ -13214,13 +13212,18 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+  SchemaAttributeTest ::= "schema-attribute" "(" AttributeDeclaration ")"
+
+  SchemaDeclaration ::= AttributeName
+********************************************************************************/
 void* begin_visit(const SchemaAttributeTest& v)
 {
   TRACE_VISIT();
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(peek_nodestk_or_null());
+
   rchandle<QName> attrName = v.get_attr();
   ZORBA_ASSERT(attrName != NULL);
 
@@ -13241,19 +13244,14 @@ void* begin_visit(const SchemaAttributeTest& v)
   }
   else
   {
-    xqtref_t seqmatch = CTX_TM->create_schema_attribute_type(attrQNameItem,
-                                                             TypeConstants::QUANT_ONE,
-                                                             loc);
+    xqtref_t seqmatch = CTX_TM->
+    create_schema_attribute_type(attrQNameItem, TypeConstants::QUANT_ONE, loc);
 
     theTypeStack.push(seqmatch);
   }
 
 #else /* ZORBA_NO_XMLSCHEMA */
-  throw XQUERY_EXCEPTION(
-    zerr::ZXQP0005_NOT_ENABLED,
-    ERROR_PARAMS( ZED( XMLSchema ) ),
-    ERROR_LOC( loc )
-  );
+  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc, ERROR_PARAMS(ZED(XMLSchema)));
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }
@@ -13330,8 +13328,8 @@ void end_visit(const PITest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(peek_nodestk_or_null());
+
   std::string target = v.get_target().str();
 
   store::Item_t qname = NULL;
@@ -13344,16 +13342,12 @@ void end_visit(const PITest& v, void* /*visit_state*/)
     // is not in the lexical space of NCName, a type error is raised [err:XPTY0004]
 
     zstring lNormalizedTarget;
-    ascii::normalize_whitespace( target, &lNormalizedTarget );
+    ascii::normalize_whitespace(target, &lNormalizedTarget);
 
-    if (!GenericCast::instance()->castableToNCName(lNormalizedTarget))
+    if (!GenericCast::castableToNCName(lNormalizedTarget))
     {
-      throw XQUERY_EXCEPTION(err::XPTY0004,
-        ERROR_PARAMS(ZED(BadType_23o), lNormalizedTarget,
-          ZED( NoCastTo_45o ), "NCName"
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadType_23o), lNormalizedTarget, ZED(NoCastTo_45o), "NCName"));
     }
 
     // bugfix (see above); pass normalized string instead of original target
@@ -13366,6 +13360,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
     match->setTestKind(match_pi_test);
     if (target != "")
       match->setQName(qname);
+
     axisExpr->setTest(match);
   }
   else
@@ -13382,7 +13377,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
                                                     TypeConstants::QUANT_ONE,
                                                     false,
                                                     false);
-      theTypeStack.push (t);
+      theTypeStack.push(t);
     }
   }
 }
