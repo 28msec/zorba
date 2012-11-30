@@ -653,7 +653,7 @@ public:
 
   bool is_equal(const TypeManager* tm, const FunctionXQType& supertype) const;
 
-  bool is_subtype(const TypeManager* tm, const FunctionXQType& supertype) const;
+  bool is_subtype(const TypeManager* tm, const FunctionXQType& supertype, bool ignoreReturnType = false) const;
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };

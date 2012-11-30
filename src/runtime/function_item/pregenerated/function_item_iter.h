@@ -107,13 +107,29 @@ public:
  *    
  * Author: Zorba Team
  */
-class FnMapPairs : public NaryBaseIterator<FnMapPairs, PlanIteratorState>
+class FnMapPairsState : public PlanIteratorState
+{
+public:
+  PlanState* thePlanState; //
+  PlanIter_t thePlan; //
+  bool theIsOpen; //
+  uint32_t theUDFStateOffset; //
+
+  FnMapPairsState();
+
+  ~FnMapPairsState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnMapPairs : public NaryBaseIterator<FnMapPairs, FnMapPairsState>
 { 
 public:
   SERIALIZABLE_CLASS(FnMapPairs);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnMapPairs,
-    NaryBaseIterator<FnMapPairs, PlanIteratorState>);
+    NaryBaseIterator<FnMapPairs, FnMapPairsState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
@@ -122,7 +138,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<FnMapPairs, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<FnMapPairs, FnMapPairsState>(sctx, loc, children)
   {}
 
   virtual ~FnMapPairs();

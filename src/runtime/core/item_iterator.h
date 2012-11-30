@@ -102,6 +102,8 @@ public:
       DynamicFunctionInfo* fnInfo);
 
   virtual ~DynamicFunctionIterator();
+  
+  const DynamicFunctionInfo_t getDynamicFunctionInfo() const { return theDynamicFunctionInfo; };
 
   void accept(PlanIterVisitor& v) const;
 

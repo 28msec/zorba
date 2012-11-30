@@ -498,6 +498,7 @@ void end_visit(function_item_expr& v)
           fnInfo->theScopedVarsIterators.push_back(varIter);
         }
 
+        /*
         store::Item* var_qname = NULL;
         if (dynamic_cast<LetVarIterator*>(varIter.getp()) != NULL)
           var_qname = dynamic_cast<LetVarIterator*>(varIter.getp())->getVarName();
@@ -506,7 +507,6 @@ void end_visit(function_item_expr& v)
         else
           var_qname = v.get_scoped_vars_names()[i].getp();
 
-        /*
         std::cerr << "--> PlanVisitor function_item_expr: var name: " << v.get_scoped_vars_names()[i]->show()
             << " global: " << v.get_is_global_var()[i]
             << " with iter: "
@@ -3724,7 +3724,6 @@ PlanIter_t codegen(
   std::cerr << root->toString() << std::endl;
   std::cerr << "------------------------------------------------\n";
   */
-
 
   root->accept(c);
   PlanIter_t result = c.result();

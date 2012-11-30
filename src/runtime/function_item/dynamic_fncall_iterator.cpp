@@ -244,7 +244,7 @@ bool DynamicFnCallIterator::nextImpl(
     {
       xqtref_t fnItemType = tm->create_value_type(fnItem, loc);
 
-      /*
+      
       std::cerr << "--> dynamic fncall nextImpl(): " << theId << std::endl
                 << "    fnItemType: " << fnItemType->toString() << std::endl
                 << "    coercionType: " << (theCoercionTargetType.getp()? theCoercionTargetType->toString() : "NULL") << std::endl;
@@ -254,17 +254,21 @@ bool DynamicFnCallIterator::nextImpl(
         std::cerr << "    coercionType subtype of fnItemType? " << TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc) << std::endl;
         std::cerr << "    fnItem subtype of coercionType? " << TypeOps::is_subtype(tm, fnItem, *theCoercionTargetType, loc) << std::endl;
         std::cerr << "    fnItem treatable as coercionType? " << TypeOps::is_treatable(tm, fnItem, *theCoercionTargetType, loc) << std::endl;
+        
+        std::cerr << "    fnItemType subtype of coercionType ignoring return? " << 
+                     static_cast<const FunctionXQType*>(fnItemType.getp())->is_subtype(tm, *static_cast<const FunctionXQType*>(theCoercionTargetType.getp()), true) << std::endl;
       }
-      */
-
-      if (!TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc))
+      
+      
+      // if (!TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc))
+      if (!TypeOps::is_subtype(tm, *fnItemType, *theCoercionTargetType, loc))
+      // if (static_cast<const FunctionXQType*>(fnItemType.getp())->is_subtype(tm, *static_cast<const FunctionXQType*>(theCoercionTargetType.getp()), true))
       {
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
                   theCoercionTargetType->toSchemaString(),
                   fnItemType->toSchemaString()));
       }
-
     }
 
 

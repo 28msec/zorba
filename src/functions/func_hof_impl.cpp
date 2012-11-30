@@ -19,6 +19,7 @@
 #include "types/typeops.h"
 
 #include "runtime/base/plan_iterator.h"
+#include "runtime/core/fncall_iterator.h"
 
 #include "functions/function.h"
 #include "functions/function_impl.h"
@@ -33,10 +34,10 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-class fn_map : public function
+class fn_map_3_0 : public function
 {
 public:
-  fn_map(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_map_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     :
     function(sig, kind)
   {
@@ -51,7 +52,7 @@ public:
                      std::vector<PlanIter_t>& argv,
                      expr& ann) const
   {
-    return NULL;
+    return new UDFunctionCallIterator(sctx, loc, argv, NULL);
   }
 };
 
@@ -97,7 +98,7 @@ void populate_context_hof_impl(static_context* sctx)
                    TypeConstants::QUANT_ONE);
 
     DECL_WITH_KIND(sctx,
-                   fn_map,
+                   fn_map_3_0,
                    (createQName(static_context::W3C_FN_NS, "", "map"),
                    hofParamType,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
@@ -163,7 +164,7 @@ void populate_context_hof_impl(static_context* sctx)
                    FunctionConsts::FN_FOLD_LEFT_3);
 
     DECL_WITH_KIND(sctx,
-                   fn_fold_right_3_0,
+                   fn_fold_left_3_0,
                    (createQName(static_context::W3C_FN_NS, "", "fold-right"),
                    hofParamType,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR,

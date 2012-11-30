@@ -101,13 +101,41 @@ FunctionArityIterator::nextImpl(
 /*******************************************************************************
 
  ******************************************************************************/
-bool
-FnMapPairs::nextImpl(
-    store::Item_t& r,
+FnMapPairsState::~FnMapPairsState()
+{
+  if (theIsOpen)
+  {
+    thePlan->close(*thePlanState);
+  }
+}
+
+
+void FnMapPairsState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  thePlanState = &planState;
+  thePlan = NULL;
+  theIsOpen = false;
+}
+
+
+void FnMapPairsState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  if (theIsOpen)
+  {
+    thePlan->reset(planState);
+  }
+}
+
+
+bool FnMapPairs::nextImpl(
+    store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t lFItem;
-  FunctionItem* lFunctionItem = 0;
+  store::Item_t lFItem, child1, child2;
+  FunctionItem* lFunctionItem = NULL;
+  
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -118,12 +146,22 @@ FnMapPairs::nextImpl(
   ZORBA_ASSERT(lFItem->isFunction());
 
   lFunctionItem = static_cast<FunctionItem*>(lFItem.getp());
-
-  if (lFunctionItem->getFunctionName())
+  
+  while (true)
   {
-    // non-inline function
-    r = lFunctionItem->getFunctionName();
-    STACK_PUSH(true, state);
+    if (!consumeNext(child1, theChildren[1], planState) ||
+        !consumeNext(child2, theChildren[2], planState))
+      break;
+        
+    if (child1.getp() && child2.getp())
+    {
+      
+    }
+    else
+    {
+      result = NULL;
+      STACK_PUSH(true, state);
+    }
   }
 
   STACK_END(state);

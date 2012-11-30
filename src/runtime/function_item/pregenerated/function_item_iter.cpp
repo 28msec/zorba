@@ -97,7 +97,7 @@ SERIALIZABLE_CLASS_VERSIONS(FnMapPairs)
 void FnMapPairs::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<FnMapPairs, PlanIteratorState>*)this);
+  (NaryBaseIterator<FnMapPairs, FnMapPairsState>*)this);
 }
 
 
@@ -115,6 +115,8 @@ void FnMapPairs::accept(PlanIterVisitor& v) const
 }
 
 FnMapPairs::~FnMapPairs() {}
+
+FnMapPairsState::FnMapPairsState() {}
 
 // </FnMapPairs>
 

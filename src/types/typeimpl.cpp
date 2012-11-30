@@ -959,14 +959,15 @@ bool FunctionXQType::is_equal(
 ********************************************************************************/
 bool FunctionXQType::is_subtype(
     const TypeManager* tm,
-    const FunctionXQType& supertype) const
+    const FunctionXQType& supertype,
+    bool ignoreReturnType) const
 {
   if (this->get_number_params() != supertype.get_number_params())
   {
     return false;
   }
 
-  if (!TypeOps::is_subtype(tm,
+  if (!ignoreReturnType && !TypeOps::is_subtype(tm,
                            *get_return_type().getp(),
                            *supertype.get_return_type().getp()))
   {
@@ -977,7 +978,8 @@ bool FunctionXQType::is_subtype(
   for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
        lIter != m_param_types.end(); ++lIter)
   {
-    if (!TypeOps::is_subtype(tm, *lIter->getp(), *supertype[i++].getp()))
+    // if (!TypeOps::is_subtype(tm, *lIter->getp(), *supertype[i++].getp()))
+    if (!TypeOps::is_subtype(tm, *supertype[i++].getp(), *lIter->getp()))
     {
       return false;
     }

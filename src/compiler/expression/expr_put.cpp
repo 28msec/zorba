@@ -553,7 +553,7 @@ std::ostream& function_item_expr::put(std::ostream& os) const
     xqtref_t funcType = get_type_manager()->create_function_type(paramTypes, sig.returnType(), TypeConstants::QUANT_ONE);
 
     // TODO: remove type
-    // os << indent << "type: " << funcType->toString() << std::endl;
+    os << indent << "type: " << funcType->toString() << std::endl;
 
     for (ulong i = 0; i < theDynamicFunctionInfo->theScopedVarsValues.size(); i++)
     {

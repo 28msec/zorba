@@ -83,6 +83,13 @@
         <zorba:output>item()*</zorba:output>
       </zorba:signature>
     </zorba:function>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="PlanState*" name="thePlanState"/>
+      <zorba:member type="PlanIter_t" name="thePlan"/>
+      <zorba:member type="bool" name="theIsOpen"/>
+      <zorba:member type="uint32_t" name="theUDFStateOffset"/>
+    </zorba:state>
   
   </zorba:iterator>
   

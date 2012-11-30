@@ -1453,8 +1453,7 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
   for_clause* fnItem_fc = wrap_in_forclause(theExpr, NULL);
   var_expr* fnItem_var = fnItem_fc->get_var();
   fnItem_flwor->add_clause(fnItem_fc);
-  var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::prolog_var);
-  // var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::hof_var);
+  var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::hof_var);
   fiExpr->add_variable(fnItem_var, inner_subst_var, fnItem_var->get_name(), 0 /*var is not global*/);
 
   // std::cerr << "--> subst_var: " << inner_subst_var->toString() << std::endl;
@@ -2487,6 +2486,100 @@ import_schema_auto_prefix(
 #else
   throw XQUERY_EXCEPTION(err::XQST0009, ERROR_LOC(aLoc));
 #endif
+}
+
+
+/******************************************************************************
+  Will generate the body of a function that does not have an associated 
+  iterator and is created in the translator using expressions. Such functions
+  are e.g. fn:map(), fn:filter() and others.
+*******************************************************************************/
+expr* generate_function(
+    FunctionConsts::FunctionKind lKind,
+    const std::vector<expr*>& arguments,
+    const QueryLoc& loc)
+{
+  expr* resultExpr = NULL;
+  
+  switch (lKind)
+  {
+    case FunctionConsts::FN_MAP_2:
+    {
+      /*
+          map(function, sequence)
+
+          is rewritten internally as:
+
+          for $item in $sequence
+          return dynamic_function_invocation[ $function, $item ]
+      */
+
+      flwor_expr* flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
+      for_clause* seq_fc = wrap_in_forclause(arguments[1], false);
+      flwor->add_clause(seq_fc);
+
+      std::vector<expr*> fncall_args;
+      fncall_args.push_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()));
+
+      expr* dynamic_fncall = theExprManager->create_dynamic_function_invocation_expr(
+          theRootSctx,
+          theUDF,
+          loc,
+          arguments[0],
+          fncall_args,
+          NULL);
+
+      flwor->set_return_expr(dynamic_fncall);
+
+      resultExpr = flwor;
+      break;
+    }
+    case FunctionConsts::FN_FILTER_2:
+    {
+      /*
+	  filter(function, sequence)
+
+	  is rewritten internally as:
+
+	  for $item in $sequence
+	  return
+	    if (dynamic_function_invocation[ $function, $item])
+	    then $item
+	    else ()
+      */
+
+      flwor_expr* flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
+      for_clause* seq_fc = wrap_in_forclause(arguments[1], true);
+      flwor->add_clause(seq_fc);
+
+      std::vector<expr*> fncall_args;
+      fncall_args.push_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()));
+
+      expr* dynamic_fncall = theExprManager->create_dynamic_function_invocation_expr(
+	  theRootSctx,
+	  theUDF,
+	  loc,
+	  arguments[0],
+	  fncall_args,
+	  NULL);
+
+      expr* if_expr = theExprManager->create_if_expr(theRootSctx, theUDF, loc,
+	  dynamic_fncall,
+	  theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()),
+	  create_empty_seq(loc));
+
+      flwor->set_return_expr(if_expr);
+
+      resultExpr = flwor;
+      break;
+    }
+    default:
+    {
+      // do nothing
+    }
+  }
+  
+  return resultExpr;
 }
 
 
@@ -11318,80 +11411,15 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       } // case FunctionConsts::FN_ZORBA_INVOKE_N:
 
       case FunctionConsts::FN_MAP_2:
-      {
-        /*
-           map(function, sequence)
-
-           is rewritten internally as:
-
-           for $item in $sequence
-           return dynamic_function_invocation[ $function, $item ]
-        */
-
-        flwor_expr* flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
-        for_clause* seq_fc = wrap_in_forclause(foExpr->get_arg(1), false);
-        flwor->add_clause(seq_fc);
-
-        std::vector<expr*> fncall_args;
-        fncall_args.push_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()));
-
-        expr* dynamic_fncall = theExprManager->create_dynamic_function_invocation_expr(
-            theRootSctx,
-            theUDF,
-            loc,
-            foExpr->get_arg(0),
-            fncall_args,
-            NULL);
-
-        flwor->set_return_expr(dynamic_fncall);
-
-        resultExpr = flwor;
-        break;
-      }
-
+        // deliberate fall-through
       case FunctionConsts::FN_FILTER_2:
       {
-        /*
-           filter(function, sequence)
-
-           is rewritten internally as:
-
-           for $item in $sequence
-           return
-             if (dynamic_function_invocation[ $function, $item])
-             then $item
-             else ()
-        */
-
-        flwor_expr* flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
-        for_clause* seq_fc = wrap_in_forclause(foExpr->get_arg(1), true);
-        flwor->add_clause(seq_fc);
-
-        std::vector<expr*> fncall_args;
-        fncall_args.push_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()));
-
-        expr* dynamic_fncall = theExprManager->create_dynamic_function_invocation_expr(
-            theRootSctx,
-            theUDF,
-            loc,
-            foExpr->get_arg(0),
-            fncall_args,
-            NULL);
-
-        expr* if_expr = theExprManager->create_if_expr(theRootSctx, theUDF, loc,
-            dynamic_fncall,
-            theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()),
-            create_empty_seq(loc));
-
-        flwor->set_return_expr(if_expr);
-
-        resultExpr = flwor;
+        resultExpr = generate_function(f->getKind(), foExpr->get_args(), loc);
         break;
       }
-
-
       default:
       {
+        // do nothing
       }
     } // switch
 
@@ -11680,9 +11708,11 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     std::vector<expr*> foArgs(arity);
     std::vector<var_expr*> udfArgs(arity);
 
+    // TODO: decide what to do with the DOTREF which is used implicitly by some funcs
+    /*
     if (fn != NULL && xquery_fns_def_dot.test(fn->getKind()))
     {
-      // arguments.push_back(DOT_REF);
+      // arguments.push_back(DOT_REF); // TODO:
       var_expr* argVar = create_temp_var(loc, var_expr::arg_var);
 
       argVar->set_param_pos(0);
@@ -11692,6 +11722,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 
       fn = lookup_fn(qname, 1, loc);
     }
+    */
 
     for (ulong i = 0; i < arity; ++i)
     {
@@ -11705,9 +11736,38 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 
     expr* body;
     if (fn == NULL) // we have a typecast function call
+    {
       body = theExprManager->create_cast_expr(theRootSctx, udf, loc, foArgs[0], type);
+    }
     else
-      body = theExprManager->create_fo_expr(theRootSctx, udf, loc, fn != NULL? fn : udf, foArgs);
+    {
+      // process pure builtin functions that have no associated iterator
+      switch (fn->getKind())
+      {
+	case FunctionConsts::FN_MAP_2:
+	case FunctionConsts::FN_FILTER_2:
+	{
+	  // create the function flwor, wrap params in for clauses
+	  flwor_expr* flwor = theExprManager->create_flwor_expr(theSctx, theUDF, loc, false);
+          std::vector<expr*> arguments;
+	  for (csize i=0; i<foArgs.size(); i++)
+	  {
+	    // var_expr* arg_var = bind_var(loc, udfArgs[i]->get_name(), var_expr::let_var);
+	    for_clause* fc = wrap_in_forclause(&*udfArgs[i], NULL);
+	    udfArgs[i]->set_param_pos(flwor->num_clauses());
+	    flwor->add_clause(fc);
+            arguments.push_back(fc->get_var());
+	  }
+	  
+	  flwor->set_return_expr(generate_function(fn->getKind(), arguments, loc));
+	  
+	  body = flwor;
+	  break;
+	}
+	default:
+	  body = theExprManager->create_fo_expr(theRootSctx, udf, loc, fn != NULL? fn : udf, foArgs);
+      }
+    }
 
     udf->setArgVars(udfArgs);
     udf->setBody(body);
@@ -11830,7 +11890,6 @@ void* begin_visit(const InlineFunction& v)
     {
       try {
         subst_var = bind_var(loc, qname, var_expr::hof_var);
-        // subst_var = bind_var(loc, qname, var_expr::prolog_var);
       } catch(XQueryException& e) {
         if (e.diagnostic() == err::XQST0049)
           continue;
