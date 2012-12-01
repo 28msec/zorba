@@ -1480,10 +1480,6 @@
       <entry key="AttributeName">
         <value>"$3": attribute with the same name already exists</value>
       </entry>
-
-      <entry key="AppliedAt">
-        <value>(applied at $3)</value>
-      </entry>
     </diagnostic>
 
     <diagnostic code="XUTY0022">

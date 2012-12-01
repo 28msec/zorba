@@ -890,7 +890,6 @@ extern entry const dict_en[] = {
   { "~XPTY0004_NoTypePromote_23", "$2 can not be promoted to type $3" },
   { "~XQST0106_CONFLICTING", "conflicting" },
   { "~XQST0106_THE_SAME", "the same" },
-  { "~XUDY0021_AppliedAt", "(applied at $3)" },
   { "~XUDY0021_AttributeName", "\"$3\": attribute with the same name already exists" },
   { "~XUST0001_CONCAT", "comma expression with updating and non-updating branches" },
   { "~XUST0001_Generic", "updating expression illegal here" },
