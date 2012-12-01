@@ -514,6 +514,7 @@ extern entry const dict_en[] = {
   { "~ANNOTATION", "annotation" },
   { "~AllMatchesHasExcludes", "AllMatches contains StringExclude" },
   { "~AlreadySpecified", "already specified" },
+  { "~AppliedAt", "applied at" },
   { "~ArithOpNotDefinedBetween_23", "arithmetic operation not defined between types \"$2\" and \"$3\"" },
   { "~AtomizationHasMoreThanOneValue", "atomization has more than one value" },
   { "~AttributeName", "attribute name" },

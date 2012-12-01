@@ -79,6 +79,7 @@
 #define ZED_ZWST0005_VARIADIC "~ZWST0005_VARIADIC"
 #define ZED_AllMatchesHasExcludes "~AllMatchesHasExcludes"
 #define ZED_AlreadySpecified "~AlreadySpecified"
+#define ZED_AppliedAt "~AppliedAt"
 #define ZED_ArithOpNotDefinedBetween_23 "~ArithOpNotDefinedBetween_23"
 #define ZED_AtomizationHasMoreThanOneValue "~AtomizationHasMoreThanOneValue"
 #define ZED_AttributeName "~AttributeName"

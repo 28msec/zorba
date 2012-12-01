@@ -2892,6 +2892,10 @@
       <value>already specified</value>
     </entry>
 
+    <entry key="AppliedAt">
+      <value>applied at</value>
+    </entry>
+
     <entry key="ArithOpNotDefinedBetween_23">
       <value>arithmetic operation not defined between types "$2" and "$3"</value>
     </entry>
@@ -4049,7 +4053,6 @@
       <value>: a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family</value>
     </entry>
     
-
     <entry key="JSON_ILLEGAL_CHARACTER">
       <value>'$2': illegal JSON character${ at 3}</value>
     </entry>
