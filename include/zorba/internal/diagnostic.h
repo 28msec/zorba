@@ -45,6 +45,7 @@ namespace diagnostic {
  * A %location holds the file location of an error.
  */
 class ZORBA_DLL_PUBLIC location {
+  typedef ztd::explicit_bool explicit_bool;
 public:
   /**
    * The line-number type.
@@ -159,8 +160,8 @@ public:
    *
    * @return Returns \c true only if this %location has been set.
    */
-  operator bool() const {
-    return !!line_;
+  operator explicit_bool::type() const {
+    return explicit_bool::value_of( line_ );
   }
 
   /**

@@ -16,9 +16,14 @@
 
 #include "stdafx.h"
 
-#include <util/fs_util.h>
-#include <util/uri_util.h>
+// standard
+#include <cstring>
 
+// Zorba
+#include "util/fs_util.h"
+#include "util/uri_util.h"
+
+// local
 #include "dict.h"
 #include "xquery_exception.h"
 
@@ -72,6 +77,16 @@ unique_ptr<ZorbaException> XQueryException::clone() const {
   return unique_ptr<ZorbaException>( new XQueryException( *this ) );
 }
 
+void XQueryException::set_applied( char const *uri,
+                                   line_type line,
+                                   column_type col,
+                                   line_type line_end,
+                                   column_type col_end ) {
+  if ( !uri || !*uri )
+    uri = source_loc_.file();
+  applied_loc_.set( uri, line, col, line_end, col_end );
+}
+
 void XQueryException::set_source( char const *uri,
                                   line_type line,
                                   column_type col,
@@ -84,36 +99,48 @@ void XQueryException::polymorphic_throw() const {
   throw *this;
 }
 
+static bool print_uri( ostream &o, char const *uri ) {
+  if ( uri && *uri ) {
+    switch ( uri::get_scheme( uri ) ) {
+      case uri::none:
+      case uri::file:
+        try {
+          o << '<' << fs::get_normalized_path( uri ) << '>';
+          break;
+        }
+        catch ( ... ) {
+          // fall back to printing as a URI
+        }
+        // no break;
+      default:
+        o << '<' << uri << '>';
+    }
+    return true;
+  }
+  return false;
+}
+
 ostream& XQueryException::print( ostream &o ) const {
   if ( has_source() ) {
-
-    char const *const u = source_uri();
-    if ( u && *u ) {
-      switch ( uri::get_scheme( u ) ) {
-        case uri::none:
-        case uri::file:
-          try {
-            o << '<' << fs::get_normalized_path( u ) << '>';
-            break;
-          }
-          catch ( ... ) {
-            // fall back to printing as a URI
-          }
-          // no break;
-        default:
-          o << '<' << u << '>';
-      }
-    } else
+    if ( !print_uri( o, source_uri() ) )
       o << '(' << diagnostic::dict::lookup( ZED( NoSourceURI ) ) << ')';
+    o << ':' << source_line();
+    if ( source_column() )
+      o << ',' << source_column();
 
-    if ( source_line() ) {
-      o << ':' << source_line();
-      if ( source_column() )
-        o << ',' << source_column();
-      o << ':';
+    if ( has_applied() ) {
+      o << " (" << diagnostic::dict::lookup( ZED( AppliedAt ) ) << ' ';
+      if ( applied_uri() && ::strcmp( applied_uri(), source_uri() ) != 0 ) {
+        if ( print_uri( o, applied_uri() ) )
+          o << ':';
+      }
+      o << applied_line();
+      if ( applied_column() )
+        o << ',' << applied_column();
+      o << ')';
     }
 
-    o << ' ';
+    o << ": ";
   }
   return ZorbaException::print( o );
 }
@@ -131,11 +158,8 @@ make_xquery_exception( char const *raise_file,
   XQueryException xe( diagnostic, raise_file, raise_line, message.c_str() );
   if ( loc )
     xe.set_source(
-        loc.file(),
-        loc.line(),
-        loc.column(),
-        loc.line_end(),
-        loc.column_end() );
+      loc.file(), loc.line(), loc.column(), loc.line_end(), loc.column_end()
+    );
   return xe;
 }
 
@@ -151,12 +175,27 @@ new_xquery_exception( char const *raise_file,
     new XQueryException( diagnostic, raise_file, raise_line, message.c_str() );
   if ( loc )
     xe->set_source(
-        loc.file(),
-        loc.line(),
-        loc.column(),
-        loc.line_end(),
-        loc.column_end() );
+      loc.file(), loc.line(), loc.column(), loc.line_end(), loc.column_end()
+    );
   return xe;
+}
+
+void set_applied( ZorbaException &ze, char const *file,
+                  XQueryException::line_type line,
+                  XQueryException::column_type col,
+                  XQueryException::line_type line_end,
+                  XQueryException::column_type col_end,
+                  bool overwrite ) {
+  if ( XQueryException *const xe = dynamic_cast<XQueryException*>( &ze ) ) {
+    if ( !xe->has_applied() || overwrite )
+      xe->set_applied( file, line, col, line_end, col_end );
+  } else {
+    XQueryException new_xe(
+      ze.diagnostic(), ze.raise_file(), ze.raise_line(), ze.what()
+    );
+    new_xe.set_applied( file, line, col, line_end, col_end );
+    throw new_xe;
+  }
 }
 
 void set_source( ZorbaException &ze, char const *file,
