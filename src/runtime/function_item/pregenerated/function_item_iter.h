@@ -168,7 +168,6 @@ public:
   bool theIsOpen; //
   uint32_t theUDFStateOffset; //
   store::Item_t theFnItem; //
-  store::TempSeq_t theZero; //
 
   FnFoldLeftIteratorState();
 

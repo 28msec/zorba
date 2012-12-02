@@ -299,8 +299,9 @@ bool FnFoldLeftIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t zero, child, nextChild;
-  std::vector<PlanIter_t> arguments;
+  store::Item_t curSeqItem, nextSeqItem, tempItem;
+  std::vector<store::Item_t> zero;
+  bool haveItems;
   
   FnFoldLeftIteratorState* state;
   DEFAULT_STACK_INIT(FnFoldLeftIteratorState, state, planState);
@@ -310,9 +311,10 @@ bool FnFoldLeftIterator::nextImpl(
   // function signature guarantees that
   ZORBA_ASSERT(state->theFnItem->isFunction());
 
-  consumeNext(child, theChildren[2], planState);
-    
-  if (child.getp() == NULL)
+  if ((haveItems = consumeNext(curSeqItem, theChildren[2], planState)))
+    haveItems = consumeNext(nextSeqItem, theChildren[2], planState);
+  
+  if (curSeqItem.getp() == NULL && nextSeqItem.getp() == NULL)
   {
     // consume and return the "zero" argument
     while (consumeNext(result, theChildren[1], planState))
@@ -322,55 +324,61 @@ bool FnFoldLeftIterator::nextImpl(
   }
   else
   {
-    std::vector<store::Item_t> zero;
-    store::Item_t tempItem;
+    // read in the "zero" argument to be able to pass it to the hof
     while (consumeNext(tempItem, theChildren[1], planState))
+    {
       zero.push_back(tempItem);
+    }
     
-    state->theZero = GENV_STORE.createTempSeq(zero);
-    store::TempSeq_t seq = GENV_STORE.createTempSeq(child);
-    store::Iterator_t seqIter1 = seq->getIterator();
-    store::Iterator_t seqIter2 = state->theZero->getIterator();
-    seqIter1->open();
-    seqIter2->open();
+    while (true)
+    {
+      {
+        store::TempSeq_t zeroSeq = GENV_STORE.createTempSeq(zero);
+        tempItem = curSeqItem; // because createTempSeq calls .release() on the item rchandle
+        store::TempSeq_t seq = GENV_STORE.createTempSeq(tempItem);
+        store::Iterator_t seqIter1 = zeroSeq->getIterator();
+        store::Iterator_t seqIter2 = seq->getIterator();
+        seqIter1->open();
+        seqIter2->open();
+        
+        std::vector<PlanIter_t> arguments;
+        arguments.push_back(NULL);
+        arguments.push_back(new PlanStateIteratorWrapper(seqIter1));
+        arguments.push_back(new PlanStateIteratorWrapper(seqIter2));
+        
+        state->thePlan = static_cast<FunctionItem*>(state->theFnItem.getp())->getImplementation(arguments);
+        state->thePlan->open(planState, state->theUDFStateOffset);
+        state->theIsOpen = true; 
+      }
+      
+      if (curSeqItem.isNull() || nextSeqItem.isNull())
+        break;
+      
+      zero.clear();
+      while (consumeNext(tempItem, state->thePlan, planState))
+      {
+        zero.push_back(tempItem);
+      }
+      
+      state->thePlan->close(planState);
+      state->theIsOpen = false;
+      
+      curSeqItem = nextSeqItem;
+      nextSeqItem = NULL;
+      if (haveItems)
+        haveItems = consumeNext(nextSeqItem, theChildren[2], planState);
+      
+    } // while (true)
     
-    arguments.push_back(NULL);
-    arguments.push_back(new PlanStateIteratorWrapper(seqIter1));
-    arguments.push_back(new PlanStateIteratorWrapper(seqIter2));
-    
-    state->thePlan = static_cast<FunctionItem*>(state->theFnItem.getp())->getImplementation(arguments);
-    // must be opened after vars and params are set
-    state->thePlan->open(planState, state->theUDFStateOffset);
-    state->theIsOpen = true;
-
     while (consumeNext(result, state->thePlan, planState))
     {
       STACK_PUSH(true, state);
     }
     
-    // need to close here early in case the plan is completely
-    // consumed. Otherwise, the plan would still be opened
-    // if destroyed from the state's destructor.
     state->thePlan->close(planState);
     state->theIsOpen = false;
-  }
-  
-  /*
-  if get(curChild)
-     get(nextChild)
-  else
-     return get(child[1])
-  
-  do
-    zero = 
     
-  while()
-   
-   
-   
-   
-   
-   */
+  } // else
   
   STACK_END(state);
 }

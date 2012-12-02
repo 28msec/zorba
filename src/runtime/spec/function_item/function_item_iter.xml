@@ -130,7 +130,6 @@
       <zorba:member type="bool" name="theIsOpen"/>
       <zorba:member type="uint32_t" name="theUDFStateOffset"/>
       <zorba:member type="store::Item_t" name="theFnItem"/>
-      <zorba:member type="store::TempSeq_t" name="theZero"/>
     </zorba:state>
   
   </zorba:iterator>
