@@ -244,9 +244,9 @@ namespace zorba{
 
     class FunctionArityIterator;
 
-    class FnMapPairs;
+    class FnMapPairsIterator;
 
-    class FnFoldLeft;
+    class FnFoldLeftIterator;
 
     class ActivateICIterator;
 
@@ -1056,11 +1056,11 @@ public:
     virtual void beginVisit ( const FunctionArityIterator& ) = 0;
     virtual void endVisit   ( const FunctionArityIterator& ) = 0;
 
-    virtual void beginVisit ( const FnMapPairs& ) = 0;
-    virtual void endVisit   ( const FnMapPairs& ) = 0;
+    virtual void beginVisit ( const FnMapPairsIterator& ) = 0;
+    virtual void endVisit   ( const FnMapPairsIterator& ) = 0;
 
-    virtual void beginVisit ( const FnFoldLeft& ) = 0;
-    virtual void endVisit   ( const FnFoldLeft& ) = 0;
+    virtual void beginVisit ( const FnFoldLeftIterator& ) = 0;
+    virtual void endVisit   ( const FnFoldLeftIterator& ) = 0;
 
     virtual void beginVisit ( const ActivateICIterator& ) = 0;
     virtual void endVisit   ( const ActivateICIterator& ) = 0;

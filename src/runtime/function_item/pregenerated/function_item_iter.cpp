@@ -32,6 +32,7 @@
 #include "context/static_context.h"
 #include "compiler/api/compilercb.h"
 #include "context/dynamic_context.h"
+#include "store/api/temp_seq.h"
 
 namespace zorba {
 
@@ -91,17 +92,17 @@ FunctionArityIterator::~FunctionArityIterator() {}
 // </FunctionArityIterator>
 
 
-// <FnMapPairs>
-SERIALIZABLE_CLASS_VERSIONS(FnMapPairs)
+// <FnMapPairsIterator>
+SERIALIZABLE_CLASS_VERSIONS(FnMapPairsIterator)
 
-void FnMapPairs::serialize(::zorba::serialization::Archiver& ar)
+void FnMapPairsIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<FnMapPairs, FnMapPairsState>*)this);
+  (NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>*)this);
 }
 
 
-void FnMapPairs::accept(PlanIterVisitor& v) const
+void FnMapPairsIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -114,24 +115,24 @@ void FnMapPairs::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-FnMapPairs::~FnMapPairs() {}
+FnMapPairsIterator::~FnMapPairsIterator() {}
 
-FnMapPairsState::FnMapPairsState() {}
+FnMapPairsIteratorState::FnMapPairsIteratorState() {}
 
-// </FnMapPairs>
+// </FnMapPairsIterator>
 
 
-// <FnFoldLeft>
-SERIALIZABLE_CLASS_VERSIONS(FnFoldLeft)
+// <FnFoldLeftIterator>
+SERIALIZABLE_CLASS_VERSIONS(FnFoldLeftIterator)
 
-void FnFoldLeft::serialize(::zorba::serialization::Archiver& ar)
+void FnFoldLeftIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<FnFoldLeft, PlanIteratorState>*)this);
+  (NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>*)this);
 }
 
 
-void FnFoldLeft::accept(PlanIterVisitor& v) const
+void FnFoldLeftIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -144,9 +145,11 @@ void FnFoldLeft::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-FnFoldLeft::~FnFoldLeft() {}
+FnFoldLeftIterator::~FnFoldLeftIterator() {}
 
-// </FnFoldLeft>
+FnFoldLeftIteratorState::FnFoldLeftIteratorState() {}
+
+// </FnFoldLeftIterator>
 
 
 

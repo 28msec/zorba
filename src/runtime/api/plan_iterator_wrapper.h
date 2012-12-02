@@ -63,8 +63,10 @@ public:
 class PlanStateIteratorWrapper : public PlanIterator
 {
 protected:
-  const PlanIterator * theIterator;
-  PlanState          * theStateBlock;
+  const PlanIterator      * theIterator;          // only one of these is used
+  const store::Iterator_t   theStoreIterator; 
+  
+  PlanState               * theStateBlock;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanStoreIteratorWrapper);
@@ -75,6 +77,8 @@ public:
 
 public:
   PlanStateIteratorWrapper(const PlanIterator* iterator, PlanState& planState);
+  
+  PlanStateIteratorWrapper(const store::Iterator_t& iterator);
 
   virtual ~PlanStateIteratorWrapper();
 

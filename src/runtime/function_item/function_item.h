@@ -136,6 +136,9 @@ public:
   const store::Item_t getFunctionName() const;
 
   unsigned int getArity() const;
+  
+  // returns the arity of the function before any partial application
+  unsigned int getStartArity() const;
 
   const signature& getSignature() const;
 

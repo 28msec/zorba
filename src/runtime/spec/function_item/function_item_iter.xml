@@ -21,6 +21,7 @@
   <zorba:include form="Quoted">context/static_context.h</zorba:include>
   <zorba:include form="Quoted">compiler/api/compilercb.h</zorba:include>
   <zorba:include form="Quoted">context/dynamic_context.h</zorba:include>
+  <zorba:include form="Quoted">store/api/temp_seq.h</zorba:include>
 </zorba:source>
 
   <!--
@@ -70,7 +71,7 @@
     fn:map-pairs
   ********************************************************************************/
   -->
-  <zorba:iterator name="FnMapPairs">
+  <zorba:iterator name="FnMapPairsIterator" generateOpenImpl="true" generateGetStateSize="true">
     <zorba:description author="Zorba Team">
       Applies the function item $f to successive pairs of items taken one from $seq1 and one from $seq2, returning the concatenation of the resulting sequences in order.
     </zorba:description>
@@ -89,6 +90,7 @@
       <zorba:member type="PlanIter_t" name="thePlan"/>
       <zorba:member type="bool" name="theIsOpen"/>
       <zorba:member type="uint32_t" name="theUDFStateOffset"/>
+      <zorba:member type="store::Item_t" name="theFnItem"/>
     </zorba:state>
   
   </zorba:iterator>
@@ -99,7 +101,7 @@
     fn:fold-right
   ********************************************************************************/
   -->
-  <zorba:iterator name="FnFoldLeft">
+  <zorba:iterator name="FnFoldLeftIterator" generateOpenImpl="true" generateGetStateSize="true">
     <zorba:description author="Zorba Team">
       Processes the supplied sequence from left to right or right to left, applying the supplied function repeatedly to each item in turn, together with an accumulated result value.
     </zorba:description>
@@ -121,6 +123,15 @@
         <zorba:output>item()*</zorba:output>
       </zorba:signature>
     </zorba:function>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="PlanState*" name="thePlanState"/>
+      <zorba:member type="PlanIter_t" name="thePlan"/>
+      <zorba:member type="bool" name="theIsOpen"/>
+      <zorba:member type="uint32_t" name="theUDFStateOffset"/>
+      <zorba:member type="store::Item_t" name="theFnItem"/>
+      <zorba:member type="store::TempSeq_t" name="theZero"/>
+    </zorba:state>
   
   </zorba:iterator>
   

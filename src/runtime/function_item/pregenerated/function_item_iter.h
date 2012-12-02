@@ -107,45 +107,50 @@ public:
  *    
  * Author: Zorba Team
  */
-class FnMapPairsState : public PlanIteratorState
+class FnMapPairsIteratorState : public PlanIteratorState
 {
 public:
   PlanState* thePlanState; //
   PlanIter_t thePlan; //
   bool theIsOpen; //
   uint32_t theUDFStateOffset; //
+  store::Item_t theFnItem; //
 
-  FnMapPairsState();
+  FnMapPairsIteratorState();
 
-  ~FnMapPairsState();
+  ~FnMapPairsIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class FnMapPairs : public NaryBaseIterator<FnMapPairs, FnMapPairsState>
+class FnMapPairsIterator : public NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(FnMapPairs);
+  SERIALIZABLE_CLASS(FnMapPairsIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnMapPairs,
-    NaryBaseIterator<FnMapPairs, FnMapPairsState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnMapPairsIterator,
+    NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  FnMapPairs(
+  FnMapPairsIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<FnMapPairs, FnMapPairsState>(sctx, loc, children)
+    NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~FnMapPairs();
+  virtual ~FnMapPairsIterator();
+
+  uint32_t getStateSizeOfSubtree() const;
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void openImpl(PlanState&, uint32_t&);
 };
 
 
@@ -155,29 +160,51 @@ public:
  *    
  * Author: Zorba Team
  */
-class FnFoldLeft : public NaryBaseIterator<FnFoldLeft, PlanIteratorState>
+class FnFoldLeftIteratorState : public PlanIteratorState
+{
+public:
+  PlanState* thePlanState; //
+  PlanIter_t thePlan; //
+  bool theIsOpen; //
+  uint32_t theUDFStateOffset; //
+  store::Item_t theFnItem; //
+  store::TempSeq_t theZero; //
+
+  FnFoldLeftIteratorState();
+
+  ~FnFoldLeftIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnFoldLeftIterator : public NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(FnFoldLeft);
+  SERIALIZABLE_CLASS(FnFoldLeftIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnFoldLeft,
-    NaryBaseIterator<FnFoldLeft, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnFoldLeftIterator,
+    NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  FnFoldLeft(
+  FnFoldLeftIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<FnFoldLeft, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~FnFoldLeft();
+  virtual ~FnFoldLeftIterator();
+
+  uint32_t getStateSizeOfSubtree() const;
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void openImpl(PlanState&, uint32_t&);
 };
 
 

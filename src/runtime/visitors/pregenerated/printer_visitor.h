@@ -376,11 +376,11 @@ namespace zorba {
     void beginVisit( const FunctionArityIterator& );
     void endVisit  ( const FunctionArityIterator& );
 
-    void beginVisit( const FnMapPairs& );
-    void endVisit  ( const FnMapPairs& );
+    void beginVisit( const FnMapPairsIterator& );
+    void endVisit  ( const FnMapPairsIterator& );
 
-    void beginVisit( const FnFoldLeft& );
-    void endVisit  ( const FnFoldLeft& );
+    void beginVisit( const FnFoldLeftIterator& );
+    void endVisit  ( const FnFoldLeftIterator& );
 
     void beginVisit( const ActivateICIterator& );
     void endVisit  ( const ActivateICIterator& );

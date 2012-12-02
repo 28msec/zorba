@@ -169,6 +169,12 @@ uint32_t FunctionItem::getArity() const
 }
 
 
+uint32_t FunctionItem::getStartArity() const
+{
+  return theDynamicFunctionInfo->theArity;
+}
+
+
 const signature& FunctionItem::getSignature() const
 {
   return theDynamicFunctionInfo->theFunction->getSignature();
@@ -189,6 +195,7 @@ const std::vector<PlanIter_t>& FunctionItem::getArgumentsValues() const
 
 bool FunctionItem::isArgumentApplied(unsigned int pos) const
 {
+  assert(pos < theArgumentsValues.size());
   return (theArgumentsValues[pos].getp() != NULL);
 }
 

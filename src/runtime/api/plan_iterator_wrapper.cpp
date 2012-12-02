@@ -78,9 +78,20 @@ PlanStateIteratorWrapper::PlanStateIteratorWrapper(const PlanIterator* iter, Pla
   :
   PlanIterator(NULL, QueryLoc()),
   theIterator(iter),
+  theStoreIterator(NULL),
   theStateBlock(&state)
 {
 }
+
+PlanStateIteratorWrapper::PlanStateIteratorWrapper(const store::Iterator_t& iter)
+  :
+  PlanIterator(NULL, QueryLoc()),
+  theIterator(NULL),
+  theStoreIterator(iter),
+  theStateBlock(NULL)
+{
+}
+
 
 
 PlanStateIteratorWrapper::~PlanStateIteratorWrapper()
@@ -90,25 +101,37 @@ PlanStateIteratorWrapper::~PlanStateIteratorWrapper()
 
 bool PlanStateIteratorWrapper::produceNext(store::Item_t& result, PlanState& planState) const
 {
-  return theIterator->produceNext(result, *theStateBlock);
+  if (theIterator)
+    return theIterator->produceNext(result, *theStateBlock);
+  else
+    return theStoreIterator->next(result);
 }
 
 
 bool PlanStateIteratorWrapper::next(store::Item_t& result)
 {
-  return PlanIterator::consumeNext(result, theIterator, *theStateBlock);
+  if (theIterator)
+    return PlanIterator::consumeNext(result, theIterator, *theStateBlock);
+  else
+    return theStoreIterator->next(result);
 }
 
 
 void PlanStateIteratorWrapper::reset() const
 {
-  theIterator->reset(*theStateBlock);
+  if (theIterator)
+    theIterator->reset(*theStateBlock);
+  else
+    theStoreIterator->reset();
 }
 
 
 void PlanStateIteratorWrapper::reset(PlanState& planState) const
 {
-  theIterator->reset(*theStateBlock);
+  if (theIterator)
+    theIterator->reset(*theStateBlock);
+  else
+    theStoreIterator->reset();
 }
 
 
@@ -121,7 +144,10 @@ void PlanStateIteratorWrapper::accept(PlanIterVisitor& v) const
 std::string PlanStateIteratorWrapper::toString() const
 {
   std::stringstream ss;
-  ss << getId() << " = PlanStateIteratorWrapper iterator: " << theIterator->toString();
+  if (theIterator)
+    ss << getId() << " = PlanStateIteratorWrapper iterator: " << theIterator->toString();
+  else
+    ss << getId() << " = PlanStateIteratorWrapper iterator: " << theStoreIterator.getp();
   return ss.str();
 }
 #endif

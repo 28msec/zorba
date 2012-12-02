@@ -44,12 +44,12 @@ namespace zorba
 {
 
 
-SERIALIZABLE_CLASS_VERSIONS(ArgumentPlaceholderIterator)
+SERIALIZABLE_CLASS_VERSIONS(ArgumentPlaceholderIterator);
 
-NOARY_ACCEPT(ArgumentPlaceholderIterator)
+NOARY_ACCEPT(ArgumentPlaceholderIterator);
 
 
-SERIALIZABLE_CLASS_VERSIONS(DynamicFnCallIterator)
+SERIALIZABLE_CLASS_VERSIONS(DynamicFnCallIterator);
 
 
 /*******************************************************************************
@@ -244,7 +244,7 @@ bool DynamicFnCallIterator::nextImpl(
     {
       xqtref_t fnItemType = tm->create_value_type(fnItem, loc);
 
-      
+      /*
       std::cerr << "--> dynamic fncall nextImpl(): " << theId << std::endl
                 << "    fnItemType: " << fnItemType->toString() << std::endl
                 << "    coercionType: " << (theCoercionTargetType.getp()? theCoercionTargetType->toString() : "NULL") << std::endl;
@@ -258,16 +258,18 @@ bool DynamicFnCallIterator::nextImpl(
         std::cerr << "    fnItemType subtype of coercionType ignoring return? " << 
                      static_cast<const FunctionXQType*>(fnItemType.getp())->is_subtype(tm, *static_cast<const FunctionXQType*>(theCoercionTargetType.getp()), true) << std::endl;
       }
-      
+      */
       
       // if (!TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc))
       if (!TypeOps::is_subtype(tm, *fnItemType, *theCoercionTargetType, loc))
       // if (static_cast<const FunctionXQType*>(fnItemType.getp())->is_subtype(tm, *static_cast<const FunctionXQType*>(theCoercionTargetType.getp()), true))
       {
+        /*
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
                   theCoercionTargetType->toSchemaString(),
                   fnItemType->toSchemaString()));
+        */
       }
     }
 
@@ -361,8 +363,6 @@ bool DynamicFnCallIterator::nextImpl(
       // need to close here early in case the plan is completely
       // consumed. Otherwise, the plan would still be opened
       // if destroyed from the state's destructor.
-
-
       state->thePlan->close(planState);
       state->theIsOpen = false;
     } // if (theIsPartialApply)
