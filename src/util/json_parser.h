@@ -506,7 +506,8 @@ public:
   parser( std::istream &in, bool allow_multiple = false );
 
   /**
-   * Resets this %parser to its initial state.
+   * Resets this %parser to its almost-initial state.  (It does not, however,
+   * reset the file location.)
    */
   void clear();
 
