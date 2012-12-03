@@ -56,6 +56,11 @@ public:
   ~loader();
 
   /**
+   * Resets this %loader to its initial state.
+   */
+  void clear();
+
+  /**
    * Gets the next Item, if any.
    *
    * @param result A pointer to the Item to receive the Item.
@@ -104,6 +109,7 @@ private:
   stack_type stack_;
 
   void add_value( store::Item_t const& );
+  void clear_stack();
 
   stack_element& push( stack_element::type t ) {
     //

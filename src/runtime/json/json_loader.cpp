@@ -86,10 +86,7 @@ loader::loader( istream &is, bool allow_multiple, bool strip_top_level_array ) :
 }
 
 loader::~loader() {
-  while ( !stack_.empty() ) {
-    stack_.top().destroy();
-    stack_.pop();
-  }
+  clear_stack();
 }
 
 void loader::add_value( store::Item_t const &value ) {
@@ -125,6 +122,19 @@ void loader::add_value( store::Item_t const &value ) {
   }
 }
 
+void loader::clear() {
+  parser_.clear();
+  clear_stack();
+  stripped_top_level_array_ = false;
+}
+
+void loader::clear_stack() {
+  while ( !stack_.empty() ) {
+    stack_.top().destroy();
+    stack_.pop();
+  }
+}
+
 bool loader::next( store::Item_t *result ) {
   store::Item_t item;
   zstring s;
@@ -143,8 +153,10 @@ bool loader::next( store::Item_t *result ) {
           push( stack_element::object_type );
           continue;
         case ']':
-          if ( stack_.empty() && strip_top_level_array_ )
+          if ( stack_.empty() && strip_top_level_array_ ) {
+            stripped_top_level_array_ = false;
             continue;
+          }
         case '}': {
           stack_element top( stack_.top() );
           stack_.pop();
