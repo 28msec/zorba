@@ -455,8 +455,7 @@ class unique_ptr<T[],D> {
   typedef typename ZORBA_TR1_NS::add_reference<D const>::type
           deleter_const_reference;
 
-  struct pointer_conversion { int valid; };
-  typedef int pointer_conversion::*explicit_bool;
+  typedef zorba::internal::ztd::explicit_bool explicit_bool;
 
 public:
   typedef T element_type;
@@ -512,8 +511,8 @@ public:
     std::swap( storage_, p.storage_ );
   }
 
-  operator explicit_bool() const throw() {
-    return get() ? &pointer_conversion::valid : 0;
+  operator explicit_bool::type() const throw() {
+    return explicit_bool::value_of( get() );
   }
 
 private:
