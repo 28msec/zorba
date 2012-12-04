@@ -1056,5 +1056,3 @@ declare function fn:uri-collection() as xs:anyURI* external;
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-uri-collection">fn:uri-collection</a>
  :)
 declare function fn:uri-collection($arg as xs:string?) as xs:anyURI* external;
-
-declare function fn:canonicalize($xml-string as xs:string) as xs:string 

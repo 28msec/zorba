@@ -318,40 +318,47 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
   zstring lDocString;
   xmlDocPtr lDoc;
   xmlChar* lResult;
+  std::istream* lInstream = NULL;
+  char buf[1024];
 
-  FnZorbaCanonicalizeIteratorState* state;
-  DEFAULT_STACK_INIT(FnZorbaCanonicalizeIteratorState, state, planState);
-  if (consumeNext(result, theChildren[0].getp(), planState))
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  consumeNext(result, theChildren[0].getp(), planState);
+  try
   {
-    try
+    if (result->isStreamable())
     {
-      result->getStringValue2(lDocString);
-      lDoc = xmlReadMemory(lDocString.c_str(), lDocString.size(), "input.xml", NULL, XML_PARSE_NOERROR);
-      
-      if (!lDoc)
+      lInstream = &result->getStream();
+      while (lInstream->good())
       {
-        zstring lErrorMsg;
-        lErrorMsg = "\"" + lDocString + "\"";
-        throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("parse-xml:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
-      }
-    
-      xmlC14NDocDumpMemory(lDoc, NULL, XML_C14N_1_1, NULL, 1, &lResult);
-      lDocString = zstring((char*)lResult);    
-      xmlFree(lResult);
-      xmlFreeDoc(lDoc);
-    }
-    catch ( std::exception const& e)
+        lInstream->read(buf, 1024);
+        lDocString.append(buf, lInstream->gcount());
+      }        
+    }    
+    else
     {
-      throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("parse-xml:canonicalize()", e.what() ), ERROR_LOC(loc));
+      result->getStringValue2(lDocString);  
     }
-    STACK_PUSH(GENV_ITEMFACTORY->createString(result, lDocString), state);
+    lDoc = xmlReadMemory(lDocString.c_str(), lDocString.size(), "input.xml", NULL, XML_PARSE_NOERROR);
+    
+    if (!lDoc)
+    {
+      zstring lErrorMsg;
+      lErrorMsg = "\"" + lDocString + "\"";
+      throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("parse-xml:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
+    }
+  
+    xmlC14NDocDumpMemory(lDoc, NULL, XML_C14N_1_1, NULL, 1, &lResult);
+    lDocString = zstring((char*)lResult);    
+    xmlFree(lResult);
+    xmlFreeDoc(lDoc);
   }
+  catch ( std::exception const& e)
+  {
+    throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("parse-xml:canonicalize()", e.what() ), ERROR_LOC(loc));
+  }
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, lDocString), state);
   STACK_END(state);
-}
-
-void FnZorbaCanonicalizeIteratorState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
 }
 
 /*******************************************************************************

@@ -60,17 +60,7 @@
         <zorba:param>xs:string</zorba:param>  <!-- string to canonicalize -->
         <zorba:output>xs:string</zorba:output>
       </zorba:signature>
- 
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-      </zorba:methods>
-
     </zorba:function>
-
-    <zorba:state generateReset="false">
-      <zorba:member type="zstring" name="theDocString"/>
-    </zorba:state>
-      
   </zorba:iterator>
   
 <!--

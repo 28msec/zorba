@@ -66,8 +66,6 @@ public:
 
   }
 
-  bool accessesDynCtx() const { return true; }
-
   CODEGEN_DECL();
 };
 

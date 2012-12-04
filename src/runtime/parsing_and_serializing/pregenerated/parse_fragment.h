@@ -85,26 +85,13 @@ public:
  * fn-zorba-xml:canonicalize
  * Author: Zorba Team
  */
-class FnZorbaCanonicalizeIteratorState : public PlanIteratorState
-{
-public:
-  zstring theDocString; //
-
-  FnZorbaCanonicalizeIteratorState();
-
-  ~FnZorbaCanonicalizeIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class FnZorbaCanonicalizeIterator : public NaryBaseIterator<FnZorbaCanonicalizeIterator, FnZorbaCanonicalizeIteratorState>
+class FnZorbaCanonicalizeIterator : public NaryBaseIterator<FnZorbaCanonicalizeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(FnZorbaCanonicalizeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnZorbaCanonicalizeIterator,
-    NaryBaseIterator<FnZorbaCanonicalizeIterator, FnZorbaCanonicalizeIteratorState>);
+    NaryBaseIterator<FnZorbaCanonicalizeIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
@@ -113,7 +100,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<FnZorbaCanonicalizeIterator, FnZorbaCanonicalizeIteratorState>(sctx, loc, children)
+    NaryBaseIterator<FnZorbaCanonicalizeIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
   virtual ~FnZorbaCanonicalizeIterator();

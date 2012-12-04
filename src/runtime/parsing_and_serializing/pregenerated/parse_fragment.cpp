@@ -74,7 +74,7 @@ SERIALIZABLE_CLASS_VERSIONS(FnZorbaCanonicalizeIterator)
 void FnZorbaCanonicalizeIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<FnZorbaCanonicalizeIterator, FnZorbaCanonicalizeIteratorState>*)this);
+  (NaryBaseIterator<FnZorbaCanonicalizeIterator, PlanIteratorState>*)this);
 }
 
 
@@ -93,14 +93,6 @@ void FnZorbaCanonicalizeIterator::accept(PlanIterVisitor& v) const
 
 FnZorbaCanonicalizeIterator::~FnZorbaCanonicalizeIterator() {}
 
-FnZorbaCanonicalizeIteratorState::FnZorbaCanonicalizeIteratorState() {}
-
-FnZorbaCanonicalizeIteratorState::~FnZorbaCanonicalizeIteratorState() {}
-
-
-void FnZorbaCanonicalizeIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
 // </FnZorbaCanonicalizeIterator>
 
 
