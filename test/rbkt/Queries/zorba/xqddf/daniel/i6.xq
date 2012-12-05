@@ -12,31 +12,37 @@ index_ddl:create($xqddf-test:index2);
 
 for $i in fn:doc("auction.xml")//item
 return 
-    dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));
+    dml:insert-nodes($xqddf-test:white-collection,
+                     (copy $copyi := $i modify () return $copyi));
 
 
 index_dml:refresh-index($xqddf-test:index2);
+
 (:xqddf:collection($xqddf-test:white-collection);:)
+
 {
 <newline>
 </newline>
-},
-
+}
+,
 {
 index_dml:probe-index-point-value($xqddf-test:index1, "United States")[@id="item0"]/name
-},
-
+}
+,
 {
 index_dml:probe-index-range-value($xqddf-test:index2, 1, 3, fn:true(), fn:true(), fn:true(), fn:false())[@id="item2"]
-},
+}
+,
 {
 rename node dml:collection($xqddf-test:white-collection)[@id="item0"]/location as "location2";
-},
+()
+}
+,
 {
 <newline> a
 </newline>
-},
-
+}
+,
 {
 index_dml:probe-index-point-value($xqddf-test:index1, "United States")[@id="item1"]/name
 }

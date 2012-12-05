@@ -19,6 +19,7 @@
 
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -55,11 +56,15 @@ void fo_expr::accept(expr_visitor& v)
   UnionExpr, and IntersectExceptExpr.
 ********************************************************************************/
 
-fo_expr* fo_expr::create_seq(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc)
+fo_expr* fo_expr::create_seq(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc)
 {
   function* f = BuiltinFunctionLibrary::getFunction(FunctionConsts::OP_CONCATENATE_N);
 
-  std::auto_ptr<fo_expr> fo(ccb->theEM->create_fo_expr(sctx, loc, f));
+  std::auto_ptr<fo_expr> fo(ccb->theEM->create_fo_expr(sctx, udf, loc, f));
 
   return fo.release();
 }
@@ -68,10 +73,11 @@ fo_expr* fo_expr::create_seq(CompilerCB* ccb, static_context* sctx, const QueryL
 fo_expr::fo_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const function* f)
   :
-  expr(ccb, sctx, loc, fo_expr_kind),
+  expr(ccb, sctx, udf, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
 {
   // This method is private and it is to be used only by the clone method
@@ -83,11 +89,12 @@ fo_expr::fo_expr(
 fo_expr::fo_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const function* f,
     expr* arg)
   :
-  expr(ccb, sctx, loc, fo_expr_kind),
+  expr(ccb, sctx, udf, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
 {
   assert(f != NULL);
@@ -101,12 +108,13 @@ fo_expr::fo_expr(
 fo_expr::fo_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const function* f,
     expr* arg1,
     expr* arg2)
   :
-  expr(ccb, sctx, loc, fo_expr_kind),
+  expr(ccb, sctx, udf, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
 {
   assert(f != NULL);
@@ -121,11 +129,12 @@ fo_expr::fo_expr(
 fo_expr::fo_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const function* f,
     const std::vector<expr*>& args)
   :
-  expr(ccb, sctx, loc, fo_expr_kind),
+  expr(ccb, sctx, udf, loc, fo_expr_kind),
   theArgs(args),
   theFunction(const_cast<function*>(f))
 {
@@ -270,29 +279,6 @@ void fo_expr::compute_scripting_kind()
     checkScriptingKind();
   }
   }
-}
-
-
-expr* fo_expr::cloneImpl(substitution_t& subst) const
-{
-  if (get_func()->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
-  {
-    expr::subst_iter_t i = subst.find(this);
-
-    if (i != subst.end())
-      return i->second;
-  }
-
-  std::auto_ptr<fo_expr> fo(theCCB->theEM->create_fo_expr(theSctx,
-                                                          get_loc(),
-                                                          get_func()));
-
-  for (csize i = 0; i < theArgs.size(); ++i)
-    fo->theArgs.push_back(theArgs[i]->clone(subst));
-
-  fo->theScriptingKind  = theScriptingKind;
-
-  return fo.release();
 }
 
 

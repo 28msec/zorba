@@ -122,7 +122,7 @@ expr* MarkConsumerNodeProps::apply(
 
     order_expr* orderExpr = static_cast<order_expr *>(node);
 
-    rCtx.theIsInOrderedMode = (orderExpr->get_type() == order_expr::ordered ?
+    rCtx.theIsInOrderedMode = (orderExpr->get_type() == doc_ordered ?
                                true : false);
     break;
   }
@@ -278,17 +278,17 @@ expr* MarkConsumerNodeProps::apply(
 
   case wrapper_expr_kind :
   {
-    wrapper_expr* we = static_cast<wrapper_expr *>(node);
-    pushdown_ignores_sorted_nodes(node, we->get_expr());
-    pushdown_ignores_duplicate_nodes(node, we->get_expr());
+    wrapper_expr* e = static_cast<wrapper_expr *>(node);
+    pushdown_ignores_sorted_nodes(node, e->get_input());
+    pushdown_ignores_duplicate_nodes(node, e->get_input());
     break;
   }
 
   case function_trace_expr_kind :
   {
-    function_trace_expr* fte = static_cast<function_trace_expr*>(node);
-    pushdown_ignores_sorted_nodes(node, fte->get_expr());
-    pushdown_ignores_duplicate_nodes(node, fte->get_expr());
+    function_trace_expr* e = static_cast<function_trace_expr *>(node);
+    pushdown_ignores_sorted_nodes(node, e->get_input());
+    pushdown_ignores_duplicate_nodes(node, e->get_input());
     break;
   }
 
@@ -527,10 +527,9 @@ expr* MarkProducerNodeProps::apply(
 ********************************************************************************/
 RULE_REWRITE_PRE(EliminateNodeOps)
 {
-  fo_expr* fo = dynamic_cast<fo_expr *>(node);
-
-  if (fo != NULL)
+  if (node->get_expr_kind() == fo_expr_kind)
   {
+    fo_expr* fo = static_cast<fo_expr*>(node);
     const function* f = fo->get_func();
 
     // ????
@@ -585,14 +584,14 @@ expr* MarkNodeCopyProps::apply(
 
   try
   {
-    if (rCtx.theCCB->theConfig.for_serialization_only)
+    if (rCtx.theForSerializationOnly)
     {
       // Serialization may or may not be a "safe" op.
       static_context* sctx = node->get_sctx();
 
-      if (sctx->preserve_mode() == StaticContextConsts::preserve_ns)
+      if (sctx->preserve_ns())
       {
-        if (sctx->inherit_mode() == StaticContextConsts::inherit_ns)
+        if (sctx->inherit_ns())
         {
           // In this case, the result of the query should not contain any shared
           // node N, because if N was reached via a referencing tree, then
@@ -604,15 +603,14 @@ expr* MarkNodeCopyProps::apply(
           // out of input nodes and (b) may propagate the extracted nodes to the
           // query result will be considered as unsafe and thus require that 
           // their input trees are standalone.
-          markInUnsafeContext(node);
+          findSourcesForNodeExtractors(node);
         }
       }
       else
       {
         // In this case serialization is always unsafe.
         std::vector<expr*> sources;
-        UDFCallChain dummyUdfCaller;
-        theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
+        theSourceFinder->findNodeSources(rCtx.theRoot, sources);
         markSources(sources);
       }
     }
@@ -621,13 +619,11 @@ expr* MarkNodeCopyProps::apply(
       // We have to assume that the result of the "node" expr will be used in an
       // unsafe op, so it must consist of standalone trees.  
       std::vector<expr*> sources;
-      UDFCallChain dummyUdfCaller;
-      theSourceFinder->findNodeSources(rCtx.theRoot, &dummyUdfCaller, sources);
+      theSourceFinder->findNodeSources(rCtx.theRoot, sources);
       markSources(sources);
     }
 
-    UDFCallChain dummyUdfCaller;
-    applyInternal(rCtx, node, dummyUdfCaller);
+    applyInternal(node, false);
   }
   catch (...)
   {
@@ -645,13 +641,13 @@ expr* MarkNodeCopyProps::apply(
 
 
 /*******************************************************************************
-
+  If "node" is inside a UDF body, then "udfCaller" is the fo expr that invokes
+  that UDF.
 ********************************************************************************/
-void MarkNodeCopyProps::applyInternal(
-    RewriterContext& rCtx,
-    expr* node,
-    UDFCallChain& udfCaller)
+void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
 {
+  static_context* sctx = node->get_sctx();
+
   switch (node->get_expr_kind())
   {
   case const_expr_kind:
@@ -666,6 +662,13 @@ void MarkNodeCopyProps::applyInternal(
   case text_expr_kind:
   case pi_expr_kind:
   {
+    // If a doc or element constructor needs to copy (and the ns mode is preserve
+    // and inherit), should it be considered unsafe? The answer is no, because if
+    // copy is needed, then any other construction done during the "current" one
+    // will need to copy as well, so the input trees to the current constructor
+    // will be standalone. This is enforced bhy the findNodeSources() method,
+    // which drills down inside constructors and will collect as sources any
+    // nested c onstructors as well.
     break;
   }
 
@@ -676,16 +679,13 @@ void MarkNodeCopyProps::applyInternal(
     // TODO improve this
     json_direct_object_expr* e = static_cast<json_direct_object_expr *>(node);
 
-    static_context* sctx = e->get_sctx();
-
-    if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
-        sctx->inherit_mode() == StaticContextConsts::inherit_ns)
+    if (sctx->preserve_ns() && sctx->inherit_ns())
     {
       csize numPairs = e->num_pairs();
       for (csize i = 0; i < numPairs; ++i)
       {
         std::vector<expr*> sources;
-        theSourceFinder->findNodeSources(e->get_value_expr(i), &udfCaller, sources);
+        theSourceFinder->findNodeSources(e->get_value_expr(i), sources);
         markSources(sources);
       }
     }
@@ -694,6 +694,9 @@ void MarkNodeCopyProps::applyInternal(
   }
   case json_object_expr_kind:
   {
+    // The input to this expr is a sequence of other objects, which if they
+    // contain any nodes, those nodes are in standalone trees. So, copying
+    // these nodes when the objects are copied is ok.
     break;
   }
   case json_array_expr_kind:
@@ -702,13 +705,10 @@ void MarkNodeCopyProps::applyInternal(
     // TODO improve this
     json_array_expr* e = static_cast<json_array_expr *>(node);
 
-    static_context* sctx = e->get_sctx();
-
-    if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
-        sctx->inherit_mode() == StaticContextConsts::inherit_ns)
+    if (sctx->preserve_ns() && sctx->inherit_ns())
     {
       std::vector<expr*> sources;
-      theSourceFinder->findNodeSources(e->get_expr(), &udfCaller, sources);
+      theSourceFinder->findNodeSources(e->get_expr(), sources);
       markSources(sources);
     }
 
@@ -720,50 +720,41 @@ void MarkNodeCopyProps::applyInternal(
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);
 
-    if (e->inUnsafeContext())
-    {
-      std::vector<expr*> sources;
-      theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
-      markSources(sources);
-    }
-    else
-    {
-      std::vector<expr*>::const_iterator ite = e->begin();
-      std::vector<expr*>::const_iterator end = e->end();
+    std::vector<expr*>::const_iterator ite = e->begin();
+    std::vector<expr*>::const_iterator end = e->end();
 
-      for (++ite; ite != end; ++ite)
+    for (++ite; ite != end; ++ite)
+    {
+      axis_step_expr* axisExpr = static_cast<axis_step_expr*>((*ite));
+      axis_kind_t axisKind = axisExpr->getAxis();
+
+      if (axisKind != axis_kind_child &&
+          axisKind != axis_kind_descendant &&
+          axisKind != axis_kind_descendant_or_self &&
+          axisKind != axis_kind_self &&
+          axisKind != axis_kind_attribute)
       {
-        axis_step_expr* axisExpr = static_cast<axis_step_expr*>((*ite));
-        axis_kind_t axisKind = axisExpr->getAxis();
-
-        if (axisKind != axis_kind_child &&
-            axisKind != axis_kind_descendant &&
-            axisKind != axis_kind_descendant_or_self &&
-            axisKind != axis_kind_self &&
-            axisKind != axis_kind_attribute)
+        std::vector<expr*> sources;
+        theSourceFinder->findNodeSources((*e)[0], sources);
+        markSources(sources);
+        break;
+      }
+      else
+      {
+        match_expr* matchExpr = axisExpr->getTest();
+        
+        if (matchExpr->getTypeName() != NULL &&
+            sctx->construction_mode() == StaticContextConsts::cons_strip)
         {
           std::vector<expr*> sources;
-          theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
+          theSourceFinder->findNodeSources((*e)[0], sources);
           markSources(sources);
           break;
-        }
-        else
-        {
-          match_expr* matchExpr = axisExpr->getTest();
-
-          if (matchExpr->getTypeName() != NULL &&
-              node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
-          {
-            std::vector<expr*> sources;
-            theSourceFinder->findNodeSources((*e)[0],  &udfCaller, sources);
-            markSources(sources);
-            break;
-          }
         }
       }
     }
 
-    applyInternal(rCtx, (*e)[0], udfCaller);
+    applyInternal((*e)[0], deferred);
 
     return;
   }
@@ -776,32 +767,49 @@ void MarkNodeCopyProps::applyInternal(
     if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
     {
       user_function* udf = static_cast<user_function*>(f);
+      user_function* callerUdf = e->get_udf();
 
-      UdfCalls::iterator ite = theProcessedUDFCalls.find(e);
+      bool recursive = (callerUdf ? callerUdf->isMutuallyRecursiveWith(udf) : false);
 
-      if (ite == theProcessedUDFCalls.end())
+      if (recursive && !deferred)
       {
-        theProcessedUDFCalls.insert(e);
-
-        UDFCallChain nextUdfCall(e, &udfCaller);
-
-        applyInternal(rCtx, udf->getBody(), nextUdfCall);
+        callerUdf->addRecursiveCall(e);
       }
       else
       {
+        UdfSet::iterator ite = theProcessedUDFs.find(udf);
+
+        if (ite == theProcessedUDFs.end())
+        {
+          theProcessedUDFs.insert(udf);
+
+          applyInternal(udf->getBody(), deferred);
+
+          if (udf->isRecursive())
+          {
+            std::vector<fo_expr*>::const_iterator ite = udf->getRecursiveCalls().begin();
+            std::vector<fo_expr*>::const_iterator end = udf->getRecursiveCalls().end();
+            for (; ite != end; ++ite)
+            {
+              applyInternal(*ite, true);
+            }
+          }
+        }
+
+        // if an arg var of this udf has been marked as a source before, it
+        // means that that var is consumed in some unsafe operation, so we
+        // now have to find the sources of the arg expr and mark them.
         csize numArgs = e->num_args();
+
         for (csize i = 0; i < numArgs; ++i)
         {
           var_expr* argVar = udf->getArgVar(i);
 
-          // if an arg var of this udf has been marked as a source before, it
-          // means that that var is consumed in some "nodeid-sesitive" operation,
-          // so we now have to find the sources of the arg expr and mark them.
           if (theSourceFinder->theVarSourcesMap.find(argVar) !=
               theSourceFinder->theVarSourcesMap.end())
           {
             std::vector<expr*> sources;
-            theSourceFinder->findNodeSources(e->get_arg(i), &udfCaller, sources);
+            theSourceFinder->findNodeSources(e->get_arg(i), sources);
             markSources(sources);
           }
         }
@@ -815,9 +823,33 @@ void MarkNodeCopyProps::applyInternal(
         if (f->mustCopyInputNodes(e, i))
         {
           std::vector<expr*> sources;
-          theSourceFinder->findNodeSources(e->get_arg(i), &udfCaller, sources);
+          theSourceFinder->findNodeSources(e->get_arg(i), sources);
           markSources(sources);
         }
+      }
+
+      FunctionConsts::FunctionKind fkind = f->getKind();
+
+      switch (fkind)
+      {
+      case FunctionConsts::FN_DATA_1:
+      case FunctionConsts::FN_NILLED_1:
+      {
+        if (sctx->construction_mode() == StaticContextConsts::cons_strip)
+        {
+          findSourcesForNodeExtractors(e->get_arg(0));
+        } 
+        break;
+      }
+      case FunctionConsts::FN_BASE_URI_1:
+      case FunctionConsts::FN_ROOT_1:
+      // TODO: node-before, node-after
+      {
+        findSourcesForNodeExtractors(e->get_arg(0));
+        break;
+      }
+      default:
+        break;
       }
     }
 
@@ -845,11 +877,11 @@ void MarkNodeCopyProps::applyInternal(
   case instanceof_expr_kind:
   case treat_expr_kind:
   {
-    if (node->get_sctx()->construction_mode() == StaticContextConsts::cons_strip)
+    if (sctx->construction_mode() == StaticContextConsts::cons_strip)
     {
       cast_or_castable_base_expr* e = static_cast<cast_or_castable_base_expr*>(node);
 
-      markInUnsafeContext(e->get_input());
+      findSourcesForNodeExtractors(e->get_input());
     }
 
     break;
@@ -859,7 +891,7 @@ void MarkNodeCopyProps::applyInternal(
   {
     validate_expr* e = static_cast<validate_expr *>(node);
     std::vector<expr*> sources;
-    theSourceFinder->findNodeSources(e->get_expr(), &udfCaller, sources);
+    theSourceFinder->findNodeSources(e->get_input(), sources);
     markSources(sources);
     break;
   }
@@ -870,22 +902,34 @@ void MarkNodeCopyProps::applyInternal(
   case replace_expr_kind:
   {
     update_expr_base* e = static_cast<update_expr_base*>(node);
+    expr_kind_t kind = e->get_expr_kind();
 
-    std::vector<expr*> sources;
-    theSourceFinder->findNodeSources(e->getTargetExpr(), &udfCaller, sources);
-    markSources(sources);
-
-    static_context* sctx = e->get_sctx();
-
-    if (e->getSourceExpr() != NULL &&
-        (e->get_expr_kind() == insert_expr_kind ||
-         (e->get_expr_kind() == replace_expr_kind &&
-          static_cast<replace_expr*>(e)->getType() == store::UpdateConsts::NODE)) &&
-        (sctx->inherit_mode() != StaticContextConsts::no_inherit_ns ||
-         sctx->preserve_mode() != StaticContextConsts::no_preserve_ns))
+    // The target node cannot be a shared node because the update would be seen
+    // by multiple trees. For updates that delete nodes (delete and replace), the
+    // whole tree must be standalone because we have to sum up the reference
+    // counts of all the nodes in the delete subtree and that won't work if the
+    // deleted subtree contains shared nodes.
+    if (kind == replace_expr_kind || kind == delete_expr_kind)
     {
       std::vector<expr*> sources;
-      theSourceFinder->findNodeSources(e->getSourceExpr(), &udfCaller, sources);
+      theSourceFinder->findNodeSources(e->getTargetExpr(), sources);
+      markSources(sources);
+    }
+    else
+    {
+      findSourcesForNodeExtractors(node);
+    }
+
+    // TODO: apply no-copy rule to insert and replace updates
+    if (e->getSourceExpr() != NULL &&
+        (kind == insert_expr_kind ||
+         (kind == replace_expr_kind &&
+          static_cast<replace_expr*>(e)->getType() == store::UpdateConsts::NODE)) &&
+        sctx->inherit_ns() &&
+        sctx->preserve_ns())
+    {
+      std::vector<expr*> sources;
+      theSourceFinder->findNodeSources(e->getSourceExpr(), sources);
       markSources(sources);
     }
 
@@ -896,10 +940,7 @@ void MarkNodeCopyProps::applyInternal(
   {
     transform_expr* e = static_cast<transform_expr *>(node);
 
-    static_context* sctx = e->get_sctx();
-
-    if (sctx->preserve_mode() == StaticContextConsts::preserve_ns &&
-        sctx->inherit_mode() == StaticContextConsts::inherit_ns)
+    if (sctx->preserve_ns() && sctx->inherit_ns())
     {
       std::vector<copy_clause*>::const_iterator ite = e->begin();
       std::vector<copy_clause*>::const_iterator end = e->end();
@@ -907,7 +948,7 @@ void MarkNodeCopyProps::applyInternal(
       for (; ite != end; ++ite)
       {
         std::vector<expr*> sources;
-        theSourceFinder->findNodeSources((*ite)->getExpr(), &udfCaller, sources);
+        theSourceFinder->findNodeSources((*ite)->getExpr(), sources);
         markSources(sources);
       }
     }
@@ -922,43 +963,8 @@ void MarkNodeCopyProps::applyInternal(
   case flowctl_expr_kind:
   case exit_expr_kind:
   case exit_catcher_expr_kind:
-  {
-    break;
-  }
-
   case block_expr_kind:
   {
-    block_expr* e = static_cast<block_expr *>(node);
-
-    if (e->is_sequential())
-    {
-      csize numChildren = e->size();
-      bool haveUpdates = false;
-
-      for (csize i = numChildren; i > 0; --i)
-      {
-        expr* child = (*e)[i-1];
-
-        if (haveUpdates)
-        {
-          std::vector<expr*> sources;
-          theSourceFinder->findNodeSources(child, &udfCaller, sources);
-          markSources(sources);
-        }
-        else
-        {
-          short scriptingKind = child->get_scripting_detail();
-
-          if (scriptingKind & APPLYING_EXPR ||
-              scriptingKind & EXITING_EXPR ||
-              scriptingKind & SEQUENTIAL_FUNC_EXPR)
-          {
-            haveUpdates = true;
-          }
-        }
-      }
-    }
-
     break;
   }
 
@@ -976,7 +982,7 @@ void MarkNodeCopyProps::applyInternal(
       expr* arg = e->get_arg_expr(i);
 
       std::vector<expr*> sources;
-      theSourceFinder->findNodeSources(arg, &udfCaller, sources);
+      theSourceFinder->findNodeSources(arg, sources);
       markSources(sources);
     }
 
@@ -991,10 +997,13 @@ void MarkNodeCopyProps::applyInternal(
 #ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:
   {
+    // This expr prefrorms whole-tree tokenization. So, its input nodes
+    // must not be shared nodes. What if the input nodes are not shared?
+    // if ft_expr safe in that case ????
     ftcontains_expr* e = static_cast<ftcontains_expr*>(node);
 
     std::vector<expr*> sources;
-    theSourceFinder->findNodeSources(e->get_range(), &udfCaller, sources);
+    theSourceFinder->findNodeSources(e->get_range(), sources);
     markSources(sources);
 
     break;
@@ -1015,7 +1024,7 @@ void MarkNodeCopyProps::applyInternal(
     FOR_EACH(std::vector<expr*>, ite, args)
     {
       std::vector<expr*> sources;
-      theSourceFinder->findNodeSources((*ite), &udfCaller, sources);
+      theSourceFinder->findNodeSources((*ite), sources);
       markSources(sources);
     }
 
@@ -1028,9 +1037,7 @@ void MarkNodeCopyProps::applyInternal(
 
     user_function* udf = static_cast<user_function*>(e->get_function());
 
-    UDFCallChain dummyUdfCaller;
-
-    applyInternal(rCtx, udf->getBody(), dummyUdfCaller);
+    applyInternal(udf->getBody(), deferred);
 
     return;
   }
@@ -1047,7 +1054,7 @@ void MarkNodeCopyProps::applyInternal(
     expr* child = (**iter);
     if (child != NULL)
     {
-      applyInternal(rCtx, child, udfCaller);
+      applyInternal(child, deferred);
     }
     iter.next();
   }
@@ -1091,13 +1098,14 @@ void MarkNodeCopyProps::markSources(const std::vector<expr*>& sources)
 
 
 /*******************************************************************************
-  This method is called when an expr E1 satisfies a condition that may make a
-  sub-expr E2 of E1 be unsafe, even though E2 by itself is safe. 
-
-  This method marks as being in "unsafe context" any expr that may produce
-  nodes which may be propagated into the result of E1.
+  Some expressions are safe when applied to a non-shared node (even is that
+  node contains shared subtrees), but unsafe on shared nodes.  Let E1 be such
+  an expr. Instead of considering E1 as an unsafe expr uncondiftionally, we
+  "transfer" its conditional unsafeness to each expr E2 such that E2 contributes
+  nodes into E1's input, and E2 extracts such nodes from other nodes (and as a 
+  result, the nodes that E2 propagates to E1 may be shared nodes). 
 ********************************************************************************/
-void MarkNodeCopyProps::markInUnsafeContext(expr* node)
+void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
 {
   TypeManager* tm = node->get_type_manager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
@@ -1126,10 +1134,10 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
     case var_expr::wincond_in_var:
     case var_expr::non_groupby_var:
     {
-      if (!e->inUnsafeContext())
+      if (!e->isVisited(1))
       {
-        e->setInUnsafeContext(ANNOTATION_TRUE);
-        markInUnsafeContext(e->get_domain_expr());
+        e->setVisitId(1);
+        findSourcesForNodeExtractors(e->get_domain_expr());
       }
       return;
     }
@@ -1137,22 +1145,21 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
     case var_expr::copy_var:
     case var_expr::catch_var:
     {
-      e->setInUnsafeContext(ANNOTATION_TRUE);
       return;
     }
 
     case var_expr::arg_var:
     {
-      e->setInUnsafeContext(ANNOTATION_TRUE);
+      e->setVisitId(1);
       return;
     }
 
     case var_expr::prolog_var:
     case var_expr::local_var:
     {
-      if (!e->inUnsafeContext())
+      if (!e->isVisited(1))
       {
-        e->setInUnsafeContext(ANNOTATION_TRUE);
+        e->setVisitId(1);
 
         std::vector<expr*>::const_iterator ite = e->setExprsBegin();
         std::vector<expr*>::const_iterator end = e->setExprsEnd();
@@ -1160,17 +1167,20 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
         for (; ite != end; ++ite)
         {
           expr* setExpr = *ite;
+          expr* valueExpr;
 
           if (setExpr->get_expr_kind() == var_decl_expr_kind)
           {
-            markInUnsafeContext(static_cast<var_decl_expr*>(setExpr)->get_init_expr());
+            valueExpr = static_cast<var_decl_expr*>(setExpr)->get_init_expr();
           }
           else
           {
             assert(setExpr->get_expr_kind() == var_set_expr_kind);
 
-            markInUnsafeContext(static_cast<var_set_expr*>(setExpr)->get_expr());
+            valueExpr = static_cast<var_set_expr*>(setExpr)->get_expr();
           }
+
+          findSourcesForNodeExtractors(valueExpr);
         }
       }
       return;
@@ -1196,7 +1206,7 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
   case text_expr_kind:
   case pi_expr_kind:
   {
-    break;
+    return;
   }
 
 #ifdef ZORBA_WITH_JSON
@@ -1204,15 +1214,41 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
   case json_direct_object_expr_kind:
   case json_array_expr_kind:
   {
-    break;
+    return;
   }
 #endif
 
   case relpath_expr_kind:
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);
-    e->setInUnsafeContext(ANNOTATION_TRUE);
-    markInUnsafeContext((*e)[0]);
+
+    e->setVisitId(1);
+
+    std::vector<expr*>::const_iterator ite = e->begin();
+    std::vector<expr*>::const_iterator end = e->end();
+
+    for (++ite; ite != end; ++ite)
+    {
+      axis_step_expr* axisExpr = static_cast<axis_step_expr*>((*ite));
+      axis_kind_t axisKind = axisExpr->getAxis();
+
+      if (axisKind != axis_kind_child &&
+          axisKind != axis_kind_descendant &&
+          axisKind != axis_kind_descendant_or_self &&
+          axisKind != axis_kind_self &&
+          axisKind != axis_kind_attribute)
+      {
+        break;
+      }
+    }
+
+    if (ite == end)
+    {
+      std::vector<expr*> sources;
+      theSourceFinder->findNodeSources((*e)[0], sources);
+      markSources(sources);
+    }
+  
     return;
   }
 
@@ -1220,8 +1256,11 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
   case flwor_expr_kind:
   {
     flwor_expr* e = static_cast<flwor_expr *>(node);
-    e->setInUnsafeContext(ANNOTATION_TRUE);
-    markInUnsafeContext(e->get_return_expr());
+
+    e->setVisitId(1);
+
+    findSourcesForNodeExtractors(e->get_return_expr());
+
     return;
   }
 
@@ -1236,16 +1275,16 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
     fo_expr* e = static_cast<fo_expr *>(node);
     function* f = e->get_func();
 
-    e->setInUnsafeContext(ANNOTATION_TRUE);
+    e->setVisitId(1);
 
     if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
     {
       user_function* udf = static_cast<user_function*>(f);
       expr* body = udf->getBody();
 
-      if (!body->inUnsafeContext())
+      if (!body->isVisited(1))
       {
-        markInUnsafeContext(body);
+        findSourcesForNodeExtractors(body);
       }
 
       std::vector<var_expr*>::const_iterator ite = udf->getArgVars().begin();
@@ -1253,10 +1292,10 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
       for (; ite != end; ++ite)
       {
         expr* argVar = (*ite);
-        if (argVar->inUnsafeContext())
+        if (argVar->isVisited(1))
         {
           expr* argExpr = e->get_arg(ite - udf->getArgVars().begin());
-          markInUnsafeContext(argExpr);
+          findSourcesForNodeExtractors(argExpr);
         }
       }
     } // f->isUdf()
@@ -1267,7 +1306,7 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
       {
         if (f->propagatesInputNodes(e, i))
         {
-          markInUnsafeContext(e->get_arg(i));
+          findSourcesForNodeExtractors(e->get_arg(i));
         }
       }
     }
@@ -1286,24 +1325,27 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
 
   case validate_expr_kind:
   {
-    node->setInUnsafeContext(ANNOTATION_TRUE);
+    node->setVisitId(1);
     return;
   }
 
   case transform_expr_kind:
   {
     transform_expr* e = static_cast<transform_expr *>(node);
-    e->setInUnsafeContext(ANNOTATION_TRUE);
-    markInUnsafeContext(e->getReturnExpr());
+
+    findSourcesForNodeExtractors(e->getReturnExpr());
+
     return;
   }
 
   case block_expr_kind:
   {
     block_expr* e = static_cast<block_expr *>(node);
-    e->setInUnsafeContext(ANNOTATION_TRUE);
+
     expr* lastChild = (*e)[e->size()-1];
-    markInUnsafeContext(lastChild);
+
+    findSourcesForNodeExtractors(lastChild);
+
     return;
   }
 
@@ -1329,7 +1371,7 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
     {
       exit_expr* ex = static_cast<exit_expr*>(*ite);
 
-      markInUnsafeContext(ex->get_expr());
+      findSourcesForNodeExtractors(ex->get_expr());
     }
 
     break;
@@ -1357,7 +1399,7 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
 
     user_function* udf = static_cast<user_function*>(e->get_function());
 
-    markInUnsafeContext(udf->getBody());
+    findSourcesForNodeExtractors(udf->getBody());
 
     return;
   }
@@ -1383,7 +1425,7 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
     ZORBA_ASSERT(false);
   }
 
-  node->setInUnsafeContext(ANNOTATION_TRUE);
+  node->setVisitId(1);
 
   ExprIterator iter(node);
   while(!iter.done())
@@ -1391,7 +1433,7 @@ void MarkNodeCopyProps::markInUnsafeContext(expr* node)
     expr* child = (**iter);
     if (child != NULL)
     {
-      markInUnsafeContext(child);
+      findSourcesForNodeExtractors(child);
     }
     iter.next();
   }

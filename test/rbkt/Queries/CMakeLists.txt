@@ -491,6 +491,13 @@ EXPECTED_FAILURE (test/rbkt/zorba/testdriver/bom_bug 3381121)
 # hitting w3.org for the DTD, which is bad.
 SET_TESTS_PROPERTIES(test/rbkt/zorba/schemas/local-xhtml
   PROPERTIES TIMEOUT 5)
+# Bug 867363. These should fail or pass quickly because HTTP download
+# is disabled.
+SET_TESTS_PROPERTIES(test/rbkt/zorba/uris/disable-http
+  PROPERTIES TIMEOUT 5)
+SET_TESTS_PROPERTIES(test/rbkt/zorba/uris/disable-http-2
+  PROPERTIES TIMEOUT 5)
+
 
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue
@@ -551,8 +558,6 @@ IF(ZORBA_NO_ICU)
                       PROPERTIES WILL_FAIL TRUE)
 ENDIF(ZORBA_NO_ICU)
 
-
-EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
 
 # external variable default expected failures
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests

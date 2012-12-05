@@ -41,15 +41,9 @@ PREPOST_RULE(SpecializeOperations);
 
 PREPOST_RULE(EliminateTypeEnforcingOperations);
 
-PREPOST_RULE(EliminateUnusedLetVars);
-
 PREPOST_RULE(RefactorPredFLWOR);
 
-PREPOST_RULE(MergeFLWOR);
-
 PREPOST_RULE(EliminateExtraneousPathSteps);
-
-PREPOST_RULE(MarkFreeVars);
 
 PREPOST_RULE(InlineFunctions);
 
@@ -59,23 +53,73 @@ PREPOST_RULE(PartialEval);
 /*******************************************************************************
 
 ********************************************************************************/
-class FoldConst : public PrePostRewriteRule
+class EliminateUnusedLetVars : public PrePostRewriteRule
 {
 protected:
-  bool  theFoldExpensiveOps;
+  flwor_expr           * theFlwor;
+  std::vector<expr**>    theRefs;
 
 public:
-  FoldConst(bool fold_expensive_ops)
+  EliminateUnusedLetVars()
     :
-    PrePostRewriteRule(RewriteRule::FoldConst, "FoldConst"),
-    theFoldExpensiveOps(fold_expensive_ops)
+    PrePostRewriteRule(RewriteRule::EliminateUnusedLetVars, "EliminateUnusedLetVars"),
+    theFlwor(NULL)
   {
+    theRefs.reserve(32);
   }
 
 protected:
   expr* rewritePre(expr* node, RewriterContext& rCtx);
 
   expr* rewritePost(expr* node, RewriterContext& rCtx);
+
+  bool safe_to_fold_var(csize varPos, int& numRefs);
+
+  bool safe_to_fold_var_rec(
+      expr* node,
+      csize varPos,
+      var_expr* var,
+      bool unsafe,
+      bool isSafeVar,
+      int& numRefs);
+
+  void subst_vars(
+      const RewriterContext& rCtx,
+      var_expr* var,
+      expr* subst,
+      int numRefs);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class MergeFLWOR : public RewriteRule
+{
+public:
+  MergeFLWOR()
+    :
+    RewriteRule(RewriteRule::MergeFLWOR, "MergeFLWOR")
+  {
+  }
+
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class FoldConst : public RewriteRule
+{
+public:
+  FoldConst()
+    :
+    RewriteRule(RewriteRule::FoldConst, "FoldConst")
+  {
+  }
+
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 
@@ -84,12 +128,38 @@ protected:
 ********************************************************************************/
 class MarkExprs : public RewriteRule
 {
+protected:
+  bool theIsLocal;
+
 public:
-  MarkExprs() : RewriteRule(RewriteRule::MarkExprs, "MarkExprs") {}
+  MarkExprs(bool local = false)
+    :
+    RewriteRule(RewriteRule::MarkExprs, "MarkExprs"),
+    theIsLocal(local)
+  {
+  }
+
+  void setLocal(bool v) { theIsLocal = v; }
 
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
+#if 1
+/*******************************************************************************
+
+********************************************************************************/
+class MarkFreeVars : public RewriteRule
+{
+public:
+  MarkFreeVars()
+    :
+    RewriteRule(RewriteRule::MarkFreeVars, "MarkFreeVars")
+  {
+  }
+
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+#endif
 
 /*******************************************************************************
 
@@ -128,12 +198,12 @@ public:
 ********************************************************************************/
 class MarkNodeCopyProps : public RewriteRule
 {
-  typedef std::set<fo_expr*> UdfCalls;
+  typedef std::set<user_function*> UdfSet;
 
 protected:
   SourceFinder   * theSourceFinder;
 
-  UdfCalls         theProcessedUDFCalls;
+  UdfSet           theProcessedUDFs;
 
 public:
   MarkNodeCopyProps()
@@ -145,11 +215,11 @@ public:
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 
 protected:
-  void applyInternal(RewriterContext& rCtx, expr* node, UDFCallChain& udfCaller);
+  void applyInternal(expr* node, bool deferred);
 
   void markSources(const std::vector<expr*>& sources);
 
-  void markInUnsafeContext(expr* node);
+  void findSourcesForNodeExtractors(expr* node);
 };
 
 

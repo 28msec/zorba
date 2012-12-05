@@ -31,6 +31,7 @@
 #include "system/globalenv.h"
 #include "system/properties.h"
 
+#include "compiler/expression/expr_manager.h"
 #include "compiler/api/compilercb.h"
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/expression/expr.h"
@@ -899,7 +900,9 @@ bool begin_visit(flwor_expr& v)
           {
             ++numForClauses;
 
-            if (c->get_expr()->is_sequential())
+            const forlet_clause* fc = static_cast<const forlet_clause*>(c);
+
+            if (fc->get_expr()->is_sequential())
             {
               // TODO: do not convert to general flwor if the whole flwor consists
               // of a single FOR followed by RETURN.
@@ -910,7 +913,9 @@ bool begin_visit(flwor_expr& v)
           }
           else if (c->get_kind() == flwor_clause::let_clause)
           {
-            if (c->get_expr()->is_sequential())
+            const forlet_clause* lc = static_cast<const forlet_clause*>(c);
+
+            if (lc->get_expr()->is_sequential())
             {
               if (numForClauses > 0)
               {
@@ -929,20 +934,11 @@ bool begin_visit(flwor_expr& v)
 
       if (pr)
       {
-        // Note: a materialize clause may exist already in case plan serialization
-        // is on (see comment in materialize_clause::clone)
-        if (!isGeneral &&
-            v.get_return_expr()->is_sequential() &&
-            v.get_clause(numClauses-1)->get_kind() != flwor_clause::materialize_clause &&
-            (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
-        {
-          materialize_clause* mat =
-          theCCB->theEM->create_materialize_clause(v.get_sctx(),
-                                              v.get_return_expr()->get_loc());
-
-          v.add_clause(mat);
-          ++numClauses;
-        }
+        materialize_clause* mat =
+        theCCB->theEM->create_materialize_clause(v.get_sctx(),
+                                                 v.get_return_expr()->get_loc());
+        v.add_clause(mat);
+        ++numClauses;
       }
     } // !isGeneral
 
@@ -966,14 +962,17 @@ bool begin_visit(flwor_expr& v)
         case flwor_clause::let_clause:
         case flwor_clause::window_clause:
         {
+          expr* domExpr = static_cast<const forletwin_clause*>(c)->get_expr();
+
           if (k == flwor_clause::for_clause || k == flwor_clause::window_clause)
           {
-            xqtref_t domainType = c->get_expr()->get_return_type();
+            xqtref_t domainType = domExpr->get_return_type();
+
             if (domainType->get_quantifier() != TypeConstants::QUANT_ONE)
               ++numForClauses;
           }
 
-          if (pr && c->get_expr()->is_sequential())
+          if (pr && domExpr->is_sequential())
           {
             if (k == flwor_clause::for_clause ||
                 k == flwor_clause::window_clause ||
@@ -987,12 +986,12 @@ bool begin_visit(flwor_expr& v)
                   v.get_clause(i-1)->get_kind() != flwor_clause::order_clause &&
                   v.get_clause(i-1)->get_kind() != flwor_clause::group_clause)
               {
-                orderby_clause* mat =
-                theCCB->theEM->create_orderby_clause(v.get_sctx(),
-                                   c->get_loc(),
-                                   true,
-                                   modifiers,
-                                   orderingExprs);
+                orderby_clause* mat = theCCB->theEM->
+                create_orderby_clause(v.get_sctx(),
+                                      c->get_loc(),
+                                      true,
+                                      modifiers,
+                                      orderingExprs);
 
                 v.add_clause(i, mat);
                 ++i;
@@ -1003,12 +1002,12 @@ bool begin_visit(flwor_expr& v)
                   (i < numClauses - 1 &&
                    v.get_clause(i+1)->get_kind() != flwor_clause::group_clause))
               {
-                orderby_clause* mat =
-                theCCB->theEM->create_orderby_clause(v.get_sctx(),
-                                   c->get_loc(),
-                                   true,
-                                   modifiers,
-                                   orderingExprs);
+                orderby_clause* mat = theCCB->theEM->
+                create_orderby_clause(v.get_sctx(),
+                                      c->get_loc(),
+                                      true,
+                                      modifiers,
+                                      orderingExprs);
 
                 v.add_clause(i+1, mat);
                 ++numClauses;
@@ -1038,12 +1037,12 @@ bool begin_visit(flwor_expr& v)
           lastClause->get_kind() != flwor_clause::order_clause &&
           lastClause->get_kind() != flwor_clause::group_clause)
       {
-        orderby_clause* mat =
-        theCCB->theEM->create_orderby_clause(v.get_sctx(),
-                           v.get_return_expr()->get_loc(),
-                           true,
-                           modifiers,
-                           orderingExprs);
+        orderby_clause* mat = theCCB->theEM->
+        create_orderby_clause(v.get_sctx(),
+                              v.get_return_expr()->get_loc(),
+                              true,
+                              modifiers,
+                              orderingExprs);
 
         v.add_clause(mat);
         ++numClauses;
@@ -1059,20 +1058,12 @@ bool begin_visit(flwor_expr& v)
     {
 
     case flwor_clause::for_clause:
-    {
-      visit_flwor_clause(c, isGeneral);
-
-      const for_clause* fc = reinterpret_cast<const for_clause*>(c);
-      fc->get_expr()->accept(*this);
-      break;
-    }
-
     case flwor_clause::let_clause:
     {
       visit_flwor_clause(c, isGeneral);
 
-      const for_clause* fc = reinterpret_cast<const for_clause*>(c);
-      fc->get_expr()->accept(*this);
+      const forlet_clause* flc = reinterpret_cast<const forlet_clause*>(c);
+      flc->get_expr()->accept(*this);
       break;
     }
 
@@ -1086,10 +1077,10 @@ bool begin_visit(flwor_expr& v)
       flwor_wincond* stopCond = wc->get_win_stop();
 
       if (startCond)
-        startCond->get_cond()->accept(*this);
+        startCond->get_expr()->accept(*this);
 
       if (stopCond)
-        stopCond->get_cond()->accept(*this);
+        stopCond->get_expr()->accept(*this);
 
       wc->get_expr()->accept(*this);
 
@@ -1572,7 +1563,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     return new flwor::WindowIterator(sctx,
                                      var->get_loc(),
-                                     wc->get_winkind() == window_clause::tumbling_window ? flwor::WindowIterator::TUMBLING : flwor::WindowIterator::SLIDING,
+                                     wc->get_winkind() == tumbling_window ? flwor::WindowIterator::TUMBLING : flwor::WindowIterator::SLIDING,
                                      PREV_ITER,
                                      domainIter,
                                      var->get_name(),
@@ -1858,10 +1849,19 @@ void flwor_codegen(const flwor_expr& flworExpr)
         std::vector<PlanIter_t>& posVarRefs =
         clauseVarMap->theVarRebinds[1]->theOutputVarRefs;
 
-        forletClauses.push_back(flwor::ForLetClause(var->get_name(),
-                                                    varRefs,
-                                                    posVarRefs,
-                                                    domainIter));
+        if (!posVarRefs.empty())
+        {
+          forletClauses.push_back(flwor::ForLetClause(var->get_name(),
+                                                      varRefs,
+                                                      posVarRefs,
+                                                      domainIter));
+        }
+        else
+        {
+          forletClauses.push_back(flwor::ForLetClause(var->get_name(),
+                                                      varRefs,
+                                                      domainIter));
+        }
       }
       else
       {
@@ -2278,10 +2278,10 @@ void end_visit(flowctl_expr& v)
   enum FlowCtlException::action a;
   switch (v.get_action())
   {
-  case flowctl_expr::BREAK:
+  case FLOW_BREAK:
     a = FlowCtlException::BREAK;
     break;
-  case flowctl_expr::CONTINUE:
+  case FLOW_CONTINUE:
     a = FlowCtlException::CONTINUE;
     break;
   default:
@@ -3028,7 +3028,7 @@ bool begin_visit(text_expr& v)
 
   theConstructorsStack.push(&v);
 
-  if (v.get_type() == text_expr::text_constructor)
+  if (v.get_type() == text_constructor)
     theEnclosedContextStack.push(TEXT_CONTENT);
   else
     theEnclosedContextStack.push(ATTRIBUTE_CONTENT);
@@ -3055,11 +3055,11 @@ void end_visit(text_expr& v)
 
   switch (v.get_type())
   {
-  case text_expr::text_constructor:
+  case text_constructor:
     push_itstack(new TextIterator(sctx, qloc, content, isRoot));
     break;
 
-  case text_expr::comment_constructor:
+  case comment_constructor:
     push_itstack(new CommentIterator(sctx, qloc, content, isRoot));
     break;
 

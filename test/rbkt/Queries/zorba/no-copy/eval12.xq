@@ -1,4 +1,9 @@
+
+declare namespace opt = "http://www.zorba-xquery.com/options/optimizer";
+
 import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+
+declare option opt:enable "for-serialization-only";
 
 
 declare function local:dummy($n as node())

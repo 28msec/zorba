@@ -34,6 +34,24 @@ namespace zorba {
 
 namespace internal {
 
+/**
+ * Utility function that identifies URL schemes that will be handled
+ * by the HttpStream class.
+ */
+bool
+HTTPURLResolver::isHTTPScheme(zstring const& aUrl)
+{
+  uri::scheme lScheme = uri::get_scheme(aUrl);
+  switch (lScheme) {
+    case uri::http:
+    case uri::https:
+    case uri::ftp:
+      return true;
+    default:
+      return false;
+  }
+}
+
 /******
  * http: (and https: and ftp:) URL resolver.
  ******/
@@ -52,16 +70,8 @@ HTTPURLResolver::resolveURL
       break;
   }
 
-  uri::scheme lScheme = uri::get_scheme(aUrl);
-  switch (lScheme) {
-    case uri::http:
-    case uri::https:
-    case uri::ftp:
-      // Fall through to actual implementation
-      break;
-    default:
-      // We don't implement other schemes
-      return NULL;
+  if (!isHTTPScheme(aUrl)) {
+    return nullptr;
   }
   try {
     std::auto_ptr<HttpStream> lStream(new HttpStream(aUrl));
@@ -75,7 +85,6 @@ HTTPURLResolver::resolveURL
     throw os_error::exception("", aUrl.c_str(), "Could not create stream resource");
   }
 }
-
 
 /******
  * file: URL resolver.

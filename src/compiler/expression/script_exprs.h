@@ -114,6 +114,7 @@ protected:
   block_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       bool allowLastUpdating,
       std::vector<expr*>& seq,
@@ -129,8 +130,6 @@ public:
   const expr* operator[](csize i) const { return theArgs[i]; }
 
   expr* operator[](csize i) { return theArgs[i]; }
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -162,6 +161,7 @@ protected:
   apply_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* inExpr,
       bool discardXDM);
@@ -172,8 +172,6 @@ public:
   bool discardsXDM() const { return theDiscardXDM; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -223,6 +221,7 @@ protected:
   var_decl_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       var_expr* varExpr,
       expr* initExpr);
@@ -235,8 +234,6 @@ public:
   expr* get_init_expr() const { return theInitExpr; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -269,6 +266,7 @@ protected:
   var_set_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       var_expr* varExpr,
       expr* setExpr);
@@ -281,8 +279,6 @@ public:
   expr* get_expr() const { return theExpr; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -308,6 +304,7 @@ protected:
   exit_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* inExpr);
 
@@ -319,8 +316,6 @@ public:
   void setCatcherExpr(exit_catcher_expr* e) { theCatcherExpr = e; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -356,6 +351,7 @@ protected:
   exit_catcher_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* inExpr,
       std::vector<expr*>& exitExprs);
@@ -379,8 +375,6 @@ public:
 
   void compute_scripting_kind();
 
-  expr* cloneImpl(substitution_t& s) const;
-
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
@@ -396,19 +390,19 @@ class flowctl_expr : public expr
   friend class ExprIterator;
   friend class expr;
 
-public:
-  enum action { BREAK, CONTINUE };
+protected:
+  FlowCtlAction theAction;
 
 protected:
-  enum action theAction;
-
-protected:
-  flowctl_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, enum action action);
+  flowctl_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      FlowCtlAction action);
 
 public:
-  enum action get_action() const { return theAction; }
-
-  expr* cloneImpl(substitution_t& s) const;
+  FlowCtlAction get_action() const { return theAction; }
 
   void compute_scripting_kind();
 
@@ -435,14 +429,17 @@ protected:
   expr* theBody;
 
 protected:
-  while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr* body);
+  while_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr* body);
 
 public:
   expr* get_body() const { return theBody; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

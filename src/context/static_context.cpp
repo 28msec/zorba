@@ -284,7 +284,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       if (!module)
       {
         throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-        ERROR_PARAMS(ZED(NoExternalModuleFromDLL), lURI));
+        ERROR_PARAMS(ZED(NoExternalModuleFromDLL_2), lURI));
       }
     }
     else
@@ -590,12 +590,8 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
-            ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
-#ifdef ZORBA_WITH_JSON
-            ns == JSONIQ_FN_NS ||
-#endif
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
@@ -680,8 +676,8 @@ static_context::static_context()
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
-  theInheritMode(StaticContextConsts::inherit_unknown),
-  thePreserveMode(StaticContextConsts::preserve_unknown),
+  theInheritNamespaces(true),
+  thePreserveNamespaces(true),
   theOrderingMode(StaticContextConsts::ordering_unknown),
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
@@ -727,8 +723,8 @@ static_context::static_context(static_context* parent)
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
-  theInheritMode(StaticContextConsts::inherit_unknown),
-  thePreserveMode(StaticContextConsts::preserve_unknown),
+  theInheritNamespaces(parent->theInheritNamespaces),
+  thePreserveNamespaces(parent->thePreserveNamespaces),
   theOrderingMode(StaticContextConsts::ordering_unknown),
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
@@ -779,8 +775,8 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
-  theInheritMode(StaticContextConsts::inherit_unknown),
-  thePreserveMode(StaticContextConsts::preserve_unknown),
+  theInheritNamespaces(true),
+  thePreserveNamespaces(true),
   theOrderingMode(StaticContextConsts::ordering_unknown),
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
@@ -1101,8 +1097,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
   SERIALIZE_ENUM(StaticContextConsts::xpath_compatibility_t, theXPathCompatibility);
   SERIALIZE_ENUM(StaticContextConsts::construction_mode_t, theConstructionMode);
-  SERIALIZE_ENUM(StaticContextConsts::inherit_mode_t, theInheritMode);
-  SERIALIZE_ENUM(StaticContextConsts::preserve_mode_t, thePreserveMode);
+  ar & theInheritNamespaces;
+  ar & thePreserveNamespaces;
   SERIALIZE_ENUM(StaticContextConsts::ordering_mode_t, theOrderingMode);
   SERIALIZE_ENUM(StaticContextConsts::empty_order_mode_t, theEmptyOrderMode);
   SERIALIZE_ENUM(StaticContextConsts::boundary_space_mode_t, theBoundarySpaceMode);
@@ -3460,11 +3456,13 @@ void static_context::bind_option(
   {
     theOptionMap->insert(qname2, option);
   }
-
 }
 
-store::Item_t
-static_context::parse_and_expand_qname(
+
+/***************************************************************************//**
+
+********************************************************************************/
+store::Item_t static_context::parse_and_expand_qname(
     const zstring& value,
     const char* default_ns,
     const QueryLoc& loc) const
@@ -3502,7 +3500,7 @@ void static_context::process_warning_option(
 
   std::vector<store::Item_t>::iterator lIter;
 
-  if ( name == "error" )
+  if (name == "error")
   {
     if ( lQName->getLocalName() == "all" )
     {
@@ -3513,11 +3511,12 @@ void static_context::process_warning_option(
           lIter != theWarningsAreErrors.end();
           ++lIter )
     {
-      if ( lQName->equals( (*lIter) ) )
+      if (lQName->equals((*lIter)))
       {
         return;
       }
     }
+
     theWarningsAreErrors.push_back( lQName );
   }
   else if ( name == "disable" )
@@ -3756,58 +3755,36 @@ void static_context::set_construction_mode(StaticContextConsts::construction_mod
 /***************************************************************************//**
 
 ********************************************************************************/
-StaticContextConsts::inherit_mode_t static_context::inherit_mode() const
+bool static_context::inherit_ns() const
 {
-  const static_context* sctx = this;
-
-  while (sctx != NULL)
-  {
-    if (sctx->theInheritMode != StaticContextConsts::inherit_unknown)
-      return sctx->theInheritMode;
-
-    sctx = sctx->theParent;
-  }
-
-  ZORBA_ASSERT(false);
-  return StaticContextConsts::inherit_unknown;
+  return theInheritNamespaces;
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_inherit_mode(StaticContextConsts::inherit_mode_t v)
+void static_context::set_inherit_ns(bool v)
 {
-  theInheritMode = v;
+  theInheritNamespaces = v;
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-StaticContextConsts::preserve_mode_t static_context::preserve_mode() const
+bool static_context::preserve_ns() const
 {
-  const static_context* sctx = this;
-
-  while (sctx != NULL)
-  {
-    if (sctx->thePreserveMode != StaticContextConsts::preserve_unknown)
-      return sctx->thePreserveMode;
-
-    sctx = sctx->theParent;
-  }
-
-  ZORBA_ASSERT(false);
-  return StaticContextConsts::preserve_unknown;
+  return thePreserveNamespaces;
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_preserve_mode(StaticContextConsts::preserve_mode_t v)
+void static_context::set_preserve_ns(bool v)
 {
-  thePreserveMode = v;
+  thePreserveNamespaces = v;
 }
 
 

@@ -24,7 +24,7 @@ namespace zorba
 
 class flwor_clause;
 class forletwin_clause;
-class for_clause;
+class forlet_clause;
 class copy_clause;
 class var_expr;
 class VarInfo;
@@ -88,10 +88,6 @@ class VarInfo;
   ------------
   For arg vars, it is the position, within the param list, of parameter that is
   bound to this arg var.
-
-  theUDF:
-  -------
-  For arg vars, the corresponding UDF.
 
   theSetExprs:
   ------------
@@ -165,8 +161,6 @@ protected:
 
   csize                 theParamPos;
 
-  user_function       * theUDF;
-
   std::vector<expr*>    theSetExprs;
 
   VarInfo             * theVarInfo;
@@ -186,11 +180,12 @@ protected:
   var_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       var_kind k,
       store::Item* name);
 
-  var_expr(const var_expr& source);
+  var_expr(user_function* udf, const var_expr& source);
 
   virtual ~var_expr();
 
@@ -235,7 +230,7 @@ public:
 
   forletwin_clause* get_forletwin_clause() const;
 
-  for_clause* get_for_clause() const;
+  forlet_clause* get_forlet_clause() const;
 
   copy_clause* get_copy_clause() const { return theCopyClause; }
 
@@ -248,10 +243,6 @@ public:
   csize get_param_pos() const { return theParamPos; }
 
   void set_param_pos(csize pos) { theParamPos = pos; }
-
-  user_function* get_udf() const { return theUDF; }
-
-  void set_udf(const user_function* udf) { theUDF = const_cast<user_function*>(udf); }
 
   void add_set_expr(expr* e) { theSetExprs.push_back(e); }
 
@@ -268,8 +259,6 @@ public:
   bool is_context_item() const;
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 

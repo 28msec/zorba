@@ -17,6 +17,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/expr_manager.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -120,9 +121,9 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theHaveTimeout(false),
   theTimeout(timeout),
   theTempIndexCounter(0),
+  theNextVisitId(1),
   theEM(new ExprManager(this))
 {
-
   if (timeout >= 0)
     theHaveTimeout = true;
 }
@@ -148,6 +149,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theHaveTimeout(cb.theHaveTimeout),
   theTimeout(cb.theTimeout),
   theTempIndexCounter(0),
+  theNextVisitId(cb.theNextVisitId+1),
   theConfig(cb.theConfig),
   theEM(new ExprManager(this))
 {
@@ -167,6 +169,7 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 #endif
   theHasEval(false),
   theIsEval(false),
+  theNextVisitId(1),
   theEM(new ExprManager(this))
 {
 }

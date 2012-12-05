@@ -25,6 +25,7 @@
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -107,10 +108,11 @@ void forletwin_clause::set_var(var_expr* v)
       {
         theDomainExpr = theCCB->theEM->
         create_treat_expr(theDomainExpr->get_sctx(),
+                          theDomainExpr->get_udf(),
                           theDomainExpr->get_loc(),
                           theDomainExpr,
                           varType,
-                          TreatIterator::TYPE_MATCH);
+                          TREAT_TYPE_MATCH);
       }
     }
   }
@@ -120,20 +122,23 @@ void forletwin_clause::set_var(var_expr* v)
 /*******************************************************************************
 
 ********************************************************************************/
-for_clause::for_clause(
+forlet_clause::forlet_clause(
     static_context* sctx,
     CompilerCB* ccb,
     const QueryLoc& loc,
+    flwor_clause::ClauseKind kind,
     var_expr* varExpr,
     expr* domainExpr,
     var_expr* posVarExpr,
     var_expr* scoreVarExpr,
-    bool isAllowingEmpty)
+    bool isAllowingEmpty,
+    bool lazy)
   :
-  forletwin_clause(sctx, ccb, loc, flwor_clause::for_clause, varExpr, domainExpr),
+  forletwin_clause(sctx, ccb, loc, kind, varExpr, domainExpr),
   thePosVarExpr(posVarExpr),
   theScoreVarExpr(scoreVarExpr),
-  theAllowingEmpty(isAllowingEmpty)
+  theAllowingEmpty(isAllowingEmpty),
+  theLazyEval(lazy)
 {
   if (thePosVarExpr != NULL)
     thePosVarExpr->set_flwor_clause(this);
@@ -147,9 +152,10 @@ for_clause::for_clause(
     TypeManager* tm = sctx->get_typemanager();
 
     xqtref_t declaredType = varExpr->get_type();
+
     if (declaredType != NULL)
     {
-      if (declaredType->is_empty())
+      if (kind == flwor_clause::for_clause && declaredType->is_empty())
       {
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(ZED(BadType_23o), "empty-sequence"));
@@ -157,27 +163,28 @@ for_clause::for_clause(
 
       xqtref_t domainType = domainExpr->get_return_type();
 
-      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *declaredType, loc))
+      if (!TypeOps::is_equal(tm, *rtm.ITEM_TYPE_STAR, *declaredType, loc))
       {
-        declaredType = tm->create_type(*declaredType, TypeConstants::QUANT_STAR);
+        if (kind == flwor_clause::for_clause)
+          declaredType = tm->create_type(*declaredType, domainType->get_quantifier());
 
         if (!TypeOps::is_subtype(tm, *domainType, *declaredType, loc))
         {
           xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
+
           if (TypeOps::is_equal(tm, *varType, *rtm.NONE_TYPE, loc))
           {
             RAISE_ERROR(err::XPTY0004, loc,
-            ERROR_PARAMS(ZED(BadType_23o),
-                         *domainType,
-                         ZED(NoTreatAs_4),
-                         *declaredType));
+            ERROR_PARAMS(ZED(BadType_23o), *domainType, ZED(NoTreatAs_4), *declaredType));
           }
 
-          domainExpr = theCCB->theEM->create_treat_expr(sctx,
-                                            loc,
-                                            domainExpr,
-                                            declaredType,
-                                            TreatIterator::TYPE_MATCH);
+          domainExpr = theCCB->theEM->
+          create_treat_expr(sctx,
+                            domainExpr->get_udf(),
+                            loc,
+                            domainExpr,
+                            declaredType,
+                            TREAT_TYPE_MATCH);
 
           set_expr(domainExpr);
         }
@@ -187,7 +194,7 @@ for_clause::for_clause(
 }
 
 
-for_clause::~for_clause()
+forlet_clause::~forlet_clause()
 {
   if (thePosVarExpr != NULL)
     thePosVarExpr->set_flwor_clause(NULL);
@@ -197,19 +204,19 @@ for_clause::~for_clause()
 }
 
 
-var_expr* for_clause::get_pos_var() const
+var_expr* forlet_clause::get_pos_var() const
 {
   return thePosVarExpr;
 }
 
 
-var_expr* for_clause::get_score_var() const
+var_expr* forlet_clause::get_score_var() const
 {
   return theScoreVarExpr;
 }
 
 
-void for_clause::set_pos_var(var_expr* v)
+void forlet_clause::set_pos_var(var_expr* v)
 {
   thePosVarExpr = v;
   if (thePosVarExpr != NULL)
@@ -217,7 +224,7 @@ void for_clause::set_pos_var(var_expr* v)
 }
 
 
-void for_clause::set_score_var(var_expr* v)
+void forlet_clause::set_score_var(var_expr* v)
 {
   theScoreVarExpr = v;
   if (theScoreVarExpr != NULL)
@@ -225,137 +232,47 @@ void for_clause::set_score_var(var_expr* v)
 }
 
 
-flwor_clause* for_clause::clone(expr::substitution_t& subst) const
+flwor_clause* forlet_clause::clone(user_function* udf, expr::substitution_t& subst) const
 {
-  expr* domainCopy = theDomainExpr->clone(subst);
+  expr* domainCopy = theDomainExpr->clone(udf, subst);
 
-  var_expr* varCopy = theCCB->theEM->create_var_expr(*theVarExpr);
+  var_expr* varCopy = theCCB->theEM->create_var_expr(udf, *theVarExpr);
   subst[theVarExpr] = varCopy;
 
   var_expr* posvarCopy = NULL;
   var_expr* pos_var_ptr = thePosVarExpr;
   if (pos_var_ptr)
   {
-    posvarCopy = theCCB->theEM->create_var_expr(*pos_var_ptr);
+    posvarCopy = theCCB->theEM->create_var_expr(udf, *pos_var_ptr);
     subst[pos_var_ptr] = posvarCopy;
   }
 
   var_expr* scorevarCopy = NULL;
-  var_expr* score_var_ptr = theScoreVarExpr;
-  if (score_var_ptr)
+  if (theScoreVarExpr)
   {
-    scorevarCopy = theCCB->theEM->create_var_expr(*score_var_ptr);
-    subst[score_var_ptr] = scorevarCopy;
+    scorevarCopy = theCCB->theEM->create_var_expr(udf, *theScoreVarExpr);
+    subst[theScoreVarExpr] = scorevarCopy;
   }
 
-  return theCCB->theEM->create_for_clause(theContext,
-                        get_loc(),
-                        varCopy,
-                        domainCopy,
-                        posvarCopy,
-                        scorevarCopy,
-                        theAllowingEmpty);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-let_clause::let_clause(
-    static_context* sctx,
-    CompilerCB* ccb,
-    const QueryLoc& loc,
-    var_expr* varExpr,
-    expr* domainExpr,
-    bool lazy)
-  :
-  forletwin_clause(sctx, ccb, loc, flwor_clause::let_clause, varExpr, domainExpr),
-  theScoreVarExpr(NULL),
-  theLazyEval(lazy)
-{
-  if (theScoreVarExpr != NULL)
-    theScoreVarExpr->set_flwor_clause(this);
-
-  if (varExpr != NULL && sctx != NULL)
+  if (theKind == flwor_clause::for_clause)
   {
-    RootTypeManager& rtm = GENV_TYPESYSTEM;
-    TypeManager* tm = sctx->get_typemanager();
-
-    xqtref_t declaredType = varExpr->get_type();
-
-    if (declaredType != NULL)
-    {
-      xqtref_t domainType = domainExpr->get_return_type();
-
-      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *declaredType, loc) &&
-          !TypeOps::is_subtype(tm, *domainType, *declaredType, loc))
-      {
-        xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
-
-        if (TypeOps::is_equal(tm, *varType, *rtm.NONE_TYPE, loc))
-        {
-          RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED(BadType_23o), *domainType, ZED(NoTreatAs_4), *declaredType));
-        }
-
-        domainExpr = theCCB->theEM->create_treat_expr(sctx,
-                                    loc,
-                                    domainExpr,
-                                    declaredType,
-                                    TreatIterator::TYPE_MATCH);
-
-        set_expr(domainExpr);
-      }
-    }
+    return theCCB->theEM->create_for_clause(theContext,
+                                            get_loc(),
+                                            varCopy,
+                                            domainCopy,
+                                            posvarCopy,
+                                            scorevarCopy,
+                                            theAllowingEmpty);
+  }
+  else
+  {
+    return theCCB->theEM->create_let_clause(theContext,
+                                            get_loc(),
+                                            varCopy,
+                                            domainCopy,
+                                            theLazyEval);
   }
 }
-
-
-let_clause::~let_clause()
-{
-  if (theScoreVarExpr != NULL)
-    theScoreVarExpr->set_flwor_clause(NULL);
-}
-
-
-var_expr* let_clause::get_score_var() const
-{
-  return theScoreVarExpr;
-}
-
-
-void let_clause::set_score_var(var_expr* v)
-{
-  theScoreVarExpr = v;
-  if (theScoreVarExpr != NULL)
-    theScoreVarExpr->set_flwor_clause(this);
-}
-
-
-flwor_clause* let_clause::clone(expr::substitution_t& subst) const
-{
-  expr* domainCopy = theDomainExpr->clone(subst);
-
-  var_expr* varCopy = theCCB->theEM->create_var_expr(*theVarExpr);
-  subst[theVarExpr] = varCopy;
-
-#if 0
-  var_expr* scorevarCopy = NULL;
-  var_expr* score_var_ptr = theScoreVarExpr;
-  if (score_var_ptr)
-  {
-    scorevarCopy = theCCB->theEM->create_var_expr(*score_var_ptr);
-    subst->get(score_var_ptr) = scorevarCopy;
-  }
-#endif
-
-  return theCCB->theEM->create_let_clause(theContext,
-                        get_loc(),
-                        varCopy,
-                        domainCopy,
-                        theLazyEval);
-}
-
 
 
 /*******************************************************************************
@@ -365,7 +282,7 @@ window_clause::window_clause(
     static_context* sctx,
     CompilerCB* ccb,
     const QueryLoc& loc,
-    window_t winKind,
+    WindowKind winKind,
     var_expr* varExpr,
     expr* domainExpr,
     flwor_wincond* winStart,
@@ -403,10 +320,11 @@ window_clause::window_clause(
       {
         domainExpr = theCCB->theEM->
         create_treat_expr(sctx,
+                          domainExpr->get_udf(),
                           loc,
                           domainExpr,
                           varType,
-                          TreatIterator::TYPE_MATCH);
+                          TREAT_TYPE_MATCH);
 
         set_expr(domainExpr);
       }
@@ -441,21 +359,23 @@ void window_clause::set_win_stop(flwor_wincond* cond)
 }
 
 
-flwor_clause* window_clause::clone(expr::substitution_t& subst) const
+flwor_clause* window_clause::clone(
+    user_function* udf,
+    expr::substitution_t& subst) const
 {
-  expr* domainCopy = theDomainExpr->clone(subst);
+  expr* domainCopy = theDomainExpr->clone(udf, subst);
 
-  var_expr* varCopy = theCCB->theEM->create_var_expr(*theVarExpr);
+  var_expr* varCopy = theCCB->theEM->create_var_expr(udf, *theVarExpr);
   subst[theVarExpr] = varCopy;
 
   flwor_wincond* cloneStartCond = NULL;
   flwor_wincond* cloneStopCond = NULL;
 
   if (theWinStartCond != NULL)
-    cloneStartCond = theWinStartCond->clone(subst);
+    cloneStartCond = theWinStartCond->clone(udf, subst);
 
   if (theWinStopCond != NULL)
-    cloneStopCond = theWinStopCond->clone(subst);
+    cloneStopCond = theWinStopCond->clone(udf, subst);
 
   return theCCB->theEM->create_window_clause(theContext,
                                              get_loc(),
@@ -493,15 +413,17 @@ flwor_wincond::flwor_wincond(
 
     xqtref_t condType = theCondExpr->get_return_type();
 
-    if(!TypeOps::is_equal(tm,
+    if (!TypeOps::is_equal(tm,
                           *condType,
                           *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
                           theCondExpr->get_loc()))
     {
-      theCondExpr = theCCB->theEM->create_fo_expr(theCondExpr->get_sctx(),
-                                theCondExpr->get_loc(),
-                                GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
-                                theCondExpr);
+      theCondExpr = theCCB->theEM->
+      create_fo_expr(theCondExpr->get_sctx(),
+                     theCondExpr->get_udf(),
+                     theCondExpr->get_loc(),
+                     BUILTIN_FUNC(FN_BOOLEAN_1),
+                     theCondExpr);
     }
   }
 }
@@ -513,22 +435,23 @@ flwor_wincond::~flwor_wincond()
 }
 
 
-flwor_wincond::vars::vars()
-:
-posvar(NULL),
-curr(NULL),
-prev(NULL),
-next(NULL)
+flwor_wincond_vars::flwor_wincond_vars()
+  :
+  posvar(NULL),
+  curr(NULL),
+  prev(NULL),
+  next(NULL)
 {
 }
 
-flwor_wincond::vars::~vars()
+
+flwor_wincond_vars::~flwor_wincond_vars()
 {
 //  set_flwor_clause(NULL);
 }
 
 
-void flwor_wincond::vars::set_flwor_clause(flwor_clause* c)
+void flwor_wincond_vars::set_flwor_clause(flwor_clause* c)
 {
   if (posvar != NULL) posvar->set_flwor_clause(c);
   if (curr != NULL) curr->set_flwor_clause(c);
@@ -537,35 +460,36 @@ void flwor_wincond::vars::set_flwor_clause(flwor_clause* c)
 }
 
 
-void flwor_wincond::vars::clone(
+void flwor_wincond_vars::clone(
     ExprManager* mgr,
+    user_function* udf,
     flwor_wincond::vars& cloneVars,
     expr::substitution_t& subst) const
 {
   if (posvar != NULL)
   {
-    var_expr* varCopy = mgr->create_var_expr(*posvar);
+    var_expr* varCopy = mgr->create_var_expr(udf, *posvar);
     subst[posvar] = varCopy;
     cloneVars.posvar = varCopy;
   }
 
   if (curr != NULL)
   {
-    var_expr* varCopy = mgr->create_var_expr(*curr);
+    var_expr* varCopy = mgr->create_var_expr(udf, *curr);
     subst[curr] = varCopy;
     cloneVars.curr = varCopy;
   }
 
   if (prev != NULL)
   {
-    var_expr* varCopy = mgr->create_var_expr(*prev);
+    var_expr* varCopy = mgr->create_var_expr(udf, *prev);
     subst[prev] = varCopy;
     cloneVars.prev = varCopy;
   }
 
   if (next != NULL)
   {
-    var_expr* varCopy = mgr->create_var_expr(*next);
+    var_expr* varCopy = mgr->create_var_expr(udf, *next);
     subst[next] = varCopy;
     cloneVars.next = varCopy;
   }
@@ -579,21 +503,23 @@ void flwor_wincond::set_flwor_clause(flwor_clause* c)
 }
 
 
-flwor_wincond* flwor_wincond::clone(expr::substitution_t& subst) const
+flwor_wincond* flwor_wincond::clone(
+    user_function* udf,
+    expr::substitution_t& subst) const
 {
   flwor_wincond::vars cloneInVars;
   flwor_wincond::vars cloneOutVars;
 
-  theInputVars.clone(theCCB->theEM, cloneInVars, subst);
-  theOutputVars.clone(theCCB->theEM, cloneOutVars, subst);
+  theInputVars.clone(theCCB->theEM, udf, cloneInVars, subst);
+  theOutputVars.clone(theCCB->theEM, udf, cloneOutVars, subst);
 
-  expr* cloneCondExpr = theCondExpr->clone(subst);
+  expr* cloneCondExpr = theCondExpr->clone(udf, subst);
 
   return theCCB->theEM->create_flwor_wincond(NULL,
-                           theIsOnly,
-                           cloneInVars,
-                           cloneOutVars,
-                           cloneCondExpr);
+                                             theIsOnly,
+                                             cloneInVars,
+                                             cloneOutVars,
+                                             cloneCondExpr);
 }
 
 
@@ -605,7 +531,7 @@ group_clause::group_clause(
      CompilerCB* ccb,
      const QueryLoc& loc,
      const rebind_list_t& gvars,
-     rebind_list_t ngvars,
+     const rebind_list_t& ngvars,
      const std::vector<std::string>& collations)
   :
   flwor_clause(sctx, ccb, loc, flwor_clause::group_clause),
@@ -663,7 +589,9 @@ expr* group_clause::get_input_for_nongroup_var(const var_expr* var)
 }
 
 
-flwor_clause* group_clause::clone(expr::substitution_t& subst) const
+flwor_clause* group_clause::clone(
+    user_function* udf,
+    expr::substitution_t& subst) const
 {
   csize numGroupVars = theGroupVars.size();
   csize numNonGroupVars = theNonGroupVars.size();
@@ -680,23 +608,29 @@ flwor_clause* group_clause::clone(expr::substitution_t& subst) const
 
   for (csize i = 0; i < numGroupVars; ++i)
   {
-    cloneGroupVars[i].first = theGroupVars[i].first->clone(subst);
-    cloneGroupVars[i].second = exprMgr->create_var_expr(*theGroupVars[i].second);
+    cloneGroupVars[i].first = theGroupVars[i].first->clone(udf, subst);
+
+    cloneGroupVars[i].second = exprMgr->
+    create_var_expr(udf, *theGroupVars[i].second);
+
     subst[theGroupVars[i].second] = cloneGroupVars[i].second;
   }
 
   for (csize i = 0; i < numNonGroupVars; ++i)
   {
-    cloneNonGroupVars[i].first = theNonGroupVars[i].first->clone(subst);
-    cloneNonGroupVars[i].second = exprMgr->create_var_expr(*theNonGroupVars[i].second);
+    cloneNonGroupVars[i].first = theNonGroupVars[i].first->clone(udf, subst);
+
+    cloneNonGroupVars[i].second = exprMgr->
+    create_var_expr(udf, *theNonGroupVars[i].second);
+
     subst[theNonGroupVars[i].second] = cloneNonGroupVars[i].second;
   }
 
   return theCCB->theEM->create_group_clause(theContext,
-                          get_loc(),
-                          cloneGroupVars,
-                          cloneNonGroupVars,
-                          theCollations);
+                                            get_loc(),
+                                            cloneGroupVars,
+                                            cloneNonGroupVars,
+                                            theCollations);
 }
 
 
@@ -726,7 +660,9 @@ orderby_clause::orderby_clause(
 }
 
 
-flwor_clause* orderby_clause::clone(expr::substitution_t& subst) const
+flwor_clause* orderby_clause::clone(
+    user_function* udf,
+    expr::substitution_t& subst) const
 {
   csize numColumns = num_columns();
 
@@ -734,14 +670,14 @@ flwor_clause* orderby_clause::clone(expr::substitution_t& subst) const
 
   for (csize i = 0; i < numColumns; ++i)
   {
-    cloneExprs[i] = theOrderingExprs[i]->clone(subst);
+    cloneExprs[i] = theOrderingExprs[i]->clone(udf, subst);
   }
 
   return theCCB->theEM->create_orderby_clause(theContext,
-                            get_loc(),
-                            theStableOrder,
-                            theModifiers,
-                            cloneExprs);
+                                              get_loc(),
+                                              theStableOrder,
+                                              theModifiers,
+                                              cloneExprs);
 }
 
 
@@ -758,7 +694,9 @@ materialize_clause::materialize_clause(
 }
 
 
-flwor_clause* materialize_clause::clone(expr::substitution_t& subst) const
+flwor_clause* materialize_clause::clone(
+    user_function* udf,
+    expr::substitution_t& subst) const
 {
   // we will reach here under the following scenario:
   // 1. We do plan serialization
@@ -782,6 +720,8 @@ count_clause::count_clause(
   flwor_clause(sctx, ccb, loc, flwor_clause::count_clause),
   theVarExpr(var)
 {
+  if (theVarExpr != NULL)
+    theVarExpr->set_flwor_clause(this);
 }
 
 
@@ -792,11 +732,13 @@ count_clause::~count_clause()
 }
 
 
-flwor_clause* count_clause::clone(expr::substitution_t& subst) const
+flwor_clause* count_clause::clone(
+    user_function* udf,
+    expr::substitution_t& subst) const
 {
   ExprManager* exprMgr = theVarExpr->get_ccb()->theEM;
 
-  var_expr* cloneVar = exprMgr->create_var_expr(*theVarExpr);
+  var_expr* cloneVar = exprMgr->create_var_expr(udf, *theVarExpr);
   subst[theVarExpr] = cloneVar;
 
   return theCCB->theEM->create_count_clause(theContext, get_loc(), cloneVar);
@@ -825,9 +767,11 @@ void where_clause::set_expr(expr* where)
 }
 
 
-flwor_clause* where_clause::clone(expr::substitution_t& subst) const
+flwor_clause* where_clause::clone(
+    user_function* udf,
+    expr::substitution_t& subst) const
 {
-  expr* cloneExpr = theWhereExpr->clone(subst);
+  expr* cloneExpr = theWhereExpr->clone(udf, subst);
 
   return theCCB->theEM->create_where_clause(theContext, get_loc(), cloneExpr);
 }
@@ -839,10 +783,11 @@ flwor_clause* where_clause::clone(expr::substitution_t& subst) const
 flwor_expr::flwor_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     bool general)
   :
-  expr(ccb, sctx, loc, (general ? gflwor_expr_kind : flwor_expr_kind)),
+  expr(ccb, sctx, udf, loc, (general ? gflwor_expr_kind : flwor_expr_kind)),
   theIsGeneral(general),
   theHasSequentialClauses(false),
   theReturnExpr(NULL)
@@ -1062,53 +1007,97 @@ long flwor_expr::defines_variable(const var_expr* v) const
 }
 
 
-/*******************************************************************************
-  Put in the given vector the var_exprs for the variables defined by this flwor
-  expr.
-********************************************************************************/
-void flwor_expr::get_vars_defined(std::vector<var_expr*>& varExprs) const
+/*****************************************************************************
+  Returns a set containing all the variables defined by the clauses of this
+  flwor expr.
+******************************************************************************/
+void flwor_expr::get_vars(expr::FreeVars& vars) const
 {
-  csize numClauses = theClauses.size();
+  csize numClauses = num_clauses();
 
   for (csize i = 0; i < numClauses; ++i)
   {
-    const flwor_clause* c = theClauses[i];
+    const flwor_clause& c = *get_clause(i);
 
-    if (c->get_kind() == flwor_clause::for_clause)
+    switch (c.get_kind())
     {
-      const for_clause* fc = static_cast<const for_clause *>(c);
+    case flwor_clause::for_clause:
+    {
+      const for_clause* fc = static_cast<const for_clause *>(&c);
 
-      varExprs.push_back(fc->get_var());
+      vars.insert(fc->get_var());
 
-      if (fc->get_pos_var())
-        varExprs.push_back(fc->get_pos_var());
+      if (fc->get_pos_var() != NULL)
+        vars.insert(fc->get_pos_var());
+
+      break;
     }
-    else if (c->get_kind() == flwor_clause::let_clause)
+    case flwor_clause::let_clause:
     {
-      const let_clause* lc = static_cast<const let_clause *>(c);
-
-      varExprs.push_back(lc->get_var());
+      const let_clause* lc = static_cast<const let_clause *>(&c);
+      vars.insert(lc->get_var());
+      break;
     }
-    else if (c->get_kind() == flwor_clause::window_clause)
+    case flwor_clause::window_clause:
     {
-      const window_clause* wc = static_cast<const window_clause *>(c);
+      const window_clause* wc = static_cast<const window_clause *>(&c);
 
-      varExprs.push_back(wc->get_var());
+      vars.insert(wc->get_var());
 
-      const flwor_wincond* startCond = wc->get_win_start();
-      const flwor_wincond* stopCond = wc->get_win_stop();
-      const flwor_wincond::vars& startVars = startCond->get_out_vars();
-      const flwor_wincond::vars& stopVars = stopCond->get_out_vars();
+      if (wc->get_win_start() != NULL)
+      {
+        const flwor_wincond* cond = wc->get_win_start();
+        const flwor_wincond::vars& condvars = cond->get_out_vars();
 
-      if (startVars.posvar) varExprs.push_back(startVars.posvar);
-      if (startVars.curr) varExprs.push_back(startVars.curr);
-      if (startVars.prev) varExprs.push_back(startVars.prev);
-      if (startVars.next) varExprs.push_back(startVars.next);
+        if (condvars.posvar != NULL) vars.insert(condvars.posvar);
+        if (condvars.curr != NULL) vars.insert(condvars.curr);
+        if (condvars.prev != NULL) vars.insert(condvars.prev);
+        if (condvars.next != NULL) vars.insert(condvars.next);
+      }
 
-      if (stopVars.posvar) varExprs.push_back(stopVars.posvar);
-      if (stopVars.curr) varExprs.push_back(stopVars.curr);
-      if (stopVars.prev) varExprs.push_back(stopVars.prev);
-      if (stopVars.next) varExprs.push_back(stopVars.next);
+      if (wc->get_win_stop() != NULL)
+      {
+        const flwor_wincond* cond = wc->get_win_stop();
+        const flwor_wincond::vars& condvars = cond->get_out_vars();
+
+        if (condvars.posvar != NULL) vars.insert(condvars.posvar);
+        if (condvars.curr != NULL) vars.insert(condvars.curr);
+        if (condvars.prev != NULL) vars.insert(condvars.prev);
+        if (condvars.next != NULL) vars.insert(condvars.next);
+      }
+
+      break;
+    }
+    case flwor_clause::group_clause:
+    {
+      const group_clause* gc = static_cast<const group_clause *>(&c);
+
+      flwor_clause::rebind_list_t::const_iterator ite = gc->beginGroupVars();
+      flwor_clause::rebind_list_t::const_iterator end = gc->endGroupVars();
+
+      for (; ite != end; ++ite)
+      {
+        vars.insert((*ite).second);
+      }
+
+      ite = gc->beginNonGroupVars();
+      end = gc->endNonGroupVars();
+
+      for (; ite != end; ++ite)
+      {
+        vars.insert((*ite).second);
+      }
+
+      break;
+    }
+    case flwor_clause::count_clause:
+    {
+      const count_clause* cc = static_cast<const count_clause *>(&c);
+      vars.insert(cc->get_var());
+      break;
+    }
+    default:
+      break;
     }
   }
 }
@@ -1164,28 +1153,6 @@ void flwor_expr::compute_scripting_kind()
   }
 
   checkScriptingKind();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-expr* flwor_expr::cloneImpl(substitution_t& subst) const
-{
-  ulong numClauses = num_clauses();
-
-  flwor_expr* cloneFlwor = theCCB->theEM->create_flwor_expr(theSctx, get_loc(), theIsGeneral);
-
-  for (ulong i = 0; i < numClauses; ++i)
-  {
-    flwor_clause* cloneClause = theClauses[i]->clone(subst);
-
-    cloneFlwor->add_clause(cloneClause, false);
-  }
-
-  cloneFlwor->set_return_expr(theReturnExpr->clone(subst));
-
-  return cloneFlwor;
 }
 
 

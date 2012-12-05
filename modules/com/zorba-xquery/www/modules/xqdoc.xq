@@ -139,6 +139,7 @@ declare %private function xqd:xqdoc-content-impl(
   $filename as xs:string
 ) as element() external;
 
+
 (:~
  : Generated the an XQDoc XML document for the module provided
  : as parameter to this function.
@@ -156,6 +157,7 @@ declare function xqd:xqdoc-content(
 {
   xqd:xqdoc-content-impl($module, "")
 };
+
 
 (:~
  : Generated the an XQDoc XML document for the module provided

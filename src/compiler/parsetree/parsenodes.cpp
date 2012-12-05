@@ -362,18 +362,18 @@ void EmptyOrderDecl::accept( parsenode_visitor &v ) const
   [20] InheritMode ::=  "inherit" | "no-inherit"
 ********************************************************************************/
 CopyNamespacesDecl::CopyNamespacesDecl(
-    const QueryLoc& loc_,
-    StaticContextConsts::preserve_mode_t _preserve_mode,
-    StaticContextConsts::inherit_mode_t  _inherit_mode)
+    const QueryLoc& loc,
+    bool preserve_ns,
+    bool inherit_ns)
   :
-  parsenode(loc_),
-  preserve_mode(_preserve_mode),
-  inherit_mode(_inherit_mode)
+  parsenode(loc),
+  thePreserveNamespaces(preserve_ns),
+  theInheritNamespaces(inherit_ns)
 {
 }
 
 
-void CopyNamespacesDecl::accept( parsenode_visitor &v ) const
+void CopyNamespacesDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -5694,7 +5694,7 @@ void LiteralFunctionItem::accept(parsenode_visitor& v) const
 void InlineFunction::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (theReturnType);
+  //ACCEPT (theReturnType);
   //ACCEPT (theParamList);
   ACCEPT (theEnclosedExpr);
   END_VISITOR ();
