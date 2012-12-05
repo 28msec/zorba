@@ -74,7 +74,7 @@ std::ostream& operator<<( std::ostream &o, SchemaTypeCode c ) {
   if ( c >= 0 && c < XS_LAST )
     o << s[ c ];
   else
-    o << "<illegal type code: " << (int)c << '>';
+    o << "[illegal type code: " << (int)c << ']';
 
   return o;
 };
