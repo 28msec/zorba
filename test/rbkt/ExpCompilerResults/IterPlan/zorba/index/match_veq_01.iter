@@ -1,0 +1,137 @@
+Iterator tree for doc indexer:
+<flwor::FLWORIterator>
+  <ForVariable name="$$context-item">
+    <CtxVarIterator varid="1" varname="$$idx_doc_var_0x891caa0" varkind="global"/>
+  </ForVariable>
+  <ReturnClause>
+    <ValueIndexEntryBuilderIterator>
+      <ForVarIterator varname="$$context-item"/>
+      <CastIterator type="xs:string">
+        <FnDataIterator>
+          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,email)" typename="*" nill allowed="0">
+            <ForVarIterator varname="$$context-item"/>
+          </AttributeAxisIterator>
+        </FnDataIterator>
+      </CastIterator>
+    </ValueIndexEntryBuilderIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+
+Iterator tree for index:
+<flwor::FLWORIterator>
+  <ForVariable name="$$context-item">
+    <ZorbaCollectionIterator>
+      <SingletonIterator value="xs:QName(www.accounts.com,accounts,accounts)"/>
+    </ZorbaCollectionIterator>
+  </ForVariable>
+  <ReturnClause>
+    <ValueIndexEntryBuilderIterator>
+      <ForVarIterator varname="$$context-item"/>
+      <CastIterator type="xs:string">
+        <FnDataIterator>
+          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,email)" typename="*" nill allowed="0">
+            <ForVarIterator varname="$$context-item"/>
+          </AttributeAxisIterator>
+        </FnDataIterator>
+      </CastIterator>
+    </ValueIndexEntryBuilderIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<LowerCaseIterator>
+  <SingletonIterator value="xs:string(George@gmail.com)"/>
+</LowerCaseIterator>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="4" varname="doc">
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,accounts)"/>
+      <FnConcatIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,account)"/>
+          <FnConcatIterator>
+            <AttributeIterator qname="xs:QName(,,name)">
+              <SingletonIterator value="xs:string(John)"/>
+            </AttributeIterator>
+            <AttributeIterator qname="xs:QName(,,email)">
+              <SingletonIterator value="xs:string(john@yahoo.com)"/>
+            </AttributeIterator>
+          </FnConcatIterator>
+        </ElementIterator>
+        <TextIterator>
+          <SingletonIterator value="xs:string(;
+)"/>
+        </TextIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,account)"/>
+          <FnConcatIterator>
+            <AttributeIterator qname="xs:QName(,,name)">
+              <SingletonIterator value="xs:string(George)"/>
+            </AttributeIterator>
+            <AttributeIterator qname="xs:QName(,,email)">
+              <SingletonIterator value="xs:string(george@gmail.com)"/>
+            </AttributeIterator>
+          </FnConcatIterator>
+        </ElementIterator>
+        <TextIterator>
+          <SingletonIterator value="xs:string(;
+)"/>
+        </TextIterator>
+      </FnConcatIterator>
+    </ElementIterator>
+  </CtxVarDeclareIterator>
+  <SequentialIterator>
+    <ApplyIterator>
+      <ZorbaCreateCollectionIterator>
+        <SingletonIterator value="xs:QName(www.accounts.com,accounts,accounts)"/>
+      </ZorbaCreateCollectionIterator>
+    </ApplyIterator>
+    <ApplyIterator>
+      <CreateIndexIterator>
+        <SingletonIterator value="xs:QName(www.accounts.com,accounts,accounts-index)"/>
+      </CreateIndexIterator>
+    </ApplyIterator>
+    <flwor::FLWORIterator>
+      <ForVariable name="acc">
+        <NodeDistinctIterator allow-atomics="false" check-only="false">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,account)" typename="*" nill allowed="0">
+            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
+              <CtxVarIterator varid="4" varname="doc" varkind="global"/>
+            </TreatIterator>
+          </ChildAxisIterator>
+        </NodeDistinctIterator>
+      </ForVariable>
+      <MaterializeClause>
+        <MaterializeForVariable inputVar="acc : "/>
+      </MaterializeClause>
+      <ReturnClause>
+        <ApplyIterator>
+          <ZorbaInsertNodesIterator need-to-copy="true">
+            <SingletonIterator value="xs:QName(www.accounts.com,accounts,accounts)"/>
+            <ForVarIterator varname="acc"/>
+          </ZorbaInsertNodesIterator>
+        </ApplyIterator>
+      </ReturnClause>
+    </flwor::FLWORIterator>
+    <FnConcatIterator>
+      <FunctionTraceIterator>
+        <ProbeIndexPointValueIterator>
+          <SingletonIterator value="xs:QName(www.accounts.com,accounts,accounts-index)"/>
+          <SingletonIterator value="xs:string(george@gmail.com)"/>
+        </ProbeIndexPointValueIterator>
+      </FunctionTraceIterator>
+      <SingletonIterator value="xs:string(
+)"/>
+    </FnConcatIterator>
+  </SequentialIterator>
+</SequentialIterator>
+

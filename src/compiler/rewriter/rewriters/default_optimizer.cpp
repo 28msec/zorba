@@ -188,6 +188,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     }
   }
 
+  // index matching
   if (Properties::instance()->useIndexes())
   {
     bool local_modified = false;
