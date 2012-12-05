@@ -13047,8 +13047,7 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
     expand_elem_qname(typeNameItem, typeName->get_name(), loc);
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
 
   xqtref_t contentType;
 

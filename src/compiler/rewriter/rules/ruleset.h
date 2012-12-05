@@ -255,9 +255,11 @@ public:
 class IndexMatchingRule : public RewriteRule
 {
 protected:
-  IndexDecl  * theIndexDecl;
-  expr       * theViewExpr;
-  bool         theDoTrace;
+  IndexDecl                 * theIndexDecl;
+  flwor_expr                * theViewExpr;
+  std::vector<expr*>          theKeyExprs;
+  flwor_expr                * theQueryExpr;
+  bool                        theDoTrace;
 
 public:
   IndexMatchingRule(IndexDecl* decl);
@@ -265,7 +267,9 @@ public:
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 
 protected:
-  expr* matchIndex(RewriterContext& rCtx, expr* node, bool& modified);
+  expr* matchIndex(RewriterContext& rCtx, bool& modified);
+
+  void getQueryPreds(std::vector<expr**>& preds);
 };
 
 

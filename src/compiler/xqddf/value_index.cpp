@@ -452,7 +452,7 @@ void IndexDecl::analyzeExprInternal(
   for $newdot at $newpos in cloned_domain_expr
   return value-index-entry-builder($$newdot, cloned_key1_expr, ..., cloned_keyN_expr)
 *******************************************************************************/
-expr* IndexDecl::getViewExpr()
+flwor_expr* IndexDecl::getViewExpr()
 {
   theDomainClause = NULL;
 
@@ -510,8 +510,8 @@ expr* IndexDecl::getViewExpr()
   // where $key_1 eq $arg_1 and ... and $key_N eq $arg_N
   // return $newdot
   //
-  function* compFunc = BUILTIN_FUNC(OP_EQUAL_2);
-  std::vector<expr*> predExprs;
+  //function* compFunc = BUILTIN_FUNC(OP_EQUAL_2);
+  //std::vector<expr*> predExprs;
   csize numKeys = theKeyExprs.size();
 
   for (csize i = 0; i < numKeys; ++i)
@@ -537,6 +537,7 @@ expr* IndexDecl::getViewExpr()
 
     flworExpr->add_clause(lc);
 
+#if 0
     // create the predicate
     expr* op1 = theCCB->theEM->create_wrapper_expr(sctx, udf, keyloc, keyVar);
 
@@ -551,8 +552,10 @@ expr* IndexDecl::getViewExpr()
     create_fo_expr(sctx, udf, keyloc, compFunc, op1, op2);
 
     predExprs.push_back(pred);
+#endif
   }
 
+#if 0
   expr* whereExpr;
 
   if (predExprs.size() > 1)
@@ -569,13 +572,7 @@ expr* IndexDecl::getViewExpr()
   create_where_clause(sctx, whereExpr->get_loc(), whereExpr);
 
   flworExpr->add_clause(wc);
-
-  if (theCCB->theConfig.optimize_cb != NULL)
-  {
-    std::string msg = "view expr for index " + theName->getStringValue().str();
-
-    theCCB->theConfig.optimize_cb(flworExpr, msg);
-  }
+#endif
 
   return flworExpr;
 }

@@ -2467,8 +2467,8 @@ bool begin_visit(instanceof_expr& v)
 void end_visit(instanceof_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  PlanIter_t p = pop_itstack ();
-  push_itstack (new InstanceOfIterator (sctx, qloc, p, v.get_target_type ()));
+  PlanIter_t p = pop_itstack();
+  push_itstack (new InstanceOfIterator (sctx, qloc, p, v.get_target_type()));
 }
 
 

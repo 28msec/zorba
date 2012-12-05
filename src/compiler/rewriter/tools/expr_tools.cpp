@@ -23,6 +23,7 @@
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/expr_iter.h"
+#include "compiler/api/compilercb.h"
 
 #include "functions/func_errors_and_diagnostics.h"
 
@@ -80,6 +81,7 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
         }
         else
         {
+          assert(false);
           subst[view] = query;
           return true;
         }
@@ -145,8 +147,58 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
       return false;
     }
 
+    switch (qkind)
+    {
+    case var_expr::for_var:
+    case var_expr::pos_var:
+    {
+      expr::substitution_t::iterator ite = subst.find(view);
+
+      if (ite != subst.end())
+      {
+        return (qe == ite->second);
+      }
+      else
+      {
+        assert(false);
+        subst[view] = query;
+        return true;
+      }
+    }
+    case var_expr::let_var:
+    {
+      return match_exact(qe->get_domain_expr(), ve->get_domain_expr(), subst);
+    }
+    case var_expr::win_var:
+    case var_expr::wincond_out_var:
+    case var_expr::wincond_out_pos_var:
+    case var_expr::wincond_in_var:
+    case var_expr::wincond_in_pos_var:
+    case var_expr::groupby_var:
+    case var_expr::non_groupby_var:
+    case var_expr::count_var:
+    {
+      ZORBA_ASSERT(false); // TODO
+    }
+    case var_expr::score_var:
+    case var_expr::prolog_var:
+    case var_expr::local_var:
+    case var_expr::copy_var:
+    case var_expr::catch_var:
+    case var_expr::arg_var:
+    case var_expr::eval_var:
+    {
+      ZORBA_ASSERT(false);
+    }
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
+
     break;
   }
+
   case fo_expr_kind:
   {
     fo_expr* qe = static_cast<fo_expr*>(query);
@@ -155,8 +207,20 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
     if (qe->get_func() != ve->get_func())
       return false;
 
-    break;
+    csize numArgs = qe->num_args();
+
+    if (numArgs != ve->num_args())
+      return false;
+
+    for (csize i = 0; i < numArgs; i++)
+    {
+      if (!match_exact(qe->get_arg(i), ve->get_arg(i), subst))
+        return false;
+    }
+
+    return true;
   }
+
   case relpath_expr_kind:
   {
     relpath_expr* qe = static_cast<relpath_expr*>(query);
@@ -181,27 +245,114 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
         return false;
     }
 
+    // <vsource>/b/c  vs  <qsource>/a/b/c
     if (vnumSteps < qnumSteps)
     {
+      expr* vsource = (*ve)[0];
+
+      if (vsource->get_expr_kind() != var_expr_kind)
+        return false;
+
+      relpath_expr* qpath = query->get_ccb()->getExprManager()->
+      create_relpath_expr(qe->get_sctx(), qe->get_udf(), qe->get_loc());
+
+      for (csize i = 0; i < qnumSteps - vnumSteps; ++i)
+        qpath->add_back((*qe)[i]);
+
+      return match_exact(qpath, vsource, subst);
     }
-    else if (vnumSteps < qnumSteps)
+    // <vsource>/a/b/c  vs  <qsource>/b/c
+    else if (qnumSteps < vnumSteps)
     {
+      expr* qsource = (*qe)[0];
+
+      if (qsource->get_expr_kind() != var_expr_kind)
+        return false;
+
+      relpath_expr* vpath = query->get_ccb()->getExprManager()->
+      create_relpath_expr(ve->get_sctx(), ve->get_udf(), ve->get_loc());
+
+      for (csize i = 0; i < vnumSteps - qnumSteps; ++i)
+        vpath->add_back((*ve)[i]);
+
+      return match_exact(qsource, vpath, subst);
     }
     else
     {
       return match_exact((*qe)[0], (*ve)[0], subst);
     }
+  }
 
-    break;
-  }
-#if 0
-  case fo_expr_kind:
+  case promote_expr_kind:
+  case cast_expr_kind:
+  case castable_expr_kind:
+  case instanceof_expr_kind:
   {
-    fo_expr* qe = static_cast<fo_expr*>(query);
-    fo_expr* ve = static_cast<fo_expr*>(view);
+    cast_or_castable_base_expr* qe = static_cast<cast_or_castable_base_expr*>(query);
+    cast_or_castable_base_expr* ve = static_cast<cast_or_castable_base_expr*>(view);
+
+    TypeManager* tm = qe->get_type_manager();
+
+    if (!TypeOps::is_equal(tm, *qe->get_target_type(), *ve->get_target_type()))
+      return false;
+
+    return match_exact(qe->get_input(), ve->get_input(), subst);
+  }
+
+  case treat_expr_kind:
+  {
+    treat_expr* qe = static_cast<treat_expr*>(query);
+    treat_expr* ve = static_cast<treat_expr*>(view);
+
+    TypeManager* tm = qe->get_type_manager();
+
+    if (qe->get_check_prime() != ve->get_check_prime())
+      return false;
+
+    if (!qe->get_check_prime())
+    {
+      if (qe->get_target_type()->get_quantifier() !=
+          ve->get_target_type()->get_quantifier())
+        return false;
+    }
+    else if (!TypeOps::is_equal(tm, *qe->get_target_type(), *ve->get_target_type()))
+    {
+      return false;
+    }
+
+    return match_exact(qe->get_input(), ve->get_input(), subst);
+  }
+
+  case wrapper_expr_kind:
+  {
+    wrapper_expr* qe = static_cast<wrapper_expr*>(query);
+    wrapper_expr* ve = static_cast<wrapper_expr*>(view);
+
+    return match_exact(qe->get_input(), ve->get_input(), subst);
+  }
+
+  case const_expr_kind:
+  {
+    const_expr* qe = static_cast<const_expr*>(query);
+    const_expr* ve = static_cast<const_expr*>(view);
+
+    try
+    {
+      // TODO: collation, timezone ???? Implement the full eq spec ????
+      return qe->get_val()->equals(ve->get_val());
+    }
+    catch (ZorbaException&)
+    {
+      return false;
+    }
     break;
   }
-#endif
+
+  case delete_expr_kind:
+  case insert_expr_kind:
+  case rename_expr_kind:
+  case replace_expr_kind:
+  case transform_expr_kind:
   default:
   {
     ZORBA_ASSERT(false);

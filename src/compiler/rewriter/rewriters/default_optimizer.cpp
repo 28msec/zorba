@@ -201,9 +201,9 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     std::vector<IndexDecl*>::const_iterator end = indexDecls.end();
     for (; ite != end; ++ite)
     {
-      store::Index* idx = GENV_STORE.getIndex((*ite)->getName());
+      //store::Index* idx = GENV_STORE.getIndex((*ite)->getName());
 
-      if (idx != NULL)
+      //if (idx != NULL)
       {
         IndexMatchingRule rule(*ite);
 

@@ -31,6 +31,8 @@ namespace zorba
 class ExprManager;
 class dynamic_context;
 class DocIndexer;
+class flwor_expr;
+
 typedef rchandle<DocIndexer> DocIndexer_t;
 
 
@@ -361,7 +363,7 @@ public:
 
   void analyze();
 
-  expr* getViewExpr();
+  flwor_expr* getViewExpr();
 
   expr* getBuildExpr(const QueryLoc& loc);
 

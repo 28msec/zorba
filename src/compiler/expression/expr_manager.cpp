@@ -421,7 +421,7 @@ const_expr* ExprManager::create_const_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    store::Item_t val)
+    const store::Item_t& val)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, udf, loc, val);
 }

@@ -262,7 +262,7 @@ public:
       static_context* sctx,
       user_function* udf,
       const QueryLoc&,
-      store::Item_t);
+      const store::Item_t&);
 
   const_expr* create_const_expr(
       static_context* sctx,
