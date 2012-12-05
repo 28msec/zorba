@@ -1252,6 +1252,53 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
+  <zorba:iterator name="ZorbaReplaceNodesIterator" >
+    
+    <zorba:description author="Zorba Team">
+      zorba:replace
+    </zorba:description>
+    
+    <zorba:function generateCodegen="false">
+      
+      <zorba:signature localname="replace" prefix="static-collections-dml">
+        <zorba:param>item()</zorba:param>
+        <zorba:param>item()</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+      
+      <zorba:signature localname="replace" prefix="dynamic-collections-dml">
+        <zorba:param>item()</zorba:param>
+        <zorba:param>item()</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+      
+      <zorba:methods>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:mustCopyInputNodes value="false"/>
+      </zorba:methods>
+      
+    </zorba:function>
+    
+    <zorba:constructor>
+      <zorba:parameter type="bool" name="isDynamic"/>
+    </zorba:constructor>
+    
+    <zorba:member type="bool" name="theIsDynamic"/>
+    
+    <zorba:method
+      const="true" 
+      name="getCollection" 
+      return="const StaticallyKnownCollection*">
+      <zorba:param type="const store::Item_t&amp;" name="name"/>
+      <zorba:param type="store::Collection_t&amp;" name="coll"/>
+    </zorba:method>
+  </zorba:iterator>
+  
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="ZorbaTruncateCollectionIterator" >
 
     <zorba:description author="Zorba Team">

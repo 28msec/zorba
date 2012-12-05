@@ -396,6 +396,28 @@ PULPrimitiveFactory::createUpdDeleteNodesFromCollection(
 /***************************************************************************
 
 ****************************************************************************/
+UpdReplaceInCollection*
+PULPrimitiveFactory::createUpdReplaceInCollection(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& name,
+    store::Item_t& target,
+    store::Item_t& content,
+    bool isDynamic)
+{
+  return new UpdReplaceInCollection(
+      pul,
+      aLoc,
+      name,
+      target,
+      content,
+      isDynamic);
+}
+    
+
+/***************************************************************************
+
+****************************************************************************/
 UpdTruncateCollection*
 PULPrimitiveFactory::createUpdTruncateCollection(
     CollectionPul* pul,

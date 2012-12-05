@@ -186,6 +186,7 @@ protected:
   std::vector<UpdatePrimitive*>      theCreateCollectionList;
   std::vector<UpdatePrimitive*>      theInsertIntoCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
+  std::vector<UpdatePrimitive*>      theReplaceInCollectionList;
   std::vector<UpdatePrimitive*>      theTruncateCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteCollectionList;
 
@@ -503,6 +504,13 @@ public:
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
+        bool isDynamic);
+
+  void addReplaceInCollection(
+        const QueryLoc* aQueryLoc,
+        store::Item_t& name,
+        store::Item_t& target,
+        store::Item_t& content,
         bool isDynamic);
 
   void addTruncateCollection(

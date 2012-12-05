@@ -509,6 +509,27 @@ public:
 };
 
 
+//static-collections-dml:replace
+class static_collections_dml_replace : public function
+{
+public:
+  static_collections_dml_replace(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
 //static-collections-dml:truncate
 class static_collections_dml_truncate : public function
 {

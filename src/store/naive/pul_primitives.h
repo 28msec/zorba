@@ -1213,6 +1213,54 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
+class UpdReplaceInCollection: public  UpdCollection
+{
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t theTarget;
+  store::Item_t theContent;
+  bool          theFound;
+
+  UpdReplaceInCollection(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::Item_t& name,
+        store::Item_t& target,
+        store::Item_t& content,
+        bool isDynamic)
+    :
+    UpdCollection(pul, aLoc, name, isDynamic),
+    theTarget(target),
+    theContent(content),
+    theFound(false)
+  {
+  }
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  { 
+    return store::UpdateConsts::UP_REPLACE_IN_COLLECTION;
+  }
+  
+  store::Item* getTarget() const
+  {
+    return theTarget.getp();
+  }
+
+  store::Item* getContent() const
+  {
+    return theContent.getp();
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class UpdTruncateCollection: public  UpdCollection
 {
   friend class PULPrimitiveFactory;

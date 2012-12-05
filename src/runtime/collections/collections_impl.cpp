@@ -1792,6 +1792,99 @@ ZorbaDeleteNodesLastIterator::getCollection(
 /*******************************************************************************
 
 ********************************************************************************/
+bool ZorbaReplaceNodesIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Collection_t              collection;
+  store::Item_t                    collectionName;
+  store::Item_t                    target;
+  store::Item_t                    content;
+  std::auto_ptr<store::PUL>        pul;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(target, theChildren[0].getp(), planState);
+  consumeNext(content, theChildren[1].getp(), planState);
+
+  if (! target->getCollection())
+  {
+    throw XQUERY_EXCEPTION(zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC(loc));
+  }
+
+  if (target->isNode() && target->getParent())
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0039_NON_ROOT_NODE_REPLACEMENT,
+      ERROR_PARAMS(target->getCollection()->getName()->getStringValue()),
+      ERROR_LOC( loc )
+    );
+  }
+  collection = target->getCollection();
+  collectionName = collection->getName();
+  (void)getCollection(collectionName, collection);
+
+  // create the pul and add the primitive
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+  pul->addReplaceInCollection(
+      &loc,
+      collectionName,
+      target,
+      content,
+      theIsDynamic);
+
+  result = pul.release();
+  STACK_PUSH( result != NULL, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+const StaticallyKnownCollection*
+ZorbaReplaceNodesIterator::getCollection(
+    const store::Item_t& name,
+    store::Collection_t& coll) const
+{
+  const StaticallyKnownCollection* collectionDecl = 
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
+
+  if (!theIsDynamic) 
+  {
+    switch(collectionDecl->getUpdateProperty())
+    {
+      case StaticContextConsts::decl_const:
+        RAISE_ERROR(zerr::ZDDY0004_COLLECTION_CONST_UPDATE, loc,
+        ERROR_PARAMS(name->getStringValue()));
+
+      case StaticContextConsts::decl_append_only:
+        RAISE_ERROR(zerr::ZDDY0037_COLLECTION_APPEND_BAD_REPLACE, loc,
+        ERROR_PARAMS(name->getStringValue()));
+
+      case StaticContextConsts::decl_queue:
+        RAISE_ERROR(zerr::ZDDY0038_COLLECTION_QUEUE_BAD_REPLACE, loc,
+        ERROR_PARAMS(name->getStringValue()));
+
+      case StaticContextConsts::decl_mutable:
+        // good to go
+        break;
+
+      default:
+        ZORBA_ASSERT(false);
+    }
+  }
+
+  return collectionDecl;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool ZorbaTruncateCollectionIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const

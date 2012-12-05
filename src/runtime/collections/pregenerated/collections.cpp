@@ -657,6 +657,36 @@ ZorbaDeleteNodesLastIterator::~ZorbaDeleteNodesLastIterator() {}
 // </ZorbaDeleteNodesLastIterator>
 
 
+// <ZorbaReplaceNodesIterator>
+SERIALIZABLE_CLASS_VERSIONS(ZorbaReplaceNodesIterator)
+
+void ZorbaReplaceNodesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaReplaceNodesIterator, PlanIteratorState>*)this);
+
+    ar & theIsDynamic;
+}
+
+
+void ZorbaReplaceNodesIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaReplaceNodesIterator::~ZorbaReplaceNodesIterator() {}
+
+// </ZorbaReplaceNodesIterator>
+
+
 // <ZorbaTruncateCollectionIterator>
 SERIALIZABLE_CLASS_VERSIONS(ZorbaTruncateCollectionIterator)
 

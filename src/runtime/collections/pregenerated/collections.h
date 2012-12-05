@@ -910,6 +910,44 @@ public:
 
 /**
  * 
+ *      zorba:replace
+ *    
+ * Author: Zorba Team
+ */
+class ZorbaReplaceNodesIterator : public NaryBaseIterator<ZorbaReplaceNodesIterator, PlanIteratorState>
+{ 
+protected:
+  bool theIsDynamic; //
+public:
+  SERIALIZABLE_CLASS(ZorbaReplaceNodesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaReplaceNodesIterator,
+    NaryBaseIterator<ZorbaReplaceNodesIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  ZorbaReplaceNodesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool isDynamic)
+    : 
+    NaryBaseIterator<ZorbaReplaceNodesIterator, PlanIteratorState>(sctx, loc, children),
+    theIsDynamic(isDynamic)
+  {}
+
+  virtual ~ZorbaReplaceNodesIterator();
+
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      zorba:truncate
  *    
  * Author: Zorba Team

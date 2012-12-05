@@ -149,6 +149,9 @@ namespace zorba {
     void beginVisit( const ZorbaDeleteNodesLastIterator& );
     void endVisit  ( const ZorbaDeleteNodesLastIterator& );
 
+    void beginVisit( const ZorbaReplaceNodesIterator& );
+    void endVisit  ( const ZorbaReplaceNodesIterator& );
+
     void beginVisit( const ZorbaTruncateCollectionIterator& );
     void endVisit  ( const ZorbaTruncateCollectionIterator& );
 
