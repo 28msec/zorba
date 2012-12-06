@@ -17,47 +17,32 @@ Iterator tree for main query:
         <SingletonIterator value="xs:integer(2)"/>
       </NumArithIterator_ModOperation>
     </ForVariable>
-    <LetVariable name="foo" materialize="true">
+    <ForVariable name="foo">
       <CtxVarIterator varid="4" varname="g" varkind="global"/>
-    </LetVariable>
-    <LetVariable name="$$opt_temp_0" materialize="true">
-      <HoistIterator>
-        <PromoteIterator type="xs:anyAtomicType">
-          <FnDataIterator>
-            <LetVarIterator varname="foo"/>
-          </FnDataIterator>
-        </PromoteIterator>
-      </HoistIterator>
-    </LetVariable>
+    </ForVariable>
     <WhereClause>
-      <CompareIterator>
-        <FnSumIterator>
+      <TypedValueCompareIterator_INTEGER>
+        <FnSumIntegerIterator>
           <flwor::FLWORIterator>
             <ForVariable name="z">
               <FnConcatIterator>
                 <SingletonIterator value="xs:integer(5)"/>
-                <LetVarIterator varname="foo"/>
+                <ForVarIterator varname="foo"/>
               </FnConcatIterator>
             </ForVariable>
             <ReturnClause>
-              <GenericArithIterator_AddOperation>
-                <GenericArithIterator_MultiplyOperation>
-                  <PromoteIterator type="xs:anyAtomicType">
-                    <FnDataIterator>
-                      <ForVarIterator varname="z"/>
-                    </FnDataIterator>
-                  </PromoteIterator>
+              <SpecificNumArithIterator_AddOperation_INTEGER>
+                <SpecificNumArithIterator_MultiplyOperation_INTEGER>
+                  <ForVarIterator varname="z"/>
                   <ForVarIterator varname="y"/>
-                </GenericArithIterator_MultiplyOperation>
-                <UnhoistIterator>
-                  <LetVarIterator varname="$$opt_temp_0"/>
-                </UnhoistIterator>
-              </GenericArithIterator_AddOperation>
+                </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+                <ForVarIterator varname="foo"/>
+              </SpecificNumArithIterator_AddOperation_INTEGER>
             </ReturnClause>
           </flwor::FLWORIterator>
-        </FnSumIterator>
+        </FnSumIntegerIterator>
         <SingletonIterator value="xs:integer(8)"/>
-      </CompareIterator>
+      </TypedValueCompareIterator_INTEGER>
     </WhereClause>
     <ReturnClause>
       <ForVarIterator varname="x"/>

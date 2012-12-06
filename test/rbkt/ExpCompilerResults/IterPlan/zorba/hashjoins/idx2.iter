@@ -36,13 +36,11 @@ Iterator tree for main query:
   </LetVariable>
   <LetVariable name="$$opt_temp_1" materialize="true">
     <HoistIterator>
-      <CastIterator type="xs:string">
-        <FnDataIterator>
-          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
-            <ForVarIterator varname="p"/>
-          </AttributeAxisIterator>
-        </FnDataIterator>
-      </CastIterator>
+      <FnDataIterator>
+        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+          <ForVarIterator varname="p"/>
+        </AttributeAxisIterator>
+      </FnDataIterator>
     </HoistIterator>
   </LetVariable>
   <ForVariable name="a">
@@ -58,17 +56,15 @@ Iterator tree for main query:
   <WhereClause>
     <FnBooleanIterator>
       <TypedValueCompareIterator_STRING>
-        <CastIterator type="xs:string">
-          <PromoteIterator type="xs:anyAtomicType">
-            <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,buyer)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="t"/>
-                </ChildAxisIterator>
-              </AttributeAxisIterator>
-            </FnDataIterator>
-          </PromoteIterator>
-        </CastIterator>
+        <PromoteIterator type="xs:anyAtomicType">
+          <FnDataIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,buyer)" typename="*" nill allowed="0">
+                <ForVarIterator varname="t"/>
+              </ChildAxisIterator>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+        </PromoteIterator>
         <UnhoistIterator>
           <LetVarIterator varname="$$opt_temp_1"/>
         </UnhoistIterator>

@@ -12,6 +12,8 @@ New Features:
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
+  * Better computation of the static type for global variables.
+  * Optimization of comparison operators when untypedAtomic items are involved.
 
 Bug Fixes/Other Changes:
   * Change XQXQ (XQuery-for-XQuery) module now part of Zorba core
@@ -28,8 +30,9 @@ Bug Fixes/Other Changes:
   * Fixed bug #1065321 (following:text() doesn't return results in doc order)
   * Fixed bug #1067706 (wrong const folding in mutually recursive udfs)
   * Fixed bug #1021492 (while computeing the "sources" of a prolog var, skip
-    any var-setting exprs that appear in non-used (and non-optimized) functions). 
+    any var-setting exprs that appear in non-used (and non-optimized) functions).
   * Fixed bug #1070551 (zerr:ZOSE0003 stream read failure)
+
 
 version 2.7
 
