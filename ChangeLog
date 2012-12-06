@@ -7,6 +7,8 @@ New Features:
   * (bug #1039284) Implemented jn:json-doc().
   * (bug #867363) Added http-uri-resolution feature to disable HTTP
 	when resolving URIs.
+  * Can now specify jsoniq-strip-top-level-array option to parse-json() to
+    strip the top-level array from JSON streams.
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
@@ -17,6 +19,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #868640 (Node lifetime is shorter than expected due to let
     variable inlining)
   * Fixed bug in castable expr when the target type is xs:QName.
+  * Fixed bugs #1081626 (Segmentation fault in a side-effecting FLWOR),
+    #1079488 (streaming segfault)
   * Fixed bug #1062093 (bug in var reference iterators with an associated
     position that is negative)
   * Fixed bug #1061222 (bad message for errors in index key type declaration)
