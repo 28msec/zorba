@@ -3329,10 +3329,25 @@ void* begin_visit(const VFO_DeclList& v)
       store::Item_t qnameItem;
       zstring value = opt_decl->get_val().str();
 
-      expand_no_default_qname(qnameItem, opt_decl->get_qname(), loc);
+      rchandle<QName> lQName = opt_decl->get_qname();
+      if (lQName->get_namespace().empty() && lQName->get_prefix().empty())
+      {
+        theSctx->expand_qname(
+           qnameItem,
+           static_context::XQUERY_OPTION_NS,
+           "",
+           lQName->get_localname(),
+           lQName->get_location());
+      }
+      else
+      {
+        expand_no_default_qname(qnameItem, lQName, loc);
+        if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
+        {
+          RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
+      }
 
-      if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
-        RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
       if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_FEATURE_NS &&
           value == "http-uri-resolution")
