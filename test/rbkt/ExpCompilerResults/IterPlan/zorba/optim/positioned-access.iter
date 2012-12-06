@@ -17,11 +17,7 @@ Iterator tree for main query:
     <FunctionTraceIterator>
       <flwor::FLWORIterator>
         <LetVariable name="x" materialize="true">
-          <PromoteIterator type="xs:integer">
-            <FnDataIterator>
-              <CtxVarIterator varid="4" varname="n1" varkind="global"/>
-            </FnDataIterator>
-          </PromoteIterator>
+          <CtxVarIterator varid="4" varname="n1" varkind="global"/>
         </LetVariable>
         <ReturnClause>
           <LetVarIterator varname="x">
@@ -35,11 +31,7 @@ Iterator tree for main query:
     <FunctionTraceIterator>
       <flwor::FLWORIterator>
         <LetVariable name="x" materialize="true">
-          <PromoteIterator type="xs:integer">
-            <FnDataIterator>
-              <CtxVarIterator varid="5" varname="n2" varkind="global"/>
-            </FnDataIterator>
-          </PromoteIterator>
+          <CtxVarIterator varid="5" varname="n2" varkind="global"/>
         </LetVariable>
         <ReturnClause>
           <LetVarIterator varname="x">
