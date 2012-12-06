@@ -27,6 +27,7 @@
 #include "node_factory.h"
 #include "pul_primitive_factory.h"
 #include "node_items.h"
+#include "json_items.h"
 
 #include "diagnostics/zorba_exception.h"
 #include "diagnostics/diagnostic.h"
@@ -88,8 +89,8 @@ void SimpleStore::shutdown(bool soft)
   {
     if (theNodeToReferencesMap.size() > 0)
     {
-      NodeRefMap::iterator iter = theNodeToReferencesMap.begin();
-      NodeRefMap::iterator end = theNodeToReferencesMap.end();
+      ItemRefMap::iterator iter = theNodeToReferencesMap.begin();
+      ItemRefMap::iterator end = theNodeToReferencesMap.end();
       for (; iter != end; ++iter)
       {
         std::cerr << "Reference: " << (*iter).second
@@ -278,27 +279,28 @@ store::Collection_t SimpleStore::createCollection(
 ********************************************************************************/
 bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* node)
 {
-  const XmlNode* xmlNode = static_cast<const XmlNode*>(node);
+  bool lHasReference = hasReference(node);
 
-  if (xmlNode->haveReference())
+  if (lHasReference)
   {
-    NodeRefMap::iterator resIt = theNodeToReferencesMap.find(xmlNode);
+    ItemRefMap::iterator resIt = theNodeToReferencesMap.find(node);
 
     ZORBA_FATAL(resIt != theNodeToReferencesMap.end(),"Node reference cannot be found");
 
     zstring id = (*resIt).second;
     return theItemFactory->createAnyURI(result, id);
   }
+  else
+  {
+    uuid u;
+    uuid::create(&u);
+    std::ostringstream oss;
+    oss << "urn:uuid:" << u;
+    zstring uuidStr = oss.str();
+    assignReference(node, uuidStr);
 
-  uuid u;
-  uuid::create(&u);
-  std::ostringstream oss;
-  oss << "urn:uuid:" << u;
-  zstring uuidStr = oss.str();
-
-  assignReference(xmlNode, uuidStr);
-
-  return theItemFactory->createAnyURI(result, uuidStr);
+    return theItemFactory->createAnyURI(result, uuidStr);
+  }
 }
 
 
@@ -310,22 +312,58 @@ bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* nod
 ********************************************************************************/
 bool SimpleStore::hasReference(const store::Item* node)
 {
-  return static_cast<const XmlNode*>(node)->haveReference();
+  using namespace zorba::simplestore::json;
+
+  bool lHasReference = false;
+  if (node->isNode())
+  {
+    const XmlNode* x = static_cast<const XmlNode*>(node);
+    lHasReference = x->haveReference();
+  }
+  else
+  {
+    assert(node->isJSONItem());
+    JSONItem* j = const_cast<JSONItem*>(static_cast<const JSONItem*>(node));
+
+    // only root nodes in a collection can have a reference
+    if (j->getTree() && j->getTree()->getRoot() == j)
+    {
+      ItemRefMap::iterator lIter = theNodeToReferencesMap.find(node);
+
+      lHasReference = (lIter != theNodeToReferencesMap.end());
+    }
+  }
+  return lHasReference;
 }
 
 
 bool SimpleStore::assignReference(const store::Item* node, const zstring& reference)
 {
-  const XmlNode* xmlNode = static_cast<const XmlNode*>(node);
-  zstring uuidStr = reference;
+  using namespace zorba::simplestore::json;
 
-  if (xmlNode->haveReference())
+  bool lHasReference = hasReference(node);
+
+  if (lHasReference)
   {
     return false;
   }
-  const_cast<XmlNode*>(xmlNode)->setHaveReference();
 
-  theNodeToReferencesMap.insert(xmlNode, uuidStr);
+  if (node->isNode())
+  {
+    const XmlNode* x = static_cast<const XmlNode*>(node);
+    const_cast<XmlNode*>(x)->setHaveReference();
+  }
+  else
+  {
+    assert(node->isJSONItem());
+    const JSONItem* j = static_cast<const JSONItem*>(node);
+
+    if (!j->getTree() || j != j->getTree()->getRoot())
+      throw ZORBA_EXCEPTION(zerr::ZAPI0080_CANNOT_RETRIEVE_REFERENCE);
+  }
+
+  zstring uuidStr = reference;
+  theNodeToReferencesMap.insert(node, uuidStr);
   theReferencesToNodeMap[uuidStr] = node;
 
   return true;
@@ -367,55 +405,59 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& refer
   @param node XDM node
   @return whether the node was registered or not.
 ********************************************************************************/
-bool SimpleStore::unregisterReferenceToUnusedNode(XmlNode* node)
+bool SimpleStore::unregisterReferenceToUnusedNode(store::Item* node)
 {
-  if (!node->haveReference())
-    return false;
+  bool lHasReference = hasReference(node);
 
-  NodeRefMap::iterator resIt;
+  if (!lHasReference)
+  {
+    return false;
+  }
+
+  ItemRefMap::iterator resIt;
 
   if ((resIt = theNodeToReferencesMap.find(node)) != theNodeToReferencesMap.end())
   {
     zstring value = (*resIt).second;
     theNodeToReferencesMap.erase(resIt);
-    node->resetHaveReference();
+
+    if (node->isNode())
+    {
+      static_cast<XmlNode*>(node)->resetHaveReference();
+    }
 
     theReferencesToNodeMap.erase(value);
 
     return true;
   }
-  else
-  {
-    return false;
-  }
+  assert(false);
 }
 
 /*******************************************************************************
+ * Remove a reference from the cache
   Does nothing in the simple store.
 
   @param node XDM node
   @return whether the node was registered or not.
 ********************************************************************************/
-bool SimpleStore::unregisterReferenceToDeletedNode(XmlNode* node)
+bool SimpleStore::unregisterReferenceToDeletedNode(store::Item* node)
 {
-  // Does nothing, since there is no persistency layer. A deleted node can still
-  // be retrieved with a reference, so its reference may not be removed from the
-  // cache.
-  // Merely returns true if entry found, false otherwise.
+  using namespace zorba::simplestore::json;
   
-  if (!node->haveReference())
-    return false;
+  bool lHasReference = hasReference(node);
 
-  NodeRefMap::iterator resIt;
-
-  if ((resIt = theNodeToReferencesMap.find(node)) != theNodeToReferencesMap.end())
-  {
-    return true;
-  }
-  else
+  if (!lHasReference)
   {
     return false;
   }
+
+  ItemRefMap::iterator resIt = theNodeToReferencesMap.find(node);
+  zstring id = (*resIt).second;
+
+  theNodeToReferencesMap.erase(node);
+  theReferencesToNodeMap.erase(id);
+
+  return true;
 }
 
 

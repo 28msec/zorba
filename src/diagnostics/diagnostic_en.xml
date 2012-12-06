@@ -2030,8 +2030,8 @@
       <value>"$1": invalid serialization method for SAX</value>
     </diagnostic>
 
-    <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_NODE_REFERENCE">
-      <value>can not retrieve node-reference for a node that is not in a collection</value>
+    <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_REFERENCE">
+      <value>can not retrieve reference for a JSON object that is not in a collection</value>
     </diagnostic>
      
     <diagnostic code="ZAPI0090" name="CANNOT_VALIDATE_NON_ROOT">
