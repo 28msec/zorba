@@ -50,7 +50,7 @@ class flwor_clause
 public:
   typedef var_rebind_list_t rebind_list_t;
 
-  typedef enum
+  enum ClauseKind
   {
     for_clause,
     let_clause,
@@ -60,7 +60,8 @@ public:
     count_clause,
     where_clause,
     materialize_clause
-  } ClauseKind;
+    // if you change this, also ensure that operator<< for it is still correct
+  };
 
 protected:
   static_context          * theContext;
@@ -106,6 +107,8 @@ public:
       expr::substitution_t& substitution) const = 0;
 };
 
+// for debugging
+std::ostream& operator<<( std::ostream&, flwor_clause::ClauseKind );
 
 /***************************************************************************//**
 

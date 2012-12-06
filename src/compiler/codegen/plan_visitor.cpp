@@ -1025,8 +1025,8 @@ bool begin_visit(flwor_expr& v)
           break;
         }
         default:
-          ZORBA_ASSERT(false);
-        }
+          ZORBA_ASSERT_WITH_MSG(false, "ClauseKind = " << k);
+        } // switch
 
         ++i;
       }
