@@ -35,7 +35,7 @@ namespace zorba {
 
 /**
  *        
- *      declare function ref:reference($item as item()) as xs:anyURI
+ *      declare function ref:reference($item as item()) as xs:string
  *    
  * Author: Federico Cavalieri
  */
@@ -131,7 +131,7 @@ public:
 
 /**
  * 
- *      declare function ref:dereference($reference as xs:anyURI) as item()?
+ *      declare function ref:dereference($reference as xs:string) as item()?
  *    
  * Author: Federico Cavalieri
  */

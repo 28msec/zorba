@@ -17,14 +17,14 @@
   <zorba:iterator name="ReferenceIterator">
 
     <zorba:description author="Federico Cavalieri">       
-      declare function ref:reference($item as item()) as xs:anyURI
+      declare function ref:reference($item as item()) as xs:string
     </zorba:description>
     
     <zorba:function>
     
       <zorba:signature localname="reference" prefix="fn-reference">
         <zorba:param>structured-item()</zorba:param>   
-        <zorba:output>xs:anyURI</zorba:output>
+        <zorba:output>xs:string</zorba:output>
       </zorba:signature>
       
       <zorba:methods>
@@ -70,7 +70,7 @@
 
       <zorba:signature localname="assign-reference" prefix="fn-reference">
         <zorba:param>structured-item()</zorba:param>
-        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:string</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
 
@@ -89,13 +89,13 @@
   <zorba:iterator name="DereferenceIterator">
 
     <zorba:description author="Federico Cavalieri">
-      declare function ref:dereference($reference as xs:anyURI) as item()?
+      declare function ref:dereference($reference as xs:string) as item()?
     </zorba:description>
 
     <zorba:function>
     
       <zorba:signature localname="dereference" prefix="fn-reference">
-        <zorba:param>xs:anyURI</zorba:param>
+        <zorba:param>xs:string</zorba:param>
         <zorba:output>structured-item()?</zorba:output>
       </zorba:signature>
       

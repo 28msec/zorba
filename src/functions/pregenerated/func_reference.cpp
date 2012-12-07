@@ -79,7 +79,7 @@ void populate_context_reference(static_context* sctx)
     DECL_WITH_KIND(sctx, fn_reference_reference,
         (createQName("http://www.zorba-xquery.com/modules/reference","","reference"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_REFERENCE_REFERENCE_1);
 
   }
@@ -103,7 +103,7 @@ void populate_context_reference(static_context* sctx)
     DECL_WITH_KIND(sctx, fn_reference_assign_reference,
         (createQName("http://www.zorba-xquery.com/modules/reference","","assign-reference"), 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FN_REFERENCE_ASSIGN_REFERENCE_2);
 
@@ -115,7 +115,7 @@ void populate_context_reference(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, fn_reference_dereference,
         (createQName("http://www.zorba-xquery.com/modules/reference","","dereference"), 
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_QUESTION),
         FunctionConsts::FN_REFERENCE_DEREFERENCE_1);
 
