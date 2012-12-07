@@ -1499,6 +1499,8 @@ void Item::swap(Item* anotherItem)
   {
     case NODE:
     {
+      SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
+      SYNC_CODE(static_cast<const simplestore::XmlNode*>(anotherItem)->getRCLock()->acquire());
       // Swap trees.
       assert(theUnion.treeRCPtr);
       assert(anotherItem->theUnion.treeRCPtr);
@@ -1509,6 +1511,9 @@ void Item::swap(Item* anotherItem)
       *theUnion.treeRCPtr -= anotherItem->theRefCount;
       *anotherItem->theUnion.treeRCPtr -= theRefCount;
       *anotherItem->theUnion.treeRCPtr += anotherItem->theRefCount;
+      SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+      SYNC_CODE(static_cast<const simplestore::XmlNode*>(anotherItem)->getRCLock()->release());
+      
       break;
     }
     case JSONIQ:

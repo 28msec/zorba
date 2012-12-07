@@ -762,7 +762,24 @@ void XmlNode::swap(Item* anotherItem)
   assert(lOtherItem);
   assert(theParent == NULL);
   assert(lOtherItem->theParent == NULL);
+  bool lHasReference = haveReference();
+  bool lOtherHasReference = lOtherItem->haveReference();
   std::swap(theFlags, lOtherItem->theFlags);
+
+  if(lHasReference)
+  {
+    setHaveReference();
+  }
+  if(lOtherHasReference)
+  {
+    setHaveReference();
+  }
+
+  // Adjust trees.
+#ifndef EMBEDED_TYPE
+  std::swap(getTree()->theTypesMap, lOtherItem->getTree()->theTypesMap);
+  std::swap(getTree()->theRootNode, lOtherItem->getTree()->theRootNode);
+#endif
 }
 
 /*******************************************************************************
@@ -1414,7 +1431,7 @@ store::Item_t OrdPathNode::leastCommonAncestor(const store::Item_t& aOther) cons
 
 void OrdPathNode::swap(Item* anotherItem)
 {
-  Item::swap(anotherItem);
+  XmlNode::swap(anotherItem);
   OrdPathNode* lOtherItem = dynamic_cast<OrdPathNode*>(anotherItem);
   std::swap(theOrdPath, lOtherItem->theOrdPath);
 }

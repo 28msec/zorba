@@ -14,4 +14,4 @@ dml:replace(dml:collection(xs:QName("ns:collection"))[2], <d/>);
 
 variable $new := ref:node-reference(dml:collection(xs:QName("ns:collection"))[2]);
 
-$old, $new, $old eq $new
+$old eq $new

@@ -1353,8 +1353,9 @@ void UpdReplaceInCollection::apply()
   (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
   assert(lColl);
+  
+  theTarget->swap(theContent.getp());
 
-  theFound = lColl->replaceNode(theTarget, theContent);
   theIsApplied = true;
 }
 
@@ -1370,7 +1371,7 @@ void UpdReplaceInCollection::undo()
 
   assert(lColl);
 
-  lColl->replaceNode(theContent, theTarget);
+  theTarget->swap(theContent.getp());
 }
 
 
