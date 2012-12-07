@@ -302,9 +302,9 @@ UpdInsertAttributes::UpdInsertAttributes(
   UpdatePrimitive(pul, aLoc, target),
   theNumApplied(0)
 {
-  std::size_t numAttrs = attrs.size();
+  csize numAttrs = attrs.size();
   theNewAttrs.resize(numAttrs);
-  for (std::size_t i = 0; i < numAttrs; i++)
+  for (csize i = 0; i < numAttrs; i++)
   {
     theNewAttrs[i].transfer(attrs[i]);
   }

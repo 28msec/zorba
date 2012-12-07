@@ -128,7 +128,9 @@ expr::expr()
   theCCB(NULL),
   theSctx(NULL),
   theUDF(NULL),
-  theFlags1(0)
+  theAnnotationFlags(0),
+  theBoolFlags(0),
+  theVisitId(0)
 {
 }
 
@@ -148,7 +150,8 @@ expr::expr(
   theUDF(udf),
   theLoc(loc),
   theKind(k),
-  theFlags1(0),
+  theAnnotationFlags(0),
+  theBoolFlags(0),
   theVisitId(0)
 {
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
@@ -335,7 +338,7 @@ void expr::clear_annotations()
   if (getDereferencesNodes() != ANNOTATION_TRUE_FIXED)
     setDereferencesNodes(ANNOTATION_FALSE);
 
-  //theFlags1 = 0;
+  //theAnnotationFlags = 0;
   //setNonDiscardable(ANNOTATION_FALSE);
   //setUnfoldable(ANNOTATION_FALSE);
 
@@ -381,14 +384,14 @@ bool expr::is_nondeterministic() const
 ********************************************************************************/
 BoolAnnotationValue expr::getProducesSortedNodes() const
 {
-  return (BoolAnnotationValue)(theFlags1 & PRODUCES_SORTED_NODES_MASK);
+  return (BoolAnnotationValue)(theAnnotationFlags & PRODUCES_SORTED_NODES_MASK);
 }
 
 
 void expr::setProducesSortedNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~PRODUCES_SORTED_NODES_MASK;
-  theFlags1 |= v;
+  theAnnotationFlags &= ~PRODUCES_SORTED_NODES_MASK;
+  theAnnotationFlags |= v;
 }
 
 
@@ -405,14 +408,14 @@ bool expr::producesSortedNodes() const
 BoolAnnotationValue expr::getProducesDistinctNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & PRODUCES_DISTINCT_NODES_MASK) >> PRODUCES_DISTINCT_NODES);
+         ((theAnnotationFlags & PRODUCES_DISTINCT_NODES_MASK) >> PRODUCES_DISTINCT_NODES);
 }
 
 
 void expr::setProducesDistinctNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~PRODUCES_DISTINCT_NODES_MASK;
-  theFlags1 |= (v << PRODUCES_DISTINCT_NODES);
+  theAnnotationFlags &= ~PRODUCES_DISTINCT_NODES_MASK;
+  theAnnotationFlags |= (v << PRODUCES_DISTINCT_NODES);
 }
 
 
@@ -429,14 +432,14 @@ bool expr::producesDistinctNodes() const
 BoolAnnotationValue expr::getIgnoresSortedNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & IGNORES_SORTED_NODES_MASK) >> IGNORES_SORTED_NODES);
+         ((theAnnotationFlags & IGNORES_SORTED_NODES_MASK) >> IGNORES_SORTED_NODES);
 }
 
 
 void expr::setIgnoresSortedNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~IGNORES_SORTED_NODES_MASK;
-  theFlags1 |= (v << IGNORES_SORTED_NODES);
+  theAnnotationFlags &= ~IGNORES_SORTED_NODES_MASK;
+  theAnnotationFlags |= (v << IGNORES_SORTED_NODES);
 }
 
 
@@ -453,14 +456,14 @@ bool expr::ignoresSortedNodes() const
 BoolAnnotationValue expr::getIgnoresDuplicateNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & IGNORES_DUPLICATE_NODES_MASK) >> IGNORES_DUPLICATE_NODES);
+         ((theAnnotationFlags & IGNORES_DUPLICATE_NODES_MASK) >> IGNORES_DUPLICATE_NODES);
 }
 
 
 void expr::setIgnoresDuplicateNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~IGNORES_DUPLICATE_NODES_MASK;
-  theFlags1 |= (v << IGNORES_DUPLICATE_NODES);
+  theAnnotationFlags &= ~IGNORES_DUPLICATE_NODES_MASK;
+  theAnnotationFlags |= (v << IGNORES_DUPLICATE_NODES);
 }
 
 
@@ -476,14 +479,14 @@ bool expr::ignoresDuplicateNodes() const
 BoolAnnotationValue expr::getNonDiscardable() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & NON_DISCARDABLE_MASK) >> NON_DISCARDABLE);
+         ((theAnnotationFlags & NON_DISCARDABLE_MASK) >> NON_DISCARDABLE);
 }
 
 
 void expr::setNonDiscardable(BoolAnnotationValue v)
 {
-  theFlags1 &= ~NON_DISCARDABLE_MASK;
-  theFlags1 |= (v << NON_DISCARDABLE);
+  theAnnotationFlags &= ~NON_DISCARDABLE_MASK;
+  theAnnotationFlags |= (v << NON_DISCARDABLE);
 }
 
 
@@ -500,14 +503,14 @@ bool expr::isNonDiscardable() const
 BoolAnnotationValue expr::getUnfoldable() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & UNFOLDABLE_MASK) >> UNFOLDABLE);
+         ((theAnnotationFlags & UNFOLDABLE_MASK) >> UNFOLDABLE);
 }
 
 
 void expr::setUnfoldable(BoolAnnotationValue v)
 {
-  theFlags1 &= ~UNFOLDABLE_MASK;
-  theFlags1 |= (v << UNFOLDABLE);
+  theAnnotationFlags &= ~UNFOLDABLE_MASK;
+  theAnnotationFlags |= (v << UNFOLDABLE);
 }
 
 
@@ -524,14 +527,14 @@ bool expr::isUnfoldable() const
 BoolAnnotationValue expr::getContainsRecursiveCall() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & CONTAINS_RECURSIVE_CALL_MASK) >> CONTAINS_RECURSIVE_CALL);
+         ((theAnnotationFlags & CONTAINS_RECURSIVE_CALL_MASK) >> CONTAINS_RECURSIVE_CALL);
 }
 
 
 void expr::setContainsRecursiveCall(BoolAnnotationValue v)
 {
-  theFlags1 &= ~CONTAINS_RECURSIVE_CALL_MASK;
-  theFlags1 |= (v << CONTAINS_RECURSIVE_CALL);
+  theAnnotationFlags &= ~CONTAINS_RECURSIVE_CALL_MASK;
+  theAnnotationFlags |= (v << CONTAINS_RECURSIVE_CALL);
 }
 
 
@@ -548,14 +551,14 @@ bool expr::containsRecursiveCall() const
 BoolAnnotationValue expr::getContainsPragma() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & CONTAINS_PRAGMA_MASK) >> CONTAINS_PRAGMA);
+         ((theAnnotationFlags & CONTAINS_PRAGMA_MASK) >> CONTAINS_PRAGMA);
 }
 
 
 void expr::setContainsPragma(BoolAnnotationValue v)
 {
-  theFlags1 &= ~CONTAINS_PRAGMA_MASK;
-  theFlags1 |= (v << CONTAINS_PRAGMA);
+  theAnnotationFlags &= ~CONTAINS_PRAGMA_MASK;
+  theAnnotationFlags |= (v << CONTAINS_PRAGMA);
 }
 
 
@@ -573,14 +576,14 @@ bool expr::containsPragma() const
 BoolAnnotationValue expr::getConstructsNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & CONSTRUCTS_NODES_MASK) >> CONSTRUCTS_NODES);
+         ((theAnnotationFlags & CONSTRUCTS_NODES_MASK) >> CONSTRUCTS_NODES);
 }
 
 
 void expr::setConstructsNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~CONSTRUCTS_NODES_MASK;
-  theFlags1 |= (v << CONSTRUCTS_NODES);
+  theAnnotationFlags &= ~CONSTRUCTS_NODES_MASK;
+  theAnnotationFlags |= (v << CONSTRUCTS_NODES);
 }
 
 
@@ -598,14 +601,14 @@ bool expr::constructsNodes() const
 BoolAnnotationValue expr::getDereferencesNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & DEREFERENCES_NODES_MASK) >> DEREFERENCES_NODES);
+         ((theAnnotationFlags & DEREFERENCES_NODES_MASK) >> DEREFERENCES_NODES);
 }
 
 
 void expr::setDereferencesNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~DEREFERENCES_NODES_MASK;
-  theFlags1 |= (v << DEREFERENCES_NODES);
+  theAnnotationFlags &= ~DEREFERENCES_NODES_MASK;
+  theAnnotationFlags |= (v << DEREFERENCES_NODES);
 }
 
 
@@ -627,14 +630,14 @@ bool expr::dereferencesNodes() const
 BoolAnnotationValue expr::getMustCopyNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & MUST_COPY_NODES_MASK) >> MUST_COPY_NODES);
+         ((theAnnotationFlags & MUST_COPY_NODES_MASK) >> MUST_COPY_NODES);
 }
 
 
 void expr::setMustCopyNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~MUST_COPY_NODES_MASK;
-  theFlags1 |= (v << MUST_COPY_NODES);
+  theAnnotationFlags &= ~MUST_COPY_NODES_MASK;
+  theAnnotationFlags |= (v << MUST_COPY_NODES);
 }
 
 

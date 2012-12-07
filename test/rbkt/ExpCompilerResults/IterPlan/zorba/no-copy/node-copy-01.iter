@@ -20,13 +20,9 @@ Iterator tree for main query:
             <SingletonIterator value="xs:QName(,,node)"/>
             <FnConcatIterator/>
             <EnclosedIterator attr_cont="false">
-              <NodeSortIterator distinct="true" ascending="true">
-                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
-                  <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                    <CtxVarIterator varid="4" varname="doc" varkind="global"/>
-                  </TreatIterator>
-                </ChildAxisIterator>
-              </NodeSortIterator>
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
+                <CtxVarIterator varid="4" varname="doc" varkind="global"/>
+              </ChildAxisIterator>
             </EnclosedIterator>
           </ElementIterator>
         </ChildAxisIterator>

@@ -235,45 +235,9 @@ void apply_updates(
   catch (XQueryException& e)
   {
     if ( e.has_source() )
-    {
-      Diagnostic const &d = e.diagnostic();
-      if ( d == err::XUDY0021
-        || d == err::XUDY0024
-        || d == jerr::JNUP0006
-        || d == zerr::ZDDY0013_COLLECTION_BAD_DESTROY_INDEXES
-        || d == zerr::ZDDY0014_COLLECTION_BAD_DESTROY_ICS
-        || d == zerr::ZDDY0015_COLLECTION_BAD_DESTROY_NODES
-        || d == zerr::ZDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES
-        || d == zerr::ZDDY0023_INDEX_DOES_NOT_EXIST
-        || d == zerr::ZSTR0060_RANGE_EXCEPTION )
-      {
-        try {
-          QueryLoc loc2( loc );
-          loc2.setFilename( fs::base_name( loc.getFilename() ) );
-          throw XQUERY_EXCEPTION(
-            err::XUDY0021,
-            ERROR_PARAMS( e.what(), ZED( XUDY0021_AppliedAt ), loc2 ),
-            ERROR_LOC( e )
-          );
-        }
-        catch ( XQueryException &e2 ) {
-          //
-          // This extra try/catch is used so that we can use the error
-          // dictionary value string of XUDY0021 to format the error message,
-          // but then set the actual error code back to that of the original
-          // exception.
-          //
-          e2.set_diagnostic( d );
-          throw;
-        }
-      }
-    }
+      set_applied( e, loc );
     else
-    {
-      // exception raised by the store doesn't have a store location
-      // hence, we add the location of the apply expression
-      set_source(e, loc);
-    }
+      set_source( e, loc );
     throw;
   }
 }

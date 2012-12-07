@@ -470,8 +470,8 @@ ostream& var_decl_expr::put(ostream& os) const
   BEGIN_PUT(var_decl_expr);
 
   theVarExpr->put(os);
-  if (theInitExpr)
-    theInitExpr->put(os);
+  if (theExpr)
+    theExpr->put(os);
 
   END_PUT();
 }

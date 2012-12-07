@@ -842,8 +842,8 @@ nextclause:
 
     EXPR_ITER_BEGIN();
 
-    if (varDeclExpr->theInitExpr)
-      EXPR_ITER_NEXT(varDeclExpr->theInitExpr);
+    if (varDeclExpr->theExpr)
+      EXPR_ITER_NEXT(varDeclExpr->theExpr);
 
     EXPR_ITER_END();
     return;

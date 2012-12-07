@@ -1165,24 +1165,12 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
       {
         e->setVisitId(1);
 
-        std::vector<expr*>::const_iterator ite = e->setExprsBegin();
-        std::vector<expr*>::const_iterator end = e->setExprsEnd();
+        var_expr::VarSetExprs::const_iterator ite = e->setExprsBegin();
+        var_expr::VarSetExprs::const_iterator end = e->setExprsEnd();
 
         for (; ite != end; ++ite)
         {
-          expr* setExpr = *ite;
-          expr* valueExpr;
-
-          if (setExpr->get_expr_kind() == var_decl_expr_kind)
-          {
-            valueExpr = static_cast<var_decl_expr*>(setExpr)->get_init_expr();
-          }
-          else
-          {
-            assert(setExpr->get_expr_kind() == var_set_expr_kind);
-
-            valueExpr = static_cast<var_set_expr*>(setExpr)->get_expr();
-          }
+          expr* valueExpr = (*ite)->get_expr();
 
           findSourcesForNodeExtractors(valueExpr);
         }

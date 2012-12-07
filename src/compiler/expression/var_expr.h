@@ -28,6 +28,8 @@ class forlet_clause;
 class copy_clause;
 class var_expr;
 class VarInfo;
+class var_set_expr;
+
 
 /******************************************************************************
 
@@ -116,6 +118,8 @@ class var_expr : public expr
   friend class ExprManager;
 
 public:
+  typedef std::vector<var_set_expr*> VarSetExprs;
+
   enum var_kind
   {
     unknown_var = 0,
@@ -163,7 +167,7 @@ protected:
 
   csize                 theParamPos;
 
-  std::vector<expr*>    theSetExprs;
+  VarSetExprs           theSetExprs;
 
   VarInfo             * theVarInfo;
 
@@ -246,17 +250,17 @@ public:
 
   void set_param_pos(csize pos) { theParamPos = pos; }
 
-  void add_set_expr(expr* e) { theSetExprs.push_back(e); }
+  void add_set_expr(expr* e);
 
   void remove_set_expr(expr* e);
 
   csize num_set_exprs() const { return theSetExprs.size(); }
 
-  expr* get_set_expr(csize i) const { return theSetExprs[i]; }
+  var_set_expr* get_set_expr(csize i) const { return theSetExprs[i]; }
 
-  std::vector<expr*>::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
+  VarSetExprs::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
 
-  std::vector<expr*>::const_iterator setExprsEnd() const { return theSetExprs.end(); }
+  VarSetExprs::const_iterator setExprsEnd() const { return theSetExprs.end(); }
 
   bool is_context_item() const;
 
