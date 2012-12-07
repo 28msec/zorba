@@ -50,14 +50,16 @@ SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 DynamicFunctionInfo::DynamicFunctionInfo(const QueryLoc& loc,
                                          function* func,
                                          store::Item_t qname,
-                                         uint32_t arity)
+                                         uint32_t arity,
+                                         bool isInline)
   :
   theCCB(NULL),
   theSctx(NULL),
   theLoc(loc),
   theFunction(func),
   theQName(qname),
-  theArity(arity)
+  theArity(arity),
+  theIsInline(isInline)
 {
 }
 
@@ -245,6 +247,7 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
     {
       *argsIte = *ite;
       static_cast<PlanStateIteratorWrapper*>(ite->getp())->reset();
+      // static_cast<PlanStateIteratorWrapper*>(ite->getp())->open(); 
     }
     else
     {
@@ -253,7 +256,7 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
     }
   }
 
-  expr* dummy = theCCB->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc);
+  expr* dummy = theCCB->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc, false);
 
 
   PlanIter_t udfCallIterator =
@@ -288,18 +291,10 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
 zstring FunctionItem::show() const
 {
   std::ostringstream lRes;
-  if (getFunctionName() != NULL)
-  {
-    lRes << getFunctionName()->getStringValue() << "#" << getArity();
-  }
-  else
-  {
-    lRes << "inline function";
-  }
-  lRes << " (" << theDynamicFunctionInfo->theLoc << ")";
+  lRes << getFunctionName()->getStringValue();
+  if (!isInline())
+    lRes << "#" << getArity() << " (" << theDynamicFunctionInfo->theLoc << ")";
   return lRes.str();
-
-  return "";
 }
 
 

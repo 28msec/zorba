@@ -63,10 +63,11 @@ public:
 class PlanStateIteratorWrapper : public PlanIterator
 {
 protected:
-  const PlanIterator      * theIterator;          // only one of these is used
+  PlanIterator      * theIterator;          // only one of these is used
   const store::Iterator_t   theStoreIterator; 
   
   PlanState               * theStateBlock;
+  uint32_t                  theOffset;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanStoreIteratorWrapper);
@@ -76,7 +77,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  PlanStateIteratorWrapper(const PlanIterator* iterator, PlanState& planState);
+  PlanStateIteratorWrapper(PlanIterator* iterator, PlanState& planState, uint32_t offset);
   
   PlanStateIteratorWrapper(const store::Iterator_t& iterator);
 
@@ -84,7 +85,10 @@ public:
 
   virtual void accept(PlanIterVisitor& v) const;
 
-  virtual void open(PlanState& planState, uint32_t& offset) {}
+  virtual void open();
+  
+  // both arguments will be ignored, and the class members equivalents will be used instead
+  virtual void open(PlanState& planState, uint32_t& offset); 
 
   virtual bool produceNext(store::Item_t& result, PlanState& planState) const;
 

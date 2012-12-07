@@ -343,6 +343,14 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
     {
       newArgs.push_back((*ite)->clone(udf, subst));
     }
+    
+    checked_vector<expr*> newDotVars;
+    for (checked_vector<expr*>::const_iterator ite = e->theDotVars.begin();
+         ite != e->theDotVars.end();
+         ++ite)
+    {
+      newDotVars.push_back((*ite)->clone(udf, subst));
+    }
 
     newExpr = theCCB->theEM->
     create_dynamic_function_invocation_expr(theSctx,
@@ -350,6 +358,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                                             theLoc,
                                             e->theExpr->clone(udf, subst),
                                             newArgs,
+                                            newDotVars,
                                             e->theCoercionTargetType);
     break;
   }
@@ -368,7 +377,8 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                               get_loc(),
                               e->theDynamicFunctionInfo->theFunction,
                               e->theDynamicFunctionInfo->theFunction->getName(),
-                              e->theDynamicFunctionInfo->theArity);
+                              e->theDynamicFunctionInfo->theArity,
+                              e->getIsInline());
 
     std::vector<expr*>::const_iterator varIter = e->theDynamicFunctionInfo->theScopedVarsValues.begin();
     std::vector<var_expr*>::const_iterator substVarIter = e->theDynamicFunctionInfo->theSubstVarsValues.begin();

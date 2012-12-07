@@ -138,7 +138,7 @@ void DynamicFnCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   std::vector<PlanIter_t>::iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
   for ( ; lIter != lEnd; ++lIter )
-	{
+  {
     (*lIter)->open(planState, offset);
   }
 }
@@ -167,9 +167,6 @@ void DynamicFnCallIterator::closeImpl(PlanState& planState)
   }
   */
   
-  NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>::
-  closeImpl(planState);
-
   /*
   DynamicFnCallIteratorState* state =
   StateTraitsImpl<DynamicFnCallIteratorState>::getState(planState, theStateOffset);
@@ -185,6 +182,16 @@ void DynamicFnCallIterator::closeImpl(PlanState& planState)
     state->theIsOpen = false;
   }
   */
+  
+  if (theIsPartialApply)
+  {
+    (*theChildren.begin())->close(planState);
+    StateTraitsImpl<DynamicFnCallIteratorState>::destroyState(planState, theStateOffset);
+  }
+  else
+  {
+    NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>::closeImpl(planState);
+  }
 
 }
 
@@ -209,8 +216,7 @@ bool DynamicFnCallIterator::nextImpl(
   // std::vector<PlanIter_t> argIters;
   // std::vector<PlanIter_t>::iterator ite;
   // std::vector<PlanIter_t>::const_iterator end2;
-  std::vector<PlanIter_t>::const_iterator ite;
-
+  
   TypeManager* tm = theSctx->get_typemanager();
 
   DynamicFnCallIteratorState* state;
@@ -261,8 +267,8 @@ bool DynamicFnCallIterator::nextImpl(
       */
       
       // if (!TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc))
-      if (!TypeOps::is_subtype(tm, *fnItemType, *theCoercionTargetType, loc))
-      // if (static_cast<const FunctionXQType*>(fnItemType.getp())->is_subtype(tm, *static_cast<const FunctionXQType*>(theCoercionTargetType.getp()), true))
+      // if (!TypeOps::is_subtype(tm, *fnItemType, *theCoercionTargetType, loc))
+      if ( ! static_cast<const FunctionXQType*>(fnItemType.getp())->is_subtype(tm, *static_cast<const FunctionXQType*>(theCoercionTargetType.getp()), true))
       {
         /*
         RAISE_ERROR(err::XPTY0004, loc,
@@ -304,13 +310,14 @@ bool DynamicFnCallIterator::nextImpl(
       }
       */
 
-      ite = theChildren.begin();
-      ++ite;
-      for (unsigned int pos=0; ite != theChildren.end(); ++ite)
+      // std::vector<PlanIter_t>::iterator ite = theChildren.begin();
+      // ++ite;
+      for (unsigned int i=1, pos=0; i<theChildren.size(); i++)
       {
-        if (dynamic_cast<ArgumentPlaceholderIterator*>(ite->getp()) == NULL)
+        // if (dynamic_cast<ArgumentPlaceholderIterator*>(ite->getp()) == NULL)
+        if (dynamic_cast<ArgumentPlaceholderIterator*>(theChildren[i].getp()) == NULL)
         {
-          PlanIter_t value = new PlanStateIteratorWrapper((*ite), planState);
+          PlanIter_t value = new PlanStateIteratorWrapper(theChildren[i].getp(), planState, state->theUDFStateOffset + sizeof(UDFunctionCallIteratorState));
           // std::cerr << "--> created PlanStateIteratorWrapper: " << value->toString() << std::endl;
           fnItem->setArgumentValue(pos, value);
         }
@@ -332,7 +339,10 @@ bool DynamicFnCallIterator::nextImpl(
     }
     else
     {
-      // state->thePlan = fnItem->getImplementation(argIters);
+      
+      // std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
+      // std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
+      
       state->thePlan = fnItem->getImplementation(theChildren);
 
       // std::cerr << "--> " << toString() << " got implementation." << std::endl;

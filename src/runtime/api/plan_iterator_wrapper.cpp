@@ -74,12 +74,13 @@ void PlanStateIteratorWrapper::serialize(::zorba::serialization::Archiver& ar)
   PlanIterator::serialize(ar);
 }
 
-PlanStateIteratorWrapper::PlanStateIteratorWrapper(const PlanIterator* iter, PlanState& state)
+PlanStateIteratorWrapper::PlanStateIteratorWrapper(PlanIterator* iter, PlanState& state, uint32_t offset)
   :
   PlanIterator(NULL, QueryLoc()),
   theIterator(iter),
   theStoreIterator(NULL),
-  theStateBlock(&state)
+  theStateBlock(&state),
+  theOffset(offset)
 {
 }
 
@@ -96,6 +97,22 @@ PlanStateIteratorWrapper::PlanStateIteratorWrapper(const store::Iterator_t& iter
 
 PlanStateIteratorWrapper::~PlanStateIteratorWrapper()
 {
+}
+
+
+void PlanStateIteratorWrapper::open() 
+{
+  if (theIterator)
+    theIterator->open(*theStateBlock, theOffset);
+  else
+    theStoreIterator->open();
+}
+
+
+// both arguments will be ignored
+void PlanStateIteratorWrapper::open(PlanState& planState, uint32_t& offset) 
+{
+  open();
 }
 
 

@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include "store/api/item_factory.h"
+
 #include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/expr_visitor.h"
 
@@ -37,11 +39,13 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
     const QueryLoc& loc,
     expr* anExpr,
     const std::vector<expr*>& args,
+    const std::vector<expr*>& dotVars,
     xqtref_t coercionTargetType)
   :
   expr(ccb, sctx, udf, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
   theArgs(args),
+  theDotVars(dotVars),
   theCoercionTargetType(coercionTargetType)
 {
   assert(anExpr != 0);
@@ -85,14 +89,16 @@ function_item_expr::function_item_expr(
     const QueryLoc& loc,
     function* f,
     store::Item* aQName,
-    uint32_t aArity)
+    uint32_t aArity,
+    bool isInline)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
                          loc,
                          f,
                          aQName,
-                         aArity))
+                         aArity,
+                         isInline))
 {
   assert(f != NULL);
   compute_scripting_kind();
@@ -103,14 +109,16 @@ function_item_expr::function_item_expr(
     CompilerCB* ccb,
     static_context* sctx,
     user_function* udf,
-    const QueryLoc& loc)
+    const QueryLoc& loc,
+    bool isInline)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
                          loc,
                          NULL,
                          NULL,
-                         0))
+                         0,
+                         isInline))
 {
   theScriptingKind = SIMPLE_EXPR;
 }
@@ -144,6 +152,17 @@ void function_item_expr::compute_scripting_kind()
 {
   // ???? TODO
   theScriptingKind = SIMPLE_EXPR;
+}
+
+store::Item_t function_item_expr::create_inline_fname(const QueryLoc& loc) 
+{
+  store::Item_t name;
+  std::stringstream ss;
+  ss << "inline function(";
+  ss << loc;
+  ss << ")";
+  GENV_ITEMFACTORY->createQName(name, "", "", ss.str());
+  return name;
 }
 
 

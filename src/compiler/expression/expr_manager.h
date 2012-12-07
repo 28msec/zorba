@@ -481,6 +481,7 @@ public:
       const QueryLoc& loc,
       expr* anExpr,
       const std::vector<expr*>& args,
+      const std::vector<expr*>& dotVars,
       xqtref_t coercionTargetType);
 
   argument_placeholder_expr* create_argument_placeholder_expr(
@@ -494,12 +495,14 @@ public:
       const QueryLoc& loc,
       function* f,
       store::Item* aQName,
-      uint32_t aArity);
+      uint32_t aArity,
+      bool isInline);
 
   function_item_expr* create_function_item_expr(
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc);
+      const QueryLoc& loc,
+      bool isInline);
 
   ftcontains_expr* create_ftcontains_expr(
       static_context*,

@@ -719,6 +719,15 @@ nextclause:
     {
       EXPR_ITER_NEXT(*theArgsIter);
     }
+    
+    theArgsIter = dfiExpr->theDotVars.begin();
+    theArgsEnd = dfiExpr->theDotVars.end();
+    for (; theArgsIter != theArgsEnd; ++theArgsIter)
+    {
+      if ( ! *theArgsIter)
+        continue;
+      EXPR_ITER_NEXT(*theArgsIter);
+    }
 
     EXPR_ITER_END();
     return;

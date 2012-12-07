@@ -1360,7 +1360,7 @@ fo_expr* create_empty_seq(const QueryLoc& loc)
 /*******************************************************************************
 
 ********************************************************************************/
-void create_inline_function(expr* body, flwor_expr* flwor, const std::vector<xqtref_t>& paramTypes, xqtref_t returnType, const QueryLoc& loc, CompilerCB* theCCB)
+void create_inline_function(expr* body, flwor_expr* flwor, const std::vector<xqtref_t>& paramTypes, xqtref_t returnType, const QueryLoc& loc, CompilerCB* theCCB, bool is_coercion)
 {
   std::vector<var_expr*> argVars;
 
@@ -1374,6 +1374,13 @@ void create_inline_function(expr* body, flwor_expr* flwor, const std::vector<xqt
     body = wrap_in_type_match(body, returnType, loc, TREAT_TYPE_MATCH);
   }
 
+  // Create the udf obj.
+  user_function_t udf(new user_function(loc,
+                                        signature(function_item_expr::create_inline_fname(loc), paramTypes, returnType),
+                                        NULL,
+                                        SIMPLE_EXPR,
+                                        theCCB));
+  
   if (flwor != NULL)
   {
     flwor->set_return_expr(body);
@@ -1386,11 +1393,18 @@ void create_inline_function(expr* body, flwor_expr* flwor, const std::vector<xqt
     // body, because optimization may remove clauses from the flwor expr
     for (csize i = 0; i < flwor->num_clauses(); ++i)
     {
-      const flwor_clause* lClause = flwor->get_clause(i);
-      const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
+      flwor_clause* lClause = flwor->get_clause(i);
+      let_clause* letClause = dynamic_cast<let_clause*>(lClause);
       ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
       var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
       argVars.push_back(argVar);
+      
+      // Since the inline function items can be created in one place but then 
+      // invoked in many other places, it is not feasable to perform function 
+      // call normalization. Instead the domain expressions of arg vars is 
+      // wrapped in type matches.
+      if (!is_coercion) 
+        letClause->set_expr(normalize_fo_arg(i, letClause->get_expr(), udf.getp(), flwor->get_type_manager(), loc));
     }
   }
 
@@ -1408,12 +1422,8 @@ void create_inline_function(expr* body, flwor_expr* flwor, const std::vector<xqt
   }
   */
 
-  // Create the udf obj.
-  user_function_t udf(new user_function(loc,
-                                        signature(0, paramTypes, returnType),
-                                        body,
-                                        body->get_scripting_detail(),
-                                        theCCB));
+  udf->setBody(body);
+  udf->setScriptingKind(body->get_scripting_detail());
   udf->setArgVars(argVars);
   udf->setOptimized(true); // TODO: this should not be set here
 
@@ -1436,7 +1446,7 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
 
   // Create the dynamic call body
 
-  function_item_expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc);
+  function_item_expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, true);
   push_nodestack(fiExpr);
 
   // Get the in-scope vars of the scope before opening the new scope for the
@@ -1500,9 +1510,10 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
                 loc,
                 theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, inner_subst_var),
                 arguments,
+                std::vector<expr*>(), // TODO: fill in
                 is_func_return ? NULL : coercionTargetType);
 
-  create_inline_function(body, inner_flwor, func_type->get_param_types(), func_type->get_return_type(), loc, theCCB);
+  create_inline_function(body, inner_flwor, func_type->get_param_types(), func_type->get_return_type(), loc, theCCB, true);
 
   theExpr = pop_nodestack();
   fnItem_flwor->set_return_expr(theExpr);
@@ -2527,6 +2538,7 @@ expr* generate_function(
           loc,
           arguments[0],
           fncall_args,
+          std::vector<expr*>(), 
           NULL);
 
       flwor->set_return_expr(dynamic_fncall);
@@ -2561,6 +2573,7 @@ expr* generate_function(
 	  loc,
 	  arguments[0],
 	  fncall_args,
+          std::vector<expr*>(), 
 	  NULL);
 
       expr* if_expr = theExprManager->create_if_expr(theRootSctx, theUDF, loc,
@@ -11411,7 +11424,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       } // case FunctionConsts::FN_ZORBA_INVOKE_N:
 
       case FunctionConsts::FN_MAP_2:
-        // deliberate fall-through
       case FunctionConsts::FN_FILTER_2:
       {
         resultExpr = generate_function(f->getKind(), foExpr->get_args(), loc);
@@ -11571,12 +11583,19 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, loc,
     ERROR_PARAMS("higher-order functions (hof)"));
   }
+  
+  std::vector<expr*> dotVars;
+  if (lookup_var(getDotVarName(), loc, zerr::ZXQP0000_NO_ERROR))
+  {
+    // dotVars.push_back(DOT_REF);
+  }
 
   expr* dynFuncInvocation =
   theExprManager->create_dynamic_function_invocation_expr(theRootSctx, theUDF,
                                                           loc,
                                                           sourceExpr,
                                                           arguments,
+                                                          dotVars,
                                                           NULL);
   push_nodestack(dynFuncInvocation);
 }
@@ -11692,7 +11711,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
         ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), arity));
       }
     }
-  }
+  } // else fn != NULL
 
   // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it
   // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
@@ -11709,7 +11728,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     std::vector<var_expr*> udfArgs(arity);
 
     // TODO: decide what to do with the DOTREF which is used implicitly by some funcs
-    /*
+    
     if (fn != NULL && xquery_fns_def_dot.test(fn->getKind()))
     {
       // arguments.push_back(DOT_REF); // TODO:
@@ -11722,7 +11741,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 
       fn = lookup_fn(qname, 1, loc);
     }
-    */
+    
 
     for (ulong i = 0; i < arity; ++i)
     {
@@ -11744,30 +11763,36 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
       // process pure builtin functions that have no associated iterator
       switch (fn->getKind())
       {
-	case FunctionConsts::FN_MAP_2:
-	case FunctionConsts::FN_FILTER_2:
-	{
-	  // create the function flwor, wrap params in for clauses
-	  flwor_expr* flwor = theExprManager->create_flwor_expr(theSctx, theUDF, loc, false);
-          std::vector<expr*> arguments;
-	  for (csize i=0; i<foArgs.size(); i++)
-	  {
-	    // var_expr* arg_var = bind_var(loc, udfArgs[i]->get_name(), var_expr::let_var);
-	    for_clause* fc = wrap_in_forclause(&*udfArgs[i], NULL);
-	    udfArgs[i]->set_param_pos(flwor->num_clauses());
-	    flwor->add_clause(fc);
-            arguments.push_back(fc->get_var());
-	  }
-	  
-	  flwor->set_return_expr(generate_function(fn->getKind(), arguments, loc));
-	  
-	  body = flwor;
-	  break;
-	}
-	default:
-	  body = theExprManager->create_fo_expr(theRootSctx, udf, loc, fn != NULL? fn : udf, foArgs);
+      case FunctionConsts::FN_MAP_2:
+      case FunctionConsts::FN_FILTER_2:
+      {
+        // create the function flwor, wrap params in for clauses
+        flwor_expr* flwor = theExprManager->create_flwor_expr(theSctx, theUDF, loc, false);
+        std::vector<expr*> arguments;
+        for (csize i=0; i<foArgs.size(); i++)
+        {
+          // var_expr* arg_var = bind_var(loc, udfArgs[i]->get_name(), var_expr::let_var);
+          for_clause* fc = wrap_in_forclause(&*udfArgs[i], NULL);
+          udfArgs[i]->set_param_pos(flwor->num_clauses());
+          flwor->add_clause(fc);
+          arguments.push_back(fc->get_var());
+        }
+        
+        flwor->set_return_expr(generate_function(fn->getKind(), arguments, loc));
+        
+        body = flwor;
+        break;
       }
-    }
+      default:
+      {
+          fo_expr* fo = theExprManager->create_fo_expr(theRootSctx, udf, loc, fn != NULL? fn : udf, foArgs);
+          normalize_fo(fo);
+          body = fo;
+          break;
+      }
+      } // switch
+      
+    } // else
 
     udf->setArgVars(udfArgs);
     udf->setBody(body);
@@ -11776,7 +11801,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     fn = udf;
   }
 
-  expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, fn, fn->getName(), arity);
+  expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, fn, fn->getName(), arity, false);
 
   push_nodestack(fiExpr);
 }
@@ -11804,7 +11829,7 @@ void* begin_visit(const InlineFunction& v)
   push_scope();
 
   function_item_expr* fiExpr =
-  theExprManager->create_function_item_expr(theRootSctx, theUDF, loc);
+  theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, true);
 
   push_nodestack(fiExpr);
 
@@ -11838,14 +11863,6 @@ void* begin_visit(const InlineFunction& v)
       }
     }
   }
-
-  // Create the udf obj.
-  user_function_t udf(new user_function(loc,
-                                        signature(0, paramTypes, returnType),
-                                        NULL,
-                                        SIMPLE_EXPR,
-                                        theCCB));
-  fiExpr->set_function(udf);
 
   flwor_expr* flwor = NULL;
 
@@ -11958,7 +11975,7 @@ void end_visit(const InlineFunction& v, void* aState)
     }
   }
 
-  create_inline_function(body, flwor, paramTypes, returnType, loc, theCCB);
+  create_inline_function(body, flwor, paramTypes, returnType, loc, theCCB, false);
 
   // std::cerr << "--> the scoped sctx: " << theSctx->toString() << std::endl;
 

@@ -46,6 +46,7 @@ public: // TODO: not public
   function_t                    theFunction;
   store::Item_t                 theQName;
   unsigned int                  theArity;
+  bool                          theIsInline;
 
   std::vector<expr*>            theScopedVarsValues;
   std::vector<var_expr*>        theSubstVarsValues;
@@ -61,7 +62,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFunctionInfo(const QueryLoc& loc, function* func, store::Item_t qname, uint32_t arity);
+  DynamicFunctionInfo(const QueryLoc& loc, function* func, store::Item_t qname, uint32_t arity, bool isInline);
 
   virtual ~DynamicFunctionInfo();
 
@@ -141,6 +142,8 @@ public:
   unsigned int getStartArity() const;
 
   const signature& getSignature() const;
+  
+  bool isInline() const { return theDynamicFunctionInfo->theIsInline; };
 
   zstring show() const;
 };

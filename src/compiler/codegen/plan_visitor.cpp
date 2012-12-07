@@ -477,9 +477,7 @@ void end_visit(function_item_expr& v)
   std::vector<int> isGlobalVar;
   */
 
-  bool isInline = (v.get_qname() == NULL);
-
-  if (isInline)
+  if (v.getIsInline())
   {
     // inline function
     size_t lSize = v.get_scoped_vars_values().size();
@@ -549,6 +547,12 @@ void end_visit(dynamic_function_invocation_expr& v)
   bool isPartialApply = false;
 
   // the arguments are reversed on the stack
+  for (csize i=0; i<v.get_dot_vars().size(); i++)
+  {
+    PlanIter_t iter = pop_itstack();
+    // std::cerr << "--> plan_visitor dot var iterator: " << iter->toString() << std::endl;
+  }
+
   for (size_t i = 0; i < numArgs-1; ++i)
   {
     if (v.get_args()[i]->get_expr_kind() == argument_placeholder_expr_kind)

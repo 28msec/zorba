@@ -72,6 +72,8 @@ class dynamic_function_invocation_expr : public expr
 protected:
   expr                * theExpr;
   std::vector<expr*>    theArgs;
+  
+  std::vector<expr*>    theDotVars; // context item vars
 
   // TODO: must be protected
 public:
@@ -85,12 +87,15 @@ protected:
       const QueryLoc& loc,
       expr* anExpr,
       const std::vector<expr*>& args,
+      const std::vector<expr*>& dotVars,
       xqtref_t coercionTargetType);
 
 public:
   const expr* get_function() const { return theExpr; }
 
   const std::vector<expr*>& get_args() const { return theArgs; }
+  
+  const std::vector<expr*>& get_dot_vars() const { return theDotVars; }
 
   void compute_scripting_kind();
 
@@ -107,10 +112,6 @@ public:
   LiteralFunctionItem ::= QName "#" IntegerLiteral
 
   InlineFunction ::= "function" "(" ParamList? ")" ("as" SequenceType)? EnclosedExpr
-
-  theQName :
-  NULL in case of inline function. Otherwise, the qname of the named function
-  in the LiteralFunctionItem.
 
   theFunction :
   This is always a pointer to a user_function obj. In case of an inline function
@@ -139,6 +140,8 @@ class function_item_expr: public expr
 
 protected:
   DynamicFunctionInfo_t       theDynamicFunctionInfo;
+  
+  bool                        theIsInline;
 
 protected:
   function_item_expr(
@@ -148,13 +151,15 @@ protected:
       const QueryLoc& loc,
       function* f,
       store::Item* aQName,
-      uint32_t aArity);
+      uint32_t aArity,
+      bool isInline);
 
   function_item_expr(
       CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc);
+      const QueryLoc& loc,
+      bool isInline);
 
   virtual ~function_item_expr();
 
@@ -178,12 +183,19 @@ public:
   const store::Item_t& get_qname() const { return theDynamicFunctionInfo->theQName; }
 
   uint32_t get_arity() const { return theDynamicFunctionInfo->theArity; }
+  
+  bool getIsInline() const { return theDynamicFunctionInfo->theIsInline; }
 
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream& os) const;
+  
+public:
+  // Given a location, will create an inline function name such 
+  // as "inline function(loc)"
+  static store::Item_t create_inline_fname(const QueryLoc& loc);
 };
 
 } //end of namespace

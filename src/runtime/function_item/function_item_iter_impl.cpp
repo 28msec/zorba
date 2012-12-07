@@ -62,7 +62,7 @@ FunctionNameIterator::nextImpl(
 
   lFunctionItem = static_cast<FunctionItem*>(lFItem.getp());
 
-  if (lFunctionItem->getFunctionName())
+  if (!lFunctionItem->isInline() && lFunctionItem->getFunctionName())
   {
     // non-inline function
     r = lFunctionItem->getFunctionName();
@@ -301,7 +301,7 @@ bool FnFoldLeftIterator::nextImpl(
 {
   store::Item_t curSeqItem, nextSeqItem, tempItem;
   std::vector<store::Item_t> zero;
-  bool haveItems;
+  bool haveSeqItems;
   
   FnFoldLeftIteratorState* state;
   DEFAULT_STACK_INIT(FnFoldLeftIteratorState, state, planState);
@@ -311,8 +311,8 @@ bool FnFoldLeftIterator::nextImpl(
   // function signature guarantees that
   ZORBA_ASSERT(state->theFnItem->isFunction());
 
-  if ((haveItems = consumeNext(curSeqItem, theChildren[2], planState)))
-    haveItems = consumeNext(nextSeqItem, theChildren[2], planState);
+  if ((haveSeqItems = consumeNext(curSeqItem, theChildren[2], planState)))
+    haveSeqItems = consumeNext(nextSeqItem, theChildren[2], planState);
   
   if (curSeqItem.getp() == NULL && nextSeqItem.getp() == NULL)
   {
@@ -365,8 +365,8 @@ bool FnFoldLeftIterator::nextImpl(
       
       curSeqItem = nextSeqItem;
       nextSeqItem = NULL;
-      if (haveItems)
-        haveItems = consumeNext(nextSeqItem, theChildren[2], planState);
+      if (haveSeqItems)
+        haveSeqItems = consumeNext(nextSeqItem, theChildren[2], planState);
       
     } // while (true)
     
