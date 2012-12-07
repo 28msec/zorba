@@ -1486,6 +1486,46 @@ void Item::setStreamReleaser(StreamReleaser /*aReleaser*/)
   );
 }
 
+void Item::swap(Item* anotherItem)
+{
+  if (getKind() != anotherItem->getKind())
+  {
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+      ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+    );
+  }
+  switch(getKind())
+  {
+    case NODE:
+    {
+      // Swap trees.
+      assert(theUnion.treeRCPtr);
+      assert(anotherItem->theUnion.treeRCPtr);
+      std::swap(theUnion.treeRCPtr, anotherItem->theUnion.treeRCPtr);
+
+      // Adjust counters.
+      *theUnion.treeRCPtr += theRefCount;
+      *theUnion.treeRCPtr -= anotherItem->theRefCount;
+      *anotherItem->theUnion.treeRCPtr -= theRefCount;
+      *anotherItem->theUnion.treeRCPtr += anotherItem->theRefCount;
+      break;
+    }
+    case JSONIQ:
+    {
+      std::swap(theUnion.itemKind, anotherItem->theUnion.itemKind);
+      break;
+    }
+    default:
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+      ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+    );
+  }
+  
+}
+
+
 } // namespace store
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
