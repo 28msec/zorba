@@ -155,6 +155,18 @@ struct call_traits<T,false> {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Clears the given stack.
+ *
+ * @tparam T The stack's \c value_type.
+ * @param s The stack to clear.
+ */
+template<typename T> inline
+void clear_stack( std::stack<T> &s ) {
+  while ( !s.empty() )
+    s.pop();
+}
+
+/**
  * A less-verbose way to determine whether the given map or set contains a
  * particular element.
  */
