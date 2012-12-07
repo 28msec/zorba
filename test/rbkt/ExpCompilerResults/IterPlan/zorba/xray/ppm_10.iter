@@ -183,13 +183,6 @@ Iterator tree for main query:
         </StringJoinIterator>
         <SingletonIterator value="xs:string(255)"/>
         <flwor::FLWORIterator>
-          <LetVariable name="$$opt_temp_1" materialize="true">
-            <HoistIterator>
-              <TreatIterator type="[NodeXQType elementNode content=[XQType ANY_TYPE_KIND*]]" quant="">
-                <CtxVarIterator varid="6" varname="scene" varkind="global"/>
-              </TreatIterator>
-            </HoistIterator>
-          </LetVariable>
           <LetVariable name="$$opt_temp_0" materialize="true">
             <HoistIterator>
               <OpToIterator>
@@ -221,7 +214,7 @@ Iterator tree for main query:
               <SingletonIterator value="xs:decimal(0.5)"/>
             </SpecificNumArithIterator_AddOperation_DECIMAL>
           </ForVariable>
-          <LetVariable name="$$opt_temp_2" materialize="true">
+          <LetVariable name="$$opt_temp_1" materialize="true">
             <HoistIterator>
               <PromoteIterator type="xs:double">
                 <ForVarIterator varname="y-recentered"/>
@@ -238,9 +231,7 @@ Iterator tree for main query:
               <flwor::FLWORIterator>
                 <ForVariable name="channel">
                   <UDFunctionCallIterator>
-                    <UnhoistIterator>
-                      <LetVarIterator varname="$$opt_temp_1"/>
-                    </UnhoistIterator>
+                    <CtxVarIterator varid="6" varname="scene" varkind="global"/>
                     <PromoteIterator type="xs:double">
                       <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
                         <SpecificNumArithIterator_SubtractOperation_DECIMAL>
@@ -254,7 +245,7 @@ Iterator tree for main query:
                       </SpecificNumArithIterator_MultiplyOperation_DECIMAL>
                     </PromoteIterator>
                     <UnhoistIterator>
-                      <LetVarIterator varname="$$opt_temp_2"/>
+                      <LetVarIterator varname="$$opt_temp_1"/>
                     </UnhoistIterator>
                   </UDFunctionCallIterator>
                 </ForVariable>

@@ -618,7 +618,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                          udf,
                          theLoc,
                          varCopy,
-                         (e->theInitExpr ? e->theInitExpr->clone(udf, subst) : NULL));
+                         (e->theExpr ? e->theExpr->clone(udf, subst) : NULL));
     
     break;
   }

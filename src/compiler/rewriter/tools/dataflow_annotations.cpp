@@ -881,30 +881,17 @@ void SourceFinder::findNodeSourcesRec(
         varSources = new std::vector<expr*>;;
         theVarSourcesMap.insert(VarSourcesPair(e, varSources));
 
-        std::vector<expr*>::const_iterator ite2 = e->setExprsBegin();
-        std::vector<expr*>::const_iterator end2 = e->setExprsEnd();
+        var_expr::VarSetExprs::const_iterator ite2 = e->setExprsBegin();
+        var_expr::VarSetExprs::const_iterator end2 = e->setExprsEnd();
 
         for (; ite2 != end2; ++ite2)
         {
-          expr* setExpr = *ite2;
+          var_set_expr* setExpr = *ite2;
 
           if (setExpr->get_udf() != NULL && !setExpr->get_udf()->isOptimized())
             continue;
 
-          if (setExpr->get_expr_kind() == var_decl_expr_kind)
-          {
-            findNodeSourcesRec(static_cast<var_decl_expr*>(setExpr)->get_init_expr(),
-                               *varSources,
-                               currentUdf);
-          }
-          else
-          {
-            assert(setExpr->get_expr_kind() == var_set_expr_kind);
-
-            findNodeSourcesRec(static_cast<var_set_expr*>(setExpr)->get_expr(),
-                               *varSources,
-                               currentUdf);
-          }
+          findNodeSourcesRec(setExpr->get_expr(), *varSources, currentUdf);
         }
       }
       else
@@ -1325,25 +1312,14 @@ void SourceFinder::findLocalNodeSources(
         varSources = new std::vector<expr*>;;
         theVarSourcesMap.insert(VarSourcesPair(e, varSources));
 
-        std::vector<expr*>::const_iterator ite2 = e->setExprsBegin();
-        std::vector<expr*>::const_iterator end2 = e->setExprsEnd();
+        var_expr::VarSetExprs::const_iterator ite2 = e->setExprsBegin();
+        var_expr::VarSetExprs::const_iterator end2 = e->setExprsEnd();
 
         for (; ite2 != end2; ++ite2)
         {
-          expr* setExpr = *ite2;
+          var_set_expr* setExpr = *ite2;
 
-          if (setExpr->get_expr_kind() == var_decl_expr_kind)
-          {
-            findLocalNodeSources(static_cast<var_decl_expr*>(setExpr)->get_init_expr(),
-                                 *varSources);
-          }
-          else
-          {
-            assert(setExpr->get_expr_kind() == var_set_expr_kind);
-
-            findLocalNodeSources(static_cast<var_set_expr*>(setExpr)->get_expr(),
-                                 *varSources);
-          }
+          findLocalNodeSources(setExpr->get_expr(), *varSources);
         }
       }
       else

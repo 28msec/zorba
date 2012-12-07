@@ -138,10 +138,10 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
 #ifdef ZORBA_XQUERYX
   char* converted_xquery_str = NULL;
   std::string   xquery_str;
-  bool  is_xqueryx = false;
+  bool is_xqueryx = false;
+
   {
-    char  strtemp[1000];
-    //int   nr_read = 1;
+    char strtemp[1000];
     do
     {
       strtemp[0] = 0;
@@ -175,26 +175,30 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
   {
     xquery_stream = new std::istringstream(xquery_str);
   }
-#endif
+#endif // ZORBA_XQUERYX
+
+  theCompilerCB->setPhase(CompilerCB::PARSING);
 
   xquery_driver lDriver(&*theCompilerCB);
   lDriver.parse_stream(*xquery_stream, aFileName);
 
+  theCompilerCB->setPhase(CompilerCB::NONE);
+
 #ifdef ZORBA_XQUERYX
   delete xquery_stream;
-  if(is_xqueryx)
+  if (is_xqueryx)
   {
     xqxconvertor->freeResult(converted_xquery_str);
   }
 #endif
+
   parsenode_t node = lDriver.get_expr();
 
   if (typeid (*node) == typeid (ParseErrorNode))
   {
     ParseErrorNode* pen = static_cast<ParseErrorNode *>(&*node);
-    throw XQUERY_EXCEPTION_VAR(
-      pen->err, ERROR_PARAMS(pen->msg), ERROR_LOC(pen->get_location())
-		);
+    throw XQUERY_EXCEPTION_VAR(pen->err, 
+    ERROR_PARAMS(pen->msg), ERROR_LOC(pen->get_location()));
   }
 
   return node;
@@ -285,7 +289,11 @@ PlanIter_t XQueryCompiler::compile(
                   audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
                   lTimer);
 
+    theCompilerCB->setPhase(CompilerCB::CODEGEN);
+
     plan = codegen("main query", rootExpr, theCompilerCB, nextDynamicVarId);
+
+    theCompilerCB->setPhase(CompilerCB::NONE);
   }
 
   //theCompilerCB->getExprManager()->garbageCollect();
@@ -306,7 +314,11 @@ expr* XQueryCompiler::normalize(parsenode_t aParsenode)
   time::get_current_walltime(startTime);
 #endif
 
+  theCompilerCB->setPhase(CompilerCB::TRANSLATION);
+
   expr* lExpr = translate(*aParsenode, theCompilerCB);
+
+  theCompilerCB->setPhase(CompilerCB::NONE);
 
 #if 0
   std::cout << "Num exprs after translation = "
@@ -321,7 +333,7 @@ expr* XQueryCompiler::normalize(parsenode_t aParsenode)
   if ( lExpr == NULL )
   {
     // TODO: can this happen?
-    throw ZORBA_EXCEPTION( zerr::ZAPI0002_XQUERY_COMPILATION_FAILED );
+    throw ZORBA_EXCEPTION(zerr::ZAPI0002_XQUERY_COMPILATION_FAILED);
   }
 
   return lExpr;
@@ -333,6 +345,8 @@ expr* XQueryCompiler::normalize(parsenode_t aParsenode)
 ********************************************************************************/
 expr* XQueryCompiler::optimize(expr* lExpr)
 {
+  theCompilerCB->setPhase(CompilerCB::OPTIMIZATION);
+
   // Build the call-graph among the udfs that are actually used in the query
   // program.
   UDFGraph udfGraph(lExpr);
@@ -343,7 +357,10 @@ expr* XQueryCompiler::optimize(expr* lExpr)
   udfGraph.inferDeterminism();
 
   if (theCompilerCB->theConfig.opt_level <= CompilerCB::config::O0)
+  {
+    theCompilerCB->setPhase(CompilerCB::NONE);
     return lExpr;
+  }
 
   // Optimize the udfs.
   udfGraph.optimizeUDFs(theCompilerCB);
@@ -361,6 +378,8 @@ expr* XQueryCompiler::optimize(expr* lExpr)
 
   if ( theCompilerCB->theConfig.optimize_cb != NULL )
     theCompilerCB->theConfig.optimize_cb(lExpr, "main query");
+
+  theCompilerCB->setPhase(CompilerCB::NONE);
 
   return lExpr;
 }
