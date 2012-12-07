@@ -78,7 +78,7 @@ xqtref_t static_collections_dml_collection::getReturnType(const fo_expr* caller)
 
   static_context* sctx = caller->get_sctx();
 
-  const store::Item* qname = caller->get_arg(0)->getQName(sctx);
+  const store::Item* qname = caller->get_arg(0)->getQName();
 
   if (qname != NULL)
   {

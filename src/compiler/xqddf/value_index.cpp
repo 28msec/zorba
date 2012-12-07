@@ -386,7 +386,7 @@ void IndexDecl::analyzeExprInternal(
       {
         const expr* argExpr = foExpr->get_arg(0);
 
-        const store::Item* qname = argExpr->getQName(theSctx);
+        const store::Item* qname = argExpr->getQName();
 
         if (qname != NULL)
         {
@@ -719,9 +719,7 @@ DocIndexer* IndexDecl::getDocIndexer(const QueryLoc& loc)
   if (theMaintenanceMode != DOC_MAP)
     return NULL;
 
-  std::stringstream ss;
-  ss << "$$idx_doc_var_" << this;
-  std::string varname = ss.str();
+  std::string varname = "$$idx_doc_var";
   store::Item_t docVarName;
   GENV_ITEMFACTORY->createQName(docVarName, "", "", varname.c_str());
 

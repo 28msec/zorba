@@ -1368,20 +1368,20 @@ void normalize_fo(fo_expr* foExpr)
   csize n = foExpr->num_args();
 
   const function* func = foExpr->get_func();
+  FunctionConsts::FunctionKind fkind = func->getKind();
 
-  if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N ||
-      func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
+  if (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N ||
+      fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
   {
     csize nStarterParams =
-      (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N 
-       ? 1 : 2);
+    (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N  ? 1 : 2);
 
     if  (n < (6 + nStarterParams) || (n - nStarterParams) % 6 != 0)
     {
       const store::Item* qname = NULL;
 
       if (n > 0)
-        qname = foExpr->get_arg(0)->getQName(theSctx);
+        qname = foExpr->get_arg(0)->getQName();
 
       zstring lMsgPart;
       ztd::to_string(nStarterParams, &lMsgPart);
@@ -1405,21 +1405,21 @@ void normalize_fo(fo_expr* foExpr)
 
     xqtref_t paramType;
 
-    if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
+    if (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
     {
       if (i == 0)
         paramType = sign[i];
       else
         paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
     }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N)
+    else if (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N)
     {
       if (i <= 1)
         paramType = sign[i];
       else
         paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
     }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
+    else if (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
     {
       if (i == 0)
         paramType = sign[i];
@@ -1428,7 +1428,7 @@ void normalize_fo(fo_expr* foExpr)
       else
         paramType = theRTM.BOOLEAN_TYPE_ONE;
     }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
+    else if (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
     {
       if (i <= 1)
         paramType = sign[i];
@@ -1437,10 +1437,10 @@ void normalize_fo(fo_expr* foExpr)
       else
         paramType = theRTM.BOOLEAN_TYPE_ONE;
     }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N ||
-             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N_N ||
-             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_U_N ||
-             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_S_N)
+    else if (fkind == FunctionConsts::FN_ZORBA_INVOKE_N ||
+             fkind == FunctionConsts::FN_ZORBA_INVOKE_N_N ||
+             fkind == FunctionConsts::FN_ZORBA_INVOKE_U_N ||
+             fkind == FunctionConsts::FN_ZORBA_INVOKE_S_N)
     {
       if (i == 0)
         paramType = sign[i];
@@ -1456,10 +1456,7 @@ void normalize_fo(fo_expr* foExpr)
     // or match should be added. This is used by the reflection:invoke() function,
     if (paramType != NULL)
     {
-      if (TypeOps::is_subtype(tm,
-                              *paramType,
-                              *theRTM.ANY_ATOMIC_TYPE_STAR,
-                              loc))
+      if (TypeOps::is_subtype(tm, *paramType, *theRTM.ANY_ATOMIC_TYPE_STAR, loc))
       {
         argExpr = wrap_in_type_promotion(argExpr,
                                          paramType,
@@ -10887,7 +10884,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     // Create and normalize the fo expr
     std::reverse(arguments.begin(), arguments.end());
 
-    fo_expr* foExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
+    fo_expr* foExpr = CREATE(fo)(theRootSctx, theUDF, loc, f, arguments);
 
     normalize_fo(foExpr);
 
@@ -10905,37 +10902,36 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     }
 
     // Some further normalization is required for certain builtin functions
-    FunctionConsts::FunctionKind lKind = f->getKind();
-    switch (lKind)
+    FunctionConsts::FunctionKind fkind = f->getKind();
+    switch (fkind)
     {
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N:
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N:
       {
         FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
 
-        resultExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
-                                 foExpr->get_loc(),
-                                 BuiltinFunctionLibrary::getFunction(fkind),
-                                 foExpr);
+        resultExpr = CREATE(fo)(theRootSctx,
+                                theUDF,
+                                foExpr->get_loc(),
+                                BuiltinFunctionLibrary::getFunction(fkind),
+                                foExpr);
 
         break;
       }
       case FunctionConsts::FN_ANALYZE_STRING_2:
       case FunctionConsts::FN_ANALYZE_STRING_3:
       {
-        resultExpr = wrap_in_validate_expr_strict(
-          foExpr,
-          "http://www.w3.org/2005/xpath-functions");
+        resultExpr = 
+        wrap_in_validate_expr_strict(foExpr, "http://www.w3.org/2005/xpath-functions");
 
         break;
       }
       case FunctionConsts::FN_SERIALIZE_2:
       {
-        import_schema_auto_prefix(
-          loc,
-          "http://www.w3.org/2010/xslt-xquery-serialization",
-          NULL);
-
+        import_schema_auto_prefix(loc,
+                                  "http://www.w3.org/2010/xslt-xquery-serialization",
+                                  NULL);
+        
         break;
       }
       case FunctionConsts::FN_ZORBA_MATCH_2:
@@ -10969,12 +10965,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       {
         expr_script_kind_t scriptingKind;
 
-        if (lKind == FunctionConsts::FN_ZORBA_EVAL_1 ||
-            lKind == FunctionConsts::FN_ZORBA_EVAL_N_1)
+        if (fkind == FunctionConsts::FN_ZORBA_EVAL_1 ||
+            fkind == FunctionConsts::FN_ZORBA_EVAL_N_1)
         {
           scriptingKind = SIMPLE_EXPR;
         }
-        else if (lKind == FunctionConsts::FN_ZORBA_EVAL_U_1)
+        else if (fkind == FunctionConsts::FN_ZORBA_EVAL_U_1)
         {
           scriptingKind = UPDATING_EXPR;
         }
@@ -10983,13 +10979,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           scriptingKind = SEQUENTIAL_FUNC_EXPR;
         }
 
-        eval_expr* evalExpr = theExprManager->
-        create_eval_expr(theRootSctx,
-                         theUDF,
-                         loc,
-                         foExpr->get_arg(0),
-                         scriptingKind,
-                         theNSCtx);
+        eval_expr* evalExpr = CREATE(eval)(theRootSctx,
+                                           theUDF,
+                                           loc,
+                                           foExpr->get_arg(0),
+                                           scriptingKind,
+                                           theNSCtx);
 
         resultExpr = evalExpr;
 
@@ -11031,16 +11026,16 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         zstring query_params;
         std::vector<var_expr*> temp_vars;
 
-        if (lKind == FunctionConsts::FN_ZORBA_INVOKE_N ||
-            lKind == FunctionConsts::FN_ZORBA_INVOKE_N_N)
+        if (fkind == FunctionConsts::FN_ZORBA_INVOKE_N ||
+            fkind == FunctionConsts::FN_ZORBA_INVOKE_N_N)
         {
           scriptingKind = SIMPLE_EXPR;
         }
-        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_U_N)
+        else if (fkind == FunctionConsts::FN_ZORBA_INVOKE_U_N)
         {
           scriptingKind = UPDATING_EXPR;
         }
-        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_S_N)
+        else if (fkind == FunctionConsts::FN_ZORBA_INVOKE_S_N)
         {
           scriptingKind = SEQUENTIAL_FUNC_EXPR;
         }
@@ -11052,8 +11047,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         }
 
         // create a flwor with LETs to hold the parameters
-        flwor_expr* flworExpr = theExprManager->
-        create_flwor_expr(theRootSctx, theUDF, loc, false);
+        flwor_expr* flworExpr = CREATE(flwor)(theRootSctx, theUDF, loc, false);
 
         // wrap function's QName
         expr* qnameExpr = wrap_in_type_promotion(arguments[0],

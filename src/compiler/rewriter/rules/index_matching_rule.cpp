@@ -23,7 +23,7 @@
 
 #include "compiler/xqddf/value_index.h"
 
-#include "compiler/rewriter/rules/ruleset.h"
+#include "compiler/rewriter/rules/index_matching_rule.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 
 #include "compiler/api/compilercb.h"
@@ -31,6 +31,7 @@
 #include "functions/function.h"
 #include "functions/library.h"
 
+#include "util/dynamic_bitset.h"
 
 namespace zorba
 {
@@ -116,13 +117,17 @@ expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
 
   expr::substitution_t subst;
 
-  std::vector<for_clause*> matchedFORs;
-  std::vector<csize> matchedFORPositions;
+  for_clause* probeFORclause = NULL;
+  csize probeFORclausePos;
+  DynamicBitset matchedFORs(numQClauses);
+  DynamicBitset usedVars(numQClauses);
+  matchedFORs.reset();
+  usedVars.reset();
 
   // match for clauses
-  for (csize i = 0; i < numVClauses; ++i)
+  for (csize vi = 0; vi < numVClauses; ++vi)
   {
-    flwor_clause* vc = theViewExpr->get_clause(i);
+    flwor_clause* vc = theViewExpr->get_clause(vi);
 
     switch (vc->get_kind())
     {
@@ -132,11 +137,11 @@ expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
       expr* vdomExpr = vfc->get_expr();
       var_expr* vvarExpr = vfc->get_var();
 
-      csize j = nextQueryClause;
+      csize qi = nextQueryClause;
 
-      for (; j < numQClauses; ++j)
+      for (; qi < numQClauses; ++qi)
       {
-        flwor_clause* qc = theQueryExpr->get_clause(j);
+        flwor_clause* qc = theQueryExpr->get_clause(qi);
 
         if (qc->get_kind() != flwor_clause::for_clause)
           continue;
@@ -147,16 +152,21 @@ expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
 
         if (expr_tools::match_exact(qdomExpr, vdomExpr, subst))
         {
-          nextQueryClause = j+1;
-
+          nextQueryClause = qi+1;
           subst[vvarExpr] = qvarExpr;
-          matchedFORPositions.push_back(j);
-          matchedFORs.push_back(qfc);
+          matchedFORs.set(qi, true);
+
+          if (!probeFORclause)
+          {
+            probeFORclause = qfc;
+            probeFORclausePos = qi;
+          }
+
           break;
         }
       }
 
-      if (j == numQClauses)
+      if (qi == numQClauses)
         return theQueryExpr;
     }
     case flwor_clause::let_clause:
@@ -178,7 +188,7 @@ expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
   store::Item_t indexName = theIndexDecl->getName();
 
   expr* qnameExpr = ccb->theEM->
-  create_const_expr(sctx, udf, matchedFORs[0]->get_loc(), indexName);
+  create_const_expr(sctx, udf, probeFORclause->get_loc(), indexName);
 
   probeArgs.push_back(qnameExpr);
 
@@ -250,21 +260,32 @@ expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
   }
 
   // check for rejoins
+  const var_expr* domVar = theViewExpr->get_return_expr()->get_var();
+  assert(domVar);
+  assert(subst[domVar]->get_expr_kind() == var_expr_kind);
+  domVar = static_cast<const var_expr*>(subst[domVar]);
+ 
+  for (csize i = 0; i < unmatchedPreds.size(); ++i)
+  {
+    expr* pred = *unmatchedPreds[i];
+    if (!checkFreeVars(pred, domVar, matchedFORs))
+      return theQueryExpr;
+  }
 
   // Do the rewrite
   fo_expr* probeExpr = ccb->theEM->
   create_fo_expr(sctx,
                  udf,
-                 matchedFORs[0]->get_loc(),
+                 probeFORclause->get_loc(),
                  BUILTIN_FUNC(FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N),
                  probeArgs);
 
-  matchedFORs[0]->set_expr(probeExpr);
+  probeFORclause->set_expr(probeExpr);
 
   csize numRemoved = 0;
-  for (csize i = 1; i < matchedFORs.size(); ++i)
+  for (csize i = probeFORclausePos + 1; i < matchedFORs.size(); ++i)
   {
-    theQueryExpr->remove_clause(matchedFORPositions[i] - numRemoved);
+    theQueryExpr->remove_clause(i - numRemoved);
     ++numRemoved;
   }
 
@@ -315,6 +336,39 @@ void IndexMatchingRule::getQueryPreds(std::vector<expr**>& preds)
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+bool IndexMatchingRule::checkFreeVars(
+    const expr* qexpr,
+    const var_expr* domVar,
+    const DynamicBitset& matchedFORs)
+{
+  const expr::FreeVars& freeVars = qexpr->getFreeVars();
+
+  expr::FreeVars::const_iterator ite = freeVars.begin();
+  expr::FreeVars::const_iterator end = freeVars.end();
+  for (; ite != end; ++ite)
+  {
+    var_expr* freeVar = *ite;
+
+    if (freeVar == domVar)
+      continue;
+
+    if (freeVar->get_kind() != var_expr::for_var)
+      continue;
+
+    for (csize i = 0; i < matchedFORs.size(); ++i)
+    {
+      if (matchedFORs.get(i) &&
+          freeVar->get_flwor_clause() == theQueryExpr->get_clause(i))
+        return false;
+    }
+  }
+
+  return true;
+}
 
 }
 

@@ -1,7 +1,7 @@
 Iterator tree for doc indexer:
 <flwor::FLWORIterator>
   <ForVariable name="$$context-item">
-    <CtxVarIterator varid="1" varname="$$idx_doc_var_0x891caa0" varkind="global"/>
+    <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
   </ForVariable>
   <ReturnClause>
     <ValueIndexEntryBuilderIterator>

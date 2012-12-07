@@ -607,7 +607,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
   TypeManager* tm = theSctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   xs_integer lSkip = xs_integer::zero();
-  ulong lAmountNonKeyParams = (theSkip ? 2 : 1);
+  ulong numNonKeyParams = (theSkip ? 2 : 1);
 
   try
   {
@@ -627,16 +627,13 @@ bool ProbeIndexPointValueIterator::nextImpl(
         ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
-      if ( state->theIndexDecl->getNumKeyExprs() 
-        != numChildren - lAmountNonKeyParams )
+      if (state->theIndexDecl->getNumKeyExprs() != numChildren - numNonKeyParams)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(
-          qnameItem->getStringValue(),
-          "index",
-          numChildren - lAmountNonKeyParams,
-          state->theIndexDecl->getNumKeyExprs())
-        );
+        ERROR_PARAMS(qnameItem->getStringValue(),
+                     "index",
+                     numChildren - numNonKeyParams,
+                     state->theIndexDecl->getNumKeyExprs()));
       }
 
       state->theIndex = (state->theIndexDecl->isTemp() ?
@@ -666,7 +663,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
         lSkip = xs_integer::zero();
     }
 
-    for (i = lAmountNonKeyParams; i < numChildren; ++i) 
+    for (i = numNonKeyParams; i < numChildren; ++i) 
     {
       if (!consumeNext(keyItem, theChildren[i], planState)) 
       {
@@ -676,12 +673,11 @@ bool ProbeIndexPointValueIterator::nextImpl(
 
       if (theCheckKeyType)
       {
-        checkKeyType(loc, tm, state->theIndexDecl, 
-                     i - lAmountNonKeyParams, keyItem);
+        checkKeyType(loc, tm, state->theIndexDecl, i - numNonKeyParams, keyItem);
       }
 
       if (state->theIndexDecl->isGeneral() &&
-          (state->theIndexDecl->getKeyTypes())[i - lAmountNonKeyParams] == NULL)
+          (state->theIndexDecl->getKeyTypes())[i - numNonKeyParams] == NULL)
       {
         xqtref_t searchKeyType = tm->create_value_type(keyItem);
         

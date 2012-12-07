@@ -1163,21 +1163,31 @@ FunctionConsts::FunctionKind expr::get_function_kind() const
   qname. This method is used to extract the qname from the expression that is
   given as an arg to collection and index related functions.
 ********************************************************************************/
-const store::Item* expr::getQName(static_context* sctx) const
+const store::Item* expr::getQName() const
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-  TypeManager* tm = sctx->get_typemanager();
-
   if (get_expr_kind() == const_expr_kind)
   {
     const const_expr* qnameExpr = static_cast<const const_expr*>(this);
 
-    xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
+    store::SchemaTypeCode valueType = qnameExpr->get_val()->getTypeCode();
 
-    if (TypeOps::is_subtype(tm, *valueType, *rtm.QNAME_TYPE_ONE, get_loc()))
+    if (TypeOps::is_subtype(valueType, store::XS_QNAME))
     {
       return qnameExpr->get_val();
+    }
+  }
+  else if (get_var() != NULL)
+  {
+    const var_expr* var = get_var();
+
+    if (var->get_kind() == var_expr::prolog_var &&
+        var->num_set_exprs() == 1 &&
+        var->get_set_expr(0)->get_expr_kind() == var_decl_expr_kind)
+    {
+      const var_decl_expr* decl = 
+      static_cast<const var_decl_expr*>(var->get_set_expr(0));
+
+      return decl->get_init_expr()->getQName();
     }
   }
   else if (get_expr_kind() == promote_expr_kind)
@@ -1197,9 +1207,9 @@ const store::Item* expr::getQName(static_context* sctx) const
       if (argExpr->get_expr_kind() == const_expr_kind)
       {
         const const_expr* qnameExpr = static_cast<const const_expr*>(argExpr);
-        xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
+        store::SchemaTypeCode valueType = qnameExpr->get_val()->getTypeCode();
 
-        if (TypeOps::is_subtype(tm, *valueType, *rtm.QNAME_TYPE_ONE, get_loc()))
+        if (TypeOps::is_subtype(valueType, store::XS_QNAME))
         {
           return qnameExpr->get_val();
         }

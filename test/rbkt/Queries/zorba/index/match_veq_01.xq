@@ -13,8 +13,8 @@ import module namespace iddl =
 
 declare variable $doc := 
 <accounts>
-<account name="John" email="john@yahoo.com"/>;
-<account name="George" email="george@gmail.com"/>;
+<account name="John" email="john@yahoo.com"/>
+<account name="George" email="george@gmail.com"/>
 </accounts>;
 
 

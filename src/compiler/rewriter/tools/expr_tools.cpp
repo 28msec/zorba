@@ -20,6 +20,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/path_expr.h"
+#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/expr_iter.h"
@@ -207,15 +208,51 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
     if (qe->get_func() != ve->get_func())
       return false;
 
+    function* func = qe->get_func();
+
     csize numArgs = qe->num_args();
 
     if (numArgs != ve->num_args())
       return false;
 
-    for (csize i = 0; i < numArgs; i++)
+    csize i = 0;
+    for (; i < numArgs; i++)
     {
       if (!match_exact(qe->get_arg(i), ve->get_arg(i), subst))
-        return false;
+        break;
+    }
+
+    if (i < numArgs)
+    {
+      if (func->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
+      {
+        const store::Item* collName1 = ve->get_arg(0)->getQName();
+        const store::Item* collName2 = qe->get_arg(0)->getQName();
+
+          if (collName1 != NULL && collName2 != NULL && collName1->equals(collName2))
+            return true;
+#if 0
+        if (collName != NULL && qe->get_arg(0)->get_var() != NULL)
+        {
+          const var_expr* var = qe->get_arg(0)->get_var();
+
+          if (var->get_kind() == var_expr::prolog_var &&
+              var->num_set_exprs() == 1 &&
+              var->get_set_expr(0)->get_expr_kind() == var_decl_expr_kind)
+          {
+            const var_decl_expr* decl = 
+            static_cast<const var_decl_expr*>(var->get_set_expr(0));
+
+            const store::Item* collName2 = decl->get_init_expr()->getQName();
+
+            if (collName2 != NULL && collName->equals(collName2))
+              return true;
+          }
+        }
+#endif
+      }
+
+      return false;
     }
 
     return true;
