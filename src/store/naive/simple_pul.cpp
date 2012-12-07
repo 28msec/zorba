@@ -2439,8 +2439,7 @@ void PULImpl::getIndicesToRefresh(
       UpdReplaceInCollection* upd = static_cast<UpdReplaceInCollection*>
                            (pul->theReplaceInCollectionList[i]);
 
-      pul->theDeletedDocs.push_back(upd->getTarget());
-      pul->theInsertedDocs.push_back(upd->getContent());
+      pul->theModifiedDocs.insert(upd->getTarget());
     }
 
     numCollUpdates = pul->theDeleteFromCollectionList.size();
