@@ -3330,7 +3330,8 @@ void* begin_visit(const VFO_DeclList& v)
       zstring value = opt_decl->get_val().str();
 
       rchandle<QName> lQName = opt_decl->get_qname();
-      if (lQName->get_namespace().empty() && lQName->get_prefix().empty())
+      if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0 &&
+          lQName->get_namespace().empty() && lQName->get_prefix().empty())
       {
         theSctx->expand_qname(
            qnameItem,
