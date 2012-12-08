@@ -410,12 +410,20 @@ public:
   }
 
   /**
-   * Converts the the built-in \c bool value to an explicit \c bool value.
+   * Converts the given value to an explicit \c bool value.
    *
-   * @param value The \c bool value to convert.
+   * @tparam T The type of the value to convert.
+   * @param value The value to convert.
    * @return Return said value.
    */
-  static type value_of( bool value ) {
+  template<typename T> static
+  typename std::enable_if<ZORBA_TR1_NS::is_convertible<T,bool>::value,
+                          type>::type
+  value_of( T const &value ) {
+    //
+    // Using a template here eliminates a MSVC++ 4800 warning:
+    // "forcing value to 'true' or 'false' (performance warning)"
+    //
     return value ? true_value() : false_value();
   }
 };
