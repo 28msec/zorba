@@ -1816,8 +1816,22 @@ bool ZorbaReplaceNodesIterator::nextImpl(
   if (target->isNode() && target->getParent())
   {
     throw XQUERY_EXCEPTION(
-      zerr::ZDDY0039_NON_ROOT_NODE_REPLACEMENT,
+      zerr::ZDDY0039_NON_ROOT_NODE_EDIT,
       ERROR_PARAMS(target->getCollection()->getName()->getStringValue()),
+      ERROR_LOC( loc )
+    );
+  }
+  if (target->getKind() != content->getKind())
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0040_INCONSISTENT_EDIT,
+      ERROR_LOC( loc )
+    );
+  }
+  if (target->isNode() && (target->getNodeKind() != content->getNodeKind()))
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0040_INCONSISTENT_EDIT,
       ERROR_LOC( loc )
     );
   }
@@ -1862,11 +1876,11 @@ ZorbaReplaceNodesIterator::getCollection(
         ERROR_PARAMS(name->getStringValue()));
 
       case StaticContextConsts::decl_append_only:
-        RAISE_ERROR(zerr::ZDDY0037_COLLECTION_APPEND_BAD_REPLACE, loc,
+        RAISE_ERROR(zerr::ZDDY0037_COLLECTION_APPEND_BAD_EDIT, loc,
         ERROR_PARAMS(name->getStringValue()));
 
       case StaticContextConsts::decl_queue:
-        RAISE_ERROR(zerr::ZDDY0038_COLLECTION_QUEUE_BAD_REPLACE, loc,
+        RAISE_ERROR(zerr::ZDDY0038_COLLECTION_QUEUE_BAD_EDIT, loc,
         ERROR_PARAMS(name->getStringValue()));
 
       case StaticContextConsts::decl_mutable:
