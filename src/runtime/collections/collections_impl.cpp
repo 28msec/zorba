@@ -1792,7 +1792,7 @@ ZorbaDeleteNodesLastIterator::getCollection(
 /*******************************************************************************
 
 ********************************************************************************/
-bool ZorbaReplaceNodesIterator::nextImpl(
+bool ZorbaEditNodesIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1842,7 +1842,7 @@ bool ZorbaReplaceNodesIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addReplaceInCollection(
+  pul->addEditInCollection(
       &loc,
       collectionName,
       target,
@@ -1860,7 +1860,7 @@ bool ZorbaReplaceNodesIterator::nextImpl(
 
 ********************************************************************************/
 const StaticallyKnownCollection*
-ZorbaReplaceNodesIterator::getCollection(
+ZorbaEditNodesIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {

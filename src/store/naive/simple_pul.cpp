@@ -935,7 +935,7 @@ void PULImpl::addDeleteFromCollection(
 }
 
 
-void PULImpl::addReplaceInCollection(
+void PULImpl::addEditInCollection(
     const QueryLoc* loc,
     store::Item_t& name,
     store::Item_t& target,
@@ -944,8 +944,8 @@ void PULImpl::addReplaceInCollection(
 {
   CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
-  pul->theReplaceInCollectionList.push_back(
-      GET_PUL_FACTORY().createUpdReplaceInCollection(
+  pul->theEditInCollectionList.push_back(
+      GET_PUL_FACTORY().createUpdEditInCollection(
           pul,
           loc,
           name,
@@ -1754,8 +1754,8 @@ void PULImpl::mergeUpdates(store::Item* other)
                                  otherPul->theInsertIntoCollectionList);
 
       mergeCollectionUpdateLists(thisPul,
-                                 thisPul->theReplaceInCollectionList,
-                                 otherPul->theReplaceInCollectionList);
+                                 thisPul->theEditInCollectionList,
+                                 otherPul->theEditInCollectionList);
 
       mergeCollectionUpdateLists(thisPul,
                                  thisPul->theDeleteFromCollectionList,
@@ -2432,12 +2432,12 @@ void PULImpl::getIndicesToRefresh(
         pul->theInsertedDocs.push_back(upd->getNode(j));
     }
 
-    numCollUpdates = pul->theReplaceInCollectionList.size();
+    numCollUpdates = pul->theEditInCollectionList.size();
 
     for (csize i = 0; i < numCollUpdates; ++i)
     {
-      UpdReplaceInCollection* upd = static_cast<UpdReplaceInCollection*>
-                           (pul->theReplaceInCollectionList[i]);
+      UpdEditInCollection* upd = static_cast<UpdEditInCollection*>
+                           (pul->theEditInCollectionList[i]);
 
       pul->theModifiedDocs.insert(upd->getTarget());
     }
@@ -2725,7 +2725,7 @@ CollectionPul::~CollectionPul()
 
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
-  cleanList(theReplaceInCollectionList);
+  cleanList(theEditInCollectionList);
   cleanList(theDeleteFromCollectionList);
   cleanList(theTruncateCollectionList);
   cleanList(theDeleteCollectionList);
@@ -2772,7 +2772,7 @@ void CollectionPul::switchPul(PULImpl* pul)
 
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);
-  switchPulInPrimitivesList(theReplaceInCollectionList);
+  switchPulInPrimitivesList(theEditInCollectionList);
   switchPulInPrimitivesList(theDeleteFromCollectionList);
   switchPulInPrimitivesList(theTruncateCollectionList);
   switchPulInPrimitivesList(theDeleteCollectionList);
@@ -3630,7 +3630,7 @@ void CollectionPul::applyUpdates()
     // Apply collection primitives, except delete primitives
     applyList(theCreateCollectionList);
     applyList(theInsertIntoCollectionList);
-    applyList(theReplaceInCollectionList);
+    applyList(theEditInCollectionList);
     applyList(theDeleteFromCollectionList);
 
     // Compute the after-delta for each incrementally maintained index.
@@ -3669,7 +3669,7 @@ void CollectionPul::undoUpdates()
   {
     undoList(theTruncateCollectionList);
     undoList(theDeleteFromCollectionList);
-    undoList(theReplaceInCollectionList);
+    undoList(theEditInCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);
 

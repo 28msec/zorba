@@ -7,4 +7,4 @@ ddl:create(xs:QName("ns:collection_const"));
 
 dml:insert-nodes(xs:QName("ns:collection_const"), <a/>);
 
-dml:replace(xs:QName("ns:collection_const")[1], <b/>);
+dml:edit(xs:QName("ns:collection_const")[1], <b/>);

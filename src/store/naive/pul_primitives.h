@@ -1213,7 +1213,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class UpdReplaceInCollection: public  UpdCollection
+class UpdEditInCollection: public  UpdCollection
 {
   friend class PULPrimitiveFactory;
 
@@ -1222,7 +1222,7 @@ protected:
   store::Item_t theContent;
   bool          theFound;
 
-  UpdReplaceInCollection(
+  UpdEditInCollection(
         CollectionPul* pul,
         const QueryLoc* aLoc,
         store::Item_t& name,

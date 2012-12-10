@@ -203,7 +203,7 @@ public:
         bool isLast,
         bool isDynamic) = 0;
 
-  virtual void addReplaceInCollection(
+  virtual void addEditInCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
         Item_t& target,

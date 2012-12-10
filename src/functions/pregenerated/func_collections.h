@@ -509,11 +509,11 @@ public:
 };
 
 
-//static-collections-dml:replace
-class static_collections_dml_replace : public function
+//static-collections-dml:edit
+class static_collections_dml_edit : public function
 {
 public:
-  static_collections_dml_replace(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_edit(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

@@ -7,4 +7,4 @@ ddl:create(xs:QName("ns:collection_append_only"));
 
 dml:insert-last(xs:QName("ns:collection_append_only"), <a/>);
 
-dml:replace(dml:collection(xs:QName("ns:collection_append_only")[1]), <b/>);
+dml:edit(dml:collection(xs:QName("ns:collection_append_only")[1]), <b/>);

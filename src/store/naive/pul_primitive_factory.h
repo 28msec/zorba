@@ -55,7 +55,7 @@ namespace zorba { namespace simplestore {
   class UpdInsertBeforeIntoCollection;
   class UpdInsertAfterIntoCollection;
   class UpdDeleteNodesFromCollection;
-  class UpdReplaceInCollection;
+  class UpdEditInCollection;
   class UpdTruncateCollection;
   class UpdCreateIndex;
   class UpdDeleteIndex;
@@ -279,8 +279,8 @@ public:
         bool isLast,
         bool isDynamic);
 
-  virtual UpdReplaceInCollection*
-  createUpdReplaceInCollection(
+  virtual UpdEditInCollection*
+  createUpdEditInCollection(
         CollectionPul* pul,
         const QueryLoc*,
         store::Item_t& name,

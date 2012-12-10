@@ -7,5 +7,5 @@ ddl:create(xs:QName("ns:collection"));
 
 dml:insert(xs:QName("ns:collection"), <a/>);
 
-dml:replace(<b/>, dml:collection(xs:QName("ns:collection")));
+dml:edit(<b/>, dml:collection(xs:QName("ns:collection")));
 

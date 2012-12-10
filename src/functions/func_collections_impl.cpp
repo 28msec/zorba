@@ -586,7 +586,7 @@ BoolAnnotationValue static_collections_dml_delete_nodes::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_dml_replace::codegen(
+PlanIter_t static_collections_dml_edit::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -598,7 +598,7 @@ PlanIter_t static_collections_dml_replace::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  return new ZorbaReplaceNodesIterator(sctx, loc, argv, dynamic);
+  return new ZorbaEditNodesIterator(sctx, loc, argv, dynamic);
 }
 
 

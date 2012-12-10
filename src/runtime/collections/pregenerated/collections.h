@@ -910,33 +910,33 @@ public:
 
 /**
  * 
- *      zorba:replace
+ *      zorba:edit
  *    
  * Author: Zorba Team
  */
-class ZorbaReplaceNodesIterator : public NaryBaseIterator<ZorbaReplaceNodesIterator, PlanIteratorState>
+class ZorbaEditNodesIterator : public NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>
 { 
 protected:
   bool theIsDynamic; //
 public:
-  SERIALIZABLE_CLASS(ZorbaReplaceNodesIterator);
+  SERIALIZABLE_CLASS(ZorbaEditNodesIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaReplaceNodesIterator,
-    NaryBaseIterator<ZorbaReplaceNodesIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaEditNodesIterator,
+    NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaReplaceNodesIterator(
+  ZorbaEditNodesIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic)
     : 
-    NaryBaseIterator<ZorbaReplaceNodesIterator, PlanIteratorState>(sctx, loc, children),
+    NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>(sctx, loc, children),
     theIsDynamic(isDynamic)
   {}
 
-  virtual ~ZorbaReplaceNodesIterator();
+  virtual ~ZorbaEditNodesIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;

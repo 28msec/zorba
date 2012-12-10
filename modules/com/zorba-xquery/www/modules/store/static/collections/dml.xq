@@ -851,7 +851,7 @@ cdml:delete-last($name as xs:QName, $number as xs:integer)  external;
  :
  :)
 declare updating function 
-cdml:replace($target as item(), $content as item()) external;
+cdml:edit($target as item(), $content as item()) external;
 
 
 (:~

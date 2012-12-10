@@ -14,7 +14,7 @@ dml:insert(xs:QName("ns:collection"), (<a id="1"/>, <b id="2"/>, <c id="3"/>));
 
 variable $old := dml:collection(xs:QName("ns:collection"))[2];
 
-dml:replace(dml:collection(xs:QName("ns:collection"))[2], <d id="4"/>);
+dml:edit(dml:collection(xs:QName("ns:collection"))[2], <d id="4"/>);
 
 variable $new := dml:collection(xs:QName("ns:collection"))[2];
 

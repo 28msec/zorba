@@ -1252,21 +1252,21 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-  <zorba:iterator name="ZorbaReplaceNodesIterator" >
+  <zorba:iterator name="ZorbaEditNodesIterator" >
     
     <zorba:description author="Zorba Team">
-      zorba:replace
+      zorba:edit
     </zorba:description>
     
     <zorba:function generateCodegen="false">
       
-      <zorba:signature localname="replace" prefix="static-collections-dml">
+      <zorba:signature localname="edit" prefix="static-collections-dml">
         <zorba:param>item()</zorba:param>
         <zorba:param>item()</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
       
-      <zorba:signature localname="replace" prefix="dynamic-collections-dml">
+      <zorba:signature localname="edit" prefix="dynamic-collections-dml">
         <zorba:param>item()</zorba:param>
         <zorba:param>item()</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>

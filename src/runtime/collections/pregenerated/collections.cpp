@@ -657,19 +657,19 @@ ZorbaDeleteNodesLastIterator::~ZorbaDeleteNodesLastIterator() {}
 // </ZorbaDeleteNodesLastIterator>
 
 
-// <ZorbaReplaceNodesIterator>
-SERIALIZABLE_CLASS_VERSIONS(ZorbaReplaceNodesIterator)
+// <ZorbaEditNodesIterator>
+SERIALIZABLE_CLASS_VERSIONS(ZorbaEditNodesIterator)
 
-void ZorbaReplaceNodesIterator::serialize(::zorba::serialization::Archiver& ar)
+void ZorbaEditNodesIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<ZorbaReplaceNodesIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>*)this);
 
     ar & theIsDynamic;
 }
 
 
-void ZorbaReplaceNodesIterator::accept(PlanIterVisitor& v) const
+void ZorbaEditNodesIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -682,9 +682,9 @@ void ZorbaReplaceNodesIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-ZorbaReplaceNodesIterator::~ZorbaReplaceNodesIterator() {}
+ZorbaEditNodesIterator::~ZorbaEditNodesIterator() {}
 
-// </ZorbaReplaceNodesIterator>
+// </ZorbaEditNodesIterator>
 
 
 // <ZorbaTruncateCollectionIterator>

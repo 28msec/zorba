@@ -7,4 +7,4 @@ ddl:create(xs:QName("ns:collection_queue"));
 
 dml:insert-last(xs:QName("ns:collection_queue"), <a/>);
 
-dml:replace(dml:collection(xs:QName("ns:collection_queue")[1]), <b/>);
+dml:edit(dml:collection(xs:QName("ns:collection_queue")[1]), <b/>);
