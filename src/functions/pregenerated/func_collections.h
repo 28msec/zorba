@@ -524,7 +524,11 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+  bool propagatesInputNodes(expr* fo, csize producer) const;
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  void processPragma(expr*, const std::vector<pragma*>&) const;
 
   CODEGEN_DECL();
 };

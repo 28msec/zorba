@@ -602,6 +602,21 @@ PlanIter_t static_collections_dml_edit::codegen(
 }
 
 
+void
+zorba::static_collections_dml_edit::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragmaInternal(e, p);
+}
+
+bool 
+static_collections_dml_edit::propagatesInputNodes(
+    expr* fo,
+    csize input) const
+{
+  return false;
+}
 /*******************************************************************************
 
 ********************************************************************************/
