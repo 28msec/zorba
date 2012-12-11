@@ -1905,8 +1905,21 @@ static void readDocument(
   store::Item_t& oResult)
 {
   //Normalize input to handle filesystem paths, etc.
-  zstring lNormUri;
+  zstring lNormUri;  
+  size_t found = 0;
+
   normalizeInputUri(aUri, aSctx, loc, &lNormUri);
+
+  //check if fragment identifier
+  found = lNormUri.find_last_of("#");
+  if (found != lNormUri.npos)
+  {
+    //confirm if fragment
+    if (lNormUri.at(found-1) == '/')
+    {
+      throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));    
+    } 
+  }
 
   //Resolve URI to stream
   zstring lErrorMessage;
@@ -2040,6 +2053,7 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   zstring lErrorMessage;
   std::auto_ptr<internal::Resource> lResource;
   StreamReleaser lStreamReleaser;
+  size_t found = 0;
 
   FnUnparsedTextLinesIteratorState* state;
   DEFAULT_STACK_INIT(FnUnparsedTextLinesIteratorState, state, planState);
@@ -2058,6 +2072,17 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   //Normalize input to handle filesystem paths, etc.
   uriItem->getStringValue2(uriString);
   normalizeInputUri(uriString, theSctx, loc, &lNormUri);
+
+  //check if fragment identifier
+  found = lNormUri.find_last_of("#");
+  if (found != lNormUri.npos)
+  {
+    //confirm if fragment
+    if (lNormUri.at(found-1) == '/')
+    {
+      throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));    
+    } 
+  }
 
   //Resolve URI to stream
   lResource = theSctx->resolve_uri
