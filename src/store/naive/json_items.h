@@ -337,6 +337,8 @@ public:
       const store::Item_t& aName,
       const store::Item_t& aNewName);
 
+  virtual void swap(store::Item* anotherItem);
+
   // root management
   
 protected:
@@ -492,6 +494,8 @@ public:
 
   virtual store::Item_t
   replace(const xs_integer& aPos, const store::Item_t& value);
+
+  virtual void swap(Item* anotherItem);
 
   // root management
 public:
