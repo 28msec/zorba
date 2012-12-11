@@ -450,6 +450,20 @@ void PrinterVisitor::endVisit ( const ZorbaDeleteNodesLastIterator& ) {
 // </ZorbaDeleteNodesLastIterator>
 
 
+// <ZorbaEditNodesIterator>
+void PrinterVisitor::beginVisit ( const ZorbaEditNodesIterator& a) {
+  thePrinter.startBeginVisit("ZorbaEditNodesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaEditNodesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaEditNodesIterator>
+
+
 // <ZorbaTruncateCollectionIterator>
 void PrinterVisitor::beginVisit ( const ZorbaTruncateCollectionIterator& a) {
   thePrinter.startBeginVisit("ZorbaTruncateCollectionIterator", ++theId);

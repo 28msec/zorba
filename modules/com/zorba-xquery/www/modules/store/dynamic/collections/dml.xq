@@ -606,7 +606,7 @@ dml:delete-last($name as xs:QName, $number as xs:integer) external;
  :
  :)
 declare updating function 
-cdml:edit($target as item(), $content as item()) external;
+dml:edit($target as item(), $content as item()) external;
 
 
 (:~

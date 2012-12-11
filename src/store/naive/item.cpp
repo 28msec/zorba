@@ -1518,7 +1518,6 @@ void Item::swap(Item* anotherItem)
     }
     case JSONIQ:
     {
-      std::swap(theUnion.itemKind, anotherItem->theUnion.itemKind);
       break;
     }
     default:

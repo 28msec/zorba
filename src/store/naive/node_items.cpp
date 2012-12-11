@@ -762,10 +762,11 @@ void XmlNode::swap(Item* anotherItem)
   assert(lOtherItem);
   assert(theParent == NULL);
   assert(lOtherItem->theParent == NULL);
+
+  // Swap flags expect hasReference.
   bool lHasReference = haveReference();
   bool lOtherHasReference = lOtherItem->haveReference();
   std::swap(theFlags, lOtherItem->theFlags);
-
   if(lHasReference)
   {
     setHaveReference();
@@ -774,11 +775,37 @@ void XmlNode::swap(Item* anotherItem)
   {
     setHaveReference();
   }
+  
+  // Swap root nodes and adjust type maps.
+  store::Item_t lRootNodeType;
+  store::Item_t lOtherRootNodeType;
+  bool lRootHasType = getTree()->theTypesMap->get(
+      getTree()->theRootNode, lRootNodeType);
+  bool lOtherRootHasType = lOtherItem->getTree()->theTypesMap->get(
+      lOtherItem->getTree()->theRootNode, lOtherRootNodeType);
+  if(lRootHasType)
+  {
+    getTree()->theTypesMap->erase(getTree()->theRootNode);
+  }
+  if(lOtherRootHasType)
+  {
+    lOtherItem->getTree()->theTypesMap->erase(
+        lOtherItem->getTree()->theRootNode);
+  }
+  std::swap(getTree()->theRootNode, lOtherItem->getTree()->theRootNode);
+  if(lRootHasType)
+  {
+    getTree()->theTypesMap->insert(getTree()->theRootNode, lRootNodeType);
+  }
+  if(lOtherRootHasType)
+  {
+    lOtherItem->getTree()->theTypesMap->insert(
+        lOtherItem->getTree()->theRootNode, lOtherRootNodeType);
+  }
 
   // Adjust trees.
 #ifndef EMBEDED_TYPE
   std::swap(getTree()->theTypesMap, lOtherItem->getTree()->theTypesMap);
-  std::swap(getTree()->theRootNode, lOtherItem->getTree()->theRootNode);
 #endif
 }
 
