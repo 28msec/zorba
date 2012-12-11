@@ -97,7 +97,7 @@ declare %private function driver:matches-dependency(
 declare %private function driver:list-assertions(
   $case as element(fots:test-case)
 ) as xs:string* {
-  distinct-values(for $assert in $case/result/descendant-or-self::*
+  distinct-values(for $assert in $case/fots:result/descendant-or-self::*
                   return local-name-from-QName(node-name($assert)))
 };
 
@@ -217,7 +217,7 @@ declare %ann:nondeterministic function driver:list-matching-test-cases(
     for $testSet in $doc/fots:catalog/fots:test-set
     let $uri := resolve-uri($testSet/@file, $baseUri),
         $testSetDoc := doc($uri)
-      for $testCase in $testSetDoc//test-case
+      for $testCase in $testSetDoc//fots:test-case
       where matches(util:get-value($testCase, 
                                   util:parent-folder($uri),
                                   "test"),
@@ -444,7 +444,7 @@ declare %private function driver:create-XQXQ-query(
                                $testSetBaseURI),
           env:set-variables($env,
                             $envBaseURI),
-          env:set-variables($case/environment,
+          env:set-variables($case/fots:environment,
                             $testSetBaseURI),
           "xqxq:evaluate($queryID)"
    ),
