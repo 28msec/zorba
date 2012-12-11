@@ -127,7 +127,7 @@ public:
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
-  void closeImpl(PlanState& planState);
+  void resetImpl(PlanState& planState) const;
 };
 
 

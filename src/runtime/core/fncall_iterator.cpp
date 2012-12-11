@@ -118,7 +118,7 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
   if (thePlanOpen)
     thePlan->close(*thePlanState);
 
-  // std::cerr << "--> deleting PlanState: " << thePlanState << std::endl;
+  // std::cerr << "--> deleted UDF thePlanState: " << thePlanState << " in state: " << this << std::endl;
 
   if (thePlanState != NULL)
     delete thePlanState;
@@ -145,14 +145,15 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf,
     theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
   else
     theLocalDCtx = new dynamic_context(theFunctionItem->getDctx());
-
+  
   thePlanState = new PlanState(theIsDynamic ? theFunctionItem->getDctx() : planState.theGlobalDynCtx,
                                theLocalDCtx,
                                thePlanStateSize,
                                planState.theStackDepth + 1,
                                planState.theMaxStackDepth);
 
-  // std::cerr << "--> created PlanState: " << thePlanState << std::endl;
+  // std::cerr << "--> UDF state: " << this << " planState: " << (void*)&planState << std::endl;
+  // std::cerr << "--> created UDF thePlanState: " << thePlanState << " in state: " << this << std::endl;
 
   /*
   std::cerr << "--> UDFunctionCallIteratorState::open() " << this << " new theBlock: " << (void*)thePlanState->theBlock << " + " << (void*)thePlanState->theBlockSize
@@ -473,7 +474,7 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
     // NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
     // closeImpl(planState);
 
-    // std::cerr << "--> destroying planState: " << (void*)&planState << std::endl;
+    // std::cerr << "--> destroying planState: " << ((void*)&planState + theStateOffset) << std::endl;
 
     StateTraitsImpl<UDFunctionCallIteratorState>::
     destroyState(planState, theStateOffset);

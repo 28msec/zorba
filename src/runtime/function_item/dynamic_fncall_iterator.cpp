@@ -147,52 +147,18 @@ void DynamicFnCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 /*******************************************************************************
 
 ********************************************************************************/
-void DynamicFnCallIterator::closeImpl(PlanState& planState)
+void DynamicFnCallIterator::resetImpl(PlanState& planState) const
 {
-  /*
-  if (!theIsDynamic)
-  {
-    NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
-    closeImpl(planState);
-  }
-  else
-  {
-    // NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
-    // closeImpl(planState);
-
-    std::cerr << "--> destroying planState: " << (void*)&planState << std::endl;
-
-    StateTraitsImpl<UDFunctionCallIteratorState>::
-    destroyState(planState, theStateOffset);
-  }
-  */
-  
-  /*
-  DynamicFnCallIteratorState* state =
+  DynamicFnCallIteratorState* state = 
   StateTraitsImpl<DynamicFnCallIteratorState>::getState(planState, theStateOffset);
-
-  StateTraitsImpl<DynamicFnCallIteratorState>::
-  destroyState(planState, theStateOffset);
-  */
-
-  /*
-  if (state->thePlan)
+  
+  if (state->theIsOpen)
   {
     state->thePlan->close(planState);
     state->theIsOpen = false;
   }
-  */
   
-  if (theIsPartialApply)
-  {
-    (*theChildren.begin())->close(planState);
-    StateTraitsImpl<DynamicFnCallIteratorState>::destroyState(planState, theStateOffset);
-  }
-  else
-  {
-    NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>::closeImpl(planState);
-  }
-
+  NaryBaseIterator<DynamicFnCallIterator,DynamicFnCallIteratorState>::resetImpl(planState);
 }
 
 
@@ -339,36 +305,22 @@ bool DynamicFnCallIterator::nextImpl(
     }
     else
     {
-      
       // std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
       // std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
       
       state->thePlan = fnItem->getImplementation(theChildren);
 
       // std::cerr << "--> " << toString() << " got implementation." << std::endl;
-
       // std::cerr << "--> dynamic fncall: opening thePlan: " << state->thePlan->toString() << std::endl;
 
       // must be opened after vars and params are set
       state->thePlan->open(planState, state->theUDFStateOffset);
       state->theIsOpen = true;
 
-      {
-        /*
-        std::cerr << "Iterator tree for dynamic function call:\n";
-        XMLIterPrinter vp(std::cerr);
-        print_iter_plan(vp, state->thePlan);
-        std::cerr << std::endl;
-        */
-      }
-
-
       while (consumeNext(result, state->thePlan, planState))
       {
         STACK_PUSH(true, state);
       }
-
-      // std::cerr << "--> " << toString() << " finished consuming items." << std::endl;
 
       // need to close here early in case the plan is completely
       // consumed. Otherwise, the plan would still be opened

@@ -110,6 +110,8 @@ public:
   void open(PlanState& planState, user_function* udf, bool theIsDynamic, store::ItemHandle<FunctionItem>& theFunctionItem);
 
   void reset(PlanState& planState);
+  
+  
 };
 
 
@@ -149,8 +151,6 @@ public:
         const QueryLoc& loc,
         std::vector<PlanIter_t>& args,
         const user_function* aUDF);
-
-  ~UDFunctionCallIterator() {}
 
   bool isUpdating() const;
 

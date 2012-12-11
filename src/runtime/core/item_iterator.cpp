@@ -169,7 +169,6 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   }
   */
 
-
   // This portion is taken from the eval iterator
   {
     // Create the "import" sctx. The importOuterEnv() method (called below) will
@@ -187,19 +186,15 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     evalCCB.reset(new CompilerCB(*planState.theCompilerCB));
     evalCCB->theRootSctx = evalSctx;
     (evalCCB->theSctxMap)[1] = evalSctx;
-    // evalCCB->theIsEval = true;
-    // evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
-
+    
     // Create the dynamic context for the eval query
     std::auto_ptr<dynamic_context> evalDctx;
     evalDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
-    // state->dctx.reset(evalDctx);
-
+    
     /*
     std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
     std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
     */
-
     // std::cerr << "--> " << toString() << " theSctx: " << theSctx->toString();
     // std::cerr << "--> " << toString() << " importSctx: " << importSctx->toString();
 
@@ -371,8 +366,7 @@ void DynamicFunctionIterator::importOuterEnv(
         // std::cerr << "--> searching for var: " << theDynamicFunctionInfo->theScopedVarsNames[i]->toString() << std::endl;
         for (csize j=0; j<theDynamicFunctionInfo->theSubstVarsValues.size(); j++)
         {
-          // std::cerr << "    substVar: " << (theDynamicFunctionInfo->theSubstVarsValues[j].getp() ?
-          //     theDynamicFunctionInfo->theSubstVarsValues[j]->toString() : "NULL");
+          // std::cerr << "    substVar: " << (theDynamicFunctionInfo->theSubstVarsValues[j] ? theDynamicFunctionInfo->theSubstVarsValues[j]->toString() : "NULL");
           if (theDynamicFunctionInfo->theSubstVarsValues[j]->get_name()->equals(theDynamicFunctionInfo->theScopedVarsNames[i].getp()))
             outerGlobalVarId = theDynamicFunctionInfo->theSubstVarsValues[j]->get_unique_id();
         }
@@ -386,7 +380,7 @@ void DynamicFunctionIterator::importOuterEnv(
           &&
           theDynamicFunctionInfo->theSubstVarsValues[i]->get_unique_id() == 0)
       {
-        theDynamicFunctionInfo->theSubstVarsValues[i]->set_var_info(NULL);
+        // theDynamicFunctionInfo->theSubstVarsValues[i]->set_var_info(NULL);
         theDynamicFunctionInfo->theSubstVarsValues[i]->set_unique_id(outerGlobalVarId);
       }
 
