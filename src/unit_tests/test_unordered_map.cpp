@@ -194,8 +194,9 @@ static void test_local_iterator() {
 }
 
 static void test_rehash() {
-  unordered_map<int,int> m;
-  unordered_map<int,int>::size_type const initial_buckets = m.bucket_count();
+  typedef unordered_map<int,int> map_type;
+  map_type m;
+  map_type::size_type const initial_buckets = m.bucket_count();
 
   // Add elements until bucket_count() changes which implies a rehash was done.
   for ( int i = 0; m.bucket_count() == initial_buckets; ++i )
@@ -204,8 +205,7 @@ static void test_rehash() {
   ASSERT_TRUE( m.bucket_count() > initial_buckets );
 
   // Ensure all the elements are still there.
-  unordered_map<int,int>::size_type const size = m.size();
-  for ( int i = 0; i < size; ++i )
+  for ( int i = 0; (unsigned)i < m.size(); ++i )
     ASSERT_TRUE_AND_NO_EXCEPTION( m.at( i ) == i );
 }
 
