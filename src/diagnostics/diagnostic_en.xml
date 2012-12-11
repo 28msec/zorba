@@ -1248,23 +1248,23 @@
        An argument to \c fn:deep-equal() contains a function item.
       </comment>
       <value>"$1": argument to fn:deep-equal() contains a function item</value>
-    </diagnostic>  
-    
+    </diagnostic>
+
     <diagnostic code="FOUT1170">
       <comment>
        Identifier cannot be used to retrive a resource containing text
       </comment>
       <value>"$1": error retrieving resource containing text</value>
     </diagnostic>
-    
+
     <diagnostic code="FOUT1190">
       <comment>
-       Retrieved resource contains octets that cannot be decoded into Unicode 
-       using the specified encoding, the resulting characters are not 
+       Retrieved resource contains octets that cannot be decoded into Unicode
+       using the specified encoding, the resulting characters are not
        permitted XML characters or requested encoding not supported
       </comment>
       <value>"$1": can not decode resource retrieved</value>
-    </diagnostic>  
+    </diagnostic>
 
     <!--////////// XQuery Update Facility //////////////////////////////////-->
 
@@ -1287,7 +1287,7 @@
          specified.
       </comment>
       <value>$1</value>
-    
+
       <entry key="CONCAT">
         <value>comma expression with updating and non-updating branches</value>
       </entry>
@@ -1476,7 +1476,7 @@
        in the query are made effective.
       </comment>
       <value>$1${ 2}</value>
-        
+
       <entry key="AttributeName">
         <value>"$3": attribute with the same name already exists</value>
       </entry>
@@ -1945,11 +1945,11 @@
     <diagnostic code="ZAPI0009" name="XQUERY_NOT_COMPILED_IN_DEBUG_MODE">
       <value>XQuery not compiled in debug mode</value>
     </diagnostic>
-     
+
      <diagnostic code="ZAPI0011" name="ELEMENT_NOT_DECLARED">
        <value>"$1": undefined $2</value>
      </diagnostic>
-     
+
     <diagnostic code="ZAPI0014" name="INVALID_ARGUMENT">
       <value>"$1": invalid argument${: 2}</value>
     </diagnostic>
@@ -1997,7 +1997,7 @@
     <diagnostic code="ZAPI0029" name="REFERENCE_ALREADY_PRESENT">
       <value>"$1": reference already present in the store</value>
     </diagnostic>
-   
+
     <diagnostic code="ZAPI0030" name="NO_CURRENT_REFERENCE">
       <value>node has no current reference</value>
     </diagnostic>
@@ -2033,7 +2033,7 @@
     <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_NODE_REFERENCE">
       <value>can not retrieve node-reference for a node that is not in a collection</value>
     </diagnostic>
-     
+
     <diagnostic code="ZAPI0090" name="CANNOT_VALIDATE_NON_ROOT">
       <value>non root element cannot be validated in place</value>
     </diagnostic>
@@ -2647,18 +2647,18 @@
 
   <namespace prefix="jerr">
 
-    <!--////////// JSONiq ///////////////////////////////////////////-->
+    <!--////////// JSONiq //////////////////////////////////////////////////-->
 
     <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.</comment>
       <value>pair value returns no, or more than one, item</value>
     </diagnostic>
-    
+
     <diagnostic code="JNDY0003" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if two pairs in an object constructor or in a simple object union have the same name.</comment>
       <value>"$1": pair with the same name already exists in object</value>
     </diagnostic>
-    
+
     <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error to call fn:data on a sequence containing an array or an object.</comment>
       <value>can not atomize an $1 item: an $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)</value>
@@ -2670,19 +2670,19 @@
       <value>"$1": duplicate pair to insert</value>
 
     </diagnostic>
-    
+
     <diagnostic code="JNUP0006" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if upd:applyUpdates causes an object to contain two pairs with the same name.</comment>
 
       <value>"$1": pair to insert already exists in object</value>
 
     </diagnostic>
-    
+
     <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if, in an updating expression, an array selector cannot be cast to xs:integer or if an object selector cannot be cast to xs:string.</comment>
-      
+
       <value>"$1": wrong type for object/array selector in update expression</value>
-      
+
       <entry key="Object">
         <value>"$2": can not be promoted to type xs:string</value>
       </entry>
@@ -2696,7 +2696,7 @@
       </entry>
 
     </diagnostic>
-    
+
     <diagnostic code="JNUP0008" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if the target of a deleting or replacing expression is not an array or an object.
         It is a dynamic error if the target of a renaming expression is not an object.
@@ -2719,22 +2719,22 @@
       </entry>
 
     </diagnostic>
-    
+
     <diagnostic code="JNUP0009" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if a pending update list contains two replacing update primitives on the same object or array, and with the same selector.</comment>
       <value>"$1": duplicate pair to replace</value>
     </diagnostic>
-    
+
     <diagnostic code="JNUP0010" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if a pending update list contains two renaming update primitives on the same object and with the same selector.</comment>
       <value>"$1": duplicate pair to rename</value>
     </diagnostic>
-    
+
     <diagnostic code="JNTY0011" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if the content sequence in a node constructor or in an XQUF insert or replace update expression contains an object or an array.</comment>
       <value>JSON item cannot appear in content sequence of node constructor or updating expression</value>
     </diagnostic>
-    
+
     <diagnostic code="JNSE0012" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error to serialize a sequence of less
       or more than one item with the JSON output method if the
@@ -2770,7 +2770,7 @@
       <comment>It is a dynamic error if it is attempted to create a replace, delete or rename update primitive with a selector that cannot be resolved against the target array or object.</comment>
 
       <value>$1</value>
-      
+
       <entry key="Object">
         <value>"$2": selector cannot be resolved against supplied object</value>
       </entry>
@@ -2779,31 +2779,29 @@
         <value>"$2": selector cannot be resolved against supplied array</value>
       </entry>
     </diagnostic>
-    
+
     <diagnostic code="JNUP0017" if="defined(ZORBA_WITH_JSON)">
       <comment> It is a dynamic error if the value in a replace expression is not exactly a single item.</comment>
       <value>can not replace with less or more than an item</value>
     </diagnostic>
-    
+
     <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
-      
+
       <value>object or array selection needs exactly one parameter</value>
     </diagnostic>
-    
+
     <diagnostic code="JNUP0019" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if the content expression, in an object insert expression, does not evaluate to a sequence of objects.</comment>
-      
+
       <value>"$1": invalid type (content of insert expression must evaluate to a sequence of objects)</value>
     </diagnostic>
-    
+
     <diagnostic code="JNTY0023" if="defined(ZORBA_WITH_JSON)">
-      <comment>It is a type error if the prefix is not a string or if the 
+      <comment>It is a type error if the prefix is not a string or if the
         serialization parameters are not an element.</comment>
       <value>$1: value of "$2" is not a $3</value>
     </diagnostic>
-
-    <!--////////// JSONIQ ///////////////////////////////////////////-->
 
     <diagnostic code="JNTY0024" if="defined(ZORBA_WITH_JSON)">
       <comment>objects or arrays don't have a string value</comment>
@@ -2818,7 +2816,32 @@
     <diagnostic code="JNDY0021" if="defined(ZORBA_WITH_JSON)">
       <comment>parser error raised by jn:parse-json</comment>
       <value>$1</value>
+      <entry key="IllegalCharacter_2">
+        <value>'$2': illegal JSON character</value>
+      </entry>
+      <entry key="IllegalCodepoint_2">
+        <value>"$2": illegal Unicode code-point</value>
+      </entry>
+      <entry key="IllegalEscape_2">
+        <value>'\\$2': illegal JSON character escape</value>
+      </entry>
+      <entry key="IllegalLiteral">
+        <value>illegal JSON literal</value>
+      </entry>
+      <entry key="IllegalNumber">
+        <value>illegal JSON number</value>
+      </entry>
+      <entry key="UnexpectedToken_2">
+        <value>"$2": unexpected JSON token</value>
+      </entry>
+      <entry key="UnterminatedString">
+        <value>unterminated JSON string</value>
+      </entry>
+      <entry key="UnexpectedExtraContent">
+        <value>unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)</value>
+      </entry>
     </diagnostic>
+
   </namespace>
 
   <!--////////// Zorba Warnings ////////////////////////////////////////////-->
@@ -3011,7 +3034,7 @@
     <entry key="BadXMLDocument_2o">
       <value>malformed XML document${ at "2"}</value>
     </entry>
-    
+
     <entry key="BadXMLNoOpeningTag">
       <value>closing tag without matching opening tag</value>
     </entry>
@@ -3828,43 +3851,43 @@
     <entry key="JSONiq error">
       <value>JSONIQ error</value>
     </entry>
-    
+
     <entry key="JSONiq type error">
       <value>JSONIQ type error</value>
     </entry>
-    
+
     <entry key="JSONiq static error">
       <value>JSONIQ static error</value>
     </entry>
-    
+
     <entry key="JSONiq dynamic error">
       <value>JSONIQ dynamic error</value>
     </entry>
-    
+
     <entry key="JSONiq serialization error">
       <value>JSONIQ serialization error</value>
     </entry>
-    
+
     <entry key="JSONiq warning">
       <value>JSONIQ warning</value>
     </entry>
-    
+
     <entry key="JSONiq type warning">
       <value>JSONIQ type warning</value>
     </entry>
-    
+
     <entry key="JSONiq static warning">
       <value>JSONIQ static warning</value>
     </entry>
-    
+
     <entry key="JSONiq dynamic warning">
       <value>JSONIQ dynamic warning</value>
     </entry>
-    
+
     <entry key="JSONiq serialization warning">
       <value>JSONIQ serialization warning</value>
     </entry>
-    
+
     <entry key="dynamic error">
       <value>dynamic error</value>
     </entry>
@@ -4012,73 +4035,41 @@
     <entry key="ParseFragmentOptionCombinationNotAllowed">
       <value>only one of the &lt;schema-validate/&gt;, &lt;DTD-validate/&gt; or &lt;parse-external-parsed-entity/&gt; options can be specified</value>
     </entry>
-    
+
     <entry key="ParseFragmentInvalidOptions">
       <value>invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace</value>
     </entry>
-    
+
     <entry key="ParseFragmentDoctypeNotAllowed">
       <value>a DOCTYPE declaration is not allowed</value>
     </entry>
-    
+
     <entry key="ParseFragmentDoctypeNotAllowedHere">
       <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
     </entry>
-    
+
     <entry key="FormatNumberDuplicates">
       <value>: a sub-picture must not contain more than one of the "$3" sign</value>
     </entry>
-    
+
     <entry key="FormatNumberGroupingAdjacentToDecimal">
       <value>: a sub-picture must not contain a grouping-separator-sign adjacent to a decimal-separator-sign</value>
     </entry>
-    
+
     <entry key="FormatNumberIntegerPart">
       <value>: the integer part of a sub-picture must not contain a member of the decimal-digit-family that is followed by an optional-digit-sign</value>
     </entry>
-    
+
     <entry key="FormatNumberFractionalPart">
       <value>: the fractional part of a sub-picture must not contain an optional-digit-sign that is followed by a member of the decimal-digit-family</value>
     </entry>
-    
+
     <entry key="FormatNumberPercentPermille">
       <value>: a sub-picture must not contain more than one percent-sign or per-mille-sign, and it must not contain one of each</value>
     </entry>
-    
+
     <entry key="FormatNumberAtLeastOneOptionalOrDecimal">
       <value>: a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family</value>
-    </entry>
-    
-    <entry key="JSON_ILLEGAL_CHARACTER">
-      <value>'$2': illegal JSON character${ at 3}</value>
-    </entry>
-
-    <entry key="JSON_ILLEGAL_CODEPOINT">
-      <value>"$2": illegal Unicode code-point${ at 3}</value>
-    </entry>
-
-    <entry key="JSON_ILLEGAL_ESCAPE">
-      <value>'\\$2': illegal JSON character escape${ at 3}</value>
-    </entry>
-
-    <entry key="JSON_ILLEGAL_LITERAL">
-      <value>illegal JSON literal${ at 2}</value>
-    </entry>
-
-    <entry key="JSON_ILLEGAL_NUMBER">
-      <value>illegal JSON number${ at 2}</value>
-    </entry>
-
-    <entry key="JSON_UNEXPECTED_TOKEN">
-      <value>"$2": unexpected JSON token${ at 3}</value>
-    </entry>
-
-    <entry key="JSON_UNTERMINATED_STRING">
-      <value>unterminated JSON string${ at 2}</value>
-    </entry>
-
-    <entry key="JSON_UNEXPECTED_EXTRA_CONTENT">
-      <value>unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)</value>
     </entry>
 
     <entry key="FUNCTION">
