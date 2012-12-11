@@ -7,6 +7,6 @@ ddl:create(xs:QName("ns:collection"));
 
 dml:insert(xs:QName("ns:collection"), <foo>1</foo> );
 
-dml:edit(dml:collection(xs:QName("ns:collection")), <foo attr="value">test</foo>);
+dml:edit(dml:collection(xs:QName("ns:collection")), <bar attr="value">test</bar>);
 
 dml:collection(xs:QName("ns:collection"))
