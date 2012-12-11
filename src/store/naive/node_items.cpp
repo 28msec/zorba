@@ -1776,6 +1776,18 @@ void InternalNode::swap(Item* anotherItem)
   OrdPathNode::swap(anotherItem);
   InternalNode* lOtherItem = dynamic_cast<InternalNode*>(anotherItem);
   std::swap(theNodes, lOtherItem->theNodes);
+  for (iterator lIterator = theNodes.begin();
+       lIterator != theNodes.end();
+       ++lIterator)
+  {
+    (*lIterator)->setParent(this);
+  }
+  for (iterator lIterator = lOtherItem->theNodes.begin();
+       lIterator !=  lOtherItem->theNodes.end();
+       ++lIterator)
+  {
+    (*lIterator)->setParent(lOtherItem);
+  }
   std::swap(theNumAttrs, lOtherItem->theNumAttrs);
   std::swap(theNsContext, lOtherItem->theNsContext);
 }
