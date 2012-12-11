@@ -164,7 +164,7 @@ std::string PlanStateIteratorWrapper::toString() const
   if (theIterator)
     ss << getId() << " = PlanStateIteratorWrapper iterator: " << theIterator->toString();
   else
-    ss << getId() << " = PlanStateIteratorWrapper iterator: " << theStoreIterator.getp();
+    ss << getId() << " = PlanStateIteratorWrapper iterator: " << theStoreIterator->toString();
   return ss.str();
 }
 #endif

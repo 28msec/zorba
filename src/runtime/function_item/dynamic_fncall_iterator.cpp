@@ -28,6 +28,8 @@
 #include "context/static_context.h"
 
 #include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "store/api/temp_seq.h"
 
 #include "types/root_typemanager.h"
 #include "types/casting.h"
@@ -171,6 +173,7 @@ bool DynamicFnCallIterator::nextImpl(
 {
   store::Item_t item;
   store::Item_t targetItem;
+  FunctionItem* fnItem;
 #ifdef ZORBA_WITH_JSON
   store::Item_t selectorItem1;
   store::Item_t selectorItem2;
@@ -178,12 +181,8 @@ bool DynamicFnCallIterator::nextImpl(
   bool isObjectNav;
   bool selectorError;
 #endif
-  FunctionItem* fnItem;
-  // std::vector<PlanIter_t> argIters;
-  // std::vector<PlanIter_t>::iterator ite;
-  // std::vector<PlanIter_t>::const_iterator end2;
   
-  TypeManager* tm = theSctx->get_typemanager();
+  TypeManager* tm = theSctx->get_typemanager(); // TODO: delete this when theCoercionTargetType is removed
 
   DynamicFnCallIteratorState* state;
 
@@ -254,50 +253,35 @@ bool DynamicFnCallIterator::nextImpl(
 
     if (theIsPartialApply)
     {
-      // argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
-      // argIters.resize(theChildren.size() - 1);
-      // ite = argIters.begin();
-
-      /*
-      ite2 = fnItem->getVariablesIterators().begin();
-      end2 = fnItem->getVariablesIterators().end();
-      for (; ite2 != end2; ++ite2, ++ite)
-      {
-        std::cerr << "--> dynamic fncall: var argIter: " << (*ite2)->getId() << " = " << (*ite2)->getClassName() << std::endl;
-        if (dynamic_cast<LetVarIterator*>(ite2->getp()))
-          std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
-        if (dynamic_cast<ForVarIterator*>(ite2->getp()))
-          std::cerr << "-->                 argIter is ForVarIterator with varName: " << dynamic_cast<ForVarIterator*>(ite2->getp())->getVarName()->getStringValue() << std::endl;
-        if (dynamic_cast<SingletonIterator*>(ite2->getp()))
-          std::cerr << "-->                 argIter is SingletonIterator with value: " << dynamic_cast<SingletonIterator*>(ite2->getp())->getValue()->show() << std::endl;
-
-        // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
-        *ite = *ite2;
-      }
-      */
-
-      // std::vector<PlanIter_t>::iterator ite = theChildren.begin();
-      // ++ite;
       for (unsigned int i=1, pos=0; i<theChildren.size(); i++)
       {
-        // if (dynamic_cast<ArgumentPlaceholderIterator*>(ite->getp()) == NULL)
         if (dynamic_cast<ArgumentPlaceholderIterator*>(theChildren[i].getp()) == NULL)
         {
-          PlanIter_t value = new PlanStateIteratorWrapper(theChildren[i].getp(), planState, state->theUDFStateOffset + sizeof(UDFunctionCallIteratorState));
-          // std::cerr << "--> created PlanStateIteratorWrapper: " << value->toString() << std::endl;
+          // TODO: The argument needs to be materialized only for local vars and only if the 
+          // function item is returned and used outside of the current function. It might
+          // be impossible to determine if the partially applied function item will be used outside 
+          // of the current function, so it is quite probable that it always needs to be materialized.
+          
+          std::vector<store::Item_t> argValues;
+          store::Item_t tempItem;
+          while (consumeNext(tempItem, theChildren[i], planState))
+            argValues.push_back(tempItem);
+          store::TempSeq_t argSeq = GENV_STORE.createTempSeq(argValues);
+          store::Iterator_t argSeqIter = argSeq->getIterator();
+          PlanIter_t value = new PlanStateIteratorWrapper(argSeqIter);
+          
+          // PlanIter_t value = new PlanStateIteratorWrapper(theChildren[i].getp(), planState, state->theUDFStateOffset + sizeof(UDFunctionCallIteratorState));
+          // std::cerr << "--> " << toString() << " created PlanStateIteratorWrapper: " << value->toString() << std::endl;
           fnItem->setArgumentValue(pos, value);
         }
         else
           pos++;
-
+        
         /*
-        std::cerr << "--> dynamic fncall: child argIter: " << (*ite)->getId() << " = " << (*ite)->getClassName() << std::endl;
-        if (dynamic_cast<LetVarIterator*>(ite->getp()))
-          std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(ite->getp())->getVarName()->getStringValue() << std::endl;
+        std::cerr << "--> dynamic fncall: child argIter: " << theChildren[i]->toString() << std::endl;
+        if (dynamic_cast<LetVarIterator*>(theChildren[i].getp()))
+          std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(theChildren[i].getp())->getVarName()->getStringValue() << std::endl;
         */
-
-        // (*ite2)->reset(planState); // TODO: do not reset on the first loop iteration
-        // *ite = *ite2;
       }
 
       result = fnItem;
@@ -329,7 +313,7 @@ bool DynamicFnCallIterator::nextImpl(
       state->theIsOpen = false;
     } // if (theIsPartialApply)
 
-  }
+  } // if (targetItem->isFunction())
 #ifdef ZORBA_WITH_JSON
   else if (targetItem->isJSONObject() || targetItem->isJSONArray())
   {
@@ -410,7 +394,8 @@ bool DynamicFnCallIterator::nextImpl(
       result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
 
     STACK_PUSH(true, state);
-  }
+    
+  } // else if (targetItem->isJSONObject() || targetItem->isJSONArray())
 #endif
   else
   {

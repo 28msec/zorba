@@ -246,8 +246,8 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
     if (*ite != NULL)
     {
       *argsIte = *ite;
+      // std::cerr << "--> fnItem: " << toString() << " about to reset arg: " << (*ite)->toString() << std::endl;
       static_cast<PlanStateIteratorWrapper*>(ite->getp())->reset();
-      // static_cast<PlanStateIteratorWrapper*>(ite->getp())->open(); 
     }
     else
     {
