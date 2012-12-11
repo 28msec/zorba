@@ -1,4 +1,5 @@
 
+#include "stdafx.h"
 #include <cstdlib>
 #include <stdio.h>
 #include <iostream>
@@ -9,7 +10,6 @@
 #include "util/hashmap32.h"
 #include "util/hashmap.h"
 #include "util/unordered_map.h"
-#include "util/hash/hash.h"
 
 namespace zorba {
 
@@ -94,7 +94,7 @@ int test_hashmaps(int argc, char* argv[])
   HashMap<zstring, int, StrCompFunc> map2(1024, false);
 
   std::unordered_map<uint64_t, int> map3(1024);
-  std::unordered_map<zstring, int> map4(1024);
+  std::unordered_map<std::string, int> map4(1024);
 
   hash64map<int> map5(1024, load_factor);
   hashmap<zstring, int> map6(1024, load_factor);
@@ -182,7 +182,7 @@ int test_hashmaps(int argc, char* argv[])
     {
       zstring key = str_buf[i];
       int value = 1;
-      (void)map4.insert(std::pair<zstring, int>(key, value));
+      (void)map4.insert(std::pair<std::string, int>(key.c_str(), value));
     }
 
     zorba::time::walltime stopTime;
