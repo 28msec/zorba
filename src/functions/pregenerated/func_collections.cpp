@@ -1190,8 +1190,8 @@ void populate_context_collections(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, static_collections_dml_edit,
         (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","edit"), 
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::STATIC_COLLECTIONS_DML_EDIT_2);
 
@@ -1203,8 +1203,8 @@ void populate_context_collections(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, static_collections_dml_edit,
         (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","edit"), 
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::DYNAMIC_COLLECTIONS_DML_EDIT_2);
 

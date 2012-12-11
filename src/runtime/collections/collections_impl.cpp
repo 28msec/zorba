@@ -1798,16 +1798,21 @@ bool ZorbaEditNodesIterator::nextImpl(
 {
   store::Collection_t              collection;
   store::Item_t                    collectionName;
+  const StaticallyKnownCollection* collectionDecl;
+
   store::Item_t                    target;
+
   store::Item_t                    content;
+  store::CopyMode lCopyMode;
+
   std::auto_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
   consumeNext(target, theChildren[0].getp(), planState);
   consumeNext(content, theChildren[1].getp(), planState);
 
+  // Target check.
   if (! target->getCollection())
   {
     throw XQUERY_EXCEPTION(zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC(loc));
@@ -1837,7 +1842,18 @@ bool ZorbaEditNodesIterator::nextImpl(
   }
   collection = target->getCollection();
   collectionName = collection->getName();
-  (void)getCollection(collectionName, collection);
+  collectionDecl = getCollection(collectionName, collection);
+
+  // Content check & copy.
+  getCopyMode(lCopyMode, this->theSctx);
+  lCopyMode.theDoCopy &= theNeedToCopy;
+  lCopyMode.theDoCopy &= !this->theChildren[1]->isConstructor();
+  checkNodeType(this->theSctx,
+                content,
+                collectionDecl,
+                this->loc,
+                theIsDynamic);
+  content = content->copy(NULL, lCopyMode);
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());

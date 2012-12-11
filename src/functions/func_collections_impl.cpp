@@ -595,10 +595,12 @@ PlanIter_t static_collections_dml_edit::codegen(
 {
   const zstring& ns = getName()->getNamespace();
 
-  bool const dynamic =
+  bool const lDynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  return new ZorbaEditNodesIterator(sctx, loc, argv, dynamic);
+  bool const lCopy = !hasNoCopyPragma(ann);
+
+  return new ZorbaEditNodesIterator(sctx, loc, argv, lDynamic, lCopy);
 }
 
 
@@ -610,13 +612,6 @@ zorba::static_collections_dml_edit::processPragma(
   processPragmaInternal(e, p);
 }
 
-bool 
-static_collections_dml_edit::propagatesInputNodes(
-    expr* fo,
-    csize input) const
-{
-  return false;
-}
 /*******************************************************************************
 
 ********************************************************************************/

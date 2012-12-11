@@ -845,7 +845,10 @@ cdml:delete-last($name as xs:QName, $number as xs:integer)  external;
  : @error zerr:ZDDY0006 if the modifier property of the collection to which $target
  :        belongs is append-only, const, or queue.
  : @error zerr:ZDDY0017 if the $target item is not a member of a collection.
+ : @error zerr:ZDDY0037 if the collection is append-only.
+ : @error zerr:ZDDY0038 if the collection is a queue.
  : @error zerr:ZDDY0039 if the $target item is not a root.
+ : @error zerr:ZDDY0040 if the target cannot be updated to match the content because of inconsistent kinds.
  : @error zerr:ZDTY0001 if $content does not match the expected type (as specified
  :        in the collection declaration) according to the rules for SequenceType Matching.
  :

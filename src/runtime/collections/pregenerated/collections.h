@@ -918,6 +918,7 @@ class ZorbaEditNodesIterator : public NaryBaseIterator<ZorbaEditNodesIterator, P
 { 
 protected:
   bool theIsDynamic; //
+  bool theNeedToCopy; //
 public:
   SERIALIZABLE_CLASS(ZorbaEditNodesIterator);
 
@@ -930,10 +931,12 @@ public:
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool isDynamic)
+    bool isDynamic,
+    bool needToCopy)
     : 
     NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic)
+    theIsDynamic(isDynamic),
+    theNeedToCopy(needToCopy)
   {}
 
   virtual ~ZorbaEditNodesIterator();

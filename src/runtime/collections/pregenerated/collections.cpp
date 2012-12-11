@@ -666,6 +666,7 @@ void ZorbaEditNodesIterator::serialize(::zorba::serialization::Archiver& ar)
   (NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>*)this);
 
     ar & theIsDynamic;
+    ar & theNeedToCopy;
 }
 
 
