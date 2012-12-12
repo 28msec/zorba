@@ -109,6 +109,10 @@ xqtref_t fn_data::getReturnType(const fo_expr* caller) const
       {
         return tm->create_builtin_atomic_type(store::XS_UNTYPED_ATOMIC, q);
       }
+      else if (TypeOps::is_equal(tm, *cType, *RTM.UNTYPED_TYPE))
+      {
+        return tm->create_builtin_atomic_type(store::XS_UNTYPED_ATOMIC, q);
+      }
       else if (TypeOps::is_subtype(tm, *cType, *RTM.ANY_ATOMIC_TYPE_STAR, loc))
       {
         return tm->create_type(*cType, q);

@@ -14,6 +14,10 @@ Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
   * Better computation of the static type for global variables.
   * Optimization of comparison operators when untypedAtomic items are involved.
+  * Improved computation of static type for fn:data function.
+  * Fixed iteration over the components of a window clause; this improves static
+    type computation of expressions referencing window vars.
+  * No need to cast xs:untypedAtomic to xs:string in order-by expression.
 
 Bug Fixes/Other Changes:
   * Change XQXQ (XQuery-for-XQuery) module now part of Zorba core
@@ -25,6 +29,7 @@ Bug Fixes/Other Changes:
     #1079488 (streaming segfault)
   * Fixed bug #1062093 (bug in var reference iterators with an associated
     position that is negative)
+  * Fixed bug #1073978 (FOTS: option default ns not supported)
   * Fixed bug #1061222 (bad message for errors in index key type declaration)
   * Fixed bug #1065175 (preceding::node()[1] returns wrong results)
   * Fixed bug #1065321 (following:text() doesn't return results in doc order)

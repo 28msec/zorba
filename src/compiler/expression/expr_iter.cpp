@@ -345,6 +345,10 @@ nextclause:
 
       else if (c->get_kind() == flwor_clause::window_clause)
       {
+        wc = static_cast<window_clause *>(*theClausesIter);
+
+        EXPR_ITER_NEXT(wc->theDomainExpr);
+
         for (theWincondIter = 0; theWincondIter < 2; ++theWincondIter)
         {
           wc = static_cast<window_clause *>(*theClausesIter);
@@ -356,10 +360,6 @@ nextclause:
           if (wincond != 0)
             EXPR_ITER_NEXT(wincond->theCondExpr);
         }
-
-        wc = static_cast<window_clause *>(*theClausesIter);
-
-        EXPR_ITER_NEXT(wc->theDomainExpr);
       }
 
       else if (c->get_kind() == flwor_clause::groupby_clause)
