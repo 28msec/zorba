@@ -68,6 +68,7 @@ FOREACH (_testset ${_testsets})
     "${CMAKE_CURRENT_LIST_DIR}/../fots_driver/cli.xq "
     "-e fotsPath:=${_outdir}/2011/QT3-test-suite/catalog.xml "
     "-e mode:=run-test-sets -e testSetPrefixes:=${_testset} "
+    "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
     "--disable-http-resolution --indent)\n"
     "ZORBA_SET_TEST_PROPERTY (FOTS-set-${_testset} "
     "FAIL_REGULAR_EXPRESSION \"result=\\\"fail\\\"\")\n")
@@ -92,8 +93,9 @@ FOREACH (_testset ${_testsets})
       "-e fotsPath:=${_outdir}/2011/QT3-test-suite/catalog.xml "
       "-e mode:=run-test-case "
       "-e testSetName:=${_testset} -e testCaseName:=${_testcase} "
+      "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
       "--disable-http-resolution --indent)\n"
       "ZORBA_SET_TEST_PROPERTY (FOTS-${_testset}-${_testcase} "
-      "PASS_REGULAR_EXPRESSION \"test-case name=\\\"${_testcase}\\\" result=\\\"pass\\\"\")\n")
+      "PASS_REGULAR_EXPRESSION \"name=\\\"${_testcase}\\\" result=\\\"pass\\\"\")\n")
   ENDFOREACH (_testcase)
 ENDFOREACH (_testset)

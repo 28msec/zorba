@@ -176,7 +176,7 @@ case "run-test-case"
                     $exceptedTestCases,
                     $exceptedTestSets,
                     xs:boolean($verbose),
-                    ())
+                    $expectedFailuresPath)
 case "run-and-report"
   return r:run-and-report($fotsPath,
                           $fotsZorbaManifestPath,
