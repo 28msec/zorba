@@ -10,6 +10,7 @@
 #include "util/hashmap32.h"
 #include "util/hashmap.h"
 #include "util/unordered_map.h"
+#include "util/hash/hash.h"
 
 namespace zorba {
 
