@@ -675,8 +675,8 @@ declare %private function driver:check-pass(
 
   let $expectedFailure as xs:boolean := 
     if (exists($expectedFailures) and
-        (exists(($expectedFailures/failures//failure[@testCaseName=$testCaseName and
-                                                     @testSetName=$testSetName]))))
+        (exists(($expectedFailures/failures/Test[@testCaseName eq $testCaseName and
+                                                 @testSetName eq $testSetName]))))
     then fn:true()
     else fn:false()
 

@@ -64,13 +64,13 @@ FILE (REMOVE "${_casescript}")
 FOREACH (_testset ${_testsets})
   # Add a test for the whole test set.
   FILE (APPEND "${_setscript}"
-    "ZORBA_ADD_TEST (FOTS-set-${_testset} zorbacmd -f -q "
+    "ZORBA_ADD_TEST (FOTS/${_testset} zorbacmd -f -q "
     "${CMAKE_CURRENT_LIST_DIR}/../fots_driver/cli.xq "
     "-e fotsPath:=${_outdir}/2011/QT3-test-suite/catalog.xml "
     "-e mode:=run-test-sets -e testSetPrefixes:=${_testset} "
     "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
     "--disable-http-resolution --indent)\n"
-    "ZORBA_SET_TEST_PROPERTY (FOTS-set-${_testset} "
+    "ZORBA_SET_TEST_PROPERTY (FOTS/${_testset} "
     "FAIL_REGULAR_EXPRESSION \"result=\\\"fail\\\"\")\n")
 
   # Iterate through the test cases for this test set.
@@ -88,14 +88,14 @@ FOREACH (_testset ${_testsets})
   FOREACH (_testcase ${_testcases})
     # Add a test for the test case.
     FILE (APPEND "${_casescript}"
-      "ZORBA_ADD_TEST (FOTS-${_testset}-${_testcase} zorbacmd -f -q "
+      "ZORBA_ADD_TEST (FOTS/${_testset}/${_testcase} zorbacmd -f -q "
       "${CMAKE_CURRENT_LIST_DIR}/../fots_driver/cli.xq "
       "-e fotsPath:=${_outdir}/2011/QT3-test-suite/catalog.xml "
       "-e mode:=run-test-case "
       "-e testSetName:=${_testset} -e testCaseName:=${_testcase} "
       "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
       "--disable-http-resolution --indent)\n"
-      "ZORBA_SET_TEST_PROPERTY (FOTS-${_testset}-${_testcase} "
+      "ZORBA_SET_TEST_PROPERTY (FOTS/${_testset}/${_testcase} "
       "PASS_REGULAR_EXPRESSION \"name=\\\"${_testcase}\\\" result=\\\"pass\\\"\")\n")
   ENDFOREACH (_testcase)
 ENDFOREACH (_testset)
