@@ -427,6 +427,7 @@ RULE_REWRITE_POST(SpecializeOperations)
       }
     }
   }
+#if 0
   else if (node->get_expr_kind() == flwor_expr_kind ||
            node->get_expr_kind() == gflwor_expr_kind)
   {
@@ -465,6 +466,7 @@ RULE_REWRITE_POST(SpecializeOperations)
     if (modified)
       return node;
   }
+#endif
 
   return NULL;
 }

@@ -12,6 +12,10 @@ Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
   * Better computation of the static type for global variables.
   * Optimization of comparison operators when untypedAtomic items are involved.
+  * Improved computation of static type for fn:data function.
+  * Fixed iteration over the components of a window clause; this improves static
+    type computation of expressions referencing window vars.
+  * No need to cast xs:untypedAtomic to xs:string in order-by expression.
 
 Bug Fixes/Other Changes:
   * Change XQXQ (XQuery-for-XQuery) module now part of Zorba core
