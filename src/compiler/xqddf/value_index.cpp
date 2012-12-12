@@ -285,7 +285,7 @@ void IndexDecl::analyze()
   if (var)
     dotVar = var->getVar();
 
-  expr::FreeVars varExprs;
+  std::vector<var_expr*> varExprs;
 
   // Check constraints on the domain expr
   analyzeExprInternal(getDomainExpr(),
@@ -366,10 +366,12 @@ void IndexDecl::analyzeExprInternal(
     expr* e,
     std::vector<store::Item*>& sourceNames,
     std::vector<expr*>& sourceExprs,
-    FreeVars& varExprs,
+    std::vector<var_expr*>& varExprs,
     expr* dotVar)
 {
-  if (e->get_expr_kind() == fo_expr_kind)
+  switch (e->get_expr_kind())
+  {
+  case fo_expr_kind:
   {
     fo_expr* foExpr = static_cast<fo_expr*>(e);
     const function* func = foExpr->get_func();
@@ -405,21 +407,27 @@ void IndexDecl::analyzeExprInternal(
         ERROR_PARAMS(theName->getStringValue()));
       }
     }
+
+    break;
   }
-  else if (e->get_expr_kind() == var_decl_expr_kind)
+  case var_decl_expr_kind:
   {
     var_expr* varExpr = static_cast<var_decl_expr*>(e)->get_var_expr();
 
     ZORBA_ASSERT(varExpr->get_kind() == var_expr::local_var);
 
-    varExprs.insert(varExpr);
+    varExprs.push_back(varExpr);
+
+    break;
   }
-  else if (e->get_expr_kind() == flwor_expr_kind ||
-           e->get_expr_kind() == gflwor_expr_kind)
+  case flwor_expr_kind:
+  case gflwor_expr_kind:
   {
     static_cast<const flwor_expr*>(e)->get_vars(varExprs);
+
+    break;
   }
-  else if (e->get_expr_kind() == var_expr_kind)
+  case var_expr_kind:
   {
     if (e == dotVar)
     {
@@ -427,12 +435,21 @@ void IndexDecl::analyzeExprInternal(
       ERROR_PARAMS(theName->getStringValue()));
     }
 
+    var_expr* var = static_cast<var_expr*>(e);
+
     if (e != getDomainVariable() &&
-        varExprs.find(static_cast<var_expr*>(e)) == varExprs.end())
+        std::find(varExprs.begin(), varExprs.end(), var) == varExprs.end())
     {
       RAISE_ERROR(zerr::ZDST0031_INDEX_HAS_FREE_VARS,  e->get_loc(),
       ERROR_PARAMS(theName->getStringValue()));
     }
+
+    break;
+  }
+  default:
+  {
+    break;
+  }
   }
 
   ExprIterator iter(e);

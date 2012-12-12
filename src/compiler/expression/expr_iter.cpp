@@ -203,9 +203,9 @@ nextclause:
           return;
         }
 
-        case flwor_clause::group_clause:
+        case flwor_clause::groupby_clause:
         {
-          group_clause* gc = static_cast<group_clause *>(c);
+          groupby_clause* gc = static_cast<groupby_clause *>(c);
 
           theGroupVarsIter = gc->theGroupVars.begin();
           theGroupVarsEnd = gc->theGroupVars.end();
@@ -315,7 +315,7 @@ nextclause:
     flwor_clause* c = NULL;
     window_clause* wc = NULL;
     orderby_clause* oc = NULL;
-    group_clause* gc = NULL;
+    groupby_clause* gc = NULL;
     flwor_wincond* wincond = NULL;
 
     EXPR_ITER_BEGIN();
@@ -362,9 +362,9 @@ nextclause:
         EXPR_ITER_NEXT(wc->theDomainExpr);
       }
 
-      else if (c->get_kind() == flwor_clause::group_clause)
+      else if (c->get_kind() == flwor_clause::groupby_clause)
       {
-        gc = static_cast<group_clause *>(c);
+        gc = static_cast<groupby_clause *>(c);
 
         theGroupVarsIter = gc->theGroupVars.begin();
         theGroupVarsEnd = gc->theGroupVars.end();

@@ -33,6 +33,9 @@
 
 #include "util/dynamic_bitset.h"
 
+#include "diagnostics/assert.h"
+
+
 namespace zorba
 {
 
@@ -71,10 +74,13 @@ expr* IndexMatchingRule::apply(RewriterContext& rCtx, expr* node, bool& modified
   {
     theQueryExpr = static_cast<flwor_expr*>(node);
 
-    expr* e = matchIndex(rCtx, modified);
+    bool matched = matchIndex();
 
-    if (modified)
-      return e;
+    if (matched)
+    {
+      modified = true;
+      return node;
+    }
   }
 
   ExprIterator iter(node);
@@ -84,11 +90,7 @@ expr* IndexMatchingRule::apply(RewriterContext& rCtx, expr* node, bool& modified
 
     expr* newChild = apply(rCtx, currChild, modified);
 
-    if (currChild != newChild)
-    {
-      assert(modified);
-      **iter = newChild;
-    }
+    ZORBA_ASSERT(currChild == newChild);
 
     if (modified)
       break;
@@ -103,10 +105,8 @@ expr* IndexMatchingRule::apply(RewriterContext& rCtx, expr* node, bool& modified
 /*******************************************************************************
   Match a flwor expr with an index
 ********************************************************************************/
-expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
+bool IndexMatchingRule::matchIndex()
 {
-  modified = false;
-
   CompilerCB* ccb = theQueryExpr->get_ccb();
   static_context* sctx = theQueryExpr->get_sctx();
   user_function* udf = theQueryExpr->get_udf();
@@ -120,11 +120,9 @@ expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
   for_clause* probeFORclause = NULL;
   csize probeFORclausePos;
   DynamicBitset matchedFORs(numQClauses);
-  DynamicBitset usedVars(numQClauses);
   matchedFORs.reset();
-  usedVars.reset();
 
-  // match for clauses
+  // Match the FOR clauses of the view FLWOR
   for (csize vi = 0; vi < numVClauses; ++vi)
   {
     flwor_clause* vc = theViewExpr->get_clause(vi);
@@ -167,7 +165,7 @@ expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
       }
 
       if (qi == numQClauses)
-        return theQueryExpr;
+        return false;
     }
     case flwor_clause::let_clause:
     {
@@ -175,8 +173,9 @@ expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
     }
     default:
     {
+      // For now we can match only indexes whose domain and key expressions
       assert(false);
-      return theQueryExpr;
+      return false;
     }
     }
   }
@@ -256,10 +255,19 @@ expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
     }
 
     if (!matched)
-      return theQueryExpr;
+      return false;
   }
 
-  // check for rejoins
+  // Mark the flwor vars of the query flwor expr as "not used" initially
+  std::vector<var_expr*> queryVars;
+  theQueryExpr->get_vars(queryVars);
+
+  for (csize i = 0; i < queryVars.size(); ++i)
+  {
+    queryVars[i]->setVisitId(0);
+  }
+
+  // Check for dependencies on query vars that will be eliminated by the rewrite
   const var_expr* domVar = theViewExpr->get_return_expr()->get_var();
   assert(domVar);
   assert(subst[domVar]->get_expr_kind() == var_expr_kind);
@@ -269,7 +277,86 @@ expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
   {
     expr* pred = *unmatchedPreds[i];
     if (!checkFreeVars(pred, domVar, matchedFORs))
-      return theQueryExpr;
+      return false;
+  }
+
+  if (!checkFreeVars(theQueryExpr->get_return_expr(), domVar, matchedFORs))
+      return false;
+
+  for (csize i = numQClauses-1; i > 0; --i)
+  {
+    if (matchedFORs.get(i))
+      continue;
+
+    flwor_clause* c = theQueryExpr->get_clause(i);
+
+    switch (c->get_kind())
+    {
+    case flwor_clause::for_clause:
+    {
+      if (matchedFORs.get(i))
+        continue;
+    }
+    case flwor_clause::let_clause:
+    {
+      forlet_clause* flc = static_cast<forlet_clause*>(c);
+      var_expr* var = flc->get_var();
+
+      if (!var->isVisited(1))
+        continue;
+
+      if (!checkFreeVars(flc->get_expr(), domVar, matchedFORs))
+        return false;
+
+      break;
+    }
+    case flwor_clause::order_clause:
+    {
+      orderby_clause* oc = static_cast<orderby_clause*>(c);
+
+      std::vector<expr*>::const_iterator ite = oc->begin();
+      std::vector<expr*>::const_iterator end = oc->end();
+      for (; ite != end; ++ite)
+      {
+        if (!checkFreeVars(*ite, domVar, matchedFORs))
+          return false;
+      }
+
+      break;
+    }
+    case flwor_clause::groupby_clause:
+    {
+      groupby_clause* gc = static_cast<groupby_clause*>(c);
+
+      flwor_clause::rebind_list_t::const_iterator ite = gc->beginGroupVars();
+      flwor_clause::rebind_list_t::const_iterator end = gc->endGroupVars();
+      for (; ite != end; ++ite)
+      {
+        if (!checkFreeVars(ite->first, domVar, matchedFORs))
+          return false;
+      }
+
+      ite = gc->beginNonGroupVars();
+      end = gc->endNonGroupVars();
+      for (; ite != end; ++ite)
+      {
+        if (!checkFreeVars(ite->first, domVar, matchedFORs))
+          return false;
+      }
+
+      break;
+    }
+    case flwor_clause::count_clause:
+    case flwor_clause::where_clause:
+    case flwor_clause::materialize_clause:
+    {
+      break;
+    }
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
   }
 
   // Do the rewrite
@@ -297,8 +384,7 @@ expr* IndexMatchingRule::matchIndex(RewriterContext& rCtx, bool& modified)
     *matchedPreds[i] = trueExpr;
   }
 
-  modified = true;
-  return theQueryExpr;
+  return true;
 }
 
 
@@ -356,6 +442,11 @@ bool IndexMatchingRule::checkFreeVars(
     if (freeVar == domVar)
       continue;
 
+    if (freeVar->get_flwor_clause()->get_flwor_expr() == theQueryExpr)
+    {
+      freeVar->setVisitId(1);
+    }
+
     if (freeVar->get_kind() != var_expr::for_var)
       continue;
 
@@ -363,7 +454,9 @@ bool IndexMatchingRule::checkFreeVars(
     {
       if (matchedFORs.get(i) &&
           freeVar->get_flwor_clause() == theQueryExpr->get_clause(i))
+      {
         return false;
+      }
     }
   }
 

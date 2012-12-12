@@ -596,10 +596,10 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
 
 /*******************************************************************************
   Let FLWOR(e) be the set of flwor exprs within the expr tree rooted at expr e.
-  Let FV(e) be the set of variables defined in any of the flwor exprs in FLWOR(e).
-  This method assigns a prefix id to each variable in FV(e) and stores the mapping
-  between var_expr and prefix id in "varmap". It also returns the number of vars
-  in FV(e).
+  Let FV(e) be the set of variables defined in any of the flwor exprs in 
+  FLWOR(e). This method assigns a prefix id to each variable in FV(e) and
+  stores the mapping between var_expr and prefix id in "varidmap" and the
+  reverse mapping in "idvapmap". It also returns the number of vars in FV(e).
 
   Given 2 vars v1 and v2 in FV(e), their prefix ids allows to check if v1 is
   defined before v2: v1 is defined before v2 iff id(v1) < id(v2).
@@ -657,9 +657,9 @@ void index_flwor_vars(
         if (stopCond != NULL)
           add_wincond_vars(stopCond, numVars, varidmap, idvarmap);
       }
-      else if (c->get_kind() == flwor_clause::group_clause)
+      else if (c->get_kind() == flwor_clause::groupby_clause)
       {
-        const group_clause* gc = static_cast<const group_clause *>(c);
+        const groupby_clause* gc = static_cast<const groupby_clause *>(c);
 
         const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
         csize numGroupVars = gvars.size();
@@ -868,9 +868,9 @@ void build_expr_to_vars_map(
         if (stopCond != NULL)
           remove_wincond_vars(stopCond, varmap, freeset);
       }
-      else if (c->get_kind() == flwor_clause::group_clause)
+      else if (c->get_kind() == flwor_clause::groupby_clause)
       {
-        const group_clause* gc = static_cast<const group_clause *>(c);
+        const groupby_clause* gc = static_cast<const groupby_clause *>(c);
 
         const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
         csize numGroupVars = gvars.size();
@@ -1246,9 +1246,9 @@ void computeMustCopyProperty(expr* inExpr)
         computeMustCopyProperty(cc->get_expr());
         break;
       }
-      case flwor_clause::group_clause:
+      case flwor_clause::groupby_clause:
       {
-        group_clause* gc = static_cast<group_clause*>(clause);
+        groupby_clause* gc = static_cast<groupby_clause*>(clause);
 
         flwor_clause::rebind_list_t::iterator ite = gc->beginGroupVars();
         flwor_clause::rebind_list_t::iterator end = gc->endGroupVars();

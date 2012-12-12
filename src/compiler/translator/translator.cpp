@@ -4296,8 +4296,8 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   TypeConstants::quantifier_t quant;
   if (v.getType() == 0)
   {
-    lNodeType = theRTM.DOCUMENT_UNTYPED_TYPE_ONE;
-    lCollectionType = theRTM.DOCUMENT_UNTYPED_TYPE_STAR;
+    lNodeType = theRTM.ANY_NODE_UNTYPED_TYPE_ONE;
+    lCollectionType = theRTM.ANY_NODE_UNTYPED_TYPE_STAR;
     quant = TypeConstants::QUANT_STAR;
   }
   else
@@ -6255,9 +6255,9 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       pop_scope();
       break;
     }
-    case flwor_clause::group_clause:
+    case flwor_clause::groupby_clause:
     {
-      group_clause* gc = static_cast<group_clause*>(curClause);
+      groupby_clause* gc = static_cast<groupby_clause*>(curClause);
 
       csize numGVars = gc->numGroupingVars();
 
@@ -6885,8 +6885,8 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
   csize numGroupSpecs = groupSpecs.size();
 
   std::vector<std::string> collations;
-  group_clause::rebind_list_t grouping_rebind;
-  group_clause::rebind_list_t nongrouping_rebind;
+  groupby_clause::rebind_list_t grouping_rebind;
+  groupby_clause::rebind_list_t nongrouping_rebind;
 
   static_context* sctx = theSctx;
 
@@ -6994,12 +6994,12 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     nongrouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, ngVar));
   }
 
-  group_clause* clause = theExprManager->
-  create_group_clause(theRootSctx,
-                      loc,
-                      grouping_rebind,
-                      nongrouping_rebind,
-                      collations);
+  groupby_clause* clause = theExprManager->
+  create_groupby_clause(theRootSctx,
+                        loc,
+                        grouping_rebind,
+                        nongrouping_rebind,
+                        collations);
 
   theFlworClausesStack.push_back(clause);
 }

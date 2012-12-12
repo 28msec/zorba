@@ -262,7 +262,7 @@ ostream& flwor_wincond::put(ostream& os) const
 }
 
 
-ostream& group_clause::put(ostream& os) const
+ostream& groupby_clause::put(ostream& os) const
 {
   BEGIN_PUT_NL(GROUPBY);
 
@@ -352,9 +352,9 @@ ostream& flwor_expr::put(ostream& os) const
       static_cast<const window_clause *>(&c)->put(os);
       break;
     }
-    case flwor_clause::group_clause:
+    case flwor_clause::groupby_clause:
     {
-      static_cast<const group_clause *>(&c)->put(os);
+      static_cast<const groupby_clause *>(&c)->put(os);
       break;
     }
     case flwor_clause::order_clause:

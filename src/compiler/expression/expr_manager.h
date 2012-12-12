@@ -43,7 +43,7 @@ class forlet_clause;
 class flwor_wincond;
 class copy_clause;
 class window_clause;
-class group_clause;
+class groupby_clause;
 class where_clause;
 class count_clause;
 class orderby_clause;
@@ -583,7 +583,7 @@ public:
       const flwor_wincond_vars& out_vars,
       expr* cond);
 
-  group_clause* create_group_clause(
+  groupby_clause* create_groupby_clause(
       static_context* sctx,
       const QueryLoc& loc,
       const var_rebind_list_t& gvars,

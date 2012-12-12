@@ -31,7 +31,7 @@
 
 #include "context/static_context.h"
 
-#include "store/api/store.h"
+//#include "store/api/store.h"
 
 
 namespace zorba
@@ -192,17 +192,24 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   // index matching
   if (Properties::instance()->useIndexes())
   {
-    bool local_modified = false;
-
     static_context* sctx = rCtx.theRoot->get_sctx();
 
     std::vector<IndexDecl*> indexDecls;
     sctx->get_index_decls(indexDecls);
 
+    if (!indexDecls.empty())
+    {
+      MarkFreeVars freeVarsRule;
+      bool modified;
+      freeVarsRule.apply(rCtx, rCtx.theRoot, modified);
+    }
+
     std::vector<IndexDecl*>::const_iterator ite = indexDecls.begin();
     std::vector<IndexDecl*>::const_iterator end = indexDecls.end();
     for (; ite != end; ++ite)
     {
+      bool local_modified = false;
+
       //store::Index* idx = GENV_STORE.getIndex((*ite)->getName());
 
       //if (idx != NULL)
@@ -215,10 +222,18 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
         if (e != rCtx.getRoot())
           rCtx.setRoot(e);
       }
-    }
 
-    if (local_modified)
-      modified = true;
+      if (local_modified)
+      {
+        if (Properties::instance()->printIntermediateOpt())
+        {
+          std::cout << "After index matching : " << std::endl;
+          rCtx.getRoot()->put(std::cout) << std::endl;
+        }
+
+        modified = true;
+      }
+    }
   }
 
   // Index Joins

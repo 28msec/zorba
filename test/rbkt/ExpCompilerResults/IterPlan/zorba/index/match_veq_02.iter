@@ -102,13 +102,9 @@ Iterator tree for main query:
     </ApplyIterator>
     <flwor::FLWORIterator>
       <ForVariable name="s">
-        <NodeDistinctIterator allow-atomics="false" check-only="false">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill allowed="0">
-            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-              <CtxVarIterator varid="6" varname="doc" varkind="global"/>
-            </TreatIterator>
-          </ChildAxisIterator>
-        </NodeDistinctIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill allowed="0">
+          <CtxVarIterator varid="6" varname="doc" varkind="global"/>
+        </ChildAxisIterator>
       </ForVariable>
       <MaterializeClause>
         <MaterializeForVariable inputVar="s : "/>

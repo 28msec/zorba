@@ -231,9 +231,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     switch (c->get_kind())
     {
-    case flwor_clause::group_clause:
+    case flwor_clause::groupby_clause:
     {
-      group_clause* gc = static_cast<group_clause *>(c);
+      groupby_clause* gc = static_cast<groupby_clause *>(c);
 
       flwor_clause::rebind_list_t::iterator ite = gc->beginNonGroupVars();
       flwor_clause::rebind_list_t::iterator end = gc->endNonGroupVars();
@@ -379,9 +379,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     {
       break;
     }
-    else if (clause->get_kind() == flwor_clause::group_clause)
+    else if (clause->get_kind() == flwor_clause::groupby_clause)
     {
-      group_clause* gc = static_cast<group_clause*>(clause);
+      groupby_clause* gc = static_cast<groupby_clause*>(clause);
 
       const flwor_clause::rebind_list_t& gVars = gc->get_grouping_vars();
 
@@ -706,9 +706,9 @@ bool EliminateUnusedLetVars::safe_to_fold_var_rec(
 
         break;
       }
-      case flwor_clause::group_clause:
+      case flwor_clause::groupby_clause:
       {
-        group_clause* cl = static_cast<group_clause*>(clause);
+        groupby_clause* cl = static_cast<groupby_clause*>(clause);
 
         csize numExprs = cl->numGroupingVars();
 
@@ -1500,7 +1500,7 @@ static bool is_positional_pred(
     {
       checkClause = flworExpr->get_clause(checkClausePos);
 
-      if (checkClause->get_kind() == flwor_clause::group_clause ||
+      if (checkClause->get_kind() == flwor_clause::groupby_clause ||
           (checkClause->get_kind() == flwor_clause::count_clause && eq))
         return false;
 
@@ -1596,7 +1596,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
           const flwor_clause* c = flwor->get_clause(i);
           
           if (c->get_kind() == flwor_clause::where_clause ||
-              c->get_kind() == flwor_clause::group_clause ||
+              c->get_kind() == flwor_clause::groupby_clause ||
               c->get_kind() == flwor_clause::order_clause)
           {
             goto next1;
@@ -1610,7 +1610,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
       {
         const flwor_clause* c = returnFlwor->get_clause(i);
         
-        if (c->get_kind() == flwor_clause::group_clause ||
+        if (c->get_kind() == flwor_clause::groupby_clause ||
             c->get_kind() == flwor_clause::order_clause)
         {
           goto next1;

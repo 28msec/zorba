@@ -378,7 +378,7 @@ private:
         expr* e,
         std::vector<store::Item*>& sourceNames,
         std::vector<expr*>& sourceExprs,
-        FreeVars& varExprs,
+        std::vector<var_expr*>& varExprs,
         expr* dotVar);
 };
 

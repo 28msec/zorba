@@ -966,7 +966,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
         break;
       }
-      case flwor_clause::group_clause:
+      case flwor_clause::groupby_clause:
       case flwor_clause::count_clause:
       {
         if (found)
