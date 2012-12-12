@@ -105,8 +105,7 @@ IF (ZORBA_WITH_JSON)
   LIST(APPEND ZORBA_STORE_IMPL_SRCS
     json_items.h
     json_items.cpp
-    json_loader.h
-    json_loader.cpp
   )
 ENDIF (ZORBA_WITH_JSON)
 
+# vim:set et sw=2 ts=2:

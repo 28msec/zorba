@@ -484,7 +484,7 @@ static expr* try_hoisting(
   expr* hoisted = rCtx.theEM->
   create_fo_expr(sctx, udf, loc, BUILTIN_FUNC(OP_HOIST_1), e);
 
-  hoisted->setFlags(e->getFlags());
+  hoisted->setAnnotationFlags(e->getAnnotationFlags());
   //letvar->setFlags(e->getFlags());
 
   let_clause* flref(rCtx.theEM->create_let_clause(sctx, loc, letvar, hoisted));
@@ -523,7 +523,7 @@ static expr* try_hoisting(
                  loc,
                  BUILTIN_FUNC(OP_UNHOIST_1),
                  rCtx.theEM->create_wrapper_expr(sctx, udf, loc, letvar));
-  unhoisted->setFlags(e->getFlags());
+  unhoisted->setAnnotationFlags(e->getAnnotationFlags());
 
   return unhoisted;
 }

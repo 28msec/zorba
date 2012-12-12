@@ -185,6 +185,7 @@ void root_static_context::init()
   set_feature( feature::ddl );
   set_feature( feature::scripting );
   set_feature( feature::trace );
+  set_feature( feature::http_resolution );
 } 
 
 

@@ -384,16 +384,6 @@ JSONDocIterator::~JSONDocIterator() {}
 
 JSONDocIteratorState::JSONDocIteratorState() {}
 
-JSONDocIteratorState::~JSONDocIteratorState() {}
-
-
-void JSONDocIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-
-void JSONDocIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
 // </JSONDocIterator>
 
 

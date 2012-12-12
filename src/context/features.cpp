@@ -49,6 +49,11 @@ namespace zorba {
         res = dtd;
         return true;
       }
+      else if ( ztd::equals(s, "http-uri-resolution") )
+      {
+        res = http_resolution;
+        return true;
+      }
       return false;
     }
   }
