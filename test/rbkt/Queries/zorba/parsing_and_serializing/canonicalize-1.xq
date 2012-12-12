@@ -1,4 +1,4 @@
-import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+import module namespace x = "http://www.zorba-xquery.com/modules/xml";
 
-let $xml := "<x b='1' a='2'/>"
-return parse-xml:canonicalize($xml)
+let $xml := "aaaa"
+return x:canonicalize($xml)

@@ -423,6 +423,9 @@ XQueryErrorCode FOUT1170( "FOUT1170" );
 XQueryErrorCode FOUT1190( "FOUT1190" );
 
 
+XQueryErrorCode FOCZ0001( "FOCZ0001" );
+
+
 XQueryErrorCode XUST0001( "XUST0001" );
 
 

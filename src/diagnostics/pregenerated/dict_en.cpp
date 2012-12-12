@@ -39,6 +39,7 @@ extern entry const dict_en[] = {
   { "FOCH0002", "\"$1\": unsuported collation${: 2}" },
   { "FOCH0003", "\"$1\": unsupported normalization form" },
   { "FOCH0004", "\"$1\": collation does not support collation units" },
+  { "FOCZ0001", "invalid content passed to $1: $2" },
   { "FODC0001", "no context document for $1() function" },
   { "FODC0002", "\"$1\": error retrieving resource${: 2}" },
   { "FODC0003", "function stability not defined" },

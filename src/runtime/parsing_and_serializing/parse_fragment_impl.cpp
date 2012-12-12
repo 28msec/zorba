@@ -238,7 +238,7 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
           result = lStore.loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
         } catch (ZorbaException const& e) {
           if ( ! state->theProperties.getNoError())
-            throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse()", e.what()), ERROR_LOC( loc ));
+            throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("x:parse()", e.what()), ERROR_LOC( loc ));
           else
             result = NULL;
         }
@@ -266,7 +266,7 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
         result = lStore.loadDocument(state->baseUri, state->docUri, *state->theFragmentStream.theStream, state->theProperties);
       } catch (ZorbaException const& e) {
         if ( ! state->theProperties.getNoError())
-          throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse()", e.what()), ERROR_LOC( loc ));
+          throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("x:parse()", e.what()), ERROR_LOC( loc ));
         else
           result = NULL;
       }
@@ -345,7 +345,7 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
     {
       zstring lErrorMsg;
       lErrorMsg = "\"" + lDocString + "\"";
-      throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("parse-xml:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(err::FOCZ0001, ERROR_PARAMS("x:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
     }
   
     xmlC14NDocDumpMemory(lDoc, NULL, XML_C14N_1_1, NULL, 1, &lResult);
@@ -355,7 +355,9 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
   }
   catch ( std::exception const& e)
   {
-    throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("parse-xml:canonicalize()", e.what() ), ERROR_LOC(loc));
+      zstring lErrorMsg;
+      lErrorMsg = "\"" + lDocString + "\"";
+      throw XQUERY_EXCEPTION(err::FOCZ0001, ERROR_PARAMS("x:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
   }
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, lDocString), state);
   STACK_END(state);
