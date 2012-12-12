@@ -1,5 +1,5 @@
-
 #include "stdafx.h"
+
 #include <cstdlib>
 #include <stdio.h>
 #include <iostream>
@@ -48,12 +48,12 @@ public:
 class StrCompFunc
 {
 public:
-  static bool equal(const zstring& k1, const zstring& k2) 
+  static bool equal(const std::string& k1, const std::string& k2) 
   {
     return k1 == k2;
   }
 
-  static uint32_t hash(const zstring& key)
+  static uint32_t hash(const std::string& key)
   { 
     return hashfun::h32(key.c_str(), FNV_32_INIT);
   }
