@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 // standard
 #ifdef ZORBA_HASH_FN_PJW
 # include <limits>

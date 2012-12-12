@@ -35,10 +35,6 @@ namespace zorba {
     void
     tokenizePath(const std::string& aPathStr, std::vector<String>&  aResult);
 
-
-    String
-    concatenatePaths( const std::vector<String>& aPathList);
-
   }
 } /* namespace zorba */
 
