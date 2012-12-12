@@ -1844,6 +1844,19 @@ bool ZorbaEditNodesIterator::nextImpl(
   collectionName = collection->getName();
   collectionDecl = getCollection(collectionName, collection);
 
+  if (target->isJSONItem())
+  {
+    xs_integer lPosition;
+    if (!collection->findNode(target, lPosition))
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZDDY0039_NON_ROOT_NODE_EDIT,
+        ERROR_PARAMS(target->getCollection()->getName()->getStringValue()),
+        ERROR_LOC( loc )
+      );
+    }
+  }
+
   // Content check & copy.
   getCopyMode(lCopyMode, this->theSctx);
   lCopyMode.theDoCopy &= theNeedToCopy;
