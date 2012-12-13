@@ -69,6 +69,10 @@
 #cmakedefine ZORBA_HAVE_MS_INT32
 #cmakedefine ZORBA_HAVE_MS_UINT32
 #cmakedefine ZORBA_HAVE_UINT32_T
+#cmakedefine ZORBA_HAVE_STRUCT_TM_TM_GMTOFF
+#cmakedefine ZORBA_HAVE_STRUCT_TM___TM_GMTOFF
+
+// Platform type sizes
 #cmakedefine ZORBA_SIZEOF_DOUBLE        @ZORBA_SIZEOF_DOUBLE@
 #cmakedefine ZORBA_SIZEOF_FLOAT         @ZORBA_SIZEOF_FLOAT@
 #cmakedefine ZORBA_SIZEOF_INT           @ZORBA_SIZEOF_INT@

@@ -297,7 +297,7 @@ namespace zorba {
        * @return Returns said enumeration or \c unknown.
        */
       type find( char const *country );
-    }
+    } // namespace iso3166_1
 
     /////////////////////////////////////////////////////////////////////////// 
 
@@ -474,7 +474,7 @@ namespace zorba {
        * @return Returns said enumeration or \c unknown.
        */
       type find( char const *lang );
-    }
+    } // namespace iso639_2
 
     /////////////////////////////////////////////////////////////////////////// 
 
@@ -485,6 +485,22 @@ namespace zorba {
      * @return Returns said enumeration or \c unknown.
      */
     iso639_1::type find_lang( char const *lang );
+
+    /**
+     * Gets the date format for the current locale.  The format is that used by
+     * strptime(3).
+     *
+     * @return Returns said date format.
+     */
+    char const* get_date_format();
+
+    /**
+     * Gets the date and time format for the current locale.  The format is
+     * that used by strptime(3).
+     *
+     * @return Returns said date format.
+     */
+    char const* get_date_time_format();
 
     /**
      * Gets the ISO 3166-1 country code enumeration for the host system.
@@ -499,6 +515,54 @@ namespace zorba {
      * @return Returns said enumeration defaulting to \c en.
      */
     iso639_1::type get_host_lang();
+
+    /**
+     * Gets a month's abbreviation in the current locale.
+     *
+     * @param month_index The index of the month to get in the range 0-11.
+     * @return Returns said abbreviation.
+     */
+    char const* get_month_abbr( unsigned month_index );
+
+    /**
+     * Gets a month's full name in the current locale.
+     *
+     * @param month_index The index of the month to get in the range 0-11.
+     * @return Returns said full name.
+     */
+    char const* get_month_name( unsigned month_index );
+
+    /**
+     * Gets the time AM or PM string in the current locale.
+     *
+     * @param pm If \c true, gets the PM string; else the AM string.
+     * @return Returns said string.
+     */
+    char const* get_time_ampm( bool pm );
+
+    /**
+     * Gets the time format for the current locale.  The format is that used by
+     * strptime(3).
+     *
+     * @return Returns said time format.
+     */
+    char const* get_time_format();
+
+    /**
+     * Gets a weekday's abbreviation in the current locale.
+     *
+     * @param day_index The index of the weekday to get in the range 0-6.
+     * @return Returns said abbreviation.
+     */
+    char const* get_weekday_abbr( unsigned day_index );
+
+    /**
+     * Gets a weekday's full name in the current locale.
+     *
+     * @param day_index The index of the month to get in the range 0-6.
+     * @return Returns said full name.
+     */
+    char const* get_weekday_name( unsigned day_index );
 
     ///////////////////////////////////////////////////////////////////////////
 

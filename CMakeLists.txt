@@ -76,14 +76,15 @@ ENDIF(ZORBA_USE_TARGET_FOLDERS)
 ###############################################################################
 # Check for system include files, features, etc.
 ###############################################################################
-INCLUDE(CheckIncludeFiles)
-INCLUDE(CheckSymbolExists)
-INCLUDE(CheckFunctionExists)
-INCLUDE(CheckLibraryExists)
-INCLUDE(CheckVariableExists)
-INCLUDE(CheckIncludeFileCXX)
-INCLUDE(CheckTypeSize)
 INCLUDE(CheckCXXSourceCompiles)
+INCLUDE(CheckFunctionExists)
+INCLUDE(CheckIncludeFileCXX)
+INCLUDE(CheckIncludeFiles)
+INCLUDE(CheckLibraryExists)
+INCLUDE(CheckStructHasMember)
+INCLUDE(CheckSymbolExists)
+INCLUDE(CheckTypeSize)
+INCLUDE(CheckVariableExists)
 
 CHECK_INCLUDE_FILES ("sys/param.h;sys/mount.h"      ZORBA_HAVE_SYS_MOUNT_H)
 CHECK_INCLUDE_FILES ("unicode/utypes.h"             ZORBA_HAVE_UTYPES_H)
@@ -123,6 +124,9 @@ CHECK_TYPE_SIZE("uint32_t" ZORBA_HAVE_UINT32_T)
 CHECK_TYPE_SIZE("unsigned __int32" ZORBA_HAVE_MS_UINT32) 
 CHECK_TYPE_SIZE("__int32" ZORBA_HAVE_MS_INT32) 
 CHECK_TYPE_SIZE("int64_t" ZORBA_HAVE_INT64_T) 
+
+CHECK_STRUCT_HAS_MEMBER("struct tm" tm_gmtoff time.h 	ZORBA_HAVE_STRUCT_TM_TM_GMTOFF)
+CHECK_STRUCT_HAS_MEMBER("struct tm" __tm_gmtoff time.h 	ZORBA_HAVE_STRUCT_TM___TM_GMTOFF)
 
 # C++ built-in type sizes
 CHECK_TYPE_SIZE("double" ZORBA_SIZEOF_DOUBLE BUILTIN_TYPES_ONLY) 

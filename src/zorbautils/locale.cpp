@@ -21,17 +21,22 @@
 #else
 # include <clocale>
 # include <cstdlib>                     /* for getenv(3) */
+# include <langinfo.h>                  /* for nl_langinfo(3) */
 #endif /* WIN32 */
 
 #include <algorithm>
 #include <cstring>
+#include <stdexcept>
 
 #include <zorba/internal/unique_ptr.h>
 
+// Zorba
 #include "util/cxx_util.h"
 #include "util/less.h"
 #include "util/stl_util.h"
+#include "util/string_util.h"
 
+// local
 #include "locale.h"
 
 #define DEF_END(CHAR_ARRAY)                             \
@@ -45,6 +50,59 @@ using namespace std;
 
 namespace zorba {
 namespace locale {
+
+#ifdef WIN32
+typedef LCTYPE locale_index;
+#else
+typedef nl_item locale_index;
+#endif /* WIN32 */
+
+///////////////////////////////////////////////////////////////////////////////
+
+static locale_index const month_abbr[] = {
+#ifdef WIN32
+  LOCALE_SABBREVMONTHNAME1, LOCALE_SABBREVMONTHNAME2,
+  LOCALE_SABBREVMONTHNAME3, LOCALE_SABBREVMONTHNAME4,
+  LOCALE_SABBREVMONTHNAME5, LOCALE_SABBREVMONTHNAME6,
+  LOCALE_SABBREVMONTHNAME7, LOCALE_SABBREVMONTHNAME8,
+  LOCALE_SABBREVMONTHNAME9, LOCALE_SABBREVMONTHNAME10,
+  LOCALE_SABBREVMONTHNAME11, LOCALE_SABBREVMONTHNAME12
+#else
+  ABMON_1, ABMON_2, ABMON_3, ABMON_4, ABMON_5, ABMON_6,
+  ABMON_7, ABMON_8, ABMON_9, ABMON_10, ABMON_11, ABMON_12
+#endif /* WIN32 */
+};
+
+static locale_index const month_name[] = {
+#ifdef WIN32
+  LOCALE_SMONTHNAME1, LOCALE_SMONTHNAME2, LOCALE_SMONTHNAME3,
+  LOCALE_SMONTHNAME4, LOCALE_SMONTHNAME5, LOCALE_SMONTHNAME6,
+  LOCALE_SMONTHNAME7, LOCALE_SMONTHNAME8, LOCALE_SMONTHNAME9,
+  LOCALE_SMONTHNAME10, LOCALE_SMONTHNAME11, LOCALE_SMONTHNAME12
+#else
+  MON_1, MON_2, MON_3, MON_4, MON_5, MON_6,
+  MON_7, MON_8, MON_9, MON_10, MON_11, MON_12
+#endif /* WIN32 */
+};
+
+static locale_index const weekday_abbr[] = {
+#ifdef WIN32
+  LOCALE_SABBREVDAYNAME1, LOCALE_SABBREVDAYNAME2, LOCALE_SABBREVDAYNAME3,
+  LOCALE_SABBREVDAYNAME4, LOCALE_SABBREVDAYNAME5, LOCALE_SABBREVDAYNAME6,
+  LOCALE_SABBREVDAYNAME7
+#else
+  ABDAY_1, ABDAY_2, ABDAY_3, ABDAY_4, ABDAY_5, ABDAY_6, ABDAY_7
+#endif /* WIN32 */
+};
+
+static locale_index const weekday_name[] = {
+#ifdef WIN32
+  LOCALE_SDAYNAME1, LOCALE_SDAYNAME2, LOCALE_SDAYNAME3, LOCALE_SDAYNAME4,
+  LOCALE_SDAYNAME5, LOCALE_SDAYNAME6, LOCALE_SDAYNAME7
+#else
+  DAY_1, DAY_2, DAY_3, DAY_4, DAY_5, DAY_6, DAY_7
+#endif /* WIN32 */
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -849,6 +907,100 @@ iso639_1::type find_lang( char const *lang ) {
   return iso639_2_to_639_1[ iso639_2::find( lang ) ];
 }
 
+char const* get_date_format() {
+#ifdef WIN32
+  static string format;
+  if ( format.empty() ) {
+    unique_ptr<char[]> const w32_format(
+      get_win32_locale_info( LOCALE_SSHORTDATE )
+    );
+    //
+    // Convert Windows' date format for that used by strptime(3); see:
+    // http://msdn.microsoft.com/en-us/library/windows/desktop/dd317787(v=vs.85).aspx
+    //
+    for ( char const *buf = w32_format.get(); *buf; ++buf ) {
+      char const c = *buf;
+      switch ( c ) {
+
+        case 'd':
+          if ( buf[1] == c )
+            if ( buf[2] == c )
+              if ( buf[3] == c )
+                format += "%A", buf += 3; // dddd = full weekday name
+              else
+                format += "%a", buf += 2; // ddd = abbreviated weekday name
+            else
+              format += "%d", buf += 1;   // dd = day of month: 01-31
+          else
+            format += "%e";               // d = day of month: 1-31
+          break;
+
+        case 'g':                         // period/era
+          //
+          // There's no equivalent strftime(3) conversion specification: just
+          // ignore it and hope for the best.
+          //
+          if ( buf[1] == c )
+            ++buf;                        // gg = same as g
+          break;
+
+        case 'M':
+          if ( buf[1] == c )
+            if ( buf[2] == c )
+              if ( buf[3] == c )
+                format += "%B", buf += 3; // MMMM = full month name
+              else
+                format += "%b", buf += 2; // MMM = abbreviated month name
+            else
+              format += "%m", buf += 1;   // MM = month: 01-12
+          else
+            format += "%m";               // M = month: 1-12
+          break;
+
+        case 'y':
+          if ( buf[1] == c )
+            if ( buf[2] == c )
+              if ( buf[3] == c ) {
+                format += "%Y", buf += 3; // yyyy = 4-digit year
+                if ( buf[3] == c )
+                  ++buf;                  // yyyyy = same as yyyy
+              } else
+                ;
+            else
+              format += "%y", buf += 1;   // yy = 2-digit year
+          else
+            format += "%y";               // y = 1-digit year
+          break;
+
+        default:
+          format += c;
+      } // switch
+    } // for
+  } // if
+  return format.c_str();
+#else
+  return nl_langinfo( D_FMT );
+#endif /* WIN32 */
+}
+
+char const* get_date_time_format() {
+#ifdef WIN32
+  static string format;
+  if ( format.empty() ) {
+    //
+    // Windows have no equivalent for both date and time, so glue its date and
+    // time together and hope for the best.
+    //
+    format = get_date_format();
+    format += ' ';
+    format += get_time_format();
+  }
+  return format.c_str();
+#else
+  return nl_langinfo( D_T_FMT );
+#endif /* WIN32 */
+}
+
 iso3166_1::type get_host_country() {
   //
   // ICU's Locale::getDefault().getLanguage() should be used here, but it
@@ -918,6 +1070,145 @@ iso639_1::type get_host_lang() {
     }
   }
   return lang_code;
+}
+
+char const* get_month_abbr( unsigned month_index ) {
+  if ( month_index > 11 )
+    throw invalid_argument(
+      BUILD_STRING( month_index, " not in range 0-11" )
+    );
+#ifdef WIN32
+  static unique_ptr<char[]> month[12];
+  if ( !month[ month_index ] )
+    month[ month_index ].reset(
+      get_win32_locale_info( month_abbr[ month_index ] )
+    );
+  return month[ month_index ].get();
+#else
+  return nl_langinfo( month_abbr[ month_index ] );
+#endif /* WIN32 */
+}
+
+char const* get_month_name( unsigned month_index ) {
+  if ( month_index > 11 )
+    throw invalid_argument(
+      BUILD_STRING( month_index, " not in range 0-11" )
+    );
+#ifdef WIN32
+  static unique_ptr<char[]> month[12];
+  if ( !month[ month_index ] )
+    month[ month_index ].reset(
+      get_win32_locale_info( month_name[ month_index ] )
+    );
+  return month[ month_index ].get();
+#else
+  return nl_langinfo( month_name[ month_index ] );
+#endif /* WIN32 */
+}
+
+char const* get_time_ampm( bool pm ) {
+#ifdef WIN32
+  static unique_ptr<char[]> ampm[2];
+  if ( ampm[ pm ] )
+    ampm[ pm ].reset(
+      get_win32_locale_info( pm ? LOCALE_S2359 : LOCALE_S1159 )
+    );
+  return ampm[ pm ].get();
+#else
+  return nl_langinfo( pm ? PM_STR : AM_STR );
+#endif /* WIN32 */
+}
+
+char const* get_time_format() {
+#ifdef WIN32
+  static string format;
+  if ( format.empty() ) {
+    unique_ptr<char[]> const w32_format(
+      get_win32_locale_info( LOCALE_STIMEFORMAT )
+    );
+    //
+    // Convert Windows' time format for that used by strptime(3); see:
+    // http://msdn.microsoft.com/en-us/library/windows/desktop/dd318148(v=vs.85).aspx
+    //
+    for ( char const *buf = w32_format.get(); *buf; ++buf ) {
+      char const c = *buf;
+      switch ( c ) {
+
+        case 'h':
+          if ( buf[1] == 'h' )
+            format += "%I", ++buf;
+          else
+            format += "%l";
+          break;
+
+        case 'H':
+          if ( buf[1] == 'H' )
+            format += "%H", ++buf;
+          else
+            format += "%k";
+          break;
+
+        case 'm':
+          format += "%M";
+          if ( buf[1] == 'm' )
+            ++buf;
+          break;
+
+        case 's':
+          format += "%S";
+          if ( buf[1] == 's' )
+            ++buf;
+          break;
+
+        case 't':
+          format += "%p";
+          if ( buf[1] == 't' )
+            ++buf;
+          break;
+
+        default:
+          format += c;
+      } // switch
+    } // for
+  } // if
+  return format.c_str();
+#else
+  return nl_langinfo( T_FMT );
+#endif /* WIN32 */
+}
+
+char const* get_weekday_abbr( unsigned day_index ) {
+  if ( day_index > 6 )
+    throw invalid_argument(
+      BUILD_STRING( day_index, " not in range 0-6" )
+    );
+#ifdef WIN32
+  static unique_ptr<char[]> weekday[7];
+  if ( !weekday[ day_index ] )
+    weekday[ day_index ].reset(
+      get_win32_locale_info( weekday_abbr[ day_index ] )
+    );
+  return weekday[ day_index ].get();
+#else
+  return nl_langinfo( weekday_abbr[ day_index ] );
+#endif /* WIN32 */
+}
+
+char const* get_weekday_name( unsigned day_index ) {
+  if ( day_index > 6 )
+    throw invalid_argument(
+      BUILD_STRING( day_index, " not in range 0-6" )
+    );
+#ifdef WIN32
+  static unique_ptr<char[]> weekday[7];
+  if ( !weekday[ day_index ] )
+    weekday[ day_index ].reset(
+      get_win32_locale_info( weekday_name[ day_index ] )
+    );
+  return weekday[ day_index ].get();
+#else
+  return nl_langinfo( weekday_name[ day_index ] );
+#endif /* WIN32 */
 }
 
 ///////////////////////////////////////////////////////////////////////////////

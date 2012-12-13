@@ -25,6 +25,7 @@ SET(UTIL_SRCS
   mem_streambuf.cpp
   regex.cpp
   string_util.cpp
+  strptime.cpp
   unicode_util.cpp
   unicode_categories.cpp
   uri_util.cpp
