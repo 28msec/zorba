@@ -499,7 +499,6 @@ bool SimpleJSONObject::rename(
 *******************************************************************************/
 void SimpleJSONObject::swap(store::Item* anotherItem)
 {
-  store::Item::swap(anotherItem);
   SimpleJSONObject* lOther = dynamic_cast<SimpleJSONObject*>(anotherItem);
   assert(lOther);
   std::swap(theKeys, lOther->theKeys);
@@ -932,7 +931,6 @@ store::Item_t SimpleJSONArray::remove(const xs_integer& aPos)
 *******************************************************************************/
 void SimpleJSONArray::swap(store::Item* anotherItem)
 {
-  store::Item::swap(anotherItem);
   SimpleJSONArray* lOther = dynamic_cast<SimpleJSONArray*>(anotherItem);
   assert(lOther);
   std::swap(theContent, lOther->theContent);
