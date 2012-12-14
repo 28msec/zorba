@@ -159,6 +159,11 @@ public:
   {
     return theTree;
   }
+  
+  bool isRoot() const
+  {
+    return theTree != NULL && (this == theTree->getRoot());
+  }
 
   // These two functions are only to be called if in a collection.
   const TreeId& getTreeId() const;

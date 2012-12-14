@@ -1818,7 +1818,7 @@ bool ZorbaEditNodesIterator::nextImpl(
     throw XQUERY_EXCEPTION(zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC(loc));
   }
 
-  if (target->isNode() && target->getParent())
+  if ((target->isNode() || target->isJSONItem()) && !target->isRoot())
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0039_NON_ROOT_NODE_EDIT,
@@ -1843,19 +1843,6 @@ bool ZorbaEditNodesIterator::nextImpl(
   collection = target->getCollection();
   collectionName = collection->getName();
   collectionDecl = getCollection(collectionName, collection);
-
-  if (target->isJSONItem())
-  {
-    xs_integer lPosition;
-    if (!collection->findNode(target, lPosition))
-    {
-      throw XQUERY_EXCEPTION(
-        zerr::ZDDY0039_NON_ROOT_NODE_EDIT,
-        ERROR_PARAMS(target->getCollection()->getName()->getStringValue()),
-        ERROR_LOC( loc )
-      );
-    }
-  }
 
   // Content check & copy.
   getCopyMode(lCopyMode, this->theSctx);

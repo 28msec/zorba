@@ -436,6 +436,11 @@ public:
     return reinterpret_cast<store::Item*>(theParent);
   }
 
+  bool isRoot() const
+  {
+    return getCollection() != NULL && getParent() == NULL;
+  }
+
   bool equals(
       const store::Item* other,
       long timezone = 0,

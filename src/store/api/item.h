@@ -820,6 +820,12 @@ public:
   getJSONItemKind() const;
 
   /**
+   * @return true if the JSON item is a root in a collection.
+   */
+  virtual bool
+  isRoot() const;
+
+  /**
    * defined on JSONArray
    * (jdm:size accessor on an array)
    * @return the number of values in the array.
