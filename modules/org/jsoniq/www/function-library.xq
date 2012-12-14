@@ -22,7 +22,7 @@ xquery version "1.0";
  : chapter 8 (Function Library). JSONiq extends
  : the XQuery specification to also deal with JSON data natively. See
  :
- :     http://www.jsoniq.org/
+ :     http://jsoniq.org/
  :
  : for details.
  :
@@ -31,9 +31,9 @@ xquery version "1.0";
  :
  : @author Ghislain Fourny
  :)
-module namespace libjn = "http://www.jsoniq.org/function-library";
+module namespace libjn = "http://jsoniq.org/function-library";
 
-import module namespace jn = "http://www.jsoniq.org/functions";
+import module namespace jn = "http://jsoniq.org/functions";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";

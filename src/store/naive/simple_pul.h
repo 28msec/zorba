@@ -584,6 +584,11 @@ public:
       std::vector<store::Item_t>& names,
       std::vector<store::Item_t>& values);
 
+  virtual void addJSONObjectInsert(
+      const QueryLoc* aQueryLoc,
+      store::Item_t& target,
+      store::Item_t& content);
+
   virtual void addJSONObjectDelete(
       const QueryLoc* aQueryLoc,
       store::Item_t& target,

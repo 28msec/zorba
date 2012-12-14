@@ -234,6 +234,8 @@ typedef rchandle<DocIndexer> DocIndexer_t;
 ********************************************************************************/
 class IndexDecl : public SimpleRCObject
 {
+  typedef std::set<var_expr *> FreeVars;
+
 public:
   typedef enum
   {
@@ -264,7 +266,7 @@ private:
   MaintenanceMode                 theMaintenanceMode;
   ContainerKind                   theContainerKind;
 
-  for_clause_t                    theDomainClause;
+  for_clause                    * theDomainClause;
   expr                          * theDomainExpr;
   var_expr                      * theDomainVar;
   var_expr                      * theDomainPosVar;
@@ -355,7 +357,7 @@ public:
 
   const store::Item* getSourceName(csize i) const { return theSourceNames[i]; }
 
-  expr* getDomainSourceExpr(csize i) const { return theDomainSourceExprs[i]; }
+  const expr* getDomainSourceExpr(csize i) const { return theDomainSourceExprs[i]; }
 
   void analyze(CompilerCB* ccb);
 
@@ -370,9 +372,9 @@ public:
 private:
   void analyzeExprInternal(
         expr* e,
-        std::vector</*const */store::Item*>& sourceNames,
+        std::vector<store::Item*>& sourceNames,
         std::vector<expr*>& sourceExprs,
-        std::vector<var_expr*>& varExprs,
+        FreeVars& varExprs,
         expr* dotVar);
 };
 

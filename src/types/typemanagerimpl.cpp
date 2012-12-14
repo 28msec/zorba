@@ -226,7 +226,7 @@ xqtref_t TypeManagerImpl::create_builtin_atomic_type(
 /***************************************************************************//**
   Create a sequence type from the given typename and quantifier. The typename
   is assumed to be of an atomic type. If not, or if no type with this name is
-  found in the in-scope schemaa, the method will return NULL or raise an error,
+  found in the in-scope schema, the method will return NULL or raise an error,
   depending on the value of the "error" param.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_named_atomic_type(
@@ -983,7 +983,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 {
   TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
 
-  switch(ident.getQuantifier())
+  switch (ident.getQuantifier())
   {
     case IdentTypes::QUANT_ONE:
       q = TypeConstants::QUANT_ONE;
@@ -1002,7 +1002,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
       break;
   }
 
-  switch(ident.getKind())
+  switch (ident.getKind())
   {
   case IdentTypes::NAMED_TYPE:
   {

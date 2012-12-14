@@ -1,39 +1,121 @@
 Zorba - The XQuery Processor
 
+
+version 2.8
+
+New Features:
+  * (bug #1039284) Implemented jn:json-doc().
+  * (bug #867363) Added http-uri-resolution feature to disable HTTP
+	when resolving URIs.
+
+Optimizations:
+  * Various optimizations in the implementation of the optimizer rules.
+
+Bug Fixes/Other Changes:
+  * Change XQXQ (XQuery-for-XQuery) module now part of Zorba core
+  * Fixed mustCopyInputNodes() method of no-copy, and jsoniq functions.
+  * Fixed bug #868640 (Node lifetime is shorter than expected due to let
+    variable inlining)
+  * Fixed bug in castable expr when the target type is xs:QName.
+  * Fixed bug #1062093 (bug in var reference iterators with an associated
+    position that is negative)
+  * Fixed bug #1061222 (bad message for errors in index key type declaration)
+  * Fixed bug #1065175 (preceding::node()[1] returns wrong results)
+  * Fixed bug #1065321 (following:text() doesn't return results in doc order)
+  * Fixed bug #1067706 (wrong const folding in mutually recursive udfs)
+  * Fixed bug #1021492 (while computeing the "sources" of a prolog var, skip
+    any var-setting exprs that appear in non-used (and non-optimized) functions). 
+  * Fixed bug #1070551 (zerr:ZOSE0003 stream read failure)
+
 version 2.7
 
 New Features:
+  * XQuery 3.0 simple map operator http://www.w3.org/TR/xquery-30/#id-map-operator
+  * Copy function added to the node module
   * Allow prolog variables to be referenced before they are declared (XQuery 3.0 feature)
-  * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the 
+  * Module http://www.jsoniq.org/modules/function-library with handy JSONiq functions
+  * jn:parse-json can parse multiple top-level JSON items
+  * New semantics of null for comparison and arithmetics operations
+  * xml:parse (fragment parsing) now allows for a DOCTYPE declaration at the
     beginning of the XML document (requested in bug #1016606).
-  * New module http://www.jsoniq.org/modules/function-library with handy JSONiq functions. jn:object is
-    also supported.
+  * New module http://jsoniq.org/modules/function-library with handy JSONiq
+    functions. jn:object is also supported.
+  * New C++ and XQuery function (see module http://www.zorba-xquery.com/modules/item) to
+    estimate the size an item allocates in memory.
+  * Incremental maintenance for general indexes.
+  * jn:parse-json can parse multiple top-level JSON items. Also, there is jn:parse-json#2 that
+    takes options to parameterize the parsing process (see bug #1047547)
+  * Roundtripping of JSON items has been moved from the serializer to encoding functions.
+  * Added uuid to public API.
+  * Best-effort serialization of atomic values in JSON items.
+  * Positional pagination support for index probes 
+  * Recognize the {http://www.zorba-xquery.com/extensions}no-copy pragma to avoid
+    copying nodes before insertion into a collection.
+  * Added createUntypedAtomic to API's ItemFactory.
+  * new xqDoc feature; reporting collections and indexes
+  * new xqDoc function parameter to enable/disable xqDoc generation of certain
+    components
+  * Adding new external module read-pdf, it converts PDF documents to text or rendered images.
 
 Optimizations:
-  * New memory management for compiler expressions (no more ref counting)
+  * Improved memory management for compiler expressions (no more ref counting)
+  * Extended optimization rules (for variable inlining/elimination and positional
+    predicate rewrite) to general flwor expressions.
+  * Early optimization of positional predicates to subsequence expressions: now
+    done at translation time, if possible.
+  * For non-mutable global variables, assign a type based on their initializing expr.
+  * Use char* instead of zstring as the hashmap key in json objects
+  * Removed document-order sorting after the index value probe functions.
+  * Optimize positional predicates involving inequality (convert them to subsequence)
+  * Optimize positional predicate that is in CNF with other predicates.
+  * Optimized runtime group iterator based on latest group-by semantics.
+  * Removed two unnecessary steps from optimizer.
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1006960 (taking construction mode into account during no-copy rule)
+  * Fixed bug #950621 (Removed two-arg version of fn:parse-xml(); use XML module
+    function xml:parse() instead)
   * Fixed bug #867227 (Improved error message for missing commas)
+  * Fixed memory leak during runtime group-by"
   * Fixed bug #1024033 and #1023170 (segfaults in parse-xml:parse())
   * Fixed bug #898792 (Dynamically computed strings can now be cast to xs:QName)
+  * Fixed bug in determining the IsId property of constructed attribute nodes
   * Fixed bug #1034990 (text serialization with jsoniq fails)
   * Fixed bugs #899364 and 899363 (throw XQST0103 in case of non-distinct window
     variables)
+  * Fixed bug #923686 (implicitly declare global context size and context position
+    variables in main module and provide api function to assign values to these
+    variables)
   * Fixed bug #899366 (enforce the type declaration of a window variable)
-  * Now using native UUID libraries.
+  * Fixed bug #1034942 (improper variable inlining inside general flwor expr)
   * Fixed bug #1024892 (index declaration references udf declared after the index)
   * Fixed bug #1038410 (Memory leaks in parser, trace iterator, and general index)
+  * Fixed bug #1046411 (automatic boxing of multi-item sequence appearing as the
+    value of an object pair)
+  * Fixed bug #1046410 (automatic conversion to null of empty sequence appearing
+    as the value of an object pair)
   * Fixed bug #1039488 (inserting more than one pair at once in a JSON object)
-  * Fixed bug #1042840 (qname pool free-list corruption)
+  * Fixed bug #1042840 (QName pool free-list corruption)
   * Fixed bug #866984 (better error message for an eval error)
+  * Fixed bug #1047538 (SourceFinder::findLocalNodeSources missing json expressions)
+  * Fixed bug #932374 (FOTS fn:matches failing tests)
+  * Fixed #1052383 (accessing context item in eval expr)
+  * Fixed bug #1046559 (dynamic resolution between function invocation and jsoniq
+    navigation)
   * Fixed bug #932884 (HTML and XHTML serialization of empty elements)
+  * Fixed bug #1046415 (pair name cast to string)
   * Fixed bug #1045902 (file:last-modified returns current date time)
-	
+  * Fixed bug #1043976 (compiler warning in serializer code)
+  * Fixed bug #866994 (a better error message when collection iterator not open)
+  * Fixed bug #1039254 (allow empty sequence as position value in positional LET
+    var iterator)
+
+
 version 2.6
 
 New Features:
   * Include first-class support for JSON data by implementing the JSONiq spec
-  - see http://www.jsoniq.org/ for more information. This feature is enabled by default.
+  - see http://jsoniq.org/ for more information. This feature is enabled by default.
   * Implemented the new EQName syntax (use Q{namespace}local instead of "namespace":local)
   * New function Item::isSeekable for streamable content (xs:string and xs:base64Binary)
   * Implemented the latest W3C specification for the group by clause (backwards incompatible)
@@ -44,9 +126,6 @@ New Features:
     http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
   * Added support for fragments to fn:path
   * Positional pagination support for collections
-  * New C++ and XQuery function (see module http://www.zorba-xquery.com/modules/item) to
-    estimate the size an item allocates in memory.
-  * Incremental maintenance for general indexes.
   * http://www.zorba-xquery.com/modules/archive module for creating,
     reading, and updating various (compressed) archives (e.g. zip, tar.gz,
     or tar.bz2)

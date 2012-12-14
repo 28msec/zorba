@@ -70,9 +70,7 @@ public:
     PARAMETER_VALUE_BINARY,
 #ifdef ZORBA_WITH_JSON
     PARAMETER_VALUE_JSON,
-    PARAMETER_VALUE_JSONIQ,
-    PARAMETER_VALUE_ARRAY,
-    PARAMETER_VALUE_APPENDED,
+    PARAMETER_VALUE_JSON_XML_HYBRID,
 #endif
 
     PARAMETER_VALUE_UTF_8,
@@ -115,10 +113,8 @@ protected:
   zstring version_string;          // this the version as a string
   short int indent;                // "yes" or "no", implemented
 #ifdef ZORBA_WITH_JSON
-  short int jsoniq_multiple_items;  // "no", "array", "appended", implemented
-  short int jsoniq_extensions;      // implemented
+  short int jsoniq_multiple_items;  // "no", "yes", implemented
   short int jsoniq_xdm_method;      // A legal value for "method", implemented
-  short int jsoniq_allow_mixed_xdm_jdm; // "yes" or "no", implemented
 #endif /* ZORBA_WITH_JSON */
   bool version_has_default_value;  // Used during validation to set version to
                                    // "4.0" when output method is "html"
@@ -220,9 +216,9 @@ protected:
      * @param aEmitAttributes If true, attributes are emitted.
      */
     emitter(
-        serializer* the_serializer, 
-        std::ostream& the_stream,
-        bool aEmitAttributes = false);
+        serializer* serializer, 
+        std::ostream& stream,
+        bool emitAttributes = false);
 
     /**
      * Outputs the start of the serialized document, which, depending on
@@ -333,13 +329,13 @@ protected:
       INVALID_ITEM,
       PREVIOUS_ITEM_WAS_TEXT,
       PREVIOUS_ITEM_WAS_NODE
-    }                                     previous_item;
+    }                                     thePreviousItemKind;
 
     std::vector<store::ChildrenIterator*> theChildIters;
     ulong                                 theFirstFreeChildIter;
     store::AttributesIterator           * theAttrIter;
 
-    bool                                  isFirstElementNode;
+    bool                                  theIsFirstElementNode;
     bool                                  theEmitAttributes;
   };
 
@@ -363,9 +359,6 @@ protected:
 
   protected:
     virtual void emit_doctype(const zstring& elementName);
-
-  protected:
-    bool theEmitAttributes;
   };
 
   ///////////////////////////////////////////////////////////
@@ -389,34 +382,28 @@ protected:
 
     virtual void emit_end();
 
-  private:
+  protected:
 
     /**
      * Outputs a JSON item. This method is called both for top-level JSON
      * items as well as any items within a JSON object or array, so it may
      * output simple typed values differently than standard XML serialization.
      */
-    void emit_json_item(store::Item* item, int depth);
+    virtual void emit_json_item(store::Item* item, int depth);
 
-    void emit_json_object(store::Item* object, int depth);
+    virtual void emit_json_object(store::Item* object, int depth);
 
-    void emit_json_array(store::Item* array, int depth);
+    virtual void emit_json_array(store::Item* array, int depth);
 
-    void emit_json_value(store::Item* value, int depth);
+    virtual void emit_jsoniq_xdm_node(store::Item *item, int depth);
 
-    void emit_jsoniq_value(zstring type, zstring value, int depth);
-
-    void emit_jsoniq_xdm_node(store::Item *item, int depth);
-
-    void emit_json_string(zstring const &string);
+    virtual void emit_json_string(zstring const &string);
 
     store::Item_t theJSONiqValueName;
     store::Item_t theTypeName;
     store::Item_t theValueName;
     store::Item_t theJSONiqXDMNodeName;
 
-    rchandle<emitter> theXMLEmitter;
-    std::stringstream* theXMLStringStream;
     bool theMultipleItems;
   };
 
@@ -427,15 +414,15 @@ protected:
   //                                                       //
   ///////////////////////////////////////////////////////////
 
-  class jsoniq_emitter : public emitter
+  class hybrid_emitter : public json_emitter
   {
   public:
-    jsoniq_emitter(
+    hybrid_emitter(
         serializer* the_serializer, 
         std::ostream& the_stream,
         bool aEmitAttributes = false);
 
-    virtual ~jsoniq_emitter();
+    virtual ~hybrid_emitter();
 
     virtual void emit_declaration();
 
@@ -443,15 +430,20 @@ protected:
 
     virtual void emit_end();
 
+  protected:
+    virtual void emit_jsoniq_xdm_node(store::Item* item, int);
+
   private:
     enum JSONiqEmitterState {
       JESTATE_UNDETERMINED,
       JESTATE_JDM,
       JESTATE_XDM
-    }                           theEmitterState;
+    }                        theEmitterState;
 
-    serializer::xml_emitter*        theXMLEmitter;
-    serializer::json_emitter*       theJSONEmitter;
+    serializer::xml_emitter* theXMLEmitter;
+
+    rchandle<emitter> theNestedXMLEmitter;
+    std::stringstream* theNestedXMLStringStream;
   };
 
 #endif /* ZORBA_WITH_JSON */

@@ -15,16 +15,15 @@
  */
 
 %{  // start Implementation
-
+  
   std::string XQuery::execute()
   {
     Zorba_SerializerOptions_t lSerOptions;
-    lSerOptions.indent = ZORBA_INDENT_YES;
-    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    lSerOptions.indent = ZORBA_INDENT_NO;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_NO;
     std::stringstream lStream;
-    lStream << theQuery;
-    std::string str = lStream.str();
-    return str;
+    theQuery->execute(lStream, &lSerOptions);
+    return lStream.str();
   }
   
   void XQuery::compile (const std::string &aQuery)
@@ -78,6 +77,32 @@
   void XQuery::destroy() { theQuery = 0; }
   Iterator XQuery::iterator() { return Iterator(theQuery->iterator()); }
 
+  void XQuery::execute( ZorbaIOStream & stream )
+  {
+    Zorba_SerializerOptions_t lSerOptions;
+    lSerOptions.indent = ZORBA_INDENT_NO;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    ZorbaStreamBuffer buffer(stream);
+    std::ostream lStream(&buffer);
+    theQuery->execute(lStream, &lSerOptions);
+    return;
+  }
+
+  void XQuery::execute( ZorbaIOStream & stream, SerializationOptions & serOptions )
+  {
+    ZorbaStreamBuffer buffer(stream);
+    std::ostream lStream(&buffer);
+    theQuery->execute(lStream, &serOptions.lOptions);
+  }
+
+  std::string XQuery::execute( SerializationOptions & serOptions )
+  {
+    std::stringstream lStream;
+    theQuery->execute(lStream, &serOptions.lOptions);
+    return lStream.str();
+  }
+  
+  
 %}  // end   Implementation
 
 %include "XQuery.h"

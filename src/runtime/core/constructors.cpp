@@ -102,11 +102,9 @@ void DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
   theTypePreserve =
     (theSctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
 
-  theNsPreserve =
-    (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
+  theNsPreserve = theSctx->preserve_ns();
 
-  theNsInherit =
-    (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
+  theNsInherit = theSctx->inherit_ns();
 }
 
 
@@ -293,11 +291,9 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
   theTypePreserve =
     (theSctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
 
-  theNsPreserve =
-    (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
+  theNsPreserve = theSctx->preserve_ns();
 
-  theNsInherit =
-    (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
+  theNsInherit = theSctx->inherit_ns();
 }
 
 
@@ -621,14 +617,12 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     // (bug 955135)
     if (theRaiseXQDY0074)
     {
-      RAISE_ERROR(err::XQDY0074, loc,
-      ERROR_PARAMS("", ZED(NoEmptyLocalname)));
+      RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS("", ZED(NoEmptyLocalname)));
     }
 
     if (theRaiseXQDY0044)
     {
-      RAISE_ERROR(err::XQDY0044, loc,
-      ERROR_PARAMS(theQName->getStringValue()));
+      RAISE_ERROR(err::XQDY0044, loc, ERROR_PARAMS(theQName->getStringValue()));
     }
   }
 
@@ -647,22 +641,14 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
     if (qname->getLocalName().empty())
     {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0074,
-        ERROR_PARAMS( "", ZED( NoEmptyLocalname ) ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS("", ZED(NoEmptyLocalname)));
     }
 
     if (ZSTREQ(qname->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
         (qname->getNamespace().empty() &&
          ZSTREQ(qname->getLocalName(), "xmlns")))
     {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0044,
-        ERROR_PARAMS( qname->getStringValue() ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XQDY0044, loc, ERROR_PARAMS(qname->getStringValue()));
     }
   }
   else
@@ -682,7 +668,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   }
 
   // normalize value of xml:id
-  if (theIsId)
+  if (isId)
   {
     ascii::normalize_whitespace(lexicalValue);
   }
@@ -700,7 +686,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
                                         typeName,
                                         typedValue);
   STACK_PUSH(true, state);
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

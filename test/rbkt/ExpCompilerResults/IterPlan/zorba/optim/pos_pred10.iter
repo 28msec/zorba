@@ -1,0 +1,18 @@
+Iterator tree for main query:
+<flwor::FLWORIterator>
+  <LetVariable name="a" materialize="true">
+    <FnConcatIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+      <SingletonIterator value="xs:integer(2)"/>
+    </FnConcatIterator>
+  </LetVariable>
+  <ReturnClause>
+    <FnConcatIterator>
+      <LetVarIterator varname="a" targetPos="1"/>
+      <LetVarIterator varname="a">
+        <FnConcatIterator/>
+      </LetVarIterator>
+    </FnConcatIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+

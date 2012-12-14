@@ -17,6 +17,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/expr_manager.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -119,10 +120,10 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theIsSequential(false),
   theHaveTimeout(false),
   theTimeout(timeout),
-  theTempIndexCounter(0)
+  theTempIndexCounter(0),
+  theNextVisitId(1),
+  theEM(new ExprManager(this))
 {
-  theEM = new ExprManager(this);
-
   if (timeout >= 0)
     theHaveTimeout = true;
 }
@@ -148,9 +149,10 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theHaveTimeout(cb.theHaveTimeout),
   theTimeout(cb.theTimeout),
   theTempIndexCounter(0),
-  theConfig(cb.theConfig)
+  theNextVisitId(cb.theNextVisitId+1),
+  theConfig(cb.theConfig),
+  theEM(new ExprManager(this))
 {
-  theEM = new ExprManager(this);
 }
 
 
@@ -166,9 +168,10 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
   theDebuggerCommons(NULL),
 #endif
   theHasEval(false),
-  theIsEval(false)
+  theIsEval(false),
+  theNextVisitId(1),
+  theEM(new ExprManager(this))
 {
-  theEM = new ExprManager(this);
 }
 
 
@@ -221,6 +224,49 @@ static_context* CompilerCB::getStaticContext(int c)
   assert(lIter != theSctxMap.end());
   return lIter->second.getp();
 }
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void CompilerCB::add_pragma(const expr* e, pragma* p)
+{
+  thePragmas.insert(std::make_pair(e, p));
+}
+
+
+void
+CompilerCB::lookup_pragmas(const expr* e, std::vector<pragma*>& pragmas) const
+{
+  pragmas.clear();
+
+  std::pair<PragmaMapIter, PragmaMapIter> lRange = thePragmas.equal_range(e);
+  while (lRange.first != lRange.second)
+  {
+    pragmas.push_back(lRange.first->second);
+    ++lRange.first;
+  }
+}
+
+bool
+CompilerCB::lookup_pragma(
+    const expr* e,
+    const zstring& localname,
+    pragma*& p) const
+{
+  std::pair<PragmaMapIter, PragmaMapIter> lRange = thePragmas.equal_range(e);
+  while (lRange.first != lRange.second)
+  {
+    if (lRange.first->second->theQName->getLocalName() == localname)
+    {
+      p = lRange.first->second;
+      return true;
+    }
+    ++lRange.first;
+  }
+  return false;
+}
+
 
 
 } /* namespace zorba */

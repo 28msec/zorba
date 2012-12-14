@@ -26,7 +26,7 @@
 #include "functions/function.h"
 
 #include "diagnostics/assert.h"
-
+#include "diagnostics/xquery_diagnostics.h"
 
 namespace zorba
 {
@@ -47,12 +47,13 @@ DEF_EXPR_ACCEPT(while_expr)
 block_expr::block_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     bool allowLastUpdating,
     std::vector<expr*>& seq,
     std::vector<var_expr*>* assignedVars)
   :
-  expr(ccb, sctx, loc, block_expr_kind),
+  expr(ccb, sctx, udf, loc, block_expr_kind),
   theArgs(seq)
 {
   compute_scripting_kind2(assignedVars, allowLastUpdating);
@@ -166,27 +167,18 @@ void block_expr::compute_scripting_kind2(
 }
 
 
-expr* block_expr::clone(substitution_t& subst) const
-{
-  checked_vector<expr*> seq2;
-  for (csize i = 0; i < theArgs.size(); ++i)
-    seq2.push_back(theArgs[i]->clone(subst));
-
-  return theCCB->theEM->create_block_expr(theSctx, get_loc(), true, seq2, NULL);
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
 apply_expr::apply_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     expr* inExpr,
     bool discardXDM)
   :
-  expr(ccb, sctx, loc, apply_expr_kind),
+  expr(ccb, sctx, udf, loc, apply_expr_kind),
   theExpr(inExpr),
   theDiscardXDM(discardXDM)
 {
@@ -205,23 +197,18 @@ void apply_expr::compute_scripting_kind()
 }
 
 
-expr* apply_expr::clone(substitution_t& subst) const
-{
-  return theCCB->theEM->create_apply_expr(theSctx, get_loc(), theExpr->clone(subst), theDiscardXDM);
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
 var_decl_expr::var_decl_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     var_expr* varExpr,
     expr* initExpr)
   :
-  expr(ccb, sctx, loc, var_decl_expr_kind),
+  expr(ccb, sctx, udf, loc, var_decl_expr_kind),
   theVarExpr(varExpr),
   theInitExpr(initExpr)
 {
@@ -262,29 +249,18 @@ void var_decl_expr::compute_scripting_kind()
 }
 
 
-expr* var_decl_expr::clone(substitution_t& s) const
-{
-  var_expr* varCopy = theCCB->theEM->create_var_expr(*theVarExpr);
-  s[theVarExpr] = varCopy;
-
-  return theCCB->theEM->create_var_decl_expr(theSctx,
-                           get_loc(),
-                           varCopy,
-                           (theInitExpr ? theInitExpr->clone(s) : NULL));
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
 var_set_expr::var_set_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     var_expr* varExpr,
     expr* setExpr)
   :
-  expr(ccb, sctx, loc, var_set_expr_kind),
+  expr(ccb, sctx, udf, loc, var_set_expr_kind),
   theVarExpr(varExpr),
   theExpr(setExpr)
 {
@@ -319,29 +295,17 @@ void var_set_expr::compute_scripting_kind()
 }
 
 
-expr* var_set_expr::clone(substitution_t& s) const
-{
-  expr* varClone = theVarExpr->clone(s);
-
-  ZORBA_ASSERT(varClone->get_expr_kind() == var_expr_kind);
-
-  return theCCB->theEM->create_var_set_expr(theSctx,
-                          get_loc(),
-                          static_cast<var_expr*>(varClone),
-                          theExpr->clone(s));
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
 exit_expr::exit_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     expr* inExpr)
   :
-  expr(ccb, sctx, loc, exit_expr_kind),
+  expr(ccb, sctx, udf, loc, exit_expr_kind),
   theExpr(inExpr),
   theCatcherExpr(NULL)
 {
@@ -368,27 +332,18 @@ void exit_expr::compute_scripting_kind()
 }
 
 
-expr* exit_expr::clone(substitution_t& subst) const
-{
-  expr* clone = theCCB->theEM->create_exit_expr(theSctx, get_loc(), get_expr()->clone(subst));
-
-  subst[this] = clone;
-
-  return clone;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
 exit_catcher_expr::exit_catcher_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     expr* inExpr,
     std::vector<expr*>& exitExprs)
   :
-  expr(ccb, sctx, loc, exit_catcher_expr_kind),
+  expr(ccb, sctx, udf, loc, exit_catcher_expr_kind),
   theExpr(inExpr)
 {
   theExitExprs.swap(exitExprs);
@@ -438,31 +393,17 @@ void exit_catcher_expr::removeExitExpr(const expr* exitExpr)
 }
 
 
-expr* exit_catcher_expr::clone(substitution_t& subst) const
-{
-  expr* clonedInput = get_expr()->clone(subst);
-
-  std::vector<expr*> clonedExits;
-  std::vector<expr*>::const_iterator ite = theExitExprs.begin();
-  std::vector<expr*>::const_iterator end = theExitExprs.end();
-  for (; ite != end; ++ite)
-  {
-    assert(subst.find(*ite) != subst.end());
-
-    clonedExits.push_back(subst[*ite]);
-  }
-
-  return theCCB->theEM->create_exit_catcher_expr(theSctx, get_loc(), clonedInput, clonedExits);
-}
-
-
-
 /*******************************************************************************
 
 ********************************************************************************/
-flowctl_expr::flowctl_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, enum action action)
+flowctl_expr::flowctl_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc,
+    FlowCtlAction action)
   :
-  expr(ccb, sctx, loc, flowctl_expr_kind),
+  expr(ccb, sctx, udf, loc, flowctl_expr_kind),
   theAction(action)
 {
   compute_scripting_kind();
@@ -479,18 +420,17 @@ void flowctl_expr::compute_scripting_kind()
 }
 
 
-expr* flowctl_expr::clone(substitution_t& subst) const
-{
-  return theCCB->theEM->create_flowctl_expr(theSctx, get_loc(), get_action());
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
-while_expr::while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr* body)
+while_expr::while_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc,
+    expr* body)
   :
-  expr(ccb, sctx, loc, while_expr_kind),
+  expr(ccb, sctx, udf, loc, while_expr_kind),
   theBody(body)
 {
   compute_scripting_kind();
@@ -522,13 +462,6 @@ void while_expr::compute_scripting_kind()
   if (theScriptingKind == UNKNOWN_SCRIPTING_KIND)
     theScriptingKind = SIMPLE_EXPR;
 }
-
-
-expr* while_expr::clone(substitution_t& subst) const
-{
-  return theCCB->theEM->create_while_expr(theSctx, get_loc(), get_body()->clone(subst));
-}
-
 
 }
 /* vim:set et sw=2 ts=2: */

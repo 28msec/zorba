@@ -624,6 +624,9 @@ store::Item* XmlNode::copy(
     const store::CopyMode& copymode) const
 {
   assert(!isConnectorNode());
+  store::StoreConsts::NodeKind kind = getNodeKind();
+
+  bool copy = (copymode.theDoCopy || kind == store::StoreConsts::attributeNode);
 
   InternalNode* parent = NULL;
   csize pos = 0;
@@ -635,9 +638,9 @@ store::Item* XmlNode::copy(
 
     parent = reinterpret_cast<InternalNode*>(inParent);
 
-    if (copymode.theDoCopy == false)
+    if (!copy)
     {
-      if (getNodeKind() == store::StoreConsts::textNode)
+      if (kind == store::StoreConsts::textNode)
       {
         pos = parent->numChildren();
 
@@ -671,28 +674,12 @@ store::Item* XmlNode::copy(
           }
         }
       }
-      else if (getNodeKind() == store::StoreConsts::attributeNode)
-      {
-        ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
-        store::Item_t attrName = getNodeName();
-        pnode->checkUniqueAttr(attrName);
-
-        try
-        {    
-          pnode->addBindingForQName(attrName, true, false);
-        }
-        catch (...)
-        {
-          goto doCopy;
-        }
-      }
 
       new ConnectorNode(parent->getTree(), parent, this);
       return const_cast<XmlNode*>(this);
     }
 
-  doCopy:
-    if (getNodeKind() == store::StoreConsts::attributeNode)
+    if (kind == store::StoreConsts::attributeNode)
     {
       ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
       pnode->checkUniqueAttr(getNodeName());
@@ -704,7 +691,7 @@ store::Item* XmlNode::copy(
     }
   } // have parent
 
-  if (copymode.theDoCopy)
+  if (copy)
   {
     return copyInternal(parent, parent, pos, NULL, copymode);
   }
@@ -713,53 +700,6 @@ store::Item* XmlNode::copy(
     return const_cast<XmlNode*>(this);
   }
 }
-
-
-#if 0
-/*******************************************************************************
-  Make a copy of the xml tree rooted at this node and place the copied tree at
-  a given position under a given node. Return a pointer to the root node of the
-  copied tree.
-
-  parent   : The node P under which the copied tree is to be placed. P may be
-             NULL, in which case the copied tree becomes a new standalone tree.
-  pos      : The position under P where the copied tree is to be placed. If
-             "this" is an attribute node, pos is a position among the attributes
-             of P; otherwise it is a position among the children of P. If pos
-             is greater or equal to the current number of attrs/children in P,
-             then the copied tree is appended to P's attributes/children.
-  copymode : Encapsulates the construction-mode and copy-namespace-mode
-             components of the query's static context.
-********************************************************************************/
-store::Item* XmlNode::copy(
-    store::Item* inParent,
-    csize pos,
-    const store::CopyMode& copymode) const
-{
-  assert(!isConnectorNode());
-  assert(copymode.theDoCopy == true);
-
-  InternalNode* parent = NULL;
-
-  if (inParent)
-  {
-    parent = reinterpret_cast<InternalNode*>(inParent);
-    ZORBA_ASSERT(inParent->getNodeKind() == store::StoreConsts::elementNode ||
-                 inParent->getNodeKind() == store::StoreConsts::documentNode);
-  }
-
-  if (getNodeKind() == store::StoreConsts::attributeNode)
-  {
-    if (parent)
-    {
-      ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
-      pnode->checkUniqueAttr(getNodeName());
-    }
-  }
-
-  return copyInternal(parent, parent, pos, NULL, copymode);
-}
-#endif
 
 
 /*******************************************************************************
@@ -3320,7 +3260,8 @@ void ElementNode::checkUniqueAttrs() const
 
       if (!otherAttr->isHidden() && otherAttr->getNodeName()->equals(attrName))
       {
-        throw XQUERY_EXCEPTION(err::XUDY0021, ERROR_PARAMS(attrName->getStringValue()));
+        throw XQUERY_EXCEPTION(err::XUDY0021,
+            ERROR_PARAMS(ZED(XUDY0021_AttributeName), "", attrName->getStringValue()));
       }
     }
   }

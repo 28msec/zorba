@@ -460,7 +460,7 @@ protected:
       bool haveUpper) const;
 
 public:
-  void init(const store::IndexCondition_t& cond);
+  void init(const store::IndexCondition_t& cond, const xs_integer& aSkip);
 
   void open();
 

@@ -30,12 +30,13 @@
 #include <zorba/internal/ztd.h>
 #include <zorba/internal/unique_ptr.h>
 
+#include "store/api/item_handle.h"
 #include "util/stl_util.h"
 #include "util/unordered_map.h"
 #include "util/unordered_set.h"
-#include "store/api/item_handle.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
+#include "zorbautils/hashmap.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -439,6 +440,21 @@ template<class T>
 struct size_traits<rchandle<T>,false> {
   static size_t alloc_sizeof( rchandle<T> const &h ) {
     return h.get() ? mem_sizeof( *h ) : 0;
+  }
+};
+
+/**
+ * Specialization for HashMap.
+ */
+template<typename T,typename V,class C>
+struct size_traits<HashMap<T,V,C>,false> {
+  static size_t alloc_sizeof( HashMap<T,V,C> const &m ) {
+    size_t total_size = 0;
+    for ( typename HashMap<T,V,C>::const_iterator
+        i = m.cbegin(); i != m.cend(); ++i ) {
+      total_size += mem_sizeof( i.getKey() ) + mem_sizeof( i.getValue() );
+    }
+    return total_size;
   }
 };
 

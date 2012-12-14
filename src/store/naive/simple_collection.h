@@ -57,7 +57,8 @@ public:
     xs_integer                              theSkip;
 
   public:
-    CollectionIter(SimpleCollection* collection, const xs_integer& aSkip);
+    CollectionIter(SimpleCollection* collection, 
+                   const xs_integer& aSkip);
 
     ~CollectionIter();
 
@@ -65,6 +66,8 @@ public:
     bool next(store::Item_t& result);
     void reset();
     void close();
+  private:
+    void skip();
   };
 
 
@@ -110,7 +113,8 @@ public:
 
   TreeId createTreeId();
 
-  store::Iterator_t getIterator(const xs_integer& aSkip);
+  store::Iterator_t getIterator(const xs_integer& aSkip, 
+                                const zstring& aStart);
 
   void addNode(store::Item* node, xs_integer position = xs_integer(-1));
 

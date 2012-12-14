@@ -36,8 +36,8 @@ public:
   XQuery(zorba::XQuery_t aQuery) : theQuery(aQuery), closed(false) {}
 
   /**
-   * \brief Execute the (updating) query. The query can be executed with this
-   * function only if it is an updating query.
+   * \brief Execute the query. The query can be executed with this function.
+   *  The query only has a result if it's a non-updating query.
    *
    * @throw ZorbaException if an error occurs (e.g. the query is closed or has
    *        not been compiled or is not updating)
@@ -156,6 +156,32 @@ public:
    * @throw ZorbaException if an error occured.
    */
   void getExternalVariables(Iterator& vars) const;
+  
+  /** \brief Execute the query and write the result to the given output stream.
+   *  The query only has a result if it's a non-updating query.
+   *
+   * @param stream The output stream on which the result is written.
+   */
+  void execute( ZorbaIOStream & stream );
+
+  /** \brief Execute the query and write the result to the given output stream.
+   *  The query only has a result if it's a non-updating query.
+   *
+   * @param stream The output stream on which the result is written.
+   * @param serOptions The serialization options for this Query result
+   */
+  void execute( ZorbaIOStream & stream, SerializationOptions & serOptions );
+  
+  /**
+   * \brief Execute the query. The query can be executed with this function.
+   *  The query only has a result if it's a non-updating query.
+   *
+   * @param serOptions The serialization options for this Query result
+   * @throw ZorbaException if an error occurs (e.g. the query is closed or has
+   *        not been compiled or is not updating)
+   */
+  std::string execute( SerializationOptions & serOptions );
+
 }; // class XQuery
 
 #endif

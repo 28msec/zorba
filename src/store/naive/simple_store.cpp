@@ -32,7 +32,7 @@
 #include "diagnostics/diagnostic.h"
 #include <zorba/diagnostic_list.h>
 
-#include "util/uuid.h"
+#include <zorba/util/uuid.h>
 #include "zorbautils/string_util.h"
 
 #ifdef ZORBA_WITH_JSON

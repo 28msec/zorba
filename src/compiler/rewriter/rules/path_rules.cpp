@@ -26,22 +26,22 @@ namespace zorba
 
 RULE_REWRITE_PRE(EliminateExtraneousPathSteps)
 {
-  relpath_expr* re = dynamic_cast<relpath_expr *>(node);
-  if (re != NULL)
+  if (node->get_expr_kind() == relpath_expr_kind)
   {
+    relpath_expr* re = static_cast<relpath_expr *>(node);
     csize numSteps = re->size();
 
-    for (csize i = 0; i < numSteps - 1; i++)
+    for (csize i = 1; i < numSteps - 1; ++i)
     {
-      axis_step_expr* axisStep = dynamic_cast<axis_step_expr*>((*re)[i]);
+      assert((*re)[i]->get_expr_kind() == axis_step_expr_kind);
 
-      if (axisStep != NULL &&
-          axisStep->getAxis() == axis_kind_descendant_or_self &&
+      axis_step_expr* axisStep = static_cast<axis_step_expr*>((*re)[i]);
+
+      if (axisStep->getAxis() == axis_kind_descendant_or_self &&
           axisStep->getTest()->getTestKind() == match_anykind_test)
       {
-        axis_step_expr* nextStep = dynamic_cast<axis_step_expr*>((*re)[i+1]);
-        if (nextStep != NULL &&
-            nextStep->getAxis() == axis_kind_child)
+        axis_step_expr* nextStep = static_cast<axis_step_expr*>((*re)[i+1]);
+        if (nextStep->getAxis() == axis_kind_child)
         {
           nextStep->setAxis(axis_kind_descendant);
           (*re).erase(i);
@@ -53,7 +53,7 @@ RULE_REWRITE_PRE(EliminateExtraneousPathSteps)
 
     if (numSteps == 1)
     {
-      return (*re) [0];
+      return (*re)[0];
     }
   }
 

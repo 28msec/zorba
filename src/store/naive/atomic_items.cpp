@@ -2340,9 +2340,9 @@ bool DateTimeItem::equals(
   {
     return 0 == theValue.compare(&aItem->getDateTimeValue(), timezone);
   }
-  catch (InvalidTimezoneException const&)
+  catch (InvalidTimezoneException const &e)
   {
-    throw XQUERY_EXCEPTION(err::FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
   }
 }
 
@@ -2356,9 +2356,9 @@ long DateTimeItem::compare(
   {
     return theValue.compare(&other->getDateTimeValue(), timezone);
   }
-  catch (InvalidTimezoneException const&)
+  catch (InvalidTimezoneException const &e)
   {
-    throw XQUERY_EXCEPTION(err::FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
   }
 }
 
@@ -3795,6 +3795,7 @@ std::istream& StreamableBase64BinaryItem::getStream()
     std::streambuf * pbuf;
     pbuf = theIstream.rdbuf();
     pbuf->pubseekoff(0, std::ios::beg);
+    theIstream.clear();
   }
   theIsConsumed = true;
   return theIstream;

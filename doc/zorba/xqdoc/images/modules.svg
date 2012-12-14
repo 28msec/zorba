@@ -1286,7 +1286,7 @@
 </g>
 <!-- 40 -->
 <g id="node115" class="node"><title>40</title>
-<a xlink:href="../www.jsoniq.org_errors.html" xlink:title="(Zorba-core) module uri=http://www.jsoniq.org/errors">
+<a xlink:href="../jsoniq.org_errors.html" xlink:title="(Zorba-core) module uri=http://jsoniq.org/errors">
 <ellipse fill="white" stroke="white" cx="5967" cy="-439" rx="31.2965" ry="18"/>
 <text text-anchor="middle" x="5967" y="-435.3" font-family="Times,serif" font-size="14.00" fill="red">errors</text>
 </a>
@@ -1374,7 +1374,7 @@
 </g>
 <!-- 39&#45;&gt;12 -->
 <g id="edge103" class="edge"><title>39-&gt;12</title>
-<a xlink:title="FROM: http://www.jsoniq.org/functions, TO: http://www.zorba-xquery.com/modules/schema">
+<a xlink:title="FROM: http://jsoniq.org/functions, TO: http://www.zorba-xquery.com/modules/schema">
 <path fill="none" stroke="black" d="M1744,-267.807C1744,-248.114 1744,-215.583 1744,-192.39"/>
 <polygon fill="black" stroke="black" points="1747.5,-192.161 1744,-182.161 1740.5,-192.161 1747.5,-192.161"/>
 </a>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -259,6 +259,16 @@ PlanIter_t fn_path_3_0::codegen(
   expr& ann) const
 {
   return new FnPathIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_node_copy::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new NodeCopyIterator(sctx, loc, argv);
 }
 
 void populate_context_nodes(static_context* sctx)
@@ -624,6 +634,18 @@ void populate_context_nodes(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
         FunctionConsts::FN_PATH_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_node_copy,
+        (createQName("http://www.zorba-xquery.com/modules/node","","copy"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
+        FunctionConsts::FN_ZORBA_NODE_COPY_1);
 
   }
 
