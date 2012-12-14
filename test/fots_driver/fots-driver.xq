@@ -372,7 +372,7 @@ declare %ann:sequential function driver:run(
             if($isExcepted)
             then driver:not-run($testCase, $verbose)
             else if(exists(env:check-dependencies($testCase/fots:dependency,
-                                             $FOTSZorbaManifest)))
+                                                  $FOTSZorbaManifest)))
             then driver:not-applicable( $testCase,
                                         $envTestSet,
                                         string-join(distinct-values(env:check-dependencies($testCase/fots:dependency,
@@ -389,7 +389,7 @@ declare %ann:sequential function driver:run(
                               $testSetName,
                               $testSetURI,
                               $verbose,
-                              $expectedFailures)
+                              $expectedFailures/failures/TestSet[@name=$testSetName]/Test[@name=xs:string($testCase/@name)])
             else driver:test( $FOTSZorbaManifest,
                               $testCase,
                               $envTestSet,
@@ -399,7 +399,7 @@ declare %ann:sequential function driver:run(
                               $testSetName,
                               $testSetURI,
                               $verbose,
-                              $expectedFailures)
+                              $expectedFailures/failures/TestSet[@name=$testSetName]/Test[@name=xs:string($testCase/@name)])
         }</fots:test-set>
     }</fots:test-cases>
 };
@@ -497,7 +497,7 @@ declare %private %ann:sequential function driver:xqxq-invoke(
  : @param $testSetName the name of the test set.
  : @param $testSetBaseURI the URI of the test set.
  : @param $verbose if set to TRUE it will also output the actual failures.
- : @param $expectedFailures the ExpectedFailures.xml file.
+ : @param $expectedFailures the Test element from the ExpectedFailures.xml file.
  : @return the result of running the test case depending on $verbose.
  :)
 declare %ann:sequential function driver:test(
@@ -509,7 +509,7 @@ declare %ann:sequential function driver:test(
   $testSetName        as xs:string?,
   $testSetBaseURI     as xs:anyURI,
   $verbose            as xs:boolean,
-  $expectedFailures   as document-node()?
+  $expectedFailure    as element(Test)?
 ) as element(fots:test-case)? {
 (:TODO Cover the "(:%VARDECL%:)"when there are tests in FOTS that use it:)
 try {
@@ -555,7 +555,7 @@ try {
            if(driver:check-pass($result,
                                 $queryName,
                                 $testSetName,
-                                $expectedFailures))
+                                $expectedFailure))
            then driver:pass($case,
                             $result,
                             $xqxqQuery,
@@ -663,7 +663,7 @@ declare %private function driver:check-pass(
   $result           as item()*,
   $testCaseName     as xs:string?,
   $testSetName      as xs:string?,
-  $expectedFailures as document-node()?
+  $expectedFailure  as element(Test)?
 ) as xs:boolean {
 (: if the exact error code was not found, report the test as 'Pass' 
    with an attribute correctError=false :)
@@ -674,9 +674,7 @@ declare %private function driver:check-pass(
       contains(string-join($result,''), "Found error:")))
 
   let $expectedFailure as xs:boolean := 
-    if (exists($expectedFailures) and
-        (exists(($expectedFailures/failures/Test[@testCaseName eq $testCaseName and
-                                                 @testSetName eq $testSetName]))))
+    if (exists($expectedFailure))
     then fn:true()
     else fn:false()
 
