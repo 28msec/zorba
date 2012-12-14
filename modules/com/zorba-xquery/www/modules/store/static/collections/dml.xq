@@ -831,14 +831,15 @@ cdml:delete-last($name as xs:QName, $number as xs:integer)  external;
 
 
 (:~
- : The replace function is an updating function that replaces the first supplied
- : item with a copy of the second supplied item.
+ : The edit function is an updating function that edits the first supplied
+ : item so as to make it look exactly like a copy of the second supplied item,
+ : while retaining its original identity.
  :
- : @param $target The item that must be replaced.
- : @param $content The item that is substituted for $target.
+ : @param $target The target item ,that must be edited.
+ : @param $content The content item, that serves as an edit goal.
  :
  : @return The result of the function is an empty XDM instance and a pending update list
- :         which, once applied, performs the replacement.
+ :         which, once applied, performs the edit.
  :
  : @error zerr:ZDDY0001 if the collection to which $target belongs is not declared.
  : @error zerr:ZDDY0003 if the collection to which $target belongs is not available.
@@ -848,7 +849,8 @@ cdml:delete-last($name as xs:QName, $number as xs:integer)  external;
  : @error zerr:ZDDY0037 if the collection is append-only.
  : @error zerr:ZDDY0038 if the collection is a queue.
  : @error zerr:ZDDY0039 if the $target item is not a root.
- : @error zerr:ZDDY0040 if the target cannot be updated to match the content because of inconsistent kinds.
+ : @error zerr:ZDDY0040 if the target cannot be updated to match the content (for
+ :        example because the target is a node and the content is an object).
  : @error zerr:ZDTY0001 if $content does not match the expected type (as specified
  :        in the collection declaration) according to the rules for SequenceType Matching.
  :
