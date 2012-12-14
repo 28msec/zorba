@@ -509,6 +509,29 @@ public:
 };
 
 
+//static-collections-dml:edit
+class static_collections_dml_edit : public function
+{
+public:
+  static_collections_dml_edit(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  void processPragma(expr*, const std::vector<pragma*>&) const;
+
+  CODEGEN_DECL();
+};
+
+
 //static-collections-dml:truncate
 class static_collections_dml_truncate : public function
 {
