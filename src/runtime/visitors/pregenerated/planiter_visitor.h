@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -309,6 +309,12 @@ namespace zorba{
     class JSONSerializeInternal;
 
 #ifdef ZORBA_WITH_JSON
+    class JSONDecodeFromRoundtripIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
+    class JSONEncodeForRoundtripIterator;
+#endif
+#ifdef ZORBA_WITH_JSON
     class JSONParseIterator;
 #endif
 #ifdef ZORBA_WITH_JSON
@@ -332,6 +338,8 @@ namespace zorba{
 #ifdef ZORBA_WITH_JSON
     class JSONArrayFlattenIterator;
 #endif
+    class JSONDocIterator;
+
 #ifdef ZORBA_WITH_JSON
     class JSONItemAccessorIterator;
 #endif
@@ -720,8 +728,6 @@ namespace zorba{
     class StringSplitIterator;
 
     class DecodeURIIterator;
-
-    class XQDocIterator;
 
     class XQDocContentIterator;
 
@@ -1145,6 +1151,14 @@ public:
     virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
 
 #ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONDecodeFromRoundtripIterator& ) = 0;
+    virtual void endVisit   ( const JSONDecodeFromRoundtripIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
+    virtual void beginVisit ( const JSONEncodeForRoundtripIterator& ) = 0;
+    virtual void endVisit   ( const JSONEncodeForRoundtripIterator& ) = 0;
+#endif
+#ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONParseIterator& ) = 0;
     virtual void endVisit   ( const JSONParseIterator& ) = 0;
 #endif
@@ -1176,6 +1190,9 @@ public:
     virtual void beginVisit ( const JSONArrayFlattenIterator& ) = 0;
     virtual void endVisit   ( const JSONArrayFlattenIterator& ) = 0;
 #endif
+    virtual void beginVisit ( const JSONDocIterator& ) = 0;
+    virtual void endVisit   ( const JSONDocIterator& ) = 0;
+
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONItemAccessorIterator& ) = 0;
     virtual void endVisit   ( const JSONItemAccessorIterator& ) = 0;
@@ -1753,9 +1770,6 @@ public:
 
     virtual void beginVisit ( const DecodeURIIterator& ) = 0;
     virtual void endVisit   ( const DecodeURIIterator& ) = 0;
-
-    virtual void beginVisit ( const XQDocIterator& ) = 0;
-    virtual void endVisit   ( const XQDocIterator& ) = 0;
 
     virtual void beginVisit ( const XQDocContentIterator& ) = 0;
     virtual void endVisit   ( const XQDocContentIterator& ) = 0;

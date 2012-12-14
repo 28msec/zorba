@@ -14,4 +14,5 @@
  * limitations under the License.
  */
 
+%include "std_string.i"
 %include ../zorba_api.i

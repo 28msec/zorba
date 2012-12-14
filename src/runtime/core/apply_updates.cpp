@@ -33,11 +33,13 @@
 
 #include "system/globalenv.h"
 
+#include "util/fs_util.h"
 #include "zorbautils/fatal.h"
 
 #include "common/shared_types.h"
 
 #include "diagnostics/util_macros.h"
+#include "zorba/internal/system_diagnostic.h"
 
 
 namespace zorba 
@@ -199,7 +201,7 @@ void apply_updates(
     // Apply updates
     pul->setValidator(&validator);
     pul->setICChecker(&icChecker);
-    bool inherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns);
+    bool inherit = sctx->inherit_ns();
     pul->applyUpdates(inherit);
 
     // Rebuild the indices that must be rebuilt from scratch
@@ -232,38 +234,16 @@ void apply_updates(
   }
   catch (XQueryException& e)
   {
-    if (e.has_source() &&
-        (e.diagnostic() == err::XUDY0021 ||
-         e.diagnostic() == err::XUDY0015 ||
-         e.diagnostic() == err::XUDY0016 ||
-         e.diagnostic() == err::XUDY0017 ||
-         e.diagnostic() == err::XUDY0014)) 
-    {
-      XQueryException lNewE = 
-      XQUERY_EXCEPTION(err::XUDY0021, ERROR_PARAMS(ZED(XUDY0021_AppliedAt), loc));
-
-      QueryLoc lLoc;
-      lLoc.setFilename(e.source_uri());
-      lLoc.setLineBegin(e.source_line());
-      lLoc.setColumnBegin(e.source_column());
-      set_source(lNewE, lLoc);
-      lNewE.set_diagnostic(e.diagnostic());
-
-      throw lNewE;
-    }
+    if ( e.has_source() )
+      set_applied( e, loc );
     else
-    {
-      // exception raised by the store doesn't have a store location
-      // hence, we add the location of the apply expression
-      set_source(e, loc);
-      throw;
-    }
+      set_source( e, loc );
+    throw;
   }
 }
 
 
 UNARY_ACCEPT(ApplyIterator);
-
 
 
 } // namespace zorba

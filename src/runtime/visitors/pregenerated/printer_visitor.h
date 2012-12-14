@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -473,6 +473,16 @@ namespace zorba {
     void endVisit  ( const JSONSerializeInternal& );
 
 #ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONDecodeFromRoundtripIterator& );
+    void endVisit  ( const JSONDecodeFromRoundtripIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONEncodeForRoundtripIterator& );
+    void endVisit  ( const JSONEncodeForRoundtripIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONParseIterator& );
     void endVisit  ( const JSONParseIterator& );
 #endif
@@ -511,6 +521,9 @@ namespace zorba {
     void beginVisit( const JSONArrayFlattenIterator& );
     void endVisit  ( const JSONArrayFlattenIterator& );
 #endif
+
+    void beginVisit( const JSONDocIterator& );
+    void endVisit  ( const JSONDocIterator& );
 
 #ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONItemAccessorIterator& );
@@ -1100,9 +1113,6 @@ namespace zorba {
 
     void beginVisit( const DecodeURIIterator& );
     void endVisit  ( const DecodeURIIterator& );
-
-    void beginVisit( const XQDocIterator& );
-    void endVisit  ( const XQDocIterator& );
 
     void beginVisit( const XQDocContentIterator& );
     void endVisit  ( const XQDocContentIterator& );

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,116 @@
 #include "runtime/base/binarybase.h"
 #include "runtime/base/noarybase.h"
 #include "runtime/base/narybase.h"
+#include <context/uri_resolver.h>
+#include "runtime/json/json_loader.h"
 
 
 namespace zorba {
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ * Author: 
+ */
+class JSONDecodeFromRoundtripIteratorState : public PlanIteratorState
+{
+public:
+  zstring thePrefix; //
+
+  JSONDecodeFromRoundtripIteratorState();
+
+  ~JSONDecodeFromRoundtripIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONDecodeFromRoundtripIterator : public NaryBaseIterator<JSONDecodeFromRoundtripIterator, JSONDecodeFromRoundtripIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONDecodeFromRoundtripIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONDecodeFromRoundtripIterator,
+    NaryBaseIterator<JSONDecodeFromRoundtripIterator, JSONDecodeFromRoundtripIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONDecodeFromRoundtripIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONDecodeFromRoundtripIterator, JSONDecodeFromRoundtripIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONDecodeFromRoundtripIterator();
+
+public:
+  static void extractChildOfKind(const store::Item_t& aParent, const store::NodeKind& aKind, store::Item_t& aChild);
+  bool decodeNode(const store::Item_t& aSerializedNode, const store::NodeKind& aKind, store::Item_t& aResult) const;
+  bool decodeXDM(const store::Item_t& anObj, store::Item_t& aResult, JSONDecodeFromRoundtripIteratorState* aState) const;
+  bool decodeObject(const store::Item_t& anObj, store::Item_t& aResult, JSONDecodeFromRoundtripIteratorState* aState) const;
+  bool decodeArray(const store::Item_t& anArray, store::Item_t& aResult, JSONDecodeFromRoundtripIteratorState* aState) const;
+  bool decodeItem(const store::Item_t& anItem, store::Item_t& aResult, JSONDecodeFromRoundtripIteratorState* aState) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
+
+#ifdef ZORBA_WITH_JSON
+/**
+ * 
+ * Author: 
+ */
+class JSONEncodeForRoundtripIteratorState : public PlanIteratorState
+{
+public:
+  zstring thePrefix; //
+  store::Item_t theSerParams; //
+  XQueryDiagnostics* theDiag; //
+
+  JSONEncodeForRoundtripIteratorState();
+
+  ~JSONEncodeForRoundtripIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONEncodeForRoundtripIterator : public NaryBaseIterator<JSONEncodeForRoundtripIterator, JSONEncodeForRoundtripIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONEncodeForRoundtripIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONEncodeForRoundtripIterator,
+    NaryBaseIterator<JSONEncodeForRoundtripIterator, JSONEncodeForRoundtripIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONEncodeForRoundtripIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONEncodeForRoundtripIterator, JSONEncodeForRoundtripIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONEncodeForRoundtripIterator();
+
+public:
+  bool encodeObject(const store::Item_t& anObj, store::Item_t& aResult, JSONEncodeForRoundtripIteratorState* aState) const;
+  bool encodeArray(const store::Item_t& anArray, store::Item_t& aResult, JSONEncodeForRoundtripIteratorState* aState) const;
+  bool encodeAtomic(const store::Item_t& aValue, store::Item_t& aResult, JSONEncodeForRoundtripIteratorState* aState) const;
+  bool encodeNode(const store::Item_t& aNode, store::Item_t& aResult, JSONEncodeForRoundtripIteratorState* aState) const;
+  bool encodeItem(const store::Item_t& anItem, store::Item_t& aResult, JSONEncodeForRoundtripIteratorState* aState) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+#endif
 
 #ifdef ZORBA_WITH_JSON
 /**
@@ -45,6 +152,7 @@ public:
   store::Item_t theInput; //
   std::istream* theInputStream; //
   bool theGotOne; //
+  json::loader* loader_; //
 
   JSONParseIteratorState();
 
@@ -79,7 +187,7 @@ public:
   virtual ~JSONParseIterator();
 
 public:
-  void processOptions(const store::Item_t& aOptions, bool& aAllowMultiple) const;
+  bool processBooleanOption(const store::Item_t& options, char const* option_name, bool* option_value) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -351,6 +459,52 @@ public:
 };
 
 #endif
+
+/**
+ * jn:json-doc
+ * Author: Zorba Team
+ */
+class JSONDocIteratorState : public PlanIteratorState
+{
+public:
+  std::auto_ptr<internal::Resource> theResource; //
+  std::istream* theStream; //
+  bool theGotOne; //
+  json::loader* loader_; //
+
+  JSONDocIteratorState();
+
+  ~JSONDocIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONDocIterator : public NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONDocIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONDocIterator,
+    NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONDocIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONDocIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
 
 #ifdef ZORBA_WITH_JSON
 /**

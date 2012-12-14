@@ -30,6 +30,7 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/api/compiler_api.h"
 #include "compiler/expression/var_expr.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
@@ -166,6 +167,8 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     // Compile
     state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId);
 
+    planState.theCompilerCB->theNextVisitId = evalCCB->theNextVisitId + 1;
+
     // Set the values for the (explicit) external vars of the eval query
     setExternalVariables(evalCCB, importSctx, evalSctx, evalDctx);
 
@@ -276,6 +279,7 @@ void EvalIterator::importOuterEnv(
   for (csize i = 0; i < numOuterVars; ++i)
   {
     var_expr* ve = evalCCB->theEM->create_var_expr(importSctx,
+                                                   NULL,
                                                    loc,
                                                    var_expr::prolog_var,
                                                    theOuterVarNames[i].getp());

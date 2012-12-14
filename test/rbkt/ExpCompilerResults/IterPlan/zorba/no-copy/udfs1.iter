@@ -5,7 +5,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="d1">
+  <CtxVarDeclareIterator varid="4" varname="d1">
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,a)"/>
       <ElementIterator>
@@ -16,7 +16,7 @@ Iterator tree for main query:
       </ElementIterator>
     </ElementIterator>
   </CtxVarDeclareIterator>
-  <CtxVarDeclareIterator varid="3" varname="d2">
+  <CtxVarDeclareIterator varid="5" varname="d2">
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,a)"/>
       <ElementIterator>
@@ -30,12 +30,12 @@ Iterator tree for main query:
   <FnConcatIterator>
     <UDFunctionCallIterator>
       <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
-        <CtxVarIterator varid="2" varname="d1" varkind="local"/>
+        <CtxVarIterator varid="4" varname="d1" varkind="local"/>
       </TreatIterator>
     </UDFunctionCallIterator>
     <UDFunctionCallIterator>
       <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
-        <CtxVarIterator varid="3" varname="d2" varkind="local"/>
+        <CtxVarIterator varid="5" varname="d2" varkind="local"/>
       </TreatIterator>
     </UDFunctionCallIterator>
   </FnConcatIterator>

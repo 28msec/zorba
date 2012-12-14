@@ -42,7 +42,8 @@ protected:
       "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo",
       "--timeout", "--uri-path", "--lib-path", "--module-path", "--classpath",
       "--option", "--trailing-nl", "--stop-words", "--thesaurus",
-      "--compile-plan", "--execute-plan --serialize-plan", NULL };
+      "--compile-plan", "--execute-plan", "--serialize-plan",
+      "--disable-http-resolution", NULL };
     return result;
   }
 
@@ -443,6 +444,11 @@ public:
       {
         theLoadPlan = true;
       }
+      else if (strcmp (*argv, "--disable-http-resolution") == 0)
+      {
+        init_val ("{http://www.zorba-xquery.com/options/features}disable=http-uri-resolution",
+                  theOption, 0);
+      }
       else if (strcmp (*argv, "--") == 0)
       {
         copy_args (++argv);
@@ -508,6 +514,7 @@ public:
         "--serialize-plan, -s\nSerialize and then load the query execution plan.\n\n"
         "--compile-plan,\nDo not execute the query; just compile it and save the execution plan in the file specified with the -o option.\n\n"
         "--execute-plan\nDo not compile the query; instead load the execution plan from the file specified by the -f -q options, and execute the loaded plan.\n\n"
+        "--disable-http-resolution\nDo not use HTTP to resolve URIs\n\n"
         ;
   }
 

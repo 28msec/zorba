@@ -58,6 +58,7 @@
 #include "runtime/scripting/scripting.h"
 #include "runtime/json/json_constructors.h"
 #include "runtime/collections/collections_impl.h"
+#include "runtime/collections/collections.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -1475,6 +1476,40 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   PRINTER_INDEX_PROBE_VISITOR_DEFINITION(ProbeIndexRangeValueIterator);
 
 #undef PRINTER_INDEX_PROBE_VISITOR_DEFINITION
+
+#define PRINTER_INSERT_NODES_VISITOR_DEFINITION(class)               \
+  void PrinterVisitor::beginVisit ( const class& a )                 \
+  {                                                                  \
+    thePrinter.startBeginVisit(#class, ++theId);                     \
+    if (a.isDynamic())                                               \
+    {                                                                \
+      thePrinter.addAttribute("is-dynamic", "true");                 \
+    }                                                                \
+    if (a.needToCopy())                                              \
+    {                                                                \
+      thePrinter.addAttribute("need-to-copy", "true");               \
+    }                                                                \
+    printCommons(  &a, theId );                                      \
+    thePrinter.endBeginVisit( theId);                                \
+  }                                                                  \
+  void PrinterVisitor::endVisit ( const class& )                     \
+  {                                                                  \
+    thePrinter.startEndVisit();                                      \
+    thePrinter.endEndVisit();                                        \
+  }
+
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesFirstIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesLastIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesBeforeIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesAfterIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesFirstIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesLastIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesBeforeIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesAfterIterator);
+
+#undef PRINTER_INSERT_NODES_VISITOR_DEFINITION
 
   PRINTER_VISITOR_DEFINITION(DynamicFnCallIterator);
 

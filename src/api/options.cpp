@@ -38,7 +38,7 @@ void Zorba_CompilerHints_default(Zorba_CompilerHints_t* aHints)
 Zorba_SerializerOptions::Zorba_SerializerOptions()
   :
 #ifdef ZORBA_WITH_JSON
-  ser_method(ZORBA_SERIALIZATION_METHOD_JSONIQ),
+  ser_method(ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID),
 #else
   ser_method(ZORBA_SERIALIZATION_METHOD_XML),
 #endif
@@ -53,10 +53,8 @@ Zorba_SerializerOptions::Zorba_SerializerOptions()
   encoding(ZORBA_ENCODING_UTF8)
 #ifdef ZORBA_WITH_JSON
   ,
-    jsoniq_extensions(JSONIQ_EXTENSIONS_NO),
-    jsoniq_multiple_items(JSONIQ_MULTIPLE_ITEMS_NO),
-    jsoniq_xdm_method(ZORBA_SERIALIZATION_METHOD_XML),
-    jsoniq_allow_mixed_xdm_jdm(JSONIQ_ALLOW_MIXED_XDM_JDM_NO)
+    jsoniq_multiple_items(JSONIQ_MULTIPLE_ITEMS_YES),
+    jsoniq_xdm_method(ZORBA_SERIALIZATION_METHOD_XML)
 #endif /* ZORBA_WITH_JSON */
 {
 }
@@ -70,7 +68,7 @@ Zorba_serialization_method_t convertMethodString(const char* value, const char* 
   else if (strcmp(value, "binary") == 0) return ZORBA_SERIALIZATION_METHOD_BINARY;
 #ifdef ZORBA_WITH_JSON
   else if (strcmp(value, "json") == 0) return ZORBA_SERIALIZATION_METHOD_JSON;
-  else if (strcmp(value, "jsoniq") == 0) return ZORBA_SERIALIZATION_METHOD_JSONIQ;
+  else if (strcmp(value, "json-xml-hybrid") == 0) return ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
 #endif
   else
   {
@@ -149,28 +147,16 @@ void Zorba_SerializerOptions::SetSerializerOption(
     version = value;
   }
 #ifdef ZORBA_WITH_JSON
-  else if (strcmp(parameter, "jsoniq-extensions") == 0)
-  {
-    if (strcmp(value, "yes") == 0) jsoniq_extensions = JSONIQ_EXTENSIONS_YES;
-    else if (strcmp(value, "no") == 0) jsoniq_extensions = JSONIQ_EXTENSIONS_NO;
-  }
   else if (strcmp(parameter, "jsoniq-multiple-items") == 0)
   {
     if (strcmp(value, "no") == 0)
       jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_NO;
-    else if (strcmp(value, "array") == 0)
-      jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_ARRAY;
-    else if (strcmp(value, "appended") == 0)
-      jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_APPENDED;
+    else if (strcmp(value, "yes") == 0)
+      jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_YES;
   }
   else if (strcmp(parameter, "jsoniq-xdm-node-output-method") == 0)
   {
     jsoniq_xdm_method = convertMethodString(value, parameter);
-  }
-  else if (strcmp(parameter, "jsoniq-allow-mixed-xdm-jdm") == 0)
-  {
-    if (strcmp(value, "yes") == 0) jsoniq_allow_mixed_xdm_jdm = JSONIQ_ALLOW_MIXED_XDM_JDM_YES;
-    else if (strcmp(value, "no") == 0) jsoniq_allow_mixed_xdm_jdm = JSONIQ_ALLOW_MIXED_XDM_JDM_NO;
   }
 #endif /* ZORBA_WITH_JSON */
 }

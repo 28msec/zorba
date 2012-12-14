@@ -21,6 +21,65 @@ namespace zorba
 {
 
 
+enum PromoteErrorKind
+{
+  PROMOTE_FUNC_RETURN,
+  PROMOTE_FUNC_PARAM,
+  PROMOTE_TYPE_PROMOTION,
+  PROMOTE_JSONIQ_ARRAY_SELECTOR,
+  PROMOTE_JSONIQ_OBJECT_SELECTOR,
+  PROMOTE_JSONIQ_SELECTOR
+};
+
+
+enum TreatErrorKind
+{
+  TREAT_FUNC_RETURN,
+  TREAT_FUNC_PARAM,
+  TREAT_TYPE_MATCH,
+  TREAT_EXPR,
+  TREAT_INDEX_DOMAIN,
+  TREAT_INDEX_KEY,
+  TREAT_PATH_STEP,
+  TREAT_PATH_DOT,
+  TREAT_MULTI_VALUED_GROUPING_KEY,
+  TREAT_JSONIQ_VALUE,
+  TREAT_JSONIQ_UPDATE_TARGET,
+  TREAT_JSONIQ_OBJECT_UPDATE_TARGET,
+  TREAT_JSONIQ_OBJECT_UPDATE_CONTENT,
+  TREAT_JSONIQ_ARRAY_UPDATE_TARGET,
+  TREAT_JSONIQ_OBJECT_UPDATE_VALUE
+};
+
+
+enum WindowKind
+{
+  tumbling_window,
+  sliding_window
+};
+
+
+enum TextConstructorType
+{
+  text_constructor,
+  comment_constructor
+};
+
+
+enum FlowCtlAction
+{
+  FLOW_BREAK,
+  FLOW_CONTINUE
+};
+
+
+enum DocOrderMode
+{
+  doc_ordered,
+  doc_unordered
+};
+
+
 enum axis_kind_t
 {
   axis_kind_self = 0,

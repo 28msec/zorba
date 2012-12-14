@@ -801,9 +801,9 @@ NodeCopyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lItem;
   store::CopyMode lCopyMode;
   lCopyMode.set(true, 
-    theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-    theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-    theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+                theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+                theSctx->preserve_ns(),
+                theSctx->inherit_ns());
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

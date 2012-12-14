@@ -5,7 +5,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="g">
+  <CtxVarDeclareIterator varid="4" varname="g">
     <SingletonIterator value="xs:integer(-4)"/>
   </CtxVarDeclareIterator>
   <flwor::FLWORIterator>

@@ -21,6 +21,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/expr_manager.h"
 
 #include "functions/signature.h"
 #include "functions/udf.h"
@@ -126,7 +127,7 @@ const std::vector<PlanIter_t>& FunctionItem::getVariables() const
 
 PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args) const
 {
-  expr* dummy = theCCB->theEM->create_function_item_expr(theSctx, theLoc);
+  expr* dummy = theCCB->theEM->create_function_item_expr(theSctx, NULL, theLoc);
 
   PlanIter_t udfCallIterator = theFunction->codegen(theCCB,
                                                     theSctx,

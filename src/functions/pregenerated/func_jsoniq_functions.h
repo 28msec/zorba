@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,46 @@ namespace zorba {
 void populate_context_jsoniq_functions(static_context* sctx);
 
 
+#ifdef ZORBA_WITH_JSON
+
+//fn-jsoniq:decode-from-roundtrip
+class fn_jsoniq_decode_from_roundtrip : public function
+{
+public:
+  fn_jsoniq_decode_from_roundtrip(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
+//fn-jsoniq:encode-for-roundtrip
+class fn_jsoniq_encode_for_roundtrip : public function
+{
+public:
+  fn_jsoniq_encode_for_roundtrip(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+#endif
 #ifdef ZORBA_WITH_JSON
 
 //fn-jsoniq:parse-json
@@ -196,6 +236,25 @@ public:
   CODEGEN_DECL();
 };
 #endif
+
+
+//fn-jsoniq:json-doc
+class fn_jsoniq_json_doc : public function
+{
+public:
+  fn_jsoniq_json_doc(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool isSource() const { return true; }
+
+  CODEGEN_DECL();
+};
 #ifdef ZORBA_WITH_JSON
 
 //op-zorba:json-item-accessor

@@ -232,6 +232,106 @@ inline void set_source( ZorbaException &to, ZorbaException const &from,
   }
 }
 
+////////// XQuery diagnostic "applied at" location ////////////////////////////
+
+/**
+ * Sets the XQuery source location of the given ZorbaException but only if it's
+ * actually an XQueryException.  If it's actually a ZorbaException, constructs
+ * a new XQueryException (copying the information from the ZorbaException) and
+ * throws it.
+ *
+ * @param ze The ZorbaException to set the location of.
+ * @param file The XQuery file name.
+ * @param line The line number.
+ * @param col The column number.
+ * @param line_end The end line number.
+ * @param col_end The end column number.
+ * @param overwrite If \c false, sets the location only if the exception
+ * doesn't already have one; if \c true, always sets the location even if the
+ * exception already has one.
+ */
+void set_applied( ZorbaException &ze, char const *file,
+                  XQueryException::line_type line,
+                  XQueryException::column_type col,
+                  XQueryException::line_type line_end,
+                  XQueryException::column_type col_end,
+                  bool overwrite = true );
+
+/**
+ * Sets the XQuery source location of the given ZorbaException but only if it's
+ * actually an XQueryException.
+ *
+ * @tparam StringType The \a file string type.
+ * @param ze The ZorbaException to set the location of.
+ * @param file The XQuery file name.
+ * @param line The line number.
+ * @param col The column number.
+ * @param line_end The end line number.
+ * @param col_end The end column number.
+ * @param overwrite If \c false, sets the location only if the exception
+ * doesn't already have one; if \c true, always sets the location even if the
+ * exception already has one.
+ */
+template<class StringType> inline
+void set_applied( ZorbaException &ze, StringType const &file,
+                 XQueryException::line_type line,
+                 XQueryException::column_type col,
+                 XQueryException::line_type line_end,
+                 XQueryException::column_type col_end,
+                 bool overwrite = true ) {
+  set_applied( ze, file.c_str(), line, col, line_end, col_end, overwrite );
+}
+
+/**
+ * Sets the XQuery source location of the given ZorbaException but only if it's
+ * actually an XQueryException.
+ *
+ * @param ze The ZorbaException to set the location of.
+ * @param loc The query location.
+ * @param overwrite If \c false, sets the location only if the exception
+ * doesn't already have one; if \c true, always sets the location even if the
+ * exception already has one.
+ */
+inline void set_applied( ZorbaException &ze, QueryLoc const &loc,
+                        bool overwrite = true ) {
+  set_applied(
+    ze,
+    loc.getFilename(),
+    loc.getLineBegin(),
+    loc.getColumnBegin(),
+    loc.getLineEnd(),
+    loc.getColumnEnd(),
+    overwrite
+  );
+}
+
+/**
+ * Sets the XQuery source location of the given ZorbaException but only if it's
+ * actually an XQueryException.
+ *
+ * @param to The ZorbaException to set the location of.
+ * @param from The ZorbaException to get the location from but only if it's
+ * actually an XQueryException.
+ * @param overwrite If \c false, sets the location only if the exception
+ * doesn't already have one; if \c true, always sets the location even if the
+ * exception already has one.
+ */
+inline void set_applied( ZorbaException &to, ZorbaException const &from,
+                        bool overwrite = true ) {
+  if ( XQueryException const *const xe =
+        dynamic_cast<XQueryException const*>( &from ) ) {
+    set_applied(
+      to,
+      xe->source_uri(),
+      xe->source_line(),
+      xe->source_column(),
+      xe->source_line_end(),
+      xe->source_column_end(),
+      overwrite
+    );
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba

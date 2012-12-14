@@ -41,9 +41,7 @@ bool op_zorba_json_array_insert::mustCopyInputNodes(expr* fo, csize producer) co
 {
   static_context* sctx = fo->get_sctx();
 
-  if (producer == 2 &&
-      (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns ||
-       sctx->construction_mode() != StaticContextConsts::cons_preserve))
+  if (producer == 2 && sctx->preserve_ns() && sctx->inherit_ns())
   {
     return true;
   }
@@ -57,8 +55,7 @@ bool op_zorba_json_array_insert::mustCopyInputNodes(expr* fo, csize producer) co
 ********************************************************************************/
 bool op_zorba_json_object_insert::mustCopyInputNodes(expr* fo, csize producer) const
 {
-  if (producer == 2 &&
-      fo->get_sctx()->preserve_mode() != StaticContextConsts::no_preserve_ns)
+  if (producer == 2 && fo->get_sctx()->preserve_ns() && fo->get_sctx()->inherit_ns())
   {
     return true;
   }
@@ -74,9 +71,7 @@ bool op_zorba_json_replace_value::mustCopyInputNodes(expr* fo, csize producer) c
 {
   static_context* sctx = fo->get_sctx();
 
-  if (producer == 2 &&
-      (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns ||
-       sctx->construction_mode() != StaticContextConsts::cons_preserve))
+  if (producer == 2 && sctx->preserve_ns() && sctx->inherit_ns())
   {
     return true;
   }
@@ -106,9 +101,7 @@ bool op_zorba_json_array_append::mustCopyInputNodes(expr* fo, csize producer) co
 {
   static_context* sctx = fo->get_sctx();
 
-  if (producer == 2 &&
-      (sctx->preserve_mode() != StaticContextConsts::no_preserve_ns ||
-       sctx->construction_mode() != StaticContextConsts::cons_preserve))
+  if (producer == 2 && sctx->preserve_ns() && sctx->inherit_ns())
   {
     return true;
   }
@@ -175,7 +168,7 @@ PlanIter_t jn_object::codegen(
 void populate_context_jsoniq_functions_impl(static_context* sctx)
 {
   DECL(sctx, jn_object,
-       (createQName("http://www.jsoniq.org/functions", "", "object"),
+       (createQName("http://jsoniq.org/functions", "", "object"),
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR,
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE));
 }
