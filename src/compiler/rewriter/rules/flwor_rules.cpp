@@ -1660,7 +1660,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
             if (nestedClauseKind == flwor_clause::for_clause)
             {
               xqtref_t nestedDomainType =
-                static_cast<for_clause*>(nestedClause)->get_expr()->get_return_type();
+              static_cast<for_clause*>(nestedClause)->get_expr()->get_return_type();
               
               if (nestedDomainType->get_quantifier() != TypeConstants::QUANT_ONE)
               {

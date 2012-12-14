@@ -17,6 +17,7 @@
 
 #include "compiler/rewriter/framework/rule_driver.h"
 #include "compiler/rewriter/rules/ruleset.h"
+#include "compiler/rewriter/rules/fold_rules.h"
 #include "compiler/rewriter/rules/index_matching_rule.h"
 #include "compiler/rewriter/rewriters/common_rewriter.h"
 #include "compiler/rewriter/rewriters/default_optimizer.h"
@@ -36,21 +37,6 @@
 
 namespace zorba
 {
-
-class FoldRules : public RuleMajorDriver
-{
-public:
-  FoldRules()
-  {
-    ADD_RULE(MarkExprs);
-    ADD_RULE(MarkFreeVars);
-    ADD_RULE(FoldConst);
-    ADD_RULE(PartialEval);
-    ADD_RULE(RefactorPredFLWOR);
-    ADD_RULE(EliminateUnusedLetVars);
-    ADD_RULE(MergeFLWOR);
-  }
-};
 
 
 DefaultOptimizer::DefaultOptimizer()

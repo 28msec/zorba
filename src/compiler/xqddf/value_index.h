@@ -375,11 +375,11 @@ public:
 
 private:
   void analyzeExprInternal(
-        expr* e,
-        std::vector<store::Item*>& sourceNames,
-        std::vector<expr*>& sourceExprs,
-        std::vector<var_expr*>& varExprs,
-        expr* dotVar);
+      expr* e,
+      std::vector<store::Item*>& sourceNames,
+      std::vector<expr*>& sourceExprs,
+      std::vector<var_expr*>& varExprs,
+      expr* dotVar);
 };
 
 
