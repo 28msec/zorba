@@ -15,6 +15,7 @@
  */
 
 #include "stdafx.h"
+
 #include "diagnostics/assert.h"
 
 #include "ascii_util.h"
@@ -23,7 +24,6 @@
 #include "utf8_util.h"
 
 #define DEBUG_JSON_PARSER 0
-
 #if DEBUG_JSON_PARSER
 # include "indent.h"
 #endif /* DEBUG_JSON_PARSER */
@@ -79,7 +79,10 @@ char const* exception::what() const throw() {
 }
 
 illegal_character::illegal_character( location const &loc, char c ) :
-  exception( loc, BUILD_STRING( '\'', c, "': illegal character" ) ),
+  exception(
+    loc,
+    BUILD_STRING( '\'', ascii::printable_char( c ), "': illegal character" )
+  ),
   c_( c )
 {
 }
@@ -100,7 +103,12 @@ illegal_codepoint::~illegal_codepoint() throw() {
 }
 
 illegal_escape::illegal_escape( location const &loc, char c ) :
-  exception( loc, BUILD_STRING( "\"\\", c, "\": illegal character escape" ) ),
+  exception(
+    loc,
+    BUILD_STRING(
+      "\"\\", ascii::printable_char( c ), "\": illegal character escape"
+    )
+  ),
   esc_( c )
 {
 }
@@ -148,9 +156,7 @@ unterminated_string::~unterminated_string() throw() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-token::token() :
-  type_( none )
-{
+token::token() : type_( none ) {
 }
 
 ostream& operator<<( ostream &o, token::type tt ) {
@@ -556,7 +562,20 @@ void parser::require_token_debug( int line, token::type tt, token *t ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-parser::parser( istream &in ) : lexer_( in ) {
+parser::parser( std::istream &in, bool allow_multiple ) :
+  allow_multiple_( allow_multiple ),
+  lexer_( in )
+{
+  init();
+}
+
+void parser::clear() {
+  peeked_token_.clear();
+  ztd::clear_stack( state_stack_ );
+  init();
+}
+
+void parser::init() {
 #if DEBUG_JSON_PARSER
   get_indent( cout ) = 0;
 #endif /* DEBUG_JSON_PARSER */
@@ -601,7 +620,7 @@ bool parser::next( token *t ) {
     switch ( state_ ) {
 
       // <JSON> ::= <Array> | <Object>
-      case J0:  PUSH_STATE( J1 );
+      case J0:  PUSH_STATE( allow_multiple_ ? J0 : J1 );
                 switch ( PEEK_TOKEN() ) {
                   case token::begin_array : GOTO_STATE( A0 );
                   case token::begin_object: GOTO_STATE( O0 );

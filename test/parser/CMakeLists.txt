@@ -15,12 +15,12 @@
 CONFIGURE_FILE(parsertestdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/parsertestdriverconfig.h)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-ZORBA_GENERATE_EXE("parsertestdriver" "parsertestdriver.cpp" "" "" "")
+#ZORBA_GENERATE_EXE("parsertestdriver" "parsertestdriver.cpp" "" "" "")
 
 # collect all queries (suffix .xq) in all subdirectories of the Queries dir
-FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)
+#FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)
 
-MESSAGE(STATUS "Adding parser tests for CTest")
+#MESSAGE(STATUS "Adding parser tests for CTest")
 
 FOREACH(TESTFILE ${TESTFILES})
   STRING(LENGTH ${TESTFILE} TESTFILELENGTH)
