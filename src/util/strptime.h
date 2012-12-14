@@ -79,8 +79,8 @@ inline void set_gmtoff( ztm &tm, long gmtoff ) {
  * @param buf The buffer to parse.
  * @param fmt The format string containing zero or more conversion
  * specifications and ordinary characters.  All ordinary characters are matched
- * exactly with the buffer; all white space characters string match any amount
- * of white space in the buffer.
+ * exactly with the buffer; all whitespace characters match any amount of
+ * whitespace in the buffer.
  * @param tm The tm structure to fill in.
  * @return Returns a pointer to the first character in \a buf past the last
  * character parsed.
@@ -89,6 +89,22 @@ inline void set_gmtoff( ztm &tm, long gmtoff ) {
  */
 char const* strptime( char const *buf, char const *fmt, ztm *tm );
 
+/**
+ * Parses the string in the buffer according to the given format and fills in
+ * the given tm structure.
+ *
+ * @tparam BufferType The buffer string type.
+ * @param buf The buffer to parse.
+ * @param fmt The format string containing zero or more conversion
+ * specifications and ordinary characters.  All ordinary characters are matched
+ * exactly with the buffer; all whitespace characters match any amount of
+ * whitespace in the buffer.
+ * @param tm The tm structure to fill in.
+ * @return Returns a pointer to the first character in \a buf past the last
+ * character parsed.
+ * @throws invalid_argument if \a fmt contains an invalid character following
+ * \c % or if the value for a conversion specification is invalid.
+ */
 template<class BufferType> inline
 typename std::enable_if<
   ztd::has_c_str<BufferType,char const* (BufferType::*)() const>::value,
@@ -98,6 +114,23 @@ strptime( BufferType const &buf, char const *fmt, ztm *tm ) {
   return ztd::strptime( buf.c_str(), fmt, tm );
 }
 
+/**
+ * Parses the string in the buffer according to the given format and fills in
+ * the given tm structure.
+ *
+ * @tparam BufferType The buffer string type.
+ * @tparam FormatType The format string type.
+ * @param buf The buffer to parse.
+ * @param fmt The format string containing zero or more conversion
+ * specifications and ordinary characters.  All ordinary characters are matched
+ * exactly with the buffer; all whitespace characters match any amount of
+ * whitespace in the buffer.
+ * @param tm The tm structure to fill in.
+ * @return Returns a pointer to the first character in \a buf past the last
+ * character parsed.
+ * @throws invalid_argument if \a fmt contains an invalid character following
+ * \c % or if the value for a conversion specification is invalid.
+ */
 template<class BufferType,class FormatType> inline
 typename std::enable_if<
   ztd::has_c_str<BufferType,char const* (BufferType::*)() const>::value &&
