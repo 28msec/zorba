@@ -37,6 +37,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1021492 (while computeing the "sources" of a prolog var, skip
     any var-setting exprs that appear in non-used (and non-optimized) functions).
   * Fixed bug #1070551 (zerr:ZOSE0003 stream read failure)
+  * Fixed bug #992304 (Compiling library modules could load data from
+	wrong source)
 
 
 version 2.7
