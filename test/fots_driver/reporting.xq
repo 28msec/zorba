@@ -262,12 +262,17 @@ declare %ann:nondeterministic function reporting:generate-expected-failures(
       variable $results := parse-xml(file:read-text($pathResults));
       
       <failures>{
-      for $testCase in $results//fots:test-set//fots:test-case[@result ="fail"]
-      let $testCaseName := xs:string($testCase/@name)
-      let $testSetName := xs:string($testCase/parent::*/@name)
-      return <failure testCaseName="{$testCaseName}"
-                      testSetName="{$testSetName}"
-                      bug="0" />}</failures>
+      for $testSet in $results//fots:test-set
+      let $countFailures := count($testSet//fots:test-case[@result ="fail"])
+      let $testSetName := xs:string($testSet/@name)
+      where ($countFailures gt xs:integer(0))
+      return
+        <TestSet name="{$testSetName}"> {
+          for $testCase in $testSet//fots:test-case[@result ="fail"]
+          return
+            <Test name="{xs:string($testCase/@name)}"
+                  bug="0" />
+          }</TestSet>}</failures>
     }
   }
   catch *
