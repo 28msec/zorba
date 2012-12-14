@@ -1973,7 +1973,7 @@ void PrinterVisitor::endVisit ( const JSONArrayFlattenIterator& ) {
 // </JSONArrayFlattenIterator>
 
 #endif
-
+#ifdef ZORBA_WITH_JSON
 // <JSONDocIterator>
 void PrinterVisitor::beginVisit ( const JSONDocIterator& a) {
   thePrinter.startBeginVisit("JSONDocIterator", ++theId);
@@ -1987,6 +1987,7 @@ void PrinterVisitor::endVisit ( const JSONDocIterator& ) {
 }
 // </JSONDocIterator>
 
+#endif
 #ifdef ZORBA_WITH_JSON
 // <JSONItemAccessorIterator>
 void PrinterVisitor::beginVisit ( const JSONItemAccessorIterator& a) {
