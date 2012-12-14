@@ -31,7 +31,7 @@ xquery version "3.0";
 module namespace oauth = "http://www.zorba-xquery.com/modules/oauth/client";
 
 import module namespace ra = "http://www.zorba-xquery.com/modules/random";
-import module namespace hmac = "http://www.zorba-xquery.com/modules/cryptography/hmac";
+import module namespace hmac = "http://www.zorba-xquery.com/modules/cryptography/hmac#2.0";
 import module namespace http-client = "http://expath.org/ns/http-client";
 import schema namespace http = "http://expath.org/ns/http-client";
 
@@ -52,7 +52,7 @@ declare namespace f = "http://www.zorba-xquery.com/features";
 
 declare option op:disable "f:trace";
 
-declare option ver:module-version "1.0";
+declare option ver:module-version "2.0";
 
 (:~
  : Utility function to build a service provider object.
@@ -504,7 +504,7 @@ declare %private function oauth:signature($base-string as xs:string, $oauth-sign
    : uses the hmac-sha1 algorithm found here @see http://tools.ietf.org/html/rfc2104
    :)
   if($oauth-signature-method = "HMAC-SHA1")
-  then hmac:sha1($base-string, $key)
+  then xs:string(hmac:sha1($base-string, $key))
   (:
    : RSA-SHA1
    : @see http://tools.ietf.org/html/rfc5849#section-3.4.3  
