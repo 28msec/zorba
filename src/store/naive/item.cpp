@@ -1488,45 +1488,30 @@ void Item::setStreamReleaser(StreamReleaser /*aReleaser*/)
 
 void Item::swap(Item* anotherItem)
 {
-  if (getKind() != anotherItem->getKind())
+  if(isNode())
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-      ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-    );
-  }
-  switch(getKind())
-  {
-    case NODE:
-    {
-      SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
-      SYNC_CODE(static_cast<const simplestore::XmlNode*>(anotherItem)->getRCLock()->acquire());
-      // Swap trees.
-      assert(theUnion.treeRCPtr);
-      assert(anotherItem->theUnion.treeRCPtr);
-      std::swap(theUnion.treeRCPtr, anotherItem->theUnion.treeRCPtr);
+    assert(anotherItem->isNode());
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(anotherItem)->getRCLock()->acquire());
+    // Swap trees.
+    assert(theUnion.treeRCPtr);
+    assert(anotherItem->theUnion.treeRCPtr);
+    std::swap(theUnion.treeRCPtr, anotherItem->theUnion.treeRCPtr);
 
-      // Adjust counters.
-      *theUnion.treeRCPtr += theRefCount;
-      *theUnion.treeRCPtr -= anotherItem->theRefCount;
-      *anotherItem->theUnion.treeRCPtr -= theRefCount;
-      *anotherItem->theUnion.treeRCPtr += anotherItem->theRefCount;
-      SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
-      SYNC_CODE(static_cast<const simplestore::XmlNode*>(anotherItem)->getRCLock()->release());
-      
-      break;
-    }
-    case JSONIQ:
-    {
-      break;
-    }
-    default:
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-      ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
-    );
+    // Adjust counters.
+    *theUnion.treeRCPtr += theRefCount;
+    *theUnion.treeRCPtr -= anotherItem->theRefCount;
+    *anotherItem->theUnion.treeRCPtr -= theRefCount;
+    *anotherItem->theUnion.treeRCPtr += anotherItem->theRefCount;
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(anotherItem)->getRCLock()->release());
+    return;
   }
-  
+
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
 }
 
 

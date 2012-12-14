@@ -757,6 +757,7 @@ bool XmlNode::disconnect(csize& pos)
 
 void XmlNode::swap(Item* anotherItem)
 {
+  // Need Item to swap trees and adjust counters.
   Item::swap(anotherItem);
   XmlNode* lOtherItem = dynamic_cast<XmlNode*>(anotherItem);
   assert(lOtherItem);
