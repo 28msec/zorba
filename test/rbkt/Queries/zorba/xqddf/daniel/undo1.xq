@@ -16,17 +16,27 @@ ic_ddl:activate($xqddf-test:ric1);
 {
 for $i in fn:doc("auction.xml")//item
 return $i/name
-},
+}
+,
 {
 <newline> a
 </newline>
-},
+}
+,
 {
 for $i in fn:doc("auction.xml")//item
 return 
-    {{$i/name},
-    {dml:insert-nodes($xqddf-test:blue-collection, (copy $copyi := $i modify () return $copyi));},
-    {dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));}}
+  {
+    { $i/name },
+    { dml:insert-nodes($xqddf-test:blue-collection,
+                       (copy $copyi := $i modify () return $copyi));
+      ()
+    },
+    { dml:insert-nodes($xqddf-test:white-collection,
+                       (copy $copyi := $i modify () return $copyi));
+      ()
+    }
+  }
 },
 {
   try
@@ -40,20 +50,24 @@ return
   catch * { "
 cannot delete first item in blue collection"
   }
-},
+}
+,
 {
 <newline> a
 </newline>
-},
+}
+,
 {
 for $x in dml:collection($xqddf-test:white-collection)
 order by number(substring-after($x/@id, "item"))
 return $x/name
-},
+}
+,
 {
 <newline> a
 </newline>
-},
+}
+,
 {
 for $x in dml:collection($xqddf-test:blue-collection)
 order by number(substring-after($x/@id, "item"))

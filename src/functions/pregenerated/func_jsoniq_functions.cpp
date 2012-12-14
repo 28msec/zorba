@@ -141,6 +141,16 @@ PlanIter_t fn_jsoniq_flatten::codegen(
 }
 
 #endif
+
+PlanIter_t fn_jsoniq_json_doc::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONDocIterator(sctx, loc, argv);
+}
 #ifdef ZORBA_WITH_JSON
 PlanIter_t op_zorba_json_item_accessor::codegen(
   CompilerCB*,
@@ -468,6 +478,18 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
 #endif
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_jsoniq_json_doc,
+        (createQName("http://jsoniq.org/functions","","json-doc"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR),
+        FunctionConsts::FN_JSONIQ_JSON_DOC_1);
+
+  }
+
 
 
 #ifdef ZORBA_WITH_JSON

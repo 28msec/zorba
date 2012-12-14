@@ -355,7 +355,7 @@ PromoteIterator::PromoteIterator(
     const QueryLoc& loc,
     PlanIter_t& child,
     const xqtref_t& promoteType,
-    ErrorKind err,
+    PromoteErrorKind err,
     store::Item_t qname)
   :
   UnaryBaseIterator<PromoteIterator, PlanIteratorState>(sctx, loc, child),
@@ -379,7 +379,7 @@ void PromoteIterator::serialize(::zorba::serialization::Archiver& ar)
 
   ar & thePromoteType;
   SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
-  SERIALIZE_ENUM(ErrorKind, theErrorKind);
+  SERIALIZE_ENUM(PromoteErrorKind, theErrorKind);
   ar & theQName;
 }
 
@@ -463,44 +463,44 @@ void PromoteIterator::raiseError(const zstring& valueType) const
 
   switch (theErrorKind)
   {
-  case FUNC_RETURN:
+  case PROMOTE_FUNC_RETURN:
   {
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_FuncReturn),
+    ERROR_PARAMS(ZED(XPTY0004_NoReturnTypePromote_234),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
-  case FUNC_PARAM:
+  case PROMOTE_FUNC_PARAM:
   {
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_FuncParam),
+    ERROR_PARAMS(ZED(XPTY0004_NoParamTypePromote_234),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
-  case TYPE_PROMOTION:
+  case PROMOTE_TYPE_PROMOTION:
   {
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_TypePromotion), valueType, targetType));
+    ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23), valueType, targetType));
     break;
   }
 #ifdef ZORBA_WITH_JSON
-  case JSONIQ_ARRAY_SELECTOR:
+  case PROMOTE_JSONIQ_ARRAY_SELECTOR:
   {
     RAISE_ERROR(jerr::JNUP0007, loc,
     ERROR_PARAMS(ZED(JNUP0007_Array), valueType));
     break;
   }
-  case JSONIQ_OBJECT_SELECTOR:
+  case PROMOTE_JSONIQ_OBJECT_SELECTOR:
   {
     RAISE_ERROR(jerr::JNUP0007, loc,
     ERROR_PARAMS(ZED(JNUP0007_Object), valueType));
     break;
   }
-  case JSONIQ_SELECTOR:
+  case PROMOTE_JSONIQ_SELECTOR:
   {
     RAISE_ERROR(jerr::JNUP0007, loc,
     ERROR_PARAMS(ZED(JNUP0007_ObjectArray), valueType));
@@ -528,7 +528,7 @@ TreatIterator::TreatIterator(
     PlanIter_t& child,
     const xqtref_t& treatType,
     bool checkPrime,
-    ErrorKind errorKind,
+    TreatErrorKind errorKind,
     store::Item_t qname)
   :
   UnaryBaseIterator<TreatIterator, PlanIteratorState>(sctx, loc, child),
@@ -549,7 +549,7 @@ void TreatIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theTreatType;
   SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
   ar & theCheckPrime;
-  SERIALIZE_ENUM(ErrorKind, theErrorKind);
+  SERIALIZE_ENUM(TreatErrorKind, theErrorKind);
   ar & theQName;
 }
 
@@ -665,28 +665,28 @@ void TreatIterator::raiseError(const zstring& valueType) const
 
   switch (theErrorKind)
   {
-  case FUNC_RETURN:
+  case TREAT_FUNC_RETURN:
   {
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_FuncReturn),
+    ERROR_PARAMS(ZED(XPTY0004_NoReturnTypePromote_234),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
-  case FUNC_PARAM:
+  case TREAT_FUNC_PARAM:
   {
     assert(theQName != NULL);
 
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_FuncParam),
+    ERROR_PARAMS(ZED(XPTY0004_NoParamTypePromote_234),
                  valueType, targetType, theQName->getStringValue()));
     break;
   }
-  case TYPE_MATCH:
+  case TREAT_TYPE_MATCH:
   {
     RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_TypeMatch), valueType, targetType));
+    ERROR_PARAMS(ZED(XPTY0004_NoTreatAs_23), valueType, targetType));
     break;
   }
   case TREAT_EXPR:
@@ -694,65 +694,64 @@ void TreatIterator::raiseError(const zstring& valueType) const
     RAISE_ERROR(err::XPDY0050, loc, ERROR_PARAMS(valueType, targetType));
     break;
   }
-  case INDEX_DOMAIN:
+  case TREAT_INDEX_DOMAIN:
   {
     RAISE_ERROR(zerr::ZDTY0010_INDEX_DOMAIN_TYPE_ERROR, loc,
     ERROR_PARAMS(theQName->getStringValue()));
     break;
   }
-  case INDEX_KEY:
+  case TREAT_INDEX_KEY:
   {
     RAISE_ERROR(zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR, loc,
     ERROR_PARAMS(valueType, targetType, theQName->getStringValue()));
     break;
   }
-  case PATH_STEP:
+  case TREAT_PATH_STEP:
   {
     RAISE_ERROR_NO_PARAMS(err::XPTY0019, loc);
     break;
   }
-  case PATH_DOT:
+  case TREAT_PATH_DOT:
   {
     RAISE_ERROR_NO_PARAMS(err::XPTY0020, loc);
     break;
   }
-  case MULTI_VALUED_GROUPING_KEY:
+  case TREAT_MULTI_VALUED_GROUPING_KEY:
   {
     RAISE_ERROR(err::XPTY0004, loc,
     ERROR_PARAMS(ZED(XPTY0004_MultiValuedGroupingKey)));
     break;
   }
 #ifdef ZORBA_WITH_JSON
-  case JSONIQ_VALUE:
+  case TREAT_JSONIQ_VALUE:
   {
     RAISE_ERROR_NO_PARAMS(jerr::JNTY0002, loc);
     break;
   }
-  case JSONIQ_UPDATE_TARGET:
+  case TREAT_JSONIQ_UPDATE_TARGET:
   {
     RAISE_ERROR(jerr::JNUP0008, loc,
     ERROR_PARAMS(ZED(JNUP0008_ObjectArray), valueType));
     break;
   }
-  case JSONIQ_OBJECT_UPDATE_TARGET:
+  case TREAT_JSONIQ_OBJECT_UPDATE_TARGET:
   {
     RAISE_ERROR(jerr::JNUP0008, loc,
     ERROR_PARAMS(ZED(JNUP0008_Object), valueType));
     break;
   }
-  case JSONIQ_OBJECT_UPDATE_CONTENT:
+  case TREAT_JSONIQ_OBJECT_UPDATE_CONTENT:
   {
-    RAISE_ERROR(jerr::JNUP0019, loc,
-    ERROR_PARAMS(ZED(JNUP0019), valueType));
+    RAISE_ERROR(jerr::JNUP0019, loc, ERROR_PARAMS(valueType));
     break;
   }
-  case JSONIQ_ARRAY_UPDATE_TARGET:
+  case TREAT_JSONIQ_ARRAY_UPDATE_TARGET:
   {
     RAISE_ERROR(jerr::JNUP0008, loc,
     ERROR_PARAMS(ZED(JNUP0008_Array), valueType));
     break;
   }
-  case JSONIQ_OBJECT_UPDATE_VALUE:
+  case TREAT_JSONIQ_OBJECT_UPDATE_VALUE:
   {
     RAISE_ERROR_NO_PARAMS(jerr::JNUP0017, loc);
     break;

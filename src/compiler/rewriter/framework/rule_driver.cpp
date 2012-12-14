@@ -20,6 +20,8 @@
 #include "compiler/rewriter/rules/rule_base.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 
+#include "functions/udf.h"
+
 #include "system/properties.h"
 
 
@@ -60,15 +62,25 @@ bool RuleMajorDriver::rewrite(RewriterContext& rCtx)
       bool rule_modified = false;
       expr* newRoot = (*i)->apply(rCtx, &*rCtx.getRoot(), rule_modified);
 
-      if (newRoot != NULL)
+      if (newRoot != NULL && newRoot != rCtx.theRoot)
       {
         rCtx.setRoot(newRoot);
+        if (rCtx.theUDF != NULL)
+        {
+          rCtx.theUDF->setBody(newRoot);
+          rCtx.theUDF->invalidatePlan();
+        }
       }
 
       if (rule_modified)
       {
         modified = true;
         totalModified = true;
+
+        if (rCtx.theUDF != NULL)
+        {
+          rCtx.theUDF->invalidatePlan();
+        }
 
         if (Properties::instance()->printIntermediateOpt())
         {
@@ -77,7 +89,8 @@ bool RuleMajorDriver::rewrite(RewriterContext& rCtx)
           rCtx.getRoot()->put(std::cout) << std::endl;
         }
 
-        if ((*i)->getKind() != RewriteRule::MarkExprs)
+        if ((*i)->getKind() != RewriteRule::MarkExprs &&
+            (*i)->getKind() != RewriteRule::FoldConst)
           break;
       }
     }
@@ -99,10 +112,20 @@ bool RuleOnceDriverBase::rewrite(RewriterContext& rCtx)
   if (newRoot != NULL)
   {
     rCtx.setRoot(newRoot);
+    if (rCtx.theUDF != NULL)
+    {
+      rCtx.theUDF->setBody(newRoot);
+      rCtx.theUDF->invalidatePlan();
+    }
   }
 
   if (modified && Properties::instance()->printIntermediateOpt())
   {
+    if (rCtx.theUDF != NULL)
+    {
+      rCtx.theUDF->invalidatePlan();
+    }
+
     std::cout << rCtx.theMessage << std::endl
               << "After " << theRule->getRuleName() << " :" << std::endl;
     rCtx.getRoot()->put(std::cout) << std::endl;

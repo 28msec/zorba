@@ -77,6 +77,14 @@ IntegerImpl::IntegerImpl( long long n ) {
   value_ = ztd::itoa( n, buf );
 }
 
+#if ZORBA_SIZEOF_INT == ZORBA_SIZEOF_LONG
+TEMPLATE_DECL(T)
+INTEGER_IMPL(T)::IntegerImpl( unsigned int n ) {
+  ztd::itoa_buf_type buf;
+  value_ = ztd::itoa( n, buf );
+}
+#endif /* ZORBA_SIZEOF_INT == ZORBA_SIZEOF_LONG */
+
 IntegerImpl::IntegerImpl( unsigned long n ) {
   ztd::itoa_buf_type buf;
   value_ = ztd::itoa( n, buf );

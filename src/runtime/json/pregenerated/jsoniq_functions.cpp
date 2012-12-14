@@ -357,6 +357,36 @@ void JSONArrayFlattenIteratorState::init(PlanState& planState) {
 // </JSONArrayFlattenIterator>
 
 #endif
+// <JSONDocIterator>
+SERIALIZABLE_CLASS_VERSIONS(JSONDocIterator)
+
+void JSONDocIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>*)this);
+}
+
+
+void JSONDocIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONDocIterator::~JSONDocIterator() {}
+
+JSONDocIteratorState::JSONDocIteratorState() {}
+
+// </JSONDocIterator>
+
+
 #ifdef ZORBA_WITH_JSON
 // <JSONItemAccessorIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONItemAccessorIterator)

@@ -138,6 +138,7 @@ LIST(APPEND RUNTIME_SRCS
   util/item_iterator.cpp
   util/timeout.cpp
   util/flowctl_exception.cpp
+  util/doc_uri_heuristics.cpp
   function_item/function_item.cpp
   function_item/dynamic_fncall_iterator.cpp
   eval/eval.cpp
@@ -174,6 +175,7 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS scripting)
 IF (ZORBA_WITH_JSON)
   LIST(APPEND RUNTIME_SRCS
     json/json_constructors.cpp
+    json/json_loader.cpp
   )
   HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS json)
 ENDIF (ZORBA_WITH_JSON)

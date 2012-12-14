@@ -18,6 +18,7 @@
 #include "functions/udf.h"
 
 #include "compiler/expression/var_expr.h"
+#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_visitor.h"
@@ -90,8 +91,6 @@ var_expr::var_expr(
   theHasInitializer(false)
 {
   compute_scripting_kind();
-
-  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -279,16 +278,35 @@ expr* var_expr::get_domain_expr() const
 ********************************************************************************/
 forletwin_clause* var_expr::get_forletwin_clause() const
 {
-  return dynamic_cast<forletwin_clause*>(theFlworClause);
+  assert(theFlworClause->get_kind() == flwor_clause::for_clause ||
+         theFlworClause->get_kind() == flwor_clause::let_clause ||
+         theFlworClause->get_kind() == flwor_clause::window_clause);
+
+  return static_cast<forletwin_clause*>(theFlworClause);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-for_clause* var_expr::get_for_clause() const
+forlet_clause* var_expr::get_forlet_clause() const
 {
-  return dynamic_cast<for_clause*>(theFlworClause);
+  assert(theFlworClause->get_kind() == flwor_clause::for_clause ||
+         theFlworClause->get_kind() == flwor_clause::let_clause);
+
+  return static_cast<forlet_clause*>(theFlworClause);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void var_expr::add_set_expr(expr* e)
+{
+  assert(e->get_expr_kind() == var_decl_expr_kind ||
+         e->get_expr_kind() == var_set_expr_kind);
+
+  theSetExprs.push_back(static_cast<var_set_expr*>(e));
 }
 
 
@@ -300,8 +318,8 @@ void var_expr::remove_set_expr(expr* e)
   assert(theVarKind == local_var || theVarKind == prolog_var);
 
   bool found = false;
-  std::vector<expr*>::iterator ite = theSetExprs.begin();
-  std::vector<expr*>::iterator end = theSetExprs.end();
+  VarSetExprs::iterator ite = theSetExprs.begin();
+  VarSetExprs::iterator end = theSetExprs.end();
   for (; ite != end; ++ite)
   {
     if (*ite == e)

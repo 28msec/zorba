@@ -522,6 +522,9 @@ namespace zorba {
     void endVisit  ( const JSONArrayFlattenIterator& );
 #endif
 
+    void beginVisit( const JSONDocIterator& );
+    void endVisit  ( const JSONDocIterator& );
+
 #ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONItemAccessorIterator& );
     void endVisit  ( const JSONItemAccessorIterator& );

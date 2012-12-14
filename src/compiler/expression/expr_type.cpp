@@ -31,6 +31,9 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "compiler/xqddf/collection_decl.h"
 
 #include "functions/function.h"
@@ -105,14 +108,6 @@ void expr::compute_return_type(bool deep, bool* modified)
     break;
   }
 
-  case order_expr_kind:
-  {
-    order_expr* e = static_cast<order_expr*>(this);
-
-    newType = e->theExpr->get_return_type();
-    break;
-  }
-
   case validate_expr_kind:
   {
     theType = rtm.ANY_NODE_TYPE_ONE;
@@ -126,9 +121,9 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
 
-    ulong numClauses = e->num_clauses();
+    csize numClauses = e->num_clauses();
 
-    for (ulong i = 0; i < numClauses && quant != TypeConstants::QUANT_STAR; ++i)
+    for (csize i = 0; i < numClauses && quant != TypeConstants::QUANT_STAR; ++i)
     {
       const flwor_clause* c = e->theClauses[i];
 
@@ -221,8 +216,38 @@ void expr::compute_return_type(bool deep, bool* modified)
     }
     case var_expr::prolog_var:
     {
-      // For const global vars, their type is set in 
+      // NOTE: For const global vars, their declared type is set to the
+      // type of their init expr, if any. This is done in 
       // translator::end_visit(const GlobalVarDecl& v, void*)
+
+      csize numSetExprs = e->num_set_exprs();
+
+      if (e->get_ccb()->getPhase() == CompilerCB::OPTIMIZATION &&
+          numSetExprs > 0 &&
+          !e->is_external() &&
+          !e->isInTypeCompute())
+      {
+        e->setInTypeCompute();
+
+        var_set_expr* setExpr = e->get_set_expr(0);
+
+        derivedType = setExpr->get_expr()->get_return_type();
+
+        for (csize i = 1; i < numSetExprs; ++i)
+        {
+          if (derivedType == rtm.ITEM_TYPE_STAR)
+            break;
+
+          setExpr = e->get_set_expr(i);
+
+          derivedType = TypeOps::union_type(*derivedType,
+                                            *setExpr->get_expr()->get_return_type(),
+                                            tm);
+        }
+
+        e->resetInTypeCompute();
+      }
+
       break;
     }
     case var_expr::local_var: // TODO: compute derived type for const local vars.
@@ -316,60 +341,14 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     fo_expr* e = static_cast<fo_expr*>(this);
 
-    const function* func = e->get_func();
     /*
-      const user_function* udf = dynamic_cast<const user_function*>(func);
+      const user_function* udf = static_cast<const user_function*>(func);
 
       if (udf != NULL)
       return udf->getUDFReturnType(sctx);
     */
-    FunctionConsts::FunctionKind funcKind = func->getKind();
 
-    switch (funcKind)
-    {
-    case FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1:
-    {
-      const store::Item* qname = e->theArgs[0]->getQName(theSctx);
-
-      if (qname != NULL)
-      {
-        const StaticallyKnownCollection* collection = theSctx->lookup_collection(qname);
-        if (collection != NULL)
-        {
-          newType = collection->getCollectionType();
-        }
-        else
-        {
-          RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, get_loc(),
-          ERROR_PARAMS(qname->getStringValue()));
-        }
-      }
-      break;
-    }
-    case FunctionConsts::FN_SUBSEQUENCE_3:
-    {
-      const_expr* lenExpr = dynamic_cast<const_expr*>(e->theArgs[2]);
-
-      if (lenExpr != NULL)
-      {
-        store::Item* val = lenExpr->get_val();
-        xs_double len = val->getDoubleValue();
-        if (len == 1.0)
-        {
-          newType = tm->create_type(*e->theArgs[0]->get_return_type(),
-                                    TypeConstants::QUANT_QUESTION);
-        }
-      }
-      break;
-    }
-    default:
-      break;
-    }
-
-    if (newType == NULL)
-    {
-      newType = e->theFunction->getReturnType(e);
-    }
+    newType = e->theFunction->getReturnType(e);
 
     break;
   }
@@ -378,7 +357,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     cast_expr* e = static_cast<cast_expr*>(this);
 
-    xqtref_t argType = e->theInputExpr->get_return_type();
+    xqtref_t argType = e->theInput->get_return_type();
     TypeConstants::quantifier_t argQuant = argType->get_quantifier();
     TypeConstants::quantifier_t targetQuant = e->theTargetType->get_quantifier();
 
@@ -424,7 +403,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     promote_expr* e = static_cast<promote_expr*>(this);
 
-    xqtref_t in_type = e->theInputExpr->get_return_type();
+    xqtref_t in_type = e->theInput->get_return_type();
     xqtref_t in_ptype = TypeOps::prime_type(tm, *in_type);
     xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
@@ -536,7 +515,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     switch (e->type)
     {
-    case text_expr::text_constructor:
+    case text_constructor:
     {
       xqtref_t t = e->get_text()->get_return_type();
 
@@ -550,7 +529,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       break;
     }
 
-    case text_expr::comment_constructor:
+    case comment_constructor:
       nodeKind = store::StoreConsts::commentNode;
       break;
 
@@ -748,15 +727,19 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case function_trace_expr_kind:
   {
-    function_trace_expr* e = static_cast<function_trace_expr*>(this);
-    newType = e->theExpr->get_return_type();
+    newType = static_cast<function_trace_expr*>(this)->theInput->get_return_type();
+    break;
+  }
+
+  case order_expr_kind:
+  {
+    newType = static_cast<order_expr*>(this)->theInput->get_return_type();
     break;
   }
 
   case wrapper_expr_kind:
   {
-    wrapper_expr* e = static_cast<wrapper_expr*>(this);
-    newType = e->theWrappedExpr->get_return_type();
+    newType = static_cast<wrapper_expr*>(this)->theInput->get_return_type();
     break;
   }
 

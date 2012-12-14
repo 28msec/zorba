@@ -67,7 +67,7 @@ RULE_REWRITE_POST(InferUDFTypes)
     return NULL;
 
   fo_expr* fo = static_cast<fo_expr*>(node);
-  user_function* udf = dynamic_cast<user_function*>(fo->get_func());
+  user_function* udf = static_cast<user_function*>(fo->get_func());
 
   if (udf == NULL)
     return NULL;
@@ -103,7 +103,9 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  if (node->get_expr_kind() == fo_expr_kind)
+  switch (node->get_expr_kind())
+  {
+  case fo_expr_kind:
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
 
@@ -147,13 +149,15 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
       return NULL;
     }
 #endif
+
+    break;
   }
-
-  cast_base_expr* pe = NULL;
-
-  // Note: the if cond is true for promote_expr, treat_expr, and cast_expr
-  if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL)
+  case cast_expr_kind:
+  case promote_expr_kind:
+  case treat_expr_kind:
   {
+    cast_base_expr* pe = static_cast<cast_base_expr*>(node);
+
     expr* arg = pe->get_input();
     xqtref_t arg_type = arg->get_return_type();
     xqtref_t target_type = pe->get_target_type();
@@ -190,7 +194,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
                                            node->get_loc(),
                                            arg,
                                            target_type,
-                                           TreatIterator::TYPE_MATCH,
+                                           TREAT_TYPE_MATCH,
                                            false); // do not check the prime types
     }
 
@@ -207,6 +211,9 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     }
 
     return NULL;
+  }
+  default:
+    break;
   }
 
   return NULL;
@@ -230,12 +237,10 @@ RULE_REWRITE_PRE(SpecializeOperations)
 
 RULE_REWRITE_POST(SpecializeOperations)
 {
-  const Properties& props = *Properties::instance();
-
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   TypeManager* tm = node->get_type_manager();
-
   static_context* sctx = node->get_sctx();
+  user_function* udf = node->get_udf();
 
   if (node->get_expr_kind() == fo_expr_kind)
   {
@@ -250,7 +255,9 @@ RULE_REWRITE_POST(SpecializeOperations)
         fnKind == FunctionConsts::FN_SUM_2)
     {
       expr* argExpr = fo->get_arg(0);
+      const QueryLoc& argLoc = argExpr->get_loc();
       xqtref_t argType = argExpr->get_return_type();
+   
       std::vector<xqtref_t> argTypes;
       argTypes.push_back(argType);
 
@@ -259,18 +266,15 @@ RULE_REWRITE_POST(SpecializeOperations)
       {
         fo->set_func(replacement);
 
-        if (TypeOps::is_subtype(tm,
-                                *argType,
-                                *rtm.UNTYPED_ATOMIC_TYPE_STAR,
-                                argExpr->get_loc()))
+        if (TypeOps::is_subtype(tm, *argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR, argLoc))
         {
           expr* promoteExpr = rCtx.theEM->
-          create_promote_expr(argExpr->get_sctx(),
-                              argExpr->get_udf(),
+          create_promote_expr(sctx,
+                              udf,
                               argExpr->get_loc(),
                               argExpr,
                               rtm.DOUBLE_TYPE_STAR,
-                              PromoteIterator::FUNC_PARAM,
+                              PROMOTE_FUNC_PARAM,
                               replacement->getName());
 
           fo->set_arg(0, promoteExpr);
@@ -354,7 +358,7 @@ RULE_REWRITE_POST(SpecializeOperations)
       if (t0->max_card() > 1 || t1->max_card() > 1)
         return NULL;
 
-      if (props.specializeNum() && fn->isArithmeticFunction())
+      if (fn->isArithmeticFunction())
       {
         if (! TypeOps::is_numeric_or_untyped(tm, *t0) ||
             ! TypeOps::is_numeric_or_untyped(tm, *t1))
@@ -363,13 +367,38 @@ RULE_REWRITE_POST(SpecializeOperations)
         if (specialize_numeric(fo, sctx, rCtx) != NULL)
           return node;
       }
-      else if (props.specializeCmp() && fn->isComparisonFunction())
+      else if (fn->isGeneralComparisonFunction())
       {
-        if (fn->isGeneralComparisonFunction())
+        std::vector<xqtref_t> argTypes;
+        argTypes.push_back(t0);
+        argTypes.push_back(t1);
+        function* replacement = fn->specialize(sctx, argTypes);
+        if (replacement != NULL)
+        {
+          fo->set_func(replacement);
+          return node;
+        }
+      }
+      else if (fn->isValueComparisonFunction())
+      {
+        xqtref_t stringType = rtm.STRING_TYPE_QUESTION;
+        xqtref_t untypedType = rtm.UNTYPED_ATOMIC_TYPE_QUESTION;
+
+        const QueryLoc& loc0 = arg0->get_loc();
+        const QueryLoc& loc1 = arg1->get_loc();
+
+        bool atomicORstring0 = (TypeOps::is_subtype(tm, *t0, *untypedType, loc0) ||
+                                TypeOps::is_subtype(tm, *t0, *stringType, loc0));
+
+        bool atomicORstring1 = (TypeOps::is_subtype(tm, *t1, *untypedType, loc1) ||
+                                TypeOps::is_subtype(tm, *t1, *stringType, loc1));
+
+        if (atomicORstring0 && atomicORstring1)
         {
           std::vector<xqtref_t> argTypes;
-          argTypes.push_back(t0);
-          argTypes.push_back(t1);
+          argTypes.push_back(stringType);
+          argTypes.push_back(stringType);
+          
           function* replacement = fn->specialize(sctx, argTypes);
           if (replacement != NULL)
           {
@@ -377,81 +406,34 @@ RULE_REWRITE_POST(SpecializeOperations)
             return node;
           }
         }
-        else if (fn->isValueComparisonFunction())
+        else if (TypeOps::is_numeric(tm, *t0) && TypeOps::is_numeric(tm, *t1))
         {
-          xqtref_t string_type = rtm.STRING_TYPE_QUESTION;
-          bool string_cmp = true;
-          expr* nargs[2];
-
-          for (int i = 0; i < 2; ++i)
+          xqtref_t aType = specialize_numeric(fo, sctx, rCtx);
+          if (aType != NULL)
           {
-            nargs[i] = NULL;
-
-            expr* arg = (i == 0 ? arg0 : arg1);
-            xqtref_t type = (i == 0 ? t0 : t1);
-            const QueryLoc& loc = arg->get_loc();
-
-            if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION, loc))
+            if (TypeOps::is_equal(tm,
+                                  *TypeOps::prime_type(tm, *aType),
+                                  *rtm.DECIMAL_TYPE_ONE,
+                                  fo->get_loc()) &&
+                TypeOps::is_subtype(tm, *t0, *rtm.INTEGER_TYPE_ONE, fo->get_loc()))
             {
-              nargs[i] = rCtx.theEM->create_cast_expr(arg->get_sctx(),
-                                                      arg->get_udf(),
-                                                      arg->get_loc(),
-                                                      arg,
-                                                      string_type);
+              expr* tmp = fo->get_arg(0);
+              fo->set_arg(0, fo->get_arg(1));
+              fo->set_arg(1, tmp);
+              fo->set_func(flip_value_cmp(fo->get_func()->getKind()));
             }
-            else if (! TypeOps::is_subtype(tm, *type, *string_type, loc))
-            {
-              string_cmp = false;
-              break;
-            }
-          }
-
-          if (string_cmp)
-          {
-            for (int i = 0; i < 2; i++)
-            {
-              if (nargs[i] != NULL)
-                fo->set_arg(i, nargs[i]);
-            }
-
-            std::vector<xqtref_t> argTypes;
-            argTypes.push_back(string_type);
-            argTypes.push_back(string_type);
-            function* replacement = fn->specialize(sctx, argTypes);
-            if (replacement != NULL)
-            {
-              fo->set_func(replacement);
-              return node;
-            }
-          }
-          else if (TypeOps::is_numeric(tm, *t0) && TypeOps::is_numeric(tm, *t1))
-          {
-            xqtref_t aType = specialize_numeric(fo, sctx, rCtx);
-            if (aType != NULL)
-            {
-              if (TypeOps::is_equal(tm,
-                                    *TypeOps::prime_type(tm, *aType),
-                                    *rtm.DECIMAL_TYPE_ONE,
-                                    fo->get_loc()) &&
-                  TypeOps::is_subtype(tm, *t0, *rtm.INTEGER_TYPE_ONE, fo->get_loc()))
-              {
-                expr* tmp = fo->get_arg(0);
-                fo->set_arg(0, fo->get_arg(1));
-                fo->set_arg(1, tmp);
-                fo->set_func(flip_value_cmp(fo->get_func()->getKind()));
-              }
-
-              return node;
-            }
+            
+            return node;
           }
         }
       }
     }
   }
+#if 0
   else if (node->get_expr_kind() == flwor_expr_kind ||
            node->get_expr_kind() == gflwor_expr_kind)
   {
-    flwor_expr* flworExpr = reinterpret_cast<flwor_expr*>(node);
+    flwor_expr* flworExpr = static_cast<flwor_expr*>(node);
 
     bool modified = false;
 
@@ -460,8 +442,8 @@ RULE_REWRITE_POST(SpecializeOperations)
     {
       if (flworExpr->get_clause(i)->get_kind() == flwor_clause::order_clause)
       {
-        orderby_clause* obc = reinterpret_cast<orderby_clause*>
-                              (flworExpr->get_clause(i));
+        orderby_clause* obc =
+        static_cast<orderby_clause*>(flworExpr->get_clause(i));
 
         csize numColumns = obc->num_columns();
         for (csize j = 0; j < numColumns; ++j)
@@ -474,11 +456,7 @@ RULE_REWRITE_POST(SpecializeOperations)
               TypeOps::is_subtype(tm, *colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR, colLoc))
           {
             expr* castExpr = rCtx.theEM->
-            create_cast_expr(colExpr->get_sctx(),
-                             colExpr->get_udf(),
-                             colExpr->get_loc(),
-                             colExpr,
-                             rtm.STRING_TYPE_QUESTION);
+            create_cast_expr(sctx, udf, colLoc, colExpr, rtm.STRING_TYPE_QUESTION);
 
             obc->set_column_expr(j, castExpr);
             modified = true;
@@ -490,6 +468,7 @@ RULE_REWRITE_POST(SpecializeOperations)
     if (modified)
       return node;
   }
+#endif
 
   return NULL;
 }
@@ -572,7 +551,7 @@ static expr* wrap_in_num_promotion(
                                          arg->get_loc(),
                                          arg,
                                          t,
-                                         PromoteIterator::FUNC_PARAM,
+                                         PROMOTE_FUNC_PARAM,
                                          fn->getName());
 }
 

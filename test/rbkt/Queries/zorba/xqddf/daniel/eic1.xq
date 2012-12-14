@@ -10,25 +10,35 @@ ic_ddl:activate($xqddf-test:eic1);
 {
 <newline>
 </newline>
-},
+}
+,
 {
 for $i in fn:doc("auction.xml")//item
 return fn:string(($i/description/parlist/listitem/text)[1])
-},
+}
+,
 {
 <newline> a
 </newline>
-},
+}
+,
 {
 for $i in fn:doc("auction.xml")//item
 return 
-   {{fn:string(($i/description/parlist/listitem/text)[1])},
-   { dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));}}
-},
+  {
+    { fn:string(($i/description/parlist/listitem/text)[1]) },
+    { dml:insert-nodes($xqddf-test:white-collection,
+      (copy $copyi := $i modify () return $copyi));
+      ()
+    }
+  }
+}
+,
 {
 <newline> a
 </newline>
-},
+}
+,
 {
 dml:collection($xqddf-test:white-collection)/description/parlist/listitem/text
 }

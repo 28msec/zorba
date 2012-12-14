@@ -32,12 +32,155 @@
 
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/var_expr.h"
 #include "compiler/expression/path_expr.h"
 
 #include "types/typeops.h"
 
 namespace zorba
 {
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_unordered::getReturnType(const fo_expr* caller) const
+{
+  return caller->get_arg(0)->get_return_type();
+}
+
+
+BoolAnnotationValue fn_unordered::ignoresSortedNodes(expr* fo, csize input) const
+{
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_unordered::ignoresDuplicateNodes(expr* fo, csize input) const
+{
+  return fo->getIgnoresDuplicateNodes();
+}
+
+
+PlanIter_t fn_unordered::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ) const
+{
+  return argv[0];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_exactly_one_noraise::getReturnType(const fo_expr* caller) const
+{
+  TypeManager* tm = caller->get_type_manager();
+
+  xqtref_t srcType = caller->get_arg(0)->get_return_type();
+
+  if (theRaiseError)
+    return TypeOps::prime_type(tm, *srcType);
+  else
+    return function::getReturnType(caller);
+}
+
+
+PlanIter_t fn_exactly_one_noraise::codegen(
+    CompilerCB* aCb,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    expr& aAnn) const
+{
+  return new FnExactlyOneIterator(aSctx,
+                                  aLoc,
+                                  aArgs,
+                                  theRaiseError,
+                                  testFlag(FunctionConsts::DoDistinct));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_union::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
+{
+  return new FnConcatIterator(sctx, loc, argv);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_intersect::ignoresSortedNodes(expr* fo, csize input) const 
+{
+  if (input == 0)
+    return fo->getIgnoresSortedNodes();
+  
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_intersect::ignoresDuplicateNodes(expr* fo, csize input) const 
+{
+  if (input == 0)
+    return fo->getIgnoresDuplicateNodes();
+
+  return ANNOTATION_TRUE;
+}
+
+
+PlanIter_t fn_intersect::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
+{
+  return new HashSemiJoinIterator(sctx, loc, argv);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_except::ignoresSortedNodes(expr* fo, csize input) const 
+{
+  if (input == 0)
+    return fo->getIgnoresSortedNodes();
+  
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_except::ignoresDuplicateNodes(expr* fo, csize input) const 
+{
+  if (input == 0)
+    return fo->getIgnoresDuplicateNodes();
+  
+  return ANNOTATION_TRUE;
+}
+
+
+PlanIter_t fn_except::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
+{
+  // TODO: use SortAntiJoinIterator when available (trac ticket 254)
+  return new HashSemiJoinIterator(sctx, loc, argv, true);
+}
 
 
 /*******************************************************************************
@@ -608,32 +751,6 @@ PlanIter_t fn_count::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_unordered::ignoresSortedNodes(expr* fo, csize input) const
-{
-  return ANNOTATION_TRUE;
-}
-
-
-BoolAnnotationValue fn_unordered::ignoresDuplicateNodes(expr* fo, csize input) const
-{
-  return fo->getIgnoresDuplicateNodes();
-}
-
-
-PlanIter_t fn_unordered::codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    expr& ) const
-{
-  return argv[0];
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 xqtref_t fn_zero_or_one::getReturnType(const fo_expr* caller) const
 {
   TypeManager* tm = caller->get_type_manager();
@@ -693,95 +810,10 @@ BoolAnnotationValue fn_one_or_more::ignoresDuplicateNodes(expr* fo, csize input)
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_exactly_one_noraise::getReturnType(const fo_expr* caller) const
-{
-  TypeManager* tm = caller->get_type_manager();
-
-  xqtref_t srcType = caller->get_arg(0)->get_return_type();
-
-  if (theRaiseError)
-    return TypeOps::prime_type(tm, *srcType);
-  else
-    return function::getReturnType(caller);
-}
-
-
-PlanIter_t fn_exactly_one_noraise::codegen(
-    CompilerCB* aCb,
-    static_context* aSctx,
-    const QueryLoc& aLoc,
-    std::vector<PlanIter_t>& aArgs,
-    expr& aAnn) const
-{
-  return new FnExactlyOneIterator(aSctx,
-                                  aLoc,
-                                  aArgs,
-                                  theRaiseError,
-                                  testFlag(FunctionConsts::DoDistinct));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 bool fn_deep_equal::mustCopyInputNodes(expr* fo, csize producer) const
 {
   return (producer < 2 &&
           fo->get_sctx()->construction_mode() == StaticContextConsts::cons_strip);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t fn_union::codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    expr& ann) const
-{
-  return new FnConcatIterator(sctx, loc, argv);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t fn_intersect::codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    expr& ann) const
-{
-#if 0  // we can't access PRODUCES_* from the inputs, must rethink
-  bool distinct = ann.get_annotation (Annotations::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL;
-  bool sort = ann.get_annotation (Annotations::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VAL;
-
-  std::vector<PlanIter_t> inputs;
-  for (std::vector<PlanIter_t>::iterator i = argv.begin ();
-       i != argv.end (); i++)
-    inputs.push_back (new NodeSortIterator (loc, *i, true, distinct, false));
-  return new SortSemiJoinIterator(loc, inputs);
-#endif
-
-  return new HashSemiJoinIterator(sctx, loc, argv);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t fn_except::codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    expr& ann) const
-{
-  // TODO: use SortAntiJoinIterator when available (trac ticket 254)
-  return new HashSemiJoinIterator(sctx, loc, argv, true);
 }
 
 

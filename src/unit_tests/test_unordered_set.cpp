@@ -38,12 +38,6 @@ static bool assert_true( char const *expr, int line, bool result ) {
   return result;
 }
 
-static void print_exception( char const *expr, int line,
-                             std::exception const &e ) {
-  assert_true( expr, line, false );
-  cout << "+ exception: " << e.what() << endl;
-}
-
 #define ASSERT_TRUE( EXPR ) assert_true( #EXPR, __LINE__, !!(EXPR) )
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -168,10 +162,11 @@ static void test_local_iterator() {
 }
 
 static void test_rehash() {
-  unordered_set<int> set;
-  unordered_set<int>::const_iterator i;
+  typedef unordered_set<int> set_type;
+  set_type set;
+  set_type::const_iterator i;
 
-  unordered_set<int>::size_type const initial_buckets = set.bucket_count();
+  set_type::size_type const initial_buckets = set.bucket_count();
 
   // Add elements until bucket_count() changes which implies a rehash was done.
   for ( int n = 0; set.bucket_count() == initial_buckets; ++n )
@@ -180,11 +175,9 @@ static void test_rehash() {
   ASSERT_TRUE( set.bucket_count() > initial_buckets );
 
   // Ensure all the elements are still there.
-  unordered_set<int>::size_type const size = set.size();
-  for ( int n = 0; n < size; ++n ) {
+  for ( int n = 0; (unsigned)n < set.size(); ++n )
     if ( ASSERT_TRUE( (i = set.find( n )) != set.end() ) )
       ASSERT_TRUE( *i == n );
-  }
 }
 
 static void test_swap() {
