@@ -37,7 +37,24 @@ public:
   StructuredItem()
   : Item()
   {}
+
+  //--------------------- Item API ---------------------------------------------
   
+  // Tells if this item is in the subtree starting at the supplied item.
+  virtual bool isInSubtreeOf(const store::Item_t& anItem) const
+  {
+    if (!anItem->isStructuredItem())
+    {
+      return false;
+    }
+    assert(static_cast<StructuredItem*>(anItem.getp()));
+    StructuredItem* lStructuredItem =
+      static_cast<StructuredItem*>(anItem.getp());
+    return lStructuredItem->isInSubTree(this);
+  };
+  
+  //--------------------- Structured Item API ----------------------------------
+
   // Attaches a root to a collection (populates collection info).
   virtual void attachToCollection(
       simplestore::Collection* aCollection,
