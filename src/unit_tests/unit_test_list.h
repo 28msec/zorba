@@ -41,6 +41,7 @@ namespace UnitTests {
   int test_json_parser( int, char*[] );
 
   int test_string( int, char*[] );
+  int test_strptime( int, char*[] );
 
   int test_unique_ptr( int, char*[] );
 

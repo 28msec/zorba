@@ -22,6 +22,7 @@
 
 // Zorba
 #include <zorba/config.h>
+#include "string_util.h"
 
 namespace zorba {
 
@@ -87,6 +88,25 @@ inline void set_gmtoff( ztm &tm, long gmtoff ) {
  * \c % or if the value for a conversion specification is invalid.
  */
 char const* strptime( char const *buf, char const *fmt, ztm *tm );
+
+template<class BufferType> inline
+typename std::enable_if<
+  ztd::has_c_str<BufferType,char const* (BufferType::*)() const>::value,
+  char const*
+>::type
+strptime( BufferType const &buf, char const *fmt, ztm *tm ) {
+  return ztd::strptime( buf.c_str(), fmt, tm );
+}
+
+template<class BufferType,class FormatType> inline
+typename std::enable_if<
+  ztd::has_c_str<BufferType,char const* (BufferType::*)() const>::value &&
+  ztd::has_c_str<FormatType,char const* (FormatType::*)() const>::value,
+  char const*
+>::type
+strptime( BufferType const &buf, FormatType const &fmt, ztm *tm ) {
+  return ztd::strptime( buf.c_str(), fmt.c_str(), tm );
+}
 
 } // namespace ztd
 

@@ -134,11 +134,10 @@ static char const* parse_num( char conv_char, char const *bp,
   unsigned n = 0;
 
   do {
-    n *= 10;
-    n += c - '0';
+    n = n * 10 + c - '0';
     limit /= 10;
     c = *++bp;
-  } while ( (n * 10 <= high) && limit && ascii::is_digit( c ) );
+  } while ( limit && ascii::is_digit( c ) );
 
   if ( n < low || n > high )
     throw invalid_argument(
@@ -165,7 +164,7 @@ char const* strptime( char const *buf, char const *fmt, ztm *tm ) {
     }
 
     int alt_format = 0;
-    int n = 0;
+    int n;
 
     if ( c != '%' ) {                   // literal
 literal:
@@ -211,7 +210,6 @@ again:
 
       case 'C': // century number
         CHECK_ALT(ALT_E);
-        n = 20;
         bp = parse_num( c, bp, 0, 99, &n );
         n = n * 100 - TM_YEAR_BASE;
         if ( split_year )
@@ -243,32 +241,32 @@ again:
 
       case 'j': // day of year: 001-366
         CHECK_ALT(0);
-        n = 1;
         bp = parse_num( c, bp, 1, 366, &n );
         tm->tm_yday = n - 1;
         break;
 
       case 'k': // hour: 0-23
         CHECK_ALT(0);
-        // no break;
+        goto case_H;
+
       case 'H': // hour: 00-23
         CHECK_ALT(ALT_O);
-        bp = parse_num( c, bp, 0, 23, &tm->tm_hour );
+case_H: bp = parse_num( c, bp, 0, 23, &tm->tm_hour );
         break;
 
       case 'l': // hour: 1-12
         CHECK_ALT(0);
-        // no break;
+        goto case_I;
+
       case 'I': // hour: 01-12
         CHECK_ALT(ALT_O);
-        bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
+case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
         if ( tm->tm_hour == 12 )
           tm->tm_hour = 0;
         break;
 
       case 'm': // month: 01-12
         CHECK_ALT(ALT_O);
-        n = 1;
         bp = parse_num( c, bp, 1, 12, &n );
         tm->tm_mon = n - 1;
         break;
@@ -327,7 +325,7 @@ again:
       case 'u': // day of week, beginning on Monday: 1-7
         CHECK_ALT(ALT_O);
         bp = parse_num( c, bp, 1, 7, &n );
-        tm->tm_wday = n == 7 ? 0 : n;
+        tm->tm_wday = n - 1;
         break;
 
       case 'V': // week of year, beginning on Monday: 01-53
@@ -377,32 +375,26 @@ again:
         if ( split_year )               // preserve century
           n += (tm->tm_year / 100) * 100;
         else {
+          n += (n <= 68 ? 2000 : 1900) - TM_YEAR_BASE;
           split_year = true;
-          if ( n <= 68 )
-            n = n + 2000 - TM_YEAR_BASE;
-          else
-            n = n + 1900 - TM_YEAR_BASE;
         }
         tm->tm_year = n;
         break;
 
       case 'Y': // year: 0-9999
         CHECK_ALT(ALT_E);
-        n = TM_YEAR_BASE;
         bp = parse_num( c, bp, 0, 9999, &n );
         tm->tm_year = n - TM_YEAR_BASE;
         break;
 
       case 'z': { // RFC 2822 timezone offset or name: [+|-]HHMM | ZZZ
         CHECK_ALT(0);
-        int sign = 0;
-        if ( *bp == '+' )
-          sign = 1;
-        else if ( *bp == '-' )
-          sign = -1;
-        if ( sign )
-          ++bp;
-
+        int sign;
+        switch ( *bp ) {
+          case '+': sign =  1; ++bp; break;
+          case '-': sign = -1; ++bp; break;
+          default : sign =  0;
+        }
         if ( ascii::is_digit( *bp ) ) { // start of HHMM
           int hour = (*bp - '0') * 10;
           if ( !ascii::is_digit( *++bp ) )
@@ -413,11 +405,16 @@ again:
           int minute = (*bp - '0') * 10;
           if ( !ascii::is_digit( *++bp ) )
             goto bad_tz;
-          minute += *bp - '0';
-          int gmtoff = hour * 60 * 60 + minute * 60;
+          minute += *bp++ - '0';
+          if ( minute > 59 )
+            throw invalid_argument(
+              BUILD_STRING( minute, ": invalid minute for %z" )
+            );
+          long gmtoff = hour * 60 * 60 + minute * 60;
           if ( sign )
             gmtoff *= sign;
           set_gmtoff( *tm, gmtoff );
+          tm->tm_isdst = 0;
           break;
         } else if ( sign )              // sign followed by non-digit
 bad_tz:   throw invalid_argument( "invalid 4-digit timezone offset" );
