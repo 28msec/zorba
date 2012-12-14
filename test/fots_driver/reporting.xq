@@ -264,15 +264,23 @@ declare %ann:nondeterministic function reporting:generate-expected-failures(
       <failures>{
       for $testSet in $results//fots:test-set
       let $countFailures := count($testSet//fots:test-case[@result ="fail"])
+      let $countNotRun := count($testSet//fots:test-case[@result ="notRun"])
       let $testSetName := xs:string($testSet/@name)
-      where ($countFailures gt xs:integer(0))
+      where ($countFailures gt xs:integer(0)) or
+            ($countNotRun gt xs:integer(0))
       return
         <TestSet name="{$testSetName}"> {
-          for $testCase in $testSet//fots:test-case[@result ="fail"]
-          return
-            <Test name="{xs:string($testCase/@name)}"
-                  bug="0" />
-          }</TestSet>}</failures>
+          (for $testCase in $testSet//fots:test-case[@result ="fail"]
+           return
+             <Test name="{xs:string($testCase/@name)}"
+                   bug="0" />
+          ,
+           for $testCase in $testSet//fots:test-case[@result ="notRun"]
+           return
+             <Test name="{xs:string($testCase/@name)}"
+                   notRun="true"
+                   bug="0" />
+          )}</TestSet>}</failures>
     }
   }
   catch *

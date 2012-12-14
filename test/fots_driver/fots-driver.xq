@@ -370,7 +370,13 @@ declare %ann:sequential function driver:run(
           where $shouldRun
           return
             if($isExcepted)
-            then driver:not-run($testCase, $verbose)
+            then
+              (if (empty($expectedFailures))
+               then driver:not-run($testCase, $verbose)
+               else if(empty($expectedFailures/failures/TestSet[@name=$testSetName]/Test[@name=xs:string($testCase/@name)]))
+               then driver:fail($testCase, (), '', $testSetName, (), xs:dayTimeDuration("PT0S"), $verbose)
+               else driver:pass($testCase, (), '', (), (), xs:dayTimeDuration("PT0S"), $verbose)
+             )
             else if(exists(env:check-dependencies($testCase/fots:dependency,
                                                   $FOTSZorbaManifest)))
             then driver:not-applicable( $testCase,
