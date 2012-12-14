@@ -178,7 +178,7 @@ public:
   /**
    *  @return  "true" if the item is a JSON item or a node
    */
-  virtual bool 
+  bool
   isStructuredItem() const;
 
   /**
