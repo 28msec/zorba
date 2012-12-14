@@ -896,7 +896,7 @@ long XmlNode::getCollectionTreeRefCount() const
 /*******************************************************************************
 
 ********************************************************************************/
-bool XmlNode::isInSubTree(const StructuredItem* anotherItem) const
+bool XmlNode::isInSubtree(const StructuredItem* anotherItem) const
 {
   if (!anotherItem->isNode())
   {

@@ -586,7 +586,7 @@ public:
 
   virtual long getCollectionTreeRefCount() const;
 
-  virtual bool isInSubTree(const StructuredItem* anotherItem) const;
+  virtual bool isInSubtree(const StructuredItem* anotherItem) const;
 };
 
 

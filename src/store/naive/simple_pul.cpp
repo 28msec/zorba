@@ -2275,7 +2275,7 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
         StructuredItem* lRootStructuredItem =
             static_cast<StructuredItem*>(rootNodes[i]);
         
-        if (lRootStructuredItem->isInSubTree(lStructuredItem))
+        if (lRootStructuredItem->isInSubtree(lStructuredItem))
         {
           found = true;
           break;

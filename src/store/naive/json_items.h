@@ -297,7 +297,7 @@ public:
 
   void setCollectionTreeInfo(CollectionTreeInfo* aTree);
 
-  bool isInSubTree(const StructuredItem* aJSONItem) const;
+  bool isInSubtree(const StructuredItem* aJSONItem) const;
 
   // Invariant handling
 #ifndef NDEBUG
@@ -451,7 +451,7 @@ public:
   
   void setCollectionTreeInfo(CollectionTreeInfo* aTree);
 
-  bool isInSubTree(const StructuredItem* aJSONItem) const;
+  bool isInSubtree(const StructuredItem* aJSONItem) const;
 
 protected:
   void add(uint64_t pos, const std::vector<store::Item_t>& aNewMembers);

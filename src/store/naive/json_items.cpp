@@ -178,7 +178,7 @@ void JSONItem::assertInvariant() const
     assert(theTreeInfo->getCollection() != NULL);
     assert(theTreeInfo->getRoot() != NULL);
     assert(isThisTreeOfAllDescendants(theTreeInfo));
-    assert(theTreeInfo->getRoot()->isInSubTree(this));
+    assert(theTreeInfo->getRoot()->isInSubtree(this));
   }
 }
 #endif
@@ -635,7 +635,7 @@ bool SimpleJSONObject::isThisTreeOfAllDescendants(const CollectionTreeInfo* aTre
 /******************************************************************************
 
 *******************************************************************************/
-bool SimpleJSONObject::isInSubTree(const StructuredItem* anItem) const
+bool SimpleJSONObject::isInSubtree(const StructuredItem* anItem) const
 {
   if (this == anItem)
   {
@@ -651,7 +651,7 @@ bool SimpleJSONObject::isInSubTree(const StructuredItem* anItem) const
     {
       const StructuredItem* lStructuredItem =
         static_cast<const StructuredItem*>(lValue);
-      if (lStructuredItem->isInSubTree(anItem))
+      if (lStructuredItem->isInSubtree(anItem))
       {
         return true;
       }
@@ -1149,7 +1149,7 @@ bool SimpleJSONArray::isThisTreeOfAllDescendants(const CollectionTreeInfo* aTree
 /******************************************************************************
 
 *******************************************************************************/
-bool SimpleJSONArray::isInSubTree(const StructuredItem* anItem) const
+bool SimpleJSONArray::isInSubtree(const StructuredItem* anItem) const
 {
   if(this == anItem)
   {
@@ -1164,7 +1164,7 @@ bool SimpleJSONArray::isInSubTree(const StructuredItem* anItem) const
     {
       const StructuredItem* lStructuredItem =
         static_cast<const StructuredItem*>(lValue);
-      if (lStructuredItem->isInSubTree(anItem))
+      if (lStructuredItem->isInSubtree(anItem))
       {
         return true;
       }

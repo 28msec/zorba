@@ -50,7 +50,7 @@ public:
     assert(static_cast<StructuredItem*>(anItem.getp()));
     StructuredItem* lStructuredItem =
       static_cast<StructuredItem*>(anItem.getp());
-    return lStructuredItem->isInSubTree(this);
+    return lStructuredItem->isInSubtree(this);
   };
   
   //--------------------- Structured Item API ----------------------------------
@@ -76,7 +76,7 @@ public:
   virtual long getCollectionTreeRefCount() const = 0;
   
   // Tells if supplied item is in the subtree starting at this item.
-  virtual bool isInSubTree(const StructuredItem* anotherItem) const = 0;
+  virtual bool isInSubtree(const StructuredItem* anotherItem) const = 0;
   
 };
 
