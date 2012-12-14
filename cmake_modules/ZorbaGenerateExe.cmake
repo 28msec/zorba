@@ -68,8 +68,8 @@ MACRO(ZORBA_GENERATE_EXE EXE_NAME SRCS DEPEND_LIBS NEW_NAME INSTALL_DESTINATION)
     INSTALL (TARGETS ${EXE_NAME}${SUFFIX} DESTINATION ${INSTALL_DESTINATION})
   ENDIF (NOT ${INSTALL_DESTINATION} STREQUAL "")
 
-  # generate list of bat scripts to set the PATH variable for the executables
   IF (WIN32)
+    # generate list of bat scripts to set the PATH variable for the executables
     IF (NOT ${NEW_NAME} STREQUAL "")
       SET (ZORBA_EXE_NAME "${NEW_NAME}${SUFFIX}")
     ELSE (NOT ${NEW_NAME} STREQUAL "")
@@ -79,20 +79,18 @@ MACRO(ZORBA_GENERATE_EXE EXE_NAME SRCS DEPEND_LIBS NEW_NAME INSTALL_DESTINATION)
     SET (ZORBA_EXE_SCRIPT_LIST "${ZORBA_EXE_SCRIPT_LIST}${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_EXE_NAME}.bat;"
       CACHE STRING "List of Windows batch scripts to be generated, one for each executable" FORCE
     )
+
+
+    # generate list of Visual Studio project files to set the PATH variable
+    IF (MSVC_IDE)
+      SET (SYSTEM_NAME $ENV{USERDOMAIN})
+      SET (USER_NAME $ENV{USERNAME})
+      SET (ZORBA_VC_PROJECT_FILE_LIST "${ZORBA_VC_PROJECT_FILE_LIST}${EXE_NAME}.vcproj.${SYSTEM_NAME}.${USER_NAME}.user"
+        CACHE STRING "List of Visual Studio project files to be generated, one for each executable" FORCE
+      )
+    ENDIF (MSVC_IDE)
   ENDIF (WIN32)
   
-  # generating initial property file for each executable in visual studio
-  # is done to set the PATH variable correctly
-  IF (MSVC_IDE)
-    SET (SYSTEM_NAME $ENV{USERDOMAIN})
-    SET (USER_NAME $ENV{USERNAME})
-    SET (ZORBA_VC_PROJECT_CONFIG_FILE "${EXE_NAME}${SUFFIX}.vcproj.${SYSTEM_NAME}.${USER_NAME}.user")
-    # Do not overwrite old property files. The user might have adapted something.
-    IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
-      CONFIGURE_FILE (${CMAKE_SOURCE_DIR}/cmake_modules/VCProject.vcproj.in ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
-    ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
-  ENDIF (MSVC_IDE)
-
   IF (ZORBA_BUILD_STATIC_LIBRARY)
     ADD_EXECUTABLE ("${EXE_NAME}${SUFFIX}_static" ${SRCS})
     SET_TARGET_PROPERTIES ("${EXE_NAME}${SUFFIX}_static" PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
@@ -112,12 +110,12 @@ MACRO(ZORBA_GENERATE_EXE EXE_NAME SRCS DEPEND_LIBS NEW_NAME INSTALL_DESTINATION)
 ENDMACRO (ZORBA_GENERATE_EXE)
 
 
-# This macro will read the ZORBA_EXE_SCRIPT_LIST environments variable and will
-# generate them near each corresponding executable.
+# This macro will read the ZORBA_EXE_SCRIPT_LIST and ZORBA_VC_PROJECT_CONFIG_FILE 
+# environment variables and will generate them near each corresponding executable.
 # This macro must be invoked AFTER all the required libraries have been searched
 # for (both Zorba and external modules) in order to set a correct path in the
 # scripts.
-MACRO (ZORBA_GENERATE_EXE_SCRIPTS_WIN32)
+MACRO (ZORBA_GENERATE_EXE_HELPERS_WIN32)
 
   IF (NOT WIN32)
     MESSAGE (FATAL_ERROR "This macro is intended only for Windows platforms.")
@@ -141,4 +139,12 @@ MACRO (ZORBA_GENERATE_EXE_SCRIPTS_WIN32)
 
   ENDFOREACH (SCRIPT)
 
-ENDMACRO (ZORBA_GENERATE_EXE_SCRIPTS_WIN32)
+  FOREACH (VCFILE ${ZORBA_VC_PROJECT_FILE_LIST})
+    # Do not overwrite old property files. The user might have adapted something.
+    IF (NOT EXISTS ${VCFILE})
+      CONFIGURE_FILE (${CMAKE_SOURCE_DIR}/cmake_modules/VCProject.vcproj.in ${VCFILE})
+    ENDIF (NOT EXISTS ${VCFILE})
+  ENDFOREACH(VCFILE)
+
+
+ENDMACRO (ZORBA_GENERATE_EXE_HELPERS_WIN32)

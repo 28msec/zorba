@@ -136,10 +136,8 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
 
   typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
-                true : false);
-  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
-               true : false);
+  nsPreserve = theSctx->preserve_ns();
+  nsInherit = theSctx->inherit_ns();
 
   lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
   
@@ -395,10 +393,8 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   
   typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
-                true : false);
-  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
-               true : false);
+  nsPreserve = theSctx->preserve_ns();
+  nsInherit = theSctx->inherit_ns();
 
   lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
 
@@ -684,8 +680,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   if (!consumeNext(lNewname, theChild1, aPlanState))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
+    throw XQUERY_EXCEPTION(err::XPTY0004,
       ERROR_PARAMS( ZED( EmptySeqNoCastToQName ) ),
       ERROR_LOC( loc )
     );
@@ -693,8 +688,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   if (consumeNext(temp, theChild1, aPlanState))
   {
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
+    throw XQUERY_EXCEPTION(err::XPTY0004,
       ERROR_PARAMS( ZED( SeqNoCastToQName ) ),
       ERROR_LOC( loc )
     );
@@ -741,6 +735,13 @@ BINARY_ACCEPT(RenameIterator);
 /*******************************************************************************
 
 ********************************************************************************/
+void CopyClause::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theCopyVars;
+  ar & theInput;
+}
+
+
 TransformIterator::TransformIterator(
     static_context* sctx,
     const QueryLoc& aLoc,
@@ -762,6 +763,17 @@ TransformIterator::TransformIterator(
 
 TransformIterator::~TransformIterator()
 {
+}
+
+
+void TransformIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (Batcher<TransformIterator>*)this);
+  ar & theCopyClauses;
+  ar & theModifyIter;
+  ar & thePulHolderIter;
+  ar & theApplyIter;
+  ar & theReturnIter;
 }
 
 
@@ -801,15 +813,15 @@ void TransformIterator::accept(PlanIterVisitor &v) const
 bool
 TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
-  std::vector<ForVarIter_t>::const_iterator lVarRefIter; 
-  std::vector<ForVarIter_t>::const_iterator lVarRefEnd;
+  std::vector<ForVarIter_t>::const_iterator varRefIte; 
+  std::vector<ForVarIter_t>::const_iterator varRefEnd;
   store::Item_t pulItem;
   store::Item_t validationPul;
   store::PUL_t pul;
   store::Item_t temp;
   store::Item_t lItem;
-  store::Item_t lCopyNode;
-  store::CopyMode lCopyMode;
+  store::Item_t copyNode;
+  store::CopyMode copymode;
   bool typePreserve;
   bool nsPreserve;
   bool nsInherit;
@@ -821,25 +833,27 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
-                true : false);
-  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
-               true : false);
+  nsPreserve = theSctx->preserve_ns();
+  nsInherit = theSctx->inherit_ns();
 
-  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
+  copymode.set(true, typePreserve, nsPreserve, nsInherit);
 
   {
-    ulong numCopyClauses = (ulong)theCopyClauses.size(); 
+    csize numCopyClauses = theCopyClauses.size(); 
     std::vector<store::Item*> copyNodes(numCopyClauses);
 
     // For each copy var compute the target node and bind that node to all
     // references of the copy var.
-    for (ulong i = 0; i < numCopyClauses; i++)
+    for (csize i = 0; i < numCopyClauses; i++)
     {
       const CopyClause& copyClause = theCopyClauses[i];
 
-      if (!consumeNext(lCopyNode, copyClause.theInput, aPlanState) ||
-          !lCopyNode->isNode())
+      if (!consumeNext(copyNode, copyClause.theInput, aPlanState) ||
+          (!copyNode->isNode()
+#ifdef ZORBA_WITH_JSON
+           && !copyNode->isJSONItem()
+#endif
+          ))
       {
         throw XQUERY_EXCEPTION(err::XUTY0013, ERROR_LOC(loc));
       }
@@ -849,13 +863,16 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
         throw XQUERY_EXCEPTION(err::XUTY0013, ERROR_LOC(loc));
       }
 
-      copyNodes[i] = lCopyNode->copy(NULL, lCopyMode);
-
-      lVarRefIter = copyClause.theCopyVars.begin();
-      lVarRefEnd = copyClause.theCopyVars.end();
-      for(; lVarRefIter != lVarRefEnd; ++lVarRefIter)
+      if (!copyClause.theCopyVars.empty())
       {
-        (*lVarRefIter)->bind(copyNodes[i], aPlanState);
+        copyNodes[i] = copyNode->copy(NULL, copymode);
+
+        varRefIte = copyClause.theCopyVars.begin();
+        varRefEnd = copyClause.theCopyVars.end();
+        for(; varRefIte != varRefEnd; ++varRefIte)
+        {
+          (*varRefIte)->bind(copyNodes[i], aPlanState);
+        }
       }
     }
 

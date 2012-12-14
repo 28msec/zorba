@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,17 @@
 namespace zorba {
 
 // <FnParseXmlIterator>
-FnParseXmlIterator::class_factory<FnParseXmlIterator>
-FnParseXmlIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnParseXmlIterator)
+
+void FnParseXmlIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnParseXmlIterator, PlanIteratorState>*)this);
+}
 
 
-void FnParseXmlIterator::accept(PlanIterVisitor& v) const {
+void FnParseXmlIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -55,11 +61,17 @@ FnParseXmlIterator::~FnParseXmlIterator() {}
 
 
 // <FnSerializeIterator>
-FnSerializeIterator::class_factory<FnSerializeIterator>
-FnSerializeIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(FnSerializeIterator)
+
+void FnSerializeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnSerializeIterator, PlanIteratorState>*)this);
+}
 
 
-void FnSerializeIterator::accept(PlanIterVisitor& v) const {
+void FnSerializeIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

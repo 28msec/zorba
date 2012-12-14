@@ -17,6 +17,8 @@
 #ifndef ZORBA_SCTX_MAP_ITERATOR_H
 #define ZORBA_SCTX_MAP_ITERATOR_H
 
+#include "zorbautils/hashmap_itemp.h"
+
 #include "store/api/iterator.h"
 
 namespace zorba 
@@ -28,21 +30,23 @@ template< typename T> class serializable_ItemPointerHashMap;
 template < typename T >
 class SctxMapIterator : public store::Iterator
 {
+
+  typedef HashMap<store::Item*, rchandle<T>, HashMapItemPointerCmp> ItemsMap;
+
 private:
-  const static_context                                           * theSctx;
-  const static_context                                           * theCurSctx;
-  serializable_ItemPointerHashMap<rchandle<T> >*                   theItems;
-  typename serializable_ItemPointerHashMap<rchandle<T> >::iterator theIterator;
-  bool                                                             theIsClosed;
+  const static_context       * theSctx;
+  const static_context       * theCurSctx;
+  ItemsMap                   * theItems;
+  typename ItemsMap::iterator  theIterator;
+  bool                         theIsClosed;
   
   // function pointer for retrieving the map in question
-  serializable_ItemPointerHashMap<rchandle<T> >* (static_context::*theMapGetter)() const;
+  ItemsMap* (static_context::*theMapGetter)() const;
   
 public:
   SctxMapIterator(
         const static_context* aSctx,
-        serializable_ItemPointerHashMap<rchandle<T> >*
-        (static_context::*aMapGetter)() const);
+        ItemsMap* (static_context::*aMapGetter)() const);
   
   virtual ~SctxMapIterator();
   

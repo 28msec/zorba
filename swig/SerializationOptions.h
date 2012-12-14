@@ -17,9 +17,24 @@
 #ifndef API_SERIALIZATION_OPTIONS_H
 #define API_SERIALIZATION_OPTIONS_H
 
+  /** \brief This class defines a set of values used to define the way a serialization can be made over Items or Collections
+   *         collections.
+   *
+   * Default values:
+   *   - Serialization method: XML
+   *   - Byte order mark: NO
+   *   - Escape uri attributes: NO
+   *   - Include content type: NO
+   *   - Indent: NO
+   *   - Normalization form: none
+   *   - Omit xml declaration: NO
+   *   - Standalone: omit
+   *   - Undeclare prefixes: NO
+   */
 class SerializationOptions
 {
 friend class Item;
+friend class XQuery;
 
 public:
   typedef enum 
@@ -84,29 +99,48 @@ private:
   Zorba_SerializerOptions_t lOptions;
   
 public:
-  /*
-   * Default values:
-   *   - serialization method: XML
-   *   - byte order mark: NO
-   *   - esacpe uri attributes: NO
-   *   - include content type: NO
-   *   - indent: NO
-   *   - normalization form: none
-   *   - omit xml declaration: NO
-   *   - standalone: omit
-   *   - undeclare prefixes: NO
-   */
 
-
+  /* /brief Set the serialization method used
+  */
   void setSerializationMethod ( SerializationMethod aSerializationMethod );
+
+  /* /brief Set the byte order mark used
+  */
   void setByteOrderMark ( ByteOrderMark aByteOrderMark );
+
+  /* /brief Set the escape uri attributes used
+  */
   void setEscapeUriAttributes ( EscapeUriAttributes aEscapeUriAttributes );
+
+  /* /brief Set the include content type used
+  */
   void setIncludeContentType ( IncludeContentType aIncludeContentType );
+
+  /* /brief Set the identation used
+  */
   void setIndent ( Indent aIndent );
+
+  /* /brief Set the normalization form used
+  */
   void setNormalizationForm ( NormalizationForm aNormalizationForm );
+
+  /* /brief Set if XML declaration is omited
+  */
   void setOmitXMLDeclaration ( OmitXMLDeclaration aOmitXMLDeclaration );
+
+  /* /brief Set the standalone option
+  */
   void setStandalone ( Standalone aStandalone );
+
+  /* /brief Set the undeclared prefixes
+  */
   void setUndeclarePrefixes ( UndeclarePrefixes aUndeclarePrefixes );
+
+  /** /brief Set the serialization options given a string parameter and a string value
+   * 
+   * @param parameter The parameter to be changed
+   * @param value The value to be assigned in a string form
+   */
   void setSerializerOption(const std::string &parameter, const std::string &value);
 
 }; // class SerializationOptions

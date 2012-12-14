@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,23 @@ class fn_zorba_fetch_content : public function
 {
 public:
   fn_zorba_fetch_content(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-fetch:content-binary
+class fn_zorba_fetch_content_binary : public function
+{
+public:
+  fn_zorba_fetch_content_binary(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

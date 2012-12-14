@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,11 +88,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaValidateInPlaceIterator,
     UnaryBaseIterator<ZorbaValidateInPlaceIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<ZorbaValidateInPlaceIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaValidateInPlaceIterator(
     static_context* sctx,
@@ -122,11 +118,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaSchemaTypeIterator,
     NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaSchemaTypeIterator(
     static_context* sctx,
@@ -156,11 +148,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaIsValidatedIterator,
     NaryBaseIterator<ZorbaIsValidatedIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaIsValidatedIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ZorbaIsValidatedIterator(
     static_context* sctx,

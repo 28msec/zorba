@@ -1,33 +1,33 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
-  <LetVariable name="$$opt_temp_0" materialize="true">
-    <HoistIterator>
-      <OpToIterator>
-        <SingletonIterator value="xs:integer(1)"/>
-        <SingletonIterator value="xs:integer(2)"/>
-      </OpToIterator>
-    </HoistIterator>
-  </LetVariable>
-  <ReturnClause>
-    <SequentialIterator>
-      <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-        <flwor::FLWORIterator>
-          <ForVariable name="$$opt_temp_2">
-            <UnhoistIterator>
-              <LetVarIterator varname="$$opt_temp_0"/>
-            </UnhoistIterator>
-          </ForVariable>
-          <ReturnClause>
-            <ValueIndexEntryBuilderIterator>
-              <ForVarIterator varname="$$opt_temp_2"/>
-              <ForVarIterator varname="$$opt_temp_2"/>
-            </ValueIndexEntryBuilderIterator>
-          </ReturnClause>
-        </flwor::FLWORIterator>
-      </CreateInternalIndexIterator>
-      <ElementIterator>
-        <SingletonIterator value="xs:QName(,,karteikasten)"/>
-        <EnclosedIterator attr_cont="false">
+<ElementIterator>
+  <SingletonIterator value="xs:QName(,,karteikasten)"/>
+  <EnclosedIterator attr_cont="false">
+    <flwor::FLWORIterator>
+      <LetVariable name="$$opt_temp_0" materialize="true">
+        <HoistIterator>
+          <OpToIterator>
+            <SingletonIterator value="xs:integer(1)"/>
+            <SingletonIterator value="xs:integer(2)"/>
+          </OpToIterator>
+        </HoistIterator>
+      </LetVariable>
+      <ReturnClause>
+        <SequentialIterator>
+          <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$opt_temp_2">
+                <UnhoistIterator>
+                  <LetVarIterator varname="$$opt_temp_0"/>
+                </UnhoistIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ValueIndexEntryBuilderIterator>
+                  <ForVarIterator varname="$$opt_temp_2"/>
+                  <ForVarIterator varname="$$opt_temp_2"/>
+                </ValueIndexEntryBuilderIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </CreateInternalIndexIterator>
           <flwor::FLWORIterator>
             <ForVariable name="book">
               <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
@@ -64,9 +64,9 @@ Iterator tree for main query:
               </ElementIterator>
             </ReturnClause>
           </flwor::FLWORIterator>
-        </EnclosedIterator>
-      </ElementIterator>
-    </SequentialIterator>
-  </ReturnClause>
-</flwor::FLWORIterator>
+        </SequentialIterator>
+      </ReturnClause>
+    </flwor::FLWORIterator>
+  </EnclosedIterator>
+</ElementIterator>
 

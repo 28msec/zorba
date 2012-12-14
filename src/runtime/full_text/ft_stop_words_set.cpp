@@ -17,14 +17,14 @@
 
 #include <zorba/config.h>
 
-#include <util/ascii_util.h>
-#include <util/cxx_util.h>
-#include <util/mmap_file.h>
-#include <util/stl_util.h>
-#include <util/uri_util.h>
-#include <context/static_context.h>
-#include <context/uri_resolver.h>
-#include <zorbautils/locale.h>
+#include "context/static_context.h"
+#include "context/uri_resolver.h"
+#include "util/ascii_util.h"
+#include "util/cxx_util.h"
+#include "util/mmap_file.h"
+#include "util/stl_util.h"
+#include "util/uri_util.h"
+#include "zorbautils/locale.h"
 
 #include "ft_stop_words_set.h"
 
@@ -57,7 +57,7 @@ static ft_stop_table get_table_for( iso639_1::type lang ) {
     case LANG(pt);
     case LANG(sv);
     default:
-      return 0;
+      return nullptr;
   }
 }
 
@@ -75,7 +75,6 @@ static bool is_word_char( char c ) {
 void ft_stop_words_set::apply_word( zstring const &word, word_set_t &word_set,
                                     ft_stop_words_unex::type mode ) {
   // TODO: should "word" be converted to lower-case?
-  std::cout << "applying word " << word << std::endl;
   switch ( mode ) {
     case ft_stop_words_unex::union_:
       word_set.insert( word );
@@ -106,12 +105,9 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
       must_delete = true;
       break;
     case ft_stop_words_mode::with_default:
-      word_set = get_default_word_set_for( lang );
-      if ( !word_set ) {
-        // TODO: throw exception?
-        return ptr();
-      }
-      break;
+      if ( (word_set = get_default_word_set_for( lang )) )
+        break;
+      // no break;
     case ft_stop_words_mode::without:
       return ptr();
   }
@@ -133,7 +129,7 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
         dynamic_cast<internal::StreamResource*>( rsrc.get() );
       if ( !stream_rsrc ) {
         // Technically this should be thrown during static analysis.
-        throw ZORBA_EXCEPTION( err::FTST0008, ERROR_PARAMS( uri ) );
+        throw XQUERY_EXCEPTION( err::FTST0008, ERROR_PARAMS( uri ) );
       }
       std::istream *const stream = stream_rsrc->getStream();
 

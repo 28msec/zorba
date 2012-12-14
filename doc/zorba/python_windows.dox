@@ -98,5 +98,5 @@ zorba_api.InMemoryStore_shutdown(store)
 \endcode
 
 <strong> Useful links</strong>
-<a href="http://www.zorba-xquery.com/doc/zorba-latest/python/html/index.html" target="_blank">Zorba Python API Documentation</a>
+<a href="http://www.zorba-xquery.com/html/documentation/latest/python" target="_blank">Zorba Python API Documentation</a>
 */

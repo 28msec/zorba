@@ -18,24 +18,21 @@
 #include "functions/udf.h"
 
 #include "compiler/expression/var_expr.h"
+#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/api/compilercb.h"
 
 #include "types/typeops.h"
 
-#include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
+#include "context/static_context.h"
 
 #include "diagnostics/assert.h"
 
 
 namespace zorba
 {
-
-SERIALIZABLE_CLASS_VERSIONS(var_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(GlobalBinding)
 
 
 /*******************************************************************************
@@ -72,72 +69,75 @@ std::string var_expr::decode_var_kind(enum var_kind k)
 
 ********************************************************************************/
 var_expr::var_expr(
+    CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     var_kind k,
     store::Item* name)
   :
-  expr(sctx, loc, var_expr_kind),
+  expr(ccb, sctx, udf, loc, var_expr_kind),
   theUniqueId(0),
-  theKind(k),
+  theVarKind(k),
   theName(name),
   theDeclaredType(NULL),
   theFlworClause(NULL),
   theCopyClause(NULL),
   theParamPos(0),
-  theUDF(NULL),
+  theVarInfo(NULL),
   theIsExternal(false),
   theIsPrivate(false),
   theIsMutable(true),
   theHasInitializer(false)
 {
   compute_scripting_kind();
-
-  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-var_expr::var_expr(const var_expr& source)
+var_expr::var_expr(user_function* udf, const var_expr& source)
   :
   expr(source),
   theUniqueId(0),
-  theKind(source.theKind),
+  theVarKind(source.theVarKind),
   theName(source.theName),
   theDeclaredType(source.theDeclaredType),
   theFlworClause(NULL),
   theCopyClause(NULL),
   theParamPos(source.theParamPos),
-  theUDF(source.theUDF),
+  theVarInfo(NULL),
   theIsExternal(source.theIsExternal),
   theIsPrivate(source.theIsPrivate),
   theIsMutable(source.theIsMutable),
   theHasInitializer(source.theHasInitializer)
 {
+  theUDF = udf;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void var_expr::serialize(::zorba::serialization::Archiver& ar)
+var_expr::~var_expr()
 {
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(var_kind, theKind);
-  ar & theUniqueId;
-  ar & theName;
-  ar & theDeclaredType;
-  ar & theFlworClause;
-  ar & theCopyClause;
-  ar & theParamPos;
-  ar & theUDF;
-  ar & theSetExprs;
-  ar & theIsPrivate;
-  ar & theIsExternal;
-  ar & theIsMutable;
-  ar & theHasInitializer;
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    assert(theVarInfo->getName() != NULL);
+    theVarInfo->clearVar();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void var_expr::set_var_info(VarInfo* v)
+{
+  assert(theVarInfo == NULL);
+  theVarInfo = v;
 }
 
 
@@ -153,9 +153,48 @@ store::Item* var_expr::get_name() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t var_expr::get_type() const
+void var_expr::set_unique_id(ulong v)
 {
-  return theDeclaredType;
+  assert(theUniqueId == 0);
+
+  theUniqueId = v;
+
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setId(v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void var_expr::set_external(bool v)
+{
+  assert(theVarKind == prolog_var);
+  theIsExternal = v;
+
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setIsExternal(v);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void var_expr::set_has_initializer(bool v)
+{
+  theHasInitializer = v;
+
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setHasInitializer(v);
+  }
 }
 
 
@@ -165,6 +204,21 @@ xqtref_t var_expr::get_type() const
 void var_expr::set_type(xqtref_t t)
 {
   theDeclaredType = t;
+
+  if (theVarInfo)
+  {
+    assert(theVarKind == prolog_var);
+    theVarInfo->setType(t);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t var_expr::get_type() const
+{
+  return theDeclaredType;
 }
 
 
@@ -173,7 +227,7 @@ void var_expr::set_type(xqtref_t t)
 ********************************************************************************/
 const var_expr* var_expr::get_pos_var() const
 {
-  if (theKind == for_var)
+  if (theVarKind == for_var)
   {
     return reinterpret_cast<for_clause*>(theFlworClause)->get_pos_var();
   }
@@ -191,20 +245,20 @@ expr* var_expr::get_domain_expr() const
 {
   if (theFlworClause)
   {
-    if (theKind == for_var ||
-        theKind == let_var ||
-        theKind == win_var ||
-        theKind == wincond_in_var ||
-        theKind == wincond_out_var)
+    if (theVarKind == for_var ||
+        theVarKind == let_var ||
+        theVarKind == win_var ||
+        theVarKind == wincond_in_var ||
+        theVarKind == wincond_out_var)
     {
       return reinterpret_cast<forletwin_clause*>(theFlworClause)->get_expr();
     }
-    else if (theKind == groupby_var)
+    else if (theVarKind == groupby_var)
     {
       return reinterpret_cast<group_clause*>(theFlworClause)->
              get_input_for_group_var(this);
     }
-    else if (theKind == non_groupby_var)
+    else if (theVarKind == non_groupby_var)
     {
       return reinterpret_cast<group_clause*>(theFlworClause)->
              get_input_for_nongroup_var(this);
@@ -224,29 +278,48 @@ expr* var_expr::get_domain_expr() const
 ********************************************************************************/
 forletwin_clause* var_expr::get_forletwin_clause() const
 {
-  return dynamic_cast<forletwin_clause*>(theFlworClause);
+  assert(theFlworClause->get_kind() == flwor_clause::for_clause ||
+         theFlworClause->get_kind() == flwor_clause::let_clause ||
+         theFlworClause->get_kind() == flwor_clause::window_clause);
+
+  return static_cast<forletwin_clause*>(theFlworClause);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-for_clause* var_expr::get_for_clause() const
+forlet_clause* var_expr::get_forlet_clause() const
 {
-  return dynamic_cast<for_clause*>(theFlworClause);
+  assert(theFlworClause->get_kind() == flwor_clause::for_clause ||
+         theFlworClause->get_kind() == flwor_clause::let_clause);
+
+  return static_cast<forlet_clause*>(theFlworClause);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void var_expr::remove_set_expr(expr* e) 
+void var_expr::add_set_expr(expr* e)
 {
-  assert(theKind == local_var || theKind == prolog_var);
+  assert(e->get_expr_kind() == var_decl_expr_kind ||
+         e->get_expr_kind() == var_set_expr_kind);
+
+  theSetExprs.push_back(static_cast<var_set_expr*>(e));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void var_expr::remove_set_expr(expr* e)
+{
+  assert(theVarKind == local_var || theVarKind == prolog_var);
 
   bool found = false;
-  std::vector<expr*>::iterator ite = theSetExprs.begin();
-  std::vector<expr*>::iterator end = theSetExprs.end();
+  VarSetExprs::iterator ite = theSetExprs.begin();
+  VarSetExprs::iterator end = theSetExprs.end();
   for (; ite != end; ++ite)
   {
     if (*ite == e)
@@ -282,36 +355,12 @@ void var_expr::compute_scripting_kind()
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr_t var_expr::clone(expr::substitution_t& subst) const
-{
-  expr::subst_iter_t i = subst.find(this);
-
-  if (i == subst.end())
-    return const_cast<var_expr*>(this);
-
-  return i->second;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void var_expr::accept(expr_visitor& v)
 {
   if (v.begin_visit(*this))
     accept_children(v);
 
   v.end_visit(*this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void GlobalBinding::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (std::pair<var_expr_t, expr_t>*)this);
-  ar & theIsExternal;
 }
 
 

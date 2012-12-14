@@ -128,11 +128,12 @@ off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_st
     return heap.put(text, 0, length);
   else
   {
+    // EQName:  Q{prefix}name
     string name;
     string prefix = text;
-    string::size_type pos = prefix.rfind(':');
+    string::size_type pos = prefix.rfind('}');
     name = prefix.substr(pos+1);
-    prefix = prefix.substr(0, pos);
+    prefix = prefix.substr(1, pos);
 
     off_t uri = put_uri(prefix.c_str(), prefix.size());
     name = get(uri) + ":" + name;

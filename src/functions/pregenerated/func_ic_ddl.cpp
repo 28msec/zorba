@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,9 +63,9 @@ PlanIter_t zorba_store_integrity_constraints_static_dml_check_integrity_constrai
 
 void populate_context_ic_ddl(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_activate,
         (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","activate"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
@@ -75,9 +75,9 @@ void populate_context_ic_ddl(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_deactivate,
         (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","deactivate"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
@@ -87,9 +87,9 @@ void populate_context_ic_ddl(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_dml_check_integrity_constraint,
         (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml","","check-integrity-constraint"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 

@@ -50,20 +50,6 @@ namespace StaticContextConsts
     cons_strip
   };
 
-  enum inherit_mode_t
-  {
-    inherit_unknown,
-    inherit_ns,
-    no_inherit_ns
-  };
-
-  enum preserve_mode_t
-  { 
-    preserve_unknown,
-    preserve_ns,
-    no_preserve_ns
-  };
-
   enum ordering_mode_t
   {
     ordering_unknown,

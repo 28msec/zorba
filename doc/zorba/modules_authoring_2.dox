@@ -318,6 +318,21 @@ command. Again, generally speaking the path to the appropriate include
 directory will be set in a CMake variable by the
 <tt>FIND_PACKAGE()</tt> command.
 
+Important note: <tt>DECLARE_ZORBA_MODULE</tt> discovers all
+<tt>.cpp</tt> files in the source directory automatically, using a
+glob pattern (i.e., <tt>*.cpp</tt>). This is convenient, but it does
+have a hidden downside: If you add new <tt>.cpp</tt> files to this
+directory, CMake has no way of knowing that you have done so, and so
+those files will not automatically get built. This can lead to strange
+compilation or runtime errors. Fortunately, there is a simple
+solution: Whenever you add new <tt>.cpp</tt> files for a module,
+always remember to immediately re-run <tt>cmake</tt> in your build
+directory. This will cause the glob pattern to be re-run and will pick
+up any new source code files. Likewise, if you delete any
+<tt>.cpp</tt> files from your source directory, you will need to
+re-run <tt>cmake</tt> for the same reason - although at least in that
+case you will get a clear error message if you forget to do so.
+
 \section mod_author_declare_synopsis Zorba Module CMake Macros: Summary
 
 For reference, here is the complete set of options for all macros

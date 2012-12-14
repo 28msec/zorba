@@ -105,12 +105,13 @@ void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain
     if (kind == fo_expr_kind)
     {
       const fo_expr* fo = static_cast<const fo_expr*>(curExpr);
-      udf = dynamic_cast<user_function*>(fo->get_func());
+      if (fo->get_func()->isUdf())
+        udf = static_cast<user_function*>(fo->get_func());
     }
     else
     {
       const function_item_expr* fi = static_cast<const function_item_expr*>(curExpr);
-      udf = dynamic_cast<user_function*>(fi->get_function());
+      udf = static_cast<user_function*>(fi->get_function());
     }
 
     if (udf != NULL)
@@ -198,7 +199,7 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
 
   node->theVisitId = visit;
 
-  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  for (csize i = 0; i < node->theChildren.size(); ++i)
   {
     optimizeUDFs(ccb, node->theChildren[i], visit);
   }
@@ -207,41 +208,31 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
     return;
 
   user_function* udf = node->theUDF;
-  expr_t body = udf->getBody();
-
-  // inline functions are optimized during translation.
-  if (udf->isOptimized())
-    return;
+  expr* body = udf->getBody();
 
   // Note: the body can be NULL when using Plan Serialization
   while (body != NULL)
   {
-    // Set the Optimized flag in advance to prevent an infinte loop (for
-    // recursive functions, an optimization could be attempted again)
-    udf->setOptimized(true);
+    udf->optimize();
 
-    RewriterContext rctx(ccb, body, udf,
-                         zstring(),
-                         body->get_sctx()->is_in_ordered_mode());
-    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
-    body = rctx.getRoot();
+    body = udf->getBody();
 
     TypeManager* tm = body->get_type_manager();
 
 #if 1
     // Set the return type of the function to the type of its body. But do not
     // do it if the body type is a user-defined type because the udf may be
-    // used in another module which does not import the schema that describes 
+    // used in another module which does not import the schema that describes
     // this user-defined type.
     xqtref_t bodyType = body->get_return_type();
     xqtref_t declaredType = udf->getSignature().returnType();
-    
+
     bool udt = (bodyType->type_kind() == XQType::USER_DEFINED_KIND);
 
     if (bodyType->type_kind() == XQType::NODE_TYPE_KIND)
     {
       const NodeXQType* nodeType = static_cast<const NodeXQType*>(bodyType.getp());
-        
+
       xqtref_t contentType = nodeType->get_content_type();
 
       udt = (contentType->type_kind() == XQType::USER_DEFINED_KIND);
@@ -253,24 +244,15 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
     {
       udf->getSignature().returnType() = bodyType;
       if (!udf->isLeaf())
+      {
+        udf->setOptimized(false);
         continue;
+      }
     }
 #endif
 
     udf->setBody(body);
     break;
-  }
-
-  if (ccb->theConfig.optimize_cb != NULL)
-  {
-    if (udf->getName())
-    {
-      ccb->theConfig.optimize_cb(body, udf->getName()->getStringValue().c_str());
-    }
-    else
-    {
-      ccb->theConfig.optimize_cb(body, "inline function");
-    }
   }
 }
 
@@ -293,7 +275,7 @@ bool UDFGraph::inferDeterminism(UDFNode* node, ulong visit)
 
   bool deterministic = true;
 
-  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  for (csize i = 0; i < node->theChildren.size(); ++i)
   {
     if (inferDeterminism(node->theChildren[i], visit) == false)
       deterministic = false;
@@ -349,7 +331,7 @@ void UDFGraph::display(std::ostream& o, UDFNode* node)
 
   o << inc_indent;
 
-  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  for (csize i = 0; i < node->theChildren.size(); ++i)
   {
     display(o, node->theChildren[i]);
   }

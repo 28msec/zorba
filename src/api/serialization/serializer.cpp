@@ -16,10 +16,11 @@
 #include "stdafx.h"
 
 #include <sstream>
+#include <iomanip>
 
 #include <zorba/zorba_string.h>
+#include <zorba/transcode_stream.h>
 
-#include "zorbatypes/numconversions.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 
@@ -30,16 +31,21 @@
 #include "api/unmarshaller.h"
 
 #include "util/ascii_util.h"
-#include "util/utf8_util.h"
+#include "util/json_util.h"
 #include "util/string_util.h"
+#include "util/unicode_util.h"
+#include "util/utf8_util.h"
 #include "util/xml_util.h"
 
 #include "system/globalenv.h"
+#include "zorbamisc/ns_consts.h"
+#include "zorbatypes/numconversions.h"
 
 #include "store/api/iterator.h"
 #include "store/api/iterator_factory.h"
 #include "store/api/item.h"
-
+#include "store/api/item_factory.h"
+#include "store/api/copymode.h"
 
 namespace zorba {
 
@@ -100,7 +106,6 @@ static void tokenize(
   }
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //  Default emitter                                                           //
@@ -111,14 +116,18 @@ static void tokenize(
 /*******************************************************************************
 
 ********************************************************************************/
-serializer::emitter::emitter(serializer* the_serializer, transcoder& the_transcoder)
+serializer::emitter::emitter(
+    serializer* the_serializer, 
+    std::ostream& the_stream,
+    bool aEmitAttributes)
   :
   ser(the_serializer),
-  tr(the_transcoder),
-  previous_item(INVALID_ITEM),
+  tr(the_stream),
+  thePreviousItemKind(INVALID_ITEM),
   theChildIters(8),
   theFirstFreeChildIter(0),
-  isFirstElementNode(true)
+  theIsFirstElementNode(true),
+  theEmitAttributes(aEmitAttributes)
 {
   for (ulong i = 0; i < 8; i++)
     theChildIters[i] = GENV_ITERATOR_FACTORY->createChildrenIterator();
@@ -193,9 +202,15 @@ int serializer::emitter::emit_expanded_string(
       const unsigned char* temp = chars;
       unicode::code_point cp = utf8::next_char(temp);
 
-      // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
-      if (ser && ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid(cp))
+      // raise an error iff (1) the serialization format is XML 1.0 and 
+      // (2) the given character is an invalid XML 1.0 character
+      if (ser &&
+          ser->method == PARAMETER_VALUE_XML &&
+          ser->version == PARAMETER_VALUE_VERSION_1_0 &&
+          !xml::is_valid(cp))
+      {
         throw XQUERY_EXCEPTION( err::FOCH0001, ERROR_PARAMS( cp ) );
+      }
 
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
@@ -219,7 +234,7 @@ int serializer::emitter::emit_expanded_string(
 
     // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
     if (ser && ser->method == PARAMETER_VALUE_XML &&
-        ser->version == "1.0" && !xml::is_valid(static_cast<unsigned>(*chars)))
+        ser->version == PARAMETER_VALUE_VERSION_1_0 && !xml::is_valid(static_cast<unsigned>(*chars)))
       throw XQUERY_EXCEPTION(
         err::XQST0090,
         ERROR_PARAMS( static_cast<unsigned>( *chars ), xml::v1_0 )
@@ -328,13 +343,12 @@ void serializer::emitter::emit_declaration()
   {
     if (ser->encoding == PARAMETER_VALUE_UTF_8 )
     {
-      tr << (char)0xEF << (char)0xBB << (char)0xBF;
+      transcode::orig_streambuf( tr )->sputn( "\xEF\xBB\xBF", 3 );
     }
     else if (ser->encoding == PARAMETER_VALUE_UTF_16)
     {
       // Little-endian
-      tr.verbatim((char)0xFF);
-      tr.verbatim((char)0xFE);
+      transcode::orig_streambuf( tr )->sputn( "\xFF\xFE", 2 );
     }
   }
 }
@@ -343,7 +357,7 @@ void serializer::emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::emitter::emit_declaration_end()
+void serializer::emitter::emit_end()
 {
   // Do nothing in the default emitter
 }
@@ -417,9 +431,21 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
 ********************************************************************************/
 void serializer::emitter::emit_item(store::Item* item)
 {
+#ifdef ZORBA_WITH_JSON
+  if (item->isJSONItem())
+  {
+    zstring lMethod;
+    ser->getSerializationMethod(lMethod);
+    throw ZORBA_EXCEPTION(
+        jerr::JNSE0022,
+        ERROR_PARAMS(lMethod, item->getType()->getStringValue())
+      );
+  }
+#endif
+
   if (item->isAtomic())
   {
-    if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
+    if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";
 
     if (item->isStreamable())
@@ -427,11 +453,12 @@ void serializer::emitter::emit_item(store::Item* item)
     else
       emit_expanded_string(item->getStringValue().c_str(), item->getStringValue().size());
 
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
   }
-  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  else if (!theEmitAttributes 
+        && item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    throw XQUERY_EXCEPTION(err::SENR0001, 
+    throw XQUERY_EXCEPTION(err::SENR0001,
     ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
   }
   else
@@ -452,7 +479,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   {
     emit_node_children(item, depth);
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
@@ -462,10 +489,10 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
     const zstring& prefix = qnameItem->getPrefix();
     const zstring& local = qnameItem->getLocalName();
 
-    if (isFirstElementNode)
+    if (theIsFirstElementNode)
     {
       emit_doctype(local);
-      isFirstElementNode = false;
+      theIsFirstElementNode = false;
     }
     else if (ser->indent && depth == 0)
     {
@@ -477,7 +504,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
     else
       tr << "<" << prefix << ":" << local;
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     bool should_remove_binding = emit_bindings(item, depth);
 
@@ -498,7 +525,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
       tr << "/>";
     }
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
@@ -520,7 +547,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
 
     tr << "\"";
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
@@ -531,14 +558,15 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
 
     emit_text_node(item, text);
 
+    // Put a space between consecutive text nodes (or a text node and an
+    // atomic item), unless the text node contains whitespace only.
     if (!ascii::is_whitespace(text.c_str()))
     {
-      // ignore whitespace text nodes when doing indentation
-      previous_item = PREVIOUS_ITEM_WAS_TEXT;
+      thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
     }
     else
     {
-      previous_item = PREVIOUS_ITEM_WAS_NODE;
+      thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
     }
 
     break;
@@ -546,7 +574,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   case store::StoreConsts::commentNode:
   {
     tr << "<!--" << item->getStringValue() << "-->";
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
@@ -554,14 +582,14 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   {
     tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     break;
   }
   default:
   {
-    ZORBA_ASSERT(false);
-    tr << "node of type: " << item->getNodeKind();
+    int k = static_cast<int>(item->getNodeKind());
+    ZORBA_ASSERT_WITH_MSG(false, BUILD_STRING("node of type: ", k));
   }
   }
 }
@@ -714,19 +742,17 @@ int serializer::emitter::emit_node_children(
 ********************************************************************************/
 bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
 {
-  // emit namespace bindings
   store::NsBindings nsBindings;
+
   if (depth == 0)
   {
     item->getNamespaceBindings(nsBindings);
   }
   else
   {
-    //item->getNamespaceBindings(nsBindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
     item->getNamespaceBindings(nsBindings);
 
     store::Item* nodeName = item->getNodeName();
-
     const zstring& prefix = nodeName->getPrefix();
     const zstring& nsuri = nodeName->getNamespace();
     if (prefix.empty() && nsuri.empty())
@@ -762,18 +788,17 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
           }
           else if (ser->undeclare_prefixes == PARAMETER_VALUE_YES)
           {
-            tr << " xmlns";
-            if (nsBindings[i].first.size() > 0)
-              tr << ":" <<  nsBindings[i].first;
-            tr << "=\"\"";
+            tr << " xmlns:" <<  nsBindings[i].first << "=\"\"";
           }
         }
       }
       else
       {
         tr << " xmlns";
+
         if (!nsBindings[i].first.empty())
           tr << ":" <<  nsBindings[i].first;
+
         tr << "=\"" << nsBindings[i].second << "\"";
       }
     }
@@ -787,7 +812,6 @@ bool serializer::emitter::emit_bindings(const store::Item* item, int depth)
 
   return false;
 }
-
 
 /*******************************************************************************
 
@@ -815,11 +839,11 @@ bool serializer::emitter::haveBinding(std::pair<zstring, zstring>& nsBinding) co
 ********************************************************************************/
 bool serializer::emitter::havePrefix(const zstring& pre) const
 {
-  for (unsigned long i = 0; i < theBindings.size(); ++i)
+  for (csize i = 0; i < theBindings.size(); ++i)
   {
     const store::NsBindings& nsBindings = theBindings[i];
 
-    for (unsigned long j = 0; j < nsBindings.size(); ++j)
+    for (csize j = 0; j < nsBindings.size(); ++j)
     {
       if (nsBindings[j].first == pre)
         return true;
@@ -833,7 +857,7 @@ bool serializer::emitter::havePrefix(const zstring& pre) const
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//  XML Emitter                                                               //
+//  XML emitter                                                               //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -843,9 +867,10 @@ bool serializer::emitter::havePrefix(const zstring& pre) const
 ********************************************************************************/
 serializer::xml_emitter::xml_emitter(
   serializer* the_serializer,
-  transcoder& the_transcoder)
+  std::ostream& the_stream,
+  bool aEmitAttributes)
   :
-  emitter(the_serializer, the_transcoder)
+  emitter(the_serializer, the_stream, aEmitAttributes)
 {
 }
 
@@ -858,7 +883,7 @@ void serializer::xml_emitter::emit_declaration()
   emitter::emit_declaration();
 
   if (ser->omit_xml_declaration == PARAMETER_VALUE_NO) {
-    tr << "<?xml version=\"" << ser->version;
+    tr << "<?xml version=\"" << ser->version_string;
     switch (ser->encoding) {
       case PARAMETER_VALUE_UTF_8:
       case PARAMETER_VALUE_UTF_16:
@@ -916,6 +941,266 @@ void serializer::xml_emitter::emit_doctype(const zstring& elementName)
     tr << ser->END_OF_LINE;
 }
 
+
+#ifdef ZORBA_WITH_JSON
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  JSON emitter - as defined by JSONiq spec                             //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+serializer::json_emitter::json_emitter(
+  serializer* the_serializer,
+  std::ostream& the_stream)
+  : emitter(the_serializer, the_stream),
+    theMultipleItems(false)
+{
+}
+
+serializer::json_emitter::~json_emitter()
+{
+}
+
+void serializer::json_emitter::emit_item(store::Item *item)
+{
+  // This is called by serializer for each top-level item. Therefore it's the
+  // right place to check for multiple items in the sequence.
+  if (theMultipleItems && ser->jsoniq_multiple_items == PARAMETER_VALUE_NO)
+  {
+    throw XQUERY_EXCEPTION(jerr::JNSE0012);
+  }
+  emit_json_item(item, 0);
+  theMultipleItems = true;
+}
+
+void serializer::json_emitter::emit_declaration()
+{
+}
+
+void serializer::json_emitter::emit_end()
+{
+}
+
+void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
+{
+  // This is called for any item within a JSON array or object, or for a
+  // top-level item. JSON rules for simple types apply here.
+  if (item->isJSONObject()) {
+    emit_json_object(item, depth);
+  }
+  else if (item->isJSONArray()) {
+    emit_json_array(item, depth);
+  }
+  else if (item->isAtomic()) {
+    store::SchemaTypeCode type = item->getTypeCode();
+    switch (type) {
+    case store::XS_STRING:
+      emit_json_string(item->getStringValue());
+      break;
+
+    case store::XS_DOUBLE:
+    case store::XS_FLOAT:
+      if (item->isNaN()) {
+        emit_json_string("NaN");
+        break;
+      }
+      else if (item->isPosOrNegInf()) {
+        // QQQ with Cloudscript, this is supposed to be INF or -INF - how can
+        // I tell which I have?
+        emit_json_string("INF");
+        break;
+      }
+      // else fall through
+    case store::XS_INTEGER:
+    case store::XS_DECIMAL:
+    case store::XS_NON_POSITIVE_INTEGER:
+    case store::XS_NEGATIVE_INTEGER:
+    case store::XS_LONG:
+    case store::XS_INT:
+    case store::XS_SHORT:
+    case store::XS_BYTE:
+    case store::XS_NON_NEGATIVE_INTEGER:
+    case store::XS_UNSIGNED_LONG:
+    case store::XS_UNSIGNED_INT:
+    case store::XS_UNSIGNED_SHORT:
+    case store::XS_UNSIGNED_BYTE:
+    case store::XS_POSITIVE_INTEGER:
+      // All numerics get serialized the same way
+      tr << item->getStringValue();
+      break;
+
+    case store::XS_BOOLEAN:
+      tr << (item->getBooleanValue() ? "true" : "false");
+      break;
+
+    case store::JS_NULL:
+      tr << "null";
+      break;
+
+    default: {
+      emit_json_string(item->getStringValue());
+      break;
+    }
+    }
+  }
+  else {
+    emit_jsoniq_xdm_node(item, depth);
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
+{
+  store::Item_t key;
+  store::Iterator_t it = obj->getObjectKeys();
+  it->open();
+  bool first = true;
+  if (ser->indent) {
+    tr << "{" <<ser->END_OF_LINE;
+  }
+  else {
+    tr << "{ ";
+  }
+  depth++;
+  while (it->next(key)) {
+    if (first) {
+      first = false;
+    }
+    else {
+      tr << ", ";
+      if (ser->indent) {
+        tr << ser->END_OF_LINE;
+      }
+    }
+    if (ser->indent) {
+      emit_indentation(depth);
+    }
+    emit_json_item(key, depth);
+    tr << " : ";
+    emit_json_item(obj->getObjectValue(key).getp(), depth);
+  }
+  if (ser->indent) {
+    tr << ser->END_OF_LINE;
+    emit_indentation(depth-1);
+    tr << "}";
+  }
+  else {
+    tr << " }";
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
+{
+  xs_integer size = array->getArraySize();
+  tr << "[ ";
+  for (xs_integer i = xs_integer(1); i <= size; ++i) {
+    if (i != 1) {
+      tr << ", ";
+    }
+    store::Item_t position;
+    GENV_ITEMFACTORY->createInteger(position, i);
+    emit_json_item(array->getArrayValue(position->getIntegerValue()).getp(), depth);
+  }
+  tr << " ]";
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_jsoniq_xdm_node(store::Item*, int)
+{
+  throw XQUERY_EXCEPTION(jerr::JNSE0014);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::json_emitter::emit_json_string(zstring const &string)
+{
+  tr << '"' << json::serialize( string ) << '"';
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  hybrid emitter (auto-detects JSON or XML)                                 //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+serializer::hybrid_emitter::hybrid_emitter(
+  serializer* the_serializer,
+  std::ostream& the_stream,
+  bool aEmitAttributes)
+  : json_emitter(the_serializer, the_stream),
+    theEmitterState(JESTATE_UNDETERMINED),
+    theXMLEmitter(new xml_emitter(the_serializer, the_stream, aEmitAttributes)),
+    theNestedXMLStringStream(nullptr)
+{
+}
+
+serializer::hybrid_emitter::~hybrid_emitter()
+{
+  delete theNestedXMLStringStream;
+  delete theXMLEmitter;
+}
+
+void serializer::hybrid_emitter::emit_declaration()
+{
+}
+
+void serializer::hybrid_emitter::emit_item(store::Item *item)
+{
+  if (item->isJSONItem()) {
+    theEmitterState = JESTATE_JDM;
+    json_emitter::emit_item(item);
+  }
+  else {
+    if (theEmitterState == JESTATE_UNDETERMINED) {
+      theXMLEmitter->emit_declaration();
+    }
+    theEmitterState = JESTATE_XDM;
+    theXMLEmitter->emit_item(item);
+  }
+}
+
+void serializer::hybrid_emitter::emit_end()
+{
+  switch(theEmitterState)
+  {
+    case JESTATE_JDM:
+      json_emitter::emit_end();
+      return;
+    case JESTATE_XDM:
+    default:
+      theXMLEmitter->emit_end();
+  }
+}
+
+void serializer::hybrid_emitter::emit_jsoniq_xdm_node(
+    store::Item* item,
+    int)
+{
+  if (! theNestedXMLEmitter) {
+    theNestedXMLStringStream = new std::stringstream();
+    ser->attach_transcoder(*theNestedXMLStringStream);
+    theNestedXMLEmitter
+        = new serializer::xml_emitter(ser, *theNestedXMLStringStream);
+  }
+  theNestedXMLEmitter->emit_item(item);
+  zstring xml(theNestedXMLStringStream->str());
+  theNestedXMLStringStream->str("");
+
+  emit_json_string(xml);
+}
+
+#endif /* ZORBA_WITH_JSON */
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -1000,28 +1285,6 @@ static bool is_html_empty_content_model_element(const store::Item* item)
 
 
 /*******************************************************************************
-  Returns true for those elements which are not allowed under HTML to have
-  empty tags (more exactly they are required to have both opening and closing
-  tags).
-********************************************************************************/
-static bool is_html_no_empty_tags_element(const store::Item* item)
-{
-  if (item == NULL)
-    return false;
-
-  zstring nodename;
-  utf8::to_lower(item->getNodeName()->getStringValue(), &nodename);
-
-  if (ztd::equals(nodename, "script", 6) ||
-      ztd::equals(nodename, "textarea", 8) ||
-      ztd::equals(nodename, "div", 3))
-    return true;
-  else
-    return false;
-}
-
-
-/*******************************************************************************
 
 ********************************************************************************/
 static bool is_html_boolean_attribute(const zstring& attribute)
@@ -1052,9 +1315,9 @@ static bool is_html_boolean_attribute(const zstring& attribute)
 ********************************************************************************/
 serializer::html_emitter::html_emitter(
   serializer* the_serializer,
-  transcoder& the_transcoder)
+  std::ostream& the_stream)
   :
-  emitter(the_serializer, the_transcoder)
+  emitter(the_serializer, the_stream)
 {
 }
 
@@ -1071,7 +1334,7 @@ void serializer::html_emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::html_emitter::emit_declaration_end()
+void serializer::html_emitter::emit_end()
 {
 }
 
@@ -1123,11 +1386,16 @@ void serializer::html_emitter::emit_node(
 {
   const store::Item* element_parent = item->getParent();
 
-  if( item->getNodeKind() == store::StoreConsts::documentNode)
+  store::NodeKind kind = item->getNodeKind();
+
+  switch (kind)
+  {
+  case store::StoreConsts::documentNode:
   {
     emit_node_children(item, depth);
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::elementNode)
+  case store::StoreConsts::elementNode:
   {
     store::Item* qnameItem = item->getNodeName();
 
@@ -1136,10 +1404,10 @@ void serializer::html_emitter::emit_node(
 
     unsigned closed_parent_tag = 0;
 
-    if (isFirstElementNode)
+    if (theIsFirstElementNode)
     {
       emit_doctype(qname);
-      isFirstElementNode = false;
+      theIsFirstElementNode = false;
     }
 
     // If a meta element has been added to the head element as described above,
@@ -1155,7 +1423,7 @@ void serializer::html_emitter::emit_node(
 
     tr << "<" << qname;
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     bool should_remove_binding = emit_bindings(item, depth);
 
@@ -1201,33 +1469,25 @@ void serializer::html_emitter::emit_node(
     }
     else
     {
-      // The HTML 4.01 spec says that both tags (begin and end tags) are REQUIRED
-      // for script, textarea and div tags.
-      if (is_html_no_empty_tags_element(item) ||
-          (ser->include_content_type == PARAMETER_VALUE_YES &&
-           strcasecmp(qname.c_str(), "head") == 0))
+      // The HTML 4.01 and XQuery Serialization specs strongly imply that
+      // ALL empty elements must be serialized as either a matched open-
+      // close tag, or (only for elements with an empty content model) as
+      // an unclosed open tag.
+      if (is_html_empty_content_model_element(item))
       {
         tr << ">";
-        tr << "</" << qname << ">";
       }
       else
       {
-        // The HTML output method MUST NOT output an end-tag for empty elements.
-        // For HTML 4.0, the empty elements are area, base, basefont, br, col,
-        // frame, hr, img, input, isindex, link, meta and param. For example,
-        // an element written as <br/> or <br></br> in an XSLT stylesheet MUST
-        // be output as <br>.
-        if (is_html_empty_content_model_element(item) &&
-            ztd::equals(ser->version, "4.0", 3))
-          tr << ">";
-        else
-          tr << "/>";
+        tr << "></" << qname << ">";
       }
     }
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  case store::StoreConsts::attributeNode:
   {
     // The HTML output method MUST output boolean attributes (that is attributes
     // with only a single allowed value that is equal to the name of the
@@ -1250,9 +1510,11 @@ void serializer::html_emitter::emit_node(
       tr << "\"";
     }
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
+
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::textNode)
+  case store::StoreConsts::textNode:
   {
     bool expand = true;
 
@@ -1280,24 +1542,28 @@ void serializer::html_emitter::emit_node(
       tr << item->getStringValue();  // no character expansion
     }
 
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::commentNode)
+  case store::StoreConsts::commentNode:
   {
     tr << "<!--" << item->getStringValue() << "-->";
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
+    break;
   }
-  else if (item->getNodeKind() == store::StoreConsts::piNode )
+  case store::StoreConsts::piNode:
   {
     tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
+    break;
   }
-  else
+  default:
   {
-    tr << "node of type: " << item->getNodeKind();
-    assert(0);
+    int k = static_cast<int>(kind);
+    ZORBA_ASSERT_WITH_MSG(false, BUILD_STRING("node of type: ", k));
+  }
   }
 }
 
@@ -1314,9 +1580,9 @@ void serializer::html_emitter::emit_node(
 ********************************************************************************/
 serializer::xhtml_emitter::xhtml_emitter(
     serializer* the_serializer,
-    transcoder& the_transcoder)
+    std::ostream& the_stream)
   :
-  xml_emitter(the_serializer, the_transcoder)
+  xml_emitter(the_serializer, the_stream)
 {
 }
 
@@ -1333,10 +1599,10 @@ void serializer::xhtml_emitter::emit_node(
     const store::Item* element_parent = item->getParent();
     unsigned closed_parent_tag = 0;
 
-    if (isFirstElementNode)
+    if (theIsFirstElementNode)
     {
       emit_doctype(item->getNodeName()->getStringValue());
-      isFirstElementNode = false;
+      theIsFirstElementNode = false;
     }
 
     // If a meta element has been added to the head element as described above
@@ -1356,7 +1622,7 @@ void serializer::xhtml_emitter::emit_node(
 
     tr << "<" << nodename;
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     // If there is a head element, and the include-content-type parameter has
     // the value yes, the HTML output method MUST add a meta element as the
@@ -1429,7 +1695,7 @@ void serializer::xhtml_emitter::emit_node(
         tr << ">" << "</" << nodename << ">";
     }
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else
   {
@@ -1450,11 +1716,11 @@ void serializer::xhtml_emitter::emit_node(
 ********************************************************************************/
 serializer::sax2_emitter::sax2_emitter(
   serializer* the_serializer,
-  transcoder& the_transcoder,
+  std::ostream& the_stream,
   std::stringstream& aSStream,
   SAX2_ContentHandler * aSAX2ContentHandler )
   :
-  emitter(the_serializer, the_transcoder),
+  emitter(the_serializer, the_stream),
   theSAX2ContentHandler( aSAX2ContentHandler ),
   theSAX2LexicalHandler( 0 ),
   theSStream(aSStream)
@@ -1475,7 +1741,7 @@ void serializer::sax2_emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::sax2_emitter::emit_declaration_end()
+void serializer::sax2_emitter::emit_end()
 {
   theSAX2ContentHandler->endDocument();
 }
@@ -1548,11 +1814,11 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
     unsigned long namespaces_emited = 0;
     store::NsBindings::size_type ns_size = 0;
 
-    if (isFirstElementNode)
+    if (theIsFirstElementNode)
     {
       // TODO: emit doctype declaration
       // emit_doctype(qname->getLocalName());
-      isFirstElementNode = false;
+      theIsFirstElementNode = false;
     }
 
     if (theSAX2ContentHandler)
@@ -1716,9 +1982,9 @@ int serializer::sax2_emitter::emit_expanded_string(
 ********************************************************************************/
 serializer::text_emitter::text_emitter(
     serializer* the_serializer,
-    transcoder& the_transcoder)
+    std::ostream& the_stream)
   :
-  emitter(the_serializer, the_transcoder)
+  emitter(the_serializer, the_stream)
 {
 }
 
@@ -1783,9 +2049,17 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
 ********************************************************************************/
 void serializer::text_emitter::emit_item(store::Item* item)
 {
+#ifdef ZORBA_WITH_JSON
+  if (item->isJSONItem())
+  {
+    throw ZORBA_EXCEPTION(jerr::JNSE0022,
+    ERROR_PARAMS("text", item->getType()->getStringValue()));
+  }
+#endif
+
   if (item->isAtomic())
   {
-    if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
+    if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";
 
     if (item->isStreamable())
@@ -1793,13 +2067,12 @@ void serializer::text_emitter::emit_item(store::Item* item)
     else
       tr << item->getStringValue();
 
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    throw XQUERY_EXCEPTION(
-      err::SENR0001, ERROR_PARAMS( item->getStringValue(), ZED( AttributeNode ) )
-    );
+    throw XQUERY_EXCEPTION(err::SENR0001,
+    ERROR_PARAMS(item->getStringValue(), ZED( AttributeNode)));
   }
   else
   {
@@ -1819,28 +2092,28 @@ void serializer::text_emitter::emit_node(const store::Item* item, int depth)
   }
   else if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
     emit_node_children(item, depth);
 
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode )
   {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::textNode)
   {
     tr << item->getStringValue();
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
   }
   else if (item->getNodeKind() == store::StoreConsts::commentNode)
   {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::piNode )
   {
-    previous_item = PREVIOUS_ITEM_WAS_NODE;
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else
   {
@@ -1890,9 +2163,9 @@ int serializer::text_emitter::emit_node_children(
 ********************************************************************************/
 serializer::binary_emitter::binary_emitter(
     serializer* the_serializer,
-    transcoder& the_transcoder)
+    std::ostream& the_stream)
   :
-  emitter(the_serializer, the_transcoder)
+  emitter(the_serializer, the_stream)
 {
 }
 
@@ -1902,12 +2175,23 @@ serializer::binary_emitter::binary_emitter(
 ********************************************************************************/
 void serializer::binary_emitter::emit_item(store::Item* item)
 {
+#ifdef ZORBA_WITH_JSON
+  if (item->isJSONItem())
+  {
+    throw ZORBA_EXCEPTION(
+        jerr::JNSE0022,
+        ERROR_PARAMS("binary", item->getType()->getStringValue())
+      );
+  }
+#endif
   if (item->isStreamable())
   {
     std::istream& stream = item->getStream();
     if (item->isEncoded())
     {
-      tr << Base64::decode(stream);
+      zstring decoded;
+      Base64::decode(stream, &decoded);
+      tr << decoded;
     }
     else
     {
@@ -1929,9 +2213,9 @@ void serializer::binary_emitter::emit_item(store::Item* item)
 
       if (item->isEncoded())
       {
-        std::stringstream tmp;
-        tmp.write(value, len);
-        tr << Base64::decode(tmp);
+        zstring decoded;
+        Base64::decode(value, len, &decoded);
+        tr << decoded;
       }
       else
       {
@@ -1946,7 +2230,6 @@ void serializer::binary_emitter::emit_item(store::Item* item)
     }
   }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -1994,7 +2277,14 @@ void serializer::reset()
 
   media_type.clear();
 
+  // This default should match the default for ser_method in Zorba_SerializerOptions
+#ifdef ZORBA_WITH_JSON
+  method = PARAMETER_VALUE_JSON_XML_HYBRID;
+  jsoniq_multiple_items = PARAMETER_VALUE_YES;
+  jsoniq_xdm_method = PARAMETER_VALUE_XML;
+#else
   method = PARAMETER_VALUE_XML;
+#endif
 
   normalization_form.clear();
 
@@ -2004,10 +2294,35 @@ void serializer::reset()
 
   undeclare_prefixes = PARAMETER_VALUE_NO;
 
-  version = "1.0";
+  version = PARAMETER_VALUE_VERSION_1_0;
+  version_string = "1.0";
   version_has_default_value = true;
 
   indent = PARAMETER_VALUE_NO;
+}
+
+static short int
+convertMethodString(const char* aValue, const char* aName) {
+  if (!strcmp(aValue, "xml"))
+    return serializer::PARAMETER_VALUE_XML;
+  else if (!strcmp(aValue, "html"))
+    return serializer::PARAMETER_VALUE_HTML;
+  else if (!strcmp(aValue, "xhtml"))
+    return serializer::PARAMETER_VALUE_XHTML;
+  else if (!strcmp(aValue, "text"))
+    return serializer::PARAMETER_VALUE_TEXT;
+  else if (!strcmp(aValue, "binary"))
+    return serializer::PARAMETER_VALUE_BINARY;
+#ifdef ZORBA_WITH_JSON
+  else if (!strcmp(aValue, "json"))
+    return serializer::PARAMETER_VALUE_JSON;
+  else if (!strcmp(aValue, "json-xml-hybrid"))
+    return serializer::PARAMETER_VALUE_JSON_XML_HYBRID;
+#endif
+  else
+    throw XQUERY_EXCEPTION(
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
+        );
 }
 
 
@@ -2076,20 +2391,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else if (!strcmp(aName, "method"))
   {
-    if (!strcmp(aValue, "xml"))
-      method = PARAMETER_VALUE_XML;
-    else if (!strcmp(aValue, "html"))
-      method = PARAMETER_VALUE_HTML;
-    else if (!strcmp(aValue, "xhtml"))
-      method = PARAMETER_VALUE_XHTML;
-    else if (!strcmp(aValue, "text"))
-      method = PARAMETER_VALUE_TEXT;
-    else if (!strcmp(aValue, "binary"))
-      method = PARAMETER_VALUE_BINARY;
-    else
-      throw XQUERY_EXCEPTION(
-        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
-      );
+    method = convertMethodString(aValue, aName);
   }
   else if (!strcmp(aName, "include-content-type"))
   {
@@ -2119,8 +2421,18 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else if (!strcmp(aName, "version"))
   {
-    version = aValue;
+    version_string = aValue;
     version_has_default_value = false;
+    if (version_string == "1.0")
+      version = PARAMETER_VALUE_VERSION_1_0;
+    else if (version_string == "1.1")
+      version = PARAMETER_VALUE_VERSION_1_1;
+    else if (version_string == "4.0")
+      version = PARAMETER_VALUE_VERSION_4_0;
+    else if (version_string == "4.01")
+      version = PARAMETER_VALUE_VERSION_4_01;
+    else
+      version = PARAMETER_VALUE_VERSION_OTHER;
   }
   else if (!strcmp(aName, "doctype-system"))
   {
@@ -2134,9 +2446,45 @@ void serializer::setParameter(const char* aName, const char* aValue)
   {
     cdata_section_elements = aValue;
   }
+#ifdef ZORBA_WITH_JSON
+  else if (!strcmp(aName, "jsoniq-multiple-items"))
+  {
+    if (!strcmp(aValue, "no"))
+      jsoniq_multiple_items = PARAMETER_VALUE_NO;
+    else if (!strcmp(aValue, "yes"))
+      jsoniq_multiple_items = PARAMETER_VALUE_YES;
+    else
+      throw XQUERY_EXCEPTION(
+        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+      );
+  }
+  else if (!strcmp(aName, "jsoniq-xdm-node-output-method"))
+  {
+    jsoniq_xdm_method = convertMethodString(aValue, aName);
+  }
+#endif /* ZORBA_WITH_JSON */
   else
   {
     throw XQUERY_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void serializer::getSerializationMethod(zstring& m) const
+{
+  switch (getSerializationMethod())
+  {
+    case PARAMETER_VALUE_XML: m = "xml"; break;
+    case PARAMETER_VALUE_HTML: m = "html"; break;
+    case PARAMETER_VALUE_XHTML: m = "xhtml"; break;
+    case PARAMETER_VALUE_TEXT: m = "text"; break;
+    case PARAMETER_VALUE_BINARY: m = "binary"; break;
+    case PARAMETER_VALUE_JSON: m = "json"; break;
+    case PARAMETER_VALUE_JSON_XML_HYBRID: m = "json-xml-hybrid"; break;
+    default: ZORBA_ASSERT(false);
   }
 }
 
@@ -2156,51 +2504,52 @@ short int serializer::getSerializationMethod() const
 void
 serializer::validate_parameters(void)
 {
-  if (method == PARAMETER_VALUE_XML || method == PARAMETER_VALUE_XHTML) 
+  if (method == PARAMETER_VALUE_XML || method == PARAMETER_VALUE_XHTML)
   {
     // XML-only validation
-    if (method == PARAMETER_VALUE_XML) 
+    if (method == PARAMETER_VALUE_XML)
     {
-      if (version != "1.0" && version != "1.1")
+      if (version != PARAMETER_VALUE_VERSION_1_0 && version != PARAMETER_VALUE_VERSION_1_1)
         throw XQUERY_EXCEPTION(
           err::SESU0013, ERROR_PARAMS( version, "XML", "\"1.0\", \"1.1\"" )
         );
     }
 
     // XHTML-only validation
-    if (method == PARAMETER_VALUE_XHTML) 
+    if (method == PARAMETER_VALUE_XHTML)
     {
     }
 
     // XML and XHTML validation
 
-    if (omit_xml_declaration == PARAMETER_VALUE_YES) 
+    if (omit_xml_declaration == PARAMETER_VALUE_YES)
     {
       if (standalone != PARAMETER_VALUE_OMIT)
         throw XQUERY_EXCEPTION(
           err::SEPM0009, ERROR_PARAMS( ZED( SEPM0009_NotOmit ) )
         );
-      if (version != "1.0" && !doctype_system.empty())
+      if (version != PARAMETER_VALUE_VERSION_1_0 && !doctype_system.empty())
         throw XQUERY_EXCEPTION(
           err::SEPM0009, ERROR_PARAMS( ZED( SEPM0009_Not10 ) )
         );
     }
 
-    if (undeclare_prefixes == PARAMETER_VALUE_YES && version == "1.0")
+    if (undeclare_prefixes == PARAMETER_VALUE_YES && version == PARAMETER_VALUE_VERSION_1_0)
       throw XQUERY_EXCEPTION( err::SEPM0010 );
   }
 
-  if (method == PARAMETER_VALUE_HTML) 
+  if (method == PARAMETER_VALUE_HTML)
   {
     // Default value for "version" when method is HTML is "4.0"
-    if (version_has_default_value) 
+    if (version_has_default_value)
     {
-      version = "4.0";
+      version = PARAMETER_VALUE_VERSION_4_0;
+      version_string = "4.0";
     }
-    else if (!(ztd::equals(version, "4.0", 3) || ztd::equals(version, "4.01", 4))) 
+    else if (version != PARAMETER_VALUE_VERSION_4_0 && version != PARAMETER_VALUE_VERSION_4_01)
     {
       throw XQUERY_EXCEPTION(
-        err::SESU0013, ERROR_PARAMS( version, "HTML", "\"4.0\", \"4.01\"" )
+        err::SESU0013, ERROR_PARAMS( version_string, "HTML", "\"4.0\", \"4.01\"" )
       );
     }
   }
@@ -2210,23 +2559,11 @@ serializer::validate_parameters(void)
 /*******************************************************************************
 
 ********************************************************************************/
-bool serializer::setup(std::ostream& os)
+bool serializer::setup(std::ostream& os, bool aEmitAttributes)
 {
-  if (encoding == PARAMETER_VALUE_UTF_8)
-  {
-    tr = new transcoder(os, false);
-  }
-  else if (encoding == PARAMETER_VALUE_UTF_16)
-  {
-    tr = new transcoder(os, true);
-  }
-  else
-  {
-    ZORBA_ASSERT(false);
-  }
-
+  tr = &os;
   if (method == PARAMETER_VALUE_XML)
-    e = new xml_emitter(this, *tr);
+    e = new xml_emitter(this, *tr, aEmitAttributes);
   else if (method == PARAMETER_VALUE_HTML)
     e = new html_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_XHTML)
@@ -2235,6 +2572,12 @@ bool serializer::setup(std::ostream& os)
     e = new text_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_BINARY)
     e = new binary_emitter(this, *tr);
+#ifdef ZORBA_WITH_JSON
+  else if (method == PARAMETER_VALUE_JSON)
+    e = new json_emitter(this, *tr);
+  else if (method == PARAMETER_VALUE_JSON_XML_HYBRID)
+    e = new hybrid_emitter(this, *tr, aEmitAttributes);
+#endif
   else
   {
     ZORBA_ASSERT(0);
@@ -2253,15 +2596,33 @@ bool serializer::setup(std::ostream& os)
   return true;
 }
 
+void serializer::attach_transcoder(std::ostream &os)
+{
+  if (encoding == PARAMETER_VALUE_UTF_8)
+  {
+    // do nothing
+  }
+#ifndef ZORBA_NO_UNICODE
+  else if (encoding == PARAMETER_VALUE_UTF_16)
+  {
+    transcode::attach( os, "UTF-16LE" );
+  }
+#endif
+  else
+  {
+    ZORBA_ASSERT(0);
+  }
+}
 
 /*******************************************************************************
 
 ********************************************************************************/
 void serializer::serialize(
     store::Iterator_t    aObject,
-    std::ostream& aOStream)
+    std::ostream& aOStream,
+    bool aEmitAttributes)
 {
-  serialize(aObject, aOStream, 0);
+  serialize(aObject, aOStream, 0, aEmitAttributes);
 }
 
 
@@ -2272,49 +2633,64 @@ void
 serializer::serialize(
   store::Iterator_t     aObject,
   std::ostream&         aOStream,
-  SAX2_ContentHandler*  aHandler)
+  SAX2_ContentHandler*  aHandler,
+  bool                  aEmitAttributes)
 {
   std::stringstream temp_sstream; // used to temporarily hold expanded strings for the SAX serializer
 
   validate_parameters();
 
-  if (!setup(aOStream)) 
+  if (!setup(aOStream, aEmitAttributes))
   {
     return;
   }
 
-  // in case we use SAX event notifications
-  if (aHandler) 
-  {
-    // only allow XML-based methods for SAX notifications
-    if (method != PARAMETER_VALUE_XML &&
-        method != PARAMETER_VALUE_XHTML) {
-      throw ZORBA_EXCEPTION(
-        zerr::ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX,
-        ERROR_PARAMS( method )
-      );
-    }
-    // it's OK now, build a SAX emmiter
-    tr = new transcoder(temp_sstream, false);
-    e = new sax2_emitter(this, *tr, temp_sstream, aHandler);
-  }
+  try {
 
-  e->emit_declaration();
-
-  store::Item_t lItem;
-  //+  aObject->open();
-  while (aObject->next(lItem)) 
-  {
-    // PUL's cannot be serialized
-    if (lItem->isPul()) 
+    // in case we use SAX event notifications
+    if (aHandler)
     {
-      throw ZORBA_EXCEPTION(zerr::ZAPI0007_CANNOT_SERIALIZE_PUL);
+      // Only allow XML-based methods for SAX notifications. For now at least,
+      // the "JSON-XML-hybrid" method is considerd "XML-based", although you
+      // will certainly get errors if you attempt to serialize JDM this way.
+      if (method != PARAMETER_VALUE_XML &&
+          method != PARAMETER_VALUE_XHTML
+#ifdef ZORBA_WITH_JSON
+          && method != PARAMETER_VALUE_JSON_XML_HYBRID
+#endif
+        ) {
+        throw ZORBA_EXCEPTION(
+          zerr::ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX,
+          ERROR_PARAMS( method )
+        );
+      }
+      // it's OK now, build a SAX emmiter
+      tr = &temp_sstream;
+      e = new sax2_emitter(this, *tr, temp_sstream, aHandler);
     }
 
-    e->emit_item(&*lItem);
+    e->emit_declaration();
+
+    store::Item_t lItem;
+    //+  aObject->open();
+    while (aObject->next(lItem))
+    {
+      // PUL's cannot be serialized
+      if (lItem->isPul())
+      {
+        throw ZORBA_EXCEPTION(zerr::ZAPI0007_CANNOT_SERIALIZE_PUL);
+      }
+
+      e->emit_item(&*lItem);
+    }
+  //+  aObject->close();
+    e->emit_end();
+    transcode::detach( aOStream );
   }
-//+  aObject->close();
-  e->emit_declaration_end();
+  catch ( ... ) {
+    transcode::detach( aOStream );
+    throw;
+  }
 }
 
 
@@ -2322,45 +2698,52 @@ serializer::serialize(
 
 ********************************************************************************/
 void serializer::serialize(
-    store::Iterator_t    object,
+    store::Iterator_t object,
     std::ostream& stream,
     itemHandler aHandler,
     void* aHandlerData)
 {
   validate_parameters();
 
-  if (!setup(stream)) 
+  if (!setup(stream))
   {
     return;
   }
 
-  e->emit_declaration();
+  try {
+    e->emit_declaration();
 
-  store::Item_t lItem;
-  //object->open();
-  while (object->next(lItem)) 
-  {
-    Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
-    if (lSerParams) 
+    store::Item_t lItem;
+    //object->open();
+    while (object->next(lItem))
     {
-      SerializerImpl::setSerializationParameters(*this, *lSerParams);
-      if (!setup(stream)) 
+      Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
+      if (lSerParams)
       {
-        return;
+        SerializerImpl::setSerializationParameters(*this, *lSerParams);
+        if (!setup(stream))
+        {
+          return;
+        }
       }
+
+      // PUL's cannot be serialized
+      if (lItem->isPul())
+      {
+        throw ZORBA_EXCEPTION(zerr::ZAPI0007_CANNOT_SERIALIZE_PUL);
+      }
+
+      e->emit_item(&*lItem);
     }
 
-    // PUL's cannot be serialized
-    if (lItem->isPul()) 
-    {
-      throw ZORBA_EXCEPTION(zerr::ZAPI0007_CANNOT_SERIALIZE_PUL);
-    }
-
-    e->emit_item(&*lItem);
+    //object->close();
+    e->emit_end();
+    transcode::detach( stream );
   }
- 
-  //object->close();
-  e->emit_declaration_end();
+  catch ( ... ) {
+    transcode::detach( stream );
+    throw;
+  }
 }
 
 } // namespace zorba

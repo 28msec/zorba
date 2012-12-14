@@ -120,9 +120,9 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
       dt = std::auto_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(
         planState.theLocalDynCtx->get_implicit_timezone()));
     }
-    catch (InvalidTimezoneException const&)
+    catch (InvalidTimezoneException const &e)
     {
-      throw XQUERY_EXCEPTION(err::FODT0003);
+      throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
     }
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
   }
@@ -151,9 +151,9 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
     {
       dt = std::auto_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(!s1 ? NULL : &item1->getDayTimeDurationValue()));
     }
-    catch (InvalidTimezoneException const&)
+    catch (InvalidTimezoneException const &e)
     {
-      throw XQUERY_EXCEPTION(err::FODT0003);
+      throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
     }
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
   }

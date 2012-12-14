@@ -45,16 +45,16 @@ public:
 typedef typename HashMap<T, DummyHashValue, C>::iterator iterator;
 
 
-HashSet(const C& compFunction, ulong size, bool sync, bool useTransfer = false)
+HashSet(const C& compFunction, ulong size, bool sync)
   :
-  HashMap<T, DummyHashValue, C>(compFunction, size, sync, useTransfer) 
+  HashMap<T, DummyHashValue, C>(compFunction, size, sync) 
 {
 }
 
 
 HashSet(ulong size, bool sync)
   :
-  HashMap<T, DummyHashValue, C>(size, sync, false) 
+  HashMap<T, DummyHashValue, C>(size, sync) 
 {
 }
 
@@ -77,7 +77,7 @@ void clear()
   Return true if the set already contains an item that is "equal" to the given
   item; otherwise return false.
 ********************************************************************************/
-bool exists(const T& item)
+bool exists(const T& item) const
 {
   return HashMap<T, DummyHashValue, C>::exists(item);
 }
@@ -100,12 +100,7 @@ bool insert(T& item)
 
   if (!found)
   {
-    /*
-    if (this->theUseTransfer)
-      entry->theItem.transfer(item);
-    else
-    */
-      entry->theItem = item;
+    entry->key() = item;
   }
 
   return !found;
@@ -129,19 +124,13 @@ bool insert(T& item, T& outItem)
   entry = this->hashInsert(item, this->hash(item), found);
   if (!found)
   {
-    /*
-    if (this->theUseTransfer)
-      entry->theItem.transfer(item);
-    else
-    */
-      entry->theItem = item;
-
-    outItem = entry->theItem;
+    entry->key() = item;
+    outItem = entry->key();
     return true;
   }
   else
   {
-    outItem = entry->theItem;
+    outItem = entry->key();
     return false;
   }
 }
@@ -164,13 +153,13 @@ bool insert(const T& item, T& outItem)
   entry = this->hashInsert(item, this->hash(item), found);
   if (!found)
   {
-    entry->theItem = item;
-    outItem = entry->theItem;
+    entry->key() = item;
+    outItem = entry->key();
     return true;
   }
   else
   {
-    outItem = entry->theItem;
+    outItem = entry->key();
     return false;
   }
 }

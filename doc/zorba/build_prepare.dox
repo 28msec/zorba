@@ -1,0 +1,104 @@
+/** \page build_prepare Preparing to Build Zorba
+
+The following outlines the common steps for building Zorba once the
+required and optional tools and libraries (as described in \ref
+build_prerequisites) have been installed.
+
+\section build_gettingsrc Getting the Zorba Source Code
+
+You may get the Zorba source code in one of two ways: downloading a
+released source distribution, or getting the code from our Launchpad
+code repository. The directory that the Zorba source code is placed
+into will be referred to as \c {ZORBASRC} in later instructions.
+
+\subsection download_source Getting a Source Code Release
+
+You may download the latest Zorba release source code as either a \c
+.zip or \c .tar.gz file from Launchpad:
+https://launchpad.net/zorba/+download .
+
+\subsection checkout_source Getting the Latest Code from Launchpad
+
+If you want the very latest and greatest Zorba source, you can check
+out our source code trunk from our Launchpad repository. This is
+actually a pretty "safe" option, compared to many projects, as Zorba
+attempts to enforce a "trunk is always releasable" policy through
+extensive regression testing on every trunk checkin.
+
+Launchpad uses the Bazaar distributed version control system from
+Canonical, the producers of Ubuntu Linux and Launchpad. So you will
+need to install Bazaar in order to check out our code
+repositories. Installers are available from Canonical's website,
+http://bazaar.canonical.com/ . Bazaar packages are also available for
+all Linux distributions (the package name may be "bazaar" or "bzr"),
+and in Macports for MacOS X.
+
+Once you have Bazaar installed, check out the Zorba trunk:
+
+\code
+bzr checkout --lightweight lp:zorba
+\endcode
+
+\section noncore_download Downloading source code for non-core modules
+
+Zorba offers a number of optional ("non-core") modules which provide
+additional functionality; see \ref non_core_modules for a list. When
+you build Zorba, you may also build any non-core modules at the same
+time, and these modules will then be available in your Zorba
+installation.
+
+Currently, the Zorba team does not provide source downloads for the
+non-core modules. However, there is a simple CMake script inside Zorba
+which will allow you to check out these modules from source control
+easily. Note that this requires having the Bazaar utility available
+on your system; see \ref checkout_source for more information.
+
+From your {ZORBASRC} directory, type
+\code
+  cmake -Doutdir=../zorba_modules -Dmodname=NAME -P modules/DownloadModules.cmake
+\endcode
+
+to download the particular module package NAME (see \ref
+non_core_modules for a complete list of module packages and their
+contents), or
+
+\code
+  cmake -Doutdir=../zorba_modules -Dallmodules=1 -P modules/DownloadModules.cmake
+\endcode
+
+to download all the modules. (On Windows, you will need to use backslashes instead of forward slashes in the above paths.)
+
+This will place the downloaded module source code in the directory
+<tt>../zorba_modules</tt>, which is where the Zorba build will look
+for them by default. If you wish to download them to some other
+location, you may do so; in that case, when you configure the Zorba
+build with CMake, provide the \c
+-DZORBA_MODULES_DIR=/full/path/to/modules argument.
+
+\note
+Please note that some of these modules depend on other modules.  Most
+notably, the EXPath http-client module (in the \c http-client module
+package) depends on the \c html module, which is in the \c
+data-converters module package. So, if you download the \c http-client
+package, you must also download the \c data-converters package (and
+ensure that \c libtidy is installed; see \ref noncore_requirements).
+\note
+Please see our <a
+href="../../zorba/xqdoc/xhtml/images/modules.svg">module-interdependency
+graph</a> for details.
+
+\section create_build_dir Creating a Build Directory
+
+Zorba requires an <a
+href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F"
+target="_blank">out-of-source build</a>, which means you need to
+create a separate (empty) build directory. A common convention is to
+create a directory named \"\c build\" in the Zorba source directory,
+but you may name it and place it anywhere you like.  We refer to this
+directory as \c {ZORBABUILD} in the following steps.
+
+\section prepare_next What's next?
+
+Now, go on to \ref configure_zorba.
+
+*/

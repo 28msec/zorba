@@ -8,6 +8,7 @@ Additional documentation:
 - \ref ft_stemmer
 - \ref ft_thesaurus
 - \ref ft_tokenizer
+- <a href="/html/modules/zorba/fulltext">Full Text Module</a>
 
 \section ft_unimplemented Unimplemented Features
 

@@ -85,7 +85,8 @@ declare option ver:module-version "2.0";
  : entities</a>). The functions takes two arguments: the first one is the 
  : string to be parsed and the second argument is an &lt;options/&gt; element that
  : passes a list of options to the parsing function. They are described below.
- : The options element must conform to the xml-options.xsd schema. Some of these
+ : The options element must conform to the xml-options:options element type 
+ : from the xml-options.xsd schema. Some of these
  : will be passed to the underlying library (LibXml2) and further documentation 
  : for them can be found at <a href="http://xmlsoft.org/html/libxml-parser.html">
  : LibXml2 parser</a>.
@@ -140,7 +141,11 @@ declare option ver:module-version "2.0";
  : external entities. If the option 
  : is enabled, the input must conform to the syntax extParsedEnt (production 
  : [78] in XML 1.0, see <a href="http://www.w3.org/TR/xml/#wf-entities">
- : Well-Formed Parsed Entities</a>). The result of the function call is a list 
+ : Well-Formed Parsed Entities</a>). In addition, by default a DOCTYPE declaration is allowed,
+ : as described by the [28] doctypedecl production, see <a href="http://www.w3.org/TR/xml/#NT-doctypedecl">
+ : Document Type Definition</a>. A parameter is available to forbid the appearance of the DOCTYPE.
+ :
+ : The result of the function call is a list 
  : of nodes corresponding to the top-level components of the content of the 
  : external entity: that is, elements, processing instructions, comments, and 
  : text nodes. CDATA sections and character references are expanded, and 
@@ -150,7 +155,7 @@ declare option ver:module-version "2.0";
  : (<a href="http://www.w3.org/TR/xml/#sec-well-formed">production [1] in XML 1.0</a>).
  : This option can not be used together with either the &lt;schema-validate/&gt; or the &lt;DTD-validate/&gt;
  : option. Doing so will raise a zerr:ZXQD0003 error.
- : The &lt;parse-external-parsed-entity/&gt; option has two parameters, given by attributes. The first
+ : The &lt;parse-external-parsed-entity/&gt; option has three parameters, given by attributes. The first
  : attribute is "skip-root-nodes" and it can have a non-negative value. Specifying the paramter
  : tells the parser to skip the given number of root nodes and return only their children. E.g.
  : skip-root-nodes="1" is equivalent to parse-xml($xml-string)/node()/node() . skip-root-nodes="2" is equivalent
@@ -158,7 +163,8 @@ declare option ver:module-version "2.0";
  : boolean value. Specifying "true" will tell the parser to skip top level text nodes, returning
  : only the top level elements, comments, PIs, etc. This parameter works in combination with
  : the "skip-root-nodes" paramter, thus top level text nodes are skipped after "skip-root-nodes" has 
- : been applied. 
+ : been applied. The third paramter is "error-on-doctype" and will generate an error if a DOCTYPE
+ : declaration appears in the input, which by default is allowed.
  : </li>
  :
  : <li>
@@ -224,7 +230,7 @@ declare option ver:module-version "2.0";
  :)
 declare function parse-xml:parse(
   $xml-string as xs:string?,
-  $options as element()?) as node()* external;
+  $options as element(parse-xml-options:options)?) as node()* external;
   
 
 (:~
@@ -321,6 +327,8 @@ declare function parse-xml:parse(
  : @error err:XQDY0027 The error will be raised if schema validation was enabled
  :                     and the input document has not passed it.
  :
+ : @deprecated
+ :
  :)
 declare function parse-xml:parse-xml-fragment(
   $xml-string as xs:string?,
@@ -337,8 +345,9 @@ declare function parse-xml:parse-xml-fragment(
       if (contains($options, "l"))
         then <parse-xml-options:schema-validate parse-xml-options:mode="lax"/> 
         else (),
+      (: TODO: uncomment once the strip-boundary-space option is implemented
       if (contains($options, "w"))
-        then <parse-xml-options:strip-boundary-space/> else (),
+        then <parse-xml-options:strip-boundary-space/> else (), :)
       if (contains($options, "f"))
         then <parse-xml-options:no-error/> else ()      
     }</parse-xml-options:options>
@@ -378,6 +387,8 @@ declare function parse-xml:parse-xml-fragment(
  : @error err:FODC0007 This error will be raised if $base-uri parameter passed
  :                     to the function is not a valid absolute URI.
  :
+ : @deprecated
+ :
  :)
 declare function parse-xml:parse-xml-fragment(
   $xml-string as xs:string?,
@@ -395,8 +406,9 @@ declare function parse-xml:parse-xml-fragment(
       if (contains($options, "l"))
         then <parse-xml-options:schema-validate parse-xml-options:mode="lax"/> 
         else (),
+      (: TODO: uncomment once the strip-boundary-space option is implemented
       if (contains($options, "w"))
-        then <parse-xml-options:strip-boundary-space/> else (),
+        then <parse-xml-options:strip-boundary-space/> else (), :)
       if (contains($options, "f"))
         then <parse-xml-options:no-error/> else (),
       <parse-xml-options:base-uri>{

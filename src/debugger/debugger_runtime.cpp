@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -150,7 +150,7 @@ DebuggerRuntime::runQuery()
     } else {
       theSerializer->serialize(theWrapper.getp(), theOStream);
     }
-    
+
     theOStream.flush();
   } catch (FlowCtlException&) {
     // Runtime correctly terminated by user interrupt
@@ -340,7 +340,7 @@ void
 DebuggerRuntime::detachRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
-  theExecStatus = QUERY_DETACHED; 
+  theExecStatus = QUERY_DETACHED;
   // TODO: something more here?
 }
 
@@ -376,17 +376,19 @@ DebuggerRuntime::getVariables(bool aLocals)
   static_context* lContext = lCommons->getCurrentStaticContext();
 
   // get all visible variables and filter below
-  std::vector<var_expr_t> lVars;
+  std::vector<VarInfo*> lVars;
   lContext->getVariables(lVars, false);
 
   std::vector<std::pair<std::string, std::string> > lVarList;
-  std::vector<var_expr_t>::iterator lIte = lVars.begin();
-  std::vector<var_expr_t>::iterator lEnd = lVars.end();
+  std::vector<VarInfo*>::iterator lIte = lVars.begin();
+  std::vector<VarInfo*>::iterator lEnd = lVars.end();
 
-  for (; lIte != lEnd; ++lIte) {
+  for (; lIte != lEnd; ++lIte)
+  {
     // non-global to locals and globals to globals
-    if ((aLocals && (*lIte)->get_kind() == var_expr::prolog_var) ||
-        (!aLocals && (*lIte)->get_kind() != var_expr::prolog_var)) {
+    if ((aLocals && (*lIte)->getKind() == var_expr::prolog_var) ||
+        (!aLocals && (*lIte)->getKind() != var_expr::prolog_var))
+    {
       continue;
     }
 
@@ -395,11 +397,12 @@ DebuggerRuntime::getVariables(bool aLocals)
 
 
     // read the name ****************************
-    store::Item* lNameItem = (*lIte)->get_name();
+    const store::Item_t& lNameItem = (*lIte)->getName();
     zstring lLocalName = lNameItem->getLocalName();
 
     // correct the name of the context item
-    if (!aLocals && lLocalName == "$$dot") {
+    if (!aLocals && lLocalName == "$$dot")
+    {
       lVarList.push_back(std::pair<std::string, std::string>(".", "item()*"));
       continue;
     }
@@ -407,29 +410,35 @@ DebuggerRuntime::getVariables(bool aLocals)
     bool lHasNS = ! lNameItem->getNamespace().empty();
 
     // if there is a namespace, append the local name as well
-    if (lHasNS) {
+    if (lHasNS) 
+    {
       lNameSs << lNameItem->getPrefix().str() << ":";
     }
     lNameSs << lNameItem->getLocalName().str();
 
     // if there is a namespace, append the namespace URI
-    if (lHasNS) {
+    if (lHasNS)
+    {
       lNameSs << "\\" << lNameItem->getNamespace().str();
     }
 
-
     // read the type ****************************
-    xqtref_t lType = (*lIte)->get_type();
+    xqtref_t lType = (*lIte)->getType();
 
-    if (lType == NULL || lType->get_qname() == NULL) {
+    if (lType == NULL || lType->get_qname() == NULL)
+    {
       lTypeSs << "item()*";
-    } else {
+    }
+    else
+    {
       TypeConstants::quantifier_t lQuantifier = lType->get_quantifier();
-      store::Item_t lQname = (*lIte)->get_type()->get_qname();
+      store::Item_t lQname = (*lIte)->getType()->get_qname();
       lTypeSs << lQname->getPrefix().str()
-            << ":"
-            << lQname->getLocalName().str();
-      switch (lQuantifier) {
+              << ":"
+              << lQname->getLocalName().str();
+
+      switch (lQuantifier) 
+      {
       case TypeConstants::QUANT_QUESTION:
         lTypeSs << "?";
         break;
@@ -522,7 +531,7 @@ DebuggerRuntime::eval(zstring& aExpr)
     std::string lMessage("I can only eval expressions if the execution is suspended.");
     throw lMessage;
   }
-  
+
 
   // disable the xml declaration for evals/variables
   Zorba_omit_xml_declaration_t lOldOpt = theSerializerOptions.omit_xml_declaration;
@@ -565,7 +574,7 @@ DebuggerRuntime::listSource(
       // TODO: under Linux, when trying to get the file name of the query
       //       the call fails because getFileName tries to get a lock that
       //       is already taken. Therefore the assertion in mutex.cpp:63
-      //       terminates the execution 
+      //       terminates the execution
       lFileName = "";
 #endif
     }
@@ -725,7 +734,7 @@ DebuggerRuntime::clone()
 // ****************************************************************************
 // Private functions
 
-DebuggerCommons* 
+DebuggerCommons*
 DebuggerRuntime::getDebbugerCommons()
 {
   return theWrapper->thePlanState->theDebuggerCommons;

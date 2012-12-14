@@ -46,11 +46,13 @@ namespace internal {
 
   StreamResource::StreamResource
   (std::istream* aStream, StreamReleaser aStreamReleaser,
-   zstring aStreamUrl /* = "" */)
+   zstring aStreamUrl /* = "" */,
+   bool aIsStreamSeekable)
     : Resource(),
       theStream(aStream),
       theStreamReleaser(aStreamReleaser),
-      theStreamUrl(aStreamUrl)
+      theStreamUrl(aStreamUrl),
+      theIsStreamSeekable(aIsStreamSeekable)
   {}
   
   StreamResource::~StreamResource()

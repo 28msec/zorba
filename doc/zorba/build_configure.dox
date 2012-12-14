@@ -1,0 +1,137 @@
+/** \page configure_zorba Configuring a Zorba Build Using CMake
+
+\section configure_overview Overview
+
+We will now configure the Zorba build by running CMake. We assume that
+the appropriate build preparations (described in \ref build_prepare)
+have been performed.
+
+\note
+The instructions in this section are based on executing commands at
+the command line. It is also possible configure Zorba using CMake's
+GUI configuration utility if you prefer. On Linux distributions, this
+is often a separate package named \"\c cmake-gui\". On Windows, the
+GUI is installed by default and can be started via the Start menu.  On
+MacOS, it is available as the \"\c gui\" variant of the \c cmake
+package.
+
+\note
+The important configuration parameters - source and build directory;
+CMake generator; configuration flags - are the same whether you use
+the command-line or the GUI form of CMake. Only the method by which
+you specify them will change.
+
+The basic steps to configure Zorba are:
+
+-# Change the working directory into the \c {ZORBABUILD} directory:
+\code
+cd {ZORBABUILD}
+\endcode
+-# Execute cmake:
+\code cmake [ -G generator ] [ -D option=value ... ] {ZORBASRC}
+\endcode
+where \c {ZORBASRC} may be an absolute or a relative path to your
+Zorba source directory. For example, if you used the convention of
+creating the build directory as a subdirectory of the source
+directory, you can just type \code cmake .. \endcode
+along with any necessary \c -G or \c -D options.
+
+This command should configure Zorba and prepare for the build.  CMake
+will tell you if your environment is missing some of the required
+libraries or development headers.
+
+The meaning of the \c -G and \c -D arguments are described below.
+
+\note
+If you need to re-configure the project later, CMake will remember
+your chosen generator and \c -D configuration parameters; it is not
+necessary to specify \c -G / \c -D every time.
+
+\section configure_generator CMake Generators (the -G argument)
+
+CMake is a meta build system. It is able to generate both native
+makefiles (e.g. GNU Make or NMake) and IDE workspaces (e.g. Visual
+Studio or KDevelop Projects), depending on which CMake \a generator is
+selected. By default it will generate a UNIX-style Makefile-based
+project.
+
+You specify the generator to use with the \c -G arguments to \c cmake.
+For example, on Windows, you can create a Visual Studio 10 solution by
+executing the following command in the \c {ZORBASRC} directory: \code
+cmake -G "Visual Studio 10" {ZORBASRC} \endcode
+
+The list of available Generators for your CMake installation
+can be seen by typing \" <tt>cmake --help</tt> \".
+
+\section configure_parameters Configuration Parameters (the -D arguments)
+
+In most circumstances it will be necessary to specify a few parameters to
+CMake, such as the various configuration parameters mentioned above in
+\ref third_party_libs. You do this with a series of \c -D arguments to
+CMake. For example, to build Zorba without ICU (Unicode) support:
+
+\code
+cmake -D ZORBA_NO_ICU=ON {ZORBASRC}
+\endcode
+
+A complete list of Zorba's configuration parameters can be found here:
+\ref configuration_parameters. CMake itself also has some
+configuration parameters that may be important for you; here are three
+of the most common:
+
+-# CMake will look for third-party libraries in a variety of standard
+  locations. If you have any installed in unusual locations, you will
+  need to provide it with additional paths to search. You do this by
+  specifying the parameter \c CMAKE_PREFIX_PATH. This parameter is a
+  semicolon-separated list of directories where CMake should look.
+  For instance, if you have Xerces-C installed in \c /opt, try the
+  following:
+\code
+cmake -D CMAKE_PREFIX_PATH=/opt {ZORBASRC}
+\endcode
+  \par On Linux and MacOS:
+  In command lines, the semicolon is
+  interpretted by the shell as a command separator. In order to pass a
+  semicolon-separated list of paths for this parameter, be sure to
+  enlose the list in single- or double-quotes.
+  \par On Windows:
+  Zorba uses a custom mechanism for specifying the paths to
+  third-party dependencies on Windows, which handles some additional
+  features such as collecting the runtime DLLs for installation.  You
+  should use this mechanism instead of \c CMAKE_PREFIX_PATH on Windows. See
+  \ref windows_autodll for more information.
+
+-# After you build Zorba, you will likely want to install it into a
+  final location. You specify this location with the \c
+  CMAKE_INSTALL_PREFIX parameter. By default, this directory will be
+  \c {ZORBABUILD}/dist, which is not likely to be a useful location.
+  \par Note:
+  After installation, the directory specified here will contain
+  subdirectories such as \c bin/, \c lib/, and \c share/. On Unix and
+  MacOS installations, a common value for \c CMAKE_INSTALL_PREFIX is
+  \c /usr/local. On Windows, something like <tt>C:\\Program
+  Files\\Zorba</tt> is suggested.
+  \par Note for Makefile-based projects:
+  The Makefiles produced by CMake do support the common \c DESTDIR
+  variable. However, specifying this variable at compile time <em>will
+  not work</em> with Zorba, because certain installation paths are
+  hard-coded into the Zorba binaries. Be sure to only use \c
+  CMAKE_INSTALL_PREFIX.
+
+-# When generating a Makefile-based project, CMake supports multiple
+  build configurations.  By default, Zorba is built in the Release
+  configuration, which enables compiler optimizations and does not
+  build debug information into the resulting product.  To change the
+  build mode to Debug, you can specify the \c CMAKE_BUILD_TYPE
+  parameter as follows:
+  \code cmake -D CMAKE_BUILD_TYPE=Debug {ZORBASRC} \endcode
+  This is not necessary for IDE-based workspaces;
+  in that case, you may select the type of build from within the IDE.
+
+
+\section configure_next What's next?
+
+Once CMake runs without reporting any configuration errors, move on to
+\ref build_and_install.
+
+*/

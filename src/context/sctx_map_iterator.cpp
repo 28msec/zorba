@@ -35,8 +35,7 @@ namespace zorba {
 template <typename T>
 SctxMapIterator<T>::SctxMapIterator(
     const static_context* aSctx,
-    serializable_ItemPointerHashMap<rchandle<T> >*
-    (static_context::*aMapGetter)() const)
+    ItemsMap* (static_context::*aMapGetter)() const)
   :
   theSctx(aSctx),
   theCurSctx(theSctx),

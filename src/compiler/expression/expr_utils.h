@@ -17,10 +17,13 @@
 #ifndef ZORBA_COMPILER_EXPR_UTILS
 #define ZORBA_COMPILER_EXPR_UTILS
 
-#include "zorbaserialization/serialize_basic_types.h"
+#include "zorbatypes/rchandle.h"
 
 namespace zorba 
 {
+
+class expr;
+class var_expr;
 
 /******************************************************************************
   Used by the orderspecs of an order by clause, and by the keyspecs of an
@@ -35,12 +38,7 @@ public:
 
   SERIALIZABLE_CLASS(OrderModifier)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(OrderModifier, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theAscending;
-    ar & theEmptyLeast;
-    ar & theCollation;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   OrderModifier() 
@@ -51,6 +49,11 @@ public:
   }
 };
 
+
+/******************************************************************************
+
+********************************************************************************/
+typedef std::vector<std::pair<expr*, var_expr*> > var_rebind_list_t;
 
 }
 #endif

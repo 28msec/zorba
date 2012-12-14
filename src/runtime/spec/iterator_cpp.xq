@@ -39,6 +39,13 @@ declare function local:process-iterator($iter) as xs:string
     '// &lt;',$iter/@name,'&gt;',$gen:newline,
     local:serializable-class-versions($iter/@name),
 
+    if ( not(exists($iter/@generateSerialize)) or
+         $iter/@generateSerialize eq 'true')
+    then
+      concat(local:generate-serialize($iter), $gen:newline, $gen:newline)
+    else
+      (),
+
     (: generate the visitor if requested :)
     if(fn:not($iter/@generateAccept) or $iter/@generateAccept eq "true") 
     then
@@ -144,7 +151,9 @@ declare function local:generate-init($iter, $baseClassName as xs:string) as xs:s
 declare function local:generate-accept($iter) as xs:string
 {
   string-join(( $gen:newline,
-    'void ',$iter/@name,'::accept(PlanIterVisitor&amp; v) const {',
+    'void ',$iter/@name,'::accept(PlanIterVisitor&amp; v) const',
+    $gen:newline,
+    '{',
     $gen:newline,
     $gen:indent,'v.beginVisit(*this);',
     $gen:newline,$gen:newline,
@@ -177,6 +186,68 @@ declare function local:generate-accept($iter) as xs:string
   ), '')
 };
 
+
+declare function local:generate-serialize($iter) as xs:string
+{
+  let $state as xs:string := if(exists($iter/zorba:state)) 
+                             then concat($iter/@name, 'State')
+                             else 'PlanIteratorState'
+  let $base := if ($iter/@base)
+               then
+                data($iter/@base)
+               else
+                concat(local:arity($iter),
+                       'BaseIterator<',
+                       if ($iter/zorba:template/zorba:param[@name="Iter"])
+                       then "Iter"
+                       else $iter/@name, ", ",
+                       if ($iter/zorba:template/zorba:param[@name="State"])
+                       then "State"
+                       else $state, '>')
+  return
+  concat('void ', $iter/@name, '::serialize(::zorba::serialization::Archiver&amp; ar)',
+         $gen:newline,
+         '{',
+         $gen:newline,
+         gen:indent(), 'serialize_baseclass(ar,',
+         $gen:newline,
+         gen:indent(),'(', $base, '*)this);',
+         $gen:newline,
+         local:add-arch($iter),
+         '}')
+};
+
+
+declare function local:add-arch($iter) as xs:string?
+{
+  if (count($iter/zorba:member) > 0) then
+    string-join(($gen:newline,
+                 for $member in $iter/zorba:member
+                 return 
+                 string-join((gen:indent(2),
+                              'ar &amp; ',
+                              $member/@name,
+                              ';',
+                              $gen:newline),'')),
+                '')
+  else ()
+};
+
+
+declare function local:arity($iter) as xs:string
+{
+  let $arity := lower-case($iter/@arity)
+  return
+    if ( $arity eq "unary" )
+    then 'Unary'
+    else if ( $arity eq "binary" )
+    then 'Binary'
+    else if ( $arity eq "noary" )
+    then 'Noary'
+    else 'Nary'
+};
+
+
 declare function local:get-include($XMLdoc, $name) as xs:string*
 {
   fn:concat(
@@ -198,10 +269,7 @@ declare function local:get-include($XMLdoc, $name) as xs:string*
 
 declare function local:serializable-class-versions($name as xs:string) as xs:string
 {
-  string-join(
-     ($name, '::class_factory<', $name, '>', $gen:newline, $name, '::g_class_factory;',
-       $gen:newline, $gen:newline)
-      ,'')
+  concat("SERIALIZABLE_CLASS_VERSIONS(", $name, ")", $gen:newline, $gen:newline)
 };
 
 

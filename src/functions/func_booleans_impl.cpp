@@ -47,9 +47,8 @@ public:
     :
     function(sig, kind)
   {
+    setFlag(FunctionConsts::IsComparison);
   }
-
-  bool isComparisonFunction() const { return true; }
 
   virtual const char* comparison_name() const { return ""; }
 
@@ -150,7 +149,7 @@ xqtref_t ValueOpComparison::getReturnType(const fo_expr* caller) const
       return empty;
 
     TypeConstants::quantifier_t aq = 
-    TypeOps::quantifier(*caller->get_arg(i)->get_return_type());
+    caller->get_arg(i)->get_return_type()->get_quantifier();
 
     if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR)
     {
@@ -168,22 +167,22 @@ xqtref_t ValueOpComparison::getReturnType(const fo_expr* caller) const
   switch (kind)                                                     \
   {                                                                 \
   case FunctionConsts::OP_VALUE_EQUAL_2:                            \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_##type##_2);         \
+    return BUILTIN_FUNC(OP_VALUE_EQUAL_##type##_2);         \
                                                                     \
   case FunctionConsts::OP_VALUE_NOT_EQUAL_2:                        \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_NOT_EQUAL_##type##_2);     \
+    return BUILTIN_FUNC(OP_VALUE_NOT_EQUAL_##type##_2);     \
                                                                     \
   case FunctionConsts::OP_VALUE_LESS_EQUAL_2:                       \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_LESS_EQUAL_##type##_2);    \
+    return BUILTIN_FUNC(OP_VALUE_LESS_EQUAL_##type##_2);    \
                                                                     \
   case FunctionConsts::OP_VALUE_LESS_2:                             \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_LESS_##type##_2);          \
+    return BUILTIN_FUNC(OP_VALUE_LESS_##type##_2);          \
                                                                     \
   case FunctionConsts::OP_VALUE_GREATER_EQUAL_2:                    \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_EQUAL_##type##_2); \
+    return BUILTIN_FUNC(OP_VALUE_GREATER_EQUAL_##type##_2); \
                                                                     \
   case FunctionConsts::OP_VALUE_GREATER_2:                          \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_##type##_2);       \
+    return BUILTIN_FUNC(OP_VALUE_GREATER_##type##_2);       \
                                                                     \
   default:                                                          \
     ZORBA_ASSERT(false);                                            \
@@ -389,7 +388,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2);
+    return BUILTIN_FUNC(OP_VALUE_EQUAL_2);
   }
 
   CompareConsts::CompareType comparisonKind() const
@@ -427,7 +426,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_NOT_EQUAL_2);
+    return BUILTIN_FUNC(OP_VALUE_NOT_EQUAL_2);
   }
 };
 
@@ -460,7 +459,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_LESS_EQUAL_2);
+    return BUILTIN_FUNC(OP_VALUE_LESS_EQUAL_2);
   }
 };
 
@@ -493,7 +492,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_LESS_2);
+    return BUILTIN_FUNC(OP_VALUE_LESS_2);
   }
 };
 
@@ -526,7 +525,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_EQUAL_2);
+    return BUILTIN_FUNC(OP_VALUE_GREATER_EQUAL_2);
   }
 };
 
@@ -559,7 +558,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_2);
+    return BUILTIN_FUNC(OP_VALUE_GREATER_2);
   }
 };
 

@@ -32,12 +32,12 @@ class Schema;
 class qname_hash_equals 
 {
  public:
-  static uint32_t hash(const store::Item *qn)
+  static uint32_t hash(const store::Item* qn)
   {
     return qn->hash();
   }
 
-  static bool equal(const store::Item *qn1, const store::Item *qn2)
+  static bool equal(const store::Item* qn1, const store::Item* qn2)
   {
     return qn1->equals(qn2);
   }
@@ -91,11 +91,20 @@ public:
 
   xqtref_t create_untyped_type() const;
 
+  xqtref_t create_any_simple_type() const;
+
   xqtref_t create_empty_type() const;
 
   xqtref_t create_none_type() const;
 
-  xqtref_t create_any_simple_type() const;
+  xqtref_t create_any_item_type(TypeConstants::quantifier_t q) const;
+
+  xqtref_t create_any_function_type(TypeConstants::quantifier_t q) const;
+
+  xqtref_t create_function_type(
+        const std::vector<xqtref_t>& aArgs,
+        const xqtref_t& aReturn,
+        TypeConstants::quantifier_t aQuant) const;
 
   xqtref_t create_builtin_atomic_type(
         store::SchemaTypeCode type_code,
@@ -104,45 +113,36 @@ public:
   xqtref_t create_named_atomic_type(
         store::Item* qname,
         TypeConstants::quantifier_t quant,
-        const QueryLoc& loc = QueryLoc::null,
+        const QueryLoc& loc,
         const Error& error = zerr::ZXQP0000_NO_ERROR) const;
 
   xqtref_t create_named_type(
         store::Item* qname,
-        TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE,
-        const QueryLoc& loc = QueryLoc::null,
+        TypeConstants::quantifier_t quant,
+        const QueryLoc& loc,
         const Error& error = zerr::ZXQP0000_NO_ERROR) const;
 
-  xqtref_t create_any_item_type(TypeConstants::quantifier_t quant) const;
+  xqtref_t create_structured_item_type(TypeConstants::quantifier_t q) const;
 
-  xqtref_t create_any_function_type(TypeConstants::quantifier_t quant) const;
+#ifdef ZORBA_WITH_JSON
+  xqtref_t create_json_type(
+        store::StoreConsts::JSONItemKind kind,
+        TypeConstants::quantifier_t quantifier) const;
+#endif
 
   xqtref_t create_node_type(
         store::StoreConsts::NodeKind nodeKind,
         const store::Item_t& nodeName,
-        xqtref_t contentType,
+        const xqtref_t& contentType,
         TypeConstants::quantifier_t quant,
         bool nillable,
         bool schematest) const;
 
-  xqtref_t create_function_type(
-        const std::vector<xqtref_t>& aArgs,
-        const xqtref_t& aReturn,
-        TypeConstants::quantifier_t aQuant) const;
-
-  xqtref_t create_type(
-        const XQType& type,
-        TypeConstants::quantifier_t quant) const;
-
-  xqtref_t create_type_x_quant(
-        const XQType& type,
-        TypeConstants::quantifier_t quant) const;
-
-  xqtref_t create_type(const TypeIdentifier& ident) const;
-
   xqtref_t create_value_type(
         const store::Item* item,
         const QueryLoc& loc = QueryLoc::null) const;
+
+  xqtref_t create_type(const TypeIdentifier& ident) const;
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
@@ -166,6 +166,14 @@ public:
         store::Item_t& typeName,
         const QueryLoc& loc);
 #endif
+
+  xqtref_t create_type(
+        const XQType& type,
+        TypeConstants::quantifier_t quant) const;
+
+  xqtref_t create_type_x_quant(
+        const XQType& type,
+        TypeConstants::quantifier_t quant) const;
 
 private:
   xqtref_t create_builtin_node_type(

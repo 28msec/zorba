@@ -313,6 +313,7 @@ public:
   PlanIterator(zorba::serialization::Archiver& ar)
     :
     SimpleRCObject(ar),
+    theStateOffset(0),
     theSctx(NULL)
   {
   }
@@ -334,17 +335,22 @@ public:
     theStateOffset(0),
     loc(it.loc),
     theSctx(it.theSctx)
-  {}
+  {
+  }
 
   virtual ~PlanIterator() {}
 
   void setLocation(const QueryLoc& loc_) { loc = loc_; }
+
+  const QueryLoc& getLocation() const { return loc; }
 
   uint32_t getStateOffset() const { return theStateOffset; }
 
   static_context* getStaticContext() const { return theSctx; }
 
   TypeManager* getTypeManager() const;
+
+  virtual bool isConstructor() const { return false; }
 
   /**
    * Accept method for the PlanIterator-Tree-Visitor
@@ -482,7 +488,7 @@ template <class IterType>
 class Batcher: public PlanIterator
 {
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(Batcher)
+  SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(Batcher)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(Batcher, PlanIterator)
   void serialize(::zorba::serialization::Archiver& ar)
   {

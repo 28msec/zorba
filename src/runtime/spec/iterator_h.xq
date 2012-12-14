@@ -29,6 +29,7 @@ declare function local:get-iterators($XMLdoc) as xs:string
   $gen:newline )
 };
 
+
 declare function local:process-iterator($iter) as xs:string
 {
   (: name of the state or PlanIteratorState if no explicit state is required :)
@@ -75,6 +76,7 @@ declare function local:process-iterator($iter) as xs:string
   ) (: concat :)
 };
 
+
 declare function local:process-state($state, $stateName as xs:string, $baseClassName as xs:string) as xs:string
 {
   string-join(('class ',$stateName,' : public ',$baseClassName,$gen:newline, '{', $gen:newline,
@@ -102,6 +104,7 @@ declare function local:process-state($state, $stateName as xs:string, $baseClass
   '};',$gen:newline, $gen:newline),'')
 };
 
+
 declare function local:arity($iter) as xs:string
 {
   let $arity := lower-case($iter/@arity)
@@ -114,6 +117,7 @@ declare function local:arity($iter) as xs:string
     then 'Noary'
     else 'Nary'
 };
+
 
 declare function local:children-decl($iter) as xs:string
 {
@@ -129,6 +133,7 @@ declare function local:children-decl($iter) as xs:string
   
 };
 
+
 declare function local:children-args($iter) as xs:string
 {
   let $arity := lower-case($iter/@arity)
@@ -142,6 +147,8 @@ declare function local:children-args($iter) as xs:string
     else ', children'
   
 };
+
+
 declare function local:constructor($iter, $name as xs:string, $base as xs:string) as xs:string
 {
   concat(
@@ -153,16 +160,21 @@ declare function local:constructor($iter, $name as xs:string, $base as xs:string
     local:children-decl($iter),
     local:add-constructor-param($iter),
     ')',
-    $gen:newline, gen:indent(2), ': ',
-    $gen:newline, gen:indent(2), $base, '(sctx, loc', local:children-args($iter),
-    if ($iter/@base)
-    then concat(', ',
-            string-join(
-              for $base-param in $iter/zorba:constructor/zorba:parameter[@base = "true"]
-              return $base-param/@name, ', '))
-    else "",
-    local:add-constructor-param-2($iter),
-    $gen:newline, gen:indent(1), '{}',
+    $gen:newline, gen:indent(2),
+    if (not(exists($iter/@generateConstructor)) or $iter/@generateConstructor = "true")
+    then concat(
+      ': ',
+      $gen:newline, gen:indent(2), $base, '(sctx, loc', local:children-args($iter),
+      if ($iter/@base)
+      then concat(', ',
+              string-join(
+                for $base-param in $iter/zorba:constructor/zorba:parameter[@base = "true"]
+                return $base-param/@name, ', '))
+      else "",
+      local:add-constructor-param-2($iter),
+      $gen:newline, gen:indent(1), '{}')
+    else
+      ';',
     $gen:newline, $gen:newline
   )
 };
@@ -202,29 +214,18 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     'SERIALIZABLE_CLASS_CONSTRUCTOR2T(', $name,',',
     $gen:newline,
     gen:indent(2), $base, ');', $gen:newline, $gen:newline,
-    gen:indent(), 'void serialize( ::zorba::serialization::Archiver&amp; ar)',
-    if ( not(exists($iter/@generateSerialize)) or
-         $iter/@generateSerialize eq 'true')
-    then concat(
-      $gen:newline,
-      gen:indent(), '{',
-      $gen:newline,
-      gen:indent(2), 'serialize_baseclass(ar,',
-      $gen:newline,
-      gen:indent(2),'(', $base, '*)this);',
-      $gen:newline,
-      local:add-arch($iter),
-      gen:indent(),'}'
-    )
-    else ";",
+    gen:indent(), 'void serialize( ::zorba::serialization::Archiver&amp; ar);',
     $gen:newline, $gen:newline,
     (: end serialization :)
 
     local:constructor($iter, $name, $base),
 
     local:add-destructor($iter),
+
     local:add-getter($iter),
+
     local:add-setter($iter),
+
     if ($iter/zorba:method) then
       local:add-methods($iter)
     else (),
@@ -246,6 +247,7 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     $gen:newline,$gen:newline
     )
 };
+
 
 declare function local:add-methods ($iter) as xs:string?
 {
@@ -271,6 +273,7 @@ declare function local:add-methods ($iter) as xs:string?
       $gen:newline)
 };
 
+
 declare function local:get-method-arguments($method) as xs:string?
 {
   fn:string-join(
@@ -282,10 +285,12 @@ declare function local:get-method-arguments($method) as xs:string?
     ", ")
 };
 
+
 declare function local:add-destructor($iter) as xs:string?
 {
   fn:concat($gen:indent, "virtual ~", $iter/@name, "();", $gen:newline, $gen:newline)
 };
+
 
 declare function local:add-getter($iter) as xs:string?
 {
@@ -368,26 +373,12 @@ declare function local:add-protected($iter) as xs:string?
 };
 
 
-declare function local:add-arch($iter) as xs:string?
-{
-  if(count($iter/zorba:member) > 0) then
-    string-join(($gen:newline,
-                 for $member in $iter/zorba:member
-                 return 
-                 string-join((gen:indent(2),
-                              'ar &amp; ',
-                              $member/@name,
-                              ';',
-                              $gen:newline),'')),
-                '')
-  else ()
-};
-
 declare function local:get-decl($XMLdoc, $ns as xs:string) as xs:string
 {
   string-join(for $tmp in $XMLdoc//zorba:fwd-decl[@ns=$ns]
   return string-join((if ($ns ne 'zorba') then $gen:indent else '','class ', $tmp/text(), ';'),''),$gen:newline)
 };
+
 
 declare function local:get-fwd-decl($XMLdoc) as xs:string*
 {
@@ -398,6 +389,7 @@ declare function local:get-fwd-decl($XMLdoc) as xs:string*
   if($ns eq 'zorba') then local:get-decl($XMLdoc, 'zorba')
   else string-join(('namespace ', $ns, '{',$gen:newline, local:get-decl($XMLdoc, $ns) ,$gen:newline,'}'),''))
 };
+
 
 declare function local:includes($XMLdoc) as xs:string*
 {

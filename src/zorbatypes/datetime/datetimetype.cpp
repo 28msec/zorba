@@ -38,16 +38,10 @@
 
 #include "util/ascii_util.h"
 
-#include "zorbaserialization/serialize_template_types.h"
-
-
 
 namespace zorba
 {
 
-SERIALIZABLE_CLASS_VERSIONS(DateTime)
-
-  
 static const char separators[] = { '-', '-', 'T', ':', ':', '.'};
 
 static const char min_length[] = { 4, 2, 2, 2, 2, 2, 0};
@@ -1202,7 +1196,7 @@ DateTime* DateTime::normalizeTimeZone(int tz_seconds) const
   {
     // validate timezone value (-14 .. +14 H)
     if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
-      throw InvalidTimezoneException();
+      throw InvalidTimezoneException( tz_seconds );
     
     d = Duration(Duration::DAYTIMEDURATION_FACET,
                  (tz_seconds < 0), 0, 0, 0, 0, 0, tz_seconds, 0);
@@ -1228,7 +1222,7 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
   
   // validate timezone value (-14 .. +14 H)
   if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
-    throw InvalidTimezoneException();
+    throw InvalidTimezoneException( tz_seconds );
 
   // If $timezone is not specified, then $timezone is the value of the implicit timezone in the dynamic context.
   context_tz = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET, (tz_seconds<0), 0, 0, 0, 0, 0, tz_seconds, 0));
@@ -1288,7 +1282,7 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
         d->getSeconds() != Integer::zero() ||
         d->getHours()*3600 + d->getMinutes()*60 > 14*3600 ||
         d->getHours()*3600 + d->getMinutes()*60 < -14*3600)
-      throw InvalidTimezoneException();
+      throw InvalidTimezoneException( d->getHours()*3600 + d->getMinutes()*60 );
         
     // If $arg does not have a timezone component and $timezone is not the
     // empty sequence, then the result is $arg with $timezone as the timezone
@@ -1333,20 +1327,6 @@ void DateTime::setFacet(FACET_TYPE a_facet)
 {
   facet = a_facet;
   adjustToFacet();
-}
-
-
-void DateTime::serialize(serialization::Archiver& ar)
-{
-  SERIALIZE_ENUM(FACET_TYPE, facet);
-  ar & data[0];
-  ar & data[1];
-  ar & data[2];
-  ar & data[3];
-  ar & data[4];
-  ar & data[5];
-  ar & data[6];
-  ar & the_time_zone;
 }
 
 

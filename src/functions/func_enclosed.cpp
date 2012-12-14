@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "runtime/core/constructors.h"
+#include "runtime/json/jsoniq_functions.h"
 
 #include "functions/function_impl.h"
 
@@ -23,6 +24,7 @@
 
 #include "system/globalenv.h"
 
+#include "types/typeops.h"
 
 namespace zorba
 {
@@ -59,7 +61,7 @@ public:
     return producer == 0;
   }
 
-  DEFAULT_UNARY_CODEGEN(EnclosedIterator);
+  CODEGEN_DECL();
 };
 
 
@@ -72,6 +74,18 @@ xqtref_t op_enclosed_expr::getReturnType(const fo_expr* caller) const
   else
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
+
+
+PlanIter_t op_enclosed_expr::codegen(
+    CompilerCB* /* cb */,
+    static_context* sctx,
+    const QueryLoc& loc, 
+    std::vector<PlanIter_t>& argv,
+    expr& ann) const
+{
+  return new EnclosedIterator(sctx, loc, argv[0]);
+}
+
 
 
 void populateContext_Constructors(static_context* sctx)

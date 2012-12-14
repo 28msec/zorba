@@ -34,6 +34,24 @@ namespace zorba {
 
 namespace internal {
 
+/**
+ * Utility function that identifies URL schemes that will be handled
+ * by the HttpStream class.
+ */
+bool
+HTTPURLResolver::isHTTPScheme(zstring const& aUrl)
+{
+  uri::scheme lScheme = uri::get_scheme(aUrl);
+  switch (lScheme) {
+    case uri::http:
+    case uri::https:
+    case uri::ftp:
+      return true;
+    default:
+      return false;
+  }
+}
+
 /******
  * http: (and https: and ftp:) URL resolver.
  ******/
@@ -52,16 +70,8 @@ HTTPURLResolver::resolveURL
       break;
   }
 
-  uri::scheme lScheme = uri::get_scheme(aUrl);
-  switch (lScheme) {
-    case uri::http:
-    case uri::https:
-    case uri::ftp:
-      // Fall through to actual implementation
-      break;
-    default:
-      // We don't implement other schemes
-      return NULL;
+  if (!isHTTPScheme(aUrl)) {
+    return nullptr;
   }
   try {
     std::auto_ptr<HttpStream> lStream(new HttpStream(aUrl));
@@ -75,7 +85,6 @@ HTTPURLResolver::resolveURL
     throw os_error::exception("", aUrl.c_str(), "Could not create stream resource");
   }
 }
-
 
 /******
  * file: URL resolver.
@@ -107,7 +116,8 @@ FileURLResolver::resolveURL
   zstring lPath = fs::get_normalized_path(aUrl);
   if (fs::get_type(lPath) == fs::file) {
     std::ifstream* lStream = new std::ifstream(lPath.c_str());
-    return new StreamResource(lStream, &fileStreamReleaser);
+    return new StreamResource(
+        lStream, &fileStreamReleaser, "", true /* seekable */);
   }
   return NULL;
 }
@@ -127,7 +137,11 @@ ZorbaCollectionURLResolver::resolveURL
   if (aEntityData->getKind() != EntityData::COLLECTION)
     return NULL;
   store::Item_t lName;
-  GENV_STORE.getItemFactory()->createQName(lName, aUrl.c_str(), "", "zorba-internal-name-for-w3c-collections");
+  GENV_STORE.getItemFactory()->createQName(lName,
+                                           aUrl.c_str(),
+                                           "",
+                                           "zorba-internal-name-for-w3c-collections");
+
   store::Collection_t lColl = GENV_STORE.getCollection(lName.getp(), true);
   if ( lColl == NULL ) {
     return NULL;

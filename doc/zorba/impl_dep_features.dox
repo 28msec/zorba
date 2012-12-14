@@ -36,12 +36,12 @@
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The circumstances in which warnings are raised, and the ways in which warnings are handled.</td>
-    <td>Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html and http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_warnings.html.</td>
+    <td>Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/html/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html and http://www.zorba-xquery.com/html/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_warnings.html.</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The method by which errors are reported to the external processing environment.</td>
-    <td>Errors are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html.</td>
+    <td>Errors are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/html/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html.</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
@@ -51,7 +51,7 @@
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Any components of the static context or dynamic context that are overwritten or augmented by the implementation.</td>
-    <td>The following static context components are overwritten/augmented: 1. Statically known namespaces: Augmented with zerr –&gt; http://www.zorba-xquery.com/errors 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*</td>
+    <td>The following static context components are overwritten/augmented: 1. Statically known namespaces: Augmented with zerr –&gt; <a href="http://www.zorba-xquery.com/html/modules/zorba/errors">http://www.zorba-xquery.com/errors</a> 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
@@ -71,17 +71,17 @@
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The names and semantics of any option declarations recognized by the implementation.</td>
-    <td>See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/options_and_annotations.html.</td>
+    <td>See http://www.zorba-xquery.com/html/doc/latest/options_and_annotations.html.</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Protocols (if any) by which parameters can be passed to an external function, and the result of the function can returned to the invoking query.</td>
-    <td>See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/external_functions.html.</td>
+    <td>See http://www.zorba-xquery.com/html/doc/latest/external_functions.html.</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The process by which the specific modules to be imported by a module import are identified, if the Module Feature is supported (includes processing of location hints, if any.)</td>
-    <td>See http://www.zorba-xquery.com/site2/doc/latest/zorba/html/modules_top.html.</td>
+    <td>See http://www.zorba-xquery.com/html/doc/latest/modules_top.html.</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
@@ -91,7 +91,7 @@
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The means by which serialization is invoked, if the Serialization Feature is supported.</td>
-    <td>The result of an XQuery program can be serialized via the zorba::XQuery::execute methods (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1XQuery.html). Sequence of items can be serialized via the zorba::Serializer::serialize method (see http://www.zorba-xquery.com/site2/doc/latest/cxx/html/classzorba_1_1Serializer.html).</td>
+    <td>The result of an XQuery program can be serialized via the zorba::XQuery::execute methods (see http://www.zorba-xquery.com/html/documentation/latest/cxx/classzorba_1_1XQuery). Sequence of items can be serialized via the zorba::Serializer::serialize method (see http://www.zorba-xquery.com/html/documentation/latest/cxx/classzorba_1_1Serializer).</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
@@ -286,7 +286,7 @@
   <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
     <td>It is implementation-defined which thesaurus relationships an implementation supports.</td>
-    <td>This is covered in the Zorba Full Text Thesaurus documentation, http://www.zorba-xquery.com/site2/doc/latest/zorba/html/ft_thesaurus.html</td>
+    <td>This is covered in the Zorba Full Text Thesaurus documentation, http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_thesaurus</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery and XPath Full Text 1.0</td>
@@ -670,13 +670,13 @@
     <td>W3C XQuery 1.0</td>
     <td>Available documents</td>
     <td>dynamic</td>
-    <td>The URIs returned by the availale-documents function of module http://www.zorba-xquery.com/modules/store/dynamic/documents (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html)</td>
+    <td>The URIs returned by the availale-documents function of module http://www.zorba-xquery.com/modules/store/dynamic/documents (see http://www.zorba-xquery.com/html/modules/zorba/store/Documents)</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Available collections</td>
     <td>dynamic</td>
-    <td>The URIs returned by the available-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/site2/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html)</td>
+    <td>The URIs returned by the available-collections function of module http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl (see http://www.zorba-xquery.com/html/modules/zorba/store/collection/w3c-ddl)</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>

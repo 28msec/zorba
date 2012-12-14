@@ -242,7 +242,12 @@ enum category {
   ZORBA_STORE,
 
   JSON_PARSER,
-  JSON_SERIALIZATION
+  JSON_SERIALIZATION,
+
+# ifdef ZORBA_WITH_JSON
+  JSONIQ_CORE,
+  JSONIQ_UPDATE
+# endif
 };
 
 /**

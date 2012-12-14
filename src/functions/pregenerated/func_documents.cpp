@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,9 +83,9 @@ PlanIter_t zorba_store_documents_is_available_document::codegen(
 
 void populate_context_documents(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_documents_put,
         (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","put"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -96,9 +96,9 @@ void populate_context_documents(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_documents_remove,
         (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","remove"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -108,9 +108,9 @@ void populate_context_documents(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_documents_document,
         (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","document"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -120,9 +120,9 @@ void populate_context_documents(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_documents_available_documents,
         (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","available-documents"), 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
@@ -131,9 +131,9 @@ void populate_context_documents(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_documents_is_available_document,
         (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","is-available-document"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 

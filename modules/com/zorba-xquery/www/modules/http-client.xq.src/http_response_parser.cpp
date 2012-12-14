@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <cstring>
 #include <string>
 #include <sstream>
 #include <assert.h>
 #include <iostream>
 
-#include <zorba/item_factory.h>
-#include <zorba/item.h>
-#include <zorba/xmldatamanager.h>
 #include <zorba/base64.h>
 #include <zorba/config.h>
+#include <zorba/diagnostic_list.h>
 #include <zorba/error.h>
+#include <zorba/item.h>
+#include <zorba/item_factory.h>
+#include <zorba/transcode_stream.h>
+#include <zorba/xmldatamanager.h>
+#include <zorba/xquery_exception.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_functions.h>
-#include <zorba/transcode_stream.h>
 
 #include "http_response_parser.h"
 #include "http_request_handler.h"
@@ -38,6 +41,21 @@ static void parse_content_type( std::string const &s, std::string *mime_type,
                                 std::string *charset ) {
   std::string::size_type pos = s.find( ';' );
   *mime_type = s.substr( 0, pos );
+
+  if ( std::strncmp( mime_type->c_str(), "text/", 5 ) == 0 ) {
+    //
+    // RFC 2616: "Hypertext Transfer Protocol -- HTTP/1.1," section 3.7.1,
+    // "Canonicalization and Text Defaults":
+    //
+    //    The "charset" parameter is used with some media types to define the
+    //    character set (section 3.4) of the data. When no explicit charset
+    //    parameter is provided by the sender, media subtypes of the "text"
+    //    type are defined to have a default charset value of "ISO-8859-1" when
+    //    received via HTTP.
+    //
+    *charset = "ISO-8859-1";
+  } else
+    charset->clear();
 
   if ( pos != std::string::npos ) {
     //
@@ -57,9 +75,6 @@ static void parse_content_type( std::string const &s, std::string *mime_type,
         *charset = t;
       } 
     }
-  } else {
-    // The HTTP/1.1 spec says that the default charset is ISO-8859-1.
-    *charset = "ISO-8859-1";
   }
 }
 
@@ -67,12 +82,17 @@ namespace http_client {
   
   HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
                                          ErrorThrower& aErrorThrower,
-                                         std::string aOverridenContentType, bool aStatusOnly)
-  : 
-  theHandler(aHandler), theCurl(aCurl), theErrorThrower(aErrorThrower),
-  theStatus(-1), theStreamBuffer(0), theInsideRead(false),
+                                         std::string aOverridenContentType,
+                                         bool aStatusOnly) : 
+  theHandler(aHandler),
+  theCurl(aCurl),
+  theErrorThrower(aErrorThrower),
+  theStatus(-1),
+  theStreamBuffer(0),
+  theInsideRead(false),
   theOverridenContentType(aOverridenContentType),
-  theStatusOnly(aStatusOnly), theSelfContained(true)
+  theStatusOnly(aStatusOnly),
+  theSelfContained(true)
   {
     registerHandler();
     theStreamBuffer = new zorba::curl::streambuf(theCurl);
@@ -100,14 +120,22 @@ namespace http_client {
       }
 
       std::auto_ptr<std::istream> lStream;
-      if ( transcode::is_necessary( theCurrentCharset.c_str() ) ) {
-        lStream.reset(
-          new transcode::stream<std::istream>(
-            theCurrentCharset.c_str(), theStreamBuffer
-          )
+      try {
+        if ( !theCurrentCharset.empty() &&
+             transcode::is_necessary( theCurrentCharset.c_str() ) ) {
+          lStream.reset(
+            new transcode::stream<std::istream>(
+              theCurrentCharset.c_str(), theStreamBuffer
+            )
+          );
+        } else
+          lStream.reset(new std::istream(theStreamBuffer));
+      }
+      catch ( std::invalid_argument const &e ) {
+        theErrorThrower.raiseException(
+          "http://www.zorba-xquery.com/errors", "ZXQP0006", e.what()
         );
-      } else
-        lStream.reset(new std::istream(theStreamBuffer));
+      }
 
       Item lItem;
       if (theCurrentContentType == "text/xml" ||

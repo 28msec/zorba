@@ -43,7 +43,7 @@ public:
 
   ~ValueIndexCompareFunction();
 
-  const XQPCollator* getCollator(ulong i) const { return theCollators[i]; }
+  const XQPCollator* getCollator(csize i) const { return theCollators[i]; }
 
   uint32_t hash(const store::IndexKey* key) const;
 
@@ -64,7 +64,7 @@ public:
 class ValueIndexValue : public store::ItemVector
 {
 public:
-  ValueIndexValue(ulong size = 0) : store::ItemVector(size) {}
+  ValueIndexValue(csize size = 0) : store::ItemVector(size) {}
 };
 
 
@@ -86,14 +86,16 @@ protected:
   virtual ~ValueIndex();
 
 public:
-  const XQPCollator* getCollator(ulong i) const;
+  const XQPCollator* getCollator(csize i) const;
+
+  virtual bool isTreeIndex() = 0;
 
   virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
 
   virtual bool remove(
-        const store::IndexKey* key,
-        store::Item_t& item,
-        bool all = false) = 0;
+      const store::IndexKey* key,
+      const store::Item_t& node,
+      bool all) = 0;
 };
 
 
@@ -142,15 +144,17 @@ protected:
   ~ValueHashIndex();
 
 public:
+  bool isTreeIndex() { return false; }
+
   void clear();
 
-  ulong size() const;
+  csize size() const;
 
   Index::KeyIterator_t keys() const;
 
   bool insert(store::IndexKey*& key, store::Item_t& item);
 
-  bool remove(const store::IndexKey* key, store::Item_t& item, bool all);
+  bool remove(const store::IndexKey* key, const store::Item_t& item, bool all);
 };
 
 
@@ -167,6 +171,7 @@ protected:
   ValueIndexValue                      * theResultSet;
   ValueIndexValue::const_iterator        theIte;
   ValueIndexValue::const_iterator        theEnd;
+  xs_integer                             theSkip;
 
 public:
   ProbeValueHashIndexIterator(const store::Index_t& index) : theResultSet(NULL)
@@ -174,7 +179,7 @@ public:
     theIndex = static_cast<ValueHashIndex*>(index.getp());
   }
 
-  void init(const store::IndexCondition_t& cond);
+  void init(const store::IndexCondition_t& cond, const xs_integer& aSkip);
 
   void open();
 
@@ -183,6 +188,8 @@ public:
   void reset();
 
   void close();
+
+  void count(store::Item_t& result);
 };
 
 
@@ -202,7 +209,12 @@ class ValueTreeIndex : public ValueIndex
 
   class KeyIterator : public Index::KeyIterator
   {
+  protected:
+    IndexMap::const_iterator   theIterator;
+    const IndexMap           & theMap;
+
   public:
+    KeyIterator(const IndexMap& aMap);
     ~KeyIterator();
 
     void open();
@@ -227,15 +239,17 @@ protected:
   ~ValueTreeIndex();
 
 public:
+  bool isTreeIndex() { return true; }
+
   void clear();
 
-  ulong size() const;
+  csize size() const;
 
   Index::KeyIterator_t keys() const;
 
   bool insert(store::IndexKey*& key, store::Item_t& item);
 
-  bool remove(const store::IndexKey* key, store::Item_t& item, bool all = false);
+  bool remove(const store::IndexKey* key, const store::Item_t& item, bool all);
 };
 
 
@@ -260,6 +274,8 @@ protected:
   ValueIndexValue::const_iterator           theIte;
   ValueIndexValue::const_iterator           theEnd;
 
+  xs_integer                                theSkip; 
+
 protected:
   void initExact();
 
@@ -274,7 +290,7 @@ public:
     theIndex = reinterpret_cast<ValueTreeIndex*>(index.getp());
   }
 
-  void init(const store::IndexCondition_t& cond);
+  void init(const store::IndexCondition_t& cond, const xs_integer& aSkip);
 
   void open();
 
@@ -283,6 +299,8 @@ public:
   void reset();
 
   void close();
+
+  void count(store::Item_t& result);
 };
 
 

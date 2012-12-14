@@ -522,6 +522,12 @@ declare function fn:parse-xml($arg as xs:string?) as document-node(element(*, xs
 declare function fn:parse-xml( $arg as xs:string?, $baseURI as xs:string) as document-node(element(*, xs:untyped)) external;
 
 (:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-parse-xml-fragment">fn:parse-xml-fragment</a>
+ :)
+declare function fn:parse-xml-fragment( $arg as xs:string?) as document-node(element(*, xs:untyped)) external;
+
+
+(:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-prefix-from-QName">fn:prefix-from-QName</a>
  :)
 declare function fn:prefix-from-QName($arg as xs:QName?) as xs:NCName? external;
@@ -864,6 +870,11 @@ declare function fn:escape-html-uri($uri as xs:string?) as xs:string external;
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-has-children">fn:has-children</a>
  :)
+declare function fn:has-children() as xs:boolean external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-has-children">fn:has-children</a>
+ :)
 declare function fn:has-children($node as node()?) as xs:boolean external;
 
 (:~
@@ -923,8 +934,13 @@ declare function fn:namespace-uri() as xs:anyURI external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-namespace-uri">fn:namespace-uri</a>
- :)
+ :)       
 declare function fn:namespace-uri($arg as node()?) as xs:anyURI external;
+
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-nilled">fn:nilled</a>
+ :)
+declare function fn:nilled() as xs:boolean external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-nilled">fn:nilled</a>

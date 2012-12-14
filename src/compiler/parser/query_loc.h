@@ -17,11 +17,17 @@
 #ifndef ZORBA_QUERY_LOC_H
 #define ZORBA_QUERY_LOC_H
 
+#include <zorba/internal/ztd.h>
 #include "zorbatypes/zstring.h"
-#include "zorbaserialization/archiver.h"
-#include "zorbaserialization/class_serializer.h"
 
 namespace zorba {
+
+namespace serialization
+{
+  class Archiver;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * Class to save the query location of zorba elements that correspond to a code
@@ -30,14 +36,13 @@ namespace zorba {
  * parser generator. yy::location is used as few as possible in zorba to reduced
  * dependencies to the parser.
  */
-// exported for unit testing only
-  class QueryLoc : public ::zorba::serialization::SerializeBaseClass
-  {
-
+class QueryLoc 
+{
+  typedef zorba::internal::ztd::explicit_bool explicit_bool;
 public:
   static QueryLoc null;
 
-private:
+public:
   zstring      theFilename;
   unsigned int theLineBegin;
   unsigned int theColumnBegin;
@@ -45,27 +50,17 @@ private:
   unsigned int theColumnEnd;
 
 public:
-  SERIALIZABLE_CLASS(QueryLoc)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(QueryLoc)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   QueryLoc();
 
-  QueryLoc(const QueryLoc& aQueryLoc);
-
-  virtual ~QueryLoc() {}
+  QueryLoc( zstring const &filename, unsigned lineBegin, unsigned lineEnd,
+            unsigned columnBegin = 0, unsigned columnEnd = 0 );
 
 public:
   const zstring& getFilename() const { return theFilename; }
  
-  void setFilename(zstring const &aFilename) {
-    theFilename = aFilename;
-  }
+  void setFilename(const zstring& aFilename) { theFilename = aFilename; }
 
-  void setFilename(char const *aFilename) {
-    theFilename = aFilename;
-  }
+  void setFilename(const char* aFilename) { theFilename = aFilename; }
 
   unsigned int getLineBegin() const { return theLineBegin; }  
    
@@ -87,21 +82,30 @@ public:
  
   bool equals(const QueryLoc& loc) const;
 
-  bool operator==(const QueryLoc& loc) const
-  {
-    return equals(loc);    
-  }
-  
-  bool operator<(const QueryLoc& loc) const
-  {
-    return theLineBegin < loc.getLineBegin();
+  operator explicit_bool::type() const {
+    return explicit_bool::value_of( !equals( null ) );
   }
 };
 
+inline bool operator==( QueryLoc const &q1, QueryLoc const &q2 ) {
+  return q1.equals( q2 );
+}
+
+inline bool operator!=( QueryLoc const &q1, QueryLoc const &q2 ) {
+  return !(q1 == q2);
+}
+
+inline bool operator<( QueryLoc const &q1, QueryLoc const &q2 ) {
+  return q1.getLineBegin()  <  q2.getLineBegin()
+      || (q1.getLineBegin() == q2.getLineBegin()
+          && q1.getColumnBegin() < q2.getColumnBegin());
+}
 
 std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc);
 
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
 
-#endif
+#endif /* ZORBA_QUERY_LOC_H */
 /* vim:set et sw=2 ts=2: */

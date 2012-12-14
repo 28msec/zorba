@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<books>
+
+	<book>
+	<ratings>4.5</ratings>
+	<reviews>9</reviews>
+	<description>Data is getting bigger </description>
+	</book>
+	
+</books>

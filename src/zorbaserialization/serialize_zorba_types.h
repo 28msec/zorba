@@ -19,9 +19,11 @@
 
 #include <zorba/item.h>
 #include <zorba/xquery_exception.h>
+
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/m_apm.h"
 #include "zorbatypes/floatimpl.h"
+
 #include "zorbautils/checked_vector.h"
 
 #include "zorbaserialization/class_serializer.h"
@@ -35,6 +37,15 @@
 
 namespace zorba
 {
+  class Decimal;
+  class Duration;
+  class Timezone;
+  class DateTime;
+  class Base16;
+  class Base64;
+  class QueryLoc;
+  class HashMapItemPointerCmp;
+  class HashMapZStringCmp;
   class XQType;
   class function;
   class Diagnostic;
@@ -48,38 +59,51 @@ namespace zorba
 namespace serialization
 {
 
-void operator&(Archiver &ar, const XQType *&obj);
-void operator&(Archiver &ar, MAPM &obj);
+void operator&(Archiver& ar, HashMapZStringCmp& obj);
+
+void operator&(Archiver& ar, HashMapItemPointerCmp& obj);
+
+void operator&(Archiver& ar, const XQType*& obj);
+
 #ifdef ZORBA_WITH_BIG_INTEGER
-void operator&(Archiver &ar, IntegerImpl &obj);
+void operator&(Archiver& ar, IntegerImpl& obj);
 #else
-template<typename IntType>
-void operator&(Archiver &ar, IntegerImpl<IntType> &obj);
-#endif /* ZORBA_WITH_BIG_INTEGER */
+void operator&(serialization::Archiver& ar, IntegerImpl<long long>& obj);
+void operator&(serialization::Archiver& ar, IntegerImpl<unsigned long long>& obj);
+#endif
 
-void operator&(Archiver &ar, XQPCollator *&obj);
-void operator&(Archiver &ar, store::Item* &obj);
+void operator&(Archiver& ar, Decimal& obj);
 
-void operator&(Archiver &ar, const Diagnostic *&obj);
-void operator&(Archiver &ar, ZorbaException *&obj);
-void operator&(Archiver &ar, zorba::internal::diagnostic::location &obj);
-void operator&(Archiver &ar, zorba::Item &obj);
-void operator&(Archiver &ar, zorba::XQueryStackTrace &obj);
-void operator&(Archiver &ar, zorba::XQueryStackTrace::Entry &obj);
+void operator&(Archiver& ar, DateTime& obj);
+
+void operator&(Archiver& ar, Duration& obj);
+
+void operator&(Archiver& ar, Timezone& obj);
+
+void operator&(Archiver& ar, Base64& obj);
+
+void operator&(Archiver& ar, Base16& obj);
+
+void operator&(Archiver& ar, store::Item*& obj);
+
+void operator&(Archiver& ar, QueryLoc& obj);
+
+void operator&(Archiver& ar, const Diagnostic*& obj);
 
 
 #define SERIALIZE_TYPEMANAGER(type_mgr_type, type_mgr)                  \
-  bool is_root_type_mgr = ar.is_serializing_out() && (!GENV.isRootStaticContextInitialized() || ((TypeManager*)type_mgr == (TypeManager*)&GENV_TYPESYSTEM)) ; \
-  ar.set_is_temp_field(true);                                           \
+  bool is_root_type_mgr =                                               \
+    ar.is_serializing_out() &&                                          \
+    (!GENV.isRootStaticContextInitialized() ||                          \
+     ((TypeManager*)type_mgr == (TypeManager*)&GENV_TYPESYSTEM)) ;      \
+                                                                        \
   ar & is_root_type_mgr;                                                \
-  ar.set_is_temp_field(false);                                          \
                                                                         \
   if (is_root_type_mgr)                                                 \
   {                                                                     \
     if (!ar.is_serializing_out())                                       \
     {                                                                   \
       type_mgr = (type_mgr_type*)&GENV_TYPESYSTEM;                      \
-      /*RCHelper::addReference(type_mgr);*/                             \
     }                                                                   \
   }                                                                     \
   else                                                                  \
@@ -87,272 +111,36 @@ void operator&(Archiver &ar, zorba::XQueryStackTrace::Entry &obj);
     ar & type_mgr;                                                      \
   }
 
-#define SERIALIZE_TYPEMANAGER_RCHANDLE(type_mgr_type, type_mgr)                             \
-  bool is_root_type_mgr = (!GENV.isRootStaticContextInitialized() || ((TypeManager*)type_mgr.getp() == (TypeManager*)&GENV_TYPESYSTEM));            \
-  ar.set_is_temp_field(true);                                           \
-  ar & is_root_type_mgr;                                            \
-  ar.set_is_temp_field(false);                                      \
-  if(is_root_type_mgr)                                              \
-  {                                                                 \
-    if(!ar.is_serializing_out())                                    \
-     type_mgr = (type_mgr_type*)&GENV_TYPESYSTEM;                   \
-  }                                                                 \
-  else                                                              \
-  {                                                                 \
-    ar & type_mgr;                                                  \
+
+#define SERIALIZE_TYPEMANAGER_RCHANDLE(type_mgr_type, type_mgr)         \
+  bool is_root_type_mgr =                                               \
+  (!GENV.isRootStaticContextInitialized() ||                            \
+   ((TypeManager*)type_mgr.getp() == (TypeManager*)&GENV_TYPESYSTEM));  \
+                                                                        \
+  ar & is_root_type_mgr;                                                \
+                                                                        \
+  if (is_root_type_mgr)                                                 \
+  {                                                                     \
+    if (!ar.is_serializing_out())                                       \
+      type_mgr = (type_mgr_type*)&GENV_TYPESYSTEM;                      \
+  }                                                                     \
+  else                                                                  \
+  {                                                                     \
+    ar & type_mgr;                                                      \
   }
 
 
-template<class T>
-void operator&(Archiver& ar, store::ItemHandle<T>& obj)
-{ 
-  if (ar.is_serializing_out())
-  {
-    bool is_ref;
-    ENUM_ALLOW_DELAY allow_delay = ar.get_allow_delay();
+/*******************************************************************************
 
-    is_ref = ar.add_compound_field("ItemHandle<T>", 
-                                   !FIELD_IS_CLASS, 
-                                   "",
-                                   &obj,
-                                   ARCHIVE_FIELD_NORMAL);
-    if (!is_ref)
-    {
-      T* p = obj.getp();
-
-      if (allow_delay != ALLOW_DELAY)
-        ar.dont_allow_delay(allow_delay);
-
-      bool is_temp = false;
-
-      if (ar.get_is_temp_field_one_level())
-      {
-        is_temp = true;
-
-        ar.set_is_temp_field_one_level(true);
-
-        if (allow_delay == ALLOW_DELAY)
-          ar.dont_allow_delay();
-      }
-
-      ar & p;
-
-      if(is_temp)
-        ar.set_is_temp_field_one_level(false);
-
-      ar.add_end_compound_field();
-    }
-    else
-    {
-      assert(false);
-    }
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-
-    bool retval = ar.read_next_field(&type, &value, &id,
-                                     &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_nonclass_field(retval, type, "ItemHandle<T>",
-                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    //ar.register_reference(id, field_treat, &obj);
-
-    bool is_temp = false;
-
-    if (ar.get_is_temp_field_one_level())
-    {
-      is_temp = true;
-      ar.set_is_temp_field_one_level(true);
-    }
-
-    T* p;
-    ar & p;
-
-    if (is_temp)
-      ar.set_is_temp_field_one_level(false);
-
-    obj = p;
-
-    ar.read_end_current_level();
-  }
-}
-
-
-template<class T>
-void operator&(Archiver& ar, zorba::rchandle<T>& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    bool is_ref;
-    ENUM_ALLOW_DELAY allow_delay = ar.get_allow_delay();
-
-    is_ref = ar.add_compound_field("rchandle<T>",
-                                   !FIELD_IS_CLASS,
-                                   "",
-                                   &obj,
-                                   ARCHIVE_FIELD_NORMAL);
-    assert(!is_ref);
-    ZORBA_ASSERT(!is_ref);
-
-    {
-      T* p = obj.getp();
-
-      if (allow_delay != ALLOW_DELAY)
-        ar.dont_allow_delay(allow_delay);
-
-      bool is_temp = false;
-
-      if (ar.get_is_temp_field_one_level())
-      {
-        is_temp = true;
-        ar.set_is_temp_field_one_level(true);
-
-        if (allow_delay == ALLOW_DELAY)
-          ar.dont_allow_delay();
-      }
-
-      ar & p;
-
-      if (is_temp)
-        ar.set_is_temp_field_one_level(false);
-
-      ar.add_end_compound_field();
-    }
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-
-    bool  retval = ar.read_next_field(&type, &value, &id,
-                                      &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_nonclass_field(retval, type, "rchandle<T>",
-                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    bool is_temp = false;
-
-    if (ar.get_is_temp_field_one_level())
-    {
-      is_temp = true;
-      ar.set_is_temp_field_one_level(true);
-    }
-
-    T* p;
-
-    ar & p;
-
-    if (is_temp)
-      ar.set_is_temp_field_one_level(false);
-
-    obj = p;
-
-    ar.read_end_current_level();
-  }
-}
-
-
-template<class T>
-void operator&(Archiver& ar, zorba::const_rchandle<T>& obj)
-{
-  if (ar.is_serializing_out())
-  {
-    bool is_ref;
-    ENUM_ALLOW_DELAY allow_delay = ar.get_allow_delay();
-
-    is_ref = ar.add_compound_field("const_rchandle<T>",
-                                   !FIELD_IS_CLASS,
-                                   "",
-                                   &obj,
-                                   ARCHIVE_FIELD_NORMAL);
-    if (!is_ref)
-    {
-      T* p = (T*)obj.getp();
-
-      if (allow_delay != ALLOW_DELAY)
-        ar.dont_allow_delay(allow_delay);
-
-      bool is_temp = false;
-
-      if (ar.get_is_temp_field_one_level())
-      {
-        is_temp = true;
-        ar.set_is_temp_field_one_level(true);
-
-        if (allow_delay == ALLOW_DELAY)
-          ar.dont_allow_delay();
-      }
-      ar & p;
-
-      if (is_temp)
-        ar.set_is_temp_field_one_level(false);
-
-      ar.add_end_compound_field();
-    }
-    else
-    {
-      assert(false);
-    }
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-
-    bool retval = ar.read_next_field(&type, &value, &id,
-                                     &is_simple, &is_class, &field_treat, &referencing);
-
-    ar.check_nonclass_field(retval, type, "const_rchandle<T>",
-                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
-
-    bool is_temp = false;
-
-    if (ar.get_is_temp_field_one_level())
-    {
-      is_temp = true;
-      ar.set_is_temp_field_one_level(true);
-    }
-
-    T* p;
-
-    ar & p;
-
-    obj = p;
-
-    if (is_temp)
-      ar.set_is_temp_field_one_level(false);
-
-    ar.read_end_current_level();
-  }
-}
-
-
+********************************************************************************/
 template<typename StringType>
 void operator&(Archiver& ar, zorba::internal::VariableQName<StringType>& obj)
 {
   if (ar.is_serializing_out())
   {
     bool is_ref;
-    is_ref = ar.add_compound_field("VariableQName<StringType>",
+    is_ref = ar.add_compound_field(TYPE_LAST,
                                    !FIELD_IS_CLASS,
-                                   "",
                                    &obj,
                                    ARCHIVE_FIELD_NORMAL);
     if (!is_ref)
@@ -369,20 +157,14 @@ void operator&(Archiver& ar, zorba::internal::VariableQName<StringType>& obj)
   }
   else
   {
-    char* type;
-    std::string value;
-    int   id;
-    bool  is_simple = false;
-    bool  is_class = false;
-    enum  ArchiveFieldKind field_treat = ARCHIVE_FIELD_NORMAL;
-    int   referencing;
-    bool  retval;
+    TypeCode type;
+    int id;
+    ArchiveFieldKind field_kind = ARCHIVE_FIELD_NORMAL;
+    int referencing;
 
-    retval = ar.read_next_field(&type, &value, &id,
-                                &is_simple, &is_class, &field_treat, &referencing);
+    ar.read_next_compound_field(false, field_kind, type, id, referencing);
 
-    ar.check_nonclass_field(retval, type, "VariableQName<StringType>",
-                            is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_nonclass_field(field_kind, ARCHIVE_FIELD_NORMAL, id);
 
     ar & obj.ns_;
     ar & obj.prefix_;
@@ -391,13 +173,6 @@ void operator&(Archiver& ar, zorba::internal::VariableQName<StringType>& obj)
   }
 }
 
-
-template<typename FloatType>
-void operator&(Archiver& ar, FloatImpl<FloatType>& obj)
-{
-  ar & obj.value_;
-  ar & obj.precision_;
-}
 
 } // namespace serialization
 } // namespae zorba

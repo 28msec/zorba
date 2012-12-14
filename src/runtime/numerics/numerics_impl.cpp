@@ -396,7 +396,7 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   STACK_END (state);
 }
 
-//XQuery 1.1 functions
+//XQuery 3.0 functions
 /*******************************************************************************
 
 ********************************************************************************/
@@ -883,7 +883,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (!isAllowedType(result->getType()))
     {
       RAISE_ERROR(err::XPTY0004, info.loc,
-      ERROR_PARAMS(ZED(FormatNumber_2), result->getType()->getStringValue()));
+      ERROR_PARAMS(ZED(XPTY0004_FormatNumber_2), result->getType()->getStringValue()));
     }
 
     consumeNext(pictureItem, theChildren[1].getp(), planState);

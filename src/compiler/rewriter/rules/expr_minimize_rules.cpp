@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,7 @@
 
 #include "types/typeops.h"
 
-namespace zorba 
+namespace zorba
 {
 
 static expr_t get_constant_if_typequant_one(expr* e, bool& modified);
@@ -38,8 +38,8 @@ static expr_t get_constant_if_typequant_one(expr* e, bool& modified);
 /*******************************************************************************
   This rule looks for exprs of the form:
 
-  FN(E) or 
-  FN(flwor_FE), 
+  FN(E) or
+  FN(flwor_FE),
   where FN is one of fn:count, fn:empty, or fn:exists, and flwor_FE is a flwor
   expr whose return expr is FE.
 
@@ -51,7 +51,7 @@ static expr_t get_constant_if_typequant_one(expr* e, bool& modified);
   applied to FFE and so on.
 ********************************************************************************/
 
-RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible) 
+RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible)
 {
   if (node->get_expr_kind() != fo_expr_kind)
     return NULL;
@@ -62,12 +62,12 @@ RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible)
 
   if (fkind == FunctionConsts::FN_COUNT_1 ||
       fkind == FunctionConsts::FN_EMPTY_1 ||
-      fkind == FunctionConsts::FN_EXISTS_1) 
+      fkind == FunctionConsts::FN_EXISTS_1)
   {
     bool modified = false;
     expr_t child = fo->get_arg(0);
     expr_t nc = get_constant_if_typequant_one(child, modified);
-    if (nc != NULL) 
+    if (nc != NULL)
     {
       fo->set_arg(0, nc);
       return node;
@@ -77,7 +77,7 @@ RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible)
 }
 
 
-RULE_REWRITE_POST(ReplaceExprWithConstantOneWhenPossible) 
+RULE_REWRITE_POST(ReplaceExprWithConstantOneWhenPossible)
 {
   return NULL;
 }
@@ -87,20 +87,20 @@ static expr_t get_constant_if_typequant_one(expr* e, bool& modified)
 {
   TypeManager* tm = e->get_type_manager();
 
-  if (e->get_expr_kind() != const_expr_kind) 
+  if (e->get_expr_kind() != const_expr_kind)
   {
     if (!e->isNonDiscardable() &&
-        TypeOps::type_cnt(tm, *(e->get_return_type())) == 1) 
+        TypeOps::type_cnt(tm, *(e->get_return_type())) == 1)
     {
       modified = true;
-      return new const_expr(e->get_sctx(), e->get_loc(), 1);
+      return rCtx.theEM->create_const_expr(e->get_sctx(), e->get_loc(), 1;
     }
     else if (e->get_expr_kind() == flwor_expr_kind)
     {
       flwor_expr* flwor = static_cast<flwor_expr *>(e);
       expr* ret = flwor->get_return_expr();
       expr_t newRet = get_constant_if_typequant_one(ret, modified);
-      if (newRet != NULL) 
+      if (newRet != NULL)
       {
         modified = true;
         flwor->set_return_expr(newRet);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,16 +41,6 @@ PlanIter_t fn_zorba_schema_validate_in_place::codegen(
   return new ZorbaValidateInPlaceIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_util_schema_type::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new ZorbaSchemaTypeIterator(sctx, loc, argv);
-}
-
 PlanIter_t fn_zorba_schema_schema_type::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -73,9 +63,9 @@ PlanIter_t fn_zorba_schema_is_validated::codegen(
 
 void populate_context_schema(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_schema_validate_in_place,
         (createQName("http://www.zorba-xquery.com/modules/schema","","validate-in-place"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
@@ -85,21 +75,9 @@ void populate_context_schema(static_context* sctx)
   }
 
 
-  {
-    
-
-    DECL_WITH_KIND(sctx, fn_zorba_util_schema_type,
-        (createQName("http://www.zorba-xquery.com/zorba/util-functions","","schema-type"), 
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION),
-        FunctionConsts::FN_ZORBA_UTIL_SCHEMA_TYPE_1);
-
-  }
 
 
-  {
-    
-
+      {
     DECL_WITH_KIND(sctx, fn_zorba_schema_schema_type,
         (createQName("http://www.zorba-xquery.com/modules/schema","","schema-type"), 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
@@ -109,9 +87,9 @@ void populate_context_schema(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_schema_is_validated,
         (createQName("http://www.zorba-xquery.com/modules/schema","","is-validated"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 

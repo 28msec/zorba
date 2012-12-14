@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,17 @@
 namespace zorba {
 
 // <ResolveUriIterator>
-ResolveUriIterator::class_factory<ResolveUriIterator>
-ResolveUriIterator::g_class_factory;
+SERIALIZABLE_CLASS_VERSIONS(ResolveUriIterator)
+
+void ResolveUriIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ResolveUriIterator, PlanIteratorState>*)this);
+}
 
 
-void ResolveUriIterator::accept(PlanIterVisitor& v) const {
+void ResolveUriIterator::accept(PlanIterVisitor& v) const
+{
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();

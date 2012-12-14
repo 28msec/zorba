@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public:
 
   }
 
-  short getScriptingKind() const { return VACUOUS_EXPR; }
+  unsigned short getScriptingKind() const { return VACUOUS_EXPR; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
 
@@ -68,7 +68,7 @@ public:
 
   }
 
-  bool isMap(ulong producer) const { return producer == 0; }
+  bool isMap(csize producer) const { return producer == 0; }
 
   bool propagatesDistinctNodes(csize producer) const { return producer == 0; }
 

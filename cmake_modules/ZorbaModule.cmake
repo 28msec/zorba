@@ -114,8 +114,22 @@ ENDMACRO (MANGLE_URI)
 #              relative to CMAKE_CURRENT_SOURCE_DIR)
 #       LINK_LIBRARIES - (optional) List of libraries to link external
 #              function library against
+#       CONFIG_FILES - (optional) List of files to configure with package
+#              information; see below
 #       TEST_ONLY - (optional) Module is for testcases only and should not
 #              be installed
+#       LIBRARY_DEPENDS - (optional) List of targets that the external
+#              function library will depend on (only works if the module
+#              contains C++ external functions)
+#
+# CONFIG_FILES - any files specific here will be copied to
+# CMAKE_CURRENT_BINARY_DIR using CONFIGURE_FILE(). They may contain
+# the following @VARIABLES@ which will be substituted:
+#       ZORBA_MODULE_RELATIVE_DIR - directory portion of mangled URI
+#       ZORBA_MODULE_LIBFILE_WE - filename (without extension) portion of
+#              mangled URI
+# The input files should have a .in extension. The resulting file in
+# the build directory will have the .in removed.
 #
 # QQQ this currently doesn't support modules with multiple component
 # .xq files. (Neither does Zorba's automatic loading mechanism, so
@@ -125,7 +139,7 @@ ENDMACRO (MANGLE_URI)
 # file enough to deduce the URI and version?
 MACRO (DECLARE_ZORBA_MODULE)
   # Parse and validate arguments
-  PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES;EXTRA_SOURCES"
+  PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES;EXTRA_SOURCES;CONFIG_FILES;LIBRARY_DEPENDS"
     "URI;FILE;VERSION" "TEST_ONLY" ${ARGN})
   IF (NOT MODULE_FILE)
     MESSAGE (FATAL_ERROR "'FILE' argument is required for ZORBA_DECLARE_MODULE()")
@@ -141,10 +155,6 @@ MACRO (DECLARE_ZORBA_MODULE)
   GET_FILENAME_COMPONENT (module_name "${MODULE_FILE}" NAME)
 
   MANGLE_URI (${MODULE_URI} ".xq" module_path module_filename)
-
-  # Compute a CMake-symbol-safe version of the target URI, for storing
-  # things in CMake properties.
-  STRING (REGEX REPLACE "[/ ]" "_" uri_sym "${module_path}/${module_filename}")
 
   # Determine which module this is, numerically. This number will be
   # used to generate unique names, for instance for the target name
@@ -189,6 +199,7 @@ MACRO (DECLARE_ZORBA_MODULE)
   # declared. If a *lower* version has already been declared, the
   # output file rules will be messed up, so die. If the *same* version
   # has already been declare, XQdoc will be messed up, so die.
+  STRING (REGEX REPLACE "[/:#% ]" "_" uri_sym "${MODULE_URI}")
   GET_PROPERTY (target_versions GLOBAL PROPERTY "${uri_sym}-versions")
   FOREACH (known_ver ${target_versions})
     IF (known_ver LESS version_int)
@@ -260,6 +271,9 @@ MACRO (DECLARE_ZORBA_MODULE)
     # the module *URI*'s final component.
     SET(module_lib_target "modlib${num_zorba_modules}_${module_name}")
     ADD_LIBRARY(${module_lib_target} SHARED ${SRC_FILES})
+    IF (MODULE_LIBRARY_DEPENDS)
+      ADD_DEPENDENCIES(${module_lib_target} ${MODULE_LIBRARY_DEPENDS})
+    ENDIF()
     GET_FILENAME_COMPONENT(module_filewe "${module_filename}" NAME_WE)
     IF (MODULE_VERSION)
       # If there's a version, insert it into the module library name
@@ -356,6 +370,20 @@ MACRO (DECLARE_ZORBA_MODULE)
       "${version_infix}" "" 1 "${MODULE_TEST_ONLY}")
   ENDFOREACH (version_infix)
 
+  # Configure any module-specified config files.
+  SET (ZORBA_MODULE_RELATIVE_DIR ${module_path})
+  SET (ZORBA_MODULE_LIBFILE_WE ${module_filewe})
+  FOREACH (_config_file ${MODULE_CONFIG_FILES})
+    # Strip off .in - can't use GET_FILENAME_COMPONENT as it always removes
+    # the longest possible extension
+    STRING (REGEX REPLACE "\\.in$" "" _config_filename_we "${_config_file}")
+    IF (NOT IS_ABSOLUTE "${_config_file}")
+      SET (_config_file "${CMAKE_CURRENT_SOURCE_DIR}/${_config_file}")
+    ENDIF (NOT IS_ABSOLUTE "${_config_file}")
+    CONFIGURE_FILE (${_config_file}
+      "${CMAKE_CURRENT_BINARY_DIR}/${_config_filename_we}" @ONLY)
+  ENDFOREACH (_config_file)
+
   # Last but not least, whip up a test case that ensures the module
   # can at least be compiled. Don't bother for test-only modules
   # (presumably they're there to be tested!).
@@ -375,6 +403,16 @@ MACRO (DECLARE_ZORBA_MODULE)
   ENDIF (NOT MODULE_TEST_ONLY)
 
 ENDMACRO (DECLARE_ZORBA_MODULE)
+
+# Macro to see whether a given module has been declared, by URI.
+# For now this only returns a true or false value; version introspection
+# is not supported.
+MACRO (IS_ZORBA_MODULE_DECLARED IS_SET_VAR MODULE_URI)
+  # Just check for the existence of the "URI-versions" global property,
+  # as set by DECLARE_ZORBA_MODULE()
+  STRING (REGEX REPLACE "[/:#% ]" "_" uri_sym "${MODULE_URI}")
+  GET_PROPERTY (${IS_SET_VAR} GLOBAL PROPERTY "${uri_sym}-versions" SET)
+ENDMACRO (IS_ZORBA_MODULE_DECLARED)
 
 # Macro which declares a schema. This sets up the installation of the
 # schema into the URI_PATH folder so it will be found at runtime.
@@ -474,16 +512,16 @@ MACRO (DECLARE_ZORBA_JAR)
   # Iterate over all supplied jar files
   FOREACH (_jar_file ${JAR_FILE})
 
-    IF (JAR_EXTERNAL)
+    IF (JAR_EXTERNAL AND NOT ZORBA_PACKAGE_EXTERNAL_JARS)
       # Put absolute path into classpath file
       FILE (APPEND "${_CP_FILE}" "${_jar_file}\n")
-    ELSE (JAR_EXTERNAL)
+    ELSE (JAR_EXTERNAL AND NOT ZORBA_PACKAGE_EXTERNAL_JARS)
       # Copy jar to jars/ directory and add relative path to classpath file
       GET_FILENAME_COMPONENT (_output_filename "${_jar_file}" NAME)
       ADD_COPY_RULE ("LIB" "${_jar_file}" "jars/${_output_filename}" "" 
 	"${JAR_TARGET}" 1 "${JAR_TEST_ONLY}")
       FILE (APPEND "${_CP_FILE}" "${_output_filename}\n")
-    ENDIF (JAR_EXTERNAL)
+    ENDIF (JAR_EXTERNAL AND NOT ZORBA_PACKAGE_EXTERNAL_JARS)
 
   ENDFOREACH (_jar_file)
 ENDMACRO (DECLARE_ZORBA_JAR)
@@ -684,7 +722,7 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
   # Generate project's projectConfig.cmake file.
   # QQQ need to create an installable version of this too, once we know
   # how installing a module package should work.
-  GET_PROPERTY (ZORBA_PROJECT_LIBRARIES
+  GET_PROPERTY (ZORBA_MODULE_LIBRARIES
     GLOBAL PROPERTY "${PROJECT_NAME}_LIBRARIES")
   CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
     "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
@@ -943,7 +981,7 @@ MACRO (ADD_XQDOC_TARGETS)
       COMMENT "Building XQDoc XHTML documentation ..."
   )
   MESSAGE(STATUS "  added target xqdoc")
-  ADD_DEPENDENCIES(xqdoc xqdoc-xml)
+  ADD_DEPENDENCIES(xqdoc xqdoc-xml modules_svg)
   SET_TARGET_PROPERTIES (xqdoc PROPERTIES
     EXCLUDE_FROM_DEFAULT_BUILD 1
     FOLDER "Docs"

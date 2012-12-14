@@ -15,7 +15,14 @@
  */
 #include "stdafx.h"
 
+// standard
+#include <cstring>
+#include <iomanip>
+
+// local
 #include "ascii_util.h"
+
+using namespace std;
 
 namespace zorba {
 namespace ascii {
@@ -28,6 +35,49 @@ bool is_whitespace( char const *s ) {
       return false;
   }
   return true;
+}
+
+ostream& printable_char( ostream &o, char c ) {
+  if ( ascii::is_print( c ) )
+    o << c;
+  else {
+    ios::fmtflags const old_flags = o.flags();
+    o << "#x" << uppercase << hex << (static_cast<unsigned>( c ) & 0xFF);
+    o.flags( old_flags );
+  }
+  return o;
+}
+
+size_type remove_chars( char *s, size_type s_len, char const *chars ) {
+  char *end = s + s_len;
+  char *c;
+
+  // remove trailing chars first
+  for ( c = end - 1; c >= s; --c )
+    if ( !std::strchr( chars, *c ) ) {
+      end = c + 1;
+      break;
+    }
+  if ( c < s )                          // it was all chars
+    return 0;
+
+  // remove all other chars
+  char *first_char = nullptr;
+  for ( c = s; c < end; ++c ) { 
+    if ( std::strchr( chars, *c ) ) { 
+      if ( !first_char ) 
+        first_char = c;
+    } else { 
+      if ( first_char ) { 
+        std::memmove( first_char, c, end - c );
+        end -= c - first_char;
+        c = first_char;
+        first_char = nullptr;
+      } 
+    } 
+  } 
+
+  return end - s;
 }
 
 char const* trim_start( char const *s, char const *chars ) {

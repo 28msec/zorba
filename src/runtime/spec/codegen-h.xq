@@ -56,8 +56,7 @@ declare function local:create-func-version($signature) as xs:string?
   if ($signature/@version eq "1.0")
   then concat($gen:newline, $gen:indent, $gen:indent, "theXQueryVersion = StaticContextConsts::xquery_version_1_0;")
   else 
-    if (($signature/@version eq "3.0") or
-        ($signature/@version eq "1.1"))
+    if ($signature/@version eq "3.0")
     then concat($gen:newline, $gen:indent, $gen:indent, "theXQueryVersion = StaticContextConsts::xquery_version_3_0;")
     else ()    
 };
@@ -121,12 +120,11 @@ declare function local:create-function-arity($iter, $function, $funcVersion as x
 declare function local:create-function-XQuery-30($iter, $function) as xs:string?
 {
   let $xq30 := count($function//zorba:signature[@version eq "3.0"])
-  let $xq11 := count($function//zorba:signature[@version eq "1.1"])
   let $sigs := count($function//zorba:signature)
-  let $xq10 := ($sigs - $xq30) - $xq11  
+  let $xq10 := ($sigs - $xq30)
   return
     concat(
-    if(($xq30 > 0 ) or ($xq11 > 0)) then
+    if ($xq30 > 0 ) then
        local:create-function-arity( $iter, 
                                     $function,
                                     "theXQueryVersion = StaticContextConsts::xquery_version_3_0;")
@@ -213,7 +211,7 @@ declare function local:add-methods($function) as xs:string*
       else if (name($meth) eq 'zorba:getScriptingKind')
       then
         string-join(($gen:newline, $gen:indent,
-                     'short getScriptingKind() const ',
+                     'unsigned short getScriptingKind() const ',
                      '{ return ', $meth/@returnValue, '; }',
                       $gen:newline),'')
 
@@ -241,7 +239,7 @@ declare function local:add-methods($function) as xs:string*
       else if (name($meth) eq 'zorba:isMap')
       then
         string-join(($gen:newline, $gen:indent,
-                     'bool isMap(ulong producer) const ',
+                     'bool isMap(csize producer) const ',
                      '{ return producer == ', $meth/@producer, '; }',
                       $gen:newline),'')
 
@@ -293,6 +291,19 @@ declare function local:add-methods($function) as xs:string*
 
       else if (name($meth) eq 'zorba:propagatesInputNodes')
       then
+        if ($meth/@producer)
+        then
+        string-join(($gen:newline, $gen:indent,
+                     'bool propagatesInputNodes(expr* fo, csize producer) const ',
+                     '{ return producer == ', $meth/@producer, '; }',
+                     $gen:newline),'')
+        else if ($meth/@value)
+        then
+        string-join(($gen:newline, $gen:indent,
+                     'bool propagatesInputNodes(expr* fo, csize producer) const ',
+                     '{ return ', $meth/@value, '; }',
+                     $gen:newline),'')
+        else
         string-join(($gen:newline, $gen:indent,
                      'bool propagatesInputNodes(expr* fo, csize producer) const;',
                       $gen:newline),'')
@@ -315,6 +326,11 @@ declare function local:add-methods($function) as xs:string*
         string-join(($gen:newline, $gen:indent,
                      'bool mustCopyInputNodes(expr* fo, csize producer) const;',
                      $gen:newline),'')
+      else if (name($meth) eq 'zorba:processPragma')
+      then
+      string-join(($gen:newline, $gen:indent,
+        'void processPragma(expr*, const std::vector<pragma*>&amp;) const;',
+        $gen:newline), '')
       else
         ()
   else

@@ -77,19 +77,25 @@ public:
 
   typedef std::vector<NodeInfo>::const_iterator const_iterator;
 
+  typedef std::vector<NodeInfo>::iterator iterator;
+
 protected:
   std::vector<NodeInfo> theNodes;
 
 public:
-  GeneralIndexValue(ulong size = 0) : theNodes(size) {}
+  GeneralIndexValue(csize size = 0) : theNodes(size) {}
+
+  bool empty() const { return theNodes.empty(); }
 
   void clear() { theNodes.clear(); }
 
-  const_iterator begin() { return theNodes.begin(); }
+  const_iterator begin() const { return theNodes.begin(); }
 
-  const_iterator end()   { return theNodes.end(); }
+  const_iterator end() const { return theNodes.end(); }
 
   void addNode(store::Item_t& node, bool untyped);
+
+  bool removeNode(const store::Item_t& node);
 };
 
 
@@ -110,16 +116,17 @@ public:
   A vector storing all domain nodes for which the key expr returns the empty
   sequence.
 
-  theUntypedFlag:
-  ---------------
-  Set to true if there is at least one domain node for which the key expression
-  returns an item with type xs:untypedAtomic and that item is sucessfully cast
-  to an item with a type other than xs:string.
+  theNumUntypedEntries:
+  ---------------------
+  The number of [key, node] index entries where the key is the result of casting
+  an originally untyped key to a non-string atomic item. If > 0, then any value
+  probes with a key (or keys) whose type cannot be promoted to xs:string will
+  raise an error.
 
-  theMultiKeyFlag:
-  ----------------
-  Set to true if there is at least one domain node for which the key expression
-  returns more than one items.
+  theNumMultiKeyNodes:
+  --------------------
+  The number of domain nodes for which the key expression returns more than one
+  items. If > 0, then any value probes on the general index raise an error.
 *******************************************************************************/
 class GeneralIndex : public IndexImpl
 {
@@ -144,9 +151,9 @@ protected:
 
   std::vector<store::Item_t>  theEmptyKeyNodes;
 
-  bool                        theUntypedFlag;
+  csize                       theNumUntypedEntries;
 
-  bool                        theMultiKeyFlag;
+  csize                       theNumMultiKeyNodes;
 
 protected:
   GeneralIndex(const store::Item_t& name, const store::IndexSpecification& spec);
@@ -161,22 +168,30 @@ protected:
       store::SchemaTypeCode targetMap,
       bool untyped);
 
-  bool probeMap(
-      const store::Item* key,
-      store::SchemaTypeCode targetMap);
+  bool removeFromMap(
+      const store::Item_t& key,
+      const store::Item_t& node,
+      store::SchemaTypeCode targetMap,
+      bool untyped);
+
+  bool probeMap(const store::Item* key, store::SchemaTypeCode targetMap);
 
 public:
-  const XQPCollator* getCollator(ulong i) const;
+  const XQPCollator* getCollator(csize i) const;
 
-  void setMultiKey() { theMultiKeyFlag = true; }
+  void addMultiKey() { ++theNumMultiKeyNodes; }
 
-  ulong size() const;
+  void removeMultiKey() { assert(theNumMultiKeyNodes > 0); --theNumMultiKeyNodes; }
+
+  csize size() const;
 
   bool insert(store::Item_t& key, store::Item_t& node);
 
-  bool insert(store::IndexKey*& key, store::Item_t& value);
+  bool insert(store::IndexKey*& key, store::Item_t& node);
 
-  virtual bool remove(const store::Item_t& key, store::Item_t& item, bool all) = 0;
+  bool remove(const store::IndexKey* key, const store::Item_t& node, bool all);
+
+  bool remove(const store::Item_t& key, const store::Item_t& node);
 };
 
 
@@ -205,14 +220,25 @@ class GeneralHashIndex : public GeneralIndex
 
   typedef IndexMap::iterator EntryIterator;
 
+  /*
+   * This iterator iterates over all index keys from all types
+   */
   class KeyIterator : public Index::KeyIterator
   {
+  protected:
+    IndexMap::iterator     theIterator;
+    IndexMap* const*       theMaps;
+    ulong                  theCurType;
   public:
+    KeyIterator(IndexMap* const* aMaps);
     ~KeyIterator();
 
     void open();
     bool next(store::IndexKey&);
     void close();
+
+  private:
+    void setNextIter();
   };
 
   typedef rchandle<KeyIterator> KeyIterator_t;
@@ -228,6 +254,11 @@ protected:
       IndexMap*& targetMap,
       bool untyped);
 
+  bool removeFromMap(
+      const store::Item_t& key,
+      const store::Item_t& node,
+      IndexMap* targetMap);
+
 public:
   GeneralHashIndex(
       const store::Item_t& name,
@@ -236,8 +267,6 @@ public:
   ~GeneralHashIndex();
 
   Index::KeyIterator_t keys() const;
-
-  bool remove(const store::Item_t& key, store::Item_t& item, bool);
 
   void clear();
 };
@@ -283,6 +312,11 @@ protected:
       IndexMap*& targetMap,
       bool untyped);
 
+  bool removeFromMap(
+      const store::Item_t& key,
+      const store::Item_t& item,
+      IndexMap* targetMap);
+
 public:
   GeneralTreeIndex(
       const store::Item_t& qname,
@@ -291,8 +325,6 @@ public:
   ~GeneralTreeIndex();
 
   Index::KeyIterator_t keys() const;
-
-  bool remove(const store::Item_t& key, store::Item_t& item, bool all);
 
   void clear();
 };
@@ -428,7 +460,7 @@ protected:
       bool haveUpper) const;
 
 public:
-  void init(const store::IndexCondition_t& cond);
+  void init(const store::IndexCondition_t& cond, const xs_integer& aSkip);
 
   void open();
 
@@ -437,6 +469,8 @@ public:
   void close();
 
   bool next(store::Item_t& result);
+
+  void count(store::Item_t& result);
 };
 
 

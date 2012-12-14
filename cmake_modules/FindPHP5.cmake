@@ -58,6 +58,17 @@ FIND_PROGRAM(PHP5_EXECUTABLE
   )
 MESSAGE(STATUS "Executable: " ${PHP5_EXECUTABLE})
 
+
+FIND_LIBRARY(PHP5_LIBRARY
+  NAMES php5ts php5
+  PATHS
+  /usr/bin
+  /usr/local/bin
+  ${PHP5_BINARY_DIR}
+  )
+
+MESSAGE(STATUS "Library: " ${PHP5_LIBRARY})
+
 MARK_AS_ADVANCED(
   PHP5_EXECUTABLE
   PHP5_FOUND_INCLUDE_PATH
@@ -103,7 +114,8 @@ MESSAGE(STATUS "Darwin Environment Configuration...")
     __zend_hash_add_or_update
     _php_strtolower
     _executor_globals
-    _call_user_function 
+    _call_user_function
+    _php_sprintf
     )
     SET(CMAKE_SHARED_MODULE_CREATE_C_FLAGS
       "${CMAKE_SHARED_MODULE_CREATE_C_FLAGS},-U,${symbol}")

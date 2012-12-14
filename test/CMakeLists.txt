@@ -49,6 +49,8 @@ ZORBA_GENERATE_EXE("apitest" "apitest.cpp" "" "" "")
 ZORBA_GENERATE_EXE("test_plan_serializer" "${TEST_PLAN_SERIALIZER_SRCS}" "" "" "")
   
 ZORBA_GENERATE_EXE("path_test" "path_test.cpp" "" "" "")
+
+#ZORBA_GENERATE_EXE("ordpath_test" "test_ordpath.cpp" "" "" "")
   
 ZORBA_ADD_TEST (test/fspathbranch1 path_test --branch-path /d1/d2/../d3/.)
 ZORBA_SET_TEST_PROPERTY (test/fspathbranch1 PASS_REGULAR_EXPRESSION /d1)

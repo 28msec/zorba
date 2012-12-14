@@ -16,8 +16,8 @@
 #ifndef ZORBA_TREE_ID_H
 #define ZORBA_TREE_ID_H
 
-#include "store/naive/shared_types.h"
-#include "store/naive/store_defs.h"
+#include "shared_types.h"
+#include "store_defs.h"
 #include "zorbatypes/zstring.h"
 
 namespace zorba {

@@ -619,7 +619,7 @@ declare %an:nondeterministic function file:list(
  :)
 declare function file:glob-to-regex(
   $pattern as xs:string
-) {
+) as xs:string {
   let $pattern := fn:replace($pattern, '(\.|\[|\]|\\|/|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
   let $pattern := fn:replace($pattern, '\\\?', '.')
   let $pattern := fn:replace($pattern, '\\\*', '.*')

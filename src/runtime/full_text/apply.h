@@ -24,6 +24,8 @@
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
 void apply_ftand( ft_all_matches const&, ft_all_matches const&,
                   ft_all_matches &result );
 
@@ -51,6 +53,8 @@ void apply_ftunary_not( ft_all_matches& );
 
 void apply_ftwindow( ft_all_matches const&, ft_int window_size, ft_unit::type,
                      ft_all_matches &result );
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_APPLY_H */

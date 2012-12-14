@@ -19,10 +19,10 @@
 
 #include <stdexcept>
 #include <streambuf>
-#include <string>
 
 #include <zorba/config.h>
 #include <zorba/internal/proxy.h>
+#include <zorba/internal/streambuf.h>
 #include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
@@ -58,6 +58,7 @@ namespace transcode {
  *      os.ios::rdbuf( tbuf.orig_streambuf() );
  *      throw;
  *    }
+ *    os.ios::rdbuf( tbuf.orig_streambuf() );
  *  }
  * \endcode
  * Alternatively, you may wish to use either \c attach(), \c auto_attach, or
@@ -119,20 +120,15 @@ private:
 } // namespace transcode
 
 namespace internal {
+namespace transcode {
 
 ZORBA_DLL_PUBLIC
-zorba::transcode::streambuf*
-alloc_streambuf( char const *charset, std::streambuf *orig );
-
-ZORBA_DLL_PUBLIC
-void dealloc_streambuf( zorba::transcode::streambuf* );
+std::streambuf* alloc_streambuf( char const *charset, std::streambuf *orig );
 
 ZORBA_DLL_PUBLIC
 int get_streambuf_index();
 
-ZORBA_DLL_PUBLIC
-void stream_callback( std::ios_base::event, std::ios_base&, int index );
-
+} // transcode
 } // namespace internal
 
 namespace transcode {
@@ -152,10 +148,11 @@ namespace transcode {
  */
 template<typename charT,typename Traits> inline
 void attach( std::basic_ios<charT,Traits> &ios, char const *charset ) {
-  int const index = internal::get_streambuf_index();
+  int const index = internal::transcode::get_streambuf_index();
   void *&pword = ios.pword( index );
   if ( !pword ) {
-    streambuf *const buf = internal::alloc_streambuf( charset, ios.rdbuf() );
+    std::streambuf *const buf =
+      internal::transcode::alloc_streambuf( charset, ios.rdbuf() );
     ios.rdbuf( buf );
     pword = buf;
     ios.register_callback( internal::stream_callback, index );
@@ -172,7 +169,7 @@ void attach( std::basic_ios<charT,Traits> &ios, char const *charset ) {
  */
 template<typename charT,typename Traits> inline
 void detach( std::basic_ios<charT,Traits> &ios ) {
-  int const index = internal::get_streambuf_index();
+  int const index = internal::transcode::get_streambuf_index();
   if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
     ios.pword( index ) = 0;
     ios.rdbuf( buf->orig_streambuf() );
@@ -188,7 +185,21 @@ void detach( std::basic_ios<charT,Traits> &ios ) {
  */
 template<typename charT,typename Traits> inline
 bool is_attached( std::basic_ios<charT,Traits> &ios ) {
-  return !!ios.pword( internal::get_streambuf_index() );
+  return !!ios.pword( internal::transcode::get_streambuf_index() );
+}
+
+/**
+ * Gets the original streambuf of the given iostream.
+ *
+ * @param ios The stream to get the original streambuf of.
+ * @return the original streambuf.
+ */
+template<typename charT,typename Traits> inline
+std::streambuf* orig_streambuf( std::basic_ios<charT,Traits> &ios ) {
+  std::streambuf *const buf = ios.rdbuf();
+  if ( streambuf *const tbuf = dynamic_cast<streambuf*>( buf ) )
+    return tbuf->orig_streambuf();
+  return buf;
 }
 
 /**
@@ -254,7 +265,14 @@ public:
    * @throws std::invalid_argument if \a charset is not supported.
    */
   stream( char const *charset ) :
+#ifdef WIN32
+# pragma warning( push )
+# pragma warning( disable : 4355 )
+#endif /* WIN32 */
     tbuf_( charset, this->rdbuf() )
+#ifdef WIN32
+# pragma warning( pop )
+#endif /* WIN32 */
   {
     init();
   }
@@ -272,7 +290,14 @@ public:
   template<typename StreamArgType>
   stream( char const *charset, StreamArgType stream_arg ) :
     StreamType( stream_arg ),
+#ifdef WIN32
+# pragma warning( push )
+# pragma warning( disable : 4355 )
+#endif /* WIN32 */
     tbuf_( charset, this->rdbuf() )
+#ifdef WIN32
+# pragma warning( pop )
+#endif /* WIN32 */
   {
     init();
   }
@@ -292,7 +317,14 @@ public:
   stream( char const *charset, StreamArgType stream_arg,
           std::ios_base::openmode mode ) :
     StreamType( stream_arg, mode ),
+#ifdef WIN32
+# pragma warning( push )
+# pragma warning( disable : 4355 )
+#endif /* WIN32 */
     tbuf_( charset, this->rdbuf() )
+#ifdef WIN32
+# pragma warning( pop )
+#endif /* WIN32 */
   {
     init();
   }

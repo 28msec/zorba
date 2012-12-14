@@ -2,7 +2,7 @@ import module namespace np = "http://www.zorba-xquery.com/modules/node-position"
 
 declare function local:get-ordpath($struct)
 {
-replace($struct,'^zorba:\d*\.\d*\.\d*\.','np:')
+replace($struct,'^zorba:\d*\.[0-9a-fA-F\-]*\.\d*\.','np:')
 };
 
 declare function local:test-generated-ordpath($testa,$testb)

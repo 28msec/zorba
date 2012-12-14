@@ -1,0 +1,22 @@
+Iterator tree for main query:
+<flwor::FLWORIterator>
+  <ForVariable name="non-group">
+    <OpToIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+      <SingletonIterator value="xs:integer(10)"/>
+    </OpToIterator>
+  </ForVariable>
+  <GroupByClause>
+    <Spec>
+      <NumArithIterator_ModOperation>
+        <ForVarIterator varname="non-group"/>
+        <SingletonIterator value="xs:integer(5)"/>
+      </NumArithIterator_ModOperation>
+      <GroupVariable/>
+    </Spec>
+  </GroupByClause>
+  <ReturnClause>
+    <ForVarIterator varname="group-var"/>
+  </ReturnClause>
+</flwor::FLWORIterator>
+

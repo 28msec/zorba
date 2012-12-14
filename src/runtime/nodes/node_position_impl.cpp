@@ -464,14 +464,14 @@ IsAttributePositionIterator::nextImpl(store::Item_t& result, PlanState& planStat
 {
   store::Item_t lUri;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
   try
   {
-    GENV_ITEMFACTORY->createBoolean(result, lUri->isAttribute());
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isAttributeRef());
   }
   catch (ZorbaException& e)
   {
@@ -493,14 +493,14 @@ IsCommentPositionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Item_t lUri;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
   try
   {
-    GENV_ITEMFACTORY->createBoolean(result, lUri->isComment());
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isCommentRef());
   }
   catch (ZorbaException& e)
   {
@@ -522,14 +522,14 @@ IsDocumentPositionIterator::nextImpl(store::Item_t& result, PlanState& planState
 {
   store::Item_t lUri;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
   try
   {
-    GENV_ITEMFACTORY->createBoolean(result, lUri->isDocument());
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isDocumentRef());
   }
   catch (ZorbaException& e)
   {
@@ -551,14 +551,14 @@ IsElementPositionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Item_t lUri;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
   try
   {
-    GENV_ITEMFACTORY->createBoolean(result, lUri->isElement());
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isElementRef());
   }
   catch (ZorbaException& e)
   {
@@ -580,14 +580,14 @@ IsProcessingInstructionPositionIterator::nextImpl(store::Item_t& result, PlanSta
 {
   store::Item_t lUri;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
   try
   {
-    GENV_ITEMFACTORY->createBoolean(result, lUri->isProcessingInstruction());
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isProcessingInstructionRef());
   }
   catch (ZorbaException& e)
   {
@@ -609,14 +609,14 @@ IsTextPositionIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 {
   store::Item_t lUri;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lUri, theChildren[0].getp(), planState);
 
   try
   {
-    GENV_ITEMFACTORY->createBoolean(result, lUri->isText());
+    GENV_ITEMFACTORY->createBoolean(result, lUri->isTextRef());
   }
   catch (ZorbaException& e)
   {

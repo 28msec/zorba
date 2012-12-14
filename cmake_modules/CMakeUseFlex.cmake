@@ -39,15 +39,22 @@ IF(NOT FLEX_EXECUTABLE)
     # Extract major and minor versions
     STRING (REGEX REPLACE "[^0-9]*([0-9]+)..*" "\\1" FLEX_MAJOR_VERSION_TMP ${FLEX_VERSION})
     STRING (REGEX REPLACE "[^0-9]*[0-9]+\\.([0-9]+).*" "\\1" FLEX_MINOR_VERSION_TMP ${FLEX_VERSION})
-	STRING (REGEX REPLACE "[^0-9]*[0-9]+\\.[0-9]+\\.([0-9]+[a-z]*).*" "\\1" FLEX_REVISION_VERSION_TMP ${FLEX_VERSION})	
+    STRING (REGEX REPLACE "[^0-9]*[0-9]+\\.[0-9]+\\.([0-9]+[a-z]*).*" "\\1" FLEX_REVISION_VERSION_TMP ${FLEX_VERSION})
     MESSAGE(STATUS "Found flex -- ${FLEX_EXECUTABLE}, version: " ${FLEX_MAJOR_VERSION_TMP} "." ${FLEX_MINOR_VERSION_TMP} "." ${FLEX_REVISION_VERSION_TMP})
     SET (FLEX_MAJOR_VERSION ${FLEX_MAJOR_VERSION_TMP} CACHE STRING "The flex major version" FORCE)
     SET (FLEX_MINOR_VERSION ${FLEX_MINOR_VERSION_TMP} CACHE STRING "The flex minor version" FORCE)
-	SET (FLEX_REVISION_VERSION ${FLEX_REVISION_VERSION_TMP} CACHE STRING "The flex revision version" FORCE)
+    SET (FLEX_REVISION_VERSION ${FLEX_REVISION_VERSION_TMP} CACHE STRING "The flex revision version" FORCE)
+
+    # Find the FlexLexer.h header. Try our best to find the one associated
+    # with the flex binary we're actually using.
+    GET_FILENAME_COMPONENT(_flex_path "${FLEX_EXECUTABLE}" PATH)
+    GET_FILENAME_COMPONENT(_flex_hint "${_flex_path}/../include" ABSOLUTE)
+    FIND_PATH(FLEX_INCLUDE_DIR FlexLexer.h HINTS "${_flex_hint}")
+
   ELSE (FLEX_EXECUTABLE)
     SET (FLEX_MAJOR_VERSION "0")
     SET (FLEX_MINOR_VERSION "0")
-	  SET (FLEX_REVISION_VERSION "0")
+    SET (FLEX_REVISION_VERSION "0")
   ENDIF(FLEX_EXECUTABLE)
   SET (FLEX_VERSION_FULL ${FLEX_MAJOR_VERSION}.${FLEX_MINOR_VERSION}.${FLEX_REVISION_VERSION} CACHE STRING "The Flex version" FORCE)
 ENDIF(NOT FLEX_EXECUTABLE)
@@ -63,15 +70,26 @@ IF(FLEX_EXECUTABLE)
     ELSE(FLEX_PREFIX_OUTPUTS)
       SET(PREFIX "yy")
     ENDIF(FLEX_PREFIX_OUTPUTS)
+    # If we regenerate the scanner, be sure to copy the corresponding
+    # FlexLexer.h as well. Put it in the top-level src/ directory since
+    # that path is on the include-directories list; also, that way
+    # multiple flex'd files will all share the include file.
+    SET(FLEXLEXERH "${CMAKE_CURRENT_BINARY_DIR}/FlexLexer.h")
+    ADD_CUSTOM_COMMAND(
+      OUTPUT "${FLEXLEXERH}"
+      COMMAND "${CMAKE_COMMAND}"
+      ARGS -E copy_if_different
+         "${FLEX_INCLUDE_DIR}/FlexLexer.h"
+         "${FLEXLEXERH}")
     SET(OUTFILE "${CMAKE_CURRENT_BINARY_DIR}/${PATH}/${PREFIX}.cpp")
     ADD_CUSTOM_COMMAND(
       OUTPUT "${OUTFILE}"
       COMMAND "${FLEX_EXECUTABLE}"
-      ARGS -t 
-	  "--debug"
-      "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}"
-      > ${OUTFILE}
-      DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}")
+      ARGS -t --debug "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}"
+      # flex's --outfile doesn't seem to work right, so redirect stdout
+          > "${OUTFILE}"
+      DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}"
+         "${FLEXLEXERH}")
     SET_SOURCE_FILES_PROPERTIES("${OUTFILE}" PROPERTIES GENERATED TRUE)
   ENDMACRO(FLEX_FILE)
 ENDIF(FLEX_EXECUTABLE)

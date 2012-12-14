@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ReadLineIterator,
     NaryBaseIterator<ReadLineIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<ReadLineIterator, PlanIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ReadLineIterator(
     static_context* sctx,
@@ -81,13 +77,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(PrintIterator,
     NaryBaseIterator<PrintIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<PrintIterator, PlanIteratorState>*)this);
-
-    ar & thePrintToConsole;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   PrintIterator(
     static_context* sctx,
@@ -129,16 +119,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionTraceIterator,
     NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>*)this);
-
-    ar & theFunctionName;
-    ar & theFunctionLocation;
-    ar & theFunctionCallLocation;
-    ar & theFunctionArity;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FunctionTraceIterator(
     static_context* sctx,

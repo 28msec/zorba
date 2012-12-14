@@ -196,7 +196,7 @@ void beginVisitWindowVariable(
 void endVisitWindowVariable();
 
     void beginVisitWinCondVariable(
-        const std::string& varName,
+        const zstring& varName,
         const std::vector<PlanIter_t>& varRefs);
 
     void endVisitWinCondVariable();
@@ -233,6 +233,11 @@ void endVisitWindowVariable();
   DECLARE_VISITOR (DocumentIterator)
   DECLARE_VISITOR (CommentIterator)
   DECLARE_VISITOR (PiIterator)
+#ifdef ZORBA_WITH_JSON
+  DECLARE_VISITOR(JSONArrayIterator)
+  DECLARE_VISITOR(JSONObjectIterator)
+  DECLARE_VISITOR(JSONDirectObjectIterator)
+#endif
   DECLARE_VISITOR (EmptyIterator)
   DECLARE_VISITOR (IfThenElseIterator)
   DECLARE_VISITOR (NodeDistinctIterator)

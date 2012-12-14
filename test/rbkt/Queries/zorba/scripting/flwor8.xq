@@ -11,7 +11,7 @@ declare variable $gid as xs:integer := 0;
     $gid := $gid + 1;
 
     <group id = "{$gid}">
-      {$state, $category}
+      <state>{$state}</state><category>{$category}</category>
       <total-qty>{sum($sales/qty)}</total-qty>
     </group>
   }

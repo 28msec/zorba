@@ -47,28 +47,6 @@ declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
-(:~
- : The function returns true if a collection with the given QName is
- : statically declared and available (i.e. has been created).
- :
- : @param $name The QName of the collection that is being checked.
- :
- : @return true if the collection is statically declared and available,
- :   false otherwise.
- :
- :)
-declare function cddl:is-available-collection($name as xs:QName) as xs:boolean external;
-
-(:~
- : The function returns a sequence of QNames of the collections that are
- : statically declared and available. The sequence will be empty if there
- : are no such collections.
- :
- : @return A sequence of QNames, one for each statically declared and available
- :  collection, or an emtpy sequence.
- :
- :)
-declare function cddl:available-collections() as xs:QName*  external;
 
 (:~
  : The create function is an updating function which creates
@@ -88,17 +66,19 @@ declare function cddl:available-collections() as xs:QName*  external;
  :)
 declare updating function cddl:create($name as xs:QName) external;
 
+
 (:~
  : The create function is an updating function which creates
  : the collection with the given expanded QName. Moreover, it adds copies
  : of the sequence $content to the new collection.
  :
  : @param $name The QName of the collection to create.
- : @param $content The sequences of nodes that should be added to the new collection.
+ : @param $content The sequences of items (nodes and/or json items) that should
+ :        be added to the new collection.
  :
  : @return The result of the function is an empty XDM instance and a 
  :         pending update list which, once applied, creates a collection
- :         with the given name and inserts the given nodes into it.
+ :         with the given name and inserts the given items into it.
  :
  : @error zerr:ZDDY0001 if the expanded QName $name is not equal
  :        to any of the declared collections in the static context.
@@ -109,9 +89,8 @@ declare updating function cddl:create($name as xs:QName) external;
  :        for SequenceType Matching.
  :
  :)
-declare updating function cddl:create(
-  $name as xs:QName,
-  $content as node()*)  external;
+declare updating function cddl:create($name as xs:QName, $content as item()*) external;
+
 
 (:~
  : The delete function is an updating function that deletes
@@ -127,14 +106,39 @@ declare updating function cddl:create(
  :        to any of the declared collections in the static context.
  : @error zerr:ZDDY0003 if the expanded QName $name is not equal
  :        to any of the available collections.
- : @error zerr:ZDDY0015 if any of the in-scope variables references a node that
+ : @error zerr:ZDDY0015 if any of the in-scope variables references an item that
  :        belongs to the collection with QName $name.
  : @error zerr:ZDDY0013 if the domain or key expression of any of the available
  :        indexes access the collection with name $name.
  :
  :)
-declare updating function cddl:delete(
-  $name as xs:QName)  external;
+declare updating function cddl:delete($name as xs:QName) external;
+
+
+(:~
+ : The function returns true if a collection with the given QName is
+ : statically declared and available (i.e. has been created).
+ :
+ : @param $name The QName of the collection that is being checked.
+ :
+ : @return true if the collection is statically declared and available,
+ :   false otherwise.
+ :
+ :)
+declare function cddl:is-available-collection($name as xs:QName) as xs:boolean external;
+
+
+(:~
+ : The function returns a sequence of QNames of the collections that are
+ : statically declared and available. The sequence will be empty if there
+ : are no such collections.
+ :
+ : @return A sequence of QNames, one for each statically declared and available
+ :  collection, or an emtpy sequence.
+ :
+ :)
+declare function cddl:available-collections() as xs:QName*  external;
+
 
 (:~
  : The function returns true if a collection with the given
@@ -145,8 +149,8 @@ declare updating function cddl:delete(
  : @return true if the collection is declared or false otherwise.
  :
  :)
-declare function cddl:is-declared-collection(
-  $name as xs:QName) as xs:boolean  external;
+declare function cddl:is-declared-collection($name as xs:QName) as xs:boolean external;
+
 
 (:~
  : The function returns a sequence of QNames representing the collections that have

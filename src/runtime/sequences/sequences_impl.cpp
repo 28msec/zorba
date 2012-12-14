@@ -40,8 +40,8 @@
 #include <runtime/sequences/sequences.h>
 #include <runtime/core/arithmetic_impl.h>
 #include <runtime/util/iterator_impl.h>
-#include <runtime/util/handle_hashset_item_value.h>
 #include <runtime/visitors/planiter_visitor.h>
+#include <runtime/util/doc_uri_heuristics.h>
 
 #include <system/globalenv.h>
 
@@ -54,9 +54,11 @@
 #include <store/api/item_factory.h>
 #include "store/api/temp_seq.h"
 #include <store/api/pul.h>
-#include <store/util/hashset_node_handle.h>
 
 #include <context/static_context.h>
+
+#include "zorbautils/hashset_node_itemh.h"
+#include "zorbautils/hashset_atomic_itemh.h"
 
 namespace zorbatm = zorba::time;
 
@@ -87,10 +89,9 @@ static XQPCollator* getCollator(
       ERROR_LOC( loc )
     );
 
-  xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type(lCollationItem);
-
   return sctx->get_collator(lCollationItem->getStringValue().str(), loc);
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -248,6 +249,7 @@ FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   STACK_END (state);
 }
 
+
 /*******************************************************************************
   15.1.6 fn:distinct-values
 ********************************************************************************/
@@ -259,6 +261,7 @@ void FnDistinctValuesIteratorState::reset(PlanState& planState)
     theAlreadySeenMap->clear();
 }
 
+
 bool FnDistinctValuesIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -266,7 +269,7 @@ bool FnDistinctValuesIterator::nextImpl(
   store::Item_t lItem;
   xqtref_t lItemType;
   XQPCollator* lCollator;
-  ValueCompareParam* theValueCompare;
+  ValueCompareParam* valueCompare;
 
   FnDistinctValuesIteratorState* state;
   DEFAULT_STACK_INIT(FnDistinctValuesIteratorState, state, planState);
@@ -275,16 +278,16 @@ bool FnDistinctValuesIterator::nextImpl(
   {
     lCollator = getCollator(theSctx, loc, planState, theChildren[1].getp());
 
-    theValueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
-    theValueCompare->theCollator = lCollator;
+    valueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
+    valueCompare->theCollator = lCollator;
   }
   else
   {
-    theValueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
+    valueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
   }
 
   // theValueCompare managed by state->theAlreadySeenMap
-  state->theAlreadySeenMap.reset(new ItemValueCollHandleHashSet(theValueCompare));
+  state->theAlreadySeenMap.reset(new AtomicItemHandleHashSet(valueCompare));
 
   while (consumeNext(result, theChildren[0].getp(), planState))
   {
@@ -298,7 +301,6 @@ bool FnDistinctValuesIterator::nextImpl(
     }
     else if ( ! state->theAlreadySeenMap->exists(result) )
     {
-      // check if the item is already in the map
       state->theAlreadySeenMap->insert(result);
       STACK_PUSH(true, state);
     }
@@ -306,6 +308,7 @@ bool FnDistinctValuesIterator::nextImpl(
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.1.7 fn:insert-before
@@ -1103,7 +1106,7 @@ bool FnDeepEqualIterator::nextImpl(
 ********************************************************************************/
 HashSemiJoinIteratorState::HashSemiJoinIteratorState()
 {
-  theRightInput = new store::NodeHashSet();
+  theRightInput = new NodeHandleHashSet(1024, false);
 }
 
 
@@ -1253,97 +1256,68 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         TypeOps::is_equal(tm, *lRunningType, *lUntypedAtomic))
     {
       lHitNumeric = true;
+
       if ( lHitYearMonth )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-					ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lYearMonthDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+				ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedType_5),
+                     *lYearMonthDuration));
+
       if ( lHitDayTime )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lDayTimeDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED( BadArgTypeForFn_2o34o ),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED( ExpectedType_5 ),
+                     *lDayTimeDuration));
     }
     else if (TypeOps::is_equal(tm, *lRunningType, *lYearMonthDuration))
     {
       lHitYearMonth = true;
+
       if (lHitNumeric)
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedNumericType )
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedNumericType)));
+
       if (lHitDayTime)
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lDayTimeDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED( BadArgTypeForFn_2o34o ),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED( ExpectedType_5 ),
+                     *lDayTimeDuration));
     }
     else if (TypeOps::is_equal(tm, *lRunningType, *lDayTimeDuration))
     {
       lHitDayTime = true;
+
       if ( lHitNumeric )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedNumericType )
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedNumericType)));
+
       if ( lHitYearMonth )
-        throw XQUERY_EXCEPTION(
-          err::FORG0006,
-          ERROR_PARAMS(
-						ZED( BadArgTypeForFn_2o34o ),
-						*lRunningType,
-						"fn:avg",
-						ZED( ExpectedType_5 ),
-						*lYearMonthDuration
-					),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FORG0006, loc,
+        ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                     *lRunningType,
+                     "fn:avg",
+                     ZED(ExpectedType_5),
+                     *lYearMonthDuration));
     }
     else
     {
-			throw XQUERY_EXCEPTION(
-				err::FORG0006,
-				ERROR_PARAMS(
-					ZED( BadArgTypeForFn_2o34o ),
-					*lRunningType,
-					"fn:avg",
-					ZED( ExpectedNumericOrDurationType )
-				),
-				ERROR_LOC( loc )
-			);
+			RAISE_ERROR(err::FORG0006, loc,
+			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
+                   *lRunningType,
+                   "fn:avg",
+                   ZED(ExpectedNumericOrDurationType)));
     }
 
     if ( lCount++ == 0 )
@@ -1409,11 +1383,10 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!TypeOps::is_numeric(tm, *lResultType) &&
         (!TypeOps::is_subtype(tm, *lResultType, *rtm.DURATION_TYPE_ONE) ||
          TypeOps::is_equal(tm, *lResultType, *rtm.DURATION_TYPE_ONE)))
-      throw XQUERY_EXCEPTION(
-				err::FORG0006,
-				ERROR_PARAMS( ZED( BadArgTypeForFn_2o34o ), *lResultType, "fn:sum" ),
-				ERROR_LOC(loc)
-			);
+    {
+      RAISE_ERROR(err::FORG0006, loc,
+			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *lResultType, "fn:sum"));
+    }
 
     while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
     {
@@ -1746,71 +1719,6 @@ static void fillTime (
     zorbatm::get_walltime_elapsed(t0, t1);
 }
 
-/**
- * Utility method for fn:doc() and fn:doc-available(). Given an input string,
- * use a few heuristics to create a valid URI, assuming that the input might
- * be an absolute or relative filesystem path, etc.
- */
-static zstring normalizeInput(zstring const& aUri, static_context* aSctx,
-                              QueryLoc const& loc)
-{
-  zstring const aBaseUri = aSctx->get_base_uri();
-  zstring lResolvedURI;
-
-  try
-  {
-    // To support the very common (if technically incorrect) use
-    // case of users passing local filesystem paths to fn:doc(),
-    // we use the following heuristic: IF the base URI has a file:
-    // scheme AND the incoming URI has no scheme, we will assume
-    // the incoming URI is actually a filesystem path.  QQQ For
-    // the moment, we assume any "unknown" schemes are probably
-    // Windows drive letters.
-    if ((uri::get_scheme(aUri) == uri::none ||
-         uri::get_scheme(aUri) == uri::unknown) &&
-        uri::get_scheme(aBaseUri) == uri::file)
-    {
-      // Ok, we assume it's a filesystem path. First normalize it.
-      zstring lNormalizedPath =
-        fs::get_normalized_path(aUri, zstring(""));
-      // QQQ For now, get_normalized_path() doesn't do what we
-      // want when base URI represents a file. So, when the
-      // normalized path is relative, we pretend it's a relative
-      // URI and resolve it as such.
-      if (fs::is_absolute(lNormalizedPath))
-      {
-        URI::encode_file_URI(lNormalizedPath, lResolvedURI);
-      }
-      else
-      {
-#ifdef WIN32
-        ascii::replace_all(lNormalizedPath, '\\', '/');
-#endif
-        lResolvedURI = aSctx->resolve_relative_uri(lNormalizedPath, true);
-      }
-    }
-    else
-    {
-      // We do NOT assume it's a filesystem path; just resolve it.
-      lResolvedURI = aSctx->resolve_relative_uri(aUri, true);
-    }
-  }
-  catch (ZorbaException& e)
-  {
-    if (e.diagnostic() == err::XQST0046)
-      // the value of a URILiteral is of nonzero length and is not in the
-      // lexical space of xs:anyURI.
-      e.set_diagnostic(err::FODC0005);
-    else
-      e.set_diagnostic(err::FODC0002);
-
-    set_source(e, loc);
-    throw;
-  }
-
-  return lResolvedURI;
-}
-
 static void loadDocument(
   zstring const& aUri,
   static_context* aSctx,
@@ -1819,7 +1727,8 @@ static void loadDocument(
   store::Item_t& oResult)
 {
   // Normalize input to handle filesystem paths, etc.
-  zstring const lNormUri(normalizeInput(aUri, aSctx, loc));
+  zstring lNormUri;
+  normalizeInputUri(aUri, aSctx, loc, &lNormUri);
 
   // See if this (normalized) URI is already loaded in the store.
   try {
@@ -1996,7 +1905,8 @@ static void readDocument(
   store::Item_t& oResult)
 {
   //Normalize input to handle filesystem paths, etc.
-  zstring const lNormUri(normalizeInput(aUri, aSctx, loc));
+  zstring lNormUri;
+  normalizeInputUri(aUri, aSctx, loc, &lNormUri);
 
   //Resolve URI to stream
   zstring lErrorMessage;
@@ -2147,7 +2057,7 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   
   //Normalize input to handle filesystem paths, etc.
   uriItem->getStringValue2(uriString);
-  lNormUri = normalizeInput(uriString, theSctx, loc);
+  normalizeInputUri(uriString, theSctx, loc, &lNormUri);
 
   //Resolve URI to stream
   lResource = theSctx->resolve_uri

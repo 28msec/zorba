@@ -15,6 +15,7 @@
  */
 
 #include "stdafx.h"
+
 #include "diagnostics/assert.h"
 
 #include "ascii_util.h"
@@ -23,7 +24,6 @@
 #include "utf8_util.h"
 
 #define DEBUG_JSON_PARSER 0
-
 #if DEBUG_JSON_PARSER
 # include "indent.h"
 #endif /* DEBUG_JSON_PARSER */
@@ -79,7 +79,10 @@ char const* exception::what() const throw() {
 }
 
 illegal_character::illegal_character( location const &loc, char c ) :
-  exception( loc, BUILD_STRING( '\'', c, "': illegal character" ) ),
+  exception(
+    loc,
+    BUILD_STRING( '\'', ascii::printable_char( c ), "': illegal character" )
+  ),
   c_( c )
 {
 }
@@ -100,7 +103,12 @@ illegal_codepoint::~illegal_codepoint() throw() {
 }
 
 illegal_escape::illegal_escape( location const &loc, char c ) :
-  exception( loc, BUILD_STRING( "\"\\", c, "\": illegal character escape" ) ),
+  exception(
+    loc,
+    BUILD_STRING(
+      "\"\\", ascii::printable_char( c ), "\": illegal character escape"
+    )
+  ),
   esc_( c )
 {
 }
@@ -148,9 +156,7 @@ unterminated_string::~unterminated_string() throw() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-token::token() :
-  type_( none )
-{
+token::token() : type_( none ) {
 }
 
 ostream& operator<<( ostream &o, token::type tt ) {
@@ -235,9 +241,9 @@ bool lexer::next( token *t ) {
         t->loc_ = cur_loc_;
         parse_number( c, &t->value_ );
         return true;
-      case 'f':
-      case 'n':
-      case 't':
+      case 'f': // false
+      case 'n': // null
+      case 't': // true
         t->type_ = parse_literal( c, &t->value_ );
         t->loc_ = cur_loc_;
         return true;
@@ -259,20 +265,55 @@ bool lexer::next( token *t ) {
 unicode::code_point lexer::parse_codepoint() {
   static char const hex_digits[] = "0123456789ABCDEF";
 
+  char c;
   zstring cp_string( "\\u" );           // needed only for error message
+  unicode::code_point high_surrogate = 0;
 
-  unicode::code_point cp = 0;
-  for ( int i = 1; i <= 4; ++i ) {
-    char c;
-    if ( !get_char( &c ) || !ascii::is_xdigit( c ) )
+  while ( true ) {
+    unicode::code_point cp = 0;
+    for ( int i = 1; i <= 4; ++i ) {
+      if ( !get_char( &c ) )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      cp_string += c;
+      if ( !ascii::is_xdigit( c ) )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      c = ascii::to_upper( c );
+      char const *const p = std::strchr( hex_digits, c );
+      assert( p );
+      cp = (cp << 4) | (p - hex_digits);
+    }
+
+    if ( unicode::is_high_surrogate( cp ) ) {
+      if ( high_surrogate )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      //
+      // It's easier to parse the \u for the low surrogate here rather than
+      // trying to manage state in parse_string().
+      //
+      if ( !get_char( &c ) )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      cp_string += c;
+      if ( c != '\\' )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      if ( !get_char( &c ) )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      cp_string += c;
+      if ( c != 'u' )
+        throw illegal_codepoint( cur_loc_, cp_string );
+
+      high_surrogate = cp;
+      continue;
+    }
+    if ( unicode::is_low_surrogate( cp ) ) {
+      if ( !high_surrogate )
+        throw illegal_codepoint( cur_loc_, cp_string );
+      return unicode::convert_surrogate( high_surrogate, cp );
+    }
+    if ( high_surrogate )
       throw illegal_codepoint( cur_loc_, cp_string );
-    cp_string += c;
-    c = ascii::to_upper( c );
-    char const *const p = std::strchr( hex_digits, c );
-    assert( p );
-    cp = (cp << 4) | (p - hex_digits);
+
+    return cp;
   }
-  return cp;
 }
 
 token::type lexer::parse_literal( char first_c, token::value_type *value ) {
@@ -521,7 +562,20 @@ void parser::require_token_debug( int line, token::type tt, token *t ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-parser::parser( istream &in ) : lexer_( in ) {
+parser::parser( std::istream &in, bool allow_multiple ) :
+  allow_multiple_( allow_multiple ),
+  lexer_( in )
+{
+  init();
+}
+
+void parser::clear() {
+  peeked_token_.clear();
+  ztd::clear_stack( state_stack_ );
+  init();
+}
+
+void parser::init() {
 #if DEBUG_JSON_PARSER
   get_indent( cout ) = 0;
 #endif /* DEBUG_JSON_PARSER */
@@ -566,7 +620,7 @@ bool parser::next( token *t ) {
     switch ( state_ ) {
 
       // <JSON> ::= <Array> | <Object>
-      case J0:  PUSH_STATE( J1 );
+      case J0:  PUSH_STATE( allow_multiple_ ? J0 : J1 );
                 switch ( PEEK_TOKEN() ) {
                   case token::begin_array : GOTO_STATE( A0 );
                   case token::begin_object: GOTO_STATE( O0 );

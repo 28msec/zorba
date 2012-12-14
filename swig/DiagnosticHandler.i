@@ -18,10 +18,7 @@
 
 %{   // start Implementations
 
-class DiagnosticHandler : public zorba::DiagnosticHandler 
-{
- private:
-  void error (const zorba::ZorbaException &ze) 
+  void DiagnosticHandler::error (const zorba::ZorbaException &ze) 
   {
     if ( zorba::XQueryException const *xe = dynamic_cast<zorba::XQueryException const*>( &ze ) ) {
       const XQueryException xe2(xe);
@@ -32,29 +29,16 @@ class DiagnosticHandler : public zorba::DiagnosticHandler
       error(ue2); 
     }
   }
-  void warning (const zorba::XQueryException &xw)
+  void DiagnosticHandler::warning (const zorba::XQueryException &xw)
   {
     // TODO: do something with warning
   }
 
- public:
-  virtual ~DiagnosticHandler() {}
-  virtual void error(const ZorbaException &ze) {
+  DiagnosticHandler::~DiagnosticHandler() {}
+  void DiagnosticHandler::error(const ZorbaException &ze) {
   }
-  //virtual void warning(const XQueryWarning &xw) {}
- }; // class DiagnosticHandler
 
 
 %}  // end Implementations
 
-    // Interface
-
-class DiagnosticHandler 
-{
- public:
-  virtual ~DiagnosticHandler();
-  virtual void error(const ZorbaException &ze); 
-  //virtual void warning(const XQueryWarning &xw); 
-}; // class DiagnosticHandler
-
-/* vim:set et sw=2 ts=2: */
+%include "DiagnosticHandler.h"

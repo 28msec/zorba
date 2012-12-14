@@ -14,12 +14,14 @@
 
 SET(UTIL_SRCS
   ascii_util.cpp
+  base64_util.cpp
   dynamic_bitset.cpp
   error_util.cpp
   file.cpp
   fs_util.cpp
   indent.cpp
   json_parser.cpp
+  json_util.cpp
   mem_streambuf.cpp
   regex.cpp
   string_util.cpp
@@ -30,8 +32,6 @@ SET(UTIL_SRCS
   xml_util.cpp
   fx/fxcharheap.cpp
   string/empty_rep_base.cpp
-  uuid/sysdep.cpp
-  uuid/uuid.cpp
   http_util.h
   http_util.cpp)
 
@@ -50,3 +50,5 @@ ENDIF(ZORBA_NO_ICU)
 
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS fx)
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS win32)
+
+ADD_SRC_SUBFOLDER(UTIL_SRCS hash UTIL_HASH_SRCS)

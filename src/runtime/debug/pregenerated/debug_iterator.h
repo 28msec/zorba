@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,17 +77,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DebugIterator,
     NaryBaseIterator<DebugIterator, DebugIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DebugIterator, DebugIteratorState>*)this);
-
-    ar & varnames;
-    ar & vartypes;
-    ar & theDebuggerChildren;
-    ar & theDebuggerParent;
-    ar & theIsVarDeclaration;
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   DebugIterator(
     static_context* sctx,

@@ -97,10 +97,13 @@ public:
    * are certain unusual circumstances where a URLResolver may wish to
    * return a stream over some other URL than the one passed to it. In
    * that case, the URLResolver may pass the true URL here.
+   * @param aIsStreamSeekable determines whether the stream passed as first
+   * argument is arbitrarily seekable without throwing errors.
    */
   StreamResource(std::istream* aStream,
                  StreamReleaser aStreamReleaser,
-                 zstring aStreamUrl = "");
+                 zstring aStreamUrl = "",
+                 bool aIsStreamSeekable = false);
   
   virtual ~StreamResource();
 
@@ -127,11 +130,18 @@ public:
    */
   zstring getStreamUrl();
 
+  /**
+   * @brief Returns true if the stream returned by getStream is seekable,
+   * false otherwise.
+   */
+  bool isStreamSeekable() const { return theIsStreamSeekable; }
+
 private:
 
   std::istream* theStream;
   StreamReleaser theStreamReleaser;
   zstring theStreamUrl;
+  bool theIsStreamSeekable;
 };
 
 /**

@@ -1541,7 +1541,7 @@ bool FnReplaceIterator::nextImpl(
   zstring input;
   zstring flags;
   zstring pattern;
-  zstring replacement, replacement2;
+  zstring replacement;
   zstring resStr;
   store::Item_t item;
   bool tmp;
@@ -1585,24 +1585,27 @@ bool FnReplaceIterator::nextImpl(
       err::FORX0003, ERROR_PARAMS( pattern ), ERROR_LOC( loc )
     );
 
-  { // local scope
-    int num_capturing_groups = 0;
+  if ( flags.find( 'q' ) == zstring::npos ) {
 
+    // count the number of capturing groups
     bool got_paren = false;
+    int num_capturing_groups = 0;
     FOR_EACH( zstring, c, pattern ) {
       if ( got_paren && *c != '?' )
         ++num_capturing_groups;
       got_paren = *c == '(';
     }
 
-    bool got_backslash = false, got_dollar = false;
+    bool got_backslash = false;
+    bool got_dollar = false;
+    zstring temp_replacement;
     FOR_EACH( zstring, c, replacement ) {
       if ( got_backslash ) {
         switch ( *c ) {
           case '\\':
           case '$':
-            replacement2 += '\\';
-            replacement2 += *c;
+            temp_replacement += '\\';
+            temp_replacement += *c;
             got_backslash = false;
             continue;
           default:
@@ -1621,8 +1624,8 @@ bool FnReplaceIterator::nextImpl(
             ERROR_LOC( loc )
           );
         if ( *c - '0' <= num_capturing_groups ) {
-          replacement2 += '$';
-          replacement2 += *c;
+          temp_replacement += '$';
+          temp_replacement += *c;
         }
         got_dollar = false;
         continue;
@@ -1635,7 +1638,7 @@ bool FnReplaceIterator::nextImpl(
           got_dollar = true;
           break;
         default:
-          replacement2 += *c;
+          temp_replacement += *c;
           break;
       }
     } // FOR_EACH
@@ -1651,13 +1654,14 @@ bool FnReplaceIterator::nextImpl(
         ERROR_PARAMS( replacement, ZED( TrailingChar_3 ), '$' ),
         ERROR_LOC( loc )
       );
-  } // local scope
+    replacement = temp_replacement;
+  }
 
   try
   {
     zstring lib_pattern;
     convert_xquery_re( pattern, &lib_pattern, flags.c_str() );
-    utf8::replace_all(input, lib_pattern, flags.c_str(), replacement2, &resStr);
+    utf8::replace_all(input, lib_pattern, flags.c_str(), replacement, &resStr);
   }
   catch(XQueryException& ex)
   {
@@ -1840,7 +1844,7 @@ static void addNonMatchElement(store::Item_t &parent,
   store::NsBindings   ns_binding;
   zstring baseURI;
   GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                "http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+                                XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
   GENV_ITEMFACTORY->createQName(non_match_element_name,
                                 static_context::W3C_FN_NS, "fn", "non-match");
   GENV_ITEMFACTORY->createElementNode(non_match_elem, parent, non_match_element_name, untyped_type_name, false, false, ns_binding, baseURI);
@@ -1969,7 +1973,7 @@ static void addMatchElement(store::Item_t &parent,
   store::NsBindings   ns_binding;
   zstring baseURI;
   GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                "http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+                                XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
   GENV_ITEMFACTORY->createQName(match_element_name,
                                 static_context::W3C_FN_NS, "fn", "match");
   store::Item_t match_elem;
@@ -2129,7 +2133,7 @@ bool FnAnalyzeStringIterator::nextImpl(
     store::NsBindings   ns_binding;
     zstring baseURI;
     GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                  "http://www.w3.org/2001/XMLSchema", "xs", "untyped");
+                                  XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
     GENV_ITEMFACTORY->createQName(result_element_name,
                                   static_context::W3C_FN_NS, "fn", "analyze-string-result");
     GENV_ITEMFACTORY->createElementNode(result, NULL, result_element_name, untyped_type_name, false, false, ns_binding, baseURI);

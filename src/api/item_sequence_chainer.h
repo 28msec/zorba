@@ -17,13 +17,15 @@
 #ifndef ZORBA_ITERATOR_ITEM_SEQUENCE_CHAINER_H
 #define ZORBA_ITERATOR_ITEM_SEQUENCE_CHAINER_H
 
+#include <vector>
+#include <set>
+#include <assert.h>
+
 #include <zorba/config.h>
 #include <zorba/item_sequence.h>
 #include <zorba/iterator.h>
 #include <zorba/item.h>
 #include <zorba/zorba_string.h>
-#include <vector>
-#include <set>
 
 namespace zorba { 
 
@@ -85,7 +87,19 @@ namespace zorba {
           struct Comparator {
             bool operator()(const Item& i1, const Item& i2) const
             {
-              return i1.getStringValue().compare(i2.getStringValue()) < 0;
+              assert(i1.getType().getLocalName() == "QName");
+              assert(i2.getType().getLocalName() == "QName");
+	          int lNamespaceComparison = i1.getNamespace().compare(i2.getNamespace());
+              if (lNamespaceComparison < 0)
+              {
+                return true;
+              }
+              if (lNamespaceComparison > 0)
+              {
+                return false;
+	          } 
+	          // Namespaces are equal, comparing local names.
+              return (i1.getLocalName().compare(i2.getLocalName()) < 0);
             }
           };
 

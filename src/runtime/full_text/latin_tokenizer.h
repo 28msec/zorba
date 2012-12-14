@@ -34,7 +34,7 @@ namespace zorba {
  */
 class LatinTokenizer : public Tokenizer {
 public:
-  LatinTokenizer( Numbers &num ) : Tokenizer( num ) { }
+  LatinTokenizer( State &state ) : Tokenizer( state ) { }
 
   // inherited
   void destroy() const;
@@ -66,7 +66,7 @@ private:
 class LatinTokenizerProvider : public TokenizerProvider {
 public:
   // inherited
-  bool getTokenizer( locale::iso639_1::type, Tokenizer::Numbers* = 0,
+  bool getTokenizer( locale::iso639_1::type, Tokenizer::State* = 0,
                      Tokenizer::ptr* = 0 ) const;
 };
 

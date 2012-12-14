@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,9 +53,9 @@ PlanIter_t fn_zorba_base64_encode::codegen(
 
 void populate_context_base64(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_base64_decode,
         (createQName("http://www.zorba-xquery.com/modules/converters/base64","","decode"), 
         GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE, 
@@ -65,9 +65,22 @@ void populate_context_base64(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_base64_decode,
+        (createQName("http://www.zorba-xquery.com/modules/converters/base64","","decode"), 
+        GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_BASE64_DECODE_2);
+
+  }
+
+
+
+
+      {
     DECL_WITH_KIND(sctx, fn_zorba_base64_encode,
         (createQName("http://www.zorba-xquery.com/modules/converters/base64","","encode"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 

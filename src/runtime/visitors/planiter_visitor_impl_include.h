@@ -31,6 +31,14 @@ class AndIterator;
   class ElementIterator;
   class AttributeIterator;
   class CommentIterator;
+
+#ifdef ZORBA_WITH_JSON
+class JSONObjectIterator;
+class JSONArrayIterator;
+class JSONDirectObjectIterator;
+class JSONObjectInsertIterator;
+#endif
+
   class PiIterator;
   class RefIterator;
   class SingletonIterator;

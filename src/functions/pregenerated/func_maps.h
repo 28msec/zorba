@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,26 @@ public:
 
   }
 
-  short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
+  unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-data-structure-unordered-map:create-transient
+class zorba_store_data_structure_unordered_map_create_transient : public function
+{
+public:
+  zorba_store_data_structure_unordered_map_create_transient(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -68,7 +87,7 @@ public:
 
   }
 
-  short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
+  unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -104,9 +123,11 @@ public:
 
   }
 
-  short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
+  unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
 
   CODEGEN_DECL();
 };
@@ -123,7 +144,7 @@ public:
 
   }
 
-  short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
+  unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -170,6 +191,23 @@ class zorba_store_data_structure_unordered_map_available_maps : public function
 {
 public:
   zorba_store_data_structure_unordered_map_available_maps(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-data-structure-unordered-map:is-transient
+class zorba_store_data_structure_unordered_map_is_transient : public function
+{
+public:
+  zorba_store_data_structure_unordered_map_is_transient(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

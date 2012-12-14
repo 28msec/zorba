@@ -87,8 +87,9 @@ public:
         CompilerCB*       ccb,
         dynamic_context*  dynamicContext,
         XQueryImpl*       query,
-        uint32_t          stackDepth = 0,
-        long              timeout = -1);
+        uint32_t          stackDepth,
+        bool              haveTimeout,
+        unsigned long     timeout);
 
   ~PlanWrapper();
 

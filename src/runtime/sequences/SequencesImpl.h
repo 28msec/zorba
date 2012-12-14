@@ -34,13 +34,6 @@
 namespace zorba
 {
 
-namespace store 
-{
-  class NodeHashSet;
-}
-
-class ValueCollCompareParam;
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

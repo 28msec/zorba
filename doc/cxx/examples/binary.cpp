@@ -25,35 +25,25 @@ encode_example()
 {
   String lString("Hello Zorba");
   String lEncoded = zorba::encoding::Base64::encode(lString);
-  String lExpectedResult("SGVsbG8gWm9yYmE=");
-  return lEncoded == lExpectedResult; 
+  return lEncoded == "SGVsbG8gWm9yYmE="; 
 }
 
 bool 
 decode_example()
 {
- String lEncoded("SGVsbG8gWm9yYmE=");
- String lDecoded = zorba::encoding::Base64::decode(lEncoded);
- return lDecoded == "Hello Zorba";
-
+  String lEncoded("SGVsbG8gWm9yYmE=");
+  String lDecoded = zorba::encoding::Base64::decode(lEncoded);
+  return lDecoded == "Hello Zorba";
 }
 
-int 
-binary(int argc, char* argv[])
-{
+int binary(int argc, char* argv[]) {
 
-bool res = false;
+  std::cout << "executing example 1 (Base64 encoding of String)" << std::endl;
+  if (!encode_example()) return 1;
 
-std::cout << "executing example 1 (Base64 encoding of String)" << std::endl;
-res = encode_example();
-if (!res) return 1;
-std::cout << std::endl;
+  std::cout << "executing example 2 (decoding of Base64 encoded String)" << std::endl;
+  if (!decode_example()) return 1;
 
-std::cout << "executing example 2 (decoding of Base64 encoded String)" << std::endl;
-res = decode_example();
-if (!res) return 1;
-std::cout << std::endl;
-
-return 0;
-
+  return 0;
 }
+/* vim:set et sw=2 ts=2: */

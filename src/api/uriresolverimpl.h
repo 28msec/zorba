@@ -39,14 +39,21 @@ public:
 
   virtual void destroy() const;
 
+  virtual bool isStreamSeekable() const { return theIsStreamSeekable; }
+
 private:
 
-  StreamResourceImpl(std::istream* aStream, StreamReleaser aStreamReleaser);
+  StreamResourceImpl(
+      std::istream* aStream,
+      StreamReleaser aStreamReleaser,
+      bool aIsStreamSeekable);
 
   friend StreamResource* StreamResource::create(std::istream *aStream,
-                                                StreamReleaser aStreamReleaser);
+                                                StreamReleaser aStreamReleaser,
+                                                bool aIsStreamSeekable);
   std::istream* theStream;
   StreamReleaser theStreamReleaser;
+  bool theIsStreamSeekable;
 
 };
 

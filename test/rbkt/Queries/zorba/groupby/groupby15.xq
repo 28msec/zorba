@@ -15,5 +15,5 @@ declare variable $products external;
     <group>
       {$state, $category}
       <total-revenue>{sum($revenue)}</total-revenue>
-    </group> 
+    </group>
 }</result>

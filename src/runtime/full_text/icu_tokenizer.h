@@ -40,9 +40,9 @@ public:
    * Constructs an %ICU_Tokenizer.
    *
    * @param lang The language of the text that the tokenizer will tokenize.
-   * @param no The Numbers to use.
+   * @param state The State to use.
    */
-  ICU_Tokenizer( locale::iso639_1::type lang, Numbers &no );
+  ICU_Tokenizer( locale::iso639_1::type lang, State &state );
 
   ~ICU_Tokenizer();
 
@@ -67,7 +67,7 @@ public:
   ICU_TokenizerProvider() { }           // needed to work-around compiler bug
 
   // inherited
-  bool getTokenizer( locale::iso639_1::type, Tokenizer::Numbers* = 0,
+  bool getTokenizer( locale::iso639_1::type, Tokenizer::State* = 0,
                      Tokenizer::ptr* = 0 ) const;
 };
 

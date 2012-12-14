@@ -84,7 +84,7 @@ public:
  * \internal
  * This namespace is used only to bundle the implementation details for
  * implementing \c has_insertion_operator<T>.
- * This implementation is based on http://stackoverflow.com/questions/4434569/
+ * This implementation is based on http://stackoverflow.com/q/4434569/
  */
 namespace has_insertion_operator_impl {
   typedef char no;
@@ -369,6 +369,64 @@ to_string( T p ) {
 inline std::string to_string( char const *s ) {
   return s ? s : "<null>";
 }
+
+////////// misc ///////////////////////////////////////////////////////////////
+
+/**
+ * Helper class for implementing a solution to the "explicit bool conversion"
+ * problem.  The canonical use is of the form:
+ * \code
+ *  class your_class {
+ *    // ...
+ *    operator explicit_bool::type() const {
+ *      return explicit_bool::value_of( some_expression );
+ *    }
+ *  };
+ * \endcode
+ *
+ * See: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2333.html
+ */
+class explicit_bool {
+  struct pointer_conversion { int valid; };
+public:
+  typedef int pointer_conversion::*type;
+
+  /**
+   * Gets the explicit \c bool value for \c false.
+   *
+   * @return Returns said value.
+   */
+  static type false_value() {
+    return 0;
+  }
+
+  /**
+   * Gets the explicit \c bool value for \c true.
+   *
+   * @return Returns said value.
+   */
+  static type true_value() {
+    return &pointer_conversion::valid;
+  }
+
+  /**
+   * Converts the given value to an explicit \c bool value.
+   *
+   * @tparam T The type of the value to convert.
+   * @param value The value to convert.
+   * @return Return said value.
+   */
+  template<typename T> static
+  typename std::enable_if<ZORBA_TR1_NS::is_convertible<T,bool>::value,
+                          type>::type
+  value_of( T const &value ) {
+    //
+    // Using a template here eliminates a MSVC++ 4800 warning:
+    // "forcing value to 'true' or 'false' (performance warning)"
+    //
+    return value ? true_value() : false_value();
+  }
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 

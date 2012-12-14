@@ -1,0 +1,841 @@
+module namespace def = "http://www.28msec.com/compile-time/functx-x-5";
+
+import module namespace functx1 = "http://www.28msec.com/compile-time/lib/functx1" at "functx1.xqlib";
+import module namespace functx2 = "http://www.28msec.com/compile-time/lib/functx2" at "functx2.xqlib";
+import module namespace functx3 = "http://www.28msec.com/compile-time/lib/functx3" at "functx3.xqlib";
+import module namespace functx4 = "http://www.28msec.com/compile-time/lib/functx4" at "functx4.xqlib";
+import module namespace functx5 = "http://www.28msec.com/compile-time/lib/functx5" at "functx5.xqlib";
+
+declare namespace ann = "http://www.zorba-xquery.com/annotations";
+
+declare function def:t ()
+{
+  "t5"
+};
+
+declare function def:index ()
+{
+  functx1:substring-before-if-contains('abcd','c'),
+  functx1:substring-before-last('abc-def-ghi', '-'),
+  functx1:substring-before-last-match('abc-def-ghi', '[ce]'),
+  functx1:substring-before-match('abc-def-ghi', '[dg]'),
+  functx1:substring-after-if-contains('abcd','b'),
+  functx1:substring-after-last('abc-def-ghi', '-'),
+  functx1:substring-after-last-match('abc-def-ghi', '[ad]'),
+  functx1:substring-after-match('abc-def-ghi', '[ce]'),
+
+  functx1:substring-before-match('abc-def-ghi', '[dg]'),
+  functx1:substring-before-last-match('abc-def-ghi', '[ce]'),
+  functx1:substring-after-last-match('abc-def-ghi', '[ad]'),
+  functx1:substring-after-match('abc-def-ghi', '[ce]'),
+  functx1:index-of-match-first('abcdabcdabcd','abc'),
+  functx1:get-matches('abc123def', '\d+'),
+  functx1:get-matches-and-non-matches('abc123def', '\d+'),
+  functx1:number-of-matches('abcabc','ab'),
+
+  functx1:index-of-string('abcdabcdabcd','abc'),
+  functx1:index-of-string-first('abcdabcdabcd','abc'),
+  functx1:index-of-string-last('abcdabcdabcd','abc'),
+  functx1:index-of-match-first('abcdabcdabcd','abc'),
+
+  functx1:contains-word('abc def ghi', 'def'),
+  functx1:contains-case-insensitive('abcdef', 'def'),
+  functx1:contains-any-of('abc',('bc','xy')),
+
+  functx1:insert-string('xyz','def',2),
+  functx1:chars('abc'),
+  functx1:lines('a value'),
+
+  functx1:replace-first('abcabcabc', 'ab', 'x'),
+  functx1:replace-beginning('abc-def', '-', 'xxx'),
+  functx1:replace-multi('abcdef123',('[a-c]', 'def', '\d+'),('x', 'y', '0')),
+  functx1:escape-for-regex('5.55'),
+  functx1:reverse-string('abc'),
+
+  functx1:max-string( <in-xml><x>a</x><y>c</y><z>b</z></in-xml>/* ),
+  functx1:min-string( <in-xml><x>a</x><y>c</y><z>b</z></in-xml>/* ),
+  functx1:min-non-empty-string(
+      <authors>
+         <author>
+            <fName/>
+            <lName>Smith</lName>
+         </author>
+         <author>
+            <fName>Kate</fName>
+            <lName>Jones</lName>
+         </author>
+         <author>
+            <fName>John</fName>
+            <lName>Doe</lName>
+         </author>
+      </authors>//fName ),
+
+  functx1:trim('   xyz   '),
+  functx1:left-trim('   xyz'),
+  functx1:right-trim('xyz   '),
+  functx1:pad-string-to-length('abc', '*', 6),
+  functx1:repeat-string('*', 6),
+
+  functx1:capitalize-first('hello'),
+  functx1:camel-case-to-words('thisIsACamelCaseTerm',' '),
+  functx1:words-to-camel-case('this Is A Term'),
+  functx1:format-as-title-en(('A Midsummer Night''s Dream',
+      'The Merchant of Venice',
+      'Hamlet')),
+
+  functx1:line-count('a value'),
+  functx1:max-line-length('a value'),
+  functx1:word-count('hello there world'),
+
+
+  functx1:ordinal-number-en(1),
+  functx1:pad-integer-to-length(12, 6),
+
+  functx1:is-a-number('123'),
+
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      functx1:avg-empty-is-zero(
+         $in-xml//price/@discount, $in-xml//price),
+
+
+  functx1:mmddyyyy-to-date('12-15-2004'),
+  functx1:dateTime(2006,6,12,20,6,12),
+  functx1:date(2006,6,12),
+  functx1:time(20,6,12),
+
+  functx1:day-of-week(xs:date('2004-11-04')),
+  functx1:day-of-week-name-en('2004-11-04'),
+  functx1:day-of-week-abbrev-en('2004-11-04'),
+
+  functx1:first-day-of-year(xs:date('2004-01-23')),
+  functx1:last-day-of-year(xs:date('2004-01-23')),
+  functx1:is-leap-year(xs:date('2004-01-23')),
+
+  functx1:month-name-en(xs:date('2004-01-23')),
+  functx1:month-abbrev-en('2004-01-23'),
+  functx1:first-day-of-month('2004-03-23'),
+  functx1:last-day-of-month('2004-03-23'),
+  functx1:days-in-month('2005-02-15'),
+  functx1:add-months('2005-12-31',-3),
+  functx1:next-day(xs:date('2004-01-23')),
+  functx1:previous-day(xs:date('2004-01-23')),
+  functx1:day-in-year('2004-02-05'),
+
+  functx1:total-seconds-from-duration(xs:dayTimeDuration('PT90S')),
+  functx1:total-minutes-from-duration(xs:dayTimeDuration('PT90M')),
+  functx1:total-hours-from-duration(xs:dayTimeDuration('PT26H')),
+  functx1:total-days-from-duration(xs:dayTimeDuration('PT24H')),
+  functx1:total-months-from-duration(xs:yearMonthDuration('P18M')),
+  functx1:total-years-from-duration(xs:yearMonthDuration('P18M')),
+  functx1:yearMonthDuration(1,6),
+  functx1:dayTimeDuration(1,6,0,0),
+
+
+  functx1:between-inclusive(55, 1, 1000),
+  functx1:between-exclusive(55, 1, 1000),
+
+  let $i := <nums><num>12</num><num>23</num><num>115</num><num>12.5</num></nums>
+  return functx1:min-determine-type($i//num),
+  let $i := <nums><num>12</num><num>23</num><num>115</num><num>12.5</num></nums>
+  return functx1:max-determine-type($i//num),
+
+  functx1:all-whitespace('   '),
+  functx1:has-empty-content(<a></a>),
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      fn:data(functx1:if-absent(
+           $in-xml//price[1]/@discount, 0)),
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      functx1:if-empty($in-xml//price[1], 0),
+
+  functx1:exclusive-or(true(),false()),
+  functx1:atomic-type(2)
+
+  (:  Sequences 
+      XML Elements and Attributes
+      XML Nodes
+      XML Namespaces and Names
+      XML Documents, URIs and IDs
+      Miscellaneous :)
+  ,
+
+  functx2:substring-before-if-contains('abcd','c'),
+  functx2:substring-before-last('abc-def-ghi', '-'),
+  functx2:substring-before-last-match('abc-def-ghi', '[ce]'),
+  functx2:substring-before-match('abc-def-ghi', '[dg]'),
+  functx2:substring-after-if-contains('abcd','b'),
+  functx2:substring-after-last('abc-def-ghi', '-'),
+  functx2:substring-after-last-match('abc-def-ghi', '[ad]'),
+  functx2:substring-after-match('abc-def-ghi', '[ce]'),
+
+  functx2:substring-before-match('abc-def-ghi', '[dg]'),
+  functx2:substring-before-last-match('abc-def-ghi', '[ce]'),
+  functx2:substring-after-last-match('abc-def-ghi', '[ad]'),
+  functx2:substring-after-match('abc-def-ghi', '[ce]'),
+  functx2:index-of-match-first('abcdabcdabcd','abc'),
+  functx2:get-matches('abc123def', '\d+'),
+  functx2:get-matches-and-non-matches('abc123def', '\d+'),
+  functx2:number-of-matches('abcabc','ab'),
+
+  functx2:index-of-string('abcdabcdabcd','abc'),
+  functx2:index-of-string-first('abcdabcdabcd','abc'),
+  functx2:index-of-string-last('abcdabcdabcd','abc'),
+  functx2:index-of-match-first('abcdabcdabcd','abc'),
+
+  functx2:contains-word('abc def ghi', 'def'),
+  functx2:contains-case-insensitive('abcdef', 'def'),
+  functx2:contains-any-of('abc',('bc','xy')),
+
+  functx2:insert-string('xyz','def',2),
+  functx2:chars('abc'),
+  functx2:lines('a value'),
+
+  functx2:replace-first('abcabcabc', 'ab', 'x'),
+  functx2:replace-beginning('abc-def', '-', 'xxx'),
+  functx2:replace-multi('abcdef123',('[a-c]', 'def', '\d+'),('x', 'y', '0')),
+  functx2:escape-for-regex('5.55'),
+  functx2:reverse-string('abc'),
+
+  functx2:max-string( <in-xml><x>a</x><y>c</y><z>b</z></in-xml>/* ),
+  functx2:min-string( <in-xml><x>a</x><y>c</y><z>b</z></in-xml>/* ),
+  functx2:min-non-empty-string(
+      <authors>
+         <author>
+            <fName/>
+            <lName>Smith</lName>
+         </author>
+         <author>
+            <fName>Kate</fName>
+            <lName>Jones</lName>
+         </author>
+         <author>
+            <fName>John</fName>
+            <lName>Doe</lName>
+         </author>
+      </authors>//fName ),
+
+  functx2:trim('   xyz   '),
+  functx2:left-trim('   xyz'),
+  functx2:right-trim('xyz   '),
+  functx2:pad-string-to-length('abc', '*', 6),
+  functx2:repeat-string('*', 6),
+
+  functx2:capitalize-first('hello'),
+  functx2:camel-case-to-words('thisIsACamelCaseTerm',' '),
+  functx2:words-to-camel-case('this Is A Term'),
+  functx2:format-as-title-en(('A Midsummer Night''s Dream',
+      'The Merchant of Venice',
+      'Hamlet')),
+
+  functx2:line-count('a value'),
+  functx2:max-line-length('a value'),
+  functx2:word-count('hello there world'),
+
+
+  functx2:ordinal-number-en(1),
+  functx2:pad-integer-to-length(12, 6),
+
+  functx2:is-a-number('123'),
+
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      functx2:avg-empty-is-zero(
+         $in-xml//price/@discount, $in-xml//price),
+
+
+  functx2:mmddyyyy-to-date('12-15-2004'),
+  functx2:dateTime(2006,6,12,20,6,12),
+  functx2:date(2006,6,12),
+  functx2:time(20,6,12),
+
+  functx2:day-of-week(xs:date('2004-11-04')),
+  functx2:day-of-week-name-en('2004-11-04'),
+  functx2:day-of-week-abbrev-en('2004-11-04'),
+
+  functx2:first-day-of-year(xs:date('2004-01-23')),
+  functx2:last-day-of-year(xs:date('2004-01-23')),
+  functx2:is-leap-year(xs:date('2004-01-23')),
+
+  functx2:month-name-en(xs:date('2004-01-23')),
+  functx2:month-abbrev-en('2004-01-23'),
+  functx2:first-day-of-month('2004-03-23'),
+  functx2:last-day-of-month('2004-03-23'),
+  functx2:days-in-month('2005-02-15'),
+  functx2:add-months('2005-12-31',-3),
+  functx2:next-day(xs:date('2004-01-23')),
+  functx2:previous-day(xs:date('2004-01-23')),
+  functx2:day-in-year('2004-02-05'),
+
+  functx2:total-seconds-from-duration(xs:dayTimeDuration('PT90S')),
+  functx2:total-minutes-from-duration(xs:dayTimeDuration('PT90M')),
+  functx2:total-hours-from-duration(xs:dayTimeDuration('PT26H')),
+  functx2:total-days-from-duration(xs:dayTimeDuration('PT24H')),
+  functx2:total-months-from-duration(xs:yearMonthDuration('P18M')),
+  functx2:total-years-from-duration(xs:yearMonthDuration('P18M')),
+  functx2:yearMonthDuration(1,6),
+  functx2:dayTimeDuration(1,6,0,0),
+
+
+  functx2:between-inclusive(55, 1, 1000),
+  functx2:between-exclusive(55, 1, 1000),
+
+  let $i := <nums><num>12</num><num>23</num><num>115</num><num>12.5</num></nums>
+  return functx2:min-determine-type($i//num),
+  let $i := <nums><num>12</num><num>23</num><num>115</num><num>12.5</num></nums>
+  return functx2:max-determine-type($i//num),
+
+  functx2:all-whitespace('   '),
+  functx2:has-empty-content(<a></a>),
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      fn:data(functx2:if-absent(
+           $in-xml//price[1]/@discount, 0)),
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      functx2:if-empty($in-xml//price[1], 0),
+
+  functx2:exclusive-or(true(),false()),
+  functx2:atomic-type(2)
+
+  (:  Sequences 
+      XML Elements and Attributes
+      XML Nodes
+      XML Namespaces and Names
+      XML Documents, URIs and IDs
+      Miscellaneous :)
+  ,
+
+  functx3:substring-before-if-contains('abcd','c'),
+  functx3:substring-before-last('abc-def-ghi', '-'),
+  functx3:substring-before-last-match('abc-def-ghi', '[ce]'),
+  functx3:substring-before-match('abc-def-ghi', '[dg]'),
+  functx3:substring-after-if-contains('abcd','b'),
+  functx3:substring-after-last('abc-def-ghi', '-'),
+  functx3:substring-after-last-match('abc-def-ghi', '[ad]'),
+  functx3:substring-after-match('abc-def-ghi', '[ce]'),
+
+  functx3:substring-before-match('abc-def-ghi', '[dg]'),
+  functx3:substring-before-last-match('abc-def-ghi', '[ce]'),
+  functx3:substring-after-last-match('abc-def-ghi', '[ad]'),
+  functx3:substring-after-match('abc-def-ghi', '[ce]'),
+  functx3:index-of-match-first('abcdabcdabcd','abc'),
+  functx3:get-matches('abc123def', '\d+'),
+  functx3:get-matches-and-non-matches('abc123def', '\d+'),
+  functx3:number-of-matches('abcabc','ab'),
+
+  functx3:index-of-string('abcdabcdabcd','abc'),
+  functx3:index-of-string-first('abcdabcdabcd','abc'),
+  functx3:index-of-string-last('abcdabcdabcd','abc'),
+  functx3:index-of-match-first('abcdabcdabcd','abc'),
+
+  functx3:contains-word('abc def ghi', 'def'),
+  functx3:contains-case-insensitive('abcdef', 'def'),
+  functx3:contains-any-of('abc',('bc','xy')),
+
+  functx3:insert-string('xyz','def',2),
+  functx3:chars('abc'),
+  functx3:lines('a value'),
+
+  functx3:replace-first('abcabcabc', 'ab', 'x'),
+  functx3:replace-beginning('abc-def', '-', 'xxx'),
+  functx3:replace-multi('abcdef123',('[a-c]', 'def', '\d+'),('x', 'y', '0')),
+  functx3:escape-for-regex('5.55'),
+  functx3:reverse-string('abc'),
+
+  functx3:max-string( <in-xml><x>a</x><y>c</y><z>b</z></in-xml>/* ),
+  functx3:min-string( <in-xml><x>a</x><y>c</y><z>b</z></in-xml>/* ),
+  functx3:min-non-empty-string(
+      <authors>
+         <author>
+            <fName/>
+            <lName>Smith</lName>
+         </author>
+         <author>
+            <fName>Kate</fName>
+            <lName>Jones</lName>
+         </author>
+         <author>
+            <fName>John</fName>
+            <lName>Doe</lName>
+         </author>
+      </authors>//fName ),
+
+  functx3:trim('   xyz   '),
+  functx3:left-trim('   xyz'),
+  functx3:right-trim('xyz   '),
+  functx3:pad-string-to-length('abc', '*', 6),
+  functx3:repeat-string('*', 6),
+
+  functx3:capitalize-first('hello'),
+  functx3:camel-case-to-words('thisIsACamelCaseTerm',' '),
+  functx3:words-to-camel-case('this Is A Term'),
+  functx3:format-as-title-en(('A Midsummer Night''s Dream',
+      'The Merchant of Venice',
+      'Hamlet')),
+
+  functx3:line-count('a value'),
+  functx3:max-line-length('a value'),
+  functx3:word-count('hello there world'),
+
+
+  functx3:ordinal-number-en(1),
+  functx3:pad-integer-to-length(12, 6),
+
+  functx3:is-a-number('123'),
+
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      functx3:avg-empty-is-zero(
+         $in-xml//price/@discount, $in-xml//price),
+
+
+  functx3:mmddyyyy-to-date('12-15-2004'),
+  functx3:dateTime(2006,6,12,20,6,12),
+  functx3:date(2006,6,12),
+  functx3:time(20,6,12),
+
+  functx3:day-of-week(xs:date('2004-11-04')),
+  functx3:day-of-week-name-en('2004-11-04'),
+  functx3:day-of-week-abbrev-en('2004-11-04'),
+
+  functx3:first-day-of-year(xs:date('2004-01-23')),
+  functx3:last-day-of-year(xs:date('2004-01-23')),
+  functx3:is-leap-year(xs:date('2004-01-23')),
+
+  functx3:month-name-en(xs:date('2004-01-23')),
+  functx3:month-abbrev-en('2004-01-23'),
+  functx3:first-day-of-month('2004-03-23'),
+  functx3:last-day-of-month('2004-03-23'),
+  functx3:days-in-month('2005-02-15'),
+  functx3:add-months('2005-12-31',-3),
+  functx3:next-day(xs:date('2004-01-23')),
+  functx3:previous-day(xs:date('2004-01-23')),
+  functx3:day-in-year('2004-02-05'),
+
+  functx3:total-seconds-from-duration(xs:dayTimeDuration('PT90S')),
+  functx3:total-minutes-from-duration(xs:dayTimeDuration('PT90M')),
+  functx3:total-hours-from-duration(xs:dayTimeDuration('PT26H')),
+  functx3:total-days-from-duration(xs:dayTimeDuration('PT24H')),
+  functx3:total-months-from-duration(xs:yearMonthDuration('P18M')),
+  functx3:total-years-from-duration(xs:yearMonthDuration('P18M')),
+  functx3:yearMonthDuration(1,6),
+  functx3:dayTimeDuration(1,6,0,0),
+
+
+  functx3:between-inclusive(55, 1, 1000),
+  functx3:between-exclusive(55, 1, 1000),
+
+  let $i := <nums><num>12</num><num>23</num><num>115</num><num>12.5</num></nums>
+  return functx3:min-determine-type($i//num),
+  let $i := <nums><num>12</num><num>23</num><num>115</num><num>12.5</num></nums>
+  return functx3:max-determine-type($i//num),
+
+  functx3:all-whitespace('   '),
+  functx3:has-empty-content(<a></a>),
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      fn:data(functx3:if-absent(
+           $in-xml//price[1]/@discount, 0)),
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      functx3:if-empty($in-xml//price[1], 0),
+
+  functx3:exclusive-or(true(),false()),
+  functx3:atomic-type(2)
+
+  (:  Sequences 
+      XML Elements and Attributes
+      XML Nodes
+      XML Namespaces and Names
+      XML Documents, URIs and IDs
+      Miscellaneous :)
+  ,
+
+  functx4:substring-before-if-contains('abcd','c'),
+  functx4:substring-before-last('abc-def-ghi', '-'),
+  functx4:substring-before-last-match('abc-def-ghi', '[ce]'),
+  functx4:substring-before-match('abc-def-ghi', '[dg]'),
+  functx4:substring-after-if-contains('abcd','b'),
+  functx4:substring-after-last('abc-def-ghi', '-'),
+  functx4:substring-after-last-match('abc-def-ghi', '[ad]'),
+  functx4:substring-after-match('abc-def-ghi', '[ce]'),
+
+  functx4:substring-before-match('abc-def-ghi', '[dg]'),
+  functx4:substring-before-last-match('abc-def-ghi', '[ce]'),
+  functx4:substring-after-last-match('abc-def-ghi', '[ad]'),
+  functx4:substring-after-match('abc-def-ghi', '[ce]'),
+  functx4:index-of-match-first('abcdabcdabcd','abc'),
+  functx4:get-matches('abc123def', '\d+'),
+  functx4:get-matches-and-non-matches('abc123def', '\d+'),
+  functx4:number-of-matches('abcabc','ab'),
+
+  functx4:index-of-string('abcdabcdabcd','abc'),
+  functx4:index-of-string-first('abcdabcdabcd','abc'),
+  functx4:index-of-string-last('abcdabcdabcd','abc'),
+  functx4:index-of-match-first('abcdabcdabcd','abc'),
+
+  functx4:contains-word('abc def ghi', 'def'),
+  functx4:contains-case-insensitive('abcdef', 'def'),
+  functx4:contains-any-of('abc',('bc','xy')),
+
+  functx4:insert-string('xyz','def',2),
+  functx4:chars('abc'),
+  functx4:lines('a value'),
+
+  functx4:replace-first('abcabcabc', 'ab', 'x'),
+  functx4:replace-beginning('abc-def', '-', 'xxx'),
+  functx4:replace-multi('abcdef123',('[a-c]', 'def', '\d+'),('x', 'y', '0')),
+  functx4:escape-for-regex('5.55'),
+  functx4:reverse-string('abc'),
+
+  functx4:max-string( <in-xml><x>a</x><y>c</y><z>b</z></in-xml>/* ),
+  functx4:min-string( <in-xml><x>a</x><y>c</y><z>b</z></in-xml>/* ),
+  functx4:min-non-empty-string(
+      <authors>
+         <author>
+            <fName/>
+            <lName>Smith</lName>
+         </author>
+         <author>
+            <fName>Kate</fName>
+            <lName>Jones</lName>
+         </author>
+         <author>
+            <fName>John</fName>
+            <lName>Doe</lName>
+         </author>
+      </authors>//fName ),
+
+  functx4:trim('   xyz   '),
+  functx4:left-trim('   xyz'),
+  functx4:right-trim('xyz   '),
+  functx4:pad-string-to-length('abc', '*', 6),
+  functx4:repeat-string('*', 6),
+
+  functx4:capitalize-first('hello'),
+  functx4:camel-case-to-words('thisIsACamelCaseTerm',' '),
+  functx4:words-to-camel-case('this Is A Term'),
+  functx4:format-as-title-en(('A Midsummer Night''s Dream',
+      'The Merchant of Venice',
+      'Hamlet')),
+
+  functx4:line-count('a value'),
+  functx4:max-line-length('a value'),
+  functx4:word-count('hello there world'),
+
+
+  functx4:ordinal-number-en(1),
+  functx4:pad-integer-to-length(12, 6),
+
+  functx4:is-a-number('123'),
+
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      functx4:avg-empty-is-zero(
+         $in-xml//price/@discount, $in-xml//price),
+
+
+  functx4:mmddyyyy-to-date('12-15-2004'),
+  functx4:dateTime(2006,6,12,20,6,12),
+  functx4:date(2006,6,12),
+  functx4:time(20,6,12),
+
+  functx4:day-of-week(xs:date('2004-11-04')),
+  functx4:day-of-week-name-en('2004-11-04'),
+  functx4:day-of-week-abbrev-en('2004-11-04'),
+
+  functx4:first-day-of-year(xs:date('2004-01-23')),
+  functx4:last-day-of-year(xs:date('2004-01-23')),
+  functx4:is-leap-year(xs:date('2004-01-23')),
+
+  functx4:month-name-en(xs:date('2004-01-23')),
+  functx4:month-abbrev-en('2004-01-23'),
+  functx4:first-day-of-month('2004-03-23'),
+  functx4:last-day-of-month('2004-03-23'),
+  functx4:days-in-month('2005-02-15'),
+  functx4:add-months('2005-12-31',-3),
+  functx4:next-day(xs:date('2004-01-23')),
+  functx4:previous-day(xs:date('2004-01-23')),
+  functx4:day-in-year('2004-02-05'),
+
+  functx4:total-seconds-from-duration(xs:dayTimeDuration('PT90S')),
+  functx4:total-minutes-from-duration(xs:dayTimeDuration('PT90M')),
+  functx4:total-hours-from-duration(xs:dayTimeDuration('PT26H')),
+  functx4:total-days-from-duration(xs:dayTimeDuration('PT24H')),
+  functx4:total-months-from-duration(xs:yearMonthDuration('P18M')),
+  functx4:total-years-from-duration(xs:yearMonthDuration('P18M')),
+  functx4:yearMonthDuration(1,6),
+  functx4:dayTimeDuration(1,6,0,0),
+
+
+  functx4:between-inclusive(55, 1, 1000),
+  functx4:between-exclusive(55, 1, 1000),
+
+  let $i := <nums><num>12</num><num>23</num><num>115</num><num>12.5</num></nums>
+  return functx4:min-determine-type($i//num),
+  let $i := <nums><num>12</num><num>23</num><num>115</num><num>12.5</num></nums>
+  return functx4:max-determine-type($i//num),
+
+  functx4:all-whitespace('   '),
+  functx4:has-empty-content(<a></a>),
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      fn:data(functx4:if-absent(
+           $in-xml//price[1]/@discount, 0)),
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      functx4:if-empty($in-xml//price[1], 0),
+
+  functx4:exclusive-or(true(),false()),
+  functx4:atomic-type(2)
+
+  (:  Sequences 
+      XML Elements and Attributes
+      XML Nodes
+      XML Namespaces and Names
+      XML Documents, URIs and IDs
+      Miscellaneous :)
+  ,
+
+  functx5:substring-before-if-contains('abcd','c'),
+  functx5:substring-before-last('abc-def-ghi', '-'),
+  functx5:substring-before-last-match('abc-def-ghi', '[ce]'),
+  functx5:substring-before-match('abc-def-ghi', '[dg]'),
+  functx5:substring-after-if-contains('abcd','b'),
+  functx5:substring-after-last('abc-def-ghi', '-'),
+  functx5:substring-after-last-match('abc-def-ghi', '[ad]'),
+  functx5:substring-after-match('abc-def-ghi', '[ce]'),
+
+  functx5:substring-before-match('abc-def-ghi', '[dg]'),
+  functx5:substring-before-last-match('abc-def-ghi', '[ce]'),
+  functx5:substring-after-last-match('abc-def-ghi', '[ad]'),
+  functx5:substring-after-match('abc-def-ghi', '[ce]'),
+  functx5:index-of-match-first('abcdabcdabcd','abc'),
+  functx5:get-matches('abc123def', '\d+'),
+  functx5:get-matches-and-non-matches('abc123def', '\d+'),
+  functx5:number-of-matches('abcabc','ab'),
+
+  functx5:index-of-string('abcdabcdabcd','abc'),
+  functx5:index-of-string-first('abcdabcdabcd','abc'),
+  functx5:index-of-string-last('abcdabcdabcd','abc'),
+  functx5:index-of-match-first('abcdabcdabcd','abc'),
+
+  functx5:contains-word('abc def ghi', 'def'),
+  functx5:contains-case-insensitive('abcdef', 'def'),
+  functx5:contains-any-of('abc',('bc','xy')),
+
+  functx5:insert-string('xyz','def',2),
+  functx5:chars('abc'),
+  functx5:lines('a value'),
+
+  functx5:replace-first('abcabcabc', 'ab', 'x'),
+  functx5:replace-beginning('abc-def', '-', 'xxx'),
+  functx5:replace-multi('abcdef123',('[a-c]', 'def', '\d+'),('x', 'y', '0')),
+  functx5:escape-for-regex('5.55'),
+  functx5:reverse-string('abc'),
+
+  functx5:max-string( <in-xml><x>a</x><y>c</y><z>b</z></in-xml>/* ),
+  functx5:min-string( <in-xml><x>a</x><y>c</y><z>b</z></in-xml>/* ),
+  functx5:min-non-empty-string(
+      <authors>
+         <author>
+            <fName/>
+            <lName>Smith</lName>
+         </author>
+         <author>
+            <fName>Kate</fName>
+            <lName>Jones</lName>
+         </author>
+         <author>
+            <fName>John</fName>
+            <lName>Doe</lName>
+         </author>
+      </authors>//fName ),
+
+  functx5:trim('   xyz   '),
+  functx5:left-trim('   xyz'),
+  functx5:right-trim('xyz   '),
+  functx5:pad-string-to-length('abc', '*', 6),
+  functx5:repeat-string('*', 6),
+
+  functx5:capitalize-first('hello'),
+  functx5:camel-case-to-words('thisIsACamelCaseTerm',' '),
+  functx5:words-to-camel-case('this Is A Term'),
+  functx5:format-as-title-en(('A Midsummer Night''s Dream',
+      'The Merchant of Venice',
+      'Hamlet')),
+
+  functx5:line-count('a value'),
+  functx5:max-line-length('a value'),
+  functx5:word-count('hello there world'),
+
+
+  functx5:ordinal-number-en(1),
+  functx5:pad-integer-to-length(12, 6),
+
+  functx5:is-a-number('123'),
+
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      functx5:avg-empty-is-zero(
+         $in-xml//price/@discount, $in-xml//price),
+
+
+  functx5:mmddyyyy-to-date('12-15-2004'),
+  functx5:dateTime(2006,6,12,20,6,12),
+  functx5:date(2006,6,12),
+  functx5:time(20,6,12),
+
+  functx5:day-of-week(xs:date('2004-11-04')),
+  functx5:day-of-week-name-en('2004-11-04'),
+  functx5:day-of-week-abbrev-en('2004-11-04'),
+
+  functx5:first-day-of-year(xs:date('2004-01-23')),
+  functx5:last-day-of-year(xs:date('2004-01-23')),
+  functx5:is-leap-year(xs:date('2004-01-23')),
+
+  functx5:month-name-en(xs:date('2004-01-23')),
+  functx5:month-abbrev-en('2004-01-23'),
+  functx5:first-day-of-month('2004-03-23'),
+  functx5:last-day-of-month('2004-03-23'),
+  functx5:days-in-month('2005-02-15'),
+  functx5:add-months('2005-12-31',-3),
+  functx5:next-day(xs:date('2004-01-23')),
+  functx5:previous-day(xs:date('2004-01-23')),
+  functx5:day-in-year('2004-02-05'),
+
+  functx5:total-seconds-from-duration(xs:dayTimeDuration('PT90S')),
+  functx5:total-minutes-from-duration(xs:dayTimeDuration('PT90M')),
+  functx5:total-hours-from-duration(xs:dayTimeDuration('PT26H')),
+  functx5:total-days-from-duration(xs:dayTimeDuration('PT24H')),
+  functx5:total-months-from-duration(xs:yearMonthDuration('P18M')),
+  functx5:total-years-from-duration(xs:yearMonthDuration('P18M')),
+  functx5:yearMonthDuration(1,6),
+  functx5:dayTimeDuration(1,6,0,0),
+
+
+  functx5:between-inclusive(55, 1, 1000),
+  functx5:between-exclusive(55, 1, 1000),
+
+  let $i := <nums><num>12</num><num>23</num><num>115</num><num>12.5</num></nums>
+  return functx5:min-determine-type($i//num),
+  let $i := <nums><num>12</num><num>23</num><num>115</num><num>12.5</num></nums>
+  return functx5:max-determine-type($i//num),
+
+  functx5:all-whitespace('   '),
+  functx5:has-empty-content(<a></a>),
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      fn:data(functx5:if-absent(
+           $in-xml//price[1]/@discount, 0)),
+  let $in-xml := 	
+      <prices>
+         <price value="29.99" discount="10.00"/>
+         <price value="39.99" discount="6.00"/>
+         <price value="69.99"/>
+         <price value="49.99" discount=""/>
+      </prices>
+  return
+      functx5:if-empty($in-xml//price[1], 0),
+
+  functx5:exclusive-or(true(),false()),
+  functx5:atomic-type(2)
+
+  (:  Sequences 
+      XML Elements and Attributes
+      XML Nodes
+      XML Namespaces and Names
+      XML Documents, URIs and IDs
+      Miscellaneous :)
+
+
+
+};
+
+

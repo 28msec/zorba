@@ -16,45 +16,34 @@
 #include "stdafx.h"
 
 #include "compiler/expression/function_item_expr.h"
-
 #include "compiler/expression/expr_visitor.h"
+
+#include "compiler/api/compilercb.h"
 
 #include "functions/function.h"
 #include "functions/udf.h"
 #include "functions/signature.h"
 
-#include "zorbaserialization/serialize_template_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
-
 namespace zorba {
-
-
-SERIALIZABLE_CLASS_VERSIONS(dynamic_function_invocation_expr)
 
 
 DEF_EXPR_ACCEPT (dynamic_function_invocation_expr)
 
 
 dynamic_function_invocation_expr::dynamic_function_invocation_expr(
+    CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
-    const expr_t& anExpr,
-    const std::vector<expr_t>& args)
+    expr* anExpr,
+    const std::vector<expr*>& args)
   :
-  expr(sctx, loc, dynamic_function_invocation_expr_kind),
+  expr(ccb, sctx, udf, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
   theArgs(args)
 {
   assert(anExpr != 0);
   compute_scripting_kind();
-}
-
-
-void dynamic_function_invocation_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theExpr;
-  ar & theArgs;
 }
 
 
@@ -68,40 +57,23 @@ void dynamic_function_invocation_expr::compute_scripting_kind()
 }
 
 
-expr_t dynamic_function_invocation_expr::clone(substitution_t& s) const
-{
-  checked_vector<expr_t> lNewArgs;
-  for (checked_vector<expr_t>::const_iterator lIter = theArgs.begin();
-       lIter != theArgs.end();
-       ++lIter)
-  {
-    lNewArgs.push_back((*lIter)->clone(s));
-  }
-
-  return new dynamic_function_invocation_expr(theSctx,
-                                              get_loc(),
-                                              theExpr->clone(s),
-                                              lNewArgs);
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
-SERIALIZABLE_CLASS_VERSIONS(function_item_expr)
-
 
 DEF_EXPR_ACCEPT (function_item_expr)
 
 
 function_item_expr::function_item_expr(
+    CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const store::Item* aQName,
     function* f,
     uint32_t aArity)
-	:
-  expr(sctx, loc, function_item_expr_kind),
+  :
+  expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theQName(const_cast<store::Item*>(aQName)),
   theFunction(f),
   theArity(aArity)
@@ -112,10 +84,12 @@ function_item_expr::function_item_expr(
 
 
 function_item_expr::function_item_expr(
+    CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc)
-	:
-  expr(sctx, loc, function_item_expr_kind),
+  :
+  expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theQName(0),
   theFunction(NULL),
   theArity(0)
@@ -124,25 +98,15 @@ function_item_expr::function_item_expr(
 }
 
 
-function_item_expr::function_item_expr(::zorba::serialization::Archiver& ar)
-  :
-  expr(ar)
-{
-}
-
-
 function_item_expr::~function_item_expr()
 {
 }
 
 
-void function_item_expr::serialize(::zorba::serialization::Archiver& ar)
+user_function* function_item_expr::get_function() const 
 {
-  serialize_baseclass(ar, (expr*)this);
-  ar & theQName;
-  ar & theFunction;
-  ar & theArity;
-  ar & theScopedVariables;
+  assert(theFunction->isUdf());
+  return static_cast<user_function*>(theFunction.getp());
 }
 
 
@@ -152,7 +116,7 @@ void function_item_expr::add_variable(expr* var)
 }
 
 
-const std::vector<expr_t>& function_item_expr::get_vars() const
+const std::vector<expr*>& function_item_expr::get_vars() const
 {
   return theScopedVariables;
 }
@@ -170,28 +134,6 @@ void function_item_expr::compute_scripting_kind()
 {
   // ???? TODO
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-expr_t function_item_expr::clone(substitution_t& s) const
-{
-  std::auto_ptr<function_item_expr> lNewExpr(
-      new function_item_expr(theSctx,
-                             get_loc(),
-                             theFunction->getName(),
-                             theFunction.getp(),
-                             theArity)
-  );
-
-  std::vector<expr_t> lNewVariables;
-  for (std::vector<expr_t>::const_iterator lIter = theScopedVariables.begin();
-       lIter != theScopedVariables.end();
-       ++lIter)
-  {
-    lNewExpr->add_variable((*lIter)->clone(s));
-  }
-
-  return lNewExpr.release();
 }
 
 

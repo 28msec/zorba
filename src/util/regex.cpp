@@ -93,6 +93,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
   icu_flags_t const icu_flags = convert_xquery_flags( xq_flags );
   bool const i_flag = (icu_flags & UREGEX_CASE_INSENSITIVE) != 0;
+  bool const m_flag = (icu_flags & UREGEX_MULTILINE) != 0;
   bool const q_flag = (icu_flags & UREGEX_LITERAL) != 0;
   bool const x_flag = (icu_flags & UREGEX_COMMENTS) != 0;
 
@@ -123,19 +124,11 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         continue;
       }
       got_backslash = false;
+
       switch ( *xq_c ) {
-        case 'c': // NameChar
-          *icu_re += "[" bs_c "]";
-          continue;
-        case 'C': // [^\c]
-          *icu_re += "[^" bs_c "]";
-          continue;
-        case 'i': // initial NameChar
-          *icu_re += "[" bs_i "]";
-          continue;
-        case 'I': // [^\i]
-          *icu_re += "[^" bs_i "]";
-          continue;
+
+        ////////// Back-References ////////////////////////////////////////////
+
         case '0':
         case '1':
         case '2':
@@ -160,7 +153,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           }
           in_backref = true;
           // no break;
-        case '$':
+
+        ////////// Single Character Escapes ///////////////////////////////////
+
+        case '$': // added in XQuery 3.0 F&O 5.6.1
         case '(':
         case ')':
         case '*':
@@ -168,26 +164,43 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '-':
         case '.':
         case '?':
-        case 'd': // [0-9]
-        case 'D': // [^\d]
-        case 'n': // newline
-        case 'p': // category escape
-        case 'P': // [^\p]
-        case 'r': // carriage return
-        case 's': // whitespace
-        case 'S': // [^\s]
-        case 't': // tab
-        case 'w': // word char
-        case 'W': // [^\w]
         case '[':
         case '\\':
         case ']':
         case '^':
+        case 'n': // newline
+        case 'r': // carriage return
+        case 't': // tab
         case '{':
         case '|':
         case '}':
+          // no break;
+
+        ////////// Multi-Character & Category Escapes /////////////////////////
+
+        case 'd': // [0-9]
+        case 'D': // [^\d]
+        case 'p': // category escape
+        case 'P': // [^\p]
+        case 's': // whitespace
+        case 'S': // [^\s]
+        case 'w': // word char
+        case 'W': // [^\w]
           *icu_re += '\\';
           break;
+        case 'c': // NameChar
+          *icu_re += "[" bs_c "]";
+          continue;
+        case 'C': // [^\c]
+          *icu_re += "[^" bs_c "]";
+          continue;
+        case 'i': // initial NameChar
+          *icu_re += "[" bs_i "]";
+          continue;
+        case 'I': // [^\i]
+          *icu_re += "[^" bs_i "]";
+          continue;
+
         default:
           throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), *xq_c );
       }
@@ -223,6 +236,28 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '\\':
           got_backslash = true;
           continue;
+        case '$':
+          if ( q_flag )
+            *icu_re += '\\';
+          else if ( !m_flag ) {
+            zstring::const_iterator const temp = xq_c + 1;
+            if ( temp == xq_re.end() ) {
+              //
+              // XQuery 3.0 F&O 5.6.1: By default, ... $ matches the end of the
+              // entire string.  [Newlines are treated as any other character.]
+              //
+              // However, in ICU, $ always matches before any trailing
+              // newlines.
+              //
+              // To make ICU work as XQuery needs it to, substitute \z for $
+              // when it is the last character in the regular expression (and
+              // multi-line mode is not set).
+              //
+              icu_re->append( "\\z" );
+              continue;
+            }
+          }
+          break;
         case '(':
           if ( q_flag )
             *icu_re += '\\';
@@ -270,6 +305,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             is_first_char = true;
             goto append;
           }
+          break;
         default:
           if ( x_flag && ascii::is_space( *xq_c ) ) {
             if ( !in_char_class )

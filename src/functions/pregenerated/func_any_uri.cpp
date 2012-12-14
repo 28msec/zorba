@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,9 @@ PlanIter_t fn_resolve_uri::codegen(
 
 void populate_context_any_uri(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_resolve_uri,
         (createQName("http://www.w3.org/2005/xpath-functions","","resolve-uri"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
@@ -55,9 +55,9 @@ void populate_context_any_uri(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_resolve_uri,
         (createQName("http://www.w3.org/2005/xpath-functions","","resolve-uri"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 

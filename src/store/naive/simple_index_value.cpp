@@ -18,11 +18,16 @@
 #include <algorithm>
 
 #include "simple_index_value.h"
+#include "store_defs.h"
+#include "simple_store.h"
+#include "simple_item_factory.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 
 #include "zorbatypes/collation_manager.h"
+
+#include "zorbautils/hashfun.h"
 
 namespace zorba 
 { 
@@ -217,7 +222,7 @@ ValueIndex::~ValueIndex()
 /******************************************************************************
 
 ********************************************************************************/
-const XQPCollator* ValueIndex::getCollator(ulong i) const 
+const XQPCollator* ValueIndex::getCollator(csize i) const 
 {
   return theCompFunction.getCollator(i);
 }
@@ -312,6 +317,15 @@ ValueHashIndex::ValueHashIndex()
 ********************************************************************************/
 ValueHashIndex::~ValueHashIndex()
 {
+  clear();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ValueHashIndex::clear()
+{
   IndexMap::iterator ite = theMap.begin();
   IndexMap::iterator end = theMap.end();
  
@@ -323,14 +337,7 @@ ValueHashIndex::~ValueHashIndex()
     delete (*ite).first;
     delete (*ite).second;
   }
-}
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void ValueHashIndex::clear()
-{
   theMap.clear();
 }
 
@@ -338,7 +345,7 @@ void ValueHashIndex::clear()
 /*******************************************************************************
 
 ********************************************************************************/
-ulong ValueHashIndex::size() const
+csize ValueHashIndex::size() const
 {
   return theMap.size();
 }
@@ -366,9 +373,9 @@ bool ValueHashIndex::insert(store::IndexKey*& key, store::Item_t& value)
     ERROR_PARAMS(key->toString(), theQname->getStringValue()));
   }
 
-  ValueIndexValue* valueSet = NULL;
+  IndexMap::iterator pos = theMap.find(key);
 
-  if (theMap.get(key, valueSet))
+  if (pos != theMap.end())
   {
     if (isUnique())
     {
@@ -376,21 +383,20 @@ bool ValueHashIndex::insert(store::IndexKey*& key, store::Item_t& value)
       ERROR_PARAMS(theQname->getStringValue()));
     }
 
-    valueSet->resize(valueSet->size() + 1);
-    (*valueSet)[valueSet->size()-1].transfer(value);
-    
+    (*pos).second->transfer_back(value);
+    key = const_cast<store::IndexKey*>((*pos).first);
+
     return true;
   }
 
-  valueSet = new ValueIndexValue(1);
+  ValueIndexValue* valueSet = new ValueIndexValue(1);
   (*valueSet)[0].transfer(value);
   
   //std::cout << "Index Entry Insert [" << key << "," 
   //          << valueSet << "]" << std::endl;
 
-  const store::IndexKey* key2 = key;
-  theMap.insert(key2, valueSet);
-  key = NULL; // ownership of the key obj passes to the index.
+  // Note: ownership of the key obj passes to the index.
+  theMap.insert(key, valueSet);
 
   return false;
 } 
@@ -407,7 +413,7 @@ bool ValueHashIndex::insert(store::IndexKey*& key, store::Item_t& value)
 ********************************************************************************/
 bool ValueHashIndex::remove(
     const store::IndexKey* key,
-    store::Item_t& value,
+    const store::Item_t& value,
     bool all)
 {
   if (key->size() != getNumColumns())
@@ -423,9 +429,8 @@ bool ValueHashIndex::remove(
     const store::IndexKey* keyp = (*pos).first;
     ValueIndexValue* valueSet = (*pos).second;
 
-    ValueIndexValue::iterator valIte = std::find(valueSet->begin(),
-                                                 valueSet->end(),
-                                                 value);
+    ValueIndexValue::iterator valIte = 
+    std::find(valueSet->begin(), valueSet->end(), value);
 
     if (all)
     {
@@ -466,8 +471,11 @@ bool ValueHashIndex::remove(
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
+void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond,
+                                       const xs_integer& aSkip)
 {
+  theSkip = aSkip;
+
   theCondition = reinterpret_cast<IndexPointCondition*>(cond.getp());
 
   store::IndexKey* key = &(theCondition->theKey);
@@ -489,8 +497,7 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
 ********************************************************************************/
 void ProbeValueHashIndexIterator::open()
 {
-  if (theResultSet)
-    theIte = theResultSet->begin();
+  reset();
 }
 
 
@@ -500,7 +507,17 @@ void ProbeValueHashIndexIterator::open()
 void ProbeValueHashIndexIterator::reset()
 {
   if (theResultSet)
-    theIte = theResultSet->begin(); 
+  {
+    theIte = theResultSet->begin();
+    if (theSkip >= theResultSet->size())
+    {
+      theIte = theEnd;
+    }
+    else
+    {
+      theIte += to_xs_long(theSkip);
+    }
+  }
 }
 
 
@@ -530,6 +547,24 @@ bool ProbeValueHashIndexIterator::next(store::Item_t& result)
 }
 
 
+/******************************************************************************
+ The implementation here doesn't really give anything in terms of
+ performance but other implementations might be able to provide more
+ efficient ones.
+********************************************************************************/
+void ProbeValueHashIndexIterator::count(store::Item_t& result)
+{
+  xs_integer lRes = xs_integer(0);
+
+  open();
+  store::Item_t lTmp;
+  while (next(lTmp)) ++lRes;
+  close();
+
+  GET_FACTORY().createInteger(result, lRes);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Value Tree Index                                                           //
@@ -540,6 +575,13 @@ bool ProbeValueHashIndexIterator::next(store::Item_t& result)
 /******************************************************************************
 
 ********************************************************************************/
+ValueTreeIndex::KeyIterator::KeyIterator(const IndexMap& aMap)
+  :
+  theMap(aMap)
+{
+}
+
+
 ValueTreeIndex::KeyIterator::~KeyIterator()
 {
 };
@@ -547,21 +589,29 @@ ValueTreeIndex::KeyIterator::~KeyIterator()
 
 void ValueTreeIndex::KeyIterator::open()
 {
-  assert(false);
+  theIterator = theMap.begin();
 }
 
 
-bool ValueTreeIndex::KeyIterator::next(store::IndexKey&)
+bool ValueTreeIndex::KeyIterator::next(store::IndexKey& aKey)
 {
-  assert(false);
+  if (theIterator != theMap.end())
+  {
+    const store::IndexKey* lKey = (*theIterator).first;
+    aKey = *lKey;
+
+    ++theIterator;
+    return true;
+  }
   return false;
 }
 
 
 void ValueTreeIndex::KeyIterator::close()
 {
-  assert(false);
-}
+  theIterator = theMap.end();
+};
+
 
 
 /******************************************************************************
@@ -593,14 +643,7 @@ ValueTreeIndex::ValueTreeIndex()
 ********************************************************************************/
 ValueTreeIndex::~ValueTreeIndex()
 {
-  IndexMap::iterator ite = theMap.begin();
-  IndexMap::iterator end = theMap.end();
- 
-  for (; ite != end; ++ite)
-  {
-    delete (*ite).first;
-    delete (*ite).second;
-  }
+  clear();
 }
 
 
@@ -609,6 +652,15 @@ ValueTreeIndex::~ValueTreeIndex()
 ********************************************************************************/
 void ValueTreeIndex::clear()
 {
+  IndexMap::iterator ite = theMap.begin();
+  IndexMap::iterator end = theMap.end();
+ 
+  for (; ite != end; ++ite)
+  {
+    delete (*ite).first;
+    delete (*ite).second;
+  }
+
   theMap.clear();
 }
 
@@ -616,10 +668,9 @@ void ValueTreeIndex::clear()
 /******************************************************************************
 
 ********************************************************************************/
-ulong ValueTreeIndex::size() const
+csize ValueTreeIndex::size() const
 {
-  assert(false);
-  return 0;
+  return theMap.size();
 }
 
 
@@ -628,8 +679,7 @@ ulong ValueTreeIndex::size() const
 ********************************************************************************/
 store::Index::KeyIterator_t ValueTreeIndex::keys() const
 {
-  assert(false);
-  return 0;
+  return new KeyIterator(theMap);
 }
 
 
@@ -649,7 +699,7 @@ bool ValueTreeIndex::insert(store::IndexKey*& key, store::Item_t& value)
 #if 0
   std::cout << "inserting entry : [(";
 
-  for (ulong i = 0; i < getNumColumns(); i++)
+  for (csize i = 0; i < getNumColumns(); i++)
   {
     if (key[i] != NULL)
       std::cout << key[i]->getStringValue() << ", ";
@@ -672,14 +722,16 @@ bool ValueTreeIndex::insert(store::IndexKey*& key, store::Item_t& value)
     }
 
     pos->second->transfer_back(value);
+    key = const_cast<store::IndexKey*>(pos->first);
+
     return true;
   }
 
   ValueIndexValue* valueSet = new ValueIndexValue(1);
   (*valueSet)[0].transfer(value);
 
+  // Note: ownership of the key obj passes to the index.
   theMap.insert(IndexMapPair(key, valueSet));
-  key = NULL; // ownership of the key obj passes to the index.
 
   return false;
 }
@@ -690,7 +742,7 @@ bool ValueTreeIndex::insert(store::IndexKey*& key, store::Item_t& value)
 ********************************************************************************/
 bool ValueTreeIndex::remove(
     const store::IndexKey* key,
-    store::Item_t& value,
+    const store::Item_t& value,
     bool all)
 {
   if (key->size() != getNumColumns())
@@ -708,9 +760,8 @@ bool ValueTreeIndex::remove(
     const store::IndexKey* keyp = pos->first;
     ValueIndexValue* valueSet = (*pos).second;
 
-    ValueIndexValue::iterator valIte = std::find(valueSet->begin(),
-                                                   valueSet->end(),
-                                                   value);
+    ValueIndexValue::iterator valIte = 
+    std::find(valueSet->begin(), valueSet->end(), value);
 
     if (valIte != valueSet->end())
     {
@@ -741,8 +792,11 @@ bool ValueTreeIndex::remove(
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond)
+void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond,
+                                       const xs_integer& aSkip)
 {
+  theSkip = aSkip;
+
   if (cond->getKind() != store::IndexCondition::BOX_VALUE &&
       cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
@@ -793,7 +847,7 @@ void ProbeValueTreeIndexIterator::initExact()
 ********************************************************************************/
 void ProbeValueTreeIndexIterator::initBox()
 {
-  ulong numRanges = theBoxCond->numRanges();
+  csize numRanges = theBoxCond->numRanges();
 
   assert(numRanges > 0 && numRanges <= theIndex->getNumColumns());
 
@@ -846,7 +900,7 @@ void ProbeValueTreeIndexIterator::initBox()
   //
   // Adjust the lower and/or upper bound index keys before probing the index.
   //
-  for (ulong i = 0; i < numRanges; i++)
+  for (csize i = 0; i < numRanges; i++)
   {
     const XQPCollator* collator = theIndex->getCollator(i);
 
@@ -921,14 +975,7 @@ void ProbeValueTreeIndexIterator::initBox()
 ********************************************************************************/
 void ProbeValueTreeIndexIterator::open()
 {
-  if (theMapBegin != theIndex->theMap.end())
-  {
-    theMapIte = theMapBegin;
-
-    theResultSet = theMapBegin->second;
-    theIte = theResultSet->begin();
-    theEnd = theResultSet->end();
-  }
+  reset();
 }
 
 
@@ -944,6 +991,17 @@ void ProbeValueTreeIndexIterator::reset()
     theResultSet = theMapIte->second;
     theIte = theResultSet->begin();
     theEnd = theResultSet->end();
+
+    // primitive skip
+    store::Item_t lDummy;
+    for (long l = 0; l < to_xs_long(theSkip); ++l)
+    {
+      if(!next(lDummy))
+      {
+        // no more values
+        break;
+      }
+    }
   }
 }
 
@@ -991,6 +1049,24 @@ bool ProbeValueTreeIndexIterator::next(store::Item_t& result)
   }
 
   return false;
+}
+
+
+/******************************************************************************
+ The implementation here doesn't really give anything in terms of
+ performance but other implementations might be able to provide more
+ efficient ones.
+********************************************************************************/
+void ProbeValueTreeIndexIterator::count(store::Item_t& result)
+{
+  xs_integer lRes = xs_integer(0);
+
+  open();
+  store::Item_t lTmp;
+  while (next(lTmp)) ++lRes;
+  close();
+
+  GET_FACTORY().createInteger(result, lRes);
 }
 
 

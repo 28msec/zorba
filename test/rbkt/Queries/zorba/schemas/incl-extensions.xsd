@@ -1,0 +1,20 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://www.28msec.com/project1/schemas/simple" 
+            xmlns:ext="http://www.28msec.com/project1/schemas/simple" 
+            xmlns:simple="http://www.28msec.com/project1/schemas/simple"
+  elementFormDefault="qualified">
+
+  <xs:include schemaLocation="incl-base.xsd"/>
+
+  <xs:element name="superproduct" type="ext:SuperProductType"/>
+
+  <xs:complexType name="SuperProductType">
+    <xs:complexContent>
+      <xs:extension base="simple:ProductType">
+        <xs:attribute name="something" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+</xs:schema>
+

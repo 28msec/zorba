@@ -15,12 +15,16 @@
  */
 #include "stdafx.h"
 
+#include "xquery_stack_trace.h"
+
 #include <typeinfo>
 
+#include <store/api/item_factory.h>
+#include <store/api/store.h>
+#include <system/globalenv.h>
 #include <zorba/xquery_exception.h>
 
 #include "diagnostic.h"
-#include "xquery_stack_trace.h"
 
 namespace zorba {
 
@@ -48,11 +52,27 @@ void XQueryStackTrace::push( Entry const &entry ) {
   trace_.push_back( entry );
 }
 
-void recordStackTrace( QueryLoc const &loc, QueryLoc const &call_loc,
-                       store::Item_t const &fn_name,
-                       XQueryStackTrace::fn_arity_type fn_arity,
-                       ZorbaException &ze ) {
-  if ( XQueryException *const xe = dynamic_cast<XQueryException*>( &ze ) ) {
+
+void recordStackTrace(
+    QueryLoc const &loc,
+    QueryLoc const &call_loc,
+    store::Item_t const &fn_name,
+    XQueryStackTrace::fn_arity_type fn_arity,
+    ZorbaException &ze ) 
+{
+  store::Item_t lPrintedFunctionName;
+  if (fn_name == NULL)
+  {
+    GENV_STORE.getItemFactory()->createQName(
+        lPrintedFunctionName,
+        "",
+        "inline",
+        "anonymous");
+  } else {
+    lPrintedFunctionName = fn_name;
+  }
+  if ( XQueryException *const xe = dynamic_cast<XQueryException*>( &ze ) )
+  {
     XQueryStackTrace &trace = xe->query_trace();
 
     if ( trace.empty() && xe->has_source() ) {
@@ -72,7 +92,7 @@ void recordStackTrace( QueryLoc const &loc, QueryLoc const &call_loc,
 
     trace.push(
       XQueryStackTrace::Entry(
-        diagnostic::to_QName<XQueryStackTrace::fn_name_type>( fn_name ),
+        diagnostic::to_QName<XQueryStackTrace::fn_name_type>( lPrintedFunctionName ),
         fn_arity,
         call_loc.getFilename().c_str(),
         call_loc.getLineBegin(),

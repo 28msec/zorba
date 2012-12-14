@@ -45,7 +45,7 @@ public:
   {
   }
 
-  short getScriptingKind() const { return SIMPLE_EXPR; }
+  unsigned short getScriptingKind() const { return SIMPLE_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -72,7 +72,7 @@ public:
   {
   }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -92,7 +92,7 @@ public:
   {
   }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -112,7 +112,7 @@ public:
   {
   }
 
-  short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -121,7 +121,7 @@ public:
 
 
 /*******************************************************************************
-  op:value-index-entry-builder($node as node(), .....)
+  op:value-index-entry-builder($node as node(), xs:anyAtomic?, ..., xs:anyAtomic?)
 
   This is a variadic function. The 1st input is a domain node, and the rest of
   the inputs are the key items that comprise the key tuple for that node
@@ -144,7 +144,7 @@ public:
 
 
 /*******************************************************************************
-  op:general-index-entry-builder($node as node(), .....)
+  op:general-index-entry-builder($node as node(), xs:anyAtomic*)
 ********************************************************************************/
 class op_general_index_entry_builder : public function
 {
@@ -157,7 +157,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  bool mustCopyInputNodes(expr* fo, csize input) const {  return false;  }
+  bool mustCopyInputNodes(expr* fo, csize input) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -179,6 +179,37 @@ public:
   fn_zorba_ddl_probe_index_point_value(const signature& sig)
     :
     function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
+  {
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+/*******************************************************************************
+  fn-zorba-ddl:probe-index-point-value-skip(
+      $indexName as xs:QName, 
+      $skip as xs:integer,
+      $key1 as xs:anyAtomicItem?,
+      ....
+      $keyN as xs:anyAtomicItem?) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_ASC
+  function.
+********************************************************************************/
+class fn_zorba_ddl_probe_index_point_value_skip : public function
+{
+public:
+  fn_zorba_ddl_probe_index_point_value_skip(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N)
   {
   }
 
@@ -229,6 +260,35 @@ public:
   fn_zorba_ddl_probe_index_range_value(const signature& sig)
     :
     function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
+  {
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+/*******************************************************************************
+  fn-zorba-ddl:probe-index-range-value-skip(
+      $indexName as xs:QName,
+      $skip as xs:integer,
+      ....) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_ASC
+  function.
+********************************************************************************/
+class fn_zorba_ddl_probe_index_range_value_skip : public function
+{
+public:
+  fn_zorba_ddl_probe_index_range_value_skip(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
   {
   }
 

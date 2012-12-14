@@ -1,0 +1,1 @@
+xs:double("NaN")

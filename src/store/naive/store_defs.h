@@ -55,6 +55,28 @@ namespace simplestore {
 
 #define COMMENT_NODE(item) (reinterpret_cast<CommentNode*>((item).getp()))
 
+
+#ifndef NDEBUG
+
+#define STORE_TRACE(level, msg)               \
+{                                             \
+  if (level <= GET_STORE().getTraceLevel())   \
+    std::cout << msg << std::endl;            \
+}
+
+#define STORE_TRACE1(msg) STORE_TRACE(1, msg);
+#define STORE_TRACE2(msg) STORE_TRACE(2, msg);
+#define STORE_TRACE3(msg) STORE_TRACE(3, msg);
+
+#else
+
+#define STORE_TRACE(msg)
+#define STORE_TRACE1(msg)
+#define STORE_TRACE2(msg)
+#define STORE_TRACE3(msg)
+
+#endif
+
 }
 }
 #endif

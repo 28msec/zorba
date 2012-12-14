@@ -19,10 +19,13 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/flwor_expr.h"
-#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/path_expr.h"
+#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/expr_manager.h"
+
+#include "compiler/api/compilercb.h"
 
 #include "functions/function.h"
 #include "functions/library.h"
@@ -36,9 +39,6 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
 
-#include "zorbaserialization/serialize_basic_types.h"
-#include "zorbaserialization/serialize_zorba_types.h"
-#include "zorbaserialization/serialize_template_types.h"
 
 namespace zorba
 {
@@ -75,20 +75,20 @@ typedef std::set<const var_expr *> var_ptr_set;
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t expr::iter_end_expr = NULL;
+expr* expr::iter_end_expr = NULL;
 
-expr_t* expr::iter_done = &expr::iter_end_expr;
+expr** expr::iter_done = &expr::iter_end_expr;
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool expr::is_sequential(short theScriptingKind)
+bool expr::is_sequential(unsigned short theScriptingKind)
 {
   return (theScriptingKind & (VAR_SETTING_EXPR |
                               APPLYING_EXPR |
                               EXITING_EXPR |
-                              BREAKING_EXPR | 
+                              BREAKING_EXPR |
                               SEQUENTIAL_FUNC_EXPR)) != 0;
 }
 
@@ -97,7 +97,7 @@ void expr::checkNonUpdating(const expr* e)
 {
   if (e != 0 && e->is_updating())
   {
-    throw XQUERY_EXCEPTION(err::XUST0001, 
+    throw XQUERY_EXCEPTION(err::XUST0001,
                            ERROR_PARAMS(ZED(XUST0001_Generic)),
                            ERROR_LOC(e->get_loc()));
   }
@@ -108,7 +108,7 @@ void expr::checkSimpleExpr(const expr* e)
 {
   if (e != 0 && e->is_updating())
   {
-    throw XQUERY_EXCEPTION(err::XUST0001, 
+    throw XQUERY_EXCEPTION(err::XUST0001,
                            ERROR_PARAMS(ZED(XUST0001_Generic)),
                            ERROR_LOC(e->get_loc()));
   }
@@ -123,18 +123,45 @@ void expr::checkSimpleExpr(const expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr(static_context* sctx, const QueryLoc& loc, expr_kind_t k)
+expr::expr() 
   :
+  theCCB(NULL),
+  theSctx(NULL),
+  theUDF(NULL),
+  theAnnotationFlags(0),
+  theBoolFlags(0),
+  theVisitId(0)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr::expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc,
+    expr_kind_t k)
+  :
+  theCCB(ccb),
   theSctx(sctx),
+  theUDF(udf),
   theLoc(loc),
   theKind(k),
-  theFlags1(0)
+  theAnnotationFlags(0),
+  theBoolFlags(0),
+  theVisitId(0)
 {
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
   // This is the default. The constructors for certain exprs set different values.
   setNonDiscardable(ANNOTATION_FALSE);
   setUnfoldable(ANNOTATION_FALSE);
+  setContainsRecursiveCall(ANNOTATION_FALSE);
+  setConstructsNodes(ANNOTATION_FALSE);
+  setDereferencesNodes(ANNOTATION_FALSE);
 }
 
 
@@ -149,23 +176,9 @@ expr::~expr()
 /*******************************************************************************
 
 ********************************************************************************/
-void expr::serialize(::zorba::serialization::Archiver& ar)
+TypeManager* expr::get_type_manager() const
 {
-  ar & theSctx;
-  ar & theLoc;
-  ar & theType;
-  SERIALIZE_ENUM(expr_kind_t, theKind);
-  ar & theScriptingKind;
-  ar & theFlags1;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-TypeManager* expr::get_type_manager() const 
-{
-  return theSctx->get_typemanager(); 
+  return theSctx->get_typemanager();
 }
 
 
@@ -252,29 +265,13 @@ void expr::checkScriptingKind() const
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t expr::clone() const
-{
-  substitution_t subst;
-  return clone(subst);
-}
-
-
-expr_t expr::clone(substitution_t& subst) const
-{
-  throw XQUERY_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR, ERROR_LOC(get_loc()));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void expr::accept_children(expr_visitor& v)
 {
   ExprIterator iter(this);
   while (!iter.done())
   {
-    if (*iter != NULL)
-      (*iter)->accept(v);
+    if (**iter != NULL)
+      (**iter)->accept(v);
 
     iter.next();
   }
@@ -321,19 +318,27 @@ void expr::clear_annotations()
     setIgnoresDuplicateNodes(ANNOTATION_UNKNOWN);
 
   if (getNonDiscardable() != ANNOTATION_TRUE_FIXED)
-    setNonDiscardable(ANNOTATION_UNKNOWN);
+    setNonDiscardable(ANNOTATION_FALSE);
 
   if (getUnfoldable() != ANNOTATION_TRUE_FIXED)
-    setUnfoldable(ANNOTATION_UNKNOWN);
+    setUnfoldable(ANNOTATION_FALSE);
 
-  //theFlags1 = 0;
+  setContainsRecursiveCall(ANNOTATION_FALSE);
+
+  if (getConstructsNodes() != ANNOTATION_TRUE_FIXED)
+    setConstructsNodes(ANNOTATION_FALSE);
+
+  if (getDereferencesNodes() != ANNOTATION_TRUE_FIXED)
+    setDereferencesNodes(ANNOTATION_FALSE);
+
+  //theAnnotationFlags = 0;
   //setNonDiscardable(ANNOTATION_FALSE);
   //setUnfoldable(ANNOTATION_FALSE);
 
   ExprIterator iter(this);
   while (!iter.done())
   {
-    (*iter)->clear_annotations();
+    (**iter)->clear_annotations();
     iter.next();
   }
 }
@@ -372,14 +377,14 @@ bool expr::is_nondeterministic() const
 ********************************************************************************/
 BoolAnnotationValue expr::getProducesSortedNodes() const
 {
-  return (BoolAnnotationValue)(theFlags1 & PRODUCES_SORTED_NODES_MASK);
+  return (BoolAnnotationValue)(theAnnotationFlags & PRODUCES_SORTED_NODES_MASK);
 }
 
 
 void expr::setProducesSortedNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~PRODUCES_SORTED_NODES_MASK;
-  theFlags1 |= v;
+  theAnnotationFlags &= ~PRODUCES_SORTED_NODES_MASK;
+  theAnnotationFlags |= v;
 }
 
 
@@ -396,14 +401,14 @@ bool expr::producesSortedNodes() const
 BoolAnnotationValue expr::getProducesDistinctNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & PRODUCES_DISTINCT_NODES_MASK) >> PRODUCES_DISTINCT_NODES);
+         ((theAnnotationFlags & PRODUCES_DISTINCT_NODES_MASK) >> PRODUCES_DISTINCT_NODES);
 }
 
 
 void expr::setProducesDistinctNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~PRODUCES_DISTINCT_NODES_MASK;
-  theFlags1 |= (v << PRODUCES_DISTINCT_NODES);
+  theAnnotationFlags &= ~PRODUCES_DISTINCT_NODES_MASK;
+  theAnnotationFlags |= (v << PRODUCES_DISTINCT_NODES);
 }
 
 
@@ -420,14 +425,14 @@ bool expr::producesDistinctNodes() const
 BoolAnnotationValue expr::getIgnoresSortedNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & IGNORES_SORTED_NODES_MASK) >> IGNORES_SORTED_NODES);
+         ((theAnnotationFlags & IGNORES_SORTED_NODES_MASK) >> IGNORES_SORTED_NODES);
 }
 
 
 void expr::setIgnoresSortedNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~IGNORES_SORTED_NODES_MASK;
-  theFlags1 |= (v << IGNORES_SORTED_NODES);
+  theAnnotationFlags &= ~IGNORES_SORTED_NODES_MASK;
+  theAnnotationFlags |= (v << IGNORES_SORTED_NODES);
 }
 
 
@@ -444,14 +449,14 @@ bool expr::ignoresSortedNodes() const
 BoolAnnotationValue expr::getIgnoresDuplicateNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & IGNORES_DUPLICATE_NODES_MASK) >> IGNORES_DUPLICATE_NODES);
+         ((theAnnotationFlags & IGNORES_DUPLICATE_NODES_MASK) >> IGNORES_DUPLICATE_NODES);
 }
 
 
 void expr::setIgnoresDuplicateNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~IGNORES_DUPLICATE_NODES_MASK;
-  theFlags1 |= (v << IGNORES_DUPLICATE_NODES);
+  theAnnotationFlags &= ~IGNORES_DUPLICATE_NODES_MASK;
+  theAnnotationFlags |= (v << IGNORES_DUPLICATE_NODES);
 }
 
 
@@ -467,14 +472,14 @@ bool expr::ignoresDuplicateNodes() const
 BoolAnnotationValue expr::getNonDiscardable() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & NON_DISCARDABLE_MASK) >> NON_DISCARDABLE);
+         ((theAnnotationFlags & NON_DISCARDABLE_MASK) >> NON_DISCARDABLE);
 }
 
 
 void expr::setNonDiscardable(BoolAnnotationValue v)
 {
-  theFlags1 &= ~NON_DISCARDABLE_MASK;
-  theFlags1 |= (v << NON_DISCARDABLE);
+  theAnnotationFlags &= ~NON_DISCARDABLE_MASK;
+  theAnnotationFlags |= (v << NON_DISCARDABLE);
 }
 
 
@@ -491,14 +496,14 @@ bool expr::isNonDiscardable() const
 BoolAnnotationValue expr::getUnfoldable() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & UNFOLDABLE_MASK) >> UNFOLDABLE);
+         ((theAnnotationFlags & UNFOLDABLE_MASK) >> UNFOLDABLE);
 }
 
 
 void expr::setUnfoldable(BoolAnnotationValue v)
 {
-  theFlags1 &= ~UNFOLDABLE_MASK;
-  theFlags1 |= (v << UNFOLDABLE);
+  theAnnotationFlags &= ~UNFOLDABLE_MASK;
+  theAnnotationFlags |= (v << UNFOLDABLE);
 }
 
 
@@ -515,14 +520,14 @@ bool expr::isUnfoldable() const
 BoolAnnotationValue expr::getContainsRecursiveCall() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & CONTAINS_RECURSIVE_CALL_MASK) >> CONTAINS_RECURSIVE_CALL);
+         ((theAnnotationFlags & CONTAINS_RECURSIVE_CALL_MASK) >> CONTAINS_RECURSIVE_CALL);
 }
 
 
 void expr::setContainsRecursiveCall(BoolAnnotationValue v)
 {
-  theFlags1 &= ~CONTAINS_RECURSIVE_CALL_MASK;
-  theFlags1 |= (v << CONTAINS_RECURSIVE_CALL);
+  theAnnotationFlags &= ~CONTAINS_RECURSIVE_CALL_MASK;
+  theAnnotationFlags |= (v << CONTAINS_RECURSIVE_CALL);
 }
 
 
@@ -536,46 +541,96 @@ bool expr::containsRecursiveCall() const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue expr::getWillBeSerialized() const
+BoolAnnotationValue expr::getContainsPragma() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & WILL_BE_SERIALIZED_MASK) >> WILL_BE_SERIALIZED);
+         ((theAnnotationFlags & CONTAINS_PRAGMA_MASK) >> CONTAINS_PRAGMA);
 }
 
 
-void expr::setWillBeSerialized(BoolAnnotationValue v)
+void expr::setContainsPragma(BoolAnnotationValue v)
 {
-  theFlags1 &= ~WILL_BE_SERIALIZED_MASK;
-  theFlags1 |= (v << WILL_BE_SERIALIZED);
+  theAnnotationFlags &= ~CONTAINS_PRAGMA_MASK;
+  theAnnotationFlags |= (v << CONTAINS_PRAGMA);
 }
 
 
-bool expr::willBeSerialized() const
+bool expr::containsPragma() const
 {
-  BoolAnnotationValue v = getWillBeSerialized();
+  BoolAnnotationValue v = getContainsPragma();
   return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
 }
 
 
 /*******************************************************************************
-  This annotation tells whether the expr must produce nodes that belong to 
-  "standalone" trees or not. A tree is standalone if it does not contain 
-  references to other trees. Such references are created when the optimizer 
+  This annotation tells whether any nodes may be constructed during the
+  evaluation of the expr.
+********************************************************************************/
+BoolAnnotationValue expr::getConstructsNodes() const
+{
+  return (BoolAnnotationValue)
+         ((theAnnotationFlags & CONSTRUCTS_NODES_MASK) >> CONSTRUCTS_NODES);
+}
+
+
+void expr::setConstructsNodes(BoolAnnotationValue v)
+{
+  theAnnotationFlags &= ~CONSTRUCTS_NODES_MASK;
+  theAnnotationFlags |= (v << CONSTRUCTS_NODES);
+}
+
+
+bool expr::constructsNodes() const
+{
+  BoolAnnotationValue v = getConstructsNodes();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+  This annotation tells whether any nodes may be dereferenced during the
+  evaluation of the expr.
+********************************************************************************/
+BoolAnnotationValue expr::getDereferencesNodes() const
+{
+  return (BoolAnnotationValue)
+         ((theAnnotationFlags & DEREFERENCES_NODES_MASK) >> DEREFERENCES_NODES);
+}
+
+
+void expr::setDereferencesNodes(BoolAnnotationValue v)
+{
+  theAnnotationFlags &= ~DEREFERENCES_NODES_MASK;
+  theAnnotationFlags |= (v << DEREFERENCES_NODES);
+}
+
+
+bool expr::dereferencesNodes() const
+{
+  BoolAnnotationValue v = getDereferencesNodes();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+  This annotation tells whether the expr must produce nodes that belong to
+  "standalone" trees or not. A tree is standalone if it does not contain
+  references to other trees. Such references are created when the optimizer
   decides that it is ok to avoid copying the referenced subtree (as would be
-  required by required by a strict implementation of the spec, eg., during 
+  required by required by a strict implementation of the spec, eg., during
   node construction).
 ********************************************************************************/
 BoolAnnotationValue expr::getMustCopyNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & MUST_COPY_NODES_MASK) >> MUST_COPY_NODES);
+         ((theAnnotationFlags & MUST_COPY_NODES_MASK) >> MUST_COPY_NODES);
 }
 
 
 void expr::setMustCopyNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~MUST_COPY_NODES_MASK;
-  theFlags1 |= (v << MUST_COPY_NODES);
+  theAnnotationFlags &= ~MUST_COPY_NODES_MASK;
+  theAnnotationFlags |= (v << MUST_COPY_NODES);
 }
 
 
@@ -607,18 +662,18 @@ bool expr::is_constant() const
 /*******************************************************************************
   Replace all references to "oldExpr" inside "e" with references to "newExpr".
 ********************************************************************************/
-void expr::replace_expr(const expr* oldExpr, const expr* newExpr)
+void expr::replace_expr(expr* oldExpr, expr* newExpr)
 {
   ExprIterator iter(this);
   while (!iter.done())
   {
-    if ((*iter).getp() == oldExpr)
+    if ((**iter) == oldExpr)
     {
-      (*iter) = newExpr;
+      (**iter) = newExpr;
     }
     else
     {
-      (*iter)->replace_expr(oldExpr, newExpr);
+      (**iter)->replace_expr(oldExpr, newExpr);
     }
 
     iter.next();
@@ -646,40 +701,6 @@ bool expr::contains_expr(const expr* e) const
     iter.next();
   }
 
-  return false;
-}
-
-
-/*******************************************************************************
-  Check if the expr tree rooted at e contains any node-constructor expr. If so,
-  e cannot be hoisted.
-********************************************************************************/
-bool expr::contains_node_construction() const
-{
-  expr_kind_t kind = get_expr_kind();
-
-  if (kind == elem_expr_kind ||
-      kind == attr_expr_kind ||
-      kind == text_expr_kind ||
-      kind == doc_expr_kind  ||
-      kind == pi_expr_kind)
-  {
-    return true;
-  }
-
-  ExprConstIterator iter(this);
-  while(!iter.done())
-  {
-    const expr* ce = iter.get_expr();
-    if (ce)
-    {
-      if (ce->contains_node_construction())
-      {
-        return true;
-      }
-    }
-    iter.next();
-  }
   return false;
 }
 
@@ -758,8 +779,7 @@ const var_expr* expr::get_var() const
 
   while (kind == wrapper_expr_kind)
   {
-    const wrapper_expr* wrapperExpr = static_cast<const wrapper_expr*>(currExpr);
-    currExpr = wrapperExpr->get_expr();
+    currExpr = static_cast<const wrapper_expr*>(currExpr)->get_input();
     kind = currExpr->get_expr_kind();
   }
 
@@ -808,13 +828,13 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   if (found)
     return true;
 
-  if (this == e) 
+  if (this == e)
   {
     found = true;
     return true;
   }
 
-  switch(get_expr_kind()) 
+  switch(get_expr_kind())
   {
 #ifdef ZORBA_WITH_DEBUGGER
   case debugger_expr_kind:
@@ -826,14 +846,14 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
   case order_expr_kind:
   {
-    const order_expr* orderExpr = static_cast<const order_expr *>(this);
-    return orderExpr->get_expr()->is_map_internal(e, found);
+    return static_cast<const order_expr*>(this)->get_input()->
+           is_map_internal(e, found);
   }
 
   case wrapper_expr_kind:
   {
-    const wrapper_expr* wrapperExpr = static_cast<const wrapper_expr *>(this);
-    return wrapperExpr->get_expr()->is_map_internal(e, found);
+    return static_cast<const wrapper_expr*>(this)->get_input()->
+           is_map_internal(e, found);
   }
 
   case const_expr_kind:
@@ -846,13 +866,13 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     const function* func = foExpr->get_func();
     csize numArgs = foExpr->num_args();
 
-    for (csize i = 0; i < numArgs; ++i) 
+    for (csize i = 0; i < numArgs; ++i)
     {
       const expr* argExpr = foExpr->get_arg(i);
 
-      if (func->isMap(i)) 
+      if (func->isMap(i))
       {
-        if (argExpr->is_map_internal(e, found) && found) 
+        if (argExpr->is_map_internal(e, found) && found)
         {
           return true;
         }
@@ -888,7 +908,9 @@ bool expr::is_map_internal(const expr* e, bool& found) const
         if (found)
           break;
 
-        if (clause->get_expr()->is_map_internal(e, found) && found)
+        const forlet_clause* fc = static_cast<const forlet_clause*>(clause);
+
+        if (fc->get_expr()->is_map_internal(e, found) && found)
         {
           break;
         }
@@ -900,12 +922,25 @@ bool expr::is_map_internal(const expr* e, bool& found) const
         break;
       }
       case flwor_clause::let_clause:
+      {
+        if (found)
+          break;
+
+        const forlet_clause* lc = static_cast<const forlet_clause*>(clause);
+
+        if (lc->get_expr()->contains_expr(e))
+          return false;
+
+        break;
+      }
       case flwor_clause::where_clause:
       {
         if (found)
           break;
 
-        if (clause->get_expr()->contains_expr(e))
+        const where_clause* wc = static_cast<const where_clause*>(clause);
+
+        if (wc->get_expr()->contains_expr(e))
           return false;
 
         break;
@@ -915,17 +950,18 @@ bool expr::is_map_internal(const expr* e, bool& found) const
         if (found)
           break;
 
-        if (clause->get_expr()->contains_expr(e))
+        const window_clause* wc = static_cast<const window_clause*>(clause);
+
+        if (wc->get_expr()->contains_expr(e))
           return false;
 
-        const window_clause* wc = static_cast<const window_clause*>(clause);
         flwor_wincond* startCond = wc->get_win_start();
         flwor_wincond* stopCond = wc->get_win_stop();
 
-        if (startCond && startCond->get_cond()->contains_expr(e))
+        if (startCond && startCond->get_expr()->contains_expr(e))
           return false;
 
-        if (stopCond && stopCond->get_cond()->contains_expr(e))
+        if (stopCond && stopCond->get_expr()->contains_expr(e))
           return false;
 
         break;
@@ -1047,6 +1083,11 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case attr_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind:
+  case json_direct_object_expr_kind:
+  case json_array_expr_kind:
+#endif
   {
     return !contains_expr(e);
   }
@@ -1130,10 +1171,10 @@ const store::Item* expr::getQName(static_context* sctx) const
 
   TypeManager* tm = sctx->get_typemanager();
 
-  const const_expr* qnameExpr = dynamic_cast<const const_expr*>(this);
-
-  if (qnameExpr != NULL)
+  if (get_expr_kind() == const_expr_kind)
   {
+    const const_expr* qnameExpr = static_cast<const const_expr*>(this);
+
     xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
 
     if (TypeOps::is_subtype(tm, *valueType, *rtm.QNAME_TYPE_ONE, get_loc()))
@@ -1154,10 +1195,10 @@ const store::Item* expr::getQName(static_context* sctx) const
         dataExpr->get_func()->getKind() == FunctionConsts::FN_DATA_1)
     {
       argExpr = dataExpr->get_arg(0);
-      const const_expr* qnameExpr = dynamic_cast<const const_expr*>(argExpr);
 
-      if (qnameExpr != NULL)
+      if (argExpr->get_expr_kind() == const_expr_kind)
       {
+        const const_expr* qnameExpr = static_cast<const const_expr*>(argExpr);
         xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
 
         if (TypeOps::is_subtype(tm, *valueType, *rtm.QNAME_TYPE_ONE, get_loc()))
@@ -1178,13 +1219,18 @@ const store::Item* expr::getQName(static_context* sctx) const
 ********************************************************************************/
 xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
 {
-  expr_t emptyExpr = new fo_expr(input->get_sctx(),
-                                 QueryLoc::null,
-                                 GET_BUILTIN_FUNCTION(OP_CONCATENATE_N));
+  assert(input->get_udf() == theUDF);
+
+  expr* emptyExpr = theCCB->theEM->
+  create_fo_expr(input->get_sctx(),
+                 theUDF,
+                 QueryLoc::null,
+                 BUILTIN_FUNC(OP_CONCATENATE_N));
+
   expr::substitution_t subst;
   subst[input] = emptyExpr;
 
-  expr_t cloneExpr = clone(subst);
+  expr* cloneExpr = clone(theUDF, subst);
 
   return cloneExpr->get_return_type();
 }

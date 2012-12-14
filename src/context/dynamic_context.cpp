@@ -15,6 +15,10 @@
  */
 #include "stdafx.h"
 
+#ifdef WIN32
+#include <sys/types.h>
+#include <sys/timeb.h>
+#endif
 #include "common/common.h"
 #include <assert.h>
 #include <time.h>
@@ -23,7 +27,6 @@
 #include <sys/time.h>
 #include <unistd.h>
 #endif
-
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
@@ -130,6 +133,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   theParent(NULL),
   keymap(NULL),
   theAvailableIndices(NULL),
+  theAvailableMaps(NULL),
   theEnvironmentVariables(NULL),
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0)
@@ -175,6 +179,9 @@ dynamic_context::~dynamic_context()
 
   if (theAvailableIndices)
     delete theAvailableIndices;
+
+  if (theAvailableMaps)
+    delete theAvailableMaps;
 }
 
 
@@ -706,7 +713,7 @@ void dynamic_context::bindIndex(
     store::Index_t& index)
 {
   if (theAvailableIndices == NULL)
-    theAvailableIndices = new IndexMap(0, NULL, 8, false);
+    theAvailableIndices = new IndexMap(HashMapItemPointerCmp(0, NULL), 8, false);
 
   if (!theAvailableIndices->insert(qname, index))
   {
@@ -722,6 +729,71 @@ void dynamic_context::unbindIndex(store::Item* qname)
 {
   if (theAvailableIndices != NULL)
     theAvailableIndices->erase(qname);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Index* dynamic_context::getMap(store::Item* qname) const
+{
+  if (theAvailableMaps == NULL)
+    return NULL;
+
+  store::Index_t map;
+
+  if (theAvailableMaps->get(qname, map))
+  {
+    return map.getp();
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::bindMap(
+    store::Item* qname,
+    store::Index_t& map)
+{
+  if (theAvailableMaps == NULL)
+    theAvailableMaps = new IndexMap(HashMapItemPointerCmp(0, NULL), 8, false);
+
+  if (!theAvailableMaps->insert(qname, map))
+  {
+    ZORBA_ASSERT(false);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::unbindMap(store::Item* qname)
+{
+  if (theAvailableMaps != NULL)
+    theAvailableMaps->erase(qname);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::getMapNames(std::vector<store::Item_t>& names) const
+{
+  if (theAvailableMaps == NULL)
+    return;
+
+  for (IndexMap::iterator lIter = theAvailableMaps->begin();
+       lIter != theAvailableMaps->end();
+       ++lIter)
+  {
+    names.push_back(lIter.getKey());
+  }
 }
 
 
@@ -822,7 +894,7 @@ bool dynamic_context::getExternalFunctionParam(
 ********************************************************************************/
 bool dynamic_context::addExternalFunctionParameter(
    const std::string& aName,
-   ExternalFunctionParameter* aValue)
+   ExternalFunctionParameter* aValue) const
 {
   if (!keymap)
   {

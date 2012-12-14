@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,38 @@ public:
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-ref:has-node-reference
+class fn_zorba_ref_has_node_reference : public function
+{
+public:
+  fn_zorba_ref_has_node_reference(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-ref:assign-node-reference
+class fn_zorba_ref_assign_node_reference : public function
+{
+public:
+  fn_zorba_ref_assign_node_reference(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
 
   CODEGEN_DECL();
 };
@@ -146,6 +178,8 @@ public:
   {
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -367,6 +401,54 @@ public:
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:path
+class fn_path_3_0 : public function
+{
+public:
+  fn_path_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-node:copy
+class fn_zorba_node_copy : public function
+{
+public:
+  fn_zorba_node_copy(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const;
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool isMap(csize producer) const { return producer == 0; }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };

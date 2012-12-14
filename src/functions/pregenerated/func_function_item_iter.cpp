@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,9 +63,9 @@ PlanIter_t fn_partial_apply_3_0::codegen(
 
 void populate_context_function_item_iter(static_context* sctx)
 {
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_function_name_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","function-name"), 
         GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE, 
@@ -75,9 +75,9 @@ void populate_context_function_item_iter(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_function_arity_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","function-arity"), 
         GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE, 
@@ -87,9 +87,9 @@ void populate_context_function_item_iter(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_partial_apply_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","partial-apply"), 
         GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE, 
@@ -100,9 +100,9 @@ void populate_context_function_item_iter(static_context* sctx)
   }
 
 
-  {
-    
 
+
+      {
     DECL_WITH_KIND(sctx, fn_partial_apply_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","partial-apply"), 
         GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE, 

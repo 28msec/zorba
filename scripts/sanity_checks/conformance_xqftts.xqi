@@ -57,9 +57,17 @@ declare %private variable $conf:XQFTTSX_submission as xs:string :=
 declare %private variable $conf:XQuery   as xs:string := "XQuery";
 declare %private variable $conf:XQueryX  as xs:string := "XQueryX";
 
+declare %private variable $conf:infos    := <infos/>;
 declare %private variable $conf:features := <features/>;
+declare %private variable $conf:numbers  := <numbers/>;
 
-declare %private variable $conf:numbers := <numbers/>;
+declare %private %ann:sequential function conf:collect-info(
+  $name     as xs:string,
+  $version  as xs:string,
+  $info     as xs:string) 
+{
+  insert node <info name ="{$name}" version="{$version}" info="{$info}"/> as last into $conf:infos;
+};
 
 declare %private %ann:sequential function conf:collect-feature(
   $name as xs:string, 
@@ -327,7 +335,15 @@ declare %ann:sequential function conf:create-collection-submissions()
   variable $docXQ := fn:parse-xml(file:read-text(file:resolve-path($conf:XQFTTS_submission)));
   for $test in $docXQ/xqRes:test-suite-result//xqRes:test-case
   return dml:apply-insert-nodes($conf:submissionXquery, $test);
-    
+  
+  conf:collect-info("Zorba",
+                    data($docXQ/xqRes:test-suite-result/xqRes:implementation/@version),
+                    "");
+  conf:collect-info("XQFTTS",
+                    data($docXQ/xqRes:test-suite-result/xqRes:test-run/xqRes:test-suite/@version),
+                    normalize-space(data($docXQ/xqRes:test-suite-result/xqRes:test-run/xqRes:otherComments)));
+  
+  
   (: collect features :)
   for $feature in $docXQ/xqRes:test-suite-result/xqRes:implementation/xqRes:features/xqRes:feature
   return
@@ -391,7 +407,7 @@ declare %private function conf:create-summary-string() as xs:string
   return
     concat("Zorba achieves ",
             $minConf, 
-            "% on minimal conformance (", 
+            "% on minimal conformance (and ", 
             string-join(( for $number in $conf:numbers/number where xs:string($number/@name) eq "Optional Features" 
                           return concat(xs:string(data($number/@value)),"% on ",xs:string(data($number/@name)))),", "),
             ") for the W3C XPath Full Text 1.0 Test Suite.
@@ -408,12 +424,23 @@ declare %ann:sequential function conf:test()
   conf:create-collection($conf:XQueryX, $XQTS_catalog);
 
   variable $pageNameSummary := "conformanceXQFTTSSummary";
-  variable $pathSummary := fn:concat($conf:XQFTTS_PATH, file:directory-separator(), $pageNameSummary, ".dox"); 
+  variable $pathSummary := fn:concat($conf:XQFTTS_PATH, file:directory-separator(), $pageNameSummary, ".dox");
+  variable $details := concat("In generating the report we used Zorba version ",
+                               tokenize(data($conf:infos//info[@name="Zorba"]/@version),"/")[last()],
+                               " that can be downloaded from ",
+                               data($conf:infos//info[@name="Zorba"]/@version),
+                               " and XQFTTS version '",
+                               data($conf:infos//info[@name="XQFTTS"]/@version),
+                               "' (",
+                               data($conf:infos//info[@name="XQFTTS"]/@info),
+                               ").");
   
   file:write(trace($pathSummary,"output file path"),
              ("/** \page conformanceXQFTTSSummary  Summary W3C XQuery and XPath Full Text 1.0 conformance.
 
 The following table shows the supported features:
+",
+             {$details},"
 ",
              {conf:generate-features-table()},"
 ",
@@ -428,6 +455,8 @@ The following table shows the supported features:
   file:write(trace($pathDetailed,"output file path"),
              ("/** \page conformanceXQFTTS  W3C XQuery and XPath Full Text 1.0 Conformance.
 
+",
+             {$details},"
 ",
              {conf:create-summary-string()},"
 ",

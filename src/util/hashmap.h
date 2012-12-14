@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-#if !defined ZORBA_HASHMAP_H && !defined ZORBA_HASHMAP_WITH_SERIALIZATION || !defined ZORBA_HASHMAP_SERIALIZATION_H && defined ZORBA_HASHMAP_WITH_SERIALIZATION
-#ifndef ZORBA_HASHMAP_WITH_SERIALIZATION
-#define ZORBA_HASHMAP_H
-#else
-#define ZORBA_HASHMAP_SERIALIZATION_H
-#endif
+#ifndef ZORBA_UTILS_HASHMAP
+#define ZORBA_UTILS_HASHMAP
 
 #include "common/common.h"
 
@@ -39,16 +35,8 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 
-#include "zorbaserialization/serialize_basic_types.h"
-
-
-namespace zorba {
-
-#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
-#define HASHMAP  serializable_hashmap
-#else
-#define HASHMAP hashmap
-#endif
+namespace zorba 
+{
 
 /*___________________________________________________________
 |
@@ -56,54 +44,31 @@ namespace zorba {
 |____________________________________________________________*/
 
 template<class K, class V>   // V = value type, K = key type
-class HASHMAP    // key type = string
-#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
-                  : public ::zorba::serialization::SerializeBaseClass   
-#endif
+class hashmap
 {
 public:
   struct entry 
-#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
-    : public ::zorba::serialization::SerializeBaseClass
-#endif
   {
     K key;
     V val;
 
-    public:
-#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
-      SERIALIZABLE_TEMPLATE_CLASS(entry)
-      entry(::zorba::serialization::Archiver &ar) : val(ar) {}
-      void serialize(::zorba::serialization::Archiver &ar)
-      {
-        ar & key;
-        ar & val;
-      }
-#endif
+  public:
     entry() {}
 
     entry(K const& k, V v) : key(k), val(v) {}
 
     entry(char const* k, uint32_t l, V v) : key(K(k,0,l)), val(v) {}
 
-    entry(entry const& e) :
-#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
-      ::zorba::serialization::SerializeBaseClass(),
-#endif
-      key(e.key), val(e.val) {}
+    entry(entry const& e) : key(e.key), val(e.val) {}
 
     entry(const char* k1, K const& k2, V v) : val(v)
     {
       key = k1;
       key += k2;
-      //val = v;
     }
 
-#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
-    virtual ~entry() {}
-#else
     ~entry() {}
-#endif
+
     entry& operator=(entry const& e) 
     {
       key = e.key; val = e.val; return *this; 
@@ -136,91 +101,11 @@ private:
   checked_vector<int> tab;   // hash table, indexes into 'v', -1 = empty
 
 public:
-#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
-  SERIALIZABLE_TEMPLATE_CLASS(serializable_hashmap)
-  serializable_hashmap(::zorba::serialization::Archiver& ar) : ::zorba::serialization::SerializeBaseClass()
-  {
-  }
+  hashmap(uint32_t sz = 1024, float ld = .6);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & sz;
-    ar & tsz;
-    ar & ld;
-    ar & minsz;
-    ar & v;
+  hashmap(const hashmap&);
 
-    //compress tab
-    int tab_size = (int)tab.size();
-
-    ar.set_is_temp_field(true);
-    ar & tab_size;
-
-    if (ar.is_serializing_out())
-    {
-      checked_vector<int>::iterator tab_it = tab.begin();
-      int last_val = *tab_it;
-      int nr_dupl = 1;
-
-      for (tab_it++; tab_it != tab.end(); ++tab_it)
-      {
-        if ((*tab_it) != last_val)
-        {
-          ar & nr_dupl;
-          ar & last_val;
-          last_val  = (*tab_it);
-          nr_dupl = 1;
-        }
-        else
-        {
-          nr_dupl++;
-        }
-      }
-
-      ar & nr_dupl;
-      ar & last_val;
-      nr_dupl = 0;
-      ar & nr_dupl;
-    }
-    else
-    {
-      tab.resize(tab_size);
-      int last_val;
-      int nr_dupl, i;
-      checked_vector<int>::iterator  tab_it = tab.begin();
-
-      while(1)
-      {
-        ar & nr_dupl;
-
-        if (!nr_dupl)
-          break;
-
-        ar & last_val;
-
-        for (i = 0; i < nr_dupl; i++)
-        {
-          *tab_it = last_val;
-          tab_it++;
-        }
-      }
-
-      assert((int)tab.size() == (int)tab_size);
-    }
-
-    ar.set_is_temp_field(false);
-  }
-#endif
-public:
-  HASHMAP(uint32_t sz = 1024, float ld = .6);
-
-  HASHMAP(HASHMAP const&);
-
-#ifdef ZORBA_HASHMAP_WITH_SERIALIZATION
-  virtual ~HASHMAP();
-#else
-  ~HASHMAP();
-#endif
+  ~hashmap();
 
 public: // housekeeping
   void clear();
@@ -268,7 +153,7 @@ public: // the hash functions
 
 ********************************************************************************/
 template<class K, class V>
-HASHMAP<K,V>::HASHMAP(uint32_t initial_size, float load_factor)
+hashmap<K,V>::hashmap(uint32_t initial_size, float load_factor)
 :
   sz(0),
   tsz(initial_size),
@@ -284,7 +169,7 @@ HASHMAP<K,V>::HASHMAP(uint32_t initial_size, float load_factor)
 
 ********************************************************************************/
 template<class K, class V>
-HASHMAP<K,V>::HASHMAP(HASHMAP<K,V> const& m)
+hashmap<K,V>::hashmap(hashmap<K,V> const& m)
 :
   sz(m.sz),
   tsz(m.tsz),
@@ -310,7 +195,7 @@ HASHMAP<K,V>::HASHMAP(HASHMAP<K,V> const& m)
 
 ********************************************************************************/
 template<class K, class V>
-HASHMAP<K,V>::~HASHMAP()
+hashmap<K,V>::~hashmap()
 {
 }
 
@@ -319,7 +204,7 @@ HASHMAP<K,V>::~HASHMAP()
 
 ********************************************************************************/
 template<class K, class V>
-inline void HASHMAP<K,V>::clear()
+inline void hashmap<K,V>::clear()
 {
   sz = 0;
   v.clear();
@@ -332,7 +217,7 @@ inline void HASHMAP<K,V>::clear()
 
 ********************************************************************************/
 template<class K, class V>
-void HASHMAP<K,V>::displayentry(uint32_t n) const
+void hashmap<K,V>::displayentry(uint32_t n) const
 {
   std::cout << "tab["<<n<<"] = ("<<v[n].key<<','<<v[n].val<<std::endl;
 }
@@ -342,7 +227,7 @@ void HASHMAP<K,V>::displayentry(uint32_t n) const
 
 ********************************************************************************/
 template<class K, class V>
-void HASHMAP<K,V>::displayEntries() const
+void hashmap<K,V>::displayEntries() const
 {
   typename checked_vector<entry>::const_iterator it;
   for (it = v.begin(); it!=v.end(); it++) {
@@ -356,7 +241,7 @@ void HASHMAP<K,V>::displayEntries() const
   Double the size of the hash table and rehash all existing entries.
 ********************************************************************************/
 template<class K, class V>
-inline void HASHMAP<K,V>::resize()
+inline void hashmap<K,V>::resize()
 {
   int oldIndex;
 
@@ -396,7 +281,7 @@ inline void HASHMAP<K,V>::resize()
   Return true if key was in map already, else false.
 ********************************************************************************/
 template<class K, class V>
-inline bool HASHMAP<K,V>::put(const K& key, V val, bool replace)
+inline bool hashmap<K,V>::put(const K& key, V val, bool replace)
 {
   if (sz > tsz*ld) resize();
 
@@ -427,7 +312,7 @@ inline bool HASHMAP<K,V>::put(const K& key, V val, bool replace)
   Return true if key was in map already, else false.
 ********************************************************************************/
 template<class K, class V>
-inline bool HASHMAP<K,V>::put(const char* key, V val, bool replace)
+inline bool hashmap<K,V>::put(const char* key, V val, bool replace)
 {
   if (sz > tsz*ld) resize();
 
@@ -458,7 +343,7 @@ inline bool HASHMAP<K,V>::put(const char* key, V val, bool replace)
   Return true if key was in map already, else false.
 ********************************************************************************/
 template<class K, class V>
-inline bool HASHMAP<K,V>::put(const char* key, uint32_t len, V val, bool replace)
+inline bool hashmap<K,V>::put(const char* key, uint32_t len, V val, bool replace)
 {
   if (sz > tsz*ld) resize();
 
@@ -489,7 +374,7 @@ inline bool HASHMAP<K,V>::put(const char* key, uint32_t len, V val, bool replace
   Return true if key was in map already, else false.
 ********************************************************************************/
 template<class K, class V>
-inline bool HASHMAP<K,V>::put2(
+inline bool hashmap<K,V>::put2(
     const char* key1,
     const K& key2,
     V val,
@@ -520,7 +405,7 @@ inline bool HASHMAP<K,V>::put2(
   Get a copy of the value for a given key, return false if key not found
 ********************************************************************************/
 template<class K, class V>
-inline bool HASHMAP<K,V>::get(const K& key, V& result) const
+inline bool hashmap<K,V>::get(const K& key, V& result) const
 {
   uint32_t h0;
   if (find(key, h0))
@@ -536,7 +421,7 @@ inline bool HASHMAP<K,V>::get(const K& key, V& result) const
   Get a copy of the value for a given key, return false if key not found.
 ********************************************************************************/
 template<class K, class V>
-inline bool HASHMAP<K,V>::get(const char* key, V& result) const
+inline bool hashmap<K,V>::get(const char* key, V& result) const
 {
   uint32_t h0;
   if (find(key,h0)) 
@@ -552,7 +437,7 @@ inline bool HASHMAP<K,V>::get(const char* key, V& result) const
   Get a copy of the value for a given key, return false if key not found.
 ********************************************************************************/
 template<class K, class V>
-inline bool HASHMAP<K,V>::get(const char* key, uint32_t len, V& result) const
+inline bool hashmap<K,V>::get(const char* key, uint32_t len, V& result) const
 {
   uint32_t h0;
   if (find(key,len,h0)) 
@@ -568,7 +453,7 @@ inline bool HASHMAP<K,V>::get(const char* key, uint32_t len, V& result) const
   Get a copy of the value for a given key, return false if key not found.
 ********************************************************************************/
 template<class K, class V>
-inline bool HASHMAP<K,V>::get2(const char* key1, const K& key2, V& result) const
+inline bool hashmap<K,V>::get2(const char* key1, const K& key2, V& result) const
 {
   uint32_t h0;
   if (find2(key1, key2, h0)) 
@@ -588,7 +473,7 @@ inline bool HASHMAP<K,V>::get2(const char* key1, const K& key2, V& result) const
   key should be inserted. 
 ********************************************************************************/  
 template<class K, class V>
-inline bool HASHMAP<K,V>::find(const K& key, uint32_t& bucket) const
+inline bool hashmap<K,V>::find(const K& key, uint32_t& bucket) const
 {
   uint32_t h0 = h(key);
   bool result = false;
@@ -620,7 +505,7 @@ inline bool HASHMAP<K,V>::find(const K& key, uint32_t& bucket) const
   key should be inserted. 
 ********************************************************************************/
 template<class K, class V>
-inline bool HASHMAP<K,V>::find(const char* key, uint32_t& bucket) const
+inline bool hashmap<K,V>::find(const char* key, uint32_t& bucket) const
 {
   uint32_t h0 = h(key);
   bool result = false;
@@ -654,7 +539,7 @@ inline bool HASHMAP<K,V>::find(const char* key, uint32_t& bucket) const
   NOTE: method does case-insesitive string comparison when looking for the key
 ********************************************************************************/
 template<class K, class V>
-inline bool HASHMAP<K,V>::find(const char* key, uint32_t len, uint32_t& bucket) const
+inline bool hashmap<K,V>::find(const char* key, uint32_t len, uint32_t& bucket) const
 {
   uint32_t h0 = h(key, len);
   bool result = false;
@@ -687,7 +572,7 @@ inline bool HASHMAP<K,V>::find(const char* key, uint32_t len, uint32_t& bucket) 
   key should be inserted. 
 ********************************************************************************/
 template<class K, class V>
-inline bool HASHMAP<K,V>::find2(
+inline bool hashmap<K,V>::find2(
     const char* key1,
     const K& key2,
     uint32_t& bucket) const
@@ -718,34 +603,32 @@ inline bool HASHMAP<K,V>::find2(
   The hash functions
 ********************************************************************************/
 template<class K, class V>
-inline uint32_t HASHMAP<K,V>::h(const K& key) const
+inline uint32_t hashmap<K,V>::h(const K& key) const
 {
   return  hashfun::h32(key.c_str(), FNV_32_INIT) % tsz;
 }
 
 
 template<class K, class V>
-inline uint32_t HASHMAP<K,V>::h(const char* key) const
+inline uint32_t hashmap<K,V>::h(const char* key) const
 {
   return  hashfun::h32(key, FNV_32_INIT) % tsz;
 }
 
 
 template<class K, class V>
-inline uint32_t HASHMAP<K,V>::h(const char* key, uint32_t len) const
+inline uint32_t hashmap<K,V>::h(const char* key, uint32_t len) const
 {
   return  hashfun::h32(key, len, FNV_32_INIT) % tsz;
 }
 
 
 template<class K, class V>
-inline uint32_t HASHMAP<K,V>::h(const char *key1, const K& key2) const
+inline uint32_t hashmap<K,V>::h(const char* key1, const K& key2) const
 {
   return  hashfun::h32(key2.c_str(), key2.length(), hashfun::h32(key1)) % tsz;
 }
 
-
-#undef HASHMAP
 
 } /* namespace zorba  */
 #endif  /* ZORBA_HASHMAP_H */

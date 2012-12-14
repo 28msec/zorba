@@ -1,0 +1,91 @@
+/** \page configuration_parameters Zorba Configuration Parameters
+
+This is a list of all published Zorba configuration parameters.  You
+specify these parameters at CMake configuration time with the \c -D
+argument. See \ref configure_parameters for more information.
+
+\section configure_enable Enabling/Disabling Zorba Features
+
+\subsection ZORBA_WITH_BIG_INTEGER Big Integer Support
+
+The Zorba XQuery processor by default has arbitrary precision for the
+\c xs:integer type.  Compared to a C++ \c int, however, arbitrary
+precision integers are orders of magnitude slower.  If arbitrary
+precision integers are not needed, they can be disabled by configuring
+Zorba with the \c ZORBA_WITH_BIG_INTEGER option set to \c OFF,
+i.e. <tt>-D ZORBA_WITH_BIG_INTEGER=OFF</tt>
+
+When arbitrary precision integers are disabled, Zorba uses a C++
+<code>long long</code> for \c xs:integer, the precision for which is
+dependent on your C++ implementation.  Typically, however, the
+precision is at least 64 bits.  However, in order to maintain the
+condition that the value space for \c xs:nonNegativeInteger is a
+subset of that of \c xs:integer, one less bit is allowed for \c
+xs:nonNegativeInteger.
+
+\subsection ZORBA_NO_FULL_TEXT XQuery Full-Text Support
+
+Zorba by default supports the XQuery Full-Text specification
+(http://www.w3.org/TR/xpath-full-text-10/ ). If you wish to disable
+this support, configure with <tt>-D ZORBA_NO_FULL_TEXT=ON</tt>.
+
+\subsection ZORBA_XQUERX XQueryX Support
+
+Zorba by default does not build with support for XQueryX (which is an
+alternate representation of XQuery using pure XML). To enable this
+support, configure with <tt>-DZORBA_XQUERYX=ON</tt>. Note that
+building with XQueryX support requires LibXslt to be available.
+
+\subsection ZORBA_VERIFY_PEER_SSL_CERTIFICATE Enabling SSL Peer Verification
+
+By default, Zorba's HTTP module does not validate the SSL certificate
+sent to it by HTTPS servers. This is because not all systems have a
+complete or valid set of root certificates against which to validate
+said server certificates. If you wish to enable SSL peer validation,
+configure with <tt>-D ZORBA_VERIFY_PEER_SSL_CERTIFICATE=ON</tt>.
+
+\section configure_deps Disabling Zorba Library Requirements
+
+\subsection ZORBA_NO_ICU Disable ICU (Unicode) Support
+
+The ICU library provides Unicode functionality, and is required by
+default when building Zorba. To disable this requirement, configure
+with <tt>-D ZORBA_NO_ICU=ON</tt>.
+
+\subsection ZORBA_NO_XMLSCHEMA Disable Xerces (XML Schema) Support
+
+The Xerces-C library provides XML Schema functionality, and is
+required by default when building Zorba. To disable this requirement,
+configure with <tt>-D ZORBA_NO_XMLSCHEMA=ON</tt>.
+
+\subsection ZORBA_SUPPRESS_CURL Disable Curl (HTTP) Support
+
+The Curl library provides HTTP functionality. Zorba will automatically
+build with HTTP support (via the built-in \c http-client module) if it
+detects \c libcurl. To suppress this check (so you can build Zorba
+without HTTP support even if Curl is installed on your system),
+configure with <tt>-D ZORBA_SUPPRESS_CURL=ON</tt>.
+
+\section configure_buildparams Parameters for Compiling
+
+\subsection ZORBA_MODULES_DIR Specifying the Directory for Non-Core Modules
+
+By default, Zorba will automatically build any non-core module
+packages it finds in a directory named \c zorba_modules that is a
+sibling to the directory containing Zorba's own source (that is,
+\"<tt>../zorba_modules</tt>\" from the source directory).  See \ref
+noncore_download for more information.
+
+If you wish to build non-core modules from a different location,
+configure with <tt>-D ZORBA_MODULES_DIR=/path/to/modules</tt>.
+
+\subsection ZORBA_THIRD_PARTY_REQUIREMENTS Specifying the Location of Third-Party Requirements on Windows
+
+On Windows, you should configure with <tt>-D
+ZORBA_THIRD_PARTY_REQUIREMENTS=/path1;/path2</tt> to indicate the
+path(s) to third-party libraries, instead of \c
+CMAKE_PREFIX_PATH. This is described in detail at \ref
+windows_autodll.
+
+*/
+/* vim:set et sw=2 ts=2: */

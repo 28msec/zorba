@@ -29,26 +29,28 @@ namespace zorba {
 #define INDENT_DEC  theIndent -= 2
 #define NL  os << std::endl
 
-class ParseNodePrintXMLVisitor : public parsenode_visitor {
-
+class ParseNodePrintXMLVisitor : public parsenode_visitor
+{
 protected:
-    int theIndent;
-    std::ostream& os;
+  int            theIndent;
+  std::ostream & os;
 
 public:
 
 ParseNodePrintXMLVisitor(std::ostream &aStream)
-  : theIndent(0),
-    os(aStream)
+  :
+  theIndent(0),
+  os(aStream)
 {
 }
 
+
 void print(const parsenode* p)
 {
-    os << "<?xml version='1.0' ?>" << std::endl;
-    os << "<ParseNodeTree>" << std::endl;
-    p->accept(*this);
-    os << "</ParseNodeTree>" << std::endl;
+  os << "<?xml version='1.0' ?>" << std::endl;
+  os << "<ParseNodeTree>" << std::endl;
+  p->accept(*this);
+  os << "</ParseNodeTree>" << std::endl;
 }
 
 #define IDS \
@@ -61,6 +63,7 @@ void print(const parsenode* p)
     INDENT_INC; NL;                             \
     return no_state;                            \
   }
+
 
 #define NO_END_TAG( cls )                                     \
   void end_visit(const cls& /*n*/, void* /*visit_state*/) {}
@@ -78,27 +81,29 @@ void print(const parsenode* p)
 
 void *begin_visit(const AbbrevForwardStep &n)
 {
-    INDENT;
+  INDENT;
 
-    os << "<AbbrevForwardStep" << IDS;
-    if (n.get_attr_bit ()) os << " attr='true'";
-    os << ">";
+  os << "<AbbrevForwardStep" << IDS;
+  if (n.get_attr_bit ()) os << " attr='true'";
+  os << ">";
 
-    INDENT_INC; NL;
-    return no_state;
+  INDENT_INC; NL;
+  return no_state;
 }
+
 
 void *begin_visit(const CaseClause &n)
 {
-    INDENT;
+  INDENT;
 
-    os << "<CaseClause" << IDS << " var='" << n.get_varname () << "'";
+  os << "<CaseClause" << IDS << " var='" << n.get_varname () << "'";
 
-    os << ">";
+  os << ">";
 
-    INDENT_INC; NL;
-    return no_state;
+  INDENT_INC; NL;
+  return no_state;
 }
+
 
 void *begin_visit(const DefaultNamespaceDecl &n)
 {
@@ -365,12 +370,26 @@ void *begin_visit(const ValueComp &n)
 
 NO_END_TAG (ValueComp)
 
-void *begin_visit(const VarDecl &n)
+void* begin_visit(const GlobalVarDecl &n)
 {
     INDENT;
 
     os << "<VarDecl pos='" << n.get_location() << "' var='"
-       << n.get_name()->get_qname() << "' ptr='" << &n << "'";
+       << n.get_var_name()->get_qname() << "' ptr='" << &n << "'";
+
+    os << ">";
+
+    INDENT_INC; NL;
+    return no_state;
+}
+
+
+void* begin_visit(const LocalVarDecl &n)
+{
+    INDENT;
+
+    os << "<LocalVarDecl pos='" << n.get_location() << "' var='"
+       << n.get_var_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
 
@@ -384,7 +403,7 @@ void *begin_visit(const VarGetsDecl &n)
     INDENT;
 
     os << "<VarGetsDecl pos='" << n.get_location() << "' var='"
-       << n.get_name()->get_qname() << "' ptr='" << &n << "'";
+       << n.get_var_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
 
@@ -397,7 +416,7 @@ void *begin_visit(const VarInDecl &n)
     INDENT;
 
     os << "<VarInDecl pos='" << n.get_location() << "' var='"
-       << n.get_name()->get_qname() << "' ptr='" << &n << "'";
+       << n.get_var_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
 
@@ -538,6 +557,19 @@ void *begin_visit(const RelativePathExpr &n)
 
 END_TAG(RelativePathExpr)
 
+void *begin_visit(const SimpleMapExpr &n)
+{
+  INDENT;
+
+  os << "<SimpleMapExpr pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
+
+  os << ">";
+
+  INDENT_INC; NL;
+  return no_state;
+}
+
+END_TAG(SimpleMapExpr)
 
 void *begin_visit(const TypeswitchExpr &n)
 {
@@ -726,6 +758,7 @@ BEGIN_END_TAG (InsertExpr)
 BEGIN_END_TAG (InstanceofExpr)
 BEGIN_END_TAG (IntersectExceptExpr)
 BEGIN_END_TAG (ItemType)
+BEGIN_END_TAG (StructuredItemType)
 BEGIN_END_TAG (LetClause)
 BEGIN_END_TAG (LibraryModule)
 BEGIN_END_TAG (Literal)
@@ -802,7 +835,8 @@ BEGIN_END_TAG (AST_IndexDecl)
 BEGIN_END_TAG (IndexKeySpec)
 BEGIN_END_TAG (IndexKeyList)
 BEGIN_END_TAG (IntegrityConstraintDecl)
-END_TAG (VarDecl)
+END_TAG (GlobalVarDecl)
+END_TAG (LocalVarDecl)
 END_TAG (VarGetsDecl)
 BEGIN_END_TAG (VarGetsDeclList)
 END_TAG (VarInDecl)
@@ -816,6 +850,7 @@ BEGIN_END_TAG (Wildcard)
 BEGIN_END_TAG (WindowClause)
 BEGIN_END_TAG (WindowVarDecl)
 BEGIN_END_TAG (WindowVars)
+
 
 ////////// Full-text //////////////////////////////////////////////////////////
 
@@ -1019,9 +1054,46 @@ BEGIN_END_TAG( FTWords )
 BEGIN_END_TAG( FTWordsTimes )
 BEGIN_END_TAG( FTWordsValue )
 
+////////// JSON ///////////////////////////////////////////////////////////////
+
+BEGIN_END_TAG(JSONArrayConstructor)
+
+BEGIN_END_TAG(JSONObjectConstructor)
+
+BEGIN_END_TAG(JSONDirectObjectConstructor)
+
+BEGIN_END_TAG(JSONPairList)
+
+BEGIN_END_TAG(JSONPairConstructor)
+
+BEGIN_END_TAG(JSONObjectInsertExpr)
+
+BEGIN_END_TAG(JSONArrayInsertExpr)
+
+BEGIN_END_TAG(JSONArrayAppendExpr)
+
+BEGIN_END_TAG(JSONDeleteExpr)
+
+BEGIN_END_TAG(JSONReplaceExpr)
+
+BEGIN_END_TAG(JSONRenameExpr)
+
+void* begin_visit(const JSON_Test& n)
+{
+  INDENT;
+  os << "<JSON_Test type=\"" << store::StoreConsts::toString(n.get_kind()) << "\"/>";
+  INDENT_INC; NL;
+  return no_state;
+}
+
+END_TAG(JSON_Test)
+
 };
 
-void print_parsetree_xml (ostream &os, const parsenode *p) {
+
+
+void print_parsetree_xml(ostream& os, const parsenode* p)
+{
   ParseNodePrintXMLVisitor v (os);
   v.print (p);
 }

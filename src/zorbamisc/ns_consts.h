@@ -31,12 +31,18 @@
 
 #define XML_NS                  W3C_NS "XML/1998/namespace"
 #define XML_SCHEMA_NS           W3C_NS "2001/XMLSchema"
+#define XML_SCHEMA_PREFIX       "xs"
 
 #define XQUERY_ERR_NS           W3C_NS "2005/xqt-errors"                //not predeclared in XQuery 3.0
 #define XQUERY_LOCAL_FN_NS      W3C_NS "2005/xquery-local-functions"
+#define XQUERY_XPATH_FN_NS      W3C_NS "2005/xpath-functions"
 #define XQUERY_MATH_FN_NS       W3C_NS "2005/xpath-functions/math"      //not predeclared in XQuery 3.0
 
 #define XSI_NS                  W3C_NS "2001/XMLSchema-instance"
+
+#ifdef ZORBA_WITH_JSON
+#define JSONIQ_ERR_NS           "http://jsoniq.org/errors"
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -50,6 +56,7 @@
 #define ZORBA_FEATURES_NS       ZORBA_NS "features"
 #define ZORBA_ANNOTATIONS_NS    ZORBA_NS "annotations"
 #define ZORBA_COLLATION_NS_BASE ZORBA_NS "collations/"
+#define ZORBA_EXTENSIONS_NS     ZORBA_NS "extensions"
 
 // TODO these probably should not be in "ns_consts"
 #define ZORBA_OPTION_ENABLE_DTD "enable-dtd"

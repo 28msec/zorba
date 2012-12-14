@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,11 +20,11 @@
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/ftnode_visitor.h"
 
+#include "compiler/api/compilercb.h"
+
 using namespace std;
 
 namespace zorba {
-
-SERIALIZABLE_CLASS_VERSIONS(ftcontains_expr)
 
 
 #define EV_ACCEPT( EXPR, V )                  \
@@ -33,13 +33,15 @@ SERIALIZABLE_CLASS_VERSIONS(ftcontains_expr)
 ///////////////////////////////////////////////////////////////////////////////
 
 ftcontains_expr::ftcontains_expr(
+  CompilerCB* ccb,
   static_context* sctx,
+  user_function* udf,
   QueryLoc const &loc,
-  expr_t range,
+  expr* range,
   ftnode *ftselection,
-  expr_t ftignore
+  expr* ftignore
 ) :
-  expr( sctx, loc, ft_expr_kind ),
+  expr(ccb, sctx, udf, loc, ft_expr_kind ),
   range_( range ),
   ftselection_( ftselection ),
   ftignore_( ftignore )
@@ -48,6 +50,7 @@ ftcontains_expr::ftcontains_expr(
   ZORBA_ASSERT( ftselection );
   compute_scripting_kind();
 }
+
 
 void ftcontains_expr::accept( expr_visitor &v ) {
   if ( v.begin_visit( *this ) ) {
@@ -58,29 +61,21 @@ void ftcontains_expr::accept( expr_visitor &v ) {
   v.end_visit( *this );
 }
 
-expr_t ftcontains_expr::clone( substitution_t &s ) const {
-  return new ftcontains_expr(
-    theSctx, get_loc(),
-    range_->clone( s ),
-    ftselection_->clone( s ).release(),
-    ftignore_.isNull() ? 0 : ftignore_->clone( s )
-  );
-}
 
-void ftcontains_expr::compute_scripting_kind() {
+void ftcontains_expr::compute_scripting_kind() 
+{
   checkSimpleExpr(range_);
 
   theScriptingKind = SIMPLE_EXPR;
   // TODO: checkIsSimple for all sub-expr
 }
 
-void ftcontains_expr::serialize( serialization::Archiver &ar )
+
+ftnode_t ftcontains_expr::get_ftselection() const
 {
-  serialize_baseclass( ar, (expr*)this );
-  ar & range_;
-  ar & ftselection_;
-  ar & ftignore_;
+  return ftselection_;
 }
+
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

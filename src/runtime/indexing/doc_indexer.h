@@ -26,21 +26,29 @@ namespace zorba
 
 
 /*******************************************************************************
-
+  See IndexEntryCreator class in store/api/index.h
 ********************************************************************************/
 class DocIndexer : public store::IndexEntryCreator
 {
 protected:
-  ulong               theNumColumns;
+  bool                theIsGeneral;
+
+  csize               theNumColumns;
 
   PlanIter_t          theIndexerPlan;
-  var_expr_t          theNodeVar; 
+
+  store::Item_t       theNodeVarName;
+  ulong               theNodeVarId; 
 
   dynamic_context   * theDctx;
   store::Iterator_t   thePlanWrapper;
   
 public:
-  DocIndexer(ulong numColumns, PlanIterator* plan, var_expr* var);
+  DocIndexer(
+      bool general,
+      csize numColumns,
+      PlanIterator* plan,
+      store::Item* varName);
 
   ~DocIndexer();
 

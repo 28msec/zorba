@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +72,22 @@ public:
 
 
 //fn:nilled
+class fn_nilled_3_0 : public function
+{
+public:
+  fn_nilled_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+//fn:nilled
 class fn_nilled : public function
 {
 public:
@@ -118,13 +134,13 @@ public:
 
   xqtref_t getReturnType(const fo_expr* caller) const;
 
-  bool isMap(ulong producer) const { return producer == 0; }
+  bool isMap(csize producer) const { return producer == 0; }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize producer) const;
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const;
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -141,7 +157,7 @@ public:
 
   }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
@@ -191,7 +207,7 @@ public:
 
   }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };

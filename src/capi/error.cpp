@@ -115,7 +115,7 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
     || error == ZXQP0013_FXCHARHEAP_EXCEPTION
     || error == ZXQP0020_INVALID_URI
     || error == ZXQP0021_USER_ERROR
-    || error == ZXQP0025_ITEM_CREATION_FAILED
+    || error == ZXQP0025_COULD_NOT_FETCH_RESOURCE
     || error == ZXQP0028_TARGET_NAMESPACE_NOT_PROVIDED
     || error == ZXQP0029_URI_ACCESS_DENIED
     || error == ZXQP0030_DEADLOCK

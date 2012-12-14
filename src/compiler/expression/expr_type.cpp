@@ -18,6 +18,7 @@
 #include <zorba/config.h>
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "system/globalenv.h"
@@ -30,6 +31,9 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "compiler/xqddf/collection_decl.h"
 
 #include "functions/function.h"
@@ -79,7 +83,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     ExprIterator iter(this);
     while (!iter.done())
     {
-      (*iter)->compute_return_type(deep, modified);
+      (**iter)->compute_return_type(deep, modified);
       iter.next();
     }
   }
@@ -89,6 +93,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   expr_kind_t kind = get_expr_kind();
 
+  xqtref_t contentType;
   xqtref_t newType;
 
   switch (kind)
@@ -100,14 +105,6 @@ void expr::compute_return_type(bool deep, bool* modified)
     newType = TypeOps::union_type(*e->theThenExpr->get_return_type(),
                                   *e->theElseExpr->get_return_type(),
                                   tm);
-    break;
-  }
-
-  case order_expr_kind:
-  {
-    order_expr* e = static_cast<order_expr*>(this);
-
-    newType = e->theExpr->get_return_type();
     break;
   }
 
@@ -124,9 +121,9 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
 
-    ulong numClauses = e->num_clauses();
+    csize numClauses = e->num_clauses();
 
-    for (ulong i = 0; i < numClauses && quant != TypeConstants::QUANT_STAR; ++i)
+    for (csize i = 0; i < numClauses && quant != TypeConstants::QUANT_STAR; ++i)
     {
       const flwor_clause* c = e->theClauses[i];
 
@@ -163,45 +160,50 @@ void expr::compute_return_type(bool deep, bool* modified)
   case var_expr_kind:
   {
     var_expr* e = static_cast<var_expr*>(this);
+    var_expr::var_kind varKind = e->get_kind();
 
     xqtref_t derivedType;
-    expr* domainExpr;
+    expr* domainExpr = NULL;
 
     // The translator has already set theDeclaredType of pos_vars, count_vars,
     // wincond_out_pos_vars, and wincond_in_pos_vars to xs:positiveInteger.
-    if (e->theKind == var_expr::pos_var ||
-        e->theKind == var_expr::wincond_out_pos_var ||
-        e->theKind == var_expr::wincond_in_pos_var)
+    switch (varKind)
+    {
+    case var_expr::pos_var:
+    case var_expr::wincond_out_pos_var:
+    case var_expr::wincond_in_pos_var:
+    case var_expr::count_var:
     {
       newType = e->theDeclaredType;
+      break;
     }
-    else if (e->theKind == var_expr::for_var ||
-             e->theKind == var_expr::let_var ||
-             e->theKind == var_expr::win_var ||
-             e->theKind == var_expr::wincond_in_var ||
-             e->theKind == var_expr::wincond_out_var ||
-             e->theKind == var_expr::groupby_var ||
-             e->theKind == var_expr::non_groupby_var ||
-             e->theKind == var_expr::copy_var)
+    case var_expr::for_var:
+    case var_expr::let_var:
+    case var_expr::win_var:
+    case var_expr::wincond_in_var:
+    case var_expr::wincond_out_var:
+    case var_expr::groupby_var:
+    case var_expr::non_groupby_var:
+    case var_expr::copy_var:
     {
       domainExpr = e->get_domain_expr();
       ZORBA_ASSERT(domainExpr != NULL);
 
       xqtref_t domainType = domainExpr->get_return_type();
 
-      if (e->theKind == var_expr::for_var)
+      if (varKind == var_expr::for_var)
       {
         derivedType = TypeOps::prime_type(tm, *domainType);
       }
-      else if (e->theKind == var_expr::wincond_in_var ||
-               e->theKind == var_expr::wincond_out_var)
+      else if (varKind == var_expr::wincond_in_var ||
+               varKind == var_expr::wincond_out_var)
       {
         // TODO: we can be a little more specific here: if the quantifier of the
         // domain type is PLUS or ONE, then the quantifier of the "current" cond
         // var is ONE.
         derivedType = tm->create_type(*domainType, TypeConstants::QUANT_QUESTION);
       }
-      else if (e->theKind == var_expr::non_groupby_var)
+      else if (varKind == var_expr::non_groupby_var)
       {
         derivedType = tm->create_type(*domainType, TypeConstants::QUANT_STAR);
       }
@@ -209,10 +211,59 @@ void expr::compute_return_type(bool deep, bool* modified)
       {
         derivedType = domainType;
       }
+
+      break;
+    }
+    case var_expr::prolog_var:
+    {
+      // NOTE: For const global vars, their declared type is set to the
+      // type of their init expr, if any. This is done in 
+      // translator::end_visit(const GlobalVarDecl& v, void*)
+
+      csize numSetExprs = e->num_set_exprs();
+
+      if (e->get_ccb()->getPhase() == CompilerCB::OPTIMIZATION &&
+          numSetExprs > 0 &&
+          !e->is_external() &&
+          !e->isInTypeCompute())
+      {
+        e->setInTypeCompute();
+
+        var_set_expr* setExpr = e->get_set_expr(0);
+
+        derivedType = setExpr->get_expr()->get_return_type();
+
+        for (csize i = 1; i < numSetExprs; ++i)
+        {
+          if (derivedType == rtm.ITEM_TYPE_STAR)
+            break;
+
+          setExpr = e->get_set_expr(i);
+
+          derivedType = TypeOps::union_type(*derivedType,
+                                            *setExpr->get_expr()->get_return_type(),
+                                            tm);
+        }
+
+        e->resetInTypeCompute();
+      }
+
+      break;
+    }
+    case var_expr::local_var: // TODO: compute derived type for const local vars.
+    case var_expr::catch_var: // TODO
+    case var_expr::arg_var:
+    case var_expr::eval_var:
+    {
+      break;
+    }
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
     }
 
     // NOTE: no derived type should be computed for mutable global/local vars.
-    // TODO: compute derived type for const global/local vars.
 
     if (derivedType == NULL)
     {
@@ -243,8 +294,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     {
       xqtref_t sourceType = e->theSteps[0]->get_return_type();
 
-      if (TypeOps::is_empty(get_type_manager(), *sourceType) ||
-          TypeOps::is_none(get_type_manager(), *sourceType))
+      if (sourceType->is_empty() || sourceType->is_none())
       {
         newType = sourceType;
       }
@@ -256,9 +306,9 @@ void expr::compute_return_type(bool deep, bool* modified)
       {
         xqtref_t stepType = sourceType;
 
-        for (ulong i = 1; i < e->size(); ++i)
+        for (csize i = 1; i < e->size(); ++i)
         {
-          const axis_step_expr* axisStep = e->theSteps[i].cast<axis_step_expr>();
+          const axis_step_expr* axisStep = static_cast<axis_step_expr*>(e->theSteps[i]);
 
           stepType = axis_step_type(theSctx,
                                     axisStep,
@@ -291,63 +341,14 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     fo_expr* e = static_cast<fo_expr*>(this);
 
-    const function* func = e->get_func();
     /*
-      const user_function* udf = dynamic_cast<const user_function*>(func);
+      const user_function* udf = static_cast<const user_function*>(func);
 
       if (udf != NULL)
       return udf->getUDFReturnType(sctx);
     */
-    FunctionConsts::FunctionKind funcKind = func->getKind();
 
-    switch (funcKind)
-    {
-    case FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_DML_COLLECTION_1:
-    {
-      const store::Item* qname = e->theArgs[0]->getQName(theSctx);
-
-      if (qname != NULL)
-      {
-        const StaticallyKnownCollection* collection = theSctx->lookup_collection(qname);
-        if (collection != NULL)
-        {
-          newType = collection->getCollectionType();
-        }
-        else
-        {
-          throw XQUERY_EXCEPTION(
-            zerr::ZDDY0001_COLLECTION_NOT_DECLARED,
-            ERROR_PARAMS( qname->getStringValue() ),
-            ERROR_LOC( get_loc() )
-          );
-        }
-      }
-      break;
-    }
-    case FunctionConsts::FN_SUBSEQUENCE_3:
-    {
-      const_expr* lenExpr = dynamic_cast<const_expr*>(e->theArgs[2].getp());
-
-      if (lenExpr != NULL)
-      {
-        store::Item* val = lenExpr->get_val();
-        xs_double len = val->getDoubleValue();
-        if (len == 1.0)
-        {
-          newType = tm->create_type(*e->theArgs[0]->get_return_type(),
-                                    TypeConstants::QUANT_QUESTION);
-        }
-      }
-      break;
-    }
-    default:
-      break;
-    }
-
-    if (newType == NULL)
-    {
-      newType = e->theFunction->getReturnType(e);
-    }
+    newType = e->theFunction->getReturnType(e);
 
     break;
   }
@@ -356,7 +357,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     cast_expr* e = static_cast<cast_expr*>(this);
 
-    xqtref_t argType = e->theInputExpr->get_return_type();
+    xqtref_t argType = e->theInput->get_return_type();
     TypeConstants::quantifier_t argQuant = argType->get_quantifier();
     TypeConstants::quantifier_t targetQuant = e->theTargetType->get_quantifier();
 
@@ -384,8 +385,8 @@ void expr::compute_return_type(bool deep, bool* modified)
     xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
     TypeConstants::quantifier_t q =
-    TypeOps::intersect_quant(TypeOps::quantifier(*input_type),
-                             TypeOps::quantifier(*e->theTargetType));
+    TypeOps::intersect_quant(input_type->get_quantifier(),
+                             e->theTargetType->get_quantifier());
 
     if (TypeOps::is_subtype(tm, *input_ptype, *target_ptype, get_loc()))
     {
@@ -402,13 +403,13 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     promote_expr* e = static_cast<promote_expr*>(this);
 
-    xqtref_t in_type = e->theInputExpr->get_return_type();
+    xqtref_t in_type = e->theInput->get_return_type();
     xqtref_t in_ptype = TypeOps::prime_type(tm, *in_type);
     xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
     TypeConstants::quantifier_t q =
-    TypeOps::intersect_quant(TypeOps::quantifier(*in_type),
-                             TypeOps::quantifier(*e->theTargetType));
+    TypeOps::intersect_quant(in_type->get_quantifier(),
+                             e->theTargetType->get_quantifier());
 
     if (TypeOps::is_subtype(tm, *in_ptype, *target_ptype, get_loc()))
     {
@@ -465,13 +466,13 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case doc_expr_kind:
   {
-    doc_expr* e = static_cast<doc_expr*>(this);
+    contentType = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                   rtm.ANY_TYPE :
+                   rtm.UNTYPED_TYPE);
 
     newType = tm->create_node_type(store::StoreConsts::documentNode,
                                    NULL,
-                                   (e->theContent == NULL ?
-                                    NULL :
-                                    e->theContent->get_return_type()),
+                                   contentType,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
@@ -480,14 +481,13 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case elem_expr_kind:
   {
-    xqtref_t typeName =
-      (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
-       rtm.ANY_TYPE :
-       rtm.UNTYPED_TYPE);
+    contentType = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                   rtm.ANY_TYPE :
+                   rtm.UNTYPED_TYPE);
 
     newType = tm->create_node_type(store::StoreConsts::elementNode,
                                    NULL,
-                                   typeName,
+                                   contentType,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
@@ -496,13 +496,9 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case attr_expr_kind:
   {
-    attr_expr* e = static_cast<attr_expr*>(this);
-
     newType = tm->create_node_type(store::StoreConsts::attributeNode,
                                    NULL,
-                                   (e->theValueExpr == NULL ?
-                                    NULL :
-                                    e->theValueExpr->get_return_type()),
+                                   rtm.UNTYPED_ATOMIC_TYPE_ONE,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
@@ -519,21 +515,21 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     switch (e->type)
     {
-    case text_expr::text_constructor:
+    case text_constructor:
     {
       xqtref_t t = e->get_text()->get_return_type();
 
-      if (TypeOps::is_empty(get_type_manager(), *t))
+      if (t->is_empty())
         newType = t;
 
-      else if (TypeOps::type_min_cnt(tm, *t) == 0)
+      else if (t->min_card() == 0)
         q = TypeConstants::QUANT_QUESTION;
 
       nodeKind = store::StoreConsts::textNode;
       break;
     }
 
-    case text_expr::comment_constructor:
+    case comment_constructor:
       nodeKind = store::StoreConsts::commentNode;
       break;
 
@@ -545,7 +541,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     if (newType == NULL)
       newType = tm->create_node_type(nodeKind,
                                      NULL,
-                                     NULL,
+                                     contentType,
                                      q,
                                      false,
                                      false);
@@ -556,12 +552,27 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     newType = tm->create_node_type(store::StoreConsts::piNode,
                                    NULL,
-                                   NULL,
+                                   contentType,
                                    TypeConstants::QUANT_ONE,
                                    false,
                                    false);
     break;
   }
+
+#ifdef ZORBA_WITH_JSON
+  case json_object_expr_kind:
+  case json_direct_object_expr_kind:
+  {
+    newType = rtm.JSON_OBJECT_TYPE_ONE;
+    break;
+  }
+
+  case json_array_expr_kind:
+  {
+    newType = rtm.JSON_ARRAY_TYPE_ONE;
+    break;
+  }
+#endif
 
   case const_expr_kind:
   {
@@ -716,15 +727,19 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case function_trace_expr_kind:
   {
-    function_trace_expr* e = static_cast<function_trace_expr*>(this);
-    newType = e->theExpr->get_return_type();
+    newType = static_cast<function_trace_expr*>(this)->theInput->get_return_type();
+    break;
+  }
+
+  case order_expr_kind:
+  {
+    newType = static_cast<order_expr*>(this)->theInput->get_return_type();
     break;
   }
 
   case wrapper_expr_kind:
   {
-    wrapper_expr* e = static_cast<wrapper_expr*>(this);
-    newType = e->theWrappedExpr->get_return_type();
+    newType = static_cast<wrapper_expr*>(this)->theInput->get_return_type();
     break;
   }
 
@@ -788,7 +803,7 @@ static xqtref_t axis_step_type(
     {
       const NodeXQType* rootElemType = reinterpret_cast<const NodeXQType*>(
                                        inContentType.getp());
-      if (rootElemType->get_content_type() == RTM.UNTYPED_TYPE)
+      if (rootElemType->get_content_type() == RTM.UNTYPED_TYPE.getp())
         inUntyped = true;
     }
   }

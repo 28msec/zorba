@@ -21,9 +21,8 @@
 
 #include "functions/function_impl.h"
 
-#include "compiler/expression/fo_expr.h"
-
-namespace zorba {
+namespace zorba
+{
 
 void populate_context_sequences_impl(static_context* sctx);
 
@@ -40,12 +39,9 @@ public:
   {
   }
 
-  xqtref_t getReturnType(const fo_expr* caller) const
-  {
-    return caller->get_arg(0)->get_return_type();
-  }
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
-  bool isMap(ulong input) const
+  bool isMap(csize input) const
   {
     return true;
   }
@@ -206,25 +202,13 @@ public:
     return producer == 0;
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
-  {
-    if (input == 0)
-      return fo->getIgnoresSortedNodes();
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const; 
 
-    return ANNOTATION_TRUE;
-  }
-
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
-  {
-    if (input == 0)
-      return fo->getIgnoresDuplicateNodes();
-
-    return ANNOTATION_TRUE;
-  }
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
 
   bool propagatesInputNodes(expr* fo, csize input) const
   {
-    return ANNOTATION_TRUE_FIXED;
+    return ANNOTATION_TRUE_FIXED!=0;
   }
 
   bool mustCopyInputNodes(expr* fo, csize input) const
@@ -258,25 +242,13 @@ public:
     return  producer == 0;
   }
 
-  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const 
-  {
-    if (input == 0)
-      return fo->getIgnoresSortedNodes();
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, csize input) const;
 
-    return ANNOTATION_TRUE;
-  }
-
-  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const 
-  {
-    if (input == 0)
-      return fo->getIgnoresDuplicateNodes();
-
-    return ANNOTATION_TRUE;
-  }
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, csize input) const;
 
   bool propagatesInputNodes(expr* fo, csize input) const
   {
-    return ANNOTATION_TRUE_FIXED;
+    return ANNOTATION_TRUE_FIXED!=0;
   }
 
   bool mustCopyInputNodes(expr* fo, csize input) const

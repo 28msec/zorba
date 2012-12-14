@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <sstream>
+#include <string>
 
 #include <zorba/diagnostic_list.h>
 
@@ -27,6 +28,7 @@
 #include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/json_parser.h"
+#include "util/json_util.h"
 #include "util/mem_streambuf.h"
 #include "util/omanip.h"
 #include "util/oseparator.h"
@@ -84,16 +86,6 @@ static void add_item_element( item_stack_type &item_stack,
 
 #define POP_ITEM_ELEMENT()  \
   if ( !IN_STATE( in_array ) ) ; else POP_ITEM()
-
-static void escape_json_chars( zstring *s ) {
-  ascii::replace_all( *s, "\"", 1, "\\\"", 2 );
-  ascii::replace_all( *s, "\\", 1, "\\\\", 2 );
-  ascii::replace_all( *s, "\b", 1, "\\b", 2 );
-  ascii::replace_all( *s, "\f", 1, "\\f", 2 );
-  ascii::replace_all( *s, "\n", 1, "\\n", 2 );
-  ascii::replace_all( *s, "\r", 1, "\\r", 2 );
-  ascii::replace_all( *s, "\t", 1, "\\t", 2 );
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -172,10 +164,6 @@ void parse( json::parser &p, store::Item_t *result ) {
       case json::token::string:
         ADD_TYPE_ATTRIBUTE( "string" );
         value = token.get_value();
-#if 0
-        escape_json_chars( &value );
-#endif
-
         if ( next_string_is_key ) {
           // <pair name="..." ...>
           GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "pair" );
@@ -344,10 +332,9 @@ static ostream& serialize_number( ostream &o, zstring const &s ) {
 DEF_OMANIP1( serialize_number, zstring const& )
 
 static ostream& serialize_string( ostream &o, zstring const &s ) {
-  zstring temp( s );
-  escape_json_chars( &temp );
-  temp.insert( (zstring::size_type)0, 1, '"' );
-  temp.append( 1, '"' );
+  ostringstream oss;
+  oss << '"' << json::serialize( s ) << '"';
+  string const temp( oss.str() );
   assert_json_type( json::string, temp );
   return o << temp;
 }

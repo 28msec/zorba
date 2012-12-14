@@ -104,10 +104,10 @@ namespace zorba {
 
   namespace ft_stem_mode {
     enum type {
-      without,
-      with
+      no_stemming,
+      stemming
     };
-    type const DEFAULT = without;
+    type const DEFAULT = no_stemming;
     extern char const *const string_of[];
     DEF_OSTREAM_INSERT_OPERATOR
   }

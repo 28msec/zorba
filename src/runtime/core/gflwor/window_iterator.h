@@ -81,40 +81,44 @@ public:
   WindowVars();
 
   WindowVars(
-        const std::vector<PlanIter_t >& aCurVars,
-        const std::vector<PlanIter_t >& aPrevVars,
-        const std::vector<PlanIter_t >& aNextVars,
-        const std::vector<PlanIter_t >& aPosVars,
+      const std::vector<PlanIter_t >& aCurVars,
+      const std::vector<PlanIter_t >& aPrevVars,
+      const std::vector<PlanIter_t >& aNextVars,
+      const std::vector<PlanIter_t >& aPosVars,
 
-        const std::vector<PlanIter_t >& aCurOuterVars,
-        const std::vector<PlanIter_t >& aPrevOuterVars,
-        const std::vector<PlanIter_t >& aNextOuterVars,
-        const std::vector<PlanIter_t >& aPosOuterVars);
-
+      const std::vector<PlanIter_t >& aCurOuterVars,
+      const std::vector<PlanIter_t >& aPrevOuterVars,
+      const std::vector<PlanIter_t >& aNextOuterVars,
+      const std::vector<PlanIter_t >& aPosOuterVars);
+  
   virtual ~WindowVars();
 
-  void accept(PlanIterVisitor&) const;
+  void accept(PlanIterVisitor& v, bool start) const;
 
   void bindIntern(
-        PlanState& aPlanState,
-        const store::TempSeq_t& aInputSeq,
-        const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 
   void bindExtern(
-        PlanState& aPlanState,
-        const store::TempSeq_t& aInputSeq,
-        const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 };
 
 
 /***************************************************************************//**
   Represents the start condition of a window clause.
 
-  theStartClauseIter : The iterator evaluating the condition expression of "this"
-  theWindowVars      : Stores the iterators representing the references to the
-                       "start" variables of this window clause, both inside the
-                       condition expression of "this" and outside the window 
-                       clause.
+  theStartClauseIter :
+  --------------------
+  The iterator evaluating the condition expression of "this"
+
+  theWindowVars :
+  ---------------
+  Stores the iterators representing the references to the "start" variables of
+  this window clause, both inside the condition expression of "this" and outside
+  the window clause.
 ********************************************************************************/
 class StartClause : public ::zorba::serialization::SerializeBaseClass
 {
@@ -127,11 +131,7 @@ protected:
 public:
   SERIALIZABLE_CLASS(StartClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(StartClause)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theStartClauseIter;
-    ar & theWindowVars;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   StartClause(PlanIter_t aStartClauseIter, WindowVars& aWindowVars);
@@ -143,38 +143,49 @@ protected:
 
   void accept(PlanIterVisitor&) const;
 
-  void open(PlanState& aPlanState, uint32_t& offset) const;
-  void reset(PlanState& aPlanState) const;
-  void close(PlanState& aPlanState) const;
+  void open(PlanState& planState, uint32_t& offset) const;
+  void reset(PlanState& planState) const;
+  void close(PlanState& planState) const;
 
   bool evaluate(
-        PlanState& aPlanState,
-        const store::TempSeq_t& aInputSeq,
-        const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 
   void bindIntern(
-        PlanState& aPlanState,
-        const store::TempSeq_t& aInputSeq,
-        const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 
   void bindExtern(
-        PlanState& aPlanState,
-        const store::TempSeq_t& aInputSeq,
-        const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 };
 
 
 /***************************************************************************//**
   Represents the end condition of a window clause.
 
-  theEndClauseIter : The iterator evaluating the condition expression of "this"
-  theWindowVars    : Stores the iterators representing the references to the
-                     "end" variables of this window clause, both inside the
-                     condition expression of "this" and outside the window clause.
-  theOnlyEnd       : Whether the end condition contains the "only" keyword or not.
-  theHasEndClause  : An EndClause instance is created even if the window clause
-                     has no end condition. For thie "dummy" EndClause obj, 
-                     theHasEndClause will be false; otherwise it will be true.
+  theEndClauseIter :
+  ------------------
+  The iterator evaluating the condition expression of "this"
+
+  theWindowVars :
+  ---------------
+  Stores the iterators representing the references to the "end" variables of
+  this window clause, both inside the condition expression of "this" and outside
+  the window clause.
+
+  theOnlyEnd :
+  ------------
+  Whether the end condition contains the "only" keyword or not.
+
+  theHasEndClause :
+  -----------------
+  An EndClause instance is created even if the window clause has no end condition.
+  For the "dummy" EndClause obj, theHasEndClause will be false; otherwise it will
+  be true.
 ********************************************************************************/
 class EndClause : public ::zorba::serialization::SerializeBaseClass
 {
@@ -189,21 +200,15 @@ protected:
 public:
   SERIALIZABLE_CLASS(EndClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(EndClause)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theEndClauseIter;
-    ar & theWindowVars;
-    ar & theOnlyEnd;
-    ar & theHasEndClause;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   EndClause();
 
   EndClause(
-        PlanIter_t aEndClauseIter,
-        WindowVars& theWindowVars,
-        bool aOnlyEnd);
+      PlanIter_t aEndClauseIter,
+      WindowVars& theWindowVars,
+      bool aOnlyEnd);
 
   virtual ~EndClause();
 
@@ -212,24 +217,24 @@ protected:
 
   void accept(PlanIterVisitor&) const;
 
-  void open(PlanState& aPlanState, uint32_t& offset) const;
-  void reset(PlanState& aPlanState) const;
-  void close(PlanState& aPlanState) const;
+  void open(PlanState& planState, uint32_t& offset) const;
+  void reset(PlanState& planState) const;
+  void close(PlanState& planState) const;
 
   bool evaluate(
-        PlanState& aPlanState,
-        const store::TempSeq_t& aInputSeq,
-        const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 
   void bindIntern(
-        PlanState& aPlanState,
-        const store::TempSeq_t& aInputSeq,
-        const ulong aPosition ) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 
   void bindExtern(
-        PlanState& aPlanState,
-        const store::TempSeq_t& aInputSeq,
-        const ulong aPosition) const;
+      PlanState& planState,
+      const store::TempSeq_t& inSeq,
+      ulong pos) const;
 };
 
 
@@ -365,14 +370,14 @@ public:
 
   void accept(PlanIterVisitor&) const;
 
-  void openImpl(PlanState& aPlanState, uint32_t& aOffset);
-  bool nextImpl(store::Item_t& aResult, PlanState& aPlanState) const;
-  void resetImpl(PlanState& aPlanState) const;
-  void closeImpl(PlanState& aPlanState);
+  void openImpl(PlanState& planState, uint32_t& aOffset);
+  bool nextImpl(store::Item_t& aResult, PlanState& planState) const;
+  void resetImpl(PlanState& planState) const;
+  void closeImpl(PlanState& planState);
 
 private:
   void bindVariable(
-        PlanState& aPlanState,
+        PlanState& planState,
         store::TempSeq_t& aInputSeq,
         ulong aStartPos,
         ulong aEndPos) const;

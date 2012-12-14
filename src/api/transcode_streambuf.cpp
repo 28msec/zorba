@@ -81,8 +81,7 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
   return proxy_buf_->sgetn( to, size );
 }
 
-streamsize streambuf::xsputn( char_type const *from,
-                                       streamsize size ) {
+streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
   return proxy_buf_->sputn( from, size );
 }
 
@@ -103,17 +102,13 @@ bool is_supported( char const *charset ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace internal {
+namespace transcode {
 
 // Both new & delete are done here inside Zorba rather than in the header to
 // guarantee that they're cross-DLL-boundary safe on Windows.
 
-zorba::transcode::streambuf*
-alloc_streambuf( char const *charset, std::streambuf *orig ) {
+std::streambuf* alloc_streambuf( char const *charset, std::streambuf *orig ) {
   return new zorba::transcode::streambuf( charset, orig );
-}
-
-void dealloc_streambuf( zorba::transcode::streambuf *buf ) {
-  delete buf;
 }
 
 int get_streambuf_index() {
@@ -133,16 +128,7 @@ int get_streambuf_index() {
   return index;
 }
 
-void stream_callback( ios_base::event e, ios_base &ios, int index ) {
-  //
-  // See: "Standard C++ IOStreams and Locales: Advanced Programmer's Guide and
-  // Reference," Angelika Langer and Klaus Kreft, Addison-Wesley, 2000, section
-  // 3.3.1.4: "Using Stream Callbacks for Memory Management."
-  //
-  if ( e == ios_base::erase_event )
-    delete static_cast<streambuf*>( ios.pword( index ) );
-}
-
+} // namespace transcode
 } // namespace internal
 
 ///////////////////////////////////////////////////////////////////////////////
