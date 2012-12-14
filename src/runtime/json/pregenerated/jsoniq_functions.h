@@ -460,6 +460,7 @@ public:
 
 #endif
 
+#ifdef ZORBA_WITH_JSON
 /**
  * jn:json-doc
  * Author: Zorba Team
@@ -505,6 +506,7 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
 #ifdef ZORBA_WITH_JSON
 /**

@@ -388,7 +388,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONDocIterator">
+<zorba:iterator name="JSONDocIterator"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
   
   <zorba:description author="Zorba Team">jn:json-doc</zorba:description>
   
