@@ -169,6 +169,11 @@ public:
     DEREFERENCES_NODES_MASK       = 0xC00000
   } AnnotationMask;
 
+  typedef enum
+  {
+    IN_TYPE_COMPUTE  = 0x1
+  } BoolFlags;
+
 
 protected:
   static expr*      iter_end_expr;
@@ -189,11 +194,13 @@ protected:
 
   xqtref_t           theType;
 
-  uint32_t           theFlags1;
+  uint32_t           theAnnotationFlags;
+
+  uint8_t            theBoolFlags;
+
+  uint8_t            theVisitId;
 
   FreeVars           theFreeVars;
-
-  int                theVisitId;
 
 public:
   static bool is_sequential(unsigned short theScriptingKind);
@@ -224,9 +231,9 @@ public:
 
   void set_loc(const QueryLoc& loc) { theLoc = loc; }
 
-  uint32_t getFlags() const { return theFlags1; }
+  uint32_t getAnnotationFlags() const { return theAnnotationFlags; }
 
-  void setFlags(uint32_t flags) { theFlags1 = flags; }
+  void setAnnotationFlags(uint32_t flags) { theAnnotationFlags = flags; }
 
   unsigned short get_scripting_detail() const { return theScriptingKind; }
 
@@ -263,6 +270,20 @@ public:
   std::string toString() const;
 
 public:
+  //
+  void setVisitId(uint8_t id) { theVisitId = id; }
+
+  bool isVisited(uint8_t id) const { return theVisitId == id; }
+
+  uint8_t getVisitId() const { return theVisitId; }
+
+  // Transient flag used only during the type computation for global vars
+  bool isInTypeCompute() const { return theBoolFlags & IN_TYPE_COMPUTE; }
+
+  void setInTypeCompute() { theBoolFlags |= IN_TYPE_COMPUTE; }
+
+  void resetInTypeCompute() { theBoolFlags &= ~IN_TYPE_COMPUTE; }
+
   // Annotation : produces-sorted-nodes
   BoolAnnotationValue getProducesSortedNodes() const;
 
@@ -351,12 +372,6 @@ public:
   void setFreeVars(FreeVars& s);
 
   //
-  void setVisitId(int id) { theVisitId = id; }
-
-  bool isVisited(int id) const { return theVisitId == id; }
-
-  int getVisitId() const { return theVisitId; }
-
   bool is_constant() const;
 
   bool is_nondeterministic() const;

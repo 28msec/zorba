@@ -495,6 +495,10 @@ static_context::ZORBA_OPTION_OPTIM_NS =
 "http://www.zorba-xquery.com/options/optimizer";
 
 const char*
+static_context::XQUERY_OPTION_NS =
+"http://www.w3.org/2011/xquery-options";
+
+const char*
 static_context::ZORBA_VERSIONING_NS =
 "http://www.zorba-xquery.com/options/versioning";
 
@@ -590,12 +594,8 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
-            ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
-#ifdef ZORBA_WITH_JSON
-            ns == JSONIQ_FN_NS ||
-#endif
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
