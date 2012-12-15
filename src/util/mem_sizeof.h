@@ -53,12 +53,12 @@ namespace ztd {
  *
  * For all built-in types as well as arrays, structs, classes, and unions
  * composed of only built-in types, <code>mem_sizeof(t) == sizeof(t)</code>.
- * However, for a \c std::string \s,
+ * However, for a \c std::string \c s,
  * <code>mem_sizeof(s) == sizeof(s) + s.capacity()</code>.
  *
  * To implement this, there has to be a distinction between
- * <em>memory size</em> (<code>mem_sizeof()</code)
- * and <em>allocation size</em> (<code>alloc_sizeof()</code).
+ * <em>memory size</em> (<code>mem_sizeof()</code>)
+ * and <em>allocation size</em> (<code>alloc_sizeof()</code>).
  * The latter is how much \e additional memory has been dynamically allocated
  * by an object (if any).
  *
@@ -265,7 +265,7 @@ struct size_traits<T*,false> {
 template<>
 struct size_traits<char const*> {
   static size_t alloc_sizeof( char const *s ) {
-    return s ? std::strlen( s ) : 0;
+    return s ? std::strlen( s ) + 1 /* terminating null */ : 0;
   }
 };
 
