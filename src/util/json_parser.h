@@ -501,8 +501,15 @@ public:
    * Constructs a %parser on the given istream.
    *
    * @param in The istream to read from.
+   * @param allow_multiple If \c true, allow multiple top-level JSON items.
    */
-  parser( std::istream &in );
+  parser( std::istream &in, bool allow_multiple = false );
+
+  /**
+   * Resets this %parser to its almost-initial state.  (It does not, however,
+   * reset the file location.)
+   */
+  void clear();
 
   /**
    * Gets the next token, if any.
@@ -546,6 +553,7 @@ private:
 
   friend std::ostream& operator<<( std::ostream&, state );
 
+  void init();
   bool get_token( token* );
   bool get_token_debug( int, token* );
   bool matches_token( token::type, token* );
@@ -555,6 +563,7 @@ private:
   void require_token( token::type, token* );
   void require_token_debug( int, token::type, token* );
 
+  bool allow_multiple_;
   lexer lexer_;
   token peeked_token_;
   std::stack<state> state_stack_;

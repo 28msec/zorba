@@ -821,6 +821,12 @@ public:
   getJSONItemKind() const;
 
   /**
+   * @return true if the JSON item is a root in a collection.
+   */
+  virtual bool
+  isRoot() const;
+
+  /**
    * defined on JSONArray
    * (jdm:size accessor on an array)
    * @return the number of values in the array.
@@ -924,6 +930,15 @@ public:
             locale::iso639_1::type lang, bool wildcards = false) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
+  /* --------------------- Method for Full swap ---------------------- */
+  
+  /**
+   * Performs a full memory swap with the other item. It can also be seen as
+   * a swap of their locations in memory.
+   *
+   * @param anotherItem The item with which this must be swapped.
+   */
+  virtual void swap(Item* anotherItem);
 
 private:
   Item(const Item& other);

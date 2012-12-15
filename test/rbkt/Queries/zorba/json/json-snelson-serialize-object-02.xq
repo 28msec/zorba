@@ -6,4 +6,5 @@ let $json :=
     <pair name="b" type="number">2</pair>
   </json>
 return json:serialize( $json )
+
 (: vim:set et sw=2 ts=2: :)

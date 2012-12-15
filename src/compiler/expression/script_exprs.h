@@ -181,68 +181,6 @@ public:
 
 /*******************************************************************************
 
-  For Global Var:
-  ----------------
-
-  AnnotatedDecl ::= "declare" Annotation* (VarDecl | FunctionDecl)
-
-  Annotation ::= "%" EQName ("(" Literal ("," Literal)* ")")?
-
-  VarDecl ::= "variable" "$" VarName TypeDeclaration?
-              ((":=" VarValue) | ("external" (":=" VarDefaultValue)?))
-
-  For Local Var:
-  --------------
-
-  VarDeclExpr ::= ("local" Annotation*)? "variable" "$" VarName TypeDeclaration?
-                  (":=" ExprSingle)?
-
-  var_decl_expr is used to declare block-local and prolog variables (including
-  the context item, if it is declared in the prolog). During runtime, the
-  associated iterator creates in the local dynamic context a binding between
-  the variable id and the variable value. If the declaration includes an
-  initializing expr, the iterator computes the initExpr and stores the resulting
-  value inside this binding.
-
-  Note: the init expr must be non-updating. For global vars, it must also be
-  non-sequential.
-********************************************************************************/
-class var_decl_expr : public expr
-{
-  friend class ExprManager;
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-  var_expr * theVarExpr;
-  expr     * theInitExpr;
-
-protected:
-  var_decl_expr(
-      CompilerCB* ccb,
-      static_context* sctx,
-      user_function* udf,
-      const QueryLoc& loc,
-      var_expr* varExpr,
-      expr* initExpr);
-
-public:
-  ~var_decl_expr();
-
-  var_expr* get_var_expr() const { return theVarExpr; }
-
-  expr* get_init_expr() const { return theInitExpr; }
-
-  void compute_scripting_kind();
-
-  void accept(expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-};
-
-
-/*******************************************************************************
-
   AssignStatement ::= "$" VarName ":=" ExprSingle ";"
 
   The RHS of the assignment must be a non-updating expr.
@@ -269,7 +207,8 @@ protected:
       user_function* udf,
       const QueryLoc& loc,
       var_expr* varExpr,
-      expr* setExpr);
+      expr* setExpr,
+      bool isDecl = false);
 
 public:
   ~var_set_expr();
@@ -277,6 +216,62 @@ public:
   var_expr* get_var_expr() const { return theVarExpr; }
 
   expr* get_expr() const { return theExpr; }
+
+  void compute_scripting_kind();
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/*******************************************************************************
+
+  For Global Var:
+  ----------------
+
+  AnnotatedDecl ::= "declare" Annotation* (VarDecl | FunctionDecl)
+
+  Annotation ::= "%" EQName ("(" Literal ("," Literal)* ")")?
+
+  VarDecl ::= "variable" "$" VarName TypeDeclaration?
+              ((":=" VarValue) | ("external" (":=" VarDefaultValue)?))
+
+  For Local Var:
+  --------------
+
+  VarDeclExpr ::= ("local" Annotation*)? "variable" "$" VarName TypeDeclaration?
+                  (":=" ExprSingle)?
+
+  var_decl_expr is used to declare block-local and prolog variables (including
+  the context item, if it is declared in the prolog). During runtime, the
+  associated iterator creates in the local dynamic context a binding between
+  the variable id and the variable value. If the declaration includes an
+  initializing expr, the iterator computes the initExpr and stores the resulting
+  value inside this binding.
+
+  Note: the init expr must be non-updating. For global vars, it must also be
+  non-sequential.
+********************************************************************************/
+class var_decl_expr : public var_set_expr
+{
+  friend class ExprManager;
+  friend class ExprIterator;
+  friend class expr;
+
+protected:
+  var_decl_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      var_expr* varExpr,
+      expr* initExpr);
+
+public:
+  ~var_decl_expr();
+
+  expr* get_init_expr() const { return theExpr; }
 
   void compute_scripting_kind();
 

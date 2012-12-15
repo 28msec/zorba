@@ -17,4 +17,5 @@ let $json := '
   }
   '
 return json:parse( $json )
+
 (: vim:set et sw=2 ts=2: :)

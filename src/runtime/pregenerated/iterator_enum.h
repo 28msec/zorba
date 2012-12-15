@@ -54,6 +54,7 @@
   TYPE_ZorbaDeleteNodesIterator,
   TYPE_ZorbaDeleteNodesFirstIterator,
   TYPE_ZorbaDeleteNodesLastIterator,
+  TYPE_ZorbaEditNodesIterator,
   TYPE_ZorbaTruncateCollectionIterator,
   TYPE_IsAvailableIndexIterator,
   TYPE_AvailableIndexesIterator,

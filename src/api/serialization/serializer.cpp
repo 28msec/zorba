@@ -2482,8 +2482,10 @@ void serializer::getSerializationMethod(zstring& m) const
     case PARAMETER_VALUE_XHTML: m = "xhtml"; break;
     case PARAMETER_VALUE_TEXT: m = "text"; break;
     case PARAMETER_VALUE_BINARY: m = "binary"; break;
+#ifdef ZORBA_WITH_JSON
     case PARAMETER_VALUE_JSON: m = "json"; break;
     case PARAMETER_VALUE_JSON_XML_HYBRID: m = "json-xml-hybrid"; break;
+#endif
     default: ZORBA_ASSERT(false);
   }
 }

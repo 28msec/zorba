@@ -175,6 +175,7 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS scripting)
 IF (ZORBA_WITH_JSON)
   LIST(APPEND RUNTIME_SRCS
     json/json_constructors.cpp
+    json/json_loader.cpp
   )
   HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS json)
 ENDIF (ZORBA_WITH_JSON)
