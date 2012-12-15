@@ -74,7 +74,7 @@ inline void set_gmtoff( ztm &tm, long gmtoff ) {
 
 /**
  * Parses the string in the buffer according to the given format and fills in
- * the given tm structure.
+ * the given \c tm structure.
  *
  * @param buf The buffer to parse.
  * @param fmt The format string containing zero or more conversion
@@ -91,7 +91,7 @@ char const* strptime( char const *buf, char const *fmt, ztm *tm );
 
 /**
  * Parses the string in the buffer according to the given format and fills in
- * the given tm structure.
+ * the given \c tm structure.
  *
  * @tparam BufferType The buffer string type.
  * @param buf The buffer to parse.
@@ -116,7 +116,7 @@ strptime( BufferType const &buf, char const *fmt, ztm *tm ) {
 
 /**
  * Parses the string in the buffer according to the given format and fills in
- * the given tm structure.
+ * the given \c tm structure.
  *
  * @tparam BufferType The buffer string type.
  * @tparam FormatType The format string type.
