@@ -333,16 +333,17 @@ namespace UnitTests {
 
 int test_strptime( int, char*[] ) {
 
-  test_locale( "%a", &zloc::get_weekday_abbr, 7, &ztm::tm_wday );
-  test_locale( "%A", &zloc::get_weekday_name, 7, &ztm::tm_wday );
-  test_locale( "%b", &zloc::get_month_abbr, 12, &ztm::tm_mon );
-  test_locale( "%B", &zloc::get_month_name, 12, &ztm::tm_mon );
+  test_locale( "%A", &zloc::get_weekday_abbr,  7, &ztm::tm_wday );
+  test_locale( "%A", &zloc::get_weekday_name,  7, &ztm::tm_wday );
+  test_locale( "%a", &zloc::get_weekday_abbr,  7, &ztm::tm_wday );
+  test_locale( "%a", &zloc::get_weekday_name,  7, &ztm::tm_wday );
+  test_locale( "%b", &zloc::get_month_abbr  , 12, &ztm::tm_mon  );
+  test_locale( "%B", &zloc::get_month_name  , 12, &ztm::tm_mon  );
 
   test_range( "%d", 1,   31, &ztm::tm_mday );
   test_range( "%j", 1,  366, &ztm::tm_yday, &minus_1 );
   test_range( "%k", 0,   23, &ztm::tm_hour );
   test_range( "%H", 0,   23, &ztm::tm_hour );
-
   test_range( "%l", 1,   12, &ztm::tm_hour, &mod_12 );
   test_range( "%I", 1,   12, &ztm::tm_hour, &mod_12 );
   test_range( "%m", 1,   12, &ztm::tm_mon, &minus_1 );
@@ -351,12 +352,12 @@ int test_strptime( int, char*[] ) {
   test_range( "%w", 0,    6, &ztm::tm_wday );
   test_range( "%Y", 0, 9999, &ztm::tm_year, &minus_1900 );
 
-  test_D();
-  test_F();
-  test_zZ();
-  test_literals();
   test_ampm();
   test_bad_dates();
+  test_D();
+  test_F();
+  test_literals();
+  test_zZ();
 
   cout << failures << " test(s) failed\n";
   return failures ? 1 : 0;
