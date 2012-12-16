@@ -135,6 +135,14 @@ static int calc_wday( int mday, int mon, int year ) {
   return (mday + y + y/4 - y/100 + y/400 + (31 * m) / 12) % 7;
 }
 
+static int calc_yday( int mday, int mon, int year ) {
+  static int const first_of_the_month[][12] = {
+    { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 }, // non-leap year
+    { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335 }  // leap year
+  };
+  return first_of_the_month[ is_leap_year( year ) ][ mon ] + mday;
+}
+
 static void validate_mday( int mday, int mon, int year ) {
   if ( mday > days_in_month[ mon ] + (mon == 1 && is_leap_year( year )) )
     throw invalid_argument(
@@ -149,6 +157,16 @@ static void validate_wday( int wday, int mday, int mon, int year ) {
     throw invalid_argument(
       BUILD_STRING(
         wday, ": invalid weekday for date ",
+        mday, '-', locale::get_month_abbr( mon ), '-', year
+      )
+    );
+}
+
+static void validate_yday( int yday, int mday, int mon, int year ) {
+  if ( yday != calc_yday( mday, mon, year ) )
+    throw invalid_argument(
+      BUILD_STRING(
+        yday, ": invalid day of year for date ",
         mday, '-', locale::get_month_abbr( mon ), '-', year
       )
     );
@@ -243,10 +261,15 @@ static char const* parse_num( char conv_char, char const *bp,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-unsigned const got_mday = 0x01;         // month day: 1-{28,29,30,31}
-unsigned const got_mon  = 0x02;         // month: 0-11
-unsigned const got_wday = 0x04;         // weekday: 0-6
-unsigned const got_year = 0x08;
+unsigned const got_gmtoff = 0x001;      // minutes: 0-59
+unsigned const got_hour   = 0x002;      // hour: 0-23
+unsigned const got_mday   = 0x004;      // month day: 1-{28,29,30,31}
+unsigned const got_min    = 0x008;      // minutes: 0-59
+unsigned const got_mon    = 0x010;      // month: 0-11
+unsigned const got_sec    = 0x020;      // seconds: 0-60
+unsigned const got_wday   = 0x040;      // weekday: 0-6
+unsigned const got_yday   = 0x080;      // day of the year: 0-365
+unsigned const got_year   = 0x100;
 
 static char const* strptime_impl( char const *buf, char const *fmt, ztm *tm,
                                   unsigned *got_flags ) {
@@ -347,6 +370,7 @@ again:
         CHECK_ALT(0);
         bp = parse_num( c, bp, 1, 366, &n );
         tm->tm_yday = n - 1;
+        *got_flags |= got_yday;
         break;
 
       case 'k': // hour: 0-23
@@ -356,6 +380,7 @@ again:
       case 'H': // hour: 00-23
         CHECK_ALT(ALT_O);
 case_H: bp = parse_num( c, bp, 0, 23, &tm->tm_hour );
+        *got_flags |= got_hour;
         break;
 
       case 'l': // hour: 1-12
@@ -367,6 +392,7 @@ case_H: bp = parse_num( c, bp, 0, 23, &tm->tm_hour );
 case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
         if ( tm->tm_hour == 12 )
           tm->tm_hour = 0;
+        *got_flags |= got_hour;
         break;
 
       case 'm': // month: 01-12
@@ -379,6 +405,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
       case 'M': // minute: 00-59
         CHECK_ALT(ALT_O);
         bp = parse_num( c, bp, 0, 59, &tm->tm_min );
+        *got_flags |= got_min;
         break;
 
       case 'n': // newline
@@ -415,6 +442,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
       case 'S': // seconds: 00-60 (60 for leap second)
         CHECK_ALT(ALT_O);
         bp = parse_num( c, bp, 0, 60, &tm->tm_sec );
+        *got_flags |= got_sec;
         break;
 
 #if 0
@@ -527,6 +555,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
             gmtoff *= sign;
           set_gmtoff( *tm, gmtoff );
           tm->tm_isdst = 0;
+          *got_flags |= got_gmtoff;
           break;
         } else if ( sign )              // sign followed by non-digit
 bad_tz:   throw invalid_argument( "invalid 4-digit timezone offset" );
@@ -540,6 +569,7 @@ bad_tz:   throw invalid_argument( "invalid 4-digit timezone offset" );
           if ( ::strncmp( bp, z->name, len ) == 0 ) {
             set_gmtoff( *tm, z->gmtoff );
             tm->tm_isdst = z->isdst;
+            *got_flags |= got_gmtoff;
             bp += len;
             goto next_outer_loop;
           }
@@ -570,6 +600,8 @@ recurse:
     validate_mday( tm->tm_mday, tm->tm_mon, year );
     if ( *got_flags & got_wday )
       validate_wday( tm->tm_wday, tm->tm_mday, tm->tm_mon, year );
+    if ( *got_flags & got_yday )
+      validate_yday( tm->tm_yday, tm->tm_mday, tm->tm_mon, year );
   }
 
   return bp;

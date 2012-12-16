@@ -199,23 +199,28 @@ static void test_bad_dates() {
     char const *date;
   };
   static bad_date bad_dates[] = {
-    { "%F",     "  2011-02-29" }, // not a leap year
-    { "%F",     "  2011-04-31" }, // Apr 31 is invalid
-    { "%F",     "  2011-06-31" }, // Jun 31 is invalid
-    { "%F",     "  2011-09-31" }, // Sep 31 is invalid
-    { "%F",     "  2011-11-31" }, // Nov 31 is invalid
-    { "%w %F",  "1 2012-01-01" }, // date is a Sun (0)
-    { "%w %F",  "2 2012-01-01" }, // date is a Sun (0)
-    { "%w %F",  "3 2012-01-01" }, // date is a Sun (0)
-    { "%w %F",  "4 2012-01-01" }, // date is a Sun (0)
-    { "%w %F",  "5 2012-01-01" }, // date is a Sun (0)
-    { "%w %F",  "6 2012-01-01" }, // date is a Sun (0)
-    { "%w %F",  "0 2013-01-01" }, // date is a Tue (2)
-    { "%w %F",  "1 2013-01-01" }, // date is a Tue (2)
-    { "%w %F",  "3 2013-01-01" }, // date is a Tue (2)
-    { "%w %F",  "4 2013-01-01" }, // date is a Tue (2)
-    { "%w %F",  "5 2013-01-01" }, // date is a Tue (2)
-    { "%w %F",  "6 2013-01-01" }, // date is a Tue (2)
+    { "%F",     "   2011-02-29" },      // not a leap year
+    { "%F",     "   2011-04-31" },      // Apr 31 is invalid
+    { "%F",     "   2011-06-31" },      // Jun 31 is invalid
+    { "%F",     "   2011-09-31" },      // Sep 31 is invalid
+    { "%F",     "   2011-11-31" },      // Nov 31 is invalid
+    { "%w %F",  " 1 2012-01-01" },      // date is a Sun (0)
+    { "%w %F",  " 2 2012-01-01" },      // date is a Sun (0)
+    { "%w %F",  " 3 2012-01-01" },      // date is a Sun (0)
+    { "%w %F",  " 4 2012-01-01" },      // date is a Sun (0)
+    { "%w %F",  " 5 2012-01-01" },      // date is a Sun (0)
+    { "%w %F",  " 6 2012-01-01" },      // date is a Sun (0)
+    { "%w %F",  " 0 2013-01-01" },      // date is a Tue (2)
+    { "%w %F",  " 1 2013-01-01" },      // date is a Tue (2)
+    { "%w %F",  " 3 2013-01-01" },      // date is a Tue (2)
+    { "%w %F",  " 4 2013-01-01" },      // date is a Tue (2)
+    { "%w %F",  " 5 2013-01-01" },      // date is a Tue (2)
+    { "%w %F",  " 6 2013-01-01" },      // date is a Tue (2)
+    { "%j %F",  " 1 2013-01-01" },      // day is 0
+    { "%j %F",  "30 2013-02-01" },      // day is 31
+    { "%j %F",  "32 2013-02-01" },      // day is 31
+    { "%j %F",  "59 2012-03-01" },      // day is 60
+    { "%j %F",  "61 2012-03-01" },      // day is 60
     0
   };
   ztm tm;
