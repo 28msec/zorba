@@ -193,6 +193,40 @@ static void test_range( char const *conv, int low, int high,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static void test_bad_dates() {
+  struct bad_date {
+    char const *conv;
+    char const *date;
+  };
+  static bad_date bad_dates[] = {
+    { "%F",     "  2011-02-29" }, // not a leap year
+    { "%F",     "  2011-04-31" }, // Apr 31 is invalid
+    { "%F",     "  2011-06-31" }, // Jun 31 is invalid
+    { "%F",     "  2011-09-31" }, // Sep 31 is invalid
+    { "%F",     "  2011-11-31" }, // Nov 31 is invalid
+    { "%w %F",  "1 2012-01-01" }, // date is a Sun (0)
+    { "%w %F",  "2 2012-01-01" }, // date is a Sun (0)
+    { "%w %F",  "3 2012-01-01" }, // date is a Sun (0)
+    { "%w %F",  "4 2012-01-01" }, // date is a Sun (0)
+    { "%w %F",  "5 2012-01-01" }, // date is a Sun (0)
+    { "%w %F",  "6 2012-01-01" }, // date is a Sun (0)
+    { "%w %F",  "0 2013-01-01" }, // date is a Tue (2)
+    { "%w %F",  "1 2013-01-01" }, // date is a Tue (2)
+    { "%w %F",  "3 2013-01-01" }, // date is a Tue (2)
+    { "%w %F",  "4 2013-01-01" }, // date is a Tue (2)
+    { "%w %F",  "5 2013-01-01" }, // date is a Tue (2)
+    { "%w %F",  "6 2013-01-01" }, // date is a Tue (2)
+    0
+  };
+  ztm tm;
+  for ( bad_date const *p = bad_dates; p->date; ++p ) {
+    ::memset( &tm, 0, sizeof( tm ) );
+    ASSERT_EXCEPTION(
+      ztd::strptime( p->date, p->conv, &tm ), invalid_argument
+    );
+  }
+}
+
 static void test_D() {                  // %m/%d/%y
   ztm tm;
   char const *const buf = "1/2/12";
@@ -265,15 +299,15 @@ static void test_zZ() {
   };
 
   ztm tm;
-  for ( gmt_test const *t = gmt_tests; t->s_off; ++t ) {
-    size_t const len = ::strlen( t->s_off );
+  for ( gmt_test const *p = gmt_tests; p->s_off; ++p ) {
+    size_t const len = ::strlen( p->s_off );
     char const *bp;
     ::memset( &tm, 0, sizeof( tm ) );
-    ASSERT_NO_EXCEPTION( bp = ztd::strptime( t->s_off, "%z", &tm ) );
-    ASSERT_TRUE( bp == t->s_off + len );
+    ASSERT_NO_EXCEPTION( bp = ztd::strptime( p->s_off, "%z", &tm ) );
+    ASSERT_TRUE( bp == p->s_off + len );
     long const gmt_off = ztd::get_gmtoff( tm );
-    ASSERT_TRUE( gmt_off == t->l_off );
-    ASSERT_TRUE( tm.tm_isdst == (t->s_off[1] == 'D') );
+    ASSERT_TRUE( gmt_off == p->l_off );
+    ASSERT_TRUE( tm.tm_isdst == (p->s_off[1] == 'D') );
   }
 
   static char const *const bad_gmts[] = {
@@ -283,8 +317,8 @@ static void test_zZ() {
     "XXX",
     0
   };
-  for ( char const *const *t = bad_gmts; *t; ++t )
-    ASSERT_EXCEPTION( ztd::strptime( *t, "%z", &tm ), invalid_argument );
+  for ( char const *const *p = bad_gmts; *p; ++p )
+    ASSERT_EXCEPTION( ztd::strptime( *p, "%z", &tm ), invalid_argument );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -317,6 +351,7 @@ int test_strptime( int, char*[] ) {
   test_zZ();
   test_literals();
   test_ampm();
+  test_bad_dates();
 
   cout << failures << " test(s) failed\n";
   return failures ? 1 : 0;

@@ -243,13 +243,15 @@ static char const* parse_num( char conv_char, char const *bp,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-char const* strptime( char const *buf, char const *fmt, ztm *tm ) {
+unsigned const got_mday = 0x01;         // month day: 1-{28,29,30,31}
+unsigned const got_mon  = 0x02;         // month: 0-11
+unsigned const got_wday = 0x04;         // weekday: 0-6
+unsigned const got_year = 0x08;
+
+static char const* strptime_impl( char const *buf, char const *fmt, ztm *tm,
+                                  unsigned *got_flags ) {
   char const *bp = buf;
   char c;
-  bool got_mday = false;                // month day: 1-31
-  bool got_mon = false;                 // month: 0-11
-  bool got_wday = false;                // weekday: 0-6
-  bool got_year = false;
   char const *recurse_fmt;
   bool split_year = false;
 
@@ -281,26 +283,26 @@ again:
       case 'a': // abbreviated weekday name
         CHECK_ALT(0);
         bp = locale_find( c, bp, &locale::get_weekday_abbr, 7, &tm->tm_wday );
-        got_wday = true;
+        *got_flags |= got_wday;
         break;
 
       case 'A': // full weekday name
         CHECK_ALT(0);
         bp = locale_find( c, bp, &locale::get_weekday_name, 7, &tm->tm_wday );
-        got_wday = true;
+        *got_flags |= got_wday;
         break;
 
       case 'b': // abbreviated month name
       case 'h': // same as %b
         CHECK_ALT(0);
         bp = locale_find( c, bp, &locale::get_month_abbr, 12, &tm->tm_mon );
-        got_mon = true;
+        *got_flags |= got_mon;
         break;
 
       case 'B': // full month name
         CHECK_ALT(0);
         bp = locale_find( c, bp, &locale::get_month_name, 12, &tm->tm_mon );
-        got_mon = true;
+        *got_flags |= got_mon;
         break;
 
       case 'c': // date and time
@@ -317,7 +319,7 @@ again:
         else
           split_year = true;
         tm->tm_year = n;
-        got_year = true;
+        *got_flags |= got_year;
         break;
 
       case 'D':
@@ -329,7 +331,7 @@ again:
       case 'e': // day of month: 1-31
         CHECK_ALT(ALT_O);
         bp = parse_num( c, bp, 1, 31, &tm->tm_mday );
-        got_mday = true;
+        *got_flags |= got_mday;
         break;
 
       case 'E': // "%E?" alternative conversion modifier
@@ -371,7 +373,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
         CHECK_ALT(ALT_O);
         bp = parse_num( c, bp, 1, 12, &n );
         tm->tm_mon = n - 1;
-        got_mon = true;
+        *got_flags |= got_mon;
         break;
 
       case 'M': // minute: 00-59
@@ -429,7 +431,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
         CHECK_ALT(ALT_O);
         bp = parse_num( c, bp, 1, 7, &n );
         tm->tm_wday = n - 1;
-        got_wday = true;
+        *got_flags |= got_wday;
         break;
 
       case 'V': // week of year, beginning on Monday: 01-53
@@ -461,7 +463,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
       case 'w': // day of week, beginning on Sunday: 0-6
         CHECK_ALT(ALT_O);
         bp = parse_num( c, bp, 0, 6, &tm->tm_wday );
-        got_wday = true;
+        *got_flags |= got_wday;
         break;
 
       case 'x': // date
@@ -484,14 +486,14 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
           split_year = true;
         }
         tm->tm_year = n;
-        got_year = true;
+        *got_flags |= got_year;
         break;
 
       case 'Y': // year: 0-9999
         CHECK_ALT(ALT_E);
         bp = parse_num( c, bp, 0, 9999, &n );
         tm->tm_year = n - TM_YEAR_BASE;
-        got_year = true;
+        *got_flags |= got_year;
         break;
 
       case 'z': { // RFC 2822 timezone offset or name: [+|-]HHMM | ZZZ
@@ -558,16 +560,24 @@ next_outer_loop:
     continue;
 
 recurse:
-    bp = ztd::strptime( bp, recurse_fmt, tm );
+    bp = ztd::strptime_impl( bp, recurse_fmt, tm, got_flags );
   } // while
 
-  if ( got_mday && got_mon && got_year ) {
-    validate_mday( tm->tm_mday, tm->tm_mon, tm->tm_year );
-    if ( got_wday )
-      validate_wday( tm->tm_wday, tm->tm_mday, tm->tm_mon, tm->tm_year );
+  if ( (*got_flags & got_mday) &&
+       (*got_flags & got_mon ) &&
+       (*got_flags & got_year) ) {
+    int const year = TM_YEAR_BASE + tm->tm_year;
+    validate_mday( tm->tm_mday, tm->tm_mon, year );
+    if ( *got_flags & got_wday )
+      validate_wday( tm->tm_wday, tm->tm_mday, tm->tm_mon, year );
   }
 
   return bp;
+}
+
+char const* strptime( char const *buf, char const *fmt, ztm *tm ) {
+  unsigned got_flags = 0;
+  return strptime_impl( buf, fmt, tm, &got_flags );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
