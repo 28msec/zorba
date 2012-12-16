@@ -237,6 +237,7 @@ static void locale_find( char conv_char, char const **bpp,
     //
     size_t const len_avg = len_sum / limit;
     string value( bp, len_avg );
+    ascii::trim_end_whitespace( value );
     value += "...";
     throw invalid_argument(
       BUILD_STRING( '"', value, "\": invalid value for %", conv_char )
