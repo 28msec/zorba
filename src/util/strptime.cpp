@@ -30,6 +30,7 @@
 // standard
 #include <cstring>
 #include <stdexcept>
+#include <string>
 #ifdef WIN32
 # include <windows.h>
 #else
@@ -48,14 +49,6 @@
 #ifndef TM_YEAR_BASE
 # define TM_YEAR_BASE 1900
 #endif
-
-//
-// We do not implement alternate representations. However, we always check
-// whether a given modifier is allowed for a certain conversion.
-//
-int const ALT_E = 0x01;
-int const ALT_O = 0x02;
-#define CHECK_ALT(x)  do { if ( alt_format & ~(x) ) bad_alt( c ); } while (0)
 
 using namespace std;
 
@@ -78,6 +71,33 @@ static int const days_in_month[] = {
   30, // 10: Nov
   31  // 11: Dec
 };
+
+struct rfc2822_obs_zone {
+  char const *name;
+  long gmtoff;
+  bool isdst;
+};
+
+//
+// See RFC 2822: "Internet Message Format," section 4.3, "Obsolete Date and
+// Time."
+//
+static rfc2822_obs_zone const rfc2822_obs_zones[] = {
+  { "GMT",  0                 },
+  { "UTC",  0                 }, // non-RFC: be liberal in what you accept....
+  { "UT" ,  0                 }, // must go after "UTC"
+  { "EDT", -4 * 60 * 60, true },
+  { "EST", -5 * 60 * 60       },
+  { "CDT", -5 * 60 * 60, true },
+  { "CST", -6 * 60 * 60       },
+  { "MDT", -6 * 60 * 60, true },
+  { "MST", -7 * 60 * 60       },
+  { "PDT", -7 * 60 * 60, true },
+  { "PST", -8 * 60 * 60       },
+  0
+};
+
+///////////////////////////////////////////////////////////////////////////////
 
 inline bool is_leap_year( int year ) {
   return !(year % 4) && ((year % 100) || !(year % 400));
@@ -174,33 +194,6 @@ static void validate_yday( int yday, int mday, int mon, int year ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct rfc2822_obs_zone {
-  char const *name;
-  int gmtoff;
-  bool isdst;
-};
-
-//
-// See RFC 2822: "Internet Message Format," section 4.3, "Obsolete Date and
-// Time."
-//
-static rfc2822_obs_zone const rfc2822_obs_zones[] = {
-  { "GMT",  0                 },
-  { "UTC",  0                 }, // non-RFC: be liberal in what you accept....
-  { "UT" ,  0                 }, // must go after "UTC"
-  { "EDT", -4 * 60 * 60, true },
-  { "EST", -5 * 60 * 60       },
-  { "CDT", -5 * 60 * 60, true },
-  { "CST", -6 * 60 * 60       },
-  { "MDT", -6 * 60 * 60, true },
-  { "MST", -7 * 60 * 60       },
-  { "PDT", -7 * 60 * 60, true },
-  { "PST", -8 * 60 * 60       },
-  0
-};
-
-///////////////////////////////////////////////////////////////////////////////
-
 typedef char const* (*locale_fn_type)(unsigned);
 
 static void bad_alt( char c ) {
@@ -218,22 +211,43 @@ static char const* get_time_ampm( unsigned pm ) {
   return locale::get_time_ampm( pm );
 }
 
-static char const* locale_find( char conv_char, char const *bp,
-                                locale_fn_type locale_fn,
-                                unsigned limit, int *result ) {
+static void locale_find( char conv_char, char const **bpp,
+                         locale_fn_type locale_fn, int limit, int *result,
+                         bool *found = nullptr ) {
+  char const *&bp = *bpp;
+  size_t len_sum = 0;
+
   for ( int i = 0; i < limit; ++i ) {
     char const *const s = (*locale_fn)( i );
     size_t const len = ::strlen( s );
+    len_sum += len;
     if ( ::strncmp( bp, s, len ) == 0 ) {
       *result = i;
-      return bp + len;
+      if ( found )
+        *found = true;
+      bp += len;
+      return;
     }
   }
-  throw invalid_argument( BUILD_STRING( "invalid value for %", conv_char ) );
+  if ( !found ) {
+    //
+    // Since we don't know the extent of the value in the buffer, extract a
+    // representative chunk whose length is the average length of all the legal
+    // values.
+    //
+    size_t const len_avg = len_sum / limit;
+    string value( bp, len_avg );
+    value += "...";
+    throw invalid_argument(
+      BUILD_STRING( '"', value, "\": invalid value for %", conv_char )
+    );
+  }
+  *found = false;
 }
 
-static char const* parse_num( char conv_char, char const *bp,
-                              unsigned low, unsigned high, int *result ) {
+static void parse_num( char conv_char, char const **bpp, unsigned low,
+                       unsigned high, int *result ) {
+  char const *&bp = *bpp;
   char c = *bp;
   if ( !ascii::is_digit( c ) )
     throw invalid_argument(
@@ -256,10 +270,17 @@ static char const* parse_num( char conv_char, char const *bp,
       )
     );
   *result = n;
-  return bp;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+//
+// We do not implement alternate representations. However, we always check
+// whether a given modifier is allowed for a certain conversion.
+//
+int const ALT_E = 0x01;
+int const ALT_O = 0x02;
+#define CHECK_ALT(x)  do { if ( alt_format & ~(x) ) bad_alt( c ); } while (0)
 
 unsigned const got_gmtoff = 0x001;      // minutes: 0-59
 unsigned const got_hour   = 0x002;      // hour: 0-23
@@ -275,6 +296,7 @@ static char const* strptime_impl( char const *buf, char const *fmt, ztm *tm,
                                   unsigned *got_flags ) {
   char const *bp = buf;
   char c;
+  bool found;
   char const *recurse_fmt;
   bool split_year = false;
 
@@ -304,27 +326,23 @@ again:
         goto literal;
 
       case 'a': // abbreviated weekday name
-        CHECK_ALT(0);
-        bp = locale_find( c, bp, &locale::get_weekday_abbr, 7, &tm->tm_wday );
-        *got_flags |= got_wday;
-        break;
-
       case 'A': // full weekday name
         CHECK_ALT(0);
-        bp = locale_find( c, bp, &locale::get_weekday_name, 7, &tm->tm_wday );
+        locale_find(
+          c, &bp, &locale::get_weekday_name, 7, &tm->tm_wday, &found
+        );
+        if ( !found )
+          locale_find( c, &bp, &locale::get_weekday_abbr, 7, &tm->tm_wday );
         *got_flags |= got_wday;
         break;
 
       case 'b': // abbreviated month name
+      case 'B': // full month name
       case 'h': // same as %b
         CHECK_ALT(0);
-        bp = locale_find( c, bp, &locale::get_month_abbr, 12, &tm->tm_mon );
-        *got_flags |= got_mon;
-        break;
-
-      case 'B': // full month name
-        CHECK_ALT(0);
-        bp = locale_find( c, bp, &locale::get_month_name, 12, &tm->tm_mon );
+        locale_find( c, &bp, &locale::get_month_name, 12, &tm->tm_mon, &found );
+        if ( !found )
+          locale_find( c, &bp, &locale::get_month_abbr, 12, &tm->tm_mon );
         *got_flags |= got_mon;
         break;
 
@@ -335,7 +353,7 @@ again:
 
       case 'C': // century number
         CHECK_ALT(ALT_E);
-        bp = parse_num( c, bp, 0, 99, &n );
+        parse_num( c, &bp, 0, 99, &n );
         n = n * 100 - TM_YEAR_BASE;
         if ( split_year )
           n += tm->tm_year % 100;
@@ -353,7 +371,7 @@ again:
       case 'd': // day of month: 01-31
       case 'e': // day of month: 1-31
         CHECK_ALT(ALT_O);
-        bp = parse_num( c, bp, 1, 31, &tm->tm_mday );
+        parse_num( c, &bp, 1, 31, &tm->tm_mday );
         *got_flags |= got_mday;
         break;
 
@@ -368,7 +386,7 @@ again:
 
       case 'j': // day of year: 001-366
         CHECK_ALT(0);
-        bp = parse_num( c, bp, 1, 366, &n );
+        parse_num( c, &bp, 1, 366, &n );
         tm->tm_yday = n - 1;
         *got_flags |= got_yday;
         break;
@@ -379,7 +397,7 @@ again:
 
       case 'H': // hour: 00-23
         CHECK_ALT(ALT_O);
-case_H: bp = parse_num( c, bp, 0, 23, &tm->tm_hour );
+case_H: parse_num( c, &bp, 0, 23, &tm->tm_hour );
         *got_flags |= got_hour;
         break;
 
@@ -389,7 +407,7 @@ case_H: bp = parse_num( c, bp, 0, 23, &tm->tm_hour );
 
       case 'I': // hour: 01-12
         CHECK_ALT(ALT_O);
-case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
+case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
         if ( tm->tm_hour == 12 )
           tm->tm_hour = 0;
         *got_flags |= got_hour;
@@ -397,14 +415,14 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
 
       case 'm': // month: 01-12
         CHECK_ALT(ALT_O);
-        bp = parse_num( c, bp, 1, 12, &n );
+        parse_num( c, &bp, 1, 12, &n );
         tm->tm_mon = n - 1;
         *got_flags |= got_mon;
         break;
 
       case 'M': // minute: 00-59
         CHECK_ALT(ALT_O);
-        bp = parse_num( c, bp, 0, 59, &tm->tm_min );
+        parse_num( c, &bp, 0, 59, &tm->tm_min );
         *got_flags |= got_min;
         break;
 
@@ -420,7 +438,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
 
       case 'p': // AM/PM
         CHECK_ALT(0);
-        bp = locale_find( c, bp, &get_time_ampm, 2, &n );
+        locale_find( c, &bp, &get_time_ampm, 2, &n );
         if ( tm->tm_hour > 11 )
           throw invalid_argument(
             "%p specified in format string more than once"
@@ -441,7 +459,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
 
       case 'S': // seconds: 00-60 (60 for leap second)
         CHECK_ALT(ALT_O);
-        bp = parse_num( c, bp, 0, 60, &tm->tm_sec );
+        parse_num( c, &bp, 0, 60, &tm->tm_sec );
         *got_flags |= got_sec;
         break;
 
@@ -457,7 +475,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
 
       case 'u': // day of week, beginning on Monday: 1-7
         CHECK_ALT(ALT_O);
-        bp = parse_num( c, bp, 1, 7, &n );
+        parse_num( c, &bp, 1, 7, &n );
         tm->tm_wday = n - 1;
         *got_flags |= got_wday;
         break;
@@ -469,7 +487,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
         // in the tm structure at this point to calculate a real value, so just
         // check the range for now.
         //
-        bp = parse_num( c, bp, 1, 53, &n );
+        parse_num( c, &bp, 1, 53, &n );
         break;
 
       case 'U': // week of year, beginning on Sunday: 00-53
@@ -480,7 +498,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
         // in the tm structure at this point to calculate a real value, so just
         // check the range for now.
         //
-        bp = parse_num( c, bp, 0, 53, &n );
+        parse_num( c, &bp, 0, 53, &n );
         break;
 
       case 'v':
@@ -490,7 +508,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
 
       case 'w': // day of week, beginning on Sunday: 0-6
         CHECK_ALT(ALT_O);
-        bp = parse_num( c, bp, 0, 6, &tm->tm_wday );
+        parse_num( c, &bp, 0, 6, &tm->tm_wday );
         *got_flags |= got_wday;
         break;
 
@@ -506,7 +524,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
 
       case 'y': // year within 100 years of the epoch
         CHECK_ALT(ALT_E | ALT_O);
-        bp = parse_num( c, bp, 0, 99, &n );
+        parse_num( c, &bp, 0, 99, &n );
         if ( split_year )               // preserve century
           n += (tm->tm_year / 100) * 100;
         else {
@@ -519,7 +537,7 @@ case_I: bp = parse_num( c, bp, 1, 12, &tm->tm_hour );
 
       case 'Y': // year: 0-9999
         CHECK_ALT(ALT_E);
-        bp = parse_num( c, bp, 0, 9999, &n );
+        parse_num( c, &bp, 0, 9999, &n );
         tm->tm_year = n - TM_YEAR_BASE;
         *got_flags |= got_year;
         break;
@@ -593,9 +611,9 @@ recurse:
     bp = ztd::strptime_impl( bp, recurse_fmt, tm, got_flags );
   } // while
 
-  if ( (*got_flags & got_mday) &&
-       (*got_flags & got_mon ) &&
-       (*got_flags & got_year) ) {
+#define BITS_SET(flags,bits) (((flags) & (bits)) == (bits))
+
+  if ( BITS_SET( *got_flags, got_mday | got_mon | got_year ) ) {
     int const year = TM_YEAR_BASE + tm->tm_year;
     validate_mday( tm->tm_mday, tm->tm_mon, year );
     if ( *got_flags & got_wday )
