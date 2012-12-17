@@ -45,6 +45,8 @@ public:
 
   ~NsBindingsContext();
 
+  size_t alloc_size() const;
+
   bool empty() const                           { return theBindings.empty(); }
 
   const store::NsBindings& getBindings() const { return theBindings; }

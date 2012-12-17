@@ -439,7 +439,7 @@ struct size_traits<rstring<RepType>,false> {
 template<class T>
 struct size_traits<rchandle<T>,false> {
   static size_t alloc_sizeof( rchandle<T> const &h ) {
-    return h.get() ? mem_sizeof( *h ) : 0;
+    return h.getp() ? mem_sizeof( *h ) : 0;
   }
 };
 

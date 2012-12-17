@@ -1242,6 +1242,7 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
   }
 }
 
+
 store::Item* StructuralAnyUriItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_ANY_URI];
@@ -3594,6 +3595,7 @@ size_t Base64BinaryItem::alloc_size() const
 {
   return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
+
 
 bool
 Base64BinaryItem::equals(

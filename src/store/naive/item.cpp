@@ -224,7 +224,9 @@ void Item::removeReference()
 #endif
 }
 
-size_t Item::alloc_size() const {
+
+size_t Item::alloc_size() const
+{
   return 0;
 }
 

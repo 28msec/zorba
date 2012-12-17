@@ -15,11 +15,16 @@
  */
 #include "stdafx.h"
 
-#include "zorbautils/fatal.h"
 #include "nsbindings.h"
+
+#include "zorbautils/fatal.h"
+
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/dict.h"
+
 #include "zorbamisc/ns_consts.h"
+
+#include "util/mem_sizeof.h"
 
 
 namespace zorba { namespace simplestore {
@@ -85,6 +90,16 @@ NsBindingsContext::~NsBindingsContext()
 #endif
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+size_t NsBindingsContext::alloc_size() const
+{
+  return ztd::alloc_sizeof(theBindings);
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -93,6 +108,7 @@ NsBindingsContext::~NsBindingsContext()
  */
 #define ZSTREQ(STRING,LITERAL) \
         ::zorba::ztd::equals( STRING, LITERAL, sizeof( LITERAL ) - 1 )
+
 void NsBindingsContext::check_ns_binding(const zstring& prefix, const zstring& uri)
 {
   if (ZSTREQ(prefix, "xmlns"))

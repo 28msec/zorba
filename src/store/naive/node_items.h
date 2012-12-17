@@ -1170,6 +1170,7 @@ protected:
 #endif
   store::Item_t   theTypedValue;
 
+protected:
   AttributeNode(store::Item_t&  attrName);
 
   AttributeNode(

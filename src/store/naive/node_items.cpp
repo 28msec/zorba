@@ -811,6 +811,7 @@ void XmlNode::swap(Item* anotherItem)
 #endif
 }
 
+
 /*******************************************************************************
   Deallocate all nodes in the subtree rooted at "this".
 ********************************************************************************/
@@ -890,6 +891,7 @@ void XmlNode::destroyInternal(bool removeType)
   delete this;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -932,10 +934,15 @@ ConnectorNode::ConnectorNode(
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 size_t ConnectorNode::alloc_size() const
 {
   return XmlNode::alloc_size() + ztd::alloc_sizeof( theNode );
 }
+
 
 /*******************************************************************************
 
@@ -950,6 +957,7 @@ XmlNode* ConnectorNode::copyInternal(
   ZORBA_ASSERT(false);
   return NULL;
 }
+
 
 /*******************************************************************************
 
@@ -1022,12 +1030,15 @@ OrdPathNode::OrdPathNode(
   }
 }
 
-///////////////////////////////////////////////////////////////////////////////
 
+/*******************************************************************************
+
+********************************************************************************/
 size_t OrdPathNode::alloc_size() const
 {
   return XmlNode::alloc_size() + ztd::alloc_sizeof( theOrdPath );
 }
+
 
 /*******************************************************************************
 
@@ -1185,12 +1196,11 @@ void OrdPathNode::setOrdPath(
   }
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-
-bool
-OrdPathNode::getDescendantNodeByOrdPath(
+bool OrdPathNode::getDescendantNodeByOrdPath(
     const OrdPath& aOrdPath,
     store::Item_t& aResult,
     bool aAttribute) const
@@ -1487,13 +1497,15 @@ void OrdPathNode::swap(Item* anotherItem)
 /*******************************************************************************
 
 ********************************************************************************/
-
 size_t InternalNode::alloc_size() const
 {
   return OrdPathNode::alloc_size() + ztd::alloc_sizeof( theNodes );
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 const OrdPath* InternalNode::getFirstChildOrdPathAfter(csize pos) const
 {
   assert((pos == 0 && numChildren() == 0) || pos < numChildren());
@@ -1831,12 +1843,16 @@ DocumentNode::DocumentNode()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 size_t DocumentNode::alloc_size() const
 {
   return  InternalNode::alloc_size()
-        + ztd::alloc_sizeof( theBaseUri )
-        + ztd::alloc_sizeof( theDocUri );
+        + ztd::alloc_sizeof(theBaseUri)
+        + ztd::alloc_sizeof(theDocUri);
 }
+
 
 /*******************************************************************************
 
@@ -2563,16 +2579,20 @@ XmlNode* ElementNode::copyInternal(
 /*******************************************************************************
 
 ********************************************************************************/
-
 size_t ElementNode::alloc_size() const
 {
   return InternalNode::alloc_size()
 #ifdef EMBEDED_TYPE
-      + ztd::alloc_sizeof( theTypeName )
+       + ztd::alloc_sizeof(theTypeName)
 #endif
-      + ztd::alloc_sizeof( theName );
+       + ztd::alloc_sizeof(theName) 
+       + (haveLocalBindings() ? ztd::alloc_sizeof(theNsContext) : 0);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 #ifdef EMBEDED_TYPE
 store::Item* ElementNode::getType() const
 {
@@ -2608,6 +2628,7 @@ void ElementNode::assertInvariants() const
   assert(haveType() || getTree() == NULL || getTree()->getType(this) == NULL);
 }
 
+
 store::Item* ElementNode::getType() const
 {
 #ifndef DEBUG
@@ -2620,6 +2641,9 @@ store::Item* ElementNode::getType() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void ElementNode::setType(store::Item_t& type)
 {
 #ifndef DEBUG
@@ -3565,6 +3589,7 @@ void ElementNode::swap(Item* anotherItem)
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+
 /*******************************************************************************
   Node constructor used by FastXmlLoader only.
 ********************************************************************************/
@@ -3714,7 +3739,6 @@ AttributeNode::AttributeNode(
 /*******************************************************************************
 
 ********************************************************************************/
-
 size_t AttributeNode::alloc_size() const
 {
   return  OrdPathNode::alloc_size()
@@ -3726,6 +3750,9 @@ size_t AttributeNode::alloc_size() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 XmlNode* AttributeNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
