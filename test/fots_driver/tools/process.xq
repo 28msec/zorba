@@ -36,7 +36,10 @@ declare namespace ann =
 declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
-declare variable $pathFOTS as xs:string external :="";
+declare variable $fotsPath as xs:string external := "";
+declare variable $dependency as xs:string external := "";
+declare variable $testSetPrefixes as xs:string external := "";
+
 
 (:~
  : Return the exit-code after invoking the FOTS driver with given $params.
@@ -51,7 +54,7 @@ declare %ann:sequential function local:exec(
 
   proc:exec(string-join(($pathZorba, "/zorba"),''),
             ("-f", "-q", concat($pathZorba, "/../../test/fots_driver/cli.xq"),
-             "-e", concat("fotsPath:=", $pathFOTS),
+             "-e", concat("fotsPath:=", $fotsPath),
              "-e", "verbose:=false",
              $params
             )
@@ -81,7 +84,7 @@ declare %private %ann:sequential function local:invoke-exec(
 };
   
 (:~
- : Return the name of the test cases that return an exit-code > 128.
+ : Return the name of the test cases that return an exit-code > 134.
  :
  : @param $fotsPath path to the FOTS catalog file.
  : @param $testSetPrefixes name/criteria for the test sets.
@@ -108,12 +111,12 @@ declare %ann:sequential function local:list-test-cases(
                         $dependency)
 };
 
-if( $pathFOTS = '')
+if( $fotsPath = '')
 then fn:error($fots-err:errNA, 
-              "please set the external variable $pathFOTS to point to FOTS catalog.xml file.")
+              "please set the external variable $fotsPath to point to FOTS catalog.xml file.")
 else
 concat("'",
-       string-join(local:list-test-cases($pathFOTS, '', 'higherOrderFunctions'),"', '"),
+       string-join(local:list-test-cases($fotsPath, $testSetPrefixes, $dependency),"', '"),
        "'")
 
 
