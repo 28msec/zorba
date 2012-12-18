@@ -16,7 +16,7 @@ Iterator tree for main query:
       </ChildAxisIterator>
     </HoistIterator>
   </LetVariable>
-  <LetVariable name="$$opt_temp_0" materialize="true">
+  <ForVariable name="$$opt_temp_0">
     <HoistIterator>
       <FnCountIterator>
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
@@ -28,7 +28,7 @@ Iterator tree for main query:
         </ChildAxisIterator>
       </FnCountIterator>
     </HoistIterator>
-  </LetVariable>
+  </ForVariable>
   <ForVariable name="er">
     <OpToIterator>
       <SingletonIterator value="xs:integer(1)"/>
@@ -38,7 +38,7 @@ Iterator tree for main query:
   <WhereClause>
     <TypedValueCompareIterator_INTEGER>
       <UnhoistIterator>
-        <LetVarIterator varname="$$opt_temp_0"/>
+        <ForVarIterator varname="$$opt_temp_0"/>
       </UnhoistIterator>
       <ForVarIterator varname="er"/>
     </TypedValueCompareIterator_INTEGER>

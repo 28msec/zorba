@@ -214,13 +214,13 @@ Iterator tree for main query:
               <SingletonIterator value="xs:decimal(0.5)"/>
             </SpecificNumArithIterator_AddOperation_DECIMAL>
           </ForVariable>
-          <LetVariable name="$$opt_temp_1" materialize="true">
+          <ForVariable name="$$opt_temp_1">
             <HoistIterator>
               <PromoteIterator type="xs:double">
                 <ForVarIterator varname="y-recentered"/>
               </PromoteIterator>
             </HoistIterator>
-          </LetVariable>
+          </ForVariable>
           <ForVariable name="x">
             <UnhoistIterator>
               <LetVarIterator varname="$$opt_temp_0"/>
@@ -245,7 +245,7 @@ Iterator tree for main query:
                       </SpecificNumArithIterator_MultiplyOperation_DECIMAL>
                     </PromoteIterator>
                     <UnhoistIterator>
-                      <LetVarIterator varname="$$opt_temp_1"/>
+                      <ForVarIterator varname="$$opt_temp_1"/>
                     </UnhoistIterator>
                   </UDFunctionCallIterator>
                 </ForVariable>
