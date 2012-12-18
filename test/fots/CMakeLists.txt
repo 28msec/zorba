@@ -1720,7 +1720,7 @@ FILE (WRITE "${fots_expected_failures_file}" "<failures>\n")
 GET_PROPERTY (_test_sets GLOBAL PROPERTY "_ALL_FOTS_TEST_SETS_")
 FOREACH (_test_set ${_test_sets})
   FILE (APPEND "${fots_expected_failures_file}"
-    "  <test-set name=\"${_test_set}\">\n")
+    "  <TestSet name=\"${_test_set}\">\n")
   # Loop through the test cases for each test set
   GET_PROPERTY (_test_cases GLOBAL PROPERTY "_FOTS_${_test_set}_CASES_")
   WHILE (_test_cases)
@@ -1733,9 +1733,9 @@ FOREACH (_test_set ${_test_sets})
       SET (_notrun " notRun=\"true\"")
     ENDIF (_notrun)
     FILE (APPEND "${fots_expected_failures_file}"
-      "    <test-case name=\"${_test_case}\" bug=\"${_bugnum}\"${_notrun}/>\n")
+      "    <Test name=\"${_test_case}\" bug=\"${_bugnum}\"${_notrun}/>\n")
   ENDWHILE (_test_cases)
-  FILE (APPEND "${fots_expected_failures_file}"  "  </test-set>\n")
+  FILE (APPEND "${fots_expected_failures_file}"  "  </TestSet>\n")
 ENDFOREACH (_test_set)
 
 # QQQ Have to close this outer element, which means you can't call
