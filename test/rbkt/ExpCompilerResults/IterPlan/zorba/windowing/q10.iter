@@ -32,13 +32,9 @@ Iterator tree for main query:
               <NodeSortIterator distinct="true" ascending="true">
                 <flwor::FLWORIterator>
                   <ForVariable name="$$context-item">
-                    <NodeDistinctIterator allow-atomics="false" check-only="false">
-                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
-                        <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                          <CtxVarIterator varid="4" varname="seq" varkind="global"/>
-                        </TreatIterator>
-                      </ChildAxisIterator>
-                    </NodeDistinctIterator>
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
+                      <CtxVarIterator varid="4" varname="seq" varkind="global"/>
+                    </ChildAxisIterator>
                   </ForVariable>
                   <ForVariable name="$$context-item">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
@@ -47,7 +43,7 @@ Iterator tree for main query:
                   </ForVariable>
                   <WhereClause>
                     <FnBooleanIterator>
-                      <CompareIterator>
+                      <TypedValueCompareIterator_STRING>
                         <PromoteIterator type="xs:anyAtomicType">
                           <FnDataIterator>
                             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill allowed="0">
@@ -56,7 +52,7 @@ Iterator tree for main query:
                           </FnDataIterator>
                         </PromoteIterator>
                         <SingletonIterator value="xs:string(in)"/>
-                      </CompareIterator>
+                      </TypedValueCompareIterator_STRING>
                     </FnBooleanIterator>
                   </WhereClause>
                   <ReturnClause>
@@ -100,7 +96,7 @@ Iterator tree for main query:
               </ForVariable>
               <WhereClause>
                 <FnBooleanIterator>
-                  <CompareIterator>
+                  <TypedValueCompareIterator_STRING>
                     <PromoteIterator type="xs:anyAtomicType">
                       <FnDataIterator>
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
@@ -109,7 +105,7 @@ Iterator tree for main query:
                       </FnDataIterator>
                     </PromoteIterator>
                     <SingletonIterator value="xs:string(Barbara)"/>
-                  </CompareIterator>
+                  </TypedValueCompareIterator_STRING>
                 </FnBooleanIterator>
               </WhereClause>
               <ReturnClause>

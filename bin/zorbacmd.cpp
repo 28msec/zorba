@@ -178,10 +178,10 @@ bool populateStaticContext(
       Item lQName = zorba->getItemFactory()->createQName(lIter->clark_qname);
       sctx->declareOption(lQName, lIter->value);
     }
-    catch (zorba::ZorbaException const& /* e */) 
+    catch (zorba::ZorbaException const& e)
     {
       std::cerr << "unable to set static context option with qname "
-                << lIter->clark_qname << std::endl;
+                << lIter->clark_qname << ": " << e.what() << std::endl;
       return false;
     }
   }
@@ -251,7 +251,8 @@ bool populateStaticContext(
       sctx->registerURIMapper(&theThesaurusMapper);
     }
   }
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
+
   return true;
 }
 

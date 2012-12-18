@@ -284,7 +284,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       if (!module)
       {
         throw ZORBA_EXCEPTION(zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
-        ERROR_PARAMS(ZED(NoExternalModuleFromDLL), lURI));
+        ERROR_PARAMS(ZED(NoExternalModuleFromDLL_2), lURI));
       }
     }
     else
@@ -495,6 +495,10 @@ static_context::ZORBA_OPTION_OPTIM_NS =
 "http://www.zorba-xquery.com/options/optimizer";
 
 const char*
+static_context::XQUERY_OPTION_NS =
+"http://www.w3.org/2011/xquery-options";
+
+const char*
 static_context::ZORBA_VERSIONING_NS =
 "http://www.zorba-xquery.com/options/versioning";
 
@@ -590,12 +594,8 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
-            ns == ZORBA_STRING_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
-#ifdef ZORBA_WITH_JSON
-            ns == JSONIQ_FN_NS ||
-#endif
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
@@ -3460,11 +3460,13 @@ void static_context::bind_option(
   {
     theOptionMap->insert(qname2, option);
   }
-
 }
 
-store::Item_t
-static_context::parse_and_expand_qname(
+
+/***************************************************************************//**
+
+********************************************************************************/
+store::Item_t static_context::parse_and_expand_qname(
     const zstring& value,
     const char* default_ns,
     const QueryLoc& loc) const
@@ -3502,7 +3504,7 @@ void static_context::process_warning_option(
 
   std::vector<store::Item_t>::iterator lIter;
 
-  if ( name == "error" )
+  if (name == "error")
   {
     if ( lQName->getLocalName() == "all" )
     {
@@ -3513,11 +3515,12 @@ void static_context::process_warning_option(
           lIter != theWarningsAreErrors.end();
           ++lIter )
     {
-      if ( lQName->equals( (*lIter) ) )
+      if (lQName->equals((*lIter)))
       {
         return;
       }
     }
+
     theWarningsAreErrors.push_back( lQName );
   }
   else if ( name == "disable" )

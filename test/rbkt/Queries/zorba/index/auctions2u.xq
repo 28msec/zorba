@@ -162,7 +162,7 @@ TEST 6 (undo without do):
   }}
   catch *
   {
-    <exception>{$err:code} : {$err:description}</exception>
+    <exception>{$err:code} : { $err:description }</exception>
   }
   ,
   for $x in auctions:probe-point-watch($auctions:PersonWatches,

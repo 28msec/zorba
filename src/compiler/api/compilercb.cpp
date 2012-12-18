@@ -113,6 +113,7 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(0),
 #endif
+  thePhase(NONE),
   theHasEval(false),
   theIsEval(false),
   theIsLoadProlog(false),
@@ -141,6 +142,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(cb.theDebuggerCommons),
 #endif
+  thePhase(NONE),
   theHasEval(false),
   theIsEval(false),
   theIsLoadProlog(false),
@@ -167,6 +169,7 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(NULL),
 #endif
+  thePhase(RUNTIME),
   theHasEval(false),
   theIsEval(false),
   theNextVisitId(1),

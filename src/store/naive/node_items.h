@@ -382,6 +382,8 @@ protected:
 
   void connect(InternalNode* node, csize pos);
 
+  virtual void swap(Item* anotherItem);
+
 #ifndef ZORBA_NO_FULL_TEXT
   virtual void tokenize( XmlNodeTokenizerCallback& );
 #endif
@@ -432,6 +434,11 @@ public:
   store::Item* getParent() const
   {
     return reinterpret_cast<store::Item*>(theParent);
+  }
+
+  bool isRoot() const
+  {
+    return getCollection() != NULL && getParent() == NULL;
   }
 
   bool equals(
@@ -595,6 +602,8 @@ public:
       const store::CopyMode& copyMode) const;
 
   zstring show() const;
+  
+  virtual void swap(Item* anotherItem);
 };
 
 
@@ -685,6 +694,8 @@ public:
 
   virtual store::Item_t
   leastCommonAncestor(const store::Item_t&) const;
+
+  virtual void swap(Item* anotherItem);
 };
 
 
@@ -860,6 +871,8 @@ protected:
   const OrdPath* getFirstChildOrdPathAfter(csize pos) const;
 
   const OrdPath* getFirstChildOrdPathBefore(csize pos) const;
+
+  virtual void swap(Item* anotherItem);
 };
 
 
@@ -925,6 +938,8 @@ public:
   void setBaseUri(const zstring& uri) { theBaseUri = uri; }
 
   void setDocUri(const zstring& uri) { theDocUri = uri; }
+
+  virtual void swap(Item* anotherItem);
 
 protected:
   void getBaseURIInternal(zstring& uri, bool& local) const;
@@ -1106,6 +1121,8 @@ public:
 
   void restoreName(UpdRenameElem& upd);
 
+  virtual void swap(Item* anotherItem);
+
 protected:
   void setType(store::Item_t& type);
 
@@ -1235,6 +1252,8 @@ public:
                                locale::iso639_1::type,
                                bool wildcards = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
+
+  virtual void swap(Item* anotherItem);
 
 protected:
   void setType(store::Item_t& type);
@@ -1394,6 +1413,8 @@ public:
   leastCommonAncestor(const store::Item_t&) const;
 #endif
   
+  virtual void swap(Item* anotherItem);
+
 protected:
   const zstring& getText() const { return theContent.getText(); }
 
@@ -1475,6 +1496,9 @@ public:
   void restoreName(UpdRenamePi& upd);
   
   store::Iterator_t getChildren() const;
+
+  virtual void swap(Item* anotherItem);
+
 };
 
 
@@ -1532,6 +1556,8 @@ public:
   void restoreValue(UpdReplaceCommentValue& upd);
   
   store::Iterator_t getChildren() const;
+
+  virtual void swap(Item* anotherItem);
 };
 
 

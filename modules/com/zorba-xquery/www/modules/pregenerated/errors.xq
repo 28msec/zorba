@@ -180,6 +180,10 @@ declare variable $zerr:ZXQP0050 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP0050
 declare variable $zerr:ZXQP0060 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP0060");
 
 (:~
+:)
+declare variable $zerr:ZXQP0061 as xs:QName := fn:QName($zerr:NS, "zerr:ZXQP0061");
+
+(:~
  :
  : The version of the thesaurus is not the expected version.
  : 
@@ -559,6 +563,22 @@ declare variable $zerr:ZDDY0035 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0035
 (:~
 :)
 declare variable $zerr:ZDDY0036 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0036");
+
+(:~
+:)
+declare variable $zerr:ZDDY0037 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0037");
+
+(:~
+:)
+declare variable $zerr:ZDDY0038 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0038");
+
+(:~
+:)
+declare variable $zerr:ZDDY0039 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0039");
+
+(:~
+:)
+declare variable $zerr:ZDDY0040 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0040");
 
 (:~
 :)

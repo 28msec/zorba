@@ -31,11 +31,7 @@ Iterator tree for main query:
         </ElementIterator>
       </DescendantAxisIterator>
     </ChildAxisIterator>
-    <PromoteIterator type="xs:integer">
-      <FnDataIterator>
-        <CtxVarIterator varid="4" varname="x" varkind="global"/>
-      </FnDataIterator>
-    </PromoteIterator>
+    <CtxVarIterator varid="4" varname="x" varkind="global"/>
   </UDFunctionCallIterator>
 </SequentialIterator>
 

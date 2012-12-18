@@ -4,9 +4,10 @@ import module namespace json = "http://www.zorba-xquery.com/modules/converters/j
 
 let $json :=
   <json type="object">
-  <!--comment-->
+    <!--comment-->
     <pair name="a" type="number">1</pair>
-  <!--comment-->
+    <!--comment-->
   </json>
 return json:serialize( $json )
+
 (: vim:set et sw=2 ts=2: :)
