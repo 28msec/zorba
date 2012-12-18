@@ -5,4 +5,6 @@ declare variable $json-element :=
   <pair name="html" type="string">&lt;b&gt;bold&lt;/b&gt;</pair>
 </json>;
 
-json:parse(json:serialize($json-element))
+json:parse( json:serialize( $json-element ) )
+
+(: vim:se et sw=2 ts=2: :)

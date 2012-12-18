@@ -20,4 +20,5 @@ let $options :=
     <json-format value="JsonML-array"/>
   </options>
 return json:parse( $json, $options )
+
 (: vim:set et sw=2 ts=2: :)

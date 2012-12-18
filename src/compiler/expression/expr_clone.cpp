@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/expr.h"
@@ -618,7 +619,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                          udf,
                          theLoc,
                          varCopy,
-                         (e->theInitExpr ? e->theInitExpr->clone(udf, subst) : NULL));
+                         (e->theExpr ? e->theExpr->clone(udf, subst) : NULL));
     
     break;
   }
