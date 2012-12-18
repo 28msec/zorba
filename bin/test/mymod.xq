@@ -14,7 +14,7 @@
  : limitations under the License.
 :)
 
-module namespace foo = "http://www.zorba-xquery.com/foo";
+module namespace foo = "http://www.28msec.com/foo";
 
 declare function foo:test() {
   if (fn:true())

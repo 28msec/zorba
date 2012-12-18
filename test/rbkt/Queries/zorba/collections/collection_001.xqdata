@@ -6,6 +6,8 @@ declare collection ns:collection as node()*;
 
 declare collection ns:collection1 as node()*;
 
+declare collection ns:collection-objects as object()*;
+
 declare %ann:ordered collection ns:collection2 as document-node();
 
 declare %ann:const collection ns:collection_const as node()*;

@@ -586,6 +586,35 @@ BoolAnnotationValue static_collections_dml_delete_nodes::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
+PlanIter_t static_collections_dml_edit::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  const zstring& ns = getName()->getNamespace();
+
+  bool const lDynamic =
+    ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
+
+  bool const lCopy = !hasNoCopyPragma(ann);
+
+  return new ZorbaEditNodesIterator(sctx, loc, argv, lDynamic, lCopy);
+}
+
+
+void
+zorba::static_collections_dml_edit::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragmaInternal(e, p);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t static_collections_dml_truncate::codegen(
   CompilerCB*,
   static_context* sctx,
