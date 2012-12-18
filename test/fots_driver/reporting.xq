@@ -31,7 +31,8 @@ import module namespace util =
   "http://www.zorba-xquery.com/fots-driver/util" at "util.xq";
 import module namespace fots-err =
   "http://www.zorba-xquery.com/fots-driver/errors" at "errors.xq";
-
+import module namespace functx =
+  "http://www.functx.com/";
 
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
@@ -282,3 +283,27 @@ declare %ann:nondeterministic function reporting:generate-expected-failures(
     error($err:code, $err:description)
   }
 };
+
+declare function reporting:regressions(
+) as xs:string* {
+  let $old_report:=fn:parse-xml(file:read-text('/home/spungi/work/zorba/repo/fots-ctest/build/bin/report_04_Dec.xml'))
+  let $new_report:=fn:parse-xml(file:read-text('/home/spungi/work/zorba/repo/fots-ctest/build/bin/report_17_Dec.xml'))
+  
+  for $testSetOld in $old_report/*:report/*:test-set
+  let $testSetNew := $new_report/*:report/*:test-set[@name = data($testSetOld/@name)]
+  let $regression := if (exists($testSetNew))
+                     then xs:decimal(data($testSetOld/@noFailures)) - xs:decimal(data($testSetNew/@noFailures))
+                     else xs:decimal(0)
+  let $testsOld as xs:string* := tokenize(data($testSetOld/@failedTestNames),",")
+  let $testsNew as xs:string* := tokenize(data($testSetNew/@failedTestNames),",")
+  where $regression < xs:decimal(0)
+  order by $regression ascending
+  return
+    concat(data($testSetOld/@name),
+           " ",
+           $regression,
+           " ",
+           string-join((functx:value-except($testsNew, $testsOld)),","),
+           "&#xA;")
+};
+
