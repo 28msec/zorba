@@ -56,11 +56,6 @@ IF (NOT _fotsscript STREQUAL "")
   ENDIF (EXISTS "${_fotsscript}")
 ENDIF (NOT _fotsscript STREQUAL "")
 
-# Initialize FOTSExpectedFailures.xml
-SET (fots_expected_failures_file "${CMAKE_BINARY_DIR}/FOTSExpectedFailures.xml")
-# QQQ For now, we output the outer <failures> element so we can load this
-# using fn:doc(). This should probably go away.
-FILE (WRITE "${fots_expected_failures_file}" "<failures>\n")
 
 # Customized macro for FOTS tests
 MACRO (expected_fots_failure)
@@ -72,15 +67,23 @@ MACRO (expected_fots_failure)
   LIST (GET EFF_DEFAULT_ARGS 0 test_set)
   LIST (GET EFF_DEFAULT_ARGS 1 test_case)
   LIST (GET EFF_DEFAULT_ARGS 2 bugid)
-  IF (EFF_SLOW)
-    MESSAGE (STATUS "Skipping test ${test_case} because it's slow")
-  ELSEIF (EFF_CRASH)
-    MESSAGE (STATUS "Skipping test ${test_case} because it crashes")
-  ELSE (EFF_SLOW) 
-    FILE (APPEND "${fots_expected_failures_file}"
-      "<Test testCaseName=\"${test_case}\" testSetName=\"${test_set}\" "
-      "bug=\"${bugid}\"/>\n")
-  ENDIF (EFF_SLOW)
+
+  # First add test_set name to list of test_sets, if it's not already there
+  GET_PROPERTY (_test_sets GLOBAL PROPERTY "_ALL_FOTS_TEST_SETS_")
+  LIST (FIND _test_sets ${test_set} _found)
+  IF (_found EQUAL -1)
+    SET_PROPERTY (GLOBAL APPEND PROPERTY "_ALL_FOTS_TEST_SETS_" ${test_set})
+  ENDIF (_found EQUAL -1)
+
+  # Determine "notrun" status
+  SET (_notrun)
+  IF (EFF_SLOW OR EFF_CRASH)
+    SET (_notrun true)
+  ENDIF (EFF_SLOW OR EFF_CRASH)
+
+  # Append three values per test case - case name, bugnum, notRun
+  SET_PROPERTY (GLOBAL APPEND PROPERTY "_FOTS_${test_set}_CASES_"
+    ${test_case} ${bugid} "${_notrun}")
 ENDMACRO (expected_fots_failure)
 
 ##
@@ -1706,6 +1709,34 @@ EXPECTED_FOTS_FAILURE (xs-normalizedString cbcl-normalizedstring-004 0)
 EXPECTED_FOTS_FAILURE (xs-token cbcl-token-002 0)
 EXPECTED_FOTS_FAILURE (xs-token cbcl-token-002b 0)
 EXPECTED_FOTS_FAILURE (xs-token cbcl-token-004 0)
+
+# Initialize FOTSExpectedFailures.xml
+SET (fots_expected_failures_file "${CMAKE_BINARY_DIR}/FOTSExpectedFailures.xml")
+# QQQ For now, we output the outer <failures> element so we can load this
+# using fn:doc(). This should probably go away.
+FILE (WRITE "${fots_expected_failures_file}" "<failures>\n")
+
+# Loop through test sets
+GET_PROPERTY (_test_sets GLOBAL PROPERTY "_ALL_FOTS_TEST_SETS_")
+FOREACH (_test_set ${_test_sets})
+  FILE (APPEND "${fots_expected_failures_file}"
+    "  <test-set name=\"${_test_set}\">\n")
+  # Loop through the test cases for each test set
+  GET_PROPERTY (_test_cases GLOBAL PROPERTY "_FOTS_${_test_set}_CASES_")
+  WHILE (_test_cases)
+    # Pop off three items and write out entry
+    LIST (GET _test_cases 0 _test_case)
+    LIST (GET _test_cases 1 _bugnum)
+    LIST (GET _test_cases 2 _notrun)
+    LIST (REMOVE_AT _test_cases 0 1 2)
+    IF (_notrun)
+      SET (_notrun " notRun=\"true\"")
+    ENDIF (_notrun)
+    FILE (APPEND "${fots_expected_failures_file}"
+      "    <test-case name=\"${_test_case}\" bug=\"${_bugnum}\"${_notrun}/>\n")
+  ENDWHILE (_test_cases)
+  FILE (APPEND "${fots_expected_failures_file}"  "  </test-set>\n")
+ENDFOREACH (_test_set)
 
 # QQQ Have to close this outer element, which means you can't call
 # EXPECTED_FOTS_FAILURE from any other CMakeLists.txt.
