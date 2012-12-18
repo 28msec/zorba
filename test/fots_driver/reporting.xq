@@ -188,27 +188,23 @@ declare %ann:nondeterministic function reporting:do-reporting(
   return
   <fots:report>
   {
-    let $totalNoTests := sum(for $testSet in $FOTSCatalog//fots:test-set
-                             let $testSetDoc := doc(resolve-uri($testSet/@file,
-                                                    $catalogBaseURI))
-                             return count($testSetDoc//fots:test-case)),
-        $totalFailures := sum(for $testSet in $failures//fots:test-set
-                              return count($testSet//fots:test-case[@result ='fail'])),
+ let $totalNoTests := count($failures//fots:test-set//fots:test-case),
+        $totalPass := sum(for $testSet in $failures//fots:test-set
+                          return count($testSet//fots:test-case[@result ='pass'])),
+        $totalFail := sum(for $testSet in $failures//fots:test-set
+                          return count($testSet//fots:test-case[@result ='fail'])),
         $totalNotApplicable := sum(for $testSet in $failures//fots:test-set
                                    return count($testSet//fots:test-case[@result ='not applicable'])),
-        $notRun := sum(for $exeptedTS in $exceptedTestSets
-                       return
-                        for $testSet in $FOTSCatalog//fots:test-set
-                        let $testSetDoc := doc(resolve-uri($testSet/@file, $catalogBaseURI))
-                        where (data($testSetDoc/fots:test-set/@name) = $exeptedTS)
-                        return count($testSetDoc//fots:test-case)),
+        $totalNotRun := sum(for $testSet in $failures//fots:test-set
+                            return count($testSet//fots:test-case[@result ='notRun'])),
         $executionTime := sum(for $testCase in $failures//fots:test-set//fots:test-case return xs:dayTimeDuration($testCase/@executionTime))
     return
-    <fots:brief  totalTests="{$totalNoTests}"
-            totalFailures="{$totalFailures}"
-            totalNotApplicable="{$totalNotApplicable}"
-            totalNotRun="{$notRun + $excepted}"
-            totalExecutionTime="{$executionTime}"/>
+    <fots:brief totalTests="{$totalNoTests}"
+                totalPass="{$totalPass}"
+                totalFail="{$totalFail}"
+                totalNotApplicable="{$totalNotApplicable}"
+                totalNotRun="{$totalNotRun}"
+                totalExecutionTime="{$executionTime}"/>
   }
   { 
     for $testSetFile in $FOTSCatalog//fots:test-set
@@ -224,20 +220,18 @@ declare %ann:nondeterministic function reporting:do-reporting(
                               return xs:dayTimeDuration($testCase/@executionTime))
     order by count($totalFailures) descending
     return
-    <fots:test-set name="{$testSetName}"
-              executionTime="{$executionTime}"
-              noFailures="{count($totalFailures)}"
-              noTestCases="{$totalNoTestCases}"
-              percent="{$percent}"
-              failedTestNames="{string-join( for $failure in $totalFailures
-                                              order by data($failure/@name)
-                                              return data($failure/@name)
+    <fots:test-set  name="{$testSetName}"
+                    executionTime="{$executionTime}"
+                    noFailures="{count($totalFailures)}"
+                    noTestCases="{$totalNoTestCases}"
+                    percent="{$percent}"
+                  failedTestNames="{string-join(for $failure in $totalFailures
+                                                order by data($failure/@name)
+                                                return data($failure/@name)
                                               ,",")}">
    {if (not($verbose)) then $totalFailures else ()}
     </fots:test-set>
    }
-   <fots:exceptedTestCases>{$exceptedTestCases}</fots:exceptedTestCases>
-   <fots:exceptedTestSets>{$exceptedTestSets}</fots:exceptedTestSets>
    </fots:report>
 };
 
