@@ -132,7 +132,6 @@ namespace zorba
      individual schema designers. They are always derived. They can be atomic,
      list, or union, and simple or complex.
 
-
   2. Primitive datatypes are those that are not defined in terms of other
      datatypes; they exist ab initio. Primitive types are always atomic and
      built-in.
@@ -151,7 +150,6 @@ namespace zorba
      and P may or may not be the same type. For example, list types are derived
      from their "itemType" (see below), but their "baseType" is always the
      xs:anySimpleType.
-
 
   3. Atomic datatypes are those having values which are regarded as being
      indivisible. Atomic datatypes can be built-in or user-defined, and
@@ -195,8 +193,6 @@ namespace zorba
 
   - The empty-sequence()
 
-  - xs:anyType*, xs:anySimpleType*, and xs:untyped*
-
   - XML Data Mode and XMLSchema both define 45 atomic, built-in types (including
     xs:anyAtomicType and xs:untypedAtomic). For each such atomic type T, we
     preallocate 4 XQType objs representing the sequence tyoes T, T?, T*, and T+.
@@ -207,9 +203,9 @@ namespace zorba
     or processing-instruction.
 
   - N(xs:untyped), N(xs:untyped)?, N(xs:untyped)+, N(xs:untyped)*, where N is
-    one of node or document. Note that these types are not really expressible
-    via the SequenceType syntax, but we include them in zorba because they are
-    convenient for certain type-related optimizations.
+    one of "node" or "document-node". Note that these types are not really
+    expressible via the SequenceType syntax, but we include them in zorba
+    because they are convenient for certain type-related optimizations.
 
   - element(*, xs:anyType), element(*, xs:anyType)?, element(*, xs:anyType)+,
     element(*, xs:anyType)*
@@ -225,6 +221,12 @@ namespace zorba
     
   - structured-item(), structured-item()?,
     structured-item()+, structured-item()*
+
+  We also preallocate XQType objs for the following XML-Schema types:
+
+  - xs:anyType, xs:anySimpleType, and xs:untyped
+
+  - xs:NMTOKENS, xs:IDREFS, and xs:ENTITIES
 
   - The none type
 
@@ -689,11 +691,8 @@ public:
     ATOMIC_TYPE,  // atomic types: ex: int, date, token, string
     LIST_TYPE,    // list of simple types: ex: list of int: "1 2 33"
     UNION_TYPE,   // union of simple types: ShirtSize int or string: "8", "small"
-                  // ATOMIC, LIST and UNION types are all SIMPLE types: i.e.
-                  // their representation is a text value
     COMPLEX_TYPE  // complex types: they represent structure
   };
-
 
 private:
   store::Item_t           m_qname;
@@ -711,40 +710,39 @@ public:
 public:
   // constructor for Atomic and Complex types
   UserDefinedXQType(
-        const TypeManager *manager,
-        store::Item_t qname,
-        const xqtref_t& baseType,
-        TypeConstants::quantifier_t quantifier,
-        type_category_t typeCategory,
-        content_kind_t contentKind);
+      const TypeManager* manager,
+      store::Item_t qname,
+      const xqtref_t& baseType,
+      TypeConstants::quantifier_t quantifier,
+      type_category_t typeCategory,
+      content_kind_t contentKind);
 
   // Constructor for List types
   UserDefinedXQType(
-        const TypeManager *manager,
-        store::Item_t qname,
-        const xqtref_t& baseType,
-        TypeConstants::quantifier_t quantifier,
-        const XQType* listItemType);
+      const TypeManager* manager,
+      store::Item_t qname,
+      const xqtref_t& baseType,
+      const XQType* listItemType);
 
   // Constructor for Union types
   UserDefinedXQType(
-        const TypeManager *manager,
-        store::Item_t qname,
-        const xqtref_t& baseType,
-        TypeConstants::quantifier_t quantifier,
-        std::vector<xqtref_t>& unionItemTypes);
+      const TypeManager* manager,
+      store::Item_t qname,
+      const xqtref_t& baseType,
+      TypeConstants::quantifier_t quantifier,
+      std::vector<xqtref_t>& unionItemTypes);
 
   virtual ~UserDefinedXQType() {}
 
   virtual content_kind_t content_kind() const { return m_contentKind; };
 
-  store::Item_t get_qname() const { return m_qname;    }
+  store::Item_t get_qname() const { return m_qname; }
 
-  bool isAtomic() const { return m_typeCategory == ATOMIC_TYPE;  }
+  bool isAtomic() const { return m_typeCategory == ATOMIC_TYPE; }
 
-  bool isList() const { return m_typeCategory == LIST_TYPE;    }
+  bool isList() const { return m_typeCategory == LIST_TYPE; }
 
-  bool isUnion() const { return m_typeCategory == UNION_TYPE;   }
+  bool isUnion() const { return m_typeCategory == UNION_TYPE; }
 
   bool isComplex() const { return m_typeCategory == COMPLEX_TYPE; }
 

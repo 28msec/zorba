@@ -219,16 +219,21 @@ public:
 
   /**
    * Pre-allocated XQType and QNameItem objects for the remaining build-in
-   * XQDM types (not including the built-in list types xs:IDREFS, xs:NMTOKENS,
-   * and xs:ENTITIES).
+   * XQDM types.
    */
   xqtref_t ANY_TYPE;
   xqtref_t UNTYPED_TYPE;
   xqtref_t ANY_SIMPLE_TYPE;
+  xqtref_t XS_NMTOKENS_TYPE;
+  xqtref_t XS_IDREFS_TYPE;
+  xqtref_t XS_ENTITIES_TYPE;
 
   store::Item_t XS_ANY_TYPE_QNAME;
   store::Item_t XS_UNTYPED_QNAME;
   store::Item_t XS_ANY_SIMPLE_TYPE_QNAME;
+  store::Item_t XS_NMTOKENS_QNAME;
+  store::Item_t XS_IDREFS_QNAME;
+  store::Item_t XS_ENTITIES_QNAME;
 
 private:
 

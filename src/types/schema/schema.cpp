@@ -888,12 +888,10 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         //  qname->getNamespace()->c_str() << " of " << itemXQType->toString()
         //    << endl; cout.flush();
 
-        xqtref_t xqType = xqtref_t(
-            new UserDefinedXQType(typeManager,
-                                  qname,
-                                  NULL /*GENV_TYPESYSTEM.ANY_SIMPLE_TYPE*/,
-                                  TypeConstants::QUANT_ONE,
-                                  itemXQType.getp()));
+        xqtref_t xqType = new UserDefinedXQType(typeManager,
+                                                qname,
+                                                NULL /*GENV_TYPESYSTEM.ANY_SIMPLE_TYPE*/,
+                                                itemXQType.getp());
 
         //cout << "   created UDT Simple List Type: " << xqType->toString() <<
         //  endl; cout.flush();
@@ -1063,7 +1061,8 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
 
 
 xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
-    const TypeManager* typeManager, zstring& strUri,
+    const TypeManager* typeManager,
+    zstring& strUri,
     const XMLCh* local)
 {
   xqtref_t result;
@@ -1227,17 +1226,7 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
   }
   else if ( XMLString::equals(XMLChArray("NMTOKENS").get (), local) )
   {
-	store::Item_t qname;
-	GENV_ITEMFACTORY->createQName(qname,
-								  XML_SCHEMA_NS,
-								  "XS",
-								  "NMTOKENS");
-
-	result = new UserDefinedXQType(typeManager,
-								   qname,
-								   NULL,
-								   TypeConstants::QUANT_ONE,
-								   GENV_TYPESYSTEM.NMTOKEN_TYPE_ONE.getp());
+    result = GENV_TYPESYSTEM.XS_NMTOKENS_TYPE;
   }
   else if ( XMLString::equals(XMLChArray("IDREF").get (), local) )
   {
@@ -1245,35 +1234,15 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
   }
   else if ( XMLString::equals(XMLChArray("IDREFS").get (), local) )
   {
-    store::Item_t qname;
-    GENV_ITEMFACTORY->createQName(qname,
-                                  XML_SCHEMA_NS,
-                                  "XS",
-                                  "IDREFS");
-
-    result = new UserDefinedXQType(typeManager,
-                                   qname,
-                                   NULL,
-                                   TypeConstants::QUANT_ONE,
-                                   GENV_TYPESYSTEM.IDREF_TYPE_ONE.getp());
+    result = GENV_TYPESYSTEM.XS_IDREFS_TYPE;
   }
   else if ( XMLString::equals(XMLChArray("ENTITY").get (), local) )
   {
-    store::Item_t qname;
-    GENV_ITEMFACTORY->createQName(qname,
-                                  XML_SCHEMA_NS,
-                                  "XS",
-                                  "ENTITIES");
-
-    result = new UserDefinedXQType(typeManager,
-                                   qname,
-                                   NULL,
-                                   TypeConstants::QUANT_ONE,
-                                   GENV_TYPESYSTEM.ENTITY_TYPE_ONE.getp());
+    result = GENV_TYPESYSTEM.ENTITY_TYPE_ONE;
   }
   else if ( XMLString::equals(XMLChArray("ENTITIES").get (), local) )
   {
-    result = GENV_TYPESYSTEM.ENTITY_TYPE_PLUS;
+    result = GENV_TYPESYSTEM.XS_ENTITIES_TYPE;
   }
   else if ( XMLString::equals(XMLChArray("NOTATION").get (), local) )
   {

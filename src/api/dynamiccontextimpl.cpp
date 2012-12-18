@@ -297,16 +297,18 @@ bool DynamicContextImpl::setVariable(
     TypeManager* tm = theStaticContext->get_typemanager();
     RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-    xqtref_t itemType = tm->create_value_type(value);
-
-    if (value->isStreamable() == false &&
-        TypeOps::is_equal(tm, *itemType, *rtm.STRING_TYPE_ONE, QueryLoc::null) &&
-        (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
+    if (value->isStreamable() == false && value->isAtomic())
     {
-      throw XQUERY_EXCEPTION(err::FOCH0001,
-      ERROR_PARAMS(zstring("#x") +
-      BUILD_STRING(std::uppercase << std::hex
-                   << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
+      xqtref_t itemType = tm->create_value_type(value);
+
+      if (TypeOps::is_equal(tm, *itemType, *rtm.STRING_TYPE_ONE, QueryLoc::null) &&
+          (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
+      {
+        throw XQUERY_EXCEPTION(err::FOCH0001,
+        ERROR_PARAMS(zstring("#x") +
+        BUILD_STRING(std::uppercase << std::hex
+                     << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
+      }
     }
 
     VarInfo* var = NULL;

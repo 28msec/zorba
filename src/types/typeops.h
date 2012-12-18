@@ -71,6 +71,11 @@ public:
   static bool is_in_scope(const TypeManager* tm, const XQType& type);
 
   /**
+   * Returns true if the ItemType of the given sequence type is an atomic type.
+   */
+  static bool has_atomic_itemtype(const TypeManager* tm, const XQType& type);
+
+  /**
    * Returns true if the quantifier of the given sequence type is QUANT_ONE and
    * its ItemType is an atomic type.
    */

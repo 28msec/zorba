@@ -8470,9 +8470,98 @@ void end_visit(const CastableExpr& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+  CastExpr ::= UnaryExpr ( "cast" "as" SingleType )?
+********************************************************************************/
+void* begin_visit(const CastExpr& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const CastExpr& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  push_nodestack(create_cast_expr(loc, pop_nodestack(), pop_tstack(), true));
+}
+
+
+/*******************************************************************************
+	SingleType ::= SimpleTypeName "?"?
+
+  SimpleTypeName ::= EQNAME
+********************************************************************************/
+
+void* begin_visit(const SingleType& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const SingleType& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  if (v.get_hook_bit())
+  {
+    xqtref_t type = pop_tstack();
+
+    assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
+           type->get_quantifier() == TypeConstants::QUANT_STAR);
+
+    if (type->get_quantifier() == TypeConstants::QUANT_ONE)
+    {
+      theTypeStack.push(CTX_TM->create_type(*type, TypeConstants::QUANT_QUESTION));
+    }
+  }
+  // else leave type as it is on tstack
+}
+
+
+/*******************************************************************************
+  SimpleTypeName ::= EQNAME
+********************************************************************************/
+void* begin_visit(const SimpleType& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const SimpleType& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  rchandle<QName> qname = v.get_qname();
+  store::Item_t qnameItem;
+  expand_elem_qname(qnameItem, qname, loc);
+
+  xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
+  if (t == NULL)
+  {
+    RAISE_ERROR(err::XQST0052, loc, ERROR_PARAMS(qname->get_qname()));
+  }
+  else
+  {
+    theTypeStack.push(t);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCast)
 {
   TypeManager* tm = CTX_TM;
+
+  if (!TypeOps::has_atomic_itemtype(tm, *type))
+  {
+    if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    {
+      RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(type->get_qname()));
+    }
+  }
 
   if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE, loc) ||
       TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION, loc) ||
@@ -8552,23 +8641,6 @@ expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCa
     else
       return CREATE(castable)(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
   }
-}
-
-
-/*******************************************************************************
-  CastExpr ::= UnaryExpr ( "cast" "as" SingleType )?
-********************************************************************************/
-void* begin_visit(const CastExpr& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const CastExpr& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-  push_nodestack(create_cast_expr(loc, pop_nodestack(), pop_tstack(), true));
 }
 
 
@@ -12674,25 +12746,6 @@ void end_visit(const CompTextConstructor& v, void* /*visit_state*/)
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-
-void* begin_visit(const SingleType& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const SingleType& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-  if (v.get_hook_bit())
-    theTypeStack.push(CTX_TM->create_type(*pop_tstack(), TypeConstants::QUANT_QUESTION));
-  // else leave type as it is on tstack
-}
-
-
 void* begin_visit(const TypeName& v)
 {
   TRACE_VISIT();
@@ -12797,7 +12850,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   }
   else
   {
-    theTypeStack.push (t);
+    theTypeStack.push(t);
   }
 }
 

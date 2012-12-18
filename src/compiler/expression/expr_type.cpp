@@ -334,12 +334,31 @@ void expr::compute_return_type(bool deep, bool* modified)
     {
       newType = rtm.EMPTY_TYPE;
     }
-    else
+    else if (TypeOps::has_atomic_itemtype(tm, *e->theTargetType))
     {
       TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
 
       newType = tm->create_type(*e->theTargetType, q);
     }
+    else
+    {
+      ZORBA_ASSERT(e->theTargetType->type_kind() == XQType::USER_DEFINED_KIND);
+
+      const UserDefinedXQType* targetType = 
+      static_cast<const UserDefinedXQType*>(e->theTargetType.getp());
+
+      if (targetType->isList())
+      {
+        newType = NULL;
+      }
+      else
+      {
+        TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
+
+        newType = tm->create_type(*e->theTargetType, q);
+      }
+    }
+
     break;
   }
 

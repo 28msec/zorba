@@ -54,6 +54,7 @@ class AposAttrContentList;
 class AposAttrValueContent;
 class ArgList;
 class AtomicType;
+class SimpleType;
 class AttributeTest;
 class AxisStep;
 class BaseURIDecl;
@@ -4871,7 +4872,7 @@ public:
 
 
 /*******************************************************************************
-  [143] SingleType ::= AtomicType "?"?
+  [143] SingleType ::= SimpleType "?"?
 
   [144] TypeDeclaration ::= "as" SequenceType
 
@@ -4934,23 +4935,37 @@ public:
 
 
 /*******************************************************************************
-  [143] SingleType ::= AtomicType "?"?
+  [143] SingleType ::= SimpleType "?"?
 ********************************************************************************/
 class SingleType : public parsenode
 {
 protected:
-  rchandle<AtomicType> atomic_type_h;
-  bool hook_b;
+  rchandle<SimpleType> theType;
+  bool                 theHook;
 
 public:
-  SingleType(
-    const QueryLoc&,
-    rchandle<AtomicType>,
-    bool hook_b);
+  SingleType(const QueryLoc& loc, rchandle<SimpleType> type, bool hook);
 
-  rchandle<AtomicType> get_atomic_type() const { return atomic_type_h; }
+  rchandle<SimpleType> get_type() const { return theType; }
 
-  bool get_hook_bit() const { return hook_b; }
+  bool get_hook_bit() const { return theHook; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  SimpleType ::= QName
+********************************************************************************/
+class SimpleType : public parsenode
+{
+protected:
+  rchandle<QName> qname_h;
+
+public:
+  SimpleType(const QueryLoc&, rchandle<QName>);
+
+  rchandle<QName> get_qname() const { return qname_h; }
 
   void accept(parsenode_visitor&) const;
 };

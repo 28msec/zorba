@@ -1711,7 +1711,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
             }
           }
         }
-    }
+      }
       
       if (merge)
       {

@@ -412,6 +412,14 @@
       <value>"$1": duplicate variable declaration</value>
     </diagnostic>
 
+    <diagnostic code="XQST0052">
+      <comment>
+      The type must be the name of a type defined in the in-scope schema types,
+      and the {variety} of the type must be simple.
+      </comment>
+      <value>"$1": not defined as simple type</value>
+    </diagnostic>
+
     <diagnostic code="XQST0054">
       <comment>
        It is a static error if a variable depends on itself.

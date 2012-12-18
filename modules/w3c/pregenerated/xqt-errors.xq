@@ -385,6 +385,15 @@ declare variable $err:XQST0049 as xs:QName := fn:QName($err:NS, "err:XQST0049");
 
 (:~
  :
+ : The type must be the name of a type defined in the in-scope schema types,
+ : and the {variety} of the type must be simple.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0052 as xs:QName := fn:QName($err:NS, "err:XQST0052");
+
+(:~
+ :
  : It is a static error if a variable depends on itself.
  : 
  : @see http://www.w3.org/2005/xqt-errors

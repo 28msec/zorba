@@ -167,6 +167,26 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
 /*******************************************************************************
 
 ********************************************************************************/
+bool TypeOps::has_atomic_itemtype(const TypeManager* tm, const XQType& type)
+{
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
+
+  if (type.type_kind() == XQType::ATOMIC_TYPE_KIND)
+  {
+    return true;
+  }
+  else if (type.type_kind() == XQType::USER_DEFINED_KIND)
+  {
+    return reinterpret_cast<const UserDefinedXQType&>(type).isAtomic();
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool TypeOps::is_atomic(const TypeManager* tm, const XQType& type)
 {
   CHECK_IN_SCOPE(tm, type, QueryLoc::null);

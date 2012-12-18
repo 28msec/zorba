@@ -221,6 +221,7 @@ extern entry const dict_en[] = {
   { "XQST0047", "\"$1\": duplicate target namespace" },
   { "XQST0048", "\"$1\": not in library namespace" },
   { "XQST0049", "\"$1\": duplicate variable declaration" },
+  { "XQST0052", "\"$1\": not defined as simple type" },
   { "XQST0054", "${\"1\": }variable must not depend on itself" },
   { "XQST0055", "multiple copy-namespaces declarations" },
   { "XQST0057", "empty target namespace" },

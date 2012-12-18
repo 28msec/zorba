@@ -1058,17 +1058,15 @@ UserDefinedXQType::UserDefinedXQType(
     const TypeManager* manager,
     store::Item_t qname,
     const xqtref_t& baseType,
-    TypeConstants::quantifier_t quantifier,
     const XQType* listItemType)
   :
-  XQType(manager, USER_DEFINED_KIND, quantifier, false),
+  XQType(manager, USER_DEFINED_KIND, TypeConstants::QUANT_STAR, false),
   m_qname(qname),
   m_baseType(baseType),
   m_typeCategory(LIST_TYPE),
   m_contentKind(SIMPLE_CONTENT_KIND),
   m_listItemType(listItemType)
 {
-  ZORBA_ASSERT(quantifier == TypeConstants::QUANT_ONE);
   ZORBA_ASSERT(listItemType);
 }
 
