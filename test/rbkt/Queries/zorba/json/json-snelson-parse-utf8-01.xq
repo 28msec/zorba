@@ -2,4 +2,4 @@
 
 import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
 
-json:parse('{"mdash": "–"}')
+json:parse( '{ "mdash": "–" }' )

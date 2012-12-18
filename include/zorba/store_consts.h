@@ -16,6 +16,7 @@
 #ifndef ZORBA_STORE_STORE_CONSTS_H
 #define ZORBA_STORE_STORE_CONSTS_H
 
+#include <iostream>
 #include <string>
 #include <zorba/config.h>
 
@@ -88,6 +89,8 @@ enum SchemaTypeCode
 
   XS_LAST
 };
+
+std::ostream& operator<<( std::ostream&, SchemaTypeCode );
 
 
 class ZORBA_DLL_PUBLIC StoreConsts

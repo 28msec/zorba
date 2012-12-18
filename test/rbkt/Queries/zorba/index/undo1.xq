@@ -57,7 +57,7 @@ return <person id = "{$x/@id}">{$x/name}</person>
     }
     catch *
     {
-      <exception>{$err:code} : {$err:description}</exception>
+      <exception>{ $err:code } : { $err:description }</exception>
     }
 
     ,

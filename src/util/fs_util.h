@@ -465,6 +465,37 @@ private:
 
 ////////// File information ///////////////////////////////////////////////////
 
+/**
+ * Gets the base name of the given path name, i.e., the file name without the
+ * path leading up to it.
+ *
+ * @param path The full path to get the base name of.
+ * @return Returns the base name.  Note that if \a path is just a file name,
+ * then returns \a path.
+ */
+inline char const* base_name( char const *path ) {
+  if ( char const *const sep = ::strrchr( path, dir_separator ) )
+    return sep + 1;
+  return path;
+}
+
+/**
+ * Gets the base name of the given path name, i.e., the file name without the
+ * path leading up to it.
+ *
+ * @tparam PathStringType The \a path string type.
+ * @param path The full path to get the base name of.
+ * @return Returns the base name.  Note that if \a path is just a file name,
+ * then returns \a path.
+ */
+template<class PathStringType> inline
+typename std::enable_if<ztd::has_c_str<PathStringType,
+                          char const* (PathStringType::*)() const>::value,
+                        char const*>::type
+base_name( PathStringType const &path ) {
+  return base_name( path.c_str() );
+}
+
 #ifdef ZORBA_WITH_FILE_ACCESS
 
 /**
