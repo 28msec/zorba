@@ -9,6 +9,7 @@ New Features:
 	when resolving URIs.
   * Can now specify jsoniq-strip-top-level-array option to parse-json() to
     strip the top-level array from JSON streams.
+  * New external module client for Oracle NoSQL Database.
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
