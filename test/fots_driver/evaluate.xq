@@ -51,30 +51,23 @@ declare option features:enable "hof";
  : Checks if the result matches the assertions.
  : @param $result actual result.
  : @param $expResult expected result.
- : @param $showResult is true the verbose mode is assumed.
  : @return the results of assertion evaluations.
  :)
 declare %ann:sequential function eval:result(
   $result     as item()*,
-  $expResult  as element(),
-  $showResult as xs:boolean?
+  $expResult  as element()
 ) as element()? {
   let $err := eval:check-assertion($result,
                                   $expResult,
                                   (),
-                                  "",
-                                  $showResult)
+                                  "")
   return if(empty($err))
   then ()
   else
     <out>
       <expected-result>{$expResult}</expected-result>
-      {
-        if($showResult)
-        then (<result>{$result}</result>,
-              <errors>{$err}</errors>)
-        else ()
-      }
+      <result>{$result}</result>
+      <errors>{$err}</errors>
     </out>
 };
 
@@ -84,15 +77,13 @@ declare %ann:sequential function eval:result(
  : @param $expResult expected result.
  : @param $code err:code.
  : @param $errorDescription err:description.
- : @param $showResult is true the verbose mode is assumed.
  : @return the results of error evaluation.
  :)
 declare %ann:sequential function eval:error(
   $result           as item()*,
   $expResult        as element(),
   $code             as xs:QName?,
-  $errorDescription as xs:string?,
-  $showResult       as xs:boolean?
+  $errorDescription as xs:string?
 ) as xs:string* {
   if(empty($result)) then
     let $err := eval:error-code($code,
@@ -103,9 +94,7 @@ declare %ann:sequential function eval:error(
     concat("Expected error &#xA;",
           data($expResult/@code),
           ",&#xA; found result ",
-          if ($showResult)
-          then string-join(util:serialize-result($result),' ')
-          else ())
+          string-join(util:serialize-result($result),' '))
 };
 
 declare %private %ann:sequential function eval:error-code(
@@ -120,16 +109,19 @@ declare %private %ann:sequential function eval:error-code(
     if (exists($expResult[@code = "*"]) or
         exists($expResult[@code = local-name-from-QName($code)]))
     then ()
-    else concat("Expected error: ",
+    else if(exists($code))
+    then concat("Expected error: ",
                 data($expResult/@code),
                 ". Found error: ",
                 local-name-from-QName($code))
+    else concat("Expected error: ",
+                data($expResult/@code),
+                ". Found empty result.")
   else if (($assertName = "any-of") or ($assertName = "all-of"))
   then eval:check-assertion((),
                             $expResult,
                             $code,
-                            $errorDescription,
-                            fn:true())
+                            $errorDescription)
   else concat("Expected result: &#xA;",
               data($expResult),
               ".&#xA; Found error ",
@@ -142,8 +134,7 @@ declare %private %ann:sequential function eval:check-assertion(
   $result           as item()*,
   $expResult        as element(),
   $code             as xs:QName?,
-  $errorDescription as xs:string?,
-  $showResult       as xs:boolean?
+  $errorDescription as xs:string?
 ) as xs:string* {
   let $test := local-name($expResult)
   return switch($test)
@@ -151,14 +142,12 @@ declare %private %ann:sequential function eval:check-assertion(
       return eval:assert-all-of($result,
                                 $expResult,
                                 $code,
-                                $errorDescription,
-                                $showResult)
+                                $errorDescription)
     case 'any-of'
       return eval:assert-any-of($result,
                                 $expResult,
                                 $code,
-                                $errorDescription,
-                                $showResult)
+                                $errorDescription)
     case 'assert'
       return eval:assert($result,
                          $expResult)
@@ -199,8 +188,7 @@ declare %private %ann:sequential function eval:check-assertion(
       return eval:error($result,
                         $expResult,
                         $code,
-                        $errorDescription,
-                        $showResult)
+                        $errorDescription)
     default 
       return error($fots-err:errNA,
                      "&#xA;The requested assertion type is not implemented.")
@@ -211,8 +199,7 @@ declare %private %ann:sequential function eval:assert-any-of(
   $result           as item()*,
   $expResult        as element(),
   $code             as xs:QName?,
-  $errorDescription as xs:string?,
-  $showResult       as xs:boolean
+  $errorDescription as xs:string?
 ) as xs:string? {
   let $results :=
     for $tmp in $expResult/*
@@ -220,8 +207,7 @@ declare %private %ann:sequential function eval:assert-any-of(
       for $r in eval:check-assertion($result,
                                      $tmp,
                                      $code,
-                                     $errorDescription,
-                                     $showResult)
+                                     $errorDescription)
       return <item>{$r}</item>
     } </result>
   where every $result in $results satisfies $result/item
@@ -234,15 +220,13 @@ declare %private %ann:sequential function eval:assert-all-of(
   $result           as item()*,
   $expResult        as element(),
   $code             as xs:QName?,
-  $errorDescription as xs:string?,
-  $showResult       as xs:boolean
+  $errorDescription as xs:string?
 ) as xs:string* {
   for $tmp in $expResult/*
   return eval:check-assertion($result,
                               $tmp,
                               $code,
-                              $errorDescription,
-                              $showResult)
+                              $errorDescription)
 };
 
 (: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert :)
@@ -468,8 +452,7 @@ declare %private %ann:sequential function eval:assert-serialization-error(
     eval:error((),
               $expResult,
               $err:code,
-              $err:description,
-              fn:true())
+              $err:description)
   }
 };
 

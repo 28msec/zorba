@@ -188,7 +188,7 @@ declare %ann:nondeterministic function reporting:do-reporting(
   return
   <fots:report>
   {
- let $totalNoTests := count($failures//fots:test-set//fots:test-case),
+    let $totalNoTests := count($failures//fots:test-set//fots:test-case),
         $totalPass := sum(for $testSet in $failures//fots:test-set
                           return count($testSet//fots:test-case[@result ='pass'])),
         $totalFail := sum(for $testSet in $failures//fots:test-set

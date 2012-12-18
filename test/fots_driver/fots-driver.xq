@@ -477,15 +477,13 @@ declare %private %ann:sequential function driver:xqxq-invoke(
       (:TODO check if this works:)
       (:variable $expResult := util:get-value($case, $testSetBaseURI, "result");:) 
       eval:result($queryResult,
-                  $case/fots:result/*,
-                  $verbose)
+                  $case/fots:result/*)
     }
   } catch * {
     eval:error((),
                $case/fots:result/*,
                $err:code,
-               $err:description,
-               $verbose)
+               $err:description)
   }
 };
 
