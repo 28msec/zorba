@@ -1483,11 +1483,11 @@ void normalize_fo(fo_expr* foExpr)
 ********************************************************************************/
 expr* wrap_in_atomization(expr* e)
 {
-  return theExprManager->create_fo_expr(theRootSctx,
-                                        theUDF,
-                                        e->get_loc(),
-                                        BUILTIN_FUNC(FN_DATA_1),
-                                        e);
+  return CREATE(fo)(theRootSctx,
+                    theUDF,
+                    e->get_loc(),
+                    BUILTIN_FUNC(FN_DATA_1),
+                    e);
 }
 
 
@@ -1502,13 +1502,13 @@ expr* wrap_in_type_promotion(
 {
   e = wrap_in_atomization(e);
 
-  return theExprManager->create_promote_expr(theRootSctx,
-                                             theUDF,
-                                             e->get_loc(),
-                                             e,
-                                             type,
-                                             errorKind,
-                                             qname);
+  return CREATE(promote)(theRootSctx,
+                         theUDF,
+                         e->get_loc(),
+                         e,
+                         type,
+                         errorKind,
+                         qname);
 }
 
 
@@ -4640,6 +4640,7 @@ void* begin_visit(const IndexKeyList& v)
   return no_state;
 }
 
+
 void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
@@ -4669,8 +4670,6 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       ERROR_PARAMS(index->getName()->getStringValue()));
     }
 
-    keyExpr = wrap_in_atomization(keyExpr);
-
     xqtref_t type;
     xqtref_t ptype;
 
@@ -4682,6 +4681,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
         ERROR_PARAMS(index->getName()->getStringValue(),
                      ZED(ZDST0027_NO_KEY_TYPE_DECL)));
       }
+
+      keyExpr = wrap_in_atomization(keyExpr);
     }
     else
     {
@@ -4732,11 +4733,26 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
                      ptype->toSchemaString()));
       }
 
-      keyExpr = wrap_in_type_match(keyExpr,
-                                   type,
-                                   loc,
-                                   TREAT_INDEX_KEY,
-                                   index->getName());
+      if (!index->isGeneral() &&
+          (TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.DOUBLE_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.FLOAT_TYPE_ONE, kloc)))
+      {
+        keyExpr = wrap_in_type_promotion(keyExpr,
+                                         type,
+                                         PROMOTE_INDEX_KEY,
+                                         index->getName());
+      }
+      else
+      {
+        keyExpr = wrap_in_atomization(keyExpr);
+
+        keyExpr = wrap_in_type_match(keyExpr,
+                                     type,
+                                     loc,
+                                     TREAT_INDEX_KEY,
+                                     index->getName());
+      }
 
       keyTypes[i] = ptype->getBaseBuiltinType();
     }
@@ -4745,12 +4761,11 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     {
       // Eliminate duplicate key values, as they don't play any role in a
       // general comparison predicate.
-      keyExpr = theExprManager->
-      create_fo_expr(theRootSctx,
-                     theUDF,
-                     keyExpr->get_loc(),
-                     BUILTIN_FUNC(FN_DISTINCT_VALUES_1),
-                     keyExpr);
+      keyExpr = CREATE(fo)(theRootSctx,
+                           theUDF,
+                           keyExpr->get_loc(),
+                           BUILTIN_FUNC(FN_DISTINCT_VALUES_1),
+                           keyExpr);
     }
 
     std::string collationUri;
@@ -4760,8 +4775,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       collationUri = collationSpec->get_uri().str();
 
       if (! theSctx->is_known_collation(collationUri))
-        RAISE_ERROR(err::XQST0076, kloc,
-        ERROR_PARAMS(collationUri));
+        RAISE_ERROR(err::XQST0076, kloc, ERROR_PARAMS(collationUri));
     }
     else if (ptype != NULL &&
              TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE, loc))

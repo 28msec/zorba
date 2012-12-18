@@ -82,16 +82,7 @@ static void checkKeyType(
   xqtref_t searchKeyType = tm->create_value_type(searchKey);
   xqtref_t indexKeyType = (indexDecl->getKeyTypes())[keyNo];
 
-  if (indexKeyType != NULL &&
-      !TypeOps::is_subtype(tm, *searchKeyType, *indexKeyType))
-  {
-    RAISE_ERROR(err::XPTY0004, loc,
-    ERROR_PARAMS(ZED(SearchKeyTypeMismatch_234),
-                 *searchKeyType,
-                 indexDecl->getName()->getStringValue(),
-                 *indexKeyType));
-  }
-  else if (indexKeyType == NULL)
+  if (indexKeyType == NULL)
   {
     ZORBA_ASSERT(indexDecl->isGeneral());
 
@@ -112,6 +103,47 @@ static void checkKeyType(
                    *searchKeyType,
                    indexDecl->getName()->getStringValue()));
     }
+  }
+  else if (!TypeOps::is_subtype(tm, *searchKeyType, *indexKeyType))
+  {
+    store::SchemaTypeCode searchKeyTypeCode = searchKey->getTypeCode();
+
+    if (TypeOps::is_subtype(tm, *indexKeyType, *rtm.STRING_TYPE_ONE) &&
+        (searchKeyTypeCode == store::XS_UNTYPED_ATOMIC ||
+         searchKeyTypeCode == store::XS_ANY_URI))
+    {
+      return;
+    }
+
+    if (TypeOps::is_subtype(tm, *indexKeyType, *rtm.DOUBLE_TYPE_ONE))
+    {
+      if (TypeOps::is_subtype(searchKeyTypeCode, store::XS_DECIMAL))
+      {
+        GENV_STORE.getItemFactory()->
+        createDouble(searchKey, xs_double(searchKey->getDecimalValue()));
+      }
+      else if (TypeOps::is_subtype(searchKeyTypeCode, store::XS_FLOAT))
+      {
+        GENV_STORE.getItemFactory()->
+        createDouble(searchKey, xs_double(searchKey->getFloatValue()));
+      }
+
+      return;
+    }
+
+    if (TypeOps::is_subtype(tm, *indexKeyType, *rtm.FLOAT_TYPE_ONE) &&
+        TypeOps::is_subtype(searchKeyTypeCode, store::XS_DECIMAL))
+    {
+      GENV_STORE.getItemFactory()->
+      createDouble(searchKey, xs_float(searchKey->getDecimalValue()));
+      return;
+    }
+
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(SearchKeyTypeMismatch_234),
+                 *searchKeyType,
+                 indexDecl->getName()->getStringValue(),
+                 *indexKeyType));
   }
 }
 
@@ -242,20 +274,14 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0021_INDEX_NOT_DECLARED,
-      ERROR_PARAMS( qname->getStringValue() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
   if (GENV_STORE.getIndex(qname) != NULL)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0022_INDEX_ALREADY_EXISTS,
-      ERROR_PARAMS( qname->getStringValue() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDDY0022_INDEX_ALREADY_EXISTS, loc,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
   buildPlan = indexDecl->getBuildPlan(loc); 
@@ -266,7 +292,8 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  reinterpret_cast<store::PUL*>(result.getp())->addCreateIndex(&loc, qname, spec, planWrapper);
+  reinterpret_cast<store::PUL*>(result.getp())->
+  addCreateIndex(&loc, qname, spec, planWrapper);
 
   STACK_PUSH(true, state);
 

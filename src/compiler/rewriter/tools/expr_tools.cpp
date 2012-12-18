@@ -50,6 +50,35 @@ static void set_bit(var_expr*, const VarIdMap&, DynamicBitset&, bool);
 /*******************************************************************************
 
 ********************************************************************************/
+static void normalize_comp(
+    CompareConsts::CompareType& comp,
+    expr*& arg0,
+    expr*& arg1)
+{
+  switch (comp)
+  {
+  case CompareConsts::VALUE_GREATER:
+  case CompareConsts::GENERAL_GREATER:
+  case CompareConsts::VALUE_GREATER_EQUAL:
+  case CompareConsts::GENERAL_GREATER_EQUAL:
+  {
+    comp = static_cast<CompareConsts::CompareType>(static_cast<int>(comp) - 4);
+     
+    expr* tmp = arg0;
+    arg0 = arg1;
+    arg1 = tmp;
+     
+    break;
+  }
+  default:
+    break;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
 {
   if (query == view)
@@ -121,6 +150,36 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
         ZORBA_ASSERT(false);
       }
       }
+    }
+    else if (view->get_function_kind() == FunctionConsts::OP_UNHOIST_1)
+    {
+      fo_expr* vfo = static_cast<fo_expr*>(view);
+      return match_exact(query, vfo->get_arg(0), subst);
+    }
+    else if (query->get_function_kind() == FunctionConsts::OP_UNHOIST_1)
+    {
+      fo_expr* qfo = static_cast<fo_expr*>(query);
+      return match_exact(qfo->get_arg(0), view, subst);
+    }
+    else if (view->get_function_kind() == FunctionConsts::OP_HOIST_1)
+    {
+      fo_expr* vfo = static_cast<fo_expr*>(view);
+      return match_exact(query, vfo->get_arg(0), subst);
+    }
+    else if (query->get_function_kind() == FunctionConsts::OP_HOIST_1)
+    {
+      fo_expr* qfo = static_cast<fo_expr*>(query);
+      return match_exact(qfo->get_arg(0), view, subst);
+    }
+    else if (view->get_expr_kind() == wrapper_expr_kind)
+    {
+      wrapper_expr* vwe = static_cast<wrapper_expr*>(view);
+      return match_exact(query, vwe->get_input(), subst);
+    }
+    else if (query->get_expr_kind() == wrapper_expr_kind)
+    {
+      wrapper_expr* qwe = static_cast<wrapper_expr*>(query);
+      return match_exact(qwe->get_input(), view, subst);
     }
     else
     {
@@ -206,7 +265,47 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
     fo_expr* ve = static_cast<fo_expr*>(view);
 
     if (qe->get_func() != ve->get_func())
+    {
+      function* vfunc = ve->get_func();
+      function* qfunc = qe->get_func();
+
+      if (qfunc->isComparisonFunction() && vfunc->isComparisonFunction())
+      {
+        CompareConsts::CompareType qcomp = qe->get_func()->comparisonKind();
+        CompareConsts::CompareType vcomp = ve->get_func()->comparisonKind();
+
+        expr* qarg0 = qe->get_arg(0);
+        expr* qarg1 = qe->get_arg(1);
+        expr* varg0 = ve->get_arg(0);
+        expr* varg1 = ve->get_arg(1);
+
+        normalize_comp(qcomp, qarg0, qarg1);
+        normalize_comp(vcomp, varg0, varg1);
+
+        if (qcomp == vcomp &&
+            match_exact(qarg0, varg0, subst) &&
+            match_exact(qarg1, varg1, subst))
+          return true;
+      }
+      else if (vfunc->getKind() == FunctionConsts::OP_UNHOIST_1)
+      {
+        return match_exact(query, ve->get_arg(0), subst);
+      }
+      else if (qfunc->getKind() == FunctionConsts::OP_UNHOIST_1)
+      {
+        return match_exact(qe->get_arg(0), view, subst);
+      }
+      else if (vfunc->getKind() == FunctionConsts::OP_HOIST_1)
+      {
+        return match_exact(query, ve->get_arg(0), subst);
+      }
+      else if (qfunc->getKind() == FunctionConsts::OP_HOIST_1)
+      {
+        return match_exact(qe->get_arg(0), view, subst);
+      }
+
       return false;
+    }
 
     function* func = qe->get_func();
 
@@ -229,8 +328,8 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
         const store::Item* collName1 = ve->get_arg(0)->getQName();
         const store::Item* collName2 = qe->get_arg(0)->getQName();
 
-          if (collName1 != NULL && collName2 != NULL && collName1->equals(collName2))
-            return true;
+        if (collName1 != NULL && collName2 != NULL && collName1->equals(collName2))
+          return true;
 #if 0
         if (collName != NULL && qe->get_arg(0)->get_var() != NULL)
         {
@@ -250,6 +349,18 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
           }
         }
 #endif
+      }
+      else if (func->isComparisonFunction())
+      {
+        CompareConsts::CompareType compKind = func->comparisonKind();
+
+        if (CompareConsts::VALUE_EQUAL <= compKind && 
+            compKind <= CompareConsts::NODE_NOT_EQUAL)
+        {
+          if (match_exact(qe->get_arg(0), ve->get_arg(1), subst) &&
+              match_exact(qe->get_arg(1), ve->get_arg(0), subst))
+            return true;
+        }
       }
 
       return false;

@@ -46,6 +46,33 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
+IndexMatchingRule::PredInfo::PredInfo(
+    where_clause* wc,
+    csize wcPos,
+    fo_expr* andExpr,
+    csize argPos)
+  :
+  theClause(wc),
+  theClausePos(wcPos),
+  theAndExpr(andExpr),
+  theArgPos(argPos)
+{
+  if (theAndExpr)
+  {
+    assert(theAndExpr->get_func()->getKind() == FunctionConsts::OP_AND_N);
+
+    theExpr = theAndExpr->get_arg(theArgPos);
+  }
+  else
+  {
+    theExpr = theClause->get_expr();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 IndexMatchingRule::IndexMatchingRule(IndexDecl* decl)
   :
   RewriteRule(RewriteRule::IndexJoin, "IndexJoin"),
@@ -77,7 +104,7 @@ IndexMatchingRule::IndexMatchingRule(IndexDecl* decl)
   FoldRules foldRules;
   foldRules.rewrite(rCtx);
 
-  if (Properties::instance()->printIntermediateOpt() && theDoTrace)
+  if (/*Properties::instance()->printIntermediateOpt() &&*/ theDoTrace)
   {
     std::cout << "Canonical view expr for candidate index : " 
               << decl->getName()->getStringValue() << std::endl;
@@ -149,9 +176,9 @@ bool IndexMatchingRule::matchIndex()
   DynamicBitset matchedClauses(numQClauses);
   matchedClauses.reset();
 
-  std::vector<PredInfo> preds;
-  std::vector<PredInfo> unmatchedPreds;
-  std::vector<PredInfo> matchedPreds;
+  std::vector<PredInfo> vpreds;
+  std::vector<PredInfo> qpreds;
+  std::vector<PredInfo> matchedQPreds;
 
   // Match the FOR and WHERE clauses of the view FLWOR. For now, we can match
   // only indexes whose domain and key expressions consist of FOR, LET, and
@@ -222,7 +249,7 @@ bool IndexMatchingRule::matchIndex()
         }
         case flwor_clause::where_clause:
         {
-          getQueryPreds(qi, preds);
+          getWherePreds(qi, static_cast<where_clause*>(qc), qpreds);
           break;
         }
         case flwor_clause::count_clause:
@@ -238,6 +265,8 @@ bool IndexMatchingRule::matchIndex()
 
       if (!matched)
         return false;
+
+      break;
     }
     case flwor_clause::let_clause:
     {
@@ -246,34 +275,7 @@ bool IndexMatchingRule::matchIndex()
     case flwor_clause::where_clause:
     {
       where_clause* vwc = static_cast<where_clause*>(vc);
-      expr* vwhereExpr = vwc->get_expr();
-      bool matched = false;
-
-      for (csize qi = nextQueryClause; qi < numQClauses && !matched; ++qi)
-      {
-        flwor_clause* qc = theQueryExpr->get_clause(qi);
-
-        if (qc->get_kind() != flwor_clause::where_clause)
-          continue;
-
-        where_clause* qwc = static_cast<where_clause*>(qc);
-        expr* qwhereExpr = qwc->get_expr();
-
-        if (expr_tools::match_exact(qwhereExpr, vwhereExpr, subst))
-        {
-          nextQueryClause = qi+1;
-          matched = true;
-          matchedClauses.set(qi, true);
-          break;
-        }
-        else
-        {
-          getQueryPreds(qi, preds);
-        }
-      }
-
-      if (!matched)
-        return false;
+      getWherePreds(vi, vwc, vpreds);
 
       break;
     }
@@ -283,6 +285,48 @@ bool IndexMatchingRule::matchIndex()
       return false;
     }
     }
+  }
+
+  // Collect the rest of the query preds, if any
+  for (csize qi = nextQueryClause; qi < numQClauses; ++qi)
+  {
+    flwor_clause* qc = theQueryExpr->get_clause(qi);
+
+    if (qc->get_kind() != flwor_clause::where_clause)
+      continue;
+
+    getWherePreds(qi, static_cast<where_clause*>(qc), qpreds);
+  }
+
+  // Find a match for each index predicate
+  std::vector<PredInfo>::iterator vpredIte = vpreds.begin();
+  std::vector<PredInfo>::iterator vpredEnd = vpreds.end();
+
+  for (; vpredIte != vpredEnd; ++vpredIte)
+  {
+    expr* vpredExpr = vpredIte->theExpr;
+    bool matched = false;
+
+    std::vector<PredInfo>::iterator qpredIte = qpreds.begin();
+    std::vector<PredInfo>::iterator qpredEnd = qpreds.end();
+
+    for (; qpredIte != qpredEnd; ++qpredIte)
+    {
+      PredInfo& qpred = *qpredIte;
+      expr* qpredExpr = qpred.theExpr;
+
+      if (expr_tools::match_exact(qpredExpr, vpredExpr, subst))
+      {
+        matched = true;
+        matchedQPreds.push_back(qpred);
+        qpreds.erase(qpredIte);
+
+        break;
+      }
+    }
+
+    if (!matched)
+      return false;
   }
 
   // Create the vector to store the args of the probe function
@@ -297,70 +341,65 @@ bool IndexMatchingRule::matchIndex()
 
   probeArgs.push_back(qnameExpr);
 
-  // Collect the rest of the query preds, if any
-  for (csize qi = nextQueryClause; qi < numQClauses; ++qi)
-  {
-    flwor_clause* qc = theQueryExpr->get_clause(qi);
-
-    if (qc->get_kind() != flwor_clause::where_clause)
-      continue;
-
-    getQueryPreds(qi, preds);
-  }
-
   // Match the predicates
   std::vector<let_clause*>::const_iterator keyIte = theKeyClauses.begin();
   std::vector<let_clause*>::const_iterator keyEnd = theKeyClauses.end();
 
   for (; keyIte != keyEnd; ++keyIte)
   {
-    expr* keyExpr = (*keyIte)->get_expr();
     bool matched = false;
+    expr* keyExpr = (*keyIte)->get_expr();
 
-    std::vector<PredInfo>::iterator predIte = preds.begin();
-    std::vector<PredInfo>::iterator predEnd = preds.end();
-
-    for (; predIte != predEnd; ++predIte)
+    if (keyExpr->get_expr_kind() == promote_expr_kind ||
+        keyExpr->get_expr_kind() == treat_expr_kind)
     {
-      if (predIte->theExpr->get_expr_kind() != fo_expr_kind)
-      {
-        unmatchedPreds.push_back(*predIte);
+      cast_or_castable_base_expr* tmp = 
+      static_cast<cast_or_castable_base_expr*>(keyExpr);
+
+      keyExpr = tmp->get_input();
+    }
+
+    std::vector<PredInfo>::iterator qpredIte = qpreds.begin();
+    std::vector<PredInfo>::iterator qpredEnd = qpreds.end();
+
+    for (; qpredIte != qpredEnd; ++qpredIte)
+    {
+      PredInfo& qpred = *qpredIte;
+
+      if (qpred.theExpr->get_expr_kind() != fo_expr_kind)
         continue;
-      }
 
-      fo_expr* predExpr = static_cast<fo_expr*>(predIte->theExpr);
-      function* predFunc = predExpr->get_func();
+      fo_expr* qpredExpr = static_cast<fo_expr*>(qpred.theExpr);
+      function* qpredFunc = qpredExpr->get_func();
 
-      if (predFunc->getKind() == FunctionConsts::FN_BOOLEAN_1)
+      if (qpredFunc->getKind() == FunctionConsts::FN_BOOLEAN_1)
       {
-        if (predExpr->get_arg(0)->get_expr_kind() != fo_expr_kind)
-        {
-          unmatchedPreds.push_back(*predIte);
+        if (qpredExpr->get_arg(0)->get_expr_kind() != fo_expr_kind)
           continue;
-        }
 
-        predExpr = static_cast<fo_expr*>(predExpr->get_arg(0));
-        predFunc = predExpr->get_func();
+        qpredExpr = static_cast<fo_expr*>(qpredExpr->get_arg(0));
+        qpredFunc = qpredExpr->get_func();
       }
 
-      if (predFunc->comparisonKind() != CompareConsts::VALUE_EQUAL)
-      {
-        unmatchedPreds.push_back(*predIte);
+      if (qpredFunc->comparisonKind() != CompareConsts::VALUE_EQUAL)
         continue;
-      }
 
-      if (expr_tools::match_exact(predExpr->get_arg(0), keyExpr, subst))
+      if (expr_tools::match_exact(qpredExpr->get_arg(0), keyExpr, subst))
       {
-        matchedPreds.push_back(*predIte);
-        probeArgs.push_back(predExpr->get_arg(1));
         matched = true;
+        matchedQPreds.push_back(qpred);
+        qpreds.erase(qpredIte);
+
+        probeArgs.push_back(qpredExpr->get_arg(1));
         break;
       }
-      else if (expr_tools::match_exact(predExpr->get_arg(1), keyExpr, subst))
+      else if (expr_tools::match_exact(qpredExpr->get_arg(1), keyExpr, subst))
       {
-        matchedPreds.push_back(*predIte);
-        probeArgs.push_back(predExpr->get_arg(0));
         matched = true;
+        matchedQPreds.push_back(qpred);
+        qpreds.erase(qpredIte);
+
+        probeArgs.push_back(qpredExpr->get_arg(0));
         break;
       }
     }
@@ -384,9 +423,9 @@ bool IndexMatchingRule::matchIndex()
   assert(subst[domVar]->get_expr_kind() == var_expr_kind);
   domVar = static_cast<const var_expr*>(subst[domVar]);
  
-  for (csize i = 0; i < unmatchedPreds.size(); ++i)
+  for (csize i = 0; i < qpreds.size(); ++i)
   {
-    expr* pred = unmatchedPreds[i].theExpr;
+    expr* pred = qpreds[i].theExpr;
     if (!checkFreeVars(pred, domVar, matchedClauses))
       return false;
   }
@@ -471,15 +510,23 @@ bool IndexMatchingRule::matchIndex()
   }
 
   // Do the rewrite
-  for (csize i = 0; i < matchedPreds.size(); ++i)
+  for (csize i = 0; i < matchedQPreds.size(); ++i)
   {
-    if (matchedPreds[i].theClause != NULL)
+    PredInfo& pred = matchedQPreds[i];
+
+    if (pred.theAndExpr != NULL)
     {
-      matchedClauses.set(matchedPreds[i].thePos, true);
+      pred.theAndExpr->remove_arg(pred.theArgPos);
+
+      if (pred.theAndExpr->num_args() == 1)
+      {
+        pred.theClause->set_expr(pred.theAndExpr->get_arg(0));
+        pred.theAndExpr = NULL;
+      }
     }
     else
     {
-      matchedPreds[i].theFoExpr->remove_arg(matchedPreds[i].thePos);
+      matchedClauses.set(pred.theClausePos, true);
     }
   }
 
@@ -509,9 +556,11 @@ bool IndexMatchingRule::matchIndex()
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexMatchingRule::getQueryPreds(csize clausePos, std::vector<PredInfo>& preds)
+void IndexMatchingRule::getWherePreds(
+    csize clausePos,
+    where_clause* wc,
+    std::vector<PredInfo>& preds)
 {
-  where_clause* wc = static_cast<where_clause*>(theQueryExpr->get_clause(clausePos));
   expr* whereExpr = wc->get_expr();
 
   if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
@@ -521,12 +570,12 @@ void IndexMatchingRule::getQueryPreds(csize clausePos, std::vector<PredInfo>& pr
 
     for (csize i = 0; i < numArgs; ++i)
     {
-      preds.push_back(PredInfo(andExpr->get_arg(i), i, NULL, andExpr));
+      preds.push_back(PredInfo(wc, clausePos, andExpr, i));
     }
   }
   else
   {
-    preds.push_back(PredInfo(wc->get_expr(), clausePos, wc, NULL));
+    preds.push_back(PredInfo(wc, clausePos, NULL, 0));
   }
 }
 

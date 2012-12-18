@@ -1193,28 +1193,36 @@ const store::Item* expr::getQName() const
       return decl->get_init_expr()->getQName();
     }
   }
+  else if (get_expr_kind() == treat_expr_kind)
+  {
+    const treat_expr* treatExpr = static_cast<const treat_expr*>(this);
+    const expr* argExpr = treatExpr->get_input();
+    return argExpr->getQName();
+  }
   else if (get_expr_kind() == promote_expr_kind)
   {
     // We get here if the optimizer is turned off.
 
     const promote_expr* promoteExpr = static_cast<const promote_expr*>(this);
-
     const expr* argExpr = promoteExpr->get_input();
-    const fo_expr* dataExpr = dynamic_cast<const fo_expr*>(argExpr);
-
-    if (dataExpr != NULL &&
-        dataExpr->get_func()->getKind() == FunctionConsts::FN_DATA_1)
+    
+    if (argExpr->get_expr_kind() == fo_expr_kind)
     {
-      argExpr = dataExpr->get_arg(0);
+      const fo_expr* dataExpr = static_cast<const fo_expr*>(argExpr);
 
-      if (argExpr->get_expr_kind() == const_expr_kind)
+      if (dataExpr->get_func()->getKind() == FunctionConsts::FN_DATA_1)
       {
-        const const_expr* qnameExpr = static_cast<const const_expr*>(argExpr);
-        store::SchemaTypeCode valueType = qnameExpr->get_val()->getTypeCode();
+        argExpr = dataExpr->get_arg(0);
 
-        if (TypeOps::is_subtype(valueType, store::XS_QNAME))
+        if (argExpr->get_expr_kind() == const_expr_kind)
         {
-          return qnameExpr->get_val();
+          const const_expr* qnameExpr = static_cast<const const_expr*>(argExpr);
+          store::SchemaTypeCode valueType = qnameExpr->get_val()->getTypeCode();
+
+          if (TypeOps::is_subtype(valueType, store::XS_QNAME))
+          {
+            return qnameExpr->get_val();
+          }
         }
       }
     }
