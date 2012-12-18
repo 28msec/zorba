@@ -51,6 +51,8 @@ SET(SRCS
 INCLUDE("${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake")
 ZORBA_GENERATE_EXE("zorbacmd" "${SRCS}" "" "zorba" "bin")
 
+ZORBA_GENERATE_EXE("david" "david.cpp" "" "" "")
+
 
 IF(UNIX)
   ADD_CUSTOM_TARGET(zorbacmd_man help2man -N -s1 -n Zorba -S "FLWOR Foundation" ./zorba > "${PROJECT_BINARY_DIR}/doc/zorba.1")

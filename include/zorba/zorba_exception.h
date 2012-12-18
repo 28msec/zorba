@@ -43,6 +43,14 @@ class ZORBA_DLL_PUBLIC ZorbaException : public std::exception {
 public:
   typedef internal::diagnostic::location::line_type line_type;
 
+  enum PrintFormat {
+    TEXT = 0,
+    XML  = 1,
+    JSON = 2
+  };
+
+  static void setPrintFormat(std::ostream &o, PrintFormat pf);
+
   /**
    * Copy-constructs a %ZorbaException.
    *
@@ -173,6 +181,12 @@ protected:
  */
 inline std::ostream& operator<<( std::ostream &o, ZorbaException const &e ) {
   return e.print( o );
+}
+
+inline std::ostream& operator<<( std::ostream &o,
+                                 ZorbaException::PrintFormat pf ) {
+  ZorbaException::setPrintFormat(o, pf);
+  return o;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

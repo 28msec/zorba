@@ -31,7 +31,18 @@ using namespace std;
 
 namespace zorba {
 
+
+int get_error_format_index() {
+  static int const index = ios_base::xalloc();
+  return index;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
+
+void ZorbaException::setPrintFormat(std::ostream &o, PrintFormat pdf) {
+   
+}
 
 ZorbaException::ZorbaException( Diagnostic const &diagnostic,
                                 char const *raise_file, line_type raise_line,
