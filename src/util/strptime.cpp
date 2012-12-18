@@ -1,30 +1,17 @@
-/*-
- * Copyright (c) 1997, 1998, 2005, 2008 The NetBSD Foundation, Inc.
- * All rights reserved.
- *
- * This code was contributed to The NetBSD Foundation by Klaus Klein.
- * Heavily optimised by David Laight
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE NETBSD FOUNDATION, INC. AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 // standard
@@ -57,20 +44,110 @@ namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static int const days_in_month[] = {
-  31, //  0: Jan
-  28, //  1: Feb
-  31, //  2: Mar
-  30, //  3: Apr
-  31, //  4: May
-  30, //  5: Jun
-  31, //  6: Jul
-  31, //  7: Aug
-  30, //  8: Sep
-  31, //  9: Oct
-  30, // 10: Nov
-  31  // 11: Dec
-};
+time_exception::time_exception( string const &msg ) :
+  invalid_argument( msg )
+{
+}
+
+time_exception::~time_exception() throw() {
+  // out-of-line since it's virtual
+}
+
+invalid_specification::invalid_specification( char spec ) :
+  time_exception(
+    BUILD_STRING( '\'', ascii::printable_char( spec ), "': invalid %" )
+  ),
+  spec_( spec )
+{
+}
+
+invalid_specification::~invalid_specification() throw() {
+  // out-of-line since it's virtual
+}
+
+invalid_value_specs::invalid_value_specs( char spec ) :
+  specs_( 1, spec )
+{
+}
+
+invalid_value_specs::invalid_value_specs( char const *specs ) :
+  specs_( specs )
+{
+}
+
+invalid_value_value::invalid_value_value( char c ) :
+  value_( 1, c )
+{
+}
+
+invalid_value_value::invalid_value_value( char const *buf, size_t len ) :
+  value_( buf, len )
+{
+  ascii::trim_end_whitespace( value_ );
+}
+
+template<typename ValueType>
+invalid_value_value::invalid_value_value( ValueType const &value ) :
+  value_( BUILD_STRING( value ) )
+{
+}
+
+std::string invalid_value::build_msg( string const &value,
+                                      string const &specs ) {
+  return BUILD_STRING( '"', value, "\": invalid value for %", specs );
+}
+
+invalid_value::invalid_value( char const *buf, size_t len, char spec ) :
+  invalid_value_value( buf, len ),
+  invalid_value_specs( spec ),
+  time_exception( build_msg( value_, specs_ ) )
+{
+}
+
+invalid_value::invalid_value( char const *buf, size_t len, char const *specs ) :
+  invalid_value_value( buf, len ),
+  invalid_value_specs( specs ),
+  time_exception( build_msg( value_, specs_ ) )
+{
+}
+
+template<typename ValueType>
+invalid_value::invalid_value( ValueType const &value, char spec ) :
+  invalid_value_value( value ),
+  invalid_value_specs( spec ),
+  time_exception( build_msg( value_, specs_ ) )
+{
+}
+
+template<typename ValueType>
+invalid_value::invalid_value( ValueType const &value, char const *specs ) :
+  invalid_value_value( value ),
+  invalid_value_specs( specs ),
+  time_exception( build_msg( value_, specs_ ) )
+{
+}
+
+invalid_value::~invalid_value() throw() {
+  // out-of-line since it's virtual
+}
+
+literal_mismatch::literal_mismatch( char expected, char got ) :
+  time_exception(
+    BUILD_STRING(
+      '\'', ascii::printable_char( got ), "': literal character mismatched '",
+      expected, '\''
+    )
+  ),
+  expected_( expected ),
+  got_( got )
+{
+}
+
+literal_mismatch::~literal_mismatch() throw() {
+  // out-of-line since it's virtual
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 struct rfc2822_obs_zone {
   char const *name;
@@ -99,7 +176,12 @@ static rfc2822_obs_zone const rfc2822_obs_zones[] = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-inline bool is_leap_year( int year ) {
+template<typename IntType> inline
+bool bits_set( IntType flags, IntType bits ) {
+  return (flags & bits) == bits;
+}
+
+inline bool is_leap_year( unsigned year ) {
   return !(year % 4) && ((year % 100) || !(year % 400));
 }
 
@@ -147,49 +229,52 @@ inline bool is_leap_year( int year ) {
  * @param year Year.
  * @return Returns the weekday where 0 = Sunday.
  */
-static int calc_wday( int mday, int mon, int year ) {
+static unsigned calc_wday( unsigned mday, unsigned mon, unsigned year ) {
   ++mon; // Tondering's algorithm assumes month value in range 1-12.
-  int const a = (14 - mon) / 12;
-  int const y = year - a;
-  int const m = mon + 12 * a - 2;
+  unsigned const a = (14 - mon) / 12;
+  unsigned const y = year - a;
+  unsigned const m = mon + 12 * a - 2;
   return (mday + y + y/4 - y/100 + y/400 + (31 * m) / 12) % 7;
 }
 
-static int calc_yday( int mday, int mon, int year ) {
-  static int const first_of_the_month[][12] = {
+static unsigned calc_yday( unsigned mday, unsigned mon, unsigned year ) {
+  static unsigned const first_of_the_month[][12] = {
     { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 }, // non-leap year
     { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335 }  // leap year
   };
   return first_of_the_month[ is_leap_year( year ) ][ mon ] + mday;
 }
 
-static void validate_mday( int mday, int mon, int year ) {
-  if ( mday > days_in_month[ mon ] + (mon == 1 && is_leap_year( year )) )
-    throw invalid_argument(
-      BUILD_STRING(
-        mday, ": invalid day of month ", mon + 1, " for year ", year
-      )
-    );
+static unsigned days_in_month( unsigned mon, unsigned year ) {
+  static unsigned const days[] = {
+    31, //  0: Jan
+    28, //  1: Feb
+    31, //  2: Mar
+    30, //  3: Apr
+    31, //  4: May
+    30, //  5: Jun
+    31, //  6: Jul
+    31, //  7: Aug
+    30, //  8: Sep
+    31, //  9: Oct
+    30, // 10: Nov
+    31  // 11: Dec
+  };
+  return days[ mon ] + (mon == 1 /* Feb */ && is_leap_year( year ));
 }
 
-static void validate_wday( int wday, int mday, int mon, int year ) {
-  if ( wday != calc_wday( mday, mon, year ) )
-    throw invalid_argument(
-      BUILD_STRING(
-        wday, ": invalid weekday for date ",
-        mday, '-', locale::get_month_abbr( mon ), '-', year
-      )
-    );
+inline bool is_mday_valid( unsigned mday, unsigned mon, unsigned year ) {
+  return mday >= 1 && mday <= days_in_month( mon, year );
 }
 
-static void validate_yday( int yday, int mday, int mon, int year ) {
-  if ( yday != calc_yday( mday, mon, year ) )
-    throw invalid_argument(
-      BUILD_STRING(
-        yday, ": invalid day of year for date ",
-        mday, '-', locale::get_month_abbr( mon ), '-', year
-      )
-    );
+static bool is_wday_valid( unsigned wday, unsigned mday, unsigned mon,
+                           unsigned year ) {
+  return wday == calc_wday( mday, mon, year );
+}
+
+inline bool is_yday_valid( unsigned yday, unsigned mday, unsigned mon,
+                           unsigned year ) {
+  return yday == calc_yday( mday, mon, year );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -197,7 +282,7 @@ static void validate_yday( int yday, int mday, int mon, int year ) {
 typedef char const* (*locale_fn_type)(unsigned);
 
 static void bad_alt( char c ) {
-  throw invalid_argument(
+  throw invalid_argument( // TODO
     BUILD_STRING( '\'', c, "': invalid alternate representation" )
   );
 }
@@ -211,9 +296,8 @@ static char const* get_time_ampm( unsigned pm ) {
   return locale::get_time_ampm( pm );
 }
 
-static void locale_find( char conv_char, char const **bpp,
-                         locale_fn_type locale_fn, int limit, int *result,
-                         bool *found = nullptr ) {
+static void locale_find( char conv, char const **bpp, locale_fn_type locale_fn,
+                         int limit, int *result, bool *found = nullptr ) {
   char const *&bp = *bpp;
   size_t len_sum = 0;
 
@@ -235,25 +319,17 @@ static void locale_find( char conv_char, char const **bpp,
     // representative chunk whose length is the average length of all the legal
     // values.
     //
-    size_t const len_avg = len_sum / limit;
-    string value( bp, len_avg );
-    ascii::trim_end_whitespace( value );
-    value += "...";
-    throw invalid_argument(
-      BUILD_STRING( '"', value, "\": invalid value for %", conv_char )
-    );
+    throw invalid_value( bp, len_sum / limit, conv );
   }
   *found = false;
 }
 
-static void parse_num( char conv_char, char const **bpp, unsigned low,
+static void parse_num( char conv, char const **bpp, unsigned low,
                        unsigned high, int *result ) {
   char const *&bp = *bpp;
   char c = *bp;
   if ( !ascii::is_digit( c ) )
-    throw invalid_argument(
-      BUILD_STRING( '\'', c, "': invalid value for %", conv_char )
-    );
+    throw invalid_value( c, conv );
 
   unsigned limit = high; // "high" also determines the number of digits
   unsigned n = 0;
@@ -265,15 +341,40 @@ static void parse_num( char conv_char, char const **bpp, unsigned low,
   } while ( limit && ascii::is_digit( c ) );
 
   if ( n < low || n > high )
-    throw invalid_argument(
-      BUILD_STRING(
-        n, ": value for %", conv_char, " not in range ", low, '-', high
-      )
-    );
+    throw invalid_value( n, conv );
   *result = n;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+/*-
+ * Copyright (c) 1997, 1998, 2005, 2008 The NetBSD Foundation, Inc.
+ * All rights reserved.
+ *
+ * This code was contributed to The NetBSD Foundation by Klaus Klein.
+ * Heavily optimised by David Laight
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE NETBSD FOUNDATION, INC. AND CONTRIBUTORS
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION OR CONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 
 //
 // We do not implement alternate representations. However, we always check
@@ -283,18 +384,8 @@ int const ALT_E = 0x01;
 int const ALT_O = 0x02;
 #define CHECK_ALT(x)  do { if ( alt_format & ~(x) ) bad_alt( c ); } while (0)
 
-unsigned const got_gmtoff = 0x001;      // minutes: 0-59
-unsigned const got_hour   = 0x002;      // hour: 0-23
-unsigned const got_mday   = 0x004;      // month day: 1-{28,29,30,31}
-unsigned const got_min    = 0x008;      // minutes: 0-59
-unsigned const got_mon    = 0x010;      // month: 0-11
-unsigned const got_sec    = 0x020;      // seconds: 0-60
-unsigned const got_wday   = 0x040;      // weekday: 0-6
-unsigned const got_yday   = 0x080;      // day of the year: 0-365
-unsigned const got_year   = 0x100;
-
 static char const* strptime_impl( char const *buf, char const *fmt, ztm *tm,
-                                  unsigned *got_flags ) {
+                                  unsigned *set_fields ) {
   char const *bp = buf;
   char c;
   bool found;
@@ -314,9 +405,7 @@ static char const* strptime_impl( char const *buf, char const *fmt, ztm *tm,
 literal:
       CHECK_ALT(0);
       if ( *bp != c )
-        throw invalid_argument(
-          BUILD_STRING( "'", *bp, "': literal character mismatches '", c, '\'' )
-        );
+        throw literal_mismatch( c, *bp );
       ++bp;
       continue;
     }
@@ -334,7 +423,7 @@ again:
         );
         if ( !found )
           locale_find( c, &bp, &locale::get_weekday_abbr, 7, &tm->tm_wday );
-        *got_flags |= got_wday;
+        *set_fields |= set_wday;
         break;
 
       case 'b': // abbreviated month name
@@ -344,7 +433,7 @@ again:
         locale_find( c, &bp, &locale::get_month_name, 12, &tm->tm_mon, &found );
         if ( !found )
           locale_find( c, &bp, &locale::get_month_abbr, 12, &tm->tm_mon );
-        *got_flags |= got_mon;
+        *set_fields |= set_mon;
         break;
 
       case 'c': // date and time
@@ -361,7 +450,7 @@ again:
         else
           split_year = true;
         tm->tm_year = n;
-        *got_flags |= got_year;
+        *set_fields |= set_year;
         break;
 
       case 'D':
@@ -373,7 +462,7 @@ again:
       case 'e': // day of month: 1-31
         CHECK_ALT(ALT_O);
         parse_num( c, &bp, 1, 31, &tm->tm_mday );
-        *got_flags |= got_mday;
+        *set_fields |= set_mday;
         break;
 
       case 'E': // "%E?" alternative conversion modifier
@@ -389,7 +478,7 @@ again:
         CHECK_ALT(0);
         parse_num( c, &bp, 1, 366, &n );
         tm->tm_yday = n - 1;
-        *got_flags |= got_yday;
+        *set_fields |= set_yday;
         break;
 
       case 'k': // hour: 0-23
@@ -399,7 +488,7 @@ again:
       case 'H': // hour: 00-23
         CHECK_ALT(ALT_O);
 case_H: parse_num( c, &bp, 0, 23, &tm->tm_hour );
-        *got_flags |= got_hour;
+        *set_fields |= set_hour;
         break;
 
       case 'l': // hour: 1-12
@@ -411,20 +500,20 @@ case_H: parse_num( c, &bp, 0, 23, &tm->tm_hour );
 case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
         if ( tm->tm_hour == 12 )
           tm->tm_hour = 0;
-        *got_flags |= got_hour;
+        *set_fields |= set_hour;
         break;
 
       case 'm': // month: 01-12
         CHECK_ALT(ALT_O);
         parse_num( c, &bp, 1, 12, &n );
         tm->tm_mon = n - 1;
-        *got_flags |= got_mon;
+        *set_fields |= set_mon;
         break;
 
       case 'M': // minute: 00-59
         CHECK_ALT(ALT_O);
         parse_num( c, &bp, 0, 59, &tm->tm_min );
-        *got_flags |= got_min;
+        *set_fields |= set_min;
         break;
 
       case 'n': // newline
@@ -441,10 +530,8 @@ case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
         CHECK_ALT(0);
         locale_find( c, &bp, &get_time_ampm, 2, &n );
         if ( tm->tm_hour > 11 )
-          throw invalid_argument(
-            "%p specified in format string more than once"
-          );
-        if ( n )
+          throw invalid_value( tm->tm_hour, "Il" );
+        if ( n /* i.e., PM */ )
           tm->tm_hour += 12;
         break;
 
@@ -461,7 +548,7 @@ case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
       case 'S': // seconds: 00-60 (60 for leap second)
         CHECK_ALT(ALT_O);
         parse_num( c, &bp, 0, 60, &tm->tm_sec );
-        *got_flags |= got_sec;
+        *set_fields |= set_sec;
         break;
 
 #if 0
@@ -478,7 +565,7 @@ case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
         CHECK_ALT(ALT_O);
         parse_num( c, &bp, 1, 7, &n );
         tm->tm_wday = n - 1;
-        *got_flags |= got_wday;
+        *set_fields |= set_wday;
         break;
 
       case 'V': // week of year, beginning on Monday: 01-53
@@ -510,7 +597,7 @@ case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
       case 'w': // day of week, beginning on Sunday: 0-6
         CHECK_ALT(ALT_O);
         parse_num( c, &bp, 0, 6, &tm->tm_wday );
-        *got_flags |= got_wday;
+        *set_fields |= set_wday;
         break;
 
       case 'x': // date
@@ -533,18 +620,19 @@ case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
           split_year = true;
         }
         tm->tm_year = n;
-        *got_flags |= got_year;
+        *set_fields |= set_year;
         break;
 
       case 'Y': // year: 0-9999
         CHECK_ALT(ALT_E);
         parse_num( c, &bp, 0, 9999, &n );
         tm->tm_year = n - TM_YEAR_BASE;
-        *got_flags |= got_year;
+        *set_fields |= set_year;
         break;
 
       case 'z': { // RFC 2822 timezone offset or name: [+|-]HHMM | ZZZ
         CHECK_ALT(0);
+        char const *const bp0 = bp;
         int sign;
         switch ( *bp ) {
           case '+': sign =  1; ++bp; break;
@@ -566,18 +654,16 @@ case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
             goto bad_tz;
           minute += *bp++ - '0';
           if ( minute > 59 )
-            throw invalid_argument(
-              BUILD_STRING( minute, ": invalid minute for %z" )
-            );
+            goto bad_tz;
           long gmtoff = hour * 60 * 60 + minute * 60;
           if ( sign )
             gmtoff *= sign;
-          set_gmtoff( *tm, gmtoff );
+          set_gmtoff_field( *tm, gmtoff );
           tm->tm_isdst = 0;
-          *got_flags |= got_gmtoff;
+          *set_fields |= set_gmtoff;
           break;
         } else if ( sign )              // sign followed by non-digit
-bad_tz:   throw invalid_argument( "invalid 4-digit timezone offset" );
+bad_tz:   throw invalid_value( bp0, 4 + !!sign, c );
         // no break;
       } // case 'z'
 
@@ -586,49 +672,49 @@ bad_tz:   throw invalid_argument( "invalid 4-digit timezone offset" );
         for ( rfc2822_obs_zone const *z = rfc2822_obs_zones; z->name; ++z ) {
           size_t const len = ::strlen( z->name );
           if ( ::strncmp( bp, z->name, len ) == 0 ) {
-            set_gmtoff( *tm, z->gmtoff );
+            set_gmtoff_field( *tm, z->gmtoff );
             tm->tm_isdst = z->isdst;
-            *got_flags |= got_gmtoff;
+            *set_fields |= set_gmtoff;
             bp += len;
             goto next_outer_loop;
           }
         }
-        char bad_tz[4];
-        ::memset( bad_tz, 0, sizeof( bad_tz ) );
-        ::strncpy( bad_tz, bp, 3 );     // assume 3
-        throw invalid_argument(
-          BUILD_STRING( '"', bad_tz, "\": unrecognized timezone" )
-        );
+        throw invalid_value( bp, 3 /* assume */, c );
       } // case 'Z'
 
       default: // unknown/unsupported conversion
-        throw invalid_argument( BUILD_STRING( '%', c, ": invalid %") );
+        throw invalid_specification( c );
     } // switch
 
 next_outer_loop:
     continue;
 
 recurse:
-    bp = ztd::strptime_impl( bp, recurse_fmt, tm, got_flags );
+    bp = ztd::strptime_impl( bp, recurse_fmt, tm, set_fields );
   } // while
 
-#define BITS_SET(flags,bits) (((flags) & (bits)) == (bits))
-
-  if ( BITS_SET( *got_flags, got_mday | got_mon | got_year ) ) {
+  if ( bits_set( *set_fields, set_mday | set_mon | set_year ) ) {
     int const year = TM_YEAR_BASE + tm->tm_year;
-    validate_mday( tm->tm_mday, tm->tm_mon, year );
-    if ( *got_flags & got_wday )
-      validate_wday( tm->tm_wday, tm->tm_mday, tm->tm_mon, year );
-    if ( *got_flags & got_yday )
-      validate_yday( tm->tm_yday, tm->tm_mday, tm->tm_mon, year );
+    if ( !is_mday_valid( tm->tm_mday, tm->tm_mon, year ) )
+      throw invalid_value( tm->tm_mday, "de" );
+    if ( (*set_fields & set_wday) &&
+         !is_wday_valid( tm->tm_wday, tm->tm_mday, tm->tm_mon, year ) )
+      throw invalid_value( tm->tm_wday, "uw" );
+    if ( (*set_fields & set_yday) &&
+         !is_yday_valid( tm->tm_yday, tm->tm_mday, tm->tm_mon, year ) )
+      throw invalid_value( tm->tm_yday, 'j' );
   }
 
   return bp;
 }
 
-char const* strptime( char const *buf, char const *fmt, ztm *tm ) {
-  unsigned got_flags = 0;
-  return strptime_impl( buf, fmt, tm, &got_flags );
+char const* strptime( char const *buf, char const *fmt, ztm *tm,
+                      unsigned *set_fields ) {
+  unsigned local_fields;
+  if ( !set_fields )
+    set_fields = &local_fields;
+  *set_fields = 0;
+  return strptime_impl( buf, fmt, tm, set_fields );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

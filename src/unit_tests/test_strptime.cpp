@@ -310,7 +310,7 @@ static void test_zZ() {
     ::memset( &tm, 0, sizeof( tm ) );
     ASSERT_NO_EXCEPTION( bp = ztd::strptime( p->s_off, "%z", &tm ) );
     ASSERT_TRUE( bp == p->s_off + len );
-    long const gmt_off = ztd::get_gmtoff( tm );
+    long const gmt_off = ztd::get_gmtoff_field( tm );
     ASSERT_TRUE( gmt_off == p->l_off );
     ASSERT_TRUE( tm.tm_isdst == (p->s_off[1] == 'D') );
   }

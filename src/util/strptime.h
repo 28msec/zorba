@@ -19,9 +19,11 @@
 
 // standard
 #include <ctime>
+#include <stdexcept>
 
 // Zorba
 #include <zorba/config.h>
+#include "cxx_util.h"
 #include "string_util.h"
 
 namespace zorba {
@@ -50,7 +52,7 @@ namespace ztd {
  * @param tm The ztm to get the GMT offset from.
  * @return Returns the GMT offset in seconds east of Greenwich.
  */
-inline long get_gmtoff( ztm const &tm ) {
+inline long get_gmtoff_field( ztm const &tm ) {
 #if defined(ZORBA_HAVE_STRUCT_TM___TM_GMTOFF)
   return tm.__tm_gmtoff;
 #else
@@ -64,13 +66,168 @@ inline long get_gmtoff( ztm const &tm ) {
  * @param tm The ztm to set the GMT offset of.
  * @param gmtoff The GMT offset in seconds east of Greenwich.
  */
-inline void set_gmtoff( ztm &tm, long gmtoff ) {
+inline void set_gmtoff_field( ztm &tm, long gmtoff ) {
 #if defined(ZORBA_HAVE_STRUCT_TM___TM_GMTOFF)
   tm.__tm_gmtoff = gmtoff;
 #else
   tm.tm_gmtoff = gmtoff;
 #endif
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+class time_exception : public std::invalid_argument {
+public:
+  ~time_exception() throw();
+protected:
+  time_exception( std::string const &msg );
+};
+
+/**
+ * This exception is thrown when an invalid conversion specification is given,
+ * i.e., an invalid character after a \c %.
+ */
+class invalid_specification : public time_exception {
+public:
+  invalid_specification( char spec );
+  ~invalid_specification() throw();
+
+  /**
+   * Gets the invalid specification.
+   *
+   * @return Returns said specification character.
+   */
+  char get_spec() const {
+    return spec_;
+  }
+
+private:
+  char spec_;
+};
+
+/**
+ * This is a helper class for invalid_value.
+ */
+class invalid_value_specs {
+protected:
+  invalid_value_specs( char spec );
+  invalid_value_specs( char const *specs );
+
+  std::string specs_;
+};
+
+/**
+ * This is a helper class for invalid_value.
+ */
+class invalid_value_value {
+protected:
+  invalid_value_value( char c );
+  invalid_value_value( char const *buf, size_t len );
+
+  template<typename ValueType>
+  invalid_value_value( ValueType const &value );
+
+  std::string value_;
+};
+
+/**
+ * This exception is thrown when an invalid value for a given specification was
+ * given.
+ */
+class invalid_value :
+  protected invalid_value_value,
+  protected invalid_value_specs,
+  public time_exception {
+public:
+  invalid_value( char const *buf, size_t len, char spec );
+  invalid_value( char const *buf, size_t len, char const *specs );
+
+  template<typename ValueType>
+  invalid_value( ValueType const &value, char spec );
+
+  template<typename ValueType>
+  invalid_value( ValueType const &value, char const *specs );
+
+  ~invalid_value() throw();
+
+  /**
+   * Gets the conversion specification character(s) the value is invalid for.
+   *
+   * @return Returns said character(s).
+   */
+  std::string const& get_specs() const {
+    return specs_;
+  }
+
+  /**
+   * Gets the invalid value.
+   *
+   * @return Returns said value.
+   */
+  std::string const& get_value() const {
+    return value_;
+  }
+
+private:
+  static std::string build_msg( std::string const &value,
+                                std::string const &specs );
+};
+
+/**
+ * This exception is thrown when a literal character in the \a buf parameter of
+ * the strptime() function does not match is corresponding character in the
+ * \a fmt parameter.
+ */
+class literal_mismatch : public time_exception {
+public:
+  literal_mismatch( char expected, char got );
+  ~literal_mismatch() throw();
+
+  /**
+   * Gets the character that was expected.
+   *
+   * @return Returns said character.
+   */
+  char get_expected() const {
+    return expected_;
+  }
+
+  /**
+   * Gets the character that was actually gotten.
+   *
+   * @return Returns said character.
+   */
+  char get_got() const {
+    return got_;
+  }
+
+private:
+  char expected_;
+  char got_;
+};
+
+// unrecognized timezone
+// invalid timezone offset
+// value not in range
+// invalid alternate representation
+// invalid day-of-month
+// invalid weekday for date
+// invalid day-of-year for date
+
+
+//
+// The bit-wise-or of these constants comprise the value returned by the
+// \c set_fields parameter of the strptime() function.
+//
+unsigned const set_gmtoff = 0x001;      // minutes: 0-59
+unsigned const set_hour   = 0x002;      // hour: 0-23
+unsigned const set_mday   = 0x004;      // month day: 1-{28,29,30,31}
+unsigned const set_min    = 0x008;      // minutes: 0-59
+unsigned const set_mon    = 0x010;      // month: 0-11
+unsigned const set_sec    = 0x020;      // seconds: 0-60
+unsigned const set_wday   = 0x040;      // weekday: 0-6
+unsigned const set_yday   = 0x080;      // day of the year: 0-365
+unsigned const set_year   = 0x100;
 
 /**
  * Parses the string in the buffer according to the given format and fills in
@@ -265,12 +422,15 @@ inline void set_gmtoff( ztm &tm, long gmtoff ) {
  *    </tr>
  *  </table>
  * @param tm The tm structure to fill in.
+ * @param set_fields If not null, this is set to the bit-wise-or of the tm
+ * structure fields that have been set.
  * @return Returns a pointer to the first character in \a buf past the last
  * character parsed.
  * @throws invalid_argument if \a fmt contains an invalid character following
  * \c % or if the value for a conversion specification is invalid.
  */
-char const* strptime( char const *buf, char const *fmt, ztm *tm );
+char const* strptime( char const *buf, char const *fmt, ztm *tm,
+                      unsigned *set_fields = nullptr );
 
 //
 // Template version of strptime().
@@ -280,8 +440,9 @@ typename std::enable_if<
   ztd::has_c_str<BufferType,char const* (BufferType::*)() const>::value,
   char const*
 >::type
-strptime( BufferType const &buf, char const *fmt, ztm *tm ) {
-  return ztd::strptime( buf.c_str(), fmt, tm );
+strptime( BufferType const &buf, char const *fmt, ztm *tm,
+          unsigned *set_fields = nullptr ) {
+  return ztd::strptime( buf.c_str(), fmt, tm, set_fields );
 }
 
 //
@@ -293,8 +454,9 @@ typename std::enable_if<
   ztd::has_c_str<FormatType,char const* (FormatType::*)() const>::value,
   char const*
 >::type
-strptime( BufferType const &buf, FormatType const &fmt, ztm *tm ) {
-  return ztd::strptime( buf.c_str(), fmt.c_str(), tm );
+strptime( BufferType const &buf, FormatType const &fmt, ztm *tm,
+          unsigned *set_fields = nullptr ) {
+  return ztd::strptime( buf.c_str(), fmt.c_str(), tm, set_fields );
 }
 
 } // namespace ztd
