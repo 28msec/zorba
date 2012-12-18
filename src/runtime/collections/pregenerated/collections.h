@@ -910,6 +910,47 @@ public:
 
 /**
  * 
+ *      zorba:edit
+ *    
+ * Author: Zorba Team
+ */
+class ZorbaEditNodesIterator : public NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>
+{ 
+protected:
+  bool theIsDynamic; //
+  bool theNeedToCopy; //
+public:
+  SERIALIZABLE_CLASS(ZorbaEditNodesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaEditNodesIterator,
+    NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  ZorbaEditNodesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool isDynamic,
+    bool needToCopy)
+    : 
+    NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>(sctx, loc, children),
+    theIsDynamic(isDynamic),
+    theNeedToCopy(needToCopy)
+  {}
+
+  virtual ~ZorbaEditNodesIterator();
+
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      zorba:truncate
  *    
  * Author: Zorba Team
