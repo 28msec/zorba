@@ -203,6 +203,13 @@ public:
         bool isLast,
         bool isDynamic) = 0;
 
+  virtual void addEditInCollection(
+        const QueryLoc* aQueryLoc,
+        Item_t& name,
+        Item_t& target,
+        Item_t& content,
+        bool isDynamic) = 0;
+
   virtual void addTruncateCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,

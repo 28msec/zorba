@@ -98,6 +98,8 @@ namespace zorba{
 
     class ZorbaDeleteNodesLastIterator;
 
+    class ZorbaEditNodesIterator;
+
     class ZorbaTruncateCollectionIterator;
 
     class IsAvailableIndexIterator;
@@ -338,8 +340,9 @@ namespace zorba{
 #ifdef ZORBA_WITH_JSON
     class JSONArrayFlattenIterator;
 #endif
+#ifdef ZORBA_WITH_JSON
     class JSONDocIterator;
-
+#endif
 #ifdef ZORBA_WITH_JSON
     class JSONItemAccessorIterator;
 #endif
@@ -843,6 +846,9 @@ public:
     virtual void beginVisit ( const ZorbaDeleteNodesLastIterator& ) = 0;
     virtual void endVisit   ( const ZorbaDeleteNodesLastIterator& ) = 0;
 
+    virtual void beginVisit ( const ZorbaEditNodesIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaEditNodesIterator& ) = 0;
+
     virtual void beginVisit ( const ZorbaTruncateCollectionIterator& ) = 0;
     virtual void endVisit   ( const ZorbaTruncateCollectionIterator& ) = 0;
 
@@ -1190,9 +1196,10 @@ public:
     virtual void beginVisit ( const JSONArrayFlattenIterator& ) = 0;
     virtual void endVisit   ( const JSONArrayFlattenIterator& ) = 0;
 #endif
+#ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONDocIterator& ) = 0;
     virtual void endVisit   ( const JSONDocIterator& ) = 0;
-
+#endif
 #ifdef ZORBA_WITH_JSON
     virtual void beginVisit ( const JSONItemAccessorIterator& ) = 0;
     virtual void endVisit   ( const JSONItemAccessorIterator& ) = 0;

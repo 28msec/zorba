@@ -2255,6 +2255,22 @@
       <value>attempt to delete non-root node from collection "$1"</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0037" name="COLLECTION_APPEND_BAD_EDIT">
+      <value>"$1": illegal edit in append-only collection</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0038" name="COLLECTION_QUEUE_BAD_EDIT">
+      <value>"$1": illegal edit from queue collection</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0039" name="NON_ROOT_NODE_EDIT">
+      <value>attempt to edit non-root node in collection "$1"</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0040" name="INCONSISTENT_EDIT">
+      <value>attempt to edit an item with a template of a different kind (for example an object with a node).</value>
+    </diagnostic>
+     
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">
       <value>"$1": collection already declared</value>
     </diagnostic>

@@ -14,6 +14,10 @@ Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
   * Better computation of the static type for global variables.
   * Optimization of comparison operators when untypedAtomic items are involved.
+  * Improved computation of static type for fn:data function.
+  * Fixed iteration over the components of a window clause; this improves static
+    type computation of expressions referencing window vars.
+  * No need to cast xs:untypedAtomic to xs:string in order-by expression.
 
 Bug Fixes/Other Changes:
   * Change XQXQ (XQuery-for-XQuery) module now part of Zorba core
@@ -33,6 +37,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1021492 (while computeing the "sources" of a prolog var, skip
     any var-setting exprs that appear in non-used (and non-optimized) functions).
   * Fixed bug #1070551 (zerr:ZOSE0003 stream read failure)
+  * Fixed bug #992304 (Compiling library modules could load data from
+	wrong source)
 
 
 version 2.7

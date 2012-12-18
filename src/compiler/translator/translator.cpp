@@ -4058,7 +4058,7 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
     expr::checkSimpleExpr(initExpr);
     ve->set_has_initializer(true);
 
-    if (!ve->is_mutable())
+    if (!ve->is_mutable() && !ve->is_external())
     {
       xqtref_t derivedType = initExpr->get_return_type();
 
