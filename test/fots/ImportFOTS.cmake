@@ -69,7 +69,8 @@ FOREACH (_testset ${_testsets})
     "-e fotsPath:=${_outdir}/2011/QT3-test-suite/catalog.xml "
     "-e mode:=run-test-sets -e testSetPrefixes:=${_testset} "
     "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
-    "--disable-http-resolution --indent)\n"
+    "--disable-http-resolution --indent "
+    "-z cdata-section-elements=\"fots:query result\")\n"
     "ZORBA_SET_TEST_PROPERTY (FOTS/${_testset} "
     "FAIL_REGULAR_EXPRESSION \"result=\\\"fail\\\"\")\n")
 
@@ -94,7 +95,8 @@ FOREACH (_testset ${_testsets})
       "-e mode:=run-test-case "
       "-e testSetName:=${_testset} -e testCaseName:=${_testcase} "
       "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
-      "--disable-http-resolution --indent)\n"
+      "--disable-http-resolution --indent "
+      "-z cdata-section-elements=\"fots:query result\")\n"
       "ZORBA_SET_TEST_PROPERTY (FOTS/${_testset}/${_testcase} "
       "PASS_REGULAR_EXPRESSION \"name=\\\"${_testcase}\\\" result=\\\"pass\\\"\")\n")
   ENDFOREACH (_testcase)
