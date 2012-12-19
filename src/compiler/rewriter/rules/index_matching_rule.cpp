@@ -104,7 +104,7 @@ IndexMatchingRule::IndexMatchingRule(IndexDecl* decl)
   FoldRules foldRules;
   foldRules.rewrite(rCtx);
 
-  if (/*Properties::instance()->printIntermediateOpt() &&*/ theDoTrace)
+  if (Properties::instance()->printIntermediateOpt() && theDoTrace)
   {
     std::cout << "Canonical view expr for candidate index : " 
               << decl->getName()->getStringValue() << std::endl;
@@ -516,12 +516,24 @@ bool IndexMatchingRule::matchIndex()
 
     if (pred.theAndExpr != NULL)
     {
-      pred.theAndExpr->remove_arg(pred.theArgPos);
+      fo_expr* andExpr = pred.theAndExpr;
+      csize numRemoved = 0;
 
-      if (pred.theAndExpr->num_args() == 1)
+      while (matchedQPreds[i].theAndExpr == andExpr)
+      {
+        matchedQPreds[i].theAndExpr->remove_arg(pred.theArgPos - numRemoved);
+        ++i;
+      }
+
+      --i;
+
+      if (andExpr->num_args() == 1)
       {
         pred.theClause->set_expr(pred.theAndExpr->get_arg(0));
-        pred.theAndExpr = NULL;
+      }
+      else if (andExpr->num_args() == 0)
+      {
+        matchedClauses.set(pred.theClausePos, true);
       }
     }
     else
