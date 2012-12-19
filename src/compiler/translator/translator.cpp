@@ -3210,10 +3210,15 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
     
     // add context-item for functions with zero arguments which implicitly
     // take the context-item as argument
-    if (errFn == NULL && f != NULL && (xquery_fns_def_dot.test(f->getKind()) || f->getKind() == FunctionConsts::FN_NUMBER_0)) // TODO: maybe FN_NUMBER_0 should go into xquery_fns_def_dot
+    if (errFn == NULL && f != NULL && (xquery_fns_def_dot.test(f->getKind()) || 
+      f->getKind() == FunctionConsts::FN_NUMBER_0 ||
+      f->getKind() == FunctionConsts::FN_LANG_1 
+      )) // TODO: maybe FN_NUMBER_0 and the rest should go into xquery_fns_def_dot
     {
-      f = theSctx->lookup_fn(qnameItem, 1, loc);
       arity = 1;
+      if (f->getKind() == FunctionConsts::FN_LANG_1)
+        arity = 2; // TODO: maybe arity can just be incresed? arity++
+      f = theSctx->lookup_fn(qnameItem, arity, loc);
       needs_context_item = true;
     }
     
