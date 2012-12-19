@@ -287,7 +287,7 @@ declare %ann:nondeterministic function reporting:generate-expected-failures(
 declare function reporting:regressions(
 ) as xs:string* {
   let $old_report:=fn:parse-xml(file:read-text('/home/spungi/work/zorba/repo/fots-ctest/build/bin/report_04_Dec.xml'))
-  let $new_report:=fn:parse-xml(file:read-text('/home/spungi/work/zorba/repo/fots-ctest/build/bin/report_17_Dec.xml'))
+  let $new_report:=fn:parse-xml(file:read-text('/home/spungi/work/zorba/repo/fots-ctest/build/bin/report_18_Dec.xml'))
   
   for $testSetOld in $old_report/*:report/*:test-set
   let $testSetNew := $new_report/*:report/*:test-set[@name = data($testSetOld/@name)]
