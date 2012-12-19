@@ -71,7 +71,8 @@ static void print_exception( int no, char const *expr, int line,
 
 #define ASSERT_TRUE_AND_NO_EXCEPTION( NO, EXPR ) \
   try { ASSERT_TRUE( NO, EXPR ); } \
-  catch ( std::exception const &e ) { print_exception( NO, #EXPR, __LINE__, e ); }
+  catch ( exception const &e ) { print_exception( NO, #EXPR, __LINE__, e ); } \
+  catch ( ... ) { assert_true( NO, #EXPR, __LINE__, false ); }
 
 ///////////////////////////////////////////////////////////////////////////////
 
