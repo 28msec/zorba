@@ -28,6 +28,7 @@
 
 using namespace std;
 using namespace zorba;
+using namespace zorba::time;
 
 namespace zloc = zorba::locale;
 
@@ -53,7 +54,8 @@ static void print_exception( char const *expr, int line,
 
 #define ASSERT_EXCEPTION( EXPR, EXCEPTION ) \
   try { EXPR; assert_true( #EXPR, __LINE__, false ); } \
-  catch ( EXCEPTION const& ) { }
+  catch ( EXCEPTION const& ) { } \
+  catch ( ... ) { assert_true( #EXPR, __LINE__, false ); }
 
 #define ASSERT_NO_EXCEPTION( EXPR ) \
   try { EXPR; } \
@@ -76,7 +78,7 @@ static void test_ampm() {
     string buf = "0123 ";
     buf += zloc::get_time_ampm( false );
     ::memset( &tm, 0, sizeof( tm ) );
-    ASSERT_NO_EXCEPTION( bp = ztd::strptime( buf, fmt, &tm ) );
+    ASSERT_NO_EXCEPTION( bp = time::strptime( buf, fmt, &tm ) );
     ASSERT_TRUE( bp = buf.c_str() + buf.length() );
     ASSERT_TRUE( tm.tm_hour ==  1 );
     ASSERT_TRUE( tm.tm_min  == 23 );
@@ -85,7 +87,7 @@ static void test_ampm() {
     string buf = "0123 ";
     buf += zloc::get_time_ampm( true );
     ::memset( &tm, 0, sizeof( tm ) );
-    ASSERT_NO_EXCEPTION( bp = ztd::strptime( buf, fmt, &tm ) );
+    ASSERT_NO_EXCEPTION( bp = time::strptime( buf, fmt, &tm ) );
     ASSERT_TRUE( bp = buf.c_str() + buf.length() );
     ASSERT_TRUE( tm.tm_hour == 13 );    // note 1300 hours
     ASSERT_TRUE( tm.tm_min  == 23 );
@@ -101,7 +103,7 @@ static void test_literals() {
   char const *bp;
   ztm tm;
   ::memset( &tm, 0, sizeof( tm ) );
-  ASSERT_NO_EXCEPTION( bp = ztd::strptime( buf, fmt, &tm ) );
+  ASSERT_NO_EXCEPTION( bp = time::strptime( buf, fmt, &tm ) );
   ASSERT_TRUE( bp == buf + len );
   ASSERT_TRUE( tm.tm_hour == 14 );
   ASSERT_TRUE( tm.tm_min  == 15 );
@@ -121,7 +123,7 @@ static void test_locale( char const *conv, locale_fn_type locale_fn, int limit,
       char const *const buf = (*locale_fn)( i );
       size_t const len = ::strlen( buf );
       ::memset( &tm, 0, sizeof( tm ) );
-      ASSERT_NO_EXCEPTION( bp = ztd::strptime( buf, conv, &tm ) )
+      ASSERT_NO_EXCEPTION( bp = time::strptime( buf, conv, &tm ) )
       ASSERT_TRUE( bp == buf + len );
       ASSERT_TRUE( tm.*ztm_mbr == i );
     }
@@ -130,12 +132,12 @@ static void test_locale( char const *conv, locale_fn_type locale_fn, int limit,
       string::size_type const len = buf.length();
       buf += "JUNK";
       ::memset( &tm, 0, sizeof( tm ) );
-      ASSERT_NO_EXCEPTION( bp = ztd::strptime( buf, conv, &tm ) )
+      ASSERT_NO_EXCEPTION( bp = time::strptime( buf, conv, &tm ) )
       ASSERT_TRUE( bp == buf.c_str() + len );
       ASSERT_TRUE( tm.*ztm_mbr == i );
     }
   }
-  ASSERT_EXCEPTION( ztd::strptime( "JUNK", conv, &tm ), invalid_argument );
+  ASSERT_EXCEPTION( time::strptime( "JUNK", conv, &tm ), invalid_value );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -175,19 +177,19 @@ static void test_range( char const *conv, int low, int high,
     size_t const len = ::strlen( buf );
     char const *bp;
     ::memset( &tm, 0, sizeof( tm ) );
-    ASSERT_NO_EXCEPTION( bp = ztd::strptime( buf, conv, &tm ) )
+    ASSERT_NO_EXCEPTION( bp = time::strptime( buf, conv, &tm ) )
     ASSERT_TRUE( bp == buf + len );
     ASSERT_TRUE( tm.*ztm_mbr == (*unary_fn)(i) );
   }
-  ASSERT_EXCEPTION( ztd::strptime( "JUNK", conv, &tm ), invalid_argument );
+  ASSERT_EXCEPTION( time::strptime( "JUNK", conv, &tm ), invalid_value );
 
   ztd::itoa( --low, buf );
-  ASSERT_EXCEPTION( ztd::strptime( buf   , conv, &tm ), invalid_argument );
+  ASSERT_EXCEPTION( time::strptime( buf   , conv, &tm ), invalid_value );
 
   int const high2 = high + 1;
   if ( num_digits( high2 ) == num_digits( high ) ) {
     ztd::itoa( ++high, buf );
-    ASSERT_EXCEPTION( ztd::strptime( buf   , conv, &tm ), invalid_argument );
+    ASSERT_EXCEPTION( time::strptime( buf   , conv, &tm ), invalid_value );
   }
 }
 
@@ -226,9 +228,7 @@ static void test_bad_dates() {
   ztm tm;
   for ( bad_date const *p = bad_dates; p->date; ++p ) {
     ::memset( &tm, 0, sizeof( tm ) );
-    ASSERT_EXCEPTION(
-      ztd::strptime( p->date, p->conv, &tm ), invalid_argument
-    );
+    ASSERT_EXCEPTION( time::strptime( p->date, p->conv, &tm ), invalid_value );
   }
 }
 
@@ -238,7 +238,7 @@ static void test_D() {                  // %m/%d/%y
   size_t const len = ::strlen( buf );
   char const *bp;
   ::memset( &tm, 0, sizeof( tm ) );
-  ASSERT_NO_EXCEPTION( bp = ztd::strptime( buf, "%D", &tm ) )
+  ASSERT_NO_EXCEPTION( bp = time::strptime( buf, "%D", &tm ) )
   ASSERT_TRUE( bp == buf + len );
   ASSERT_TRUE( tm.tm_mon == 0 );
   ASSERT_TRUE( tm.tm_mday == 2 );
@@ -251,11 +251,23 @@ static void test_F() {                  // %Y-%m-%d
   size_t const len = ::strlen( buf );
   char const *bp;
   ::memset( &tm, 0, sizeof( tm ) );
-  ASSERT_NO_EXCEPTION( bp = ztd::strptime( buf, "%F", &tm ) )
+  ASSERT_NO_EXCEPTION( bp = time::strptime( buf, "%F", &tm ) )
   ASSERT_TRUE( bp == buf + len );
   ASSERT_TRUE( tm.tm_mon == 0 );
   ASSERT_TRUE( tm.tm_mday == 2 );
   ASSERT_TRUE( tm.tm_year == 112 );     // years since 1900
+}
+
+static void test_invalid_specification() {
+  static char const bad_specs[] = "fgGiJKLNoPqQ";
+  ztm tm;
+  char spec[3];
+  spec[0] = '%';
+  spec[2] = '\0';
+  for ( char const *s = bad_specs; *s; ++s ) {
+    spec[1] = *s;
+    ASSERT_EXCEPTION( time::strptime( "", spec, &tm ), invalid_specification );
+  }
 }
 
 static void test_j() {                  // dat of year: 001-366
@@ -264,7 +276,7 @@ static void test_j() {                  // dat of year: 001-366
   size_t const len = ::strlen( buf );
   char const *bp;
   ::memset( &tm, 0, sizeof( tm ) );
-  ASSERT_NO_EXCEPTION( bp = ztd::strptime( buf, "%F", &tm ) )
+  ASSERT_NO_EXCEPTION( bp = time::strptime( buf, "%F", &tm ) )
   ASSERT_TRUE( bp == buf + len );
   ASSERT_TRUE( tm.tm_yday == 0 );
 }
@@ -308,9 +320,9 @@ static void test_zZ() {
     size_t const len = ::strlen( p->s_off );
     char const *bp;
     ::memset( &tm, 0, sizeof( tm ) );
-    ASSERT_NO_EXCEPTION( bp = ztd::strptime( p->s_off, "%z", &tm ) );
+    ASSERT_NO_EXCEPTION( bp = time::strptime( p->s_off, "%z", &tm ) );
     ASSERT_TRUE( bp == p->s_off + len );
-    long const gmt_off = ztd::get_gmtoff_field( tm );
+    long const gmt_off = get_gmtoff_field( tm );
     ASSERT_TRUE( gmt_off == p->l_off );
     ASSERT_TRUE( tm.tm_isdst == (p->s_off[1] == 'D') );
   }
@@ -323,7 +335,7 @@ static void test_zZ() {
     0
   };
   for ( char const *const *p = bad_gmts; *p; ++p )
-    ASSERT_EXCEPTION( ztd::strptime( *p, "%z", &tm ), invalid_argument );
+    ASSERT_EXCEPTION( time::strptime( *p, "%z", &tm ), invalid_value );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -346,7 +358,7 @@ int test_strptime( int, char*[] ) {
   test_range( "%H", 0,   23, &ztm::tm_hour );
   test_range( "%l", 1,   12, &ztm::tm_hour, &mod_12 );
   test_range( "%I", 1,   12, &ztm::tm_hour, &mod_12 );
-  test_range( "%m", 1,   12, &ztm::tm_mon, &minus_1 );
+  test_range( "%m", 1,   12, &ztm::tm_mon , &minus_1 );
   test_range( "%M", 0,   59, &ztm::tm_min );
   test_range( "%u", 1,    7, &ztm::tm_wday, &minus_1 );
   test_range( "%w", 0,    6, &ztm::tm_wday );
@@ -356,6 +368,7 @@ int test_strptime( int, char*[] ) {
   test_bad_dates();
   test_D();
   test_F();
+  test_invalid_specification();
   test_literals();
   test_zZ();
 

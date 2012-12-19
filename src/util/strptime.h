@@ -14,80 +14,38 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_STRPTIME
-#define ZORBA_STRPTIME
+#ifndef ZORBA_STRPTIME_H
+#define ZORBA_STRPTIME_H
 
 // standard
-#include <ctime>
 #include <stdexcept>
 
 // Zorba
 #include <zorba/config.h>
 #include "cxx_util.h"
 #include "string_util.h"
+#include "time_util.h"
 
 namespace zorba {
+namespace time {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-//
-// If the OS's tm struct has a GMT-timezone offset field, simply typedef tm as
-// ztm; otherwise declare ztm as a struct derived from tm that adds a
-// GMT-timezone offset field.
-//
-#if defined(ZORBA_HAVE_STRUCT_TM_TM_GMTOFF) || \
-    defined(ZORBA_HAVE_STRUCT_TM___TM_GMTOFF)
-typedef struct tm ztm;
-#else
-struct ztm : tm {
-  long tm_gmtoff;
-};
-#endif
-
-namespace ztd {
-
 /**
- * Gets the GMT offset from the given ztm.
- *
- * @param tm The ztm to get the GMT offset from.
- * @return Returns the GMT offset in seconds east of Greenwich.
+ * An %exception is the root of strptime %exception hierarchy.
  */
-inline long get_gmtoff_field( ztm const &tm ) {
-#if defined(ZORBA_HAVE_STRUCT_TM___TM_GMTOFF)
-  return tm.__tm_gmtoff;
-#else
-  return tm.tm_gmtoff;
-#endif
-}
-
-/**
- * Sets the GMT offset of the given ztm.
- *
- * @param tm The ztm to set the GMT offset of.
- * @param gmtoff The GMT offset in seconds east of Greenwich.
- */
-inline void set_gmtoff_field( ztm &tm, long gmtoff ) {
-#if defined(ZORBA_HAVE_STRUCT_TM___TM_GMTOFF)
-  tm.__tm_gmtoff = gmtoff;
-#else
-  tm.tm_gmtoff = gmtoff;
-#endif
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-class time_exception : public std::invalid_argument {
+class exception : public std::runtime_error {
 public:
-  ~time_exception() throw();
+  ~exception() throw();
 protected:
-  time_exception( std::string const &msg );
+  exception( std::string const &msg );
 };
 
 /**
  * This exception is thrown when an invalid conversion specification is given,
  * i.e., an invalid character after a \c %.
  */
-class invalid_specification : public time_exception {
+class invalid_specification : public std::invalid_argument {
 public:
   invalid_specification( char spec );
   ~invalid_specification() throw();
@@ -137,7 +95,7 @@ protected:
 class invalid_value :
   protected invalid_value_value,
   protected invalid_value_specs,
-  public time_exception {
+  public exception {
 public:
   invalid_value( char const *buf, size_t len, char spec );
   invalid_value( char const *buf, size_t len, char const *specs );
@@ -178,7 +136,7 @@ private:
  * the strptime() function does not match is corresponding character in the
  * \a fmt parameter.
  */
-class literal_mismatch : public time_exception {
+class literal_mismatch : public exception {
 public:
   literal_mismatch( char expected, char got );
   ~literal_mismatch() throw();
@@ -206,14 +164,7 @@ private:
   char got_;
 };
 
-// unrecognized timezone
-// invalid timezone offset
-// value not in range
-// invalid alternate representation
-// invalid day-of-month
-// invalid weekday for date
-// invalid day-of-year for date
-
+///////////////////////////////////////////////////////////////////////////////
 
 //
 // The bit-wise-or of these constants comprise the value returned by the
@@ -426,8 +377,12 @@ unsigned const set_year   = 0x100;
  * structure fields that have been set.
  * @return Returns a pointer to the first character in \a buf past the last
  * character parsed.
- * @throws invalid_argument if \a fmt contains an invalid character following
- * \c % or if the value for a conversion specification is invalid.
+ * @throws invalid_specification if \a fmt contains an invalid character
+ * following \c %
+ * @throws invalid_value if \a buf contains an invalid value for a
+ * specification.
+ * @throws literal_mismatch if a literal character in \a buf does not match is
+ * corresponding character in \a fmt.
  */
 char const* strptime( char const *buf, char const *fmt, ztm *tm,
                       unsigned *set_fields = nullptr );
@@ -442,7 +397,7 @@ typename std::enable_if<
 >::type
 strptime( BufferType const &buf, char const *fmt, ztm *tm,
           unsigned *set_fields = nullptr ) {
-  return ztd::strptime( buf.c_str(), fmt, tm, set_fields );
+  return time::strptime( buf.c_str(), fmt, tm, set_fields );
 }
 
 //
@@ -456,13 +411,12 @@ typename std::enable_if<
 >::type
 strptime( BufferType const &buf, FormatType const &fmt, ztm *tm,
           unsigned *set_fields = nullptr ) {
-  return ztd::strptime( buf.c_str(), fmt.c_str(), tm, set_fields );
+  return time::strptime( buf.c_str(), fmt.c_str(), tm, set_fields );
 }
-
-} // namespace ztd
 
 ///////////////////////////////////////////////////////////////////////////////
 
+} // namespace time
 } // namespace zorba
-#endif /* ZORBA_STRPTIME */
+#endif /* ZORBA_STRPTIME_H */
 /* vim:set et sw=2 ts=2: */
