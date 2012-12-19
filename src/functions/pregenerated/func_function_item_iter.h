@@ -38,6 +38,21 @@ void populate_context_function_item_iter(static_context* sctx);
 
 
 
+//fn:function-lookup
+class fn_function_lookup_3_0 : public function
+{
+public:
+  fn_function_lookup_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn:function-name
 class fn_function_name_3_0 : public function
 {

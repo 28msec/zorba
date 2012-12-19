@@ -496,13 +496,15 @@ public:
       function* f,
       store::Item* aQName,
       uint32_t aArity,
-      bool isInline);
+      bool isInline,
+      bool needsContextItem);
 
   function_item_expr* create_function_item_expr(
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      bool isInline);
+      bool isInline,
+      bool needsContextItem);
 
   ftcontains_expr* create_ftcontains_expr(
       static_context*,

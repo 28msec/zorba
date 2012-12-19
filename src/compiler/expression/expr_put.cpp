@@ -578,11 +578,11 @@ std::ostream& function_item_expr::put(std::ostream& os) const
 ostream& dynamic_function_invocation_expr::put(ostream& os) const
 {
   BEGIN_PUT( dynamic_function_invocation_expr );
-  
+ 
+  theExpr->put(os);
+ 
   for (csize i = 0; i < theArgs.size(); ++i)
     theArgs[i]->put(os);
-  
-  theExpr->put(os);
   
   for (csize i = 0; i < theDotVars.size(); i++)
     if (theDotVars[i] != NULL)

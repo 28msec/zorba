@@ -743,6 +743,9 @@ xqtref_t TypeManagerImpl::create_value_type(
     const xqtref_t& lRetType = lSig.returnType();
     const xqtref_t& lNonOptimizedRetType = lSig.getNonOptimizedReturnType();
     std::vector<xqtref_t> lParamTypes;
+    
+    assert(lFItem->getStartArity() <= lSig.paramCount());
+    
     for (uint32_t i = 0; i < lFItem->getStartArity(); ++i)
     {
       // In case some of the parameters of the function have been partially applied,

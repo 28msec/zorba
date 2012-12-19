@@ -24,6 +24,30 @@
   <zorba:include form="Quoted">store/api/temp_seq.h</zorba:include>
 </zorba:source>
 
+
+ <!--
+  /*******************************************************************************
+    fn:function-lookup
+  ********************************************************************************/
+  -->
+  <zorba:iterator name="FunctionLookupIterator">
+    <zorba:description author="Zorba Team">
+      Returns the function having a given name and arity, if there is one.
+    </zorba:description>
+
+    <zorba:function >
+
+      <zorba:signature localname="function-lookup" prefix="fn" version="3.0">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:output>function()?</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+  
+  </zorba:iterator>
+
+
   <!--
   /*******************************************************************************
     fn:function-name

@@ -1282,6 +1282,14 @@ declare variable $err:FOUT1190 as xs:QName := fn:QName($err:NS, "err:FOUT1190");
 
 (:~
  :
+ : This error is raised if the fn:function-lookup returns a context-dependent function and the context-dependent function is then called.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOFL0001 as xs:QName := fn:QName($err:NS, "err:FOFL0001");
+
+(:~
+ :
  : It is a static error if an updating expression is used in any position
  : other than one of the following:
  : - The topmost expression in the body of a query.

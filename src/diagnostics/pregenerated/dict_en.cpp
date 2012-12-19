@@ -54,6 +54,7 @@ extern entry const dict_en[] = {
   { "FOER0000", "unidentifier error" },
   { "FOFI0001", "\"$1\": not castable to xs:language" },
   { "FOFI0002", "invalid argument in format-integer: $1" },
+  { "FOFL0001", "dynamic call on context-dependent function item" },
   { "FONS0004", "\"$1\": no namespace found for prefix" },
   { "FONS0005", "base-URI not defined in the static context" },
   { "FORG0001", "${\"1\": }invalid value for cast/constructor${: 2}" },

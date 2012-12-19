@@ -865,7 +865,8 @@ bool
 FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   zstring resultString;
-  store::Item_t numberItem, pictureItem, formatName;
+  store::Item_t numberItem, pictureItem;
+  store::Item_t formatName = NULL;
   FormatNumberInfo info;
   DecimalFormat_t df_t;
 
@@ -887,8 +888,11 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     }
 
     consumeNext(pictureItem, theChildren[1].getp(), planState);
+    
+    if (theChildren.size() == 3)
+      consumeNext(formatName, theChildren[2].getp(), planState);
 
-    if (theChildren.size() < 3)
+    if (theChildren.size() < 3 || formatName.getp() == NULL)
     {
       df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(NULL);
     }
@@ -898,7 +902,6 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         // The formatName is a string, which must be interpreted as a QName -> 
         // must resolve the namespace, if any
-        consumeNext(formatName, theChildren[2].getp(), planState);
         zstring tmpFormatName = formatName->getStringValue();
         formatName = NULL;
         if (tmpFormatName.find(':') ==  zstring::npos)

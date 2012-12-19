@@ -131,6 +131,10 @@ static expr* translate_aux(
       StaticContextConsts::xquery_version_unknown);
 
 
+
+
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1435,6 +1439,9 @@ void create_inline_function(expr* body, flwor_expr* flwor, const std::vector<xqt
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, CompilerCB* theCCB, bool is_func_return = false)
 {
   const FunctionXQType* func_type = static_cast<const FunctionXQType*>(targetType.getp());
@@ -1446,7 +1453,7 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
 
   // Create the dynamic call body
 
-  function_item_expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, true);
+  function_item_expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, true, false);
   push_nodestack(fiExpr);
 
   // Get the in-scope vars of the scope before opening the new scope for the
@@ -2501,28 +2508,130 @@ import_schema_auto_prefix(
 
 
 /******************************************************************************
+  Wraps an expression in a validate expression. If the schema URI is a
+  non-empty string, the corresponding schema is imported. If the location is
+  QueryLoc::null, the wrapped expression's location will be used.
+*******************************************************************************/
+expr* wrap_in_validate_expr_strict(
+    expr* aExpr,
+    const zstring& aSchemaURI)
+{
+  QueryLoc lLoc = aExpr->get_loc();
+  import_schema_auto_prefix(lLoc, aSchemaURI.c_str(), NULL);
+
+  store::Item_t qname;
+  return theExprManager->create_validate_expr(theRootSctx,
+                                              theUDF,
+                                              lLoc,
+                                              ParseConstants::val_strict,
+                                              qname,
+                                              aExpr,
+                                              theSctx->get_typemanager());
+}
+
+
+/******************************************************************************
   Will generate the body of a function that does not have an associated 
   iterator and is created in the translator using expressions. Such functions
   are e.g. fn:map(), fn:filter() and others.
 *******************************************************************************/
-expr* generate_function(
-    FunctionConsts::FunctionKind lKind,
-    const std::vector<expr*>& arguments,
+expr* generate_fn_body(
+    function* f,
+    std::vector<expr*>& arguments,
     const QueryLoc& loc)
 {
   expr* resultExpr = NULL;
   
-  switch (lKind)
+  csize numArgs = arguments.size();
+  
+  switch (f->getKind())
   {
+    case FunctionConsts::FN_HEAD_1:
+    {
+      arguments.push_back(theExprManager->
+                          create_const_expr(theRootSctx, theUDF, loc, xs_integer::one()));
+
+      arguments.push_back(theExprManager->
+                          create_const_expr(theRootSctx, theUDF, loc, xs_integer::one()));
+
+      function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
+
+      fo_expr* foExpr = theExprManager->
+      create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
+
+      normalize_fo(foExpr);
+
+      resultExpr = foExpr;
+      break;
+    }
+    case FunctionConsts::FN_TAIL_1:
+    {
+      arguments.push_back(theExprManager->
+                          create_const_expr(theRootSctx, theUDF, loc, xs_integer(2)));
+
+      function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2);
+
+      fo_expr* foExpr = theExprManager->
+      create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
+
+      normalize_fo(foExpr);
+
+      resultExpr = foExpr;
+      break;
+    }
+    case FunctionConsts::FN_NUMBER_0:
+    case FunctionConsts::FN_NUMBER_1:
+    {
+      switch (numArgs)
+      {
+      case 0:
+      {
+        arguments.push_back(DOT_REF);
+        f = BUILTIN_FUNC(FN_NUMBER_1);
+        break;
+      }
+      case 1:
+        break;
+      default:
+        RAISE_ERROR(err::XPST0017, loc,
+        ERROR_PARAMS("fn:number", ZED(FunctionUndeclared_3), numArgs));
+      }
+
+      var_expr* tv = create_temp_var(loc, var_expr::let_var);
+
+      expr* nanExpr = CREATE(const)(theRootSctx, theUDF, loc, xs_double::nan());
+
+      expr* condExpr = CREATE(castable)(theRootSctx,
+                                        theUDF,
+                                        loc,
+                                        tv,
+                                        theRTM.DOUBLE_TYPE_ONE);
+
+      expr* castExpr = create_cast_expr(loc, tv, theRTM.DOUBLE_TYPE_ONE, true);
+
+      expr* ret = CREATE(if)(theRootSctx, theUDF, loc, condExpr, castExpr, nanExpr);
+
+      expr* data_expr = wrap_in_atomization(arguments[0]);
+
+      resultExpr = wrap_in_let_flwor(CREATE(treat)(theRootSctx,
+                                                   theUDF,
+                                                   loc,
+                                                   data_expr,
+                                                   theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                                                   TREAT_TYPE_MATCH),
+                                     tv,
+                                     ret);
+      break;
+    }
     case FunctionConsts::FN_MAP_2:
     {
       /*
-          map(function, sequence)
+        map(function, sequence)
 
-          is rewritten internally as:
+        is rewritten internally as:
 
-          for $item in $sequence
-          return dynamic_function_invocation[ $function, $item ]
+        for $item in $sequence
+        return dynamic_function_invocation[ $function, $item ]
       */
 
       flwor_expr* flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
@@ -2549,15 +2658,15 @@ expr* generate_function(
     case FunctionConsts::FN_FILTER_2:
     {
       /*
-	  filter(function, sequence)
+        filter(function, sequence)
 
-	  is rewritten internally as:
+        is rewritten internally as:
 
-	  for $item in $sequence
-	  return
-	    if (dynamic_function_invocation[ $function, $item])
-	    then $item
-	    else ()
+        for $item in $sequence
+        return
+          if (dynamic_function_invocation[ $function, $item])
+          then $item
+          else ()
       */
 
       flwor_expr* flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
@@ -2568,18 +2677,18 @@ expr* generate_function(
       fncall_args.push_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()));
 
       expr* dynamic_fncall = theExprManager->create_dynamic_function_invocation_expr(
-	  theRootSctx,
-	  theUDF,
-	  loc,
-	  arguments[0],
-	  fncall_args,
-          std::vector<expr*>(), 
-	  NULL);
+                                theRootSctx,
+                                theUDF,
+                                loc,
+                                arguments[0],
+                                fncall_args,
+                                std::vector<expr*>(), 
+                                NULL);
 
       expr* if_expr = theExprManager->create_if_expr(theRootSctx, theUDF, loc,
-	  dynamic_fncall,
-	  theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()),
-	  create_empty_seq(loc));
+                                dynamic_fncall,
+                                theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, seq_fc->get_var()),
+                                create_empty_seq(loc));
 
       flwor->set_return_expr(if_expr);
 
@@ -2590,32 +2699,612 @@ expr* generate_function(
     {
       // do nothing
     }
-  }
+  } // switch (lKind)
   
   return resultExpr;
 }
 
 
-/******************************************************************************
-  Wraps an expression in a validate expression. If the schema URI is a
-  non-empty string, the corresponding schema is imported. If the location is
-  QueryLoc::null, the wrapped expression's location will be used.
-*******************************************************************************/
-expr* wrap_in_validate_expr_strict(
-    expr* aExpr,
-    const zstring& aSchemaURI)
-{
-  QueryLoc lLoc = aExpr->get_loc();
-  import_schema_auto_prefix(lLoc, aSchemaURI.c_str(), NULL);
+/*******************************************************************************
 
-  store::Item_t qname;
-  return theExprManager->create_validate_expr(theRootSctx,
-                                              theUDF,
-                                              lLoc,
-                                              ParseConstants::val_strict,
-                                              qname,
-                                              aExpr,
-                                              theSctx->get_typemanager());
+********************************************************************************/
+expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>& arguments, QueryLoc loc)
+{
+  const zstring& fn_ns = qnameItem->getNamespace();
+  
+  csize numArgs = arguments.size();
+  
+  TypeManager* tm = CTX_TM;
+  
+  // add context-item for functions with zero arguments which implicitly
+  // take the context-item as argument
+  if (f != NULL && xquery_fns_def_dot.test(f->getKind())) 
+  {
+    arguments.push_back(DOT_REF);
+    f = theSctx->lookup_fn(qnameItem, 1, loc);
+  }
+  
+  //  Check if it is a zorba builtin function, and if so,
+  // make sure that the module it belongs to has been imported.
+  if (f != NULL &&
+      f->isBuiltin() &&
+      fn_ns != static_context::W3C_FN_NS &&
+#ifdef ZORBA_WITH_JSON
+      fn_ns != static_context::JSONIQ_FN_NS &&
+#endif
+      fn_ns != XQUERY_MATH_FN_NS &&
+      fn_ns != theModuleNamespace)
+  {
+    if (! theSctx->is_imported_builtin_module(fn_ns))
+    {
+      RAISE_ERROR(err::XPST0017, loc,
+      ERROR_PARAMS(qnameItem, ZED(FunctionUndeclared_3), numArgs));
+    }
+  }
+
+  numArgs = arguments.size();  // recompute size
+
+  // Check if this is a call to a type constructor function
+  xqtref_t type = tm->create_named_type(qnameItem,
+                                        TypeConstants::QUANT_QUESTION,
+                                        loc);
+
+  if (type != NULL)
+  {
+    if (numArgs != 1 ||
+        TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION, loc) ||
+        TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
+    {
+      RAISE_ERROR(err::XPST0017, loc,
+      ERROR_PARAMS(qnameItem, ZED(FunctionUndeclared_3), numArgs));
+    }
+
+    return create_cast_expr(loc, arguments[0], type, true);
+  }  
+  else // if (type != NULL)
+  {
+    // It is not a builtin constructor function
+    
+    if (f == NULL)
+    {
+      if (theHaveModuleImportCycle)
+      {
+        std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
+        std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
+
+        --end;
+        assert((*end).second == theModuleNamespace);
+
+        for (; ite != end; ++ite)
+        {
+          if ((*ite).second == fn_ns)
+            RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+        }
+      }
+
+      RAISE_ERROR(err::XPST0017, loc,
+      ERROR_PARAMS(qnameItem, ZED(FunctionUndeclared_3), numArgs));
+    }
+
+    // If this is a udf that is invoked from another udf, mark that other udf
+    // as a non-leaf function.
+    if (f->isUdf())
+    {
+      if (inUDFBody())
+      {
+        function* f1 = const_cast<function*>(theCurrentPrologVFDecl.getFunction());
+        user_function* udf = dynamic_cast<user_function*>(f1);
+        ZORBA_ASSERT(udf != NULL);
+        udf->setLeaf(false);
+      }
+    }
+
+    // Create and normalize the fo expr
+    std::reverse(arguments.begin(), arguments.end());
+
+    fo_expr* foExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
+
+    normalize_fo(foExpr);
+
+    expr* resultExpr = foExpr;
+
+    if (f->isExternal())
+    {
+      const xqtref_t& resultType = f->getSignature().returnType();
+
+      resultExpr = wrap_in_type_match(foExpr,
+                                      resultType,
+                                      loc,
+                                      TREAT_FUNC_RETURN,
+                                      f->getName());
+    }
+
+    // Some further normalization is required for certain builtin functions
+    FunctionConsts::FunctionKind lKind = f->getKind();
+    switch (lKind)
+    {
+      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N:
+      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N:
+      {
+        FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
+
+        resultExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
+                                 foExpr->get_loc(),
+                                 BuiltinFunctionLibrary::getFunction(fkind),
+                                 foExpr);
+
+        break;
+      }
+      case FunctionConsts::FN_ANALYZE_STRING_2:
+      case FunctionConsts::FN_ANALYZE_STRING_3:
+      {
+        resultExpr = wrap_in_validate_expr_strict(
+          foExpr,
+          "http://www.w3.org/2005/xpath-functions");
+
+        break;
+      }
+      case FunctionConsts::FN_SERIALIZE_2:
+      {
+        import_schema_auto_prefix(
+          loc,
+          "http://www.w3.org/2010/xslt-xquery-serialization",
+          NULL);
+
+        break;
+      }
+      case FunctionConsts::FN_ZORBA_EVAL_1:
+      case FunctionConsts::FN_ZORBA_EVAL_N_1:
+      case FunctionConsts::FN_ZORBA_EVAL_U_1:
+      case FunctionConsts::FN_ZORBA_EVAL_S_1:
+      {
+        expr_script_kind_t scriptingKind;
+
+        if (lKind == FunctionConsts::FN_ZORBA_EVAL_1 ||
+            lKind == FunctionConsts::FN_ZORBA_EVAL_N_1)
+        {
+          scriptingKind = SIMPLE_EXPR;
+        }
+        else if (lKind == FunctionConsts::FN_ZORBA_EVAL_U_1)
+        {
+          scriptingKind = UPDATING_EXPR;
+        }
+        else
+        {
+          scriptingKind = SEQUENTIAL_FUNC_EXPR;
+        }
+
+        eval_expr* evalExpr = theExprManager->
+        create_eval_expr(theRootSctx,
+                         theUDF,
+                         loc,
+                         foExpr->get_arg(0),
+                         scriptingKind,
+                         theNSCtx);
+
+        resultExpr = evalExpr;
+
+        std::vector<VarInfo*> inscopeVars;
+        theSctx->getVariables(inscopeVars);
+
+        csize numVars = inscopeVars.size();
+
+        for (csize i = 0; i < numVars; ++i)
+        {
+          evalExpr->add_var(inscopeVars[i]->getVar());
+        }
+
+        break;
+      }
+      case FunctionConsts::FN_ZORBA_INVOKE_N:
+      case FunctionConsts::FN_ZORBA_INVOKE_N_N:
+      case FunctionConsts::FN_ZORBA_INVOKE_U_N:
+      case FunctionConsts::FN_ZORBA_INVOKE_S_N:
+      {
+        /*
+           invoke(qnameExpr, arg1Expr, ...., argNExpr)
+
+           is rewritten internally as:
+
+           let $temp_invoke_var1   := data(qnameExpr) treat as xs:QName
+           let $temp_invoke_var2   := arg1Expr
+           ...
+           let $temp_invoke_varN+1 := argNExpr
+           let $query := concat("Q{",
+                                string(namespace-uri-from-QName(temp_invoke_var1)),
+                                "}",
+                                string(local-name-from-QName(temp_invoke_var1)),
+                                "($temp_invoke_var2, ..., $temp_invoke_varN+1)")
+           return eval { $query }
+        */
+
+        expr_script_kind_t scriptingKind = SIMPLE_EXPR; // avoid warning
+        zstring query_params;
+        std::vector<var_expr*> temp_vars;
+
+        if (lKind == FunctionConsts::FN_ZORBA_INVOKE_N ||
+            lKind == FunctionConsts::FN_ZORBA_INVOKE_N_N)
+        {
+          scriptingKind = SIMPLE_EXPR;
+        }
+        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_U_N)
+        {
+          scriptingKind = UPDATING_EXPR;
+        }
+        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_S_N)
+        {
+          scriptingKind = SEQUENTIAL_FUNC_EXPR;
+        }
+
+        if (numArgs == 0)
+        {
+          RAISE_ERROR(err::XPST0017, loc,
+          ERROR_PARAMS("invoke", ZED(FunctionUndeclared_3), numArgs));
+        }
+
+        // create a flwor with LETs to hold the parameters
+        flwor_expr* flworExpr = theExprManager->
+        create_flwor_expr(theRootSctx, theUDF, loc, false);
+
+        // wrap function's QName
+        expr* qnameExpr = wrap_in_type_promotion(arguments[0],
+                                                 theRTM.QNAME_TYPE_ONE,
+                                                 PROMOTE_TYPE_PROMOTION);
+
+        for (csize i = 0; i < numArgs ; ++i)
+        {
+          let_clause* lc;
+          store::Item_t qnameItem;
+
+          // cannot use create_temp_var() as the variables created there are not
+          // accessible. use a special name but check for name clashes
+          do
+          {
+            std::string localName = "temp_invoke_var" +
+                                    ztd::to_string(theTempVarCounter++);
+            GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
+          }
+          while (lookup_var(qnameItem, loc, zerr::ZXQP0000_NO_ERROR) != NULL);
+
+          var_expr* var = create_var(loc, qnameItem, var_expr::let_var);
+          temp_vars.push_back(var);
+
+          if (i == 0)
+            lc = wrap_in_letclause(qnameExpr, var);
+          else
+            lc = wrap_in_letclause(arguments[i], var);
+
+          flworExpr->add_clause(lc);
+
+          // add the parameters to the eval's query string
+          if (i > 1)
+            query_params += ",";
+          if (i > 0)
+            query_params += "$" + var->get_name()->getStringValue();
+        }
+
+        query_params = "(" + query_params + ")";
+
+        // Expanded QName's namespace URI
+        expr* namespaceExpr =
+        theExprManager->create_fo_expr(theRootSctx, theUDF,
+                    loc,
+                    BUILTIN_FUNC(FN_NAMESPACE_URI_FROM_QNAME_1),
+                    temp_vars[0]);
+
+        namespaceExpr =
+        theExprManager->create_fo_expr(theRootSctx, theUDF,
+                    loc,
+                    BUILTIN_FUNC(FN_STRING_1),
+                    namespaceExpr);
+
+        // Expanded QName's local name
+        expr* localExpr =
+        theExprManager->create_fo_expr(theRootSctx, theUDF,
+                    loc,
+                    BUILTIN_FUNC(FN_LOCAL_NAME_FROM_QNAME_1),
+                    temp_vars[0]);
+
+        localExpr = theExprManager->
+        create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(FN_STRING_1), localExpr);
+
+        // qnameExpr := concat("Q{",
+        //                     namespaceExpr,
+        //                     "}",
+        //                     localExpr,
+        //                     "($temp_invoke_var2, $temp_invoke_var3,...)")
+        std::vector<expr*> concat_args;
+        concat_args.push_back(theExprManager->create_const_expr(theRootSctx, theUDF, loc, "Q{"));
+        concat_args.push_back(namespaceExpr);
+        concat_args.push_back(theExprManager->create_const_expr(theRootSctx, theUDF, loc, "}"));
+        concat_args.push_back(localExpr);
+        concat_args.push_back(theExprManager->create_const_expr(theRootSctx, theUDF, loc, query_params));
+
+        qnameExpr = theExprManager->
+        create_fo_expr(theRootSctx, theUDF,
+                       loc,
+                       BUILTIN_FUNC(FN_CONCAT_N),
+                       concat_args);
+
+        eval_expr* evalExpr = theExprManager->
+        create_eval_expr(theRootSctx, theUDF,
+                         loc,
+                         qnameExpr,
+                         scriptingKind,
+                         theNSCtx);
+
+        flworExpr->set_return_expr(evalExpr);
+        resultExpr = flworExpr;
+
+        for (csize i = 0; i < temp_vars.size(); ++i)
+        {
+          evalExpr->add_var(temp_vars[i]);
+        }
+
+        break;
+      } // case FunctionConsts::FN_ZORBA_INVOKE_N:
+
+      case FunctionConsts::FN_MAP_2:
+      case FunctionConsts::FN_FILTER_2:
+      {
+        std::vector<expr*> args(foExpr->get_args());
+        resultExpr = generate_fn_body(f, args, loc);
+        break;
+      }
+      default:
+      {
+        // do nothing
+      }
+    } // switch
+
+    f->processPragma(resultExpr, theScopedPragmas);
+
+    return resultExpr;
+  }
+
+}
+
+/*******************************************************************************
+  Returns true if the given function is context-dependent as defined by 
+  XQuery F&O spec (see http://www.w3.org/TR/xpath-functions-30/#properties-of-functions),
+  for the purpose of deciding if it can be used by function-lookup(), which is why
+  the list differs from spec.
+********************************************************************************/
+bool is_context_dependent(function* f)
+{
+  FunctionConsts::FunctionKind kind = f->getKind();
+  
+  if (kind == FunctionConsts::FN_CURRENT_DATETIME_0 ||
+      kind == FunctionConsts::FN_CURRENT_DATE_0 ||
+      kind == FunctionConsts::FN_CURRENT_TIME_0 ||
+      kind == FunctionConsts::FN_IMPLICIT_TIMEZONE_0 ||
+      // kind == FunctionConsts::OP_ADJUST_DT_TO_TZ_1 ||
+      // kind == FunctionConsts::OP_ADJUST_DT_TO_TZ_2 ||
+      // kind == FunctionConsts::OP_ADJUST_D_TO_TZ_1 ||
+      // kind == FunctionConsts::OP_ADJUST_D_TO_TZ_2 ||
+      // kind == FunctionConsts::OP_ADJUST_T_TO_TZ_1 ||
+      // kind == FunctionConsts::OP_ADJUST_T_TO_TZ_2 ||
+      // kind == FunctionConsts::FN_BASE_URI_0 ||  // there is a FOTS test which expects the function to be allowed
+      // kind == FunctionConsts::FN_DATA_0 ||  // there is a FOTS test which expects the function to be allowed
+      // kind == FunctionConsts::FN_DOCUMENT_URI_0 ||  // there is a FOTS test which expects the function to be allowed
+      kind == FunctionConsts::FN_POSITION_0 ||
+      kind == FunctionConsts::FN_LAST_0 ||
+      kind == FunctionConsts::FN_ID_1 ||
+      kind == FunctionConsts::FN_IDREF_1 || 
+      kind == FunctionConsts::FN_ELEMENT_WITH_ID_1 ||
+      // kind == FunctionConsts::FN_LANG_1 || 
+      // kind == FunctionConsts::FN_LOCAL_NAME_0 ||
+      // kind == FunctionConsts::FN_NAME_0 || 
+      // kind == FunctionConsts::FN_NAMESPACE_URI_0 ||
+      // kind == FunctionConsts::FN_NORMALIZE_SPACE_0 ||  // there is a FOTS test which expects the function to be allowed
+      // kind == FunctionConsts::FN_NUMBER_0 ||  // there is a FOTS test which expects the function to be allowed 
+      // kind == FunctionConsts::FN_ROOT_0 || 
+      // kind == FunctionConsts::FN_STRING_0 ||  // there is a FOTS test which expects the function to be allowed
+      // kind == FunctionConsts::FN_STRING_LENGTH_0 ||  // there is a FOTS test which expects the function to be allowed
+      // kind == FunctionConsts::FN_PATH_0 ||
+      kind == FunctionConsts::FN_DEFAULT_COLLATION_0 ||
+      kind == FunctionConsts::FN_STATIC_BASE_URI_0 ||
+      kind == FunctionConsts::FN_DOC_1 ||
+      kind == FunctionConsts::FN_COLLECTION_0 ||
+      kind == FunctionConsts::FN_COLLECTION_1)
+    return true;
+    
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, QueryLoc loc, bool errIfContextDependent)
+{
+  xqtref_t type;
+  function* errFn = NULL;
+  user_function* udf = NULL;
+  bool needs_context_item = false;
+  
+  // Get function implementation
+  function* f = theSctx->lookup_fn(qnameItem, arity, loc);
+
+  // raise XPST0017 if function could not be found
+  if (f == NULL)
+  {
+    // Check if this is a call to a type constructor function
+    type = CTX_TM->create_named_type(qnameItem,
+                                     TypeConstants::QUANT_QUESTION,
+                                     loc);
+
+    if (type == NULL ||
+        arity != 1 ||
+        TypeOps::is_equal(CTX_TM, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION, loc) ||
+        TypeOps::is_equal(CTX_TM, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
+    {
+      RAISE_ERROR(err::XPST0017, loc,
+                    ERROR_PARAMS(qnameItem, ZED(FunctionUndeclared_3), arity));
+    }
+
+    udf = new user_function(loc,
+                            signature(qnameItem, GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, type),
+                            NULL, // no body for now
+                            SIMPLE_EXPR,
+                            theCCB);
+  }
+  else // f != NULL
+  {
+    // validate the number of parameters on certain functions
+    switch (f->getKind())
+    {
+      case FunctionConsts::FN_NUMBER_0:
+      case FunctionConsts::FN_NUMBER_1:
+      {
+        if (arity != 0 && arity != 1)
+          RAISE_ERROR(err::XPST0017, loc, ERROR_PARAMS("fn:number", ZED(FunctionUndeclared_3), arity));
+        break;
+      }
+      case FunctionConsts::FN_STATIC_BASE_URI_0:
+      {
+        if (arity != 0)
+          RAISE_ERROR(err::XPST0017, loc, ERROR_PARAMS("fn:static-base-uri", ZED(FunctionUndeclared_3), arity));
+        break;
+      }
+      case FunctionConsts::FN_CONCAT_N:
+      {
+        if (arity < 2)
+          RAISE_ERROR(err::XPST0017, loc, ERROR_PARAMS("concat", ZED(FunctionUndeclared_3), arity));
+        break;
+      }
+      default:
+        // otherwise function is valid by default
+        break;
+    }
+
+    //  Check if it is a zorba builtin function, and if so,
+    // make sure that the module it belongs to has been imported.
+    const zstring& fn_ns = qnameItem->getNamespace();
+    if (f->isBuiltin() &&
+        fn_ns != static_context::W3C_FN_NS &&
+#ifdef ZORBA_WITH_JSON
+        fn_ns != static_context::JSONIQ_FN_NS &&
+#endif
+        fn_ns != XQUERY_MATH_FN_NS &&
+        fn_ns != theModuleNamespace)
+    {
+      if (! theSctx->is_imported_builtin_module(fn_ns))
+      {
+        RAISE_ERROR(err::XPST0017, loc,
+        ERROR_PARAMS(qnameItem, ZED(FunctionUndeclared_3), arity));
+      }
+    }
+  } // else f != NULL
+
+  // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it
+  // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
+  if (udf != NULL || !f->isUdf())
+  {
+    if (errIfContextDependent && f != NULL && is_context_dependent(f))
+    {
+      store::Item_t errQName;
+      GENV_ITEMFACTORY->createQName(errQName, static_context::W3C_FN_NS, "", "error");
+      errFn = theSctx->lookup_fn(errQName, 1);
+    }
+    
+    // add context-item for functions with zero arguments which implicitly
+    // take the context-item as argument
+    if (errFn == NULL && f != NULL && (xquery_fns_def_dot.test(f->getKind()) || f->getKind() == FunctionConsts::FN_NUMBER_0)) // TODO: maybe FN_NUMBER_0 should go into xquery_fns_def_dot
+    {
+      f = theSctx->lookup_fn(qnameItem, 1, loc);
+      arity = 1;
+      needs_context_item = true;
+    }
+    
+    if (udf == NULL)
+      udf = new user_function(loc,
+                              f->getSignature(),
+                              NULL, // no body for now
+                              f->getScriptingKind(),
+                              theCCB);
+
+    std::vector<expr*> foArgs(arity);
+    std::vector<var_expr*> udfArgs(arity);
+
+    for (ulong i = 0; i < arity; ++i)
+    {
+      var_expr* argVar = create_temp_var(loc, var_expr::arg_var);
+
+      argVar->set_param_pos(i);
+
+      udfArgs[i] = argVar;
+      foArgs[i] = argVar;
+    }
+    
+    if (errFn != NULL)
+    {
+      foArgs.push_back(theExprManager->create_const_expr(theSctx, udf, loc, static_context::W3C_ERR_NS, "", "FOFL0001"));
+    }
+
+    expr* body;
+    if (f == NULL) // we have a typecast function call
+    {
+      body = theExprManager->create_cast_expr(theRootSctx, udf, loc, foArgs[0], type);
+    }
+    else
+    {
+      // process pure builtin functions that have no associated iterator
+      switch (f->getKind())
+      {
+      case FunctionConsts::FN_NUMBER_0:
+      case FunctionConsts::FN_NUMBER_1:
+      case FunctionConsts::FN_HEAD_1:
+      case FunctionConsts::FN_TAIL_1:
+      case FunctionConsts::FN_MAP_2:
+      case FunctionConsts::FN_FILTER_2:
+      {
+        // create the function flwor, wrap params in for clauses
+        flwor_expr* flwor = theExprManager->create_flwor_expr(theSctx, theUDF, loc, false);
+        std::vector<expr*> arguments;
+        for (csize i=0; i<foArgs.size(); i++)
+        {
+          for_clause* fc = wrap_in_forclause(&*udfArgs[i], NULL);
+          udfArgs[i]->set_param_pos(flwor->num_clauses());
+          flwor->add_clause(fc);
+          arguments.push_back(fc->get_var());
+        }
+        
+        flwor->set_return_expr(generate_fn_body(f, arguments, loc));
+        
+        body = flwor;
+        break;
+      }
+      default:
+      {
+        if (errFn != NULL)
+          f = errFn;
+        
+        if (f == NULL)
+          f = udf;
+        
+        fo_expr* fo = theExprManager->create_fo_expr(theRootSctx, udf, loc, f, foArgs);
+        
+        if (errFn == NULL)
+          normalize_fo(fo);
+        
+        body = fo;
+        break;
+      }
+      } // switch
+      
+    } // else
+
+    udf->setArgVars(udfArgs);
+    udf->setBody(body);
+    udf->setOptimized(true); // TODO: this is needed because otherwise the optimizer would get into an infinte cycle
+
+    f = udf;
+  } // if (udf != NULL || !f->isUdf())
+
+  expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, f, f->getName(), arity, false, needs_context_item);
+
+  return fiExpr;
 }
 
 
@@ -10792,6 +11481,8 @@ void* begin_visit(const FunctionCall& v)
 void end_visit(const FunctionCall& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
+  
+  expr* resultExpr = NULL;
 
   TypeManager* tm = CTX_TM;
 
@@ -10852,8 +11543,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         normalize_fo(foExpr);
 
-        push_nodestack(foExpr);
-        return;
+        resultExpr = foExpr;
+        break;
       }
       case FunctionConsts::FN_TAIL_1:
       {
@@ -10867,8 +11558,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         normalize_fo(foExpr);
 
-        push_nodestack(foExpr);
-        return;
+        resultExpr = foExpr;
+        break;
       }
       case FunctionConsts::FN_SUBSEQUENCE_2:
       case FunctionConsts::FN_SUBSEQUENCE_3:
@@ -10907,18 +11598,18 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
 
         normalize_fo(foExpr);
-        push_nodestack(foExpr);
-        return;
+        resultExpr = foExpr;
+        break;
       }
       case FunctionConsts::FN_POSITION_0:
       {
-        push_nodestack(lookup_ctx_var(DOT_POS_VARNAME, loc));
-        return;
+        resultExpr = lookup_ctx_var(DOT_POS_VARNAME, loc);
+        break;
       }
       case FunctionConsts::FN_LAST_0:
       {
-        push_nodestack(lookup_ctx_var(LAST_IDX_VARNAME, loc));
-        return;
+        resultExpr = lookup_ctx_var(LAST_IDX_VARNAME, loc);
+        break;
       }
       case FunctionConsts::FN_NUMBER_0:
       case FunctionConsts::FN_NUMBER_1:
@@ -10954,15 +11645,15 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         expr* data_expr = wrap_in_atomization(arguments[0]);
 
-        push_nodestack(wrap_in_let_flwor(CREATE(treat)(theRootSctx,
+        resultExpr = wrap_in_let_flwor(CREATE(treat)(theRootSctx,
                                                        theUDF,
                                                        loc,
                                                        data_expr,
                                                        theRTM.ANY_ATOMIC_TYPE_QUESTION,
                                                        TREAT_TYPE_MATCH),
                                            tv,
-                                           ret));
-        return;
+                                           ret);
+        break;
       }
       case FunctionConsts::FN_STATIC_BASE_URI_0:
       {
@@ -10976,13 +11667,13 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         zstring baseuri = theSctx->get_base_uri();
         if (baseuri.empty())
-          push_nodestack(create_empty_seq(loc));
+          resultExpr = create_empty_seq(loc);
         else
-          push_nodestack(CREATE(cast)(theRootSctx, theUDF,
+          resultExpr = CREATE(cast)(theRootSctx, theUDF,
                                       loc,
                                       CREATE(const)(theRootSctx, theUDF, loc, baseuri),
-                                      theRTM.ANY_URI_TYPE_ONE));
-        return;
+                                      theRTM.ANY_URI_TYPE_ONE);
+        break;;
       }
       case FunctionConsts::FN_ID_1:
       case FunctionConsts::FN_ID_2:
@@ -11082,363 +11773,25 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         }
         break;
       }
-      default: {}
-    }
-  }
+      default: 
+      {
+        // do nothing otherwise
+      }
+    } // switch (f->getKind())
+  } // if (fn_ns == static_context::W3C_FN_NS)
 
   if (f != NULL && f->getKind() ==  FunctionConsts::FN_APPLY_1)
   {
     expr* applyExpr = theExprManager->
     create_apply_expr(theRootSctx, theUDF, loc, arguments[0], false);
 
-    push_nodestack(applyExpr);
-    return;
+    resultExpr = applyExpr;
   }
-
-  // add context-item for functions with zero arguments which implicitly
-  // take the context-item as argument
-  if (f != NULL && xquery_fns_def_dot.test(f->getKind()))
-  {
-    arguments.push_back(DOT_REF);
-    f = lookup_fn(qname, 1, loc);
-  }
-
-  //  Check if it is a zorba builtin function, and if so,
-  // make sure that the module it belongs to has been imported.
-  if (f != NULL &&
-      f->isBuiltin() &&
-      fn_ns != static_context::W3C_FN_NS &&
-#ifdef ZORBA_WITH_JSON
-      fn_ns != static_context::JSONIQ_FN_NS &&
-#endif
-      fn_ns != XQUERY_MATH_FN_NS &&
-      fn_ns != theModuleNamespace)
-  {
-    if (! theSctx->is_imported_builtin_module(fn_ns))
-    {
-      RAISE_ERROR(err::XPST0017, loc,
-      ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
-    }
-  }
-
-  numArgs = arguments.size();  // recompute size
-
-  // Check if this is a call to a type constructor function
-  xqtref_t type = CTX_TM->create_named_type(qnameItem,
-                                            TypeConstants::QUANT_QUESTION,
-                                            loc);
-
-  if (type != NULL)
-  {
-    if (numArgs != 1 ||
-        TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION, loc) ||
-        TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
-    {
-      RAISE_ERROR(err::XPST0017, loc,
-      ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
-    }
-
-    push_nodestack(create_cast_expr(loc, arguments[0], type, true));
-  }
-
-  // It is not a builtin constructor function
-  else
-  {
-    if (f == NULL)
-    {
-      if (theHaveModuleImportCycle)
-      {
-        std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
-        std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
-
-        --end;
-        assert((*end).second == theModuleNamespace);
-
-        for (; ite != end; ++ite)
-        {
-          if ((*ite).second == fn_ns)
-            RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
-        }
-      }
-
-      RAISE_ERROR(err::XPST0017, loc,
-      ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
-    }
-
-    // If this is a udf that is invoked from another udf, mark that other udf
-    // as a non-leaf function.
-    if (f->isUdf())
-    {
-      if (inUDFBody())
-      {
-        function* f1 = const_cast<function*>(theCurrentPrologVFDecl.getFunction());
-        user_function* udf = dynamic_cast<user_function*>(f1);
-        ZORBA_ASSERT(udf != NULL);
-        udf->setLeaf(false);
-      }
-    }
-
-    // Create and normalize the fo expr
-    std::reverse(arguments.begin(), arguments.end());
-
-    fo_expr* foExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
-
-    normalize_fo(foExpr);
-
-    expr* resultExpr = foExpr;
-
-    if (f->isExternal())
-    {
-      const xqtref_t& resultType = f->getSignature().returnType();
-
-      resultExpr = wrap_in_type_match(foExpr,
-                                      resultType,
-                                      loc,
-                                      TREAT_FUNC_RETURN,
-                                      f->getName());
-    }
-
-    // Some further normalization is required for certain builtin functions
-    FunctionConsts::FunctionKind lKind = f->getKind();
-    switch (lKind)
-    {
-      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N:
-      case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N:
-      {
-        FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
-
-        resultExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
-                                 foExpr->get_loc(),
-                                 BuiltinFunctionLibrary::getFunction(fkind),
-                                 foExpr);
-
-        break;
-      }
-      case FunctionConsts::FN_ANALYZE_STRING_2:
-      case FunctionConsts::FN_ANALYZE_STRING_3:
-      {
-        resultExpr = wrap_in_validate_expr_strict(
-          foExpr,
-          "http://www.w3.org/2005/xpath-functions");
-
-        break;
-      }
-      case FunctionConsts::FN_SERIALIZE_2:
-      {
-        import_schema_auto_prefix(
-          loc,
-          "http://www.w3.org/2010/xslt-xquery-serialization",
-          NULL);
-
-        break;
-      }
-      case FunctionConsts::FN_ZORBA_EVAL_1:
-      case FunctionConsts::FN_ZORBA_EVAL_N_1:
-      case FunctionConsts::FN_ZORBA_EVAL_U_1:
-      case FunctionConsts::FN_ZORBA_EVAL_S_1:
-      {
-        expr_script_kind_t scriptingKind;
-
-        if (lKind == FunctionConsts::FN_ZORBA_EVAL_1 ||
-            lKind == FunctionConsts::FN_ZORBA_EVAL_N_1)
-        {
-          scriptingKind = SIMPLE_EXPR;
-        }
-        else if (lKind == FunctionConsts::FN_ZORBA_EVAL_U_1)
-        {
-          scriptingKind = UPDATING_EXPR;
-        }
-        else
-        {
-          scriptingKind = SEQUENTIAL_FUNC_EXPR;
-        }
-
-        eval_expr* evalExpr = theExprManager->
-        create_eval_expr(theRootSctx,
-                         theUDF,
-                         loc,
-                         foExpr->get_arg(0),
-                         scriptingKind,
-                         theNSCtx);
-
-        resultExpr = evalExpr;
-
-        std::vector<VarInfo*> inscopeVars;
-        theSctx->getVariables(inscopeVars);
-
-        csize numVars = inscopeVars.size();
-
-        for (csize i = 0; i < numVars; ++i)
-        {
-          evalExpr->add_var(inscopeVars[i]->getVar());
-        }
-
-        break;
-      }
-      case FunctionConsts::FN_ZORBA_INVOKE_N:
-      case FunctionConsts::FN_ZORBA_INVOKE_N_N:
-      case FunctionConsts::FN_ZORBA_INVOKE_U_N:
-      case FunctionConsts::FN_ZORBA_INVOKE_S_N:
-      {
-        /*
-           invoke(qnameExpr, arg1Expr, ...., argNExpr)
-
-           is rewritten internally as:
-
-           let $temp_invoke_var1   := data(qnameExpr) treat as xs:QName
-           let $temp_invoke_var2   := arg1Expr
-           ...
-           let $temp_invoke_varN+1 := argNExpr
-           let $query := concat("Q{",
-                                string(namespace-uri-from-QName(temp_invoke_var1)),
-                                "}",
-                                string(local-name-from-QName(temp_invoke_var1)),
-                                "($temp_invoke_var2, ..., $temp_invoke_varN+1)")
-           return eval { $query }
-        */
-
-        expr_script_kind_t scriptingKind = SIMPLE_EXPR; // avoid warning
-        zstring query_params;
-        std::vector<var_expr*> temp_vars;
-
-        if (lKind == FunctionConsts::FN_ZORBA_INVOKE_N ||
-            lKind == FunctionConsts::FN_ZORBA_INVOKE_N_N)
-        {
-          scriptingKind = SIMPLE_EXPR;
-        }
-        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_U_N)
-        {
-          scriptingKind = UPDATING_EXPR;
-        }
-        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_S_N)
-        {
-          scriptingKind = SEQUENTIAL_FUNC_EXPR;
-        }
-
-        if (numArgs == 0)
-        {
-          RAISE_ERROR(err::XPST0017, loc,
-          ERROR_PARAMS("invoke", ZED(FunctionUndeclared_3), numArgs));
-        }
-
-        // create a flwor with LETs to hold the parameters
-        flwor_expr* flworExpr = theExprManager->
-        create_flwor_expr(theRootSctx, theUDF, loc, false);
-
-        // wrap function's QName
-        expr* qnameExpr = wrap_in_type_promotion(arguments[0],
-                                                 theRTM.QNAME_TYPE_ONE,
-                                                 PROMOTE_TYPE_PROMOTION);
-
-        for (csize i = 0; i < numArgs ; ++i)
-        {
-          let_clause* lc;
-          store::Item_t qnameItem;
-
-          // cannot use create_temp_var() as the variables created there are not
-          // accessible. use a special name but check for name clashes
-          do
-          {
-            std::string localName = "temp_invoke_var" +
-                                    ztd::to_string(theTempVarCounter++);
-            GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
-          }
-          while (lookup_var(qnameItem, loc, zerr::ZXQP0000_NO_ERROR) != NULL);
-
-          var_expr* var = create_var(loc, qnameItem, var_expr::let_var);
-          temp_vars.push_back(var);
-
-          if (i == 0)
-            lc = wrap_in_letclause(qnameExpr, var);
-          else
-            lc = wrap_in_letclause(arguments[i], var);
-
-          flworExpr->add_clause(lc);
-
-          // add the parameters to the eval's query string
-          if (i > 1)
-            query_params += ",";
-          if (i > 0)
-            query_params += "$" + var->get_name()->getStringValue();
-        }
-
-        query_params = "(" + query_params + ")";
-
-        // Expanded QName's namespace URI
-        expr* namespaceExpr =
-        theExprManager->create_fo_expr(theRootSctx, theUDF,
-                    loc,
-                    BUILTIN_FUNC(FN_NAMESPACE_URI_FROM_QNAME_1),
-                    temp_vars[0]);
-
-        namespaceExpr =
-        theExprManager->create_fo_expr(theRootSctx, theUDF,
-                    loc,
-                    BUILTIN_FUNC(FN_STRING_1),
-                    namespaceExpr);
-
-        // Expanded QName's local name
-        expr* localExpr =
-        theExprManager->create_fo_expr(theRootSctx, theUDF,
-                    loc,
-                    BUILTIN_FUNC(FN_LOCAL_NAME_FROM_QNAME_1),
-                    temp_vars[0]);
-
-        localExpr = theExprManager->
-        create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(FN_STRING_1), localExpr);
-
-        // qnameExpr := concat("Q{",
-        //                     namespaceExpr,
-        //                     "}",
-        //                     localExpr,
-        //                     "($temp_invoke_var2, $temp_invoke_var3,...)")
-        std::vector<expr*> concat_args;
-        concat_args.push_back(theExprManager->create_const_expr(theRootSctx, theUDF, loc, "Q{"));
-        concat_args.push_back(namespaceExpr);
-        concat_args.push_back(theExprManager->create_const_expr(theRootSctx, theUDF, loc, "}"));
-        concat_args.push_back(localExpr);
-        concat_args.push_back(theExprManager->create_const_expr(theRootSctx, theUDF, loc, query_params));
-
-        qnameExpr = theExprManager->
-        create_fo_expr(theRootSctx, theUDF,
-                       loc,
-                       BUILTIN_FUNC(FN_CONCAT_N),
-                       concat_args);
-
-        eval_expr* evalExpr = theExprManager->
-        create_eval_expr(theRootSctx, theUDF,
-                         loc,
-                         qnameExpr,
-                         scriptingKind,
-                         theNSCtx);
-
-        flworExpr->set_return_expr(evalExpr);
-        resultExpr = flworExpr;
-
-        for (csize i = 0; i < temp_vars.size(); ++i)
-        {
-          evalExpr->add_var(temp_vars[i]);
-        }
-
-        break;
-      } // case FunctionConsts::FN_ZORBA_INVOKE_N:
-
-      case FunctionConsts::FN_MAP_2:
-      case FunctionConsts::FN_FILTER_2:
-      {
-        resultExpr = generate_function(f->getKind(), foExpr->get_args(), loc);
-        break;
-      }
-      default:
-      {
-        // do nothing
-      }
-    } // switch
-
-    f->processPragma(resultExpr, theScopedPragmas);
-
-    push_nodestack(resultExpr);
-  }
+  
+  if (!resultExpr)
+    resultExpr = generate_fncall(qnameItem, f, arguments, loc);
+  
+  push_nodestack(resultExpr);
 }
 
 
@@ -11587,7 +11940,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   std::vector<expr*> dotVars;
   if (lookup_var(getDotVarName(), loc, zerr::ZXQP0000_NO_ERROR))
   {
-    // dotVars.push_back(DOT_REF);
+    dotVars.push_back(DOT_REF);
   }
 
   expr* dynFuncInvocation =
@@ -11624,8 +11977,6 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   rchandle<QName> qname = v.getQName();
   uint32_t arity = 0;
   store::Item_t qnameItem;
-  xqtref_t type;
-  user_function* udf = NULL;
 
   try
   {
@@ -11637,171 +11988,9 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     ERROR_PARAMS(v.getArity(), ZED(NoParseFnArity)));
   }
 
-  // Get function implementation
-  function* fn = lookup_fn(qname, arity, loc);
-
   expand_function_qname(qnameItem, qname, loc);
 
-  // raise XPST0017 if function could not be found
-  if (fn == NULL)
-  {
-    // Check if this is a call to a type constructor function
-    type = CTX_TM->create_named_type(qnameItem,
-                                     TypeConstants::QUANT_QUESTION,
-                                     loc);
-
-    if (type == NULL ||
-        arity != 1 ||
-        TypeOps::is_equal(CTX_TM, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION, loc) ||
-        TypeOps::is_equal(CTX_TM, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
-    {
-      RAISE_ERROR(err::XPST0017, loc,
-                    ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), arity));
-    }
-
-    udf = new user_function(loc,
-                            signature(qnameItem, GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, type),
-                            NULL, // no body for now
-                            SIMPLE_EXPR,
-                            theCCB);
-  }
-  else // fn != NULL
-  {
-    // validate the number of parameters on certain functions
-    switch (fn->getKind())
-    {
-      case FunctionConsts::FN_NUMBER_0:
-      case FunctionConsts::FN_NUMBER_1:
-      {
-        if (arity != 0 && arity != 1)
-          RAISE_ERROR(err::XPST0017, loc, ERROR_PARAMS("fn:number", ZED(FunctionUndeclared_3), arity));
-        break;
-      }
-      case FunctionConsts::FN_STATIC_BASE_URI_0:
-      {
-        if (arity != 0)
-          RAISE_ERROR(err::XPST0017, loc, ERROR_PARAMS("fn:static-base-uri", ZED(FunctionUndeclared_3), arity));
-        break;
-      }
-      case FunctionConsts::FN_CONCAT_N:
-      {
-        if (arity < 2)
-          RAISE_ERROR(err::XPST0017, loc, ERROR_PARAMS("concat", ZED(FunctionUndeclared_3), arity));
-        break;
-      }
-      default:
-        // otherwise function is valid by default
-        break;
-    }
-
-    //  Check if it is a zorba builtin function, and if so,
-    // make sure that the module it belongs to has been imported.
-    const zstring& fn_ns = qnameItem->getNamespace();
-    if (fn->isBuiltin() &&
-        fn_ns != static_context::W3C_FN_NS &&
-#ifdef ZORBA_WITH_JSON
-        fn_ns != static_context::JSONIQ_FN_NS &&
-#endif
-        fn_ns != XQUERY_MATH_FN_NS &&
-        fn_ns != theModuleNamespace)
-    {
-      if (! theSctx->is_imported_builtin_module(fn_ns))
-      {
-        RAISE_ERROR(err::XPST0017, loc,
-        ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), arity));
-      }
-    }
-  } // else fn != NULL
-
-  // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it
-  // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
-  if (udf != NULL || !fn->isUdf())
-  {
-    if (udf == NULL)
-      udf = new user_function(loc,
-                              fn->getSignature(),
-                              NULL, // no body for now
-                              fn->getScriptingKind(),
-                              theCCB);
-
-    std::vector<expr*> foArgs(arity);
-    std::vector<var_expr*> udfArgs(arity);
-
-    // TODO: decide what to do with the DOTREF which is used implicitly by some funcs
-    
-    if (fn != NULL && xquery_fns_def_dot.test(fn->getKind()))
-    {
-      // arguments.push_back(DOT_REF); // TODO:
-      var_expr* argVar = create_temp_var(loc, var_expr::arg_var);
-
-      argVar->set_param_pos(0);
-
-      udfArgs.push_back(argVar);
-      foArgs.push_back(DOT_REF);
-
-      fn = lookup_fn(qname, 1, loc);
-    }
-    
-
-    for (ulong i = 0; i < arity; ++i)
-    {
-      var_expr* argVar = create_temp_var(loc, var_expr::arg_var);
-
-      argVar->set_param_pos(i);
-
-      udfArgs[i] = argVar;
-      foArgs[i] = argVar;
-    }
-
-    expr* body;
-    if (fn == NULL) // we have a typecast function call
-    {
-      body = theExprManager->create_cast_expr(theRootSctx, udf, loc, foArgs[0], type);
-    }
-    else
-    {
-      // process pure builtin functions that have no associated iterator
-      switch (fn->getKind())
-      {
-      case FunctionConsts::FN_MAP_2:
-      case FunctionConsts::FN_FILTER_2:
-      {
-        // create the function flwor, wrap params in for clauses
-        flwor_expr* flwor = theExprManager->create_flwor_expr(theSctx, theUDF, loc, false);
-        std::vector<expr*> arguments;
-        for (csize i=0; i<foArgs.size(); i++)
-        {
-          // var_expr* arg_var = bind_var(loc, udfArgs[i]->get_name(), var_expr::let_var);
-          for_clause* fc = wrap_in_forclause(&*udfArgs[i], NULL);
-          udfArgs[i]->set_param_pos(flwor->num_clauses());
-          flwor->add_clause(fc);
-          arguments.push_back(fc->get_var());
-        }
-        
-        flwor->set_return_expr(generate_function(fn->getKind(), arguments, loc));
-        
-        body = flwor;
-        break;
-      }
-      default:
-      {
-          fo_expr* fo = theExprManager->create_fo_expr(theRootSctx, udf, loc, fn != NULL? fn : udf, foArgs);
-          normalize_fo(fo);
-          body = fo;
-          break;
-      }
-      } // switch
-      
-    } // else
-
-    udf->setArgVars(udfArgs);
-    udf->setBody(body);
-    udf->setOptimized(true); // TODO: this is needed because otherwise the optimizer would get into an infinte cycle
-
-    fn = udf;
-  }
-
-  expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, fn, fn->getName(), arity, false);
+  expr* fiExpr = generate_literal_function(qnameItem, arity, loc, false);
 
   push_nodestack(fiExpr);
 }
@@ -11829,7 +12018,7 @@ void* begin_visit(const InlineFunction& v)
   push_scope();
 
   function_item_expr* fiExpr =
-  theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, true);
+  theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, true, false);
 
   push_nodestack(fiExpr);
 
@@ -15234,7 +15423,6 @@ expr* translate_aux(
 }
 
 
-
 /*******************************************************************************
   Translate a main module.
 ********************************************************************************/
@@ -15256,6 +15444,29 @@ expr* translate(const parsenode& root, CompilerCB* ccb)
                        modulesStack,
                        false);
 }
+
+
+/*******************************************************************************
+  Globally accesible translation function: translate a function call
+********************************************************************************/
+expr* Translator::translate_literal_function(store::Item_t& qname, unsigned int arity, CompilerCB* ccb, const QueryLoc& loc, bool errIfContextDependent)
+{
+  std::map<zstring, zstring> modulesStack;
+  
+  ModulesInfo minfo(ccb);
+  
+  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(NULL,
+                                                     ccb->theRootSctx,
+                                                     ccb->theSctxMap.size(),
+                                                     &minfo,
+                                                     modulesStack,
+                                                     false,
+                                                     StaticContextConsts::xquery_version_unknown));
+  
+  return t->generate_literal_function(qname, arity, loc, errIfContextDependent);
+}
+
+
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

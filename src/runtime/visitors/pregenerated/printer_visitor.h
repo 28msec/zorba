@@ -370,6 +370,9 @@ namespace zorba {
     void endVisit  ( const TokenizeStringIterator& );
 #endif
 
+    void beginVisit( const FunctionLookupIterator& );
+    void endVisit  ( const FunctionLookupIterator& );
+
     void beginVisit( const FunctionNameIterator& );
     void endVisit  ( const FunctionNameIterator& );
 

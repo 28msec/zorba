@@ -500,6 +500,8 @@ public:
   static const char* W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
 
   static const char* W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
+  
+  static const char* W3C_ERR_NS;    // http://www.w3.org/2005/xqt-errors
 
   //
   // Zorba namespaces

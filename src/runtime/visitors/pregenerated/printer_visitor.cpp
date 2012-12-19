@@ -1352,6 +1352,20 @@ void PrinterVisitor::endVisit ( const TokenizeStringIterator& ) {
 
 #endif
 
+// <FunctionLookupIterator>
+void PrinterVisitor::beginVisit ( const FunctionLookupIterator& a) {
+  thePrinter.startBeginVisit("FunctionLookupIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FunctionLookupIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FunctionLookupIterator>
+
+
 // <FunctionNameIterator>
 void PrinterVisitor::beginVisit ( const FunctionNameIterator& a) {
   thePrinter.startBeginVisit("FunctionNameIterator", ++theId);

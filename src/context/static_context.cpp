@@ -332,6 +332,9 @@ const char*
 static_context::W3C_FN_NS = "http://www.w3.org/2005/xpath-functions";
 
 const char*
+static_context::W3C_ERR_NS = "http://www.w3.org/2005/xqt-errors";
+
+const char*
 static_context::W3C_XML_NS = "http://www.w3.org/XML/1998/namespace";
 
 const char*

@@ -141,8 +141,6 @@ class function_item_expr: public expr
 protected:
   DynamicFunctionInfo_t       theDynamicFunctionInfo;
   
-  bool                        theIsInline;
-
 protected:
   function_item_expr(
       CompilerCB* ccb,
@@ -152,17 +150,17 @@ protected:
       function* f,
       store::Item* aQName,
       uint32_t aArity,
-      bool isInline);
+      bool isInline,
+      bool needsContextItem);
 
   function_item_expr(
       CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      bool isInline);
-
-  virtual ~function_item_expr();
-
+      bool isInline,
+      bool needsContextItem);
+  
 public:
   DynamicFunctionInfo* get_dynamic_fn_info() { return theDynamicFunctionInfo; }
 
@@ -184,7 +182,9 @@ public:
 
   uint32_t get_arity() const { return theDynamicFunctionInfo->theArity; }
   
-  bool getIsInline() const { return theDynamicFunctionInfo->theIsInline; }
+  bool is_inline() const { return theDynamicFunctionInfo->theIsInline; }
+  
+  bool needs_context_item() const { return theDynamicFunctionInfo->theNeedsContextItem; }
 
   void compute_scripting_kind();
 
@@ -193,7 +193,7 @@ public:
   std::ostream& put(std::ostream& os) const;
   
 public:
-  // Given a location, will create an inline function name such 
+  // Given a location, will create an inline function name string such 
   // as "inline function(loc)"
   static store::Item_t create_inline_fname(const QueryLoc& loc);
 };

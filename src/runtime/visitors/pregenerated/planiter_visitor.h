@@ -240,6 +240,8 @@ namespace zorba{
 #ifndef ZORBA_NO_FULL_TEXT
     class TokenizeStringIterator;
 #endif
+    class FunctionLookupIterator;
+
     class FunctionNameIterator;
 
     class FunctionArityIterator;
@@ -1050,6 +1052,9 @@ public:
     virtual void beginVisit ( const TokenizeStringIterator& ) = 0;
     virtual void endVisit   ( const TokenizeStringIterator& ) = 0;
 #endif
+    virtual void beginVisit ( const FunctionLookupIterator& ) = 0;
+    virtual void endVisit   ( const FunctionLookupIterator& ) = 0;
+
     virtual void beginVisit ( const FunctionNameIterator& ) = 0;
     virtual void endVisit   ( const FunctionNameIterator& ) = 0;
 

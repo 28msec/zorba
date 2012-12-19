@@ -90,7 +90,8 @@ function_item_expr::function_item_expr(
     function* f,
     store::Item* aQName,
     uint32_t aArity,
-    bool isInline)
+    bool isInline,
+    bool needsContextItem)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
@@ -98,7 +99,8 @@ function_item_expr::function_item_expr(
                          f,
                          aQName,
                          aArity,
-                         isInline))
+                         isInline,
+                         needsContextItem))
 {
   assert(f != NULL);
   compute_scripting_kind();
@@ -110,7 +112,8 @@ function_item_expr::function_item_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    bool isInline)
+    bool isInline,
+    bool needsContextItem)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
@@ -118,18 +121,10 @@ function_item_expr::function_item_expr(
                          NULL,
                          NULL,
                          0,
-                         isInline))
+                         isInline,
+                         needsContextItem))
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-function_item_expr::~function_item_expr()
-{
-  /*
-  std::cerr << "--> ~function_item_expr(): (static_context) theDynamicFunctionInfo: " << theDynamicFunctionInfo.getp()
-      << " (" << theDynamicFunctionInfo->getRefCount() << ")" << std::endl;
-  */
 }
 
 

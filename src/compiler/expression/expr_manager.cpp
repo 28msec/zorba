@@ -812,9 +812,10 @@ function_item_expr* ExprManager::create_function_item_expr(
     function* f,
     store::Item* aQName,
     uint32_t aArity,
-    bool isInline)
+    bool isInline,
+    bool needsContextItem)
 {
-  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, f, aQName, aArity, isInline);
+  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, f, aQName, aArity, isInline, needsContextItem);
 }
 
 
@@ -822,9 +823,10 @@ function_item_expr* ExprManager::create_function_item_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    bool isInline)
+    bool isInline,
+    bool needsContextItem)
 {
-  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, isInline);
+  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, isInline, needsContextItem);
 }
 
 

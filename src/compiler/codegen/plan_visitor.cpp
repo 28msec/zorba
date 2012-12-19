@@ -470,14 +470,7 @@ void end_visit(function_item_expr& v)
   fnInfo->theQName = v.get_qname();
   fnInfo->theArity = v.get_arity();
 
-  // store::Item_t lFItem;
-  /*
-  std::vector<PlanIter_t> scopedVarsValues;
-  std::vector<store::Item_t> scopedVarsNames;
-  std::vector<int> isGlobalVar;
-  */
-
-  if (v.getIsInline())
+  if (v.is_inline())
   {
     // inline function
     size_t lSize = v.get_scoped_vars_values().size();
@@ -542,15 +535,16 @@ void end_visit(dynamic_function_invocation_expr& v)
 
   ulong numArgs = (ulong)v.get_args().size() + 1;
 
-  std::vector<PlanIter_t> argIters(numArgs);
-
+  std::vector<PlanIter_t> argIters;
+  
   bool isPartialApply = false;
-
+  
   // the arguments are reversed on the stack
   for (csize i=0; i<v.get_dot_vars().size(); i++)
   {
     PlanIter_t iter = pop_itstack();
-    // std::cerr << "--> plan_visitor dot var iterator: " << iter->toString() << std::endl;
+    argIters.push_back(iter);
+    // std::cerr << "--> plan_visitor dot var iterator: " << iter->toString() << std::endl; // TODO
   }
 
   for (size_t i = 0; i < numArgs-1; ++i)
@@ -558,14 +552,14 @@ void end_visit(dynamic_function_invocation_expr& v)
     if (v.get_args()[i]->get_expr_kind() == argument_placeholder_expr_kind)
       isPartialApply = true;
 
-    argIters[i] = pop_itstack();
+    argIters.push_back(pop_itstack());
   }
 
-  argIters[numArgs-1] = pop_itstack();
+  argIters.push_back(pop_itstack());
 
   std::reverse(argIters.begin(), argIters.end());
 
-  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, isPartialApply, v.theCoercionTargetType));
+  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, v.get_dot_vars().size(), isPartialApply, v.theCoercionTargetType));
 }
 
 

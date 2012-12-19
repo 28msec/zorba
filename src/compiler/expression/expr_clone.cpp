@@ -378,7 +378,8 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                               e->theDynamicFunctionInfo->theFunction,
                               e->theDynamicFunctionInfo->theFunction->getName(),
                               e->theDynamicFunctionInfo->theArity,
-                              e->getIsInline());
+                              e->is_inline(),
+                              e->needs_context_item());
 
     std::vector<expr*>::const_iterator varIter = e->theDynamicFunctionInfo->theScopedVarsValues.begin();
     std::vector<var_expr*>::const_iterator substVarIter = e->theDynamicFunctionInfo->theSubstVarsValues.begin();

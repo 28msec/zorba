@@ -211,7 +211,7 @@ bool DynamicFnCallIterator::nextImpl(
 
     // std::cerr << "--> " << this->toString() << " nextImpl() theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariablesIterators().size() << std::endl;
 
-    if (theCoercionTargetType.getp())
+    // if (theCoercionTargetType.getp())
     {
       xqtref_t fnItemType = tm->create_value_type(fnItem, loc);
 
@@ -233,7 +233,7 @@ bool DynamicFnCallIterator::nextImpl(
       
       // if (!TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc))
       // if (!TypeOps::is_subtype(tm, *fnItemType, *theCoercionTargetType, loc))
-      if ( ! static_cast<const FunctionXQType*>(fnItemType.getp())->is_subtype(tm, *static_cast<const FunctionXQType*>(theCoercionTargetType.getp()), true))
+      // if ( ! static_cast<const FunctionXQType*>(fnItemType.getp())->is_subtype(tm, *static_cast<const FunctionXQType*>(theCoercionTargetType.getp()), true))
       {
         /*
         RAISE_ERROR(err::XPTY0004, loc,
@@ -245,7 +245,9 @@ bool DynamicFnCallIterator::nextImpl(
     }
 
 
-    if (theChildren.size() - 1 != fnItem->getArity())
+    if (( ! fnItem->needsContextItem() && theChildren.size() - 1 - theDotVarsCount != fnItem->getArity())
+        ||
+        (fnItem->needsContextItem() && theChildren.size() - 1 != fnItem->getArity()))
     {
       // TODO: customize error message and take into account partial application
       RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
@@ -253,7 +255,7 @@ bool DynamicFnCallIterator::nextImpl(
 
     if (theIsPartialApply)
     {
-      for (unsigned int i=1, pos=0; i<theChildren.size(); i++)
+      for (unsigned int i=1, pos=0; i<theChildren.size() - theDotVarsCount; i++)
       {
         if (dynamic_cast<ArgumentPlaceholderIterator*>(theChildren[i].getp()) == NULL)
         {
@@ -289,14 +291,8 @@ bool DynamicFnCallIterator::nextImpl(
     }
     else
     {
-      // std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
-      // std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
-      
       state->thePlan = fnItem->getImplementation(theChildren);
-
-      // std::cerr << "--> " << toString() << " got implementation." << std::endl;
-      // std::cerr << "--> dynamic fncall: opening thePlan: " << state->thePlan->toString() << std::endl;
-
+      
       // must be opened after vars and params are set
       state->thePlan->open(planState, state->theUDFStateOffset);
       state->theIsOpen = true;

@@ -47,6 +47,7 @@ public: // TODO: not public
   store::Item_t                 theQName;
   unsigned int                  theArity;
   bool                          theIsInline;
+  bool                          theNeedsContextItem;
 
   std::vector<expr*>            theScopedVarsValues;
   std::vector<var_expr*>        theSubstVarsValues;
@@ -62,9 +63,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFunctionInfo(const QueryLoc& loc, function* func, store::Item_t qname, uint32_t arity, bool isInline);
-
-  virtual ~DynamicFunctionInfo();
+  DynamicFunctionInfo(const QueryLoc& loc, function* func, store::Item_t qname, uint32_t arity, bool isInline, bool needsContextItem);
 
   void add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal);
 };
@@ -83,7 +82,7 @@ class FunctionItem : public store::Item, public zorba::serialization::SerializeB
 {
 protected:
   std::auto_ptr<CompilerCB>       theCCB;
-
+  
   DynamicFunctionInfo_t           theDynamicFunctionInfo;
 
   unsigned int                    theArity;   // The arity of the function
@@ -105,13 +104,8 @@ public:
 
 public:
   FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
-               const std::vector<store::Iterator_t>& varsValues,
                CompilerCB* ccb,
                dynamic_context* dctx);
-
-  FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo);
-
-  virtual ~FunctionItem();
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
@@ -129,10 +123,12 @@ public:
   // has been partially applied, i.e. theArgumentsValues[pos] is not NULL
   bool isArgumentApplied(unsigned int pos) const;
 
-  // The getImplementation function assumes the args vector comes from a
-  // DynamicFnCallIterator, and as such, the first element of args is
+  // The getImplementation function assumes the dynChildren vector comes from a
+  // DynamicFnCallIterator, and as such, the first element of dynChildren is
   // the function item itself, so it will be skipped.
-  PlanIter_t getImplementation(const std::vector<PlanIter_t>& args);
+  // The last element(s) of dynChildren might contain DOT vars iterators. They
+  // will be picked up automatically if needed.
+  PlanIter_t getImplementation(const std::vector<PlanIter_t>& dynChildren);
 
   const store::Item_t getFunctionName() const;
 
@@ -144,6 +140,8 @@ public:
   const signature& getSignature() const;
   
   bool isInline() const { return theDynamicFunctionInfo->theIsInline; };
+  
+  bool needsContextItem() const { return theDynamicFunctionInfo->theNeedsContextItem; }
 
   zstring show() const;
 };

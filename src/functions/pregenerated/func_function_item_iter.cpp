@@ -31,6 +31,16 @@ namespace zorba{
 
 
 
+PlanIter_t fn_function_lookup_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FunctionLookupIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_function_name_3_0::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -83,6 +93,19 @@ PlanIter_t fn_fold_right_3_0::codegen(
 
 void populate_context_function_item_iter(static_context* sctx)
 {
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_function_lookup_3_0,
+        (createQName("http://www.w3.org/2005/xpath-functions","","function-lookup"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_QUESTION),
+        FunctionConsts::FN_FUNCTION_LOOKUP_2);
+
+  }
+
+
 
 
       {

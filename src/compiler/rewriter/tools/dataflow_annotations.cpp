@@ -871,6 +871,7 @@ void SourceFinder::findNodeSourcesRec(
 
     case var_expr::prolog_var:
     case var_expr::local_var:
+    case var_expr::hof_var:
     {
       VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 

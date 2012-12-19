@@ -16,24 +16,30 @@
 
 #include "stdafx.h"
 
+#include "compiler/expression/function_item_expr.h"
+#include "compiler/api/compilercb.h"
+#include "compiler/translator/translator.h"
+
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/iterator_impl.h"
 #include "runtime/function_item/function_item.h"
 #include "runtime/core/fncall_iterator.h"
 
-#include "compiler/parsetree/parsenodes.h"
-#include "compiler/api/compilercb.h"
-#include "compiler/api/compiler_api.h"
-
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
+
+#include "types/typeops.h"
 
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/temp_seq.h"
 
+#include "diagnostics/util_macros.h"
+
 #include "system/globalenv.h"
+
+#include "zorbamisc/ns_consts.h"
 
 
 using namespace std;
@@ -43,7 +49,79 @@ namespace zorba {
 
 /*******************************************************************************
 
- ******************************************************************************/
+********************************************************************************/
+/*
+var_expr* create_temp_var(CompilerCB* ccb, static_context* theSctx, user_function* udf, const QueryLoc& loc, var_expr::var_kind kind, int& theTempVarCounter)
+{
+  store::Item_t varQname;
+  
+  do
+  {
+    std::string localName = "temp_var" + ztd::to_string(theTempVarCounter++);
+    GENV_ITEMFACTORY->createQName(varQname, "", "", localName.c_str());
+  }
+  while (theSctx->lookup_var(varQname) != NULL);
+      
+  return ccb->theEM->create_var_expr(theSctx, udf, loc, kind, varQname);
+}
+  */    
+
+bool
+FunctionLookupIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t qname;
+  store::Item_t arityItem;
+  uint32_t arity;
+  result = NULL;
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(qname, theChildren[0], planState);
+  consumeNext(arityItem, theChildren[1], planState);
+  
+  try
+  {
+    arity = to_xs_unsignedInt(arityItem->getIntegerValue());
+  }
+  catch ( std::range_error const& )
+  {
+    RAISE_ERROR(err::XPST0017, loc,
+    ERROR_PARAMS(arityItem->getIntegerValue(), ZED(NoParseFnArity)));
+  }
+  
+  try
+  {
+    std::auto_ptr<CompilerCB> evalCCB;
+    evalCCB.reset(new CompilerCB(*planState.theCompilerCB));
+    evalCCB->theRootSctx = theSctx;
+
+    expr* fiExpr = Translator::translate_literal_function(qname, arity, evalCCB.get(), loc, true);
+    
+    DynamicFunctionInfo_t dynFnInfo = static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
+    dynFnInfo->theCCB = evalCCB.get();
+    dynFnInfo->theSctx = theSctx;
+    
+    result = new FunctionItem(dynFnInfo, evalCCB.release(), new dynamic_context(planState.theGlobalDynCtx));
+  }
+  catch (ZorbaException const& e)
+  {
+    if (e.diagnostic() != err::XPST0017)
+      throw;
+  }
+  
+  if (result.getp() != NULL)
+    STACK_PUSH(true, state); 
+    
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool
 FunctionNameIterator::nextImpl(
     store::Item_t& r,
@@ -75,7 +153,7 @@ FunctionNameIterator::nextImpl(
 
 /*******************************************************************************
 
- ******************************************************************************/
+********************************************************************************/
 bool
 FunctionArityIterator::nextImpl(
     store::Item_t& r,
@@ -105,7 +183,7 @@ FunctionArityIterator::nextImpl(
 
 /*******************************************************************************
 
- ******************************************************************************/
+********************************************************************************/
 FnMapPairsIteratorState::~FnMapPairsIteratorState()
 {
   if (theIsOpen)
@@ -233,7 +311,7 @@ bool FnMapPairsIterator::nextImpl(
 
 /*******************************************************************************
 
- ******************************************************************************/
+********************************************************************************/
 FnFoldLeftIteratorState::~FnFoldLeftIteratorState()
 {
   if (theIsOpen)

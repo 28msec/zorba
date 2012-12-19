@@ -88,9 +88,13 @@ class DynamicFnCallIterator : public NaryBaseIterator<DynamicFnCallIterator,
                                                       DynamicFnCallIteratorState>
 {
 protected:
+  // This variable counts the number of children that hold DOT variables. They 
+  // are placed at the end of the children array. It currently should have a 
+  // value of either 0 or 1 (at most one DOT var).
+  unsigned int theDotVarsCount; 
+  
   bool theIsPartialApply;
-  xqtref_t theCoercionTargetType;
-
+  
 public:
   SERIALIZABLE_CLASS(DynamicFnCallIterator);
 
@@ -108,12 +112,14 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& args,
+      unsigned int dotVarsCount,
       bool isPartialApply,
       xqtref_t coercionTargetType = NULL)
     :
     NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>(sctx, loc, args),
-    theIsPartialApply(isPartialApply),
-    theCoercionTargetType(coercionTargetType)
+    theDotVarsCount(dotVarsCount),
+    theIsPartialApply(isPartialApply)
+    // , theCoercionTargetType(coercionTargetType) // TODO: remove
   {
   }
 

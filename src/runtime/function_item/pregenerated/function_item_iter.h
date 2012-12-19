@@ -39,6 +39,38 @@ namespace zorba {
 
 /**
  * 
+ *      Returns the function having a given name and arity, if there is one.
+ *    
+ * Author: Zorba Team
+ */
+class FunctionLookupIterator : public NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FunctionLookupIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionLookupIterator,
+    NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FunctionLookupIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FunctionLookupIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      Returns the name of the function identified by a function item.
  *    
  * Author: Zorba Team

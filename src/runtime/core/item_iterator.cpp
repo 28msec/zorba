@@ -34,9 +34,6 @@
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planiter_visitor.h"
 
-// TODO:
-#include "runtime/misc/materialize.h"
-
 #include "store/api/item.h"
 #include "store/api/temp_seq.h"
 
@@ -119,7 +116,7 @@ void DynamicFunctionIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, (NoaryBaseIterator<DynamicFunctionIterator,
                       PlanIteratorState>*)this);
   ar & theDynamicFunctionInfo;
-  // TODO: add var values?
+  // TODO: add the rest
 }
 
 
@@ -136,38 +133,10 @@ DynamicFunctionIterator::DynamicFunctionIterator(
 {
 }
 
-DynamicFunctionIterator::~DynamicFunctionIterator()
-{
-  /*
-  std::cerr << "--> ~DynamicFunctionIterator(): (static_context) theDynamicFunctionInfo: " << theDynamicFunctionInfo.getp()
-      << " (" << theDynamicFunctionInfo->getRefCount() << ")" << std::endl;
-  */
-}
-
 bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
-  std::vector<store::Iterator_t> varsValues;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  // varsValues.resize(theChildren.size());
-  varsValues.resize(theDynamicFunctionInfo->theArity);
-
-  /*
-  for (csize i=0; i<theChildren.size(); i++)
-  {
-    if (! theDynamicFunctionInfo->theIsGlobalVar[i])
-    {
-      store::Item_t sequence;
-      consumeNext(sequence, theChildren[i], planState);
-      if (dynamic_cast<const MaterializeIterator*>(theChildren[i].getp()) != NULL)
-        varsValues[i] = const_cast<MaterializeIterator*>(
-          dynamic_cast<const MaterializeIterator*>(theChildren[i].getp()))->getSequenceIterator(planState);
-
-      // else varsValues[i] = theChildren[i];
-    }
-  }
-  */
 
   // This portion is taken from the eval iterator
   {
@@ -191,13 +160,6 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     std::auto_ptr<dynamic_context> evalDctx;
     evalDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
     
-    /*
-    std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
-    std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
-    */
-    // std::cerr << "--> " << toString() << " theSctx: " << theSctx->toString();
-    // std::cerr << "--> " << toString() << " importSctx: " << importSctx->toString();
-
     // Import the outer environment.
     ulong maxOuterVarId;
     importOuterEnv(planState, evalCCB.get(), importSctx, evalDctx.get(), maxOuterVarId);
@@ -216,17 +178,10 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
           << std::endl;
     }
     */
-
-    /*
-    std::cerr << "--> evalSctx: " << evalSctx->toString();
-    std::cerr << "--> evalDctx: " << evalDctx->toString();
-    std::cerr << "--> evalDctx parent: " << evalDctx->getParent()->toString();
-    */
-
+    
     // std::cerr << "--> the body before: " << static_cast<user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody()->toString() << std::endl;
 
-
-    result = new FunctionItem(theDynamicFunctionInfo, varsValues, evalCCB.release(), evalDctx.release());
+    result = new FunctionItem(theDynamicFunctionInfo, evalCCB.release(), evalDctx.release());
   }
 
   STACK_PUSH ( result != NULL, state );

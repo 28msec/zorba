@@ -117,6 +117,7 @@
   TYPE_TokenizeNodesIterator,
   TYPE_TokenizerPropertiesIterator,
   TYPE_TokenizeStringIterator,
+  TYPE_FunctionLookupIterator,
   TYPE_FunctionNameIterator,
   TYPE_FunctionArityIterator,
   TYPE_FnMapPairsIterator,
