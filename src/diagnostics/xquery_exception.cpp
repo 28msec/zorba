@@ -19,6 +19,12 @@
 // standard
 #include <cstring>
 
+// API
+#include <zorba/xquery_stack_trace.h>
+#include <zorba/zorba_string.h>
+#include <zorba/util/uri.h>
+#include <zorba/xquery_functions.h>
+
 // Zorba
 #include "util/fs_util.h"
 #include "util/uri_util.h"
@@ -99,6 +105,59 @@ void XQueryException::polymorphic_throw() const {
   throw *this;
 }
 
+ostream& XQueryException::print_stack_trace(ostream &o) const {
+  bool lAsXml = ZorbaException::isPrintFormatXML(o);
+  XQueryStackTrace const& lTrace = query_trace();
+  if (!lTrace.empty()) {
+    XQueryStackTrace::const_iterator it = lTrace.begin();
+    if (lAsXml) {
+      o << "<stack>";
+    } 
+    for (; it != lTrace.end(); ++it) {
+      XQueryStackTrace::fn_name_type const& lName = it->getFnName();
+      XQueryStackTrace::fn_arity_type lArity = it->getFnArity();
+      char const *const lPrefix = lName.prefix();
+      String lFileName = it->getFileName();
+      if (fn::starts_with(lFileName,"file:")) {
+        lFileName = URIHelper::decodeFileURI(lFileName);
+        while (fn::starts_with(lFileName,"//")) {
+          lFileName = lFileName.substr(1);
+        }
+      }
+      if (lAsXml) {
+        o << "<call ";
+        if (lPrefix && *lPrefix) {
+          o << "prefix=\"" << lPrefix << "\" ";
+        }
+        o << "arity=\"" << lArity << "\" ";
+        o << "ns=\"" << lName.ns() << "\" ";
+        o << "local-name=\"" << lName.localname() << "\">";
+        o << "<location ";
+        o << "file-name=\"" << lFileName << "\" ";
+        o << "line-begin=\"" << it->getLine() << "\" "
+          << "column-begin=\"" << it->getColumn() << "\" ";
+        if (it->getLineEnd())
+          o << "line-end=\"" << it->getLineEnd() << "\" ";
+        if (it->getColumnEnd())
+          o << "line-end=\"" << it->getColumnEnd() << "\" ";
+        o << "/>";
+        o << "</call>"; 
+      } else {
+        std::ostringstream oss;
+        oss << lName;
+        String lFName = oss.str();
+        o << "=================================================" << std::endl;
+        o << lFName << "#" << lArity << " <" << lName.ns() << "> " << std::endl;
+        o << lFileName << " at line " << it->getLine() << " column " << it->getColumn() << std::endl;
+      }
+    } 
+    if  (lAsXml) {
+      o << "</stack>";
+    } 
+  }
+  return o;
+}
+
 static bool print_uri( ostream &o, char const *uri ) {
   bool lAsXml = ZorbaException::isPrintFormatXML(o);
   if ( uri && *uri ) {
@@ -161,6 +220,9 @@ ostream& XQueryException::print( ostream &o ) const {
 
     if (!lAsXml)
       o << ": ";
+
+    if (ZorbaException::isPrintStacktrace(o))
+      print_stack_trace(o);
   }
   return ZorbaException::print( o );
 }

@@ -14,12 +14,15 @@ int main()
   Zorba *lZorba = Zorba::getInstance(lStore);                                      
                                                                                    
   try {                                                                            
-    XQuery_t lQuery = lZorba->compileQuery("1+");                                  
+    XQuery_t lQuery = lZorba->compileQuery("declare function local:test() { fn:error() }; local:test()");                                  
                                                                                    
     std::cout << lQuery << std::endl;                                              
   }                                                                                
   catch (ZorbaException& e) {                                                      
-    std::cerr << ZorbaException::XML << e << std::endl;                            
+    std::cerr << ZorbaException::STACKTRACE_YES 
+              << ZorbaException::FORMAT_XML 
+              << e 
+              << std::endl;                            
   }                                                                                
                                                                                    
   return 0;                                                                        

@@ -44,14 +44,21 @@ public:
   typedef internal::diagnostic::location::line_type line_type;
 
   enum PrintFormat {
-    TEXT = 0,
-    XML  = 1,
-    JSON = 2
+    FORMAT_TEXT = 0,
+    FORMAT_XML  = 1,
+    FORMAT_JSON = 2
+  };
+  
+  enum PrintStacktrace {
+    STACKTRACE_NO = 0,
+    STACKTRACE_YES  = 1
   };
 
   static std::ostream& printException(std::ostream&, ZorbaException const&);
   static void setPrintFormat(std::ostream&, PrintFormat);
   static bool isPrintFormatXML(std::ostream&);
+  static void setPrintStacktrace(std::ostream&, PrintStacktrace);
+  static bool isPrintStacktrace(std::ostream&);
 
   /**
    * Copy-constructs a %ZorbaException.
@@ -188,6 +195,12 @@ inline std::ostream& operator<<( std::ostream &o, ZorbaException const &e ) {
 inline std::ostream& operator<<( std::ostream &o,
                                  ZorbaException::PrintFormat pf ) {
   ZorbaException::setPrintFormat(o, pf);
+  return o;
+}
+
+inline std::ostream& operator<<( std::ostream &o,
+                                 ZorbaException::PrintStacktrace ps ) {
+  ZorbaException::setPrintStacktrace(o, ps);
   return o;
 }
 

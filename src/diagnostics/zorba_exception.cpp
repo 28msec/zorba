@@ -37,6 +37,11 @@ int get_error_format_index() {
   return index;
 }
 
+int get_error_stacktrace_index() {
+  static int const index = ios_base::xalloc();
+  return index;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 std::ostream& ZorbaException::printException(std::ostream& os, ZorbaException const &e) {
   bool lAsXml = ZorbaException::isPrintFormatXML(os);
@@ -54,7 +59,16 @@ void ZorbaException::setPrintFormat(std::ostream &os, ZorbaException::PrintForma
 
 bool ZorbaException::isPrintFormatXML(std::ostream &os) {
   PrintFormat pf = static_cast<PrintFormat>(os.iword( get_error_format_index() ));
-  return pf = XML;
+  return pf == FORMAT_XML;
+}
+
+void ZorbaException::setPrintStacktrace(std::ostream &os, ZorbaException::PrintStacktrace ps) {
+  os.iword( get_error_stacktrace_index() ) = static_cast<long>(ps);
+}
+
+bool ZorbaException::isPrintStacktrace(std::ostream &os) {
+  PrintStacktrace ps = static_cast<PrintStacktrace>(os.iword( get_error_stacktrace_index() ));
+  return ps == STACKTRACE_YES;
 }
 
 ZorbaException::ZorbaException( Diagnostic const &diagnostic,

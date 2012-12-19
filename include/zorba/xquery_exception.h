@@ -232,6 +232,7 @@ protected:
   // inherited
   std::unique_ptr<ZorbaException> clone() const;
   std::ostream& print( std::ostream &o ) const;
+  std::ostream& print_stack_trace( std::ostream &o ) const;
 
 private:
   typedef internal::diagnostic::location location;
