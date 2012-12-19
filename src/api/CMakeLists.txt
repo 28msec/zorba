@@ -57,6 +57,7 @@ SET(API_SRCS
     zorba_functions.cpp
     annotationimpl.cpp
     auditimpl.cpp
+    store_consts.cpp
     streambuf.cpp
     transcode_streambuf.cpp
     uuid.cpp

@@ -129,6 +129,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
         return NULL;
     }
 
+#ifdef ZORBA_WITH_JSON
     if (fo->get_func()->getKind() == FunctionConsts::OP_ZORBA_JSON_BOX_1)
     {
       expr* arg = fo->get_arg(0);
@@ -147,6 +148,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
       return NULL;
     }
+#endif
 
     break;
   }
@@ -427,6 +429,7 @@ RULE_REWRITE_POST(SpecializeOperations)
       }
     }
   }
+#if 0
   else if (node->get_expr_kind() == flwor_expr_kind ||
            node->get_expr_kind() == gflwor_expr_kind)
   {
@@ -465,6 +468,7 @@ RULE_REWRITE_POST(SpecializeOperations)
     if (modified)
       return node;
   }
+#endif
 
   return NULL;
 }
