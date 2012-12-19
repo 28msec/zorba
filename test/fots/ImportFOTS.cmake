@@ -19,7 +19,7 @@
 
 
 # Change this to publish updated FOTS archives
-SET (FOTS_ARCHIVE "FOTS_041212.tgz")
+SET (FOTS_ARCHIVE "FOTS_191212.tgz")
 
 
 # Download and unpack pre-created archive
