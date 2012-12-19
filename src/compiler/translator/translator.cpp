@@ -3070,14 +3070,15 @@ expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>&
   for the purpose of deciding if it can be used by function-lookup(), which is why
   the list differs from spec.
 ********************************************************************************/
+// TODO: seems the function is not needed -- remove
 bool is_context_dependent(function* f)
 {
-  FunctionConsts::FunctionKind kind = f->getKind();
+  // FunctionConsts::FunctionKind kind = f->getKind();
   
-  if (kind == FunctionConsts::FN_CURRENT_DATETIME_0 ||
-      kind == FunctionConsts::FN_CURRENT_DATE_0 ||
-      kind == FunctionConsts::FN_CURRENT_TIME_0 ||
-      kind == FunctionConsts::FN_IMPLICIT_TIMEZONE_0 ||
+  if (// kind == FunctionConsts::FN_CURRENT_DATETIME_0 ||
+      // kind == FunctionConsts::FN_CURRENT_DATE_0 ||
+      // kind == FunctionConsts::FN_CURRENT_TIME_0 ||
+      // kind == FunctionConsts::FN_IMPLICIT_TIMEZONE_0 ||
       // kind == FunctionConsts::OP_ADJUST_DT_TO_TZ_1 ||
       // kind == FunctionConsts::OP_ADJUST_DT_TO_TZ_2 ||
       // kind == FunctionConsts::OP_ADJUST_D_TO_TZ_1 ||
@@ -3087,11 +3088,11 @@ bool is_context_dependent(function* f)
       // kind == FunctionConsts::FN_BASE_URI_0 ||  // there is a FOTS test which expects the function to be allowed
       // kind == FunctionConsts::FN_DATA_0 ||  // there is a FOTS test which expects the function to be allowed
       // kind == FunctionConsts::FN_DOCUMENT_URI_0 ||  // there is a FOTS test which expects the function to be allowed
-      kind == FunctionConsts::FN_POSITION_0 ||
-      kind == FunctionConsts::FN_LAST_0 ||
-      kind == FunctionConsts::FN_ID_1 ||
-      kind == FunctionConsts::FN_IDREF_1 || 
-      kind == FunctionConsts::FN_ELEMENT_WITH_ID_1 ||
+      // kind == FunctionConsts::FN_POSITION_0 ||
+      // kind == FunctionConsts::FN_LAST_0 ||
+      // kind == FunctionConsts::FN_ID_1 ||
+      // kind == FunctionConsts::FN_IDREF_1 || 
+      // kind == FunctionConsts::FN_ELEMENT_WITH_ID_1 ||
       // kind == FunctionConsts::FN_LANG_1 || 
       // kind == FunctionConsts::FN_LOCAL_NAME_0 ||
       // kind == FunctionConsts::FN_NAME_0 || 
@@ -3102,11 +3103,13 @@ bool is_context_dependent(function* f)
       // kind == FunctionConsts::FN_STRING_0 ||  // there is a FOTS test which expects the function to be allowed
       // kind == FunctionConsts::FN_STRING_LENGTH_0 ||  // there is a FOTS test which expects the function to be allowed
       // kind == FunctionConsts::FN_PATH_0 ||
-      kind == FunctionConsts::FN_DEFAULT_COLLATION_0 ||
-      kind == FunctionConsts::FN_STATIC_BASE_URI_0 ||
-      kind == FunctionConsts::FN_DOC_1 ||
-      kind == FunctionConsts::FN_COLLECTION_0 ||
-      kind == FunctionConsts::FN_COLLECTION_1)
+      // kind == FunctionConsts::FN_DEFAULT_COLLATION_0 ||
+      // kind == FunctionConsts::FN_STATIC_BASE_URI_0 ||
+      // kind == FunctionConsts::FN_DOC_1 ||
+      // kind == FunctionConsts::FN_COLLECTION_0 ||
+      // kind == FunctionConsts::FN_COLLECTION_1
+      false 
+     )
     return true;
     
   return false;
@@ -3212,12 +3215,13 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
     // take the context-item as argument
     if (errFn == NULL && f != NULL && (xquery_fns_def_dot.test(f->getKind()) || 
       f->getKind() == FunctionConsts::FN_NUMBER_0 ||
-      f->getKind() == FunctionConsts::FN_LANG_1 
+      f->getKind() == FunctionConsts::FN_LANG_1 || 
+      f->getKind() == FunctionConsts::FN_ID_1 ||
+      f->getKind() == FunctionConsts::FN_ELEMENT_WITH_ID_1 ||
+      f->getKind() == FunctionConsts::FN_IDREF_1 
       )) // TODO: maybe FN_NUMBER_0 and the rest should go into xquery_fns_def_dot
     {
-      arity = 1;
-      if (f->getKind() == FunctionConsts::FN_LANG_1)
-        arity = 2; // TODO: maybe arity can just be incresed? arity++
+      arity++; // TODO need to make sure all funcs in xquery_fns_def_dot have an arity of 0      
       f = theSctx->lookup_fn(qnameItem, arity, loc);
       needs_context_item = true;
     }
