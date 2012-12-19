@@ -9,6 +9,7 @@ New Features:
 	when resolving URIs.
   * Can now specify jsoniq-strip-top-level-array option to parse-json() to
     strip the top-level array from JSON streams.
+  * (bug #1053699) Implemented SQLite support for Zorba.
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
