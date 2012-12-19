@@ -218,9 +218,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // (a) Remove, if possible, FOR/LET vars that are not referenced anywhere
   // (b) Replace, if possible, FOR/LET vars that are referenced only once, with
   //     their domain expr.
-  // (c) Change a LET var into a FOR var, if its domain expr consists of
-  //     exactly one item.
-  // (d) Remove any unused non-group variables from GROUP BY clauses.
+  // (c) Remove any unused non-group variables from GROUP BY clauses.
   for (csize i = 0; i < numClauses; ++i)
   {
     int numRefs;
@@ -327,7 +325,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     {
       let_clause* lc = static_cast<let_clause *>(c);
       expr* domExpr = lc->get_expr();
-      TypeConstants::quantifier_t domQuant = domExpr->get_return_type()->get_quantifier();
       var = lc->get_var();
 
       if (safe_to_fold_var(i, numRefs))
@@ -336,12 +333,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           subst_vars(rCtx, var, domExpr, numRefs);
 
         folded = true;
-      }
-      else if (domQuant == TypeConstants::QUANT_ONE)
-      {
-        lc->set_kind(flwor_clause::for_clause);
-        var->set_kind(var_expr::for_var);
-        modified = true;
       }
     }
     default:
