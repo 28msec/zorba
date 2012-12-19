@@ -49,7 +49,9 @@ public:
     JSON = 2
   };
 
-  static void setPrintFormat(std::ostream &o, PrintFormat pf);
+  static std::ostream& printException(std::ostream&, ZorbaException const&);
+  static void setPrintFormat(std::ostream&, PrintFormat);
+  static bool isPrintFormatXML(std::ostream&);
 
   /**
    * Copy-constructs a %ZorbaException.
@@ -180,7 +182,7 @@ protected:
  * @return Returns \a o.
  */
 inline std::ostream& operator<<( std::ostream &o, ZorbaException const &e ) {
-  return e.print( o );
+  return ZorbaException::printException(o, e);
 }
 
 inline std::ostream& operator<<( std::ostream &o,

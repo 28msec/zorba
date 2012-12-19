@@ -37,11 +37,24 @@ int get_error_format_index() {
   return index;
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
+std::ostream& ZorbaException::printException(std::ostream& os, ZorbaException const &e) {
+  bool lAsXml = ZorbaException::isPrintFormatXML(os);
+  if (lAsXml)
+    os << "<exception>";
+  std::ostream& lCurOS= e.print( os );
+  if (lAsXml)
+    lCurOS << "<exception>";
+  return lCurOS;
+}
 
-void ZorbaException::setPrintFormat(std::ostream &o, PrintFormat pdf) {
-   
+void ZorbaException::setPrintFormat(std::ostream &os, ZorbaException::PrintFormat pf) {
+  os.iword( get_error_format_index() ) = static_cast<long>(pf);
+}
+
+bool ZorbaException::isPrintFormatXML(std::ostream &os) {
+  PrintFormat pf = static_cast<PrintFormat>(os.iword( get_error_format_index() ));
+  return pf = XML;
 }
 
 ZorbaException::ZorbaException( Diagnostic const &diagnostic,
@@ -102,6 +115,9 @@ ostream& ZorbaException::print( ostream &o ) const {
   // separately because many languages have the word order reversed (e.g.,
   // "static error" becomes "erreur statique" in French).
   //
+  
+  bool lAsXml = isPrintFormatXML(o);
+
   ostringstream oss;
   oss << ZED_PREFIX;
 
@@ -116,15 +132,37 @@ ostream& ZorbaException::print( ostream &o ) const {
 
   oss << (dynamic_cast<ZorbaWarningCode const*>( &d ) ? "warning" : "error");
 
-  o << diagnostic::dict::lookup( oss.str() ) << " [" << d.qname() << ']';
+  if (lAsXml)
+    o << "<kind>";
+
+  o << diagnostic::dict::lookup( oss.str() );
+
+  if (lAsXml)
+    o << "</kind><code>" << d.qname();
+  else
+    o << " [" << d.qname() << ']';
+
+  if (lAsXml)
+    o << "</code>";
 
   if ( char const *const w = what() )
-    if ( *w )
-      o << ": " << w;
+    if ( *w ) {
+      if (lAsXml)
+        o << "<description>";
+      else
+        o << ": ";
+
+      o  << w;
+
+      if (lAsXml)
+        o << "</description>";
+    }
 
 #ifndef NDEBUG
-  o << "; raised at " << raise_file() << ':' << raise_line();
+  if (!lAsXml)
+    o << "; raised at " << raise_file() << ':' << raise_line();
 #endif
+
   return o;
 }
 

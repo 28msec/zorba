@@ -100,12 +100,13 @@ void XQueryException::polymorphic_throw() const {
 }
 
 static bool print_uri( ostream &o, char const *uri ) {
+  bool lAsXml = ZorbaException::isPrintFormatXML(o);
   if ( uri && *uri ) {
     switch ( uri::get_scheme( uri ) ) {
       case uri::none:
       case uri::file:
         try {
-          o << '<' << fs::get_normalized_path( uri ) << '>';
+          o << (lAsXml ? "<" : "<uri>") << fs::get_normalized_path( uri ) << (lAsXml ? ">" : "</uri>");
           break;
         }
         catch ( ... ) {
@@ -113,7 +114,7 @@ static bool print_uri( ostream &o, char const *uri ) {
         }
         // no break;
       default:
-        o << '<' << uri << '>';
+        o << (lAsXml ? "<" : "<uri>") << uri << (lAsXml ? ">" : "</uri>");
     }
     return true;
   }
@@ -121,14 +122,32 @@ static bool print_uri( ostream &o, char const *uri ) {
 }
 
 ostream& XQueryException::print( ostream &o ) const {
+  bool lAsXml = ZorbaException::isPrintFormatXML(o);
   if ( has_source() ) {
-    if ( !print_uri( o, source_uri() ) )
-      o << '(' << diagnostic::dict::lookup( ZED( NoSourceURI ) ) << ')';
-    o << ':' << source_line();
-    if ( source_column() )
-      o << ',' << source_column();
+    if (lAsXml)
+      o << "<location>";
+    if ( !print_uri( o, source_uri() ) && !lAsXml )
+      o << "(" << diagnostic::dict::lookup( ZED( NoSourceURI ) ) << ")";
+    if (!lAsXml)
+      o << ":" << source_line();
+    else
+      o << "<line-begin>" << source_line() << "</line-begin>";
+    if ( lAsXml && source_line_end() )
+        o << "<line-end>" << source_line_end() << "</line-end>";
+    if ( source_column() ) {
+      if (lAsXml)
+        o << "<column-begin>" << source_column() << "</column-begin>";
+      else
+        o << "," << source_column();
+    }
+    if ( lAsXml && source_column_end() )
+        o << "<column-end>" << source_column_end() << "</column-end>";
 
-    if ( has_applied() ) {
+    if (lAsXml)
+      o << "</location>";
+
+    // diabled for XML printing because I don't know what the applied uri is
+    if ( !lAsXml && has_applied() ) {
       o << " (" << diagnostic::dict::lookup( ZED( AppliedAt ) ) << ' ';
       if ( applied_uri() && ::strcmp( applied_uri(), source_uri() ) != 0 ) {
         if ( print_uri( o, applied_uri() ) )
@@ -140,7 +159,8 @@ ostream& XQueryException::print( ostream &o ) const {
       o << ')';
     }
 
-    o << ": ";
+    if (!lAsXml)
+      o << ": ";
   }
   return ZorbaException::print( o );
 }
