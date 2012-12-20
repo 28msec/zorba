@@ -43,23 +43,14 @@ class ZORBA_DLL_PUBLIC ZorbaException : public std::exception {
 public:
   typedef internal::diagnostic::location::line_type line_type;
 
-  enum PrintFormat {
-    FORMAT_TEXT = 0,
-    FORMAT_XML  = 1,
-    FORMAT_JSON = 2
+  /**
+   * The format to print exceptions as to an ostream.
+   */
+  enum print_format {
+    format_text,
+    format_xml
   };
   
-  enum PrintStacktrace {
-    STACKTRACE_NO  = 0,
-    STACKTRACE_YES = 1
-  };
-
-  static std::ostream& printException(std::ostream&, ZorbaException const&);
-  static void setPrintFormat(std::ostream&, PrintFormat);
-  static bool isPrintFormatXML(std::ostream&);
-  static void setPrintStacktrace(std::ostream&, PrintStacktrace);
-  static bool isPrintStacktrace(std::ostream&);
-
   /**
    * Copy-constructs a %ZorbaException.
    *
@@ -87,6 +78,16 @@ public:
    */
   Diagnostic const& diagnostic() const throw() {
     return *diagnostic_;
+  }
+
+  /**
+   * Gets the current print_format associated with the given ostream.
+   *
+   * @param o The ostream to get the print_format of.
+   * @return Returns said print_format.
+   */
+  static print_format get_print_format( std::ostream &o ) {
+    return static_cast<print_format>( o.iword( get_ios_format_index() ) );
   }
 
   /**
@@ -122,6 +123,16 @@ public:
     return raise_line_;
   }
 
+  /**
+   * Sets the print_format of the given ostream.
+   *
+   * @param o The ostream to set the print_format of.
+   * @param f The print_format value.
+   */
+  static void set_print_format( std::ostream &o, print_format f ) {
+    o.iword( get_ios_format_index() ) = static_cast<long>( f );
+  }
+
   // inherited
   char const* what() const throw();
 
@@ -152,15 +163,17 @@ protected:
    * @param o The ostream to print to.
    * @return Returns \a o.
    */
-  virtual std::ostream& print( std::ostream &o ) const;
+  std::ostream& print( std::ostream& ) const;
 
-  friend std::ostream& operator<<( std::ostream&, ZorbaException const& );
+  virtual std::ostream& print_impl( std::ostream &o ) const;
 
 private:
   Diagnostic const *diagnostic_;
   std::string raise_file_;
   line_type raise_line_;
   std::string message_;
+
+  static int get_ios_format_index();
 
   friend std::unique_ptr<ZorbaException> clone( ZorbaException const& );
 
@@ -174,12 +187,16 @@ private:
     internal::diagnostic::parameters const&
   );
 
+  friend std::ostream& operator<<( std::ostream&, ZorbaException const& );
+
 protected:
   // for plan serialization
   ZorbaException( serialization::Archiver& );
   friend void serialization::operator&( serialization::Archiver&,
                                         ZorbaException*& );
 };
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * Emits the given ZorbaException to the given ostream.
@@ -189,18 +206,19 @@ protected:
  * @return Returns \a o.
  */
 inline std::ostream& operator<<( std::ostream &o, ZorbaException const &e ) {
-  return ZorbaException::printException(o, e);
+  return e.print( o );
 }
 
+/**
+ * Sets the format for the next ZorbaException that's printed.
+ *
+ * @param o The ostream to affect.
+ * @param f The print_format to use.
+ * @return Returns \a o.
+ */
 inline std::ostream& operator<<( std::ostream &o,
-                                 ZorbaException::PrintFormat pf ) {
-  ZorbaException::setPrintFormat(o, pf);
-  return o;
-}
-
-inline std::ostream& operator<<( std::ostream &o,
-                                 ZorbaException::PrintStacktrace ps ) {
-  ZorbaException::setPrintStacktrace(o, ps);
+                                 ZorbaException::print_format f ) {
+  ZorbaException::set_print_format( o, f );
   return o;
 }
 

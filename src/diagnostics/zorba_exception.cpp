@@ -31,45 +31,7 @@ using namespace std;
 
 namespace zorba {
 
-
-int get_error_format_index() {
-  static int const index = ios_base::xalloc();
-  return index;
-}
-
-int get_error_stacktrace_index() {
-  static int const index = ios_base::xalloc();
-  return index;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
-std::ostream& ZorbaException::printException(std::ostream& os, ZorbaException const &e) {
-  bool lAsXml = ZorbaException::isPrintFormatXML(os);
-  if (lAsXml)
-    os << "<exception>";
-  std::ostream& lCurOS= e.print( os );
-  if (lAsXml)
-    lCurOS << "<exception>";
-  return lCurOS;
-}
-
-void ZorbaException::setPrintFormat(std::ostream &os, ZorbaException::PrintFormat pf) {
-  os.iword( get_error_format_index() ) = static_cast<long>(pf);
-}
-
-bool ZorbaException::isPrintFormatXML(std::ostream &os) {
-  PrintFormat pf = static_cast<PrintFormat>(os.iword( get_error_format_index() ));
-  return pf == FORMAT_XML;
-}
-
-void ZorbaException::setPrintStacktrace(std::ostream &os, ZorbaException::PrintStacktrace ps) {
-  os.iword( get_error_stacktrace_index() ) = static_cast<long>(ps);
-}
-
-bool ZorbaException::isPrintStacktrace(std::ostream &os) {
-  PrintStacktrace ps = static_cast<PrintStacktrace>(os.iword( get_error_stacktrace_index() ));
-  return ps == STACKTRACE_YES;
-}
 
 ZorbaException::ZorbaException( Diagnostic const &diagnostic,
                                 char const *raise_file, line_type raise_line,
@@ -118,20 +80,32 @@ unique_ptr<ZorbaException> ZorbaException::clone() const {
   return unique_ptr<ZorbaException>( new ZorbaException( *this ) );
 }
 
+int ZorbaException::get_ios_format_index() {
+  static int const index = ios_base::xalloc();
+  return index;
+}
+
 void ZorbaException::polymorphic_throw() const {
   throw *this;
 }
 
-ostream& ZorbaException::print( ostream &o ) const {
+ostream& ZorbaException::print( ostream& o ) const {
+  bool const as_xml = get_print_format( o ) == format_xml;
+  if ( as_xml )
+    o << "<exception>";
+  print_impl( o );
+  if ( as_xml )
+    o << "<exception>";
+  return o;
+}
+
+ostream& ZorbaException::print_impl( ostream &o ) const {
   //
   // We need to create an error phrase (e.g., "static error") and look that up
   // as a unit rather than looking up the error kind word and "error"
   // separately because many languages have the word order reversed (e.g.,
   // "static error" becomes "erreur statique" in French).
   //
-  
-  bool lAsXml = isPrintFormatXML(o);
-
   ostringstream oss;
   oss << ZED_PREFIX;
 
@@ -146,34 +120,35 @@ ostream& ZorbaException::print( ostream &o ) const {
 
   oss << (dynamic_cast<ZorbaWarningCode const*>( &d ) ? "warning" : "error");
 
-  if (lAsXml)
+  bool const as_xml = get_print_format( o ) == format_xml;
+  if ( as_xml )
     o << "<kind>";
 
   o << diagnostic::dict::lookup( oss.str() );
 
-  if (lAsXml)
+  if ( as_xml )
     o << "</kind><code>" << d.qname();
   else
     o << " [" << d.qname() << ']';
 
-  if (lAsXml)
+  if ( as_xml )
     o << "</code>";
 
   if ( char const *const w = what() )
     if ( *w ) {
-      if (lAsXml)
+      if ( as_xml )
         o << "<description>";
       else
         o << ": ";
 
-      o  << w;
+      o << w;
 
-      if (lAsXml)
+      if ( as_xml )
         o << "</description>";
     }
 
 #ifndef NDEBUG
-  if (!lAsXml)
+  if ( !as_xml )
     o << "; raised at " << raise_file() << ':' << raise_line();
 #endif
 
