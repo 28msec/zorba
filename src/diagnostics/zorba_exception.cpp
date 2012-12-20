@@ -127,12 +127,9 @@ ostream& ZorbaException::print_impl( ostream &o ) const {
   o << diagnostic::dict::lookup( oss.str() );
 
   if ( as_xml )
-    o << "</kind><code>" << d.qname();
+    o << "</kind><code>" << d.qname() << "</code>";
   else
     o << " [" << d.qname() << ']';
-
-  if ( as_xml )
-    o << "</code>";
 
   if ( char const *const w = what() )
     if ( *w ) {
