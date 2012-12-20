@@ -133,7 +133,7 @@ ostream& XQueryException::print_stack_trace(ostream &o) const {
         o << "ns=\"" << lName.ns() << "\" ";
         o << "local-name=\"" << lName.localname() << "\">";
         o << "<location ";
-        o << "file-name=\"" << lFileName << "\" ";
+        o << "uri=\"" << lFileName << "\" ";
         o << "line-begin=\"" << it->getLine() << "\" "
           << "column-begin=\"" << it->getColumn() << "\" ";
         if (it->getLineEnd())
@@ -165,7 +165,9 @@ static bool print_uri( ostream &o, char const *uri ) {
       case uri::none:
       case uri::file:
         try {
-          o << (lAsXml ? "<" : "<uri>") << fs::get_normalized_path( uri ) << (lAsXml ? ">" : "</uri>");
+          o << (lAsXml ? "<" : " uri=\"") 
+            << fs::get_normalized_path( uri ) 
+            << (lAsXml ? ">" : "\"");
           break;
         }
         catch ( ... ) {
@@ -173,7 +175,7 @@ static bool print_uri( ostream &o, char const *uri ) {
         }
         // no break;
       default:
-        o << (lAsXml ? "<" : "<uri>") << uri << (lAsXml ? ">" : "</uri>");
+        o << (lAsXml ? "<" : "uri=\"") << uri << (lAsXml ? ">" : "\"");
     }
     return true;
   }
@@ -184,26 +186,26 @@ ostream& XQueryException::print( ostream &o ) const {
   bool lAsXml = ZorbaException::isPrintFormatXML(o);
   if ( has_source() ) {
     if (lAsXml)
-      o << "<location>";
+      o << "<location";
     if ( !print_uri( o, source_uri() ) && !lAsXml )
       o << "(" << diagnostic::dict::lookup( ZED( NoSourceURI ) ) << ")";
     if (!lAsXml)
       o << ":" << source_line();
     else
-      o << "<line-begin>" << source_line() << "</line-begin>";
+      o << " line-begin=\"" << source_line() << "\"";
     if ( lAsXml && source_line_end() )
-        o << "<line-end>" << source_line_end() << "</line-end>";
+        o << " line-end=\"" << source_line_end() << "\"";
     if ( source_column() ) {
       if (lAsXml)
-        o << "<column-begin>" << source_column() << "</column-begin>";
+        o << " column-begin=\"" << source_column() << "\"";
       else
         o << "," << source_column();
     }
     if ( lAsXml && source_column_end() )
-        o << "<column-end>" << source_column_end() << "</column-end>";
+        o << " column-end=\"" << source_column_end() << "\"";
 
     if (lAsXml)
-      o << "</location>";
+      o << " />";
 
     // diabled for XML printing because I don't know what the applied uri is
     if ( !lAsXml && has_applied() ) {

@@ -50,8 +50,8 @@ public:
   };
   
   enum PrintStacktrace {
-    STACKTRACE_NO = 0,
-    STACKTRACE_YES  = 1
+    STACKTRACE_NO  = 0,
+    STACKTRACE_YES = 1
   };
 
   static std::ostream& printException(std::ostream&, ZorbaException const&);

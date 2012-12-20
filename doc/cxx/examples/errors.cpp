@@ -168,8 +168,14 @@ error_example_7(Zorba* aZorba)
 
     std::cout << lQuery << std::endl;
   } catch (ZorbaException const& ze) {
+    std::cerr << "=== Error XML + Stacktrace ===" << std::endl;
     std::cerr << ZorbaException::STACKTRACE_YES 
               << ZorbaException::FORMAT_XML 
+              << ze 
+              << std::endl;                            
+    std::cerr << "=== Error Text + Stacktrace ===" << std::endl;
+    std::cerr << ZorbaException::STACKTRACE_YES 
+              << ZorbaException::FORMAT_TEXT 
               << ze 
               << std::endl;                            
     return true;
