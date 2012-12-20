@@ -1345,6 +1345,37 @@ void UpdDeleteNodesFromCollection::undo()
 
 
 /*******************************************************************************
+  UpdEditInCollection
+********************************************************************************/
+void UpdEditInCollection::apply()
+{
+  Collection* lColl = static_cast<Collection*>
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
+
+  assert(lColl);
+  
+  theTarget->swap(theContent.getp());
+
+  theIsApplied = true;
+}
+
+
+void UpdEditInCollection::undo()
+{
+  if (!theFound)
+  {
+    return;
+  }
+  Collection* lColl = static_cast<Collection*>
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
+
+  assert(lColl);
+
+  theTarget->swap(theContent.getp());
+}
+
+
+/*******************************************************************************
   UpdTruncateCollection
 ********************************************************************************/
 void UpdTruncateCollection::apply()

@@ -454,6 +454,20 @@ void PrinterVisitor::endVisit ( const ZorbaDeleteNodesLastIterator& ) {
 // </ZorbaDeleteNodesLastIterator>
 
 
+// <ZorbaEditNodesIterator>
+void PrinterVisitor::beginVisit ( const ZorbaEditNodesIterator& a) {
+  thePrinter.startBeginVisit("ZorbaEditNodesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaEditNodesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaEditNodesIterator>
+
+
 // <ZorbaTruncateCollectionIterator>
 void PrinterVisitor::beginVisit ( const ZorbaTruncateCollectionIterator& a) {
   thePrinter.startBeginVisit("ZorbaTruncateCollectionIterator", ++theId);
@@ -2005,7 +2019,7 @@ void PrinterVisitor::endVisit ( const JSONArrayFlattenIterator& ) {
 // </JSONArrayFlattenIterator>
 
 #endif
-
+#ifdef ZORBA_WITH_JSON
 // <JSONDocIterator>
 void PrinterVisitor::beginVisit ( const JSONDocIterator& a) {
   thePrinter.startBeginVisit("JSONDocIterator", ++theId);
@@ -2019,6 +2033,7 @@ void PrinterVisitor::endVisit ( const JSONDocIterator& ) {
 }
 // </JSONDocIterator>
 
+#endif
 #ifdef ZORBA_WITH_JSON
 // <JSONItemAccessorIterator>
 void PrinterVisitor::beginVisit ( const JSONItemAccessorIterator& a) {

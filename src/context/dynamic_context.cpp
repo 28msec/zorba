@@ -15,6 +15,10 @@
  */
 #include "stdafx.h"
 
+#ifdef WIN32
+#include <sys/types.h>
+#include <sys/timeb.h>
+#endif
 #include "common/common.h"
 #include <assert.h>
 #include <time.h>
@@ -23,7 +27,6 @@
 #include <sys/time.h>
 #include <unistd.h>
 #endif
-
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"

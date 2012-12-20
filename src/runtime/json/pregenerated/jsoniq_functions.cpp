@@ -357,6 +357,7 @@ void JSONArrayFlattenIteratorState::init(PlanState& planState) {
 // </JSONArrayFlattenIterator>
 
 #endif
+#ifdef ZORBA_WITH_JSON
 // <JSONDocIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONDocIterator)
 
@@ -386,7 +387,7 @@ JSONDocIteratorState::JSONDocIteratorState() {}
 
 // </JSONDocIterator>
 
-
+#endif
 #ifdef ZORBA_WITH_JSON
 // <JSONItemAccessorIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONItemAccessorIterator)

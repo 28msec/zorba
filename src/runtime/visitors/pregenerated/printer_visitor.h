@@ -149,6 +149,9 @@ namespace zorba {
     void beginVisit( const ZorbaDeleteNodesLastIterator& );
     void endVisit  ( const ZorbaDeleteNodesLastIterator& );
 
+    void beginVisit( const ZorbaEditNodesIterator& );
+    void endVisit  ( const ZorbaEditNodesIterator& );
+
     void beginVisit( const ZorbaTruncateCollectionIterator& );
     void endVisit  ( const ZorbaTruncateCollectionIterator& );
 
@@ -528,8 +531,10 @@ namespace zorba {
     void endVisit  ( const JSONArrayFlattenIterator& );
 #endif
 
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONDocIterator& );
     void endVisit  ( const JSONDocIterator& );
+#endif
 
 #ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONItemAccessorIterator& );
