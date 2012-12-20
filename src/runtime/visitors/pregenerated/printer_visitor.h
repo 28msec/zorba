@@ -203,6 +203,12 @@ namespace zorba {
     void beginVisit( const DefaultCollationIterator& );
     void endVisit  ( const DefaultCollationIterator& );
 
+    void beginVisit( const ParseDate& );
+    void endVisit  ( const ParseDate& );
+
+    void beginVisit( const ParseDateTime& );
+    void endVisit  ( const ParseDateTime& );
+
 #ifdef ZORBA_WITH_DEBUGGER
     void beginVisit( const DebugIterator& );
     void endVisit  ( const DebugIterator& );

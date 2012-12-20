@@ -41,6 +41,7 @@
 #include "runtime/booleans/booleans.h"
 #include "runtime/collections/collections.h"
 #include "runtime/context/context.h"
+#include "runtime/datetime/datetime.h"
 #include "runtime/debug/debug_iterator.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
 #include "runtime/errors_and_diagnostics/errors_and_diagnostics.h"
@@ -700,6 +701,34 @@ void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DefaultCollationIterator>
+
+
+// <ParseDate>
+void PrinterVisitor::beginVisit ( const ParseDate& a) {
+  thePrinter.startBeginVisit("ParseDate", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ParseDate& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ParseDate>
+
+
+// <ParseDateTime>
+void PrinterVisitor::beginVisit ( const ParseDateTime& a) {
+  thePrinter.startBeginVisit("ParseDateTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ParseDateTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ParseDateTime>
 
 #ifdef ZORBA_WITH_DEBUGGER
 // <DebugIterator>

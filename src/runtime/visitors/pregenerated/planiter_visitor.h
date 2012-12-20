@@ -134,6 +134,10 @@ namespace zorba{
 
     class DefaultCollationIterator;
 
+    class ParseDate;
+
+    class ParseDateTime;
+
 #ifdef ZORBA_WITH_DEBUGGER
     class DebugIterator;
 #endif
@@ -899,6 +903,12 @@ public:
 
     virtual void beginVisit ( const DefaultCollationIterator& ) = 0;
     virtual void endVisit   ( const DefaultCollationIterator& ) = 0;
+
+    virtual void beginVisit ( const ParseDate& ) = 0;
+    virtual void endVisit   ( const ParseDate& ) = 0;
+
+    virtual void beginVisit ( const ParseDateTime& ) = 0;
+    virtual void endVisit   ( const ParseDateTime& ) = 0;
 
 #ifdef ZORBA_WITH_DEBUGGER
     virtual void beginVisit ( const DebugIterator& ) = 0;

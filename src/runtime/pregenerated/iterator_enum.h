@@ -72,6 +72,8 @@
   TYPE_CurrentTimeIterator,
   TYPE_ImplicitTimezoneIterator,
   TYPE_DefaultCollationIterator,
+  TYPE_ParseDate,
+  TYPE_ParseDateTime,
   TYPE_DebugIterator,
   TYPE_YearsFromDurationIterator,
   TYPE_MonthsFromDurationIterator,

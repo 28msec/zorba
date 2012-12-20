@@ -53,11 +53,43 @@ declare %an:nondeterministic function datetime:current-time ( ) as xs:time exter
 (:~
  : Return the current date value.
  : Please note, that this function is not stable. It returns the
- : dat value of the date the function has been actually invoked.
+ : date value of the date the function has been actually invoked.
  :
  : @return the non-stable date value
  :)
 declare %an:nondeterministic function datetime:current-date ( ) as xs:date external;
+
+(:~
+ : Parses a date from a string.
+ :
+ : @param $input The string to parse.
+ : @param $format The format string containing zero or more conversion
+ : specifications and ordinary characters.  All ordinary characters are matched
+ : exactly with the buffer; all whitespace characters match any amount of
+ : whitespace in the buffer.
+ : @return Returns an xs:date.
+ : @throws TODO
+ :)
+declare function datetime:parse-date(
+  $input as xs:string,
+  $format as xs:string
+) as xs:date external;
+
+(:~
+ : Parses a dateTime from a string.
+ :
+ : @param $input The string to parse.
+ : @param $format The format string containing zero or more conversion
+ : specifications and ordinary characters.  All ordinary characters are matched
+ : exactly with the buffer; all whitespace characters match any amount of
+ : whitespace in the buffer.
+ : @return Returns an xs:date.
+ : @throws TODO
+ :)
+declare function datetime:parse-dateTime(
+  $input as xs:string,
+  $format as xs:string
+) as xs:dateTime external;
 
 (:~
  : Return the the number of milliseconds since the Epoch.
@@ -65,3 +97,5 @@ declare %an:nondeterministic function datetime:current-date ( ) as xs:date exter
  : @return the said number of milliseconds.
  :)
 declare %an:nondeterministic function datetime:timestamp ( ) as xs:long external;
+
+(: vim:set et sw=2 ts=2: :)
