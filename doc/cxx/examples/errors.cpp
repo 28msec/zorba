@@ -157,6 +157,26 @@ error_example_6(Zorba* aZorba)
 	return false;
 }
 
+bool
+error_example_7(Zorba* aZorba)
+{
+  try {
+    std::ostringstream s;
+    s << "declare function local:test() { fn:error() };" << std::endl
+      << "local:test()" << std::endl;                                  
+    XQuery_t lQuery = aZorba->compileQuery(s.str()); 
+
+    std::cout << lQuery << std::endl;
+  } catch (ZorbaException const& ze) {
+    std::cerr << ZorbaException::STACKTRACE_YES 
+              << ZorbaException::FORMAT_XML 
+              << ze 
+              << std::endl;                            
+    return true;
+  }
+	return false;
+}
+
 int 
 errors(int argc, char* argv[])
 {
@@ -191,6 +211,11 @@ errors(int argc, char* argv[])
 
   std::cout << "executing example 6" << std::endl;
   res = error_example_6(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
+
+  std::cout << "executing example 7" << std::endl;
+  res = error_example_7(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
 
