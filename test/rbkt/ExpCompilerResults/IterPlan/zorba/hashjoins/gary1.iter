@@ -147,7 +147,7 @@ Iterator tree for main query:
                         <ForVarIterator varname="j"/>
                       </AttributeAxisIterator>
                     </LetVariable>
-                    <LetVariable name="$$opt_temp_0" materialize="true">
+                    <ForVariable name="$$opt_temp_0">
                       <HoistIterator>
                         <CompareIterator>
                           <FnDataIterator>
@@ -156,7 +156,7 @@ Iterator tree for main query:
                           <SingletonIterator value="xs:integer(1980)"/>
                         </CompareIterator>
                       </HoistIterator>
-                    </LetVariable>
+                    </ForVariable>
                     <ReturnClause>
                       <ElementIterator>
                         <SingletonIterator value="xs:QName(,,year)"/>
@@ -193,7 +193,7 @@ Iterator tree for main query:
                                   <IfThenElseIterator>
                                     <AndIterator>
                                       <UnhoistIterator>
-                                        <LetVarIterator varname="$$opt_temp_0"/>
+                                        <ForVarIterator varname="$$opt_temp_0"/>
                                       </UnhoistIterator>
                                       <CompareIterator>
                                         <FnDataIterator>
