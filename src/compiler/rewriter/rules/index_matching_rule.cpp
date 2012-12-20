@@ -32,6 +32,8 @@
 #include "functions/function.h"
 #include "functions/library.h"
 
+#include "types/typeops.h"
+
 #include "util/dynamic_bitset.h"
 
 #include "diagnostics/assert.h"
@@ -177,7 +179,7 @@ bool IndexMatchingRule::matchIndex()
   matchedClauses.reset();
 
   std::vector<PredInfo> vpreds;
-  std::vector<PredInfo> qpreds;
+  std::vector<PredInfo> unmatchedQPreds;
   std::vector<PredInfo> matchedQPreds;
 
   // Match the FOR and WHERE clauses of the view FLWOR. For now, we can match
@@ -249,7 +251,7 @@ bool IndexMatchingRule::matchIndex()
         }
         case flwor_clause::where_clause:
         {
-          getWherePreds(qi, static_cast<where_clause*>(qc), qpreds);
+          getWherePreds(qi, static_cast<where_clause*>(qc), unmatchedQPreds);
           break;
         }
         case flwor_clause::count_clause:
@@ -295,7 +297,7 @@ bool IndexMatchingRule::matchIndex()
     if (qc->get_kind() != flwor_clause::where_clause)
       continue;
 
-    getWherePreds(qi, static_cast<where_clause*>(qc), qpreds);
+    getWherePreds(qi, static_cast<where_clause*>(qc), unmatchedQPreds);
   }
 
   // Find a match for each index predicate
@@ -307,8 +309,8 @@ bool IndexMatchingRule::matchIndex()
     expr* vpredExpr = vpredIte->theExpr;
     bool matched = false;
 
-    std::vector<PredInfo>::iterator qpredIte = qpreds.begin();
-    std::vector<PredInfo>::iterator qpredEnd = qpreds.end();
+    std::vector<PredInfo>::iterator qpredIte = unmatchedQPreds.begin();
+    std::vector<PredInfo>::iterator qpredEnd = unmatchedQPreds.end();
 
     for (; qpredIte != qpredEnd; ++qpredIte)
     {
@@ -319,7 +321,7 @@ bool IndexMatchingRule::matchIndex()
       {
         matched = true;
         matchedQPreds.push_back(qpred);
-        qpreds.erase(qpredIte);
+        unmatchedQPreds.erase(qpredIte);
 
         break;
       }
@@ -341,26 +343,17 @@ bool IndexMatchingRule::matchIndex()
 
   probeArgs.push_back(qnameExpr);
 
-  // Match the predicates
+  // Match the key exprs
   std::vector<let_clause*>::const_iterator keyIte = theKeyClauses.begin();
   std::vector<let_clause*>::const_iterator keyEnd = theKeyClauses.end();
 
   for (; keyIte != keyEnd; ++keyIte)
   {
-    bool matched = false;
+    int matched = -1;
     expr* keyExpr = (*keyIte)->get_expr();
 
-    if (keyExpr->get_expr_kind() == promote_expr_kind ||
-        keyExpr->get_expr_kind() == treat_expr_kind)
-    {
-      cast_or_castable_base_expr* tmp = 
-      static_cast<cast_or_castable_base_expr*>(keyExpr);
-
-      keyExpr = tmp->get_input();
-    }
-
-    std::vector<PredInfo>::iterator qpredIte = qpreds.begin();
-    std::vector<PredInfo>::iterator qpredEnd = qpreds.end();
+    std::vector<PredInfo>::iterator qpredIte = unmatchedQPreds.begin();
+    std::vector<PredInfo>::iterator qpredEnd = unmatchedQPreds.end();
 
     for (; qpredIte != qpredEnd; ++qpredIte)
     {
@@ -384,27 +377,21 @@ bool IndexMatchingRule::matchIndex()
       if (qpredFunc->comparisonKind() != CompareConsts::VALUE_EQUAL)
         continue;
 
-      if (expr_tools::match_exact(qpredExpr->get_arg(0), keyExpr, subst))
-      {
-        matched = true;
-        matchedQPreds.push_back(qpred);
-        qpreds.erase(qpredIte);
+      if (matchKeyExpr(qpredExpr->get_arg(0), keyExpr, subst))
+        matched = 0;
+      else if (matchKeyExpr(qpredExpr->get_arg(1), keyExpr, subst))
+        matched = 1;
 
-        probeArgs.push_back(qpredExpr->get_arg(1));
-        break;
-      }
-      else if (expr_tools::match_exact(qpredExpr->get_arg(1), keyExpr, subst))
+      if (matched >= 0)
       {
-        matched = true;
         matchedQPreds.push_back(qpred);
-        qpreds.erase(qpredIte);
-
-        probeArgs.push_back(qpredExpr->get_arg(0));
+        unmatchedQPreds.erase(qpredIte);
+        probeArgs.push_back(qpredExpr->get_arg(1 - matched));
         break;
       }
     }
 
-    if (!matched)
+    if (matched < 0)
       return false;
   }
 
@@ -423,9 +410,9 @@ bool IndexMatchingRule::matchIndex()
   assert(subst[domVar]->get_expr_kind() == var_expr_kind);
   domVar = static_cast<const var_expr*>(subst[domVar]);
  
-  for (csize i = 0; i < qpreds.size(); ++i)
+  for (csize i = 0; i < unmatchedQPreds.size(); ++i)
   {
-    expr* pred = qpreds[i].theExpr;
+    expr* pred = unmatchedQPreds[i].theExpr;
     if (!checkFreeVars(pred, domVar, matchedClauses))
       return false;
   }
@@ -443,20 +430,64 @@ bool IndexMatchingRule::matchIndex()
     switch (c->get_kind())
     {
     case flwor_clause::for_clause:
-    {
-      if (matchedClauses.get(i))
-        continue;
-    }
     case flwor_clause::let_clause:
     {
       forlet_clause* flc = static_cast<forlet_clause*>(c);
       var_expr* var = flc->get_var();
+      var_expr* posVar = flc->get_pos_var();
 
-      if (!var->isVisited(1))
+      if (!var->isVisited(1) && (posVar == NULL || !posVar->isVisited(1)))
         continue;
 
       if (!checkFreeVars(flc->get_expr(), domVar, matchedClauses))
         return false;
+
+      break;
+    }
+    case flwor_clause::window_clause:
+    {
+      window_clause* wc = static_cast<window_clause*>(c);
+      var_expr* var = wc->get_var();
+      flwor_wincond* startCond = wc->get_win_start();
+      flwor_wincond* stopCond = wc->get_win_stop();
+
+      bool used = var->isVisited(1);
+
+      if (! used && startCond)
+      {
+        const flwor_wincond_vars& vars = startCond->get_out_vars();
+
+        if ((vars.posvar && vars.posvar->isVisited(1)) ||
+            (vars.curr && vars.curr->isVisited(1)) ||
+            (vars.prev && vars.prev->isVisited(1)) ||
+            (vars.next && vars.next->isVisited(1)))
+          used = true;
+      }
+
+      if (! used && stopCond)
+      {
+        const flwor_wincond_vars& vars = stopCond->get_out_vars();
+
+        if ((vars.posvar && vars.posvar->isVisited(1)) ||
+            (vars.curr && vars.curr->isVisited(1)) ||
+            (vars.prev && vars.prev->isVisited(1)) ||
+            (vars.next && vars.next->isVisited(1)))
+          used = true;
+      }
+
+      if (used)
+      {
+        if (!checkFreeVars(wc->get_expr(), domVar, matchedClauses))
+          return false;
+
+        if (startCond &&
+            !checkFreeVars(startCond->get_expr(), domVar, matchedClauses))
+          return false;
+
+        if (stopCond &&
+            !checkFreeVars(stopCond->get_expr(), domVar, matchedClauses))
+          return false;
+      }
 
       break;
     }
@@ -589,6 +620,65 @@ void IndexMatchingRule::getWherePreds(
   {
     preds.push_back(PredInfo(wc, clausePos, NULL, 0));
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool IndexMatchingRule::matchKeyExpr(
+    expr* qexpr,
+    expr* vexpr,
+    expr::substitution_t& subst)
+{
+  if (qexpr->get_expr_kind() == promote_expr_kind &&
+      vexpr->get_expr_kind() == promote_expr_kind)
+  {
+    promote_expr* qe = static_cast<promote_expr*>(qexpr);
+    promote_expr* ve = static_cast<promote_expr*>(vexpr);
+    xqtref_t qtype = qe->get_return_type();
+    xqtref_t vtype = ve->get_target_type();
+
+    TypeManager* tm = qe->get_type_manager();
+    RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+    if (TypeOps::is_subtype(tm, *qtype, *vtype) ||
+        (TypeOps::is_subtype(tm, *qtype, *rtm.UNTYPED_ATOMIC_TYPE_STAR) &&
+         TypeOps::is_subtype(tm, *vtype, *rtm.STRING_TYPE_STAR)))
+    {
+      return expr_tools::match_exact(qe->get_input(), ve->get_input(), subst);
+    }
+
+    return false;
+  }
+  else if (vexpr->get_expr_kind() == promote_expr_kind &&
+           qexpr->get_expr_kind() != promote_expr_kind)
+  {
+    promote_expr* ve = static_cast<promote_expr*>(vexpr);
+    xqtref_t qtype = qexpr->get_return_type();
+    xqtref_t vtype = ve->get_target_type();
+
+    TypeManager* tm = qexpr->get_type_manager();
+    RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+    if (TypeOps::is_subtype(tm, *qtype, *vtype) ||
+        (TypeOps::is_subtype(tm, *qtype, *rtm.UNTYPED_ATOMIC_TYPE_STAR) &&
+         TypeOps::is_subtype(tm, *vtype, *rtm.STRING_TYPE_STAR)))
+    {
+      return expr_tools::match_exact(qexpr, ve->get_input(), subst);
+    }
+
+    return false;
+  }
+  else if (vexpr->get_expr_kind() == treat_expr_kind &&
+           qexpr->get_expr_kind() != treat_expr_kind)
+  {
+    treat_expr* ve = static_cast<treat_expr*>(vexpr);
+
+    return expr_tools::match_exact(qexpr, ve->get_input(), subst);
+  }
+
+  return expr_tools::match_exact(qexpr, vexpr, subst);
 }
 
 

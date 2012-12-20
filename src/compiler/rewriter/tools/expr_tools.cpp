@@ -431,7 +431,6 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
     }
   }
 
-  case promote_expr_kind:
   case cast_expr_kind:
   case castable_expr_kind:
   case instanceof_expr_kind:
@@ -442,6 +441,19 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
     TypeManager* tm = qe->get_type_manager();
 
     if (!TypeOps::is_equal(tm, *qe->get_target_type(), *ve->get_target_type()))
+      return false;
+
+    return match_exact(qe->get_input(), ve->get_input(), subst);
+  }
+
+  case promote_expr_kind:
+  {
+    promote_expr* qe = static_cast<promote_expr*>(query);
+    promote_expr* ve = static_cast<promote_expr*>(view);
+
+    TypeManager* tm = qe->get_type_manager();
+
+    if (!TypeOps::is_subtype(tm, *qe->get_return_type(), *ve->get_target_type()))
       return false;
 
     return match_exact(qe->get_input(), ve->get_input(), subst);
