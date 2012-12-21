@@ -221,6 +221,9 @@ namespace zorba {
     void beginVisit( const Timestamp& );
     void endVisit  ( const Timestamp& );
 
+    void beginVisit( const UTCOffset& );
+    void endVisit  ( const UTCOffset& );
+
 #ifdef ZORBA_WITH_DEBUGGER
     void beginVisit( const DebugIterator& );
     void endVisit  ( const DebugIterator& );

@@ -81,6 +81,17 @@
   </zorba:function>
 </zorba:iterator>
 
+<zorba:iterator name="UTCOffset">
+  <zorba:description author="Zorba Team">
+    function for getting the current offset from UTC
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="utc-offset" prefix="fn-zorba-dateTime">
+      <zorba:output>xs:long</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
 <!-- ////////////////////////////////////////////////////////////////////// -->
 
 </zorba:iterators>

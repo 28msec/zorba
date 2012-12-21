@@ -91,6 +91,16 @@ PlanIter_t fn_zorba_dateTime_timestamp::codegen(
   return new Timestamp(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_dateTime_utc_offset::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new UTCOffset(sctx, loc, argv);
+}
+
 void populate_context_datetime(static_context* sctx)
 {
 
@@ -159,6 +169,17 @@ void populate_context_datetime(static_context* sctx)
         (createQName("Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element","","timestamp"), 
         GENV_TYPESYSTEM.LONG_TYPE_ONE),
         FunctionConsts::FN_ZORBA_DATETIME_TIMESTAMP_0);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_dateTime_utc_offset,
+        (createQName("Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element","","utc-offset"), 
+        GENV_TYPESYSTEM.LONG_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_DATETIME_UTC_OFFSET_0);
 
   }
 

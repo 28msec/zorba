@@ -19,10 +19,17 @@
 
 // standard
 #include <ctime>                        /* for struct tm */
+#ifndef WIN32
+# include <tzfile.h>                    /* for TM_YEAR_BASE */
+#endif /* WIN32 */
 
 // Zorba
 #include <zorba/config.h>
 #include "cxx_util.h"
+
+#ifndef TM_YEAR_BASE
+# define TM_YEAR_BASE 1900
+#endif
 
 namespace zorba {
 namespace time {
@@ -30,7 +37,7 @@ namespace time {
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifdef WIN32
-typedef int usec_type;
+typedef unsigned long usec_type;
 #else
 typedef suseconds_t usec_type;
 #endif /* WIN32 */
@@ -100,18 +107,30 @@ unsigned days_in_month( unsigned mon, unsigned year );
 void get_epoch( time_t *sec, usec_type *usec = nullptr );
 
 /**
- * Gets the current Greenwich time and populates the given ztm structure.
+ * Gets the Greenwich time and populates the given ztm structure.
  *
  * @param tm The ztm struct to populate.
+ * @param when If 0, populates \a tm based on \a when number of seconds since
+ * \e epoch; if 0, populates \a when based on \e now.
  */
-void get_gmtime( ztm *tm );
+void get_gmtime( ztm *tm, time_t when = 0 );
 
 /**
- * Gets the current local time and populates the given ztm structure.
+ * Gets the offset of the current timezone from Greenwich time.
+ *
+ * @return Returns the offset in seconds with positive values being east of the
+ * prime meridian.
+ */
+long get_gmt_offset();
+
+/**
+ * Gets the local time and populates the given ztm structure.
  *
  * @param tm The ztm struct to populate.
+ * @param when If 0, populates \a tm based on \a when number of seconds since
+ * \e epoch; if 0, populates \a when based on \e now.
  */
-void get_localtime( ztm *tm );
+void get_localtime( ztm *tm, time_t when = 0 );
 
 /**
  * Checks whether the given year is a leap year.

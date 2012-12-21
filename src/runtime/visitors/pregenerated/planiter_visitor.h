@@ -146,6 +146,8 @@ namespace zorba{
 
     class Timestamp;
 
+    class UTCOffset;
+
 #ifdef ZORBA_WITH_DEBUGGER
     class DebugIterator;
 #endif
@@ -929,6 +931,9 @@ public:
 
     virtual void beginVisit ( const Timestamp& ) = 0;
     virtual void endVisit   ( const Timestamp& ) = 0;
+
+    virtual void beginVisit ( const UTCOffset& ) = 0;
+    virtual void endVisit   ( const UTCOffset& ) = 0;
 
 #ifdef ZORBA_WITH_DEBUGGER
     virtual void beginVisit ( const DebugIterator& ) = 0;

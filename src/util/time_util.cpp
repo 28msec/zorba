@@ -22,6 +22,7 @@
 #   define DELTA_EPOCH_IN_USEC 11644473600000000ULL
 # endif
 #else
+# include <ctime>
 # include <sys/time.h>
 #endif /* WIN32 */
 
@@ -130,25 +131,38 @@ void get_epoch( time_t *sec, usec_type *usec ) {
 #endif /* WIN32 */
 }
 
-void get_gmtime( ztm *tm ) {
-  time_t sec;
-  get_epoch( &sec );
+void get_gmtime( ztm *tm, time_t when ) {
+  if ( !when )
+    get_epoch( &when );
 #ifdef WIN32
-  ::_gmtime_s( &tm, &sec );
+  ::_gmtime_s( tm, &when );
   tm->ZTM_GMTOFF = 0;
 #else
-  ::gmtime_r( &sec, tm );
+  ::gmtime_r( &when, tm );
 #endif /* WIN32 */
 }
 
-void get_localtime( ztm *tm ) {
-  time_t sec;
-  get_epoch( &sec );
+void get_localtime( ztm *tm, time_t when ) {
+  if ( !when )
+    get_epoch( &when );
 #ifdef WIN32
-  ::localtime_s( &tm, &sec );
-  tm->ZTM_GMTOFF = - _timezone;         // flip seconds east/west
+  ::localtime_s( tm, &when );
+  tm->ZTM_GMTOFF = - _timezone;         // seconds west -> east
 #else
-  ::localtime_r( &sec, tm );
+  ::localtime_r( &when, tm );
+#endif /* WIN32 */
+}
+
+long get_gmt_offset() {
+#ifdef WIN32
+  TIME_ZONE_INFORMATION tz;
+  GetTimeZoneInformation( &tz );
+  return tz.Bias * -60;                 // minutes west -> seconds east
+#else
+  time_t const now = ::time( nullptr );
+  ztm tm;
+  ::localtime_r( &now, &tm );
+  return ::timegm( &tm ) - now;
 #endif /* WIN32 */
 }
 

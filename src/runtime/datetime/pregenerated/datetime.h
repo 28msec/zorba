@@ -226,6 +226,38 @@ public:
 };
 
 
+/**
+ * 
+ *    function for getting the current offset from UTC
+ *  
+ * Author: Zorba Team
+ */
+class UTCOffset : public NaryBaseIterator<UTCOffset, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(UTCOffset);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(UTCOffset,
+    NaryBaseIterator<UTCOffset, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  UTCOffset(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<UTCOffset, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~UTCOffset();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

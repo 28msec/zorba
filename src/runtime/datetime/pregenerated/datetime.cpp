@@ -194,6 +194,34 @@ Timestamp::~Timestamp() {}
 // </Timestamp>
 
 
+// <UTCOffset>
+SERIALIZABLE_CLASS_VERSIONS(UTCOffset)
+
+void UTCOffset::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<UTCOffset, PlanIteratorState>*)this);
+}
+
+
+void UTCOffset::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+UTCOffset::~UTCOffset() {}
+
+// </UTCOffset>
+
+
 
 }
 

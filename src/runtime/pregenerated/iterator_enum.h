@@ -78,6 +78,7 @@
   TYPE_ParseDate,
   TYPE_ParseDateTime,
   TYPE_Timestamp,
+  TYPE_UTCOffset,
   TYPE_DebugIterator,
   TYPE_YearsFromDurationIterator,
   TYPE_MonthsFromDurationIterator,

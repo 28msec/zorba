@@ -33,7 +33,7 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : Gets the current date value.
+ : Gets the current date value in Universal time.
  : Please note, that this function is not stable. It returns the
  : date value of the date the function has been actually invoked.
  :
@@ -43,7 +43,7 @@ declare %an:nondeterministic function datetime:current-date()
   as xs:date external;
 
 (:~
- : Gets the current dateTime value.
+ : Gets the current dateTime value in Universal time.
  : Please note, that this function is not stable. It returns the
  : dateTime value of the date and time the function has actually been invoked.
  :
@@ -53,7 +53,7 @@ declare %an:nondeterministic function datetime:current-dateTime()
   as xs:dateTime external;
 
 (:~
- : Return the current time value.
+ : Return the current time value in Universal time.
  : Please note, that this function is not stable. It returns the
  : time value of the date and time the function has actually been invoked.
  :
@@ -100,6 +100,15 @@ declare function datetime:parse-dateTime(
  : @return the said number of milliseconds.
  :)
 declare %an:nondeterministic function datetime:timestamp()
+  as xs:long external;
+
+(:~
+ : Gets the offset of the current timezone from Universal time.
+ :
+ : @return the offset in seconds with positive values being east of the prime
+ : meridian.
+ :)
+declare %an:nondeterministic function datetime:utc-offset()
   as xs:long external;
 
 (: vim:set et sw=2 ts=2: :)

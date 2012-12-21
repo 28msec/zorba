@@ -42,7 +42,7 @@ bool CurrentDate::nextImpl( store::Item_t& result,
 
   GENV_ITEMFACTORY->createDate(
     result,
-    static_cast<short>( tm.tm_year + 1900 ),
+    static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
     static_cast<short>( tm.tm_mon + 1 ),
     static_cast<short>( tm.tm_mday )
   );
@@ -53,20 +53,23 @@ bool CurrentDate::nextImpl( store::Item_t& result,
 
 bool CurrentDateTime::nextImpl( store::Item_t& result,
                                 PlanState &plan_state ) const {
+  time_t sec;
+  time::usec_type usec;
+  time::get_epoch( &sec, &usec );
   time::ztm tm;
-  time::get_gmtime( &tm );
+  time::get_gmtime( &tm, sec );
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
   GENV_ITEMFACTORY->createDateTime(
     result,
-    static_cast<short>( tm.tm_year + 1900 ),
+    static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
     static_cast<short>( tm.tm_mon + 1 ),
     static_cast<short>( tm.tm_mday ),
     static_cast<short>( tm.tm_hour ),
     static_cast<short>( tm.tm_min ),
-    static_cast<short>( tm.tm_sec ), // TODO: fractions of secons
+    tm.tm_sec + usec / 1000000.0,
     static_cast<short>( tm.ZTM_GMTOFF / 3600 )
   );
 
@@ -76,8 +79,11 @@ bool CurrentDateTime::nextImpl( store::Item_t& result,
 
 bool CurrentTime::nextImpl( store::Item_t& result,
                             PlanState &plan_state ) const {
+  time_t sec;
+  time::usec_type usec;
+  time::get_epoch( &sec, &usec );
   time::ztm tm;
-  time::get_gmtime( &tm );
+  time::get_gmtime( &tm, sec );
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -86,7 +92,7 @@ bool CurrentTime::nextImpl( store::Item_t& result,
     result,
     static_cast<short>( tm.tm_hour ),
     static_cast<short>( tm.tm_min ),
-    static_cast<short>( tm.tm_sec ), // TODO: fractions of secons
+    tm.tm_sec + usec / 1000000.0,
     static_cast<short>( tm.ZTM_GMTOFF / 3600 )
   );
 
@@ -111,7 +117,7 @@ bool ParseDate::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
 
   GENV_ITEMFACTORY->createDate(
     result,
-    static_cast<short>( tm.tm_year + 1900 ),
+    static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
     static_cast<short>( tm.tm_mon + 1 ),
     static_cast<short>( tm.tm_mday )
   );
@@ -123,8 +129,8 @@ bool ParseDate::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
 bool ParseDateTime::nextImpl( store::Item_t& result,
                               PlanState &plan_state ) const {
   store::Item_t item;
-  time::ztm tm;
   zstring buf, fmt;
+  time::ztm tm;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -138,12 +144,12 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
 
   GENV_ITEMFACTORY->createDateTime(
     result,
-    static_cast<short>( tm.tm_year + 1900 ),
+    static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
     static_cast<short>( tm.tm_mon + 1 ),
     static_cast<short>( tm.tm_mday ),
     static_cast<short>( tm.tm_hour ),
     static_cast<short>( tm.tm_min ),
-    static_cast<short>( tm.tm_sec ), // TODO: fractions of secons
+    static_cast<short>( tm.tm_sec ),
     static_cast<short>( tm.ZTM_GMTOFF / 3600 )
   );
 
@@ -154,13 +160,20 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
 bool Timestamp::nextImpl( store::Item_t& result,
                           PlanState &plan_state ) const {
   time_t sec;
+  time::get_epoch( &sec );
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
-
-  time::get_epoch( &sec );
   GENV_ITEMFACTORY->createLong( result, sec );
+  STACK_PUSH( true, state );
+  STACK_END( state );
+}
 
+bool UTCOffset::nextImpl( store::Item_t& result,
+                          PlanState &plan_state ) const {
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+  GENV_ITEMFACTORY->createLong( result, time::get_gmt_offset() );
   STACK_PUSH( true, state );
   STACK_END( state );
 }

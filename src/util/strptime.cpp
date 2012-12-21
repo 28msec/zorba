@@ -17,11 +17,6 @@
 // standard
 #include <cstring>
 #include <string>
-#ifdef WIN32
-# include <windows.h>
-#else
-# include <tzfile.h>                    /* for TM_YEAR_BASE */
-#endif /* WIN32 */
 
 // Zorba
 #include "ascii_util.h"
@@ -31,10 +26,7 @@
 
 // local
 #include "strptime.h"
-
-#ifndef TM_YEAR_BASE
-# define TM_YEAR_BASE 1900
-#endif
+#include "time_util.h"
 
 using namespace std;
 

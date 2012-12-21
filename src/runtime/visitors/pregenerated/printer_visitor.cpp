@@ -786,6 +786,20 @@ void PrinterVisitor::endVisit ( const Timestamp& ) {
 }
 // </Timestamp>
 
+
+// <UTCOffset>
+void PrinterVisitor::beginVisit ( const UTCOffset& a) {
+  thePrinter.startBeginVisit("UTCOffset", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const UTCOffset& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </UTCOffset>
+
 #ifdef ZORBA_WITH_DEBUGGER
 // <DebugIterator>
 void PrinterVisitor::beginVisit ( const DebugIterator& a) {

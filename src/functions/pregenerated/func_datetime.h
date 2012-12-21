@@ -128,6 +128,21 @@ public:
 };
 
 
+//fn-zorba-dateTime:utc-offset
+class fn_zorba_dateTime_utc_offset : public function
+{
+public:
+  fn_zorba_dateTime_utc_offset(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 
