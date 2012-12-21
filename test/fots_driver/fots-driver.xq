@@ -32,6 +32,8 @@ import module namespace datetime  =
 
 import module namespace eval =
   "http://www.zorba-xquery.com/fots-driver/evaluate" at "evaluate.xq";
+import module namespace feedback =
+  "http://www.zorba-xquery.com/fots-driver/feedback" at "feedback.xq";
 import module namespace env =
   "http://www.zorba-xquery.com/fots-driver/environment" at "environment.xq";
 import module namespace util =
@@ -349,11 +351,11 @@ declare %ann:sequential function driver:run(
           where $shouldRun
           return
             if($isExcepted)
-            then driver:not-run($testCase, $verbose)
-            else driver:not-applicable($testCase,
-                                       $envTestSet,
-                                       string-join($depMet,''),
-                                       $verbose)
+            then feedback:not-run($testCase, $verbose)
+            else feedback:not-applicable($testCase,
+                                         $envTestSet,
+                                         string-join($depMet,''),
+                                         $verbose)
         }</fots:test-set>
         else <fots:test-set name="{$testSetName}">
         {
@@ -373,17 +375,24 @@ declare %ann:sequential function driver:run(
             then
               (if(exists($expectedFailures) and
                   empty($expectedFailures/failures/TestSet[@name=$testSetName]/Test[@name=xs:string($testCase/@name)]))
-               then driver:fail($testCase, (), '', $testSetName, (), xs:dayTimeDuration("PT0S"), $verbose)
-               else driver:not-run($testCase, $verbose)
+               then feedback:fail($testCase,
+                                  (),
+                                  '',
+                                  $testSetName,
+                                  (),
+                                  xs:dayTimeDuration("PT0S"),
+                                  $verbose,
+                                  fn:false())
+               else feedback:not-run($testCase, $verbose)
              )
             else if(exists(env:check-dependencies($testCase/fots:dependency,
                                                   $FOTSZorbaManifest)))
-            then driver:not-applicable( $testCase,
-                                        $envTestSet,
-                                        string-join(distinct-values(env:check-dependencies($testCase/fots:dependency,
-                                                                                           $FOTSZorbaManifest)),
-                                                   ''),
-                                        $verbose)
+            then feedback:not-applicable($testCase,
+                                         $envTestSet,
+                                         string-join(distinct-values(env:check-dependencies($testCase/fots:dependency,
+                                                                                            $FOTSZorbaManifest)),
+                                                    ''),
+                                         $verbose)
             else if(empty($envTestSet))
             then driver:test( $FOTSZorbaManifest,
                               $testCase,
@@ -555,247 +564,38 @@ try {
                                          $testSetBaseURI),
            $duration := (datetime:current-dateTime () - $startDateTime);
 
-           if(driver:check-pass($result,
-                                $queryName,
-                                $testSetName,
-                                $expectedFailure))
-           then driver:pass($case,
-                            $result,
-                            $xqxqQuery,
-                            $env,
-                            $result,
-                            $duration,
-                            $verbose)
+           if(feedback:check-pass($result,
+                                  $queryName,
+                                  $testSetName,
+                                  $expectedFailure))
+           then feedback:pass($case,
+                              $result,
+                              $xqxqQuery,
+                              $env,
+                              $duration,
+                              $verbose,
+                              exists($expectedFailure))
            else
-             driver:fail($case,
-                         $result,
-                         $xqxqQuery,
-                         $testSetName,
-                         $env,
-                         $duration,
-                         $verbose)
+             feedback:fail($case,
+                           $result,
+                           $xqxqQuery,
+                           $testSetName,
+                           $env,
+                           $duration,
+                           $verbose,
+                           exists($expectedFailure))
 }
 } catch * {
-  driver:fail($case, 
-              <fots:result>{$err:description}</fots:result>,
-              "",
-              $testSetName,
-              $env,
-              xs:dayTimeDuration("PT0S"),
-              $verbose)
+  feedback:fail($case,
+                eval:error((),
+                           $case/fots:result/*,
+                           $err:code,
+                           $err:description),
+                "fots-driver.xq:driver:test catch",
+                $testSetName,
+                $env,
+                xs:dayTimeDuration("PT0S"),
+                $verbose,
+                exists($expectedFailure))
 }
-};
-
-(:~
- : Gives feedback on a test case that is not run (because it Seg Faults, hangs).
- :
- : @param $case test case.
- : @return the test case.
- :)
-declare  %private %ann:sequential function driver:not-run(
-  $case     as element(fots:test-case),
-  $verbose  as xs:boolean
-) as element(fots:test-case)? {
-  trace(data($case/@name), "processing test case :");
-  trace("Above test case was not run.","");
-  if($verbose)
-  then {
-    let $tmp := $case
-    return {
-      insert node
-      attribute result{'notRun'}
-      as last into $tmp;
-      
-      delete node $tmp/description;
-      delete node $tmp/created;
-      
-      $tmp
-      }
-  }
-  else
-    <fots:test-case name="{data($case/@name)}"
-                    result="notRun" />
-};
-
-(:~
- : Gives feedback on a test case that is not run when dependencies are not met.
- :
- : @param $case test case.
- : @param $dependencyError test error returned by the dependency checking.
- : @return the test case.
- :)
-declare  %private %ann:sequential function driver:not-applicable(
-  $case             as element(fots:test-case),
-  $env              as element(fots:environment)?,
-  $dependencyError  as xs:string,
-  $verbose          as xs:boolean
-) as element(fots:test-case)? {
-  trace(data($case/@name), "processing test case :");
-  trace($dependencyError, "Dependency error :");
-  if($verbose)
-  then {
-    let $tmp := $case
-    return {
-      insert node
-      attribute result{'not applicable'}
-      as last into $tmp;
-      
-      insert node
-      attribute comment{$dependencyError}
-      as last into $tmp;
-      
-      insert node
-        <fots:info>
-          {$env}
-        </fots:info>
-      as last into $tmp;
-      
-      delete node $tmp/description;
-      delete node $tmp/created;
-      
-      $tmp
-      }
-  }
-  else
-    <fots:test-case name="{data($case/@name)}"
-                    result="not applicable"
-                    comment="{$dependencyError}" />
-};
-
-declare %private function driver:check-pass(
-  $result           as item()*,
-  $testCaseName     as xs:string?,
-  $testSetName      as xs:string?,
-  $expectedFailure  as element(Test)?
-) as xs:boolean {
-(: if the exact error code was not found, report the test as 'Pass' 
-   with an attribute correctError=false :)
-  let $resultTestRun as xs:boolean := 
-    (empty($result) or
-     (exists($result) and
-      contains(string-join($result,''), "Expected error:") and
-      contains(string-join($result,''), "Found error:")))
-
-  let $expectedFailure as xs:boolean := 
-    if (exists($expectedFailure))
-    then fn:true()
-    else fn:false()
-
-(:if test PASSED and was expected to FAIL OR test FAILED and wasn't expected to
-  FAIL => report as FAIL, a.k.a. regression;
-  otherwise report as PASS:)
-  return ($resultTestRun eq not($expectedFailure))
-};
-
-(:~
- : Gives feedback on a test case run with success.
- :
- : @param $case test case.
- : @return the test case after certain information was added.
- :)
-declare  %private %ann:sequential function driver:pass(
-  $case         as element(fots:test-case),
-  $result       as item()*,
-  $zorbaQuery   as xs:string,
-  $env          as element(fots:environment)?,
-  $comment      as xs:string?,
-  $duration     as xs:dayTimeDuration,
-  $verbose      as xs:boolean
-) as element(fots:test-case)? {
-  if($verbose)
-  then {
-    let $tmp := $case
-    return {
-      insert node
-      attribute result{'pass'}
-      as last into $tmp;
-
-      if(exists($comment)) then
-        insert node
-        attribute correctError{'false'}
-        as last into $tmp;
-      else ();
-
-      if(exists($comment)) then
-        insert node
-        attribute comment{$comment}
-        as last into $tmp;
-      else ();
-      
-      insert node
-      attribute executionTime{$duration}
-      as last into $tmp;
-
-      insert node
-        <fots:info>
-          {$env}
-          <fots:query>{$zorbaQuery}</fots:query>
-          <fots:actual-result>{$result}</fots:actual-result>
-        </fots:info>
-      as last into $tmp;
-
-      delete node $tmp/description;
-      delete node $tmp/created;
-
-      $tmp
-    }
-  }
-  else if(empty($comment))
-  then <fots:test-case  name="{data($case/@name)}"
-                        result="pass"
-                        executionTime="{$duration}" />
-  else <fots:test-case  name="{data($case/@name)}"
-                        result="pass"
-                        correctError="{empty($comment)}"
-                        executionTime="{$duration}" />
-};
-
-(:~
- : Gives feedback on a test case run without success.
- :
- : @param $case test case.
- : @return the test case after certain information was added.
- :)
-declare %private %ann:sequential function driver:fail(
-  $case         as element(fots:test-case),
-  $result       as item()*,
-  $zorbaQuery   as xs:string,
-  $testSetName  as xs:string?,
-  $env          as element(fots:environment)?,
-  $duration     as xs:dayTimeDuration,
-  $verbose      as xs:boolean
-) as element(fots:test-case)? {
-  trace($testSetName, "test set name");
-  trace("above test case failed", "result");
-
-  if($verbose)
-  then
-  {
-    let $tmp := $case
-    return {
-      insert node
-      attribute result{'fail'}
-      as last into $tmp;
-      
-      insert node
-      attribute executionTime{$duration}
-      as last into $tmp;
-      
-      insert node
-        <fots:info>
-          {$env}
-          <fots:query>{$zorbaQuery}</fots:query>
-          <fots:actual-result>{$result}</fots:actual-result>
-        </fots:info>
-      as last into $tmp;
-      
-      delete node $tmp/description;
-      delete node $tmp/created;
-      
-      $tmp
-    }
-  }
-  else <fots:test-case  name="{data($case/@name)}"
-                        result="fail"
-                        executionTime="{$duration}"/>
 };
