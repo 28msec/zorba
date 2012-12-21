@@ -74,8 +74,8 @@ class CastIterator : public UnaryBaseIterator<CastIterator, PlanIteratorState>
   friend class PrinterVisitor;
 
 private:
-  xqtref_t                    theCastType;
-  TypeConstants::quantifier_t theQuantifier;
+  xqtref_t      theCastType;
+  bool          theAllowEmpty;
 
 public:
   SERIALIZABLE_CLASS(CastIterator);
@@ -88,8 +88,9 @@ public:
   CastIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      PlanIter_t& aChild,
-      const xqtref_t& aCastType);
+      PlanIter_t& child,
+      const xqtref_t& castType,
+      bool allowEmpty);
   
   ~CastIterator();
 
@@ -110,8 +111,8 @@ class CastableIterator : public UnaryBaseIterator<CastableIterator,
   friend class PrinterVisitor;
 
 private:
-  xqtref_t                    theCastType;
-  TypeConstants::quantifier_t theQuantifier;
+  xqtref_t  theCastType;
+  bool      theAllowEmpty;
 
 public:
   SERIALIZABLE_CLASS(CastableIterator);
@@ -123,9 +124,10 @@ public:
 public:
   CastableIterator(
         static_context* sctx,
-        const QueryLoc& aLoc,
-        PlanIter_t& aChild,
-        const xqtref_t& aCastType);
+        const QueryLoc& loc,
+        PlanIter_t& child,
+        const xqtref_t& castType,
+        bool allowEmpty);
 
   ~CastableIterator();
 

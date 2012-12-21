@@ -253,6 +253,20 @@
       <value>context item in axis step is not a node</value>
     </diagnostic>
 
+    <diagnostic code="XPTY0117">
+      <comment>
+      Attempt to cast to a namespace-sensitive type failed because the namespace
+      bindings for the result can not be determined.
+      </comment>
+
+      <value>$1</value>
+
+      <entry key="NodeCast">
+        <value>Cannot cast node to xs:QName</value>
+      </entry>
+
+    </diagnostic>
+
     <diagnostic code="XQTY0024">
       <comment>
        It is a type error if the content sequence in an element constructor

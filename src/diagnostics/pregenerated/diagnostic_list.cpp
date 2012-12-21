@@ -67,6 +67,9 @@ XQueryErrorCode XPTY0019( "XPTY0019" );
 XQueryErrorCode XPTY0020( "XPTY0020" );
 
 
+XQueryErrorCode XPTY0117( "XPTY0117" );
+
+
 XQueryErrorCode XQTY0024( "XQTY0024" );
 
 

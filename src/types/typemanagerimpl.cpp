@@ -358,7 +358,7 @@ xqtref_t TypeManagerImpl::create_named_simple_type(store::Item* qname) const
     const UserDefinedXQType* udt =
     reinterpret_cast<const UserDefinedXQType*>(namedType.getp());
 
-    if (udt->isAtomic())
+    if (udt->isAtomic() || udt->isList() || udt->isUnion())
       return create_type(*namedType, TypeConstants::QUANT_ONE);
   }
 #endif

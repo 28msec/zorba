@@ -3325,16 +3325,17 @@ public:
 class CastableExpr : public exprnode
 {
 protected:
-  rchandle<exprnode> cast_expr_h;
+  rchandle<exprnode>   cast_expr_h;
   rchandle<SingleType> singletype_h;
 
 public:
   CastableExpr(
-    const QueryLoc&,
-    rchandle<exprnode>,
-    rchandle<SingleType>);
+      const QueryLoc&,
+      rchandle<exprnode>,
+      rchandle<SingleType>);
 
   rchandle<exprnode> cast_expr() const { return cast_expr_h; }
+
   rchandle<SingleType> singletype() const { return singletype_h; }
 
   virtual void accept(parsenode_visitor&) const;
@@ -3347,16 +3348,17 @@ public:
 class CastExpr : public exprnode
 {
 protected:
-  rchandle<exprnode> unary_expr_h;
+  rchandle<exprnode>   unary_expr_h;
   rchandle<SingleType> singletype_h;
 
 public:
   CastExpr(
-    const QueryLoc&,
-    rchandle<exprnode>,
-    rchandle<SingleType>);
+      const QueryLoc&,
+      rchandle<exprnode>,
+      rchandle<SingleType>);
 
   rchandle<exprnode> get_unary_expr() const { return unary_expr_h; }
+
   rchandle<SingleType> get_singletype() const { return singletype_h; }
 
   virtual void accept(parsenode_visitor&) const;

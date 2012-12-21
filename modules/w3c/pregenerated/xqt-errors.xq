@@ -166,6 +166,15 @@ declare variable $err:XPTY0020 as xs:QName := fn:QName($err:NS, "err:XPTY0020");
 
 (:~
  :
+ : Attempt to cast to a namespace-sensitive type failed because the namespace
+ : bindings for the result can not be determined.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPTY0117 as xs:QName := fn:QName($err:NS, "err:XPTY0117");
+
+(:~
+ :
  : It is a type error if the content sequence in an element constructor
  : contains an attribute node following a node that is not an attribute node.
  : 

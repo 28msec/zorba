@@ -876,7 +876,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
           result = NULL;
         }
         xqtref_t itemXQType = createXQTypeFromTypeDefinition(typeManager,
-            itemTypeDef);
+                                                             itemTypeDef);
 
         if ( itemXQType->type_kind() == XQType::USER_DEFINED_KIND )
         {   // if UDT add it to the cache, otherwise it will get lost

@@ -1172,7 +1172,7 @@ bool UserDefinedXQType::isSuperTypeOf(
 
 
 /*******************************************************************************
-
+  TODO: fix this method ?????
 ********************************************************************************/
 bool UserDefinedXQType::isSubTypeOf(
     const TypeManager* tm,
@@ -1198,7 +1198,7 @@ bool UserDefinedXQType::isSubTypeOf(
       return TypeOps::is_subtype(tm, *subtype, supertype);
     }
   }
-  while(true);
+  while(subtype != NULL);
 
   return false;
 }

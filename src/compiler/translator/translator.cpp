@@ -7361,21 +7361,22 @@ void* begin_visit(const SwitchExpr& v)
   //          then $atomv cast as xs:string
   //          else $atomv
   //     return NULL]
-  static_cast<flwor_expr*>(atomizedFlwor)->set_return_expr(theExprManager->
-    create_if_expr(theRootSctx,
-                   theUDF,
-                   loc,
-                   theExprManager->create_instanceof_expr(theRootSctx,
-                                                          theUDF,
-                                                          loc,
-                                                          atomv,
-                                                          theRTM.UNTYPED_ATOMIC_TYPE_ONE),
-                   theExprManager->create_cast_expr(theRootSctx,
-                                                    theUDF,
-                                                    loc,
-                                                    atomv,
-                                                    theRTM.STRING_TYPE_ONE),
-                   atomv));
+  static_cast<flwor_expr*>(atomizedFlwor)->set_return_expr(
+      CREATE(if)(theRootSctx,
+                 theUDF,
+                 loc,
+                 CREATE(instanceof)(theRootSctx,
+                                    theUDF,
+                                    loc,
+                                    atomv,
+                                    theRTM.UNTYPED_ATOMIC_TYPE_ONE),
+                 CREATE(cast)(theRootSctx,
+                              theUDF,
+                              loc,
+                              atomv,
+                              theRTM.STRING_TYPE_ONE,
+                              false),
+                 atomv));
 
   // flworExpr = [let $sv := atomizedFlwor return NULL]
   var_expr* sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
@@ -7408,13 +7409,12 @@ void* begin_visit(const SwitchExpr& v)
 
       expr* operandExpr = pop_nodestack();
       operandExpr = wrap_in_atomization(operandExpr);
-      operandExpr = theExprManager->
-      create_fo_expr(theRootSctx,
-                     theUDF,
-                     loc,
-                     BUILTIN_FUNC(OP_ATOMIC_VALUES_EQUIVALENT_2),
-                     sv,
-                     operandExpr);
+      operandExpr = CREATE(fo)(theRootSctx,
+                               theUDF,
+                               loc,
+                               BUILTIN_FUNC(OP_ATOMIC_VALUES_EQUIVALENT_2),
+                               sv,
+                               operandExpr);
       
       condOperands.push_back(operandExpr);
     } // for
@@ -8482,7 +8482,12 @@ void end_visit(const CastableExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(create_cast_expr(loc, pop_nodestack(), pop_tstack(), false));
+  bool allowsEmpty = v.singletype()->get_hook_bit();
+
+  expr* castableExpr = 
+  create_cast_expr(loc, pop_nodestack(), pop_tstack(), allowsEmpty, false);
+
+  push_nodestack(castableExpr);
 }
 
 
@@ -8499,7 +8504,12 @@ void end_visit(const CastExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(create_cast_expr(loc, pop_nodestack(), pop_tstack(), true));
+  bool allowsEmpty = v.get_singletype()->get_hook_bit();
+
+  expr* castExpr = 
+  create_cast_expr(loc, pop_nodestack(), pop_tstack(), allowsEmpty, true);
+
+  push_nodestack(castExpr);
 }
 
 
@@ -8555,7 +8565,14 @@ void end_visit(const SimpleType& v, void* /*visit_state*/)
   xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
   if (t == NULL)
   {
-    RAISE_ERROR(err::XQST0052, loc, ERROR_PARAMS(qname->get_qname()));
+    if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    {
+      RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(qname->get_qname()));
+    }
+    else
+    {
+      RAISE_ERROR(err::XQST0052, loc, ERROR_PARAMS(qname->get_qname()));
+    }
   }
   else
   {
@@ -8567,7 +8584,12 @@ void end_visit(const SimpleType& v, void* /*visit_state*/)
 /*******************************************************************************
 
 ********************************************************************************/
-expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCast)
+expr* create_cast_expr(
+    const QueryLoc& loc,
+    expr* node,
+    const xqtref_t& type,
+    bool allowsEmpty,
+    bool isCast)
 {
   TypeManager* tm = CTX_TM;
 
@@ -8579,33 +8601,28 @@ expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCa
     }
   }
 
-  if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE, loc) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION, loc) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, loc) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
+  if (TypeOps::is_equal(tm, *type, *theRTM.NOTATION_TYPE_ONE, loc) ||
+      TypeOps::is_equal(tm, *type, *theRTM.NOTATION_TYPE_QUESTION, loc) ||
+      TypeOps::is_equal(tm, *type, *theRTM.ANY_ATOMIC_TYPE_ONE, loc) ||
+      TypeOps::is_equal(tm, *type, *theRTM.ANY_ATOMIC_TYPE_QUESTION, loc))
   {
     RAISE_ERROR(err::XPST0080, loc, ERROR_PARAMS(type->toString()));
   }
 
-  if (TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, loc))
+  if (TypeOps::is_subtype(tm, *type, *theRTM.QNAME_TYPE_QUESTION, loc))
   {
     const const_expr* ce = dynamic_cast<const_expr*>(node);
 
     if (ce != NULL &&
         TypeOps::is_equal(tm,
                           *tm->create_value_type(ce->get_val()),
-                          *GENV_TYPESYSTEM.STRING_TYPE_ONE,
+                          *theRTM.STRING_TYPE_ONE,
                           loc))
     {
       store::Item_t castLiteral;
       try
       {
-        GenericCast::instance()->castToQName(castLiteral,
-                                             ce->get_val(),
-                                             theNSCtx,
-                                             false,
-                                             CTX_TM,
-                                             loc);
+        GenericCast::castToQName(castLiteral, ce->get_val(), theNSCtx, false, tm, loc);
       }
       catch (ZorbaException& e)
       {
@@ -8630,6 +8647,17 @@ expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCa
       else
         return CREATE(const)(theRootSctx, theUDF, loc, castLiteral != NULL);
     }
+    else if (TypeOps::is_subtype(tm, *type, *theRTM.ANY_NODE_TYPE_PLUS, loc))
+    {
+      if (isCast)
+      {
+        RAISE_ERROR(err::XPTY0117, loc, ERROR_PARAMS(ZED(XPTY0117_NodeCast)));
+      }
+      else
+      {
+        return CREATE(const)(theRootSctx, theUDF, loc, false);
+      }
+    }
     else
     {
       xqtref_t qnameType = (type->get_quantifier() == TypeConstants::QUANT_ONE ?
@@ -8641,21 +8669,33 @@ expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCa
                             theUDF,
                             loc,
                             wrap_in_atomization(node),
-                            qnameType);
+                            qnameType,
+                            allowsEmpty);
       else
         return CREATE(castable)(theRootSctx,
                                 theUDF,
                                 loc,
                                 wrap_in_atomization(node),
-                                qnameType);
+                                qnameType,
+                                allowsEmpty);
     }
   }
   else
   {
     if (isCast)
-      return CREATE(cast)(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
+      return CREATE(cast)(theRootSctx,
+                          theUDF,
+                          loc,
+                          wrap_in_atomization(node),
+                          type,
+                          allowsEmpty);
     else
-      return CREATE(castable)(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
+      return CREATE(castable)(theRootSctx,
+                              theUDF,
+                              loc,
+                              wrap_in_atomization(node),
+                              type,
+                              allowsEmpty);
   }
 }
 
@@ -10740,9 +10780,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                           theUDF,
                                           loc,
                                           tv,
-                                          theRTM.DOUBLE_TYPE_ONE);
+                                          theRTM.DOUBLE_TYPE_ONE,
+                                          false);
 
-        expr* castExpr = create_cast_expr(loc, tv, theRTM.DOUBLE_TYPE_ONE, true);
+        expr* castExpr = create_cast_expr(loc, tv, theRTM.DOUBLE_TYPE_ONE, false, true);
 
         expr* ret = CREATE(if)(theRootSctx, theUDF, loc, condExpr, castExpr, nanExpr);
 
@@ -10775,7 +10816,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           push_nodestack(CREATE(cast)(theRootSctx, theUDF,
                                       loc,
                                       CREATE(const)(theRootSctx, theUDF, loc, baseuri),
-                                      theRTM.ANY_URI_TYPE_ONE));
+                                      theRTM.ANY_URI_TYPE_ONE, false));
         return;
       }
       case FunctionConsts::FN_ID_1:
@@ -10932,7 +10973,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
     }
 
-    push_nodestack(create_cast_expr(loc, arguments[0], type, true));
+    push_nodestack(create_cast_expr(loc, arguments[0], type, true, true));
   }
 
   // It is not a builtin constructor function
@@ -11811,19 +11852,18 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
 
   nameExpr = wrap_in_atomization(nameExpr);
 
-  nameExpr = theExprManager->
-  create_cast_expr(theRootSctx,
-                   theUDF,
-                   nameExpr->get_loc(),
-                   nameExpr,
-                   GENV_TYPESYSTEM.STRING_TYPE_ONE);
+  nameExpr = CREATE(cast)(theRootSctx,
+                          theUDF,
+                          nameExpr->get_loc(),
+                          nameExpr,
+                          GENV_TYPESYSTEM.STRING_TYPE_ONE,
+                          false);
 
-  valueExpr = theExprManager->
-  create_fo_expr(theRootSctx,
-                 theUDF,
-                 valueExpr->get_loc(),
-                 BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
-                 valueExpr);
+  valueExpr = CREATE(fo)(theRootSctx,
+                         theUDF,
+                         valueExpr->get_loc(),
+                         BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
+                         valueExpr);
 
   push_nodestack(valueExpr);
   push_nodestack(nameExpr);
@@ -12726,7 +12766,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
   {
     target = pop_nodestack();
 
-    expr* castExpr = create_cast_expr(loc, target, theRTM.NCNAME_TYPE_ONE, true);
+    expr* castExpr = create_cast_expr(loc, target, theRTM.NCNAME_TYPE_ONE, false, true);
 
     target = wrap_in_enclosed_expr(castExpr, loc);
   }
