@@ -503,6 +503,8 @@ void SimpleJSONObject::swap(store::Item* anotherItem)
   assert(lOther);
   std::swap(theKeys, lOther->theKeys);
   std::swap(thePairs, lOther->thePairs);
+  setTree(getTree());
+  lOther->setTree(lOther->getTree());
 }
 
 /******************************************************************************
@@ -934,6 +936,8 @@ void SimpleJSONArray::swap(store::Item* anotherItem)
   SimpleJSONArray* lOther = dynamic_cast<SimpleJSONArray*>(anotherItem);
   assert(lOther);
   std::swap(theContent, lOther->theContent);
+  setTree(getTree());
+  lOther->setTree(lOther->getTree());
 }
 
 /******************************************************************************
