@@ -361,11 +361,13 @@ void expr::compute_return_type(bool deep, bool* modified)
     TypeConstants::quantifier_t argQuant = argType->get_quantifier();
     TypeConstants::quantifier_t targetQuant = e->theTargetType->get_quantifier();
 
-    if (TypeOps::is_equal(tm, *argType, *rtm.EMPTY_TYPE, get_loc()) &&
-        (targetQuant == TypeConstants::QUANT_QUESTION ||
-         targetQuant == TypeConstants::QUANT_STAR))
+    if (TypeOps::is_equal(tm, *argType, *rtm.EMPTY_TYPE, get_loc()))
     {
-      newType = rtm.EMPTY_TYPE;
+      if (targetQuant == TypeConstants::QUANT_QUESTION ||
+          targetQuant == TypeConstants::QUANT_STAR)
+        newType = rtm.EMPTY_TYPE;
+      else
+        newType = rtm.NONE_TYPE;
     }
     else if (TypeOps::has_atomic_itemtype(tm, *e->theTargetType))
     {
@@ -382,10 +384,13 @@ void expr::compute_return_type(bool deep, bool* modified)
 
       if (targetType->isList())
       {
-        newType = NULL;
+        newType = tm->create_type(*targetType->getListItemType(),
+                                  TypeConstants::QUANT_STAR);
       }
       else
       {
+        assert(targetType->isAtomic() || targetType->isUnion());
+
         TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
 
         newType = tm->create_type(*e->theTargetType, q);

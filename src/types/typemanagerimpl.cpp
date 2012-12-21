@@ -1015,6 +1015,14 @@ xqtref_t TypeManagerImpl::create_type(
                                    udt.getBaseType(),
                                    udt.getListItemType());
     }
+    else if (udt.isUnion())
+    {
+      return new UserDefinedXQType(this,
+                                   udt.get_qname(),
+                                   udt.getBaseType(),
+                                   quantifier,
+                                   udt.getUnionItemTypes());
+    }
     else
     {
       return new UserDefinedXQType(this,

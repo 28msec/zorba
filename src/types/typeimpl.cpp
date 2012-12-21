@@ -1092,7 +1092,7 @@ UserDefinedXQType::UserDefinedXQType(
     store::Item_t qname,
     const xqtref_t& baseType,
     TypeConstants::quantifier_t quantifier,
-    std::vector<xqtref_t>& unionItemTypes)
+    const std::vector<xqtref_t>& unionItemTypes)
   :
   XQType(manager, USER_DEFINED_KIND, quantifier, false),
   m_qname(qname),
