@@ -3329,10 +3329,26 @@ void* begin_visit(const VFO_DeclList& v)
       store::Item_t qnameItem;
       zstring value = opt_decl->get_val().str();
 
-      expand_no_default_qname(qnameItem, opt_decl->get_qname(), loc);
+      rchandle<QName> lQName = opt_decl->get_qname();
+      if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0 &&
+          lQName->get_namespace().empty() && lQName->get_prefix().empty())
+      {
+        theSctx->expand_qname(
+           qnameItem,
+           static_context::XQUERY_OPTION_NS,
+           "",
+           lQName->get_localname(),
+           lQName->get_location());
+      }
+      else
+      {
+        expand_no_default_qname(qnameItem, lQName, loc);
+        if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
+        {
+          RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
+      }
 
-      if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
-        RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
       if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_FEATURE_NS &&
           value == "http-uri-resolution")
@@ -4042,7 +4058,7 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
     expr::checkSimpleExpr(initExpr);
     ve->set_has_initializer(true);
 
-    if (!ve->is_mutable())
+    if (!ve->is_mutable() && !ve->is_external())
     {
       xqtref_t derivedType = initExpr->get_return_type();
 
@@ -6328,7 +6344,7 @@ void* begin_visit(const ForClause& v)
   if (v.has_allowing_empty())
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_OuterForClause11)));
+      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_OuterForClause30)));
 
     theFlworClausesStack.push_back(NULL);
   }
@@ -6547,7 +6563,7 @@ void* begin_visit(const WindowClause& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_WindowClause11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_WindowClause30)));
 
   return no_state;
 }
@@ -7257,7 +7273,7 @@ void* begin_visit(const CountClause& v)
   TRACE_VISIT ();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_CountClause11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_CountClause30)));
 
   return no_state;
 }
@@ -7321,7 +7337,7 @@ void* begin_visit(const SwitchExpr& v)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_SwitchExpr11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_SwitchExpr30)));
   }
 
   v.get_switch_expr()->accept(*this);
@@ -7731,7 +7747,7 @@ void* begin_visit(const TryExpr& v)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
   {
-    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_TryCatchExpr11)));
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_TryCatchExpr30)));
   }
 
   theTryStack.push_back(&v);

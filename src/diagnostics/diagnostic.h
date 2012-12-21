@@ -19,6 +19,7 @@
 #define ZORBA_DIAGNOSTIC_H
 
 #include <zorba/diagnostic.h>
+#include <zorba/xquery_exception.h>
 
 #include "compiler/parser/query_loc.h"
 #include "store/api/item.h"
@@ -71,16 +72,41 @@ make_location( internal::diagnostic::location const &loc ) {
 /**
  * Makes a location.
  *
- * @param file The name of the file where the error occurred.
- * @param line The line number of the file where the error occurred.
- * @param column The column number, if any, of the file where the error
+ * @param file The name of the file where the expression causing the error
  * occurred.
+ * @param line The line number of the file where the expression causing the
+ * error begins.
+ * @param column The column number, if any, of the file where the expression
+ * causing the error begins.
+ * @param line_end The end line number, if any, of the file where the
+ * expression causing the error ends.
+ * @param column_end The end column number, if any, of the file where the
+ * expression causing the error ends.
  * @return Returns a new location.
  */
 inline internal::diagnostic::location
 make_location( char const *file, internal::diagnostic::location::line_type line,
-               internal::diagnostic::location::column_type column = 0 ) {
-  return internal::diagnostic::location( file, line, column );
+               internal::diagnostic::location::column_type column = 0,
+               internal::diagnostic::location::line_type line_end = 0,
+               internal::diagnostic::location::column_type column_end = 0 ) {
+  return internal::diagnostic::location(
+    file, line, column, line_end, column_end
+  );
+}
+
+/**
+ * Makes a location.
+ *
+ * @param e The XQueryException to copy the location from.
+ * @return Returns a new location.
+ */
+inline internal::diagnostic::location
+make_location( XQueryException const &e ) {
+  return internal::diagnostic::location(
+    e.source_uri(),
+    e.source_line(), e.source_column(),
+    e.source_line_end(), e.source_column_end()
+  );
 }
 
 /**

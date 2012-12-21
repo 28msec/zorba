@@ -562,6 +562,7 @@ public:
   static const char* ZORBA_OPTION_WARN_NS;
   static const char* ZORBA_OPTION_FEATURE_NS;
   static const char* ZORBA_OPTION_OPTIM_NS;
+  static const char* XQUERY_OPTION_NS;
   static const char* ZORBA_VERSIONING_NS;
 
 protected:

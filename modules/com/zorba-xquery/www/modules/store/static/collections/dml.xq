@@ -831,6 +831,35 @@ cdml:delete-last($name as xs:QName, $number as xs:integer)  external;
 
 
 (:~
+ : The edit function is an updating function that edits the first supplied
+ : item so as to make it look exactly like a copy of the second supplied item,
+ : while retaining its original identity.
+ :
+ : @param $target The target item ,that must be edited.
+ : @param $content The content item, that serves as an edit goal.
+ :
+ : @return The result of the function is an empty XDM instance and a pending update list
+ :         which, once applied, performs the edit.
+ :
+ : @error zerr:ZDDY0001 if the collection to which $target belongs is not declared.
+ : @error zerr:ZDDY0003 if the collection to which $target belongs is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection to which $target
+ :        belongs is append-only, const, or queue.
+ : @error zerr:ZDDY0017 if the $target item is not a member of a collection.
+ : @error zerr:ZDDY0037 if the collection is append-only.
+ : @error zerr:ZDDY0038 if the collection is a queue.
+ : @error zerr:ZDDY0039 if the $target item is not a root.
+ : @error zerr:ZDDY0040 if the target cannot be updated to match the content (for
+ :        example because the target is a node and the content is an object).
+ : @error zerr:ZDTY0001 if $content does not match the expected type (as specified
+ :        in the collection declaration) according to the rules for SequenceType Matching.
+ :
+ :)
+declare updating function 
+cdml:edit($target as item(), $content as item()) external;
+
+
+(:~
  : The truncate function is an updating function that deletes the
  : entire contents of collection.
  :

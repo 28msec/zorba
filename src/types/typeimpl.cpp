@@ -270,6 +270,11 @@ std::string XQType::toSchemaString() const
 
   switch (type_kind())
   {
+  case NONE_KIND:
+  {
+    result = "none";
+    break;
+  }
   case EMPTY_KIND:
   {
     result = "empty-sequence()";
@@ -283,11 +288,13 @@ std::string XQType::toSchemaString() const
   case ITEM_KIND:
   {
     result = "item()";
+    result += TypeOps::decode_quantifier(get_quantifier());
     break;
   }
   case STRUCTURED_ITEM_KIND:
   {
     result = "structured-item()";
+    result += TypeOps::decode_quantifier(get_quantifier());
     break;
   }
 
@@ -311,6 +318,7 @@ std::string XQType::toSchemaString() const
       result = "array()";
     }
 
+    result += TypeOps::decode_quantifier(get_quantifier());
     break;
   }
 #endif
@@ -318,11 +326,19 @@ std::string XQType::toSchemaString() const
   case NODE_TYPE_KIND:
   {
     result = static_cast<const NodeXQType*>(this)->toSchemaStringInternal();
+    result += TypeOps::decode_quantifier(get_quantifier());
     break;
   }
   case FUNCTION_TYPE_KIND:
   {
     result = toString();
+    result += TypeOps::decode_quantifier(get_quantifier());
+    break;
+  }
+  case ANY_FUNCTION_TYPE_KIND:
+  {
+    result = "function(*)";
+    result += TypeOps::decode_quantifier(get_quantifier());
     break;
   }
   case ANY_TYPE_KIND:
@@ -335,22 +351,19 @@ std::string XQType::toSchemaString() const
     result = "xs:anySimpleType";
     break;
   }
-  case ANY_FUNCTION_TYPE_KIND:
-  {
-    result = "function(*)";
-    break;
-  }
   case UNTYPED_KIND:
   {
-    result = toString();
+    result = "xs:untyped";
     break;
   }
   default:
-    return toString();
+  {
+    result = toString();
+    result += TypeOps::decode_quantifier(get_quantifier());
     break;
   }
+  }
 
-  result += TypeOps::decode_quantifier(get_quantifier());
   return result;
 }
 

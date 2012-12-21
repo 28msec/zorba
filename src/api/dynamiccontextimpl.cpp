@@ -294,14 +294,12 @@ bool DynamicContextImpl::setVariable(
 
     // For string items, check that the value is a valid Unicode codepoint sequence
     const char* invalid_char;
-    TypeManager* tm = theStaticContext->get_typemanager();
-    RootTypeManager& rtm = GENV_TYPESYSTEM;
 
     if (value->isStreamable() == false && value->isAtomic())
     {
-      xqtref_t itemType = tm->create_value_type(value);
+      store::SchemaTypeCode itemTypeCode = value->getTypeCode();
 
-      if (TypeOps::is_equal(tm, *itemType, *rtm.STRING_TYPE_ONE, QueryLoc::null) &&
+      if (TypeOps::is_subtype(itemTypeCode, store::XS_STRING) &&
           (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
       {
         throw XQUERY_EXCEPTION(err::FOCH0001,

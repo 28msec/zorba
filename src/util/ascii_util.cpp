@@ -15,9 +15,14 @@
  */
 #include "stdafx.h"
 
+// standard
 #include <cstring>
+#include <iomanip>
 
+// local
 #include "ascii_util.h"
+
+using namespace std;
 
 namespace zorba {
 namespace ascii {
@@ -30,6 +35,17 @@ bool is_whitespace( char const *s ) {
       return false;
   }
   return true;
+}
+
+ostream& printable_char( ostream &o, char c ) {
+  if ( ascii::is_print( c ) )
+    o << c;
+  else {
+    ios::fmtflags const old_flags = o.flags();
+    o << "#x" << uppercase << hex << (static_cast<unsigned>( c ) & 0xFF);
+    o.flags( old_flags );
+  }
+  return o;
 }
 
 size_type remove_chars( char *s, size_type s_len, char const *chars ) {
