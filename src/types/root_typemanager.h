@@ -41,12 +41,12 @@ class RootTypeManager : public TypeManagerImpl
 
 public:
   /**
-   * Pre-allocated XQType object for the "none" type
+   * Pre-allocated XQType object for the "none" type.
    */
   xqtref_t NONE_TYPE;
 
   /**
-   * Pre-allocated XQType object for the () sequence type (the empty sequence).
+   * Pre-allocated XQType object for the empty-sequence() type.
    */ 
   xqtref_t EMPTY_TYPE;
 
@@ -219,7 +219,7 @@ public:
 
   /**
    * Pre-allocated XQType and QNameItem objects for the remaining build-in
-   * XQDM types.
+   * XQDM types. These are not sequence-types.
    */
   xqtref_t ANY_TYPE;
   xqtref_t UNTYPED_TYPE;

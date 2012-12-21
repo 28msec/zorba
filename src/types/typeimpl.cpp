@@ -1278,28 +1278,6 @@ store::Item_t AnyXQType::get_qname() const
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  AnySimpleXQType                                                            //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void AnySimpleXQType::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (XQType*)this);
-}
-
-
-store::Item_t AnySimpleXQType::get_qname() const
-{
-  return GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
 //  UntypedXQType                                                              //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
@@ -1317,6 +1295,28 @@ void UntypedXQType::serialize(::zorba::serialization::Archiver& ar)
 store::Item_t UntypedXQType::get_qname() const
 {
   return GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  AnySimpleXQType                                                            //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void AnySimpleXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+}
+
+
+store::Item_t AnySimpleXQType::get_qname() const
+{
+  return GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME;
 }
 
 

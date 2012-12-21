@@ -668,20 +668,36 @@ public:
       or attribute node, or
   (b) a sequence type whose ItemType is a user0defined atomic type.
 
-  Note: unless the user-defined tpye is an atomic one, the quentifier of
-  "this" must be QUANT_ONE.
+  Note: For list types, the associated quantifier is always STAR. For user-
+  defined atomic types, the associated quantifier can be anything. For all
+  other user-defined types, associated quantifier must be ONE.
  
-  m_qname          : The name of this user-defined type. The actual type
-                     definition is stored in the TypeManger that created this
-                     type (and is pointed to my theManager). The TypeManager
-                     also stores the mapping from the type name to the type
-                     definition.
-  m_base_type      : The baseType of this type. NULL for list or union types.
-  m_typeCategory   : Whether this is an atomic, list, union, or complex type.
-  m_contentKind    : This type's content kind, if this is a complex type. One
-                     of empty, simple, element-only, or mixed.
-  m_listItemType   : This type's itemType, if this is a list type.
-  m_unionItemTypes : This type's memberTypes, if this is a union type.
+  m_qname:
+  --------
+  The name of this user-defined type. The actual type definition is stored in
+  the TypeManger that created this type (and is pointed to my theManager). The
+  TypeManager also stores the mapping from the type name to the type definition.
+
+  m_base_type:
+  ------------
+  The baseType of this type. NULL for list or union types.
+
+  m_typeCategory:
+  ---------------
+  Whether this is an atomic, list, union, or complex type.
+
+  m_contentKind:
+  --------------
+  This type's content kind, if this is a complex type. One of empty, simple,
+  element-only, or mixed.
+
+  m_listItemType:
+  ---------------
+  This type's itemType, if this is a list type.
+
+  m_unionItemTypes:
+  -----------------
+  This type's memberTypes, if this is a union type.
 ********************************************************************************/
 class UserDefinedXQType : public XQType
 {
@@ -766,27 +782,6 @@ public:
 };
 
 
-/***************************************************************************//**
-  xs:untyped
-********************************************************************************/
-class UntypedXQType : public XQType
-{
-public:
-  UntypedXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
-  {
-  }
-
-  store::Item_t get_qname() const;
-
- public:
-  SERIALIZABLE_CLASS(UntypedXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar);
-};
-
-
 /******************************************************************************
   xs:anyType
 *******************************************************************************/
@@ -804,6 +799,27 @@ public:
  public:
   SERIALIZABLE_CLASS(AnyXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnyXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar);
+};
+
+
+/***************************************************************************//**
+  xs:untyped
+********************************************************************************/
+class UntypedXQType : public XQType
+{
+public:
+  UntypedXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
+  {
+  }
+
+  store::Item_t get_qname() const;
+
+ public:
+  SERIALIZABLE_CLASS(UntypedXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
   void serialize(::zorba::serialization::Archiver& ar);
 };
 
