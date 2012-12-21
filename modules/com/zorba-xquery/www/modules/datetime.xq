@@ -86,13 +86,29 @@ declare function datetime:parse-date(
  : specifications and ordinary characters.  All ordinary characters are matched
  : exactly with the buffer; all whitespace characters match any amount of
  : whitespace in the buffer.
- : @return Returns an xs:date.
+ : @return Returns an xs:dateTime.
  : @throws TODO
  :)
 declare function datetime:parse-dateTime(
   $input as xs:string,
   $format as xs:string
 ) as xs:dateTime external;
+
+(:~
+ : Parses a time from a string.
+ :
+ : @param $input The string to parse.
+ : @param $format The format string containing zero or more conversion
+ : specifications and ordinary characters.  All ordinary characters are matched
+ : exactly with the buffer; all whitespace characters match any amount of
+ : whitespace in the buffer.
+ : @return Returns an xs:time.
+ : @throws TODO
+ :)
+declare function datetime:parse-time(
+  $input as xs:string,
+  $format as xs:string
+) as xs:time external;
 
 (:~
  : Gets the the number of milliseconds since epoch.

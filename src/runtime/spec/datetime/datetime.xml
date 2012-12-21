@@ -70,6 +70,19 @@
   </zorba:function>
 </zorba:iterator>
 
+<zorba:iterator name="ParseTime" arity="binary">
+  <zorba:description author="Zorba Team">
+    function for parsing strings into a time
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="parse-time" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:time</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
 <zorba:iterator name="Timestamp">
   <zorba:description author="Zorba Team">
     function for getting the current number of seconds since epoch

@@ -9,6 +9,8 @@ New Features:
 	when resolving URIs.
   * Can now specify jsoniq-strip-top-level-array option to parse-json() to
     strip the top-level array from JSON streams.
+  * In the datetime module, added parse-date(), parse-dateTime(), parse-time(),
+    and utc-offset().
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.

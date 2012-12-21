@@ -81,6 +81,16 @@ PlanIter_t fn_zorba_dateTime_parse_dateTime::codegen(
   return new ParseDateTime(sctx, loc, argv[0], argv[1]);
 }
 
+PlanIter_t fn_zorba_dateTime_parse_time::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new ParseTime(sctx, loc, argv[0], argv[1]);
+}
+
 PlanIter_t fn_zorba_dateTime_timestamp::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -158,6 +168,19 @@ void populate_context_datetime(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.DATETIME_TYPE_ONE),
         FunctionConsts::FN_ZORBA_DATETIME_PARSE_DATETIME_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_dateTime_parse_time,
+        (createQName("Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element","","parse-time"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.TIME_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_DATETIME_PARSE_TIME_2);
 
   }
 

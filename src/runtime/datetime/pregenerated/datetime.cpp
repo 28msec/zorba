@@ -166,6 +166,31 @@ ParseDateTime::~ParseDateTime() {}
 // </ParseDateTime>
 
 
+// <ParseTime>
+SERIALIZABLE_CLASS_VERSIONS(ParseTime)
+
+void ParseTime::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<ParseTime, PlanIteratorState>*)this);
+}
+
+
+void ParseTime::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild0->accept(v);
+theChild1->accept(v);
+
+  v.endVisit(*this);
+}
+
+ParseTime::~ParseTime() {}
+
+// </ParseTime>
+
+
 // <Timestamp>
 SERIALIZABLE_CLASS_VERSIONS(Timestamp)
 

@@ -77,6 +77,7 @@
   TYPE_CurrentTime,
   TYPE_ParseDate,
   TYPE_ParseDateTime,
+  TYPE_ParseTime,
   TYPE_Timestamp,
   TYPE_UTCOffset,
   TYPE_DebugIterator,

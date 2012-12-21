@@ -113,6 +113,21 @@ public:
 };
 
 
+//fn-zorba-dateTime:parse-time
+class fn_zorba_dateTime_parse_time : public function
+{
+public:
+  fn_zorba_dateTime_parse_time(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-dateTime:timestamp
 class fn_zorba_dateTime_timestamp : public function
 {

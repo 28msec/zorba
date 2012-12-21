@@ -196,6 +196,38 @@ public:
 
 /**
  * 
+ *    function for parsing strings into a time
+ *  
+ * Author: Zorba Team
+ */
+class ParseTime : public BinaryBaseIterator<ParseTime, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ParseTime);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ParseTime,
+    BinaryBaseIterator<ParseTime, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  ParseTime(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child1, PlanIter_t& child2)
+    : 
+    BinaryBaseIterator<ParseTime, PlanIteratorState>(sctx, loc, child1, child2)
+  {}
+
+  virtual ~ParseTime();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *    function for getting the current number of seconds since epoch
  *  
  * Author: Zorba Team

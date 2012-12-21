@@ -144,6 +144,8 @@ namespace zorba{
 
     class ParseDateTime;
 
+    class ParseTime;
+
     class Timestamp;
 
     class UTCOffset;
@@ -928,6 +930,9 @@ public:
 
     virtual void beginVisit ( const ParseDateTime& ) = 0;
     virtual void endVisit   ( const ParseDateTime& ) = 0;
+
+    virtual void beginVisit ( const ParseTime& ) = 0;
+    virtual void endVisit   ( const ParseTime& ) = 0;
 
     virtual void beginVisit ( const Timestamp& ) = 0;
     virtual void endVisit   ( const Timestamp& ) = 0;

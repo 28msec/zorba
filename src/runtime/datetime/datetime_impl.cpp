@@ -157,6 +157,33 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
   STACK_END( state );
 }
 
+bool ParseTime::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
+  store::Item_t item;
+  time::ztm tm;
+  zstring buf, fmt;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+  consumeNext( item, theChild0, plan_state );
+  item->getStringValue2( buf );
+  consumeNext( item, theChild1, plan_state );
+  item->getStringValue2( fmt );
+
+  time::strptime( buf, fmt, &tm );
+
+  GENV_ITEMFACTORY->createTime(
+    result,
+    static_cast<short>( tm.tm_hour ),
+    static_cast<short>( tm.tm_min ),
+    tm.tm_sec,
+    static_cast<short>( tm.ZTM_GMTOFF / 3600 )
+  );
+
+  STACK_PUSH( true, state );
+  STACK_END( state );
+}
+
 bool Timestamp::nextImpl( store::Item_t& result,
                           PlanState &plan_state ) const {
   time_t sec;
