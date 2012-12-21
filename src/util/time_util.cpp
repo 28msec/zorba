@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
+#ifdef WIN32
+# include <windows.h>
+# if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
+#   define DELTA_EPOCH_IN_USEC 11644473600000000Ui64
+# else
+#   define DELTA_EPOCH_IN_USEC 11644473600000000ULL
+# endif
+#else
+# include <sys/time.h>
+#endif /* WIN32 */
+
 // local
 #include "time_util.h"
 
@@ -98,6 +109,47 @@ unsigned days_in_month( unsigned mon, unsigned year ) {
     31  // 11: Dec
   };
   return days[ mon ] + (mon == 1 /* Feb */ && is_leap_year( year ));
+}
+
+void get_epoch( time_t *sec, usec_type *usec ) {
+#ifdef WIN32
+  FILETIME ft;
+  GetSystemTimeAsFileTime( &ft );
+  unsigned __int64 temp = (ft.dwHighDateTime << 32) | ft.dwLowDateTime;
+  temp /= 10;                           // nanosec -> usec
+  temp -= DELTA_EPOCH_IN_USEC;          // 1601 -> 1970
+  *sec = (time_t)(temp / 1000000UL);    // usec -> sec
+  if ( usec )
+    *usec = (usec_type)(temp % 1000000UL);
+#else
+  timeval tv;
+  ::gettimeofday( &tv, nullptr );
+  *sec = tv.tv_sec;
+  if ( usec )
+    *usec = tv.tv_usec;
+#endif /* WIN32 */
+}
+
+void get_gmtime( ztm *tm ) {
+  time_t sec;
+  get_epoch( &sec );
+#ifdef WIN32
+  ::_gmtime_s( &tm, &sec );
+  tm->ZTM_GMTOFF = 0;
+#else
+  ::gmtime_r( &sec, tm );
+#endif /* WIN32 */
+}
+
+void get_localtime( ztm *tm ) {
+  time_t sec;
+  get_epoch( &sec );
+#ifdef WIN32
+  ::localtime_s( &tm, &sec );
+  tm->ZTM_GMTOFF = - _timezone;         // flip seconds east/west
+#else
+  ::localtime_r( &sec, tm );
+#endif /* WIN32 */
 }
 
 ///////////////////////////////////////////////////////////////////////////////

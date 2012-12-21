@@ -22,11 +22,18 @@
 
 // Zorba
 #include <zorba/config.h>
+#include "cxx_util.h"
 
 namespace zorba {
 namespace time {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+#ifdef WIN32
+typedef int usec_type;
+#else
+typedef suseconds_t usec_type;
+#endif /* WIN32 */
 
 //
 // If the OS's tm struct has a GMT-timezone offset field, simply typedef tm as
@@ -42,33 +49,15 @@ struct ztm : tm {
 };
 #endif
 
-/**
- * Gets the GMT offset from the given ztm.
- *
- * @param tm The ztm to get the GMT offset from.
- * @return Returns the GMT offset in seconds east of Greenwich.
- */
-inline long get_gmtoff_field( ztm const &tm ) {
-#if defined(ZORBA_HAVE_STRUCT_TM___TM_GMTOFF)
-  return tm.__tm_gmtoff;
+//
+// Always use this macro to access the tm_gmtoff field of the tm struct since
+// its name varies across plattorms.
+//
+#ifdef ZORBA_HAVE_STRUCT_TM___TM_GMTOFF
+# define ZTM_GMTOFF __tm_gmtoff
 #else
-  return tm.tm_gmtoff;
+# define ZTM_GMTOFF tm_gmtoff
 #endif
-}
-
-/**
- * Sets the GMT offset of the given ztm.
- *
- * @param tm The ztm to set the GMT offset of.
- * @param gmtoff The GMT offset in seconds east of Greenwich.
- */
-inline void set_gmtoff_field( ztm &tm, long gmtoff ) {
-#if defined(ZORBA_HAVE_STRUCT_TM___TM_GMTOFF)
-  tm.__tm_gmtoff = gmtoff;
-#else
-  tm.tm_gmtoff = gmtoff;
-#endif
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -100,6 +89,29 @@ unsigned calc_yday( unsigned mday, unsigned mon, unsigned year );
  * @return Returns said number of days (1-31).
  */
 unsigned days_in_month( unsigned mon, unsigned year );
+
+/**
+ * Gets the number of seconds and microseconds since epoch.
+ *
+ * @param sec A pointer to the result in seconds.
+ * @param usec A pointer to the result in microseconds or null if this is
+ * not desired.
+ */
+void get_epoch( time_t *sec, usec_type *usec = nullptr );
+
+/**
+ * Gets the current Greenwich time and populates the given ztm structure.
+ *
+ * @param tm The ztm struct to populate.
+ */
+void get_gmtime( ztm *tm );
+
+/**
+ * Gets the current local time and populates the given ztm structure.
+ *
+ * @param tm The ztm struct to populate.
+ */
+void get_localtime( ztm *tm );
 
 /**
  * Checks whether the given year is a leap year.

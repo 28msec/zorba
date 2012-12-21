@@ -33,13 +33,24 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : Return the current dateTime value.
+ : Gets the current date value.
+ : Please note, that this function is not stable. It returns the
+ : date value of the date the function has been actually invoked.
+ :
+ : @return the non-stable date value
+ :)
+declare %an:nondeterministic function datetime:current-date()
+  as xs:date external;
+
+(:~
+ : Gets the current dateTime value.
  : Please note, that this function is not stable. It returns the
  : dateTime value of the date and time the function has actually been invoked.
  :
  : @return the non-stable datetime value
  :)
-declare %an:nondeterministic function datetime:current-dateTime ( ) as xs:dateTime external;
+declare %an:nondeterministic function datetime:current-dateTime()
+  as xs:dateTime external;
 
 (:~
  : Return the current time value.
@@ -48,16 +59,8 @@ declare %an:nondeterministic function datetime:current-dateTime ( ) as xs:dateTi
  :
  : @return the non-stable time value
  :)
-declare %an:nondeterministic function datetime:current-time ( ) as xs:time external;
-
-(:~
- : Return the current date value.
- : Please note, that this function is not stable. It returns the
- : date value of the date the function has been actually invoked.
- :
- : @return the non-stable date value
- :)
-declare %an:nondeterministic function datetime:current-date ( ) as xs:date external;
+declare %an:nondeterministic function datetime:current-time()
+  as xs:time external;
 
 (:~
  : Parses a date from a string.
@@ -92,10 +95,11 @@ declare function datetime:parse-dateTime(
 ) as xs:dateTime external;
 
 (:~
- : Return the the number of milliseconds since the Epoch.
+ : Gets the the number of milliseconds since epoch.
  :
  : @return the said number of milliseconds.
  :)
-declare %an:nondeterministic function datetime:timestamp ( ) as xs:long external;
+declare %an:nondeterministic function datetime:timestamp()
+  as xs:long external;
 
 (: vim:set et sw=2 ts=2: :)

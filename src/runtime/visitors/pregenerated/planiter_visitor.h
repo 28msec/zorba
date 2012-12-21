@@ -134,9 +134,17 @@ namespace zorba{
 
     class DefaultCollationIterator;
 
+    class CurrentDate;
+
+    class CurrentDateTime;
+
+    class CurrentTime;
+
     class ParseDate;
 
     class ParseDateTime;
+
+    class Timestamp;
 
 #ifdef ZORBA_WITH_DEBUGGER
     class DebugIterator;
@@ -904,11 +912,23 @@ public:
     virtual void beginVisit ( const DefaultCollationIterator& ) = 0;
     virtual void endVisit   ( const DefaultCollationIterator& ) = 0;
 
+    virtual void beginVisit ( const CurrentDate& ) = 0;
+    virtual void endVisit   ( const CurrentDate& ) = 0;
+
+    virtual void beginVisit ( const CurrentDateTime& ) = 0;
+    virtual void endVisit   ( const CurrentDateTime& ) = 0;
+
+    virtual void beginVisit ( const CurrentTime& ) = 0;
+    virtual void endVisit   ( const CurrentTime& ) = 0;
+
     virtual void beginVisit ( const ParseDate& ) = 0;
     virtual void endVisit   ( const ParseDate& ) = 0;
 
     virtual void beginVisit ( const ParseDateTime& ) = 0;
     virtual void endVisit   ( const ParseDateTime& ) = 0;
+
+    virtual void beginVisit ( const Timestamp& ) = 0;
+    virtual void endVisit   ( const Timestamp& ) = 0;
 
 #ifdef ZORBA_WITH_DEBUGGER
     virtual void beginVisit ( const DebugIterator& ) = 0;

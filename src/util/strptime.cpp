@@ -554,7 +554,7 @@ case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
           long gmtoff = hour * 60 * 60 + minute * 60;
           if ( sign )
             gmtoff *= sign;
-          set_gmtoff_field( *tm, gmtoff );
+          tm->ZTM_GMTOFF = gmtoff;
           tm->tm_isdst = 0;
           *set_fields |= set_gmtoff;
           break;
@@ -568,7 +568,7 @@ bad_tz:   throw invalid_value( bp0, 4 + !!sign, c );
         for ( rfc2822_obs_zone const *z = rfc2822_obs_zones; z->name; ++z ) {
           size_t const len = ::strlen( z->name );
           if ( ::strncmp( bp, z->name, len ) == 0 ) {
-            set_gmtoff_field( *tm, z->gmtoff );
+            tm->ZTM_GMTOFF = z->gmtoff;
             tm->tm_isdst = z->isdst;
             *set_fields |= set_gmtoff;
             bp += len;

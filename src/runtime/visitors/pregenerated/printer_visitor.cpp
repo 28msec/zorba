@@ -703,6 +703,48 @@ void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
 // </DefaultCollationIterator>
 
 
+// <CurrentDate>
+void PrinterVisitor::beginVisit ( const CurrentDate& a) {
+  thePrinter.startBeginVisit("CurrentDate", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentDate& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentDate>
+
+
+// <CurrentDateTime>
+void PrinterVisitor::beginVisit ( const CurrentDateTime& a) {
+  thePrinter.startBeginVisit("CurrentDateTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentDateTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentDateTime>
+
+
+// <CurrentTime>
+void PrinterVisitor::beginVisit ( const CurrentTime& a) {
+  thePrinter.startBeginVisit("CurrentTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentTime>
+
+
 // <ParseDate>
 void PrinterVisitor::beginVisit ( const ParseDate& a) {
   thePrinter.startBeginVisit("ParseDate", ++theId);
@@ -729,6 +771,20 @@ void PrinterVisitor::endVisit ( const ParseDateTime& ) {
   thePrinter.endEndVisit();
 }
 // </ParseDateTime>
+
+
+// <Timestamp>
+void PrinterVisitor::beginVisit ( const Timestamp& a) {
+  thePrinter.startBeginVisit("Timestamp", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const Timestamp& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </Timestamp>
 
 #ifdef ZORBA_WITH_DEBUGGER
 // <DebugIterator>
