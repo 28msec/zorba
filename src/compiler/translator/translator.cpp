@@ -2738,7 +2738,7 @@ expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>&
     if (! theSctx->is_imported_builtin_module(fn_ns))
     {
       RAISE_ERROR(err::XPST0017, loc,
-      ERROR_PARAMS(qnameItem, ZED(FunctionUndeclared_3), numArgs));
+      ERROR_PARAMS(qnameItem->getStringValue(), ZED(FunctionUndeclared_3), numArgs));
     }
   }
 
@@ -2756,7 +2756,7 @@ expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>&
         TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
     {
       RAISE_ERROR(err::XPST0017, loc,
-      ERROR_PARAMS(qnameItem, ZED(FunctionUndeclared_3), numArgs));
+      ERROR_PARAMS(qnameItem->getStringValue(), ZED(FunctionUndeclared_3), numArgs));
     }
 
     return create_cast_expr(loc, arguments[0], type, true);
@@ -2783,7 +2783,7 @@ expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>&
       }
 
       RAISE_ERROR(err::XPST0017, loc,
-      ERROR_PARAMS(qnameItem, ZED(FunctionUndeclared_3), numArgs));
+      ERROR_PARAMS(qnameItem->getStringValue(), ZED(FunctionUndeclared_3), numArgs));
     }
 
     // If this is a udf that is invoked from another udf, mark that other udf
@@ -3143,7 +3143,7 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
         TypeOps::is_equal(CTX_TM, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
     {
       RAISE_ERROR(err::XPST0017, loc,
-                    ERROR_PARAMS(qnameItem, ZED(FunctionUndeclared_3), arity));
+                    ERROR_PARAMS(qnameItem->getStringValue(), ZED(FunctionUndeclared_3), arity));
     }
 
     udf = new user_function(loc,
@@ -3195,7 +3195,7 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
       if (! theSctx->is_imported_builtin_module(fn_ns))
       {
         RAISE_ERROR(err::XPST0017, loc,
-        ERROR_PARAMS(qnameItem, ZED(FunctionUndeclared_3), arity));
+        ERROR_PARAMS(qnameItem->getStringValue(), ZED(FunctionUndeclared_3), arity));
       }
     }
   } // else f != NULL
@@ -11797,6 +11797,14 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           }
         }
         break;
+      }
+      case FunctionConsts::FN_FOLD_RIGHT_3:
+      {
+        // Because arguments are reversed, the 3rd argument is actually arguments[0]
+        arguments[0] = theExprManager->create_fo_expr(theRootSctx, theUDF,
+                                loc,
+                                BUILTIN_FUNC(FN_REVERSE_1),
+                                arguments[0]);
       }
       default: 
       {

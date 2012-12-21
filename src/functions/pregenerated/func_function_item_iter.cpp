@@ -71,25 +71,7 @@ PlanIter_t fn_map_pairs_3_0::codegen(
   return new FnMapPairsIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_fold_left_3_0::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new FnFoldLeftIterator(sctx, loc, argv);
-}
 
-PlanIter_t fn_fold_right_3_0::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new FnFoldLeftIterator(sctx, loc, argv);
-}
 
 void populate_context_function_item_iter(static_context* sctx)
 {

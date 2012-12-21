@@ -423,6 +423,8 @@ bool FnFoldLeftIterator::nextImpl(
         arguments.push_back(NULL);
         arguments.push_back(new PlanStateIteratorWrapper(seqIter1));
         arguments.push_back(new PlanStateIteratorWrapper(seqIter2));
+        if (theIsFoldRight)
+          std::reverse(++arguments.begin(), arguments.end());
         
         state->thePlan = static_cast<FunctionItem*>(state->theFnItem.getp())->getImplementation(arguments);
         state->thePlan->open(planState, state->theUDFStateOffset);

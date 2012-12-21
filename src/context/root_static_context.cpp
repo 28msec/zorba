@@ -186,6 +186,7 @@ void root_static_context::init()
   set_feature( feature::scripting );
   set_feature( feature::trace );
   set_feature( feature::http_resolution );
+  set_feature( feature::hof ); // TODO: should it be enabled by default?
 } 
 
 

@@ -18,12 +18,11 @@
 #include "common/shared_types.h"
 #include "types/typeops.h"
 
-#include "runtime/base/plan_iterator.h"
-#include "runtime/core/fncall_iterator.h"
-
 #include "functions/function.h"
 #include "functions/function_impl.h"
 #include "functions/func_function_item_iter.h"
+
+#include "runtime/function_item/function_item_iter.h"
 
 #include "system/globalenv.h"
 
@@ -52,7 +51,9 @@ public:
                      std::vector<PlanIter_t>& argv,
                      expr& ann) const
   {
-    return new UDFunctionCallIterator(sctx, loc, argv, NULL);
+    // TODO: delete the commented line
+    // return new UDFunctionCallIterator(sctx, loc, argv, NULL);
+    return NULL;
   }
 };
 
@@ -81,6 +82,34 @@ public:
     return NULL;
   }
 };
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_fold_left_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnFoldLeftIterator(sctx, loc, argv, false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_fold_right_3_0::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FnFoldLeftIterator(sctx, loc, argv, true);
+}
 
 
 /*******************************************************************************
@@ -146,10 +175,11 @@ void populate_context_hof_impl(static_context* sctx)
 
   {
     std::vector<xqtref_t> args;
+    xqtref_t hofParamType;
+    
     args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-
-    xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
+    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+    hofParamType = GENV_TYPESYSTEM.create_function_type(
                    args,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
                    TypeConstants::QUANT_ONE);
@@ -162,9 +192,17 @@ void populate_context_hof_impl(static_context* sctx)
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR),
                    FunctionConsts::FN_FOLD_LEFT_3);
+    
+    args.clear();
+    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+    args.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+    hofParamType = GENV_TYPESYSTEM.create_function_type(
+                   args,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   TypeConstants::QUANT_ONE);
 
     DECL_WITH_KIND(sctx,
-                   fn_fold_left_3_0,
+                   fn_fold_right_3_0,
                    (createQName(static_context::W3C_FN_NS, "", "fold-right"),
                    hofParamType,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR,

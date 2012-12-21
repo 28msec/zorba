@@ -211,6 +211,8 @@ public:
 
 class FnFoldLeftIterator : public NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>
 { 
+protected:
+  bool theIsFoldRight; //
 public:
   SERIALIZABLE_CLASS(FnFoldLeftIterator);
 
@@ -222,9 +224,11 @@ public:
   FnFoldLeftIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+    std::vector<PlanIter_t>& children,
+    bool aIsFoldRight)
     : 
-    NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>(sctx, loc, children)
+    NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>(sctx, loc, children),
+    theIsFoldRight(aIsFoldRight)
   {}
 
   virtual ~FnFoldLeftIterator();

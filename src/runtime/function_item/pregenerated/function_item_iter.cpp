@@ -157,6 +157,8 @@ void FnFoldLeftIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
   (NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>*)this);
+
+    ar & theIsFoldRight;
 }
 
 

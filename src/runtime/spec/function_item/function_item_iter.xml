@@ -130,7 +130,13 @@
       Processes the supplied sequence from left to right or right to left, applying the supplied function repeatedly to each item in turn, together with an accumulated result value.
     </zorba:description>
 
-    <zorba:function generateDECL="false">
+    <zorba:member type="bool" name="theIsFoldRight"/>
+  
+    <zorba:constructor>
+      <zorba:parameter type="bool" name="aIsFoldRight"/>
+    </zorba:constructor>
+
+    <zorba:function generateDECL="false" generateCodegen="false">
       <zorba:signature localname="fold-left" prefix="fn" version="3.0">
         <zorba:param>function()*</zorba:param>
         <zorba:param>item()*</zorba:param>
@@ -139,7 +145,7 @@
       </zorba:signature>
     </zorba:function>
     
-    <zorba:function generateDECL="false">
+    <zorba:function generateDECL="false" generateCodegen="false">
       <zorba:signature localname="fold-right" prefix="fn" version="3.0">
         <zorba:param>function()*</zorba:param>
         <zorba:param>item()*</zorba:param>
