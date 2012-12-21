@@ -173,8 +173,10 @@ bool IndexMatchingRule::matchIndex()
 
   expr::substitution_t subst;
 
-  for_clause* probeFORclause = NULL;
-  csize probeFORclausePos = 0;
+  for_clause* firstMatchedFOR = NULL;
+  csize firstMatchedFORpos = 0;
+  csize lastMatchedFORpos = 0;
+  csize lastMatchedWHEREpos = 0;
   DynamicBitset matchedClauses(numQClauses);
   matchedClauses.reset();
 
@@ -211,22 +213,24 @@ bool IndexMatchingRule::matchIndex()
           expr* qdomExpr = qfc->get_expr();
           var_expr* qvarExpr = qfc->get_var();
 
-          if (expr_tools::match_exact(qdomExpr, vdomExpr, subst))
+          if (!qfc->is_allowing_empty() &&
+              expr_tools::match_exact(qdomExpr, vdomExpr, subst))
           {
             nextQueryClause = qi+1;
             subst[vvarExpr] = qvarExpr;
             matchedClauses.set(qi, true);
 
-            if (!probeFORclause)
+            if (firstMatchedFOR == NULL)
             {
-              probeFORclause = qfc;
-              probeFORclausePos = qi;
+              firstMatchedFOR = qfc;
+              firstMatchedFORpos = qi;
             }
 
+            lastMatchedFORpos = qi;
             matched = true;
             break;
           }
-          else if (probeFORclause != NULL)
+          else if (firstMatchedFOR != NULL)
           {
             // TODO allow for FOR clause reordering, if conditions allow it
             return false;
@@ -235,13 +239,20 @@ bool IndexMatchingRule::matchIndex()
           break;
         }
         case flwor_clause::let_clause:
-        case flwor_clause::order_clause:
         {
+          if (firstMatchedFOR != NULL)
+          {
+            let_clause* qlc = static_cast<let_clause*>(qc);
+            expr* qdomExpr = qlc->get_expr();
+
+            if (qdomExpr->is_sequential())
+              return false;
+          }
           break;
         }
         case flwor_clause::window_clause:
         {
-          if (probeFORclause != NULL)
+          if (firstMatchedFOR != NULL)
           {
             // TODO allow for FOR clause reordering, if conditions allow it
             return false; // todo
@@ -254,11 +265,18 @@ bool IndexMatchingRule::matchIndex()
           getWherePreds(qi, static_cast<where_clause*>(qc), unmatchedQPreds);
           break;
         }
+        case flwor_clause::order_clause:
+        {
+          break;
+        }
         case flwor_clause::count_clause:
         case flwor_clause::groupby_clause:
         case flwor_clause::materialize_clause:
         {
-          return false;
+          if (firstMatchedFOR != NULL)
+            return false;
+
+          break;
         }
         default:
           ZORBA_ASSERT(false);
@@ -323,6 +341,9 @@ bool IndexMatchingRule::matchIndex()
         matchedQPreds.push_back(qpred);
         unmatchedQPreds.erase(qpredIte);
 
+        if (qpred.theClausePos > lastMatchedWHEREpos)
+          lastMatchedWHEREpos = qpred.theClausePos;
+
         break;
       }
     }
@@ -339,7 +360,7 @@ bool IndexMatchingRule::matchIndex()
   store::Item_t indexName = theIndexDecl->getName();
 
   expr* qnameExpr = ccb->theEM->
-  create_const_expr(sctx, udf, probeFORclause->get_loc(), indexName);
+  create_const_expr(sctx, udf, firstMatchedFOR->get_loc(), indexName);
 
   probeArgs.push_back(qnameExpr);
 
@@ -386,6 +407,10 @@ bool IndexMatchingRule::matchIndex()
       {
         matchedQPreds.push_back(qpred);
         unmatchedQPreds.erase(qpredIte);
+
+        if (qpred.theClausePos > lastMatchedWHEREpos)
+          lastMatchedWHEREpos = qpred.theClausePos;
+
         probeArgs.push_back(qpredExpr->get_arg(1 - matched));
         break;
       }
@@ -393,6 +418,42 @@ bool IndexMatchingRule::matchIndex()
 
     if (matched < 0)
       return false;
+  }
+
+  // Make sure thare are no "ilegal" query clauses between the last matched FOR
+  // clause and the last WHERE clause containing a matched pred.
+  for (csize i = lastMatchedFORpos + 1; i < lastMatchedWHEREpos; ++i)
+  {
+    flwor_clause* qc = theQueryExpr->get_clause(i);
+
+    switch (qc->get_kind())
+    {
+    case flwor_clause::for_clause:
+    case flwor_clause::let_clause:
+    case flwor_clause::window_clause:
+    {
+      forletwin_clause* qflwc = static_cast<forletwin_clause*>(qc);
+      expr* qdomExpr = qflwc->get_expr();
+
+      if (qdomExpr->is_sequential())
+        return false;
+      
+      break;
+    }
+    case flwor_clause::count_clause:
+    case flwor_clause::groupby_clause:
+    case flwor_clause::materialize_clause:
+    {
+      return false;
+    }
+    case flwor_clause::where_clause:
+    case flwor_clause::order_clause:
+    {
+      break;
+    }
+    default:
+      ZORBA_ASSERT(false);
+    }
   }
 
   // Mark the flwor vars of the query flwor expr as "not used" initially
@@ -576,14 +637,14 @@ bool IndexMatchingRule::matchIndex()
   fo_expr* probeExpr = ccb->theEM->
   create_fo_expr(sctx,
                  udf,
-                 probeFORclause->get_loc(),
+                 firstMatchedFOR->get_loc(),
                  BUILTIN_FUNC(FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N),
                  probeArgs);
 
-  probeFORclause->set_expr(probeExpr);
+  firstMatchedFOR->set_expr(probeExpr);
 
   csize numRemoved = 0;
-  for (csize i = probeFORclausePos + 1; i < matchedClauses.size(); ++i)
+  for (csize i = firstMatchedFORpos + 1; i < matchedClauses.size(); ++i)
   {
     if (matchedClauses.get(i))
     {

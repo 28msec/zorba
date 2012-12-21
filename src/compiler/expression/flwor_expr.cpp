@@ -543,10 +543,18 @@ groupby_clause::groupby_clause(
   csize numNGVars = theNonGroupVars.size();
 
   for (csize i = 0; i < numGVars; ++i)
+  {
+    expr::checkSimpleExpr(theGroupVars[i].first);
+
     theGroupVars[i].second->set_flwor_clause(this);
+  }
 
   for (csize i = 0; i < numNGVars; ++i)
+  {
+    expr::checkSimpleExpr(theNonGroupVars[i].first);
+
     theNonGroupVars[i].second->set_flwor_clause(this);
+  }
 }
 
 

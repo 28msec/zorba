@@ -242,15 +242,15 @@ protected:
 
 protected:
   window_clause(
-        static_context* sctx,
-        CompilerCB* ccb,
-        const QueryLoc& loc,
-        WindowKind winKind,
-        var_expr* varExpr,
-        expr* domainExpr,
-        flwor_wincond* winStart,
-        flwor_wincond* winStop,
-        bool lazy = false);
+      static_context* sctx,
+      CompilerCB* ccb,
+      const QueryLoc& loc,
+      WindowKind winKind,
+      var_expr* varExpr,
+      expr* domainExpr,
+      flwor_wincond* winStart,
+      flwor_wincond* winStop,
+      bool lazy = false);
 
 public:
   ~window_clause();
