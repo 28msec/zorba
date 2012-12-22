@@ -2710,11 +2710,295 @@ expr* generate_fn_body(
 ********************************************************************************/
 expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>& arguments, QueryLoc loc)
 {
+  expr* resultExpr = NULL;
+  
   const zstring& fn_ns = qnameItem->getNamespace();
   
   csize numArgs = arguments.size();
   
   TypeManager* tm = CTX_TM;
+
+  if (fn_ns == static_context::W3C_FN_NS)
+  {
+    if (f == NULL)
+    {
+      RAISE_ERROR(err::XPST0017, loc,
+      ERROR_PARAMS(qnameItem->getStringValue(), ZED(FunctionUndeclared_3), numArgs));
+    }
+
+    // Special processing for certain "fn" functions
+    switch (f->getKind())
+    {
+      case FunctionConsts::FN_HEAD_1:
+      {
+        arguments.push_back(theExprManager->
+                            create_const_expr(theRootSctx, theUDF, loc, xs_integer::one()));
+
+        arguments.push_back(theExprManager->
+                            create_const_expr(theRootSctx, theUDF, loc, xs_integer::one()));
+
+        function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
+
+        fo_expr* foExpr = theExprManager->
+        create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
+
+        normalize_fo(foExpr);
+
+        resultExpr = foExpr;
+        break;
+      }
+      case FunctionConsts::FN_TAIL_1:
+      {
+        arguments.push_back(theExprManager->
+                            create_const_expr(theRootSctx, theUDF, loc, xs_integer(2)));
+
+        function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2);
+
+        fo_expr* foExpr = theExprManager->
+        create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
+
+        normalize_fo(foExpr);
+
+        resultExpr = foExpr;
+        break;
+      }
+      case FunctionConsts::FN_SUBSEQUENCE_2:
+      case FunctionConsts::FN_SUBSEQUENCE_3:
+      case FunctionConsts::FN_SUBSTRING_2:
+      case FunctionConsts::FN_SUBSTRING_3:
+      {
+        std::reverse(arguments.begin(), arguments.end());
+
+        xqtref_t posType = arguments[1]->get_return_type();
+
+        if (numArgs == 2)
+        {
+          if (TypeOps::is_subtype(tm, *posType, *theRTM.INTEGER_TYPE_STAR, loc))
+          {
+            if (f->getKind() == FunctionConsts::FN_SUBSTRING_2)
+              f = BUILTIN_FUNC(OP_SUBSTRING_INT_2);
+            else
+              f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2);
+          }
+        }
+        else
+        {
+          xqtref_t lenType = arguments[2]->get_return_type();
+
+          if (TypeOps::is_subtype(tm, *posType, *theRTM.INTEGER_TYPE_STAR, loc) &&
+              TypeOps::is_subtype(tm, *lenType, *theRTM.INTEGER_TYPE_STAR, loc))
+          {
+            if (f->getKind() == FunctionConsts::FN_SUBSTRING_3)
+              f = BUILTIN_FUNC(OP_SUBSTRING_INT_3);
+            else
+              f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
+          }
+        }
+
+        fo_expr* foExpr = theExprManager->
+        create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
+
+        normalize_fo(foExpr);
+        resultExpr = foExpr;
+        break;
+      }
+      case FunctionConsts::FN_POSITION_0:
+      {
+        resultExpr = lookup_ctx_var(DOT_POS_VARNAME, loc);
+        break;
+      }
+      case FunctionConsts::FN_LAST_0:
+      {
+        resultExpr = lookup_ctx_var(LAST_IDX_VARNAME, loc);
+        break;
+      }
+      case FunctionConsts::FN_NUMBER_0:
+      case FunctionConsts::FN_NUMBER_1:
+      {
+        switch (numArgs)
+        {
+        case 0:
+        {
+          arguments.push_back(DOT_REF);
+          f = BUILTIN_FUNC(FN_NUMBER_1);
+          break;
+        }
+        case 1:
+          break;
+        default:
+          RAISE_ERROR(err::XPST0017, loc,
+          ERROR_PARAMS("fn:number", ZED(FunctionUndeclared_3), numArgs));
+        }
+
+        var_expr* tv = create_temp_var(loc, var_expr::let_var);
+
+        expr* nanExpr = CREATE(const)(theRootSctx, theUDF, loc, xs_double::nan());
+
+        expr* condExpr = CREATE(castable)(theRootSctx,
+                                          theUDF,
+                                          loc,
+                                          tv,
+                                          theRTM.DOUBLE_TYPE_ONE);
+
+        expr* castExpr = create_cast_expr(loc, tv, theRTM.DOUBLE_TYPE_ONE, true);
+
+        expr* ret = CREATE(if)(theRootSctx, theUDF, loc, condExpr, castExpr, nanExpr);
+
+        expr* data_expr = wrap_in_atomization(arguments[0]);
+
+        resultExpr = wrap_in_let_flwor(CREATE(treat)(theRootSctx,
+                                                       theUDF,
+                                                       loc,
+                                                       data_expr,
+                                                       theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                                                       TREAT_TYPE_MATCH),
+                                           tv,
+                                           ret);
+        break;
+      }
+      case FunctionConsts::FN_STATIC_BASE_URI_0:
+      {
+        if (numArgs != 0)
+        {
+          RAISE_ERROR(err::XPST0017, loc,
+          ERROR_PARAMS("fn:static-base-uri",
+                       ZED(FunctionUndeclared_3),
+                       numArgs));
+        }
+
+        zstring baseuri = theSctx->get_base_uri();
+        if (baseuri.empty())
+          resultExpr = create_empty_seq(loc);
+        else
+          resultExpr = CREATE(cast)(theRootSctx, theUDF,
+                                      loc,
+                                      CREATE(const)(theRootSctx, theUDF, loc, baseuri),
+                                      theRTM.ANY_URI_TYPE_ONE);
+        break;;
+      }
+      case FunctionConsts::FN_ID_1:
+      case FunctionConsts::FN_ID_2:
+      case FunctionConsts::FN_ELEMENT_WITH_ID_1:
+      case FunctionConsts::FN_ELEMENT_WITH_ID_2:
+      {
+        if (numArgs == 1)
+        {
+          arguments.insert(arguments.begin(), DOT_REF);
+          f = theSctx->lookup_fn(qnameItem, 2, loc);
+        }
+
+        expr* idsExpr = arguments[1];
+
+        flwor_expr* flworExpr = wrap_expr_in_flwor(idsExpr, false);
+
+        const for_clause* fc = static_cast<const for_clause*>(flworExpr->get_clause(0));
+        expr* flworVarExpr = fc->get_var();
+
+        fo_expr* normExpr = NULL;
+        fo_expr* tokenExpr = NULL;
+        zstring space(" ");
+        const_expr* constExpr = theExprManager->create_const_expr(theRootSctx, theUDF, loc, space);
+
+        normExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
+                               loc,
+                               BUILTIN_FUNC(FN_NORMALIZE_SPACE_1),
+                               flworVarExpr);
+        normalize_fo(normExpr);
+
+        tokenExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
+                                loc,
+                                BUILTIN_FUNC(FN_TOKENIZE_2),
+                                normExpr,
+                                constExpr);
+        normalize_fo(tokenExpr);
+
+        flworExpr->set_return_expr(tokenExpr);
+
+        pop_scope();
+
+        arguments[1] = flworExpr;
+        break;
+      }
+      case FunctionConsts::FN_IDREF_1:
+      {
+        arguments.insert(arguments.begin(), DOT_REF);
+        f = BUILTIN_FUNC(FN_IDREF_2);
+        break;
+      }
+      case FunctionConsts::FN_LANG_1:
+      {
+        arguments.insert(arguments.begin(), DOT_REF);
+        f = BUILTIN_FUNC(FN_LANG_2);
+        break;
+      }
+      case FunctionConsts::FN_RESOLVE_URI_1:
+      {
+        zstring baseUri = theSctx->get_base_uri();
+        arguments.insert(arguments.begin(), theExprManager->create_const_expr(theRootSctx, theUDF, loc, baseUri));
+        f = BUILTIN_FUNC(FN_RESOLVE_URI_2);
+        break;
+      }
+      case FunctionConsts::FN_CONCAT_N:
+      {
+        if (numArgs < 2)
+          RAISE_ERROR(err::XPST0017, loc,
+            ERROR_PARAMS("concat", ZED(FunctionUndeclared_3), numArgs));
+        break;
+      }
+      case FunctionConsts::FN_DOC_1:
+      {
+        if (numArgs > 0)
+        {
+          expr*  doc_uri = arguments[0];
+
+          //validate uri
+          if(doc_uri->get_expr_kind() == const_expr_kind)
+          {
+            const_expr* const_uri = reinterpret_cast<const_expr*>(doc_uri);
+            const store::Item* uri_value = const_uri->get_val();
+            zstring uri_string = uri_value->getStringValue();
+
+            try
+            {
+              if (uri_string.find(":/", 0, 3) != zstring::npos)
+              {
+                URI docURI(uri_string, true);//with validate
+              }
+            }
+            catch(XQueryException& e)
+            {
+              set_source(e, loc);
+              throw;
+            }
+          }
+        }
+        break;
+      }
+      case FunctionConsts::FN_FOLD_RIGHT_3:
+      {
+        // Because arguments are reversed, the 3rd argument is actually arguments[0]
+        arguments[0] = theExprManager->create_fo_expr(theRootSctx, theUDF,
+                                loc,
+                                BUILTIN_FUNC(FN_REVERSE_1),
+                                arguments[0]);
+      }
+      default: 
+      {
+        // do nothing otherwise
+      }
+    } // switch (f->getKind())
+  } // if (fn_ns == static_context::W3C_FN_NS)
+
+  if (f != NULL && f->getKind() ==  FunctionConsts::FN_APPLY_1)
+  {
+    expr* applyExpr = theExprManager->
+    create_apply_expr(theRootSctx, theUDF, loc, arguments[0], false);
+
+    resultExpr = applyExpr;
+  }
+
+  if (resultExpr)
+    return resultExpr;
   
   // add context-item for functions with zero arguments which implicitly
   // take the context-item as argument
@@ -3064,57 +3348,6 @@ expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>&
 
 }
 
-/*******************************************************************************
-  Returns true if the given function is context-dependent as defined by 
-  XQuery F&O spec (see http://www.w3.org/TR/xpath-functions-30/#properties-of-functions),
-  for the purpose of deciding if it can be used by function-lookup(), which is why
-  the list differs from spec.
-********************************************************************************/
-// TODO: seems the function is not needed -- remove
-bool is_context_dependent(function* f)
-{
-  // FunctionConsts::FunctionKind kind = f->getKind();
-  
-  if (// kind == FunctionConsts::FN_CURRENT_DATETIME_0 ||
-      // kind == FunctionConsts::FN_CURRENT_DATE_0 ||
-      // kind == FunctionConsts::FN_CURRENT_TIME_0 ||
-      // kind == FunctionConsts::FN_IMPLICIT_TIMEZONE_0 ||
-      // kind == FunctionConsts::OP_ADJUST_DT_TO_TZ_1 ||
-      // kind == FunctionConsts::OP_ADJUST_DT_TO_TZ_2 ||
-      // kind == FunctionConsts::OP_ADJUST_D_TO_TZ_1 ||
-      // kind == FunctionConsts::OP_ADJUST_D_TO_TZ_2 ||
-      // kind == FunctionConsts::OP_ADJUST_T_TO_TZ_1 ||
-      // kind == FunctionConsts::OP_ADJUST_T_TO_TZ_2 ||
-      // kind == FunctionConsts::FN_BASE_URI_0 ||  // there is a FOTS test which expects the function to be allowed
-      // kind == FunctionConsts::FN_DATA_0 ||  // there is a FOTS test which expects the function to be allowed
-      // kind == FunctionConsts::FN_DOCUMENT_URI_0 ||  // there is a FOTS test which expects the function to be allowed
-      // kind == FunctionConsts::FN_POSITION_0 ||
-      // kind == FunctionConsts::FN_LAST_0 ||
-      // kind == FunctionConsts::FN_ID_1 ||
-      // kind == FunctionConsts::FN_IDREF_1 || 
-      // kind == FunctionConsts::FN_ELEMENT_WITH_ID_1 ||
-      // kind == FunctionConsts::FN_LANG_1 || 
-      // kind == FunctionConsts::FN_LOCAL_NAME_0 ||
-      // kind == FunctionConsts::FN_NAME_0 || 
-      // kind == FunctionConsts::FN_NAMESPACE_URI_0 ||
-      // kind == FunctionConsts::FN_NORMALIZE_SPACE_0 ||  // there is a FOTS test which expects the function to be allowed
-      // kind == FunctionConsts::FN_NUMBER_0 ||  // there is a FOTS test which expects the function to be allowed 
-      // kind == FunctionConsts::FN_ROOT_0 || 
-      // kind == FunctionConsts::FN_STRING_0 ||  // there is a FOTS test which expects the function to be allowed
-      // kind == FunctionConsts::FN_STRING_LENGTH_0 ||  // there is a FOTS test which expects the function to be allowed
-      // kind == FunctionConsts::FN_PATH_0 ||
-      // kind == FunctionConsts::FN_DEFAULT_COLLATION_0 ||
-      // kind == FunctionConsts::FN_STATIC_BASE_URI_0 ||
-      // kind == FunctionConsts::FN_DOC_1 ||
-      // kind == FunctionConsts::FN_COLLECTION_0 ||
-      // kind == FunctionConsts::FN_COLLECTION_1
-      false 
-     )
-    return true;
-    
-  return false;
-}
-
 
 /*******************************************************************************
 
@@ -3204,7 +3437,7 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
   // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
   if (udf != NULL || !f->isUdf())
   {
-    if (errIfContextDependent && f != NULL && is_context_dependent(f))
+    if (errIfContextDependent && f != NULL) // TODO: this should be removed 
     {
       store::Item_t errQName;
       GENV_ITEMFACTORY->createQName(errQName, static_context::W3C_FN_NS, "", "error");
@@ -11507,22 +11740,16 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
   
-  expr* resultExpr = NULL;
-
-  TypeManager* tm = CTX_TM;
-
-  // Expand the function qname
+// Expand the function qname
   rchandle<QName> qname = v.get_fname();
 
   store::Item_t qnameItem;
   expand_function_qname(qnameItem, qname, loc);
 
-  const zstring& fn_ns = qnameItem->getNamespace();
-
-  if (static_context::is_reserved_module(fn_ns))
+  if (static_context::is_reserved_module(qnameItem->getNamespace()))
   {
     RAISE_ERROR(zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
-    ERROR_PARAMS(fn_ns));
+    ERROR_PARAMS(qnameItem->getNamespace()));
   }
 
   // Collect the arguments of this function in reverse order
@@ -11538,291 +11765,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     arguments.push_back(argExpr);
   }
 
-  csize numArgs = arguments.size();
+  function* f = lookup_fn(qname, arguments.size(), loc);
 
-  function* f = lookup_fn(qname, numArgs, loc);
-
-  if (fn_ns == static_context::W3C_FN_NS)
-  {
-    if (f == NULL)
-    {
-      RAISE_ERROR(err::XPST0017, loc,
-      ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
-    }
-
-    // Special processing for certain "fn" functions
-    switch (f->getKind())
-    {
-      case FunctionConsts::FN_HEAD_1:
-      {
-        arguments.push_back(theExprManager->
-                            create_const_expr(theRootSctx, theUDF, loc, xs_integer::one()));
-
-        arguments.push_back(theExprManager->
-                            create_const_expr(theRootSctx, theUDF, loc, xs_integer::one()));
-
-        function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
-
-        fo_expr* foExpr = theExprManager->
-        create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
-
-        normalize_fo(foExpr);
-
-        resultExpr = foExpr;
-        break;
-      }
-      case FunctionConsts::FN_TAIL_1:
-      {
-        arguments.push_back(theExprManager->
-                            create_const_expr(theRootSctx, theUDF, loc, xs_integer(2)));
-
-        function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2);
-
-        fo_expr* foExpr = theExprManager->
-        create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
-
-        normalize_fo(foExpr);
-
-        resultExpr = foExpr;
-        break;
-      }
-      case FunctionConsts::FN_SUBSEQUENCE_2:
-      case FunctionConsts::FN_SUBSEQUENCE_3:
-      case FunctionConsts::FN_SUBSTRING_2:
-      case FunctionConsts::FN_SUBSTRING_3:
-      {
-        std::reverse(arguments.begin(), arguments.end());
-
-        xqtref_t posType = arguments[1]->get_return_type();
-
-        if (numArgs == 2)
-        {
-          if (TypeOps::is_subtype(tm, *posType, *theRTM.INTEGER_TYPE_STAR, loc))
-          {
-            if (f->getKind() == FunctionConsts::FN_SUBSTRING_2)
-              f = BUILTIN_FUNC(OP_SUBSTRING_INT_2);
-            else
-              f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2);
-          }
-        }
-        else
-        {
-          xqtref_t lenType = arguments[2]->get_return_type();
-
-          if (TypeOps::is_subtype(tm, *posType, *theRTM.INTEGER_TYPE_STAR, loc) &&
-              TypeOps::is_subtype(tm, *lenType, *theRTM.INTEGER_TYPE_STAR, loc))
-          {
-            if (f->getKind() == FunctionConsts::FN_SUBSTRING_3)
-              f = BUILTIN_FUNC(OP_SUBSTRING_INT_3);
-            else
-              f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
-          }
-        }
-
-        fo_expr* foExpr = theExprManager->
-        create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
-
-        normalize_fo(foExpr);
-        resultExpr = foExpr;
-        break;
-      }
-      case FunctionConsts::FN_POSITION_0:
-      {
-        resultExpr = lookup_ctx_var(DOT_POS_VARNAME, loc);
-        break;
-      }
-      case FunctionConsts::FN_LAST_0:
-      {
-        resultExpr = lookup_ctx_var(LAST_IDX_VARNAME, loc);
-        break;
-      }
-      case FunctionConsts::FN_NUMBER_0:
-      case FunctionConsts::FN_NUMBER_1:
-      {
-        switch (numArgs)
-        {
-        case 0:
-        {
-          arguments.push_back(DOT_REF);
-          f = BUILTIN_FUNC(FN_NUMBER_1);
-          break;
-        }
-        case 1:
-          break;
-        default:
-          RAISE_ERROR(err::XPST0017, loc,
-          ERROR_PARAMS("fn:number", ZED(FunctionUndeclared_3), numArgs));
-        }
-
-        var_expr* tv = create_temp_var(loc, var_expr::let_var);
-
-        expr* nanExpr = CREATE(const)(theRootSctx, theUDF, loc, xs_double::nan());
-
-        expr* condExpr = CREATE(castable)(theRootSctx,
-                                          theUDF,
-                                          loc,
-                                          tv,
-                                          theRTM.DOUBLE_TYPE_ONE);
-
-        expr* castExpr = create_cast_expr(loc, tv, theRTM.DOUBLE_TYPE_ONE, true);
-
-        expr* ret = CREATE(if)(theRootSctx, theUDF, loc, condExpr, castExpr, nanExpr);
-
-        expr* data_expr = wrap_in_atomization(arguments[0]);
-
-        resultExpr = wrap_in_let_flwor(CREATE(treat)(theRootSctx,
-                                                       theUDF,
-                                                       loc,
-                                                       data_expr,
-                                                       theRTM.ANY_ATOMIC_TYPE_QUESTION,
-                                                       TREAT_TYPE_MATCH),
-                                           tv,
-                                           ret);
-        break;
-      }
-      case FunctionConsts::FN_STATIC_BASE_URI_0:
-      {
-        if (numArgs != 0)
-        {
-          RAISE_ERROR(err::XPST0017, loc,
-          ERROR_PARAMS("fn:static-base-uri",
-                       ZED(FunctionUndeclared_3),
-                       numArgs));
-        }
-
-        zstring baseuri = theSctx->get_base_uri();
-        if (baseuri.empty())
-          resultExpr = create_empty_seq(loc);
-        else
-          resultExpr = CREATE(cast)(theRootSctx, theUDF,
-                                      loc,
-                                      CREATE(const)(theRootSctx, theUDF, loc, baseuri),
-                                      theRTM.ANY_URI_TYPE_ONE);
-        break;;
-      }
-      case FunctionConsts::FN_ID_1:
-      case FunctionConsts::FN_ID_2:
-      case FunctionConsts::FN_ELEMENT_WITH_ID_1:
-      case FunctionConsts::FN_ELEMENT_WITH_ID_2:
-      {
-        if (numArgs == 1)
-        {
-          arguments.insert(arguments.begin(), DOT_REF);
-          f = lookup_fn(qname, 2, loc);
-        }
-
-        expr* idsExpr = arguments[1];
-
-        flwor_expr* flworExpr = wrap_expr_in_flwor(idsExpr, false);
-
-        const for_clause* fc = static_cast<const for_clause*>(flworExpr->get_clause(0));
-        expr* flworVarExpr = fc->get_var();
-
-        fo_expr* normExpr = NULL;
-        fo_expr* tokenExpr = NULL;
-        zstring space(" ");
-        const_expr* constExpr = theExprManager->create_const_expr(theRootSctx, theUDF, loc, space);
-
-        normExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
-                               loc,
-                               BUILTIN_FUNC(FN_NORMALIZE_SPACE_1),
-                               flworVarExpr);
-        normalize_fo(normExpr);
-
-        tokenExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
-                                loc,
-                                BUILTIN_FUNC(FN_TOKENIZE_2),
-                                normExpr,
-                                constExpr);
-        normalize_fo(tokenExpr);
-
-        flworExpr->set_return_expr(tokenExpr);
-
-        pop_scope();
-
-        arguments[1] = flworExpr;
-        break;
-      }
-      case FunctionConsts::FN_IDREF_1:
-      {
-        arguments.insert(arguments.begin(), DOT_REF);
-        f = BUILTIN_FUNC(FN_IDREF_2);
-        break;
-      }
-      case FunctionConsts::FN_LANG_1:
-      {
-        arguments.insert(arguments.begin(), DOT_REF);
-        f = BUILTIN_FUNC(FN_LANG_2);
-        break;
-      }
-      case FunctionConsts::FN_RESOLVE_URI_1:
-      {
-        zstring baseUri = theSctx->get_base_uri();
-        arguments.insert(arguments.begin(), theExprManager->create_const_expr(theRootSctx, theUDF, loc, baseUri));
-        f = BUILTIN_FUNC(FN_RESOLVE_URI_2);
-        break;
-      }
-      case FunctionConsts::FN_CONCAT_N:
-      {
-        if (numArgs < 2)
-          RAISE_ERROR(err::XPST0017, loc,
-            ERROR_PARAMS("concat", ZED(FunctionUndeclared_3), numArgs));
-        break;
-      }
-      case FunctionConsts::FN_DOC_1:
-      {
-        if (numArgs > 0)
-        {
-          expr*  doc_uri = arguments[0];
-
-          //validate uri
-          if(doc_uri->get_expr_kind() == const_expr_kind)
-          {
-            const_expr* const_uri = reinterpret_cast<const_expr*>(doc_uri);
-            const store::Item* uri_value = const_uri->get_val();
-            zstring uri_string = uri_value->getStringValue();
-
-            try
-            {
-              if (uri_string.find(":/", 0, 3) != zstring::npos)
-              {
-                URI docURI(uri_string, true);//with validate
-              }
-            }
-            catch(XQueryException& e)
-            {
-              set_source(e, loc);
-              throw;
-            }
-          }
-        }
-        break;
-      }
-      case FunctionConsts::FN_FOLD_RIGHT_3:
-      {
-        // Because arguments are reversed, the 3rd argument is actually arguments[0]
-        arguments[0] = theExprManager->create_fo_expr(theRootSctx, theUDF,
-                                loc,
-                                BUILTIN_FUNC(FN_REVERSE_1),
-                                arguments[0]);
-      }
-      default: 
-      {
-        // do nothing otherwise
-      }
-    } // switch (f->getKind())
-  } // if (fn_ns == static_context::W3C_FN_NS)
-
-  if (f != NULL && f->getKind() ==  FunctionConsts::FN_APPLY_1)
-  {
-    expr* applyExpr = theExprManager->
-    create_apply_expr(theRootSctx, theUDF, loc, arguments[0], false);
-
-    resultExpr = applyExpr;
-  }
-  
-  if (!resultExpr)
-    resultExpr = generate_fncall(qnameItem, f, arguments, loc);
+  expr* resultExpr = generate_fncall(qnameItem, f, arguments, loc);
   
   push_nodestack(resultExpr);
 }

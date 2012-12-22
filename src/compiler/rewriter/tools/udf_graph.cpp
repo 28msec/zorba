@@ -97,7 +97,7 @@ void UDFGraph::build(const expr* e)
 void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain)
 {
   expr_kind_t kind = curExpr->get_expr_kind();
-
+ 
   if (kind == fo_expr_kind || kind == function_item_expr_kind)
   {
     user_function* udf = NULL;
@@ -111,7 +111,10 @@ void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain
     else
     {
       const function_item_expr* fi = static_cast<const function_item_expr*>(curExpr);
-      udf = static_cast<user_function*>(fi->get_function());
+      // Literal function item expressions might have UDFs, but they should not
+      // get into the UDF graph.
+      if (fi->is_inline())
+        udf = static_cast<user_function*>(fi->get_function());
     }
 
     if (udf != NULL)
@@ -216,7 +219,7 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
     udf->optimize();
 
     body = udf->getBody();
-
+    
     TypeManager* tm = body->get_type_manager();
 
 #if 1
