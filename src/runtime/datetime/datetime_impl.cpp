@@ -20,15 +20,50 @@
 
 #include <zorba/diagnostic_list.h>
 
+#include "diagnostics/xquery_exception.h"
 #include "runtime/datetime/datetime.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
+#include "util/ascii_util.h"
 #include "util/strptime.h"
 #include "util/time_util.h"
 
 using namespace std;
 
 namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
+
+static void try_strptime( zstring const &buf, zstring const &fmt,
+                          time::ztm *tm, QueryLoc const &loc ) {
+  try {
+    time::strptime( buf, fmt, tm );
+  }
+  catch ( time::invalid_specification const &e ) {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDTP0001_INVALID_SPECIFICATION,
+      ERROR_PARAMS( ascii::printable_char( e.get_spec() ) ),
+      ERROR_LOC( loc )
+    );
+  }
+  catch ( time::invalid_value const &e ) {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDTP0002_INVALID_VALUE,
+      ERROR_PARAMS( e.get_value(), e.get_specs() ),
+      ERROR_LOC( loc )
+    );
+  }
+  catch ( time::literal_mismatch const &e ) {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDTP0003_LITERAL_MISMATCH,
+      ERROR_PARAMS(
+        ascii::printable_char( e.get_got() ),
+        ascii::printable_char( e.get_expected() )
+      ),
+      ERROR_LOC( loc )
+    );
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -113,7 +148,7 @@ bool ParseDate::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   consumeNext( item, theChild1, plan_state );
   item->getStringValue2( fmt );
 
-  time::strptime( buf, fmt, &tm );
+  try_strptime( buf, fmt, &tm, loc );
 
   GENV_ITEMFACTORY->createDate(
     result,
@@ -140,7 +175,7 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
   consumeNext( item, theChild1, plan_state );
   item->getStringValue2( fmt );
 
-  time::strptime( buf, fmt, &tm );
+  try_strptime( buf, fmt, &tm, loc );
 
   GENV_ITEMFACTORY->createDateTime(
     result,
@@ -170,7 +205,7 @@ bool ParseTime::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   consumeNext( item, theChild1, plan_state );
   item->getStringValue2( fmt );
 
-  time::strptime( buf, fmt, &tm );
+  try_strptime( buf, fmt, &tm, loc );
 
   GENV_ITEMFACTORY->createTime(
     result,

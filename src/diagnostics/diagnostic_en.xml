@@ -2583,6 +2583,20 @@
       <value>"continue loop" statement not inside while statement</value>
     </diagnostic>
 
+   <!--////////// dateTime ParseErrors /////////////////////////////////////-->
+
+    <diagnostic code="ZDTP0001" name="INVALID_SPECIFICATION">
+      <value>'$1': invalid % conversion specification</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0002" name="INVALID_VALUE">
+      <value>"$1": invalid value for conversion specification(s) %$2</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0003" name="LITERAL_MISMATCH">
+      <value>'$1': literal character mismatched '$2'</value>
+    </diagnostic>
+
    <!--////////// JSON Parse Errors ////////////////////////////////////////-->
 
     <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">

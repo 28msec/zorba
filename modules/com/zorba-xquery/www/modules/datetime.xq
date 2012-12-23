@@ -28,7 +28,10 @@ xquery version "3.0";
  :
  :)
 module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";
+
 declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
+
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
@@ -71,7 +74,12 @@ declare %an:nondeterministic function datetime:current-time()
  : exactly with the buffer; all whitespace characters match any amount of
  : whitespace in the buffer.
  : @return Returns an xs:date.
- : @throws TODO
+ : @error zerr:ZDTP0001 if $format contains an invalid conversion specification.
+ : @error zerr:ZDTP0002 if $input contains an invalid value for a conversion
+ : specification.
+ : @error zerr:ZDTP0003 if there is a literal characer mismatch between $input
+ : and $format.
+ : @example test/rbkt/Queries/zorba/datetime/TODO
  :)
 declare function datetime:parse-date(
   $input as xs:string,
@@ -87,7 +95,12 @@ declare function datetime:parse-date(
  : exactly with the buffer; all whitespace characters match any amount of
  : whitespace in the buffer.
  : @return Returns an xs:dateTime.
- : @throws TODO
+ : @error zerr:ZDTP0001 if $format contains an invalid conversion specification.
+ : @error zerr:ZDTP0002 if $input contains an invalid value for a conversion
+ : specification.
+ : @error zerr:ZDTP0003 if there is a literal characer mismatch between $input
+ : and $format.
+ : @example test/rbkt/Queries/zorba/datetime/TODO
  :)
 declare function datetime:parse-dateTime(
   $input as xs:string,
@@ -103,7 +116,12 @@ declare function datetime:parse-dateTime(
  : exactly with the buffer; all whitespace characters match any amount of
  : whitespace in the buffer.
  : @return Returns an xs:time.
- : @throws TODO
+ : @error zerr:ZDTP0001 if $format contains an invalid conversion specification.
+ : @error zerr:ZDTP0002 if $input contains an invalid value for a conversion
+ : specification.
+ : @error zerr:ZDTP0003 if there is a literal characer mismatch between $input
+ : and $format.
+ : @example test/rbkt/Queries/zorba/datetime/TODO
  :)
 declare function datetime:parse-time(
   $input as xs:string,
