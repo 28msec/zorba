@@ -44,7 +44,7 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="ParseDate" arity="binary">
+<zorba:iterator name="ParseDate">
   <zorba:description author="Zorba Team">
     function for parsing strings into a date
   </zorba:description>
@@ -57,7 +57,7 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="ParseDateTime" arity="binary">
+<zorba:iterator name="ParseDateTime">
   <zorba:description author="Zorba Team">
     function for parsing strings into a dateTime
   </zorba:description>
@@ -70,7 +70,7 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator name="ParseTime" arity="binary">
+<zorba:iterator name="ParseTime">
   <zorba:description author="Zorba Team">
     function for parsing strings into a time
   </zorba:description>

@@ -122,7 +122,7 @@ SERIALIZABLE_CLASS_VERSIONS(ParseDate)
 void ParseDate::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (BinaryBaseIterator<ParseDate, PlanIteratorState>*)this);
+  (NaryBaseIterator<ParseDate, PlanIteratorState>*)this);
 }
 
 
@@ -130,8 +130,11 @@ void ParseDate::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
-  theChild0->accept(v);
-theChild1->accept(v);
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
 
   v.endVisit(*this);
 }
@@ -147,7 +150,7 @@ SERIALIZABLE_CLASS_VERSIONS(ParseDateTime)
 void ParseDateTime::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (BinaryBaseIterator<ParseDateTime, PlanIteratorState>*)this);
+  (NaryBaseIterator<ParseDateTime, PlanIteratorState>*)this);
 }
 
 
@@ -155,8 +158,11 @@ void ParseDateTime::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
-  theChild0->accept(v);
-theChild1->accept(v);
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
 
   v.endVisit(*this);
 }
@@ -172,7 +178,7 @@ SERIALIZABLE_CLASS_VERSIONS(ParseTime)
 void ParseTime::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (BinaryBaseIterator<ParseTime, PlanIteratorState>*)this);
+  (NaryBaseIterator<ParseTime, PlanIteratorState>*)this);
 }
 
 
@@ -180,8 +186,11 @@ void ParseTime::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
-  theChild0->accept(v);
-theChild1->accept(v);
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
 
   v.endVisit(*this);
 }

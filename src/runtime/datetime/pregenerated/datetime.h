@@ -26,9 +26,9 @@
 
 #include "common/shared_types.h"
 
-#include "runtime/base/binarybase.h"
 
 
+#include "runtime/base/narybase.h"
 #include "runtime/base/narybase.h"
 
 
@@ -136,22 +136,22 @@ public:
  *  
  * Author: Zorba Team
  */
-class ParseDate : public BinaryBaseIterator<ParseDate, PlanIteratorState>
+class ParseDate : public NaryBaseIterator<ParseDate, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ParseDate);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ParseDate,
-    BinaryBaseIterator<ParseDate, PlanIteratorState>);
+    NaryBaseIterator<ParseDate, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
   ParseDate(
     static_context* sctx,
     const QueryLoc& loc,
-    PlanIter_t& child1, PlanIter_t& child2)
+    std::vector<PlanIter_t>& children)
     : 
-    BinaryBaseIterator<ParseDate, PlanIteratorState>(sctx, loc, child1, child2)
+    NaryBaseIterator<ParseDate, PlanIteratorState>(sctx, loc, children)
   {}
 
   virtual ~ParseDate();
@@ -168,22 +168,22 @@ public:
  *  
  * Author: Zorba Team
  */
-class ParseDateTime : public BinaryBaseIterator<ParseDateTime, PlanIteratorState>
+class ParseDateTime : public NaryBaseIterator<ParseDateTime, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ParseDateTime);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ParseDateTime,
-    BinaryBaseIterator<ParseDateTime, PlanIteratorState>);
+    NaryBaseIterator<ParseDateTime, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
   ParseDateTime(
     static_context* sctx,
     const QueryLoc& loc,
-    PlanIter_t& child1, PlanIter_t& child2)
+    std::vector<PlanIter_t>& children)
     : 
-    BinaryBaseIterator<ParseDateTime, PlanIteratorState>(sctx, loc, child1, child2)
+    NaryBaseIterator<ParseDateTime, PlanIteratorState>(sctx, loc, children)
   {}
 
   virtual ~ParseDateTime();
@@ -200,22 +200,22 @@ public:
  *  
  * Author: Zorba Team
  */
-class ParseTime : public BinaryBaseIterator<ParseTime, PlanIteratorState>
+class ParseTime : public NaryBaseIterator<ParseTime, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ParseTime);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ParseTime,
-    BinaryBaseIterator<ParseTime, PlanIteratorState>);
+    NaryBaseIterator<ParseTime, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
   ParseTime(
     static_context* sctx,
     const QueryLoc& loc,
-    PlanIter_t& child1, PlanIter_t& child2)
+    std::vector<PlanIter_t>& children)
     : 
-    BinaryBaseIterator<ParseTime, PlanIteratorState>(sctx, loc, child1, child2)
+    NaryBaseIterator<ParseTime, PlanIteratorState>(sctx, loc, children)
   {}
 
   virtual ~ParseTime();

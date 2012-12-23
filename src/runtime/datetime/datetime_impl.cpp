@@ -143,9 +143,9 @@ bool ParseDate::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  consumeNext( item, theChild0, plan_state );
+  consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( buf );
-  consumeNext( item, theChild1, plan_state );
+  consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
 
   try_strptime( buf, fmt, &tm, loc );
@@ -170,9 +170,9 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  consumeNext( item, theChild0, plan_state );
+  consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( buf );
-  consumeNext( item, theChild1, plan_state );
+  consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
 
   try_strptime( buf, fmt, &tm, loc );
@@ -200,9 +200,9 @@ bool ParseTime::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  consumeNext( item, theChild0, plan_state );
+  consumeNext( item, theChildren[0], plan_state );
   item->getStringValue2( buf );
-  consumeNext( item, theChild1, plan_state );
+  consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
 
   try_strptime( buf, fmt, &tm, loc );

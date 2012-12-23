@@ -68,7 +68,7 @@ PlanIter_t fn_zorba_dateTime_parse_date::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ParseDate(sctx, loc, argv[0], argv[1]);
+  return new ParseDate(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_dateTime_parse_dateTime::codegen(
@@ -78,7 +78,7 @@ PlanIter_t fn_zorba_dateTime_parse_dateTime::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ParseDateTime(sctx, loc, argv[0], argv[1]);
+  return new ParseDateTime(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_dateTime_parse_time::codegen(
@@ -88,7 +88,7 @@ PlanIter_t fn_zorba_dateTime_parse_time::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ParseTime(sctx, loc, argv[0], argv[1]);
+  return new ParseTime(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_dateTime_timestamp::codegen(
