@@ -8,6 +8,8 @@ declare collection ns:collection1 as node()*;
 
 declare collection ns:collection-objects as object()*;
 
+declare collection ns:collection-arrays as array()*;
+
 declare %ann:ordered collection ns:collection2;
 
 declare %ann:const collection ns:collection_const as node()*;
