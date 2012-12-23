@@ -919,7 +919,7 @@ void SourceFinder::findNodeSourcesRec(
 
     case var_expr::arg_var:
     {
-      theVarSourcesMap.insert(VarSourcesPair(e, NULL));
+      theVarSourcesMap.insert(VarSourcesPair(e, nullptr));
 
       return;
     }
