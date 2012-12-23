@@ -184,7 +184,7 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
     static_cast<short>( tm.tm_mday ),
     static_cast<short>( tm.tm_hour ),
     static_cast<short>( tm.tm_min ),
-    static_cast<short>( tm.tm_sec ),
+    tm.tm_sec,
     static_cast<short>( tm.ZTM_GMTOFF / 3600 )
   );
 
