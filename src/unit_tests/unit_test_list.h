@@ -56,6 +56,7 @@ namespace UnitTests {
   int test_unique_ptr( int, char*[] );
 #endif /* ZORBA_HAVE_UNIQUE_PTR */
 
+  int test_utf8_streambuf( int, char*[] );
   int test_uuid( int, char*[] );
 
 #ifndef ZORBA_HAVE_UNORDERED_MAP

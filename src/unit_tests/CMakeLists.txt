@@ -26,6 +26,7 @@ SET(UNIT_TEST_SRCS
   test_json_parser.cpp
   test_fs_iterator.cpp
   test_hashmaps.cpp
+  test_utf8_streambuf.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

@@ -61,6 +61,7 @@ void initializeTestList()
   libunittests["unique_ptr"] = test_unique_ptr;
 #endif /* ZORBA_HAVE_UNIQUE_PTR */
 
+  libunittests["utf8_streambuf"] = test_utf8_streambuf;
   libunittests["uuid"] = test_uuid;
 
 #ifndef ZORBA_HAVE_UNORDERED_MAP

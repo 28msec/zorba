@@ -38,7 +38,7 @@ namespace zorba {
  *  is.ios::rdbuf( &xbuf );
  * \endcode
  * Note that the %icu_streambuf must exist for as long as it's being used by
- * the stream.  If you are replacing the streabuf for a stream you did not
+ * the stream.  If you are replacing the streambuf for a stream you did not
  * create, you should set it back to the original streambuf:
  * \code
  *  void f( ostream &os ) {
