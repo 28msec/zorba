@@ -1518,7 +1518,9 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
   key += ":";
   key += ns;
   key += " ";
-  key += TypeOps::decode_quantifier(itemXQType->get_quantifier());
+
+  if (!itemUDType->isList())
+    key += TypeOps::decode_quantifier(itemXQType->get_quantifier());
 
   xqtref_t res;
   if( !theUdTypesCache->get(key, res) )

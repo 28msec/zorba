@@ -49,7 +49,7 @@
 namespace zorba
 {
 
-void castToUserDefinedType(
+void castToUserDefinedAtomicType(
     store::Item_t& result,
     const store::Item_t& aItem,
     const XQType* aSourceType,
@@ -2127,7 +2127,7 @@ bool GenericCast::castToAtomic(
 #ifndef ZORBA_NO_XMLSCHEMA
   if (targetType->type_kind() == XQType::USER_DEFINED_KIND)
   {
-    castToUserDefinedType(result, item, sourceType.getp(), targetType, loc);
+    castToUserDefinedAtomicType(result, item, sourceType.getp(), targetType, loc);
     return result != NULL;
   }
 #endif // ZORBA_NO_XMLSCHEMA
@@ -2283,14 +2283,14 @@ bool GenericCast::castToAtomic(
 /*******************************************************************************
 
 ********************************************************************************/
-void castToUserDefinedType(
+void castToUserDefinedAtomicType(
     store::Item_t& result,
-    const store::Item_t& aItem,
-    const XQType* aSourceType,
-    const XQType* aTargetType,
+    const store::Item_t& item,
+    const XQType* sourceType,
+    const XQType* targetType,
     const QueryLoc& loc)
 {
-  ErrorInfo lErrorInfo(aSourceType, aTargetType, loc);
+  ErrorInfo lErrorInfo(sourceType, targetType, loc);
 
   // std::cout << "-castToUserDefinedType: " << aItem.getp()->getStringValue()->c_str()
   //           << " srcType: " << aSourceType->get_qname()->getLocalName()->c_str()
@@ -2299,45 +2299,33 @@ void castToUserDefinedType(
   //           << aTargetType->get_qname()->getLocalName()->c_str() << " @ "
   //           << aTargetType->get_qname()->getNamespace()->c_str() << "\n";
 
-  const TypeManager* tm = aTargetType->get_manager();
+  const TypeManager* tm = targetType->get_manager();
   Schema* schema = tm->getSchema();
 
-  if (aSourceType->type_kind() != XQType::ATOMIC_TYPE_KIND ||
-      (TypeOps::get_atomic_type_code(*aSourceType) != store::XS_STRING))
+  if (sourceType->type_kind() != XQType::ATOMIC_TYPE_KIND ||
+      (TypeOps::get_atomic_type_code(*sourceType) != store::XS_STRING))
   {
     throwTypeException(err::FORG0001, lErrorInfo);
   }
 
-  const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
+  const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
 
-  switch (udt->getTypeCategory())
+  ZORBA_ASSERT(udt->getTypeCategory() == UserDefinedXQType::ATOMIC_TYPE);
+
+  zstring strValue;
+  item->getStringValue2(strValue);
+
+  store::Item_t baseItem;
+  bool hasResult = schema->parseUserAtomicTypes(strValue,
+                                                targetType,
+                                                baseItem,
+                                                NULL,
+                                                loc);
+  if (hasResult)
   {
-  case UserDefinedXQType::ATOMIC_TYPE:
-  {
-    zstring strValue;
-    aItem->getStringValue2(strValue);
-
-    store::Item_t baseItem;
-    bool hasResult = schema->parseUserAtomicTypes(strValue,
-                                                  aTargetType,
-                                                  baseItem,
-                                                  NULL,
-                                                  loc);
-    if (hasResult)
-    {
-      store::Item_t typeName = udt->get_qname();
-      GENV_ITEMFACTORY->createUserTypedAtomicItem(result, baseItem, typeName);
-      return;
-    }
-  }
-  break;
-
-  case UserDefinedXQType::LIST_TYPE:
-  case UserDefinedXQType::UNION_TYPE:
-  case UserDefinedXQType::COMPLEX_TYPE:
-  default:
-    ZORBA_ASSERT( false);
-    break;
+    store::Item_t typeName = udt->get_qname();
+    GENV_ITEMFACTORY->createUserTypedAtomicItem(result, baseItem, typeName);
+    return;
   }
 
   result = NULL;

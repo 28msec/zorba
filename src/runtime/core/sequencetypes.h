@@ -69,7 +69,18 @@ public:
 
   http://www.w3.org/TR/xquery/#id-cast
 ********************************************************************************/
-class CastIterator : public UnaryBaseIterator<CastIterator, PlanIteratorState> 
+class CastIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::Item_t> theResultItems;
+  csize                      theResultPos;
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+class CastIterator : public UnaryBaseIterator<CastIterator, CastIteratorState> 
 {
   friend class PrinterVisitor;
 
@@ -81,7 +92,7 @@ public:
   SERIALIZABLE_CLASS(CastIterator);
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   CastIterator,
-  UnaryBaseIterator<CastIterator, PlanIteratorState>);
+  UnaryBaseIterator<CastIterator, CastIteratorState>);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:

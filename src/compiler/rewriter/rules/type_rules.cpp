@@ -185,7 +185,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     // If the prime types of the arg type and the target type are equal, then
     // for a cast expr, we just need to make sure that the cardinality of the
     // arg is the correct one. This we can do by turning cast to a treat expr
-    // that just chacks the cardinality.
+    // that just checks the cardinality.
     if (node->get_expr_kind() == cast_expr_kind &&
         TypeOps::is_equal(tm, *arg_ptype, *target_ptype, arg->get_loc()))
     {

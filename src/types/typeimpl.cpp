@@ -1101,7 +1101,12 @@ UserDefinedXQType::UserDefinedXQType(
   m_contentKind(SIMPLE_CONTENT_KIND),
   m_unionItemTypes(unionItemTypes)
 {
-  ZORBA_ASSERT(quantifier == TypeConstants::QUANT_ONE);
+  std::vector<xqtref_t>::const_iterator ite = unionItemTypes.begin();
+  std::vector<xqtref_t>::const_iterator end = unionItemTypes.end();
+  for (; ite != end; ++ite)
+  {
+    theQuantifier = TypeOps::union_quant(theQuantifier, (*ite)->get_quantifier());
+  }
 }
 
 

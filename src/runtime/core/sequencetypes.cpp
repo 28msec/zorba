@@ -177,6 +177,21 @@ UNARY_ACCEPT(InstanceOfIterator);
 /*******************************************************************************
 
 ********************************************************************************/
+void CastIteratorState::init(PlanState& planState) 
+{
+  PlanIteratorState::init(planState);
+  theResultPos = 0;
+  theResultItems.clear();
+}
+
+
+void CastIteratorState::reset(PlanState& planState) 
+{
+  PlanIteratorState::reset(planState);
+  theResultPos = 0;
+  theResultItems.clear();
+}
+
 
 CastIterator::CastIterator(
     static_context* sctx,
@@ -185,7 +200,7 @@ CastIterator::CastIterator(
     const xqtref_t& castType,
     bool allowEmpty)
   : 
-  UnaryBaseIterator<CastIterator, PlanIteratorState>(sctx, loc, child),
+  UnaryBaseIterator<CastIterator, CastIteratorState>(sctx, loc, child),
   theAllowEmpty(allowEmpty)
 {
   theCastType = TypeOps::prime_type(sctx->get_typemanager(), *castType);
@@ -199,7 +214,7 @@ CastIterator::~CastIterator()
 
 void CastIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, CastIteratorState>*)this);
   ar & theCastType;
   ar & theAllowEmpty;
 }
@@ -209,11 +224,15 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   bool valid = false;
+  const UserDefinedXQType* udt;
+  store::SchemaTypeCode targetType;
+  store::SchemaTypeCode itemTypeCode;
+  zstring strval;
 
   const TypeManager* tm = theSctx->get_typemanager();
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  CastIteratorState* state;
+  DEFAULT_STACK_INIT(CastIteratorState, state, planState);
 
   if (!consumeNext(item, theChild.getp(), planState))
   {
@@ -227,8 +246,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (theCastType->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
-      store::SchemaTypeCode targetType = 
-      static_cast<const AtomicXQType*>(theCastType.getp())->get_type_code();
+      targetType = static_cast<const AtomicXQType*>(theCastType.getp())->get_type_code();
 
       valid = GenericCast::castToAtomic(result, item, targetType, tm, NULL, loc);
     }
@@ -236,14 +254,12 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       ZORBA_ASSERT(theCastType->type_kind() == XQType::USER_DEFINED_KIND);
 
-      const UserDefinedXQType* udt = 
-      static_cast<const UserDefinedXQType*>(theCastType.getp());
+      udt = static_cast<const UserDefinedXQType*>(theCastType.getp());
 
-      store::SchemaTypeCode itemTypeCode = item->getTypeCode();
+      itemTypeCode = item->getTypeCode();
 
       if (udt->isAtomic())
       {
-        zstring strval;
         item->getStringValue2(strval);
       
         namespace_context tmp_ctx(theSctx);
@@ -258,19 +274,28 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         assert(udt->isList() || udt->isUnion());
 
-        if (itemTypeCode == store::XS_STRING ||
-            itemTypeCode == store::XS_UNTYPED_ATOMIC)
+        //if (itemTypeCode == store::XS_STRING ||
+        //    itemTypeCode == store::XS_UNTYPED_ATOMIC)
         {
-          zstring strval;
           item->getStringValue2(strval);
 
-          std::vector<store::Item_t> resultItems;
           valid = GenericCast::castToSimple(strval,
                                             theCastType,
-                                            resultItems,
+                                            state->theResultItems,
                                             tm,
                                             loc);
+
+          state->theResultPos = 0;
+
+          while (state->theResultPos < state->theResultItems.size())
+          {
+            result = state->theResultItems[state->theResultPos];
+            STACK_PUSH(true, state);
+
+            ++state->theResultPos;
+          }
         }
+        /*
         else
         {
           xqtref_t sourceType = tm->create_value_type(item);
@@ -278,6 +303,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           RAISE_ERROR(err::XPTY0004, loc,
           ERROR_PARAMS(*sourceType, ZED(NoCastTo_34o), *theCastType));
         }
+        */
       }
     }
 
@@ -300,7 +326,6 @@ UNARY_ACCEPT(CastIterator);
 /*******************************************************************************
 
 ********************************************************************************/
-
 CastableIterator::CastableIterator(
   static_context* sctx,
   const QueryLoc& loc,

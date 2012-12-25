@@ -8611,43 +8611,75 @@ expr* create_cast_expr(
 
   if (TypeOps::is_subtype(tm, *type, *theRTM.QNAME_TYPE_QUESTION, loc))
   {
-    const const_expr* ce = dynamic_cast<const_expr*>(node);
-
-    if (ce != NULL &&
-        TypeOps::is_equal(tm,
-                          *tm->create_value_type(ce->get_val()),
-                          *theRTM.STRING_TYPE_ONE,
-                          loc))
+    if (node->get_expr_kind() == const_expr_kind)
     {
-      store::Item_t castLiteral;
-      try
+      const const_expr* ce = static_cast<const_expr*>(node);
+
+      if (ce->get_val()->getTypeCode() == store::XS_STRING)
       {
-        GenericCast::castToQName(castLiteral, ce->get_val(), theNSCtx, false, tm, loc);
-      }
-      catch (ZorbaException& e)
-      {
-        if (isCast)
+        store::Item_t result;
+        try
         {
-          throw;
+          GenericCast::castToQName(result, ce->get_val(), theNSCtx, false, tm, loc);
+        }
+        catch (ZorbaException& e)
+        {
+          if (isCast)
+          {
+            throw;
+          }
+          else
+          {
+            if (e.diagnostic() == err::FORG0001)
+              throw;// XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+            else
+              RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(result->getStringValue()));
+          }
+        }
+
+        if (type->type_kind() == XQType::USER_DEFINED_KIND)
+        {
+          const UserDefinedXQType* udt = 
+          static_cast<const UserDefinedXQType*>(type.getp());
+
+          store::Item_t tmp = result;
+          store::Item_t typeName = udt->get_qname();
+          GENV_ITEMFACTORY->createUserTypedAtomicItem(result, tmp, typeName);
+        }
+
+        assert(result != NULL || ! isCast);
+        return (isCast ?
+                CREATE(const)(theRootSctx, theUDF, loc, result) :
+                CREATE(const)(theRootSctx, theUDF, loc, result != NULL));
+      }
+    }
+
+    xqtref_t inputType = node->get_return_type();
+
+    if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    {
+      // when casting to type T, where T is QName or subtype of, and the input
+      // is not a const expr, then the input MUST be of type T or subtype of.
+      if (isCast)
+      {
+        if (TypeOps::is_subtype(tm, *inputType, *theRTM.QNAME_TYPE_STAR, loc))
+        {
+          return CREATE(cast)(theRootSctx, theUDF, loc, node, type, allowsEmpty);
         }
         else
         {
-          if (e.diagnostic() == err::FORG0001)
-            throw;// XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
-          else
-            RAISE_ERROR(err::XPST0081, loc,
-            ERROR_PARAMS(castLiteral->getStringValue()));
+          return CREATE(treat)(theRootSctx, theUDF, loc, node, type, TREAT_TYPE_MATCH);
         }
       }
-
-      assert(castLiteral != NULL || ! isCast);
-
-      if (isCast)
-        return CREATE(const)(theRootSctx, theUDF, loc, castLiteral);
       else
-        return CREATE(const)(theRootSctx, theUDF, loc, castLiteral != NULL);
+      {
+        return CREATE(instanceof)(theRootSctx, theUDF, loc, node, type);
+      }
     }
-    else if (TypeOps::is_subtype(tm, *type, *theRTM.ANY_NODE_TYPE_PLUS, loc))
+
+    expr* input = wrap_in_atomization(node);
+
+    if (TypeOps::is_subtype(tm, *inputType, *theRTM.ANY_NODE_TYPE_PLUS, loc))
     {
       if (isCast)
       {
@@ -8658,44 +8690,20 @@ expr* create_cast_expr(
         return CREATE(const)(theRootSctx, theUDF, loc, false);
       }
     }
-    else
-    {
-      xqtref_t qnameType = (type->get_quantifier() == TypeConstants::QUANT_ONE ?
-                            GENV_TYPESYSTEM.QNAME_TYPE_ONE :
-                            GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
 
-      if (isCast)
-        return CREATE(cast)(theRootSctx,
-                            theUDF,
-                            loc,
-                            wrap_in_atomization(node),
-                            qnameType,
-                            allowsEmpty);
-      else
-        return CREATE(castable)(theRootSctx,
-                                theUDF,
-                                loc,
-                                wrap_in_atomization(node),
-                                qnameType,
-                                allowsEmpty);
-    }
+    if (isCast)
+      return CREATE(cast)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
+    else
+      return CREATE(castable)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
   }
   else
   {
+    expr* input = wrap_in_atomization(node);
+
     if (isCast)
-      return CREATE(cast)(theRootSctx,
-                          theUDF,
-                          loc,
-                          wrap_in_atomization(node),
-                          type,
-                          allowsEmpty);
+      return CREATE(cast)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
     else
-      return CREATE(castable)(theRootSctx,
-                              theUDF,
-                              loc,
-                              wrap_in_atomization(node),
-                              type,
-                              allowsEmpty);
+      return CREATE(castable)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
   }
 }
 
