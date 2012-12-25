@@ -17,6 +17,8 @@
 #ifndef ZORBA_COMPILER_EXPR_BASE
 #define ZORBA_COMPILER_EXPR_BASE
 
+#include <map>
+
 #include <zorba/config.h>
 
 #include "common/shared_types.h"
@@ -27,7 +29,7 @@
 
 #include "functions/function_consts.h"
 
-#include "types/typeimpl.h"
+//#include "types/typeimpl.h"
 
 #include "context/static_context_consts.h"
 
@@ -122,11 +124,9 @@ enum expr_kind_t
 ********************************************************************************/
 class expr
 {
-  friend class expr_iterator_data;
   friend class ExprIterator;
   friend class forletwin_clause;
-  friend class for_clause;
-  friend class let_clause;
+  friend class forlet_clause;
   friend class where_clause;
   friend class function_trace_expr;
 
@@ -135,7 +135,7 @@ public:
 
   typedef substitution_t::iterator subst_iter_t;
 
-  typedef std::set<const var_expr *> FreeVars;
+  typedef std::set<var_expr *> FreeVars;
 
   typedef enum
   {
@@ -147,8 +147,10 @@ public:
     UNFOLDABLE              = 10,
     CONTAINS_RECURSIVE_CALL = 12,
     PROPAGATES_INPUT_NODES  = 14,
-    WILL_BE_SERIALIZED      = 16,
-    MUST_COPY_NODES         = 18
+    MUST_COPY_NODES         = 16,
+    CONTAINS_PRAGMA         = 18,
+    CONSTRUCTS_NODES        = 20,
+    DEREFERENCES_NODES      = 22
   } Annotationkey;
 
   typedef enum
@@ -161,9 +163,16 @@ public:
     UNFOLDABLE_MASK               = 0xC00,
     CONTAINS_RECURSIVE_CALL_MASK  = 0x3000,
     PROPAGATES_INPUT_NODES_MASK   = 0xC000,
-    WILL_BE_SERIALIZED_MASK       = 0x30000,
-    MUST_COPY_NODES_MASK          = 0xC0000
+    MUST_COPY_NODES_MASK          = 0x30000,
+    CONTAINS_PRAGMA_MASK          = 0xC0000,
+    CONSTRUCTS_NODES_MASK         = 0x300000,
+    DEREFERENCES_NODES_MASK       = 0xC00000
   } AnnotationMask;
+
+  typedef enum
+  {
+    IN_TYPE_COMPUTE  = 0x1
+  } BoolFlags;
 
 
 protected:
@@ -171,20 +180,27 @@ protected:
   static expr*    * iter_done;
 
 protected:
+  CompilerCB * const theCCB;
+
   static_context   * theSctx;
+
+  user_function    * theUDF;
 
   QueryLoc           theLoc;
 
   unsigned short     theKind;
+
   unsigned short     theScriptingKind;
 
   xqtref_t           theType;
 
-  uint32_t           theFlags1;
+  uint32_t           theAnnotationFlags;
+
+  uint8_t            theBoolFlags;
+
+  uint8_t            theVisitId;
 
   FreeVars           theFreeVars;
-
-  CompilerCB       * theCCB;
 
 public:
   static bool is_sequential(unsigned short theScriptingKind);
@@ -193,17 +209,21 @@ public:
 
   static void checkNonUpdating(const expr* e);
 
-  virtual void free() {}
-
 protected:
-  expr(CompilerCB*, static_context*, const QueryLoc&, expr_kind_t);
+  expr(CompilerCB*, static_context*, user_function*, const QueryLoc&, expr_kind_t);
 
-  expr() : theSctx(NULL), theFlags1(0), theCCB(NULL) {}
+  expr();
 
 public:
   virtual ~expr();
 
-  CompilerCB* get_ccb() {return theCCB;}
+  CompilerCB* get_ccb() { return theCCB; }
+
+  static_context* get_sctx() const { return theSctx; }
+
+  TypeManager* get_type_manager() const;
+
+  user_function* get_udf() const { return theUDF; }
 
   expr_kind_t get_expr_kind() const { return static_cast<expr_kind_t>(theKind); }
 
@@ -211,13 +231,9 @@ public:
 
   void set_loc(const QueryLoc& loc) { theLoc = loc; }
 
-  static_context* get_sctx() const { return theSctx; }
+  uint32_t getAnnotationFlags() const { return theAnnotationFlags; }
 
-  TypeManager* get_type_manager() const;
-
-  uint32_t getFlags() const { return theFlags1; }
-
-  void setFlags(uint32_t flags) { theFlags1 = flags; }
+  void setAnnotationFlags(uint32_t flags) { theAnnotationFlags = flags; }
 
   unsigned short get_scripting_detail() const { return theScriptingKind; }
 
@@ -241,9 +257,9 @@ public:
 
   xqtref_t get_return_type();
 
-  expr* clone() const;
+  expr* clone(user_function* udf) const;
 
-  virtual expr* clone(substitution_t& substitution) const;
+  expr* clone(user_function* udf, substitution_t& subst) const;
 
   virtual void accept(expr_visitor& v) = 0;
 
@@ -254,6 +270,20 @@ public:
   std::string toString() const;
 
 public:
+  //
+  void setVisitId(uint8_t id) { theVisitId = id; }
+
+  bool isVisited(uint8_t id) const { return theVisitId == id; }
+
+  uint8_t getVisitId() const { return theVisitId; }
+
+  // Transient flag used only during the type computation for global vars
+  bool isInTypeCompute() const { return theBoolFlags & IN_TYPE_COMPUTE; }
+
+  void setInTypeCompute() { theBoolFlags |= IN_TYPE_COMPUTE; }
+
+  void resetInTypeCompute() { theBoolFlags &= ~IN_TYPE_COMPUTE; }
+
   // Annotation : produces-sorted-nodes
   BoolAnnotationValue getProducesSortedNodes() const;
 
@@ -313,12 +343,26 @@ public:
 
   void setMustCopyNodes(BoolAnnotationValue v);
 
-  // Annotation : willBeSerialized
-  BoolAnnotationValue getWillBeSerialized() const;
+  // Annotation : containsPragma
+  BoolAnnotationValue getContainsPragma() const;
 
-  void setWillBeSerialized(BoolAnnotationValue v);
+  void setContainsPragma(BoolAnnotationValue v);
 
-  bool willBeSerialized() const;
+  bool containsPragma() const;
+
+  // Annotation : constructsNodes
+  BoolAnnotationValue getConstructsNodes() const;
+
+  void setConstructsNodes(BoolAnnotationValue v);
+
+  bool constructsNodes() const;
+
+  // Annotation : dereferencesNodes
+  BoolAnnotationValue getDereferencesNodes() const;
+
+  void setDereferencesNodes(BoolAnnotationValue v);
+
+  bool dereferencesNodes() const;
 
   // Annotation : free vars
   const FreeVars& getFreeVars() const { return theFreeVars; }
@@ -327,6 +371,7 @@ public:
 
   void setFreeVars(FreeVars& s);
 
+  //
   bool is_constant() const;
 
   bool is_nondeterministic() const;
@@ -334,8 +379,6 @@ public:
   void replace_expr(expr* oldExpr, expr* newExpr);
 
   bool contains_expr(const expr* e) const;
-
-  bool contains_node_construction() const;
 
   void get_exprs_of_kind(
       expr_kind_t kind,

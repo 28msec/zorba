@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -655,6 +655,37 @@ void ZorbaDeleteNodesLastIterator::accept(PlanIterVisitor& v) const
 ZorbaDeleteNodesLastIterator::~ZorbaDeleteNodesLastIterator() {}
 
 // </ZorbaDeleteNodesLastIterator>
+
+
+// <ZorbaEditNodesIterator>
+SERIALIZABLE_CLASS_VERSIONS(ZorbaEditNodesIterator)
+
+void ZorbaEditNodesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>*)this);
+
+    ar & theIsDynamic;
+    ar & theNeedToCopy;
+}
+
+
+void ZorbaEditNodesIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaEditNodesIterator::~ZorbaEditNodesIterator() {}
+
+// </ZorbaEditNodesIterator>
 
 
 // <ZorbaTruncateCollectionIterator>

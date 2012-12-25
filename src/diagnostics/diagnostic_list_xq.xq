@@ -76,7 +76,7 @@ declare function local:getNSURI($namespace as xs:string) as xs:string
   if ($namespace = "err")
     then "http://www.w3.org/2005/xqt-errors"
   else if ($namespace = "jerr")
-    then "http://www.jsoniq.org/errors"
+    then "http://jsoniq.org/errors"
   else if ($namespace = "zerr")
     then "http://www.zorba-xquery.com/errors"
   else if ($namespace = "zwarn")

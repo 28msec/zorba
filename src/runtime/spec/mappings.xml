@@ -32,7 +32,7 @@
                      define="ZORBA_SCHEMA_FN_NS"
                      prefix="fn-zorba-schema"/>
 
-    <zorba:namespace uri="http://www.jsoniq.org/functions"
+    <zorba:namespace uri="http://jsoniq.org/functions"
                      define="JSONIQ_FN_NS"
                      prefix="fn-jsoniq"/>
 
@@ -207,7 +207,7 @@
     <zorba:type zorbaType="JSON_ITEM">json-item()</zorba:type>
     <zorba:type zorbaType="JSON_ARRAY">array()</zorba:type>
     <zorba:type zorbaType="JSON_OBJECT">object()</zorba:type>
-    <zorba:type zorbaType="JDM_NULL">jdm:null</zorba:type>
+    <zorba:type zorbaType="JS_NULL">js:null</zorba:type>
   </zorba:types>
 
   <!-- XQuery Occurrence Indicators -->

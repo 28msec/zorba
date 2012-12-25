@@ -17,6 +17,7 @@
 #include "stdafx.h"
 
 #include <context/default_uri_mappers.h>
+#include <context/default_url_resolvers.h>
 #include <util/uri_util.h>
 #include <util/fs_util.h>
 #include <zorbatypes/URI.h>
@@ -192,7 +193,14 @@ AutoFSURIMapper::mapURI
 
   // Finally, append the original URI, so that it will be resolved
   // as-is if there's nothing appropriate on the local filesystem.
-  oUris.push_back(aUri);
+  // Note: For module or schema imports, don't do this if it's a
+  // network (HTTP) URI and the "http_resolution" feature is disabled
+  // on this context.
+  if ( (lKind != EntityData::MODULE && lKind != EntityData::SCHEMA) ||
+       aSctx.is_feature_set(feature::http_resolution) ||
+       (HTTPURLResolver::isHTTPScheme(aUri) == false) ) {
+    oUris.push_back(aUri);
+  }
 }
 
 ZorbaCollectionURIMapper::~ZorbaCollectionURIMapper()

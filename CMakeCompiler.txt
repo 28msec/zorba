@@ -250,7 +250,7 @@ ELSEIF (WIN32)
   SET(requiredlibs ${requiredlibs} "Rpcrt4")
 ELSEIF (ZORBA_HAVE_UUID_H)
   # Needed for uuid_generate() function in util/uuid.c.
-  SET(CMAKE_SHARED_LINKER_FLAGS "-luuid ${CMAKE_SHARED_LINKER_FLAGS}")
+  SET(requiredlibs ${requiredlibs} "uuid")
   # Double-check that we can link against the required library.
   CHECK_LIBRARY_EXISTS(uuid uuid_generate "" LIBUUID_EXISTS)
   IF (NOT LIBUUID_EXISTS)

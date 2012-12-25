@@ -1637,6 +1637,15 @@ void *ParseNodePrintDOTVisitor::begin_visit(const RelativePathExpr &n)
     return no_state;
 }
 
+void *ParseNodePrintDOTVisitor::begin_visit(const SimpleMapExpr &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"BangExpr\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
 
 
 void *ParseNodePrintDOTVisitor::begin_visit(const StringLiteral &n)
@@ -3147,6 +3156,9 @@ void ParseNodePrintDOTVisitor::end_visit(const RelativePathExpr&, void*)
 {
 }
 
+void ParseNodePrintDOTVisitor::end_visit(const BangExpr&, void*)
+{
+}
 
 
 void ParseNodePrintDOTVisitor::end_visit(const StringLiteral&, void*)

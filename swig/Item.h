@@ -199,7 +199,7 @@ public:
    * Note that this function is only available for node Items.
    *
    * @return bool if the name of the node was retrieved successfully
-   * @return aNodeName the name of the node
+   * @param aNodeName the name of the node
    * @throw ZorbaException if an error occured (e.g. the Item is not of type node).
    */
   bool getNodeName (Item &aNodeName) const;
@@ -298,6 +298,26 @@ public:
    * Also note that this function is available for all types of Items.
    */
   void close();
+  
+  /** \brief Serializes the object
+   *
+   * Put the serialized object into the specified stream.
+   *
+   * @param aStream The stream to write the value of the Item.
+   * @throw ZorbaException if an error occured.
+   */
+  void serializeToStream(ZorbaIOStream & aStream) const;
+
+  /** \brief Serializes the object
+   *
+   * Put the serialized object into the specified stream.
+   *
+   * @param aStream The stream to write the value of the Item.
+   * @param serOptions The serialization options for this Item
+   * @throw ZorbaException if an error occured.
+   */
+  void serializeToStream(ZorbaIOStream & aStream, SerializationOptions serOptions) const;
+ 
 }; // class Item
 
 #endif

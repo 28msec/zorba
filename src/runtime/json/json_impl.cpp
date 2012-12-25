@@ -24,8 +24,8 @@
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 
+#include "util/ascii_util.h"
 #include "util/mem_streambuf.h"
-#include "util/string_util.h"
 
 #include "jsonml_array.h"
 #include "snelson.h"
@@ -105,9 +105,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
   catch ( json::illegal_character const &e ) {
     throw XQUERY_EXCEPTION(
       zerr::ZJPE0001_ILLEGAL_CHARACTER,
-      ERROR_PARAMS(zstring("#x") + 
-      BUILD_STRING(std::uppercase << std::hex
-                   << (static_cast<unsigned int>(e.get_char()) & 0xFF)) ),
+      ERROR_PARAMS( ascii::printable_char( e.get_char() ) ),
       ERROR_LOC( e.get_loc() )
     );
   }

@@ -16,11 +16,11 @@
 #ifndef ZORBA_SIMPLE_STORE
 #define ZORBA_SIMPLE_STORE
 
-#include "store/naive/store.h"
+#include "store.h"
 
-#include "store/naive/node_factory.h"
-#include "store/naive/pul_primitive_factory.h"
-#include "store/naive/tree_id_generator.h"
+#include "node_factory.h"
+#include "pul_primitive_factory.h"
+#include "tree_id_generator.h"
 
 namespace zorba {
 namespace simplestore {
@@ -113,12 +113,6 @@ protected:
   bool assignReference(const store::Item* node, const zstring& reference);
 
   bool getNodeByReference(store::Item_t& result, const zstring& reference);
-
-#ifdef ZORBA_WITH_JSON
-  store::Item_t parseJSON(
-      std::istream& stream,
-      internal::diagnostic::location* relative_error_loc);
-#endif
 };
 
 } // namespace store

@@ -29,14 +29,6 @@
 namespace zorba 
 { 
 
-namespace internal 
-{
-namespace diagnostic 
-{
-  class location;
-}
-}
-
 SYNC_CODE(class Lock;)
 
 class TokenizerProvider;
@@ -368,13 +360,6 @@ public:
   virtual TokenizerProvider const* getTokenizerProvider() const = 0;
 
 #endif /* ZORBA_NO_FULL_TEXT */
-
-#ifdef ZORBA_WITH_JSON
-  virtual Item_t parseJSON(
-      std::istream& stream,
-      internal::diagnostic::location* relative_error_loc
-    ) = 0;
-#endif
 };
 
 } // namespace store

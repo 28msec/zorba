@@ -16,285 +16,63 @@
 package api_test;
 
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import javax.xml.namespace.QName;
-import javax.xml.xquery.*;
-import org.zorbaxquery.api.*;
-import org.zorbaxquery.api.xqj.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Locale;
 
 public class Api_test {
-
-  static 
-  {
-    System.loadLibrary ( "zorba_api" );
-  }
-
-  static boolean example_1() throws XQException
-  {
-      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
-      XQConnection xqc = xqds.getConnection();
-      XQExpression xqe = xqc.createExpression();
-      org.zorbaxquery.api.xqj.ZorbaXQResultSequence xqs = (org.zorbaxquery.api.xqj.ZorbaXQResultSequence) xqe.executeQuery("1,2,3");
-      ZorbaXQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
-      xqc.close();
-      xqc.close();
-      return true;
-  }
-
-  static boolean example_2 () throws XQException
-  {
-      StringBuilder strBuilder = new StringBuilder();
-      try {
-            BufferedReader in = new BufferedReader(new FileReader("managers/module1.xq"));
-            String str;
-            while ((str = in.readLine()) != null) {
-                strBuilder.append(str);
-            }
-            in.close();
-      } catch (Exception e) {
-          throw new XQException("Error reading file for test: " + e.getLocalizedMessage());
-      }
-      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
-      XQConnection xqc = xqds.getConnection();
-      XQExpression xqe = xqc.createExpression();
-      org.zorbaxquery.api.xqj.ZorbaXQResultSequence xqs = (org.zorbaxquery.api.xqj.ZorbaXQResultSequence) xqe.executeQuery(strBuilder.toString());
-      ZorbaXQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
-      boolean resultAdding = false;
-      boolean resultDeleting = true;
-      URI uri;
-      QName qname;
-      XQItemType type = null;
-        try {
-          uri = new URI("http://www.mod2.com/");
-          qname = new QName("http://www.mod2.com/", "coll");
-          type = xqc.createAtomicType( XQItemType.XQBASETYPE_QNAME, qname, uri);
-        } catch (URISyntaxException e) {
-            throw new XQException("Error creating QName: " + e.getLocalizedMessage());
-        }
-      XQItem colName = xqc.createItemFromString("coll",  type);
-      colManager.createCollection(colName);
-      resultAdding = colManager.isAvailableCollection(colName);
-      colManager.deleteCollection(colName);
-      resultDeleting = !colManager.isAvailableCollection(colName);
-      xqc.close();
-      return resultAdding && resultDeleting;
-  }
-  
-  static boolean example_3a() throws XQException
-  {
-      StringBuilder strBuilder = new StringBuilder();
-      try {
-            BufferedReader in = new BufferedReader(new FileReader("managers/module1.xq"));
-            String str;
-            while ((str = in.readLine()) != null) {
-                strBuilder.append(str);
-            }
-            in.close();
-      } catch (Exception e) {
-          throw new XQException("Error reading file for test: " + e.getLocalizedMessage());
-      }
-      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
-      org.zorbaxquery.api.xqj.ZorbaXQConnection xqc = (org.zorbaxquery.api.xqj.ZorbaXQConnection) xqds.getConnection();
-      XQExpression xqe = xqc.createExpression();
-      org.zorbaxquery.api.xqj.ZorbaXQResultSequence xqs = (org.zorbaxquery.api.xqj.ZorbaXQResultSequence) xqe.executeQuery(strBuilder.toString());
-      ZorbaXQStaticCollectionManager colManager =  xqs.getStaticCollectionManager();
-      URI uri;
-      QName qname;
-      XQItemType type = null;
-        try {
-          uri = new URI("http://www.mod2.com/");
-          qname = new QName("http://www.mod2.com/", "coll");
-          type = xqc.createAtomicType( XQItemType.XQBASETYPE_QNAME, qname, uri);
-        } catch (URISyntaxException e) {
-            throw new XQException("Error creating QName: " + e.getLocalizedMessage());
-        }
-      XQItem colName = xqc.createItemFromString("coll",  type);
-      colManager.createCollection(colName);
-      ZorbaXQCollection collection = colManager.getCollection(colName);
-      
-      ZorbaXQXmlDataManager manager = xqc.getXmlDataManager();
-      XQSequence data = manager.parseXML("<books><book>Book 1</book><book>Book 2</book></books>");
-      collection.insertNodesFirst(data);
-      
-      colManager.deleteCollection(colName);
-      boolean resultDeleting = !colManager.isAvailableCollection(colName);
-      xqc.close();
-      return resultDeleting;
-  }
-
-  static boolean example_3b() throws XQException
-  {
-      StringBuilder strBuilder = new StringBuilder();
-      try {
-            BufferedReader in = new BufferedReader(new FileReader("managers/module1.xq"));
-            String str;
-            while ((str = in.readLine()) != null) {
-                strBuilder.append(str);
-            }
-            in.close();
-      } catch (Exception e) {
-          throw new XQException("Error reading file for test: " + e.getLocalizedMessage());
-      }
-    InMemoryStore store = InMemoryStore.getInstance();
-    Zorba zorba = Zorba.getInstance ( store );
-    XQuery query = zorba.compileQuery(strBuilder.toString());
-    StaticCollectionManager manager = query.getStaticCollectionManager();
-    
-    
-    ItemFactory factory = zorba.getItemFactory();
-    Item name = factory.createQName("http://www.mod2.com/", "coll");
-    
-    manager.createCollection(name);
-    Collection collection = manager.getCollection(name);
-
-    XmlDataManager xmlManager = zorba.getXmlDataManager();
-    Item data = xmlManager.parseXMLtoItem("<books><book>Book 1</book><book>Book 2</book></books>");
-    ItemSequence sequence = new ItemSequence(data);
-    collection.insertNodesLast(sequence);
-    
-    zorba.shutdown();
-    InMemoryStore.shutdown ( store );
-
-    return true;
-  }
-
-  static boolean example_4() throws XQException
-  {
-      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
-      org.zorbaxquery.api.xqj.ZorbaXQConnection xqc = (org.zorbaxquery.api.xqj.ZorbaXQConnection) xqds.getConnection();
-      XQExpression xqe = xqc.createExpression();
-      ZorbaXQXmlDataManager xmlManager = xqc.getXmlDataManager();
-      ZorbaXQCollectionManager colManager =  xmlManager.getCollectionManager();
-      xqc.close();
-      xqc.close();
-      return true;
-  }
-
-  static boolean example_5() throws XQException
-  {
-      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
-      org.zorbaxquery.api.xqj.ZorbaXQConnection xqc = (org.zorbaxquery.api.xqj.ZorbaXQConnection) xqds.getConnection();
-      ZorbaXQXmlDataManager xmlManager = xqc.getXmlDataManager();
-      ZorbaXQCollectionManager colManager =  xmlManager.getCollectionManager();
-      boolean resultAdding = false;
-      boolean resultDeleting = true;
-      URI uri;
-      QName qname;
-      XQItemType type = null;
-        try {
-          uri = new URI("http://www.mod2.com/");
-          qname = new QName("http://www.mod2.com/", "col2");
-          type = xqc.createAtomicType( XQItemType.XQBASETYPE_QNAME, qname, uri);
-        } catch (URISyntaxException e) {
-            throw new XQException("Error creating QName: " + e.getLocalizedMessage());
-        }
-      XQItem colName = xqc.createItemFromString("col2",  type);
-      colManager.createCollection(colName);
-      resultAdding = colManager.isAvailableCollection(colName);
-      colManager.deleteCollection(colName);
-      resultDeleting = !colManager.isAvailableCollection(colName);
-      xqc.close();
-      return resultAdding && resultDeleting;
-  }
-  static boolean example_6a() throws XQException
-  {
-    InMemoryStore store = InMemoryStore.getInstance();
-    Zorba zorba = Zorba.getInstance ( store );
-    XmlDataManager xmlManager = new XmlDataManager(zorba.getXmlDataManager());
-    CollectionManager manager = new CollectionManager(xmlManager.getCollectionManager());
-
-    ItemFactory factory = zorba.getItemFactory();
-    Item name = factory.createQName("http://www.zorba-xquery.com/", "aaa");
-    manager.createCollection(name);
-    boolean resultAdding = manager.isAvailableCollection(name);
-    Collection collection = null;
-    //Item data = new Item();
-    if (resultAdding) {
-      collection = manager.getCollection(name);
-      Item data = xmlManager.parseXMLtoItem("<books><book>Book 1</book><book>Book 2</book></books>");
-      collection.insertNodesLast(new ItemSequence(data));
+    static 
+    {
+        System.loadLibrary ( "zorba_api" );
     }
-    collection.delete();
-    
-    zorba.shutdown();
-    InMemoryStore.shutdown ( store );
-    return true;
-  }
 
-  static boolean example_6b() throws XQException
-  {
-      ZorbaXQDataSource xqds = new ZorbaXQDataSource();
-      org.zorbaxquery.api.xqj.ZorbaXQConnection xqc = (org.zorbaxquery.api.xqj.ZorbaXQConnection) xqds.getConnection();
-      ZorbaXQXmlDataManager xmlManager = xqc.getXmlDataManager();
-      ZorbaXQCollectionManager colManager =  xmlManager.getCollectionManager();
-      URI uri;
-      QName qname;
-      XQItemType type = null;
+
+    public static void main ( String... args )
+    {
         try {
-          uri = new URI("http://www.mod2.com/");
-          qname = new QName("http://www.mod2.com/", "col2");
-          type = xqc.createAtomicType( XQItemType.XQBASETYPE_QNAME, qname, uri);
-        } catch (URISyntaxException e) {
-            throw new XQException("Error creating QName: " + e.getLocalizedMessage());
+          Class<?> c = Class.forName("api_test.Tests");
+          Object t = c.newInstance();
+
+          Method[] allMethods = c.getDeclaredMethods();
+          for (Method m : allMethods) {
+              String mname = m.getName();
+              if (!mname.startsWith("test")
+                  || (m.getGenericReturnType() != boolean.class)) {
+                  continue;
+              }
+              Type[] pType = m.getGenericParameterTypes();
+              if ((pType.length != 1)
+                  || Locale.class.isAssignableFrom(pType[0].getClass())) {
+                  //continue;
+              }
+
+              System.out.format("invoking %s()%n", mname);
+              try {
+                  m.setAccessible(true);
+                  Object o = m.invoke(t);
+                  System.out.format("%s() returned %b%n", mname, (Boolean) o);
+                  if ((Boolean) o) {
+                    System.out.println("Success");
+                  } else {
+                    System.out.println("Failed");
+                    System.exit (1);
+                  }
+
+              // Handle any exceptions thrown by method to be invoked.
+              } catch (InvocationTargetException x) {
+                  Throwable cause = x.getCause();
+                  System.err.format("invocation of %s failed: %s%n",
+                       mname, cause.getMessage());
+              }
+          }
+
+            // production code should handle these exceptions more gracefully
+        } catch (Exception e) {
+          System.out.println("Failed");
+          System.out.println("Exception caught. " + e.getLocalizedMessage());
+          e.printStackTrace();
         }
-      XQItem colName = xqc.createItemFromString("col2",  type);
-      colManager.createCollection(colName);
-      ZorbaXQCollection collection = colManager.getCollection(colName);
-      colName.close();
-      XQSequence data = xmlManager.parseXML("<books><book>Book 1</book><book>Book 2</book></books>");
-      collection.insertNodesLast(data);
-      xqc.close();
-      return true;
-  }
-
-  public static void main ( String argv[] ) throws XQException
-  {
-    boolean res = false;
-
-    System.out.println ("executing test 1" );
-    res = example_1( );
-    if ( !res ) 
-      System.exit ( 1 ); 
-
-    System.out.println ( "executing test 2" );
-    res = example_2 ( );
-    if (!res) 
-      System.exit ( 1 ); 
-  
-    System.out.println ( "executing test 3a" );
-    res = example_3a ( );
-    if (!res) 
-      System.exit ( 1 ); 
-  
-    System.out.println ( "executing test 3b" );
-    res = example_3b ( );
-    if (!res) 
-      System.exit ( 1 ); 
-    
-    System.out.println ( "executing test 4" );
-    res = example_4 ( );
-    if (!res) 
-      System.exit ( 1 ); 
-
-    System.out.println ( "executing test 5" );
-    res = example_5 ( );
-    if (!res) 
-      System.exit ( 1 ); 
-    System.out.println ( "executing test 6a" );
-    res = example_6a ( );
-    if (!res) 
-      System.exit ( 1 ); 
-
-    System.out.println ( "executing test 6b" );
-    res = example_6b ( );
-    if (!res) 
-      System.exit ( 1 ); 
-    System.out.println ( "done." );
-
-  } // main
+    } // main
 
 } // class Test_Zorba
-

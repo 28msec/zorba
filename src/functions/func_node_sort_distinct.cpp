@@ -115,17 +115,17 @@ function* op_node_sort_distinct_base::optimize(const expr* self, expr* child) co
   {
     if (distinct && noa)
     {
-      return GET_BUILTIN_FUNCTION(OP_DISTINCT_NODES_OR_ATOMICS_1); 
+      return BUILTIN_FUNC(OP_DISTINCT_NODES_OR_ATOMICS_1); 
     }
     else if (distinct)
     { 
       return (getKind() == FunctionConsts::OP_CHECK_DISTINCT_NODES_1 ?
-              GET_BUILTIN_FUNCTION(OP_CHECK_DISTINCT_NODES_1) :
-              GET_BUILTIN_FUNCTION(OP_DISTINCT_NODES_1)); 
+              BUILTIN_FUNC(OP_CHECK_DISTINCT_NODES_1) :
+              BUILTIN_FUNC(OP_DISTINCT_NODES_1)); 
     }
     else if (noa)
     {
-      return GET_BUILTIN_FUNCTION(OP_EITHER_NODES_OR_ATOMICS_1);
+      return BUILTIN_FUNC(OP_EITHER_NODES_OR_ATOMICS_1);
     }
     else
     {
@@ -135,26 +135,26 @@ function* op_node_sort_distinct_base::optimize(const expr* self, expr* child) co
   else if (distinct && noa)
   {
     return (myActions[SORT_ASC] ?
-            GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS_1) :
-            GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_DESC_OR_ATOMICS_1)); 
+            BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS_1) :
+            BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_DESC_OR_ATOMICS_1)); 
   }
   else if (distinct)
   {
     return (myActions[SORT_ASC] ?
-            GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1) :
-            GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_DESC_1)); 
+            BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_ASC_1) :
+            BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_DESC_1)); 
   }
   else if (noa)
   {
     return (myActions[SORT_ASC] ?
-            GET_BUILTIN_FUNCTION(OP_SORT_NODES_ASC_OR_ATOMICS_1) :
-            GET_BUILTIN_FUNCTION(OP_SORT_NODES_DESC_OR_ATOMICS_1)); 
+            BUILTIN_FUNC(OP_SORT_NODES_ASC_OR_ATOMICS_1) :
+            BUILTIN_FUNC(OP_SORT_NODES_DESC_OR_ATOMICS_1)); 
   }
   else
   {
     return (myActions[SORT_ASC] ?
-            GET_BUILTIN_FUNCTION(OP_SORT_NODES_ASC_1) :
-            GET_BUILTIN_FUNCTION(OP_SORT_NODES_DESC_1)); 
+            BUILTIN_FUNC(OP_SORT_NODES_ASC_1) :
+            BUILTIN_FUNC(OP_SORT_NODES_DESC_1)); 
   }
 }
 

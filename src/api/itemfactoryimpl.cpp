@@ -880,6 +880,14 @@ zorba::Item ItemFactoryImpl::createTextNode(Item parent, String content)
   return &*lItem;
 }
 
+zorba::Item ItemFactoryImpl::createUntypedAtomic(const String& value)
+{
+  store::Item_t lItem;
+  zstring &lValue = Unmarshaller::getInternalString(value);
+  theItemFactory->createUntypedAtomic(lItem, lValue);
+  return &*lItem;
+}
+
 #ifdef ZORBA_WITH_JSON
 
 zorba::Item ItemFactoryImpl::createJSONNull()
@@ -950,11 +958,18 @@ zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item>& aItems)
   return &*lItem;
 }
 
-
-
-
 #endif /* ZORBA_WITH_JSON */
 
+zorba::Item ItemFactoryImpl::createUserTypedAtomicItem(
+    Item& aBaseItem,
+    Item& aTypeName)
+{
+  store::Item_t lRes;
+  store::Item_t lBaseItem = Unmarshaller::getInternalItem(aBaseItem);
+  store::Item_t lTypeName = Unmarshaller::getInternalItem(aTypeName);
+  theItemFactory->createUserTypedAtomicItem(lRes, lBaseItem, lTypeName);
+  return &*lRes;
+}
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -346,6 +346,7 @@ ZorbaCollectionIteratorState::~ZorbaCollectionIteratorState()
 void ZorbaCollectionIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
+  theIteratorOpened = false;
   theIterator = NULL;
 }
 
@@ -368,6 +369,14 @@ void ZorbaCollectionIteratorState::reset(PlanState& planState)
 }
 
 
+bool ZorbaCollectionIterator::isCountOptimizable() const
+{
+  // if ref is passed to the collections function, count cannot be 
+  // optimized anymore.
+  return theChildren.size() <= 2;
+}
+
+
 bool ZorbaCollectionIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -375,6 +384,7 @@ bool ZorbaCollectionIterator::nextImpl(
   store::Item_t name;
   store::Collection_t collection;
   xs_integer lSkip;
+  zstring lStart;
 
   ZorbaCollectionIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
@@ -383,21 +393,44 @@ bool ZorbaCollectionIterator::nextImpl(
 
   (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
 
-  if (theChildren.size() > 1)
+  if (theChildren.size() == 1)
   {
-    // skip parameter passed
-    store::Item_t lSkipItem;
-    consumeNext(lSkipItem, theChildren[1].getp(), planState);
-    lSkip = lSkipItem->getIntegerValue(); 
-    // negative is transformed into 0
-    state->theIterator = ( lSkip > xs_integer::zero() 
-                             ? collection->getIterator(lSkip)
-                             : collection->getIterator()
-                         );
+    state->theIterator = collection->getIterator();
   }
   else
   {
-    state->theIterator = collection->getIterator();
+    bool lRefPassed = theChildren.size() >= 3;
+    
+    // read positional skip parameter
+    store::Item_t lSkipItem;
+    consumeNext(lSkipItem, theChildren[(lRefPassed ? 2 : 1)].getp(), planState);
+    lSkip = lSkipItem->getIntegerValue(); 
+
+    // negative skip is not allowed
+    if (lSkip < xs_integer::zero())
+    {
+      lSkip = xs_integer::zero();
+    }
+
+    if (!lRefPassed)
+    {
+      state->theIterator = collection->getIterator(lSkip);
+    }
+    else
+    {
+      store::Item_t lRefItem;
+      consumeNext(lRefItem, theChildren[1].getp(), planState);
+      lStart = lRefItem->getString(); 
+      try
+      {
+        state->theIterator = collection->getIterator(lSkip, lStart);
+      }
+      catch (ZorbaException& e)
+      {
+        set_source(e, loc);
+        throw;
+      }
+    }
   }
 
   ZORBA_ASSERT(state->theIterator != NULL);
@@ -1750,6 +1783,129 @@ ZorbaDeleteNodesLastIterator::getCollection(
   {
     RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
     ERROR_PARAMS(name->getStringValue(), "delete"));
+  }
+
+  return collectionDecl;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool ZorbaEditNodesIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Collection_t              collection;
+  store::Item_t                    collectionName;
+  const StaticallyKnownCollection* collectionDecl;
+
+  store::Item_t                    target;
+
+  store::Item_t                    content;
+  store::CopyMode lCopyMode;
+
+  std::auto_ptr<store::PUL>        pul;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  consumeNext(target, theChildren[0].getp(), planState);
+  consumeNext(content, theChildren[1].getp(), planState);
+
+  // Target check.
+  if (! target->getCollection())
+  {
+    throw XQUERY_EXCEPTION(zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC(loc));
+  }
+
+  if ((target->isNode() || target->isJSONItem()) && !target->isRoot())
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0039_NON_ROOT_NODE_EDIT,
+      ERROR_PARAMS(target->getCollection()->getName()->getStringValue()),
+      ERROR_LOC( loc )
+    );
+  }
+  if (target->getKind() != content->getKind())
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0040_INCONSISTENT_EDIT,
+      ERROR_LOC( loc )
+    );
+  }
+  if (target->isNode() && (target->getNodeKind() != content->getNodeKind()))
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0040_INCONSISTENT_EDIT,
+      ERROR_LOC( loc )
+    );
+  }
+  collection = target->getCollection();
+  collectionName = collection->getName();
+  collectionDecl = getCollection(collectionName, collection);
+
+  // Content check & copy.
+  getCopyMode(lCopyMode, this->theSctx);
+  lCopyMode.theDoCopy &= theNeedToCopy;
+  lCopyMode.theDoCopy &= !this->theChildren[1]->isConstructor();
+  checkNodeType(this->theSctx,
+                content,
+                collectionDecl,
+                this->loc,
+                theIsDynamic);
+  content = content->copy(NULL, lCopyMode);
+
+  // create the pul and add the primitive
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+  pul->addEditInCollection(
+      &loc,
+      collectionName,
+      target,
+      content,
+      theIsDynamic);
+
+  result = pul.release();
+  STACK_PUSH( result != NULL, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+const StaticallyKnownCollection*
+ZorbaEditNodesIterator::getCollection(
+    const store::Item_t& name,
+    store::Collection_t& coll) const
+{
+  const StaticallyKnownCollection* collectionDecl = 
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
+
+  if (!theIsDynamic) 
+  {
+    switch(collectionDecl->getUpdateProperty())
+    {
+      case StaticContextConsts::decl_const:
+        RAISE_ERROR(zerr::ZDDY0004_COLLECTION_CONST_UPDATE, loc,
+        ERROR_PARAMS(name->getStringValue()));
+
+      case StaticContextConsts::decl_append_only:
+        RAISE_ERROR(zerr::ZDDY0037_COLLECTION_APPEND_BAD_EDIT, loc,
+        ERROR_PARAMS(name->getStringValue()));
+
+      case StaticContextConsts::decl_queue:
+        RAISE_ERROR(zerr::ZDDY0038_COLLECTION_QUEUE_BAD_EDIT, loc,
+        ERROR_PARAMS(name->getStringValue()));
+
+      case StaticContextConsts::decl_mutable:
+        // good to go
+        break;
+
+      default:
+        ZORBA_ASSERT(false);
+    }
   }
 
   return collectionDecl;

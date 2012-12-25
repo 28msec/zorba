@@ -132,11 +132,11 @@ public:
    *
    * N, N?, N+, N*, where N is the jdm::null atomic type
    */
-  store::Item_t JDM_NULL_QNAME;
-  xqtref_t JDM_NULL_TYPE_ONE;
-  xqtref_t JDM_NULL_TYPE_QUESTION;
-  xqtref_t JDM_NULL_TYPE_STAR;
-  xqtref_t JDM_NULL_TYPE_PLUS;
+  store::Item_t JS_NULL_QNAME;
+  xqtref_t JS_NULL_TYPE_ONE;
+  xqtref_t JS_NULL_TYPE_QUESTION;
+  xqtref_t JS_NULL_TYPE_STAR;
+  xqtref_t JS_NULL_TYPE_PLUS;
 #endif
 
   /**

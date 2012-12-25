@@ -84,7 +84,7 @@ public:
 ********************************************************************************/
 class RuleOnceDriverBase : public Rewriter 
 {
-private:
+protected:
   rule_ptr_t theRule;
 
 public:
@@ -99,6 +99,8 @@ class RuleOnceDriver : public RuleOnceDriverBase
 {
 public:
   RuleOnceDriver() : RuleOnceDriverBase(rule_ptr_t(new R)) {}
+
+  R* getRule() const { return static_cast<R*>(theRule.getp()); }
 };
 
 

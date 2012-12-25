@@ -155,6 +155,18 @@ struct call_traits<T,false> {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Clears the given stack.
+ *
+ * @tparam T The stack's \c value_type.
+ * @param s The stack to clear.
+ */
+template<typename T> inline
+void clear_stack( std::stack<T> &s ) {
+  while ( !s.empty() )
+    s.pop();
+}
+
+/**
  * A less-verbose way to determine whether the given map or set contains a
  * particular element.
  */
@@ -353,7 +365,7 @@ le0( IntType n ) {
 // warning-free.
 //
 // Note: the use of "!!" is to work around a compiler problem on Windows;
-// see: http://stackoverflow.com/questions/9285657/sfinae-differentiation-between-signed-and-unsigned
+// see http://stackoverflow.com/q/9285657
 //
 
 template<typename N1,typename N2> inline

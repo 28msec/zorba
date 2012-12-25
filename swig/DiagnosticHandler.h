@@ -27,6 +27,7 @@ class DiagnosticHandler : public zorba::DiagnosticHandler
   void error (const zorba::ZorbaException &ze);
   void warning (const zorba::XQueryException &xw);
  public:
+  DiagnosticHandler() {};
   virtual ~DiagnosticHandler();
 
   /**

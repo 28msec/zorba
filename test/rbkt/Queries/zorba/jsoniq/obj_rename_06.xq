@@ -1,4 +1,4 @@
-import module namespace j = "http://www.jsoniq.org/functions";
+import module namespace j = "http://jsoniq.org/functions";
 
 variable $o := { "foo" : { "foo" : "bar" } };
 

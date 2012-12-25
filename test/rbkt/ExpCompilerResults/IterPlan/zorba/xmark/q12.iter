@@ -5,13 +5,13 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <CtxVarDeclareIterator varid="4" varname="input-context"/>
   <flwor::FLWORIterator>
     <LetVariable name="auction" materialize="true">
       <FnDocIterator>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+            <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
           </FnDataIterator>
         </PromoteIterator>
       </FnDocIterator>

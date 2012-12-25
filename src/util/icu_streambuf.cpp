@@ -25,6 +25,7 @@
 #include <cassert>
 #include <stdexcept>
 
+#include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
 
 #include "diagnostics/assert.h"
@@ -177,6 +178,16 @@ icu_streambuf::int_type icu_streambuf::overflow( int_type c ) {
   return c;
 }
 
+#ifdef __GNUC__
+# ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
+#   pragma GCC diagnostic push
+# endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+//
+// Disables warnings about p.pivot_buf_ + sizeof p.pivot_buf_.
+//
+# pragma GCC diagnostic ignored "-Warray-bounds"
+#endif /* __GNUC__ */
+
 bool icu_streambuf::to_external( char_type const **from,
                                  char_type const *from_end, char **to,
                                  char const *to_end, bool flush ) {
@@ -214,6 +225,12 @@ bool icu_streambuf::to_utf8( char const **from, char const *from_end,
     );
   return true;
 }
+
+#ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
+# pragma GCC diagnostic pop
+#else
+# pragma GCC diagnostic warning "-Warray-bounds"
+#endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
 
 icu_streambuf::int_type icu_streambuf::underflow() {
 #if ZORBA_DEBUG_ICU_STREAMBUF

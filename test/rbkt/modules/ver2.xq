@@ -1,4 +1,4 @@
-module namespace vm = "http://www.flworfound.org/modules/ver";
+module namespace vm = "http://zorba-tests.28msec.us/modules/ver";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.3";

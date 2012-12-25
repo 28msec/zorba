@@ -30,17 +30,20 @@
 # include "context/static_context.h"
 #endif
 
+#include "compiler/expression/pragma.h"
+
 #include "zorbaserialization/class_serializer.h"
 
-#include "compiler/expression/mem_manager.h"
-#include "compiler/expression/expr_manager.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 #ifdef ZORBA_WITH_DEBUGGER
 class DebuggerCommons;
 #endif
 class static_context;
+class ExprManager;
+
 
 /*******************************************************************************
   There is one CompilerCB per query plus one CompilerCB per invocation of an
@@ -102,6 +105,13 @@ class static_context;
   A counter used to create unique names for temporary (query-specific) indexes
   created to perform hashjoins (see rewriter/rules/index_join_rule.cpp).
 
+  thePragmas:
+  -------------
+  A multimap from expr* to pragma such that not every expression needs
+  to keep it's own list of pragmas. Since the expr* pointer is only valid
+  until codegen finished, the pragmas can only be used in the compiler.
+
+
   theConfig.lib_module :
   ----------------------
   If true, then if the query string that is given by the user is a library
@@ -122,7 +132,7 @@ class static_context;
   Pointer to the function to call to print the expr tree that results from
   translating the query AST.
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC CompilerCB : public zorba::serialization::SerializeBaseClass
+class CompilerCB : public zorba::serialization::SerializeBaseClass
 {
 public:
   struct config : public zorba::serialization::SerializeBaseClass
@@ -148,7 +158,7 @@ public:
     bool           print_item_flow;  // TODO: move to RuntimeCB
 
    public:
-    SERIALIZABLE_CLASS(config)
+    SERIALIZABLE_CLASS(config);
     config(::zorba::serialization::Archiver& ar);
 
     config();
@@ -158,11 +168,23 @@ public:
     void serialize(::zorba::serialization::Archiver& ar);
   };
 
+  typedef enum
+  {
+    NONE,
+    PARSING,
+    TRANSLATION,
+    OPTIMIZATION,
+    CODEGEN,
+    RUNTIME
+  } ProcessingPhase;
+
   typedef std::map<csize, static_context_t> SctxMap;
 
-public:
-  ExprManager             * theEM;
+  typedef std::multimap<const expr*, pragma*>  PragmaMap;
 
+  typedef PragmaMap::const_iterator PragmaMapIter;
+
+public:
   XQueryDiagnostics       * theXQueryDiagnostics;
 
   SctxMap                   theSctxMap;
@@ -172,6 +194,8 @@ public:
 #ifdef ZORBA_WITH_DEBUGGER
   DebuggerCommons         * theDebuggerCommons;
 #endif
+
+  ProcessingPhase           thePhase;
 
   bool                      theHasEval;
 
@@ -189,7 +213,13 @@ public:
 
   uint32_t                  theTempIndexCounter;
 
+  uint8_t                   theNextVisitId;
+
   config                    theConfig;
+
+  ExprManager       * const theEM;
+
+  PragmaMap                 thePragmas;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);
@@ -202,6 +232,10 @@ public:
   CompilerCB(const CompilerCB& ccb);
 
   ~CompilerCB();
+
+  ProcessingPhase getPhase() const { return thePhase; }
+
+  void setPhase(ProcessingPhase v) { thePhase = v; }
 
   bool isLoadPrologQuery() const { return theIsLoadProlog; }
 
@@ -219,8 +253,14 @@ public:
 
   ExprManager* getExprManager() const { return theEM; }
 
-  MemoryManager& getMemoryManager() const { return theEM->getMemory(); }
+  //
+  // Pragmas
+  //
+  void add_pragma(const expr* e, pragma* p);
 
+  void lookup_pragmas(const expr* e, std::vector<pragma*>& pragmas) const;
+
+  bool lookup_pragma(const expr* e, const zstring& localname, pragma*&) const;
 };
 
 

@@ -20,36 +20,35 @@
 #include <stack>
 #include <vector>
 
+#include <store/api/item.h>
+
+#include <diagnostics/assert.h>
 #include <zorba/config.h>
 #include <zorba/error.h>
+#ifndef ZORBA_NO_FULL_TEXT
+#include <zorba/locale.h>
+#include <zorba/tokenizer.h>
+#endif /* ZORBA_NO_FULL_TEXT */
+#include <zorbatypes/zstring.h>
+#include <zorbautils/fatal.h>
+#include <zorbautils/hashfun.h>
 
-#include "store_defs.h"
-#include "shared_types.h"
-#include "text_node_content.h"
+#ifndef ZORBA_NO_FULL_TEXT
+#include "ft_token_store.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 #include "item_vector.h"
-#include "ordpath.h"
 #include "nsbindings.h" // TODO remove by introducing explicit destructors
+#include "ordpath.h"
+#include "shared_types.h"
+#include "store.h"
+#include "store_defs.h"
+#include "text_node_content.h"
 #include "tree_id.h"
-#include "simple_store.h"
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
 #include "hashmap_nodep.h"
-#endif
-
-#ifndef ZORBA_NO_FULL_TEXT
-#include <zorba/locale.h>
-#include <zorba/tokenizer.h>
-#include "ft_token_store.h"
-#endif /* ZORBA_NO_FULL_TEXT */
-
-#include "store/api/item.h"
-
-#include "diagnostics/assert.h"
-#include "zorbautils/fatal.h"
-#include "zorbautils/hashfun.h"
-
-#include "zorbatypes/zstring.h"
+#endif /* EMBEDED_TYPE */
 
 
 namespace zorba
@@ -383,6 +382,8 @@ protected:
 
   void connect(InternalNode* node, csize pos);
 
+  virtual void swap(Item* anotherItem);
+
 #ifndef ZORBA_NO_FULL_TEXT
   virtual void tokenize( XmlNodeTokenizerCallback& );
 #endif
@@ -433,6 +434,11 @@ public:
   store::Item* getParent() const
   {
     return reinterpret_cast<store::Item*>(theParent);
+  }
+
+  bool isRoot() const
+  {
+    return getCollection() != NULL && getParent() == NULL;
   }
 
   bool equals(
@@ -596,6 +602,8 @@ public:
       const store::CopyMode& copyMode) const;
 
   zstring show() const;
+  
+  virtual void swap(Item* anotherItem);
 };
 
 
@@ -686,6 +694,8 @@ public:
 
   virtual store::Item_t
   leastCommonAncestor(const store::Item_t&) const;
+
+  virtual void swap(Item* anotherItem);
 };
 
 
@@ -861,6 +871,8 @@ protected:
   const OrdPath* getFirstChildOrdPathAfter(csize pos) const;
 
   const OrdPath* getFirstChildOrdPathBefore(csize pos) const;
+
+  virtual void swap(Item* anotherItem);
 };
 
 
@@ -926,6 +938,8 @@ public:
   void setBaseUri(const zstring& uri) { theBaseUri = uri; }
 
   void setDocUri(const zstring& uri) { theDocUri = uri; }
+
+  virtual void swap(Item* anotherItem);
 
 protected:
   void getBaseURIInternal(zstring& uri, bool& local) const;
@@ -1107,6 +1121,8 @@ public:
 
   void restoreName(UpdRenameElem& upd);
 
+  virtual void swap(Item* anotherItem);
+
 protected:
   void setType(store::Item_t& type);
 
@@ -1236,6 +1252,8 @@ public:
                                locale::iso639_1::type,
                                bool wildcards = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
+
+  virtual void swap(Item* anotherItem);
 
 protected:
   void setType(store::Item_t& type);
@@ -1395,6 +1413,8 @@ public:
   leastCommonAncestor(const store::Item_t&) const;
 #endif
   
+  virtual void swap(Item* anotherItem);
+
 protected:
   const zstring& getText() const { return theContent.getText(); }
 
@@ -1476,6 +1496,9 @@ public:
   void restoreName(UpdRenamePi& upd);
   
   store::Iterator_t getChildren() const;
+
+  virtual void swap(Item* anotherItem);
+
 };
 
 
@@ -1533,6 +1556,8 @@ public:
   void restoreValue(UpdReplaceCommentValue& upd);
   
   store::Iterator_t getChildren() const;
+
+  virtual void swap(Item* anotherItem);
 };
 
 
@@ -1556,8 +1581,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      ulong tree1 = this->getTreeId();
-      ulong tree2 = other->getTreeId();
+      TreeId tree1 = this->getTreeId();
+      TreeId tree2 = other->getTreeId();
 
       if (tree1 < tree2)
         return -1;

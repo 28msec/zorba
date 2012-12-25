@@ -142,7 +142,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
          TypeOps::is_subtype(type, store::XS_STRING) ||
          TypeOps::is_subtype(type, store::XS_ANY_URI) ||
          type == store::XS_UNTYPED_ATOMIC ||
-         type == store::JDM_NULL ||
+         type == store::JS_NULL ||
          TypeOps::is_numeric(type)))
     {
       // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
@@ -488,19 +488,23 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (consumeNext(item0, theChild0.getp(), planState) &&
         consumeNext(item1, theChild1.getp(), planState))
     {
-      STACK_PUSH(GENV_ITEMFACTORY->
-                 createBoolean(result,
-                               CompareIterator::valueComparison(loc,
-                                                                item0,
-                                                                item1,
-                                                                theCompType,
-                                                                theTypeManager,
-                                                                theTimezone,
-                                                                theCollation)),
-                 state);
+      if (item0->getTypeCode() != store::JS_NULL &&
+          item1->getTypeCode() != store::JS_NULL)
+      {
+        STACK_PUSH(GENV_ITEMFACTORY->
+                   createBoolean(result,
+                                 CompareIterator::valueComparison(loc,
+                                                                  item0,
+                                                                  item1,
+                                                                  theCompType,
+                                                                  theTypeManager,
+                                                                  theTimezone,
+                                                                  theCollation)),
+                   state);
 
-      assert(!consumeNext(item0, theChild0.getp(), planState) &&
-             !consumeNext(item1, theChild1.getp(), planState));
+        assert(!consumeNext(item0, theChild0.getp(), planState) &&
+               !consumeNext(item1, theChild1.getp(), planState));
+      }
     }
   }
 
@@ -625,21 +629,22 @@ void CompareIterator::valueCasting(
   store::SchemaTypeCode type1 = item1->getTypeCode();
 
   // all untyped Atomics to String
-  if (TypeOps::is_subtype(type0, store::XS_UNTYPED_ATOMIC))
+  if (type0 == store::XS_UNTYPED_ATOMIC)
   {
-    GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
-
-    if  (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
+    if  (type1 == store::XS_UNTYPED_ATOMIC)
     {
-      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+      castItem0.transfer(item0);
+      castItem1.transfer(item1);
     }
     else
     {
+      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+
       if (!GenericCast::promote(castItem1, item1, store::XS_STRING, tm, loc))
         castItem1.transfer(item1);
     }
   }
-  else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
+  else if (type1 == store::XS_UNTYPED_ATOMIC)
   {
     if (!GenericCast::promote(castItem0, item0, store::XS_STRING, tm, loc))
       castItem0.transfer(item0);
@@ -685,6 +690,11 @@ bool CompareIterator::generalComparison(
     long timezone,
     XQPCollator* aCollation)
 {
+  if (aItem0->getTypeCode() == store::JS_NULL ||
+      aItem1->getTypeCode() == store::JS_NULL)
+  {
+    return false;
+  }
   try
   {
     switch(aCompType)
@@ -801,7 +811,7 @@ void CompareIterator::generalCasting(
   store::SchemaTypeCode type0 = item0->getTypeCode();
   store::SchemaTypeCode type1 = item1->getTypeCode();
 
-  if (TypeOps::is_subtype(type0, store::XS_UNTYPED_ATOMIC))
+  if (type0 == store::XS_UNTYPED_ATOMIC)
   {
     if (TypeOps::is_numeric(type1))
     {
@@ -809,10 +819,10 @@ void CompareIterator::generalCasting(
 
       GenericCast::promote(castItem1, item1, store::XS_DOUBLE, tm, loc);
     }
-    else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
+    else if (type1 == store::XS_UNTYPED_ATOMIC)
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
-      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+      castItem0.transfer(item0);
+      castItem1.transfer(item1);
     }
     else if (TypeOps::is_subtype(type1, store::XS_STRING))
     {
@@ -825,7 +835,7 @@ void CompareIterator::generalCasting(
       castItem1.transfer(item1);
     }
   }
-  else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
+  else if (type1 == store::XS_UNTYPED_ATOMIC)
   {
     if (TypeOps::is_numeric(type0))
     {
