@@ -66,11 +66,8 @@ streambuf::int_type streambuf::overflow( int_type c ) {
 }
 
 streambuf::int_type streambuf::pbackfail( int_type c ) {
-  return  !traits_type::eq_int_type( c, traits_type::eof() ) &&
-          proxy_buf_->sputbackc( traits_type::to_char_type( c ) ) ?
-            c
-          :
-            traits_type::eof();
+  return  traits_type::eq_int_type( c, traits_type::eof() ) ?
+          c : proxy_buf_->sputbackc( traits_type::to_char_type( c ) );
 }
 
 streambuf::int_type streambuf::uflow() {
