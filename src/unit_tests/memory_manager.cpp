@@ -39,20 +39,20 @@ static void print_exception( char const *expr, char const *testName,
 #define ASSERT_TRUE( EXPR ) assert_true( #EXPR, testName, !!(EXPR) )
 
 #define ASSERT_EXCEPTION( EXPR, EXCEPTION ) \
-  try { EXPR; assert_true( #EXPR, testName, false); } \
+  try { EXPR; assert_true( #EXPR, testName, false ); } \
   catch (EXCEPTION const& ) { } \
-  catch ( std::exception const &e ){ print_exception( #EXPR, testName, e ); } \
-  catch ( ... ) { assert_true ( #EXPR, testName, false ); }
+  catch ( std::exception const &e ) { print_exception( #EXPR, testName, e ); } \
+  catch ( ... ) { assert_true( #EXPR, testName, false ); }
 
 #define ASSERT_NO_EXCEPTION( EXPR ) \
-  try {EXPR; } \
-  catch ( std::exception const &e ){ print_exception( #EXPR, testName, e ); } \
-  catch ( ... ) { assert_true (#EXPR, testName, false ); }
+  try { EXPR; } \
+  catch ( std::exception const &e ) { print_exception( #EXPR, testName, e ); } \
+  catch ( ... ) { assert_true( #EXPR, testName, false ); }
 
 #define ASSERT_TRUE_AND_NO_EXCEPTION( EXPR ) \
   try { ASSERT_TRUE ( EXPR ); } \
   catch ( std::exception const &e ) { print_exception( #EXPR, testName, e ); } \
-  catch ( ... ) {assert_true( #EXPR, testName, false ); }
+  catch ( ... ) { assert_true( #EXPR, testName, false ); }
 
 #define TEST( TESTNAME ) \
 static void TESTNAME () { \
