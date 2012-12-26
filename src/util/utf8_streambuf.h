@@ -55,8 +55,8 @@ namespace utf8 {
  *  }
  * \endcode
  *
- * While %utf8::streambuf does support seeking, the positions are relative to
- * the original byte stream.
+ * While %utf8::streambuf does support seeking, the positions must always be on
+ * the first byte of a UTF-8 character.
  */
 class streambuf : public proxy_streambuf {
 public:
