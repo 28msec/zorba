@@ -79,7 +79,7 @@ static void print_exception( int no, char const *expr, int line,
 
 #define ASSERT_EXCEPTION( NO, EXPR ) \
   try { EXPR; assert_true( NO, #EXPR, __LINE__, false ); } \
-  catch ( ZorbaException const& ) { } \
+  catch ( ZorbaException const &e ) { } \
   catch ( ... ) { assert_true( NO, #EXPR, __LINE__, false ); }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -88,6 +88,7 @@ static bool test_getline( char const *test ) {
   istringstream iss( test );
   utf8::streambuf utf_buf( iss.rdbuf() );
   iss.ios::rdbuf( &utf_buf );
+  iss.exceptions( ios_base::badbit );
 
   char buf[ 1024 ];
   iss.getline( buf, sizeof buf );
@@ -102,6 +103,7 @@ static bool test_read( char const *test ) {
   istringstream iss( test );
   utf8::streambuf utf_buf( iss.rdbuf() );
   iss.ios::rdbuf( &utf_buf );
+  iss.exceptions( ios_base::badbit );
 
   char buf[ 1024 ];
   iss.read( buf, sizeof buf );
@@ -114,8 +116,9 @@ static bool test_read( char const *test ) {
 
 static bool test_insertion( char const *test ) {
   ostringstream oss;
-  utf8::streambuf utf_buf( oss.rdbuf() );
+  utf8::streambuf utf_buf( oss.rdbuf(), true );
   oss.ios::rdbuf( &utf_buf );
+  oss.exceptions( ios_base::badbit );
 
   oss << test << flush;
   string const s( oss.str() );
@@ -124,8 +127,9 @@ static bool test_insertion( char const *test ) {
 
 static bool test_put( char const *test ) {
   ostringstream oss;
-  utf8::streambuf utf_buf( oss.rdbuf() );
+  utf8::streambuf utf_buf( oss.rdbuf(), true );
   oss.ios::rdbuf( &utf_buf );
+  oss.exceptions( ios_base::badbit );
 
   for ( char const *c = test; *c; ++c )
     oss.put( *c );
@@ -148,9 +152,9 @@ int test_utf8_streambuf( int, char*[] ) {
     ASSERT_TRUE_AND_NO_EXCEPTION( test_no, test_put( *s ) );
   }
   for ( char const *const *s = tests_bad; *s; ++s, ++test_no ) {
-    //ASSERT_EXCEPTION( test_no, test_getline( *s ) );
-    //ASSERT_EXCEPTION( test_no, test_read( *s ) );
-    //ASSERT_EXCEPTION( test_no, test_insertion( *s ) );
+    ASSERT_EXCEPTION( test_no, test_getline( *s ) );
+    ASSERT_EXCEPTION( test_no, test_read( *s ) );
+    ASSERT_EXCEPTION( test_no, test_insertion( *s ) );
     ASSERT_EXCEPTION( test_no, test_put( *s ) );
   }
   cout << failures << " test(s) failed\n";

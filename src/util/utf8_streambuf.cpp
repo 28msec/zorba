@@ -21,6 +21,7 @@
 # include <stdio.h>
 #endif
 
+#include <iomanip>
 #include <stdexcept>
 
 #include <zorba/config.h>
@@ -29,6 +30,7 @@
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/zorba_exception.h"
 #include "util/cxx_util.h"
+#include "util/oseparator.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
 
@@ -41,52 +43,59 @@ namespace utf8 {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void throw_invalid_utf8( storage_type *buf, size_type len ) {
-  char err_buf[ 6 /* bytes at most */ * 5 /* chars per byte */ ], *b = err_buf;
-  bool first = true;
-  for ( size_type i = 0; i < len; ++i, b += 4 ) {
-    if ( first )
-      first = false;
-    else
-      *b++ = ',';
-    ::sprintf( b, "0x%0hhX", buf[i] );
-  }
+inline void streambuf::buf_type::clear() {
+  char_len_ = 0;
+}
+
+void streambuf::buf_type::throw_invalid_utf8( storage_type *buf,
+                                              size_type len ) {
+  ostringstream oss;
+  oss << hex << setfill('0') << setw(2) << uppercase;
+  oseparator comma( ',' );
+
+  for ( size_type i = 0; i < len; ++i )
+    oss << comma << "0x" << (static_cast<unsigned>( buf[i] ) & 0xFF);
+
+  clear();
   throw ZORBA_EXCEPTION(
     zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
-    ERROR_PARAMS( err_buf )
+    ERROR_PARAMS( oss.str() )
   );
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
 void streambuf::buf_type::validate( storage_type c, bool bump ) {
-  size_type char_len = char_len_, cur_len = cur_len_;
+  size_type char_len_copy = char_len_, cur_len_copy = cur_len_;
 
-  if ( !char_len ) {
-    if ( !(char_len = char_length( c )) )
+  if ( !char_len_copy ) {
+    //
+    // This means we're (hopefully) at the first byte of a UTF-8 byte sequence
+    // comprising a character.
+    //
+    if ( !(char_len_copy = char_length( c )) )
       throw_invalid_utf8( &c, 1 );
-    cur_len = 0;
+    cur_len_copy = 0;
   }
 
-  storage_type *const p = utf8_char_ + cur_len;
-  storage_type const old = *p;
-  *p = c;
+  storage_type *const cur_byte_ptr = utf8_char_ + cur_len_copy;
+  storage_type const old_byte = *cur_byte_ptr;
+  *cur_byte_ptr = c;
 
-  if ( cur_len++ && !is_continuation_byte( c ) )
-    throw_invalid_utf8( utf8_char_, cur_len );
+  if ( cur_len_copy++ && !is_continuation_byte( c ) )
+    throw_invalid_utf8( utf8_char_, cur_len_copy );
 
   if ( bump ) {
-    char_len_ = (cur_len == char_len ? 0 : char_len);
-    cur_len_ = cur_len;
+    char_len_ = (cur_len_copy == char_len_copy ? 0 : char_len_copy);
+    cur_len_ = cur_len_copy;
   } else {
-    *p = old;
+    *cur_byte_ptr = old_byte;
   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 inline void streambuf::clear() {
-  gbuf_.char_len_ = pbuf_.char_len_ = 0;
+  gbuf_.clear();
+  pbuf_.clear();
 }
 
 streambuf::streambuf( std::streambuf *orig, bool validate_put ) :
@@ -96,6 +105,15 @@ streambuf::streambuf( std::streambuf *orig, bool validate_put ) :
   if ( !orig )
     throw invalid_argument( "null streambuf" );
   clear();
+}
+
+void streambuf::resync() {
+  int_type c = original()->sgetc();
+  while ( !traits_type::eq_int_type( c, traits_type::eof() ) ) {
+    if ( is_start_byte( traits_type::to_char_type( c ) ) )
+      break;
+    c = original()->sbumpc();
+  }
 }
 
 streambuf::pos_type streambuf::seekoff( off_type o, ios_base::seekdir d,
@@ -129,7 +147,7 @@ streambuf::int_type streambuf::overflow( int_type c ) {
   if ( traits_type::eq_int_type( c, traits_type::eof() ) )
     return traits_type::eof();
   if ( validate_put_ )
-    pbuf_.validate( traits_type::to_char_type( c ) );
+    pbuf_.validate( traits_type::to_char_type( c ), true );
   original()->sputc( c );
   return c;
 }

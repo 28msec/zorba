@@ -71,6 +71,12 @@ public:
    */
   streambuf( std::streambuf *orig, bool validate_put = false );
 
+  /**
+   * If an invalid UTF-8 byte sequence was read, resynchronizes by skipping
+   * bytes until a new start byte is encountered.
+   */
+  void resync();
+
 protected:
   pos_type seekoff( off_type, std::ios_base::seekdir, std::ios_base::openmode );
   pos_type seekpos( pos_type, std::ios_base::openmode );
@@ -89,6 +95,8 @@ private:
     size_type char_len_;
     size_type cur_len_;
 
+    void clear();
+    void throw_invalid_utf8( storage_type *buf, size_type len );
     void validate( storage_type, bool bump = true );
   };
 
