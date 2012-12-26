@@ -9,6 +9,8 @@ New Features:
 	when resolving URIs.
   * Can now specify jsoniq-strip-top-level-array option to parse-json() to
     strip the top-level array from JSON streams.
+  * New info-extraction module for querying concepts and entities in
+	natural language text.
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
