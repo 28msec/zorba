@@ -84,6 +84,7 @@ protected:
   std::streamsize showmanyc();
   int sync();
   int_type overflow( int_type );
+  int_type pbackfail( int_type );
   int_type uflow();
   int_type underflow();
   std::streamsize xsgetn( char_type*, std::streamsize );

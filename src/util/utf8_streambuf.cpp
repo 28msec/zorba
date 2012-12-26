@@ -152,6 +152,16 @@ streambuf::int_type streambuf::overflow( int_type c ) {
   return c;
 }
 
+streambuf::int_type streambuf::pbackfail( int_type c ) {
+  if ( !traits_type::eq_int_type( c, traits_type::eof() ) &&
+       gbuf_.cur_len_ &&
+       original()->sputbackc( traits_type::to_char_type( c ) ) ) {
+    --gbuf_.cur_len_;
+    return c;
+  }
+  return traits_type::eof();
+}
+
 streambuf::int_type streambuf::uflow() {
 #ifdef ZORBA_DEBUG_UTF8_STREAMBUF
   printf( "uflow()\n" );
