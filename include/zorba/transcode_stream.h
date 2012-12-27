@@ -17,9 +17,6 @@
 #ifndef ZORBA_TRANSCODE_STREAM_API_H
 #define ZORBA_TRANSCODE_STREAM_API_H
 
-#include <stdexcept>
-#include <streambuf>
-
 #include <zorba/config.h>
 #include <zorba/internal/proxy.h>
 #include <zorba/internal/streambuf.h>
