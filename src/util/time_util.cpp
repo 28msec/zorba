@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <cassert>
 #ifdef WIN32
 # include <windows.h>
 # if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
@@ -79,6 +80,7 @@ namespace time {
  * @return Returns the weekday where 0 = Sunday.
  */
 unsigned calc_wday( unsigned mday, unsigned mon, unsigned year ) {
+  assert( mon < 12 );
   ++mon; // Tondering's algorithm assumes month value in range 1-12.
   unsigned const a = (14 - mon) / 12;
   unsigned const y = year - a;
@@ -109,6 +111,7 @@ unsigned days_in_month( unsigned mon, unsigned year ) {
     30, // 10: Nov
     31  // 11: Dec
   };
+  assert( mon < 12 );
   return days[ mon ] + (mon == 1 /* Feb */ && is_leap_year( year ));
 }
 
