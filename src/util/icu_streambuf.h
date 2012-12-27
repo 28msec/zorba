@@ -18,7 +18,7 @@
 #define ZORBA_ICU_STREAMBUF_H
 
 #include <unicode/ucnv.h>
-#include <zorba/transcode_stream.h>
+#include <zorba/internal/streambuf.h>
 
 #include "util/utf8_util.h"
 
@@ -58,7 +58,7 @@ namespace zorba {
  * While %icu_streambuf does support seeking, the positions are relative to the
  * original byte stream.
  */
-class icu_streambuf : public proxy_streambuf {
+class icu_streambuf : public internal::proxy_streambuf {
 public:
   /**
    * Constructs an %icu_streambuf.

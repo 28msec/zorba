@@ -58,7 +58,7 @@ inline void icu_streambuf::resetg() {
 }
 
 icu_streambuf::icu_streambuf( char const *charset, streambuf *orig ) :
-  proxy_streambuf( orig ),
+  internal::proxy_streambuf( orig ),
   no_conv_( !is_necessary( charset ) ),
   external_conv_( no_conv_ ? nullptr : create_conv( charset ) ),
   utf8_conv_( no_conv_ ? nullptr : create_conv( "UTF-8" ) )
