@@ -107,6 +107,10 @@ streambuf::streambuf( std::streambuf *orig, bool validate_put ) :
   clear();
 }
 
+void streambuf::imbue( std::locale const &loc ) {
+  orig_buf_->pubimbue( loc );
+}
+
 void streambuf::resync() {
   int_type c = orig_buf_->sgetc();
   while ( !traits_type::eq_int_type( c, traits_type::eof() ) ) {

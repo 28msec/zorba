@@ -88,6 +88,7 @@ public:
 protected:
   std::streambuf *const orig_buf_;
 
+  void imbue( std::locale const& );
   pos_type seekoff( off_type, std::ios_base::seekdir, std::ios_base::openmode );
   pos_type seekpos( pos_type, std::ios_base::openmode );
   std::streambuf* setbuf( char_type*, std::streamsize );
