@@ -21,6 +21,9 @@
 # Change this to publish updated FOTS archives
 SET (FOTS_ARCHIVE "FOTS_191212.tgz")
 
+# Change this to modify which elements in FOTS driver results are output
+# as CDATA
+SET (FOTS_CDATA_ELEMENTS "fots:query test assert-xml")
 
 # Download and unpack pre-created archive
 SET (_outdir "${BUILDDIR}/test/fots")
@@ -70,7 +73,7 @@ FOREACH (_testset ${_testsets})
     "-e mode:=run-test-sets -e testSetPrefixes:=${_testset} "
     "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
     "--disable-http-resolution --indent "
-    "-z cdata-section-elements=\"fots:query result\")\n"
+    "-z \"cdata-section-elements=${FOTS_CDATA_ELEMENTS}\")\n"
     "ZORBA_SET_TEST_PROPERTY (FOTS/${_testset} "
     "FAIL_REGULAR_EXPRESSION \"result=\\\"fail\\\"\")\n")
 
@@ -96,7 +99,7 @@ FOREACH (_testset ${_testsets})
       "-e testSetName:=${_testset} -e testCaseName:=${_testcase} "
       "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
       "--disable-http-resolution --indent "
-      "-z cdata-section-elements=\"fots:query result\")\n"
+      "-z \"cdata-section-elements=${FOTS_CDATA_ELEMENTS}\")\n"
       "ZORBA_SET_TEST_PROPERTY (FOTS/${_testset}/${_testcase} "
       "PASS_REGULAR_EXPRESSION \"name=\\\"${_testcase}\\\" result=\\\"pass\\\"\")\n")
   ENDFOREACH (_testcase)
