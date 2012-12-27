@@ -28,7 +28,6 @@ namespace utf8 {
 
 /**
  * A %utf8::streambuf is-a std::streambuf for validating UTF-8 on-the-fly.
- *
  * To use it, replace a stream's streambuf:
  * \code
  *  istream is;
@@ -45,19 +44,40 @@ namespace utf8 {
  *    try {
  *      os.ios::rdbuf( &xbuf );
  *      // ...
+ *      os.ios::rdbuf( xbuf.original() );
  *    }
  *    catch ( ... ) {
  *      os.ios::rdbuf( xbuf.original() );
  *      throw;
  *    }
- *    os.ios::rdbuf( xbuf.original() );
+ *  }
+ * \endcode
+ *
+ * If an invalid UTF-8 byte sequence is read, then the stream's \c badbit is
+ * set.  Hence using a %utf8::streambuf requires rigorous error-checking.
+ *
+ * However, if exceptions are enabled for the stream, then
+ * \c ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE is thrown.  (When enabling exceptions
+ * for a stream you didn't create, you should set the exception mask back to
+ * the original mask.)
+ * \code
+ *  istream is;
+ *  std::ios::iostate const orig_exceptions = is.exceptions();
+ *  try {
+ *    is.exceptions( orig_exceptions | ios::badbit );
+ *    // ...
+ *    is.exceptions( orig_exceptions );
+ *  }
+ *  catch ( ... ) {
+ *    is.exceptions( orig_exceptions );
+ *    throw;
  *  }
  * \endcode
  *
  * While %utf8::streambuf does support seeking, the positions must always be on
  * the first byte of a UTF-8 character.
  */
-class streambuf : public std::streambuf {
+class streambuf : public internal::proxy_streambuf {
 public:
   /**
    * Constructs a %streambuf.
@@ -71,23 +91,12 @@ public:
   streambuf( std::streambuf *orig, bool validate_put = false );
 
   /**
-   * Gets the original streambuf.
-   *
-   * @return said streambuf.
-   */
-  std::streambuf* orig_streambuf() const {
-    return orig_buf_;
-  }
-
-  /**
    * If an invalid UTF-8 byte sequence was read, resynchronizes by skipping
-   * bytes until a new start byte is encountered.
+   * bytes until a new UTF-8 start byte is encountered.
    */
   void resync();
 
 protected:
-  std::streambuf *const orig_buf_;
-
   void imbue( std::locale const& );
   pos_type seekoff( off_type, std::ios_base::seekdir, std::ios_base::openmode );
   pos_type seekpos( pos_type, std::ios_base::openmode );
@@ -164,7 +173,7 @@ void detach( std::basic_ios<charT,Traits> &ios ) {
   int const index = get_streambuf_index();
   if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
     ios.pword( index ) = 0;
-    ios.rdbuf( buf->orig_streambuf() );
+    ios.rdbuf( buf->original() );
     internal::dealloc_streambuf( buf );
   }
 }

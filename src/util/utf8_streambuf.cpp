@@ -99,7 +99,7 @@ inline void streambuf::clear() {
 }
 
 streambuf::streambuf( std::streambuf *orig, bool validate_put ) :
-  orig_buf_( orig ),
+  internal::proxy_streambuf( orig ),
   validate_put_( validate_put )
 {
   if ( !orig )
@@ -108,40 +108,40 @@ streambuf::streambuf( std::streambuf *orig, bool validate_put ) :
 }
 
 void streambuf::imbue( std::locale const &loc ) {
-  orig_buf_->pubimbue( loc );
+  original()->pubimbue( loc );
 }
 
 void streambuf::resync() {
-  int_type c = orig_buf_->sgetc();
+  int_type c = original()->sgetc();
   while ( !traits_type::eq_int_type( c, traits_type::eof() ) ) {
     if ( is_start_byte( traits_type::to_char_type( c ) ) )
       break;
-    c = orig_buf_->sbumpc();
+    c = original()->sbumpc();
   }
 }
 
 streambuf::pos_type streambuf::seekoff( off_type o, ios_base::seekdir d,
                                         ios_base::openmode m ) {
   clear();
-  return orig_buf_->pubseekoff( o, d, m );
+  return original()->pubseekoff( o, d, m );
 }
 
 streambuf::pos_type streambuf::seekpos( pos_type p, ios_base::openmode m ) {
   clear();
-  return orig_buf_->pubseekpos( p, m );
+  return original()->pubseekpos( p, m );
 }
 
 std::streambuf* streambuf::setbuf( char_type *p, streamsize s ) {
-  orig_buf_->pubsetbuf( p, s );
+  original()->pubsetbuf( p, s );
   return this;
 }
 
 streamsize streambuf::showmanyc() {
-  return orig_buf_->in_avail();
+  return original()->in_avail();
 }
 
 int streambuf::sync() {
-  return orig_buf_->pubsync();
+  return original()->pubsync();
 }
 
 streambuf::int_type streambuf::overflow( int_type c ) {
@@ -152,14 +152,14 @@ streambuf::int_type streambuf::overflow( int_type c ) {
     return traits_type::eof();
   if ( validate_put_ )
     pbuf_.validate( traits_type::to_char_type( c ), true );
-  orig_buf_->sputc( c );
+  original()->sputc( c );
   return c;
 }
 
 streambuf::int_type streambuf::pbackfail( int_type c ) {
   if ( !traits_type::eq_int_type( c, traits_type::eof() ) &&
        gbuf_.cur_len_ &&
-       orig_buf_->sputbackc( traits_type::to_char_type( c ) ) ) {
+       original()->sputbackc( traits_type::to_char_type( c ) ) ) {
     --gbuf_.cur_len_;
     return c;
   }
@@ -170,7 +170,7 @@ streambuf::int_type streambuf::uflow() {
 #ifdef ZORBA_DEBUG_UTF8_STREAMBUF
   printf( "uflow()\n" );
 #endif
-  int_type const c = orig_buf_->sbumpc();
+  int_type const c = original()->sbumpc();
   if ( traits_type::eq_int_type( c, traits_type::eof() ) )
     return traits_type::eof();
   gbuf_.validate( traits_type::to_char_type( c ) );
@@ -181,7 +181,7 @@ streambuf::int_type streambuf::underflow() {
 #ifdef ZORBA_DEBUG_UTF8_STREAMBUF
   printf( "underflow()\n" );
 #endif
-  int_type const c = orig_buf_->sgetc();
+  int_type const c = original()->sgetc();
   if ( traits_type::eq_int_type( c, traits_type::eof() ) )
     return traits_type::eof();
   gbuf_.validate( traits_type::to_char_type( c ), false );
@@ -197,7 +197,7 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
   if ( gbuf_.char_len_ ) {
     streamsize const want = gbuf_.char_len_ - gbuf_.cur_len_;
     streamsize const get = min( want, size );
-    streamsize const got = orig_buf_->sgetn( to, get );
+    streamsize const got = original()->sgetn( to, get );
     for ( streamsize i = 0; i < got; ++i )
       gbuf_.validate( to[i] );
     to += got;
@@ -205,7 +205,7 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
   }
 
   while ( size > 0 ) {
-    if ( streamsize const got = orig_buf_->sgetn( to, size ) ) {
+    if ( streamsize const got = original()->sgetn( to, size ) ) {
       for ( streamsize i = 0; i < got; ++i )
         gbuf_.validate( to[i] );
       to += got;
@@ -223,7 +223,7 @@ streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
   if ( validate_put_ )
     for ( streamsize i = 0; i < size; ++i )
       pbuf_.validate( from[i] );
-  return orig_buf_->sputn( from, size );
+  return original()->sputn( from, size );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
