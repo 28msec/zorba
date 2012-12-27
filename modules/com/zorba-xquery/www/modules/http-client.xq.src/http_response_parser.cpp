@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <cassert>
 #include <cstring>
-#include <string>
-#include <sstream>
-#include <assert.h>
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
+#include <string>
 
 #include <zorba/base64.h>
 #include <zorba/config.h>
