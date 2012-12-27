@@ -88,7 +88,7 @@ static bool test_getline( char const *test ) {
   istringstream iss( test );
   utf8::streambuf utf_buf( iss.rdbuf() );
   iss.ios::rdbuf( &utf_buf );
-  iss.exceptions( ios_base::badbit );
+  iss.exceptions( ios::badbit );
 
   char buf[ 1024 ];
   iss.getline( buf, sizeof buf );
@@ -103,7 +103,7 @@ static bool test_read( char const *test ) {
   istringstream iss( test );
   utf8::streambuf utf_buf( iss.rdbuf() );
   iss.ios::rdbuf( &utf_buf );
-  iss.exceptions( ios_base::badbit );
+  iss.exceptions( ios::badbit );
 
   char buf[ 1024 ];
   iss.read( buf, sizeof buf );
@@ -118,7 +118,7 @@ static bool test_insertion( char const *test ) {
   ostringstream oss;
   utf8::streambuf utf_buf( oss.rdbuf(), true );
   oss.ios::rdbuf( &utf_buf );
-  oss.exceptions( ios_base::badbit );
+  oss.exceptions( ios::badbit );
 
   oss << test << flush;
   string const s( oss.str() );
@@ -129,7 +129,7 @@ static bool test_put( char const *test ) {
   ostringstream oss;
   utf8::streambuf utf_buf( oss.rdbuf(), true );
   oss.ios::rdbuf( &utf_buf );
-  oss.exceptions( ios_base::badbit );
+  oss.exceptions( ios::badbit );
 
   for ( char const *c = test; *c; ++c )
     oss.put( *c );
