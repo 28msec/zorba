@@ -99,7 +99,7 @@ inline void streambuf::clear() {
 }
 
 streambuf::streambuf( std::streambuf *orig, bool validate_put ) :
-  proxy_streambuf( orig ),
+  orig_buf_( orig ),
   validate_put_( validate_put )
 {
   if ( !orig )
@@ -108,36 +108,36 @@ streambuf::streambuf( std::streambuf *orig, bool validate_put ) :
 }
 
 void streambuf::resync() {
-  int_type c = original()->sgetc();
+  int_type c = orig_buf_->sgetc();
   while ( !traits_type::eq_int_type( c, traits_type::eof() ) ) {
     if ( is_start_byte( traits_type::to_char_type( c ) ) )
       break;
-    c = original()->sbumpc();
+    c = orig_buf_->sbumpc();
   }
 }
 
 streambuf::pos_type streambuf::seekoff( off_type o, ios_base::seekdir d,
                                         ios_base::openmode m ) {
   clear();
-  return original()->pubseekoff( o, d, m );
+  return orig_buf_->pubseekoff( o, d, m );
 }
 
 streambuf::pos_type streambuf::seekpos( pos_type p, ios_base::openmode m ) {
   clear();
-  return original()->pubseekpos( p, m );
+  return orig_buf_->pubseekpos( p, m );
 }
 
 std::streambuf* streambuf::setbuf( char_type *p, streamsize s ) {
-  original()->pubsetbuf( p, s );
+  orig_buf_->pubsetbuf( p, s );
   return this;
 }
 
 streamsize streambuf::showmanyc() {
-  return original()->in_avail();
+  return orig_buf_->in_avail();
 }
 
 int streambuf::sync() {
-  return original()->pubsync();
+  return orig_buf_->pubsync();
 }
 
 streambuf::int_type streambuf::overflow( int_type c ) {
@@ -148,14 +148,14 @@ streambuf::int_type streambuf::overflow( int_type c ) {
     return traits_type::eof();
   if ( validate_put_ )
     pbuf_.validate( traits_type::to_char_type( c ), true );
-  original()->sputc( c );
+  orig_buf_->sputc( c );
   return c;
 }
 
 streambuf::int_type streambuf::pbackfail( int_type c ) {
   if ( !traits_type::eq_int_type( c, traits_type::eof() ) &&
        gbuf_.cur_len_ &&
-       original()->sputbackc( traits_type::to_char_type( c ) ) ) {
+       orig_buf_->sputbackc( traits_type::to_char_type( c ) ) ) {
     --gbuf_.cur_len_;
     return c;
   }
@@ -166,7 +166,7 @@ streambuf::int_type streambuf::uflow() {
 #ifdef ZORBA_DEBUG_UTF8_STREAMBUF
   printf( "uflow()\n" );
 #endif
-  int_type const c = original()->sbumpc();
+  int_type const c = orig_buf_->sbumpc();
   if ( traits_type::eq_int_type( c, traits_type::eof() ) )
     return traits_type::eof();
   gbuf_.validate( traits_type::to_char_type( c ) );
@@ -177,7 +177,7 @@ streambuf::int_type streambuf::underflow() {
 #ifdef ZORBA_DEBUG_UTF8_STREAMBUF
   printf( "underflow()\n" );
 #endif
-  int_type const c = original()->sgetc();
+  int_type const c = orig_buf_->sgetc();
   if ( traits_type::eq_int_type( c, traits_type::eof() ) )
     return traits_type::eof();
   gbuf_.validate( traits_type::to_char_type( c ), false );
@@ -193,7 +193,7 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
   if ( gbuf_.char_len_ ) {
     streamsize const want = gbuf_.char_len_ - gbuf_.cur_len_;
     streamsize const get = min( want, size );
-    streamsize const got = original()->sgetn( to, get );
+    streamsize const got = orig_buf_->sgetn( to, get );
     for ( streamsize i = 0; i < got; ++i )
       gbuf_.validate( to[i] );
     to += got;
@@ -201,7 +201,7 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
   }
 
   while ( size > 0 ) {
-    if ( streamsize const got = original()->sgetn( to, size ) ) {
+    if ( streamsize const got = orig_buf_->sgetn( to, size ) ) {
       for ( streamsize i = 0; i < got; ++i )
         gbuf_.validate( to[i] );
       to += got;
@@ -219,7 +219,33 @@ streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
   if ( validate_put_ )
     for ( streamsize i = 0; i < size; ++i )
       pbuf_.validate( from[i] );
-  return original()->sputn( from, size );
+  return orig_buf_->sputn( from, size );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// Both new & delete are done inside Zorba rather than in the header to
+// guarantee that they're cross-DLL-boundary safe on Windows.
+
+std::streambuf* alloc_streambuf( std::streambuf *orig ) {
+  return new utf8::streambuf( orig );
+}
+
+int get_streambuf_index() {
+  //
+  // This function is out-of-line because it has a static constant within it.
+  // It has a static constant within it to guarantee (1) initialization before
+  // use and (2) initialization happens exactly once.
+  //
+  // See: "Standard C++ IOStreams and Locales: Advanced Programmer's Guide and
+  // Reference," Angelika Langer and Klaus Kreft, Addison-Wesley, 2000, section
+  // 3.3.1.1: "Initializing and Maintaining the iword/pword Index."
+  //
+  // See: "The C++ Programming Language," Bjarne Stroustrup, Addison-Wesley,
+  // 2000, section 10.4.8: "Local Static Store."
+  //
+  static int const index = ios_base::xalloc();
+  return index;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

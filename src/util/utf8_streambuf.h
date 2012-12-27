@@ -17,8 +17,7 @@
 #ifndef ZORBA_UTF8_STREAMBUF_H
 #define ZORBA_UTF8_STREAMBUF_H
 
-#include <unicode/ucnv.h>
-#include <zorba/transcode_stream.h>
+#include <zorba/internal/streambuf.h>
 
 #include "util/utf8_util.h"
 
@@ -58,7 +57,7 @@ namespace utf8 {
  * While %utf8::streambuf does support seeking, the positions must always be on
  * the first byte of a UTF-8 character.
  */
-class streambuf : public proxy_streambuf {
+class streambuf : public std::streambuf {
 public:
   /**
    * Constructs a %streambuf.
@@ -72,12 +71,23 @@ public:
   streambuf( std::streambuf *orig, bool validate_put = false );
 
   /**
+   * Gets the original streambuf.
+   *
+   * @return said streambuf.
+   */
+  std::streambuf* orig_streambuf() const {
+    return orig_buf_;
+  }
+
+  /**
    * If an invalid UTF-8 byte sequence was read, resynchronizes by skipping
    * bytes until a new start byte is encountered.
    */
   void resync();
 
 protected:
+  std::streambuf *const orig_buf_;
+
   pos_type seekoff( off_type, std::ios_base::seekdir, std::ios_base::openmode );
   pos_type seekpos( pos_type, std::ios_base::openmode );
   std::streambuf* setbuf( char_type*, std::streamsize );
@@ -110,6 +120,65 @@ private:
   streambuf( streambuf const& );
   streambuf& operator=( streambuf const& );
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::streambuf* alloc_streambuf( std::streambuf *orig );
+
+int get_streambuf_index();
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Attaches a utf8::streambuf to a stream.  Unlike using a
+ * utf8::streambuf directly, this function will create the streambuf,
+ * attach it to the stream, and manage it for the lifetime of the stream
+ * automatically.
+ *
+ * @param ios The stream to attach the utf8::streambuf to.  If the stream
+ * already has a utf8::streambuf attached to it, this function does
+ * nothing.
+ */
+template<typename charT,typename Traits> inline
+void attach( std::basic_ios<charT,Traits> &ios ) {
+  int const index = get_streambuf_index();
+  void *&pword = ios.pword( index );
+  if ( !pword ) {
+    std::streambuf *const buf = alloc_streambuf( ios.rdbuf() );
+    ios.rdbuf( buf );
+    pword = buf;
+    ios.register_callback( internal::stream_callback, index );
+  }
+}
+
+/**
+ * Detaches a previously attached base64::streambuf from a stream.  The
+ * streambuf is destroyed and the stream's original streambuf is restored.
+ *
+ * @param ios The stream to detach the base64::streambuf from.  If the
+ * stream doesn't have a base64::streambuf attached to it, this function
+ * does nothing.
+ */
+template<typename charT,typename Traits> inline
+void detach( std::basic_ios<charT,Traits> &ios ) {
+  int const index = get_streambuf_index();
+  if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
+    ios.pword( index ) = 0;
+    ios.rdbuf( buf->orig_streambuf() );
+    internal::dealloc_streambuf( buf );
+  }
+}
+
+/**
+ * Checks whether the given stream has a base64::streambuf attached.
+ *
+ * @param ios The stream to check.
+ * @return \c true only if a base64::streambuf is attached.
+ */
+template<typename charT,typename Traits> inline
+bool is_attached( std::basic_ios<charT,Traits> &ios ) {
+  return !!ios.pword( get_streambuf_index() );
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
