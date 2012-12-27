@@ -18,14 +18,10 @@
 #define ZORBA_TRANSCODE_STREAM_API_H
 
 #include <zorba/config.h>
-#include <zorba/internal/proxy.h>
 #include <zorba/internal/streambuf.h>
 #include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
-
-typedef internal::ztd::proxy<std::streambuf> proxy_streambuf;
-
 namespace transcode {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -105,7 +101,7 @@ protected:
   std::streamsize xsputn( char_type const*, std::streamsize );
 
 private:
-  std::unique_ptr<proxy_streambuf> proxy_buf_;
+  std::unique_ptr<internal::proxy_streambuf> proxy_buf_;
 
   // forbid
   streambuf( streambuf const& );
