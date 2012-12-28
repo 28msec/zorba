@@ -153,6 +153,39 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     break;
   }
   case cast_expr_kind:
+  {
+    cast_expr* e = static_cast<cast_expr*>(node);
+
+    expr* arg = e->get_input();
+    xqtref_t arg_type = arg->get_return_type();
+    xqtref_t target_type = e->get_target_type();
+
+    if (TypeOps::is_equal(tm, *arg_type, *target_type, arg->get_loc()))
+      return arg;
+
+    if (target_type->isAtomicAny())
+    {
+      xqtref_t arg_ptype = TypeOps::prime_type(tm, *arg_type);
+      xqtref_t target_ptype = TypeOps::prime_type(tm, *target_type);
+
+      // If the prime types of the arg type and the target type are equal, then
+      // for a cast expr, we just need to make sure that the cardinality of the
+      // arg is the correct one. This we can do by turning cast to a treat expr
+      // that just checks the cardinality.
+      if (TypeOps::is_equal(tm, *arg_ptype, *target_ptype, arg->get_loc()))
+      {
+        return rCtx.theEM->create_treat_expr(sctx,
+                                             node->get_udf(),
+                                             node->get_loc(),
+                                             arg,
+                                             target_type,
+                                             TREAT_TYPE_MATCH,
+                                             false); // do not check the prime types
+      }
+    }
+
+    break;
+  }
   case promote_expr_kind:
   case treat_expr_kind:
   {
@@ -172,41 +205,24 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     }
 
     // If arg type is subtype of target type, we can eliminate treat and promote
-    // (because they are noops in this case), but not cast (which will actually
-    // create a new item with the target type).
-    if (TypeOps::is_equal(tm, *arg_type, *target_type, arg->get_loc()) ||
-        (node->get_expr_kind() != cast_expr_kind &&
-         TypeOps::is_subtype(tm, *arg_type, *target_type, arg->get_loc())))
+    // (because they are noops in this case).
+    if (TypeOps::is_subtype(tm, *arg_type, *target_type, arg->get_loc()))
       return arg;
-
-    xqtref_t arg_ptype = TypeOps::prime_type(tm, *arg_type);
-    xqtref_t target_ptype = TypeOps::prime_type(tm, *target_type);
-
-    // If the prime types of the arg type and the target type are equal, then
-    // for a cast expr, we just need to make sure that the cardinality of the
-    // arg is the correct one. This we can do by turning cast to a treat expr
-    // that just chacks the cardinality.
-    if (node->get_expr_kind() == cast_expr_kind &&
-        TypeOps::is_equal(tm, *arg_ptype, *target_ptype, arg->get_loc()))
-    {
-      return rCtx.theEM->create_treat_expr(sctx,
-                                           node->get_udf(),
-                                           node->get_loc(),
-                                           arg,
-                                           target_type,
-                                           TREAT_TYPE_MATCH,
-                                           false); // do not check the prime types
-    }
 
     if (node->get_expr_kind() == treat_expr_kind)
     {
       treat_expr* te = static_cast<treat_expr *> (pe);
 
-      if (te->get_check_prime() &&
-          TypeOps::is_subtype(tm, *arg_ptype, *target_ptype, arg->get_loc()))
+      if (te->get_check_prime())
       {
-        te->set_check_prime(false);
-        return node;
+        xqtref_t arg_ptype = TypeOps::prime_type(tm, *arg_type);
+        xqtref_t target_ptype = TypeOps::prime_type(tm, *target_type);
+
+        if (TypeOps::is_subtype(tm, *arg_ptype, *target_ptype, arg->get_loc()))
+        {
+          te->set_check_prime(false);
+          return node;
+        }
       }
     }
 
