@@ -69,6 +69,19 @@ struct ztm : tm {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Calculates the day of the month and month from the given day of the year.
+ *
+ * @param yday The year day (0-365) where 0 = January 1.
+ * @param mday A pointer to the result for the month day (1-31).
+ * @param mon A pointer to the result for the month (0-11).
+ * @param year The year.
+ * @return Returns \c true if \a yday and \a year are a valid combination and
+ * a result is yielded.
+ */
+bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
+                    unsigned year );
+
+/**
  * Calculates the weekday for the given date.
  *
  * @param mday The month day (1-31).
@@ -101,7 +114,7 @@ unsigned days_in_month( unsigned mon, unsigned year );
  * Gets the number of seconds and microseconds since epoch.
  *
  * @param sec A pointer to the result in seconds.
- * @param usec A pointer to the result in microseconds or null if this is
+ * @param usec A pointer to the result in microseconds or \c null if this is
  * not desired.
  */
 void get_epoch( time_t *sec, usec_type *usec = nullptr );
@@ -109,9 +122,9 @@ void get_epoch( time_t *sec, usec_type *usec = nullptr );
 /**
  * Gets the Greenwich time and populates the given ztm structure.
  *
- * @param tm The ztm struct to populate.
- * @param when If 0, populates \a tm based on \a when number of seconds since
- * \e epoch; if 0, populates \a when based on \e now.
+ * @param tm A pointer to the ztm struct to populate.
+ * @param when If &gt; 0, populates \a tm based on \a when number of seconds
+ * since \e epoch; if 0, populates \a when based on \e now.
  */
 void get_gmtime( ztm *tm, time_t when = 0 );
 
@@ -126,9 +139,9 @@ long get_gmt_offset();
 /**
  * Gets the local time and populates the given ztm structure.
  *
- * @param tm The ztm struct to populate.
- * @param when If 0, populates \a tm based on \a when number of seconds since
- * \e epoch; if 0, populates \a when based on \e now.
+ * @param tm A pointer to the ztm struct to populate.
+ * @param when If &gt; 0, populates \a tm based on \a when number of seconds
+ * since \e epoch; if 0, populates \a when based on \e now.
  */
 void get_localtime( ztm *tm, time_t when = 0 );
 

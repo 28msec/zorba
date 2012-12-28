@@ -35,6 +35,26 @@ namespace time {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static unsigned const yday_mon[][13] = {
+  // 0   1   2   3    4    5    6    7    8    9   10   11   12
+  {  0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 },  // non-leap
+  {  0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 }   // leap
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
+                    unsigned year ) {
+  unsigned const *const ym = yday_mon[ is_leap_year( year ) ];
+  for ( unsigned m = 1; m <= 12; ++m ) 
+    if ( ym[ m ] > yday ) {
+      *mday = yday - ym[ --m ];
+      *mon = m;
+      return true;
+    }
+  return false;
+}
+
 /**
  * Tondering's algorithm for calculating the weekday given a date; see:
  * http://www.tondering.dk/claus/calendar.html
@@ -89,11 +109,8 @@ unsigned calc_wday( unsigned mday, unsigned mon, unsigned year ) {
 }
 
 unsigned calc_yday( unsigned mday, unsigned mon, unsigned year ) {
-  static unsigned const first_of_the_month[][12] = {
-    { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 }, // non-leap year
-    { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335 }  // leap year
-  };
-  return first_of_the_month[ is_leap_year( year ) ][ mon ] + mday;
+  assert( mday <= days_in_month( mon, year ) );
+  return yday_mon[ is_leap_year( year ) ][ mon ] + mday;
 }
 
 unsigned days_in_month( unsigned mon, unsigned year ) {
