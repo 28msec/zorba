@@ -539,12 +539,12 @@ void SchemaValidatorImpl::processTextValue (
       // else isAtomic
     }
 
-    bool isResult = GenericCast::castToAtomic(result,
-                                              textValue,
-                                              type.getp(),
-                                              typeManager,
-                                              &nsCtx,
-                                              loc);
+    bool isResult = GenericCast::castStringToAtomic(result,
+                                                    textValue,
+                                                    type.getp(),
+                                                    typeManager,
+                                                    &nsCtx,
+                                                    loc);
     if ( isResult )
       resultList.push_back(result);
   }

@@ -180,27 +180,35 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
       return arg;
 
     xqtref_t arg_ptype = TypeOps::prime_type(tm, *arg_type);
-    xqtref_t target_ptype = TypeOps::prime_type(tm, *target_type);
+    xqtref_t target_ptype;
 
-    // If the prime types of the arg type and the target type are equal, then
-    // for a cast expr, we just need to make sure that the cardinality of the
-    // arg is the correct one. This we can do by turning cast to a treat expr
-    // that just checks the cardinality.
-    if (node->get_expr_kind() == cast_expr_kind &&
-        TypeOps::is_equal(tm, *arg_ptype, *target_ptype, arg->get_loc()))
+    if (target_type->isAtomicAny())
     {
-      return rCtx.theEM->create_treat_expr(sctx,
-                                           node->get_udf(),
-                                           node->get_loc(),
-                                           arg,
-                                           target_type,
-                                           TREAT_TYPE_MATCH,
-                                           false); // do not check the prime types
+      target_ptype = TypeOps::prime_type(tm, *target_type);
+
+      // If the prime types of the arg type and the target type are equal, then
+      // for a cast expr, we just need to make sure that the cardinality of the
+      // arg is the correct one. This we can do by turning cast to a treat expr
+      // that just checks the cardinality.
+      if (node->get_expr_kind() == cast_expr_kind &&
+          TypeOps::is_equal(tm, *arg_ptype, *target_ptype, arg->get_loc()))
+      {
+        return rCtx.theEM->create_treat_expr(sctx,
+                                             node->get_udf(),
+                                             node->get_loc(),
+                                             arg,
+                                             target_type,
+                                             TREAT_TYPE_MATCH,
+                                             false); // do not check the prime types
+      }
     }
 
     if (node->get_expr_kind() == treat_expr_kind)
     {
       treat_expr* te = static_cast<treat_expr *> (pe);
+
+      if (target_ptype == NULL)
+        target_ptype = TypeOps::prime_type(tm, *target_type);
 
       if (te->get_check_prime() &&
           TypeOps::is_subtype(tm, *arg_ptype, *target_ptype, arg->get_loc()))

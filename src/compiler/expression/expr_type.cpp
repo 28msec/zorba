@@ -369,7 +369,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       else
         newType = rtm.NONE_TYPE;
     }
-    else if (TypeOps::has_atomic_itemtype(tm, *e->theTargetType))
+    else if (e->theTargetType->isAtomicAny())
     {
       TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
 

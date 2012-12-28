@@ -3839,7 +3839,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     // return type.
     xqtref_t returnType = udf->getSignature().returnType();
 
-    if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
+    if (returnType->isBuiltinAtomicAny())
     {
       body = wrap_in_type_promotion(body,
                                     returnType,
@@ -8593,7 +8593,7 @@ expr* create_cast_expr(
 {
   TypeManager* tm = CTX_TM;
 
-  if (!TypeOps::has_atomic_itemtype(tm, *type))
+  if (!type->isAtomicAny())
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     {
@@ -11632,7 +11632,7 @@ void end_visit(const InlineFunction& v, void* aState)
   xqtref_t returnType = udf->getSignature().returnType();
 
   // Wrap the body in appropriate type op.
-  if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
+  if (returnType->isBuiltinAtomicAny())
   {
     body = wrap_in_type_promotion(body, returnType, PROMOTE_TYPE_PROMOTION);
   }

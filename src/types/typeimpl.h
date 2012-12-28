@@ -356,6 +356,14 @@ public:
 
   int card() const;
 
+  bool isAtomicAny() const;
+
+  bool isAtomicOne() const;
+
+  bool isBuiltinAtomicAny() const;
+
+  bool isBuiltinAtomicOne() const;
+
   virtual bool isList() const { return false; }
 
   virtual content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };

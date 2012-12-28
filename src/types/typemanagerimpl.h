@@ -69,13 +69,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  TypeManagerImpl(TypeManager* parent)
-    :
-    TypeManager(parent ? parent->level() + 1 : 0),
-    m_parent(parent),
-    m_schema(NULL)
-  {
-  }
+  TypeManagerImpl(TypeManager* parent);
 
   virtual ~TypeManagerImpl();
 

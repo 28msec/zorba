@@ -240,6 +240,66 @@ int XQType::card() const
 
 
 /*******************************************************************************
+  Returns true if the ItemType of the given sequence type is an atomic type.
+********************************************************************************/
+bool XQType::isAtomicAny() const
+{
+  if (type_kind() == XQType::ATOMIC_TYPE_KIND)
+  {
+    return true;
+  }
+  else if (type_kind() == XQType::USER_DEFINED_KIND)
+  {
+    return static_cast<const UserDefinedXQType*>(this)->isAtomic();
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+  Returns true if the quantifier of the given sequence type is QUANT_ONE and
+  its ItemType is an atomic type.
+********************************************************************************/
+bool XQType::isAtomicOne() const
+{
+  if (get_quantifier() == TypeConstants::QUANT_ONE)
+  {
+    if (type_kind() == XQType::ATOMIC_TYPE_KIND)
+    {
+      return true;
+    }
+    else if (type_kind() == XQType::USER_DEFINED_KIND)
+    {
+      return static_cast<const UserDefinedXQType*>(this)->isAtomic();
+    }
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool XQType::isBuiltinAtomicAny() const
+{
+  return type_kind() == XQType::ATOMIC_TYPE_KIND;
+}
+
+
+/*******************************************************************************
+  Returns true if the quantifier of the given sequence type is QUANT_ONE and
+  its ItemType is a builtin atomic type.
+********************************************************************************/
+bool XQType::isBuiltinAtomicOne() const
+{
+  return get_quantifier() == TypeConstants::QUANT_ONE &&
+         type_kind() == XQType::ATOMIC_TYPE_KIND;
+}
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 std::string XQType::toString() const
@@ -1135,7 +1195,7 @@ xqtref_t UserDefinedXQType::getBaseBuiltinType() const
   while (builtinType->type_kind() == XQType::USER_DEFINED_KIND)
   {
     const UserDefinedXQType* tmp =
-    reinterpret_cast<const UserDefinedXQType*>(builtinType.getp());
+    static_cast<const UserDefinedXQType*>(builtinType.getp());
 
     builtinType = tmp->getBaseType();
   }
@@ -1240,35 +1300,49 @@ std::ostream& UserDefinedXQType::serialize_ostream(std::ostream& os) const
   switch (m_typeCategory)
   {
   case ATOMIC_TYPE:
+  {
     info << "isAtomic";
     break;
+  }
   case COMPLEX_TYPE:
+  {
     info << "isComplex";
     break;
+  }
   case LIST_TYPE:
+  {
     info << " isList itemType:" << m_listItemType->toString();
     break;
+  }
   case UNION_TYPE:
-    info << " isUnion " << m_unionItemTypes.size() << ":";
-    for ( unsigned int i = 0; i < m_unionItemTypes.size(); i++)
+  {
+    csize numMembers = m_unionItemTypes.size();
+    info << " Union (" ;
+    if (numMembers > 0)
     {
-      info << m_unionItemTypes[i]->toString();
+      for (csize i = 0; i < numMembers-1; ++i)
+      {
+        info << m_unionItemTypes[i]->toString() << ", ";
+      }
+      info << m_unionItemTypes[numMembers-1]->toString();
     }
+    info << ")";
     break;
+  }
   default:
     ZORBA_ASSERT(false);
   }
 
   info << " " << contentKindStr(m_contentKind);
 
-  return os << "[UserDefinedXQType " << " "
-            << TypeOps::decode_quantifier (get_quantifier()) << " "
+  return os << "[UserDefinedXQType "
+            << TypeOps::decode_quantifier(get_quantifier()) << " "
             << m_qname->getLocalName() << "@"
             << m_qname->getNamespace() << " "
             << info.str()
             << " base:"
-            << ( m_baseType ? TypeOps::toString(*m_baseType) : "NULL" )
-            << " ]";
+            << ( m_baseType ? m_baseType->toString() : "NULL" )
+            << "]";
 }
 
 

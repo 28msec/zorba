@@ -26,6 +26,9 @@
 
 #include "compiler/expression/expr_consts.h"
 
+#include "context/namespace_context.h"
+
+
 namespace zorba 
 {
 
@@ -85,8 +88,10 @@ class CastIterator : public UnaryBaseIterator<CastIterator, CastIteratorState>
   friend class PrinterVisitor;
 
 private:
-  xqtref_t      theCastType;
-  bool          theAllowEmpty;
+  xqtref_t          theCastType;
+  bool              theAllowEmpty;
+
+  namespace_context theNsCtx;
 
 public:
   SERIALIZABLE_CLASS(CastIterator);

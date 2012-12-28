@@ -65,6 +65,19 @@ SERIALIZABLE_CLASS_VERSIONS(TypeManagerImpl)
 /***************************************************************************//**
 
 ********************************************************************************/
+TypeManagerImpl::TypeManagerImpl(TypeManager* parent)
+  :
+  TypeManager(parent ? parent->level() + 1 : 0),
+  m_parent(parent),
+  m_schema(NULL)
+{
+  initializeSchema();
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 void TypeManager::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & m_level;

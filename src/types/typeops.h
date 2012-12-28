@@ -71,29 +71,6 @@ public:
   static bool is_in_scope(const TypeManager* tm, const XQType& type);
 
   /**
-   * Returns true if the ItemType of the given sequence type is an atomic type.
-   */
-  static bool has_atomic_itemtype(const TypeManager* tm, const XQType& type);
-
-  /**
-   * Returns true if the quantifier of the given sequence type is QUANT_ONE and
-   * its ItemType is an atomic type.
-   */
-  static bool is_atomic(const TypeManager* tm, const XQType& type);
-
-  /**
-   * Returns true if the quantifier of the given sequence type is QUANT_ONE and
-   * its ItemType is a builtin atomic type.
-   */
-  static bool is_builtin_atomic(const TypeManager* tm, const XQType& type);
-
-  /**
-   * Returns true if the ItemType of the given sequence type is a builtin
-   * atomic type.
-   */
-  static bool is_builtin_simple(const TypeManager* tm, const XQType& type);
-
-  /**
    * Returns true is the given sequence type is a subtype of an atomic builtin
    * numeric type (xs:decimal, xs:double, or xs:float)
    */
@@ -228,11 +205,6 @@ public:
    */
   static std::ostream& serialize(std::ostream& os, const XQType& type);
   
-  /*
-   * Returns a string with a textual representation of the given type.
-   */
-  static std::string toString(const XQType& type);
-
   /*
    * Returns a string with a textual representation of the given quantifier.
    */
