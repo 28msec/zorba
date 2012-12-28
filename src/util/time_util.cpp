@@ -48,8 +48,11 @@ bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
   unsigned const *const ym = yday_mon[ is_leap_year( year ) ];
   for ( unsigned m = 1; m <= 12; ++m ) 
     if ( ym[ m ] > yday ) {
-      *mday = yday - ym[ --m ];
-      *mon = m;
+      --m;
+      if ( mday )
+        *mday = yday - ym[ m ];
+      if ( mon )
+        *mon = m;
       return true;
     }
   return false;

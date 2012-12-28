@@ -72,8 +72,10 @@ struct ztm : tm {
  * Calculates the day of the month and month from the given day of the year.
  *
  * @param yday The year day (0-365) where 0 = January 1.
- * @param mday A pointer to the result for the month day (1-31).
- * @param mon A pointer to the result for the month (0-11).
+ * @param mday A pointer to the result for the month day (1-31) or \c null if
+ * this is not desired.
+ * @param mon A pointer to the result for the month (0-11) or \c null if this
+ * is not desired.
  * @param year The year.
  * @return Returns \c true if \a yday and \a year are a valid combination and
  * a result is yielded.
