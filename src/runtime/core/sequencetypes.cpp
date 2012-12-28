@@ -249,9 +249,9 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       targetType = static_cast<const AtomicXQType*>(theCastType.getp())->get_type_code();
 
-      valid = GenericCast::castToBuiltinAtomic(result, item, targetType, NULL, loc);
+      GenericCast::castToBuiltinAtomic(result, item, targetType, NULL, loc);
 
-      STACK_PUSH(valid, state);
+      STACK_PUSH(true, state);
     }
     else
     {

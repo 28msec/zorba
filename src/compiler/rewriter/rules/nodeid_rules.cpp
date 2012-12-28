@@ -307,9 +307,7 @@ expr* MarkConsumerNodeProps::apply(
     static_cast<cast_or_castable_base_expr*>(node);
 
     expr* arg = curExpr->get_input();
-
     xqtref_t targetType = curExpr->get_target_type();
-    TypeConstants::quantifier_t q = targetType->get_quantifier();
 
     set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
     set_ignores_duplicate_nodes(arg, ANNOTATION_FALSE);

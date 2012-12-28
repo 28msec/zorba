@@ -108,7 +108,7 @@ public:
         const namespace_context* nsCtx,
         const QueryLoc& loc);
 
-  static bool castToBuiltinAtomic(
+  static void castToBuiltinAtomic(
         store::Item_t& result,
         store::Item_t& item, 
         store::SchemaTypeCode targetType,

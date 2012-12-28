@@ -2046,10 +2046,6 @@ bool GenericCast::castToSimple(
     const TypeManager* tm,
     const QueryLoc& loc)
 {
-  //std::cout << "-castToSimple: " << aStr.c_str() << " tgtType: "
-  //          << targetType->get_qname()->getLocalName()->c_str()
-  //          << " @ " << targetType->get_qname()->getNamespace()->c_str() << "\n";
-
   const TypeManager* ttm = targetType->get_manager();
   if (ttm != tm && ttm != &GENV_TYPESYSTEM && !TypeOps::is_in_scope(tm, *targetType))
   {
@@ -2241,7 +2237,8 @@ bool GenericCast::castToAtomic(
   {
     targetTypeCode = TypeOps::get_atomic_type_code(*targetType);
 
-    return castToBuiltinAtomic(result, item, targetTypeCode, nsCtx, loc);
+    castToBuiltinAtomic(result, item, targetTypeCode, nsCtx, loc);
+    return true;
   }
   else
   {
@@ -2261,8 +2258,7 @@ bool GenericCast::castToAtomic(
       return castStringToAtomic(result, stringValue, targetType, tm, nsCtx, loc);
     }
 
-    bool valid = castToBuiltinAtomic(result, item, targetTypeCode, nsCtx, loc);
-    ZORBA_ASSERT(valid);
+    castToBuiltinAtomic(result, item, targetTypeCode, nsCtx, loc);
 
     const TypeManager* tm = targetType->get_manager();
     Schema* schema = tm->getSchema();
@@ -2271,7 +2267,9 @@ bool GenericCast::castToAtomic(
     result->getStringValue2(stringValue);
 
     store::Item_t baseItem;
-    valid = schema->parseUserAtomicTypes(stringValue, targetType, baseItem, nsCtx, loc);
+
+    bool valid = 
+    schema->parseUserAtomicTypes(stringValue, targetType, baseItem, nsCtx, loc);
 
     if (valid)
     {
@@ -2293,7 +2291,7 @@ bool GenericCast::castToAtomic(
   Bug: no casting is done if TI is a user-defined type whose builtin base type
   is TT. TODO fix this ???? 
 ********************************************************************************/
-bool GenericCast::castToBuiltinAtomic(
+void GenericCast::castToBuiltinAtomic(
     store::Item_t& result,
     store::Item_t& item,
     store::SchemaTypeCode targetTypeCode,
@@ -2308,7 +2306,7 @@ bool GenericCast::castToBuiltinAtomic(
   if (sourceTypeCode == targetTypeCode)
   {
     result.transfer(item);
-    return true;
+    return;
   }
 
   ErrorInfo errInfo(sourceTypeCode, targetTypeCode, loc);
@@ -2354,8 +2352,6 @@ bool GenericCast::castToBuiltinAtomic(
   {
     (*downCastFunc)(result, &*result, targetTypeCode, factory, errInfo);
   }
-
-  return true;
 }
 
 
@@ -2871,7 +2867,8 @@ bool GenericCast::promote(
 
     if (TypeOps::is_subtype(itemTypeCode, store::XS_ANY_URI))
     {
-      return castToBuiltinAtomic(result, item, store::XS_STRING, NULL, loc);
+      castToBuiltinAtomic(result, item, store::XS_STRING, NULL, loc);
+      return true;
     }
   }
 
@@ -2903,7 +2900,8 @@ bool GenericCast::promote(
       ! TypeOps::is_subtype(targetType, store::XS_QNAME))
   {
     // untyped --> target type
-    return castToBuiltinAtomic(result, item, targetType, NULL, loc);
+    castToBuiltinAtomic(result, item, targetType, NULL, loc);
+    return true;
   }
   else if (TypeOps::is_subtype(targetType, store::XS_DOUBLE))
   {
@@ -2911,7 +2909,8 @@ bool GenericCast::promote(
     if (TypeOps::is_subtype(itemType, store::XS_DECIMAL) ||
         TypeOps::is_subtype(itemType, store::XS_FLOAT))
     {
-      return castToBuiltinAtomic(result, item, targetType, NULL, loc);
+      castToBuiltinAtomic(result, item, targetType, NULL, loc);
+      return true;
     }
   }
   else if (TypeOps::is_subtype(targetType, store::XS_FLOAT))
@@ -2919,7 +2918,8 @@ bool GenericCast::promote(
     // decimal --> xs:float
     if (TypeOps::is_subtype(itemType, store::XS_DECIMAL))
     {
-      return castToBuiltinAtomic(result, item, targetType, NULL, loc);
+      castToBuiltinAtomic(result, item, targetType, NULL, loc);
+      return true;
     }
   }
   else if (TypeOps::is_subtype(targetType, store::XS_STRING))
@@ -2927,7 +2927,8 @@ bool GenericCast::promote(
     // URI --> xs:String Promotion
     if (TypeOps::is_subtype(itemType, store::XS_ANY_URI))
     {
-      return castToBuiltinAtomic(result, item, store::XS_STRING, NULL, loc);
+      castToBuiltinAtomic(result, item, store::XS_STRING, NULL, loc);
+      return true;
     }
   }
 
