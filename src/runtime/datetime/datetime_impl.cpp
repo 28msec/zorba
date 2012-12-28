@@ -34,10 +34,26 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void try_strptime( zstring const &buf, zstring const &fmt,
-                          time::ztm *tm, QueryLoc const &loc ) {
+static void strptime( zstring const &buf, zstring const &fmt, time::ztm *tm,
+                      QueryLoc const &loc ) {
   try {
-    time::strptime( buf, fmt, tm );
+    unsigned set_fields;
+    time::strptime( buf, fmt, tm, &set_fields );
+    bool const set_mday = set_fields & time::set_mday;
+    bool const set_mon  = set_fields & time::set_mon;
+    bool const set_yday = set_fields & time::set_yday;
+    bool const set_year = set_fields & time::set_year;
+    if ( set_yday && set_year && (!set_mday || !set_mon) ) {
+      //
+      // Given yday and year, "back fill" mday and/or mon.
+      //
+      time::calc_mday_mon(
+        tm->tm_yday, 
+        set_mday ? nullptr : reinterpret_cast<unsigned*>( &tm->tm_mday ),
+        set_mon  ? nullptr : reinterpret_cast<unsigned*>( &tm->tm_mon ),
+        tm->tm_year
+      );
+    }
   }
   catch ( time::invalid_specification const &e ) {
     throw XQUERY_EXCEPTION(
@@ -148,8 +164,7 @@ bool ParseDate::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
 
-  try_strptime( buf, fmt, &tm, loc );
-
+  strptime( buf, fmt, &tm, loc );
   GENV_ITEMFACTORY->createDate(
     result,
     static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
@@ -175,8 +190,7 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
   consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
 
-  try_strptime( buf, fmt, &tm, loc );
-
+  strptime( buf, fmt, &tm, loc );
   GENV_ITEMFACTORY->createDateTime(
     result,
     static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
@@ -205,8 +219,7 @@ bool ParseTime::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
 
-  try_strptime( buf, fmt, &tm, loc );
-
+  strptime( buf, fmt, &tm, loc );
   GENV_ITEMFACTORY->createTime(
     result,
     static_cast<short>( tm.tm_hour ),
