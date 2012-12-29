@@ -3836,7 +3836,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     // return type.
     xqtref_t returnType = udf->getSignature().returnType();
 
-    if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
+    if (returnType->isBuiltinAtomicAny())
     {
       body = wrap_in_type_promotion(body,
                                     returnType,
@@ -7372,21 +7372,22 @@ void* begin_visit(const SwitchExpr& v)
   //          then $atomv cast as xs:string
   //          else $atomv
   //     return NULL]
-  static_cast<flwor_expr*>(atomizedFlwor)->set_return_expr(theExprManager->
-    create_if_expr(theRootSctx,
-                   theUDF,
-                   loc,
-                   theExprManager->create_instanceof_expr(theRootSctx,
-                                                          theUDF,
-                                                          loc,
-                                                          atomv,
-                                                          theRTM.UNTYPED_ATOMIC_TYPE_ONE),
-                   theExprManager->create_cast_expr(theRootSctx,
-                                                    theUDF,
-                                                    loc,
-                                                    atomv,
-                                                    theRTM.STRING_TYPE_ONE),
-                   atomv));
+  static_cast<flwor_expr*>(atomizedFlwor)->set_return_expr(
+      CREATE(if)(theRootSctx,
+                 theUDF,
+                 loc,
+                 CREATE(instanceof)(theRootSctx,
+                                    theUDF,
+                                    loc,
+                                    atomv,
+                                    theRTM.UNTYPED_ATOMIC_TYPE_ONE),
+                 CREATE(cast)(theRootSctx,
+                              theUDF,
+                              loc,
+                              atomv,
+                              theRTM.STRING_TYPE_ONE,
+                              false),
+                 atomv));
 
   // flworExpr = [let $sv := atomizedFlwor return NULL]
   var_expr* sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
@@ -7419,13 +7420,12 @@ void* begin_visit(const SwitchExpr& v)
 
       expr* operandExpr = pop_nodestack();
       operandExpr = wrap_in_atomization(operandExpr);
-      operandExpr = theExprManager->
-      create_fo_expr(theRootSctx,
-                     theUDF,
-                     loc,
-                     BUILTIN_FUNC(OP_ATOMIC_VALUES_EQUIVALENT_2),
-                     sv,
-                     operandExpr);
+      operandExpr = CREATE(fo)(theRootSctx,
+                               theUDF,
+                               loc,
+                               BUILTIN_FUNC(OP_ATOMIC_VALUES_EQUIVALENT_2),
+                               sv,
+                               operandExpr);
       
       condOperands.push_back(operandExpr);
     } // for
@@ -8493,92 +8493,12 @@ void end_visit(const CastableExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(create_cast_expr(loc, pop_nodestack(), pop_tstack(), false));
-}
+  bool allowsEmpty = v.singletype()->get_hook_bit();
 
+  expr* castableExpr = 
+  create_cast_expr(loc, pop_nodestack(), pop_tstack(), allowsEmpty, false);
 
-expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCast)
-{
-  TypeManager* tm = CTX_TM;
-
-  if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE, loc) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION, loc) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, loc) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
-  {
-    RAISE_ERROR(err::XPST0080, loc, ERROR_PARAMS(type->toString()));
-  }
-
-  if (TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, loc))
-  {
-    const const_expr* ce = dynamic_cast<const_expr*>(node);
-
-    if (ce != NULL &&
-        TypeOps::is_equal(tm,
-                          *tm->create_value_type(ce->get_val()),
-                          *GENV_TYPESYSTEM.STRING_TYPE_ONE,
-                          loc))
-    {
-      store::Item_t castLiteral;
-      try
-      {
-        GenericCast::instance()->castToQName(castLiteral,
-                                             ce->get_val(),
-                                             theNSCtx,
-                                             false,
-                                             CTX_TM,
-                                             loc);
-      }
-      catch (ZorbaException& e)
-      {
-        if (isCast)
-        {
-          throw;
-        }
-        else
-        {
-          if (e.diagnostic() == err::FORG0001)
-            throw;// XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
-          else
-            RAISE_ERROR(err::XPST0081, loc,
-            ERROR_PARAMS(castLiteral->getStringValue()));
-        }
-      }
-
-      assert(castLiteral != NULL || ! isCast);
-
-      if (isCast)
-        return CREATE(const)(theRootSctx, theUDF, loc, castLiteral);
-      else
-        return CREATE(const)(theRootSctx, theUDF, loc, castLiteral != NULL);
-    }
-    else
-    {
-      xqtref_t qnameType = (type->get_quantifier() == TypeConstants::QUANT_ONE ?
-                            GENV_TYPESYSTEM.QNAME_TYPE_ONE :
-                            GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
-
-      if (isCast)
-        return CREATE(cast)(theRootSctx,
-                            theUDF,
-                            loc,
-                            wrap_in_atomization(node),
-                            qnameType);
-      else
-        return CREATE(castable)(theRootSctx,
-                                theUDF,
-                                loc,
-                                wrap_in_atomization(node),
-                                qnameType);
-    }
-  }
-  else
-  {
-    if (isCast)
-      return CREATE(cast)(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
-    else
-      return CREATE(castable)(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
-  }
+  push_nodestack(castableExpr);
 }
 
 
@@ -8595,7 +8515,207 @@ void end_visit(const CastExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(create_cast_expr(loc, pop_nodestack(), pop_tstack(), true));
+  bool allowsEmpty = v.get_singletype()->get_hook_bit();
+
+  expr* castExpr = 
+  create_cast_expr(loc, pop_nodestack(), pop_tstack(), allowsEmpty, true);
+
+  push_nodestack(castExpr);
+}
+
+
+/*******************************************************************************
+	SingleType ::= SimpleTypeName "?"?
+
+  SimpleTypeName ::= EQNAME
+********************************************************************************/
+
+void* begin_visit(const SingleType& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const SingleType& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  if (v.get_hook_bit())
+  {
+    xqtref_t type = pop_tstack();
+
+    assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
+           type->get_quantifier() == TypeConstants::QUANT_STAR);
+
+    if (type->get_quantifier() == TypeConstants::QUANT_ONE)
+    {
+      theTypeStack.push(CTX_TM->create_type(*type, TypeConstants::QUANT_QUESTION));
+    }
+  }
+  // else leave type as it is on tstack
+}
+
+
+/*******************************************************************************
+  SimpleTypeName ::= EQNAME
+********************************************************************************/
+void* begin_visit(const SimpleType& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const SimpleType& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  rchandle<QName> qname = v.get_qname();
+  store::Item_t qnameItem;
+  expand_elem_qname(qnameItem, qname, loc);
+
+  xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
+  if (t == NULL)
+  {
+    if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    {
+      RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(qname->get_qname()));
+    }
+    else
+    {
+      RAISE_ERROR(err::XQST0052, loc, ERROR_PARAMS(qname->get_qname()));
+    }
+  }
+  else
+  {
+    theTypeStack.push(t);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr* create_cast_expr(
+    const QueryLoc& loc,
+    expr* node,
+    const xqtref_t& type,
+    bool allowsEmpty,
+    bool isCast)
+{
+  TypeManager* tm = CTX_TM;
+
+  if (!type->isAtomicAny())
+  {
+    if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    {
+      RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(type->get_qname()));
+    }
+  }
+
+  if (TypeOps::is_equal(tm, *type, *theRTM.NOTATION_TYPE_ONE, loc) ||
+      TypeOps::is_equal(tm, *type, *theRTM.NOTATION_TYPE_QUESTION, loc) ||
+      TypeOps::is_equal(tm, *type, *theRTM.ANY_ATOMIC_TYPE_ONE, loc) ||
+      TypeOps::is_equal(tm, *type, *theRTM.ANY_ATOMIC_TYPE_QUESTION, loc))
+  {
+    RAISE_ERROR(err::XPST0080, loc, ERROR_PARAMS(type->toString()));
+  }
+
+  if (TypeOps::is_subtype(tm, *type, *theRTM.QNAME_TYPE_QUESTION, loc))
+  {
+    if (node->get_expr_kind() == const_expr_kind)
+    {
+      const const_expr* ce = static_cast<const_expr*>(node);
+
+      if (ce->get_val()->getTypeCode() == store::XS_STRING)
+      {
+        store::Item_t result;
+        try
+        {
+          GenericCast::castToQName(result, ce->get_val(), theNSCtx, false, tm, loc);
+        }
+        catch (ZorbaException& e)
+        {
+          if (isCast)
+          {
+            throw;
+          }
+          else
+          {
+            if (e.diagnostic() == err::FORG0001)
+              throw;// XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+            else
+              RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(result->getStringValue()));
+          }
+        }
+
+        if (type->type_kind() == XQType::USER_DEFINED_KIND)
+        {
+          const UserDefinedXQType* udt = 
+          static_cast<const UserDefinedXQType*>(type.getp());
+
+          store::Item_t tmp = result;
+          store::Item_t typeName = udt->get_qname();
+          GENV_ITEMFACTORY->createUserTypedAtomicItem(result, tmp, typeName);
+        }
+
+        assert(result != NULL || ! isCast);
+        return (isCast ?
+                CREATE(const)(theRootSctx, theUDF, loc, result) :
+                CREATE(const)(theRootSctx, theUDF, loc, result != NULL));
+      }
+    }
+
+    xqtref_t inputType = node->get_return_type();
+
+    if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    {
+      // when casting to type T, where T is QName or subtype of, and the input
+      // is not a const expr, then the input MUST be of type T or subtype of.
+      if (isCast)
+      {
+        if (TypeOps::is_subtype(tm, *inputType, *theRTM.QNAME_TYPE_STAR, loc))
+        {
+          return CREATE(cast)(theRootSctx, theUDF, loc, node, type, allowsEmpty);
+        }
+        else
+        {
+          return CREATE(treat)(theRootSctx, theUDF, loc, node, type, TREAT_TYPE_MATCH);
+        }
+      }
+      else
+      {
+        return CREATE(instanceof)(theRootSctx, theUDF, loc, node, type);
+      }
+    }
+
+    expr* input = wrap_in_atomization(node);
+
+    if (TypeOps::is_subtype(tm, *inputType, *theRTM.ANY_NODE_TYPE_PLUS, loc))
+    {
+      if (isCast)
+      {
+        RAISE_ERROR(err::XPTY0117, loc, ERROR_PARAMS(ZED(XPTY0117_NodeCast)));
+      }
+      else
+      {
+        return CREATE(const)(theRootSctx, theUDF, loc, false);
+      }
+    }
+
+    if (isCast)
+      return CREATE(cast)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
+    else
+      return CREATE(castable)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
+  }
+  else
+  {
+    expr* input = wrap_in_atomization(node);
+
+    if (isCast)
+      return CREATE(cast)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
+    else
+      return CREATE(castable)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
+  }
 }
 
 
@@ -10679,9 +10799,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                           theUDF,
                                           loc,
                                           tv,
-                                          theRTM.DOUBLE_TYPE_ONE);
+                                          theRTM.DOUBLE_TYPE_ONE,
+                                          false);
 
-        expr* castExpr = create_cast_expr(loc, tv, theRTM.DOUBLE_TYPE_ONE, true);
+        expr* castExpr = create_cast_expr(loc, tv, theRTM.DOUBLE_TYPE_ONE, false, true);
 
         expr* ret = CREATE(if)(theRootSctx, theUDF, loc, condExpr, castExpr, nanExpr);
 
@@ -10714,7 +10835,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           push_nodestack(CREATE(cast)(theRootSctx, theUDF,
                                       loc,
                                       CREATE(const)(theRootSctx, theUDF, loc, baseuri),
-                                      theRTM.ANY_URI_TYPE_ONE));
+                                      theRTM.ANY_URI_TYPE_ONE, false));
         return;
       }
       case FunctionConsts::FN_ID_1:
@@ -10871,7 +10992,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
     }
 
-    push_nodestack(create_cast_expr(loc, arguments[0], type, true));
+    push_nodestack(create_cast_expr(loc, arguments[0], type, true, true));
   }
 
   // It is not a builtin constructor function
@@ -11543,7 +11664,7 @@ void end_visit(const InlineFunction& v, void* aState)
   xqtref_t returnType = udf->getSignature().returnType();
 
   // Wrap the body in appropriate type op.
-  if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
+  if (returnType->isBuiltinAtomicAny())
   {
     body = wrap_in_type_promotion(body, returnType, PROMOTE_TYPE_PROMOTION);
   }
@@ -11771,19 +11892,18 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
 
   nameExpr = wrap_in_atomization(nameExpr);
 
-  nameExpr = theExprManager->
-  create_cast_expr(theRootSctx,
-                   theUDF,
-                   nameExpr->get_loc(),
-                   nameExpr,
-                   GENV_TYPESYSTEM.STRING_TYPE_ONE);
+  nameExpr = CREATE(cast)(theRootSctx,
+                          theUDF,
+                          nameExpr->get_loc(),
+                          nameExpr,
+                          GENV_TYPESYSTEM.STRING_TYPE_ONE,
+                          false);
 
-  valueExpr = theExprManager->
-  create_fo_expr(theRootSctx,
-                 theUDF,
-                 valueExpr->get_loc(),
-                 BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
-                 valueExpr);
+  valueExpr = CREATE(fo)(theRootSctx,
+                         theUDF,
+                         valueExpr->get_loc(),
+                         BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
+                         valueExpr);
 
   push_nodestack(valueExpr);
   push_nodestack(nameExpr);
@@ -12686,7 +12806,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
   {
     target = pop_nodestack();
 
-    expr* castExpr = create_cast_expr(loc, target, theRTM.NCNAME_TYPE_ONE, true);
+    expr* castExpr = create_cast_expr(loc, target, theRTM.NCNAME_TYPE_ONE, false, true);
 
     target = wrap_in_enclosed_expr(castExpr, loc);
   }
@@ -12719,25 +12839,6 @@ void end_visit(const CompTextConstructor& v, void* /*visit_state*/)
                                                      enclosedExpr);
 
   push_nodestack(textExpr);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-
-void* begin_visit(const SingleType& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const SingleType& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-  if (v.get_hook_bit())
-    theTypeStack.push(CTX_TM->create_type(*pop_tstack(), TypeConstants::QUANT_QUESTION));
-  // else leave type as it is on tstack
 }
 
 
@@ -12845,7 +12946,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   }
   else
   {
-    theTypeStack.push (t);
+    theTypeStack.push(t);
   }
 }
 

@@ -2529,7 +2529,11 @@ void end_visit(castable_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
-  push_itstack(new CastableIterator(sctx, qloc, lChild, v.get_target_type()));
+  push_itstack(new CastableIterator(sctx,
+                                    qloc,
+                                    lChild,
+                                    v.get_target_type(),
+                                    v.allows_empty_input()));
 }
 
 
@@ -2543,8 +2547,12 @@ bool begin_visit(cast_expr& v)
 void end_visit(cast_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  PlanIter_t lChild = pop_itstack();
-  push_itstack(new CastIterator(sctx, qloc, lChild, v.get_target_type()));
+  PlanIter_t child = pop_itstack();
+  push_itstack(new CastIterator(sctx,
+                                qloc,
+                                child,
+                                v.get_target_type(),
+                                v.allows_empty_input()));
 }
 
 

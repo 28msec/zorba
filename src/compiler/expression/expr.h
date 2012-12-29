@@ -253,16 +253,20 @@ class cast_expr : public cast_base_expr
   friend class expr;
 
 protected:
+  bool theAllowsEmtpyInput;
+
+protected:
   cast_expr(
       CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
       const QueryLoc&,
       expr*,
-      const xqtref_t&);
+      const xqtref_t&,
+      bool allowsEmptyInput);
 
 public:
-  bool is_optional() const;
+  bool allows_empty_input() const { return theAllowsEmtpyInput; }
 
   void accept(expr_visitor&);
 
@@ -432,16 +436,20 @@ class castable_expr : public castable_base_expr
   friend class expr;
 
 protected:
+  bool theAllowsEmtpyInput;
+
+protected:
   castable_expr(
       CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
       const QueryLoc&,
       expr*,
-      const xqtref_t&);
+      const xqtref_t&,
+      bool allowsEmtpyInput);
 
 public:
-  bool is_optional() const;
+  bool allows_empty_input() const { return theAllowsEmtpyInput; }
 
   void accept(expr_visitor&);
 
