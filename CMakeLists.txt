@@ -86,16 +86,18 @@ INCLUDE(CheckSymbolExists)
 INCLUDE(CheckTypeSize)
 INCLUDE(CheckVariableExists)
 
-CHECK_INCLUDE_FILES ("sys/param.h;sys/mount.h"      ZORBA_HAVE_SYS_MOUNT_H)
-CHECK_INCLUDE_FILES ("unicode/utypes.h"             ZORBA_HAVE_UTYPES_H)
 CHECK_INCLUDE_FILES ("unicode/coll.h"               ZORBA_HAVE_COLL_H)
-CHECK_INCLUDE_FILES ("unicode/ustring.h"            ZORBA_HAVE_USTRING_H)
+CHECK_INCLUDE_FILES ("iconv.h"                      ZORBA_HAVE_ICONV_H)
 CHECK_INCLUDE_FILES ("inttypes.h"                   ZORBA_HAVE_INTTYPES_H)
+CHECK_INCLUDE_FILES ("limits.h"                     ZORBA_HAVE_LIMITS_H)
 CHECK_INCLUDE_FILES ("stdint.h"                     ZORBA_HAVE_STDINT_H)
 CHECK_INCLUDE_FILES ("stdlib.h"                     ZORBA_HAVE_STDLIB_H)
-CHECK_INCLUDE_FILES ("limits.h"                     ZORBA_HAVE_LIMITS_H)
+CHECK_INCLUDE_FILES ("sys/param.h;sys/mount.h"      ZORBA_HAVE_SYS_MOUNT_H)
 CHECK_INCLUDE_FILES ("sys/types.h"                  ZORBA_HAVE_SYS_TYPES_H)
-CHECK_INCLUDE_FILES ("iconv.h"                      ZORBA_HAVE_ICONV_H)
+CHECK_INCLUDE_FILES ("tzfile.h"                     ZORBA_HAVE_TZFILE_H)
+CHECK_INCLUDE_FILES ("unicode/ustring.h"            ZORBA_HAVE_USTRING_H)
+CHECK_INCLUDE_FILES ("unicode/utypes.h"             ZORBA_HAVE_UTYPES_H)
+
 IF (NOT APPLE OR ${CMAKE_SYSTEM_VERSION} VERSION_GREATER "10.4")
   # execinfo is found by this macro when cross compiling for Mac OS X 10.4
   # although it shouldn't be found for this platform

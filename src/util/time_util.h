@@ -19,9 +19,9 @@
 
 // standard
 #include <ctime>                        /* for struct tm */
-#ifndef WIN32
+#ifdef ZORBA_HAVE_TZFILE_H
 # include <tzfile.h>                    /* for TM_YEAR_BASE */
-#endif /* WIN32 */
+#endif /* ZORBA_HAVE_TZFILE_H */
 
 // Zorba
 #include <zorba/config.h>

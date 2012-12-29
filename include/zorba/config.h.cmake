@@ -50,6 +50,7 @@
 #cmakedefine ZORBA_HAVE_STDLIB_H
 #cmakedefine ZORBA_HAVE_SYS_MOUNT_H
 #cmakedefine ZORBA_HAVE_SYS_TYPES_H
+#cmakedefine ZORBA_HAVE_TZFILE_H
 #cmakedefine ZORBA_HAVE_USTRING_H
 #cmakedefine ZORBA_HAVE_UTYPES_H
 #cmakedefine ZORBA_HAVE_UUID_H
