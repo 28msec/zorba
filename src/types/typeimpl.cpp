@@ -106,7 +106,7 @@ const char* AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST] =
   "xs:ID",
   "xs:IDREF",
   "xs:ENTITY",
-  "UNTYPED_ATOMIC",
+  "xs:untypedAtomic",
   "xs:dateTime",
   "xs:date",
   "xs:time",

@@ -493,6 +493,16 @@ void PromoteIterator::raiseError(const zstring& valueType) const
   {
     assert(theQName != NULL);
 
+    if (TypeOps::is_equal(theSctx->get_typemanager(),
+                          *thePromoteType,
+                          *GENV_TYPESYSTEM.NOTATION_TYPE_ONE,
+                          loc))
+    {
+      RAISE_ERROR(err::XPTY0117, loc,
+      ERROR_PARAMS(ZED(XPTY0117_NotationParam_23),
+                   valueType, theQName->getStringValue()));
+    }
+
     RAISE_ERROR(err::XPTY0004, loc, 
     ERROR_PARAMS(ZED(XPTY0004_NoParamTypePromote_234),
                  valueType, targetType, theQName->getStringValue()));
