@@ -2896,9 +2896,14 @@ bool GenericCast::promote(
     return result != NULL;
   }
 
-  if (TypeOps::is_subtype(itemType, store::XS_UNTYPED_ATOMIC) &&
-      ! TypeOps::is_subtype(targetType, store::XS_QNAME))
+  if (TypeOps::is_subtype(itemType, store::XS_UNTYPED_ATOMIC))
   {
+    if (TypeOps::is_subtype(targetType, store::XS_QNAME) ||
+        TypeOps::is_subtype(targetType, store::XS_NOTATION))
+    {
+      return false;
+    }
+
     // untyped --> target type
     castToBuiltinAtomic(result, item, targetType, NULL, loc);
     return true;

@@ -265,6 +265,10 @@
         <value>Cannot cast node to xs:QName</value>
       </entry>
 
+      <entry key="NotationParam_23">
+        <value>$2 can not be promoted to parameter type xs:NOTATION of function $3()</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XQTY0024">
