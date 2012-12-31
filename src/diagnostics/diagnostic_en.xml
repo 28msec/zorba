@@ -2597,6 +2597,10 @@
       <value>'$1': literal character mismatched '$2'</value>
     </diagnostic>
 
+    <diagnostic code="ZDTP0004" name="INCOMPLETE_DATE_OR_TIME">
+      <value>'$1': incomplete date, time, or dateTime format</value>
+    </diagnostic>
+
    <!--////////// JSON Parse Errors ////////////////////////////////////////-->
 
     <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">
@@ -3820,6 +3824,10 @@
 
     <entry key="Zorba API error">
       <value>Zorba API error</value>
+    </entry>
+
+    <entry key="Zorba core module error">
+      <value>Zorba core module error</value>
     </entry>
 
     <entry key="Zorba data-definition error">

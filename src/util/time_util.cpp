@@ -45,12 +45,14 @@ static unsigned const yday_mon[][13] = {
 
 bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
                     unsigned year ) {
+  assert( yday < 365 + is_leap_year( year ) );
+
   unsigned const *const ym = yday_mon[ is_leap_year( year ) ];
   for ( unsigned m = 1; m <= 12; ++m ) 
     if ( ym[ m ] > yday ) {
       --m;
       if ( mday )
-        *mday = yday - ym[ m ];
+        *mday = yday - ym[ m ] + 1;
       if ( mon )
         *mon = m;
       return true;
@@ -103,7 +105,10 @@ bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
  * @return Returns the weekday where 0 = Sunday.
  */
 unsigned calc_wday( unsigned mday, unsigned mon, unsigned year ) {
+  assert( mday >= 1 );
+  assert( mday <= days_in_month( mon, year ) );
   assert( mon < 12 );
+
   ++mon; // Tondering's algorithm assumes month value in range 1-12.
   unsigned const a = (14 - mon) / 12;
   unsigned const y = year - a;
@@ -112,8 +117,9 @@ unsigned calc_wday( unsigned mday, unsigned mon, unsigned year ) {
 }
 
 unsigned calc_yday( unsigned mday, unsigned mon, unsigned year ) {
+  assert( mday >= 1 );
   assert( mday <= days_in_month( mon, year ) );
-  return yday_mon[ is_leap_year( year ) ][ mon ] + mday;
+  return yday_mon[ is_leap_year( year ) ][ mon ] + mday - 1;
 }
 
 unsigned days_in_month( unsigned mon, unsigned year ) {

@@ -372,7 +372,7 @@ case_H: parse_num( c, &bp, 0, 23, &tm->tm_hour );
         CHECK_ALT(ALT_O);
 case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
         if ( tm->tm_hour == 12 )
-          tm->tm_hour = 0;
+          tm->tm_hour = 0;              // assume AM until %p
         *set_fields |= set_hour;
         break;
 

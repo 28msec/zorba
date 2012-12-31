@@ -15,8 +15,7 @@
  */
 #include "stdafx.h"
 
-#include <map>
-#include <sstream>
+#include <cstring>
 
 #include <zorba/diagnostic_list.h>
 
@@ -32,17 +31,27 @@ using namespace std;
 
 namespace zorba {
 
+enum parse_type {
+  parse_date,
+  parse_time,
+  parse_dateTime
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 
-static void strptime( zstring const &buf, zstring const &fmt, time::ztm *tm,
+static void strptime( zstring const &buf, zstring const &fmt,
+                      parse_type parse_what, time::ztm *tm,
                       QueryLoc const &loc ) {
   try {
     unsigned set_fields;
+    ::memset( tm, 0, sizeof( *tm ) );
     time::strptime( buf, fmt, tm, &set_fields );
-    bool const set_mday = set_fields & time::set_mday;
-    bool const set_mon  = set_fields & time::set_mon;
+
+    bool       set_mday = set_fields & time::set_mday;
+    bool       set_mon  = set_fields & time::set_mon;
     bool const set_yday = set_fields & time::set_yday;
     bool const set_year = set_fields & time::set_year;
+
     if ( set_yday && set_year && (!set_mday || !set_mon) ) {
       //
       // Given yday and year, "back fill" mday and/or mon.
@@ -53,7 +62,35 @@ static void strptime( zstring const &buf, zstring const &fmt, time::ztm *tm,
         set_mon  ? nullptr : reinterpret_cast<unsigned*>( &tm->tm_mon ),
         tm->tm_year
       );
+      set_mday = set_mon = true;
     }
+
+    switch ( parse_what ) {
+      case parse_date:
+        if ( set_mday && set_mon && set_year )
+          return;
+        break;
+      case parse_dateTime:
+        if ( !(set_mday && set_mon && set_year) )
+          break;
+        // no break;
+      case parse_time:
+        if ( (!set_fields & time::set_hour) )
+          break;
+        if ( !(set_fields & time::set_min) )
+          tm->tm_min = 0;
+        if ( !(set_fields & time::set_sec) )
+          tm->tm_sec = 0;
+        if ( !(set_fields & time::set_gmtoff) )
+          tm->ZTM_GMTOFF = 0;
+        return;
+    }
+
+    throw XQUERY_EXCEPTION(
+      zerr::ZDTP0004_INCOMPLETE_DATE_OR_TIME,
+      ERROR_PARAMS( fmt ),
+      ERROR_LOC( loc )
+    );
   }
   catch ( time::invalid_specification const &e ) {
     throw XQUERY_EXCEPTION(
@@ -164,7 +201,7 @@ bool ParseDate::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
 
-  strptime( buf, fmt, &tm, loc );
+  strptime( buf, fmt, parse_date, &tm, loc );
   GENV_ITEMFACTORY->createDate(
     result,
     static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
@@ -190,7 +227,7 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
   consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
 
-  strptime( buf, fmt, &tm, loc );
+  strptime( buf, fmt, parse_dateTime, &tm, loc );
   GENV_ITEMFACTORY->createDateTime(
     result,
     static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
@@ -219,7 +256,7 @@ bool ParseTime::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
 
-  strptime( buf, fmt, &tm, loc );
+  strptime( buf, fmt, parse_time, &tm, loc );
   GENV_ITEMFACTORY->createTime(
     result,
     static_cast<short>( tm.tm_hour ),

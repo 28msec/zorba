@@ -1,3 +1,3 @@
 import module namespace dt = "http://www.zorba-xquery.com/modules/datetime";
 
-dt:parse-date( "1/2/68", "%D" )
+dt:parse-time( "23:45:01", "%T" )
