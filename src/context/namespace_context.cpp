@@ -75,7 +75,7 @@ void namespace_context::bind_ns(
 ********************************************************************************/
 bool namespace_context::findBinding(
     const zstring& aPrefix,
-    zstring& aNamespace)
+    zstring& aNamespace) const
 {
   store::NsBindings::const_iterator lIter = m_bindings.begin();
   store::NsBindings::const_iterator lEnd = m_bindings.end();
