@@ -17,12 +17,27 @@ xquery version "3.0";
 :)
 
 (:~
- : This module provides functions to retrieve the current dateTime.
+ : This module provides functions to retrieve the current dateTime and to
+ : parse dates and times.
+ :
  : In contrast to the current-dateTime functions specified in
- : "XQuery Functions and Operators" the functions in this module are nondeterministic.
- : That is, they do not return the current-dateTime from the dynamic context but return the actual value.
+ : <a href="http://www.w3.org/TR/xpath-functions-30/">XQuery Functions and
+ : Operators</a>, the functions in this module are nondeterministic, that is,
+ : they do not return the current dateTime from the dynamic context, but return
+ : the actual value.
+ :
+ : Dates and times are parsed according to the format given by
+ : <a href="http://pubs.opengroup.org/onlinepubs/007904975/functions/strptime.html">strptime</a>.
+ : However, date and time values must be "complete."
+ : For a date, the year and either month and day or day of the year must have
+ : been parsed.
+ : For a time, the hour must have been parsed.
+ : (If either the minute, second, or timezone has not been parsed, they default
+ : to 0.)
+ : For a dateTime, the parsing requirements of both date and time must be met.
  :
  : @author Matthias Brantner
+ : @author Paul J. Lucas
  : @see http://www.w3.org/TR/xpath-functions/#context
  : @project XDM/atomic
  :
@@ -37,8 +52,8 @@ declare option ver:module-version "2.0";
 
 (:~
  : Gets the current date value in Universal time.
- : Please note, that this function is not stable. It returns the
- : date value of the date the function has been actually invoked.
+ : Note that this function is not stable: it returns the value of the date when
+ : the function is invoked.
  :
  : @return the non-stable date value
  :)
@@ -47,8 +62,8 @@ declare %an:nondeterministic function datetime:current-date()
 
 (:~
  : Gets the current dateTime value in Universal time.
- : Please note, that this function is not stable. It returns the
- : dateTime value of the date and time the function has actually been invoked.
+ : Note that this function is not stable: it returns the value of the date and
+ : time when the function is invoked.
  :
  : @return the non-stable datetime value
  :)
@@ -57,8 +72,8 @@ declare %an:nondeterministic function datetime:current-dateTime()
 
 (:~
  : Return the current time value in Universal time.
- : Please note, that this function is not stable. It returns the
- : time value of the date and time the function has actually been invoked.
+ : Note that this function is not stable: it returns the value of the time when
+ : the function is invoked.
  :
  : @return the non-stable time value
  :)
@@ -75,11 +90,14 @@ declare %an:nondeterministic function datetime:current-time()
  : whitespace in the buffer.
  : @return Returns an xs:date.
  : @error zerr:ZDTP0001 if $format contains an invalid conversion specification.
- : @error zerr:ZDTP0002 if $input contains an invalid value for a conversion
+ : @error zerr:ZDTP0002 if $input is insufficient for $format.
+ : @error zerr:ZDTP0003 if $input contains an invalid value for a conversion
  : specification.
- : @error zerr:ZDTP0003 if there is a literal characer mismatch between $input
+ : @error zerr:ZDTP0004 if there is a literal characer mismatch between $input
  : and $format.
- : @example test/rbkt/Queries/zorba/datetime/TODO
+ : @error zerr:ZDTP0005 if the date is incomplete.
+ : @example test/rbkt/Queries/zorba/datetime/datetime-parse-date-uD-1.xq
+ : @example test/rbkt/Queries/zorba/datetime/datetime-parse-date-uF-1.xq
  :)
 declare function datetime:parse-date(
   $input as xs:string,
@@ -96,11 +114,13 @@ declare function datetime:parse-date(
  : whitespace in the buffer.
  : @return Returns an xs:dateTime.
  : @error zerr:ZDTP0001 if $format contains an invalid conversion specification.
- : @error zerr:ZDTP0002 if $input contains an invalid value for a conversion
+ : @error zerr:ZDTP0002 if $input is insufficient for $format.
+ : @error zerr:ZDTP0003 if $input contains an invalid value for a conversion
  : specification.
- : @error zerr:ZDTP0003 if there is a literal characer mismatch between $input
+ : @error zerr:ZDTP0004 if there is a literal characer mismatch between $input
  : and $format.
- : @example test/rbkt/Queries/zorba/datetime/TODO
+ : @error zerr:ZDTP0005 if either the date or time is incomplete.
+ : @example test/rbkt/Queries/zorba/datetime/datetime-parse-dateTime-uFTZ-1.xq
  :)
 declare function datetime:parse-dateTime(
   $input as xs:string,
@@ -117,11 +137,14 @@ declare function datetime:parse-dateTime(
  : whitespace in the buffer.
  : @return Returns an xs:time.
  : @error zerr:ZDTP0001 if $format contains an invalid conversion specification.
- : @error zerr:ZDTP0002 if $input contains an invalid value for a conversion
+ : @error zerr:ZDTP0002 if $input is insufficient for $format.
+ : @error zerr:ZDTP0003 if $input contains an invalid value for a conversion
  : specification.
- : @error zerr:ZDTP0003 if there is a literal characer mismatch between $input
+ : @error zerr:ZDTP0004 if there is a literal characer mismatch between $input
  : and $format.
- : @example test/rbkt/Queries/zorba/datetime/TODO
+ : @error zerr:ZDTP0005 if the hour has not been parsed.
+ : @example test/rbkt/Queries/zorba/datetime/datetime-parse-time-uH-1.xq
+ : @example test/rbkt/Queries/zorba/datetime/datetime-parse-time-uIMS-1.xq
  :)
 declare function datetime:parse-time(
   $input as xs:string,
