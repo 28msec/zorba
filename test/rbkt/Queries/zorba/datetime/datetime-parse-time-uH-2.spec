@@ -1,1 +1,1 @@
-Error: http://www.zorba-xquery.com/errors:ZDTP0002
+Error: http://www.zorba-xquery.com/errors:ZDTP0003

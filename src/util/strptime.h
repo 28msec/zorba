@@ -42,6 +42,15 @@ protected:
 };
 
 /**
+ * This exception is thrown when the buffer is exhausted before the format
+ * string.
+ */
+class insufficient_buffer : public exception {
+public:
+  insufficient_buffer();
+};
+
+/**
  * This exception is thrown when an invalid conversion specification is given,
  * i.e., an invalid character after a \c %.
  */
@@ -168,7 +177,7 @@ private:
 
 //
 // The bit-wise-or of these constants comprise the value returned by the
-// \c set_fields parameter of the strptime() function.
+// set_fields parameter of the strptime() function.
 //
 unsigned const set_gmtoff = 0x001;      // minutes: 0-59
 unsigned const set_hour   = 0x002;      // hour: 0-23
@@ -377,6 +386,7 @@ unsigned const set_year   = 0x100;
  * structure fields that have been set.
  * @return Returns a pointer to the first character in \a buf past the last
  * character parsed.
+ * @throws insufficient_buffer if \a buf is insufficient for \a fmt.
  * @throws invalid_specification if \a fmt contains an invalid character
  * following \c %
  * @throws invalid_value if \a buf contains an invalid value for a

@@ -75,7 +75,7 @@ static void strptime( zstring const &buf, zstring const &fmt,
           break;
         // no break;
       case parse_time:
-        if ( (!set_fields & time::set_hour) )
+        if ( !(set_fields & time::set_hour) )
           break;
         if ( !(set_fields & time::set_min) )
           tm->tm_min = 0;
@@ -87,8 +87,15 @@ static void strptime( zstring const &buf, zstring const &fmt,
     }
 
     throw XQUERY_EXCEPTION(
-      zerr::ZDTP0004_INCOMPLETE_DATE_OR_TIME,
+      zerr::ZDTP0005_INCOMPLETE_DATE_OR_TIME,
       ERROR_PARAMS( fmt ),
+      ERROR_LOC( loc )
+    );
+  }
+  catch ( time::insufficient_buffer const& ) {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDTP0002_INSUFFICIENT_BUFFER,
+      ERROR_PARAMS( buf, fmt ),
       ERROR_LOC( loc )
     );
   }
@@ -101,14 +108,14 @@ static void strptime( zstring const &buf, zstring const &fmt,
   }
   catch ( time::invalid_value const &e ) {
     throw XQUERY_EXCEPTION(
-      zerr::ZDTP0002_INVALID_VALUE,
+      zerr::ZDTP0003_INVALID_VALUE,
       ERROR_PARAMS( e.get_value(), e.get_specs() ),
       ERROR_LOC( loc )
     );
   }
   catch ( time::literal_mismatch const &e ) {
     throw XQUERY_EXCEPTION(
-      zerr::ZDTP0003_LITERAL_MISMATCH,
+      zerr::ZDTP0004_LITERAL_MISMATCH,
       ERROR_PARAMS(
         ascii::printable_char( e.get_got() ),
         ascii::printable_char( e.get_expected() )

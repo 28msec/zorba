@@ -44,6 +44,11 @@ exception::~exception() throw() {
   // out-of-line since it's virtual
 }
 
+insufficient_buffer::insufficient_buffer() :
+  exception( "insufficient buffer" )
+{
+}
+
 invalid_specification::invalid_specification( char spec ) :
   invalid_argument(
     BUILD_STRING( '\'', ascii::printable_char( spec ), "': invalid %" )
@@ -280,7 +285,10 @@ static char const* strptime_impl( char const *buf, char const *fmt, ztm *tm,
   char const *recurse_fmt;
   bool split_year = false;
 
-  while ( bp && (c = *fmt++) ) {
+  while ( (c = *fmt++) ) {
+    if ( !*bp )
+      throw insufficient_buffer();
+
     if ( ascii::is_space( c ) ) {
       bp = ascii::trim_start_whitespace( bp );
       continue;

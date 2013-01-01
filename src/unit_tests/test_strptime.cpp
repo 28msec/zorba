@@ -266,7 +266,9 @@ static void test_invalid_specification() {
   spec[2] = '\0';
   for ( char const *s = bad_specs; *s; ++s ) {
     spec[1] = *s;
-    ASSERT_EXCEPTION( time::strptime( "", spec, &tm ), invalid_specification );
+    ASSERT_EXCEPTION(
+      time::strptime( "JUNK", spec, &tm ), invalid_specification
+    );
   }
 }
 
