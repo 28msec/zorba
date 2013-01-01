@@ -698,12 +698,19 @@ void QNameItem::free()
 bool QNameItem::equals(
     const store::Item* item,
     long timezone,
-    const XQPCollator* aCollation) const
+    const XQPCollator* collation) const
 {
-  assert(dynamic_cast<const QNameItem*>(item) != NULL);
+  if (item->getBaseItem() == NULL)
+  {
+    assert(dynamic_cast<const QNameItem*>(item) != NULL);
 
-  return (theNormalizedQName ==
-          static_cast<const QNameItem*>(item)->theNormalizedQName);
+    return (theNormalizedQName ==
+            static_cast<const QNameItem*>(item)->theNormalizedQName);
+  }
+  else
+  {
+    return this->equals(item->getBaseItem(), timezone, collation);
+  }
 }
 
 

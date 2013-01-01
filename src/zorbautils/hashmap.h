@@ -599,9 +599,9 @@ void clearNoSync()
   csize n = theHashTab.size();
 
   HashEntry<T, V>* entry = &theHashTab[0];
-  HashEntry<T, V>* lastentry = &theHashTab[n];
+  HashEntry<T, V>* lastentry = &theHashTab[n-1];
 
-  for (; entry < lastentry; ++entry)
+  for (; entry <= lastentry; ++entry)
   {
     if (!entry->isFree())
       entry->setFree();
@@ -1163,10 +1163,10 @@ void resizeHashTab(csize newSize)
 
   HashEntry<T, V>* entry;
   HashEntry<T, V>* oldentry = &oldTab[0];
-  HashEntry<T, V>* lastentry = &oldTab[oldcap];
+  HashEntry<T, V>* lastentry = &oldTab[oldcap-1];
 
   // Now rehash every entry
-  for (; oldentry < lastentry; ++oldentry)
+  for (; oldentry <= lastentry; ++oldentry)
   {
     if (oldentry->isFree())
       continue;

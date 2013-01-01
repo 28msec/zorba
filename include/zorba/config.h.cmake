@@ -160,6 +160,8 @@ typedef __int64 int64_t;
 
 ////////// Zorba //////////////////////////////////////////////////////////////
 
+#cmakedefine ZORBA_STORE_NAME "zorba_${ZORBA_STORE_NAME}"
+
 // Version
 #define ZORBA_VERSION "${ZORBA_VERSION}"
 #define ZORBA_MAJOR_NUMBER ${ZORBA_MAJOR_NUMBER}
