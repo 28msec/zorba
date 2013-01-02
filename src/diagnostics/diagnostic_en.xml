@@ -2609,7 +2609,7 @@
       <value>"continue loop" statement not inside while statement</value>
     </diagnostic>
 
-   <!--////////// dateTime ParseErrors /////////////////////////////////////-->
+   <!--////////// dateTime Parse Errors ////////////////////////////////////-->
 
     <diagnostic code="ZDTP0001" name="INVALID_SPECIFICATION">
       <value>'$1': invalid % conversion specification</value>
