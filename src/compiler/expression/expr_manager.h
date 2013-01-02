@@ -124,7 +124,8 @@ public:
       user_function* udf,
       const QueryLoc&,
       expr*,
-      xqtref_t);
+      const xqtref_t&,
+      bool allowsEmptyInput);
 
   treat_expr* create_treat_expr(
       static_context* sctx,
@@ -151,7 +152,8 @@ public:
       user_function* udf,
       const QueryLoc&,
       expr*,
-      xqtref_t);
+      const xqtref_t&,
+      bool allowsEmptyInput);
 
   instanceof_expr* create_instanceof_expr(
       static_context* sctx,

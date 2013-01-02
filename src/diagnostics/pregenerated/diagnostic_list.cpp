@@ -67,6 +67,9 @@ XQueryErrorCode XPTY0019( "XPTY0019" );
 XQueryErrorCode XPTY0020( "XPTY0020" );
 
 
+XQueryErrorCode XPTY0117( "XPTY0117" );
+
+
 XQueryErrorCode XQTY0024( "XQTY0024" );
 
 
@@ -128,6 +131,9 @@ XQueryErrorCode XQST0048( "XQST0048" );
 
 
 XQueryErrorCode XQST0049( "XQST0049" );
+
+
+XQueryErrorCode XQST0052( "XQST0052" );
 
 
 XQueryErrorCode XQST0054( "XQST0054" );

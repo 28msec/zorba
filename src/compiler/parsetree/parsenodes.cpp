@@ -4183,20 +4183,38 @@ void CompPIConstructor::accept( parsenode_visitor &v ) const
 // [117] SingleType
 // ----------------
 SingleType::SingleType(
-  const QueryLoc& loc_,
-  rchandle<AtomicType> _atomic_type_h,
-  bool _hook_b)
+  const QueryLoc& loc,
+  rchandle<SimpleType> type,
+  bool hook)
 :
-  parsenode(loc_),
-  atomic_type_h(_atomic_type_h),
-  hook_b(_hook_b)
-{}
+  parsenode(loc),
+  theType(type),
+  theHook(hook)
+{
+}
 
 
-void SingleType::accept( parsenode_visitor &v ) const
+void SingleType::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT (atomic_type_h);
+  ACCEPT(theType);
+  END_VISITOR();
+}
+
+
+// SimpleType
+// ----------------
+SimpleType::SimpleType(const QueryLoc& loc, rchandle<QName> _qname_h)
+  :
+  parsenode(loc),
+  qname_h(_qname_h)
+{
+}
+
+
+void SimpleType::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
   END_VISITOR();
 }
 
@@ -4289,8 +4307,6 @@ AtomicType::AtomicType(
   qname_h(_qname_h)
 {}
 
-
-//-AtomicType::
 
 void AtomicType::accept( parsenode_visitor &v ) const
 {
@@ -4492,8 +4508,6 @@ SchemaElementTest::SchemaElementTest(
 {}
 
 
-//-SchemaElementTest::
-
 void SchemaElementTest::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -4533,8 +4547,6 @@ TypeName::TypeName(
   optional_b(_b)
 {}
 
-
-//-TypeName::
 
 void TypeName::accept( parsenode_visitor &v ) const
 {

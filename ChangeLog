@@ -11,6 +11,8 @@ New Features:
     strip the top-level array from JSON streams.
   * New info-extraction module for querying concepts and entities in
 	natural language text.
+  * Extended cast and castable expression to allow any simple target type
+    (as specified by XQuery 3.0)
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
@@ -42,6 +44,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1070551 (zerr:ZOSE0003 stream read failure)
   * Fixed bug #992304 (Compiling library modules could load data from
 	wrong source)
+  * Fixed bugs related to casting to user-defined types.
 
 
 version 2.7
