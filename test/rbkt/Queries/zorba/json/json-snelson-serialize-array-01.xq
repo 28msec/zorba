@@ -5,4 +5,5 @@ let $json :=
     <item type="boolean">true</item>
   </json>
 return json:serialize( $json )
+
 (: vim:set et sw=2 ts=2: :)

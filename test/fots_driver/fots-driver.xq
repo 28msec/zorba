@@ -103,7 +103,7 @@ declare %private function driver:matches-dependency(
  : (empty string means all test cases).
  : @return matching test case names.
  :)
-declare %private function driver:list-test-cases(
+declare function driver:list-test-cases(
   $testSetDoc as document-node(),
   $dependency as xs:string*
 ) as xs:string* {

@@ -46,8 +46,8 @@ using internal::ztd::c_str;
  * the resultant string to some function.  See the BUILD_STRING macro for usage.
  * Note that you can use either "<<" or "," to taste.
  *
- * See http://stackoverflow.com/questions/5666678/ as to why a class like this
- * is needed rather than just using an ostringstream directly.
+ * See http://stackoverflow.com/q/5666678 as to why a class like this is
+ * needed rather than just using an ostringstream directly.
  */
 class string_builder {
 public:
