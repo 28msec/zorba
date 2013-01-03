@@ -1003,7 +1003,9 @@ void ProbeValueTreeIndexIterator::reset()
 
     while (theMapIte != theMapEnd)
     {
-      if (!theDoExtraFiltering || theBoxCond->test(*(theMapIte->first)))
+      if (!theDoExtraFiltering ||
+          theBoxCond == NULL ||
+          theBoxCond->test(*(theMapIte->first)))
         break;
 
       ++theMapIte;
