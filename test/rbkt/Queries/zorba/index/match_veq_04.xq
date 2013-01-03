@@ -9,6 +9,8 @@ import module namespace dml =
 import module namespace iddl = 
 "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
+declare construction strip;
+
 
 declare variable $external_id external := "50";
 

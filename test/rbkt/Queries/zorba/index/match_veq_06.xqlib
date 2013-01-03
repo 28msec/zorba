@@ -18,6 +18,8 @@ import module namespace doc =
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 
+declare construction strip;
+
 
 declare collection data:parents;
 

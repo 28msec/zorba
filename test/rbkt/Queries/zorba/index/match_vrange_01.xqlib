@@ -1,0 +1,49 @@
+
+module namespace data = "www.data.com";
+
+import module namespace ddl = 
+"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+
+import module namespace dml = 
+"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+import module namespace iddl = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+
+import module namespace idml = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+
+declare %private collection data:parents;
+
+declare variable $data:parents as xs:QName := xs:QName('data:parents');
+
+
+declare %private %an:automatic %an:value-range index data:idx
+  on nodes dml:collection(xs:QName('data:parents'))
+  by @uri as xs:string,
+     @date-time as xs:string;
+
+declare variable $data:idx as xs:QName := xs:QName('data:idx');
+
+
+declare function data:page-count($folder-uri as xs:string) as xs:integer
+{
+  count(dml:collection($data:parents)[@uri eq $folder-uri])
+};
+
+
+(:
+declare function data:page($folder-uri as xs:string) as xs:string*
+{
+  unordered 
+  {
+    idml:probe-index-range-value(
+                    $data:idx,
+                    $folder-uri, $folder-uri, true(), true(), true(), true(),
+                    (), (), false(), false(), false(), false())/@child/string()
+  }
+};
+:)

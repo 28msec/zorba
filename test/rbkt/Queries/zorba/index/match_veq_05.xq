@@ -9,6 +9,8 @@ import module namespace dml =
 import module namespace iddl = 
 "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
+declare construction strip;
+
 
 declare variable $external_id external := "50";
 
@@ -18,6 +20,7 @@ declare variable $doc :=
 <session id="12" duration="30"><data>2222222222</data></session>
 <session id="50" duration="150"><data>3333333333</data></session>
 </sessions>;
+
 
 declare variable $doc2 := 
 <sessions>
