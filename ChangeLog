@@ -36,6 +36,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1062093 (bug in var reference iterators with an associated
     position that is negative)
   * Fixed bug #1073978 (FOTS: option default ns not supported)
+  * Fixed bug in probing multi-key value-range indexes
   * Fixed bug #1061222 (bad message for errors in index key type declaration)
   * Fixed bug #1065175 (preceding::node()[1] returns wrong results)
   * Fixed bug #1065321 (following:text() doesn't return results in doc order)
