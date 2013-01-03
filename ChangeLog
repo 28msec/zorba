@@ -30,6 +30,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #868640 (Node lifetime is shorter than expected due to let
     variable inlining)
   * Fixed bug in castable expr when the target type is xs:QName.
+  * Fixed bug in testing if a sequence type is subtype of node(xs:untyped)
   * Fixed bugs #1081626 (Segmentation fault in a side-effecting FLWOR),
     #1079488 (streaming segfault)
   * Fixed bug #1062093 (bug in var reference iterators with an associated
