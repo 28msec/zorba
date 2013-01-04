@@ -25,6 +25,7 @@
 #include "cxx_util.h"
 #include "string_util.h"
 #include "time_util.h"
+#include "zorbautils/locale.h"
 
 namespace zorba {
 namespace time {
@@ -32,7 +33,7 @@ namespace time {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An %exception is the root of strptime %exception hierarchy.
+ * An %exception is the root of time::parse %exception hierarchy.
  */
 class exception : public std::runtime_error {
 public:
@@ -142,7 +143,7 @@ private:
 
 /**
  * This exception is thrown when a literal character in the \a buf parameter of
- * the strptime() function does not match is corresponding character in the
+ * the parse() function does not match is corresponding character in the
  * \a fmt parameter.
  */
 class literal_mismatch : public exception {
@@ -177,7 +178,7 @@ private:
 
 //
 // The bit-wise-or of these constants comprise the value returned by the
-// set_fields parameter of the strptime() function.
+// set_fields parameter of the parse() function.
 //
 unsigned const set_gmtoff = 0x001;      // minutes: 0-59
 unsigned const set_hour   = 0x002;      // hour: 0-23
@@ -381,6 +382,8 @@ unsigned const set_year   = 0x100;
  *      <td>Literal \c %.</td>
  *    </tr>
  *  </table>
+ * @param lang The language of the locale to use.
+ * @param country The country of the locale to use.
  * @param tm The tm structure to fill in.
  * @param set_fields If not null, this is set to the bit-wise-or of the tm
  * structure fields that have been set.
@@ -394,24 +397,41 @@ unsigned const set_year   = 0x100;
  * @throws literal_mismatch if a literal character in \a buf does not match is
  * corresponding character in \a fmt.
  */
-char const* strptime( char const *buf, char const *fmt, ztm *tm,
-                      unsigned *set_fields = nullptr );
+char const* parse( char const *buf, char const *fmt,
+                   locale::iso639_1::type lang,
+                   locale::iso3166_1::type country,
+                   ztm *tm, unsigned *set_fields = nullptr );
 
 //
-// Template version of strptime().
+// Template version of parse().
 //
 template<class BufferType> inline
 typename std::enable_if<
   ztd::has_c_str<BufferType,char const* (BufferType::*)() const>::value,
   char const*
 >::type
-strptime( BufferType const &buf, char const *fmt, ztm *tm,
-          unsigned *set_fields = nullptr ) {
-  return time::strptime( buf.c_str(), fmt, tm, set_fields );
+parse( BufferType const &buf, char const *fmt,
+       locale::iso639_1::type lang, locale::iso3166_1::type country,
+       ztm *tm, unsigned *set_fields = nullptr ) {
+  return parse( buf.c_str(), fmt, lang, country, tm, set_fields );
 }
 
 //
-// Template version of strptime().
+// Template version of parse().
+//
+template<class FormatType> inline
+typename std::enable_if<
+  ztd::has_c_str<FormatType,char const* (FormatType::*)() const>::value,
+  char const*
+>::type
+parse( char const *buf, FormatType const &fmt,
+       locale::iso639_1::type lang, locale::iso3166_1::type country,
+       ztm *tm, unsigned *set_fields = nullptr ) {
+  return parse( buf, fmt.c_str(), lang, country, tm, set_fields );
+}
+
+//
+// Template version of parse().
 //
 template<class BufferType,class FormatType> inline
 typename std::enable_if<
@@ -419,9 +439,10 @@ typename std::enable_if<
   ztd::has_c_str<FormatType,char const* (FormatType::*)() const>::value,
   char const*
 >::type
-strptime( BufferType const &buf, FormatType const &fmt, ztm *tm,
-          unsigned *set_fields = nullptr ) {
-  return time::strptime( buf.c_str(), fmt.c_str(), tm, set_fields );
+parse( BufferType const &buf, FormatType const &fmt,
+       locale::iso639_1::type lang, locale::iso3166_1::type country,
+       ztm *tm, unsigned *set_fields = nullptr ) {
+  return parse( buf.c_str(), fmt.c_str(), lang, country, tm, set_fields );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

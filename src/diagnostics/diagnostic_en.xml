@@ -1794,6 +1794,14 @@
       <value>"$1": builtin sequential function not implemented as sequential</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0011" name="INVALID_LOCALE">
+      <value>"$1": invalid locale</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP0012" name="UNKNOWN_LOCALE">
+      <value>"$1": unknown locale</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0013" name="FXCHARHEAP_EXCEPTION">
       <value>FxCharHeap error: $1 ($2)</value>
     </diagnostic>

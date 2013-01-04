@@ -492,6 +492,8 @@ extern entry const dict_en[] = {
   { "ZXQP0008", "\"$1\": function implementation not found" },
   { "ZXQP0009", "\"$1\": function referred to by this local-name has the local-name \"$2\" instead" },
   { "ZXQP0010", "\"$1\": builtin sequential function not implemented as sequential" },
+  { "ZXQP0011", "\"$1\": invalid locale" },
+  { "ZXQP0012", "\"$1\": unknown locale" },
   { "ZXQP0013", "FxCharHeap error: $1 ($2)" },
   { "ZXQP0016", "\"$1\": reserved module target namespace" },
   { "ZXQP0017", "file access disabled" },

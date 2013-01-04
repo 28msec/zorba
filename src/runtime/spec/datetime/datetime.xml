@@ -50,8 +50,14 @@
   </zorba:description>
   <zorba:function>
     <zorba:signature localname="parse-date" prefix="fn-zorba-dateTime">
-      <zorba:param>xs:string</zorba:param>
-      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:output>xs:date</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="parse-date" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:param>xs:string</zorba:param>  <!-- locale -->
       <zorba:output>xs:date</zorba:output>
     </zorba:signature>
   </zorba:function>
@@ -63,8 +69,14 @@
   </zorba:description>
   <zorba:function>
     <zorba:signature localname="parse-dateTime" prefix="fn-zorba-dateTime">
-      <zorba:param>xs:string</zorba:param>
-      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:output>xs:dateTime</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="parse-dateTime" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:param>xs:string</zorba:param>  <!-- locale -->
       <zorba:output>xs:dateTime</zorba:output>
     </zorba:signature>
   </zorba:function>
@@ -76,8 +88,14 @@
   </zorba:description>
   <zorba:function>
     <zorba:signature localname="parse-time" prefix="fn-zorba-dateTime">
-      <zorba:param>xs:string</zorba:param>
-      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:output>xs:time</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="parse-time" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:param>xs:string</zorba:param>  <!-- locale -->
       <zorba:output>xs:time</zorba:output>
     </zorba:signature>
   </zorba:function>

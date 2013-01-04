@@ -22,13 +22,15 @@
 #include "ascii_util.h"
 #include "cxx_util.h"
 #include "string_util.h"
+#include "zorbatypes/zstring.h"
 #include "zorbautils/locale.h"
 
 // local
-#include "strptime.h"
+#include "time_parse.h"
 #include "time_util.h"
 
 using namespace std;
+using namespace zorba::locale;
 
 namespace zorba {
 namespace time {
@@ -172,7 +174,7 @@ static rfc2822_obs_zone const rfc2822_obs_zones[] = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef char const* (*locale_fn_type)(unsigned);
+typedef zstring (*locale_fn_type)(unsigned,iso639_1::type,iso3166_1::type);
 
 template<typename IntType> inline
 bool bits_set( IntType flags, IntType bits ) {
@@ -184,24 +186,27 @@ bool bits_set( IntType flags, IntType bits ) {
 // function that takes an unsigned parameter so that locale_find() can be used
 // for it.
 //
-static char const* get_time_ampm( unsigned pm ) {
-  return locale::get_time_ampm( pm );
+static zstring get_time_ampm( unsigned pm, iso639_1::type lang,
+                              iso3166_1::type country ) {
+  return locale::get_time_ampm( pm, lang, country );
 }
 
 static void locale_find( char conv, char const **bpp, locale_fn_type locale_fn,
+                         iso639_1::type lang, iso3166_1::type country,
                          int limit, int *result, bool *found = nullptr ) {
+  using namespace locale;
+
   char const *&bp = *bpp;
   size_t len_sum = 0;
 
   for ( int i = 0; i < limit; ++i ) {
-    char const *const s = (*locale_fn)( i );
-    size_t const len = ::strlen( s );
-    len_sum += len;
-    if ( ::strncmp( bp, s, len ) == 0 ) {
+    zstring const s( locale_fn( i, lang, country ) );
+    len_sum += s.size();
+    if ( ::strncmp( bp, s.c_str(), s.size() ) == 0 ) {
       *result = i;
       if ( found )
         *found = true;
-      bp += len;
+      bp += s.size();
       return;
     }
   }
@@ -277,12 +282,13 @@ int const ALT_O = 0x02;
 #define CHECK_ALT(x) \
   do { if ( alt_format & ~(x) ) throw invalid_specification( c ); } while (0)
 
-static char const* strptime_impl( char const *buf, char const *fmt, ztm *tm,
-                                  unsigned *set_fields ) {
+static char const* parse_impl( char const *buf, char const *fmt,
+                               iso639_1::type lang, iso3166_1::type country,
+                               ztm *tm, unsigned *set_fields ) {
   char const *bp = buf;
   char c;
   bool found;
-  char const *recurse_fmt;
+  zstring recurse_fmt;
   bool split_year = false;
 
   while ( (c = *fmt++) ) {
@@ -315,10 +321,13 @@ again:
       case 'A': // full weekday name
         CHECK_ALT(0);
         locale_find(
-          c, &bp, &locale::get_weekday_name, 7, &tm->tm_wday, &found
+          c, &bp, &locale::get_weekday_name, lang, country, 7, &tm->tm_wday,
+          &found
         );
         if ( !found )
-          locale_find( c, &bp, &locale::get_weekday_abbr, 7, &tm->tm_wday );
+          locale_find(
+            c, &bp, &locale::get_weekday_abbr, lang, country, 7, &tm->tm_wday
+          );
         *set_fields |= set_wday;
         break;
 
@@ -326,9 +335,14 @@ again:
       case 'B': // full month name
       case 'h': // same as %b
         CHECK_ALT(0);
-        locale_find( c, &bp, &locale::get_month_name, 12, &tm->tm_mon, &found );
+        locale_find(
+          c, &bp, &locale::get_month_name, lang, country, 12, &tm->tm_mon,
+          &found
+        );
         if ( !found )
-          locale_find( c, &bp, &locale::get_month_abbr, 12, &tm->tm_mon );
+          locale_find(
+            c, &bp, &locale::get_month_abbr, lang, country, 12, &tm->tm_mon
+          );
         *set_fields |= set_mon;
         break;
 
@@ -424,7 +438,7 @@ case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
 
       case 'p': // AM/PM
         CHECK_ALT(0);
-        locale_find( c, &bp, &get_time_ampm, 2, &n );
+        locale_find( c, &bp, &get_time_ampm, lang, country, 2, &n );
         if ( tm->tm_hour > 11 )
           throw invalid_value( tm->tm_hour, "Il" );
         if ( n /* i.e., PM */ )
@@ -586,7 +600,7 @@ next_outer_loop:
     continue;
 
 recurse:
-    bp = strptime_impl( bp, recurse_fmt, tm, set_fields );
+    bp = parse_impl( bp, recurse_fmt.c_str(), lang, country, tm, set_fields );
   } // while
 
   if ( bits_set( *set_fields, set_mday | set_mon | set_year ) ) {
@@ -604,13 +618,13 @@ recurse:
   return bp;
 }
 
-char const* strptime( char const *buf, char const *fmt, ztm *tm,
-                      unsigned *set_fields ) {
+char const* parse( char const *buf, char const *fmt, iso639_1::type lang,
+                   iso3166_1::type country, ztm *tm, unsigned *set_fields ) {
   unsigned local_fields;
   if ( !set_fields )
     set_fields = &local_fields;
   *set_fields = 0;
-  return strptime_impl( buf, fmt, tm, set_fields );
+  return parse_impl( buf, fmt, lang, country, tm, set_fields );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

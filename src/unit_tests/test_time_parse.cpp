@@ -23,11 +23,13 @@
 #include <string>
 
 #include "util/stl_util.h"
-#include "util/strptime.h"
+#include "util/time_parse.h"
+#include "zorbatypes/zstring.h"
 #include "zorbautils/locale.h"
 
 using namespace std;
 using namespace zorba;
+using namespace zorba::locale;
 using namespace zorba::time;
 
 namespace zloc = zorba::locale;
@@ -71,23 +73,23 @@ static void print_exception( char const *expr, int line,
 
 static void test_ampm() {
   char const fmt[] = "%l%M %p";
-  char const *bp;
+  iso639_1::type lang = iso639_1::unknown;
+  iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
+  char const *bp;
 
   {
-    string buf = "0123 ";
-    buf += zloc::get_time_ampm( false );
+    zstring const buf = "0123 " + get_time_ampm( false );
     ::memset( &tm, 0, sizeof( tm ) );
-    ASSERT_NO_EXCEPTION( bp = time::strptime( buf, fmt, &tm ) );
+    ASSERT_NO_EXCEPTION( bp = time::parse( buf, fmt, lang, country, &tm ) );
     ASSERT_TRUE( bp = buf.c_str() + buf.length() );
     ASSERT_TRUE( tm.tm_hour ==  1 );
     ASSERT_TRUE( tm.tm_min  == 23 );
   }
   {
-    string buf = "0123 ";
-    buf += zloc::get_time_ampm( true );
+    zstring const buf = "0123 " + get_time_ampm( true );
     ::memset( &tm, 0, sizeof( tm ) );
-    ASSERT_NO_EXCEPTION( bp = time::strptime( buf, fmt, &tm ) );
+    ASSERT_NO_EXCEPTION( bp = time::parse( buf, fmt, lang, country, &tm ) );
     ASSERT_TRUE( bp = buf.c_str() + buf.length() );
     ASSERT_TRUE( tm.tm_hour == 13 );    // note 1300 hours
     ASSERT_TRUE( tm.tm_min  == 23 );
@@ -97,47 +99,53 @@ static void test_ampm() {
 ///////////////////////////////////////////////////////////////////////////////
 
 static void test_literals() {
-  char const fmt[] = "JUNK %k %% JUNK %t JUNK %n %M";
   char const buf[] = "JUNK 14 % JUNK JUNK 15";
-  size_t const len = ::strlen( buf );
-  char const *bp;
+  char const fmt[] = "JUNK %k %% JUNK %t JUNK %n %M";
+  iso639_1::type lang = iso639_1::unknown;
+  iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
+  char const *bp;
+
   ::memset( &tm, 0, sizeof( tm ) );
-  ASSERT_NO_EXCEPTION( bp = time::strptime( buf, fmt, &tm ) );
-  ASSERT_TRUE( bp == buf + len );
+  ASSERT_NO_EXCEPTION( bp = time::parse( buf, fmt, lang, country, &tm ) );
+  ASSERT_TRUE( bp == buf + ::strlen( buf ) );
   ASSERT_TRUE( tm.tm_hour == 14 );
   ASSERT_TRUE( tm.tm_min  == 15 );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef char const* (*locale_fn_type)(unsigned);
+typedef zstring (*locale_fn_type)(unsigned,iso639_1::type,iso3166_1::type);
 typedef int ztm::*ztm_int_ptr;
 
 static void test_locale( char const *conv, locale_fn_type locale_fn, int limit,
                          ztm_int_ptr ztm_mbr ) {
+  zstring const junk( "JUNK" );
+  iso639_1::type lang = iso639_1::unknown;
+  iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
+
   for ( int i = 0; i < limit; ++i ) {
     char const *bp;
     {
-      char const *const buf = (*locale_fn)( i );
-      size_t const len = ::strlen( buf );
+      zstring const buf = (*locale_fn)( i, lang, country );
       ::memset( &tm, 0, sizeof( tm ) );
-      ASSERT_NO_EXCEPTION( bp = time::strptime( buf, conv, &tm ) )
-      ASSERT_TRUE( bp == buf + len );
+      ASSERT_NO_EXCEPTION( bp = time::parse( buf, conv, lang, country, &tm ) )
+      ASSERT_TRUE( bp == buf.c_str() + buf.size() );
       ASSERT_TRUE( tm.*ztm_mbr == i );
     }
     {
-      string buf = (*locale_fn)( i );
-      string::size_type const len = buf.length();
-      buf += "JUNK";
+      zstring buf = (*locale_fn)( i, lang, country );
+      buf += junk;
       ::memset( &tm, 0, sizeof( tm ) );
-      ASSERT_NO_EXCEPTION( bp = time::strptime( buf, conv, &tm ) )
-      ASSERT_TRUE( bp == buf.c_str() + len );
+      ASSERT_NO_EXCEPTION( bp = time::parse( buf, conv, lang, country, &tm ) )
+      ASSERT_TRUE( bp == buf.c_str() + buf.size() - junk.size() );
       ASSERT_TRUE( tm.*ztm_mbr == i );
     }
   }
-  ASSERT_EXCEPTION( time::strptime( "JUNK", conv, &tm ), invalid_value );
+  ASSERT_EXCEPTION(
+    time::parse( "JUNK", conv, lang, country, &tm ), invalid_value
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -171,25 +179,34 @@ static void test_range( char const *conv, int low, int high,
                         ztm_int_ptr ztm_mbr,
                         unary_fn_type unary_fn = &identity ) {
   ztd::itoa_buf_type buf;
+  iso639_1::type lang = iso639_1::unknown;
+  iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
+
   for ( int i = low; i <= high; ++i ) {
     ztd::itoa( i, buf );
     size_t const len = ::strlen( buf );
     char const *bp;
     ::memset( &tm, 0, sizeof( tm ) );
-    ASSERT_NO_EXCEPTION( bp = time::strptime( buf, conv, &tm ) )
+    ASSERT_NO_EXCEPTION( bp = time::parse( buf, conv, lang, country, &tm ) )
     ASSERT_TRUE( bp == buf + len );
     ASSERT_TRUE( tm.*ztm_mbr == (*unary_fn)(i) );
   }
-  ASSERT_EXCEPTION( time::strptime( "JUNK", conv, &tm ), invalid_value );
+  ASSERT_EXCEPTION(
+    time::parse( "JUNK", conv, lang, country, &tm ), invalid_value
+  );
 
   ztd::itoa( --low, buf );
-  ASSERT_EXCEPTION( time::strptime( buf   , conv, &tm ), invalid_value );
+  ASSERT_EXCEPTION(
+    time::parse( buf, conv, lang, country, &tm ), invalid_value
+  );
 
   int const high2 = high + 1;
   if ( num_digits( high2 ) == num_digits( high ) ) {
     ztd::itoa( ++high, buf );
-    ASSERT_EXCEPTION( time::strptime( buf   , conv, &tm ), invalid_value );
+    ASSERT_EXCEPTION(
+      time::parse( buf, conv, lang, country, &tm ), invalid_value
+    );
   }
 }
 
@@ -225,34 +242,43 @@ static void test_bad_dates() {
     { "%j %F",  "62 2012-03-01" },      // day is 61
     0
   };
+  iso639_1::type lang = iso639_1::unknown;
+  iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
+
   for ( bad_date const *p = bad_dates; p->date; ++p ) {
     ::memset( &tm, 0, sizeof( tm ) );
-    ASSERT_EXCEPTION( time::strptime( p->date, p->conv, &tm ), invalid_value );
+    ASSERT_EXCEPTION(
+      time::parse( p->date, p->conv, lang, country, &tm ), invalid_value
+    );
   }
 }
 
 static void test_D() {                  // %m/%d/%y
-  ztm tm;
   char const *const buf = "1/2/12";
-  size_t const len = ::strlen( buf );
+  iso639_1::type lang = iso639_1::unknown;
+  iso3166_1::type country = iso3166_1::unknown;
+  ztm tm;
   char const *bp;
+
   ::memset( &tm, 0, sizeof( tm ) );
-  ASSERT_NO_EXCEPTION( bp = time::strptime( buf, "%D", &tm ) )
-  ASSERT_TRUE( bp == buf + len );
+  ASSERT_NO_EXCEPTION( bp = time::parse( buf, "%D", lang, country, &tm ) )
+  ASSERT_TRUE( bp == buf + ::strlen( buf ) );
   ASSERT_TRUE( tm.tm_mon == 0 );
   ASSERT_TRUE( tm.tm_mday == 2 );
   ASSERT_TRUE( tm.tm_year == 112 );     // years since 1900
 }
 
 static void test_F() {                  // %Y-%m-%d
-  ztm tm;
   char const *const buf = "2012-1-2";
-  size_t const len = ::strlen( buf );
+  iso639_1::type lang = iso639_1::unknown;
+  iso3166_1::type country = iso3166_1::unknown;
+  ztm tm;
   char const *bp;
+
   ::memset( &tm, 0, sizeof( tm ) );
-  ASSERT_NO_EXCEPTION( bp = time::strptime( buf, "%F", &tm ) )
-  ASSERT_TRUE( bp == buf + len );
+  ASSERT_NO_EXCEPTION( bp = time::parse( buf, "%F", lang, country, &tm ) )
+  ASSERT_TRUE( bp == buf + ::strlen( buf ) );
   ASSERT_TRUE( tm.tm_mon == 0 );
   ASSERT_TRUE( tm.tm_mday == 2 );
   ASSERT_TRUE( tm.tm_year == 112 );     // years since 1900
@@ -260,26 +286,31 @@ static void test_F() {                  // %Y-%m-%d
 
 static void test_invalid_specification() {
   static char const bad_specs[] = "fgGiJKLNoPqQ";
+  iso639_1::type lang = iso639_1::unknown;
+  iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
   char spec[3];
   spec[0] = '%';
   spec[2] = '\0';
+
   for ( char const *s = bad_specs; *s; ++s ) {
     spec[1] = *s;
     ASSERT_EXCEPTION(
-      time::strptime( "JUNK", spec, &tm ), invalid_specification
+      time::parse( "JUNK", spec, lang, country, &tm ), invalid_specification
     );
   }
 }
 
 static void test_j() {                  // dat of year: 001-366
-  ztm tm;
   char const *const buf = "2012-1-2";
-  size_t const len = ::strlen( buf );
+  iso639_1::type lang = iso639_1::unknown;
+  iso3166_1::type country = iso3166_1::unknown;
+  ztm tm;
   char const *bp;
+
   ::memset( &tm, 0, sizeof( tm ) );
-  ASSERT_NO_EXCEPTION( bp = time::strptime( buf, "%F", &tm ) )
-  ASSERT_TRUE( bp == buf + len );
+  ASSERT_NO_EXCEPTION( bp = time::parse( buf, "%F", lang, country, &tm ) )
+  ASSERT_TRUE( bp == buf + ::strlen( buf ) );
   ASSERT_TRUE( tm.tm_yday == 0 );
 }
 
@@ -317,13 +348,17 @@ static void test_zZ() {
     0
   };
 
+  iso639_1::type lang = iso639_1::unknown;
+  iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
+
   for ( gmt_test const *p = gmt_tests; p->s_off; ++p ) {
-    size_t const len = ::strlen( p->s_off );
     char const *bp;
     ::memset( &tm, 0, sizeof( tm ) );
-    ASSERT_NO_EXCEPTION( bp = time::strptime( p->s_off, "%z", &tm ) );
-    ASSERT_TRUE( bp == p->s_off + len );
+    ASSERT_NO_EXCEPTION(
+      bp = time::parse( p->s_off, "%z", lang, country, &tm )
+    );
+    ASSERT_TRUE( bp == p->s_off + ::strlen( p->s_off ) );
     ASSERT_TRUE( tm.ZTM_GMTOFF == p->l_off );
     ASSERT_TRUE( tm.tm_isdst == (p->s_off[1] == 'D') );
   }
@@ -336,7 +371,9 @@ static void test_zZ() {
     0
   };
   for ( char const *const *p = bad_gmts; *p; ++p )
-    ASSERT_EXCEPTION( time::strptime( *p, "%z", &tm ), invalid_value );
+    ASSERT_EXCEPTION(
+      time::parse( *p, "%z", lang, country, &tm ), invalid_value
+    );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -344,14 +381,14 @@ static void test_zZ() {
 namespace zorba {
 namespace UnitTests {
 
-int test_strptime( int, char*[] ) {
+int test_time_parse( int, char*[] ) {
 
-  test_locale( "%A", &zloc::get_weekday_abbr,  7, &ztm::tm_wday );
-  test_locale( "%A", &zloc::get_weekday_name,  7, &ztm::tm_wday );
-  test_locale( "%a", &zloc::get_weekday_abbr,  7, &ztm::tm_wday );
-  test_locale( "%a", &zloc::get_weekday_name,  7, &ztm::tm_wday );
-  test_locale( "%b", &zloc::get_month_abbr  , 12, &ztm::tm_mon  );
-  test_locale( "%B", &zloc::get_month_name  , 12, &ztm::tm_mon  );
+  test_locale( "%A", &get_weekday_abbr,  7, &ztm::tm_wday );
+  test_locale( "%A", &get_weekday_name,  7, &ztm::tm_wday );
+  test_locale( "%a", &get_weekday_abbr,  7, &ztm::tm_wday );
+  test_locale( "%a", &get_weekday_name,  7, &ztm::tm_wday );
+  test_locale( "%b", &get_month_abbr  , 12, &ztm::tm_mon  );
+  test_locale( "%B", &get_month_name  , 12, &ztm::tm_mon  );
 
   test_range( "%d", 1,   31, &ztm::tm_mday );
   test_range( "%j", 1,  366, &ztm::tm_yday, &minus_1 );

@@ -26,7 +26,7 @@ SET(UTIL_SRCS
   regex.cpp
   string_util.cpp
   time_util.cpp
-  strptime.cpp
+  time_parse.cpp
   unicode_util.cpp
   unicode_categories.cpp
   uri_util.cpp

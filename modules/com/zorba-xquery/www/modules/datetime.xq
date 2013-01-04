@@ -36,6 +36,16 @@ xquery version "3.0";
  : to 0.)
  : For a dateTime, the parsing requirements of both date and time must be met.
  :
+ : When a locale is given,
+ : it must be of the form {lang}[{sep}{country}[{encoding}]] where
+ : {lang} is an ISO 639-1 2-letter or 639-2 3-letter language code,
+ : {sep} is either '-' or '_',
+ : {country} is an ISO 3166-1 2-letter country code,
+ : and {encoding} is any string that begins with a '.'.
+ : The {sep}, {country}, and {encoding} are optional;
+ : {encoding} is always ignored.
+ : Examples include: de, en-US, fr_CA, ru_RU.UTF-8.
+ :
  : @author Matthias Brantner
  : @author Paul J. Lucas
  : @see http://www.w3.org/TR/xpath-functions/#context
@@ -81,7 +91,7 @@ declare %an:nondeterministic function datetime:current-time()
   as xs:time external;
 
 (:~
- : Parses a date from a string.
+ : Parses a date from a string in the current locale.
  :
  : @param $input The string to parse.
  : @param $format The format string containing zero or more conversion
@@ -105,7 +115,35 @@ declare function datetime:parse-date(
 ) as xs:date external;
 
 (:~
- : Parses a dateTime from a string.
+ : Parses a date from a string in the given locale.
+ :
+ : @param $input The string to parse.
+ : @param $format The format string containing zero or more conversion
+ : specifications and ordinary characters.  All ordinary characters are matched
+ : exactly with the buffer; all whitespace characters match any amount of
+ : whitespace in the buffer.
+ : @param $locale The locale to use.
+ : @return Returns an xs:date.
+ : @error zerr:ZDTP0001 if $format contains an invalid conversion specification.
+ : @error zerr:ZDTP0002 if $input is insufficient for $format.
+ : @error zerr:ZDTP0003 if $input contains an invalid value for a conversion
+ : specification.
+ : @error zerr:ZDTP0004 if there is a literal characer mismatch between $input
+ : and $format.
+ : @error zerr:ZDTP0005 if the date is incomplete.
+ : @error zerr:ZXQP0011 if $locale is in an invalid format.
+ : @error zerr:ZXQP0012 if $locale is unknown.
+ : @example test/rbkt/Queries/zorba/datetime/datetime-parse-date-la-uD-1.xq
+ : @example test/rbkt/Queries/zorba/datetime/datetime-parse-date-uA-uD-2.xq
+ :)
+declare function datetime:parse-date(
+  $input as xs:string,
+  $format as xs:string,
+  $locale as xs:string
+) as xs:date external;
+
+(:~
+ : Parses a dateTime from a string in the current locale.
  :
  : @param $input The string to parse.
  : @param $format The format string containing zero or more conversion
@@ -128,7 +166,35 @@ declare function datetime:parse-dateTime(
 ) as xs:dateTime external;
 
 (:~
- : Parses a time from a string.
+ : Parses a dateTime from a string in the given locale.
+ :
+ : @param $input The string to parse.
+ : @param $format The format string containing zero or more conversion
+ : specifications and ordinary characters.  All ordinary characters are matched
+ : exactly with the buffer; all whitespace characters match any amount of
+ : whitespace in the buffer.
+ : @param $locale The locale to use.
+ : @return Returns an xs:dateTime.
+ : @error zerr:ZDTP0001 if $format contains an invalid conversion specification.
+ : @error zerr:ZDTP0002 if $input is insufficient for $format.
+ : @error zerr:ZDTP0003 if $input contains an invalid value for a conversion
+ : specification.
+ : @error zerr:ZDTP0004 if there is a literal characer mismatch between $input
+ : and $format.
+ : @error zerr:ZDTP0005 if either the date or time is incomplete.
+ : @error zerr:ZXQP0011 if $locale is in an invalid format.
+ : @error zerr:ZXQP0012 if $locale is unknown.
+ : @example test/rbkt/Queries/zorba/datetime/datetime-parse-dateTime-uAB-ld-uYTZ-1.xq
+ : @example test/rbkt/Queries/zorba/datetime/datetime-parse-dateTime-uAB-ld-uYTZ-2.xq
+ :)
+declare function datetime:parse-dateTime(
+  $input as xs:string,
+  $format as xs:string,
+  $locale as xs:string
+) as xs:dateTime external;
+
+(:~
+ : Parses a time from a string in the current locale.
  :
  : @param $input The string to parse.
  : @param $format The format string containing zero or more conversion
@@ -149,6 +215,34 @@ declare function datetime:parse-dateTime(
 declare function datetime:parse-time(
   $input as xs:string,
   $format as xs:string
+) as xs:time external;
+
+(:~
+ : Parses a time from a string in the given locale.
+ :
+ : @param $input The string to parse.
+ : @param $format The format string containing zero or more conversion
+ : specifications and ordinary characters.  All ordinary characters are matched
+ : exactly with the buffer; all whitespace characters match any amount of
+ : whitespace in the buffer.
+ : @param $locale The locale to use.
+ : @return Returns an xs:time.
+ : @error zerr:ZDTP0001 if $format contains an invalid conversion specification.
+ : @error zerr:ZDTP0002 if $input is insufficient for $format.
+ : @error zerr:ZDTP0003 if $input contains an invalid value for a conversion
+ : specification.
+ : @error zerr:ZDTP0004 if there is a literal characer mismatch between $input
+ : and $format.
+ : @error zerr:ZDTP0005 if the hour has not been parsed.
+ : @error zerr:ZXQP0011 if $locale is in an invalid format.
+ : @error zerr:ZXQP0012 if $locale is unknown.
+ : @example test/rbkt/Queries/zorba/datetime/datetime-parse-time-lr-1.xq
+ : @example test/rbkt/Queries/zorba/datetime/datetime-parse-time-lr-2.xq
+ :)
+declare function datetime:parse-time(
+  $input as xs:string,
+  $format as xs:string,
+  $locale as xs:string
 ) as xs:time external;
 
 (:~

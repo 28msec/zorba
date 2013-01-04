@@ -24,10 +24,11 @@
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "util/ascii_util.h"
-#include "util/strptime.h"
+#include "util/time_parse.h"
 #include "util/time_util.h"
 
 using namespace std;
+using namespace zorba::locale;
 
 namespace zorba {
 
@@ -39,13 +40,14 @@ enum parse_type {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void strptime( zstring const &buf, zstring const &fmt,
-                      parse_type parse_what, time::ztm *tm,
-                      QueryLoc const &loc ) {
+static void parse( parse_type parse_what, zstring const &buf,
+                   zstring const &fmt, iso639_1::type lang,
+                   iso3166_1::type country, time::ztm *tm,
+                   QueryLoc const &loc ) {
   try {
     unsigned set_fields;
     ::memset( tm, 0, sizeof( *tm ) );
-    time::strptime( buf, fmt, tm, &set_fields );
+    time::parse( buf, fmt, lang, country, tm, &set_fields );
 
     bool       set_mday = set_fields & time::set_mday;
     bool       set_mon  = set_fields & time::set_mon;
@@ -125,6 +127,25 @@ static void strptime( zstring const &buf, zstring const &fmt,
   }
 }
 
+static void parse_locale( store::Item_t const &item, iso639_1::type *lang,
+                          iso3166_1::type *country,
+                          QueryLoc const &loc ) {
+  zstring locale_str;
+  item->getStringValue2( locale_str );
+  if ( !locale::parse( locale_str, lang, country ) )
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0011_INVALID_LOCALE,
+      ERROR_PARAMS( locale_str ),
+      ERROR_LOC( loc )
+    );
+  if ( !*lang || !*country )
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0012_UNKNOWN_LOCALE,
+      ERROR_PARAMS( locale_str ),
+      ERROR_LOC( loc )
+    );
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 bool CurrentDate::nextImpl( store::Item_t& result,
@@ -197,8 +218,10 @@ bool CurrentTime::nextImpl( store::Item_t& result,
 
 bool ParseDate::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   store::Item_t item;
-  time::ztm tm;
   zstring buf, fmt;
+  iso639_1::type lang;
+  iso3166_1::type country;
+  time::ztm tm;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -207,8 +230,15 @@ bool ParseDate::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   item->getStringValue2( buf );
   consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
+  if ( theChildren.size() > 2 ) {
+    consumeNext( item, theChildren[2], plan_state );
+    parse_locale( item, &lang, &country, loc );
+  } else {
+    lang = iso639_1::unknown;
+    country = iso3166_1::unknown;
+  }
 
-  strptime( buf, fmt, parse_date, &tm, loc );
+  parse( parse_date, buf, fmt, lang, country, &tm, loc );
   GENV_ITEMFACTORY->createDate(
     result,
     static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
@@ -224,6 +254,8 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
                               PlanState &plan_state ) const {
   store::Item_t item;
   zstring buf, fmt;
+  iso639_1::type lang;
+  iso3166_1::type country;
   time::ztm tm;
 
   PlanIteratorState *state;
@@ -233,8 +265,15 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
   item->getStringValue2( buf );
   consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
+  if ( theChildren.size() > 2 ) {
+    consumeNext( item, theChildren[2], plan_state );
+    parse_locale( item, &lang, &country, loc );
+  } else {
+    lang = iso639_1::unknown;
+    country = iso3166_1::unknown;
+  }
 
-  strptime( buf, fmt, parse_dateTime, &tm, loc );
+  parse( parse_dateTime, buf, fmt, lang, country, &tm, loc );
   GENV_ITEMFACTORY->createDateTime(
     result,
     static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
@@ -252,8 +291,10 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
 
 bool ParseTime::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   store::Item_t item;
-  time::ztm tm;
   zstring buf, fmt;
+  iso639_1::type lang;
+  iso3166_1::type country;
+  time::ztm tm;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -262,8 +303,15 @@ bool ParseTime::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   item->getStringValue2( buf );
   consumeNext( item, theChildren[1], plan_state );
   item->getStringValue2( fmt );
+  if ( theChildren.size() > 2 ) {
+    consumeNext( item, theChildren[2], plan_state );
+    parse_locale( item, &lang, &country, loc );
+  } else {
+    lang = iso639_1::unknown;
+    country = iso3166_1::unknown;
+  }
 
-  strptime( buf, fmt, parse_time, &tm, loc );
+  parse( parse_time, buf, fmt, lang, country, &tm, loc );
   GENV_ITEMFACTORY->createTime(
     result,
     static_cast<short>( tm.tm_hour ),
