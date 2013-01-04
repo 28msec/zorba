@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <iostream>
 
-#include <zorba/util/time.h>
-
 #include "zorbautils/hashmap.h"
 #include "util/hashmap32.h"
 #include "util/hashmap.h"

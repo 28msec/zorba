@@ -130,12 +130,22 @@ void* begin_visit(const ArgList& n)
 }
 
 
-DEFAULT_END_VISIT (ArgList)
+DEFAULT_END_VISIT(ArgList)
 
-DEFAULT_BEGIN_VISIT (AtomicType)
+
+DEFAULT_BEGIN_VISIT(AtomicType)
 
 
 void end_visit(const AtomicType& n, void* state)
+{
+  os << n.get_qname()->get_qname();
+}
+
+
+DEFAULT_BEGIN_VISIT(SimpleType)
+
+
+void end_visit(const SimpleType& n, void* state)
 {
   os << n.get_qname()->get_qname();
 }
