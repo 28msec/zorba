@@ -808,7 +808,15 @@ bool NodeXQType::is_supertype(
   assert(subitem->isNode());
 
   if (m_node_kind == store::StoreConsts::anyNode)
+  {
+    if (theContentType != NULL &&
+        theContentType->type_kind() == XQType::UNTYPED_KIND)
+    {
+      return (subitem->getType()->equals(GENV_TYPESYSTEM.XS_UNTYPED_QNAME));
+    }
+
     return true;
+  }
 
   if (m_node_kind != subitem->getNodeKind())
     return false;

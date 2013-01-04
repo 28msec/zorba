@@ -16,7 +16,8 @@ declare %ann:automatic %ann:value-range index keys-lib:FooIdx2
 
 declare %ann:automatic %ann:value-range index keys-lib:FooIdx3
   on nodes dml:collection(xs:QName("keys-lib:foo"))
-  by xs:string(./@id) as xs:string, (if (./@name) then xs:string(./@name) else ()) as xs:string?;
+  by xs:string(./@id) as xs:string,
+     (if (./@name) then xs:string(./@name) else ()) as xs:string?;
 
 declare %ann:automatic %ann:general-equality index keys-lib:FooIdx-general
   on nodes dml:collection(xs:QName("keys-lib:foo"))
