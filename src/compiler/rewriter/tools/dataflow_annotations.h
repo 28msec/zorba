@@ -44,9 +44,7 @@ private:
   void compute_trycatch_expr(trycatch_expr* e);
   void compute_if_expr(if_expr* e);
   void compute_fo_expr(fo_expr* e);
-  void compute_treat_expr(treat_expr* e);
   void compute_castable_expr(castable_expr* e);
-  void compute_cast_expr(cast_expr* e);
   void compute_name_cast_expr(name_cast_expr* e);
   void compute_validate_expr(validate_expr* e);
   void compute_extension_expr(extension_expr* e);

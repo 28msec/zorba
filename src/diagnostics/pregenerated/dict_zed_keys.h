@@ -41,6 +41,8 @@
 #define ZED_XPTY0004_FormatNumber_2 "~XPTY0004_FormatNumber_2"
 #define ZED_XPTY0004_JSONIQ_SELECTOR "~XPTY0004_JSONIQ_SELECTOR"
 #define ZED_XPTY0004_MultiValuedGroupingKey "~XPTY0004_MultiValuedGroupingKey"
+#define ZED_XPTY0117_NodeCast "~XPTY0117_NodeCast"
+#define ZED_XPTY0117_NotationParam_23 "~XPTY0117_NotationParam_23"
 #define ZED_XQST0106_THE_SAME "~XQST0106_THE_SAME"
 #define ZED_XQST0106_CONFLICTING "~XQST0106_CONFLICTING"
 #define ZED_FTST0009_BadStopWordsLang "~FTST0009_BadStopWordsLang"
