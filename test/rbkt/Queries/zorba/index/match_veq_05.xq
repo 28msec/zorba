@@ -9,6 +9,9 @@ import module namespace dml =
 import module namespace iddl = 
 "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
+import module namespace idml = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
 declare construction strip;
 
 

@@ -1,4 +1,3 @@
-
 module namespace data = "www.data.com";
 
 import module namespace ddl = 
@@ -15,17 +14,18 @@ import module namespace idml =
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 
-
-declare %private collection data:parents;
-
-declare variable $data:parents as xs:QName := xs:QName('data:parents');
+declare construction strip;
 
 
-declare %private %an:automatic %an:value-range index data:idx
-  on nodes dml:collection(xs:QName('data:parents'))
-  by @uri as xs:string,
-     @date-time as xs:string;
+declare collection data:documents as document-node();
+
+declare variable $data:documents as xs:QName := xs:QName('data:documents');
+
+
+declare %private %an:automatic %an:unique %an:value-range index data:idx
+on nodes dml:collection(xs:QName('data:documents'))
+by substring-after(./doc/@base-uri, "www.foo.com/") as xs:string,
+   string(.//sports-content/sports-metadata/@date-time) as xs:string;
 
 declare variable $data:idx as xs:QName := xs:QName('data:idx');
-
 

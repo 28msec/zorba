@@ -12,6 +12,18 @@ import module namespace iddl =
 declare construction strip;
 
 
+declare function local:page-count($folder-uri as xs:string) as xs:integer
+{
+  count(dml:collection($d:parents)[@uri eq $folder-uri])
+};
+
+
+declare function local:page($folder-uri as xs:string) as node()*
+{
+  dml:collection($d:parents)[@uri eq $folder-uri]
+};
+
+
 declare variable $doc := 
 <parents>
 <parent uri="" child="/zorba" date-time="2013-01-01"/>
@@ -31,7 +43,12 @@ for $p in $doc/parent
 return dml:insert($d:parents, $p);
 
 
-d:page-count("/zorba/repo")
+local:page-count("/zorba/repo")
+,
+"
+",
+local:page("/zorba/repo")
 ,
 "
 "
+

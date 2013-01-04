@@ -1,0 +1,3 @@
+<doc base-uri="www.foo.com/folder2"><sports-content><sports-metadata date-time="2012-12-31"/></sports-content></doc>
+ true 
+<doc base-uri="www.foo.com/folder1"><sports-content><sports-metadata date-time="2013-01-01"/></sports-content></doc>
