@@ -186,6 +186,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %type <node>  ERROR                         "'error'"
 
+
 /* constant string tokens */
 %type <strval> WindowType
 %type <strval> FLWORWinCondType
@@ -207,7 +208,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> NCNAME_SVAL                   "'NCName_sval'"
 %token <sval> PRAGMA_LITERAL_AND_END_PRAGMA "'pragma literal'"
 %token <sval> QNAME_SVAL_AND_END_PRAGMA     "'QName #)'"
-%token <sval> EQNAME_SVAL_AND_END_PRAGMA     "'EQName #)'"
+%token <sval> EQNAME_SVAL_AND_END_PRAGMA    "'EQName #)'"
 %token <sval> PREFIX_WILDCARD               "'*:QName'"
 %token <sval> COMP_ELEMENT_QNAME_LBRACE     "'element QName {'"
 %token <sval> COMP_ATTRIBUTE_QNAME_LBRACE   "'attribute QName {'"
@@ -1059,14 +1060,17 @@ Module :
       {
         $$ = $3;
       }
-
-
 ;
 
+
 ERROR :
-      // Special rule to get Bison out of some infinte loops. This can happen when the lexer
+      error
+      {
+        $$ = NULL;
+      }
+      // Special rules to get Bison out of some infinte loops. This can happen when the lexer
       // throws an error and Bison finds an error too.
-      error UNRECOGNIZED
+   |  error UNRECOGNIZED
       {
         $$ = NULL; YYABORT;
       }
@@ -2493,23 +2497,15 @@ Expr :
       $$ = expr;
     }
   //  ============================ Improved error messages ============================
-  | Expr error ExprSingle error
+  | 
+    Expr ERROR ExprSingle
     {
       $$ = $1; // to prevent the Bison warning
       $$ = $3; // to prevent the Bison warning
       error(@2, "syntax error, unexpected ExprSingle (missing comma \",\" between expressions?)");
       delete $1; // these need to be deleted here because the parser deallocator will skip them
       delete $3;
-      YYERROR;
-    }
-  | Expr ERROR ExprSingle
-    {
-      // This rule will never be reached, as the ERROR rule will stop the parser,
-      // but it is nevertheless needed to fix a testcase with an unterminated comment which
-      // would otherwise cycle indefinitely
-      $$ = $1; // to prevent the Bison warning
-      $$ = $3; // to prevent the Bison warning
-      YYERROR;
+      YYABORT;
     }
 ;
 
@@ -2687,7 +2683,7 @@ ForClause :
     {
       $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
     }
-  //  ============================ Improved error messages ============================
+  //  ============================ Improved error messages ============================ 
   |
     FOR error VarInDeclList
     {
@@ -6959,6 +6955,19 @@ void xquery_parser::error(zorba::xquery_parser::location_type const& loc, string
   }
   else
   {
+    ParseErrorNode* prevErr = dynamic_cast<ParseErrorNode*>(driver.get_expr());
+
+    if (prevErr != NULL)
+    {
+      // Error message heuristics: if the current error message has the "(missing comma "," between expressions?)" text,
+      // and the old message has a "','" text, the replace the old message with the new one. Unfortunately this 
+      // makes the parser error messages harder to internationalize.
+      if ( ! (msg.find("(missing comma \",\" between expressions?)") != string::npos
+              &&
+              prevErr->msg.find(zstring("\",\"")) != zstring::npos))
+        return;
+    }
+
     // remove the double quoting "''" from every token description
     string message = msg;
     int pos;
