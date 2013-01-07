@@ -25,6 +25,7 @@ Optimizations:
   * Convert LET vars whose domain sequence has exactly one item to FOR vars.
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1072644 (broken parser error location)
   * Change XQXQ (XQuery-for-XQuery) module now part of Zorba core
   * Fixed mustCopyInputNodes() method of no-copy, and jsoniq functions.
   * Fixed bug #868640 (Node lifetime is shorter than expected due to let
