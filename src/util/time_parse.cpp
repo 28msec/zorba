@@ -37,6 +37,16 @@ namespace time {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static size_t min_len( char const *buf, size_t max_len ) {
+  size_t len = 0;
+  for ( char const *p = buf; *p; ++p )
+    if ( ++len >= max_len )
+      return max_len;
+  return len;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 exception::exception( string const &msg ) :
   runtime_error( msg )
 {
@@ -79,7 +89,7 @@ invalid_value_value::invalid_value_value( char c ) :
 }
 
 invalid_value_value::invalid_value_value( char const *buf, size_t len ) :
-  value_( buf, len )
+  value_( buf, min_len( buf, len ) )
 {
   ascii::trim_end_whitespace( value_ );
 }
