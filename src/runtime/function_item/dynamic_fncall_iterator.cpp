@@ -270,12 +270,12 @@ bool DynamicFnCallIterator::nextImpl(
             store::SchemaTypeCode selectorType = 
             (isObjectNav ? store::XS_STRING : store::XS_INTEGER);
 
-            selectorError = ! GenericCast::castToAtomic(selectorItem3,
-                                                        selectorItem2,
-                                                        selectorType,
-                                                        tm,
-                                                        NULL,
-                                                        loc);
+            GenericCast::castToBuiltinAtomic(selectorItem3,
+                                             selectorItem2,
+                                             selectorType,
+                                             NULL,
+                                             loc);
+            selectorError = false;
           }
         }
       }

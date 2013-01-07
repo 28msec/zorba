@@ -113,6 +113,9 @@ public:
         const QueryLoc& loc,
         const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
 
+  virtual xqtref_t create_named_simple_type(
+        store::Item* qname) const = 0;
+
   virtual xqtref_t create_named_type(
         store::Item* qname,
         TypeConstants::quantifier_t q,
