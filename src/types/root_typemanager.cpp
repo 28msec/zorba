@@ -384,17 +384,20 @@ RootTypeManager::RootTypeManager()
   XS_NMTOKENS_TYPE = new UserDefinedXQType(this,
                                            XS_NMTOKENS_QNAME,
                                            NULL,
-                                           NMTOKEN_TYPE_ONE.getp());
+                                           NMTOKEN_TYPE_ONE.getp(),
+                                           true);
 
   XS_ENTITIES_TYPE = new UserDefinedXQType(this,
                                            XS_ENTITIES_QNAME,
                                            NULL,
-                                           ENTITY_TYPE_ONE.getp());
+                                           ENTITY_TYPE_ONE.getp(),
+                                           true);
 
   XS_IDREFS_TYPE = new UserDefinedXQType(this,
                                          XS_IDREFS_QNAME,
                                          NULL,
-                                         IDREF_TYPE_ONE.getp());
+                                         IDREF_TYPE_ONE.getp(),
+                                         true);
 
   STRUCTURED_ITEM_TYPE_ONE = 
   new StructuredItemXQType(this, TypeConstants::QUANT_ONE, true);
@@ -576,6 +579,14 @@ RootTypeManager::~RootTypeManager()
   DELETE_TYPE(ANY_NODE_UNTYPED)
   DELETE_TYPE(ANY_NODE)
   DELETE_TYPE(STRUCTURED_ITEM)
+
+  // These must be deallocated first because they may reference other types
+  delete XS_NMTOKENS_TYPE.getp();
+  XS_NMTOKENS_TYPE.setNull();
+  delete XS_ENTITIES_TYPE.getp();
+  XS_ENTITIES_TYPE.setNull();
+  delete XS_IDREFS_TYPE.getp();
+  XS_IDREFS_TYPE.setNull();
 
 #ifdef ZORBA_WITH_JSON
   DELETE_TYPE(JS_NULL)

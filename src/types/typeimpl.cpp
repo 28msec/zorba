@@ -1113,9 +1113,10 @@ UserDefinedXQType::UserDefinedXQType(
     const xqtref_t& baseType,
     TypeConstants::quantifier_t quantifier,
     type_category_t typeCategory,
-    content_kind_t contentKind)
+    content_kind_t contentKind,
+    bool builtin)
   :
-  XQType(manager, USER_DEFINED_KIND, quantifier, false),
+  XQType(manager, USER_DEFINED_KIND, quantifier, builtin),
   m_qname(qname),
   m_baseType(baseType),
   m_typeCategory(typeCategory),
@@ -1139,9 +1140,10 @@ UserDefinedXQType::UserDefinedXQType(
     const TypeManager* manager,
     store::Item_t qname,
     const xqtref_t& baseType,
-    const XQType* listItemType)
+    const XQType* listItemType,
+    bool builtin)
   :
-  XQType(manager, USER_DEFINED_KIND, TypeConstants::QUANT_STAR, false),
+  XQType(manager, USER_DEFINED_KIND, TypeConstants::QUANT_STAR, builtin),
   m_qname(qname),
   m_baseType(baseType),
   m_typeCategory(LIST_TYPE),
@@ -1160,9 +1162,10 @@ UserDefinedXQType::UserDefinedXQType(
     store::Item_t qname,
     const xqtref_t& baseType,
     TypeConstants::quantifier_t quantifier,
-    const std::vector<xqtref_t>& unionItemTypes)
+    const std::vector<xqtref_t>& unionItemTypes,
+    bool builtin)
   :
-  XQType(manager, USER_DEFINED_KIND, quantifier, false),
+  XQType(manager, USER_DEFINED_KIND, quantifier, builtin),
   m_qname(qname),
   m_baseType(baseType),
   m_typeCategory(UNION_TYPE),
