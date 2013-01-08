@@ -133,6 +133,7 @@ declare function datetime:parse-date(
  : @error zerr:ZDTP0005 if the date is incomplete.
  : @error zerr:ZXQP0011 if $locale is in an invalid format.
  : @error zerr:ZXQP0012 if $locale is unknown.
+ : @error zerr:ZOSE0007 if $locale is unsupported by the operating system.
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-date-la-uD-1.xq
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-date-uA-uD-2.xq
  :)
@@ -184,6 +185,7 @@ declare function datetime:parse-dateTime(
  : @error zerr:ZDTP0005 if either the date or time is incomplete.
  : @error zerr:ZXQP0011 if $locale is in an invalid format.
  : @error zerr:ZXQP0012 if $locale is unknown.
+ : @error zerr:ZOSE0007 if $locale is unsupported by the operating system.
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-dateTime-uAB-ld-uYTZ-1.xq
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-dateTime-uAB-ld-uYTZ-2.xq
  :)
@@ -236,6 +238,7 @@ declare function datetime:parse-time(
  : @error zerr:ZDTP0005 if the hour has not been parsed.
  : @error zerr:ZXQP0011 if $locale is in an invalid format.
  : @error zerr:ZXQP0012 if $locale is unknown.
+ : @error zerr:ZOSE0007 if $locale is unsupported by the operating system.
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-time-lr-1.xq
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-time-lr-2.xq
  :)
