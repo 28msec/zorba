@@ -235,18 +235,18 @@ static zstring get_unix_locale() {
  *
  * @param lang The language.
  * @param country The country.
- * @return Returns said \c locale_t or \c nullptr.
+ * @return Returns said \c locale_t or \c (locale_t)0.
  */
 static locale_t get_unix_locale_t( iso639_1::type lang,
                                    iso3166_1::type country ) {
-  zstring locale_name = iso639_1::string_of[ lang ];
+  zstring locale_name( iso639_1::string_of[ lang ] );
   if ( country ) {
     locale_name += '_';
     locale_name += iso3166_1::string_of[ country ];
   }
   int const mask = LC_MESSAGES_MASK | LC_TIME_MASK;
   locale_t loc = ::newlocale( mask, locale_name.c_str(), nullptr );
-  if ( !loc ) {                         // try it without the country
+  if ( !loc && country ) {              // try it without the country
     locale_name = iso639_1::string_of[ lang ];
     loc = ::newlocale( mask, locale_name.c_str(), nullptr );
   }
@@ -1242,10 +1242,11 @@ bool is_supported( iso639_1::type lang, iso3166_1::type country ) {
   unique_ptr<WCHAR[]> const wlocale_name( get_wlocale_name( lang, country ) );
   return ::IsValidLocaleName( wlocale_name.get() );
 #else
-  locale_t const loc = get_unix_locale_t( lang, country );
-  bool const supported = !!loc;
-  ::freelocale( loc );
-  return supported;
+  if ( locale_t const loc = get_unix_locale_t( lang, country ) ) {
+    ::freelocale( loc );
+    return true;
+  }
+  return false;
 #endif /* WIN32 */
 }
 
