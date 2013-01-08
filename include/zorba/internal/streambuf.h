@@ -20,11 +20,14 @@
 #include <streambuf>
 
 #include <zorba/config.h>
+#include <zorba/internal/proxy.h>
 
 namespace zorba {
 namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+typedef ztd::proxy<std::streambuf> proxy_streambuf;
 
 ZORBA_DLL_PUBLIC
 void dealloc_streambuf( std::streambuf* );

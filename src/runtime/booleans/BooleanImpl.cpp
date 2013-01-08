@@ -638,7 +638,7 @@ void CompareIterator::valueCasting(
     }
     else
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_STRING, NULL, loc);
 
       if (!GenericCast::promote(castItem1, item1, store::XS_STRING, tm, loc))
         castItem1.transfer(item1);
@@ -649,7 +649,7 @@ void CompareIterator::valueCasting(
     if (!GenericCast::promote(castItem0, item0, store::XS_STRING, tm, loc))
       castItem0.transfer(item0);
 
-    GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+    GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_STRING, NULL, loc);
   }
   else
   {
@@ -815,7 +815,7 @@ void CompareIterator::generalCasting(
   {
     if (TypeOps::is_numeric(type1))
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_DOUBLE, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_DOUBLE, NULL, loc);
 
       GenericCast::promote(castItem1, item1, store::XS_DOUBLE, tm, loc);
     }
@@ -826,12 +826,12 @@ void CompareIterator::generalCasting(
     }
     else if (TypeOps::is_subtype(type1, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_STRING, NULL, loc);
       castItem1.transfer(item1);
     }
     else
     {
-      GenericCast::castToAtomic(castItem0, item0, type1, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, type1, NULL, loc);
       castItem1.transfer(item1);
     }
   }
@@ -839,17 +839,17 @@ void CompareIterator::generalCasting(
   {
     if (TypeOps::is_numeric(type0))
     {
-      GenericCast::castToAtomic(castItem1, item1, store::XS_DOUBLE, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_DOUBLE, NULL, loc);
       GenericCast::promote(castItem0, item0, store::XS_DOUBLE, tm, loc);
     }
     else if (TypeOps::is_subtype(type0, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_STRING, NULL, loc);
       castItem0.transfer(item0);
     }
     else
     {
-      GenericCast::castToAtomic(castItem1, item1, type0, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, type0, NULL, loc);
       castItem0.transfer(item0);
     }
   }

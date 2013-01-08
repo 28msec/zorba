@@ -65,6 +65,19 @@ SERIALIZABLE_CLASS_VERSIONS(TypeManagerImpl)
 /***************************************************************************//**
 
 ********************************************************************************/
+TypeManagerImpl::TypeManagerImpl(TypeManager* parent)
+  :
+  TypeManager(parent ? parent->level() + 1 : 0),
+  m_parent(parent),
+  m_schema(NULL)
+{
+  initializeSchema();
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 void TypeManager::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & m_level;
@@ -271,7 +284,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
       if (error != zerr::ZXQP0000_NO_ERROR)
       {
 				throw XQUERY_EXCEPTION_VAR(error,
-				ERROR_PARAMS(qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes)),
+				ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
 				ERROR_LOC(loc));
       }
       else
@@ -293,13 +306,75 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   if (error != zerr::ZXQP0000_NO_ERROR)
   {
 		throw XQUERY_EXCEPTION_VAR(error,
-		ERROR_PARAMS(qname->getStringValue(), ZED( NotAmongInScopeSchemaTypes)),
+		ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
 		ERROR_LOC(loc));
   }
   else
   {
     return NULL;
   }
+
+  return NULL;
+}
+
+
+/***************************************************************************//**
+  Create an XML Schema type from the given typename. The typename is assumed to
+  be of a simple type. If not, or if no type with this name is found in the
+  in-scope schema, the method will return NULL.
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_named_simple_type(store::Item* qname) const
+{
+  // Try to resolve the type name as a builtin atomic type
+  RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
+
+  store::SchemaTypeCode code = store::XS_LAST;
+
+  if (myMap.get(qname, code))
+    return create_builtin_atomic_type(code, TypeConstants::QUANT_ONE);
+
+  // If the type name is an XML Schema builtin type, then it can only be one of
+  // xs:NMTOKES, xs:IDREFS, or xs:ENTITIES.
+  if (ZSTREQ(qname->getNamespace(), XML_SCHEMA_NS))
+  {
+    RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+    if (qname->equals(rtm.XS_NMTOKENS_QNAME))
+      return rtm.XS_NMTOKENS_TYPE;
+
+    if (qname->equals(rtm.XS_IDREFS_QNAME))
+      return rtm.XS_IDREFS_TYPE;
+
+    if (qname->equals(rtm.XS_ENTITIES_QNAME))
+      return rtm.XS_ENTITIES_TYPE;
+ 
+    if (qname->equals(rtm.XS_ANY_SIMPLE_TYPE_QNAME))
+      return rtm.ANY_SIMPLE_TYPE;
+
+    return NULL;
+  }
+
+#ifndef ZORBA_NO_XMLSCHEMA
+  // See if there is a type declaration for this type name in the in-scope
+  // schema, if any.
+  if (m_schema != NULL)
+  {
+    xqtref_t namedType = m_schema->createXQTypeFromTypeName(this, qname);
+
+    if (namedType == NULL)
+    {
+      return NULL;
+    }
+
+    ZORBA_ASSERT(namedType->type_kind() == XQType::USER_DEFINED_KIND);
+
+    const UserDefinedXQType* udt =
+    reinterpret_cast<const UserDefinedXQType*>(namedType.getp());
+
+    if (udt->isAtomic() || udt->isList() || udt->isUnion())
+      return create_type(*namedType, TypeConstants::QUANT_ONE);
+  }
+#endif
 
   return NULL;
 }
@@ -945,12 +1020,31 @@ xqtref_t TypeManagerImpl::create_type(
   case XQType::USER_DEFINED_KIND:
   {
     const UserDefinedXQType& udt = static_cast<const UserDefinedXQType&>(type);
-    return xqtref_t(new UserDefinedXQType(this,
-                                          udt.get_qname(),
-                                          udt.getBaseType(),
-                                          quantifier,
-                                          udt.getTypeCategory(),
-                                          udt.content_kind()));
+
+    if (udt.isList())
+    {
+      return new UserDefinedXQType(this,
+                                   udt.get_qname(),
+                                   udt.getBaseType(),
+                                   udt.getListItemType());
+    }
+    else if (udt.isUnion())
+    {
+      return new UserDefinedXQType(this,
+                                   udt.get_qname(),
+                                   udt.getBaseType(),
+                                   quantifier,
+                                   udt.getUnionItemTypes());
+    }
+    else
+    {
+      return new UserDefinedXQType(this,
+                                   udt.get_qname(),
+                                   udt.getBaseType(),
+                                   quantifier,
+                                   udt.getTypeCategory(),
+                                   udt.content_kind());
+    }
   }
   default:
     ZORBA_ASSERT(false);

@@ -55,7 +55,8 @@ static void print_exception( char const *expr, int line,
 
 #define ASSERT_EXCEPTION( EXPR, EXCEPTION ) \
   try { EXPR; assert_true( #EXPR, __LINE__, false ); } \
-  catch ( EXCEPTION const& ) { }
+  catch ( EXCEPTION const& ) { } \
+  catch ( ... ) { assert_true( #EXPR, __LINE__, false ); }
 
 #define ASSERT_NO_EXCEPTION( EXPR ) \
   try { EXPR; } \

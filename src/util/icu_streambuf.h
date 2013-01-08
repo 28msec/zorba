@@ -18,7 +18,7 @@
 #define ZORBA_ICU_STREAMBUF_H
 
 #include <unicode/ucnv.h>
-#include <zorba/transcode_stream.h>
+#include <zorba/internal/streambuf.h>
 
 #include "util/utf8_util.h"
 
@@ -38,7 +38,7 @@ namespace zorba {
  *  is.ios::rdbuf( &xbuf );
  * \endcode
  * Note that the %icu_streambuf must exist for as long as it's being used by
- * the stream.  If you are replacing the streabuf for a stream you did not
+ * the stream.  If you are replacing the streambuf for a stream you did not
  * create, you should set it back to the original streambuf:
  * \code
  *  void f( ostream &os ) {
@@ -58,7 +58,7 @@ namespace zorba {
  * While %icu_streambuf does support seeking, the positions are relative to the
  * original byte stream.
  */
-class icu_streambuf : public proxy_streambuf {
+class icu_streambuf : public internal::proxy_streambuf {
 public:
   /**
    * Constructs an %icu_streambuf.

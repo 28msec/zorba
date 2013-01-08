@@ -361,18 +361,42 @@ void expr::compute_return_type(bool deep, bool* modified)
     TypeConstants::quantifier_t argQuant = argType->get_quantifier();
     TypeConstants::quantifier_t targetQuant = e->theTargetType->get_quantifier();
 
-    if (TypeOps::is_equal(tm, *argType, *rtm.EMPTY_TYPE, get_loc()) &&
-        (targetQuant == TypeConstants::QUANT_QUESTION ||
-         targetQuant == TypeConstants::QUANT_STAR))
+    if (TypeOps::is_equal(tm, *argType, *rtm.EMPTY_TYPE, get_loc()))
     {
-      newType = rtm.EMPTY_TYPE;
+      if (targetQuant == TypeConstants::QUANT_QUESTION ||
+          targetQuant == TypeConstants::QUANT_STAR)
+        newType = rtm.EMPTY_TYPE;
+      else
+        newType = rtm.NONE_TYPE;
     }
-    else
+    else if (e->theTargetType->isAtomicAny())
     {
       TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
 
       newType = tm->create_type(*e->theTargetType, q);
     }
+    else
+    {
+      ZORBA_ASSERT(e->theTargetType->type_kind() == XQType::USER_DEFINED_KIND);
+
+      const UserDefinedXQType* targetType = 
+      static_cast<const UserDefinedXQType*>(e->theTargetType.getp());
+
+      if (targetType->isList())
+      {
+        newType = tm->create_type(*targetType->getListItemType(),
+                                  TypeConstants::QUANT_STAR);
+      }
+      else
+      {
+        assert(targetType->isAtomic() || targetType->isUnion());
+
+        TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
+
+        newType = tm->create_type(*e->theTargetType, q);
+      }
+    }
+
     break;
   }
 
