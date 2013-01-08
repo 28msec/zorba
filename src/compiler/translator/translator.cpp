@@ -13259,11 +13259,8 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
 
     if (contentType == NULL)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPST0008,
-        ERROR_PARAMS( typeNameItem->getStringValue(), ZED( AttributeName ) ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPST0008, loc,
+      ERROR_PARAMS(typeNameItem->getStringValue(), ZED(AttributeName)));
     }
   }
 

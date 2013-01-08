@@ -384,7 +384,7 @@ xqtref_t TypeManagerImpl::create_named_type(
     store::Item* qname,
     TypeConstants::quantifier_t quant,
     const QueryLoc& loc,
-    const Error& error) const
+    bool raiseError) const
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
@@ -419,11 +419,10 @@ xqtref_t TypeManagerImpl::create_named_type(
 
       if (namedType == NULL)
       {
-        if (error != zerr::ZXQP0000_NO_ERROR)
+        if (raiseError)
         {
-					throw XQUERY_EXCEPTION_VAR(error,
-					ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
-					ERROR_LOC(loc));
+					RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)));
         }
         else
         {
@@ -437,11 +436,10 @@ xqtref_t TypeManagerImpl::create_named_type(
     }
 #endif
 
-    if (error != zerr::ZXQP0000_NO_ERROR)
+    if (raiseError)
     {
-			throw XQUERY_EXCEPTION_VAR(error,
-			ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
-			ERROR_LOC(loc));
+			RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)));
     }
     else
     {
@@ -737,7 +735,7 @@ xqtref_t TypeManagerImpl::create_value_type(
       xqtref_t contentType = create_named_type(item->getType(),
                                                quant,
                                                loc,
-                                               err::XPTY0004);
+                                               true);
 
       return create_node_type(nodeKind,
                               item->getNodeName(),
@@ -1099,7 +1097,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                                   ident.getUri().c_str(),
                                   NULL,
                                   ident.getLocalName().c_str());
-    return create_named_type(i, q, QueryLoc::null, err::XPTY0004);
+    return create_named_type(i, q, QueryLoc::null, true);
   }
 
   case IdentTypes::ELEMENT_TYPE:
