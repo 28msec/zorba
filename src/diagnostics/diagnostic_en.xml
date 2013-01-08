@@ -253,6 +253,24 @@
       <value>context item in axis step is not a node</value>
     </diagnostic>
 
+    <diagnostic code="XPTY0117">
+      <comment>
+      Attempt to cast to a namespace-sensitive type failed because the namespace
+      bindings for the result can not be determined.
+      </comment>
+
+      <value>$1</value>
+
+      <entry key="NodeCast">
+        <value>Cannot cast node to xs:QName</value>
+      </entry>
+
+      <entry key="NotationParam_23">
+        <value>$2 can not be promoted to parameter type xs:NOTATION of function $3()</value>
+      </entry>
+
+    </diagnostic>
+
     <diagnostic code="XQTY0024">
       <comment>
        It is a type error if the content sequence in an element constructor
@@ -449,6 +467,14 @@
        module have equal expanded QNames (as defined by the eq operator.)
       </comment>
       <value>"$1": duplicate variable declaration</value>
+    </diagnostic>
+
+    <diagnostic code="XQST0052">
+      <comment>
+      The type must be the name of a type defined in the in-scope schema types,
+      and the {variety} of the type must be simple.
+      </comment>
+      <value>"$1": not defined as simple type</value>
     </diagnostic>
 
     <diagnostic code="XQST0054">
@@ -2255,6 +2281,22 @@
       <value>attempt to delete non-root node from collection "$1"</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0037" name="COLLECTION_APPEND_BAD_EDIT">
+      <value>"$1": illegal edit in append-only collection</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0038" name="COLLECTION_QUEUE_BAD_EDIT">
+      <value>"$1": illegal edit from queue collection</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0039" name="NON_ROOT_NODE_EDIT">
+      <value>attempt to edit non-root node in collection "$1"</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0040" name="INCONSISTENT_EDIT">
+      <value>attempt to edit an item with a template of a different kind (for example an object with a node).</value>
+    </diagnostic>
+     
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">
       <value>"$1": collection already declared</value>
     </diagnostic>

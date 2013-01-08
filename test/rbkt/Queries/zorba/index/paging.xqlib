@@ -18,6 +18,7 @@ declare variable $data:idx-age-point-val := xs:QName("data:idx-age-point-val");
 declare %an:nonunique %an:value-range %an:automatic index data:idx-age-range-val
 on nodes dml:collection(xs:QName("data:people"))
 by xs:integer(./age/text()) as xs:integer;
+
 declare variable $data:idx-age-range-val := xs:QName("data:idx-age-range-val");
 
 declare %an:sequential function data:init()

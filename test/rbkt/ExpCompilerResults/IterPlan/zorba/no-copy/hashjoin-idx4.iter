@@ -62,13 +62,13 @@ Iterator tree for main query:
           </flwor::FLWORIterator>
         </CreateInternalIndexIterator>
         <flwor::FLWORIterator>
-          <LetVariable name="$$opt_temp_0" materialize="true">
+          <ForVariable name="$$opt_temp_0">
             <HoistIterator>
               <TreatIterator quant="">
                 <LetVarIterator varname="e"/>
               </TreatIterator>
             </HoistIterator>
-          </LetVariable>
+          </ForVariable>
           <ForVariable name="prefix">
             <flwor::FLWORIterator>
               <ForVariable name="prefixE">
@@ -83,7 +83,7 @@ Iterator tree for main query:
                   <NamespaceUriForPrefixIterator>
                     <ForVarIterator varname="prefixE"/>
                     <UnhoistIterator>
-                      <LetVarIterator varname="$$opt_temp_0"/>
+                      <ForVarIterator varname="$$opt_temp_0"/>
                     </UnhoistIterator>
                   </NamespaceUriForPrefixIterator>
                 </HoistIterator>
