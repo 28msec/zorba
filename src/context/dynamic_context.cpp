@@ -15,6 +15,10 @@
  */
 #include "stdafx.h"
 
+#ifdef WIN32
+#include <sys/types.h>
+#include <sys/timeb.h>
+#endif
 #include "common/common.h"
 #include <assert.h>
 #include <time.h>
@@ -23,7 +27,6 @@
 #include <sys/time.h>
 #include <unistd.h>
 #endif
-
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
@@ -459,7 +462,7 @@ void dynamic_context::set_variable(
       theVarValues[varid].theState == VarValue::undeclared)
   {
     RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(varname->getStringValue(), ZED(VariabledUndeclared)));
+    ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varname->getStringValue()));
   }
 
   valueIter->open();
@@ -513,7 +516,7 @@ void dynamic_context::set_variable(
       theVarValues[varid].theState == VarValue::undeclared)
   {
     RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(varname->getStringValue(), ZED(VariabledUndeclared)));
+    ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varname->getStringValue()));
   }
 
   VarValue& var = theVarValues[varid];
@@ -556,7 +559,7 @@ void dynamic_context::unset_variable(
       theVarValues[varid].theState == VarValue::undeclared)
   {
     RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(varname->getStringValue(), ZED(VariabledUndeclared)));
+    ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varname->getStringValue()));
   }
 
   VarValue& var = theVarValues[varid];
@@ -603,14 +606,14 @@ void dynamic_context::get_variable(
   {
     zstring varName = static_context::var_name(varname.getp());
     RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(varName, ZED(VariabledUndeclared)));
+    ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varName));
   }
 
   if (theVarValues[varid].theState == VarValue::declared)
   {
     zstring varName = static_context::var_name(varname.getp());
     RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(varName, ZED(VariabledHasNoValue)));
+    ERROR_PARAMS(ZED(XPDY0002_VariableHasNoValue_2), varName));
   }
 
   const VarValue& var = theVarValues[varid];

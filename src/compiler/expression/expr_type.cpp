@@ -31,6 +31,9 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "compiler/xqddf/collection_decl.h"
 
 #include "functions/function.h"
@@ -118,9 +121,9 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
 
-    ulong numClauses = e->num_clauses();
+    csize numClauses = e->num_clauses();
 
-    for (ulong i = 0; i < numClauses && quant != TypeConstants::QUANT_STAR; ++i)
+    for (csize i = 0; i < numClauses && quant != TypeConstants::QUANT_STAR; ++i)
     {
       const flwor_clause* c = e->theClauses[i];
 
@@ -213,8 +216,38 @@ void expr::compute_return_type(bool deep, bool* modified)
     }
     case var_expr::prolog_var:
     {
-      // For const global vars, their type is set in 
+      // NOTE: For const global vars, their declared type is set to the
+      // type of their init expr, if any. This is done in 
       // translator::end_visit(const GlobalVarDecl& v, void*)
+
+      csize numSetExprs = e->num_set_exprs();
+
+      if (e->get_ccb()->getPhase() == CompilerCB::OPTIMIZATION &&
+          numSetExprs > 0 &&
+          !e->is_external() &&
+          !e->isInTypeCompute())
+      {
+        e->setInTypeCompute();
+
+        var_set_expr* setExpr = e->get_set_expr(0);
+
+        derivedType = setExpr->get_expr()->get_return_type();
+
+        for (csize i = 1; i < numSetExprs; ++i)
+        {
+          if (derivedType == rtm.ITEM_TYPE_STAR)
+            break;
+
+          setExpr = e->get_set_expr(i);
+
+          derivedType = TypeOps::union_type(*derivedType,
+                                            *setExpr->get_expr()->get_return_type(),
+                                            tm);
+        }
+
+        e->resetInTypeCompute();
+      }
+
       break;
     }
     case var_expr::local_var: // TODO: compute derived type for const local vars.
@@ -328,18 +361,42 @@ void expr::compute_return_type(bool deep, bool* modified)
     TypeConstants::quantifier_t argQuant = argType->get_quantifier();
     TypeConstants::quantifier_t targetQuant = e->theTargetType->get_quantifier();
 
-    if (TypeOps::is_equal(tm, *argType, *rtm.EMPTY_TYPE, get_loc()) &&
-        (targetQuant == TypeConstants::QUANT_QUESTION ||
-         targetQuant == TypeConstants::QUANT_STAR))
+    if (TypeOps::is_equal(tm, *argType, *rtm.EMPTY_TYPE, get_loc()))
     {
-      newType = rtm.EMPTY_TYPE;
+      if (targetQuant == TypeConstants::QUANT_QUESTION ||
+          targetQuant == TypeConstants::QUANT_STAR)
+        newType = rtm.EMPTY_TYPE;
+      else
+        newType = rtm.NONE_TYPE;
     }
-    else
+    else if (e->theTargetType->isAtomicAny())
     {
       TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
 
       newType = tm->create_type(*e->theTargetType, q);
     }
+    else
+    {
+      ZORBA_ASSERT(e->theTargetType->type_kind() == XQType::USER_DEFINED_KIND);
+
+      const UserDefinedXQType* targetType = 
+      static_cast<const UserDefinedXQType*>(e->theTargetType.getp());
+
+      if (targetType->isList())
+      {
+        newType = tm->create_type(*targetType->getListItemType(),
+                                  TypeConstants::QUANT_STAR);
+      }
+      else
+      {
+        assert(targetType->isAtomic() || targetType->isUnion());
+
+        TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
+
+        newType = tm->create_type(*e->theTargetType, q);
+      }
+    }
+
     break;
   }
 

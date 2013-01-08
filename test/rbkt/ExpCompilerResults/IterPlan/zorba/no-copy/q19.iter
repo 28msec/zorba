@@ -18,15 +18,13 @@ Iterator tree for main query:
       </DescendantAxisIterator>
     </ForVariable>
     <OrderBySpec>
-      <CastIterator type="xs:string">
-        <FnDataIterator>
-          <FnZeroOrOneIterator>
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,location)" typename="*" nill allowed="0">
-              <ForVarIterator varname="b"/>
-            </ChildAxisIterator>
-          </FnZeroOrOneIterator>
-        </FnDataIterator>
-      </CastIterator>
+      <FnDataIterator>
+        <FnZeroOrOneIterator>
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,location)" typename="*" nill allowed="0">
+            <ForVarIterator varname="b"/>
+          </ChildAxisIterator>
+        </FnZeroOrOneIterator>
+      </FnDataIterator>
     </OrderBySpec>
     <ReturnClause>
       <ElementIterator copyInputNodes="false">

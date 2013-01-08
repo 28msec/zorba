@@ -1,15 +1,14 @@
+#include "stdafx.h"
 
 #include <cstdlib>
 #include <stdio.h>
 #include <iostream>
 
-#include <zorba/util/time.h>
-
 #include "zorbautils/hashmap.h"
 #include "util/hashmap32.h"
 #include "util/hashmap.h"
 #include "util/unordered_map.h"
-
+#include "util/hash/hash.h"
 
 namespace zorba {
 
@@ -27,7 +26,7 @@ public:
   static uint32_t hash(uint64_t key)
   {
 #if 1
-    return key;
+    return static_cast<uint32_t>(key);
 #else
     char buf[9];
     buf[0] = (unsigned char)(key>>56);
@@ -48,12 +47,12 @@ public:
 class StrCompFunc
 {
 public:
-  static bool equal(const zstring& k1, const zstring& k2) 
+  static bool equal(const std::string& k1, const std::string& k2) 
   {
     return k1 == k2;
   }
 
-  static uint32_t hash(const zstring& key)
+  static uint32_t hash(const std::string& key)
   { 
     return hashfun::h32(key.c_str(), FNV_32_INIT);
   }
@@ -78,7 +77,7 @@ int test_hashmaps(int argc, char* argv[])
     int_buf[i] = rand() % num;
   }
 
-  zstring* str_buf = new zstring[num];
+  std::string* str_buf = new std::string[num];
 
   for (int i = 0; i < num; ++i)
   {
@@ -91,13 +90,13 @@ int test_hashmaps(int argc, char* argv[])
 
 
   HashMap<uint64_t, int, IntCompFunc> map1(1024, false);
-  HashMap<zstring, int, StrCompFunc> map2(1024, false);
+  HashMap<std::string, int, StrCompFunc> map2(1024, false);
 
   std::unordered_map<uint64_t, int> map3(1024);
-  std::unordered_map<zstring, int> map4(1024);
+  std::unordered_map<std::string, int> map4(1024);
 
   hash64map<int> map5(1024, load_factor);
-  hashmap<zstring, int> map6(1024, load_factor);
+  hashmap<std::string, int> map6(1024, load_factor);
 
   map1.set_load_factor(load_factor);
   map2.set_load_factor(load_factor);
@@ -133,9 +132,8 @@ int test_hashmaps(int argc, char* argv[])
 
     for (int i = 0; i < num; ++i)
     {
-      zstring key = str_buf[i];
       int value = 1;
-      (void)map2.insert(key, value);
+      (void)map2.insert(str_buf[i], value);
     }
 
     zorba::time::walltime stopTime;
@@ -144,7 +142,7 @@ int test_hashmaps(int argc, char* argv[])
     double time = time::get_walltime_elapsed(startTime, stopTime);  
 
     std::cout << "Load factor = " << load_factor << std::endl
-              << "Num zstring insertions = " << num << std::endl
+              << "Num string insertions = " << num << std::endl
               << "HashMap entries = " << map2.size() << std::endl
               << "HashMap buckets = " << map2.bucket_count() << std::endl
               << "HashMap capacity = " << map2.capacity() << std::endl
@@ -180,9 +178,8 @@ int test_hashmaps(int argc, char* argv[])
 
     for (int i = 0; i < num; ++i)
     {
-      zstring key = str_buf[i];
       int value = 1;
-      (void)map4.insert(std::pair<zstring, int>(key, value));
+      (void)map4.insert(std::pair<std::string, int>(str_buf[i], value));
     }
 
     zorba::time::walltime stopTime;
@@ -191,7 +188,7 @@ int test_hashmaps(int argc, char* argv[])
     double time = time::get_walltime_elapsed(startTime, stopTime);  
 
     std::cout << "Load factor = " << load_factor << std::endl
-              << "Num zstring insertions = " << num << std::endl
+              << "Num string insertions = " << num << std::endl
               << "UnorderedMap entries = " << map4.size() << std::endl
               << "UnorderedMap buckets = " << map4.bucket_count() << std::endl
               << "Time = " << time << std::endl;
@@ -225,9 +222,8 @@ int test_hashmaps(int argc, char* argv[])
 
     for (int i = 0; i < num; ++i)
     {
-      zstring key = str_buf[i];
       int value = 1;
-      (void)map6.put(key, value, false);
+      (void)map6.put(str_buf[i], value, false);
     }
 
     zorba::time::walltime stopTime;
@@ -236,7 +232,7 @@ int test_hashmaps(int argc, char* argv[])
     double time = time::get_walltime_elapsed(startTime, stopTime);  
 
     std::cout << "Load factor = " << load_factor << std::endl
-              << "Num zstring insertions = " << num << std::endl
+              << "Num string insertions = " << num << std::endl
               << "hashmap entries = " << map6.size() << std::endl
               << "Time = " << time << std::endl;
   }

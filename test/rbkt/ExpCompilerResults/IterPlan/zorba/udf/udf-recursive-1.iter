@@ -5,9 +5,9 @@ Iterator tree for const-folded expr:
 
 Iterator tree for local:get-request-id2:
 <flwor::FLWORIterator>
-  <LetVariable name="p" materialize="true">
+  <ForVariable name="p">
     <LetVarIterator varname="p"/>
-  </LetVariable>
+  </ForVariable>
   <ReturnClause>
     <UDFunctionCallIterator cached="true">
       <SingletonIterator value="xs:integer(4)"/>
@@ -18,9 +18,9 @@ Iterator tree for local:get-request-id2:
 Iterator tree for local:get-request-id1:
 <PromoteIterator type="xs:string">
   <flwor::FLWORIterator>
-    <LetVariable name="p" materialize="true">
+    <ForVariable name="p">
       <LetVarIterator varname="p"/>
-    </LetVariable>
+    </ForVariable>
     <ReturnClause>
       <flwor::FLWORIterator>
         <ForVariable name="i">

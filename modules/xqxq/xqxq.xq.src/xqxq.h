@@ -13,164 +13,200 @@
 namespace zorba { namespace xqxq {
   
   
+/*******************************************************************************
 
-  class XQXQModule : public ExternalModule {
-    protected:
-      class ltstr
-      {
-      public:
-        bool operator()(const String& s1, const String& s2) const
-        {
-          return s1.compare(s2) < 0;
-        }
-      };
-
-      typedef std::map<String, ExternalFunction*, ltstr> FuncMap_t;
-
-      FuncMap_t theFunctions;
-
-    public:
-
-      virtual ~XQXQModule();
-
-      virtual zorba::String 
-        getURI() const {return XQXQ_MODULE_NAMESPACE;}
-
-      virtual zorba::ExternalFunction* 
-        getExternalFunction(const String& localName);
-
-      virtual void destroy();
-
-      static ItemFactory*
-        getItemFactory()
-      {
-        return Zorba::getInstance(0)->getItemFactory();
-      }
-
+********************************************************************************/
+class XQXQModule : public ExternalModule 
+{
+protected:
+  class ltstr
+  {
+  public:
+    bool operator()(const String& s1, const String& s2) const
+    {
+      return s1.compare(s2) < 0;
+    }
   };
 
-  /**
-   * @brief Bag class for objects associated with a prepared query
-   */
-  class QueryData : public SmartObject
+  typedef std::map<String, ExternalFunction*, ltstr> FuncMap_t;
+
+  FuncMap_t theFunctions;
+
+public:
+
+  virtual ~XQXQModule();
+
+  virtual zorba::String 
+  getURI() const {return XQXQ_MODULE_NAMESPACE;}
+
+  virtual zorba::ExternalFunction* 
+  getExternalFunction(const String& localName);
+
+  virtual void destroy();
+
+  static ItemFactory*
+  getItemFactory()
   {
-    private:
-      XQuery_t theQuery;
-      URIMapper* theURIMapper;
-      URLResolver* theURLResolver;
+    return Zorba::getInstance(0)->getItemFactory();
+  }
+};
 
-    public:
-      QueryData(XQuery_t aQuery, URIMapper* aMapper, URLResolver* aResolver);
-      virtual ~QueryData();
-      XQuery_t getQuery() { return theQuery; }
-  };
-  typedef SmartPtr<QueryData> QueryData_t;
 
-  class QueryMap : public ExternalFunctionParameter
-  {
-    private:
-      typedef std::map<String, QueryData_t> QueryMap_t;
-      QueryMap_t* queryMap;
+/*******************************************************************************
 
-    public:
-      QueryMap();
-      bool 
-        storeQuery(const String&, XQuery_t, URIMapper*, URLResolver*);
-      XQuery_t
-        getQuery(const String&);
-      bool 
-        deleteQuery(const String&);
-      virtual void 
-        destroy() throw();
-  };
+********************************************************************************/
+/**
+ * @brief Bag class for objects associated with a prepared query
+ */
+class QueryData : public SmartObject
+{
+private:
+  XQuery_t theQuery;
+  URIMapper* theURIMapper;
+  URLResolver* theURLResolver;
+  
+public:
+  QueryData(XQuery_t aQuery, URIMapper* aMapper, URLResolver* aResolver);
+  virtual ~QueryData();
+  XQuery_t getQuery() { return theQuery; }
+};
 
-  class XQXQFunction : public ContextualExternalFunction
-  {
-    protected:
-      const XQXQModule* theModule;
 
-       String
-         getOneStringArgument(const Arguments_t&, int) const;
+typedef SmartPtr<QueryData> QueryData_t;
 
-       Item
-         getItemArgument(const Arguments_t&, int) const;
 
-       Iterator_t
-         getIterArgument(const Arguments_t&, int) const;
+/*******************************************************************************
 
-      static void
-        throwError(const char*, const std::string);
+********************************************************************************/
+class QueryMap : public ExternalFunctionParameter
+{
+private:
+  typedef std::map<String, QueryData_t> QueryMap_t;
+  QueryMap_t* queryMap;
 
-      XQuery_t
-      getQuery(
+public:
+  QueryMap();
+  bool 
+  storeQuery(const String&, XQuery_t, URIMapper*, URLResolver*);
+  
+  XQuery_t
+  getQuery(const String&);
+  
+  bool 
+  deleteQuery(const String&);
+  
+  virtual void 
+  destroy() throw();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class XQXQFunction : public ContextualExternalFunction
+{
+protected:
+  const XQXQModule* theModule;
+
+  String
+  getOneStringArgument(const Arguments_t&, int) const;
+
+  Item
+  getItemArgument(const Arguments_t&, int) const;
+
+  Iterator_t
+  getIterArgument(const Arguments_t&, int) const;
+
+  static void
+  throwError(const char*, const std::string);
+
+  XQuery_t
+  getQuery(
           const zorba::DynamicContext* dctx,
           const zorba::String& aIdent) const;
 
-    public:
+public:
 
-      XQXQFunction(const XQXQModule* module);
+  XQXQFunction(const XQXQModule* module);
 
-      virtual ~XQXQFunction();
+  virtual ~XQXQFunction();
 
-      virtual String
-        getURI() const;
-  };
+  virtual String
+  getURI() const;
+};
 
   
+/*******************************************************************************
 
-  class PrepareMainModuleFunction : public XQXQFunction{
-    public:
-      PrepareMainModuleFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+********************************************************************************/
+class PrepareMainModuleFunction : public XQXQFunction
+{
+public:
+  PrepareMainModuleFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual ~PrepareMainModuleFunction(){  }
+  virtual ~PrepareMainModuleFunction(){  }
       
-      virtual zorba::String
-        getLocalName() const { return "prepare-main-module"; }
+  virtual zorba::String
+  getLocalName() const { return "prepare-main-module"; }
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+  
+protected:
+  
+  class XQXQURLResolver : public URLResolver
+  {
+  protected:
+    Item             theFunction;
+    StaticContext_t  theCtx;
 
-      protected:
-
-      class XQXQURLResolver : public URLResolver
-      {
-        protected:
-        Item theFunction;
-        StaticContext_t theCtx;
-
-        public:
-        XQXQURLResolver(Item& aFunction, StaticContext_t& aSctx) : URLResolver(), theFunction(aFunction), theCtx(aSctx) {}
+  public:
+    XQXQURLResolver(Item& aFunction, StaticContext_t& aSctx)
+      :
+      URLResolver(),
+      theFunction(aFunction),
+      theCtx(aSctx)
+    {
+    }
         
-        virtual ~XQXQURLResolver(){ }
+    virtual ~XQXQURLResolver() { }
       
-        virtual Resource* resolveURL(const String& aUrl,
-          EntityData const* aEntityData);
-
-      };
-
-      class XQXQURIMapper : public URIMapper
-      {
-        protected:
-        Item theFunction;
-        StaticContext_t theCtx;
-
-        public:
-        XQXQURIMapper(Item& aFunction, StaticContext_t& aSctx) : URIMapper(), theFunction(aFunction), theCtx(aSctx) {}
-        
-        virtual ~XQXQURIMapper(){ }
-        
-        virtual void mapURI(
-          const zorba::String aUri,
-          EntityData const* aEntityData,
-          std::vector<zorba::String>& oUris);
-
-      };
-
+    virtual Resource* resolveURL(const String& url, EntityData const* entityData);
   };
+  
 
-  class PrepareLibraryModuleFunction : public XQXQFunction{
+  class XQXQURIMapper : public URIMapper
+  {
+  protected:
+    Item            theFunction;
+    StaticContext_t theCtx;
+    
+  public:
+    XQXQURIMapper(Item& aFunction, StaticContext_t& aSctx)
+      :
+      URIMapper(),
+      theFunction(aFunction),
+      theCtx(aSctx)
+    {
+    }
+    
+    virtual ~XQXQURIMapper(){ }
+    
+    virtual void mapURI(
+      const zorba::String aUri,
+      EntityData const* aEntityData,
+      std::vector<zorba::String>& oUris);
+  };
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class PrepareLibraryModuleFunction : public XQXQFunction
+{
     public:
       PrepareLibraryModuleFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
@@ -185,6 +221,10 @@ namespace zorba { namespace xqxq {
                  const zorba::DynamicContext*) const;
   };
 
+
+/*******************************************************************************
+
+********************************************************************************/
   class IsBoundContextItemFunction : public XQXQFunction{
     public:
       IsBoundContextItemFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
@@ -200,6 +240,10 @@ namespace zorba { namespace xqxq {
                  const zorba::DynamicContext*) const;
   };
 
+
+/*******************************************************************************
+
+********************************************************************************/
   class IsBoundVariableFunction : public XQXQFunction{
     public:
       IsBoundVariableFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}

@@ -46,6 +46,7 @@ namespace zorba
 const TypeConstants::castable_t 
 RootTypeManager::ATOMIC_CAST_MATRIX[store::XS_LAST][store::XS_LAST] = 
 {
+// aA s  nS t  l  NM Na NC ID IR EN uA dT d  t  d  yM dT f  do de i  nP nI l  i  s  b  nn uL uI uS uB pI YM Y  MD D  M  b  64 hB aU QN NO nu
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N}, /* anyAtomicType */
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N}, /* string */
   {Y, Y, Y, M, M, M, M, M, M, M, M, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N}, /* normalizedString */
@@ -56,7 +57,7 @@ RootTypeManager::ATOMIC_CAST_MATRIX[store::XS_LAST][store::XS_LAST] =
   {Y, Y, Y, Y, M, M, Y, Y, M, M, M, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N}, /* NCMame */
   {Y, Y, Y, Y, M, M, Y, Y, Y, M, M, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N}, /* ID */
   {Y, Y, Y, Y, M, M, Y, Y, M, Y, M, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N}, /* IDREF */
-  {Y, Y, Y, Y, M, M, Y, Y, M, M, Y, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N}, /* EMTITY */
+  {Y, Y, Y, Y, M, M, Y, Y, M, M, Y, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N}, /* ENTITY */
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N, N, N}, /* untypedAtomic */
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, Y, Y, Y, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, Y, Y, Y, Y, Y, N, N, N, N, N, N, N}, /* dateTime */
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, Y, Y, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, Y, Y, Y, Y, Y, N, N, N, N, N, N, N}, /* date */
@@ -66,20 +67,20 @@ RootTypeManager::ATOMIC_CAST_MATRIX[store::XS_LAST][store::XS_LAST] =
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, Y, Y, Y, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N}, /* dayTimeDuration */
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* float */
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* double */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* decimal */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* integer */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* nonPositiveInteger */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* negativeInteger */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* long */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* int */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* short */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* byte */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* nonNegativeInteger */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* unsignedLong */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* unsignedInt */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* unsignedShort */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* unsignedByte */
-  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* positiveInteger */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, M, M, M, M, M, M, M, M, M, M, M, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* decimal */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, M, M, M, M, M, M, M, M, M, M, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* integer */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, M, M, M, M, M, M, M, M, M, M, N, N, N, N, N, N, Y, N, N, N, N, N, N}, /* nonPositiveInteger */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, Y, Y, M, M, M, M, Y, N, N, N, N, N, N, N, N, N, N, Y, N, N, N, N, N, N}, /* negativeInteger */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, M, M, Y, M, M, M, M, M, M, M, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* long */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, M, M, Y, Y, M, M, M, M, M, M, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* int */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, M, M, Y, Y, Y, M, M, M, M, M, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* short */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, M, M, Y, Y, Y, Y, M, M, M, M, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* byte */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, M, N, M, M, M, M, Y, M, M, M, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* nonNegativeInteger */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, M, N, M, M, M, M, Y, Y, M, M, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* unsignedLong */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, M, N, Y, M, M, M, Y, Y, Y, M, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* unsignedInt */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, M, N, Y, Y, M, M, Y, Y, Y, Y, M, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* unsignedShort */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, M, N, Y, Y, Y, M, Y, Y, Y, Y, Y, M, N, N, N, N, N, Y, N, N, N, N, N, N}, /* unsignedByte */
+  {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, Y, Y, Y, Y, N, N, M, M, M, M, M, Y, Y, Y, Y, Y, N, N, N, N, N, Y, N, N, N, N, N, N}, /* positiveInteger */
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, Y, N, N, N, N, N, N, N, N, N, N, N}, /* gYearMonth */
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, Y, N, N, N, N, N, N, N, N, N, N}, /* gYear */
   {Y, Y, M, M, M, M, M, M, M, M, M, Y, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, N, Y, N, N, N, N, N, N, N, N, N}, /* gMonthDay */
@@ -229,7 +230,8 @@ RootTypeManager::RootTypeManager()
   ANY_FUNCTION_TYPE_PLUS = new AnyFunctionXQType(this, TypeConstants::QUANT_PLUS, true);
 
 #define XSQNDECL(var, local)  \
-  GENV.getStore().getItemFactory()->createQName(var, XML_SCHEMA_NS, XML_SCHEMA_PREFIX, local)
+  GENV.getStore().getItemFactory()-> \
+  createQName(var, XML_SCHEMA_NS, XML_SCHEMA_PREFIX, local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
   XSQNDECL(XS_STRING_QNAME, "string");
@@ -279,6 +281,9 @@ RootTypeManager::RootTypeManager()
   XSQNDECL(XS_ANY_TYPE_QNAME, "anyType");
   XSQNDECL(XS_ANY_SIMPLE_TYPE_QNAME, "anySimpleType");
   XSQNDECL(XS_UNTYPED_QNAME, "untyped");
+  XSQNDECL(XS_NMTOKENS_QNAME, "NMTOKENS");
+  XSQNDECL(XS_IDREFS_QNAME, "IDREFS");
+  XSQNDECL(XS_ENTITIES_QNAME, "ENTITIES");
 
 #ifdef ZORBA_WITH_JSON
   GENV_STORE.getItemFactory()->createQName(JS_NULL_QNAME,
@@ -375,6 +380,24 @@ RootTypeManager::RootTypeManager()
   ATOMIC_TYPE_DEFN(QNAME)
   ATOMIC_TYPE_DEFN(NOTATION)
 #undef ATOMIC_TYPE_DEFN
+
+  XS_NMTOKENS_TYPE = new UserDefinedXQType(this,
+                                           XS_NMTOKENS_QNAME,
+                                           NULL,
+                                           NMTOKEN_TYPE_ONE.getp(),
+                                           true);
+
+  XS_ENTITIES_TYPE = new UserDefinedXQType(this,
+                                           XS_ENTITIES_QNAME,
+                                           NULL,
+                                           ENTITY_TYPE_ONE.getp(),
+                                           true);
+
+  XS_IDREFS_TYPE = new UserDefinedXQType(this,
+                                         XS_IDREFS_QNAME,
+                                         NULL,
+                                         IDREF_TYPE_ONE.getp(),
+                                         true);
 
   STRUCTURED_ITEM_TYPE_ONE = 
   new StructuredItemXQType(this, TypeConstants::QUANT_ONE, true);
@@ -556,6 +579,14 @@ RootTypeManager::~RootTypeManager()
   DELETE_TYPE(ANY_NODE_UNTYPED)
   DELETE_TYPE(ANY_NODE)
   DELETE_TYPE(STRUCTURED_ITEM)
+
+  // These must be deallocated first because they may reference other types
+  delete XS_NMTOKENS_TYPE.getp();
+  XS_NMTOKENS_TYPE.setNull();
+  delete XS_ENTITIES_TYPE.getp();
+  XS_ENTITIES_TYPE.setNull();
+  delete XS_IDREFS_TYPE.getp();
+  XS_IDREFS_TYPE.setNull();
 
 #ifdef ZORBA_WITH_JSON
   DELETE_TYPE(JS_NULL)

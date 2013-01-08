@@ -302,9 +302,9 @@ UpdInsertAttributes::UpdInsertAttributes(
   UpdatePrimitive(pul, aLoc, target),
   theNumApplied(0)
 {
-  std::size_t numAttrs = attrs.size();
+  csize numAttrs = attrs.size();
   theNewAttrs.resize(numAttrs);
-  for (std::size_t i = 0; i < numAttrs; i++)
+  for (csize i = 0; i < numAttrs; i++)
   {
     theNewAttrs[i].transfer(attrs[i]);
   }
@@ -314,7 +314,15 @@ UpdInsertAttributes::UpdInsertAttributes(
 void UpdInsertAttributes::apply()
 {
   theIsApplied = true;
-  ELEM_NODE(theTarget)->insertAttributes(*this);
+  try
+  {
+    ELEM_NODE(theTarget)->insertAttributes(*this);
+  } 
+  catch (ZorbaException& e)
+  {
+    set_source(e, *theLoc);
+    throw;
+  }
 }
 
 
@@ -330,7 +338,8 @@ void UpdInsertAttributes::check()
   try
   {
     target->checkUniqueAttrs();
-  } catch (ZorbaException& e)
+  }
+  catch (ZorbaException& e)
   {
     set_source(e, *theLoc);
     throw;
@@ -364,8 +373,16 @@ UpdReplaceAttribute::UpdReplaceAttribute(
 
 void UpdReplaceAttribute::apply()
 {
-  theIsApplied = true;
-  ELEM_NODE(theTarget)->replaceAttribute(*this);
+  try
+  {
+    ELEM_NODE(theTarget)->replaceAttribute(*this);
+    theIsApplied = true;
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, *theLoc);
+    throw;
+  }
 }
 
 
@@ -381,7 +398,8 @@ void UpdReplaceAttribute::check()
   try
   {
     target->checkUniqueAttrs();
-  } catch (ZorbaException& e)
+  }
+  catch (ZorbaException& e)
   {
     set_source(e, *theLoc);
     throw;
@@ -463,8 +481,16 @@ void UpdReplaceElemContent::undo()
 ********************************************************************************/
 void UpdRenameElem::apply()
 {
-  ELEM_NODE(theTarget)->replaceName(*this);
-  theIsApplied = true;
+  try
+  {
+    ELEM_NODE(theTarget)->replaceName(*this);
+    theIsApplied = true;
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, *theLoc);
+    throw;
+  }
 }
 
 
@@ -612,8 +638,16 @@ void UpdReplaceAttrValue::undo()
 ********************************************************************************/
 void UpdRenameAttr::apply()
 {
-  ATTR_NODE(theTarget)->replaceName(*this);
-  theIsApplied = true;
+  try
+  {
+    ATTR_NODE(theTarget)->replaceName(*this);
+    theIsApplied = true;
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, *theLoc);
+    throw;
+  }
 }
 
 
@@ -839,7 +873,7 @@ void UpdPut::apply()
 
     store->addNode(targetUri, theTarget);
   }
-  catch(ZorbaException const& e)
+  catch(ZorbaException& e)
   {
     if (e.diagnostic() == zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
     {
@@ -851,6 +885,7 @@ void UpdPut::apply()
     }
     else
     {
+      set_source(e, *theLoc);
       throw;
     }
   }
@@ -989,7 +1024,7 @@ void UpdDeleteCollection::apply()
   }
   catch (std::range_error& e)
   {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
     ERROR_PARAMS(BUILD_STRING("collection too big ("
                               << e.what() << "; " << theName << ")")));
   }
@@ -1066,7 +1101,7 @@ void UpdInsertIntoCollection::undo()
   }
   catch (std::range_error& e)
   {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
     ERROR_PARAMS(BUILD_STRING("collection too big ("
                               << e.what() << "; " << theName << ")")));
   }
@@ -1157,7 +1192,7 @@ void UpdInsertLastIntoCollection::undo()
   }
   catch (std::range_error& e)
   {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
     ERROR_PARAMS(BUILD_STRING("collection too big ("
                               << e.what() << "; " << theName << ")")));
   }
@@ -1242,21 +1277,21 @@ void UpdInsertAfterIntoCollection::undo()
 ********************************************************************************/
 void UpdDeleteNodesFromCollection::apply()
 {
-  Collection* lColl = static_cast<Collection*>
+  Collection* coll = static_cast<Collection*>
   (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
-  assert(lColl);
+  assert(coll);
 
   theIsApplied = true;
 
   uint64_t size;
   try
   {
-    size = to_xs_unsignedLong(lColl->size());
+    size = to_xs_unsignedLong(coll->size());
   }
   catch (std::range_error& e)
   {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
+    RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
     ERROR_PARAMS(BUILD_STRING("collection too big ("
                               << e.what() << "; " << theName << ")")));
   }
@@ -1269,7 +1304,7 @@ void UpdDeleteNodesFromCollection::apply()
   {
     for (csize i = numNodes; i > 0; --i)
     {
-      if (theNodes[i-1] != lColl->nodeAt(xs_integer(size - i)))
+      if (theNodes[i-1] != coll->nodeAt(xs_integer(size - i)))
       {
         isLast = false;
         break;
@@ -1285,27 +1320,61 @@ void UpdDeleteNodesFromCollection::apply()
   theFound.resize(numNodes);
   thePositions.resize(numNodes);
 
-  for (std::size_t i = 0; i < numNodes; ++i)
+  for (csize i = 0; i < numNodes; ++i)
   {
-    theFound[i] = lColl->removeNode(theNodes[i], thePositions[i]);
+    theFound[i] = coll->removeNode(theNodes[i], thePositions[i]);
     ++theNumApplied;
   }
 }
 
 void UpdDeleteNodesFromCollection::undo()
 {
-  Collection* lColl = static_cast<Collection*>
+  Collection* coll = static_cast<Collection*>
   (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
-  assert(lColl);
+  assert(coll);
 
   for (csize i = 0; i < theNumApplied; ++i)
   {
     if (theFound[i])
     {
-      lColl->addNode(theNodes[i], thePositions[i]);
+      coll->addNode(theNodes[i], thePositions[i]);
     }
   }
+}
+
+
+/*******************************************************************************
+  UpdEditInCollection
+********************************************************************************/
+void UpdEditInCollection::apply()
+{
+#ifndef NDEBUG
+  Collection* coll = static_cast<Collection*>
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
+
+  assert(coll);
+#endif
+
+  theTarget->swap(theContent.getp());
+
+  theIsApplied = true;
+}
+
+
+void UpdEditInCollection::undo()
+{
+  if (!theFound)
+    return;
+
+#ifndef NDEBUG
+  Collection* coll = static_cast<Collection*>
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
+
+  assert(coll);
+#endif
+
+  theTarget->swap(theContent.getp());
 }
 
 
@@ -1362,15 +1431,15 @@ void UpdCreateIndex::apply()
   {
     theIndex = store->createIndex(theQName, theSpec, theSourceIter);
   }
-  catch(ZorbaException const& e)
+  catch(ZorbaException& e)
   {
     if (e.diagnostic() == zerr::ZSTR0045_DUPLICATE_NODE_ERROR)
     {
-      throw ZORBA_EXCEPTION(
-        zerr::ZDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, 
-        ERROR_PARAMS( theQName->getStringValue() )
-      );
+      RAISE_ERROR(zerr::ZDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, theLoc,
+      ERROR_PARAMS(theQName->getStringValue()));
     }
+
+    set_source(e, *theLoc);
     throw;
   }
 
@@ -1409,7 +1478,7 @@ void UpdDeleteIndex::apply()
 
   if ((theIndex = store->getIndex(theQName)) == NULL)
   {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
+    RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, theLoc,
     ERROR_PARAMS(theQName->getStringValue()));
   }
 
@@ -1457,7 +1526,7 @@ void UpdRefreshIndex::apply()
 
   if ((theIndex = store.getIndex(theQName)) == NULL)
   {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
+    RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, theLoc,
     ERROR_PARAMS(theQName->getStringValue()));
   }
 
@@ -1821,7 +1890,7 @@ void UpdInsertIntoHashMap::apply()
 
   if (!lMap)
   {
-    throw ZORBA_EXCEPTION(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
+    RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, theLoc,
     ERROR_PARAMS(theQName->getStringValue()));
   }
 
@@ -1877,10 +1946,8 @@ void UpdRemoveFromHashMap::apply()
 
   if (!lMap)
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
-      ERROR_PARAMS( theQName->getStringValue() )
-    );
+    RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, theLoc,
+    ERROR_PARAMS(theQName->getStringValue()));
   }
 
   simplestore::ValueHashIndex* lImpl =

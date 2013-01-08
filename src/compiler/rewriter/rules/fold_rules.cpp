@@ -734,8 +734,8 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     {
       bool modified = false;
       expr* newArg = partial_eval_return_clause(static_cast<flwor_expr*>(arg),
-                                                 modified,
-                                                 rCtx);
+                                                modified,
+                                                rCtx);
 
       if (newArg != arg)
         fo->set_arg(0, newArg);
@@ -894,7 +894,7 @@ static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
                           *tm->create_named_type(val->getType(),
                                                  TypeConstants::QUANT_ONE,
                                                  fo.get_loc(),
-                                                 err::XPTY0004),
+                                                 true),
                           *rtm.INTEGER_TYPE_ONE,
                           fo.get_loc()))
   {

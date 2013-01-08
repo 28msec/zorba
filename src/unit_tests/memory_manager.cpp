@@ -30,7 +30,7 @@ static bool assert_true(char const *expr, char const *testName, bool result) {
 }
 
 static void print_exception( char const *expr, char const *testName,
-        std::exception const &e ) {
+                             std::exception const &e ) {
     std::cout << "FAILED " << testName << ": exception: " << e.what() <<
         std::endl;
   ++failures;
@@ -40,19 +40,19 @@ static void print_exception( char const *expr, char const *testName,
 
 #define ASSERT_EXCEPTION( EXPR, EXCEPTION ) \
   try { EXPR; assert_true( #EXPR, testName, false); } \
-  catch (EXCEPTION const& ) { } \
-  catch ( std::exception const &e ){ print_exception( #EXPR, testName, e ); } \
+  catch ( EXCEPTION const& ) { } \
+  catch ( std::exception const &e ) { print_exception( #EXPR, testName, e ); } \
   catch ( ... ) { assert_true ( #EXPR, testName, false ); }
 
 #define ASSERT_NO_EXCEPTION( EXPR ) \
-  try {EXPR; } \
-  catch ( std::exception const &e ){ print_exception( #EXPR, testName, e ); } \
+  try { EXPR; } \
+  catch ( std::exception const &e ) { print_exception( #EXPR, testName, e ); } \
   catch ( ... ) { assert_true (#EXPR, testName, false ); }
 
 #define ASSERT_TRUE_AND_NO_EXCEPTION( EXPR ) \
   try { ASSERT_TRUE ( EXPR ); } \
   catch ( std::exception const &e ) { print_exception( #EXPR, testName, e ); } \
-  catch ( ... ) {assert_true( #EXPR, testName, false ); }
+  catch ( ... ) { assert_true( #EXPR, testName, false ); }
 
 #define TEST( TESTNAME ) \
 static void TESTNAME () { \
@@ -177,9 +177,11 @@ TEST(BiggerPagesAllowForBiggerSpaceAndAllocation)
   ASSERT_TRUE(hugePage == mem);
 END_TEST
 
-namespace zorba { namespace UnitTests{
-
 ///////////////////////////////////////////////////////////////////////////////
+
+namespace zorba {
+namespace UnitTests {
+
 int test_mem_manager( int, char*[] )
 {
   PageCreationAllocatesMemoryDeletionFreesIt();
@@ -201,4 +203,7 @@ int test_mem_manager( int, char*[] )
   return failures ? 1 : 0;
 }
 
-}} //namespace zorba::UnitTests
+} // namespace UnitTests
+} // namespace zorba
+
+/* vim:set et sw=2 ts=2: */
