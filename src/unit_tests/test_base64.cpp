@@ -53,11 +53,13 @@ static void print_exception( int no, char const *expr, int line,
 
 #define ASSERT_NO_EXCEPTION( NO, EXPR ) \
   try { EXPR; } \
-  catch ( std::exception const &e ) { print_exception( NO, #EXPR, __LINE__, e ); }
+  catch ( exception const &e ) { print_exception( NO, #EXPR, __LINE__, e ); } \
+  catch ( ... ) { assert_true( NO, #EXPR, __LINE__, false ); }
 
 #define ASSERT_EXCEPTION( NO, EXPR, EXCEPTION ) \
   try { EXPR; assert_true( NO, #EXPR, __LINE__, false ); } \
-  catch ( EXCEPTION const& ) { }
+  catch ( EXCEPTION const& ) { } \
+  catch ( ... ) { assert_true( NO, #EXPR, __LINE__, false ); }
 
 ///////////////////////////////////////////////////////////////////////////////}
 
