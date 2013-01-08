@@ -644,6 +644,16 @@ namespace zorba {
                               iso3166_1::type country = iso3166_1::unknown );
 
     /**
+     * Checks if the given locale is supported by the OS.
+     *
+     * @param lang The language to use.
+     * @param country The country to use.  Defaults to none.
+     * @return Returns \a true only if the given locale is supported by the OS.
+     */
+    bool is_supported( iso639_1::type lang,
+                       iso3166_1::type country = iso3166_1::unknown );
+
+    /**
      * Parses a locale string.
      *
      * @param locale_str A locale string of the form \c ll{-_}CC[.enc] where

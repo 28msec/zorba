@@ -129,6 +129,32 @@ inline int find_index( char const *const *begin, char const *const *end,
 #ifdef WIN32
 
 /**
+ * Gets the name of the locale for the given language and country in the format
+ * that Windows expects.
+ *
+ * @param lang The language to use.
+ * @param country The country to use, if any.
+ * @return Returns a pointre to the UTF-16 buffer containing the locale name.
+ */
+static unique_ptr<WCHAR[]> get_wlocale_name( iso639_1::type lang,
+                                             iso3166_1::type country ) {
+  assert( lang );
+
+  zstring locale_name( iso639_1::string_of[ lang ] );
+  if ( country ) {
+    locale_name += '-';
+    locale_name += iso3166_1::string_of[ country ];
+  }
+
+  unique_ptr<WCHAR[]> wlocale_name( new WCHAR[ LOCALE_NAME_MAX_LENGTH ] );
+  MultiByteToWide(
+    CP_UTF8, 0, locale_name.c_str(), -1,
+    wlocale_name.get(), LOCALE_NAME_MAX_LENGTH
+  );
+  return wlocale_name;
+}
+
+/**
  * Gets a particular piece of information from a locale.
  *
  * @param constant The constant specifying which piece of locale information to
@@ -141,25 +167,17 @@ static zstring get_locale_info( int constant,
                                 iso639_1::type lang = iso639_1::unknown,
                                 iso3166_1::type country = iso3166_1::unknown ) {
   LPCWSTR wlocale_name;
-  unique_ptr<WCHAR[]> wlocale_name_buf;
+  unique_ptr<WCHAR[]> wlocale_name_ptr;
 
   if ( lang && country ) {
-    zstring locale_name = iso639_1::string_of[ lang ];
-    locale_name += '-';
-    locale_name += iso3166_1::string_of[ country ];
-
-    wlocale_name_buf.reset( new WCHAR[ LOCALE_NAME_MAX_LENGTH ] );
-    MultiByteToWide(
-      CP_UTF8, 0, locale_name.c_str(), -1,
-      wlocale_name_buf.get(), LOCALE_NAME_MAX_LENGTH
-    );
-    wlocale_name = wlocale_name_buf.get();
+    wlocale_name_ptr = get_wlocale_name( lang, country );
+    wlocale_name = wlocale_name_ptr.get();
   } else
     wlocale_name = LOCALE_NAME_USER_DEFAULT;
 
   int wlen = ::GetLocaleInfoEx( wlocale_name, constant, NULL, 0 );
   if ( !wlen )
-    return nullptr;
+    return zstring();
   unique_ptr<WCHAR[]> winfo( new WCHAR[ wlen ] );
   wlen = ::GetLocaleInfoEx( wlocale_name, constant, winfo.get(), wlen );
   ZORBA_FATAL( wlen, "GetLocaleInfoEx() failed" );
@@ -226,10 +244,11 @@ static locale_t get_unix_locale_t( iso639_1::type lang,
     locale_name += '_';
     locale_name += iso3166_1::string_of[ country ];
   }
-  locale_t loc = ::newlocale( LC_ALL_MASK, locale_name.c_str(), nullptr );
+  int const mask = LC_MESSAGES_MASK | LC_TIME_MASK;
+  locale_t loc = ::newlocale( mask, locale_name.c_str(), nullptr );
   if ( !loc ) {                         // try it without the country
     locale_name = iso639_1::string_of[ lang ];
-    loc = ::newlocale( LC_ALL_MASK, locale_name.c_str(), nullptr );
+    loc = ::newlocale( mask, locale_name.c_str(), nullptr );
   }
   return loc;
 }
@@ -246,10 +265,12 @@ static locale_t get_unix_locale_t( iso639_1::type lang,
 static zstring get_locale_info( nl_item item, iso639_1::type lang,
                                 iso3166_1::type country ) {
   if ( lang ) {
-    locale_t const loc = get_unix_locale_t( lang, country );
-    char const *const info = nl_langinfo_l( item, loc );
-    ::freelocale( loc );
-    return info;
+    if ( locale_t const loc = get_unix_locale_t( lang, country ) ) {
+      char const *const info = nl_langinfo_l( item, loc );
+      ::freelocale( loc );
+      return info;
+    }
+    return zstring();
   }
   return nl_langinfo( item );
 }
@@ -1214,6 +1235,18 @@ zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
       BUILD_STRING( day_index, " not in range 0-6" )
     );
   return get_locale_info( weekday_name[ day_index ], lang, country );
+}
+
+bool is_supported( iso639_1::type lang, iso3166_1::type country ) {
+#ifdef WIN32
+  unique_ptr<WCHAR[]> const wlocale_name( get_wlocale_name( lang, country ) );
+  return ::IsValidLocaleName( wlocale_name.get() );
+#else
+  locale_t const loc = get_unix_locale_t( lang, country );
+  bool const supported = !!loc;
+  ::freelocale( loc );
+  return supported;
+#endif /* WIN32 */
 }
 
 bool parse( char const *locale_str, iso639_1::type *lang,

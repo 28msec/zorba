@@ -144,6 +144,12 @@ static void parse_locale( store::Item_t const &item, iso639_1::type *lang,
       ERROR_PARAMS( locale_str ),
       ERROR_LOC( loc )
     );
+  if ( !locale::is_supported( *lang, *country ) )
+    throw XQUERY_EXCEPTION(
+      zerr::ZOSE0007_UNSUPPORTED_LOCALE,
+      ERROR_PARAMS( locale_str ),
+      ERROR_LOC( loc )
+    );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

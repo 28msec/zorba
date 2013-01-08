@@ -2486,6 +2486,10 @@
       <value>stream transcoding error ($1)</value>
     </diagnostic>
 
+    <diagnostic code="ZOSE0007" name="UNSUPPORTED_LOCALE">
+      <value>"$1": unsupported locale</value>
+    </diagnostic>
+
     <!--////////// Zorba Store Errors //////////////////////////////////////-->
 
     <diagnostic code="ZSTR0001" name="INDEX_ALREADY_EXISTS">
