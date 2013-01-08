@@ -497,7 +497,8 @@ void SchemaValidatorImpl::processTextValue (
 {
   xqtref_t type = typeManager->create_named_atomic_type(typeQName,
                                                         TypeConstants::QUANT_ONE,
-                                                        loc);
+                                                        loc,
+                                                        false);
   //cout << " vup        - processTextValue: '" << textValue->c_str() << "'\n";
   //cout << " vup        - processTextValue: " << typeQName->getPrefix()->str()
   // << ":" << typeQName->getLocalName()->str() << "@"
