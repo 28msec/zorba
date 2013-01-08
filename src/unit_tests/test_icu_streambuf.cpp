@@ -15,9 +15,11 @@
  */
 
 #include "stdafx.h"
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string>
 
 #include "util/transcode_streambuf.h"
 
