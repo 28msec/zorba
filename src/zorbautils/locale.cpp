@@ -246,10 +246,8 @@ static locale_t get_unix_locale_t( iso639_1::type lang,
   }
   int const mask = LC_MESSAGES_MASK | LC_TIME_MASK;
   locale_t loc = ::newlocale( mask, locale_name.c_str(), nullptr );
-  if ( !loc && country ) {              // try it without the country
-    locale_name = iso639_1::string_of[ lang ];
-    loc = ::newlocale( mask, locale_name.c_str(), nullptr );
-  }
+  if ( !loc && country )                // try it without the country
+    loc = ::newlocale( mask, iso639_1::string_of[ lang ], nullptr );
   return loc;
 }
 
