@@ -1075,6 +1075,10 @@ ERROR :
       {
         $$ = NULL; YYABORT;
       }
+   |  ERROR error
+      {
+        $$ = NULL; YYABORT;
+      }
 ;
 
 
@@ -2125,7 +2129,7 @@ QueryBody :
     {
       if ($1 == NULL)
       {
-        error(@1, "syntax error, unexpected end of file, the query should not be empty");
+        error(@1, "syntax error, unexpected end of file, the query body should not be empty");
         YYERROR;
       }
 
@@ -2506,7 +2510,7 @@ Expr :
       error(@2, "syntax error, unexpected ExprSingle (missing comma \",\" between expressions?)");
       delete $1; // these need to be deleted here because the parser deallocator will skip them
       delete $3;
-      YYABORT;
+      YYERROR;
     }
 ;
 
