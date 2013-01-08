@@ -375,6 +375,7 @@ declare function env:set-variables(
      return
       concat('xqxq:bind-variable( $queryID, xs:QName("', $srcName, '")', ', ',
              $srcValues[$index], ');'),
+
       for $param in $env/fots:param
       let $select:= $param/@select
       let $file := $env/fots:source[@uri = translate($select, "'", "")]/@file

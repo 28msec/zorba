@@ -15,6 +15,8 @@
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR})
 
+INCLUDE("${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake")
+
 IF (ZORBA_WITH_DEBUGGER)
   IF (NOT WIN32)
     FIND_PACKAGE (Libedit)
@@ -49,7 +51,6 @@ SET(SRCS
   path_util.cpp
 )
 
-INCLUDE("${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake")
 ZORBA_GENERATE_EXE("zorbacmd" "${SRCS}" "" "zorba" "bin")
 
 
