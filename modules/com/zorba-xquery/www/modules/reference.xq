@@ -58,7 +58,7 @@ declare option ver:module-version "1.0";
  : identifier, using the <tt>ref:dereference</tt> function.
  :
  : Please note that a reference can only be retrieved for a JSON object or JSON
- : reference if the item is a member of a collection.
+ : array if the item is a member of a collection.
  :
  : @param $arg the node, object, or array for which the URI should be computed
  :
