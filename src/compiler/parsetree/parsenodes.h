@@ -4358,13 +4358,13 @@ protected:
 public:
   DirAttributeList(const QueryLoc&);
 
-  void push_back(rchandle<DirAttr> attr) { theAttributes.push_back(attr); }
+  void push_back(rchandle<DirAttr> attr);
 
   rchandle<DirAttr> operator[](int i) { return theAttributes[i]; }
 
-  const DirAttr *operator[] (int i) const { return theAttributes[i]; }
+  const DirAttr* operator[](int i) const { return theAttributes[i]; }
 
-  ulong size () const { return (ulong)theAttributes.size (); }
+  csize size() const { return theAttributes.size(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -4388,6 +4388,7 @@ public:
 
 public:
   rchandle<QName> get_name() const { return theName; }
+
   rchandle<DirAttributeValue> get_value() const { return theValue; }
 
 public:

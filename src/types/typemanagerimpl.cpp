@@ -246,7 +246,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
     store::Item* qname,
     TypeConstants::quantifier_t quantifier,
     const QueryLoc& loc,
-    const Error& error) const
+    bool raiseError) const
 {
   // Try to resolve the type name as a builtin atomic type
   RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
@@ -260,11 +260,10 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   // type (because, otherwise it would have been found above). So we return NULL.
   if (ZSTREQ(qname->getNamespace(), XML_SCHEMA_NS))
   {
-    if (error != zerr::ZXQP0000_NO_ERROR)
+    if (raiseError)
     {
-			throw XQUERY_EXCEPTION_VAR(error,
-			ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
-			ERROR_LOC(loc));
+			RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)));
     }
     else
     {
@@ -281,11 +280,10 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
     if (namedType == NULL)
     {
-      if (error != zerr::ZXQP0000_NO_ERROR)
+      if (raiseError)
       {
-				throw XQUERY_EXCEPTION_VAR(error,
-				ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
-				ERROR_LOC(loc));
+				RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)));
       }
       else
       {
@@ -303,11 +301,10 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   }
 #endif
 
-  if (error != zerr::ZXQP0000_NO_ERROR)
+  if (raiseError)
   {
-		throw XQUERY_EXCEPTION_VAR(error,
-		ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)),
-		ERROR_LOC(loc));
+		RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(qname->getStringValue(), ZED(NotAmongInScopeSchemaTypes)));
   }
   else
   {
@@ -726,7 +723,7 @@ xqtref_t TypeManagerImpl::create_value_type(
     return create_named_atomic_type(item->getType(),
                                     quant,
                                     loc,
-                                    err::XPTY0004);
+                                    true);
   }
   else if (item->isNode())
   {
@@ -848,11 +845,8 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
 {
   if (m_schema == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( elemName->getStringValue(), ZED( SchemaElementName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
   }
 
   xqtref_t contentType =
@@ -878,7 +872,7 @@ void TypeManagerImpl::get_schema_element_typename(
   if (m_schema == NULL)
   {
     RAISE_ERROR(err::XPST0008, loc,
-    ERROR_PARAMS(elemName->getStringValue(), ZED(SchemaElementName)));
+    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
   }
 
   m_schema->getTypeNameFromElementName(elemName, typeName, loc);
@@ -899,7 +893,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
   if (m_schema == NULL)
   {
     RAISE_ERROR(err::XPST0008, loc,
-    ERROR_PARAMS(attrName->getStringValue(), ZED(SchemaAttributeName)));
+    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), attrName->getStringValue()));
   }
 
   xqtref_t contentType =
@@ -926,7 +920,7 @@ void TypeManagerImpl::get_schema_attribute_typename(
   if (m_schema == NULL)
   {
     RAISE_ERROR(err::XPST0008, loc,
-    ERROR_PARAMS(attrName->getStringValue(), ZED(SchemaAttributeName)));
+    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), attrName->getStringValue()));
   }
 
   m_schema->getTypeNameFromAttributeName(attrName, typeName, loc);

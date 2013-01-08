@@ -111,7 +111,7 @@ public:
         store::Item* qname,
         TypeConstants::quantifier_t q,
         const QueryLoc& loc,
-        const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
+        bool raiseError) const = 0;
 
   virtual xqtref_t create_named_simple_type(
         store::Item* qname) const = 0;
