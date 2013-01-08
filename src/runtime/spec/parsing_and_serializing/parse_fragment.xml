@@ -19,7 +19,7 @@
 
 <!--
 /*******************************************************************************
- * 14.9.1 parse-xml:parse
+ * 14.9.1 x:parse
 ********************************************************************************/
 -->
   <zorba:iterator name="FnZorbaParseXmlFragmentIterator">
@@ -45,6 +45,22 @@
       <zorba:member type="zstring" name="docUri"/>
     </zorba:state>
       
+  </zorba:iterator>
+<!--
+/*******************************************************************************
+ * 14.9.1.1 x:canonicalize
+********************************************************************************/
+-->
+  <zorba:iterator name="FnZorbaCanonicalizeIterator">
+      
+    <zorba:description author="Zorba Team">fn-zorba-xml:canonicalize</zorba:description>
+    
+    <zorba:function>
+      <zorba:signature localname="canonicalize" prefix="fn-zorba-xml">
+        <zorba:param>xs:string</zorba:param>  <!-- string to canonicalize -->
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+    </zorba:function>
   </zorba:iterator>
   
 <!--

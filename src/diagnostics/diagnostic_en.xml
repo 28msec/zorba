@@ -1316,6 +1316,12 @@
       <value>"$1": can not decode resource retrieved</value>
     </diagnostic>
 
+    <diagnostic code="FOCZ0001"> <comment>
+       Invalid content passed to \c x:canonicalize().
+      </comment>
+      <value>invalid content passed to $1: $2</value>
+    </diagnostic>
+
     <!--////////// XQuery Update Facility //////////////////////////////////-->
 
     <diagnostic code="XUST0001">

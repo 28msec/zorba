@@ -535,6 +535,8 @@ namespace zorba{
 
     class FnZorbaParseXmlFragmentIterator;
 
+    class FnZorbaCanonicalizeIterator;
+
     class FnParseXmlFragmentIterator;
 
     class FnParseXmlIterator;
@@ -1482,6 +1484,9 @@ public:
 
     virtual void beginVisit ( const FnZorbaParseXmlFragmentIterator& ) = 0;
     virtual void endVisit   ( const FnZorbaParseXmlFragmentIterator& ) = 0;
+
+    virtual void beginVisit ( const FnZorbaCanonicalizeIterator& ) = 0;
+    virtual void endVisit   ( const FnZorbaCanonicalizeIterator& ) = 0;
 
     virtual void beginVisit ( const FnParseXmlFragmentIterator& ) = 0;
     virtual void endVisit   ( const FnParseXmlFragmentIterator& ) = 0;

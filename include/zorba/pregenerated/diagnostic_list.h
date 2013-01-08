@@ -298,6 +298,8 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode FOUT1170;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode FOUT1190;
 
+extern ZORBA_DLL_PUBLIC XQueryErrorCode FOCZ0001;
+
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XUST0001;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XUST0002;

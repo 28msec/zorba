@@ -13,6 +13,7 @@ New Features:
 	natural language text.
   * Extended cast and castable expression to allow any simple target type
     (as specified by XQuery 3.0)
+  * Added canonicalize function to modules/xml.
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
