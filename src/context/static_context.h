@@ -853,14 +853,13 @@ public:
   void bind_ns(
         const zstring& prefix,
         const zstring& ns,
-        const QueryLoc& loc,
-        const Error& err = err::XQST0033);
+        const QueryLoc& loc);
 
   bool lookup_ns(
         zstring& ns,
         const zstring& prefix,
         const QueryLoc& loc,
-        const Error& err = err::XPST0081) const;
+        bool raiseError = true) const;
 
   void expand_qname(
         store::Item_t& qname,
@@ -874,7 +873,7 @@ public:
   //
   // Variables
   //
-  void bind_var(var_expr* expr, const QueryLoc& loc, const Error& err);
+  void bind_var(var_expr* expr, const QueryLoc& loc);
 
   VarInfo* lookup_var(const store::Item* qname) const;
 

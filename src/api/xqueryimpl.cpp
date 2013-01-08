@@ -848,12 +848,11 @@ bool XQueryImpl::isBoundVariable(
     
     if (!var)
     {
-      throw XQUERY_EXCEPTION(zerr::ZAPI0011_ELEMENT_NOT_DECLARED,
+      throw XQUERY_EXCEPTION(zerr::ZAPI0011_VARIABLE_NOT_DECLARED,
       ERROR_PARAMS(BUILD_STRING('{',
                                 qname->getNamespace(),
                                 '}',
-                                qname->getLocalName()),
-                   ZED(Variable)));
+                                qname->getLocalName())));
     }
 
     if (var->hasInitializer())

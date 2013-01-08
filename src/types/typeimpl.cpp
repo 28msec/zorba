@@ -883,7 +883,7 @@ bool NodeXQType::is_supertype(
   xqtref_t subContentType = tm->create_named_type(subitem->getType(),
                                                   TypeConstants::QUANT_ONE,
                                                   loc,
-                                                  err::XPTY0004);
+                                                  true);
 
   return TypeOps::is_subtype(tm, *subContentType, *theContentType);
 }
