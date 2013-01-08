@@ -1,6 +1,6 @@
 (: 
   Test for improved error messages logic:
-  the error messages should not contain the "missing comma?" suggestion
+  the error message should not contain the "missing comma?" hint
 :)
 
 import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";

@@ -2208,6 +2208,19 @@ Statements :
       blk->add($2);
 
       $$ = blk;
+    } 
+  //  ============================ Improved error messages ============================
+  | 
+    Statements Expr ERROR Statement
+    {
+      $$ = $1; // to prevent the Bison warning
+      $$ = $2; // to prevent the Bison warning
+      $$ = $4; // to prevent the Bison warning
+      error(@3, "syntax error, unexpected statement (missing semicolon \";\" between statements?)");
+      delete $1; // these need to be deleted here because the parser deallocator will skip them
+      delete $2;
+      delete $4;
+      YYERROR;
     }
 ;
 
@@ -2507,7 +2520,11 @@ Expr :
     {
       $$ = $1; // to prevent the Bison warning
       $$ = $3; // to prevent the Bison warning
-      error(@2, "syntax error, unexpected ExprSingle (missing comma \",\" between expressions?)");
+      // Heuristics to improve the error message: if the $1 Expr is a QName (which in turn gets
+      // promoted to a PathExpr), chances are that it's not a missing comma, so don't modify
+      // the error message.
+      if (dynamic_cast<PathExpr*>($1) == NULL)
+        error(@2, "syntax error, unexpected expression (missing comma \",\" between expressions?)");
       delete $1; // these need to be deleted here because the parser deallocator will skip them
       delete $3;
       YYERROR;
@@ -6972,9 +6989,9 @@ void xquery_parser::error(zorba::xquery_parser::location_type const& loc, string
       // Error message heuristics: if the current error message has the "(missing comma "," between expressions?)" text,
       // and the old message has a "','" text, the replace the old message with the new one. Unfortunately this 
       // makes the parser error messages harder to internationalize.
-      if ( ! (msg.find("(missing comma \",\" between expressions?)") != string::npos
-              &&
-              prevErr->msg.find(zstring("\",\"")) != zstring::npos))
+      if (msg.find("(missing comma \",\" between expressions?)") != string::npos
+          &&
+          prevErr->msg.find(zstring("\",\"")) == zstring::npos)
         return;
     }
 
