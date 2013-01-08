@@ -1905,21 +1905,20 @@ static void readDocument(
   store::Item_t& oResult)
 {
   //Normalize input to handle filesystem paths, etc.
-  zstring lNormUri;  
-  size_t found = 0;
+  zstring lNormUri;
+  zorba::URI* lUri;
 
   normalizeInputUri(aUri, aSctx, loc, &lNormUri);
 
-  //check if fragment identifier
-  found = lNormUri.find_last_of("#");
-  if (found != lNormUri.npos)
+  //Check for a fragment identifier
+  //Create a zorba::URI for validating if it contains a fragment  
+  lUri = new zorba::URI(lNormUri);
+  if (lUri->get_encoded_fragment() != "")
   {
-    //confirm if fragment
-    if (lNormUri.at(found-1) == '/')
-    {
-      throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));    
-    } 
+    delete lUri;
+    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));    
   }
+  delete lUri;
 
   //Resolve URI to stream
   zstring lErrorMessage;
@@ -2050,10 +2049,10 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   zstring uriString;
   zstring encodingString("UTF-8");
   zstring lNormUri;
+  zorba::URI* lUri;
   zstring lErrorMessage;
   std::auto_ptr<internal::Resource> lResource;
   StreamReleaser lStreamReleaser;
-  size_t found = 0;
 
   FnUnparsedTextLinesIteratorState* state;
   DEFAULT_STACK_INIT(FnUnparsedTextLinesIteratorState, state, planState);
@@ -2073,16 +2072,15 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   uriItem->getStringValue2(uriString);
   normalizeInputUri(uriString, theSctx, loc, &lNormUri);
 
-  //check if fragment identifier
-  found = lNormUri.find_last_of("#");
-  if (found != lNormUri.npos)
+  //Check for a fragment identifier
+  //Create a zorba::URI for validating if it contains a fragment  
+  lUri = new zorba::URI(lNormUri);
+  if (lUri->get_encoded_fragment() != "")
   {
-    //confirm if fragment
-    if (lNormUri.at(found-1) == '/')
-    {
-      throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));    
-    } 
+    delete lUri;
+    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));    
   }
+  delete lUri;
 
   //Resolve URI to stream
   lResource = theSctx->resolve_uri
