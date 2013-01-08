@@ -5,8 +5,8 @@ version 2.8
 
 New Features:
   * (bug #1039284) Implemented jn:json-doc().
-  * (bug #867363) Added http-uri-resolution feature to disable HTTP
-	when resolving URIs.
+  * (bug #867363) Added http-uri-resolution feature to disable HTTP when
+    resolving URIs.
   * Can now specify jsoniq-strip-top-level-array option to parse-json() to
     strip the top-level array from JSON streams.
   * New info-extraction module for querying concepts and entities in
@@ -44,9 +44,9 @@ Bug Fixes/Other Changes:
   * Fixed bug #1021492 (while computeing the "sources" of a prolog var, skip
     any var-setting exprs that appear in non-used (and non-optimized) functions).
   * Fixed bug #1070551 (zerr:ZOSE0003 stream read failure)
-  * Fixed bug #992304 (Compiling library modules could load data from
-	wrong source)
-  * Fixed bug # (XQST0036 not used in XQuery 3.0)
+  * Fixed bug #992304 (Compiling library modules could load data from wrong
+    source)
+  * Fixed bug #1043294 (XQST0036 not used in XQuery 3.0).
   * Fixed bugs related to casting to user-defined types.
 
 

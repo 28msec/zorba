@@ -52,7 +52,7 @@ mem_streambuf::int_type mem_streambuf::overflow( int_type c ) {
 
 mem_streambuf::int_type mem_streambuf::pbackfail( int_type c ) {
   if ( !traits_type::eq_int_type( c, traits_type::eof() ) ) {
-    *pptr() = traits_type::to_int_type( c );
+    *pptr() = traits_type::to_char_type( c );
     pbump( -1 );
   }
   return traits_type::to_int_type( *pptr() );
