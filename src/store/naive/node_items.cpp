@@ -22,8 +22,11 @@
 #include <zorba/item.h>
 
 #include "api/unmarshaller.h"
+
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
+
 #include "zorbatypes/URI.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "zorbautils/locale.h"
@@ -3263,7 +3266,7 @@ void ElementNode::uninheritBinding(
 ********************************************************************************/
 void ElementNode::checkNamespaceConflict(
     const store::Item*  qname,
-    Error const& ecode) const
+    const QueryLoc* loc) const
 {
   const QNameItem* qn = reinterpret_cast<const QNameItem*>(qname);
 
@@ -3279,7 +3282,8 @@ void ElementNode::checkNamespaceConflict(
 
   if (found && ns2 != ns)
   {
-    throw XQUERY_EXCEPTION_VAR(ecode, ERROR_PARAMS(qname->show(), prefix, ns2));
+    RAISE_ERROR(err::XUDY0023, loc, 
+    ERROR_PARAMS(qn->getStringValue(), prefix, ns, ns2));
   }
 }
 

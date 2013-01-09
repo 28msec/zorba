@@ -609,7 +609,7 @@ zorba::ItemSequence_t IsBoundVariableFunction::evaluate(
   }
   catch (ZorbaException& ze)
   {
-    if (ze.diagnostic() == zerr::ZAPI0011_ELEMENT_NOT_DECLARED)
+    if (ze.diagnostic() == zerr::ZAPI0011_VARIABLE_NOT_DECLARED)
       XQXQFunction::throwError("UndeclaredVariable", ze.what());  
     throw; // should not happen
   }

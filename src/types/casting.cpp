@@ -2043,7 +2043,7 @@ bool GenericCast::castToSimple(
     const xqtref_t& targetType,
     const namespace_context* nsCtx,
     std::vector<store::Item_t>& resultList,
-    const TypeManager* tm,
+    TypeManager* tm,
     const QueryLoc& loc)
 {
   const TypeManager* ttm = targetType->get_manager();
@@ -2074,6 +2074,9 @@ bool GenericCast::castToSimple(
   else
   {
     ZORBA_ASSERT(targetType->type_kind() == XQType::USER_DEFINED_KIND);
+
+#ifndef ZORBA_NO_XMLSCHEMA
+    tm->initializeSchema();
 
     Schema* schema = tm->getSchema();
 
@@ -2129,6 +2132,7 @@ bool GenericCast::castToSimple(
       RAISE_ERROR(err::FORG0001, loc,
       ERROR_PARAMS(item->getStringValue(), ZED(NoCastTo_34o), udt->toSchemaString()));
     } // union
+#endif // ZORBA_NO_XMLSCHEMA
   } // list or union
 }
 
@@ -2371,7 +2375,7 @@ bool GenericCast::castToQName(
   xqtref_t sourceType = tm->create_named_type(item->getType(),
                                               TypeConstants::QUANT_ONE,
                                               loc,
-                                              err::XPTY0004);
+                                              true);
 
   ZORBA_ASSERT(item->isAtomic());
   ZORBA_ASSERT(sourceType != NULL);
@@ -2692,7 +2696,7 @@ bool GenericCast::castableToName(const zstring& str)
 bool GenericCast::isCastable(
     const store::Item_t& aItem,
     const XQType* targetType,
-    const TypeManager* tm)
+    TypeManager* tm)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
   if (targetType->type_kind() == XQType::USER_DEFINED_KIND )
@@ -2700,6 +2704,8 @@ bool GenericCast::isCastable(
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
     if (!udt->isComplex())
     {
+      tm->initializeSchema();
+
       return tm->getSchema()->
              isCastableUserSimpleTypes(aItem->getStringValue(), targetType);
     }
@@ -2709,7 +2715,7 @@ bool GenericCast::isCastable(
   xqtref_t lSourceType = tm->create_named_type(aItem->getType(),
                                                TypeConstants::QUANT_ONE,
                                                QueryLoc::null,
-                                               err::XPTY0004);
+                                               true);
 
   TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
                                                                *targetType);
@@ -2746,7 +2752,7 @@ bool GenericCast::isCastable(
 bool GenericCast::isCastable(
     const zstring& str,
     const XQType* aTargetType,
-    const TypeManager* tm)
+    TypeManager* tm)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
@@ -2754,6 +2760,8 @@ bool GenericCast::isCastable(
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
     if (!udt->isComplex())
     {
+      tm->initializeSchema();
+
       return tm->getSchema()->
              isCastableUserSimpleTypes(str,
                                        udt->getBaseType().getp());

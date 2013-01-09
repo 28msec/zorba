@@ -21,6 +21,7 @@
 
 #include <zorba/locale.h>
 
+#include "util/string_util.h"
 namespace zorba {
   namespace locale {
 
@@ -297,7 +298,19 @@ namespace zorba {
        * @return Returns said enumeration or \c unknown.
        */
       type find( char const *country );
-    }
+
+      //
+      // Template version of find().
+      //
+      template<class StringType> inline
+      typename std::enable_if<
+        ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+        type
+      >::type
+      find( StringType const &country ) {
+        return find( country.c_str() );
+      }
+    } // namespace iso3166_1
 
     /////////////////////////////////////////////////////////////////////////// 
 
@@ -322,7 +335,19 @@ namespace zorba {
        * @return Returns said enumeration or \c unknown.
        */
       type find( char const *lang );
-    }
+
+      //
+      // Template version of find().
+      //
+      template<class StringType> inline
+      typename std::enable_if<
+        ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+        type
+      >::type
+      find( StringType const &lang ) {
+        return find( lang.c_str() );
+      }
+    } // namespace iso639_1
 
     /////////////////////////////////////////////////////////////////////////// 
 
@@ -474,7 +499,19 @@ namespace zorba {
        * @return Returns said enumeration or \c unknown.
        */
       type find( char const *lang );
-    }
+
+      //
+      // Template version of find().
+      //
+      template<class StringType> inline
+      typename std::enable_if<
+        ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+        type
+      >::type
+      find( StringType const &lang ) {
+        return find( lang.c_str() );
+      }
+    } // namespace iso639_2
 
     /////////////////////////////////////////////////////////////////////////// 
 
@@ -485,6 +522,18 @@ namespace zorba {
      * @return Returns said enumeration or \c unknown.
      */
     iso639_1::type find_lang( char const *lang );
+
+    //
+    // Template version of find_lang().
+    //
+    template<class StringType> inline
+    typename std::enable_if<
+      ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+      iso639_1::type
+    >::type
+    find_lang( StringType const &lang ) {
+      return find_lang( lang.c_str() );
+    }
 
     /**
      * Gets the ISO 3166-1 country code enumeration for the host system.
@@ -504,8 +553,6 @@ namespace zorba {
 
   } // namespace locale
 } // namespace zorba
-
-#undef DEF_OSTREAM_INSERT_OPERATOR
 
 #endif  /* ZORBA_CORE_LOCALE_H */
 /* vim:set et sw=2 ts=2: */
