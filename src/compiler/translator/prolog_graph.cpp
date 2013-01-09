@@ -55,7 +55,7 @@ void PrologGraph::addEdge(const PrologGraphVertex& v1, const PrologGraphVertex& 
     zstring varName = '$' + v1.getVarExpr()->get_name()->getStringValue();
 
     RAISE_ERROR(err::XPST0008, v2.getVarExpr()->get_loc(),
-    ERROR_PARAMS(varName, ZED(VariabledUndeclared)));
+    ERROR_PARAMS(ZED(XPST0008_VariableName_2), varName));
   }
 
   addEdge(theGraph, v1, v2);
