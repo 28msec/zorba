@@ -513,11 +513,8 @@ void Schema::getTypeNameFromElementName(
 
   if (!typeDef)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( qname->getStringValue(), ZED( SchemaElementName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), qname->getStringValue()));
   }
 
   const XMLCh* typeNameStr = typeDef->getName();
@@ -542,11 +539,8 @@ void Schema::getTypeNameFromAttributeName(
 
   if (!typeDef)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( qname->getStringValue(), ZED( SchemaAttributeName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), qname->getStringValue()));
   }
 
   const XMLCh* typeNameStr = typeDef->getName();
@@ -579,11 +573,8 @@ xqtref_t Schema::createXQTypeFromElementName(
 
   if (!typeDef)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( qname->getStringValue(), ZED( SchemaElementName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), qname->getStringValue()));
   }
 
   xqtref_t res = createXQTypeFromTypeDefinition(typeManager, typeDef);
@@ -611,11 +602,8 @@ xqtref_t Schema::createXQTypeFromAttributeName(
 
   if (!typeDef)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( qname->getStringValue(), ZED( SchemaAttributeName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), qname->getStringValue()));
   }
 
   return createXQTypeFromTypeDefinition(typeManager, typeDef);

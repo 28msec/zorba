@@ -108,7 +108,7 @@ public:
       store::Item* qname,
       TypeConstants::quantifier_t quant,
       const QueryLoc& loc,
-      const Error& error = zerr::ZXQP0000_NO_ERROR) const;
+      bool raiseError) const;
 
   virtual xqtref_t create_named_simple_type(
       store::Item* qname) const;
@@ -117,7 +117,7 @@ public:
       store::Item* qname,
       TypeConstants::quantifier_t quant,
       const QueryLoc& loc,
-      const Error& error = zerr::ZXQP0000_NO_ERROR) const;
+      bool raiseError = false) const;
 
   xqtref_t create_structured_item_type(TypeConstants::quantifier_t q) const;
 

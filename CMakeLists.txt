@@ -550,12 +550,16 @@ ENDIF (WIN32)
 ADD_SUBDIRECTORY(scripts)
 ADD_SUBDIRECTORY(cmake_modules)
 
-# Subdirectory ordering: We need to include "test" before "config" so
-# ZorbaConfig knows about testdriver. We need to include "config"
-# before "modules" so external modules will be able to find
-# ZorbaConfig.cmake. We need to include "modules" before "include" so
-# config.h can know eg. whether we found CURL. We need to include "modules"
-# before "doc" so xqdoc can know what non-core modules are available.
+# Subdirectory ordering: We need to include "bin" before "test" so
+# that test/fots can add zorbacmd-based tests. We need to include
+# "test" before "config" so ZorbaConfig knows about testdriver. We
+# need to include "config" before "modules" so external modules will
+# be able to find ZorbaConfig.cmake. We need to include "modules"
+# before "include" so config.h can know eg. whether we found CURL. We
+# need to include "modules" before "doc" so xqdoc can know what
+# non-core modules are available.
+
+ADD_SUBDIRECTORY(bin)
 
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
@@ -571,8 +575,6 @@ REMOVE_DEFINITIONS(-Dzorba_EXPORTS)
 IF (SWIG_FOUND)
   ADD_SUBDIRECTORY (swig)
 ENDIF (SWIG_FOUND)
-
-ADD_SUBDIRECTORY(bin)
 
 # add the uninstall support
 # QQQ move to config/
