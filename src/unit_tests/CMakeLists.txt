@@ -23,7 +23,6 @@ SET(UNIT_TEST_SRCS
   test_uri.cpp
   test_uuid.cpp
   unit_tests.cpp
-  test_uri.cpp
   test_utf8_streambuf.cpp
 )
 
