@@ -37,6 +37,8 @@ ADD_SUBDIRECTORY(parser)
 ADD_SUBDIRECTORY(update)
 ADD_SUBDIRECTORY(sax2)
 
+ADD_SUBDIRECTORY(fots)
+
 SET (TEST_PLAN_SERIALIZER_SRCS
     test_plan_serializer.cpp
     timer.cpp)

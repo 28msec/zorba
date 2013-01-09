@@ -2371,7 +2371,7 @@ bool GenericCast::castToQName(
   xqtref_t sourceType = tm->create_named_type(item->getType(),
                                               TypeConstants::QUANT_ONE,
                                               loc,
-                                              err::XPTY0004);
+                                              true);
 
   ZORBA_ASSERT(item->isAtomic());
   ZORBA_ASSERT(sourceType != NULL);
@@ -2709,7 +2709,7 @@ bool GenericCast::isCastable(
   xqtref_t lSourceType = tm->create_named_type(aItem->getType(),
                                                TypeConstants::QUANT_ONE,
                                                QueryLoc::null,
-                                               err::XPTY0004);
+                                               true);
 
   TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
                                                                *targetType);

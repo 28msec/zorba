@@ -310,7 +310,7 @@ void EvalIterator::importOuterEnv(
       ve->set_unique_id(outerGlobalVarId);
     }
 
-    importSctx->bind_var(ve, loc, err::XQST0049);
+    importSctx->bind_var(ve, loc);
   }
 
   // Import the outer-query ns bindings

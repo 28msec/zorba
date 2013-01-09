@@ -54,6 +54,9 @@
 namespace zorba
 {
 
+class QueryLoc;
+
+
 namespace store
 {
   class CopyMode;
@@ -1096,7 +1099,7 @@ public:
 
   void addBindingForQName2(const store::Item* qname);
 
-  void checkNamespaceConflict(const store::Item* qname, Error const &ecode) const;
+  void checkNamespaceConflict(const store::Item* qname, const QueryLoc* loc) const;
 
   void uninheritBinding(
       NsBindingsContext* rootNSCtx,
