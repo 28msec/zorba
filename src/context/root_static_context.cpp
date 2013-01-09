@@ -33,7 +33,7 @@
 
 #ifdef WIN32
 #include <zorba/config.h>
-#endif WIN32
+#endif //WIN32
 
 
 // DEFINE ENVIRONMENT VARIABLES
