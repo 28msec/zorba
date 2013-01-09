@@ -17,6 +17,7 @@
 #include <cassert>
 #ifdef WIN32
 # include <windows.h>
+# include <time.h>                      /* for gmtime_s() */
 # if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
 #   define DELTA_EPOCH_IN_USEC 11644473600000000Ui64
 # else
@@ -144,8 +145,8 @@ unsigned days_in_month( unsigned mon, unsigned year ) {
 void get_epoch( time_t *sec, usec_type *usec ) {
 #ifdef WIN32
   FILETIME ft;
-  GetSystemTimeAsFileTime( &ft );
-  unsigned __int64 temp = (ft.dwHighDateTime << 32) | ft.dwLowDateTime;
+  ::GetSystemTimeAsFileTime( &ft );
+  unsigned __int64 temp = ((__int64)ft.dwHighDateTime << 32) | ft.dwLowDateTime;
   temp /= 10;                           // nanosec -> usec
   temp -= DELTA_EPOCH_IN_USEC;          // 1601 -> 1970
   *sec = (time_t)(temp / 1000000UL);    // usec -> sec
@@ -164,7 +165,7 @@ void get_gmtime( ztm *tm, time_t when ) {
   if ( !when )
     get_epoch( &when );
 #ifdef WIN32
-  ::_gmtime_s( tm, &when );
+  ::gmtime_s( tm, &when );
   tm->ZTM_GMTOFF = 0;
 #else
   ::gmtime_r( &when, tm );
@@ -185,7 +186,7 @@ void get_localtime( ztm *tm, time_t when ) {
 long get_gmt_offset() {
 #ifdef WIN32
   TIME_ZONE_INFORMATION tz;
-  GetTimeZoneInformation( &tz );
+  ::GetTimeZoneInformation( &tz );
   return tz.Bias * -60;                 // minutes west -> seconds east
 #else
   time_t const now = ::time( nullptr );

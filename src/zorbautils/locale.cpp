@@ -147,7 +147,7 @@ static unique_ptr<WCHAR[]> get_wlocale_name( iso639_1::type lang,
   }
 
   unique_ptr<WCHAR[]> wlocale_name( new WCHAR[ LOCALE_NAME_MAX_LENGTH ] );
-  MultiByteToWide(
+  MultiByteToWideChar(
     CP_UTF8, 0, locale_name.c_str(), -1,
     wlocale_name.get(), LOCALE_NAME_MAX_LENGTH
   );
@@ -183,11 +183,11 @@ static zstring get_locale_info( int constant,
   ZORBA_FATAL( wlen, "GetLocaleInfoEx() failed" );
 
   int const len = WideCharToMultiByte(
-    CP_UTF8, 0, winfo, -1, NULL, 0, NULL, NULL
+    CP_UTF8, 0, winfo.get(), -1, NULL, 0, NULL, NULL
   );
   unique_ptr<char[]> info( new char[ len ] );
   WideCharToMultiByte(
-    CP_UTF8, 0, winfo, -1, info.get(), len, NULL, NULL
+    CP_UTF8, 0, winfo.get(), -1, info.get(), len, NULL, NULL
   );
   return info.get();
 }
@@ -1104,7 +1104,7 @@ iso3166_1::type get_host_country() {
 
   if ( !got ) {
 #   ifdef WIN32
-    zstring const name( get_win32_locale_info( LOCALE_SISO3166CTRYNAME ) );
+    zstring const name( get_locale_info( LOCALE_SISO3166CTRYNAME ) );
     country = iso3166_1::find( name );
 #   else
     zstring const loc_info( get_unix_locale() );
@@ -1163,7 +1163,7 @@ zstring get_time_ampm( bool pm, iso639_1::type lang, iso3166_1::type country ) {
 zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
 #ifdef WIN32
   unique_ptr<char[]> const w32_format(
-    get_win32_locale_info( LOCALE_STIMEFORMAT, lang, country )
+    get_locale_info( LOCALE_STIMEFORMAT, lang, country )
   );
   zstring format;
   //
