@@ -167,52 +167,6 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
 /*******************************************************************************
 
 ********************************************************************************/
-bool TypeOps::is_atomic(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  if (type.get_quantifier() == TypeConstants::QUANT_ONE)
-  {
-    if (type.type_kind() == XQType::ATOMIC_TYPE_KIND)
-    {
-      return true;
-    }
-    else if (type.type_kind() == XQType::USER_DEFINED_KIND)
-    {
-      return reinterpret_cast<const UserDefinedXQType&>(type).isAtomic();
-    }
-  }
-
-  return false;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_builtin_atomic(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return type.get_quantifier() == TypeConstants::QUANT_ONE &&
-         type.type_kind() == XQType::ATOMIC_TYPE_KIND;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_builtin_simple(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return type.type_kind() == XQType::ATOMIC_TYPE_KIND;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 bool TypeOps::is_numeric(store::SchemaTypeCode type)
 {
   return store::XS_FLOAT <= type && type <= store::XS_POSITIVE_INTEGER;
@@ -371,12 +325,16 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
     if (type.get_quantifier() == TypeConstants::QUANT_ONE)
       return &type;
 
-    const UserDefinedXQType& udType = static_cast<const UserDefinedXQType&>(type);
+    const UserDefinedXQType& udt = static_cast<const UserDefinedXQType&>(type);
 
-    return tm->create_named_type(udType.get_qname(),
-                                 TypeConstants::QUANT_ONE,
-                                 QueryLoc::null,
-                                 err::XPTY0004);
+    if (udt.isAtomic())
+    {
+      return tm->create_type(type, TypeConstants::QUANT_ONE);
+    }
+    else
+    {
+      return &type;
+    }
   }
 
   default:
@@ -819,7 +777,7 @@ bool TypeOps::is_subtype(
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
                                                     TypeConstants::QUANT_ONE,
                                                     loc,
-                                                    err::XPTY0004);
+                                                    true);
     switch(subtype->type_kind()) 
     {
     case XQType::ATOMIC_TYPE_KIND:
@@ -908,7 +866,7 @@ bool TypeOps::is_subtype(
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
                                                     TypeConstants::QUANT_ONE,
                                                     loc,
-                                                    err::XPTY0004);
+                                                    true);
     switch (subtype->type_kind())
     {
     case XQType::ATOMIC_TYPE_KIND:
@@ -953,7 +911,7 @@ bool TypeOps::is_subtype(
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
                                                     TypeConstants::QUANT_ONE,
                                                     loc,
-                                                    err::XPTY0004);
+                                                    true);
     const UserDefinedXQType& udSuperType = 
     static_cast<const UserDefinedXQType&>(supertype);
 
@@ -1491,15 +1449,14 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 
   case XQType::USER_DEFINED_KIND:
   {
-    ZORBA_ASSERT(nested || is_atomic(tm, type));
+    ZORBA_ASSERT(nested || type.isAtomicOne());
 
     store::Item* lQname = type.get_qname().getp();
 
     return TypeIdentifier::createNamedType(
-      Unmarshaller::newString( lQname->getNamespace() ), 
-      Unmarshaller::newString( lQname->getLocalName() ),
-      q
-    );
+      Unmarshaller::newString(lQname->getNamespace()), 
+      Unmarshaller::newString(lQname->getLocalName()),
+      q);
   }
   default:
     break;
@@ -1516,17 +1473,6 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 std::ostream& TypeOps::serialize(std::ostream& os, const XQType& type)
 {
   return type.serialize_ostream(os);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-std::string TypeOps::toString(const XQType& type)
-{
-  std::ostringstream os;
-  serialize(os, type);
-  return os.str ();
 }
 
 
