@@ -1021,8 +1021,7 @@ zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
   // Convert Windows' date format for that used by strptime(3); see:
   // http://msdn.microsoft.com/en-us/library/windows/desktop/dd317787(v=vs.85).aspx
   //
-  for ( char const *buf = w32_format.get(); *buf; ++buf ) {
-    char const c = *buf;
+  FOR_EACH( zstring, c, w32_format ) {
     switch ( c ) {
 
       case 'd':
@@ -1162,7 +1161,7 @@ zstring get_time_ampm( bool pm, iso639_1::type lang, iso3166_1::type country ) {
 
 zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
 #ifdef WIN32
-  unique_ptr<char[]> const w32_format(
+  zstring const w32_format(
     get_locale_info( LOCALE_STIMEFORMAT, lang, country )
   );
   zstring format;
@@ -1170,8 +1169,7 @@ zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
   // Convert Windows' time format for that used by strptime(3); see:
   // http://msdn.microsoft.com/en-us/library/windows/desktop/dd318148(v=vs.85).aspx
   //
-  for ( char const *buf = w32_format.get(); *buf; ++buf ) {
-    char const c = *buf;
+  FOR_EACH( zstring, c, w32_format ) {
     switch ( c ) {
 
       case 'h':
@@ -1237,7 +1235,7 @@ zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
 bool is_supported( iso639_1::type lang, iso3166_1::type country ) {
 #ifdef WIN32
   unique_ptr<WCHAR[]> const wlocale_name( get_wlocale_name( lang, country ) );
-  return ::IsValidLocaleName( wlocale_name.get() );
+  return !!::IsValidLocaleName( wlocale_name.get() );
 #else
   if ( locale_t const loc = get_unix_locale_t( lang, country ) ) {
     ::freelocale( loc );
