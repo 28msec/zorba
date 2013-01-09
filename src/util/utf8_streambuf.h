@@ -32,7 +32,7 @@ namespace utf8 {
  * \code
  *  istream is;
  *  // ...
- *  utf8::streambuf xbuf( "ISO-8859-1", is.rdbuf() );
+ *  utf8::streambuf xbuf( is.rdbuf() );
  *  is.ios::rdbuf( &xbuf );
  * \endcode
  * Note that the %utf8::streambuf must exist for as long as it's being used by
@@ -40,7 +40,7 @@ namespace utf8 {
  * create, you should set it back to the original streambuf:
  * \code
  *  void f( ostream &os ) {
- *    utf8::streambuf xbuf( "ISO-8859-1", os.rdbuf() );
+ *    utf8::streambuf xbuf( os.rdbuf() );
  *    try {
  *      os.ios::rdbuf( &xbuf );
  *      // ...

@@ -153,5 +153,6 @@ IF (NOT ZORBA_NO_FULL_TEXT)
   ZORBA_ADD_TEST("test/libunit/thesaurus" LibUnitTest thesaurus)
   ZORBA_ADD_TEST("test/libunit/tokenizer" LibUnitTest tokenizer)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
+ZORBA_ADD_TEST("test/libunit/utf8_streambuf" LibUnitTest utf8_streambuf)
 
 # vim:set et sw=2 ts=2:
