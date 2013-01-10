@@ -186,6 +186,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %type <node>  ERROR                         "'error'"
 
+
 /* constant string tokens */
 %type <strval> WindowType
 %type <strval> FLWORWinCondType
@@ -207,7 +208,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> NCNAME_SVAL                   "'NCName_sval'"
 %token <sval> PRAGMA_LITERAL_AND_END_PRAGMA "'pragma literal'"
 %token <sval> QNAME_SVAL_AND_END_PRAGMA     "'QName #)'"
-%token <sval> EQNAME_SVAL_AND_END_PRAGMA     "'EQName #)'"
+%token <sval> EQNAME_SVAL_AND_END_PRAGMA    "'EQName #)'"
 %token <sval> PREFIX_WILDCARD               "'*:QName'"
 %token <sval> COMP_ELEMENT_QNAME_LBRACE     "'element QName {'"
 %token <sval> COMP_ATTRIBUTE_QNAME_LBRACE   "'attribute QName {'"
@@ -1060,14 +1061,21 @@ Module :
       {
         $$ = $3;
       }
-
-
 ;
 
+
 ERROR :
-      // Special rule to get Bison out of some infinte loops. This can happen when the lexer
+      error
+      {
+        $$ = NULL;
+      }
+      // Special rules to get Bison out of some infinte loops. This can happen when the lexer
       // throws an error and Bison finds an error too.
-      error UNRECOGNIZED
+   |  error UNRECOGNIZED
+      {
+        $$ = NULL; YYABORT;
+      }
+   |  ERROR error
       {
         $$ = NULL; YYABORT;
       }
@@ -2121,7 +2129,7 @@ QueryBody :
     {
       if ($1 == NULL)
       {
-        error(@1, "syntax error, unexpected end of file, the query should not be empty");
+        error(@1, "syntax error, unexpected end of file, the query body should not be empty");
         YYERROR;
       }
 
@@ -2200,6 +2208,19 @@ Statements :
       blk->add($2);
 
       $$ = blk;
+    } 
+  //  ============================ Improved error messages ============================
+  | 
+    Statements Expr ERROR Statement
+    {
+      $$ = $1; // to prevent the Bison warning
+      $$ = $2; // to prevent the Bison warning
+      $$ = $4; // to prevent the Bison warning
+      error(@3, "syntax error, unexpected statement (missing semicolon \";\" between statements?)");
+      delete $1; // these need to be deleted here because the parser deallocator will skip them
+      delete $2;
+      delete $4;
+      YYERROR;
     }
 ;
 
@@ -2494,22 +2515,18 @@ Expr :
       $$ = expr;
     }
   //  ============================ Improved error messages ============================
-  | Expr error ExprSingle error
+  | 
+    Expr ERROR ExprSingle
     {
       $$ = $1; // to prevent the Bison warning
       $$ = $3; // to prevent the Bison warning
-      error(@2, "syntax error, unexpected ExprSingle (missing comma \",\" between expressions?)");
+      // Heuristics to improve the error message: if the $1 Expr is a QName (which in turn gets
+      // promoted to a PathExpr), chances are that it's not a missing comma, so don't modify
+      // the error message.
+      if (dynamic_cast<PathExpr*>($1) == NULL)
+        error(@2, "syntax error, unexpected expression (missing comma \",\" between expressions?)");
       delete $1; // these need to be deleted here because the parser deallocator will skip them
       delete $3;
-      YYERROR;
-    }
-  | Expr ERROR ExprSingle
-    {
-      // This rule will never be reached, as the ERROR rule will stop the parser,
-      // but it is nevertheless needed to fix a testcase with an unterminated comment which
-      // would otherwise cycle indefinitely
-      $$ = $1; // to prevent the Bison warning
-      $$ = $3; // to prevent the Bison warning
       YYERROR;
     }
 ;
@@ -2688,12 +2705,12 @@ ForClause :
     {
       $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
     }
-  //  ============================ Improved error messages ============================
+  //  ============================ Improved error messages ============================ 
   |
     FOR error VarInDeclList
     {
       $$ = $3; // to prevent the Bison warning
-      error(@2, "syntax error, unexpected QName \""
+      error(@2, "syntax error, unexpected qualified name \""
           + static_cast<VarInDeclList*>($3)->operator[](0)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
       delete $3;
       YYERROR;
@@ -6965,9 +6982,27 @@ void xquery_parser::error(zorba::xquery_parser::location_type const& loc, string
   }
   else
   {
-    // remove the double quoting "''" from every token description
+    ParseErrorNode* prevErr = dynamic_cast<ParseErrorNode*>(driver.get_expr());
+
+    if (prevErr != NULL)
+    {
+      // Error message heuristics: if the current error message has the "(missing comma "," between expressions?)" text,
+      // and the old message has a "','" text, then replace the old message with the new one. Unfortunately this 
+      // makes the parser error messages harder to internationalize.
+      if (msg.find("(missing comma \",\" between expressions?)") != string::npos
+          &&
+          prevErr->msg.find(zstring("\",\"")) == zstring::npos)
+        return;
+    }
+
+    // Replace the first occurrence of "unexpected "'QName'"" with "unexpected qualified name %actual_qname%"
     string message = msg;
     int pos;
+    std::string unexpected_qname = "unexpected \"'QName'\"";
+    if ((pos = message.find(unexpected_qname)) != -1)
+      message = message.substr(0, pos) + "unexpected qualified name \"" + driver.symtab.get_last_qname() + "\"" + message.substr(pos+unexpected_qname.length());
+
+    // remove the double quoting "''" from every token description
     while ((pos = message.find("\"'")) != -1 || (pos = message.find("'\"")) != -1)
       message.replace(pos, 2, "\"");
     driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), err::XPST0003, message));

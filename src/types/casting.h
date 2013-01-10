@@ -89,7 +89,7 @@ public:
         const xqtref_t& targetType,
         const namespace_context* nsCtx,
         std::vector<store::Item_t>& resultList,
-        const TypeManager* tm,
+        TypeManager* tm,
         const QueryLoc& loc);
 
   static bool castStringToAtomic(
@@ -138,12 +138,12 @@ public:
   static bool isCastable(
       const store::Item_t& item,
       const XQType* targetType,
-      const TypeManager* tm); 
+      TypeManager* tm); 
 
   static bool isCastable(
       const zstring& stringValue,
       const XQType* targetType,
-      const TypeManager* tm);
+      TypeManager* tm);
 };
 
 } /* namespace zorba */
