@@ -164,9 +164,8 @@ static int Zorba_GetLocaleInfoEx( LPCWSTR lpLocaleName, LCTYPE LCType,
  * @param country The country to use, if any.
  * @return Returns said information or an empty string.
  */
-static zstring get_locale_info( int constant,
-                                iso639_1::type lang,
-                                iso3166_1::type country = iso3166_1::unknown ) {
+static zstring get_locale_info( int constant, iso639_1::type lang,
+                                iso3166_1::type country ) {
   LPCWSTR wlocale_name;
   unique_ptr<WCHAR[]> wlocale_name_ptr;
 
