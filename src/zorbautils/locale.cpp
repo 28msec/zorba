@@ -1062,14 +1062,6 @@ iso639_1::type find_lang( char const *lang ) {
 }
 
 zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
-  zstring w32_format;
-  FOR_EACH( zstring, c, w32_format ) {
-    switch ( *c ) {
-      default:
-        ;
-    }
-  }
-
 #ifdef WIN32
   //
   // Convert Windows' date format for that used by strptime(3); see:
