@@ -63,5 +63,5 @@ refl:eval(
 }
 catch err:XPST0003
 {
-  $err:description eq 'invalid expression: syntax error, unexpected "QName", expecting "with"'
+  $err:description eq 'invalid expression: syntax error, unexpected qualified name "width", expecting "with"'
 }
