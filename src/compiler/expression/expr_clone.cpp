@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/update_exprs.h"
 #include "compiler/expression/expr.h"
@@ -383,7 +384,8 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                          udf,
                          theLoc,
                          e->get_input()->clone(udf, subst),
-                         e->get_target_type());
+                         e->get_target_type(),
+                         e->allows_empty_input());
 
     break;
   }
@@ -396,7 +398,8 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                      udf,
                      theLoc,
                      e->get_input()->clone(udf, subst),
-                     e->get_target_type());
+                     e->get_target_type(),
+                     e->allows_empty_input());
     break;
   }
   case instanceof_expr_kind:

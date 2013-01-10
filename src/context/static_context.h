@@ -562,6 +562,7 @@ public:
   static const char* ZORBA_OPTION_WARN_NS;
   static const char* ZORBA_OPTION_FEATURE_NS;
   static const char* ZORBA_OPTION_OPTIM_NS;
+  static const char* XQUERY_OPTION_NS;
   static const char* ZORBA_VERSIONING_NS;
 
 protected:
@@ -852,14 +853,13 @@ public:
   void bind_ns(
         const zstring& prefix,
         const zstring& ns,
-        const QueryLoc& loc,
-        const Error& err = err::XQST0033);
+        const QueryLoc& loc);
 
   bool lookup_ns(
         zstring& ns,
         const zstring& prefix,
         const QueryLoc& loc,
-        const Error& err = err::XPST0081) const;
+        bool raiseError = true) const;
 
   void expand_qname(
         store::Item_t& qname,
@@ -873,7 +873,7 @@ public:
   //
   // Variables
   //
-  void bind_var(var_expr* expr, const QueryLoc& loc, const Error& err);
+  void bind_var(var_expr* expr, const QueryLoc& loc);
 
   VarInfo* lookup_var(const store::Item* qname) const;
 

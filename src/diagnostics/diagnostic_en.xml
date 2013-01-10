@@ -136,7 +136,19 @@
        that is not defined in the static context, except for an ElementName in
        an ElementTest or an AttributeName in an AttributeTest.
       </comment>
-      <value>"$1": undefined $2</value>
+      <value>$1</value>
+
+      <entry key="VariableName_2">
+        <value>"$2": undeclared variable</value>
+      </entry>
+
+      <entry key="SchemaAttributeName_2">
+        <value>"$2": undefined schema-attribute name</value>
+      </entry>
+
+      <entry key="SchemaElementName_2">
+        <value>"$2": undefined schema-element name</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPST0017">
@@ -251,6 +263,24 @@
        It is a type error if, in an axis step, the context item is not a node.
       </comment>
       <value>context item in axis step is not a node</value>
+    </diagnostic>
+
+    <diagnostic code="XPTY0117">
+      <comment>
+      Attempt to cast to a namespace-sensitive type failed because the namespace
+      bindings for the result can not be determined.
+      </comment>
+
+      <value>$1</value>
+
+      <entry key="NodeCast">
+        <value>Cannot cast node to xs:QName</value>
+      </entry>
+
+      <entry key="NotationParam_23">
+        <value>$2 can not be promoted to parameter type xs:NOTATION of function $3()</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XQTY0024">
@@ -449,6 +479,14 @@
        module have equal expanded QNames (as defined by the eq operator.)
       </comment>
       <value>"$1": duplicate variable declaration</value>
+    </diagnostic>
+
+    <diagnostic code="XQST0052">
+      <comment>
+      The type must be the name of a type defined in the in-scope schema types,
+      and the {variety} of the type must be simple.
+      </comment>
+      <value>"$1": not defined as simple type</value>
     </diagnostic>
 
     <diagnostic code="XQST0054">
@@ -688,7 +726,19 @@
        It is a dynamic error if evaluation of an expression relies on some part
        of the dynamic context that has not been assigned a value.
       </comment>
-      <value>"$1": $2</value>
+      <value>$1</value>
+
+      <entry key="VariableHasNoValue_2">
+        <value>"$2": variable has no value</value>
+      </entry>
+
+      <entry key="VariableUndeclared_2">
+        <value>"$2": undeclared variable</value>
+      </entry>
+
+      <entry key="ContextUndeclared_2">
+        <value>$2 not declared</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPDY0050">
@@ -1496,7 +1546,7 @@
        affects an element node by introducing a new namespace binding that
        conflicts with one of its existing namespace bindings.
       </comment>
-      <value>"$1": namespace binding conflicts with $2=$3</value>
+      <value>"$1": qname causes namespace binding conflict: prefix $2 cannot be bound to both $3 and $4</value>
     </diagnostic>
 
     <diagnostic code="XUDY0024">
@@ -1946,8 +1996,8 @@
       <value>XQuery not compiled in debug mode</value>
     </diagnostic>
 
-     <diagnostic code="ZAPI0011" name="ELEMENT_NOT_DECLARED">
-       <value>"$1": undefined $2</value>
+     <diagnostic code="ZAPI0011" name="VARIABLE_NOT_DECLARED">
+       <value>"$1": undeclared variable</value>
      </diagnostic>
 
     <diagnostic code="ZAPI0014" name="INVALID_ARGUMENT">
@@ -2255,6 +2305,22 @@
       <value>attempt to delete non-root node from collection "$1"</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0037" name="COLLECTION_APPEND_BAD_EDIT">
+      <value>"$1": illegal edit in append-only collection</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0038" name="COLLECTION_QUEUE_BAD_EDIT">
+      <value>"$1": illegal edit from queue collection</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0039" name="NON_ROOT_NODE_EDIT">
+      <value>attempt to edit non-root node in collection "$1"</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0040" name="INCONSISTENT_EDIT">
+      <value>attempt to edit an item with a template of a different kind (for example an object with a node).</value>
+    </diagnostic>
+     
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">
       <value>"$1": collection already declared</value>
     </diagnostic>
@@ -3503,14 +3569,6 @@
       <value>the standalone attribute has a value other than "omit"</value>
     </entry>
 
-    <entry key="SchemaAttributeName">
-      <value>schema-attribute name</value>
-    </entry>
-
-    <entry key="SchemaElementName">
-      <value>schema-element name</value>
-    </entry>
-
     <entry key="SchemaOutOfMemory">
       <value>OutOfMemoryException during parsing</value>
     </entry>
@@ -3758,18 +3816,6 @@
 
     <entry key="VarValMustBeSingleItem_2">
       <value>"$2": variable value must be single item</value>
-    </entry>
-
-    <entry key="Variable">
-      <value>variable</value>
-    </entry>
-
-    <entry key="VariabledHasNoValue">
-      <value>variable has no value</value>
-    </entry>
-
-    <entry key="VariabledUndeclared">
-      <value>undeclared variable</value>
     </entry>
 
     <entry key="XMLSchema">

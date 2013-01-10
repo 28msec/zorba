@@ -236,7 +236,7 @@ public:
   CODEGEN_DECL();
 };
 #endif
-
+#ifdef ZORBA_WITH_JSON
 
 //fn-jsoniq:json-doc
 class fn_jsoniq_json_doc : public function
@@ -255,6 +255,7 @@ public:
 
   CODEGEN_DECL();
 };
+#endif
 #ifdef ZORBA_WITH_JSON
 
 //op-zorba:json-item-accessor

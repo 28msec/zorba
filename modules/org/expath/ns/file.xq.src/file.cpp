@@ -16,9 +16,10 @@
 
 #include "file.h"
 
-#include <memory>
 #include <fstream>
+#include <memory>
 #include <sstream>
+#include <stdexcept>
 
 #include <zorba/base64.h>
 #include <zorba/empty_sequence.h>

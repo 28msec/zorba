@@ -26,7 +26,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <UDFunctionCallIterator>
-  <TreatIterator type="[NodeXQType elementNode content=[UserDefinedXQType   Content@http://foo.com/schemas/schema isComplex emptyContent base:[XQType ANY_TYPE_KIND*] ]]" quant="?">
+  <TreatIterator type="[NodeXQType elementNode content=[UserDefinedXQType  Content@http://foo.com/schemas/schema isComplex emptyContent base:[XQType ANY_TYPE_KIND*]]]" quant="?">
     <ValidateIterator>
       <ElementIterator>
         <SingletonIterator value="xs:QName(http://foo.com/schemas/schema,d,Content)"/>
