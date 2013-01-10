@@ -54,14 +54,14 @@ namespace zorba {
 namespace locale {
 
 #ifdef WIN32
-typedef LCTYPE locale_index;
+typedef LCTYPE locale_index_type;
 #else
-typedef nl_item locale_index;
+typedef nl_item locale_index_type;
 #endif /* WIN32 */
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static locale_index const ampm[] = {
+static locale_index_type const ampm[] = {
 #ifdef WIN32
   LOCALE_S1159, LOCALE_S2359
 #else
@@ -69,7 +69,7 @@ static locale_index const ampm[] = {
 #endif /* WIN32 */
 };
 
-static locale_index const month_abbr[] = {
+static locale_index_type const month_abbr[] = {
 #ifdef WIN32
   LOCALE_SABBREVMONTHNAME1, LOCALE_SABBREVMONTHNAME2,
   LOCALE_SABBREVMONTHNAME3, LOCALE_SABBREVMONTHNAME4,
@@ -83,7 +83,7 @@ static locale_index const month_abbr[] = {
 #endif /* WIN32 */
 };
 
-static locale_index const month_name[] = {
+static locale_index_type const month_name[] = {
 #ifdef WIN32
   LOCALE_SMONTHNAME1, LOCALE_SMONTHNAME2, LOCALE_SMONTHNAME3,
   LOCALE_SMONTHNAME4, LOCALE_SMONTHNAME5, LOCALE_SMONTHNAME6,
@@ -95,7 +95,7 @@ static locale_index const month_name[] = {
 #endif /* WIN32 */
 };
 
-static locale_index const weekday_abbr[] = {
+static locale_index_type const weekday_abbr[] = {
 #ifdef WIN32
   LOCALE_SABBREVDAYNAME1, LOCALE_SABBREVDAYNAME2, LOCALE_SABBREVDAYNAME3,
   LOCALE_SABBREVDAYNAME4, LOCALE_SABBREVDAYNAME5, LOCALE_SABBREVDAYNAME6,
@@ -105,7 +105,7 @@ static locale_index const weekday_abbr[] = {
 #endif /* WIN32 */
 };
 
-static locale_index const weekday_name[] = {
+static locale_index_type const weekday_name[] = {
 #ifdef WIN32
   LOCALE_SDAYNAME1, LOCALE_SDAYNAME2, LOCALE_SDAYNAME3, LOCALE_SDAYNAME4,
   LOCALE_SDAYNAME5, LOCALE_SDAYNAME6, LOCALE_SDAYNAME7
@@ -1072,13 +1072,12 @@ zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
   // http://msdn.microsoft.com/en-us/library/windows/desktop/dd317787(v=vs.85).aspx
   //
   for ( char const *i = w32_format.c_str(); *i; ++i ) {
-    char const c = *i;
-    switch ( c ) {
+    switch ( *i ) {
 
       case 'd':
-        if ( i[1] == c )
-          if ( i[2] == c )
-            if ( i[3] == c )
+        if ( i[1] == 'd' )
+          if ( i[2] == 'd' )
+            if ( i[3] == 'd' )
               format += "%A", i += 3;   // dddd = full weekday name
             else
               format += "%a", i += 2;   // ddd = abbreviated weekday name
@@ -1093,14 +1092,14 @@ zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
         // There's no equivalent strftime(3) conversion specification: just
         // ignore it and hope for the best.
         //
-        if ( i[1] == c )
+        if ( i[1] == 'g' )
           ++i;                          // gg = same as g
         break;
 
       case 'M':
-        if ( i[1] == c )
-          if ( i[2] == c )
-            if ( i[3] == c )
+        if ( i[1] == 'M' )
+          if ( i[2] == 'M' )
+            if ( i[3] == 'M' )
               format += "%B", i += 3;   // MMMM = full month name
             else
               format += "%b", i += 2;   // MMM = abbreviated month name
@@ -1111,11 +1110,11 @@ zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
         break;
 
       case 'y':
-        if ( i[1] == c )
-          if ( i[2] == c )
-            if ( i[3] == c ) {
+        if ( i[1] == 'y' )
+          if ( i[2] == 'y' )
+            if ( i[3] == 'y' ) {
               format += "%Y", i += 3;   // yyyy = 4-digit year
-              if ( i[3] == c )
+              if ( i[3] == 'y' )
                 ++i;                    // yyyyy = same as yyyy
             } else
               ;
@@ -1126,7 +1125,7 @@ zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
         break;
 
       default:
-        format += c;
+        format += *i;
     } // switch
   } // for
   return format;
@@ -1221,8 +1220,7 @@ zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
   // http://msdn.microsoft.com/en-us/library/windows/desktop/dd318148(v=vs.85).aspx
   //
   for ( char const *i = w32_format.c_str(); *i; ++i ) {
-    char const c = *i;
-    switch ( c ) {
+    switch ( *i ) {
 
       case 'h':
         if ( i[1] == 'h' )
@@ -1257,7 +1255,7 @@ zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
         break;
 
       default:
-        format += c;
+        format += *i;
     } // switch
   } // for
   return format;
