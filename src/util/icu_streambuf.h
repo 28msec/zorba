@@ -46,12 +46,12 @@ namespace zorba {
  *    try {
  *      os.ios::rdbuf( &xbuf );
  *      // ...
+ *      os.ios::rdbuf( xbuf.original() );
  *    }
  *    catch ( ... ) {
  *      os.ios::rdbuf( xbuf.original() );
  *      throw;
  *    }
- *    os.ios::rdbuf( xbuf.original() );
  *  }
  * \endcode
  *
