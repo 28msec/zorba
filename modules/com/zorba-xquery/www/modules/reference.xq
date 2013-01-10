@@ -81,9 +81,6 @@ declare function ref:reference(
  :
  : @return the item identified by the URI passed as parameter
  :         or the empty-sequence if no item with that URI is found.
- :
- : @error zerr:ZAPI0028 if the given URI is not a valid reference
- :        computed by the <tt>ref:reference</tt> function.
  :)
 declare function ref:dereference(
   $arg as xs:string

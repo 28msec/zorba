@@ -376,12 +376,6 @@ bool SimpleStore::assignReference(const store::Item* node, const zstring& refere
 ********************************************************************************/
 bool SimpleStore::getNodeByReference(store::Item_t& result, const zstring& reference)
 {
-  if (reference.length() != 45 ||
-      !utf8::match_whole(reference, "urn:uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))
-  {
-    throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(reference));
-  }
-
   RefNodeMap::iterator resIt;
 
   if ((resIt = theReferencesToNodeMap.find(reference)) != theReferencesToNodeMap.end())
