@@ -39,6 +39,9 @@ ADD_SUBDIRECTORY(sax2)
 
 ADD_SUBDIRECTORY(fots)
 
+INSTALL(DIRECTORY fots_driver
+        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
+
 SET (TEST_PLAN_SERIALIZER_SRCS
     test_plan_serializer.cpp
     timer.cpp)
