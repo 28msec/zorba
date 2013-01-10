@@ -978,6 +978,8 @@ public:
     }
   }
 
+  size_t alloc_size() const;
+
 protected:
   StreamableStringItem(
       std::istream& aStream,

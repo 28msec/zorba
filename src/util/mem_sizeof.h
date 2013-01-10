@@ -430,7 +430,7 @@ struct size_traits<store::ItemHandle<T>,false> {
 template<class RepType>
 struct size_traits<rstring<RepType>,false> {
   static size_t alloc_sizeof( rstring<RepType> const &s ) {
-    return s.capacity();
+    return s.capacity() + (s.is_shared() ? 0 : sizeof( RepType ));
   }
 };
 

@@ -1955,6 +1955,12 @@ StreamableStringItem::StreamableStringItem(
 }
 
 
+size_t StreamableStringItem::alloc_size() const
+{
+  return ztd::alloc_sizeof( theStreamableDependent );
+}
+
+
 void StreamableStringItem::appendStringValue(zstring& aBuf) const
 {
   if (!theIsMaterialized) 
