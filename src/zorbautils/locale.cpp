@@ -1242,9 +1242,13 @@ zstring get_weekday_abbr( unsigned day_index, iso639_1::type lang,
                           iso3166_1::type country ) {
   static locale_index_type const weekday_abbr[] = {
 #ifdef WIN32
-    LOCALE_SABBREVDAYNAME1, LOCALE_SABBREVDAYNAME2, LOCALE_SABBREVDAYNAME3,
-    LOCALE_SABBREVDAYNAME4, LOCALE_SABBREVDAYNAME5, LOCALE_SABBREVDAYNAME6,
-    LOCALE_SABBREVDAYNAME7
+    LOCALE_SABBREVDAYNAME7 /* Sun */,
+    LOCALE_SABBREVDAYNAME1 /* Mon */,
+    LOCALE_SABBREVDAYNAME2 /* Tue */,
+    LOCALE_SABBREVDAYNAME3 /* Wed */,
+    LOCALE_SABBREVDAYNAME4 /* Thu */,
+    LOCALE_SABBREVDAYNAME5 /* Fri */,
+    LOCALE_SABBREVDAYNAME6 /* Sat */
 #else
     ABDAY_1, ABDAY_2, ABDAY_3, ABDAY_4, ABDAY_5, ABDAY_6, ABDAY_7
 #endif /* WIN32 */
@@ -1259,8 +1263,13 @@ zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
                           iso3166_1::type country ) {
   static locale_index_type const weekday_name[] = {
 #ifdef WIN32
-    LOCALE_SDAYNAME1, LOCALE_SDAYNAME2, LOCALE_SDAYNAME3, LOCALE_SDAYNAME4,
-    LOCALE_SDAYNAME5, LOCALE_SDAYNAME6, LOCALE_SDAYNAME7
+    LOCALE_SDAYNAME7 /* Sun */,
+    LOCALE_SDAYNAME1 /* Mon */,
+    LOCALE_SDAYNAME2 /* Tue */,
+    LOCALE_SDAYNAME3 /* Wed */,
+    LOCALE_SDAYNAME4 /* Thu */,
+    LOCALE_SDAYNAME5 /* Fri */,
+    LOCALE_SDAYNAME6 /* Sat */
 #else
     DAY_1, DAY_2, DAY_3, DAY_4, DAY_5, DAY_6, DAY_7
 #endif /* WIN32 */
