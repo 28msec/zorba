@@ -155,6 +155,62 @@ static unique_ptr<WCHAR[]> get_wlocale_name( iso639_1::type lang,
 }
 
 /**
+ * Converts a wide character (UTF-16) string to a multibyte (UTF-8) string.
+ *
+ * @param ws The wide string to convert.
+ * @return Returns the equivalent multi-byte string.
+ */
+static unique_ptr<char[]> wtoa( LPCWSTR ws ) {
+  int const len = ::WideCharToMultiByte(
+    CP_UTF8, 0, ws, -1, NULL, 0, NULL, NULL
+  );
+  unique_ptr<char[]> s( new char[ len ] );
+  ::WideCharToMultiByte( CP_UTF8, 0, ws, -1, s.get(), len, NULL, NULL );
+  return s;
+}
+
+/**
+ * Gets a particular piece of information from the user's default locale.
+ *
+ * @param constant The constant specifying which piece of locale information to
+ * get.
+ * @return Returns said information or an emptr string.
+ */
+static zstring get_locale_info( int constant ) {
+  int wlen = ::GetLocaleInfo( LOCALE_USER_DEFAULT, constant, NULL, 0 );
+  if ( !wlen )
+    return zstring();
+  unique_ptr<WCHAR[]> winfo( new WCHAR[ wlen ] );
+  wlen = ::GetLocaleInfo( LOCALE_USER_DEFAULT, constant, winfo.get(), wlen );
+  ZORBA_FATAL( wlen, "GetLocaleInfo() failed" );
+  unique_ptr<char[]> const info( wtoa( winfo.get() ) );
+  return zstring( info.get() );
+}
+
+/**
+ * GetLocaleInfoEx() is available only on Windows Vista and later so we can't
+ * call it directly since we might be running on Windows XP.  Hence, check to
+ * see if it's available and call it indirectly if so.
+ */
+static int Zorba_GetLocaleInfoEx( LPCWSTR lpLocaleName, LCTYPE LCType,
+                                  LPWSTR lpLCData, int cchData ) {
+  typedef int (WINAPI *GetLocaleInfoEx_type)( LPCWSTR, LCTYPE, LPWSTR, int );
+
+  static GetLocaleInfoEx_type GetLocaleInfoEx_ptr;
+  static bool init;
+
+  if ( !init ) {
+    GetLocaleInfoEx_ptr = (GetLocaleInfoEx_type)::GetProcAddress(
+      ::GetModuleHandle( TEXT( "kernel32.dll" ) ), "GetLocaleInfoEx"
+    );
+    init = true;
+  }
+
+  return GetLocaleInfoEx_ptr ?
+    GetLocaleInfoEx_ptr( lpLocaleName, LCType, lpLCData, cchData ) : 0;
+}
+
+/**
  * Gets a particular piece of information from a locale.
  *
  * @param constant The constant specifying which piece of locale information to
@@ -164,7 +220,7 @@ static unique_ptr<WCHAR[]> get_wlocale_name( iso639_1::type lang,
  * @return Returns said information or an empty string.
  */
 static zstring get_locale_info( int constant,
-                                iso639_1::type lang = iso639_1::unknown,
+                                iso639_1::type lang,
                                 iso3166_1::type country = iso3166_1::unknown ) {
   LPCWSTR wlocale_name;
   unique_ptr<WCHAR[]> wlocale_name_ptr;
@@ -175,21 +231,15 @@ static zstring get_locale_info( int constant,
   } else
     wlocale_name = LOCALE_NAME_USER_DEFAULT;
 
-  int wlen = ::GetLocaleInfoEx( wlocale_name, constant, NULL, 0 );
+  int wlen = Zorba_GetLocaleInfoEx( wlocale_name, constant, NULL, 0 );
   if ( !wlen )
     return zstring();
   unique_ptr<WCHAR[]> winfo( new WCHAR[ wlen ] );
-  wlen = ::GetLocaleInfoEx( wlocale_name, constant, winfo.get(), wlen );
+  wlen = Zorba_GetLocaleInfoEx( wlocale_name, constant, winfo.get(), wlen );
   ZORBA_FATAL( wlen, "GetLocaleInfoEx() failed" );
 
-  int const len = WideCharToMultiByte(
-    CP_UTF8, 0, winfo.get(), -1, NULL, 0, NULL, NULL
-  );
-  unique_ptr<char[]> info( new char[ len ] );
-  WideCharToMultiByte(
-    CP_UTF8, 0, winfo.get(), -1, info.get(), len, NULL, NULL
-  );
-  return info.get();
+  unique_ptr<char[]> const info( wtoa( wingo.get() ) );
+  return zstring( info.get() );
 }
 
 #else /* WIN32 */
