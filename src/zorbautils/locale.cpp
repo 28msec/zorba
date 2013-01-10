@@ -238,7 +238,7 @@ static zstring get_locale_info( int constant,
   wlen = Zorba_GetLocaleInfoEx( wlocale_name, constant, winfo.get(), wlen );
   ZORBA_FATAL( wlen, "GetLocaleInfoEx() failed" );
 
-  unique_ptr<char[]> const info( wtoa( wingo.get() ) );
+  unique_ptr<char[]> const info( wtoa( winfo.get() ) );
   return zstring( info.get() );
 }
 
@@ -1062,16 +1062,21 @@ iso639_1::type find_lang( char const *lang ) {
 }
 
 zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
+  zstring w32_format;
+  FOR_EACH( zstring, c, w32_format ) {
+    switch ( *c ) {
+      default:
+        ;
+    }
+  }
+
 #ifdef WIN32
-  zstring const w32_format(
-    get_locale_info( LOCALE_SSHORTDATE, lang, country )
-  );
-  zstring format;
   //
   // Convert Windows' date format for that used by strptime(3); see:
   // http://msdn.microsoft.com/en-us/library/windows/desktop/dd317787(v=vs.85).aspx
   //
-  FOR_EACH( zstring, c, w32_format ) {
+  FOR_EACH( zstring, i, w32_format ) {
+    char const c = *i;
     switch ( c ) {
 
       case 'd':
@@ -1219,7 +1224,8 @@ zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
   // Convert Windows' time format for that used by strptime(3); see:
   // http://msdn.microsoft.com/en-us/library/windows/desktop/dd318148(v=vs.85).aspx
   //
-  FOR_EACH( zstring, c, w32_format ) {
+  FOR_EACH( zstring, i, w32_format ) {
+    char const c = *i;
     switch ( c ) {
 
       case 'h':
