@@ -200,7 +200,7 @@ bool bits_set( IntType flags, IntType bits ) {
 //
 static zstring get_time_ampm( unsigned pm, iso639_1::type lang,
                               iso3166_1::type country ) {
-  return locale::get_time_ampm( pm, lang, country );
+  return locale::get_time_ampm( !!pm, lang, country );
 }
 
 static void locale_find( char conv, char const **bpp, locale_fn_type locale_fn,
