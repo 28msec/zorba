@@ -152,7 +152,7 @@ static void test_locale( char const *conv, locale_fn_type locale_fn, int limit,
 
 typedef int (*unary_fn_type)(int);
 
-int identity( int i ) {
+int my_identity( int i ) {
   return i;
 }
 
@@ -177,7 +177,7 @@ int num_digits( int i ) {
 
 static void test_range( char const *conv, int low, int high,
                         ztm_int_ptr ztm_mbr,
-                        unary_fn_type unary_fn = &identity ) {
+                        unary_fn_type unary_fn = &my_identity ) {
   ztd::itoa_buf_type buf;
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
