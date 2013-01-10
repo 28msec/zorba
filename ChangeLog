@@ -11,11 +11,14 @@ New Features:
     resolving URIs.
   * Can now specify jsoniq-strip-top-level-array option to parse-json() to
     strip the top-level array from JSON streams.
-  * New couchbase module for handling data in a Couchbase server.
+  * New external module client for Couchbase Server.
+  * New external module client for SQLite Database.
+  * New external module client for Oracle NoSQL Database.
   * New info-extraction module for querying concepts and entities in
 	natural language text.
   * Extended cast and castable expression to allow any simple target type
     (as specified by XQuery 3.0)
+>>>>>>> MERGE-SOURCE
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
