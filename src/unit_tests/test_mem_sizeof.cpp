@@ -53,7 +53,8 @@ static void test_map_string_int() {
   m[ key ] = 1;
 
   size_t const expected_size = sizeof( m )
-    + sizeof( map_type::value_type ) + key.capacity();
+    + sizeof( map_type::value_type ) + key.capacity()
+    + sizeof( void* ) * 2;
 
   ASSERT_TRUE( ztd::mem_sizeof( m ) == expected_size );
 }
@@ -87,10 +88,27 @@ static void test_string_empty() {
   ASSERT_TRUE( ztd::mem_sizeof( s ) == sizeof( s ) );
 }
 
+template<>
+void test_string_empty<zstring>() {
+  zstring const s;
+  ASSERT_TRUE(
+    ztd::mem_sizeof( s ) == sizeof( s ) + sizeof( zstring::rep_type )
+  );
+}
+
 template<class StringType>
 static void test_string_not_empty() {
   StringType const s( "hello" );
   ASSERT_TRUE( ztd::mem_sizeof( s ) == sizeof( s ) + s.capacity() );
+}
+
+template<>
+void test_string_not_empty<zstring>() {
+  zstring const s( "hello" );
+  ASSERT_TRUE(
+    ztd::mem_sizeof( s ) ==
+      sizeof( s ) + sizeof( zstring::rep_type ) + s.capacity()
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

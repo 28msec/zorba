@@ -297,8 +297,7 @@ private:
   static size_t const value_type_padding =
       sizeof( typename MapType::value_type )
     - sizeof( typename MapType::key_type )
-    - sizeof( typename MapType::mapped_type )
-    + sizeof( void* ) * 2; // assume two pointers per node, e.g, red-black tree
+    - sizeof( typename MapType::mapped_type );
 };
 
 /**
@@ -308,7 +307,7 @@ private:
 template<class SequenceType>
 struct sequence_size_traits {
   static size_t alloc_sizeof( SequenceType const &s ) {
-    size_t total_size = sizeof( typename SequenceType::size_type );
+    size_t total_size = 0;
     FOR_EACH( typename SequenceType, i, s )
       total_size += mem_sizeof( *i );
     return total_size;
@@ -340,6 +339,13 @@ template<typename K,typename V,typename Comp,class Alloc>
 struct size_traits<std::map<K,V,Comp,Alloc>,false> :
   map_size_traits< std::map<K,V,Comp,Alloc> >
 {
+  static size_t alloc_sizeof( std::map<K,V,Comp,Alloc> const &m ) {
+    return map_size_traits< std::map<K,V,Comp,Alloc> >::alloc_sizeof( m )
+      + m.size() * value_type_padding;
+  }
+private:
+  static size_t const value_type_padding =
+    sizeof( void* ) * 2; // assume two pointers per node, e.g, red-black tree
 };
 
 /**
@@ -360,6 +366,13 @@ template<typename T,class Comp,class Alloc>
 struct size_traits<std::set<T,Comp,Alloc>,false> :
   sequence_size_traits< std::set<T,Comp,Alloc> >
 {
+  static size_t alloc_sizeof( std::set<T,Comp,Alloc> const &s ) {
+    return map_size_traits< std::set<T,Comp,Alloc> >::alloc_sizeof( s )
+      + s.size() * value_type_padding;
+  }
+private:
+  static size_t const value_type_padding =
+    sizeof( void* ) * 2; // assume two pointers per node, e.g, red-black tree
 };
 
 /**
