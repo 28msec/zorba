@@ -297,7 +297,8 @@ private:
   static size_t const value_type_padding =
       sizeof( typename MapType::value_type )
     - sizeof( typename MapType::key_type )
-    - sizeof( typename MapType::mapped_type );
+    - sizeof( typename MapType::mapped_type )
+    + sizeof( void* ) * 2; // assume two pointers per node, e.g, red-black tree
 };
 
 /**
@@ -307,7 +308,7 @@ private:
 template<class SequenceType>
 struct sequence_size_traits {
   static size_t alloc_sizeof( SequenceType const &s ) {
-    size_t total_size = 0;
+    size_t total_size = sizeof( typename SequenceType::size_type );
     FOR_EACH( typename SequenceType, i, s )
       total_size += mem_sizeof( *i );
     return total_size;
