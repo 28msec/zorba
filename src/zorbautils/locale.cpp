@@ -1071,19 +1071,19 @@ zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
   // Convert Windows' date format for that used by strptime(3); see:
   // http://msdn.microsoft.com/en-us/library/windows/desktop/dd317787(v=vs.85).aspx
   //
-  FOR_EACH( zstring, i, w32_format ) {
+  for ( char const *i = w32_format.c_str(); *i; ++i ) {
     char const c = *i;
     switch ( c ) {
 
       case 'd':
-        if ( buf[1] == c )
-          if ( buf[2] == c )
-            if ( buf[3] == c )
-              format += "%A", buf += 3; // dddd = full weekday name
+        if ( i[1] == c )
+          if ( i[2] == c )
+            if ( i[3] == c )
+              format += "%A", i += 3;   // dddd = full weekday name
             else
-              format += "%a", buf += 2; // ddd = abbreviated weekday name
+              format += "%a", i += 2;   // ddd = abbreviated weekday name
           else
-            format += "%d", buf += 1;   // dd = day of month: 01-31
+            format += "%d", i += 1;     // dd = day of month: 01-31
         else
           format += "%e";               // d = day of month: 1-31
         break;
@@ -1093,34 +1093,34 @@ zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
         // There's no equivalent strftime(3) conversion specification: just
         // ignore it and hope for the best.
         //
-        if ( buf[1] == c )
-          ++buf;                        // gg = same as g
+        if ( i[1] == c )
+          ++i;                          // gg = same as g
         break;
 
       case 'M':
-        if ( buf[1] == c )
-          if ( buf[2] == c )
-            if ( buf[3] == c )
-              format += "%B", buf += 3; // MMMM = full month name
+        if ( i[1] == c )
+          if ( i[2] == c )
+            if ( i[3] == c )
+              format += "%B", i += 3;   // MMMM = full month name
             else
-              format += "%b", buf += 2; // MMM = abbreviated month name
+              format += "%b", i += 2;   // MMM = abbreviated month name
           else
-            format += "%m", buf += 1;   // MM = month: 01-12
+            format += "%m", i += 1;     // MM = month: 01-12
         else
           format += "%m";               // M = month: 1-12
         break;
 
       case 'y':
-        if ( buf[1] == c )
-          if ( buf[2] == c )
-            if ( buf[3] == c ) {
-              format += "%Y", buf += 3; // yyyy = 4-digit year
-              if ( buf[3] == c )
-                ++buf;                  // yyyyy = same as yyyy
+        if ( i[1] == c )
+          if ( i[2] == c )
+            if ( i[3] == c ) {
+              format += "%Y", i += 3;   // yyyy = 4-digit year
+              if ( i[3] == c )
+                ++i;                    // yyyyy = same as yyyy
             } else
               ;
           else
-            format += "%y", buf += 1;   // yy = 2-digit year
+            format += "%y", i += 1;     // yy = 2-digit year
         else
           format += "%y";               // y = 1-digit year
         break;
@@ -1220,40 +1220,40 @@ zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
   // Convert Windows' time format for that used by strptime(3); see:
   // http://msdn.microsoft.com/en-us/library/windows/desktop/dd318148(v=vs.85).aspx
   //
-  FOR_EACH( zstring, i, w32_format ) {
+  for ( char const *i = w32_format.c_str(); *i; ++i ) {
     char const c = *i;
     switch ( c ) {
 
       case 'h':
-        if ( buf[1] == 'h' )
-          format += "%I", ++buf;
+        if ( i[1] == 'h' )
+          format += "%I", ++i;
         else
           format += "%l";
         break;
 
       case 'H':
-        if ( buf[1] == 'H' )
-          format += "%H", ++buf;
+        if ( i[1] == 'H' )
+          format += "%H", ++i;
         else
           format += "%k";
         break;
 
       case 'm':
         format += "%M";
-        if ( buf[1] == 'm' )
-          ++buf;
+        if ( i[1] == 'm' )
+          ++i;
         break;
 
       case 's':
         format += "%S";
-        if ( buf[1] == 's' )
-          ++buf;
+        if ( i[1] == 's' )
+          ++i;
         break;
 
       case 't':
         format += "%p";
-        if ( buf[1] == 't' )
-          ++buf;
+        if ( i[1] == 't' )
+          ++i;
         break;
 
       default:
