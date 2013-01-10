@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <zorba/config.h>
 
+#include "util/mem_sizeof.h"
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
@@ -105,6 +106,10 @@ public:
   void decode(std::vector<char>&);
 
   uint32_t hash() const;
+
+  size_t alloc_size() const {
+    return ztd::alloc_sizeof( theData );
+  }
 };
 
 
@@ -161,6 +166,10 @@ public:
   zstring str() const;
 
   uint32_t hash() const;
+
+  size_t alloc_size() const {
+    return ztd::alloc_sizeof( theData );
+  }
 
 private:
   void insertData(const char* aCharStar, size_t len);

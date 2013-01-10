@@ -1836,7 +1836,9 @@ bool StructuralAnyUriItem::inSameCollection(const store::Item_t& aOther) const
 
 size_t StructuralAnyUriItem::alloc_size() const
 {
-  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theOrdPath );
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theOrdPath )
+        + ztd::alloc_sizeof( theEncodedValue );
 }
 
 
@@ -3863,7 +3865,7 @@ void StreamableBase64BinaryItem::materialize() const
 
 size_t HexBinaryItem::alloc_size() const
 {
-  return AtomicItem::alloc_size() + theValue.size();
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 
 
