@@ -5,10 +5,13 @@ version 2.8
 
 New Features:
   * (bug #1039284) Implemented jn:json-doc().
+  * (bug #867363) Added http-uri-resolution feature to disable HTTP
+	when resolving URIs.
   * (bug #867363) Added http-uri-resolution feature to disable HTTP when
     resolving URIs.
   * Can now specify jsoniq-strip-top-level-array option to parse-json() to
     strip the top-level array from JSON streams.
+  * New external module client for Couchbase Server.
   * New external module client for SQLite Database.
   * New external module client for Oracle NoSQL Database.
   * New info-extraction module for querying concepts and entities in
