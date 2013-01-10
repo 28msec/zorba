@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "stdafx.h"
+
 #include <cassert>
 #ifdef WIN32
 # include <windows.h>
