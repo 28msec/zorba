@@ -579,6 +579,14 @@ namespace zorba{
 
     class UuidIterator;
 
+    class ReferenceIterator;
+
+    class HasReferenceIterator;
+
+    class AssignReferenceIterator;
+
+    class DereferenceIterator;
+
 #ifndef ZORBA_NO_XMLSCHEMA
     class ValidateIterator;
 #endif
@@ -1564,6 +1572,18 @@ public:
 
     virtual void beginVisit ( const UuidIterator& ) = 0;
     virtual void endVisit   ( const UuidIterator& ) = 0;
+
+    virtual void beginVisit ( const ReferenceIterator& ) = 0;
+    virtual void endVisit   ( const ReferenceIterator& ) = 0;
+
+    virtual void beginVisit ( const HasReferenceIterator& ) = 0;
+    virtual void endVisit   ( const HasReferenceIterator& ) = 0;
+
+    virtual void beginVisit ( const AssignReferenceIterator& ) = 0;
+    virtual void endVisit   ( const AssignReferenceIterator& ) = 0;
+
+    virtual void beginVisit ( const DereferenceIterator& ) = 0;
+    virtual void endVisit   ( const DereferenceIterator& ) = 0;
 
 #ifndef ZORBA_NO_XMLSCHEMA
     virtual void beginVisit ( const ValidateIterator& ) = 0;

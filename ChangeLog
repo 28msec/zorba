@@ -5,6 +5,8 @@ version 2.8
 
 New Features:
   * (bug #1039284) Implemented jn:json-doc().
+  * http://www.zorba-xquery.com/modules/references to (de)reference
+    XML nodes or JSON objects and arrays that are stored in a collection
   * (bug #867363) Added http-uri-resolution feature to disable HTTP
 	when resolving URIs.
   * (bug #867363) Added http-uri-resolution feature to disable HTTP when
