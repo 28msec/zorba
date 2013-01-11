@@ -710,7 +710,7 @@ declare %private %an:sequential function xqdoc2html:copy-example(
 
       variable $specContent2 := fn:replace($specContent,
                                           "\$RBKT_SRC_DIR",
-                                          fn:concat($examplePath,"/rbkt"));
+                                          fn:concat($examplePath,"/test/rbkt"));
 
       variable $specLines := fn:tokenize($specContent2, "[\n\r]+");
 

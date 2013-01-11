@@ -5,12 +5,22 @@ version 2.8
 
 New Features:
   * (bug #1039284) Implemented jn:json-doc().
+  * (bug #867363) Added http-uri-resolution feature to disable HTTP
+	when resolving URIs.
   * (bug #867363) Added http-uri-resolution feature to disable HTTP when
     resolving URIs.
   * Can now specify jsoniq-strip-top-level-array option to parse-json() to
     strip the top-level array from JSON streams.
+  * In the datetime module, added parse-date(), parse-dateTime(), parse-time(),
+    and utc-offset().
+  * New info-extraction module for querying concepts and entities in natural
+    language text.
+  * New external module client for Couchbase Server.
+  * New external module client for SQLite Database.
+  * New external module client for Oracle NoSQL Database.
   * New info-extraction module for querying concepts and entities in
-	natural language text.
+    natural language text.
+  * New JDBC module for manipulating SQL relational databases.
   * Extended cast and castable expression to allow any simple target type
     (as specified by XQuery 3.0)
 
@@ -25,6 +35,8 @@ Optimizations:
   * Convert LET vars whose domain sequence has exactly one item to FOR vars.
 
 Bug Fixes/Other Changes:
+  * Fixed bug #949064  (faulty QName should be printed in the error message)
+  * Fixed bug #1072644 (broken parser error location)
   * Change XQXQ (XQuery-for-XQuery) module now part of Zorba core
   * Fixed mustCopyInputNodes() method of no-copy, and jsoniq functions.
   * Fixed bug #868640 (Node lifetime is shorter than expected due to let

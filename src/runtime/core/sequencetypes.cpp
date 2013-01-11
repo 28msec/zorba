@@ -230,7 +230,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   const UserDefinedXQType* udt;
   store::SchemaTypeCode targetType;
 
-  const TypeManager* tm = theSctx->get_typemanager();
+  TypeManager* tm = theSctx->get_typemanager();
 
   CastIteratorState* state;
   DEFAULT_STACK_INIT(CastIteratorState, state, planState);
@@ -336,7 +336,7 @@ bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   bool res;
   store::Item_t item;
 
-  const TypeManager* tm = theSctx->get_typemanager();
+  TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

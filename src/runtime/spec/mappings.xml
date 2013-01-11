@@ -81,6 +81,11 @@
       define="ZORBA_FULL_TEXT_FN_NS"
       prefix="full-text"/>
 
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/datetime"
+      define="ZORBA_DATETIME_FN_NS"
+      prefix="fn-zorba-dateTime"/>
+
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" 
                      define="ZORBA_XQDOC_FN_NS" 
                      prefix="fn-zorba-xqdoc"/>
