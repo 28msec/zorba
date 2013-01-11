@@ -8,14 +8,18 @@ New Features:
   * New external module for interfacing with SQLite Database.
   * New external module for interfacing with Oracle NoSQL Database.
   * New external module for interfacing with relational databases via JDBC.
+  * New info-extraction module for querying concepts and entities in
+    natural language text.
   * Implemented JSONiq's json-doc() function.
   * http-uri-resolution feature to disable HTTP when resolving URIs.
   * Option to specify that parse-json() strips the top-level array.
-  * New info-extraction module for querying concepts and entities in
-    natural language text.
   * Extended cast and castable expression to allow any simple target type
-    (as specified by XQuery 3.0)
+    (as specified by XQuery 3.0).
   * The XQXQ (XQuery-for-XQuery) module became part of the Zorba core.
+  * The datetime module became part of the Zorba core.
+  * In the datetime module, added parse-date(), parse-dateTime(), parse-time(),
+    and utc-offset().
+  * Includes test driver for W3C XQuery 3.0 Test Suite (aka FOTS).
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
