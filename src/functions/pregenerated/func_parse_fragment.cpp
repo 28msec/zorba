@@ -78,6 +78,19 @@ void populate_context_parse_fragment(static_context* sctx)
 
 
       {
+    DECL_WITH_KIND(sctx, fn_zorba_xml_canonicalize,
+        (createQName("http://www.zorba-xquery.com/modules/xml","","canonicalize"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_XML_CANONICALIZE_2);
+
+  }
+
+
+
+
+      {
     DECL_WITH_KIND(sctx, fn_parse_xml_fragment_3_0,
         (createQName("http://www.w3.org/2005/xpath-functions","","parse-xml-fragment"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 

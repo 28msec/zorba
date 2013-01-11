@@ -71,6 +71,7 @@ xquery version "3.0";
 module namespace x = "http://www.zorba-xquery.com/modules/xml";
 
 import schema namespace parse-xml-options = "http://www.zorba-xquery.com/modules/xml-options";
+import schema namespace canonicalize-xml-options = "http://www.zorba-xquery.com/modules/xml-canonicalize-options";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace err = "http://www.w3.org/xqt-errors";
@@ -435,5 +436,36 @@ declare function x:parse-xml-fragment(
  :)
 declare function x:canonicalize(
   $xml-string as xs:string
+  ) as xs:string external;
+
+
+(:~
+ : <br/><p>
+ : Note: This function is not streamable, if a streamable string is used
+ : as input for the function it will be materialized
+ : </p><br/>
+ : 
+ : A function to canonicalize the given XML string.
+ :
+ : @param $xml-string an XML string to canonicalize.
+ : @param $options an XML containg options for the canonicalize function. 
+ :        The options available are the following:
+ :        <options>
+ :          <xml-parse-dtdload/>
+ :          <xml-parse-dtdattr/>
+ :          <xml-parse-dtdvalid/>
+ :          <xml-parse-noblanks/>
+ :          <xml-parse-nonet/>
+ :          <xml-parse-nsclean/>
+ :          <xml-parse-nocdata/>
+ :        </options>
+ :
+ : @return the canonicalized XML string.
+ :
+ : @error err:CANO0001 invalid input.
+ :)
+declare function x:canonicalize(
+  $xml-string as xs:string,
+  $options as element()
   ) as xs:string external;
 

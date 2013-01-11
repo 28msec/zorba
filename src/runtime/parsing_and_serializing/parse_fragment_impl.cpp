@@ -313,6 +313,70 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
 /*******************************************************************************
   14.9.1.1 fn-zorba-xml:canonicalize
 ********************************************************************************/
+void processOptions(store::Item_t item, int& props, static_context* theSctx, const QueryLoc& loc)
+{
+  store::Item_t child;  
+  
+  if (item.getp() == NULL)
+    return;
+
+  store::Iterator_t children = item->getChildren();
+  children->open();
+  
+  /*
+   XML_PARSE_NOENT = 2 : substitute entities
+   XML_PARSE_DTDLOAD = 4 : load the external subset
+   XML_PARSE_DTDATTR = 8 : default DTD attributes
+   XML_PARSE_DTDVALID = 16 : validate with the DTD
+   XML_PARSE_NOBLANKS = 256 : remove blank nodes
+   XML_PARSE_NONET = 2048 : Forbid network access
+   XML_PARSE_NSCLEAN = 8192 : remove redundant namespaces declarations
+   XML_PARSE_NOCDATA = 16384 : merge CDATA as text nodes
+  */
+
+  while (children->next(child))
+  {
+    if (child->getNodeKind() != store::StoreConsts::elementNode)
+      continue;
+  
+    if(child->getNodeName()->getLocalName() == "xml-parse-noent")
+    {
+      props |= XML_PARSE_NOENT;
+    }
+    else if(child->getNodeName()->getLocalName() == "xml-parse-dtdload")
+    {
+      props |= XML_PARSE_DTDLOAD;
+    }
+    else if(child->getNodeName()->getLocalName() == "xml-parse-dtdattr")
+    {
+      props |= XML_PARSE_DTDATTR;
+    }
+    else if(child->getNodeName()->getLocalName() == "xml-parse-dtdvalid")
+    {
+      props |= XML_PARSE_DTDVALID;
+    }
+    else if(child->getNodeName()->getLocalName() == "xml-parse-noblanks")
+    {
+      props |= XML_PARSE_NOBLANKS;
+    }
+    else if(child->getNodeName()->getLocalName() == "xml-parse-nonet")
+    {
+      props |= XML_PARSE_NONET;
+    }
+    else if(child->getNodeName()->getLocalName() == "xml-parse-nsclean")
+    {
+      props |= XML_PARSE_NSCLEAN;
+    }
+    else if(child->getNodeName()->getLocalName() == "xml-parse-nocdata")
+    {
+      props |= XML_PARSE_NOCDATA;
+    }
+  }
+
+  children->close();
+}
+
+
 bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   zstring lDocString;
@@ -320,16 +384,27 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
   xmlChar* lResult;
   std::istream* lInstream = NULL;
   char buf[1024];
+  store::Item_t tempItem;
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  FnZorbaCanonicalizeIteratorState* state;
+  DEFAULT_STACK_INIT(FnZorbaCanonicalizeIteratorState, state, planState);
   // Read the XML string
   // if the XML string is a streamable string it will have to be materialized
   // since the libxml2 xmlReadMemory functions can't work with streamable strings 
   consumeNext(result, theChildren[0].getp(), planState);
+  
+ 
+  
+  // read options
+  if (theChildren.size() == 2)
+  {
+    consumeNext(tempItem, theChildren[1].getp(), planState);
+    processOptions(tempItem, state->theProperties, theSctx, loc);
+  }
+
   try
   {
-    if (result->isStreamable())
+   if (result->isStreamable())
     {
       lInstream = &result->getStream();
       while (lInstream->good())
@@ -342,8 +417,7 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
     {
       result->getStringValue2(lDocString);  
     }
-    lDoc = xmlReadMemory(lDocString.c_str(), lDocString.size(), "input.xml", NULL, XML_PARSE_NOERROR);
-    
+    lDoc = xmlReadMemory(lDocString.c_str(), lDocString.size(), "input.xml", NULL, state->theProperties);
     if (!lDoc)
     {
       zstring lErrorMsg;
@@ -364,6 +438,18 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
   }
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, lDocString), state);
   STACK_END(state);
+}
+
+
+void FnZorbaCanonicalizeIteratorState::init(PlanState& planState)
+{
+  theProperties = XML_PARSE_NOERROR;
+}
+
+void FnZorbaCanonicalizeIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theProperties = 0;
 }
 
 /*******************************************************************************
