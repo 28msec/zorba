@@ -136,7 +136,19 @@
        that is not defined in the static context, except for an ElementName in
        an ElementTest or an AttributeName in an AttributeTest.
       </comment>
-      <value>"$1": undefined $2</value>
+      <value>$1</value>
+
+      <entry key="VariableName_2">
+        <value>"$2": undeclared variable</value>
+      </entry>
+
+      <entry key="SchemaAttributeName_2">
+        <value>"$2": undefined schema-attribute name</value>
+      </entry>
+
+      <entry key="SchemaElementName_2">
+        <value>"$2": undefined schema-element name</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPST0017">
@@ -443,6 +455,10 @@
        is of nonzero length and is not in the lexical space of \c xs:anyURI.
       </comment>
       <value>${"1": }invalid URI literal${: 2}</value>
+
+      <entry key="BadHexDigit_3">
+        <value>'$3': invalid hexedecimal digit</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQST0047">
@@ -714,7 +730,19 @@
        It is a dynamic error if evaluation of an expression relies on some part
        of the dynamic context that has not been assigned a value.
       </comment>
-      <value>"$1": $2</value>
+      <value>$1</value>
+
+      <entry key="VariableHasNoValue_2">
+        <value>"$2": variable has no value</value>
+      </entry>
+
+      <entry key="VariableUndeclared_2">
+        <value>"$2": undeclared variable</value>
+      </entry>
+
+      <entry key="ContextUndeclared_2">
+        <value>$2 not declared</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPDY0050">
@@ -996,7 +1024,20 @@
       <comment>
        Invalid lexical value.
       </comment>
-      <value>"$1": invalid lexical value${: 2}</value>
+      <value>$1</value>
+
+      <entry key="BadLexicalQName_2">
+        <value>"$2": value is not a valid lexical QName</value>
+      </entry>
+
+      <entry key="NoURIforPrefix_2">
+        <value>no namespace URI provided for prefix in lexical QName "$2"</value>
+      </entry>
+
+      <entry key="NoCastTo_234">
+        <value>"$2": value of type $3 is not castable to type $4</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="FOCA0003">
@@ -1164,7 +1205,52 @@
       <comment>
        Invalid value for cast/constructor.
       </comment>
-      <value>${"1": }invalid value for cast/constructor${: 2}</value>
+
+      <value>$1</value>
+
+      <entry key="NoCastTo_234">
+        <value>"$2": value of type $3 is not castable to type $4</value>
+      </entry>
+
+      <entry key="NoCastTo_234o">
+        <value>"$2": value is not castable to type $3${: 4}</value>
+      </entry>
+
+      <entry key="LocalNotNCName_2">
+        <value>"$2": local name in qname is not an xs:NCName</value>
+      </entry>
+
+      <entry key="PrefixNotNCName_2">
+        <value>"$2": prefix in qname is not an xs:NCName</value>
+      </entry>
+
+      <entry key="NameNotNCName_2">
+        <value>"$2": name is not an xs:NCName</value>
+      </entry>
+
+      <entry key="PrefixNotBound_2">
+        <value>"$2": prefix has no known namespace binding</value>
+      </entry>
+
+      <entry key="Base64BadChar_2">
+        <value>"$2": invalid Base64 character</value>
+      </entry>
+
+      <entry key="Base64Multiple4">
+        <value>Base64 data must be a multiple of 4 characters</value>
+      </entry>
+
+      <entry key="HexBinaryMustBeEven">
+        <value>HexBinary value must contain an even number of characters</value>
+      </entry>
+
+      <entry key="BadHexDigit_2">
+        <value>'$2': invalid hexedecimal digit</value>
+      </entry>
+
+      <entry key="NoTypeInCtx_2">
+        <value>"$2": type no defined in current context</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="FORG0002">
@@ -1522,7 +1608,7 @@
        affects an element node by introducing a new namespace binding that
        conflicts with one of its existing namespace bindings.
       </comment>
-      <value>"$1": namespace binding conflicts with $2=$3</value>
+      <value>"$1": qname causes namespace binding conflict: prefix $2 cannot be bound to both $3 and $4</value>
     </diagnostic>
 
     <diagnostic code="XUDY0024">
@@ -1794,6 +1880,14 @@
       <value>"$1": builtin sequential function not implemented as sequential</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0011" name="INVALID_LOCALE">
+      <value>"$1": invalid locale</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP0012" name="UNKNOWN_LOCALE">
+      <value>"$1": unknown locale</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0013" name="FXCHARHEAP_EXCEPTION">
       <value>FxCharHeap error: $1 ($2)</value>
     </diagnostic>
@@ -1972,8 +2066,8 @@
       <value>XQuery not compiled in debug mode</value>
     </diagnostic>
 
-     <diagnostic code="ZAPI0011" name="ELEMENT_NOT_DECLARED">
-       <value>"$1": undefined $2</value>
+     <diagnostic code="ZAPI0011" name="VARIABLE_NOT_DECLARED">
+       <value>"$1": undeclared variable</value>
      </diagnostic>
 
     <diagnostic code="ZAPI0014" name="INVALID_ARGUMENT">
@@ -2478,6 +2572,10 @@
       <value>stream transcoding error ($1)</value>
     </diagnostic>
 
+    <diagnostic code="ZOSE0007" name="UNSUPPORTED_LOCALE">
+      <value>"$1": unsupported locale</value>
+    </diagnostic>
+
     <!--////////// Zorba Store Errors //////////////////////////////////////-->
 
     <diagnostic code="ZSTR0001" name="INDEX_ALREADY_EXISTS">
@@ -2607,6 +2705,28 @@
     </diagnostic>
     <diagnostic code="XSST0010">
       <value>"continue loop" statement not inside while statement</value>
+    </diagnostic>
+
+   <!--////////// dateTime Parse Errors ////////////////////////////////////-->
+
+    <diagnostic code="ZDTP0001" name="INVALID_SPECIFICATION">
+      <value>'$1': invalid % conversion specification</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0002" name="INSUFFICIENT_BUFFER">
+      <value>"$1": insufficient value to parse for "$2"</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0003" name="INVALID_VALUE">
+      <value>"$1": invalid value for conversion specification(s) %$2</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0004" name="LITERAL_MISMATCH">
+      <value>'$1': literal character mismatched '$2'</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0005" name="INCOMPLETE_DATE_OR_TIME">
+      <value>'$1': incomplete date, time, or dateTime format</value>
     </diagnostic>
 
    <!--////////// JSON Parse Errors ////////////////////////////////////////-->
@@ -3005,10 +3125,6 @@
       <value>"$2": invalid authority for "file" scheme</value>
     </entry>
 
-    <entry key="BadHexDigit_3">
-      <value>'$3': invalid hexedecimal digit</value>
-    </entry>
-
     <entry key="BadHexSequence">
       <value>invalid hexedecimal sequence</value>
     </entry>
@@ -3089,24 +3205,12 @@
       <value>unsupported XQuery version</value>
     </entry>
 
-    <entry key="Base64BadChar">
-      <value>invalid Base64 character</value>
-    </entry>
-
-    <entry key="Base64Multiple4">
-      <value>Base64 data must be a multiple of 4 characters</value>
-    </entry>
-
     <entry key="BaseURI">
       <value>base URI</value>
     </entry>
 
     <entry key="BoxCondTooManyColumns">
       <value>box condition has more columns than index</value>
-    </entry>
-
-    <entry key="CastFromToFailed_34">
-      <value>$3 to $4 cast failed</value>
     </entry>
 
     <entry key="CharExpected_3">
@@ -3261,10 +3365,6 @@
       <value>valid values are: yes, no, omit</value>
     </entry>
 
-    <entry key="HexBinaryMustBeEven">
-      <value>HexBinary value must contain an even number of characters</value>
-    </entry>
-
     <entry key="IncompleteKeyInIndexBuild">
       <value>incomplete key during index build</value>
     </entry>
@@ -3283,10 +3383,6 @@
 
     <entry key="MustBeAbsoluteURI">
       <value>must be absolute</value>
-    </entry>
-
-    <entry key="MustBeNCName">
-      <value>must be an xs:NCName</value>
     </entry>
 
     <entry key="NoAttrNodesInDocument">
@@ -3421,10 +3517,6 @@
       <value>can not treat as "$4"</value>
     </entry>
 
-    <entry key="NoTypeInCtx">
-      <value>undefined type in current context</value>
-    </entry>
-
     <entry key="NoTypeInMainModule_4">
       <value>type of variable "$4" is not among the in-scope types of the main module</value>
     </entry>
@@ -3543,14 +3635,6 @@
 
     <entry key="SEPM0009_NotOmit">
       <value>the standalone attribute has a value other than "omit"</value>
-    </entry>
-
-    <entry key="SchemaAttributeName">
-      <value>schema-attribute name</value>
-    </entry>
-
-    <entry key="SchemaElementName">
-      <value>schema-element name</value>
     </entry>
 
     <entry key="SchemaOutOfMemory">
@@ -3802,18 +3886,6 @@
       <value>"$2": variable value must be single item</value>
     </entry>
 
-    <entry key="Variable">
-      <value>variable</value>
-    </entry>
-
-    <entry key="VariabledHasNoValue">
-      <value>variable has no value</value>
-    </entry>
-
-    <entry key="VariabledUndeclared">
-      <value>undeclared variable</value>
-    </entry>
-
     <entry key="XMLSchema">
       <value>XML schema</value>
     </entry>
@@ -3832,6 +3904,10 @@
 
     <entry key="Zorba API error">
       <value>Zorba API error</value>
+    </entry>
+
+    <entry key="Zorba core module error">
+      <value>Zorba core module error</value>
     </entry>
 
     <entry key="Zorba data-definition error">

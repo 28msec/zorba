@@ -146,7 +146,6 @@ ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const loca
   return parserError;
 }
 
-
 ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const location& loc, Error const &code)
 {
   parserError = new ZorbaParserError(_message, loc, code);
@@ -158,7 +157,6 @@ ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const Qu
   parserError = new ZorbaParserError(_message, loc, code);
   return parserError;
 }
-
 
 bool xquery_driver::parse_stream(std::istream& in, const zstring& aFilename)
 {

@@ -82,7 +82,7 @@ static iso639_1::type get_lang_from( store::Item_t lang_item,
       ),
       ERROR_LOC( loc )
     );
-  if ( iso639_1::type const lang = find_lang( lang_string.c_str() ) )
+  if ( iso639_1::type const lang = find_lang( lang_string ) )
     return lang;
   throw XQUERY_EXCEPTION(
     err::FTST0009 /* lang not supported */,

@@ -465,6 +465,10 @@ static_context::ZORBA_FULL_TEXT_FN_NS =
 #endif /* ZORBA_NO_FULL_TEXT */
 
 const char*
+static_context::ZORBA_DATETIME_FN_NS =
+"http://www.zorba-xquery.com/modules/datetime";
+
+const char*
 static_context::ZORBA_XML_FN_OPTIONS_NS =
 "http://www.zorba-xquery.com/modules/xml-options";
 
@@ -547,6 +551,7 @@ bool static_context::is_builtin_module(const zstring& ns)
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
 #endif /* ZORBA_NO_FULL_TEXT */
+            ns == ZORBA_DATETIME_FN_NS ||
 #ifdef ZORBA_WITH_JSON
             ns == JSONIQ_FN_NS ||
 #endif /* ZORBA_WITH_JSON */
@@ -603,6 +608,7 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
+            ns == ZORBA_DATETIME_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
@@ -2050,8 +2056,7 @@ void static_context::set_default_function_ns(
 void static_context::bind_ns(
     const zstring& prefix,
     const zstring& ns,
-    const QueryLoc& loc,
-    const Error& err)
+    const QueryLoc& loc)
 {
   if (theNamespaceBindings == NULL)
   {
@@ -2062,9 +2067,7 @@ void static_context::bind_ns(
 
   if (!theNamespaceBindings->insert(prefix, temp))
   {
-    throw XQUERY_EXCEPTION_VAR(err,
-      ERROR_PARAMS(prefix, temp),
-      ERROR_LOC(loc));
+    RAISE_ERROR(err::XQST0033, loc, ERROR_PARAMS(prefix, ns));
   }
 }
 
@@ -2080,19 +2083,17 @@ bool static_context::lookup_ns(
     zstring& ns,
     const zstring& prefix,
     const QueryLoc& loc,
-    const Error& err) const
+    bool raiseError) const
 {
   if (theNamespaceBindings == NULL || !theNamespaceBindings->get(prefix, ns))
   {
     if (theParent != NULL)
     {
-      return theParent->lookup_ns(ns, prefix, loc, err);
+      return theParent->lookup_ns(ns, prefix, loc, raiseError);
     }
-    else if (err != zerr::ZXQP0000_NO_ERROR)
+    else if (raiseError)
     {
-      throw XQUERY_EXCEPTION_VAR(
-        err, ERROR_PARAMS( prefix ), ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(prefix));
     }
     else
     {
@@ -2101,11 +2102,9 @@ bool static_context::lookup_ns(
   }
   else if (!prefix.empty() && ns.empty())
   {
-    if (err != zerr::ZXQP0000_NO_ERROR)
+    if (raiseError)
     {
-      throw XQUERY_EXCEPTION_VAR(
-        err, ERROR_PARAMS( prefix ), ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(prefix));
     }
     else
     {
@@ -2193,10 +2192,7 @@ void static_context::get_namespace_bindings(store::NsBindings& bindings) const
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::bind_var(
-    var_expr* varExpr,
-    const QueryLoc& loc,
-    const Error& err)
+void static_context::bind_var(var_expr* varExpr, const QueryLoc& loc)
 {
   if (theVariablesMap == NULL)
   {
@@ -2213,8 +2209,7 @@ void static_context::bind_var(
 
     if (!theVariablesMap->insert(qname, vi))
     {
-      throw XQUERY_EXCEPTION_VAR(err,
-      ERROR_PARAMS(qname->getStringValue()), ERROR_LOC(loc));
+      goto error;
     }
 
     if (varExpr->get_kind() == var_expr::prolog_var)
@@ -2224,9 +2219,31 @@ void static_context::bind_var(
   {
     if (!theVariablesMap->insert(qname, vi))
     {
-      throw XQUERY_EXCEPTION_VAR(err,
-      ERROR_PARAMS(qname->getStringValue()), ERROR_LOC(loc));
+      goto error;
     }
+  }
+
+  return;
+
+ error:
+  switch (varExpr->get_kind())
+  {
+  case var_expr::let_var:
+  {
+    RAISE_ERROR(err::XQST0039, loc, ERROR_PARAMS(qname->getStringValue()));
+  }
+  case var_expr::win_var:
+  case var_expr::wincond_out_var:
+  case var_expr::wincond_out_pos_var:
+  case var_expr::wincond_in_var:
+  case var_expr::wincond_in_pos_var:
+  {
+    RAISE_ERROR(err::XQST0103, loc, ERROR_PARAMS(qname->getStringValue()));
+  }
+  default:
+  {
+    RAISE_ERROR(err::XQST0049, loc, ERROR_PARAMS(qname->getStringValue()));
+  }
   }
 }
 
@@ -4090,7 +4107,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 
       if (!ve->is_private())
       {
-        bind_var(ve, loc, err::XQST0049);
+        bind_var(ve, loc);
       }
       else
       {

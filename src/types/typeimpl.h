@@ -739,14 +739,16 @@ public:
       const xqtref_t& baseType,
       TypeConstants::quantifier_t quantifier,
       type_category_t typeCategory,
-      content_kind_t contentKind);
+      content_kind_t contentKind,
+      bool builtin = false);
 
   // Constructor for List types
   UserDefinedXQType(
       const TypeManager* manager,
       store::Item_t qname,
       const xqtref_t& baseType,
-      const XQType* listItemType);
+      const XQType* listItemType,
+      bool builtin = false);
 
   // Constructor for Union types
   UserDefinedXQType(
@@ -754,7 +756,8 @@ public:
       store::Item_t qname,
       const xqtref_t& baseType,
       TypeConstants::quantifier_t quantifier,
-      const std::vector<xqtref_t>& unionItemTypes);
+      const std::vector<xqtref_t>& unionItemTypes,
+      bool builtin = false);
 
   virtual ~UserDefinedXQType() {}
 

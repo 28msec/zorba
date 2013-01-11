@@ -17,6 +17,7 @@
 
 #include "util/stl_util.h"
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "types/typemanager.h"
@@ -3644,20 +3645,23 @@ void DirElemContentList::accept( parsenode_visitor &v ) const
   dir_content_hv.rbegin();
 
   const DirElemContent* lPrev = 0;
-  // To find out if a DirElemContent is boundary whitespace, the current item cannot be accepted till
-  // the next item (relative to the current item) is passed to check_boundary_whitespace.
+  // To find out if a DirElemContent is boundary whitespace, the current item
+  // cannot be accepted till the next item (relative to the current item) is
+  // passed to check_boundary_whitespace.
   v.begin_check_boundary_whitespace();
-  for (; it!=dir_content_hv.rend(); ++it)
+  for (; it != dir_content_hv.rend(); ++it)
   {
     const DirElemContent* e_p = &**it;
     v.check_boundary_whitespace (*e_p);
-    if (lPrev != 0) {
+    if (lPrev != 0) 
+    {
       ACCEPT_CHK(lPrev);
     }
     lPrev = e_p;
   }
   v.end_check_boundary_whitespace();
-  if (lPrev != 0) {
+  if (lPrev != 0) 
+  {
     ACCEPT_CHK(lPrev);
   }
   END_VISITOR();
@@ -3666,11 +3670,33 @@ void DirElemContentList::accept( parsenode_visitor &v ) const
 
 // [97] DirAttributeList
 
-DirAttributeList::DirAttributeList(
-  const QueryLoc& loc)
-:
+DirAttributeList::DirAttributeList(const QueryLoc& loc)
+  :
   parsenode(loc)
-{}
+{
+}
+
+
+void DirAttributeList::push_back(rchandle<DirAttr> attr)
+{
+  const QName* qname = attr->get_name();
+
+  if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns")
+  {
+    std::vector<rchandle<DirAttr> >::const_iterator ite = theAttributes.begin();
+    std::vector<rchandle<DirAttr> >::const_iterator end = theAttributes.end();
+    for (; ite != end; ++ite)
+    {
+      if (*((*ite)->get_name()) == *(qname))
+      {
+        RAISE_ERROR(err::XQST0071, attr->get_location(),
+        ERROR_PARAMS(attr->get_name()->get_qname()));
+      }
+    }
+  }
+
+  theAttributes.push_back(attr);
+}
 
 
 void DirAttributeList::accept( parsenode_visitor &v ) const

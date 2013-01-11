@@ -41,6 +41,7 @@
 #include "runtime/booleans/booleans.h"
 #include "runtime/collections/collections.h"
 #include "runtime/context/context.h"
+#include "runtime/datetime/datetime.h"
 #include "runtime/debug/debug_iterator.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
 #include "runtime/errors_and_diagnostics/errors_and_diagnostics.h"
@@ -701,6 +702,118 @@ void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DefaultCollationIterator>
+
+
+// <CurrentDate>
+void PrinterVisitor::beginVisit ( const CurrentDate& a) {
+  thePrinter.startBeginVisit("CurrentDate", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentDate& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentDate>
+
+
+// <CurrentDateTime>
+void PrinterVisitor::beginVisit ( const CurrentDateTime& a) {
+  thePrinter.startBeginVisit("CurrentDateTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentDateTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentDateTime>
+
+
+// <CurrentTime>
+void PrinterVisitor::beginVisit ( const CurrentTime& a) {
+  thePrinter.startBeginVisit("CurrentTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentTime>
+
+
+// <ParseDate>
+void PrinterVisitor::beginVisit ( const ParseDate& a) {
+  thePrinter.startBeginVisit("ParseDate", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ParseDate& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ParseDate>
+
+
+// <ParseDateTime>
+void PrinterVisitor::beginVisit ( const ParseDateTime& a) {
+  thePrinter.startBeginVisit("ParseDateTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ParseDateTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ParseDateTime>
+
+
+// <ParseTime>
+void PrinterVisitor::beginVisit ( const ParseTime& a) {
+  thePrinter.startBeginVisit("ParseTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ParseTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ParseTime>
+
+
+// <Timestamp>
+void PrinterVisitor::beginVisit ( const Timestamp& a) {
+  thePrinter.startBeginVisit("Timestamp", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const Timestamp& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </Timestamp>
+
+
+// <UTCOffset>
+void PrinterVisitor::beginVisit ( const UTCOffset& a) {
+  thePrinter.startBeginVisit("UTCOffset", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const UTCOffset& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </UTCOffset>
 
 #ifdef ZORBA_WITH_DEBUGGER
 // <DebugIterator>
