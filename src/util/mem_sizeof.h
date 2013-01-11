@@ -54,7 +54,7 @@ namespace ztd {
  * For all built-in types as well as arrays, structs, classes, and unions
  * composed of only built-in types, <code>mem_sizeof(t) == sizeof(t)</code>.
  * However, for a \c std::string \c s,
- * <code>mem_sizeof(s) == sizeof(s) + s.capacity()</code>.
+ * <code>mem_sizeof(s) == sizeof(s) + s.capacity() + 1</code>.
  *
  * To implement this, there has to be a distinction between
  * <em>memory size</em> (<code>mem_sizeof()</code>)
@@ -97,7 +97,7 @@ namespace ztd {
  *  template<>
  *  struct size_traits<std::string> {
  *    static size_t alloc_sizeof( std::string const &s ) {
- *      return s.capacity();
+ *      return s.capacity() + 1;
  *    }
  *  };
  * \endcode
@@ -277,7 +277,7 @@ struct size_traits<char const*> {
 template<>
 struct size_traits<std::string> {
   static size_t alloc_sizeof( std::string const &s ) {
-    return s.capacity();
+    return s.capacity() + 1;
   }
 };
 
@@ -339,13 +339,13 @@ template<typename K,typename V,typename Comp,class Alloc>
 struct size_traits<std::map<K,V,Comp,Alloc>,false> :
   map_size_traits< std::map<K,V,Comp,Alloc> >
 {
-  static size_t alloc_sizeof( std::map<K,V,Comp,Alloc> const &m ) {
-    return map_size_traits< std::map<K,V,Comp,Alloc> >::alloc_sizeof( m )
-      + m.size() * value_type_padding;
+  typedef std::map<K,V,Comp,Alloc> sized_type;
+
+  static size_t alloc_sizeof( sized_type const &m ) {
+    return map_size_traits<sized_type>::alloc_sizeof( m )
+      // assume two pointers per node, e.g, red-black tree
+      + m.size() * sizeof( void* ) * 2;
   }
-private:
-  static size_t const value_type_padding =
-    sizeof( void* ) * 2; // assume two pointers per node, e.g, red-black tree
 };
 
 /**
@@ -354,7 +354,7 @@ private:
 template<typename T,typename U>
 struct size_traits<std::pair<T,U>,false> {
   static size_t alloc_sizeof( std::pair<T,U> const &p ) {
-    // Yes, alloc_sizeof() is correct here.
+    // yes, alloc_sizeof() is correct here
     return ztd::alloc_sizeof( p.first ) + ztd::alloc_sizeof( p.second );
   }
 };
@@ -366,13 +366,13 @@ template<typename T,class Comp,class Alloc>
 struct size_traits<std::set<T,Comp,Alloc>,false> :
   sequence_size_traits< std::set<T,Comp,Alloc> >
 {
-  static size_t alloc_sizeof( std::set<T,Comp,Alloc> const &s ) {
-    return map_size_traits< std::set<T,Comp,Alloc> >::alloc_sizeof( s )
-      + s.size() * value_type_padding;
+  typedef std::set<T,Comp,Alloc> sized_type;
+
+  static size_t alloc_sizeof( sized_type const &s ) {
+    return map_size_traits<sized_type>::alloc_sizeof( s )
+      // assume two pointers per node, e.g, red-black tree
+      + s.size() * sizeof( void* ) * 2;
   }
-private:
-  static size_t const value_type_padding =
-    sizeof( void* ) * 2; // assume two pointers per node, e.g, red-black tree
 };
 
 /**
@@ -401,6 +401,13 @@ template<typename K,typename V,class Hash,class Equal,class Alloc>
 struct size_traits<std::unordered_map<K,V,Hash,Equal,Alloc>,false> :
   map_size_traits< std::unordered_map<K,V,Hash,Equal,Alloc> >
 {
+  typedef std::unordered_map<K,V,Hash,Equal,Alloc> sized_type;
+
+  static size_t alloc_sizeof( sized_type const &m ) {
+    return map_size_traits<sized_type>::alloc_sizeof( m )
+      // assume 1 pointer per node and per bucket
+      + (m.size() + m.bucket_count()) * sizeof( void* );
+  }
 };
 
 /**
@@ -410,6 +417,13 @@ template<typename K,class Hash,class Equal,class Alloc>
 struct size_traits<std::unordered_set<K,Hash,Equal,Alloc>,false> :
   sequence_size_traits< std::unordered_set<K,Hash,Equal,Alloc> >
 {
+  typedef std::unordered_set<K,Hash,Equal,Alloc> sized_type;
+
+  static size_t alloc_sizeof( sized_type const &m ) {
+    return map_size_traits<sized_type>::alloc_sizeof( m )
+      // assume 1 pointer per node and per bucket
+      + (m.size() + m.bucket_count()) * sizeof( void* );
+  }
 };
 
 /**
@@ -419,9 +433,11 @@ template<typename T,class Alloc>
 struct size_traits<std::vector<T,Alloc>,false> :
   sequence_size_traits< std::vector<T,Alloc> >
 {
-  static size_t alloc_sizeof( std::vector<T,Alloc> const &v ) {
-    return  sequence_size_traits< std::vector<T,Alloc> >::alloc_sizeof( v )
-          + (v.capacity() - v.size()) * sizeof( T );
+  typedef std::vector<T,Alloc> sized_type;
+
+  static size_t alloc_sizeof( sized_type const &v ) {
+    return sequence_size_traits<sized_type>::alloc_sizeof( v )
+      + (v.capacity() - v.size()) * sizeof( T );
   }
 };
 
@@ -443,7 +459,7 @@ struct size_traits<store::ItemHandle<T>,false> {
 template<class RepType>
 struct size_traits<rstring<RepType>,false> {
   static size_t alloc_sizeof( rstring<RepType> const &s ) {
-    return s.capacity() + (s.is_shared() ? 0 : sizeof( RepType ));
+    return s.capacity() + 1 + (s.is_shared() ? 0 : sizeof( RepType ));
   }
 };
 
