@@ -2710,7 +2710,7 @@ ForClause :
     FOR error VarInDeclList
     {
       $$ = $3; // to prevent the Bison warning
-      error(@2, "syntax error, unexpected QName \""
+      error(@2, "syntax error, unexpected qualified name \""
           + static_cast<VarInDeclList*>($3)->operator[](0)->get_var_name()->get_qname().str() + "\" (missing \"$\" sign?)");
       delete $3;
       YYERROR;
@@ -6987,7 +6987,7 @@ void xquery_parser::error(zorba::xquery_parser::location_type const& loc, string
     if (prevErr != NULL)
     {
       // Error message heuristics: if the current error message has the "(missing comma "," between expressions?)" text,
-      // and the old message has a "','" text, the replace the old message with the new one. Unfortunately this 
+      // and the old message has a "','" text, then replace the old message with the new one. Unfortunately this 
       // makes the parser error messages harder to internationalize.
       if (msg.find("(missing comma \",\" between expressions?)") != string::npos
           &&
@@ -6995,9 +6995,14 @@ void xquery_parser::error(zorba::xquery_parser::location_type const& loc, string
         return;
     }
 
-    // remove the double quoting "''" from every token description
+    // Replace the first occurrence of "unexpected "'QName'"" with "unexpected qualified name %actual_qname%"
     string message = msg;
     int pos;
+    std::string unexpected_qname = "unexpected \"'QName'\"";
+    if ((pos = message.find(unexpected_qname)) != -1)
+      message = message.substr(0, pos) + "unexpected qualified name \"" + driver.symtab.get_last_qname() + "\"" + message.substr(pos+unexpected_qname.length());
+
+    // remove the double quoting "''" from every token description
     while ((pos = message.find("\"'")) != -1 || (pos = message.find("'\"")) != -1)
       message.replace(pos, 2, "\"");
     driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), err::XPST0003, message));
