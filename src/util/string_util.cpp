@@ -56,14 +56,17 @@ namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void check_parse_number( char const *buf, char const *end,
-                                bool check_trailing_chars ) {
+static void check_errno( char const *buf, char const *end ) {
   if ( errno == ERANGE ) {
     zstring const s( buf, end );
     throw std::range_error(
       BUILD_STRING( '"', s, "\": number too big/small" )
     );
   }
+}
+
+static void check_parse_number( char const *buf, char const *end,
+                                bool check_trailing_chars ) {
   if ( end == buf )
     throw std::invalid_argument( BUILD_STRING( '"', buf, "\": no digits" ) );
   if ( check_trailing_chars )
@@ -104,6 +107,7 @@ float atof( char const *buf, char const **end ) {
 long long atoll( char const *buf, char const **end ) {
   ATON_PREAMBLE();
   long long const result = std::strtoll( buf, (char**)end, 10 );
+  check_errno( buf, *end );
   check_parse_number( buf, *end, check_trailing_chars );
   return result;
 }
@@ -117,6 +121,7 @@ unsigned long long atoull( char const *buf, char const **end ) {
   bool const minus = *buf == '-';
 
   unsigned long long const result = std::strtoull( buf, (char**)end, 10 );
+  check_errno( buf, *end );
   check_parse_number( buf, *end, check_trailing_chars );
 
   if ( minus && result ) {
