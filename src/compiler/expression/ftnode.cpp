@@ -472,7 +472,7 @@ ftlanguage_option::ftlanguage_option(
       ),
       ERROR_LOC( loc )
     );
-  if ( !(lang_ = locale::find_lang( lang.c_str() )) )
+  if ( !(lang_ = locale::find_lang( lang )) )
     throw XQUERY_EXCEPTION(
       err::FTST0009, ERROR_PARAMS( lang ), ERROR_LOC( loc )
     );
