@@ -112,10 +112,12 @@ Iterator tree for main query:
     </flwor::FLWORIterator>
     <FnConcatIterator>
       <FunctionTraceIterator>
-        <ProbeIndexPointValueIterator>
-          <SingletonIterator value="xs:QName(www.accounts.com,accounts,accounts-index)"/>
-          <SingletonIterator value="xs:string(george@gmail.com)"/>
-        </ProbeIndexPointValueIterator>
+        <NodeSortIterator distinct="false" ascending="true">
+          <ProbeIndexPointValueIterator>
+            <SingletonIterator value="xs:QName(www.accounts.com,accounts,accounts-index)"/>
+            <SingletonIterator value="xs:string(george@gmail.com)"/>
+          </ProbeIndexPointValueIterator>
+        </NodeSortIterator>
       </FunctionTraceIterator>
       <SingletonIterator value="xs:string(
 )"/>

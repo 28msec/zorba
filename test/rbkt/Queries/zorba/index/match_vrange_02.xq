@@ -27,6 +27,14 @@ local:collection($uri as xs:string) as document-node()*
   }
 };
 
+declare function
+local:collection-ordered($uri as xs:string) as document-node()*
+{
+  for $d in dml:collection(xs:QName('d:documents'))
+  where substring-after($d/doc/@base-uri, "www.foo.com/") gt $uri
+  return $d
+};
+
 
 declare function 
 local:doc-exists($uri as xs:string) as xs:boolean
@@ -40,6 +48,10 @@ local:doc-exists($uri as xs:string) as xs:boolean
 declare function 
 local:docs-since($date as xs:string) as document-node()*
 {
+  (:
+    The index should not be used here because there is no predicate on the 1st
+    index key, and the domain expr does not contain any predicates either.
+  :)
   dml:collection($d:documents)[$date lt string(.//sports-content/sports-metadata/@date-time)]
 };
 
@@ -48,16 +60,6 @@ declare variable $doc11 :=
 document 
 {
 <doc base-uri="www.foo.com/folder1">
-  <sports-content>
-    <sports-metadata date-time="2012-12-31"/>
-  </sports-content>
-</doc>
-};
-
-declare variable $doc21 := 
-document 
-{
-<doc base-uri="www.foo.com/folder2">
   <sports-content>
     <sports-metadata date-time="2012-12-31"/>
   </sports-content>
@@ -74,14 +76,37 @@ document
 </doc>
 };
 
+declare variable $doc21 := 
+document 
+{
+<doc base-uri="www.foo.com/folder2">
+  <sports-content>
+    <sports-metadata date-time="2012-12-31"/>
+  </sports-content>
+</doc>
+};
+
+declare variable $doc31 := 
+document 
+{
+<doc base-uri="www.foo.com/folder3">
+  <sports-content>
+    <sports-metadata date-time="2012-12-31"/>
+  </sports-content>
+</doc>
+};
+
 
 ddl:create($d:documents);
 
-dml:insert($d:documents, ($doc11, $doc21, $doc12));
+dml:insert($d:documents, ($doc11, $doc31, $doc21, $doc12));
 
 iddl:create($d:idx);
 
 local:collection("folder1"),
+"
+",
+local:collection-ordered("folder1"),
 "
 ",
 local:doc-exists("folder2"),
@@ -90,6 +115,7 @@ local:doc-exists("folder2"),
 local:docs-since("2012-12-31"),
 "
 "
+
 
 
 

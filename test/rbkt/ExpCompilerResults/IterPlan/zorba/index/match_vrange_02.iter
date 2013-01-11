@@ -113,28 +113,7 @@ Iterator tree for main query:
       </EnclosedIterator>
     </DocumentIterator>
   </CtxVarDeclareIterator>
-  <CtxVarDeclareIterator varid="7" varname="doc21">
-    <DocumentIterator>
-      <EnclosedIterator attr_cont="false">
-        <ElementIterator>
-          <SingletonIterator value="xs:QName(,,doc)"/>
-          <AttributeIterator qname="xs:QName(,,base-uri)">
-            <SingletonIterator value="xs:string(www.foo.com/folder2)"/>
-          </AttributeIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,sports-content)"/>
-            <ElementIterator>
-              <SingletonIterator value="xs:QName(,,sports-metadata)"/>
-              <AttributeIterator qname="xs:QName(,,date-time)">
-                <SingletonIterator value="xs:string(2012-12-31)"/>
-              </AttributeIterator>
-            </ElementIterator>
-          </ElementIterator>
-        </ElementIterator>
-      </EnclosedIterator>
-    </DocumentIterator>
-  </CtxVarDeclareIterator>
-  <CtxVarDeclareIterator varid="8" varname="doc12">
+  <CtxVarDeclareIterator varid="7" varname="doc12">
     <DocumentIterator>
       <EnclosedIterator attr_cont="false">
         <ElementIterator>
@@ -155,6 +134,48 @@ Iterator tree for main query:
       </EnclosedIterator>
     </DocumentIterator>
   </CtxVarDeclareIterator>
+  <CtxVarDeclareIterator varid="8" varname="doc21">
+    <DocumentIterator>
+      <EnclosedIterator attr_cont="false">
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,doc)"/>
+          <AttributeIterator qname="xs:QName(,,base-uri)">
+            <SingletonIterator value="xs:string(www.foo.com/folder2)"/>
+          </AttributeIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,sports-content)"/>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,sports-metadata)"/>
+              <AttributeIterator qname="xs:QName(,,date-time)">
+                <SingletonIterator value="xs:string(2012-12-31)"/>
+              </AttributeIterator>
+            </ElementIterator>
+          </ElementIterator>
+        </ElementIterator>
+      </EnclosedIterator>
+    </DocumentIterator>
+  </CtxVarDeclareIterator>
+  <CtxVarDeclareIterator varid="9" varname="doc31">
+    <DocumentIterator>
+      <EnclosedIterator attr_cont="false">
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,doc)"/>
+          <AttributeIterator qname="xs:QName(,,base-uri)">
+            <SingletonIterator value="xs:string(www.foo.com/folder3)"/>
+          </AttributeIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,sports-content)"/>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,sports-metadata)"/>
+              <AttributeIterator qname="xs:QName(,,date-time)">
+                <SingletonIterator value="xs:string(2012-12-31)"/>
+              </AttributeIterator>
+            </ElementIterator>
+          </ElementIterator>
+        </ElementIterator>
+      </EnclosedIterator>
+    </DocumentIterator>
+  </CtxVarDeclareIterator>
   <SequentialIterator>
     <ApplyIterator>
       <ZorbaCreateCollectionIterator>
@@ -166,8 +187,9 @@ Iterator tree for main query:
         <CtxVarIterator varid="4" varname="data:documents" varkind="global"/>
         <FnConcatIterator>
           <CtxVarIterator varid="6" varname="doc11" varkind="global"/>
-          <CtxVarIterator varid="7" varname="doc21" varkind="global"/>
-          <CtxVarIterator varid="8" varname="doc12" varkind="global"/>
+          <CtxVarIterator varid="9" varname="doc31" varkind="global"/>
+          <CtxVarIterator varid="8" varname="doc21" varkind="global"/>
+          <CtxVarIterator varid="7" varname="doc12" varkind="global"/>
         </FnConcatIterator>
       </ZorbaInsertNodesIterator>
     </ApplyIterator>
@@ -193,6 +215,27 @@ Iterator tree for main query:
           <SingletonIterator value="xs:boolean(false)"/>
           <SingletonIterator value="xs:boolean(false)"/>
         </ProbeIndexRangeValueIterator>
+      </FunctionTraceIterator>
+      <SingletonIterator value="xs:string(
+)"/>
+      <FunctionTraceIterator>
+        <NodeSortIterator distinct="false" ascending="true">
+          <ProbeIndexRangeValueIterator>
+            <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
+            <SingletonIterator value="xs:string(folder1)"/>
+            <FnConcatIterator/>
+            <SingletonIterator value="xs:boolean(true)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <FnConcatIterator/>
+            <FnConcatIterator/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+          </ProbeIndexRangeValueIterator>
+        </NodeSortIterator>
       </FunctionTraceIterator>
       <SingletonIterator value="xs:string(
 )"/>

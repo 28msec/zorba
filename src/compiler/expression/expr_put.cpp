@@ -778,13 +778,16 @@ ostream& const_expr::put(ostream& os) const
 
 ostream& order_expr::put(ostream& os) const
 {
-  BEGIN_PUT(order_expr);
-
   switch (theType)
   {
-  case doc_ordered: os << "ordered\n"; break;
-  case doc_unordered: os << "unordered\n"; break;
-  default: os << "??\n";
+  case doc_ordered: 
+    os << indent << "ordered" << expr_addr(this) << " [\n" << inc_indent;
+    break;
+  case doc_unordered:
+    os << indent << "unordered" << expr_addr(this) << " [\n" << inc_indent;
+    break;
+  default:
+    os << "??\n";
   }
   theInput->put(os) << endl;
 

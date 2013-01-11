@@ -611,6 +611,16 @@ bool IndexMatchingRule::matchIndex()
                    theProbeArgs);
   }
 
+  if (!theQueryExpr->ignoresSortedNodes())
+  {
+    probeExpr =  ccb->theEM->
+    create_fo_expr(sctx,
+                   udf,
+                   firstMatchedFOR->get_loc(),
+                   BUILTIN_FUNC(OP_SORT_NODES_ASC_1),
+                   probeExpr);
+  }
+
   firstMatchedFOR->set_expr(probeExpr);
 
   csize numRemoved = 0;

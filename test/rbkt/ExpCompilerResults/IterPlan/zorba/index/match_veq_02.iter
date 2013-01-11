@@ -126,14 +126,16 @@ Iterator tree for main query:
         <LetVariable name="session" materialize="true">
           <flwor::FLWORIterator>
             <ForVariable name="session">
-              <ProbeIndexPointValueIterator>
-                <SingletonIterator value="xs:QName(www.sessions.com,sessions,session-index)"/>
-                <PromoteIterator type="xs:anyAtomicType">
-                  <FnDataIterator>
-                    <LetVarIterator varname="id"/>
-                  </FnDataIterator>
-                </PromoteIterator>
-              </ProbeIndexPointValueIterator>
+              <NodeSortIterator distinct="false" ascending="true">
+                <ProbeIndexPointValueIterator>
+                  <SingletonIterator value="xs:QName(www.sessions.com,sessions,session-index)"/>
+                  <PromoteIterator type="xs:anyAtomicType">
+                    <FnDataIterator>
+                      <LetVarIterator varname="id"/>
+                    </FnDataIterator>
+                  </PromoteIterator>
+                </ProbeIndexPointValueIterator>
+              </NodeSortIterator>
             </ForVariable>
             <ReturnClause>
               <ForVarIterator varname="session"/>
