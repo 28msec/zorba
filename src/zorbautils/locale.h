@@ -22,6 +22,8 @@
 #include <zorba/locale.h>
 
 #include "util/string_util.h"
+#include "zorbatypes/zstring.h"
+
 namespace zorba {
   namespace locale {
 
@@ -536,6 +538,28 @@ namespace zorba {
     }
 
     /**
+     * Gets the date format for the current locale.  The format is that used by
+     * strptime(3).
+     *
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said date format.
+     */
+    zstring get_date_format( iso639_1::type lang = iso639_1::unknown,
+                             iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets the date and time format for the current locale.  The format is
+     * that used by strptime(3).
+     *
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said date format.
+     */
+    zstring get_date_time_format( iso639_1::type lang = iso639_1::unknown,
+                                  iso3166_1::type country = iso3166_1::unknown);
+
+    /**
      * Gets the ISO 3166-1 country code enumeration for the host system.
      *
      * @return Returns said enumeration or \c unknown.
@@ -548,6 +572,113 @@ namespace zorba {
      * @return Returns said enumeration defaulting to \c en.
      */
     iso639_1::type get_host_lang();
+
+    /**
+     * Gets a month's abbreviation in the current locale.
+     *
+     * @param month_index The index of the month to get in the range 0-11.
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said abbreviation.
+     */
+    zstring get_month_abbr( unsigned month_index,
+                            iso639_1::type lang = iso639_1::unknown,
+                            iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets a month's full name in the current locale.
+     *
+     * @param month_index The index of the month to get in the range 0-11.
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said full name.
+     */
+    zstring get_month_name( unsigned month_index,
+                            iso639_1::type lang = iso639_1::unknown,
+                            iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets the time AM or PM string in the current locale.
+     *
+     * @param pm If \c true, gets the PM string; else the AM string.
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said string.
+     */
+    zstring get_time_ampm( bool pm, iso639_1::type lang = iso639_1::unknown,
+                           iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets the time format for the current locale.  The format is that used by
+     * strptime(3).
+     *
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said time format.
+     */
+    zstring get_time_format( iso639_1::type lang = iso639_1::unknown,
+                             iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets a weekday's abbreviation in the current locale.
+     *
+     * @param day_index The index of the weekday to get in the range 0-6.
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said abbreviation.
+     */
+    zstring get_weekday_abbr( unsigned day_index,
+                              iso639_1::type lang = iso639_1::unknown,
+                              iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets a weekday's full name in the current locale.
+     *
+     * @param day_index The index of the month to get in the range 0-6.
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said full name.
+     */
+    zstring get_weekday_name( unsigned day_index,
+                              iso639_1::type lang = iso639_1::unknown,
+                              iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Checks if the given locale is supported by the OS.
+     *
+     * @param lang The language to use.
+     * @param country The country to use.  Defaults to none.
+     * @return Returns \a true only if the given locale is supported by the OS.
+     */
+    bool is_supported( iso639_1::type lang,
+                       iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Parses a locale string.
+     *
+     * @param locale_str A locale string of the form \c ll{-_}CC[.enc] where
+     * \c ll is a 2 letter ISO 639-1 (or 3 letter 639-2) language code, \c CC
+     * is a 2 letter ISO 3166-1 country code, and \c enc is an optional
+     * encoding (which is ignored).
+     * @param lang A pointer to receive the language, if any.
+     * @param country A pointer to receive the country, if any.
+     * @return Returns \c true if at least a language is parsed.
+     */
+    bool parse( char const *locale_str, iso639_1::type *lang = nullptr,
+                iso3166_1::type *country = nullptr );
+
+    //
+    // Template version of parse().
+    //
+    template<class StringType> inline
+    typename std::enable_if<
+      ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+      bool
+    >::type
+    parse( StringType const &locale_str, iso639_1::type *lang = nullptr,
+           iso3166_1::type *country = nullptr ) {
+      return parse( locale_str.c_str(), lang, country );
+    }
 
     ///////////////////////////////////////////////////////////////////////////
 
