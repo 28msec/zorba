@@ -175,7 +175,6 @@ class DeleteIndexIterator;
 class DynamicFnCallIterator;
 
 class EvalIterator;
-class MatchIterator;
 
 class MaterializeIterator;
 

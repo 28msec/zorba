@@ -743,12 +743,6 @@ void expr::compute_return_type(bool deep, bool* modified)
     return;
   }
 
-  case expr_match_expr_kind:
-  {
-    theType = rtm.BOOLEAN_TYPE_ONE; // TODO
-    return;
-  }
-
   case debugger_expr_kind:
   {
     theType = rtm.ITEM_TYPE_STAR; // TODO

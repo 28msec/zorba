@@ -11075,30 +11075,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         
         break;
       }
-      case FunctionConsts::FN_ZORBA_MATCH_2:
-      {
-        expr_match_expr* matchExpr = CREATE(expr_match)(theRootSctx,
-                                                        theUDF,
-                                                        loc,
-                                                        foExpr->get_arg(0),
-                                                        foExpr->get_arg(1),
-                                                        SIMPLE_EXPR,
-                                                        theNSCtx);
-
-        resultExpr = matchExpr;
-
-        std::vector<VarInfo*> inscopeVars;
-        theSctx->getVariables(inscopeVars);
-
-        csize numVars = inscopeVars.size();
-
-        for (csize i = 0; i < numVars; ++i)
-        {
-          matchExpr->add_var(inscopeVars[i]->getVar());
-        }
-
-        break;
-      }
       case FunctionConsts::FN_ZORBA_EVAL_1:
       case FunctionConsts::FN_ZORBA_EVAL_N_1:
       case FunctionConsts::FN_ZORBA_EVAL_U_1:

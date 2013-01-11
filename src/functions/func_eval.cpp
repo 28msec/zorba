@@ -93,37 +93,6 @@ public:
 
 
 
-/***************************************************************************//**
-  1st arg is a string specifying the "query" expression, and 2nd arg is a string
-  specifying the "view" ast.
-********************************************************************************/
-class fn_zorba_match : public function
-{
-public:
-  fn_zorba_match(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATCH_2)
-  {
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-PlanIter_t fn_zorba_match::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  ZORBA_ASSERT(false);
-  return NULL;
-}
-
-
 PlanIter_t fn_zorba_eval::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -193,13 +162,6 @@ void populate_context_eval(static_context* sctx)
        (createQName(static_context::ZORBA_REFLECTION_FN_NS, "", "eval-s"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
-  DECL(sctx, fn_zorba_match,
-       (createQName(static_context::ZORBA_UTIL_FN_NS, "", "match"),
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-
 }
 
 

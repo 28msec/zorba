@@ -95,7 +95,6 @@ public:
   DECL_EXPR_VISITOR_VISIT_MEM_FNS(flowctl_expr);
 
   DECL_EXPR_VISITOR_VISIT_MEM_FNS(eval_expr);
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS(expr_match_expr);
 #ifdef ZORBA_WITH_DEBUGGER
   DECL_EXPR_VISITOR_VISIT_MEM_FNS(debugger_expr);
 #endif

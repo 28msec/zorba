@@ -308,7 +308,6 @@ void endVisitWindowVariable();
   DECLARE_VISITOR(DynamicFnCallIterator);
 
   DECLARE_VISITOR(EvalIterator);
-  DECLARE_VISITOR(MatchIterator);
 
   DECLARE_VISITOR(MaterializeIterator);
 

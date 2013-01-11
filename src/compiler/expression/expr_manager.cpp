@@ -519,20 +519,6 @@ eval_expr* ExprManager::create_eval_expr(
 }
 
 
-expr_match_expr* ExprManager::create_expr_match_expr(
-      static_context* sctx,
-      user_function* udf,
-      const QueryLoc& loc,
-      expr* query,
-      expr* view,
-      expr_script_kind_t scriptingKind,
-      namespace_context* nsCtx)
-{
-  CREATE_AND_RETURN_EXPR(expr_match_expr, sctx, udf, loc,
-                         query, view, scriptingKind, nsCtx);
-}
-
-
 #ifdef ZORBA_WITH_DEBUGGER
 
 debugger_expr* ExprManager::create_debugger_expr(

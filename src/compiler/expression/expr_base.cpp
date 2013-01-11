@@ -1109,7 +1109,6 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   }
 
   case eval_expr_kind:
-  case expr_match_expr_kind:
     return false; // TODO
 
   case var_decl_expr_kind:

@@ -105,7 +105,6 @@ enum expr_kind_t
   while_expr_kind,
 
   eval_expr_kind,
-  expr_match_expr_kind,
   debugger_expr_kind,
   wrapper_expr_kind,
   function_trace_expr_kind,

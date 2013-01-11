@@ -66,7 +66,6 @@ DEF_EXPR_ACCEPT (wrapper_expr)
 DEF_EXPR_ACCEPT (promote_expr)
 DEF_EXPR_ACCEPT (trycatch_expr)
 DEF_EXPR_ACCEPT (eval_expr)
-//DEF_EXPR_ACCEPT (expr_match_expr)
 DEF_EXPR_ACCEPT (function_trace_expr)
 DEF_EXPR_ACCEPT (if_expr)
 DEF_EXPR_ACCEPT (instanceof_expr)
@@ -1105,43 +1104,6 @@ void eval_expr::add_var(var_expr* var)
   theOuterVarNames.push_back(var->get_name());
   theOuterVarTypes.push_back(var->get_return_type());
   theArgs.push_back(var);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-expr_match_expr::expr_match_expr(
-    CompilerCB* ccb,
-    static_context* sctx,
-    user_function* udf,
-    const QueryLoc& loc,
-    expr* query,
-    expr* view,
-    expr_script_kind_t scriptingKind,
-    namespace_context* nsCtx)
-  :
-  eval_expr(ccb, sctx, udf, loc, query, scriptingKind, nsCtx),
-  theViewExpr(view)
-{
-  theKind = expr_match_expr_kind;
-
-  compute_scripting_kind();
-}
-
-
-void expr_match_expr::compute_scripting_kind()
-{
-  checkSimpleExpr(theViewExpr);
-}
-
-
-void expr_match_expr::accept(expr_visitor& v)
-{                      
-  if (v.begin_visit(*this))
-    accept_children(v);
-                     
-  v.end_visit(*this);
 }
 
 

@@ -243,7 +243,6 @@ void DataflowAnnotationsComputer::compute(expr* e)
   case ft_expr_kind:            // TODO
 #endif
   case eval_expr_kind:          // TODO
-  case expr_match_expr_kind:    // TODO
   case debugger_expr_kind:      // TODO
     break;
 
@@ -1130,7 +1129,6 @@ void SourceFinder::findNodeSourcesRec(
   }
 
   case eval_expr_kind:
-  case expr_match_expr_kind:
   {
     eval_expr* e = static_cast<eval_expr*>(node);
     // Make sure that the eval iterator will produce standalone trees.

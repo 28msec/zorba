@@ -319,15 +319,6 @@ public:
       expr_script_kind_t scriptingKind,
       namespace_context* nsCtx);
 
-  expr_match_expr* create_expr_match_expr(
-      static_context* sctx,
-      user_function* udf,
-      const QueryLoc& loc,
-      expr* query,
-      expr* view,
-      expr_script_kind_t scriptingKind,
-      namespace_context* nsCtx);
-
 #ifdef ZORBA_WITH_DEBUGGER
   debugger_expr* create_debugger_expr(
       static_context* sctx,
