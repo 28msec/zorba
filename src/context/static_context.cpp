@@ -465,6 +465,10 @@ static_context::ZORBA_FULL_TEXT_FN_NS =
 #endif /* ZORBA_NO_FULL_TEXT */
 
 const char*
+static_context::ZORBA_DATETIME_FN_NS =
+"http://www.zorba-xquery.com/modules/datetime";
+
+const char*
 static_context::ZORBA_XML_FN_OPTIONS_NS =
 "http://www.zorba-xquery.com/modules/xml-options";
 
@@ -547,6 +551,7 @@ bool static_context::is_builtin_module(const zstring& ns)
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
 #endif /* ZORBA_NO_FULL_TEXT */
+            ns == ZORBA_DATETIME_FN_NS ||
 #ifdef ZORBA_WITH_JSON
             ns == JSONIQ_FN_NS ||
 #endif /* ZORBA_WITH_JSON */
@@ -603,6 +608,7 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
+            ns == ZORBA_DATETIME_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||

@@ -43,6 +43,7 @@ namespace UnitTests {
   int test_mem_sizeof( int, char*[] );
 
   int test_string( int, char*[] );
+  int test_time_parse( int, char*[] );
 
   int test_fs_iterator( int, char*[] );
 
