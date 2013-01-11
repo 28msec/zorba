@@ -94,8 +94,9 @@ static void append_env_var(
   }
 }
 #else
-  static void append_env_var(
-  char * env_var_name,
+  static void append_env_var
+    (
+  const char * env_var_name,
   std::vector<zstring>& pathsVector
   )
 {
