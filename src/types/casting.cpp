@@ -2481,9 +2481,53 @@ bool GenericCast::castToQName(
   zstring strval;
   item->getStringValue2(strval);
 
-  str_QN(result, item, strval, GENV_ITEMFACTORY, nsCtx, errInfo);
+  ascii::trim_whitespace(strval);
 
-  return true;
+  zstring::size_type idx = strval.find(":");
+  zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
+
+  if (idx != lidx)
+    throwFORG0001Exception(strval, errInfo);
+
+  zstring nsuri;
+  zstring prefix;
+  zstring local;
+
+  if (idx == zstring::npos)
+  {
+    if (nsCtx && !isAttrName)
+    {
+      nsCtx->findBinding(prefix, nsuri);
+    }
+
+    local = strval;
+  }
+  else
+  {
+    prefix = strval.substr(0, idx);
+
+    if (!GenericCast::castableToNCName(prefix))
+    {
+      RAISE_ERROR(err::FORG0001, errInfo.theLoc,
+      ERROR_PARAMS(ZED(FORG0001_PrefixNotNCName_2), prefix));
+    }
+
+    if (nsCtx)
+    {
+      if (!nsCtx->findBinding(prefix, nsuri))
+        RAISE_ERROR(err::FONS0004, errInfo.theLoc, ERROR_PARAMS(prefix));
+    }
+
+    local = strval.substr(idx + 1);
+  }
+
+  if (!GenericCast::castableToNCName(local))
+  {
+    RAISE_ERROR(err::FORG0001, errInfo.theLoc,
+    ERROR_PARAMS(ZED(FORG0001_LocalNotNCName_2), local));
+  }
+
+  return GENV_ITEMFACTORY->createQName(result, nsuri, prefix, local);
 }
 
 
