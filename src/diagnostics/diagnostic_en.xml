@@ -455,6 +455,10 @@
        is of nonzero length and is not in the lexical space of \c xs:anyURI.
       </comment>
       <value>${"1": }invalid URI literal${: 2}</value>
+
+      <entry key="BadHexDigit_3">
+        <value>'$3': invalid hexedecimal digit</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQST0047">
@@ -1020,7 +1024,20 @@
       <comment>
        Invalid lexical value.
       </comment>
-      <value>"$1": invalid lexical value${: 2}</value>
+      <value>$1</value>
+
+      <entry key="BadLexicalQName_2">
+        <value>"$2": value is not a valid lexical QName</value>
+      </entry>
+
+      <entry key="NoURIforPrefix_2">
+        <value>no namespace URI provided for prefix in lexical QName "$2"</value>
+      </entry>
+
+      <entry key="NoCastTo_234">
+        <value>"$2": value of type $3 is not castable to type $4</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="FOCA0003">
@@ -1188,7 +1205,52 @@
       <comment>
        Invalid value for cast/constructor.
       </comment>
-      <value>${"1": }invalid value for cast/constructor${: 2}</value>
+
+      <value>$1</value>
+
+      <entry key="NoCastTo_234">
+        <value>"$2": value of type $3 is not castable to type $4</value>
+      </entry>
+
+      <entry key="NoCastTo_234o">
+        <value>"$2": value is not castable to type $3${: 4}</value>
+      </entry>
+
+      <entry key="LocalNotNCName_2">
+        <value>"$2": local name in qname is not an xs:NCName</value>
+      </entry>
+
+      <entry key="PrefixNotNCName_2">
+        <value>"$2": prefix in qname is not an xs:NCName</value>
+      </entry>
+
+      <entry key="NameNotNCName_2">
+        <value>"$2": name is not an xs:NCName</value>
+      </entry>
+
+      <entry key="PrefixNotBound_2">
+        <value>"$2": prefix has no known namespace binding</value>
+      </entry>
+
+      <entry key="Base64BadChar_2">
+        <value>"$2": invalid Base64 character</value>
+      </entry>
+
+      <entry key="Base64Multiple4">
+        <value>Base64 data must be a multiple of 4 characters</value>
+      </entry>
+
+      <entry key="HexBinaryMustBeEven">
+        <value>HexBinary value must contain an even number of characters</value>
+      </entry>
+
+      <entry key="BadHexDigit_2">
+        <value>'$2': invalid hexedecimal digit</value>
+      </entry>
+
+      <entry key="NoTypeInCtx_2">
+        <value>"$2": type no defined in current context</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="FORG0002">
@@ -3063,10 +3125,6 @@
       <value>"$2": invalid authority for "file" scheme</value>
     </entry>
 
-    <entry key="BadHexDigit_3">
-      <value>'$3': invalid hexedecimal digit</value>
-    </entry>
-
     <entry key="BadHexSequence">
       <value>invalid hexedecimal sequence</value>
     </entry>
@@ -3147,24 +3205,12 @@
       <value>unsupported XQuery version</value>
     </entry>
 
-    <entry key="Base64BadChar">
-      <value>invalid Base64 character</value>
-    </entry>
-
-    <entry key="Base64Multiple4">
-      <value>Base64 data must be a multiple of 4 characters</value>
-    </entry>
-
     <entry key="BaseURI">
       <value>base URI</value>
     </entry>
 
     <entry key="BoxCondTooManyColumns">
       <value>box condition has more columns than index</value>
-    </entry>
-
-    <entry key="CastFromToFailed_34">
-      <value>$3 to $4 cast failed</value>
     </entry>
 
     <entry key="CharExpected_3">
@@ -3319,10 +3365,6 @@
       <value>valid values are: yes, no, omit</value>
     </entry>
 
-    <entry key="HexBinaryMustBeEven">
-      <value>HexBinary value must contain an even number of characters</value>
-    </entry>
-
     <entry key="IncompleteKeyInIndexBuild">
       <value>incomplete key during index build</value>
     </entry>
@@ -3341,10 +3383,6 @@
 
     <entry key="MustBeAbsoluteURI">
       <value>must be absolute</value>
-    </entry>
-
-    <entry key="MustBeNCName">
-      <value>must be an xs:NCName</value>
     </entry>
 
     <entry key="NoAttrNodesInDocument">
@@ -3477,10 +3515,6 @@
 
     <entry key="NoTreatAs_4">
       <value>can not treat as "$4"</value>
-    </entry>
-
-    <entry key="NoTypeInCtx">
-      <value>undefined type in current context</value>
     </entry>
 
     <entry key="NoTypeInMainModule_4">
