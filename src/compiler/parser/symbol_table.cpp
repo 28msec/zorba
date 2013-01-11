@@ -56,8 +56,9 @@ static bool decode_string(const char *yytext, uint32_t yyleng, string *result) {
 }
 
 symbol_table::symbol_table(uint32_t initial_heapsize)
-:
-	heap(initial_heapsize)
+  :
+  heap(initial_heapsize),
+  last_qname(-1)
 {
 }
 
@@ -107,7 +108,8 @@ off_t symbol_table::put(char const* text, uint32_t length, int normalizationType
 
 off_t symbol_table::put_ncname(char const* text, uint32_t length)
 {
-	return heap.put(text, 0, length);
+  last_qname = heap.put(text, 0, length);
+  return last_qname;
 }
 
 off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_start, bool do_trim_end, bool is_eqname)
@@ -125,7 +127,9 @@ off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_st
   }
 
   if (!is_eqname)
-    return heap.put(text, 0, length);
+  {
+    last_qname = heap.put(text, 0, length);
+  }
   else
   {
     // EQName:  Q{prefix}name
@@ -138,8 +142,10 @@ off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_st
     off_t uri = put_uri(prefix.c_str(), prefix.size());
     name = get(uri) + ":" + name;
 
-    return heap.put(name.c_str(), 0, name.size());
+    last_qname = heap.put(name.c_str(), 0, name.size());
   }
+  
+  return last_qname;
 }
 
 off_t symbol_table::put_uri(char const* text, uint32_t length)
@@ -226,15 +232,19 @@ xs_integer* symbol_table::integerval(char const* text, uint32_t length)
 
 std::string symbol_table::get(off_t id)
 {
-	uint32_t n = heap.get_length0(id);
-	char *buf;
-	buf = (char*)malloc(n+1);
-	heap.get0(id, buf, 0, n+1);
-	std::string retstr = string(buf, 0, n);
-	free(buf);
-	return retstr;
+  uint32_t n = heap.get_length0(id);  
+  char *buf;
+  buf = (char*)malloc(n+1);
+  heap.get0(id, buf, 0, n+1);
+  std::string retstr = string(buf, 0, n);
+  free(buf);
+  return retstr;
 }
 
+std::string symbol_table::get_last_qname()
+{
+  return get(last_qname);
+}
 
 }	/* namespace zorba */
 /* vim:set et sw=2 ts=2: */

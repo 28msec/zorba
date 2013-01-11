@@ -71,7 +71,8 @@ TypeManagerImpl::TypeManagerImpl(TypeManager* parent)
   m_parent(parent),
   m_schema(NULL)
 {
-  initializeSchema();
+  // This is too expensive. Do it only if relly necessary
+  //initializeSchema();
 }
 
 
