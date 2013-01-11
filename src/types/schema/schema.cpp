@@ -513,11 +513,8 @@ void Schema::getTypeNameFromElementName(
 
   if (!typeDef)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( qname->getStringValue(), ZED( SchemaElementName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), qname->getStringValue()));
   }
 
   const XMLCh* typeNameStr = typeDef->getName();
@@ -542,11 +539,8 @@ void Schema::getTypeNameFromAttributeName(
 
   if (!typeDef)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( qname->getStringValue(), ZED( SchemaAttributeName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), qname->getStringValue()));
   }
 
   const XMLCh* typeNameStr = typeDef->getName();
@@ -579,11 +573,8 @@ xqtref_t Schema::createXQTypeFromElementName(
 
   if (!typeDef)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( qname->getStringValue(), ZED( SchemaElementName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), qname->getStringValue()));
   }
 
   xqtref_t res = createXQTypeFromTypeDefinition(typeManager, typeDef);
@@ -611,11 +602,8 @@ xqtref_t Schema::createXQTypeFromAttributeName(
 
   if (!typeDef)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0008,
-      ERROR_PARAMS( qname->getStringValue(), ZED( SchemaAttributeName ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), qname->getStringValue()));
   }
 
   return createXQTypeFromTypeDefinition(typeManager, typeDef);
@@ -1703,7 +1691,7 @@ bool Schema::parseUserAtomicTypes(
       if (!xsiTypeDV)
       {
         RAISE_ERROR(err::FORG0001, loc,
-        ERROR_PARAMS(targetType, ZED(NoTypeInCtx)));
+        ERROR_PARAMS(ZED(FORG0001_NoTypeInCtx_2), targetType->toSchemaString()));
       }
 
       // workaround for validating xs:NOTATION with Xerces
@@ -1724,8 +1712,8 @@ bool Schema::parseUserAtomicTypes(
         }
         else
         {
-          ZORBA_ERROR_DESC_OSS(err::FORG0001, "Prefix '" << prefix <<
-              "' not found in current namespace context.");
+          RAISE_ERROR(err::FORG0001, loc,
+          ERROR_PARAMS(ZED(FORG0001_PrefixNotBound_2), prefix));
         }
       }
       else
@@ -1737,7 +1725,7 @@ bool Schema::parseUserAtomicTypes(
     else
     {
       RAISE_ERROR(err::FORG0001, loc,
-      ERROR_PARAMS(targetType, ZED(NoTypeInCtx)));
+      ERROR_PARAMS(ZED(FORG0001_NoTypeInCtx_2), targetType->toSchemaString()));
     }
   }
   catch (XMLException& idve)
@@ -1746,7 +1734,10 @@ bool Schema::parseUserAtomicTypes(
     transcode(idve.getMessage(), msg);
 
     RAISE_ERROR(err::FORG0001, loc,
-    ERROR_PARAMS(textValue, ZED(NoCastTo_34o), targetType, msg));
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o),
+                 textValue,
+                 targetType->toSchemaString(),
+                 msg));
   }
   catch(const OutOfMemoryException&)
   {
@@ -1843,7 +1834,7 @@ bool Schema::parseUserListTypes(
   if (atomicTextValues.empty())
   {
     RAISE_ERROR(err::FORG0001, loc,
-    ERROR_PARAMS(textValue, ZED(NoCastTo_34o), udt->toSchemaString()));
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, udt->toSchemaString()));
   }
 
   for (csize i = 0; i < atomicTextValues.size() ; ++i)
@@ -1893,7 +1884,7 @@ bool Schema::parseUserUnionTypes(
   }
 
   RAISE_ERROR(err::FORG0001, loc,
-  ERROR_PARAMS(textValue, ZED(NoCastTo_34o), udt->toSchemaString()));
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, udt->toSchemaString()));
 }
 
 
@@ -1918,8 +1909,7 @@ bool Schema::isCastableUserSimpleTypes(
   const UserDefinedXQType* udXQType =
     static_cast<const UserDefinedXQType*>(aTargetType.getp());
 
-  ZORBA_ASSERT( udXQType->isAtomic() || udXQType->isList() ||
-                udXQType->isUnion() );
+  ZORBA_ASSERT(udXQType->isAtomic() || udXQType->isList() || udXQType->isUnion());
 
 
   switch ( udXQType->getTypeCategory() )

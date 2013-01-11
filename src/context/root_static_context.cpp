@@ -33,7 +33,7 @@
 
 #ifdef WIN32
 #include <zorba/config.h>
-#endif WIN32
+#endif //WIN32
 
 
 // DEFINE ENVIRONMENT VARIABLES
@@ -94,8 +94,9 @@ static void append_env_var(
   }
 }
 #else
-  static void append_env_var(
-  char * env_var_name,
+  static void append_env_var
+    (
+  const char * env_var_name,
   std::vector<zstring>& pathsVector
   )
 {

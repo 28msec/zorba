@@ -112,7 +112,10 @@ zorba::diagnostic::category ZorbaErrQName::category() const {
   switch ( name[1] ) {
     case 'A': return ZORBA_API;
     case 'C': return ZORBA_SERIALIZATION;
-    case 'D': return ZORBA_DDF;
+    case 'D': switch ( name[3] ) {
+                case 'P': return ZORBA_CORE_MODULE;
+                default : return ZORBA_DDF;
+              }
     case 'G': return ZORBA_DEBUGGER;
     case 'J': switch ( name[2] ) {
                 case 'P': return JSON_PARSER;
