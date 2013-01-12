@@ -515,6 +515,10 @@ public:
 
   const std::vector<OrderModifier>& get_modifiers() const { return theModifiers; }
 
+  bool is_ascending(csize i) const { return theModifiers[i].theAscending; }
+
+  const std::string& get_collation(csize i) const { return theModifiers[i].theCollation; }
+
   const std::vector<expr*>& get_column_exprs() const { return theOrderingExprs; }
 
   std::vector<expr*>::iterator begin() { return theOrderingExprs.begin(); }

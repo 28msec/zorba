@@ -268,6 +268,15 @@ void IndexDecl::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+const std::string& IndexDecl::getCollation(csize i) const
+{
+  return theOrderModifiers[i].theCollation;
+}
+
+
 /******************************************************************************
   Check that the domain and key exprs satisfy the constraints specified by the
   XQDDF spec. This method is called from the translator, after the domain and

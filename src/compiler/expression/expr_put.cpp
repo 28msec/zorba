@@ -252,6 +252,7 @@ ostream& flwor_wincond::vars::put(ostream& os) const
   END_PUT();
 }
 
+
 ostream& flwor_wincond::put(ostream& os) const
 {
   BEGIN_PUT(flwor_wincond);

@@ -182,6 +182,7 @@ bool IndexMatchingRule::matchIndex()
   csize firstMatchedFORpos = 0;
   csize lastMatchedFORpos = 0;
   csize lastMatchedWHEREpos = 0;
+  csize firstOrderByPos = 0;
   DynamicBitset matchedClauses(numQClauses);
   matchedClauses.reset();
 
@@ -254,6 +255,7 @@ bool IndexMatchingRule::matchIndex()
           break;
         }
         case flwor_clause::window_clause:
+        case flwor_clause::order_clause:
         {
           if (firstMatchedFOR != NULL)
           {
@@ -266,10 +268,6 @@ bool IndexMatchingRule::matchIndex()
         case flwor_clause::where_clause:
         {
           getWherePreds(qi, static_cast<where_clause*>(qc), theUnmatchedQPreds);
-          break;
-        }
-        case flwor_clause::order_clause:
-        {
           break;
         }
         case flwor_clause::count_clause:
@@ -310,15 +308,28 @@ bool IndexMatchingRule::matchIndex()
     }
   }
 
-  // Collect the rest of the query preds, if any
+  // Collect the rest of the query preds, if any, as well as the first orderby
   for (csize qi = nextQueryClause; qi < numQClauses; ++qi)
   {
     flwor_clause* qc = theQueryExpr->get_clause(qi);
 
-    if (qc->get_kind() != flwor_clause::where_clause)
-      continue;
-
-    getWherePreds(qi, static_cast<where_clause*>(qc), theUnmatchedQPreds);
+    switch (qc->get_kind())
+    {
+    case flwor_clause::where_clause:
+    {
+      getWherePreds(qi, static_cast<where_clause*>(qc), theUnmatchedQPreds);
+      break;
+    }
+    case flwor_clause::order_clause:
+    {
+      if (firstOrderByPos == 0)
+        firstOrderByPos = qi;
+      
+      break;
+    }
+    default:
+      break;
+    }
   }
 
   // Find a match for each index predicate
@@ -412,6 +423,35 @@ bool IndexMatchingRule::matchIndex()
     }
   }
 
+  // Match orderby exprs, if any, with the index key exprs
+  if (theIndexDecl->isOrdered() && firstOrderByPos != 0)
+  {
+    orderby_clause* ob = 
+    static_cast<orderby_clause*>(theQueryExpr->get_clause(firstOrderByPos));
+    
+    csize numKeys = theKeyClauses.size();
+    csize numSortKeys = ob->num_columns();
+
+    if (numSortKeys <= numKeys)
+    {
+      csize i;
+      for (i = 0; i < numSortKeys; ++i)
+      {
+        if (!ob->is_ascending(i) ||
+            ob->get_collation(i) != theIndexDecl->getCollation(i))
+          break;
+
+        if (!matchKeyExpr(ob->get_column_expr(i),
+                          theKeyClauses[i]->get_expr(),
+                          subst))
+          break;
+      }
+
+      if (i == numSortKeys)
+        matchedClauses.set(firstOrderByPos, true);
+    }
+  }
+
   // Mark the flwor vars of the query flwor expr as "not used" initially
   std::vector<var_expr*> queryVars;
   theQueryExpr->get_vars(queryVars);
@@ -454,7 +494,12 @@ bool IndexMatchingRule::matchIndex()
       var_expr* posVar = flc->get_pos_var();
 
       if (!var->isVisited(1) && (posVar == NULL || !posVar->isVisited(1)))
+      {
+        if (c->get_kind() == flwor_clause::let_clause)
+          matchedClauses.set(i, true);
+
         continue;
+      }
 
       if (!checkFreeVars(flc->get_expr(), domVar, matchedClauses))
         return false;
@@ -565,15 +610,18 @@ bool IndexMatchingRule::matchIndex()
     if (pred.theAndExpr != NULL)
     {
       fo_expr* andExpr = pred.theAndExpr;
-      csize numRemoved = 0;
 
-      while (theMatchedQPreds[i].theAndExpr == andExpr)
+      pred.theAndExpr->remove_arg(pred.theArgPos);
+
+      csize j = i+1;
+      while (j < theMatchedQPreds.size() &&
+             theMatchedQPreds[j].theAndExpr == andExpr)
       {
-        theMatchedQPreds[i].theAndExpr->remove_arg(pred.theArgPos - numRemoved);
-        ++i;
-      }
+        if (theMatchedQPreds[j].theArgPos > pred.theArgPos)
+          --theMatchedQPreds[j].theArgPos;
 
-      --i;
+        ++j;
+      }
 
       if (andExpr->num_args() == 1)
       {
@@ -611,7 +659,7 @@ bool IndexMatchingRule::matchIndex()
                    theProbeArgs);
   }
 
-  if (!theQueryExpr->ignoresSortedNodes())
+  if (!(theQueryExpr->ignoresSortedNodes() || firstOrderByPos != 0))
   {
     probeExpr =  ccb->theEM->
     create_fo_expr(sctx,
@@ -776,12 +824,13 @@ bool IndexMatchingRule::matchKeyExprsForRangeIndex(
         {
           theMatchedQPreds.push_back(qpred);
           theUnmatchedQPreds.erase(qpredIte);
-          
+          --qpredIte;
+
           if (qpred.theClausePos > lastMatchedWHEREpos)
             lastMatchedWHEREpos = qpred.theClausePos;
         }
         
-        if (bounds[0] != NULL && bounds[1] != NULL)
+        if ((bounds[0] != NULL && bounds[1] != NULL) || theUnmatchedQPreds.empty())
           break;
       }
     } // for each query pred

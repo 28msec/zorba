@@ -355,6 +355,8 @@ public:
 
   void setOrderModifiers(const std::vector<OrderModifier>& modifiers);
 
+  const std::string& getCollation(csize i) const;
+
   csize numSources() const { return theSourceNames.size(); }
 
   const store::Item* getSourceName(csize i) const { return theSourceNames[i]; }
