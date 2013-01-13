@@ -777,7 +777,7 @@ bool TypeOps::is_subtype(
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
                                                     TypeConstants::QUANT_ONE,
                                                     loc,
-                                                    err::XPTY0004);
+                                                    true);
     switch(subtype->type_kind()) 
     {
     case XQType::ATOMIC_TYPE_KIND:
@@ -866,7 +866,7 @@ bool TypeOps::is_subtype(
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
                                                     TypeConstants::QUANT_ONE,
                                                     loc,
-                                                    err::XPTY0004);
+                                                    true);
     switch (subtype->type_kind())
     {
     case XQType::ATOMIC_TYPE_KIND:
@@ -911,7 +911,7 @@ bool TypeOps::is_subtype(
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
                                                     TypeConstants::QUANT_ONE,
                                                     loc,
-                                                    err::XPTY0004);
+                                                    true);
     const UserDefinedXQType& udSuperType = 
     static_cast<const UserDefinedXQType&>(supertype);
 

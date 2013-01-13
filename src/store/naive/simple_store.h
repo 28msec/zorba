@@ -21,6 +21,7 @@
 #include "node_factory.h"
 #include "pul_primitive_factory.h"
 #include "tree_id_generator.h"
+#include "zorbautils/hashmap_itemp.h"
 
 namespace zorba {
 namespace simplestore {
@@ -47,14 +48,14 @@ class SimpleStore : public Store
   friend class zorba::StoreManager;
 
   typedef std::map<const zstring, const store::Item*> RefNodeMap;
-  typedef NodePointerHashMap<zstring> NodeRefMap;
+  typedef zorba::simplestore::ItemPointerHashMap<zorba::zstring> ItemRefMap;
 
 private:
   ulong                         theCollectionCounter;
   SYNC_CODE(Mutex               theCollectionCounterMutex;)
 
   RefNodeMap                    theReferencesToNodeMap;
-  NodeRefMap                    theNodeToReferencesMap;
+  ItemRefMap                    theNodeToReferencesMap;
 
 public:
   ulong createCollectionId();
@@ -98,9 +99,9 @@ protected:
 
   void destroyTreeIdGeneratorFactory(TreeIdGeneratorFactory* g) const;
 
-  bool unregisterReferenceToUnusedNode(XmlNode* node);
+  bool unregisterReferenceToUnusedNode(store::Item* node);
 
-  bool unregisterReferenceToDeletedNode(XmlNode* node);
+  bool unregisterReferenceToDeletedNode(store::Item* node);
 
   //
   // Store api methods

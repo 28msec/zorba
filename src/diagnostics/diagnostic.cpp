@@ -127,6 +127,7 @@ ostream& operator<<( ostream &o, category c ) {
     case XQUERY_USER_DEFINED : o << "user-defined"          ; break;
 
     case ZORBA_API           : o << "Zorba API"             ; break;
+    case ZORBA_CORE_MODULE   : o << "Zorba core module"     ; break;
     case ZORBA_DDF           : o << "Zorba data-definition" ; break;
     case ZORBA_DEBUGGER      : o << "Zorba debugger"        ; break;
     case ZORBA_OS            : o << "operating system"      ; break;

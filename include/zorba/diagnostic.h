@@ -246,8 +246,10 @@ enum category {
 
 # ifdef ZORBA_WITH_JSON
   JSONIQ_CORE,
-  JSONIQ_UPDATE
-# endif
+  JSONIQ_UPDATE,
+# endif /* ZORBA_WITH_JSON */
+
+  ZORBA_CORE_MODULE                     // Zorba Core Module
 };
 
 /**
