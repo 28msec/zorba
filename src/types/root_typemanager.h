@@ -41,12 +41,12 @@ class RootTypeManager : public TypeManagerImpl
 
 public:
   /**
-   * Pre-allocated XQType object for the "none" type
+   * Pre-allocated XQType object for the "none" type.
    */
   xqtref_t NONE_TYPE;
 
   /**
-   * Pre-allocated XQType object for the () sequence type (the empty sequence).
+   * Pre-allocated XQType object for the empty-sequence() type.
    */ 
   xqtref_t EMPTY_TYPE;
 
@@ -132,11 +132,11 @@ public:
    *
    * N, N?, N+, N*, where N is the jdm::null atomic type
    */
-  store::Item_t JDM_NULL_QNAME;
-  xqtref_t JDM_NULL_TYPE_ONE;
-  xqtref_t JDM_NULL_TYPE_QUESTION;
-  xqtref_t JDM_NULL_TYPE_STAR;
-  xqtref_t JDM_NULL_TYPE_PLUS;
+  store::Item_t JS_NULL_QNAME;
+  xqtref_t JS_NULL_TYPE_ONE;
+  xqtref_t JS_NULL_TYPE_QUESTION;
+  xqtref_t JS_NULL_TYPE_STAR;
+  xqtref_t JS_NULL_TYPE_PLUS;
 #endif
 
   /**
@@ -219,16 +219,21 @@ public:
 
   /**
    * Pre-allocated XQType and QNameItem objects for the remaining build-in
-   * XQDM types (not including the built-in list types xs:IDREFS, xs:NMTOKENS,
-   * and xs:ENTITIES).
+   * XQDM types. These are not sequence-types.
    */
   xqtref_t ANY_TYPE;
   xqtref_t UNTYPED_TYPE;
   xqtref_t ANY_SIMPLE_TYPE;
+  xqtref_t XS_NMTOKENS_TYPE;
+  xqtref_t XS_IDREFS_TYPE;
+  xqtref_t XS_ENTITIES_TYPE;
 
   store::Item_t XS_ANY_TYPE_QNAME;
   store::Item_t XS_UNTYPED_QNAME;
   store::Item_t XS_ANY_SIMPLE_TYPE_QNAME;
+  store::Item_t XS_NMTOKENS_QNAME;
+  store::Item_t XS_IDREFS_QNAME;
+  store::Item_t XS_ENTITIES_QNAME;
 
 private:
 

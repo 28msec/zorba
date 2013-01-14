@@ -42,7 +42,7 @@ void checkNodeType(
   if (!TypeOps::is_treatable(tm, node, *(collectionDecl->getNodeType()), loc))
   {
     RAISE_ERROR(zerr::ZDTY0001_COLLECTION_INVALID_NODE_TYPE, loc,
-    ERROR_PARAMS(TypeOps::toString(*tm->create_value_type(node)),
+    ERROR_PARAMS(tm->create_value_type(node)->toSchemaString(),
                  collectionDecl->getName()->getStringValue()));
   }
 }
@@ -52,8 +52,8 @@ void getCopyMode(store::CopyMode& copyMode, const static_context* sctx)
 {
   copyMode.set(true, 
                sctx->construction_mode() == StaticContextConsts::cons_preserve,
-               sctx->preserve_mode() == StaticContextConsts::preserve_ns,
-               sctx->inherit_mode() == StaticContextConsts::inherit_ns);
+               sctx->preserve_ns(),
+               sctx->inherit_ns());
 }
 
 } /* namespace zorba */

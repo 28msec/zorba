@@ -7,7 +7,7 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <CtxVarDeclareIterator varid="4" varname="input-context"/>
   <ElementIterator copyInputNodes="false">
     <SingletonIterator value="xs:QName(,,missing-variable)"/>
     <EnclosedIterator attr_cont="false">
@@ -15,33 +15,33 @@ Iterator tree for main query:
         <ForVariable name="x">
           <NodeSortIterator distinct="true" ascending="true">
             <flwor::FLWORIterator>
-              <ForVariable name="$$dot">
+              <ForVariable name="$$context-item">
                 <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
                   <FnDocIterator>
                     <PromoteIterator type="xs:string">
                       <FnDataIterator>
-                        <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
+                        <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
                       </FnDataIterator>
                     </PromoteIterator>
                   </FnDocIterator>
                 </DescendantSelfAxisIterator>
               </ForVariable>
-              <ForVariable name="$$dot">
+              <ForVariable name="$$context-item">
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,wildcard,input-file)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="$$dot"/>
+                  <ForVarIterator varname="$$context-item"/>
                 </ChildAxisIterator>
               </ForVariable>
               <WhereClause>
                 <AndIterator>
                   <FnEmptyIterator>
                     <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,variable)" typename="*" nill allowed="0">
-                      <ForVarIterator varname="$$dot"/>
+                      <ForVarIterator varname="$$context-item"/>
                     </AttributeAxisIterator>
                   </FnEmptyIterator>
                   <CompareIterator>
                     <FnDataIterator>
                       <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                        <ForVarIterator varname="$$dot"/>
+                        <ForVarIterator varname="$$context-item"/>
                       </ChildAxisIterator>
                     </FnDataIterator>
                     <SingletonIterator value="xs:string(emptydoc)"/>
@@ -49,7 +49,7 @@ Iterator tree for main query:
                 </AndIterator>
               </WhereClause>
               <ReturnClause>
-                <ForVarIterator varname="$$dot"/>
+                <ForVarIterator varname="$$context-item"/>
               </ReturnClause>
             </flwor::FLWORIterator>
           </NodeSortIterator>

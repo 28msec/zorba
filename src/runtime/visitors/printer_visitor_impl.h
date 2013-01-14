@@ -196,7 +196,7 @@ void beginVisitWindowVariable(
 void endVisitWindowVariable();
 
     void beginVisitWinCondVariable(
-        const std::string& varName,
+        const zstring& varName,
         const std::vector<PlanIter_t>& varRefs);
 
     void endVisitWinCondVariable();
@@ -237,7 +237,6 @@ void endVisitWindowVariable();
   DECLARE_VISITOR(JSONArrayIterator)
   DECLARE_VISITOR(JSONObjectIterator)
   DECLARE_VISITOR(JSONDirectObjectIterator)
-  DECLARE_VISITOR(JSONObjectInsertIterator)
 #endif
   DECLARE_VISITOR (EmptyIterator)
   DECLARE_VISITOR (IfThenElseIterator)

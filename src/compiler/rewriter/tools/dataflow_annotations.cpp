@@ -110,16 +110,45 @@ void DataflowAnnotationsComputer::compute(expr* e)
   case while_expr_kind:         // TODO
     break;
 
-  case wrapper_expr_kind:
-    compute_wrapper_expr(static_cast<wrapper_expr *>(e));
+  case promote_expr_kind:
+  case cast_expr_kind:
+  case name_cast_expr_kind:
+  case castable_expr_kind:
+  case instanceof_expr_kind:
+  {
+    default_walk(e);
+    SORTED_NODES(e);
+    DISTINCT_NODES(e);
     break;
+  }
+
+  case treat_expr_kind:
+  {
+    default_walk(e);
+    if (!generic_compute(e))
+    {
+      treat_expr* ue = static_cast<treat_expr*>(e);
+      PROPOGATE_SORTED_NODES(ue->get_input(), e);
+      PROPOGATE_DISTINCT_NODES(ue->get_input(), e);
+    }
+    break;
+  }
+
+  case wrapper_expr_kind:
+  {
+    default_walk(e);
+    wrapper_expr* ue = static_cast<wrapper_expr*>(e);
+    PROPOGATE_SORTED_NODES(ue->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(ue->get_input(), e);
+    break;
+  }
 
   case function_trace_expr_kind:
   {
     default_walk(e);
-    function_trace_expr* fte = static_cast<function_trace_expr*>(e);
-    PROPOGATE_SORTED_NODES(fte->get_expr(), e);
-    PROPOGATE_DISTINCT_NODES(fte->get_expr(), e);
+    function_trace_expr* ue = static_cast<function_trace_expr*>(e);
+    PROPOGATE_SORTED_NODES(ue->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(ue->get_input(), e);
     break;
   }
 
@@ -136,36 +165,12 @@ void DataflowAnnotationsComputer::compute(expr* e)
     compute_trycatch_expr(static_cast<trycatch_expr *>(e));
     break;
 
-  case promote_expr_kind:
-    compute_promote_expr(static_cast<promote_expr *>(e));
-    break;
-
   case if_expr_kind:
     compute_if_expr(static_cast<if_expr *>(e));
     break;
 
   case fo_expr_kind:
     compute_fo_expr(static_cast<fo_expr *>(e));
-    break;
-
-  case instanceof_expr_kind:
-    compute_instanceof_expr(static_cast<instanceof_expr *>(e));
-    break;
-
-  case treat_expr_kind:
-    compute_treat_expr(static_cast<treat_expr *>(e));
-    break;
-
-  case castable_expr_kind:
-    compute_castable_expr(static_cast<castable_expr *>(e));
-    break;
-
-  case cast_expr_kind:
-    compute_cast_expr(static_cast<cast_expr *>(e));
-    break;
-
-  case name_cast_expr_kind:
-    compute_name_cast_expr(static_cast<name_cast_expr *>(e));
     break;
 
   case validate_expr_kind:
@@ -286,6 +291,16 @@ bool DataflowAnnotationsComputer::generic_compute(expr* e)
     return true;
   }
 
+  if (TypeOps::is_subtype(e->get_type_manager(),
+                          *rt,
+                          *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE,
+                          e->get_loc()))
+  {
+    SORTED_NODES(e);
+    DISTINCT_NODES(e);
+    return true;
+  }
+
   return false;
 }
 
@@ -336,25 +351,14 @@ void DataflowAnnotationsComputer::compute_block_expr(block_expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute_wrapper_expr(wrapper_expr* e)
-{
-  default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_expr(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_expr(), e);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void DataflowAnnotationsComputer::compute_var_expr(var_expr* e)
 {
   if (!generic_compute(e))
   {
     if (e->get_kind() == var_expr::let_var)
     {
-      PROPOGATE_SORTED_NODES(e->get_forletwin_clause()->get_expr(), e);
-      PROPOGATE_DISTINCT_NODES(e->get_forletwin_clause()->get_expr(), e);
+      PROPOGATE_SORTED_NODES(e->get_forlet_clause()->get_expr(), e);
+      PROPOGATE_DISTINCT_NODES(e->get_forlet_clause()->get_expr(), e);
     }
   }
 }
@@ -451,17 +455,6 @@ void DataflowAnnotationsComputer::compute_trycatch_expr(trycatch_expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute_promote_expr(promote_expr* e)
-{
-  default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_input(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_input(), e);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void DataflowAnnotationsComputer::compute_if_expr(if_expr* e)
 {
   default_walk(e);
@@ -540,69 +533,13 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute_instanceof_expr(instanceof_expr *e)
-{
-  default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_input(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_input(), e);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void DataflowAnnotationsComputer::compute_treat_expr(treat_expr *e)
-{
-  default_walk(e);
-  if (!generic_compute(e))
-  {
-    PROPOGATE_SORTED_NODES(e->get_input(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void DataflowAnnotationsComputer::compute_castable_expr(castable_expr *e)
-{
-  default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_input(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_input(), e);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void DataflowAnnotationsComputer::compute_cast_expr(cast_expr* e)
-{
-  default_walk(e);
-  if (!generic_compute(e))
-  {
-    PROPOGATE_SORTED_NODES(e->get_input(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
-  }
-}
-
-void DataflowAnnotationsComputer::compute_name_cast_expr(name_cast_expr* e)
-{
-  default_walk(e);
-  if (!generic_compute(e))
-  {
-    PROPOGATE_SORTED_NODES(e->get_input(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
-  }
-}
-
 void DataflowAnnotationsComputer::compute_validate_expr(validate_expr* e)
 {
   default_walk(e);
   if (!generic_compute(e))
   {
-    PROPOGATE_SORTED_NODES(e->get_expr(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_expr(), e);
+    PROPOGATE_SORTED_NODES(e->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
   }
 }
 
@@ -634,8 +571,8 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
 
     for (csize i = 1; i < num_steps; ++i)
     {
-      axis_step_expr* ase = dynamic_cast<axis_step_expr *>((*e)[i]);
-      assert(ase != NULL);
+      assert((*e)[i]->get_expr_kind() == axis_step_expr_kind);
+      axis_step_expr* ase = static_cast<axis_step_expr *>((*e)[i]);
 
       reverse_axes = reverse_axes || ase->is_reverse_axis();
 
@@ -806,59 +743,23 @@ SourceFinder::~SourceFinder()
   If "node" is inside a UDF, "udfCaller" contains the fo expr that invoked that
   UDF.
 ********************************************************************************/
-void SourceFinder::findNodeSources(
-    expr* node,
-    UDFCallChain* udfCaller,
-    std::vector<expr*>& sources)
+void SourceFinder::findNodeSources(expr* node, std::vector<expr*>& sources)
 {
-  theStartingUdf = NULL;
+  user_function* startingUdf = node->get_udf();
 
-  if (udfCaller->theFo)
-    theStartingUdf = static_cast<user_function*>(udfCaller->theFo->get_func());
-
-  findNodeSourcesRec(node, sources, theStartingUdf);
+  findNodeSourcesRec(node, sources, startingUdf);
 
   for (csize i = 0; i < sources.size(); ++i)
   {
     expr* source = sources[i];
 
-    if (source->get_expr_kind() == var_expr_kind)
-    {
-      var_expr* varExpr = static_cast<var_expr*>(source);
+    ZORBA_ASSERT(source->get_expr_kind() == doc_expr_kind ||
+                 source->get_expr_kind() == elem_expr_kind);
 
-      ZORBA_ASSERT(udfCaller != NULL);
-      ZORBA_ASSERT(varExpr->get_kind() == var_expr::arg_var);
+    user_function* udf = source->get_udf();
 
-      sources.erase(sources.begin() + i);
-      --i;
-
-      // Note: If this method is called to find the sources of an expr within the
-      // body of a function_item, then udfCaller->theFo will be NULL.
-      while(udfCaller->theFo && varExpr->get_udf() != udfCaller->theFo->get_func())
-      {
-        udfCaller = udfCaller->thePrev;
-      }
-
-      if (udfCaller->theFo)
-      {
-        fo_expr* foExpr = udfCaller->theFo;
-        expr* foArg = foExpr->get_arg(varExpr->get_param_pos());
-        std::vector<expr*> argSources;
-        findNodeSources(foArg, udfCaller->thePrev, argSources);
-
-        sources.insert(sources.end(), argSources.begin(), argSources.end());
-      }
-    }
-    else
-    {
-      ZORBA_ASSERT(source->get_expr_kind() == doc_expr_kind ||
-                   source->get_expr_kind() == elem_expr_kind);
-
-      user_function* udf = theSourceUdfMap.find(source)->second;
-
-      if (udf)
-        udf->invalidatePlan();
-    }
+    if (udf)
+      udf->invalidatePlan();
   }
 }
 
@@ -876,7 +777,7 @@ void SourceFinder::findNodeSourcesRec(
 
   xqtref_t retType = node->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR, node->get_loc()))
+  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_SIMPLE_TYPE, node->get_loc()))
     return;
 
   switch(node->get_expr_kind())
@@ -944,19 +845,6 @@ void SourceFinder::findNodeSourcesRec(
       return;
     }
 
-    case var_expr::arg_var:
-    {
-      if (std::find(sources.begin(), sources.end(), node) == sources.end())
-        sources.push_back(node);
-
-      std::vector<expr*>* varSources = new std::vector<expr*>;
-
-      if (theVarSourcesMap.insert(VarSourcesPair(e, varSources)).second == false)
-        delete varSources;
-
-      return;
-    }
-
     case var_expr::prolog_var:
     case var_expr::local_var:
     {
@@ -969,27 +857,17 @@ void SourceFinder::findNodeSourcesRec(
         varSources = new std::vector<expr*>;;
         theVarSourcesMap.insert(VarSourcesPair(e, varSources));
 
-        std::vector<expr*>::const_iterator ite2 = e->setExprsBegin();
-        std::vector<expr*>::const_iterator end2 = e->setExprsEnd();
+        var_expr::VarSetExprs::const_iterator ite2 = e->setExprsBegin();
+        var_expr::VarSetExprs::const_iterator end2 = e->setExprsEnd();
 
         for (; ite2 != end2; ++ite2)
         {
-          expr* setExpr = *ite2;
+          var_set_expr* setExpr = *ite2;
 
-          if (setExpr->get_expr_kind() == var_decl_expr_kind)
-          {
-            findNodeSourcesRec(static_cast<var_decl_expr*>(setExpr)->get_init_expr(),
-                               *varSources,
-                               currentUdf);
-          }
-          else
-          {
-            assert(setExpr->get_expr_kind() == var_set_expr_kind);
+          if (setExpr->get_udf() != NULL && !setExpr->get_udf()->isOptimized())
+            continue;
 
-            findNodeSourcesRec(static_cast<var_set_expr*>(setExpr)->get_expr(),
-                               *varSources,
-                               currentUdf);
-          }
+          findNodeSourcesRec(setExpr->get_expr(), *varSources, currentUdf);
         }
       }
       else
@@ -1016,6 +894,13 @@ void SourceFinder::findNodeSourcesRec(
       return;
     }
 
+    case var_expr::arg_var:
+    {
+      theVarSourcesMap.insert(VarSourcesPair(e, nullptr));
+
+      return;
+    }
+
     case var_expr::eval_var:
     default:
     {
@@ -1026,14 +911,98 @@ void SourceFinder::findNodeSourcesRec(
     break;
   }
 
+  case fo_expr_kind:
+  {
+    fo_expr* e = static_cast<fo_expr *>(node);
+    function* f = e->get_func();
+
+    if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
+    {
+      user_function* udf = static_cast<user_function*>(f);
+
+      bool recursive = (currentUdf ? currentUdf->isMutuallyRecursiveWith(udf) : false);
+
+      if (recursive)
+      {
+        currentUdf->addRecursiveCall(e);
+      }
+      else
+      {
+        UdfSourcesMap::iterator ite = theUdfSourcesMap.find(udf);
+
+        std::vector<expr*>* udfSources;
+
+        if (ite == theUdfSourcesMap.end())
+        {
+          // must do this before calling findNodeSourcesRec in order to break
+          // recursion cycle
+          udfSources = new std::vector<expr*>;
+          theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources));
+
+          findNodeSourcesRec(udf->getBody(), *udfSources, udf);
+
+          if (udf->isRecursive())
+          {
+            std::vector<fo_expr*>::const_iterator ite = udf->getRecursiveCalls().begin();
+            std::vector<fo_expr*>::const_iterator end = udf->getRecursiveCalls().end();
+            for (; ite != end; ++ite)
+            {
+              findNodeSourcesRec((*ite), *udfSources, NULL);
+            }
+          }
+        }
+        else
+        {
+          udfSources = (*ite).second;
+        }
+
+        csize numUdfSources = udfSources->size();
+
+        for (csize i = 0; i < numUdfSources; ++i)
+        {
+          expr* source = (*udfSources)[i];
+
+          if (std::find(sources.begin(), sources.end(), source) == sources.end())
+            sources.push_back(source);
+        }
+
+        // if an arg var of this udf has been marked as a source before, it
+        // means that that var is consumed in some unsafe operation, so we
+        // now have to find the sources of the arg exprs and mark them.
+        csize numArgs = e->num_args();
+
+        for (csize i = 0; i < numArgs; ++i)
+        {
+          var_expr* argVar = udf->getArgVar(i);
+
+          if (theVarSourcesMap.find(argVar) != theVarSourcesMap.end())
+          {
+            findNodeSourcesRec(e->get_arg(i), sources, currentUdf);
+          }
+        }
+      } // not recursive call
+    } // f->isUdf()
+    else
+    {
+      csize numArgs = e->num_args();
+      for (csize i = 0; i < numArgs; ++i)
+      {
+        if (f->propagatesInputNodes(e, i))
+        {
+          findNodeSourcesRec(e->get_arg(i), sources, currentUdf);
+        }
+      }
+    }
+
+    return;
+  }
+
   case doc_expr_kind:
   case elem_expr_kind:
   {
     if (std::find(sources.begin(), sources.end(), node) == sources.end())
     {
       sources.push_back(node);
-
-      theSourceUdfMap.insert(SourceUdfMapPair(node, currentUdf));
     }
 
     std::vector<expr*> enclosedExprs;
@@ -1100,95 +1069,6 @@ void SourceFinder::findNodeSourcesRec(
   case trycatch_expr_kind:
   {
     break;
-  }
-
-  case fo_expr_kind:
-  {
-    fo_expr* e = static_cast<fo_expr *>(node);
-    function* f = e->get_func();
-
-    if (f->isUdf() && static_cast<user_function*>(f)->getBody() != NULL)
-    {
-      user_function* udf = static_cast<user_function*>(f);
-
-      bool recursive = (currentUdf ? currentUdf->isMutuallyRecursiveWith(udf) : false);
-
-      if (recursive)
-      {
-        currentUdf->addRecursiveCall(node);
-      }
-      else
-      {
-        UdfSourcesMap::iterator ite = theUdfSourcesMap.find(udf);
-
-        std::vector<expr*>* udfSources;
-
-        if (ite == theUdfSourcesMap.end())
-        {
-          // must do this before calling findNodeSourcesRec in order to break
-          // recursion cycle
-          if (ite == theUdfSourcesMap.end())
-          {
-            udfSources = new std::vector<expr*>;
-            theUdfSourcesMap.insert(UdfSourcesPair(udf, udfSources));
-          }
-          else
-          {
-            udfSources = (*ite).second;
-          }
-
-          findNodeSourcesRec(udf->getBody(), *udfSources, udf);
-
-          if (udf->isRecursive())
-          {
-            std::vector<expr*>::const_iterator ite = udf->getRecursiveCalls().begin();
-            std::vector<expr*>::const_iterator end = udf->getRecursiveCalls().end();
-            for (; ite != end; ++ite)
-            {
-              findNodeSourcesRec((*ite), *udfSources, NULL);
-            }
-          }
-        }
-        else
-        {
-          udfSources = (*ite).second;
-        }
-
-        csize numUdfSources = udfSources->size();
-
-        for (csize i = 0; i < numUdfSources; ++i)
-        {
-          expr* source = (*udfSources)[i];
-
-          if (source->get_expr_kind() == var_expr_kind)
-          {
-            var_expr* argVar = static_cast<var_expr*>(source);
-            ZORBA_ASSERT(argVar->get_kind() == var_expr::arg_var);
-            expr* argExpr = e->get_arg(argVar->get_param_pos());
-
-            findNodeSourcesRec(argExpr, sources, currentUdf);
-          }
-          else
-          {
-            if (std::find(sources.begin(), sources.end(), source) == sources.end())
-              sources.push_back(source);
-          }
-        }
-      } // not recursive call
-    } // f->isUdf()
-    else
-    {
-      csize numArgs = e->num_args();
-      for (csize i = 0; i < numArgs; ++i)
-      {
-        if (f->propagatesInputNodes(e, i))
-        {
-          findNodeSourcesRec(e->get_arg(i), sources, currentUdf);
-        }
-      }
-    }
-
-    return;
   }
 
   case promote_expr_kind:
@@ -1311,7 +1191,7 @@ void SourceFinder::findNodeSourcesRec(
 
 
 /*******************************************************************************
-
+  This method is called when we serialize a udf, if the query has an eval expr.
 ********************************************************************************/
 void SourceFinder::findLocalNodeSources(
     expr* node,
@@ -1322,7 +1202,7 @@ void SourceFinder::findLocalNodeSources(
 
   xqtref_t retType = node->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR, node->get_loc()))
+  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_SIMPLE_TYPE, node->get_loc()))
     return;
 
   switch(node->get_expr_kind())
@@ -1407,25 +1287,14 @@ void SourceFinder::findLocalNodeSources(
         varSources = new std::vector<expr*>;;
         theVarSourcesMap.insert(VarSourcesPair(e, varSources));
 
-        std::vector<expr*>::const_iterator ite2 = e->setExprsBegin();
-        std::vector<expr*>::const_iterator end2 = e->setExprsEnd();
+        var_expr::VarSetExprs::const_iterator ite2 = e->setExprsBegin();
+        var_expr::VarSetExprs::const_iterator end2 = e->setExprsEnd();
 
         for (; ite2 != end2; ++ite2)
         {
-          expr* setExpr = *ite2;
+          var_set_expr* setExpr = *ite2;
 
-          if (setExpr->get_expr_kind() == var_decl_expr_kind)
-          {
-            findLocalNodeSources(static_cast<var_decl_expr*>(setExpr)->get_init_expr(),
-                                 *varSources);
-          }
-          else
-          {
-            assert(setExpr->get_expr_kind() == var_set_expr_kind);
-
-            findLocalNodeSources(static_cast<var_set_expr*>(setExpr)->get_expr(),
-                                 *varSources);
-          }
+          findLocalNodeSources(setExpr->get_expr(), *varSources);
         }
       }
       else
@@ -1493,6 +1362,17 @@ void SourceFinder::findLocalNodeSources(
   {
     return;
   }
+
+#ifdef ZORBA_WITH_JSON
+  case json_direct_object_expr_kind:
+  case json_object_expr_kind:
+  case json_array_expr_kind:
+  {
+    // TODO? We need to drill inside a json pair or array constructor only
+    // if we are coming from an unbox or flatten call ????
+    break;
+  }
+#endif
 
   case relpath_expr_kind:
   {

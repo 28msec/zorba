@@ -63,12 +63,12 @@ QNamePool::QNamePool(ulong size, StringPool* nspool)
 ********************************************************************************/
 QNamePool::~QNamePool() 
 {
-  csize n = theHashSet.theHashTab.size();
+  csize n = theHashSet.capacity();
   for (csize i = 0; i < n; ++i)
   {
     if (!theHashSet.theHashTab[i].isFree() &&
-        theHashSet.theHashTab[i].theItem->isOverflow())
-      delete theHashSet.theHashTab[i].theItem;
+        theHashSet.theHashTab[i].key()->isOverflow())
+      delete theHashSet.theHashTab[i].key();
   }
 
   if (theCache != NULL)
@@ -297,12 +297,12 @@ retry:
 
       bool found;
       entry = theHashSet.hashInsert(qn, hval, found);
-      entry->theItem = qn;
+      entry->key() = qn;
       ZORBA_FATAL(!found, "");
     }
     else
     {
-      qn = entry->theItem;
+      qn = entry->key();
       cachePin(qn);
     }
 
@@ -389,12 +389,12 @@ retry:
 
       bool found;
       entry = theHashSet.hashInsert(qn, hval, found);
-      entry->theItem = qn;
+      entry->key() = qn;
       ZORBA_FATAL(!found, "");
     }
     else
     {
-      qn = entry->theItem;
+      qn = entry->key();
       cachePin(qn);
     }
 
@@ -478,7 +478,7 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
 
   while (entry != NULL)
   {
-    QNameItem* qn = entry->theItem;
+    QNameItem* qn = entry->key();
 
     if (ztd::equals(qn->getLocalName(), ln, lnlen) &&
         ztd::equals(qn->getNamespace(), ns, nslen) &&

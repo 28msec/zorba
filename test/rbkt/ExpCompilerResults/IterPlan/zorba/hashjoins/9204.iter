@@ -33,7 +33,7 @@ Iterator tree for main query:
             </FnDocIterator>
           </DescendantAxisIterator>
         </ForVariable>
-        <LetVariable name="$$opt_temp_1" materialize="true">
+        <ForVariable name="$$opt_temp_1">
           <HoistIterator>
             <FnCountIterator>
               <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
@@ -41,7 +41,7 @@ Iterator tree for main query:
               </ChildAxisIterator>
             </FnCountIterator>
           </HoistIterator>
-        </LetVariable>
+        </ForVariable>
         <ReturnClause>
           <ElementIterator>
             <SingletonIterator value="xs:QName(,,karteikasten)"/>
@@ -51,7 +51,7 @@ Iterator tree for main query:
                   <ProbeIndexPointValueIterator>
                     <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                     <UnhoistIterator>
-                      <LetVarIterator varname="$$opt_temp_1"/>
+                      <ForVarIterator varname="$$opt_temp_1"/>
                     </UnhoistIterator>
                   </ProbeIndexPointValueIterator>
                 </ForVariable>

@@ -5,6 +5,8 @@
 (: Purpose: Error XQST0036                               :)
 (:*******************************************************:)
 
+xquery version "1.0";
+
 import module namespace math = "http://example.org/math-functions" at
 "libraryModule12.xqlib";
 

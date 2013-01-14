@@ -82,7 +82,7 @@ static iso639_1::type get_lang_from( store::Item_t lang_item,
       ),
       ERROR_LOC( loc )
     );
-  if ( iso639_1::type const lang = find_lang( lang_string.c_str() ) )
+  if ( iso639_1::type const lang = find_lang( lang_string ) )
     return lang;
   throw XQUERY_EXCEPTION(
     err::FTST0009 /* lang not supported */,
@@ -504,18 +504,14 @@ bool StripDiacriticsIterator::nextImpl( store::Item_t &result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 460)
-# define GCC_GREATER_EQUAL_460 1
-#endif
-
-#if defined( GCC_GREATER_EQUAL_460 ) || defined( __llvm__ )
-# define GCC_PRAGMA_DIAGNOSTIC_PUSH 1
-#endif
-
-#ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
-# pragma GCC diagnostic push
+#ifdef __GNUC__
+# ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
+#   pragma GCC diagnostic push
+# endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+# pragma GCC diagnostic ignored "-Wunknown-pragmas"
+# pragma GCC diagnostic ignored "-Wpragmas"
 # pragma GCC diagnostic ignored "-Wbind-to-temporary-copy"
-#endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+#endif /* __GNUC__ */
 
 bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
@@ -612,6 +608,10 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
 
 #ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
 # pragma GCC diagnostic pop
+#else
+# pragma GCC diagnostic warning "-Wbind-to-temporary-copy"
+# pragma GCC diagnostic warning "-Wunknown-pragmas"
+# pragma GCC diagnostic warning "-Wpragmas"
 #endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
 
 ///////////////////////////////////////////////////////////////////////////////

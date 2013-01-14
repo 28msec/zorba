@@ -37,9 +37,10 @@ protected:
 
   expr                                ** theCurrentChild;
   int                                    theState;
+  bool                                   theIsDone;
 
-  std::vector<expr*>::iterator          theArgsIter;
-  std::vector<expr*>::iterator          theArgsEnd;
+  std::vector<expr*>::iterator           theArgsIter;
+  std::vector<expr*>::iterator           theArgsEnd;
 
   flwor_expr::clause_list_t::iterator    theClausesIter;
   flwor_expr::clause_list_t::iterator    theClausesBegin;
@@ -50,8 +51,8 @@ protected:
   flwor_clause::rebind_list_t::iterator  theNonGroupVarsEnd;
   int                                    theWincondIter;
 
-  std::vector<copy_clause_t>::iterator   theCopyClauseIter;
-  std::vector<copy_clause_t>::iterator   theCopyClauseEnd;
+  std::vector<copy_clause*>::iterator   theCopyClauseIter;
+  std::vector<copy_clause*>::iterator   theCopyClauseEnd;
 
 #ifndef ZORBA_NO_FULL_TEXT
   std::vector<expr**>                   theFTSelectionExprs;
@@ -68,7 +69,7 @@ public:
 
   expr** operator*() const { return (theCurrentChild); }
 
-  bool done() const { return theCurrentChild == expr::iter_done; }
+  bool done() const { return theIsDone; }
 
 private:
   // comparisson forbidden; use done()

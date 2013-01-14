@@ -1,0 +1,64 @@
+Iterator tree for const-folded expr:
+<SingletonIterator value="xs:boolean(true)"/>
+
+Iterator tree for main query:
+<flwor::TupleStreamIterator>
+  <flwor::WindowIterator>
+    <WindowVariable name="w">
+      <FnConcatIterator>
+        <SingletonIterator value="xs:integer(2)"/>
+        <SingletonIterator value="xs:integer(4)"/>
+        <SingletonIterator value="xs:integer(6)"/>
+        <SingletonIterator value="xs:integer(8)"/>
+        <SingletonIterator value="xs:integer(10)"/>
+        <SingletonIterator value="xs:integer(12)"/>
+      </FnConcatIterator>
+    </WindowVariable>
+    <WinCondVariable name="start-PosIn"/>
+    <SingletonIterator value="xs:boolean(true)"/>
+    <WinCondVariable name="end-PosIn"/>
+    <FnBooleanIterator>
+      <TypedValueCompareIterator_INTEGER>
+        <SpecificNumArithIterator_SubtractOperation_INTEGER>
+          <ForVarIterator varname="e"/>
+          <ForVarIterator varname="s"/>
+        </SpecificNumArithIterator_SubtractOperation_INTEGER>
+        <CastIterator type="xs:integer">
+          <FnDataIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0" target_position="1">
+              <ForVarIterator varname="x"/>
+            </ChildAxisIterator>
+          </FnDataIterator>
+        </CastIterator>
+      </TypedValueCompareIterator_INTEGER>
+    </FnBooleanIterator>
+    <flwor::ForIterator>
+      <ForVariable name="x"/>
+      <flwor::TupleSourceIterator/>
+      <ElementIterator copyInputNodes="false">
+        <SingletonIterator value="xs:QName(,,a)"/>
+        <FnConcatIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,b)"/>
+            <TextIterator>
+              <SingletonIterator value="xs:string(1)"/>
+            </TextIterator>
+          </ElementIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,b)"/>
+            <TextIterator>
+              <SingletonIterator value="xs:string(2)"/>
+            </TextIterator>
+          </ElementIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </flwor::ForIterator>
+  </flwor::WindowIterator>
+  <ElementIterator>
+    <SingletonIterator value="xs:QName(,,window)"/>
+    <EnclosedIterator attr_cont="false">
+      <LetVarIterator varname="w"/>
+    </EnclosedIterator>
+  </ElementIterator>
+</flwor::TupleStreamIterator>
+

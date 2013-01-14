@@ -220,6 +220,15 @@ unsigned short user_function::getScriptingKind() const
 /*******************************************************************************
 
 ********************************************************************************/
+void user_function::setScriptingKind(unsigned short k)
+{
+  theScriptingKind = k;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void user_function::setBody(expr* body)
 {
   theBodyExpr = body;
@@ -271,7 +280,7 @@ void user_function::addMutuallyRecursiveUDFs(
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::addRecursiveCall(expr* call)
+void user_function::addRecursiveCall(fo_expr* call)
 {
   assert(theBodyExpr != NULL);
 
@@ -288,7 +297,8 @@ void user_function::addRecursiveCall(expr* call)
 ********************************************************************************/
 bool user_function::isRecursive() const
 {
-  assert(isOptimized());
+  // recursiveness is established before any optimization is done
+  // assert(isOptimized());
   assert(theBodyExpr != NULL);
   return !theMutuallyRecursiveUDFs.empty();
 }
@@ -299,7 +309,8 @@ bool user_function::isRecursive() const
 ********************************************************************************/
 bool user_function::isMutuallyRecursiveWith(const user_function* udf)
 {
-  assert(isOptimized());
+  // recursiveness is established before any optimization is done
+  // assert(isOptimized());
   assert(theBodyExpr != NULL);
 
   if (std::find(theMutuallyRecursiveUDFs.begin(),
@@ -314,6 +325,44 @@ bool user_function::isMutuallyRecursiveWith(const user_function* udf)
 /*******************************************************************************
 
 ********************************************************************************/
+bool user_function::dereferencesNodes() const
+{
+  if (!isOptimized())
+  {
+    std::cerr << "dereferencesNodes invoked on non-optimized UDF"
+              << getName()->getStringValue() << std::endl;
+    assert(isOptimized());
+  }
+
+  if (theBodyExpr != NULL)
+    return theBodyExpr->dereferencesNodes();
+
+  return testFlag(FunctionConsts::DereferencesNodes);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool user_function::constructsNodes() const
+{
+  if (!isOptimized())
+  {
+    std::cerr << "constructNodes invoked on non-optimized UDF"
+              << getName()->getStringValue() << std::endl;
+    assert(isOptimized());
+  }
+
+  if (theBodyExpr != NULL)
+    return theBodyExpr->constructsNodes();
+
+  return testFlag(FunctionConsts::ConstructsNodes);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool user_function::accessesDynCtx() const
 {
   if (!isOptimized())
@@ -322,6 +371,9 @@ bool user_function::accessesDynCtx() const
               << getName()->getStringValue() << std::endl;
     assert(isOptimized());
   }
+
+  if (theBodyExpr != NULL)
+    return theBodyExpr->isUnfoldable();
 
   return testFlag(FunctionConsts::AccessesDynCtx);
 }
@@ -415,7 +467,14 @@ void user_function::optimize()
 
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
     body = rctx.getRoot();
+
     setBody(body);
+
+    if (theBodyExpr->dereferencesNodes())
+      setFlag(FunctionConsts::DereferencesNodes);
+
+    if (theBodyExpr->constructsNodes())
+      setFlag(FunctionConsts::ConstructsNodes);
 
     if (theBodyExpr->isUnfoldable())
       setFlag(FunctionConsts::AccessesDynCtx);

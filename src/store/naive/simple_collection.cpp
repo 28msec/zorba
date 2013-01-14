@@ -49,7 +49,7 @@ SimpleCollection::SimpleCollection(
   theNodeType(aNodeType)
 {
   theId = GET_STORE().createCollectionId();
-  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
 }
 
 
@@ -62,7 +62,7 @@ SimpleCollection::SimpleCollection()
   theIsDynamic(false),
   theNodeType(NULL)
 {
-  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator();
+  theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
 }
 
 
@@ -81,9 +81,22 @@ SimpleCollection::~SimpleCollection()
   Note: it is allowed to have several concurrent iterators on the same collection
   but each iterator should be used by a single thread only.
 ********************************************************************************/
-store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip)
+store::Iterator_t SimpleCollection::getIterator(const xs_integer& aSkip,
+                                                const zstring& aStart)
 {
-  return new CollectionIter(this, aSkip);
+  store::Item_t lReferencedNode;
+  xs_integer lReferencedPosition = xs_integer::zero();
+  if (aStart.size() != 0
+   && (!GET_STORE().getNodeByReference(lReferencedNode, aStart)
+    || !findNode(lReferencedNode.getp(), lReferencedPosition)))
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0066_REFERENCED_NODE_NOT_IN_COLLECTION,
+    ERROR_PARAMS(aStart, theName->getStringValue()));
+  }
+
+  return new CollectionIter(
+               this, 
+               aSkip + lReferencedPosition);
 }
 
 
@@ -431,6 +444,97 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
   }
 }
 
+/*******************************************************************************
+ * Substitues content for target.
+********************************************************************************/
+bool SimpleCollection::replaceNode(store::Item* target, store::Item* content)
+{
+  XmlNode* lTargetNode = NULL;
+  XmlNode* lContentNode = NULL;
+#ifdef ZORBA_WITH_JSON
+  json::JSONItem* lTargetJSONItem = NULL;
+  json::JSONItem* lContentJSONItem = NULL;
+#endif
+
+  if (target->isNode())
+  {
+    lTargetNode = static_cast<XmlNode*>(target);
+  }
+#ifdef ZORBA_WITH_JSON
+  else if (target->isJSONItem())
+  {
+    lTargetJSONItem = static_cast<json::JSONItem*>(target);
+  }
+  else
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+#else
+  else
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+#endif
+
+  if (content->isNode())
+  {
+    lContentNode = static_cast<XmlNode*>(content);
+  }
+#ifdef ZORBA_WITH_JSON
+  else if (content->isJSONItem())
+  {
+    lContentJSONItem = static_cast<json::JSONItem*>(content);
+  }
+  else
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+#else
+  else
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+#endif
+
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
+
+  xs_integer position;
+  bool found = findNode(target, position);
+
+  if (found)
+  {
+    ZORBA_ASSERT(target->getCollection() == this);
+
+    xs_integer const &zero = xs_integer::zero();
+
+#ifdef ZORBA_WITH_JSON
+    if (lTargetJSONItem)
+      lTargetJSONItem->detachFromCollection();
+    else
+#endif
+      lTargetNode->setCollection(NULL, zero);
+
+    csize pos = to_xs_unsignedInt(position);
+    theXmlTrees[pos] = content;
+
+#ifdef ZORBA_WITH_JSON
+  if (lContentJSONItem)
+    lContentJSONItem->attachToCollection(this, createTreeId());
+  else
+#endif
+    lContentNode->setCollection(this, position);
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 
 /*******************************************************************************
  * Remove all the nodes from the collection
@@ -597,6 +701,21 @@ SimpleCollection::CollectionIter::~CollectionIter()
 }
 
 
+void SimpleCollection::CollectionIter::skip()
+{
+  // skip by position
+  if (theSkip >= theCollection->size())
+  {
+    // we need to skip more then possible -> jump to the end
+    theIterator = theEnd;
+  }
+  else
+  {
+    theIterator += to_xs_long(theSkip);
+  }
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -606,8 +725,8 @@ void SimpleCollection::CollectionIter::open()
   theHaveLock = true;
 
   theIterator = theCollection->theXmlTrees.begin();
-  theIterator += to_xs_long(theSkip);
   theEnd = theCollection->theXmlTrees.end();
+  skip();
 }
 
 
@@ -618,8 +737,8 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
   if (!theHaveLock) 
   {
-    throw ZORBA_EXCEPTION(zerr::ZXQP0001_DYNAMIC_RUNTIME_ERROR,
-    ERROR_PARAMS(ZED(CollectionIteratorNotOpen)));
+    throw ZORBA_EXCEPTION(zerr::ZDDY0019_COLLECTION_ITERATOR_NOT_OPEN,
+    ERROR_PARAMS(theCollection->getName()->getStringValue()));
   }
 
   if (theIterator == theEnd) 
@@ -641,8 +760,8 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 void SimpleCollection::CollectionIter::reset()
 {
   theIterator = theCollection->theXmlTrees.begin();
-  theIterator += to_xs_long(theSkip);
   theEnd = theCollection->theXmlTrees.end();
+  skip();
 }
 
 

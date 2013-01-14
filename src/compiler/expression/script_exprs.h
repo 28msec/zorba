@@ -114,6 +114,7 @@ protected:
   block_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       bool allowLastUpdating,
       std::vector<expr*>& seq,
@@ -129,8 +130,6 @@ public:
   const expr* operator[](csize i) const { return theArgs[i]; }
 
   expr* operator[](csize i) { return theArgs[i]; }
-
-  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -162,6 +161,7 @@ protected:
   apply_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* inExpr,
       bool discardXDM);
@@ -173,7 +173,51 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/*******************************************************************************
+
+  AssignStatement ::= "$" VarName ":=" ExprSingle ";"
+
+  The RHS of the assignment must be a non-updating expr.
+
+  var_set_expr is used to assign a value to a prolog or block-local var. During
+  runtime, the function computes theExpr and stores the resulting value inside
+  the appropriate dynamic ctx (global or local), at the location that is identified
+  by the variable id.
+********************************************************************************/
+class var_set_expr : public expr
+{
+  friend class ExprManager;
+  friend class ExprIterator;
+  friend class expr;
+
+protected:
+  var_expr * theVarExpr;
+  expr     * theExpr;
+
+protected:
+  var_set_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      var_expr* varExpr,
+      expr* setExpr,
+      bool isDecl = false);
+
+public:
+  ~var_set_expr();
+
+  var_expr* get_var_expr() const { return theVarExpr; }
+
+  expr* get_expr() const { return theExpr; }
+
+  void compute_scripting_kind();
 
   void accept(expr_visitor&);
 
@@ -209,20 +253,17 @@ public:
   Note: the init expr must be non-updating. For global vars, it must also be
   non-sequential.
 ********************************************************************************/
-class var_decl_expr : public expr
+class var_decl_expr : public var_set_expr
 {
   friend class ExprManager;
   friend class ExprIterator;
   friend class expr;
 
 protected:
-  var_expr * theVarExpr;
-  expr     * theInitExpr;
-
-protected:
   var_decl_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       var_expr* varExpr,
       expr* initExpr);
@@ -230,59 +271,9 @@ protected:
 public:
   ~var_decl_expr();
 
-  var_expr* get_var_expr() const { return theVarExpr; }
-
-  expr* get_init_expr() const { return theInitExpr; }
+  expr* get_init_expr() const { return theExpr; }
 
   void compute_scripting_kind();
-
-  expr* clone(substitution_t& s) const;
-
-  void accept(expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-};
-
-
-/*******************************************************************************
-
-  AssignStatement ::= "$" VarName ":=" ExprSingle ";"
-
-  The RHS of the assignment must be a non-updating expr.
-
-  var_set_expr is used to assign a value to a prolog or block-local var. During
-  runtime, the function computes theExpr and stores the resulting value inside
-  the appropriate dynamic ctx (global or local), at the location that is identified
-  by the variable id.
-********************************************************************************/
-class var_set_expr : public expr
-{
-  friend class ExprManager;
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-  var_expr * theVarExpr;
-  expr     * theExpr;
-
-protected:
-  var_set_expr(
-      CompilerCB* ccb,
-      static_context* sctx,
-      const QueryLoc& loc,
-      var_expr* varExpr,
-      expr* setExpr);
-
-public:
-  ~var_set_expr();
-
-  var_expr* get_var_expr() const { return theVarExpr; }
-
-  expr* get_expr() const { return theExpr; }
-
-  void compute_scripting_kind();
-
-  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -308,6 +299,7 @@ protected:
   exit_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* inExpr);
 
@@ -319,8 +311,6 @@ public:
   void setCatcherExpr(exit_catcher_expr* e) { theCatcherExpr = e; }
 
   void compute_scripting_kind();
-
-  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -356,6 +346,7 @@ protected:
   exit_catcher_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* inExpr,
       std::vector<expr*>& exitExprs);
@@ -379,8 +370,6 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t& s) const;
-
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
@@ -396,19 +385,19 @@ class flowctl_expr : public expr
   friend class ExprIterator;
   friend class expr;
 
-public:
-  enum action { BREAK, CONTINUE };
+protected:
+  FlowCtlAction theAction;
 
 protected:
-  enum action theAction;
-
-protected:
-  flowctl_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, enum action action);
+  flowctl_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      FlowCtlAction action);
 
 public:
-  enum action get_action() const { return theAction; }
-
-  expr* clone(substitution_t& s) const;
+  FlowCtlAction get_action() const { return theAction; }
 
   void compute_scripting_kind();
 
@@ -435,14 +424,17 @@ protected:
   expr* theBody;
 
 protected:
-  while_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr* body);
+  while_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr* body);
 
 public:
   expr* get_body() const { return theBody; }
 
   void compute_scripting_kind();
-
-  expr* clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

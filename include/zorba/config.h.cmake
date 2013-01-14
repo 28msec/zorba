@@ -50,8 +50,10 @@
 #cmakedefine ZORBA_HAVE_STDLIB_H
 #cmakedefine ZORBA_HAVE_SYS_MOUNT_H
 #cmakedefine ZORBA_HAVE_SYS_TYPES_H
+#cmakedefine ZORBA_HAVE_TZFILE_H
 #cmakedefine ZORBA_HAVE_USTRING_H
 #cmakedefine ZORBA_HAVE_UTYPES_H
+#cmakedefine ZORBA_HAVE_UUID_H
 
 // Platform functions
 #cmakedefine ZORBA_HAVE_CLOCKGETTIME_FUNCTION
@@ -68,6 +70,10 @@
 #cmakedefine ZORBA_HAVE_MS_INT32
 #cmakedefine ZORBA_HAVE_MS_UINT32
 #cmakedefine ZORBA_HAVE_UINT32_T
+#cmakedefine ZORBA_HAVE_STRUCT_TM_TM_GMTOFF
+#cmakedefine ZORBA_HAVE_STRUCT_TM___TM_GMTOFF
+
+// Platform type sizes
 #cmakedefine ZORBA_SIZEOF_DOUBLE        @ZORBA_SIZEOF_DOUBLE@
 #cmakedefine ZORBA_SIZEOF_FLOAT         @ZORBA_SIZEOF_FLOAT@
 #cmakedefine ZORBA_SIZEOF_INT           @ZORBA_SIZEOF_INT@
@@ -147,7 +153,19 @@ typedef __int64 int64_t;
 # define ZORBA_TR1_NS std
 #endif
 
+////////// GCC diagnostics ////////////////////////////////////////////////////
+
+#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 460)
+# define GCC_GREATER_EQUAL_460 1
+#endif
+
+#if defined( GCC_GREATER_EQUAL_460 ) || defined( __llvm__ )
+# define GCC_PRAGMA_DIAGNOSTIC_PUSH 1
+#endif
+
 ////////// Zorba //////////////////////////////////////////////////////////////
+
+#cmakedefine ZORBA_STORE_NAME "zorba_${ZORBA_STORE_NAME}"
 
 // Version
 #define ZORBA_VERSION "${ZORBA_VERSION}"

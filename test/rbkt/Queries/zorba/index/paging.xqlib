@@ -1,0 +1,48 @@
+module namespace data = "http://www.test.com/";
+
+import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace iddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+declare collection data:people as node()*;
+declare variable $data:people := xs:QName("data:people");
+
+declare %an:nonunique %an:value-equality %an:automatic index data:idx-age-point-val
+on nodes dml:collection(xs:QName("data:people"))
+by xs:integer(./age/text()) as xs:integer;
+declare variable $data:idx-age-point-val := xs:QName("data:idx-age-point-val");
+
+declare %an:nonunique %an:value-range %an:automatic index data:idx-age-range-val
+on nodes dml:collection(xs:QName("data:people"))
+by xs:integer(./age/text()) as xs:integer;
+
+declare variable $data:idx-age-range-val := xs:QName("data:idx-age-range-val");
+
+declare %an:sequential function data:init()
+{
+  ddl:create($data:people);
+  iddl:create($data:idx-age-point-val);
+  iddl:create($data:idx-age-range-val);
+  dml:insert($data:people,
+    (
+      <person><name>Alf</name><age>2</age></person>,
+      <person><name>Bob</name><age>3</age></person>,
+      <person><name>Charlie</name><age>2</age></person>,
+      <person><name>David</name><age>4</age></person>,
+      <person><name>David II</name><age>2</age></person>,
+      <person><name>Eve</name><age>3</age></person>,
+      <person><name>Eve II</name><age>5</age></person>,
+      <person><name>Eve III</name><age>43</age></person>,
+      <person><name>Fred</name><age>2</age></person>,
+      <person><name>Fred II</name><age>2</age></person>,
+      <person><name>George</name><age>2</age></person>,
+      <person><name>Fred</name><age>2</age></person>,
+      <person><name>Hugh</name><age>3</age></person>,
+      <person><name>Hugh II</name><age>4</age></person>
+    )
+  );
+};
+

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "store/naive/query_context.h"
-#include "store/naive/node_items.h"
+#include "query_context.h"
+#include "node_items.h"
 
 
 namespace zorba { namespace store {

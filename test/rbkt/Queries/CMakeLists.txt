@@ -230,7 +230,6 @@ MARK_AS_ADVANCED(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 ####
 IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
-  #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2 872732)
 
   IF (NOT ZORBA_WITH_BIG_INTEGER)
@@ -262,10 +261,6 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes014 3355019)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes015 3355019)
   ENDIF (ZORBA_TEST_XQUERYX)
-
-  #this is marked as expected failure because the RQ uses XQTS_1_0_3. In that version the expected result is err:FODC0004 instead of err:FODC0002.
-  #W3C has changed the expected result for this test in the meantime: please see http://www.w3.org/Bugs/Public/show_bug.cgi?id=12542
-  #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-2 882002)
 
 ENDIF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
@@ -491,6 +486,13 @@ EXPECTED_FAILURE (test/rbkt/zorba/testdriver/bom_bug 3381121)
 # hitting w3.org for the DTD, which is bad.
 SET_TESTS_PROPERTIES(test/rbkt/zorba/schemas/local-xhtml
   PROPERTIES TIMEOUT 5)
+# Bug 867363. These should fail or pass quickly because HTTP download
+# is disabled.
+SET_TESTS_PROPERTIES(test/rbkt/zorba/uris/disable-http
+  PROPERTIES TIMEOUT 5)
+SET_TESTS_PROPERTIES(test/rbkt/zorba/uris/disable-http-2
+  PROPERTIES TIMEOUT 5)
+
 
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue
@@ -552,13 +554,7 @@ IF(ZORBA_NO_ICU)
 ENDIF(ZORBA_NO_ICU)
 
 
-EXPECTED_FAILURE(test/rbkt/zorba/reference/reference_5 868640)
-
 # external variable default expected failures
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 923686)
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
-
-# Failing due to flworfound.org hosting changes.
-EXPECTED_FAILURE(test/rbkt/zorba/versioning/import5 1022495)
-EXPECTED_FAILURE(test/rbkt/zorba/fetch/fetch_bogus2 1022494)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,6 +149,9 @@ namespace zorba {
     void beginVisit( const ZorbaDeleteNodesLastIterator& );
     void endVisit  ( const ZorbaDeleteNodesLastIterator& );
 
+    void beginVisit( const ZorbaEditNodesIterator& );
+    void endVisit  ( const ZorbaEditNodesIterator& );
+
     void beginVisit( const ZorbaTruncateCollectionIterator& );
     void endVisit  ( const ZorbaTruncateCollectionIterator& );
 
@@ -199,6 +202,30 @@ namespace zorba {
 
     void beginVisit( const DefaultCollationIterator& );
     void endVisit  ( const DefaultCollationIterator& );
+
+    void beginVisit( const CurrentDate& );
+    void endVisit  ( const CurrentDate& );
+
+    void beginVisit( const CurrentDateTime& );
+    void endVisit  ( const CurrentDateTime& );
+
+    void beginVisit( const CurrentTime& );
+    void endVisit  ( const CurrentTime& );
+
+    void beginVisit( const ParseDate& );
+    void endVisit  ( const ParseDate& );
+
+    void beginVisit( const ParseDateTime& );
+    void endVisit  ( const ParseDateTime& );
+
+    void beginVisit( const ParseTime& );
+    void endVisit  ( const ParseTime& );
+
+    void beginVisit( const Timestamp& );
+    void endVisit  ( const Timestamp& );
+
+    void beginVisit( const UTCOffset& );
+    void endVisit  ( const UTCOffset& );
 
 #ifdef ZORBA_WITH_DEBUGGER
     void beginVisit( const DebugIterator& );
@@ -473,6 +500,16 @@ namespace zorba {
     void endVisit  ( const JSONSerializeInternal& );
 
 #ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONDecodeFromRoundtripIterator& );
+    void endVisit  ( const JSONDecodeFromRoundtripIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONEncodeForRoundtripIterator& );
+    void endVisit  ( const JSONEncodeForRoundtripIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONParseIterator& );
     void endVisit  ( const JSONParseIterator& );
 #endif
@@ -513,6 +550,11 @@ namespace zorba {
 #endif
 
 #ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONDocIterator& );
+    void endVisit  ( const JSONDocIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONItemAccessorIterator& );
     void endVisit  ( const JSONItemAccessorIterator& );
 #endif
@@ -520,6 +562,16 @@ namespace zorba {
 #ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONNullIterator& );
     void endVisit  ( const JSONNullIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONIsNullIterator& );
+    void endVisit  ( const JSONIsNullIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONObjectInsertIterator& );
+    void endVisit  ( const JSONObjectInsertIterator& );
 #endif
 
 #ifdef ZORBA_WITH_JSON
@@ -545,6 +597,11 @@ namespace zorba {
 #ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONArrayAppendIterator& );
     void endVisit  ( const JSONArrayAppendIterator& );
+#endif
+
+#ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONBoxIterator& );
+    void endVisit  ( const JSONBoxIterator& );
 #endif
 
     void beginVisit( const SqrtIterator& );
@@ -763,6 +820,9 @@ namespace zorba {
     void beginVisit( const FnPathIterator& );
     void endVisit  ( const FnPathIterator& );
 
+    void beginVisit( const NodeCopyIterator& );
+    void endVisit  ( const NodeCopyIterator& );
+
     void beginVisit( const AbsIterator& );
     void endVisit  ( const AbsIterator& );
 
@@ -828,6 +888,18 @@ namespace zorba {
 
     void beginVisit( const UuidIterator& );
     void endVisit  ( const UuidIterator& );
+
+    void beginVisit( const ReferenceIterator& );
+    void endVisit  ( const ReferenceIterator& );
+
+    void beginVisit( const HasReferenceIterator& );
+    void endVisit  ( const HasReferenceIterator& );
+
+    void beginVisit( const AssignReferenceIterator& );
+    void endVisit  ( const AssignReferenceIterator& );
+
+    void beginVisit( const DereferenceIterator& );
+    void endVisit  ( const DereferenceIterator& );
 
 #ifndef ZORBA_NO_XMLSCHEMA
     void beginVisit( const ValidateIterator& );
@@ -1082,9 +1154,6 @@ namespace zorba {
 
     void beginVisit( const DecodeURIIterator& );
     void endVisit  ( const DecodeURIIterator& );
-
-    void beginVisit( const XQDocIterator& );
-    void endVisit  ( const XQDocIterator& );
 
     void beginVisit( const XQDocContentIterator& );
     void endVisit  ( const XQDocContentIterator& );

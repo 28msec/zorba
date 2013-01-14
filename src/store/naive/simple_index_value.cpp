@@ -471,8 +471,11 @@ bool ValueHashIndex::remove(
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
+void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond,
+                                       const xs_integer& aSkip)
 {
+  theSkip = aSkip;
+
   theCondition = reinterpret_cast<IndexPointCondition*>(cond.getp());
 
   store::IndexKey* key = &(theCondition->theKey);
@@ -494,8 +497,7 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
 ********************************************************************************/
 void ProbeValueHashIndexIterator::open()
 {
-  if (theResultSet)
-    theIte = theResultSet->begin();
+  reset();
 }
 
 
@@ -505,7 +507,17 @@ void ProbeValueHashIndexIterator::open()
 void ProbeValueHashIndexIterator::reset()
 {
   if (theResultSet)
-    theIte = theResultSet->begin(); 
+  {
+    theIte = theResultSet->begin();
+    if (theSkip >= theResultSet->size())
+    {
+      theIte = theEnd;
+    }
+    else
+    {
+      theIte += to_xs_long(theSkip);
+    }
+  }
 }
 
 
@@ -780,8 +792,12 @@ bool ValueTreeIndex::remove(
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond)
+void ProbeValueTreeIndexIterator::init(
+    const store::IndexCondition_t& cond,
+    const xs_integer& skip)
 {
+  theSkip = skip;
+
   if (cond->getKind() != store::IndexCondition::BOX_VALUE &&
       cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
@@ -892,13 +908,23 @@ void ProbeValueTreeIndexIterator::initBox()
     if (haveLowerBound)
     {
       if (!flags[i].theHaveLowerBound)
-        lowerBounds[i] = IndexConditionImpl::theNegInf;
+      {
+        if (lowIncl)
+          lowerBounds[i] = IndexConditionImpl::theNegInf;
+        else
+          lowerBounds[i] = IndexConditionImpl::thePosInf;
+      }
     }
 
     if (haveUpperBound)
     {
       if (!flags[i].theHaveUpperBound)
-        upperBounds[i] = IndexConditionImpl::thePosInf;
+      {
+        if (highIncl)
+          upperBounds[i] = IndexConditionImpl::thePosInf;
+        else
+          upperBounds[i] = IndexConditionImpl::theNegInf;
+      }
     }
 
     if (flags[i].theHaveLowerBound && flags[i].theHaveUpperBound)
@@ -960,14 +986,7 @@ void ProbeValueTreeIndexIterator::initBox()
 ********************************************************************************/
 void ProbeValueTreeIndexIterator::open()
 {
-  if (theMapBegin != theIndex->theMap.end())
-  {
-    theMapIte = theMapBegin;
-
-    theResultSet = theMapBegin->second;
-    theIte = theResultSet->begin();
-    theEnd = theResultSet->end();
-  }
+  reset();
 }
 
 
@@ -976,13 +995,39 @@ void ProbeValueTreeIndexIterator::open()
 ********************************************************************************/
 void ProbeValueTreeIndexIterator::reset()
 {
+  theResultSet = NULL;
+
   if (theMapBegin != theIndex->theMap.end())
   {
     theMapIte = theMapBegin;
 
-    theResultSet = theMapIte->second;
-    theIte = theResultSet->begin();
-    theEnd = theResultSet->end();
+    while (theMapIte != theMapEnd)
+    {
+      if (!theDoExtraFiltering ||
+          theBoxCond == NULL ||
+          theBoxCond->test(*(theMapIte->first)))
+        break;
+
+      ++theMapIte;
+    }
+
+    if (theMapIte != theMapEnd)
+    {
+      theResultSet = theMapIte->second;
+      theIte = theResultSet->begin();
+      theEnd = theResultSet->end();
+
+      // primitive skip
+      store::Item_t lDummy;
+      for (long l = 0; l < to_xs_long(theSkip); ++l)
+      {
+        if(!next(lDummy))
+        {
+          // no more values
+          break;
+        }
+      }
+    }
   }
 }
 
@@ -1013,7 +1058,7 @@ bool ProbeValueTreeIndexIterator::next(store::Item_t& result)
     }
 
     theResultSet = NULL;
-    theMapIte++;
+    ++theMapIte;
 
     while (theMapIte != theMapEnd)
     {
@@ -1025,7 +1070,7 @@ bool ProbeValueTreeIndexIterator::next(store::Item_t& result)
         break;
       }
 
-      theMapIte++;
+      ++theMapIte;
     }
   }
 
@@ -1034,9 +1079,9 @@ bool ProbeValueTreeIndexIterator::next(store::Item_t& result)
 
 
 /******************************************************************************
- The implementation here doesn't really give anything in terms of
- performance but other implementations might be able to provide more
- efficient ones.
+  The implementation here doesn't really give anything in terms of
+  performance but other implementations might be able to provide more
+  efficient ones.
 ********************************************************************************/
 void ProbeValueTreeIndexIterator::count(store::Item_t& result)
 {

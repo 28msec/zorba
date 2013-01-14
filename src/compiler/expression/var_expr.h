@@ -24,10 +24,12 @@ namespace zorba
 
 class flwor_clause;
 class forletwin_clause;
-class for_clause;
+class forlet_clause;
 class copy_clause;
 class var_expr;
 class VarInfo;
+class var_set_expr;
+
 
 /******************************************************************************
 
@@ -89,10 +91,6 @@ class VarInfo;
   For arg vars, it is the position, within the param list, of parameter that is
   bound to this arg var.
 
-  theUDF:
-  -------
-  For arg vars, the corresponding UDF.
-
   theSetExprs:
   ------------
   For global and local vars, this vector contains a pointer to the var_decl_expr
@@ -120,11 +118,13 @@ class var_expr : public expr
   friend class ExprManager;
 
 public:
+  typedef std::vector<var_set_expr*> VarSetExprs;
+
   enum var_kind
   {
     unknown_var = 0,
 
-    eval_var,
+    eval_var,  // TODO: remove (it is used only in the debugger_expr)
 
     for_var,
     let_var,
@@ -165,9 +165,7 @@ protected:
 
   csize                 theParamPos;
 
-  user_function       * theUDF;
-
-  std::vector<expr*>    theSetExprs;
+  VarSetExprs           theSetExprs;
 
   VarInfo             * theVarInfo;
 
@@ -186,11 +184,12 @@ protected:
   var_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       var_kind k,
       store::Item* name);
 
-  var_expr(const var_expr& source);
+  var_expr(user_function* udf, const var_expr& source);
 
   virtual ~var_expr();
 
@@ -235,7 +234,7 @@ public:
 
   forletwin_clause* get_forletwin_clause() const;
 
-  for_clause* get_for_clause() const;
+  forlet_clause* get_forlet_clause() const;
 
   copy_clause* get_copy_clause() const { return theCopyClause; }
 
@@ -249,23 +248,21 @@ public:
 
   void set_param_pos(csize pos) { theParamPos = pos; }
 
-  user_function* get_udf() const { return theUDF; }
-
-  void set_udf(const user_function* udf) { theUDF = const_cast<user_function*>(udf); }
-
-  void add_set_expr(expr* e) { theSetExprs.push_back(e); }
+  void add_set_expr(expr* e);
 
   void remove_set_expr(expr* e);
 
-  std::vector<expr*>::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
+  csize num_set_exprs() const { return theSetExprs.size(); }
 
-  std::vector<expr*>::const_iterator setExprsEnd() const { return theSetExprs.end(); }
+  var_set_expr* get_set_expr(csize i) const { return theSetExprs[i]; }
+
+  VarSetExprs::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
+
+  VarSetExprs::const_iterator setExprsEnd() const { return theSetExprs.end(); }
 
   bool is_context_item() const;
 
   void compute_scripting_kind();
-
-  expr* clone(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 

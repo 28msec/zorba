@@ -557,6 +557,19 @@ void *begin_visit(const RelativePathExpr &n)
 
 END_TAG(RelativePathExpr)
 
+void *begin_visit(const SimpleMapExpr &n)
+{
+  INDENT;
+
+  os << "<SimpleMapExpr pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
+
+  os << ">";
+
+  INDENT_INC; NL;
+  return no_state;
+}
+
+END_TAG(SimpleMapExpr)
 
 void *begin_visit(const TypeswitchExpr &n)
 {
@@ -681,6 +694,7 @@ BEGIN_END_TAG (AposAttrContentList)
 BEGIN_END_TAG (AposAttrValueContent)
 BEGIN_END_TAG (ArgList)
 BEGIN_END_TAG (AtomicType)
+BEGIN_END_TAG (SimpleType)
 BEGIN_END_TAG (AttributeTest)
 BEGIN_END_TAG (AxisStep)
 BEGIN_END_TAG (BaseURIDecl)

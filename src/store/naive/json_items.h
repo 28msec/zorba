@@ -17,11 +17,10 @@
 #ifndef ZORBA_STORE_JSON_ITEMS_H
 #define ZORBA_STORE_JSON_ITEMS_H
 
-#include <set>
 #include <vector>
 
 #include <zorba/config.h>
-#include <zorbautils/hashmap_zstring.h>
+#include "util/unordered_map.h"
 
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
@@ -68,7 +67,7 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  store::SchemaTypeCode getTypeCode() const { return store::JDM_NULL; }
+  store::SchemaTypeCode getTypeCode() const { return store::JS_NULL; }
 
   store::Item* getType() const; 
 
@@ -97,6 +96,8 @@ private:
 public:
   JSONTree() : theCollection(NULL), theId(), theRoot(NULL)
   {}
+
+  ~JSONTree();
 
   simplestore::Collection* getCollection() const
   {
@@ -159,6 +160,11 @@ public:
   JSONTree* getTree() const
   {
     return theTree;
+  }
+  
+  bool isRoot() const
+  {
+    return theTree != NULL && (this == theTree->getRoot());
   }
 
   // These two functions are only to be called if in a collection.
@@ -241,7 +247,36 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  ZSTRING_HASH_MAP(csize, Keys);
+  class ConstCharStarHash
+  {
+  public:
+    typedef size_t result_type;
+    size_t operator()(const char* a) const
+    {
+      size_t hash = 5381;
+      int c;
+
+      while ((c = *a++))
+        hash = ((hash << 5) + hash) + c;
+
+      return hash;
+    }
+  };
+
+  class ConstCharStarComparator
+  {
+  public:
+    bool operator()(const char* a, const char* b) const
+    {
+      return strcmp(a, b) == 0;
+    }
+  };
+
+  typedef std::unordered_map<
+    const char*,
+    csize,
+    ConstCharStarHash,
+    ConstCharStarComparator> Keys;
   typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
   class KeyIterator : public store::Iterator
@@ -270,10 +305,7 @@ private:
 
 public:
   SimpleJSONObject()
-    :
-    theKeys(64, false)
-  {
-  }
+  {}
 
   virtual ~SimpleJSONObject();
 
@@ -311,6 +343,8 @@ public:
   virtual bool rename(
       const store::Item_t& aName,
       const store::Item_t& aNewName);
+
+  virtual void swap(store::Item* anotherItem);
 
   // root management
   
@@ -395,23 +429,22 @@ protected:
 
   class ValuesIterator : public store::Iterator
   {
-    protected:
-      SimpleJSONArray_t theArray;
-      Members::iterator theIter;
+  protected:
+    SimpleJSONArray_t theArray;
+    Members::iterator theIter;
 
-    public:
-      ValuesIterator(const SimpleJSONArray_t& anArray)
-        : theArray(anArray) {}
+  public:
+    ValuesIterator(const SimpleJSONArray_t& anArray) : theArray(anArray) {}
 
-      virtual ~ValuesIterator();
+    virtual ~ValuesIterator();
+    
+    virtual void open();
 
-      virtual void open();
+    virtual bool next(store::Item_t&);
 
-      virtual bool next(store::Item_t&);
+    virtual void reset();
 
-      virtual void reset();
-
-      virtual void close();
+    virtual void close();
   };
 
 private:
@@ -468,6 +501,8 @@ public:
 
   virtual store::Item_t
   replace(const xs_integer& aPos, const store::Item_t& value);
+
+  virtual void swap(Item* anotherItem);
 
   // root management
 public:

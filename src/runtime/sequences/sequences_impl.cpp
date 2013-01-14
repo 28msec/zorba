@@ -41,6 +41,7 @@
 #include <runtime/core/arithmetic_impl.h>
 #include <runtime/util/iterator_impl.h>
 #include <runtime/visitors/planiter_visitor.h>
+#include <runtime/util/doc_uri_heuristics.h>
 
 #include <system/globalenv.h>
 
@@ -88,10 +89,9 @@ static XQPCollator* getCollator(
       ERROR_LOC( loc )
     );
 
-  xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type(lCollationItem);
-
   return sctx->get_collator(lCollationItem->getStringValue().str(), loc);
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -1719,71 +1719,6 @@ static void fillTime (
     zorbatm::get_walltime_elapsed(t0, t1);
 }
 
-/**
- * Utility method for fn:doc() and fn:doc-available(). Given an input string,
- * use a few heuristics to create a valid URI, assuming that the input might
- * be an absolute or relative filesystem path, etc.
- */
-static zstring normalizeInput(zstring const& aUri, static_context* aSctx,
-                              QueryLoc const& loc)
-{
-  zstring const aBaseUri = aSctx->get_base_uri();
-  zstring lResolvedURI;
-
-  try
-  {
-    // To support the very common (if technically incorrect) use
-    // case of users passing local filesystem paths to fn:doc(),
-    // we use the following heuristic: IF the base URI has a file:
-    // scheme AND the incoming URI has no scheme, we will assume
-    // the incoming URI is actually a filesystem path.  QQQ For
-    // the moment, we assume any "unknown" schemes are probably
-    // Windows drive letters.
-    if ((uri::get_scheme(aUri) == uri::none ||
-         uri::get_scheme(aUri) == uri::unknown) &&
-        uri::get_scheme(aBaseUri) == uri::file)
-    {
-      // Ok, we assume it's a filesystem path. First normalize it.
-      zstring lNormalizedPath =
-        fs::get_normalized_path(aUri, zstring(""));
-      // QQQ For now, get_normalized_path() doesn't do what we
-      // want when base URI represents a file. So, when the
-      // normalized path is relative, we pretend it's a relative
-      // URI and resolve it as such.
-      if (fs::is_absolute(lNormalizedPath))
-      {
-        URI::encode_file_URI(lNormalizedPath, lResolvedURI);
-      }
-      else
-      {
-#ifdef WIN32
-        ascii::replace_all(lNormalizedPath, '\\', '/');
-#endif
-        lResolvedURI = aSctx->resolve_relative_uri(lNormalizedPath, true);
-      }
-    }
-    else
-    {
-      // We do NOT assume it's a filesystem path; just resolve it.
-      lResolvedURI = aSctx->resolve_relative_uri(aUri, true);
-    }
-  }
-  catch (ZorbaException& e)
-  {
-    if (e.diagnostic() == err::XQST0046)
-      // the value of a URILiteral is of nonzero length and is not in the
-      // lexical space of xs:anyURI.
-      e.set_diagnostic(err::FODC0005);
-    else
-      e.set_diagnostic(err::FODC0002);
-
-    set_source(e, loc);
-    throw;
-  }
-
-  return lResolvedURI;
-}
-
 static void loadDocument(
   zstring const& aUri,
   static_context* aSctx,
@@ -1792,7 +1727,8 @@ static void loadDocument(
   store::Item_t& oResult)
 {
   // Normalize input to handle filesystem paths, etc.
-  zstring const lNormUri(normalizeInput(aUri, aSctx, loc));
+  zstring lNormUri;
+  normalizeInputUri(aUri, aSctx, loc, &lNormUri);
 
   // See if this (normalized) URI is already loaded in the store.
   try {
@@ -1969,7 +1905,8 @@ static void readDocument(
   store::Item_t& oResult)
 {
   //Normalize input to handle filesystem paths, etc.
-  zstring const lNormUri(normalizeInput(aUri, aSctx, loc));
+  zstring lNormUri;
+  normalizeInputUri(aUri, aSctx, loc, &lNormUri);
 
   //Resolve URI to stream
   zstring lErrorMessage;
@@ -2120,7 +2057,7 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   
   //Normalize input to handle filesystem paths, etc.
   uriItem->getStringValue2(uriString);
-  lNormUri = normalizeInput(uriString, theSctx, loc);
+  normalizeInputUri(uriString, theSctx, loc, &lNormUri);
 
   //Resolve URI to stream
   lResource = theSctx->resolve_uri

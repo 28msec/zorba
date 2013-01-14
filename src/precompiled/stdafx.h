@@ -24,14 +24,12 @@
   #include <memory>
 
   #include <sstream>
-  #include <xfwrap>
-  #include <xfwrap1>
   #include <istream>
   #include <cstdio>
-  #include <xxshared>
   #include <crtdefs.h>
   #include <map>
   #include <set>
+  #include <sys/timeb.h>
 
   #include "runtime/sequences/sequences.h"
   #include "diagnostics/xquery_diagnostics.h"
@@ -61,18 +59,19 @@
   #include "zorbatypes/m_apm.h"
   #include "zorbatypes/rclock.h"
   #include "zorbatypes/schema_types.h"
+//
   #include "zorbatypes/timezone.h"
-  #include "zorbatypes/transcoder.h"
   #include "zorbatypes/URI.h"
   #include "zorbatypes/xerces_xmlcharray.h"
   #include "zorbatypes/zorbatypes_decl.h"
   #include "zorbatypes/zstring.h"
   #include "zorbautils/condition.h"
-  #include "zorbautils/hashfun.h"
+
   #include "zorbautils/hashmap.h"
   #include "zorbautils/hashmap_itemp.h"
   #include "zorbautils/hashmap_zstring.h"
   #include "zorbautils/hashset.h"
+  
   #include "zorbautils/latch.h"
   #include "zorbautils/locale.h"
   #include "zorbautils/lock.h"
@@ -87,6 +86,5 @@
   #include "runtime/full_text/ftcontains_visitor.h"
   #include "store/api/ft_token_iterator.h"
   #include "store/naive/ft_token_store.h"
-
 #endif
 /* vim:set et sw=2 ts=2: */

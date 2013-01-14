@@ -203,6 +203,13 @@ public:
         bool isLast,
         bool isDynamic) = 0;
 
+  virtual void addEditInCollection(
+        const QueryLoc* aQueryLoc,
+        Item_t& name,
+        Item_t& target,
+        Item_t& content,
+        bool isDynamic) = 0;
+
   virtual void addTruncateCollection(
         const QueryLoc* aQueryLoc,
         Item_t& name,
@@ -285,6 +292,11 @@ public:
         Item_t& target,
         std::vector<Item_t>& names,
         std::vector<store::Item_t>& values) = 0;
+
+  virtual void addJSONObjectInsert(
+        const QueryLoc* aQueryLoc,
+        Item_t& target,
+        Item_t& content) = 0;
 
   virtual void addJSONObjectDelete(
       const QueryLoc* aQueryLoc,

@@ -1,4 +1,4 @@
-# Copyright 2006-2008 The FLWOR Foundation.
+# Copyright 2006-2012 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -60,6 +60,8 @@ DECLARE_ZORBA_MODULE(FILE math.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/math")
 DECLARE_ZORBA_MODULE(FILE node-reference.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node-reference")
+DECLARE_ZORBA_MODULE(FILE reference.xq VERSION 1.0
+  URI "http://www.zorba-xquery.com/modules/reference")
 DECLARE_ZORBA_MODULE(FILE node-position.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node-position")
 DECLARE_ZORBA_MODULE(FILE node.xq VERSION 2.0
@@ -82,6 +84,8 @@ DECLARE_ZORBA_MODULE(FILE xml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xml")
 DECLARE_ZORBA_MODULE(FILE xqdoc.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xqdoc")
+DECLARE_ZORBA_SCHEMA(FILE xqdoc-options.xsd 
+  URI "http://www.zorba-xquery.com/modules/xqdoc-options") 
 
 IF(NOT ZORBA_NO_FULL_TEXT)
   DECLARE_ZORBA_MODULE(FILE full-text.xq VERSION 2.0

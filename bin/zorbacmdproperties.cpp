@@ -68,7 +68,8 @@ std::string ZorbaCMDProperties::check_args () {
     std::string lVarName = lStr.substr(0, lPos);
     std::string lValue = lStr.substr(lPos + 1);
     bool lInlineFile = true;
-    if (lVarName.at(lVarName.size()-1) == ':') {
+    if (lVarName.at(lVarName.size()-1) == ':')
+    {
       lInlineFile = false;
       lVarName.resize(lVarName.size()-1); // remove the :
     }
@@ -80,7 +81,8 @@ std::string ZorbaCMDProperties::check_args () {
   }
 
   for (std::vector<std::string>::const_iterator lIter = theOption.begin();
-       lIter != theOption.end(); ++lIter) {
+       lIter != theOption.end(); ++lIter)
+  {
     size_t lEQual = lIter->find_last_of("=");
     if (lEQual == std::string::npos)
       return "option must be of the form {namespace}localname=value";
@@ -93,8 +95,10 @@ std::string ZorbaCMDProperties::check_args () {
     lOption.value = lValue;
     theStaticContextOptions.push_back(lOption);
   }
+
   for (std::vector<std::string>::const_iterator lIter = theStopWords.begin();
-       lIter != theStopWords.end(); ++lIter) {
+       lIter != theStopWords.end(); ++lIter)
+  {
     size_t lEQual = lIter->find(":=");
     if (lEQual == std::string::npos)
       return "Stop-words mapping must be of the form URI:=value";
@@ -107,8 +111,10 @@ std::string ZorbaCMDProperties::check_args () {
     lMapping.value = lValue;
     theStopWordsMapping.push_back(lMapping);
   }
+
   for (std::vector<std::string>::const_iterator lIter = theThesaurus.begin();
-       lIter != theThesaurus.end(); ++lIter) {
+       lIter != theThesaurus.end(); ++lIter)
+  {
     size_t lEQual = lIter->find(":=");
     if (lEQual == std::string::npos)
       return "Thesaurus mapping must be of the form URI:=value";

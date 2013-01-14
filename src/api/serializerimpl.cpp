@@ -102,8 +102,8 @@ SerializerImpl::getSerializationMethod() const
 #ifdef ZORBA_WITH_JSON
   case serializer::PARAMETER_VALUE_JSON:
     return ZORBA_SERIALIZATION_METHOD_JSON;
-  case serializer::PARAMETER_VALUE_JSONIQ:
-    return ZORBA_SERIALIZATION_METHOD_JSONIQ;
+  case serializer::PARAMETER_VALUE_JSON_XML_HYBRID:
+    return ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
 #endif
   default:
     ZORBA_ASSERT(0);
@@ -131,8 +131,8 @@ convertSerializationMethod(
 #ifdef ZORBA_WITH_JSON
   case ZORBA_SERIALIZATION_METHOD_JSON:
     aInternalSerializer.setParameter(aParameter, "json"); break;
-  case ZORBA_SERIALIZATION_METHOD_JSONIQ:
-    aInternalSerializer.setParameter(aParameter, "jsoniq"); break;
+  case ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID:
+    aInternalSerializer.setParameter(aParameter, "json-xml-hybrid"); break;
 #endif
   }
 }
@@ -219,36 +219,13 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("version", aSerializerOptions.version.c_str());
 
 #ifdef ZORBA_WITH_JSON
-  switch (aSerializerOptions.jsoniq_extensions)
-  {
-    case JSONIQ_EXTENSIONS_YES:
-      aInternalSerializer.setParameter("jsoniq-extensions", "yes");
-      break;
-    case JSONIQ_EXTENSIONS_NO:
-      aInternalSerializer.setParameter("jsoniq-extensions", "no");
-      break;
-  }
-
   switch (aSerializerOptions.jsoniq_multiple_items)
   {
     case JSONIQ_MULTIPLE_ITEMS_NO:
       aInternalSerializer.setParameter("jsoniq-multiple-items", "no");
       break;
-    case JSONIQ_MULTIPLE_ITEMS_ARRAY:
-      aInternalSerializer.setParameter("jsoniq-multiple-items", "array");
-      break;
-    case JSONIQ_MULTIPLE_ITEMS_APPENDED:
-      aInternalSerializer.setParameter("jsoniq-multiple-items", "appended");
-      break;
-  }
-
-  switch (aSerializerOptions.jsoniq_allow_mixed_xdm_jdm)
-  {
-    case JSONIQ_ALLOW_MIXED_XDM_JDM_NO:
-      aInternalSerializer.setParameter("jsoniq-allow-mixed-xdm-jdm", "no");
-      break;
-    case JSONIQ_ALLOW_MIXED_XDM_JDM_YES:
-      aInternalSerializer.setParameter("jsoniq-allow-mixed-xdm-jdm", "yes");
+    case JSONIQ_MULTIPLE_ITEMS_YES:
+      aInternalSerializer.setParameter("jsoniq-multiple-items", "yes");
       break;
   }
 

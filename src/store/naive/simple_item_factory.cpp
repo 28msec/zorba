@@ -446,6 +446,7 @@ bool BasicItemFactory::createDateTime(store::Item_t& result, const xs_dateTime* 
   return true;
 }
 
+
 bool BasicItemFactory::createDateTime(
     store::Item_t& result,
     const xs_date* date,
@@ -457,9 +458,15 @@ bool BasicItemFactory::createDateTime(
   {
     result = dtin.get();
     dtin.release();
-  } // destroy object if error occured
-  return err == 0;
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
 }
+
 
 bool BasicItemFactory::createDateTime(
     store::Item_t& result,
@@ -473,7 +480,7 @@ bool BasicItemFactory::createDateTime(
   DateTime dt;
   TimeZone tz;
 
-  if(DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
+  if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -544,10 +551,10 @@ bool BasicItemFactory::createDateTime(
   }
   else
   {
-    xs_date const &d = date->getDateValue();
-    xs_time const &t = time->getTimeValue();
+    const xs_date& d = date->getDateValue();
+    const xs_time& t = time->getTimeValue();
     if (! createDateTime(result, &d, &t))
-      throw XQUERY_EXCEPTION( err::FORG0008, ERROR_PARAMS( d, t ) );
+      throw XQUERY_EXCEPTION(err::FORG0008, ERROR_PARAMS(d, t));
 
     return true;
   }
@@ -570,7 +577,7 @@ bool BasicItemFactory::createDate(
   DateTime dt;
   TimeZone tz;
 
-  if(DateTime::createDate(year, month, day, &tz, dt) == 0)
+  if (DateTime::createDate(year, month, day, &tz, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -617,7 +624,7 @@ bool BasicItemFactory::createTime(
 {
   DateTime dt;
 
-  if( DateTime::parseTime(str, strlen, dt) == 0)
+  if (DateTime::parseTime(str, strlen, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -796,11 +803,13 @@ bool BasicItemFactory::createGMonthDay(store::Item_t& result, short month, short
 {
   DateTime dt;
 
-  if(DateTime::createGMonthDay(month, day, dt) == 0)
+  if (DateTime::createGMonthDay(month, day, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
-  } else {
+  }
+  else
+  {
     result = NULL;
     return false;
   }
@@ -887,7 +896,7 @@ bool BasicItemFactory::createGYearMonth(
 {
   DateTime dt;
 
-  if(DateTime::createGYearMonth(year, month, dt) == 0)
+  if (DateTime::createGYearMonth(year, month, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -1019,9 +1028,7 @@ bool BasicItemFactory::createStreamableBase64Binary(
     bool seekable,
     bool encoded)
 {
-  result = new StreamableBase64BinaryItem(
-      aStream, aReleaser, seekable, encoded
-    );
+  result = new StreamableBase64BinaryItem(aStream, aReleaser, seekable, encoded);
   return true;
 }
 
@@ -1031,6 +1038,7 @@ bool BasicItemFactory::createHexBinary(store::Item_t& result,  xs_hexBinary valu
   result = new HexBinaryItem(value);
   return true;
 }
+
 
 bool BasicItemFactory::createNOTATION(
     store::Item_t& result,
@@ -1042,9 +1050,8 @@ bool BasicItemFactory::createNOTATION(
   return true;
 }
 
-bool BasicItemFactory::createNOTATION(
-    store::Item_t& result,
-    zstring& str)
+
+bool BasicItemFactory::createNOTATION(store::Item_t& result, zstring& str)
 {
   zstring nsuri;
   zstring prefix;
@@ -2113,6 +2120,34 @@ bool BasicItemFactory::createJSONArray(
       
       array->push_back(item);
     }
+  }
+
+  return true;
+}
+
+
+bool BasicItemFactory::createJSONArray(
+    store::Item_t& result,
+    store::Item_t& item1,
+    store::Item_t& item2,
+    const store::Iterator_t& source,
+    const store::CopyMode& copymode)
+{
+  result = new json::SimpleJSONArray();
+
+  json::SimpleJSONArray* array = static_cast<json::SimpleJSONArray*>(result.getp());
+
+  array->push_back(item1);
+  array->push_back(item2);
+  
+  store::Item_t item;
+
+  while (source->next(item))
+  {
+    if (copymode.theDoCopy && (item->isNode() || item->isJSONItem()))
+      item = item->copy(NULL, copymode);
+      
+    array->push_back(item);
   }
 
   return true;

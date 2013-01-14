@@ -24,7 +24,7 @@ sudo apt-get install bzr
 \subsection ubuntu_libs Core Zorba Library Dependencies
 Required libraries for core Zorba:
 \code
-sudo apt-get install libxml2-dev
+sudo apt-get install libxml2-dev uuid-dev
 \endcode
 
 Recommended libraries for core Zorba:
