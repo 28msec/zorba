@@ -8,8 +8,10 @@ New Features:
   * New external module for interfacing with SQLite Database.
   * New external module for interfacing with Oracle NoSQL Database.
   * New external module for interfacing with relational databases via JDBC.
-  * New info-extraction module for querying concepts and entities in
+  * New external info-extraction module for querying concepts and entities in
     natural language text.
+  * New built-in module to (de)reference XML nodes or JSON objects and
+    arrays that are stored in a collection
   * Implemented JSONiq's json-doc() function.
   * http-uri-resolution feature to disable HTTP when resolving URIs.
   * Option to specify that parse-json() strips the top-level array.
