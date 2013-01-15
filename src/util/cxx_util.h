@@ -52,7 +52,7 @@ private:
  * "identifier 'nullptr' will become a keyword in C++0x" warning.
  *
  * We also use a singleton object since using multiple instances as shown in
- * Bjarne's paper has a sligt performance penalty.
+ * Bjarne's paper has a slight performance penalty.
  */
 extern zorba::nullptr_type const zorba_nullptr;
 
