@@ -95,8 +95,8 @@ public:
   /**
    * Adds a warning to the list of warnings.
    *
-   * @param exception The exception to add.  The %XQueryDiagnostics takes
-   * ownership of the exception.
+   * @param warning The warning to add.  The %XQueryDiagnostics takes ownership
+   * of the warning.
    */
   void add_warning( XQueryWarning const *warning ) {
     warnings_.push_back( warning );
