@@ -125,7 +125,7 @@ FastXmlLoader::FastXmlLoader(
   theSaxHandler.comment = &FastXmlLoader::comment;
   theSaxHandler.processingInstruction = &FastXmlLoader::processingInstruction;
   theSaxHandler.warning = &FastXmlLoader::warning;
-  theSaxHandler.error = &FastXmlLoader::error;
+  theSaxHandler.serror = &FastXmlLoader::error;
 
   theSaxHandler.getEntity = &FastXmlLoader::getEntity;
   theSaxHandler.getParameterEntity = &FastXmlLoader::getParameterEntity;
@@ -1119,19 +1119,75 @@ void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
    msg:  the message to display/transmit
    ...:  extra parameters for the message display
 ********************************************************************************/
-void FastXmlLoader::error(void * ctx, const char * msg, ... )
+void FastXmlLoader::error(void *ctx, xmlErrorPtr error)
 {
-  FastXmlLoader* loader = (static_cast<FastXmlLoader *>(ctx));
-  char buf[1024];
-  va_list args;
-  va_start(args, msg);
-  vsprintf(buf, msg, args);
-  va_end(args);
-  loader->theXQueryDiagnostics->add_error(
-    NEW_ZORBA_EXCEPTION(
-      zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
-    )
-  );
+  if ( error->level == XML_ERR_NONE )
+    return;
+
+  FastXmlLoader *const loader = static_cast<FastXmlLoader*>(ctx);
+  ztd::itoa_buf_type itoa_buf;
+
+  zstring libxml_error_dict_key_4( ZED_PREFIX "libxml_" );
+  libxml_error_dict_key_4 += error->level == XML_ERR_WARNING ? "WAR_" : "ERR_";
+  libxml_error_dict_key_4 += ztd::itoa( error->code, itoa_buf );
+
+  zstring str1_5, str2_6, str3_7, int1_8, message_9( error->message );
+  if ( error->str1 )
+    str1_5 = error->str1;
+  if ( error->str2 )
+    str2_6 = error->str2;
+  if ( error->str3 )
+    str3_7 = error->str3;
+
+  if ( error->int1 )
+    switch ( error->code ) {
+      case XML_ERR_INVALID_CHAR:
+      case XML_ERR_ENTITY_CHAR_ERROR:
+      case XML_ERR_SEPARATOR_REQUIRED:
+        // for these error codes, int1 is a char
+        int1_8 = static_cast<char>( error->int1 );
+        break;
+      case XML_ERR_INTERNAL_ERROR:
+      case XML_ERR_ELEMCONTENT_NOT_FINISHED:
+        // for these error codes, int1 is an int
+        int1_8 = ztd::itoa( error->int1, itoa_buf );
+        break;
+      default:
+        // An unaccounted-for error code: use a heuristic to guess at whether
+        // int1 is a char or an int.
+        if ( ascii::is_print( error->int1 ) )
+          int1_8 = static_cast<char>( error->int1 );
+        else
+          int1_8 = ztd::itoa( error->int1, itoa_buf );
+    } // switch
+
+  switch ( error->level ) {
+    case XML_ERR_ERROR:
+    case XML_ERR_FATAL:
+      loader->theXQueryDiagnostics->add_error(
+        NEW_XQUERY_EXCEPTION(
+          zerr::ZSTR0021_LOADER_PARSING_ERROR,
+          ERROR_PARAMS(
+            error->file, error->line, error->int2 /* column */,
+            libxml_error_dict_key_4, str1_5, str2_6, str3_7, int1_8, message_9
+          )
+        )
+      );
+      break;
+    case XML_ERR_WARNING:
+      loader->theXQueryDiagnostics->add_warning(
+        NEW_XQUERY_WARNING(
+          zerr::ZSTR0021_LOADER_PARSING_ERROR,
+          WARN_PARAMS(
+            error->file, error->line, error->int2 /* column */,
+            libxml_error_dict_key_4, str1_5, str2_6, str3_7, int1_8, message_9
+          )
+        )
+      );
+      break;
+    default:
+      ZORBA_ASSERT( false );
+  } // switch
 }
 
 

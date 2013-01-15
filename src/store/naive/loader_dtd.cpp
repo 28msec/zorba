@@ -137,7 +137,7 @@ FragmentXmlLoader::FragmentXmlLoader(
   theSaxHandler.comment = &FragmentXmlLoader::comment;
   theSaxHandler.processingInstruction = &FragmentXmlLoader::processingInstruction;
   theSaxHandler.warning = &FragmentXmlLoader::warning;
-  theSaxHandler.error = &FragmentXmlLoader::error;
+  //theSaxHandler.error = &FragmentXmlLoader::error; TODO pjl
   theSaxHandler.getEntity = &FragmentXmlLoader::getEntity;
   theSaxHandler.getParameterEntity = &FragmentXmlLoader::getParameterEntity;
   theSaxHandler.entityDecl = &FragmentXmlLoader::entityDecl;

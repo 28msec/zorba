@@ -217,7 +217,7 @@ public:
         const xmlChar * target,
         const xmlChar * data);
 
-  static void error(void * ctx, const char * msg, ... );
+  static void error(void * ctx, xmlErrorPtr );
 
   static void warning(void * ctx, const char * msg, ... );
 
