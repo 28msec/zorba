@@ -97,6 +97,8 @@ public:
   JSONTree() : theCollection(NULL), theId(), theRoot(NULL)
   {}
 
+  ~JSONTree();
+
   simplestore::Collection* getCollection() const
   {
     return theCollection;
