@@ -273,6 +273,9 @@ private:
   params_type params_;
 
   value_type lookup_param( size_type i ) const;
+  bool then_else( bool, value_type const&, value_type::size_type*,
+                  value_type* ) const;
+  size_type to_index( value_type::value_type ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

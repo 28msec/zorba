@@ -4211,7 +4211,7 @@
     <!-- 3: XML_ERR_DOCUMENT_START not used -->
 
     <entry key="libxml_ERR_4"> <!-- XML_ERR_DOCUMENT_EMPTY -->
-      <value>empty XML document</value>
+      <value>empty XML document ('&lt;' expected)</value>
     </entry>
 
     <entry key="libxml_ERR_5"> <!-- XML_ERR_DOCUMENT_END -->
@@ -4338,7 +4338,7 @@
     </entry>
 
     <entry key="libxml_ERR_42"> <!-- XML_ERR_ATTRIBUTE_REDEFINED -->
-      <value>${"5": }attribute redefined</value>
+      <value>"$6?{5:}:6$6?6:5" attribute redefined</value>
     </entry>
 
     <entry key="libxml_ERR_43"> <!-- XML_ERR_LITERAL_NOT_STARTED -->
@@ -4384,7 +4384,7 @@
     <!-- 53: XML_ERR_MIXED_NOT_FINISHED not used -->
 
     <entry key="libxml_ERR_54"> <!-- XML_ERR_ELEMCONTENT_NOT_STARTED -->
-      <value>name${ "5"} or '(' expected for content declaration</value>
+      <value>$5?5:{name or} '(' expected for content declaration</value>
     </entry>
 
     <entry key="libxml_ERR_55"> <!-- XML_ERR_ELEMCONTENT_NOT_FINISHED -->
@@ -4612,7 +4612,7 @@
     </entry>
 
     <entry key="libxml_ERR_201"> <!-- XML_NS_ERR_UNDEFINED_NAMESPACE -->
-      <value>"$5": namespace prefix${ on 7} not defined</value>
+      <value>${"5": }namespace prefix${ for "7?6:7"}${ on "7?7:6"} not defined</value>
     </entry>
 
     <entry key="libxml_ERR_202"> <!-- XML_NS_ERR_QNAME -->
@@ -4652,7 +4652,11 @@
     </entry>
 
     <entry key="libxml_ERR_503"> <!-- XML_DTD_CONTENT_MODEL -->
-      <value>element does not follow content model</value>
+      <!--
+       ! We can't do better here since libxml uses puts different things in the
+       ! positional parameters.
+       !-->
+      <value>element content does not follow DTD</value>
     </entry>
 
   </subvalues>

@@ -192,13 +192,18 @@ parameters::value_type parameters::lookup_param( size_type i ) const {
   return param;
 }
 
+inline
+parameters::size_type parameters::to_index( value_type::value_type c ) const {
+  return static_cast<size_type>( c - '0' );
+}
+
 void parameters::substitute( value_type *s ) const {
   for ( size_type i = 1; i <= 9; ++i ) {
     size_type dollar_pos = value_type::npos;
     bool got_lbrace = false;
     value_type param, replacement;
 
-    for ( size_type pos = 0; pos < s->size(); ++pos ) {
+    for ( value_type::size_type pos = 0; pos < s->size(); ++pos ) {
       char const c = s->at( pos );
       if ( dollar_pos != value_type::npos ) {
 
@@ -209,17 +214,18 @@ void parameters::substitute( value_type *s ) const {
           switch ( c ) {
             case '1': case '2': case '3': case '4': case '5':
             case '6': case '7': case '8': case '9':
-              if ( c - '0' == static_cast<int>( i ) ) {
+              if ( to_index( c ) == i ) {
                 param = lookup_param( i );
                 replacement += param;
               } else
                 dollar_pos = value_type::npos;
               break;
             case '}': {
-              size_type const len = pos - dollar_pos + 1;
-              if ( param.empty() )
+              value_type::size_type const len = pos - dollar_pos + 1;
+              if ( param.empty() ) {
                 s->erase( dollar_pos, len );
-              else {
+                pos = dollar_pos - 1;
+              } else {
                 s->replace( dollar_pos, len, replacement );
                 pos = dollar_pos + replacement.length();
               }
@@ -235,6 +241,7 @@ void parameters::substitute( value_type *s ) const {
 
         //
         // $i case
+        // $i?j:k case
         //
         switch ( c ) {
           case '{':
@@ -242,15 +249,39 @@ void parameters::substitute( value_type *s ) const {
             break;
           case '1': case '2': case '3': case '4': case '5':
           case '6': case '7': case '8': case '9':
-            if ( c - '0' == static_cast<int>( i ) ) {
-              replacement = lookup_param( i );
-              s->replace( dollar_pos, 2, replacement );
-              pos = dollar_pos + replacement.length();
-            }
+            if ( to_index( c ) == i ) {
+              param = lookup_param( i );
+
+              value_type::size_type pos2 = pos;
+              if ( ++pos2 < s->size() && s->at( pos2 ) == '?' &&
+                  ++pos2 < s->size() ) {
+                bool not_empty =
+                  then_else( !param.empty(), *s, &pos2, &replacement );
+                if ( s->at( ++pos2 ) != ':' )
+                  throw invalid_argument( "':' expected for ?:");
+                ++pos2;
+
+                not_empty =
+                  then_else( param.empty(), *s, &pos2, &replacement ) ||
+                  not_empty;
+
+                value_type::size_type const len = pos2 - dollar_pos + 1;
+                if ( not_empty ) {
+                  s->replace( dollar_pos, len, replacement );
+                  pos = dollar_pos + replacement.length();
+                } else {
+                  s->erase( dollar_pos, len );
+                  pos = dollar_pos - 1;
+                }
+              } else {
+                s->replace( dollar_pos, 2, param );
+                pos = dollar_pos + param.length();
+              }
+            } // if ( to_index( c ) ...
             // no break;
           default:
             dollar_pos = value_type::npos;
-        }
+        } // switch
 
         continue;
       } // if ( dollar_pos ...
@@ -262,6 +293,50 @@ void parameters::substitute( value_type *s ) const {
       }
     } // for ( ... pos ...
   } // for ( ... i ...
+}
+
+bool parameters::then_else( bool expr, value_type const &s,
+                            value_type::size_type *pos,
+                            value_type *replacement ) const {
+  value_type::value_type c = s[ *pos ];
+  bool found_param = false;
+  value_type param;
+
+  switch ( c ) {
+    case '1': case '2': case '3': case '4': case '5':
+    case '6': case '7': case '8': case '9':
+      if ( found_param )
+        throw invalid_argument( "multiple params within { }" );
+      found_param = true;
+      if ( expr )
+        *replacement = param = lookup_param( to_index( c ) );
+      break;
+    case '{':
+      while ( ++*pos < s.size() ) {
+        c = s[ *pos ];
+        switch ( c ) {
+          case '1': case '2': case '3': case '4': case '5':
+          case '6': case '7': case '8': case '9':
+            if ( found_param )
+              throw invalid_argument( "multiple params within { }" );
+            found_param = true;
+            if ( expr ) {
+              param = lookup_param( to_index( c ) );
+              *replacement += param;
+            }
+            break;
+          case '}':
+            goto done;
+          default:
+            *replacement += c;
+        } // switch
+      } // while
+      throw invalid_argument( "then_else(): invalid ?:" );
+    default:
+      throw invalid_argument( "then_else(): illegal char" );
+  } // switch
+done:
+  return !found_param || !param.empty();
 }
 
 } // namespace diagnostic
