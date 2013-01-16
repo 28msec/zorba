@@ -54,6 +54,7 @@ private:
  * We also use a singleton object since using multiple instances as shown in
  * Bjarne's paper has a slight performance penalty.
  */
+ZORBA_DLL_PUBLIC
 extern zorba::nullptr_type const zorba_nullptr;
 
 #define nullptr ::zorba_nullptr
