@@ -23,13 +23,15 @@
 
 #ifndef ZORBA_CXX_NULLPTR
 
+namespace zorba {
+
 /**
- * See: http://www2.research.att.com/~bs/C++0xFAQ.html#nullptr
+ * A \c nullptr type.
  *
- * We use "zorba_nullptr" in combination with a macro to elimimate a
- * "identifier 'nullptr' will become a keyword in C++0x" warning.
+ * See http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2431.pdf
+ * section 1.1: "Alternative #1: A Library Implementation of nullptr," p. 3.
  */
-class nullptr_t {
+class nullptr_type {
 public:
   template<typename T>                  // convertible to any type
   operator T*() const {                 // of null non-member
@@ -41,7 +43,18 @@ public:
   }
 private:
   void operator&() const;               // whose address can't be taken
-} const zorba_nullptr = {};             // and whose name is nullptr
+};
+
+} // namespace zorba
+
+/**
+ * We use "zorba_nullptr" in combination with a macro to elimimate an
+ * "identifier 'nullptr' will become a keyword in C++0x" warning.
+ *
+ * We also use a singleton object since using multiple instances as shown in
+ * Bjarne's paper has a slight performance penalty.
+ */
+extern zorba::nullptr_type const zorba_nullptr;
 
 #define nullptr ::zorba_nullptr
 
