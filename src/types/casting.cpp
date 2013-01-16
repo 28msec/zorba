@@ -1111,7 +1111,7 @@ T1_TO_T2(dT, dat)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::DATE_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createDate(result, &dt);
 }
 
 
@@ -1119,7 +1119,7 @@ T1_TO_T2(dT, gYM)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GYEARMONTH_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGYearMonth(result, &dt);
 }
 
 
@@ -1127,7 +1127,7 @@ T1_TO_T2(dT, gYr)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GYEAR_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGYear(result, &dt);
 }
 
 
@@ -1135,7 +1135,7 @@ T1_TO_T2(dT, gMD)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GMONTHDAY_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGMonthDay(result, &dt);
 }
 
 
@@ -1143,7 +1143,7 @@ T1_TO_T2(dT, gDay)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GDAY_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGDay(result, &dt);
 }
 
 
@@ -1151,7 +1151,7 @@ T1_TO_T2(dT, gMon)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GMONTH_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGMonth(result, &dt);
 }
 
 
@@ -1187,7 +1187,7 @@ T1_TO_T2(dat, dT)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::DATETIME_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createDateTime(result, &dt);
 }
 
 
@@ -1195,7 +1195,7 @@ T1_TO_T2(dat, gYM)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GYEARMONTH_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGYearMonth(result, &dt);
 }
 
 
@@ -1203,7 +1203,7 @@ T1_TO_T2(dat, gYr)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GYEAR_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGYear(result, &dt);
 }
 
 
@@ -1211,7 +1211,7 @@ T1_TO_T2(dat, gMD)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GMONTHDAY_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGMonthDay(result, &dt);
 }
 
 
@@ -1219,7 +1219,7 @@ T1_TO_T2(dat, gDay)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GDAY_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGDay(result, &dt);
 }
 
 
@@ -1227,7 +1227,7 @@ T1_TO_T2(dat, gMon)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GMONTH_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGMonth(result, &dt);
 }
 
 
@@ -2125,7 +2125,7 @@ bool GenericCast::castToSimple(
     const xqtref_t& targetType,
     const namespace_context* nsCtx,
     std::vector<store::Item_t>& resultList,
-    const TypeManager* tm,
+    TypeManager* tm,
     const QueryLoc& loc)
 {
   const TypeManager* ttm = targetType->get_manager();
@@ -2157,6 +2157,9 @@ bool GenericCast::castToSimple(
   else
   {
     ZORBA_ASSERT(targetType->type_kind() == XQType::USER_DEFINED_KIND);
+
+#ifndef ZORBA_NO_XMLSCHEMA
+    tm->initializeSchema();
 
     Schema* schema = tm->getSchema();
 
@@ -2217,6 +2220,7 @@ bool GenericCast::castToSimple(
                    sourceType->toSchemaString(),
                    udt->toSchemaString()));
     } // union
+#endif // ZORBA_NO_XMLSCHEMA
   } // list or union
 }
 
@@ -2788,7 +2792,7 @@ bool GenericCast::castableToName(const zstring& str)
 bool GenericCast::isCastable(
     const store::Item_t& aItem,
     const XQType* targetType,
-    const TypeManager* tm)
+    TypeManager* tm)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
   if (targetType->type_kind() == XQType::USER_DEFINED_KIND )
@@ -2796,6 +2800,8 @@ bool GenericCast::isCastable(
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
     if (!udt->isComplex())
     {
+      tm->initializeSchema();
+
       return tm->getSchema()->
              isCastableUserSimpleTypes(aItem->getStringValue(), targetType);
     }
@@ -2842,7 +2848,7 @@ bool GenericCast::isCastable(
 bool GenericCast::isCastable(
     const zstring& str,
     const XQType* aTargetType,
-    const TypeManager* tm)
+    TypeManager* tm)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
@@ -2850,6 +2856,8 @@ bool GenericCast::isCastable(
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
     if (!udt->isComplex())
     {
+      tm->initializeSchema();
+
       return tm->getSchema()->
              isCastableUserSimpleTypes(str,
                                        udt->getBaseType().getp());

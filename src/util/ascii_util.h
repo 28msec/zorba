@@ -922,7 +922,7 @@ void trim_end_whitespace( InputStringType const &in, OutputStringType *out ) {
  * @param s The string.
  */
 template<class StringType> inline
-void trim_end_whitespace( StringType &s, char const *chars ) {
+void trim_end_whitespace( StringType &s ) {
   trim_end( s, whitespace );
 }
 

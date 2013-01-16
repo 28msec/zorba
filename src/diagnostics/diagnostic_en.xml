@@ -1880,6 +1880,14 @@
       <value>"$1": builtin sequential function not implemented as sequential</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0011" name="INVALID_LOCALE">
+      <value>"$1": invalid locale</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP0012" name="UNKNOWN_LOCALE">
+      <value>"$1": unknown locale</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0013" name="FXCHARHEAP_EXCEPTION">
       <value>FxCharHeap error: $1 ($2)</value>
     </diagnostic>
@@ -2142,8 +2150,8 @@
       <value>"$1": invalid serialization method for SAX</value>
     </diagnostic>
 
-    <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_NODE_REFERENCE">
-      <value>can not retrieve node-reference for a node that is not in a collection</value>
+    <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_REFERENCE">
+      <value>can not retrieve reference for a JSON object or array that is not in a collection</value>
     </diagnostic>
 
     <diagnostic code="ZAPI0090" name="CANNOT_VALIDATE_NON_ROOT">
@@ -2564,6 +2572,10 @@
       <value>stream transcoding error ($1)</value>
     </diagnostic>
 
+    <diagnostic code="ZOSE0007" name="UNSUPPORTED_LOCALE">
+      <value>"$1": unsupported locale</value>
+    </diagnostic>
+
     <!--////////// Zorba Store Errors //////////////////////////////////////-->
 
     <diagnostic code="ZSTR0001" name="INDEX_ALREADY_EXISTS">
@@ -2693,6 +2705,28 @@
     </diagnostic>
     <diagnostic code="XSST0010">
       <value>"continue loop" statement not inside while statement</value>
+    </diagnostic>
+
+   <!--////////// dateTime Parse Errors ////////////////////////////////////-->
+
+    <diagnostic code="ZDTP0001" name="INVALID_SPECIFICATION">
+      <value>'$1': invalid % conversion specification</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0002" name="INSUFFICIENT_BUFFER">
+      <value>"$1": insufficient value to parse for "$2"</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0003" name="INVALID_VALUE">
+      <value>"$1": invalid value for conversion specification(s) %$2</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0004" name="LITERAL_MISMATCH">
+      <value>'$1': literal character mismatched '$2'</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0005" name="INCOMPLETE_DATE_OR_TIME">
+      <value>'$1': incomplete date, time, or dateTime format</value>
     </diagnostic>
 
    <!--////////// JSON Parse Errors ////////////////////////////////////////-->
@@ -3870,6 +3904,10 @@
 
     <entry key="Zorba API error">
       <value>Zorba API error</value>
+    </entry>
+
+    <entry key="Zorba core module error">
+      <value>Zorba core module error</value>
     </entry>
 
     <entry key="Zorba data-definition error">

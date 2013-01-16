@@ -420,10 +420,10 @@ public:
 
   // Unregisters a reference to an unused node (upon its destruction in
   // the memory).
-  virtual bool unregisterReferenceToUnusedNode(XmlNode* node) = 0;
+  virtual bool unregisterReferenceToUnusedNode(store::Item* node) = 0;
 
   // Unregisters a reference to a node that was deleted (by XQUF).
-  virtual bool unregisterReferenceToDeletedNode(XmlNode* node) = 0;
+  virtual bool unregisterReferenceToDeletedNode(store::Item* node) = 0;
 
 /*----------------------- Temp Sequence Management ---------------------------*/
 public:
