@@ -46,8 +46,8 @@ using internal::ztd::c_str;
  * the resultant string to some function.  See the BUILD_STRING macro for usage.
  * Note that you can use either "<<" or "," to taste.
  *
- * See http://stackoverflow.com/questions/5666678/ as to why a class like this
- * is needed rather than just using an ostringstream directly.
+ * See http://stackoverflow.com/q/5666678 as to why a class like this is
+ * needed rather than just using an ostringstream directly.
  */
 class string_builder {
 public:
@@ -408,61 +408,76 @@ inline bool split( InputStringType const &in, DelimStringType const &delim,
 /**
  * Parses the given string for a \c double.
  *
- * @param s The null-terminated C string to parse.  Leading and trailing
+ * @param buf The null-terminated C string to parse.  Leading and trailing
  * whitespace is ignored.
+ * @param end If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
  * @return Returns the \c double value.
- * @throws invalid_argument if \a s contains characters other than digits or
+ * @throws invalid_argument if \a buf contains characters other than digits or
  * leading/trailing whitespace, or contains no digits at all.
  * @throws range_error if the number overflows/underflows.
  */
-double atod( char const *s );
+double atod( char const *buf, char const **end = nullptr );
 
 /**
  * Parses the given string for a \c float.
  *
- * @param s The null-terminated C string to parse.  Leading and trailing
+ * @param buf The null-terminated C string to parse.  Leading and trailing
  * whitespace is ignored.
+ * @param end If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
  * @return Returns the \c float value.
- * @throws invalid_argument if \a s contains characters other than digits or
+ * @throws invalid_argument if \a buf contains characters other than digits or
  * leading/trailing whitespace, or contains no digits at all.
  * @throws range_error if the number overflows/underflows.
  */
-float atof( char const *s );
+float atof( char const *buf, char const **end = nullptr );
 
 /**
  * Parses the given string for a <code>long lomg</code>.
  *
- * @param s The null-terminated C string to parse.  Leading and trailing
+ * @param buf The null-terminated C string to parse.  Leading and trailing
  * whitespace is ignored.
+ * @param end If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
  * @return Returns the <code>long long</code> value.
- * @throws invalid_argument if \a s contains characters other than digits or
+ * @throws invalid_argument if \a buf contains characters other than digits or
  * leading/trailing whitespace, or contains no digits at all.
  * @throws range_error if the number overflows/underflows.
  */
-long long atoll( char const *s );
+long long atoll( char const *buf, char const **end = nullptr );
 
 /**
  * Parses the given string for an <code>unsigned long lomg</code>.
  *
- * @param s The null-terminated C string to parse.  Leading and trailing
+ * @param buf The null-terminated C string to parse.  Leading and trailing
  * whitespace is ignored.
+ * @param end If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
  * @return Returns the <code>unsigned long long</code> value.
- * @throws invalid_argument if \a s contains characters other than digits or
+ * @throws invalid_argument if \a buf contains characters other than digits or
  * leading/trailing whitespace, or contains no digits at all.
  * @throws range_error if the number overflows/underflows.
  */
-unsigned long long atoull( char const *s );
+unsigned long long atoull( char const *buf, char const **end = nullptr );
 
 /**
  * Parses the given string for a C++ signed integral type.
  *
  * @tparam IntegralType The C++ signed integral type to parse for.
- * @param s The null-terminated C string to parse.  Leading and trailing
+ * @param buf The null-terminated C string to parse.  Leading and trailing
  * whitespace is ignored.
+ * @param end If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
  * @return Returns the \c IntegralType value.
- * @throws invalid_argument if \a s contains characters other than digits or
- * leading/trailing whitespace, or contains no digits at all.
- * @throws range_error if the number overflows/underflows.
+ * @throws invalid_argument if \a buf contains characters other than digits, a
+ * sign, or leading/trailing whitespace, or contains no digits at all.
+ * @throws range_error if the number is either too small or too big.
  */
 template<typename IntegralType> inline
 //
@@ -473,8 +488,8 @@ template<typename IntegralType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value
                      && ZORBA_TR1_NS::is_signed<IntegralType>::value,
                         IntegralType>::type
-aton( char const *s ) {
-  long long const result = atoll( s );
+aton( char const *buf, char const **end = nullptr ) {
+  long long const result = atoll( buf, end );
   if ( result < std::numeric_limits<IntegralType>::min() ||
        result > std::numeric_limits<IntegralType>::max() )
     throw std::range_error(
@@ -484,60 +499,137 @@ aton( char const *s ) {
 }
 
 /**
+ * Parses the given string for a C++ signed integral type.
+ *
+ * @tparam IntegralType The C++ signed integral type to parse for.
+ * @param buf The null-terminated C string to parse.  Leading and trailing
+ * whitespace is ignored.
+ * @param low The lower acceptable bound.
+ * @param high the higher acceptable bound.
+ * @param end If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
+ * @return Returns the \c IntegralType value.
+ * @throws invalid_argument if \a buf contains characters other than digits, a
+ * sign, or leading/trailing whitespace, or contains no digits at all.
+ * @throws range_error if the number is either too small or too big.
+ */
+template<typename IntegralType> inline
+//
+// Note that the is_integral shouldn't be needed since is_signed means "is a
+// signed integral type", but Microsoft's implementation is broken and returns
+// true for floating point types as well.
+//
+typename std::enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value
+                     && ZORBA_TR1_NS::is_signed<IntegralType>::value,
+                        IntegralType>::type
+aton( char const *buf, IntegralType low, IntegralType high,
+      char const **end = nullptr ) {
+  long long const result = atoll( buf, end );
+  if ( result < low || result > high )
+    throw std::range_error(
+      BUILD_STRING(
+        '"', result, "\": number not in range ", low, '-', high
+      )
+    );
+  return static_cast<IntegralType>( result );
+}
+
+/**
  * Parses the given string for a C++ unsigned integral types.
  *
  * @tparam IntegralType The C++ unsigned integral type to parse for.
- * @param s The null-terminated C string to parse.  Leading and trailing
+ * @param buf The null-terminated C string to parse.  Leading and trailing
  * whitespace is ignored.
+ * @param end If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
  * @return Returns the \c IntegralType value.
- * @throws invalid_argument if \a s contains characters other than digits or
- * leading/trailing whitespace, or contains no digits at all.
- * @throws range_error if the number overflows/underflows.
+ * @throws invalid_argument if \a buf contains characters other than digits, a
+ * sign, or leading/trailing whitespace, or contains no digits at all.
+ * @throws range_error if the number is either too small or too big.
  */
 template<typename IntegralType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntegralType>::value,
                         IntegralType>::type
-aton( char const *s ) {
-  unsigned long long const result = atoull( s );
+aton( char const *buf, char const **end = nullptr ) {
+  unsigned long long const result = atoull( buf, end );
   if ( result > std::numeric_limits<IntegralType>::max() )
     throw std::range_error( BUILD_STRING( '"', result, "\": number too big" ) );
   return static_cast<IntegralType>( result );
 }
 
 /**
+ * Parses the given string for a C++ unsigned integral types.
+ *
+ * @tparam IntegralType The C++ unsigned integral type to parse for.
+ * @param buf The null-terminated C string to parse.  Leading and trailing
+ * whitespace is ignored.
+ * @param low The lower acceptable bound.
+ * @param high the higher acceptable bound.
+ * @param end If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
+ * @return Returns the \c IntegralType value.
+ * @throws invalid_argument if \a buf contains characters other than digits or
+ * leading/trailing whitespace, or contains no digits at all.
+ * @throws range_error if the number is either too small or too big.
+ */
+template<typename IntegralType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntegralType>::value,
+                        IntegralType>::type
+aton( char const *buf, IntegralType low, IntegralType high,
+      char const **end = nullptr ) {
+  unsigned long long const result = atoull( buf, end );
+  if ( result < low || result > high )
+    throw std::range_error(
+      BUILD_STRING(
+        '"', result, "\": number not in range ", low, '-', high
+      )
+    );
+  return static_cast<IntegralType>( result );
+}
+
+/**
  * Parses the given string for a C++ \c double type.
  *
- * @param s The null-terminated C string to parse.  Leading and trailing
+ * @param buf The null-terminated C string to parse.  Leading and trailing
  * whitespace is ignored.
+ * @param end If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
  * @return Returns the \c double value.
- * @throws invalid_argument if \a s contains characters other than those for a
- * valid \c double value or leading/trailing whitespace, or contains no digits
- * at all.
+ * @throws invalid_argument if \a buf contains characters other than those for
+ * a valid \c double value or leading/trailing whitespace, or contains no
+ * digits at all.
  * @throws range_error if the number overflows/underflows.
  */
 template<typename NumericType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_same<NumericType,double>::value,
                         NumericType>::type
-aton( char const *s ) {
-  return atod( s );
+aton( char const *buf, char const **end = nullptr ) {
+  return atod( buf, end );
 }
 
 /**
  * Parses the given string for a C++ \c float type.
  *
- * @param s The null-terminated C string to parse.  Leading and trailing
+ * @param buf The null-terminated C string to parse.  Leading and trailing
  * whitespace is ignored.
+ * @param end If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
  * @return Returns the \c float value.
- * @throws invalid_argument if \a s contains characters other than those for a
- * valid \c float value or leading/trailing whitespace, or contains no digits
+ * @throws invalid_argument if \a buf contains characters other than those for
+ * a valid \c float value or leading/trailing whitespace, or contains no digits
  * at all.
  * @throws range_error if the number overflows/underflows.
  */
 template<typename NumericType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_same<NumericType,float>::value,
                         NumericType>::type
-aton( char const *s ) {
-  return atof( s );
+aton( char const *buf, char const **end = nullptr ) {
+  return atof( buf, end );
 }
 
 ////////// To-string conversion ////////////////////////////////////////////////

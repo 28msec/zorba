@@ -121,6 +121,14 @@ NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   consumeNext(lUUID, theChildren[0].getp(), planState);
   try
   {
+    zstring lReference = lUUID->getStringValue();
+
+    if (lReference.length() != 45 ||
+        !utf8::match_whole(lReference, "urn:uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))
+    {
+      throw XQUERY_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(lReference), ERROR_LOC(loc));
+    }
+
     haveResult = GENV_STORE.getNodeByReference(result, lUUID->getStringValue());
   }
   catch (ZorbaException& e)

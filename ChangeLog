@@ -4,27 +4,60 @@ Zorba - The XQuery Processor
 version 2.8
 
 New Features:
-  * (bug #1039284) Implemented jn:json-doc().
-  * (bug #867363) Added http-uri-resolution feature to disable HTTP
-	when resolving URIs.
+  * New external module for interfacing with Couchbase Server.
+  * New external module for interfacing with SQLite Database.
+  * New external module for interfacing with Oracle NoSQL Database.
+  * New external module for interfacing with relational databases via JDBC.
+  * New external info-extraction module for querying concepts and entities in
+    natural language text.
+  * New built-in module to (de)reference XML nodes or JSON objects and
+    arrays that are stored in a collection
+  * Implemented JSONiq's json-doc() function.
+  * http-uri-resolution feature to disable HTTP when resolving URIs.
+  * Option to specify that parse-json() strips the top-level array.
+  * Extended cast and castable expression to allow any simple target type
+    (as specified by XQuery 3.0).
+  * The XQXQ (XQuery-for-XQuery) module became part of the Zorba core.
+  * The datetime module became part of the Zorba core.
+  * In the datetime module, added parse-date(), parse-dateTime(), parse-time(),
+    and utc-offset().
+  * Includes test driver for W3C XQuery 3.0 Test Suite (aka FOTS).
 
 Optimizations:
   * Various optimizations in the implementation of the optimizer rules.
+  * Better computation of the static type for global variables.
+  * Optimization of comparison operators when untypedAtomic items are involved.
+  * Improved computation of static type for fn:data function.
+  * Fixed iteration over the components of a window clause; this improves static
+    type computation of expressions referencing window vars.
+  * No need to cast xs:untypedAtomic to xs:string in order-by expression.
+  * Convert LET variables whose domain sequence has exactly one item to FOR vars.
 
 Bug Fixes/Other Changes:
-  * Change XQXQ (XQuery-for-XQuery) module now part of Zorba core
-  * Fixed mustCopyInputNodes() method of no-copy, and jsoniq functions.
+  * Fixed bug #949064  (faulty QName should be printed in the error message)
+  * Fixed bug #1072644 (broken parser error location)
   * Fixed bug #868640 (Node lifetime is shorter than expected due to let
-    variable inlining)
+      variable inlining)
+  * Fixed bugs #1081626 (Segmentation fault in a side-effecting FLWOR),
+      #1079488 (streaming segfault)
   * Fixed bug #1062093 (bug in var reference iterators with an associated
-    position that is negative)
+      position that is negative)
+  * Fixed bug #1073978 (FOTS: option default ns not supported)
   * Fixed bug #1061222 (bad message for errors in index key type declaration)
   * Fixed bug #1065175 (preceding::node()[1] returns wrong results)
   * Fixed bug #1065321 (following:text() doesn't return results in doc order)
   * Fixed bug #1067706 (wrong const folding in mutually recursive udfs)
-  * Fixed bug #1021492 (while computeing the "sources" of a prolog var, skip
-    any var-setting exprs that appear in non-used (and non-optimized) functions). 
+  * Fixed bug #1021492 (while computing the "sources" of a prolog var, skip
+      any var-setting exprs that appear in non-used (and non-optimized) functions).
   * Fixed bug #1070551 (zerr:ZOSE0003 stream read failure)
+  * Fixed bug #992304 (Compiling library modules could load data from wrong
+    source)
+  * Fixed bug #1043294 (XQST0036 not used in XQuery 3.0).
+  * Fixed bug in castable expr when the target type is xs:QName.
+  * Fixed bug in testing if a sequence type is subtype of node(xs:untyped)
+  * Fixed mustCopyInputNodes() method of no-copy, and jsoniq functions.
+  * Fixed bugs related to casting to user-defined types.
+
 
 version 2.7
 
@@ -40,7 +73,7 @@ New Features:
   * Roundtripping of JSON items has been moved from the serializer to encoding functions.
   * Added uuid to public API.
   * Best-effort serialization of atomic values in JSON items.
-  * Positional pagination support for index probes 
+  * Positional pagination support for index probes
   * Recognize the {http://www.zorba-xquery.com/extensions}no-copy pragma to avoid
     copying nodes before insertion into a collection.
   * Added createUntypedAtomic to API's ItemFactory.
@@ -206,7 +239,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #967864 (var substitution did not update theFreeVars property)
   * Fixed bug #891650 (context size var not always declared within path expr)
   * Fixed bug #948879 (--uri-path doesn't work with fetch:content())
-  * Fixed bug in MarkNodeCopyProps rule (static cast to replace_expr without chaing the expr kind first)  
+  * Fixed bug in MarkNodeCopyProps rule (static cast to replace_expr without chaing the expr kind first)
   * Fixed bug in window iterator (binding the end vars in the output tuple stream)
   * Fixed bug #866547 (protect index-join rule from general flwor)
   * Fixed bug #867253 (cdml:delete-nodes should only remove root nodes)
@@ -232,10 +265,10 @@ version 2.2
 
 New Features:
   * Add --compile-plan (-c) and --execute-plan (-e) options to zorba command line.
-  * Add XQuery 3.0 concat operator (http://www.w3.org/TR/xquery-30/#id-string-concat-expr) 
+  * Add XQuery 3.0 concat operator (http://www.w3.org/TR/xquery-30/#id-string-concat-expr)
   * New URI module providing percent-decoding functions.
   * The core parse-xml module is now able to parse input files in a streaming mode. A number of new options have also been added.
-  * LibXml2 version 2.7.0 or higher is now required in order to build Zorba.  
+  * LibXml2 version 2.7.0 or higher is now required in order to build Zorba.
   * Added index management function to the C++ api's StaticCollectionManager.
   * Added createDayTimeDuration, createYearMonthDuration, createDocumentNode, createCommentNode, createPiNode to api's ItemFactory.
   * Fixed bug #905050 (setting and getting the context item type via the c++ api).
@@ -254,7 +287,7 @@ New Features:
 
 Optimization:
   * No-copy optimization: avoids copying nodes during node-constructor expressions.
-  * Added external function annotations %ann:propagates-input-nodes and 
+  * Added external function annotations %ann:propagates-input-nodes and
     %ann:must-copy-input-nodes to be used by the no-copy optimization.
   * Caching of results for recursive functions with atomic parameter and return types.
   * Added %ann:cache and %ann:no-cache to enable or disable caching of results of functions with atomic parameter and return types.
@@ -290,7 +323,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #907872 (segfault when returning an input ItemSequence from an external function).
   * Fixed bug in codegen: do not create a materialize clause if one exists already
     support.
-  * Fixed bug involving positional var and groupby 
+  * Fixed bug involving positional var and groupby
   * Fixed bug #867266 (do not hoist updating expressions)
   * Fixed bug #867022 (added location and params to some XPTY0004 errors)
   * zerr is not predeclared anymore to be http://www.zorba-xquery.com/errors
@@ -307,17 +340,17 @@ Bug Fixes/Other Changes:
   * Fixed bug #951772 (Comment node crashes serialization)
   * Fixed bug #945241 (StaticCollectionManager::declaredIndexes() and temporary indexes)
 
-	
+
 version 2.1
 
 New Features:
   * New node-position module. This module allows to obtain a representation of a node position, which
     can be used to assess structural relationships with other nodes.
   * New node-reference module. References can be obtained for any node, and
-	different nodes cannot have the same identifier.
+       different nodes cannot have the same identifier.
   * Custom Full-text thesaurus using Zorba URI resolver mechanism.
-  * Modified C++ API to add isSequential, getExternalVariables, isBoundContextItem and 
-  isBoundExternalVariable Functions
+  * Modified C++ API to add isSequential, getExternalVariables,
+       isBoundContextItem and isBoundExternalVariable Functions
   * Collection allows to retrieve information about the type
   and the annotations of a static collection.
   * Implemented the probe-index-range-value for general indexes
@@ -352,7 +385,7 @@ Bug Fixes/Other Changes:
     corruption will occur)
   * Fixed bug # (Should not destroy the parent of a node that is being detached
     before the detach is done).
-  * Added const qualifier to StaticContext::getAuditEvent() 
+  * Added const qualifier to StaticContext::getAuditEvent()
   * Fixed bug #3408181 (available-collection() returns undeclared collections)
   * Fixed bug #859465 (Fatal error if a PUL contains two deactivate IC primitives)
   * Fixed bug #859467 (Fatal error if a PUL contains two activate Foreign Key primitives)
@@ -372,7 +405,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #869024 (segmentation fault with node-reference)
   * Fixed bug #869025 (segmentation fault with node-reference)
   * New node-reference module. References can be obtained for any node, and
-	different nodes cannot have the same identifier.
+      different nodes cannot have the same identifier.
   * Fixed bug #872697  (segmentation fault with validation of NMTOKENS)
   * General index cannot be declared as unique if the type of its key is
     xs:anyAtomicType or xs:untypedAtomic.
@@ -395,7 +428,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #862089 (Split binary/xq install directories for modules) by
   splitting "module path" into separate URI and Library paths
   * New node-position module. This module allows to obtain a representation of a node position, which
-    can be used to assess structural relationships with other nodes.   
+    can be used to assess structural relationships with other nodes.
   * Fixed bug #872502 (validation of the JSON module xqdoc fails)
   * Fixed bug #897619 (testdriver_mt can not run the XQueryX tests)
   * Fixed bug #867107 (xqdoc dependency to zorba is wrong)

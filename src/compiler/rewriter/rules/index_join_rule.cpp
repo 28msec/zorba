@@ -309,7 +309,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   {
     // Normally, other rewrite rules should have added the necessary casting
     // to the eq operands so that their static types have quantifiers ONE
-    // or QUESTION and the associated prime types are not xs:untypedAtomic.
+    // or QUESTION and the associated prime types are not xs:anyAtomicType.
     // But just in case those rules have been disabled, we check again here
     // and reject the hashjoin rewrite if these condition are violated.
 
@@ -323,10 +323,11 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
     // The type of the outer/inner operands in the join predicate must not be
     // xs:untypedAtomic or xs:anyAtomic.
+    /*
     if (TypeOps::is_equal(tm, *primeOuterType, *rtm.UNTYPED_ATOMIC_TYPE_ONE, outerLoc) ||
         TypeOps::is_equal(tm, *primeInnerType, *rtm.UNTYPED_ATOMIC_TYPE_ONE, innerLoc))
       return false;
-
+    */
     if (TypeOps::is_equal(tm, *primeOuterType, *rtm.ANY_ATOMIC_TYPE_ONE, outerLoc) ||
         TypeOps::is_equal(tm, *primeInnerType, *rtm.ANY_ATOMIC_TYPE_ONE, innerLoc))
       return false;

@@ -197,6 +197,10 @@ class VarRebind : public SimpleRCObject
 public:
   PlanIter_t               theInputVar;
   std::vector<PlanIter_t>  theOutputVarRefs;
+  bool                     theIsFakeLetVar;
+
+public:
+  VarRebind() : theIsFakeLetVar(false) {}
 };
 
 
@@ -776,12 +780,15 @@ void general_var_codegen(const var_expr& var)
       ZORBA_ASSERT(i >= 0);
     }
 
+    FlworClauseVarMap* clauseVarMap = theClauseStack[i];
+    flwor_expr* flworExpr = clauseVarMap->theClause->get_flwor_expr();
+    bool isFakeLetVar = clauseVarMap->theVarRebinds[varPos]->theIsFakeLetVar;
+
+    if (isFakeLetVar)
+      isForVar = true;
+
     // Create a var ref iter in the output of C.
     varIter = create_var_iter(var, isForVar);
-
-    FlworClauseVarMap* clauseVarMap = theClauseStack[i];
-
-    flwor_expr* flworExpr = clauseVarMap->theClause->get_flwor_expr();
 
     clauseVarMap->theVarRebinds[varPos]->theOutputVarRefs.push_back(varIter);
 
@@ -807,6 +814,7 @@ void general_var_codegen(const var_expr& var)
           clauseVarMap->theVarRebinds.push_back(varRebind);
 
           varRebind->theInputVar = varIter;
+          varRebind->theIsFakeLetVar = isFakeLetVar;
 
           varIter = create_var_iter(var, isForVar);
 
@@ -1097,12 +1105,12 @@ bool begin_visit(flwor_expr& v)
       const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
       const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
 
-      for (ulong i = 0; i < gvars.size(); ++i)
+      for (csize i = 0; i < gvars.size(); ++i)
       {
         gvars[i].first->accept(*this);
       }
 
-      for (ulong i = 0; i < ngvars.size(); ++i)
+      for (csize i = 0; i < ngvars.size(); ++i)
       {
         ngvars[i].first->accept(*this);
       }
@@ -1116,8 +1124,8 @@ bool begin_visit(flwor_expr& v)
     {
       const orderby_clause* oc = reinterpret_cast<const orderby_clause*>(c);
 
-      ulong numCols = oc->num_columns();
-      for (ulong i = 0; i < numCols; ++i)
+      csize numCols = oc->num_columns();
+      for (csize i = 0; i < numCols; ++i)
       {
         oc->get_column_expr(i)->accept(*this);
       }
@@ -1208,10 +1216,14 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
   case flwor_clause::let_clause:
   {
     const let_clause* lc = static_cast<const let_clause *>(c);
+    xqtref_t domType = lc->get_expr()->get_return_type();
 
     VarRebind_t varRebind = new VarRebind;
     clauseVarMap->theVarExprs.push_back(lc->get_var());
     clauseVarMap->theVarRebinds.push_back(varRebind);
+
+    if (domType->get_quantifier() == TypeConstants::QUANT_ONE)
+      varRebind->theIsFakeLetVar = true;
 
     break;
   }
@@ -1513,14 +1525,19 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     std::vector<PlanIter_t>& varRefs = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
 
-    return new flwor::LetIterator(sctx,
-                                  var->get_loc(),
-                                  var->get_name(),
-                                  PREV_ITER,
-                                  domainIter,
-                                  varRefs,
-                                  lc->lazyEval(),
-                                  true);  // materilize
+    if (clauseVarMap->theVarRebinds[0]->theIsFakeLetVar)
+    {
+      std::vector<PlanIter_t>* posVarRefs = &no_var_iters;
+
+      return new flwor::ForIterator(sctx, var->get_loc(), var->get_name(),
+                                    PREV_ITER, domainIter, varRefs, *posVarRefs);
+    }
+    else
+    {
+      return new flwor::LetIterator(sctx, var->get_loc(), var->get_name(),
+                                    PREV_ITER, domainIter, varRefs,
+                                    lc->lazyEval(), true);  // materialize
+    }
   }
 
   //
@@ -1894,11 +1911,20 @@ void flwor_codegen(const flwor_expr& flworExpr)
       std::vector<PlanIter_t>& varRefs =
       clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
 
-      forletClauses.push_back(flwor::ForLetClause(var->get_name(),
-                                                  varRefs,
-                                                  domainIter,
-                                                  lc->lazyEval(),
-                                                  true)); // materialize
+      if (clauseVarMap->theVarRebinds[0]->theIsFakeLetVar)
+      {
+        forletClauses.push_back(flwor::ForLetClause(var->get_name(),
+                                                    varRefs,
+                                                    domainIter));
+      }
+      else
+      {
+        forletClauses.push_back(flwor::ForLetClause(var->get_name(),
+                                                    varRefs,
+                                                    domainIter,
+                                                    lc->lazyEval(),
+                                                    true)); // materialize
+      }
       break;
     }
 
@@ -2438,7 +2464,11 @@ void end_visit(castable_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
-  push_itstack(new CastableIterator(sctx, qloc, lChild, v.get_target_type()));
+  push_itstack(new CastableIterator(sctx,
+                                    qloc,
+                                    lChild,
+                                    v.get_target_type(),
+                                    v.allows_empty_input()));
 }
 
 
@@ -2452,8 +2482,12 @@ bool begin_visit(cast_expr& v)
 void end_visit(cast_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  PlanIter_t lChild = pop_itstack();
-  push_itstack(new CastIterator(sctx, qloc, lChild, v.get_target_type()));
+  PlanIter_t child = pop_itstack();
+  push_itstack(new CastIterator(sctx,
+                                qloc,
+                                child,
+                                v.get_target_type(),
+                                v.allows_empty_input()));
 }
 
 

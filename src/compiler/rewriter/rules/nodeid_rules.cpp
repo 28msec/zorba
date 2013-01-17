@@ -302,6 +302,19 @@ expr* MarkConsumerNodeProps::apply(
 
   case cast_expr_kind :
   case castable_expr_kind :
+  {
+    cast_or_castable_base_expr* curExpr =
+    static_cast<cast_or_castable_base_expr*>(node);
+
+    expr* arg = curExpr->get_input();
+    xqtref_t targetType = curExpr->get_target_type();
+
+    set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
+    set_ignores_duplicate_nodes(arg, ANNOTATION_FALSE);
+
+    break;
+  }
+
   case instanceof_expr_kind :
   {
     cast_or_castable_base_expr* curExpr =
@@ -1112,7 +1125,7 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
 
   xqtref_t retType = node->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_SIMPLE_TYPE))
     return;
 
   switch (node->get_expr_kind())
@@ -1161,24 +1174,12 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
       {
         e->setVisitId(1);
 
-        std::vector<expr*>::const_iterator ite = e->setExprsBegin();
-        std::vector<expr*>::const_iterator end = e->setExprsEnd();
+        var_expr::VarSetExprs::const_iterator ite = e->setExprsBegin();
+        var_expr::VarSetExprs::const_iterator end = e->setExprsEnd();
 
         for (; ite != end; ++ite)
         {
-          expr* setExpr = *ite;
-          expr* valueExpr;
-
-          if (setExpr->get_expr_kind() == var_decl_expr_kind)
-          {
-            valueExpr = static_cast<var_decl_expr*>(setExpr)->get_init_expr();
-          }
-          else
-          {
-            assert(setExpr->get_expr_kind() == var_set_expr_kind);
-
-            valueExpr = static_cast<var_set_expr*>(setExpr)->get_expr();
-          }
+          expr* valueExpr = (*ite)->get_expr();
 
           findSourcesForNodeExtractors(valueExpr);
         }

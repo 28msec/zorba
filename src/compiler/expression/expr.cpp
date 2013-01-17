@@ -328,20 +328,17 @@ cast_expr::cast_expr(
     user_function* udf,
     const QueryLoc& loc,
     expr* inputExpr,
-    const xqtref_t& type)
+    const xqtref_t& type,
+    bool allowsEmptyInput)
   :
-  cast_base_expr(ccb, sctx, udf, loc, cast_expr_kind, inputExpr, type)
+  cast_base_expr(ccb, sctx, udf, loc, cast_expr_kind, inputExpr, type),
+  theAllowsEmtpyInput(allowsEmptyInput)
 {
   assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
-         type->get_quantifier() == TypeConstants::QUANT_QUESTION);
+         type->get_quantifier() == TypeConstants::QUANT_QUESTION ||
+         type->get_quantifier() == TypeConstants::QUANT_STAR);
 
   setNonDiscardable(ANNOTATION_TRUE_FIXED);
-}
-
-
-bool cast_expr::is_optional() const
-{
-  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION;
 }
 
 
@@ -421,16 +418,12 @@ castable_expr::castable_expr(
     user_function* udf,
     const QueryLoc& loc,
     expr* inputExpr,
-    const xqtref_t& type)
+    const xqtref_t& type,
+    bool allowsEmtpyInput)
   :
-  castable_base_expr(ccb, sctx, udf, loc, castable_expr_kind, inputExpr, type)
+  castable_base_expr(ccb, sctx, udf, loc, castable_expr_kind, inputExpr, type),
+  theAllowsEmtpyInput(allowsEmtpyInput)
 {
-}
-
-
-bool castable_expr::is_optional() const 
-{
-  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION; 
 }
 
 
