@@ -166,6 +166,10 @@ ostream& operator<<( ostream &o, kind k ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#define case_123456789 \
+  case '1': case '2': case '3': case '4': case '5': \
+  case '6': case '7': case '8': case '9'
+
 namespace internal {
 
 SystemDiagnosticBase::map_type& SystemDiagnosticBase::get_map() {
@@ -198,10 +202,13 @@ parameters::size_type parameters::to_index( value_type::value_type c ) const {
 }
 
 void parameters::substitute( value_type *s ) const {
+  value_type param, replacement;
+
   for ( size_type i = 1; i <= 9; ++i ) {
     size_type dollar_pos = value_type::npos;
+    bool found_param = false;
     bool got_lbrace = false;
-    value_type param, replacement;
+    bool replace;
 
     for ( value_type::size_type pos = 0; pos < s->size(); ++pos ) {
       char const c = s->at( pos );
@@ -212,27 +219,20 @@ void parameters::substitute( value_type *s ) const {
         //
         if ( got_lbrace ) {
           switch ( c ) {
-            case '1': case '2': case '3': case '4': case '5':
-            case '6': case '7': case '8': case '9':
+            case_123456789:
               if ( to_index( c ) == i ) {
+                if ( found_param )
+                  throw invalid_argument( "multiple params within { }" );
+                found_param = true;
                 param = lookup_param( i );
                 replacement += param;
               } else
                 dollar_pos = value_type::npos;
               break;
-            case '}': {
-              value_type::size_type const len = pos - dollar_pos + 1;
-              if ( param.empty() ) {
-                s->erase( dollar_pos, len );
-                pos = dollar_pos - 1;
-              } else {
-                s->replace( dollar_pos, len, replacement );
-                pos = dollar_pos + replacement.length();
-              }
-              dollar_pos = value_type::npos;
+            case '}':
               got_lbrace = false;
-              break;
-            }
+              replace = !param.empty();
+              goto replace_or_erase;
             default:
               replacement += c;
           }
@@ -247,32 +247,25 @@ void parameters::substitute( value_type *s ) const {
           case '{':
             got_lbrace = true;
             break;
-          case '1': case '2': case '3': case '4': case '5':
-          case '6': case '7': case '8': case '9':
+          case_123456789:
             if ( to_index( c ) == i ) {
               param = lookup_param( i );
 
               value_type::size_type pos2 = pos;
               if ( ++pos2 < s->size() && s->at( pos2 ) == '?' &&
-                  ++pos2 < s->size() ) {
-                bool not_empty =
-                  then_else( !param.empty(), *s, &pos2, &replacement );
-                if ( s->at( ++pos2 ) != ':' )
-                  throw invalid_argument( "':' expected for ?:");
-                ++pos2;
-
-                not_empty =
-                  then_else( param.empty(), *s, &pos2, &replacement ) ||
-                  not_empty;
-
-                value_type::size_type const len = pos2 - dollar_pos + 1;
-                if ( not_empty ) {
-                  s->replace( dollar_pos, len, replacement );
-                  pos = dollar_pos + replacement.length();
-                } else {
-                  s->erase( dollar_pos, len );
-                  pos = dollar_pos - 1;
+                   ++pos2 < s->size() ) {
+                //
+                // The i?j:k case....
+                //
+                pos = pos2;
+                replace = then_else( !param.empty(), *s, &pos, &replacement );
+                pos2 = pos;
+                if ( ++pos2 < s->size() && s->at( pos2 ) == ':' ) {
+                  pos = pos2 + 1;
+                  replace =  then_else( param.empty(), *s, &pos, &replacement )
+                          || replace;
                 }
+                goto replace_or_erase;
               } else {
                 s->replace( dollar_pos, 2, param );
                 pos = dollar_pos + param.length();
@@ -283,6 +276,18 @@ void parameters::substitute( value_type *s ) const {
             dollar_pos = value_type::npos;
         } // switch
 
+        continue;
+
+replace_or_erase:
+        value_type::size_type const replace_or_erase_len = pos - dollar_pos + 1;
+        if ( replace ) {
+          s->replace( dollar_pos, replace_or_erase_len, replacement );
+          pos = dollar_pos + replacement.length() - 1;
+        } else {
+          s->erase( dollar_pos, replace_or_erase_len );
+          pos = dollar_pos - 1;
+        }
+        dollar_pos = value_type::npos;
         continue;
       } // if ( dollar_pos ...
 
@@ -303,8 +308,7 @@ bool parameters::then_else( bool expr, value_type const &s,
   value_type param;
 
   switch ( c ) {
-    case '1': case '2': case '3': case '4': case '5':
-    case '6': case '7': case '8': case '9':
+    case_123456789:
       if ( found_param )
         throw invalid_argument( "multiple params within { }" );
       found_param = true;
@@ -315,8 +319,7 @@ bool parameters::then_else( bool expr, value_type const &s,
       while ( ++*pos < s.size() ) {
         c = s[ *pos ];
         switch ( c ) {
-          case '1': case '2': case '3': case '4': case '5':
-          case '6': case '7': case '8': case '9':
+          case_123456789:
             if ( found_param )
               throw invalid_argument( "multiple params within { }" );
             found_param = true;
@@ -331,10 +334,16 @@ bool parameters::then_else( bool expr, value_type const &s,
             *replacement += c;
         } // switch
       } // while
-      throw invalid_argument( "then_else(): invalid ?:" );
+      throw invalid_argument( "'}' expected for ?:" );
     default:
-      throw invalid_argument( "then_else(): illegal char" );
+      throw invalid_argument(
+        BUILD_STRING(
+          '\'', c, "': invalid character after '", (expr ? '?' : ':'),
+          "' (one of [1-9{] expected)"
+        )
+      );
   } // switch
+
 done:
   return !found_param || !param.empty();
 }

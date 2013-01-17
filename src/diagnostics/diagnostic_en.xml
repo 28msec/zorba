@@ -4338,7 +4338,7 @@
     </entry>
 
     <entry key="libxml_ERR_42"> <!-- XML_ERR_ATTRIBUTE_REDEFINED -->
-      <value>"$6?{5:}:6$6?6:5" attribute redefined</value>
+      <value>"$6?{5:}$6?6:5" attribute redefined</value>
     </entry>
 
     <entry key="libxml_ERR_43"> <!-- XML_ERR_LITERAL_NOT_STARTED -->
@@ -4474,7 +4474,7 @@
     </entry>
 
     <entry key="libxml_ERR_77"> <!-- XML_ERR_TAG_NOT_FINISHED -->
-      <value>"$5": premature end of content for tag (line $8)</value>
+      <value>"$5": premature end of content for tag starting on line $8</value>
     </entry>
 
     <entry key="libxml_ERR_78"> <!-- XML_ERR_STANDALONE_VALUE -->
@@ -4560,11 +4560,11 @@
     </entry>
 
     <entry key="libxml_WAR_99"> <!-- XML_WAR_NS_URI -->
-      <value>"xmlns:$5": invalid URI</value>
+      <value>xmlns$6?{:5}: URI "$6?6:5": invalid URI</value>
     </entry>
 
     <entry key="libxml_WAR_100"> <!-- XML_WAR_NS_URI_RELATIVE -->
-      <value>"xmlns:$5": URI not absolute</value>
+      <value>xmlns$6?{:5}: URI "$6?6:5": invalid URI</value>
     </entry>
 
     <entry key="libxml_ERR_101"> <!-- XML_ERR_MISSING_ENCODING -->
@@ -4608,15 +4608,15 @@
     </entry>
 
     <entry key="libxml_ERR_200"> <!-- XML_NS_ERR_XML_NAMESPACE -->
-      <value>invalid use of either the "xml" prefix or the "xmlns" namespace</value>
+      <value>${"5": }invalid namespace or prefix</value>
     </entry>
 
     <entry key="libxml_ERR_201"> <!-- XML_NS_ERR_UNDEFINED_NAMESPACE -->
-      <value>${"5": }namespace prefix${ for "7?6:7"}${ on "7?7:6"} not defined</value>
+      <value>${"5": }namespace prefix${ for "7?6"}${ on "7?7:6"} not defined</value>
     </entry>
 
     <entry key="libxml_ERR_202"> <!-- XML_NS_ERR_QNAME -->
-      <value>"$5": invalid XML QName</value>
+      <value>"$5${:6}": invalid XML QName</value>
     </entry>
 
     <entry key="libxml_ERR_203"> <!-- XML_NS_ERR_ATTRIBUTE_REDEFINED -->
@@ -4628,10 +4628,14 @@
     </entry>
 
     <entry key="libxml_ERR_205"> <!-- XML_NS_ERR_COLON -->
-      <value>"$5": colon is forbidden</value>
+      <value>"$5": colon is forbidden in entity, notation, and processing instruction names</value>
     </entry>
 
     <entry key="libxml_ERR_500"> <!-- XML_DTD_ATTRIBUTE_DEFAULT -->
+      <!--
+       ! We can't do better here since libxml uses puts different things in the
+       ! positional parameters.
+       !-->
       <value>"$5": invalid attribute value</value>
     </entry>
 
@@ -4644,19 +4648,145 @@
        ! We can't do better here since libxml uses puts different things in the
        ! positional parameters.
        !-->
-      <value>invalid attribute value</value>
+      <value>"$5": invalid attribute value</value>
     </entry>
 
-    <entry key="libxml_ERR_502"> <!-- XML_DTD_CONTENT_ERROR -->
+    <entry key="libxml_ERR_503"> <!-- XML_DTD_CONTENT_ERROR -->
       <value>"$5": defintion has duplicate references to "$6"</value>
     </entry>
 
-    <entry key="libxml_ERR_503"> <!-- XML_DTD_CONTENT_MODEL -->
+    <entry key="libxml_ERR_504"> <!-- XML_DTD_CONTENT_MODEL -->
       <!--
        ! We can't do better here since libxml uses puts different things in the
        ! positional parameters.
        !-->
-      <value>element content does not follow DTD</value>
+      <value>${"5:" }element content does not follow DTD</value>
+    </entry>
+
+    <entry key="libxml_ERR_505"> <!-- XML_DTD_CONTENT_NOT_DETERMINIST -->
+      <value>"$5": content model is not deteministic</value>
+    </entry>
+
+    <entry key="libxml_ERR_506"> <!-- XML_DTD_DIFFERENT_PREFIX -->
+      <value>element "$5" required attribute "$6:$7" has different prefix</value>
+    </entry>
+
+    <entry key="libxml_ERR_507"> <!-- XML_DTD_ELEM_DEFAULT_NAMESPACE -->
+      <value>"$5": element namespace name for default namespace does not match DTD</value>
+    </entry>
+
+    <entry key="libxml_ERR_508"> <!-- XML_DTD_ELEM_NAMESPACE -->
+      <!--
+       ! We can't do better here since libxml uses puts different things in the
+       ! positional parameters.
+       !-->
+      <value>"$7?6:5": invalid attribute value or element namespace name does not match DTD</value>
+    </entry>
+
+    <entry key="libxml_ERR_509"> <!-- XML_DTD_ELEM_REDEFINED -->
+      <value>"$5": element redefined</value>
+    </entry>
+
+    <entry key="libxml_ERR_510"> <!-- XML_DTD_EMPTY_NOTATION -->
+      <value>"$5": notation attribute declared "EMPTY" for element "$6"</value>
+    </entry>
+
+    <entry key="libxml_ERR_511"> <!-- XML_DTD_ENTITY_TYPE -->
+      <value>"$5": ENTITY attribute references an entity "$6" of wrong type</value>
+    </entry>
+
+    <entry key="libxml_ERR_512"> <!-- XML_DTD_ID_FIXED -->
+      <value>"$5": invalid ID attribute of "$6" ("#IMPLIED" or "#REQUIRED" expected)</value>
+    </entry>
+
+    <entry key="libxml_ERR_513"> <!-- XML_DTD_ID_REDEFINED -->
+      <value>"$5": ID already defined</value>
+    </entry>
+
+    <entry key="libxml_ERR_514"> <!-- XML_DTD_ID_SUBSET -->
+      <value>"$5": element has${ 8} attribute(s) defined in the internal subset: "$6"</value>
+    </entry>
+
+    <entry key="libxml_ERR_515"> <!-- XML_DTD_INVALID_CHILD -->
+      <value>"$5": element not declared in list of possible children of "$6"</value>
+    </entry>
+
+    <entry key="libxml_ERR_516"> <!-- XML_DTD_INVALID_DEFAULT -->
+      <value>"xmlns$6?{:5}" invalid attribute of "$6?6:5"</value>
+    </entry>
+
+    <entry key="libxml_ERR_517"> <!-- XML_DTD_LOAD_ERROR -->
+      <value>"$5": could not load external subset</value>
+    </entry>
+
+    <entry key="libxml_ERR_518"> <!-- XML_DTD_MISSING_ATTRIBUTE -->
+      <value>"$7?{6:}$7?7:6": attribute not carried by element "$5"</value>
+    </entry>
+
+    <entry key="libxml_ERR_519"> <!-- XML_DTD_MIXED_CORRUPT -->
+      <value>internal MIXED struct corrupted</value>
+    </entry>
+
+    <entry key="libxml_ERR_520"> <!-- XML_DTD_MULTIPLE_ID -->
+      <value>"$5": element has too many ID attributes defined: "$6"</value>
+    </entry>
+
+    <entry key="libxml_ERR_521"> <!-- XML_DTD_NO_DOC -->
+      <value>document is null</value>
+    </entry>
+
+    <entry key="libxml_ERR_522"> <!-- XML_DTD_NO_DTD -->
+      <value>document without internal/external subset or no DTD found</value>
+    </entry>
+
+    <!-- 523: XML_DTD_NO_ELEM_NAME not used -->
+
+    <entry key="libxml_ERR_524"> <!-- XML_DTD_NO_PREFIX -->
+      <value>"$6:$7": required attribute of element "$5" has no prefix</value>
+    </entry>
+
+    <entry key="libxml_ERR_525"> <!-- XML_DTD_NO_ROOT -->
+      <value>no root element</value>
+    </entry>
+
+    <entry key="libxml_ERR_526"> <!-- XML_DTD_NOTATION_REDEFINED -->
+      <value>"$5": notation already defined</value>
+    </entry>
+
+    <entry key="libxml_ERR_527"> <!-- XML_DTD_NOTATION_VALUE -->
+      <value>"$5": value for attribute "xmlns$7?{:6}" of element "$7?7:6" is not among the enumerated notations</value>
+    </entry>
+
+    <entry key="libxml_ERR_528"> <!-- XML_DTD_NOT_EMPTY -->
+      <value>"$5": element declared empty but has content</value>
+    </entry>
+
+    <entry key="libxml_ERR_529"> <!-- XML_DTD_NOT_PCDATA -->
+      <value>"$5": element declared "#PCDATA" but has non-text nodes</value>
+    </entry>
+
+    <entry key="libxml_ERR_530"> <!-- XML_DTD_NOT_STANDALONE -->
+      <value>"$5" on "$6" value has to be normalized based on external subset declaration</value>
+    </entry>
+
+    <entry key="libxml_ERR_531"> <!-- XML_DTD_ROOT_NAME -->
+      <value>"$5"/"$6": root/DTD name mismatch</value>
+    </entry>
+
+    <entry key="libxml_ERR_532"> <!-- XML_DTD_STANDALONE_WHITE_SPACE -->
+      <value>"$5": element declared in external subset contains whitespace nodes</value>
+    </entry>
+
+    <entry key="libxml_ERR_533"> <!-- XML_DTD_UNKNOWN_ATTRIBUTE -->
+      <value>"$6?6:{xmlns}": attribute not declated for element "$6?6:5"</value>
+    </entry>
+
+    <entry key="libxml_ERR_534"> <!-- XML_DTD_UNKNOWN_ELEM -->
+      <value>"$6?6:5": undeclared element$6?{ for attribute "5"}</value>
+    </entry>
+
+    <entry key="libxml_ERR_535"> <!-- XML_DTD_UNKNOWN_ENTITY -->
+      <value>$5?{"6": unknown entity referenced by attribute "5"}:{unknown entity type}</value>
     </entry>
 
   </subvalues>
