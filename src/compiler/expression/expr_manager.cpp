@@ -204,9 +204,10 @@ cast_expr* ExprManager::create_cast_expr(
     user_function* udf,
     const QueryLoc& loc,
     expr* casted,
-    xqtref_t type)
+    const xqtref_t& type,
+    bool allowsEmptyInput)
 {
-  CREATE_AND_RETURN_EXPR(cast_expr, sctx, udf, loc, casted, type);
+  CREATE_AND_RETURN_EXPR(cast_expr, sctx, udf, loc, casted, type, allowsEmptyInput);
 }
 
 
@@ -243,9 +244,10 @@ castable_expr* ExprManager::create_castable_expr(
     user_function* udf,
     const QueryLoc& loc,
     expr* castable,
-    xqtref_t type)
+    const xqtref_t& type,
+    bool allowsEmptyInput)
 {
-  CREATE_AND_RETURN_EXPR(castable_expr, sctx, udf, loc, castable, type);
+  CREATE_AND_RETURN_EXPR(castable_expr, sctx, udf, loc, castable, type, allowsEmptyInput);
 }
 
 

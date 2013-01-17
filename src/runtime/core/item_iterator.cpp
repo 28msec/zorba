@@ -346,7 +346,7 @@ void DynamicFunctionIterator::importOuterEnv(
     //  << (theDynamicFunctionInfo->theSubstVarsValues[i].getp()
     //  ? theDynamicFunctionInfo->theSubstVarsValues[i]->toString() : "NULL\n");
 
-    importSctx->bind_var(ve, loc, err::XQST0049);
+    importSctx->bind_var(ve, loc);
   }
 
   // Import the outer-query ns bindings

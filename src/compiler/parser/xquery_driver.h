@@ -70,9 +70,9 @@ public:
 
   bool parse_file(const zstring& aFilename);
 
-	void set_expr(parsenode* e_p);
+  void set_expr(parsenode* e_p);
 
-	parsenode* get_expr() { return expr_p; }
+  parsenode* get_expr() { return expr_p; }
 
   QueryLoc createQueryLoc(const location& aLoc) const;
 

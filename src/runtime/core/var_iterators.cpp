@@ -469,7 +469,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       RAISE_ERROR(err::XPDY0002, loc,
-      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
+      ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), theVarName->getStringValue()));
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter == NULL && theInfLen == false)
 
@@ -537,7 +537,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       RAISE_ERROR(err::XPDY0002, loc,
-      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
+      ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), theVarName->getStringValue()));
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter != NULL)
 
@@ -570,7 +570,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       RAISE_ERROR(err::XPDY0002, loc,
-      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
+      ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), theVarName->getStringValue()));
     }
   } // if (theTargetPos > 0)
 
@@ -601,7 +601,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       RAISE_ERROR(err::XPDY0002, loc,
-      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
+      ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), theVarName->getStringValue()));
     }
 	}
 

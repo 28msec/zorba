@@ -151,6 +151,15 @@ void end_visit(const AtomicType& n, void* state)
 }
 
 
+DEFAULT_BEGIN_VISIT(SimpleType)
+
+
+void end_visit(const SimpleType& n, void* state)
+{
+  os << n.get_qname()->get_qname();
+}
+
+
 void* begin_visit(const AttributeTest& n)
 {
   os << "attribute(";

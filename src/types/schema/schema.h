@@ -71,6 +71,7 @@ private:
 
   TypeManager                              * theTypeManager;
 
+  bool                                       theHasXSD;
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE::XMLGrammarPool     * theGrammarPool;
   // QQQ use zstring?
@@ -88,12 +89,13 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-    Schema(TypeManager* tm);
+  Schema(TypeManager* tm);
 
-    virtual ~Schema();
+  virtual ~Schema();
 
-    void printXSDInfo(bool excludeBuiltIn = true);
+  void printXSDInfo(bool excludeBuiltIn = true);
 
+  bool hasXSD() const { return theHasXSD; }
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
@@ -152,7 +154,7 @@ public:
         zstring& textValue,
         const xqtref_t& aTargetType,
         store::Item_t& result,
-        namespace_context* aNCtx, // the namespace context is needed for parsing the xs:NOTATION items
+        const namespace_context* aNCtx, // the namespace context is needed for parsing the xs:NOTATION items
         const QueryLoc& loc);   
 
     // user defined list types

@@ -912,27 +912,34 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
         zstring ns;
         zstring prefix = tmpFormatName.substr(0, tmpFormatName.find(':'));
-        if (theSctx->lookup_ns(ns, prefix, loc, zerr::ZXQP0000_NO_ERROR))
+        if (theSctx->lookup_ns(ns, prefix, loc, false))
         {
-          GENV_ITEMFACTORY->createQName(formatName, ns, prefix, tmpFormatName.substr(tmpFormatName.find(':')+1));
+          GENV_ITEMFACTORY->createQName(formatName,
+                                        ns,
+                                        prefix,
+                                        tmpFormatName.substr(tmpFormatName.find(':')+1));
           break;
         }
 
         // The prefix is not in the known namespaces, the only posibility left is for the function to be invoked from an EnclosedIterator
         if (planState.theNodeConstuctionPath.empty())
         {
-          throw XQUERY_EXCEPTION(err::FODF1280, ERROR_PARAMS(tmpFormatName), ERROR_LOC(loc));
+          RAISE_ERROR(err::FODF1280, loc, ERROR_PARAMS(tmpFormatName));
         }
 
         store::NsBindings bindings;
         planState.theNodeConstuctionPath.top()->getNamespaceBindings(bindings);
-        for (unsigned int i=0; i<bindings.size(); i++)
+        for (unsigned int i = 0; i < bindings.size(); i++)
+        {
           if (prefix == bindings[i].first)
           {
-            GENV_ITEMFACTORY->createQName(formatName, bindings[i].second, prefix, tmpFormatName.substr(tmpFormatName.find(':')+1));
+            GENV_ITEMFACTORY->createQName(formatName,
+                                          bindings[i].second,
+                                          prefix,
+                                          tmpFormatName.substr(tmpFormatName.find(':')+1));
             break;
           }
-
+        }
       } while(0);
 
       if (formatName.isNull())

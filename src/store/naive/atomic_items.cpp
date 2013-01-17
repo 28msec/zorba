@@ -690,12 +690,19 @@ void QNameItem::free()
 bool QNameItem::equals(
     const store::Item* item,
     long timezone,
-    const XQPCollator* aCollation) const
+    const XQPCollator* collation) const
 {
-  assert(dynamic_cast<const QNameItem*>(item) != NULL);
+  if (item->getBaseItem() == NULL)
+  {
+    assert(dynamic_cast<const QNameItem*>(item) != NULL);
 
-  return (theNormalizedQName ==
-          static_cast<const QNameItem*>(item)->theNormalizedQName);
+    return (theNormalizedQName ==
+            static_cast<const QNameItem*>(item)->theNormalizedQName);
+  }
+  else
+  {
+    return this->equals(item->getBaseItem(), timezone, collation);
+  }
 }
 
 
@@ -2679,7 +2686,10 @@ xs_long IntegerItemImpl::getLongValue() const
   catch ( std::range_error const& )
   {
     RAISE_ERROR_NO_LOC(err::FORG0001,
-    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "long"));
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:integer",
+                 "xs:long"));
   }
 }
 
@@ -2693,7 +2703,10 @@ xs_unsignedInt IntegerItemImpl::getUnsignedIntValue() const
   catch ( std::range_error const& ) 
   {
     RAISE_ERROR_NO_LOC(err::FORG0001,
-    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "unsignedInt"));
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:integer",
+                 "xs:unsignedInt"));
   }
 }
 
@@ -2793,10 +2806,11 @@ xs_long NonPositiveIntegerItem::getLongValue() const
   }
   catch ( std::range_error const& )
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
-    );
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:nonPositiveInteger",
+                 "xs:long"));
   }
 }
 
@@ -2882,6 +2896,7 @@ bool NonNegativeIntegerItem::equals( const store::Item* other, long,
   }
 }
 
+
 store::Item* NonNegativeIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER];
@@ -2893,10 +2908,12 @@ xs_decimal NonNegativeIntegerItem::getDecimalValue() const
   return xs_decimal(theValue);
 }
 
+
 xs_integer NonNegativeIntegerItem::getIntegerValue() const
 {
   return xs_integer(theValue);
 }
+
 
 xs_long NonNegativeIntegerItem::getLongValue() const
 {
@@ -2904,14 +2921,16 @@ xs_long NonNegativeIntegerItem::getLongValue() const
   {
     return to_xs_long(theValue);
   }
-  catch ( std::range_error const& )
+  catch (const std::range_error& )
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
-    );
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:nonNegativeInteger",
+                 "xs:long"));
   }
 }
+
 
 zstring NonNegativeIntegerItem::getStringValue() const
 {

@@ -177,17 +177,34 @@ UNARY_ACCEPT(InstanceOfIterator);
 /*******************************************************************************
 
 ********************************************************************************/
+void CastIteratorState::init(PlanState& planState) 
+{
+  PlanIteratorState::init(planState);
+  theResultPos = 0;
+  theResultItems.clear();
+}
+
+
+void CastIteratorState::reset(PlanState& planState) 
+{
+  PlanIteratorState::reset(planState);
+  theResultPos = 0;
+  theResultItems.clear();
+}
+
 
 CastIterator::CastIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    PlanIter_t& aChild,
-    const xqtref_t& aCastType)
+    PlanIter_t& child,
+    const xqtref_t& castType,
+    bool allowEmpty)
   : 
-  UnaryBaseIterator<CastIterator, PlanIteratorState>(sctx, loc, aChild)
+  UnaryBaseIterator<CastIterator, CastIteratorState>(sctx, loc, child),
+  theAllowEmpty(allowEmpty),
+  theNsCtx(theSctx)
 {
-  theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
-  theQuantifier = aCastType->get_quantifier();
+  theCastType = TypeOps::prime_type(sctx->get_typemanager(), *castType);
 }
 
 
@@ -198,9 +215,11 @@ CastIterator::~CastIterator()
 
 void CastIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, PlanIteratorState>*)this);
+  serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, CastIteratorState>*)this);
   ar & theCastType;
-  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+  ar & theAllowEmpty;
+
+  theNsCtx.setStaticContext(theSctx);
 }
 
 
@@ -208,18 +227,17 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   bool valid = false;
+  const UserDefinedXQType* udt;
+  store::SchemaTypeCode targetType;
 
-  const TypeManager* tm = theSctx->get_typemanager();
+  TypeManager* tm = theSctx->get_typemanager();
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  assert(theQuantifier == TypeConstants::QUANT_ONE ||
-         theQuantifier == TypeConstants::QUANT_QUESTION);
+  CastIteratorState* state;
+  DEFAULT_STACK_INIT(CastIteratorState, state, planState);
 
   if (!consumeNext(item, theChild.getp(), planState))
   {
-    if (theQuantifier == TypeConstants::QUANT_ONE)
+    if (!theAllowEmpty)
     {
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS(ZED(EmptySeqNoCastToTypeWithQuantOne)));
@@ -229,20 +247,42 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (theCastType->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
-      store::SchemaTypeCode targetType = 
-      static_cast<const AtomicXQType*>(theCastType.getp())->get_type_code();
+      targetType = static_cast<const AtomicXQType*>(theCastType.getp())->get_type_code();
 
-      valid = GenericCast::castToAtomic(result, item, targetType, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(result, item, targetType, NULL, loc);
+
+      STACK_PUSH(true, state);
     }
     else
     {
-      assert(theCastType->type_kind() == XQType::USER_DEFINED_KIND);
+      ZORBA_ASSERT(theCastType->type_kind() == XQType::USER_DEFINED_KIND);
 
-      zstring strval;
-      item->getStringValue2(strval);
-      
-      namespace_context tmp_ctx(theSctx);
-      valid = GenericCast::castToAtomic(result, strval, theCastType, tm, &tmp_ctx, loc);
+      udt = static_cast<const UserDefinedXQType*>(theCastType.getp());
+
+      if (udt->isAtomic())
+      {
+        valid = GenericCast::
+        castToAtomic(result, item, theCastType, tm, &theNsCtx, loc);
+
+        STACK_PUSH(valid, state);
+      }
+      else
+      {
+        assert(udt->isList() || udt->isUnion());
+
+        valid = GenericCast::
+        castToSimple(item, theCastType, &theNsCtx, state->theResultItems, tm, loc);
+
+        state->theResultPos = 0;
+
+        while (state->theResultPos < state->theResultItems.size())
+        {
+          result = state->theResultItems[state->theResultPos];
+          STACK_PUSH(true, state);
+
+          ++state->theResultPos;
+        }
+      }
     }
 
     if (consumeNext(item, theChild.getp(), planState))
@@ -250,8 +290,6 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS(ZED(NoSeqCastToTypeWithQuantOneOrQuestion)));
     }
-
-    STACK_PUSH(valid, state);
   }
 
   STACK_END(state);
@@ -264,17 +302,17 @@ UNARY_ACCEPT(CastIterator);
 /*******************************************************************************
 
 ********************************************************************************/
-
 CastableIterator::CastableIterator(
   static_context* sctx,
-  const QueryLoc& aLoc,
-  PlanIter_t& aChild,
-  const xqtref_t& aCastType)
+  const QueryLoc& loc,
+  PlanIter_t& child,
+  const xqtref_t& castType,
+  bool allowEmpty)
   :
-  UnaryBaseIterator<CastableIterator, PlanIteratorState>(sctx, aLoc, aChild)
+  UnaryBaseIterator<CastableIterator, PlanIteratorState>(sctx, loc, child),
+  theAllowEmpty(allowEmpty)
 {
-  theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
-  theQuantifier = aCastType->get_quantifier();
+  theCastType = TypeOps::prime_type(sctx->get_typemanager(), *castType);
 }
 
 
@@ -289,7 +327,7 @@ void CastableIterator::serialize(::zorba::serialization::Archiver& ar)
   (UnaryBaseIterator<CastableIterator, PlanIteratorState>*)this);
 
   ar & theCastType;
-  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+  ar & theAllowEmpty;
 }
 
 
@@ -298,43 +336,22 @@ bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   bool res;
   store::Item_t item;
 
-  const TypeManager* tm = theSctx->get_typemanager();
+  TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (!consumeNext(item, theChild.getp(), planState))
   {
-    res = !(theQuantifier == TypeConstants::QUANT_PLUS ||
-            theQuantifier == TypeConstants::QUANT_ONE);
+    res = theAllowEmpty;
   }
   else
   {
     res = GenericCast::isCastable(item, theCastType, tm);
-    if (res)
+
+    if (consumeNext(item, theChild.getp(), planState))
     {
-      if (consumeNext(item, theChild.getp(), planState))
-      {
-        if (theQuantifier == TypeConstants::QUANT_ONE ||
-            theQuantifier == TypeConstants::QUANT_QUESTION)
-        {
-          res = false;
-        }
-        else
-        {
-          res = true;
-          do
-          {
-            if (!GenericCast::isCastable(item, theCastType, tm))
-            {
-              res = false;
-              theChild->reset(planState);
-              break;
-            }
-          } 
-          while (consumeNext(item, theChild.getp(), planState));
-        }
-      }
+      res = false;
     }
   }
 
@@ -475,6 +492,16 @@ void PromoteIterator::raiseError(const zstring& valueType) const
   case PROMOTE_FUNC_PARAM:
   {
     assert(theQName != NULL);
+
+    if (TypeOps::is_equal(theSctx->get_typemanager(),
+                          *thePromoteType,
+                          *GENV_TYPESYSTEM.NOTATION_TYPE_ONE,
+                          loc))
+    {
+      RAISE_ERROR(err::XPTY0117, loc,
+      ERROR_PARAMS(ZED(XPTY0117_NotationParam_23),
+                   valueType, theQName->getStringValue()));
+    }
 
     RAISE_ERROR(err::XPTY0004, loc, 
     ERROR_PARAMS(ZED(XPTY0004_NoParamTypePromote_234),
