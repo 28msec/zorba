@@ -304,27 +304,25 @@ bool parameters::then_else( bool expr, value_type const &s,
                             value_type::size_type *pos,
                             value_type *replacement ) const {
   value_type::value_type c = s[ *pos ];
-  bool found_param = false;
-  value_type param;
+  bool found_param = false, not_empty = false;
 
   switch ( c ) {
     case_123456789:
-      if ( found_param )
-        throw invalid_argument( "multiple params within { }" );
       found_param = true;
-      if ( expr )
-        *replacement = param = lookup_param( to_index( c ) );
+      if ( expr ) {
+        *replacement = lookup_param( to_index( c ) );
+        not_empty = !replacement->empty();
+      }
       break;
     case '{':
       while ( ++*pos < s.size() ) {
         c = s[ *pos ];
         switch ( c ) {
           case_123456789:
-            if ( found_param )
-              throw invalid_argument( "multiple params within { }" );
             found_param = true;
             if ( expr ) {
-              param = lookup_param( to_index( c ) );
+              value_type const param = lookup_param( to_index( c ) );
+              not_empty = !param.empty() || not_empty;
               *replacement += param;
             }
             break;
@@ -345,7 +343,7 @@ bool parameters::then_else( bool expr, value_type const &s,
   } // switch
 
 done:
-  return !found_param || !param.empty();
+  return !found_param || not_empty;
 }
 
 } // namespace diagnostic
