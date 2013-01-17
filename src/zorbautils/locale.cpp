@@ -156,27 +156,6 @@ static int Zorba_GetLocaleInfoEx( LPCWSTR lpLocaleName, LCTYPE LCType,
 }
 
 /**
- * IsValidLocaleName() is available only on Windows Vista and later so we can't
- * call it directly since we might be running on Windows XP.  Hence, check to
- * see if it's available and call it indirectly if so.
- */
-static BOOL Zorba_IsValidLocaleName( LPCWSTR lpLocaleName ) {
-  typedef int (WINAPI *IsValidLocaleName_type)( LPCWSTR );
-
-  static IsValidLocaleName_type IsValidLocaleName_ptr;
-  static bool init;
-
-  if ( !init ) {
-    IsValidLocaleName_ptr = (IsValidLocaleName_type)::GetProcAddress(
-      ::GetModuleHandle( TEXT( "kernel32.dll" ) ), "IsValidLocaleName"
-    );
-    init = true;
-  }
-
-  return IsValidLocaleName_ptr ? IsValidLocaleName_ptr( lpLocaleName ) : 0;
-}
-
-/**
  * Gets a particular piece of information from a locale.
  *
  * @param constant The constant specifying which piece of locale information to
@@ -205,6 +184,27 @@ static zstring get_locale_info( int constant, iso639_1::type lang,
 
   unique_ptr<char[]> const info( wtoa( winfo.get() ) );
   return zstring( info.get() );
+}
+
+/**
+ * IsValidLocaleName() is available only on Windows Vista and later so we can't
+ * call it directly since we might be running on Windows XP.  Hence, check to
+ * see if it's available and call it indirectly if so.
+ */
+static BOOL Zorba_IsValidLocaleName( LPCWSTR lpLocaleName ) {
+  typedef int (WINAPI *IsValidLocaleName_type)( LPCWSTR );
+
+  static IsValidLocaleName_type IsValidLocaleName_ptr;
+  static bool init;
+
+  if ( !init ) {
+    IsValidLocaleName_ptr = (IsValidLocaleName_type)::GetProcAddress(
+      ::GetModuleHandle( TEXT( "kernel32.dll" ) ), "IsValidLocaleName"
+    );
+    init = true;
+  }
+
+  return IsValidLocaleName_ptr ? IsValidLocaleName_ptr( lpLocaleName ) : 0;
 }
 
 #else /* WIN32 */
