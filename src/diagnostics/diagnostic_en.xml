@@ -166,7 +166,16 @@
        SequenceType is not defined in the in-scope schema types as an atomic
        type.
       </comment>
-      <value>"$1": not defined as atomic type${: 2}</value>
+      <value>$1</value>
+
+      <entry key="GenAtomic_2">
+        <value>"$2": not defined a generalized atomic type</value>
+      </entry>
+
+      <entry key="Atomic_2">
+        <value>"$2": not defined an atomic type</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPST0080">

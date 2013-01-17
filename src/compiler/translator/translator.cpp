@@ -8388,14 +8388,14 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
     break;
   }
 
-  fo_expr* foExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, e2, e1);
+  fo_expr* foExpr = CREATE(fo)(theRootSctx, theUDF, loc, f, e2, e1);
 
   normalize_fo(foExpr);
 
-  push_nodestack(theExprManager->create_fo_expr(theRootSctx, theUDF,
-                             loc,
-                             BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_ASC_1),
-                             foExpr));
+  push_nodestack(CREATE(fo)(theRootSctx, theUDF,
+                            loc,
+                            BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_ASC_1),
+                            foExpr));
 }
 
 
@@ -8412,7 +8412,8 @@ void end_visit (const InstanceofExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(CREATE(instanceof)(theRootSctx, theUDF,
+  push_nodestack(CREATE(instanceof)(theRootSctx,
+                                    theUDF,
                                     loc,
                                     pop_nodestack(),
                                     pop_tstack()));
@@ -8432,7 +8433,8 @@ void end_visit(const TreatExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(CREATE(treat)(theRootSctx, theUDF,
+  push_nodestack(CREATE(treat)(theRootSctx,
+                               theUDF,
                                loc,
                                pop_nodestack(),
                                pop_tstack(),
@@ -8538,7 +8540,8 @@ void end_visit(const SimpleType& v, void* /*visit_state*/)
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     {
-      RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(qname->get_qname()));
+      RAISE_ERROR(err::XPST0051, loc,
+      ERROR_PARAMS(ZED(XPST0051_Atomic_2), qname->get_qname()));
     }
     else
     {
@@ -8568,7 +8571,8 @@ expr* create_cast_expr(
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     {
-      RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(type->get_qname()));
+      RAISE_ERROR(err::XPST0051, loc,
+      ERROR_PARAMS(ZED(XPST0051_Atomic_2), type->toSchemaString()));
     }
   }
 
@@ -8615,7 +8619,7 @@ expr* create_cast_expr(
           static_cast<const UserDefinedXQType*>(type.getp());
 
           store::Item_t tmp = result;
-          store::Item_t typeName = udt->get_qname();
+          store::Item_t typeName = udt->getQName();
           GENV_ITEMFACTORY->createUserTypedAtomicItem(result, tmp, typeName);
         }
 
@@ -12821,8 +12825,8 @@ void end_visit(const TypeName& v, void* /*visit_state*/)
 /*******************************************************************************
 
   A SequenceType parsenode has 2 children: The right child is always an
-  OccurrenceIndicator node. The left child may be either an AtomicType node,
-  or one of the 9 kind-test nodes (elementTest, documentTest, ... etc), or
+  OccurrenceIndicator node. The left child may be either a GeneralizedAtomicType
+  node, or one of the 9 kind-test nodes (elementTest, documentTest, ... etc), or
   an ItemType node. ItemType respesents the expression item().
 
 ********************************************************************************/
@@ -12877,13 +12881,13 @@ void end_visit(const OccurrenceIndicator& v, void* /*visit_state*/)
 }
 
 
-void* begin_visit(const AtomicType& v)
+void* begin_visit(const GeneralizedAtomicType& v)
 {
   TRACE_VISIT();
   return no_state;
 }
 
-void end_visit(const AtomicType& v, void* /*visit_state*/)
+void end_visit(const GeneralizedAtomicType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
@@ -12891,16 +12895,13 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem,
-                                                TypeConstants::QUANT_ONE,
-                                                loc,
-                                                false);
+  xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
 
-  // some types that should never be parsed, like xs:untyped, are;
-  // we catch them with is_simple()
-  if (t == NULL)
+  if (t == NULL ||
+      t->get_quantifier() != TypeConstants::QUANT_ONE)
   {
-    RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(qname->get_qname()));
+    RAISE_ERROR(err::XPST0051, loc,
+    ERROR_PARAMS(ZED(XPST0051_GenAtomic_2), qname->get_qname()));
   }
   else
   {

@@ -53,7 +53,7 @@ class AnyKindTest;
 class AposAttrContentList;
 class AposAttrValueContent;
 class ArgList;
-class AtomicType;
+class GeneralizedAtomicType;
 class SimpleType;
 class AttributeTest;
 class AxisStep;
@@ -1287,8 +1287,6 @@ public:
   IndexKeyList := IndexKeySpec+
 
   IndexKeySpec := PathExpr TypeDeclaration? IndexKeyOrderModifier
-
-  AtomicType := QName
 
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 *******************************************************************************/
@@ -4875,70 +4873,7 @@ public:
 
 
 /*******************************************************************************
-  [143] SingleType ::= SimpleType "?"?
-
-  [144] TypeDeclaration ::= "as" SequenceType
-
-  [145] SequenceType ::= ("empty-sequence" "(" ")") | (ItemType OccurrenceIndicator?)
-
-  [146] OccurrenceIndicator ::= "?" | "*" | "+"
-
-  [147] ItemType ::= KindTest | ("item" "(" ")") | AtomicType
-
-  [148] AtomicType ::= QName
-
-  [149] KindTest ::= DocumentTest |
-                     ElementTest |
-                     AttributeTest |
-                     SchemaElementTest |
-                     SchemaAttributeTest |
-                     PITest |
-                     CommentTest |
-                     TextTest |
-                     AnyKindTest
-
-  [150] AnyKindTest ::= "node" "(" ")"
-
-  [151] DocumentTest ::= "document-node" "(" (ElementTest | SchemaElementTest)? ")"
-
-  [152] TextTest ::= "text" "(" ")"
-
-  [153] CommentTest ::= "comment" "(" ")"
-
-  [154] NamespaceNodeTest ::= "namespace-node" "(" ")"
-
-  [155] PITest ::= "processing-instruction" "(" (NCName | StringLiteral)? ")"
-
-  [156] AttributeTest ::= "attribute" "(" (AttribNameOrWildcard ("," TypeName)?)? ")"
-
-  [157] AttribNameOrWildcard ::= AttributeName | "*"
-
-  [158] SchemaAttributeTest ::= "schema-attribute" "(" AttributeDeclaration ")"
-
-  [159] AttributeDeclaration ::= AttributeName
-
-  [160] ElementTest ::= "element" "(" (ElementNameOrWildcard ("," TypeName "?"?)?)? ")"
-
-  [161] ElementNameOrWildcard ::= ElementName | "*"
-
-  [162] SchemaElementTest ::= "schema-element" "(" ElementDeclaration ")"
-
-  [163] ElementDeclaration ::= ElementName
-
-  [164] AttributeName ::= QName
-
-  [165] ElementName ::= QName
-
-  [166] TypeName ::= QName
-
-  [167] URILiteral ::= StringLiteral
-
-  [168] Prefix ::= NCName
-********************************************************************************/
-
-
-/*******************************************************************************
-  [143] SingleType ::= SimpleType "?"?
+  SingleType ::= SimpleType "?"?
 ********************************************************************************/
 class SingleType : public parsenode
 {
@@ -4972,6 +4907,68 @@ public:
 
   void accept(parsenode_visitor&) const;
 };
+
+
+/*******************************************************************************
+
+  TypeDeclaration ::= "as" SequenceType
+
+  SequenceType ::= ("empty-sequence" "(" ")") | (ItemType OccurrenceIndicator?)
+
+  OccurrenceIndicator ::= "?" | "*" | "+"
+
+  ItemType ::= KindTest | ("item" "(" ")") | GeneralizedAtomicType
+
+  GeneralizedAtomicType ::= QName
+
+  KindTest ::= DocumentTest |
+               ElementTest |
+               AttributeTest |
+               SchemaElementTest |
+               SchemaAttributeTest |
+               PITest |
+               CommentTest |
+               TextTest |
+               AnyKindTest
+
+  AnyKindTest ::= "node" "(" ")"
+
+  DocumentTest ::= "document-node" "(" (ElementTest | SchemaElementTest)? ")"
+
+  TextTest ::= "text" "(" ")"
+
+  CommentTest ::= "comment" "(" ")"
+
+  NamespaceNodeTest ::= "namespace-node" "(" ")"
+
+  PITest ::= "processing-instruction" "(" (NCName | StringLiteral)? ")"
+
+  AttributeTest ::= "attribute" "(" (AttribNameOrWildcard ("," TypeName)?)? ")"
+
+  AttribNameOrWildcard ::= AttributeName | "*"
+
+  SchemaAttributeTest ::= "schema-attribute" "(" AttributeDeclaration ")"
+
+  AttributeDeclaration ::= AttributeName
+
+  ElementTest ::= "element" "(" (ElementNameOrWildcard ("," TypeName "?"?)?)? ")"
+
+  ElementNameOrWildcard ::= ElementName | "*"
+
+  SchemaElementTest ::= "schema-element" "(" ElementDeclaration ")"
+
+  ElementDeclaration ::= ElementName
+
+  AttributeName ::= QName
+
+  ElementName ::= QName
+
+  TypeName ::= QName
+
+  URILiteral ::= StringLiteral
+
+  Prefix ::= NCName
+********************************************************************************/
 
 
 /*******************************************************************************
@@ -5025,7 +5022,7 @@ public:
 
 
 /*******************************************************************************
-  [147] ItemType ::= KindTest | ("item" "(" ")") | AtomicType
+  [147] ItemType ::= KindTest | ("item" "(" ")") | GeneralizedAtomicType
 ********************************************************************************/
 class ItemType : public parsenode
 {
@@ -5060,15 +5057,15 @@ public:
 
 
 /*******************************************************************************
-  [148] AtomicType ::= QName
+  GeneralizedAtomicType ::= QName
 ********************************************************************************/
-class AtomicType : public parsenode
+class GeneralizedAtomicType : public parsenode
 {
 protected:
   rchandle<QName> qname_h;
 
 public:
-  AtomicType(const QueryLoc&, rchandle<QName>);
+  GeneralizedAtomicType(const QueryLoc&, rchandle<QName>);
 
   rchandle<QName> get_qname() const { return qname_h; }
 

@@ -941,9 +941,7 @@ void CollectionDecl::accept( parsenode_visitor &v ) const
 
   IndexKeyList := IndexKeySpec+
 
-  IndexKeySpec := PathExpr AtomicType IndexKeyOrderModifier
-
-  AtomicType := QName
+  IndexKeySpec := PathExpr TypeDeclaration? IndexKeyOrderModifier
 
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 ********************************************************************************/
@@ -966,8 +964,8 @@ AST_IndexDecl::AST_IndexDecl(
   if (properties == NULL)
     return;
 
-  ulong numProperties = (ulong)properties->size();
-  for (ulong i = 0; i < numProperties; ++i)
+  csize numProperties = properties->size();
+  for (csize i = 0; i < numProperties; ++i)
   {
     const DeclProperty* property = properties->getProperty(i);
     StaticContextConsts::declaration_property_t prop = property->getProperty();
@@ -1002,59 +1000,7 @@ AST_IndexDecl::AST_IndexDecl(
 }
 
 
-#if 0
-Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
-{
-  if (props == NULL)
-    return zerr::ZXQP0000_NO_ERROR;
-
-  bool setUnique = false;
-  bool setUsage = false;
-  bool setMaintenance = false;
-
-  for (ulong i = 0; i < props->size(); ++i)
-  {
-    switch (props->getProperty(i)->getProperty())
-    {
-      case StaticContextConsts::decl_unique:
-      case StaticContextConsts::decl_non_unique:
-      {
-        if (setUnique)
-          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-
-        setUnique = true;
-        break;
-      }
-      case StaticContextConsts::decl_value_equality:
-      case StaticContextConsts::decl_value_range:
-      case StaticContextConsts::decl_general_equality:
-      case StaticContextConsts::decl_general_range:
-      {
-        if (setUsage)
-          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-
-        setUsage = true;
-        break;
-      }
-      case StaticContextConsts::decl_manual:
-      case StaticContextConsts::decl_automatic:
-      {
-        if (setMaintenance)
-          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-
-        setMaintenance = true;
-        break;
-      }
-      default:
-        return zerr::ZDST0026_INDEX_INVALID_PROPERTY_VALUE;
-    }
-  }
-
-  return zerr::ZXQP0000_NO_ERROR;
-}
-#endif
-
-void AST_IndexDecl::accept( parsenode_visitor &v ) const
+void AST_IndexDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
@@ -1068,7 +1014,7 @@ void AST_IndexDecl::accept( parsenode_visitor &v ) const
 /***************************************************************************//**
   IndexKeyList ::= IndexKeySpec ("," IndexKeySpec)*
 ********************************************************************************/
-void IndexKeyList::accept( parsenode_visitor &v ) const
+void IndexKeyList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
@@ -1084,7 +1030,7 @@ void IndexKeyList::accept( parsenode_visitor &v ) const
 
 
 /***************************************************************************//**
-  IndexKeySpec ::= PathExpr "as" AtomicType IndexKeyOrderModifier
+  IndexKeySpec ::= PathExpr TypeDeclaration? IndexKeyOrderModifier
 
   IndexKeyOrderModifier ::= OrderDirSpec? OrderCollationSpec?
 
@@ -1092,7 +1038,7 @@ void IndexKeyList::accept( parsenode_visitor &v ) const
 
   OrderCollationSpec ::= "collation" URILiteral
 ********************************************************************************/
-void IndexKeySpec::accept( parsenode_visitor &v ) const
+void IndexKeySpec::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
@@ -4323,21 +4269,21 @@ void StructuredItemType::accept(parsenode_visitor& v) const
 }
 
 
-// [122] AtomicType
+// AtomicType
 // ----------------
-AtomicType::AtomicType(
-  const QueryLoc& loc_,
-  rchandle<QName> _qname_h)
-:
-  parsenode(loc_),
+GeneralizedAtomicType::GeneralizedAtomicType(
+    const QueryLoc& loc,
+    rchandle<QName> _qname_h)
+  :
+  parsenode(loc),
   qname_h(_qname_h)
-{}
+{
+}
 
 
-void AtomicType::accept( parsenode_visitor &v ) const
+void GeneralizedAtomicType::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  //qname_h->accept(v);
   END_VISITOR();
 }
 

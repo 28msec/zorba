@@ -36,6 +36,8 @@
 #define ZED_XPST0008_VariableName_2 "~XPST0008_VariableName_2"
 #define ZED_XPST0008_SchemaAttributeName_2 "~XPST0008_SchemaAttributeName_2"
 #define ZED_XPST0008_SchemaElementName_2 "~XPST0008_SchemaElementName_2"
+#define ZED_XPST0051_GenAtomic_2 "~XPST0051_GenAtomic_2"
+#define ZED_XPST0051_Atomic_2 "~XPST0051_Atomic_2"
 #define ZED_XPTY0004_NoReturnTypePromote_234 "~XPTY0004_NoReturnTypePromote_234"
 #define ZED_XPTY0004_NoParamTypePromote_234 "~XPTY0004_NoParamTypePromote_234"
 #define ZED_XPTY0004_NoTypePromote_23 "~XPTY0004_NoTypePromote_23"

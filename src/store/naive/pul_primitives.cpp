@@ -965,10 +965,7 @@ UpdCollection::UpdCollection(
 void UpdCreateCollection::apply()
 {
   // Error is raised if collection exists already.
-  GET_STORE().createCollection(theName,
-                               theAnnotations,
-                               theNodeType,
-                               theIsDynamic);
+  GET_STORE().createCollection(theName, theAnnotations, theIsDynamic);
   theIsApplied = true;
 }
 
