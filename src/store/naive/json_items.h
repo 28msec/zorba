@@ -53,7 +53,7 @@ protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
 public:
-  JSONNull() : AtomicItem() { }
+  JSONNull() : AtomicItem(store::JS_NULL) { }
 
   virtual ~JSONNull() {}
 
