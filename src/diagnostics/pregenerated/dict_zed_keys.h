@@ -477,6 +477,12 @@
 #define ZED_libxml_ERR_533 "~libxml_ERR_533"
 #define ZED_libxml_ERR_534 "~libxml_ERR_534"
 #define ZED_libxml_ERR_535 "~libxml_ERR_535"
+#define ZED_libxml_ERR_536 "~libxml_ERR_536"
+#define ZED_libxml_ERR_537 "~libxml_ERR_537"
+#define ZED_libxml_ERR_538 "~libxml_ERR_538"
+#define ZED_libxml_ERR_539 "~libxml_ERR_539"
+#define ZED_libxml_ERR_540 "~libxml_ERR_540"
+#define ZED_libxml_ERR_541 "~libxml_ERR_541"
 
 #endif /* ZORBA_DIAGNOSTICS_ZED_KEYS */
 /*
