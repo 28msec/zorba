@@ -354,6 +354,10 @@ static_context::ZORBA_NODEREF_FN_NS =
 "http://www.zorba-xquery.com/modules/node-reference";
 
 const char*
+static_context::ZORBA_REFERENCE_FN_NS =
+"http://www.zorba-xquery.com/modules/reference";
+
+const char*
 static_context::ZORBA_NODEPOS_FN_NS =
 "http://www.zorba-xquery.com/modules/node-position";
 
@@ -521,6 +525,7 @@ bool static_context::is_builtin_module(const zstring& ns)
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
             ns == ZORBA_NODEREF_FN_NS ||
+            ns == ZORBA_REFERENCE_FN_NS ||
             ns == ZORBA_NODEPOS_FN_NS ||
 
             ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||

@@ -626,8 +626,13 @@ zstring UntypedAtomicItem::show() const
 /*******************************************************************************
   class QNameItem
 ********************************************************************************/
-QNameItem::QNameItem(const char* ns, const char* prefix, const char* local)
+QNameItem::QNameItem(
+    store::SchemaTypeCode t,
+    const char* ns,
+    const char* prefix,
+    const char* local)
   :
+  AtomicItem(t),
   theNormalizedQName(NULL),
   theIsInPool(false)
 {
@@ -635,8 +640,13 @@ QNameItem::QNameItem(const char* ns, const char* prefix, const char* local)
 }
 
 
-QNameItem::QNameItem(const zstring& ns, const zstring& prefix, const zstring& local)
+QNameItem::QNameItem(
+    store::SchemaTypeCode t,
+    const zstring& ns,
+    const zstring& prefix,
+    const zstring& local)
   :
+  AtomicItem(t),
   theNormalizedQName(NULL),
   theIsInPool(false)
 {
@@ -809,14 +819,18 @@ zstring QNameItem::show() const
   return res;
 }
 
+
 /*******************************************************************************
   class NotationItem
 ********************************************************************************/
 
 NotationItem::NotationItem(
+    store::SchemaTypeCode t,
     const zstring& nameSpace,
     const zstring& prefix,
     const zstring& localName)
+  :
+  AtomicItem(t)
 {
   store::Item_t temp;
   GET_FACTORY().createQName(temp, nameSpace, prefix, localName);
@@ -824,7 +838,9 @@ NotationItem::NotationItem(
 }
 
 
-NotationItem::NotationItem(store::Item* qname)
+NotationItem::NotationItem(store::SchemaTypeCode t, store::Item* qname)
+  :
+  AtomicItem(t)
 {
   theQName = qname;
 }
@@ -1120,11 +1136,13 @@ bool AnyUriItem::inSameCollection(const store::Item_t& aOther) const
 ********************************************************************************/
 
 StructuralAnyUriItem::StructuralAnyUriItem(
+    store::SchemaTypeCode t,
     ulong collectionId,
     const TreeId& treeId, 
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
   :
+  AtomicItem(t),
   theCollectionId(collectionId),
   theTreeId(treeId),
   theNodeKind(nodeKind),
@@ -1134,7 +1152,9 @@ StructuralAnyUriItem::StructuralAnyUriItem(
 }
 
 
-StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
+StructuralAnyUriItem::StructuralAnyUriItem(store::SchemaTypeCode t, zstring& value)
+  :
+  AtomicItem(t)
 {
   if (value == "")
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI,
@@ -1883,9 +1903,12 @@ FTTokenIterator_t StringItem::getTokens(
   class StreamableStringItem
 ********************************************************************************/
 StreamableStringItem::StreamableStringItem(
+    store::SchemaTypeCode t,
     std::istream& aStream,
     StreamReleaser streamReleaser,
-    bool seekable) :
+    bool seekable) 
+  :
+  StringItem(t),
   theIstream(aStream),
   theIsMaterialized(false),
   theIsConsumed(false),
@@ -1896,7 +1919,10 @@ StreamableStringItem::StreamableStringItem(
 }
 
 StreamableStringItem::StreamableStringItem(
-    store::Item_t& aStreamableDependent) :
+    store::SchemaTypeCode t,
+    store::Item_t& aStreamableDependent)
+  :
+  StringItem(t),
   theIstream(aStreamableDependent->getStream()),
   theIsMaterialized(false),
   theIsConsumed(false),
@@ -2258,40 +2284,6 @@ void DateTimeItem::appendStringValue(zstring& buf) const
 }
 
 
-store::SchemaTypeCode DateTimeItem::getTypeCode() const
-{
-  switch (theValue.getFacet())
-  {
-  case DateTime::GYEARMONTH_FACET:
-    return store::XS_GYEAR_MONTH;
-
-  case DateTime::GYEAR_FACET:
-    return store::XS_GYEAR;
-
-  case DateTime::GMONTH_FACET:
-    return store::XS_GMONTH;
-
-  case DateTime::GMONTHDAY_FACET:
-    return store::XS_GMONTH_DAY;
-
-  case DateTime::GDAY_FACET:
-    return store::XS_GDAY;
-
-  case DateTime::DATE_FACET:
-    return store::XS_DATE;
-
-  case DateTime::TIME_FACET:
-    return store::XS_TIME;
-
-  case DateTime::DATETIME_FACET:
-    return store::XS_DATETIME;
-
-  default:
-    ZORBA_ASSERT(false);
-  }
-}
-
-
 store::Item* DateTimeItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[getTypeCode()];
@@ -2418,23 +2410,6 @@ void DurationItem::getStringValue2(zstring& val) const
 void DurationItem::appendStringValue(zstring& buf) const
 {
   buf += theValue.toString();
-}
-
-
-store::SchemaTypeCode DurationItem::getTypeCode() const
-{
-  switch (theValue.getFacet())
-  {
-  case Duration::DURATION_FACET:
-    return store::XS_DURATION;
-
-  case Duration::DAYTIMEDURATION_FACET:
-    return store::XS_DT_DURATION;
-
-  case Duration::YEARMONTHDURATION_FACET:
-  default:
-    return store::XS_YM_DURATION;
-  }
 }
 
 

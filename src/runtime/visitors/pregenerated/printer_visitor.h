@@ -895,6 +895,18 @@ namespace zorba {
     void beginVisit( const UuidIterator& );
     void endVisit  ( const UuidIterator& );
 
+    void beginVisit( const ReferenceIterator& );
+    void endVisit  ( const ReferenceIterator& );
+
+    void beginVisit( const HasReferenceIterator& );
+    void endVisit  ( const HasReferenceIterator& );
+
+    void beginVisit( const AssignReferenceIterator& );
+    void endVisit  ( const AssignReferenceIterator& );
+
+    void beginVisit( const DereferenceIterator& );
+    void endVisit  ( const DereferenceIterator& );
+
 #ifndef ZORBA_NO_XMLSCHEMA
     void beginVisit( const ValidateIterator& );
     void endVisit  ( const ValidateIterator& );
