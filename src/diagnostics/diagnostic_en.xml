@@ -15,6 +15,48 @@
  -->
 
 <!--
+ !  Substitutes substrings of the given string.  Substitutions are in three
+ !  forms:
+ ! 
+ !  - $i
+ !  - ${<chars> i <chars>}
+ !  - $i?<then>[:<else>]
+ ! 
+ !  where i is a digit in the range [1,9] and refers to the value of the ith
+ !  parameter, <chars> may be any characters except [1-9}], and <then> and
+ !  <else> are of one of the two forms:
+ ! 
+ !   - j
+ !   - {<chars> j <chars> [k <chars>...]}
+ ! 
+ !  The first substitution form replaces $i with the value of the ith
+ !  parameter.
+ ! 
+ !  The second form replaces everything from the $ to the } with the contents
+ !  of the {} where i is replaced with the value of the ith parameter.
+ !  However, if the value is empty, then everything from the $ to the } is
+ !  instead erased.
+ ! 
+ !  For example, ${"1": } will substitute the value of the 1st parameter quoted
+ !  followed by a : and a space if non-empty; if empty, then everything from
+ !  the $ to the } will instead be erased.
+ ! 
+ !  The third form tests the value of the ith parameter: if non-empty, then the
+ !  <then> portion is substituted; if empty, then the <else> portion is.  Both
+ !  the <then> and <else> portions can be either a digit in the range [1,9] or
+ !  <chars> enclosed by {}.  The {} here can contain multiple parameter
+ !  indicies.  If at least one is non-empty, then the substitution for the
+ !  portion will be done; if all are empty, then everything for the portion
+ !  will be erased.
+ ! 
+ !  Substitution is performed by making at most 9 passes over the string, one
+ !  pass per parameter starting at 1.  Substitutions may themselves have
+ !  further substitutions, but, due to the way that substitution is performed,
+ !  should only refer to parameters having higher digits.  (Digits less than or
+ !  equal to the current one will not be substituted.)
+ -->
+
+<!--
  ! Please use the following convention for sub-message keys.
  !
  ! If a sub-message key has at least one $n number in it (where 'n' is [1-9]),
