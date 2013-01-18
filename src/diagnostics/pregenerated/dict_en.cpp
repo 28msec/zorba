@@ -731,8 +731,6 @@ extern entry const dict_en[] = {
   { "~ParseFragmentDoctypeNotAllowedHere", "a DOCTYPE declaration must appear before any element or text node, and at most once" },
   { "~ParseFragmentInvalidOptions", "invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace" },
   { "~ParseFragmentOptionCombinationNotAllowed", "only one of the <schema-validate/>, <DTD-validate/> or <parse-external-parsed-entity/> options can be specified" },
-  { "~ParserInitFailed", "parser initialization failed" },
-  { "~ParserNoCreateTree", "XML tree creation failed" },
   { "~PromotionImpossible", "promotion not possible" },
   { "~QuotedColon_23", "\"$2\": $3" },
 #if defined(ZORBA_NO_ICU)
@@ -885,6 +883,8 @@ extern entry const dict_en[] = {
 #endif
   { "~UnexpectedElement", "unexpected element" },
   { "~VarValMustBeSingleItem_2", "\"$2\": variable value must be single item" },
+  { "~XMLParserInitFailed", "XML parser initialization failed" },
+  { "~XMLParserNoCreateTree", "XML tree creation failed" },
   { "~XMLSchema", "XML schema" },
   { "~XPDY0002_ContextUndeclared_2", "$2 not declared" },
   { "~XPDY0002_VariableHasNoValue_2", "\"$2\": variable has no value" },

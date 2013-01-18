@@ -3659,11 +3659,11 @@
       <value>"$2": operation not possible with parameters of type "$3" and "$4"</value>
     </entry>
 
-    <entry key="ParserInitFailed">
-      <value>parser initialization failed</value>
+    <entry key="XMLParserInitFailed">
+      <value>XML parser initialization failed</value>
     </entry>
 
-    <entry key="ParserNoCreateTree">
+    <entry key="XMLParserNoCreateTree">
       <value>XML tree creation failed</value>
     </entry>
 

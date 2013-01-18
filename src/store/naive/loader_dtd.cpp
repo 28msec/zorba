@@ -220,7 +220,7 @@ store::Item_t FragmentXmlLoader::loadXml(
       theFragmentStream->ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, NULL, 0, 0);
       if (theFragmentStream->ctxt == NULL)
       {
-        theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( ParserInitFailed ) )));
+        theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( XMLParserInitFailed ) )));
         throw 0; // the argument to throw is not used by the catch clause
       }
 
@@ -234,7 +234,7 @@ store::Item_t FragmentXmlLoader::loadXml(
       xmlParserInputPtr input = xmlNewInputStream(theFragmentStream->ctxt);
       if (input == NULL)
       {
-        theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( ParserInitFailed ) )));
+        theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( XMLParserInitFailed ) )));
         throw 0; // the argument to throw is not used by the catch clause
       }
 
@@ -822,7 +822,7 @@ store::Item_t DtdXmlLoader::loadXml(
       theXQueryDiagnostics->add_error(
         NEW_ZORBA_EXCEPTION(
           zerr::ZSTR0021_LOADER_PARSING_ERROR,
-          ERROR_PARAMS( ZED( ParserInitFailed ) )
+          ERROR_PARAMS( ZED( XMLParserInitFailed ) )
         )
       );
       abortload();
@@ -849,7 +849,7 @@ store::Item_t DtdXmlLoader::loadXml(
     if ( xmlParseDocument(ctxt)==-1 )
     {
       // std::cout << "  xmlParseDocument: Error: Unable to create tree: " << ctxt->lastError.message << std::endl;
-      theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,ERROR_PARAMS( ZED( ParserNoCreateTree ) )));
+      theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,ERROR_PARAMS( ZED( XMLParserNoCreateTree ) )));
       abortload();
       return NULL;
     }
@@ -923,7 +923,7 @@ store::Item_t DtdXmlLoader::loadXml(
     theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
         zerr::ZSTR0021_LOADER_PARSING_ERROR,
-        ERROR_PARAMS( ZED( ParserNoCreateTree ) )
+        ERROR_PARAMS( ZED( XMLParserNoCreateTree ) )
       )
     );
     abortload();

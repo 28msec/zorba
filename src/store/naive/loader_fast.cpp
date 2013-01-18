@@ -15,10 +15,11 @@
  */
 #include "stdafx.h"
 
-#include <stdio.h>
+#include <cstdio>
 #include <memory.h>
 #include <string>
 #include <iostream>
+
 #include <libxml/xmlmemory.h>
 
 #include <zorba/store_consts.h>
@@ -417,7 +418,7 @@ store::Item_t FastXmlLoader::loadXml(
     {
       theXQueryDiagnostics->
       add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,
-                                    ERROR_PARAMS(ZED(ParserInitFailed))));
+                                    ERROR_PARAMS(ZED(XMLParserInitFailed))));
       abortload();
 			return NULL;
     }
