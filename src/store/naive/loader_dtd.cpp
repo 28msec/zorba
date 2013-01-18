@@ -136,8 +136,7 @@ FragmentXmlLoader::FragmentXmlLoader(
   theSaxHandler.cdataBlock = &FragmentXmlLoader::cdataBlock;
   theSaxHandler.comment = &FragmentXmlLoader::comment;
   theSaxHandler.processingInstruction = &FragmentXmlLoader::processingInstruction;
-  theSaxHandler.warning = &FragmentXmlLoader::warning;
-  //theSaxHandler.error = &FragmentXmlLoader::error; TODO pjl
+  theSaxHandler.serror = &XmlLoader::error;
   theSaxHandler.getEntity = &FragmentXmlLoader::getEntity;
   theSaxHandler.getParameterEntity = &FragmentXmlLoader::getParameterEntity;
   theSaxHandler.entityDecl = &FragmentXmlLoader::entityDecl;
@@ -611,9 +610,7 @@ DtdXmlLoader::DtdXmlLoader(
   //theSaxHandler.cdataBlock = &DtdXmlLoader::cdataBlock;
   //theSaxHandler.comment = &DtdXmlLoader::comment;
   //theSaxHandler.processingInstruction = &DtdXmlLoader::processingInstruction;
-  theSaxHandler.warning = &DtdXmlLoader::warning;
-  theSaxHandler.error = &DtdXmlLoader::error;
-
+  theSaxHandler.serror = &XmlLoader::error;
   theSaxHandler.getEntity = &DtdXmlLoader::getEntity;
   theSaxHandler.getParameterEntity = &DtdXmlLoader::getParameterEntity;
   theSaxHandler.entityDecl = &DtdXmlLoader::entityDecl;
@@ -1789,48 +1786,6 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
-}
-
-
-/*******************************************************************************
-  Display and format an error messages, callback.
-
-   ctx:  an XML parser context
-   msg:  the message to display/transmit
-   ...:  extra parameters for the message display
-********************************************************************************/
-void DtdXmlLoader::error(void * ctx, const char * msg, ... )
-{
-  DtdXmlLoader* loader = (static_cast<DtdXmlLoader *>(ctx));
-  char buf[1024];
-  va_list args;
-  va_start(args, msg);
-  vsprintf(buf, msg, args);
-  va_end(args);
-  loader->theXQueryDiagnostics->add_error(
-    NEW_ZORBA_EXCEPTION(
-      zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
-    )
-  );
-}
-
-
-/*******************************************************************************
-   Display and format a warning messages, callback.
-
-   ctx:  an XML parser context
-   msg:  the message to display/transmit
-   ...:  extra parameters for the message display
-********************************************************************************/
-void DtdXmlLoader::warning(void * ctx, const char * msg, ... )
-{
-  char buf[1024];
-  va_list args;
-  va_start(args, msg);
-  vsprintf(buf, msg, args);
-  va_end(args);
-
-  std::cerr << buf << std::endl;
 }
 
 

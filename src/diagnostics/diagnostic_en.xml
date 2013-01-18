@@ -3101,6 +3101,10 @@
       <value>"$1": function caching might not give the intended result because the function is declared as $2</value>
     </diagnostic>
 
+    <diagnostic code="ZWST0007" name="LOADER_PARSING_WARNING">
+      <value>"$1":$2,$3: loader parsing warning${: 4}</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Subvalues /////////////////////////////////////////////////-->
