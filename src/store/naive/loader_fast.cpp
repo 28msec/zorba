@@ -97,11 +97,7 @@ XmlLoader::~XmlLoader()
 
 
 /*******************************************************************************
-  Display and format an error messages, callback.
 
-   ctx:  an XML parser context
-   msg:  the message to display/transmit
-   ...:  extra parameters for the message display
 ********************************************************************************/
 void XmlLoader::error(void *ctx, xmlErrorPtr error)
 {
