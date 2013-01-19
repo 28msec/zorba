@@ -279,9 +279,8 @@ void FastXmlLoader::abortload()
   {
     xmlCtxtReset(ctxt);
     xmlFreeParserCtxt(ctxt);
+    ctxt = NULL;
   }
-
-  ctxt = NULL;
 }
 
 
