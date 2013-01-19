@@ -224,6 +224,7 @@ class SchemaElementTest;
 class SchemaImport;
 class SchemaPrefix;
 class SequenceType;
+class SequenceTypeList;
 class SignList;
 class SingleType;
 class StringLiteral;
@@ -2699,7 +2700,8 @@ public:
 
 
 /*******************************************************************************
-  [71] SwitchExpr ::= "switch" "(" Expr ")" SwitchCaseClause+ "default" "return" ExprSingle
+  SwitchExpr ::= "switch" "(" Expr ")"
+                  SwitchCaseClause+ "default" "return" ExprSingle
 ********************************************************************************/
 class SwitchExpr : public exprnode
 {
@@ -2856,67 +2858,82 @@ public:
 class CaseClauseList : public parsenode
 {
 protected:
-  std::vector<rchandle<CaseClause> > clause_hv;
+  std::vector<rchandle<CaseClause> > theClauses;
 
 public:
   CaseClauseList(const QueryLoc&);
 
   void push_back(rchandle<CaseClause> clause_h)
-  { clause_hv.push_back(clause_h); }
+  { theClauses.push_back(clause_h); }
 
-  rchandle<CaseClause> operator[](int i) const
-  { return clause_hv[i]; }
+  const CaseClause* operator[](csize i) const
+  { return theClauses[i]; }
 
   std::vector<rchandle<CaseClause> >::const_iterator begin() const
-  { return clause_hv.begin(); }
+  { return theClauses.begin(); }
 
   std::vector<rchandle<CaseClause> >::const_iterator end() const
-  { return clause_hv.end(); }
+  { return theClauses.end(); }
 
   std::vector<rchandle<CaseClause> >::const_reverse_iterator rbegin() const
-  { return clause_hv.rbegin(); }
+  { return theClauses.rbegin(); }
 
   std::vector<rchandle<CaseClause> >::const_reverse_iterator rend() const
-  { return clause_hv.rend(); }
+  { return theClauses.rend(); }
 
-  uint32_t size () const
-  { return (uint32_t)clause_hv.size (); }
+  csize size() const
+  { return theClauses.size(); }
 
   void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-  [67] CaseClause ::= "case" ("$" VarName "as")? SequenceType "return" ExprSingle
+  CaseClause ::= "case" ("$" VarName "as")? SequenceTypeList "return" ExprSingle
 ********************************************************************************/
 class CaseClause : public parsenode
 {
 protected:
-  rchandle<QName> varname;
-  rchandle<SequenceType> type_h;
-  rchandle<exprnode> val_h;
+  rchandle<QName> theVarName;
+  std::vector<rchandle<SequenceType> > theTypes;
+  rchandle<exprnode> theExpr;
 
 public:
-  CaseClause(
-    const QueryLoc&,
-    rchandle<QName> varname,
-    rchandle<SequenceType>,
-    rchandle<exprnode>);
+  CaseClause(const QueryLoc&, QName* vname, SequenceTypeList*, exprnode*);
 
-  CaseClause(
-    const QueryLoc&,
-    rchandle<SequenceType>,
-    rchandle<exprnode>);
+  CaseClause(const QueryLoc&, SequenceTypeList*, exprnode*);
 
-  const QName* get_varname() const { return varname.getp(); }
+  const QName* get_varname() const { return theVarName.getp(); }
 
-  rchandle<SequenceType> get_type() const { return type_h; }
+  csize num_types() const { return theTypes.size(); }
 
-  rchandle<exprnode> get_expr() const { return val_h; }
+  SequenceType* get_type(csize i) const { return theTypes[i].getp(); }
+
+  exprnode* get_expr() const { return theExpr.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
 
+
+/*******************************************************************************
+  SequenceTypeList := SequenceType ("|" SequenceType)*
+
+  This is an auxiliary parse node, that will never appear in an actual AST.
+********************************************************************************/
+class SequenceTypeList : public parsenode
+{
+  friend class CaseClause;
+
+protected:
+  std::vector<rchandle<SequenceType> > theTypes;
+
+public:
+  SequenceTypeList(const QueryLoc& loc) : parsenode(loc) {}
+
+  void push_back(SequenceType* t) { theTypes.push_back(t); }
+
+  void accept(parsenode_visitor&) const;
+};
 
 
 /*******************************************************************************

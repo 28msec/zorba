@@ -198,13 +198,19 @@ DEFAULT_END_VISIT (BoundarySpaceDecl)
 void* begin_visit(const CaseClause& n)
 {
   os << "case ";
-  if(n.get_varname())
+
+  if (n.get_varname())
   {
     os << "$" << n.get_varname()->get_qname() << " as ";
   }
-  n.get_type()->accept(*this);
+
+  csize numTypes = n.num_types();
+  for (csize i = 0; i < numTypes; ++i)
+    n.get_type(i)->accept(*this);
+
   os << "return ";
   n.get_expr()->accept(*this);
+
   return no_state;
 }
 

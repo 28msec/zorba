@@ -235,10 +235,10 @@ public:
   //GroupTupleCmp() : theGroupingSpecs(0), theTypeManager(0), theTimezone(0) {}
 
   GroupTupleCmp(
-        const QueryLoc& loc,
-        dynamic_context* dctx,
-        const TypeManager* tm,
-        std::vector<GroupingSpec>* groupSpecs);
+      const QueryLoc& loc,
+      dynamic_context* dctx,
+      const TypeManager* tm,
+      std::vector<GroupingSpec>* groupSpecs);
 
   uint32_t hash(GroupTuple* t) const;
 

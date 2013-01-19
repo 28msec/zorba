@@ -2144,31 +2144,33 @@ void SwitchCaseOperandList::accept( parsenode_visitor &v ) const
 // [43] TypeswitchExpr
 // -------------------
 TypeswitchExpr::TypeswitchExpr(
-  const QueryLoc& loc_,
-  rchandle<exprnode> _switch_expr_h,
-  rchandle<CaseClauseList> _clause_list_h,
-  rchandle<exprnode> _default_clause_h)
-:
+    const QueryLoc& loc_,
+    rchandle<exprnode> _switch_expr_h,
+    rchandle<CaseClauseList> _clause_list_h,
+    rchandle<exprnode> _default_clause_h)
+  :
   exprnode(loc_),
   switch_expr_h(_switch_expr_h),
   clause_list_h(_clause_list_h),
   default_clause_h(_default_clause_h)
-{}
+{
+}
 
 
 TypeswitchExpr::TypeswitchExpr(
-  const QueryLoc& loc_,
-  rchandle<exprnode> _switch_expr_h,
-  rchandle<CaseClauseList> _clause_list_h,
-  rchandle<QName> _default_varname,
-  rchandle<exprnode> _default_clause_h)
-:
+    const QueryLoc& loc_,
+    rchandle<exprnode> _switch_expr_h,
+    rchandle<CaseClauseList> _clause_list_h,
+    rchandle<QName> _default_varname,
+    rchandle<exprnode> _default_clause_h)
+  :
   exprnode(loc_),
   switch_expr_h(_switch_expr_h),
   clause_list_h(_clause_list_h),
   default_varname(_default_varname),
   default_clause_h(_default_clause_h)
-{}
+{
+}
 
 
 //-TypeswitchExpr::
@@ -2186,21 +2188,22 @@ void TypeswitchExpr::accept( parsenode_visitor &v ) const
 
 // [43a] CaseClauseList
 // --------------------
-CaseClauseList::CaseClauseList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
+CaseClauseList::CaseClauseList(const QueryLoc& loc)
+  :
+  parsenode(loc)
 {
 }
 
 
-void CaseClauseList::accept( parsenode_visitor &v ) const
+void CaseClauseList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  std::vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
-  for (; it!=clause_hv.rend(); ++it) {
-    const parsenode *e_p = &**it;
-    ACCEPT_CHK (e_p);
+
+  std::vector<rchandle<CaseClause> >::const_reverse_iterator it = theClauses.rbegin();
+  for (; it != theClauses.rend(); ++it) 
+  {
+    const parsenode* e_p = &**it;
+    ACCEPT_CHK(e_p);
   }
   END_VISITOR();
 }
@@ -2209,37 +2212,55 @@ void CaseClauseList::accept( parsenode_visitor &v ) const
 // [44] CaseClause
 // ---------------
 CaseClause::CaseClause(
-  const QueryLoc& loc_,
-  rchandle<QName> _varname,
-  rchandle<SequenceType> _type_h,
-  rchandle<exprnode> _val_h)
-:
-  parsenode(loc_),
-  varname(_varname),
-  type_h(_type_h),
-  val_h(_val_h)
+    const QueryLoc& loc,
+    QName* varname,
+    SequenceTypeList* types,
+    exprnode* expr)
+  :
+  parsenode(loc),
+  theVarName(varname),
+  theExpr(expr)
 {
+  theTypes.swap(types->theTypes);
+
+  delete types;
 }
+
 
 CaseClause::CaseClause(
-  const QueryLoc& loc_,
-  rchandle<SequenceType> _type_h,
-  rchandle<exprnode> _val_h)
-:
-  parsenode(loc_),
-  varname(NULL),
-  type_h(_type_h),
-  val_h(_val_h)
+    const QueryLoc& loc,
+    SequenceTypeList* types,
+    exprnode* expr)
+  :
+  parsenode(loc),
+  theVarName(NULL),
+  theExpr(expr)
 {
+  theTypes.swap(types->theTypes);
+
+  delete types;
 }
 
 
-void CaseClause::accept( parsenode_visitor &v ) const
+void CaseClause::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT (type_h);
-  ACCEPT (val_h);
+
+  csize numTypes = theTypes.size();
+  for (csize i = 0; i < numTypes; ++i)
+  {
+    ACCEPT(theTypes[i]);
+  }
+
+  ACCEPT(theExpr);
+
   END_VISITOR();
+}
+
+
+void SequenceTypeList::accept(parsenode_visitor& v) const
+{
+  ZORBA_ASSERT(false);
 }
 
 

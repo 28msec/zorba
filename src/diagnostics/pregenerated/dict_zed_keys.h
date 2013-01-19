@@ -29,6 +29,7 @@
 #define ZED_XPST0003_WindowClause30 "~XPST0003_WindowClause30"
 #define ZED_XPST0003_CountClause30 "~XPST0003_CountClause30"
 #define ZED_XPST0003_SwitchExpr30 "~XPST0003_SwitchExpr30"
+#define ZED_XPST0003_TypeSwitchExpr30 "~XPST0003_TypeSwitchExpr30"
 #define ZED_XPST0003_TryCatchExpr30 "~XPST0003_TryCatchExpr30"
 #define ZED_XPST0003_Annotations "~XPST0003_Annotations"
 #define ZED_XPST0003_Scripting "~XPST0003_Scripting"

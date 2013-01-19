@@ -1,5 +1,16 @@
 Zorba - The XQuery Processor
 
+version 2.8
+
+New Features:
+  * Typeswitch expression extended to allow union of types in each case clause,
+    as specified by XQuery v3.0
+
+Optimizations:
+
+Bug Fixes/Other Changes:
+  * NaN items are considered equal to each other during grouping
+
 
 version 2.8
 
