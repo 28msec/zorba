@@ -4,6 +4,7 @@ Zorba - The XQuery Processor
 version 2.9
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
   * Fixed bug #1099535  (xml:parse endless loop)
 
 
