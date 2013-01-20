@@ -110,13 +110,11 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
   libxml_dict_key_4 += error->level == XML_ERR_WARNING ? "WAR_" : "ERR_";
   libxml_dict_key_4 += ztd::itoa( error->code, itoa_buf );
 
-  zstring str1_5, str2_6, str3_7, int1_8, message_9( error->message );
-  if ( error->str1 )
-    str1_5 = error->str1;
-  if ( error->str2 )
-    str2_6 = error->str2;
-  if ( error->str3 )
-    str3_7 = error->str3;
+  char const *const str1_5 = error->str1 ? error->str1 : "";
+  char const *const str2_6 = error->str2 ? error->str2 : "";
+  char const *const str3_7 = error->str3 ? error->str3 : "";
+  zstring int1_8;
+  char const *const message_9 = error->message ? error->message : "";
 
   if ( error->int1 ) {                  // assume valid only if > 0
     switch ( error->code ) {
@@ -144,7 +142,7 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
     } // switch
   } // if
 
-  XmlLoader *const loader = static_cast<FastXmlLoader*>(ctx);
+  XmlLoader *const loader = static_cast<XmlLoader*>( ctx );
   switch ( error->level ) {
     case XML_ERR_ERROR:
     case XML_ERR_FATAL:
