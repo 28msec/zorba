@@ -243,7 +243,9 @@ store::Item_t FragmentXmlLoader::loadXml(
 
       // Initialize the parser input (only filename and the pointer to the current char)
       theFragmentStream->theBuffer[0] = ' '; // This assignment is needed for LibXml2-2.7.6, which tries to read the buffer when xmlPushInput() is called
-      input->cur = (xmlChar*)(&theFragmentStream->theBuffer[0]);
+      input->base = (xmlChar*)(&theFragmentStream->theBuffer[0]);
+      input->cur = input->base;
+      // input->cur = (xmlChar*)(&theFragmentStream->theBuffer[0]);
       input->filename = (const char*)(xmlCanonicPath((const xmlChar*)theDocUri.c_str()));
       xmlPushInput(theFragmentStream->ctxt, input);
     }
@@ -322,6 +324,8 @@ store::Item_t FragmentXmlLoader::loadXml(
       
       /*
       std::string buffer = (char*)theFragmentStream->ctxt->input->cur;
+      if (theFragmentStream->ctxt->input->length < buffer.size())
+          buffer = buffer.substr(0, theFragmentStream->ctxt->input->length);
       std::cerr << "\n==================\n--> skip_root: " << theFragmentStream->root_elements_to_skip << " current_depth: " << theFragmentStream->current_element_depth 
           << " state: " << theFragmentStream->ctxt->instate
           << " about to parse: [";
@@ -343,7 +347,7 @@ store::Item_t FragmentXmlLoader::loadXml(
         xmlParseCharData(theFragmentStream->ctxt, 0);
         theFragmentStream->current_offset = getCurrentInputOffset(); // update current offset
         
-        if (theXQueryDiagnostics->errors().empty() && theFragmentStream->current_offset == 0 && theFragmentStream->ctxt->checkIndex > 0)
+        if (theXQueryDiagnostics->errors().empty() && theFragmentStream->current_offset == 0)
         {
           assert(buffer_not_consumed == true);
           
