@@ -110,11 +110,11 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
   libxml_dict_key_4 += error->level == XML_ERR_WARNING ? "WAR_" : "ERR_";
   libxml_dict_key_4 += ztd::itoa( error->code, itoa_buf );
 
-  char const *const str1_5 = error->str1 ? error->str1 : "";
-  char const *const str2_6 = error->str2 ? error->str2 : "";
-  char const *const str3_7 = error->str3 ? error->str3 : "";
-  zstring int1_8;
-  char const *const message_9 = error->message ? error->message : "";
+  char const *const error_str1_5 = error->str1 ? error->str1 : "";
+  char const *const error_str2_6 = error->str2 ? error->str2 : "";
+  char const *const error_str3_7 = error->str3 ? error->str3 : "";
+  zstring error_int1_8;
+  char const *const error_message_9 = error->message ? error->message : "";
 
   if ( error->int1 ) {                  // assume valid only if > 0
     switch ( error->code ) {
@@ -122,7 +122,7 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
       case XML_ERR_INVALID_CHAR:
       case XML_ERR_SEPARATOR_REQUIRED:
         // For these error codes, int1 is a char.
-        int1_8 = static_cast<char>( error->int1 );
+        error_int1_8 = static_cast<char>( error->int1 );
         break;
       case XML_DTD_ID_SUBSET:
       case XML_DTD_UNKNOWN_ID:
@@ -130,15 +130,15 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
       case XML_ERR_INTERNAL_ERROR:
       case XML_ERR_TAG_NOT_FINISHED:
         // For these error codes, int1 is an int.
-        int1_8 = ztd::itoa( error->int1, itoa_buf );
+        error_int1_8 = ztd::itoa( error->int1, itoa_buf );
         break;
       default:
         // For an unaccounted-for error code, use a heuristic to guess whether
         // int1 is a char or an int.
         if ( ascii::is_print( error->int1 ) )
-          int1_8 = static_cast<char>( error->int1 );
+          error_int1_8 = static_cast<char>( error->int1 );
         else
-          int1_8 = ztd::itoa( error->int1, itoa_buf );
+          error_int1_8 = ztd::itoa( error->int1, itoa_buf );
     } // switch
   } // if
 
@@ -151,7 +151,8 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
           zerr::ZSTR0021_LOADER_PARSING_ERROR,
           ERROR_PARAMS(
             error->file, error->line, error->int2 /* column */,
-            libxml_dict_key_4, str1_5, str2_6, str3_7, int1_8, message_9
+            libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
+            error_int1_8, error_message_9
           )
         )
       );
@@ -162,7 +163,8 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
           zwarn::ZWST0007_LOADER_PARSING_WARNING,
           WARN_PARAMS(
             error->file, error->line, error->int2 /* column */,
-            libxml_dict_key_4, str1_5, str2_6, str3_7, int1_8, message_9
+            libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
+            error_int1_8, error_message_9
           )
         )
       );
