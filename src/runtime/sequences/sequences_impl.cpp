@@ -1908,6 +1908,14 @@ static void readDocument(
   zstring lNormUri;
   normalizeInputUri(aUri, aSctx, loc, &lNormUri);
 
+  //Check for a fragment identifier
+  //Create a zorba::URI for validating if it contains a fragment  
+  std::auto_ptr<zorba::URI> lUri(new zorba::URI(lNormUri));
+  if (lUri->get_encoded_fragment() != "")
+  {
+    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));    
+  }
+
   //Resolve URI to stream
   zstring lErrorMessage;
   std::auto_ptr<internal::Resource> lResource = aSctx->resolve_uri
@@ -2040,6 +2048,7 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   zstring lErrorMessage;
   std::auto_ptr<internal::Resource> lResource;
   StreamReleaser lStreamReleaser;
+  std::auto_ptr<zorba::URI> lUri;
 
   FnUnparsedTextLinesIteratorState* state;
   DEFAULT_STACK_INIT(FnUnparsedTextLinesIteratorState, state, planState);
@@ -2058,6 +2067,14 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   //Normalize input to handle filesystem paths, etc.
   uriItem->getStringValue2(uriString);
   normalizeInputUri(uriString, theSctx, loc, &lNormUri);
+
+  //Check for a fragment identifier
+  //Create a zorba::URI for validating if it contains a fragment  
+  lUri.reset(new zorba::URI(lNormUri));
+  if (lUri->get_encoded_fragment() != "")
+  {
+    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));    
+  }
 
   //Resolve URI to stream
   lResource = theSctx->resolve_uri

@@ -186,6 +186,27 @@ static zstring get_locale_info( int constant, iso639_1::type lang,
   return zstring( info.get() );
 }
 
+/**
+ * IsValidLocaleName() is available only on Windows Vista and later so we can't
+ * call it directly since we might be running on Windows XP.  Hence, check to
+ * see if it's available and call it indirectly if so.
+ */
+static BOOL Zorba_IsValidLocaleName( LPCWSTR lpLocaleName ) {
+  typedef int (WINAPI *IsValidLocaleName_type)( LPCWSTR );
+
+  static IsValidLocaleName_type IsValidLocaleName_ptr;
+  static bool init;
+
+  if ( !init ) {
+    IsValidLocaleName_ptr = (IsValidLocaleName_type)::GetProcAddress(
+      ::GetModuleHandle( TEXT( "kernel32.dll" ) ), "IsValidLocaleName"
+    );
+    init = true;
+  }
+
+  return IsValidLocaleName_ptr ? IsValidLocaleName_ptr( lpLocaleName ) : 0;
+}
+
 #else /* WIN32 */
 
 /**
@@ -1282,7 +1303,7 @@ zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
 bool is_supported( iso639_1::type lang, iso3166_1::type country ) {
 #ifdef WIN32
   unique_ptr<WCHAR[]> const wlocale_name( get_wlocale_name( lang, country ) );
-  return !!::IsValidLocaleName( wlocale_name.get() );
+  return !!::Zorba_IsValidLocaleName( wlocale_name.get() );
 #else
   if ( locale_t const loc = get_unix_locale_t( lang, country ) ) {
     ::freelocale( loc );
