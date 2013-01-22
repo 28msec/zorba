@@ -56,16 +56,25 @@ rewriteSubsequenceCollection(static_context* aSctx,
   assert(collIter);
   std::vector<PlanIter_t>& lCollectionArgs = collIter->getChildren();
 
+  // prepare helper
+  store::Item_t lItemOne;
+  GENV_ITEMFACTORY->createInteger(lItemOne, Integer(1));
+
   int lNumCollArgs = lCollectionArgs.size();
   if (lNumCollArgs == 1)
   {
     // argument is of type collection(qname)
-    // simply move the pos of subsequence into the skip of 
+    // simply move the (pos-1) of subsequence into the skip of 
     // collection function
     // subsequence(collection(qname), 10, 20) 
-    //   -> subsequence(collection(qname, 10), 10, 20)
-    PlanIterator* lNewCollSkipIter = aArgs[1].getp();
-    lCollectionArgs.push_back(lNewCollSkipIter);
+    //   -> subsequence(collection(qname, 10-1), 10, 20)
+    PlanIter_t& lNewCollSkipIter = aArgs[1];
+    PlanIter_t lOneIter = new SingletonIterator (aSctx, aLoc, lItemOne);
+    lCollectionArgs.push_back(
+        new NumArithIterator<zorba::SubtractOperation>(
+          collIter->getStaticContext(), collIter->getLocation(),
+          lNewCollSkipIter, lOneIter)
+        );
   }
   else if (lNumCollArgs <= 3 && lNumCollArgs != 0)
   {
@@ -78,15 +87,20 @@ rewriteSubsequenceCollection(static_context* aSctx,
       lSkipPosition = 2;
     }
       
-    // add position of subsequence to collection skip
+    // add position-1 of subsequence to collection skip
     // subsequence(collection(qname, 10), 10, 20) 
-    //   -> subsequence(collection(qname, 20), 10, 20)
-    PlanIter_t& lCollSkipIter = lCollectionArgs[lSkipPosition];
+    //   -> subsequence(collection(qname, 10+10-1), 10, 20)
+    PlanIter_t& lOldCollSkipIter = lCollectionArgs[lSkipPosition];
+    PlanIter_t lOneIter = new SingletonIterator (aSctx, aLoc, lItemOne);
     PlanIter_t& lSubseqPosIter = aArgs[1];
+    PlanIter_t lCollSkipAdditionIter
+      = new NumArithIterator<zorba::SubtractOperation>(
+          collIter->getStaticContext(), collIter->getLocation(),
+          lSubseqPosIter, lOneIter);
     lCollectionArgs[lSkipPosition] 
       = new NumArithIterator<zorba::AddOperation>(
           collIter->getStaticContext(), collIter->getLocation(), 
-          lSubseqPosIter, lCollSkipIter);
+          lOldCollSkipIter, lCollSkipAdditionIter);
   }
   else
   {
@@ -97,12 +111,10 @@ rewriteSubsequenceCollection(static_context* aSctx,
       collIter->getLocation(), lCollectionArgs, collIter->isDynamic());
 
   // after pushing the position param down we need to rewrite the actual 
-  // position to 0:
-  // subsequence(collection(qname, 20), 10, 20) 
-  //   -> subsequence(collection(qname, 20), 0, 20)
-  store::Item_t lposItem;
-  GENV_ITEMFACTORY->createInteger(lposItem, xs_integer::zero());
-  aArgs[1] = new SingletonIterator (aSctx, aLoc, lposItem);
+  // position to 1:
+  // subsequence(collection(qname, 10+10-1), 10, 20) 
+  //   -> subsequence(collection(qname, 10+10-1), 1, 20)
+  aArgs[1] = new SingletonIterator (aSctx, aLoc, lItemOne);
 }
 
 
