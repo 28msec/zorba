@@ -123,14 +123,7 @@ private:
   warnings_type warnings_;
 };
 
-////////// TEMPORARY TRANSITION MACROS: THESE WILL BE REMOVED /////////////////
-
-#define ZORBA_ERROR_DESC_OSS(LOCALNAME,MSG) \
-  do { \
-    std::ostringstream oss; \
-    oss << MSG; \
-    throw XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS( oss.str() ) ); \
-  } while (0)
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 
