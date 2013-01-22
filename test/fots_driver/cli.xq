@@ -188,7 +188,8 @@ declare function local:usage() as xs:string
 
 
 (:~
-  Tokenize comma or empty string
+  Tokenize a string that contains a comma-separated list of tokens.
+  Note: if the input string is empty, the function returns the empty sequence.
 :)
 declare %private function local:tokenize(
   $input as xs:string
