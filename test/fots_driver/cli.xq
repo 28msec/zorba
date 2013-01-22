@@ -50,7 +50,7 @@ declare variable $testSetName as xs:string external := "";
 declare variable $testCaseName as xs:string external := "";
 
 (:~ Enable or disable verbose output :)
-declare variable $verbose as xs:string external := "true";
+declare variable $verbose as xs:string external := "false";
 
 (:~ assertion type :)
 declare variable $assertType as xs:string external := "";
