@@ -152,7 +152,6 @@ declare variable $exceptedTestSets := ();
 declare variable $verbose as xs:string external := "true";
 
 
-
 declare function local:usage() as xs:string
 {
   string-join((
@@ -194,7 +193,8 @@ declare %private function local:tokenize(
   $input as xs:string
 ) as xs:string*
 {
-  tokenize($input, ",")
+  let $tokens := tokenize($input, ",")
+  return if (exists($tokens)) then $tokens else ""
 };
 
 
