@@ -556,8 +556,14 @@ try {
                                                   $case,
                                                   $env,
                                                   $envBaseURI,
-                                                  $testSetBaseURI),
-           $startDateTime := datetime:current-dateTime (),
+                                                  $testSetBaseURI);
+
+  (: if $verbose then print the query to a file :)
+  if($verbose)
+  then util:write-query-to-file($xqxqQuery, $queryName);
+  else ();
+
+  variable $startDateTime := datetime:current-dateTime (),
            $result := driver:xqxq-invoke($xqxqQuery,
                                          $case,
                                          $verbose,
