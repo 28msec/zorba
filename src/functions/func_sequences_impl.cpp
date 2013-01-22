@@ -23,6 +23,9 @@
 #include "runtime/sequences/sequences.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/var_iterators.h"
+#include "runtime/core/item_iterator.h"
+#include "runtime/core/arithmetic_impl.h"
+#include "runtime/numerics/NumericsImpl.h"
 
 #include "runtime/collections/collections_impl.h"
 #include "runtime/collections/collections.h"
@@ -42,7 +45,68 @@ namespace zorba
 
 
 /*******************************************************************************
+********************************************************************************/
+inline void 
+rewriteSubsequenceCollection(static_context* aSctx,
+                             const QueryLoc& aLoc,
+                             std::vector<PlanIter_t>& aArgs)
+{
+  ZorbaCollectionIterator* collIter 
+    = dynamic_cast<ZorbaCollectionIterator*>(aArgs[0].getp());
+  assert(collIter);
+  std::vector<PlanIter_t>& lCollectionArgs = collIter->getChildren();
 
+  int lNumCollArgs = lCollectionArgs.size();
+  if (lNumCollArgs == 1)
+  {
+    // argument is of type collection(qname)
+    // simply move the pos of subsequence into the skip of 
+    // collection function
+    // subsequence(collection(qname), 10, 20) 
+    //   -> subsequence(collection(qname, 10), 10, 20)
+    PlanIterator* lNewCollSkipIter = aArgs[1].getp();
+    lCollectionArgs.push_back(lNewCollSkipIter);
+  }
+  else if (lNumCollArgs <= 3 && lNumCollArgs != 0)
+  {
+    // argument is of type collection(qname,skip) or 
+    // collection(qname,start_uri,skip)
+    int lSkipPosition = 1;
+    if(lNumCollArgs == 3) 
+    {
+      // collection function with start reference -> skip is the 3rd param
+      lSkipPosition = 2;
+    }
+      
+    // add position of subsequence to collection skip
+    // subsequence(collection(qname, 10), 10, 20) 
+    //   -> subsequence(collection(qname, 20), 10, 20)
+    PlanIter_t& lCollSkipIter = lCollectionArgs[lSkipPosition];
+    PlanIter_t& lSubseqPosIter = aArgs[1];
+    lCollectionArgs[lSkipPosition] 
+      = new NumArithIterator<zorba::AddOperation>(
+          collIter->getStaticContext(), collIter->getLocation(), 
+          lSubseqPosIter, lCollSkipIter);
+  }
+  else
+  {
+    // no collection function with 0 or >3 params
+    assert(false);
+  }
+  aArgs[0] = new ZorbaCollectionIterator(collIter->getStaticContext(),
+      collIter->getLocation(), lCollectionArgs, collIter->isDynamic());
+
+  // after pushing the position param down we need to rewrite the actual 
+  // position to 0:
+  // subsequence(collection(qname, 20), 10, 20) 
+  //   -> subsequence(collection(qname, 20), 0, 20)
+  store::Item_t lposItem;
+  GENV_ITEMFACTORY->createInteger(lposItem, xs_integer::zero());
+  aArgs[1] = new SingletonIterator (aSctx, aLoc, lposItem);
+}
+
+
+/*******************************************************************************
 ********************************************************************************/
 xqtref_t fn_unordered::getReturnType(const fo_expr* caller) const
 {
@@ -408,12 +472,10 @@ PlanIter_t fn_subsequence::codegen(
     std::vector<PlanIter_t>& aArgs,
     expr& aAnn) const
 {
+  const std::type_info& lFirstArgType = typeid(*aArgs[0]);
   fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
-
   const expr* inputExpr = subseqExpr.get_arg(0);
-
   const expr* posExpr = subseqExpr.get_arg(1);
-
   const expr* lenExpr = (subseqExpr.num_args() > 2 ? subseqExpr.get_arg(2) : NULL);
 
   if (inputExpr->get_expr_kind() == relpath_expr_kind &&
@@ -455,6 +517,20 @@ PlanIter_t fn_subsequence::codegen(
         return aArgs[0];
     }
   }
+  else if (typeid(ZorbaCollectionIterator) == lFirstArgType)
+  {
+    // push down position param into collection skip
+    rewriteSubsequenceCollection(aSctx, aLoc, aArgs);
+
+    // we have rewritten the subsequence start to zero.
+    // if there is no length param we can remove the entire
+    // subsequence function
+    // subsequence(collection(qname, 10),0)
+    //   -> collection(qname, 10)
+    if(aArgs.size() == 2){
+      return aArgs[0];
+    }
+  }
 
  done:
   return new FnSubsequenceIterator(aSctx, aLoc, aArgs);
@@ -491,16 +567,11 @@ PlanIter_t op_zorba_subsequence_int::codegen(
     std::vector<PlanIter_t>& aArgs,
     expr& aAnn) const
 {
+  const std::type_info& lFirstArgType = typeid(*aArgs[0]);
   fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
-
   const expr* inputExpr = subseqExpr.get_arg(0);
-
   const expr* posExpr = subseqExpr.get_arg(1);
-
   const expr* lenExpr = (subseqExpr.num_args() > 2 ? subseqExpr.get_arg(2) : NULL);
-
-  LetVarIterator* letVarIter;
-  CtxVarIterator* ctxVarIter;
 
   if (inputExpr->get_expr_kind() == relpath_expr_kind &&
       posExpr->get_expr_kind() == const_expr_kind &&
@@ -533,29 +604,45 @@ PlanIter_t op_zorba_subsequence_int::codegen(
         return aArgs[0];
     }
   }
-  else if ((letVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
+  else if (typeid(LetVarIterator) == lFirstArgType)
   {
+    LetVarIterator& letVarIter = static_cast<LetVarIterator&>(*aArgs[0]);
     const var_expr* inputVar = inputExpr->get_var();
 
     if (inputVar != NULL &&
         (inputVar->get_kind() == var_expr::let_var ||
          inputVar->get_kind() == var_expr::win_var ||
          inputVar->get_kind() == var_expr::non_groupby_var) &&
-        letVarIter->setTargetPosIter(aArgs[1]) &&
-        letVarIter->setTargetLenIter(lenExpr ? aArgs[2] : NULL))
+        letVarIter.setTargetPosIter(aArgs[1]) &&
+        letVarIter.setTargetLenIter(lenExpr ? aArgs[2] : NULL))
     {
       return aArgs[0];
     }
   }
-  else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
+  else if (typeid(CtxVarIterator) == lFirstArgType)
   {
+    CtxVarIterator& ctxVarIter = static_cast<CtxVarIterator&>(*aArgs[0]);
     const var_expr* inputVar = inputExpr->get_var();
 
     if (inputVar != NULL &&
         !inputVar->is_context_item() &&
-        ctxVarIter->setTargetPosIter(aArgs[1]) &&
-        ctxVarIter->setTargetLenIter(lenExpr ? aArgs[2] : NULL))
+        ctxVarIter.setTargetPosIter(aArgs[1]) &&
+        ctxVarIter.setTargetLenIter(lenExpr ? aArgs[2] : NULL))
     {
+      return aArgs[0];
+    }
+  }
+  else if (typeid(ZorbaCollectionIterator) == lFirstArgType)
+  {
+    // push down position param into collection skip
+    rewriteSubsequenceCollection(aSctx, aLoc, aArgs);
+
+    // we have rewritten the subsequence start to zero.
+    // if there is no length param we can remove the entire
+    // subsequence function
+    // subsequence(collection(qname, 10),0)
+    //   -> collection(qname, 10)
+    if(aArgs.size() == 2){
       return aArgs[0];
     }
   }
