@@ -945,26 +945,30 @@ void URI::initializePath(const zstring& uri)
         {
           if ( lIndex + 2 >= lEnd )
           {
-            throw XQUERY_EXCEPTION(
-              err::XQST0046, ERROR_PARAMS( uri, ZED( BadHexSequence ) )
-            );
+            throw XQUERY_EXCEPTION(err::XQST0046,
+            ERROR_PARAMS(uri, ZED(BadHexSequence)));
           }
+
           unicode::code_point lHex1 = lCodepoints[++lIndex];
-          if(!ascii::is_xdigit(lHex1))
-            throw XQUERY_EXCEPTION(
-              err::XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit_3 ), lHex1 )
-            );
+
+          if (!ascii::is_xdigit(lHex1))
+          {
+            throw XQUERY_EXCEPTION(err::XQST0046,
+            ERROR_PARAMS(uri, ZED(XQST0046_BadHexDigit_3), lHex1));
+          }
+
           unicode::code_point lHex2 = lCodepoints[++lIndex];
-          if(!ascii::is_xdigit(lHex2))
-            throw XQUERY_EXCEPTION(
-              err::XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit_3 ), lHex2 )
-            );
+
+          if (!ascii::is_xdigit(lHex2))
+          {
+            throw XQUERY_EXCEPTION(err::XQST0046,
+            ERROR_PARAMS(uri, ZED(XQST0046_BadHexDigit_3), lHex2));
+          }
         }
         else if (!is_unreserved_char(lCp) && !is_path_character(lCp) && valid)
         {
-          throw XQUERY_EXCEPTION(
-            err::XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar_3 ), lCp )
-          );
+          throw XQUERY_EXCEPTION(err::XQST0046,
+          ERROR_PARAMS(uri, ZED(BadUnicodeChar_3), lCp));
         }
         ++lIndex;
       }

@@ -21,6 +21,7 @@
 #include "ascii_util.h"
 #include "cxx_util.h"
 #include "string_util.h"
+#include "zorbatypes/zstring.h"
 
 #ifdef WIN32
 namespace std {
@@ -55,67 +56,90 @@ namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#define ENABLE_CLIPPING 0
+static void no_digits( char const *buf ) {
+  throw std::invalid_argument( BUILD_STRING( '"', buf, "\": no digits" ) );
+}
 
-template<typename T>
-static void check_parse_number( char const *s, char *end,  T *result ) {
-  if ( errno == ERANGE ) {
-    if ( result ) {
-#if ENABLE_CLIPPING
-      if ( *ascii::trim_start_whitespace( s ) == '-' )
-        *result = numeric_limits<T>::min();
-      else
-        *result = numeric_limits<T>::max();
-#endif /* ENABLE_CLIPPING */
-    } else
-      throw std::range_error(
-        BUILD_STRING( '"', s, "\": number too big/small" )
-      );
-  }
-  if ( end == s )
-    throw std::invalid_argument( BUILD_STRING( '"', s, "\": no digits" ) );
+static void too_big_or_small( char const *buf, char const *end ) {
+  zstring const s( buf, end );
+  throw std::range_error( BUILD_STRING( '"', s, "\": number too big/small" ) );
+}
+
+inline void check_errno( char const *buf, char const *end ) {
+  if ( errno == ERANGE )
+    too_big_or_small( buf, end );
+}
+
+static void check_trailing_chars_impl( char const *end ) {
   for ( ; *end; ++end )                 // remaining characters, if any, ...
     if ( !ascii::is_space( *end ) )     // ... may only be whitespace
       throw std::invalid_argument(
-        BUILD_STRING( '"', *end, "\": invalid character" )
+        BUILD_STRING( '\'', *end, "': invalid character" )
       );
 }
 
-double atod( char const *s ) {
-  char *end;
-  errno = 0;
-  double result = std::strtod( s, &end );
-  check_parse_number( s, end, &result );
+inline void check_parse_number( char const *buf, char const *end,
+                                bool check_trailing_chars ) {
+  if ( end == buf )
+    no_digits( buf );
+  if ( check_trailing_chars )
+    check_trailing_chars_impl( end );
+}
+
+class aton_context {
+public:
+  aton_context( char const **&end ) {
+    if ( end ) {
+      check_trailing_chars_ = false;
+    } else {
+      end = &end_;
+      check_trailing_chars_ = true;
+    }
+    errno = 0;
+  }
+  bool check_trailing_chars() const {
+    return check_trailing_chars_;
+  }
+private:
+  bool check_trailing_chars_;
+  char const *end_;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+double atod( char const *buf, char const **end ) {
+  aton_context const ctx( end );
+  double const result = std::strtod( buf, (char**)end );
+  check_parse_number( buf, *end, ctx.check_trailing_chars() );
   return result;
 }
 
-float atof( char const *s ) {
-  char *end;
-  errno = 0;
-  float result = std::strtof( s, &end );
-  check_parse_number( s, end, &result );
+float atof( char const *buf, char const **end ) {
+  aton_context const ctx( end );
+  float const result = std::strtof( buf, (char**)end );
+  check_parse_number( buf, *end, ctx.check_trailing_chars() );
   return result;
 }
 
-long long atoll( char const *s ) {
-  char *end;
-  errno = 0;
-  long long const result = std::strtoll( s, &end, 10 );
-  check_parse_number( s, end, static_cast<long long*>( nullptr ) );
+long long atoll( char const *buf, char const **end ) {
+  aton_context const ctx( end );
+  long long const result = std::strtoll( buf, (char**)end, 10 );
+  check_errno( buf, *end );
+  check_parse_number( buf, *end, ctx.check_trailing_chars() );
   return result;
 }
 
-unsigned long long atoull( char const *s ) {
+unsigned long long atoull( char const *buf, char const **end ) {
+  aton_context const ctx( end );
   //
   // We have to check for '-' ourselves since strtoull(3) allows it (oddly).
   //
-  s = ascii::trim_start_whitespace( s );
-  bool const minus = *s == '-';
+  buf = ascii::trim_start_whitespace( buf );
+  bool const minus = *buf == '-';
 
-  char *end;
-  errno = 0;
-  unsigned long long const result = std::strtoull( s, &end, 10 );
-  check_parse_number( s, end, static_cast<unsigned long long*>( nullptr ) );
+  unsigned long long const result = std::strtoull( buf, (char**)end, 10 );
+  check_errno( buf, *end );
+  check_parse_number( buf, *end, ctx.check_trailing_chars() );
 
   if ( minus && result ) {
     //
@@ -123,7 +147,7 @@ unsigned long long atoull( char const *s ) {
     // Hence, this allows "-0" and treats it as "0".
     //
     throw std::invalid_argument(
-      "\"-\": invalid character for unsigned integer"
+      "'-': invalid character for unsigned integer"
     );
   }
   return result;

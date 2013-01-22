@@ -112,7 +112,9 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
 
   // If $arg is the empty sequence, then the result is the empty sequence.
   if (!consumeNext(item0, theChild.getp(), planState))
+  {
     STACK_PUSH(false, state);
+  }
   else
   {
     try
@@ -124,10 +126,26 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
     {
       throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
     }
-    STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
+
+    if (item0->getTypeCode() == store::XS_DATETIME)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
+    }
+    else if (item0->getTypeCode() == store::XS_DATE)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createDate(result, dt.get()), state);
+    }
+    else if (item0->getTypeCode() == store::XS_TIME)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createTime(result, dt.get()), state);
+    }
+    else
+    {
+      ZORBA_ASSERT(false);
+    }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -143,7 +161,9 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (!consumeNext(item0, theChild0.getp(), planState))
+  {
     STACK_PUSH(false, state);
+  }
   else
   {
     s1 = consumeNext(item1, theChild1.getp(), planState);
@@ -155,11 +175,28 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
     {
       throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
     }
-    STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
+
+    if (item0->getTypeCode() == store::XS_DATETIME)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
+    }
+    else if (item0->getTypeCode() == store::XS_DATE)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createDate(result, dt.get()), state);
+    }
+    else if (item0->getTypeCode() == store::XS_TIME)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createTime(result, dt.get()), state);
+    }
+    else
+    {
+      ZORBA_ASSERT(false);
+    }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
+
 
 /**
  *______________________________________________________________________

@@ -25,6 +25,8 @@ SET(UTIL_SRCS
   mem_streambuf.cpp
   regex.cpp
   string_util.cpp
+  time_util.cpp
+  time_parse.cpp
   unicode_util.cpp
   unicode_categories.cpp
   uri_util.cpp
@@ -34,6 +36,10 @@ SET(UTIL_SRCS
   string/empty_rep_base.cpp
   http_util.h
   http_util.cpp)
+
+IF (NOT ZORBA_CXX_NULLPTR)
+  LIST(APPEND UTIL_SRCS cxx_util.cpp)
+ENDIF (NOT ZORBA_CXX_NULLPTR)
 
 IF(ZORBA_WITH_FILE_ACCESS)
   LIST(APPEND UTIL_SRCS mmap_file.cpp)
