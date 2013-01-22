@@ -188,14 +188,13 @@ declare function local:usage() as xs:string
 
 (:~
   Tokenize a string that contains a comma-separated list of tokens.
-  Note: if the input string is empty, the function returns the empty string.
+  Note: if the input string is empty, the function returns the empty sequence.
 :)
 declare %private function local:tokenize(
   $input as xs:string
 ) as xs:string*
 {
-  let $tokens := tokenize($input, ",")
-  return if (exists($tokens)) then $tokens else ""
+  tokenize($input, ",")
 };
 
 
