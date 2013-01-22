@@ -46,15 +46,47 @@ namespace zorba
 
 /*******************************************************************************
 ********************************************************************************/
-inline void 
+bool
 rewriteSubsequenceCollection(static_context* aSctx,
                              const QueryLoc& aLoc,
-                             std::vector<PlanIter_t>& aArgs)
+                             std::vector<PlanIter_t>& aArgs,
+                             bool aIsIntSubsequence)
 {
   ZorbaCollectionIterator* collIter 
     = dynamic_cast<ZorbaCollectionIterator*>(aArgs[0].getp());
   assert(collIter);
   std::vector<PlanIter_t>& lCollectionArgs = collIter->getChildren();
+
+  SingletonIterator* lPosIter = dynamic_cast<SingletonIterator*>(aArgs[1].getp());
+  if (lPosIter == NULL)
+  {
+    return false;
+  }
+  xs_long pos;
+  const store::Item_t& lPosItem = lPosIter->getValue();
+  try
+  {
+    if (aIsIntSubsequence)
+    {
+      pos = lPosItem->getLongValue();
+    }
+    else
+    {
+      xs_double dpos = lPosItem->getDoubleValue().round();
+      xs_integer ipos(dpos.getNumber());
+      pos = to_xs_long(ipos);
+    }
+  }
+  catch (std::range_error&)
+  {
+    return false;
+  }
+  if (pos <= 1)
+  {
+    // if the start position is less than 1 we can't push this down into
+    // the collection skip parameter because the result won't be equivalent.
+    return false;
+  }
 
   // prepare helper
   store::Item_t lItemOne;
@@ -81,7 +113,7 @@ rewriteSubsequenceCollection(static_context* aSctx,
     // argument is of type collection(qname,skip) or 
     // collection(qname,start_uri,skip)
     int lSkipPosition = 1;
-    if(lNumCollArgs == 3) 
+    if (lNumCollArgs == 3) 
     {
       // collection function with start reference -> skip is the 3rd param
       lSkipPosition = 2;
@@ -115,6 +147,8 @@ rewriteSubsequenceCollection(static_context* aSctx,
   // subsequence(collection(qname, 10+10-1), 10, 20) 
   //   -> subsequence(collection(qname, 10+10-1), 1, 20)
   aArgs[1] = new SingletonIterator (aSctx, aLoc, lItemOne);
+
+  return true;
 }
 
 
@@ -531,16 +565,18 @@ PlanIter_t fn_subsequence::codegen(
   }
   else if (typeid(ZorbaCollectionIterator) == lFirstArgType)
   {
-    // push down position param into collection skip
-    rewriteSubsequenceCollection(aSctx, aLoc, aArgs);
-
-    // we have rewritten the subsequence start to zero.
-    // if there is no length param we can remove the entire
-    // subsequence function
-    // subsequence(collection(qname, 10),0)
-    //   -> collection(qname, 10)
-    if(aArgs.size() == 2){
-      return aArgs[0];
+    // push down position param into collection skip if possible
+    if (rewriteSubsequenceCollection(aSctx, aLoc, aArgs, false /*no int*/))
+    {
+      // we have rewritten the subsequence to start at the beginning.
+      // if there is no length param we can remove the entire
+      // subsequence function
+      // subsequence(collection(qname, 10),1)
+      //   -> collection(qname, 10)
+      if (aArgs.size() == 2)
+      {
+        return aArgs[0];
+      }
     }
   }
 
@@ -646,16 +682,18 @@ PlanIter_t op_zorba_subsequence_int::codegen(
   }
   else if (typeid(ZorbaCollectionIterator) == lFirstArgType)
   {
-    // push down position param into collection skip
-    rewriteSubsequenceCollection(aSctx, aLoc, aArgs);
-
-    // we have rewritten the subsequence start to zero.
-    // if there is no length param we can remove the entire
-    // subsequence function
-    // subsequence(collection(qname, 10),0)
-    //   -> collection(qname, 10)
-    if(aArgs.size() == 2){
-      return aArgs[0];
+    // push down position param into collection skip if possible
+    if (rewriteSubsequenceCollection(aSctx, aLoc, aArgs, true /*flag int*/))
+    {
+      // we have rewritten the subsequence to start from the beginning.
+      // if there is no length param we can remove the entire
+      // subsequence function
+      // subsequence(collection(qname, 10),1)
+      //   -> collection(qname, 10)
+      if (aArgs.size() == 2)
+      {
+        return aArgs[0];
+      }
     }
   }
 
