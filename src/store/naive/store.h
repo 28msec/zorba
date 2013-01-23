@@ -275,7 +275,6 @@ public:
   virtual store::Collection_t createCollection(
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
-      const store::Item_t& aNodeType,
       bool isDynamic) = 0;
 
   virtual void addCollection(store::Collection_t& collection);

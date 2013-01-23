@@ -226,6 +226,10 @@ bool GroupTupleCmp::equal(const GroupTuple* t1, const GroupTuple* t2) const
     {
       return false;
     }
+    else if (item1->isNaN() && item2->isNaN())
+    {
+      return true;
+    }
     else
     {
       try

@@ -231,7 +231,7 @@ void SchemaValidatorImpl::processElement(
     {
       // workaround for elem of type xsd:string with no text child
       if ( newType->is_builtin() && 
-          newType->get_qname()->equals(GENV_TYPESYSTEM.STRING_TYPE_ONE->get_qname()) )
+          newType->getQName()->equals(GENV_TYPESYSTEM.STRING_TYPE_ONE->getQName()) )
       {
         /*store::Item_t result;
          zstring emptyStr = "";
@@ -636,7 +636,7 @@ bool SchemaValidatorImpl::isPossibleSimpleContentRevalImpl(
         return true;
       }
       
-      if ( udType->isAtomic() ) 
+      if ( udType->isAtomicAny() ) 
       {
         xqtref_t baseBIType = udType->getBaseBuiltinType();
         return isPossibleSimpleContentRevalImpl(baseBIType);
