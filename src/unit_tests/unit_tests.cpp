@@ -38,17 +38,16 @@ map<string,libunittestfunc> libunittests;
 void initializeTestList() 
 {
   libunittests["base64"] = test_base64;
-
   libunittests["base64_streambuf"] = test_base64_streambuf;
-
   libunittests["fs_iterator"] = test_fs_iterator;
+  libunittests["hashmaps"] = test_hashmaps;
 
 #ifndef ZORBA_NO_ICU
   libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_ICU */
 
   libunittests["json_parser"] = test_json_parser;
-
+  libunittests["parameters"] = test_parameters;
   libunittests["string"] = test_string;
   libunittests["time_parse"] = test_time_parse;
 
@@ -71,8 +70,6 @@ void initializeTestList()
 #ifndef ZORBA_HAVE_UNORDERED_SET
   libunittests["unordered_set"] = test_unordered_set;
 #endif /* ZORBA_HAVE_UNORDERED_SET */
-
-  libunittests["hashmaps"] = test_hashmaps;
 
   libunittests["uri"] = runUriTest;
 
