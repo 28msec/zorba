@@ -615,6 +615,17 @@ declare variable $err:XQST0093 as xs:QName := fn:QName($err:NS, "err:XQST0093");
 
 (:~
  :
+ : In the group by clause of a FLWOR expression, it is a static error if the
+ : name of a grouping variable is not equal (by the eq operator on expanded
+ : QNames) to the name of a variable that is bound by a for or let clause
+ : that precedes the group by clause.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0094 as xs:QName := fn:QName($err:NS, "err:XQST0094");
+
+(:~
+ :
  : It is a static error if, for any named or unnamed decimal format, the
  : properties representing characters used in a picture string do not each
  : have distinct values. These properties are decimal-separator-sign,

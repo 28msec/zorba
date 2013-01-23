@@ -301,6 +301,18 @@ public:
     MAX_TYPE_KIND
   } TypeKind;
 
+
+  //
+  // The kind of a UDT: atomic, union, lis, or complex
+  //
+  enum UDTKind
+  {
+    ATOMIC_UDT,
+    LIST_UDT,  
+    UNION_UDT, 
+    COMPLEX_UDT
+  };
+
   //
   // The content kind of a complex type
   //
@@ -356,6 +368,16 @@ public:
 
   int card() const;
 
+  bool isComplex() const;
+
+  bool isList() const;
+
+  bool isUnion() const;
+
+  bool isGenAtomicAny() const;
+
+  bool isGenAtomicOne() const;
+
   bool isAtomicAny() const;
 
   bool isAtomicOne() const;
@@ -364,11 +386,9 @@ public:
 
   bool isBuiltinAtomicOne() const;
 
-  virtual bool isList() const { return false; }
+  store::Item_t getQName() const;
 
   virtual content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
-
-  virtual store::Item_t get_qname() const { return store::ItemHandle<store::Item>(); }
 
   virtual xqtref_t getBaseBuiltinType() const { return this; }
 
@@ -380,9 +400,9 @@ public:
 
 protected:
   XQType(
-      const TypeManager* manager,
-      TypeKind type_kind,
-      TypeConstants::quantifier_t quantifier,
+      const TypeManager* mgr,
+      TypeKind kind,
+      TypeConstants::quantifier_t quant,
       bool builtin);
 };
 
@@ -450,11 +470,13 @@ public:
 ********************************************************************************/
 class AtomicXQType : public XQType
 {
+  friend class XQType;
+
 public:
    static const char* ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST];
 
 private:
-   store::SchemaTypeCode m_type_code;
+   store::SchemaTypeCode theAtomicCode;
 
 public:
   SERIALIZABLE_CLASS(AtomicXQType)
@@ -464,20 +486,18 @@ public:
 public:
   AtomicXQType(
       const TypeManager* manager,
-      store::SchemaTypeCode type_code,
-      TypeConstants::quantifier_t quantifier,
+      store::SchemaTypeCode code,
+      TypeConstants::quantifier_t quant,
       bool builtin = false)
     :
-    XQType(manager, ATOMIC_TYPE_KIND, quantifier, builtin),
-    m_type_code(type_code)
+    XQType(manager, ATOMIC_TYPE_KIND, quant, builtin),
+    theAtomicCode(code)
   {
   }
 
-  store::SchemaTypeCode get_type_code() const { return m_type_code; }
+  store::SchemaTypeCode get_type_code() const { return theAtomicCode; }
 
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
-
-  store::Item_t get_qname() const;
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
@@ -709,22 +729,26 @@ public:
 ********************************************************************************/
 class UserDefinedXQType : public XQType
 {
+  friend class XQType;
+
 public:
-  enum type_category_t
-  {
-    ATOMIC_TYPE,  // atomic types: ex: int, date, token, string
-    LIST_TYPE,    // list of simple types: ex: list of int: "1 2 33"
-    UNION_TYPE,   // union of simple types: ShirtSize int or string: "8", "small"
-    COMPLEX_TYPE  // complex types: they represent structure
-  };
+
 
 private:
-  store::Item_t           m_qname;
+  store::Item_t           theQName;
+
   xqtref_t                m_baseType;
-  type_category_t         m_typeCategory;
+
+  UDTKind                 theUDTKind;
+
   content_kind_t          m_contentKind;
+
   std::vector<xqtref_t>   m_unionItemTypes;
+
   xqtref_t                m_listItemType;
+
+public:
+  static std::string decodeUDTKind(UDTKind typeCategory);
 
 public:
   SERIALIZABLE_CLASS(UserDefinedXQType)
@@ -738,7 +762,7 @@ public:
       store::Item_t qname,
       const xqtref_t& baseType,
       TypeConstants::quantifier_t quantifier,
-      type_category_t typeCategory,
+      UDTKind typeCategory,
       content_kind_t contentKind,
       bool builtin = false);
 
@@ -763,17 +787,7 @@ public:
 
   virtual content_kind_t content_kind() const { return m_contentKind; };
 
-  store::Item_t get_qname() const { return m_qname; }
-
-  bool isAtomic() const { return m_typeCategory == ATOMIC_TYPE; }
-
-  bool isList() const { return m_typeCategory == LIST_TYPE; }
-
-  bool isUnion() const { return m_typeCategory == UNION_TYPE; }
-
-  bool isComplex() const { return m_typeCategory == COMPLEX_TYPE; }
-
-  type_category_t getTypeCategory() const { return m_typeCategory; }
+  UDTKind getUDTKind() const { return theUDTKind; }
 
   xqtref_t getBaseType() const { return m_baseType; }
 
@@ -783,11 +797,12 @@ public:
 
   const std::vector<xqtref_t>& getUnionItemTypes() const { return m_unionItemTypes; }
 
-  bool isSuperTypeOf(const TypeManager* tm, const XQType& subType) const;
+  bool isSuperTypeOf(
+      const TypeManager* tm,
+      const XQType& subType,
+      const QueryLoc& loc) const;
 
   bool isSubTypeOf(const TypeManager* tm, const XQType& superType) const;
-
-  static std::string typeCategoryStr(type_category_t typeCategory);
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
@@ -804,8 +819,6 @@ public:
     XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
   {
   }
-
-  store::Item_t get_qname() const;
 
  public:
   SERIALIZABLE_CLASS(AnyXQType)
@@ -825,8 +838,6 @@ public:
     XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
   {
   }
-
-  store::Item_t get_qname() const;
 
  public:
   SERIALIZABLE_CLASS(UntypedXQType)
@@ -848,8 +859,6 @@ public:
   }
 
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
-
-  store::Item_t get_qname() const;
 
 public:
   SERIALIZABLE_CLASS(AnySimpleXQType)

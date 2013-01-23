@@ -116,6 +116,15 @@ void* begin_visit(const AposAttrValueContent& n)
 DEFAULT_END_VISIT (AposAttrValueContent)
 
 
+void * begin_visit(const ArgumentPlaceholder& n)
+{
+  os << "?";
+  return 0;
+}
+
+
+DEFAULT_END_VISIT (ArgumentPlaceholder)
+
 void* begin_visit(const ArgList& n)
 {
   for (int i=0; i<(int)n.size(); ++i) {
@@ -130,22 +139,13 @@ void* begin_visit(const ArgList& n)
 }
 
 
-DEFAULT_END_VISIT (ArgList)
+DEFAULT_END_VISIT(ArgList)
 
 
-void * begin_visit(const ArgumentPlaceholder& n)
-{
-  os << "?";
-  return 0;
-}
-
-DEFAULT_END_VISIT (ArgumentPlaceholder)
+DEFAULT_BEGIN_VISIT(GeneralizedAtomicType)
 
 
-DEFAULT_BEGIN_VISIT (AtomicType)
-
-
-void end_visit(const AtomicType& n, void* state)
+void end_visit(const GeneralizedAtomicType& n, void* state)
 {
   os << n.get_qname()->get_qname();
 }
@@ -207,13 +207,19 @@ DEFAULT_END_VISIT (BoundarySpaceDecl)
 void* begin_visit(const CaseClause& n)
 {
   os << "case ";
-  if(n.get_varname())
+
+  if (n.get_varname())
   {
     os << "$" << n.get_varname()->get_qname() << " as ";
   }
-  n.get_type()->accept(*this);
+
+  csize numTypes = n.num_types();
+  for (csize i = 0; i < numTypes; ++i)
+    n.get_type(i)->accept(*this);
+
   os << "return ";
   n.get_expr()->accept(*this);
+
   return no_state;
 }
 
