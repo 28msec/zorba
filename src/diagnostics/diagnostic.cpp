@@ -166,10 +166,6 @@ ostream& operator<<( ostream &o, kind k ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#define case_123456789 \
-  case '1': case '2': case '3': case '4': case '5': \
-  case '6': case '7': case '8': case '9'
-
 namespace internal {
 
 SystemDiagnosticBase::map_type& SystemDiagnosticBase::get_map() {
@@ -181,6 +177,10 @@ namespace diagnostic {
 
 location const location::empty;
 parameters const parameters::empty;
+
+#define case_123456789 \
+  case '1': case '2': case '3': case '4': case '5': \
+  case '6': case '7': case '8': case '9'
 
 parameters::parameters() {
 }
@@ -206,15 +206,24 @@ void parameters::substitute( value_type *s ) const {
 
   for ( size_type i = 1; i <= 9; ++i ) {
     size_type dollar_pos = value_type::npos;
-    bool got_lbrace = false;
+    bool inside_braces = false;
     bool replace;
 
     for ( value_type::size_type pos = 0; pos < s->size(); ++pos ) {
       char c = s->at( pos );
+
+      //
+      // ordinary (non-substitution) character case
+      //
       if ( dollar_pos == value_type::npos ) {
-        if ( c == '$' ) {
-          dollar_pos = pos;
-          replacement.clear();
+        switch ( c ) {
+          case '$':
+            dollar_pos = pos;
+            replacement.clear();
+            break;
+          case '\\':
+            s->erase( pos, 1 );
+            break;
         }
         continue;
       }
@@ -222,7 +231,7 @@ void parameters::substitute( value_type *s ) const {
       //
       // ${i} case
       //
-      if ( got_lbrace ) {
+      if ( inside_braces ) {
         switch ( c ) {
           case_123456789:
             if ( to_index( c ) == i ) {
@@ -233,7 +242,7 @@ void parameters::substitute( value_type *s ) const {
               dollar_pos = value_type::npos;
             break;
           case '}':
-            got_lbrace = false;
+            inside_braces = false;
             goto replace_or_erase;
           case '\\':
             if ( pos + 1 < s->size() )
@@ -241,17 +250,16 @@ void parameters::substitute( value_type *s ) const {
             // no break;
           default:
             replacement += c;
-        } // switch
+        }
         continue;
-      } // if ( got_lbrace )
+      }
 
       //
       // $i case
-      // $i?j:k case
       //
       switch ( c ) {
         case '{':
-          got_lbrace = true;
+          inside_braces = true;
           replace = false;
           break;
         case_123456789:
@@ -261,13 +269,10 @@ void parameters::substitute( value_type *s ) const {
             value_type::size_type pos2 = pos + 1;
             if ( pos2 < s->size() ) {
               switch ( s->at( pos2 ) ) {
-                case '\\':
-                  s->erase( pos2, 1 );
-                  break;
                 case '?':
                   if ( ++pos2 < s->size() ) {
                     //
-                    // The i?j:k case....
+                    // $i?<then>:<else> case
                     //
                     pos = pos2;
                     replace =
@@ -284,15 +289,14 @@ void parameters::substitute( value_type *s ) const {
                         case '\\':
                           s->erase( pos2, 1 );
                           break;
-                        default:
-                          /* do nothing */;
                       } // switch
-                    }
+                    } // if ( pos2 ...
                     goto replace_or_erase;
                   } // if ( ++pos2 ...
                   break;
-                default:
-                  /* do nothing */;
+                case '\\':
+                  s->erase( pos2, 1 );
+                  break;
               } // switch
             } // if ( pos2 ...
 
