@@ -259,11 +259,21 @@ void parameters::substitute( value_type *s ) const {
                 //
                 pos = pos2;
                 replace = then_else( !param.empty(), *s, &pos, &replacement );
-                pos2 = pos;
-                if ( ++pos2 < s->size() && s->at( pos2 ) == ':' ) {
-                  pos = pos2 + 1;
-                  replace =  then_else( param.empty(), *s, &pos, &replacement )
-                          || replace;
+                pos2 = pos + 1;
+                if ( pos2 < s->size() ) {
+                  switch ( s->at( pos2 ) ) {
+                    case ':':
+                      pos = pos2 + 1;
+                      replace =
+                        then_else( param.empty(), *s, &pos, &replacement ) ||
+                        replace;
+                      break;
+                    case '\\':
+                      s->erase( pos2, 1 );
+                      break;
+                    default:
+                      /* do nothing */;
+                  } // switch
                 }
                 goto replace_or_erase;
               } else {

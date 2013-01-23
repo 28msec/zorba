@@ -4606,11 +4606,11 @@
     </entry>
 
     <entry key="libxml_WAR_99"> <!-- XML_WAR_NS_URI -->
-      <value>xmlns$6?{:5}: URI "$6?6:5": invalid URI</value>
+      <value>xmlns$6?{:5}\: URI "$6?6:5": invalid URI</value>
     </entry>
 
     <entry key="libxml_WAR_100"> <!-- XML_WAR_NS_URI_RELATIVE -->
-      <value>xmlns$6?{:5}: URI "$6?6:5": invalid URI</value>
+      <value>xmlns$6?{:5}\: URI "$6?6:5": invalid URI</value>
     </entry>
 
     <entry key="libxml_ERR_101"> <!-- XML_ERR_MISSING_ENCODING -->

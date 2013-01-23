@@ -424,7 +424,7 @@ extern entry const dict_en[] = {
 #endif
   { "ZJPE0001", "'$1': illegal JSON character" },
   { "ZJPE0002", "\"$1\": illegal Unicode code-point" },
-  { "ZJPE0003", "'\\$1': illegal JSON character escape" },
+  { "ZJPE0003", "'\\\\$1': illegal JSON character escape" },
   { "ZJPE0004", "illegal JSON literal" },
   { "ZJPE0005", "illegal JSON number" },
   { "ZJPE0006", "\"$1\": unexpected JSON token" },
@@ -469,7 +469,7 @@ extern entry const dict_en[] = {
   { "ZSTR0050", "\"$1\" not implemented for item type \"$2\"" },
   { "ZSTR0055", "streamable string has already been consumed" },
   { "ZSTR0060", "out of range: $1" },
-  { "ZSTR0065", "Zorba did not close properly, objects may still in memory.\n$1 referenced URI(s) remain in the string pool.\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks." },
+  { "ZSTR0065", "Zorba did not close properly, objects may still in memory.\\n$1 referenced URI(s) remain in the string pool.\\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks." },
   { "ZSTR0066", "$1: does not reference a node in collection $2" },
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
@@ -637,7 +637,7 @@ extern entry const dict_en[] = {
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
   { "~JNDY0021_IllegalCharacter_2", "'$2': illegal JSON character" },
   { "~JNDY0021_IllegalCodepoint_2", "\"$2\": illegal Unicode code-point" },
-  { "~JNDY0021_IllegalEscape_2", "'\\$2': illegal JSON character escape" },
+  { "~JNDY0021_IllegalEscape_2", "'\\\\$2': illegal JSON character escape" },
   { "~JNDY0021_IllegalLiteral", "illegal JSON literal" },
   { "~JNDY0021_IllegalNumber", "illegal JSON number" },
   { "~JNDY0021_UnexpectedExtraContent", "unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)" },
@@ -734,22 +734,22 @@ extern entry const dict_en[] = {
   { "~PromotionImpossible", "promotion not possible" },
   { "~QuotedColon_23", "\"$2\": $3" },
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_BROKEN_PIs_CONSTRUCT", "broken \\p{Is} construct; valid characters are [a-zA-Z0-9-]" },
+  { "~REGEX_BROKEN_PIs_CONSTRUCT", "broken \\\\p{Is} construct; valid characters are [a-zA-Z0-9-]" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_BROKEN_P_CONSTRUCT", "broken \\p construct" },
+  { "~REGEX_BROKEN_P_CONSTRUCT", "broken \\\\p construct" },
 #endif
 #if defined(ZORBA_NO_ICU)
   { "~REGEX_INVALID_ATOM_CHAR", "'$3': invalid character for an atom; forbidden characters are: [{}?*+|^]" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_INVALID_BACK_REF", "\\$3 backreference to a non-existent capture group ($4 groups so far)" },
+  { "~REGEX_INVALID_BACK_REF", "\\\\$3 backreference to a non-existent capture group ($4 groups so far)" },
 #endif
 #if defined(ZORBA_NO_ICU)
   { "~REGEX_INVALID_SUBCLASS", "malformed class subtraction" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_INVALID_UNICODE_CODEPOINT_u", "invalid unicode hex, should be in form \\uXXXX or \\UXXXXXXXX" },
+  { "~REGEX_INVALID_UNICODE_CODEPOINT_u", "invalid unicode hex, should be in form \\\\uXXXX or \\\\UXXXXXXXX" },
 #endif
 #if defined(ZORBA_NO_ICU)
   { "~REGEX_INVALID_USE_OF_SUBCLASS", "improper use of class subtraction: it must be the last construct in a class group [xxx-[yyy]]" },
@@ -770,31 +770,31 @@ extern entry const dict_en[] = {
   { "~REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_UNKNOWN_ESC_CHAR", "unknown \\? escape char; supported escapes are: \\[nrt\\|.?*+(){}[]-^$] for char escapes, \\[pP] for categories and \\[sSiIcCdDwW] for multichar groups" },
+  { "~REGEX_UNKNOWN_ESC_CHAR", "unknown \\\\? escape char; supported escapes are: \\\\[nrt\\\\|.?*+(){}[]-^$] for char escapes, \\\\[pP] for categories and \\\\[sSiIcCdDwW] for multichar groups" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_UNKNOWN_PC_CONSTRUCT", "unknown \\p{C?} category; supported categories: C, Cc, Cf, Co, Cn(for not assigned)" },
+  { "~REGEX_UNKNOWN_PC_CONSTRUCT", "unknown \\\\p{C?} category; supported categories: C, Cc, Cf, Co, Cn(for not assigned)" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_UNKNOWN_PIs_CONSTRUCT", "unknown \\p{Is} category block; see supported block escapes here: http://www.w3.org/TR/xmlschema-2/#charcter-classes" },
+  { "~REGEX_UNKNOWN_PIs_CONSTRUCT", "unknown \\\\p{Is} category block; see supported block escapes here: http://www.w3.org/TR/xmlschema-2/#charcter-classes" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_UNKNOWN_PL_CONSTRUCT", "unknown \\p{L?} category; supported categories: L, Lu, Ll, Lt, Lm, Lo" },
+  { "~REGEX_UNKNOWN_PL_CONSTRUCT", "unknown \\\\p{L?} category; supported categories: L, Lu, Ll, Lt, Lm, Lo" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_UNKNOWN_PM_CONSTRUCT", "unknown \\p{M?} category; supported categories: M, Mn, Mc, Me" },
+  { "~REGEX_UNKNOWN_PM_CONSTRUCT", "unknown \\\\p{M?} category; supported categories: M, Mn, Mc, Me" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_UNKNOWN_PN_CONSTRUCT", "unknown \\p{N?} category; supported categories: N, Nd, Nl, No" },
+  { "~REGEX_UNKNOWN_PN_CONSTRUCT", "unknown \\\\p{N?} category; supported categories: N, Nd, Nl, No" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_UNKNOWN_PP_CONSTRUCT", "unknown \\p{P?} category; supported categories: P, Pc, Pd, Ps, Pe, Pi, Pf, Po" },
+  { "~REGEX_UNKNOWN_PP_CONSTRUCT", "unknown \\\\p{P?} category; supported categories: P, Pc, Pd, Ps, Pe, Pi, Pf, Po" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_UNKNOWN_PS_CONSTRUCT", "unknown \\p{S?} category; supported categories: S, Sm, Sc, Sk, So" },
+  { "~REGEX_UNKNOWN_PS_CONSTRUCT", "unknown \\\\p{S?} category; supported categories: S, Sm, Sc, Sk, So" },
 #endif
 #if defined(ZORBA_NO_ICU)
-  { "~REGEX_UNKNOWN_PZ_CONSTRUCT", "unknown \\p{Z?} category; supported categories: Z, Zs, Zl, Zp" },
+  { "~REGEX_UNKNOWN_PZ_CONSTRUCT", "unknown \\\\p{Z?} category; supported categories: Z, Zs, Zl, Zp" },
 #endif
   { "~SEPM0009_Not10", "the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
   { "~SEPM0009_NotOmit", "the standalone attribute has a value other than \"omit\"" },
@@ -1106,7 +1106,7 @@ extern entry const dict_en[] = {
   { "~libxml_ERR_94", "validation failed: no DTD found" },
   { "~libxml_ERR_95", "\"IGNORE\" or \"INCLUDE\" expected" },
   { "~libxml_ERR_96", "XML version expected" },
-  { "~libxml_WAR_100", "xmlns$6?{:5}: URI \"$6?6:5\": invalid URI" },
+  { "~libxml_WAR_100", "xmlns$6?{:5}\\: URI \"$6?6:5\": invalid URI" },
   { "~libxml_WAR_102", "\"$5\": invalid value for \"xml:space\"; either \"default\" or \"preserve\" expected" },
   { "~libxml_WAR_106", "\"$5\": avoid attribute ending with ':'" },
   { "~libxml_WAR_107", "\"$5\": entity already defined in the internal subset" },
@@ -1114,7 +1114,7 @@ extern entry const dict_en[] = {
   { "~libxml_WAR_93", "\"$5\": catalog processing instruction syntax error" },
   { "~libxml_WAR_97", "\"$5\": unsupported XML version" },
   { "~libxml_WAR_98", "\"$5\": malformed xml:lang value" },
-  { "~libxml_WAR_99", "xmlns$6?{:5}: URI \"$6?6:5\": invalid URI" },
+  { "~libxml_WAR_99", "xmlns$6?{:5}\\: URI \"$6?6:5\": invalid URI" },
   { "~operating system error", "operating system error" },
   { "~scripting static error", "scripting static error" },
   { "~scripting static warning", "scripting static warning" },
