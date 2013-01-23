@@ -274,6 +274,7 @@ void DynamicFunctionIterator::importOuterEnv(
 
   csize numOuterVars = theDynamicFunctionInfo->theScopedVarsNames.size();
 
+
   for (csize i = 0; i < numOuterVars; ++i)
   {
     var_expr* ve = evalCCB->theEM->create_var_expr(importSctx,
@@ -281,6 +282,7 @@ void DynamicFunctionIterator::importOuterEnv(
                                                    loc,
                                                    var_expr::hof_var,
                                                    theDynamicFunctionInfo->theScopedVarsNames[i].getp());
+
 
     // ve->set_type(theOuterVarTypes[i]); TODO: get types
 
@@ -310,7 +312,7 @@ void DynamicFunctionIterator::importOuterEnv(
 
       VarInfo* outerGlobalVar = outerSctx->lookup_var(theDynamicFunctionInfo->theScopedVarsNames[i]);
 
-      ulong outerGlobalVarId;
+      ulong outerGlobalVarId = 0;
 
       if (outerGlobalVar)
       {
@@ -349,7 +351,9 @@ void DynamicFunctionIterator::importOuterEnv(
     importSctx->bind_var(ve, loc);
   }
 
+
   // Import the outer-query ns bindings
+
 
   store::NsBindings::const_iterator ite = theDynamicFunctionInfo->theLocalBindings.begin();
   store::NsBindings::const_iterator end = theDynamicFunctionInfo->theLocalBindings.end();

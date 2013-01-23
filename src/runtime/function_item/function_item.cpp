@@ -15,6 +15,11 @@
  */
 #include "stdafx.h"
 
+// This include needs to be kept in order to make sure the
+// auto_ptr<dynamic_context> manages to dealocate the
+// dynamic_context object.
+#include "context/dynamic_context.h"
+
 #include "runtime/function_item/function_item.h"
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/base/plan_iterator.h"
@@ -34,6 +39,8 @@
 // TODO: delete, debugging purposes
 #include "runtime/visitors/printer_visitor_api.h"
 #include "runtime/visitors/iterprinter.h"
+
+
 
 
 namespace zorba
@@ -109,7 +116,6 @@ FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
 {
 }
 
-
 FunctionItem::FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
                            CompilerCB* ccb,
                            dynamic_context* dctx)
@@ -122,6 +128,8 @@ FunctionItem::FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
 {
   assert(theDynamicFunctionInfo->theFunction->isUdf());
   theArgumentsValues.resize(theDynamicFunctionInfo->theArity);
+
+  // TODO: decide if it is needed
   if (theDynamicFunctionInfo->theCCB == NULL)
     theDynamicFunctionInfo->theCCB = ccb;
 }
