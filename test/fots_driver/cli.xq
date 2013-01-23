@@ -27,108 +27,66 @@ import module namespace r =
 
 
 (:~
-  Path to the FOTS catalog.xml file. If the path is relative, it will be 
-  resolved relative to the directory containing this cli.xq file.
-:)
+ : Path to the FOTS catalog.xml file. If the path is relative, it will be 
+ : resolved relative to the directory containing this cli.xq file.
+ :)
 declare variable $fotsPath as xs:string external := "";
 
 
 (:~ 
-  Path to the FOTSZorbaManifest.xml file. If the path is relative, it will be
-  resolved relative to the diractory containing this cli.xq file
-:)
+ : Path to the FOTSZorbaManifest.xml file. If the path is relative, it will be
+ : resolved relative to the diractory containing this cli.xq file
+ :)
 declare variable $fotsZorbaManifestPath as xs:string external :=
   "FOTSZorbaManifest.xml";
 
 
 (:~
-  Path to the results from a previous run. Used when we just want to generate
-  a report based on some previous run, i.e., without running the tests again. 
-:)
+ : Path to the results from a previous run. Used when we just want to generate
+ : a report based on some previous run, i.e., without running the tests again. 
+ :)
 declare variable $failuresFilePath as xs:string external := "";
 
 
 (:~
-  Path to the ExpectedFailures file.
-:)
+ : Path to the ExpectedFailures file.
+ :)
 declare variable $expectedFailuresPath  as xs:string external :="";
 
 
 (:~ 
-  The CLI command you want to run.
-:)
+ : The CLI command you want to run.
+ :)
 declare variable $mode as xs:string external := "";
 
 
 (:~ 
-  A list of comma-seperated prefixes. Only test-sets whose name starts with
-  a prefix in this list are going to be proccesed. An empty string means no
-  filtering of test-sets.
-:)
+ : A list of comma-seperated prefixes that acts as a filter for the test-sets
+ : to be processed: only test-sets whose name starts with a prefix in this list
+ : are going to be proccesed. An empty string means no filtering.
+ :
+ : Used by the list-test-sets, list-test-cases, and run-test-sets commands.
+ :)
 declare variable $testSetPrefixes as xs:string external := "";
 
 
 (:~ 
-  A list of comma-seperated prefixes. Only test-cases whose name starts with
-  a prefix in this list are going to be proccesed. An empty string means no
-  filtering of test-cases.
-:)
+ : A list of comma-seperated prefixes that acts as a filter for the test-cases
+ : to be processed: only test-cases whose name starts with a prefix in this list
+ : are going to be proccesed. An empty string means no filtering.
+ :
+ : Used by the list-test-cases, and run-test-sets commands.
+ :)
 declare variable $testCasePrefixes as xs:string external := "";
 
 
 (:~
- : Name of the test-set containing a test-case to process. Used only for the
- : "run-test-case" command.
-:)
-declare variable $testSetName as xs:string external := "";
-
-
-(:~ 
- : Name of the test-case to process. Used only for the "run-test-case" command.
-:)
-declare variable $testCaseName as xs:string external := "";
-
-
-(:~ 
-  A dependency used in the 'list-test-cases' and 'run-test-sets' commands to
-  filter the test-cases that will actually be listed/run. Only test-cases whose
-  applicable dependencies contain at least one dependency the matches this
-  user-specified dependency will be processed. The filtering dependency is
-  given as a string of the form "depValue_depSatisfied" (for example, 
-  "XQ30+_true"), or just "depValue" (in which case "true" is assumed as the
-  value of the satisfied attribute). If $dependency is set to the empty string,
-  no filtering is done.
-:)
-declare variable $dependency as xs:string external := "";
-
-
-(:~ 
-  List of assertion types used in the 'list-test-cases' and 'run-test-sets'
-  commands to filter the test-cases that will actually be listed/run. A test
-  case qualifies if there is at least one element node under the <result>
-  node of the <test-case> whose local name is equal to one of the strings
-  in the filtering set. If $assrtType is set to the empty sequence, no
-  filtering is done.
-:)
-declare variable $assertType as xs:string* external := ();
-
-
-(:~ 
-  Regex to be used by the 'list-matching-test-cases' command.  
-:)
-declare variable $pattern as xs:string external := "";
-
-
-(:~ 
-  Flags to be used by the 'list-matching-test-cases' command.
-:)
-declare variable $flags as xs:string external := "";
-
-
-(:~
-  The test cases in this list have bugs assigned and should not be run.
-:)
-declare variable $exceptedTestCases := (
+ : The test cases in this list should not have their queries evaluated at all
+ : (because they segfault, or hang, or take too long, etc).
+ :
+ : Used by the run-test-sets, run-and-report, and report commands.
+ :)
+declare variable $exceptedTestCases as xs:string* := (
   "cbcl-subsequence-011",
   "cbcl-subsequence-012",
   "cbcl-subsequence-013",
@@ -141,14 +99,69 @@ declare variable $exceptedTestCases := (
 
 
 (:~
-  The test in this list have bugs assigned already and should not be run
-:)
-declare variable $exceptedTestSets := ();
+ : The test sets in this list should not be not be processed at all.
+ :
+ : Used by the run-test-sets, run-and-report, and report commands.
+ :)
+declare variable $exceptedTestSets as xs:string* := ();
+
+
+(:~
+ : Name of the test-set containing a test-case to process. Used only for the
+ : "run-test-case" command.
+ :)
+declare variable $testSetName as xs:string external := "";
 
 
 (:~ 
-  Enable or disable verbose output 
-:)
+ : Name of the test-case to process. Used only for the "run-test-case" command.
+ :)
+declare variable $testCaseName as xs:string external := "";
+
+
+(:~ 
+ : A dependency used in the 'list-test-cases' and 'run-test-sets' commands to
+ : filter the test-cases that will actually be listed/run. Only test-cases whose
+ : applicable dependencies contain at least one dependency the matches this
+ : user-specified dependency will be processed. The filtering dependency is
+ : given as a string of the form "depValue_depSatisfied" (for example, 
+ : "XQ30+_true"), or just "depValue" (in which case "true" is assumed as the
+ : value of the satisfied attribute). If $dependency is set to the empty string,
+ : no filtering is done.
+ :
+ : Used in the list-test-cases and run-test-sets commands.
+ :)
+declare variable $dependency as xs:string external := "";
+
+
+(:~ 
+ : List of assertion types used in the 'list-test-cases' and 'run-test-sets'
+ : commands to filter the test-cases that will actually be listed/run. A test
+ : case qualifies if there is at least one element node under the <result>
+ : node of the <test-case> whose local name is equal to one of the strings
+ : in the filtering set. If $assrtType is set to the empty sequence, no
+ : filtering is done.
+ :
+ : Used in the list-test-cases and run-test-sets commands.
+ :)
+declare variable $assertType as xs:string* external := ();
+
+
+(:~ 
+ : Regex to be used by the 'list-matching-test-cases' command.  
+ :)
+declare variable $pattern as xs:string external := "";
+
+
+(:~ 
+ : Flags to be used by the 'list-matching-test-cases' command.
+ :)
+declare variable $flags as xs:string external := "";
+
+
+(:~ 
+ : Enable or disable verbose output 
+ :)
 declare variable $verbose as xs:string external := "true";
 
 
@@ -187,9 +200,9 @@ declare function local:usage() as xs:string
 
 
 (:~
-  Tokenize a string that contains a comma-separated list of tokens.
-  Note: if the input string is empty, the function returns the empty sequence.
-:)
+ : Tokenize a string that contains a comma-separated list of tokens.
+ : Note: if the input string is empty, the function returns the empty sequence.
+ :)
 declare %private function local:tokenize(
   $input as xs:string
 ) as xs:string*
@@ -247,9 +260,13 @@ case "run-test-sets"
 return 
   d:run-fots($fotsPath,
              $fotsZorbaManifestPath,
-             d:list-test-sets($fotsPath,
-                              local:tokenize(trace($testSetPrefixes,
-                                                   $testSetPrefixesMsg))),
+             if ($testSetPrefixes eq '')
+             then
+               ()
+             else
+               d:list-test-sets($fotsPath,
+                                local:tokenize(trace($testSetPrefixes,
+                                                     $testSetPrefixesMsg))),
              d:list-test-cases($fotsPath,
                                local:tokenize($testSetPrefixes),
                                local:tokenize(trace($testCasePrefixes,

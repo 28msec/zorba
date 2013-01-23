@@ -506,57 +506,41 @@ declare function env:resolver(
 
 
 (:~
- : Checks the dependencies according to the Zorba manifest.
+ : Checks that a set of dependencies (associated with some test-set or test-case)
+ : are met by Zorba's capabilities and implementation-defined features (as 
+ : specified in the Zorba manifest).
  :
- : @param $deps the dependencies of the test set and test case
+ : @param $deps the dependencies of the test set or test case
  : @param $zorbaManifest Zorba manifest document.
- : @return if true empty string, otherwise returns a string with the
- : dependencies that were not matched.
+ : @return a sequence of strings containing one string for each dependency
+ :         that was not met, describing the dependency. If all dependencies
+ :         are met, the empty sequence is returned.
  :)
 declare function env:check-dependencies(
   $deps           as element(fots:dependency)*,
-  $zorbaManifest
+  $zorbaManifest  as node()
 ) as xs:string* 
 {
-  if(empty($deps))
-  then ()
+  if (empty($deps)) then
+  { 
+    ()
+  }
   else
+  {
     for $dep in $deps
-    let $satisfied := if(exists($dep/@satisfied))
+
+    let $satisfied := if ($dep/@satisfied)
                       then data($dep/@satisfied)
                       else "true"
-    let $zorbaDep := $zorbaManifest//fots:dependency[ @type = $dep/@type and
-                                                      @value = $dep/@value and
-                                                      @satisfied = $satisfied]
+
+    let $zorbaDep := $zorbaManifest//fots:dependency[@type eq $dep/@type and
+                                                     @value eq $dep/@value and
+                                                     @satisfied eq $satisfied]
     return
-      if(empty($zorbaDep))
-      then concat("Dependency (type=",
-                  $dep/@type,
-                  ", value=",
-                  $dep/@value,
-                  ", satisfied=",
-                  $satisfied,
-                  ") was not met. ")
+      if (empty($zorbaDep))
+      then
+        concat("Dependency (type=", $dep/@type, ", value=", $dep/@value,
+               ", satisfied=", $satisfied, ") was not met. ")
       else ()
-};
-
-
-(:~
- : Retrieves the environment from a test-set/catalog given an environment name.
- : @param $catalog FOTS catalog file.
- : @param $testSet test set.
- : @param $envName name of the environment.
- : @return the environment with the given name.
- :)
-declare function env:get-environment (
-  $catalog,
-  $testSet  as element (fots:test-set),
-  $envName  as xs:string
-) as element(fots:environment)? 
-{
-  let $envTestSet := $testSet/test-set//environment[@name = $envName]
-  return
-    if (empty($envTestSet))
-    then $catalog/catalog//environment[@name = $envName]
-    else $envTestSet
+  }
 };
