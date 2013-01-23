@@ -202,110 +202,121 @@ parameters::size_type parameters::to_index( value_type::value_type c ) const {
 }
 
 void parameters::substitute( value_type *s ) const {
-  value_type param, replacement;
+  value_type replacement;
 
   for ( size_type i = 1; i <= 9; ++i ) {
     size_type dollar_pos = value_type::npos;
-    bool found_param = false;
     bool got_lbrace = false;
     bool replace;
 
     for ( value_type::size_type pos = 0; pos < s->size(); ++pos ) {
-      char const c = s->at( pos );
-      if ( dollar_pos != value_type::npos ) {
-
-        //
-        // ${i} case
-        //
-        if ( got_lbrace ) {
-          switch ( c ) {
-            case_123456789:
-              if ( to_index( c ) == i ) {
-                if ( found_param )
-                  throw invalid_argument( "multiple params within { }" );
-                found_param = true;
-                param = lookup_param( i );
-                replacement += param;
-              } else
-                dollar_pos = value_type::npos;
-              break;
-            case '}':
-              got_lbrace = false;
-              replace = !param.empty();
-              goto replace_or_erase;
-            default:
-              replacement += c;
-          }
-          continue;
+      char c = s->at( pos );
+      if ( dollar_pos == value_type::npos ) {
+        if ( c == '$' ) {
+          dollar_pos = pos;
+          replacement.clear();
         }
+        continue;
+      }
 
-        //
-        // $i case
-        // $i?j:k case
-        //
+      //
+      // ${i} case
+      //
+      if ( got_lbrace ) {
         switch ( c ) {
-          case '{':
-            got_lbrace = true;
-            break;
           case_123456789:
             if ( to_index( c ) == i ) {
-              param = lookup_param( i );
-
-              value_type::size_type pos2 = pos;
-              if ( ++pos2 < s->size() && s->at( pos2 ) == '?' &&
-                   ++pos2 < s->size() ) {
-                //
-                // The i?j:k case....
-                //
-                pos = pos2;
-                replace = then_else( !param.empty(), *s, &pos, &replacement );
-                pos2 = pos + 1;
-                if ( pos2 < s->size() ) {
-                  switch ( s->at( pos2 ) ) {
-                    case ':':
-                      pos = pos2 + 1;
-                      replace =
-                        then_else( param.empty(), *s, &pos, &replacement ) ||
-                        replace;
-                      break;
-                    case '\\':
-                      s->erase( pos2, 1 );
-                      break;
-                    default:
-                      /* do nothing */;
-                  } // switch
-                }
-                goto replace_or_erase;
-              } else {
-                s->replace( dollar_pos, 2, param );
-                pos = dollar_pos + param.length();
-              }
-            } // if ( to_index( c ) ...
+              value_type const param( lookup_param( i ) );
+              replace = !param.empty() || replace;
+              replacement += param;
+            } else
+              dollar_pos = value_type::npos;
+            break;
+          case '}':
+            got_lbrace = false;
+            goto replace_or_erase;
+          case '\\':
+            if ( pos + 1 < s->size() )
+              c = s->at( ++pos );
             // no break;
           default:
-            dollar_pos = value_type::npos;
+            replacement += c;
         } // switch
-
         continue;
+      } // if ( got_lbrace )
+
+      //
+      // $i case
+      // $i?j:k case
+      //
+      switch ( c ) {
+        case '{':
+          got_lbrace = true;
+          replace = false;
+          break;
+        case_123456789:
+          if ( to_index( c ) == i ) {
+            value_type const param( lookup_param( i ) );
+
+            value_type::size_type pos2 = pos + 1;
+            if ( pos2 < s->size() ) {
+              switch ( s->at( pos2 ) ) {
+                case '\\':
+                  s->erase( pos2, 1 );
+                  break;
+                case '?':
+                  if ( ++pos2 < s->size() ) {
+                    //
+                    // The i?j:k case....
+                    //
+                    pos = pos2;
+                    replace =
+                      then_else( !param.empty(), *s, &pos, &replacement );
+                    pos2 = pos + 1;
+                    if ( pos2 < s->size() ) {
+                      switch ( s->at( pos2 ) ) {
+                        case ':':
+                          pos = pos2 + 1;
+                          replace =
+                            then_else( param.empty(), *s, &pos, &replacement )
+                            || replace;
+                          break;
+                        case '\\':
+                          s->erase( pos2, 1 );
+                          break;
+                        default:
+                          /* do nothing */;
+                      } // switch
+                    }
+                    goto replace_or_erase;
+                  } // if ( ++pos2 ...
+                  break;
+                default:
+                  /* do nothing */;
+              } // switch
+            } // if ( pos2 ...
+
+            s->replace( dollar_pos, 2, param );
+            pos = dollar_pos + param.length();
+          } // if ( to_index( c ) ...
+          // no break;
+        default:
+          dollar_pos = value_type::npos;
+      } // switch
+
+      continue;
 
 replace_or_erase:
-        value_type::size_type const replace_or_erase_len = pos - dollar_pos + 1;
-        if ( replace ) {
-          s->replace( dollar_pos, replace_or_erase_len, replacement );
-          pos = dollar_pos + replacement.length() - 1;
-        } else {
-          s->erase( dollar_pos, replace_or_erase_len );
-          pos = dollar_pos - 1;
-        }
-        dollar_pos = value_type::npos;
-        continue;
-      } // if ( dollar_pos ...
-
-      if ( c == '$' ) {
-        dollar_pos = pos;
-        param.clear();
-        replacement.clear();
+      value_type::size_type const replace_or_erase_len = pos - dollar_pos + 1;
+      if ( replace ) {
+        s->replace( dollar_pos, replace_or_erase_len, replacement );
+        pos = dollar_pos + replacement.length() - 1;
+      } else {
+        s->erase( dollar_pos, replace_or_erase_len );
+        pos = dollar_pos - 1;
       }
+      dollar_pos = value_type::npos;
+
     } // for ( ... pos ...
   } // for ( ... i ...
 }
@@ -338,8 +349,13 @@ bool parameters::then_else( bool expr, value_type const &s,
             break;
           case '}':
             goto done;
+          case '\\':
+            if ( *pos + 1 < s.size() )
+              c = s[ ++*pos ];
+            // no break;
           default:
-            *replacement += c;
+            if ( expr )
+              *replacement += c;
         } // switch
       } // while
       throw invalid_argument( "'}' expected for ?:" );
