@@ -42,6 +42,10 @@ namespace UnitTests {
   int test_string( int, char*[] );
   int test_time_parse( int, char*[] );
 
+#ifdef ZORBA_WITH_FILE_ACCESS
+  int test_fs_iterator( int, char*[] );
+#endif /* ZORBA_WITH_FILE_ACCESS */
+
 #ifndef ZORBA_NO_FULL_TEXT
   int test_stemmer( int, char*[] );
   int test_thesaurus( int, char*[] );
