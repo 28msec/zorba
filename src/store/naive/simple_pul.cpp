@@ -831,13 +831,12 @@ void PULImpl::addCreateCollection(
     const QueryLoc* loc,
     store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
-    const store::Item_t& nodeType,
     bool isDynamic)
 {
   CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
   pul->theCreateCollectionList.push_back(GET_PUL_FACTORY().
-  createUpdCreateCollection(pul, loc, name, annotations, nodeType, isDynamic));
+  createUpdCreateCollection(pul, loc, name, annotations, isDynamic));
 }
 
 

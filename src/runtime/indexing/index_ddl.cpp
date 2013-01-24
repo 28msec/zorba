@@ -134,7 +134,7 @@ static void createIndexSpec(
     if (keyTypes[i] != NULL)
     {
       const XQType& t = *keyTypes[i];
-      spec.theKeyTypes[i] = t.get_qname();
+      spec.theKeyTypes[i] = t.getQName();
     }
     spec.theCollations.push_back(keyModifiers[i].theCollation);
   }

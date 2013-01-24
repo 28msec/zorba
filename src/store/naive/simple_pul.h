@@ -459,7 +459,6 @@ public:
         const QueryLoc* aQueryLoc,
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
-        const store::Item_t& nodeType,
         bool isDynamic);
 
   void addDeleteCollection(

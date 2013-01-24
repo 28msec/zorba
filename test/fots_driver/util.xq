@@ -33,6 +33,7 @@ import module namespace fots-err =
 
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
+
 declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
@@ -59,62 +60,74 @@ declare namespace ann =
     <output:indent                value="yes"  />
     <output:omit-xml-declaration  value="no" />
   </output:serialization-parameters>;
-  
+
+
 (:~
- : Retrieve the value of from the given node that is either given as text node
- : or in a file attribute.
+ : Search within a given test-case for all element nodes with a given node name.
+ : For each such element node return:
+ : (a) if the node has a @file attr, the content of that file as unparsed text,
+ : or
+ : (b) the typed value of the node (assuming it is promotable to string).
  :
  : @param $case test-case element.
- : @param $path the path of the test-set.
+ : @param $node-name
+ : @param $envBaseURI
  : @return the query text.
  :)
 declare %ann:nondeterministic function util:get-value(
   $case       as element(fots:test-case),
   $envBaseURI as xs:anyURI,
   $node-name  as xs:string
-) as xs:string {
-  try {
+) as xs:string
+{
+  try
+  {
     for $node in $case/descendant-or-self::*
-    where (fn:local-name-from-QName(fn:node-name($node)) = $node-name)
+    where (fn:local-name-from-QName(fn:node-name($node)) eq $node-name)
     return
-      if(exists($node/@file))
+      if ($node/@file)
       then fn:unparsed-text(resolve-uri($node/@file, $envBaseURI))
       else fn:data($node)
-  } catch * {
+  }
+  catch *
+  {
     fn:error($fots-err:errNA, $err:description)
   }
 };
 
+
 (:~
- :  returns the parent folder of the given file path.
- :   example: util:parent-folder('/home/user/file.ext') returns '/home/user'.
+ :  Returns the parent folder of the given file path.
+ :  example: util:parent-folder('/home/user/file.ext') returns '/home/user'.
+ :
  : @param $path Path.
  : @return the parent folder of the given file.
  :)
-
 declare function util:parent-folder(
-  $path   as xs:string
-) as xs:anyURI {
-  xs:anyURI(fn:substring-before($path,
-                                file:base-name($path)))
+  $path as xs:string
+) as xs:anyURI
+{
+  xs:anyURI(fn:substring-before($path, file:base-name($path)))
 };
 
-declare function util:serialize-result(
-  $result    as item()*
-) as xs:string* {
-util:serialize-result($result,
-                      $util:serParamXml)
-};
 
 declare function util:serialize-result(
-  $result    as item()*,
+  $result as item()*
+) as xs:string*
+{
+  util:serialize-result($result, $util:serParamXml)
+};
+
+
+declare function util:serialize-result(
+  $result as item()*,
   $SerParams
-) as xs:string* {
+) as xs:string*
+{
   for $res in $result
   return
-   if($res instance of node())
-   then fn:serialize($res,
-                     $SerParams)
+   if ($res instance of node())
+   then fn:serialize($res, $SerParams)
    else fn:string($res)
 };
 
