@@ -255,7 +255,7 @@ public:
    * forms:
    *
    * - <code>$</code><em>i</em>
-   * - <code>${</code><em>chars i chars</em><code>}</code>
+   * - <code>${</code>[<em>chars</em>]<em>i</em>[<em>chars</em>]<code>}</code>
    * - <code>$</code><em>i</em><code>?</code><em>then</em>[<code>:</code><em>else</em>]
    *
    * where \e i is a digit in the range <code>[1,9]</code> and refers to the
@@ -263,7 +263,10 @@ public:
    * <code>[1-9}]</code>, and \e then and \e else are of one of the two forms:
    *
    *  - <em>j</em>
-   *  - <code>{</code><em>chars j chars k chars ...</em><code>}</code>
+   *  - <code>{</code>[<em>chars j chars k chars ...</em>]<code>}</code>
+   *
+   * where \e j is likewise a digit in the range <code>[1,9]</code> and refers
+   * to the value of the \e jth parameter.
    *
    * The first substitution form replaces <code>$</code><em>i</em> with the
    * value of the \e ith parameter.
@@ -284,6 +287,11 @@ public:
    * parameter indicies.  If at least one is non-empty, then the substitution
    * for the portion will be done; if all are empty, then everything for the
    * portion will be erased.
+   * 
+   * 
+   * The \c \\ character can be used to escape the meaning of the
+   * <code>$</code>, <code>[1-9]</code>, <code>?</code>, <code>:</code>, and
+   * <code>}</code> characters and instead treat them as ordinary characters.
    *
    * Substitution is performed by making at most 9 passes over the string, one
    * pass per parameter starting at 1.  Substitutions may themselves have

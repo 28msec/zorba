@@ -19,7 +19,7 @@
  !  forms:
  ! 
  !  - $i
- !  - ${<chars> i <chars>}
+ !  - ${[<chars>]i[<chars>]}
  !  - $i?<then>[:<else>]
  ! 
  !  where i is a digit in the range [1,9] and refers to the value of the ith
@@ -27,8 +27,11 @@
  !  <else> are of one of the two forms:
  ! 
  !   - j
- !   - {<chars> j <chars> [k <chars>...]}
+ !   - {[<chars>]j[<chars>][k<chars>...]}
  ! 
+ !  where j is likewise a digit in the range [1,9] and refers to the value of
+ !  the jth parameter.
+ !
  !  The first substitution form replaces $i with the value of the ith
  !  parameter.
  ! 
@@ -48,6 +51,9 @@
  !  indicies.  If at least one is non-empty, then the substitution for the
  !  portion will be done; if all are empty, then everything for the portion
  !  will be erased.
+ !
+ !  The \ character can be used to escape the meaning of the $, [1-9], ?, :,
+ !  and } characters and instead treat them as ordinary characters.
  ! 
  !  Substitution is performed by making at most 9 passes over the string, one
  !  pass per parameter starting at 1.  Substitutions may themselves have
@@ -57,13 +63,13 @@
  -->
 
 <!--
- ! Please use the following convention for sub-message keys.
+ !  Please use the following convention for sub-message keys.
  !
- ! If a sub-message key has at least one $n number in it (where 'n' is [1-9]),
- ! append an underscore ('_') followed by all the number(s) used in the value.
- ! If the last $n is optional, append a lowercase 'o'.
+ !  If a sub-message key has at least one $n number in it (where 'n' is [1-9]),
+ !  append an underscore ('_') followed by all the number(s) used in the value.
+ !  If the last $n is optional, append a lowercase 'o'.
  !
- ! For example, given this "throw" in C++ code:
+ !  For example, given this "throw" in C++ code:
  !
  !    throw XQUERY_EXCEPTION(
  !      err::XPTY0004,
@@ -74,7 +80,7 @@
  !      ERROR_LOC( get_loc() )
  !    );
  !
- ! The "bad type" and "no treat as" keys are defined as:
+ !  The "bad type" and "no treat as" keys are defined as:
  !
  !    <entry key="BadType_23o">
  !      <value>"$2": invalid type${: 3}</value>
@@ -84,8 +90,9 @@
  !      <value>can not treat as "$4"</value>
  !    </entry>
  !
- ! In the "throw" above, you can tell just by looking at it that all the
- ! required parameters are given and that each has the correct number/position.
+ !  In the "throw" above, you can tell just by looking at it that all the
+ !  required parameters are given and that each has the correct
+ !  number/position.
  !
  !      ERROR_PARAMS(
  !        ZED( BadType_23o ), // #1
