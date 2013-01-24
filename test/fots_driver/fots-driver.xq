@@ -690,6 +690,7 @@ declare %ann:sequential function driver:test(
 (:~
  : Creates the complete query that will be evaluated by adding the necessary
  : XQXQ URL resolvers.
+ :
  : @param $queryText the test-case/test after all the additional prolog
  : statements were added.
  : @param $case the test case.
@@ -736,15 +737,17 @@ declare %private function driver:create-XQXQ-query(
       "&#xA;",
       "&#xA;",
 
-      env:set-context-item($env, $envBaseURI),
+      let $tmp := env:set-context-item($env, $envBaseURI)
+      return if (empty($tmp) or $tmp eq '') then () else concat($tmp, "&#xA;", "&#xA;"),
 
-      env:set-context-item($case/fots:environment, $testSetBaseURI),
+      let tmp := env:set-context-item($case/fots:environment, $testSetBaseURI)
+      return if (empty($tmp) or $tmp eq '') then () else concat($tmp, "&#xA;", "&#xA;"),
 
-      let $tmp := env:set-variables($env, $envBaseURI),
-      return if (empty($tmp)) then () else concat($tmp, "&#xA;", "&#xA;"),
+      let $tmp := env:set-variables($env, $envBaseURI)
+      return if (empty($tmp) or $tmp eq '') then () else concat($tmp, "&#xA;", "&#xA;"),
 
-      let $tmp := env:set-variables($case/fots:environment, $testSetBaseURI),
-      return if (empty($tmp)) then () else concat($tmp, "&#xA;", "&#xA;"),
+      let $tmp := env:set-variables($case/fots:environment, $testSetBaseURI)
+      return if (empty($tmp) or $tmp eq '') then () else concat($tmp, "&#xA;", "&#xA;"),
 
       "xqxq:evaluate($queryID)",
       "&#xA;",
