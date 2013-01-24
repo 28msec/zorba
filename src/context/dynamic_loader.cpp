@@ -30,6 +30,8 @@
 #endif
 
 #include <diagnostics/xquery_diagnostics.h>
+#include "diagnostics/assert.h"
+
 #include <zorbatypes/URI.h>
 #include <zorba/external_module.h>
 #include <zorba/zorba_string.h>
@@ -283,6 +285,10 @@ DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
               ERROR_PARAMS( lURI, potentialModuleFile )
             );
           }
+        }
+        else
+        {
+          ZORBA_ASSERT(false);
         }
 
         return lModule;

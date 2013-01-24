@@ -257,26 +257,54 @@ return
   )
 
 case "run-test-sets"
-return 
-  d:run-fots($fotsPath,
-             $fotsZorbaManifestPath,
-             if ($testSetPrefixes eq '')
-             then
-               ()
-             else
-               d:list-test-sets($fotsPath,
-                                local:tokenize(trace($testSetPrefixes,
-                                                     $testSetPrefixesMsg))),
-             d:list-test-cases($fotsPath,
-                               local:tokenize($testSetPrefixes),
-                               local:tokenize(trace($testCasePrefixes,
-                                                    $testCasePrefixesMsg)),
-                               trace($dependency, "'dependency' set to:"),
-                               trace($assertType, "'assertType' set to: ")),
-             $exceptedTestCases,
-             $exceptedTestSets,
-             xs:boolean($verbose),
-             $expectedFailuresPath)
+return
+{
+  trace($testSetPrefixes, $testSetPrefixesMsg);
+  trace($testCasePrefixes, $testCasePrefixesMsg);
+  trace($dependency, "'dependency' set to:");
+  trace($assertType, "'assertType' set to: ");
+
+  let $testSetNames :=
+  {
+    if ($testSetPrefixes eq '') then
+    {
+      ()
+    }
+    else
+    {
+      let $testSetNames := d:list-test-sets($fotsPath, local:tokenize($testSetPrefixes))
+      return if (empty($testSetNames)) then '' else $testSetNames
+    }
+  }
+
+  let $testCaseNames :=
+  {
+    if ($testCasePrefixes eq '') then
+    {
+      ()
+    }
+    else
+    {
+      let $testCaseNames :=
+        d:list-test-cases($fotsPath,
+                          local:tokenize($testSetPrefixes),
+                          local:tokenize($testCasePrefixes),
+                          $dependency,
+                          $assertType)
+      return if (empty($testCaseNames)) then '' else $testCaseNames
+    }
+  }
+
+  return
+    d:run-fots($fotsPath,
+               $fotsZorbaManifestPath,
+               $testSetNames,
+               $testCaseNames,
+               $exceptedTestCases,
+               $exceptedTestSets,
+               xs:boolean($verbose),
+               $expectedFailuresPath)
+}
 
 case "run-test-case"
 return 

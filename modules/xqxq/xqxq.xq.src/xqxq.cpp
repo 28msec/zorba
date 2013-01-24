@@ -489,8 +489,8 @@ zorba::ItemSequence_t PrepareMainModuleFunction::evaluate(
     lQuery = NULL;
     std::ostringstream err;
     err << "The query compiled using xqxq:prepare-main-module raised an error at"
-        << " line " << xe.source_line() << " column " << xe.source_column()
-        << ": " << xe.what();
+        << " file " << xe.source_uri() << " line " << xe.source_line() << " column " << xe.source_column()
+        << ": " << xe.what() << " -- Query string : " << std::endl << lQueryString;
 
     Item errQName = XQXQModule::getItemFactory()->createQName(
                                 xe.diagnostic().qname().ns(),

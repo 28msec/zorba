@@ -242,7 +242,6 @@ ulong SimpleStore::createCollectionId()
 store::Collection_t SimpleStore::createCollection(
     const store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
-    const store::Item_t& nodeType,
     bool isDynamic)
 {
   if (name == NULL)
@@ -250,7 +249,6 @@ store::Collection_t SimpleStore::createCollection(
 
   store::Collection_t collection(new SimpleCollection(name,
                                                       annotations,
-                                                      nodeType,
                                                       isDynamic));
 
   const store::Item* lName = collection->getName();
@@ -420,8 +418,11 @@ bool SimpleStore::unregisterReferenceToUnusedNode(store::Item* node)
 
     return true;
   }
-  assert(false);
+
+  ZORBA_ASSERT(false);
+  return false;
 }
+
 
 /*******************************************************************************
  * Remove a reference from the cache

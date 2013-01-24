@@ -945,7 +945,6 @@ class UpdCreateCollection : public UpdCollection
 
 protected:
   const std::vector<store::Annotation_t> theAnnotations;
-  store::Item_t                          theNodeType;
 
 protected:
   UpdCreateCollection(
@@ -953,12 +952,10 @@ protected:
         const QueryLoc* aLoc,
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
-        const store::Item_t& nodeType,
         bool isDynamic)
     :
     UpdCollection(pul, aLoc, name, isDynamic),
-    theAnnotations(annotations),
-    theNodeType(nodeType)
+    theAnnotations(annotations)
   {
   }
 

@@ -710,29 +710,46 @@ declare %private function driver:create-XQXQ-query(
                                               $env,
                                               $envBaseURI,
                                               $testSetBaseURI)
-  return string-join(
-  ("import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';",
-  if (exists($resolver))
-  then $resolver
-  else (),
-  (concat("variable $queryID := xqxq:prepare-main-module('",
-          "&#xA;",
-          replace($queryText,"'","''"),
-          "'",
-          "&#xA;",
-          if (exists($resolver)) 
-          then ", resolver:url-resolver#2, ());"
-          else ");")),
-          env:set-context-item($env, $envBaseURI),
-          env:set-context-item($case/fots:environment,
-                               $testSetBaseURI),
-          env:set-variables($env,
-                            $envBaseURI),
-          env:set-variables($case/fots:environment,
-                            $testSetBaseURI),
-          "xqxq:evaluate($queryID)"
-   ),
-  "&#xA;")
+  return
+    concat
+    (
+    "&#xA;",
+    "import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';",
+    "&#xA;",
+    "&#xA;",
+
+     if (exists($resolver))
+     then concat($resolver, "&#xA;", "&#xA;")
+     else (),
+
+     "variable $queryID := xqxq:prepare-main-module(",
+     "&#xA;",
+      "'",
+     "&#xA;",
+      replace($queryText,"'","''"),
+     "&#xA;",
+      "'",
+     "&#xA;",
+      if (exists($resolver)) 
+      then ", resolver:url-resolver#2, ());"
+      else ");",
+      "&#xA;",
+      "&#xA;",
+
+      env:set-context-item($env, $envBaseURI),
+
+      env:set-context-item($case/fots:environment, $testSetBaseURI),
+
+      let $tmp := env:set-variables($env, $envBaseURI),
+      return if (empty($tmp)) then () else concat($tmp, "&#xA;", "&#xA;"),
+
+      let $tmp := env:set-variables($case/fots:environment, $testSetBaseURI),
+      return if (empty($tmp)) then () else concat($tmp, "&#xA;", "&#xA;"),
+
+      "xqxq:evaluate($queryID)",
+      "&#xA;",
+      "        "
+   )
 };
 
 
@@ -751,16 +768,21 @@ declare %private %ann:sequential function driver:xqxq-invoke(
   $testSetBaseURI as xs:anyURI
 )
 {
-  try {
+  try 
+  {
     {
       variable $queryKey := xqxq:prepare-main-module($xqxqQueryText);
+
       variable $queryResult := xqxq:evaluate-sequential($queryKey);
+
       (:TODO check if this works:)
       (:variable $expResult := util:get-value($case, $testSetBaseURI, "result");:) 
-      eval:result($queryResult,
-                  $case/fots:result/*)
+
+      eval:result($queryResult, $case/fots:result/*)
     }
-  } catch * {
+  }
+  catch *
+  {
     eval:error((),
                $case/fots:result/*,
                $err:code,

@@ -234,7 +234,7 @@ void UDFunctionCallIterator::createCache(
 
     for (csize i = 0; i < numArgs; ++i)
     {
-      lSpec.theKeyTypes[i] = sig[i]->getBaseBuiltinType()->get_qname().getp();
+      lSpec.theKeyTypes[i] = sig[i]->getBaseBuiltinType()->getQName().getp();
     }
 
     lIndex = GENV_STORE.createIndex(theUDF->getName(), lSpec, 0);
