@@ -102,6 +102,10 @@
         <value>"switch" expressions only available in XQuery 3.0 or later</value>
       </entry>
 
+      <entry key="TypeSwitchExpr30">
+        <value>union of types in typeswitch clause is only available in XQuery 3.0 or later</value>
+      </entry>
+
       <entry key="TryCatchExpr30">
         <value>"try/catch" expressions only available in XQuery 3.0 or later</value>
       </entry>
@@ -166,7 +170,16 @@
        SequenceType is not defined in the in-scope schema types as an atomic
        type.
       </comment>
-      <value>"$1": not defined as atomic type${: 2}</value>
+      <value>$1</value>
+
+      <entry key="GenAtomic_2">
+        <value>"$2": not defined a generalized atomic type</value>
+      </entry>
+
+      <entry key="Atomic_2">
+        <value>"$2": not defined an atomic type</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPST0080">
@@ -455,6 +468,10 @@
        is of nonzero length and is not in the lexical space of \c xs:anyURI.
       </comment>
       <value>${"1": }invalid URI literal${: 2}</value>
+
+      <entry key="BadHexDigit_3">
+        <value>'$3': invalid hexedecimal digit</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQST0047">
@@ -670,6 +687,16 @@
        some chain of module dependencies.)
       </comment>
       <value>"$1": module must not depend on itself</value>
+    </diagnostic>
+
+    <diagnostic code="XQST0094">
+      <comment>
+      In the group by clause of a FLWOR expression, it is a static error if the
+      name of a grouping variable is not equal (by the eq operator on expanded
+      QNames) to the name of a variable that is bound by a for or let clause
+      that precedes the group by clause.
+      </comment>
+      <value>"$1": grouping variable not defined in the same flwor expression as the group-by clause</value>
     </diagnostic>
 
     <diagnostic code="XQST0098">
@@ -1020,7 +1047,20 @@
       <comment>
        Invalid lexical value.
       </comment>
-      <value>"$1": invalid lexical value${: 2}</value>
+      <value>$1</value>
+
+      <entry key="BadLexicalQName_2">
+        <value>"$2": value is not a valid lexical QName</value>
+      </entry>
+
+      <entry key="NoURIforPrefix_2">
+        <value>no namespace URI provided for prefix in lexical QName "$2"</value>
+      </entry>
+
+      <entry key="NoCastTo_234">
+        <value>"$2": value of type $3 is not castable to type $4</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="FOCA0003">
@@ -1188,7 +1228,52 @@
       <comment>
        Invalid value for cast/constructor.
       </comment>
-      <value>${"1": }invalid value for cast/constructor${: 2}</value>
+
+      <value>$1</value>
+
+      <entry key="NoCastTo_234">
+        <value>"$2": value of type $3 is not castable to type $4</value>
+      </entry>
+
+      <entry key="NoCastTo_234o">
+        <value>"$2": value is not castable to type $3${: 4}</value>
+      </entry>
+
+      <entry key="LocalNotNCName_2">
+        <value>"$2": local name in qname is not an xs:NCName</value>
+      </entry>
+
+      <entry key="PrefixNotNCName_2">
+        <value>"$2": prefix in qname is not an xs:NCName</value>
+      </entry>
+
+      <entry key="NameNotNCName_2">
+        <value>"$2": name is not an xs:NCName</value>
+      </entry>
+
+      <entry key="PrefixNotBound_2">
+        <value>"$2": prefix has no known namespace binding</value>
+      </entry>
+
+      <entry key="Base64BadChar_2">
+        <value>"$2": invalid Base64 character</value>
+      </entry>
+
+      <entry key="Base64Multiple4">
+        <value>Base64 data must be a multiple of 4 characters</value>
+      </entry>
+
+      <entry key="HexBinaryMustBeEven">
+        <value>HexBinary value must contain an even number of characters</value>
+      </entry>
+
+      <entry key="BadHexDigit_2">
+        <value>'$2': invalid hexedecimal digit</value>
+      </entry>
+
+      <entry key="NoTypeInCtx_2">
+        <value>"$2": type no defined in current context</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="FORG0002">
@@ -2088,8 +2173,8 @@
       <value>"$1": invalid serialization method for SAX</value>
     </diagnostic>
 
-    <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_NODE_REFERENCE">
-      <value>can not retrieve node-reference for a node that is not in a collection</value>
+    <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_REFERENCE">
+      <value>can not retrieve reference for a JSON object or array that is not in a collection</value>
     </diagnostic>
 
     <diagnostic code="ZAPI0090" name="CANNOT_VALIDATE_NON_ROOT">
@@ -3063,10 +3148,6 @@
       <value>"$2": invalid authority for "file" scheme</value>
     </entry>
 
-    <entry key="BadHexDigit_3">
-      <value>'$3': invalid hexedecimal digit</value>
-    </entry>
-
     <entry key="BadHexSequence">
       <value>invalid hexedecimal sequence</value>
     </entry>
@@ -3147,24 +3228,12 @@
       <value>unsupported XQuery version</value>
     </entry>
 
-    <entry key="Base64BadChar">
-      <value>invalid Base64 character</value>
-    </entry>
-
-    <entry key="Base64Multiple4">
-      <value>Base64 data must be a multiple of 4 characters</value>
-    </entry>
-
     <entry key="BaseURI">
       <value>base URI</value>
     </entry>
 
     <entry key="BoxCondTooManyColumns">
       <value>box condition has more columns than index</value>
-    </entry>
-
-    <entry key="CastFromToFailed_34">
-      <value>$3 to $4 cast failed</value>
     </entry>
 
     <entry key="CharExpected_3">
@@ -3319,10 +3388,6 @@
       <value>valid values are: yes, no, omit</value>
     </entry>
 
-    <entry key="HexBinaryMustBeEven">
-      <value>HexBinary value must contain an even number of characters</value>
-    </entry>
-
     <entry key="IncompleteKeyInIndexBuild">
       <value>incomplete key during index build</value>
     </entry>
@@ -3341,10 +3406,6 @@
 
     <entry key="MustBeAbsoluteURI">
       <value>must be absolute</value>
-    </entry>
-
-    <entry key="MustBeNCName">
-      <value>must be an xs:NCName</value>
     </entry>
 
     <entry key="NoAttrNodesInDocument">
@@ -3477,10 +3538,6 @@
 
     <entry key="NoTreatAs_4">
       <value>can not treat as "$4"</value>
-    </entry>
-
-    <entry key="NoTypeInCtx">
-      <value>undefined type in current context</value>
     </entry>
 
     <entry key="NoTypeInMainModule_4">

@@ -51,6 +51,8 @@
 #include "functions/func_json.h"
 #include "functions/func_maps.h"
 #include "functions/func_maths.h"
+#include "functions/func_nodes.h"
+#include "functions/func_reference.h"
 #include "functions/func_node_position.h"
 #include "functions/func_node_sort_distinct.h"
 #include "functions/func_nodes.h"
@@ -132,6 +134,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_maths(sctx);
   populate_context_nodes(sctx);
   populate_context_item(sctx);
+  populate_context_reference(sctx);
   populate_context_node_position(sctx);
   populate_context_numerics(sctx);
   populate_context_other_diagnostics(sctx);

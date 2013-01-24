@@ -53,7 +53,7 @@ protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
 public:
-  JSONNull() : AtomicItem() { }
+  JSONNull() : AtomicItem(store::JS_NULL) { }
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
@@ -94,6 +94,8 @@ private:
 public:
   JSONTree() : theCollection(NULL), theId(), theRoot(NULL)
   {}
+
+  ~JSONTree();
 
   simplestore::Collection* getCollection() const
   {

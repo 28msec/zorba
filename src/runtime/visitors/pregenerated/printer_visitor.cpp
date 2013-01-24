@@ -64,6 +64,7 @@
 #include "runtime/parsing_and_serializing/parsing_and_serializing.h"
 #include "runtime/qnames/qnames.h"
 #include "runtime/random/random.h"
+#include "runtime/reference/reference.h"
 #include "runtime/schema/schema.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/store/documents.h"
@@ -3609,6 +3610,62 @@ void PrinterVisitor::endVisit ( const UuidIterator& ) {
   thePrinter.endEndVisit();
 }
 // </UuidIterator>
+
+
+// <ReferenceIterator>
+void PrinterVisitor::beginVisit ( const ReferenceIterator& a) {
+  thePrinter.startBeginVisit("ReferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ReferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ReferenceIterator>
+
+
+// <HasReferenceIterator>
+void PrinterVisitor::beginVisit ( const HasReferenceIterator& a) {
+  thePrinter.startBeginVisit("HasReferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const HasReferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </HasReferenceIterator>
+
+
+// <AssignReferenceIterator>
+void PrinterVisitor::beginVisit ( const AssignReferenceIterator& a) {
+  thePrinter.startBeginVisit("AssignReferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const AssignReferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </AssignReferenceIterator>
+
+
+// <DereferenceIterator>
+void PrinterVisitor::beginVisit ( const DereferenceIterator& a) {
+  thePrinter.startBeginVisit("DereferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DereferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DereferenceIterator>
 
 #ifndef ZORBA_NO_XMLSCHEMA
 // <ValidateIterator>

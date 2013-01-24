@@ -231,62 +231,7 @@ size_t Item::alloc_size() const
 }
 
 
-Item::ItemKind Item::getKind() const
-{
-  //if (theUnion.treeRCPtr == 0)
-  //  return UNKNOWN;
-
-  if ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0)
-    return NODE;
-
-  return static_cast<ItemKind>(theUnion.itemKind);
-}
-
-
-bool Item::isNode() const
-{
-  return ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0 &&
-          theUnion.treeRCPtr != 0);
-}
-
-
-bool Item::isAtomic() const
-{
-  return (theUnion.itemKind == ATOMIC); 
-}
-
-
-bool Item::isList() const
-{
-  return (theUnion.itemKind == LIST); 
-}
-
-
-bool Item::isPul() const
-{
-  return (theUnion.itemKind == PUL);
-}
-
-
-bool Item::isError() const
-{
-  return (theUnion.itemKind == ERROR_);
-}
-
-
-bool Item::isFunction() const
-{
-  return (theUnion.itemKind == FUNCTION);
-}
-
-
 #ifdef ZORBA_WITH_JSON
-
-bool Item::isJSONItem() const
-{
-  return (theUnion.itemKind == JSONIQ); 
-}
-
 
 bool Item::isJSONObject() const
 {
@@ -340,10 +285,14 @@ Item* Item::getBaseItem() const
 
 store::SchemaTypeCode Item::getTypeCode() const
 {
+  if (isAtomic())
+  {
+    return static_cast<SchemaTypeCode>(theUnion.itemKind >> 4);
+  }
+
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
-  );
+    ERROR_PARAMS(__FUNCTION__, typeid(*this).name()));
 }
 
 

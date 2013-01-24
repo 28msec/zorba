@@ -276,15 +276,9 @@ PULPrimitiveFactory::createUpdCreateCollection(
     const QueryLoc* aLoc,
     store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
-    const store::Item_t& nodeType,
     bool isDynamic)
 {
-  return new UpdCreateCollection(pul,
-                                 aLoc,
-                                 name,
-                                 annotations,
-                                 nodeType,
-                                 isDynamic);
+  return new UpdCreateCollection(pul, aLoc, name, annotations, isDynamic);
 }
     
     

@@ -26,17 +26,18 @@
 #include "diagnostics/xquery_exception.h"
 #include "util/base64_util.h"
 
-#define CATCH_BASE64_EXCEPTION()                                            \
-  catch ( base64::exception const &e ) {                                    \
-    throw XQUERY_EXCEPTION(                                                 \
-      err::FORG0001, ERROR_PARAMS( e.invalid_char(), ZED( Base64BadChar ) ) \
-    );                                                                      \
-  }                                                                         \
-  catch ( std::invalid_argument const& ) {                                  \
-    throw XQUERY_EXCEPTION(                                                 \
-      err::FORG0001, ERROR_PARAMS( "", ZED( Base64Multiple4 ) )             \
-    );                                                                      \
+#define CATCH_BASE64_EXCEPTION()                                        \
+  catch (const base64::exception& e)                                    \
+  {                                                                     \
+    throw XQUERY_EXCEPTION(err::FORG0001,                               \
+    ERROR_PARAMS(ZED(FORG0001_Base64BadChar_2),  e.invalid_char()));    \
+  }                                                                     \
+  catch (const std::invalid_argument&)                                  \
+  {                                                                     \
+    throw XQUERY_EXCEPTION(err::FORG0001,                               \
+    ERROR_PARAMS(ZED(FORG0001_Base64Multiple4)));                       \
   }
+
 
 namespace zorba {
 namespace encoding {

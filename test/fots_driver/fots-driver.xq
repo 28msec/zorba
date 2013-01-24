@@ -27,23 +27,29 @@ import module namespace functx =
 
 import module namespace xqxq =
   "http://www.zorba-xquery.com/modules/xqxq";
+
 import module namespace datetime  =
   "http://www.zorba-xquery.com/modules/datetime";
 
 import module namespace eval =
   "http://www.zorba-xquery.com/fots-driver/evaluate" at "evaluate.xq";
+
 import module namespace feedback =
   "http://www.zorba-xquery.com/fots-driver/feedback" at "feedback.xq";
+
 import module namespace env =
   "http://www.zorba-xquery.com/fots-driver/environment" at "environment.xq";
+
 import module namespace util =
   "http://www.zorba-xquery.com/fots-driver/util" at "util.xq";
+
 import module namespace fots-err =
   "http://www.zorba-xquery.com/fots-driver/errors" at "errors.xq";
 
 
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
+
 declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
@@ -51,199 +57,278 @@ declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
 (:~
- : Loops through the FOTS catalog and returns all available test set names.
+ : Returns the names of all qualifying test sets.
+ :
+ : A test set qualifies if its name starts with one of the prefixes listed in
+ : $testSetPrefixes. If $testSetPrefixes is the empty sequence, then all test
+ : sets qualify.
+ :
  : @param $fotsPath path to the FOTS catalog file.
- : @param $testSetPrefixes name/criteria for the test sets
- : (empty string means all).
- : @return available FOTS test sets.
+ : @param $testSetPrefixes name criteria for the test sets
+ :        (empty sequence means all).
+ : @return names of qualifying FOTS test sets.
  :)
 declare %ann:nondeterministic function driver:list-test-sets(
   $fotsPath         as xs:string,
   $testSetPrefixes  as xs:string*
-) as xs:string* {
+) as xs:string*
+{
   let $doc := doc(resolve-uri($fotsPath))
   return
-    if(string-join($testSetPrefixes,'') = '')
+    if (empty($testSetPrefixes))
     then
       for $testSet in $doc/fots:catalog/fots:test-set
       return data($testSet/@name)
     else
       for $prefix in $testSetPrefixes
-        for $testSet in $doc/fots:catalog/fots:test-set[starts-with(@name, $prefix)]
-        return data($testSet/@name)
+      for $testSet in $doc/fots:catalog/fots:test-set[starts-with(@name, $prefix)]
+      return data($testSet/@name)
 };
 
-declare %private function driver:matches-dependency(
-  $dependencies as element(fots:dependency)*,
-  $filter       as xs:string
-) as xs:boolean {
-  let $filter := tokenize($filter, '_')
-  let $depValue := $filter[1]
-  let $depSatisfied as xs:string := if(exists($filter[2]) and
-                                    ($filter[2] = 'true' or $filter[2]='false'))
-                                    then $filter[2]
-                                    else 'true'
-  return
-    if(xs:boolean($depSatisfied))
-
-    (: $depSatisfied = 'true' :)
-    then (exists($dependencies[@value = $depValue and
-                               @satisfied = $depSatisfied]) or
-          exists($dependencies[@value = $depValue and empty(@satisfied)]))
-
-    (: $depSatisfied = 'false' :)
-    else  exists($dependencies[@value = $depValue and
-                               @satisfied = $depSatisfied])
-};
-
-declare %private function driver:list-assertions(
-  $case as element(fots:test-case)
-) as xs:string* {
-  distinct-values(for $assert in $case/fots:result/descendant-or-self::*
-                  return local-name-from-QName(node-name($assert)))
-};
 
 (:~
- : Loops through the given test set and returns the test cases that have the
- : given dependencies defined.
- : @param $testSet test set document.
- : @param $dependency defined dependency
- : (empty string means all test cases).
- : @param $assert lists of tests that contain a certain assert-type(empty
- : string means all tests).
- : @return matching test case names.
- :)
-declare %private function driver:list-test-cases(
-  $testSetDoc as document-node(),
-  $dependency as xs:string*,
-  $assert     as xs:string*
-) as xs:string* {
-  if(string-join($dependency,'') = '')
-  then $testSetDoc//fots:test-case/@name
-  else  for $testCase in $testSetDoc//fots:test-case
-        let $matchDep := driver:matches-dependency(($testSetDoc/fots:test-set/fots:dependency,
-                                                $testCase/fots:dependency),
-                                               $dependency)
-        let $matchAssert := (($assert = '') or
-                              exists(functx:value-intersect(
-                                      driver:list-assertions($testCase),
-                                                             $assert)))
-        where ($matchDep and $matchAssert)
-        return $testCase/@name
-  
-};
-
-(:~
- : Loops through the given test sets and returns the corresponding test cases.
+ : Returns the names of all qualifying test cases.
+ :
+ : A test case qualifies if (a) it belongs to a qualifing test set, and (b)
+ : its applicable dependencies include a user-provided dependency, or no
+ : dependency was provided by the user, and (c) its expected-result assertions
+ : include at least one of the assertions in a user-provided set of assertions,
+ : or no expected-result assertions were provided by the user.
+ :
+ : A test set qualifies if its name starts with one of the prefixes listed in
+ : $testSetPrefixes. If $testSetPrefixes is the empty sequence, then all test
+ : sets qualify.
+ :
+ : The filtering dependency is given as a string, which may be empty (signifying
+ : no dependency) or of the form "depValue_depSatisfied" (e.g., "XQ30+_true"),
+ : or just "depValue" (in which case "true" is assumed as the value of the
+ : satisfied attribute). A test-case qualifies if it has at least one dependency
+ : whose @value and @satisfied attributes are equal to the filtering depValue
+ : and depSatisfied. 
+ :
+ : A filtering set of assertions is given as a sequence of strings. A test-case
+ : qualifies if there is at least one element node under the <result> node of
+ : the <test-case> whose local name is equal to one of the strings in the 
+ : filtering set. 
+ :
  : @param $fotsPath path to the FOTS catalog file.
- : @param $testSetPrefixes name/criteria for the test sets
- : (empty string means all test cases).
- : @param $dependency type of dependency that has to be met
- : (empty string means all test cases).
- : @param $assert lists of tests that contain a certain assert-type(empty
- : string means all tests).
- : @return available FOTS test cases.
+ : @param $testSetPrefixes name criteria for the test sets
+ :        (empty sequence means all test sets).
+ : @param $dependency dependency used to filter test-cases.
+ :        (empty string means no filtering).
+ : @param $assert set of expected-result assertions used to filter test-cases.
+ :        (empty sequence means no filtering).
+ : @return names of qualifying FOTS test cases.
  :)
 declare %ann:nondeterministic function driver:list-test-cases(
   $fotsPath         as xs:string,
   $testSetPrefixes  as xs:string*,
-  $dependency       as xs:string*,
+  $dependency       as xs:string,
   $assert           as xs:string*
-) as xs:string* {
-  let $doc := doc(resolve-uri($fotsPath)),
-      $baseUri:= resolve-uri(util:parent-folder($fotsPath))
+) as xs:string*
+{
+  let $doc := doc(resolve-uri($fotsPath))
+  let $baseUri:= resolve-uri(util:parent-folder($fotsPath))
   return
-    if(string-join($testSetPrefixes,'') = '')
+    if (empty($testSetPrefixes))
     then
       for $testSet in $doc/fots:catalog/fots:test-set
       let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
       return driver:list-test-cases($testSetDoc, $dependency, $assert)
     else
       for $prefix in $testSetPrefixes
-        for $testSet in $doc/fots:catalog/fots:test-set[starts-with(@name, $prefix)]
-        let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
-        return driver:list-test-cases($testSetDoc, $dependency, $assert)
+      for $testSet in $doc/fots:catalog/fots:test-set[starts-with(@name, $prefix)]
+      let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
+      return driver:list-test-cases($testSetDoc, $dependency, $assert)
 };
 
+
 (:~
- : Loops through the given test sets and returns the corresponding test cases.
+ : Returns the names of all qualifying test cases.
+ :
+ : This function is similar to the driver:list-test-cases() defined above. It 
+ : just adds the following condition to the list of conditions that must be
+ : satisfied by each qualifying test case: (d) its name starts with one of the
+ : prefixes in $testCasePrefixes.
+ :
  : @param $fotsPath path to the FOTS catalog file.
- : @param $testSetPrefixes name/criteria for the test sets
- : (empty string means all test cases).
- : @param $testCasePrefixes name/criteria for the test cases
- : (empty string means all test cases).
- : @param $dependency type of dependency that has to be met
- : (empty string means all test cases).
- : @param $assert lists of tests that contain a certain assert-type(empty
- : string means all tests).
- : @return available FOTS test cases.
+ : @param $testSetPrefixes name criteria for the test sets
+ :        (empty sequence means all test sets).
+ : @param $testCasePrefixes name criteria for the test cases
+ : @param $dependency dependency used to filter test-cases.
+ :        (empty string means no filtering).
+ : @param $assert set of expected-result assertions used to filter test-cases.
+ :        (empty sequence means no filtering).
+ : @return names of qualifying FOTS test cases.
  :)
 declare %ann:nondeterministic function driver:list-test-cases(
   $fotsPath         as xs:string,
   $testSetPrefixes  as xs:string*,
   $testCasePrefixes as xs:string*,
-  $dependency       as xs:string*,
+  $dependency       as xs:string ,
   $assert           as xs:string*
-) as xs:string* {
-  let $doc := doc(resolve-uri($fotsPath)),
-      $baseUri:= resolve-uri(util:parent-folder($fotsPath)),
-      $testCaseNames := driver:list-test-cases($fotsPath,
-                                               $testSetPrefixes,
-                                               $dependency,
-                                               $assert)
-  return
-    for $prefix in $testCasePrefixes
+) as xs:string* 
+{
+  if (empty($testCasePrefixes))
+  then
+    ()
+  else
+    let $doc := doc(resolve-uri($fotsPath))
+    let $baseUri:= resolve-uri(util:parent-folder($fotsPath))
+    let $testCaseNames := driver:list-test-cases($fotsPath,
+                                                 $testSetPrefixes,
+                                                 $dependency,
+                                                 $assert)
     return
-      for $name in $testCaseNames
-      where starts-with($name,
-                        $prefix)
-      return $name
+      for $prefix in $testCasePrefixes
+      return
+        for $name in $testCaseNames
+        where starts-with($name, $prefix)
+        return $name
 };
 
+
 (:~
- : Loops through all the test cases and returns those that have a 'test' node
- : that matches given pattern using given flags.
+ : Helper function. Returns the names of all qualifying test cases within a
+ : given test set. A test case qualifies if (a) its applicable dependencies
+ : include a user-provided dependency, or no dependency was provided by the
+ : user, and (b) its expected-result assertions include at least one of the
+ : assertions in a user-provided set of assertions, or no expected-result
+ : assertions were provided b the user.
+ :
+ : @param $testSetDoc root node of the xml document the specifies the test set.
+ : @param $dependency dependency used to filter test-cases.
+ :        (empty string means no filtering).
+ : @param $assert set of expected-result assertions used to filter test-cases.
+ :        (empty sequence means no filtering).
+ : @return names of qualifying FOTS test cases.
+ :)
+declare %private function driver:list-test-cases(
+  $testSetDoc as document-node(),
+  $dependency as xs:string,
+  $assert     as xs:string*
+) as xs:string*
+{
+  if ($dependency eq '' and empty($assert)) then 
+  {
+    $testSetDoc//fots:test-case/@name
+  }
+  else if ($dependency eq '') then
+  {
+    for $testCase in $testSetDoc//fots:test-case
+    where functx:value-intersect(driver:list-assertions($testCase), $assert)
+    return $testCase/@name
+  }
+  else
+  {
+    for $testCase in $testSetDoc//fots:test-case
+
+    where 
+      driver:matches-dependency(($testSetDoc/fots:test-set/fots:dependency,
+                                 $testCase/fots:dependency),
+                                $dependency)
+      and
+      (empty($assert) or
+       functx:value-intersect(driver:list-assertions($testCase), $assert))
+
+    return $testCase/@name
+  }
+};
+
+
+(:~
+ : Helper function to check whether a user-specified dependency (given as an
+ : encoded string) "matches" at least one of the dependencies in a given list
+ : of dependecies (given as a sequence of <dependency> elements)
+ :)
+declare %private function driver:matches-dependency(
+  $dependencies as element(fots:dependency)*,
+  $filter       as xs:string
+) as xs:boolean
+{
+  if ($filter eq '')
+  then
+    fn:true()
+  else
+    let $filter := tokenize($filter, '_')
+    let $depValue := $filter[1]
+    let $depSatisfied := if ($filter[2] eq 'true' or $filter[2] eq 'false')
+                         then $filter[2]
+                         else 'true'
+    return
+      if ($depSatisfied)
+      then
+        $dependencies[@value eq $depValue and @satisfied eq $depSatisfied] or
+        $dependencies[@value eq $depValue and empty(@satisfied)]
+      else
+        $dependencies[@value eq $depValue and @satisfied eq $depSatisfied]
+};
+
+
+(:~
+ : Helper function to return the local names of all the nodes under a <result>
+ : child of a given <test-case>.
+ :)
+declare %private function driver:list-assertions(
+  $case as element(fots:test-case)
+) as xs:string*
+{
+  distinct-values(for $assert in $case/fots:result/descendant-or-self::*
+                  return local-name-from-QName(node-name($assert)))
+};
+
+
+(:~
+ : For each qualifying test case, this functions returns its name and the full
+ : filepath of its associated test-set file.
+ :
+ : A test case qualifies if its <test> node (which contains the query text) 
+ : matches the given pattern using the given flags.
+ :
  : @param $fotsPath path to the FOTS catalog file.
  : @param $pattern pattern.
  : @param $flags flags.
- : @return available FOTS test cases matching given pattern and flags.
+ : @return names of qualifying FOTS test case and the filepaths of their
+ :         containing test-set files.
  :)
 declare %ann:nondeterministic function driver:list-matching-test-cases(
   $fotsPath as xs:string,
   $pattern  as xs:string,
   $flags    as xs:string?
-) as xs:string* {
-  let $doc := doc(resolve-uri($fotsPath)),
-      $baseUri:= resolve-uri(util:parent-folder($fotsPath))
+) as xs:string*
+{
+  let $doc := doc(resolve-uri($fotsPath))
+  let $baseUri:= resolve-uri(util:parent-folder($fotsPath))
   return
     for $testSet in $doc/fots:catalog/fots:test-set
-    let $uri := resolve-uri($testSet/@file, $baseUri),
-        $testSetDoc := doc($uri)
-      for $testCase in $testSetDoc//fots:test-case
-      where matches(util:get-value($testCase, 
-                                  util:parent-folder($uri),
-                                  "test"),
-                   $pattern,
-                   $flags)
-      return
-        concat(resolve-uri($testSet/@file, $baseUri),
-              ", test name:",
-              data($testCase/@name))
+    let $uri := resolve-uri($testSet/@file, $baseUri)
+    let $testSetDoc := doc($uri)
+    for $testCase in $testSetDoc//fots:test-case
+    where matches(util:get-value($testCase, 
+                                 util:parent-folder($uri),
+                                 "test"),
+                  $pattern,
+                  $flags)
+    return
+      concat(resolve-uri($testSet/@file, $baseUri),
+             ", test name:",
+             data($testCase/@name))
 };
 
+
 (:~
- : Loops through the FOTS catalog and evaluates all test cases that have
- : a certain assert-type.
- : This is useful for testing the implementation of a certain assert type.
+ : This function is just a thin wrapper over the driver:run() function. See
+ : driver:run() for more info.
+ :
  : @param $FOTSCatalogFilePath path to the FOTS catalog file.
  : @param $FOTSZorbaManifestPath the path to the file that describes optional
- : features and implementation defined items in Zorba.
- : @param $testSetNames list of test set names (empty string means all).
- : @param $testCaseNames list of test case names (empty string means all).
- : @param $exceptedTestCases lists of test cases that should not be run(empty
- : string means all tests will be run).
- : @param $exceptedTestSets lists of test sets that should not be run(empty 
- : string means all tests will be run).
+ :        features and implementation-defined items in Zorba.
+ : @param $testSetNames names of the test sets to run (empty seq means all)
+ : @param $testCaseNames names of the test sets to run (empty seq means all)
+ : @param $exceptedTestCases names of test cases that should be excepted from
+ :        running
+ : @param $exceptedTestSets names of test sets that should be excepted from
+ :        running
  : @param $verbose if set to TRUE it will also output the actual failures.
  : @param $expectedFailuresPath path to the ExpectedFailures.xml file.
  : @return an element containing all failed tests
@@ -257,27 +342,37 @@ declare %ann:sequential function driver:run-fots(
   $exceptedTestSets       as xs:string*,
   $verbose                as xs:boolean,
   $expectedFailuresPath   as xs:string
-) as element(fots:test-cases) {
-  try {
-  let $FOTSCatalog := doc(trace(resolve-uri($FOTSCatalogFilePath), 
-                              "Path to FOTS catalog.xml set to: ")),
-      $FOTSZorbaManifest := doc(trace(resolve-uri($FOTSZorbaManifestPath),
-                                    "Path to FOTSZorbaManifest set to:")),
-      $expectedFailures :=  if($expectedFailuresPath = '')
-                            then ()
-                            else doc(trace($expectedFailuresPath,
-                                    "Path to ExpectedFailures.xml set to:"))
-  return driver:run($FOTSCatalog,
-                    resolve-uri(util:parent-folder($FOTSCatalogFilePath)),
-                    $FOTSZorbaManifest,
-                    $testSetNames,
-                    $testCaseNames,
-                    $exceptedTestCases,
-                    $exceptedTestSets,
-                    trace($verbose,         "'Verbose' parameter set to: "),
-                    $expectedFailures)
+) as element(fots:test-cases)
+{
+  variable $fotsPathMsg := "The path to FOTS catalog.xml was set to: ";
+  variable $zorbaManifestMsg := "Path to FOTSZorbaManifest set to :";
+  variable $expectedFailuresPathMsg := "Path to ExpectedFailures.xml set to:";
+
+  try
+  {
+    let $FOTSCatalog := 
+      doc(trace(resolve-uri($FOTSCatalogFilePath), $fotsPathMsg))
+
+    let $FOTSZorbaManifest := 
+      doc(trace(resolve-uri($FOTSZorbaManifestPath), $zorbaManifestMsg))
+
+    let $expectedFailures := 
+      if ($expectedFailuresPath eq '')
+      then ()
+      else doc(trace($expectedFailuresPath, $expectedFailuresPathMsg))
+
+    return driver:run($FOTSCatalog,
+                      resolve-uri(util:parent-folder($FOTSCatalogFilePath)),
+                      $FOTSZorbaManifest,
+                      $testSetNames,
+                      $testCaseNames,
+                      $exceptedTestCases,
+                      $exceptedTestSets,
+                      trace($verbose, "'Verbose' parameter set to: "),
+                      $expectedFailures)
   }
-  catch * {
+  catch * 
+  {
     error($err:code,
           concat("&#xA;Please make sure the passed 'fotsPath' points to the",
                  " exact location of the FOTS catalog.xml:&#xA;",
@@ -291,20 +386,42 @@ declare %ann:sequential function driver:run-fots(
   }
 };
 
+
 (:~
- : Loops through the FOTS catalog and evaluates all test cases
+ : Process a specified subset of all test-cases. The subsetting is done in 2
+ : orthogonal ways:
  :
- : @param $FOTSCatalog the FOTS catalog.xml file.
- : @param $FOTSZorbaManifest the file that describes optional features and
- : implementation defined items in Zorba.
- : @param $testSetNames list of test set names (empty string means all).
- : @param $testCaseNames list of test case names (empty string means all).
- : @param $exceptedTestCases lists of test cases that should not be run(empty
- : string means all tests will be run).
- : @param $exceptedTestSets lists of test sets that should not be run(empty
- : string means all tests will be run).
+ : (a) Explicit enumeration of qualifying test-sets and test-cases.
+ :     The params $testSetNames and $testCaseNames contain the names of test-sets
+ :     and test-cases to process. A test-case will be processed only if it
+ :     belongs to a test-set whose name is in $testSetNames, and the name of
+ :     the test-case itself appears in $testCaseNames. If $testSetNames and/or
+ :     $testCaseNames is the empty sequence, then no filtering is done based
+ :     on these params.
+ :
+ : (b) Explicit enumeration of disqualifying test-sets and test-cases.
+ :     The params $exceptedTestSets and $exceptedTestCases contain the names
+ :     of test-sets and test-cases that should not be processed. If a test-case
+ :     belongs to a test-set whose name appears in $exceptedTestSets, or the
+ :     name of the test-case itself appears in $exceptedTestCases, then the
+ :     test-case will NOT be processed.
+ :
+ : "processing" a test-case means either evaluating the corresponding query
+ : and reporting whether it result matches the expected result, or reporting
+ : the test-case as "non-applicable" because it violates some dependency.
+ :
+ : @param $FOTSCatalog the root node of the FOTS catalog doc.
+ : @param $catalogBaseURI the URI of the directory containing the catalog.xml file
+ : @param $FOTSZorbaManifest the root node of the doc that describes optional
+ :        features and implementation-defined items in Zorba.
+ : @param $testSetNames names of the test sets to run (empty seq means all)
+ : @param $testCaseNames names of the test sets to run (empty seq means all)
+ : @param $exceptedTestCases names of test cases that should be excepted from
+ :        running
+ : @param $exceptedTestSets names of test sets that should be excepted from
+ :        running
  : @param $verbose if set to TRUE it will also output the actual failures.
- : @param $expectedFailures the ExpectedFailures.xml file.
+ : @param $expectedFailures the root node of the ExpectedFailures.xml file.
  : @return an element containing all failed tests
  :)
 declare %ann:sequential function driver:run(
@@ -317,83 +434,104 @@ declare %ann:sequential function driver:run(
   $exceptedTestSets   as xs:string*,
   $verbose            as xs:boolean,
   $expectedFailures   as document-node()?
-) as element(fots:test-cases) {
-    <fots:test-cases>{
-      let $catalogTestSetNames := $FOTSCatalog//fots:test-set/@name,
-          $testSetNames :=  if ($testSetNames = '')
-                            then functx:value-except($catalogTestSetNames,
-                                                     $exceptedTestSets)
-                            else functx:value-except(
-                                  functx:value-intersect($testSetNames,
-                                                         $catalogTestSetNames),
-                                  $exceptedTestSets)
-      for $testSetName in $testSetNames
-      let $testSet := $FOTSCatalog//fots:test-set[@name=$testSetName],
-          $testSetURI := resolve-uri($testSet/@file,
-                                     $catalogBaseURI),
-          $testSetDoc := doc($testSetURI),
-          $depMet as xs:string*:= env:check-dependencies($testSetDoc/fots:test-set/fots:dependency,
-                                                         $FOTSZorbaManifest)
-      return
-      if(exists($depMet))
-      then <fots:test-set name="{$testSetName}">
+) as element(fots:test-cases)
+{
+  <fots:test-cases>
+  {
+    let $catalogTestSetNames := $FOTSCatalog//fots:test-set/@name
+
+    let $testSetNames := 
+    {
+      if (empty($testSetNames))
+      then
+        functx:value-except($catalogTestSetNames, $exceptedTestSets)
+      else
+        functx:value-except(functx:value-intersect($testSetNames,
+                                                   $catalogTestSetNames),
+                            $exceptedTestSets)
+    }
+
+    for $testSetName in $testSetNames
+
+    let $testSet := $FOTSCatalog//fots:test-set[@name=$testSetName]
+
+    let $testSetURI := resolve-uri($testSet/@file, $catalogBaseURI)
+
+    let $testSetDoc := doc($testSetURI)
+
+    let $depMet as xs:string*:= 
+      env:check-dependencies($testSetDoc/fots:test-set/fots:dependency,
+                             $FOTSZorbaManifest)
+
+    return
+      if (exists($depMet)) then
       {
-        for $testCase in $testSetDoc/fots:test-set/fots:test-case
-        let $envName := data($testCase/fots:environment/@ref),
-            $envTestSet := $testSetDoc/fots:test-set/fots:environment[@name = $envName],
-            $envCatalog := $FOTSCatalog/fots:catalog/fots:environment[@name = $envName],
-            $isExcepted := exists(index-of($exceptedTestCases,
-                                             xs:string(data($testCase/@name)))
-                                  ),
-            $shouldRun  := ($testCaseNames = '') or
-                            exists(index-of($testCaseNames,
-                                            xs:string($testCase/@name)))
-          where $shouldRun
+        <fots:test-set name="{$testSetName}">
+        {
+          for $testCase in $testSetDoc/fots:test-set/fots:test-case
+
+          let $envName := data($testCase/fots:environment/@ref)
+
+          let $envTestSet := $testSetDoc/fots:test-set/fots:environment[@name = $envName]
+
+          let $envCatalog := $FOTSCatalog/fots:catalog/fots:environment[@name = $envName]
+
+          let $isExcepted := $exceptedTestCases[. eq $testCase/@name]
+
+          where empty($testCaseNames) or $testCaseNames[. eq $testCase/@name]
+
           return
-            if($isExcepted)
+            if ($isExcepted)
             then feedback:not-run($testCase, $verbose)
             else feedback:not-applicable($testCase,
                                          $envTestSet,
                                          string-join($depMet,''),
                                          $verbose)
-        }</fots:test-set>
-        else <fots:test-set name="{$testSetName}">
+        }
+        </fots:test-set>
+      }
+      else
+      {
+        <fots:test-set name="{$testSetName}">
         {
           for $testCase in $testSetDoc/fots:test-set/fots:test-case
-          let $envName := data($testCase/fots:environment/@ref),
-              $envTestSet := $testSetDoc/fots:test-set/fots:environment[@name = $envName],
-              $envCatalog := $FOTSCatalog/fots:catalog/fots:environment[@name = $envName],
-              $isExcepted := exists(index-of($exceptedTestCases,
-                                             xs:string(data($testCase/@name)))
-                                   ),
-              $shouldRun  := ($testCaseNames = '') or
-                             exists(index-of($testCaseNames,
-                                             xs:string($testCase/@name)))
-          where $shouldRun
+
+          let $envName := data($testCase/fots:environment/@ref)
+
+          let $envTestSet := $testSetDoc/fots:test-set/fots:environment[@name = $envName]
+
+          let $envCatalog := $FOTSCatalog/fots:catalog/fots:environment[@name = $envName]
+
+          let $isExcepted := $exceptedTestCases[. eq $testCase/@name]
+
+          where empty($testCaseNames) or $testCaseNames[. eq $testCase/@name]
+
           return
-            if($isExcepted)
-            then
-              (if(exists($expectedFailures) and
-                  empty($expectedFailures/failures/TestSet[@name=$testSetName]/Test[@name=xs:string($testCase/@name)]))
-               then feedback:fail($testCase,
-                                  (),
-                                  '',
-                                  $testSetName,
-                                  (),
-                                  xs:dayTimeDuration("PT0S"),
-                                  $verbose,
-                                  fn:false())
-               else feedback:not-run($testCase, $verbose)
-             )
-            else if(exists(env:check-dependencies($testCase/fots:dependency,
-                                                  $FOTSZorbaManifest)))
+            if ($isExcepted) then
+            {
+              if (exists($expectedFailures) and
+                  empty($expectedFailures/failures/TestSet[@name eq $testSetName]/Test[@name eq $testCase/@name]))
+              then
+                feedback:fail($testCase,
+                              (),
+                              '',
+                              $testSetName,
+                              (),
+                              xs:dayTimeDuration("PT0S"),
+                              $verbose,
+                              fn:false())
+               else
+                 feedback:not-run($testCase, $verbose)
+            }
+            else if (exists(env:check-dependencies($testCase/fots:dependency,
+                                                   $FOTSZorbaManifest)))
             then feedback:not-applicable($testCase,
                                          $envTestSet,
                                          string-join(distinct-values(env:check-dependencies($testCase/fots:dependency,
                                                                                             $FOTSZorbaManifest)),
                                                     ''),
                                          $verbose)
-            else if(empty($envTestSet))
+            else if (empty($envTestSet))
             then driver:test( $FOTSZorbaManifest,
                               $testCase,
                               $envCatalog,
@@ -414,9 +552,13 @@ declare %ann:sequential function driver:run(
                               $testSetURI,
                               $verbose,
                               $expectedFailures/failures/TestSet[@name=$testSetName]/Test[@name=xs:string($testCase/@name)])
-        }</fots:test-set>
-    }</fots:test-cases>
+        }
+        </fots:test-set>
+      }
+  }
+  </fots:test-cases>
 };
+
 
 (:~
  : Creates the complete query that will be evaluated by adding the necessary
@@ -435,7 +577,8 @@ declare %private function driver:create-XQXQ-query(
   $env            as element(fots:environment)?,
   $envBaseURI     as xs:anyURI?,
   $testSetBaseURI as xs:anyURI
-) as xs:string {
+) as xs:string
+{
   let $resolver as xs:string? := env:resolver($case,
                                               $env,
                                               $envBaseURI,
@@ -465,6 +608,7 @@ declare %private function driver:create-XQXQ-query(
   "&#xA;")
 };
 
+
 (:~
  : XQXQ invoke.
  : @param $xqxqQueryText the query that will be run.
@@ -478,7 +622,8 @@ declare %private %ann:sequential function driver:xqxq-invoke(
   $case           as element(fots:test-case),
   $verbose        as xs:boolean?,
   $testSetBaseURI as xs:anyURI
-) {
+)
+{
   try {
     {
       variable $queryKey := xqxq:prepare-main-module($xqxqQueryText);
@@ -495,6 +640,7 @@ declare %private %ann:sequential function driver:xqxq-invoke(
                $err:description)
   }
 };
+
 
 (:~
  : Runs a single test case.

@@ -56,64 +56,81 @@ namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void check_errno( char const *buf, char const *end ) {
-  if ( errno == ERANGE ) {
-    zstring const s( buf, end );
-    throw std::range_error(
-      BUILD_STRING( '"', s, "\": number too big/small" )
-    );
-  }
+static void no_digits( char const *buf ) {
+  throw std::invalid_argument( BUILD_STRING( '"', buf, "\": no digits" ) );
 }
 
-static void check_parse_number( char const *buf, char const *end,
+static void too_big_or_small( char const *buf, char const *end ) {
+  zstring const s( buf, end );
+  throw std::range_error( BUILD_STRING( '"', s, "\": number too big/small" ) );
+}
+
+inline void check_errno( char const *buf, char const *end ) {
+  if ( errno == ERANGE )
+    too_big_or_small( buf, end );
+}
+
+static void check_trailing_chars_impl( char const *end ) {
+  for ( ; *end; ++end )                 // remaining characters, if any, ...
+    if ( !ascii::is_space( *end ) )     // ... may only be whitespace
+      throw std::invalid_argument(
+        BUILD_STRING( '\'', *end, "': invalid character" )
+      );
+}
+
+inline void check_parse_number( char const *buf, char const *end,
                                 bool check_trailing_chars ) {
   if ( end == buf )
-    throw std::invalid_argument( BUILD_STRING( '"', buf, "\": no digits" ) );
+    no_digits( buf );
   if ( check_trailing_chars )
-    for ( ; *end; ++end )               // remaining characters, if any, ...
-      if ( !ascii::is_space( *end ) )   // ... may only be whitespace
-        throw std::invalid_argument(
-          BUILD_STRING( '"', *end, "\": invalid character" )
-        );
+    check_trailing_chars_impl( end );
 }
 
-#define ATON_PREAMBLE()           \
-  bool check_trailing_chars;      \
-  char const *pc;                 \
-  if ( end ) {                    \
-    check_trailing_chars = false; \
-  } else {                        \
-    end = &pc;                    \
-    check_trailing_chars = true;  \
-  }                               \
-  errno = 0
+class aton_context {
+public:
+  aton_context( char const **&end ) {
+    if ( end ) {
+      check_trailing_chars_ = false;
+    } else {
+      end = &end_;
+      check_trailing_chars_ = true;
+    }
+    errno = 0;
+  }
+  bool check_trailing_chars() const {
+    return check_trailing_chars_;
+  }
+private:
+  bool check_trailing_chars_;
+  char const *end_;
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 
 double atod( char const *buf, char const **end ) {
-  ATON_PREAMBLE();
+  aton_context const ctx( end );
   double const result = std::strtod( buf, (char**)end );
-  check_parse_number( buf, *end, check_trailing_chars );
+  check_parse_number( buf, *end, ctx.check_trailing_chars() );
   return result;
 }
 
 float atof( char const *buf, char const **end ) {
-  ATON_PREAMBLE();
+  aton_context const ctx( end );
   float const result = std::strtof( buf, (char**)end );
-  check_parse_number( buf, *end, check_trailing_chars );
+  check_parse_number( buf, *end, ctx.check_trailing_chars() );
   return result;
 }
 
 long long atoll( char const *buf, char const **end ) {
-  ATON_PREAMBLE();
+  aton_context const ctx( end );
   long long const result = std::strtoll( buf, (char**)end, 10 );
   check_errno( buf, *end );
-  check_parse_number( buf, *end, check_trailing_chars );
+  check_parse_number( buf, *end, ctx.check_trailing_chars() );
   return result;
 }
 
 unsigned long long atoull( char const *buf, char const **end ) {
-  ATON_PREAMBLE();
+  aton_context const ctx( end );
   //
   // We have to check for '-' ourselves since strtoull(3) allows it (oddly).
   //
@@ -122,7 +139,7 @@ unsigned long long atoull( char const *buf, char const **end ) {
 
   unsigned long long const result = std::strtoull( buf, (char**)end, 10 );
   check_errno( buf, *end );
-  check_parse_number( buf, *end, check_trailing_chars );
+  check_parse_number( buf, *end, ctx.check_trailing_chars() );
 
   if ( minus && result ) {
     //

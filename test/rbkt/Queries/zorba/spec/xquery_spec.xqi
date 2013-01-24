@@ -2,7 +2,7 @@ module namespace util = "http://www.zorba-xquery.com/util";
 
 import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
-import module namespace html = "http://www.zorba-xquery.com/modules/converters/html";
+(: import module namespace html = "http://www.zorba-xquery.com/modules/converters/html"; :)
 
 (: this should be uncommented only when one wants to retrieve a fresh copy of the F&O Spec from the W3C site :)
 import module namespace file = "http://expath.org/ns/file";
@@ -19,7 +19,7 @@ used local variables instead of passing the specURI defined as an external varia
 opened bug #3152386
 :)
 (: this should be uncommented only when one wants to retrieve a fresh copy of the F&O Spec from the W3C site :)
-
+(:
 declare %ann:sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) 
 {
   let $serParams := 
@@ -37,7 +37,7 @@ declare %ann:sequential function util:download-and-write-spec($specVersion as xs
                 html:parse(http:get("http://www.w3.org/TR/xpath-functions-30/")[2]),
                 $serParams)
 };
-
+:)
 
 
 declare function util:create-spec-function-arity-sequence(
