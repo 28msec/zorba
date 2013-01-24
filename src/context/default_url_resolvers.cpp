@@ -26,6 +26,7 @@
 #include "store/api/collection.h"
 #include "store/api/item.h"
 #include "system/globalenv.h"
+#include <context/static_context.h>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -60,6 +61,12 @@ Resource*
 HTTPURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
+  // First, don't even try if http-uri-resolution is disabled.
+  if (!GENV.getRootStaticContext().is_feature_set(feature::http_resolution)) {
+    return nullptr;
+  }
+
+  // HTTP resolution doesn't make sense for collections or thesauri.
   switch ( aEntityData->getKind() ) {
     case EntityData::COLLECTION:
 #ifndef ZORBA_NO_FULL_TEXT
