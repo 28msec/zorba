@@ -41,7 +41,9 @@ void initializeTestList()
 
   libunittests["base64_streambuf"] = test_base64_streambuf;
 
+#ifdef ZORBA_WITH_FILE_ACCESS
   libunittests["fs_iterator"] = test_fs_iterator;
+#endif /* ZORBA_WITH_FILE_ACCESS */
 
 #ifndef ZORBA_NO_ICU
   libunittests["icu_streambuf"] = test_icu_streambuf;

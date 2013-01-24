@@ -159,10 +159,11 @@ declare variable $pattern as xs:string external := "";
 declare variable $flags as xs:string external := "";
 
 
-(:~ 
- : Enable or disable verbose output 
+(:~
+ : Enable or disable verbose output. When this is set to true the exact query
+ : that is run by XQXQ is also written down into a query_*.xq file.
  :)
-declare variable $verbose as xs:string external := "true";
+declare variable $verbose as xs:string external := "false";
 
 
 declare function local:usage() as xs:string
@@ -178,6 +179,10 @@ declare function local:usage() as xs:string
     " This way you will see trace information in the CLI window and detailed",
     " results of the test cases in the 'output.xml'.",
     "",
+    " Please note that when Verbose is set to true the query that is executed",
+  	" is written down into a query_TESTCASENAME.xq file, where TESTCASENAME is",
+  	" the test case name.",
+  	"",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e fotsZorbaManifestPath:=/path/to/Zorba_manifest.xml -e mode:=list-test-sets",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-sets",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-sets -e testSetPrefixes:=prod,app",
@@ -207,7 +212,7 @@ declare %private function local:tokenize(
   $input as xs:string
 ) as xs:string*
 {
-  tokenize($input, ",")
+  $tokens := tokenize($input, ",")
 };
 
 
