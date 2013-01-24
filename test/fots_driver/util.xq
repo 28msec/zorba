@@ -50,7 +50,7 @@ declare namespace ann =
     <output:indent                value="no"  />
     <output:omit-xml-declaration  value="yes" />
   </output:serialization-parameters>;
-  
+
 (:~
  : The serialization parameters for XML serialization.
  :)
@@ -129,4 +129,13 @@ declare function util:serialize-result(
    if ($res instance of node())
    then fn:serialize($res, $SerParams)
    else fn:string($res)
+};
+
+declare %ann:sequential function util:write-query-to-file(
+  $query        as xs:string,
+  $queryName    as xs:string
+) {
+  file:write(concat("query_", $queryName, ".xq"),
+             $query,
+             $util:serParamXml);
 };
