@@ -205,7 +205,7 @@ void parameters::substitute( value_type *s ) const {
   value_type replacement;
 
   for ( size_type i = 1; i <= 9; ++i ) {
-    size_type dollar_pos = value_type::npos;
+    value_type::size_type dollar_pos = value_type::npos;
     bool inside_braces = false;
     bool replace;
 
@@ -222,7 +222,16 @@ void parameters::substitute( value_type *s ) const {
             replacement.clear();
             break;
           case '\\':
-            s->erase( pos, 1 );
+            //
+            // We can't erase the \ here until the last iteration of the loop
+            // since it has to do its job of escaping characters for all 9
+            // passes.  Until then, simply skip over the next character (in
+            // particular, the $) so it's not treated specially.
+            //
+            if ( i == 9 )
+              s->erase( pos, 1 );
+            else
+              ++pos;
             break;
         }
         continue;
