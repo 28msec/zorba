@@ -29,23 +29,21 @@ namespace UnitTests {
   int runDebuggerProtocolTest(int argc, char* argv[]);
 
   int test_base64( int, char*[] );
-
   int test_base64_streambuf( int, char*[] );
-
   int test_fs_iterator( int, char*[] );
+  int test_hashmaps( int argc, char* argv[] );
 
 #ifndef ZORBA_NO_ICU
   int test_icu_streambuf( int, char*[] );
 #endif /* ZORBA_NO_ICU */
 
   int test_json_parser( int, char*[] );
-
   int test_string( int, char*[] );
   int test_time_parse( int, char*[] );
 
-  int test_unique_ptr( int, char*[] );
-
+#ifdef ZORBA_WITH_FILE_ACCESS
   int test_fs_iterator( int, char*[] );
+#endif /* ZORBA_WITH_FILE_ACCESS */
 
 #ifndef ZORBA_NO_FULL_TEXT
   int test_stemmer( int, char*[] );
@@ -57,9 +55,6 @@ namespace UnitTests {
   int test_unique_ptr( int, char*[] );
 #endif /* ZORBA_HAVE_UNIQUE_PTR */
 
-  int test_utf8_streambuf( int, char*[] );
-  int test_uuid( int, char*[] );
-
 #ifndef ZORBA_HAVE_UNORDERED_MAP
   int test_unordered_map( int, char*[] );
 #endif /* ZORBA_HAVE_UNORDERED_MAP */
@@ -68,7 +63,8 @@ namespace UnitTests {
   int test_unordered_set( int, char*[] );
 #endif /* ZORBA_HAVE_UNORDERED_SET */
 
-  int test_hashmaps(int argc, char* argv[]);
+  int test_utf8_streambuf( int, char*[] );
+  int test_uuid( int, char*[] );
 
   void initializeTestList();
 

@@ -514,6 +514,7 @@ public:
   static const char* ZORBA_JSON_FN_NS;
 
   static const char* ZORBA_NODEREF_FN_NS;
+  static const char* ZORBA_REFERENCE_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;

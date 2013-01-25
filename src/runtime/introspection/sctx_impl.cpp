@@ -245,8 +245,8 @@ bool StaticallyKnownDocumentTypeIterator::nextImpl(
   }
   else
   {
-    aResult = type->get_qname();
-    STACK_PUSH(true, state);
+    temp_str = type->toSchemaString();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp_str), state);
   }
 
   STACK_END(state);

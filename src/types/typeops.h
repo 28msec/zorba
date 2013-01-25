@@ -134,15 +134,6 @@ public:
       const XQType& supertype,
       const QueryLoc& loc);
 
-  /*
-   * Returns true if _item_ is treatable as _type_, false otherwise.
-   */
-  static bool is_treatable(
-        const TypeManager* tm,
-        const store::Item_t& item,
-        const XQType& type,
-        const QueryLoc& loc);
-
   /**
    * Returns the castability fron the source ItemType to the target ItemType. It
    * works only if both source and target types are builtin atomic types.

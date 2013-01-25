@@ -28,16 +28,16 @@
 #include "util/base64_util.h"
 #include "util/stl_util.h"
 
-#define CATCH_BASE64_EXCEPTION()                                            \
-  catch ( base64::exception const &e ) {                                    \
-    throw XQUERY_EXCEPTION(                                                 \
-      err::FORG0001, ERROR_PARAMS( e.invalid_char(), ZED( Base64BadChar ) ) \
-    );                                                                      \
-  }                                                                         \
-  catch ( std::invalid_argument const& ) {                                  \
-    throw XQUERY_EXCEPTION(                                                 \
-      err::FORG0001, ERROR_PARAMS( "", ZED( Base64Multiple4 ) )             \
-    );                                                                      \
+#define CATCH_BASE64_EXCEPTION()                                        \
+  catch (const base64::exception& e)                                    \
+  {                                                                     \
+    throw XQUERY_EXCEPTION(err::FORG0001,                               \
+    ERROR_PARAMS(ZED(FORG0001_Base64BadChar_2), e.invalid_char()));     \
+  }                                                                     \
+  catch (const std::invalid_argument& )                                 \
+  {                                                                     \
+    throw XQUERY_EXCEPTION(err::FORG0001,                               \
+    ERROR_PARAMS(ZED(FORG0001_Base64Multiple4)));                       \
   }
 
 using namespace std;
@@ -330,9 +330,8 @@ void Base16::insertData(const char* str, size_t len)
 
   if (len % 2 != 0) 
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( "", ZED( HexBinaryMustBeEven ) )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_HexBinaryMustBeEven)));
   }
 
   for (size_t i = 0; i < len; ++i)
@@ -349,9 +348,8 @@ void Base16::insertData(const char* str, size_t len)
     }
     else
     {
-      throw XQUERY_EXCEPTION(
-        err::FORG0001, ERROR_PARAMS( lChar, ZED( BadHexDigit_3 ), lChar )
-      );
+      throw XQUERY_EXCEPTION(err::FORG0001,
+      ERROR_PARAMS(ZED(FORG0001_BadHexDigit_2), lChar));
     }
   }
 }

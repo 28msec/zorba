@@ -40,13 +40,11 @@ namespace zorba { namespace simplestore {
 SimpleCollection::SimpleCollection(
     const store::Item_t& aName,
     const std::vector<store::Annotation_t>& aAnnotations,
-    const store::Item_t& aNodeType,
     bool isDynamic)
   : 
   theName(aName),
   theIsDynamic(isDynamic),
-  theAnnotations(aAnnotations),
-  theNodeType(aNodeType)
+  theAnnotations(aAnnotations)
 {
   theId = GET_STORE().createCollectionId();
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
@@ -59,8 +57,7 @@ SimpleCollection::SimpleCollection(
 ********************************************************************************/
 SimpleCollection::SimpleCollection()
   : 
-  theIsDynamic(false),
-  theNodeType(NULL)
+  theIsDynamic(false)
 {
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
 }
