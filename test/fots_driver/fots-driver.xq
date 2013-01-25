@@ -745,7 +745,7 @@ declare %private function driver:create-XQXQ-query(
       let $tmp := env:set-context-item($env, $envBaseURI)
       return if (empty($tmp) or $tmp eq '') then () else concat($tmp, "&#xA;", "&#xA;"),
 
-      let tmp := env:set-context-item($case/fots:environment, $testSetBaseURI)
+      let $tmp := env:set-context-item($case/fots:environment, $testSetBaseURI)
       return if (empty($tmp) or $tmp eq '') then () else concat($tmp, "&#xA;", "&#xA;"),
 
       let $tmp := env:set-variables($env, $envBaseURI)

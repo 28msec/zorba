@@ -212,7 +212,7 @@ declare %private function local:tokenize(
   $input as xs:string
 ) as xs:string*
 {
-  $tokens := tokenize($input, ",")
+  tokenize($input, ",")
 };
 
 
