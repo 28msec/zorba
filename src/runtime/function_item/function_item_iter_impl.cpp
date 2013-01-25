@@ -50,24 +50,7 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
-/*
-var_expr* create_temp_var(CompilerCB* ccb, static_context* theSctx, user_function* udf, const QueryLoc& loc, var_expr::var_kind kind, int& theTempVarCounter)
-{
-  store::Item_t varQname;
-  
-  do
-  {
-    std::string localName = "temp_var" + ztd::to_string(theTempVarCounter++);
-    GENV_ITEMFACTORY->createQName(varQname, "", "", localName.c_str());
-  }
-  while (theSctx->lookup_var(varQname) != NULL);
-      
-  return ccb->theEM->create_var_expr(theSctx, udf, loc, kind, varQname);
-}
-  */    
-
-bool
-FunctionLookupIterator::nextImpl(
+bool FunctionLookupIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -122,8 +105,7 @@ FunctionLookupIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-bool
-FunctionNameIterator::nextImpl(
+bool FunctionNameIterator::nextImpl(
     store::Item_t& r,
     PlanState& planState) const
 {
@@ -154,8 +136,7 @@ FunctionNameIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-bool
-FunctionArityIterator::nextImpl(
+bool FunctionArityIterator::nextImpl(
     store::Item_t& r,
     PlanState& planState) const
 {

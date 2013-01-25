@@ -3413,12 +3413,14 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
   // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
   if (udf != NULL || !f->isUdf())
   {
+    /*
     if (errIfContextDependent && f != NULL) // TODO: this should be removed 
     {
       store::Item_t errQName;
       GENV_ITEMFACTORY->createQName(errQName, static_context::W3C_FN_NS, "", "error");
       errFn = theSctx->lookup_fn(errQName, 1);
     }
+    */
     
     // add context-item for functions with zero arguments which implicitly
     // take the context-item as argument
@@ -3457,6 +3459,7 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
     
     if (errFn != NULL)
     {
+      udfArgs.push_back(create_temp_var(loc, var_expr::arg_var)); // it will not be used
       foArgs.push_back(theExprManager->create_const_expr(theSctx, udf, loc, static_context::W3C_ERR_NS, "", "FOFL0001"));
     }
 
@@ -3481,11 +3484,11 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
         flwor_expr* flwor = theExprManager->create_flwor_expr(theSctx, theUDF, loc, false);
         std::vector<expr*> arguments;
         for (csize i=0; i<foArgs.size(); i++)
-        {
-          for_clause* fc = wrap_in_forclause(&*udfArgs[i], NULL);
+        {          
+          let_clause* lc = wrap_in_letclause(&*udfArgs[i]); // FN_HEAD and FN_TAIL need this to be a LET clause
           udfArgs[i]->set_param_pos(flwor->num_clauses());
-          flwor->add_clause(fc);
-          arguments.push_back(fc->get_var());
+          flwor->add_clause(lc);
+          arguments.push_back(lc->get_var());
         }
         
         flwor->set_return_expr(generate_fn_body(f, arguments, loc));
