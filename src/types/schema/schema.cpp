@@ -259,12 +259,17 @@ public:
             
           return lRetval;
         }
-        else
-          return NULL;          
+        else {
+          // We didn't find it. If we return NULL here, Xerces will try to
+          // resolve it its own way, which we don't want to happen.
+          throw XQUERY_EXCEPTION( err::XQST0059,
+              ERROR_PARAMS( lResolved ));
+        }
       }
       catch (ZorbaException const& e) {
         TRACE("!!! ZorbaException: " << e );
-        if ( e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED )
+        if ( e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED ||
+             e.diagnostic() == err::XQST0059 )
         {
           throw;
         }
