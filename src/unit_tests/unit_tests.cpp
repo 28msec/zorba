@@ -39,7 +39,11 @@ void initializeTestList()
 {
   libunittests["base64"] = test_base64;
   libunittests["base64_streambuf"] = test_base64_streambuf;
+
+#ifdef ZORBA_WITH_FILE_ACCESS
   libunittests["fs_iterator"] = test_fs_iterator;
+#endif /* ZORBA_WITH_FILE_ACCESS */
+
   libunittests["hashmaps"] = test_hashmaps;
 
 #ifndef ZORBA_NO_ICU

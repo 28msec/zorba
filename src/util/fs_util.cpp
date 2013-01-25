@@ -273,6 +273,8 @@ void get_temp_file( char *path ) {
 #endif /* WIN32 */
 }
 
+#endif /* ZORBA_WITH_FILE_ACCESS */
+
 type get_type( char const *path, size_type *size ) {
 #ifndef WIN32
   struct stat st_buf;
@@ -294,6 +296,8 @@ type get_type( char const *path, size_type *size ) {
   return win32::get_type( wpath, size );
 #endif /* WIN32 */
 }
+
+#ifdef ZORBA_WITH_FILE_ACCESS
 
 void mkdir( char const *path ) {
 #ifndef WIN32
