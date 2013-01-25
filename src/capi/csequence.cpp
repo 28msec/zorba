@@ -492,10 +492,7 @@ void
 CSequence::free(XQC_Sequence* seq)
 {
   try {
-    CSequence* me = CSequence::get(seq);
-    delete me;
-  } catch (ZorbaException const&) {
-    assert(false);
+    delete CSequence::get(seq);
   } catch (...) {
     assert(false);
   }

@@ -519,6 +519,10 @@ void XmlNode::detach()
       SYNC_CODE(oldTree->getRCLock()->release());
     }
   }
+  catch (std::exception const &e)
+  {
+    ZORBA_FATAL(false, e.what());
+  }
   catch(...)
   {
     ZORBA_FATAL(0, "Unexpected exception");

@@ -666,10 +666,7 @@ namespace zorbac {
   CStaticContext::free(XQC_StaticContext* context)
   {
     try {
-      CStaticContext* me = CStaticContext::get(context);
-      delete me;
-    } catch (ZorbaException const&) { 
-      assert(false);
+      delete CStaticContext::get(context);
     } catch (...) { 
       assert(false);
     }

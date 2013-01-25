@@ -746,6 +746,14 @@ std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::s
       )
     );
   }
+  catch (std::exception const &e)
+  {
+    theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() )
+      )
+    );
+  }
   catch (...)
   {
     theXQueryDiagnostics->add_error(
@@ -1078,6 +1086,14 @@ void DtdXmlLoader::startDocument(void * ctx)
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
+  catch (std::exception const &e)
+  {
+    loader.theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( e.what() )
+      )
+    );
+  }
   catch (...)
   {
     loader.theXQueryDiagnostics->add_error(
@@ -1159,6 +1175,14 @@ void DtdXmlLoader::endDocument(void * ctx)
   catch (ZorbaException const& e)
   {
     loader.theXQueryDiagnostics->add_error( e );
+  }
+  catch (std::exception const &e)
+  {
+    loader.theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( e.what() )
+      )
+    );
   }
   catch (...)
   {
@@ -1454,6 +1478,14 @@ void DtdXmlLoader::startElement(
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
+  catch (std::exception const &e)
+  {
+    loader.theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( e.what() )
+      )
+    );
+  }
   catch (...)
   {
     loader.theXQueryDiagnostics->
@@ -1586,6 +1618,14 @@ void  DtdXmlLoader::endElement(
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
+  catch (std::exception const &e)
+  {
+    loader.theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( e.what() )
+      )
+    );
+  }
   catch (...)
   {
     loader.theXQueryDiagnostics->add_error(
@@ -1636,6 +1676,14 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   catch (ZorbaException const& e)
   {
     loader.theXQueryDiagnostics->add_error( e );
+  }
+  catch (std::exception const &e)
+  {
+    loader.theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( e.what() )
+      )
+    );
   }
   catch (...)
   {
@@ -1690,6 +1738,14 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
+  catch (std::exception const &e)
+  {
+    loader.theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( e.what() )
+      )
+    );
+  }
   catch (...)
   {
     loader.theXQueryDiagnostics->add_error(
@@ -1740,6 +1796,14 @@ void DtdXmlLoader::processingInstruction(
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
+  catch (std::exception const &e)
+  {
+    loader.theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( e.what() )
+      )
+    );
+  }
   catch (...)
   {
     loader.theXQueryDiagnostics->add_error(
@@ -1782,6 +1846,14 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
   catch (ZorbaException const& e)
   {
     loader.theXQueryDiagnostics->add_error( e );
+  }
+  catch (std::exception const &e)
+  {
+    loader.theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( e.what() )
+      )
+    );
   }
   catch (...)
   {

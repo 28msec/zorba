@@ -205,25 +205,18 @@ DebugIterator::checkBreak(PlanState* planState) const
   if (lCommons->canBreak() && (lCommons->mustBreak(lCause) ||
       lCommons->hasToBreakAt(loc) || lCommons->hasToBreakAt(this)))
   {
-    try
-    {
-      lCause = lCause == 0 ? CAUSE_BREAKPOINT : lCause;
-      
-      // tell everybody that we are the iterator who suspended
-      //lCommons->setCurrentIterator(this);
-      lCommons->setCurrentStaticContext(getStaticContext());
-      lCommons->setCurrentDynamicContext(planState->theLocalDynCtx);
-      lCommons->setBreak(false);
-      lCommons->setPlanState(planState);
+    lCause = lCause == 0 ? CAUSE_BREAKPOINT : lCause;
+    
+    // tell everybody that we are the iterator who suspended
+    //lCommons->setCurrentIterator(this);
+    lCommons->setCurrentStaticContext(getStaticContext());
+    lCommons->setCurrentDynamicContext(planState->theLocalDynCtx);
+    lCommons->setBreak(false);
+    lCommons->setPlanState(planState);
 
-      // suspend
-      lCommons->getRuntime()->suspendRuntime(loc, lCause);
-      lCause = 0;
-    }
-    catch (...)
-    {
-      throw;
-    }
+    // suspend
+    lCommons->getRuntime()->suspendRuntime(loc, lCause);
+    lCause = 0;
   }
 }
 #endif // ZORBA_WITH_DEBUGGER

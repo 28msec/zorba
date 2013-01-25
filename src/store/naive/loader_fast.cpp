@@ -70,6 +70,25 @@ namespace simplestore {
       return; \
   } while (0);
 
+#define LOADER_TRY try
+
+#define LOADER_CATCH                                            \
+  catch ( ZorbaException const &e ) {                           \
+    loader.theXQueryDiagnostics->add_error( e );                \
+  }                                                             \
+  catch ( std::exception const &e ) {                           \
+    loader.theXQueryDiagnostics->add_error(                     \
+      NEW_ZORBA_EXCEPTION(                                      \
+        zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( e.what() ) \
+      )                                                         \
+    );                                                          \
+  }                                                             \
+  catch ( ... ) {                                               \
+    loader.theXQueryDiagnostics->add_error(                     \
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )      \
+    );                                                          \
+  }
+
 
 /*******************************************************************************
 
@@ -250,7 +269,7 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
 
     return stream.gcount();
   }
-  catch (std::iostream::failure e)
+  catch (std::exception const &e)
   {
     theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
@@ -450,10 +469,19 @@ void FastXmlLoader::startDocument(void * ctx)
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
+  catch (std::exception const &e)
+  {
+    loader.theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( e.what() )
+      )
+    );
+  }
   catch (...)
   {
-    loader.theXQueryDiagnostics->
-    add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR));
+    loader.theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
+    );
   }
 }
 
@@ -477,7 +505,7 @@ void FastXmlLoader::endDocument(void * ctx)
   DocumentNode* docNode;
   XmlNode* currChild;
   
-  try
+  LOADER_TRY
   {
     // This check is required because it is possible (in case of mal-formed doc)
     // that libXml calls endDocument() without having called startDocument().
@@ -531,16 +559,7 @@ void FastXmlLoader::endDocument(void * ctx)
 
     LOADER_TRACE2("End Doc Node = " << docNode);
   }
-  catch (ZorbaException const& e)
-  {
-    loader.theXQueryDiagnostics->add_error( e );
-  }
-  catch (...)
-  {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
-    );
-  }
+  LOADER_CATCH
 }
 
 
@@ -581,7 +600,7 @@ void FastXmlLoader::startElement(
   zorba::Stack<PathStepInfo>& pathStack = loader.thePathStack;
   zstring baseUri;
 
-  try
+  LOADER_TRY
   {
     csize numAttributes = static_cast<csize>(numAttrs);
     csize numBindings = static_cast<csize>(numNamespaces);
@@ -772,15 +791,7 @@ void FastXmlLoader::startElement(
     nodeStack.push(NULL);
     pathStack.push(PathStepInfo(elemNode, baseUri));
   }
-  catch (ZorbaException const& e)
-  {
-    loader.theXQueryDiagnostics->add_error( e );
-  }
-  catch (...)
-  {
-    loader.theXQueryDiagnostics->
-    add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR));
-  }
+  LOADER_CATCH
 }
 
 
@@ -813,7 +824,7 @@ void  FastXmlLoader::endElement(
   XmlNode* prevChild = NULL;
   XmlNode* currChild;
 
-  try
+  LOADER_TRY
   {
     // Find the position of the 1st child of this element node in the node stack
     firstChildPos = stackSize - 1;
@@ -900,16 +911,7 @@ void  FastXmlLoader::endElement(
     }
 #endif
   }
-  catch (ZorbaException const& e)
-  {
-    loader.theXQueryDiagnostics->add_error( e );
-  }
-  catch (...)
-  {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
-    );
-  }
+  LOADER_CATCH
 }
 
 
@@ -925,7 +927,7 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  try
+  LOADER_TRY
   {
     const char* charp = reinterpret_cast<const char*>(ch);
     zstring content(charp, len);
@@ -951,16 +953,7 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     LOADER_TRACE2(lSs.str());
 #endif
   }
-  catch (ZorbaException const& e)
-  {
-    loader.theXQueryDiagnostics->add_error( e );
-  }
-  catch (...)
-  {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
-    );
-  }
+  LOADER_CATCH
 }
 
 
@@ -976,7 +969,7 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  try
+  LOADER_TRY
   {
     // If a doc contains an element like <cdata><![CDATA[ <> ]]></cdata>,
     // libxml returns the string " <> ".
@@ -1004,16 +997,7 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     LOADER_TRACE2(lSs.str());
 #endif
   }
-  catch (ZorbaException const& e)
-  {
-    loader.theXQueryDiagnostics->add_error( e );
-  }
-  catch (...)
-  {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
-    );
-  }
+  LOADER_CATCH
 }
 
 
@@ -1031,7 +1015,7 @@ void FastXmlLoader::processingInstruction(
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  try
+  LOADER_TRY
   {
     // bugfix: handling PIs with no data (i.e. data being NULL)
     zstring content;
@@ -1054,16 +1038,7 @@ void FastXmlLoader::processingInstruction(
                   << targetp << std::endl << " ordpath = "
                   << piNode->getOrdPath().show() << std::endl);
   }
-  catch (ZorbaException const& e)
-  {
-    loader.theXQueryDiagnostics->add_error( e );
-  }
-  catch (...)
-  {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
-    );
-  }
+  LOADER_CATCH
 }
 
 
@@ -1078,7 +1053,7 @@ void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  try
+  LOADER_TRY
   {
     const char* charp = reinterpret_cast<const char*>(ch);
     zstring content;
@@ -1099,16 +1074,7 @@ void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
                   << charp << std::endl << " ordpath = "
                   << commentNode->getOrdPath().show() << std::endl);
   }
-  catch (ZorbaException const& e)
-  {
-    loader.theXQueryDiagnostics->add_error( e );
-  }
-  catch (...)
-  {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
-    );
-  }
+  LOADER_CATCH
 }
 
 

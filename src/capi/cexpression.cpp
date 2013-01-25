@@ -227,10 +227,7 @@ namespace zorbac {
   CExpression::free(XQC_Expression* expr)
   {
     try {
-      CExpression* me = CExpression::get(expr);
-      delete me;
-    } catch (ZorbaException const&) {
-      assert(false);
+      delete CExpression::get(expr);
     } catch (...) {
       assert(false);
     }

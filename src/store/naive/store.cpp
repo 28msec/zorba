@@ -574,9 +574,7 @@ void Store::populateValueIndex(
   }
   catch(...)
   {
-    if (key != NULL)
-      delete key;
-
+    delete key;
     sourceIter->close();
     throw;
   }
@@ -1050,6 +1048,7 @@ store::Item_t Store::loadDocument(
   catch(...)
   {
     delete stream;
+    // catch-TODO: "throw;" here?
   }
   return docitem;
 }

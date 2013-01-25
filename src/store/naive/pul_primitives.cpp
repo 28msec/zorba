@@ -743,9 +743,13 @@ void UpdRevalidate::apply()
   {
     theRevalidationPul->applyUpdates(false);
   }
+  catch (std::exception const &e)
+  {
+    ZORBA_FATAL(false, "Error during the in-place validation: " << e.what());
+  }
   catch (...)
   {
-    ZORBA_FATAL(0, "Error during the in-place validation");
+    ZORBA_FATAL(false, "Error during the in-place validation");
   }
 
   theIsApplied = true;

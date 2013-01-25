@@ -79,6 +79,7 @@
 namespace zorba
 {
 
+#define QUERY_TRY try
 
 #define QUERY_CATCH                                                 \
   catch (ZorbaException const& e)                                   \
@@ -941,7 +942,7 @@ bool XQueryImpl::saveExecutionPlan(
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
-  try
+  QUERY_TRY
   {
     checkNotClosed();
     checkCompiled();
@@ -964,22 +965,7 @@ bool XQueryImpl::saveExecutionPlan(
 
     return true;
   }
-  catch (ZorbaException const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  }
-  catch (FlowCtlException const&)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, "User interrupt");
-  }
-  catch (std::exception const& e)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
-  }
-  catch (...)
-  {
-    ZorbaImpl::notifyError(theDiagnosticHandler);
-  }
+  QUERY_CATCH
 
   return false;
 }

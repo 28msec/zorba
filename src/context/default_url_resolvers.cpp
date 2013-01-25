@@ -21,6 +21,7 @@
 #include "util/uri_util.h"
 #include "util/http_util.h"
 #include "util/fs_util.h"
+#include "util/string_util.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/api/collection.h"
@@ -81,6 +82,11 @@ HTTPURLResolver::resolveURL
         new StreamResource(&(lStream->getStream()), lStream->getStreamReleaser());
     lStream->setStreamReleaser(nullptr);
     return lResource;
+  } catch (std::exception const &e) {
+    std::string const msg(
+      BUILD_STRING( "Could not create stream resource: ", e.what() )
+    );
+    throw os_error::exception( "", aUrl.c_str(), msg.c_str() );
   } catch (...) {
     throw os_error::exception("", aUrl.c_str(), "Could not create stream resource");
   }

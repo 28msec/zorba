@@ -271,10 +271,7 @@ CDynamicContext::get_variable(
   CDynamicContext::free(XQC_DynamicContext* context)
   {
     try {
-      CDynamicContext* me = CDynamicContext::get(context);
-      delete me;
-    } catch (ZorbaException const&) { 
-      assert(false);
+      delete CDynamicContext::get(context);
     } catch (...) { 
       assert(false);
     }

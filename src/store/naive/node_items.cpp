@@ -751,7 +751,11 @@ bool XmlNode::disconnect(csize& pos)
       return (pos < numChildren);
     }
   }
-  catch(...)
+  catch (std::exception const &e)
+  {
+    ZORBA_FATAL(false, e.what());
+  }
+  catch (...)
   {
     ZORBA_FATAL(false, "Unexpected exception");
   }
@@ -824,6 +828,10 @@ void XmlNode::destroy(bool removeType)
     disconnect(pos);
 
     destroyInternal(removeType);
+  }
+  catch (std::exception const &e)
+  {
+    ZORBA_FATAL(false, e.what());
   }
   catch (...)
   {

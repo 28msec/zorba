@@ -507,10 +507,7 @@ namespace zorbac {
   CImplementation::free(XQC_Implementation* impl)
   {
     try {
-      CImplementation* me = CImplementation::get(impl);
-      delete me;
-    } catch (ZorbaException const&) {
-      assert(false);
+      delete CImplementation::get(impl);
     } catch (...) {
       assert(false);
     }

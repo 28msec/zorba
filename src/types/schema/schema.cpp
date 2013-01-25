@@ -483,7 +483,7 @@ void Schema::registerXSD(
         ERROR_PARAMS( std::string(xsdURL), ZED( SchemaParseError ), StrX(e.getMessage())),
         ERROR_LOC( loc ) );
   }
-  catch (const ZorbaException& /* e */)
+  catch (const ZorbaException&)
   {
     throw;
   }
@@ -1758,18 +1758,6 @@ bool Schema::parseUserAtomicTypes(
                  targetType->toSchemaString(),
                  msg));
   }
-  catch(const OutOfMemoryException&)
-  {
-    throw;
-  }
-  catch (const ZorbaException&) 
-  {
-    throw;
-  }
-  catch (...)
-  {
-    throw;
-  }
 #endif //ZORBA_NO_XMLSCHEMA
 
   // find the non user defined base type
@@ -2074,6 +2062,7 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
        }
        catch (...)
        {
+        // catch-TODO: should all exceptions really be ignored here?
        }
 
        ar & binstr;

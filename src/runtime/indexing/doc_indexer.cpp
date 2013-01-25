@@ -150,9 +150,7 @@ void DocIndexer::createIndexEntries(
       }
       catch(...)
       {
-        if (key != NULL)
-          delete key;
-
+        delete key;
         throw;
       }
     }
