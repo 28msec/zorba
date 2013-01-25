@@ -240,7 +240,7 @@ void SchemaValidatorFilter::processStartElement()
                                         fPrefixBuf,
                                         ElemStack::Mode_Element,
                                         colonPos);
-    std::cout << " processStartEvent - : setXsiType" << "\n";
+
     ((XercSchemaValidator*)fValidator)->setXsiType(fPrefixBuf.getRawBuffer(),
                                                    theXsiType + colonPos + 1,
                                                    atUriId);
@@ -858,8 +858,6 @@ void SchemaValidatorFilter::attributeEvent(
     // Ignore schema location hints
     if(XMLString::equals(localname, SchemaSymbols::fgXSI_TYPE))
     {
-      std::cout << "   svf attrEvent: " << StrX(localname) << "  T: " <<
-                StrX(typeName) << " xsi:type \n";
       theXsiType = curAttr->getValue();
     }
     else if(XMLString::equals(localname, SchemaSymbols::fgATT_NILL) &&
@@ -1085,7 +1083,6 @@ const XMLCh* SchemaValidatorFilter::getTypeName()
           else
             typeName = SchemaSymbols::fgATTVAL_ANYTYPE;
         }
-        std::cout << " top : theElemDepth:" << theElemDepth << "\n";
       }
     }
   }
