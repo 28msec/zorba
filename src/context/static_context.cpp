@@ -65,6 +65,8 @@
 #include "types/typeops.h"
 #include "types/schema/validate.h"
 
+#include <util/uri_util.h>
+
 #include "functions/function.h"
 #include "functions/library.h"
 #include "functions/signature.h"
@@ -1694,6 +1696,23 @@ void static_context::apply_uri_mappers(
       oUris = lResultUris;
     }
   }
+
+  // We're all done, but for efficiency, we want to attempt all possible file:
+  // URIs first. So, post-sort the list.
+  size_t const lNumUris = oUris.size();
+  std::vector<zstring> lFileUris, lNonFileUris;
+  for (size_t i = 0; i < lNumUris; i++) {
+    zstring lUri = oUris.at(i);
+    if (uri::get_scheme(lUri) == uri::file) {
+      lFileUris.push_back(lUri);
+    }
+    else {
+      lNonFileUris.push_back(lUri);
+    }
+  }
+
+  oUris = lFileUris;
+  oUris.insert(oUris.end(), lNonFileUris.begin(), lNonFileUris.end());
 }
 
 
@@ -3595,10 +3614,14 @@ void static_context::process_feature_option(
   feature::kind k;
   if (feature::kind_for(featureName->getLocalName().c_str(), k))
   {
+    // Special case: the http-uri-resolution feature is ALWAYS set on the
+    // root static context, to ensure it is applied system-wide.
+    static_context& target = (k != feature::http_resolution) ?
+          *this : GENV.getRootStaticContext();
     if (enable)
-      set_feature(k);
+      target.set_feature(k);
     else
-      unset_feature(k);
+      target.unset_feature(k);
   }
   else
   {
