@@ -27,6 +27,7 @@
 #include "store/api/collection.h"
 #include "store/api/item.h"
 #include "system/globalenv.h"
+#include <context/static_context.h>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -61,12 +62,23 @@ Resource*
 HTTPURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
+  // HTTP resolution doesn't make sense for collections or thesauri. For
+  // schemas and modules, we also want to abort if the http-uri-resolution
+  // feature is disabled.
   switch ( aEntityData->getKind() ) {
     case EntityData::COLLECTION:
 #ifndef ZORBA_NO_FULL_TEXT
     case EntityData::THESAURUS:
 #endif /* ZORBA_NO_FULL_TEXT */
       return nullptr;
+
+    case EntityData::SCHEMA:
+    case EntityData::MODULE:
+      if (!GENV.getRootStaticContext().is_feature_set(feature::http_resolution)) {
+        return nullptr;
+      }
+      break;
+
     default:
       break;
   }
