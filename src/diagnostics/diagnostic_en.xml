@@ -808,6 +808,14 @@
        either \c valid or \c notKnown if validation mode is \c lax.
       </comment>
       <value>"$1": unexpected validity property${: 2}</value>
+
+      <entry key="SerializationElementName_2">
+        <value>"$2": invalid serialization parameters element name must be "serialization parameters"</value>
+      </entry>
+
+      <entry key="SerializationElementNs_2">
+        <value>"$2": invalid namespace for the serialization-parameters element, must be "http://www.w3.org/2010/xslt-xquery-serialization"</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQDY0041">
@@ -2401,19 +2409,19 @@
     <diagnostic code="ZDDY0037" name="COLLECTION_APPEND_BAD_EDIT">
       <value>"$1": illegal edit in append-only collection</value>
     </diagnostic>
-     
+
     <diagnostic code="ZDDY0038" name="COLLECTION_QUEUE_BAD_EDIT">
       <value>"$1": illegal edit from queue collection</value>
     </diagnostic>
-     
+
     <diagnostic code="ZDDY0039" name="NON_ROOT_NODE_EDIT">
       <value>attempt to edit non-root node in collection "$1"</value>
     </diagnostic>
-     
+
     <diagnostic code="ZDDY0040" name="INCONSISTENT_EDIT">
       <value>attempt to edit an item with a template of a different kind (for example an object with a node).</value>
     </diagnostic>
-     
+
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">
       <value>"$1": collection already declared</value>
     </diagnostic>
