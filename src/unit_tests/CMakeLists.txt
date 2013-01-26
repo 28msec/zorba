@@ -23,6 +23,7 @@ SET(UNIT_TEST_SRCS
   test_uri.cpp
   test_uuid.cpp
   unit_tests.cpp
+  test_utf8_streambuf.cpp
 )
 
 IF (ZORBA_WITH_FILE_ACCESS)
