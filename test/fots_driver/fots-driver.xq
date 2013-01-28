@@ -770,7 +770,9 @@ declare %private function driver:create-XQXQ-query(
     env:set-variables($env, $envBaseURI),
     env:set-variables($case/fots:environment, $testSetBaseURI),
 
-    "xqxq:evaluate($queryID)",
+    "xqxq:evaluate($queryID),",
+    "",
+    "xqxq:delete-query($queryID)",
     "        "
     ),
     "&#xA;"
@@ -803,6 +805,8 @@ declare %private %ann:sequential function driver:xqxq-invoke(
 
       (:TODO check if this works:)
       (:variable $expResult := util:get-value($case, $testSetBaseURI, "result");:) 
+
+      xqxq:delete-query($queryKey);
 
       eval:result($queryResult, $case/fots:result/*)
     }
