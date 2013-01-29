@@ -83,6 +83,21 @@ public:
 };
 
 
+//fn-zorba-dateTime:millis-to-dateTime
+class fn_zorba_dateTime_millis_to_dateTime : public function
+{
+public:
+  fn_zorba_dateTime_millis_to_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-dateTime:parse-date
 class fn_zorba_dateTime_parse_date : public function
 {
