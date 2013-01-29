@@ -702,7 +702,7 @@ static void rewriteJoin(
 
   sctx->bind_index(idx, loc);
 
-  buildExpr = idx->getBuildExpr(rCtx.getCompilerCB(), loc);
+  buildExpr = idx->getBuildExpr(loc);
 
   createExpr->set_arg(1, buildExpr);
 

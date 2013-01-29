@@ -116,6 +116,34 @@ CurrentTime::~CurrentTime() {}
 // </CurrentTime>
 
 
+// <MillisToDateTime>
+SERIALIZABLE_CLASS_VERSIONS(MillisToDateTime)
+
+void MillisToDateTime::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<MillisToDateTime, PlanIteratorState>*)this);
+}
+
+
+void MillisToDateTime::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+MillisToDateTime::~MillisToDateTime() {}
+
+// </MillisToDateTime>
+
+
 // <ParseDate>
 SERIALIZABLE_CLASS_VERSIONS(ParseDate)
 

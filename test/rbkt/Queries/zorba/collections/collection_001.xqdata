@@ -10,7 +10,7 @@ declare collection ns:collection-objects as object()*;
 
 declare collection ns:collection-arrays as array()*;
 
-declare %ann:ordered collection ns:collection2;
+declare %ann:ordered collection ns:collection2 as document-node();
 
 declare %ann:const collection ns:collection_const as node()*;
 
