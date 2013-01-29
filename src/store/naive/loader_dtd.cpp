@@ -368,6 +368,9 @@ store::Item_t FragmentXmlLoader::loadXml(
   }
   catch (...)
   {
+    // catch-TODO: "throw 0" and "catch(...)" are being used here as "flow
+    // control" -- not an appropriate use of C++ exceptions.  The catch here
+    // will silently swallow all other exceptions as well -- not good.
     abortload();
     thePathStack.clear();
     return NULL;

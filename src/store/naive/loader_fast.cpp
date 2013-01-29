@@ -269,6 +269,7 @@ std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long 
 
     return stream.gcount();
   }
+  // catch-TODO: should ZorbaException be caught seperately here?
   catch (std::exception const &e)
   {
     theXQueryDiagnostics->add_error(
@@ -385,7 +386,7 @@ store::Item_t FastXmlLoader::loadXml(
   catch(...)
   {
     abortload();
-    return NULL;
+    return NULL; // catch-TODO: "throw;" here?
   }
 
   bool ok = ctxt->wellFormed != 0;
@@ -440,7 +441,7 @@ void FastXmlLoader::startDocument(void * ctx)
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
   
-  try
+  LOADER_TRY
   {
     DocumentNode* docNode = GET_STORE().getNodeFactory().createDocumentNode();
 
@@ -465,24 +466,7 @@ void FastXmlLoader::startDocument(void * ctx)
 
     LOADER_TRACE1("Start Doc Node = " << docNode);
   }
-  catch (ZorbaException const& e)
-  {
-    loader.theXQueryDiagnostics->add_error( e );
-  }
-  catch (std::exception const &e)
-  {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION(
-        zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( e.what() )
-      )
-    );
-  }
-  catch (...)
-  {
-    loader.theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
-    );
-  }
+  LOADER_CATCH
 }
 
 
