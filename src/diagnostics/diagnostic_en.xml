@@ -810,11 +810,11 @@
       <value>"$1": unexpected validity property${: 2}</value>
 
       <entry key="SerializationElementName_2">
-        <value>"$2": invalid serialization parameters element name must be "serialization parameters"</value>
+        <value>"$2": invalid serialization parameters element name must be "serialization-parameters"</value>
       </entry>
 
       <entry key="SerializationElementNs_2">
-        <value>"$2": invalid namespace for the serialization-parameters element, must be "http://www.w3.org/2010/xslt-xquery-serialization"</value>
+        <value>"$2": invalid namespace for the "serialization-parameters" element, must be "http://www.w3.org/2010/xslt-xquery-serialization"</value>
       </entry>
     </diagnostic>
 
