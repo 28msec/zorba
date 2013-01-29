@@ -34,6 +34,7 @@
 #include "atomic_items.h"
 #include "pul_primitive_factory.h"
 #include "node_factory.h"
+#include "collection_tree_info_getters.h"
 
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
@@ -2368,7 +2369,7 @@ void PULImpl::getIndicesToRefresh(
       assert(dynamic_cast<StructuredItem*>(lItem));
       StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lItem);
       pul->theModifiedDocs.insert(const_cast<StructuredItem*>(
-          lStructuredItem->getCollectionTreeInfo()->getRoot()));
+          CollectionTreeInfoGetters::getRoot(lStructuredItem)));
       continue;
     }
 

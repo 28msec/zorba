@@ -102,6 +102,8 @@ class NodeTypeInfo;
 
 class Collection;
 
+class CollectionTreeInfoGetters;
+
 typedef std::vector<NodeTypeInfo> TypeUndoList;
 
 typedef rchandle<NsBindingsContext> NsBindingsContext_t;
@@ -157,6 +159,12 @@ class XmlTree
 
   // make sure that only created by the factory
   friend class NodeFactory;
+  
+  // Used to access collection tree information.
+  friend class CollectionTreeInfoGetters;
+  
+  // For setting positions directly.
+  friend class SimpleCollection;
 
 #ifndef EMBEDED_TYPE
   typedef NodePointerHashMap<store::Item_t> NodeTypeMap;
@@ -206,12 +214,27 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
   
-  CollectionTreeInfo* getCollectionTreeInfo() { return theTreeInfo; }
-
   void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
+
+  virtual void attachToCollection(
+      simplestore::Collection* aCollection,
+      const TreeId& aTreeId,
+      const xs_integer& aPosition);
+
+  virtual void detachFromCollection();
 
   // Returns 0 if not in a collection.
   ulong getCollectionId() const;
+  
+  const TreeId& getTreeId() const
+  {
+    return theTreeInfo->getTreeId();
+  }
+
+  const xs_integer& getPosition() const
+  {
+    return theTreeInfo->getPosition();
+  }
 
 public:
   XmlNode* getRoot() const { return theRootNode; }
@@ -422,12 +445,7 @@ public:
   const store::Collection* getCollection() const
   {
     assert(!isConnectorNode());
-    CollectionTreeInfo* lInfo = getTree()->getCollectionTreeInfo();
-    if (lInfo == NULL)
-    {
-      return NULL;
-    }
-    return reinterpret_cast<const store::Collection*>(lInfo->getCollection());
+    return StructuredItem::getCollection();
   }
 
   virtual void getDocumentURI(zstring& uri) const
@@ -502,7 +520,7 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  const TreeId& getTreeId() const {
+/*  const TreeId& getTreeId() const {
     static TreeId lId;
     CollectionTreeInfo* lInfo = getTree()->getCollectionTreeInfo();
     if (lInfo == NULL)
@@ -519,7 +537,7 @@ public:
       return xs_integer::zero();
     }
     return lInfo->getPosition();
-  }
+  } */
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
@@ -591,8 +609,6 @@ public:
   virtual void detachFromCollection();
 
   virtual void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
-
-  virtual CollectionTreeInfo* getCollectionTreeInfo() const;
 
   virtual long getCollectionTreeRefCount() const;
 
@@ -1666,8 +1682,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      const TreeId& tree1 = this->getTreeId();
-      const TreeId& tree2 = other->getTreeId();
+      const TreeId& tree1 = this->getTree()->getTreeId();
+      const TreeId& tree2 = other->getTree()->getTreeId();
 
       if (tree1 < tree2)
         return -1;
@@ -1677,8 +1693,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
     }
     else
     {
-      xs_integer pos1 = this->getPosition();
-      xs_integer pos2 = other->getPosition();
+      xs_integer pos1 = this->getTree()->getPosition();
+      xs_integer pos2 = other->getTree()->getPosition();
 
       if (pos1 < pos2)
         return -1;

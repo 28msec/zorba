@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "collection_tree_info_getters.h"
 #include "json_items.h"
 #include "simple_item_factory.h"
 #include "simple_store.h"
@@ -108,18 +109,6 @@ void JSONItem::destroy()
 }
 
 
-/******************************************************************************
-
-*******************************************************************************/
-const simplestore::Collection* JSONItem::getCollection() const
-{
-  if (theTreeInfo == NULL)
-  {
-    return NULL;
-  }
-  return theTreeInfo->getCollection();
-}
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -141,7 +130,7 @@ void JSONItem::attachToCollection(
   assert(aCollection);
 
   // Attach
-  assert(getCollectionTreeInfo() == NULL);
+  assert(theTreeInfo == NULL);
   CollectionTreeInfo* lTree = new CollectionTreeInfo();
   lTree->setCollection(aCollection);
   lTree->setTreeId(aTreeId);
@@ -159,7 +148,8 @@ void JSONItem::detachFromCollection()
 {
   ASSERT_INVARIANT();
   
-  CollectionTreeInfo* lTree = getCollectionTreeInfo();
+  
+  CollectionTreeInfo* lTree = theTreeInfo;
   // Detach
   assert(lTree);
   setCollectionTreeInfo(NULL);
@@ -297,7 +287,7 @@ bool SimpleJSONObject::add(
     {
       assert(dynamic_cast<StructuredItem*>(aValue.getp()));
       StructuredItem* lStructuredItem = static_cast<StructuredItem*>(aValue.getp());
-      lStructuredItem->setCollectionTreeInfo(getCollectionTreeInfo());
+      lStructuredItem->setCollectionTreeInfo(theTreeInfo);
     }
     
     csize lPosition = thePairs.size();
@@ -329,7 +319,7 @@ bool SimpleJSONObject::add(
 
       if (getCollection() != NULL)
       {
-        array->setCollectionTreeInfo(getCollectionTreeInfo());
+        array->setCollectionTreeInfo(theTreeInfo);
       }
 
       lValue->removeReference();
@@ -437,7 +427,7 @@ store::Item_t SimpleJSONObject::setValue(
       assert(dynamic_cast<StructuredItem*>(aValue.getp()));
       StructuredItem* lStructuredItem =
           static_cast<StructuredItem*>(aValue.getp());
-      lStructuredItem->setCollectionTreeInfo(getCollectionTreeInfo());
+      lStructuredItem->setCollectionTreeInfo(theTreeInfo);
     }
   }
 
@@ -498,8 +488,8 @@ void SimpleJSONObject::swap(store::Item* anotherItem)
   assert(lOther);
   std::swap(theKeys, lOther->theKeys);
   std::swap(thePairs, lOther->thePairs);
-  setCollectionTreeInfo(getCollectionTreeInfo());
-  lOther->setCollectionTreeInfo(lOther->getCollectionTreeInfo());
+  setCollectionTreeInfo(theTreeInfo);
+  lOther->setCollectionTreeInfo(lOther->theTreeInfo);
 }
 
 /******************************************************************************
@@ -779,7 +769,7 @@ void SimpleJSONArray::push_back(const store::Item_t& aValue)
     assert(dynamic_cast<StructuredItem*>(aValue.getp()));
     StructuredItem* lStructuredItem =
         static_cast<StructuredItem*>(aValue.getp());
-    lStructuredItem->setCollectionTreeInfo(getCollectionTreeInfo());
+    lStructuredItem->setCollectionTreeInfo(theTreeInfo);
   }
 
   aValue->addReference();
@@ -828,7 +818,7 @@ void SimpleJSONArray::insert_before(
     assert(dynamic_cast<StructuredItem*>(member.getp()));
     StructuredItem* lStructuredItem =
         static_cast<StructuredItem*>(member.getp());
-    lStructuredItem->setCollectionTreeInfo(getCollectionTreeInfo());
+    lStructuredItem->setCollectionTreeInfo(theTreeInfo);
   }
 
   member->addReference();
@@ -891,7 +881,7 @@ void SimpleJSONArray::add(
       assert(dynamic_cast<StructuredItem*>(lItem));
       StructuredItem* lStructuredItem =
           static_cast<StructuredItem*>(lItem);
-      lStructuredItem->setCollectionTreeInfo(getCollectionTreeInfo());
+      lStructuredItem->setCollectionTreeInfo(theTreeInfo);
     }
 
     lItem->addReference();
@@ -936,8 +926,8 @@ void SimpleJSONArray::swap(store::Item* anotherItem)
   SimpleJSONArray* lOther = dynamic_cast<SimpleJSONArray*>(anotherItem);
   assert(lOther);
   std::swap(theContent, lOther->theContent);
-  setCollectionTreeInfo(getCollectionTreeInfo());
-  lOther->setCollectionTreeInfo(lOther->getCollectionTreeInfo());
+  setCollectionTreeInfo(theTreeInfo);
+  lOther->setCollectionTreeInfo(lOther->theTreeInfo);
 }
 
 /******************************************************************************
@@ -967,7 +957,7 @@ store::Item_t SimpleJSONArray::replace(
     assert(dynamic_cast<StructuredItem*>(value.getp()));
     StructuredItem* lStructuredItem =
         static_cast<StructuredItem*>(value.getp());
-    lStructuredItem->setCollectionTreeInfo(getCollectionTreeInfo());
+    lStructuredItem->setCollectionTreeInfo(theTreeInfo);
   }
 
   theContent[pos]->removeReference();
@@ -1149,7 +1139,7 @@ void SimpleJSONArray::getTypedValue(store::Item_t& val, store::Iterator_t& iter)
 *******************************************************************************/
 bool SimpleJSONArray::isThisTreeOfAllDescendants(const CollectionTreeInfo* aTree) const
 {
-  if (getCollectionTreeInfo() != aTree)
+  if (theTreeInfo != aTree)
   {
     return false;
   }
