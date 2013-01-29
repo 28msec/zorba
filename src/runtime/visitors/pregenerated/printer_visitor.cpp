@@ -747,6 +747,20 @@ void PrinterVisitor::endVisit ( const CurrentTime& ) {
 // </CurrentTime>
 
 
+// <MillisToDateTime>
+void PrinterVisitor::beginVisit ( const MillisToDateTime& a) {
+  thePrinter.startBeginVisit("MillisToDateTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MillisToDateTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MillisToDateTime>
+
+
 // <ParseDate>
 void PrinterVisitor::beginVisit ( const ParseDate& a) {
   thePrinter.startBeginVisit("ParseDate", ++theId);

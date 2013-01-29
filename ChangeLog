@@ -6,6 +6,7 @@ New Features:
   * Typeswitch expression extended to allow union of types in each case clause,
     as specified by XQuery v3.0
   * Extended sequence types to include unions, as specified by XQuery v3.0
+  * Added millis-to-dateTime() function in datetime module.
 
 Optimizations:
 

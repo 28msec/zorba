@@ -75,6 +75,7 @@
   TYPE_CurrentDate,
   TYPE_CurrentDateTime,
   TYPE_CurrentTime,
+  TYPE_MillisToDateTime,
   TYPE_ParseDate,
   TYPE_ParseDateTime,
   TYPE_ParseTime,

@@ -967,7 +967,7 @@ bool NodeXQType::is_supertype(
       m_node_kind == store::StoreConsts::documentNode &&
       theContentType != NULL &&
       theContentType->type_kind() == XQType::NODE_TYPE_KIND &&
-      dynamic_cast<const NodeXQType*>(theContentType.getp())->m_schema_test == false);
+      static_cast<const NodeXQType*>(theContentType.getp())->m_schema_test == false);
 
   if (m_node_kind != store::StoreConsts::elementNode &&
       m_node_kind != store::StoreConsts::attributeNode &&

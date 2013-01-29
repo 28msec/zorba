@@ -44,6 +44,18 @@
   </zorba:function>
 </zorba:iterator>
 
+<zorba:iterator name="MillisToDateTime">
+  <zorba:description author="Zorba Team">
+    function for converting seconds since epoch to an xs:dateTime
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="millis-to-dateTime" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:long</zorba:param>    <!-- millis -->
+      <zorba:output>xs:dateTime</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
 <zorba:iterator name="ParseDate">
   <zorba:description author="Zorba Team">
     function for parsing strings into a date
