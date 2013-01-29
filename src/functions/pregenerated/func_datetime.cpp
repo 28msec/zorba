@@ -61,6 +61,16 @@ PlanIter_t fn_zorba_dateTime_current_time::codegen(
   return new CurrentTime(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_dateTime_millis_to_dateTime::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new MillisToDateTime(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_dateTime_parse_date::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -142,6 +152,18 @@ void populate_context_datetime(static_context* sctx)
         (createQName("http://www.zorba-xquery.com/modules/datetime","","current-time"), 
         GENV_TYPESYSTEM.TIME_TYPE_ONE),
         FunctionConsts::FN_ZORBA_DATETIME_CURRENT_TIME_0);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_dateTime_millis_to_dateTime,
+        (createQName("http://www.zorba-xquery.com/modules/datetime","","millis-to-dateTime"), 
+        GENV_TYPESYSTEM.LONG_TYPE_ONE, 
+        GENV_TYPESYSTEM.DATETIME_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_DATETIME_MILLIS_TO_DATETIME_1);
 
   }
 

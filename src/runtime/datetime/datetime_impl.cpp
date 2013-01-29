@@ -222,6 +222,34 @@ bool CurrentTime::nextImpl( store::Item_t& result,
   STACK_END( state );
 }
 
+bool MillisToDateTime::nextImpl( store::Item_t& result,
+                                 PlanState &plan_state ) const {
+  store::Item_t item;
+  xs_long millis;
+  time::ztm tm;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+  consumeNext( item, theChildren[0], plan_state );
+  millis = item->getLongValue();
+
+  time::get_gmtime( &tm, static_cast<time_t>( millis / 1000 ) );
+  GENV_ITEMFACTORY->createDateTime(
+    result,
+    static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
+    static_cast<short>( tm.tm_mon + 1 ),
+    static_cast<short>( tm.tm_mday ),
+    static_cast<short>( tm.tm_hour ),
+    static_cast<short>( tm.tm_min ),
+    tm.tm_sec + (millis % 1000) / 1000.0,
+    static_cast<short>( tm.ZTM_GMTOFF / 3600 )
+  );
+
+  STACK_PUSH( true, state );
+  STACK_END( state );
+}
+
 bool ParseDate::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   store::Item_t item;
   zstring buf, fmt;
