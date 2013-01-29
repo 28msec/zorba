@@ -130,12 +130,22 @@ void* begin_visit(const ArgList& n)
 }
 
 
-DEFAULT_END_VISIT (ArgList)
-
-DEFAULT_BEGIN_VISIT (AtomicType)
+DEFAULT_END_VISIT(ArgList)
 
 
-void end_visit(const AtomicType& n, void* state)
+DEFAULT_BEGIN_VISIT(GeneralizedAtomicType)
+
+
+void end_visit(const GeneralizedAtomicType& n, void* state)
+{
+  os << n.get_qname()->get_qname();
+}
+
+
+DEFAULT_BEGIN_VISIT(SimpleType)
+
+
+void end_visit(const SimpleType& n, void* state)
 {
   os << n.get_qname()->get_qname();
 }
@@ -188,13 +198,19 @@ DEFAULT_END_VISIT (BoundarySpaceDecl)
 void* begin_visit(const CaseClause& n)
 {
   os << "case ";
-  if(n.get_varname())
+
+  if (n.get_varname())
   {
     os << "$" << n.get_varname()->get_qname() << " as ";
   }
-  n.get_type()->accept(*this);
+
+  csize numTypes = n.num_types();
+  for (csize i = 0; i < numTypes; ++i)
+    n.get_type(i)->accept(*this);
+
   os << "return ";
   n.get_expr()->accept(*this);
+
   return no_state;
 }
 

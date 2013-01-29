@@ -203,14 +203,17 @@ UpdInsertChildren::UpdInsertChildren(
   std::size_t numChildren = children.size();
   theNewChildren.resize(numChildren);
 
-  for (std::size_t i = 0; i < numChildren; i++)
+  for (csize i = 0; i < numChildren; ++i)
   {
     if (i > 0 &&
         children[i]->getNodeKind() == store::StoreConsts::textNode &&
-        theNewChildren[i-1]->getNodeKind() == store::StoreConsts::textNode)
+        theNewChildren[numNewChildren-1]->getNodeKind() == store::StoreConsts::textNode)
     {
-      TextNode* node1 = reinterpret_cast<TextNode*>(theNewChildren[i-1].getp());
-      TextNode* node2 = reinterpret_cast<TextNode*>(children[i].getp());
+      TextNode* node1 = 
+      reinterpret_cast<TextNode*>(theNewChildren[numNewChildren-1].getp());
+
+      TextNode* node2 = 
+      reinterpret_cast<TextNode*>(children[i].getp());
 
       zstring newText;
       newText.reserve(node1->getText().size() + node2->getText().size());
@@ -220,13 +223,15 @@ UpdInsertChildren::UpdInsertChildren(
     }
     else
     {
-      theNewChildren[i].transfer(children[i]);
+      theNewChildren[numNewChildren].transfer(children[i]);
       ++numNewChildren;
     }
 
     if (theRemoveType == false)
     {
-      store::StoreConsts::NodeKind childKind = theNewChildren[i]->getNodeKind();
+      store::StoreConsts::NodeKind childKind = 
+      theNewChildren[numNewChildren-1]->getNodeKind();
+
       if (childKind == store::StoreConsts::elementNode ||
           childKind == store::StoreConsts::textNode)
         theRemoveType = true;
@@ -966,10 +971,7 @@ UpdCollection::UpdCollection(
 void UpdCreateCollection::apply()
 {
   // Error is raised if collection exists already.
-  GET_STORE().createCollection(theName,
-                               theAnnotations,
-                               theNodeType,
-                               theIsDynamic);
+  GET_STORE().createCollection(theName, theAnnotations, theIsDynamic);
   theIsApplied = true;
 }
 
@@ -1267,17 +1269,17 @@ void UpdInsertAfterIntoCollection::undo()
 ********************************************************************************/
 void UpdDeleteNodesFromCollection::apply()
 {
-  Collection* lColl = static_cast<Collection*>
+  Collection* coll = static_cast<Collection*>
   (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
-  assert(lColl);
+  assert(coll);
 
   theIsApplied = true;
 
   uint64_t size;
   try
   {
-    size = to_xs_unsignedLong(lColl->size());
+    size = to_xs_unsignedLong(coll->size());
   }
   catch (std::range_error& e)
   {
@@ -1294,7 +1296,7 @@ void UpdDeleteNodesFromCollection::apply()
   {
     for (csize i = numNodes; i > 0; --i)
     {
-      if (theNodes[i-1] != lColl->nodeAt(xs_integer(size - i)))
+      if (theNodes[i-1] != coll->nodeAt(xs_integer(size - i)))
       {
         isLast = false;
         break;
@@ -1310,27 +1312,61 @@ void UpdDeleteNodesFromCollection::apply()
   theFound.resize(numNodes);
   thePositions.resize(numNodes);
 
-  for (std::size_t i = 0; i < numNodes; ++i)
+  for (csize i = 0; i < numNodes; ++i)
   {
-    theFound[i] = lColl->removeNode(theNodes[i], thePositions[i]);
+    theFound[i] = coll->removeNode(theNodes[i], thePositions[i]);
     ++theNumApplied;
   }
 }
 
 void UpdDeleteNodesFromCollection::undo()
 {
-  Collection* lColl = static_cast<Collection*>
+  Collection* coll = static_cast<Collection*>
   (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
-  assert(lColl);
+  assert(coll);
 
   for (csize i = 0; i < theNumApplied; ++i)
   {
     if (theFound[i])
     {
-      lColl->addNode(theNodes[i], thePositions[i]);
+      coll->addNode(theNodes[i], thePositions[i]);
     }
   }
+}
+
+
+/*******************************************************************************
+  UpdEditInCollection
+********************************************************************************/
+void UpdEditInCollection::apply()
+{
+#ifndef NDEBUG
+  Collection* coll = static_cast<Collection*>
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
+
+  assert(coll);
+#endif
+
+  theTarget->swap(theContent.getp());
+
+  theIsApplied = true;
+}
+
+
+void UpdEditInCollection::undo()
+{
+  if (!theFound)
+    return;
+
+#ifndef NDEBUG
+  Collection* coll = static_cast<Collection*>
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
+
+  assert(coll);
+#endif
+
+  theTarget->swap(theContent.getp());
 }
 
 

@@ -78,7 +78,7 @@ Iterator tree for main query:
                   </DescendantAxisIterator>
                 </NodeSortIterator>
               </ForVariable>
-              <LetVariable name="$$opt_temp_3" materialize="true">
+              <ForVariable name="$$opt_temp_3">
                 <HoistIterator>
                   <CompareIterator>
                     <FnDataIterator>
@@ -89,7 +89,7 @@ Iterator tree for main query:
                     <SingletonIterator value="xs:string(Tom Jones)"/>
                   </CompareIterator>
                 </HoistIterator>
-              </LetVariable>
+              </ForVariable>
               <ForVariable name="buyer">
                 <UnhoistIterator>
                   <LetVarIterator varname="$$opt_temp_0"/>
@@ -182,7 +182,7 @@ Iterator tree for main query:
                   </FnDataIterator>
                 </HoistIterator>
               </LetVariable>
-              <LetVariable name="$$opt_temp_5" materialize="true">
+              <ForVariable name="$$opt_temp_5">
                 <HoistIterator>
                   <ContainsIterator>
                     <PromoteIterator type="xs:string">
@@ -197,8 +197,8 @@ Iterator tree for main query:
                     <SingletonIterator value="xs:string(Bicycle)"/>
                   </ContainsIterator>
                 </HoistIterator>
-              </LetVariable>
-              <LetVariable name="$$opt_temp_4" materialize="true">
+              </ForVariable>
+              <ForVariable name="$$opt_temp_4">
                 <HoistIterator>
                   <CompareIterator>
                     <FnDataIterator>
@@ -213,7 +213,7 @@ Iterator tree for main query:
                     </FnDataIterator>
                   </CompareIterator>
                 </HoistIterator>
-              </LetVariable>
+              </ForVariable>
               <ForVariable name="highbid">
                 <NodeSortIterator distinct="true" ascending="true">
                   <ProbeIndexPointGeneralIterator>
@@ -227,13 +227,13 @@ Iterator tree for main query:
               <WhereClause>
                 <AndIterator>
                   <UnhoistIterator>
-                    <LetVarIterator varname="$$opt_temp_3"/>
+                    <ForVarIterator varname="$$opt_temp_3"/>
                   </UnhoistIterator>
                   <UnhoistIterator>
-                    <LetVarIterator varname="$$opt_temp_4"/>
+                    <ForVarIterator varname="$$opt_temp_4"/>
                   </UnhoistIterator>
                   <UnhoistIterator>
-                    <LetVarIterator varname="$$opt_temp_5"/>
+                    <ForVarIterator varname="$$opt_temp_5"/>
                   </UnhoistIterator>
                   <SingletonIterator value="xs:boolean(true)"/>
                   <CompareIterator>

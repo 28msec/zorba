@@ -231,7 +231,7 @@ void SchemaValidatorImpl::processElement(
     {
       // workaround for elem of type xsd:string with no text child
       if ( newType->is_builtin() && 
-          newType->get_qname()->equals(GENV_TYPESYSTEM.STRING_TYPE_ONE->get_qname()) )
+          newType->getQName()->equals(GENV_TYPESYSTEM.STRING_TYPE_ONE->getQName()) )
       {
         /*store::Item_t result;
          zstring emptyStr = "";
@@ -497,7 +497,8 @@ void SchemaValidatorImpl::processTextValue (
 {
   xqtref_t type = typeManager->create_named_atomic_type(typeQName,
                                                         TypeConstants::QUANT_ONE,
-                                                        loc);
+                                                        loc,
+                                                        false);
   //cout << " vup        - processTextValue: '" << textValue->c_str() << "'\n";
   //cout << " vup        - processTextValue: " << typeQName->getPrefix()->str()
   // << ":" << typeQName->getLocalName()->str() << "@"
@@ -539,12 +540,12 @@ void SchemaValidatorImpl::processTextValue (
       // else isAtomic
     }
 
-    bool isResult = GenericCast::castToAtomic(result,
-                                              textValue,
-                                              type.getp(),
-                                              typeManager,
-                                              &nsCtx,
-                                              loc);
+    bool isResult = GenericCast::castStringToAtomic(result,
+                                                    textValue,
+                                                    type.getp(),
+                                                    typeManager,
+                                                    &nsCtx,
+                                                    loc);
     if ( isResult )
       resultList.push_back(result);
   }
@@ -635,7 +636,7 @@ bool SchemaValidatorImpl::isPossibleSimpleContentRevalImpl(
         return true;
       }
       
-      if ( udType->isAtomic() ) 
+      if ( udType->isAtomicAny() ) 
       {
         xqtref_t baseBIType = udType->getBaseBuiltinType();
         return isPossibleSimpleContentRevalImpl(baseBIType);

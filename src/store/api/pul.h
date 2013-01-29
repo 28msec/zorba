@@ -156,7 +156,6 @@ public:
         const QueryLoc* aQueryLoc,
         Item_t& name,
         const std::vector<Annotation_t>& annotations,
-        const Item_t& nodeType, // can be null if not a schema type
         bool isDynamic) = 0;
 
   virtual void addDeleteCollection(
@@ -201,6 +200,13 @@ public:
         Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
+        bool isDynamic) = 0;
+
+  virtual void addEditInCollection(
+        const QueryLoc* aQueryLoc,
+        Item_t& name,
+        Item_t& target,
+        Item_t& content,
         bool isDynamic) = 0;
 
   virtual void addTruncateCollection(

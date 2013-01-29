@@ -41,7 +41,7 @@ bool find_lang_attribute( store::Item const &item, iso639_1::type *lang ) {
       if ( qname &&
            qname->getLocalName() == "lang" &&
            qname->getNamespace() == XML_NS ) {
-        *lang = locale::find_lang( attr->getStringValue().c_str() );
+        *lang = locale::find_lang( attr->getStringValue() );
         found_lang = true;
         break;
       }

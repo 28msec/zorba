@@ -40,13 +40,11 @@ namespace zorba { namespace simplestore {
 SimpleCollection::SimpleCollection(
     const store::Item_t& aName,
     const std::vector<store::Annotation_t>& aAnnotations,
-    const store::Item_t& aNodeType,
     bool isDynamic)
   : 
   theName(aName),
   theIsDynamic(isDynamic),
-  theAnnotations(aAnnotations),
-  theNodeType(aNodeType)
+  theAnnotations(aAnnotations)
 {
   theId = GET_STORE().createCollectionId();
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
@@ -59,8 +57,7 @@ SimpleCollection::SimpleCollection(
 ********************************************************************************/
 SimpleCollection::SimpleCollection()
   : 
-  theIsDynamic(false),
-  theNodeType(NULL)
+  theIsDynamic(false)
 {
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
 }
@@ -352,6 +349,47 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
     }
 
     return xs_integer(last - pos);
+  }
+}
+
+/*******************************************************************************
+ * Substitues content for target.
+********************************************************************************/
+bool SimpleCollection::replaceNode(store::Item* target, store::Item* content)
+{
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
+
+  if (!target->isStructuredItem())
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+  if (!content->isStructuredItem())
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+  StructuredItem* lTargetItem = static_cast<StructuredItem*>(target);
+  StructuredItem* lContentItem = static_cast<StructuredItem*>(content);
+
+  xs_integer position;
+  bool found = findNode(target, position);
+
+  if (found)
+  {
+    ZORBA_ASSERT(target->getCollection() == this);
+
+    lTargetItem->detachFromCollection();
+
+    csize pos = to_xs_unsignedInt(position);
+    theXmlTrees[pos] = content;
+    
+    lContentItem->attachToCollection(this, createTreeId(), position);
+    return true;
+  }
+  else
+  {
+    return false;
   }
 }
 

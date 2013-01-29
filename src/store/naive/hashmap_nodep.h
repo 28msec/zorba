@@ -65,6 +65,43 @@ public:
 };
 
 
+/***************************************************************************//**
+  Class to privide the equality and hash functions for the NodePointerHashMap
+  class defined below.
+*******************************************************************************/
+class ItemPointerHashMapCmp
+{
+public:
+  static bool equal(const store::Item* n1, const store::Item* n2)
+  {
+    return n1 == n2;
+  }
+
+  static uint32_t hash(const store::Item* n)
+  {
+    return hashfun::h32((void*)(&n), sizeof(n));
+  }
+};
+
+
+/*******************************************************************************
+  A hash-based map container mapping item pointers to values of type V. 
+  Equality is based on the Item::equals() method.
+*******************************************************************************/
+template <class V>
+class ItemPointerHashMap : public HashMap<const store::Item*,
+                                          V,
+                                          ItemPointerHashMapCmp>
+{
+public:
+  ItemPointerHashMap(ulong size, bool sync) 
+    :
+    HashMap<const store::Item*, V, ItemPointerHashMapCmp>(size, sync)
+  {
+  }
+};
+
+
 }
 }
 

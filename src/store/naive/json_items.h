@@ -55,7 +55,7 @@ protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
 public:
-  JSONNull() : AtomicItem() { }
+  JSONNull() : AtomicItem(store::JS_NULL) { }
 
   virtual ~JSONNull() {}
 
@@ -299,6 +299,8 @@ public:
 
   bool isInSubtree(const StructuredItem* aJSONItem) const;
 
+  virtual void swap(store::Item* anotherItem);
+
   // Invariant handling
 #ifndef NDEBUG
   void assertInvariant() const;
@@ -450,6 +452,8 @@ public:
   // StructuredItem API
   
   void setCollectionTreeInfo(CollectionTreeInfo* aTree);
+
+  virtual void swap(Item* anotherItem);
 
   bool isInSubtree(const StructuredItem* aJSONItem) const;
 

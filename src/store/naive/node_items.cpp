@@ -22,8 +22,11 @@
 #include <zorba/item.h>
 
 #include "api/unmarshaller.h"
+
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
+
 #include "zorbatypes/URI.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "zorbautils/locale.h"
@@ -757,6 +760,61 @@ bool XmlNode::disconnect(csize& pos)
 }
 
 
+void XmlNode::swap(Item* anotherItem)
+{
+  // Need Item to swap trees and adjust counters.
+  Item::swap(anotherItem);
+  XmlNode* lOtherItem = dynamic_cast<XmlNode*>(anotherItem);
+  assert(lOtherItem);
+  assert(theParent == NULL);
+  assert(lOtherItem->theParent == NULL);
+
+  // Swap flags expect hasReference.
+  bool lHasReference = haveReference();
+  bool lOtherHasReference = lOtherItem->haveReference();
+  std::swap(theFlags, lOtherItem->theFlags);
+  if(lHasReference)
+  {
+    setHaveReference();
+  }
+  if(lOtherHasReference)
+  {
+    setHaveReference();
+  }
+  
+  // Swap root nodes and adjust type maps.
+  store::Item_t lRootNodeType;
+  store::Item_t lOtherRootNodeType;
+  bool lRootHasType = getTree()->theTypesMap->get(
+      getTree()->theRootNode, lRootNodeType);
+  bool lOtherRootHasType = lOtherItem->getTree()->theTypesMap->get(
+      lOtherItem->getTree()->theRootNode, lOtherRootNodeType);
+  if(lRootHasType)
+  {
+    getTree()->theTypesMap->erase(getTree()->theRootNode);
+  }
+  if(lOtherRootHasType)
+  {
+    lOtherItem->getTree()->theTypesMap->erase(
+        lOtherItem->getTree()->theRootNode);
+  }
+  std::swap(getTree()->theRootNode, lOtherItem->getTree()->theRootNode);
+  if(lRootHasType)
+  {
+    getTree()->theTypesMap->insert(getTree()->theRootNode, lRootNodeType);
+  }
+  if(lOtherRootHasType)
+  {
+    lOtherItem->getTree()->theTypesMap->insert(
+        lOtherItem->getTree()->theRootNode, lOtherRootNodeType);
+  }
+
+  // Adjust trees.
+#ifndef EMBEDED_TYPE
+  std::swap(getTree()->theTypesMap, lOtherItem->getTree()->theTypesMap);
+#endif
+}
+
 /*******************************************************************************
   Deallocate all nodes in the subtree rooted at "this".
 ********************************************************************************/
@@ -968,6 +1026,16 @@ zstring ConnectorNode::show() const
 
   return str.str();
 }
+
+void ConnectorNode::swap(Item* anotherItem)
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1464,6 +1532,14 @@ store::Item_t OrdPathNode::leastCommonAncestor(const store::Item_t& aOther) cons
 }
 
 
+void OrdPathNode::swap(Item* anotherItem)
+{
+  XmlNode::swap(anotherItem);
+  OrdPathNode* lOtherItem = dynamic_cast<OrdPathNode*>(anotherItem);
+  std::swap(theOrdPath, lOtherItem->theOrdPath);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class InternalNode                                                         //
@@ -1771,6 +1847,28 @@ void InternalNode::unregisterReferencesToDeletedSubtree()
 }
 
 
+void InternalNode::swap(Item* anotherItem)
+{
+  OrdPathNode::swap(anotherItem);
+  InternalNode* lOtherItem = dynamic_cast<InternalNode*>(anotherItem);
+  std::swap(theNodes, lOtherItem->theNodes);
+  for (iterator lIterator = theNodes.begin();
+       lIterator != theNodes.end();
+       ++lIterator)
+  {
+    (*lIterator)->setParent(this);
+  }
+  for (iterator lIterator = lOtherItem->theNodes.begin();
+       lIterator !=  lOtherItem->theNodes.end();
+       ++lIterator)
+  {
+    (*lIterator)->setParent(lOtherItem);
+  }
+  std::swap(theNumAttrs, lOtherItem->theNumAttrs);
+  std::swap(theNsContext, lOtherItem->theNsContext);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class DocumentNode                                                         //
@@ -1992,6 +2090,15 @@ zstring DocumentNode::show() const
   return strStream.str();
 }
 
+
+
+void DocumentNode::swap(Item* anotherItem)
+{
+  InternalNode::swap(anotherItem);
+  DocumentNode* lOtherItem = dynamic_cast<DocumentNode*>(anotherItem);
+  std::swap(theBaseUri, lOtherItem->theBaseUri);
+  std::swap(theDocUri, lOtherItem->theDocUri);
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -3233,7 +3340,7 @@ void ElementNode::uninheritBinding(
 ********************************************************************************/
 void ElementNode::checkNamespaceConflict(
     const store::Item*  qname,
-    Error const& ecode) const
+    const QueryLoc* loc) const
 {
   const QNameItem* qn = reinterpret_cast<const QNameItem*>(qname);
 
@@ -3249,7 +3356,8 @@ void ElementNode::checkNamespaceConflict(
 
   if (found && ns2 != ns)
   {
-    throw XQUERY_EXCEPTION_VAR(ecode, ERROR_PARAMS(qname->show(), prefix, ns2));
+    RAISE_ERROR(err::XUDY0023, loc, 
+    ERROR_PARAMS(qn->getStringValue(), prefix, ns, ns2));
   }
 }
 
@@ -3299,7 +3407,7 @@ void ElementNode::checkUniqueAttrs() const
       if (!otherAttr->isHidden() && otherAttr->getNodeName()->equals(attrName))
       {
         throw XQUERY_EXCEPTION(err::XUDY0021,
-            ERROR_PARAMS(ZED(XUDY0021_AttributeName), "", attrName->getStringValue()));
+        ERROR_PARAMS(ZED(XUDY0021_AttributeName), "", attrName->getStringValue()));
       }
     }
   }
@@ -3480,6 +3588,17 @@ zstring ElementNode::show() const
   return str.str();
 }
 
+
+
+void ElementNode::swap(Item* anotherItem)
+{
+  InternalNode::swap(anotherItem);
+  ElementNode* lOtherItem = dynamic_cast<ElementNode*>(anotherItem);
+  std::swap(theName, lOtherItem->theName);
+#ifdef EMBEDED_TYPE
+  std::swap(theTypeName, lOtherItem->theTypeName);
+#endif
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -3989,6 +4108,18 @@ store::Iterator_t AttributeNode::getChildren() const
 {
   return NULL;
 }
+
+void AttributeNode::swap(Item* anotherItem)
+{
+  OrdPathNode::swap(anotherItem);
+  AttributeNode* lOtherItem = dynamic_cast<AttributeNode*>(anotherItem);
+  std::swap(theName, lOtherItem->theName);
+#ifdef EMBEDED_TYPE
+  std::swap(theTypeName, lOtherItem->theTypeName);
+#endif
+  std::swap(theTypedValue, lOtherItem->theTypedValue);
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -4698,6 +4829,15 @@ store::Iterator_t TextNode::getChildren() const
   return NULL;
 }
 
+void TextNode::swap(Item* anotherItem)
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class PiNode                                                               //
@@ -4844,6 +4984,16 @@ store::Iterator_t PiNode::getChildren() const
 }
 
 
+void PiNode::swap(Item* anotherItem)
+{
+  OrdPathNode::swap(anotherItem);
+  PiNode* lOtherItem = dynamic_cast<PiNode*>(anotherItem);
+  std::swap(theTarget, lOtherItem->theTarget);
+  std::swap(theContent, lOtherItem->theContent);
+  std::swap(theName, lOtherItem->theName);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class CommentNode                                                          //
@@ -4974,6 +5124,14 @@ zstring CommentNode::show() const
 store::Iterator_t CommentNode::getChildren() const
 {
   return NULL;
+}
+
+
+void CommentNode::swap(Item* anotherItem)
+{
+  OrdPathNode::swap(anotherItem);
+  CommentNode* lOtherItem = dynamic_cast<CommentNode*>(anotherItem);
+  std::swap(theContent, lOtherItem->theContent);
 }
 
 

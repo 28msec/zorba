@@ -110,9 +110,14 @@ streambuf::int_type streambuf::overflow( int_type c ) {
 }
 
 streambuf::int_type streambuf::pbackfail( int_type c ) {
-  if ( gptr() > eback() )
-    gbump( -1 );
-  return orig_buf_->sputbackc( traits_type::to_char_type( c ) );
+  if ( !traits_type::eq_int_type( c, traits_type::eof() ) &&
+       gptr() > eback() ) {
+    c = orig_buf_->sputbackc( traits_type::to_char_type( c ) );
+    if ( !traits_type::eq_int_type( c, traits_type::eof() ) )
+      gbump( -1 );
+    return c;
+  }
+  return traits_type::eof();
 }
 
 streambuf::int_type streambuf::underflow() {

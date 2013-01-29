@@ -129,11 +129,11 @@ VarInfo* DynamicContextImpl::get_var_info(const zstring& inVarName)
   if (!var)
   {
     throw XQUERY_EXCEPTION(err::XPST0008,
-    ERROR_PARAMS(BUILD_STRING('{',
+    ERROR_PARAMS(ZED(XPST0008_VariableName_2),
+                 BUILD_STRING('{',
                               qnameItem->getNamespace(),
                               '}',
-                              qnameItem->getLocalName()),
-                 ZED(Variable)));
+                              qnameItem->getLocalName())));
   }
 
   return var;
@@ -177,7 +177,8 @@ VarInfo* DynamicContextImpl::get_var_info(
   if (!var)
   {
     throw XQUERY_EXCEPTION(err::XPST0008,
-    ERROR_PARAMS(BUILD_STRING('{', inVarUri, '}', inVarLocalName ), ZED(Variable)));
+    ERROR_PARAMS(ZED(XPST0008_VariableName_2),
+                 BUILD_STRING('{', inVarUri, '}', inVarLocalName )));
   }
 
   return var;

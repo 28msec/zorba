@@ -488,6 +488,18 @@ bool SimpleJSONObject::rename(
   return true;
 }
 
+/******************************************************************************
+
+*******************************************************************************/
+void SimpleJSONObject::swap(store::Item* anotherItem)
+{
+  SimpleJSONObject* lOther = dynamic_cast<SimpleJSONObject*>(anotherItem);
+  assert(lOther);
+  std::swap(theKeys, lOther->theKeys);
+  std::swap(thePairs, lOther->thePairs);
+  setCollectionTreeInfo(getCollectionTreeInfo());
+  lOther->setCollectionTreeInfo(lOther->getCollectionTreeInfo());
+}
 
 /******************************************************************************
 
@@ -914,6 +926,18 @@ store::Item_t SimpleJSONArray::remove(const xs_integer& aPos)
   return lItem;
 }
 
+
+/******************************************************************************
+
+*******************************************************************************/
+void SimpleJSONArray::swap(store::Item* anotherItem)
+{
+  SimpleJSONArray* lOther = dynamic_cast<SimpleJSONArray*>(anotherItem);
+  assert(lOther);
+  std::swap(theContent, lOther->theContent);
+  setCollectionTreeInfo(getCollectionTreeInfo());
+  lOther->setCollectionTreeInfo(lOther->getCollectionTreeInfo());
+}
 
 /******************************************************************************
 

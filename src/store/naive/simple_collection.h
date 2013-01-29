@@ -57,8 +57,7 @@ public:
     xs_integer                              theSkip;
 
   public:
-    CollectionIter(SimpleCollection* collection, 
-                   const xs_integer& aSkip);
+    CollectionIter(SimpleCollection* collection, const xs_integer& skip);
 
     ~CollectionIter();
 
@@ -81,8 +80,6 @@ protected:
 
   const std::vector<store::Annotation_t> theAnnotations;
 
-  store::Item_t                          theNodeType;
-
   SYNC_CODE(Latch                        theLatch;)
 
   // default constructor added in order to allow subclasses to instantiate
@@ -93,7 +90,6 @@ public:
   SimpleCollection(
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
-      const store::Item_t& aNodeType,
       bool isDynamic = false);
 
   virtual ~SimpleCollection();
@@ -131,6 +127,10 @@ public:
 
   xs_integer removeNodes(xs_integer position, xs_integer num);
 
+  bool replaceNode(
+      store::Item* target,
+      store::Item* content);
+  
   bool findNode(const store::Item* node, xs_integer& position) const;
 
   store::Item_t nodeAt(xs_integer position);

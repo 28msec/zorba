@@ -1149,27 +1149,7 @@ void bind_var(var_expr* e, static_context* sctx)
 {
   assert(sctx != NULL);
 
-  switch (e->get_kind())
-  {
-  case var_expr::let_var:
-  {
-    sctx->bind_var(e, e->get_loc(), err::XQST0039);
-    break;
-  }
-  case var_expr::win_var:
-  case var_expr::wincond_out_var:
-  case var_expr::wincond_out_pos_var:
-  case var_expr::wincond_in_var:
-  case var_expr::wincond_in_pos_var:
-  {
-    sctx->bind_var(e, e->get_loc(), err::XQST0103);
-    break;
-  }
-  default:
-  {
-    sctx->bind_var(e, e->get_loc(), err::XQST0049);
-  }
-  }
+  sctx->bind_var(e, e->get_loc());
 }
 
 
@@ -1221,26 +1201,27 @@ var_expr* bind_var(
 ********************************************************************************/
 var_expr* lookup_ctx_var(const QName* qname, const QueryLoc& loc)
 {
-  if (theIsInIndexDomain)
+  store::Item_t qnameItem;
+  expand_no_default_qname(qnameItem, qname, loc);
+
+  VarInfo* var = theSctx->lookup_var(qnameItem.getp());
+
+  if (var == NULL)
   {
-    try
+    if (theIsInIndexDomain)
     {
-      return lookup_var(qname, loc, err::XPDY0002);
+      RAISE_ERROR(zerr::ZDST0032_INDEX_REFERENCES_CTX_ITEM, loc,
+      ERROR_PARAMS(theIndexDecl->getName()->getStringValue()));
     }
-    catch (ZorbaException const& e)
+    else
     {
-      if (e.diagnostic() == err::XPDY0002)
-      {
-        RAISE_ERROR(zerr::ZDST0032_INDEX_REFERENCES_CTX_ITEM, loc,
-        ERROR_PARAMS(theIndexDecl->getName()->getStringValue()));
-      }
-      throw;
+      zstring varName = static_context::var_name(qnameItem);
+      RAISE_ERROR(err::XPDY0002, loc, 
+      ERROR_PARAMS(ZED(XPDY0002_ContextUndeclared_2), varName));
     }
   }
-  else
-  {
-    return lookup_var(qname, loc, err::XPDY0002);
-  }
+
+  return var->getVar();
 }
 
 
@@ -1252,10 +1233,10 @@ var_expr* lookup_ctx_var(const QName* qname, const QueryLoc& loc)
   If the lexical qname has a prefix for which no namespace binding exists, the
   method raises error.
 
-  If var is not found, the method raises the given error, unless the given error
-  is zerr::ZXQP0000_NO_ERROR, in which case it returns NULL.
+  If var is not found, the method raises XPST0008, unless the raiseError param
+  is alse, in which case it returns NULL.
 ********************************************************************************/
-var_expr* lookup_var(const QName* qname, const QueryLoc& loc, const Error& err)
+var_expr* lookup_var(const QName* qname, const QueryLoc& loc, bool raiseError)
 {
   store::Item_t qnameItem;
   expand_no_default_qname(qnameItem, qname, loc);
@@ -1264,12 +1245,11 @@ var_expr* lookup_var(const QName* qname, const QueryLoc& loc, const Error& err)
 
   if (!var)
   {
-    if (err != zerr::ZXQP0000_NO_ERROR)
+    if (raiseError)
     {
       zstring varName = static_context::var_name(qnameItem);
-      throw XQUERY_EXCEPTION_VAR(err,
-      ERROR_PARAMS(varName, ZED(VariabledUndeclared)),
-      ERROR_LOC(loc));
+      RAISE_ERROR(err::XPST0008, loc,
+      ERROR_PARAMS(ZED(XPST0008_VariableName_2), varName));
     }
 
     return NULL;
@@ -1284,21 +1264,20 @@ var_expr* lookup_var(const QName* qname, const QueryLoc& loc, const Error& err)
   moves upwards the ancestor path until the first instance (if any) of the var
   is found.
 
-  If var is not found, the method raises the given error, unless the given error
-  is MAX_ZORBA_ERROR_CODE, in which case it returns NULL.
+  If var is not found, the method raises XPST0008, unless the raiseError param
+  is alse, in which case it returns NULL.
 ********************************************************************************/
-var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, const Error& err)
+var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, bool raiseError)
 {
   VarInfo* var = theSctx->lookup_var(qname);
 
   if (!var)
   {
-    if (err != zerr::ZXQP0000_NO_ERROR)
+    if (raiseError)
     {
       zstring varName = static_context::var_name(qname);
-      throw XQUERY_EXCEPTION_VAR(err,
-      ERROR_PARAMS(varName, ZED(VariabledUndeclared)),
-      ERROR_LOC(loc));
+      RAISE_ERROR(err::XPST0008, loc,
+      ERROR_PARAMS(ZED(XPST0008_VariableName_2), varName));
     }
 
     return NULL;
@@ -1909,10 +1888,10 @@ void collect_flwor_vars (
       {
         VarInDecl* varDecl = varDecls[j];
 
-        vars.insert(lookup_var(varDecl->get_var_name(), loc, err::XPST0008));
+        vars.insert(lookup_var(varDecl->get_var_name(), loc, true));
 
         if (varDecl->get_posvar() != NULL)
-          vars.insert(lookup_var(varDecl->get_posvar()->get_name(), loc, err::XPST0008));
+          vars.insert(lookup_var(varDecl->get_posvar()->get_name(), loc, true));
       }
     }
     else if (typeid(c) == typeid(LetClause))
@@ -1922,13 +1901,13 @@ void collect_flwor_vars (
 
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
       {
-        vars.insert(lookup_var(lV[j]->get_var_name(), loc, err::XPST0008));
+        vars.insert(lookup_var(lV[j]->get_var_name(), loc, true));
       }
     }
     else if (typeid(c) == typeid(WindowClause))
     {
       const WindowClause& wc = *static_cast<const WindowClause *>(&c);
-      vars.insert(lookup_var(wc.get_var()->get_var_name(), loc, err::XPST0008));
+      vars.insert(lookup_var(wc.get_var()->get_var_name(), loc, true));
       for (int j = 1; j >= 0; j--)
       {
         const FLWORWinCond* cond = &*wc[j];
@@ -1938,13 +1917,13 @@ void collect_flwor_vars (
           if (wv != NULL)
           {
             if (wv->get_next())
-              vars.insert(lookup_var(wv->get_next(), loc, err::XPST0008));
+              vars.insert(lookup_var(wv->get_next(), loc, true));
             if (wv->get_prev())
-              vars.insert(lookup_var(wv->get_prev(), loc, err::XPST0008));
+              vars.insert(lookup_var(wv->get_prev(), loc, true));
             if (wv->get_curr())
-              vars.insert(lookup_var(wv->get_curr(), loc, err::XPST0008));
+              vars.insert(lookup_var(wv->get_curr(), loc, true));
             if (wv->get_posvar() != NULL)
-              vars.insert(lookup_var(wv->get_posvar()->get_name(), loc, err::XPST0008));
+              vars.insert(lookup_var(wv->get_posvar()->get_name(), loc, true));
           }
         }
       }
@@ -1953,7 +1932,7 @@ void collect_flwor_vars (
     {
       vars.insert(lookup_var(static_cast<const CountClause*>(&c)->get_varname(),
                              loc,
-                             err::XPST0008));
+                             true));
     }
     else if (typeid(c) == typeid(OrderByClause))
     {
@@ -1968,7 +1947,7 @@ void collect_flwor_vars (
       {
         GroupSpec* groupSpec = (*(groupClause.get_spec_list()))[gSpecPos];
         if (groupSpec->get_binding_expr() != NULL)
-          vars.insert(lookup_var(groupSpec->get_var_name(), loc, err::XPST0008));
+          vars.insert(lookup_var(groupSpec->get_var_name(), loc, true));
       }
 
       // Group-by redefines ALL previous variables, but the GroupByClause lists
@@ -2169,7 +2148,7 @@ void* import_schema(
       theSctx->set_default_elem_type_ns(targetNS, true, loc);
 
     if (! pfx.empty())
-      theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
+      theSctx->bind_ns(pfx, targetNS, loc);
   }
 
   zstring xsdTNS = zstring(XML_SCHEMA_NS);
@@ -3005,7 +2984,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       ! (pfx == theModulePrefix &&
          targetNS == theModuleNamespace))
   {
-    theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
+    theSctx->bind_ns(pfx, targetNS, loc);
   }
 
   const URILiteralList* atlist = v.get_at_list();
@@ -3839,7 +3818,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     // return type.
     xqtref_t returnType = udf->getSignature().returnType();
 
-    if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
+    if (returnType->isBuiltinAtomicAny())
     {
       body = wrap_in_type_promotion(body,
                                     returnType,
@@ -3988,7 +3967,7 @@ void* begin_visit(const GlobalVarDecl& v)
 
   if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
   {
-    ve = lookup_var(qnameItem, loc, err::XPST0008);
+    ve = lookup_var(qnameItem, loc, true);
 
     assert(ve);
   }
@@ -5003,16 +4982,10 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     flwor_expr* evFlworExpr = theExprManager->
     create_flwor_expr(theRootSctx, theUDF, loc, false);
 
-    evFlworExpr->set_return_expr(theExprManager->create_const_expr(theRootSctx,
-                                                                   theUDF,
-                                                                   loc,
-                                                                   true));
+    evFlworExpr->set_return_expr(CREATE(const)(theRootSctx, theUDF, loc, true));
 
     // $x_ in dc:collection( xs:QName("org:employees") )
-    var_expr* evVarExpr = bind_var(loc,
-                                    varItem,
-                                    var_expr::for_var,
-                                    NULL);
+    var_expr* evVarExpr = bind_var(loc, varItem, var_expr::for_var, NULL);
 
     // maybe make one more collExpr?
     evFlworExpr->add_clause(wrap_in_forclause(collExpr, evVarExpr, NULL));
@@ -5941,7 +5914,7 @@ void end_visit(const AssignExpr& v, void* visit_state)
 {
   TRACE_VISIT_OUT();
 
-  var_expr* ve = lookup_var(v.get_name(), loc, err::XPST0008);
+  var_expr* ve = lookup_var(v.get_name(), loc, true);
 
   if ((ve->get_kind() != var_expr::local_var &&
        ve->get_kind() != var_expr::prolog_var) ||
@@ -6862,11 +6835,11 @@ void* begin_visit(const GroupByClause& v)
 
     if (spec->get_binding_expr() == NULL)
     {
-      ve = lookup_var(varname, loc, err::XPST0008);
+      ve = lookup_var(varname, loc, true);
     }
     else
     {
-      ve = lookup_var(varname, loc, zerr::ZXQP0000_NO_ERROR);
+      ve = lookup_var(varname, loc, false);
     }
 
     if (ve != NULL)
@@ -6947,16 +6920,14 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
       if (!var)
       {
         RAISE_ERROR(err::XPST0008, specLoc,
-        ERROR_PARAMS(varName->getStringValue(), ZED(VariabledUndeclared)));
+        ERROR_PARAMS(ZED(XPST0008_VariableName_2), varName->getStringValue()));
       }
 
       expr* inputExpr = var->getVar();
 
-      if (inputExpr->get_expr_kind() == var_expr_kind)
-      {
-        inputExpr = theExprManager->
-        create_wrapper_expr(theRootSctx, theUDF, specLoc, inputExpr);
-      }
+      assert(inputExpr->get_expr_kind() == var_expr_kind);
+
+      inputExpr = CREATE(wrapper)(theRootSctx, theUDF, specLoc, inputExpr);
 
       inputExpr = wrap_in_atomization(inputExpr);
 
@@ -7361,21 +7332,22 @@ void* begin_visit(const SwitchExpr& v)
   //          then $atomv cast as xs:string
   //          else $atomv
   //     return NULL]
-  static_cast<flwor_expr*>(atomizedFlwor)->set_return_expr(theExprManager->
-    create_if_expr(theRootSctx,
-                   theUDF,
-                   loc,
-                   theExprManager->create_instanceof_expr(theRootSctx,
-                                                          theUDF,
-                                                          loc,
-                                                          atomv,
-                                                          theRTM.UNTYPED_ATOMIC_TYPE_ONE),
-                   theExprManager->create_cast_expr(theRootSctx,
-                                                    theUDF,
-                                                    loc,
-                                                    atomv,
-                                                    theRTM.STRING_TYPE_ONE),
-                   atomv));
+  static_cast<flwor_expr*>(atomizedFlwor)->set_return_expr(
+      CREATE(if)(theRootSctx,
+                 theUDF,
+                 loc,
+                 CREATE(instanceof)(theRootSctx,
+                                    theUDF,
+                                    loc,
+                                    atomv,
+                                    theRTM.UNTYPED_ATOMIC_TYPE_ONE),
+                 CREATE(cast)(theRootSctx,
+                              theUDF,
+                              loc,
+                              atomv,
+                              theRTM.STRING_TYPE_ONE,
+                              false),
+                 atomv));
 
   // flworExpr = [let $sv := atomizedFlwor return NULL]
   var_expr* sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
@@ -7408,13 +7380,12 @@ void* begin_visit(const SwitchExpr& v)
 
       expr* operandExpr = pop_nodestack();
       operandExpr = wrap_in_atomization(operandExpr);
-      operandExpr = theExprManager->
-      create_fo_expr(theRootSctx,
-                     theUDF,
-                     loc,
-                     BUILTIN_FUNC(OP_ATOMIC_VALUES_EQUIVALENT_2),
-                     sv,
-                     operandExpr);
+      operandExpr = CREATE(fo)(theRootSctx,
+                               theUDF,
+                               loc,
+                               BUILTIN_FUNC(OP_ATOMIC_VALUES_EQUIVALENT_2),
+                               sv,
+                               operandExpr);
       
       condOperands.push_back(operandExpr);
     } // for
@@ -7512,7 +7483,7 @@ void end_visit(const SwitchCaseOperandList& v, void* /*visit_state*/)
 
   CaseClauseList := CaseClause+
 
-  CaseClause ::= "case" ("$" VarName "as")? SequenceType "return" ExprSingle
+  CaseClause ::= "case" ("$" VarName "as")? SequenceTypeList "return" ExprSingle
 
 
   A typeswitch expr is translated into a flwor expr. For example, a typeswitch of
@@ -7541,7 +7512,8 @@ void* begin_visit(const TypeswitchExpr& v)
 {
   TRACE_VISIT();
 
-  var_expr* sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
+  var_expr* sv = create_temp_var(v.get_switch_expr()->get_location(),
+                                 var_expr::let_var);
 
   v.get_switch_expr()->accept(*this);
 
@@ -7551,14 +7523,14 @@ void* begin_visit(const TypeswitchExpr& v)
   expr* retExpr = NULL;
   expr* flworExpr = wrap_in_let_flwor(se, sv, retExpr);
 
-  const QName* defvar_name = v.get_default_varname();
+  const QName* defVarName = v.get_default_varname();
   var_expr* defvar = NULL;
 
-  if (defvar_name)
+  if (defVarName)
   {
     push_scope();
     defvar = bind_var(v.get_default_clause()->get_location(),
-                      defvar_name,
+                      defVarName,
                       var_expr::let_var);
 
     // retExpr = [let $def := $sv return NULL]
@@ -7569,7 +7541,7 @@ void* begin_visit(const TypeswitchExpr& v)
 
   expr* defExpr = pop_nodestack();
 
-  if (defvar_name)
+  if (defVarName)
   {
     pop_scope();
 
@@ -7590,9 +7562,36 @@ void* begin_visit(const TypeswitchExpr& v)
     const CaseClause* caseClause = &**it;
     const QueryLoc& loc = caseClause->get_location();
     expr* clauseExpr = NULL;
+    expr* condExpr;
 
-    caseClause->get_type()->accept(*this);
-    xqtref_t type = pop_tstack();
+    csize numTypes = caseClause->num_types();
+    xqtref_t type;
+    std::vector<expr*> typeCheckExprs;
+    typeCheckExprs.reserve(numTypes);
+    for (csize i = 0; i < numTypes; ++i)
+    {
+      caseClause->get_type(i)->accept(*this);
+
+      type = pop_tstack();
+
+      expr* e = CREATE(instanceof)(theRootSctx, theUDF, loc, &*sv, type);
+      typeCheckExprs.push_back(e);
+    }
+
+    if (numTypes > 1)
+    {
+      if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+      {
+        RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_SwitchExpr30)));
+      }
+
+      function* orFunc = BUILTIN_FUNC(OP_OR_N);
+      condExpr = CREATE(fo)(theRootSctx, theUDF, loc, orFunc, typeCheckExprs);
+    }
+    else
+    {
+      condExpr = typeCheckExprs[0];
+    }
 
     const QName* varname = caseClause->get_varname();
     var_expr* caseVar = NULL;
@@ -7603,16 +7602,23 @@ void* begin_visit(const TypeswitchExpr& v)
 
       caseVar = bind_var(loc, varname, var_expr::let_var);
 
-      expr* treatExpr = theExprManager->
-      create_treat_expr(theRootSctx,
-                        theUDF,
-                        loc,
-                        sv,
-                        type,
-                        TREAT_EXPR);
+      if (numTypes == 1)
+      {
+        expr* treatExpr = CREATE(treat)(theRootSctx,
+                                        theUDF,
+                                        loc,
+                                        sv,
+                                        type,
+                                        TREAT_EXPR);
 
-      // clauseExpr = [let $caseVar := treat_as($sv, caseType) return NULL]
-      clauseExpr = wrap_in_let_flwor(treatExpr, caseVar, NULL);
+        // clauseExpr = [let $caseVar := treat_as($sv, caseType) return NULL]
+        clauseExpr = wrap_in_let_flwor(treatExpr, caseVar, NULL);
+      }
+      else
+      {
+        // clauseExpr = [let $caseVar := $sv return NULL]
+        clauseExpr = wrap_in_let_flwor(sv, caseVar, NULL);
+      }
     }
 
     caseClause->get_expr()->accept(*this);
@@ -7622,7 +7628,7 @@ void* begin_visit(const TypeswitchExpr& v)
     {
       pop_scope();
 
-      // clauseExpr = [let $caseVar := treat_as($sv, caseType) return NULL]
+      // clauseExpr = [let $caseVar := treat_as($sv, caseType) return caseExpr]
       static_cast<flwor_expr*>(clauseExpr)->set_return_expr(caseExpr);
     }
     else
@@ -7632,11 +7638,7 @@ void* begin_visit(const TypeswitchExpr& v)
     }
 
     // retExpr = [if (instance_of($sv, type)) then clauseExpr else retExpr]
-    retExpr = theExprManager->create_if_expr(theRootSctx, theUDF,
-                          loc,
-                          theExprManager->create_instanceof_expr(theRootSctx, theUDF, loc, &*sv, type),
-                          clauseExpr,
-                          retExpr);
+    retExpr = CREATE(if)(theRootSctx, theUDF, loc, condExpr, clauseExpr, retExpr);
   }
 
   static_cast<flwor_expr*>(flworExpr)->set_return_expr(retExpr);
@@ -8007,8 +8009,8 @@ void end_visit(const OrExpr& v, void* /*visit_state*/)
 
     if (foArg->get_func()->getKind() == FunctionConsts::OP_OR_N)
     {
-      ulong numArgs = foArg->num_args();
-      for (ulong i = 0; i < numArgs; ++i)
+      csize numArgs = foArg->num_args();
+      for (csize i = 0; i < numArgs; ++i)
         args.push_back(foArg->get_arg(i));
     }
     else
@@ -8027,8 +8029,8 @@ void end_visit(const OrExpr& v, void* /*visit_state*/)
 
     if (foArg->get_func()->getKind() == FunctionConsts::OP_OR_N)
     {
-      ulong numArgs = foArg->num_args();
-      for (ulong i = 0; i < numArgs; ++i)
+      csize numArgs = foArg->num_args();
+      for (csize i = 0; i < numArgs; ++i)
         args.push_back(foArg->get_arg(i));
     }
     else
@@ -8041,7 +8043,7 @@ void end_visit(const OrExpr& v, void* /*visit_state*/)
     args.push_back(e1);
   }
 
-  fo_expr* fo = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), args);
+  fo_expr* fo = CREATE(fo)(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), args);
 
   push_nodestack(fo);
 }
@@ -8417,14 +8419,14 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
     break;
   }
 
-  fo_expr* foExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, e2, e1);
+  fo_expr* foExpr = CREATE(fo)(theRootSctx, theUDF, loc, f, e2, e1);
 
   normalize_fo(foExpr);
 
-  push_nodestack(theExprManager->create_fo_expr(theRootSctx, theUDF,
-                             loc,
-                             BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_ASC_1),
-                             foExpr));
+  push_nodestack(CREATE(fo)(theRootSctx, theUDF,
+                            loc,
+                            BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_ASC_1),
+                            foExpr));
 }
 
 
@@ -8441,7 +8443,8 @@ void end_visit (const InstanceofExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(CREATE(instanceof)(theRootSctx, theUDF,
+  push_nodestack(CREATE(instanceof)(theRootSctx,
+                                    theUDF,
                                     loc,
                                     pop_nodestack(),
                                     pop_tstack()));
@@ -8461,7 +8464,8 @@ void end_visit(const TreatExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(CREATE(treat)(theRootSctx, theUDF,
+  push_nodestack(CREATE(treat)(theRootSctx,
+                               theUDF,
                                loc,
                                pop_nodestack(),
                                pop_tstack(),
@@ -8482,92 +8486,12 @@ void end_visit(const CastableExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(create_cast_expr(loc, pop_nodestack(), pop_tstack(), false));
-}
+  bool allowsEmpty = v.singletype()->get_hook_bit();
 
+  expr* castableExpr = 
+  create_cast_expr(loc, pop_nodestack(), pop_tstack(), allowsEmpty, false);
 
-expr* create_cast_expr(const QueryLoc& loc, expr* node, xqtref_t type, bool isCast)
-{
-  TypeManager* tm = CTX_TM;
-
-  if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE, loc) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION, loc) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, loc) ||
-      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, loc))
-  {
-    RAISE_ERROR(err::XPST0080, loc, ERROR_PARAMS(type->toString()));
-  }
-
-  if (TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, loc))
-  {
-    const const_expr* ce = dynamic_cast<const_expr*>(node);
-
-    if (ce != NULL &&
-        TypeOps::is_equal(tm,
-                          *tm->create_value_type(ce->get_val()),
-                          *GENV_TYPESYSTEM.STRING_TYPE_ONE,
-                          loc))
-    {
-      store::Item_t castLiteral;
-      try
-      {
-        GenericCast::instance()->castToQName(castLiteral,
-                                             ce->get_val(),
-                                             theNSCtx,
-                                             false,
-                                             CTX_TM,
-                                             loc);
-      }
-      catch (ZorbaException& e)
-      {
-        if (isCast)
-        {
-          throw;
-        }
-        else
-        {
-          if (e.diagnostic() == err::FORG0001)
-            throw;// XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
-          else
-            RAISE_ERROR(err::XPST0081, loc,
-            ERROR_PARAMS(castLiteral->getStringValue()));
-        }
-      }
-
-      assert(castLiteral != NULL || ! isCast);
-
-      if (isCast)
-        return CREATE(const)(theRootSctx, theUDF, loc, castLiteral);
-      else
-        return CREATE(const)(theRootSctx, theUDF, loc, castLiteral != NULL);
-    }
-    else
-    {
-      xqtref_t qnameType = (type->get_quantifier() == TypeConstants::QUANT_ONE ?
-                            GENV_TYPESYSTEM.QNAME_TYPE_ONE :
-                            GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
-
-      if (isCast)
-        return CREATE(cast)(theRootSctx,
-                            theUDF,
-                            loc,
-                            wrap_in_atomization(node),
-                            qnameType);
-      else
-        return CREATE(castable)(theRootSctx,
-                                theUDF,
-                                loc,
-                                wrap_in_atomization(node),
-                                qnameType);
-    }
-  }
-  else
-  {
-    if (isCast)
-      return CREATE(cast)(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
-    else
-      return CREATE(castable)(theRootSctx, theUDF, loc, wrap_in_atomization(node), type);
-  }
+  push_nodestack(castableExpr);
 }
 
 
@@ -8584,7 +8508,210 @@ void end_visit(const CastExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(create_cast_expr(loc, pop_nodestack(), pop_tstack(), true));
+  bool allowsEmpty = v.get_singletype()->get_hook_bit();
+
+  expr* castExpr = 
+  create_cast_expr(loc, pop_nodestack(), pop_tstack(), allowsEmpty, true);
+
+  push_nodestack(castExpr);
+}
+
+
+/*******************************************************************************
+	SingleType ::= SimpleTypeName "?"?
+
+  SimpleTypeName ::= EQNAME
+********************************************************************************/
+
+void* begin_visit(const SingleType& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const SingleType& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  if (v.get_hook_bit())
+  {
+    xqtref_t type = pop_tstack();
+
+    assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
+           type->get_quantifier() == TypeConstants::QUANT_STAR);
+
+    if (type->get_quantifier() == TypeConstants::QUANT_ONE)
+    {
+      theTypeStack.push(CTX_TM->create_type(*type, TypeConstants::QUANT_QUESTION));
+    }
+  }
+  // else leave type as it is on tstack
+}
+
+
+/*******************************************************************************
+  SimpleTypeName ::= EQNAME
+********************************************************************************/
+void* begin_visit(const SimpleType& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const SimpleType& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  rchandle<QName> qname = v.get_qname();
+  store::Item_t qnameItem;
+  expand_elem_qname(qnameItem, qname, loc);
+
+  xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
+  if (t == NULL)
+  {
+    if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    {
+      RAISE_ERROR(err::XPST0051, loc,
+      ERROR_PARAMS(ZED(XPST0051_Atomic_2), qname->get_qname()));
+    }
+    else
+    {
+      RAISE_ERROR(err::XQST0052, loc, ERROR_PARAMS(qname->get_qname()));
+    }
+  }
+  else
+  {
+    theTypeStack.push(t);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr* create_cast_expr(
+    const QueryLoc& loc,
+    expr* node,
+    const xqtref_t& type,
+    bool allowsEmpty,
+    bool isCast)
+{
+  TypeManager* tm = CTX_TM;
+
+  if (!type->isAtomicAny())
+  {
+    if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    {
+      RAISE_ERROR(err::XPST0051, loc,
+      ERROR_PARAMS(ZED(XPST0051_Atomic_2), type->toSchemaString()));
+    }
+  }
+
+  if (TypeOps::is_equal(tm, *type, *theRTM.NOTATION_TYPE_ONE, loc) ||
+      TypeOps::is_equal(tm, *type, *theRTM.NOTATION_TYPE_QUESTION, loc) ||
+      TypeOps::is_equal(tm, *type, *theRTM.ANY_ATOMIC_TYPE_ONE, loc) ||
+      TypeOps::is_equal(tm, *type, *theRTM.ANY_ATOMIC_TYPE_QUESTION, loc))
+  {
+    RAISE_ERROR(err::XPST0080, loc, ERROR_PARAMS(type->toString()));
+  }
+
+  if (TypeOps::is_subtype(tm, *type, *theRTM.QNAME_TYPE_QUESTION, loc))
+  {
+    if (node->get_expr_kind() == const_expr_kind)
+    {
+      const const_expr* ce = static_cast<const_expr*>(node);
+
+      if (ce->get_val()->getTypeCode() == store::XS_STRING)
+      {
+        store::Item_t result;
+        try
+        {
+          GenericCast::castToQName(result, ce->get_val(), theNSCtx, false, tm, loc);
+        }
+        catch (ZorbaException& e)
+        {
+          if (isCast)
+          {
+            throw;
+          }
+          else
+          {
+            if (e.diagnostic() == err::FORG0001)
+              throw;// XQUERY_EXCEPTION(err::XPST0003, ERROR_LOC(loc));
+            else
+              RAISE_ERROR(err::XPST0081, loc, 
+              ERROR_PARAMS(ce->get_val()->getStringValue()));
+          }
+        }
+
+        if (type->type_kind() == XQType::USER_DEFINED_KIND)
+        {
+          const UserDefinedXQType* udt = 
+          static_cast<const UserDefinedXQType*>(type.getp());
+
+          store::Item_t tmp = result;
+          store::Item_t typeName = udt->getQName();
+          GENV_ITEMFACTORY->createUserTypedAtomicItem(result, tmp, typeName);
+        }
+
+        assert(result != NULL || ! isCast);
+        return (isCast ?
+                CREATE(const)(theRootSctx, theUDF, loc, result) :
+                CREATE(const)(theRootSctx, theUDF, loc, result != NULL));
+      }
+    }
+
+    xqtref_t inputType = node->get_return_type();
+
+    if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    {
+      // when casting to type T, where T is QName or subtype of, and the input
+      // is not a const expr, then the input MUST be of type T or subtype of.
+      if (isCast)
+      {
+        if (TypeOps::is_subtype(tm, *inputType, *theRTM.QNAME_TYPE_STAR, loc))
+        {
+          return CREATE(cast)(theRootSctx, theUDF, loc, node, type, allowsEmpty);
+        }
+        else
+        {
+          return CREATE(treat)(theRootSctx, theUDF, loc, node, type, TREAT_TYPE_MATCH);
+        }
+      }
+      else
+      {
+        return CREATE(instanceof)(theRootSctx, theUDF, loc, node, type);
+      }
+    }
+
+    expr* input = wrap_in_atomization(node);
+
+    if (TypeOps::is_subtype(tm, *inputType, *theRTM.ANY_NODE_TYPE_PLUS, loc))
+    {
+      if (isCast)
+      {
+        RAISE_ERROR(err::XPTY0117, loc, ERROR_PARAMS(ZED(XPTY0117_NodeCast)));
+      }
+      else
+      {
+        return CREATE(const)(theRootSctx, theUDF, loc, false);
+      }
+    }
+
+    if (isCast)
+      return CREATE(cast)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
+    else
+      return CREATE(castable)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
+  }
+  else
+  {
+    expr* input = wrap_in_atomization(node);
+
+    if (isCast)
+      return CREATE(cast)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
+    else
+      return CREATE(castable)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
+  }
 }
 
 
@@ -9225,7 +9352,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
 
       if (stepExpr->get_expr_kind() == wrapper_expr_kind)
       {
-        var_expr* dotVar = lookup_var(DOT_VARNAME, loc, zerr::ZXQP0000_NO_ERROR);
+        var_expr* dotVar = lookup_var(DOT_VARNAME, loc, false);
         if (static_cast<wrapper_expr*>(stepExpr)->get_input() == dotVar)
           errKind = TREAT_PATH_DOT;
       }
@@ -10033,17 +10160,17 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   fo_expr* condExpr = NULL;
   std::vector<expr*> condOperands(3);
 
-  condOperands[0] = theExprManager->
-  create_instanceof_expr(theRootSctx, theUDF, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
+  condOperands[0] = 
+  CREATE(instanceof)(theRootSctx, theUDF, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
 
-  condOperands[1] = theExprManager->
-  create_instanceof_expr(theRootSctx, theUDF, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
+  condOperands[1] = 
+  CREATE(instanceof)(theRootSctx, theUDF, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
 
-  condOperands[2] = theExprManager->
-  create_instanceof_expr(theRootSctx, theUDF, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
+  condOperands[2] =
+  CREATE(instanceof)(theRootSctx, theUDF, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
 
-  condExpr = theExprManager->
-  create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), condOperands);
+  condExpr = 
+  CREATE(fo)(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), condOperands);
 
   // If so: return $dot if the value of the pred expr is equal to the value
   // of $dot_pos var, otherwise return the empty seq.
@@ -10135,17 +10262,17 @@ void end_visit(const NumericLiteral& v, void* /*visit_state*/)
   {
   case ParseConstants::num_integer:
   {
-    push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, v.get<xs_integer>()));
+    push_nodestack(CREATE(const)(theRootSctx, theUDF, loc, v.get<xs_integer>()));
     break;
   }
   case ParseConstants::num_decimal:
   {
-    push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, v.get<xs_decimal>()));
+    push_nodestack(CREATE(const)(theRootSctx, theUDF, loc, v.get<xs_decimal>()));
     break;
   }
   case ParseConstants::num_double:
   {
-    push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, v.get<xs_double>()));
+    push_nodestack(CREATE(const)(theRootSctx, theUDF, loc, v.get<xs_double>()));
     break;
   }
   }
@@ -10251,7 +10378,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
 
   try
   {
-    ve = lookup_var(v.get_name(), loc, err::XPST0008);
+    ve = lookup_var(v.get_name(), loc, true);
   }
   catch (const ZorbaException& e)
   {
@@ -10284,33 +10411,48 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
 
     xqtref_t declaredType = ve->get_type();
 
-    if (declaredType != NULL && !TypeOps::is_in_scope(tm, *declaredType))
+    if (declaredType != NULL && !TypeOps::is_in_scope(tm, *declaredType) &&
+        theSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
     {
-      const Error& error = (declaredType->get_manager() == tm ?
-                            err::XPTY0004 : err::XQST0036);
-
-      if (theModuleNamespace.empty())
+      if (declaredType->get_manager() == tm)
       {
-        throw XQUERY_EXCEPTION_VAR(
-          error,
+        if (theModuleNamespace.empty())
+        {
+          RAISE_ERROR(err::XPTY0004, loc,
           ERROR_PARAMS(ZED(BadType_23o),
                        *declaredType,
-                       ZED( NoTypeInMainModule_4 ),
-                       ve->get_name()->getStringValue()),
-          ERROR_LOC( loc )
-        );
+                       ZED(NoTypeInMainModule_4),
+                       ve->get_name()->getStringValue()));
+        }
+        else
+        {
+          RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(ZED(BadType_23o),
+                       *declaredType,
+                       ZED(NoTypeInModule_45),
+                       ve->get_name()->getStringValue(),
+                       theModuleNamespace));
+        }
       }
       else
       {
-        throw XQUERY_EXCEPTION_VAR(
-          error,
+        if (theModuleNamespace.empty())
+        {
+          RAISE_ERROR(err::XQST0036, loc,
           ERROR_PARAMS(ZED(BadType_23o),
                        *declaredType,
-                       ZED( NoTypeInModule_45 ),
+                       ZED(NoTypeInMainModule_4),
+                       ve->get_name()->getStringValue()));
+        }
+        else
+        {
+          RAISE_ERROR(err::XQST0036, loc,
+          ERROR_PARAMS(ZED(BadType_23o),
+                       *declaredType,
+                       ZED(NoTypeInModule_45),
                        ve->get_name()->getStringValue(),
-                       theModuleNamespace),
-          ERROR_LOC( loc )
-        );
+                       theModuleNamespace));
+        }
       }
     }
 
@@ -10458,7 +10600,8 @@ void* begin_visit(const FunctionCall& v)
 
     xqtref_t retType = sign.returnType();
 
-    if (!TypeOps::is_in_scope(tm, *retType))
+    if (!TypeOps::is_in_scope(tm, *retType) &&
+        theSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
     {
       if (theModuleNamespace.empty())
       {
@@ -10484,7 +10627,9 @@ void* begin_visit(const FunctionCall& v)
     for (csize i = 0; i < numParams; ++i)
     {
       xqtref_t type = sign[i];
-      if (!TypeOps::is_in_scope(tm, *type))
+
+      if (!TypeOps::is_in_scope(tm, *type) &&
+          theSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
       {
         if (theModuleNamespace.empty())
         {
@@ -10561,16 +10706,13 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       case FunctionConsts::FN_HEAD_1:
       {
-        arguments.push_back(theExprManager->
-                            create_const_expr(theRootSctx, theUDF, loc, xs_integer::one()));
+        arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer::one()));
 
-        arguments.push_back(theExprManager->
-                            create_const_expr(theRootSctx, theUDF, loc, xs_integer::one()));
+        arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer::one()));
 
         function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
 
-        fo_expr* foExpr = theExprManager->
-        create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
+        fo_expr* foExpr = CREATE(fo)(theRootSctx, theUDF, loc, f, arguments);
 
         normalize_fo(foExpr);
 
@@ -10579,13 +10721,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_TAIL_1:
       {
-        arguments.push_back(theExprManager->
-                            create_const_expr(theRootSctx, theUDF, loc, xs_integer(2)));
+        arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer(2)));
 
         function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2);
 
-        fo_expr* foExpr = theExprManager->
-        create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
+        fo_expr* foExpr = CREATE(fo)(theRootSctx, theUDF, loc, f, arguments);
 
         normalize_fo(foExpr);
 
@@ -10668,9 +10808,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                           theUDF,
                                           loc,
                                           tv,
-                                          theRTM.DOUBLE_TYPE_ONE);
+                                          theRTM.DOUBLE_TYPE_ONE,
+                                          false);
 
-        expr* castExpr = create_cast_expr(loc, tv, theRTM.DOUBLE_TYPE_ONE, true);
+        expr* castExpr = create_cast_expr(loc, tv, theRTM.DOUBLE_TYPE_ONE, false, true);
 
         expr* ret = CREATE(if)(theRootSctx, theUDF, loc, condExpr, castExpr, nanExpr);
 
@@ -10703,7 +10844,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           push_nodestack(CREATE(cast)(theRootSctx, theUDF,
                                       loc,
                                       CREATE(const)(theRootSctx, theUDF, loc, baseuri),
-                                      theRTM.ANY_URI_TYPE_ONE));
+                                      theRTM.ANY_URI_TYPE_ONE, false));
         return;
       }
       case FunctionConsts::FN_ID_1:
@@ -10860,7 +11001,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       ERROR_PARAMS(qname->get_qname(), ZED(FunctionUndeclared_3), numArgs));
     }
 
-    push_nodestack(create_cast_expr(loc, arguments[0], type, true));
+    push_nodestack(create_cast_expr(loc, arguments[0], type, true, true));
   }
 
   // It is not a builtin constructor function
@@ -11065,7 +11206,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                     ztd::to_string(theTempVarCounter++);
             GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
           }
-          while (lookup_var(qnameItem, loc, zerr::ZXQP0000_NO_ERROR) != NULL);
+          while (lookup_var(qnameItem, loc, false) != NULL);
 
           var_expr* var = create_var(loc, qnameItem, var_expr::let_var);
           temp_vars.push_back(var);
@@ -11511,7 +11652,7 @@ void end_visit(const InlineFunction& v, void* aState)
   xqtref_t returnType = udf->getSignature().returnType();
 
   // Wrap the body in appropriate type op.
-  if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
+  if (returnType->isBuiltinAtomicAny())
   {
     body = wrap_in_type_promotion(body, returnType, PROMOTE_TYPE_PROMOTION);
   }
@@ -11739,19 +11880,18 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
 
   nameExpr = wrap_in_atomization(nameExpr);
 
-  nameExpr = theExprManager->
-  create_cast_expr(theRootSctx,
-                   theUDF,
-                   nameExpr->get_loc(),
-                   nameExpr,
-                   GENV_TYPESYSTEM.STRING_TYPE_ONE);
+  nameExpr = CREATE(cast)(theRootSctx,
+                          theUDF,
+                          nameExpr->get_loc(),
+                          nameExpr,
+                          GENV_TYPESYSTEM.STRING_TYPE_ONE,
+                          false);
 
-  valueExpr = theExprManager->
-  create_fo_expr(theRootSctx,
-                 theUDF,
-                 valueExpr->get_loc(),
-                 BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
-                 valueExpr);
+  valueExpr = CREATE(fo)(theRootSctx,
+                         theUDF,
+                         valueExpr->get_loc(),
+                         BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
+                         valueExpr);
 
   push_nodestack(valueExpr);
   push_nodestack(nameExpr);
@@ -11856,7 +11996,7 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-   [120] DirAttributeList ::= DirAttr | DirAttributeList  DirAttr
+   [120] DirAttributeList ::= DirAttr | DirAttributeList DirAttr
 ********************************************************************************/
 void* begin_visit(const DirAttributeList& v)
 {
@@ -11878,7 +12018,7 @@ void* begin_visit(const DirAttributeList& v)
     }
   }
 
-  unsigned long numAttrs = 0;
+  csize numAttrs = 0;
   std::vector<attr_expr*> attributes;
   while(true)
   {
@@ -11889,7 +12029,7 @@ void* begin_visit(const DirAttributeList& v)
     attr_expr* attrExpr = dynamic_cast<attr_expr*>(expr);
     const store::Item* attExprName = attrExpr->getQName();
 
-    for (unsigned long i = 0; i < numAttrs; ++i)
+    for (csize i = 0; i < numAttrs; ++i)
     {
       const store::Item* attName = attributes[i]->getQName();
       if (attName->equals(attExprName))
@@ -11914,8 +12054,8 @@ void* begin_visit(const DirAttributeList& v)
       args.push_back((*it));
     }
 
-    fo_expr* expr_list =
-    theExprManager->create_fo_expr(theRootSctx, theUDF, loc, op_concatenate, args);
+    fo_expr* expr_list = 
+    CREATE(fo)(theRootSctx, theUDF, loc, op_concatenate, args);
 
     normalize_fo(expr_list);
 
@@ -11924,6 +12064,7 @@ void* begin_visit(const DirAttributeList& v)
 
   return NULL;  // reject visitor -- everything done
 }
+
 
 void end_visit(const DirAttributeList& v, void* /*visit_state*/)
 {
@@ -11969,15 +12110,13 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       prefix = qname->get_localname();
 
       if (ZSTREQ(prefix, "xmlns"))
-        throw XQUERY_EXCEPTION(
-          err::XQST0070,
-          ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0070, loc,
+        ERROR_PARAMS(prefix, ZED(NoRebindPrefix)));
     }
 
     const_expr* constValueExpr = dynamic_cast<const_expr*>(valueExpr);
     fo_expr* foExpr = dynamic_cast<fo_expr*>(valueExpr);
+
     if (foExpr != NULL && foExpr->get_func() != op_concatenate)
       foExpr = NULL;
 
@@ -11988,7 +12127,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     }
     else if (foExpr != NULL)
     {
-      for (unsigned int i=0; i<foExpr->num_args(); i++)
+      for (csize i = 0; i < foExpr->num_args(); ++i)
       {
         const_expr* constValueExpr = dynamic_cast<const_expr*>(foExpr->get_arg(i));
         if (constValueExpr != NULL)
@@ -12023,7 +12162,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
         RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(uri, ZED(NoBindURI)));
       }
 
-      theSctx->bind_ns(prefix, uri, loc, err::XQST0071);
+      theSctx->bind_ns(prefix, uri, loc);
       theNSCtx->bind_ns(prefix, uri);
 
       if (prefix.empty())
@@ -12039,7 +12178,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
       // unbind the prefix
       zstring empty;
-      theSctx->bind_ns(prefix, empty, loc, err::XQST0071);
+      theSctx->bind_ns(prefix, empty, loc);
       theNSCtx->bind_ns(prefix, empty);
 
       if (prefix.empty())
@@ -12050,13 +12189,13 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       throw XQUERY_EXCEPTION(err::XQST0022, ERROR_LOC(loc));
     }
   }
-  else
   // Plain direct attribute
+  else
   {
     store::Item_t qnameItem;
     expand_no_default_qname(qnameItem, qname, qname->get_location());
 
-    expr* nameExpr = theExprManager->create_const_expr(theRootSctx, theUDF, loc, qnameItem);
+    expr* nameExpr = CREATE(const)(theRootSctx, theUDF, loc, qnameItem);
 
     fo_expr* foExpr = NULL;
     if ((foExpr = dynamic_cast<fo_expr*>(valueExpr)) != NULL &&
@@ -12654,7 +12793,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
   {
     target = pop_nodestack();
 
-    expr* castExpr = create_cast_expr(loc, target, theRTM.NCNAME_TYPE_ONE, true);
+    expr* castExpr = create_cast_expr(loc, target, theRTM.NCNAME_TYPE_ONE, false, true);
 
     target = wrap_in_enclosed_expr(castExpr, loc);
   }
@@ -12690,25 +12829,6 @@ void end_visit(const CompTextConstructor& v, void* /*visit_state*/)
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-
-void* begin_visit(const SingleType& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const SingleType& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-  if (v.get_hook_bit())
-    theTypeStack.push(CTX_TM->create_type(*pop_tstack(), TypeConstants::QUANT_QUESTION));
-  // else leave type as it is on tstack
-}
-
-
 void* begin_visit(const TypeName& v)
 {
   TRACE_VISIT();
@@ -12731,8 +12851,8 @@ void end_visit(const TypeName& v, void* /*visit_state*/)
 /*******************************************************************************
 
   A SequenceType parsenode has 2 children: The right child is always an
-  OccurrenceIndicator node. The left child may be either an AtomicType node,
-  or one of the 9 kind-test nodes (elementTest, documentTest, ... etc), or
+  OccurrenceIndicator node. The left child may be either a GeneralizedAtomicType
+  node, or one of the 9 kind-test nodes (elementTest, documentTest, ... etc), or
   an ItemType node. ItemType respesents the expression item().
 
 ********************************************************************************/
@@ -12787,13 +12907,13 @@ void end_visit(const OccurrenceIndicator& v, void* /*visit_state*/)
 }
 
 
-void* begin_visit(const AtomicType& v)
+void* begin_visit(const GeneralizedAtomicType& v)
 {
   TRACE_VISIT();
   return no_state;
 }
 
-void end_visit(const AtomicType& v, void* /*visit_state*/)
+void end_visit(const GeneralizedAtomicType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
@@ -12801,19 +12921,17 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem,
-                                                TypeConstants::QUANT_ONE,
-                                                loc);
+  xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
 
-  // some types that should never be parsed, like xs:untyped, are;
-  // we catch them with is_simple()
-  if (t == NULL)
+  if (t == NULL ||
+      t->get_quantifier() != TypeConstants::QUANT_ONE)
   {
-    RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(qname->get_qname()));
+    RAISE_ERROR(err::XPST0051, loc,
+    ERROR_PARAMS(ZED(XPST0051_GenAtomic_2), qname->get_qname()));
   }
   else
   {
-    theTypeStack.push (t);
+    theTypeStack.push(t);
   }
 }
 
@@ -13168,11 +13286,8 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
 
     if (contentType == NULL)
     {
-      throw XQUERY_EXCEPTION(
-        err::XPST0008,
-        ERROR_PARAMS( typeNameItem->getStringValue(), ZED( AttributeName ) ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPST0008, loc,
+      ERROR_PARAMS(typeNameItem->getStringValue(), ZED(AttributeName)));
     }
   }
 
