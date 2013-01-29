@@ -61,9 +61,8 @@ public:
   ulong createCollectionId();
 
   store::Collection_t createCollection(
-      const store::Item_t& aName,
+      const store::Item_t& name,
       const std::vector<store::Annotation_t>& annotations,
-      const store::Item_t& aNodeType,
       bool isDynamic);
 
 protected:

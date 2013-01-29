@@ -16,7 +16,7 @@ import module namespace idml =
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 
-declare %private collection data:parents;
+declare %private %an:ordered collection data:parents;
 
 declare variable $data:parents as xs:QName := xs:QName('data:parents');
 

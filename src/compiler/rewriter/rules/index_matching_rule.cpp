@@ -22,6 +22,7 @@
 #include "compiler/expression/expr_iter.h"
 
 #include "compiler/xqddf/value_index.h"
+#include "compiler/xqddf/collection_decl.h"
 
 #include "compiler/rewriter/rules/index_matching_rule.h"
 #include "compiler/rewriter/rules/fold_rules.h"
@@ -659,7 +660,10 @@ bool IndexMatchingRule::matchIndex()
                    theProbeArgs);
   }
 
-  if (!(theQueryExpr->ignoresSortedNodes() || firstOrderByPos != 0))
+  if (! (theQueryExpr->ignoresSortedNodes() ||
+         firstOrderByPos != 0 ||
+         (theIndexDecl->numSources() == 1 &&
+          !sctx->lookup_collection(theIndexDecl->getSourceName(0))->isOrdered())))
   {
     probeExpr =  ccb->theEM->
     create_fo_expr(sctx,

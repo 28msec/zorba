@@ -2,5 +2,5 @@
 (: not available on the local filesystem, so it should be run with a    :)
 (: short timeout (~5 seconds).                                          :)
 
-import schema namespace bogus = "http://example.com/BOGUS";
+import schema namespace bogus = "http://example.com/BOGUS" at "bogus.xsd";
 1

@@ -16,7 +16,6 @@ SET(UNIT_TEST_SRCS
   instantiate_string.cpp
   test_base64.cpp
   test_base64_streambuf.cpp
-  test_fs_iterator.cpp
   test_hashmaps.cpp
   test_json_parser.cpp
   test_string.cpp
@@ -24,7 +23,13 @@ SET(UNIT_TEST_SRCS
   test_uri.cpp
   test_uuid.cpp
   unit_tests.cpp
+  test_utf8_streambuf.cpp
 )
+
+IF (ZORBA_WITH_FILE_ACCESS)
+  LIST (APPEND UNIT_TEST_SRCS
+    test_fs_iterator.cpp)
+ENDIF (ZORBA_WITH_FILE_ACCESS)
 
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST (APPEND UNIT_TEST_SRCS

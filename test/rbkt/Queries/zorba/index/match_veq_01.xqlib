@@ -14,7 +14,7 @@ import module namespace iddl =
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 
-declare collection accounts:accounts as element(account);
+declare %an:ordered collection accounts:accounts as element(account);
 
 
 declare %an:automatic %an:unique %an:value-equality index accounts:accounts-index

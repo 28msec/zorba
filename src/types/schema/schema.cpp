@@ -259,12 +259,17 @@ public:
             
           return lRetval;
         }
-        else
-          return NULL;          
+        else {
+          // We didn't find it. If we return NULL here, Xerces will try to
+          // resolve it its own way, which we don't want to happen.
+          throw XQUERY_EXCEPTION( err::XQST0059,
+              ERROR_PARAMS( lResolved ));
+        }
       }
       catch (ZorbaException const& e) {
         TRACE("!!! ZorbaException: " << e );
-        if ( e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED )
+        if ( e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED ||
+             e.diagnostic() == err::XQST0059 )
         {
           throw;
         }
@@ -626,7 +631,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
         << qname->getNamespace());
 
   if (theGrammarPool == NULL)
-        return NULL;
+    return NULL;
 
   const zstring& nsuri = qname->getNamespace();
   const zstring& local = qname->getLocalName();
@@ -652,7 +657,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
 
   typeDef = xsModel->getTypeDefinition(xml_local, xml_uri);
 
-  if ( typeDef == NULL )
+  if (typeDef == NULL)
   {
     // Go through all the top level type and element definitions and
     // add annonymous types to the cache
@@ -855,7 +860,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                 qname,
                                                 baseXQType,
                                                 TypeConstants::QUANT_ONE,
-                                                UserDefinedXQType::ATOMIC_TYPE,
+                                                XQType::ATOMIC_UDT,
                                                 XQType::SIMPLE_CONTENT_KIND);
 
         TRACE("created atomic " << qname->getStringValue()
@@ -1046,7 +1051,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                               qname,
                                               baseXQType,
                                               TypeConstants::QUANT_ONE,
-                                              UserDefinedXQType::COMPLEX_TYPE,
+                                              XQType::COMPLEX_UDT,
                                               contentType);
 
       result = xqType;
@@ -1063,6 +1068,9 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
 }
 
 
+/*******************************************************************************
+
+*******************************************************************************/
 xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
     const TypeManager* typeManager,
     zstring& strUri,
@@ -1269,6 +1277,9 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
 }
 
 
+/*******************************************************************************
+
+*******************************************************************************/
 void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
 {
   if (theGrammarPool == NULL)
@@ -1346,79 +1357,92 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
   }
 }
 
-void Schema::checkForAnonymousTypesInType(const TypeManager* typeManager,
-                                          XSTypeDefinition* xsTypeDef)
+
+/*******************************************************************************
+
+*******************************************************************************/
+void Schema::checkForAnonymousTypesInType(
+    const TypeManager* typeManager,
+    XSTypeDefinition* xsTypeDef)
 {
-    TRACE(" type: " << StrX(xsTypeDef->getName()) << "@" <<
+  TRACE(" type: " << StrX(xsTypeDef->getName()) << "@" <<
         StrX(xsTypeDef->getNamespace()));
 
-    XSTypeDefinition *xsBaseTypeDef = xsTypeDef->getBaseType();
-    if (xsBaseTypeDef)
-    {
-        addAnonymousTypeToCache(typeManager, xsBaseTypeDef);
-    }
+  XSTypeDefinition *xsBaseTypeDef = xsTypeDef->getBaseType();
+  if (xsBaseTypeDef)
+  {
+    addAnonymousTypeToCache(typeManager, xsBaseTypeDef);
+  }
 
-    if (xsTypeDef->getTypeCategory() == XSTypeDefinition::SIMPLE_TYPE)
+  if (xsTypeDef->getTypeCategory() == XSTypeDefinition::SIMPLE_TYPE)
+  {
+    // Simple
+    // to do list, union ??
+  }
+  else
+  {
+    // Complex
+    XSComplexTypeDefinition* xsComplexTypeDef =
+      static_cast<XSComplexTypeDefinition*>(xsTypeDef);
+    XSComplexTypeDefinition::CONTENT_TYPE contentType =
+      xsComplexTypeDef->getContentType();
+    
+    if (contentType == XSComplexTypeDefinition::CONTENTTYPE_ELEMENT
+        || contentType == XSComplexTypeDefinition::CONTENTTYPE_MIXED)
     {
-        // Simple
-        // to do list, union ??
+      XSParticle *xsParticle = xsComplexTypeDef->getParticle();
+      checkForAnonymousTypesInParticle(typeManager, xsParticle);
     }
-    else
-    {
-        // Complex
-        XSComplexTypeDefinition* xsComplexTypeDef =
-            static_cast<XSComplexTypeDefinition*>(xsTypeDef);
-        XSComplexTypeDefinition::CONTENT_TYPE contentType =
-            xsComplexTypeDef->getContentType();
-
-        if (contentType == XSComplexTypeDefinition::CONTENTTYPE_ELEMENT
-          || contentType == XSComplexTypeDefinition::CONTENTTYPE_MIXED)
-        {
-            XSParticle *xsParticle = xsComplexTypeDef->getParticle();
-            checkForAnonymousTypesInParticle(typeManager, xsParticle);
-        }
-    }
+  }
 }
 
-void Schema::checkForAnonymousTypesInParticle(const TypeManager* typeManager,
+
+/*******************************************************************************
+
+*******************************************************************************/
+void Schema::checkForAnonymousTypesInParticle(
+    const TypeManager* typeManager,
     XSParticle *xsParticle)
 {
-    if (!xsParticle)
-        return;
+  if (!xsParticle)
+    return;
 
-    if ( xsParticle->getName() )
-    {
-        TRACE(" particle: " << StrX(xsParticle->getName()) << " @" <<
-            StrX(xsParticle->getNamespace()));
-    }
+  if ( xsParticle->getName() )
+  {
+    TRACE(" particle: " << StrX(xsParticle->getName()) << " @" <<
+          StrX(xsParticle->getNamespace()));
+  }
+  
+  XSParticle::TERM_TYPE termType = xsParticle->getTermType();
+  if (termType == XSParticle::TERM_ELEMENT)
+  {
+    XSElementDeclaration *xsElement = xsParticle->getElementTerm();
     
-    XSParticle::TERM_TYPE termType = xsParticle->getTermType();
-    if (termType == XSParticle::TERM_ELEMENT)
+    if ( xsElement->getScope() != XSConstants::SCOPE_GLOBAL )
     {
-        XSElementDeclaration *xsElement = xsParticle->getElementTerm();
-
-        if ( xsElement->getScope() != XSConstants::SCOPE_GLOBAL )
-        {
-          // if reference to a global definition skip it,
-          // otherwise infinite loop
-          XSTypeDefinition* xsParticleTypeDef = xsElement->getTypeDefinition();
-          addAnonymousTypeToCache(typeManager, xsParticleTypeDef);
-        }
+      // if reference to a global definition skip it,
+      // otherwise infinite loop
+      XSTypeDefinition* xsParticleTypeDef = xsElement->getTypeDefinition();
+      addAnonymousTypeToCache(typeManager, xsParticleTypeDef);
     }
-    else if (termType == XSParticle::TERM_MODELGROUP)
+  }
+  else if (termType == XSParticle::TERM_MODELGROUP)
+  {
+    XSModelGroup *xsModelGroup = xsParticle->getModelGroupTerm();
+    
+    XSParticleList *xsParticleList = xsModelGroup->getParticles();
+    for (unsigned i = 0; i < xsParticleList->size(); i++)
     {
-        XSModelGroup *xsModelGroup = xsParticle->getModelGroupTerm();
-
-        XSParticleList *xsParticleList = xsModelGroup->getParticles();
-        for (unsigned i = 0; i < xsParticleList->size(); i++)
-        {
-            checkForAnonymousTypesInParticle(typeManager,
-                xsParticleList->elementAt(i));
-        }
+      checkForAnonymousTypesInParticle(typeManager,
+                                       xsParticleList->elementAt(i));
     }
+  }
 }
 
 
+/*******************************************************************************
+
+*******************************************************************************/
 void Schema::addAnonymousTypeToCache(
     const TypeManager* typeManager,
     XSTypeDefinition* xsTypeDef)
@@ -1486,7 +1510,7 @@ void Schema::addAnonymousTypeToCache(
                                        qname,
                                        baseXQType,
                                        TypeConstants::QUANT_ONE,
-                                       UserDefinedXQType::COMPLEX_TYPE,
+                                       XQType::COMPLEX_UDT,
                                        contentType));
 
       addTypeToCache(xqType);
@@ -1513,7 +1537,7 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
   const UserDefinedXQType* itemUDType =
     static_cast<const UserDefinedXQType*>(itemXQType.getp());
 
-  const store::Item* qname = itemUDType->get_qname();
+  const store::Item* qname = itemUDType->getQName();
 
   const zstring& local = qname->getLocalName();
   const zstring& ns = qname->getNamespace();
@@ -1578,13 +1602,13 @@ bool Schema::parseUserSimpleTypes(
   const UserDefinedXQType* udXQType =
     static_cast<const UserDefinedXQType*>(aTargetType.getp());
 
-  ZORBA_ASSERT(udXQType->isAtomic() || udXQType->isList() || udXQType->isUnion());
+  ZORBA_ASSERT(udXQType->isAtomicAny() || udXQType->isList() || udXQType->isUnion());
 
   bool hasResult = false;
 
-  switch ( udXQType->getTypeCategory() )
+  switch ( udXQType->getUDTKind() )
   {
-  case UserDefinedXQType::ATOMIC_TYPE:
+  case XQType::ATOMIC_UDT:
   {
     store::Item_t atomicResult;
     hasResult = parseUserAtomicTypes(textValue, aTargetType, atomicResult, NULL, loc);
@@ -1602,15 +1626,15 @@ bool Schema::parseUserSimpleTypes(
   }
   break;
 
-  case UserDefinedXQType::LIST_TYPE:
+  case XQType::LIST_UDT:
     return parseUserListTypes(textValue, aTargetType, resultList, loc);
     break;
 
-  case UserDefinedXQType::UNION_TYPE:
+  case XQType::UNION_UDT:
     return parseUserUnionTypes(textValue, aTargetType, resultList, loc);
     break;
 
-  case UserDefinedXQType::COMPLEX_TYPE:
+  case XQType::COMPLEX_UDT:
   default:
     ZORBA_ASSERT( false);
     break;
@@ -1637,9 +1661,9 @@ bool Schema::parseUserAtomicTypes(
 
   const UserDefinedXQType* udXQType =
   static_cast<const UserDefinedXQType*>(targetType.getp());
-  ZORBA_ASSERT(udXQType->isAtomic());
+  ZORBA_ASSERT(udXQType->isAtomicAny());
 
-  const store::Item* typeQName = udXQType->get_qname();
+  const store::Item* typeQName = udXQType->getQName();
 
 #ifndef ZORBA_NO_XMLSCHEMA
   XMLChArray localPart (typeQName->getLocalName());
@@ -1672,7 +1696,7 @@ bool Schema::parseUserAtomicTypes(
           xqtref_t baseXQType = tmpXQType->getBaseType();
           if (baseXQType.getp())
           {
-            store::Item_t baseTypeQName = baseXQType->get_qname();
+            store::Item_t baseTypeQName = baseXQType->getQName();
             XMLChArray baseLocalPart(baseTypeQName->getLocalName());
             XMLChArray baseUriStr(baseTypeQName->getNamespace());
 
@@ -1766,7 +1790,7 @@ bool Schema::parseUserAtomicTypes(
                                       nsCtx,
                                       loc))
   {
-    store::Item_t tTypeQName = udXQType->get_qname();
+    store::Item_t tTypeQName = udXQType->getQName();
 
     //TRACE("factory '" << baseItem->getStringValue() << "' type "
     //      << tTypeQName->getStringValue() << "  base:" << baseType->toString());
@@ -1794,7 +1818,7 @@ void splitToAtomicTextValues(
   size_t start = 0;
   size_t i = 0;
 
-  while ( std::string::npos != (i=normalizedTextValue.find_first_of(" \n\r\t", start)) ) 
+  while (std::string::npos != (i=normalizedTextValue.find_first_of(" \n\r\t", start))) 
   {
     atomicTextValues.push_back(normalizedTextValue.substr(start, i - start));
     start = i+1;
@@ -1909,24 +1933,24 @@ bool Schema::isCastableUserSimpleTypes(
   const UserDefinedXQType* udXQType =
     static_cast<const UserDefinedXQType*>(aTargetType.getp());
 
-  ZORBA_ASSERT(udXQType->isAtomic() || udXQType->isList() || udXQType->isUnion());
+  ZORBA_ASSERT(udXQType->isAtomicAny() || udXQType->isList() || udXQType->isUnion());
 
 
-  switch ( udXQType->getTypeCategory() )
+  switch ( udXQType->getUDTKind() )
   {
-  case UserDefinedXQType::ATOMIC_TYPE:
+  case XQType::ATOMIC_UDT:
     return isCastableUserAtomicTypes( textValue, aTargetType );
     break;
 
-  case UserDefinedXQType::LIST_TYPE:
+  case XQType::LIST_UDT:
     return isCastableUserListTypes( textValue, aTargetType );
     break;
 
-  case UserDefinedXQType::UNION_TYPE:
+  case XQType::UNION_UDT:
     return isCastableUserUnionTypes( textValue, aTargetType );
     break;
 
-  case UserDefinedXQType::COMPLEX_TYPE:
+  case XQType::COMPLEX_UDT:
   default:
     ZORBA_ASSERT( false);
     break;

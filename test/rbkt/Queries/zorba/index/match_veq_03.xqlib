@@ -13,7 +13,7 @@ import module namespace iddl =
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 
-declare collection sessions:sessions as element();
+declare %an:ordered collection sessions:sessions as element();
 
 declare variable $sessions:sessions := xs:QName("sessions:sessions");
 

@@ -99,6 +99,8 @@ unfortunately the <tt>http-uri-resolution</tt> option can have no effect if
 it is specified inside query text. It must be specified using the C++ API
 or a Zorba command-line option. An error will be raised if this option is
 specified inside query text to avoid confusion.
+\note Also note that, unlike other features, this feature is always set or
+unset Zorba-wide.
 </ul>
 
 

@@ -1111,7 +1111,7 @@ T1_TO_T2(dT, dat)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::DATE_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createDate(result, &dt);
 }
 
 
@@ -1119,7 +1119,7 @@ T1_TO_T2(dT, gYM)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GYEARMONTH_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGYearMonth(result, &dt);
 }
 
 
@@ -1127,7 +1127,7 @@ T1_TO_T2(dT, gYr)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GYEAR_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGYear(result, &dt);
 }
 
 
@@ -1135,7 +1135,7 @@ T1_TO_T2(dT, gMD)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GMONTHDAY_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGMonthDay(result, &dt);
 }
 
 
@@ -1143,7 +1143,7 @@ T1_TO_T2(dT, gDay)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GDAY_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGDay(result, &dt);
 }
 
 
@@ -1151,7 +1151,7 @@ T1_TO_T2(dT, gMon)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GMONTH_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGMonth(result, &dt);
 }
 
 
@@ -1187,7 +1187,7 @@ T1_TO_T2(dat, dT)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::DATETIME_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createDateTime(result, &dt);
 }
 
 
@@ -1195,7 +1195,7 @@ T1_TO_T2(dat, gYM)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GYEARMONTH_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGYearMonth(result, &dt);
 }
 
 
@@ -1203,7 +1203,7 @@ T1_TO_T2(dat, gYr)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GYEAR_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGYear(result, &dt);
 }
 
 
@@ -1211,7 +1211,7 @@ T1_TO_T2(dat, gMD)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GMONTHDAY_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGMonthDay(result, &dt);
 }
 
 
@@ -1219,7 +1219,7 @@ T1_TO_T2(dat, gDay)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GDAY_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGDay(result, &dt);
 }
 
 
@@ -1227,7 +1227,7 @@ T1_TO_T2(dat, gMon)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GMONTH_FACET, dt);
-  aFactory->createTime(result, &dt);
+  aFactory->createGMonth(result, &dt);
 }
 
 
@@ -2193,6 +2193,8 @@ bool GenericCast::castToSimple(
         try
         {
           store::Item_t tmp = item;
+          resultList.clear();
+
           bool success = castToSimple(tmp, memberTypes[i], nsCtx, resultList, tm, loc);
 
           if (success)
@@ -2245,7 +2247,10 @@ bool GenericCast::castStringToAtomic(
   ErrorInfo errInfo(sourceType, targetType, loc);
 
   if (!targetType->isAtomicOne())
-    RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(targetType));
+  {
+    RAISE_ERROR(err::XPST0051, loc,
+    ERROR_PARAMS(ZED(XPST0051_Atomic_2), targetType));
+  }
 
 #ifndef ZORBA_NO_XMLSCHEMA
   if (targetType->type_kind() == XQType::USER_DEFINED_KIND)
@@ -2260,7 +2265,7 @@ bool GenericCast::castStringToAtomic(
     if (success)
     {
       const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
-      store::Item_t typeName = udt->get_qname();
+      store::Item_t typeName = udt->getQName();
 
       factory->createUserTypedAtomicItem(result, baseItem, typeName);
       return true;
@@ -2320,7 +2325,8 @@ bool GenericCast::castToAtomic(
 
   if (!targetType->isAtomicOne())
   {
-    RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(targetType));
+    RAISE_ERROR(err::XPST0051, loc,
+    ERROR_PARAMS(ZED(XPST0051_Atomic_2), targetType));
   }
 
   store::SchemaTypeCode targetTypeCode;
@@ -2365,7 +2371,7 @@ bool GenericCast::castToAtomic(
 
     if (valid)
     {
-      store::Item_t typeName = udt->get_qname();
+      store::Item_t typeName = udt->getQName();
       GENV_ITEMFACTORY->createUserTypedAtomicItem(result, baseItem, typeName);
     }
 

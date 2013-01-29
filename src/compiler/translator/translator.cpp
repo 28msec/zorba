@@ -7494,7 +7494,7 @@ void end_visit(const SwitchCaseOperandList& v, void* /*visit_state*/)
 
   CaseClauseList := CaseClause+
 
-  CaseClause ::= "case" ("$" VarName "as")? SequenceType "return" ExprSingle
+  CaseClause ::= "case" ("$" VarName "as")? SequenceTypeList "return" ExprSingle
 
 
   A typeswitch expr is translated into a flwor expr. For example, a typeswitch of
@@ -7523,7 +7523,8 @@ void* begin_visit(const TypeswitchExpr& v)
 {
   TRACE_VISIT();
 
-  var_expr* sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
+  var_expr* sv = create_temp_var(v.get_switch_expr()->get_location(),
+                                 var_expr::let_var);
 
   v.get_switch_expr()->accept(*this);
 
@@ -7533,14 +7534,14 @@ void* begin_visit(const TypeswitchExpr& v)
   expr* retExpr = NULL;
   expr* flworExpr = wrap_in_let_flwor(se, sv, retExpr);
 
-  const QName* defvar_name = v.get_default_varname();
+  const QName* defVarName = v.get_default_varname();
   var_expr* defvar = NULL;
 
-  if (defvar_name)
+  if (defVarName)
   {
     push_scope();
     defvar = bind_var(v.get_default_clause()->get_location(),
-                      defvar_name,
+                      defVarName,
                       var_expr::let_var);
 
     // retExpr = [let $def := $sv return NULL]
@@ -7551,7 +7552,7 @@ void* begin_visit(const TypeswitchExpr& v)
 
   expr* defExpr = pop_nodestack();
 
-  if (defvar_name)
+  if (defVarName)
   {
     pop_scope();
 
@@ -7572,9 +7573,36 @@ void* begin_visit(const TypeswitchExpr& v)
     const CaseClause* caseClause = &**it;
     const QueryLoc& loc = caseClause->get_location();
     expr* clauseExpr = NULL;
+    expr* condExpr;
 
-    caseClause->get_type()->accept(*this);
-    xqtref_t type = pop_tstack();
+    csize numTypes = caseClause->num_types();
+    xqtref_t type;
+    std::vector<expr*> typeCheckExprs;
+    typeCheckExprs.reserve(numTypes);
+    for (csize i = 0; i < numTypes; ++i)
+    {
+      caseClause->get_type(i)->accept(*this);
+
+      type = pop_tstack();
+
+      expr* e = CREATE(instanceof)(theRootSctx, theUDF, loc, &*sv, type);
+      typeCheckExprs.push_back(e);
+    }
+
+    if (numTypes > 1)
+    {
+      if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+      {
+        RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_SwitchExpr30)));
+      }
+
+      function* orFunc = BUILTIN_FUNC(OP_OR_N);
+      condExpr = CREATE(fo)(theRootSctx, theUDF, loc, orFunc, typeCheckExprs);
+    }
+    else
+    {
+      condExpr = typeCheckExprs[0];
+    }
 
     const QName* varname = caseClause->get_varname();
     var_expr* caseVar = NULL;
@@ -7585,16 +7613,23 @@ void* begin_visit(const TypeswitchExpr& v)
 
       caseVar = bind_var(loc, varname, var_expr::let_var);
 
-      expr* treatExpr = theExprManager->
-      create_treat_expr(theRootSctx,
-                        theUDF,
-                        loc,
-                        sv,
-                        type,
-                        TREAT_EXPR);
+      if (numTypes == 1)
+      {
+        expr* treatExpr = CREATE(treat)(theRootSctx,
+                                        theUDF,
+                                        loc,
+                                        sv,
+                                        type,
+                                        TREAT_EXPR);
 
-      // clauseExpr = [let $caseVar := treat_as($sv, caseType) return NULL]
-      clauseExpr = wrap_in_let_flwor(treatExpr, caseVar, NULL);
+        // clauseExpr = [let $caseVar := treat_as($sv, caseType) return NULL]
+        clauseExpr = wrap_in_let_flwor(treatExpr, caseVar, NULL);
+      }
+      else
+      {
+        // clauseExpr = [let $caseVar := $sv return NULL]
+        clauseExpr = wrap_in_let_flwor(sv, caseVar, NULL);
+      }
     }
 
     caseClause->get_expr()->accept(*this);
@@ -7604,7 +7639,7 @@ void* begin_visit(const TypeswitchExpr& v)
     {
       pop_scope();
 
-      // clauseExpr = [let $caseVar := treat_as($sv, caseType) return NULL]
+      // clauseExpr = [let $caseVar := treat_as($sv, caseType) return caseExpr]
       static_cast<flwor_expr*>(clauseExpr)->set_return_expr(caseExpr);
     }
     else
@@ -7614,11 +7649,7 @@ void* begin_visit(const TypeswitchExpr& v)
     }
 
     // retExpr = [if (instance_of($sv, type)) then clauseExpr else retExpr]
-    retExpr = theExprManager->create_if_expr(theRootSctx, theUDF,
-                          loc,
-                          theExprManager->create_instanceof_expr(theRootSctx, theUDF, loc, &*sv, type),
-                          clauseExpr,
-                          retExpr);
+    retExpr = CREATE(if)(theRootSctx, theUDF, loc, condExpr, clauseExpr, retExpr);
   }
 
   static_cast<flwor_expr*>(flworExpr)->set_return_expr(retExpr);
@@ -7989,8 +8020,8 @@ void end_visit(const OrExpr& v, void* /*visit_state*/)
 
     if (foArg->get_func()->getKind() == FunctionConsts::OP_OR_N)
     {
-      ulong numArgs = foArg->num_args();
-      for (ulong i = 0; i < numArgs; ++i)
+      csize numArgs = foArg->num_args();
+      for (csize i = 0; i < numArgs; ++i)
         args.push_back(foArg->get_arg(i));
     }
     else
@@ -8009,8 +8040,8 @@ void end_visit(const OrExpr& v, void* /*visit_state*/)
 
     if (foArg->get_func()->getKind() == FunctionConsts::OP_OR_N)
     {
-      ulong numArgs = foArg->num_args();
-      for (ulong i = 0; i < numArgs; ++i)
+      csize numArgs = foArg->num_args();
+      for (csize i = 0; i < numArgs; ++i)
         args.push_back(foArg->get_arg(i));
     }
     else
@@ -8023,7 +8054,7 @@ void end_visit(const OrExpr& v, void* /*visit_state*/)
     args.push_back(e1);
   }
 
-  fo_expr* fo = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), args);
+  fo_expr* fo = CREATE(fo)(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), args);
 
   push_nodestack(fo);
 }
@@ -8399,14 +8430,14 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
     break;
   }
 
-  fo_expr* foExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, e2, e1);
+  fo_expr* foExpr = CREATE(fo)(theRootSctx, theUDF, loc, f, e2, e1);
 
   normalize_fo(foExpr);
 
-  push_nodestack(theExprManager->create_fo_expr(theRootSctx, theUDF,
-                             loc,
-                             BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_ASC_1),
-                             foExpr));
+  push_nodestack(CREATE(fo)(theRootSctx, theUDF,
+                            loc,
+                            BUILTIN_FUNC(OP_SORT_DISTINCT_NODES_ASC_1),
+                            foExpr));
 }
 
 
@@ -8423,7 +8454,8 @@ void end_visit (const InstanceofExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(CREATE(instanceof)(theRootSctx, theUDF,
+  push_nodestack(CREATE(instanceof)(theRootSctx,
+                                    theUDF,
                                     loc,
                                     pop_nodestack(),
                                     pop_tstack()));
@@ -8443,7 +8475,8 @@ void end_visit(const TreatExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(CREATE(treat)(theRootSctx, theUDF,
+  push_nodestack(CREATE(treat)(theRootSctx,
+                               theUDF,
                                loc,
                                pop_nodestack(),
                                pop_tstack(),
@@ -8549,7 +8582,8 @@ void end_visit(const SimpleType& v, void* /*visit_state*/)
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     {
-      RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(qname->get_qname()));
+      RAISE_ERROR(err::XPST0051, loc,
+      ERROR_PARAMS(ZED(XPST0051_Atomic_2), qname->get_qname()));
     }
     else
     {
@@ -8579,7 +8613,8 @@ expr* create_cast_expr(
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     {
-      RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(type->get_qname()));
+      RAISE_ERROR(err::XPST0051, loc,
+      ERROR_PARAMS(ZED(XPST0051_Atomic_2), type->toSchemaString()));
     }
   }
 
@@ -8626,7 +8661,7 @@ expr* create_cast_expr(
           static_cast<const UserDefinedXQType*>(type.getp());
 
           store::Item_t tmp = result;
-          store::Item_t typeName = udt->get_qname();
+          store::Item_t typeName = udt->getQName();
           GENV_ITEMFACTORY->createUserTypedAtomicItem(result, tmp, typeName);
         }
 
@@ -10136,17 +10171,17 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   fo_expr* condExpr = NULL;
   std::vector<expr*> condOperands(3);
 
-  condOperands[0] = theExprManager->
-  create_instanceof_expr(theRootSctx, theUDF, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
+  condOperands[0] = 
+  CREATE(instanceof)(theRootSctx, theUDF, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
 
-  condOperands[1] = theExprManager->
-  create_instanceof_expr(theRootSctx, theUDF, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
+  condOperands[1] = 
+  CREATE(instanceof)(theRootSctx, theUDF, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
 
-  condOperands[2] = theExprManager->
-  create_instanceof_expr(theRootSctx, theUDF, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
+  condOperands[2] =
+  CREATE(instanceof)(theRootSctx, theUDF, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
 
-  condExpr = theExprManager->
-  create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), condOperands);
+  condExpr = 
+  CREATE(fo)(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), condOperands);
 
   // If so: return $dot if the value of the pred expr is equal to the value
   // of $dot_pos var, otherwise return the empty seq.
@@ -10238,17 +10273,17 @@ void end_visit(const NumericLiteral& v, void* /*visit_state*/)
   {
   case ParseConstants::num_integer:
   {
-    push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, v.get<xs_integer>()));
+    push_nodestack(CREATE(const)(theRootSctx, theUDF, loc, v.get<xs_integer>()));
     break;
   }
   case ParseConstants::num_decimal:
   {
-    push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, v.get<xs_decimal>()));
+    push_nodestack(CREATE(const)(theRootSctx, theUDF, loc, v.get<xs_decimal>()));
     break;
   }
   case ParseConstants::num_double:
   {
-    push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, v.get<xs_double>()));
+    push_nodestack(CREATE(const)(theRootSctx, theUDF, loc, v.get<xs_double>()));
     break;
   }
   }
@@ -10682,16 +10717,13 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       case FunctionConsts::FN_HEAD_1:
       {
-        arguments.push_back(theExprManager->
-                            create_const_expr(theRootSctx, theUDF, loc, xs_integer::one()));
+        arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer::one()));
 
-        arguments.push_back(theExprManager->
-                            create_const_expr(theRootSctx, theUDF, loc, xs_integer::one()));
+        arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer::one()));
 
         function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
 
-        fo_expr* foExpr = theExprManager->
-        create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
+        fo_expr* foExpr = CREATE(fo)(theRootSctx, theUDF, loc, f, arguments);
 
         normalize_fo(foExpr);
 
@@ -10700,13 +10732,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
       case FunctionConsts::FN_TAIL_1:
       {
-        arguments.push_back(theExprManager->
-                            create_const_expr(theRootSctx, theUDF, loc, xs_integer(2)));
+        arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer(2)));
 
         function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_2);
 
-        fo_expr* foExpr = theExprManager->
-        create_fo_expr(theRootSctx, theUDF, loc, f, arguments);
+        fo_expr* foExpr = CREATE(fo)(theRootSctx, theUDF, loc, f, arguments);
 
         normalize_fo(foExpr);
 
@@ -12829,8 +12859,8 @@ void end_visit(const TypeName& v, void* /*visit_state*/)
 /*******************************************************************************
 
   A SequenceType parsenode has 2 children: The right child is always an
-  OccurrenceIndicator node. The left child may be either an AtomicType node,
-  or one of the 9 kind-test nodes (elementTest, documentTest, ... etc), or
+  OccurrenceIndicator node. The left child may be either a GeneralizedAtomicType
+  node, or one of the 9 kind-test nodes (elementTest, documentTest, ... etc), or
   an ItemType node. ItemType respesents the expression item().
 
 ********************************************************************************/
@@ -12885,13 +12915,13 @@ void end_visit(const OccurrenceIndicator& v, void* /*visit_state*/)
 }
 
 
-void* begin_visit(const AtomicType& v)
+void* begin_visit(const GeneralizedAtomicType& v)
 {
   TRACE_VISIT();
   return no_state;
 }
 
-void end_visit(const AtomicType& v, void* /*visit_state*/)
+void end_visit(const GeneralizedAtomicType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
@@ -12899,16 +12929,13 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem,
-                                                TypeConstants::QUANT_ONE,
-                                                loc,
-                                                false);
+  xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
 
-  // some types that should never be parsed, like xs:untyped, are;
-  // we catch them with is_simple()
-  if (t == NULL)
+  if (t == NULL ||
+      t->get_quantifier() != TypeConstants::QUANT_ONE)
   {
-    RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(qname->get_qname()));
+    RAISE_ERROR(err::XPST0051, loc,
+    ERROR_PARAMS(ZED(XPST0051_GenAtomic_2), qname->get_qname()));
   }
   else
   {
