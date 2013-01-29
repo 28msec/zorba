@@ -72,7 +72,7 @@ public:
  */
 #define ZORBA_DECL_HAS_MEM_FN(FN_NAME)                                \
   template<typename T,typename S>                                     \
-  class has_##FN_NAME : public sfinae_base {                          \
+  class has_##FN_NAME : public ::zorba::internal::ztd::sfinae_base {  \
     template<typename SignatureType,SignatureType> struct type_check; \
     template<class U> static yes& test(type_check<S,&U::FN_NAME>*);   \
     template<class U> static no& test(...);                           \
