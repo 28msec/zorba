@@ -260,16 +260,35 @@ ZORBA_DECL_HAS_MEM_FN( toString );
 
 /**
  * \internal
+ * Tests whether a given type \a T is a C string type.
+ *
+ * @tparam T The type to check.
+ */
+template<typename T>
+class is_c_string {
+  typedef typename ZORBA_TR1_NS::remove_pointer<T>::type T_base;
+  typedef typename ZORBA_TR1_NS::add_const<T_base>::type T_base_const;
+public:
+  static bool const value =
+       ZORBA_TR1_NS::is_same<T_base_const*,char const*>::value
+    || ZORBA_TR1_NS::is_same<T_base_const*,unsigned char const*>::value
+    || ZORBA_TR1_NS::is_same<T_base_const*,signed char const*>::value;
+};
+
+/**
+ * \internal
  * Converts an object to its string representation.
  *
  * @tparam T The object type that:
+ *  - is not an array
  *  - is not a pointer
  *  - has an <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
  * @param t The object.
  * @return Returns a string representation of the object.
  */
 template<typename T> inline
-typename std::enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
+typename std::enable_if<!ZORBA_TR1_NS::is_array<T>::value
+                     && !ZORBA_TR1_NS::is_pointer<T>::value
                      && has_insertion_operator<T>::value,
                         std::string>::type
 to_string( T const &t ) {
@@ -345,7 +364,7 @@ to_string( T const &t ) {
 
 /**
  * \internal
- * Specialization of \c to_string() for pointer types.
+ * Specialization of \c to_string() for pointer types other than C strings.
  *
  * @tparam T The pointer type.
  * @param p The pointer.
@@ -353,10 +372,13 @@ to_string( T const &t ) {
  * otherwise returns \c "<null>".
  */
 template<typename T> inline
-typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value,std::string>::type
+typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value
+                     && !is_c_string<T>::value,
+                        std::string>::type
 to_string( T p ) {
-  typedef typename ZORBA_TR1_NS::remove_pointer<T>::type const* T_const_ptr;
-  return p ? to_string( *static_cast<T_const_ptr>( p ) ) : "<null>";
+  typedef typename ZORBA_TR1_NS::remove_pointer<T>::type T_base;
+  typedef typename ZORBA_TR1_NS::add_const<T_base>::type T_base_const;
+  return p ? to_string( *static_cast<T_base_const*>( p ) ) : "<null>";
 }
 
 /**
@@ -368,6 +390,17 @@ to_string( T p ) {
  */
 inline std::string to_string( char const *s ) {
   return s ? s : "<null>";
+}
+
+/**
+ * \internal
+ * Specialization of \c to_string() for C strings.
+ *
+ * @param s The C string.
+ * @return Returns a string representation of the object.
+ */
+inline std::string to_string( unsigned char const *s ) {
+  return s ? reinterpret_cast<char const*>( s ) : "<null>";
 }
 
 ////////// misc ///////////////////////////////////////////////////////////////
