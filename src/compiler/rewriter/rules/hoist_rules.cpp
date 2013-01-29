@@ -408,7 +408,7 @@ static expr* try_hoisting(
       assert(step->theExpr->get_expr_kind() == flwor_expr_kind);
 
       flwor_expr* flwor = static_cast<flwor_expr*>(step->theExpr);
-      group_clause* gc = flwor->get_group_clause();
+      groupby_clause* gc = flwor->get_group_clause();
 
       // If any free variable is a group-by variable, give up.
       if (gc != NULL)
