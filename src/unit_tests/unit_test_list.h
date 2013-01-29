@@ -63,6 +63,7 @@ namespace UnitTests {
   int test_unordered_set( int, char*[] );
 #endif /* ZORBA_HAVE_UNORDERED_SET */
 
+  int test_utf8_streambuf( int, char*[] );
   int test_uuid( int, char*[] );
 
   void initializeTestList();

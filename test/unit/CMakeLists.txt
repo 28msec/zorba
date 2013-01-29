@@ -165,5 +165,6 @@ ENDIF (NOT ZORBA_HAVE_UNORDERED_MAP)
 IF (NOT ZORBA_HAVE_UNORDERED_SET)
   ZORBA_ADD_TEST("test/libunit/unordered_set" LibUnitTest unordered_set)
 ENDIF (NOT ZORBA_HAVE_UNORDERED_SET)
+ZORBA_ADD_TEST("test/libunit/utf8_streambuf" LibUnitTest utf8_streambuf)
 
 # vim:set et sw=2 ts=2:
