@@ -386,14 +386,17 @@ bool ValueHashIndex::insert(store::IndexKey*& key, store::Item_t& value)
     (*pos).second->transfer_back(value);
     key = const_cast<store::IndexKey*>((*pos).first);
 
+    //std::cout << "Index Entry Insert [" << *key << "," 
+    //          << *((*pos).second) << "]" << std::endl;
+
     return true;
   }
 
   ValueIndexValue* valueSet = new ValueIndexValue(1);
   (*valueSet)[0].transfer(value);
   
-  //std::cout << "Index Entry Insert [" << key << "," 
-  //          << valueSet << "]" << std::endl;
+  //std::cout << "Index Entry Insert [" << *key << "," 
+  //          << *valueSet << "]" << std::endl;
 
   // Note: ownership of the key obj passes to the index.
   theMap.insert(key, valueSet);
