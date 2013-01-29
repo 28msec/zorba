@@ -103,6 +103,7 @@ void JSONItem::free()
 *******************************************************************************/
 void JSONItem::destroy()
 {
+  GET_STORE().unregisterReferenceToUnusedNode(this);
   delete this;
 }
 

@@ -123,6 +123,12 @@ public:
   }
 
   virtual void setCollectionTreeInfo(CollectionTreeInfo* aTree) = 0;
+  
+  virtual bool isRoot() const
+  {
+    return getCollectionTreeInfo() != NULL &&
+        getCollectionTreeInfo()->getRoot() == this;
+  }
 
   virtual long getCollectionTreeRefCount() const;
   
