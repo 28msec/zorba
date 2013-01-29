@@ -789,7 +789,7 @@ ZorbaInsertNodesFirstIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (!collectionDecl->isOrdered())
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
       ERROR_PARAMS(name->getStringValue(), "insert" ));
@@ -869,7 +869,7 @@ ZorbaInsertNodesLastIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (!collectionDecl->isOrdered())
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
       ERROR_PARAMS(name->getStringValue(), "insert"));
@@ -957,7 +957,7 @@ ZorbaInsertNodesBeforeIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (!collectionDecl->isOrdered())
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
       ERROR_PARAMS(name->getStringValue(), "insert" ));
@@ -1048,7 +1048,7 @@ ZorbaInsertNodesAfterIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (!collectionDecl->isOrdered())
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
       ERROR_PARAMS(name->getStringValue()));
@@ -1678,7 +1678,7 @@ ZorbaDeleteNodesFirstIterator::getCollection(
     }
   }
 
-  if (!collectionDecl->isOrdered())
+  if (collectionDecl && !collectionDecl->isOrdered())
   {
     RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
     ERROR_PARAMS(name->getStringValue(), "delete" ));
@@ -1774,7 +1774,7 @@ ZorbaDeleteNodesLastIterator::getCollection(
     }
   }
 
-  if (!collectionDecl->isOrdered())
+  if (collectionDecl && !collectionDecl->isOrdered())
   {
     RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
     ERROR_PARAMS(name->getStringValue(), "delete"));
