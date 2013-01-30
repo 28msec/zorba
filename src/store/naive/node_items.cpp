@@ -289,32 +289,6 @@ void XmlTree::setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo)
 
 #endif // #ifndef EMBEDED_TYPE
 
-/*******************************************************************************
-
-********************************************************************************/
-void XmlTree::attachToCollection(
-    simplestore::Collection* aCollection,
-    const TreeId& aTreeId,
-    const xs_integer& aPosition)
-{
-  theTreeInfo->setCollection(aCollection);
-  theTreeInfo->setPosition(aPosition);
-  theTreeInfo->setTreeId(aTreeId);
-  theTreeInfo->setRoot(getRoot());
-}
-  
-/*******************************************************************************
-
-********************************************************************************/
-void XmlTree::detachFromCollection()
-{
-  theTreeInfo->setCollection(NULL);
-  theTreeInfo->setPosition(xs_integer::zero());
-  theTreeInfo->setRoot(NULL);
-}
-
-
-
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class XmlNode                                                              //

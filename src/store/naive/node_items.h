@@ -218,13 +218,6 @@ public:
   
   void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
 
-  virtual void attachToCollection(
-      simplestore::Collection* aCollection,
-      const TreeId& aTreeId,
-      const xs_integer& aPosition);
-
-  virtual void detachFromCollection();
-
   // Returns 0 if not in a collection.
   ulong getCollectionId() const;
   
