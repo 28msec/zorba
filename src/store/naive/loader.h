@@ -110,6 +110,8 @@ public:
       const zstring& baseUri,
       const zstring& docUri,
       std::istream& xmlStream) = 0;
+
+  static void error( void *ctx, xmlErrorPtr );
 };
 
 
@@ -216,10 +218,6 @@ public:
         void * ctx,
         const xmlChar * target,
         const xmlChar * data);
-
-  static void error(void * ctx, const char * msg, ... );
-
-  static void warning(void * ctx, const char * msg, ... );
 
   static xmlEntityPtr	getEntity(
         void * ctx,
@@ -412,10 +410,6 @@ public:
         const xmlChar * target,
         const xmlChar * data);
 
-  static void error(void * ctx, const char * msg, ... );
-
-  static void warning(void * ctx, const char * msg, ... );
-
   static xmlEntityPtr	getEntity(
         void * ctx,
         const xmlChar * name);
@@ -438,8 +432,6 @@ public:
 } // namespace zorba
 
 #endif /* ZORBA_SIMPLE_STORE_LOADER */
-
-
 /*
  * Local variables:
  * mode: c++

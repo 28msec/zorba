@@ -51,6 +51,7 @@ void initializeTestList()
 #endif /* ZORBA_NO_ICU */
 
   libunittests["json_parser"] = test_json_parser;
+  libunittests["parameters"] = test_parameters;
   libunittests["string"] = test_string;
   libunittests["time_parse"] = test_time_parse;
 
