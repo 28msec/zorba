@@ -936,7 +936,10 @@ void XmlNode::attachToCollection(
     const TreeId& aTreeId,
     const xs_integer& aPosition)
 {
-  getTree()->attachToCollection(aCollection, aTreeId, aPosition);
+  getTree()->getCollectionTreeInfo()->setCollection(aCollection);
+  getTree()->getCollectionTreeInfo()->setPosition(aPosition);
+  getTree()->getCollectionTreeInfo()->setTreeId(aTreeId);
+  getTree()->getCollectionTreeInfo()->setRoot(this);
 }
   
 /*******************************************************************************
@@ -944,7 +947,9 @@ void XmlNode::attachToCollection(
 ********************************************************************************/
 void XmlNode::detachFromCollection()
 {
-  getTree()->detachFromCollection();
+  getTree()->getCollectionTreeInfo()->setCollection(NULL);
+  getTree()->getCollectionTreeInfo()->setPosition(xs_integer::zero());
+  getTree()->getCollectionTreeInfo()->setRoot(NULL);
 }
 
 /*******************************************************************************
