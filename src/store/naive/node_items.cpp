@@ -311,6 +311,7 @@ void XmlTree::detachFromCollection()
   assert(theTreeInfo);
   assert(theTreeInfo->getRoot() == static_cast<StructuredItem*>(getRoot()));
   delete theTreeInfo;
+  theTreeInfo = NULL;
 }
 
 
