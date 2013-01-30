@@ -1810,12 +1810,12 @@ bool ZorbaEditNodesIterator::nextImpl(
   consumeNext(content, theChildren[1].getp(), planState);
 
   // Target check.
-  if (! target->getCollection())
+  if (!target->getCollection() || !target->isStructuredItem())
   {
     throw XQUERY_EXCEPTION(zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC(loc));
   }
 
-  if ((target->isNode() || target->isJSONItem()) && !target->isRoot())
+  if (!target->isRoot())
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0039_NON_ROOT_NODE_EDIT,

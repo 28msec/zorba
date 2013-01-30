@@ -82,13 +82,14 @@ XmlTree::XmlTree()
   theTypesMap(NULL)
 #endif
 {
-  theTreeInfo = new CollectionTreeInfo();
+  theTreeInfo = new CollectionTreeInfoWithoutTreeId();
 }
 
 
 XmlTree::XmlTree(XmlNode* root, const TreeId& id)
   :
   theRefCount(0),
+  theTreeId(id),
   theRootNode(root),
 #ifdef DATAGUIDE
   theDataGuideRootNode(NULL),
@@ -100,8 +101,7 @@ XmlTree::XmlTree(XmlNode* root, const TreeId& id)
   theTypesMap(NULL)
 #endif
 {
-  theTreeInfo = new CollectionTreeInfo();
-  theTreeInfo->setTreeId(id);
+  theTreeInfo = new CollectionTreeInfoWithoutTreeId();
 }
 
 
@@ -280,9 +280,9 @@ void XmlTree::setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo)
   }
   if (lTreeInfo != NULL)
   {
-    theTreeInfo = lTreeInfo;
+    theTreeInfo = reinterpret_cast<CollectionTreeInfoWithoutTreeId*>(lTreeInfo);
   } else {
-    theTreeInfo = new CollectionTreeInfo();
+    theTreeInfo = new CollectionTreeInfoWithoutTreeId();
   }
 }
 
@@ -300,8 +300,8 @@ void XmlTree::attachToCollection(
 {
   theTreeInfo->setCollection(aCollection);
   theTreeInfo->setPosition(aPosition);
-  theTreeInfo->setTreeId(aTreeId);
   theTreeInfo->setRoot(getRoot());
+  theTreeId = aTreeId;
 }
   
 /*******************************************************************************

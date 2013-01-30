@@ -176,7 +176,8 @@ protected:
 
   // Contains pointer to collection, tree ID, position,
   // pointer to absolute root.
-  CollectionTreeInfo*       theTreeInfo;
+  CollectionTreeInfoWithoutTreeId*       theTreeInfo;
+  TreeId                                 theTreeId;
 
   // Topmost XML ancestor (root of the XML tree).
   XmlNode                 * theRootNode;
@@ -228,7 +229,7 @@ public:
   
   const TreeId& getTreeId() const
   {
-    return theTreeInfo->getTreeId();
+    return theTreeId;
   }
 
   const xs_integer& getPosition() const
@@ -457,11 +458,6 @@ public:
   store::Item* getParent() const
   {
     return reinterpret_cast<store::Item*>(theParent);
-  }
-
-  bool isRoot() const
-  {
-    return getCollection() != NULL && getParent() == NULL;
   }
 
   bool equals(

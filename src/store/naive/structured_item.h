@@ -46,6 +46,8 @@ public:
   
   virtual const store::Collection* getCollection() const;
   
+  virtual bool isRoot() const;
+
   //--------------------- Structured Item API ----------------------------------
 
   // Attaches a root to a collection (populates collection info).

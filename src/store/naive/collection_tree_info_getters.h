@@ -37,7 +37,7 @@ public:
     {
       const simplestore::XmlNode* lNode =
           static_cast<const simplestore::XmlNode*>(lItem);
-      CollectionTreeInfo* lInfo = lNode->getTree()->theTreeInfo;
+      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theTreeInfo;
       return lInfo ? lInfo->getCollection() : NULL;
     }
     if (lItem->isJSONItem())
@@ -57,8 +57,7 @@ public:
     {
       const simplestore::XmlNode* lNode =
           static_cast<const simplestore::XmlNode*>(lItem);
-      CollectionTreeInfo* lInfo = lNode->getTree()->theTreeInfo;
-      return lInfo ? &lInfo->getTreeId() : NULL;
+      return &lNode->getTree()->theTreeId;
     }
     if (lItem->isJSONItem())
     {
@@ -77,7 +76,7 @@ public:
     {
       const simplestore::XmlNode* lNode =
           static_cast<const simplestore::XmlNode*>(lItem);
-      CollectionTreeInfo* lInfo = lNode->getTree()->theTreeInfo;
+      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theTreeInfo;
       return lInfo ? lInfo->getRoot() : NULL;
     }
     if (lItem->isJSONItem())
@@ -98,7 +97,7 @@ public:
     {
       const simplestore::XmlNode* lNode =
           static_cast<const simplestore::XmlNode*>(lItem);
-      CollectionTreeInfo* lInfo = lNode->getTree()->theTreeInfo;
+      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theTreeInfo;
       return lInfo ? lInfo->getPosition() : lDummy;
     }
     if (lItem->isJSONItem())
@@ -114,26 +113,25 @@ public:
 
   static simplestore::Collection* getCollection(const simplestore::XmlTree* aTree)
   {
-    CollectionTreeInfo* lInfo = aTree->theTreeInfo;
+    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theTreeInfo;
     return lInfo ? lInfo->getCollection() : NULL;
   }
 
   static const TreeId* getTreeId(const simplestore::XmlTree* aTree)
   {
-    CollectionTreeInfo* lInfo = aTree->theTreeInfo;
-    return lInfo ? &lInfo->getTreeId() : NULL;
+    return &aTree->theTreeId;
   }
 
   static StructuredItem* getRoot(const simplestore::XmlTree* aTree)
   {
-    CollectionTreeInfo* lInfo = aTree->theTreeInfo;
+    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theTreeInfo;
     return lInfo ? lInfo->getRoot() : NULL;
   }
 
   static const xs_integer& getPosition(const simplestore::XmlTree* aTree)
   {
     static xs_integer lDummy(-1);
-    CollectionTreeInfo* lInfo = aTree->theTreeInfo;
+    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theTreeInfo;
     return lInfo ? lInfo->getPosition() : lDummy;
   }
 };

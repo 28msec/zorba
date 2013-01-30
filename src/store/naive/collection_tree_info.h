@@ -37,16 +37,16 @@ class CollectionTreeInfo
 {
 private:
   Collection*     theCollection;
-  TreeId          theId;
   xs_integer      thePosition;
   StructuredItem* theRoot;
+  TreeId          theTreeId;
 
 public:
   CollectionTreeInfo()
     : theCollection(NULL),
-      theId(),
       thePosition(0),
-      theRoot(NULL)
+      theRoot(NULL),
+      theTreeId()
   {}
 
   simplestore::Collection* getCollection() const
@@ -61,12 +61,12 @@ public:
 
   const TreeId& getTreeId() const
   {
-    return theId;
+    return theTreeId;
   }
 
   void setTreeId(const TreeId& aId)
   {
-    theId = aId;
+    theTreeId = aId;
   }
 
   StructuredItem* getRoot() const
