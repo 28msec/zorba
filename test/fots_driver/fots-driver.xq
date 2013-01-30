@@ -599,8 +599,9 @@ declare %private %ann:sequential function driver:run-fots(
  : Runs a single test case.
  :
  : @param $case the test case to run.
- : @param $env the environment to use. It is specified either in the test-set
- :        file associated with the test-case, or in the catalog file.
+ : @param $env the non-local environment to use, if any. It is an enviroment
+ :        specified either at the test-set level or at the catalog level and
+ :        is referenced by the test-case.
  : @param $envBaseURI the URI of the directory containing the file where the 
  :        envoronment is specified in. It is used to calculate the full URI 
  :        for the different children of the <environment> that have a @file
@@ -633,8 +634,7 @@ declare %ann:sequential function driver:test(
  
     variable $test := util:get-value($case, $testSetBaseURI, "test");
 
-    variable $enableHOF := env:enable-HOF-feature(($deps, $case//fots:dependency),
-                                                  $test);
+    variable $envCase := $case/fots:environment;
 
     variable $query := 
       string-join
@@ -642,18 +642,18 @@ declare %ann:sequential function driver:test(
       (
         env:add-xquery-version-decl(($deps, $case//fots:dependency), $test),
 
-        env:decl-def-elem-namespace($env, $case/fots:environment),
+        env:decl-base-uri($env, $envCase),
 
-        env:decl-base-uri($env, $case/fots:environment),
+        env:decl-def-elem-namespace($env, $envCase),
 
-        env:decl-namespaces($env, $case, $testSetBaseURI),
+        env:decl-namespaces($env, $envCase, $test),
 
-        $enableHOF,
+        env:enable-HOF-feature(($deps, $case//fots:dependency), $test),
 
         env:decl-decimal-formats(($env/fots:decimal-format,
-                                  $case/fots:environment/fots:decimal-format)),
+                                  $envCase/fots:decimal-format)),
 
-        env:add-var-decl($env, $case, $envBaseURI, $testSetBaseURI),
+        env:add-var-decl($env, $envCase, $envBaseURI, $testSetBaseURI),
 
         $test
       ),
@@ -671,6 +671,7 @@ declare %ann:sequential function driver:test(
     then util:write-query-to-file($xqxqQuery, $queryName);
     else ();
     :)
+
     variable $startDateTime := datetime:current-dateTime();
 
     variable $result := driver:xqxq-invoke($xqxqQuery,

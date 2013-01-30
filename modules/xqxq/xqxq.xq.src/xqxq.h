@@ -92,7 +92,7 @@ public:
   
   bool deleteQuery(const String&);
   
-  virtual void estroy() throw();
+  virtual void destroy() throw();
 };
 
 
