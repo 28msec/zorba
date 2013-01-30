@@ -56,7 +56,6 @@
 #include "document_name_iterator.h"
 #include "pul_primitive_factory.h"
 #include "tree_id_generator.h"
-#include "collection_tree_info_getters.h"
 
 #include "util/cxx_util.h"
 #include "zorbautils/string_util.h"
@@ -1212,12 +1211,11 @@ bool Store::getStructuralInformation(
 #ifdef TEXT_ORDPATH
   const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
 
-  return theItemFactory->createStructuralAnyURI(
-      result,
-      n->getCollectionId(),
-      n->getTree()->getTreeId(),
-      n->getNodeKind(),
-      n->getOrdPath());
+  return theItemFactory->createStructuralAnyURI(result,
+                                                n->getCollectionId(),
+                                                n->getTreeId(),
+                                                n->getNodeKind(),
+                                                n->getOrdPath());
 #else
   if (node->getNodeKind() == store::StoreConsts::textNode)
   {
@@ -1225,23 +1223,21 @@ bool Store::getStructuralInformation(
     const TextNode* n = static_cast<const TextNode*>(node);
     n->getOrdPath(ordPath);
 
-    return GET_FACTORY().createStructuralAnyURI(
-        result,
-        n->getCollectionId(),
-        n->getTree()->getTreeId(),
-        store::StoreConsts::textNode,
-        ordPath);
+    return GET_FACTORY().createStructuralAnyURI(result,
+                                                n->getCollectionId(),
+                                                n->getTreeId(),
+                                                store::StoreConsts::textNode,
+                                                ordPath);
   }
   else
   {
     const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
 
-    return GET_FACTORY().createStructuralAnyURI(
-        result,
-        n->getCollectionId(),
-        n->getTree()->getTreeId(),
-        n->getNodeKind(),
-        n->getOrdPath());
+    return GET_FACTORY().createStructuralAnyURI(result,
+                                                n->getCollectionId(),
+                                                n->getTreeId(),
+                                                n->getNodeKind(),
+                                                n->getOrdPath());
   }
 #endif
 }
