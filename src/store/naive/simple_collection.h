@@ -127,10 +127,6 @@ public:
 
   xs_integer removeNodes(xs_integer position, xs_integer num);
 
-  bool replaceNode(
-      store::Item* target,
-      store::Item* content);
-  
   bool findNode(const store::Item* node, xs_integer& position) const;
 
   store::Item_t nodeAt(xs_integer position);
