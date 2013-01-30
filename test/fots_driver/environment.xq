@@ -261,12 +261,6 @@ declare %ann:nondeterministic function env:add-var-decl(
   if ($env)
   then env:add-var-decls($env, $envBaseURI)
   else env:add-var-decls($envCase, $testSetBaseURI)
-
-(:
-  concat(env:var-decl-with-value($env, $envBaseURI),
-         env:var-decl-with-value($envCase, $testSetBaseURI),
-         env:var-decl-without-value($env, $envCase))
-:)
 };
 
 
@@ -327,70 +321,6 @@ declare %private function env:add-var-decls(
 };
 
 
-(:
-declare %private function env:var-decl-with-value(
-  $env      as element(fots:environment)?,
-  $baseURI  as xs:anyURI
-) as xs:string? 
-{
-  string-join
-  (
-    for $param in $env/fots:param
-    let $type := $param/@as
-    let $select := $param/@select
-    let $file := $env/fots:source[@uri = translate($select, "'", "")]/@file
-    let $varValue := if (starts-with($select, "'") and
-                         ends-with($select, "'") and
-                         exists($file))
-                     then  concat('"', resolve-uri($file, $baseURI), '"')
-                     else $select
-    where (exists($select) and
-(: if there is an attribute 'declared' set to true, this means that the variable
-   is declared within the 'test' itself so no additional variable declaration
-   is needed :)
-           empty($param[@declared eq "true"]))
-    return
-      concat("declare variable $",
-             $param/@name,
-             if ($type) then concat(" as ", $type) else (),
-             " := ",
-             $varValue,
-             ";")
-   ,
-   " "
-   )
-};
-
-
-declare %private function env:var-decl-without-value(
-  $env      as element(fots:environment)?,
-  $envCase  as element(fots:environment)?
-) as xs:string? 
-{
-  string-join
-  (
-  (
-  for $param in ($env/fots:param, $envCase/fots:param)
-  let $type := $param/@as
-  let $select := $param/@select
-  where (empty($select) and empty($param[@declared="true"]))
-  return concat("declare variable $",
-                 $param/@name,
-                 ((concat(" as ", $type)))[$type],
-                 " external;")
-  ,
-  for $source in ($env/fots:source, $envCase/fots:source)
-  let $role := $source/@role
-  where starts-with($role,"$")
-  return concat("declare variable ", $role, " external;")
-  )
-  ,
-  " "
-  )
-};
-:)
-
-
 (:~
  : Returns the string for setting the context item if needed.
  : @param $env environment.
@@ -400,7 +330,8 @@ declare %private function env:var-decl-without-value(
 declare function env:set-context-item(
   $env        as element(fots:environment)?,
   $envBaseURI as xs:anyURI?
-) as xs:string? {
+) as xs:string?
+{
   if (exists($env/fots:source[@role = "."]))
   then string-join((env:declare-context-item($env, $envBaseURI),
                    'xqxq:bind-context-item($queryID, $contextItem);')
@@ -483,7 +414,7 @@ declare function env:set-variables(
 };
 
 
-declare %private function env:get-schema-import (
+declare %private function env:get-schema-import(
   $env  as element(fots:environment)?
 ) as xs:string 
 {
