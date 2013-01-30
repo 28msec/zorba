@@ -38,6 +38,7 @@ namespace UnitTests {
 
   int test_json_parser( int, char*[] );
   int test_mem_sizeof( int, char*[] );
+  int test_parameters( int, char*[] );
   int test_string( int, char*[] );
   int test_time_parse( int, char*[] );
 
