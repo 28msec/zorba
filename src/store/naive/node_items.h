@@ -445,7 +445,8 @@ public:
   const store::Collection* getCollection() const
   {
     assert(!isConnectorNode());
-    return StructuredItem::getCollection();
+    const store::Collection* lResult = StructuredItem::getCollection();
+    return lResult;
   }
 
   virtual void getDocumentURI(zstring& uri) const

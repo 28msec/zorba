@@ -49,6 +49,7 @@ SET(ZORBA_STORE_IMPL_SRCS
     simple_temp_seq.cpp
     store.cpp
     string_pool.cpp
+    structured_item.cpp
     tree_id_generator.cpp
 )
 
