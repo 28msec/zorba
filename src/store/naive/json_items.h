@@ -92,9 +92,7 @@ public:
 
 class JSONItem : public StructuredItem
 {
-  // Used to access collection tree information.
-  friend class zorba::simplestore::CollectionTreeInfoGetters;
-
+friend class zorba::simplestore::CollectionTreeInfoGetters;
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
@@ -111,6 +109,8 @@ public:
 
   virtual void destroy();
 
+  const simplestore::Collection* getCollection() const;
+  
   // StructuredItem API
 
   void attachToCollection(
@@ -120,12 +120,17 @@ public:
 
   void detachFromCollection();
   
+  CollectionTreeInfo* getCollectionTreeInfo() const
+  {
+    return theTreeInfo;
+  }
+
   virtual void setCollectionTreeInfo(CollectionTreeInfo* aTree) = 0;
   
   virtual bool isRoot() const
   {
-    return theTreeInfo != NULL &&
-        theTreeInfo->getRoot() == this;
+    return getCollectionTreeInfo() != NULL &&
+        getCollectionTreeInfo()->getRoot() == this;
   }
 
   virtual long getCollectionTreeRefCount() const;

@@ -214,6 +214,8 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
   
+  CollectionTreeInfo* getCollectionTreeInfo() { return theTreeInfo; }
+  
   void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
 
   virtual void attachToCollection(
@@ -607,6 +609,8 @@ public:
       const xs_integer& aPosition);
 
   virtual void detachFromCollection();
+
+  virtual CollectionTreeInfo* getCollectionTreeInfo() const;
 
   virtual void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
 

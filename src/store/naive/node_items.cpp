@@ -64,7 +64,6 @@ namespace zorba { namespace simplestore {
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -954,6 +953,15 @@ void XmlNode::detachFromCollection()
 void XmlNode::setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo)
 {
   getTree()->setCollectionTreeInfo(lTreeInfo);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+
+CollectionTreeInfo* XmlNode::getCollectionTreeInfo() const
+{  
+  return getTree()->getCollectionTreeInfo();
 }
 
 /*******************************************************************************
