@@ -92,23 +92,22 @@ public:
 
   static const xs_integer& getPosition(const store::Item* lItem)
   {
-    static xs_integer lDummy(-1);
     if (lItem->isNode())
     {
       const simplestore::XmlNode* lNode =
           static_cast<const simplestore::XmlNode*>(lItem);
       CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theTreeInfo;
-      return lInfo ? lInfo->getPosition() : lDummy;
+      return lInfo ? lInfo->getPosition() : xs_integer::zero();
     }
     if (lItem->isJSONItem())
     {
       const simplestore::json::JSONItem* lJSON =
           static_cast<const simplestore::json::JSONItem*>(lItem);
       CollectionTreeInfo* lInfo = lJSON->theTreeInfo;
-      return lInfo ? lInfo->getPosition() : lDummy;
+      return lInfo ? lInfo->getPosition() : xs_integer::zero();
     }
     assert(false);
-    return lDummy;
+    return xs_integer::zero();
   }
 
   static simplestore::Collection* getCollection(const simplestore::XmlTree* aTree)

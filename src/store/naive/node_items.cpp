@@ -71,6 +71,7 @@ namespace zorba { namespace simplestore {
 XmlTree::XmlTree()
   :
   theRefCount(0),
+  theTreeInfo(NULL),
   theRootNode(NULL),
 #ifdef DATAGUIDE
   theDataGuideRootNode(NULL),
@@ -81,14 +82,13 @@ XmlTree::XmlTree()
   ,
   theTypesMap(NULL)
 #endif
-{
-  theTreeInfo = new CollectionTreeInfoWithoutTreeId();
-}
+{}
 
 
 XmlTree::XmlTree(XmlNode* root, const TreeId& id)
   :
   theRefCount(0),
+  theTreeInfo(NULL),
   theTreeId(id),
   theRootNode(root),
 #ifdef DATAGUIDE
@@ -100,9 +100,7 @@ XmlTree::XmlTree(XmlNode* root, const TreeId& id)
   ,
   theTypesMap(NULL)
 #endif
-{
-  theTreeInfo = new CollectionTreeInfoWithoutTreeId();
-}
+{}
 
 
 /*******************************************************************************
@@ -110,11 +108,16 @@ XmlTree::XmlTree(XmlNode* root, const TreeId& id)
 ********************************************************************************/
 ulong XmlTree::getCollectionId() const
 {
-  Collection *lCollection = theTreeInfo->getCollection();
-  if (lCollection != NULL)
-    return lCollection->getId();
-  else
+  if (!theTreeInfo)
+  {
     return 0;
+  }
+  Collection *lCollection = theTreeInfo->getCollection();
+  if (!lCollection)
+  {
+    return 0;
+  }
+  return lCollection->getId();
 }
 
 
@@ -127,8 +130,7 @@ void XmlTree::destroy() throw()
 
   // Only delete if not in a collection, or if it is the overall root.
   if (theTreeInfo != NULL &&
-      (theTreeInfo->getCollection() == NULL ||
-       theTreeInfo->getRoot() == static_cast<StructuredItem*>(getRoot())))
+      theTreeInfo->getRoot() == static_cast<StructuredItem*>(getRoot()))
   {
     delete theTreeInfo;
   }
@@ -271,19 +273,15 @@ void XmlTree::copyTypesMap(const XmlTree* source)
 ********************************************************************************/
 void XmlTree::setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo)
 {
-  // Only delete if not in a collection, or if it is the overall root.
-  if (theTreeInfo != NULL &&
-      (theTreeInfo->getCollection() == NULL ||
-       theTreeInfo->getRoot() == static_cast<StructuredItem*>(getRoot())))
-  {
-    delete theTreeInfo;
-  }
-  if (lTreeInfo != NULL)
-  {
-    theTreeInfo = reinterpret_cast<CollectionTreeInfoWithoutTreeId*>(lTreeInfo);
-  } else {
-    theTreeInfo = new CollectionTreeInfoWithoutTreeId();
-  }
+  // If the supplied tree information is not NULL, the existing tree info must
+  // be NULL.
+  assert(!lTreeInfo || !theTreeInfo);
+  // If the supplied tree information is NULL, the existing tree info must
+  // exist, and this node may not be the root.
+  assert(lTreeInfo || theTreeInfo);
+  assert(lTreeInfo ||
+         theTreeInfo->getRoot() != static_cast<StructuredItem*>(getRoot()));
+  theTreeInfo = reinterpret_cast<CollectionTreeInfoWithoutTreeId*>(lTreeInfo);
 }
 
 
@@ -298,6 +296,8 @@ void XmlTree::attachToCollection(
     const TreeId& aTreeId,
     const xs_integer& aPosition)
 {
+  assert(!theTreeInfo);
+  theTreeInfo = new CollectionTreeInfoWithoutTreeId();
   theTreeInfo->setCollection(aCollection);
   theTreeInfo->setPosition(aPosition);
   theTreeInfo->setRoot(getRoot());
@@ -309,9 +309,8 @@ void XmlTree::attachToCollection(
 ********************************************************************************/
 void XmlTree::detachFromCollection()
 {
-  theTreeInfo->setCollection(NULL);
-  theTreeInfo->setPosition(xs_integer::zero());
-  theTreeInfo->setRoot(NULL);
+  assert(theTreeInfo);
+  delete theTreeInfo;
 }
 
 
