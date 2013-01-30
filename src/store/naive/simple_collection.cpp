@@ -29,7 +29,6 @@
 #ifdef ZORBA_WITH_JSON
 #  include "json_items.h"
 #endif
-#include "collection_tree_info_getters.h"
 
 #include "zorbatypes/numconversions.h"
 
@@ -460,14 +459,13 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
     assert(dynamic_cast<const XmlNode*>(item));
     const XmlNode* lNode = static_cast<const XmlNode*>(item);
   
-    position = CollectionTreeInfoGetters::getPosition(lNode);
+    position = lNode->getCollectionTreeInfo()->getPosition();
 
     csize pos = to_xs_unsignedInt(position);
 
     if (pos < theXmlTrees.size() &&
         theXmlTrees[pos]->isNode() &&
-        CollectionTreeInfoGetters::getTreeId(theXmlTrees[pos]) ==
-            CollectionTreeInfoGetters::getTreeId(lNode))
+        BASE_NODE(theXmlTrees[pos])->getTreeId() == lNode->getTreeId())
     {
       return true;
     }
@@ -511,9 +509,9 @@ void SimpleCollection::adjustTreePositions()
   {
 #ifdef ZORBA_WITH_JSON
     if (theXmlTrees[i]->isNode())
-      BASE_NODE(theXmlTrees[i])->getTree()->theTreeInfo->setPosition(xs_integer(i));
+      BASE_NODE(theXmlTrees[i])->getCollectionTreeInfo()->setPosition(xs_integer(i));
 #else
-    BASE_NODE(theXmlTrees[i])->getTree()->theTreeInfo->setPosition(xs_integer(i));
+    BASE_NODE(theXmlTrees[i])->getCollectionTreeInfo()->setPosition(xs_integer(i));
 #endif
   }
 }

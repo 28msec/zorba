@@ -522,7 +522,7 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-/*  const TreeId& getTreeId() const {
+  const TreeId& getTreeId() const {
     static TreeId lId;
     CollectionTreeInfo* lInfo = getTree()->getCollectionTreeInfo();
     if (lInfo == NULL)
@@ -539,7 +539,7 @@ public:
       return xs_integer::zero();
     }
     return lInfo->getPosition();
-  } */
+  }
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
