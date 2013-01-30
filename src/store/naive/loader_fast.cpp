@@ -34,7 +34,6 @@
 #include "loader.h"
 #include "simple_item_factory.h"
 #include "node_factory.h"
-#include "collection_tree_info_getters.h"
 
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/URI.h"
@@ -289,7 +288,7 @@ store::Item_t FastXmlLoader::loadXml(
   {
     std::ostringstream uristream;
     uristream << "zorba://internalDocumentURI-" <<
-        CollectionTreeInfoGetters::getTreeId(theTree);
+        theTree->getCollectionTreeInfo()->getTreeId();
 
     theDocUri = uristream.str();
   }
