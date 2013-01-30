@@ -268,6 +268,8 @@ void XmlTree::copyTypesMap(const XmlTree* source)
   }
 }
 
+#endif // #ifndef EMBEDED_TYPE
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -283,10 +285,6 @@ void XmlTree::setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo)
          theTreeInfo->getRoot() != static_cast<StructuredItem*>(getRoot()));
   theTreeInfo = reinterpret_cast<CollectionTreeInfoWithoutTreeId*>(lTreeInfo);
 }
-
-
-
-#endif // #ifndef EMBEDED_TYPE
 
 /*******************************************************************************
 
@@ -309,7 +307,9 @@ void XmlTree::attachToCollection(
 ********************************************************************************/
 void XmlTree::detachFromCollection()
 {
+  // The tree info must exist and this XML must be the overall root.
   assert(theTreeInfo);
+  assert(theTreeInfo->getRoot() == static_cast<StructuredItem*>(getRoot()));
   delete theTreeInfo;
 }
 
