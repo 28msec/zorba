@@ -19,6 +19,7 @@
 
 #include "store/api/item.h"
 
+#include "collection.h"
 #include "collection_tree_info.h"
 
 namespace zorba
@@ -67,9 +68,6 @@ public:
   // Propagates collection tree info to descendants
   // (not to be called on a root - use functions above if root).
   virtual void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo) = 0;
-
-  // Accesses collection tree info for any structured item in a tree.
-  virtual CollectionTreeInfo* getCollectionTreeInfo() const = 0;
 
   // Returns total number of outstanding pointers to the tree (for garbage
   // collection purposes).

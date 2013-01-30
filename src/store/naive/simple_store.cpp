@@ -35,6 +35,7 @@
 
 #include <zorba/util/uuid.h>
 #include "zorbautils/string_util.h"
+#include "collection_tree_info_getters.h"
 
 
 namespace zorba
@@ -320,7 +321,7 @@ bool SimpleStore::hasReference(const store::Item* node)
     JSONItem* j = const_cast<JSONItem*>(static_cast<const JSONItem*>(node));
 
     // only root nodes in a collection can have a reference
-    if (j->getCollectionTreeInfo() && j->getCollectionTreeInfo()->getRoot() == j)
+    if (CollectionTreeInfoGetters::getRoot(j) == j)
     {
       ItemRefMap::iterator lIter = theNodeToReferencesMap.find(node);
 
@@ -352,7 +353,7 @@ bool SimpleStore::assignReference(const store::Item* node, const zstring& refere
     assert(node->isJSONItem());
     const JSONItem* j = static_cast<const JSONItem*>(node);
 
-    if (!j->getCollectionTreeInfo() || j != j->getCollectionTreeInfo()->getRoot())
+    if (CollectionTreeInfoGetters::getRoot(j) != j)
       throw ZORBA_EXCEPTION(zerr::ZAPI0080_CANNOT_RETRIEVE_REFERENCE);
   }
 

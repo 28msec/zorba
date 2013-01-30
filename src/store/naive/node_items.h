@@ -214,9 +214,14 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
   
-  CollectionTreeInfo* getCollectionTreeInfo() { return theTreeInfo; }
-  
   void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
+
+  void attachToCollection(
+      simplestore::Collection* aCollection,
+      const TreeId& aTreeId,
+      const xs_integer& aPosition);
+
+  void detachFromCollection();
 
   // Returns 0 if not in a collection.
   ulong getCollectionId() const;
@@ -515,7 +520,7 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  const TreeId& getTreeId() const {
+/*  const TreeId& getTreeId() const {
     static TreeId lId;
     CollectionTreeInfo* lInfo = getTree()->getCollectionTreeInfo();
     if (lInfo == NULL)
@@ -532,7 +537,7 @@ public:
       return xs_integer::zero();
     }
     return lInfo->getPosition();
-  }
+  } */
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
@@ -602,8 +607,6 @@ public:
       const xs_integer& aPosition);
 
   virtual void detachFromCollection();
-
-  virtual CollectionTreeInfo* getCollectionTreeInfo() const;
 
   virtual void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
 

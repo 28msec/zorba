@@ -91,6 +91,52 @@ public:
 };
 
 
+class CollectionTreeInfoWithoutTreeId
+{
+private:
+  Collection*     theCollection;
+  xs_integer      thePosition;
+  StructuredItem* theRoot;
+
+public:
+  CollectionTreeInfoWithoutTreeId()
+    : theCollection(NULL),
+      thePosition(0),
+      theRoot(NULL)
+  {}
+
+  simplestore::Collection* getCollection() const
+  {
+    return theCollection;
+  }
+
+  void setCollection(simplestore::Collection* aCollection)
+  {
+    theCollection = aCollection;
+  }
+
+  StructuredItem* getRoot() const
+  {
+    return theRoot;
+  }
+
+  void setRoot(StructuredItem* aRoot)
+  {
+    theRoot = aRoot;
+  }
+  
+  const xs_integer& getPosition() const
+  {
+    return thePosition;
+  }
+
+  void setPosition(const xs_integer& aPosition)
+  {
+    thePosition = aPosition;
+  }
+};
+
+
 } // namespace simplestore
 } // namespace zorba
 #endif /* ZORBA_STORE_COLLECTION_TREE_INFO_H */
