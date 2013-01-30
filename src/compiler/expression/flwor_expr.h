@@ -55,7 +55,7 @@ public:
     for_clause,
     let_clause,
     window_clause,
-    group_clause,
+    groupby_clause,
     order_clause,
     count_clause,
     where_clause,
@@ -242,15 +242,15 @@ protected:
 
 protected:
   window_clause(
-        static_context* sctx,
-        CompilerCB* ccb,
-        const QueryLoc& loc,
-        WindowKind winKind,
-        var_expr* varExpr,
-        expr* domainExpr,
-        flwor_wincond* winStart,
-        flwor_wincond* winStop,
-        bool lazy = false);
+      static_context* sctx,
+      CompilerCB* ccb,
+      const QueryLoc& loc,
+      WindowKind winKind,
+      var_expr* varExpr,
+      expr* domainExpr,
+      flwor_wincond* winStart,
+      flwor_wincond* winStop,
+      bool lazy = false);
 
 public:
   ~window_clause();
@@ -405,7 +405,7 @@ public:
                     the Y values in the input tuples that were grouped into T.
   theCollations   : The collations to use when comparing values for grouping.
 ********************************************************************************/
-class group_clause : public flwor_clause
+class groupby_clause : public flwor_clause
 {
   friend class expr;
   friend class flwor_expr;
@@ -417,7 +417,7 @@ protected:
   rebind_list_t            theNonGroupVars;
   std::vector<std::string> theCollations;
 
-  group_clause(
+  groupby_clause(
       static_context* sctx,
       CompilerCB* ccb,
       const QueryLoc& loc,
@@ -426,7 +426,7 @@ protected:
       const std::vector<std::string>& collations);
 
 public:
-  ~group_clause();
+  ~groupby_clause();
 
   const std::vector<std::string>& get_collations() const { return theCollations; }
 
@@ -514,6 +514,10 @@ public:
   bool is_stable() const { return theStableOrder; }
 
   const std::vector<OrderModifier>& get_modifiers() const { return theModifiers; }
+
+  bool is_ascending(csize i) const { return theModifiers[i].theAscending; }
+
+  const std::string& get_collation(csize i) const { return theModifiers[i].theCollation; }
 
   const std::vector<expr*>& get_column_exprs() const { return theOrderingExprs; }
 
@@ -648,7 +652,6 @@ public:
   typedef std::vector<flwor_clause*> clause_list_t;
 
 protected:
-  bool            theIsGeneral;
   bool            theHasSequentialClauses;
   clause_list_t   theClauses;
   expr          * theReturnExpr;
@@ -662,9 +665,9 @@ protected:
       bool general);
 
 public:
-  bool is_general() const { return theIsGeneral; }
+  bool is_general() const { return get_expr_kind() == gflwor_expr_kind; }
 
-  void set_general(bool v) { theIsGeneral = true; }
+  void set_general(bool v) { theKind = (v ? gflwor_expr_kind : flwor_expr_kind); }
 
   expr* get_return_expr() const { return theReturnExpr; }
 
@@ -698,14 +701,14 @@ public:
 
   long defines_variable(const var_expr* v) const;
 
-  void get_vars(expr::FreeVars& vars) const;
+  void get_vars(std::vector<var_expr*>& vars) const;
 
   // The following 5 methods are for the simple flwor only. They should be
   // removed eventually.
   expr* get_where() const;
   void set_where(expr* e);
   void remove_where_clause();
-  group_clause* get_group_clause() const;
+  groupby_clause* get_group_clause() const;
   orderby_clause* get_order_clause() const;
   csize num_forlet_clauses();
 

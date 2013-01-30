@@ -73,3 +73,7 @@ declare variable $zwarn:ZWST0005 as xs:QName := fn:QName($zwarn:NS, "zwarn:ZWST0
  : 
 :)
 declare variable $zwarn:ZWST0006 as xs:QName := fn:QName($zwarn:NS, "zwarn:ZWST0006");
+
+(:~
+:)
+declare variable $zwarn:ZWST0007 as xs:QName := fn:QName($zwarn:NS, "zwarn:ZWST0007");

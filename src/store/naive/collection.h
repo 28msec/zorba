@@ -90,10 +90,6 @@ public:
 
   virtual void removeAll() = 0;
   
-  virtual bool replaceNode(
-      store::Item* target,
-      store::Item* content) = 0;
-
   virtual void adjustTreePositions() = 0;
 
   /***************************** ID Management ********************************/

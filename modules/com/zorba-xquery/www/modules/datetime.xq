@@ -249,6 +249,17 @@ declare function datetime:parse-time(
 ) as xs:time external;
 
 (:~
+ : Converts the given number of milliseconds since epoch into its corresponding
+ : xs:dateTime.
+ :
+ : @param $millis The number of milliseconds since epoch.
+ : @return Returns an xs:dateTime.
+ : @example test/rbkt/Queries/zorba/datetime/datetime-millis-to-dateTime-1.xq
+ :)
+declare function datetime:millis-to-dateTime( $millis as xs:long )
+  as xs:dateTime external;
+
+(:~
  : Gets the the number of milliseconds since epoch.
  :
  : @return the said number of milliseconds.
