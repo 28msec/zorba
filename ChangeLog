@@ -15,6 +15,20 @@ Bug Fixes/Other Changes:
   * NaN items are considered equal to each other during grouping
 
 
+version 2.9
+
+Bug Fixes/Other Changes:
+  * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
+  * Fixed bug #1099535  (xml:parse endless loop)
+
+
+
+version 2.9
+
+Bug Fixes/Other Changes:
+  * Fixed bug #866958  (Parsing error not explicit enough)
+
+
 version 2.8
 
 New Features:
