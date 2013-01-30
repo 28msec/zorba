@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,6 +73,7 @@ public:
   store::Item_t theTagItem; //
   uint32_t theIndex; //
   std::ostream* theOS; //
+  rchandle<serializer> theSerializer; //
 
   TraceIteratorState();
 

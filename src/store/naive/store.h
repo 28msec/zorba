@@ -136,7 +136,7 @@ public:
   static const char* XS_URI;
   static const char* XML_URI;
   static const char* ZXSE_URI;
-  static const char* JDM_URI;
+  static const char* JS_URI;
 
   static const ulong XML_URI_LEN;
 
@@ -159,9 +159,9 @@ public:
   store::Item_t                 XS_ANY_SIMPLE_QNAME;
 
 #ifdef ZORBA_WITH_JSON
-  store::Item_t                 JDM_OBJECT_QNAME;
-  store::Item_t                 JDM_ARRAY_QNAME;
-  store::Item_t                 JDM_NULL_QNAME;
+  store::Item_t                 JS_OBJECT_QNAME;
+  store::Item_t                 JS_ARRAY_QNAME;
+  store::Item_t                 JS_NULL_QNAME;
 #endif
 
 protected:
@@ -275,7 +275,6 @@ public:
   virtual store::Collection_t createCollection(
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
-      const store::Item_t& aNodeType,
       bool isDynamic) = 0;
 
   virtual void addCollection(store::Collection_t& collection);
@@ -420,10 +419,10 @@ public:
 
   // Unregisters a reference to an unused node (upon its destruction in
   // the memory).
-  virtual bool unregisterReferenceToUnusedNode(XmlNode* node) = 0;
+  virtual bool unregisterReferenceToUnusedNode(store::Item* node) = 0;
 
   // Unregisters a reference to a node that was deleted (by XQUF).
-  virtual bool unregisterReferenceToDeletedNode(XmlNode* node) = 0;
+  virtual bool unregisterReferenceToDeletedNode(store::Item* node) = 0;
 
 /*----------------------- Temp Sequence Management ---------------------------*/
 public:

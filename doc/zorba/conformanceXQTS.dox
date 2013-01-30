@@ -1,8 +1,8 @@
 /** \page conformanceXQTS  W3C XQuery 1.0 Conformance
 
-Zorba achieves 99.99% on minimal conformance (and 99.63% on Optional Features) for the W3C XML Query Test Suite.
-Please see the table below for more details.
-
+ In generating the report we used Zorba version 2.5 that can be downloaded from https://launchpad.net/zorba/trunk/2.5 and XQTS version 'current' (XQTS taken from W3C CVS as of 2012-01-12). 
+ Zorba achieves 99.99% on minimal conformance (and 99.81% on Optional Features) for the W3C XML Query Test Suite.            
+Please see the table below for more details. 
 <table bgcolor="lightcyan">
   <tr>
     <td>W3C XQuery 1.0 features</td>
@@ -687,12 +687,12 @@ Please see the table below for more details.
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      Content</td>
     <td align="center" bgcolor="mediumseagreen">126/126</td>
-    <td align="center" bgcolor="mediumseagreen">126/126</td>
+    <td align="center" bgcolor="palegreen">125/126</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      White Space Element Content</td>
     <td align="center" bgcolor="mediumseagreen">83/83</td>
-    <td align="center" bgcolor="mediumseagreen">83/83</td>
+    <td align="center" bgcolor="palegreen">82/83</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">      Other Direct Constructors</td>
@@ -1721,8 +1721,8 @@ Please see the table below for more details.
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    Schema Import</td>
-    <td align="center" bgcolor="palegreen">30/31</td>
-    <td align="center" bgcolor="palegreen">30/31</td>
+    <td align="center" bgcolor="mediumseagreen">31/31</td>
+    <td align="center" bgcolor="mediumseagreen">31/31</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="lightcyan">    FOR Clause with TypeDeclaration</td>

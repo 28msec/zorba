@@ -39,30 +39,46 @@ void initializeTestList()
 {
   libunittests["base64"] = test_base64;
   libunittests["base64_streambuf"] = test_base64_streambuf;
+
+#ifdef ZORBA_WITH_FILE_ACCESS
   libunittests["fs_iterator"] = test_fs_iterator;
+#endif /* ZORBA_WITH_FILE_ACCESS */
+
+  libunittests["hashmaps"] = test_hashmaps;
+
 #ifndef ZORBA_NO_ICU
   libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_ICU */
+
   libunittests["json_parser"] = test_json_parser;
   libunittests["string"] = test_string;
+  libunittests["time_parse"] = test_time_parse;
+
 #ifndef ZORBA_NO_FULL_TEXT
   libunittests["stemmer"] = test_stemmer;
   libunittests["thesaurus"] = test_thesaurus;
   libunittests["tokenizer"] = test_tokenizer;
 #endif /* ZORBA_NO_FULL_TEXT */
+
 #ifndef ZORBA_HAVE_UNIQUE_PTR
   libunittests["unique_ptr"] = test_unique_ptr;
 #endif /* ZORBA_HAVE_UNIQUE_PTR */
+
+  libunittests["utf8_streambuf"] = test_utf8_streambuf;
+  libunittests["uuid"] = test_uuid;
+
 #ifndef ZORBA_HAVE_UNORDERED_MAP
   libunittests["unordered_map"] = test_unordered_map;
 #endif /* ZORBA_HAVE_UNORDERED_MAP */
+
 #ifndef ZORBA_HAVE_UNORDERED_SET
   libunittests["unordered_set"] = test_unordered_set;
 #endif /* ZORBA_HAVE_UNORDERED_SET */
+
   libunittests["uri"] = runUriTest;
 
 #ifdef ZORBA_WITH_DEBUGGER
-//      libunittests["debugger_protocol"] = runDebuggerProtocolTest;
+  // libunittests["debugger_protocol"] = runDebuggerProtocolTest;
 #endif /* ZORBA_WITH_DEBUGGER */
 }
 
@@ -70,7 +86,8 @@ void initializeTestList()
 int runUnitTest(int argc, char* argv[]) 
 {
   // Look up the function pointer for the test based on the first arg
-  if (argc < 1) {
+  if (argc < 1)
+  {
     cerr << "No test name passed to UnitTests::runUnitTest!" << '\n';
     return 240;
   }
@@ -78,7 +95,8 @@ int runUnitTest(int argc, char* argv[])
   initializeTestList();
 
   map<string,libunittestfunc>::iterator iter = libunittests.find(argv[0]);
-  if (iter == libunittests.end()) {
+  if (iter == libunittests.end())
+  {
     cerr << "No registered test matches '" << argv[0] << "'" << '\n';
     return 241;
   }

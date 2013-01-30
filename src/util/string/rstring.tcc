@@ -461,7 +461,7 @@ rstring<Rep>::swap( rstring &s ) {
     s.rep().set_sharable();
 
   if ( get_allocator() == s.get_allocator() ) {
-    rep().swap(s.rep());
+    rep().swap( s.rep() );
   } else {
     rstring const temp1( ibegin(), iend(), s.get_allocator() );
     rstring const temp2( s.ibegin(), s.iend(), get_allocator() );

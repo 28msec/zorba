@@ -174,6 +174,7 @@ public:
   void *begin_visit(const QueryBody &);
   void *begin_visit(const RangeExpr &);
   void *begin_visit(const RelativePathExpr &);
+  void *begin_visit(const BangExpr &);
   void *begin_visit(const StringLiteral &);
   void *begin_visit(const StringConcatExpr &);
   void *begin_visit(const TreatExpr &);
@@ -380,6 +381,7 @@ public:
   void end_visit(const QueryBody&, void *visit_state);
   void end_visit(const RangeExpr&, void *visit_state);
   void end_visit(const RelativePathExpr&, void *visit_state);
+  void end_visit(const BangExpr&, void *visit_state);
   void end_visit(const StringLiteral&, void *visit_state);
   void end_visit(const StringConcatExpr&, void *visit_state);
   void end_visit(const TreatExpr&, void *visit_state);

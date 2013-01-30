@@ -48,7 +48,6 @@ ZORBA_HASHTABLE_CLASS::alloc_node( value_type const &v ) {
   node *const p = node_alloc_.allocate( 1 );
   try {
     node_alloc_.construct( p, v );
-    p->next_ = nullptr;
     return p;
   }
   catch ( ... ) {

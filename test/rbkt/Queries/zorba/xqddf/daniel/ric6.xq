@@ -16,27 +16,48 @@ ic_ddl:activate($xqddf-test:ric1);
 {
 for $i in fn:doc("auction.xml")//item
 return $i/name
-},
+}
+,
 {
 <newline> a
 </newline>
-},
+}
+,
 {
 for $i in fn:doc("auction.xml")//item
 return 
-    {{$i/name},
-    {dml:insert-nodes($xqddf-test:blue-collection, (copy $copyi := $i modify () return $copyi));},
-    {dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));}}
-},
+  {
+    { $i/name }
+    ,
+    { dml:insert-nodes($xqddf-test:blue-collection,
+                       (copy $copyi := $i modify () return $copyi));
+      ()
+    }
+    ,
+    { dml:insert-nodes($xqddf-test:white-collection,
+                       (copy $copyi := $i modify () return $copyi));
+      ()
+    }
+  }
+}
+,
 {
-try{
-    (dml:insert-nodes($xqddf-test:blue-collection, (fn:doc("auction.xml")//item)[@id="item0"]),
-    dml:delete-nodes(dml:collection($xqddf-test:blue-collection)[@id="item0"]));
+try
+{
+  {
+    (dml:insert-nodes($xqddf-test:blue-collection,
+                      (fn:doc("auction.xml")//item)[@id="item0"]),
+
+     dml:delete-nodes(dml:collection($xqddf-test:blue-collection)[@id="item0"]));
+     ()
+   }
 }
-catch * { "
-cannot delete first item in blue collection";
+catch * 
+{ "
+cannot delete first item in blue collection"
 }
-},
+}
+,
 {
 <newline> a
 </newline>

@@ -1,20 +1,25 @@
 module namespace client = "http://pilman.ch/ns/blubb";
 
 declare variable $client:public as xs:string := "public";
+
 declare %private variable $client:oauth-token1 as xs:string := "private token1";
+
 declare %private variable $client:oauth-token2 as xs:string := "private token2"; 
+
 
 declare function client:public()
 {
- $client:public
+  $client:public
 };
+
 
 declare function client:tweets1()
 {
- $client:oauth-token1
+  $client:oauth-token1
 };
+
 
 declare function client:tweets2()
 {
- $client:oauth-token2
+  $client:oauth-token2
 };

@@ -123,7 +123,7 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 ********************************************************************************/
 void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
 {
-  thePlan = udf->getPlan(planState.theCompilerCB, thePlanStateSize).getp();
+  thePlan = udf->getPlan(thePlanStateSize).getp();
 
   thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
@@ -234,7 +234,7 @@ void UDFunctionCallIterator::createCache(
 
     for (csize i = 0; i < numArgs; ++i)
     {
-      lSpec.theKeyTypes[i] = sig[i]->getBaseBuiltinType()->get_qname().getp();
+      lSpec.theKeyTypes[i] = sig[i]->getBaseBuiltinType()->getQName().getp();
     }
 
     lIndex = GENV_STORE.createIndex(theUDF->getName(), lSpec, 0);
@@ -255,33 +255,34 @@ bool UDFunctionCallIterator::probeCache(
     PlanState& planState,
     UDFunctionCallIteratorState* state,
     store::Item_t& result,
-    std::vector<store::Item_t>& aKey) const
+    std::vector<store::Item_t>& argValues) const
 {
   if (!state->theCache)
     return false;
 
-  store::IndexCondition_t lCond =
+  store::IndexCondition_t cond =
   state->theCache->createCondition(store::IndexCondition::POINT_VALUE);
 
-  std::vector<store::Iterator_t>::iterator lIter = state->theArgWrappers.begin();
+  std::vector<store::Iterator_t>::iterator ite = state->theArgWrappers.begin();
 
-  for (; lIter != state->theArgWrappers.end(); ++lIter)
+  for (; ite != state->theArgWrappers.end(); ++ite)
   {
-    store::Iterator_t& argWrapper = (*lIter);
-    store::Item_t lArg;
+    store::Iterator_t& argWrapper = (*ite);
+    store::Item_t argValue;
     if (argWrapper) // might be 0 if argument is not used
     {
-      argWrapper->next(lArg); // guaranteed to have exactly one result
+      argWrapper->next(argValue); // guaranteed to have exactly one result
     }
-    aKey.push_back(lArg);
-    lCond->pushItem(lArg);
+    argValues.push_back(argValue);
+    cond->pushItem(argValue);
   }
 
   store::IndexProbeIterator_t probeIte = 
   GENV_STORE.getIteratorFactory()->createIndexProbeIterator(state->theCache);
 
-  probeIte->init(lCond);
+  probeIte->init(cond);
   probeIte->open();
+
   return probeIte->next(result);
 }
 
@@ -291,15 +292,15 @@ bool UDFunctionCallIterator::probeCache(
 ********************************************************************************/
 void UDFunctionCallIterator::insertCacheEntry(
   UDFunctionCallIteratorState* state,
-  std::vector<store::Item_t>& aKey,
-  store::Item_t& aValue) const
+  std::vector<store::Item_t>& argValues,
+  store::Item_t& udfValue) const
 {
   if (state->theCache)
   {
     std::auto_ptr<store::IndexKey> k(new store::IndexKey());
     store::IndexKey* k2 = k.get();
-    k->theItems = aKey;
-    store::Item_t lTmp = aValue; // insert will eventually transfer the Item_t
+    k->theItems = argValues;
+    store::Item_t lTmp = udfValue; // insert will eventually transfer the Item_t
     if (!state->theCache->insert(k2, lTmp))
     {
       k.release();
@@ -447,31 +448,34 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
       for (size_t i = 0; i < argsRefs.size(); ++i)
       {
-        const ArgVarRefs& argVarRefs = argsRefs[i];
-        store::Iterator_t argWrapper;
-        if (state->theCache)
+        if (argWraps[i] != NULL)
         {
-          std::vector<store::Item_t> lParam(1, lKey[i]);
-          state->theArgValues.push_back(GENV_STORE.createTempSeq(lParam));
-          argWrapper = state->theArgValues.back()->getIterator();
-          argWrapper->open();
-        }
-        else
-        {
-          argWrapper = argWraps[i];
-        }
-
-        ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
-        ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
-
-        for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
-        {
-          const LetVarIter_t& argRef = (*argVarRefsIte);
-          assert(argRef != NULL);
-
-          if (argRef != NULL)
+          const ArgVarRefs& argVarRefs = argsRefs[i];
+          store::Iterator_t argWrapper;
+          if (state->theCache)
           {
-            argRef->bind(argWrapper, *state->thePlanState);
+            std::vector<store::Item_t> lParam(1, lKey[i]);
+            state->theArgValues.push_back(GENV_STORE.createTempSeq(lParam));
+            argWrapper = state->theArgValues.back()->getIterator();
+            argWrapper->open();
+          }
+          else
+          {
+            argWrapper = argWraps[i];
+          }
+
+          ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
+          ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
+
+          for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
+          {
+            const LetVarIter_t& argRef = (*argVarRefsIte);
+            assert(argRef != NULL);
+            
+            if (argRef != NULL)
+            {
+              argRef->bind(argWrapper, *state->thePlanState);
+            }
           }
         }
       }
@@ -707,7 +711,7 @@ void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
         throw ZORBA_EXCEPTION(
           zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY,
           ERROR_PARAMS(
-                ZED( NoExternalFunction ),
+                ZED( NoExternalFunction_2 ),
                 BUILD_STRING( '{', theNamespace, '}', lLocalname )
                 )
         );

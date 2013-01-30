@@ -42,8 +42,10 @@
 
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/hashmap_itemp.h"
+#include "zorbautils/checked_vector.h"
 
 #include "common/shared_types.h"
+
 #include "util/stl_util.h"
 #include "util/auto_vector.h"
 
@@ -137,9 +139,7 @@ struct FunctionInfo : public ::zorba::serialization::SerializeBaseClass
 
 public:
   SERIALIZABLE_CLASS(FunctionInfo)
-
   FunctionInfo(::zorba::serialization::Archiver& ar);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -151,13 +151,75 @@ public:
 };
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
+class VarInfo : public SimpleRCObject
+{
+protected:
+  store::Item_t  theName;
+
+  ulong          theId;
+
+  int            theKind;
+
+  xqtref_t       theType;
+
+  bool           theIsExternal;
+
+  bool           theHasInitializer;
+
+  var_expr     * theVarExpr;
+
+public:
+  SERIALIZABLE_CLASS(VarInfo)
+  VarInfo(::zorba::serialization::Archiver& ar);
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  VarInfo();
+
+  VarInfo(var_expr* v);
+
+  ~VarInfo();
+
+  const store::Item_t& getName() const { return theName; }
+
+  ulong getId() const { return theId; }
+
+  void setId(ulong id) { theId = id; }
+
+  int getKind() const { return theKind; }
+
+  const XQType* getType() const { return theType.getp(); }
+
+  void setType(const xqtref_t& t);
+
+  bool isExternal() const { return theIsExternal; }
+
+  void setIsExternal(bool v) { theIsExternal = v; }
+
+  bool hasInitializer() const { return theHasInitializer; }
+
+  void setHasInitializer(bool v) { theHasInitializer = v; }
+
+  var_expr* getVar() const { return theVarExpr; }
+
+  void clearVar() { theVarExpr = NULL; }
+};
+
+
+typedef rchandle<VarInfo> VarInfo_t;
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 struct PrologOption : public ::zorba::serialization::SerializeBaseClass
 {
-  store::Item_t    theName;
-  zstring theValue;
+  store::Item_t  theName;
+  zstring        theValue;
 
 public:
   SERIALIZABLE_CLASS(PrologOption)
@@ -378,7 +440,6 @@ public:
   Feature flags that are used when a particular feature (e.g. scripting
   or ddl) is enabled. The definition of the features is located in
   context/featueres.h.
-
 ********************************************************************************/
 
 class static_context : public SimpleRCObject
@@ -389,7 +450,7 @@ class static_context : public SimpleRCObject
 
   ITEM_PTR_HASH_MAP(ValueIC_t, ICMap);
 
-  ITEM_PTR_HASH_MAP(var_expr_t, VariableMap);
+  ITEM_PTR_HASH_MAP(VarInfo_t, VariableMap);
 
   ITEM_PTR_HASH_MAP(FunctionInfo, FunctionMap);
 
@@ -453,6 +514,7 @@ public:
   static const char* ZORBA_JSON_FN_NS;
 
   static const char* ZORBA_NODEREF_FN_NS;
+  static const char* ZORBA_REFERENCE_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
@@ -466,7 +528,7 @@ public:
   static const char* ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
 
 #ifdef ZORBA_WITH_JSON
-  static const char* JSONIQ_NS;
+  static const char* JSONIQ_DM_NS;
   static const char* JSONIQ_FN_NS;
 #endif
 
@@ -485,6 +547,7 @@ public:
 #ifndef ZORBA_NO_FULL_TEXT
   static const char* ZORBA_FULL_TEXT_FN_NS;
 #endif /* ZORBA_NO_FULL_TEXT */
+  static const char* ZORBA_DATETIME_FN_NS;
   static const char* ZORBA_XML_FN_OPTIONS_NS;
 
   // Namespaces of virtual modules declaring zorba builtin functions
@@ -501,6 +564,7 @@ public:
   static const char* ZORBA_OPTION_WARN_NS;
   static const char* ZORBA_OPTION_FEATURE_NS;
   static const char* ZORBA_OPTION_OPTIM_NS;
+  static const char* XQUERY_OPTION_NS;
   static const char* ZORBA_VERSIONING_NS;
 
 protected:
@@ -508,7 +572,7 @@ protected:
 
   std::ostream                          * theTraceStream;
 
-  expr_t                                  theQueryExpr;
+  expr*                                  theQueryExpr;
 
   std::string                             theModuleNamespace;
 
@@ -574,9 +638,9 @@ protected:
 
   StaticContextConsts::construction_mode_t   theConstructionMode;
 
-  StaticContextConsts::inherit_mode_t        theInheritMode;
+  bool                                       theInheritNamespaces;
 
-  StaticContextConsts::preserve_mode_t       thePreserveMode;
+  bool                                       thePreserveNamespaces;
 
   StaticContextConsts::ordering_mode_t       theOrderingMode;
 
@@ -618,8 +682,6 @@ public:
 
   void serialize(serialization::Archiver& ar);
 
-  void prepare_for_serialize(CompilerCB *compiler_cb);
-
 public:
   static_context(::zorba::serialization::Archiver& ar);
 
@@ -631,9 +693,9 @@ public:
 
   bool is_global_root_sctx() const;
 
-  expr_t get_query_expr() const;
+  expr* get_query_expr() const;
 
-  void set_query_expr(expr_t expr);
+  void set_query_expr(expr* expr);
 
   void set_trace_stream(std::ostream&);
 
@@ -668,13 +730,11 @@ public:
 
   void compute_base_uri();
 
-  zstring
-  resolve_relative_uri(
+  zstring resolve_relative_uri(
       const zstring& aUri,
       bool aValidate = true) const;
 
-  zstring
-  resolve_relative_uri(
+  zstring resolve_relative_uri(
       const zstring&  aRelativeUri,
       const zstring&  aBaseUri,
       bool            validate = true) const;
@@ -699,33 +759,39 @@ public:
    * Given a URI, return a Resource for that URI.
    * @param aEntityKind the expected kind of entity expected at this aUri
    */
-  std::auto_ptr<internal::Resource> resolve_uri
-  (zstring const& aUri, internal::EntityData::Kind aEntityKind, zstring& oErrorMessage) const;
+  std::auto_ptr<internal::Resource> resolve_uri(
+      const zstring& aUri,
+      internal::EntityData::Kind aEntityKind,
+      zstring& oErrorMessage) const;
 
   /**
    * Given a URI, return a Resource for that URI.
    * @param aEntityData an EntityData object to pass to the mappers/resolvers.
    */
-  std::auto_ptr<internal::Resource> resolve_uri
-  (zstring const& aUri, internal::EntityData const& aEntityData, zstring& oErrorMessage) const;
+  std::auto_ptr<internal::Resource> resolve_uri(
+      const zstring& aUri,
+      const internal::EntityData& aEntityData,
+      zstring& oErrorMessage) const;
 
   /**
    * Given a URI, populate a vector with a list of component URIs.  If
    * no component URIs are available, the vector will be populated
    * with (only) the input URI.
    */
-  void get_component_uris
-  (zstring const& aUri, internal::EntityData::Kind aEntityKind,
-    std::vector<zstring>& oComponents) const;
+  void get_component_uris(
+      const zstring& aUri,
+      internal::EntityData::Kind aEntityKind,
+      std::vector<zstring>& oComponents) const;
 
   /**
    * Given a URI, populate a vector with a list of candidate URIs.  If
    * no candidate URIs are available, the vector will be populated
    * with (only) the input URI.
    */
-  void get_candidate_uris
-  (zstring const& aUri, internal::EntityData::Kind aEntityKind,
-    std::vector<zstring>& oComponents) const;
+  void get_candidate_uris(
+      const zstring& aUri,
+      internal::EntityData::Kind aEntityKind,
+      std::vector<zstring>& oComponents) const;
 
   void set_uri_path(const std::vector<zstring>& aURIPath);
 
@@ -789,14 +855,13 @@ public:
   void bind_ns(
         const zstring& prefix,
         const zstring& ns,
-        const QueryLoc& loc,
-        const Error& err = err::XQST0033);
+        const QueryLoc& loc);
 
   bool lookup_ns(
         zstring& ns,
         const zstring& prefix,
         const QueryLoc& loc,
-        const Error& err = err::XPST0081) const;
+        bool raiseError = true) const;
 
   void expand_qname(
         store::Item_t& qname,
@@ -810,21 +875,15 @@ public:
   //
   // Variables
   //
-  void bind_var(
-        var_expr_t& expr,
-        const QueryLoc& loc,
-        const Error& err);
+  void bind_var(var_expr* expr, const QueryLoc& loc);
 
-  var_expr* lookup_var(
-        const store::Item* qname,
-        const QueryLoc& loc,
-        const Error& err) const;
+  VarInfo* lookup_var(const store::Item* qname) const;
 
   void getVariables(
-    std::vector<var_expr_t>& variableList,
-    bool localsOnly = false,
-    bool returnPrivateVars = false,
-    bool externalVarsOnly = false) const;
+      std::vector<VarInfo*>& variableList,
+      bool localsOnly = false,
+      bool returnPrivateVars = false,
+      bool externalVarsOnly = false) const;
 
   void set_context_item_type(const xqtref_t& t, const QueryLoc& loc);
 
@@ -898,6 +957,8 @@ public:
 
   IndexDecl* lookup_index(const store::Item* qname) const;
 
+  void get_index_decls(std::vector<IndexDecl*>& decls) const;
+
   store::Iterator_t index_names() const;
 
 
@@ -928,7 +989,6 @@ public:
 
   void get_collations(std::vector<std::string>& collations) const;
 
-
   //
   // Options
   //
@@ -938,6 +998,8 @@ public:
       const QueryLoc& loc);
 
   bool lookup_option(const store::Item* qname, zstring& option) const;
+
+  bool is_feature_set(feature::kind k) const { return (theFeatures & k) != 0; }
 
 protected:
   void process_feature_option(
@@ -959,8 +1021,11 @@ protected:
   parse_and_expand_qname(
       const zstring& value,
       const char* default_ns,
-      const QueryLoc& loc
-    ) const;
+      const QueryLoc& loc) const;
+
+  void set_feature(feature::kind k) { theFeatures |= k; }
+
+  void unset_feature(feature::kind k) { theFeatures &= ~k; }
 
 public:
 
@@ -987,13 +1052,13 @@ public:
 
   void set_construction_mode(StaticContextConsts::construction_mode_t v);
 
-  StaticContextConsts::inherit_mode_t inherit_mode() const;
+  bool inherit_ns() const;
 
-  void set_inherit_mode(StaticContextConsts::inherit_mode_t v);
+  void set_inherit_ns(bool v);
 
-  StaticContextConsts::preserve_mode_t preserve_mode() const;
+  bool preserve_ns() const;
 
-  void set_preserve_mode(StaticContextConsts::preserve_mode_t v);
+  void set_preserve_ns(bool);
 
   StaticContextConsts::ordering_mode_t ordering_mode() const;
 
@@ -1018,19 +1083,15 @@ public:
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
 
 #ifndef ZORBA_NO_FULL_TEXT
-  ftmatch_options const* get_match_options() const {
-    return theFTMatchOptions;
-  }
+  ftmatch_options const* get_match_options() const { return theFTMatchOptions; }
 
-  void set_match_options( ftmatch_options *mo ) {
-    theFTMatchOptions = mo;
-  }
+  void set_match_options(ftmatch_options* mo) { theFTMatchOptions = mo; }
 #endif /* ZORBA_NO_FULL_TEXT */
 
   //
   // Merge in the static context of a module
   //
-  void import_module (const static_context* module, const QueryLoc& loc);
+  void import_module(const static_context* module, const QueryLoc& loc);
 
   //
   // Warnings
@@ -1064,32 +1125,17 @@ protected:
 
 private:
 
-  void apply_uri_mappers(zstring const& aUri,
-    internal::EntityData const* aEntityData,
-    internal::URIMapper::Kind aMapperKind,
-    std::vector<zstring>& oUris) const;
-
-  void apply_url_resolvers(std::vector<zstring>& aUrls,
-    internal::EntityData const* aEntityData,
-    std::auto_ptr<internal::Resource>& oResource,
-    zstring& oErrorMessage) const;
-
-public:
-  bool is_feature_set( feature::kind k ) const
-  {
-    return (theFeatures & k) != 0;
-  }
-
-  void set_feature( feature::kind k )
-  {
-    theFeatures |= k;
-  }
-
-  void unset_feature( feature::kind k )
-  {
-    theFeatures &= ~k;
-  }
-
+  void apply_uri_mappers(
+      zstring const& aUri,
+      internal::EntityData const* aEntityData,
+      internal::URIMapper::Kind aMapperKind,
+      std::vector<zstring>& oUris) const;
+  
+  void apply_url_resolvers(
+      std::vector<zstring>& aUrls,
+      internal::EntityData const* aEntityData,
+      std::auto_ptr<internal::Resource>& oResource,
+      zstring& oErrorMessage) const;
 };
 
 

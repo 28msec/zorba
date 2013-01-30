@@ -25,6 +25,7 @@
 #include <cassert>
 #include <stdexcept>
 
+#include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
 
 #include "diagnostics/assert.h"
@@ -57,7 +58,7 @@ inline void icu_streambuf::resetg() {
 }
 
 icu_streambuf::icu_streambuf( char const *charset, streambuf *orig ) :
-  proxy_streambuf( orig ),
+  internal::proxy_streambuf( orig ),
   no_conv_( !is_necessary( charset ) ),
   external_conv_( no_conv_ ? nullptr : create_conv( charset ) ),
   utf8_conv_( no_conv_ ? nullptr : create_conv( "UTF-8" ) )
@@ -150,7 +151,7 @@ int icu_streambuf::sync() {
 }
 
 icu_streambuf::int_type icu_streambuf::overflow( int_type c ) {
-#if ZORBA_DEBUG_ICU_STREAMBUF
+#ifdef ZORBA_DEBUG_ICU_STREAMBUF
   printf( "overflow()\n" );
 #endif
   if ( no_conv_ )
@@ -176,6 +177,16 @@ icu_streambuf::int_type icu_streambuf::overflow( int_type c ) {
 
   return c;
 }
+
+#ifdef __GNUC__
+# ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
+#   pragma GCC diagnostic push
+# endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+//
+// Disables warnings about p.pivot_buf_ + sizeof p.pivot_buf_.
+//
+# pragma GCC diagnostic ignored "-Warray-bounds"
+#endif /* __GNUC__ */
 
 bool icu_streambuf::to_external( char_type const **from,
                                  char_type const *from_end, char **to,
@@ -215,8 +226,14 @@ bool icu_streambuf::to_utf8( char const **from, char const *from_end,
   return true;
 }
 
+#ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
+# pragma GCC diagnostic pop
+#else
+# pragma GCC diagnostic warning "-Warray-bounds"
+#endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+
 icu_streambuf::int_type icu_streambuf::underflow() {
-#if ZORBA_DEBUG_ICU_STREAMBUF
+#ifdef ZORBA_DEBUG_ICU_STREAMBUF
   printf( "underflow()\n" );
 #endif
   if ( no_conv_ )
@@ -246,7 +263,7 @@ icu_streambuf::int_type icu_streambuf::underflow() {
 }
 
 streamsize icu_streambuf::xsgetn( char_type *to, streamsize size ) {
-#if ZORBA_DEBUG_ICU_STREAMBUF
+#ifdef ZORBA_DEBUG_ICU_STREAMBUF
   printf( "xsgetn()\n" );
 #endif
   if ( no_conv_ )
@@ -284,7 +301,7 @@ streamsize icu_streambuf::xsgetn( char_type *to, streamsize size ) {
 }
 
 streamsize icu_streambuf::xsputn( char_type const *from, streamsize size ) {
-#if ZORBA_DEBUG_ICU_STREAMBUF
+#ifdef ZORBA_DEBUG_ICU_STREAMBUF
   printf( "xsputn()\n" );
 #endif
   if ( no_conv_ )

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@
 #include "compiler/rewriter/rules/rule_base.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 
@@ -41,15 +41,9 @@ PREPOST_RULE(SpecializeOperations);
 
 PREPOST_RULE(EliminateTypeEnforcingOperations);
 
-PREPOST_RULE(EliminateUnusedLetVars);
-
 PREPOST_RULE(RefactorPredFLWOR);
 
-PREPOST_RULE(MergeFLWOR);
-
 PREPOST_RULE(EliminateExtraneousPathSteps);
-
-PREPOST_RULE(MarkFreeVars);
 
 PREPOST_RULE(InlineFunctions);
 
@@ -59,111 +53,185 @@ PREPOST_RULE(PartialEval);
 /*******************************************************************************
 
 ********************************************************************************/
-class FoldConst : public PrePostRewriteRule 
+class EliminateUnusedLetVars : public PrePostRewriteRule
 {
 protected:
-  bool  theFoldExpensiveOps;
+  flwor_expr           * theFlwor;
+  std::vector<expr**>    theRefs;
 
-public:     
-  FoldConst(bool fold_expensive_ops) 
+public:
+  EliminateUnusedLetVars()
     :
-    PrePostRewriteRule(RewriteRule::FoldConst, "FoldConst"),
-    theFoldExpensiveOps(fold_expensive_ops)
+    PrePostRewriteRule(RewriteRule::EliminateUnusedLetVars, "EliminateUnusedLetVars"),
+    theFlwor(NULL)
   {
+    theRefs.reserve(32);
   }
 
 protected:
-  expr_t rewritePre(expr* node, RewriterContext& rCtx);
+  expr* rewritePre(expr* node, RewriterContext& rCtx);
 
-  expr_t rewritePost(expr* node, RewriterContext& rCtx);
+  expr* rewritePost(expr* node, RewriterContext& rCtx);
+
+  bool safe_to_fold_var(csize varPos, int& numRefs);
+
+  bool safe_to_fold_var_rec(
+      expr* node,
+      csize varPos,
+      var_expr* var,
+      bool unsafe,
+      bool isSafeVar,
+      int& numRefs);
+
+  void subst_vars(
+      const RewriterContext& rCtx,
+      var_expr* var,
+      expr* subst,
+      int numRefs);
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class MarkExprs : public RewriteRule 
+class MergeFLWOR : public RewriteRule
 {
 public:
-  MarkExprs() : RewriteRule(RewriteRule::MarkExprs, "MarkExprs") {}
+  MergeFLWOR()
+    :
+    RewriteRule(RewriteRule::MergeFLWOR, "MergeFLWOR")
+  {
+  }
 
-  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class MarkConsumerNodeProps : public RewriteRule 
+class FoldConst : public RewriteRule
 {
 public:
-  MarkConsumerNodeProps() 
+  FoldConst()
+    :
+    RewriteRule(RewriteRule::FoldConst, "FoldConst")
+  {
+  }
+
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class MarkExprs : public RewriteRule
+{
+protected:
+  bool theIsLocal;
+
+public:
+  MarkExprs(bool local = false)
+    :
+    RewriteRule(RewriteRule::MarkExprs, "MarkExprs"),
+    theIsLocal(local)
+  {
+  }
+
+  void setLocal(bool v) { theIsLocal = v; }
+
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class MarkFreeVars : public RewriteRule
+{
+public:
+  MarkFreeVars()
+    :
+    RewriteRule(RewriteRule::MarkFreeVars, "MarkFreeVars")
+  {
+  }
+
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class MarkConsumerNodeProps : public RewriteRule
+{
+public:
+  MarkConsumerNodeProps()
     :
     RewriteRule(RewriteRule::MarkConsumerNodeProps, "MarkConsumerNodeProps")
   {
   }
 
-  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class MarkProducerNodeProps : public RewriteRule 
+class MarkProducerNodeProps : public RewriteRule
 {
 public:
-  MarkProducerNodeProps() 
+  MarkProducerNodeProps()
     :
     RewriteRule(RewriteRule::MarkProducerNodeProps, "MarkProducerNodeProps")
   {
   }
 
-  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class MarkNodeCopyProps : public RewriteRule 
+class MarkNodeCopyProps : public RewriteRule
 {
-  typedef std::set<fo_expr*> UdfCalls;
-  //typedef std::vector<fo_expr*> UdfCalls;
+  typedef std::set<user_function*> UdfSet;
 
 protected:
   SourceFinder   * theSourceFinder;
 
-  UdfCalls         theProcessedUDFCalls;
-  //UdfCalls       theUdfCallPath;
+  UdfSet           theProcessedUDFs;
 
 public:
-  MarkNodeCopyProps() 
+  MarkNodeCopyProps()
     :
     RewriteRule(RewriteRule::MarkNodeCopyProps, "MarkNodeCopyProps")
   {
   }
 
-  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 
 protected:
-  void applyInternal(RewriterContext& rCtx, expr* node, UDFCallChain& udfCaller);
+  void applyInternal(expr* node, bool deferred);
 
   void markSources(const std::vector<expr*>& sources);
 
-  void markForSerialization(expr* node);
+  void findSourcesForNodeExtractors(expr* node);
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class HoistRule : public RewriteRule 
+class HoistRule : public RewriteRule
 {
 public:
   HoistRule() : RewriteRule(RewriteRule::IndexJoin, "Hoist") {}
 
-  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 
@@ -171,12 +239,12 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class IndexJoinRule : public RewriteRule 
+class IndexJoinRule : public RewriteRule
 {
 public:
   IndexJoinRule() : RewriteRule(RewriteRule::IndexJoin, "IndexJoin") {}
 
-  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 

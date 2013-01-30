@@ -10,29 +10,40 @@ ic_ddl:activate($xqddf-test:dic1);
 {
 <newline>
 </newline>
-},
-
+}
+,
 {
-for $i in fn:doc("auction.xml")//item
-return $i/name
-},
-{
-<newline> a
-</newline>
-},
-{
-for $i in fn:doc("auction.xml")//item
-return 
-    {{$i/name},
-    {dml:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));}}
-},
+  for $i in fn:doc("auction.xml")//item
+  return $i/name
+}
+,
 {
 <newline> a
 </newline>
-},
+}
+,
 {
-dml:delete-nodes(dml:collection($xqddf-test:white-collection)[1]);
-},
+  for $i in fn:doc("auction.xml")//item
+  return 
+  {
+    { $i/name },
+    { dml:insert-nodes($xqddf-test:white-collection,
+                       (copy $copyi := $i modify () return $copyi));
+      ()
+    }
+  }
+}
+,
 {
-dml:collection($xqddf-test:white-collection)/name
+<newline> a
+</newline>
+}
+,
+{
+  dml:delete-nodes(dml:collection($xqddf-test:white-collection)[1]);
+  ()
+}
+,
+{
+  dml:collection($xqddf-test:white-collection)/name
 }

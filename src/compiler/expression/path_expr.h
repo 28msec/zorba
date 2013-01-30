@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@
 #include "zorbatypes/zstring.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 class match_expr;
@@ -31,7 +31,7 @@ class match_expr;
 
 /*******************************************************************************
 
-  PathExpr ::= 	("/" RelativePathExpr?) |
+  PathExpr ::=  ("/" RelativePathExpr?) |
                 ("//" RelativePathExpr) |
                 RelativePathExpr
 
@@ -49,34 +49,38 @@ class match_expr;
  RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 
 ********************************************************************************/
-class relpath_expr : public expr 
+class relpath_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
-  std::vector<expr_t> theSteps;
+  std::vector<expr*> theSteps;
+
+protected:
+  relpath_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc);
 
 public:
-  relpath_expr(static_context* sctx, const QueryLoc& loc);
+  size_t size() const { return theSteps.size(); }
 
-	size_t size() const { return theSteps.size(); }
-
-	void add_back(expr_t step);
+  void add_back(expr* step);
 
   void erase(csize i) { theSteps.erase(theSteps.begin() + i); }
 
   csize numSteps() const { return theSteps.size(); }
 
-  expr* operator[](csize n) const { return theSteps[n].getp(); }
+  expr* operator[](csize n) const { return theSteps[n]; }
 
-  std::vector<expr_t>::const_iterator begin() const { return theSteps.begin(); }
+  std::vector<expr*>::const_iterator begin() const { return theSteps.begin(); }
 
-  std::vector<expr_t>::const_iterator end() const { return theSteps.end(); }
+  std::vector<expr*>::const_iterator end() const { return theSteps.end(); }
 
   void compute_scripting_kind();
-
-  expr_t clone(substitution_t &) const;
 
   void accept(expr_visitor&);
 
@@ -96,22 +100,28 @@ public:
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
-class axis_step_expr : public expr 
+class axis_step_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   axis_kind_t             theAxis;
   bool                    theReverseOrder;
-  expr_t                  theNodeTest;
+  expr                  * theNodeTest;
 
 public:
   static bool is_reverse_axis(axis_kind_t kind);
 
-public:
-  axis_step_expr(static_context* sctx, const QueryLoc&);
+protected:
+  axis_step_expr(
+     CompilerCB* ccb,
+     static_context* sctx,
+     user_function* udf,
+     const QueryLoc&);
 
+public:
   axis_kind_t getAxis() const { return theAxis; }
 
   void setAxis(axis_kind_t v) { theAxis = v; }
@@ -122,16 +132,14 @@ public:
 
   bool is_reverse_axis() const { return is_reverse_axis(getAxis()); }
 
-  match_expr* getTest() const 
+  match_expr* getTest() const
   {
-    return reinterpret_cast<match_expr*>(theNodeTest.getp());
+    return reinterpret_cast<match_expr*>(theNodeTest);
   }
 
-  void setTest(rchandle<match_expr> v) { theNodeTest = v.getp(); }
+  void setTest(match_expr* v);
 
   void compute_scripting_kind();
-
-  expr_t clone(substitution_t &) const;
 
   void accept(expr_visitor&);
 
@@ -151,14 +159,31 @@ public:
                      PITest | CommentTest | TextTest | AnyKindTest
 
   If a match_expr represents a KindTest, then theWildKind and theWildName data
-  members are not used. If a match_expr represents a NameTest, then theTypeName
-  and theNilledAllowed data members are not used.
+  members are not used. 
 
+  If a match_expr represents a NameTest, then theTypeName and theNilledAllowed
+  data members are not used. In this case, theWildKind is used to distinguish
+  among 4 subcases:
+
+  1. no wildcard: 
+     theQName holds the expanded qname to match against an element or attribute
+     node. theWildName is not used.
+
+  2. full wildcard (*):
+     Neither theQName nor theWildName are used.
+
+  3. localname wildcard (pre:*):
+     theQName holds an artificial qname: "ns:wildcard", where ns is the URI
+     associated with pre. theWildName holds the pre.
+
+  4. prefix wildcard (*:name):
+     theQName is not used and theWildName holds the local name.
 ********************************************************************************/
-class match_expr : public expr 
+class match_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
+  friend class ExprManager;
 
 protected:
   match_test_t      theTestKind;
@@ -168,12 +193,18 @@ protected:
   zstring           theWildName;
 
   store::Item_t     theQName;
+
   store::Item_t     theTypeName;
   bool              theNilledAllowed;
 
-public:
-  match_expr(static_context* sctx, const QueryLoc&);
+protected:
+  match_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&);
 
+public:
   match_test_t getTestKind() const { return theTestKind; }
 
   void setTestKind(enum match_test_t v) { theTestKind = v; }
@@ -188,8 +219,7 @@ public:
 
   const zstring& getWildName() const { return theWildName; }
 
-  template<class StringType>
-  void setWildName(const StringType& v) { theWildName = v; } 
+  void setWildName(const zstring& v) { theWildName = v; }
 
   store::Item* getQName() const { return theQName.getp(); }
 
@@ -207,7 +237,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t &) const;
+  bool matches(const match_expr* other) const;
 
   void accept(expr_visitor&);
 

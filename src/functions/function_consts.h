@@ -52,8 +52,10 @@ typedef enum
   FN_ZORBA_INVOKE_S_N,
 
   FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N,
+  FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N,
   FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N,
   FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N,
+  FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N,
   FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N,
   OP_CREATE_INTERNAL_INDEX_2,
   FN_ZORBA_XQDDF_CREATE_INDEX_1,
@@ -229,7 +231,7 @@ typedef enum
   OP_UNHOIST_1,
 
 #ifdef ZORBA_WITH_JSON
-  OP_OBJECT_INSERT_N,
+  JN_OBJECT_1,
 #endif
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -259,15 +261,18 @@ typedef enum
 
 typedef enum
 {
-  DoDistinct    = 1,   // Used by fn:zore-or-one and fn:exaclty-one
-  SkipCodeGen   = 2,
-  isDeterministic = 4,
-  isPrivate = 8,
-  isBuiltin = 16,
-  isUDF = 32,
+  DoDistinct           = 1,   // Used by fn:zore-or-one and fn:exaclty-one
+  SkipCodeGen          = 2,
+  isDeterministic      = 4,
+  isPrivate            = 8,
+  isBuiltin            = 16,
+  isUDF                = 32,
   propagatesInputNodes = 64,
-  mustCopyInputNodes = 128,
-  AccessesDynCtx = 256
+  mustCopyInputNodes   = 128,
+  AccessesDynCtx       = 256,
+  ConstructsNodes      = 512,
+  DereferencesNodes    = 1024,
+  IsComparison         = 2048
 } AnnotationFlags;
 
 };

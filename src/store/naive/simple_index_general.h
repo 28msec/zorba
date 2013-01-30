@@ -220,14 +220,25 @@ class GeneralHashIndex : public GeneralIndex
 
   typedef IndexMap::iterator EntryIterator;
 
+  /*
+   * This iterator iterates over all index keys from all types
+   */
   class KeyIterator : public Index::KeyIterator
   {
+  protected:
+    IndexMap::iterator     theIterator;
+    IndexMap* const*       theMaps;
+    ulong                  theCurType;
   public:
+    KeyIterator(IndexMap* const* aMaps);
     ~KeyIterator();
 
     void open();
     bool next(store::IndexKey&);
     void close();
+
+  private:
+    void setNextIter();
   };
 
   typedef rchandle<KeyIterator> KeyIterator_t;
@@ -449,7 +460,7 @@ protected:
       bool haveUpper) const;
 
 public:
-  void init(const store::IndexCondition_t& cond);
+  void init(const store::IndexCondition_t& cond, const xs_integer& aSkip);
 
   void open();
 

@@ -306,6 +306,12 @@ protected:
         void * ctx,
         const xmlChar * target,
         const xmlChar * data);
+  
+  static void internalSubset(
+        void *ctx,
+        const xmlChar *name,
+        const xmlChar *ExternalID,
+        const xmlChar *SystemID);
 
 protected:
   FragmentIStream* theFragmentStream;

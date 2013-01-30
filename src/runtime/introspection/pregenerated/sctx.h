@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@
 
 
 #include "runtime/base/narybase.h"
+#include "context/static_context.h"
 
 
 namespace zorba {
@@ -216,8 +217,8 @@ public:
 class InscopeVariablesIteratorState : public PlanIteratorState
 {
 public:
-  std::vector<var_expr_t> theVariables; //vector of variables
-  ulong thePosition; //current position
+  std::vector<VarInfo*> theVariables; //vector of variables
+  csize thePosition; //current position
 
   InscopeVariablesIteratorState();
 

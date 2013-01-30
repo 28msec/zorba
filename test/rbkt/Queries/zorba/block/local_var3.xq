@@ -11,7 +11,7 @@ declare %ann:sequential function local:f($n)
   for $i in (1, 2)
   return
     {
-      variable $dummy := {$x := $i + $y; };
+      variable $dummy := { $x := $i + $y; () };
       $x
     }
 };
@@ -20,7 +20,7 @@ declare %ann:sequential function local:f($n)
 for $i in (10, 20, 30)
 return
   {
-    variable $dummy := { $result := local:f($i); };
+    variable $dummy := { $result := local:f($i); () };
     $result
   }
 

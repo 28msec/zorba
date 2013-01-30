@@ -1,6 +1,6 @@
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="x">
+  <CtxVarDeclareIterator varid="4" varname="x">
     <SingletonIterator value="xs:integer(1)"/>
   </CtxVarDeclareIterator>
   <UDFunctionCallIterator>
@@ -31,11 +31,7 @@ Iterator tree for main query:
         </ElementIterator>
       </DescendantAxisIterator>
     </ChildAxisIterator>
-    <PromoteIterator type="xs:integer">
-      <FnDataIterator>
-        <CtxVarIterator varid="2" varname="x" varkind="global"/>
-      </FnDataIterator>
-    </PromoteIterator>
+    <CtxVarIterator varid="4" varname="x" varkind="global"/>
   </UDFunctionCallIterator>
 </SequentialIterator>
 

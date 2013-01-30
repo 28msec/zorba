@@ -346,6 +346,7 @@ class ProbeIndexPointValueIterator
 protected:
   bool theCheckKeyType;
   bool theCountOnly;
+  bool theSkip;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexPointValueIterator);
@@ -359,9 +360,13 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children,
-        bool aCountOnly = false);
+        bool aCountOnly,
+        bool aSkip);
 
   ~ProbeIndexPointValueIterator();
+
+  bool isCountOnly() const { return theCountOnly; }
+  bool hasSkip() const { return theSkip; }
 
   void accept(PlanIterVisitor& v) const;
 
@@ -469,6 +474,7 @@ public NaryBaseIterator<ProbeIndexRangeValueIterator,
 protected:
   bool theCheckKeyType;
   bool theCountOnly;
+  bool theSkip;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexRangeValueIterator);
@@ -483,9 +489,13 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
-      bool aCountOnly = false);
+      bool aCountOnly,
+      bool aSkip);
 
   ~ProbeIndexRangeValueIterator();
+
+  bool isCountOnly() const { return theCountOnly; }
+  bool hasSkip() const { return theSkip; }
 
   void accept(PlanIterVisitor& v) const;
 

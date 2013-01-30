@@ -19,16 +19,16 @@
 
 #include "compiler/expression/expr_base.h"
 
-namespace zorba 
+namespace zorba
 {
 
 class flwor_clause;
 class forletwin_clause;
-class for_clause;
+class forlet_clause;
 class copy_clause;
 class var_expr;
-
-typedef rchandle<var_expr> var_expr_t;
+class VarInfo;
+class var_set_expr;
 
 
 /******************************************************************************
@@ -76,7 +76,7 @@ typedef rchandle<var_expr> var_expr_t;
 
   theFlworClause:
   ---------------
-  If this is a var declared in flwor clause, theFlworClause points to the 
+  If this is a var declared in flwor clause, theFlworClause points to the
   defining clause. That clause also contains the defining expr for the var
   and a pointer back to this var_exr.
 
@@ -88,12 +88,8 @@ typedef rchandle<var_expr> var_expr_t;
 
   theParamPos:
   ------------
-  For arg vars, it is the position, within the param list, of parameter that is
-  bound to this arg var.
-  
-  theUDF:
-  -------
-  For arg vars, the corresponding UDF.
+  For arg vars, it is the position, within the param list, of the parameter that
+  is bound to this arg var.
 
   theSetExprs:
   ------------
@@ -119,17 +115,22 @@ typedef rchandle<var_expr> var_expr_t;
 class var_expr : public expr
 {
   friend class expr;
+  friend class ExprManager;
 
 public:
+  typedef std::vector<var_set_expr*> VarSetExprs;
+
   enum var_kind
   {
-    eval_var = 0,
+    unknown_var = 0,
+
+    eval_var,  // TODO: remove (it is used only in the debugger_expr)
 
     for_var,
     let_var,
     pos_var,
-    win_var,
     score_var,
+    win_var,
     wincond_out_var,
     wincond_out_pos_var,
     wincond_in_var,
@@ -146,9 +147,7 @@ public:
 
     local_var,
 
-    arg_var,
-
-    unknown_var  // TODO: get rid
+    arg_var
   };
 
 protected:
@@ -166,38 +165,42 @@ protected:
 
   csize                 theParamPos;
 
-  user_function       * theUDF;
+  VarSetExprs           theSetExprs;
 
-  std::vector<expr*>    theSetExprs;
+  VarInfo             * theVarInfo;
 
   bool                  theIsExternal;
 
-  bool                  theIsPrivate; 
+  bool                  theIsPrivate;
 
   bool                  theIsMutable;
 
   bool                  theHasInitializer;
 
 public:
-  SERIALIZABLE_CLASS(var_expr)
-  var_expr(::zorba::serialization::Archiver& ar);
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
   static std::string decode_var_kind(enum var_kind);
 
-public:
+protected:
   var_expr(
+      CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       var_kind k,
       store::Item* name);
 
-  var_expr(const var_expr& source);
+  var_expr(user_function* udf, const var_expr& source);
+
+  virtual ~var_expr();
+
+public:
+  void set_var_info(VarInfo* v);
+
+  VarInfo* get_var_info() const { return theVarInfo; }
 
   ulong get_unique_id() const { return theUniqueId; }
 
-  void set_unique_id(ulong v) { assert(theUniqueId == 0); theUniqueId = v; }
+  void set_unique_id(ulong v);
 
   store::Item* get_name() const;
 
@@ -211,11 +214,11 @@ public:
 
   bool is_external() const { return theIsExternal; }
 
-  void set_external(bool v) { theIsExternal = v; }
+  void set_external(bool v);
 
-  bool hasInitializer() const { return theHasInitializer; }
+  bool has_initializer() const { return theHasInitializer; }
 
-  void setHasInitializer(bool v) { theHasInitializer = v; }
+  void set_has_initializer(bool v);
 
   bool is_mutable() const { return theIsMutable; }
 
@@ -231,7 +234,7 @@ public:
 
   forletwin_clause* get_forletwin_clause() const;
 
-  for_clause* get_for_clause() const;
+  forlet_clause* get_forlet_clause() const;
 
   copy_clause* get_copy_clause() const { return theCopyClause; }
 
@@ -245,23 +248,21 @@ public:
 
   void set_param_pos(csize pos) { theParamPos = pos; }
 
-  user_function* get_udf() const { return theUDF; }
-
-  void set_udf(const user_function* udf) { theUDF = const_cast<user_function*>(udf); }
-
-  void add_set_expr(expr* e) { theSetExprs.push_back(e); }
+  void add_set_expr(expr* e);
 
   void remove_set_expr(expr* e);
 
-  std::vector<expr*>::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
+  csize num_set_exprs() const { return theSetExprs.size(); }
 
-  std::vector<expr*>::const_iterator setExprsEnd() const { return theSetExprs.end(); }
-  
+  var_set_expr* get_set_expr(csize i) const { return theSetExprs[i]; }
+
+  VarSetExprs::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
+
+  VarSetExprs::const_iterator setExprsEnd() const { return theSetExprs.end(); }
+
   bool is_context_item() const;
 
   void compute_scripting_kind();
-
-  expr_t clone(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 
@@ -269,16 +270,16 @@ public:
 };
 
 
-struct GlobalBinding 
+struct GlobalBinding
 {
-  var_expr_t  theVar;
-  expr_t      theExpr;
+  var_expr  * theVar;
+  expr      * theExpr;
   bool        theIsExternal;
 
 public:
   GlobalBinding() : theIsExternal(false) {}
 
-  GlobalBinding(const var_expr_t& v, const expr_t& e, bool external)
+  GlobalBinding(var_expr* v, expr* e, bool external)
     :
     theVar(v),
     theExpr(e),

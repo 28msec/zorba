@@ -57,7 +57,7 @@ public:
     xs_integer                              theSkip;
 
   public:
-    CollectionIter(SimpleCollection* collection, const xs_integer& aSkip);
+    CollectionIter(SimpleCollection* collection, const xs_integer& skip);
 
     ~CollectionIter();
 
@@ -65,6 +65,8 @@ public:
     bool next(store::Item_t& result);
     void reset();
     void close();
+  private:
+    void skip();
   };
 
 
@@ -78,8 +80,6 @@ protected:
 
   const std::vector<store::Annotation_t> theAnnotations;
 
-  store::Item_t                          theNodeType;
-
   SYNC_CODE(Latch                        theLatch;)
 
   // default constructor added in order to allow subclasses to instantiate
@@ -90,7 +90,6 @@ public:
   SimpleCollection(
       const store::Item_t& aName,
       const std::vector<store::Annotation_t>& annotations,
-      const store::Item_t& aNodeType,
       bool isDynamic = false);
 
   virtual ~SimpleCollection();
@@ -110,7 +109,8 @@ public:
 
   TreeId createTreeId();
 
-  store::Iterator_t getIterator(const xs_integer& aSkip);
+  store::Iterator_t getIterator(const xs_integer& aSkip, 
+                                const zstring& aStart);
 
   void addNode(store::Item* node, xs_integer position = xs_integer(-1));
 

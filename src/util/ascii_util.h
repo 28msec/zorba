@@ -17,11 +17,14 @@
 #ifndef ZORBA_STRING_UTIL_ASCII_UTIL_H
 #define ZORBA_STRING_UTIL_ASCII_UTIL_H
 
+// standard
 #include <algorithm>
 #include <cctype>
 #include <cstddef>
 #include <cstring>
 
+// local
+#include "omanip.h"
 #include "stl_util.h"
 
 namespace zorba {
@@ -141,6 +144,25 @@ bool is_alnum( CharType c ) {
 }
 
 /**
+ * Checks whether the given character is a control character.  This function
+ * exists to make a proper function out of the standard iscntrl(3) that may be
+ * implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a control character.
+ */
+template<typename CharType> inline
+bool is_cntrl( CharType c ) {
+#ifdef WIN32
+  // Windows' iscntrl() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && iscntrl( c );
+#else
+  return iscntrl( c );
+#endif
+}
+
+/**
  * Checks whether the given character is a decimal digit.  This function exists
  * to make a proper function out of the standard isdigit(3) that may be
  * implemented as a macro.
@@ -156,6 +178,25 @@ bool is_digit( CharType c ) {
   return __isascii( c ) && isdigit( c );
 #else
   return isdigit( c );
+#endif
+}
+
+/**
+ * Checks whether the given character is a printing character.  This function
+ * exists to make a proper function out of the standard isprint(3) that may be
+ * implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a printing character.
+ */
+template<typename CharType> inline
+bool is_print( CharType c ) {
+#ifdef WIN32
+  // Windows' isprint() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isprint( c );
+#else
+  return isprint( c );
 #endif
 }
 
@@ -881,7 +922,7 @@ void trim_end_whitespace( InputStringType const &in, OutputStringType *out ) {
  * @param s The string.
  */
 template<class StringType> inline
-void trim_end_whitespace( StringType &s, char const *chars ) {
+void trim_end_whitespace( StringType &s ) {
   trim_end( s, whitespace );
 }
 
@@ -927,6 +968,20 @@ inline void skip_whitespace( char const *s, size_type s_len, size_type *pos ) {
 }
 
 ////////// Miscellaneous //////////////////////////////////////////////////////
+
+/**
+ * Prints the given character in a printable way: if \c is_print(c) is \c true,
+ * prints \a c as-is; otherwise prints \c #x followed by the hexadecimal value
+ * of the character.
+ *
+ * @param o The ostream to print to.
+ * @param c The \c char to print.
+ * @return Returns \a o.
+ */
+std::ostream& printable_char( std::ostream &o, char c );
+
+// An ostream manipulator version of the above.
+DEF_OMANIP1( printable_char, char )
 
 /**
  * Reverses the characters in a string.

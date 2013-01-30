@@ -72,7 +72,7 @@ public:
  */
 #define ZORBA_DECL_HAS_MEM_FN(FN_NAME)                                \
   template<typename T,typename S>                                     \
-  class has_##FN_NAME : public sfinae_base {                          \
+  class has_##FN_NAME : public ::zorba::internal::ztd::sfinae_base {  \
     template<typename SignatureType,SignatureType> struct type_check; \
     template<class U> static yes& test(type_check<S,&U::FN_NAME>*);   \
     template<class U> static no& test(...);                           \
@@ -84,7 +84,7 @@ public:
  * \internal
  * This namespace is used only to bundle the implementation details for
  * implementing \c has_insertion_operator<T>.
- * This implementation is based on http://stackoverflow.com/questions/4434569/
+ * This implementation is based on http://stackoverflow.com/q/4434569/
  */
 namespace has_insertion_operator_impl {
   typedef char no;
@@ -260,16 +260,35 @@ ZORBA_DECL_HAS_MEM_FN( toString );
 
 /**
  * \internal
+ * Tests whether a given type \a T is a C string type.
+ *
+ * @tparam T The type to check.
+ */
+template<typename T>
+class is_c_string {
+  typedef typename ZORBA_TR1_NS::remove_pointer<T>::type T_base;
+  typedef typename ZORBA_TR1_NS::add_const<T_base>::type T_base_const;
+public:
+  static bool const value =
+       ZORBA_TR1_NS::is_same<T_base_const*,char const*>::value
+    || ZORBA_TR1_NS::is_same<T_base_const*,unsigned char const*>::value
+    || ZORBA_TR1_NS::is_same<T_base_const*,signed char const*>::value;
+};
+
+/**
+ * \internal
  * Converts an object to its string representation.
  *
  * @tparam T The object type that:
+ *  - is not an array
  *  - is not a pointer
  *  - has an <code>ostream& operator&lt;&lt;(ostream&,T const&)</code> defined
  * @param t The object.
  * @return Returns a string representation of the object.
  */
 template<typename T> inline
-typename std::enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
+typename std::enable_if<!ZORBA_TR1_NS::is_array<T>::value
+                     && !ZORBA_TR1_NS::is_pointer<T>::value
                      && has_insertion_operator<T>::value,
                         std::string>::type
 to_string( T const &t ) {
@@ -345,7 +364,7 @@ to_string( T const &t ) {
 
 /**
  * \internal
- * Specialization of \c to_string() for pointer types.
+ * Specialization of \c to_string() for pointer types other than C strings.
  *
  * @tparam T The pointer type.
  * @param p The pointer.
@@ -353,10 +372,13 @@ to_string( T const &t ) {
  * otherwise returns \c "<null>".
  */
 template<typename T> inline
-typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value,std::string>::type
+typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value
+                     && !is_c_string<T>::value,
+                        std::string>::type
 to_string( T p ) {
-  typedef typename ZORBA_TR1_NS::remove_pointer<T>::type const* T_const_ptr;
-  return p ? to_string( *static_cast<T_const_ptr>( p ) ) : "<null>";
+  typedef typename ZORBA_TR1_NS::remove_pointer<T>::type T_base;
+  typedef typename ZORBA_TR1_NS::add_const<T_base>::type T_base_const;
+  return p ? to_string( *static_cast<T_base_const*>( p ) ) : "<null>";
 }
 
 /**
@@ -369,6 +391,75 @@ to_string( T p ) {
 inline std::string to_string( char const *s ) {
   return s ? s : "<null>";
 }
+
+/**
+ * \internal
+ * Specialization of \c to_string() for C strings.
+ *
+ * @param s The C string.
+ * @return Returns a string representation of the object.
+ */
+inline std::string to_string( unsigned char const *s ) {
+  return s ? reinterpret_cast<char const*>( s ) : "<null>";
+}
+
+////////// misc ///////////////////////////////////////////////////////////////
+
+/**
+ * Helper class for implementing a solution to the "explicit bool conversion"
+ * problem.  The canonical use is of the form:
+ * \code
+ *  class your_class {
+ *    // ...
+ *    operator explicit_bool::type() const {
+ *      return explicit_bool::value_of( some_expression );
+ *    }
+ *  };
+ * \endcode
+ *
+ * See: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2333.html
+ */
+class explicit_bool {
+  struct pointer_conversion { int valid; };
+public:
+  typedef int pointer_conversion::*type;
+
+  /**
+   * Gets the explicit \c bool value for \c false.
+   *
+   * @return Returns said value.
+   */
+  static type false_value() {
+    return 0;
+  }
+
+  /**
+   * Gets the explicit \c bool value for \c true.
+   *
+   * @return Returns said value.
+   */
+  static type true_value() {
+    return &pointer_conversion::valid;
+  }
+
+  /**
+   * Converts the given value to an explicit \c bool value.
+   *
+   * @tparam T The type of the value to convert.
+   * @param value The value to convert.
+   * @return Return said value.
+   */
+  template<typename T> static
+  typename std::enable_if<ZORBA_TR1_NS::is_convertible<T,bool>::value,
+                          type>::type
+  value_of( T const &value ) {
+    //
+    // Using a template here eliminates a MSVC++ 4800 warning:
+    // "forcing value to 'true' or 'false' (performance warning)"
+    //
+    return value ? true_value() : false_value();
+  }
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 

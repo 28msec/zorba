@@ -34,9 +34,6 @@
 
 #include "runtime/function_item/function_item.h"
 
-# include <cstdlib>
-# include <execinfo.h>
-
 
 namespace zorba
 {
@@ -76,6 +73,7 @@ void Item::addReference() const
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+    return;
   }
 #endif
   case ATOMIC:
@@ -164,6 +162,7 @@ void Item::removeReference()
     }
 
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
+    return;
   }
 #endif
   case ATOMIC:
@@ -226,62 +225,7 @@ void Item::removeReference()
 }
 
 
-Item::ItemKind Item::getKind() const
-{
-  //if (theUnion.treeRCPtr == 0)
-  //  return UNKNOWN;
-
-  if ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0)
-    return NODE;
-
-  return static_cast<ItemKind>(theUnion.itemKind);
-}
-
-
-bool Item::isNode() const
-{
-  return ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0 &&
-          theUnion.treeRCPtr != 0);
-}
-
-
-bool Item::isAtomic() const
-{
-  return (theUnion.itemKind == ATOMIC); 
-}
-
-
-bool Item::isList() const
-{
-  return (theUnion.itemKind == LIST); 
-}
-
-
-bool Item::isPul() const
-{
-  return (theUnion.itemKind == PUL);
-}
-
-
-bool Item::isError() const
-{
-  return (theUnion.itemKind == ERROR_);
-}
-
-
-bool Item::isFunction() const
-{
-  return (theUnion.itemKind == FUNCTION);
-}
-
-
 #ifdef ZORBA_WITH_JSON
-
-bool Item::isJSONItem() const
-{
-  return (theUnion.itemKind == JSONIQ); 
-}
-
 
 bool Item::isJSONObject() const
 {
@@ -335,10 +279,14 @@ Item* Item::getBaseItem() const
 
 store::SchemaTypeCode Item::getTypeCode() const
 {
+  if (isAtomic())
+  {
+    return static_cast<SchemaTypeCode>(theUnion.itemKind >> 4);
+  }
+
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
-  );
+    ERROR_PARAMS(__FUNCTION__, typeid(*this).name()));
 }
 
 
@@ -353,10 +301,8 @@ Item* Item::getType() const
 
 uint32_t Item::hash(long timezone, const XQPCollator* coll) const
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS( ZED( NoHashItemOfType_2 ), getType()->getStringValue() )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+  ERROR_PARAMS(ZED(NoHashItemOfType_2), getType()->getStringValue()));
 };
 
 
@@ -365,13 +311,10 @@ bool Item::equals(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS(
-      ZED( NoCompareTypes_23 ),
-      getType()->getStringValue(), other->getType()->getStringValue()
-    )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+  ERROR_PARAMS(ZED(NoCompareTypes_23),
+               getType()->getStringValue(),
+               other->getType()->getStringValue()));
 }
 
 
@@ -380,13 +323,10 @@ long Item::compare(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0040_TYPE_ERROR,
-    ERROR_PARAMS(
-      ZED( NoCompareTypes_23 ),
-      getType()->getStringValue(), other->getType()->getStringValue()
-    )
-  );
+  throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
+  ERROR_PARAMS(ZED(NoCompareTypes_23),
+               getType()->getStringValue(),
+               other->getType()->getStringValue()));
 }
 
 
@@ -495,50 +435,11 @@ const zstring& Item::getLocalName() const
 }
 
 
-static void print_stack_trace( std::ostream& o ) 
-{
-  int BUF_SIZE = 250;
-  void* buf[ BUF_SIZE ];
-
-  int const size = backtrace(buf, BUF_SIZE);
-
-  if (char** symbols = backtrace_symbols(buf, size)) 
-  {
-    for ( int i = 0; i < size; ++i )
-      o << symbols[i] << std::endl;
-
-    free( symbols );
-  }
-  else
-  {
-    o << "allocation of backtrace symbols failed" << std::endl;
-  }
-}
-
-
 /**
  * Accessor for xs:untypedAtomic and xs:string and its subtypes
  */
 const zstring& Item::getString() const
 {
-  if (isAtomic())
-  {
-    std::cerr << "Atomic item value: " << getStringValue() << std::endl;
-  }
-  else if (isNode())
-  {
-    std::cerr << "Node item: " << this << std::endl
-              << " node name: " << getNodeName()->getStringValue() << std::endl
-              << " node string value: " << getStringValue() << std::endl;
-  }
-  else
-  {
-    std::cerr << "???????" << std::endl;
-  }
-
-  
-  print_stack_trace(std::cerr);
-
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
     ERROR_PARAMS(
@@ -1435,6 +1336,13 @@ store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
   );
 }
 
+bool Item::isRoot() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
 
 xs_integer
 Item::getArraySize() const
@@ -1533,6 +1441,35 @@ void Item::setStreamReleaser(StreamReleaser /*aReleaser*/)
     ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
   );
 }
+
+void Item::swap(Item* anotherItem)
+{
+  if(isNode())
+  {
+    assert(anotherItem->isNode());
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(anotherItem)->getRCLock()->acquire());
+    // Swap trees.
+    assert(theUnion.treeRCPtr);
+    assert(anotherItem->theUnion.treeRCPtr);
+    std::swap(theUnion.treeRCPtr, anotherItem->theUnion.treeRCPtr);
+
+    // Adjust counters.
+    *theUnion.treeRCPtr += theRefCount;
+    *theUnion.treeRCPtr -= anotherItem->theRefCount;
+    *anotherItem->theUnion.treeRCPtr -= theRefCount;
+    *anotherItem->theUnion.treeRCPtr += anotherItem->theRefCount;
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(anotherItem)->getRCLock()->release());
+    return;
+  }
+
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
 
 } // namespace store
 } // namespace zorba

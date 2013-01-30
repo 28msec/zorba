@@ -217,6 +217,7 @@ FOREACH (SRCS ${ZORBA_STORE_IMPL_SRCS})
   LIST(APPEND STORE_SRCS ${ZORBA_STORE_DIR}/${SRCS})
 ENDFOREACH (SRCS ${ZORBA_STORE_IMPL_SRCS})
 
+LIST(APPEND requiredlibs ${requiredlibs-store})
 #
 # Build the Zorba SHARED library
 #

@@ -16,21 +16,29 @@
 #include "stdafx.h"
 
 #define  __STDC_LIMIT_MACROS
+
 #include <zorba/item.h>
 #include <zorba/zorba_string.h>
+
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
+
 #include "api/itemfactoryimpl.h"
 
 #include "zorbatypes/duration.h"
+
 #include "system/globalenv.h"
+
 #include "store/api/item_factory.h"
-#include <store/api/store.h>
+#include "store/api/store.h"
 #include "store/api/copymode.h"
+#include "store/api/item.h"
+
 #include "api/unmarshaller.h"
+
 #include "types/casting.h"
 
-#include "store/api/item.h"
-#include <runtime/util/item_iterator.h>
+#include "runtime/util/item_iterator.h"
 
 
 namespace zorba {
@@ -112,14 +120,16 @@ Item ItemFactoryImpl::createQName(
   zstring const &lLocalname = Unmarshaller::getInternalString( aLocalname );
   
   if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
-    );
+  {
+    RAISE_ERROR_NO_LOC(err::FORG0001, 
+    ERROR_PARAMS(ZED(FORG0001_LocalNotNCName_2), lLocalname));
+  }
 
   if (lPrefix.size() && !GenericCast::instance()->castableToNCName(lPrefix.c_str()))
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( lPrefix, ZED( MustBeNCName ) )
-    );
+  {
+    RAISE_ERROR_NO_LOC(err::FORG0001, 
+    ERROR_PARAMS(ZED(FORG0001_PrefixNotNCName_2), lPrefix));
+  }
   
   store::Item_t lItem;
   theItemFactory->createQName(lItem, lNamespace, lPrefix, lLocalname);
@@ -135,44 +145,51 @@ Item ItemFactoryImpl::createQName(
   zstring const &lLocalname = Unmarshaller::getInternalString( aLocalname );
 
   if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
-    );
+  {
+    RAISE_ERROR_NO_LOC(err::FORG0001, 
+    ERROR_PARAMS(ZED(FORG0001_LocalNotNCName_2), lLocalname));
+  }
   
   store::Item_t lItem;
   theItemFactory->createQName(lItem, lNamespace, zstring(), lLocalname);
   return &*lItem;
 }
   
+
 Item
 ItemFactoryImpl::createQName(const String& aQNameString)
 {
-  zstring const &lQNameString = Unmarshaller::getInternalString( aQNameString );
+  const zstring& lQNameString = Unmarshaller::getInternalString( aQNameString );
   store::Item_t lItem;
 
   size_t lOpen  = lQNameString.find("{");
   size_t lClose = lQNameString.find("}");
 
-  if (lOpen == 0 && lClose != std::string::npos) {
+  if (lOpen == 0 && lClose != std::string::npos) 
+  {
     zstring const &lNamespace = lQNameString.substr(1, lClose - 1);
     zstring const &lLocalname = lQNameString.substr(lClose+1);
     theItemFactory->createQName(lItem, lNamespace, zstring(), lLocalname);
+
     if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
-      throw XQUERY_EXCEPTION(
-        err::FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
-      );
+    {
+      RAISE_ERROR_NO_LOC(err::FORG0001, 
+      ERROR_PARAMS(ZED(FORG0001_LocalNotNCName_2), lLocalname));
+    }
   }
   return &*lItem;
 }
+
 
 Item ItemFactoryImpl::createNCName(const String& aValue)
 {
   zstring lString = Unmarshaller::getInternalString(aValue);
 
   if (!GenericCast::instance()->castableToNCName(lString.c_str()))
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( lString, ZED( MustBeNCName ) )
-    );
+  {
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NameNotNCName_2), lString));
+  }
   
   store::Item_t lItem;
   theItemFactory->createNCName(lItem, lString);
@@ -191,9 +208,7 @@ Item ItemFactoryImpl::createBase64Binary(const char* aBinData, size_t aLength)
   }
   else
   {
-    throw ZORBA_EXCEPTION(
-      zerr::ZSTR0040_TYPE_ERROR, ERROR_PARAMS( lMessage )
-    );
+    throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR, ERROR_PARAMS(lMessage));
   }
   return &*lItem;
 }
@@ -361,6 +376,20 @@ Item ItemFactoryImpl::createDateTime(short aYear, short aMonth, short aDay,
   store::Item_t lItem;
   theItemFactory->createDateTime(lItem, aYear, aMonth, aDay,
                                  aHour, aMinute, aSecond, aTimezone_hours);
+
+  return &*lItem;
+}
+
+
+Item
+ItemFactoryImpl::createDateTime(
+    short aYear, short aMonth, short aDay,
+    short aHour, short aMinute, double aSecond)
+{
+  store::Item_t lItem;
+  theItemFactory->createDateTime(
+      lItem, aYear, aMonth, aDay,
+      aHour, aMinute, aSecond);
 
   return &*lItem;
 }
@@ -866,6 +895,14 @@ zorba::Item ItemFactoryImpl::createTextNode(Item parent, String content)
   return &*lItem;
 }
 
+zorba::Item ItemFactoryImpl::createUntypedAtomic(const String& value)
+{
+  store::Item_t lItem;
+  zstring &lValue = Unmarshaller::getInternalString(value);
+  theItemFactory->createUntypedAtomic(lItem, lValue);
+  return &*lItem;
+}
+
 #ifdef ZORBA_WITH_JSON
 
 zorba::Item ItemFactoryImpl::createJSONNull()
@@ -936,11 +973,18 @@ zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item>& aItems)
   return &*lItem;
 }
 
-
-
-
 #endif /* ZORBA_WITH_JSON */
 
+zorba::Item ItemFactoryImpl::createUserTypedAtomicItem(
+    Item& aBaseItem,
+    Item& aTypeName)
+{
+  store::Item_t lRes;
+  store::Item_t lBaseItem = Unmarshaller::getInternalItem(aBaseItem);
+  store::Item_t lTypeName = Unmarshaller::getInternalItem(aTypeName);
+  theItemFactory->createUserTypedAtomicItem(lRes, lBaseItem, lTypeName);
+  return &*lRes;
+}
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

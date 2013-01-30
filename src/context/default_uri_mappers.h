@@ -91,10 +91,10 @@ public:
   virtual void mapURI(zstring const& aUri,
     EntityData const* aEntityData,
     static_context const& aSctx,
-    std::vector<zstring>& oUrls);
+    std::vector<zstring>& oUris);
 };
 
-} /* namespace zorba::impl */
+} /* namespace zorba::internal */
 
 } /* namespace zorba */
 

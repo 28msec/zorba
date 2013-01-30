@@ -123,8 +123,8 @@ namespace zorba {
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param aBinData a pointer to the base6c4 binary data.
-       * @param aLength the length of the base64 binary data.
+       * @param aBinData a pointer to the base64 encoded data. The data is copied from aBinData.
+       * @param aLength the length of the base64 encoded data.
        * @return The Base64Binary Item.
        */
       virtual Item
@@ -133,7 +133,7 @@ namespace zorba {
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param aStream A stream containing the Base64 encoded data.
+       * @param aStream A stream containing the Base64 encoded data. The data is copied from aStream imediately.
        * @return the Base64Binary Item.
        */
       virtual Item
@@ -142,11 +142,11 @@ namespace zorba {
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param aBinData the data in binary form. The data is copied from aBinData.
-       * @param aLength the length of the data
+       * @param aBinData the data in binary form (not encoded). The data is copied from aBinData.
+       * @param aLength the length of the binary data
        * @return the Base64Binary Item.
        */
-      virtual Item 
+      virtual Item
       createBase64Binary(const unsigned char* aBinData, size_t aLength) = 0;
 
       /** \brief Creates a streamable Base64Binary Item
@@ -294,6 +294,21 @@ namespace zorba {
       createDateTime(short aYear, short aMonth, short aDay,
                      short aHour, short aMinute, double aSecond,
                      short aTimeZone_hours) = 0;
+
+      /** \brief Creates a DateTime Item without setting a time zone.
+       *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
+       *
+       * @param aYear short-valued representation of the year.
+       * @param aMonth short-valued representation of the month.
+       * @param aDay short-valued representation of the day.
+       * @param aHour short-valued representation of the hour.
+       * @param aMinute short-valued representation of the minute.
+       * @param aSecond double-valued representation of the seconds and fractional seconds.
+       * @return The DateTime Item.
+       */
+      virtual Item
+      createDateTime(short aYear, short aMonth, short aDay,
+                     short aHour, short aMinute, double aSecond) = 0;
 
       /** \brief Creates a DateTime Item
        *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
@@ -698,6 +713,13 @@ namespace zorba {
         Item   parent,
         String content) = 0;
 
+      /** \brief Creates a UntypedAtomic Item
+       *
+       * @param value String representation of the UntypedAtomic Item.
+       * @return The UntypedAtomic Item
+       */
+      virtual Item createUntypedAtomic(const String& value) = 0;
+
 #ifdef ZORBA_WITH_JSON
 
       /**
@@ -720,7 +742,7 @@ namespace zorba {
        * @param aNames A vector containing the name and value of each pair.
        */
       virtual Item createJSONObject(std::vector<std::pair<Item, Item> >& aNames) = 0;
-      
+
       /**
        * Create a JSON Array containing the specified items.
        *
@@ -762,6 +784,17 @@ namespace zorba {
       virtual void
       assignElementTypedValue(Item& aElement,
                               std::vector<Item>& aTypedValue) = 0;
+
+      /**
+       * Create an atomic item having a user-defined atomic type.
+       *
+       * @param aBaseItem the base item of the item to create.
+       * @param aTypeName the name of the type of the item to create.
+       *
+       * @return a new atomic item having the given user-defined atomic type.
+       */
+      virtual Item
+      createUserTypedAtomicItem(Item& aBaseItem, Item& aTypeName) = 0;
 
   }; // class ItemFactory
 

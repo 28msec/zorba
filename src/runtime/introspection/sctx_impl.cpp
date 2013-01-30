@@ -28,8 +28,6 @@
 #include "context/dynamic_context.h"
 #include "context/static_context_consts.h"
 
-#include "compiler/expression/var_expr.h"
-
 #include "runtime/introspection/sctx.h"
 
 #include "functions/function.h"
@@ -104,7 +102,7 @@ bool StaticNamespaceBindingIterator::nextImpl(
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc, zerr::ZXQP0000_NO_ERROR))
+  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc, false))
   {
     STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, ns), state);
   }
@@ -141,7 +139,7 @@ bool InscopeVariablesIterator::nextImpl(
 
   while (state->thePosition < state->theVariables.size())
   {
-    aResult = state->theVariables[state->thePosition]->get_name();
+    aResult = state->theVariables[state->thePosition]->getName();
     STACK_PUSH(true, state);
     ++state->thePosition;
   }
@@ -247,8 +245,8 @@ bool StaticallyKnownDocumentTypeIterator::nextImpl(
   }
   else
   {
-    aResult = type->get_qname();
-    STACK_PUSH(true, state);
+    temp_str = type->toSchemaString();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp_str), state);
   }
 
   STACK_END(state);
@@ -437,12 +435,12 @@ bool CopyNamespacesModeIterator::nextImpl(
   PlanIteratorState* state;
   zstring inherit, preserve;
 
-  if (theSctx->inherit_mode() == StaticContextConsts::inherit_ns)
+  if (theSctx->inherit_ns())
     inherit = "inherit";
   else
     inherit = "no-inherit";
 
-  if (theSctx->preserve_mode() == StaticContextConsts::preserve_ns)
+  if (theSctx->preserve_ns())
     preserve = "preserve";
   else
     preserve = "no-preserve";

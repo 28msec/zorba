@@ -115,24 +115,28 @@ bool GenericArithIterator<Operation>::nextImpl(
   {
     if (this->consumeNext(n1, this->theChild1.getp(), planState))
     {
-      status = compute(result,
-                       planState.theLocalDynCtx,
-                       this->theSctx->get_typemanager(),
-                       this->loc,
-                       n0,
-                       n1);
-      /*
-      if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
-          this->consumeNext(n1, this->theChild1.getp(), planState))
+      if (n0->getTypeCode() != store::JS_NULL &&
+          n1->getTypeCode() != store::JS_NULL)
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( NoSeqAsArithOp ) ),
-          ERROR_LOC( this->loc )
-        );
+        status = compute(result,
+                         planState.theLocalDynCtx,
+                         this->theSctx->get_typemanager(),
+                         this->loc,
+                         n0,
+                         n1);
+        /*
+        if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
+            this->consumeNext(n1, this->theChild1.getp(), planState))
+        {
+          throw XQUERY_EXCEPTION(
+            err::XPTY0004,
+            ERROR_PARAMS( ZED( NoSeqAsArithOp ) ),
+            ERROR_LOC( this->loc )
+          );
+        }
+        */
+        STACK_PUSH ( status, state );
       }
-      */
-      STACK_PUSH ( status, state );
     }
   }
 
@@ -523,9 +527,9 @@ bool SubtractOperation::compute<store::XS_DATETIME,store::XS_DATETIME>(
     d.reset(i0->getDateTimeValue().subtractDateTime(&i1->getDateTimeValue(),
                                                     dctx->get_implicit_timezone()));
   }
-  catch (InvalidTimezoneException const&) 
+  catch (InvalidTimezoneException const &e) 
   {
-    throw XQUERY_EXCEPTION(err::FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -546,9 +550,9 @@ bool SubtractOperation::compute<store::XS_DATE,store::XS_DATE>(
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
                                                 dctx->get_implicit_timezone()));
   }
-  catch (InvalidTimezoneException const&)
+  catch (InvalidTimezoneException const &e)
   {
-    throw XQUERY_EXCEPTION(err::FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -569,9 +573,9 @@ bool SubtractOperation::compute<store::XS_TIME,store::XS_TIME>(
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
                                                 dctx->get_implicit_timezone()));
   }
-  catch (InvalidTimezoneException const&)
+  catch (InvalidTimezoneException const &e)
   {
-    throw XQUERY_EXCEPTION(err::FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }

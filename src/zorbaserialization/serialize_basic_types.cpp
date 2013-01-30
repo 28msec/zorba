@@ -377,7 +377,7 @@ void operator&(Archiver& ar, float& obj)
   if (ar.is_serializing_out())
   {
      FloatImpl<float> zorba_float(obj);
-    zstring float_str = zorba_float.toString();
+     zstring float_str = zorba_float.toString();
 
     if (isdigit(float_str.c_str()[0]))
     {

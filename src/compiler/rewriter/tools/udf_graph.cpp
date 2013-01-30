@@ -105,12 +105,13 @@ void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain
     if (kind == fo_expr_kind)
     {
       const fo_expr* fo = static_cast<const fo_expr*>(curExpr);
-      udf = dynamic_cast<user_function*>(fo->get_func());
+      if (fo->get_func()->isUdf())
+        udf = static_cast<user_function*>(fo->get_func());
     }
     else
     {
       const function_item_expr* fi = static_cast<const function_item_expr*>(curExpr);
-      udf = dynamic_cast<user_function*>(fi->get_function());
+      udf = static_cast<user_function*>(fi->get_function());
     }
 
     if (udf != NULL)
@@ -207,12 +208,12 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
     return;
 
   user_function* udf = node->theUDF;
-  expr_t body = udf->getBody();
+  expr* body = udf->getBody();
 
   // Note: the body can be NULL when using Plan Serialization
   while (body != NULL)
   {
-    udf->optimize(ccb);
+    udf->optimize();
 
     body = udf->getBody();
 
@@ -221,17 +222,17 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
 #if 1
     // Set the return type of the function to the type of its body. But do not
     // do it if the body type is a user-defined type because the udf may be
-    // used in another module which does not import the schema that describes 
+    // used in another module which does not import the schema that describes
     // this user-defined type.
     xqtref_t bodyType = body->get_return_type();
     xqtref_t declaredType = udf->getSignature().returnType();
-    
+
     bool udt = (bodyType->type_kind() == XQType::USER_DEFINED_KIND);
 
     if (bodyType->type_kind() == XQType::NODE_TYPE_KIND)
     {
       const NodeXQType* nodeType = static_cast<const NodeXQType*>(bodyType.getp());
-        
+
       xqtref_t contentType = nodeType->get_content_type();
 
       udt = (contentType->type_kind() == XQType::USER_DEFINED_KIND);
@@ -274,7 +275,7 @@ bool UDFGraph::inferDeterminism(UDFNode* node, ulong visit)
 
   bool deterministic = true;
 
-  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  for (csize i = 0; i < node->theChildren.size(); ++i)
   {
     if (inferDeterminism(node->theChildren[i], visit) == false)
       deterministic = false;
@@ -330,7 +331,7 @@ void UDFGraph::display(std::ostream& o, UDFNode* node)
 
   o << inc_indent;
 
-  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  for (csize i = 0; i < node->theChildren.size(); ++i)
   {
     display(o, node->theChildren[i]);
   }

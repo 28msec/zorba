@@ -32,7 +32,11 @@ protected:
   const char** get_all_options () const
   {
     static const char* result [] = {
-      "--timing", "--output-file", "--serialization-parameter",
+      "--timing",
+#ifdef ZORBA_WITH_FILE_ACCESS
+      "--output-file",
+#endif /* ZORBA_WITH_FILE_ACCESS */
+      "--serialization-parameter",
       "--serialize-html", "--serialize-text", "--indent", "--print-query",
       "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration",
       "--base-uri", "--boundary-space", "--default-collation",
@@ -42,12 +46,15 @@ protected:
       "--no-serializer", "--debug", "--debug-host", "--debug-port", "--no-logo",
       "--timeout", "--uri-path", "--lib-path", "--module-path", "--classpath",
       "--option", "--trailing-nl", "--stop-words", "--thesaurus",
-      "--compile-plan", "--execute-plan --serialize-plan", NULL };
+      "--compile-plan", "--execute-plan", "--serialize-plan",
+      "--disable-http-resolution", NULL };
     return result;
   }
 
   bool theTiming;
+#ifdef ZORBA_WITH_FILE_ACCESS
   std::string theOutputFile;
+#endif /* ZORBA_WITH_FILE_ACCESS */
   std::vector<std::string> theSerializationParameter;
   bool theSerializeHtml;
   bool theSerializeText;
@@ -118,7 +125,9 @@ protected:
 
 public:
   const bool &timing () const { return theTiming; }
+#ifdef ZORBA_WITH_FILE_ACCESS
   const std::string &outputFile () const { return theOutputFile; }
+#endif /* ZORBA_WITH_FILE_ACCESS */
   const std::vector<std::string> &serializationParameter () const { return theSerializationParameter; }
   const bool &serializeHtml () const { return theSerializeHtml; }
   const bool &serializeText () const { return theSerializeText; }
@@ -176,6 +185,7 @@ public:
       {
         theTiming = true;
       }
+#ifdef ZORBA_WITH_FILE_ACCESS
       else if (strcmp (*argv, "--output-file") == 0 || strncmp (*argv, "-o", 2) == 0) 
       {
         int d = 2;
@@ -183,6 +193,7 @@ public:
         if (*argv == NULL) { result = "No value given for --output-file option"; break; }
         init_val (*argv, theOutputFile, d);
       }
+#endif /* ZORBA_WITH_FILE_ACCESS */
       else if (strcmp (*argv, "--serialization-parameter") == 0 || strncmp (*argv, "-z", 2) == 0) 
       {
         int d = 2;
@@ -426,6 +437,11 @@ public:
       {
         theLoadPlan = true;
       }
+      else if (strcmp (*argv, "--disable-http-resolution") == 0)
+      {
+        init_val ("{http://www.zorba-xquery.com/options/features}disable=http-uri-resolution",
+                  theOption, 0);
+      }
       else if (strcmp (*argv, "--") == 0)
       {
         copy_args (++argv);
@@ -489,6 +505,7 @@ public:
         "--serialize-plan, -s\nSerialize and then load the query execution plan.\n\n"
         "--compile-plan,\nDo not execute the query; just compile it and save the execution plan in the file specified with the -o option.\n\n"
         "--execute-plan\nDo not compile the query; instead load the execution plan from the file specified by the -f -q options, and execute the loaded plan.\n\n"
+        "--disable-http-resolution\nDo not use HTTP to resolve URIs\n\n"
         ;
   }
 

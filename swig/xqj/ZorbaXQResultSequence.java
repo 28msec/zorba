@@ -35,6 +35,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.zorbaxquery.api.Item;
 import org.zorbaxquery.api.Iterator;
+import org.zorbaxquery.api.SerializationOptions;
 
  /**
    * This class represents a sequence of items obtained as a result of evaluation XQuery expressions. The result sequence is tied to the XQconnection object on which the expression was evaluated.
@@ -309,21 +310,20 @@ public class ZorbaXQResultSequence implements javax.xml.xquery.XQResultSequence 
         isConsumedXQException();
         String result = null;
         try {
-        /*
-        if (item.isNode() && item.getNodeKind()==3) { //attribute node
-            resultString = resultString.concat(item.getStringValue()).concat(" ");
-        } else {
-            resultString = resultString.concat(item.serialize().replace("&gt;", ">").replace("&lt;", "<")).concat(" ");
-        }
-         * 
-         */
+            SerializationOptions opts = new SerializationOptions();
+            if ((prprts!=null) && prprts.size()>0) {
+                for(String key : prprts.stringPropertyNames()) {
+                    String value = prprts.getProperty(key);
+                    opts.setSerializerOption(key, value);
+                }
+            }
             if (iter.isOpen()) {
                 iter.close();
                 iter.delete();
             }
             iterDeleted = true;
             consumedItem = true;
-            result = lQuery.execute().replace("&gt;", ">").replace("&lt;", "<");
+            result = lQuery.execute(opts).replace("&gt;", ">").replace("&lt;", "<");
         } catch (Exception e) {
             throw new XQException("Error getting stream: " + e.getLocalizedMessage());
         } finally {

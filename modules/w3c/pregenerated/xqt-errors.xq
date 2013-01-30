@@ -166,6 +166,15 @@ declare variable $err:XPTY0020 as xs:QName := fn:QName($err:NS, "err:XPTY0020");
 
 (:~
  :
+ : Attempt to cast to a namespace-sensitive type failed because the namespace
+ : bindings for the result can not be determined.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPTY0117 as xs:QName := fn:QName($err:NS, "err:XPTY0117");
+
+(:~
+ :
  : It is a type error if the content sequence in an element constructor
  : contains an attribute node following a node that is not an attribute node.
  : 
@@ -385,6 +394,15 @@ declare variable $err:XQST0049 as xs:QName := fn:QName($err:NS, "err:XQST0049");
 
 (:~
  :
+ : The type must be the name of a type defined in the in-scope schema types,
+ : and the {variety} of the type must be simple.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0052 as xs:QName := fn:QName($err:NS, "err:XQST0052");
+
+(:~
+ :
  : It is a static error if a variable depends on itself.
  : 
  : @see http://www.w3.org/2005/xqt-errors
@@ -589,6 +607,17 @@ declare variable $err:XQST0093 as xs:QName := fn:QName($err:NS, "err:XQST0093");
 
 (:~
  :
+ : In the group by clause of a FLWOR expression, it is a static error if the
+ : name of a grouping variable is not equal (by the eq operator on expanded
+ : QNames) to the name of a variable that is bound by a for or let clause
+ : that precedes the group by clause.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0094 as xs:QName := fn:QName($err:NS, "err:XQST0094");
+
+(:~
+ :
  : It is a static error if, for any named or unnamed decimal format, the
  : properties representing characters used in a picture string do not each
  : have distinct values. These properties are decimal-separator-sign,
@@ -606,6 +635,14 @@ declare variable $err:XQST0098 as xs:QName := fn:QName($err:NS, "err:XQST0098");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0099 as xs:QName := fn:QName($err:NS, "err:XQST0099");
+
+(:~
+ :
+ : All variables in a window clause must have distinct names.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0103 as xs:QName := fn:QName($err:NS, "err:XQST0103");
 
 (:~
  :
@@ -1256,8 +1293,8 @@ declare variable $err:FOUT1170 as xs:QName := fn:QName($err:NS, "err:FOUT1170");
 
 (:~
  :
- : Retrieved resource contains octets that cannot be decoded into Unicode 
- : using the specified encoding, the resulting characters are not 
+ : Retrieved resource contains octets that cannot be decoded into Unicode
+ : using the specified encoding, the resulting characters are not
  : permitted XML characters or requested encoding not supported
  : 
  : @see http://www.w3.org/2005/xqt-errors

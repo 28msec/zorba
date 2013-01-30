@@ -717,6 +717,17 @@ public:
       const std::vector<CopyMode>& copyModes) = 0;
 
   /**
+   * This method is used when we want to box a sequence of item into an array,
+   * but only if the sequence has more than 1 items.
+   */
+  virtual bool createJSONArray(
+      Item_t& result,
+      Item_t& item1,
+      Item_t& item2,
+      const Iterator_t& source,
+      const CopyMode& copyMode) = 0;
+
+  /**
    * This method is used by the public API only
    */
   virtual bool createJSONArray(

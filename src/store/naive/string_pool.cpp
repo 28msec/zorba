@@ -27,19 +27,23 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 StringPool::~StringPool() 
 {
-  ulong count = 0;
-  ulong n = (ulong)theHashTab.size();
-  for (ulong i = 0; i < n; i++)
+  csize count = 0;
+  csize n = capacity();
+
+  for (csize i = 0; i < n; ++i)
   {
-    if (theHashTab[i].theItem.is_shared())
+    if (!theHashTab[i].isFree() && theHashTab[i].key().is_shared())
     {
-      //std::cerr << "ID: " << i << "   Referenced URI: " << theHashTab[i].theItem << std::endl;
+      std::cerr << "ID: " << i << " Referenced URI: "
+                << theHashTab[i].key() << std::endl;
       //delete theHashTab[i].theString.getp();
-      count ++;
+      count++;
     }
   }
-  if (count>0) {
-      throw ZORBA_EXCEPTION(zerr::ZSTR0065_STRINGS_IN_POOL, ERROR_PARAMS(count));
+
+  if (count > 0)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZSTR0065_STRINGS_IN_POOL, ERROR_PARAMS(count));
   }
 }
 
@@ -54,7 +58,8 @@ bool StringPool::insertc(const char* str, zstring& outStr)
   bool found = false;
 
   zstring::size_type len = strlen(str);
-  ulong hval = hashfun::h32(str, len, FNV_32_INIT) % theHashTabSize;
+
+  ulong hval = hashfun::h32(str, len, FNV_32_INIT) % bucket_count();
 
   {
     SYNC_CODE(AutoMutex lock(&theMutex);)
@@ -65,7 +70,7 @@ bool StringPool::insertc(const char* str, zstring& outStr)
     {
       while (entry != NULL)
       {
-        if (ztd::equals(entry->theItem, str, len))
+        if (ztd::equals(entry->key(), str, len))
         {
           found = true;
           break;
@@ -76,7 +81,7 @@ bool StringPool::insertc(const char* str, zstring& outStr)
 
     if (found)
     {
-      outStr = entry->theItem;
+      outStr = entry->key();
       return false;
     }
   }
@@ -94,76 +99,78 @@ bool StringPool::insertc(const char* str, zstring& outStr)
 ********************************************************************************/
 void StringPool::garbageCollect()
 {
-  HashEntry<zstring, DummyHashValue>* entry;
+  HashEntry<zstring, DummyHashValue>* currEntry;
 
   HashEntry<zstring, DummyHashValue>* freeList = NULL;
 
-  zstring::size_type size = theHashTabSize;
+  csize size = bucket_count();
 
-  for (ulong i = 0; i < size; ++i)
+  for (csize i = 0; i < size; ++i)
   {
-    entry = &theHashTab[i];
+    currEntry = &theHashTab[i];
 
     // If the current hash bucket is empty, move to the next one
-    if (entry->isFree())
+    if (currEntry->isFree())
     {
-      ZORBA_FATAL(entry->theNext == 0, "");
+      ZORBA_FATAL(currEntry->theNext == 0, "");
       continue;
     }
 
     // Handle the 1st hash entry of the current hash bucket
-    while (!entry->theItem.is_shared())
+    while (!currEntry->key().is_shared())
     {
-      if (entry->theNext == 0)
+      if (currEntry->theNext == 0)
       {
-        entry->setFree();
-        theNumEntries--;
+        currEntry->setFree();
+        --theNumEntries;
         break;
       }
       else
       {
-        HashEntry<zstring, DummyHashValue>* nextEntry = entry->getNext();
-        *entry = *nextEntry;
-        entry->setNext(nextEntry->getNext());
+        HashEntry<zstring, DummyHashValue>* nextEntry = currEntry->getNext();
+        assert(!nextEntry->isFree());
+        *currEntry = *nextEntry;
+        currEntry->setNext(nextEntry->getNext());
         nextEntry->setFree();
         nextEntry->setNext(freeList);
         freeList = nextEntry;
-        theNumEntries--;
+        --theNumEntries;
       }
     }
 
     // Handle the overflow entries of the current hash bucket.
-    HashEntry<zstring, DummyHashValue>* prevEntry = entry;
-    entry = entry->getNext();
+    HashEntry<zstring, DummyHashValue>* prevEntry = currEntry;
+    currEntry = currEntry->getNext();
 
-    while (entry != NULL)
+    while (currEntry != NULL)
     {
-      if (!entry->theItem.is_shared())
+      if (!currEntry->key().is_shared())
       {
-        prevEntry->setNext(entry->getNext());
-        entry->setFree();
-        entry->setNext(freeList);
-        freeList = entry;
-        theNumEntries--;
+        prevEntry->setNext(currEntry->getNext());
+        currEntry->setFree();
+        currEntry->setNext(freeList);
+        freeList = currEntry;
+        --theNumEntries;
 
-        entry = prevEntry->getNext();
+        currEntry = prevEntry->getNext();
       }
       else
       {
-        prevEntry = entry;
-        entry = entry->getNext();
+        prevEntry = currEntry;
+        currEntry = currEntry->getNext();
       }
     }
   }
 
   if (freeList != NULL)
   {
-    entry = freeList;
-    while (entry->theNext != 0)
-      entry = entry->getNext();
+    currEntry = freeList;
+    while (currEntry->theNext != 0)
+      currEntry = currEntry->getNext();
 
-    entry->setNext(theHashTab[theHashTabSize].getNext());
-    theHashTab[theHashTabSize].setNext(freeList);
+    currEntry->setNext(theHashTab[bucket_count()].getNext());
+
+    theHashTab[bucket_count()].setNext(freeList);
   }
 }
 

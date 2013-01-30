@@ -86,7 +86,7 @@ typedef enum
   ZORBA_SERIALIZATION_METHOD_BINARY,
 #ifdef ZORBA_WITH_JSON
   ZORBA_SERIALIZATION_METHOD_JSON,
-  ZORBA_SERIALIZATION_METHOD_JSONIQ
+  ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID
 #endif
 } Zorba_serialization_method_t;
 
@@ -161,14 +161,8 @@ typedef enum {
 
 typedef enum {
   JSONIQ_MULTIPLE_ITEMS_NO,
-  JSONIQ_MULTIPLE_ITEMS_ARRAY,
-  JSONIQ_MULTIPLE_ITEMS_APPENDED
+  JSONIQ_MULTIPLE_ITEMS_YES
 } Zorba_jsoniq_multiple_items_t;
-
-typedef enum {
-  JSONIQ_ALLOW_MIXED_XDM_JDM_YES,
-  JSONIQ_ALLOW_MIXED_XDM_JDM_NO
-} Zorba_jsoniq_allow_mixed_xdm_jdm_t;
 
 
 /** \brief Options that configure the serialization process of a query result.
@@ -201,10 +195,8 @@ typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
   zorba::String                 version;
 
 #ifdef ZORBA_WITH_JSON
-  Zorba_jsoniq_extensions_t jsoniq_extensions;
   Zorba_jsoniq_multiple_items_t jsoniq_multiple_items;
-  Zorba_serialization_method_t   jsoniq_xdm_method;
-  Zorba_jsoniq_allow_mixed_xdm_jdm_t jsoniq_allow_mixed_xdm_jdm;
+  Zorba_serialization_method_t  jsoniq_xdm_method;
 #endif /* ZORBA_WITH_JSON */
 
   /** \brief Default constructor for SerializerOptions which assigns default values to all

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,13 @@
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
 #include "diagnostics/dict.h"
+#include "diagnostics/util_macros.h"
 
 #include "context/static_context.h"
 #include "context/uri_resolver.h"
 
 #include "compiler/api/compiler_api.h"
+#include "compiler/api/compiler_api_consts.h"
 #include "compiler/api/compilercb.h"
 #include "context/dynamic_context.h"
 
@@ -39,86 +41,39 @@
 
 namespace zorba {
 
-/*******************************************************************************
-
-********************************************************************************/
-bool
-XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+/**
+ * Helper function to transfrom the option item optionally passed to the
+ * xqdoc functions into an uint32_t option value.
+ */
+void readOptions(uint32_t& aOptions, const store::Item& aOptionItem)
 {
-  zstring lURI;
-  zstring lFileName;
-  store::Item_t lItem;
-  store::Item_t lURIItem = 0;
-  zstring strval;
-  std::string uriStr;
-  static_context* lSctx;
-  std::auto_ptr<internal::Resource> lResource;
-  internal::StreamResource* lStream;
-  std::istream* lFile;
-  zstring lErrorMessage;
+  aOptions = xqdoc_component_none;
 
-  // setup a new CompilerCB and a new XQueryCompiler 
-  CompilerCB lCompilerCB(*planState.theCompilerCB);
-  lCompilerCB.theRootSctx = GENV.getRootStaticContext().create_child_context();
-  (planState.theCompilerCB->theSctxMap)[1] = lCompilerCB.theRootSctx; 
+  store::Iterator_t lChildrenIter = aOptionItem.getChildren();
+  lChildrenIter->open();
+  store::Item_t lChild;
 
-  XQueryCompiler lCompiler(&lCompilerCB);
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  // retrieve the URI of the module to generate xqdoc for
-  if(consumeNext(lItem, theChildren[0].getp(), planState))
+  while (lChildrenIter->next(lChild))
   {
-    lFileName = lItem->getStringValue().str();
-  }
+    zstring lLocalName = lChild->getNodeName()->getLocalName();
+    zstring lValue = lChild->getStringValue();
 
-  // resolve the uri in the surrounding static context and use
-  // the URI resolver to retrieve the module
-  lSctx = theSctx;
-  lItem->getStringValue2(strval);
-  lURI = lSctx->resolve_relative_uri(strval);
-  lResource = lSctx->resolve_uri(lURI, internal::EntityData::MODULE, lErrorMessage);
-  lStream = static_cast<internal::StreamResource*>(lResource.get());
-  if ( ! lStream )
-  {
-    throw XQUERY_EXCEPTION(
-      err::XQST0046,
-      ERROR_PARAMS( lURI, ZED( ModuleNotFound ) ),
-      ERROR_LOC( loc )
-    );
-  }
-  lFile = lStream->getStream();
+    if(lValue != "true")
+      continue;
 
-  // now, do the real work
-  if (lFile && lFile->good())
-  {
-    try 
-    {
-      // retrieve the xqdoc elements 
-      lCompiler.xqdoc(*lFile,
-                      lFileName,
-                      result,
-                      planState.theLocalDynCtx->get_current_date_time());
-    }
-    catch (XQueryException& e)
-    {
-      set_source( e, loc );
-      throw;
-    }
-
-    STACK_PUSH(true, state);
+    if (lLocalName == "comments")
+      aOptions |= xqdoc_component_comments;
+    else if (lLocalName == "imports")
+      aOptions |= xqdoc_component_imports;
+    else if (lLocalName == "variables")
+      aOptions |= xqdoc_component_variables;
+    else if (lLocalName == "functions")
+      aOptions |= xqdoc_component_functions;
+    else if (lLocalName == "collections")
+      aOptions |= xqdoc_component_collections;
+    else if (lLocalName == "indexes")
+      aOptions |= xqdoc_component_indexes;
   }
-  else
-  {
-    throw XQUERY_EXCEPTION(
-      err::XQST0046,
-      ERROR_PARAMS( lURI, ZED( ModuleNotFound ) ),
-      ERROR_LOC( loc )
-    );
-  }
-
-  STACK_END(state);
 }
 
 
@@ -128,33 +83,47 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem;
-  zstring lFileName;
-
-  // setup a new CompilerCB and a new XQueryCompiler 
-  CompilerCB lCompilerCB(*planState.theCompilerCB);
-  lCompilerCB.theRootSctx = GENV.getRootStaticContext().create_child_context();
-  (planState.theCompilerCB->theSctxMap)[1] = lCompilerCB.theRootSctx; 
-
-  // the XQueryCompiler's constructor destroys the existing type manager 
-  // in the static context. Hence, we create a new one
-  XQueryCompiler lCompiler(&lCompilerCB);
+  store::Item_t lCodeItem, lFileNameItem, lOptionsItem;
+  bool lIgnoreComments = true;
+  uint32_t lXQDocOptions;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // retrieve the URI of the module to generate xqdoc for
-  consumeNext(lItem, theChildren[0].getp(), planState);
+  // retrieve the module code to generate xqdoc for
+  consumeNext(lCodeItem, theChildren[0].getp(), planState);
+
+  consumeNext(lFileNameItem, theChildren[1].getp(), planState);
+
+  if (theChildren.size() > 2)
+  {
+    // retrieve the options
+    consumeNext(lOptionsItem, theChildren[2].getp(), planState);
+    readOptions(lXQDocOptions, *lOptionsItem);
+  }
+  else
+  {
+    // if no option passed, everything is printed
+    lXQDocOptions = 0xFFFFFFFF;
+  }
 
   try 
   {
-    std::istringstream is(lItem->getStringValue().c_str());
+    std::istringstream is(lCodeItem->getStringValue().c_str());
+
+    // setup a new CompilerCB and a new XQueryCompiler 
+    CompilerCB lCompilerCB(*planState.theCompilerCB);
+
+    // the XQueryCompiler's constructor destroys the existing type manager 
+    // in the static context. Hence, we create a new one
+    XQueryCompiler lCompiler(&lCompilerCB);
 
     // retrieve the xqdoc elements
     lCompiler.xqdoc(is,
-                    lFileName,
+                    lFileNameItem->getStringValue(),
                     result,
-                    planState.theLocalDynCtx->get_current_date_time());
+                    planState.theLocalDynCtx->get_current_date_time(),
+                    lXQDocOptions);
   }
   catch (XQueryException& e) 
   {

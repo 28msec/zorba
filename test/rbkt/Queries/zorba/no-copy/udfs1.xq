@@ -4,7 +4,7 @@ declare namespace opt = "http://www.zorba-xquery.com/options/optimizer";
 declare option opt:enable "for-serialization-only";
 
 
-declare function local:dummy($x as node()) as node()
+declare function local:dummy($x as xs:integer) as xs:integer
 {
   $x
 };
@@ -12,6 +12,8 @@ declare function local:dummy($x as node()) as node()
 
 declare function local:parent($n as node()) as node()
 {
+  local:dummy(2);
+
   $n/..
 };
 

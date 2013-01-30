@@ -37,6 +37,8 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbautils/locale.h"
 
+#include "system/globalenv.h"
+
 #include "decode_base128.h"
 #include "wn_db_segment.h"
 #include "wn_synset.h"

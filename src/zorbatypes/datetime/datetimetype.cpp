@@ -1196,7 +1196,7 @@ DateTime* DateTime::normalizeTimeZone(int tz_seconds) const
   {
     // validate timezone value (-14 .. +14 H)
     if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
-      throw InvalidTimezoneException();
+      throw InvalidTimezoneException( tz_seconds );
     
     d = Duration(Duration::DAYTIMEDURATION_FACET,
                  (tz_seconds < 0), 0, 0, 0, 0, 0, tz_seconds, 0);
@@ -1222,7 +1222,7 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
   
   // validate timezone value (-14 .. +14 H)
   if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
-    throw InvalidTimezoneException();
+    throw InvalidTimezoneException( tz_seconds );
 
   // If $timezone is not specified, then $timezone is the value of the implicit timezone in the dynamic context.
   context_tz = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET, (tz_seconds<0), 0, 0, 0, 0, 0, tz_seconds, 0));
@@ -1282,7 +1282,7 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
         d->getSeconds() != Integer::zero() ||
         d->getHours()*3600 + d->getMinutes()*60 > 14*3600 ||
         d->getHours()*3600 + d->getMinutes()*60 < -14*3600)
-      throw InvalidTimezoneException();
+      throw InvalidTimezoneException( d->getHours()*3600 + d->getMinutes()*60 );
         
     // If $arg does not have a timezone component and $timezone is not the
     // empty sequence, then the result is $arg with $timezone as the timezone

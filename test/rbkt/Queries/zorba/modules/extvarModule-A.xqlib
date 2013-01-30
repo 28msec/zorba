@@ -9,6 +9,7 @@ module namespace zm-A = "http://zorbatest.lambda.nu/modules-A";
 import module namespace zm-B = "http://zorbatest.lambda.nu/modules-B"
 at "extvarModule-B.xqlib";
 
+
 declare function zm-A:getVar()
 {
   zm-B:getVar()

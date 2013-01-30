@@ -49,6 +49,8 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
+  namespace_context() : m_sctx(NULL) {}
+
   namespace_context(const static_context* sctx) 
     :
     m_sctx(const_cast<static_context*>(sctx))
@@ -64,6 +66,8 @@ public:
   { 
   }
   
+  void setStaticContext(static_context* sctx) { m_sctx = sctx; }
+
   rchandle<namespace_context> get_parent() const { return m_parent; }
 
   const static_context* get_context() const { return m_sctx; }
@@ -74,7 +78,7 @@ public:
 
   void getAllBindings(store::NsBindings& bindings) const;
 
-  bool findBinding(const zstring& aPrefix, zstring& aNamespace);
+  bool findBinding(const zstring& aPrefix, zstring& aNamespace) const;
 };
 
 }

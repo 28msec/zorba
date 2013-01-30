@@ -39,6 +39,9 @@
 #include <zorba/xquery_functions.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/serialization_callback.h>
+#include <zorba/audit.h>
+#include <zorba/audit_scoped.h>
+
 #include <zorba/store_manager.h>
 
 //#define DO_AUDIT
@@ -65,6 +68,8 @@
 #if ZORBACMD_LOAD_SYSTEM_PROPERTIES
 #  include "system/properties.h"
 #endif
+
+//#define DO_AUDIT
 
 using namespace zorba;
 namespace zorbatm = zorba::time;
@@ -173,13 +178,42 @@ bool populateStaticContext(
       Item lQName = zorba->getItemFactory()->createQName(lIter->clark_qname);
       sctx->declareOption(lQName, lIter->value);
     }
-    catch (zorba::ZorbaException const& /* e */) 
+    catch (zorba::ZorbaException const& e)
     {
       std::cerr << "unable to set static context option with qname "
-                << lIter->clark_qname << std::endl;
+                << lIter->clark_qname << ": " << e.what() << std::endl;
       return false;
     }
   }
+
+#ifdef DO_AUDIT
+  zorba::audit::Provider* lAuditProvider = zorba->getAuditProvider();
+  zorba::audit::Configuration* config = lAuditProvider->createConfiguration();
+  std::vector<zorba::String> property_names;
+  zorba::audit::Configuration::getPropertyNames(property_names);
+
+  bool lIsStatic;
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/parse-duration");
+  assert(lIsStatic);
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/translation-duration");
+  assert(lIsStatic);
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/optimization-duration");
+  assert(lIsStatic);
+
+  lIsStatic = zorba::audit::Configuration::
+  enableProperty(config, property_names, "xquery/compilation/codegeneration-duration");
+  assert(lIsStatic);
+
+  zorba::audit::Event* event = lAuditProvider->createEvent(config);
+
+  sctx->setAuditEvent(event);
+#endif // DO_AUDIT
 
 #ifndef ZORBA_NO_FULL_TEXT
   {
@@ -217,7 +251,8 @@ bool populateStaticContext(
       sctx->registerURIMapper(&theThesaurusMapper);
     }
   }
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
+
   return true;
 }
 
@@ -587,6 +622,7 @@ TimingInfo::print(std::ostream& os, bool serializePlan)
 void
 removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties)
 {
+#ifdef ZORBA_WITH_FILE_ACCESS
   if (lProperties.outputFile().size() > 0)
   {
     File_t lFile = zorba::File::createFile(lProperties.outputFile());
@@ -595,6 +631,7 @@ removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties)
       lFile->remove();
     }
   }
+#endif /* ZORBA_WITH_FILE_ACCESS */
 }
 
 
@@ -854,14 +891,23 @@ compileAndExecute(
 
       timing.startTimer(TimingInfo::UNLOAD_TIMER, i);
 
-      DocumentManager* lMgr = store->getDocumentManager();
-      ItemSequence_t lSeq = lMgr->availableDocuments();
-      Iterator_t lIter = lSeq->getIterator();
+      DocumentManager* docMgr = store->getDocumentManager();
+      ItemSequence_t docsSeq = docMgr->availableDocuments();
+      Iterator_t lIter = docsSeq->getIterator();
       lIter->open();
-      Item lURI;
-      while (lIter->next(lURI)) 
+      Item uri;
+      std::vector<Item> docURIs;
+      while (lIter->next(uri)) 
       {
-        lMgr->remove(lURI.getStringValue());
+        docURIs.push_back(uri);
+      }
+      lIter->close();
+
+      size_t numDocs = docURIs.size();
+
+      for (size_t k = 0; k < numDocs; ++k)
+      {
+        docMgr->remove(docURIs[k].getStringValue());
       }
 
       timing.stopTimer(TimingInfo::UNLOAD_TIMER, i);
@@ -919,20 +965,28 @@ _tmain(int argc, _TCHAR* argv[])
 
   // write to file or standard out
   std::auto_ptr<std::ostream> 
-  lFileStream(properties.outputFile().size() > 0 ?
-              new std::ofstream(properties.outputFile().c_str()) : 0);
+  lFileStream(
+      #ifdef ZORBA_WITH_FILE_ACCESS
+        properties.outputFile().size() > 0 ?
+          new std::ofstream(properties.outputFile().c_str()) : 0
+      #else /* ZORBA_WITH_FILE_ACCESS */
+        0
+      #endif /* ZORBA_WITH_FILE_ACCESS */
+        );
 
   std::ostream* lOutputStream = lFileStream.get();
   if ( lOutputStream == 0 )
   {
     lOutputStream = &std::cout;
   }
+#ifdef ZORBA_WITH_FILE_ACCESS
   else if ( !lOutputStream->good() )
   {
     std::cerr << "could not write to output file {" << properties.outputFile()
               << "}" << std::endl;
     return 2;
   }
+#endif /* ZORBA_WITH_FILE_ACCESS */
 
   if (properties.queriesOrFilesBegin() == properties.queriesOrFilesEnd())
   {

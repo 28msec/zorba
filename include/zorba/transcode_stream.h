@@ -17,18 +17,11 @@
 #ifndef ZORBA_TRANSCODE_STREAM_API_H
 #define ZORBA_TRANSCODE_STREAM_API_H
 
-#include <stdexcept>
-#include <streambuf>
-
 #include <zorba/config.h>
-#include <zorba/internal/proxy.h>
 #include <zorba/internal/streambuf.h>
 #include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
-
-typedef internal::ztd::proxy<std::streambuf> proxy_streambuf;
-
 namespace transcode {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -108,7 +101,7 @@ protected:
   std::streamsize xsputn( char_type const*, std::streamsize );
 
 private:
-  std::unique_ptr<proxy_streambuf> proxy_buf_;
+  std::unique_ptr<internal::proxy_streambuf> proxy_buf_;
 
   // forbid
   streambuf( streambuf const& );
@@ -186,6 +179,20 @@ void detach( std::basic_ios<charT,Traits> &ios ) {
 template<typename charT,typename Traits> inline
 bool is_attached( std::basic_ios<charT,Traits> &ios ) {
   return !!ios.pword( internal::transcode::get_streambuf_index() );
+}
+
+/**
+ * Gets the original streambuf of the given iostream.
+ *
+ * @param ios The stream to get the original streambuf of.
+ * @return the original streambuf.
+ */
+template<typename charT,typename Traits> inline
+std::streambuf* orig_streambuf( std::basic_ios<charT,Traits> &ios ) {
+  std::streambuf *const buf = ios.rdbuf();
+  if ( streambuf *const tbuf = dynamic_cast<streambuf*>( buf ) )
+    return tbuf->orig_streambuf();
+  return buf;
 }
 
 /**

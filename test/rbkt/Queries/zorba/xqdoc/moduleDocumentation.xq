@@ -18,6 +18,7 @@ declare copy-namespaces preserve, inherit;
  :)
 declare variable $ZorbaManifestPath as xs:string external;
 
+
 declare %private %ann:nondeterministic function local:load-manifest()
 {
   try 
@@ -29,6 +30,7 @@ declare %private %ann:nondeterministic function local:load-manifest()
     fn:error(fn:concat("The file <",$ZorbaManifestPath,"> does not have the correct structure."))
   }
 };
+
 
 (:~
  : This function generates the XQDoc XML for all correctly configured in Zorba 
@@ -63,22 +65,27 @@ declare %ann:sequential function local:testXQDoc() as xs:string?
                 ($moduleUri = "http://www.functx.com/") or
                 ($moduleUri = "http://www.w3.org/2005/xqt-errors") or
                 ($moduleUri = "http://www.zorba-xquery.com/errors") or
-                ($moduleUri = "http://www.jsoniq.org/errors") or
+                ($moduleUri = "http://jsoniq.org/errors") or
                 ($moduleUri = "http://www.zorba-xquery.com/warnings")) then ()
             else(
             local:test-module($xqdoc),
             local:test-functions($xqdoc),
             local:test-variables($xqdoc)
           ),"")
-      } catch * {
-    fn:concat("ERROR: ", $err:code, " Message: ", $err:description, "
+      }
+      catch *
+      {
+        fn:concat("ERROR: ", $err:code,
+                  " Message: ", $err:description,
+                  " Line: ", $err:line-number, "
 processing module: ", $moduleURI)
       }
-     };
+    };
      
-   fn:string-join($res,"")
-   }
+    fn:string-join($res,"")
+  }
 };
+
 
 declare function local:test-module($xqdoc as element(xqdoc:xqdoc)) as xs:string?
 {
@@ -119,15 +126,18 @@ declare function local:test-module($xqdoc as element(xqdoc:xqdoc)) as xs:string?
   ),"")  
 };
 
+
 declare function local:test-functions(
   $xqdoc as element(xqdoc:xqdoc)
-)as xs:string? {
+)as xs:string? 
+{
     let $module := $xqdoc/xqdoc:module
     return
       string-join(for $function in $xqdoc/xqdoc:functions/xqdoc:function
       where not(exists($function//xqdoc:annotation[@localname = 'private']))
       return local:test-function($module, $function),"")
 };
+
 
 declare function local:test-function(
   $module as element(xqdoc:module),
@@ -182,9 +192,11 @@ declare function local:test-function(
     ),"")
 };
 
+
 declare function local:test-variables(
   $xqdoc as element(xqdoc:xqdoc)
-) as xs:string? {
+) as xs:string?
+{
     let $module := $xqdoc/xqdoc:module
     let $moduleUri := $module/xqdoc:uri
     return
@@ -192,10 +204,12 @@ declare function local:test-variables(
       return local:test-variable($module, $variable),"")
 };
 
+
 declare function local:test-variable(
   $module as element(xqdoc:module),
   $variable as element(xqdoc:variable)
-) as xs:string? {
+) as xs:string?
+{
     let $hasDescr := exists($variable/xqdoc:comment/xqdoc:description)
     return
         (: Test for variable description :)

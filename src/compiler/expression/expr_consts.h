@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +17,68 @@
 #ifndef ZORBA_COMPILER_EXPR_CONSTS_H
 #define ZORBA_COMPILER_EXPR_CONSTS_H
 
-namespace zorba 
+namespace zorba
 {
+
+
+enum PromoteErrorKind
+{
+  PROMOTE_FUNC_RETURN,
+  PROMOTE_FUNC_PARAM,
+  PROMOTE_TYPE_PROMOTION,
+  PROMOTE_JSONIQ_ARRAY_SELECTOR,
+  PROMOTE_JSONIQ_OBJECT_SELECTOR,
+  PROMOTE_JSONIQ_SELECTOR,
+  PROMOTE_INDEX_KEY
+};
+
+
+enum TreatErrorKind
+{
+  TREAT_FUNC_RETURN,
+  TREAT_FUNC_PARAM,
+  TREAT_TYPE_MATCH,
+  TREAT_EXPR,
+  TREAT_INDEX_DOMAIN,
+  TREAT_INDEX_KEY,
+  TREAT_PATH_STEP,
+  TREAT_PATH_DOT,
+  TREAT_MULTI_VALUED_GROUPING_KEY,
+  TREAT_JSONIQ_VALUE,
+  TREAT_JSONIQ_UPDATE_TARGET,
+  TREAT_JSONIQ_OBJECT_UPDATE_TARGET,
+  TREAT_JSONIQ_OBJECT_UPDATE_CONTENT,
+  TREAT_JSONIQ_ARRAY_UPDATE_TARGET,
+  TREAT_JSONIQ_OBJECT_UPDATE_VALUE
+};
+
+
+enum WindowKind
+{
+  tumbling_window,
+  sliding_window
+};
+
+
+enum TextConstructorType
+{
+  text_constructor,
+  comment_constructor
+};
+
+
+enum FlowCtlAction
+{
+  FLOW_BREAK,
+  FLOW_CONTINUE
+};
+
+
+enum DocOrderMode
+{
+  doc_ordered,
+  doc_unordered
+};
 
 
 enum axis_kind_t
@@ -77,16 +137,16 @@ enum expr_script_kind_t
                                  // expr may return non-empty XDM as well.
 
   VAR_SETTING_EXPR       =   8,  // An expr E during the evaluation of which a
-                                 // var may be set and that var is declared 
+                                 // var may be set and that var is declared
                                  // outside the innermost block that contains E.
 
-  APPLYING_EXPR          =  16,  // An expr during the evaluation of which a 
+  APPLYING_EXPR          =  16,  // An expr during the evaluation of which a
                                  // PUL may get applied.
 
   EXITING_EXPR           =  32,  // An expr during the evaluation of which an
                                  // exit expression may be executed.
 
-  BREAKING_EXPR          =  64,  // An expr E during the evaluation of which 
+  BREAKING_EXPR          =  64,  // An expr E during the evaluation of which
                                  // a break or continue expr may be executed
                                  // and the the while or flwor expr being
                                  // broken or continued contains E.
@@ -105,23 +165,39 @@ enum BoolAnnotationValue
 };
 
 
-class CompareConsts 
+/*******************************************************************************
+  ATTENTION !!! 
+  The ordering of the enum values in IKMPORTANT. DO NOT CHANGE IT.
+  ATTENTION !!!
+********************************************************************************/
+class CompareConsts
 {
 public:
   enum CompareType
   {
-    UNKNOWN,
-    VALUE_EQUAL, GENERAL_EQUAL, NODE_EQUAL,
-    VALUE_NOT_EQUAL, GENERAL_NOT_EQUAL, NODE_NOT_EQUAL,
-    VALUE_LESS, GENERAL_LESS,
-    VALUE_LESS_EQUAL, GENERAL_LESS_EQUAL,
-    VALUE_GREATER, GENERAL_GREATER,
-    VALUE_GREATER_EQUAL, GENERAL_GREATER_EQUAL
+    UNKNOWN = 0,
+
+    VALUE_EQUAL           = 1,
+    GENERAL_EQUAL         = 2,
+    NODE_EQUAL            = 3,
+    VALUE_NOT_EQUAL       = 4,
+    GENERAL_NOT_EQUAL     = 5,
+    NODE_NOT_EQUAL        = 6,
+
+    VALUE_LESS            = 7,
+    GENERAL_LESS          = 8,
+    VALUE_LESS_EQUAL      = 9,
+    GENERAL_LESS_EQUAL    = 10,
+
+    VALUE_GREATER         = 11,
+    GENERAL_GREATER       = 12,
+    VALUE_GREATER_EQUAL   = 13,
+    GENERAL_GREATER_EQUAL = 14
   };
 };
 
 
-class ArithmeticConsts 
+class ArithmeticConsts
 {
 public:
   enum OperationKind

@@ -1,0 +1,28 @@
+module namespace guestbook = "http://www.28msec.com/guestbook";
+
+import module namespace functx = "http://www.functx.com/";
+
+import module namespace db = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+import module namespace idx = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+declare collection guestbook:entries as node()*;
+
+declare variable $guestbook:entries as xs:QName := xs:QName("guestbook:entries");
+
+(: Access a document range :)
+declare %private %an:automatic %an:unique %an:value-range index guestbook:by-date
+on nodes db:collection(xs:QName('guestbook:entries'))
+by guestbook:convert-dateTime(@datetime) as xs:dateTime;
+
+
+declare %private variable $guestbook:by-date as xs:QName := xs:QName('guestbook:by-date');
+
+
+declare function guestbook:convert-dateTime($dateTime as xs:string) as xs:dateTime 
+{
+  current-dateTime()
+};
+

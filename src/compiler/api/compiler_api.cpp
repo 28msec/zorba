@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,11 +112,13 @@ void XQueryCompiler::xqdoc(
     std::istream&         aXQuery,
     const zstring&        aFileName,
     store::Item_t&        aResult,
-    const store::Item_t&  aDateTime)
+    const store::Item_t&  aDateTime,
+    uint32_t              aOptions)
 {
   parsenode_t lAST = parse(aXQuery, aFileName);
 
-  print_parsetree_xqdoc(aResult, lAST.getp(), aFileName.c_str(), aDateTime);
+  print_parsetree_xqdoc(aResult, lAST.getp(),
+                        aFileName.c_str(), aDateTime, aOptions);
 }
 
 
@@ -136,10 +138,10 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
 #ifdef ZORBA_XQUERYX
   char* converted_xquery_str = NULL;
   std::string   xquery_str;
-  bool  is_xqueryx = false;
+  bool is_xqueryx = false;
+
   {
-    char  strtemp[1000];
-    //int   nr_read = 1;
+    char strtemp[1000];
     do
     {
       strtemp[0] = 0;
@@ -154,8 +156,8 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
 
   if(xqxconvertor->isXQueryX((char*)xquery_str.c_str()))
   {
-    // identify XQueryX by content: 
-    // root tag = 
+    // identify XQueryX by content:
+    // root tag =
     // "<prefix:module ... xmlns:prefix="http://www.w3.org/2005/XQueryX" ... > "
 
     is_xqueryx = true;
@@ -173,26 +175,30 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
   {
     xquery_stream = new std::istringstream(xquery_str);
   }
-#endif
+#endif // ZORBA_XQUERYX
+
+  theCompilerCB->setPhase(CompilerCB::PARSING);
 
   xquery_driver lDriver(&*theCompilerCB);
   lDriver.parse_stream(*xquery_stream, aFileName);
 
+  theCompilerCB->setPhase(CompilerCB::NONE);
+
 #ifdef ZORBA_XQUERYX
   delete xquery_stream;
-  if(is_xqueryx)
+  if (is_xqueryx)
   {
     xqxconvertor->freeResult(converted_xquery_str);
   }
 #endif
+
   parsenode_t node = lDriver.get_expr();
 
   if (typeid (*node) == typeid (ParseErrorNode))
   {
     ParseErrorNode* pen = static_cast<ParseErrorNode *>(&*node);
-    throw XQUERY_EXCEPTION_VAR(
-      pen->err, ERROR_PARAMS(pen->msg), ERROR_LOC(pen->get_location())
-		);
+    throw XQUERY_EXCEPTION_VAR(pen->err, 
+    ERROR_PARAMS(pen->msg), ERROR_LOC(pen->get_location()));
   }
 
   return node;
@@ -211,18 +217,17 @@ PlanIter_t XQueryCompiler::compile(
   zorba::audit::ScopedRecord sar(ae);
 
   const char* lFileName = aFileName.c_str();
-  zorba::audit::ScopedAuditor<const char*> filenameAudit(
-      sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lFileName);
+
+  audit::ScopedAuditor<const char*>
+  filenameAudit(sar, zorba::audit::XQUERY_COMPILATION_FILENAME, lFileName);
 
   parsenode_t lAST;
 
   {
     time::Timer lTimer;
 
-    audit::DurationAuditor 
-    durationAudit(sar,
-                  audit::XQUERY_COMPILATION_PARSE_DURATION,
-                  lTimer);
+    audit::DurationAuditor
+    durationAudit(sar, audit::XQUERY_COMPILATION_PARSE_DURATION, lTimer);
 
     lAST = parse(aXQuery, aFileName);
 
@@ -233,9 +238,7 @@ PlanIter_t XQueryCompiler::compile(
     }
   }
 
-  expr_t rootExpr;
-
-  return compile(lAST, true, rootExpr, nextDynamicVarId, sar);
+  return compile(lAST, true, nextDynamicVarId, sar);
 }
 
 
@@ -245,14 +248,15 @@ PlanIter_t XQueryCompiler::compile(
 PlanIter_t XQueryCompiler::compile(
     const parsenode_t& ast,
     bool applyPUL,
-    expr_t& rootExpr,
     ulong& nextDynamicVarId,
     audit::ScopedRecord& aAuditRecord)
 {
+  expr* rootExpr;
+
   {
     time::Timer lTimer;
 
-    audit::DurationAuditor 
+    audit::DurationAuditor
     durationAudit(aAuditRecord,
                   audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
                   lTimer);
@@ -276,6 +280,7 @@ PlanIter_t XQueryCompiler::compile(
 #endif
 
   PlanIter_t plan;
+
   {
     time::Timer lTimer;
 
@@ -284,9 +289,14 @@ PlanIter_t XQueryCompiler::compile(
                   audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
                   lTimer);
 
+    theCompilerCB->setPhase(CompilerCB::CODEGEN);
+
     plan = codegen("main query", rootExpr, theCompilerCB, nextDynamicVarId);
+
+    theCompilerCB->setPhase(CompilerCB::NONE);
   }
 
+  //theCompilerCB->getExprManager()->garbageCollect();
   return plan;
 }
 
@@ -294,7 +304,7 @@ PlanIter_t XQueryCompiler::compile(
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
+expr* XQueryCompiler::normalize(parsenode_t aParsenode)
 {
 #if 0
   time::walltime startTime;
@@ -304,9 +314,17 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
   time::get_current_walltime(startTime);
 #endif
 
-  expr_t lExpr = translate(*aParsenode, theCompilerCB);
+  theCompilerCB->setPhase(CompilerCB::TRANSLATION);
+
+  expr* lExpr = translate(*aParsenode, theCompilerCB);
+
+  theCompilerCB->setPhase(CompilerCB::NONE);
 
 #if 0
+  std::cout << "Num exprs after translation = "
+            << theCompilerCB->getExprManager()->numExprs()
+            << std::endl << std::endl;
+
   time::get_current_walltime(stopTime);
   elapsedTime = time::get_walltime_elapsed(startTime, stopTime);      
   std::cout << "Translation time = " << elapsedTime << std::endl;
@@ -315,7 +333,7 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
   if ( lExpr == NULL )
   {
     // TODO: can this happen?
-    throw ZORBA_EXCEPTION( zerr::ZAPI0002_XQUERY_COMPILATION_FAILED );
+    throw ZORBA_EXCEPTION(zerr::ZAPI0002_XQUERY_COMPILATION_FAILED);
   }
 
   return lExpr;
@@ -325,11 +343,13 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t XQueryCompiler::optimize(expr_t lExpr)
+expr* XQueryCompiler::optimize(expr* lExpr)
 {
+  theCompilerCB->setPhase(CompilerCB::OPTIMIZATION);
+
   // Build the call-graph among the udfs that are actually used in the query
   // program.
-  UDFGraph udfGraph(lExpr.getp());
+  UDFGraph udfGraph(lExpr);
 
   // By default all UDFs are marked as deterministic. Now, we find which udfs
   // are actually non-deterministic and mark them as such. This has to be done
@@ -337,7 +357,10 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
   udfGraph.inferDeterminism();
 
   if (theCompilerCB->theConfig.opt_level <= CompilerCB::config::O0)
+  {
+    theCompilerCB->setPhase(CompilerCB::NONE);
     return lExpr;
+  }
 
   // Optimize the udfs.
   udfGraph.optimizeUDFs(theCompilerCB);
@@ -354,7 +377,9 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
   lExpr = rCtx.getRoot();
 
   if ( theCompilerCB->theConfig.optimize_cb != NULL )
-    theCompilerCB->theConfig.optimize_cb(lExpr.getp(), "main query");
+    theCompilerCB->theConfig.optimize_cb(lExpr, "main query");
+
+  theCompilerCB->setPhase(CompilerCB::NONE);
 
   return lExpr;
 }
@@ -362,7 +387,7 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
 
 /******************************************************************************
   This is a small helper class used when the user wants to compile a library
-  module. The ONLY place it is used (and should be used) is in the 
+  module. The ONLY place it is used (and should be used) is in the
   XQueryCompiler::createMainModule method below.
   QQQ When we have the ability to compile a library module indepedently, this
   rather hacky class can go away. At that time, we can also eliminate the
@@ -372,32 +397,37 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
 class FakeLibraryModuleURLResolver : public internal::URLResolver
 {
 public:
-  FakeLibraryModuleURLResolver
-  (zstring const& aLibraryModuleNamespace, 
-    zstring const& aLibraryModuleFilename, std::istream& aStream)
-    : theLibraryModuleNamespace(aLibraryModuleNamespace),
-      theLibraryModuleFilename(aLibraryModuleFilename),
-      theStream(aStream)
+  FakeLibraryModuleURLResolver(
+      zstring const& aLibraryModuleFilename,
+      std::istream& aStream)
+    :
+    theLibraryModuleFilename(aLibraryModuleFilename),
+    theStream(aStream)
   {}
+
   virtual ~FakeLibraryModuleURLResolver()
   {}
 
-  virtual internal::Resource* resolveURL
-  (zstring const& aUrl, internal::EntityData const* aEntityData)
+  virtual internal::Resource* resolveURL(
+      const zstring& aUrl,
+      const internal::EntityData* aEntityData)
   {
-    if (aUrl != theLibraryModuleNamespace) {
-      return NULL;
-    }
+    // Since we know this URL resolver will only be used when compiling the
+    // stub query, and the only URI that query will contain is the one we're
+    // interested in, then we don't actually need to check the URL at all -
+    // just return the stream. This is a good thing, because due to URI
+    // mapping, aUrl will probably be different than the one we're expecting.
+    // If we returned NULL here, Zorba's built-in URL Resolvers would attempt
+    // to load the resource from somewhere else, and that may result in the
+    // wrong information being compiled. See bug 992304.
     assert (theStream.good());
     // Pass a nullptr StreamReleaser; memory ownership of the istream remains
     // with the caller of this method.
     // QQQ We can remove this third argument when we can compile modules individually
-    return new internal::StreamResource(&theStream, nullptr,
-                                    theLibraryModuleFilename);
+    return new internal::StreamResource(&theStream, nullptr, theLibraryModuleFilename);
   }
 
 private:
-  zstring theLibraryModuleNamespace;
   zstring theLibraryModuleFilename;
   std::istream& theStream;
 };
@@ -414,28 +444,27 @@ parsenode_t XQueryCompiler::createMainModule(
   //get the namespace from the LibraryModule
   LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*aLibraryModule);
   if (!mod_ast)
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0002_XQUERY_COMPILATION_FAILED,
-      ERROR_PARAMS( ZED( BadLibraryModule ) )
-		);
+    throw ZORBA_EXCEPTION(zerr::ZAPI0002_XQUERY_COMPILATION_FAILED,
+    ERROR_PARAMS(ZED(BadLibraryModule)));
 
   const zstring& lib_namespace = mod_ast->get_decl()->get_target_namespace();
 
   URI lURI(lib_namespace);
   if(!lURI.is_absolute())
   {
-    throw XQUERY_EXCEPTION(
-      err::XQST0046, ERROR_PARAMS( lURI.toString(), ZED( MustBeAbsoluteURI ) ),
-      ERROR_LOC( mod_ast->get_decl()->get_location() )
-		);
+    throw XQUERY_EXCEPTION(err::XQST0046,
+    ERROR_PARAMS(lURI.toString(), ZED(MustBeAbsoluteURI)),
+      ERROR_LOC(mod_ast->get_decl()->get_location()));
   }
 
   // Set up the original query stream as the result of resolving the
   // library module's URI
   aXQuery.clear();
   aXQuery.seekg(0);
+
   FakeLibraryModuleURLResolver* aFakeResolver =
-    new FakeLibraryModuleURLResolver(lib_namespace.str(), aFileName, aXQuery);
+    new FakeLibraryModuleURLResolver(aFileName, aXQuery);
+
   theCompilerCB->theRootSctx->add_url_resolver(aFakeResolver);
 
   // create a dummy main module and parse it

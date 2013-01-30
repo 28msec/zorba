@@ -114,8 +114,22 @@ ENDMACRO (MANGLE_URI)
 #              relative to CMAKE_CURRENT_SOURCE_DIR)
 #       LINK_LIBRARIES - (optional) List of libraries to link external
 #              function library against
+#       CONFIG_FILES - (optional) List of files to configure with package
+#              information; see below
 #       TEST_ONLY - (optional) Module is for testcases only and should not
 #              be installed
+#       LIBRARY_DEPENDS - (optional) List of targets that the external
+#              function library will depend on (only works if the module
+#              contains C++ external functions)
+#
+# CONFIG_FILES - any files specific here will be copied to
+# CMAKE_CURRENT_BINARY_DIR using CONFIGURE_FILE(). They may contain
+# the following @VARIABLES@ which will be substituted:
+#       ZORBA_MODULE_RELATIVE_DIR - directory portion of mangled URI
+#       ZORBA_MODULE_LIBFILE_WE - filename (without extension) portion of
+#              mangled URI
+# The input files should have a .in extension. The resulting file in
+# the build directory will have the .in removed.
 #
 # QQQ this currently doesn't support modules with multiple component
 # .xq files. (Neither does Zorba's automatic loading mechanism, so
@@ -125,7 +139,7 @@ ENDMACRO (MANGLE_URI)
 # file enough to deduce the URI and version?
 MACRO (DECLARE_ZORBA_MODULE)
   # Parse and validate arguments
-  PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES;EXTRA_SOURCES"
+  PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES;EXTRA_SOURCES;CONFIG_FILES;LIBRARY_DEPENDS"
     "URI;FILE;VERSION" "TEST_ONLY" ${ARGN})
   IF (NOT MODULE_FILE)
     MESSAGE (FATAL_ERROR "'FILE' argument is required for ZORBA_DECLARE_MODULE()")
@@ -257,6 +271,9 @@ MACRO (DECLARE_ZORBA_MODULE)
     # the module *URI*'s final component.
     SET(module_lib_target "modlib${num_zorba_modules}_${module_name}")
     ADD_LIBRARY(${module_lib_target} SHARED ${SRC_FILES})
+    IF (MODULE_LIBRARY_DEPENDS)
+      ADD_DEPENDENCIES(${module_lib_target} ${MODULE_LIBRARY_DEPENDS})
+    ENDIF()
     GET_FILENAME_COMPONENT(module_filewe "${module_filename}" NAME_WE)
     IF (MODULE_VERSION)
       # If there's a version, insert it into the module library name
@@ -352,6 +369,20 @@ MACRO (DECLARE_ZORBA_MODULE)
     ADD_COPY_RULE ("URI" "${SOURCE_FILE}" "${module_path}/${module_filename}"
       "${version_infix}" "" 1 "${MODULE_TEST_ONLY}")
   ENDFOREACH (version_infix)
+
+  # Configure any module-specified config files.
+  SET (ZORBA_MODULE_RELATIVE_DIR ${module_path})
+  SET (ZORBA_MODULE_LIBFILE_WE ${module_filewe})
+  FOREACH (_config_file ${MODULE_CONFIG_FILES})
+    # Strip off .in - can't use GET_FILENAME_COMPONENT as it always removes
+    # the longest possible extension
+    STRING (REGEX REPLACE "\\.in$" "" _config_filename_we "${_config_file}")
+    IF (NOT IS_ABSOLUTE "${_config_file}")
+      SET (_config_file "${CMAKE_CURRENT_SOURCE_DIR}/${_config_file}")
+    ENDIF (NOT IS_ABSOLUTE "${_config_file}")
+    CONFIGURE_FILE (${_config_file}
+      "${CMAKE_CURRENT_BINARY_DIR}/${_config_filename_we}" @ONLY)
+  ENDFOREACH (_config_file)
 
   # Last but not least, whip up a test case that ensures the module
   # can at least be compiled. Don't bother for test-only modules

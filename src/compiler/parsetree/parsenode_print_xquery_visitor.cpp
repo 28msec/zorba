@@ -130,12 +130,22 @@ void* begin_visit(const ArgList& n)
 }
 
 
-DEFAULT_END_VISIT (ArgList)
-
-DEFAULT_BEGIN_VISIT (AtomicType)
+DEFAULT_END_VISIT(ArgList)
 
 
-void end_visit(const AtomicType& n, void* state)
+DEFAULT_BEGIN_VISIT(GeneralizedAtomicType)
+
+
+void end_visit(const GeneralizedAtomicType& n, void* state)
+{
+  os << n.get_qname()->get_qname();
+}
+
+
+DEFAULT_BEGIN_VISIT(SimpleType)
+
+
+void end_visit(const SimpleType& n, void* state)
 {
   os << n.get_qname()->get_qname();
 }
@@ -188,13 +198,19 @@ DEFAULT_END_VISIT (BoundarySpaceDecl)
 void* begin_visit(const CaseClause& n)
 {
   os << "case ";
-  if(n.get_varname())
+
+  if (n.get_varname())
   {
     os << "$" << n.get_varname()->get_qname() << " as ";
   }
-  n.get_type()->accept(*this);
+
+  csize numTypes = n.num_types();
+  for (csize i = 0; i < numTypes; ++i)
+    n.get_type(i)->accept(*this);
+
   os << "return ";
   n.get_expr()->accept(*this);
+
   return no_state;
 }
 
@@ -237,29 +253,17 @@ DEFAULT_END_VISIT (ConstructionDecl)
 void* begin_visit(const CopyNamespacesDecl& n)
 {
   os << "declare copy-namespaces ";
-  switch(n.get_preserve_mode())
-  {
-  case StaticContextConsts::preserve_ns:
-    os << "preserve,";
-    break;
-  case StaticContextConsts::no_preserve_ns:
-    os << "no-preserve,";
-    break;
-  default:
-    ZORBA_ASSERT(false);
-  }
 
-  switch(n.get_inherit_mode())
-  {
-  case StaticContextConsts::inherit_ns:
+  if (n.preserve_ns())
+    os << "preserve,";
+  else
+    os << "no-preserve,";
+
+  if (n.inherit_ns())
     os << "inherit";
-    break;
-  case StaticContextConsts::no_inherit_ns:
+  else
     os << "no-inherit";
-    break;
-  default:
-    ZORBA_ASSERT(false);
-  }
+
   return 0;
 }
 
@@ -1044,23 +1048,49 @@ DEFAULT_END_VISIT (ReverseAxis);
     DEFAULT_VISIT (IndexKeyList)
     DEFAULT_VISIT (IntegrityConstraintDecl)
 
-    void* begin_visit(const VarDecl& n)
+    void* begin_visit(const GlobalVarDecl& n)
     {
       os << "declare variable $" << n.get_var_name()->get_qname();
-      if(n.get_var_type())
+
+      if (n.get_var_type())
       {
         n.get_var_type()->accept(*this);
       }
-      if(n.is_extern())
+
+      if (n.is_extern())
       {
         os << "external";
-      } else if(n.get_binding_expr()) {
+      }
+
+      if (n.get_binding_expr())
+      {
         os << ":=";
         n.get_binding_expr()->accept(*this);
       }
       return 0;
     }
-    DEFAULT_END_VISIT (VarDecl)
+
+    DEFAULT_END_VISIT (GlobalVarDecl)
+
+    void* begin_visit(const LocalVarDecl& n)
+    {
+      os << "variable $" << n.get_var_name()->get_qname();
+
+      if (n.get_var_type())
+      {
+        n.get_var_type()->accept(*this);
+      }
+
+      if (n.get_binding_expr())
+      {
+        os << ":=";
+        n.get_binding_expr()->accept(*this);
+      }
+      return 0;
+    }
+
+    DEFAULT_END_VISIT (LocalVarDecl)
+
 
     void* begin_visit(const VarGetsDecl& n)
     {
@@ -1624,6 +1654,16 @@ DEFAULT_END_VISIT (ReverseAxis);
       return 0;
     }
     DEFAULT_END_VISIT (RelativePathExpr)
+
+    void* begin_visit(const SimpleMapExpr& n)
+    {
+      n.get_left_expr()->accept(*this);
+      os << "!";
+      n.get_right_expr()->accept(*this);
+      return 0;
+    }
+    DEFAULT_END_VISIT (SimpleMapExpr)
+
 
     void* begin_visit(const StringLiteral& n)
     {

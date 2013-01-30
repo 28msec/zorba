@@ -13,6 +13,9 @@
 # limitations under the License.
 
 IF (SWIG_FOUND)
+
+  SET (ZORBA_STREAM_BUFFER_SIZE 10240) # 10k default buffer size
+  
   IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing")
     SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
@@ -37,6 +40,7 @@ IF (SWIG_FOUND)
   ADD_SUBDIRECTORY (php)
   ADD_SUBDIRECTORY (java)
   ADD_SUBDIRECTORY (xqj)
+  ADD_SUBDIRECTORY (csharp)
   
   IF (APPLE AND UNIVERSAL)
     MESSAGE (STATUS "Ruby module can't be built Universal")

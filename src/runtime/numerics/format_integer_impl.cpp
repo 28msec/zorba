@@ -762,7 +762,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   utf8_string<zstring>  utf8_picture(pictureString);
   xs_integer valueInteger;
   bool  is_neg = false;
-  const TypeManager* tm = theSctx->get_typemanager();
+  TypeManager* tm = theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
@@ -788,10 +788,11 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     {
       consumeNext(language_item, theChildren[2].getp(), planState);
       languageString = language_item->getStringValue();
+
       if(!GenericCast::isCastable(languageString, &*rtm.LANGUAGE_TYPE_ONE, tm))
       {
-        throw XQUERY_EXCEPTION(err::FOFI0001, ERROR_PARAMS( languageString ), ERROR_LOC( loc )
-        );
+        throw XQUERY_EXCEPTION(err::FOFI0001,
+        ERROR_PARAMS(languageString), ERROR_LOC(loc));
       }
     }
 
