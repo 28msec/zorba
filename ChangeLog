@@ -23,6 +23,12 @@ Bug Fixes/Other Changes:
 
 
 
+version 2.9
+
+Bug Fixes/Other Changes:
+  * Fixed bug #866958  (Parsing error not explicit enough)
+
+
 version 2.8
 
 New Features:

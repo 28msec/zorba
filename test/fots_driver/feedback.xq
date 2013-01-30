@@ -36,7 +36,8 @@ declare function feedback:check-pass(
   $testCaseName     as xs:string?,
   $testSetName      as xs:string?,
   $expectedFailure  as element(Test)?
-) as xs:boolean {
+) as xs:boolean
+{
 (: if the exact error code was not found, report the test as 'Pass' 
    with an attribute correctError=false :)
   let $resultTestRun as xs:boolean := 
@@ -56,6 +57,7 @@ declare function feedback:check-pass(
   return ($resultTestRun eq not($expectedFailure))
 };
 
+
 declare %ann:sequential function feedback:pass(
   $case             as element(fots:test-case),
   $result           as item()*,
@@ -64,7 +66,8 @@ declare %ann:sequential function feedback:pass(
   $duration         as xs:dayTimeDuration,
   $verbose          as xs:boolean,
   $expectedFailure  as xs:boolean
-) as element(fots:test-case)? {
+) as element(fots:test-case)?
+{
   if ($expectedFailure)
   then feedback:pass-expected-FOTS-failure( $case,
                                             $result,
@@ -79,6 +82,7 @@ declare %ann:sequential function feedback:pass(
                       $verbose)
 };
 
+
 (:~
  : Feedback on a test case that failed but is marked as EXPECTED_FOTS_FAILURE.
  :
@@ -91,7 +95,8 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
   $zorbaQuery       as xs:string,
   $env              as element(fots:environment)?,
   $verbose          as xs:boolean
-) as element(fots:test-case)? {
+) as element(fots:test-case)?
+{
   variable $info := "Test case failed but it is marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt";
 
   if($verbose)
@@ -127,6 +132,8 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
                         result="pass"
                         comment="{$info}" />
 };
+
+
 (:~
  : Gives feedback on a test case run with success.
  :
@@ -140,7 +147,8 @@ declare %private %ann:sequential function feedback:pass(
   $env              as element(fots:environment)?,
   $duration         as xs:dayTimeDuration,
   $verbose          as xs:boolean
-) as element(fots:test-case)? {
+) as element(fots:test-case)?
+{
   if($verbose)
   then {
     let $tmp := $case
@@ -190,6 +198,7 @@ declare %private %ann:sequential function feedback:pass(
                         executionTime="{$duration}" />
 };
 
+
 (:~
  : Gives feedback on a test case run without success.
  :
@@ -205,7 +214,8 @@ declare %ann:sequential function feedback:fail(
   $duration         as xs:dayTimeDuration,
   $verbose          as xs:boolean,
   $expectedFailure  as xs:boolean
-) as element(fots:test-case)? {
+) as element(fots:test-case)?
+{
   trace($testSetName, "test set name");
   trace("above test case failed", "result");
 
@@ -254,8 +264,10 @@ declare %ann:sequential function feedback:fail(
                        executionTime="{$duration}"/>
 };
 
+
 (:~
- : Gives feedback on a test case that is not run (because it Seg Faults, hangs).
+ : Gives feedback on a test case that is not run (because its name is listed
+ : in the $exceptedTestCases global var).
  :
  : @param $case test case.
  : @return the test case.
@@ -263,28 +275,28 @@ declare %ann:sequential function feedback:fail(
 declare %ann:sequential function feedback:not-run(
   $case     as element(fots:test-case),
   $verbose  as xs:boolean
-) as element(fots:test-case)? {
+) as element(fots:test-case)?
+{
   trace(data($case/@name), "processing test case :");
   trace("Above test case was not run.","");
 
-  if($verbose)
-  then {
-    let $tmp := $case
-    return {
-      insert node
-      attribute result{'notRun'}
-      as last into $tmp;
+  if ($verbose)
+  then 
+  {
+    {
+      (insert node attribute result {'notRun'} as last into $case,
+       delete node $case/fots:description,
+       delete node $case/fots:created);
       
-      delete node $tmp/fots:description;
-      delete node $tmp/fots:created;
-      
-      $tmp
-      }
+      $case
+    }
   }
   else
-    <fots:test-case name="{data($case/@name)}"
-                    result="notRun" />
+  {
+    <fots:test-case name="{$case/@name}" result="notRun" />
+  }
 };
+
 
 (:~
  : Gives feedback on a test case that is not run when dependencies are not met.
