@@ -767,20 +767,13 @@ void XmlNode::swap(Item* anotherItem)
   assert(theParent == NULL);
   assert(lOtherItem->theParent == NULL);
 
-  // Swap flags expect hasReference.
-  bool lHasReference = haveReference();
-  bool lOtherHasReference = lOtherItem->haveReference();
-  std::swap(theFlags, lOtherItem->theFlags);
-  if(lHasReference)
-  {
-    setHaveReference();
-  }
-  if(lOtherHasReference)
-  {
-    setHaveReference();
-  }
-  
-  // Swap root nodes and adjust type maps.
+  // But some things must be "unswapped"
+  std::swap(getTree()->thePos, lOtherItem->getTree()->thePos);
+  std::swap(getTree()->theId, lOtherItem->getTree()->theId);
+  std::swap(getTree()->theCollection, lOtherItem->getTree()->theCollection);
+
+  // Before unswapping root nodes as well, their references in the type maps
+  // must be erased.
   store::Item_t lRootNodeType;
   store::Item_t lOtherRootNodeType;
   bool lRootHasType = getTree()->theTypesMap->get(
@@ -796,7 +789,11 @@ void XmlNode::swap(Item* anotherItem)
     lOtherItem->getTree()->theTypesMap->erase(
         lOtherItem->getTree()->theRootNode);
   }
+
+  // Now unswapping root nodes.
   std::swap(getTree()->theRootNode, lOtherItem->getTree()->theRootNode);
+
+  // And putting references back into the type maps.
   if(lRootHasType)
   {
     getTree()->theTypesMap->insert(getTree()->theRootNode, lRootNodeType);
@@ -807,10 +804,19 @@ void XmlNode::swap(Item* anotherItem)
         lOtherItem->getTree()->theRootNode, lOtherRootNodeType);
   }
 
-  // Adjust trees.
-#ifndef EMBEDED_TYPE
-  std::swap(getTree()->theTypesMap, lOtherItem->getTree()->theTypesMap);
-#endif
+  // Swap flags expect hasReference.
+  bool lHasReference = haveReference();
+  bool lOtherHasReference = lOtherItem->haveReference();
+  std::swap(theFlags, lOtherItem->theFlags);
+  if(lHasReference)
+  {
+    setHaveReference();
+  }
+  if(lOtherHasReference)
+  {
+    setHaveReference();
+  }
+
 }
 
 /*******************************************************************************
