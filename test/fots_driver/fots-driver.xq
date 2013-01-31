@@ -316,6 +316,7 @@ declare %ann:nondeterministic function driver:list-matching-test-cases(
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about each processed test-case.
  : @param $expectedFailures the root node of the ExpectedFailures.xml file.
+ : @param $cliMode the cli command.
  : @return an XML tree containing info about all the processed tests-cases
  :)
 declare %ann:sequential function driver:run-fots(
@@ -328,12 +329,13 @@ declare %ann:sequential function driver:run-fots(
   $dependency             as xs:string,
   $assertions             as xs:string*,
   $verbose                as xs:boolean,
-  $expectedFailuresPath   as xs:string
+  $expectedFailuresPath   as xs:string,
+  $cliMode                as xs:string
 ) as element(fots:test-cases)
 {
-  trace($fotsPath, "The path to FOTS catalog.xml was set to: ");
-  trace($zorbaManifestPath, "The path to FOTSZorbaManifest set to :");
-  trace($expectedFailuresPath, "the path to ExpectedFailures.xml set to:");
+  trace($fotsPath, "Path to FOTS catalog.xml was set to: ");
+  trace($zorbaManifestPath, "Path to FOTSZorbaManifest set to :");
+  trace($expectedFailuresPath, "Path to ExpectedFailures.xml set to:");
 
   try
   {
@@ -394,7 +396,7 @@ declare %ann:sequential function driver:run-fots(
       }
     }
 
-    let $expectedFailures := 
+    let $expectedFailures :=
     {
       if ($expectedFailuresPath eq '')
       then ()
@@ -408,7 +410,8 @@ declare %ann:sequential function driver:run-fots(
                            $testCaseNames,
                            $exceptedTestCases,
                            $verbose,
-                           $expectedFailures)
+                           $expectedFailures,
+                           $cliMode)
   }
   catch * 
   {
@@ -458,6 +461,7 @@ declare %ann:sequential function driver:run-fots(
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about each processed test-case.
  : @param $expectedFailures the root node of the ExpectedFailures.xml file.
+ : @param $cliMode the cli command.
  : @return an XML tree containing info about all the processed tests-cases
  :)
 declare %private %ann:sequential function driver:run-fots(
@@ -468,7 +472,8 @@ declare %private %ann:sequential function driver:run-fots(
   $testCaseNames      as xs:string*,
   $exceptedTestCases  as xs:string*,
   $verbose            as xs:boolean,
-  $expectedFailures   as document-node()?
+  $expectedFailures   as document-node()?,
+  $cliMode            as xs:string
 ) as element(fots:test-cases)
 {
   <fots:test-cases>
@@ -572,7 +577,8 @@ declare %private %ann:sequential function driver:run-fots(
                           $testSetName,
                           $testSetURI,
                           $verbose,
-                          $expectedFailures//TestSet[@name eq $testSetName]/Test[@name eq $testCase/@name])
+                          $expectedFailures//TestSet[@name eq $testSetName]/Test[@name eq $testCase/@name],
+                          $cliMode)
             }
             else
             {
@@ -584,7 +590,8 @@ declare %private %ann:sequential function driver:run-fots(
                           $testSetName,
                           $testSetURI,
                           $verbose,
-                          $expectedFailures//TestSet[@name eq $testSetName]/Test[@name eq $testCase/@name])
+                          $expectedFailures//TestSet[@name eq $testSetName]/Test[@name eq $testCase/@name],
+                          $cliMode)
             }
           }
         }
@@ -613,6 +620,7 @@ declare %private %ann:sequential function driver:run-fots(
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about the test-case.
  : @param $expectedFailure the Test element from the ExpectedFailures.xml file.
+ : @param $cliMode the cli command.
  : @return an XML tree containing info about the result of running the test case.
  :)
 declare %ann:sequential function driver:test(
@@ -623,7 +631,8 @@ declare %ann:sequential function driver:test(
   $testSetName        as xs:string?,
   $testSetBaseURI     as xs:anyURI,
   $verbose            as xs:boolean,
-  $expectedFailure    as element(Test)?
+  $expectedFailure    as element(Test)?,
+  $cliMode            as xs:string
 ) as element(fots:test-case)?
 {
 (:TODO Cover the "(:%VARDECL%:)"when there are tests in FOTS that use it:)
@@ -666,11 +675,11 @@ declare %ann:sequential function driver:test(
                                                     $envBaseURI,
                                                     $testSetBaseURI);
 
-    (: if $verbose then print the query to a file
-    if ($verbose)
+    (:if $verbose then print the query to a file:)
+    if ($verbose and
+        ($cliMode eq "run-test-case"))
     then util:write-query-to-file($xqxqQuery, $queryName);
     else ();
-    :)
 
     variable $startDateTime := datetime:current-dateTime();
 

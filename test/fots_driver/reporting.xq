@@ -86,7 +86,8 @@ try {
                                             '',
                                             (),
                                             $verbose,
-                                            '')
+                                            '',
+                                            'run-test-sets')
                              )
                              }</fots:FOTS-test-suite-result>;
 
