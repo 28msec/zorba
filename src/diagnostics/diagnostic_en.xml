@@ -1649,7 +1649,7 @@
        It is a dynamic error if a function that was declared to be both \c
        external and \c updating returns a non-empty data model instance.
       </comment>
-      <value>"$1": function declated external, updating returns non-empty data model instance</value>
+      <value>"$1": function declared external, updating returns non-empty data model instance</value>
     </diagnostic>
 
     <diagnostic code="XUDY0021">
@@ -4854,7 +4854,7 @@
     </entry>
 
     <entry key="libxml_ERR_533"> <!-- XML_DTD_UNKNOWN_ATTRIBUTE -->
-      <value>"$6?6:{xmlns}": attribute not declated for element "$6?6:5"</value>
+      <value>"$6?5:{xmlns}": attribute not declared for element "$6?6:5"</value>
     </entry>
 
     <entry key="libxml_ERR_534"> <!-- XML_DTD_UNKNOWN_ELEM -->
