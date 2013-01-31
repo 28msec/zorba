@@ -96,7 +96,12 @@ NsBindingsContext::~NsBindingsContext()
 ********************************************************************************/
 size_t NsBindingsContext::alloc_size() const
 {
-  return ztd::alloc_sizeof(theBindings);
+  return ztd::alloc_sizeof( theBindings );
+}
+
+size_t NsBindingsContext::static_size() const
+{
+  return sizeof( *this );
 }
 
 

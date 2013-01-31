@@ -309,6 +309,7 @@ public:
   // store API
 
   size_t alloc_size() const;
+  size_t static_size() const;
 
   virtual store::Iterator_t getObjectKeys() const;
 
@@ -456,6 +457,7 @@ public:
   // store API
 
   size_t alloc_size() const;
+  size_t static_size() const;
 
   xs_integer getArraySize() const;
 

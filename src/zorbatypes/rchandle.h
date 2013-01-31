@@ -136,6 +136,9 @@ public:
 
   virtual ~SimpleRCObject() { }
 
+  virtual size_t alloc_size() const;
+  virtual size_t static_size() const;
+
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
 
   virtual void free() { delete this; }
@@ -149,7 +152,6 @@ public:
     if (--theRefCount == 0)
     {
       free();
-      return; 
     }
   }
 

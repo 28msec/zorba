@@ -131,6 +131,9 @@ struct my_base {
   virtual size_t alloc_size() const {
     return ztd::alloc_sizeof( s_ ) + ztd::alloc_sizeof( t_ );
   }
+  virtual size_t dynamic_size() const {
+    return sizeof( *this );
+  }
 
   string s_, t_;
 };
@@ -140,6 +143,9 @@ struct my_derived : my_base {
 
   size_t alloc_size() const {
     return my_base::alloc_size() + ztd::alloc_sizeof( s_ );
+  }
+  virtual size_t dynamic_size() const {
+    return sizeof( *this );
   }
 
   string s_;

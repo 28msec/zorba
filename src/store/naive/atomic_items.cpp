@@ -403,6 +403,10 @@ size_t UserTypedAtomicItem::alloc_size() const
         + ztd::alloc_sizeof( theTypeName );
 }
 
+size_t UserTypedAtomicItem::static_size() const
+{
+  return sizeof( *this );
+}
 
 /*******************************************************************************
   class UntypedAtomicItem
@@ -599,6 +603,11 @@ size_t UntypedAtomicItem::alloc_size() const
   return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 
+size_t UntypedAtomicItem::static_size() const
+{
+  return sizeof( *this );
+}
+
 
 bool UntypedAtomicItem::equals(
     const store::Item* other,
@@ -737,6 +746,11 @@ size_t QNameItem::alloc_size() const
         + ztd::alloc_sizeof( theNamespace )
         + ztd::alloc_sizeof( thePrefix )
         + ztd::alloc_sizeof( theLocal );
+}
+
+size_t QNameItem::static_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -879,6 +893,12 @@ size_t NotationItem::alloc_size() const
 }
 
 
+size_t NotationItem::static_size() const
+{
+  return sizeof( *this );
+}
+
+
 store::Item* NotationItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NOTATION];
@@ -935,6 +955,12 @@ uint32_t AnyUriItem::hash(long timezone, const XQPCollator* aCollation) const
 size_t AnyUriItem::alloc_size() const
 {
   return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t AnyUriItem::static_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -1861,6 +1887,11 @@ size_t StructuralAnyUriItem::alloc_size() const
         + ztd::alloc_sizeof( theEncodedValue );
 }
 
+size_t StructuralAnyUriItem::static_size() const
+{
+  return sizeof( *this );
+}
+
 
 /*******************************************************************************
   class StringItem
@@ -1869,6 +1900,11 @@ size_t StructuralAnyUriItem::alloc_size() const
 size_t StringItem::alloc_size() const
 {
   return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+size_t StringItem::static_size() const
+{
+  return sizeof( *this );
 }
 
 store::Item* StringItem::getType() const
@@ -1984,6 +2020,12 @@ StreamableStringItem::StreamableStringItem(
 size_t StreamableStringItem::alloc_size() const
 {
   return ztd::alloc_sizeof( theStreamableDependent );
+}
+
+
+size_t StreamableStringItem::static_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -2627,6 +2669,12 @@ size_t DecimalItem::alloc_size() const
 }
 
 
+size_t DecimalItem::static_size() const
+{
+  return sizeof( *this );
+}
+
+
 store::Item* DecimalItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_DECIMAL];
@@ -2682,6 +2730,11 @@ size_t IntegerItemImpl::alloc_size() const
   return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
+
+size_t IntegerItemImpl::static_size() const
+{
+  return sizeof( *this );
+}
 
 
 long IntegerItemImpl::compare( Item const *other, long,
@@ -2804,6 +2857,10 @@ size_t NonPositiveIntegerItem::alloc_size() const
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
+size_t NonPositiveIntegerItem::static_size() const
+{
+  return sizeof( *this );
+}
 
 long NonPositiveIntegerItem::compare( Item const *other, long,
                                       const XQPCollator* ) const {
@@ -2925,6 +2982,11 @@ size_t NonNegativeIntegerItem::alloc_size() const
   return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
+
+size_t NonNegativeIntegerItem::static_size() const
+{
+  return sizeof( *this );
+}
 
 long NonNegativeIntegerItem::compare( Item const *other, long,
                                       const XQPCollator* ) const {
@@ -3599,6 +3661,12 @@ size_t Base64BinaryItem::alloc_size() const
 }
 
 
+size_t Base64BinaryItem::static_size() const
+{
+  return sizeof( *this );
+}
+
+
 bool
 Base64BinaryItem::equals(
       const store::Item* other,
@@ -3862,6 +3930,12 @@ size_t HexBinaryItem::alloc_size() const
 }
 
 
+size_t HexBinaryItem::static_size() const
+{
+  return sizeof( *this );
+}
+
+
 store::Item* HexBinaryItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_HEXBINARY];
@@ -3914,6 +3988,12 @@ ErrorItem::~ErrorItem()
 size_t ErrorItem::alloc_size() const
 {
   return AtomicItem::alloc_size() + ztd::alloc_sizeof( theError );
+}
+
+
+size_t ErrorItem::static_size() const
+{
+  return sizeof( *this );
 }
 
 

@@ -254,6 +254,11 @@ size_t SimpleJSONObject::alloc_size() const
         + ztd::alloc_sizeof( thePairs );
 }
 
+size_t SimpleJSONObject::static_size() const
+{
+  return sizeof( *this );
+}
+
 /******************************************************************************
 
 *******************************************************************************/
@@ -800,6 +805,11 @@ SimpleJSONArray::~SimpleJSONArray()
 size_t SimpleJSONArray::alloc_size() const
 {
   return ztd::alloc_sizeof( theContent );
+}
+
+size_t SimpleJSONArray::static_size() const
+{
+  return sizeof( *this );
 }
 
 /******************************************************************************

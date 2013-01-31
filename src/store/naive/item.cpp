@@ -231,6 +231,12 @@ size_t Item::alloc_size() const
 }
 
 
+size_t Item::static_size() const
+{
+  return sizeof( *this );
+}
+
+
 #ifdef ZORBA_WITH_JSON
 
 bool Item::isJSONObject() const

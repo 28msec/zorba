@@ -49,22 +49,26 @@ namespace ztd {
  * amount of memory an object is using including any dynamically allocated
  * memory it has pointers to.  Hence \c mem_sizeof() takes a reference to an
  * actual object at run-time rather than only a type at compile-time like the
- * build-in C++ \c sizeof operator does.
+ * built-in C++ \c sizeof operator does.
  *
  * For all built-in types as well as arrays, structs, classes, and unions
  * composed of only built-in types, <code>mem_sizeof(t) == sizeof(t)</code>.
- * However, for a \c std::string \c s,
+ * However, for a \c std::string \c s (for example),
  * <code>mem_sizeof(s) == sizeof(s) + s.capacity() + 1</code>.
  *
- * To implement this, there has to be a distinction between
- * <em>memory size</em> (<code>mem_sizeof()</code>)
- * and <em>allocation size</em> (<code>alloc_sizeof()</code>).
- * The latter is how much \e additional memory has been dynamically allocated
- * by an object (if any).
+ * To implement this, there have to be distinctions among
+ * <em>memory size</em> (<code>mem_sizeof()</code>),
+ * <em>allocation size</em> (<code>alloc_sizeof()</code>),
+ * and <em>dynamic size</em> (<code>dynamic_sizeof()</code>).
+ * <em>Memory size</em> has already been explained.
+ *
+ * The <em>allocation size</em> is how much \e additional memory has been
+ * dynamically allocated by an object (if any).
  *
  * For all objects of built-in types as well as arrays, structs, classes, and
  * unions composed of only built-in types, <code>alloc_sizeof(t) == 0</code>
- * because those objects don't have any additional dynamically allocated memory.
+ * because those objects don't have any additional dynamically allocated
+ * memory.
  *
  * For structs and classes that \e do have additional dynamically allocated
  * memory, there has to be a way for \c alloc_sizeof() to be able to know how
@@ -72,10 +76,10 @@ namespace ztd {
  * This can be accomplished by two different methods:
  *  <ol>
  *    <li>
- *      Template partial specialization of \c size_traits.
+ *      Template partial specialization of \c alloc_size_traits.
  *    </li>
  *    <li>
- *      Adding an \c alloc_size() member function to your class.
+ *      Adding an \c alloc_size() member function to a class.
  *    </li>
  *  </ol>
  * Template partial specialization must be used
@@ -85,9 +89,9 @@ namespace ztd {
  * It also has the code for a class and its template specialization
  * in different places in the code.
  *
- * Adding an \c alloc_size() member function
- * allows you to report the precise amount of memory an object is using
- * and also has the code directly in the class.
+ * Adding an \c alloc_size() member function allows you to report the precise
+ * amount of memory an object is using and also has the code directly in the
+ * class.
  * However, it is intrusive and adds a (possibly virtual) function.
  *
  * An example of template partial specialization is for \c std::string.
@@ -95,7 +99,7 @@ namespace ztd {
  * you must use template partial specialization for it.
  * \code
  *  template<>
- *  struct size_traits<std::string> {
+ *  struct alloc_size_traits<std::string> {
  *    static size_t alloc_sizeof( std::string const &s ) {
  *      return s.capacity() + 1;
  *    }
@@ -138,9 +142,11 @@ namespace ztd {
  *    </li>
  *  </ul>
  *
- * If a class has derived classes
+ * If a class has one or more derived classes
  * (and at least one derived class allocates additional memory
- * or contains a data member that does),
+ * or contains a data member that does)
+ * and you refer to objects of derived classes via base class references
+ * or pointers,
  * then:
  *  <ol>
  *    <li>
@@ -148,7 +154,7 @@ namespace ztd {
  *      (It need not be otherwise.)
  *    </li>
  *    <li>
- *      A given derived class must also implement of \c alloc_size()
+ *      A derived class must also implement of \c alloc_size()
  *      (but only if it allocates additional memory
  *      or contains a data member that does)
  *      and it must call its base class's implementation.
@@ -166,6 +172,33 @@ namespace ztd {
  *    std::string u;
  *  };
  * \endcode
+ *
+ * The <em>dynamic size</em> is the size of an object's run-time type (similar
+ * to \c dynamic_cast casting to an object's run-time type).
+ * Dynamic size is only necessary for objects in a class hierarchy
+ * and you refer to objects of derived classes via base class references
+ * or pointers.
+ *
+ * Implementing dynamic size is always done by adding a virtual
+ * \c dynamic_size() member function:
+ * \code
+ *  class my_class {
+ *  public:
+ *    // ...
+ *    virtual size_t dynamic_size() const {
+ *      return sizeof( *this );
+ *    }
+ *  };
+ *
+ *  class my_derived_class : public my_class {
+ *  public:
+ *    // ...
+ *    size_t dynamic_size() const {
+ *      return sizeof( *this );
+ *    }
+ *  };
+ * \endcode
+ * The body of the function is \e always as shown.
  */
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -179,7 +212,7 @@ namespace ztd {
  * @tparam T The type to test.
  */
 template<typename T>
-class has_alloc_size : zorba::internal::ztd::sfinae_base {
+class has_alloc_size : ::zorba::internal::ztd::sfinae_base {
   template<typename SignatureType,SignatureType> struct type_check;
 
   template<typename U>
@@ -199,8 +232,38 @@ public:
 };
 
 /**
- * Size traits for classes that have an \c alloc_size() member function having
- * the signature:
+ * Tests the given type to see if it's a class that has a member function
+ * named \c dynamic_size having the signature:
+ * \code
+ *  size_t (T::*)() const
+ * \endcode
+ * @tparam T The type to test.
+ */
+template<typename T>
+class has_dynamic_size : ::zorba::internal::ztd::sfinae_base {
+  template<typename SignatureType,SignatureType> struct type_check;
+
+  template<typename U>
+  static yes& test( type_check<size_t (U::*)() const,&U::dynamic_size>* );
+
+  template<typename U>
+  static no& test( ... );
+
+  //
+  // The struct and friend declaration below suppress the "all member functions
+  // are private" warning.
+  //
+  struct suppress_warning;
+  friend struct suppress_warning;
+public:
+  static bool const value = sizeof( test<T>(0) ) == sizeof( yes );
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Allocation size for classes that have an \c alloc_size() member function
+ * having the signature:
  * \code
  *  size_t (T::*)() const
  * \endcode
@@ -208,22 +271,83 @@ public:
  * @tparam T The type to use.
  */
 template<typename T,bool = has_alloc_size<T>::value>
-struct size_traits {
+struct alloc_size_traits {
   static size_t alloc_sizeof( T const &t ) {
     return t.alloc_size();
   }
 };
 
 /**
- * Specialization for any non-pointer type.
+ * Allocation size specialization for all types that do not have an
+ * \c alloc_size() member function having the signature:
+ * \code
+ *  size_t (T::*)() const
+ * \endcode
+ *
  * @tparam T The type to use.
  */
 template<typename T>
-struct size_traits<T,false> {
+struct alloc_size_traits<T,false> {
   static size_t alloc_sizeof( T const& ) {
     return 0;
   }
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Static size for classes that have a \c dynamic_size() member function having
+ * the signature:
+ * \code
+ *  size_t (T::*)() const
+ * \endcode
+ *
+ * @tparam T The type to use.
+ */
+template<typename T,bool = has_dynamic_size<T>::value>
+struct dynamic_size_traits {
+  static size_t dynamic_sizeof( T const &t ) {
+    return t.dynamic_size();
+  }
+};
+
+/**
+ * Static size specialization for all types that do not have a
+ * \c dynamic_size() member function having the signature:
+ * \code
+ *  size_t (T::*)() const
+ * \endcode
+ *
+ * @tparam T The type to use.
+ */
+template<typename T>
+struct dynamic_size_traits<T,false> {
+  static size_t dynamic_sizeof( T const& ) {
+    return sizeof( T );
+  }
+};
+
+/**
+ * Specialization for pointer types.
+ * @tparam T A pointer type.
+ */
+template<typename T>
+struct dynamic_size_traits<T*,false> {
+  static size_t dynamic_sizeof( T* ) {
+    return 0;
+  }
+};
+
+/**
+ * Combined traits.
+ *
+ * @tparam T The type to use.
+ */
+template<typename T>
+struct size_traits : alloc_size_traits<T>, dynamic_size_traits<T> {
+};
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * Gets the size of all the object's additional data.
@@ -238,6 +362,18 @@ inline size_t alloc_sizeof( T const &t ) {
 }
 
 /**
+ * Gets the size of the object itself.
+ * It does \e not include the size of an object's additional data.
+ *
+ * @tparam T The type to get the data size of.
+ * @param t An instance of \a T to get the size of.
+ */
+template<typename T>
+inline size_t dynamic_sizeof( T const &t ) {
+  return size_traits<T>::dynamic_sizeof( t );
+}
+
+/**
  * Gets the total memory size of an object.
  *
  * @tparam T The type to get the memory size of.
@@ -245,15 +381,17 @@ inline size_t alloc_sizeof( T const &t ) {
  */
 template<typename T>
 inline size_t mem_sizeof( T const &t ) {
-  return sizeof( T ) + alloc_sizeof( t );
+  return dynamic_sizeof( t ) + alloc_sizeof( t );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * Specialization for pointer types.
  * @tparam T A pointer type.
  */
 template<typename T>
-struct size_traits<T*,false> {
+struct alloc_size_traits<T*,false> {
   static size_t alloc_sizeof( T *p ) {
     return p ? mem_sizeof( *p ) : 0;
   }
@@ -263,26 +401,26 @@ struct size_traits<T*,false> {
  * Specialization for <code>char const*</code>.
  */
 template<>
-struct size_traits<char const*> {
+struct alloc_size_traits<char const*> {
   static size_t alloc_sizeof( char const *s ) {
     return s ? std::strlen( s ) + 1 /* terminating null */ : 0;
   }
 };
 
-////////// C++ Specializations ////////////////////////////////////////////////
+////////// C++ Standard Library Specializations ///////////////////////////////
 
 /**
  * Specialization for std::string.
  */
 template<>
-struct size_traits<std::string> {
+struct alloc_size_traits<std::string> {
   static size_t alloc_sizeof( std::string const &s ) {
     return s.capacity() + 1;
   }
 };
 
 /**
- * Size traits for a MapType.
+ * Allocation size traits for a MapType.
  * (This is a base class used by other specializations.)
  */
 template<class MapType>
@@ -301,7 +439,7 @@ private:
 };
 
 /**
- * Size traits for a SequenceType.
+ * Allocation size traits for a SequenceType.
  * (This is a base class used by other specializations.)
  */
 template<class SequenceType>
@@ -318,7 +456,7 @@ struct sequence_size_traits {
  * Specialization for std::deque.
  */
 template<typename T,class Alloc>
-struct size_traits<std::deque<T,Alloc>,false> :
+struct alloc_size_traits<std::deque<T,Alloc>,false> :
   sequence_size_traits< std::deque<T,Alloc> >
 {
 };
@@ -327,7 +465,7 @@ struct size_traits<std::deque<T,Alloc>,false> :
  * Specialization for std::list.
  */
 template<typename T,class Alloc>
-struct size_traits<std::list<T,Alloc>,false> :
+struct alloc_size_traits<std::list<T,Alloc>,false> :
   sequence_size_traits< std::list<T,Alloc> >
 {
 };
@@ -335,8 +473,8 @@ struct size_traits<std::list<T,Alloc>,false> :
 /**
  * Specialization for std::map.
  */
-template<typename K,typename V,typename Comp,class Alloc>
-struct size_traits<std::map<K,V,Comp,Alloc>,false> :
+template<typename K,typename V,class Comp,class Alloc>
+struct alloc_size_traits<std::map<K,V,Comp,Alloc>,false> :
   map_size_traits< std::map<K,V,Comp,Alloc> >
 {
   typedef std::map<K,V,Comp,Alloc> sized_type;
@@ -352,7 +490,7 @@ struct size_traits<std::map<K,V,Comp,Alloc>,false> :
  * Specialization for std::pair.
  */
 template<typename T,typename U>
-struct size_traits<std::pair<T,U>,false> {
+struct alloc_size_traits<std::pair<T,U>,false> {
   static size_t alloc_sizeof( std::pair<T,U> const &p ) {
     // yes, alloc_sizeof() is correct here
     return ztd::alloc_sizeof( p.first ) + ztd::alloc_sizeof( p.second );
@@ -363,7 +501,7 @@ struct size_traits<std::pair<T,U>,false> {
  * Specialization for std::set.
  */
 template<typename T,class Comp,class Alloc>
-struct size_traits<std::set<T,Comp,Alloc>,false> :
+struct alloc_size_traits<std::set<T,Comp,Alloc>,false> :
   sequence_size_traits< std::set<T,Comp,Alloc> >
 {
   typedef std::set<T,Comp,Alloc> sized_type;
@@ -379,7 +517,7 @@ struct size_traits<std::set<T,Comp,Alloc>,false> :
  * Specialization for std::stack.
  */
 template<typename T,class Container>
-struct size_traits<std::stack<T,Container>,false> :
+struct alloc_size_traits<std::stack<T,Container>,false> :
   sequence_size_traits< std::stack<T,Container> >
 {
 };
@@ -388,7 +526,7 @@ struct size_traits<std::stack<T,Container>,false> :
  * Specialization for std::unique_ptr.
  */
 template<typename T,class D>
-struct size_traits<std::unique_ptr<T,D>,false> {
+struct alloc_size_traits<std::unique_ptr<T,D>,false> {
   static size_t alloc_sizeof( std::unique_ptr<T,D> const &p ) {
     return p ? mem_sizeof( *p ) : 0;
   }
@@ -398,7 +536,7 @@ struct size_traits<std::unique_ptr<T,D>,false> {
  * Specialization for std::unordered_map.
  */
 template<typename K,typename V,class Hash,class Equal,class Alloc>
-struct size_traits<std::unordered_map<K,V,Hash,Equal,Alloc>,false> :
+struct alloc_size_traits<std::unordered_map<K,V,Hash,Equal,Alloc>,false> :
   map_size_traits< std::unordered_map<K,V,Hash,Equal,Alloc> >
 {
   typedef std::unordered_map<K,V,Hash,Equal,Alloc> sized_type;
@@ -414,7 +552,7 @@ struct size_traits<std::unordered_map<K,V,Hash,Equal,Alloc>,false> :
  * Specialization for std::unordered_set.
  */
 template<typename K,class Hash,class Equal,class Alloc>
-struct size_traits<std::unordered_set<K,Hash,Equal,Alloc>,false> :
+struct alloc_size_traits<std::unordered_set<K,Hash,Equal,Alloc>,false> :
   sequence_size_traits< std::unordered_set<K,Hash,Equal,Alloc> >
 {
   typedef std::unordered_set<K,Hash,Equal,Alloc> sized_type;
@@ -430,7 +568,7 @@ struct size_traits<std::unordered_set<K,Hash,Equal,Alloc>,false> :
  * Specialization for std::vector.
  */
 template<typename T,class Alloc>
-struct size_traits<std::vector<T,Alloc>,false> :
+struct alloc_size_traits<std::vector<T,Alloc>,false> :
   sequence_size_traits< std::vector<T,Alloc> >
 {
   typedef std::vector<T,Alloc> sized_type;
@@ -447,7 +585,7 @@ struct size_traits<std::vector<T,Alloc>,false> :
  * Specialization for ItemHandle.
  */
 template<class T>
-struct size_traits<store::ItemHandle<T>,false> {
+struct alloc_size_traits<store::ItemHandle<T>,false> {
   static size_t alloc_sizeof( store::ItemHandle<T> const &h ) {
     return h.getp() ? mem_sizeof( *h ) : 0;
   }
@@ -457,7 +595,7 @@ struct size_traits<store::ItemHandle<T>,false> {
  * Specialization for rstring.
  */
 template<class RepType>
-struct size_traits<rstring<RepType>,false> {
+struct alloc_size_traits<rstring<RepType>,false> {
   static size_t alloc_sizeof( rstring<RepType> const &s ) {
     return s.capacity() + 1 + (s.is_shared() ? 0 : sizeof( RepType ));
   }
@@ -467,7 +605,7 @@ struct size_traits<rstring<RepType>,false> {
  * Specialization for rchandle.
  */
 template<class T>
-struct size_traits<rchandle<T>,false> {
+struct alloc_size_traits<rchandle<T>,false> {
   static size_t alloc_sizeof( rchandle<T> const &h ) {
     return h.getp() ? mem_sizeof( *h ) : 0;
   }
@@ -477,7 +615,7 @@ struct size_traits<rchandle<T>,false> {
  * Specialization for HashMap.
  */
 template<typename T,typename V,class C>
-struct size_traits<HashMap<T,V,C>,false> {
+struct alloc_size_traits<HashMap<T,V,C>,false> {
   static size_t alloc_sizeof( HashMap<T,V,C> const &m ) {
     size_t total_size = 0;
     for ( typename HashMap<T,V,C>::const_iterator

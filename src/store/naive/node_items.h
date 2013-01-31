@@ -586,6 +586,7 @@ protected:
 
 public:
   size_t alloc_size() const;
+  size_t static_size() const;
 
   XmlNode* getNode() const { return theNode.getp(); }
 
@@ -652,6 +653,7 @@ protected:
 
 public:
   size_t alloc_size() const;
+  size_t static_size() const;
 
   const OrdPath& getOrdPath() const { return theOrdPath; }
 
@@ -766,6 +768,7 @@ public:
   //
 
   size_t alloc_size() const;
+  size_t static_size() const;
 
   // To be used by the loader ONLY!
   NodeVector& nodes() { return theNodes; }
@@ -910,6 +913,7 @@ public:
   //
 
   size_t alloc_size() const;
+  size_t static_size() const;
 
   store::Item* getType() const;
 
@@ -1003,6 +1007,7 @@ public:
   // Item methods
   //
   size_t alloc_size() const;
+  size_t static_size() const;
 
   store::Item* getNodeName() const { return theName.getp(); }
 
@@ -1195,6 +1200,7 @@ public:
   //
 
   size_t alloc_size() const;
+  size_t static_size() const;
 
   store::Item* getNodeName() const { return theName.getp(); }
 
@@ -1348,6 +1354,7 @@ public:
   //
 
   size_t alloc_size() const;
+  size_t static_size() const;
 
   store::Item* getType() const;
 
@@ -1482,6 +1489,7 @@ protected:
 
 public:
   size_t alloc_size() const;
+  size_t static_size() const;
 
   XmlNode* copyInternal(
         InternalNode* rootParent,
@@ -1550,6 +1558,7 @@ protected:
 
 public:
   size_t alloc_size() const;
+  size_t static_size() const;
 
   XmlNode* copyInternal(
         InternalNode* rootParent,
