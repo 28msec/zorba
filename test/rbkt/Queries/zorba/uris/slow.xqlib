@@ -3,7 +3,7 @@
 (: unless the http-uri-resolution feature is disabled. :)
 module namespace slow = "http://www.zorba-xquery.com/test/uris/slow";
 
-import schema "http://www.w3.org/";
+import schema "http://www.w3.org/" at "bogus2.xsd";
 
 declare function slow:ok() as xs:string
 {

@@ -132,6 +132,38 @@ public:
 
 /**
  * 
+ *    function for converting seconds since epoch to an xs:dateTime
+ *  
+ * Author: Zorba Team
+ */
+class MillisToDateTime : public NaryBaseIterator<MillisToDateTime, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(MillisToDateTime);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MillisToDateTime,
+    NaryBaseIterator<MillisToDateTime, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  MillisToDateTime(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<MillisToDateTime, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~MillisToDateTime();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *    function for parsing strings into a date
  *  
  * Author: Zorba Team

@@ -1,0 +1,101 @@
+
+module namespace data = "www.data.com";
+
+import module namespace ddl = 
+"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+
+import module namespace dml = 
+"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+import module namespace iddl = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+
+import module namespace idml = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
+import module namespace doc = 
+"http://www.zorba-xquery.com/modules/store/dynamic/documents";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+declare construction strip;
+
+
+declare collection data:parents;
+
+declare variable $data:parents as xs:QName := xs:QName('data:parents');
+
+
+declare %private %an:automatic %an:value-equality %an:unique index data:idx
+  on nodes dml:collection(xs:QName('data:parents'))
+  by @uri as xs:string,
+     @child as xs:string;
+
+declare variable $data:idx as xs:QName := xs:QName('data:idx');
+
+
+declare %an:sequential function 
+data:add-document(
+    $docURI as xs:anyURI,
+    $overwrite as xs:boolean) as empty-sequence()
+{
+  variable $doc-uri := substring-after($docURI, "http://www.xmlteam.com");
+  variable $segments := tokenize($doc-uri, "/");
+
+  for $segment at $i in $segments
+  let $parent := string-join(subsequence($segments, 1, $i - 1), "/")
+  let $child := string-join(subsequence($segments, 1, $i), "/")
+  where $i gt 1 and empty(for $p in dml:collection($data:parents)
+                          where $p/@uri eq $parent and $p/@child eq $child
+                          return $p)
+  return 
+  {
+    dml:insert-nodes($data:parents, <parent uri="{$parent}" child="{$child}"/>);
+  }
+
+  if ($overwrite and data:doc-exists($doc-uri)) then
+    data:remove-document($docURI);
+  else
+    ();
+};
+
+
+declare %an:sequential function 
+data:remove-document($docURI as xs:anyURI) as empty-sequence()
+{
+  let $uri := substring-after(trace($docURI, "uri"), "http://www.xmlteam.com")
+
+  let $tokens := tokenize($uri, "/")
+
+  let $parent-uri := string-join(subsequence($tokens, 1, count($tokens) - 1), "/")
+
+  let $child-uri := string-join($tokens, "/")
+
+  let $parent := for $p in dml:collection($data:parents)
+                 where $p/@uri eq $parent-uri and $p/@child eq $child-uri
+                 return $p
+  return 
+  {
+    trace($parent-uri, "parent");
+    trace($child-uri, "child");
+    dml:delete-nodes($parent);
+  }
+};
+
+
+declare function 
+data:doc-exists($docURI as xs:string) as xs:boolean
+{
+  if (try
+      {
+        doc:document($docURI)
+      }
+      catch *
+      {
+        ()
+      })
+  then
+    true()
+  else
+    false()
+};

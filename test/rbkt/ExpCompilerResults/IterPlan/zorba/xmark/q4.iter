@@ -31,82 +31,64 @@ Iterator tree for main query:
         </ChildAxisIterator>
       </ChildAxisIterator>
     </ForVariable>
-    <LetVariable name="$$opt_temp_0" materialize="true">
-      <HoistIterator>
-        <flwor::FLWORIterator>
-          <ForVariable name="$$context-item">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
-              <ForVarIterator varname="b"/>
-            </ChildAxisIterator>
-          </ForVariable>
-          <ForVariable name="$$context-item">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
-              <ForVarIterator varname="$$context-item"/>
-            </ChildAxisIterator>
-          </ForVariable>
-          <WhereClause>
-            <CompareIterator>
-              <FnDataIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="$$context-item"/>
-                </AttributeAxisIterator>
-              </FnDataIterator>
-              <SingletonIterator value="xs:string(person51)"/>
-            </CompareIterator>
-          </WhereClause>
-          <ReturnClause>
-            <ForVarIterator varname="$$context-item"/>
-          </ReturnClause>
-        </flwor::FLWORIterator>
-      </HoistIterator>
-    </LetVariable>
     <WhereClause>
       <FnExistsIterator>
-        <flwor::FLWORIterator>
-          <ForVariable name="pr1">
-            <flwor::FLWORIterator>
-              <ForVariable name="$$context-item">
-                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="b"/>
-                </ChildAxisIterator>
-              </ForVariable>
-              <ForVariable name="$$context-item">
+        <flwor::TupleStreamIterator>
+          <flwor::WhereIterator>
+            <flwor::WhereIterator>
+              <flwor::ForIterator>
+                <ForVariable name="$$context-item"/>
+                <flwor::ForIterator>
+                  <ForVariable name="$$context-item"/>
+                  <flwor::WhereIterator>
+                    <flwor::ForIterator>
+                      <ForVariable name="$$context-item"/>
+                      <flwor::ForIterator>
+                        <ForVariable name="$$context-item"/>
+                        <flwor::TupleSourceIterator/>
+                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="b"/>
+                        </ChildAxisIterator>
+                      </flwor::ForIterator>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </flwor::ForIterator>
+                    <CompareIterator>
+                      <FnDataIterator>
+                        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="$$context-item"/>
+                        </AttributeAxisIterator>
+                      </FnDataIterator>
+                      <SingletonIterator value="xs:string(person20)"/>
+                    </CompareIterator>
+                  </flwor::WhereIterator>
+                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="b"/>
+                  </ChildAxisIterator>
+                </flwor::ForIterator>
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
                   <ForVarIterator varname="$$context-item"/>
                 </ChildAxisIterator>
-              </ForVariable>
-              <WhereClause>
-                <CompareIterator>
-                  <FnDataIterator>
-                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                      <ForVarIterator varname="$$context-item"/>
-                    </AttributeAxisIterator>
-                  </FnDataIterator>
-                  <SingletonIterator value="xs:string(person20)"/>
-                </CompareIterator>
-              </WhereClause>
-              <ReturnClause>
-                <ForVarIterator varname="$$context-item"/>
-              </ReturnClause>
-            </flwor::FLWORIterator>
-          </ForVariable>
-          <ForVariable name="pr2">
-            <UnhoistIterator>
-              <LetVarIterator varname="$$opt_temp_0"/>
-            </UnhoistIterator>
-          </ForVariable>
-          <WhereClause>
+              </flwor::ForIterator>
+              <CompareIterator>
+                <FnDataIterator>
+                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </AttributeAxisIterator>
+                </FnDataIterator>
+                <SingletonIterator value="xs:string(person51)"/>
+              </CompareIterator>
+            </flwor::WhereIterator>
             <FnBooleanIterator>
               <NodeBeforeIterator>
-                <ForVarIterator varname="pr1"/>
-                <ForVarIterator varname="pr2"/>
+                <ForVarIterator varname="$$context-item"/>
+                <ForVarIterator varname="$$context-item"/>
               </NodeBeforeIterator>
             </FnBooleanIterator>
-          </WhereClause>
-          <ReturnClause>
-            <SingletonIterator value="xs:boolean(true)"/>
-          </ReturnClause>
-        </flwor::FLWORIterator>
+          </flwor::WhereIterator>
+          <SingletonIterator value="xs:boolean(true)"/>
+        </flwor::TupleStreamIterator>
       </FnExistsIterator>
     </WhereClause>
     <ReturnClause>

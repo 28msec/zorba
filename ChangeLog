@@ -1,5 +1,33 @@
 Zorba - The XQuery Processor
 
+version 2.9
+
+New Features:
+  * Typeswitch expression extended to allow union of types in each case clause,
+    as specified by XQuery v3.0
+  * Extended sequence types to include unions, as specified by XQuery v3.0
+  * Added millis-to-dateTime() function in datetime module.
+
+Optimizations:
+
+Bug Fixes/Other Changes:
+  * Fixed bug #1095889 (Improve error message for xml-parsing error).
+  * NaN items are considered equal to each other during grouping
+
+
+version 2.9
+
+Bug Fixes/Other Changes:
+  * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
+  * Fixed bug #1099535  (xml:parse endless loop)
+
+
+
+version 2.9
+
+Bug Fixes/Other Changes:
+  * Fixed bug #866958  (Parsing error not explicit enough)
+
 
 version 2.8
 
@@ -31,27 +59,28 @@ Optimizations:
   * Fixed iteration over the components of a window clause; this improves static
     type computation of expressions referencing window vars.
   * No need to cast xs:untypedAtomic to xs:string in order-by expression.
-  * Convert LET variables whose domain sequence has exactly one item to FOR vars.
+  * Convert LET variables whose domain sequence has exactly one item to FOR
+    vars.
 
 Bug Fixes/Other Changes:
   * Fixed bug #949064  (faulty QName should be printed in the error message)
   * Fixed bug #1072644 (broken parser error location)
   * Fixed bug #868640 (Node lifetime is shorter than expected due to let
-      variable inlining)
+    variable inlining)
   * Fixed bugs #1081626 (Segmentation fault in a side-effecting FLWOR),
-      #1079488 (streaming segfault)
+    #1079488 (streaming segfault)
   * Fixed bug #1062093 (bug in var reference iterators with an associated
-      position that is negative)
+    position that is negative)
   * Fixed bug #1073978 (FOTS: option default ns not supported)
   * Fixed bug #1061222 (bad message for errors in index key type declaration)
   * Fixed bug #1065175 (preceding::node()[1] returns wrong results)
   * Fixed bug #1065321 (following:text() doesn't return results in doc order)
   * Fixed bug #1067706 (wrong const folding in mutually recursive udfs)
-  * Fixed bug #1021492 (while computing the "sources" of a prolog var, skip
-      any var-setting exprs that appear in non-used (and non-optimized) functions).
+  * Fixed bug #1021492 (while computing the "sources" of a prolog var, skip any
+    var-setting exprs that appear in non-used (and non-optimized) functions).
   * Fixed bug #1070551 (zerr:ZOSE0003 stream read failure)
   * Fixed bug #992304 (Compiling library modules could load data from wrong
-    source)
+    source).
   * Fixed bug #1043294 (XQST0036 not used in XQuery 3.0).
   * Fixed bug in castable expr when the target type is xs:QName.
   * Fixed bug in testing if a sequence type is subtype of node(xs:untyped)

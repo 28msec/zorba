@@ -526,7 +526,7 @@ flwor_wincond* flwor_wincond::clone(
 /*******************************************************************************
 
 ********************************************************************************/
-group_clause::group_clause(
+groupby_clause::groupby_clause(
      static_context* sctx,
      CompilerCB* ccb,
      const QueryLoc& loc,
@@ -534,7 +534,7 @@ group_clause::group_clause(
      const rebind_list_t& ngvars,
      const std::vector<std::string>& collations)
   :
-  flwor_clause(sctx, ccb, loc, flwor_clause::group_clause),
+  flwor_clause(sctx, ccb, loc, flwor_clause::groupby_clause),
   theGroupVars(gvars),
   theNonGroupVars(ngvars),
   theCollations(collations)
@@ -543,14 +543,22 @@ group_clause::group_clause(
   csize numNGVars = theNonGroupVars.size();
 
   for (csize i = 0; i < numGVars; ++i)
+  {
+    expr::checkSimpleExpr(theGroupVars[i].first);
+
     theGroupVars[i].second->set_flwor_clause(this);
+  }
 
   for (csize i = 0; i < numNGVars; ++i)
+  {
+    expr::checkSimpleExpr(theNonGroupVars[i].first);
+
     theNonGroupVars[i].second->set_flwor_clause(this);
+  }
 }
 
 
-group_clause::~group_clause()
+groupby_clause::~groupby_clause()
 {
   csize numGVars = theGroupVars.size();
   csize numNGVars = theNonGroupVars.size();
@@ -563,7 +571,7 @@ group_clause::~group_clause()
 }
 
 
-expr* group_clause::get_input_for_group_var(const var_expr* var)
+expr* groupby_clause::get_input_for_group_var(const var_expr* var)
 {
   csize numVars = theGroupVars.size();
   for (csize i = 0; i < numVars; ++i)
@@ -576,7 +584,7 @@ expr* group_clause::get_input_for_group_var(const var_expr* var)
 }
 
 
-expr* group_clause::get_input_for_nongroup_var(const var_expr* var)
+expr* groupby_clause::get_input_for_nongroup_var(const var_expr* var)
 {
   csize numVars = theNonGroupVars.size();
   for (csize i = 0; i < numVars; ++i)
@@ -589,7 +597,7 @@ expr* group_clause::get_input_for_nongroup_var(const var_expr* var)
 }
 
 
-flwor_clause* group_clause::clone(
+flwor_clause* groupby_clause::clone(
     user_function* udf,
     expr::substitution_t& subst) const
 {
@@ -626,7 +634,7 @@ flwor_clause* group_clause::clone(
     subst[theNonGroupVars[i].second] = cloneNonGroupVars[i].second;
   }
 
-  return theCCB->theEM->create_group_clause(theContext,
+  return theCCB->theEM->create_groupby_clause(theContext,
                                             get_loc(),
                                             cloneGroupVars,
                                             cloneNonGroupVars,
@@ -788,7 +796,6 @@ flwor_expr::flwor_expr(
     bool general)
   :
   expr(ccb, sctx, udf, loc, (general ? gflwor_expr_kind : flwor_expr_kind)),
-  theIsGeneral(general),
   theHasSequentialClauses(false),
   theReturnExpr(NULL)
 {
@@ -934,13 +941,13 @@ expr* flwor_expr::get_where() const
 /*******************************************************************************
   For simple flwor only.
 ********************************************************************************/
-group_clause* flwor_expr::get_group_clause() const
+groupby_clause* flwor_expr::get_group_clause() const
 {
   csize numClauses = num_clauses();
   for (csize i = 0; i < numClauses; ++i)
   {
-    if (theClauses[i]->get_kind() == flwor_clause::group_clause)
-      return reinterpret_cast<group_clause*>(theClauses[i]);
+    if (theClauses[i]->get_kind() == flwor_clause::groupby_clause)
+      return static_cast<groupby_clause*>(theClauses[i]);
   }
 
   return NULL;
@@ -1011,7 +1018,7 @@ long flwor_expr::defines_variable(const var_expr* v) const
   Returns a set containing all the variables defined by the clauses of this
   flwor expr.
 ******************************************************************************/
-void flwor_expr::get_vars(expr::FreeVars& vars) const
+void flwor_expr::get_vars(std::vector<var_expr*>& vars) const
 {
   csize numClauses = num_clauses();
 
@@ -1025,34 +1032,34 @@ void flwor_expr::get_vars(expr::FreeVars& vars) const
     {
       const for_clause* fc = static_cast<const for_clause *>(&c);
 
-      vars.insert(fc->get_var());
+      vars.push_back(fc->get_var());
 
       if (fc->get_pos_var() != NULL)
-        vars.insert(fc->get_pos_var());
+        vars.push_back(fc->get_pos_var());
 
       break;
     }
     case flwor_clause::let_clause:
     {
       const let_clause* lc = static_cast<const let_clause *>(&c);
-      vars.insert(lc->get_var());
+      vars.push_back(lc->get_var());
       break;
     }
     case flwor_clause::window_clause:
     {
       const window_clause* wc = static_cast<const window_clause *>(&c);
 
-      vars.insert(wc->get_var());
+      vars.push_back(wc->get_var());
 
       if (wc->get_win_start() != NULL)
       {
         const flwor_wincond* cond = wc->get_win_start();
         const flwor_wincond::vars& condvars = cond->get_out_vars();
 
-        if (condvars.posvar != NULL) vars.insert(condvars.posvar);
-        if (condvars.curr != NULL) vars.insert(condvars.curr);
-        if (condvars.prev != NULL) vars.insert(condvars.prev);
-        if (condvars.next != NULL) vars.insert(condvars.next);
+        if (condvars.posvar != NULL) vars.push_back(condvars.posvar);
+        if (condvars.curr != NULL) vars.push_back(condvars.curr);
+        if (condvars.prev != NULL) vars.push_back(condvars.prev);
+        if (condvars.next != NULL) vars.push_back(condvars.next);
       }
 
       if (wc->get_win_stop() != NULL)
@@ -1060,24 +1067,24 @@ void flwor_expr::get_vars(expr::FreeVars& vars) const
         const flwor_wincond* cond = wc->get_win_stop();
         const flwor_wincond::vars& condvars = cond->get_out_vars();
 
-        if (condvars.posvar != NULL) vars.insert(condvars.posvar);
-        if (condvars.curr != NULL) vars.insert(condvars.curr);
-        if (condvars.prev != NULL) vars.insert(condvars.prev);
-        if (condvars.next != NULL) vars.insert(condvars.next);
+        if (condvars.posvar != NULL) vars.push_back(condvars.posvar);
+        if (condvars.curr != NULL) vars.push_back(condvars.curr);
+        if (condvars.prev != NULL) vars.push_back(condvars.prev);
+        if (condvars.next != NULL) vars.push_back(condvars.next);
       }
 
       break;
     }
-    case flwor_clause::group_clause:
+    case flwor_clause::groupby_clause:
     {
-      const group_clause* gc = static_cast<const group_clause *>(&c);
+      const groupby_clause* gc = static_cast<const groupby_clause *>(&c);
 
       flwor_clause::rebind_list_t::const_iterator ite = gc->beginGroupVars();
       flwor_clause::rebind_list_t::const_iterator end = gc->endGroupVars();
 
       for (; ite != end; ++ite)
       {
-        vars.insert((*ite).second);
+        vars.push_back((*ite).second);
       }
 
       ite = gc->beginNonGroupVars();
@@ -1085,7 +1092,7 @@ void flwor_expr::get_vars(expr::FreeVars& vars) const
 
       for (; ite != end; ++ite)
       {
-        vars.insert((*ite).second);
+        vars.push_back((*ite).second);
       }
 
       break;
@@ -1093,7 +1100,7 @@ void flwor_expr::get_vars(expr::FreeVars& vars) const
     case flwor_clause::count_clause:
     {
       const count_clause* cc = static_cast<const count_clause *>(&c);
-      vars.insert(cc->get_var());
+      vars.push_back(cc->get_var());
       break;
     }
     default:
