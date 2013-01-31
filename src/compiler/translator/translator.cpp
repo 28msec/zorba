@@ -2525,6 +2525,11 @@ expr* generate_fn_body(
   
   switch (f->getKind())
   {
+    case FunctionConsts::FN_POSITION_0:
+    {
+      resultExpr = lookup_ctx_var(DOT_POS_VARNAME, loc);
+      break;
+    }
     case FunctionConsts::FN_HEAD_1:
     {
       arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer::one()));
@@ -3494,6 +3499,10 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
         flwor->set_return_expr(generate_fn_body(f, arguments, loc));
         
         body = flwor;
+
+        if (flwor->num_clauses() == 0)
+          body = flwor->get_return_expr();
+
         break;
       }
       default:
@@ -12064,9 +12073,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   
   std::vector<expr*> dotVars;
   if (lookup_var(getDotVarName(), loc, false))
-  {
     dotVars.push_back(DOT_REF);
-  }
 
   expr* dynFuncInvocation =
   theExprManager->create_dynamic_function_invocation_expr(theRootSctx, theUDF,

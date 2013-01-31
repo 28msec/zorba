@@ -181,8 +181,8 @@ bool DynamicFnCallIterator::nextImpl(
   bool isObjectNav;
   bool selectorError;
 #endif
-  
-  TypeManager* tm = theSctx->get_typemanager(); // TODO: delete this when theCoercionTargetType is removed
+
+  TypeManager* tm = theSctx->get_typemanager();
 
   DynamicFnCallIteratorState* state;
 
@@ -209,42 +209,6 @@ bool DynamicFnCallIterator::nextImpl(
 
     fnItem = static_cast<FunctionItem*>(targetItem.getp());
 
-    // std::cerr << "--> " << this->toString() << " nextImpl() theChildren.size(): " << theChildren.size() << " fnItem arity: " << fnItem->getArity() << " fnItem var count: " << fnItem->getVariablesIterators().size() << std::endl;
-
-    // if (theCoercionTargetType.getp())
-    {
-      xqtref_t fnItemType = tm->create_value_type(fnItem, loc);
-
-      /*
-      std::cerr << "--> dynamic fncall nextImpl(): " << theId << std::endl
-                << "    fnItemType: " << fnItemType->toString() << std::endl
-                << "    coercionType: " << (theCoercionTargetType.getp()? theCoercionTargetType->toString() : "NULL") << std::endl;
-      if (theCoercionTargetType.getp())
-      {
-        std::cerr << "    fnItemType subtype of coercionType? " << TypeOps::is_subtype(tm, *fnItemType, *theCoercionTargetType, loc) << std::endl;
-        std::cerr << "    coercionType subtype of fnItemType? " << TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc) << std::endl;
-        std::cerr << "    fnItem subtype of coercionType? " << TypeOps::is_subtype(tm, fnItem, *theCoercionTargetType, loc) << std::endl;
-        std::cerr << "    fnItem treatable as coercionType? " << TypeOps::is_treatable(tm, fnItem, *theCoercionTargetType, loc) << std::endl;
-        
-        std::cerr << "    fnItemType subtype of coercionType ignoring return? " << 
-                     static_cast<const FunctionXQType*>(fnItemType.getp())->is_subtype(tm, *static_cast<const FunctionXQType*>(theCoercionTargetType.getp()), true) << std::endl;
-      }
-      */
-      
-      // if (!TypeOps::is_subtype(tm, *theCoercionTargetType, *fnItemType, loc))
-      // if (!TypeOps::is_subtype(tm, *fnItemType, *theCoercionTargetType, loc))
-      // if ( ! static_cast<const FunctionXQType*>(fnItemType.getp())->is_subtype(tm, *static_cast<const FunctionXQType*>(theCoercionTargetType.getp()), true))
-      {
-        /*
-        RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
-                  theCoercionTargetType->toSchemaString(),
-                  fnItemType->toSchemaString()));
-        */
-      }
-    }
-
-
     if (( ! fnItem->needsContextItem() && theChildren.size() - 1 - theDotVarsCount != fnItem->getArity())
         ||
         (fnItem->needsContextItem() && theChildren.size() - 1 != fnItem->getArity()))
@@ -262,8 +226,7 @@ bool DynamicFnCallIterator::nextImpl(
           // TODO: The argument needs to be materialized only for local vars and only if the 
           // function item is returned and used outside of the current function. It might
           // be impossible to determine if the partially applied function item will be used outside 
-          // of the current function, so it is quite probable that it always needs to be materialized.
-          
+          // of the current function, so it is quite probable that it always needs to be materialized.          
           std::vector<store::Item_t> argValues;
           store::Item_t tempItem;
           while (consumeNext(tempItem, theChildren[i], planState))
@@ -271,19 +234,11 @@ bool DynamicFnCallIterator::nextImpl(
           store::TempSeq_t argSeq = GENV_STORE.createTempSeq(argValues);
           store::Iterator_t argSeqIter = argSeq->getIterator();
           PlanIter_t value = new PlanStateIteratorWrapper(argSeqIter);
-          
-          // PlanIter_t value = new PlanStateIteratorWrapper(theChildren[i].getp(), planState, state->theUDFStateOffset + sizeof(UDFunctionCallIteratorState));
-          // std::cerr << "--> " << toString() << " created PlanStateIteratorWrapper: " << value->toString() << std::endl;
+                    
           fnItem->setArgumentValue(pos, value);
         }
         else
           pos++;
-        
-        /*
-        std::cerr << "--> dynamic fncall: child argIter: " << theChildren[i]->toString() << std::endl;
-        if (dynamic_cast<LetVarIterator*>(theChildren[i].getp()))
-          std::cerr << "-->                 argIter is LetVarIterator with varName: " << dynamic_cast<LetVarIterator*>(theChildren[i].getp())->getVarName()->getStringValue() << std::endl;
-        */
       }
 
       result = fnItem;
