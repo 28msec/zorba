@@ -53,13 +53,15 @@ declare variable $env:hof as xs:string :=
 declare function env:enable-HOF-feature(
   $deps as element(fots:dependency)*,
   $test as xs:string
-) as xs:string? 
+) as xs:string?
 {
-  let $check := 
+  let $check :=
     some $dep in $deps
     satisfies $dep[@type eq "feature" and contains(@value, "higherOrderFunctions")]
   return
-    if ($check) then $env:hof else ()
+    if ($check)
+    then $env:hof
+    else ()
 };
 
 
@@ -74,7 +76,7 @@ declare function env:enable-HOF-feature(
 declare function env:add-xquery-version-decl(
   $deps as element(fots:dependency)*,
   $test as xs:string
-) as xs:string? 
+) as xs:string?
 {
   let $deps := $deps[@type eq "spec"]
 
@@ -83,7 +85,8 @@ declare function env:add-xquery-version-decl(
     satisfies $dep[contains(@value, "XQ30") or contains(@value, "XP30")]
 
   return
-    if ($v30 and not(contains($test, "xquery version"))) then
+    if ($v30 and not(contains($test, "xquery version")))
+    then
     {
       'xquery version "3.0";'
     }
@@ -114,7 +117,7 @@ declare function env:add-xquery-version-decl(
 declare function env:decl-base-uri(
   $env      as element(fots:environment)?,
   $envCase  as element(fots:environment)?
-) as xs:string? 
+) as xs:string?
 {
   for $baseURI in ($env/fots:static-base-uri, $envCase/fots:static-base-uri)
   return concat("declare base-uri '", $baseURI/@uri, "';")
@@ -135,7 +138,7 @@ declare function env:decl-base-uri(
 declare function env:decl-def-elem-namespace(
   $env      as element(fots:environment)?,
   $envCase  as element(fots:environment)?
-) as xs:string? 
+) as xs:string?
 {
   for $ns in ($env/fots:namespace, $envCase/fots:namespace)
   where $ns[@prefix eq ""]
@@ -159,12 +162,12 @@ declare %ann:nondeterministic function env:decl-namespaces(
   $env     as element(fots:environment)?,
   $envCase as element(fots:environment)?,
   $test    as xs:string
-) as xs:string? 
+) as xs:string?
 {
   string-join
   (
     for $ns in ($env/fots:namespace, $envCase/fots:namespace)
-    where not($ns[@prefix eq ""]) and 
+    where not($ns[@prefix eq ""]) and
           not(env:is-schema-prefix-bound($ns/@prefix, $test))
     return concat('declare namespace ', $ns/@prefix, ' = "', $ns/@uri, '";')
   ,
@@ -180,7 +183,7 @@ declare %ann:nondeterministic function env:decl-namespaces(
 declare %private %ann:nondeterministic function env:is-schema-prefix-bound(
   $prefix as xs:string,
   $test   as xs:string
-) as xs:boolean 
+) as xs:boolean
 {
   contains($test, concat("import schema namespace ", $prefix))
 };
@@ -194,20 +197,23 @@ declare %private %ann:nondeterministic function env:is-schema-prefix-bound(
  :)
 declare function env:decl-decimal-formats(
   $decimal-formats as element(fots:decimal-format)*
-) as xs:string* 
+) as xs:string*
 {
   if (empty($decimal-formats))
-  then
-    ()
+  then ()
   else
     for $tmp in $decimal-formats
-    let $default := if ($tmp/@name) then () else "default"
-    let $name := if ($tmp/@name) then data($tmp/@name) else ()
+    let $default := if ($tmp/@name)
+                    then ()
+                    else "default"
+    let $name := if ($tmp/@name)
+                 then data($tmp/@name)
+                 else ()
     return
       string-join
       (
       (
-        "declare", 
+        "declare",
         $default,
         "decimal-format",
         $name,
@@ -221,7 +227,7 @@ declare function env:decl-decimal-formats(
 
 declare %private function env:set-properties(
   $decimal-format as element(fots:decimal-format)
-) as xs:string* 
+) as xs:string*
 {
   for $att in $decimal-format/attribute::*
   let $name := node-name($att)
@@ -256,7 +262,7 @@ declare %ann:nondeterministic function env:add-var-decl(
   $envCase        as element(fots:environment)?,
   $envBaseURI     as xs:anyURI,
   $testSetBaseURI as xs:anyURI
-) as xs:string? 
+) as xs:string?
 {
   if ($env)
   then env:add-var-decls($env, $envBaseURI)
@@ -268,7 +274,7 @@ declare %ann:nondeterministic function env:add-var-decl(
 declare %private function env:add-var-decls(
   $env         as element(fots:environment)?,
   $envBaseURI  as xs:anyURI
-) as xs:string? 
+) as xs:string?
 {
   string-join
   (
@@ -281,7 +287,8 @@ declare %private function env:add-var-decls(
       let $select := $param/@select
       return
       {
-        if ($select) then
+        if ($select)
+        then
         {
           let $file := $env/fots:source[@uri = translate($select, "'", "")]/@file
 
@@ -295,7 +302,9 @@ declare %private function env:add-var-decls(
           return
             concat("declare variable $",
                    $param/@name,
-                   if ($type) then concat(" as ", $type) else (),
+                   if ($type)
+                   then concat(" as ", $type)
+                   else (),
                    " := ",
                    $varValue,
                    ";")
@@ -304,7 +313,9 @@ declare %private function env:add-var-decls(
         {
           concat("declare variable $",
                  $param/@name,
-                 if ($type) then concat(" as ", $type) else (),
+                 if ($type)
+                 then concat(" as ", $type)
+                 else (),
                  " external;")
         }
       }
@@ -343,11 +354,11 @@ declare function env:set-context-item(
 declare %private function env:declare-context-item(
   $env        as element(fots:environment)?,
   $envBaseURI as xs:anyURI?
-) as xs:string 
+) as xs:string
 {
   let $ciURI := resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
   return
-  if(empty($env/fots:source[@validation = "strict"]))
+  if (empty($env/fots:source[@validation = "strict"]))
   then concat('variable $contextItem := doc("', $ciURI, '");')
   else string-join(
     ("&#xA;",
@@ -370,9 +381,9 @@ declare %private function env:declare-context-item(
 declare function env:set-variables(
   $env        as element(fots:environment)?,
   $envBaseURI as xs:anyURI
-) as xs:string? 
+) as xs:string?
 {
-  if(empty($env))
+  if (empty($env))
   then ()
   else
     let $srcNames := for $source in $env/fots:source
@@ -393,7 +404,7 @@ declare function env:set-variables(
       for $param in $env/fots:param
       let $select:= $param/@select
       let $file := $env/fots:source[@uri = translate($select, "'", "")]/@file
-      let $varValue := if(starts-with($select, "'") and
+      let $varValue := if (starts-with($select, "'") and
                           ends-with($select, "'") and
                           exists($file))
                        then  concat('"',
@@ -416,17 +427,17 @@ declare function env:set-variables(
 
 declare %private function env:get-schema-import(
   $env  as element(fots:environment)?
-) as xs:string 
+) as xs:string
 {
   if (empty($env))
   then ""
   else
     let $namespace := $env/fots:namespace[@uri = data($env/fots:schema/@uri)]
-    let $prefix as xs:string := if(exists($namespace))
+    let $prefix as xs:string := if (exists($namespace))
                                 then xs:string(data($namespace/@prefix))
                                 else "p"
     return
-      if($prefix = "")
+      if ($prefix = "")
       then concat('import schema default element namespace "',
                   $env/fots:schema/@uri,
                   '";&#xA;')
@@ -496,7 +507,8 @@ declare function env:resolver(
                     "    default return ()"),
                     "&#xA;")
     else (),
-    if (exists($resources)) then
+    if (exists($resources))
+    then
     string-join(("case ''",
                  "  return switch($namespace)",
                   for $resource in $resources
@@ -505,7 +517,7 @@ declare function env:resolver(
                                  "' return unparsed-text('",
                                  resolve-uri($resource/@file, $envBaseURI),
                                  "'",
-                                 if(exists($resource/@encoding))
+                                 if (exists($resource/@encoding))
                                  then concat (",'",
                                               data($resource/@encoding),
                                               "'")
@@ -521,7 +533,7 @@ declare function env:resolver(
 
 (:~
  : Checks that a set of dependencies (associated with some test-set or test-case)
- : are met by Zorba's capabilities and implementation-defined features (as 
+ : are met by Zorba's capabilities and implementation-defined features (as
  : specified in the Zorba manifest).
  :
  : @param $deps the dependencies of the test set or test case
@@ -533,10 +545,11 @@ declare function env:resolver(
 declare function env:check-dependencies(
   $deps           as element(fots:dependency)*,
   $zorbaManifest  as node()
-) as xs:string* 
+) as xs:string*
 {
-  if (empty($deps)) then
-  { 
+  if (empty($deps))
+  then
+  {
     ()
   }
   else
