@@ -132,7 +132,6 @@ namespace zorba
      individual schema designers. They are always derived. They can be atomic,
      list, or union, and simple or complex.
 
-
   2. Primitive datatypes are those that are not defined in terms of other
      datatypes; they exist ab initio. Primitive types are always atomic and
      built-in.
@@ -151,7 +150,6 @@ namespace zorba
      and P may or may not be the same type. For example, list types are derived
      from their "itemType" (see below), but their "baseType" is always the
      xs:anySimpleType.
-
 
   3. Atomic datatypes are those having values which are regarded as being
      indivisible. Atomic datatypes can be built-in or user-defined, and
@@ -195,8 +193,6 @@ namespace zorba
 
   - The empty-sequence()
 
-  - xs:anyType*, xs:anySimpleType*, and xs:untyped*
-
   - XML Data Mode and XMLSchema both define 45 atomic, built-in types (including
     xs:anyAtomicType and xs:untypedAtomic). For each such atomic type T, we
     preallocate 4 XQType objs representing the sequence tyoes T, T?, T*, and T+.
@@ -207,9 +203,9 @@ namespace zorba
     or processing-instruction.
 
   - N(xs:untyped), N(xs:untyped)?, N(xs:untyped)+, N(xs:untyped)*, where N is
-    one of node or document. Note that these types are not really expressible
-    via the SequenceType syntax, but we include them in zorba because they are
-    convenient for certain type-related optimizations.
+    one of "node" or "document-node". Note that these types are not really
+    expressible via the SequenceType syntax, but we include them in zorba
+    because they are convenient for certain type-related optimizations.
 
   - element(*, xs:anyType), element(*, xs:anyType)?, element(*, xs:anyType)+,
     element(*, xs:anyType)*
@@ -225,6 +221,12 @@ namespace zorba
     
   - structured-item(), structured-item()?,
     structured-item()+, structured-item()*
+
+  We also preallocate XQType objs for the following XML-Schema types:
+
+  - xs:anyType, xs:anySimpleType, and xs:untyped
+
+  - xs:NMTOKENS, xs:IDREFS, and xs:ENTITIES
 
   - The none type
 
@@ -299,6 +301,18 @@ public:
     MAX_TYPE_KIND
   } TypeKind;
 
+
+  //
+  // The kind of a UDT: atomic, union, lis, or complex
+  //
+  enum UDTKind
+  {
+    ATOMIC_UDT,
+    LIST_UDT,  
+    UNION_UDT, 
+    COMPLEX_UDT
+  };
+
   //
   // The content kind of a complex type
   //
@@ -354,11 +368,27 @@ public:
 
   int card() const;
 
-  virtual bool isList() const { return false; }
+  bool isComplex() const;
+
+  bool isList() const;
+
+  bool isUnion() const;
+
+  bool isGenAtomicAny() const;
+
+  bool isGenAtomicOne() const;
+
+  bool isAtomicAny() const;
+
+  bool isAtomicOne() const;
+
+  bool isBuiltinAtomicAny() const;
+
+  bool isBuiltinAtomicOne() const;
+
+  store::Item_t getQName() const;
 
   virtual content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
-
-  virtual store::Item_t get_qname() const { return store::ItemHandle<store::Item>(); }
 
   virtual xqtref_t getBaseBuiltinType() const { return this; }
 
@@ -370,9 +400,9 @@ public:
 
 protected:
   XQType(
-      const TypeManager* manager,
-      TypeKind type_kind,
-      TypeConstants::quantifier_t quantifier,
+      const TypeManager* mgr,
+      TypeKind kind,
+      TypeConstants::quantifier_t quant,
       bool builtin);
 };
 
@@ -440,11 +470,13 @@ public:
 ********************************************************************************/
 class AtomicXQType : public XQType
 {
+  friend class XQType;
+
 public:
    static const char* ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST];
 
 private:
-   store::SchemaTypeCode m_type_code;
+   store::SchemaTypeCode theAtomicCode;
 
 public:
   SERIALIZABLE_CLASS(AtomicXQType)
@@ -454,20 +486,18 @@ public:
 public:
   AtomicXQType(
       const TypeManager* manager,
-      store::SchemaTypeCode type_code,
-      TypeConstants::quantifier_t quantifier,
+      store::SchemaTypeCode code,
+      TypeConstants::quantifier_t quant,
       bool builtin = false)
     :
-    XQType(manager, ATOMIC_TYPE_KIND, quantifier, builtin),
-    m_type_code(type_code)
+    XQType(manager, ATOMIC_TYPE_KIND, quant, builtin),
+    theAtomicCode(code)
   {
   }
 
-  store::SchemaTypeCode get_type_code() const { return m_type_code; }
+  store::SchemaTypeCode get_type_code() const { return theAtomicCode; }
 
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
-
-  store::Item_t get_qname() const;
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
@@ -666,42 +696,59 @@ public:
       or attribute node, or
   (b) a sequence type whose ItemType is a user0defined atomic type.
 
-  Note: unless the user-defined tpye is an atomic one, the quentifier of
-  "this" must be QUANT_ONE.
+  Note: For list types, the associated quantifier is always STAR. For user-
+  defined atomic types, the associated quantifier can be anything. For all
+  other user-defined types, associated quantifier must be ONE.
  
-  m_qname          : The name of this user-defined type. The actual type
-                     definition is stored in the TypeManger that created this
-                     type (and is pointed to my theManager). The TypeManager
-                     also stores the mapping from the type name to the type
-                     definition.
-  m_base_type      : The baseType of this type. NULL for list or union types.
-  m_typeCategory   : Whether this is an atomic, list, union, or complex type.
-  m_contentKind    : This type's content kind, if this is a complex type. One
-                     of empty, simple, element-only, or mixed.
-  m_listItemType   : This type's itemType, if this is a list type.
-  m_unionItemTypes : This type's memberTypes, if this is a union type.
+  m_qname:
+  --------
+  The name of this user-defined type. The actual type definition is stored in
+  the TypeManger that created this type (and is pointed to my theManager). The
+  TypeManager also stores the mapping from the type name to the type definition.
+
+  m_base_type:
+  ------------
+  The baseType of this type. NULL for list or union types.
+
+  m_typeCategory:
+  ---------------
+  Whether this is an atomic, list, union, or complex type.
+
+  m_contentKind:
+  --------------
+  This type's content kind, if this is a complex type. One of empty, simple,
+  element-only, or mixed.
+
+  m_listItemType:
+  ---------------
+  This type's itemType, if this is a list type.
+
+  m_unionItemTypes:
+  -----------------
+  This type's memberTypes, if this is a union type.
 ********************************************************************************/
 class UserDefinedXQType : public XQType
 {
+  friend class XQType;
+
 public:
-  enum type_category_t
-  {
-    ATOMIC_TYPE,  // atomic types: ex: int, date, token, string
-    LIST_TYPE,    // list of simple types: ex: list of int: "1 2 33"
-    UNION_TYPE,   // union of simple types: ShirtSize int or string: "8", "small"
-                  // ATOMIC, LIST and UNION types are all SIMPLE types: i.e.
-                  // their representation is a text value
-    COMPLEX_TYPE  // complex types: they represent structure
-  };
 
 
 private:
-  store::Item_t           m_qname;
+  store::Item_t           theQName;
+
   xqtref_t                m_baseType;
-  type_category_t         m_typeCategory;
+
+  UDTKind                 theUDTKind;
+
   content_kind_t          m_contentKind;
+
   std::vector<xqtref_t>   m_unionItemTypes;
+
   xqtref_t                m_listItemType;
+
+public:
+  static std::string decodeUDTKind(UDTKind typeCategory);
 
 public:
   SERIALIZABLE_CLASS(UserDefinedXQType)
@@ -711,44 +758,36 @@ public:
 public:
   // constructor for Atomic and Complex types
   UserDefinedXQType(
-        const TypeManager *manager,
-        store::Item_t qname,
-        const xqtref_t& baseType,
-        TypeConstants::quantifier_t quantifier,
-        type_category_t typeCategory,
-        content_kind_t contentKind);
+      const TypeManager* manager,
+      store::Item_t qname,
+      const xqtref_t& baseType,
+      TypeConstants::quantifier_t quantifier,
+      UDTKind typeCategory,
+      content_kind_t contentKind,
+      bool builtin = false);
 
   // Constructor for List types
   UserDefinedXQType(
-        const TypeManager *manager,
-        store::Item_t qname,
-        const xqtref_t& baseType,
-        TypeConstants::quantifier_t quantifier,
-        const XQType* listItemType);
+      const TypeManager* manager,
+      store::Item_t qname,
+      const xqtref_t& baseType,
+      const XQType* listItemType,
+      bool builtin = false);
 
   // Constructor for Union types
   UserDefinedXQType(
-        const TypeManager *manager,
-        store::Item_t qname,
-        const xqtref_t& baseType,
-        TypeConstants::quantifier_t quantifier,
-        std::vector<xqtref_t>& unionItemTypes);
+      const TypeManager* manager,
+      store::Item_t qname,
+      const xqtref_t& baseType,
+      TypeConstants::quantifier_t quantifier,
+      const std::vector<xqtref_t>& unionItemTypes,
+      bool builtin = false);
 
   virtual ~UserDefinedXQType() {}
 
   virtual content_kind_t content_kind() const { return m_contentKind; };
 
-  store::Item_t get_qname() const { return m_qname;    }
-
-  bool isAtomic() const { return m_typeCategory == ATOMIC_TYPE;  }
-
-  bool isList() const { return m_typeCategory == LIST_TYPE;    }
-
-  bool isUnion() const { return m_typeCategory == UNION_TYPE;   }
-
-  bool isComplex() const { return m_typeCategory == COMPLEX_TYPE; }
-
-  type_category_t getTypeCategory() const { return m_typeCategory; }
+  UDTKind getUDTKind() const { return theUDTKind; }
 
   xqtref_t getBaseType() const { return m_baseType; }
 
@@ -758,34 +797,14 @@ public:
 
   const std::vector<xqtref_t>& getUnionItemTypes() const { return m_unionItemTypes; }
 
-  bool isSuperTypeOf(const TypeManager* tm, const XQType& subType) const;
+  bool isSuperTypeOf(
+      const TypeManager* tm,
+      const XQType& subType,
+      const QueryLoc& loc) const;
 
   bool isSubTypeOf(const TypeManager* tm, const XQType& superType) const;
 
-  static std::string typeCategoryStr(type_category_t typeCategory);
-
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
-};
-
-
-/***************************************************************************//**
-  xs:untyped
-********************************************************************************/
-class UntypedXQType : public XQType
-{
-public:
-  UntypedXQType(const TypeManager* manager, bool builtin = false)
-    :
-    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
-  {
-  }
-
-  store::Item_t get_qname() const;
-
- public:
-  SERIALIZABLE_CLASS(UntypedXQType)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
-  void serialize(::zorba::serialization::Archiver& ar);
 };
 
 
@@ -801,11 +820,28 @@ public:
   {
   }
 
-  store::Item_t get_qname() const;
-
  public:
   SERIALIZABLE_CLASS(AnyXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnyXQType, XQType)
+  void serialize(::zorba::serialization::Archiver& ar);
+};
+
+
+/***************************************************************************//**
+  xs:untyped
+********************************************************************************/
+class UntypedXQType : public XQType
+{
+public:
+  UntypedXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
+  {
+  }
+
+ public:
+  SERIALIZABLE_CLASS(UntypedXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(UntypedXQType, XQType)
   void serialize(::zorba::serialization::Archiver& ar);
 };
 
@@ -823,8 +859,6 @@ public:
   }
 
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
-
-  store::Item_t get_qname() const;
 
 public:
   SERIALIZABLE_CLASS(AnySimpleXQType)

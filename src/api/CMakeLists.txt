@@ -46,7 +46,6 @@ SET(API_SRCS
     invoke_item_sequence.cpp
     item_sequence_chainer.cpp
     empty_sequence.cpp
-    fileimpl.cpp
     serializerimpl.cpp
     base64impl.cpp
     base64_streambuf.cpp
@@ -63,6 +62,11 @@ SET(API_SRCS
     uuid.cpp
     error_printer.cpp
     )
+
+IF (ZORBA_WITH_FILE_ACCESS)
+  LIST(APPEND API_SRCS
+    fileimpl.cpp)
+ENDIF (ZORBA_WITH_FILE_ACCESS)  
 
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND API_SRCS

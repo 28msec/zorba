@@ -1,1 +1,1 @@
-Ha! It worked  err:FORG0001 "xs:string": invalid value for cast/constructor: can not cast to "xs:integer"
+Ha! It worked  err:FORG0001 "a": value of type xs:string is not castable to type xs:integer

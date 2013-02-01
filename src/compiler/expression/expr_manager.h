@@ -43,7 +43,7 @@ class forlet_clause;
 class flwor_wincond;
 class copy_clause;
 class window_clause;
-class group_clause;
+class groupby_clause;
 class where_clause;
 class count_clause;
 class orderby_clause;
@@ -124,7 +124,8 @@ public:
       user_function* udf,
       const QueryLoc&,
       expr*,
-      xqtref_t);
+      const xqtref_t&,
+      bool allowsEmptyInput);
 
   treat_expr* create_treat_expr(
       static_context* sctx,
@@ -151,7 +152,8 @@ public:
       user_function* udf,
       const QueryLoc&,
       expr*,
-      xqtref_t);
+      const xqtref_t&,
+      bool allowsEmptyInput);
 
   instanceof_expr* create_instanceof_expr(
       static_context* sctx,
@@ -262,7 +264,7 @@ public:
       static_context* sctx,
       user_function* udf,
       const QueryLoc&,
-      store::Item_t);
+      const store::Item_t&);
 
   const_expr* create_const_expr(
       static_context* sctx,
@@ -574,7 +576,7 @@ public:
       const flwor_wincond_vars& out_vars,
       expr* cond);
 
-  group_clause* create_group_clause(
+  groupby_clause* create_groupby_clause(
       static_context* sctx,
       const QueryLoc& loc,
       const var_rebind_list_t& gvars,

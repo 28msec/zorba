@@ -15,6 +15,8 @@
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR})
 
+INCLUDE("${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake")
+
 IF (ZORBA_WITH_DEBUGGER)
   IF (NOT WIN32)
     FIND_PACKAGE (Libedit)
@@ -48,7 +50,6 @@ SET(SRCS
   path_util.cpp
 )
 
-INCLUDE("${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake")
 ZORBA_GENERATE_EXE("zorbacmd" "${SRCS}" "" "zorba" "bin")
 
 IF(UNIX)
@@ -132,4 +133,7 @@ ZORBA_SET_TEST_PROPERTY(bin/zorba_module_path_1
   PASS_REGULAR_EXPRESSION "hello, v2")
 
 # test compilation of the perf script
-ZORBA_ADD_TEST(bin/zorba_compilechk4 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/../test/zperf/src/start.xq" -f --compile-only)
+ZORBA_ADD_TEST(bin/zorba_compilechk4 zorbacmd 
+  -q "${CMAKE_CURRENT_SOURCE_DIR}/../test/zperf/src/start.xq" -f --compile-only)
+ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk4
+  PASS_REGULAR_EXPRESSION "[]|[XQST0059]")

@@ -82,16 +82,7 @@ static void checkKeyType(
   xqtref_t searchKeyType = tm->create_value_type(searchKey);
   xqtref_t indexKeyType = (indexDecl->getKeyTypes())[keyNo];
 
-  if (indexKeyType != NULL &&
-      !TypeOps::is_subtype(tm, *searchKeyType, *indexKeyType))
-  {
-    RAISE_ERROR(err::XPTY0004, loc,
-    ERROR_PARAMS(ZED(SearchKeyTypeMismatch_234),
-                 *searchKeyType,
-                 indexDecl->getName()->getStringValue(),
-                 *indexKeyType));
-  }
-  else if (indexKeyType == NULL)
+  if (indexKeyType == NULL)
   {
     ZORBA_ASSERT(indexDecl->isGeneral());
 
@@ -112,6 +103,47 @@ static void checkKeyType(
                    *searchKeyType,
                    indexDecl->getName()->getStringValue()));
     }
+  }
+  else if (!TypeOps::is_subtype(tm, *searchKeyType, *indexKeyType))
+  {
+    store::SchemaTypeCode searchKeyTypeCode = searchKey->getTypeCode();
+
+    if (TypeOps::is_subtype(tm, *indexKeyType, *rtm.STRING_TYPE_ONE) &&
+        (searchKeyTypeCode == store::XS_UNTYPED_ATOMIC ||
+         searchKeyTypeCode == store::XS_ANY_URI))
+    {
+      return;
+    }
+
+    if (TypeOps::is_subtype(tm, *indexKeyType, *rtm.DOUBLE_TYPE_ONE))
+    {
+      if (TypeOps::is_subtype(searchKeyTypeCode, store::XS_DECIMAL))
+      {
+        GENV_STORE.getItemFactory()->
+        createDouble(searchKey, xs_double(searchKey->getDecimalValue()));
+      }
+      else if (TypeOps::is_subtype(searchKeyTypeCode, store::XS_FLOAT))
+      {
+        GENV_STORE.getItemFactory()->
+        createDouble(searchKey, xs_double(searchKey->getFloatValue()));
+      }
+
+      return;
+    }
+
+    if (TypeOps::is_subtype(tm, *indexKeyType, *rtm.FLOAT_TYPE_ONE) &&
+        TypeOps::is_subtype(searchKeyTypeCode, store::XS_DECIMAL))
+    {
+      GENV_STORE.getItemFactory()->
+      createDouble(searchKey, xs_float(searchKey->getDecimalValue()));
+      return;
+    }
+
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(SearchKeyTypeMismatch_234),
+                 *searchKeyType,
+                 indexDecl->getName()->getStringValue(),
+                 *indexKeyType));
   }
 }
 
@@ -134,7 +166,7 @@ static void createIndexSpec(
     if (keyTypes[i] != NULL)
     {
       const XQType& t = *keyTypes[i];
-      spec.theKeyTypes[i] = t.get_qname();
+      spec.theKeyTypes[i] = t.getQName();
     }
     spec.theCollations.push_back(keyModifiers[i].theCollation);
   }
@@ -242,23 +274,17 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0021_INDEX_NOT_DECLARED,
-      ERROR_PARAMS( qname->getStringValue() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
   if (GENV_STORE.getIndex(qname) != NULL)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0022_INDEX_ALREADY_EXISTS,
-      ERROR_PARAMS( qname->getStringValue() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDDY0022_INDEX_ALREADY_EXISTS, loc,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
-  buildPlan = indexDecl->getBuildPlan(ccb, loc); 
+  buildPlan = indexDecl->getBuildPlan(loc); 
   
   planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL, 0, false, 0); 
 
@@ -266,7 +292,8 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  reinterpret_cast<store::PUL*>(result.getp())->addCreateIndex(&loc, qname, spec, planWrapper);
+  reinterpret_cast<store::PUL*>(result.getp())->
+  addCreateIndex(&loc, qname, spec, planWrapper);
 
   STACK_PUSH(true, state);
 
@@ -387,7 +414,7 @@ bool RefreshIndexIterator::nextImpl(
     );
   }
 
-  buildPlan = indexDecl->getBuildPlan(ccb, loc); 
+  buildPlan = indexDecl->getBuildPlan(loc); 
   
   planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL, 0, false, 0); 
 
@@ -607,7 +634,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
   TypeManager* tm = theSctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   xs_integer lSkip = xs_integer::zero();
-  ulong lAmountNonKeyParams = (theSkip ? 2 : 1);
+  ulong numNonKeyParams = (theSkip ? 2 : 1);
 
   try
   {
@@ -627,16 +654,13 @@ bool ProbeIndexPointValueIterator::nextImpl(
         ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
-      if ( state->theIndexDecl->getNumKeyExprs() 
-        != numChildren - lAmountNonKeyParams )
+      if (state->theIndexDecl->getNumKeyExprs() != numChildren - numNonKeyParams)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(
-          qnameItem->getStringValue(),
-          "index",
-          numChildren - lAmountNonKeyParams,
-          state->theIndexDecl->getNumKeyExprs())
-        );
+        ERROR_PARAMS(qnameItem->getStringValue(),
+                     "index",
+                     numChildren - numNonKeyParams,
+                     state->theIndexDecl->getNumKeyExprs()));
       }
 
       state->theIndex = (state->theIndexDecl->isTemp() ?
@@ -666,7 +690,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
         lSkip = xs_integer::zero();
     }
 
-    for (i = lAmountNonKeyParams; i < numChildren; ++i) 
+    for (i = numNonKeyParams; i < numChildren; ++i) 
     {
       if (!consumeNext(keyItem, theChildren[i], planState)) 
       {
@@ -676,12 +700,11 @@ bool ProbeIndexPointValueIterator::nextImpl(
 
       if (theCheckKeyType)
       {
-        checkKeyType(loc, tm, state->theIndexDecl, 
-                     i - lAmountNonKeyParams, keyItem);
+        checkKeyType(loc, tm, state->theIndexDecl, i - numNonKeyParams, keyItem);
       }
 
       if (state->theIndexDecl->isGeneral() &&
-          (state->theIndexDecl->getKeyTypes())[i - lAmountNonKeyParams] == NULL)
+          (state->theIndexDecl->getKeyTypes())[i - numNonKeyParams] == NULL)
       {
         xqtref_t searchKeyType = tm->create_value_type(keyItem);
         

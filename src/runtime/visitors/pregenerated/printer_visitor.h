@@ -203,6 +203,33 @@ namespace zorba {
     void beginVisit( const DefaultCollationIterator& );
     void endVisit  ( const DefaultCollationIterator& );
 
+    void beginVisit( const CurrentDate& );
+    void endVisit  ( const CurrentDate& );
+
+    void beginVisit( const CurrentDateTime& );
+    void endVisit  ( const CurrentDateTime& );
+
+    void beginVisit( const CurrentTime& );
+    void endVisit  ( const CurrentTime& );
+
+    void beginVisit( const MillisToDateTime& );
+    void endVisit  ( const MillisToDateTime& );
+
+    void beginVisit( const ParseDate& );
+    void endVisit  ( const ParseDate& );
+
+    void beginVisit( const ParseDateTime& );
+    void endVisit  ( const ParseDateTime& );
+
+    void beginVisit( const ParseTime& );
+    void endVisit  ( const ParseTime& );
+
+    void beginVisit( const Timestamp& );
+    void endVisit  ( const Timestamp& );
+
+    void beginVisit( const UTCOffset& );
+    void endVisit  ( const UTCOffset& );
+
 #ifdef ZORBA_WITH_DEBUGGER
     void beginVisit( const DebugIterator& );
     void endVisit  ( const DebugIterator& );
@@ -864,6 +891,18 @@ namespace zorba {
 
     void beginVisit( const UuidIterator& );
     void endVisit  ( const UuidIterator& );
+
+    void beginVisit( const ReferenceIterator& );
+    void endVisit  ( const ReferenceIterator& );
+
+    void beginVisit( const HasReferenceIterator& );
+    void endVisit  ( const HasReferenceIterator& );
+
+    void beginVisit( const AssignReferenceIterator& );
+    void endVisit  ( const AssignReferenceIterator& );
+
+    void beginVisit( const DereferenceIterator& );
+    void endVisit  ( const DereferenceIterator& );
 
 #ifndef ZORBA_NO_XMLSCHEMA
     void beginVisit( const ValidateIterator& );

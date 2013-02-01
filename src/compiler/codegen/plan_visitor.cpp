@@ -995,7 +995,7 @@ bool begin_visit(flwor_expr& v)
 
               if (i > 0 &&
                   v.get_clause(i-1)->get_kind() != flwor_clause::order_clause &&
-                  v.get_clause(i-1)->get_kind() != flwor_clause::group_clause)
+                  v.get_clause(i-1)->get_kind() != flwor_clause::groupby_clause)
               {
                 orderby_clause* mat = theCCB->theEM->
                 create_orderby_clause(v.get_sctx(),
@@ -1011,7 +1011,7 @@ bool begin_visit(flwor_expr& v)
 
               if (i == numClauses -1 ||
                   (i < numClauses - 1 &&
-                   v.get_clause(i+1)->get_kind() != flwor_clause::group_clause))
+                   v.get_clause(i+1)->get_kind() != flwor_clause::groupby_clause))
               {
                 orderby_clause* mat = theCCB->theEM->
                 create_orderby_clause(v.get_sctx(),
@@ -1029,7 +1029,7 @@ bool begin_visit(flwor_expr& v)
           break;
         }
         case flwor_clause::where_clause:
-        case flwor_clause::group_clause:
+        case flwor_clause::groupby_clause:
         case flwor_clause::order_clause:
         case flwor_clause::count_clause:
         {
@@ -1046,7 +1046,7 @@ bool begin_visit(flwor_expr& v)
 
       if (v.get_return_expr()->is_sequential() &&
           lastClause->get_kind() != flwor_clause::order_clause &&
-          lastClause->get_kind() != flwor_clause::group_clause)
+          lastClause->get_kind() != flwor_clause::groupby_clause)
       {
         orderby_clause* mat = theCCB->theEM->
         create_orderby_clause(v.get_sctx(),
@@ -1098,9 +1098,9 @@ bool begin_visit(flwor_expr& v)
       break;
     }
 
-    case flwor_clause::group_clause:
+    case flwor_clause::groupby_clause:
     {
-      const group_clause* gc = reinterpret_cast<const group_clause*>(c);
+      const groupby_clause* gc = reinterpret_cast<const groupby_clause*>(c);
 
       const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
       const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
@@ -1242,11 +1242,11 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
     break;
   }
 
-  case flwor_clause::group_clause:
+  case flwor_clause::groupby_clause:
   {
-    const group_clause* gbc = static_cast<const group_clause *>(c);
-    const group_clause::rebind_list_t& grouping_vars = gbc->get_grouping_vars();
-    const group_clause::rebind_list_t& nongrouping_vars = gbc->get_nongrouping_vars();
+    const groupby_clause* gbc = static_cast<const groupby_clause *>(c);
+    const groupby_clause::rebind_list_t& grouping_vars = gbc->get_grouping_vars();
+    const groupby_clause::rebind_list_t& nongrouping_vars = gbc->get_nongrouping_vars();
 
     for (unsigned i = 0; i < grouping_vars.size(); ++i)
     {
@@ -1689,7 +1689,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   //
   // GROUPBY
   //
-  else if (c.get_kind() == flwor_clause::group_clause)
+  else if (c.get_kind() == flwor_clause::groupby_clause)
   {
     std::vector<flwor::GroupingSpec> gspecs;
     std::vector<flwor::NonGroupingSpec> ngspecs;
@@ -1825,7 +1825,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
     //
     // GROUPBY
     //
-    case flwor_clause::group_clause:
+    case flwor_clause::groupby_clause:
     {
       std::vector<flwor::GroupingSpec> gspecs;
       std::vector<flwor::NonGroupingSpec> ngspecs;
@@ -1954,10 +1954,10 @@ void generate_groupby(
     std::vector<flwor::GroupingSpec>& gspecs,
     std::vector<flwor::NonGroupingSpec>& ngspecs)
 {
-  const group_clause* gbc = static_cast<const group_clause*>(clauseVarMap->theClause);
+  const groupby_clause* gbc = static_cast<const groupby_clause*>(clauseVarMap->theClause);
 
-  const group_clause::rebind_list_t& gvars = gbc->get_grouping_vars();
-  const group_clause::rebind_list_t& ngvars = gbc->get_nongrouping_vars();
+  const groupby_clause::rebind_list_t& gvars = gbc->get_grouping_vars();
+  const groupby_clause::rebind_list_t& ngvars = gbc->get_nongrouping_vars();
 
   const std::vector<std::string>& collations = gbc->get_collations();
 
@@ -2157,6 +2157,7 @@ void end_visit(eval_expr& v)
                                 v.getNodeCopy(),
                                 false));
 }
+
 
 #ifdef ZORBA_WITH_DEBUGGER
 bool begin_visit(debugger_expr& v)
@@ -2428,8 +2429,8 @@ bool begin_visit(instanceof_expr& v)
 void end_visit(instanceof_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  PlanIter_t p = pop_itstack ();
-  push_itstack (new InstanceOfIterator (sctx, qloc, p, v.get_target_type ()));
+  PlanIter_t p = pop_itstack();
+  push_itstack (new InstanceOfIterator (sctx, qloc, p, v.get_target_type()));
 }
 
 
@@ -2464,7 +2465,11 @@ void end_visit(castable_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
-  push_itstack(new CastableIterator(sctx, qloc, lChild, v.get_target_type()));
+  push_itstack(new CastableIterator(sctx,
+                                    qloc,
+                                    lChild,
+                                    v.get_target_type(),
+                                    v.allows_empty_input()));
 }
 
 
@@ -2478,8 +2483,12 @@ bool begin_visit(cast_expr& v)
 void end_visit(cast_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  PlanIter_t lChild = pop_itstack();
-  push_itstack(new CastIterator(sctx, qloc, lChild, v.get_target_type()));
+  PlanIter_t child = pop_itstack();
+  push_itstack(new CastIterator(sctx,
+                                qloc,
+                                child,
+                                v.get_target_type(),
+                                v.allows_empty_input()));
 }
 
 

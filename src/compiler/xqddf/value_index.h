@@ -31,6 +31,8 @@ namespace zorba
 class ExprManager;
 class dynamic_context;
 class DocIndexer;
+class flwor_expr;
+
 typedef rchandle<DocIndexer> DocIndexer_t;
 
 
@@ -353,29 +355,33 @@ public:
 
   void setOrderModifiers(const std::vector<OrderModifier>& modifiers);
 
+  const std::string& getCollation(csize i) const;
+
   csize numSources() const { return theSourceNames.size(); }
 
   const store::Item* getSourceName(csize i) const { return theSourceNames[i]; }
 
   const expr* getDomainSourceExpr(csize i) const { return theDomainSourceExprs[i]; }
 
-  void analyze(CompilerCB* ccb);
+  void analyze();
 
-  expr* getBuildExpr(CompilerCB* ccb, const QueryLoc& loc);
+  flwor_expr* getViewExpr();
 
-  PlanIterator* getBuildPlan(CompilerCB* ccb, const QueryLoc& loc);
+  expr* getBuildExpr(const QueryLoc& loc);
 
-  DocIndexer* getDocIndexer(CompilerCB* ccb, const QueryLoc& loc);
+  PlanIterator* getBuildPlan(const QueryLoc& loc);
+
+  DocIndexer* getDocIndexer(const QueryLoc& loc);
 
   std::string toString();
 
 private:
   void analyzeExprInternal(
-        expr* e,
-        std::vector<store::Item*>& sourceNames,
-        std::vector<expr*>& sourceExprs,
-        FreeVars& varExprs,
-        expr* dotVar);
+      expr* e,
+      std::vector<store::Item*>& sourceNames,
+      std::vector<expr*>& sourceExprs,
+      std::vector<var_expr*>& varExprs,
+      expr* dotVar);
 };
 
 

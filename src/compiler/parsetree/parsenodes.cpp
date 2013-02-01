@@ -17,6 +17,7 @@
 
 #include "util/stl_util.h"
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "types/typemanager.h"
@@ -940,9 +941,7 @@ void CollectionDecl::accept( parsenode_visitor &v ) const
 
   IndexKeyList := IndexKeySpec+
 
-  IndexKeySpec := PathExpr AtomicType IndexKeyOrderModifier
-
-  AtomicType := QName
+  IndexKeySpec := PathExpr TypeDeclaration? IndexKeyOrderModifier
 
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 ********************************************************************************/
@@ -965,8 +964,8 @@ AST_IndexDecl::AST_IndexDecl(
   if (properties == NULL)
     return;
 
-  ulong numProperties = (ulong)properties->size();
-  for (ulong i = 0; i < numProperties; ++i)
+  csize numProperties = properties->size();
+  for (csize i = 0; i < numProperties; ++i)
   {
     const DeclProperty* property = properties->getProperty(i);
     StaticContextConsts::declaration_property_t prop = property->getProperty();
@@ -1001,59 +1000,7 @@ AST_IndexDecl::AST_IndexDecl(
 }
 
 
-#if 0
-Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
-{
-  if (props == NULL)
-    return zerr::ZXQP0000_NO_ERROR;
-
-  bool setUnique = false;
-  bool setUsage = false;
-  bool setMaintenance = false;
-
-  for (ulong i = 0; i < props->size(); ++i)
-  {
-    switch (props->getProperty(i)->getProperty())
-    {
-      case StaticContextConsts::decl_unique:
-      case StaticContextConsts::decl_non_unique:
-      {
-        if (setUnique)
-          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-
-        setUnique = true;
-        break;
-      }
-      case StaticContextConsts::decl_value_equality:
-      case StaticContextConsts::decl_value_range:
-      case StaticContextConsts::decl_general_equality:
-      case StaticContextConsts::decl_general_range:
-      {
-        if (setUsage)
-          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-
-        setUsage = true;
-        break;
-      }
-      case StaticContextConsts::decl_manual:
-      case StaticContextConsts::decl_automatic:
-      {
-        if (setMaintenance)
-          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-
-        setMaintenance = true;
-        break;
-      }
-      default:
-        return zerr::ZDST0026_INDEX_INVALID_PROPERTY_VALUE;
-    }
-  }
-
-  return zerr::ZXQP0000_NO_ERROR;
-}
-#endif
-
-void AST_IndexDecl::accept( parsenode_visitor &v ) const
+void AST_IndexDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
@@ -1067,7 +1014,7 @@ void AST_IndexDecl::accept( parsenode_visitor &v ) const
 /***************************************************************************//**
   IndexKeyList ::= IndexKeySpec ("," IndexKeySpec)*
 ********************************************************************************/
-void IndexKeyList::accept( parsenode_visitor &v ) const
+void IndexKeyList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
@@ -1083,7 +1030,7 @@ void IndexKeyList::accept( parsenode_visitor &v ) const
 
 
 /***************************************************************************//**
-  IndexKeySpec ::= PathExpr "as" AtomicType IndexKeyOrderModifier
+  IndexKeySpec ::= PathExpr TypeDeclaration? IndexKeyOrderModifier
 
   IndexKeyOrderModifier ::= OrderDirSpec? OrderCollationSpec?
 
@@ -1091,7 +1038,7 @@ void IndexKeyList::accept( parsenode_visitor &v ) const
 
   OrderCollationSpec ::= "collation" URILiteral
 ********************************************************************************/
-void IndexKeySpec::accept( parsenode_visitor &v ) const
+void IndexKeySpec::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
@@ -2197,31 +2144,33 @@ void SwitchCaseOperandList::accept( parsenode_visitor &v ) const
 // [43] TypeswitchExpr
 // -------------------
 TypeswitchExpr::TypeswitchExpr(
-  const QueryLoc& loc_,
-  rchandle<exprnode> _switch_expr_h,
-  rchandle<CaseClauseList> _clause_list_h,
-  rchandle<exprnode> _default_clause_h)
-:
+    const QueryLoc& loc_,
+    rchandle<exprnode> _switch_expr_h,
+    rchandle<CaseClauseList> _clause_list_h,
+    rchandle<exprnode> _default_clause_h)
+  :
   exprnode(loc_),
   switch_expr_h(_switch_expr_h),
   clause_list_h(_clause_list_h),
   default_clause_h(_default_clause_h)
-{}
+{
+}
 
 
 TypeswitchExpr::TypeswitchExpr(
-  const QueryLoc& loc_,
-  rchandle<exprnode> _switch_expr_h,
-  rchandle<CaseClauseList> _clause_list_h,
-  rchandle<QName> _default_varname,
-  rchandle<exprnode> _default_clause_h)
-:
+    const QueryLoc& loc_,
+    rchandle<exprnode> _switch_expr_h,
+    rchandle<CaseClauseList> _clause_list_h,
+    rchandle<QName> _default_varname,
+    rchandle<exprnode> _default_clause_h)
+  :
   exprnode(loc_),
   switch_expr_h(_switch_expr_h),
   clause_list_h(_clause_list_h),
   default_varname(_default_varname),
   default_clause_h(_default_clause_h)
-{}
+{
+}
 
 
 //-TypeswitchExpr::
@@ -2239,21 +2188,22 @@ void TypeswitchExpr::accept( parsenode_visitor &v ) const
 
 // [43a] CaseClauseList
 // --------------------
-CaseClauseList::CaseClauseList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
+CaseClauseList::CaseClauseList(const QueryLoc& loc)
+  :
+  parsenode(loc)
 {
 }
 
 
-void CaseClauseList::accept( parsenode_visitor &v ) const
+void CaseClauseList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  std::vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
-  for (; it!=clause_hv.rend(); ++it) {
-    const parsenode *e_p = &**it;
-    ACCEPT_CHK (e_p);
+
+  std::vector<rchandle<CaseClause> >::const_reverse_iterator it = theClauses.rbegin();
+  for (; it != theClauses.rend(); ++it) 
+  {
+    const parsenode* e_p = &**it;
+    ACCEPT_CHK(e_p);
   }
   END_VISITOR();
 }
@@ -2262,37 +2212,55 @@ void CaseClauseList::accept( parsenode_visitor &v ) const
 // [44] CaseClause
 // ---------------
 CaseClause::CaseClause(
-  const QueryLoc& loc_,
-  rchandle<QName> _varname,
-  rchandle<SequenceType> _type_h,
-  rchandle<exprnode> _val_h)
-:
-  parsenode(loc_),
-  varname(_varname),
-  type_h(_type_h),
-  val_h(_val_h)
+    const QueryLoc& loc,
+    QName* varname,
+    SequenceTypeList* types,
+    exprnode* expr)
+  :
+  parsenode(loc),
+  theVarName(varname),
+  theExpr(expr)
 {
+  theTypes.swap(types->theTypes);
+
+  delete types;
 }
+
 
 CaseClause::CaseClause(
-  const QueryLoc& loc_,
-  rchandle<SequenceType> _type_h,
-  rchandle<exprnode> _val_h)
-:
-  parsenode(loc_),
-  varname(NULL),
-  type_h(_type_h),
-  val_h(_val_h)
+    const QueryLoc& loc,
+    SequenceTypeList* types,
+    exprnode* expr)
+  :
+  parsenode(loc),
+  theVarName(NULL),
+  theExpr(expr)
 {
+  theTypes.swap(types->theTypes);
+
+  delete types;
 }
 
 
-void CaseClause::accept( parsenode_visitor &v ) const
+void CaseClause::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT (type_h);
-  ACCEPT (val_h);
+
+  csize numTypes = theTypes.size();
+  for (csize i = 0; i < numTypes; ++i)
+  {
+    ACCEPT(theTypes[i]);
+  }
+
+  ACCEPT(theExpr);
+
   END_VISITOR();
+}
+
+
+void SequenceTypeList::accept(parsenode_visitor& v) const
+{
+  ZORBA_ASSERT(false);
 }
 
 
@@ -3644,20 +3612,23 @@ void DirElemContentList::accept( parsenode_visitor &v ) const
   dir_content_hv.rbegin();
 
   const DirElemContent* lPrev = 0;
-  // To find out if a DirElemContent is boundary whitespace, the current item cannot be accepted till
-  // the next item (relative to the current item) is passed to check_boundary_whitespace.
+  // To find out if a DirElemContent is boundary whitespace, the current item
+  // cannot be accepted till the next item (relative to the current item) is
+  // passed to check_boundary_whitespace.
   v.begin_check_boundary_whitespace();
-  for (; it!=dir_content_hv.rend(); ++it)
+  for (; it != dir_content_hv.rend(); ++it)
   {
     const DirElemContent* e_p = &**it;
     v.check_boundary_whitespace (*e_p);
-    if (lPrev != 0) {
+    if (lPrev != 0) 
+    {
       ACCEPT_CHK(lPrev);
     }
     lPrev = e_p;
   }
   v.end_check_boundary_whitespace();
-  if (lPrev != 0) {
+  if (lPrev != 0) 
+  {
     ACCEPT_CHK(lPrev);
   }
   END_VISITOR();
@@ -3666,11 +3637,33 @@ void DirElemContentList::accept( parsenode_visitor &v ) const
 
 // [97] DirAttributeList
 
-DirAttributeList::DirAttributeList(
-  const QueryLoc& loc)
-:
+DirAttributeList::DirAttributeList(const QueryLoc& loc)
+  :
   parsenode(loc)
-{}
+{
+}
+
+
+void DirAttributeList::push_back(rchandle<DirAttr> attr)
+{
+  const QName* qname = attr->get_name();
+
+  if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns")
+  {
+    std::vector<rchandle<DirAttr> >::const_iterator ite = theAttributes.begin();
+    std::vector<rchandle<DirAttr> >::const_iterator end = theAttributes.end();
+    for (; ite != end; ++ite)
+    {
+      if (*((*ite)->get_name()) == *(qname))
+      {
+        RAISE_ERROR(err::XQST0071, attr->get_location(),
+        ERROR_PARAMS(attr->get_name()->get_qname()));
+      }
+    }
+  }
+
+  theAttributes.push_back(attr);
+}
 
 
 void DirAttributeList::accept( parsenode_visitor &v ) const
@@ -4183,20 +4176,38 @@ void CompPIConstructor::accept( parsenode_visitor &v ) const
 // [117] SingleType
 // ----------------
 SingleType::SingleType(
-  const QueryLoc& loc_,
-  rchandle<AtomicType> _atomic_type_h,
-  bool _hook_b)
+  const QueryLoc& loc,
+  rchandle<SimpleType> type,
+  bool hook)
 :
-  parsenode(loc_),
-  atomic_type_h(_atomic_type_h),
-  hook_b(_hook_b)
-{}
+  parsenode(loc),
+  theType(type),
+  theHook(hook)
+{
+}
 
 
-void SingleType::accept( parsenode_visitor &v ) const
+void SingleType::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT (atomic_type_h);
+  ACCEPT(theType);
+  END_VISITOR();
+}
+
+
+// SimpleType
+// ----------------
+SimpleType::SimpleType(const QueryLoc& loc, rchandle<QName> _qname_h)
+  :
+  parsenode(loc),
+  qname_h(_qname_h)
+{
+}
+
+
+void SimpleType::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
   END_VISITOR();
 }
 
@@ -4279,23 +4290,21 @@ void StructuredItemType::accept(parsenode_visitor& v) const
 }
 
 
-// [122] AtomicType
+// AtomicType
 // ----------------
-AtomicType::AtomicType(
-  const QueryLoc& loc_,
-  rchandle<QName> _qname_h)
-:
-  parsenode(loc_),
+GeneralizedAtomicType::GeneralizedAtomicType(
+    const QueryLoc& loc,
+    rchandle<QName> _qname_h)
+  :
+  parsenode(loc),
   qname_h(_qname_h)
-{}
+{
+}
 
 
-//-AtomicType::
-
-void AtomicType::accept( parsenode_visitor &v ) const
+void GeneralizedAtomicType::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  //qname_h->accept(v);
   END_VISITOR();
 }
 
@@ -4492,8 +4501,6 @@ SchemaElementTest::SchemaElementTest(
 {}
 
 
-//-SchemaElementTest::
-
 void SchemaElementTest::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -4533,8 +4540,6 @@ TypeName::TypeName(
   optional_b(_b)
 {}
 
-
-//-TypeName::
 
 void TypeName::accept( parsenode_visitor &v ) const
 {

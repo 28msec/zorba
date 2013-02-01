@@ -249,7 +249,14 @@ public:
 
 /*******************************************************************************
   fn-zorba-ddl:probe-index-range-value(
-      $indexName as xs:QName, ....) as node()*
+      $indexName           as xs:QName,
+      $lowerBound1         as xs:anyAtomicType?,
+      $upperBound1         as xs:anyAtomicType?,
+      $haveLowerBound1     as xs:boolean,
+      $haveUpperBound1     as xs:boolean,
+      $lowerBoundIncluded1 as xs:boolean,
+      $upperBoundIncluded1 as xs:boolean,
+      ....) as node()*
 
   Note: the translator wraps calls to this function with an OP_NODE_SORT_ASC
   function.

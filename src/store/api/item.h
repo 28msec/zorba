@@ -54,15 +54,15 @@ class ZORBA_DLL_PUBLIC Item
 public:
   enum ItemKind
   {
-    NODE       = 0x10,
-    ATOMIC     = 0x21,
-    PUL        = 0x41, 
-    FUNCTION   = 0x81,
-    LIST       = 0x101,
+    NODE       = 0x0,
+    ATOMIC     = 0x1,
+    PUL        = 0x3, 
+    FUNCTION   = 0x5,
+    LIST       = 0x7,
 #ifdef ZORBA_WITH_JSON
-    JSONIQ     = 0x201,
+    JSONIQ     = 0x9,
 #endif
-    ERROR_     = 0x401
+    ERROR_     = 0xB
   };
 
 protected:
@@ -110,51 +110,73 @@ public:
   /**
    * @return the kind of the item
    */
-  ItemKind getKind() const;
+  ItemKind getKind() const
+  {
+    if ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0)
+      return NODE;
+
+    return static_cast<ItemKind>(theUnion.itemKind & 0xF);
+  }
 
   /**
    *  @return  "true" if the item is a node
    */
-  bool 
-  isNode() const;
+  bool isNode() const 
+  {
+    return ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0 &&
+            theUnion.treeRCPtr != 0);
+  }
 
 #ifdef ZORBA_WITH_JSON
   /**
    *  @return  "true" if the item is a JSON item
    */
-  bool
-  isJSONItem() const;
+  bool isJSONItem() const
+  {
+    return ((theUnion.itemKind & 0xF) == JSONIQ); 
+  }
 #endif
 
   /**
    *  @return  "true" if the item is an atomic value
    */
-  bool 
-  isAtomic() const;
+  bool isAtomic() const 
+  {
+    return ((theUnion.itemKind & 0xF) == ATOMIC); 
+  }
 
   /**
    * @return  "true" if the item is an list of atomic values
    */
-  bool 
-  isList() const;
+  bool isList() const
+  {
+    return ((theUnion.itemKind & 0xF) == LIST); 
+  }
 
   /**
    *  @return  "true" if the item is a pending update list
    */
-  bool 
-  isPul() const;
+  bool isPul() const
+  {
+    return ((theUnion.itemKind & 0xF) == PUL);
+  }
 
   /**
    * @return "true" if the item is an error.
    */
-  bool
-  isError() const;
+  bool isError() const
+  {
+    return ((theUnion.itemKind & 0xF) == ERROR_);
+  }
 
   /**
    * @return "true" if the item is a function.
    */
-  bool
-  isFunction() const;
+  bool isFunction() const
+  {
+    return ((theUnion.itemKind & 0xF) == FUNCTION);
+  }
+
 
   /**
    * @return a string representation of the item's kind
@@ -176,7 +198,7 @@ public:
 #endif
 
   /**
-   *  @return  (dynamic) XQuery type of the item
+   *  @return the qname identifying the XQuery type of the item
    */
   virtual Item*
   getType() const;
@@ -193,7 +215,7 @@ public:
    * @return The hash value
    */
   virtual uint32_t 
-  hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  hash(long timezone = 0, const XQPCollator* collation = 0) const;
   
   /**
    * Compares (by value) two items for equality. 
@@ -206,7 +228,7 @@ public:
    *         the table of http://www.w3.org/TR/xquery/#mapping.  
    */
   virtual bool 
-  equals(const Item*, long timezone = 0, const XQPCollator* aCollation = 0) const;
+  equals(const Item*, long timezone = 0, const XQPCollator* collation = 0) const;
 
   /**
    *  Compares (by value) two items, returning < 0 if "this" is less than "other",
@@ -223,7 +245,7 @@ public:
    *         or xs:float and at leat one of the items is NaN.
    */
   virtual long
-  compare(const Item* other, long timezone = 0, const XQPCollator* aCollation = 0) const;
+  compare(const Item* other, long timezone = 0, const XQPCollator* collation = 0) const;
   
   /**
    *  Computes the Effective Boolean Value for that item as specified in the
@@ -278,7 +300,7 @@ public:
   /**
    * @return The numeric code coresponding to the data type of this item.
    */
-  virtual SchemaTypeCode getTypeCode() const;
+  SchemaTypeCode getTypeCode() const;
 
   /**
    * @return If this is an atomic item with a user-defined data type UT, return

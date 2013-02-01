@@ -514,6 +514,7 @@ public:
   static const char* ZORBA_JSON_FN_NS;
 
   static const char* ZORBA_NODEREF_FN_NS;
+  static const char* ZORBA_REFERENCE_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
@@ -546,6 +547,7 @@ public:
 #ifndef ZORBA_NO_FULL_TEXT
   static const char* ZORBA_FULL_TEXT_FN_NS;
 #endif /* ZORBA_NO_FULL_TEXT */
+  static const char* ZORBA_DATETIME_FN_NS;
   static const char* ZORBA_XML_FN_OPTIONS_NS;
 
   // Namespaces of virtual modules declaring zorba builtin functions
@@ -853,14 +855,13 @@ public:
   void bind_ns(
         const zstring& prefix,
         const zstring& ns,
-        const QueryLoc& loc,
-        const Error& err = err::XQST0033);
+        const QueryLoc& loc);
 
   bool lookup_ns(
         zstring& ns,
         const zstring& prefix,
         const QueryLoc& loc,
-        const Error& err = err::XPST0081) const;
+        bool raiseError = true) const;
 
   void expand_qname(
         store::Item_t& qname,
@@ -874,7 +875,7 @@ public:
   //
   // Variables
   //
-  void bind_var(var_expr* expr, const QueryLoc& loc, const Error& err);
+  void bind_var(var_expr* expr, const QueryLoc& loc);
 
   VarInfo* lookup_var(const store::Item* qname) const;
 
@@ -955,6 +956,8 @@ public:
   void bind_index(IndexDecl_t& vi, const QueryLoc& loc);
 
   IndexDecl* lookup_index(const store::Item* qname) const;
+
+  void get_index_decls(std::vector<IndexDecl*>& decls) const;
 
   store::Iterator_t index_names() const;
 

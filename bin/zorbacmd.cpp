@@ -622,6 +622,7 @@ TimingInfo::print(std::ostream& os, bool serializePlan)
 void
 removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties)
 {
+#ifdef ZORBA_WITH_FILE_ACCESS
   if (lProperties.outputFile().size() > 0)
   {
     File_t lFile = zorba::File::createFile(lProperties.outputFile());
@@ -630,6 +631,7 @@ removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties)
       lFile->remove();
     }
   }
+#endif /* ZORBA_WITH_FILE_ACCESS */
 }
 
 
@@ -963,20 +965,28 @@ _tmain(int argc, _TCHAR* argv[])
 
   // write to file or standard out
   std::auto_ptr<std::ostream> 
-  lFileStream(properties.outputFile().size() > 0 ?
-              new std::ofstream(properties.outputFile().c_str()) : 0);
+  lFileStream(
+      #ifdef ZORBA_WITH_FILE_ACCESS
+        properties.outputFile().size() > 0 ?
+          new std::ofstream(properties.outputFile().c_str()) : 0
+      #else /* ZORBA_WITH_FILE_ACCESS */
+        0
+      #endif /* ZORBA_WITH_FILE_ACCESS */
+        );
 
   std::ostream* lOutputStream = lFileStream.get();
   if ( lOutputStream == 0 )
   {
     lOutputStream = &std::cout;
   }
+#ifdef ZORBA_WITH_FILE_ACCESS
   else if ( !lOutputStream->good() )
   {
     std::cerr << "could not write to output file {" << properties.outputFile()
               << "}" << std::endl;
     return 2;
   }
+#endif /* ZORBA_WITH_FILE_ACCESS */
 
   if (properties.queriesOrFilesBegin() == properties.queriesOrFilesEnd())
   {

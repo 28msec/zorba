@@ -230,7 +230,8 @@ RootTypeManager::RootTypeManager()
   ANY_FUNCTION_TYPE_PLUS = new AnyFunctionXQType(this, TypeConstants::QUANT_PLUS, true);
 
 #define XSQNDECL(var, local)  \
-  GENV.getStore().getItemFactory()->createQName(var, XML_SCHEMA_NS, XML_SCHEMA_PREFIX, local)
+  GENV.getStore().getItemFactory()-> \
+  createQName(var, XML_SCHEMA_NS, XML_SCHEMA_PREFIX, local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
   XSQNDECL(XS_STRING_QNAME, "string");
@@ -280,6 +281,9 @@ RootTypeManager::RootTypeManager()
   XSQNDECL(XS_ANY_TYPE_QNAME, "anyType");
   XSQNDECL(XS_ANY_SIMPLE_TYPE_QNAME, "anySimpleType");
   XSQNDECL(XS_UNTYPED_QNAME, "untyped");
+  XSQNDECL(XS_NMTOKENS_QNAME, "NMTOKENS");
+  XSQNDECL(XS_IDREFS_QNAME, "IDREFS");
+  XSQNDECL(XS_ENTITIES_QNAME, "ENTITIES");
 
 #ifdef ZORBA_WITH_JSON
   GENV_STORE.getItemFactory()->createQName(JS_NULL_QNAME,
@@ -376,6 +380,24 @@ RootTypeManager::RootTypeManager()
   ATOMIC_TYPE_DEFN(QNAME)
   ATOMIC_TYPE_DEFN(NOTATION)
 #undef ATOMIC_TYPE_DEFN
+
+  XS_NMTOKENS_TYPE = new UserDefinedXQType(this,
+                                           XS_NMTOKENS_QNAME,
+                                           NULL,
+                                           NMTOKEN_TYPE_ONE.getp(),
+                                           true);
+
+  XS_ENTITIES_TYPE = new UserDefinedXQType(this,
+                                           XS_ENTITIES_QNAME,
+                                           NULL,
+                                           ENTITY_TYPE_ONE.getp(),
+                                           true);
+
+  XS_IDREFS_TYPE = new UserDefinedXQType(this,
+                                         XS_IDREFS_QNAME,
+                                         NULL,
+                                         IDREF_TYPE_ONE.getp(),
+                                         true);
 
   STRUCTURED_ITEM_TYPE_ONE = 
   new StructuredItemXQType(this, TypeConstants::QUANT_ONE, true);
@@ -557,6 +579,14 @@ RootTypeManager::~RootTypeManager()
   DELETE_TYPE(ANY_NODE_UNTYPED)
   DELETE_TYPE(ANY_NODE)
   DELETE_TYPE(STRUCTURED_ITEM)
+
+  // These must be deallocated first because they may reference other types
+  delete XS_NMTOKENS_TYPE.getp();
+  XS_NMTOKENS_TYPE.setNull();
+  delete XS_ENTITIES_TYPE.getp();
+  XS_ENTITIES_TYPE.setNull();
+  delete XS_IDREFS_TYPE.getp();
+  XS_IDREFS_TYPE.setNull();
 
 #ifdef ZORBA_WITH_JSON
   DELETE_TYPE(JS_NULL)

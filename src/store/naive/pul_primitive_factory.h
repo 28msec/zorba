@@ -218,7 +218,6 @@ public:
         const QueryLoc*,
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
-        const store::Item_t& nodeType,
         bool isDynamic);
     
   virtual UpdDeleteCollection*
