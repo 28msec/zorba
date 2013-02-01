@@ -1,0 +1,30 @@
+module namespace x = "www.xmark.com";
+
+import module namespace ddl = 
+"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+
+import module namespace dml = 
+"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+import module namespace iddl = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+
+import module namespace idml = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+
+import module namespace doc = 
+"http://www.zorba-xquery.com/modules/store/dynamic/documents";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+
+declare collection x:auctions;
+
+declare variable $x:auctions as xs:QName := xs:QName('x:auctions');
+
+
+declare %private %an:automatic %an:value-equality index x:idx
+  on nodes dml:collection(xs:QName('x:auctions'))/site/closed_auctions/closed_auction
+  by buyer/@person as xs:string?;
+
+declare variable $x:idx as xs:QName := xs:QName('x:idx');

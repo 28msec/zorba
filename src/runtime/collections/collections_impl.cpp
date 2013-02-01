@@ -247,7 +247,7 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   }
 
   lCount = coll->size();
-  if (theChildren.size() > 1) 
+  if (theChildren.size() == 2) 
   {
     // skip parameter passed
     store::Item_t lSkipItem;
@@ -257,6 +257,14 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     lCount -= ( lSkip <= xs_integer::zero() ? xs_integer::zero() : lSkip );
     // negative is transformed into 0
     lCount = ( lCount < xs_integer::zero() ? xs_integer::zero() : lCount );
+  }
+  else if(theChildren.size() > 2)
+  {
+    // if ref is passed to the collections function, count cannot be 
+    // optimized anymore. Hence this iterator must not be used.
+    // In this case ZorbaCollectionIterator::isCountOptimizable() returns 
+    // false.
+    assert(false);
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lCount), state);
@@ -789,7 +797,7 @@ ZorbaInsertNodesFirstIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
       ERROR_PARAMS(name->getStringValue(), "insert" ));
@@ -869,7 +877,7 @@ ZorbaInsertNodesLastIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
       ERROR_PARAMS(name->getStringValue(), "insert"));
@@ -957,7 +965,7 @@ ZorbaInsertNodesBeforeIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
       ERROR_PARAMS(name->getStringValue(), "insert" ));
@@ -1048,7 +1056,7 @@ ZorbaInsertNodesAfterIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
       ERROR_PARAMS(name->getStringValue()));
@@ -1678,8 +1686,7 @@ ZorbaDeleteNodesFirstIterator::getCollection(
     }
   }
 
-  if (collectionDecl &&
-      collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+  if (collectionDecl && !collectionDecl->isOrdered())
   {
     RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
     ERROR_PARAMS(name->getStringValue(), "delete" ));
@@ -1775,8 +1782,7 @@ ZorbaDeleteNodesLastIterator::getCollection(
     }
   }
 
-  if (collectionDecl &&
-      collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+  if (collectionDecl && !collectionDecl->isOrdered())
   {
     RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
     ERROR_PARAMS(name->getStringValue(), "delete"));

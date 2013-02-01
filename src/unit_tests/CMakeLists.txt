@@ -18,11 +18,13 @@ SET(UNIT_TEST_SRCS
   test_base64_streambuf.cpp
   test_hashmaps.cpp
   test_json_parser.cpp
+  test_parameters.cpp
   test_string.cpp
   test_time_parse.cpp
   test_uri.cpp
   test_uuid.cpp
   unit_tests.cpp
+  test_utf8_streambuf.cpp
 )
 
 IF (ZORBA_WITH_FILE_ACCESS)

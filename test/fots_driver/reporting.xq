@@ -77,15 +77,16 @@ try {
     variable $failures := <fots:FOTS-test-suite-result>{
                           ( $FOTSZorbaManifest//fots:implementation,
                             $FOTSZorbaManifest//fots:dependencies-satisfied,
-                            driver:run($FOTSCatalog,
-                                       $catalogBaseURI,
-                                       $FOTSZorbaManifest,
-                                       '',
-                                       '',
-                                       $exceptedTestCases,
-                                       $exceptedTestSets,
-                                       $verbose,
-                                       ())
+                            driver:run-fots($FOTSCatalogFilePath,
+                                            $FOTSZorbaManifestPath,
+                                            (),
+                                            $exceptedTestSets,
+                                            (),
+                                            $exceptedTestCases,
+                                            '',
+                                            (),
+                                            $verbose,
+                                            '')
                              )
                              }</fots:FOTS-test-suite-result>;
 
@@ -243,10 +244,12 @@ declare %ann:nondeterministic function reporting:do-reporting(
  :)
 declare %ann:nondeterministic function reporting:generate-expected-failures(
   $pathResults  as xs:string
-) as element(failures) {
-  try {
+) as element(failures)
+{
+  try
+  {
     {
-      if(not(file:is-file($pathResults)))
+      if (not(file:is-file($pathResults)))
       then
       {
         error($fots-err:errNA, 

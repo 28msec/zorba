@@ -399,7 +399,7 @@ public:
 
   const var_expr* get_var() const;
 
-  const store::Item* getQName(static_context* sctx) const;
+  const store::Item* getQName() const;
 
   void clear_annotations();
 

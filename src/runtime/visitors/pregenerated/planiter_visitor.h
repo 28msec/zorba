@@ -140,6 +140,8 @@ namespace zorba{
 
     class CurrentTime;
 
+    class MillisToDateTime;
+
     class ParseDate;
 
     class ParseDateTime;
@@ -936,6 +938,9 @@ public:
 
     virtual void beginVisit ( const CurrentTime& ) = 0;
     virtual void endVisit   ( const CurrentTime& ) = 0;
+
+    virtual void beginVisit ( const MillisToDateTime& ) = 0;
+    virtual void endVisit   ( const MillisToDateTime& ) = 0;
 
     virtual void beginVisit ( const ParseDate& ) = 0;
     virtual void endVisit   ( const ParseDate& ) = 0;

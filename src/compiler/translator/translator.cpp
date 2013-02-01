@@ -1574,10 +1574,7 @@ expr* normalize_fo_arg(csize i, expr* argExpr, const function* func, TypeManager
   // or match should be added. This is used by the reflection:invoke() function,
   if (paramType != NULL)
   {
-    if (TypeOps::is_subtype(tm,
-        *paramType,
-        *theRTM.ANY_ATOMIC_TYPE_STAR,
-        loc))
+    if (TypeOps::is_subtype(tm, *paramType, *theRTM.ANY_ATOMIC_TYPE_STAR, loc))
     {
       argExpr = wrap_in_type_promotion(argExpr,
                                        paramType,
@@ -1617,20 +1614,20 @@ void normalize_fo(fo_expr* foExpr)
   csize n = foExpr->num_args();
 
   const function* func = foExpr->get_func();
+  FunctionConsts::FunctionKind fkind = func->getKind();
 
-  if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N ||
-      func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
+  if (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N ||
+      fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
   {
     csize nStarterParams =
-      (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N
-       ? 1 : 2);
+    (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N  ? 1 : 2);
 
     if  (n < (6 + nStarterParams) || (n - nStarterParams) % 6 != 0)
     {
       const store::Item* qname = NULL;
 
       if (n > 0)
-        qname = foExpr->get_arg(0)->getQName(theSctx);
+        qname = foExpr->get_arg(0)->getQName();
 
       zstring lMsgPart;
       ztd::to_string(nStarterParams, &lMsgPart);
@@ -1664,11 +1661,11 @@ void normalize_fo(fo_expr* foExpr)
 ********************************************************************************/
 expr* wrap_in_atomization(expr* e)
 {
-  return theExprManager->create_fo_expr(theRootSctx,
-                                        theUDF,
-                                        e->get_loc(),
-                                        BUILTIN_FUNC(FN_DATA_1),
-                                        e);
+  return CREATE(fo)(theRootSctx,
+                    theUDF,
+                    e->get_loc(),
+                    BUILTIN_FUNC(FN_DATA_1),
+                    e);
 }
 
 
@@ -1683,13 +1680,13 @@ expr* wrap_in_type_promotion(
 {
   e = wrap_in_atomization(e);
 
-  return theExprManager->create_promote_expr(theRootSctx,
-                                             theUDF,
-                                             e->get_loc(),
-                                             e,
-                                             type,
-                                             errorKind,
-                                             qname);
+  return CREATE(promote)(theRootSctx,
+                         theUDF,
+                         e->get_loc(),
+                         e,
+                         type,
+                         errorKind,
+                         qname);
 }
 
 
@@ -3085,34 +3082,33 @@ expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>&
     }
 
     // Some further normalization is required for certain builtin functions
-    FunctionConsts::FunctionKind lKind = f->getKind();
-    switch (lKind)
+    FunctionConsts::FunctionKind fKind = f->getKind();
+    switch (fKind)
     {
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N:
       case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N:
       {
         FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
 
-        resultExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
-                                 foExpr->get_loc(),
-                                 BuiltinFunctionLibrary::getFunction(fkind),
-                                 foExpr);
+        resultExpr = theExprManager->create_fo_expr(theRootSctx,
+                                                    theUDF,
+                                                    foExpr->get_loc(),
+                                                    BuiltinFunctionLibrary::getFunction(fkind),
+                                                    foExpr);
 
         break;
       }
       case FunctionConsts::FN_ANALYZE_STRING_2:
       case FunctionConsts::FN_ANALYZE_STRING_3:
       {
-        resultExpr = wrap_in_validate_expr_strict(
-          foExpr,
-          "http://www.w3.org/2005/xpath-functions");
+        resultExpr =
+        wrap_in_validate_expr_strict(foExpr, "http://www.w3.org/2005/xpath-functions");
 
         break;
       }
       case FunctionConsts::FN_SERIALIZE_2:
       {
-        import_schema_auto_prefix(
-          loc,
+        import_schema_auto_prefix(loc,
           "http://www.w3.org/2010/xslt-xquery-serialization",
           NULL);
 
@@ -3125,12 +3121,12 @@ expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>&
       {
         expr_script_kind_t scriptingKind;
 
-        if (lKind == FunctionConsts::FN_ZORBA_EVAL_1 ||
-            lKind == FunctionConsts::FN_ZORBA_EVAL_N_1)
+        if (fKind == FunctionConsts::FN_ZORBA_EVAL_1 ||
+            fKind == FunctionConsts::FN_ZORBA_EVAL_N_1)
         {
           scriptingKind = SIMPLE_EXPR;
         }
-        else if (lKind == FunctionConsts::FN_ZORBA_EVAL_U_1)
+        else if (fKind == FunctionConsts::FN_ZORBA_EVAL_U_1)
         {
           scriptingKind = UPDATING_EXPR;
         }
@@ -3139,8 +3135,7 @@ expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>&
           scriptingKind = SEQUENTIAL_FUNC_EXPR;
         }
 
-        eval_expr* evalExpr = theExprManager->
-        create_eval_expr(theRootSctx,
+        eval_expr* evalExpr = CREATE(eval)(theRootSctx,
                          theUDF,
                          loc,
                          foExpr->get_arg(0),
@@ -3187,16 +3182,16 @@ expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>&
         zstring query_params;
         std::vector<var_expr*> temp_vars;
 
-        if (lKind == FunctionConsts::FN_ZORBA_INVOKE_N ||
-            lKind == FunctionConsts::FN_ZORBA_INVOKE_N_N)
+        if (fKind == FunctionConsts::FN_ZORBA_INVOKE_N ||
+            fKind == FunctionConsts::FN_ZORBA_INVOKE_N_N)
         {
           scriptingKind = SIMPLE_EXPR;
         }
-        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_U_N)
+        else if (fKind == FunctionConsts::FN_ZORBA_INVOKE_U_N)
         {
           scriptingKind = UPDATING_EXPR;
         }
-        else if (lKind == FunctionConsts::FN_ZORBA_INVOKE_S_N)
+        else if (fKind == FunctionConsts::FN_ZORBA_INVOKE_S_N)
         {
           scriptingKind = SEQUENTIAL_FUNC_EXPR;
         }
@@ -3208,8 +3203,7 @@ expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>&
         }
 
         // create a flwor with LETs to hold the parameters
-        flwor_expr* flworExpr = theExprManager->
-        create_flwor_expr(theRootSctx, theUDF, loc, false);
+        flwor_expr* flworExpr = CREATE(flwor)(theRootSctx, theUDF, loc, false);
 
         // wrap function's QName
         expr* qnameExpr = wrap_in_type_promotion(arguments[0],
@@ -5530,8 +5524,8 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   TypeConstants::quantifier_t quant;
   if (v.getType() == 0)
   {
-    lNodeType = theRTM.DOCUMENT_UNTYPED_TYPE_ONE;
-    lCollectionType = theRTM.DOCUMENT_UNTYPED_TYPE_STAR;
+    lNodeType = theRTM.ANY_NODE_UNTYPED_TYPE_ONE;
+    lCollectionType = theRTM.ANY_NODE_UNTYPED_TYPE_STAR;
     quant = TypeConstants::QUANT_STAR;
   }
   else
@@ -5740,7 +5734,7 @@ void end_visit(const AST_IndexDecl& v, void* /*visit_state*/)
   IndexDecl_t index = theIndexDecl;
   theIndexDecl = NULL;
 
-  index->analyze(theCCB);
+  index->analyze();
 
   // Register the index in the sctx of the current module. Raise error if such
   // a binding exists already in the sctx.
@@ -5858,6 +5852,7 @@ void* begin_visit(const IndexKeyList& v)
   return no_state;
 }
 
+
 void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
@@ -5887,8 +5882,6 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       ERROR_PARAMS(index->getName()->getStringValue()));
     }
 
-    keyExpr = wrap_in_atomization(keyExpr);
-
     xqtref_t type;
     xqtref_t ptype;
 
@@ -5900,6 +5893,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
         ERROR_PARAMS(index->getName()->getStringValue(),
                      ZED(ZDST0027_NO_KEY_TYPE_DECL)));
       }
+
+      keyExpr = wrap_in_atomization(keyExpr);
     }
     else
     {
@@ -5950,11 +5945,26 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
                      ptype->toSchemaString()));
       }
 
-      keyExpr = wrap_in_type_match(keyExpr,
-                                   type,
-                                   loc,
-                                   TREAT_INDEX_KEY,
-                                   index->getName());
+      if (!index->isGeneral() &&
+          (TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.DOUBLE_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.FLOAT_TYPE_ONE, kloc)))
+      {
+        keyExpr = wrap_in_type_promotion(keyExpr,
+                                         type,
+                                         PROMOTE_INDEX_KEY,
+                                         index->getName());
+      }
+      else
+      {
+        keyExpr = wrap_in_atomization(keyExpr);
+
+        keyExpr = wrap_in_type_match(keyExpr,
+                                     type,
+                                     loc,
+                                     TREAT_INDEX_KEY,
+                                     index->getName());
+      }
 
       keyTypes[i] = ptype->getBaseBuiltinType();
     }
@@ -5963,12 +5973,11 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     {
       // Eliminate duplicate key values, as they don't play any role in a
       // general comparison predicate.
-      keyExpr = theExprManager->
-      create_fo_expr(theRootSctx,
-                     theUDF,
-                     keyExpr->get_loc(),
-                     BUILTIN_FUNC(FN_DISTINCT_VALUES_1),
-                     keyExpr);
+      keyExpr = CREATE(fo)(theRootSctx,
+                           theUDF,
+                           keyExpr->get_loc(),
+                           BUILTIN_FUNC(FN_DISTINCT_VALUES_1),
+                           keyExpr);
     }
 
     std::string collationUri;
@@ -5978,8 +5987,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       collationUri = collationSpec->get_uri().str();
 
       if (! theSctx->is_known_collation(collationUri))
-        RAISE_ERROR(err::XQST0076, kloc,
-        ERROR_PARAMS(collationUri));
+        RAISE_ERROR(err::XQST0076, kloc, ERROR_PARAMS(collationUri));
     }
     else if (ptype != NULL &&
              TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE, loc))
@@ -7483,9 +7491,9 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       pop_scope();
       break;
     }
-    case flwor_clause::group_clause:
+    case flwor_clause::groupby_clause:
     {
-      group_clause* gc = static_cast<group_clause*>(curClause);
+      groupby_clause* gc = static_cast<groupby_clause*>(curClause);
 
       csize numGVars = gc->numGroupingVars();
 
@@ -8113,8 +8121,8 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
   csize numGroupSpecs = groupSpecs.size();
 
   std::vector<std::string> collations;
-  group_clause::rebind_list_t grouping_rebind;
-  group_clause::rebind_list_t nongrouping_rebind;
+  groupby_clause::rebind_list_t grouping_rebind;
+  groupby_clause::rebind_list_t nongrouping_rebind;
 
   static_context* sctx = theSctx;
 
@@ -8220,12 +8228,12 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     nongrouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, ngVar));
   }
 
-  group_clause* clause = theExprManager->
-  create_group_clause(theRootSctx,
-                      loc,
-                      grouping_rebind,
-                      nongrouping_rebind,
-                      collations);
+  groupby_clause* clause = theExprManager->
+  create_groupby_clause(theRootSctx,
+                        loc,
+                        grouping_rebind,
+                        nongrouping_rebind,
+                        collations);
 
   theFlworClausesStack.push_back(clause);
 }
@@ -11059,7 +11067,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
         matchExpr->setWildKind(match_all_wild);
         break;
       }
-      case ParseConstants::wild_elem:
+      case ParseConstants::wild_elem: // pre:*
       {
         matchExpr->setWildKind(match_name_wild);
         matchExpr->setWildName(wildcard->getNsOrPrefix());
@@ -11080,16 +11088,16 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
         }
 
         theSctx->expand_qname(qnItem,
-            ns,
-            prefix,
-            localname,
-            wildcard->get_location());
+                              ns,
+                              prefix,
+                              localname,
+                              wildcard->get_location());
 
         matchExpr->setQName(qnItem);
 
         break;
       }
-      case ParseConstants::wild_prefix:
+      case ParseConstants::wild_prefix: // *:name
       {
         matchExpr->setWildKind(match_prefix_wild);
         matchExpr->setWildName(wildcard->getLocalName());
@@ -13658,8 +13666,8 @@ void end_visit(const AnyKindTest& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*>(peek_nodestk_or_null());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(peek_nodestk_or_null());
+
   if (axisExpr != NULL)
   {
     match_expr* me = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
@@ -13763,8 +13771,7 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
     expand_elem_qname(typeNameItem, typeName->get_name(), loc);
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
 
   xqtref_t contentType;
 
@@ -13807,19 +13814,16 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-
   SchemaElementTest ::= "schema-element" "(" ElementDeclaration ")"
 
   ElementDeclaration ::= ElementName
-
 ********************************************************************************/
 void* begin_visit(const SchemaElementTest& v)
 {
   TRACE_VISIT();
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
   rchandle<QName> elemName = v.get_elem();
   ZORBA_ASSERT(elemName != NULL);
 
@@ -13846,8 +13850,7 @@ void* begin_visit(const SchemaElementTest& v)
     theTypeStack.push(seqmatch);
   }
 #else /* ZORBA_NO_XMLSCHEMA */
-  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc,
-  ERROR_PARAMS(ZED(XMLSchema)));
+  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc, ERROR_PARAMS(ZED(XMLSchema)));
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }
@@ -13859,6 +13862,11 @@ void end_visit(const SchemaElementTest& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+  AttributeTest ::= "attribute" "(" (AttribNameOrWildcard ("," TypeName)?)? ")"
+
+  AttribNameOrWildcard ::= AttributeName | "*"
+********************************************************************************/
 void* begin_visit(const AttributeTest& v)
 {
   TRACE_VISIT();
@@ -13898,8 +13906,8 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
   }
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*> (peek_nodestk_or_null());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*> (peek_nodestk_or_null());
+
   if (axisExpr != NULL)
   {
     match_expr* match = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
@@ -13927,13 +13935,18 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+  SchemaAttributeTest ::= "schema-attribute" "(" AttributeDeclaration ")"
+
+  SchemaDeclaration ::= AttributeName
+********************************************************************************/
 void* begin_visit(const SchemaAttributeTest& v)
 {
   TRACE_VISIT();
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(peek_nodestk_or_null());
+
   rchandle<QName> attrName = v.get_attr();
   ZORBA_ASSERT(attrName != NULL);
 
@@ -13954,19 +13967,14 @@ void* begin_visit(const SchemaAttributeTest& v)
   }
   else
   {
-    xqtref_t seqmatch = CTX_TM->create_schema_attribute_type(attrQNameItem,
-                                                             TypeConstants::QUANT_ONE,
-                                                             loc);
+    xqtref_t seqmatch = CTX_TM->
+    create_schema_attribute_type(attrQNameItem, TypeConstants::QUANT_ONE, loc);
 
     theTypeStack.push(seqmatch);
   }
 
 #else /* ZORBA_NO_XMLSCHEMA */
-  throw XQUERY_EXCEPTION(
-    zerr::ZXQP0005_NOT_ENABLED,
-    ERROR_PARAMS( ZED( XMLSchema ) ),
-    ERROR_LOC( loc )
-  );
+  RAISE_ERROR(zerr::ZXQP0005_NOT_ENABLED, loc, ERROR_PARAMS(ZED(XMLSchema)));
 #endif /* ZORBA_NO_XMLSCHEMA */
   return no_state;
 }
@@ -14043,8 +14051,8 @@ void end_visit(const PITest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
+  axis_step_expr* axisExpr = dynamic_cast<axis_step_expr*>(peek_nodestk_or_null());
+
   std::string target = v.get_target().str();
 
   store::Item_t qname = NULL;
@@ -14057,16 +14065,12 @@ void end_visit(const PITest& v, void* /*visit_state*/)
     // is not in the lexical space of NCName, a type error is raised [err:XPTY0004]
 
     zstring lNormalizedTarget;
-    ascii::normalize_whitespace( target, &lNormalizedTarget );
+    ascii::normalize_whitespace(target, &lNormalizedTarget);
 
-    if (!GenericCast::instance()->castableToNCName(lNormalizedTarget))
+    if (!GenericCast::castableToNCName(lNormalizedTarget))
     {
-      throw XQUERY_EXCEPTION(err::XPTY0004,
-        ERROR_PARAMS(ZED(BadType_23o), lNormalizedTarget,
-          ZED( NoCastTo_45o ), "NCName"
-        ),
-        ERROR_LOC( loc )
-      );
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadType_23o), lNormalizedTarget, ZED(NoCastTo_45o), "NCName"));
     }
 
     // bugfix (see above); pass normalized string instead of original target
@@ -14079,6 +14083,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
     match->setTestKind(match_pi_test);
     if (target != "")
       match->setQName(qname);
+
     axisExpr->setTest(match);
   }
   else
@@ -14095,7 +14100,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
                                                     TypeConstants::QUANT_ONE,
                                                     false,
                                                     false);
-      theTypeStack.push (t);
+      theTypeStack.push(t);
     }
   }
 }

@@ -726,9 +726,7 @@ bool TypeOps::is_subtype(
 {
   CHECK_IN_SCOPE(tm, supertype, loc);
 
-  // std::cerr << "--> TypeOps::is_subtype() subitem: " << subitem->show() << " subtype of " << supertype.toString() << "?" << std::endl;
-
-  switch(supertype.type_kind()) 
+  switch (supertype.type_kind()) 
   {
   case XQType::EMPTY_KIND:
   case XQType::NONE_KIND:
@@ -870,30 +868,7 @@ bool TypeOps::is_subtype(
     if (!subitem->isAtomic())
       return false;
 
-    xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
-                                                    TypeConstants::QUANT_ONE,
-                                                    loc,
-                                                    true);
-    switch (subtype->type_kind())
-    {
-    case XQType::ATOMIC_TYPE_KIND:
-    case XQType::ANY_SIMPLE_TYPE_KIND:
-    case XQType::EMPTY_KIND:
-      return true;
-
-    case XQType::USER_DEFINED_KIND:
-    {
-      const UserDefinedXQType& udSubType = 
-      static_cast<const UserDefinedXQType&>(*subtype);
-
-      return (udSubType.isAtomicAny() || udSubType.isList() || udSubType.isUnion());
-    }
-
-    default:
-      // ANY, UNTYPED, ITEM, NODE
-      return false;
-    }
-    break;
+    return true;
   }
 
   case XQType::UNTYPED_KIND:

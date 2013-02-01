@@ -423,7 +423,7 @@ const_expr* ExprManager::create_const_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    store::Item_t val)
+    const store::Item_t& val)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, udf, loc, val);
 }
@@ -517,6 +517,7 @@ eval_expr* ExprManager::create_eval_expr(
 {
   CREATE_AND_RETURN_EXPR(eval_expr, sctx, udf, loc, e, scriptingKind, nsCtx);
 }
+
 
 #ifdef ZORBA_WITH_DEBUGGER
 
@@ -963,14 +964,14 @@ flwor_wincond* ExprManager::create_flwor_wincond(
 }
 
 
-group_clause* ExprManager::create_group_clause(
+groupby_clause* ExprManager::create_groupby_clause(
     static_context* sctx,
     const QueryLoc& loc,
     const flwor_clause::rebind_list_t& gvars,
     const flwor_clause::rebind_list_t& ngvars,
     const std::vector<std::string>& collations)
 {
-  CREATE_AND_RETURN(group_clause, sctx, theCCB,  loc, gvars, ngvars, collations);
+  CREATE_AND_RETURN(groupby_clause, sctx, theCCB,  loc, gvars, ngvars, collations);
 }
 
 

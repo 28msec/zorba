@@ -212,6 +212,9 @@ namespace zorba {
     void beginVisit( const CurrentTime& );
     void endVisit  ( const CurrentTime& );
 
+    void beginVisit( const MillisToDateTime& );
+    void endVisit  ( const MillisToDateTime& );
+
     void beginVisit( const ParseDate& );
     void endVisit  ( const ParseDate& );
 

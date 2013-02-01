@@ -20,9 +20,11 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/path_expr.h"
+#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/expr_iter.h"
+#include "compiler/api/compilercb.h"
 
 #include "functions/func_errors_and_diagnostics.h"
 
@@ -43,6 +45,482 @@ static void add_var(var_expr*, ulong&, VarIdMap&, IdVarMap*);
 static void remove_wincond_vars(const flwor_wincond*, const VarIdMap&, DynamicBitset&);
 
 static void set_bit(var_expr*, const VarIdMap&, DynamicBitset&, bool);
+
+
+/*******************************************************************************
+
+********************************************************************************/
+static void normalize_comp(
+    CompareConsts::CompareType& comp,
+    expr*& arg0,
+    expr*& arg1)
+{
+  switch (comp)
+  {
+  case CompareConsts::VALUE_GREATER:
+  case CompareConsts::GENERAL_GREATER:
+  case CompareConsts::VALUE_GREATER_EQUAL:
+  case CompareConsts::GENERAL_GREATER_EQUAL:
+  {
+    comp = static_cast<CompareConsts::CompareType>(static_cast<int>(comp) - 4);
+     
+    expr* tmp = arg0;
+    arg0 = arg1;
+    arg1 = tmp;
+     
+    break;
+  }
+  default:
+    break;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
+{
+  if (query == view)
+    return true;
+
+  if (query->get_expr_kind() != view->get_expr_kind())
+  {
+    if (query->get_expr_kind() == var_expr_kind)
+    {
+      var_expr* qe = static_cast<var_expr*>(query);
+
+      if (qe->get_kind() != var_expr::let_var)
+        return false;
+
+      return match_exact(qe->get_domain_expr(), view, subst);
+    }
+    else if (view->get_expr_kind() == var_expr_kind)
+    {
+      var_expr* ve = static_cast<var_expr*>(view);
+
+      switch (ve->get_kind())
+      {
+      case var_expr::for_var:
+      {
+        expr::substitution_t::iterator ite = subst.find(view);
+
+        if (ite != subst.end())
+        {
+          return match_exact(query, ite->second, subst);
+        }
+        else
+        {
+          assert(false);
+          subst[view] = query;
+          return true;
+        }
+      }
+      case var_expr::let_var:
+      {
+        return match_exact(query, ve->get_domain_expr(), subst);
+      }
+      case var_expr::pos_var:
+      {
+        return false;
+      }
+      case var_expr::win_var:
+      case var_expr::wincond_out_var:
+      case var_expr::wincond_out_pos_var:
+      case var_expr::wincond_in_var:
+      case var_expr::wincond_in_pos_var:
+      case var_expr::groupby_var:
+      case var_expr::non_groupby_var:
+      case var_expr::count_var:
+      {
+        ZORBA_ASSERT(false); // TODO
+      }
+      case var_expr::score_var:
+      case var_expr::prolog_var:
+      case var_expr::local_var:
+      case var_expr::copy_var:
+      case var_expr::catch_var:
+      case var_expr::arg_var:
+      case var_expr::eval_var:
+      {
+        ZORBA_ASSERT(false);
+      }
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
+      }
+    }
+    else if (view->get_function_kind() == FunctionConsts::OP_UNHOIST_1)
+    {
+      fo_expr* vfo = static_cast<fo_expr*>(view);
+      return match_exact(query, vfo->get_arg(0), subst);
+    }
+    else if (query->get_function_kind() == FunctionConsts::OP_UNHOIST_1)
+    {
+      fo_expr* qfo = static_cast<fo_expr*>(query);
+      return match_exact(qfo->get_arg(0), view, subst);
+    }
+    else if (view->get_function_kind() == FunctionConsts::OP_HOIST_1)
+    {
+      fo_expr* vfo = static_cast<fo_expr*>(view);
+      return match_exact(query, vfo->get_arg(0), subst);
+    }
+    else if (query->get_function_kind() == FunctionConsts::OP_HOIST_1)
+    {
+      fo_expr* qfo = static_cast<fo_expr*>(query);
+      return match_exact(qfo->get_arg(0), view, subst);
+    }
+    else if (view->get_expr_kind() == wrapper_expr_kind)
+    {
+      wrapper_expr* vwe = static_cast<wrapper_expr*>(view);
+      return match_exact(query, vwe->get_input(), subst);
+    }
+    else if (query->get_expr_kind() == wrapper_expr_kind)
+    {
+      wrapper_expr* qwe = static_cast<wrapper_expr*>(query);
+      return match_exact(qwe->get_input(), view, subst);
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  switch (query->get_expr_kind())
+  {
+  case var_expr_kind:
+  {
+    var_expr* qe = static_cast<var_expr*>(query);
+    var_expr* ve = static_cast<var_expr*>(view);
+
+    var_expr::var_kind qkind = qe->get_kind();
+    var_expr::var_kind vkind = ve->get_kind();
+
+    if (qkind != vkind)
+    {
+      if (qkind == var_expr::let_var)
+      {
+        return match_exact(qe->get_domain_expr(), view, subst);
+      }
+
+      return false;
+    }
+
+    switch (qkind)
+    {
+    case var_expr::for_var:
+    case var_expr::pos_var:
+    {
+      expr::substitution_t::iterator ite = subst.find(view);
+
+      if (ite != subst.end())
+      {
+        return (qe == ite->second);
+      }
+      else
+      {
+        assert(false);
+        subst[view] = query;
+        return true;
+      }
+    }
+    case var_expr::let_var:
+    {
+      return match_exact(qe->get_domain_expr(), ve->get_domain_expr(), subst);
+    }
+    case var_expr::win_var:
+    case var_expr::wincond_out_var:
+    case var_expr::wincond_out_pos_var:
+    case var_expr::wincond_in_var:
+    case var_expr::wincond_in_pos_var:
+    case var_expr::groupby_var:
+    case var_expr::non_groupby_var:
+    case var_expr::count_var:
+    {
+      ZORBA_ASSERT(false); // TODO
+    }
+    case var_expr::score_var:
+    case var_expr::prolog_var:
+    case var_expr::local_var:
+    case var_expr::copy_var:
+    case var_expr::catch_var:
+    case var_expr::arg_var:
+    case var_expr::eval_var:
+    {
+      ZORBA_ASSERT(false);
+    }
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
+
+    break;
+  }
+
+  case fo_expr_kind:
+  {
+    fo_expr* qe = static_cast<fo_expr*>(query);
+    fo_expr* ve = static_cast<fo_expr*>(view);
+
+    if (qe->get_func() != ve->get_func())
+    {
+      function* vfunc = ve->get_func();
+      function* qfunc = qe->get_func();
+
+      if (qfunc->isComparisonFunction() && vfunc->isComparisonFunction())
+      {
+        CompareConsts::CompareType qcomp = qe->get_func()->comparisonKind();
+        CompareConsts::CompareType vcomp = ve->get_func()->comparisonKind();
+
+        expr* qarg0 = qe->get_arg(0);
+        expr* qarg1 = qe->get_arg(1);
+        expr* varg0 = ve->get_arg(0);
+        expr* varg1 = ve->get_arg(1);
+
+        normalize_comp(qcomp, qarg0, qarg1);
+        normalize_comp(vcomp, varg0, varg1);
+
+        if (qcomp == vcomp &&
+            match_exact(qarg0, varg0, subst) &&
+            match_exact(qarg1, varg1, subst))
+          return true;
+      }
+      else if (vfunc->getKind() == FunctionConsts::OP_UNHOIST_1)
+      {
+        return match_exact(query, ve->get_arg(0), subst);
+      }
+      else if (qfunc->getKind() == FunctionConsts::OP_UNHOIST_1)
+      {
+        return match_exact(qe->get_arg(0), view, subst);
+      }
+      else if (vfunc->getKind() == FunctionConsts::OP_HOIST_1)
+      {
+        return match_exact(query, ve->get_arg(0), subst);
+      }
+      else if (qfunc->getKind() == FunctionConsts::OP_HOIST_1)
+      {
+        return match_exact(qe->get_arg(0), view, subst);
+      }
+
+      return false;
+    }
+
+    function* func = qe->get_func();
+
+    csize numArgs = qe->num_args();
+
+    if (numArgs != ve->num_args())
+      return false;
+
+    csize i = 0;
+    for (; i < numArgs; i++)
+    {
+      if (!match_exact(qe->get_arg(i), ve->get_arg(i), subst))
+        break;
+    }
+
+    if (i < numArgs)
+    {
+      if (func->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
+      {
+        const store::Item* collName1 = ve->get_arg(0)->getQName();
+        const store::Item* collName2 = qe->get_arg(0)->getQName();
+
+        if (collName1 != NULL && collName2 != NULL && collName1->equals(collName2))
+          return true;
+#if 0
+        if (collName != NULL && qe->get_arg(0)->get_var() != NULL)
+        {
+          const var_expr* var = qe->get_arg(0)->get_var();
+
+          if (var->get_kind() == var_expr::prolog_var &&
+              var->num_set_exprs() == 1 &&
+              var->get_set_expr(0)->get_expr_kind() == var_decl_expr_kind)
+          {
+            const var_decl_expr* decl = 
+            static_cast<const var_decl_expr*>(var->get_set_expr(0));
+
+            const store::Item* collName2 = decl->get_init_expr()->getQName();
+
+            if (collName2 != NULL && collName->equals(collName2))
+              return true;
+          }
+        }
+#endif
+      }
+      else if (func->isComparisonFunction())
+      {
+        CompareConsts::CompareType compKind = func->comparisonKind();
+
+        if (CompareConsts::VALUE_EQUAL <= compKind && 
+            compKind <= CompareConsts::NODE_NOT_EQUAL)
+        {
+          if (match_exact(qe->get_arg(0), ve->get_arg(1), subst) &&
+              match_exact(qe->get_arg(1), ve->get_arg(0), subst))
+            return true;
+        }
+      }
+
+      return false;
+    }
+
+    return true;
+  }
+
+  case relpath_expr_kind:
+  {
+    relpath_expr* qe = static_cast<relpath_expr*>(query);
+    relpath_expr* ve = static_cast<relpath_expr*>(view);
+
+    csize vnumSteps = ve->size();
+    csize qnumSteps = qe->size();
+    csize numSteps = (vnumSteps < qnumSteps ? vnumSteps : qnumSteps);
+
+    for (csize i = numSteps-1; i > 0; --i)
+    {
+      axis_step_expr* qstep = static_cast<axis_step_expr*>((*qe)[i]);
+      axis_step_expr* vstep = static_cast<axis_step_expr*>((*ve)[i]);
+
+      if (qstep->getAxis() != vstep->getAxis())
+        return false;
+
+      match_expr* qtest = qstep->getTest();
+      match_expr* vtest = vstep->getTest();
+
+      if (!qtest->matches(vtest))
+        return false;
+    }
+
+    // <vsource>/b/c  vs  <qsource>/a/b/c
+    if (vnumSteps < qnumSteps)
+    {
+      expr* vsource = (*ve)[0];
+
+      if (vsource->get_expr_kind() != var_expr_kind)
+        return false;
+
+      relpath_expr* qpath = query->get_ccb()->getExprManager()->
+      create_relpath_expr(qe->get_sctx(), qe->get_udf(), qe->get_loc());
+
+      for (csize i = 0; i < qnumSteps - vnumSteps; ++i)
+        qpath->add_back((*qe)[i]);
+
+      return match_exact(qpath, vsource, subst);
+    }
+    // <vsource>/a/b/c  vs  <qsource>/b/c
+    else if (qnumSteps < vnumSteps)
+    {
+      expr* qsource = (*qe)[0];
+
+      if (qsource->get_expr_kind() != var_expr_kind)
+        return false;
+
+      relpath_expr* vpath = query->get_ccb()->getExprManager()->
+      create_relpath_expr(ve->get_sctx(), ve->get_udf(), ve->get_loc());
+
+      for (csize i = 0; i < vnumSteps - qnumSteps; ++i)
+        vpath->add_back((*ve)[i]);
+
+      return match_exact(qsource, vpath, subst);
+    }
+    else
+    {
+      return match_exact((*qe)[0], (*ve)[0], subst);
+    }
+  }
+
+  case cast_expr_kind:
+  case castable_expr_kind:
+  case instanceof_expr_kind:
+  {
+    cast_or_castable_base_expr* qe = static_cast<cast_or_castable_base_expr*>(query);
+    cast_or_castable_base_expr* ve = static_cast<cast_or_castable_base_expr*>(view);
+
+    TypeManager* tm = qe->get_type_manager();
+
+    if (!TypeOps::is_equal(tm, *qe->get_target_type(), *ve->get_target_type()))
+      return false;
+
+    return match_exact(qe->get_input(), ve->get_input(), subst);
+  }
+
+  case promote_expr_kind:
+  {
+    promote_expr* qe = static_cast<promote_expr*>(query);
+    promote_expr* ve = static_cast<promote_expr*>(view);
+
+    TypeManager* tm = qe->get_type_manager();
+
+    if (!TypeOps::is_subtype(tm, *qe->get_return_type(), *ve->get_target_type()))
+      return false;
+
+    return match_exact(qe->get_input(), ve->get_input(), subst);
+  }
+
+  case treat_expr_kind:
+  {
+    treat_expr* qe = static_cast<treat_expr*>(query);
+    treat_expr* ve = static_cast<treat_expr*>(view);
+
+    TypeManager* tm = qe->get_type_manager();
+
+    if (qe->get_check_prime() != ve->get_check_prime())
+      return false;
+
+    if (!qe->get_check_prime())
+    {
+      if (qe->get_target_type()->get_quantifier() !=
+          ve->get_target_type()->get_quantifier())
+        return false;
+    }
+    else if (!TypeOps::is_equal(tm, *qe->get_target_type(), *ve->get_target_type()))
+    {
+      return false;
+    }
+
+    return match_exact(qe->get_input(), ve->get_input(), subst);
+  }
+
+  case wrapper_expr_kind:
+  {
+    wrapper_expr* qe = static_cast<wrapper_expr*>(query);
+    wrapper_expr* ve = static_cast<wrapper_expr*>(view);
+
+    return match_exact(qe->get_input(), ve->get_input(), subst);
+  }
+
+  case const_expr_kind:
+  {
+    const_expr* qe = static_cast<const_expr*>(query);
+    const_expr* ve = static_cast<const_expr*>(view);
+
+    try
+    {
+      // TODO: collation, timezone ???? Implement the full eq spec ????
+      return qe->get_val()->equals(ve->get_val());
+    }
+    catch (ZorbaException&)
+    {
+      return false;
+    }
+    break;
+  }
+
+  case delete_expr_kind:
+  case insert_expr_kind:
+  case rename_expr_kind:
+  case replace_expr_kind:
+  case transform_expr_kind:
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
+
+  return false;
+}
 
 
 /*******************************************************************************
@@ -241,10 +719,10 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
 
 /*******************************************************************************
   Let FLWOR(e) be the set of flwor exprs within the expr tree rooted at expr e.
-  Let FV(e) be the set of variables defined in any of the flwor exprs in FLWOR(e).
-  This method assigns a prefix id to each variable in FV(e) and stores the mapping
-  between var_expr and prefix id in "varmap". It also returns the number of vars
-  in FV(e).
+  Let FV(e) be the set of variables defined in any of the flwor exprs in 
+  FLWOR(e). This method assigns a prefix id to each variable in FV(e) and
+  stores the mapping between var_expr and prefix id in "varidmap" and the
+  reverse mapping in "idvapmap". It also returns the number of vars in FV(e).
 
   Given 2 vars v1 and v2 in FV(e), their prefix ids allows to check if v1 is
   defined before v2: v1 is defined before v2 iff id(v1) < id(v2).
@@ -302,9 +780,9 @@ void index_flwor_vars(
         if (stopCond != NULL)
           add_wincond_vars(stopCond, numVars, varidmap, idvarmap);
       }
-      else if (c->get_kind() == flwor_clause::group_clause)
+      else if (c->get_kind() == flwor_clause::groupby_clause)
       {
-        const group_clause* gc = static_cast<const group_clause *>(c);
+        const groupby_clause* gc = static_cast<const groupby_clause *>(c);
 
         const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
         csize numGroupVars = gvars.size();
@@ -513,9 +991,9 @@ void build_expr_to_vars_map(
         if (stopCond != NULL)
           remove_wincond_vars(stopCond, varmap, freeset);
       }
-      else if (c->get_kind() == flwor_clause::group_clause)
+      else if (c->get_kind() == flwor_clause::groupby_clause)
       {
-        const group_clause* gc = static_cast<const group_clause *>(c);
+        const groupby_clause* gc = static_cast<const groupby_clause *>(c);
 
         const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
         csize numGroupVars = gvars.size();

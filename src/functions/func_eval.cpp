@@ -91,6 +91,8 @@ public:
   CODEGEN_DECL();
 };
 
+
+
 PlanIter_t fn_zorba_eval::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -101,6 +103,7 @@ PlanIter_t fn_zorba_eval::codegen(
   ZORBA_ASSERT(false);
   return NULL;
 }
+
 
 PlanIter_t fn_zorba_eval_n::codegen(
   CompilerCB*,
