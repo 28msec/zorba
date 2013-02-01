@@ -47,8 +47,9 @@ public:
    * The format to print exceptions as to an ostream.
    */
   enum print_format {
-    format_text,
-    format_xml
+    format_text         = 0,            ///< plain text
+    format_xml          = 1,            ///< XML without unnecessary whitespace
+    format_xml_indented = 3             ///< XML with newlines and indentation
   };
   
   /**

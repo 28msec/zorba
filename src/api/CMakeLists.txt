@@ -60,7 +60,6 @@ SET(API_SRCS
     streambuf.cpp
     transcode_streambuf.cpp
     uuid.cpp
-    error_printer.cpp
     )
 
 IF (ZORBA_WITH_FILE_ACCESS)

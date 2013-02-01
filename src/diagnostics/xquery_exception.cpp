@@ -25,14 +25,22 @@
 #include <zorba/xquery_functions.h>
 
 // Zorba
-#include "util/fs_util.h"
-#include "util/uri_util.h"
 #include "util/ascii_util.h"
+#include "util/fs_util.h"
+#include "util/indent.h"
+#include "util/omanip.h"
+#include "util/uri_util.h"
 #include "zorbatypes/URI.h"
 
 // local
 #include "dict.h"
 #include "xquery_exception.h"
+
+#define if_inc_indent if_do( do_indent, inc_indent )
+#define if_dec_indent if_do( do_indent, dec_indent )
+
+#undef if_nl
+#define if_nl if_emit( do_indent, '\n' )
 
 using namespace std;
 
@@ -112,12 +120,14 @@ void XQueryException::polymorphic_throw() const {
 }
 
 ostream& XQueryException::print_impl( ostream &o ) const {
-  bool const as_xml = get_print_format( o ) == format_xml;
+  print_format const format = get_print_format( o );
+  bool const as_xml = format != format_text;
+  bool const do_indent = format == format_xml_indented;
 
   if ( as_xml ) {
     ZorbaException::print_impl( o );
     if ( has_source() ) {
-      o << "<location";
+      o << indent << "<location";
       print_uri( o, source_uri() );
       o << " line-begin=\"" << source_line() << '"';
       if ( source_line_end() )
@@ -126,16 +136,16 @@ ostream& XQueryException::print_impl( ostream &o ) const {
         o << " column-begin=\"" << source_column() << '"';
       if ( source_column_end() )
         o << " column-end=\"" << source_column_end() << '"';
-      o << "/>"; // <location ...
+      o << "/>" << if_nl; // <location ...
 
       if ( has_applied() ) {
-        o << "<applied-at";
+        o << indent << "<applied-at";
         if ( applied_uri() && ::strcmp( applied_uri(), source_uri() ) != 0 )
           print_uri( o, applied_uri() );
         o << " line=\"" << applied_line() << '"';
         if ( applied_column() )
           o << " column=\"" << applied_column() << '"';
-        o << "/>"; // <applied-at ...
+        o << "/>" << if_nl; // <applied-at ...
       }
 
       if ( get_print_trace( o ) )
@@ -171,9 +181,12 @@ ostream& XQueryException::print_impl( ostream &o ) const {
 ostream& XQueryException::print_stack_trace( ostream &o ) const {
   XQueryStackTrace const &trace = query_trace();
   if ( !trace.empty() ) {
-    bool const as_xml = get_print_format( o ) == format_xml;
+    print_format const format = get_print_format( o );
+    bool const as_xml = format != format_text;
+    bool const do_indent = format == format_xml_indented;
+
     if ( as_xml )
-      o << "<stack>";
+      o << indent << "<stack>" << if_nl << if_inc_indent;
     FOR_EACH( XQueryStackTrace, it, trace ) {
       XQueryStackTrace::fn_name_type const &fn_name = it->getFnName();
       char const *const fn_prefix = fn_name.prefix();
@@ -187,16 +200,16 @@ ostream& XQueryException::print_stack_trace( ostream &o ) const {
       }
 
       if ( as_xml ) {
-        o << "<call";
+        o << indent << "<call";
         if ( fn_prefix && *fn_prefix )
           o << " prefix=\"" << fn_prefix << '"';
 
         o << " namespace=\"" << fn_name.ns() << '"'
           << " local-name=\"" << fn_name.localname()
           << " arity=\"" << fn_arity << '"'
-          << "\">"; // <call ...
+          << "\">" << if_nl; // <call ...
 
-        o << "<location uri=\"" << filename << '"';
+        o << if_inc_indent << indent << "<location uri=\"" << filename << '"';
 
         o << " line-begin=\"" << it->getLine() << '"';
         if ( it->getLineEnd() )
@@ -206,8 +219,8 @@ ostream& XQueryException::print_stack_trace( ostream &o ) const {
         if ( it->getColumnEnd() )
           o << " column-end=\"" << it->getColumnEnd() << '"';
 
-        o << "/>" // <location ...
-          << "</call>"; 
+        o << "/>" << if_nl // <location ...
+          << if_dec_indent << "</call>" << if_nl;
       } else {
         o << fn_name << '#' << fn_arity
           << " <" << fn_name.ns() << "> "
@@ -217,21 +230,21 @@ ostream& XQueryException::print_stack_trace( ostream &o ) const {
       }
     } // FOR_EACH
     if ( as_xml )
-      o << "</stack>";
+      o << indent << "</stack>" << if_nl << if_dec_indent;
   }
   return o;
 }
 
 bool XQueryException::print_uri( ostream &o, char const *uri ) {
   if ( uri && *uri ) {
-    bool const as_xml = get_print_format( o ) == format_xml;
+    bool const as_xml = get_print_format( o ) != format_text;
     switch ( uri::get_scheme( uri ) ) {
       case uri::none:
       case uri::file:
         try {
-          o << (as_xml ? "<" : " uri=\"") 
+          o << (as_xml ? " uri=\"" : "<") 
             << fs::get_normalized_path( uri ) 
-            << (as_xml ? '>' : '"');
+            << (as_xml ? '"' : '>');
           break;
         }
         catch ( ... ) {
@@ -239,7 +252,7 @@ bool XQueryException::print_uri( ostream &o, char const *uri ) {
         }
         // no break;
       default:
-        o << (as_xml ? "<" : "uri=\"") << uri << (as_xml ? '>' : '"');
+        o << (as_xml ? " uri=\"" : "<" ) << uri << (as_xml ? '"' : '>');
     } // switch
     return true;
   } // if

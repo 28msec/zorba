@@ -20,12 +20,21 @@
 #include <zorba/zorba_exception.h>
 #include <zorba/xquery_warning.h>
 
+#include "util/indent.h"
+#include "util/omanip.h"
+
 #include "dict.h"
 
 #ifndef NDEBUG
 #include <cstdlib>                      /* for abort() */
 ZORBA_DLL_PUBLIC bool g_abort_on_error;
 #endif /* NDEBUG */
+
+#define if_inc_indent if_do( do_indent, inc_indent )
+#define if_dec_indent if_do( do_indent, dec_indent )
+
+#undef if_nl
+#define if_nl if_emit( do_indent, '\n' )
 
 using namespace std;
 
@@ -56,7 +65,7 @@ ZorbaException::ZorbaException( ZorbaException const &from ) :
 {
 }
 
-ZorbaException::ZorbaException( serialization::Archiver &ar ) 
+ZorbaException::ZorbaException( serialization::Archiver& ) 
 {
 }
 
@@ -90,16 +99,22 @@ void ZorbaException::polymorphic_throw() const {
 }
 
 ostream& ZorbaException::print( ostream& o ) const {
-  bool const as_xml = get_print_format( o ) == format_xml;
+  print_format const format = get_print_format( o );
+  bool const as_xml = format != format_text;
+  bool const do_indent = format == format_xml_indented;
   if ( as_xml )
-    o << "<exception>";
+    o << "<exception>" << if_nl << if_inc_indent;
   print_impl( o );
   if ( as_xml )
-    o << "</exception>";
+    o << if_dec_indent << "</exception>" << if_nl;
   return o;
 }
 
 ostream& ZorbaException::print_impl( ostream &o ) const {
+  print_format const format = get_print_format( o );
+  bool const as_xml = format != format_text;
+  bool const do_indent = format == format_xml_indented;
+
   //
   // We need to create an error phrase (e.g., "static error") and look that up
   // as a unit rather than looking up the error kind word and "error"
@@ -120,29 +135,26 @@ ostream& ZorbaException::print_impl( ostream &o ) const {
 
   oss << (dynamic_cast<ZorbaWarningCode const*>( &d ) ? "warning" : "error");
 
-  bool const as_xml = get_print_format( o ) == format_xml;
-  if ( as_xml )
-    o << "<kind>";
-
-  o << diagnostic::dict::lookup( oss.str() );
-
-  if ( as_xml )
-    o << "</kind><code>" << d.qname() << "</code>";
-  else
-    o << " [" << d.qname() << ']';
+  if ( as_xml ) {
+    string const kind( oss.str(), 1 );  // skip ZED_PREFIX
+    o << indent << "<kind>" << kind << "</kind>" << if_nl
+      << indent << "<code>" << d.qname() << "</code>"
+      << if_nl;
+  } else
+    o << diagnostic::dict::lookup( oss.str() ) << " [" << d.qname() << ']';
 
   if ( char const *const w = what() )
     if ( *w ) {
       if ( as_xml )
-        o << "<message>" << w << "</message>";
+        o << indent << "<message>" << w << "</message>" << if_nl;
       else
         o << ": " << w;
     }
 
 #ifndef NDEBUG
   if ( as_xml )
-    o << "<raised-at file=\"" << raise_file()
-      << "\" line=\"" << raise_line() << "\"/>";
+    o << indent << "<raised-at file=\"" << raise_file()
+      << "\" line=\"" << raise_line() << "\"/>" << if_nl;
   else
     o << "; raised at " << raise_file() << ':' << raise_line();
 #endif
