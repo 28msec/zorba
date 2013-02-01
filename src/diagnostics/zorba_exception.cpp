@@ -95,7 +95,7 @@ ostream& ZorbaException::print( ostream& o ) const {
     o << "<exception>";
   print_impl( o );
   if ( as_xml )
-    o << "<exception>";
+    o << "</exception>";
   return o;
 }
 
@@ -134,18 +134,16 @@ ostream& ZorbaException::print_impl( ostream &o ) const {
   if ( char const *const w = what() )
     if ( *w ) {
       if ( as_xml )
-        o << "<description>";
+        o << "<message>" << w << "</message>";
       else
-        o << ": ";
-
-      o << w;
-
-      if ( as_xml )
-        o << "</description>";
+        o << ": " << w;
     }
 
 #ifndef NDEBUG
-  if ( !as_xml )
+  if ( as_xml )
+    o << "<raised-at file=\"" << raise_file()
+      << "\" line=\"" << raise_line() << "\"/>";
+  else
     o << "; raised at " << raise_file() << ':' << raise_line();
 #endif
 

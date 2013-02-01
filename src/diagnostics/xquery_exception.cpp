@@ -21,13 +21,14 @@
 
 // API
 #include <zorba/xquery_stack_trace.h>
-#include <zorba/zorba_string.h>
 #include <zorba/util/uri.h>
 #include <zorba/xquery_functions.h>
 
 // Zorba
 #include "util/fs_util.h"
 #include "util/uri_util.h"
+#include "util/ascii_util.h"
+#include "zorbatypes/URI.h"
 
 // local
 #include "dict.h"
@@ -112,49 +113,59 @@ void XQueryException::polymorphic_throw() const {
 
 ostream& XQueryException::print_impl( ostream &o ) const {
   bool const as_xml = get_print_format( o ) == format_xml;
-  if ( has_source() ) {
-    if ( as_xml )
+
+  if ( as_xml ) {
+    ZorbaException::print_impl( o );
+    if ( has_source() ) {
       o << "<location";
-    if ( !print_uri( o, source_uri() ) && !as_xml )
-      o << "(" << diagnostic::dict::lookup( ZED( NoSourceURI ) ) << ")";
-    if ( !as_xml )
-      o << ":" << source_line();
-    else
+      print_uri( o, source_uri() );
       o << " line-begin=\"" << source_line() << '"';
-    if ( as_xml && source_line_end() )
+      if ( source_line_end() )
         o << " line-end=\"" << source_line_end() << '"';
-    if ( source_column() ) {
-      if ( as_xml )
+      if ( source_column() )
         o << " column-begin=\"" << source_column() << '"';
-      else
-        o << "," << source_column();
-    }
-    if ( as_xml && source_column_end() )
-      o << " column-end=\"" << source_column_end() << '"';
+      if ( source_column_end() )
+        o << " column-end=\"" << source_column_end() << '"';
+      o << "/>"; // <location ...
 
-    if ( as_xml )
-      o << " />";
-
-    // diabled for XML printing because I don't know what the applied uri is
-    if ( !as_xml && has_applied() ) {
-      o << " (" << diagnostic::dict::lookup( ZED( AppliedAt ) ) << ' ';
-      if ( applied_uri() && ::strcmp( applied_uri(), source_uri() ) != 0 ) {
-        if ( print_uri( o, applied_uri() ) )
-          o << ':';
+      if ( has_applied() ) {
+        o << "<applied-at";
+        if ( applied_uri() && ::strcmp( applied_uri(), source_uri() ) != 0 )
+          print_uri( o, applied_uri() );
+        o << " line=\"" << applied_line() << '"';
+        if ( applied_column() )
+          o << " column=\"" << applied_column() << '"';
+        o << "/>"; // <applied-at ...
       }
-      o << applied_line();
-      if ( applied_column() )
-        o << ',' << applied_column();
-      o << ')';
+
+      if ( get_print_trace( o ) )
+        print_stack_trace( o );
     }
+    return o;
+  } else {
+    if ( has_source() ) {
+      if ( !print_uri( o, source_uri() ) )
+        o << "(" << diagnostic::dict::lookup( ZED( NoSourceURI ) ) << ")";
+      o << ":" << source_line();
+      if ( source_column() )
+        o << "," << source_column();
 
-    if ( !as_xml )
+      if ( has_applied() ) {
+        o << " (" << diagnostic::dict::lookup( ZED( AppliedAt ) ) << ' ';
+        if ( applied_uri() && ::strcmp( applied_uri(), source_uri() ) != 0 ) {
+          if ( print_uri( o, applied_uri() ) )
+            o << ':';
+        }
+        o << applied_line();
+        if ( applied_column() )
+          o << ',' << applied_column();
+        o << ')';
+      }
+
       o << ": ";
-
-    if ( get_print_trace( o ) )
-      print_stack_trace( o );
+    }
+    return ZorbaException::print_impl( o );
   }
-  return ZorbaException::print( o );
 }
 
 ostream& XQueryException::print_stack_trace( ostream &o ) const {
@@ -164,40 +175,47 @@ ostream& XQueryException::print_stack_trace( ostream &o ) const {
     if ( as_xml )
       o << "<stack>";
     FOR_EACH( XQueryStackTrace, it, trace ) {
-      XQueryStackTrace::fn_name_type const& lName = it->getFnName();
-      XQueryStackTrace::fn_arity_type lArity = it->getFnArity();
-      char const *const lPrefix = lName.prefix();
-      String lFileName = it->getFileName();
-      if ( fn::starts_with(lFileName,"file:") ) {
-        lFileName = URIHelper::decodeFileURI(lFileName);
-        while (fn::starts_with(lFileName,"//")) {
-          lFileName = lFileName.substr(1);
-        }
+      XQueryStackTrace::fn_name_type const &fn_name = it->getFnName();
+      char const *const fn_prefix = fn_name.prefix();
+      XQueryStackTrace::fn_arity_type fn_arity = it->getFnArity();
+
+      zstring filename( it->getFileName() );
+      if ( ascii::begins_with( filename, "file:" ) ) {
+        URI::decode_file_URI( filename, filename );
+        while ( ascii::begins_with( filename, "//" ) )
+          filename = filename.substr(1);
       }
+
       if ( as_xml ) {
-        o << "<call ";
-        if ( lPrefix && *lPrefix ) {
-          o << "prefix=\"" << lPrefix << "\" ";
-        }
-        o << "arity=\"" << lArity << "\" ";
-        o << "ns=\"" << lName.ns() << "\" ";
-        o << "local-name=\"" << lName.localname() << "\">";
-        o << "<location ";
-        o << "uri=\"" << lFileName << "\" ";
-        o << "line-begin=\"" << it->getLine() << "\" "
-          << "column-begin=\"" << it->getColumn() << "\" ";
+        o << "<call";
+        if ( fn_prefix && *fn_prefix )
+          o << " prefix=\"" << fn_prefix << '"';
+
+        o << " namespace=\"" << fn_name.ns() << '"'
+          << " local-name=\"" << fn_name.localname()
+          << " arity=\"" << fn_arity << '"'
+          << "\">"; // <call ...
+
+        o << "<location uri=\"" << filename << '"';
+
+        o << " line-begin=\"" << it->getLine() << '"';
         if ( it->getLineEnd() )
-          o << "line-end=\"" << it->getLineEnd() << "\" ";
+          o << " line-end=\"" << it->getLineEnd() << '"';
+
+        o << " column-begin=\"" << it->getColumn() << '"';
         if ( it->getColumnEnd() )
-          o << "line-end=\"" << it->getColumnEnd() << "\" ";
-        o << "/>";
-        o << "</call>"; 
+          o << " column-end=\"" << it->getColumnEnd() << '"';
+
+        o << "/>" // <location ...
+          << "</call>"; 
       } else {
-        o << "=================================================" << std::endl;
-        o << lName << "#" << lArity << " <" << lName.ns() << "> " << std::endl;
-        o << lFileName << " at line " << it->getLine() << " column " << it->getColumn() << std::endl;
+        o << fn_name << '#' << fn_arity
+          << " <" << fn_name.ns() << "> "
+          << '"' << filename << "\":"
+          << it->getLine() << ',' << it->getColumn()
+          << '\n';
       }
-    } 
+    } // FOR_EACH
     if ( as_xml )
       o << "</stack>";
   }
@@ -205,8 +223,8 @@ ostream& XQueryException::print_stack_trace( ostream &o ) const {
 }
 
 bool XQueryException::print_uri( ostream &o, char const *uri ) {
-  bool const as_xml = get_print_format( o ) == format_xml;
   if ( uri && *uri ) {
+    bool const as_xml = get_print_format( o ) == format_xml;
     switch ( uri::get_scheme( uri ) ) {
       case uri::none:
       case uri::file:
@@ -222,9 +240,9 @@ bool XQueryException::print_uri( ostream &o, char const *uri ) {
         // no break;
       default:
         o << (as_xml ? "<" : "uri=\"") << uri << (as_xml ? '>' : '"');
-    }
+    } // switch
     return true;
-  }
+  } // if
   return false;
 }
 
