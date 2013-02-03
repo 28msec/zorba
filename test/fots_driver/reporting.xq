@@ -63,10 +63,11 @@ declare %ann:sequential function reporting:run-and-report(
   $exceptedTestCases      as xs:string*,
   $exceptedTestSets       as xs:string*,
   $verbose                as xs:boolean
-) {
+)
+{
 try {
   {
-    variable $FOTSCatalog := doc(trace(resolve-uri($FOTSCatalogFilePath), 
+    variable $FOTSCatalog := doc(trace(resolve-uri($FOTSCatalogFilePath),
                                 "Path to FOTS catalog.xml set to: "));
 
     variable $catalogBaseURI := resolve-uri(util:parent-folder($FOTSCatalogFilePath));
@@ -77,15 +78,17 @@ try {
     variable $failures := <fots:FOTS-test-suite-result>{
                           ( $FOTSZorbaManifest//fots:implementation,
                             $FOTSZorbaManifest//fots:dependencies-satisfied,
-                            driver:run($FOTSCatalog,
-                                       $catalogBaseURI,
-                                       $FOTSZorbaManifest,
-                                       '',
-                                       '',
-                                       $exceptedTestCases,
-                                       $exceptedTestSets,
-                                       $verbose,
-                                       ())
+                            driver:run-fots($FOTSCatalogFilePath,
+                                            $FOTSZorbaManifestPath,
+                                            (),
+                                            $exceptedTestSets,
+                                            (),
+                                            $exceptedTestCases,
+                                            '',
+                                            (),
+                                            $verbose,
+                                            '',
+                                            'run-test-sets')
                              )
                              }</fots:FOTS-test-suite-result>;
 
@@ -133,13 +136,14 @@ declare %ann:nondeterministic function reporting:report(
   $exceptedTestCases    as xs:string*,
   $exceptedTestSets     as xs:string*,
   $verbose              as xs:boolean
-) as element(fots:report) {
+) as element(fots:report)
+{
   try {
     {
-      if(not(file:is-file($pathResults)))
+      if (not(file:is-file($pathResults)))
       then
       {
-        error($fots-err:errNA, 
+        error($fots-err:errNA,
               "The file results file was not found. Suggestion: use driver:run-fots to generate it or use reporting:run-and-report function.");
       }
       else ();
@@ -184,7 +188,8 @@ declare %ann:nondeterministic function reporting:do-reporting(
   $exceptedTestCases  as xs:string*,
   $exceptedTestSets   as xs:string*,
   $verbose            as xs:boolean
-) as element(fots:report) {
+) as element(fots:report)
+{
   let $excepted := count($exceptedTestCases)
   return
   <fots:report>
@@ -207,7 +212,7 @@ declare %ann:nondeterministic function reporting:do-reporting(
                 totalNotRun="{$totalNotRun}"
                 totalExecutionTime="{$executionTime}"/>
   }
-  { 
+  {
     for $testSetFile in $FOTSCatalog//fots:test-set
     let $testSetURI := resolve-uri($testSetFile/@file,
                                    $catalogBaseURI),
@@ -230,7 +235,9 @@ declare %ann:nondeterministic function reporting:do-reporting(
                                                 order by data($failure/@name)
                                                 return data($failure/@name)
                                               ,",")}">
-   {if (not($verbose)) then $totalFailures else ()}
+   {if (not($verbose))
+    then $totalFailures
+    else ()}
     </fots:test-set>
    }
    </fots:report>
@@ -243,19 +250,21 @@ declare %ann:nondeterministic function reporting:do-reporting(
  :)
 declare %ann:nondeterministic function reporting:generate-expected-failures(
   $pathResults  as xs:string
-) as element(failures) {
-  try {
+) as element(failures)
+{
+  try
+  {
     {
-      if(not(file:is-file($pathResults)))
+      if (not(file:is-file($pathResults)))
       then
       {
-        error($fots-err:errNA, 
+        error($fots-err:errNA,
               "The file results file was not found. Suggestion: use driver:run-fots to generate it.");
       }
       else ();
 
       variable $results := parse-xml(file:read-text($pathResults));
-      
+     
       <failures>{
       for $testSet in $results//fots:test-set
       let $countFailures := count($testSet//fots:test-case[@result ="fail"])
@@ -285,10 +294,11 @@ declare %ann:nondeterministic function reporting:generate-expected-failures(
 };
 
 declare function reporting:regressions(
-) as xs:string* {
+) as xs:string*
+{
   let $old_report:=fn:parse-xml(file:read-text('/home/spungi/work/zorba/repo/fots-ctest/build/bin/report_04_Dec.xml'))
   let $new_report:=fn:parse-xml(file:read-text('/home/spungi/work/zorba/repo/fots-ctest/build/bin/report_18_Dec.xml'))
-  
+ 
   for $testSetOld in $old_report/*:report/*:test-set
   let $testSetNew := $new_report/*:report/*:test-set[@name = data($testSetOld/@name)]
   let $regression := if (exists($testSetNew))

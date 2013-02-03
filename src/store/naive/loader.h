@@ -259,7 +259,8 @@ public:
   const FragmentIStream* getFragmentStream() const { return theFragmentStream; };
   
 protected:
-  bool fillBuffer(FragmentIStream* theFragmentStream);
+  // returns true if the input buffer is not yet fully consumed
+  bool fillBuffer(FragmentIStream* theFragmentStream);  
 
   unsigned long getCurrentInputOffset() const;
 

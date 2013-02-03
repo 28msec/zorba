@@ -148,6 +148,7 @@ FragmentXmlLoader::~FragmentXmlLoader()
 {
 }
 
+// returns true if the input buffer is not yet fully consumed
 bool FragmentXmlLoader::fillBuffer(FragmentIStream* theFragmentStream)
 {
   if (theFragmentStream->ctxt->input->length > 0 && theFragmentStream->current_offset < theFragmentStream->bytes_in_buffer)
@@ -174,6 +175,7 @@ bool FragmentXmlLoader::fillBuffer(FragmentIStream* theFragmentStream)
   theFragmentStream->ctxt->input->length = (theFragmentStream->bytes_in_buffer < (theFragmentStream->theBuffer.size()-1) ? theFragmentStream->bytes_in_buffer : (theFragmentStream->theBuffer.size()-1));
   theFragmentStream->ctxt->input->cur = theFragmentStream->ctxt->input->base;
   theFragmentStream->ctxt->input->end = theFragmentStream->ctxt->input->base + theFragmentStream->ctxt->input->length;
+  theFragmentStream->ctxt->checkIndex = 0; // this needs to be reset to force LibXml2 to rescan the buffer. Otherwise it might fail to detect opening/closing tags in certain inputs
   
   if (theFragmentStream->bytes_in_buffer < theFragmentStream->theBuffer.size()-1)
     theFragmentStream->theBuffer[theFragmentStream->bytes_in_buffer] = 0;
@@ -240,7 +242,9 @@ store::Item_t FragmentXmlLoader::loadXml(
 
       // Initialize the parser input (only filename and the pointer to the current char)
       theFragmentStream->theBuffer[0] = ' '; // This assignment is needed for LibXml2-2.7.6, which tries to read the buffer when xmlPushInput() is called
-      input->cur = (xmlChar*)(&theFragmentStream->theBuffer[0]);
+      input->base = (xmlChar*)(&theFragmentStream->theBuffer[0]);
+      input->cur = input->base;
+      // input->cur = (xmlChar*)(&theFragmentStream->theBuffer[0]);
       input->filename = (const char*)(xmlCanonicPath((const xmlChar*)theDocUri.c_str()));
       xmlPushInput(theFragmentStream->ctxt, input);
     }
@@ -249,6 +253,8 @@ store::Item_t FragmentXmlLoader::loadXml(
     theFragmentStream->ctxt->disableSAX = false; // xmlStopParser() sets disableSAX to true
     theFragmentStream->parsed_nodes_count = 0;
     theFragmentStream->forced_parser_stop = false;
+    
+    // theFragmentStream->ctxt->progressive = 1;
 
     if (theFragmentStream->state != FragmentIStream::FRAGMENT_FIRST_START_DOC)
     {
@@ -256,7 +262,8 @@ store::Item_t FragmentXmlLoader::loadXml(
       FragmentXmlLoader::startDocument(theFragmentStream->ctxt->userData);
     }
 
-    while ( ! theFragmentStream->forced_parser_stop && fillBuffer(theFragmentStream))
+    bool buffer_not_consumed;
+    while ( ! theFragmentStream->forced_parser_stop && (buffer_not_consumed = fillBuffer(theFragmentStream)))
     {
       if (theFragmentStream->only_one_doc_node && theFragmentStream->state != FragmentIStream::FRAGMENT_FIRST_START_DOC)
       {
@@ -315,9 +322,17 @@ store::Item_t FragmentXmlLoader::loadXml(
       }
       
       /*
+      std::string buffer = (char*)theFragmentStream->ctxt->input->cur;
+      if (theFragmentStream->ctxt->input->length < buffer.size())
+          buffer = buffer.substr(0, theFragmentStream->ctxt->input->length);
       std::cerr << "\n==================\n--> skip_root: " << theFragmentStream->root_elements_to_skip << " current_depth: " << theFragmentStream->current_element_depth 
-          << " state: " << theFragmentStream->ctxt->instate 
-          << " about to parse: [" << theFragmentStream->ctxt->input->cur << "] " << std::endl;
+          << " state: " << theFragmentStream->ctxt->instate
+          << " about to parse: [";
+      if (buffer.size() > 500)
+        std::cerr << buffer.substr(0, 160) << "\n...\n" << buffer.substr(buffer.size()-160);
+      else
+        std::cerr << theFragmentStream->ctxt->input->cur;
+      std::cerr << "] " << std::endl;
       */
       
       xmlParseChunk(theFragmentStream->ctxt, (const char*)theFragmentStream->ctxt->input->cur,
@@ -331,8 +346,10 @@ store::Item_t FragmentXmlLoader::loadXml(
         xmlParseCharData(theFragmentStream->ctxt, 0);
         theFragmentStream->current_offset = getCurrentInputOffset(); // update current offset
         
-        if (theXQueryDiagnostics->errors().empty() && theFragmentStream->current_offset == 0 && theFragmentStream->ctxt->checkIndex > 0)
+        if (theXQueryDiagnostics->errors().empty() && theFragmentStream->current_offset == 0)
         {
+          assert(buffer_not_consumed == true);
+          
           // we still haven't moved, double the buffer size
           theFragmentStream->theBuffer.resize((theFragmentStream->theBuffer.size()-1) * 2 + 1);
           theFragmentStream->ctxt->input->base = (xmlChar*)(&theFragmentStream->theBuffer[0]);

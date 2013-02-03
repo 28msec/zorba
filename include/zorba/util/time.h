@@ -17,6 +17,8 @@
 #ifndef ZORBA_UTIL_TIME_H
 #define ZORBA_UTIL_TIME_H
 
+#include <zorba/config.h>
+
 /**
  * This header includes utility functions for certain timing-related
  * operations, namely getting current wall-clock time and current
@@ -52,6 +54,13 @@ namespace zorba
 
   namespace time
   {
+
+    // Large enough to hold number of milliseconds since epoch.
+#if ZORBA_SIZEOF_LONG <= 4
+    typedef long long msec_type;
+#else
+    typedef long msec_type;
+#endif /* ZORBA_SIZEOF_LONG */
 
     //
     //
@@ -139,12 +148,12 @@ namespace zorba
       clock_gettime(CLOCK_MONOTONIC, &t);
 #else
       clock_gettime(CLOCK_REALTIME, &t);
-#endif
+#endif /* _POSIX_MONOTONIC_CLOCK */
     }
 
-    inline long get_walltime_in_millis(const walltime& t)
+    inline msec_type get_walltime_in_millis(const walltime& t)
     {
-      return t.tv_sec * 1000 + t.tv_nsec / 1000000;
+      return t.tv_sec * (msec_type)1000 + t.tv_nsec / 1000000;
     }
 
 #elif defined(WIN32)
@@ -160,7 +169,7 @@ namespace zorba
     typedef struct timeb walltime;
 #else
     typedef struct _timeb walltime;
-#endif
+#endif /* WINCE */
 
     inline double get_walltime_elapsed (const walltime& t0, const walltime& t1) 
     {
@@ -173,12 +182,12 @@ namespace zorba
       ftime(&t);
 #else
       _ftime_s(&t);
-#endif
+#endif /* WINCE */
     }
 	
-    inline long get_walltime_in_millis(const walltime& t)
+    inline msec_type get_walltime_in_millis(const walltime& t)
     {
-      return (long)(t.time * 1000 + t.millitm);
+      return t.time * (msec_type)1000 + t.millitm;
     }
 
 #else /* not Windows, and no clock_gettime() */
@@ -199,19 +208,17 @@ namespace zorba
       gettimeofday(&t, NULL);
     }
 	
-    inline long get_walltime_in_millis(const walltime& t)
+    inline msec_type get_walltime_in_millis(const walltime& t)
     {
-      return t.tv_sec * 1000 + t.tv_usec / 1000;
+      return t.tv_sec * (msec_type)1000 + t.tv_usec / 1000;
     }
 
 #endif /* ZORBA_HAVE_CLOCKGETTIME_FUNCTION */
 
-  }  // ::time
+  } // namespace time
+} // namesace zorba
 
-}  // ::zorba
-
-#endif
-
+#endif /* ZORBA_UTIL_TIME_H */
 /*
  * Local variables:
  * mode: c++
