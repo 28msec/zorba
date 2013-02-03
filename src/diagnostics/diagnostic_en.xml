@@ -2735,7 +2735,13 @@
     </diagnostic>
 
     <diagnostic code="ZSTR0060" name="RANGE_EXCEPTION">
-      <value>out of range: $1</value>
+      <value>"$1": value out of range${ 2}</value>
+      <entry key="ForCollection_3">
+        <value>for collection "$3"</value>
+      </entry>
+      <entry key="ForSequence">
+        <value>for sequence</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="ZSTR0065" name="STRINGS_IN_POOL">

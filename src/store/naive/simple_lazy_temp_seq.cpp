@@ -16,9 +16,11 @@
 #include "stdafx.h"
 #include <limits>
 
-#include "diagnostics/xquery_exception.h"
+#include <zorba/diagnostic_list.h>
 #include "diagnostics/assert.h"
+#include "diagnostics/dict.h"
 #include "diagnostics/util_macros.h"
+#include "diagnostics/xquery_exception.h"
 
 #include "store/api/item.h"
 #include "simple_lazy_temp_seq.h"
@@ -170,10 +172,10 @@ void SimpleLazyTempSeq::purgeUpTo(xs_integer position)
   {
     pos = to_xs_long(position);
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
     throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("sequence too big (" << e.what() << ")")));
+    ERROR_PARAMS(position,ZED(ZSTR0060_ForSequence)));
   }
 
   ZORBA_ASSERT(pos >= thePurgedUpTo);
@@ -202,10 +204,10 @@ void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
   {
     pos = to_xs_long(position);
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
     RAISE_ERROR_NO_LOC(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
+    ERROR_PARAMS(position,ZED(ZSTR0060_ForSequence)));
   }
 
   ZORBA_ASSERT(pos > thePurgedUpTo);
@@ -255,10 +257,10 @@ inline bool SimpleLazyTempSeq::containsItem(xs_integer position)
   {
     pos = to_xs_long(position);
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
     RAISE_ERROR_NO_LOC(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
+    ERROR_PARAMS(position,ZED(ZSTR0060_ForSequence)));
   }
 
   ZORBA_ASSERT(pos > thePurgedUpTo);
@@ -317,17 +319,26 @@ SimpleLazyTempSeqIter::SimpleLazyTempSeqIter(
   :
   theTempSeq(const_cast<SimpleLazyTempSeq*>(tempSeq))
 {
-  try 
-  {
+  try {
     theStartPos = to_xs_long(startPos);
+  }
+  catch ( std::range_error const& ) {
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0060_RANGE_EXCEPTION,
+      ERROR_PARAMS( startPos, ZED( ZSTR0060_ForSequence ) )
+    );
+  }
+  try {
     theEndPos = to_xs_long(endPos);
-    theCurPos = theStartPos - 1;
   }
-  catch (std::range_error& e)
-  {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("sequence too big (" << e.what() << ")")));
+  catch ( std::range_error const& ) {
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0060_RANGE_EXCEPTION,
+      ERROR_PARAMS( endPos, ZED( ZSTR0060_ForSequence ) )
+    );
   }
+
+  theCurPos = theStartPos - 1;
 }
 
 
@@ -360,17 +371,26 @@ void SimpleLazyTempSeqIter::init(
 
   theTempSeq = static_cast<SimpleLazyTempSeq*>(seq.getp());
 
-  try 
-  {
+  try {
     theStartPos = to_xs_long(startPos);
+  }
+  catch ( std::range_error const& ) {
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0060_RANGE_EXCEPTION,
+      ERROR_PARAMS( startPos, ZED( ZSTR0060_ForSequence ) )
+    );
+  }
+  try {
     theEndPos = to_xs_long(endPos);
-    theCurPos = theStartPos - 1;
   }
-  catch (std::range_error& e)
-  {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("sequence too big (" << e.what() << ")")));
+  catch ( std::range_error const& ) {
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0060_RANGE_EXCEPTION,
+      ERROR_PARAMS( endPos, ZED( ZSTR0060_ForSequence ) )
+    );
   }
+
+  theCurPos = theStartPos - 1;
 }
 
 
