@@ -268,7 +268,7 @@ bool DynamicFnCallIterator::nextImpl(
 #ifdef ZORBA_WITH_JSON
   else if (targetItem->isJSONObject() || targetItem->isJSONArray())
   {
-    if (theChildren.size() != 2)
+    if (theChildren.size() - theDotVarsCount != 2)
     {
       RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
     }
