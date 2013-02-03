@@ -474,7 +474,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
       for (size_t i = 0; i < argsRefs.size(); ++i)
       {
-        // if (argWraps[i] != NULL) // TODO: should this condition be removed?
+        if (argWraps[i] != NULL) // TODO: should this condition be removed?
         {
           const ArgVarRefs& argVarRefs = argsRefs[i];
           store::Iterator_t argWrapper;
