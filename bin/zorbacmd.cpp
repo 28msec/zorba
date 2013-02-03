@@ -113,7 +113,7 @@ static void print_exception( ZorbaException const &e,
         ZorbaException::format_xml_indented : ZorbaException::format_xml);
   else
     std::cerr << ZorbaException::format_text;
-  std::cerr << e;
+  std::cerr << e << std::endl;
 }
 
 /*******************************************************************************

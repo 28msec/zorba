@@ -22,6 +22,7 @@
 
 #include "util/indent.h"
 #include "util/omanip.h"
+#include "zorbamisc/ns_consts.h"
 
 #include "dict.h"
 
@@ -39,6 +40,12 @@ ZORBA_DLL_PUBLIC bool g_abort_on_error;
 using namespace std;
 
 namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
+
+inline bool is_warning( Diagnostic const &d ) {
+  return !!dynamic_cast<ZorbaWarningCode const*>( &d );
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -102,46 +109,49 @@ ostream& ZorbaException::print( ostream& o ) const {
   print_format const format = get_print_format( o );
   bool const as_xml = format != format_text;
   bool const do_indent = format == format_xml_indented;
-  if ( as_xml )
-    o << "<exception>" << if_nl << if_inc_indent;
+  if ( as_xml ) {
+    o << "<exception xmlns=\""
+      << (is_warning( diagnostic() ) ? ZORBA_WARN_NS : ZORBA_ERR_NS)
+      << "\">" << if_nl << if_inc_indent;
+  }
   print_impl( o );
   if ( as_xml )
-    o << if_dec_indent << "</exception>" << if_nl;
+    o << if_dec_indent << "</exception>";
   return o;
 }
 
 ostream& ZorbaException::print_impl( ostream &o ) const {
+  Diagnostic const &d = diagnostic();
   print_format const format = get_print_format( o );
   bool const as_xml = format != format_text;
   bool const do_indent = format == format_xml_indented;
 
-  //
-  // We need to create an error phrase (e.g., "static error") and look that up
-  // as a unit rather than looking up the error kind word and "error"
-  // separately because many languages have the word order reversed (e.g.,
-  // "static error" becomes "erreur statique" in French).
-  //
-  ostringstream oss;
-  oss << ZED_PREFIX;
-
-  streampos pos = oss.tellp();
-  Diagnostic const &d = diagnostic();
-  oss << d.category();
-  if ( oss.tellp() != pos )             // emit ' ' only if non-empty category
-    oss << ' ';
-
-  if ( diagnostic::kind const k = d.kind() )
-    oss << k << ' ';
-
-  oss << (dynamic_cast<ZorbaWarningCode const*>( &d ) ? "warning" : "error");
-
   if ( as_xml ) {
-    string const kind( oss.str(), 1 );  // skip ZED_PREFIX
-    o << indent << "<kind>" << kind << "</kind>" << if_nl
-      << indent << "<code>" << d.qname() << "</code>"
+    diagnostic::QName const &q = d.qname();
+    o << indent << "<kind>" << d.kind() << "</kind>" << if_nl
+      << indent << "<code>" << q.ns() << '#' << q.localname() << "</code>"
       << if_nl;
-  } else
+  } else {
+    //
+    // We need to create an error phrase (e.g., "static error") and look that
+    // up as a unit rather than looking up the error kind word and "error"
+    // separately because many languages have the word order reversed (e.g.,
+    // "static error" becomes "erreur statique" in French).
+    //
+    ostringstream oss;
+    oss << ZED_PREFIX;
+
+    streampos pos = oss.tellp();
+    oss << d.category();
+    if ( oss.tellp() != pos )           // emit ' ' only if non-empty category
+      oss << ' ';
+
+    if ( diagnostic::kind const k = d.kind() )
+      oss << k << ' ';
+
+    oss << (is_warning( d ) ? "warning" : "error");
     o << diagnostic::dict::lookup( oss.str() ) << " [" << d.qname() << ']';
+  }
 
   if ( char const *const w = what() )
     if ( *w ) {
