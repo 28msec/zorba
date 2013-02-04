@@ -198,7 +198,7 @@ declare function local:usage() as xs:string
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -e verbose:=false -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-and-report -o report.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=report -e resultsFilePath:=failures.xml -e verbose:=false -o report.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=report -e resultsFilePath:=failures.xml -o results_Zorba_XQ30.xml --indent",
     "zorba -f -q /path/to/cli.xq -e mode:=generate-expected-failures -e resultsFilePath:=failures.xml -o ExpectedFailures.xml --indent",
     ""
     ), "&#xA;")
@@ -331,19 +331,14 @@ return
   r:run-and-report($fotsPath,
                    $fotsZorbaManifestPath,
                    $exceptedTestCases,
-                   $exceptedTestSets,
-        (: the reports to W3C are always generated with verbose set to false:)
-                   fn:false())
+                   $exceptedTestSets)
 }
 
 case "report"
 return
 {
-  r:report($fotsPath,
-           $resultsFilePath,
-           $exceptedTestCases,
-           $exceptedTestSets,
-           xs:boolean($verbose))
+  r:report($fotsZorbaManifestPath,
+           $resultsFilePath)
 }
 
 case "generate-expected-failures"
