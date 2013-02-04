@@ -38,15 +38,15 @@ declare function feedback:check-pass(
   $expectedFailure  as element(Test)?
 ) as xs:boolean
 {
-(: if the exact error code was not found, report the test as 'Pass' 
+(: if the exact error code was not found, report the test as 'Pass'
    with an attribute correctError=false :)
-  let $resultTestRun as xs:boolean := 
+  let $resultTestRun as xs:boolean :=
     (empty($result) or
      (exists($result) and
       contains(string-join($result/fots:errors,''), "Expected error:") and
       contains(string-join($result/fots:errors,''), "Found error:")))
 
-  let $expectedFailure as xs:boolean := 
+  let $expectedFailure as xs:boolean :=
     if (exists($expectedFailure))
     then fn:true()
     else fn:false()
@@ -99,18 +99,18 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
 {
   variable $info := "Test case failed but it is marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt";
 
-  if($verbose)
+  if ($verbose)
   then {
     let $tmp := $case
     return {
       insert node
       attribute result{'pass'}
       as last into $tmp;
-      
+     
       insert node
       attribute comment{$info}
       as last into $tmp;
-      
+     
       insert node
         <fots:info>
           {$env}
@@ -120,7 +120,7 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
             $result/fots:errors)}
         </fots:info>
       as last into $tmp;
-      
+     
       delete node $tmp/fots:description;
       delete node $tmp/fots:created;
       delete node $tmp/fots:result;
@@ -149,21 +149,23 @@ declare %private %ann:sequential function feedback:pass(
   $verbose          as xs:boolean
 ) as element(fots:test-case)?
 {
-  if($verbose)
+  if ($verbose)
   then {
     let $tmp := $case
     return {
       insert node
       attribute result{'pass'}
       as last into $tmp;
-      
-      if(exists($result/fots:errors)) then
+     
+      if (exists($result/fots:errors))
+      then
         insert node
         attribute correctError{'false'}
         as last into $tmp;
       else ();
 
-      if(exists($result/fots:errors)) then
+      if (exists($result/fots:errors))
+      then
         insert node
         attribute comment{$result/fots:errors}
         as last into $tmp;
@@ -188,7 +190,7 @@ declare %private %ann:sequential function feedback:pass(
       $tmp
     }
   }
-  else if(empty($result/fots:errors))
+  else if (empty($result/fots:errors))
   then <fots:test-case  name="{data($case/@name)}"
                         result="pass"
                         executionTime="{$duration}" />
@@ -228,14 +230,14 @@ declare %ann:sequential function feedback:fail(
       insert node
       attribute result{'fail'}
       as last into $tmp;
-      
+     
       if ($expectedFailure)
       then
         insert node
         attribute comment{$info}
         as last into $tmp;
       else ();
-      
+     
       insert node
         <fots:info>
           {$env}
@@ -245,11 +247,11 @@ declare %ann:sequential function feedback:fail(
             $result/fots:errors)}
         </fots:info>
       as last into $tmp;
-      
+     
       delete node $tmp/fots:description;
       delete node $tmp/fots:created;
       delete node $tmp/fots:result;
-      
+     
       $tmp
     }
   }
@@ -258,7 +260,7 @@ declare %ann:sequential function feedback:fail(
                        result="fail"
                        comment="{$info}"
                        executionTime="{$duration}"/>
-  
+ 
   else <fots:test-case name="{data($case/@name)}"
                        result="fail"
                        executionTime="{$duration}"/>
@@ -281,13 +283,13 @@ declare %ann:sequential function feedback:not-run(
   trace("Above test case was not run.","");
 
   if ($verbose)
-  then 
+  then
   {
     {
       (insert node attribute result {'notRun'} as last into $case,
        delete node $case/fots:description,
        delete node $case/fots:created);
-      
+     
       $case
     }
   }
@@ -310,29 +312,30 @@ declare %ann:sequential function feedback:not-applicable(
   $env              as element(fots:environment)?,
   $dependencyError  as xs:string,
   $verbose          as xs:boolean
-) as element(fots:test-case)? {
+) as element(fots:test-case)?
+{
   trace(data($case/@name), "processing test case :");
   trace($dependencyError, "Dependency error :");
 
-  if($verbose)
+  if ($verbose)
   then {
     let $tmp := $case
     return {
       insert node
       attribute result{'not applicable'}
       as last into $tmp;
-      
+     
       insert node
       attribute comment{$dependencyError}
       as last into $tmp;
-      
+     
       insert node
         <fots:info>{$env}</fots:info>
       as last into $tmp;
-      
+     
       delete node $tmp/fots:description;
       delete node $tmp/fots:created;
-      
+     
       $tmp
       }
   }

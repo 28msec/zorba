@@ -53,12 +53,13 @@ declare namespace ann =
 declare %ann:sequential function eval:result(
   $result     as item()*,
   $expResult  as element()
-) as element()* {
+) as element()*
+{
   let $err := eval:check-assertion($result,
                                    $expResult,
                                    (),
                                    "")
-  return if(empty($err))
+  return if (empty($err))
   then ()
   else
     <fots:info>
@@ -81,13 +82,15 @@ declare %ann:sequential function eval:error(
   $expResult        as element(),
   $code             as xs:QName?,
   $errorDescription as xs:string?
-) as element()* {
-  if(empty($result)) then
+) as element()*
+{
+  if (empty($result))
+  then
     let $err := eval:error-code($code,
                                 $errorDescription,
                                 $expResult)
-    return 
-      if(empty($err))
+    return
+      if (empty($err))
       then ()
       else
         <fots:info>
@@ -109,15 +112,16 @@ declare %private %ann:sequential function eval:error-code(
   $code             as xs:QName?,
   $errorDescription as xs:string?,
   $expResult        as element()
-) as xs:string* {
+) as xs:string*
+{
   let $assertName := local-name($expResult)
   return
-  if( $assertName = "error")
+  if ( $assertName = "error")
   then
     if (exists($expResult[@code = "*"]) or
         exists($expResult[@code = local-name-from-QName($code)]))
     then ()
-    else if(exists($code))
+    else if (exists($code))
     then concat("Expected error: ",
                 data($expResult/@code),
                 ". Found error: ",
@@ -141,7 +145,8 @@ declare %private %ann:sequential function eval:check-assertion(
   $expResult        as element(),
   $code             as xs:QName?,
   $errorDescription as xs:string?
-) as xs:string* {
+) as xs:string*
+{
   let $test := local-name($expResult)
   return switch($test)
     case 'all-of'
@@ -195,7 +200,7 @@ declare %private %ann:sequential function eval:check-assertion(
                         $expResult,
                         $code,
                         $errorDescription)
-    default 
+    default
       return error($fots-err:errNA,
                    "&#xA;The requested assertion type is not implemented.")
 };
@@ -206,7 +211,8 @@ declare %private %ann:sequential function eval:assert-any-of(
   $expResult        as element(),
   $code             as xs:QName?,
   $errorDescription as xs:string?
-) as xs:string? {
+) as xs:string?
+{
   let $results :=
     for $tmp in $expResult/*
     return <result>{
@@ -227,7 +233,8 @@ declare %private %ann:sequential function eval:assert-all-of(
   $expResult        as element(),
   $code             as xs:QName?,
   $errorDescription as xs:string?
-) as xs:string* {
+) as xs:string*
+{
   for $tmp in $expResult/*
   return eval:check-assertion($result,
                               $tmp,
@@ -239,7 +246,8 @@ declare %private %ann:sequential function eval:assert-all-of(
 declare %private %ann:sequential function eval:assert(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
   {
     variable $queryText := concat(
@@ -253,8 +261,8 @@ declare %private %ann:sequential function eval:assert(
                                                   xs:QName('result'),
                                                   $result),
              $queryResult := xqxq:evaluate($queryKey);
-   
-   if($queryResult)
+  
+   if ($queryResult)
    then ()
    else concat("Assertion ", $expResult, " failed.")
   }
@@ -268,8 +276,9 @@ declare %private %ann:sequential function eval:assert(
 declare %private function eval:assert-count(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
-  if(count($result) eq xs:integer($expResult))
+) as xs:string?
+{
+  if (count($result) eq xs:integer($expResult))
   then ()
   else "'assert-count' returned: actual number of items is different than the expected number of items."
 };
@@ -278,7 +287,8 @@ declare %private function eval:assert-count(
 declare %private %ann:sequential function eval:assert-deep-eq(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
   {
     variable $queryText := concat(
@@ -293,7 +303,7 @@ declare %private %ann:sequential function eval:assert-deep-eq(
                                                    xs:QName('x'),
                                                    $result),
              $queryResult := xqxq:evaluate($queryKey);
-    if($queryResult)
+    if ($queryResult)
     then ()
     else "'assert-deep-eq' returned: actual result is not deep-equal to expected result."
   }
@@ -306,8 +316,9 @@ declare %private %ann:sequential function eval:assert-deep-eq(
 (: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-empty :)
 declare %private function eval:assert-empty(
   $result    as item()*
-) as xs:string? {
-  if(empty($result))
+) as xs:string?
+{
+  if (empty($result))
   then ()
   else "'assert-empty' returned: result is not empty as expected."
 };
@@ -316,7 +327,8 @@ declare %private function eval:assert-empty(
 declare %private %ann:sequential function eval:assert-eq(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
   {
     variable $type := if (empty($result[1]) or (count($result) gt 1))
@@ -330,17 +342,17 @@ declare %private %ann:sequential function eval:assert-eq(
                           else ();
     variable  $queryText := concat(
       "declare variable $x external;",
-      "$x eq ", 
+      "$x eq ",
       if (starts-with(data($expResult), $type))
       then data($expResult)
       else concat($type,"(", data($expResult), ")"));
     variable  $queryKey := xqxq:prepare-main-module($queryText);
-    
+   
     xqxq:bind-variable($queryKey,
                       xs:QName('x'),
                       $result);
     variable $queryResult := xqxq:evaluate($queryKey);
-    if($queryResult)
+    if ($queryResult)
     then ()
     else "'assert-eq' returned: result doesn't match expected result."
   }
@@ -353,8 +365,9 @@ declare %private %ann:sequential function eval:assert-eq(
 (: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-true :)
 declare %private function eval:assert-true(
   $result as item()*
-) as xs:string? {
-  if($result eq fn:true())
+) as xs:string?
+{
+  if ($result eq fn:true())
   then ()
   else "'assert-true' returned: query doesn't evaluate to true."
 };
@@ -362,8 +375,9 @@ declare %private function eval:assert-true(
 (: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-false :)
 declare %private function eval:assert-false(
   $result as item()*
-) as xs:string? {
-  if($result eq fn:false())
+) as xs:string?
+{
+  if ($result eq fn:false())
   then ()
   else "'assert-false' returned: query doesn't evaluate to false."
 };
@@ -372,7 +386,8 @@ declare %private function eval:assert-false(
 declare %private %ann:sequential function eval:assert-permutation(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
   {
     variable $queryText := concat(
@@ -388,7 +403,7 @@ declare %private %ann:sequential function eval:assert-permutation(
                                                   xs:QName('x'),
                                                   $result),
              $queryResult := xqxq:evaluate($queryKey);
-    if($queryResult)
+    if ($queryResult)
     then ()
     else "'assert-permutation' returned: result isn't a permutation of expected result."
   }
@@ -402,14 +417,15 @@ declare %private %ann:sequential function eval:assert-permutation(
 declare %private function eval:assert-xml(
   $result    as item()*,
   $expResult as element()
-) {
+)
+{
 (:TODO call xml-canonicalization after bug #1076919 is implemented.:)
   try {
     let $serRes := util:serialize-result($result),
         $result1 as xs:string := string-join($serRes,''),
         $result2 as xs:string := string-join($serRes,' ')
     return
-      if((normalize-space($result1) eq normalize-space(string($expResult))) or
+      if ((normalize-space($result1) eq normalize-space(string($expResult))) or
          (normalize-space($result2) eq normalize-space(string($expResult))))
       then ()
       else "'assert-xml' returned: result is different from the expected result."
@@ -423,7 +439,8 @@ declare %private function eval:assert-xml(
 declare %private %ann:sequential function eval:assert-serialization-error(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
   let $serializedResult as xs:string := string-join(
                                             util:serialize-result($result), '')
@@ -441,7 +458,8 @@ declare %private %ann:sequential function eval:assert-serialization-error(
 declare %private function eval:serialization-matches(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
   let $serResult := string-join(util:serialize-result($result,
                                                       $util:serParamXml),
@@ -451,15 +469,15 @@ declare %private function eval:serialization-matches(
                                   '')
   let $matchesFlags := data($expResult/@flags)
   return
-    if(exists($matchesFlags))
+    if (exists($matchesFlags))
     then
-      if(matches($serResult, $serExpResult, $matchesFlags))
+      if (matches($serResult, $serExpResult, $matchesFlags))
       then ()
       else concat("'serialization-matches' returned: result does not match expected result with flags '",
                   $matchesFlags,
                   "'.")
     else
-      if(matches($serResult, $serExpResult))
+      if (matches($serResult, $serExpResult))
       then ()
       else "'serialization-matches' returned: result does not match expected result."
   } catch * {
@@ -472,7 +490,8 @@ declare %private function eval:serialization-matches(
 declare %private function eval:assert-string-value(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
     let $serRes := string-join(util:serialize-result($result), ' '),
         $res := if (empty($expResult[@normalize-space="true"]))
@@ -482,7 +501,7 @@ declare %private function eval:assert-string-value(
                     then xs:string($expResult)
                     else normalize-space(xs:string($expResult))
     return
-      if($res eq $expRes)
+      if ($res eq $expRes)
       then ()
       else "'assert-string-value' returned: result different from expected result."
   } catch * {
@@ -495,7 +514,8 @@ declare %private function eval:assert-string-value(
 declare %private %ann:sequential function eval:assert-type(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
   {
     variable $queryText := concat( "declare variable $x external; $x instance of ",
@@ -505,7 +525,7 @@ declare %private %ann:sequential function eval:assert-type(
                                                   xs:QName('x'),
                                                   $result),
              $queryResult := xqxq:evaluate($queryKey);
-    if($queryResult)
+    if ($queryResult)
     then ()
     else concat("'assert-type' returned: result doesn't have type '",
                 data($expResult), "'")

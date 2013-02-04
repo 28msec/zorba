@@ -90,6 +90,8 @@
 #define ZED_ZDST0027_NON_ORDERED_KEY_TYPE "~ZDST0027_NON_ORDERED_KEY_TYPE"
 #define ZED_ZDST0060_unknown_namespace "~ZDST0060_unknown_namespace"
 #define ZED_ZDST0060_unknown_localname "~ZDST0060_unknown_localname"
+#define ZED_ZSTR0060_ForCollection_3 "~ZSTR0060_ForCollection_3"
+#define ZED_ZSTR0060_ForSequence "~ZSTR0060_ForSequence"
 #define ZED_JNUP0007_Object "~JNUP0007_Object"
 #define ZED_JNUP0007_Array "~JNUP0007_Array"
 #define ZED_JNUP0007_ObjectArray "~JNUP0007_ObjectArray"
