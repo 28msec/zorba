@@ -1014,10 +1014,12 @@ uint64_t SimpleJSONArray::cast(const xs_integer& i)
   {
     return to_xs_unsignedLong(i);
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0060_RANGE_EXCEPTION,
+      ERROR_PARAMS( i )
+    );
   }
 }
 
