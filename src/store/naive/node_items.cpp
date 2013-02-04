@@ -283,7 +283,7 @@ void XmlTree::setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo)
   assert(lTreeInfo || theTreeInfo);
   assert(lTreeInfo ||
          theTreeInfo->getRoot() != static_cast<StructuredItem*>(getRoot()));
-  theTreeInfo = reinterpret_cast<CollectionTreeInfoWithoutTreeId*>(lTreeInfo);
+  theTreeInfo = static_cast<CollectionTreeInfoWithoutTreeId*>(lTreeInfo);
 }
 
 /*******************************************************************************

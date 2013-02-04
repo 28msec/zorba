@@ -33,20 +33,18 @@ class StructuredItem;
   four fields and getters and setters for each of them).
 *******************************************************************************/
 
-class CollectionTreeInfo
+class CollectionTreeInfoWithoutTreeId
 {
-private:
+protected:
   Collection*     theCollection;
   xs_integer      thePosition;
   StructuredItem* theRoot;
-  TreeId          theTreeId;
 
 public:
-  CollectionTreeInfo()
+  CollectionTreeInfoWithoutTreeId()
     : theCollection(NULL),
       thePosition(0),
-      theRoot(NULL),
-      theTreeId()
+      theRoot(NULL)
   {}
 
   simplestore::Collection* getCollection() const
@@ -57,16 +55,6 @@ public:
   void setCollection(simplestore::Collection* aCollection)
   {
     theCollection = aCollection;
-  }
-
-  const TreeId& getTreeId() const
-  {
-    return theTreeId;
-  }
-
-  void setTreeId(const TreeId& aId)
-  {
-    theTreeId = aId;
   }
 
   StructuredItem* getRoot() const
@@ -91,18 +79,14 @@ public:
 };
 
 
-class CollectionTreeInfoWithoutTreeId
+class CollectionTreeInfo : public CollectionTreeInfoWithoutTreeId
 {
 private:
-  Collection*     theCollection;
-  xs_integer      thePosition;
-  StructuredItem* theRoot;
+  TreeId          theTreeId;
 
 public:
-  CollectionTreeInfoWithoutTreeId()
-    : theCollection(NULL),
-      thePosition(0),
-      theRoot(NULL)
+  CollectionTreeInfo()
+    : theTreeId()
   {}
 
   simplestore::Collection* getCollection() const
@@ -113,6 +97,16 @@ public:
   void setCollection(simplestore::Collection* aCollection)
   {
     theCollection = aCollection;
+  }
+
+  const TreeId& getTreeId() const
+  {
+    return theTreeId;
+  }
+
+  void setTreeId(const TreeId& aId)
+  {
+    theTreeId = aId;
   }
 
   StructuredItem* getRoot() const
