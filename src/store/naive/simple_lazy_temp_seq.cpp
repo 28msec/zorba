@@ -319,19 +319,23 @@ SimpleLazyTempSeqIter::SimpleLazyTempSeqIter(
   :
   theTempSeq(const_cast<SimpleLazyTempSeq*>(tempSeq))
 {
-  try {
+  try
+  {
     theStartPos = to_xs_long(startPos);
   }
-  catch ( std::range_error const& ) {
+  catch ( std::range_error const& )
+  {
     throw ZORBA_EXCEPTION(
       zerr::ZSTR0060_RANGE_EXCEPTION,
       ERROR_PARAMS( startPos, ZED( ZSTR0060_ForSequence ) )
     );
   }
-  try {
+  try
+  {
     theEndPos = to_xs_long(endPos);
   }
-  catch ( std::range_error const& ) {
+  catch ( std::range_error const& )
+  {
     throw ZORBA_EXCEPTION(
       zerr::ZSTR0060_RANGE_EXCEPTION,
       ERROR_PARAMS( endPos, ZED( ZSTR0060_ForSequence ) )
@@ -371,19 +375,23 @@ void SimpleLazyTempSeqIter::init(
 
   theTempSeq = static_cast<SimpleLazyTempSeq*>(seq.getp());
 
-  try {
+  try
+  {
     theStartPos = to_xs_long(startPos);
   }
-  catch ( std::range_error const& ) {
+  catch ( std::range_error const& )
+  {
     throw ZORBA_EXCEPTION(
       zerr::ZSTR0060_RANGE_EXCEPTION,
       ERROR_PARAMS( startPos, ZED( ZSTR0060_ForSequence ) )
     );
   }
-  try {
+  try
+  {
     theEndPos = to_xs_long(endPos);
   }
-  catch ( std::range_error const& ) {
+  catch ( std::range_error const& )
+  {
     throw ZORBA_EXCEPTION(
       zerr::ZSTR0060_RANGE_EXCEPTION,
       ERROR_PARAMS( endPos, ZED( ZSTR0060_ForSequence ) )

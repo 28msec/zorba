@@ -265,19 +265,23 @@ void SimpleTempSeqIter::init(
   xs_long start;
   xs_long end;
 
-  try {
+  try
+  {
     start = to_xs_long(startPos);
   }
-  catch ( std::range_error const& ) {
+  catch ( std::range_error const& )
+  {
     throw ZORBA_EXCEPTION(
       zerr::ZSTR0060_RANGE_EXCEPTION,
       ERROR_PARAMS( start, ZED(ZSTR0060_ForSequence) )
     );
   }
-  try {
+  try
+  {
     end = to_xs_long(endPos);
   }
-  catch ( std::range_error const& ) {
+  catch ( std::range_error const& )
+  {
     throw ZORBA_EXCEPTION(
       zerr::ZSTR0060_RANGE_EXCEPTION,
       ERROR_PARAMS( end, ZED(ZSTR0060_ForSequence) )
