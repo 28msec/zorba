@@ -133,7 +133,7 @@ declare function env:decl-base-uri(
  :        enviroment specified either at the test-set level or at the catalog
  :        level and is referenced by the test-case.
  : @param $envCase the local environment of the test-case, if any.
- : @return the text for thee default element namespace declaration.
+ : @return the text for the default element namespace declaration.
  :)
 declare function env:decl-def-elem-namespace(
   $env      as element(fots:environment)?,
