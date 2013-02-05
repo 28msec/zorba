@@ -29,8 +29,11 @@ import module namespace r =
 (:~
  : Path to the FOTS catalog.xml file. If the path is relative, it will be 
  : resolved relative to the directory containing this cli.xq file.
+ : By default it is assumed that the FOTS was imported using CMake (i.e. after
+ : 'make fots-import' and 'make fots-activate-sets' were run).
  :)
-declare variable $fotsPath as xs:string external := "";
+declare variable $fotsPath as xs:string external :=
+  "../../build/test/fots/2011/QT3-test-suite/catalog.xml";
 
 
 (:~ 
@@ -95,7 +98,6 @@ declare variable $exceptedTestCases as xs:string* := (
 , "re00975",
   "re00976",
   "re00976a"                    (:see bug lp:1070533 :)
-, "fn-unparsed-text-lines-052"  (:see bug lp:1073175 :)
 );
 
 

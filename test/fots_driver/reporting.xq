@@ -290,7 +290,7 @@ declare %ann:nondeterministic function reporting:do-reporting(
  :)
 declare %ann:nondeterministic function reporting:generate-expected-failures(
   $pathResults  as xs:string
-) as element(failures)
+)
 {
   try
   {
@@ -305,26 +305,20 @@ declare %ann:nondeterministic function reporting:generate-expected-failures(
 
       variable $results := parse-xml(file:read-text($pathResults));
      
-      <failures>{
-      for $testSet in $results//fots:test-set
-      let $countFailures := count($testSet//fots:test-case[@result ="fail"])
-      let $countNotRun := count($testSet//fots:test-case[@result ="notRun"])
-      let $testSetName := xs:string($testSet/@name)
-      where ($countFailures gt xs:integer(0)) or
-            ($countNotRun gt xs:integer(0))
-      return
-        <TestSet name="{$testSetName}"> {
-          (for $testCase in $testSet//fots:test-case[@result ="fail"]
-           return
-             <Test name="{xs:string($testCase/@name)}"
-                   bug="0" />
-          ,
-           for $testCase in $testSet//fots:test-case[@result ="notRun"]
-           return
-             <Test name="{xs:string($testCase/@name)}"
-                   notRun="true"
-                   bug="0" />
-          )}</TestSet>}</failures>
+      {
+        for $testSet in $results//fots:test-set
+        let $countFailures := count($testSet//fots:test-case[@result ="fail"])
+        let $testSetName := xs:string($testSet/@name)
+        where $countFailures gt xs:integer(0)
+        return
+        for $testCase in $testSet//fots:test-case[@result ="fail"]
+        return
+          concat('EXPECTED_FOTS_FAILURE (',
+                $testSetName,
+                ' ',
+                $testCase/@name,
+                ' 0)&#xA;')
+      }
     }
   }
   catch *
