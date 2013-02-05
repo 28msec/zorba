@@ -221,7 +221,11 @@ variable $fotsPathMsg := "The path to FOTS catalog.xml was set to: ";
 
 variable $testSetPrefixesMsg := "'testSetPrefixes' was set to: ";
 
+variable $testSetNameMsg := "'testSetName' was set to: ";
+
 variable $testCasePrefixesMsg := "'testCasePrefixes' was set to: ";
+
+variable $testCaseNameMsg := "'testCaseName' was set to: ";
 
 
 switch ($mode)
@@ -284,6 +288,8 @@ return
   trace($testCasePrefixes, $testCasePrefixesMsg);
   trace($dependency, "'dependency' set to:");
   trace($assertions, "'assertions' set to: ");
+  trace($verbose, "'verbose' set to:");
+  trace($mode, "Cli command was set to:");
 
   d:run-fots($fotsPath,
              $fotsZorbaManifestPath,
@@ -294,22 +300,29 @@ return
              $dependency,
              $assertions,
              xs:boolean($verbose),
-             $expectedFailuresPath)
+             $expectedFailuresPath,
+             $mode)
 }
 
 case "run-test-case"
 return
-{ 
+{
+  trace($testSetName, $testSetNameMsg);
+  trace($testCaseName, $testCaseNameMsg);
+  trace($verbose, "'verbose' set to:");
+  trace($mode, "Cli command was set to:");
+
   d:run-fots($fotsPath,
              $fotsZorbaManifestPath,
-             trace($testSetName, "'testSetName' set to: "),
-             trace($testCaseName,"'testCaseName' set to: "),
-             $exceptedTestCases,
+             $testSetName,
              $exceptedTestSets,
+             $testCaseName,
+             $exceptedTestCases,
              "",
              (),
              xs:boolean($verbose),
-             $expectedFailuresPath)
+             $expectedFailuresPath,
+             $mode)
 }
 
 case "run-and-report"

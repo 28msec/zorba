@@ -104,12 +104,12 @@ declare %ann:nondeterministic function driver:list-test-sets(
  : or just "depValue" (in which case "true" is assumed as the value of the
  : satisfied attribute). A test-case qualifies only if it has at least one
  : dependency whose @value and @satisfied attributes are equal to the filtering
- : depValue and depSatisfied. 
+ : depValue and depSatisfied.
  :
  : A filtering set of assertions is given as a sequence of strings. A test-case
  : qualifies if there is at least one element node under the <result> node of
- : the <test-case> whose local name is equal to one of the strings in the 
- : filtering set. 
+ : the <test-case> whose local name is equal to one of the strings in the
+ : filtering set.
  :
  : @param $fotsPath path to the FOTS catalog file.
  : @param $testSetPrefixes name criteria for the test sets
@@ -164,7 +164,7 @@ declare %private function driver:list-test-cases(
   $assert     as xs:string*
 ) as xs:string*
 {
-  if ($dependency eq '' and empty($assert)) then 
+  if ($dependency eq '' and empty($assert)) then
   {
     $testSetDoc//fots:test-case/@name
   }
@@ -178,7 +178,7 @@ declare %private function driver:list-test-cases(
   {
     for $testCase in $testSetDoc//fots:test-case
 
-    where 
+    where
       driver:matches-dependency(($testSetDoc/fots:test-set/fots:dependency,
                                  $testCase/fots:dependency),
                                 $dependency)
@@ -237,7 +237,7 @@ declare %private function driver:list-assertions(
  : For each qualifying test case, this functions returns a string containing
  : the test-case name and the full filepath of its associated test-set file.
  :
- : A test case qualifies if its <test> node (which contains the query text) 
+ : A test case qualifies if its <test> node (which contains the query text)
  : matches the given pattern using the given flags.
  :
  : @param $fotsPath path to the FOTS catalog file.
@@ -289,10 +289,10 @@ declare %ann:nondeterministic function driver:list-matching-test-cases(
  : $testSetPrefixes, $testCasePrefixes, $dependency, and assertions parameters.
  : A test-case will be processed only if it satisfies all of the following
  : conditions:
- : (a) it belongs to a test-set whose name is not among the ones listed in the 
+ : (a) it belongs to a test-set whose name is not among the ones listed in the
  :     $exceptedTestSets parameter,
  : (b) $testSetPrefixes is the empty sequence, or the test-case belongs to a
- :     test-set whose name starts with a prefix listed in $testSetPrefixes, 
+ :     test-set whose name starts with a prefix listed in $testSetPrefixes,
  : (c) $testCasePrefixes is the empty sequence, or the name of the test-case
  :     starts with a prefix listed in $testCaseNames.
  : (d) $dependency is equal to the empty string or the dependencies applicable
@@ -316,6 +316,7 @@ declare %ann:nondeterministic function driver:list-matching-test-cases(
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about each processed test-case.
  : @param $expectedFailures the root node of the ExpectedFailures.xml file.
+ : @param $cliMode the cli command.
  : @return an XML tree containing info about all the processed tests-cases
  :)
 declare %ann:sequential function driver:run-fots(
@@ -328,12 +329,13 @@ declare %ann:sequential function driver:run-fots(
   $dependency             as xs:string,
   $assertions             as xs:string*,
   $verbose                as xs:boolean,
-  $expectedFailuresPath   as xs:string
+  $expectedFailuresPath   as xs:string,
+  $cliMode                as xs:string
 ) as element(fots:test-cases)
 {
-  trace($fotsPath, "The path to FOTS catalog.xml was set to: ");
-  trace($zorbaManifestPath, "The path to FOTSZorbaManifest set to :");
-  trace($expectedFailuresPath, "the path to ExpectedFailures.xml set to:");
+  trace($fotsPath, "Path to FOTS catalog.xml was set to: ");
+  trace($zorbaManifestPath, "Path to FOTSZorbaManifest set to :");
+  trace($expectedFailuresPath, "Path to ExpectedFailures.xml set to:");
 
   try
   {
@@ -341,7 +343,7 @@ declare %ann:sequential function driver:run-fots(
 
     let $zorbaManifest := doc(resolve-uri($zorbaManifestPath))
 
-    let $testSetNames := 
+    let $testSetNames :=
     {
       if (empty($testSetPrefixes) and empty($exceptedTestSets)) then
       {
@@ -350,7 +352,7 @@ declare %ann:sequential function driver:run-fots(
       else
       {
         let $testSetNames := driver:list-test-sets($fotsPath, $testSetPrefixes)
-        return 
+        return
           if (empty($testSetNames)) then
           {
             exit returning <fots:test-cases/>;
@@ -394,7 +396,7 @@ declare %ann:sequential function driver:run-fots(
       }
     }
 
-    let $expectedFailures := 
+    let $expectedFailures :=
     {
       if ($expectedFailuresPath eq '')
       then ()
@@ -408,9 +410,10 @@ declare %ann:sequential function driver:run-fots(
                            $testCaseNames,
                            $exceptedTestCases,
                            $verbose,
-                           $expectedFailures)
+                           $expectedFailures,
+                           $cliMode)
   }
-  catch * 
+  catch *
   {
     error($err:code,
           concat("&#xA;Please make sure the passed 'fotsPath' points to the",
@@ -443,7 +446,7 @@ declare %ann:sequential function driver:run-fots(
  : and $testCaseNames parameters. A test-case will be processed only if it
  : satisfies all of the following conditions:
  : (a) $testSetNames is the empty sequence, or the test-case belongs to a
- :     test-set whose name is listed in $testSetNames, 
+ :     test-set whose name is listed in $testSetNames,
  : (b) $testCaseNames is the empty sequence, or the name of the test-case
  :     appears in $testCaseNames.
  :
@@ -458,6 +461,7 @@ declare %ann:sequential function driver:run-fots(
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about each processed test-case.
  : @param $expectedFailures the root node of the ExpectedFailures.xml file.
+ : @param $cliMode the cli command.
  : @return an XML tree containing info about all the processed tests-cases
  :)
 declare %private %ann:sequential function driver:run-fots(
@@ -468,7 +472,8 @@ declare %private %ann:sequential function driver:run-fots(
   $testCaseNames      as xs:string*,
   $exceptedTestCases  as xs:string*,
   $verbose            as xs:boolean,
-  $expectedFailures   as document-node()?
+  $expectedFailures   as document-node()?,
+  $cliMode            as xs:string
 ) as element(fots:test-cases)
 {
   <fots:test-cases>
@@ -485,7 +490,7 @@ declare %private %ann:sequential function driver:run-fots(
 
     let $testSetDoc := doc($testSetURI)
 
-    let $depMet := 
+    let $depMet :=
       env:check-dependencies($testSetDoc/fots:test-set/fots:dependency,
                              $FOTSZorbaManifest)
 
@@ -572,7 +577,8 @@ declare %private %ann:sequential function driver:run-fots(
                           $testSetName,
                           $testSetURI,
                           $verbose,
-                          $expectedFailures//TestSet[@name eq $testSetName]/Test[@name eq $testCase/@name])
+                          $expectedFailures//TestSet[@name eq $testSetName]/Test[@name eq $testCase/@name],
+                          $cliMode)
             }
             else
             {
@@ -584,7 +590,8 @@ declare %private %ann:sequential function driver:run-fots(
                           $testSetName,
                           $testSetURI,
                           $verbose,
-                          $expectedFailures//TestSet[@name eq $testSetName]/Test[@name eq $testCase/@name])
+                          $expectedFailures//TestSet[@name eq $testSetName]/Test[@name eq $testCase/@name],
+                          $cliMode)
             }
           }
         }
@@ -602,8 +609,8 @@ declare %private %ann:sequential function driver:run-fots(
  : @param $env the non-local environment to use, if any. It is an enviroment
  :        specified either at the test-set level or at the catalog level and
  :        is referenced by the test-case.
- : @param $envBaseURI the URI of the directory containing the file where the 
- :        envoronment is specified in. It is used to calculate the full URI 
+ : @param $envBaseURI the URI of the directory containing the file where the
+ :        envoronment is specified in. It is used to calculate the full URI
  :        for the different children of the <environment> that have a @file
  :        attribute.
  : @param $deps the dependencies that should be checked for given test case.
@@ -613,6 +620,7 @@ declare %private %ann:sequential function driver:run-fots(
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about the test-case.
  : @param $expectedFailure the Test element from the ExpectedFailures.xml file.
+ : @param $cliMode the cli command.
  : @return an XML tree containing info about the result of running the test case.
  :)
 declare %ann:sequential function driver:test(
@@ -623,20 +631,21 @@ declare %ann:sequential function driver:test(
   $testSetName        as xs:string?,
   $testSetBaseURI     as xs:anyURI,
   $verbose            as xs:boolean,
-  $expectedFailure    as element(Test)?
+  $expectedFailure    as element(Test)?,
+  $cliMode            as xs:string
 ) as element(fots:test-case)?
 {
 (:TODO Cover the "(:%VARDECL%:)"when there are tests in FOTS that use it:)
-  try 
+  try
   {
   {
     variable $queryName := trace(data($case/@name), "processing test case :");
- 
+
     variable $test := util:get-value($case, $testSetBaseURI, "test");
 
     variable $envCase := $case/fots:environment;
 
-    variable $query := 
+    variable $query :=
       string-join
       (
       (
@@ -666,11 +675,11 @@ declare %ann:sequential function driver:test(
                                                     $envBaseURI,
                                                     $testSetBaseURI);
 
-    (: if $verbose then print the query to a file
-    if ($verbose)
+    (:if $verbose then print the query to a file:)
+    if ($verbose and
+        ($cliMode eq "run-test-case"))
     then util:write-query-to-file($xqxqQuery, $queryName);
     else ();
-    :)
 
     variable $startDateTime := datetime:current-dateTime();
 
@@ -762,7 +771,7 @@ declare %private function driver:create-XQXQ-query(
            "&#xA;",
            "'",
            "&#xA;",
-           if (exists($resolver)) 
+           if (exists($resolver))
            then ", resolver:url-resolver#2, ());"
            else ");"),
 
@@ -797,7 +806,7 @@ declare %private %ann:sequential function driver:xqxq-invoke(
   $testSetBaseURI as xs:anyURI
 )
 {
-  try 
+  try
   {
     {
       variable $queryKey := xqxq:prepare-main-module($xqxqQueryText);
@@ -805,7 +814,7 @@ declare %private %ann:sequential function driver:xqxq-invoke(
       variable $queryResult := xqxq:evaluate-sequential($queryKey);
 
       (:TODO check if this works:)
-      (:variable $expResult := util:get-value($case, $testSetBaseURI, "result");:) 
+      (:variable $expResult := util:get-value($case, $testSetBaseURI, "result");:)
 
       xqxq:delete-query($queryKey);
 
