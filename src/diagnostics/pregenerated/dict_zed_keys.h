@@ -187,6 +187,7 @@
 #define ZED_GoodValuesAreXMLEtc "~GoodValuesAreXMLEtc"
 #define ZED_GoodValuesAreYesNo "~GoodValuesAreYesNo"
 #define ZED_GoodValuesAreYesNoOmit "~GoodValuesAreYesNoOmit"
+#define ZED_In "~In"
 #define ZED_IncompleteKeyInIndexBuild "~IncompleteKeyInIndexBuild"
 #define ZED_IncompleteKeyInIndexRefresh "~IncompleteKeyInIndexRefresh"
 #define ZED_LibModVersionMismatch_3 "~LibModVersionMismatch_3"

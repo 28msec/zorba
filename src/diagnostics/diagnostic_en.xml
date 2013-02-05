@@ -3447,6 +3447,10 @@
       <value>valid values are: yes, no, omit</value>
     </entry>
 
+    <entry key="In">
+      <value>in</value>
+    </entry>
+
     <entry key="IncompleteKeyInIndexBuild">
       <value>incomplete key during index build</value>
     </entry>
