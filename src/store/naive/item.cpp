@@ -231,7 +231,7 @@ size_t Item::alloc_size() const
 }
 
 
-size_t Item::static_size() const
+size_t Item::dynamic_size() const
 {
   return sizeof( *this );
 }

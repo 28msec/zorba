@@ -403,7 +403,7 @@ size_t UserTypedAtomicItem::alloc_size() const
         + ztd::alloc_sizeof( theTypeName );
 }
 
-size_t UserTypedAtomicItem::static_size() const
+size_t UserTypedAtomicItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -603,7 +603,7 @@ size_t UntypedAtomicItem::alloc_size() const
   return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 
-size_t UntypedAtomicItem::static_size() const
+size_t UntypedAtomicItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -748,7 +748,7 @@ size_t QNameItem::alloc_size() const
         + ztd::alloc_sizeof( theLocal );
 }
 
-size_t QNameItem::static_size() const
+size_t QNameItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -893,7 +893,7 @@ size_t NotationItem::alloc_size() const
 }
 
 
-size_t NotationItem::static_size() const
+size_t NotationItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -958,7 +958,7 @@ size_t AnyUriItem::alloc_size() const
 }
 
 
-size_t AnyUriItem::static_size() const
+size_t AnyUriItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -1887,7 +1887,7 @@ size_t StructuralAnyUriItem::alloc_size() const
         + ztd::alloc_sizeof( theEncodedValue );
 }
 
-size_t StructuralAnyUriItem::static_size() const
+size_t StructuralAnyUriItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -1902,7 +1902,7 @@ size_t StringItem::alloc_size() const
   return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
 }
 
-size_t StringItem::static_size() const
+size_t StringItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -2023,7 +2023,7 @@ size_t StreamableStringItem::alloc_size() const
 }
 
 
-size_t StreamableStringItem::static_size() const
+size_t StreamableStringItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -2669,7 +2669,7 @@ size_t DecimalItem::alloc_size() const
 }
 
 
-size_t DecimalItem::static_size() const
+size_t DecimalItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -2731,7 +2731,7 @@ size_t IntegerItemImpl::alloc_size() const
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-size_t IntegerItemImpl::static_size() const
+size_t IntegerItemImpl::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -2857,7 +2857,7 @@ size_t NonPositiveIntegerItem::alloc_size() const
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-size_t NonPositiveIntegerItem::static_size() const
+size_t NonPositiveIntegerItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -2983,7 +2983,7 @@ size_t NonNegativeIntegerItem::alloc_size() const
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-size_t NonNegativeIntegerItem::static_size() const
+size_t NonNegativeIntegerItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -3661,7 +3661,7 @@ size_t Base64BinaryItem::alloc_size() const
 }
 
 
-size_t Base64BinaryItem::static_size() const
+size_t Base64BinaryItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -3930,7 +3930,7 @@ size_t HexBinaryItem::alloc_size() const
 }
 
 
-size_t HexBinaryItem::static_size() const
+size_t HexBinaryItem::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -3991,7 +3991,7 @@ size_t ErrorItem::alloc_size() const
 }
 
 
-size_t ErrorItem::static_size() const
+size_t ErrorItem::dynamic_size() const
 {
   return sizeof( *this );
 }

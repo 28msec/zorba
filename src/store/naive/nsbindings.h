@@ -46,7 +46,7 @@ public:
   ~NsBindingsContext();
 
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   bool empty() const                           { return theBindings.empty(); }
 

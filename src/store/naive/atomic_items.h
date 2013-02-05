@@ -118,7 +118,7 @@ protected:
 
 public:
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   store::Item* getBaseItem() const;
 
@@ -316,7 +316,7 @@ public:
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   bool equals(
         const store::Item* other,
@@ -391,7 +391,7 @@ public:
   virtual ~QNameItem() {}
 
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   // zorba::store::Item interface.
 
@@ -566,7 +566,7 @@ public:
       const XQPCollator* aCollation = 0) const;
 
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   zstring getStringValue() const;
 
@@ -623,7 +623,7 @@ public:
   }
 
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   long compare(
         const Item* other,
@@ -733,7 +733,7 @@ protected:
 
 public:
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   virtual AnyUriTypeCode getAnyUriTypeCode() const 
   {
@@ -887,7 +887,7 @@ protected:
 
 public:
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   virtual store::Item* getType() const;
 
@@ -987,7 +987,7 @@ public:
   }
 
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
 protected:
   StreamableStringItem(
@@ -1444,7 +1444,7 @@ protected:
 
 public:
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   xs_decimal getDecimalValue() const { return theValue; }
 
@@ -1529,7 +1529,7 @@ public:
 #ifdef ZORBA_WITH_BIG_INTEGER
   size_t alloc_size() const;
 #endif /* ZORBA_WITH_BIG_INTEGER */
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   xs_decimal getDecimalValue() const;
 
@@ -1590,7 +1590,7 @@ public:
 #ifdef ZORBA_WITH_BIG_INTEGER
   size_t alloc_size() const;
 #endif /* ZORBA_WITH_BIG_INTEGER */
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   xs_decimal getDecimalValue() const;
 
@@ -1670,7 +1670,7 @@ public:
 #ifdef ZORBA_WITH_BIG_INTEGER
   size_t alloc_size() const;
 #endif /* ZORBA_WITH_BIG_INTEGER */
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   xs_decimal getDecimalValue() const;
 
@@ -2532,7 +2532,7 @@ protected:
 
 public:
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   const char* getBase64BinaryValue(size_t& data) const;
 
@@ -2659,7 +2659,7 @@ protected:
 
 public:
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   xs_hexBinary getHexBinaryValue() const { return theValue; }
 
@@ -2718,7 +2718,7 @@ public:
   virtual ~ErrorItem();
 
   size_t alloc_size() const;
-  size_t static_size() const;
+  size_t dynamic_size() const;
 
   ZorbaException* getError() const { return theError; }
 

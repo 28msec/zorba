@@ -130,7 +130,7 @@ size_t SimpleRCObject::alloc_size() const
   return 0;
 }
 
-size_t SimpleRCObject::static_size() const
+size_t SimpleRCObject::dynamic_size() const
 {
   return sizeof( *this );
 }

@@ -946,7 +946,7 @@ size_t ConnectorNode::alloc_size() const
   return XmlNode::alloc_size() + ztd::alloc_sizeof( theNode );
 }
 
-size_t ConnectorNode::static_size() const
+size_t ConnectorNode::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -1047,7 +1047,7 @@ size_t OrdPathNode::alloc_size() const
   return XmlNode::alloc_size() + ztd::alloc_sizeof( theOrdPath );
 }
 
-size_t OrdPathNode::static_size() const
+size_t OrdPathNode::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -1515,12 +1515,6 @@ size_t InternalNode::alloc_size() const
   return OrdPathNode::alloc_size() + ztd::alloc_sizeof( theNodes );
 }
 
-size_t InternalNode::static_size() const
-{
-  return sizeof( *this );
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1871,7 +1865,7 @@ size_t DocumentNode::alloc_size() const
         + ztd::alloc_sizeof(theDocUri);
 }
 
-size_t DocumentNode::static_size() const
+size_t DocumentNode::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -2612,7 +2606,7 @@ size_t ElementNode::alloc_size() const
        + (haveLocalBindings() ? ztd::alloc_sizeof(theNsContext) : 0);
 }
 
-size_t ElementNode::static_size() const
+size_t ElementNode::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -3778,7 +3772,7 @@ size_t AttributeNode::alloc_size() const
         + ztd::alloc_sizeof( theTypedValue );
 }
 
-size_t AttributeNode::static_size() const
+size_t AttributeNode::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -4302,7 +4296,7 @@ size_t TextNode::alloc_size() const
         );
 }
 
-size_t TextNode::static_size() const
+size_t TextNode::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -4958,7 +4952,7 @@ size_t PiNode::alloc_size() const
         + ztd::alloc_sizeof( theName );
 }
 
-size_t PiNode::static_size() const
+size_t PiNode::dynamic_size() const
 {
   return sizeof( *this );
 }
@@ -5116,7 +5110,7 @@ size_t CommentNode::alloc_size() const
   return  OrdPathNode::alloc_size() + ztd::alloc_sizeof( theContent );
 }
 
-size_t CommentNode::static_size() const
+size_t CommentNode::dynamic_size() const
 {
   return sizeof( *this );
 }

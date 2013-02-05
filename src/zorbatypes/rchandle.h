@@ -137,7 +137,7 @@ public:
   virtual ~SimpleRCObject() { }
 
   virtual size_t alloc_size() const;
-  virtual size_t static_size() const;
+  virtual size_t dynamic_size() const;
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
 
