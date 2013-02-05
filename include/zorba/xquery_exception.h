@@ -129,6 +129,77 @@ public:
     return source_loc_.column_end();
   }
 
+  ////////// data file/line location //////////////////////////////////////////
+
+  /**
+   * Checks whether the XQuery data location has been set.
+   *
+   * @return Returns \c true only if the data location has been set.
+   */
+  bool has_data() const throw() {
+    return data_loc_;
+  }
+
+  /**
+   * Sets the XQuery source-code data URI name, line, and column numbers.
+   *
+   * @param uri The source-code data URI name.  Must not be null.
+   * @param line The source-code data URI line number.
+   * @param column The source-code data URI column number.
+   * @param line_end The source-code data URI end line number.
+   * @param column_end The source-code data URI end column number.
+   */
+  void set_data( char const *uri,
+                 line_type line,
+                 column_type column = 0,
+                 line_type line_end = 0,
+                 column_type column_end = 0 );
+
+  /**
+   * Gets the data URI containing the error.
+   *
+   * @return Returns said URI or the empty string if unset.
+   */
+  char const* data_uri() const throw() {
+    return data_loc_.file();
+  }
+
+  /**
+   * Gets the data line number containing the error.
+   *
+   * @return Returns said line number or 0 if unset.
+   */
+  line_type data_line() const throw() {
+    return data_loc_.line();
+  }
+
+  /**
+   * Gets the data column number containing the error.
+   *
+   * @return Returns said column number or 0 if unset.
+   */
+  column_type data_column() const throw() {
+    return data_loc_.column();
+  }
+
+  /**
+   * Gets the data end line number containing the error.
+   *
+   * @return Returns said line number or 0 if unset.
+   */
+  line_type data_line_end() const throw() {
+    return data_loc_.line_end();
+  }
+
+  /**
+   * Gets the data end column number containing the error.
+   *
+   * @return Returns said column number or 0 if unset.
+   */
+  column_type data_column_end() const throw() {
+    return data_loc_.column_end();
+  }
+
   ////////// "applied at" file/line location //////////////////////////////////
 
   /**
@@ -251,6 +322,7 @@ private:
                    line_type raise_line, char const *message );
 
   location source_loc_;
+  location data_loc_;
   location applied_loc_;
   XQueryStackTrace query_trace_;
 
@@ -266,6 +338,9 @@ private:
 
   friend void set_applied( ZorbaException&, char const*, line_type, column_type,
                            line_type, column_type, bool );
+
+  friend void set_data( ZorbaException&, char const*, line_type, column_type,
+                        line_type, column_type, bool );
 
   friend void set_source( ZorbaException&, char const*, line_type, column_type,
                           line_type, column_type, bool );

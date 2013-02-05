@@ -87,6 +87,16 @@ void XQueryException::set_applied( char const *uri,
   applied_loc_.set( uri, line, col, line_end, col_end );
 }
 
+void XQueryException::set_data( char const *uri,
+                                line_type line,
+                                column_type col,
+                                line_type line_end,
+                                column_type col_end ) {
+  if ( !uri )
+    uri = "";
+  applied_loc_.set( uri, line, col, line_end, col_end );
+}
+
 void XQueryException::set_source( char const *uri,
                                   line_type line,
                                   column_type col,
@@ -194,6 +204,24 @@ void set_applied( ZorbaException &ze, char const *file,
       ze.diagnostic(), ze.raise_file(), ze.raise_line(), ze.what()
     );
     new_xe.set_applied( file, line, col, line_end, col_end );
+    throw new_xe;
+  }
+}
+
+void set_data( ZorbaException &ze, char const *file,
+               XQueryException::line_type line,
+               XQueryException::column_type col,
+               XQueryException::line_type line_end,
+               XQueryException::column_type col_end,
+               bool overwrite ) {
+  if ( XQueryException *const xe = dynamic_cast<XQueryException*>( &ze ) ) {
+    if ( !xe->has_data() || overwrite )
+      xe->set_data( file, line, col, line_end, col_end );
+  } else {
+    XQueryException new_xe(
+      ze.diagnostic(), ze.raise_file(), ze.raise_line(), ze.what()
+    );
+    new_xe.set_data( file, line, col, line_end, col_end );
     throw new_xe;
   }
 }
