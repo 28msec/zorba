@@ -363,12 +363,11 @@ declare %an:nondeterministic function file:read-text(
  : Reads the content of a file using the specified encoding and returns a
  : string representation of the content.
  :
+ : @param $file The file to read.
+ : @param $encoding The encoding used when reading the file.
  : If compiled with ICU, then Zorba supports any encoding that ICU supports;
  : otherwise Zorba only supports ASCII and UTF-8.
  : The encoding parameter is case insensitive.
- :
- : @param $file The file to read.
- : @param $encoding The encoding used when reading the file.
  : @return The content of the file as string.
  : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
@@ -409,12 +408,11 @@ declare %an:nondeterministic function file:read-text-lines(
  : trimmed as well. This implementation will uniformly treat LF and CRLF as
  : line separators.
  :
+ : @param $file The file to read.
+ : @param $encoding The encoding used when reading the file.
  : If compiled with ICU, then Zorba supports any encoding that ICU supports;
  : otherwise Zorba only supports ASCII and UTF-8.
  : The encoding parameter is case insensitive.
- :
- : @param $file The file to read.
- : @param $encoding The encoding used when reading the file.
  : @return The content of the file as a sequence of strings.
  : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
