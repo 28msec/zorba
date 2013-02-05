@@ -278,7 +278,7 @@ struct alloc_size_traits {
 };
 
 /**
- * Allocation size specialization for all types that do not have an
+ * Allocation size specialization for all types that do \e not have an
  * \c alloc_size() member function having the signature:
  * \code
  *  size_t (T::*)() const
@@ -296,8 +296,8 @@ struct alloc_size_traits<T,false> {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Static size for classes that have a \c dynamic_size() member function having
- * the signature:
+ * Dynamic size for classes that have a \c dynamic_size() member function
+ * having the signature:
  * \code
  *  size_t (T::*)() const
  * \endcode
@@ -312,7 +312,7 @@ struct dynamic_size_traits {
 };
 
 /**
- * Static size specialization for all types that do not have a
+ * Dynamic size specialization for all types that do \e not have a
  * \c dynamic_size() member function having the signature:
  * \code
  *  size_t (T::*)() const
@@ -327,19 +327,10 @@ struct dynamic_size_traits<T,false> {
   }
 };
 
-/**
- * Specialization for pointer types.
- * @tparam T A pointer type.
- */
-template<typename T>
-struct dynamic_size_traits<T*,false> {
-  static size_t dynamic_sizeof( T* ) {
-    return 0;
-  }
-};
+///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Combined traits.
+ * Combined size traits.
  *
  * @tparam T The type to use.
  */
@@ -347,14 +338,12 @@ template<typename T>
 struct size_traits : alloc_size_traits<T>, dynamic_size_traits<T> {
 };
 
-///////////////////////////////////////////////////////////////////////////////
-
 /**
- * Gets the size of all the object's additional data.
+ * Gets the size of an object's dynamically allocated data.
  * It does \e not include the size of the object itself.
  *
  * @tparam T The type to get the data size of.
- * @param t An instance of \a T to get the data size of.
+ * @param t An instance of \a T to get the dynamically allocated size of.
  */
 template<typename T>
 inline size_t alloc_sizeof( T const &t ) {
@@ -363,9 +352,9 @@ inline size_t alloc_sizeof( T const &t ) {
 
 /**
  * Gets the size of the object itself.
- * It does \e not include the size of an object's additional data.
+ * It does \e not include the size of an object's dynamically allocated data.
  *
- * @tparam T The type to get the data size of.
+ * @tparam T The type to get the size of.
  * @param t An instance of \a T to get the size of.
  */
 template<typename T>
@@ -387,7 +376,7 @@ inline size_t mem_sizeof( T const &t ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Specialization for pointer types.
+ * Allocation size specialization for pointer types.
  * @tparam T A pointer type.
  */
 template<typename T>
@@ -398,7 +387,7 @@ struct alloc_size_traits<T*,false> {
 };
 
 /**
- * Specialization for <code>char const*</code>.
+ * Allocation size specialization for <code>char const*</code>.
  */
 template<>
 struct alloc_size_traits<char const*> {

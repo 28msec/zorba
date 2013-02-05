@@ -53,7 +53,7 @@ static void test_map_string_int() {
   m[ key ] = 1;
 
   size_t const expected_size = sizeof( m )
-    + sizeof( map_type::value_type ) + key.capacity()
+    + sizeof( map_type::value_type ) + key.capacity() + 1
     + sizeof( void* ) * 2;
 
   ASSERT_TRUE( ztd::mem_sizeof( m ) == expected_size );
@@ -85,21 +85,21 @@ static void test_pointer() {
 template<class StringType>
 static void test_string_empty() {
   StringType const s;
-  ASSERT_TRUE( ztd::mem_sizeof( s ) == sizeof( s ) );
+  ASSERT_TRUE( ztd::mem_sizeof( s ) == sizeof( s ) + 1 );
 }
 
 template<>
 void test_string_empty<zstring>() {
   zstring const s;
   ASSERT_TRUE(
-    ztd::mem_sizeof( s ) == sizeof( s ) + sizeof( zstring::rep_type )
+    ztd::mem_sizeof( s ) == sizeof( s ) + 1 + sizeof( zstring::rep_type )
   );
 }
 
 template<class StringType>
 static void test_string_not_empty() {
   StringType const s( "hello" );
-  ASSERT_TRUE( ztd::mem_sizeof( s ) == sizeof( s ) + s.capacity() );
+  ASSERT_TRUE( ztd::mem_sizeof( s ) == sizeof( s ) + s.capacity() + 1 );
 }
 
 template<>
@@ -107,7 +107,7 @@ void test_string_not_empty<zstring>() {
   zstring const s( "hello" );
   ASSERT_TRUE(
     ztd::mem_sizeof( s ) ==
-      sizeof( s ) + sizeof( zstring::rep_type ) + s.capacity()
+      sizeof( s ) + sizeof( zstring::rep_type ) + s.capacity() + 1
   );
 }
 
@@ -129,37 +129,46 @@ static void test_vector_int() {
 
 struct my_base {
   virtual size_t alloc_size() const {
-    return ztd::alloc_sizeof( s_ ) + ztd::alloc_sizeof( t_ );
+    return ztd::alloc_sizeof( b1_ ) + ztd::alloc_sizeof( b2_ );
   }
   virtual size_t dynamic_size() const {
     return sizeof( *this );
   }
 
-  string s_, t_;
+  string b1_, b2_;
 };
 
 struct my_derived : my_base {
-  my_derived( string const &s ) : s_( s ) { }
+  my_derived( string const &s ) : d1_( s ) { }
 
   size_t alloc_size() const {
-    return my_base::alloc_size() + ztd::alloc_sizeof( s_ );
+    return my_base::alloc_size() + ztd::alloc_sizeof( d1_ );
   }
   virtual size_t dynamic_size() const {
     return sizeof( *this );
   }
 
-  string s_;
+  string d1_;
 };
 
 static void test_base_empty() {
   my_base b;
-  ASSERT_TRUE( ztd::mem_sizeof( b ) == sizeof( b ) );
+  ASSERT_TRUE(
+    ztd::mem_sizeof( b ) == sizeof( b )
+      + b.b1_.capacity() + 1
+      + b.b2_.capacity() + 1
+  );
 }
 
 static void test_derived_not_empty() {
   string const s( "hello" );
   my_derived d( s );
-  ASSERT_TRUE( ztd::mem_sizeof( d ) == sizeof( d ) + s.capacity() );
+  ASSERT_TRUE(
+    ztd::mem_sizeof( d ) == sizeof( d )
+      + d.b1_.capacity() + 1
+      + d.b2_.capacity() + 1
+      + d.d1_.capacity() + 1
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
