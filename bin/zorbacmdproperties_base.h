@@ -32,7 +32,11 @@ protected:
   const char** get_all_options () const
   {
     static const char* result [] = {
-      "--timing", "--output-file", "--serialization-parameter",
+      "--timing",
+#ifdef ZORBA_WITH_FILE_ACCESS
+      "--output-file",
+#endif /* ZORBA_WITH_FILE_ACCESS */
+      "--serialization-parameter",
       "--serialize-html", "--serialize-text", "--indent", "--print-query",
       "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration",
       "--base-uri", "--boundary-space", "--default-collation",
@@ -48,7 +52,9 @@ protected:
   }
 
   bool theTiming;
+#ifdef ZORBA_WITH_FILE_ACCESS
   std::string theOutputFile;
+#endif /* ZORBA_WITH_FILE_ACCESS */
   std::vector<std::string> theSerializationParameter;
   bool theSerializeHtml;
   bool theSerializeText;
@@ -119,7 +125,9 @@ protected:
 
 public:
   const bool &timing () const { return theTiming; }
+#ifdef ZORBA_WITH_FILE_ACCESS
   const std::string &outputFile () const { return theOutputFile; }
+#endif /* ZORBA_WITH_FILE_ACCESS */
   const std::vector<std::string> &serializationParameter () const { return theSerializationParameter; }
   const bool &serializeHtml () const { return theSerializeHtml; }
   const bool &serializeText () const { return theSerializeText; }
@@ -177,6 +185,7 @@ public:
       {
         theTiming = true;
       }
+#ifdef ZORBA_WITH_FILE_ACCESS
       else if (strcmp (*argv, "--output-file") == 0 || strncmp (*argv, "-o", 2) == 0) 
       {
         int d = 2;
@@ -184,6 +193,7 @@ public:
         if (*argv == NULL) { result = "No value given for --output-file option"; break; }
         init_val (*argv, theOutputFile, d);
       }
+#endif /* ZORBA_WITH_FILE_ACCESS */
       else if (strcmp (*argv, "--serialization-parameter") == 0 || strncmp (*argv, "-z", 2) == 0) 
       {
         int d = 2;

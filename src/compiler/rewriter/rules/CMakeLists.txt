@@ -21,4 +21,5 @@ SET(REWRITER_RULES_SRCS
     path_rules.cpp
     hoist_rules.cpp
     index_join_rule.cpp
+    index_matching_rule.cpp
 )

@@ -37,7 +37,7 @@ namespace zorba
         return get_walltime_elapsed(theStart, lEnd);
       }
 
-      long getStart() const {
+      time::msec_type getStart() const {
         return get_walltime_in_millis(theStart);
       }
 

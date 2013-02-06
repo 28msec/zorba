@@ -18,6 +18,7 @@
 #include <sstream>
 
 #include "store/api/temp_seq.h"
+#include "store/api/item_factory.h"
 
 #include "runtime/eval/eval.h"
 
@@ -31,6 +32,7 @@
 #include "compiler/api/compiler_api.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_manager.h"
+#include "compiler/rewriter/tools/expr_tools.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"

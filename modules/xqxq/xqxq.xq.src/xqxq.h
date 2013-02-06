@@ -30,22 +30,20 @@ protected:
 
   typedef std::map<String, ExternalFunction*, ltstr> FuncMap_t;
 
+protected:
   FuncMap_t theFunctions;
 
 public:
 
   virtual ~XQXQModule();
 
-  virtual zorba::String 
-  getURI() const {return XQXQ_MODULE_NAMESPACE;}
+  virtual zorba::String getURI() const {return XQXQ_MODULE_NAMESPACE;}
 
-  virtual zorba::ExternalFunction* 
-  getExternalFunction(const String& localName);
+  virtual zorba::ExternalFunction* getExternalFunction(const String& localName);
 
   virtual void destroy();
 
-  static ItemFactory*
-  getItemFactory()
+  static ItemFactory* getItemFactory()
   {
     return Zorba::getInstance(0)->getItemFactory();
   }
@@ -53,21 +51,20 @@ public:
 
 
 /*******************************************************************************
-
+  Bag class for objects associated with a prepared query
 ********************************************************************************/
-/**
- * @brief Bag class for objects associated with a prepared query
- */
 class QueryData : public SmartObject
 {
 private:
-  XQuery_t theQuery;
-  URIMapper* theURIMapper;
-  URLResolver* theURLResolver;
+  XQuery_t      theQuery;
+  URIMapper   * theURIMapper;
+  URLResolver * theURLResolver;
   
 public:
   QueryData(XQuery_t aQuery, URIMapper* aMapper, URLResolver* aResolver);
+
   virtual ~QueryData();
+
   XQuery_t getQuery() { return theQuery; }
 };
 
@@ -82,21 +79,20 @@ class QueryMap : public ExternalFunctionParameter
 {
 private:
   typedef std::map<String, QueryData_t> QueryMap_t;
-  QueryMap_t* queryMap;
+
+private:
+  QueryMap_t  * theQueryMap;
 
 public:
   QueryMap();
-  bool 
-  storeQuery(const String&, XQuery_t, URIMapper*, URLResolver*);
+
+  bool storeQuery(const String&, XQuery_t, URIMapper*, URLResolver*);
   
-  XQuery_t
-  getQuery(const String&);
+  XQuery_t getQuery(const String&);
   
-  bool 
-  deleteQuery(const String&);
+  bool deleteQuery(const String&);
   
-  virtual void 
-  destroy() throw();
+  virtual void destroy() throw();
 };
 
 
@@ -106,33 +102,28 @@ public:
 class XQXQFunction : public ContextualExternalFunction
 {
 protected:
-  const XQXQModule* theModule;
+  const XQXQModule * theModule;
 
-  String
-  getOneStringArgument(const Arguments_t&, int) const;
+protected:
+  static void throwError(const char*, const std::string&);
 
-  Item
-  getItemArgument(const Arguments_t&, int) const;
+protected:
+  String getOneStringArgument(const Arguments_t&, int) const;
 
-  Iterator_t
-  getIterArgument(const Arguments_t&, int) const;
+  Item getItemArgument(const Arguments_t&, int) const;
 
-  static void
-  throwError(const char*, const std::string);
+  Iterator_t getIterArgument(const Arguments_t&, int) const;
 
-  XQuery_t
-  getQuery(
-          const zorba::DynamicContext* dctx,
-          const zorba::String& aIdent) const;
+  XQuery_t getQuery(
+      const zorba::DynamicContext* dctx,
+      const zorba::String& aIdent) const;
 
 public:
-
   XQXQFunction(const XQXQModule* module);
 
   virtual ~XQXQFunction();
 
-  virtual String
-  getURI() const;
+  virtual String getURI() const;
 };
 
   
@@ -207,290 +198,335 @@ protected:
 ********************************************************************************/
 class PrepareLibraryModuleFunction : public XQXQFunction
 {
-    public:
-      PrepareLibraryModuleFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+public:
+  PrepareLibraryModuleFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual ~PrepareLibraryModuleFunction(){}
+  virtual ~PrepareLibraryModuleFunction(){}
       
-      virtual zorba::String
-        getLocalName() const { return "prepare-library-module"; }
+  virtual zorba::String
+  getLocalName() const { return "prepare-library-module"; }
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
-
-
-/*******************************************************************************
-
-********************************************************************************/
-  class IsBoundContextItemFunction : public XQXQFunction{
-    public:
-      IsBoundContextItemFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
-
-      virtual ~IsBoundContextItemFunction(){}
-
-      virtual zorba::String
-        getLocalName() const { return "is-bound-context-item"; }
-
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-  class IsBoundVariableFunction : public XQXQFunction{
-    public:
-      IsBoundVariableFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+class IsBoundContextItemFunction : public XQXQFunction
+{
+public:
+  IsBoundContextItemFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual ~IsBoundVariableFunction(){}
+  virtual ~IsBoundContextItemFunction(){}
 
-      virtual zorba::String
-        getLocalName() const { return "is-bound-variable"; }
+  virtual zorba::String
+  getLocalName() const { return "is-bound-context-item"; }
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
+    
+    
+/*******************************************************************************
 
-  class GetExternalVariablesFunction : public XQXQFunction{
-    public:
-      GetExternalVariablesFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+********************************************************************************/
+class IsBoundVariableFunction : public XQXQFunction
+{
+public:
+  IsBoundVariableFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual ~GetExternalVariablesFunction() {}
+  virtual ~IsBoundVariableFunction(){}
 
-      virtual zorba::String
-        getLocalName() const {return "external-variables"; }
+  virtual zorba::String
+  getLocalName() const { return "is-bound-variable"; }
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
+    
 
-  class IsUpdatingFunction : public XQXQFunction{
-    public:
-      IsUpdatingFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+/*******************************************************************************
 
-      virtual ~IsUpdatingFunction() {}
+********************************************************************************/
+class GetExternalVariablesFunction : public XQXQFunction
+{
+public:
+  GetExternalVariablesFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual zorba::String
-        getLocalName() const {return "is-updating"; }
+  virtual ~GetExternalVariablesFunction() {}
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
+  virtual zorba::String
+  getLocalName() const {return "external-variables"; }
 
-  };
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
 
-  class IsSequentialFunction : public XQXQFunction{
-    public:
-      IsSequentialFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual ~IsSequentialFunction() {}
+/*******************************************************************************
 
-      virtual zorba::String
-        getLocalName() const {return "is-sequential"; }
+********************************************************************************/
+class IsUpdatingFunction : public XQXQFunction
+{
+public:
+  IsUpdatingFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
+  virtual ~IsUpdatingFunction() {}
 
-  class BindContextItemFunction : public XQXQFunction{
-    public:
-      BindContextItemFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+  virtual zorba::String
+  getLocalName() const {return "is-updating"; }
 
-      virtual ~BindContextItemFunction() {}
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;  
+};
 
-      virtual zorba::String
-        getLocalName() const {return "bind-context-item"; }
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
+/*******************************************************************************
 
-  class BindContextPositionFunction : public XQXQFunction{
-    public:
-      BindContextPositionFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+********************************************************************************/
+class IsSequentialFunction : public XQXQFunction
+{
+public:
+  IsSequentialFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual ~BindContextPositionFunction() {}
+  virtual ~IsSequentialFunction() {}
 
-      virtual zorba::String
-        getLocalName() const {return "bind-context-position"; }
+  virtual zorba::String
+  getLocalName() const {return "is-sequential"; }
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
 
-  class BindContextSizeFunction : public XQXQFunction{
-    public:
-      BindContextSizeFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual ~BindContextSizeFunction() {}
+/*******************************************************************************
 
-      virtual zorba::String
-        getLocalName() const {return "bind-context-size"; }
+********************************************************************************/
+class BindContextItemFunction : public XQXQFunction
+{
+public:
+  BindContextItemFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
+  virtual ~BindContextItemFunction() {}
 
-  class BindVariableFunction : public XQXQFunction{
-    public:
-      BindVariableFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+  virtual zorba::String
+  getLocalName() const {return "bind-context-item"; }
 
-      virtual ~BindVariableFunction() {}
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
 
-      virtual zorba::String
-        getLocalName() const {return "bind-variable"; }
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
+/*******************************************************************************
 
-  /*******************************************************************************************
-  *******************************************************************************************/
-  class EvaluateItemSequence : public ItemSequence
+********************************************************************************/
+class BindContextPositionFunction : public XQXQFunction
+{
+public:
+  BindContextPositionFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+
+  virtual ~BindContextPositionFunction() {}
+
+  virtual zorba::String
+  getLocalName() const {return "bind-context-position"; }
+
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class BindContextSizeFunction : public XQXQFunction
+{
+public:
+  BindContextSizeFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+
+  virtual ~BindContextSizeFunction() {}
+  
+  virtual zorba::String
+  getLocalName() const {return "bind-context-size"; }
+
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class BindVariableFunction : public XQXQFunction
+{
+public:
+  BindVariableFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+
+  virtual ~BindVariableFunction() {}
+
+  virtual zorba::String
+  getLocalName() const {return "bind-variable"; }
+
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class EvaluateItemSequence : public ItemSequence
+{
+protected:
+
+  class EvaluateIterator : public Iterator
   {
   protected:
+    Iterator_t theIterator;
 
-    class EvaluateIterator : public Iterator
-    {
-      protected:
-        Iterator_t theIterator;
-
-        String theQueryID;
-
-      public:
-        EvaluateIterator(Iterator_t& aIter, String aQueryID)
-          : theIterator(aIter), theQueryID(aQueryID)
-        {
-        }
-
-        virtual ~EvaluateIterator(){}
-
-        virtual void
-          open()
-        {
-          theIterator->open();
-        }
-
-        virtual bool
-          next(Item& aItem);
-
-        virtual void 
-          close()
-        {
-          theIterator->close();
-        }
-
-        virtual bool
-          isOpen() const
-        {
-          return theIterator->isOpen();
-        }
-
-    };
-
-    typedef zorba::SmartPtr<EvaluateIterator> EvaluateIterator_t;
-    EvaluateIterator_t theIter; 
+    String theQueryID;
 
   public:
-    EvaluateItemSequence(Iterator_t& aIter, String& aQueryID)
-      :theIter (new EvaluateIterator(aIter, aQueryID))
+    EvaluateIterator(Iterator_t& aIter, String aQueryID)
+      :
+      theIterator(aIter),
+      theQueryID(aQueryID)
     {
-      
     }
 
-    virtual ~EvaluateItemSequence() {}
+    virtual ~EvaluateIterator(){}
 
-    Iterator_t
-      getIterator() { return theIter.get(); }
+    virtual void open() { theIterator->open(); }
+
+    virtual bool next(Item& aItem);
+
+    virtual void close() { theIterator->close(); }
+
+    virtual bool isOpen() const { return theIterator->isOpen(); }
   };
 
-  class EvaluateFunction : public XQXQFunction{
-    public:
-      EvaluateFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+  typedef zorba::SmartPtr<EvaluateIterator> EvaluateIterator_t;
+  EvaluateIterator_t theIter; 
 
-      virtual ~EvaluateFunction() {}
+public:
+  EvaluateItemSequence(Iterator_t& aIter, String& aQueryID)
+    :
+    theIter(new EvaluateIterator(aIter, aQueryID))
+  {
+  }
+  
+  virtual ~EvaluateItemSequence() {}
 
-      virtual zorba::String
-        getLocalName() const {return "evaluate"; }
+  Iterator_t getIterator() { return theIter.get(); }
+};
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
 
-  class EvaluateUpdatingFunction : public XQXQFunction{
-    public:
-      EvaluateUpdatingFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+/*******************************************************************************
 
-      virtual ~EvaluateUpdatingFunction() {}
+********************************************************************************/
+class EvaluateFunction : public XQXQFunction
+{
+public:
+  EvaluateFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual zorba::String
-        getLocalName() const {return "evaluate-updating"; }
+  virtual ~EvaluateFunction() {}
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
+  virtual zorba::String
+  getLocalName() const {return "evaluate"; }
 
-  class EvaluateSequentialFunction : public XQXQFunction{
-    public:
-      EvaluateSequentialFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
 
-      virtual ~EvaluateSequentialFunction() {}
 
-      virtual zorba::String
-        getLocalName() const {return "evaluate-sequential"; }
+/*******************************************************************************
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
+********************************************************************************/
+class EvaluateUpdatingFunction : public XQXQFunction
+{
+public:
+  EvaluateUpdatingFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual String getURI() const {
-        return theModule->getURI();
-      }
+  virtual ~EvaluateUpdatingFunction() {}
 
-    protected:
-      const XQXQModule* theModule;
-  };
+  virtual zorba::String
+  getLocalName() const {return "evaluate-updating"; }
 
-  class DeleteQueryFunction : public XQXQFunction{
-    public:
-      DeleteQueryFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
 
-      virtual ~DeleteQueryFunction() {}
 
-      virtual zorba::String
-        getLocalName() const {return "delete-query"; }
+/*******************************************************************************
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
+********************************************************************************/
+class EvaluateSequentialFunction : public XQXQFunction
+{
+public:
+  EvaluateSequentialFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+
+  virtual ~EvaluateSequentialFunction() {}
+
+  virtual zorba::String
+  getLocalName() const {return "evaluate-sequential"; }
+
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+  
+  virtual String getURI() const {
+    return theModule->getURI();
+  }
+  
+protected:
+  const XQXQModule* theModule;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class DeleteQueryFunction : public XQXQFunction
+{
+public:
+  DeleteQueryFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+
+  virtual ~DeleteQueryFunction() {}
+
+  virtual zorba::String
+  getLocalName() const {return "delete-query"; }
+
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
 
 
 

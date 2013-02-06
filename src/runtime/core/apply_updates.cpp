@@ -174,7 +174,7 @@ void apply_updates(
 
     if (indexDecl->getMaintenanceMode() == IndexDecl::DOC_MAP)
     {
-      DocIndexer* docIndexer = indexDecl->getDocIndexer(ccb, loc);
+      DocIndexer* docIndexer = indexDecl->getDocIndexer(loc);
       assert(docIndexer != NULL);
 
       docIndexer->setup(ccb);
@@ -215,7 +215,7 @@ void apply_updates(
 
         if (zorbaIndex->getMaintenanceMode() == IndexDecl::REBUILD)
         {
-          PlanIter_t buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
+          PlanIter_t buildPlan = zorbaIndex->getBuildPlan(loc);
 
           PlanWrapper_t planWrapper = new PlanWrapper(buildPlan,
                                                       ccb,

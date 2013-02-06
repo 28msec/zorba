@@ -193,14 +193,7 @@ AutoFSURIMapper::mapURI
 
   // Finally, append the original URI, so that it will be resolved
   // as-is if there's nothing appropriate on the local filesystem.
-  // Note: For module or schema imports, don't do this if it's a
-  // network (HTTP) URI and the "http_resolution" feature is disabled
-  // on this context.
-  if ( (lKind != EntityData::MODULE && lKind != EntityData::SCHEMA) ||
-       aSctx.is_feature_set(feature::http_resolution) ||
-       (HTTPURLResolver::isHTTPScheme(aUri) == false) ) {
-    oUris.push_back(aUri);
-  }
+  oUris.push_back(aUri);
 }
 
 ZorbaCollectionURIMapper::~ZorbaCollectionURIMapper()
