@@ -98,12 +98,12 @@ class JSONItem : public StructuredItem
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  CollectionTreeInfo * theTreeInfo;
+  CollectionTreeInfo * theCollectionInfo;
 
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  JSONItem() : StructuredItem(store::Item::JSONIQ), theTreeInfo(NULL) {}
+  JSONItem() : StructuredItem(store::Item::JSONIQ), theCollectionInfo(NULL) {}
 
   virtual ~JSONItem();
   
@@ -120,12 +120,12 @@ public:
 
   void detachFromCollection();
   
-  virtual void setCollectionTreeInfo(CollectionTreeInfo* aTree) = 0;
+  virtual void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo) = 0;
   
   virtual bool isRoot() const
   {
-    return theTreeInfo != NULL &&
-        theTreeInfo->getRoot() == this;
+    return theCollectionInfo != NULL &&
+        theCollectionInfo->getRoot() == this;
   }
 
   virtual long getCollectionTreeRefCount() const;
@@ -145,7 +145,7 @@ public:
   virtual void assertInvariant() const;
 
   virtual bool isThisTreeOfAllDescendants(
-      const CollectionTreeInfo* aTree) const = 0;
+      const CollectionTreeInfo* collectionInfo) const = 0;
 #endif
 };
 
@@ -299,7 +299,7 @@ public:
 
   // StructuredItem API
 
-  void setCollectionTreeInfo(CollectionTreeInfo* aTree);
+  void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo);
 
   bool isInSubtree(const StructuredItem* aJSONItem) const;
 
@@ -309,7 +309,7 @@ public:
 #ifndef NDEBUG
   void assertInvariant() const;
   
-  bool isThisTreeOfAllDescendants(const CollectionTreeInfo* aTree) const;
+  bool isThisTreeOfAllDescendants(const CollectionTreeInfo* collectionInfo) const;
 #endif
 };
 
@@ -455,7 +455,7 @@ public:
 
   // StructuredItem API
   
-  void setCollectionTreeInfo(CollectionTreeInfo* aTree);
+  void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo);
 
   virtual void swap(Item* anotherItem);
 
@@ -469,7 +469,7 @@ protected:
   // Invariant handling
 public:
 #ifndef NDEBUG
-  bool isThisTreeOfAllDescendants(const CollectionTreeInfo* aTree) const;
+  bool isThisTreeOfAllDescendants(const CollectionTreeInfo* colectionInfo) const;
 #endif
 };
 

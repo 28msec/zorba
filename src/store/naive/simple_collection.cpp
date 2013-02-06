@@ -470,9 +470,9 @@ void SimpleCollection::adjustTreePositions()
   {
 #ifdef ZORBA_WITH_JSON
     if (theXmlTrees[i]->isNode())
-      BASE_NODE(theXmlTrees[i])->getTree()->theTreeInfo->setPosition(xs_integer(i));
+      BASE_NODE(theXmlTrees[i])->getTree()->theCollectionInfo->setPosition(xs_integer(i));
 #else
-    BASE_NODE(theXmlTrees[i])->getTree()->theTreeInfo->setPosition(xs_integer(i));
+    BASE_NODE(theXmlTrees[i])->getTree()->theCollectionInfo->setPosition(xs_integer(i));
 #endif
   }
 }

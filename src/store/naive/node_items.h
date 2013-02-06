@@ -120,38 +120,51 @@ class XmlNodeTokenizerCallback;
 
 /*******************************************************************************
 
-  theRefCount    : It is the sum of theRefCounts of all the nodes belonging to
-                   this tree. Individual nodes are not destroyed when their
-                   refCount goes to 0. Instead, nodes belonging to a tree are all
-                   destroyed together when theRefCount of the tree goes to 0
-                   (i.e. when there are no refs to any of the nodes in the tree).
-  theRCLock      : Protects theRefCount
+  Class XmlTree contains top-level information about an xml tree. Every node of
+  such a tree has a pointer to the associated XmlTree object.
 
-  theId          : An internally generated id for the tree. The id uniquely
-                   identifies the tree within its containing collection (see
-                   Collection::createTreeId() method). Trees that do not
-                   belong to any collection, are considered to belong to a
-                   "virtual" collection (with collection id equal to 0), and
-                   their id is created by the SimpleStore::createId() method.
-                   theId it is guaranteed to be stable during the lifetime of
-                   the tree, but may be reused after the tree is destroyed.
-                   theId is used in building node URIs that are returned to
-                   the application. It is not meant to be used (at least not
-                   directly) to sort nodes in doc order.
-  thePos         : The position of this tree within its containing collection.
-                   After inserting/deleting one or more nodes in/from the middle
+  theRefCount:
+  ------------
+  It is the sum of theRefCounts of all the nodes belonging to this tree. 
+  Individual nodes are not destroyed when their refCount goes to 0. Instead,
+  nodes belonging to a tree are all destroyed together when theRefCount of
+  the tree goes to 0 (i.e. when there are no refs to any of the nodes in the
+  tree).
 
-  theBaseUri     : The base uri property of the tree's root node.
-  theDocUri      : A user provided uri for the tree (may be NULL).
+  theRCLock:
+  ----------
+  Protects theRefCount
 
-  theCollection  : The collection where this xml tree belongs to, if any. An xml
-                   tree may belong to at most one collection at a time.
-  theRootNode    : The root node of the tree.
+  theTreeId:
+  ----------
+  A collection-relative id for this tree. Uniquely identifies the tree within a
+  collection, or if the tree does not belong to any collection, its id is unique
+  among all the other trees that do not belong to any collection either. NOTE:
+  when a tree becomes member of a colection, it gets a new id. 
+ 
+  theCollectionInfo:
+  ------------------
+  Contains info that is relevant only if the tree belongs to a collection (see
+  class CollectionTreeInfo for more details).
 
-  theIsValidated : True if the tree has ever undergone schema validation.
-  theIsRecursive : True if the tree contains at least one pair of element nodes
-                   that have the same tag name and are in an ancestor-descendant
-                   relationship with each other.
+  theRootNode:
+  ------------
+  The root node of this XML tree.
+
+  theIsValidated : 
+  ----------------
+  True if the tree has ever undergone schema validation.
+
+  theIsRecursive :
+  ----------------
+  True if the tree contains at least one pair of element nodes that have the 
+  same tag name and are in an ancestor-descendant relationship with each other.
+
+  theTypesMap:
+  ------------
+
+  theTokens:
+  ----------
 ********************************************************************************/
 class XmlTree
 {
@@ -174,12 +187,10 @@ protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  // Contains pointer to collection, tree ID, position,
-  // pointer to absolute root.
-  CollectionTreeInfoWithoutTreeId*       theTreeInfo;
-  TreeId                                 theTreeId;
+  CollectionTreeInfoWithoutTreeId  * theCollectionInfo;
 
-  // Topmost XML ancestor (root of the XML tree).
+  TreeId                    theTreeId;
+
   XmlNode                 * theRootNode;
 
 #ifdef DATAGUIDE
@@ -234,11 +245,11 @@ public:
 
   const xs_integer& getPosition() const
   {
-    if (!theTreeInfo)
+    if (!theCollectionInfo)
     {
       return xs_integer::zero();
     }
-    return theTreeInfo->getPosition();
+    return theCollectionInfo->getPosition();
   }
 
 public:
@@ -590,7 +601,7 @@ public:
 
   virtual void detachFromCollection();
 
-  virtual void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
+  virtual void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo);
 
   virtual long getCollectionTreeRefCount() const;
 

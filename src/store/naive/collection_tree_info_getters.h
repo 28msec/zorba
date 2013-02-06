@@ -37,14 +37,14 @@ public:
     {
       const simplestore::XmlNode* lNode =
           static_cast<const simplestore::XmlNode*>(lItem);
-      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theTreeInfo;
+      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theCollectionInfo;
       return lInfo ? lInfo->getCollection() : NULL;
     }
     if (lItem->isJSONItem())
     {
       const simplestore::json::JSONItem* lJSON =
           static_cast<const simplestore::json::JSONItem*>(lItem);
-      CollectionTreeInfo* lInfo = lJSON->theTreeInfo;
+      CollectionTreeInfo* lInfo = lJSON->theCollectionInfo;
       return lInfo ? lInfo->getCollection() : NULL;
     }
     assert(false);
@@ -63,7 +63,7 @@ public:
     {
       const simplestore::json::JSONItem* lJSON =
           static_cast<const simplestore::json::JSONItem*>(lItem);
-      CollectionTreeInfo* lInfo = lJSON->theTreeInfo;
+      CollectionTreeInfo* lInfo = lJSON->theCollectionInfo;
       return lInfo ? &lInfo->getTreeId() : NULL;
     }
     assert(false);
@@ -76,14 +76,14 @@ public:
     {
       const simplestore::XmlNode* lNode =
           static_cast<const simplestore::XmlNode*>(lItem);
-      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theTreeInfo;
+      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theCollectionInfo;
       return lInfo ? lInfo->getRoot() : NULL;
     }
     if (lItem->isJSONItem())
     {
       const simplestore::json::JSONItem* lJSON =
           static_cast<const simplestore::json::JSONItem*>(lItem);
-      CollectionTreeInfo* lInfo = lJSON->theTreeInfo;
+      CollectionTreeInfo* lInfo = lJSON->theCollectionInfo;
       return lInfo ? lInfo->getRoot() : NULL;
     }
     assert(false);
@@ -96,14 +96,14 @@ public:
     {
       const simplestore::XmlNode* lNode =
           static_cast<const simplestore::XmlNode*>(lItem);
-      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theTreeInfo;
+      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theCollectionInfo;
       return lInfo ? lInfo->getPosition() : xs_integer::zero();
     }
     if (lItem->isJSONItem())
     {
       const simplestore::json::JSONItem* lJSON =
           static_cast<const simplestore::json::JSONItem*>(lItem);
-      CollectionTreeInfo* lInfo = lJSON->theTreeInfo;
+      CollectionTreeInfo* lInfo = lJSON->theCollectionInfo;
       return lInfo ? lInfo->getPosition() : xs_integer::zero();
     }
     assert(false);
@@ -112,7 +112,7 @@ public:
 
   static simplestore::Collection* getCollection(const simplestore::XmlTree* aTree)
   {
-    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theTreeInfo;
+    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theCollectionInfo;
     return lInfo ? lInfo->getCollection() : NULL;
   }
 
@@ -123,14 +123,14 @@ public:
 
   static StructuredItem* getRoot(const simplestore::XmlTree* aTree)
   {
-    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theTreeInfo;
+    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theCollectionInfo;
     return lInfo ? lInfo->getRoot() : NULL;
   }
 
   static const xs_integer& getPosition(const simplestore::XmlTree* aTree)
   {
     static xs_integer lDummy(-1);
-    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theTreeInfo;
+    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theCollectionInfo;
     return lInfo ? lInfo->getPosition() : lDummy;
   }
 };
