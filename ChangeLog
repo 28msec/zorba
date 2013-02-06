@@ -11,7 +11,7 @@ Optimizations:
 
 Bug Fixes/Other Changes:
   * NaN items are considered equal to each other during grouping
-
+  * Fixed bug #867068: (Incorrect usage of XQDY0027)
 
 version 2.8
 
