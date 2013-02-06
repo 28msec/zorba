@@ -37,7 +37,7 @@ public:
     {
       const simplestore::XmlNode* lNode =
           static_cast<const simplestore::XmlNode*>(lItem);
-      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theCollectionInfo;
+      CollectionTreeInfo* lInfo = lNode->getTree()->theCollectionInfo;
       return lInfo ? lInfo->getRoot() : NULL;
     }
     if (lItem->isJSONItem())
@@ -53,7 +53,7 @@ public:
 
   static StructuredItem* getRoot(const simplestore::XmlTree* aTree)
   {
-    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theCollectionInfo;
+    CollectionTreeInfo* lInfo = aTree->theCollectionInfo;
     return lInfo ? lInfo->getRoot() : NULL;
   }
 };

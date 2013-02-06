@@ -267,7 +267,7 @@ void XmlTree::setCollectionTreeInfo(CollectionTreeInfo* collectionInfo)
   assert(collectionInfo ||
          theCollectionInfo->getRoot() != static_cast<StructuredItem*>(getRoot()));
 
-  theCollectionInfo = static_cast<CollectionTreeInfoWithoutTreeId*>(collectionInfo);
+  theCollectionInfo = collectionInfo;
 }
 
 /*******************************************************************************
@@ -280,7 +280,7 @@ void XmlTree::attachToCollection(
 {
   assert(!theCollectionInfo);
 
-  theCollectionInfo = new CollectionTreeInfoWithoutTreeId();
+  theCollectionInfo = new CollectionTreeInfo();
   theCollectionInfo->setCollection(aCollection);
   theCollectionInfo->setPosition(aPosition);
   theCollectionInfo->setRoot(getRoot());

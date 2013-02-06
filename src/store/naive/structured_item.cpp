@@ -23,23 +23,30 @@ namespace zorba
 namespace simplestore
 {
 
+/*******************************************************************************
+
+********************************************************************************/
+bool StructuredItem::isCollectionRoot() const
+{
+  return CollectionTreeInfoGetters::getRoot(this) == this;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool StructuredItem::isInSubtreeOf(const store::Item_t& anItem) const
 {
   if (!anItem->isStructuredItem())
   {
     return false;
   }
-  assert(static_cast<StructuredItem*>(anItem.getp()));
-  StructuredItem* lStructuredItem =
-    static_cast<StructuredItem*>(anItem.getp());
-  return lStructuredItem->isInSubtree(this);
+
+  StructuredItem* structuredItem = static_cast<StructuredItem*>(anItem.getp());
+
+  return structuredItem->isInSubtree(this);
 };
 
-
-bool StructuredItem::isRoot() const
-{
-  return CollectionTreeInfoGetters::getRoot(this) == this;
-}
 
 } // simplestore
 } // zorba

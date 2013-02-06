@@ -1813,7 +1813,7 @@ bool ZorbaEditNodesIterator::nextImpl(
     throw XQUERY_EXCEPTION(zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC(loc));
   }
 
-  if (!target->isRoot())
+  if (!target->isCollectionRoot())
   {
     throw XQUERY_EXCEPTION(
       zerr::ZDDY0039_NON_ROOT_NODE_EDIT,

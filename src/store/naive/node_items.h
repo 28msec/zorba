@@ -186,7 +186,7 @@ protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  CollectionTreeInfoWithoutTreeId  * theCollectionInfo;
+  CollectionTreeInfo      * theCollectionInfo;
 
   TreeId                    theTreeId;
 

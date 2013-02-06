@@ -29,6 +29,10 @@ namespace simplestore
 
 class Collection;
 
+
+/******************************************************************************
+  StructuredItem represents either an XML noe or a JSON node.
+*******************************************************************************/
 class StructuredItem : public store::Item
 {
 public:
@@ -38,25 +42,24 @@ public:
 
   //--------------------- Item API ---------------------------------------------
   
-  // Tells if this item is in the subtree starting at the supplied item.
   virtual bool isInSubtreeOf(const store::Item_t& anItem) const;
   
-  virtual bool isRoot() const;
+  virtual bool isCollectionRoot() const;
 
   //--------------------- Structured Item API ----------------------------------
 
-  // Attaches a root to a collection (populates collection info).
+  // Attaches a root node to a collection (populates collection info).
   virtual void attachToCollection(
-      simplestore::Collection* aCollection,
-      const TreeId& aTreeId,
-      const xs_integer& aPosition) = 0;
+      simplestore::Collection* collection,
+      const TreeId& treeId,
+      const xs_integer& position) = 0;
 
-  // Detaches a root from a collection (populates collection info).
+  // Detaches a root node from a collection (populates collection info).
   virtual void detachFromCollection() = 0;
   
   // Propagates collection tree info to descendants
   // (not to be called on a root - use functions above if root).
-  virtual void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo) = 0;
+  virtual void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo) = 0;
 
   // Assuming the tree T this node belongs to is in a collection, return the
   // position of T within its containing collection. 
@@ -75,9 +78,11 @@ public:
   // id of T (the id is unique within the containing collection).
   virtual const TreeId& getTreeId() const = 0;
 
-  // Tells if supplied item is in the subtree starting at this item.
+  // Tells if the given item is in the subtree starting at this item.
+  // NOTE: for the purposes of this method, XML trees that are pointed-to
+  // by a JSON tree are considered part of that JSON tree. As a result,
+  // an XML node may be in the subtree of a JSON node.
   virtual bool isInSubtree(const StructuredItem* anotherItem) const = 0;
-  
 };
 
 } // namespace simplestore

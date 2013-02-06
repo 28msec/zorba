@@ -29,11 +29,58 @@ class Collection;
 class StructuredItem;
 
 /******************************************************************************
-  Contains info about a tree that is in a collection. Very simple API (just
-  four fields and getters and setters for each of them).
+  Contains info about an XML or JSON tree that belongs to a collection, either
+  directly or indirectly. A tree belongs to a collection "directly" if the
+  collection stores a "pointer" to the root of the tree.  A tree belongs to a
+  collection "indirectly" if it is pointed-to by a tree that belongs to the
+  collection directly. Such indirect membership happens only when an XML tree
+  is pointed-to by a JSON tree that belongs to a collection directly. Indirect
+  membership cannot happen for JSON trees.
+
+  A tree may belong to at most one collection at a time.
+
+  A CollectionTreeInfo instance is created when a tree is attached to a collection
+  (directly or indirectly) and is destroyed when the tree is detached from the
+  collection. For XML trees, a pointer to this CollectionTreeInfo is stored in
+  the XmlTree obj representing the tree. For JSON trees, a pointer to the
+  CollectionTreeInfo is stored in each node of the tree. 
+
+  Each tree within a collection must have an id that uniquely identifies the
+  tree within the collection. 
+
+  XML trees need a tree id even if they don't belong to a collection. As a
+  result, XML trees store their id inside their associated XmlTree object.
+  When an XML tree does not belong to a collection, its id uniquely identifies
+  the tree among all the trees that do not belong to any collection. When an
+  XML tree enters a collection, its tree id is updated so that is becomes
+  unique within the target collection. When an XML tree exits a collection,
+  its id is again updated appropriately.
+
+  JSON trees need a tree id only while inside a collection. For this purpose,
+  the CollectionTreeInfoWithTreeId subclass is use to provide the storage for
+  the tree id.
+
+  theCollection:
+  --------------
+  The collection where this tree belongs to.
+
+  theRoot:
+  --------
+  The xml or json node that is directly stored in the collection. For JSON trees
+  this is the root node of the tree. For XML trees, it is the root node of the 
+  tree, if the tree belongs to the collection directly, or it is the root of a
+  JSON tree that belongs to the collection directly and also points to the XML
+  tree.
+
+  thePosition:
+  ------------
+  The position of this tree within its containing collection. It is used as a
+  hint to quickly retrieve the tree of a node within a collection.
+
+  Very simple API (just getters and setters for each of the data members).
 *******************************************************************************/
 
-class CollectionTreeInfoWithoutTreeId
+class CollectionTreeInfo
 {
 protected:
   Collection*     theCollection;
@@ -41,11 +88,13 @@ protected:
   StructuredItem* theRoot;
 
 public:
-  CollectionTreeInfoWithoutTreeId()
-    : theCollection(NULL),
-      thePosition(0),
-      theRoot(NULL)
-  {}
+  CollectionTreeInfo()
+    :
+    theCollection(NULL),
+    thePosition(0),
+    theRoot(NULL)
+  {
+  }
 
   simplestore::Collection* getCollection() const
   {
@@ -79,15 +128,16 @@ public:
 };
 
 
-class CollectionTreeInfo : public CollectionTreeInfoWithoutTreeId
+/******************************************************************************
+
+*******************************************************************************/
+class CollectionTreeInfoWithTreeId : public CollectionTreeInfo
 {
 private:
-  TreeId          theTreeId;
+  TreeId  theTreeId;
 
 public:
-  CollectionTreeInfo()
-    : theTreeId()
-  {}
+  CollectionTreeInfoWithTreeId() : theTreeId() {}
 
   simplestore::Collection* getCollection() const
   {

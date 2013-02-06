@@ -1336,7 +1336,7 @@ store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
   );
 }
 
-bool Item::isRoot() const
+bool Item::isCollectionRoot() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

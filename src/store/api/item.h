@@ -533,8 +533,25 @@ public:
   virtual bool
   isTextRef() const;
 
-  
-  /* -------------------  Methods for Nodes ------------------------------------- */
+  /* -------------------  Methods for XML and JSON Nodes --------------------- */
+
+  /**
+   * @return true if this node is the root node of a tree that belongs to a
+   * a collection directly.
+   */
+  virtual bool
+  isCollectionRoot() const;
+
+  /**
+   * @return true if this node is in the subtree starting at the given item.
+   *         NOTE: for the purposes of this method, XML trees that are pointed-to
+   *         by a JSON tree are considered part of that JSON tree. As a result,
+   *         an XML node may be in the subtree of a JSON node.
+   */
+  virtual bool
+  isInSubtreeOf(const store::Item_t&) const;
+
+  /* -------------------  Methods for XML Nodes ------------------------------ */
 
   /**
    *  getNodeProperty functions - Accessor of XDM (see XDM specification, Section 5)
@@ -755,12 +772,6 @@ public:
    *
    */
   virtual bool
-  isInSubtreeOf(const store::Item_t&) const;
-
-  /**
-   *
-   */
-  virtual bool
   isDescendant(const store::Item_t&) const;
 
   /**
@@ -850,12 +861,6 @@ public:
    */
   virtual store::StoreConsts::JSONItemKind 
   getJSONItemKind() const;
-
-  /**
-   * @return true if the JSON item is a root in a collection.
-   */
-  virtual bool
-  isRoot() const;
 
   /**
    * defined on JSONArray

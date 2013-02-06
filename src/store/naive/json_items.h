@@ -100,7 +100,7 @@ class JSONItem : public StructuredItem
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  CollectionTreeInfo * theCollectionInfo;
+  CollectionTreeInfoWithTreeId * theCollectionInfo;
 
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
@@ -124,12 +124,6 @@ public:
   
   virtual void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo) = 0;
   
-  virtual bool isRoot() const
-  {
-    return theCollectionInfo != NULL &&
-        theCollectionInfo->getRoot() == this;
-  }
-
   virtual long getCollectionTreeRefCount() const;
 
   const xs_integer& getPosition() const
