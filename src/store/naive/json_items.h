@@ -122,6 +122,8 @@ public:
 
   void detachFromCollection();
   
+  CollectionTreeInfo* getCollectionTreeInfo() const { return theCollectionInfo; }
+
   virtual void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo) = 0;
   
   virtual long getCollectionTreeRefCount() const;

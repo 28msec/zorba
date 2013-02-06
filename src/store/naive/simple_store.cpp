@@ -35,7 +35,6 @@
 
 #include <zorba/util/uuid.h>
 #include "zorbautils/string_util.h"
-#include "collection_tree_info_getters.h"
 
 
 namespace zorba
@@ -267,10 +266,10 @@ store::Collection_t SimpleStore::createCollection(
 
 
 /*******************************************************************************
- Computes the reference of the given node.
+  Computes the reference of the given node.
 
- @param node XDM node
- @return the identifier as an item of type xs:anyURI
+  @param node XDM node
+  @return the identifier as an item of type xs:anyURI
 ********************************************************************************/
 bool SimpleStore::getNodeReference(store::Item_t& result, const store::Item* node)
 {
@@ -309,11 +308,11 @@ bool SimpleStore::hasReference(const store::Item* node)
 {
   using namespace zorba::simplestore::json;
 
-  bool lHasReference = false;
+  bool hasReference = false;
   if (node->isNode())
   {
     const XmlNode* x = static_cast<const XmlNode*>(node);
-    lHasReference = x->haveReference();
+    hasReference = x->haveReference();
   }
   else
   {
@@ -321,17 +320,21 @@ bool SimpleStore::hasReference(const store::Item* node)
     JSONItem* j = const_cast<JSONItem*>(static_cast<const JSONItem*>(node));
 
     // only root nodes in a collection can have a reference
-    if (CollectionTreeInfoGetters::getRoot(j) == j)
+    if (j->isCollectionRoot())
     {
-      ItemRefMap::iterator lIter = theNodeToReferencesMap.find(node);
+      ItemRefMap::iterator iter = theNodeToReferencesMap.find(node);
 
-      lHasReference = (lIter != theNodeToReferencesMap.end());
+      hasReference = (iter != theNodeToReferencesMap.end());
     }
   }
-  return lHasReference;
+
+  return hasReference;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool SimpleStore::assignReference(const store::Item* node, const zstring& reference)
 {
   using namespace zorba::simplestore::json;
@@ -353,7 +356,7 @@ bool SimpleStore::assignReference(const store::Item* node, const zstring& refere
     assert(node->isJSONItem());
     const JSONItem* j = static_cast<const JSONItem*>(node);
 
-    if (CollectionTreeInfoGetters::getRoot(j) != j)
+    if (! j->isCollectionRoot())
       throw ZORBA_EXCEPTION(zerr::ZAPI0080_CANNOT_RETRIEVE_REFERENCE);
   }
 

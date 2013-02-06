@@ -47,6 +47,7 @@
 #include "simple_store.h"
 #include "structured_item.h"
 #include "collection_tree_info.h"
+#include "collection.h"
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
@@ -176,8 +177,6 @@ class XmlTree
   // For setting positions directly.
   friend class SimpleCollection;
 
-  friend class CollectionTreeInfoGetters;
-
 #ifndef EMBEDED_TYPE
   typedef NodePointerHashMap<store::Item_t> NodeTypeMap;
 #endif
@@ -227,6 +226,8 @@ public:
   
   const TreeId& getTreeId() const { return theTreeId; }
 
+  CollectionTreeInfo* getCollectionTreeInfo() const { return theCollectionInfo; }
+
   void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo);
 
   void attachToCollection(
@@ -258,7 +259,6 @@ public:
     return theCollectionInfo->setPosition(pos);
   }
 
-public:
   XmlNode* getRoot() const { return theRootNode; }
 
   void setRoot(XmlNode* root) { theRootNode = root; }

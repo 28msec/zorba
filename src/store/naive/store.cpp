@@ -56,7 +56,6 @@
 #include "document_name_iterator.h"
 #include "pul_primitive_factory.h"
 #include "tree_id_generator.h"
-#include "collection_tree_info_getters.h"
 
 #include "util/cxx_util.h"
 #include "zorbautils/string_util.h"

@@ -34,7 +34,6 @@
 #include "atomic_items.h"
 #include "pul_primitive_factory.h"
 #include "node_factory.h"
-#include "collection_tree_info_getters.h"
 
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
@@ -2363,22 +2362,30 @@ void PULImpl::getIndicesToRefresh(
     NodeToUpdatesMap::iterator end = pul->theNodeToUpdatesMap.end();
     for (; ite != end; ++ite)
     {
-      store::Item* lItem = (*ite).first;
-      ZORBA_ASSERT(lItem->isStructuredItem());
+      store::Item* item = (*ite).first;
+      ZORBA_ASSERT(item->isStructuredItem());
 
-      assert(dynamic_cast<StructuredItem*>(lItem));
-      StructuredItem* lStructuredItem = static_cast<StructuredItem*>(lItem);
-      pul->theModifiedDocs.insert(const_cast<StructuredItem*>(
-          CollectionTreeInfoGetters::getRoot(lStructuredItem)));
+      StructuredItem* structuredItem = static_cast<StructuredItem*>(item);
+      pul->theModifiedDocs.insert(structuredItem->getCollectionRoot());
       continue;
     }
 
-    csize numCollUpdates = pul->theInsertIntoCollectionList.size();
+    csize numCollUpdates = pul->theEditInCollectionList.size();
 
     for (csize i = 0; i < numCollUpdates; ++i)
     {
-      UpdCollection* upd = static_cast<UpdCollection*>
-                           (pul->theInsertIntoCollectionList[i]);
+      UpdEditInCollection* upd = 
+      static_cast<UpdEditInCollection*>(pul->theEditInCollectionList[i]);
+
+      pul->theModifiedDocs.insert(upd->getTarget());
+    }
+
+    numCollUpdates = pul->theInsertIntoCollectionList.size();
+
+    for (csize i = 0; i < numCollUpdates; ++i)
+    {
+      UpdCollection* upd = 
+      static_cast<UpdCollection*>(pul->theInsertIntoCollectionList[i]);
 
       csize numDocs = upd->numNodes();
 
@@ -2386,22 +2393,12 @@ void PULImpl::getIndicesToRefresh(
         pul->theInsertedDocs.push_back(upd->getNode(j));
     }
 
-    numCollUpdates = pul->theEditInCollectionList.size();
-
-    for (csize i = 0; i < numCollUpdates; ++i)
-    {
-      UpdEditInCollection* upd = static_cast<UpdEditInCollection*>
-                           (pul->theEditInCollectionList[i]);
-
-      pul->theModifiedDocs.insert(upd->getTarget());
-    }
-
     numCollUpdates = pul->theDeleteFromCollectionList.size();
 
     for (csize i = 0; i < numCollUpdates; ++i)
     {
-      UpdCollection* upd = static_cast<UpdCollection*>
-                           (pul->theDeleteFromCollectionList[i]);
+      UpdCollection* upd =
+      static_cast<UpdCollection*>(pul->theDeleteFromCollectionList[i]);
 
       csize numDocs = upd->numNodes();
 

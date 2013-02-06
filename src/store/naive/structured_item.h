@@ -18,9 +18,7 @@
 #define ZORBA_SIMPLE_STORE_STRUCTURED_ITEMS
 
 #include "store/api/item.h"
-
-#include "collection.h"
-#include "collection_tree_info.h"
+#include "tree_id.h"
 
 namespace zorba
 {
@@ -28,10 +26,11 @@ namespace simplestore
 {
 
 class Collection;
+class CollectionTreeInfo;
 
 
 /******************************************************************************
-  StructuredItem represents either an XML noe or a JSON node.
+  StructuredItem represents either an XML node or a JSON node.
 *******************************************************************************/
 class StructuredItem : public store::Item
 {
@@ -42,15 +41,17 @@ public:
 
   //--------------------- Item API ---------------------------------------------
   
-  virtual bool isInSubtreeOf(const store::Item_t& anItem) const;
+  bool isInSubtreeOf(const store::Item_t& anItem) const;
   
-  virtual bool isCollectionRoot() const;
+  bool isCollectionRoot() const;
 
   //--------------------- Structured Item API ----------------------------------
 
+  StructuredItem* getCollectionRoot() const;
+
   // Attaches a root node to a collection (populates collection info).
   virtual void attachToCollection(
-      simplestore::Collection* collection,
+      Collection* collection,
       const TreeId& treeId,
       const xs_integer& position) = 0;
 
@@ -83,6 +84,9 @@ public:
   // by a JSON tree are considered part of that JSON tree. As a result,
   // an XML node may be in the subtree of a JSON node.
   virtual bool isInSubtree(const StructuredItem* anotherItem) const = 0;
+
+protected:
+  CollectionTreeInfo* getCollectionTreeInfo() const;
 };
 
 } // namespace simplestore

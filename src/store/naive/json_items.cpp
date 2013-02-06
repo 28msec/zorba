@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include "collection_tree_info_getters.h"
 #include "json_items.h"
 #include "simple_item_factory.h"
 #include "simple_store.h"

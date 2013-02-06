@@ -15,25 +15,66 @@
  */
 
 #include "structured_item.h"
+#include "collection_tree_info.h"
+#include "collection.h"
+#include "node_items.h"
+#include "json_items.h"
 
-#include "collection_tree_info_getters.h"
 
 namespace zorba
 {
 namespace simplestore
 {
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-bool StructuredItem::isCollectionRoot() const
+CollectionTreeInfo* StructuredItem::getCollectionTreeInfo() const
 {
-  return CollectionTreeInfoGetters::getRoot(this) == this;
+  if (isNode())
+  {
+    const XmlNode* node = static_cast<const XmlNode*>(this);
+    return node->getTree()->getCollectionTreeInfo();
+  }
+  else
+  {
+    assert(isJSONItem());
+    const json::JSONItem* node = static_cast<const json::JSONItem*>(this);
+    return node->getCollectionTreeInfo();
+  }
 }
 
 
 /*******************************************************************************
+  Let T be the tree containing this node. If T belongs to a collection directly,
+  return the root node of T. If T belongs to a collection indirectly, return the
+  root node of the (JSON) tree that points to T and belongs to the collection
+  directly. If T does not belong to any collection, return NULL.
+********************************************************************************/
+StructuredItem* StructuredItem::getCollectionRoot() const
+{
+  CollectionTreeInfo* info = getCollectionTreeInfo();
+  return info ? info->getRoot() : NULL;
+}
 
+
+/*******************************************************************************
+  Return true if this node is the root node of a tree that belongs to a
+  a collection directly.
+********************************************************************************/
+bool StructuredItem::isCollectionRoot() const
+{
+  return getCollectionRoot() == this;
+}
+
+
+/*******************************************************************************
+  Return true if this node is in the subtree starting at the given item.
+
+  NOTE: for the purposes of this method, XML trees that are pointed-to by a
+  JSON tree are considered part of that JSON tree. As a result, an XML node
+  may be in the subtree of a JSON node.
 ********************************************************************************/
 bool StructuredItem::isInSubtreeOf(const store::Item_t& anItem) const
 {
