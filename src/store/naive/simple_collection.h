@@ -162,9 +162,9 @@ public:
 
   bool removeNode(xs_integer position);
 
-  void removeAll();
-
   xs_integer removeNodes(xs_integer position, xs_integer num);
+
+  void removeAll();
 
   void adjustTreePositions();
 };

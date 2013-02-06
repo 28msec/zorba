@@ -71,6 +71,10 @@ public:
   // collection purposes).
   virtual long getCollectionTreeRefCount() const = 0;
   
+  // Assuming the tree T this node belongs to is in a collection, get the
+  // id of T (the id is unique within the containing collection).
+  virtual const TreeId& getTreeId() const = 0;
+
   // Tells if supplied item is in the subtree starting at this item.
   virtual bool isInSubtree(const StructuredItem* anotherItem) const = 0;
   

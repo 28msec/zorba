@@ -50,17 +50,21 @@ public:
 
   zorba::xs_integer size() const  = 0;
 
-  zorba::store::Iterator_t getIterator(
-      const xs_integer& skip, 
-      const zstring& start) = 0;
-
-  virtual zorba::store::Item_t nodeAt(xs_integer position) = 0;
-
-  virtual bool findNode(const store::Item* node, xs_integer& position) const = 0;
-
   virtual bool isDynamic() const = 0;
 
   virtual void getAnnotations(std::vector<store::Annotation_t>&) const = 0;
+
+  store::Iterator_t getIterator(const xs_integer& skip, const zstring& start) = 0;
+
+  virtual bool findNode(const store::Item* node, xs_integer& position) const = 0;
+
+  virtual zorba::store::Item_t nodeAt(xs_integer position) = 0;
+
+  /***************************** ID Management ********************************/
+
+  virtual ulong getId() const = 0;
+
+  virtual TreeId createTreeId() = 0;
 
   /************************* Updates on collection ****************************/
 
@@ -82,12 +86,6 @@ public:
   virtual void removeAll() = 0;
   
   virtual void adjustTreePositions() = 0;
-
-  /***************************** ID Management ********************************/
-
-  virtual ulong getId() const = 0;
-
-  virtual TreeId createTreeId() = 0;
 
   /*********************** Indices ********************************************/
 

@@ -144,6 +144,12 @@ public:
     theCollectionInfo->setPosition(pos); 
   }
 
+  const TreeId& getTreeId() const
+  {
+    ZORBA_ASSERT(theCollectionInfo);
+    return theCollectionInfo->getTreeId();
+  }
+
   // store API
 
   const store::Collection* getCollection() const
