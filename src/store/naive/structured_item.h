@@ -62,6 +62,11 @@ public:
   // position of T within its containing collection. 
   virtual const xs_integer& getPosition() const = 0;
 
+  // Assuming the tree T this node belongs to is in a collection, store the
+  // position of T within its containing collection. The position is stored
+  // inside the CollectionTreeInfo object associated with the node.
+  virtual void setPosition(const xs_integer& pos) = 0;
+
   // Returns total number of outstanding pointers to the tree (for garbage
   // collection purposes).
   virtual long getCollectionTreeRefCount() const = 0;

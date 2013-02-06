@@ -462,12 +462,7 @@ void SimpleCollection::adjustTreePositions()
 
   for (csize i = 0; i < numTrees; ++i)
   {
-#ifdef ZORBA_WITH_JSON
-    if (theTrees[i]->isNode())
-      BASE_NODE(theTrees[i])->getTree()->theCollectionInfo->setPosition(xs_integer(i));
-#else
-    BASE_NODE(theTrees[i])->getTree()->theCollectionInfo->setPosition(xs_integer(i));
-#endif
+    static_cast<StructuredItem*>(theTrees[i].getp())->setPosition(xs_integer(i));
   }
 }
 

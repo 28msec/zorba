@@ -173,11 +173,10 @@ class XmlTree
   // make sure that only created by the factory
   friend class NodeFactory;
   
-  // Used to access collection tree information.
-  friend class CollectionTreeInfoGetters;
-  
   // For setting positions directly.
   friend class SimpleCollection;
+
+  friend class CollectionTreeInfoGetters;
 
 #ifndef EMBEDED_TYPE
   typedef NodePointerHashMap<store::Item_t> NodeTypeMap;
@@ -228,7 +227,7 @@ public:
   
   const TreeId& getTreeId() const { return theTreeId; }
 
-  void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
+  void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo);
 
   void attachToCollection(
       simplestore::Collection* aCollection,
@@ -251,6 +250,12 @@ public:
   {
     ZORBA_ASSERT(theCollectionInfo);
     return theCollectionInfo->getPosition();
+  }
+
+  void setPosition(const xs_integer& pos) const
+  {
+    ZORBA_ASSERT(theCollectionInfo);
+    return theCollectionInfo->setPosition(pos);
   }
 
 public:
@@ -543,6 +548,8 @@ public:
   }
 
   const xs_integer& getPosition() const { return getTree()->getPosition(); }
+
+  void setPosition(const xs_integer& pos) { getTree()->setPosition(pos); }
 
   void setId(XmlTree* tree, const OrdPathStack* op);
 

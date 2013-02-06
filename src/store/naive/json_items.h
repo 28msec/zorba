@@ -138,6 +138,12 @@ public:
     return theCollectionInfo->getPosition();
   }
   
+  void setPosition(const xs_integer& pos)
+  {
+    ZORBA_ASSERT(theCollectionInfo);
+    theCollectionInfo->setPosition(pos); 
+  }
+
   // store API
 
   const store::Collection* getCollection() const
