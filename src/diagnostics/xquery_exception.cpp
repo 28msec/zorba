@@ -24,7 +24,6 @@
 #include "util/uri_util.h"
 
 // local
-#include "assert.h"
 #include "dict.h"
 #include "xquery_exception.h"
 
@@ -93,7 +92,8 @@ void XQueryException::set_data( char const *uri,
                                 column_type col,
                                 line_type line_end,
                                 column_type col_end ) {
-  ZORBA_ASSERT( uri && *uri );
+  if ( !uri || !*uri )
+    uri = source_loc_.file();
   applied_loc_.set( uri, line, col, line_end, col_end );
 }
 
@@ -140,7 +140,10 @@ ostream& XQueryException::print( ostream &o ) const {
 
     if ( has_data() ) {
       o << " (" << diagnostic::dict::lookup( ZED( In ) ) << ' ';
-      print_uri( o, data_uri() );
+      if ( data_uri() && ::strcmp( data_uri(), source_uri() ) != 0 ) {
+        if ( print_uri( o, applied_uri() ) )
+          o << ':';
+      }
       o << ':' << data_line();
       if ( data_column() )
         o << ',' << data_column();
