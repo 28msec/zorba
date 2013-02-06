@@ -436,8 +436,8 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
       ZORBA_ASSERT(item->getCollection() == this);
       ZORBA_ASSERT(item->isStructuredItem());
 
-      StructuredItem* lStructuredItem = static_cast<StructuredItem*>(item);
-      lStructuredItem->detachFromCollection();
+      StructuredItem* structuredItem = static_cast<StructuredItem*>(item);
+      structuredItem->detachFromCollection();
 
       theTrees.erase(theTrees.begin() + pos);
     }
@@ -453,6 +453,19 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
 void SimpleCollection::removeAll()
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
+
+  csize numTrees = theTrees.size();
+
+  for (csize i = 0; i < numTrees; ++i)
+  {
+    store::Item* item = theTrees[i].getp();
+
+    ZORBA_ASSERT(item->getCollection() == this);
+    ZORBA_ASSERT(item->isStructuredItem());
+
+    StructuredItem* structuredItem = static_cast<StructuredItem*>(item);
+    structuredItem->detachFromCollection();
+  }
 
   theTrees.clear();
 }
@@ -477,11 +490,11 @@ void SimpleCollection::adjustTreePositions()
 ********************************************************************************/
 SimpleCollection::CollectionIter::CollectionIter(
     SimpleCollection* collection,
-    const xs_integer& aSkip)
+    const xs_integer& skip)
   :
   theCollection(collection),
   theHaveLock(false),
-  theSkip(aSkip)
+  theSkip(to_xs_unsignedLong(skip))
 {
 }
 
@@ -509,7 +522,7 @@ void SimpleCollection::CollectionIter::skip()
   }
   else
   {
-    theIterator += to_xs_long(theSkip);
+    theIterator += theSkip;
   }
 }
 

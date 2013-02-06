@@ -83,7 +83,7 @@ public:
     checked_vector<store::Item_t>::iterator theIterator;
     checked_vector<store::Item_t>::iterator theEnd;
     bool                                    theHaveLock;
-    xs_integer                              theSkip;
+    csize                                   theSkip;
 
   public:
     CollectionIter(SimpleCollection* collection, const xs_integer& skip);
