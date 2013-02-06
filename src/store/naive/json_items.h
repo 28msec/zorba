@@ -22,6 +22,8 @@
 #include <zorba/config.h>
 #include "util/unordered_map.h"
 
+#include "diagnostics/assert.h"
+
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
 
@@ -129,6 +131,12 @@ public:
   }
 
   virtual long getCollectionTreeRefCount() const;
+
+  const xs_integer& getPosition() const
+  {
+    ZORBA_ASSERT(theCollectionInfo);
+    return theCollectionInfo->getPosition();
+  }
   
   // store API
 

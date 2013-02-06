@@ -249,10 +249,7 @@ public:
 
   const xs_integer& getPosition() const
   {
-    if (!theCollectionInfo)
-    {
-      return xs_integer::zero();
-    }
+    ZORBA_ASSERT(theCollectionInfo);
     return theCollectionInfo->getPosition();
   }
 

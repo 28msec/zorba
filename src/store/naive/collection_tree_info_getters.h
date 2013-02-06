@@ -51,37 +51,10 @@ public:
     return NULL;
   }
 
-  static const xs_integer& getPosition(const store::Item* lItem)
-  {
-    if (lItem->isNode())
-    {
-      const simplestore::XmlNode* lNode =
-          static_cast<const simplestore::XmlNode*>(lItem);
-      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theCollectionInfo;
-      return lInfo ? lInfo->getPosition() : xs_integer::zero();
-    }
-    if (lItem->isJSONItem())
-    {
-      const simplestore::json::JSONItem* lJSON =
-          static_cast<const simplestore::json::JSONItem*>(lItem);
-      CollectionTreeInfo* lInfo = lJSON->theCollectionInfo;
-      return lInfo ? lInfo->getPosition() : xs_integer::zero();
-    }
-    assert(false);
-    return xs_integer::zero();
-  }
-
   static StructuredItem* getRoot(const simplestore::XmlTree* aTree)
   {
     CollectionTreeInfoWithoutTreeId* lInfo = aTree->theCollectionInfo;
     return lInfo ? lInfo->getRoot() : NULL;
-  }
-
-  static const xs_integer& getPosition(const simplestore::XmlTree* aTree)
-  {
-    static xs_integer lDummy(-1);
-    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theCollectionInfo;
-    return lInfo ? lInfo->getPosition() : lDummy;
   }
 };
 

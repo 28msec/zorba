@@ -58,6 +58,10 @@ public:
   // (not to be called on a root - use functions above if root).
   virtual void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo) = 0;
 
+  // Assuming the tree T this node belongs to is in a collection, return the
+  // position of T within its containing collection. 
+  virtual const xs_integer& getPosition() const = 0;
+
   // Returns total number of outstanding pointers to the tree (for garbage
   // collection purposes).
   virtual long getCollectionTreeRefCount() const = 0;

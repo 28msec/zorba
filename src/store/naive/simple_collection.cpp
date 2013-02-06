@@ -29,7 +29,6 @@
 #ifdef ZORBA_WITH_JSON
 #  include "json_items.h"
 #endif
-#include "collection_tree_info_getters.h"
 
 #include "zorbatypes/numconversions.h"
 
@@ -397,7 +396,6 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
   
   if (lStructuredItem->isNode())
   {
-    assert(dynamic_cast<const XmlNode*>(item));
     const XmlNode* lNode = static_cast<const XmlNode*>(item);
     if (lNode->getTree()->getRoot() != lNode)
     {
@@ -414,16 +412,15 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
 
   if (item->isNode())
   {
-    assert(dynamic_cast<const XmlNode*>(item));
-    const XmlNode* lNode = static_cast<const XmlNode*>(item);
+    const XmlNode* node = static_cast<const XmlNode*>(item);
   
-    position = CollectionTreeInfoGetters::getPosition(lNode);
+    position = node->getPosition();
 
     csize pos = to_xs_unsignedInt(position);
 
     if (pos < theTrees.size() &&
         theTrees[pos]->isNode() &&
-        BASE_NODE(theTrees[pos])->getTreeId() == lNode->getTreeId())
+        BASE_NODE(theTrees[pos])->getTreeId() == node->getTreeId())
     {
       return true;
     }
