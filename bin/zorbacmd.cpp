@@ -107,13 +107,17 @@ URIMapperSerializationCallback theSerializationCallback;
 ********************************************************************************/
 static void print_exception( ZorbaException const &e,
                              ZorbaCMDProperties const &props ) {
+  using namespace std;
+
   if ( props.printErrorsAsXml() )
-    std::cerr <<
-      (props.indent() ?
-        ZorbaException::format_xml_indented : ZorbaException::format_xml);
+    if ( props.indent() )
+      cerr << ZorbaException::format_xml_indented;
+    else
+      cerr << ZorbaException::format_xml;
   else
-    std::cerr << ZorbaException::format_text;
-  std::cerr << e << std::endl;
+    cerr << ZorbaException::format_text;
+
+  cerr << e << endl;
 }
 
 /*******************************************************************************
