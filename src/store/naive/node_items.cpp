@@ -47,7 +47,6 @@
 #include "item_iterator.h"
 #include "dataguide.h"
 #include "node_factory.h"
-#include "collection_tree_info_getters.h"
 
 #include "util/stl_util.h"
 #include "util/string_util.h"
@@ -82,7 +81,8 @@ XmlTree::XmlTree()
   ,
   theTypesMap(NULL)
 #endif
-{}
+{
+}
 
 
 XmlTree::XmlTree(XmlNode* root, const TreeId& id)
@@ -100,24 +100,7 @@ XmlTree::XmlTree(XmlNode* root, const TreeId& id)
   ,
   theTypesMap(NULL)
 #endif
-{}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-ulong XmlTree::getCollectionId() const
 {
-  if (!theCollectionInfo)
-  {
-    return 0;
-  }
-  Collection *lCollection = theCollectionInfo->getCollection();
-  if (!lCollection)
-  {
-    return 0;
-  }
-  return lCollection->getId();
 }
 
 
@@ -1916,8 +1899,7 @@ DocumentNode::DocumentNode(
   theDocUri(docUri)
 {
   STORE_TRACE1("{\nConstructing doc node " << this << " tree = "
-              << CollectionTreeInfoGetters::getTreeId(this)
-              << ":" << getTree()
+              << getTreeId() << ":" << getTree()
               << " doc uri = " << docUri);
 }
 
@@ -2278,8 +2260,7 @@ ElementNode::ElementNode(
 
   STORE_TRACE1("Constructed element node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << CollectionTreeInfoGetters::getTreeId(this)
-              << ":" << getTree()
+              << " tree = " << getTreeId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " name = " << theName->getStringValue()
               << " type = " << getType()->getStringValue());
@@ -3762,8 +3743,7 @@ AttributeNode::AttributeNode(
 
   STORE_TRACE1("Constructed attribute node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << CollectionTreeInfoGetters::getTreeId(this)
-              << ":" << getTree()
+              << " tree = " << getTreeId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " name = " << theName->getStringValue()
               << " value = " << getStringValue());
@@ -4210,8 +4190,7 @@ TextNode::TextNode(
 #else
   STORE_TRACE1("Constructed text node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << CollectionTreeInfoGetters::getTreeId(this)
-              << ":" << getTree()
+              << " tree = " << getTreeId() << ":" << getTree()
               << " content = " << getText());
 #endif
 }
@@ -4910,8 +4889,7 @@ PiNode::PiNode(
 
   STORE_TRACE1("Constructed pi node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << CollectionTreeInfoGetters::getTreeId(this)
-              << ":" << getTree()
+              << " tree = " << getTreeId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " target = " << theTarget);
 }
 
@@ -5054,8 +5032,7 @@ CommentNode::CommentNode(
 
   STORE_TRACE1("Constructed comment node " << this << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << CollectionTreeInfoGetters::getTreeId(this)
-              << ":" << getTree()
+              << " tree = " << getTreeId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " content = "
               << theContent);
 }

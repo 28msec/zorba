@@ -23,13 +23,6 @@ namespace zorba
 namespace simplestore
 {
 
-const store::Collection* StructuredItem::getCollection() const
-{
-  simplestore::Collection* lSimpleCollection =
-      CollectionTreeInfoGetters::getCollection(this);
-  return static_cast<store::Collection*>(lSimpleCollection);
-};
-
 bool StructuredItem::isInSubtreeOf(const store::Item_t& anItem) const
 {
   if (!anItem->isStructuredItem())

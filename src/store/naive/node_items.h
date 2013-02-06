@@ -226,6 +226,8 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
   
+  const TreeId& getTreeId() const { return theTreeId; }
+
   void setCollectionTreeInfo(CollectionTreeInfo* lTreeInfo);
 
   void attachToCollection(
@@ -235,12 +237,14 @@ public:
 
   void detachFromCollection();
 
-  // Returns 0 if not in a collection.
-  ulong getCollectionId() const;
-  
-  const TreeId& getTreeId() const
+  ulong getCollectionId() const
   {
-    return theTreeId;
+    return (theCollectionInfo ? theCollectionInfo->getCollection()->getId() : 0);
+  }
+
+  const store::Collection* getCollection() const
+  {
+    return (theCollectionInfo ? theCollectionInfo->getCollection() : NULL);
   }
 
   const xs_integer& getPosition() const
@@ -461,8 +465,7 @@ public:
   const store::Collection* getCollection() const
   {
     assert(!isConnectorNode());
-    const store::Collection* lResult = StructuredItem::getCollection();
-    return lResult;
+    return getTree()->getCollection();
   }
 
   virtual void getDocumentURI(zstring& uri) const
@@ -532,14 +535,17 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  XmlNode* getRoot() const { return getTree()->getRoot(); }
+  const TreeId& getTreeId() const { return getTree()->getTreeId(); }
 
+  XmlNode* getRoot() const { return getTree()->getRoot(); }
 
   ulong getCollectionId() const
   {
     assert(!isConnectorNode());
     return getTree()->getCollectionId(); 
   }
+
+  const xs_integer& getPosition() const { return getTree()->getPosition(); }
 
   void setId(XmlTree* tree, const OrdPathStack* op);
 
@@ -1675,8 +1681,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      const TreeId& tree1 = this->getTree()->getTreeId();
-      const TreeId& tree2 = other->getTree()->getTreeId();
+      const TreeId& tree1 = this->getTreeId();
+      const TreeId& tree2 = other->getTreeId();
 
       if (tree1 < tree2)
         return -1;

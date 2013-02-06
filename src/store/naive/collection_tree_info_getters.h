@@ -31,45 +31,6 @@ namespace simplestore
 class CollectionTreeInfoGetters
 {
 public:
-  static simplestore::Collection* getCollection(const store::Item* lItem)
-  {
-    if (lItem->isNode())
-    {
-      const simplestore::XmlNode* lNode =
-          static_cast<const simplestore::XmlNode*>(lItem);
-      CollectionTreeInfoWithoutTreeId* lInfo = lNode->getTree()->theCollectionInfo;
-      return lInfo ? lInfo->getCollection() : NULL;
-    }
-    if (lItem->isJSONItem())
-    {
-      const simplestore::json::JSONItem* lJSON =
-          static_cast<const simplestore::json::JSONItem*>(lItem);
-      CollectionTreeInfo* lInfo = lJSON->theCollectionInfo;
-      return lInfo ? lInfo->getCollection() : NULL;
-    }
-    assert(false);
-    return NULL;
-  }
-
-  static const TreeId* getTreeId(const store::Item* lItem)
-  {
-    if (lItem->isNode())
-    {
-      const simplestore::XmlNode* lNode =
-          static_cast<const simplestore::XmlNode*>(lItem);
-      return &lNode->getTree()->theTreeId;
-    }
-    if (lItem->isJSONItem())
-    {
-      const simplestore::json::JSONItem* lJSON =
-          static_cast<const simplestore::json::JSONItem*>(lItem);
-      CollectionTreeInfo* lInfo = lJSON->theCollectionInfo;
-      return lInfo ? &lInfo->getTreeId() : NULL;
-    }
-    assert(false);
-    return NULL;
-  }
-
   static StructuredItem* getRoot(const store::Item* lItem)
   {
     if (lItem->isNode())
@@ -108,17 +69,6 @@ public:
     }
     assert(false);
     return xs_integer::zero();
-  }
-
-  static simplestore::Collection* getCollection(const simplestore::XmlTree* aTree)
-  {
-    CollectionTreeInfoWithoutTreeId* lInfo = aTree->theCollectionInfo;
-    return lInfo ? lInfo->getCollection() : NULL;
-  }
-
-  static const TreeId* getTreeId(const simplestore::XmlTree* aTree)
-  {
-    return &aTree->theTreeId;
   }
 
   static StructuredItem* getRoot(const simplestore::XmlTree* aTree)

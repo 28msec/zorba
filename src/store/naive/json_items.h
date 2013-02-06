@@ -132,6 +132,11 @@ public:
   
   // store API
 
+  const store::Collection* getCollection() const
+  {
+    return (theCollectionInfo ? theCollectionInfo->getCollection() : NULL);
+  }
+
   virtual bool equals(
       const store::Item* other,
       long timezone = 0,

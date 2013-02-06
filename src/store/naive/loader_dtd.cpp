@@ -37,7 +37,6 @@
 #include "loader.h"
 #include "simple_item_factory.h"
 #include "node_factory.h"
-#include "collection_tree_info_getters.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/URI.h"
 
@@ -197,8 +196,7 @@ store::Item_t FragmentXmlLoader::loadXml(
   if (docUri.empty())
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-"
-              << CollectionTreeInfoGetters::getTreeId(theTree);
+    uristream << "zorba://internalDocumentURI-" << theTree->getTreeId();
     theDocUri = uristream.str();
   }
   else
@@ -788,8 +786,7 @@ store::Item_t DtdXmlLoader::loadXml(
   if (docUri.empty())
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-"
-              << CollectionTreeInfoGetters::getTreeId(theTree);
+    uristream << "zorba://internalDocumentURI-" << theTree->getTreeId();
     theDocUri = uristream.str();
   }
   else

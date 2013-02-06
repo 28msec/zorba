@@ -32,19 +32,14 @@ class Collection;
 class StructuredItem : public store::Item
 {
 public:
-  StructuredItem(ItemKind k)
-  : Item(k)
-  {}
-  StructuredItem()
-  : Item()
-  {}
+  StructuredItem(ItemKind k) : Item(k) {}
+
+  StructuredItem() : Item() {}
 
   //--------------------- Item API ---------------------------------------------
   
   // Tells if this item is in the subtree starting at the supplied item.
   virtual bool isInSubtreeOf(const store::Item_t& anItem) const;
-  
-  virtual const store::Collection* getCollection() const;
   
   virtual bool isRoot() const;
 

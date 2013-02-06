@@ -423,8 +423,7 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
 
     if (pos < theTrees.size() &&
         theTrees[pos]->isNode() &&
-        CollectionTreeInfoGetters::getTreeId(theTrees[pos]) ==
-            CollectionTreeInfoGetters::getTreeId(lNode))
+        BASE_NODE(theTrees[pos])->getTreeId() == lNode->getTreeId())
     {
       return true;
     }
