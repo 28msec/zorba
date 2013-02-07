@@ -67,8 +67,9 @@ Zorba specific features presented in the following are declared in this namespac
 <li><b>scripting:</b> This local name can be used to enable or disable the 
 Zorba Scripting Extension. Per default, the feature is enabled.
 </li>
-<li><b>xqddf:</b> The <tt>xqddf</tt> local name refers to the Zorba specific
-XQuery Data Definition Facility. The feature is enabled by default.
+<li><b>ddl:</b> The <tt>ddl</tt> local name refers to the static
+(language-level) Data Description Language portion of the \ref xqddf.
+The feature is enabled by default.
 </li>
 <li><b>trace:</b> The 
 <a href="http://www.w3.org/TR/xpath-functions-30/#func-trace">fn:trace</a> 
@@ -86,6 +87,20 @@ DTD validation when parsing resources retrieved by
 <a href="http://www.w3.org/TR/xpath-functions-30/#func-doc">fn:doc</a>. DTD 
 validation is disabled by default.
 </li>
+<li><b>http-uri-resolution:</b> When resolving URIs for schema and module
+import statements, Zorba always first attempts to map the URI to a local
+filesystem location (see \ref builtin_uri_resolver). As a fallback, Zorba
+will then by default attempt to use HTTP, HTTPS, or FTP (depending on the
+URI scheme) to download the resource from the internet. The local name
+<tt>http-uri-resolution</tt> can be used to enable or disable this network
+fallback. By default it is enabled.
+\note Because XQuery options must appear in queries after import statements,
+unfortunately the <tt>http-uri-resolution</tt> option can have no effect if
+it is specified inside query text. It must be specified using the C++ API
+or a Zorba command-line option. An error will be raised if this option is
+specified inside query text to avoid confusion.
+\note Also note that, unlike other features, this feature is always set or
+unset Zorba-wide.
 </ul>
 
 
@@ -490,5 +505,27 @@ declare function sctx:function-annotations(
   $name as xs:QName,
   $arity as xs:integer) as xs:QName* external;
 \endcode
+
+\section pragma_introduction Extension Expressions
+
+An extension expression consists of one or more pragmas, followed by an expression enclosed in curly braces.
+A pragma might be used to modify the behavior or semantics of the expression enclosed in curly braces.
+Pragmas are denoted by the delimiters (# and #), and consists of an identifying EQName.
+Zorba recognizes pragmas having the namespace <tt>http://www.zorba-xquery.com/extensions</tt>.
+Specifically, Zorba recognizes the following pragmas:
+
+<ul>
+  <li><b>no-copy</b> In order to indicate that a node that should be inserted into a collection does not need to be copied before inserting it. Not copying a node improves performance. However, the user needs to make sure that the node does not have a parent and is not modified in any other expression. For example, in the following example snippet, the node refered to by <tt>$n</tt> will not be copied before insertion into the collection.
+\code
+import module namespace db = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+
+declare namespace ext = "http://www.zorba-xquery.com/extensions";
+
+let $n := <a/>
+return (# ext:no-copy #) { $n is  db:apply-insert-last(xs:QName("local:bar"), $n) }
+\endcode
+  </li>
+</ul>
+
 
 */

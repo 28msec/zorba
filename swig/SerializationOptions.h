@@ -34,6 +34,7 @@
 class SerializationOptions
 {
 friend class Item;
+friend class XQuery;
 
 public:
   typedef enum 

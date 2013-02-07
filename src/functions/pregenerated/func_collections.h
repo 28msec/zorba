@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,6 +146,8 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
   bool isSource() const { return true; }
 
   FunctionConsts::AnnotationValue producesDistinctNodes() const 
@@ -217,6 +219,8 @@ public:
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
+  void processPragma(expr*, const std::vector<pragma*>&) const;
+
   CODEGEN_DECL();
 };
 
@@ -237,6 +241,8 @@ public:
   bool accessesDynCtx() const { return true; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  void processPragma(expr*, const std::vector<pragma*>&) const;
 
   CODEGEN_DECL();
 };
@@ -259,6 +265,8 @@ public:
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
+  void processPragma(expr*, const std::vector<pragma*>&) const;
+
   CODEGEN_DECL();
 };
 
@@ -280,6 +288,8 @@ public:
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
 
+  void processPragma(expr*, const std::vector<pragma*>&) const;
+
   CODEGEN_DECL();
 };
 
@@ -300,6 +310,8 @@ public:
   bool accessesDynCtx() const { return true; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
+
+  void processPragma(expr*, const std::vector<pragma*>&) const;
 
   CODEGEN_DECL();
 };
@@ -324,6 +336,8 @@ public:
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
+  void processPragma(expr*, const std::vector<pragma*>&) const;
+
   CODEGEN_DECL();
 };
 
@@ -346,6 +360,8 @@ public:
   bool propagatesInputNodes(expr* fo, csize producer) const;
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  void processPragma(expr*, const std::vector<pragma*>&) const;
 
   CODEGEN_DECL();
 };
@@ -370,6 +386,8 @@ public:
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
+  void processPragma(expr*, const std::vector<pragma*>&) const;
+
   CODEGEN_DECL();
 };
 
@@ -393,6 +411,8 @@ public:
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
 
+  void processPragma(expr*, const std::vector<pragma*>&) const;
+
   CODEGEN_DECL();
 };
 
@@ -415,6 +435,8 @@ public:
   bool propagatesInputNodes(expr* fo, csize producer) const;
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 2; }
+
+  void processPragma(expr*, const std::vector<pragma*>&) const;
 
   CODEGEN_DECL();
 };
@@ -482,6 +504,29 @@ public:
   bool accessesDynCtx() const { return true; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-dml:edit
+class static_collections_dml_edit : public function
+{
+public:
+  static_collections_dml_edit(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  void processPragma(expr*, const std::vector<pragma*>&) const;
 
   CODEGEN_DECL();
 };

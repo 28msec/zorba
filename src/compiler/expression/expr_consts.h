@@ -21,6 +21,66 @@ namespace zorba
 {
 
 
+enum PromoteErrorKind
+{
+  PROMOTE_FUNC_RETURN,
+  PROMOTE_FUNC_PARAM,
+  PROMOTE_TYPE_PROMOTION,
+  PROMOTE_JSONIQ_ARRAY_SELECTOR,
+  PROMOTE_JSONIQ_OBJECT_SELECTOR,
+  PROMOTE_JSONIQ_SELECTOR,
+  PROMOTE_INDEX_KEY
+};
+
+
+enum TreatErrorKind
+{
+  TREAT_FUNC_RETURN,
+  TREAT_FUNC_PARAM,
+  TREAT_TYPE_MATCH,
+  TREAT_EXPR,
+  TREAT_INDEX_DOMAIN,
+  TREAT_INDEX_KEY,
+  TREAT_PATH_STEP,
+  TREAT_PATH_DOT,
+  TREAT_MULTI_VALUED_GROUPING_KEY,
+  TREAT_JSONIQ_VALUE,
+  TREAT_JSONIQ_UPDATE_TARGET,
+  TREAT_JSONIQ_OBJECT_UPDATE_TARGET,
+  TREAT_JSONIQ_OBJECT_UPDATE_CONTENT,
+  TREAT_JSONIQ_ARRAY_UPDATE_TARGET,
+  TREAT_JSONIQ_OBJECT_UPDATE_VALUE
+};
+
+
+enum WindowKind
+{
+  tumbling_window,
+  sliding_window
+};
+
+
+enum TextConstructorType
+{
+  text_constructor,
+  comment_constructor
+};
+
+
+enum FlowCtlAction
+{
+  FLOW_BREAK,
+  FLOW_CONTINUE
+};
+
+
+enum DocOrderMode
+{
+  doc_ordered,
+  doc_unordered
+};
+
+
 enum axis_kind_t
 {
   axis_kind_self = 0,
@@ -105,18 +165,34 @@ enum BoolAnnotationValue
 };
 
 
+/*******************************************************************************
+  ATTENTION !!! 
+  The ordering of the enum values in IKMPORTANT. DO NOT CHANGE IT.
+  ATTENTION !!!
+********************************************************************************/
 class CompareConsts
 {
 public:
   enum CompareType
   {
-    UNKNOWN,
-    VALUE_EQUAL, GENERAL_EQUAL, NODE_EQUAL,
-    VALUE_NOT_EQUAL, GENERAL_NOT_EQUAL, NODE_NOT_EQUAL,
-    VALUE_LESS, GENERAL_LESS,
-    VALUE_LESS_EQUAL, GENERAL_LESS_EQUAL,
-    VALUE_GREATER, GENERAL_GREATER,
-    VALUE_GREATER_EQUAL, GENERAL_GREATER_EQUAL
+    UNKNOWN = 0,
+
+    VALUE_EQUAL           = 1,
+    GENERAL_EQUAL         = 2,
+    NODE_EQUAL            = 3,
+    VALUE_NOT_EQUAL       = 4,
+    GENERAL_NOT_EQUAL     = 5,
+    NODE_NOT_EQUAL        = 6,
+
+    VALUE_LESS            = 7,
+    GENERAL_LESS          = 8,
+    VALUE_LESS_EQUAL      = 9,
+    GENERAL_LESS_EQUAL    = 10,
+
+    VALUE_GREATER         = 11,
+    GENERAL_GREATER       = 12,
+    VALUE_GREATER_EQUAL   = 13,
+    GENERAL_GREATER_EQUAL = 14
   };
 };
 

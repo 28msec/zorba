@@ -392,7 +392,7 @@ void PULImpl::addInsertChildren(
 
 ********************************************************************************/
 void PULImpl::addInsertAttributes(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& target,
     std::vector<store::Item_t>& attrs)
 {
@@ -401,16 +401,16 @@ void PULImpl::addInsertAttributes(
   ElementNode* n = ELEM_NODE(target);
 
   csize numAttrs = attrs.size();
-  for (csize i = 0; i < numAttrs; i++)
+  for (csize i = 0; i < numAttrs; ++i)
   {
-    n->checkNamespaceConflict(attrs[i]->getNodeName(), err::XUDY0023);
+    n->checkNamespaceConflict(attrs[i]->getNodeName(), loc);
   }
 
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(n, updates);
 
   UpdInsertAttributes* upd = GET_PUL_FACTORY().
-  createUpdInsertAttributes(pul, aQueryLoc, target, attrs);
+  createUpdInsertAttributes(pul, loc, target, attrs);
 
   pul->theDoFirstList.push_back(upd);
 
@@ -431,7 +431,7 @@ void PULImpl::addInsertAttributes(
 
 ********************************************************************************/
 void PULImpl::addReplaceNode(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& target,
     std::vector<store::Item_t>& newNodes)
 {
@@ -456,19 +456,19 @@ void PULImpl::addReplaceNode(
       csize numNewAttrs = newNodes.size();
       for (csize i = 0; i < numNewAttrs; ++i)
       {
-        elemParent->checkNamespaceConflict(newNodes[i]->getNodeName(), err::XUDY0023); 
+        elemParent->checkNamespaceConflict(newNodes[i]->getNodeName(), loc); 
       }
     }
 
     upd = GET_PUL_FACTORY().
-          createUpdReplaceAttribute(pul, aQueryLoc, parent, target, newNodes);
+          createUpdReplaceAttribute(pul, loc, parent, target, newNodes);
 
     kind = store::UpdateConsts::UP_REPLACE_ATTRIBUTE;
   }
   else
   {
     upd = GET_PUL_FACTORY().
-          createUpdReplaceChild(pul, aQueryLoc, parent, target, newNodes);
+          createUpdReplaceChild(pul, loc, parent, target, newNodes);
 
     kind = store::UpdateConsts::UP_REPLACE_CHILD;
   }
@@ -614,7 +614,7 @@ void PULImpl::addReplaceValue(
 
 ********************************************************************************/
 void PULImpl::addRename(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& target,
     store::Item_t& newName)
 {
@@ -632,10 +632,9 @@ void PULImpl::addRename(
   case store::StoreConsts::elementNode:
   {
     ElementNode* elemTarget = ELEM_NODE(target);
-    elemTarget->checkNamespaceConflict(newName.getp(), err::XUDY0023);
+    elemTarget->checkNamespaceConflict(newName.getp(), loc);
 
-    upd = GET_PUL_FACTORY().
-    createUpdRenameElem(pul, aQueryLoc, target, newName);
+    upd = GET_PUL_FACTORY().createUpdRenameElem(pul, loc, target, newName);
     break;
   }
   case store::StoreConsts::attributeNode:
@@ -643,16 +642,16 @@ void PULImpl::addRename(
     ElementNode* elemParent = reinterpret_cast<ElementNode*>(n->theParent);
 
     if (elemParent != NULL)
-      elemParent->checkNamespaceConflict(newName.getp(), err::XUDY0023);
+      elemParent->checkNamespaceConflict(newName.getp(), loc);
 
-    upd = GET_PUL_FACTORY().createUpdRenameAttr(pul, aQueryLoc, target, newName);
+    upd = GET_PUL_FACTORY().createUpdRenameAttr(pul, loc, target, newName);
     break;
   }
   case store::StoreConsts::piNode:
   {
     zstring tmp;
     newName->getStringValue2(tmp);
-    upd = GET_PUL_FACTORY().createUpdRenamePi(pul, aQueryLoc, target, tmp);
+    upd = GET_PUL_FACTORY().createUpdRenamePi(pul, loc, target, tmp);
     break;
   }
   default:
@@ -670,7 +669,7 @@ void PULImpl::addRename(
   else
   {
     csize numUpdates = updates->size();
-    for (csize i = 0; i < numUpdates; i++)
+    for (csize i = 0; i < numUpdates; ++i)
     {
       if (store::UpdateConsts::isRename((*updates)[i]->getKind()))
       {
@@ -832,13 +831,12 @@ void PULImpl::addCreateCollection(
     const QueryLoc* loc,
     store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
-    const store::Item_t& nodeType,
     bool isDynamic)
 {
   CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
   pul->theCreateCollectionList.push_back(GET_PUL_FACTORY().
-  createUpdCreateCollection(pul, loc, name, annotations, nodeType, isDynamic));
+  createUpdCreateCollection(pul, loc, name, annotations, isDynamic));
 }
 
 
@@ -935,6 +933,25 @@ void PULImpl::addDeleteFromCollection(
 }
 
 
+void PULImpl::addEditInCollection(
+    const QueryLoc* loc,
+    store::Item_t& name,
+    store::Item_t& target,
+    store::Item_t& content,
+    bool isDynamic)
+{
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
+
+  pul->theEditInCollectionList.push_back(
+      GET_PUL_FACTORY().createUpdEditInCollection(
+          pul,
+          loc,
+          name,
+          target,
+          content,
+          isDynamic));
+}
+  
 void PULImpl::addTruncateCollection(
     const QueryLoc* aQueryLoc,
     store::Item_t& name,
@@ -1100,6 +1117,31 @@ void PULImpl::addRemoveFromHashMap(
 
 
 #ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addJSONObjectInsert(
+     const QueryLoc* loc,
+     store::Item_t& target,
+     store::Item_t& content)
+{
+  assert(content->isJSONObject());
+  assert(dynamic_cast<json::JSONObject*>(content.getp()));
+  json::JSONObject* lObject = static_cast<json::JSONObject*>(content.getp());
+  store::Iterator_t lIterator = lObject->getObjectKeys();
+  lIterator->open();
+  store::Item_t lKey;
+  std::vector<store::Item_t> lKeys;
+  std::vector<store::Item_t> lValues;
+  while(lIterator->next(lKey))
+  {
+    lKeys.push_back(lKey);
+    lValues.push_back(lObject->getObjectValue(lKey));
+  }
+  lIterator->close();
+  this->addJSONObjectInsert(loc, target, lKeys, lValues);
+}
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1708,6 +1750,10 @@ void PULImpl::mergeUpdates(store::Item* other)
       mergeCollectionUpdateLists(thisPul,
                                  thisPul->theInsertIntoCollectionList,
                                  otherPul->theInsertIntoCollectionList);
+
+      mergeCollectionUpdateLists(thisPul,
+                                 thisPul->theEditInCollectionList,
+                                 otherPul->theEditInCollectionList);
 
       mergeCollectionUpdateLists(thisPul,
                                  thisPul->theDeleteFromCollectionList,
@@ -2384,6 +2430,16 @@ void PULImpl::getIndicesToRefresh(
         pul->theInsertedDocs.push_back(upd->getNode(j));
     }
 
+    numCollUpdates = pul->theEditInCollectionList.size();
+
+    for (csize i = 0; i < numCollUpdates; ++i)
+    {
+      UpdEditInCollection* upd = static_cast<UpdEditInCollection*>
+                           (pul->theEditInCollectionList[i]);
+
+      pul->theModifiedDocs.insert(upd->getTarget());
+    }
+
     numCollUpdates = pul->theDeleteFromCollectionList.size();
 
     for (csize i = 0; i < numCollUpdates; ++i)
@@ -2667,6 +2723,7 @@ CollectionPul::~CollectionPul()
 
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
+  cleanList(theEditInCollectionList);
   cleanList(theDeleteFromCollectionList);
   cleanList(theTruncateCollectionList);
   cleanList(theDeleteCollectionList);
@@ -2713,6 +2770,7 @@ void CollectionPul::switchPul(PULImpl* pul)
 
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);
+  switchPulInPrimitivesList(theEditInCollectionList);
   switchPulInPrimitivesList(theDeleteFromCollectionList);
   switchPulInPrimitivesList(theTruncateCollectionList);
   switchPulInPrimitivesList(theDeleteCollectionList);
@@ -3570,6 +3628,7 @@ void CollectionPul::applyUpdates()
     // Apply collection primitives, except delete primitives
     applyList(theCreateCollectionList);
     applyList(theInsertIntoCollectionList);
+    applyList(theEditInCollectionList);
     applyList(theDeleteFromCollectionList);
 
     // Compute the after-delta for each incrementally maintained index.
@@ -3608,6 +3667,7 @@ void CollectionPul::undoUpdates()
   {
     undoList(theTruncateCollectionList);
     undoList(theDeleteFromCollectionList);
+    undoList(theEditInCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);
 

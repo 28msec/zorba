@@ -1,4 +1,4 @@
-import module namespace jn = "http://www.jsoniq.org/functions";
+import module namespace jn = "http://jsoniq.org/functions";
 
 let $j := ({ "product" : "broiler", "store number" : 1, "quantity" : 20  },
 { "product" : "toaster", "store number" : 2, "quantity" : 100 },

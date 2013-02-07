@@ -626,8 +626,13 @@ zstring UntypedAtomicItem::show() const
 /*******************************************************************************
   class QNameItem
 ********************************************************************************/
-QNameItem::QNameItem(const char* ns, const char* prefix, const char* local)
+QNameItem::QNameItem(
+    store::SchemaTypeCode t,
+    const char* ns,
+    const char* prefix,
+    const char* local)
   :
+  AtomicItem(t),
   theNormalizedQName(NULL),
   theIsInPool(false)
 {
@@ -635,8 +640,13 @@ QNameItem::QNameItem(const char* ns, const char* prefix, const char* local)
 }
 
 
-QNameItem::QNameItem(const zstring& ns, const zstring& prefix, const zstring& local)
+QNameItem::QNameItem(
+    store::SchemaTypeCode t,
+    const zstring& ns,
+    const zstring& prefix,
+    const zstring& local)
   :
+  AtomicItem(t),
   theNormalizedQName(NULL),
   theIsInPool(false)
 {
@@ -683,12 +693,19 @@ void QNameItem::free()
 bool QNameItem::equals(
     const store::Item* item,
     long timezone,
-    const XQPCollator* aCollation) const
+    const XQPCollator* collation) const
 {
-  assert(dynamic_cast<const QNameItem*>(item) != NULL);
+  if (item->getBaseItem() == NULL)
+  {
+    assert(dynamic_cast<const QNameItem*>(item) != NULL);
 
-  return (theNormalizedQName ==
-          static_cast<const QNameItem*>(item)->theNormalizedQName);
+    return (theNormalizedQName ==
+            static_cast<const QNameItem*>(item)->theNormalizedQName);
+  }
+  else
+  {
+    return this->equals(item->getBaseItem(), timezone, collation);
+  }
 }
 
 
@@ -795,14 +812,18 @@ zstring QNameItem::show() const
   return res;
 }
 
+
 /*******************************************************************************
   class NotationItem
 ********************************************************************************/
 
 NotationItem::NotationItem(
+    store::SchemaTypeCode t,
     const zstring& nameSpace,
     const zstring& prefix,
     const zstring& localName)
+  :
+  AtomicItem(t)
 {
   store::Item_t temp;
   GET_FACTORY().createQName(temp, nameSpace, prefix, localName);
@@ -810,7 +831,9 @@ NotationItem::NotationItem(
 }
 
 
-NotationItem::NotationItem(store::Item* qname)
+NotationItem::NotationItem(store::SchemaTypeCode t, store::Item* qname)
+  :
+  AtomicItem(t)
 {
   theQName = qname;
 }
@@ -1106,11 +1129,13 @@ bool AnyUriItem::inSameCollection(const store::Item_t& aOther) const
 ********************************************************************************/
 
 StructuralAnyUriItem::StructuralAnyUriItem(
+    store::SchemaTypeCode t,
     ulong collectionId,
     const TreeId& treeId, 
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
   :
+  AtomicItem(t),
   theCollectionId(collectionId),
   theTreeId(treeId),
   theNodeKind(nodeKind),
@@ -1120,7 +1145,9 @@ StructuralAnyUriItem::StructuralAnyUriItem(
 }
 
 
-StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
+StructuralAnyUriItem::StructuralAnyUriItem(store::SchemaTypeCode t, zstring& value)
+  :
+  AtomicItem(t)
 {
   if (value == "")
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI,
@@ -1869,9 +1896,12 @@ FTTokenIterator_t StringItem::getTokens(
   class StreamableStringItem
 ********************************************************************************/
 StreamableStringItem::StreamableStringItem(
+    store::SchemaTypeCode t,
     std::istream& aStream,
     StreamReleaser streamReleaser,
-    bool seekable) :
+    bool seekable) 
+  :
+  StringItem(t),
   theIstream(aStream),
   theIsMaterialized(false),
   theIsConsumed(false),
@@ -1882,7 +1912,10 @@ StreamableStringItem::StreamableStringItem(
 }
 
 StreamableStringItem::StreamableStringItem(
-    store::Item_t& aStreamableDependent) :
+    store::SchemaTypeCode t,
+    store::Item_t& aStreamableDependent)
+  :
+  StringItem(t),
   theIstream(aStreamableDependent->getStream()),
   theIsMaterialized(false),
   theIsConsumed(false),
@@ -2244,40 +2277,6 @@ void DateTimeItem::appendStringValue(zstring& buf) const
 }
 
 
-store::SchemaTypeCode DateTimeItem::getTypeCode() const
-{
-  switch (theValue.getFacet())
-  {
-  case DateTime::GYEARMONTH_FACET:
-    return store::XS_GYEAR_MONTH;
-
-  case DateTime::GYEAR_FACET:
-    return store::XS_GYEAR;
-
-  case DateTime::GMONTH_FACET:
-    return store::XS_GMONTH;
-
-  case DateTime::GMONTHDAY_FACET:
-    return store::XS_GMONTH_DAY;
-
-  case DateTime::GDAY_FACET:
-    return store::XS_GDAY;
-
-  case DateTime::DATE_FACET:
-    return store::XS_DATE;
-
-  case DateTime::TIME_FACET:
-    return store::XS_TIME;
-
-  case DateTime::DATETIME_FACET:
-    return store::XS_DATETIME;
-
-  default:
-    ZORBA_ASSERT(false);
-  }
-}
-
-
 store::Item* DateTimeItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[getTypeCode()];
@@ -2293,9 +2292,9 @@ bool DateTimeItem::equals(
   {
     return 0 == theValue.compare(&aItem->getDateTimeValue(), timezone);
   }
-  catch (InvalidTimezoneException const&)
+  catch (InvalidTimezoneException const &e)
   {
-    throw XQUERY_EXCEPTION(err::FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
   }
 }
 
@@ -2309,9 +2308,9 @@ long DateTimeItem::compare(
   {
     return theValue.compare(&other->getDateTimeValue(), timezone);
   }
-  catch (InvalidTimezoneException const&)
+  catch (InvalidTimezoneException const &e)
   {
-    throw XQUERY_EXCEPTION(err::FODT0003);
+    throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
   }
 }
 
@@ -2404,23 +2403,6 @@ void DurationItem::getStringValue2(zstring& val) const
 void DurationItem::appendStringValue(zstring& buf) const
 {
   buf += theValue.toString();
-}
-
-
-store::SchemaTypeCode DurationItem::getTypeCode() const
-{
-  switch (theValue.getFacet())
-  {
-  case Duration::DURATION_FACET:
-    return store::XS_DURATION;
-
-  case Duration::DAYTIMEDURATION_FACET:
-    return store::XS_DT_DURATION;
-
-  case Duration::YEARMONTHDURATION_FACET:
-  default:
-    return store::XS_YM_DURATION;
-  }
 }
 
 
@@ -2672,7 +2654,10 @@ xs_long IntegerItemImpl::getLongValue() const
   catch ( std::range_error const& )
   {
     RAISE_ERROR_NO_LOC(err::FORG0001,
-    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "long"));
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:integer",
+                 "xs:long"));
   }
 }
 
@@ -2686,7 +2671,10 @@ xs_unsignedInt IntegerItemImpl::getUnsignedIntValue() const
   catch ( std::range_error const& ) 
   {
     RAISE_ERROR_NO_LOC(err::FORG0001,
-    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "unsignedInt"));
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:integer",
+                 "xs:unsignedInt"));
   }
 }
 
@@ -2786,10 +2774,11 @@ xs_long NonPositiveIntegerItem::getLongValue() const
   }
   catch ( std::range_error const& )
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
-    );
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:nonPositiveInteger",
+                 "xs:long"));
   }
 }
 
@@ -2875,6 +2864,7 @@ bool NonNegativeIntegerItem::equals( const store::Item* other, long,
   }
 }
 
+
 store::Item* NonNegativeIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER];
@@ -2886,10 +2876,12 @@ xs_decimal NonNegativeIntegerItem::getDecimalValue() const
   return xs_decimal(theValue);
 }
 
+
 xs_integer NonNegativeIntegerItem::getIntegerValue() const
 {
   return xs_integer(theValue);
 }
+
 
 xs_long NonNegativeIntegerItem::getLongValue() const
 {
@@ -2897,14 +2889,16 @@ xs_long NonNegativeIntegerItem::getLongValue() const
   {
     return to_xs_long(theValue);
   }
-  catch ( std::range_error const& )
+  catch (const std::range_error& )
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
-    );
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:nonNegativeInteger",
+                 "xs:long"));
   }
 }
+
 
 zstring NonNegativeIntegerItem::getStringValue() const
 {
@@ -3711,6 +3705,7 @@ std::istream& StreamableBase64BinaryItem::getStream()
     std::streambuf * pbuf;
     pbuf = theIstream.rdbuf();
     pbuf->pubseekoff(0, std::ios::beg);
+    theIstream.clear();
   }
   theIsConsumed = true;
   return theIstream;

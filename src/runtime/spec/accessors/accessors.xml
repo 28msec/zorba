@@ -71,7 +71,7 @@
       </zorba:signature>
       
       <zorba:methods>
-        <zorba:mustCopyInputNodes value="true"/>
+        <zorba:mustCopyInputNodes value="false"/>
       </zorba:methods>
 
     </zorba:function>
@@ -140,7 +140,7 @@
       <zorba:isMap producer="0"/>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
-      <zorba:mustCopyInputNodes/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -173,7 +173,7 @@
     </zorba:signature>
 
     <zorba:methods>
-      <zorba:mustCopyInputNodes value="true"/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>
@@ -236,7 +236,7 @@
     </zorba:signature>
 
     <zorba:methods>
-      <zorba:mustCopyInputNodes value="true"/>
+      <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
 
   </zorba:function>

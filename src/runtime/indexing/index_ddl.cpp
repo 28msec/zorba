@@ -82,16 +82,7 @@ static void checkKeyType(
   xqtref_t searchKeyType = tm->create_value_type(searchKey);
   xqtref_t indexKeyType = (indexDecl->getKeyTypes())[keyNo];
 
-  if (indexKeyType != NULL &&
-      !TypeOps::is_subtype(tm, *searchKeyType, *indexKeyType))
-  {
-    RAISE_ERROR(err::XPTY0004, loc,
-    ERROR_PARAMS(ZED(SearchKeyTypeMismatch_234),
-                 *searchKeyType,
-                 indexDecl->getName()->getStringValue(),
-                 *indexKeyType));
-  }
-  else if (indexKeyType == NULL)
+  if (indexKeyType == NULL)
   {
     ZORBA_ASSERT(indexDecl->isGeneral());
 
@@ -112,6 +103,47 @@ static void checkKeyType(
                    *searchKeyType,
                    indexDecl->getName()->getStringValue()));
     }
+  }
+  else if (!TypeOps::is_subtype(tm, *searchKeyType, *indexKeyType))
+  {
+    store::SchemaTypeCode searchKeyTypeCode = searchKey->getTypeCode();
+
+    if (TypeOps::is_subtype(tm, *indexKeyType, *rtm.STRING_TYPE_ONE) &&
+        (searchKeyTypeCode == store::XS_UNTYPED_ATOMIC ||
+         searchKeyTypeCode == store::XS_ANY_URI))
+    {
+      return;
+    }
+
+    if (TypeOps::is_subtype(tm, *indexKeyType, *rtm.DOUBLE_TYPE_ONE))
+    {
+      if (TypeOps::is_subtype(searchKeyTypeCode, store::XS_DECIMAL))
+      {
+        GENV_STORE.getItemFactory()->
+        createDouble(searchKey, xs_double(searchKey->getDecimalValue()));
+      }
+      else if (TypeOps::is_subtype(searchKeyTypeCode, store::XS_FLOAT))
+      {
+        GENV_STORE.getItemFactory()->
+        createDouble(searchKey, xs_double(searchKey->getFloatValue()));
+      }
+
+      return;
+    }
+
+    if (TypeOps::is_subtype(tm, *indexKeyType, *rtm.FLOAT_TYPE_ONE) &&
+        TypeOps::is_subtype(searchKeyTypeCode, store::XS_DECIMAL))
+    {
+      GENV_STORE.getItemFactory()->
+      createDouble(searchKey, xs_float(searchKey->getDecimalValue()));
+      return;
+    }
+
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(SearchKeyTypeMismatch_234),
+                 *searchKeyType,
+                 indexDecl->getName()->getStringValue(),
+                 *indexKeyType));
   }
 }
 
@@ -134,7 +166,7 @@ static void createIndexSpec(
     if (keyTypes[i] != NULL)
     {
       const XQType& t = *keyTypes[i];
-      spec.theKeyTypes[i] = t.get_qname();
+      spec.theKeyTypes[i] = t.getQName();
     }
     spec.theCollations.push_back(keyModifiers[i].theCollation);
   }
@@ -242,23 +274,17 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0021_INDEX_NOT_DECLARED,
-      ERROR_PARAMS( qname->getStringValue() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
   if (GENV_STORE.getIndex(qname) != NULL)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDDY0022_INDEX_ALREADY_EXISTS,
-      ERROR_PARAMS( qname->getStringValue() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDDY0022_INDEX_ALREADY_EXISTS, loc,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
-  buildPlan = indexDecl->getBuildPlan(ccb, loc); 
+  buildPlan = indexDecl->getBuildPlan(loc); 
   
   planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL, 0, false, 0); 
 
@@ -266,7 +292,8 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  reinterpret_cast<store::PUL*>(result.getp())->addCreateIndex(&loc, qname, spec, planWrapper);
+  reinterpret_cast<store::PUL*>(result.getp())->
+  addCreateIndex(&loc, qname, spec, planWrapper);
 
   STACK_PUSH(true, state);
 
@@ -387,7 +414,7 @@ bool RefreshIndexIterator::nextImpl(
     );
   }
 
-  buildPlan = indexDecl->getBuildPlan(ccb, loc); 
+  buildPlan = indexDecl->getBuildPlan(loc); 
   
   planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL, 0, false, 0); 
 
@@ -566,12 +593,14 @@ ProbeIndexPointValueIterator::ProbeIndexPointValueIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool aCountOnly)
+    bool aCountOnly,
+    bool aSkip)
   : 
   NaryBaseIterator<ProbeIndexPointValueIterator,
                    ProbeIndexPointValueIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theCountOnly(aCountOnly)
+  theCountOnly(aCountOnly),
+  theSkip(aSkip)
 {
 }
 
@@ -588,6 +617,7 @@ void ProbeIndexPointValueIterator::serialize(::zorba::serialization::Archiver& a
 
   ar & theCheckKeyType;
   ar & theCountOnly;
+  ar & theSkip;
 }
 
 
@@ -603,6 +633,8 @@ bool ProbeIndexPointValueIterator::nextImpl(
   bool status;
   TypeManager* tm = theSctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
+  xs_integer lSkip = xs_integer::zero();
+  ulong numNonKeyParams = (theSkip ? 2 : 1);
 
   try
   {
@@ -622,15 +654,13 @@ bool ProbeIndexPointValueIterator::nextImpl(
         ERROR_PARAMS(qnameItem->getStringValue()));
       }
 
-      if (state->theIndexDecl->getNumKeyExprs() != numChildren-1)
+      if (state->theIndexDecl->getNumKeyExprs() != numChildren - numNonKeyParams)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(
-          qnameItem->getStringValue(),
-          "index",
-          numChildren-1,
-          state->theIndexDecl->getNumKeyExprs())
-        );
+        ERROR_PARAMS(qnameItem->getStringValue(),
+                     "index",
+                     numChildren - numNonKeyParams,
+                     state->theIndexDecl->getNumKeyExprs()));
       }
 
       state->theIndex = (state->theIndexDecl->isTemp() ?
@@ -649,7 +679,18 @@ bool ProbeIndexPointValueIterator::nextImpl(
 
     cond = state->theIndex->createCondition(store::IndexCondition::POINT_VALUE);
 
-    for (i = 1; i < numChildren; ++i) 
+    // read skip
+    if (theSkip)
+    {
+      store::Item_t lSkipItem;
+      status = consumeNext(lSkipItem, theChildren[1], planState);
+      ZORBA_ASSERT(status);
+      lSkip = lSkipItem->getIntegerValue();
+      if (lSkip < xs_integer::zero())
+        lSkip = xs_integer::zero();
+    }
+
+    for (i = numNonKeyParams; i < numChildren; ++i) 
     {
       if (!consumeNext(keyItem, theChildren[i], planState)) 
       {
@@ -659,11 +700,11 @@ bool ProbeIndexPointValueIterator::nextImpl(
 
       if (theCheckKeyType)
       {
-        checkKeyType(loc, tm, state->theIndexDecl, i-1, keyItem);
+        checkKeyType(loc, tm, state->theIndexDecl, i - numNonKeyParams, keyItem);
       }
 
       if (state->theIndexDecl->isGeneral() &&
-          (state->theIndexDecl->getKeyTypes())[i-1] == NULL)
+          (state->theIndexDecl->getKeyTypes())[i - numNonKeyParams] == NULL)
       {
         xqtref_t searchKeyType = tm->create_value_type(keyItem);
         
@@ -679,7 +720,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
     
     if (i == numChildren)
     {
-      state->theIterator->init(cond);
+      state->theIterator->init(cond, lSkip);
 
       if (!theCountOnly)
       {
@@ -942,12 +983,14 @@ ProbeIndexRangeValueIterator::ProbeIndexRangeValueIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool aCountOnly)
+    bool aCountOnly,
+    bool aSkip)
   : 
   NaryBaseIterator<ProbeIndexRangeValueIterator,
                    ProbeIndexRangeValueIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theCountOnly(aCountOnly)
+  theCountOnly(aCountOnly),
+  theSkip(aSkip)
 {
 }
 
@@ -965,6 +1008,7 @@ void ProbeIndexRangeValueIterator::serialize(::zorba::serialization::Archiver& a
 
   ar & theCheckKeyType;
   ar & theCountOnly;
+  ar & theSkip;
 }
 
 
@@ -979,6 +1023,8 @@ bool ProbeIndexRangeValueIterator::nextImpl(
   bool status;
   TypeManager* tm = theSctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
+  xs_integer lSkip = xs_integer::zero();
+  ulong lAmountNonKeyParams = (theSkip ? 2 : 1);
 
   try
   {
@@ -1004,21 +1050,22 @@ bool ProbeIndexRangeValueIterator::nextImpl(
         ERROR_PARAMS(qname->getStringValue()));
       }
 
-      if (numChildren < 7 || (numChildren-1) % 6 != 0)
+      if (numChildren < (6 + lAmountNonKeyParams) 
+       || (numChildren - lAmountNonKeyParams) % 6 != 0)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(qname->getStringValue(),
                      "index",
-                     numChildren-1,
+                     numChildren - lAmountNonKeyParams,
                      "multiple of 6"));
       }
 
-      if (indexDecl->getNumKeyExprs() * 6 < numChildren-1)
+      if (indexDecl->getNumKeyExprs() * 6 < numChildren-lAmountNonKeyParams)
       {
         RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
         ERROR_PARAMS(qname->getStringValue(),
                      "index",
-                     numChildren-1,
+                     numChildren-lAmountNonKeyParams,
                      indexDecl->getNumKeyExprs() * 6));
       }
 
@@ -1038,9 +1085,20 @@ bool ProbeIndexRangeValueIterator::nextImpl(
 
     cond = state->theIndex->createCondition(store::IndexCondition::BOX_VALUE);
 
+    // read skip
+    if (theSkip)
+    {
+      store::Item_t lSkipItem;
+      status = consumeNext(lSkipItem, theChildren[1], planState);
+      ZORBA_ASSERT(status);
+      lSkip = lSkipItem->getIntegerValue();
+      if (lSkip < xs_integer::zero())
+        lSkip = xs_integer::zero();
+    }
+
     ulong keyNo;
     ulong i;
-    for (i = 1, keyNo = 0; i < numChildren; i += 6, ++keyNo) 
+    for (i = lAmountNonKeyParams, keyNo = 0; i < numChildren; i += 6, ++keyNo) 
     {
       store::Item_t tempLeft;
       store::Item_t tempRight;
@@ -1126,7 +1184,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
       cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
     }
 
-    state->theIterator->init(cond);
+    state->theIterator->init(cond, lSkip);
     if (!theCountOnly)
     {
       state->theIterator->open();

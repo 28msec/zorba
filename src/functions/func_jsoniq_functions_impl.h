@@ -31,32 +31,10 @@ void populate_context_jsoniq_functions_impl(static_context* sctx);
 
 
 /*******************************************************************************
-  updating function jn:object-insert(
-      $o as object(),
-      $name1 as xs:integer, $value1 as item(), 
-      ..., 
-      $nameN as xs:integer, $valueN as item())
+  jn:object($objs as object()*) as object()
+
+  It performs object construction by unioning the input objects.
 ********************************************************************************/
-class op_zorba_object_insert : public function
-{
-public:
-  op_zorba_object_insert(const signature& sig)
-    : 
-    function(sig, FunctionConsts::OP_OBJECT_INSERT_N)
-  {
-
-  }
-
-  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const;
-
-  CODEGEN_DECL();
-};
-
-
 class jn_object : public function
 {
 public:
@@ -66,7 +44,7 @@ public:
   {
   }
 
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };

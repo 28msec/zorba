@@ -16,9 +16,10 @@
 
 #include "file.h"
 
-#include <memory>
 #include <fstream>
+#include <memory>
 #include <sstream>
+#include <stdexcept>
 
 #include <zorba/base64.h>
 #include <zorba/empty_sequence.h>
@@ -204,7 +205,7 @@ ReadTextFunction::evaluate(
   {
     try {
       lInStream.reset( new transcode::stream<std::ifstream>(lEncoding.c_str()) );
-    } catch (std::invalid_argument const& e)
+    } catch (std::invalid_argument const&)
     {
       raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
     }

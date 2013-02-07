@@ -39,6 +39,15 @@ public:
   typedef internal::diagnostic::location::column_type column_type;
 
   /**
+   * Whether to include the XQuery stack trace for the XQueryException that's
+   * printed to an ostream.
+   */
+  enum print_trace {
+    trace,
+    no_trace
+  };
+
+  /**
    * Copy-constructs an %XQueryException.
    *
    * @param from The %XQueryException to copy from.
@@ -58,6 +67,17 @@ public:
    */
   XQueryException& operator=( XQueryException const &from );
 
+  ////////// source file/line location ////////////////////////////////////////
+
+  /**
+   * Checks whether the XQuery source-code location has been set.
+   *
+   * @return Returns \c true only if said has been set.
+   */
+  bool has_source() const throw() {
+    return source_loc_;
+  }
+
   /**
    * Sets the XQuery source-code URI name, line, and column numbers.
    *
@@ -67,24 +87,14 @@ public:
    * @param line_end The source-code URI end line number.
    * @param column_end The source-code URI end column number.
    */
-  void set_source(
-      char const *uri,
-      line_type line,
-      column_type column = 0,
-      line_type line_end = 0,
-      column_type column_end = 0 );
+  void set_source( char const *uri,
+                   line_type line,
+                   column_type column = 0,
+                   line_type line_end = 0,
+                   column_type column_end = 0 );
 
   /**
-   * Checks whether the XQuery source location has been set.
-   *
-   * @return Returns \c true only if the source location has been set.
-   */
-  bool has_source() const throw() {
-    return source_loc_;
-  }
-
-  /**
-   * Gets the XQuery source URI containing the error.
+   * Gets the XQuery source-code URI containing the error.
    *
    * @return Returns said URI or the empty string if unset.
    */
@@ -128,6 +138,95 @@ public:
     return source_loc_.column_end();
   }
 
+  ////////// "applied at" file/line location //////////////////////////////////
+
+  /**
+   * Checks whether the XQuery "applied at" location has been set.
+   *
+   * @return Returns \c true only if the "applied at" location has been set.
+   */
+  bool has_applied() const throw() {
+    return applied_loc_;
+  }
+
+  /**
+   * Sets the XQuery source-code "applied at" URI name, line, and column
+   * numbers.
+   *
+   * @param uri The source-code "applied at" URI name.  If either the null
+   * pointer or the empty string, \c source_uri() is used.
+   * @param line The source-code "applied at" URI line number.
+   * @param column The source-code "applied at" URI column number.
+   * @param line_end The source-code "applied at" URI end line number.
+   * @param column_end The source-code "applied at" URI end column number.
+   */
+  void set_applied( char const *uri,
+                    line_type line,
+                    column_type column = 0,
+                    line_type line_end = 0,
+                    column_type column_end = 0 );
+
+  /**
+   * Gets the XQuery source-code "applied at" URI containing the error.
+   *
+   * @return Returns said URI or the empty string if unset.
+   */
+  char const* applied_uri() const throw() {
+    return applied_loc_.file();
+  }
+
+  /**
+   * Gets the XQuery source-code "applied at" line number containing the error.
+   *
+   * @return Returns said line number or 0 if unset.
+   */
+  line_type applied_line() const throw() {
+    return applied_loc_.line();
+  }
+
+  /**
+   * Gets the XQuery source-code "applied at" column number containing the
+   * error.
+   *
+   * @return Returns said column number or 0 if unset.
+   */
+  column_type applied_column() const throw() {
+    return applied_loc_.column();
+  }
+
+  /**
+   * Gets the XQuery source-code "applied at" end line number containing the
+   * error.
+   *
+   * @return Returns said line number or 0 if unset.
+   */
+  line_type applied_line_end() const throw() {
+    return applied_loc_.line_end();
+  }
+
+  /**
+   * Gets the XQuery source-code "applied at" end column number containing the
+   * error.
+   *
+   * @return Returns said column number or 0 if unset.
+   */
+  column_type applied_column_end() const throw() {
+    return applied_loc_.column_end();
+  }
+
+  ////////// XQuery stack trace ///////////////////////////////////////////////
+
+  /**
+   * Gets whether XQuery stack traces will be included when XQueryExceptions
+   * are printed to the given ostream.
+   *
+   * @param o The ostream.
+   * @return Returns \a true only if stack traces will be included.
+   */
+  static bool get_print_trace( std::ostream &o ) {
+    return static_cast<print_trace>( o.iword( get_ios_trace_index() ) );
+  }
+
   /**
    * Gets the XQuery stack trace, if any.
    *
@@ -146,15 +245,34 @@ public:
     return query_trace_;
   }
 
+  /**
+   * Sets whether XQuery stack traces will be included when XQueryExceptions
+   * are printed to the given ostream.
+   *
+   * @param o The ostream to affect.
+   * @param print If \a true, stack traces will be included.
+   */
+  static void set_print_trace( std::ostream &o, bool print ) {
+    o.iword( get_ios_trace_index() ) = print;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+
   // inherited
   void polymorphic_throw() const;
 
 protected:
+  std::ostream& print_stack_trace( std::ostream& ) const;
+  static bool print_uri( std::ostream&, char const *uri );
+
   // inherited
   std::unique_ptr<ZorbaException> clone() const;
-  std::ostream& print( std::ostream &o ) const;
+  std::ostream& print_impl( std::ostream& ) const;
 
 private:
+  typedef internal::diagnostic::location location;
+  typedef internal::diagnostic::parameters parameters;
+
   /**
    * Constructs an %XQueryException.
    *
@@ -168,20 +286,24 @@ private:
   XQueryException( Diagnostic const &diagnostic, char const *raise_file,
                    line_type raise_line, char const *message );
 
-  internal::diagnostic::location source_loc_;
+  location source_loc_;
+  location applied_loc_;
   XQueryStackTrace query_trace_;
+
+  static int get_ios_trace_index();
 
   friend XQueryException make_xquery_exception(
     char const*, ZorbaException::line_type, Diagnostic const&,
-    internal::diagnostic::parameters const&,
-    internal::diagnostic::location const&
+    parameters const&, location const&
   );
 
   friend XQueryException* new_xquery_exception(
     char const*, ZorbaException::line_type, Diagnostic const&,
-    internal::diagnostic::parameters const&,
-    internal::diagnostic::location const&
+    parameters const&, location const&
   );
+
+  friend void set_applied( ZorbaException&, char const*, line_type, column_type,
+                           line_type, column_type, bool );
 
   friend void set_source( ZorbaException&, char const*, line_type, column_type,
                           line_type, column_type, bool );
@@ -194,6 +316,22 @@ protected:
   friend void serialization::operator&( serialization::Archiver&,
                                         ZorbaException*& );
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Sets whether to include the XQuery stack trace for the next XQueryException
+ * that's printed.
+ *
+ * @param o The ostream to affect.
+ * @param t The print_trace value.
+ * @return Returns \a o.
+ */
+inline std::ostream& operator<<( std::ostream &o,
+                                 XQueryException::print_trace t ) {
+  XQueryException::set_print_trace( o, t );
+  return o;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -1,9 +1,14 @@
 Iterator tree for const-folded expr:
 <SingletonIterator value="xs:integer(2)"/>
 
+Iterator tree for const-folded expr:
+<PromoteIterator type="xs:double">
+  <SingletonIterator value="xs:integer(2)"/>
+</PromoteIterator>
+
 Iterator tree for main query:
 <SequentialIterator>
-  <CtxVarDeclareIterator varid="2" varname="timesequence">
+  <CtxVarDeclareIterator varid="4" varname="timesequence">
     <FnDocIterator>
       <SingletonIterator value="xs:string(temp_events.xml)"/>
     </FnDocIterator>
@@ -11,60 +16,52 @@ Iterator tree for main query:
   <flwor::TupleStreamIterator>
     <flwor::WindowIterator>
       <WindowVariable name="w">
-        <NodeSortIterator distinct="true" ascending="true">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
-              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                <CtxVarIterator varid="2" varname="timesequence" varkind="global"/>
-              </TreatIterator>
-            </ChildAxisIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
+            <CtxVarIterator varid="4" varname="timesequence" varkind="global"/>
           </ChildAxisIterator>
-        </NodeSortIterator>
+        </ChildAxisIterator>
       </WindowVariable>
       <WinCondVariable name="start-CurrentIn"/>
       <WinCondVariable name="start-CurrentInPrevIn"/>
       <OrIterator>
-        <CompareIterator>
-          <PromoteIterator type="xs:anyAtomicType">
-            <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
-                <ForVarIterator varname="s_curr"/>
-              </AttributeAxisIterator>
-            </FnDataIterator>
-          </PromoteIterator>
-          <PromoteIterator type="xs:anyAtomicType">
-            <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
-                <ForVarIterator varname="s_prev"/>
-              </AttributeAxisIterator>
-            </FnDataIterator>
-          </PromoteIterator>
-        </CompareIterator>
+        <TypedValueCompareIterator_STRING>
+          <FnDataIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
+              <ForVarIterator varname="s_curr"/>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+          <FnDataIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
+              <ForVarIterator varname="s_prev"/>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+        </TypedValueCompareIterator_STRING>
         <FnEmptyIterator>
           <ForVarIterator varname="s_prev"/>
         </FnEmptyIterator>
       </OrIterator>
       <WinCondVariable name="end-NextIn"/>
       <FnBooleanIterator>
-        <CompareIterator>
-          <GenericArithIterator_SubtractOperation>
-            <PromoteIterator type="xs:anyAtomicType">
+        <TypedValueCompareIterator_DOUBLE>
+          <SpecificNumArithIterator_SubtractOperation_DOUBLE>
+            <PromoteIterator type="xs:double">
               <FnDataIterator>
                 <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
                   <ForVarIterator varname="e_next"/>
                 </AttributeAxisIterator>
               </FnDataIterator>
             </PromoteIterator>
-            <PromoteIterator type="xs:anyAtomicType">
+            <PromoteIterator type="xs:double">
               <FnDataIterator>
                 <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
                   <ForVarIterator varname="s_curr"/>
                 </AttributeAxisIterator>
               </FnDataIterator>
             </PromoteIterator>
-          </GenericArithIterator_SubtractOperation>
-          <SingletonIterator value="xs:integer(2)"/>
-        </CompareIterator>
+          </SpecificNumArithIterator_SubtractOperation_DOUBLE>
+          <SingletonIterator value="xs:double(2)"/>
+        </TypedValueCompareIterator_DOUBLE>
       </FnBooleanIterator>
       <flwor::TupleSourceIterator/>
     </flwor::WindowIterator>

@@ -14,6 +14,94 @@
  !  limitations under the License.
  -->
 
+<!--
+ !  Substitutes substrings of the given string.  Substitutions are in three
+ !  forms:
+ ! 
+ !  - $i
+ !  - ${[<chars>]i[<chars>]}
+ !  - $i?<then>[:<else>]
+ ! 
+ !  where i is a digit in the range [1,9] and refers to the value of the ith
+ !  parameter, <chars> may be any characters except [1-9}], and <then> and
+ !  <else> are of one of the two forms:
+ ! 
+ !   - j
+ !   - {[<chars>]j[<chars>][k<chars>...]}
+ ! 
+ !  where j is likewise a digit in the range [1,9] and refers to the value of
+ !  the jth parameter.
+ !
+ !  The first substitution form replaces $i with the value of the ith
+ !  parameter.
+ ! 
+ !  The second form replaces everything from the $ to the } with the contents
+ !  of the {} where i is replaced with the value of the ith parameter.
+ !  However, if the value is empty, then everything from the $ to the } is
+ !  instead erased.
+ ! 
+ !  For example, ${"1": } will substitute the value of the 1st parameter quoted
+ !  followed by a : and a space if non-empty; if empty, then everything from
+ !  the $ to the } will instead be erased.
+ ! 
+ !  The third form tests the value of the ith parameter: if non-empty, then the
+ !  <then> portion is substituted; if empty, then the <else> portion is.  Both
+ !  the <then> and <else> portions can be either a digit in the range [1,9] or
+ !  <chars> enclosed by {}.  The {} here can contain multiple parameter
+ !  indicies.  If at least one is non-empty, then the substitution for the
+ !  portion will be done; if all are empty, then everything for the portion
+ !  will be erased.
+ !
+ !  The \ character can be used to escape the meaning of the $, [1-9], ?, :,
+ !  and } characters and instead treat them as ordinary characters.
+ ! 
+ !  Substitution is performed by making at most 9 passes over the string, one
+ !  pass per parameter starting at 1.  Substitutions may themselves have
+ !  further substitutions, but, due to the way that substitution is performed,
+ !  should only refer to parameters having higher digits.  (Digits less than or
+ !  equal to the current one will not be substituted.)
+ -->
+
+<!--
+ !  Please use the following convention for sub-message keys.
+ !
+ !  If a sub-message key has at least one $n number in it (where 'n' is [1-9]),
+ !  append an underscore ('_') followed by all the number(s) used in the value.
+ !  If the last $n is optional, append a lowercase 'o'.
+ !
+ !  For example, given this "throw" in C++ code:
+ !
+ !    throw XQUERY_EXCEPTION(
+ !      err::XPTY0004,
+ !      ERROR_PARAMS(
+ !        ZED( BadType_23o ), *domainType,
+ !        ZED( NoTreatAs_4 ), *declaredType
+ !      ),
+ !      ERROR_LOC( get_loc() )
+ !    );
+ !
+ !  The "bad type" and "no treat as" keys are defined as:
+ !
+ !    <entry key="BadType_23o">
+ !      <value>"$2": invalid type${: 3}</value>
+ !    </entry>
+ !
+ !    <entry key="NoTreatAs_4">
+ !      <value>can not treat as "$4"</value>
+ !    </entry>
+ !
+ !  In the "throw" above, you can tell just by looking at it that all the
+ !  required parameters are given and that each has the correct
+ !  number/position.
+ !
+ !      ERROR_PARAMS(
+ !        ZED( BadType_23o ), // #1
+ !        *domainType,        // #2
+ !        ZED( NoTreatAs_4 ), // #3
+ !        *declaredType       // #4
+ !      ),
+ -->
+
 <diagnostic-list lang="en">
 
   <namespace prefix="err">
@@ -47,27 +135,31 @@
         <value>"$2": XQuery version must be at least 3.0</value>
       </entry>
 
-      <entry key="OuterForClause11">
+      <entry key="OuterForClause30">
         <value>"outer-for" clause only available in XQuery 3.0 or later</value>
       </entry>
 
-      <entry key="WindowClause11">
+      <entry key="WindowClause30">
         <value>"window" clause only available in XQuery 3.0 or later</value>
       </entry>
 
-      <entry key="CountClause11">
+      <entry key="CountClause30">
         <value>"count" clause only available in XQuery 3.0 or later</value>
       </entry>
 
-      <entry key="SwitchExpr11">
+      <entry key="SwitchExpr30">
         <value>"switch" expressions only available in XQuery 3.0 or later</value>
       </entry>
 
-      <entry key="TryCatchExpr11">
+      <entry key="TypeSwitchExpr30">
+        <value>union of types in typeswitch clause is only available in XQuery 3.0 or later</value>
+      </entry>
+
+      <entry key="TryCatchExpr30">
         <value>"try/catch" expressions only available in XQuery 3.0 or later</value>
       </entry>
 
-      <entry key="Anotations">
+      <entry key="Annotations">
         <value>function and variable annotations only available in XQuery 3.0 or later</value>
       </entry>
 
@@ -97,7 +189,19 @@
        that is not defined in the static context, except for an ElementName in
        an ElementTest or an AttributeName in an AttributeTest.
       </comment>
-      <value>"$1": undefined $2</value>
+      <value>$1</value>
+
+      <entry key="VariableName_2">
+        <value>"$2": undeclared variable</value>
+      </entry>
+
+      <entry key="SchemaAttributeName_2">
+        <value>"$2": undefined schema-attribute name</value>
+      </entry>
+
+      <entry key="SchemaElementName_2">
+        <value>"$2": undefined schema-element name</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPST0017">
@@ -115,7 +219,16 @@
        SequenceType is not defined in the in-scope schema types as an atomic
        type.
       </comment>
-      <value>"$1": not defined as atomic type${: 2}</value>
+      <value>$1</value>
+
+      <entry key="GenAtomic_2">
+        <value>"$2": not defined a generalized atomic type</value>
+      </entry>
+
+      <entry key="Atomic_2">
+        <value>"$2": not defined an atomic type</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPST0080">
@@ -156,28 +269,36 @@
 
       <value>$1</value>
 
-      <entry key="FuncReturn">
+      <entry key="NoReturnTypePromote_234">
         <value>$2 can not be promoted to return type $3 of function $4()</value>
       </entry>
 
-      <entry key="FuncParam">
+      <entry key="NoParamTypePromote_234">
         <value>$2 can not be promoted to parameter type $3 of function $4()</value>
       </entry>
 
-      <entry key="TypePromotion">
+      <entry key="NoTypePromote_23">
         <value>$2 can not be promoted to type $3</value>
       </entry>
 
-      <entry key="NoMultiSeqTypePromotion">
+      <entry key="NoMultiSeqTypePromotion_2">
         <value>sequence of more than one item can not be promoted to type $2</value>
       </entry>
 
-      <entry key="TypeMatch">
+      <entry key="NoTreatAs_23">
         <value>$2 can not be treated as type $3</value>
       </entry>
 
       <entry key="FormatNumber_2">
-        <value>the first parameter to the format-number() function is of type $2, which is not allowed</value>
+        <value>first parameter to format-number() function is type $2 that is not allowed</value>
+      </entry>
+
+      <entry key="JSONIQ_SELECTOR">
+        <value>can not atomize and/or cast value of type $2 to string</value>
+      </entry>
+
+      <entry key="MultiValuedGroupingKey">
+        <value>atomization of grouping variable produces more than one item</value>
       </entry>
 
     </diagnostic>
@@ -204,6 +325,24 @@
        It is a type error if, in an axis step, the context item is not a node.
       </comment>
       <value>context item in axis step is not a node</value>
+    </diagnostic>
+
+    <diagnostic code="XPTY0117">
+      <comment>
+      Attempt to cast to a namespace-sensitive type failed because the namespace
+      bindings for the result can not be determined.
+      </comment>
+
+      <value>$1</value>
+
+      <entry key="NodeCast">
+        <value>Cannot cast node to xs:QName</value>
+      </entry>
+
+      <entry key="NotationParam_23">
+        <value>$2 can not be promoted to parameter type xs:NOTATION of function $3()</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XQTY0024">
@@ -369,7 +508,7 @@
        <code>http://www.w3.org/2001/XMLSchema-instance</code>,
        <code>http://www.w3.org/2005/xpath-functions</code>.
       </comment>
-      <value>"$1": invalid function or annotation namespace</value>
+      <value>"$1": $2 declared in reserved namespace${ 3}</value>
     </diagnostic>
 
     <diagnostic code="XQST0046">
@@ -378,6 +517,10 @@
        is of nonzero length and is not in the lexical space of \c xs:anyURI.
       </comment>
       <value>${"1": }invalid URI literal${: 2}</value>
+
+      <entry key="BadHexDigit_3">
+        <value>'$3': invalid hexedecimal digit</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQST0047">
@@ -402,6 +545,14 @@
        module have equal expanded QNames (as defined by the eq operator.)
       </comment>
       <value>"$1": duplicate variable declaration</value>
+    </diagnostic>
+
+    <diagnostic code="XQST0052">
+      <comment>
+      The type must be the name of a type defined in the in-scope schema types,
+      and the {variety} of the type must be simple.
+      </comment>
+      <value>"$1": not defined as simple type</value>
     </diagnostic>
 
     <diagnostic code="XQST0054">
@@ -587,6 +738,16 @@
       <value>"$1": module must not depend on itself</value>
     </diagnostic>
 
+    <diagnostic code="XQST0094">
+      <comment>
+      In the group by clause of a FLWOR expression, it is a static error if the
+      name of a grouping variable is not equal (by the eq operator on expanded
+      QNames) to the name of a variable that is bound by a for or let clause
+      that precedes the group by clause.
+      </comment>
+      <value>"$1": grouping variable not defined in the same flwor expression as the group-by clause</value>
+    </diagnostic>
+
     <diagnostic code="XQST0098">
       <comment>
        It is a static error if, for any named or unnamed decimal format, the
@@ -641,7 +802,19 @@
        It is a dynamic error if evaluation of an expression relies on some part
        of the dynamic context that has not been assigned a value.
       </comment>
-      <value>"$1": $2</value>
+      <value>$1</value>
+
+      <entry key="VariableHasNoValue_2">
+        <value>"$2": variable has no value</value>
+      </entry>
+
+      <entry key="VariableUndeclared_2">
+        <value>"$2": undeclared variable</value>
+      </entry>
+
+      <entry key="ContextUndeclared_2">
+        <value>$2 not declared</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPDY0050">
@@ -923,7 +1096,20 @@
       <comment>
        Invalid lexical value.
       </comment>
-      <value>"$1": invalid lexical value${: 2}</value>
+      <value>$1</value>
+
+      <entry key="BadLexicalQName_2">
+        <value>"$2": value is not a valid lexical QName</value>
+      </entry>
+
+      <entry key="NoURIforPrefix_2">
+        <value>no namespace URI provided for prefix in lexical QName "$2"</value>
+      </entry>
+
+      <entry key="NoCastTo_234">
+        <value>"$2": value of type $3 is not castable to type $4</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="FOCA0003">
@@ -1056,7 +1242,7 @@
       <comment>
        Invalid timezone value.
       </comment>
-      <value>"$1": invalid timezone value</value>
+      <value>"$1": invalid timezone value (in seconds)</value>
     </diagnostic>
 
     <diagnostic code="FOFI0001">
@@ -1091,7 +1277,52 @@
       <comment>
        Invalid value for cast/constructor.
       </comment>
-      <value>${"1": }invalid value for cast/constructor${: 2}</value>
+
+      <value>$1</value>
+
+      <entry key="NoCastTo_234">
+        <value>"$2": value of type $3 is not castable to type $4</value>
+      </entry>
+
+      <entry key="NoCastTo_234o">
+        <value>"$2": value is not castable to type $3${: 4}</value>
+      </entry>
+
+      <entry key="LocalNotNCName_2">
+        <value>"$2": local name in qname is not an xs:NCName</value>
+      </entry>
+
+      <entry key="PrefixNotNCName_2">
+        <value>"$2": prefix in qname is not an xs:NCName</value>
+      </entry>
+
+      <entry key="NameNotNCName_2">
+        <value>"$2": name is not an xs:NCName</value>
+      </entry>
+
+      <entry key="PrefixNotBound_2">
+        <value>"$2": prefix has no known namespace binding</value>
+      </entry>
+
+      <entry key="Base64BadChar_2">
+        <value>"$2": invalid Base64 character</value>
+      </entry>
+
+      <entry key="Base64Multiple4">
+        <value>Base64 data must be a multiple of 4 characters</value>
+      </entry>
+
+      <entry key="HexBinaryMustBeEven">
+        <value>HexBinary value must contain an even number of characters</value>
+      </entry>
+
+      <entry key="BadHexDigit_2">
+        <value>'$2': invalid hexedecimal digit</value>
+      </entry>
+
+      <entry key="NoTypeInCtx_2">
+        <value>"$2": type no defined in current context</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="FORG0002">
@@ -1201,23 +1432,23 @@
        An argument to \c fn:deep-equal() contains a function item.
       </comment>
       <value>"$1": argument to fn:deep-equal() contains a function item</value>
-    </diagnostic>  
-    
+    </diagnostic>
+
     <diagnostic code="FOUT1170">
       <comment>
        Identifier cannot be used to retrive a resource containing text
       </comment>
       <value>"$1": error retrieving resource containing text</value>
     </diagnostic>
-    
+
     <diagnostic code="FOUT1190">
       <comment>
-       Retrieved resource contains octets that cannot be decoded into Unicode 
-       using the specified encoding, the resulting characters are not 
+       Retrieved resource contains octets that cannot be decoded into Unicode
+       using the specified encoding, the resulting characters are not
        permitted XML characters or requested encoding not supported
       </comment>
       <value>"$1": can not decode resource retrieved</value>
-    </diagnostic>  
+    </diagnostic>
 
     <!--////////// XQuery Update Facility //////////////////////////////////-->
 
@@ -1240,7 +1471,7 @@
          specified.
       </comment>
       <value>$1</value>
-    
+
       <entry key="CONCAT">
         <value>comma expression with updating and non-updating branches</value>
       </entry>
@@ -1418,7 +1649,7 @@
        It is a dynamic error if a function that was declared to be both \c
        external and \c updating returns a non-empty data model instance.
       </comment>
-      <value>"$1": function declated external, updating returns non-empty data model instance</value>
+      <value>"$1": function declared external, updating returns non-empty data model instance</value>
     </diagnostic>
 
     <diagnostic code="XUDY0021">
@@ -1428,7 +1659,11 @@
        [XQuery 1.0 and XPath 2.0 Data Model]. In this case, none of the updates
        in the query are made effective.
       </comment>
-      <value>updates violate constraint</value>
+      <value>$1${ 2}</value>
+
+      <entry key="AttributeName">
+        <value>"$3": attribute with the same name already exists</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XUTY0022">
@@ -1445,7 +1680,7 @@
        affects an element node by introducing a new namespace binding that
        conflicts with one of its existing namespace bindings.
       </comment>
-      <value>"$1": namespace binding conflicts with $2=$3</value>
+      <value>"$1": qname causes namespace binding conflict: prefix $2 cannot be bound to both $3 and $4</value>
     </diagnostic>
 
     <diagnostic code="XUDY0024">
@@ -1717,6 +1952,14 @@
       <value>"$1": builtin sequential function not implemented as sequential</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0011" name="INVALID_LOCALE">
+      <value>"$1": invalid locale</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP0012" name="UNKNOWN_LOCALE">
+      <value>"$1": unknown locale</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0013" name="FXCHARHEAP_EXCEPTION">
       <value>FxCharHeap error: $1 ($2)</value>
     </diagnostic>
@@ -1800,7 +2043,11 @@
     </diagnostic>
 
     <diagnostic code="ZXQP0060" name="OPTION_NOT_KNOWN">
-      <value>"$1": unkown option</value>
+      <value>"$1": unknown option</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP0061" name="DISABLE_HTTP_OPTION_IN_QUERY">
+      <value>"$1": this option cannot be specified in a query, it must be set via C++ API or command-line parameter</value>
     </diagnostic>
 
     <diagnostic code="ZXQP8401" name="THESAURUS_VERSION_MISMATCH"
@@ -1890,11 +2137,11 @@
     <diagnostic code="ZAPI0009" name="XQUERY_NOT_COMPILED_IN_DEBUG_MODE">
       <value>XQuery not compiled in debug mode</value>
     </diagnostic>
-     
-     <diagnostic code="ZAPI0011" name="ELEMENT_NOT_DECLARED">
-       <value>"$1": undefined $2</value>
+
+     <diagnostic code="ZAPI0011" name="VARIABLE_NOT_DECLARED">
+       <value>"$1": undeclared variable</value>
      </diagnostic>
-     
+
     <diagnostic code="ZAPI0014" name="INVALID_ARGUMENT">
       <value>"$1": invalid argument${: 2}</value>
     </diagnostic>
@@ -1915,6 +2162,22 @@
       <value>"$1": item to load is not a node</value>
     </diagnostic>
 
+    <diagnostic code="ZAPI0023" name="NON_ATOMIC_CONTEXT_SIZE_VALUE">
+      <value>non-atomic value can not be assigned to the context size</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0024" name="NON_INTEGER_CONTEXT_SIZE_VALUE">
+      <value>"$1": wrong type for context size value (must be integer)</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0025" name="NON_ATOMIC_CONTEXT_POSITION_VALUE">
+      <value>non-atomic value can not be assigned to the context position</value>
+    </diagnostic>
+
+    <diagnostic code="ZAPI0026" name="NON_INTEGER_CONTEXT_POSITION_VALUE">
+      <value>"$1": wrong type for context position value (must be integer)</value>
+    </diagnostic>
+
     <diagnostic code="ZAPI0027" name="CANNOT_UPDATE_DCTX_WITH_ITERATORS">
       <value>cannot update dynamic context with iterators</value>
     </diagnostic>
@@ -1926,7 +2189,7 @@
     <diagnostic code="ZAPI0029" name="REFERENCE_ALREADY_PRESENT">
       <value>"$1": reference already present in the store</value>
     </diagnostic>
-   
+
     <diagnostic code="ZAPI0030" name="NO_CURRENT_REFERENCE">
       <value>node has no current reference</value>
     </diagnostic>
@@ -1959,12 +2222,12 @@
       <value>"$1": invalid serialization method for SAX</value>
     </diagnostic>
 
-    <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_NODE_REFERENCE">
-      <value>can not retrieve node-reference for a node that is not in a collection.</value>
+    <diagnostic code="ZAPI0080" name="CANNOT_RETRIEVE_REFERENCE">
+      <value>can not retrieve reference for a JSON object or array that is not in a collection</value>
     </diagnostic>
-     
+
     <diagnostic code="ZAPI0090" name="CANNOT_VALIDATE_NON_ROOT">
-      <value>a non root element cannot be validated in place.</value>
+      <value>non root element cannot be validated in place</value>
     </diagnostic>
 
     <!--////////// Zorba Class Serialization Errors ////////////////////////-->
@@ -2116,6 +2379,10 @@
       <value>"$1": index domain expression yields nodes that are not in collection</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0019" name="COLLECTION_ITERATOR_NOT_OPEN">
+      <value>"$1": iterator on collection is not open</value>
+    </diagnostic>
+
     <diagnostic code="ZDDY0021" name="INDEX_NOT_DECLARED">
       <value>"$1": undeclared index</value>
     </diagnostic>
@@ -2180,6 +2447,22 @@
       <value>attempt to delete non-root node from collection "$1"</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0037" name="COLLECTION_APPEND_BAD_EDIT">
+      <value>"$1": illegal edit in append-only collection</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0038" name="COLLECTION_QUEUE_BAD_EDIT">
+      <value>"$1": illegal edit from queue collection</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0039" name="NON_ROOT_NODE_EDIT">
+      <value>attempt to edit non-root node in collection "$1"</value>
+    </diagnostic>
+     
+    <diagnostic code="ZDDY0040" name="INCONSISTENT_EDIT">
+      <value>attempt to edit an item with a template of a different kind (for example an object with a node).</value>
+    </diagnostic>
+     
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">
       <value>"$1": collection already declared</value>
     </diagnostic>
@@ -2229,7 +2512,29 @@
     </diagnostic>
 
     <diagnostic code="ZDST0027" name="INDEX_BAD_KEY_TYPE">
-      <value>"$1": index bad key type</value>
+
+      <value>"$1": $2</value>
+
+      <entry key="NO_KEY_TYPE_DECL">
+        <value>value index missing key type declaration</value>
+      </entry>
+
+      <entry key="NON_SPECIFIC_KEY_TYPE_DECL">
+        <value>value index can not have xs:untypedAtomic or xs:anyAtomicType in key type declaration</value>
+      </entry>
+
+      <entry key="MULTI_VALUED_KEY_TYPE_DECL">
+        <value>value index can not have a key type declaration with * or + quantifier</value>
+      </entry>
+
+      <entry key="NON_ATOMIC_KEY_TYPE">
+        <value>index has non-atomic key type declaration</value>
+      </entry>
+
+      <entry key="NON_ORDERED_KEY_TYPE">
+        <value>range index can not have type $3 in key type declaration</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="ZDST0028" name="INDEX_NOT_DETERMINISTIC">
@@ -2339,6 +2644,10 @@
       <value>stream transcoding error ($1)</value>
     </diagnostic>
 
+    <diagnostic code="ZOSE0007" name="UNSUPPORTED_LOCALE">
+      <value>"$1": unsupported locale</value>
+    </diagnostic>
+
     <!--////////// Zorba Store Errors //////////////////////////////////////-->
 
     <diagnostic code="ZSTR0001" name="INDEX_ALREADY_EXISTS">
@@ -2398,7 +2707,7 @@
     </diagnostic>
 
     <diagnostic code="ZSTR0021" name="LOADER_PARSING_ERROR">
-      <value>loader parsing error${: 1}</value>
+      <value>"$1":$2,$3: loader parsing error${: 4}</value>
     </diagnostic>
 
     <diagnostic code="ZSTR0030" name="NODEID_ERROR">
@@ -2426,11 +2735,21 @@
     </diagnostic>
 
     <diagnostic code="ZSTR0060" name="RANGE_EXCEPTION">
-      <value>out of range: $1</value>
+      <value>"$1": value out of range${ 2}</value>
+      <entry key="ForCollection_3">
+        <value>for collection "$3"</value>
+      </entry>
+      <entry key="ForSequence">
+        <value>for sequence</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="ZSTR0065" name="STRINGS_IN_POOL">
       <value>Zorba did not close properly, objects may still in memory.\n$1 referenced URI(s) remain in the string pool.\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks.</value>
+    </diagnostic>
+
+    <diagnostic code="ZSTR0066" name="REFERENCED_NODE_NOT_IN_COLLECTION">
+      <value>$1: does not reference a node in collection $2</value>
     </diagnostic>
 
     <!--////////// XQuery Scripting ////////////////////////////////////////-->
@@ -2464,6 +2783,28 @@
     </diagnostic>
     <diagnostic code="XSST0010">
       <value>"continue loop" statement not inside while statement</value>
+    </diagnostic>
+
+   <!--////////// dateTime Parse Errors ////////////////////////////////////-->
+
+    <diagnostic code="ZDTP0001" name="INVALID_SPECIFICATION">
+      <value>'$1': invalid % conversion specification</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0002" name="INSUFFICIENT_BUFFER">
+      <value>"$1": insufficient value to parse for "$2"</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0003" name="INVALID_VALUE">
+      <value>"$1": invalid value for conversion specification(s) %$2</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0004" name="LITERAL_MISMATCH">
+      <value>'$1': literal character mismatched '$2'</value>
+    </diagnostic>
+
+    <diagnostic code="ZDTP0005" name="INCOMPLETE_DATE_OR_TIME">
+      <value>'$1': incomplete date, time, or dateTime format</value>
     </diagnostic>
 
    <!--////////// JSON Parse Errors ////////////////////////////////////////-->
@@ -2503,6 +2844,7 @@
     <diagnostic code="ZJPE0009" name="ILLEGAL_EMPTY_STRING">
       <value>illegal empty string</value>
     </diagnostic>
+
     <diagnostic code="ZJPE0010" name="JSONML_ARRAY_REQUIRES_BRACKET">
       <value>JsonML (array form) must start with '['</value>
     </diagnostic>
@@ -2545,26 +2887,21 @@
 
   <namespace prefix="jerr">
 
-    <!--////////// JSONiq ///////////////////////////////////////////-->
-
-    <diagnostic code="JNTY0001" if="defined(ZORBA_WITH_JSON)">
-      <comment>It is a type error if the left-hand-side expression of a pair constructor cannot be atomized and cast to a string.</comment>
-      <value>Cannot atomize and/or cast value of type $1 to a string.</value>
-    </diagnostic>
+    <!--////////// JSONiq //////////////////////////////////////////////////-->
 
     <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.</comment>
-      <value>Pair value returns no, or more than one, item.</value>
+      <value>pair value returns no, or more than one, item</value>
     </diagnostic>
-    
+
     <diagnostic code="JNDY0003" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if two pairs in an object constructor or in a simple object union have the same name.</comment>
-      <value>"$1": pair with the same name already exists in object.</value>
+      <value>"$1": pair with the same name already exists in object</value>
     </diagnostic>
-    
+
     <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error to call fn:data on a sequence containing an array or an object.</comment>
-      <value>$1 items do not have typed value</value>
+      <value>can not atomize an $1 item: an $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)</value>
     </diagnostic>
 
     <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
@@ -2573,19 +2910,19 @@
       <value>"$1": duplicate pair to insert</value>
 
     </diagnostic>
-    
+
     <diagnostic code="JNUP0006" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if upd:applyUpdates causes an object to contain two pairs with the same name.</comment>
 
-      <value>"$1": pair to insert already exists in object.</value>
+      <value>"$1": pair to insert already exists in object</value>
 
     </diagnostic>
-    
+
     <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if, in an updating expression, an array selector cannot be cast to xs:integer or if an object selector cannot be cast to xs:string.</comment>
-      
-      <value>$1 - wrong type for object/array selector in update expression.</value>
-      
+
+      <value>"$1": wrong type for object/array selector in update expression</value>
+
       <entry key="Object">
         <value>"$2": can not be promoted to type xs:string</value>
       </entry>
@@ -2599,7 +2936,7 @@
       </entry>
 
     </diagnostic>
-    
+
     <diagnostic code="JNUP0008" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if the target of a deleting or replacing expression is not an array or an object.
         It is a dynamic error if the target of a renaming expression is not an object.
@@ -2610,7 +2947,7 @@
       <value>$1</value>
 
       <entry key="Object">
-        <value>"$2": target of a renaming expression or of a non-position-inserting expression is not an object.</value>
+        <value>"$2": target of a renaming expression or of a non-position-inserting expression is not an object</value>
       </entry>
 
       <entry key="Array">
@@ -2618,33 +2955,33 @@
       </entry>
 
       <entry key="ObjectArray">
-        <value>"$2": target of a deleting or replacing expression is not a JSON item.</value>
+        <value>"$2": target of a deleting or replacing expression is not a JSON item</value>
       </entry>
 
     </diagnostic>
-    
+
     <diagnostic code="JNUP0009" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if a pending update list contains two replacing update primitives on the same object or array, and with the same selector.</comment>
       <value>"$1": duplicate pair to replace</value>
     </diagnostic>
-    
+
     <diagnostic code="JNUP0010" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if a pending update list contains two renaming update primitives on the same object and with the same selector.</comment>
       <value>"$1": duplicate pair to rename</value>
     </diagnostic>
-    
+
     <diagnostic code="JNTY0011" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a type error if the content sequence in a node constructor or in an XQUF insert or replace update expression contains an object or an array.</comment>
       <value>JSON item cannot appear in content sequence of node constructor or updating expression</value>
     </diagnostic>
-    
+
     <diagnostic code="JNSE0012" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error to serialize a sequence of less
       or more than one item with the JSON output method if the
       jsoniq-serialization-multiple-items is set to no.
       </comment>
 
-      <value>Cannot serialize multiple top-level items as JSON</value>
+      <value>can not serialize multiple top-level items as JSON</value>
     </diagnostic>
 
     <diagnostic code="JNSE0013" if="defined(ZORBA_WITH_JSON)">
@@ -2653,51 +2990,96 @@
       the jsoniq-serialization-extensions serialization parameter
       set to false.</comment>
 
-      <value>Cannot serialize value as JSON: $1</value>
+      <value>can not serialize value as JSON: $1</value>
     </diagnostic>
 
     <diagnostic code="JNSE0014" if="defined(ZORBA_WITH_JSON)">
-      <comment>It is a dynamic error to serialize a function with the
+      <comment>It is a dynamic error to serialize a function or a node with the
       JSON output method.</comment>
-      <value>Cannot serialize a function item as JSON</value>
+      <value>can not serialize a node or function item as JSON</value>
+    </diagnostic>
+
+    <diagnostic code="JNSE0022" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error to serialize a sequence that does
+        not exist of exactly one document node with XML, HTML, XHTML, Text.
+      </comment>
+      <value>"$1": invalid serialization method for item type ($2)</value>
     </diagnostic>
 
     <diagnostic code="JNUP0016" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if it is attempted to create a replace, delete or rename update primitive with a selector that cannot be resolved against the target array or object.</comment>
 
       <value>$1</value>
-      
+
       <entry key="Object">
-        <value>"$2": selector cannot be resolved against supplied object.</value>
+        <value>"$2": selector cannot be resolved against supplied object</value>
       </entry>
 
       <entry key="Array">
-        <value>"$2": selector cannot be resolved against supplied array.</value>
+        <value>"$2": selector cannot be resolved against supplied array</value>
       </entry>
     </diagnostic>
-    
+
     <diagnostic code="JNUP0017" if="defined(ZORBA_WITH_JSON)">
       <comment> It is a dynamic error if the value in a replace expression is not exactly a single item.</comment>
-      <value>Cannot replace with less or more than an item.</value>
+      <value>can not replace with less or more than an item</value>
     </diagnostic>
-    
+
     <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
 
-      <value>Object or array selection needs exactly one parameter.</value>
+      <value>object or array selection needs exactly one parameter</value>
     </diagnostic>
-    
-    <!--////////// JSONIQ ///////////////////////////////////////////-->
 
-    <diagnostic code="JNTY0003" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0019" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a dynamic error if the content expression, in an object insert expression, does not evaluate to a sequence of objects.</comment>
+
+      <value>"$1": invalid type (content of insert expression must evaluate to a sequence of objects)</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0023" if="defined(ZORBA_WITH_JSON)">
+      <comment>It is a type error if the prefix is not a string or if the
+        serialization parameters are not an element.</comment>
+      <value>$1: value of "$2" is not a $3</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0024" if="defined(ZORBA_WITH_JSON)">
       <comment>objects or arrays don't have a string value</comment>
-
       <value>$1 items do not have string value</value>
     </diagnostic>
 
-    <diagnostic code="JSDY0040" if="defined(ZORBA_WITH_JSON)">
-      <comment>parser errors raised by the JSONIQLoader</comment>
+    <diagnostic code="JNTY0020" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser error for invalid option type</comment>
+      <value>$1: invalid option type for option $2 (expected $3)</value>
+    </diagnostic>
+
+    <diagnostic code="JNDY0021" if="defined(ZORBA_WITH_JSON)">
+      <comment>parser error raised by jn:parse-json</comment>
       <value>$1</value>
+      <entry key="IllegalCharacter_2">
+        <value>'$2': illegal JSON character</value>
+      </entry>
+      <entry key="IllegalCodepoint_2">
+        <value>"$2": illegal Unicode code-point</value>
+      </entry>
+      <entry key="IllegalEscape_2">
+        <value>'\\$2': illegal JSON character escape</value>
+      </entry>
+      <entry key="IllegalLiteral">
+        <value>illegal JSON literal</value>
+      </entry>
+      <entry key="IllegalNumber">
+        <value>illegal JSON number</value>
+      </entry>
+      <entry key="UnexpectedToken_2">
+        <value>"$2": unexpected JSON token</value>
+      </entry>
+      <entry key="UnterminatedString">
+        <value>unterminated JSON string</value>
+      </entry>
+      <entry key="UnexpectedExtraContent">
+        <value>unexpected extra content at the end of the document (consider using the jsoniq-multiple-top-level-items option)</value>
+      </entry>
     </diagnostic>
 
   </namespace>
@@ -2721,7 +3103,7 @@
     </diagnostic>
 
     <diagnostic code="ZWST0004" name="AMBIGUOUS_SEQUENTIAL_FLWOR">
-      <value>Sequential FLWOR expr may not have the semantics you expect</value>
+      <value>sequential FLWOR expr may not have the semantics you expect</value>
     </diagnostic>
 
     <diagnostic code="ZWST0005" name="CACHING_NOT_POSSIBLE">
@@ -2755,6 +3137,10 @@
       <value>"$1": function caching might not give the intended result because the function is declared as $2</value>
     </diagnostic>
 
+    <diagnostic code="ZWST0007" name="LOADER_PARSING_WARNING">
+      <value>"$1":$2,$3: loader parsing warning${: 4}</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Subvalues /////////////////////////////////////////////////-->
@@ -2769,16 +3155,16 @@
       <value>already specified</value>
     </entry>
 
+    <entry key="AppliedAt">
+      <value>applied at</value>
+    </entry>
+
     <entry key="ArithOpNotDefinedBetween_23">
       <value>arithmetic operation not defined between types "$2" and "$3"</value>
     </entry>
 
     <entry key="AtomizationHasMoreThanOneValue">
       <value>atomization has more than one value</value>
-    </entry>
-
-    <entry key="AtomizationOfGroupByMakesMoreThanOneItem">
-      <value>atomization of groupby variable produces more than one item</value>
     </entry>
 
     <entry key="AttributeName">
@@ -2819,10 +3205,6 @@
 
     <entry key="BadFileURIAuthority_2">
       <value>"$2": invalid authority for "file" scheme</value>
-    </entry>
-
-    <entry key="BadHexDigit_3">
-      <value>'$3': invalid hexedecimal digit</value>
     </entry>
 
     <entry key="BadHexSequence">
@@ -2892,7 +3274,7 @@
     <entry key="BadXMLDocument_2o">
       <value>malformed XML document${ at "2"}</value>
     </entry>
-    
+
     <entry key="BadXMLNoOpeningTag">
       <value>closing tag without matching opening tag</value>
     </entry>
@@ -2905,24 +3287,12 @@
       <value>unsupported XQuery version</value>
     </entry>
 
-    <entry key="Base64BadChar">
-      <value>invalid Base64 character</value>
-    </entry>
-
-    <entry key="Base64Multiple4">
-      <value>Base64 data must be a multiple of 4 characters</value>
-    </entry>
-
     <entry key="BaseURI">
       <value>base URI</value>
     </entry>
 
     <entry key="BoxCondTooManyColumns">
       <value>box condition has more columns than index</value>
-    </entry>
-
-    <entry key="CastFromToFailed_34">
-      <value>$3 to $4 cast failed</value>
     </entry>
 
     <entry key="CharExpected_3">
@@ -2939,6 +3309,10 @@
 
     <entry key="CollectionIteratorNotOpen">
       <value>collection iterator not open</value>
+    </entry>
+
+    <entry key="DefaultCollection">
+      <value>default collection</value>
     </entry>
 
     <entry key="DefaultCollation">
@@ -2967,6 +3341,10 @@
 
     <entry key="ElementName">
       <value>element name</value>
+    </entry>
+
+    <entry key="ElementNode">
+      <value>element node</value>
     </entry>
 
     <entry key="EmptyPath">
@@ -3041,11 +3419,11 @@
       <value>full-text was not enabled in this build</value>
     </entry>
 
-    <entry key="FunctionFailedErrorCodeMessage_123">
+    <entry key="FunctionFailedErrorCodeMessage_234">
       <value>$2 failed (error $3): $4</value>
     </entry>
 
-    <entry key="FunctionFailed_12o">
+    <entry key="FunctionFailed_23o">
       <value>$2 failed${: 3}</value>
     </entry>
 
@@ -3069,14 +3447,6 @@
       <value>valid values are: yes, no, omit</value>
     </entry>
 
-    <entry key="GroupByVarHasMoreThanOneItem_2">
-      <value>"$2": value of groupby variable has more than one item</value>
-    </entry>
-
-    <entry key="HexBinaryMustBeEven">
-      <value>HexBinary value must contain an even number of characters</value>
-    </entry>
-
     <entry key="IncompleteKeyInIndexBuild">
       <value>incomplete key during index build</value>
     </entry>
@@ -3095,10 +3465,6 @@
 
     <entry key="MustBeAbsoluteURI">
       <value>must be absolute</value>
-    </entry>
-
-    <entry key="MustBeNCName">
-      <value>must be an xs:NCName</value>
     </entry>
 
     <entry key="NoAttrNodesInDocument">
@@ -3209,6 +3575,14 @@
       <value>document, collection, or module resolver required but no SerializationCallback given</value>
     </entry>
 
+    <entry key="NoExternalFunction_2">
+      <value>"$2": external function not found</value>
+    </entry>
+
+    <entry key="NoExternalModuleFromDLL_2">
+      <value>required external module "$2" not found</value>
+    </entry>
+
     <entry key="NoSerializationCallbackForModule">
       <value>no SerializationCallback for required external module "$2"</value>
     </entry>
@@ -3223,10 +3597,6 @@
 
     <entry key="NoTreatAs_4">
       <value>can not treat as "$4"</value>
-    </entry>
-
-    <entry key="NoTypeInCtx">
-      <value>undefined type in current context</value>
     </entry>
 
     <entry key="NoTypeInMainModule_4">
@@ -3325,11 +3695,11 @@
       <value>"$2": operation not possible with parameters of type "$3" and "$4"</value>
     </entry>
 
-    <entry key="ParserInitFailed">
-      <value>parser initialization failed</value>
+    <entry key="XMLParserInitFailed">
+      <value>XML parser initialization failed</value>
     </entry>
 
-    <entry key="ParserNoCreateTree">
+    <entry key="XMLParserNoCreateTree">
       <value>XML tree creation failed</value>
     </entry>
 
@@ -3347,14 +3717,6 @@
 
     <entry key="SEPM0009_NotOmit">
       <value>the standalone attribute has a value other than "omit"</value>
-    </entry>
-
-    <entry key="SchemaAttributeName">
-      <value>schema-attribute name</value>
-    </entry>
-
-    <entry key="SchemaElementName">
-      <value>schema-element name</value>
     </entry>
 
     <entry key="SchemaOutOfMemory">
@@ -3606,18 +3968,6 @@
       <value>"$2": variable value must be single item</value>
     </entry>
 
-    <entry key="Variable">
-      <value>variable</value>
-    </entry>
-
-    <entry key="VariabledHasNoValue">
-      <value>variable has no value</value>
-    </entry>
-
-    <entry key="VariabledUndeclared">
-      <value>undeclared variable</value>
-    </entry>
-
     <entry key="XMLSchema">
       <value>XML schema</value>
     </entry>
@@ -3636,6 +3986,10 @@
 
     <entry key="Zorba API error">
       <value>Zorba API error</value>
+    </entry>
+
+    <entry key="Zorba core module error">
+      <value>Zorba core module error</value>
     </entry>
 
     <entry key="Zorba data-definition error">
@@ -3697,43 +4051,43 @@
     <entry key="JSONiq error">
       <value>JSONIQ error</value>
     </entry>
-    
+
     <entry key="JSONiq type error">
       <value>JSONIQ type error</value>
     </entry>
-    
+
     <entry key="JSONiq static error">
       <value>JSONIQ static error</value>
     </entry>
-    
+
     <entry key="JSONiq dynamic error">
       <value>JSONIQ dynamic error</value>
     </entry>
-    
+
     <entry key="JSONiq serialization error">
       <value>JSONIQ serialization error</value>
     </entry>
-    
+
     <entry key="JSONiq warning">
       <value>JSONIQ warning</value>
     </entry>
-    
+
     <entry key="JSONiq type warning">
       <value>JSONIQ type warning</value>
     </entry>
-    
+
     <entry key="JSONiq static warning">
       <value>JSONIQ static warning</value>
     </entry>
-    
+
     <entry key="JSONiq dynamic warning">
       <value>JSONIQ dynamic warning</value>
     </entry>
-    
+
     <entry key="JSONiq serialization warning">
       <value>JSONIQ serialization warning</value>
     </entry>
-    
+
     <entry key="dynamic error">
       <value>dynamic error</value>
     </entry>
@@ -3881,70 +4235,668 @@
     <entry key="ParseFragmentOptionCombinationNotAllowed">
       <value>only one of the &lt;schema-validate/&gt;, &lt;DTD-validate/&gt; or &lt;parse-external-parsed-entity/&gt; options can be specified</value>
     </entry>
-    
+
     <entry key="ParseFragmentInvalidOptions">
       <value>invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace</value>
     </entry>
-    
+
     <entry key="ParseFragmentDoctypeNotAllowed">
       <value>a DOCTYPE declaration is not allowed</value>
     </entry>
-    
+
     <entry key="ParseFragmentDoctypeNotAllowedHere">
       <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
     </entry>
-    
+
     <entry key="FormatNumberDuplicates">
       <value>: a sub-picture must not contain more than one of the "$3" sign</value>
     </entry>
-    
+
     <entry key="FormatNumberGroupingAdjacentToDecimal">
       <value>: a sub-picture must not contain a grouping-separator-sign adjacent to a decimal-separator-sign</value>
     </entry>
-    
+
     <entry key="FormatNumberIntegerPart">
       <value>: the integer part of a sub-picture must not contain a member of the decimal-digit-family that is followed by an optional-digit-sign</value>
     </entry>
-    
+
     <entry key="FormatNumberFractionalPart">
       <value>: the fractional part of a sub-picture must not contain an optional-digit-sign that is followed by a member of the decimal-digit-family</value>
     </entry>
-    
+
     <entry key="FormatNumberPercentPermille">
       <value>: a sub-picture must not contain more than one percent-sign or per-mille-sign, and it must not contain one of each</value>
     </entry>
-    
+
     <entry key="FormatNumberAtLeastOneOptionalOrDecimal">
       <value>: a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family</value>
     </entry>
-    
 
-    <entry key="JSON_ILLEGAL_CHARACTER">
-      <value>'$2': illegal JSON character${ at 3}</value>
+    <entry key="FUNCTION">
+      <value>function</value>
     </entry>
 
-    <entry key="JSON_ILLEGAL_CODEPOINT">
-      <value>"$2": illegal Unicode code-point${ at 3}</value>
+    <entry key="ANNOTATION">
+      <value>annotation</value>
     </entry>
 
-    <entry key="JSON_ILLEGAL_ESCAPE">
-      <value>'\\$2': illegal JSON character escape${ at 3}</value>
+    <!--////////// libxml2 Errors //////////////////////////////////////////-->
+
+    <entry key="libxml_ERR_1"> <!-- XML_ERR_INTERNAL_ERROR -->
+      <value>libxml internal error${: 9}</value>
     </entry>
 
-    <entry key="JSON_ILLEGAL_LITERAL">
-      <value>illegal JSON literal${ at 2}</value>
+    <entry key="libxml_ERR_2"> <!-- XML_ERR_NO_MEMORY -->
+      <value>out of memory${: 9}</value>
     </entry>
 
-    <entry key="JSON_ILLEGAL_NUMBER">
-      <value>illegal JSON number${ at 2}</value>
+    <!-- 3: XML_ERR_DOCUMENT_START not used -->
+
+    <entry key="libxml_ERR_4"> <!-- XML_ERR_DOCUMENT_EMPTY -->
+      <value>empty XML document ('&lt;' expected)</value>
     </entry>
 
-    <entry key="JSON_UNEXPECTED_TOKEN">
-      <value>"$2": unexpected JSON token${ at 3}</value>
+    <entry key="libxml_ERR_5"> <!-- XML_ERR_DOCUMENT_END -->
+      <value>extra content at end of XML document</value>
     </entry>
 
-    <entry key="JSON_UNTERMINATED_STRING">
-      <value>unterminated JSON string${ at 2}</value>
+    <entry key="libxml_ERR_6"> <!-- XML_ERR_INVALID_HEX_CHARREF -->
+      <value>${"5": }invalid hexedecimal value for character reference</value>
+    </entry>
+
+    <entry key="libxml_ERR_7"> <!-- XML_ERR_INVALID_DEC_CHARREF -->
+      <value>${"5": }invalid decimal value for character reference</value>
+    </entry>
+
+    <entry key="libxml_ERR_8"> <!-- XML_ERR_INVALID_CHARREF -->
+      <value>${"5": }invalid value for character reference</value>
+    </entry>
+
+    <entry key="libxml_ERR_9"> <!-- XML_ERR_INVALID_CHAR -->
+      <value>${"&amp;#8;": }invalid XML character value</value>
+    </entry>
+
+    <!-- 10: XML_ERR_CHARREF_AT_EOF not used -->
+    <!-- 11: XML_ERR_CHARREF_IN_PROLOG not used -->
+    <!-- 12: XML_ERR_CHARREF_IN_EPILOG not used -->
+    <!-- 13: XML_ERR_CHARREF_IN_DTD not used -->
+    <!-- 14: XML_ERR_ENTITYREF_AT_EOF not used -->
+    <!-- 15: XML_ERR_ENTITYREF_IN_PROLOG not used -->
+    <!-- 16: XML_ERR_ENTITYREF_IN_EPILOG not used -->
+    <!-- 17: XML_ERR_ENTITYREF_IN_DTD not used -->
+
+    <entry key="libxml_ERR_18"> <!-- XML_ERR_PEREF_AT_EOF -->
+      <value>PE reference at end of XML document</value>
+    </entry>
+
+    <entry key="libxml_ERR_19"> <!-- XML_ERR_PEREF_IN_PROLOG -->
+      <value>PE reference in prolog</value>
+    </entry>
+
+    <entry key="libxml_ERR_20"> <!-- XML_ERR_PEREF_IN_EPILOG -->
+      <value>PE reference in epilog</value>
+    </entry>
+
+    <entry key="libxml_ERR_21"> <!-- XML_ERR_PEREF_IN_INT_SUBSET -->
+      <value>PE reference forbidden within markup declaration in internal subset</value>
+    </entry>
+
+    <!-- 22: XML_ERR_ENTITYREF_NO_NAME not used -->
+
+    <entry key="libxml_ERR_23"> <!-- XML_ERR_ENTITYREF_SEMICOL_MISSING -->
+      <value>';' expected at end of character entity reference</value>
+    </entry>
+
+    <entry key="libxml_ERR_24"> <!-- XML_ERR_PEREF_NO_NAME -->
+      <value>PE reference: no name</value>
+    </entry>
+
+    <entry key="libxml_ERR_25"> <!-- XML_ERR_PEREF_SEMICOL_MISSING -->
+      <value>PE reference: ';' expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_26"> <!-- XML_ERR_UNDECLARED_ENTITY -->
+      <value>${"5": }undeclared entity reference</value>
+    </entry>
+
+    <entry key="libxml_WAR_27"> <!-- XML_WAR_UNDECLARED_ENTITY -->
+      <value>${"5": }undeclared entity reference</value>
+    </entry>
+
+    <entry key="libxml_ERR_28"> <!-- XML_ERR_UNPARSED_ENTITY -->
+      <value>${"5": }entity reference to unparsed entity</value>
+    </entry>
+
+    <entry key="libxml_ERR_29"> <!-- XML_ERR_ENTITY_IS_EXTERNAL -->
+      <value>${"5": }external entity referenced by attribute</value>
+    </entry>
+
+    <entry key="libxml_ERR_30"> <!-- XML_ERR_ENTITY_IS_PARAMETER -->
+      <value>${"5": }parameter entity attempted reference</value>
+    </entry>
+
+    <entry key="libxml_ERR_31"> <!-- XML_ERR_UNKNOWN_ENCODING -->
+      <value>${"5": }unknown character encoding</value>
+    </entry>
+
+    <entry key="libxml_ERR_32"> <!-- XML_ERR_UNSUPPORTED_ENCODING -->
+      <value>${"5": }unsupported character encoding</value>
+    </entry>
+
+    <entry key="libxml_ERR_33"> <!-- XML_ERR_STRING_NOT_STARTED -->
+      <value>string not started (' or " expected)</value>
+    </entry>
+
+    <entry key="libxml_ERR_34"> <!-- XML_ERR_STRING_NOT_CLOSED -->
+      <value>string not ended (' or " expected)</value>
+    </entry>
+
+    <entry key="libxml_ERR_35"> <!-- XML_ERR_NS_DECL_ERROR -->
+      <value>${"5": }invalid namespace declaration</value>
+    </entry>
+
+    <entry key="libxml_ERR_36"> <!-- XML_ERR_ENTITY_NOT_STARTED -->
+      <value>entity value not started (' or " expected)</value>
+    </entry>
+
+    <entry key="libxml_ERR_37"> <!-- XML_ERR_ENTITY_NOT_FINISHED -->
+      <value>${"5": }entity value not ended (' or " expected)</value>
+    </entry>
+
+    <entry key="libxml_ERR_38"> <!-- XML_ERR_LT_IN_ATTRIBUTE -->
+      <value>unescaped '&lt;' not allowed in attribute values</value>
+    </entry>
+
+    <entry key="libxml_ERR_39"> <!-- XML_ERR_ATTRIBUTE_NOT_STARTED -->
+      <value>attribute value not started (' or " expected)</value>
+    </entry>
+
+    <entry key="libxml_ERR_40"> <!-- XML_ERR_ATTRIBUTE_NOT_FINISHED -->
+      <value>attribute value not ended (' or " expected) or too big</value>
+    </entry>
+
+    <entry key="libxml_ERR_41"> <!-- XML_ERR_ATTRIBUTE_WITHOUT_VALUE -->
+      <value>${"5": }attribute must have a value</value>
+    </entry>
+
+    <entry key="libxml_ERR_42"> <!-- XML_ERR_ATTRIBUTE_REDEFINED -->
+      <value>"$6?{5:}$6?6:5" attribute redefined</value>
+    </entry>
+
+    <entry key="libxml_ERR_43"> <!-- XML_ERR_LITERAL_NOT_STARTED -->
+      <value>' or " expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_44"> <!-- XML_ERR_LITERAL_NOT_FINISHED -->
+      <value>' or " expected to end System or Public ID literal</value>
+    </entry>
+
+    <entry key="libxml_ERR_45"> <!-- XML_ERR_COMMENT_NOT_FINISHED -->
+      <value>comment not ended ("-->" expected) or too big</value>
+    </entry>
+
+    <entry key="libxml_ERR_46"> <!-- XML_ERR_PI_NOT_STARTED -->
+      <value>processing instruction not started correctly (missing target name?)</value>
+    </entry>
+
+    <entry key="libxml_ERR_47"> <!-- XML_ERR_PI_NOT_FINISHED -->
+      <value>processing instruction "$5" not ended ("?>" expected) or too big</value>
+    </entry>
+
+    <entry key="libxml_ERR_48"> <!-- XML_ERR_NOTATION_NOT_STARTED -->
+      <value>notation name expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_49"> <!-- XML_ERR_NOTATION_NOT_FINISHED -->
+      <value>'>' expected to end notation declaration</value>
+    </entry>
+
+    <entry key="libxml_ERR_50"> <!-- XML_ERR_ATTLIST_NOT_STARTED -->
+      <value>'(' expected to start ATTLIST enumeration</value>
+    </entry>
+
+    <entry key="libxml_ERR_51"> <!-- XML_ERR_ATTLIST_NOT_FINISHED -->
+      <value>')' expected to end ATTLIST enumeration</value>
+    </entry>
+
+    <entry key="libxml_ERR_52"> <!-- XML_ERR_MIXED_NOT_STARTED -->
+      <value>'|' or ")*" expected for mixed content declaration</value>
+    </entry>
+
+    <!-- 53: XML_ERR_MIXED_NOT_FINISHED not used -->
+
+    <entry key="libxml_ERR_54"> <!-- XML_ERR_ELEMCONTENT_NOT_STARTED -->
+      <value>$5?5:{name or} '(' expected for content declaration</value>
+    </entry>
+
+    <entry key="libxml_ERR_55"> <!-- XML_ERR_ELEMCONTENT_NOT_FINISHED -->
+      <value>',', '|', or ')' expected in content declaration${ or depth 8 too deep}</value>
+    </entry>
+
+    <entry key="libxml_ERR_56"> <!-- XML_ERR_XMLDECL_NOT_STARTED -->
+      <value>"&lt;?xml" required to start XML declaration</value>
+    </entry>
+
+    <entry key="libxml_ERR_57"> <!-- XML_ERR_XMLDECL_NOT_FINISHED -->
+      <value>"?>" expected to end XML declaration</value>
+    </entry>
+
+    <!-- 58: XML_ERR_CONDSEC_NOT_STARTED not used -->
+
+    <entry key="libxml_ERR_59"> <!-- XML_ERR_CONDSEC_NOT_FINISHED -->
+      <value>XML conditional section not ended</value>
+    </entry>
+
+    <entry key="libxml_ERR_60"> <!-- XML_ERR_EXT_SUBSET_NOT_FINISHED -->
+      <value>content error in external subset</value>
+    </entry>
+
+    <entry key="libxml_ERR_61"> <!-- XML_ERR_DOCTYPE_NOT_FINISHED -->
+      <value>DOCTYPE improperly ended</value>
+    </entry>
+
+    <entry key="libxml_ERR_62"> <!-- XML_ERR_MISPLACED_CDATA_END -->
+      <value>"]]&gt;" not allowed in content</value>
+    </entry>
+
+    <entry key="libxml_ERR_63"> <!-- XML_ERR_CDATA_NOT_FINISHED -->
+      <value>CDATA not ended ("]]&gt;" expected) or too big</value>
+    </entry>
+
+    <entry key="libxml_ERR_64"> <!-- XML_ERR_RESERVED_XML_NAME -->
+      <value>"xml": reserved XML prefix</value>
+    </entry>
+
+    <entry key="libxml_ERR_65"> <!-- XML_ERR_SPACE_REQUIRED -->
+      <value>space required here</value>
+    </entry>
+
+    <entry key="libxml_ERR_66"> <!-- XML_ERR_SEPARATOR_REQUIRED -->
+      <value>'$8' expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_67"> <!-- XML_ERR_NMTOKEN_REQUIRED -->
+      <value>NMTOKEN expected in ATTLIST enumeration</value>
+    </entry>
+
+    <entry key="libxml_ERR_68"> <!-- XML_ERR_NAME_REQUIRED -->
+      <value>name expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_69"> <!-- XML_ERR_PCDATA_REQUIRED -->
+      <value>"#PCDATA" expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_70"> <!-- XML_ERR_URI_REQUIRED -->
+      <value>URI expected for SYSTEM or PUBLIC</value>
+    </entry>
+
+    <entry key="libxml_ERR_71"> <!-- XML_ERR_PUBID_REQUIRED -->
+      <value>PUBLIC identifier expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_72"> <!-- XML_ERR_LT_REQUIRED -->
+      <value>'&lt;' expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_73"> <!-- XML_ERR_GT_REQUIRED -->
+      <value>'>' expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_74"> <!-- XML_ERR_LTSLASH_REQUIRED -->
+      <value>"&lt;/" expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_75"> <!-- XML_ERR_EQUAL_REQUIRED -->
+      <value>'=' expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_76"> <!-- XML_ERR_TAG_NAME_MISMATCH -->
+      <value>"&lt;/$6>": closing tag mismatch for "&lt;$5>"</value>
+    </entry>
+
+    <entry key="libxml_ERR_77"> <!-- XML_ERR_TAG_NOT_FINISHED -->
+      <value>"$5": premature end of content for tag starting on line $8</value>
+    </entry>
+
+    <entry key="libxml_ERR_78"> <!-- XML_ERR_STANDALONE_VALUE -->
+      <value>"yes" or "no" expected for "standalone"</value>
+    </entry>
+
+    <entry key="libxml_ERR_79"> <!-- XML_ERR_ENCODING_NAME -->
+      <value>invalid XML encoding name</value>
+    </entry>
+
+    <entry key="libxml_ERR_80"> <!-- XML_ERR_HYPHEN_IN_COMMENT -->
+      <value>"--" forbidden within XML comment</value>
+    </entry>
+
+    <entry key="libxml_ERR_81"> <!-- XML_ERR_INVALID_ENCODING -->
+      <value>document labelled UTF-16 but has UTF-8 content</value>
+    </entry>
+
+    <!-- 82: XML_ERR_EXT_ENTITY_STANDALONE not used -->
+
+    <entry key="libxml_ERR_83"> <!-- XML_ERR_CONDSEC_INVALID -->
+      <value>'[' expected in XML condition section</value>
+    </entry>
+
+    <entry key="libxml_ERR_84"> <!-- XML_ERR_VALUE_REQUIRED -->
+      <value>entity value expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_85"> <!-- XML_ERR_NOT_WELL_BALANCED -->
+      <value>XML chunk is not well-balanced</value>
+    </entry>
+
+    <entry key="libxml_ERR_86"> <!-- XML_ERR_EXTRA_CONTENT -->
+      <value>extra content at end of well-balanced chunk</value>
+    </entry>
+
+    <entry key="libxml_ERR_87"> <!-- XML_ERR_ENTITY_CHAR_ERROR -->
+      <value>'$8' forbidden except for entity references</value>
+    </entry>
+
+    <entry key="libxml_ERR_88"> <!-- XML_ERR_ENTITY_PE_INTERNAL -->
+      <value>invalid entity type</value>
+    </entry>
+
+    <entry key="libxml_ERR_89"> <!-- XML_ERR_ENTITY_LOOP -->
+      <value>entity reference loop</value>
+    </entry>
+
+    <entry key="libxml_ERR_90"> <!-- XML_ERR_ENTITY_BOUNDARY -->
+      <value>declaration must start and end in the same entity</value>
+    </entry>
+
+    <entry key="libxml_ERR_91"> <!-- XML_ERR_INVALID_URI -->
+      <value>"$5": invalid URI</value>
+    </entry>
+
+    <entry key="libxml_ERR_92"> <!-- XML_ERR_URI_FRAGMENT -->
+      <value>URI fragment not allowed</value>
+    </entry>
+
+    <entry key="libxml_WAR_93"> <!-- XML_WAR_CATALOG_PI -->
+      <value>"$5": catalog processing instruction syntax error</value>
+    </entry>
+
+    <entry key="libxml_ERR_94"> <!-- XML_ERR_NO_DTD -->
+      <value>validation failed: no DTD found</value>
+    </entry>
+
+    <entry key="libxml_ERR_95"> <!-- XML_ERR_CONDSEC_INVALID_KEYWORD -->
+      <value>"IGNORE" or "INCLUDE" expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_96"> <!-- XML_ERR_VERSION_MISSING -->
+      <value>XML version expected</value>
+    </entry>
+
+    <entry key="libxml_WAR_97"> <!-- XML_WAR_UNKNOWN_VERSION -->
+      <value>"$5": unsupported XML version</value>
+    </entry>
+
+    <entry key="libxml_WAR_98"> <!-- XML_WAR_LANG_VALUE -->
+      <value>"$5": malformed xml:lang value</value>
+    </entry>
+
+    <entry key="libxml_WAR_99"> <!-- XML_WAR_NS_URI -->
+      <value>xmlns$6?{:5}\: URI "$6?6:5": invalid URI</value>
+    </entry>
+
+    <entry key="libxml_WAR_100"> <!-- XML_WAR_NS_URI_RELATIVE -->
+      <value>xmlns$6?{:5}\: URI "$6?6:5": invalid URI</value>
+    </entry>
+
+    <entry key="libxml_ERR_101"> <!-- XML_ERR_MISSING_ENCODING -->
+      <value>encoding expected in text declaration</value>
+    </entry>
+
+    <entry key="libxml_WAR_102"> <!-- XML_WAR_SPACE_VALUE -->
+      <value>"$5": invalid value for "xml:space"; either "default" or "preserve" expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_103"> <!-- XML_ERR_NOT_STANDALONE -->
+      <value>"$5": entity marked standalone but requires external subset</value>
+    </entry>
+
+    <entry key="libxml_ERR_104"> <!-- XML_ERR_ENTITY_PROCESSING -->
+      <value>"$5": failed to process entity or called while not in subset</value>
+    </entry>
+
+    <entry key="libxml_ERR_105"> <!-- XML_ERR_NOTATION_PROCESSING -->
+      <value>"$5": external or public ID missing or called while not in subset</value>
+    </entry>
+
+    <entry key="libxml_WAR_106"> <!-- XML_WAR_NS_COLUMN -->
+      <value>"$5": avoid attribute ending with ':'</value>
+    </entry>
+
+    <entry key="libxml_WAR_107"> <!-- XML_WAR_ENTITY_REDEFINED -->
+      <value>"$5": entity already defined in the internal subset</value>
+    </entry>
+
+    <entry key="libxml_ERR_108"> <!-- XML_ERR_UNKNOWN_VERSION -->
+      <value>"$5": unsupprted XML version</value>
+    </entry>
+
+    <entry key="libxml_ERR_109"> <!-- XML_ERR_VERSION_MISMATCH -->
+      <value>document/entity version mismatch</value>
+    </entry>
+
+    <entry key="libxml_ERR_110"> <!-- XML_ERR_NAME_TOO_LONG -->
+      <value>$5 too long (use XML_PARSE_HUGE option)</value>
+    </entry>
+
+    <entry key="libxml_ERR_200"> <!-- XML_NS_ERR_XML_NAMESPACE -->
+      <value>${"5": }invalid namespace or prefix</value>
+    </entry>
+
+    <entry key="libxml_ERR_201"> <!-- XML_NS_ERR_UNDEFINED_NAMESPACE -->
+      <value>${"5": }namespace prefix${ for "7?6"}${ on "7?7:6"} not defined</value>
+    </entry>
+
+    <entry key="libxml_ERR_202"> <!-- XML_NS_ERR_QNAME -->
+      <value>"$5${:6}": invalid XML QName</value>
+    </entry>
+
+    <entry key="libxml_ERR_203"> <!-- XML_NS_ERR_ATTRIBUTE_REDEFINED -->
+      <value>"$5": attribute in namespace "$6" redefined</value>
+    </entry>
+
+    <entry key="libxml_ERR_204"> <!-- XML_NS_ERR_EMPTY -->
+      <value>empty namespace for prefix "$5"</value>
+    </entry>
+
+    <entry key="libxml_ERR_205"> <!-- XML_NS_ERR_COLON -->
+      <value>"$5": colon is forbidden in entity, notation, and processing instruction names</value>
+    </entry>
+
+    <entry key="libxml_ERR_500"> <!-- XML_DTD_ATTRIBUTE_DEFAULT -->
+      <!--
+       ! We can't do better here since libxml uses puts different things in the
+       ! positional parameters.
+       !-->
+      <value>"$5": invalid attribute value</value>
+    </entry>
+
+    <entry key="libxml_ERR_501"> <!-- XML_DTD_ATTRIBUTE_REDEFINED -->
+      <value>"$5": attribute of element "$6" already defined</value>
+    </entry>
+
+    <entry key="libxml_ERR_502"> <!-- XML_DTD_ATTRIBUTE_VALUE -->
+      <!--
+       ! We can't do better here since libxml uses puts different things in the
+       ! positional parameters.
+       !-->
+      <value>"$5": invalid attribute value</value>
+    </entry>
+
+    <entry key="libxml_ERR_503"> <!-- XML_DTD_CONTENT_ERROR -->
+      <value>"$5": defintion has duplicate references to "$6"</value>
+    </entry>
+
+    <entry key="libxml_ERR_504"> <!-- XML_DTD_CONTENT_MODEL -->
+      <!--
+       ! We can't do better here since libxml uses puts different things in the
+       ! positional parameters.
+       !-->
+      <value>${"5:" }element content does not follow DTD</value>
+    </entry>
+
+    <entry key="libxml_ERR_505"> <!-- XML_DTD_CONTENT_NOT_DETERMINIST -->
+      <value>"$5": content model is not deteministic</value>
+    </entry>
+
+    <entry key="libxml_ERR_506"> <!-- XML_DTD_DIFFERENT_PREFIX -->
+      <value>element "$5" required attribute "$6:$7" has different prefix</value>
+    </entry>
+
+    <entry key="libxml_ERR_507"> <!-- XML_DTD_ELEM_DEFAULT_NAMESPACE -->
+      <value>"$5": element namespace name for default namespace does not match DTD</value>
+    </entry>
+
+    <entry key="libxml_ERR_508"> <!-- XML_DTD_ELEM_NAMESPACE -->
+      <!--
+       ! We can't do better here since libxml uses puts different things in the
+       ! positional parameters.
+       !-->
+      <value>"$7?6:5": invalid attribute value or element namespace name does not match DTD</value>
+    </entry>
+
+    <entry key="libxml_ERR_509"> <!-- XML_DTD_ELEM_REDEFINED -->
+      <value>"$5": element redefined</value>
+    </entry>
+
+    <entry key="libxml_ERR_510"> <!-- XML_DTD_EMPTY_NOTATION -->
+      <value>"$5": notation attribute declared "EMPTY" for element "$6"</value>
+    </entry>
+
+    <entry key="libxml_ERR_511"> <!-- XML_DTD_ENTITY_TYPE -->
+      <value>"$5": ENTITY attribute references an entity "$6" of wrong type</value>
+    </entry>
+
+    <entry key="libxml_ERR_512"> <!-- XML_DTD_ID_FIXED -->
+      <value>"$5": invalid ID attribute of "$6" ("#IMPLIED" or "#REQUIRED" expected)</value>
+    </entry>
+
+    <entry key="libxml_ERR_513"> <!-- XML_DTD_ID_REDEFINED -->
+      <value>"$5": ID already defined</value>
+    </entry>
+
+    <entry key="libxml_ERR_514"> <!-- XML_DTD_ID_SUBSET -->
+      <value>"$5": element has${ 8} attribute(s) defined in the internal subset: "$6"</value>
+    </entry>
+
+    <entry key="libxml_ERR_515"> <!-- XML_DTD_INVALID_CHILD -->
+      <value>"$5": element not declared in list of possible children of "$6"</value>
+    </entry>
+
+    <entry key="libxml_ERR_516"> <!-- XML_DTD_INVALID_DEFAULT -->
+      <value>"xmlns$6?{:5}" invalid attribute of "$6?6:5"</value>
+    </entry>
+
+    <entry key="libxml_ERR_517"> <!-- XML_DTD_LOAD_ERROR -->
+      <value>"$5": could not load external subset</value>
+    </entry>
+
+    <entry key="libxml_ERR_518"> <!-- XML_DTD_MISSING_ATTRIBUTE -->
+      <value>"$7?{6:}$7?7:6": attribute not carried by element "$5"</value>
+    </entry>
+
+    <entry key="libxml_ERR_519"> <!-- XML_DTD_MIXED_CORRUPT -->
+      <value>internal MIXED struct corrupted</value>
+    </entry>
+
+    <entry key="libxml_ERR_520"> <!-- XML_DTD_MULTIPLE_ID -->
+      <value>"$5": element has too many ID attributes defined: "$6"</value>
+    </entry>
+
+    <entry key="libxml_ERR_521"> <!-- XML_DTD_NO_DOC -->
+      <value>document is null</value>
+    </entry>
+
+    <entry key="libxml_ERR_522"> <!-- XML_DTD_NO_DTD -->
+      <value>document without internal/external subset or no DTD found</value>
+    </entry>
+
+    <!-- 523: XML_DTD_NO_ELEM_NAME not used -->
+
+    <entry key="libxml_ERR_524"> <!-- XML_DTD_NO_PREFIX -->
+      <value>"$6:$7": required attribute of element "$5" has no prefix</value>
+    </entry>
+
+    <entry key="libxml_ERR_525"> <!-- XML_DTD_NO_ROOT -->
+      <value>no root element</value>
+    </entry>
+
+    <entry key="libxml_ERR_526"> <!-- XML_DTD_NOTATION_REDEFINED -->
+      <value>"$5": notation already defined</value>
+    </entry>
+
+    <entry key="libxml_ERR_527"> <!-- XML_DTD_NOTATION_VALUE -->
+      <value>"$5": value for attribute "xmlns$7?{:6}" of element "$7?7:6" is not among the enumerated notations</value>
+    </entry>
+
+    <entry key="libxml_ERR_528"> <!-- XML_DTD_NOT_EMPTY -->
+      <value>"$5": element declared empty but has content</value>
+    </entry>
+
+    <entry key="libxml_ERR_529"> <!-- XML_DTD_NOT_PCDATA -->
+      <value>"$5": element declared "#PCDATA" but has non-text nodes</value>
+    </entry>
+
+    <entry key="libxml_ERR_530"> <!-- XML_DTD_NOT_STANDALONE -->
+      <value>"$5" on "$6" value has to be normalized based on external subset declaration</value>
+    </entry>
+
+    <entry key="libxml_ERR_531"> <!-- XML_DTD_ROOT_NAME -->
+      <value>"$5"/"$6": root/DTD name mismatch</value>
+    </entry>
+
+    <entry key="libxml_ERR_532"> <!-- XML_DTD_STANDALONE_WHITE_SPACE -->
+      <value>"$5": element declared in external subset contains whitespace nodes</value>
+    </entry>
+
+    <entry key="libxml_ERR_533"> <!-- XML_DTD_UNKNOWN_ATTRIBUTE -->
+      <value>"$6?5:{xmlns}": attribute not declared for element "$6?6:5"</value>
+    </entry>
+
+    <entry key="libxml_ERR_534"> <!-- XML_DTD_UNKNOWN_ELEM -->
+      <value>"$6?6:5": undeclared element$6?{ for attribute "5"}</value>
+    </entry>
+
+    <entry key="libxml_ERR_535"> <!-- XML_DTD_UNKNOWN_ENTITY -->
+      <value>$5?{"6": unknown entity referenced by attribute "5"}:{unknown entity type}</value>
+    </entry>
+
+    <entry key="libxml_ERR_536"> <!-- XML_DTD_UNKNOWN_ID -->
+      <value>"$5": attribute references an unknown ID "$6"${ on line 8}"</value>
+    </entry>
+
+    <entry key="libxml_ERR_537"> <!-- XML_DTD_UNKNOWN_NOTATION -->
+      <!--
+       ! We can't do better here since libxml uses puts different things in the
+       ! positional parameters.
+       !-->
+      <value>"$5": unknown notation</value>
+    </entry>
+
+    <entry key="libxml_ERR_538"> <!-- XML_DTD_STANDALONE_DEFAULTED -->
+      <value>"$5": attribute on "$7" defaulted from external subset</value>
+    </entry>
+
+    <entry key="libxml_ERR_539"> <!-- XML_DTD_XMLID_VALUE -->
+      <value>"$5": xml:id attribute value is not an NCName</value>
+    </entry>
+
+    <entry key="libxml_ERR_540"> <!-- XML_DTD_XMLID_TYPE -->
+      <value>"$5": xml:id attribute type must be ID</value>
+    </entry>
+
+    <entry key="libxml_ERR_541"> <!-- XML_DTD_DUP_TOKEN -->
+      <value>"$5": duplicate attribute enumeration value token</value>
     </entry>
 
   </subvalues>

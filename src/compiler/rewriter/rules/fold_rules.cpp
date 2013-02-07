@@ -49,103 +49,19 @@
 
 #include <iterator>
 
-using namespace std;
-
 namespace zorba {
 
-static void remove_wincond_vars(const flwor_wincond*, expr::FreeVars&);
+static bool execute(CompilerCB*, expr* node, store::Item_t& result);
 
-static bool standalone_expr(expr*);
-
-static bool already_folded(expr*, RewriterContext&);
-
-static expr* partial_eval_fo (RewriterContext&, fo_expr*);
+static expr* partial_eval_fo(RewriterContext&, fo_expr*);
 
 static expr* partial_eval_logic(fo_expr*, bool, RewriterContext&);
 
 static expr* partial_eval_eq(RewriterContext&, fo_expr&);
 
-static expr* partial_eval_return_clause(flwor_expr* flworExpr, bool& modified, RewriterContext& rCtx);
+static expr* partial_eval_return_clause(flwor_expr*, bool&, RewriterContext&);
 
 static bool maybe_needs_implicit_timezone(const fo_expr* fo);
-
-
-/*******************************************************************************
-
-********************************************************************************/
-static expr* execute (
-    CompilerCB* compilercb,
-    expr* node,
-    vector<store::Item_t>& result)
-{
-  ulong nextVarId = 1;
-  PlanIter_t plan = codegen ("const-folded expr", node, compilercb, nextVarId);
-  QueryLoc loc = LOC (node);
-  store::Item_t item;
-
-  CompilerCB expr_ccb(*compilercb);
-  expr_ccb.theRootSctx = node->get_sctx();
-  try
-  {
-    //std::cout << "Const folding expr : " << std::endl;
-    //node->put(std::cout);
-    //std::cout << std::endl;
-
-    PlanWrapperHolder pw(new PlanWrapper(plan,
-                                         &expr_ccb,
-                                         0,      // dynamic ctx
-                                         NULL,   // xquery
-                                         0,      // stack depth
-                                         expr_ccb.theHaveTimeout,
-                                         expr_ccb.theTimeout));
-    for (;;)
-    {
-      if (!pw->next(item))
-      {
-        break;
-      }
-
-      if (item->isError())
-      {
-        node->setUnfoldable(ANNOTATION_TRUE_FIXED);
-        node->setNonDiscardable(ANNOTATION_TRUE_FIXED);
-        return node;
-      }
-
-      result.push_back(item);
-    }
-
-    return NULL;
-  }
-  catch (ZorbaException const&)
-  {
-    node->setUnfoldable(ANNOTATION_TRUE_FIXED);
-    node->setNonDiscardable(ANNOTATION_TRUE_FIXED);
-    return node;
-    // TODO:
-    // we had to disable folding of errors because the FnErrorIterator
-    // was erroneously used. It always raises a ZorbaUserError (which is not correct).
-#if 0
-    Error lErrorCode = e.theErrorCode;
-    QueryLoc loc;
-    loc.setLineBegin(e.theQueryLine);
-    loc.setColumnBegin(e.theQueryColumn);
-    store::Item_t qname;
-    ITEM_FACTORY->createQName(qname,
-                              "http://www.w3.org/2005/xqt-errors",
-                              "err",
-                              error::ZorbaError::toString(lErrorCode).c_str());
-    expr* err_expr = rCtx.theEM->create_fo_expr(node->get_sctx_id(),
-                                  loc,
-                                  GET_BUILTIN_FUNCTION(FN_ERROR_2),
-                                  rCtx.theEM->create_const_expr(node->get_sctx_id(), loc, qname),
-                                  rCtx.theEM->create_const_expr(node->get_sctx_id(), loc, e.theDescription));
-    err_expr->setUnfoldable(ANNOTATION_TRUE_FIXED);
-    err_expr->setNonDiscardable(ANNOTATION_TRUE_FIXED);
-    return err_expr;
-#endif
-  }
-}
 
 
 /*******************************************************************************
@@ -170,12 +86,16 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   BoolAnnotationValue saveNonDiscardable = node->getNonDiscardable();
   BoolAnnotationValue saveUnfoldable = node->getUnfoldable();
   BoolAnnotationValue saveContainsRecursiveCall = node->getContainsRecursiveCall();
+  BoolAnnotationValue saveConstructsNodes = node->getConstructsNodes();
+  BoolAnnotationValue saveDereferencesNodes = node->getDereferencesNodes();
 
-  // By default, an expr is discardable, foldable, and does not contain
-  // recursive calls
+  // By default, an expr is discardable, foldable,  does not contain recursive
+  // calls, and returns constructed nodes.
   BoolAnnotationValue curNonDiscardable = ANNOTATION_FALSE;
   BoolAnnotationValue curUnfoldable = ANNOTATION_FALSE;
   BoolAnnotationValue curContainsRecursiveCall = ANNOTATION_FALSE;
+  BoolAnnotationValue curConstructsNodes = ANNOTATION_FALSE;
+  BoolAnnotationValue curDereferencesNodes = ANNOTATION_FALSE;
 
   // Process udfs: If the current expr is a udf invocation, optimize the udf
   // body, if not optimized already, and determine whether the invocation is
@@ -185,12 +105,14 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     fo_expr* fo = static_cast<fo_expr *>(node);
     function* f = fo->get_func();
 
-    if (f->isUdf())
+    if (f->isUdf() && !theIsLocal)
     {
       user_function* udf = static_cast<user_function*>(f);
 
       if (!udf->isOptimized())
       {
+        // we can be here in case of mutually recursive udfs or during plan
+        // serialization and udf was not callable by the main program
         udf->optimize();
       }
 
@@ -221,123 +143,90 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     if (childExpr->containsRecursiveCall())
       curContainsRecursiveCall = ANNOTATION_TRUE;
 
+    if (childExpr->constructsNodes())
+      curConstructsNodes = ANNOTATION_TRUE;
+
+    if (childExpr->dereferencesNodes())
+      curDereferencesNodes = ANNOTATION_TRUE;
+
     iter.next();
   }
 
-  // Certain exprs are nondiscardable independently from their children.
-  if (saveNonDiscardable != ANNOTATION_TRUE_FIXED)
+  switch (node->get_expr_kind())
   {
-    if (node->is_sequential())
+  case fo_expr_kind:
+  {
+    fo_expr* fo = static_cast<fo_expr *>(node);
+    function* f = fo->get_func();
+        
+    if (!f->isUdf())
     {
-      curNonDiscardable = ANNOTATION_TRUE_FIXED;
-    }
-    else
-    {
-      switch (node->get_expr_kind())
-      {
-      case fo_expr_kind:
-      {
-        fo_expr* fo = static_cast<fo_expr *>(node);
-        function* f = fo->get_func();
-
-        bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
-
-        if (f->getKind() == FunctionConsts::FN_TRACE_2 ||
-            isErrorFunc)
-        {
-          curNonDiscardable = ANNOTATION_TRUE_FIXED;
-        }
-
-        break;
-      }
-
-      case cast_expr_kind:
-      case treat_expr_kind:
-      case promote_expr_kind:
+      if (FunctionConsts::FN_ERROR_0 <= f->getKind() &&
+          f->getKind() <= FunctionConsts::FN_TRACE_2)
       {
         curNonDiscardable = ANNOTATION_TRUE_FIXED;
-        break;
+        curUnfoldable = ANNOTATION_TRUE_FIXED;
       }
-
-      default:
+      else if (f->getKind() == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
       {
-        break;
+        curDereferencesNodes = ANNOTATION_TRUE;
       }
+      
+      // Do not fold functions that always require access to the dynamic context,
+      // or may need to access the implicit timezone (which is also in the dynamic
+      // constext).
+      if (saveUnfoldable != ANNOTATION_TRUE_FIXED &&
+          (f->accessesDynCtx() ||
+           maybe_needs_implicit_timezone(fo) ||
+           !f->isDeterministic()))
+      {
+        curUnfoldable = ANNOTATION_TRUE_FIXED;
       }
     }
-  }
-
-  // Certain exprs are unfoldable independently from their children
-  if (saveUnfoldable != ANNOTATION_TRUE_FIXED)
-  {
-    if (node->is_sequential())
+    else if (theIsLocal)
     {
-      curUnfoldable = ANNOTATION_TRUE_FIXED;
+      curUnfoldable = saveUnfoldable;
+      curDereferencesNodes = saveDereferencesNodes;
+      curConstructsNodes = saveConstructsNodes;
     }
     else
     {
-      switch (node->get_expr_kind())
-      {
-      case fo_expr_kind:
-      {
-        fo_expr* fo = static_cast<fo_expr *>(node);
-        function* f = fo->get_func();
-
-        bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
-
-        // Do not fold functions that always require access to the dynamic context,
-        // or may need to access the implicit timezone (which is also in the dynamic
-        // constext).
-        if (isErrorFunc ||
-            f->accessesDynCtx() ||
-            maybe_needs_implicit_timezone(fo) ||
-            !f->isDeterministic())
-        {
-          curUnfoldable = ANNOTATION_TRUE_FIXED;
-        }
-
-        break;
-      }
-
-      case var_expr_kind:
-      {
-        var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
-
-        if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
-          curUnfoldable = ANNOTATION_TRUE_FIXED;
-
-        break;
-      }
-
-      // Node constructors are unfoldable because if a node constructor is inside
-      // a loop, then it will create a different xml tree every time it is invoked,
-      // even if the constructor itself is "constant" (i.e. does not reference any
-      // varialbes)
-      case elem_expr_kind:
-      case attr_expr_kind:
-      case text_expr_kind:
-      case pi_expr_kind:
-      case doc_expr_kind:
+      if (saveUnfoldable != ANNOTATION_TRUE_FIXED &&
+          (f->accessesDynCtx() || !f->isDeterministic()))
       {
         curUnfoldable = ANNOTATION_TRUE_FIXED;
-        break;
       }
-
-      case delete_expr_kind:
-      case insert_expr_kind:
-      case rename_expr_kind:
-      case replace_expr_kind:
-      {
-        curUnfoldable = ANNOTATION_TRUE_FIXED;
-        break;
-      }
-
-      default:
-      {
-        break;
-      }
-      }
+      
+      if (static_cast<user_function*>(f)->dereferencesNodes())
+        curDereferencesNodes = ANNOTATION_TRUE;
+      
+      if (static_cast<user_function*>(f)->constructsNodes())
+        curConstructsNodes = ANNOTATION_TRUE;
     }
+    
+    break;
+  }
+  
+  case var_expr_kind:
+  {
+    var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
+    
+    if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
+      curUnfoldable = ANNOTATION_TRUE_FIXED;
+    
+    break;
+  }
+  
+  default:
+  {
+    break;
+  }
+  }
+
+  if (node->is_sequential())
+  {
+    curNonDiscardable = ANNOTATION_TRUE_FIXED;
+    curUnfoldable = ANNOTATION_TRUE_FIXED;
   }
 
   if (saveNonDiscardable != curNonDiscardable &&
@@ -358,6 +247,20 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
       saveContainsRecursiveCall != ANNOTATION_TRUE_FIXED)
   {
     node->setContainsRecursiveCall(curContainsRecursiveCall);
+    modified = true;
+  }
+
+  if (saveConstructsNodes != curConstructsNodes &&
+      saveConstructsNodes != ANNOTATION_TRUE_FIXED)
+  {
+    node->setConstructsNodes(curConstructsNodes);
+    modified = true;
+  }
+
+  if (saveDereferencesNodes != curDereferencesNodes &&
+      saveDereferencesNodes != ANNOTATION_TRUE_FIXED)
+  {
+    node->setDereferencesNodes(curDereferencesNodes);
     modified = true;
   }
 
@@ -385,7 +288,7 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo)
              fkind == FunctionConsts::FN_MIN_2 ||
              fkind == FunctionConsts::FN_MAX_1 ||
              fkind == FunctionConsts::FN_MAX_2)
-            && TypeOps::maybe_date_time(tm, *TypeOps::prime_type(tm, *type0))) );
+            && TypeOps::maybe_date_time(tm, *type0)) );
 }
 
 
@@ -393,131 +296,76 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo)
   For each expr E, collect all the variables that are referenced directly by E
   and its subexpressions.
 ********************************************************************************/
-
-RULE_REWRITE_PRE(MarkFreeVars)
-{
-  return NULL;
-}
-
-RULE_REWRITE_POST(MarkFreeVars)
+expr* MarkFreeVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
   expr::FreeVars& freevars = node->getFreeVars();
 
   freevars.clear();
 
-  if (node->get_expr_kind() == var_expr_kind)
+  switch (node->get_expr_kind())
+  {
+  case var_expr_kind:
   {
     var_expr* v = static_cast<var_expr *>(node);
     freevars.insert(v);
+
+    break;
   }
-  else
+  // Get the free vars of each child expr and add them to the free vars of the
+  // parent. But in case of a flwor expr, do not add any variables defined by
+  // the flwor expr itself
+
+  case flwor_expr_kind:
+  case gflwor_expr_kind:
   {
-    // Get the free vars of each child expr and add them to the free vars of the
-    // parent.
+    flwor_expr* flwor = static_cast<flwor_expr *> (node);
+
     ExprIterator iter(node);
     while (!iter.done())
     {
       expr* e = **iter;
+        
+      apply(rCtx, e, modified);
 
+      const expr::FreeVars& kfv = e->getFreeVars();
+
+      expr::FreeVars::const_iterator ite = kfv.begin();
+      expr::FreeVars::const_iterator end = kfv.end();
+      for (; ite != end; ++ite)
+      {
+        flwor_clause* c = (*ite)->get_flwor_clause();
+        if (c != NULL && c->get_flwor_expr() == flwor)
+          continue;
+        
+        freevars.insert(*ite);
+      }
+      
+      iter.next();
+    }
+
+    break;
+  }
+  default:
+  {
+    ExprIterator iter(node);
+
+    while (!iter.done())
+    {
+      expr* e = **iter;
+
+      apply(rCtx, e, modified);
+        
       const expr::FreeVars& kfv = e->getFreeVars();
       std::copy(kfv.begin(),
                 kfv.end(),
                 inserter(freevars, freevars.begin()));
-
+      
       iter.next();
     }
-
-    // For a flwor expr, remove the vars defined by the flwor expr itself from
-    // the flwor free vars .
-    if (node->get_expr_kind() == flwor_expr_kind ||
-        node->get_expr_kind() == gflwor_expr_kind)
-    {
-      flwor_expr* flwor = dynamic_cast<flwor_expr *> (node);
-      for (flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
-           i != flwor->clause_end();
-           ++i)
-      {
-        const flwor_clause* c = *i;
-
-        if (c->get_kind() == flwor_clause::for_clause)
-        {
-          const for_clause* fc = static_cast<const for_clause *>(c);
-
-          freevars.erase(fc->get_var());
-          if (fc->get_pos_var() != NULL)
-            freevars.erase(fc->get_pos_var());
-        }
-        else if (c->get_kind() == flwor_clause::let_clause)
-        {
-          const let_clause* lc = static_cast<const let_clause *>(c);
-
-          freevars.erase(lc->get_var());
-        }
-        else if (c->get_kind() == flwor_clause::window_clause)
-        {
-          const window_clause* wc = static_cast<const window_clause *>(c);
-
-          freevars.erase(wc->get_var());
-
-          flwor_wincond* startCond = wc->get_win_start();
-          flwor_wincond* stopCond = wc->get_win_stop();
-
-          if (startCond != NULL)
-            remove_wincond_vars(startCond, freevars);
-
-          if (stopCond != NULL)
-            remove_wincond_vars(stopCond, freevars);
-        }
-        else if (c->get_kind() == flwor_clause::group_clause)
-        {
-          const group_clause* gc = static_cast<const group_clause *>(c);
-
-          const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-          csize numGroupVars = gvars.size();
-
-          for (csize i = 0; i < numGroupVars; ++i)
-          {
-            freevars.erase(gvars[i].second);
-          }
-
-          const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-          csize numNonGroupVars = ngvars.size();
-
-          for (csize i = 0; i < numNonGroupVars; ++i)
-          {
-            freevars.erase(ngvars[i].second);
-          }
-        }
-        else if (c->get_kind() == flwor_clause::count_clause)
-        {
-          const count_clause* cc = static_cast<const count_clause *>(c);
-
-          freevars.erase(cc->get_var());
-        }
-      }
-    }
+  }
   }
 
   return NULL;
-}
-
-
-static void remove_wincond_vars(
-    const flwor_wincond* cond,
-    expr::FreeVars& freevars)
-{
-  const flwor_wincond::vars& inVars = cond->get_in_vars();
-  const flwor_wincond::vars& outVars = cond->get_out_vars();
-
-  freevars.erase(inVars.posvar);
-  freevars.erase(inVars.curr);
-  freevars.erase(inVars.prev);
-  freevars.erase(inVars.next);
-
-  freevars.erase(outVars.posvar);
-  freevars.erase(outVars.curr);
-  freevars.erase(outVars.prev);
-  freevars.erase(outVars.next);
 }
 
 
@@ -527,55 +375,158 @@ static void remove_wincond_vars(
   fn:concatenate expr, if no item is returned by the evaluation of the const
   expr.
 ********************************************************************************/
-
-RULE_REWRITE_PRE(FoldConst)
+expr* FoldConst::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
-  xqtref_t rtype = node->get_return_type();
+  expr_kind_t k = node->get_expr_kind();
+  xqtref_t rtype = node->get_return_type(); // DO NOT MOVE THIS !!!!
 
-  if (standalone_expr(node) &&
-      ! already_folded(node, rCtx) &&
-      node->getFreeVars().empty() &&
-      ! node->isUnfoldable() &&
-      rtype->max_card() <= 1)
+  switch (k)
   {
-    vector<store::Item_t> result;
-    expr* folded = execute(rCtx.getCompilerCB(), node, result);
-    if (folded == NULL)
-    {
-      ZORBA_ASSERT (result.size () <= 1);
-      folded = (result.size () == 1 ?
-                ((expr*) (rCtx.theEM->create_const_expr(node->get_sctx(), LOC(node), result[0]))) :
-                ((expr*) (rCtx.theEM->create_seq(node->get_sctx(), LOC(node)))));
-    }
-    return folded;
+  case const_expr_kind:
+  case match_expr_kind:
+  case axis_step_expr_kind:
+  {
+    break;
   }
+  case fo_expr_kind:
+  {
+    fo_expr* fo = static_cast<fo_expr*>(node);
+
+    if (fo->get_func()->getKind() == FunctionConsts::OP_CONCATENATE_N &&
+        fo->num_args() == 0)
+      break;
+  }
+   
+  default:
+  {
+    if (node->getFreeVars().empty() &&
+        ! node->isUnfoldable() &&
+        rtype->max_card() <= 1)
+    {
+      store::Item_t result;
+      bool folded = execute(rCtx.getCompilerCB(), node, result);
+
+      if (folded)
+      {
+        expr* foldedExpr;
+
+        if (result)
+        {
+          foldedExpr = rCtx.theEM->
+          create_const_expr(node->get_sctx(), node->get_udf(), LOC(node), result);
+        }
+        else
+        {
+          foldedExpr  = rCtx.theEM->
+          create_seq(node->get_sctx(), node->get_udf(), LOC(node));
+        }
+
+        modified = true;
+        return foldedExpr;
+      }
+    }
+
+    break;
+  }
+  }
+
+  ExprIterator iter(node);
+
+  while (!iter.done())
+  {
+    expr* new_e = apply(rCtx, **iter, modified);
+    if (new_e != NULL)
+    {
+      **iter = new_e;
+    }
+    
+    iter.next();
+  }
+
   return NULL;
 }
 
-RULE_REWRITE_POST(FoldConst)
+
+/*******************************************************************************
+
+********************************************************************************/
+static bool execute(
+    CompilerCB* compilercb,
+    expr* node,
+    store::Item_t& result)
 {
-  return NULL;
-}
+  ulong nextVarId = 1;
+  PlanIter_t plan = codegen("const-folded expr", node, compilercb, nextVarId);
 
+  QueryLoc loc = LOC (node);
+  store::Item_t item;
 
-static bool standalone_expr(expr* e)
-{
-  expr_kind_t k = e->get_expr_kind ();
-  return k != match_expr_kind && k != axis_step_expr_kind;
-}
+  CompilerCB expr_ccb(*compilercb);
+  expr_ccb.theRootSctx = node->get_sctx();
 
+  try
+  {
+    //std::cout << "Const folding expr : " << std::endl;
+    //node->put(std::cout);
+    //std::cout << std::endl;
 
-static bool already_folded(expr* e, RewriterContext& rCtx)
-{
-  if (e->get_expr_kind () == const_expr_kind)
+    PlanWrapperHolder pw(new PlanWrapper(plan,
+                                         &expr_ccb,
+                                         0,      // dynamic ctx
+                                         NULL,   // xquery
+                                         0,      // stack depth
+                                         expr_ccb.theHaveTimeout,
+                                         expr_ccb.theTimeout));
+    if (pw->next(item))
+    {
+      if (item->isError())
+      {
+        node->setUnfoldable(ANNOTATION_TRUE_FIXED);
+        node->setNonDiscardable(ANNOTATION_TRUE_FIXED);
+        return false;
+      }
+
+      result.transfer(item);
+
+      ZORBA_ASSERT(!pw->next(item));
+    }
+    else
+    {
+      result = NULL;
+    }
+
     return true;
-  if (e->get_expr_kind () != fo_expr_kind)
+  }
+  catch (ZorbaException const&)
+  {
+    node->setUnfoldable(ANNOTATION_TRUE_FIXED);
+    node->setNonDiscardable(ANNOTATION_TRUE_FIXED);
     return false;
 
-  const fo_expr* fo = dynamic_cast<fo_expr*>(e);
-
-  return (fo->get_func()->getKind() == FunctionConsts::OP_CONCATENATE_N &&
-          fo->num_args() == 0);
+    // TODO:
+    // we had to disable folding of errors because the FnErrorIterator
+    // was erroneously used. It always raises a ZorbaUserError (which is not correct).
+#if 0
+    Error lErrorCode = e.theErrorCode;
+    QueryLoc loc;
+    loc.setLineBegin(e.theQueryLine);
+    loc.setColumnBegin(e.theQueryColumn);
+    store::Item_t qname;
+    ITEM_FACTORY->createQName(qname,
+                              "http://www.w3.org/2005/xqt-errors",
+                              "err",
+                              error::ZorbaError::toString(lErrorCode).c_str());
+    expr* err_expr = rCtx.theEM->
+    create_fo_expr(node->get_sctx_id(),
+                   loc,
+                   BUILTIN_FUNC(FN_ERROR_2),
+                   rCtx.theEM->create_const_expr(node->get_sctx(), loc, qname),
+                   rCtx.theEM->create_const_expr(node->get_sctx(), loc, e.theDescription));
+    err_expr->setUnfoldable(ANNOTATION_TRUE_FIXED);
+    err_expr->setNonDiscardable(ANNOTATION_TRUE_FIXED);
+    return err_expr;
+#endif
+  }
 }
 
 
@@ -621,11 +572,18 @@ static bool already_folded(expr* e, RewriterContext& rCtx)
 RULE_REWRITE_PRE(PartialEval)
 {
   TypeManager* tm = node->get_type_manager();
+  static_context* sctx = node->get_sctx();
 
-  // if node is a castable or instance-of expr
-  const castable_base_expr* cbe = NULL;
-  if ((cbe = dynamic_cast<const castable_base_expr *>(node)) != NULL)
+  switch (node->get_expr_kind())
   {
+  case instanceof_expr_kind:
+  case castable_expr_kind:
+  {
+    const castable_base_expr* cbe = static_cast<const castable_base_expr*>(node);
+
+    user_function* udf = node->get_udf();
+    assert(udf == rCtx.theUDF);
+
     expr* arg = cbe->get_input();
 
     if (arg->isNonDiscardable())
@@ -634,39 +592,51 @@ RULE_REWRITE_PRE(PartialEval)
     xqtref_t argType = arg->get_return_type();
     xqtref_t targetType = cbe->get_target_type();
 
-    if (TypeOps::is_subtype(tm, *argType, *targetType, node->get_loc()))
+    try
     {
-      return rCtx.theEM->create_const_expr(node->get_sctx(), LOC(node), true);
-    }
-    else if (node->get_expr_kind() == instanceof_expr_kind)
-    {
-      instanceof_expr* ioExpr = static_cast<instanceof_expr*>(node);
-
-      if (ioExpr->getCheckPrimeOnly())
+      if (TypeOps::is_subtype(tm, *argType, *targetType, node->get_loc()))
       {
-        argType = TypeOps::prime_type(tm, *argType);
-        targetType = TypeOps::prime_type(tm, *targetType);
+        return rCtx.theEM->create_const_expr(sctx, udf, LOC(node), true);
       }
+      else if (node->get_expr_kind() == instanceof_expr_kind)
+      {
+        instanceof_expr* ioExpr = static_cast<instanceof_expr*>(node);
 
-      return (TypeOps::intersect_type(*argType, *targetType, tm) ==
-              GENV_TYPESYSTEM.NONE_TYPE ?
-              rCtx.theEM->create_const_expr(node->get_sctx(), LOC(node), false) :
-              NULL);
+        if (ioExpr->getCheckPrimeOnly())
+        {
+          argType = TypeOps::prime_type(tm, *argType);
+          targetType = TypeOps::prime_type(tm, *targetType);
+        }
+
+        return (TypeOps::intersect_type(*argType, *targetType, tm) ==
+                GENV_TYPESYSTEM.NONE_TYPE ?
+                rCtx.theEM->create_const_expr(sctx, udf, LOC(node), false) :
+                NULL);
+      }
+      else
+      {
+        return NULL;
+      }
     }
-    else
+    catch (XQueryException& e)
     {
-      return NULL;
-    }
-  }
+      if (e.diagnostic() == err::XPTY0004)
+        return NULL;
 
-  switch (node->get_expr_kind())
-  {
+      throw;
+    }
+
+    break;
+  }
   case if_expr_kind:
   {
-    if_expr* ite = dynamic_cast<if_expr *> (node);
-    const const_expr* cond = dynamic_cast<const const_expr*>(ite->get_cond_expr());
-    if (cond != NULL)
+    if_expr* ite = static_cast<if_expr *> (node);
+    expr* condExpr = ite->get_cond_expr();
+
+    if (condExpr->get_expr_kind() == const_expr_kind)
     {
+      const const_expr* cond = static_cast<const const_expr*>(condExpr);
+
       return (cond->get_val()->getBooleanValue() ?
               ite->get_then_expr() :
               ite->get_else_expr());
@@ -676,7 +646,7 @@ RULE_REWRITE_PRE(PartialEval)
 
   case fo_expr_kind:
   {
-    return partial_eval_fo(rCtx, dynamic_cast<fo_expr *>(node));
+    return partial_eval_fo(rCtx, static_cast<fo_expr *>(node));
   }
 
   default:
@@ -685,6 +655,7 @@ RULE_REWRITE_PRE(PartialEval)
 
   return NULL;
 }
+
 
 RULE_REWRITE_POST(PartialEval)
 {
@@ -695,6 +666,10 @@ RULE_REWRITE_POST(PartialEval)
 static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
 {
   TypeManager* tm = fo->get_type_manager();
+
+  static_context* sctx = fo->get_sctx();
+  user_function* udf = fo->get_udf();
+  assert(udf == rCtx.theUDF);
 
   const function* f = fo->get_func();
   FunctionConsts::FunctionKind fkind = f->getKind();
@@ -726,32 +701,31 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
 
       if (fkind == FunctionConsts::FN_COUNT_1 && type_cnt != -1)
       {
-        return rCtx.theEM->create_const_expr(fo->get_sctx(),
-                              fo->get_loc(),
-                              xs_integer(type_cnt));
+        return rCtx.theEM->
+        create_const_expr(sctx, udf, fo->get_loc(), xs_integer(type_cnt));
       }
       else if (fkind == FunctionConsts::FN_EMPTY_1)
       {
         if (type_cnt == 0)
         {
-          return rCtx.theEM->create_const_expr(fo->get_sctx(), fo->get_loc(), true);
+          return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), true);
         }
         else if (argQuant == TypeConstants::QUANT_ONE ||
                  argQuant == TypeConstants::QUANT_PLUS)
         {
-          return rCtx.theEM->create_const_expr(fo->get_sctx(), fo->get_loc(), false);
+          return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), false);
         }
       }
       else if (fkind == FunctionConsts::FN_EXISTS_1)
       {
         if (type_cnt == 0)
         {
-          return rCtx.theEM->create_const_expr(fo->get_sctx(), fo->get_loc(), false);
+          return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), false);
         }
         else if (argQuant == TypeConstants::QUANT_ONE ||
                  argQuant == TypeConstants::QUANT_PLUS)
         {
-          return rCtx.theEM->create_const_expr(fo->get_sctx(), fo->get_loc(), true);
+          return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), true);
         }
       }
     }
@@ -760,8 +734,8 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     {
       bool modified = false;
       expr* newArg = partial_eval_return_clause(static_cast<flwor_expr*>(arg),
-                                                 modified,
-                                                 rCtx);
+                                                modified,
+                                                rCtx);
 
       if (newArg != arg)
         fo->set_arg(0, newArg);
@@ -783,7 +757,7 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
                               *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
                               arg->get_loc()))
       {
-        return rCtx.theEM->create_const_expr(fo->get_sctx(), fo->get_loc(), true);
+        return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), true);
       }
     }
   }
@@ -801,22 +775,31 @@ static expr* partial_eval_logic(
     bool shortcircuit_val,
     RewriterContext& rCtx)
 {
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
   TypeManager* tm = fo->get_type_manager();
+  static_context* sctx = fo->get_sctx();
+  user_function* udf = fo->get_udf();
+
+  assert(udf == rCtx.theUDF);
 
   long nonConst1 = -1;
   long nonConst2 = -1;
 
-  ulong numArgs = fo->num_args();
+  csize numArgs = fo->num_args();
 
-  for (ulong i = 0; i < numArgs; ++i)
+  for (csize i = 0; i < numArgs; ++i)
   {
     const expr* arg = fo->get_arg(i);
-    const const_expr* constArg = NULL;
 
-    if ((constArg = dynamic_cast<const const_expr*>(arg)) != NULL)
+    if (arg->get_expr_kind() == const_expr_kind)
     {
+      const const_expr* constArg = static_cast<const const_expr*>(arg);
+
       if (constArg->get_val()->getEBV() == shortcircuit_val)
-        return rCtx.theEM->create_const_expr(fo->get_sctx(), LOC(fo), (xs_boolean)shortcircuit_val);
+      {
+        return rCtx.theEM->
+        create_const_expr(sctx, udf, LOC(fo), (xs_boolean)shortcircuit_val);
+      }
     }
     else
     {
@@ -835,7 +818,7 @@ static expr* partial_eval_logic(
   if (nonConst1 < 0)
   {
     // All args are constant exprs
-    return rCtx.theEM->create_const_expr(fo->get_sctx(), LOC(fo), (xs_boolean) ! shortcircuit_val);
+    return rCtx.theEM->create_const_expr(sctx, udf, LOC(fo), (xs_boolean)!shortcircuit_val);
   }
 
   if (nonConst2 < 0)
@@ -847,13 +830,16 @@ static expr* partial_eval_logic(
 
     if (! TypeOps::is_subtype(tm,
                               *arg->get_return_type(),
-                              *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
+                              *rtm.BOOLEAN_TYPE_ONE,
                               arg->get_loc()))
     {
-      arg = expr_tools::fix_annotations(rCtx.theEM->create_fo_expr(fo->get_sctx(),
-                                                    LOC(fo),
-                                                    GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
-                                                    arg));
+      arg = rCtx.theEM->create_fo_expr(sctx,
+                                       udf,
+                                       LOC(fo),
+                                       BUILTIN_FUNC(FN_BOOLEAN_1),
+                                       arg);
+
+      arg = expr_tools::fix_annotations(arg);
     }
 
     return arg;
@@ -877,12 +863,22 @@ static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
   fo_expr* count_expr = NULL;
   const_expr* val_expr = NULL;
 
+  static_context* sctx = fo.get_sctx();
+  user_function* udf = fo.get_udf();
+
+  assert(udf == rCtx.theUDF);
+
   for (i = 0; i < 2; i++)
   {
-    if (NULL != (val_expr = dynamic_cast<const_expr*>(fo.get_arg(i))) &&
-        NULL != (count_expr = dynamic_cast<fo_expr*>(fo.get_arg(1-i))) &&
-        count_expr->get_func()->getKind() == FunctionConsts::FN_COUNT_1)
-      break;
+    if (fo.get_arg(i)->get_expr_kind() == const_expr_kind &&
+        fo.get_arg(1-i)->get_expr_kind() == fo_expr_kind)
+    {
+      val_expr = static_cast<const_expr*>(fo.get_arg(i));
+      count_expr = static_cast<fo_expr*>(fo.get_arg(1-i));
+
+      if (count_expr->get_func()->getKind() == FunctionConsts::FN_COUNT_1)
+        break;
+    }
   }
 
   if (i == 2)
@@ -898,7 +894,7 @@ static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
                           *tm->create_named_type(val->getType(),
                                                  TypeConstants::QUANT_ONE,
                                                  fo.get_loc(),
-                                                 err::XPTY0004),
+                                                 true),
                           *rtm.INTEGER_TYPE_ONE,
                           fo.get_loc()))
   {
@@ -907,41 +903,46 @@ static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
     if (ival < 0)
     {
       if (!count_expr->isNonDiscardable())
-        return rCtx.theEM->create_const_expr(val_expr->get_sctx(), LOC(val_expr), false);
+        return rCtx.theEM->create_const_expr(sctx, udf, LOC(val_expr), false);
     }
     else if (ival == 0)
     {
-      return expr_tools::fix_annotations(
-             rCtx.theEM->create_fo_expr(fo.get_sctx(), fo.get_loc(),
-                         GET_BUILTIN_FUNCTION(FN_EMPTY_1),
-                         count_expr->get_arg(0)));
+      return expr_tools::fix_annotations(rCtx.theEM->
+             create_fo_expr(sctx,
+                            udf,
+                            fo.get_loc(),
+                            BUILTIN_FUNC(FN_EMPTY_1),
+                            count_expr->get_arg(0)));
     }
     else if (ival == 1)
     {
-      return expr_tools::fix_annotations(
-             rCtx.theEM->create_fo_expr(fo.get_sctx(),
-                         fo.get_loc(),
-                         GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
-                         count_expr->get_arg(0)));
+      return expr_tools::fix_annotations(rCtx.theEM->
+             create_fo_expr(sctx,
+                            udf,
+                            fo.get_loc(),
+                            BUILTIN_FUNC(OP_EXACTLY_ONE_NORAISE_1),
+                            count_expr->get_arg(0)));
     }
     else
     {
       std::vector<expr*> args(3);
       args[0] = count_expr->get_arg(0);
       args[1] = val_expr;
-      args[2] = rCtx.theEM->create_const_expr(val_expr->get_sctx(), LOC(val_expr), xs_integer(2));
+      args[2] = rCtx.theEM->create_const_expr(sctx, udf, LOC(val_expr), xs_integer(2));
 
-      expr* subseq_expr = expr_tools::fix_annotations(
-      rCtx.theEM->create_fo_expr(count_expr->get_sctx(),
-                  LOC(count_expr),
-                  GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3),
-                  args));
+      expr* subseq_expr = expr_tools::fix_annotations(rCtx.theEM->
+      create_fo_expr(sctx,
+                     udf,
+                     LOC(count_expr),
+                     BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3),
+                     args));
 
-      return expr_tools::fix_annotations(
-             rCtx.theEM->create_fo_expr(fo.get_sctx(),
-                         fo.get_loc(),
-                         GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
-                         subseq_expr));
+      return expr_tools::fix_annotations(rCtx.theEM->
+      create_fo_expr(sctx,
+                     udf,
+                     fo.get_loc(),
+                     BUILTIN_FUNC(OP_EXACTLY_ONE_NORAISE_1),
+                     subseq_expr));
     }
   }
 
@@ -952,11 +953,18 @@ static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 /*******************************************************************************
 
 ********************************************************************************/
-static expr* partial_eval_return_clause(flwor_expr* flworExpr,
-                                        bool& modified,
-                                        RewriterContext& rCtx)
+static expr* partial_eval_return_clause(
+    flwor_expr* flworExpr,
+    bool& modified,
+    RewriterContext& rCtx)
 {
   expr* returnExpr = flworExpr->get_return_expr();
+
+  const QueryLoc& loc = returnExpr->get_loc();
+  static_context* sctx = returnExpr->get_sctx();
+  user_function* udf = returnExpr->get_udf();
+
+  assert(udf == rCtx.theUDF);
 
   if (returnExpr->get_expr_kind() == const_expr_kind ||
       (!returnExpr->isNonDiscardable() &&
@@ -970,21 +978,20 @@ static expr* partial_eval_return_clause(flwor_expr* flworExpr,
 
       if (c->get_kind() == flwor_clause::for_clause)
       {
-        return c->get_expr();
+        return static_cast<for_clause*>(c)->get_expr();
       }
       else
       {
         assert(c->get_kind() == flwor_clause::let_clause);
 
-        return rCtx.theEM->create_const_expr(returnExpr->get_sctx(), returnExpr->get_loc(), 1);
+        return rCtx.theEM->create_const_expr(sctx, udf, loc, 1);
       }
     }
     else if (returnExpr->get_expr_kind() != const_expr_kind)
     {
       modified = true;
 
-      expr* newRet =
-      rCtx.theEM->create_const_expr(returnExpr->get_sctx(), returnExpr->get_loc(), 1);
+      expr* newRet = rCtx.theEM->create_const_expr(sctx, udf, loc, 1);
 
       flworExpr->set_return_expr(newRet);
 
@@ -1019,59 +1026,48 @@ RULE_REWRITE_PRE(InlineFunctions)
 
 RULE_REWRITE_POST(InlineFunctions)
 {
-  if (node->get_expr_kind () == fo_expr_kind)
+  if (node->get_expr_kind() == fo_expr_kind)
   {
     const fo_expr* fo = static_cast<const fo_expr *> (node);
 
-    const user_function* udf = dynamic_cast<const user_function *>(fo->get_func());
-    expr* body = NULL;
-
-    if (NULL != udf &&
-        //!udf->isSequential() &&
-        (NULL != (body = udf->getBody())) &&
-        !udf->isExiting() &&
-        udf->isLeaf())
+    if (fo->get_func()->isUdf())
     {
-      const std::vector<var_expr*>& udfArgs = udf->getArgVars();
+      assert(fo->get_udf() == rCtx.theUDF);
 
-      expr::substitution_t subst;
+      const user_function* udf = static_cast<const user_function*>(fo->get_func());
+      expr* body = udf->getBody();
 
-      for (ulong i = 0; i < udfArgs.size(); ++i)
+      if (//!udf->isSequential() &&
+          body != NULL &&
+          !udf->isExiting() &&
+          udf->isLeaf())
       {
-        var_expr* p = udfArgs[i];
-        subst[p] = fo->get_arg(i);
+        const std::vector<var_expr*>& udfArgs = udf->getArgVars();
 
-        if (fo->get_arg(i)->is_sequential())
-          return NULL;
-      }
+        expr::substitution_t subst;
 
-      try
-      {
-        expr* body = udf->getBody();
-        body = body->clone(subst);
+        for (csize i = 0; i < udfArgs.size(); ++i)
+        {
+          var_expr* p = udfArgs[i];
+          subst[p] = fo->get_arg(i);
+
+          if (fo->get_arg(i)->is_sequential())
+            return NULL;
+        }
+
+        body = body->clone(fo->get_udf(), subst);
+
         body->clear_annotations();
-        if (rCtx.getCompilerCB()->theConfig.opt_level <= CompilerCB::config::O1)
-        {
-          function_trace_expr* dummy = rCtx.theEM->create_function_trace_expr(body);
-          dummy->setFunctionName(udf->getName());
-          dummy->setFunctionArity((unsigned int)udf->getArgVars().size());
-          dummy->setFunctionCallLocation(node->get_loc());
-          dummy->setFunctionLocation(udf->getLoc());
-          return dummy;
-        }
-        else
-        {
-          return body;
-        }
-      }
-      catch (...)
-      {
-        // TODO: this is caught here, because clone is not implemented for all expressions
-        throw XQUERY_EXCEPTION(
-          zerr::ZXQP0003_INTERNAL_ERROR,
-          ERROR_PARAMS( ZED( CloneNotImplemented ) ),
-          ERROR_LOC( udf->getLoc() )
-        );
+
+        function_trace_expr* dummy = rCtx.theEM->
+        create_function_trace_expr(fo->get_udf(), body);
+        
+        dummy->setFunctionName(udf->getName());
+        dummy->setFunctionArity((unsigned int)udf->getArgVars().size());
+        dummy->setFunctionCallLocation(node->get_loc());
+        dummy->setFunctionLocation(udf->getLoc());
+        
+        return dummy;
       }
     }
   }

@@ -42,9 +42,13 @@ DEF_EXPR_ACCEPT (match_expr)
   RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 
 ********************************************************************************/
-relpath_expr::relpath_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc)
+relpath_expr::relpath_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc)
   :
-  expr(ccb, sctx, loc, relpath_expr_kind)
+  expr(ccb, sctx, udf, loc, relpath_expr_kind)
 {
   theScriptingKind = SIMPLE_EXPR;
 }
@@ -100,28 +104,18 @@ void relpath_expr::compute_scripting_kind()
 }
 
 
-expr* relpath_expr::clone(substitution_t& subst) const
-{
-  std::auto_ptr<relpath_expr> re(theCCB->theEM->create_relpath_expr(theSctx, get_loc()));
-
-  for (unsigned i = 0; i < size(); ++i)
-  {
-    re->add_back((*this)[i]->clone(subst));
-  }
-
-  return re.release();
-}
-
-
-
 /*******************************************************************************
 
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
-axis_step_expr::axis_step_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc)
+axis_step_expr::axis_step_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc)
   :
-  expr(ccb, sctx, loc, axis_step_expr_kind),
+  expr(ccb, sctx, udf, loc, axis_step_expr_kind),
   theReverseOrder(false)
 {
   compute_scripting_kind();
@@ -148,16 +142,6 @@ void axis_step_expr::compute_scripting_kind()
 }
 
 
-expr* axis_step_expr::clone(substitution_t& subst) const
-{
-  axis_step_expr* ae = theCCB->theEM->create_axis_step_expr(theSctx, get_loc());
-  ae->setAxis(getAxis());
-  ae->setTest(getTest());
-  ae->theReverseOrder = theReverseOrder;
-  return ae;
-}
-
-
 /*******************************************************************************
 
   [78] NodeTest ::= KindTest | NameTest
@@ -170,9 +154,13 @@ expr* axis_step_expr::clone(substitution_t& subst) const
                      PITest | CommentTest | TextTest | AnyKindTest
 
 ********************************************************************************/
-match_expr::match_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc)
+match_expr::match_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc)
   :
-  expr(ccb, sctx, loc, match_expr_kind),
+  expr(ccb, sctx, udf, loc, match_expr_kind),
   theDocTestKind(match_no_test),
   theWildKind(match_no_wild),
   theQName(NULL),
@@ -220,17 +208,96 @@ void match_expr::compute_scripting_kind()
 }
 
 
-expr* match_expr::clone(substitution_t& subst) const
+bool match_expr::matches(const match_expr* other) const
 {
-  match_expr* me = theCCB->theEM->create_match_expr(theSctx, get_loc());
-  me->setTestKind(getTestKind());
-  me->setDocTestKind(getDocTestKind());
-  me->setWildName(getWildName());
-  me->setWildKind(getWildKind());
-  me->setQName(getQName());
-  me->setTypeName(getTypeName());
-  me->setNilledAllowed(getNilledAllowed());
-  return me;
+  if (theTestKind != other->theTestKind)
+    return false;
+
+  switch (theTestKind)
+  {
+  case match_name_test:
+  {
+    if (getWildKind() != other->getWildKind())
+      return false;
+
+    if (getWildName() != other->getWildName())
+      return false;
+
+    if (getWildKind() == match_no_wild || getWildKind() == match_name_wild)
+    {
+      return getQName()->equals(other->getQName());
+    }
+
+    return true;
+  }
+  case match_anykind_test:
+  case match_text_test:
+  case match_comment_test:
+  {
+    return true;
+  }
+  case match_pi_test:
+  {
+    if (theQName == NULL && other->theQName == NULL)
+      return true;
+
+    if (theQName == NULL || other->theQName == NULL)
+      return false;
+
+    return theQName->equals(other->theQName);
+  }
+  case match_doc_test:
+  {
+    if (theDocTestKind != other->theDocTestKind)
+      return false;
+
+    if (theDocTestKind == match_xs_elem_test)
+      goto schema_test;
+
+    // else fall through
+  }
+  case match_elem_test:
+  case match_attr_test:
+  {
+    if (theQName == NULL || other->theQName == NULL)
+    {
+      if (theQName != NULL || other->theQName != NULL)
+        return false;
+    }
+    else if (!theQName->equals(other->theQName))
+    {
+      return false;
+    }
+
+    if (theTypeName == NULL || other->theTypeName == NULL)
+    {
+      if (theTypeName != NULL || other->theTypeName != NULL)
+        return false;
+    }
+    else if (!theTypeName->equals(other->theTypeName))
+    {
+      return false;
+    }
+
+    if (theNilledAllowed != other->theNilledAllowed)
+      return false;
+
+    return true;
+  }
+  case match_xs_elem_test:
+  case match_xs_attr_test:
+  {
+schema_test:
+    return (theQName->equals(other->theQName) &&
+            theTypeName->equals(other->theTypeName));
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
+
+  return false;
 }
 
 

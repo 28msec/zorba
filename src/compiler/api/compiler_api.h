@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2012 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,13 @@
 #include "common/shared_types.h"
 #include <zorba/api_shared_types.h>
 
-namespace zorba {
+namespace zorba 
+{
 
 
+/********************************************************************************
+
+********************************************************************************/
 class XQueryCompiler
 {
 public:
@@ -43,7 +47,8 @@ public:
       std::istream& aXQuery,
       const zstring& aFileName,
       store::Item_t& aResult,
-      const store::Item_t& aDateTime);
+      const store::Item_t& aDateTime,
+      uint32_t aOptions);
 
   parsenode_t parse(std::istream& aXQuery, const zstring& aFileName);
 
@@ -58,7 +63,6 @@ public:
       ulong& nextDynamicVarId,
       audit::ScopedRecord& aAuditRecord);
 
-protected:
   expr* normalize(parsenode_t ast);
 
   expr* optimize(expr* expr);
@@ -71,6 +75,9 @@ private:
 };
 
 
+/********************************************************************************
+
+********************************************************************************/
 class XQueryCompilerSubsystem
 {
   friend class GlobalEnvironment;

@@ -265,13 +265,15 @@ MACRO (FIND_PACKAGE_DLL_WIN32 LIBRARY_LOCATION)
   IF (NOT WIN32)
     MESSAGE (FATAL_ERROR "This macro is intended only for Windows platforms.")
   ENDIF (NOT WIN32)
-
+  
+  PARSE_ARGUMENTS(ARG "" "" "SKIP_INSTALL" ${ARGN})
+  
   # get the current DLLs and their paths
   SET (dlls "${ZORBA_REQUIRED_DLLS}")
   SET (paths "${ZORBA_REQUIRED_DLL_PATHS}")
-
-  FOREACH (NAME ${ARGN})
-
+  
+  FOREACH (NAME ${ARG_DEFAULT_ARGS})
+  
     # first delete the cache entry used during FIND_FILE to make sure the correct file is chosen
     UNSET (TMP_DLL_VAR CACHE)
 
@@ -291,8 +293,13 @@ MACRO (FIND_PACKAGE_DLL_WIN32 LIBRARY_LOCATION)
       FILE (TO_NATIVE_PATH ${PATH} NATIVE_PATH)
       LIST (APPEND paths "${NATIVE_PATH}")
       MESSAGE (STATUS "Added dll to ZORBA_REQUIRED_DLLS cache variable: ${TMP_DLL_VAR}")
-      INSTALL_DLL (${TMP_DLL_VAR})
-
+      
+      IF(ARG_SKIP_INSTALL)
+        MESSAGE(STATUS "Skip installation of ${NAME}.dll")
+      ELSE (ARG_SKIP_INSTALL)
+        INSTALL_DLL (${TMP_DLL_VAR})
+      ENDIF(ARG_SKIP_INSTALL)
+      
       # we break the loop if we found one DLL
       BREAK ()
 
@@ -302,7 +309,7 @@ MACRO (FIND_PACKAGE_DLL_WIN32 LIBRARY_LOCATION)
 
   # we report a warning if the DLL could not be found
   IF (NOT TMP_DLL_VAR)
-    MESSAGE (WARNING "None of the names provided (${ARGN}) points to a DLL in: ${LIBRARY_LOCATION}. Zorba will not run properly unless you have it in the path.")
+    MESSAGE (WARNING "None of the names provided (${ARG_DEFAULT_ARGS}) points to a DLL in: ${LIBRARY_LOCATION}. Zorba will not run properly unless you have it in the path.")
   ENDIF (NOT TMP_DLL_VAR)
 
   # make sure we don't leave garbage in the cache and don't influence other logic with this

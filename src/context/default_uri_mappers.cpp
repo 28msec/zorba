@@ -17,6 +17,7 @@
 #include "stdafx.h"
 
 #include <context/default_uri_mappers.h>
+#include <context/default_url_resolvers.h>
 #include <util/uri_util.h>
 #include <util/fs_util.h>
 #include <zorbatypes/URI.h>

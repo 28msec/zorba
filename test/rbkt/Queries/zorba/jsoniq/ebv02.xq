@@ -1,4 +1,4 @@
-import module namespace j = "http://www.jsoniq.org/functions";
+import module namespace j = "http://jsoniq.org/functions";
 
 (: ebv of an array in a pair :)
 let $j := { "foo" : [ 1 to 10 ] }

@@ -99,7 +99,7 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
 {
   if (type.type_kind() == XQType::USER_DEFINED_KIND)
   {
-    return (tm->create_named_type(type.get_qname(), 
+    return (tm->create_named_type(type.getQName(), 
                                   TypeConstants::QUANT_ONE,
                                   QueryLoc::null) != NULL);
   }
@@ -115,7 +115,7 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
         assert(!ntype.is_schema_test());
         return is_in_scope(tm, *ctype);
       }
-      else if (tm->create_named_type(ctype->get_qname(),
+      else if (tm->create_named_type(ctype->getQName(),
                                      TypeConstants::QUANT_ONE,
                                      QueryLoc::null) == NULL)
       {
@@ -161,52 +161,6 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
   {
     return true;
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_atomic(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  if (type.get_quantifier() == TypeConstants::QUANT_ONE)
-  {
-    if (type.type_kind() == XQType::ATOMIC_TYPE_KIND)
-    {
-      return true;
-    }
-    else if (type.type_kind() == XQType::USER_DEFINED_KIND)
-    {
-      return reinterpret_cast<const UserDefinedXQType&>(type).isAtomic();
-    }
-  }
-
-  return false;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_builtin_atomic(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return type.get_quantifier() == TypeConstants::QUANT_ONE &&
-         type.type_kind() == XQType::ATOMIC_TYPE_KIND;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_builtin_simple(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return type.type_kind() == XQType::ATOMIC_TYPE_KIND;
 }
 
 
@@ -371,12 +325,16 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
     if (type.get_quantifier() == TypeConstants::QUANT_ONE)
       return &type;
 
-    const UserDefinedXQType& udType = static_cast<const UserDefinedXQType&>(type);
+    const UserDefinedXQType& udt = static_cast<const UserDefinedXQType&>(type);
 
-    return tm->create_named_type(udType.get_qname(),
-                                 TypeConstants::QUANT_ONE,
-                                 QueryLoc::null,
-                                 err::XPTY0004);
+    if (udt.isAtomicAny())
+    {
+      return tm->create_type(type, TypeConstants::QUANT_ONE);
+    }
+    else
+    {
+      return &type;
+    }
   }
 
   default:
@@ -441,8 +399,8 @@ bool TypeOps::is_equal(
       const UserDefinedXQType& udt1 = static_cast<const UserDefinedXQType&>(type1);
       const UserDefinedXQType& udt2 = static_cast<const UserDefinedXQType&>(type2);
 
-      return (udt1.getTypeCategory() == udt2.getTypeCategory() &&
-              udt1.get_qname()->equals(udt2.get_qname()));
+      return (udt1.getUDTKind() == udt2.getUDTKind() &&
+              udt1.getQName()->equals(udt2.getQName()));
     }
     default:
       break;
@@ -474,6 +432,9 @@ bool TypeOps::is_subtype(
 {
   CHECK_IN_SCOPE(tm, subtype, loc);
   CHECK_IN_SCOPE(tm, supertype, loc);
+
+  if (&subtype == &supertype)
+    return true;
 
   if (subtype.type_kind() == XQType::NONE_KIND)
     return true;
@@ -524,7 +485,7 @@ bool TypeOps::is_subtype(
       static_cast<const UserDefinedXQType&>(subtype);
       
       // What about union of atomic types ????
-      return udSubType.isAtomic();
+      return udSubType.isAtomicAny();
     }
     
     default:
@@ -710,7 +671,7 @@ bool TypeOps::is_subtype(
       const UserDefinedXQType& udSubType = 
       static_cast<const UserDefinedXQType&>(subtype);
 
-      return (udSubType.isAtomic() || udSubType.isList() || udSubType.isUnion());
+      return (udSubType.isAtomicAny() || udSubType.isList() || udSubType.isUnion());
     }
 
     default:
@@ -735,10 +696,10 @@ bool TypeOps::is_subtype(
 
   case XQType::USER_DEFINED_KIND:
   {
-    const UserDefinedXQType& udSuperType = 
+    const UserDefinedXQType& udt = 
     static_cast<const UserDefinedXQType&>(supertype);
 
-    return udSuperType.isSuperTypeOf(tm, subtype);
+    return udt.isSuperTypeOf(tm, subtype, loc);
   }
   
   default:
@@ -760,7 +721,7 @@ bool TypeOps::is_subtype(
 {
   CHECK_IN_SCOPE(tm, supertype, loc);
 
-  switch(supertype.type_kind()) 
+  switch (supertype.type_kind()) 
   {
   case XQType::EMPTY_KIND:
   case XQType::NONE_KIND:
@@ -816,7 +777,7 @@ bool TypeOps::is_subtype(
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
                                                     TypeConstants::QUANT_ONE,
                                                     loc,
-                                                    err::XPTY0004);
+                                                    true);
     switch(subtype->type_kind()) 
     {
     case XQType::ATOMIC_TYPE_KIND:
@@ -902,30 +863,7 @@ bool TypeOps::is_subtype(
     if (!subitem->isAtomic())
       return false;
 
-    xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
-                                                    TypeConstants::QUANT_ONE,
-                                                    loc,
-                                                    err::XPTY0004);
-    switch (subtype->type_kind())
-    {
-    case XQType::ATOMIC_TYPE_KIND:
-    case XQType::ANY_SIMPLE_TYPE_KIND:
-    case XQType::EMPTY_KIND:
-      return true;
-
-    case XQType::USER_DEFINED_KIND:
-    {
-      const UserDefinedXQType& udSubType = 
-      static_cast<const UserDefinedXQType&>(*subtype);
-
-      return (udSubType.isAtomic() || udSubType.isList() || udSubType.isUnion());
-    }
-
-    default:
-      // ANY, UNTYPED, ITEM, NODE
-      return false;
-    }
-    break;
+    return true;
   }
 
   case XQType::UNTYPED_KIND:
@@ -950,11 +888,11 @@ bool TypeOps::is_subtype(
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
                                                     TypeConstants::QUANT_ONE,
                                                     loc,
-                                                    err::XPTY0004);
+                                                    true);
     const UserDefinedXQType& udSuperType = 
     static_cast<const UserDefinedXQType&>(supertype);
 
-    return udSuperType.isSuperTypeOf(tm, *subtype);
+    return udSuperType.isSuperTypeOf(tm, *subtype, loc);
   }
 
   default:
@@ -962,19 +900,6 @@ bool TypeOps::is_subtype(
   }
 
   return false;
-}
-
-
-/*******************************************************************************
-  
-********************************************************************************/
-bool TypeOps::is_treatable(
-    const TypeManager* tm,
-    const store::Item_t& item,
-    const XQType& targetType,
-    const QueryLoc& loc)
-{
-  return is_subtype(tm, item.getp(), targetType, loc);
 }
 
 
@@ -1488,15 +1413,14 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 
   case XQType::USER_DEFINED_KIND:
   {
-    ZORBA_ASSERT(nested || is_atomic(tm, type));
+    ZORBA_ASSERT(nested || type.isAtomicOne());
 
-    store::Item* lQname = type.get_qname().getp();
+    store::Item* lQname = type.getQName().getp();
 
     return TypeIdentifier::createNamedType(
-      Unmarshaller::newString( lQname->getNamespace() ), 
-      Unmarshaller::newString( lQname->getLocalName() ),
-      q
-    );
+      Unmarshaller::newString(lQname->getNamespace()), 
+      Unmarshaller::newString(lQname->getLocalName()),
+      q);
   }
   default:
     break;
@@ -1513,17 +1437,6 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 std::ostream& TypeOps::serialize(std::ostream& os, const XQType& type)
 {
   return type.serialize_ostream(os);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-std::string TypeOps::toString(const XQType& type)
-{
-  std::ostringstream os;
-  serialize(os, type);
-  return os.str ();
 }
 
 

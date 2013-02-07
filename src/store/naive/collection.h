@@ -54,19 +54,26 @@ public:
 
   zorba::xs_integer size() const  = 0;
 
-  zorba::store::Iterator_t getIterator(const xs_integer& aSkip) = 0;
+  zorba::store::Iterator_t getIterator(
+      const xs_integer& aSkip, 
+      const zstring& aStart) = 0;
 
   virtual zorba::store::Item_t nodeAt(xs_integer position) = 0;
 
-  virtual bool findNode(const store::Item* node, xs_integer& position) const = 0;
+  virtual bool findNode(
+      const store::Item* node,
+      xs_integer& position) const = 0;
 
   virtual bool isDynamic() const = 0;
 
-  virtual void getAnnotations(std::vector<zorba::store::Annotation_t>&) const = 0;
+  virtual void getAnnotations(
+      std::vector<zorba::store::Annotation_t>&) const = 0;
 
   /************************* Updates on collection ****************************/
 
-  virtual void addNode(store::Item* node, xs_integer position = xs_integer(-1)) = 0;
+  virtual void addNode(
+      store::Item* node,
+      xs_integer position = xs_integer(-1)) = 0;
 
   virtual zorba::xs_integer addNodes(
       std::vector<store::Item_t>& nodes,
@@ -77,10 +84,12 @@ public:
 
   virtual bool removeNode(xs_integer position) = 0;
 
-  virtual zorba::xs_integer removeNodes(xs_integer position, xs_integer num) = 0;
+  virtual zorba::xs_integer removeNodes(
+      xs_integer position,
+      xs_integer num) = 0;
 
   virtual void removeAll() = 0;
-
+  
   virtual void adjustTreePositions() = 0;
 
   /***************************** ID Management ********************************/

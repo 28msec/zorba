@@ -21,24 +21,33 @@
 
 #include "zorbacmdproperties_base.h"
 
-class ZorbaCMDProperties : public zorbacmd::ZorbaCMDPropertiesBase {
+class ZorbaCMDProperties : public zorbacmd::ZorbaCMDPropertiesBase 
+{
 public:
-  struct ExternalVariable {
+  struct ExternalVariable
+  {
     std::string var_name;
     std::string var_value;
     bool        inline_file;
   };
+
   typedef std::vector<ExternalVariable> ExternalVars_t;
-  struct StaticContextOption {
+
+
+  struct StaticContextOption
+  {
     std::string clark_qname;
     std::string value;
   };
+
   typedef std::vector<StaticContextOption> Options_t;
 
-  struct FullTextMapping {
+  struct FullTextMapping
+  {
     std::string uri;
     std::string value;
   };
+
   typedef std::vector<FullTextMapping> FullText_t;
 
   typedef std::vector<std::string>      QueriesOrFiles_t;

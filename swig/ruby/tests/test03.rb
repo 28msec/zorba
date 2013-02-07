@@ -14,13 +14,13 @@
 
 require '@rubyPath@/zorba_api'
 
-class MyDiagnosticHandler < Zorba_api.DiagnosticHandler
-  def error(self, *args)
-    print "Error args: " + args
+class MyDiagnosticHandler < Zorba_api::DiagnosticHandler
+  def error(args)
+    print "Error args: " + args.getDescription() + "\n"
   end
 end
 
-def test(zorba):
+def test(zorba)
   diagnosticHandler = MyDiagnosticHandler.new
   begin
     xquery = zorba.compileQuery("1 div 0", diagnosticHandler)
@@ -35,7 +35,7 @@ end
 store = Zorba_api::InMemoryStore.getInstance()
 zorba = Zorba_api::Zorba.getInstance(store)
 
-print "Running: Capturing error with DiagnosticHandler"
+print "Running: Capturing error with DiagnosticHandler\n"
 test(zorba)
 print "Success"
 

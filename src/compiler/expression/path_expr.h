@@ -59,7 +59,11 @@ protected:
   std::vector<expr*> theSteps;
 
 protected:
-  relpath_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc);
+  relpath_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc);
 
 public:
   size_t size() const { return theSteps.size(); }
@@ -77,8 +81,6 @@ public:
   std::vector<expr*>::const_iterator end() const { return theSteps.end(); }
 
   void compute_scripting_kind();
-
-  expr* clone(substitution_t &) const;
 
   void accept(expr_visitor&);
 
@@ -113,7 +115,11 @@ public:
   static bool is_reverse_axis(axis_kind_t kind);
 
 protected:
-  axis_step_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&);
+  axis_step_expr(
+     CompilerCB* ccb,
+     static_context* sctx,
+     user_function* udf,
+     const QueryLoc&);
 
 public:
   axis_kind_t getAxis() const { return theAxis; }
@@ -135,8 +141,6 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t &) const;
-
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
@@ -155,9 +159,25 @@ public:
                      PITest | CommentTest | TextTest | AnyKindTest
 
   If a match_expr represents a KindTest, then theWildKind and theWildName data
-  members are not used. If a match_expr represents a NameTest, then theTypeName
-  and theNilledAllowed data members are not used.
+  members are not used. 
 
+  If a match_expr represents a NameTest, then theTypeName and theNilledAllowed
+  data members are not used. In this case, theWildKind is used to distinguish
+  among 4 subcases:
+
+  1. no wildcard: 
+     theQName holds the expanded qname to match against an element or attribute
+     node. theWildName is not used.
+
+  2. full wildcard (*):
+     Neither theQName nor theWildName are used.
+
+  3. localname wildcard (pre:*):
+     theQName holds an artificial qname: "ns:wildcard", where ns is the URI
+     associated with pre. theWildName holds the pre.
+
+  4. prefix wildcard (*:name):
+     theQName is not used and theWildName holds the local name.
 ********************************************************************************/
 class match_expr : public expr
 {
@@ -173,11 +193,16 @@ protected:
   zstring           theWildName;
 
   store::Item_t     theQName;
+
   store::Item_t     theTypeName;
   bool              theNilledAllowed;
 
 protected:
-  match_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&);
+  match_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&);
 
 public:
   match_test_t getTestKind() const { return theTestKind; }
@@ -194,8 +219,7 @@ public:
 
   const zstring& getWildName() const { return theWildName; }
 
-  template<class StringType>
-  void setWildName(const StringType& v) { theWildName = v; }
+  void setWildName(const zstring& v) { theWildName = v; }
 
   store::Item* getQName() const { return theQName.getp(); }
 
@@ -213,7 +237,7 @@ public:
 
   void compute_scripting_kind();
 
-  expr* clone(substitution_t &) const;
+  bool matches(const match_expr* other) const;
 
   void accept(expr_visitor&);
 

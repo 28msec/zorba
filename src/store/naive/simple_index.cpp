@@ -117,8 +117,8 @@ store::IndexCondition_t IndexImpl::createCondition(store::IndexCondition::Kind k
 /*******************************************************************************
   TODO: proper initialization order is not guaranteed => use factory instead
 ********************************************************************************/
-store::Item_t IndexConditionImpl::theNegInf(new DecimalItem);
-store::Item_t IndexConditionImpl::thePosInf(new DecimalItem);
+store::Item_t IndexConditionImpl::theNegInf(new DecimalItem(store::XS_DECIMAL));
+store::Item_t IndexConditionImpl::thePosInf(new DecimalItem(store::XS_DECIMAL));
 
 
 /*******************************************************************************
@@ -488,7 +488,7 @@ void IndexBoxValueCondition::pushRange(
     bool lowerIncl,
     bool upperIncl)
 {
-  ulong size = theLowerBounds.size();
+  csize size = theLowerBounds.size();
   theLowerBounds.resize(size + 1);
   theUpperBounds.resize(size + 1);
   theRangeFlags.resize(size + 1);
@@ -507,13 +507,13 @@ void IndexBoxValueCondition::pushRange(
 ********************************************************************************/
 bool IndexBoxValueCondition::test(const store::IndexKey& key) const
 {
-  ulong numCols = theLowerBounds.size();
+  csize numCols = theLowerBounds.size();
 
   ZORBA_ASSERT(numCols <= theIndex->getNumColumns());
 
   long timezone = theIndex->getSpecification().theTimezone;
 
-  for (ulong i = 0; i < numCols; i++)
+  for (csize i = 0; i < numCols; i++)
   {
     const XQPCollator* collator = theIndex->getCollator(i);
 
