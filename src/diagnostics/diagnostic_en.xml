@@ -3447,8 +3447,8 @@
       <value>valid values are: yes, no, omit</value>
     </entry>
 
-    <entry key="In">
-      <value>in</value>
+    <entry key="InData">
+      <value>in data</value>
     </entry>
 
     <entry key="IncompleteKeyInIndexBuild">

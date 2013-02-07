@@ -58,6 +58,8 @@ XQueryException::XQueryException( Diagnostic const &diagnostic,
 XQueryException::XQueryException( XQueryException const &from ) :
   ZorbaException( from ),
   source_loc_( from.source_loc_ ),
+  data_loc_( from.data_loc_ ),
+  applied_loc_( from.applied_loc_ ),
   query_trace_( from.query_trace_ )
 {
   // This copy constructor isn't necessary: the compiler-generated default copy
@@ -83,6 +85,8 @@ XQueryException& XQueryException::operator=( XQueryException const &from ) {
   if ( &from != this ) {
     ZorbaException::operator=( from );
     source_loc_  = from.source_loc_;
+    data_loc_    = from.data_loc_;
+    applied_loc_ = from.applied_loc_;
     query_trace_ = from.query_trace_;
   }
   return *this;
@@ -114,7 +118,7 @@ void XQueryException::set_data( char const *uri,
                                 column_type col_end ) {
   if ( !uri || !*uri )
     uri = source_loc_.file();
-  applied_loc_.set( uri, line, col, line_end, col_end );
+  data_loc_.set( uri, line, col, line_end, col_end );
 }
 
 void XQueryException::set_source( char const *uri,
@@ -190,13 +194,13 @@ ostream& XQueryException::print_impl( ostream &o ) const {
       if ( source_column() )
         o << "," << source_column();
 
-      if ( has_data() ) {
-        o << " (" << diagnostic::dict::lookup( ZED( In ) ) << ' ';
+      if ( has_data() && data_loc_ != source_loc_ ) {
+        o << " (" << diagnostic::dict::lookup( ZED( InData ) ) << ' ';
         if ( data_uri() && ::strcmp( data_uri(), source_uri() ) != 0 ) {
-          if ( print_uri( o, applied_uri() ) )
+          if ( print_uri( o, data_uri() ) )
             o << ':';
         }
-        o << ':' << data_line();
+        o << data_line();
         if ( data_column() )
           o << ',' << data_column();
         o << ')';

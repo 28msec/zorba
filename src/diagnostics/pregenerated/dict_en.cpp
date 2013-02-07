@@ -634,7 +634,7 @@ extern entry const dict_en[] = {
   { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary, json, jsoniq" },
   { "~GoodValuesAreYesNo", "valid values are: yes, no" },
   { "~GoodValuesAreYesNoOmit", "valid values are: yes, no, omit" },
-  { "~In", "in" },
+  { "~InData", "in data" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
   { "~JNDY0021_IllegalCharacter_2", "'$2': illegal JSON character" },

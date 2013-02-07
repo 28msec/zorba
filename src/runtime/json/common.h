@@ -30,6 +30,9 @@
 
 namespace zorba {
 
+class XQueryException;
+namespace json { class exception; }
+
 ///////////////////////////////////////////////////////////////////////////////
 
 typedef std::stack<store::Item*> item_stack_type;
@@ -55,6 +58,10 @@ namespace whitespace {
 
 bool get_attribute_value( store::Item_t const &element, char const *att_name,
                           zstring *att_value );
+
+void set_data( XQueryException*, json::exception const& );
+
+typedef std::ostream& (*std_omanip_type)(std::ostream&);
 
 ///////////////////////////////////////////////////////////////////////////////
 
