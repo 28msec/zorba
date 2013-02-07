@@ -7818,7 +7818,7 @@ void* begin_visit(const CatchExpr& v)
   push_scope();
 
   store::Item_t lCode, lDesc, lValue, lModule, lLineNo, lColumnNo,
-                lDataModule, lDataLineNo, lDataColumnNo, lStackTrace;
+                lDataURI, lDataLineNo, lDataColumnNo, lStackTrace;
 
   GENV_ITEMFACTORY->createQName(lCode, XQUERY_ERR_NS, "", "code");
   GENV_ITEMFACTORY->createQName(lDesc, XQUERY_ERR_NS, "", "description");
@@ -7826,10 +7826,7 @@ void* begin_visit(const CatchExpr& v)
   GENV_ITEMFACTORY->createQName(lModule, XQUERY_ERR_NS, "", "module");
   GENV_ITEMFACTORY->createQName(lLineNo, XQUERY_ERR_NS, "", "line-number");
   GENV_ITEMFACTORY->createQName(lColumnNo, XQUERY_ERR_NS, "", "column-number");
-  GENV_ITEMFACTORY->createQName(lColumnNo, XQUERY_ERR_NS, "", "data-uri");
-  GENV_ITEMFACTORY->createQName(lColumnNo, XQUERY_ERR_NS, "", "data-line-number");
-  GENV_ITEMFACTORY->createQName(lColumnNo, XQUERY_ERR_NS, "", "data-column-number");
-  GENV_ITEMFACTORY->createQName(lDataModule, ZORBA_ERR_NS, "", "data-module");
+  GENV_ITEMFACTORY->createQName(lDataURI, ZORBA_ERR_NS, "", "data-uri");
   GENV_ITEMFACTORY->createQName(lDataLineNo, ZORBA_ERR_NS, "", "data-line-number");
   GENV_ITEMFACTORY->createQName(lDataColumnNo, ZORBA_ERR_NS, "", "data-column-number");
   GENV_ITEMFACTORY->createQName(lStackTrace, ZORBA_ERR_NS, "", "stack-trace");
@@ -7852,8 +7849,8 @@ void* begin_visit(const CatchExpr& v)
   cc->add_var(catch_clause::err_column_no,
       bind_var(loc, lColumnNo, var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION));
 
-  cc->add_var(catch_clause::zerr_data_module,
-      bind_var(loc, lDataModule, var_expr::catch_var, theRTM.STRING_TYPE_QUESTION));
+  cc->add_var(catch_clause::zerr_data_uri,
+      bind_var(loc, lDataURI, var_expr::catch_var, theRTM.STRING_TYPE_QUESTION));
 
   cc->add_var(catch_clause::zerr_data_line_no,
       bind_var(loc, lDataLineNo, var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION));

@@ -2078,8 +2078,8 @@ void end_visit(trycatch_expr& v)
       case catch_clause::err_column_no:
         rcc.theVars[TryCatchIterator::CatchClause::err_column_no] = *vec;
         break;
-      case catch_clause::zerr_data_module:
-        rcc.theVars[TryCatchIterator::CatchClause::zerr_data_module] = *vec;
+      case catch_clause::zerr_data_uri:
+        rcc.theVars[TryCatchIterator::CatchClause::zerr_data_uri] = *vec;
         break;
       case catch_clause::zerr_data_line_no:
         rcc.theVars[TryCatchIterator::CatchClause::zerr_data_line_no] = *vec;
