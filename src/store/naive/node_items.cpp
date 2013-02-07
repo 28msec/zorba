@@ -480,6 +480,11 @@ XmlNode::~XmlNode()
 }
 #endif
 
+size_t XmlNode::alloc_size() const
+{
+  return store::Item::alloc_size();
+}
+
 
 /*******************************************************************************
 

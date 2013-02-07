@@ -406,6 +406,8 @@ public:
   virtual ~XmlNode() {}
 #endif
 
+  size_t alloc_size() const;
+
   SYNC_CODE(RCLock* getRCLock() const { return getTree()->getRCLock(); })
 
   void free()
