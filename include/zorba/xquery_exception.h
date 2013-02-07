@@ -39,6 +39,15 @@ public:
   typedef internal::diagnostic::location::column_type column_type;
 
   /**
+   * Whether to include the XQuery stack trace for the XQueryException that's
+   * printed to an ostream.
+   */
+  enum print_trace {
+    trace,
+    no_trace
+  };
+
+  /**
    * Copy-constructs an %XQueryException.
    *
    * @param from The %XQueryException to copy from.
@@ -279,6 +288,17 @@ public:
   ////////// XQuery stack trace ///////////////////////////////////////////////
 
   /**
+   * Gets whether XQuery stack traces will be included when XQueryExceptions
+   * are printed to the given ostream.
+   *
+   * @param o The ostream.
+   * @return Returns \a true only if stack traces will be included.
+   */
+  static bool get_print_trace( std::ostream &o ) {
+    return static_cast<print_trace>( o.iword( get_ios_trace_index() ) );
+  }
+
+  /**
    * Gets the XQuery stack trace, if any.
    *
    * @return Returns said stack trace.
@@ -296,13 +316,29 @@ public:
     return query_trace_;
   }
 
+  /**
+   * Sets whether XQuery stack traces will be included when XQueryExceptions
+   * are printed to the given ostream.
+   *
+   * @param o The ostream to affect.
+   * @param print If \a true, stack traces will be included.
+   */
+  static void set_print_trace( std::ostream &o, bool print ) {
+    o.iword( get_ios_trace_index() ) = print;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+
   // inherited
   void polymorphic_throw() const;
 
 protected:
+  std::ostream& print_stack_trace( std::ostream& ) const;
+  static bool print_uri( std::ostream&, char const *uri );
+
   // inherited
   std::unique_ptr<ZorbaException> clone() const;
-  std::ostream& print( std::ostream &o ) const;
+  std::ostream& print_impl( std::ostream& ) const;
 
 private:
   typedef internal::diagnostic::location location;
@@ -325,6 +361,8 @@ private:
   location data_loc_;
   location applied_loc_;
   XQueryStackTrace query_trace_;
+
+  static int get_ios_trace_index();
 
   friend XQueryException make_xquery_exception(
     char const*, ZorbaException::line_type, Diagnostic const&,
@@ -353,6 +391,22 @@ protected:
   friend void serialization::operator&( serialization::Archiver&,
                                         ZorbaException*& );
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Sets whether to include the XQuery stack trace for the next XQueryException
+ * that's printed.
+ *
+ * @param o The ostream to affect.
+ * @param t The print_trace value.
+ * @return Returns \a o.
+ */
+inline std::ostream& operator<<( std::ostream &o,
+                                 XQueryException::print_trace t ) {
+  XQueryException::set_print_trace( o, t );
+  return o;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
