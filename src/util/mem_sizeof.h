@@ -576,7 +576,7 @@ struct alloc_size_traits<std::vector<T,Alloc>,false> :
 template<class T>
 struct alloc_size_traits<store::ItemHandle<T>,false> {
   static size_t alloc_sizeof( store::ItemHandle<T> const &h ) {
-    return h.getp() ? mem_sizeof( *h ) : 0;
+    return h.isNull() ? 0 : mem_sizeof( *h );
   }
 };
 
@@ -596,7 +596,7 @@ struct alloc_size_traits<rstring<RepType>,false> {
 template<class T>
 struct alloc_size_traits<rchandle<T>,false> {
   static size_t alloc_sizeof( rchandle<T> const &h ) {
-    return h.getp() ? mem_sizeof( *h ) : 0;
+    return h.isNull() ? 0 : mem_sizeof( *h );
   }
 };
 
