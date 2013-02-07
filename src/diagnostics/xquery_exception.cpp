@@ -58,6 +58,7 @@ XQueryException::XQueryException( Diagnostic const &diagnostic,
 XQueryException::XQueryException( XQueryException const &from ) :
   ZorbaException( from ),
   source_loc_( from.source_loc_ ),
+  applied_loc_( from.applied_loc_ ),
   query_trace_( from.query_trace_ )
 {
   // This copy constructor isn't necessary: the compiler-generated default copy
@@ -83,6 +84,7 @@ XQueryException& XQueryException::operator=( XQueryException const &from ) {
   if ( &from != this ) {
     ZorbaException::operator=( from );
     source_loc_  = from.source_loc_;
+    applied_loc_ = from.applied_loc_;
     query_trace_ = from.query_trace_;
   }
   return *this;
