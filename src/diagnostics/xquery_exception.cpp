@@ -129,6 +129,7 @@ ostream& XQueryException::print_impl( ostream &o ) const {
     if ( has_source() ) {
       o << indent << "<location";
       print_uri( o, source_uri() );
+#if 0
       o << " line-begin=\"" << source_line() << '"';
       if ( source_line_end() )
         o << " line-end=\"" << source_line_end() << '"';
@@ -136,6 +137,15 @@ ostream& XQueryException::print_impl( ostream &o ) const {
         o << " column-begin=\"" << source_column() << '"';
       if ( source_column_end() )
         o << " column-end=\"" << source_column_end() << '"';
+#else
+      o << " lineStart=\"" << source_line() << '"';
+      if ( source_column() )
+        o << " columnStart=\"" << source_column() << '"';
+      if ( source_line_end() )
+        o << " lineEnd=\"" << source_line_end() << '"';
+      if ( source_column_end() )
+        o << " columnEnd=\"" << source_column_end() << '"';
+#endif
       o << "/>" << if_nl; // <location ...
 
       if ( has_applied() ) {
@@ -204,6 +214,7 @@ ostream& XQueryException::print_stack_trace( ostream &o ) const {
         if ( fn_prefix && *fn_prefix )
           o << " prefix=\"" << fn_prefix << '"';
 
+#if 0
         o << " namespace=\"" << fn_name.ns() << '"'
           << " local-name=\"" << fn_name.localname()
           << " arity=\"" << fn_arity << '"'
@@ -218,6 +229,22 @@ ostream& XQueryException::print_stack_trace( ostream &o ) const {
         o << " column-begin=\"" << it->getColumn() << '"';
         if ( it->getColumnEnd() )
           o << " column-end=\"" << it->getColumnEnd() << '"';
+#else
+        o << " ns=\"" << fn_name.ns() << '"'
+          << " localName=\"" << fn_name.localname()
+          << " arity=\"" << fn_arity << '"'
+          << "\">" << if_nl; // <call ...
+
+        o << if_inc_indent << indent << "<location fileName=\"" << filename << '"';
+
+        o << " lineStart=\"" << it->getLine() << '"';
+        o << " columnStart=\"" << it->getColumn() << '"';
+
+        if ( it->getLineEnd() )
+          o << " lineEnd=\"" << it->getLineEnd() << '"';
+        if ( it->getColumnEnd() )
+          o << " columnEnd=\"" << it->getColumnEnd() << '"';
+#endif
 
         o << "/>" << if_nl // <location ...
           << if_dec_indent << "</call>" << if_nl;
