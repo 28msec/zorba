@@ -44,6 +44,15 @@ public:
   typedef internal::diagnostic::location::line_type line_type;
 
   /**
+   * The format to print exceptions as to an ostream.
+   */
+  enum print_format {
+    format_text         = 0,            ///< plain text
+    format_xml          = 1,            ///< XML without unnecessary whitespace
+    format_xml_indented = 3             ///< XML with newlines and indentation
+  };
+  
+  /**
    * Copy-constructs a %ZorbaException.
    *
    * @param from The %ZorbaException to copy from.
@@ -70,6 +79,16 @@ public:
    */
   Diagnostic const& diagnostic() const throw() {
     return *diagnostic_;
+  }
+
+  /**
+   * Gets the current print_format associated with the given ostream.
+   *
+   * @param o The ostream to get the print_format of.
+   * @return Returns said print_format.
+   */
+  static print_format get_print_format( std::ostream &o ) {
+    return static_cast<print_format>( o.iword( get_ios_format_index() ) );
   }
 
   /**
@@ -105,6 +124,16 @@ public:
     return raise_line_;
   }
 
+  /**
+   * Sets the print_format of the given ostream.
+   *
+   * @param o The ostream to set the print_format of.
+   * @param f The print_format value.
+   */
+  static void set_print_format( std::ostream &o, print_format f ) {
+    o.iword( get_ios_format_index() ) = static_cast<long>( f );
+  }
+
   // inherited
   char const* what() const throw();
 
@@ -135,15 +164,17 @@ protected:
    * @param o The ostream to print to.
    * @return Returns \a o.
    */
-  virtual std::ostream& print( std::ostream &o ) const;
+  std::ostream& print( std::ostream& ) const;
 
-  friend std::ostream& operator<<( std::ostream&, ZorbaException const& );
+  virtual std::ostream& print_impl( std::ostream &o ) const;
 
 private:
   Diagnostic const *diagnostic_;
   std::string raise_file_;
   line_type raise_line_;
   std::string message_;
+
+  static int get_ios_format_index();
 
   friend std::unique_ptr<ZorbaException> clone( ZorbaException const& );
 
@@ -157,12 +188,16 @@ private:
     internal::diagnostic::parameters const&
   );
 
+  friend std::ostream& operator<<( std::ostream&, ZorbaException const& );
+
 protected:
   // for plan serialization
   ZorbaException( serialization::Archiver& );
   friend void serialization::operator&( serialization::Archiver&,
                                         ZorbaException*& );
 };
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * Emits the given ZorbaException to the given ostream.
@@ -173,6 +208,19 @@ protected:
  */
 inline std::ostream& operator<<( std::ostream &o, ZorbaException const &e ) {
   return e.print( o );
+}
+
+/**
+ * Sets the format for the next ZorbaException that's printed.
+ *
+ * @param o The ostream to affect.
+ * @param f The print_format to use.
+ * @return Returns \a o.
+ */
+inline std::ostream& operator<<( std::ostream &o,
+                                 ZorbaException::print_format f ) {
+  ZorbaException::set_print_format( o, f );
+  return o;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
