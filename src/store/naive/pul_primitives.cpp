@@ -1025,11 +1025,15 @@ void UpdDeleteCollection::apply()
   {
     size = to_xs_unsignedLong(collection->size());
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
     RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
-    ERROR_PARAMS(BUILD_STRING("collection too big ("
-                              << e.what() << "; " << theName << ")")));
+      ERROR_PARAMS(
+        collection->size(),
+        ZED( ZSTR0060_ForCollection_3 ),
+        theName
+      )
+    );
   }
 
   for (uint64_t i = 0; i < size; ++i)
@@ -1091,11 +1095,15 @@ void UpdInsertIntoCollection::undo()
   {
     lastPos = to_xs_unsignedLong(lColl->size()) - 1;
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
     RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
-    ERROR_PARAMS(BUILD_STRING("collection too big ("
-                              << e.what() << "; " << theName << ")")));
+      ERROR_PARAMS(
+        lColl->size(),
+        ZED( ZSTR0060_ForCollection_3 ),
+        theName
+      )
+    );
   }
 
   for (long i = theNumApplied-1; i >= 0; --i)
@@ -1182,11 +1190,15 @@ void UpdInsertLastIntoCollection::undo()
   {
     lastPos = to_xs_unsignedLong(lColl->size()) - 1;
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
     RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
-    ERROR_PARAMS(BUILD_STRING("collection too big ("
-                              << e.what() << "; " << theName << ")")));
+      ERROR_PARAMS(
+        lColl->size(),
+        ZED( ZSTR0060_ForCollection_3 ),
+        theName
+      )
+    );
   }
 
   xs_integer const xs_lastPos( lastPos );
@@ -1281,11 +1293,15 @@ void UpdDeleteNodesFromCollection::apply()
   {
     size = to_xs_unsignedLong(coll->size());
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
     RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
-    ERROR_PARAMS(BUILD_STRING("collection too big ("
-                              << e.what() << "; " << theName << ")")));
+      ERROR_PARAMS(
+        coll->size(),
+        ZED( ZSTR0060_ForCollection_3 ),
+        theName
+      )
+    );
   }
 
   csize numNodes = theNodes.size();

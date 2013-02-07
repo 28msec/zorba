@@ -247,7 +247,7 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   }
 
   lCount = coll->size();
-  if (theChildren.size() > 1) 
+  if (theChildren.size() == 2) 
   {
     // skip parameter passed
     store::Item_t lSkipItem;
@@ -257,6 +257,14 @@ bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     lCount -= ( lSkip <= xs_integer::zero() ? xs_integer::zero() : lSkip );
     // negative is transformed into 0
     lCount = ( lCount < xs_integer::zero() ? xs_integer::zero() : lCount );
+  }
+  else if(theChildren.size() > 2)
+  {
+    // if ref is passed to the collections function, count cannot be 
+    // optimized anymore. Hence this iterator must not be used.
+    // In this case ZorbaCollectionIterator::isCountOptimizable() returns 
+    // false.
+    assert(false);
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lCount), state);

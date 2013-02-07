@@ -29,8 +29,11 @@ import module namespace r =
 (:~
  : Path to the FOTS catalog.xml file. If the path is relative, it will be 
  : resolved relative to the directory containing this cli.xq file.
+ : By default it is assumed that the FOTS was imported using CMake (i.e. after
+ : 'make fots-import' and 'make fots-activate-sets' were run).
  :)
-declare variable $fotsPath as xs:string external := "";
+declare variable $fotsPath as xs:string external :=
+  "../../build/test/fots/2011/QT3-test-suite/catalog.xml";
 
 
 (:~ 
@@ -95,7 +98,6 @@ declare variable $exceptedTestCases as xs:string* := (
 , "re00975",
   "re00976",
   "re00976a"                    (:see bug lp:1070533 :)
-, "fn-unparsed-text-lines-052"  (:see bug lp:1073175 :)
 );
 
 
@@ -198,7 +200,7 @@ declare function local:usage() as xs:string
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -e verbose:=false -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-and-report -o report.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=report -e resultsFilePath:=failures.xml -e verbose:=false -o report.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=report -e resultsFilePath:=failures.xml -o results_Zorba_XQ30.xml --indent",
     "zorba -f -q /path/to/cli.xq -e mode:=generate-expected-failures -e resultsFilePath:=failures.xml -o ExpectedFailures.xml --indent",
     ""
     ), "&#xA;")
@@ -221,7 +223,11 @@ variable $fotsPathMsg := "The path to FOTS catalog.xml was set to: ";
 
 variable $testSetPrefixesMsg := "'testSetPrefixes' was set to: ";
 
+variable $testSetNameMsg := "'testSetName' was set to: ";
+
 variable $testCasePrefixesMsg := "'testCasePrefixes' was set to: ";
+
+variable $testCaseNameMsg := "'testCaseName' was set to: ";
 
 
 switch ($mode)
@@ -284,6 +290,8 @@ return
   trace($testCasePrefixes, $testCasePrefixesMsg);
   trace($dependency, "'dependency' set to:");
   trace($assertions, "'assertions' set to: ");
+  trace($verbose, "'verbose' set to:");
+  trace($mode, "Cli command was set to:");
 
   d:run-fots($fotsPath,
              $fotsZorbaManifestPath,
@@ -294,22 +302,29 @@ return
              $dependency,
              $assertions,
              xs:boolean($verbose),
-             $expectedFailuresPath)
+             $expectedFailuresPath,
+             $mode)
 }
 
 case "run-test-case"
 return
-{ 
+{
+  trace($testSetName, $testSetNameMsg);
+  trace($testCaseName, $testCaseNameMsg);
+  trace($verbose, "'verbose' set to:");
+  trace($mode, "Cli command was set to:");
+
   d:run-fots($fotsPath,
              $fotsZorbaManifestPath,
-             trace($testSetName, "'testSetName' set to: "),
-             trace($testCaseName,"'testCaseName' set to: "),
-             $exceptedTestCases,
+             $testSetName,
              $exceptedTestSets,
+             $testCaseName,
+             $exceptedTestCases,
              "",
              (),
              xs:boolean($verbose),
-             $expectedFailuresPath)
+             $expectedFailuresPath,
+             $mode)
 }
 
 case "run-and-report"
@@ -318,19 +333,14 @@ return
   r:run-and-report($fotsPath,
                    $fotsZorbaManifestPath,
                    $exceptedTestCases,
-                   $exceptedTestSets,
-        (: the reports to W3C are always generated with verbose set to false:)
-                   fn:false())
+                   $exceptedTestSets)
 }
 
 case "report"
 return
 {
-  r:report($fotsPath,
-           $resultsFilePath,
-           $exceptedTestCases,
-           $exceptedTestSets,
-           xs:boolean($verbose))
+  r:report($fotsZorbaManifestPath,
+           $resultsFilePath)
 }
 
 case "generate-expected-failures"

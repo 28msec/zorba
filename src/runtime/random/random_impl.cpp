@@ -105,7 +105,7 @@ RandomIterator::nextImpl(
 {
   store::Item_t    num;
   unsigned int     int_seed;
-  long             walltime_millis;
+  time::msec_type  walltime_millis;
   uint32_t         time_low;
   zstring ltmp;
 

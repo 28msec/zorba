@@ -648,7 +648,7 @@ typename std::enable_if<ztd::has_c_str<PathStringType,
                           char const* (PathStringType::*)() const>::value,
                         zstring>::type
 get_normalized_path( PathStringType const &path,
-                             PathStringType const &base = "" ) {
+                     PathStringType const &base = "" ) {
   return get_normalized_path( path.c_str(), base.c_str() );
 }
 
