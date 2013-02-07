@@ -29,9 +29,14 @@ class Collection;
 class CollectionTreeInfo;
 
 
-/******************************************************************************
+/*******************************************************************************
   StructuredItem represents either an XML node or a JSON node.
-*******************************************************************************/
+
+  An important goal of the StructureItem class is to provide methods that
+  manage the interactions between trees of nodes and collections. These methods
+  operate on instances of the CollectionTreeInfo class. See comments in 
+  collection_tree_info.h for more details.
+********************************************************************************/
 class StructuredItem : public store::Item
 {
 public:
@@ -47,7 +52,13 @@ public:
 
   //--------------------- Structured Item API ----------------------------------
 
+  const TreeId& getTreeId() const;
+
   StructuredItem* getCollectionRoot() const;
+
+  const xs_integer& getPosition() const;
+
+  void setPosition(const xs_integer& pos);
 
   // Attaches a root node to a collection (populates collection info).
   virtual void attachToCollection(
@@ -62,22 +73,9 @@ public:
   // (not to be called on a root - use functions above if root).
   virtual void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo) = 0;
 
-  // Assuming the tree T this node belongs to is in a collection, return the
-  // position of T within its containing collection. 
-  virtual const xs_integer& getPosition() const = 0;
-
-  // Assuming the tree T this node belongs to is in a collection, store the
-  // position of T within its containing collection. The position is stored
-  // inside the CollectionTreeInfo object associated with the node.
-  virtual void setPosition(const xs_integer& pos) = 0;
-
   // Returns total number of outstanding pointers to the tree (for garbage
   // collection purposes).
   virtual long getCollectionTreeRefCount() const = 0;
-  
-  // Assuming the tree T this node belongs to is in a collection, get the
-  // id of T (the id is unique within the containing collection).
-  virtual const TreeId& getTreeId() const = 0;
 
   // Tells if the given item is in the subtree starting at this item.
   // NOTE: for the purposes of this method, XML trees that are pointed-to

@@ -537,8 +537,6 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  const TreeId& getTreeId() const { return getTree()->getTreeId(); }
-
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
   ulong getCollectionId() const
@@ -546,10 +544,6 @@ public:
     assert(!isConnectorNode());
     return getTree()->getCollectionId(); 
   }
-
-  const xs_integer& getPosition() const { return getTree()->getPosition(); }
-
-  void setPosition(const xs_integer& pos) { getTree()->setPosition(pos); }
 
   void setId(XmlTree* tree, const OrdPathStack* op);
 
@@ -1635,8 +1629,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      TreeId tree1 = this->getTreeId();
-      TreeId tree2 = other->getTreeId();
+      TreeId tree1 = this->getTree()->getTreeId();
+      TreeId tree2 = other->getTree()->getTreeId();
 
       if (tree1 < tree2)
         return -1;
@@ -1685,8 +1679,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      const TreeId& tree1 = this->getTreeId();
-      const TreeId& tree2 = other->getTreeId();
+      const TreeId& tree1 = this->getTree()->getTreeId();
+      const TreeId& tree2 = other->getTree()->getTreeId();
 
       if (tree1 < tree2)
         return -1;

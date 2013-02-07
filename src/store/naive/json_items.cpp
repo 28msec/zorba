@@ -478,6 +478,7 @@ bool SimpleJSONObject::rename(
   return true;
 }
 
+
 /******************************************************************************
 
 *******************************************************************************/
@@ -490,6 +491,7 @@ void SimpleJSONObject::swap(store::Item* anotherItem)
   setCollectionTreeInfo(theCollectionInfo);
   lOther->setCollectionTreeInfo(lOther->theCollectionInfo);
 }
+
 
 /******************************************************************************
 

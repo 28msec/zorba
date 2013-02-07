@@ -28,6 +28,32 @@ namespace simplestore
 
 
 /*******************************************************************************
+  Get the id of the tree this node belongs to
+********************************************************************************/
+const TreeId& StructuredItem::getTreeId() const
+{
+  if (isNode())
+  {
+    const XmlNode* node = static_cast<const XmlNode*>(this);
+    return node->getTree()->getTreeId();
+  }
+  else
+  {
+    assert(isJSONItem());
+
+    const json::JSONItem* node = static_cast<const json::JSONItem*>(this);
+
+    CollectionTreeInfoWithTreeId* info = 
+    static_cast<CollectionTreeInfoWithTreeId*>(node->getCollectionTreeInfo());
+
+    ZORBA_ASSERT(info);
+
+    return info->getTreeId();
+  }
+}
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 CollectionTreeInfo* StructuredItem::getCollectionTreeInfo() const
@@ -56,6 +82,31 @@ StructuredItem* StructuredItem::getCollectionRoot() const
 {
   CollectionTreeInfo* info = getCollectionTreeInfo();
   return info ? info->getRoot() : NULL;
+}
+
+
+/*******************************************************************************
+  Assuming the tree T this node belongs to is in a collection, return the
+  position of T within its containing collection. 
+********************************************************************************/
+const xs_integer& StructuredItem::getPosition() const
+{
+  CollectionTreeInfo* info = getCollectionTreeInfo();
+  ZORBA_ASSERT(info);
+  return info->getPosition();
+}
+
+
+/*******************************************************************************
+  Assuming the tree T this node belongs to is in a collection, store the
+  position of T within its containing collection. The position is stored
+  inside the CollectionTreeInfo object associated with the node.
+********************************************************************************/
+void StructuredItem::setPosition(const xs_integer& pos)
+{
+  CollectionTreeInfo* info = getCollectionTreeInfo();
+  ZORBA_ASSERT(info);
+  info->setPosition(pos);
 }
 
 

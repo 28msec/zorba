@@ -124,27 +124,9 @@ public:
   
   CollectionTreeInfo* getCollectionTreeInfo() const { return theCollectionInfo; }
 
-  virtual void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo) = 0;
+  void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo) = 0;
   
-  virtual long getCollectionTreeRefCount() const;
-
-  const xs_integer& getPosition() const
-  {
-    ZORBA_ASSERT(theCollectionInfo);
-    return theCollectionInfo->getPosition();
-  }
-  
-  void setPosition(const xs_integer& pos)
-  {
-    ZORBA_ASSERT(theCollectionInfo);
-    theCollectionInfo->setPosition(pos); 
-  }
-
-  const TreeId& getTreeId() const
-  {
-    ZORBA_ASSERT(theCollectionInfo);
-    return theCollectionInfo->getTreeId();
-  }
+  long getCollectionTreeRefCount() const;
 
   // store API
 
