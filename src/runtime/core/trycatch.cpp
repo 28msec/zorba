@@ -499,36 +499,36 @@ TryCatchIterator::bindErrorVars(
       break;
       }
 
-      case CatchClause::err_data_uri:
+      case CatchClause::zerr_data_module:
       {
-        LetVarConstIter lErrorDataURIVarIter = lIter->second.begin();
-        LetVarConstIter const lErrorDataURIVarIterEnd = lIter->second.end();
+        LetVarConstIter lErrorDataModuleVarIter = lIter->second.begin();
+        LetVarConstIter const lErrorDataModuleVarIterEnd = lIter->second.end();
 
-        for ( ; lErrorDataURIVarIter != lErrorDataURIVarIterEnd;
-              ++lErrorDataURIVarIter )
+        for ( ; lErrorDataModuleVarIter != lErrorDataModuleVarIterEnd;
+              ++lErrorDataModuleVarIter )
         {
-          store::Iterator_t lErrorDataURIIter;
+          store::Iterator_t lErrorDataModuleIter;
 
           XQueryException const *const xe =
             dynamic_cast<XQueryException const*>( &e );
 	        if ( xe && xe->has_data() ) {
-            store::Item_t lErrorDataURIItem;
+            store::Item_t lErrorDataModuleItem;
             zstring uri( xe->data_uri() );
-            GENV_ITEMFACTORY->createString( lErrorDataURIItem, uri );
-            lErrorDataURIIter = new ItemIterator(lErrorDataURIItem);
+            GENV_ITEMFACTORY->createString( lErrorDataModuleItem, uri );
+            lErrorDataModuleIter = new ItemIterator(lErrorDataModuleItem);
 	        }
           else
           {
-            lErrorDataURIIter = new ItemIterator();
+            lErrorDataModuleIter = new ItemIterator();
           }
-          lErrorDataURIIter->open();
-          state->theErrorIters.push_back(lErrorDataURIIter);
-          (*lErrorDataURIVarIter)->bind(lErrorDataURIIter, planState);
+          lErrorDataModuleIter->open();
+          state->theErrorIters.push_back(lErrorDataModuleIter);
+          (*lErrorDataModuleVarIter)->bind(lErrorDataModuleIter, planState);
         }
         break;
       }
 
-      case CatchClause::err_data_line_no:
+      case CatchClause::zerr_data_line_no:
       {
         LetVarConstIter lErrorDataLineVarIter = lIter->second.begin();
         LetVarConstIter const lErrorDataLineVarIterEnd = lIter->second.end();
@@ -557,7 +557,7 @@ TryCatchIterator::bindErrorVars(
         break;
       }
 
-      case CatchClause::err_data_column_no:
+      case CatchClause::zerr_data_column_no:
       {
         LetVarConstIter lErrorDataColumnVarIter = lIter->second.begin();
         LetVarConstIter const lErrorDataColumnVarIterEnd = lIter->second.end();

@@ -61,9 +61,9 @@ public:
       err_module,
       err_line_no,
       err_column_no,
-      err_data_uri,
-      err_data_line_no,
-      err_data_column_no,
+      zerr_data_module,
+      zerr_data_line_no,
+      zerr_data_column_no,
       zerr_stack_trace
     };
 
