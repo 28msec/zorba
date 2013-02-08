@@ -57,6 +57,8 @@
 #define ZED_XPDY0002_VariableHasNoValue_2 "~XPDY0002_VariableHasNoValue_2"
 #define ZED_XPDY0002_VariableUndeclared_2 "~XPDY0002_VariableUndeclared_2"
 #define ZED_XPDY0002_ContextUndeclared_2 "~XPDY0002_ContextUndeclared_2"
+#define ZED_XQDY0027_SerializationElementName_2 "~XQDY0027_SerializationElementName_2"
+#define ZED_XQDY0027_SerializationElementNs_2 "~XQDY0027_SerializationElementNs_2"
 #define ZED_FTST0009_BadStopWordsLang "~FTST0009_BadStopWordsLang"
 #define ZED_FTST0009_BadStemmerLang "~FTST0009_BadStemmerLang"
 #define ZED_FTST0009_BadThesaurusLang "~FTST0009_BadThesaurusLang"
