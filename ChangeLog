@@ -13,7 +13,7 @@ New Features:
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
-    parameter into collection skip if $sourceSeq parameter is from a 
+    parameter into collection skip if $sourceSeq parameter is from a
     collection).
 
 Bug Fixes/Other Changes:
@@ -21,6 +21,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
   * NaN items are considered equal to each other during grouping
   * Fixed bug #855481 (Too small time types on Windows).
+  * Fixed bug in computing the static type of an allowing-empty FOR variable.
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
   * Fixed bug #1099535  (xml:parse endless loop)
   * Fixed bug #866958  (Parsing error not explicit enough)
