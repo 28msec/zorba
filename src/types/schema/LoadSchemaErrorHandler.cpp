@@ -51,41 +51,20 @@ LoadSchemaErrorHandler::~LoadSchemaErrorHandler()
 void LoadSchemaErrorHandler::error(const XERCES_CPP_NAMESPACE::SAXParseException& e)
 {
   theSawErrors = true;
-  std::ostringstream os;
-  os << "Error in schema ";
-
-if ( e.getSystemId() != NULL )
-    os << "with system id " << StrX(e.getSystemId());
-  else if ( e.getPublicId() != NULL )
-    os << "with public id " << StrX(e.getPublicId());
-  else 
-    os << "without id"; 
-  
-  os << ", line " << e.getLineNumber() 
-     << ", column " << e.getColumnNumber() << "." << std::endl
-     << StrX(e.getMessage());
-
-  throw XQUERY_EXCEPTION( err::XQST0059, ERROR_PARAMS(os.str()), ERROR_LOC(theQueryLoc) );
+  throw XQUERY_EXCEPTION(
+    zerr::ZXQP0034_SCHEMA_ERROR,
+    ERROR_PARAMS(
+      e.getLineNumber(), e.getColumnNumber(),
+      e.getSystemId(), e.getPublicId(),
+      e.getMessage()
+    ),
+    ERROR_LOC( theQueryLoc )
+  );
 }
 
 void LoadSchemaErrorHandler::fatalError(const XERCES_CPP_NAMESPACE::SAXParseException& e)
 {
-  theSawErrors = true;
-  std::ostringstream os;
-  os << "Fatal error in schema ";
-
-  if ( e.getSystemId() != NULL )
-    os << "with system id " << StrX(e.getSystemId());
-  else if ( e.getPublicId() != NULL )
-    os << "with public id " << StrX(e.getPublicId());
-  else 
-    os << "without id"; 
-  
-  os << ", line " << e.getLineNumber() 
-     << ", column " << e.getColumnNumber() << "." << std::endl
-     << StrX(e.getMessage());
-
-  throw XQUERY_EXCEPTION( err::XQST0059, ERROR_PARAMS(os.str()), ERROR_LOC(theQueryLoc) );
+  error( e );
 }
 
 void LoadSchemaErrorHandler::warning(const XERCES_CPP_NAMESPACE::SAXParseException& e)

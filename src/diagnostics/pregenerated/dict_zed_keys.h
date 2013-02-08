@@ -255,8 +255,6 @@
 #define ZED_QuotedColon_23 "~QuotedColon_23"
 #define ZED_SEPM0009_Not10 "~SEPM0009_Not10"
 #define ZED_SEPM0009_NotOmit "~SEPM0009_NotOmit"
-#define ZED_SchemaOutOfMemory "~SchemaOutOfMemory"
-#define ZED_SchemaParseError "~SchemaParseError"
 #define ZED_SchemaUnexpected "~SchemaUnexpected"
 #define ZED_SearchKeyTypeMismatch_234 "~SearchKeyTypeMismatch_234"
 #define ZED_SearchKeyTypeNoProbeIndex_23 "~SearchKeyTypeNoProbeIndex_23"

@@ -2197,7 +2197,7 @@ void* import_schema(
     }
 
     if ( lStream == NULL ) {
-      throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(lNsURI, lErrorMessage));
+      throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(lNsURI, "", lErrorMessage));
     }
 
     // If we got this far, we have a valid StreamResource.

@@ -572,27 +572,27 @@
 
     <diagnostic code="XQST0057">
       <comment>
-       It is a static error if a schema import binds a namespace prefix but does
-       not specify a target namespace other than a zero-length string.
+        It is a static error if a schema import binds a namespace prefix but
+        does not specify a target namespace other than a zero-length string.
       </comment>
       <value>empty target namespace</value>
     </diagnostic>
 
     <diagnostic code="XQST0058">
       <comment>
-       It is a static error if multiple schema imports specify the same target
-       namespace.
+        It is a static error if multiple schema imports specify the same target
+        namespace.
       </comment>
       <value>"$1": duplicate target namespace</value>
     </diagnostic>
 
     <diagnostic code="XQST0059">
       <comment>
-       It is a static error if an implementation is unable to process a schema
-       or module import by finding a schema or module with the specified target
-       namespace.
+        It is a static error if an implementation is unable to process a schema
+        or module import by finding a schema or module with the specified
+        target namespace.
       </comment>
-      <value>"$1": target namespace not found for schema/module${ 2}</value>
+      <value>"$1": target namespace not found for schema/module${ "2"}${: 3}</value>
     </diagnostic>
 
     <diagnostic code="XQST0060">
@@ -1964,6 +1964,10 @@
       <value>FxCharHeap error: $1 ($2)</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0014" name="OUT_OF_MEMORY">
+      <value>${"1": }out of memory${: 2}</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0016" name="RESERVED_MODULE_TARGET_NAMESPACE">
       <value>"$1": reserved module target namespace</value>
     </diagnostic>
@@ -1986,7 +1990,6 @@
 
     <diagnostic code="ZXQP0025" name="COULD_NOT_FETCH_RESOURCE">
       <value>"$1": could not fetch resource${; reason: 2}</value>
-
       <entry key="RESOURCE_NOT_FOUND">
         <value>resource not found</value>
       </entry>
@@ -2016,6 +2019,18 @@
       <value>error transforming XQueryX to XQuery${: 1}</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0033" name="SCHEMA_XML_ERROR">
+      <value>${"1": }XML error in schema${: 2}</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP0034" name="SCHEMA_ERROR">
+      <value>$1,$2: error in schema${ with System ID "3"}${ with Public ID "4"}${: 5}</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP0035" name="SCHEMA_UNEXPECTED_ERROR">
+      <value>${"1": }unexpected error in schema${: 2}</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0036" name="BREAKITERATOR_CREATION_FAILED">
       <value>BreakIterator creation failed</value>
     </diagnostic>
@@ -2037,9 +2052,7 @@
     </diagnostic>
 
     <diagnostic code="ZXQP0050" name="FEATURE_NOT_AVAILABLE">
-
       <value>"$1": feature not available</value>
-
     </diagnostic>
 
     <diagnostic code="ZXQP0060" name="OPTION_NOT_KNOWN">
@@ -3717,14 +3730,6 @@
 
     <entry key="SEPM0009_NotOmit">
       <value>the standalone attribute has a value other than "omit"</value>
-    </entry>
-
-    <entry key="SchemaOutOfMemory">
-      <value>OutOfMemoryException during parsing</value>
-    </entry>
-
-    <entry key="SchemaParseError">
-      <value>error during parsing</value>
     </entry>
 
     <entry key="SchemaUnexpected">
