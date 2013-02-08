@@ -481,8 +481,7 @@ main(int argc, char** argv)
             int lCanonicalRes =
             zorba::canonicalizeAndCompare(State::compareTypeStr(lState->theCompareTypes[i]),
                                           lRefFile.get_path().c_str(),
-                                          lResultFile.get_path().c_str(),
-                                          zorba::UPDATE_BINARY_DIR.c_str());
+                                          lResultFile.get_path().c_str());
             if (lCanonicalRes == 0) 
             {
               anyMatch = true;

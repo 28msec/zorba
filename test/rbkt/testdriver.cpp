@@ -559,8 +559,7 @@ main(int argc, char** argv)
         else {
           int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
             lIter->c_str(),
-            lResultFile.c_str(),
-            rbkt_bin_dir);
+            lResultFile.c_str());
           if (lCanonicalRes == 0) 
           {
             std::cout << "testdriver: success (canonical result # " << i  
