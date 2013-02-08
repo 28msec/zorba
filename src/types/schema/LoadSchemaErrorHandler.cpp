@@ -50,13 +50,22 @@ LoadSchemaErrorHandler::~LoadSchemaErrorHandler()
 // ---------------------------------------------------------------------------
 void LoadSchemaErrorHandler::error(const XERCES_CPP_NAMESPACE::SAXParseException& e)
 {
+  zstring system_id, public_id;
+  if ( e.getSystemId() )
+    system_id = StrX( e.getSystemId() ).localFormOrDefault( "" );
+  if ( e.getPublicId() )
+    public_id = StrX( e.getPublicId() ).localFormOrDefault( "" );
+
   theSawErrors = true;
   throw XQUERY_EXCEPTION(
-    zerr::ZXQP0034_SCHEMA_ERROR,
+    err::XQST0059,
     ERROR_PARAMS(
-      e.getLineNumber(), e.getColumnNumber(),
-      e.getSystemId(), e.getPublicId(),
-      e.getMessage()
+      ZED( XQST0059_XercesMessage ),
+      e.getLineNumber(),
+      e.getColumnNumber(),
+      system_id,
+      public_id,
+      StrX( e.getMessage() ).localFormOrDefault( "" )
     ),
     ERROR_LOC( theQueryLoc )
   );

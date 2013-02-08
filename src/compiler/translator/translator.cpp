@@ -2197,7 +2197,13 @@ void* import_schema(
     }
 
     if ( lStream == NULL ) {
-      throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(lNsURI, "", lErrorMessage));
+      throw XQUERY_EXCEPTION(
+        err::XQST0059,
+        ERROR_PARAMS(
+          ZED( XQST0059_SpecificationMessage ),
+          lNsURI, "", lErrorMessage
+        )
+      );
     }
 
     // If we got this far, we have a valid StreamResource.
@@ -3086,7 +3092,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     if (theModulesInfo->mod_ns_map.get(compURI, importedNS))
     {
       if (importedNS != targetNS)
-        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI));
+        throw XQUERY_EXCEPTION(
+          err::XQST0059,
+          ERROR_PARAMS(
+            ZED( XQST0059_SpecificationMessage ),
+            targetNS, compURI
+          ),
+          ERROR_LOC( loc )
+        );
 
       bool found = theModulesInfo->mod_sctx_map.get(compURI, importedSctx);
       ZORBA_ASSERT(found);
@@ -3129,7 +3142,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       }
       else
       {
-        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI, lErrorMessage));
+        throw XQUERY_EXCEPTION(
+          err::XQST0059,
+          ERROR_PARAMS(
+            ZED( XQST0059_SpecificationMessage ),
+            targetNS, compURI, lErrorMessage
+          ),
+          ERROR_LOC( loc )
+        );
       }
 
       // Get the parent of the query root sctx. This is the user-specified sctx
@@ -3185,7 +3205,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Also make sure that the imported module is a library module
       LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*ast);
       if (mod_ast == NULL)
-        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI));
+        throw XQUERY_EXCEPTION(
+          err::XQST0059,
+          ERROR_PARAMS(
+            ZED( XQST0059_SpecificationMessage ),
+            targetNS, compURI
+          ),
+          ERROR_LOC( loc )
+        );
 
       importedNS = mod_ast->get_decl()->get_target_namespace().str();
 
@@ -3193,7 +3220,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
 
       if (importedNS != targetNS)
-        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI));
+        throw XQUERY_EXCEPTION(
+          err::XQST0059,
+          ERROR_PARAMS(
+            ZED( XQST0059_SpecificationMessage ),
+            targetNS, compURI
+          ),
+          ERROR_LOC( loc )
+        );
 
       // translate the imported module
       translate_aux(theRootTranslator,

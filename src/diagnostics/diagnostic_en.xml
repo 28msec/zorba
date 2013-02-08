@@ -592,7 +592,13 @@
         or module import by finding a schema or module with the specified
         target namespace.
       </comment>
-      <value>"$1": target namespace not found for schema/module${ "2"}${: 3}</value>
+      <value>$1</value>
+      <entry key="SpecificationMessage">
+        <value>"$2": target namespace not found for schema/module${ "3"}${: 4}</value>
+      </entry>
+      <entry key="XercesMessage">
+        <value>$2,$3: error in schema${ with System ID "4"}${ with Public ID "5"}${: 6}</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQST0060">
@@ -2021,10 +2027,6 @@
 
     <diagnostic code="ZXQP0033" name="SCHEMA_XML_ERROR">
       <value>${"1": }XML error in schema${: 2}</value>
-    </diagnostic>
-
-    <diagnostic code="ZXQP0034" name="SCHEMA_ERROR">
-      <value>$1,$2: error in schema${ with System ID "3"}${ with Public ID "4"}${: 5}</value>
     </diagnostic>
 
     <diagnostic code="ZXQP0035" name="SCHEMA_UNEXPECTED_ERROR">

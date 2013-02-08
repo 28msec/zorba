@@ -50,6 +50,8 @@
 #define ZED_XPTY0117_NodeCast "~XPTY0117_NodeCast"
 #define ZED_XPTY0117_NotationParam_23 "~XPTY0117_NotationParam_23"
 #define ZED_XQST0046_BadHexDigit_3 "~XQST0046_BadHexDigit_3"
+#define ZED_XQST0059_SpecificationMessage "~XQST0059_SpecificationMessage"
+#define ZED_XQST0059_XercesMessage "~XQST0059_XercesMessage"
 #define ZED_XQST0106_THE_SAME "~XQST0106_THE_SAME"
 #define ZED_XQST0106_CONFLICTING "~XQST0106_CONFLICTING"
 #define ZED_XPDY0002_VariableHasNoValue_2 "~XPDY0002_VariableHasNoValue_2"

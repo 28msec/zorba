@@ -262,8 +262,13 @@ public:
         else {
           // We didn't find it. If we return NULL here, Xerces will try to
           // resolve it its own way, which we don't want to happen.
-          throw XQUERY_EXCEPTION( err::XQST0059,
-              ERROR_PARAMS( lResolved ));
+          throw XQUERY_EXCEPTION(
+            err::XQST0059,
+            ERROR_PARAMS(
+              ZED( XQST0059_SpecificationMessage ),
+              lResolved
+            )
+          );
         }
       }
       catch (ZorbaException const& e) {
