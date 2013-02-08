@@ -918,6 +918,8 @@ extern entry const dict_en[] = {
   { "~XPTY0004_NoTypePromote_23", "$2 can not be promoted to type $3" },
   { "~XPTY0117_NodeCast", "Cannot cast node to xs:QName" },
   { "~XPTY0117_NotationParam_23", "$2 can not be promoted to parameter type xs:NOTATION of function $3()" },
+  { "~XQDY0027_SerializationElementName_2", "\"$2\": invalid serialization parameters; element name must be \"serialization-parameters\"" },
+  { "~XQDY0027_SerializationElementNs_2", "\"$2\": invalid namespace for the \"serialization-parameters\" element; must be \"http://www.w3.org/2010/xslt-xquery-serialization\"" },
   { "~XQST0046_BadHexDigit_3", "'$3': invalid hexedecimal digit" },
   { "~XQST0059_SpecificationMessage", "\"$2\": target namespace not found for schema/module${ \"3\"}${: 4}" },
   { "~XQST0059_XercesMessage", "$2,$3: error in schema${ with System ID \"4\"}${ with Public ID \"5\"}${: 6}" },
