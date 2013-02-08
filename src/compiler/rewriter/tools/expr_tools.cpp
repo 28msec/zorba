@@ -16,7 +16,6 @@
 #include "stdafx.h"
 
 #include "compiler/rewriter/tools/expr_tools.h"
-#include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/path_expr.h"
@@ -38,9 +37,9 @@ namespace zorba
 namespace expr_tools
 {
 
-static void add_wincond_vars(const flwor_wincond*, ulong&, VarIdMap&, IdVarMap*);
+static void add_wincond_vars(const flwor_wincond*, csize&, VarIdMap&, IdVarMap*);
 
-static void add_var(var_expr*, ulong&, VarIdMap&, IdVarMap*);
+static void add_var(var_expr*, csize&, VarIdMap&, IdVarMap*);
 
 static void remove_wincond_vars(const flwor_wincond*, const VarIdMap&, DynamicBitset&);
 
@@ -729,7 +728,7 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
 ********************************************************************************/
 void index_flwor_vars(
     const expr* e,
-    ulong& numVars,
+    csize& numVars,
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {
@@ -872,7 +871,7 @@ void index_flwor_vars(
 ********************************************************************************/
 static void add_wincond_vars(
     const flwor_wincond* cond,
-    ulong& numVars,
+    csize& numVars,
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {
@@ -898,7 +897,7 @@ static void add_wincond_vars(
 ********************************************************************************/
 static void add_var(
     var_expr* v,
-    ulong& numVars,
+    csize& numVars,
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {

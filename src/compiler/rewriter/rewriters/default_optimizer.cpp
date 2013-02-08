@@ -226,32 +226,15 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   // Index Joins
   if (Properties::instance()->inferJoins())
   {
-    IndexJoinRule rule;
     bool local_modified = false;
 
-    rCtx.theVarIdMap = new VarIdMap;
-    rCtx.theIdVarMap = new IdVarMap;
-    rCtx.theExprVarsMap = new ExprVarsMap;
-
-    ulong numVars = 0;
-    expr_tools::index_flwor_vars(rCtx.getRoot(),
-                                 numVars,
-                                 *rCtx.theVarIdMap,
-                                 rCtx.theIdVarMap);
+    IndexJoinRule rule(&rCtx);
 
     do
     {
-      assert(rCtx.theFlworStack.empty());
+     local_modified = false;
 
-      rCtx.theExprVarsMap->clear();
-
-      DynamicBitset freeset(numVars);
-      expr_tools::build_expr_to_vars_map(rCtx.getRoot(),
-                                         *rCtx.theVarIdMap,
-                                         freeset,
-                                         *rCtx.theExprVarsMap);
-
-      local_modified = false;
+      rule.reset();
 
       expr* e = rule.apply(rCtx, rCtx.getRoot(), local_modified);
 

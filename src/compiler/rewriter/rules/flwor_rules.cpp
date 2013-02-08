@@ -1518,12 +1518,12 @@ static bool is_positional_pred(
                               *rtm.INTEGER_TYPE_QUESTION,
                               posExpr->get_loc()))
       {
-        VarIdMap varidMap;
-        ulong numFlworVars = 0;
+        expr_tools::VarIdMap varidMap;
+        csize numFlworVars = 0;
         expr_tools::index_flwor_vars(flworExpr, numFlworVars, varidMap, NULL);
         
         DynamicBitset varset(numFlworVars);
-        ExprVarsMap exprVarMap;
+        expr_tools::ExprVarsMap exprVarMap;
         expr_tools::build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
         
         var_expr* forVar = forClause->get_var();
