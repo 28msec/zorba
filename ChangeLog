@@ -17,6 +17,7 @@ Optimizations:
     collection).
 
 Bug Fixes/Other Changes:
+  * Fixed bug #867027 (XQST0059 error messages inconsistent)
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
   * NaN items are considered equal to each other during grouping
   * Fixed bug #855481 (Too small time types on Windows).
