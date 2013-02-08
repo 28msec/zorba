@@ -252,7 +252,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
     const flwor_expr* e = static_cast<const flwor_expr*>(this);
 
     flwor_expr* cloneExpr = theCCB->theEM->
-    create_flwor_expr(theSctx, udf, theLoc, e->theIsGeneral);
+    create_flwor_expr(theSctx, udf, theLoc, e->is_general());
 
     csize numClauses = e->num_clauses();
 

@@ -317,6 +317,7 @@ void file::rmdir( bool ignore ) {
   remove( ignore );
 }
 
+#ifdef ZORBA_WITH_FILE_ACCESS
 #ifndef _WIN32_WCE
 void file::chdir() {
   if ( is_directory() ) {
@@ -329,6 +330,7 @@ void file::chdir() {
   }
 }
 #endif
+#endif /* ZORBA_WITH_FILE_ACCESS */
 
 void file::rename( std::string const& newpath ) {
 #ifdef ZORBA_WITH_FILE_ACCESS

@@ -110,6 +110,8 @@ public:
       const zstring& baseUri,
       const zstring& docUri,
       std::istream& xmlStream) = 0;
+
+  static void error( void *ctx, xmlErrorPtr );
 };
 
 
@@ -217,10 +219,6 @@ public:
         const xmlChar * target,
         const xmlChar * data);
 
-  static void error(void * ctx, const char * msg, ... );
-
-  static void warning(void * ctx, const char * msg, ... );
-
   static xmlEntityPtr	getEntity(
         void * ctx,
         const xmlChar * name);
@@ -261,7 +259,8 @@ public:
   const FragmentIStream* getFragmentStream() const { return theFragmentStream; };
   
 protected:
-  bool fillBuffer(FragmentIStream* theFragmentStream);
+  // returns true if the input buffer is not yet fully consumed
+  bool fillBuffer(FragmentIStream* theFragmentStream);  
 
   unsigned long getCurrentInputOffset() const;
 
@@ -412,10 +411,6 @@ public:
         const xmlChar * target,
         const xmlChar * data);
 
-  static void error(void * ctx, const char * msg, ... );
-
-  static void warning(void * ctx, const char * msg, ... );
-
   static xmlEntityPtr	getEntity(
         void * ctx,
         const xmlChar * name);
@@ -438,8 +433,6 @@ public:
 } // namespace zorba
 
 #endif /* ZORBA_SIMPLE_STORE_LOADER */
-
-
 /*
  * Local variables:
  * mode: c++

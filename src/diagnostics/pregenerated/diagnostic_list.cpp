@@ -199,6 +199,9 @@ XQueryErrorCode XQST0090( "XQST0090" );
 XQueryErrorCode XQST0093( "XQST0093" );
 
 
+XQueryErrorCode XQST0094( "XQST0094" );
+
+
 XQueryErrorCode XQST0098( "XQST0098" );
 
 
@@ -1339,6 +1342,9 @@ ZorbaWarningCode ZWST0005_CACHING_NOT_POSSIBLE( "ZWST0005" );
 
 
 ZorbaWarningCode ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED( "ZWST0006" );
+
+
+ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING( "ZWST0007" );
 
 
 } // namespace zwarn

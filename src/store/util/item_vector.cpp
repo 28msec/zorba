@@ -40,16 +40,16 @@ std::string ItemVector::toString() const
 ********************************************************************************/
 std::ostream& operator<<(std::ostream& os, const ItemVector& key)
 {
-  ulong size = (ulong)key.theItems.size();
+  csize size = key.theItems.size();
 
-  os << "[";
+  os << "[ ";
 
-  for (ulong i = 0; i < size; i++)
+  for (csize i = 0; i < size; ++i)
   {
     if (key.theItems[i] == NULL)
-      os << "NULL";
+      os << "NULL ";
     else
-      os << key.theItems[i]->getStringValue();
+      os << key.theItems[i]->getStringValue() << " ";
   }
 
   os << "]";

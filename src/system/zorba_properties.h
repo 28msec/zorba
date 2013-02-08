@@ -79,6 +79,7 @@ protected:
   bool theInlineUdf;
   bool theLoopHoisting;
   bool theInferJoins;
+  bool theUseIndexes;
   bool theNoCopyOptim;
   int theSerializeOnlyQuery;
   bool theTraceTranslator;
@@ -123,6 +124,7 @@ protected:
     theInlineUdf = true;
     theLoopHoisting = true;
     theInferJoins = true;
+    theUseIndexes = true;
     theNoCopyOptim = true;
     theSerializeOnlyQuery = -1;
     theTraceTranslator = false;
@@ -161,11 +163,12 @@ public:
   const bool &forceGflwor () const { return theForceGflwor; }
   const bool &reorderGlobals () const { return theReorderGlobals; }
   const bool &specializeNum () const { return theSpecializeNum; }
-  const bool &specializeCmp () const { return theSpecializeCmp; }
-  const bool &inlineUdf () const { return theInlineUdf; }
-  const bool &loopHoisting () const { return theLoopHoisting; }
-  const bool &inferJoins () const { return theInferJoins; }
-  const bool &noCopyOptim() const { return theNoCopyOptim; }
+  const bool& specializeCmp () const { return theSpecializeCmp; }
+  const bool& inlineUdf () const { return theInlineUdf; }
+  const bool& loopHoisting () const { return theLoopHoisting; }
+  const bool& inferJoins () const { return theInferJoins; }
+  const bool& useIndexes() const { return theUseIndexes; }
+  const bool& noCopyOptim() const { return theNoCopyOptim; }
   const int& serializeOnlyQuery() const { return theSerializeOnlyQuery; }
   const bool &traceTranslator () const { return theTraceTranslator; }
   const bool &traceCodegen () const { return theTraceCodegen; }
@@ -301,33 +304,47 @@ public:
 
         init_val (*argv, theSpecializeCmp, d);
       }
-      else if (strcmp (*argv, "--inline-udf") == 0) {
+      else if (strcmp (*argv, "--inline-udf") == 0)
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --inline-udf option"; break; }
 
         init_val (*argv, theInlineUdf, d);
       }
-      else if (strcmp (*argv, "--loop-hoisting") == 0) {
+      else if (strcmp (*argv, "--loop-hoisting") == 0)
+      {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --loop-hoisting option"; break; }
 
         init_val (*argv, theLoopHoisting, d);
       }
-      else if (strcmp (*argv, "--infer-joins") == 0) {
-        int d = 2;
-        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --infer-joins option"; break; }
-
-        init_val (*argv, theInferJoins, d);
-      }
-      else if (strcmp (*argv, "--no-copy-optim") == 0)
+      else if (strcmp (*argv, "--infer-joins") == 0)
       {
         int d = 2;
-        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-        if (*argv == NULL) { result = "No value given for --no-copy-optim option"; break; }
-        init_val (*argv, theNoCopyOptim, d);
+        if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --infer-joins option"; break; }
+
+        init_val(*argv, theInferJoins, d);
+      }
+      else if (strcmp(*argv, "--use-indexes") == 0)
+      {
+        int d = 2;
+        if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --use-indexes option"; break; }
+
+        init_val(*argv, theUseIndexes, d);
+      }
+      else if (strcmp(*argv, "--no-copy-optim") == 0)
+      {
+        int d = 2;
+        if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL)
+        {
+          result = "No value given for --no-copy-optim option"; break; 
+        }
+        init_val(*argv, theNoCopyOptim, d);
       }
       else if (strcmp (*argv, "--serialize-only-query") == 0)
       {
@@ -338,10 +355,14 @@ public:
         init_val(*argv, theSerializeOnlyQuery, d);
       }
 #ifndef NDEBUG
-      else if (strcmp (*argv, "--trace-translator") == 0 || strncmp (*argv, "-l", 2) == 0) {
+      else if (strcmp (*argv, "--trace-translator") == 0 ||
+               strncmp (*argv, "-l", 2) == 0)
+      {
         theTraceTranslator = true;
       }
-      else if (strcmp (*argv, "--trace-codegen") == 0 || strncmp (*argv, "-c", 2) == 0) {
+      else if (strcmp (*argv, "--trace-codegen") == 0 ||
+               strncmp (*argv, "-c", 2) == 0)
+      {
         theTraceCodegen = true;
       }
       else if (strcmp (*argv, "--trace-fulltext") == 0) {

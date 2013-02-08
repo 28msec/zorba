@@ -281,7 +281,5 @@ styles/main.css
  #function_summary 
  images/up.gif 
  http://expath.org/modules/http-client.html#d2e483 
- http://disqus.com/?ref_noscript 
- http://disqus.com 
  http://flworfound.org/ 
  http://www.apache.org/licenses/LICENSE-2.0.html 

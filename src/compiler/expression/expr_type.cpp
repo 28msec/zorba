@@ -389,7 +389,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       }
       else
       {
-        assert(targetType->isAtomic() || targetType->isUnion());
+        assert(targetType->isAtomicAny() || targetType->isUnion());
 
         TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
 

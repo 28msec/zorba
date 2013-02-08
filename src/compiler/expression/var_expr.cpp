@@ -255,12 +255,12 @@ expr* var_expr::get_domain_expr() const
     }
     else if (theVarKind == groupby_var)
     {
-      return reinterpret_cast<group_clause*>(theFlworClause)->
+      return reinterpret_cast<groupby_clause*>(theFlworClause)->
              get_input_for_group_var(this);
     }
     else if (theVarKind == non_groupby_var)
     {
-      return reinterpret_cast<group_clause*>(theFlworClause)->
+      return reinterpret_cast<groupby_clause*>(theFlworClause)->
              get_input_for_nongroup_var(this);
     }
   }
