@@ -31,7 +31,7 @@ private:
 
 private:
   ulong    m_num_bits;
-  bits_t m_bits;
+  bits_t   m_bits;
 
 public:
   DynamicBitset() { }
@@ -100,7 +100,7 @@ public:
   void reset()
   {
     bits_t::iterator end = m_bits.end();
-    for(bits_t::iterator i = m_bits.begin(); i != end; ++i) 
+    for (bits_t::iterator i = m_bits.begin(); i != end; ++i) 
     {
       *i = 0;
     }

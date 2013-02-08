@@ -28,7 +28,6 @@ int
 canonicalizeAndCompare(const std::string& aComparisonMethod,
                        const char* aRefFile,
                        const char* aResultFile,
-                       const std::string& aRBKTBinDir,
                        std::ostream& = std::cout);
 
 void

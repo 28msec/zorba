@@ -534,6 +534,12 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     break;
   }
 #endif
+  case PROMOTE_INDEX_KEY:
+  {
+    RAISE_ERROR(zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR, loc,
+    ERROR_PARAMS(valueType, targetType, theQName->getStringValue()));
+    break;
+  }
   default:
   {
     ZORBA_ASSERT(false);

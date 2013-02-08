@@ -23,19 +23,28 @@
 
 <!--================ Character mnemonic entities =========================-->
 
+<!-- PLEASE NOTE: This file is modified from the W3C original to
+  specify absolute URLs for the entities below. This is necessary due
+  to Zorba's interaction with Xerces: When Xerces processes this DTD
+  with the original relative entity URLs, it does not inform Zorba of
+  the base URI (ie, the URI of this DTD). Therefore Zorba cannot find
+  its local copy of the .ent file. This causes Xerces to fall back to
+  querying w3.org via HTTP for the .ent file, and w3.org punitively
+  puts a 30-second delay on such requests. -->
+
 <!ENTITY % HTMLlat1 PUBLIC
    "-//W3C//ENTITIES Latin 1 for XHTML//EN"
-   "xhtml-lat1.ent">
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml-lat1.ent">
 %HTMLlat1;
 
 <!ENTITY % HTMLsymbol PUBLIC
    "-//W3C//ENTITIES Symbols for XHTML//EN"
-   "xhtml-symbol.ent">
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml-symbol.ent">
 %HTMLsymbol;
 
 <!ENTITY % HTMLspecial PUBLIC
    "-//W3C//ENTITIES Special for XHTML//EN"
-   "xhtml-special.ent">
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml-special.ent">
 %HTMLspecial;
 
 <!--================== Imported Names ====================================-->

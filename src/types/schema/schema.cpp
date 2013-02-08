@@ -259,12 +259,22 @@ public:
             
           return lRetval;
         }
-        else
-          return NULL;          
+        else {
+          // We didn't find it. If we return NULL here, Xerces will try to
+          // resolve it its own way, which we don't want to happen.
+          throw XQUERY_EXCEPTION(
+            err::XQST0059,
+            ERROR_PARAMS(
+              ZED( XQST0059_SpecificationMessage ),
+              lResolved
+            )
+          );
+        }
       }
       catch (ZorbaException const& e) {
         TRACE("!!! ZorbaException: " << e );
-        if ( e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED )
+        if ( e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED ||
+             e.diagnostic() == err::XQST0059 )
         {
           throw;
         }
@@ -473,25 +483,31 @@ void Schema::registerXSD(
   }
   catch (const OutOfMemoryException&)
   {
-    throw XQUERY_EXCEPTION( err::XQST0059,
-        ERROR_PARAMS( std::string(xsdURL), ZED( SchemaOutOfMemory )),
-        ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0014_OUT_OF_MEMORY,
+      ERROR_PARAMS( xsdURL ),
+      ERROR_LOC( loc )
+    );
   }
   catch (const XMLException& e)
   {
-    throw XQUERY_EXCEPTION( err::XQST0059,
-        ERROR_PARAMS( std::string(xsdURL), ZED( SchemaParseError ), StrX(e.getMessage())),
-        ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0033_SCHEMA_XML_ERROR,
+      ERROR_PARAMS( xsdURL, e.getMessage() ),
+      ERROR_LOC( loc )
+    );
   }
-  catch (const ZorbaException& /* e */)
+  catch (const ZorbaException&)
   {
     throw;
   }
   catch (...)
   {
-    throw XQUERY_EXCEPTION( err::XQST0059,
-        ERROR_PARAMS( std::string(xsdURL), ZED( SchemaUnexpected )),
-        ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0035_SCHEMA_UNEXPECTED_ERROR,
+      ERROR_PARAMS( xsdURL ),
+      ERROR_LOC( loc )
+    );
   }
 
 #ifdef DO_PRINT_SCHEMA_INFO

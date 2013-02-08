@@ -710,7 +710,6 @@ DWORD WINAPI thread_main(LPVOID param)
         int lCanonicalRes = zorba::canonicalizeAndCompare(querySpec.getComparisonMethod(),
                                                           refFilePath.c_str(),
                                                           resFilePath.c_str(),
-                                                          rbkt_bin_dir,
                                                           queries->theOutput);
         if (lCanonicalRes == 0)
         {

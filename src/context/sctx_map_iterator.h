@@ -45,8 +45,8 @@ private:
   
 public:
   SctxMapIterator(
-        const static_context* aSctx,
-        ItemsMap* (static_context::*aMapGetter)() const);
+      const static_context* aSctx,
+      ItemsMap* (static_context::*aMapGetter)() const);
   
   virtual ~SctxMapIterator();
   

@@ -19,13 +19,28 @@
 // standard
 #include <cstring>
 
+// API
+#include <zorba/xquery_stack_trace.h>
+#include <zorba/util/uri.h>
+#include <zorba/xquery_functions.h>
+
 // Zorba
+#include "util/ascii_util.h"
 #include "util/fs_util.h"
+#include "util/indent.h"
+#include "util/omanip.h"
 #include "util/uri_util.h"
+#include "zorbatypes/URI.h"
 
 // local
 #include "dict.h"
 #include "xquery_exception.h"
+
+#define if_inc_indent if_do( do_indent, inc_indent )
+#define if_dec_indent if_do( do_indent, dec_indent )
+
+#undef if_nl
+#define if_nl if_emit( do_indent, '\n' )
 
 using namespace std;
 
@@ -43,6 +58,7 @@ XQueryException::XQueryException( Diagnostic const &diagnostic,
 XQueryException::XQueryException( XQueryException const &from ) :
   ZorbaException( from ),
   source_loc_( from.source_loc_ ),
+  applied_loc_( from.applied_loc_ ),
   query_trace_( from.query_trace_ )
 {
   // This copy constructor isn't necessary: the compiler-generated default copy
@@ -68,6 +84,7 @@ XQueryException& XQueryException::operator=( XQueryException const &from ) {
   if ( &from != this ) {
     ZorbaException::operator=( from );
     source_loc_  = from.source_loc_;
+    applied_loc_ = from.applied_loc_;
     query_trace_ = from.query_trace_;
   }
   return *this;
@@ -75,6 +92,11 @@ XQueryException& XQueryException::operator=( XQueryException const &from ) {
 
 unique_ptr<ZorbaException> XQueryException::clone() const {
   return unique_ptr<ZorbaException>( new XQueryException( *this ) );
+}
+
+int XQueryException::get_ios_trace_index() {
+  static int const index = ios_base::xalloc();
+  return index;
 }
 
 void XQueryException::set_applied( char const *uri,
@@ -99,13 +121,159 @@ void XQueryException::polymorphic_throw() const {
   throw *this;
 }
 
-static bool print_uri( ostream &o, char const *uri ) {
+ostream& XQueryException::print_impl( ostream &o ) const {
+  print_format const format = get_print_format( o );
+  bool const as_xml = format != format_text;
+  bool const do_indent = format == format_xml_indented;
+
+  if ( as_xml ) {
+    ZorbaException::print_impl( o );
+    if ( has_source() ) {
+      o << indent << "<location";
+      print_uri( o, source_uri() );
+#if 0
+      o << " line-begin=\"" << source_line() << '"';
+      if ( source_line_end() )
+        o << " line-end=\"" << source_line_end() << '"';
+      if ( source_column() )
+        o << " column-begin=\"" << source_column() << '"';
+      if ( source_column_end() )
+        o << " column-end=\"" << source_column_end() << '"';
+#else
+      o << " lineStart=\"" << source_line() << '"';
+      if ( source_column() )
+        o << " columnStart=\"" << source_column() << '"';
+      if ( source_line_end() )
+        o << " lineEnd=\"" << source_line_end() << '"';
+      if ( source_column_end() )
+        o << " columnEnd=\"" << source_column_end() << '"';
+#endif
+      o << "/>" << if_nl; // <location ...
+
+      if ( has_applied() ) {
+        o << indent << "<applied-at";
+        if ( applied_uri() && ::strcmp( applied_uri(), source_uri() ) != 0 )
+          print_uri( o, applied_uri() );
+        o << " line=\"" << applied_line() << '"';
+        if ( applied_column() )
+          o << " column=\"" << applied_column() << '"';
+        o << "/>" << if_nl; // <applied-at ...
+      }
+
+      if ( get_print_trace( o ) )
+        print_stack_trace( o );
+    }
+    return o;
+  } else {
+    if ( has_source() ) {
+      if ( !print_uri( o, source_uri() ) )
+        o << "(" << diagnostic::dict::lookup( ZED( NoSourceURI ) ) << ")";
+      o << ":" << source_line();
+      if ( source_column() )
+        o << "," << source_column();
+
+      if ( has_applied() ) {
+        o << " (" << diagnostic::dict::lookup( ZED( AppliedAt ) ) << ' ';
+        if ( applied_uri() && ::strcmp( applied_uri(), source_uri() ) != 0 ) {
+          if ( print_uri( o, applied_uri() ) )
+            o << ':';
+        }
+        o << applied_line();
+        if ( applied_column() )
+          o << ',' << applied_column();
+        o << ')';
+      }
+
+      o << ": ";
+    }
+    return ZorbaException::print_impl( o );
+  }
+}
+
+ostream& XQueryException::print_stack_trace( ostream &o ) const {
+  XQueryStackTrace const &trace = query_trace();
+  if ( !trace.empty() ) {
+    print_format const format = get_print_format( o );
+    bool const as_xml = format != format_text;
+    bool const do_indent = format == format_xml_indented;
+
+    if ( as_xml )
+      o << indent << "<stack>" << if_nl << if_inc_indent;
+    FOR_EACH( XQueryStackTrace, it, trace ) {
+      XQueryStackTrace::fn_name_type const &fn_name = it->getFnName();
+      char const *const fn_prefix = fn_name.prefix();
+      XQueryStackTrace::fn_arity_type fn_arity = it->getFnArity();
+
+      zstring filename( it->getFileName() );
+      if ( ascii::begins_with( filename, "file:" ) ) {
+        URI::decode_file_URI( filename, filename );
+        while ( ascii::begins_with( filename, "//" ) )
+          filename = filename.substr(1);
+      }
+
+      if ( as_xml ) {
+        o << indent << "<call";
+        if ( fn_prefix && *fn_prefix )
+          o << " prefix=\"" << fn_prefix << '"';
+
+#if 0
+        o << " namespace=\"" << fn_name.ns() << '"'
+          << " local-name=\"" << fn_name.localname()
+          << " arity=\"" << fn_arity << '"'
+          << "\">" << if_nl; // <call ...
+
+        o << if_inc_indent << indent << "<location uri=\"" << filename << '"';
+
+        o << " line-begin=\"" << it->getLine() << '"';
+        if ( it->getLineEnd() )
+          o << " line-end=\"" << it->getLineEnd() << '"';
+
+        o << " column-begin=\"" << it->getColumn() << '"';
+        if ( it->getColumnEnd() )
+          o << " column-end=\"" << it->getColumnEnd() << '"';
+#else
+        o << " ns=\"" << fn_name.ns() << '"'
+          << " localName=\"" << fn_name.localname()
+          << " arity=\"" << fn_arity << '"'
+          << "\">" << if_nl; // <call ...
+
+        o << if_inc_indent << indent << "<location fileName=\"" << filename << '"';
+
+        o << " lineStart=\"" << it->getLine() << '"';
+        o << " columnStart=\"" << it->getColumn() << '"';
+
+        if ( it->getLineEnd() )
+          o << " lineEnd=\"" << it->getLineEnd() << '"';
+        if ( it->getColumnEnd() )
+          o << " columnEnd=\"" << it->getColumnEnd() << '"';
+#endif
+
+        o << "/>" << if_nl // <location ...
+          << if_dec_indent << "</call>" << if_nl;
+      } else {
+        o << fn_name << '#' << fn_arity
+          << " <" << fn_name.ns() << "> "
+          << '"' << filename << "\":"
+          << it->getLine() << ',' << it->getColumn()
+          << '\n';
+      }
+    } // FOR_EACH
+    if ( as_xml )
+      o << indent << "</stack>" << if_nl << if_dec_indent;
+  }
+  return o;
+}
+
+bool XQueryException::print_uri( ostream &o, char const *uri ) {
   if ( uri && *uri ) {
+    bool const as_xml = get_print_format( o ) != format_text;
     switch ( uri::get_scheme( uri ) ) {
       case uri::none:
       case uri::file:
         try {
-          o << '<' << fs::get_normalized_path( uri ) << '>';
+          o << (as_xml ? " uri=\"" : "<") 
+            << fs::get_normalized_path( uri ) 
+            << (as_xml ? '"' : '>');
           break;
         }
         catch ( ... ) {
@@ -113,36 +281,11 @@ static bool print_uri( ostream &o, char const *uri ) {
         }
         // no break;
       default:
-        o << '<' << uri << '>';
-    }
+        o << (as_xml ? " uri=\"" : "<" ) << uri << (as_xml ? '"' : '>');
+    } // switch
     return true;
-  }
+  } // if
   return false;
-}
-
-ostream& XQueryException::print( ostream &o ) const {
-  if ( has_source() ) {
-    if ( !print_uri( o, source_uri() ) )
-      o << '(' << diagnostic::dict::lookup( ZED( NoSourceURI ) ) << ')';
-    o << ':' << source_line();
-    if ( source_column() )
-      o << ',' << source_column();
-
-    if ( has_applied() ) {
-      o << " (" << diagnostic::dict::lookup( ZED( AppliedAt ) ) << ' ';
-      if ( applied_uri() && ::strcmp( applied_uri(), source_uri() ) != 0 ) {
-        if ( print_uri( o, applied_uri() ) )
-          o << ':';
-      }
-      o << applied_line();
-      if ( applied_column() )
-        o << ',' << applied_column();
-      o << ')';
-    }
-
-    o << ": ";
-  }
-  return ZorbaException::print( o );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
