@@ -316,6 +316,10 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   if (outerDomainType->max_card() < 2)
     return false;
 
+  // The inner var must not be an outer FOR var
+  if (predInfo.theInnerVar->get_forlet_clause()->is_allowing_empty())
+    return false;
+
   // The expr that defines the inner var must not depend on the outer var.
   expr* innerDomainExpr = predInfo.theInnerVar->get_forlet_clause()->get_expr();
   if (checkVarDependency(innerDomainExpr, outerVarId))
@@ -752,11 +756,11 @@ bool IndexJoinRule::expandVars(expr* subExpr, ulong outerVarId, long& maxVarId)
 {
   if (subExpr->get_expr_kind() == wrapper_expr_kind)
   {
-    wrapper_expr* wrapper = reinterpret_cast<wrapper_expr*>(subExpr);
+    wrapper_expr* wrapper = static_cast<wrapper_expr*>(subExpr);
 
     if (wrapper->get_input()->get_expr_kind() == var_expr_kind)
     {
-      var_expr* var = reinterpret_cast<var_expr*>(wrapper->get_input());
+      var_expr* var = static_cast<var_expr*>(wrapper->get_input());
       long varid = -1;
 
       if (theVarIdMap->find(var) != theVarIdMap->end())
@@ -840,7 +844,8 @@ bool IndexJoinRule::findFlworForVar(
     if (theFlworStack[i-1]->get_expr_kind() == trycatch_expr_kind)
       return false;
 
-    assert(theFlworStack[i-1]->get_expr_kind() == flwor_expr_kind);
+    assert(theFlworStack[i-1]->get_expr_kind() == flwor_expr_kind ||
+           theFlworStack[i-1]->get_expr_kind() == gflwor_expr_kind);
 
     flworExpr = static_cast<flwor_expr*>(theFlworStack[i-1]);
 

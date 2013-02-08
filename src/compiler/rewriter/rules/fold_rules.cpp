@@ -562,7 +562,7 @@ static bool execute(
   - Replace empty(E) with true if the return type of E is the emtpy sequence, or
     false if the return type of E has QUANT_ONE or QUANT_PLUS.
   - Replace exists(E) with false if the return type of E is the emtpy sequence, or
-    truee if the return type of E has QUANT_ONE or QUANT_PLUS.
+    true if the return type of E has QUANT_ONE or QUANT_PLUS.
 
   Replace EBV(E) with true if the return type of E is subtype on node()+ and E
   is not NONDISCARDABLE.
