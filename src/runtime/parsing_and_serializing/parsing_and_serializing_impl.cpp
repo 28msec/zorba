@@ -26,6 +26,9 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "compiler/api/compilercb.h"
 
+#include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
+
 #include "store/api/store.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -74,9 +77,9 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       is = iss.get();
     }
 
-    
+
     baseUri = theSctx->get_base_uri();
-    
+
 
     try {
       store::LoadProperties loadProps;
@@ -117,12 +120,10 @@ FnSerializeIterator::setSerializationParams(
   if (lElemName->getLocalName() != "serialization-parameters")
   {
     ztd::string_builder lSb;
-    lSb << "the serialization parameters element must have the name \"serialization parameters\". "
-      << "\"" << lElemName->getLocalName() << "\" was found";
-    throw XQUERY_EXCEPTION(
-      err::XQDY0027,
-      ERROR_PARAMS(lSb.str()),
-      ERROR_LOC( aLoc ));
+    lSb << lElemName->getLocalName();
+
+    RAISE_ERROR(err::XQDY0027, aLoc,
+      ERROR_PARAMS(ZED(XQDY0027_SerializationElementName_2), lSb));
   }
 
   // the provided element must be in the correct namespace otherwise
@@ -131,20 +132,12 @@ FnSerializeIterator::setSerializationParams(
   if (lElemName->getNamespace() != "http://www.w3.org/2010/xslt-xquery-serialization")
   {
     ztd::string_builder lSb;
-    zstring lFoundNs("No");
+    zstring lFoundNs("");
     if (lElemName->getNamespace().size() > 0)
-    {
-      lFoundNs = "<";
       lFoundNs += lElemName->getNamespace();
-      lFoundNs += ">";
-    }
 
-    lSb << "the serialization-parameters element must be in the <http://www.w3.org/2010/xslt-xquery-serialization> namespace. "
-      << lFoundNs << " namespace was found";
-    throw XQUERY_EXCEPTION(
-      err::XQDY0027,
-      ERROR_PARAMS(lSb .str()),
-      ERROR_LOC( aLoc ));
+    RAISE_ERROR(err::XQDY0027, aLoc,
+      ERROR_PARAMS(ZED(XQDY0027_SerializationElementNs_2), lFoundNs));
   }
 
 #ifndef ZORBA_NO_XMLSCHEMA
