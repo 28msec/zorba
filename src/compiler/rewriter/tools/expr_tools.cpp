@@ -737,32 +737,28 @@ void index_flwor_vars(
   {
     const flwor_expr* flwor = static_cast<const flwor_expr *>(e);
 
-    for (flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
-         i != flwor->clause_end();
-         ++i)
+    flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
+    flwor_expr::clause_list_t::const_iterator end = flwor->clause_end();
+    for (; i != end; ++i)
     {
       const flwor_clause* c = *i;
 
-      if (c->get_kind() == flwor_clause::for_clause)
+      switch (c->get_kind())
       {
-        const for_clause* fc = static_cast<const for_clause *>(c);
-
-        add_var(fc->get_var(), numVars, varidmap, idvarmap);
-        add_var(fc->get_pos_var(), numVars, varidmap, idvarmap);
-        add_var(fc->get_score_var(), numVars, varidmap, idvarmap);
-
-        index_flwor_vars(fc->get_expr(), numVars, varidmap, idvarmap);
-      }
-      else if (c->get_kind() == flwor_clause::let_clause)
+      case flwor_clause::for_clause:
+      case flwor_clause::let_clause:
       {
-        const let_clause* lc = static_cast<const let_clause *>(c);
+        const forlet_clause* flc = static_cast<const forlet_clause *>(c);
 
-        add_var(lc->get_var(), numVars, varidmap, idvarmap);
-        add_var(lc->get_score_var(), numVars, varidmap, idvarmap);
+        add_var(flc->get_var(), numVars, varidmap, idvarmap);
+        add_var(flc->get_pos_var(), numVars, varidmap, idvarmap);
+        add_var(flc->get_score_var(), numVars, varidmap, idvarmap);
 
-        index_flwor_vars(lc->get_expr(), numVars, varidmap, idvarmap);
+        index_flwor_vars(flc->get_expr(), numVars, varidmap, idvarmap);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::window_clause)
+      case flwor_clause::window_clause:
       {
         const window_clause* wc = static_cast<const window_clause *>(c);
 
@@ -778,8 +774,10 @@ void index_flwor_vars(
 
         if (stopCond != NULL)
           add_wincond_vars(stopCond, numVars, varidmap, idvarmap);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::groupby_clause)
+      case flwor_clause::groupby_clause:
       {
         const groupby_clause* gc = static_cast<const groupby_clause *>(c);
 
@@ -798,20 +796,26 @@ void index_flwor_vars(
         {
           add_var(ngvars[i].second, numVars, varidmap, idvarmap);
         }
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::count_clause)
+      case flwor_clause::count_clause:
       {
         const count_clause* cc = static_cast<const count_clause *>(c);
 
         add_var(cc->get_var(), numVars, varidmap, idvarmap);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::where_clause)
+      case flwor_clause::where_clause:
       {
         const where_clause* wc = static_cast<const where_clause *>(c);
 
         index_flwor_vars(wc->get_expr(), numVars, varidmap, idvarmap);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::order_clause)
+      case flwor_clause::order_clause:
       {
         const orderby_clause* obc = static_cast<const orderby_clause *>(c);
         csize numExprs = obc->num_columns();
@@ -819,6 +823,13 @@ void index_flwor_vars(
         {
           index_flwor_vars(obc->get_column_expr(i), numVars, varidmap, idvarmap);
         }
+
+        break;
+      }
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
       }
     }
 

@@ -831,6 +831,33 @@ void flwor_expr::remove_clause(csize pos)
 /*******************************************************************************
 
 ********************************************************************************/
+void flwor_expr::remove_clause(flwor_clause* c, csize posHint)
+{
+  if (posHint < theClauses.size() && theClauses[posHint] == c)
+    return remove_clause(posHint);
+  
+  csize numClauses = theClauses.size();
+  csize i = 0;
+  for (; i < numClauses; ++i)
+  {
+    if (theClauses[i] != c)
+      continue;
+
+    if (theClauses[i]->theFlworExpr == this)
+      theClauses[i]->theFlworExpr = NULL;
+
+    theClauses.erase(theClauses.begin() + i);
+
+    return;
+  }
+
+  assert(i < numClauses);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void flwor_expr::add_clause(flwor_clause* c, bool computeScriptingKind)
 {
   theClauses.push_back(c);
@@ -901,24 +928,6 @@ void flwor_expr::set_where(expr* e)
   where_clause* wc = theCCB->theEM->create_where_clause(theSctx, e->get_loc(), e);
   theClauses.insert(theClauses.begin() + i, wc);
   wc->theFlworExpr = this;
-}
-
-
-/*******************************************************************************
-  For simple flwor only.
-********************************************************************************/
-void flwor_expr::remove_where_clause()
-{
-  csize numClauses = num_clauses();
-  for (csize i = 0; i < numClauses; ++i)
-  {
-    if (theClauses[i]->get_kind() == flwor_clause::where_clause)
-    {
-      theClauses[i]->theFlworExpr = NULL;
-      theClauses.erase(theClauses.begin() + i);
-      return;
-    }
-  }
 }
 
 

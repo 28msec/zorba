@@ -120,71 +120,76 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
     theFlworStack.push_back(flworExpr);
     theInReturnClause.push_back(false);
 
-    expr* whereExpr = flworExpr->get_where();
-
-    if (whereExpr == NULL)
-      goto drilldown;
-
-    PredicateInfo predInfo;
-    predInfo.theFlworExpr = flworExpr;
-    predInfo.thePredicate = whereExpr;
-
-    if (isIndexJoinPredicate(predInfo))
+    csize numClauses = flworExpr->num_clauses();
+    for (csize i = 0; i < numClauses; ++i)
     {
-      rewriteJoin(predInfo, modified);
+      flwor_clause* c = flworExpr->get_clause(i);
 
-      if (modified)
+      if (c->get_kind() != flwor_clause::where_clause)
+        continue;
+
+      const where_clause* wc = static_cast<const where_clause *>(c);
+      expr* whereExpr = wc->get_expr();
+
+      PredicateInfo predInfo;
+      predInfo.theFlworExpr = flworExpr;
+      predInfo.thePredicate = whereExpr;
+
+      if (isIndexJoinPredicate(predInfo))
       {
-        predInfo.theFlworExpr->remove_where_clause();
+        rewriteJoin(predInfo, modified);
 
-        expr* e = theFlworStack.back();
-
-        ZORBA_ASSERT(e == node || e->get_expr_kind() == block_expr_kind);
-
-        theFlworStack.pop_back();
-        theInReturnClause.pop_back();
-        return e;
-      }
-    }
-    else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
-    {
-      // TODO: consider multi-key indices
-      ExprIterator iter(whereExpr);
-      while (!iter.done())
-      {
-        PredicateInfo predInfo;
-        predInfo.theFlworExpr = flworExpr;
-        predInfo.thePredicate = (**iter);
-
-        if (isIndexJoinPredicate(predInfo))
+        if (modified)
         {
-          rewriteJoin(predInfo, modified);
+          predInfo.theFlworExpr->remove_clause(c, i);
 
-          if (modified)
-          {
-            expr* trueExpr = rCtx.theEM->
-            create_const_expr(flworExpr->get_sctx(),
-                              flworExpr->get_udf(),
-                              flworExpr->get_loc(),
-                              true);
-            (**iter) = trueExpr;
+          expr* e = theFlworStack.back();
 
-            expr* e = theFlworStack.back();
-
-            ZORBA_ASSERT(e == node || e->get_expr_kind() == block_expr_kind);
-
-            theFlworStack.pop_back();
-            theInReturnClause.pop_back();
-            return e;
-          }
+          ZORBA_ASSERT(e == node || e->get_expr_kind() == block_expr_kind);
+          
+          theFlworStack.pop_back();
+          theInReturnClause.pop_back();
+          return e;
         }
+      }
+      else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+      {
+        // TODO: consider multi-key indices
+        ExprIterator iter(whereExpr);
+        while (!iter.done())
+        {
+          PredicateInfo predInfo;
+          predInfo.theFlworExpr = flworExpr;
+          predInfo.thePredicate = (**iter);
+          
+          if (isIndexJoinPredicate(predInfo))
+          {
+            rewriteJoin(predInfo, modified);
+            
+            if (modified)
+            {
+              expr* trueExpr = rCtx.theEM->
+              create_const_expr(flworExpr->get_sctx(),
+                                flworExpr->get_udf(),
+                                flworExpr->get_loc(),
+                                true);
+              (**iter) = trueExpr;
+              
+              expr* e = theFlworStack.back();
+              
+              ZORBA_ASSERT(e == node || e->get_expr_kind() == block_expr_kind);
+              
+              theFlworStack.pop_back();
+              theInReturnClause.pop_back();
+              return e;
+            }
+          }
 
-        iter.next();
+          iter.next();
+        }
       }
     }
   }
-
- drilldown:
 
   ExprIterator iter(node);
   while (!iter.done())
@@ -263,8 +268,6 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   if (opKind != CompareConsts::VALUE_EQUAL && opKind != CompareConsts::GENERAL_EQUAL)
     return false;
 
-  static_context* sctx = predExpr->get_sctx();
-
   predInfo.theIsGeneral = (opKind == CompareConsts::GENERAL_EQUAL);
 
   expr* op1 = foExpr->get_arg(0);
@@ -273,12 +276,12 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   // Analyze each operand of the eq to see if it depends on a single for
   // variable. If that is not true, we reject this predicate.
   ulong var1id;
-  var_expr* var1 = findForVar(sctx, op1, var1id);
+  var_expr* var1 = findForVar(op1, var1id);
   if (var1 == NULL)
     return false;
 
   ulong var2id;
-  var_expr* var2 = findForVar(sctx, op2, var2id);
+  var_expr* var2 = findForVar(op2, var2id);
   if (var2 == NULL)
     return false;
 
@@ -307,14 +310,9 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
     outerVarId = var2id;
   }
 
+  static_context* sctx = predExpr->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-  // The domain of the outer var must contain more than 1 item.
-  xqtref_t outerDomainType = predInfo.theOuterVar->get_domain_expr()->get_return_type();
-
-  if (outerDomainType->max_card() < 2)
-    return false;
 
   // The inner var must not be an outer FOR var
   if (predInfo.theInnerVar->get_forlet_clause()->is_allowing_empty())
@@ -357,12 +355,7 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
       return false;
 
     // The type of the outer/inner operands in the join predicate must not be
-    // xs:untypedAtomic or xs:anyAtomic.
-    /*
-    if (TypeOps::is_equal(tm, *primeOuterType, *rtm.UNTYPED_ATOMIC_TYPE_ONE, outerLoc) ||
-        TypeOps::is_equal(tm, *primeInnerType, *rtm.UNTYPED_ATOMIC_TYPE_ONE, innerLoc))
-      return false;
-    */
+    // xs:anyAtomic.
     if (TypeOps::is_equal(tm, *primeOuterType, *rtm.ANY_ATOMIC_TYPE_ONE, outerLoc) ||
         TypeOps::is_equal(tm, *primeInnerType, *rtm.ANY_ATOMIC_TYPE_ONE, innerLoc))
       return false;
@@ -391,13 +384,11 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
 
 
 /*******************************************************************************
-  Check if "curExpr" references a single var and that var is a FOR var. If so,
-  return that FOR var and its prefix id; otherwise return NULL.
+  Check if "curExpr" references a single var and that var is a FOR var whose
+  domain expr has a max cardinality > 1. If so, return that FOR var and its
+  prefix id; otherwise return NULL.
 ********************************************************************************/
-var_expr* IndexJoinRule::findForVar(
-    static_context* sctx,
-    const expr* curExpr,
-    ulong& varid)
+var_expr* IndexJoinRule::findForVar(const expr* curExpr, ulong& varid)
 {
   var_expr* var = NULL;
 
@@ -423,11 +414,21 @@ var_expr* IndexJoinRule::findForVar(
         return NULL;
 
       xqtref_t domainType = var->get_domain_expr()->get_return_type();
+      TypeConstants::quantifier_t quant = domainType->get_quantifier();
 
-      if (domainType->get_quantifier() != TypeConstants::QUANT_ONE)
+      if (quant == TypeConstants::QUANT_STAR || quant == TypeConstants::QUANT_PLUS)
       {
-        // found a real FOR var, so we return it.
         return var;
+      }
+      else if (quant == TypeConstants::QUANT_ONE)
+      {
+        // this FOR var is equivalent to a LET var, so we drill into its
+        // domain expr
+        continue;
+      }
+      else
+      {
+        return false;
       }
     }
     else if (var->get_kind() == var_expr::let_var)

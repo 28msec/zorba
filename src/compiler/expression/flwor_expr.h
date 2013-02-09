@@ -693,6 +693,8 @@ public:
 
   void remove_clause(csize pos);
 
+  void remove_clause(flwor_clause* c, csize posHint);
+
   flwor_clause* get_clause(csize i) const;
 
   clause_list_t::const_iterator clause_begin() const { return theClauses.begin(); }
@@ -707,7 +709,6 @@ public:
   // removed eventually.
   expr* get_where() const;
   void set_where(expr* e);
-  void remove_where_clause();
   groupby_clause* get_group_clause() const;
   orderby_clause* get_order_clause() const;
   csize num_forlet_clauses();
