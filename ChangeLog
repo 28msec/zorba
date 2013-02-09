@@ -6,6 +6,8 @@ New Features:
   * Typeswitch expression extended to allow union of types in each case clause,
     as specified by XQuery v3.0
   * In C++ API, added optional XML formatting of exceptions.
+  * New C++ and XQuery function (see module http://www.zorba-xquery.com/modules/item)
+    to estimate the size an item allocates in memory.
   * Extended sequence types to include unions, as specified by XQuery v3.0
   * Added millis-to-dateTime() function in datetime module.
 

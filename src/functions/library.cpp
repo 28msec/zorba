@@ -47,6 +47,7 @@
 #include "functions/func_ic_ddl.h"
 #include "functions/func_index_ddl.h"
 #include "functions/func_index_func.h"
+#include "functions/func_item.h"
 #include "functions/func_json.h"
 #include "functions/func_maps.h"
 #include "functions/func_maths.h"
@@ -132,6 +133,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_json(sctx);
   populate_context_maths(sctx);
   populate_context_nodes(sctx);
+  populate_context_item(sctx);
   populate_context_reference(sctx);
   populate_context_node_position(sctx);
   populate_context_numerics(sctx);
