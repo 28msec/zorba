@@ -116,6 +116,11 @@ EXPECTED_FOTS_FAILURE (app-Demos sudoku 0)
 EXPECTED_FOTS_FAILURE (app-Demos currencysvg 0)
 EXPECTED_FOTS_FAILURE (app-Demos itunes 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-number-all 0)
+
+# Next two possibly unique to old RQ machine
+EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
+EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
+
 EXPECTED_FOTS_FAILURE (app-FunctxFunctx functx-functx-copy-attributes-1 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFunctx functx-functx-copy-attributes-all 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFunctx functx-functx-id-from-element-1 0)
@@ -495,7 +500,10 @@ EXPECTED_FOTS_FAILURE (fn-nilled cbcl-nilled-005 0)
 EXPECTED_FOTS_FAILURE (fn-node-name fn-node-name-28 0)
 EXPECTED_FOTS_FAILURE (fn-normalize-space fn-normalize-space-23 0)
 EXPECTED_FOTS_FAILURE (fn-normalize-space fn-normalize-space-25 0)
-EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
+
+# This test passes on the old and new RQ machines; fixed?
+#EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
+
 EXPECTED_FOTS_FAILURE (fn-normalize-unicode cbcl-fn-normalize-unicode-001 0)
 EXPECTED_FOTS_FAILURE (fn-normalize-unicode cbcl-fn-normalize-unicode-006 0)
 EXPECTED_FOTS_FAILURE (fn-parse-xml parse-xml-001 0)
@@ -700,7 +708,10 @@ EXPECTED_FOTS_FAILURE (op-union fn-union-node-args-015 0)
 EXPECTED_FOTS_FAILURE (op-union fn-union-node-args-016 0)
 EXPECTED_FOTS_FAILURE (op-union fn-union-node-args-017 0)
 EXPECTED_FOTS_FAILURE (prod-AllowingEmpty outer-013 0)
-EXPECTED_FOTS_FAILURE (prod-AllowingEmpty outer-016 0)
+
+# This test passes on the old RQ machine but not the new; weird.
+#EXPECTED_FOTS_FAILURE (prod-AllowingEmpty outer-016 0)
+
 EXPECTED_FOTS_FAILURE (prod-Annotation annotation-3 0)
 EXPECTED_FOTS_FAILURE (prod-Annotation annotation-26 0)
 EXPECTED_FOTS_FAILURE (prod-Annotation annotation-27 0)
@@ -757,6 +768,10 @@ EXPECTED_FOTS_FAILURE (prod-CastableExpr cbcl-castable-yearMonthDuration-001 0)
 EXPECTED_FOTS_FAILURE (prod-CastableExpr cbcl-castable-yearMonthDuration-002 0)
 EXPECTED_FOTS_FAILURE (prod-CastExpr CastAs674a 0)
 EXPECTED_FOTS_FAILURE (prod-CastExpr K-SeqExprCast-71b 0)
+
+# Following test fails on old RQ machine but not new.
+EXPECTED_FOTS_FAILURE (prod-CastExpr CastAsNamespaceSensitiveType-10 0)
+
 EXPECTED_FOTS_FAILURE (prod-CastExpr.derived cbcl-cast-date-001 0)
 EXPECTED_FOTS_FAILURE (prod-CastExpr.derived cbcl-cast-date-002 0)
 EXPECTED_FOTS_FAILURE (prod-CastExpr.derived cbcl-cast-dateTime-001 0)
