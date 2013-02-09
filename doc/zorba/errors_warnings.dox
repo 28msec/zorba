@@ -117,7 +117,9 @@ Zorba defines additional implicit variables:
 </table>
 
 where the \c zerr prefix
-is bound to the namespace \c %http://www.zorba-xquery.com/errors.
+is bound to the namespace \c %http://www.zorba-xquery.com/errors
+and "data file" refers to the file that data is being read from,
+e.g., the result of reading XML (<tt>fn:doc</tt>) or JSON data.
 For example, the query:
 
 \code
