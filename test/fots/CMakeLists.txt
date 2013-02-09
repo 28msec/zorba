@@ -118,8 +118,8 @@ EXPECTED_FOTS_FAILURE (app-Demos itunes 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-number-all 0)
 
 # Next two possibly unique to old RQ machine
-EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
-EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
+#EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
+#EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
 
 EXPECTED_FOTS_FAILURE (app-FunctxFunctx functx-functx-copy-attributes-1 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFunctx functx-functx-copy-attributes-all 0)
@@ -770,7 +770,7 @@ EXPECTED_FOTS_FAILURE (prod-CastExpr CastAs674a 0)
 EXPECTED_FOTS_FAILURE (prod-CastExpr K-SeqExprCast-71b 0)
 
 # Following test fails on old RQ machine but not new.
-EXPECTED_FOTS_FAILURE (prod-CastExpr CastAsNamespaceSensitiveType-10 0)
+#EXPECTED_FOTS_FAILURE (prod-CastExpr CastAsNamespaceSensitiveType-10 0)
 
 EXPECTED_FOTS_FAILURE (prod-CastExpr.derived cbcl-cast-date-001 0)
 EXPECTED_FOTS_FAILURE (prod-CastExpr.derived cbcl-cast-date-002 0)
