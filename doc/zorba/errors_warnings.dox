@@ -57,18 +57,68 @@ However, the API also provides a way to register a user-defined diagnostic handl
 Please take a look at the C++ examples that show how to deal with errors and warnings in the C++ API (<a href="../../cxx/html/errors_8cpp-example.html">errors.cpp</a>).
 
 \section try_catch Try/Catch Expressions
-The XQuery <a href="http://www.w3.org/TR/xquery-30/#id-try-catch">try/catch expression</a> provides error handling for dynamic errors and type errors raised during dynamic evaluation.
-For example,
+The XQuery
+<a href="http://www.w3.org/TR/xquery-30/#id-try-catch">try/catch expression</a>
+provides error handling for dynamic errors and type errors
+raised during dynamic evaluation.
+For example:
 
 \include zorba/trycatch/trycatch_doc_example_01.xq
 
-Withing the catch expression, a couple of implicit variables are declared.
-Some of them (e.g.<tt>\$err:code</tt>, <tt>\$err:description</tt>, or <tt>\$err:line-number</tt>) are defined by the XQuery set of specifications.
-They are contained in XQuery's error namespace http://www.w3.org/2005/xqt-errors (prefix <tt>err</tt>).
-Zorba defines an additional implicit variable that contains the stack trace of the error as an element.
-The name of the variable is <tt>\$zerr:stack-trace</tt> where the <tt>zerr</tt> prefix is bound to the namespace %http://www.zorba-xquery.com/errors.
+Within the \c catch expression,
+a few implicit variables are defined.
+Some of them
+(e.g., <tt>\$err:code</tt>,
+<tt>\$err:description</tt>,
+and <tt>\$err:line-number</tt>)
+are defined by the
+<a href="http://www.w3.org/TR/xquery-30/#id-try-catch">XQuery</a>
+specification.
 
-For example, the query
+Zorba defines additional implicit variables:
+
+<table>
+  <tr>
+    <th>Variable</th>
+    <th>Type</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>\c $zerr:data-uri</td>
+    <td>\c xs:string?</td>
+    <td>
+      The URI of the data file containing the error.
+    </td>
+  </tr>
+  <tr>
+    <td>\c $zerr:data-line-number</td>
+    <td>\c xs:integer?</td>
+    <td>
+      The line number within the data file where the error occurred.
+      The value \e may be approximate.
+    </td>
+  </tr>
+  <tr>
+    <td>\c $zerr:data-column-number</td>
+    <td>\c xs:integer?</td>
+    <td>
+      The column number within the data file where the error occurred.
+      The value \e may be approximate.
+    </td>
+  </tr>
+  <tr>
+    <td>\c $zerr:stack-trace</td>
+    <td>\c item()?</td>
+    <td>
+      The XQuery function call stack-trace
+      leading up to the error.
+    </td>
+  </tr>
+</table>
+
+where the \c zerr prefix
+is bound to the namespace \c %http://www.zorba-xquery.com/errors.
+For example, the query:
 
 \code
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
@@ -107,3 +157,4 @@ returns the following result:
 \endcode
 
 */
+/* vim:set et sw=2 ts=2: */
