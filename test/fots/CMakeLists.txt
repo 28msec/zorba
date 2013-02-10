@@ -708,10 +708,6 @@ EXPECTED_FOTS_FAILURE (op-union fn-union-node-args-015 0)
 EXPECTED_FOTS_FAILURE (op-union fn-union-node-args-016 0)
 EXPECTED_FOTS_FAILURE (op-union fn-union-node-args-017 0)
 EXPECTED_FOTS_FAILURE (prod-AllowingEmpty outer-013 0)
-
-# This test passes on the old RQ machine but not the new; weird.
-#EXPECTED_FOTS_FAILURE (prod-AllowingEmpty outer-016 0)
-
 EXPECTED_FOTS_FAILURE (prod-Annotation annotation-3 0)
 EXPECTED_FOTS_FAILURE (prod-Annotation annotation-26 0)
 EXPECTED_FOTS_FAILURE (prod-Annotation annotation-27 0)
