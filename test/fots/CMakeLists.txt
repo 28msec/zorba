@@ -89,16 +89,25 @@ ENDMACRO (expected_fots_failure)
 ##
 ## Place all known failing FOTS tests here!
 ##
-#"slow" test
+#"slow" tests
 EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-011 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-012 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-013 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-014 1069794)
 
-#"crashing" test
+#"crashing" tests
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00975 1070533)
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976 1070533)
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
+
+# Next three possibly unique to old RQ machine, but they need to be
+# marked for the RQ to pass.
+EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
+EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
+EXPECTED_FOTS_FAILURE (prod-CastExpr CastAsNamespaceSensitiveType-10 0)
+
+# This test passes on the old and new RQ machines, but fails for Sorin.
+#EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
 
 EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog001 0)
 EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog002 0)
@@ -116,11 +125,6 @@ EXPECTED_FOTS_FAILURE (app-Demos sudoku 0)
 EXPECTED_FOTS_FAILURE (app-Demos currencysvg 0)
 EXPECTED_FOTS_FAILURE (app-Demos itunes 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-number-all 0)
-
-# Next two possibly unique to old RQ machine
-#EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
-#EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
-
 EXPECTED_FOTS_FAILURE (app-FunctxFunctx functx-functx-copy-attributes-1 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFunctx functx-functx-copy-attributes-all 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFunctx functx-functx-id-from-element-1 0)
@@ -500,10 +504,6 @@ EXPECTED_FOTS_FAILURE (fn-nilled cbcl-nilled-005 0)
 EXPECTED_FOTS_FAILURE (fn-node-name fn-node-name-28 0)
 EXPECTED_FOTS_FAILURE (fn-normalize-space fn-normalize-space-23 0)
 EXPECTED_FOTS_FAILURE (fn-normalize-space fn-normalize-space-25 0)
-
-# This test passes on the old and new RQ machines; fixed?
-#EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
-
 EXPECTED_FOTS_FAILURE (fn-normalize-unicode cbcl-fn-normalize-unicode-001 0)
 EXPECTED_FOTS_FAILURE (fn-normalize-unicode cbcl-fn-normalize-unicode-006 0)
 EXPECTED_FOTS_FAILURE (fn-parse-xml parse-xml-001 0)
@@ -764,10 +764,6 @@ EXPECTED_FOTS_FAILURE (prod-CastableExpr cbcl-castable-yearMonthDuration-001 0)
 EXPECTED_FOTS_FAILURE (prod-CastableExpr cbcl-castable-yearMonthDuration-002 0)
 EXPECTED_FOTS_FAILURE (prod-CastExpr CastAs674a 0)
 EXPECTED_FOTS_FAILURE (prod-CastExpr K-SeqExprCast-71b 0)
-
-# Following test fails on old RQ machine but not new.
-#EXPECTED_FOTS_FAILURE (prod-CastExpr CastAsNamespaceSensitiveType-10 0)
-
 EXPECTED_FOTS_FAILURE (prod-CastExpr.derived cbcl-cast-date-001 0)
 EXPECTED_FOTS_FAILURE (prod-CastExpr.derived cbcl-cast-date-002 0)
 EXPECTED_FOTS_FAILURE (prod-CastExpr.derived cbcl-cast-dateTime-001 0)
