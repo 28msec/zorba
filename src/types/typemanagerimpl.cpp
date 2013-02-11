@@ -297,7 +297,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
     const UserDefinedXQType* udt =
     reinterpret_cast<const UserDefinedXQType*>(namedType.getp());
 
-    if (udt->isAtomic())
+    if (udt->isAtomicAny())
       return create_type(*namedType, quantifier);
   }
 #endif
@@ -369,8 +369,8 @@ xqtref_t TypeManagerImpl::create_named_simple_type(store::Item* qname) const
     const UserDefinedXQType* udt =
     reinterpret_cast<const UserDefinedXQType*>(namedType.getp());
 
-    if (udt->isAtomic() || udt->isList() || udt->isUnion())
-      return create_type(*namedType, TypeConstants::QUANT_ONE);
+    if (udt->isAtomicAny() || udt->isList() || udt->isUnion())
+      return create_type_x_quant(*namedType, TypeConstants::QUANT_ONE);
   }
 #endif
 
@@ -1017,14 +1017,14 @@ xqtref_t TypeManagerImpl::create_type(
     if (udt.isList())
     {
       return new UserDefinedXQType(this,
-                                   udt.get_qname(),
+                                   udt.getQName(),
                                    udt.getBaseType(),
                                    udt.getListItemType());
     }
     else if (udt.isUnion())
     {
       return new UserDefinedXQType(this,
-                                   udt.get_qname(),
+                                   udt.getQName(),
                                    udt.getBaseType(),
                                    quantifier,
                                    udt.getUnionItemTypes());
@@ -1032,10 +1032,10 @@ xqtref_t TypeManagerImpl::create_type(
     else
     {
       return new UserDefinedXQType(this,
-                                   udt.get_qname(),
+                                   udt.getQName(),
                                    udt.getBaseType(),
                                    quantifier,
-                                   udt.getTypeCategory(),
+                                   udt.getUDTKind(),
                                    udt.content_kind());
     }
   }

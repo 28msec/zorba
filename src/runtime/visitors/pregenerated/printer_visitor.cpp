@@ -53,6 +53,7 @@
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/indexing/index_func.h"
 #include "runtime/introspection/sctx.h"
+#include "runtime/item/item.h"
 #include "runtime/json/json.h"
 #include "runtime/json/jsoniq_functions.h"
 #include "runtime/maths/maths.h"
@@ -744,6 +745,20 @@ void PrinterVisitor::endVisit ( const CurrentTime& ) {
   thePrinter.endEndVisit();
 }
 // </CurrentTime>
+
+
+// <MillisToDateTime>
+void PrinterVisitor::beginVisit ( const MillisToDateTime& a) {
+  thePrinter.startBeginVisit("MillisToDateTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MillisToDateTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MillisToDateTime>
 
 
 // <ParseDate>
@@ -1922,6 +1937,20 @@ void PrinterVisitor::endVisit ( const FunctionAnnotationsIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FunctionAnnotationsIterator>
+
+
+// <MemSizeIterator>
+void PrinterVisitor::beginVisit ( const MemSizeIterator& a) {
+  thePrinter.startBeginVisit("MemSizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MemSizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MemSizeIterator>
 
 
 // <JSONParseInternal>

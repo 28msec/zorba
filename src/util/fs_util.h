@@ -496,8 +496,6 @@ base_name( PathStringType const &path ) {
   return base_name( path.c_str() );
 }
 
-#ifdef ZORBA_WITH_FILE_ACCESS
-
 /**
  * Gets the type of the given file.
  *
@@ -524,8 +522,6 @@ typename std::enable_if<ztd::has_c_str<PathStringType,
 get_type( PathStringType const &path, size_type *size = nullptr ) {
   return get_type( path.c_str(), size );
 }
-
-#endif /* ZORBA_WITH_FILE_ACCESS */
 
 /**
  * Checks whether the given path is an absolute path.
@@ -652,7 +648,7 @@ typename std::enable_if<ztd::has_c_str<PathStringType,
                           char const* (PathStringType::*)() const>::value,
                         zstring>::type
 get_normalized_path( PathStringType const &path,
-                             PathStringType const &base = "" ) {
+                     PathStringType const &base = "" ) {
   return get_normalized_path( path.c_str(), base.c_str() );
 }
 

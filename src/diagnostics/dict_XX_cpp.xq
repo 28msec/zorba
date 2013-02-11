@@ -43,7 +43,7 @@ declare function local:make-dict( $doc ) as xs:string*
           )
       default
         return error()
-  let $value := replace( $entry/value, '"', '\\"' )
+  let $value := replace( replace( $entry/value, '\\', '\\\\' ), '"', '\\"' )
   let $if := $entry/@if
   order by $key
   return (

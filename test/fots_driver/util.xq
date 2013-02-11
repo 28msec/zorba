@@ -50,7 +50,7 @@ declare namespace ann =
     <output:indent                value="no"  />
     <output:omit-xml-declaration  value="yes" />
   </output:serialization-parameters>;
-  
+
 (:~
  : The serialization parameters for XML serialization.
  :)
@@ -78,16 +78,18 @@ declare %ann:nondeterministic function util:get-value(
   $case       as element(fots:test-case),
   $envBaseURI as xs:anyURI,
   $node-name  as xs:string
-) as xs:string {
+) as xs:string
+{
   try
   {
     for $node in $case/descendant-or-self::*
-    where (fn:local-name-from-QName(fn:node-name($node)) = $node-name)
+    where (fn:local-name-from-QName(fn:node-name($node)) eq $node-name)
     return
       if ($node/@file)
       then fn:unparsed-text(resolve-uri($node/@file, $envBaseURI))
       else fn:data($node)
-  } catch * 
+  }
+  catch *
   {
     fn:error($fots-err:errNA, $err:description)
   }
@@ -103,14 +105,16 @@ declare %ann:nondeterministic function util:get-value(
  :)
 declare function util:parent-folder(
   $path as xs:string
-) as xs:anyURI {
+) as xs:anyURI
+{
   xs:anyURI(fn:substring-before($path, file:base-name($path)))
 };
 
 
 declare function util:serialize-result(
   $result as item()*
-) as xs:string* {
+) as xs:string*
+{
   util:serialize-result($result, $util:serParamXml)
 };
 
@@ -118,10 +122,20 @@ declare function util:serialize-result(
 declare function util:serialize-result(
   $result as item()*,
   $SerParams
-) as xs:string* {
+) as xs:string*
+{
   for $res in $result
   return
    if ($res instance of node())
    then fn:serialize($res, $SerParams)
    else fn:string($res)
+};
+
+declare %ann:sequential function util:write-query-to-file(
+  $query        as xs:string,
+  $queryName    as xs:string
+) {
+  file:write(concat("query_", $queryName, ".xq"),
+             $query,
+             $util:serParamXml);
 };

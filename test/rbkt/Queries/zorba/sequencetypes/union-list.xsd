@@ -1,0 +1,115 @@
+<?xml version="1.0" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:s="http://www.w3.org/XQueryTest/unionListDefined"
+           targetNamespace="http://www.w3.org/XQueryTest/unionListDefined"
+           elementFormDefault="qualified">
+
+  <xs:simpleType name="unrestrictedInteger">
+    <xs:restriction base='xs:integer'/>
+  </xs:simpleType> 
+  
+  <xs:simpleType name="unrestrictedDate">
+    <xs:restriction base='xs:date'/>
+  </xs:simpleType>  
+  
+  <xs:simpleType name='myUnionType1'>
+    <xs:union memberTypes="s:unrestrictedInteger s:unrestrictedDate"/>
+  </xs:simpleType>
+  
+  <xs:simpleType name="restrictedString">
+    <xs:restriction base='xs:string'>
+      <xs:pattern value='IB(\d)+'/>
+    </xs:restriction>
+  </xs:simpleType>  
+
+  <xs:simpleType name='myUnionType2'>
+    <xs:union memberTypes="s:restrictedString s:unrestrictedInteger"/>
+  </xs:simpleType>
+  
+  <xs:simpleType name="sensitiveUnion">
+    <xs:union memberTypes="xs:NCName xs:QName"/>
+  </xs:simpleType>
+
+  <xs:simpleType name='decimalListType1'>
+    <xs:list itemType='xs:decimal'/>
+  </xs:simpleType>
+
+  <xs:simpleType name='strListType1'>
+    <xs:list itemType='xs:string'/>
+  </xs:simpleType>
+
+  <xs:simpleType name='intListType1'>
+	<xs:list itemType='xs:integer'/>
+  </xs:simpleType>
+
+  <xs:simpleType name='myRestrictedList1'>
+	<xs:restriction base='s:intListType1'>
+		<xs:pattern value='123 (\d+\s)*456'/>
+	</xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="sensitiveList">
+    <xs:list itemType="s:sensitiveUnion"/>
+  </xs:simpleType>
+  
+  <xs:simpleType name="lowercaseName">
+    <xs:restriction base="s:sensitiveUnion">
+      <xs:pattern value="[a-z:]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="unionOfLists">
+    <xs:union memberTypes="xs:IDREFS s:sensitiveList"/>
+  </xs:simpleType>
+  
+  <xs:simpleType name="unionOfListsAndAtomic">
+    <xs:union memberTypes="xs:integer xs:NMTOKENS "/>
+  </xs:simpleType>
+  
+  <xs:simpleType name="listOfUnions">
+    <xs:list itemType="s:sensitiveUnion"/>
+  </xs:simpleType>
+  
+  <xs:simpleType name="approximateDate">
+    <xs:union memberTypes="xs:date xs:dateTime xs:gYear xs:gYearMonth"/>
+  </xs:simpleType>
+  
+  <xs:simpleType name="dateOrDateTime">
+    <xs:union memberTypes="xs:date xs:dateTime"/>
+  </xs:simpleType>  
+  
+  <xs:simpleType name="restrictedUnion">
+    <xs:restriction base="s:approximateDate">      
+      <xs:pattern value="20.*"/>
+    </xs:restriction>  
+  </xs:simpleType>
+  
+  <xs:simpleType name="restrictedDate">
+    <xs:restriction base="s:unrestrictedDate">      
+      <xs:pattern value="20.*"/>
+    </xs:restriction>  
+  </xs:simpleType>
+  
+  <xs:element name="elementContainingApproximateDate" type="s:elementContainingApproximateDateType"/>
+  
+    <xs:complexType name="elementContainingApproximateDateType">
+      <xs:sequence>
+        <xs:element name="e" type="s:approximateDate"/>
+      </xs:sequence>
+    </xs:complexType>  
+  
+  <xs:element name="elementContainingDateTime" substitutionGroup="s:elementContainingApproximateDate"
+            type="s:elementContainingDateType"/>
+    
+  <xs:complexType name="elementContainingDateType">
+    <xs:complexContent>
+      <xs:restriction base="s:elementContainingApproximateDateType">
+        <xs:sequence>
+          <xs:element name="e" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:restriction>
+    </xs:complexContent>    
+  </xs:complexType>    
+
+
+</xs:schema>

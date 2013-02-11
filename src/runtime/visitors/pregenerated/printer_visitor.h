@@ -212,6 +212,9 @@ namespace zorba {
     void beginVisit( const CurrentTime& );
     void endVisit  ( const CurrentTime& );
 
+    void beginVisit( const MillisToDateTime& );
+    void endVisit  ( const MillisToDateTime& );
+
     void beginVisit( const ParseDate& );
     void endVisit  ( const ParseDate& );
 
@@ -492,6 +495,9 @@ namespace zorba {
 
     void beginVisit( const FunctionAnnotationsIterator& );
     void endVisit  ( const FunctionAnnotationsIterator& );
+
+    void beginVisit( const MemSizeIterator& );
+    void endVisit  ( const MemSizeIterator& );
 
     void beginVisit( const JSONParseInternal& );
     void endVisit  ( const JSONParseInternal& );

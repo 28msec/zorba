@@ -117,7 +117,7 @@ bool Base64DecodeIterator::nextImpl(
         }
         GENV_ITEMFACTORY->createString(result, lTranscodedString);
       }
-      catch (ZorbaException& e)
+      catch (ZorbaException const& e)
       {
         throw XQUERY_EXCEPTION(
           zerr::ZOSE0006_TRANSCODING_ERROR,

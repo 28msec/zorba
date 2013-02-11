@@ -30,6 +30,9 @@
 
 namespace zorba {
 
+class XQueryException;
+namespace json { class exception; }
+
 ///////////////////////////////////////////////////////////////////////////////
 
 typedef std::stack<store::Item*> item_stack_type;
@@ -49,33 +52,16 @@ namespace whitespace {
   };
 }
 
+#define if_indent(WS,FN) if_do( (WS) == whitespace::indent, FN )
+
 ///////////////////////////////////////////////////////////////////////////////
 
 bool get_attribute_value( store::Item_t const &element, char const *att_name,
                           zstring *att_value );
 
+void set_data( XQueryException*, json::exception const& );
+
 typedef std::ostream& (*std_omanip_type)(std::ostream&);
-
-inline std::ostream& if_do_impl( std::ostream &o, bool expr,
-                                 std_omanip_type fn ) {
-  if ( expr )
-    o << fn;
-  return o;
-}
-DEF_OMANIP2( if_do_impl, bool, std_omanip_type )
-// A macro with a !! is used to suppress a warning from MSVC++.
-#define if_do(EXPR,FN) if_do_impl( !!(EXPR), (FN) )
-
-#define if_indent(WS,FN) if_do( (WS) == whitespace::indent, FN )
-
-inline std::ostream& if_emit_impl( std::ostream &o, bool expr, char c ) {
-  if ( expr )
-    o << c;
-  return o;
-}
-DEF_OMANIP2( if_emit_impl, bool, char )
-// A macro with a !! is used to suppress a warning from MSVC++.
-#define if_emit(EXPR,C) if_emit_impl( !!(EXPR), (C) )
 
 ///////////////////////////////////////////////////////////////////////////////
 
