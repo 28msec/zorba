@@ -225,6 +225,18 @@ void Item::removeReference()
 }
 
 
+size_t Item::alloc_size() const
+{
+  return 0;
+}
+
+
+size_t Item::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 #ifdef ZORBA_WITH_JSON
 
 bool Item::isJSONObject() const

@@ -44,6 +44,7 @@
 #include "tree_id.h"
 
 #include "util/ascii_util.h"
+#include "util/mem_sizeof.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
 
@@ -395,6 +396,18 @@ store::Item* UserTypedAtomicItem::getBaseItem() const
 }
 
 
+size_t UserTypedAtomicItem::alloc_size() const
+{
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theBaseItem )
+        + ztd::alloc_sizeof( theTypeName );
+}
+
+size_t UserTypedAtomicItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 /*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
@@ -585,6 +598,17 @@ uint32_t UntypedAtomicItem::hash(long timezone, const XQPCollator* aCollation) c
 }
 
 
+size_t UntypedAtomicItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+size_t UntypedAtomicItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 bool UntypedAtomicItem::equals(
     const store::Item* other,
     long timezone,
@@ -723,6 +747,20 @@ uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 }
 
 
+size_t QNameItem::alloc_size() const
+{
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theNamespace )
+        + ztd::alloc_sizeof( thePrefix )
+        + ztd::alloc_sizeof( theLocal );
+}
+
+size_t QNameItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 store::Item* QNameItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_QNAME];
@@ -856,6 +894,18 @@ bool NotationItem::equals(
 }
 
 
+size_t NotationItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theQName );
+}
+
+
+size_t NotationItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 store::Item* NotationItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NOTATION];
@@ -906,6 +956,18 @@ store::Item* AnyUriItem::getType() const
 uint32_t AnyUriItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   return hashfun::h32(theValue.data(), (uint32_t)theValue.size());
+}
+
+
+size_t AnyUriItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t AnyUriItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -1239,6 +1301,7 @@ StructuralAnyUriItem::StructuralAnyUriItem(store::SchemaTypeCode t, zstring& val
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theEncodedValue));
   }
 }
+
 
 store::Item* StructuralAnyUriItem::getType() const
 {
@@ -1824,10 +1887,33 @@ bool StructuralAnyUriItem::inSameCollection(const store::Item_t& aOther) const
   }
 }
 
+size_t StructuralAnyUriItem::alloc_size() const
+{
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theOrdPath )
+        + ztd::alloc_sizeof( theEncodedValue );
+}
+
+size_t StructuralAnyUriItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 
 /*******************************************************************************
   class StringItem
 ********************************************************************************/
+
+size_t StringItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+size_t StringItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 store::Item* StringItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_STRING];
@@ -1935,6 +2021,18 @@ StreamableStringItem::StreamableStringItem(
   // We copied the dependent item's stream and seekable flag in the initializer
   // above, but did NOT copy the StreamReleaser. The dependent item maintains
   // memory ownership of the stream in this way.
+}
+
+
+size_t StreamableStringItem::alloc_size() const
+{
+  return ztd::alloc_sizeof( theStreamableDependent );
+}
+
+
+size_t StreamableStringItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -2572,6 +2670,18 @@ uint32_t FloatItem::hash(long timezone, const XQPCollator* aCollation) const
   class DecimalItem
 ********************************************************************************/
 
+size_t DecimalItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t DecimalItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 store::Item* DecimalItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_DECIMAL];
@@ -2620,6 +2730,19 @@ zstring DecimalItem::show() const
 /*******************************************************************************
   class IntegerItemImpl
 ********************************************************************************/
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t IntegerItemImpl::alloc_size() const
+{
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
+size_t IntegerItemImpl::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 
 long IntegerItemImpl::compare( Item const *other, long,
                                const XQPCollator* ) const {
@@ -2733,6 +2856,19 @@ zstring IntegerItemImpl::show() const
 /*******************************************************************************
   class NonPositiveIntegerItem
 ********************************************************************************/
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t NonPositiveIntegerItem::alloc_size() const
+{
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
+size_t NonPositiveIntegerItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 long NonPositiveIntegerItem::compare( Item const *other, long,
                                       const XQPCollator* ) const {
   try
@@ -2846,6 +2982,19 @@ zstring NegativeIntegerItem::show() const
 /*******************************************************************************
   class NonNegativeIntegerItem
 ********************************************************************************/
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t NonNegativeIntegerItem::alloc_size() const
+{
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
+size_t NonNegativeIntegerItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 long NonNegativeIntegerItem::compare( Item const *other, long,
                                       const XQPCollator* ) const {
   try
@@ -3512,6 +3661,19 @@ zstring BooleanItem::show() const
 /*******************************************************************************
   class Base64BinaryItem
 ********************************************************************************/
+
+size_t Base64BinaryItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t Base64BinaryItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 bool
 Base64BinaryItem::equals(
       const store::Item* other,
@@ -3768,6 +3930,19 @@ void StreamableBase64BinaryItem::materialize() const
 /*******************************************************************************
   class HexBinaryItem
 ********************************************************************************/
+
+size_t HexBinaryItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t HexBinaryItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 store::Item* HexBinaryItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_HEXBINARY];
@@ -3810,13 +3985,22 @@ uint32_t HexBinaryItem::hash(long timezone, const XQPCollator* aCollation) const
 /*******************************************************************************
   class ErrorItem
 ********************************************************************************/
+
 ErrorItem::~ErrorItem()
 {
-  if (theError)
-  {
-    delete theError;
-    theError = NULL;
-  }
+  delete theError;
+}
+
+
+size_t ErrorItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theError );
+}
+
+
+size_t ErrorItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 

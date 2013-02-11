@@ -328,6 +328,8 @@ namespace zorba{
 
     class FunctionAnnotationsIterator;
 
+    class MemSizeIterator;
+
     class JSONParseInternal;
 
     class JSONSerializeInternal;
@@ -1212,6 +1214,9 @@ public:
 
     virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
     virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
+
+    virtual void beginVisit ( const MemSizeIterator& ) = 0;
+    virtual void endVisit   ( const MemSizeIterator& ) = 0;
 
     virtual void beginVisit ( const JSONParseInternal& ) = 0;
     virtual void endVisit   ( const JSONParseInternal& ) = 0;

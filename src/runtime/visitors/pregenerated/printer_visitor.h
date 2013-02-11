@@ -502,6 +502,9 @@ namespace zorba {
     void beginVisit( const FunctionAnnotationsIterator& );
     void endVisit  ( const FunctionAnnotationsIterator& );
 
+    void beginVisit( const MemSizeIterator& );
+    void endVisit  ( const MemSizeIterator& );
+
     void beginVisit( const JSONParseInternal& );
     void endVisit  ( const JSONParseInternal& );
 

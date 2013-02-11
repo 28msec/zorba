@@ -88,10 +88,11 @@ FileModule::getExternalFunction(const String& aLocalname)
 void
 FileModule::destroy()
 {
-  if (!dynamic_cast<FileModule*>(this)) {
-    return;
+  if (dynamic_cast<FileModule*>(this)) {
+    delete this;
   }
-  delete this;
 }
 
-} /* namespace filemodule */ } /* namespace zorba */
+} // namespace filemodule
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

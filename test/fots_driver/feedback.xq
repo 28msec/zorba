@@ -97,39 +97,33 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
   $verbose          as xs:boolean
 ) as element(fots:test-case)?
 {
-  variable $info := "Test case failed but it is marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt";
+  variable $info := 'Test case failed but it is marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt';
+  variable $status := 'pass';
 
   if ($verbose)
-  then {
-    let $tmp := $case
-    return {
-      insert node
-      attribute result{'pass'}
-      as last into $tmp;
-     
-      insert node
-      attribute comment{$info}
-      as last into $tmp;
-     
-      insert node
-        <fots:info>
-          {$env}
-          <fots:query>{$zorbaQuery}</fots:query>
-          {($result/fots:expected-result,
+  then
+  {
+    {
+      (insert node attribute result{$status} as last into $case,
+       insert node attribute comment{$info} as last into $case,
+       insert node
+         <fots:info>
+           {$env}
+           <fots:query>{$zorbaQuery}</fots:query>
+           {$result/fots:expected-result,
             $result/fots:result,
-            $result/fots:errors)}
-        </fots:info>
-      as last into $tmp;
-     
-      delete node $tmp/fots:description;
-      delete node $tmp/fots:created;
-      delete node $tmp/fots:result;
+            $result/fots:errors}
+         </fots:info>
+      as last into $case,
+      delete node $case/fots:description,
+      delete node $case/fots:created,
+      delete node $case/fots:result);
 
-      $tmp
+      $case
     }
   }
   else <fots:test-case  name="{data($case/@name)}"
-                        result="pass"
+                        result="{$status}"
                         comment="{$info}" />
 };
 
@@ -149,54 +143,40 @@ declare %private %ann:sequential function feedback:pass(
   $verbose          as xs:boolean
 ) as element(fots:test-case)?
 {
+  let $status := if(exists($result/fots:errors))
+                 then 'wrongError'
+                 else 'pass'
+  return
   if ($verbose)
-  then {
-    let $tmp := $case
-    return {
-      insert node
-      attribute result{'pass'}
-      as last into $tmp;
-     
-      if (exists($result/fots:errors))
-      then
-        insert node
-        attribute correctError{'false'}
-        as last into $tmp;
-      else ();
-
-      if (exists($result/fots:errors))
-      then
-        insert node
-        attribute comment{$result/fots:errors}
-        as last into $tmp;
-      else ();
-
-      insert node
-      attribute executionTime{$duration}
-      as last into $tmp;
-
-      insert node
+  then
+  {
+    {
+      (insert node attribute result{$status} as last into $case,
+       if (exists($result/fots:errors))
+       then
+         insert node
+         attribute comment{$result/fots:errors}
+         as last into $case
+       else (),
+       insert node attribute executionTime{$duration} as last into $case,
+       insert node
         <fots:info>
           {$env}
           <fots:query>{$zorbaQuery}</fots:query>
-          {$result/descendant::*}
+          {$result/fots:expected-result,
+            $result/fots:result,
+            $result/fots:errors}
         </fots:info>
-      as last into $tmp;
+      as last into $case,
+      delete node $case/fots:description,
+      delete node $case/fots:created,
+      delete node $case/fots:result);
 
-      delete node $tmp/description;
-      delete node $tmp/created;
-      delete node $tmp/fots:result;
-
-      $tmp
+      $case
     }
   }
-  else if (empty($result/fots:errors))
-  then <fots:test-case  name="{data($case/@name)}"
-                        result="pass"
-                        executionTime="{$duration}" />
   else <fots:test-case  name="{data($case/@name)}"
-                        result="pass"
-                        correctError="{empty($result/fots:errors)}"
+                        result="{$status}"
                         executionTime="{$duration}" />
 };
 
@@ -221,48 +201,41 @@ declare %ann:sequential function feedback:fail(
   trace($testSetName, "test set name");
   trace("above test case failed", "result");
 
-  variable $info := "Test case passed but it is marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt";
+  variable $info := 'Test case passed but it is marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt';
+  variable $status := 'fail';
 
   if ($verbose)
-  then {
-    let $tmp := $case
-    return {
-      insert node
-      attribute result{'fail'}
-      as last into $tmp;
-     
-      if ($expectedFailure)
-      then
-        insert node
-        attribute comment{$info}
-        as last into $tmp;
-      else ();
-     
-      insert node
-        <fots:info>
-          {$env}
-          <fots:query>{$zorbaQuery}</fots:query>
-          {($result/fots:expected-result,
+  then
+  {
+    {
+      (insert node attribute result{$status} as last into $case,
+       if ($expectedFailure)
+       then insert node attribute comment{$info} as last into $case
+       else (),
+       insert node
+         <fots:info>
+           {$env}
+           <fots:query>{$zorbaQuery}</fots:query>
+           {$result/fots:expected-result,
             $result/fots:result,
-            $result/fots:errors)}
-        </fots:info>
-      as last into $tmp;
-     
-      delete node $tmp/fots:description;
-      delete node $tmp/fots:created;
-      delete node $tmp/fots:result;
-     
-      $tmp
+            $result/fots:errors}
+         </fots:info>
+       as last into $case,
+       delete node $case/fots:description,
+       delete node $case/fots:created,
+       delete node $case/fots:result);
+
+       $case
     }
   }
   else if ($expectedFailure)
   then <fots:test-case name="{data($case/@name)}"
-                       result="fail"
+                       result="{$status}"
                        comment="{$info}"
                        executionTime="{$duration}"/>
  
   else <fots:test-case name="{data($case/@name)}"
-                       result="fail"
+                       result="{$status}"
                        executionTime="{$duration}"/>
 };
 
@@ -282,11 +255,13 @@ declare %ann:sequential function feedback:not-run(
   trace(data($case/@name), "processing test case :");
   trace("Above test case was not run.","");
 
+  let $status := 'notRun'
+  return
   if ($verbose)
   then
   {
     {
-      (insert node attribute result {'notRun'} as last into $case,
+      (insert node attribute result {$status} as last into $case,
        delete node $case/fots:description,
        delete node $case/fots:created);
      
@@ -295,7 +270,8 @@ declare %ann:sequential function feedback:not-run(
   }
   else
   {
-    <fots:test-case name="{$case/@name}" result="notRun" />
+    <fots:test-case name="{$case/@name}"
+                    result="{$status}" />
   }
 };
 
@@ -317,30 +293,25 @@ declare %ann:sequential function feedback:not-applicable(
   trace(data($case/@name), "processing test case :");
   trace($dependencyError, "Dependency error :");
 
+  let $status := 'n/a'
+  return
   if ($verbose)
-  then {
-    let $tmp := $case
-    return {
-      insert node
-      attribute result{'not applicable'}
-      as last into $tmp;
-     
-      insert node
-      attribute comment{$dependencyError}
-      as last into $tmp;
-     
-      insert node
-        <fots:info>{$env}</fots:info>
-      as last into $tmp;
-     
-      delete node $tmp/fots:description;
-      delete node $tmp/fots:created;
-     
-      $tmp
-      }
+  then
+  {
+   {
+    (insert node attribute result{$status} as last into $case,
+     insert node attribute comment{$dependencyError} as last into $case,
+     insert node
+       <fots:info>{$env}</fots:info>
+     as last into $case,
+     delete node $case/fots:description,
+     delete node $case/fots:created);
+
+    $case
+   }
   }
   else
     <fots:test-case name="{data($case/@name)}"
-                    result="not applicable"
+                    result="{$status}"
                     comment="{$dependencyError}" />
 };

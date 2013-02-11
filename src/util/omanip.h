@@ -298,6 +298,54 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A type for the standard, no-argument ostream manipulator.
+ */
+typedef std::ostream& (*std_omanip_type)(std::ostream&);
+
+/**
+ * Emits \a c to the given ostream only if \a expr is \c true.
+ *
+ * @param o The ostream to emit to.
+ * @param expr The boolean expression.
+ * @param c The character to emit only if \a expr is \c true.
+ * @return Returns \a o.
+ */
+inline std::ostream& if_emit_impl( std::ostream &o, bool expr, char c ) {
+  if ( expr )
+    o << c;
+  return o;
+}
+DEF_OMANIP2( if_emit_impl, bool, char )
+// A macro with a !! is used to suppress a warning from MSVC++.
+#define if_emit(EXPR,C) if_emit_impl( !!(EXPR), (C) )
+
+/**
+ * Emits a newline only if the given expression is \c true.
+ */
+#define if_nl(EXPR) if_emit( EXPR, '\n' )
+
+/**
+ * Calls the given manipulator function \a fn on the given ostream only if \a
+ * expr is \c true.
+ *
+ * @param o The ostream to emit to.
+ * @param expr The boolean expression.
+ * @param fn The manipulator function to call only if \a expr is \c true.
+ * @return Returns \a o.
+ */
+inline std::ostream& if_do_impl( std::ostream &o, bool expr,
+                                 std_omanip_type fn ) {
+  if ( expr )
+    o << fn;
+  return o;
+}
+DEF_OMANIP2( if_do_impl, bool, std_omanip_type )
+// A macro with a !! is used to suppress a warning from MSVC++.
+#define if_do(EXPR,FN) if_do_impl( !!(EXPR), (FN) )
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
 
 #endif  /* ZORBA_OMANIP_H */

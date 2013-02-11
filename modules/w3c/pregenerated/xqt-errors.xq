@@ -428,8 +428,8 @@ declare variable $err:XQST0055 as xs:QName := fn:QName($err:NS, "err:XQST0055");
 
 (:~
  :
- : It is a static error if a schema import binds a namespace prefix but does
- : not specify a target namespace other than a zero-length string.
+ : It is a static error if a schema import binds a namespace prefix but
+ : does not specify a target namespace other than a zero-length string.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -447,8 +447,8 @@ declare variable $err:XQST0058 as xs:QName := fn:QName($err:NS, "err:XQST0058");
 (:~
  :
  : It is a static error if an implementation is unable to process a schema
- : or module import by finding a schema or module with the specified target
- : namespace.
+ : or module import by finding a schema or module with the specified
+ : target namespace.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
