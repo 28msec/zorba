@@ -89,8 +89,7 @@ class DynamicFnCallIterator : public NaryBaseIterator<DynamicFnCallIterator,
 {
 protected:
   // This variable counts the number of children that hold DOT variables. They 
-  // are placed at the end of the children array. It currently should have a 
-  // value of either 0 or 1 (at most one DOT var).
+  // are placed at the end of the children array.
   unsigned int theDotVarsCount; 
   
   bool theIsPartialApply;
@@ -101,11 +100,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DynamicFnCallIterator,
   NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
 public:
   DynamicFnCallIterator(
@@ -119,11 +114,8 @@ public:
     NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>(sctx, loc, args),
     theDotVarsCount(dotVarsCount),
     theIsPartialApply(isPartialApply)
-    // , theCoercionTargetType(coercionTargetType) // TODO: remove
   {
   }
-
-  virtual ~DynamicFnCallIterator();
 
   void accept(PlanIterVisitor& v) const;
 

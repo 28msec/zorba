@@ -539,7 +539,7 @@ public:
 
   void open(PlanState& planState, uint32_t& offset)
   {
-    // std::cerr << "--> openImpl() " << toString() << std::endl;
+    // std::cerr << "--> openImpl() " << toString() << " at offset: " << offset << std::endl;
 
     static_cast<IterType*>(this)->openImpl(planState, offset);
 #ifndef NDEBUG

@@ -483,8 +483,7 @@ public:
       const QueryLoc& loc,
       expr* anExpr,
       const std::vector<expr*>& args,
-      const std::vector<expr*>& dotVars,
-      xqtref_t coercionTargetType);
+      const std::vector<expr*>& dotVars);
 
   argument_placeholder_expr* create_argument_placeholder_expr(
       static_context* sctx,

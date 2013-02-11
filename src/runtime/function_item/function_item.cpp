@@ -83,13 +83,17 @@ void DynamicFunctionInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theCCB;
   ar & theSctx;
   // ar & theLoc; TODO
+  ar & theFunction;
   ar & theQName;
   ar & theArity;
   ar & theIsInline;
   ar & theNeedsContextItem;
-  ar & theFunction;
+
+  // ar & theScopedVarsValues;
+  // ar & theSubstVarsValues;
   ar & theScopedVarsNames;
   ar & theScopedVarsIterators;
+  ar & theIsGlobalVar;
 
   if (ar.is_serializing_out())
   {
@@ -136,7 +140,8 @@ FunctionItem::FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
 
 void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
 {
-  // ar & theDynamicFunctionInfo;
+  ar & theDynamicFunctionInfo;
+  ar & theArity;
   ar & theArgumentsValues;
 }
 

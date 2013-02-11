@@ -359,8 +359,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                                             theLoc,
                                             e->theExpr->clone(udf, subst),
                                             newArgs,
-                                            newDotVars,
-                                            e->theCoercionTargetType);
+                                            newDotVars);
     break;
   }
   case argument_placeholder_expr_kind:

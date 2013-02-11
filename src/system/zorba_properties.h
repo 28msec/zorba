@@ -43,7 +43,7 @@ protected:
       "--infer-joins", "--no-copy-optim", "--serialize-only-query",
       "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug",
       "--compile-only", "--tz", "--external-var", "--serializer-param",
-      "--iter-plan-test", "--dot-plan-file", "--max-udf-call-depth",
+      "--iter-plan-test", "--dot-plan-file", "--plan", "--max-udf-call-depth",
       "--CLASSPATH", NULL };
 
     return result;
@@ -92,6 +92,7 @@ protected:
   std::vector<std::string> theSerializerParam;
   bool theIterPlanTest;
   std::string theDotPlanFile;
+  bool theTestPlanSerialization;
   uint32_t theMaxUdfCallDepth;
   std::string theCLASSPATH;
 
@@ -133,6 +134,7 @@ protected:
     theDebug = false;
     theCompileOnly = false;
     theIterPlanTest = false;
+    theTestPlanSerialization = false;
     theMaxUdfCallDepth = 1024;
   }
 
@@ -180,6 +182,7 @@ public:
   const std::vector<std::string> &serializerParam () const { return theSerializerParam; }
   const bool &iterPlanTest () const { return theIterPlanTest; }
   const std::string &dotPlanFile () const { return theDotPlanFile; }
+  const bool& testPlanSerialization() const { return theTestPlanSerialization; }
   const uint32_t &maxUdfCallDepth () const { return theMaxUdfCallDepth; }
   const std::string &CLASSPATH () const { return theCLASSPATH; }
 
@@ -406,6 +409,9 @@ public:
 
         init_val (*argv, theDotPlanFile, d);
       }
+      else if (strcmp (*argv, "--plan") == 0) {
+        theTestPlanSerialization = true;
+      } 
       else if (strcmp (*argv, "--max-udf-call-depth") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
@@ -482,6 +488,7 @@ public:
 "--serializer-param, -z\nserializer parameters (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g. -z method=xhtml, -z doctype-system='DTD/xhtml1-strict.dtd', -z indent=yes)\n\n"
 "--iter-plan-test\nrun as iterator plan test\n\n"
 "--dot-plan-file\ngenerate the dot iterator plan\n\n"
+"--plan\ntest plan serialization, i.e. save the plan, load it back and then execute it\n\n"
 "--max-udf-call-depth\nmaximum stack depth of udf function calls\n\n"
 "--CLASSPATH\nJVM classpath to be used by modules using Java implementations\n\n"
 ;

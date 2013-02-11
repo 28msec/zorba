@@ -98,8 +98,9 @@ PlanIteratorState::PlanIteratorState()
   class PlanIterator
 ********************************************************************************/
 PlanIterator::PlanIterator(zorba::serialization::Archiver& ar)
-    :
+    :    
     SimpleRCObject(ar),
+    theStateOffset(0),
     theSctx(NULL)
 {
 // Used for debugging purposes

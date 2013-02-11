@@ -1487,17 +1487,13 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
     inner_flwor = NULL;
   }
 
-  // clone the target type and change the quantifier
-  xqtref_t coercionTargetType = theExpr->get_type_manager()->create_type(*targetType, TypeConstants::QUANT_ONE);
-
   expr* body = theExprManager->create_dynamic_function_invocation_expr(
                 theRootSctx,
                 theUDF,
                 loc,
                 theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, inner_subst_var),
                 arguments,
-                std::vector<expr*>(), // TODO: fill in
-                is_func_return ? NULL : coercionTargetType);
+                std::vector<expr*>()); // empty array for dot vars
 
   create_inline_function(body, inner_flwor, func_type->get_param_types(), func_type->get_return_type(), loc, theCCB, true);
 
@@ -2624,8 +2620,7 @@ expr* generate_fn_body(
           loc,
           arguments[0],
           fncall_args,
-          std::vector<expr*>(), 
-          NULL);
+          std::vector<expr*>());
 
       flwor->set_return_expr(dynamic_fncall);
 
@@ -2659,8 +2654,7 @@ expr* generate_fn_body(
                                 loc,
                                 arguments[0],
                                 fncall_args,
-                                std::vector<expr*>(), 
-                                NULL);
+                                std::vector<expr*>()); // Empty array for dot vars
 
       expr* if_expr = theExprManager->create_if_expr(theRootSctx, theUDF, loc,
                                 dynamic_fncall,
@@ -12088,8 +12082,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
                                                           loc,
                                                           sourceExpr,
                                                           arguments,
-                                                          dotVars,
-                                                          NULL);
+                                                          dotVars);
   push_nodestack(dynFuncInvocation);
 }
 

@@ -115,8 +115,6 @@ public:
 
   const std::vector<PlanIter_t>& getArgumentsValues() const;
 
-  // store::Iterator_t getVariableValue(unsigned int i) const;
-
   void setArgumentValue(unsigned int pos, const PlanIter_t& value);
 
   // This function will return true if the pos-th argument of the function

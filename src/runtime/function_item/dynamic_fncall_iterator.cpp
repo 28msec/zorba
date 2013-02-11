@@ -77,6 +77,19 @@ DynamicFnCallIteratorState::~DynamicFnCallIteratorState()
 /*******************************************************************************
 
 ********************************************************************************/
+void DynamicFnCallIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>*)this);
+
+  ar & theDotVarsCount;
+  ar & theIsPartialApply;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void DynamicFnCallIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
@@ -96,14 +109,6 @@ void DynamicFnCallIteratorState::reset(PlanState& planState)
   {
     thePlan->reset(planState);
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-DynamicFnCallIterator::~DynamicFnCallIterator()
-{
 }
 
 

@@ -39,14 +39,12 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
     const QueryLoc& loc,
     expr* anExpr,
     const std::vector<expr*>& args,
-    const std::vector<expr*>& dotVars,
-    xqtref_t coercionTargetType)
+    const std::vector<expr*>& dotVars)
   :
   expr(ccb, sctx, udf, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
   theArgs(args),
-  theDotVars(dotVars),
-  theCoercionTargetType(coercionTargetType)
+  theDotVars(dotVars)
 {
   assert(anExpr != 0);
   compute_scripting_kind();

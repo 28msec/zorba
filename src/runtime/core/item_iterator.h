@@ -80,14 +80,10 @@ public:
 /*******************************************************************************
   An iterator that creates and returns dynamic function items
 ********************************************************************************/
-class DynamicFunctionIterator : public NaryBaseIterator<DynamicFunctionIterator,  // TODO: change to Noary
-                                                   PlanIteratorState>
+class DynamicFunctionIterator : public NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>
 {
 protected:
-  DynamicFunctionInfo_t          theDynamicFunctionInfo;
-
-  std::vector<PlanIter_t>        theVariableValues;
-  std::vector<store::Iterator_t> theVariableWrappers; // TODO: move somewhere else? dctx maybe?
+  DynamicFunctionInfo_t theDynamicFunctionInfo;
 
 public:
   SERIALIZABLE_CLASS(DynamicFunctionIterator)

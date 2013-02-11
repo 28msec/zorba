@@ -75,20 +75,14 @@ protected:
   
   std::vector<expr*>    theDotVars; // context item vars
 
-  // TODO: must be protected
-public:
-  xqtref_t               theCoercionTargetType;
-
 protected:
-  dynamic_function_invocation_expr(
-      CompilerCB* ccb,
+  dynamic_function_invocation_expr(CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
       expr* anExpr,
       const std::vector<expr*>& args,
-      const std::vector<expr*>& dotVars,
-      xqtref_t coercionTargetType);
+      const std::vector<expr*>& dotVars);
 
 public:
   const expr* get_function() const { return theExpr; }
@@ -165,8 +159,6 @@ public:
   DynamicFunctionInfo* get_dynamic_fn_info() { return theDynamicFunctionInfo; }
 
   void add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal);
-
-  const std::vector<expr*>& get_scoped_vars_values() const { return theDynamicFunctionInfo->theScopedVarsValues; }
 
   const std::vector<var_expr*>& get_subst_vars_values() const { return theDynamicFunctionInfo->theSubstVarsValues; }
 

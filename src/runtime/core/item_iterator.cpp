@@ -113,10 +113,8 @@ uint32_t SingletonIterator::getStateSizeOfSubtree() const
 ********************************************************************************/
 void DynamicFunctionIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (NoaryBaseIterator<DynamicFunctionIterator,
-                      PlanIteratorState>*)this);
-  ar & theDynamicFunctionInfo;
-  // TODO: add the rest
+  serialize_baseclass(ar, (NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>*)this);
+  ar & theDynamicFunctionInfo;  
 }
 
 
@@ -296,6 +294,8 @@ void DynamicFunctionIterator::importOuterEnv(
 
       ve->set_unique_id(maxOuterVarId);
 
+      // std::cerr << "--> importOuterEnv(): var: " << theDynamicFunctionInfo->theScopedVarsNames[i]->toString() << " assigned id: " << maxOuterVarId << std::endl;
+
       if (theDynamicFunctionInfo->theSubstVarsValues[i] != NULL
           &&
           theDynamicFunctionInfo->theSubstVarsValues[i]->get_unique_id() == 0)
@@ -336,8 +336,7 @@ void DynamicFunctionIterator::importOuterEnv(
       if (theDynamicFunctionInfo->theSubstVarsValues[i] != NULL
           &&
           theDynamicFunctionInfo->theSubstVarsValues[i]->get_unique_id() == 0)
-      {
-        // theDynamicFunctionInfo->theSubstVarsValues[i]->set_var_info(NULL);
+      {        
         theDynamicFunctionInfo->theSubstVarsValues[i]->set_unique_id(outerGlobalVarId);
       }
 
@@ -351,10 +350,7 @@ void DynamicFunctionIterator::importOuterEnv(
     importSctx->bind_var(ve, loc);
   }
 
-
   // Import the outer-query ns bindings
-
-
   store::NsBindings::const_iterator ite = theDynamicFunctionInfo->theLocalBindings.begin();
   store::NsBindings::const_iterator end = theDynamicFunctionInfo->theLocalBindings.end();
 

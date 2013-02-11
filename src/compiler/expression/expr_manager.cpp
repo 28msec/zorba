@@ -785,16 +785,14 @@ match_expr* ExprManager::create_match_expr(
 ////////////////////////////////////////////////////////////////////////////////
 
 dynamic_function_invocation_expr*
-ExprManager::create_dynamic_function_invocation_expr(
-    static_context* sctx,
+ExprManager::create_dynamic_function_invocation_expr(static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
     expr* anExpr,
     const std::vector<expr*>& args,
-    const std::vector<expr*>& dotVars,
-    xqtref_t coercionTargetType)
+    const std::vector<expr*>& dotVars)
 {
-  CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, udf, loc, anExpr, args, dotVars, coercionTargetType);
+  CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, udf, loc, anExpr, args, dotVars);
 }
 
 
