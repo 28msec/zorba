@@ -518,8 +518,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
-EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_3_0 867035)
-
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xmlid/valid-ncname 1010728)
