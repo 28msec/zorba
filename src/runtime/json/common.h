@@ -20,9 +20,11 @@
 #include <iostream>
 #include <stack>
 
+#include "diagnostics/xquery_exception.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "util/indent.h"
+#include "util/json_parser.h"
 #include "util/omanip.h"
 #include "zorbatypes/zstring.h"
 
@@ -59,7 +61,9 @@ namespace whitespace {
 bool get_attribute_value( store::Item_t const &element, char const *att_name,
                           zstring *att_value );
 
-void set_data( XQueryException*, json::exception const& );
+inline void set_data( XQueryException *xe, json::exception const &je ) {
+  set_data( *xe, je.get_loc() );
+}
 
 typedef std::ostream& (*std_omanip_type)(std::ostream&);
 
