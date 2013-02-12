@@ -332,6 +332,10 @@ void DynamicFunctionIterator::importOuterEnv(
       // ZORBA_ASSERT(outerGlobalVar);
 
       // std::cerr << "--> importOuterEnv(): outerSctx: " << outerSctx->toString() << std::endl;
+      /*
+      std::cerr << "--> importOuterEnv(): updating id for subst_var: "
+                << (theDynamicFunctionInfo->theSubstVarsValues[i] ? theDynamicFunctionInfo->theSubstVarsValues[i]->toString() : "NULL\n");
+      */
 
       if (theDynamicFunctionInfo->theSubstVarsValues[i] != NULL
           &&
@@ -342,10 +346,6 @@ void DynamicFunctionIterator::importOuterEnv(
 
       ve->set_unique_id(outerGlobalVarId);
     }
-
-    // std::cerr << "--> importOuterEnv(): updated id for subst_var: "
-    //  << (theDynamicFunctionInfo->theSubstVarsValues[i].getp()
-    //  ? theDynamicFunctionInfo->theSubstVarsValues[i]->toString() : "NULL\n");
 
     importSctx->bind_var(ve, loc);
   }

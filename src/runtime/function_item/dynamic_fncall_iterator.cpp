@@ -349,7 +349,8 @@ bool DynamicFnCallIterator::nextImpl(
     else
       result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
 
-    STACK_PUSH(true, state);
+    if (result)
+      STACK_PUSH(true, state);
     
   } // else if (targetItem->isJSONObject() || targetItem->isJSONArray())
 #endif

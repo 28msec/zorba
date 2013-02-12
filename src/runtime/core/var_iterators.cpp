@@ -430,7 +430,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                            planState.theLocalDynCtx :
                            planState.theGlobalDynCtx);
 
-  // std::cerr << "--> CtxVarIterator used dctx: " << dctx->toString();
+  // std::cerr << "--> CtxVarIterator varid: " << theVarId << " varName: " << theVarName->toString() << " used dctx: " << dctx->toString() << std::endl;
 
   CtxVarState* state;
   DEFAULT_STACK_INIT(CtxVarState, state, planState);

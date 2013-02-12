@@ -40,7 +40,7 @@ public:
     :
     function(sig, kind)
   {
-
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool accessesDynCtx() const { return true; }
@@ -51,8 +51,6 @@ public:
                      std::vector<PlanIter_t>& argv,
                      expr& ann) const
   {
-    // TODO: delete the commented line
-    // return new UDFunctionCallIterator(sctx, loc, argv, NULL);
     return NULL;
   }
 };
@@ -68,7 +66,7 @@ public:
     :
     function(sig, kind)
   {
-
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool accessesDynCtx() const { return true; }
