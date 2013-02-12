@@ -231,10 +231,9 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
       while ( ! state->theFragmentStream.stream_is_consumed())
       {
         try {
-          result = nullptr;
           result = lStore.loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
         }
-        catch ( XQueryException const &e ) {
+        catch ( ZorbaException const &e ) {
           if ( !state->theProperties.getNoError() ) {
             XQueryException xe(
               XQUERY_EXCEPTION(
@@ -246,14 +245,7 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
             set_data( xe, e );
             throw xe;
           }
-        }
-        catch ( ZorbaException const &e ) {
-          if ( !state->theProperties.getNoError() )
-            throw XQUERY_EXCEPTION(
-              err::FODC0006,
-              ERROR_PARAMS( "parse-xml:parse()", e.what() ),
-              ERROR_LOC( loc )
-            );
+          result = nullptr;
         }
 
         if (result == NULL)
@@ -276,10 +268,9 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
     else  // if (!state->theProperties.getEnableExtParsedEntity())
     {
       try {
-        result = nullptr;
         result = lStore.loadDocument(state->baseUri, state->docUri, *state->theFragmentStream.theStream, state->theProperties);
       }
-      catch ( XQueryException const &e ) {
+      catch ( ZorbaException const &e ) {
         if ( !state->theProperties.getNoError() ) {
           XQueryException xe(
             XQUERY_EXCEPTION(
@@ -291,14 +282,7 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
           set_data( xe, e );
           throw xe;
         }
-      }
-      catch ( ZorbaException const &e ) {
-        if ( !state->theProperties.getNoError() )
-          throw XQUERY_EXCEPTION(
-            err::FODC0006,
-            ERROR_PARAMS( "parse-xml:parse()", e.what() ),
-            ERROR_LOC( loc )
-          );
+        result = nullptr;
       }
 
       if (result != NULL)
@@ -372,15 +356,20 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
     try {
       state->theProperties.setStoreDocument(false);
       result = GENV.getStore().loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
-    } catch (ZorbaException const& e) {
-      if ( !state->theProperties.getNoError() )
-        throw XQUERY_EXCEPTION(
-          err::FODC0006,
-          ERROR_PARAMS( "fn:parse-xml-fragment()", e.what() ),
-          ERROR_LOC( loc )
+    }
+    catch ( ZorbaException const &e ) {
+      if ( !state->theProperties.getNoError() ) {
+        XQueryException xe(
+          XQUERY_EXCEPTION(
+            err::FODC0006,
+            ERROR_PARAMS( "fn:parse-xml-fragment()", e.what() ),
+            ERROR_LOC( loc )
+          )
         );
-      else
-        result = NULL;
+        set_data( xe, e );
+        throw xe;
+      }
+      result = nullptr;
     }
 
     if (result != NULL)
