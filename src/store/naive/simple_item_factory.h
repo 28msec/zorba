@@ -135,6 +135,14 @@ public:
       bool seekable = false,
       bool encoded = false);
 
+  bool createStreamableBase64Binary(
+      store::Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      char const *uri,
+      bool seekable = false,
+      bool encoded = false);
+
   bool createBoolean(store::Item_t& result, xs_boolean value);
 
 

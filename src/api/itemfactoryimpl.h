@@ -82,6 +82,14 @@ namespace zorba {
           bool seekable = false,
           bool encoded = false);
 
+      virtual Item
+      createStreamableBase64Binary(
+          std::istream &stream,
+          StreamReleaser streamReleaser,
+          char const *uri,
+          bool seekable = false,
+          bool encoded = false);
+
       virtual Item 
       createBoolean(bool aValue);
     

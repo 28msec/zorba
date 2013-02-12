@@ -248,6 +248,13 @@ public:
       bool seekable = false,
       bool encoded = false) = 0;
 
+  virtual bool createStreamableBase64Binary(
+      Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      char const *uri,
+      bool seekable = false,
+      bool encoded = false) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#bool]

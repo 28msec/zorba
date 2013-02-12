@@ -1059,6 +1059,24 @@ bool BasicItemFactory::createStreamableBase64Binary(
 }
 
 
+bool BasicItemFactory::createStreamableBase64Binary(
+    store::Item_t& result,
+    std::istream& aStream,
+    StreamReleaser aReleaser,
+    char const *uri,
+    bool seekable,
+    bool encoded)
+{
+  result = new StreamableBase64BinaryItem(store::XS_BASE64BINARY,
+                                          aStream,
+                                          aReleaser,
+                                          seekable,
+                                          encoded);
+  set_uri( aStream, uri );
+  return true;
+}
+
+
 bool BasicItemFactory::createHexBinary(store::Item_t& result,  xs_hexBinary value)
 {
   result = new HexBinaryItem(store::XS_HEXBINARY, value);

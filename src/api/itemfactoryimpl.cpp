@@ -268,6 +268,22 @@ ItemFactoryImpl::createStreamableBase64Binary(
 }
 
 
+Item
+ItemFactoryImpl::createStreamableBase64Binary(
+    std::istream &stream,
+    StreamReleaser streamReleaser,
+    char const *uri,
+    bool seekable,
+    bool encoded)
+{
+  store::Item_t lItem;
+  theItemFactory->createStreamableBase64Binary(
+      lItem, stream, streamReleaser, uri, seekable, encoded
+    );
+  return &*lItem;
+}
+
+
 Item ItemFactoryImpl::createBoolean(bool aValue)
 {
   store::Item_t lItem;
