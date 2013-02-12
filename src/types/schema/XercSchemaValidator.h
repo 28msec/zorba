@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -114,7 +114,7 @@ private:
   DatatypeValidator*              fCurrentDatatypeValidator;
   XMLBuffer*                      fNotationBuf;
   XMLBuffer                       fDatatypeBuffer;
-  
+
 #if _XERCES_VERSION >= 30000
   // Only for 3.0.1.
   //
@@ -158,7 +158,7 @@ public:
         XMLElementDecl* const               elemDecl,
         XERCES_CPP_NAMESPACE::QName** const children,
         const unsigned int                  childCount);
-#endif                
+#endif
 
   virtual void faultInAttr(
         XMLAttr&          toFill,
@@ -194,7 +194,7 @@ public:
   //  Virtual DTD handler interface.
   // -----------------------------------------------------------------------
   virtual bool handlesDTD() const;
-  
+
   // -----------------------------------------------------------------------
   //  Virtual Schema handler interface. handlesSchema() always return false.
     // -----------------------------------------------------------------------
@@ -394,12 +394,12 @@ private:
 
   ContentSpecNode* getNonUnaryGroup(ContentSpecNode* const pNode);
 };
-  
-  
+
+
 // ---------------------------------------------------------------------------
 //  XercSchemaValidator: Setter methods
 // ---------------------------------------------------------------------------
-inline void XercSchemaValidator::setGrammarResolver(GrammarResolver* grammarResolver) 
+inline void XercSchemaValidator::setGrammarResolver(GrammarResolver* grammarResolver)
 {
   fGrammarResolver = grammarResolver;
 }
@@ -413,16 +413,17 @@ inline void XercSchemaValidator::setXsiType(
   delete fXsiType;
   fXsiType = new (fMemoryManager)
              XERCES_CPP_NAMESPACE::QName(prefix, localPart, uriId, fMemoryManager);
+  //std::cout << "      xsv::setXsiType " << StrX(prefix) << ":" << StrX(localPart) << " " << uriId << "\n"; std::cout.flush();
 }
 
 
-inline void XercSchemaValidator::setNillable(bool isNil) 
+inline void XercSchemaValidator::setNillable(bool isNil)
 {
   fNil = isNil;
 }
 
 
-inline void XercSchemaValidator::setExitOnFirstFatal(const bool newValue) 
+inline void XercSchemaValidator::setExitOnFirstFatal(const bool newValue)
 {
   fSchemaErrorReporter.setExitOnFirstFatal(newValue);
 }
@@ -443,7 +444,7 @@ inline void XercSchemaValidator::clearDatatypeBuffer()
 // ---------------------------------------------------------------------------
 //  XercSchemaValidator: Getter methods
 // ---------------------------------------------------------------------------
-inline ComplexTypeInfo* XercSchemaValidator::getCurrentTypeInfo() const 
+inline ComplexTypeInfo* XercSchemaValidator::getCurrentTypeInfo() const
 {
   if (fTypeStack->empty())
     return 0;
@@ -467,19 +468,19 @@ inline DatatypeValidator * XercSchemaValidator::getMostRecentAttrValidator() con
 // ---------------------------------------------------------------------------
 //  Virtual interface
 // ---------------------------------------------------------------------------
-inline Grammar* XercSchemaValidator::getGrammar() const 
+inline Grammar* XercSchemaValidator::getGrammar() const
 {
   return fSchemaGrammar;
 }
 
 
-inline void XercSchemaValidator::setGrammar(Grammar* aGrammar) 
+inline void XercSchemaValidator::setGrammar(Grammar* aGrammar)
 {
   fSchemaGrammar = (SchemaGrammar*) aGrammar;
 }
 
 
-inline void XercSchemaValidator::setErrorReporter(XMLErrorReporter* const errorReporter) 
+inline void XercSchemaValidator::setErrorReporter(XMLErrorReporter* const errorReporter)
 {
   XMLValidator::setErrorReporter(errorReporter);
   fSchemaErrorReporter.setErrorReporter(errorReporter);
@@ -512,7 +513,7 @@ inline bool XercSchemaValidator::isOccurrenceRangeOK(
     const int min1,
     const int max1,
     const int min2,
-    const int max2) 
+    const int max2)
 {
   if (min1 >= min2 &&
       (max2 == SchemaSymbols::XSD_UNBOUNDED ||

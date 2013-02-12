@@ -103,50 +103,78 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
       ZORBA_ASSERT( false );
   }
   catch ( json::illegal_character const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0001_ILLEGAL_CHARACTER,
-      ERROR_PARAMS( ascii::printable_char( e.get_char() ) ),
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0001_ILLEGAL_CHARACTER,
+        ERROR_PARAMS( ascii::printable_char( e.get_char() ) ),
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::illegal_codepoint const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0002_ILLEGAL_CODEPOINT,
-      ERROR_PARAMS( e.get_codepoint() ),
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0002_ILLEGAL_CODEPOINT,
+        ERROR_PARAMS( e.get_codepoint() ),
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::illegal_escape const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0003_ILLEGAL_ESCAPE,
-      ERROR_PARAMS( e.get_escape() ),
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0003_ILLEGAL_ESCAPE,
+        ERROR_PARAMS( e.get_escape() ),
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::illegal_literal const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0004_ILLEGAL_LITERAL,
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0004_ILLEGAL_LITERAL,
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::illegal_number const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0005_ILLEGAL_NUMBER,
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0005_ILLEGAL_NUMBER,
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::unexpected_token const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0006_UNEXPECTED_TOKEN,
-      ERROR_PARAMS( e.get_token() ),
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0006_UNEXPECTED_TOKEN,
+        ERROR_PARAMS( e.get_token() ),
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::unterminated_string const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0007_UNTERMINATED_STRING,
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0007_UNTERMINATED_STRING,
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
 
   STACK_PUSH( !!result, state );

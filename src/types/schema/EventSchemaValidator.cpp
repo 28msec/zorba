@@ -94,7 +94,7 @@ void EventSchemaValidator::endDoc()
 
 void EventSchemaValidator::startElem(store::Item_t elemName)
 {
-  //cout << "  sv SElem: " << elemName->getLocalName() << "\n";
+  //cout << "\n  esv SElem: " << elemName->getLocalName() << "\n"; std::cout.flush();
 
   XMLChArray prefix(elemName->getPrefix());
   XMLChArray uri(elemName->getNamespace());
@@ -105,7 +105,7 @@ void EventSchemaValidator::startElem(store::Item_t elemName)
 
 void EventSchemaValidator::endElem(store::Item_t elemName)
 {
-  //cout << "  sv EElem: " << elemName->getLocalName() << "\n";
+  //cout << "  esv EElem: " << elemName->getLocalName() << "\n"; std::cout.flush();
 
   XMLChArray prefix(elemName->getPrefix());
   XMLChArray uri(elemName->getNamespace());
@@ -118,8 +118,8 @@ void EventSchemaValidator::endElem(store::Item_t elemName)
 
 void EventSchemaValidator::attr(store::Item_t attrName, const zstring& textValue)
 {
-  //cout << "  sv   Attr: " << attrName->getPrefix() << ":"
-  //     << attrName->getLocalName() << " = '" << textValue << "'\n";
+  //cout << "  esv   Attr: " << attrName->getPrefix() << ":"
+  //     << attrName->getLocalName() << " = '" << textValue << "'\n"; std::cout.flush();
 
   XMLChArray prefix(attrName->getPrefix());
   XMLChArray uri(attrName->getNamespace());
@@ -133,14 +133,14 @@ void EventSchemaValidator::attr(store::Item_t attrName, const zstring& textValue
 
 void EventSchemaValidator::endAttrs()
 {
-  //cout << "  sv   endAttrs \n";
+  //cout << "  esv   endAttrs \n"; std::cout.flush();
   theSchemaValidatorFilter->endAttributesEvent();
 }
 
 
 void EventSchemaValidator::text(const zstring& textValue)
 {
-  //cout << "  sv   Text: '" << textValue << "'\n";
+  //cout << "  esv   Text: '" << textValue << "'\n"; std::cout.flush();
 
   XMLChArray value(textValue);
   theSchemaValidatorFilter->textEvent(value);
@@ -163,7 +163,7 @@ store::Item_t EventSchemaValidator::getTypeQName()
   StrX typeName(theSchemaValidatorFilter->getTypeName());
   StrX typeUri(theSchemaValidatorFilter->getTypeUri());
 
-  //cout << "  - getTypeQName:  " << typeName << " @ " << typeUri <<" ";
+  //cout << "    esv  - : getTypeQName:  " << typeName << " @ " << typeUri <<"\n"; std::cout.flush();
 
   store::Item_t typeQName;
   GENV_ITEMFACTORY->createQName(typeQName,
@@ -171,8 +171,8 @@ store::Item_t EventSchemaValidator::getTypeQName()
                                 "",
                                 typeName.localFormOrDefault ("untyped"));
 
-  //cout << " : " << typeQName->getLocalName() << " @ "
-  //     << typeQName->getNamespace() <<"\n"; std::cout.flush();
+  //cout << "               " << typeQName->getLocalName() << " @ "
+  //     << typeQName->getNamespace() <<"\n"; std::cout.flush(); std::cout.flush();
 
   return typeQName;
 }
@@ -183,7 +183,7 @@ xqtref_t EventSchemaValidator::getType()
   StrX typeName(theSchemaValidatorFilter->getTypeName());
   StrX typeUri(theSchemaValidatorFilter->getTypeUri());
 
-  //cout << "  - getType: " << typeName << "@" << typeUri <<"\n";
+  //cout << "    esv  - : getType: " << typeName << "@" << typeUri <<"\n"; std::cout.flush();
 
   store::Item_t typeQName;
   GENV_ITEMFACTORY->createQName(typeQName,
@@ -191,7 +191,7 @@ xqtref_t EventSchemaValidator::getType()
                                 "",
                                 typeName.localFormOrDefault ("untyped"));
 
-  xqtref_t type = theTypeManager->create_named_type(typeQName, 
+  xqtref_t type = theTypeManager->create_named_type(typeQName,
                                                     TypeConstants::QUANT_ONE,
                                                     QueryLoc::null);
   return type;
@@ -229,7 +229,7 @@ void EventSchemaValidator::startType(store::Item_t typeQName)
   XMLChArray localname(typeQName->getLocalName());
 
   //cout << "   SType: " << typeQName->getLocalName() << " @ "
-  //     << typeQName->getNamespace() << "\n";
+  //     << typeQName->getNamespace() << "\n"; std::cout.flush();
 
   theSchemaValidatorFilter->startTypeEvent(uri, localname);
 }
@@ -237,7 +237,7 @@ void EventSchemaValidator::startType(store::Item_t typeQName)
 
 void EventSchemaValidator::endType()
 {
-  //cout << "   EType \n";
+  //cout << "   EType \n"; std::cout.flush();
 
   theSchemaValidatorFilter->endTypeEvent();
 }
