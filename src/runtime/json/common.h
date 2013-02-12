@@ -62,8 +62,6 @@ inline void set_data( XQueryException *xe, json::exception const &je ) {
   set_data( *xe, je.get_loc() );
 }
 
-typedef std::ostream& (*std_omanip_type)(std::ostream&);
-
 ///////////////////////////////////////////////////////////////////////////////
 
 #define IN_STATE(S) ztd::top_stack_equals( state_stack, (S) )
