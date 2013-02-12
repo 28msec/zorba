@@ -365,7 +365,7 @@ declare %private function env:declare-context-item(
      "variable $contextItemQuery := xqxq:prepare-main-module('",
      env:get-schema-import($env),
      concat('validate { doc("', $ciURI, '")', "}',", " "),
-           "resolver:url-resolver#2, ());",
+           "(), mapper:uri-mapper#2);",
            "variable $contextItem := xqxq:evaluate($contextItemQuery);")
    ,"&#xA;")
 };
@@ -464,37 +464,14 @@ declare function env:resolver(
   $testSetBaseURI as xs:anyURI
 ) as xs:string?
 {
-  let $envSchema := $env/fots:schema,
-      $tcSchema := $case/fots:environment/fots:schema,
-      $schemas := ($envSchema, $tcSchema),
-      $modules := $case/fots:module,
-      $resources := ($env/fots:resource, $case/fots:environment/fots:schema)
+  let $modules := $case/fots:module
+  let $resources := $env/fots:resource
   return
-    if (empty($schemas) and empty($modules) and empty($resources))
+    if (empty($modules) and empty($resources))
     then ()
     else string-join(
-            ("declare namespace resolver = 'http://www.zorba-xquery.com/modules/xqxq/url-resolver';",
-             $env:hof,
-            "declare function resolver:url-resolver($namespace as xs:string, $entity as xs:string) {",
+            ("declare function resolver:url-resolver($namespace as xs:string, $entity as xs:string) {",
             "switch($entity)",
-    if (exists($schemas))
-    then string-join(("case 'schema'",
-                     "  return switch($namespace)",
-                    (for $schema in $envSchema
-                     return concat("    case '",
-                                  data($schema/@uri),
-                                   "' return doc('",
-                                   resolve-uri($schema/@file, $envBaseURI),
-                                   "')"),
-                      for $schema in $tcSchema
-                      return concat("    case '",
-                                   data($schema/@uri),
-                                   "' return doc('",
-                                   resolve-uri($schema/@file, $testSetBaseURI),
-                                   "')")),
-                      "    default return ()"),
-                      "&#xA;")
-    else (),
     if (exists($modules))
     then string-join(("case 'module'",
                       "  return switch($namespace)",
@@ -530,6 +507,51 @@ declare function env:resolver(
     "&#xA;")
 };
 
+(:~
+ : Returns the XQXQ URL mapper declaration.
+ : @param $case the test case.
+ : @param $env the environment.
+ : @param $envBaseURI URI of the environment.
+ : @param $testSetBaseURI URI to the test set that defines the test case.
+ : @return the XQXQ URL mapper declaration.
+ :)
+declare function env:mapper(
+  $case           as element(fots:test-case),
+  $env            as element(fots:environment)?,
+  $envBaseURI     as xs:anyURI?,
+  $testSetBaseURI as xs:anyURI
+) as xs:string?
+{
+  let $envSchema := $env/fots:schema,
+      $tcSchema := $case/fots:environment/fots:schema,
+      $schemas := ($envSchema, $tcSchema)
+  return
+    if (empty($schemas))
+    then ()
+    else string-join(
+            ("declare function mapper:uri-mapper($namespace as xs:string, $entity as xs:string) {",
+            "switch($entity)",
+    if (exists($schemas))
+    then string-join(("case 'schema'",
+                     "  return switch($namespace)",
+                    (for $schema in $envSchema
+                     return concat("    case '",
+                                   data($schema/@uri),
+                                   "' return '",
+                                   resolve-uri($schema/@file, $envBaseURI),
+                                   "'"),
+                      for $schema in $tcSchema
+                      return concat("    case '",
+                                   data($schema/@uri),
+                                   "' return '",
+                                   resolve-uri($schema/@file, $testSetBaseURI),
+                                   "'"),
+                      "    default return ()")),
+                      "&#xA;")
+    else (),
+    "default return ()","};"),
+    "&#xA;")
+};
 
 (:~
  : Checks that a set of dependencies (associated with some test-set or test-case)
