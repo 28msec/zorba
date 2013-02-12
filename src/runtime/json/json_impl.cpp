@@ -67,7 +67,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
   istringstream iss;
   mem_streambuf buf;
   zstring s;
-  char const *uri;
+  char const *stream_uri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
@@ -82,20 +82,20 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
   istream *is;
   if ( cur_item->isStreamable() ) {
     is = &cur_item->getStream();
-    uri = get_uri( *is );
+    stream_uri = get_uri( *is );
   } else {
     cur_item->getStringValue2( s );
     // Doing it this way uses the string data in-place with no copy.
     buf.set( s.data(), s.size() );
     iss.ios::rdbuf( &buf );
     is = &iss;
-    uri = nullptr;
+    stream_uri = nullptr;
   }
 
   try {
     json::parser p( *is );
-    if ( uri )
-      p.set_loc( uri, 1, 1 );
+    if ( stream_uri )
+      p.set_loc( stream_uri, 1, 1 );
     else
       p.set_loc(
         loc.getFilename().c_str(), loc.getLineBegin(), loc.getColumnBegin()
