@@ -836,9 +836,17 @@ MACRO (ADD_TEST_DIRECTORY TEST_DIR)
       # path separator
       ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
 	"--rbkt-src" "${TEST_DIR}"
+	"--rbkt-bin" "${PROJECT_BINARY_DIR}/test/rbkt"
 	"--module-path"
 	"${CMAKE_BINARY_DIR}/URI_PATH/${PATH_SEP}${DEPENDENCY_MODULE_PATH}"
 	"${TESTFILE}")
+      # Create test results output directory, if it doesn't exist
+      GET_FILENAME_COMPONENT(_bucket_path "${TESTFILE}" PATH)
+      SET (_full_bucket_path
+	"${PROJECT_BINARY_DIR}/test/rbkt/QueryResults/${_bucket_path}")
+      IF (NOT EXISTS "${_full_bucket_path}")
+	FILE (MAKE_DIRECTORY "${_full_bucket_path}")
+      ENDIF (NOT EXISTS "${_full_bucket_path}")
 
       # On non-Windows, call EXPECTED_FAILURE() for known crashes
       IF (${_crash_idx} GREATER -1)
