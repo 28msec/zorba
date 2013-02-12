@@ -32,9 +32,6 @@
 
 namespace zorba {
 
-class XQueryException;
-namespace json { class exception; }
-
 ///////////////////////////////////////////////////////////////////////////////
 
 typedef std::stack<store::Item*> item_stack_type;
