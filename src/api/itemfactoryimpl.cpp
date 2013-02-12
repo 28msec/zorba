@@ -76,6 +76,18 @@ Item ItemFactoryImpl::createStreamableString(
 }
 
 
+Item ItemFactoryImpl::createStreamableString(
+    std::istream &stream,
+    StreamReleaser streamReleaser,
+    char const *uri,
+    bool seekable)
+{
+  store::Item_t lItem;
+  theItemFactory->createStreamableString(lItem, stream, streamReleaser, uri, seekable);
+  return &*lItem;
+}
+
+
 Item ItemFactoryImpl::createAnyURI(const String& aURI)
 {
   zstring lString = Unmarshaller::getInternalString(aURI);

@@ -96,6 +96,13 @@ public:
       StreamReleaser,
       bool seekable = false) = 0;
 
+  virtual bool createStreamableString(
+      Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      char const *uri,
+      bool seekable = false) = 0;
+
   /**
    * Create a StreamableStringItem which re-uses the stream from another
    * Streamable*Item. This will maintain a reference to the original

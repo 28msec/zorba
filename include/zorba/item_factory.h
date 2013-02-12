@@ -66,6 +66,24 @@ namespace zorba {
                               StreamReleaser streamReleaser,
                               bool seekable = false ) = 0;
 
+      /** \brief Creates a streamable String Item
+       *         see [http://www.w3.org/TR/xmlschema-2/#string]
+       *
+       * @param stream An istream from where to read the string's content.
+       * @param streamReleaser A function pointer which is invoked once
+       *        the StreamableStringItem is destroyed. Normally this function
+       *        will delete the std::istream object passed to it.
+       * @param uri The URI is intended to be used to note the origination URI
+       *         (e.g., file) that data is coming from.
+       * @param seekable
+       * @return The streamable String Item
+       */
+      virtual Item
+      createStreamableString( std::istream &stream,
+                              StreamReleaser streamReleaser,
+                              char const *uri,
+                              bool seekable = false ) = 0;
+
       /** \brief Creates an AnyURI Item
        *         see [http://www.w3.org/TR/xmlschema-2/#anyURI]
        *

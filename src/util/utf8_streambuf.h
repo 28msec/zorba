@@ -149,7 +149,7 @@ int get_streambuf_index();
  * already has a utf8::streambuf attached to it, this function does
  * nothing.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 void attach( std::basic_ios<charT,Traits> &ios ) {
   int const index = get_streambuf_index();
   void *&pword = ios.pword( index );
@@ -168,7 +168,7 @@ void attach( std::basic_ios<charT,Traits> &ios ) {
  * @param ios The stream to detach the utf8::streambuf from.  If the stream
  * doesn't have a utf8::streambuf attached to it, this function does nothing.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 void detach( std::basic_ios<charT,Traits> &ios ) {
   int const index = get_streambuf_index();
   if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
@@ -184,7 +184,7 @@ void detach( std::basic_ios<charT,Traits> &ios ) {
  * @param ios The stream to check.
  * @return \c true only if a utf8::streambuf is attached.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 bool is_attached( std::basic_ios<charT,Traits> &ios ) {
   return !!ios.pword( get_streambuf_index() );
 }

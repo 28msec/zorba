@@ -41,6 +41,7 @@
 #endif
 
 #include "util/ascii_util.h"
+#include "util/stream_util.h"
 
 
 namespace zorba { namespace simplestore {
@@ -157,6 +158,18 @@ bool BasicItemFactory::createStreamableString(
     bool seekable) 
 {
   result = new StreamableStringItem(store::XS_STRING, stream, streamReleaser, seekable);
+  return true;
+}
+
+bool BasicItemFactory::createStreamableString(
+    store::Item_t& result,
+    std::istream& stream,
+    StreamReleaser streamReleaser,
+    char const *uri,
+    bool seekable) 
+{
+  result = new StreamableStringItem(store::XS_STRING, stream, streamReleaser, seekable);
+  set_uri( stream, uri );
   return true;
 }
 

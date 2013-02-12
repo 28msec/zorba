@@ -109,6 +109,13 @@ public:
       StreamReleaser,
       bool seekable = false);
 
+  bool createStreamableString(
+      store::Item_t& result,
+      std::istream& stream,
+      StreamReleaser streamReleaser,
+      char const *uri,
+      bool seekable = false);
+
   bool createSharedStreamableString(
       store::Item_t& result,
       store::Item_t& streamable_dependent);

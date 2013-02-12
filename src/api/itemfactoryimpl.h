@@ -45,6 +45,12 @@ namespace zorba {
                               bool seekable = false );
 
       virtual Item
+      createStreamableString( std::istream&,
+                              StreamReleaser,
+                              char const*,
+                              bool seekable = false );
+
+      virtual Item
       createAnyURI(const String& aURI);
 
       virtual Item
