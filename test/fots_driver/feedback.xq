@@ -176,8 +176,7 @@ declare %private %ann:sequential function feedback:pass(
     }
   }
   else <fots:test-case  name="{data($case/@name)}"
-                        result="{$status}"
-                        executionTime="{$duration}" />
+                        result="{$status}"/>
 };
 
 
@@ -212,6 +211,7 @@ declare %ann:sequential function feedback:fail(
        if ($expectedFailure)
        then insert node attribute comment{$info} as last into $case
        else (),
+       insert node attribute executionTime{$duration} as last into $case,
        insert node
          <fots:info>
            {$env}
@@ -231,12 +231,10 @@ declare %ann:sequential function feedback:fail(
   else if ($expectedFailure)
   then <fots:test-case name="{data($case/@name)}"
                        result="{$status}"
-                       comment="{$info}"
-                       executionTime="{$duration}"/>
+                       comment="{$info}"/>
  
   else <fots:test-case name="{data($case/@name)}"
-                       result="{$status}"
-                       executionTime="{$duration}"/>
+                       result="{$status}"/>
 };
 
 
