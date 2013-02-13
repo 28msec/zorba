@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+// TODO: remove this line. Added just to test the new FOTS remote queue.
+
 #include <sstream>
 #include <iterator>
 #include <stack>
