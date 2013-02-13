@@ -363,15 +363,17 @@ store::Item_t FastXmlLoader::loadXml(
 
   theBaseUri = baseUri;
 
+  char const *doc_uri;
+  if ( char const *const stream_uri = get_uri( stream ) )
+    doc_uri = stream_uri;
+  else
+    doc_uri = docUri.c_str();
+
   if (docUri.empty())
   {
-    if ( char const *const stream_uri = get_uri( stream ) )
-      theDocUri = stream_uri;
-    else {
-      std::ostringstream uristream;
-      uristream << "zorba://internalDocumentURI-" << theTree->getId();
-      theDocUri = uristream.str();
-    }
+    std::ostringstream uristream;
+    uristream << "zorba://internalDocumentURI-" << theTree->getId();
+    theDocUri = uristream.str();
   }
   else
   {
@@ -405,7 +407,7 @@ store::Item_t FastXmlLoader::loadXml(
                                    this,
                                    theBuffer,
                                    static_cast<int>(numChars),
-                                   theDocUri.c_str());
+                                   doc_uri);
 
     // Apply loader options
     store::LoadProperties new_props = theLoadProperties;
