@@ -98,9 +98,9 @@ void IndexJoinRule::reset()
 
 
 /*******************************************************************************
-  This rule analyzes the where clause of flwor exprs to deterimne whether any
-  predicate in the clause is a join predicate and whether the associated join
-  can be converted into a hashjoin using an index that is built on-th-fly.
+  This rule analyzes the where clauses of flwor exprs to deterimne whether any
+  predicate in a clause is a join predicate and whether the associated join
+  can be converted into a hashjoin using an index that is built on-the-fly.
 ********************************************************************************/
 expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
@@ -273,15 +273,15 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   expr* op1 = foExpr->get_arg(0);
   expr* op2 = foExpr->get_arg(1);
 
-  // Analyze each operand of the eq to see if it depends on a single for
+  // Analyze each operand of the eq to see if it depends on a single FOR
   // variable. If that is not true, we reject this predicate.
   ulong var1id;
-  var_expr* var1 = findForVar(op1, var1id);
+  var_expr* var1 = findLoopVar(op1, var1id);
   if (var1 == NULL)
     return false;
 
   ulong var2id;
-  var_expr* var2 = findForVar(op2, var2id);
+  var_expr* var2 = findLoopVar(op2, var2id);
   if (var2 == NULL)
     return false;
 
@@ -314,6 +314,8 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
+  ZORBA_ASSERT(predInfo.theInnerVar->get_kind() == var_expr::for_var);
+
   // The inner var must not be an outer FOR var
   if (predInfo.theInnerVar->get_forlet_clause()->is_allowing_empty())
     return false;
@@ -342,9 +344,9 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   {
     // Normally, other rewrite rules should have added the necessary casting
     // to the eq operands so that their static types have quantifiers ONE
-    // or QUESTION and the associated prime types are not xs:anyAtomicType.
-    // But just in case those rules have been disabled, we check again here
-    // and reject the hashjoin rewrite if these condition are violated.
+    // or QUESTION. But just in case those rules have been disabled, we
+    // check again here and reject the hashjoin rewrite if these conditions
+    // are violated.
 
     if (innerQuant != TypeConstants::QUANT_ONE &&
         innerQuant != TypeConstants::QUANT_QUESTION)
@@ -354,10 +356,9 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
         outerQuant != TypeConstants::QUANT_QUESTION)
       return false;
 
-    // The type of the outer/inner operands in the join predicate must not be
+    // The type of the inner operand in the join predicate must not be
     // xs:anyAtomic.
-    if (TypeOps::is_equal(tm, *primeOuterType, *rtm.ANY_ATOMIC_TYPE_ONE, outerLoc) ||
-        TypeOps::is_equal(tm, *primeInnerType, *rtm.ANY_ATOMIC_TYPE_ONE, innerLoc))
+    if (TypeOps::is_equal(tm, *primeInnerType, *rtm.ANY_ATOMIC_TYPE_ONE, innerLoc))
       return false;
 
     // The prime type of the outer operand in the join predicate must be a
@@ -385,10 +386,12 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
 
 /*******************************************************************************
   Check if "curExpr" references a single var and that var is a FOR var whose
-  domain expr has a max cardinality > 1. If so, return that FOR var and its
-  prefix id; otherwise return NULL.
+  domain expr is not sequential and has a max cardinality > 1. If so, return
+  that FOR var and its prefix id; otherwise return NULL. If "curExpr" references
+  a single LET var, the check is applied recurdively to the domain expr of the
+  LET var.
 ********************************************************************************/
-var_expr* IndexJoinRule::findForVar(const expr* curExpr, ulong& varid)
+var_expr* IndexJoinRule::findLoopVar(const expr* curExpr, ulong& varid)
 {
   var_expr* var = NULL;
 
@@ -405,8 +408,9 @@ var_expr* IndexJoinRule::findForVar(const expr* curExpr, ulong& varid)
 
     varid = varidSet[0];
     var = (*theIdVarMap)[varid];
+    var_expr::var_kind vkind = var->get_kind();
 
-    if (var->get_kind() == var_expr::for_var)
+    if (vkind == var_expr::for_var)
     {
       curExpr = var->get_domain_expr();
 
@@ -431,7 +435,11 @@ var_expr* IndexJoinRule::findForVar(const expr* curExpr, ulong& varid)
         return false;
       }
     }
-    else if (var->get_kind() == var_expr::let_var)
+    else if (vkind == var_expr::groupby_var)
+    {
+      return var;
+    }
+    else if (vkind == var_expr::let_var)
     {
       curExpr = var->get_domain_expr();
 
@@ -467,10 +475,13 @@ bool IndexJoinRule::checkVarDependency(expr* curExpr, ulong searchVarId)
   for (csize i = 0; i < numVars; ++i)
   {
     const var_expr* var = (*theIdVarMap)[varidSet[i]];
-    curExpr = var->get_forletwin_clause()->get_expr();
 
-    if (checkVarDependency(curExpr, searchVarId))
-      return true;
+    forletwin_clause* flwc = var->get_forletwin_clause();
+    if (flwc != NULL)
+    {
+      if (checkVarDependency(flwc->get_expr(), searchVarId))
+        return true;
+    }
   }
 
   return false;
@@ -502,6 +513,24 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo, bool& modified)
   expr::substitution_t subst;
   expr* domainExpr = fc->get_expr()->clone(udf, subst);
 
+  expr::subst_iter_t ite = subst.begin();
+  expr::subst_iter_t end = subst.end();
+  for (; ite != end; ++ite)
+  {
+    if (ite->first->get_expr_kind() == var_expr_kind)
+    {
+      assert(ite->second->get_expr_kind() == var_expr_kind);
+
+      const var_expr* v = static_cast<const var_expr*>(ite->first);
+      var_expr* var = const_cast<var_expr*>(v);
+      var_expr* cloneVar = static_cast<var_expr*>(ite->second);
+
+      assert(theVarIdMap->find(var) != theVarIdMap->end());
+
+      (*theVarIdMap)[cloneVar] = (*theVarIdMap)[var];
+    }
+  }
+
   if (!expandVars(domainExpr, predInfo.theOuterVarId, maxInnerVarId))
     return;
 
@@ -517,12 +546,8 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo, bool& modified)
   expr* qnameExpr(em->create_const_expr(sctx, udf, loc, qname));
   expr* buildExpr = NULL;
 
-  fo_expr* createExpr = em->create_fo_expr(sctx,
-                                           udf,
-                                           loc,
-                                           BUILTIN_FUNC(OP_CREATE_INTERNAL_INDEX_2),
-                                           qnameExpr,
-                                           buildExpr);
+  function* f = BUILTIN_FUNC(OP_CREATE_INTERNAL_INDEX_2);
+  fo_expr* createExpr = em->create_fo_expr(sctx, udf, loc, f, qnameExpr, buildExpr);
 
   //
   // Find where to place the create-index expr
@@ -640,13 +665,12 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo, bool& modified)
                          outerPosInStack))
       return;
 
-    //  Build outer sequential expr
+    // Build outer sequential expr
     std::vector<expr*> args(2);
     args[0] = createExpr;
     args[1] = outerFlworExpr;
 
-    block_expr* seqExpr = em->
-    create_block_expr(sctx, udf, loc, false, args, NULL);
+    block_expr* seqExpr = em->create_block_expr(sctx, udf, loc, false, args, NULL);
 
     theFlworStack[outerPosInStack] = seqExpr;
   }
@@ -737,9 +761,6 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo, bool& modified)
     std::cout << std::endl << idx->toString() << std::endl;
   }
 
-  //idx->setDomainExpr(NULL);
-  //idx->setDomainVariable(NULL);
-
 #if 0
   if (predInfo.theIsGeneral)
     std::cout << "!!!!! Applied General Hash Join !!!!!" << std::endl << std::endl;
@@ -773,6 +794,11 @@ bool IndexJoinRule::expandVars(expr* subExpr, ulong outerVarId, long& maxVarId)
         // TODO: allow index domain exprs to reference local vars
         return false;
       }
+      else
+      {
+        ZORBA_ASSERT(var->get_kind() == var_expr::prolog_var ||
+                     var->get_kind() == var_expr::arg_var);
+      }
 
       // If it is a variable that is defined after the outer var
       if (varid > (long)outerVarId)
@@ -791,7 +817,6 @@ bool IndexJoinRule::expandVars(expr* subExpr, ulong outerVarId, long& maxVarId)
           // TODO: to expand a FOR var, we must make sure that the expr is a
           // map w.r.t. that var.
           wrapper->set_expr(var->get_forlet_clause()->get_expr());
-
           return expandVars(wrapper, outerVarId, maxVarId);
 #endif
         }
@@ -800,6 +825,7 @@ bool IndexJoinRule::expandVars(expr* subExpr, ulong outerVarId, long& maxVarId)
           return false;
         }
       }
+      // Else, if it is a variable that is defined before the outer var
       else
       {
         if (varid > maxVarId)

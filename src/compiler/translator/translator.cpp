@@ -1730,23 +1730,27 @@ flwor_expr* wrap_expr_in_flwor(
 
   if (withContextSize)
   {
-    // create a LET var equal to the seq returned by the input epxr
+    // create a LET var whose domain expr is the input epxr
     let_clause* lcInputSeq = wrap_in_letclause(inputExpr);
+    var_expr* lcInputVar = lcInputSeq->get_var();
 
     // compute the size of the input seq
-    fo_expr* countExpr = theExprManager->
-    create_fo_expr(theRootSctx,
-                   theUDF,
-                   loc,
-                   BUILTIN_FUNC(FN_COUNT_1),
-                   lcInputSeq->get_var());
+    expr* varWrapper = CREATE(wrapper)(theRootSctx, theUDF, loc, lcInputVar);
+
+    fo_expr* countExpr = CREATE(fo)(theRootSctx,
+                                    theUDF,
+                                    loc,
+                                    BUILTIN_FUNC(FN_COUNT_1),
+                                    varWrapper);
 
     normalize_fo(countExpr);
 
     forlet_clause* lcLast = wrap_in_letclause(countExpr, loc, LAST_IDX_VARNAME);
 
     // Iterate over the input seq
-    for_clause* fcDot = wrap_in_forclause(lcInputSeq->get_var(),
+    varWrapper = CREATE(wrapper)(theRootSctx, theUDF, loc, lcInputVar);
+
+    for_clause* fcDot = wrap_in_forclause(varWrapper,
                                           loc,
                                           DOT_VARNAME,
                                           DOT_POS_VARNAME);

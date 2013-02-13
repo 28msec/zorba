@@ -1161,6 +1161,22 @@ FunctionConsts::FunctionKind expr::get_function_kind() const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+expr* expr::skip_wrappers() const
+{
+  const expr* e = this;
+
+  while (e->get_expr_kind() == wrapper_expr_kind)
+  {
+    e = static_cast<const wrapper_expr*>(e)->get_input();
+  }
+
+  return const_cast<expr*>(e);
+}
+
+
+/*******************************************************************************
   If "this" is a const expr that returns a qname, evaluate and return this
   qname. This method is used to extract the qname from the expression that is
   given as an arg to collection and index related functions.

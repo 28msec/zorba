@@ -848,7 +848,7 @@ void index_flwor_vars(
       const catch_clause* clause = (*trycatch)[i];
 
       catch_clause::var_map_t& trycatchVars =
-        const_cast<catch_clause*>(clause)->get_vars();
+      const_cast<catch_clause*>(clause)->get_vars();
 
       catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
       catch_clause::var_map_t::const_iterator end = trycatchVars.end();

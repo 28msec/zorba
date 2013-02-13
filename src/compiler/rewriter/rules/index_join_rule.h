@@ -76,7 +76,7 @@ public:
 protected:
   bool isIndexJoinPredicate(PredicateInfo& predInfo);
 
-  var_expr* findForVar(const expr* curExpr, ulong& varid);
+  var_expr* findLoopVar(const expr* curExpr, ulong& varid);
 
   bool checkVarDependency(expr* curExpr, ulong searchVarId);
 

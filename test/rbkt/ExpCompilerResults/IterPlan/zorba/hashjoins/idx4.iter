@@ -19,13 +19,6 @@ Iterator tree for main query:
         </ElementIterator>
       </ChildAxisIterator>
     </LetVariable>
-    <ForVariable name="$$opt_temp_3">
-      <HoistIterator>
-        <TreatIterator quant="">
-          <LetVarIterator varname="e"/>
-        </TreatIterator>
-      </HoistIterator>
-    </ForVariable>
     <LetVariable name="parent" materialize="true">
       <ParentAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
         <LetVarIterator varname="e"/>
@@ -42,7 +35,7 @@ Iterator tree for main query:
       <SequentialIterator>
         <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
           <flwor::FLWORIterator>
-            <ForVariable name="$$opt_temp_4">
+            <ForVariable name="$$opt_temp_5">
               <UnhoistIterator>
                 <HoistIterator>
                   <InScopePrefixesIterator>
@@ -55,13 +48,20 @@ Iterator tree for main query:
             </ForVariable>
             <ReturnClause>
               <ValueIndexEntryBuilderIterator>
-                <ForVarIterator varname="$$opt_temp_4"/>
-                <ForVarIterator varname="$$opt_temp_4"/>
+                <ForVarIterator varname="$$opt_temp_5"/>
+                <ForVarIterator varname="$$opt_temp_5"/>
               </ValueIndexEntryBuilderIterator>
             </ReturnClause>
           </flwor::FLWORIterator>
         </CreateInternalIndexIterator>
         <flwor::FLWORIterator>
+          <ForVariable name="$$opt_temp_1">
+            <HoistIterator>
+              <TreatIterator quant="">
+                <LetVarIterator varname="e"/>
+              </TreatIterator>
+            </HoistIterator>
+          </ForVariable>
           <ForVariable name="$$opt_temp_0">
             <HoistIterator>
               <TreatIterator quant="">
@@ -69,51 +69,63 @@ Iterator tree for main query:
               </TreatIterator>
             </HoistIterator>
           </ForVariable>
-          <ForVariable name="prefix">
-            <flwor::FLWORIterator>
-              <ForVariable name="prefixE">
-                <InScopePrefixesIterator>
-                  <TreatIterator quant="">
-                    <LetVarIterator varname="e"/>
-                  </TreatIterator>
-                </InScopePrefixesIterator>
-              </ForVariable>
-              <LetVariable name="$$opt_temp_1" materialize="true">
-                <HoistIterator>
-                  <NamespaceUriForPrefixIterator>
-                    <ForVarIterator varname="prefixE"/>
-                    <UnhoistIterator>
-                      <ForVarIterator varname="$$opt_temp_0"/>
-                    </UnhoistIterator>
-                  </NamespaceUriForPrefixIterator>
-                </HoistIterator>
-              </LetVariable>
-              <ForVariable name="prefixP">
-                <ProbeIndexPointValueIterator>
-                  <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-                  <ForVarIterator varname="prefixE"/>
-                </ProbeIndexPointValueIterator>
-              </ForVariable>
-              <WhereClause>
-                <FnBooleanIterator>
-                  <CompareIterator>
-                    <UnhoistIterator>
-                      <LetVarIterator varname="$$opt_temp_1"/>
-                    </UnhoistIterator>
-                    <NamespaceUriForPrefixIterator>
-                      <ForVarIterator varname="prefixP"/>
-                      <UnhoistIterator>
-                        <ForVarIterator varname="$$opt_temp_2"/>
-                      </UnhoistIterator>
-                    </NamespaceUriForPrefixIterator>
-                  </CompareIterator>
-                </FnBooleanIterator>
-              </WhereClause>
-              <ReturnClause>
-                <ForVarIterator varname="prefixE"/>
-              </ReturnClause>
-            </flwor::FLWORIterator>
+          <ForVariable name="prefixE">
+            <InScopePrefixesIterator>
+              <TreatIterator quant="">
+                <LetVarIterator varname="e"/>
+              </TreatIterator>
+            </InScopePrefixesIterator>
           </ForVariable>
+          <LetVariable name="$$opt_temp_4" materialize="true">
+            <HoistIterator>
+              <NamespaceUriForPrefixIterator>
+                <ForVarIterator varname="prefixE"/>
+                <UnhoistIterator>
+                  <ForVarIterator varname="$$opt_temp_0"/>
+                </UnhoistIterator>
+              </NamespaceUriForPrefixIterator>
+            </HoistIterator>
+          </LetVariable>
+          <ForVariable name="$$opt_temp_3">
+            <HoistIterator>
+              <ConcatStrIterator>
+                <SingletonIterator value="xs:string(xmlns:)"/>
+                <ForVarIterator varname="prefixE"/>
+                <SingletonIterator value="xs:string(=")"/>
+              </ConcatStrIterator>
+            </HoistIterator>
+          </ForVariable>
+          <LetVariable name="$$opt_temp_1" materialize="true">
+            <HoistIterator>
+              <NamespaceUriForPrefixIterator>
+                <ForVarIterator varname="prefixE"/>
+                <UnhoistIterator>
+                  <ForVarIterator varname="$$opt_temp_1"/>
+                </UnhoistIterator>
+              </NamespaceUriForPrefixIterator>
+            </HoistIterator>
+          </LetVariable>
+          <ForVariable name="prefixP">
+            <ProbeIndexPointValueIterator>
+              <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+              <ForVarIterator varname="prefixE"/>
+            </ProbeIndexPointValueIterator>
+          </ForVariable>
+          <WhereClause>
+            <FnBooleanIterator>
+              <CompareIterator>
+                <UnhoistIterator>
+                  <LetVarIterator varname="$$opt_temp_1"/>
+                </UnhoistIterator>
+                <NamespaceUriForPrefixIterator>
+                  <ForVarIterator varname="prefixP"/>
+                  <UnhoistIterator>
+                    <ForVarIterator varname="$$opt_temp_2"/>
+                  </UnhoistIterator>
+                </NamespaceUriForPrefixIterator>
+              </CompareIterator>
+            </FnBooleanIterator>
+          </WhereClause>
           <ReturnClause>
             <FnConcatIterator>
               <SingletonIterator value="xs:string( )"/>
@@ -124,23 +136,18 @@ Iterator tree for main query:
                 </AttributeIterator>
                 <EnclosedIterator attr_cont="false">
                   <FnConcatIterator>
-                    <ConcatStrIterator>
-                      <SingletonIterator value="xs:string(xmlns:)"/>
-                      <ForVarIterator varname="prefix"/>
-                      <SingletonIterator value="xs:string(=")"/>
-                    </ConcatStrIterator>
+                    <UnhoistIterator>
+                      <ForVarIterator varname="$$opt_temp_3"/>
+                    </UnhoistIterator>
                     <ElementIterator>
                       <SingletonIterator value="xs:QName(,,span)"/>
                       <AttributeIterator qname="xs:QName(,,class)">
                         <SingletonIterator value="xs:string(nsUri)"/>
                       </AttributeIterator>
                       <EnclosedIterator attr_cont="false">
-                        <NamespaceUriForPrefixIterator>
-                          <ForVarIterator varname="prefix"/>
-                          <UnhoistIterator>
-                            <ForVarIterator varname="$$opt_temp_3"/>
-                          </UnhoistIterator>
-                        </NamespaceUriForPrefixIterator>
+                        <UnhoistIterator>
+                          <LetVarIterator varname="$$opt_temp_4"/>
+                        </UnhoistIterator>
                       </EnclosedIterator>
                     </ElementIterator>
                     <SingletonIterator value="xs:string(")"/>

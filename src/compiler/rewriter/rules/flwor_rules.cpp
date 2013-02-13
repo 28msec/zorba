@@ -102,6 +102,10 @@ public:
     theVarExpr(var),
     theSubstExpr(subst)
   {
+    while (theSubstExpr->get_expr_kind() == wrapper_expr_kind)
+    {
+      theSubstExpr = static_cast<wrapper_expr*>(theSubstExpr)->get_input();
+    }
   }
 
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
@@ -1634,7 +1638,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
       
       if (c->get_kind() == flwor_clause::let_clause)
       {
-        expr* domainExpr = static_cast<let_clause*>(c)->get_expr();
+        expr* domainExpr = static_cast<let_clause*>(c)->get_expr()->skip_wrappers();
         
         if (domainExpr->get_expr_kind() == flwor_expr_kind &&
             !domainExpr->is_sequential())
@@ -1670,7 +1674,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
       else if (c->get_kind() == flwor_clause::for_clause &&
                static_cast<for_clause*>(c)->get_pos_var() == NULL)
       {
-        expr* domainExpr = static_cast<for_clause*>(c)->get_expr();
+        expr* domainExpr = static_cast<for_clause*>(c)->get_expr()->skip_wrappers();
 
         if (domainExpr->get_expr_kind() == flwor_expr_kind &&
             !domainExpr->is_sequential())
