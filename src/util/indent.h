@@ -81,7 +81,7 @@ template<typename charT,class Traits> inline
 std::basic_ostream<charT,Traits>&
 indent( std::basic_ostream<charT,Traits> &os ) 
 {
-  for ( int i = get_indent( os ); i > 0; --i )
+  for ( long i = get_indent( os ); i > 0; --i )
     os << ' ';
   return os;
 }
