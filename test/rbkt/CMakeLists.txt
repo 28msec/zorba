@@ -15,11 +15,6 @@
 ADD_SUBDIRECTORY(Scripts)
 ADD_SUBDIRECTORY(ExpCompilerResults)
 
-# create the result directory for all tests
-IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
-    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
-ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
-
 # configure the testdriver
 CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfig.h)
 

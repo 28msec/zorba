@@ -752,16 +752,26 @@ declare %private function driver:create-XQXQ-query(
                                               $env,
                                               $envBaseURI,
                                               $testSetBaseURI)
+  let $mapper as xs:string? := env:mapper($case,
+                                          $env,
+                                          $envBaseURI,
+                                          $testSetBaseURI)
   return
     string-join
     (
     (
     "",
     "import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';",
-    "",
     if (exists($resolver))
-    then ($resolver, "")
+    then "declare namespace resolver = 'http://www.zorba-xquery.com/modules/xqxq/url-resolver';"
     else (),
+    if (exists($mapper))
+    then "declare namespace mapper = 'http://www.zorba-xquery.com/modules/xqxq/uri-mapper';"
+    else (),
+    if (exists($resolver) or exists($mapper)) then $env:hof else (),
+    "",
+    if (exists($resolver)) then ($resolver, "") else (),
+    if (exists($mapper)) then ($mapper, "") else (),
 
     concat("variable $queryID := xqxq:prepare-main-module(",
            "&#xA;",
@@ -772,8 +782,12 @@ declare %private function driver:create-XQXQ-query(
            "'",
            "&#xA;",
            if (exists($resolver))
-           then ", resolver:url-resolver#2, ());"
-           else ");"),
+           then if(exists($mapper))
+                then ", resolver:url-resolver#2, mapper:uri-mapper#2);"
+                else ", resolver:url-resolver#2, ());"
+           else if(exists($mapper))
+                then ", (), mapper:uri-mapper#2);"
+                else");"),
 
     env:set-context-item($env, $envBaseURI),
     env:set-context-item($case/fots:environment, $testSetBaseURI),

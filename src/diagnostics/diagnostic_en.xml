@@ -572,27 +572,33 @@
 
     <diagnostic code="XQST0057">
       <comment>
-       It is a static error if a schema import binds a namespace prefix but does
-       not specify a target namespace other than a zero-length string.
+        It is a static error if a schema import binds a namespace prefix but
+        does not specify a target namespace other than a zero-length string.
       </comment>
       <value>empty target namespace</value>
     </diagnostic>
 
     <diagnostic code="XQST0058">
       <comment>
-       It is a static error if multiple schema imports specify the same target
-       namespace.
+        It is a static error if multiple schema imports specify the same target
+        namespace.
       </comment>
       <value>"$1": duplicate target namespace</value>
     </diagnostic>
 
     <diagnostic code="XQST0059">
       <comment>
-       It is a static error if an implementation is unable to process a schema
-       or module import by finding a schema or module with the specified target
-       namespace.
+        It is a static error if an implementation is unable to process a schema
+        or module import by finding a schema or module with the specified
+        target namespace.
       </comment>
-      <value>"$1": target namespace not found for schema/module${ 2}</value>
+      <value>$1</value>
+      <entry key="SpecificationMessage">
+        <value>"$2": target namespace not found for schema/module${ "3"}${: 4}</value>
+      </entry>
+      <entry key="XercesMessage">
+        <value>$2,$3: error in schema${ with System ID "4"}${ with Public ID "5"}${: 6}</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQST0060">
@@ -857,6 +863,14 @@
        either \c valid or \c notKnown if validation mode is \c lax.
       </comment>
       <value>"$1": unexpected validity property${: 2}</value>
+
+      <entry key="SerializationElementName_2">
+        <value>"$2": invalid serialization parameters; element name must be "serialization-parameters"</value>
+      </entry>
+
+      <entry key="SerializationElementNs_2">
+        <value>"$2": invalid namespace for the "serialization-parameters" element; must be "http://www.w3.org/2010/xslt-xquery-serialization"</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQDY0041">
@@ -1964,6 +1978,10 @@
       <value>FxCharHeap error: $1 ($2)</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0014" name="OUT_OF_MEMORY">
+      <value>${"1": }out of memory${: 2}</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0016" name="RESERVED_MODULE_TARGET_NAMESPACE">
       <value>"$1": reserved module target namespace</value>
     </diagnostic>
@@ -1986,7 +2004,6 @@
 
     <diagnostic code="ZXQP0025" name="COULD_NOT_FETCH_RESOURCE">
       <value>"$1": could not fetch resource${; reason: 2}</value>
-
       <entry key="RESOURCE_NOT_FOUND">
         <value>resource not found</value>
       </entry>
@@ -2016,6 +2033,14 @@
       <value>error transforming XQueryX to XQuery${: 1}</value>
     </diagnostic>
 
+    <diagnostic code="ZXQP0033" name="SCHEMA_XML_ERROR">
+      <value>${"1": }XML error in schema${: 2}</value>
+    </diagnostic>
+
+    <diagnostic code="ZXQP0035" name="SCHEMA_UNEXPECTED_ERROR">
+      <value>${"1": }unexpected error in schema${: 2}</value>
+    </diagnostic>
+
     <diagnostic code="ZXQP0036" name="BREAKITERATOR_CREATION_FAILED">
       <value>BreakIterator creation failed</value>
     </diagnostic>
@@ -2037,9 +2062,7 @@
     </diagnostic>
 
     <diagnostic code="ZXQP0050" name="FEATURE_NOT_AVAILABLE">
-
       <value>"$1": feature not available</value>
-
     </diagnostic>
 
     <diagnostic code="ZXQP0060" name="OPTION_NOT_KNOWN">
@@ -2450,19 +2473,19 @@
     <diagnostic code="ZDDY0037" name="COLLECTION_APPEND_BAD_EDIT">
       <value>"$1": illegal edit in append-only collection</value>
     </diagnostic>
-     
+
     <diagnostic code="ZDDY0038" name="COLLECTION_QUEUE_BAD_EDIT">
       <value>"$1": illegal edit from queue collection</value>
     </diagnostic>
-     
+
     <diagnostic code="ZDDY0039" name="NON_ROOT_NODE_EDIT">
       <value>attempt to edit non-root node in collection "$1"</value>
     </diagnostic>
-     
+
     <diagnostic code="ZDDY0040" name="INCONSISTENT_EDIT">
       <value>attempt to edit an item with a template of a different kind (for example an object with a node).</value>
     </diagnostic>
-     
+
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">
       <value>"$1": collection already declared</value>
     </diagnostic>
@@ -3447,6 +3470,10 @@
       <value>valid values are: yes, no, omit</value>
     </entry>
 
+    <entry key="InData">
+      <value>in data</value>
+    </entry>
+
     <entry key="IncompleteKeyInIndexBuild">
       <value>incomplete key during index build</value>
     </entry>
@@ -3717,14 +3744,6 @@
 
     <entry key="SEPM0009_NotOmit">
       <value>the standalone attribute has a value other than "omit"</value>
-    </entry>
-
-    <entry key="SchemaOutOfMemory">
-      <value>OutOfMemoryException during parsing</value>
-    </entry>
-
-    <entry key="SchemaParseError">
-      <value>error during parsing</value>
     </entry>
 
     <entry key="SchemaUnexpected">

@@ -24,6 +24,7 @@ SET(UTIL_SRCS
   json_util.cpp
   mem_streambuf.cpp
   regex.cpp
+  stream_util.cpp
   string_util.cpp
   time_util.cpp
   time_parse.cpp

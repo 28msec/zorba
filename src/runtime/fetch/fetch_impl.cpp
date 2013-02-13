@@ -197,6 +197,7 @@ FetchContentBinaryIterator::nextImpl(
         result,
         *lRes->getStream(),
         lRes->getStreamReleaser(),
+        lUri->getStringValue().c_str(),
         lRes->isStreamSeekable(),
         false
   );

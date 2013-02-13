@@ -117,6 +117,9 @@ protected:
   //UserTypedAtomicItem() {}
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   store::Item* getBaseItem() const;
 
   store::Item* getType() const { return theTypeName.getp(); }
@@ -312,6 +315,9 @@ public:
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   bool equals(
         const store::Item* other,
         long timezone = 0,
@@ -383,6 +389,9 @@ private:
 
 public:
   virtual ~QNameItem() {}
+
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
   // zorba::store::Item interface.
 
@@ -556,6 +565,9 @@ public:
       long timezone = 0,
       const XQPCollator* aCollation = 0) const;
 
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   zstring getStringValue() const;
 
   void getStringValue2(zstring& val) const;
@@ -609,6 +621,9 @@ public:
   {
     return item->getString() == theValue;
   }
+
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
   long compare(
         const Item* other,
@@ -717,6 +732,9 @@ protected:
   mutable zstring              theEncodedValue;
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   virtual AnyUriTypeCode getAnyUriTypeCode() const 
   {
     return STRUCTURAL_INFORMATION_ANY_URI;
@@ -868,6 +886,8 @@ protected:
   StringItem(store::SchemaTypeCode t) : AtomicItem(t) {}
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
   virtual store::Item* getType() const;
 
@@ -965,6 +985,9 @@ public:
       theStreamReleaser(&theIstream);
     }
   }
+
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
 protected:
   StreamableStringItem(
@@ -1420,6 +1443,9 @@ protected:
   DecimalItem(store::SchemaTypeCode t) : AtomicItem(t) {}
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   xs_decimal getDecimalValue() const { return theValue; }
 
   store::Item* getType() const;
@@ -1500,6 +1526,11 @@ protected:
   IntegerItemImpl(store::SchemaTypeCode t) : IntegerItem(t) {}
 
 public:
+#ifdef ZORBA_WITH_BIG_INTEGER
+  size_t alloc_size() const;
+#endif /* ZORBA_WITH_BIG_INTEGER */
+  size_t dynamic_size() const;
+
   xs_decimal getDecimalValue() const;
 
   xs_integer getIntegerValue() const { return theValue; }
@@ -1556,6 +1587,11 @@ protected:
   NonPositiveIntegerItem(store::SchemaTypeCode t) : IntegerItem(t) {}
 
 public:
+#ifdef ZORBA_WITH_BIG_INTEGER
+  size_t alloc_size() const;
+#endif /* ZORBA_WITH_BIG_INTEGER */
+  size_t dynamic_size() const;
+
   xs_decimal getDecimalValue() const;
 
   xs_integer getIntegerValue() const;
@@ -1631,6 +1667,11 @@ protected:
   NonNegativeIntegerItem(store::SchemaTypeCode t) : IntegerItem(t) {}
 
 public:
+#ifdef ZORBA_WITH_BIG_INTEGER
+  size_t alloc_size() const;
+#endif /* ZORBA_WITH_BIG_INTEGER */
+  size_t dynamic_size() const;
+
   xs_decimal getDecimalValue() const;
 
   xs_integer getIntegerValue() const;
@@ -2490,6 +2531,9 @@ protected:
   }
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   const char* getBase64BinaryValue(size_t& data) const;
 
   store::Item* getType() const;
@@ -2614,6 +2658,9 @@ protected:
   HexBinaryItem(store::SchemaTypeCode t) : AtomicItem(t) {}
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   xs_hexBinary getHexBinaryValue() const { return theValue; }
 
   store::Item* getType() const;
@@ -2669,6 +2716,9 @@ protected:
 
 public:
   virtual ~ErrorItem();
+
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
   ZorbaException* getError() const { return theError; }
 
