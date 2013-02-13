@@ -18,6 +18,9 @@ ENDIF(COMMAND cmake_policy AND POLICY CMP0009)
 
 MESSAGE(STATUS "Adding tests for CTest")
 
+# Compute results directory for testdriver
+SET (_results_dir "${CMAKE_CURRENT_BINARY_DIR}/../QueryResults")
+
 FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.xq")
 IF(ZORBA_TEST_XQUERYX)
@@ -91,6 +94,10 @@ IF(${cxqNO} STRGREATER "0")
     # finally add the test
     ZORBA_ADD_TEST("${TEST_NAME}" testdriver ${CHAINED_TESTS_FILES})
 
+    # Create directory for output, if it doesn't exit
+    IF (NOT EXISTS "${_results_dir}/${CT}")
+      FILE (MAKE_DIRECTORY "${_results_dir}/${CT}")
+    ENDIF (NOT EXISTS "${_results_dir}/${CT}")
 
     # clear the list of testfiles, args and also the name of the test
     SET(CHAINED_TESTS_FILES)
@@ -196,6 +203,12 @@ FOREACH(TESTFILE ${TESTFILES})
   IF(NOT SKIP_TEST)
 
     ZORBA_ADD_TEST("${TESTNAME}" testdriver ${TESTFILE})
+
+    # Create directory for output, if it doesn't exist
+    GET_FILENAME_COMPONENT(_bucket_path ${TESTFILE} PATH)
+    IF (NOT EXISTS "${_results_dir}/${_bucket_path}")
+      FILE (MAKE_DIRECTORY "${_results_dir}/${_bucket_path}")
+    ENDIF (NOT EXISTS "${_results_dir}/${_bucket_path}")
 
     MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
     MATH(EXPR TESTMOD "${TESTCOUNTER}/1000")
