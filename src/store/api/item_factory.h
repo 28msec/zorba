@@ -96,6 +96,13 @@ public:
       StreamReleaser,
       bool seekable = false) = 0;
 
+  virtual bool createStreamableString(
+      Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      char const *uri,
+      bool seekable = false) = 0;
+
   /**
    * Create a StreamableStringItem which re-uses the stream from another
    * Streamable*Item. This will maintain a reference to the original
@@ -241,6 +248,13 @@ public:
       bool seekable = false,
       bool encoded = false) = 0;
 
+  virtual bool createStreamableBase64Binary(
+      Item_t& result,
+      std::istream&,
+      StreamReleaser,
+      char const *uri,
+      bool seekable = false,
+      bool encoded = false) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#bool]

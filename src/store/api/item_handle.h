@@ -16,7 +16,6 @@
 #ifndef ZORBA_STORE_ITEM_HANDLE_H
 #define ZORBA_STORE_ITEM_HANDLE_H
 
-
 namespace zorba 
 {
 
@@ -209,8 +208,8 @@ protected:
   }
 };
 
-
 } // namespace store
+
 } // namespace zorba
 
 #endif

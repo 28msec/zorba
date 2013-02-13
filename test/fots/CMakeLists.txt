@@ -89,16 +89,25 @@ ENDMACRO (expected_fots_failure)
 ##
 ## Place all known failing FOTS tests here!
 ##
-#"slow" test
+#"slow" tests
 EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-011 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-012 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-013 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-014 1069794)
 
-#"crashing" test
+#"crashing" tests
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00975 1070533)
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976 1070533)
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
+
+# Next three possibly unique to old RQ machine, but they need to be
+# marked for the RQ to pass.
+EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
+EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
+EXPECTED_FOTS_FAILURE (prod-CastExpr CastAsNamespaceSensitiveType-10 0)
+
+# This test passes on the old and new RQ machines, but fails for Sorin.
+#EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
 
 EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog001 0)
 EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog002 0)
@@ -495,7 +504,6 @@ EXPECTED_FOTS_FAILURE (fn-nilled cbcl-nilled-005 0)
 EXPECTED_FOTS_FAILURE (fn-node-name fn-node-name-28 0)
 EXPECTED_FOTS_FAILURE (fn-normalize-space fn-normalize-space-23 0)
 EXPECTED_FOTS_FAILURE (fn-normalize-space fn-normalize-space-25 0)
-EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
 EXPECTED_FOTS_FAILURE (fn-normalize-unicode cbcl-fn-normalize-unicode-001 0)
 EXPECTED_FOTS_FAILURE (fn-normalize-unicode cbcl-fn-normalize-unicode-006 0)
 EXPECTED_FOTS_FAILURE (fn-parse-xml parse-xml-001 0)
@@ -700,7 +708,6 @@ EXPECTED_FOTS_FAILURE (op-union fn-union-node-args-015 0)
 EXPECTED_FOTS_FAILURE (op-union fn-union-node-args-016 0)
 EXPECTED_FOTS_FAILURE (op-union fn-union-node-args-017 0)
 EXPECTED_FOTS_FAILURE (prod-AllowingEmpty outer-013 0)
-EXPECTED_FOTS_FAILURE (prod-AllowingEmpty outer-016 0)
 EXPECTED_FOTS_FAILURE (prod-Annotation annotation-3 0)
 EXPECTED_FOTS_FAILURE (prod-Annotation annotation-26 0)
 EXPECTED_FOTS_FAILURE (prod-Annotation annotation-27 0)
@@ -1034,9 +1041,6 @@ EXPECTED_FOTS_FAILURE (prod-ReturnClause ReturnExpr016 0)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema005 0)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema016 0)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema031 0)
-EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema032 0)
-EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema032a 0)
-EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema032b 0)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema032c 0)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema040 0)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema040a 0)

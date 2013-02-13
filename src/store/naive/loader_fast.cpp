@@ -41,7 +41,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
-
+#include "util/stream_util.h"
 
 namespace zorba {
 namespace simplestore {
@@ -164,30 +164,32 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
   XmlLoader *const loader = static_cast<XmlLoader*>( ctx );
   switch ( error->level ) {
     case XML_ERR_ERROR:
-    case XML_ERR_FATAL:
-      loader->theXQueryDiagnostics->add_error(
-        NEW_XQUERY_EXCEPTION(
-          zerr::ZSTR0021_LOADER_PARSING_ERROR,
-          ERROR_PARAMS(
-            error->file, error->line, error->int2 /* column */,
-            libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
-            error_int1_8, error_message_9
-          )
+    case XML_ERR_FATAL: {
+      XQueryException *const xe = NEW_XQUERY_EXCEPTION(
+        zerr::ZSTR0021_LOADER_PARSING_ERROR,
+        ERROR_PARAMS(
+          error->file, error->line, error->int2 /* column */,
+          libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
+          error_int1_8, error_message_9
         )
       );
+      xe->set_data( error->file, error->line, error->int2 /* column */ );
+      loader->theXQueryDiagnostics->add_error( xe );
       break;
-    case XML_ERR_WARNING:
-      loader->theXQueryDiagnostics->add_warning(
-        NEW_XQUERY_WARNING(
-          zwarn::ZWST0007_LOADER_PARSING_WARNING,
-          WARN_PARAMS(
-            error->file, error->line, error->int2 /* column */,
-            libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
-            error_int1_8, error_message_9
-          )
+    }
+    case XML_ERR_WARNING: {
+      XQueryWarning *const xw = NEW_XQUERY_WARNING(
+        zwarn::ZWST0007_LOADER_PARSING_WARNING,
+        WARN_PARAMS(
+          error->file, error->line, error->int2 /* column */,
+          libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
+          error_int1_8, error_message_9
         )
       );
+      xw->set_data( error->file, error->line, error->int2 /* column */ );
+      loader->theXQueryDiagnostics->add_warning( xw );
       break;
+    }
     default:
       ZORBA_ASSERT( false );
   } // switch
@@ -381,11 +383,16 @@ store::Item_t FastXmlLoader::loadXml(
 
   theBaseUri = baseUri;
 
+  char const *doc_uri;
+  if ( char const *const stream_uri = get_uri( stream ) )
+    doc_uri = stream_uri;
+  else
+    doc_uri = docUri.c_str();
+
   if (docUri.empty())
   {
     std::ostringstream uristream;
     uristream << "zorba://internalDocumentURI-" << theTree->getId();
-
     theDocUri = uristream.str();
   }
   else
@@ -420,7 +427,7 @@ store::Item_t FastXmlLoader::loadXml(
                                    this,
                                    theBuffer,
                                    static_cast<int>(numChars),
-                                   docUri.c_str());
+                                   doc_uri);
 
     // Apply loader options
     store::LoadProperties new_props = theLoadProperties;
@@ -482,18 +489,12 @@ store::Item_t FastXmlLoader::loadXml(
   }
   else if (!ok)
   {
-    if (!theDocUri.empty())
-    {
-      theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,
-                          ERROR_PARAMS(ZED(BadXMLDocument_2o), theDocUri)));
-    }
-    else
-    {
-      theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,
-                          ERROR_PARAMS(ZED(BadXMLDocument_2o))));
-    }
+    theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZSTR0021_LOADER_PARSING_ERROR,
+        ERROR_PARAMS( ZED( BadXMLDocument_2o ), theDocUri )
+      )
+    );
     abortload();
     return NULL;
   }

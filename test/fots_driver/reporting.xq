@@ -62,7 +62,7 @@ declare %ann:sequential function reporting:run-and-report(
   $FOTSZorbaManifestPath  as xs:string,
   $exceptedTestCases      as xs:string*,
   $exceptedTestSets       as xs:string*
-)
+) as document-node()
 {
   try
   {
@@ -122,7 +122,7 @@ declare %ann:sequential function reporting:report(
   try
   {
     {
-      reporting:W3C-reporting(parse-xml(file:read-text($resultsFilePath)),
+      reporting:W3C-reporting(parse-xml(file:read-text($resultsFilePath))/fots:test-cases,
                               $FOTSZorbaManifestPath)
     }
   }
@@ -139,7 +139,7 @@ declare %ann:sequential function reporting:report(
  : @return The W3C conformance submission file.
  :)
 declare %ann:sequential function reporting:W3C-reporting(
-  $results                as document-node()?,
+  $results                as element(fots:test-cases)?,
   $FOTSZorbaManifestPath  as xs:string
 ) as document-node()
 {

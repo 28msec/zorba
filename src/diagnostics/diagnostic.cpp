@@ -176,6 +176,15 @@ SystemDiagnosticBase::map_type& SystemDiagnosticBase::get_map() {
 namespace diagnostic {
 
 location const location::empty;
+
+bool operator==( location const &i, location const &j ) {
+  return i.file_       == j.file_
+      && i.line_       == j.line_
+      && i.column_     == j.column_
+      && i.line_end_   == j.line_end_
+      && i.column_end_ == j.column_end_;
+}
+
 parameters const parameters::empty;
 
 #define case_123456789 \

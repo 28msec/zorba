@@ -51,7 +51,6 @@
 #include <zorba/audit_scoped.h>
 #endif
 
-#include "error_printer.h"
 #include "util.h"
 #include "path_util.h"
 
@@ -103,6 +102,23 @@ public:
 
 URIMapperSerializationCallback theSerializationCallback;
 
+/*******************************************************************************
+
+********************************************************************************/
+static void print_exception( ZorbaException const &e,
+                             ZorbaCMDProperties const &props ) {
+  using namespace std;
+
+  if ( props.printErrorsAsXml() )
+    if ( props.indent() )
+      cerr << ZorbaException::format_xml_indented;
+    else
+      cerr << ZorbaException::format_xml;
+  else
+    cerr << ZorbaException::format_text;
+
+  cerr << e << endl;
+}
 
 /*******************************************************************************
 
@@ -779,7 +795,7 @@ compileAndExecute(
       }
       catch (zorba::XQueryException const& qe)
       {
-        ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
+        print_exception( qe, properties );
         return 11;
       }
       catch (zorba::ZorbaException const& ze)
@@ -830,7 +846,7 @@ compileAndExecute(
         }
         catch (zorba::XQueryException const& qe)
         {
-          ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
+          print_exception( qe, properties );
           return 22;
         }
         catch (zorba::ZorbaException const& ze)
@@ -872,7 +888,7 @@ compileAndExecute(
       }
       catch (zorba::XQueryException const& qe)
       {
-        ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
+        print_exception( qe, properties );
         return 31;
       }
       catch (zorba::ZorbaException const& ze)
@@ -1169,10 +1185,7 @@ _tmain(int argc, _TCHAR* argv[])
         }
         catch (zorba::XQueryException const& qe)
         {
-          ErrorPrinter::print(qe,
-                              std::cerr,
-                              properties.printErrorsAsXml(),
-                              properties.indent());
+          print_exception( qe, properties );
           return 6;
         }
       }
@@ -1258,10 +1271,7 @@ _tmain(int argc, _TCHAR* argv[])
       }
       catch (zorba::XQueryException const& qe)
       {
-        ErrorPrinter::print(qe,
-                            std::cerr,
-                            properties.printErrorsAsXml(),
-                            properties.indent());
+        print_exception( qe, properties );
         return 5;
       }
       catch (zorba::ZorbaException const& ze)
@@ -1303,3 +1313,4 @@ _tmain(int argc, _TCHAR* argv[])
   }
   return 0;
 }
+/* vim:set et sw=2 ts=2: */

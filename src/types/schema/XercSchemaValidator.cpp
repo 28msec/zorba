@@ -91,6 +91,7 @@ XercSchemaValidator::XercSchemaValidator( XMLErrorReporter* const errReporter
 {
     fTrailingSeenNonWhiteSpace.flags = 0;
     fTypeStack = new (fMemoryManager) ValueStackOf<ComplexTypeInfo*>(8, fMemoryManager);
+    //std::cout << "      xsv - : constructor \n"; std::cout.flush();
 }
 
 XercSchemaValidator::~XercSchemaValidator()
@@ -129,6 +130,7 @@ bool XercSchemaValidator::checkContent (XMLElementDecl* const elemDecl
     }
 
     ComplexTypeInfo* currType = fTypeStack->pop();
+    //std::cout << "      xsv - : checkcontent   pop \n"; std::cout.flush();
 
     const SchemaElementDecl::ModelTypes modelType = (currType)
             ? (SchemaElementDecl::ModelTypes)(currType->getContentType())
@@ -370,6 +372,8 @@ void XercSchemaValidator::reset()
     fTrailingSeenNonWhiteSpace.flags = 0;
     fSeenId = false;
     fTypeStack->removeAllElements();
+    //std::cout << "      xsv - : reset \n"; std::cout.flush();
+
     delete fXsiType;
     fXsiType = 0;
     fCurrentDatatypeValidator = 0;
@@ -560,6 +564,7 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
 {
     ComplexTypeInfo* elemTypeInfo = ((SchemaElementDecl*)elemDef)->getComplexTypeInfo();
     fTypeStack->push(elemTypeInfo);
+    //std::cout << "      xsv - : valElem1 push eti " << (elemTypeInfo ? StrX(elemTypeInfo->getTypeLocalName()).localForm() : "_") << "\n"; std::cout.flush();
     fCurrentDatatypeValidator = (elemTypeInfo)
             ? elemTypeInfo->getDatatypeValidator()
             : ((SchemaElementDecl*)elemDef)->getDatatypeValidator();
@@ -580,7 +585,7 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
 
             // retrieve Grammar for the uri
             const XMLCh* uriStr = getScanner()->getURIText(uri);
-            //std::cout << "      xsv: fXsiType: " << zorba::StrX(localPart) << " @ " << zorba::StrX(uriStr) << "\n"; std::cout.flush();
+            //std::cout << "      xsv - : valElem2  fXsiType: " << zorba::StrX(localPart) << " @ " << zorba::StrX(uriStr) << "\n"; std::cout.flush();
             SchemaGrammar* sGrammar = (SchemaGrammar*) fGrammarResolver->getGrammar(uriStr);
             if (!sGrammar) {
 
@@ -691,7 +696,9 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                             if (!fErrorOccurred)
                             {
                                 fTypeStack->pop();
+                                //std::cout << "        xsv - : valElem2 pop  \n"; std::cout.flush();
                                 fTypeStack->push(typeInfo);
+                                //std::cout << "  xsv - : valElem3 push " <<  (typeInfo ? StrX(typeInfo->getTypeLocalName()).localForm() : "_") << "\n"; std::cout.flush();
                                 fCurrentDatatypeValidator = typeInfo->getDatatypeValidator();
                             }
                         }
@@ -863,6 +870,7 @@ void XercSchemaValidator::validateProcessorStipulatedTypeName(const   XMLElement
                             {
                                 fTypeStack->push(typeInfo);
                                 fCurrentDatatypeValidator = typeInfo->getDatatypeValidator();
+                                //std::cout << "  xsv - : valElem4 push " <<  (typeInfo ? StrX(typeInfo->getTypeLocalName()).localForm() : "_") << "\n"; std::cout.flush();
                             }
                         }
                     }

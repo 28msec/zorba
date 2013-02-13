@@ -29,7 +29,7 @@ int get_ostream_indent_index();
  * @param os The ostream to get the indentation amount for.
  * @return Returns a modifyable reference to said indentation.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 long& get_indent( std::basic_ostream<charT,Traits> &os ) 
 {
   //
@@ -46,7 +46,7 @@ long& get_indent( std::basic_ostream<charT,Traits> &os )
  * @param os The ostream to increment the indentation amount of.
  * @return Returns the given ostream.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 std::basic_ostream<charT,Traits>&
 inc_indent( std::basic_ostream<charT,Traits> &os ) 
 {
@@ -60,7 +60,7 @@ inc_indent( std::basic_ostream<charT,Traits> &os )
  * @param os The ostream to decrement the indentation amount of.
  * @return Returns the given ostream.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 std::basic_ostream<charT,Traits>&
 dec_indent( std::basic_ostream<charT,Traits> &os ) 
 {
@@ -77,7 +77,7 @@ dec_indent( std::basic_ostream<charT,Traits> &os )
  * @param os The ostream to emit the space characters to.
  * @return Returns the given ostream.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 std::basic_ostream<charT,Traits>&
 indent( std::basic_ostream<charT,Traits> &os ) 
 {

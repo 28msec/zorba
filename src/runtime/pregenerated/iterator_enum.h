@@ -159,6 +159,7 @@
   TYPE_InScopeAttributeGroupsIterator,
   TYPE_OptionIterator,
   TYPE_FunctionAnnotationsIterator,
+  TYPE_MemSizeIterator,
   TYPE_JSONParseInternal,
   TYPE_JSONSerializeInternal,
   TYPE_JSONDecodeFromRoundtripIterator,
