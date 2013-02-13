@@ -102,7 +102,7 @@ FileImpl::getFilePath() const
   ZORBA_CATCH
 
   return lResult;
-};
+}
 
 const std::string
 FileImpl::getFileUri() const
@@ -136,7 +136,7 @@ FileImpl::getFileUri() const
   ZORBA_CATCH
 
   return lPath;
-};
+}
 
 bool
 FileImpl::isDirectory() const
@@ -148,7 +148,7 @@ FileImpl::isDirectory() const
   ZORBA_CATCH
 
   return lResult;
-};
+}
 
 bool
 FileImpl::isFile() const

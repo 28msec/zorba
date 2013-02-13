@@ -88,8 +88,8 @@ class var_set_expr;
 
   theParamPos:
   ------------
-  For arg vars, it is the position, within the param list, of parameter that is
-  bound to this arg var.
+  For arg vars, it is the position, within the param list, of the parameter that
+  is bound to this arg var.
 
   theSetExprs:
   ------------
@@ -129,8 +129,8 @@ public:
     for_var,
     let_var,
     pos_var,
-    win_var,
     score_var,
+    win_var,
     wincond_out_var,
     wincond_out_pos_var,
     wincond_in_var,

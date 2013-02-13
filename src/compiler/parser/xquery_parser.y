@@ -580,7 +580,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> opt_AposAttrContentList
 %type <node> AposAttrValueContent
 %type <node> ArgList
-%type <node> AtomicType
+%type <node> GeneralizedAtomicType
 %type <node> SimpleType
 %type <node> AttributeTest
 %type <node> BaseURIDecl
@@ -659,6 +659,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> SchemaImport
 %type <node> SchemaPrefix
 %type <node> SequenceType
+%type <node> SequenceTypeList
 %type <node> Setter
 %type <node> SignList
 %type <node> SingleType
@@ -919,7 +920,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType SimpleType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList GeneralizedAtomicType SimpleType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
@@ -3384,14 +3385,14 @@ TypeswitchExpr :
     {
       $$ = new TypeswitchExpr(LOC(@$),
                               $3,
-                              dynamic_cast<CaseClauseList*>($5),
+                              static_cast<CaseClauseList*>($5),
                               $8);
     }
   | TYPESWITCH LPAR Expr RPAR CaseClauseList DEFAULT DOLLAR QNAME RETURN ExprSingle
     {
       $$ = new TypeswitchExpr(LOC (@$),
                               $3,
-                              dynamic_cast<CaseClauseList*>($5),
+                              static_cast<CaseClauseList*>($5),
                               static_cast<QName*>($8),
                               $10);
     }
@@ -3402,14 +3403,14 @@ TypeswitchStatement :
     {
       $$ = new TypeswitchExpr(LOC(@$),
                               $3,
-                              dynamic_cast<CaseClauseList*>($5),
+                              static_cast<CaseClauseList*>($5),
                               $8);
     }
   | TYPESWITCH LPAR Expr RPAR CaseClauseList DEFAULT DOLLAR QNAME RETURN Statement
     {
       $$ = new TypeswitchExpr(LOC (@$),
                               $3,
-                              dynamic_cast<CaseClauseList*>($5),
+                              static_cast<CaseClauseList*>($5),
                               static_cast<QName*>($8),
                               $10);
     }
@@ -3420,13 +3421,13 @@ CaseClauseList :
     CaseClause
     {
       CaseClauseList* cc_list_p = new CaseClauseList(LOC (@$));
-      cc_list_p->push_back(dynamic_cast<CaseClause*>($1));
+      cc_list_p->push_back(static_cast<CaseClause*>($1));
       $$ = cc_list_p;
     }
   | CaseClauseList  CaseClause
     {
       CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>($1);
-      cc_list_p->push_back(dynamic_cast<CaseClause*>($2));
+      cc_list_p->push_back(static_cast<CaseClause*>($2));
       $$ = $1;
     }
 ;
@@ -3435,17 +3436,17 @@ CaseClauseList :
 // [44] CaseClause
 // ---------------
 CaseClause :
-    CASE  SequenceType  RETURN  ExprSingle
+    CASE SequenceTypeList RETURN ExprSingle
     {
       $$ = new CaseClause(LOC (@$),
-                          dynamic_cast<SequenceType*>($2),
+                          static_cast<SequenceTypeList*>($2),
                           $4);
     }
-  | CASE  DOLLAR  QNAME  AS  SequenceType  RETURN  ExprSingle
+  | CASE DOLLAR QNAME AS SequenceTypeList RETURN ExprSingle
     {
       $$ = new CaseClause(LOC (@$),
                           static_cast<QName*>($3),
-                          dynamic_cast<SequenceType*>($5),
+                          static_cast<SequenceTypeList*>($5),
                           $7);
      }
 ;
@@ -3455,13 +3456,13 @@ CaseStatementList :
     CaseStatement
     {
       CaseClauseList* cc_list_p = new CaseClauseList(LOC (@$));
-      cc_list_p->push_back(dynamic_cast<CaseClause*>($1));
+      cc_list_p->push_back(static_cast<CaseClause*>($1));
       $$ = cc_list_p;
     }
   | CaseStatementList  CaseStatement
     {
-      CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>($1);
-      cc_list_p->push_back(dynamic_cast<CaseClause*>($2));
+      CaseClauseList* cc_list_p = static_cast<CaseClauseList*>($1);
+      cc_list_p->push_back(static_cast<CaseClause*>($2));
       $$ = $1;
     }
 ;
@@ -3469,20 +3470,37 @@ CaseStatementList :
 // [44] CaseClause
 // ---------------
 CaseStatement :
-    CASE  SequenceType  RETURN  Statement
+    CASE SequenceTypeList RETURN Statement
     {
       $$ = new CaseClause(LOC (@$),
-                          dynamic_cast<SequenceType*>($2),
+                          static_cast<SequenceTypeList*>($2),
                           $4);
     }
-  | CASE  DOLLAR  QNAME  AS  SequenceType  RETURN  Statement
+  | CASE DOLLAR QNAME AS SequenceTypeList RETURN Statement
     {
       $$ = new CaseClause(LOC (@$),
                           static_cast<QName*>($3),
-                          dynamic_cast<SequenceType*>($5),
+                          static_cast<SequenceTypeList*>($5),
                           $7);
      }
 ;
+
+
+SequenceTypeList :
+    SequenceType
+    {
+      SequenceTypeList* seqList = new SequenceTypeList(LOC(@$));
+      seqList->push_back(static_cast<SequenceType*>($1));
+      $$ = seqList;
+    }
+  | SequenceTypeList VBAR SequenceType
+    {
+      SequenceTypeList* seqList = static_cast<SequenceTypeList*>($1);
+      seqList->push_back(static_cast<SequenceType*>($3));
+      $$ = $1;
+    }
+;
+
 
 // [45]
 IfExpr :
@@ -5108,7 +5126,7 @@ OccurrenceIndicator :
 
 // [119]
 ItemType :
-        AtomicType
+        GeneralizedAtomicType
         {
             $$ = $1;
         }
@@ -5154,10 +5172,10 @@ TypeList:
 ;
 
 
-AtomicType :
+GeneralizedAtomicType :
     QNAME
     {
-      $$ = new AtomicType( LOC(@$), static_cast<QName*>($1) );
+      $$ = new GeneralizedAtomicType( LOC(@$), static_cast<QName*>($1) );
     }
 ;
 

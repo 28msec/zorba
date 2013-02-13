@@ -194,6 +194,11 @@ void expr::compute_return_type(bool deep, bool* modified)
       if (varKind == var_expr::for_var)
       {
         derivedType = TypeOps::prime_type(tm, *domainType);
+
+        if (e->get_forlet_clause()->is_allowing_empty())
+        {
+          derivedType = tm->create_type(*derivedType, TypeConstants::QUANT_QUESTION);
+        }
       }
       else if (varKind == var_expr::wincond_in_var ||
                varKind == var_expr::wincond_out_var)
@@ -389,7 +394,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       }
       else
       {
-        assert(targetType->isAtomic() || targetType->isUnion());
+        assert(targetType->isAtomicAny() || targetType->isUnion());
 
         TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
 

@@ -23,6 +23,7 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
+#include "util/mem_sizeof.h"
 
 namespace zorba
 {
@@ -242,6 +243,21 @@ SimpleJSONObject::~SimpleJSONObject()
   ASSERT_INVARIANT();
 }
 
+
+/******************************************************************************
+
+*******************************************************************************/
+
+size_t SimpleJSONObject::alloc_size() const
+{
+  return  ztd::alloc_sizeof( theKeys )
+        + ztd::alloc_sizeof( thePairs );
+}
+
+size_t SimpleJSONObject::dynamic_size() const
+{
+  return sizeof( *this );
+}
 
 /******************************************************************************
 
@@ -785,6 +801,20 @@ SimpleJSONArray::~SimpleJSONArray()
 /******************************************************************************
 
 *******************************************************************************/
+
+size_t SimpleJSONArray::alloc_size() const
+{
+  return ztd::alloc_sizeof( theContent );
+}
+
+size_t SimpleJSONArray::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+/******************************************************************************
+
+*******************************************************************************/
 void SimpleJSONArray::push_back(const store::Item_t& aValue)
 {
   ASSERT_INVARIANT();
@@ -1014,10 +1044,12 @@ uint64_t SimpleJSONArray::cast(const xs_integer& i)
   {
     return to_xs_unsignedLong(i);
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0060_RANGE_EXCEPTION,
+      ERROR_PARAMS( i )
+    );
   }
 }
 

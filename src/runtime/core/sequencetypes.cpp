@@ -136,7 +136,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
         }
       }
     }
-    else if (TypeOps::is_treatable(tm, item, *theSequenceType, loc))
+    else if (TypeOps::is_subtype(tm, item, *theSequenceType, loc))
     {
       if (consumeNext(item, theChild.getp(), planState))
       {
@@ -145,7 +145,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
           res = true;
           do
           {
-            if (!TypeOps::is_treatable(tm, item, *theSequenceType, loc))
+            if (!TypeOps::is_subtype(tm, item, *theSequenceType, loc))
             {
               res = false;
               theChild->reset(planState);
@@ -259,7 +259,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
       udt = static_cast<const UserDefinedXQType*>(theCastType.getp());
 
-      if (udt->isAtomic())
+      if (udt->isAtomicAny())
       {
         valid = GenericCast::
         castToAtomic(result, item, theCastType, tm, &theNsCtx, loc);
@@ -534,6 +534,12 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     break;
   }
 #endif
+  case PROMOTE_INDEX_KEY:
+  {
+    RAISE_ERROR(zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR, loc,
+    ERROR_PARAMS(valueType, targetType, theQName->getStringValue()));
+    break;
+  }
   default:
   {
     ZORBA_ASSERT(false);

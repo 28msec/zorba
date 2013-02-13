@@ -24,6 +24,7 @@ SET(UTIL_SRCS
   json_util.cpp
   mem_streambuf.cpp
   regex.cpp
+  stream_util.cpp
   string_util.cpp
   time_util.cpp
   time_parse.cpp
@@ -31,6 +32,7 @@ SET(UTIL_SRCS
   unicode_categories.cpp
   uri_util.cpp
   utf8_util.cpp
+  utf8_streambuf.cpp
   xml_util.cpp
   fx/fxcharheap.cpp
   string/empty_rep_base.cpp

@@ -140,6 +140,8 @@ namespace zorba{
 
     class CurrentTime;
 
+    class MillisToDateTime;
+
     class ParseDate;
 
     class ParseDateTime;
@@ -321,6 +323,8 @@ namespace zorba{
     class OptionIterator;
 
     class FunctionAnnotationsIterator;
+
+    class MemSizeIterator;
 
     class JSONParseInternal;
 
@@ -933,6 +937,9 @@ public:
     virtual void beginVisit ( const CurrentTime& ) = 0;
     virtual void endVisit   ( const CurrentTime& ) = 0;
 
+    virtual void beginVisit ( const MillisToDateTime& ) = 0;
+    virtual void endVisit   ( const MillisToDateTime& ) = 0;
+
     virtual void beginVisit ( const ParseDate& ) = 0;
     virtual void endVisit   ( const ParseDate& ) = 0;
 
@@ -1197,6 +1204,9 @@ public:
 
     virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
     virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
+
+    virtual void beginVisit ( const MemSizeIterator& ) = 0;
+    virtual void endVisit   ( const MemSizeIterator& ) = 0;
 
     virtual void beginVisit ( const JSONParseInternal& ) = 0;
     virtual void endVisit   ( const JSONParseInternal& ) = 0;

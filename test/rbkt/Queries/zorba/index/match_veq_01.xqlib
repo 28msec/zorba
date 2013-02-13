@@ -1,0 +1,23 @@
+
+
+module namespace accounts = "www.accounts.com";
+
+import module namespace ddl = 
+"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+
+import module namespace dml = 
+"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+import module namespace iddl = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+
+declare %an:ordered collection accounts:accounts as element(account);
+
+
+declare %an:automatic %an:unique %an:value-equality index accounts:accounts-index
+on nodes dml:collection(xs:QName('accounts:accounts'))
+by xs:string(@email) as xs:string?;
+

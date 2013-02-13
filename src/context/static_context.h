@@ -543,6 +543,7 @@ public:
 
   static const char* ZORBA_FETCH_FN_NS;
   static const char* ZORBA_NODE_FN_NS;
+  static const char* ZORBA_ITEM_FN_NS;
   static const char* ZORBA_XML_FN_NS;
 #ifndef ZORBA_NO_FULL_TEXT
   static const char* ZORBA_FULL_TEXT_FN_NS;
@@ -956,6 +957,8 @@ public:
   void bind_index(IndexDecl_t& vi, const QueryLoc& loc);
 
   IndexDecl* lookup_index(const store::Item* qname) const;
+
+  void get_index_decls(std::vector<IndexDecl*>& decls) const;
 
   store::Iterator_t index_names() const;
 

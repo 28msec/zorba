@@ -253,6 +253,8 @@ public:
 
   ExprManager* getExprManager() const { return theEM; }
 
+  uint8_t getVisitId() { return theNextVisitId++; }
+
   //
   // Pragmas
   //

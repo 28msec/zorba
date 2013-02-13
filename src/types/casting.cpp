@@ -2193,6 +2193,8 @@ bool GenericCast::castToSimple(
         try
         {
           store::Item_t tmp = item;
+          resultList.clear();
+
           bool success = castToSimple(tmp, memberTypes[i], nsCtx, resultList, tm, loc);
 
           if (success)
@@ -2245,7 +2247,10 @@ bool GenericCast::castStringToAtomic(
   ErrorInfo errInfo(sourceType, targetType, loc);
 
   if (!targetType->isAtomicOne())
-    RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(targetType));
+  {
+    RAISE_ERROR(err::XPST0051, loc,
+    ERROR_PARAMS(ZED(XPST0051_Atomic_2), targetType));
+  }
 
 #ifndef ZORBA_NO_XMLSCHEMA
   if (targetType->type_kind() == XQType::USER_DEFINED_KIND)
@@ -2260,7 +2265,7 @@ bool GenericCast::castStringToAtomic(
     if (success)
     {
       const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
-      store::Item_t typeName = udt->get_qname();
+      store::Item_t typeName = udt->getQName();
 
       factory->createUserTypedAtomicItem(result, baseItem, typeName);
       return true;
@@ -2320,7 +2325,8 @@ bool GenericCast::castToAtomic(
 
   if (!targetType->isAtomicOne())
   {
-    RAISE_ERROR(err::XPST0051, loc, ERROR_PARAMS(targetType));
+    RAISE_ERROR(err::XPST0051, loc,
+    ERROR_PARAMS(ZED(XPST0051_Atomic_2), targetType));
   }
 
   store::SchemaTypeCode targetTypeCode;
@@ -2365,7 +2371,7 @@ bool GenericCast::castToAtomic(
 
     if (valid)
     {
-      store::Item_t typeName = udt->get_qname();
+      store::Item_t typeName = udt->getQName();
       GENV_ITEMFACTORY->createUserTypedAtomicItem(result, baseItem, typeName);
     }
 

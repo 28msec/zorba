@@ -78,7 +78,7 @@ xqtref_t static_collections_dml_collection::getReturnType(const fo_expr* caller)
 
   static_context* sctx = caller->get_sctx();
 
-  const store::Item* qname = caller->get_arg(0)->getQName(sctx);
+  const store::Item* qname = caller->get_arg(0)->getQName();
 
   if (qname != NULL)
   {
@@ -90,8 +90,10 @@ xqtref_t static_collections_dml_collection::getReturnType(const fo_expr* caller)
     }
     else
     {
-      RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, caller->get_loc(),
-      ERROR_PARAMS(qname->getStringValue()));
+      return theSignature.returnType();
+
+      //RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, caller->get_loc(),
+      //ERROR_PARAMS(qname->getStringValue()));
     }
   }
   else

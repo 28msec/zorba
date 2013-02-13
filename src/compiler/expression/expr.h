@@ -189,7 +189,7 @@ public:
 };
 
 
-/***************************************************************************//**
+/*******************************************************************************
   Base for cast, treat, promote, castable, instanceof
 ********************************************************************************/
 class cast_or_castable_base_expr : public expr
@@ -222,8 +222,8 @@ public:
 };
 
 
-/***************************************************************************//**
-  Base for cast, treat, promote
+/*******************************************************************************
+  Base for cast, promote, treat
 ********************************************************************************/
 class cast_base_expr : public cast_or_castable_base_expr
 {
@@ -241,7 +241,7 @@ protected:
 };
 
 
-/***************************************************************************//**
+/*******************************************************************************
   CastExpr ::= UnaryExpr ( "cast" "as" SingleType )?
 
   SingleType ::= AtomicType "?"?
@@ -275,17 +275,95 @@ public:
 
 
 /***************************************************************************//**
+  This is an internal zorba expr. Its semantics are the following:
+
+  1. Let "input sequence" be the result of theInputExpr, and "output sequence"
+     be the result of the promote_expr.
+
+  2. The input sequence is assumed to be empty or consist of atomic items only.
+
+  4. theTargetType is always a subtype of xs:anyAtomicType*
+
+  5. Raise error if the cardinality of the input sequence is not compatible with
+     the quantifier of theTargetType.
+
+  6. For each item I in the input sequence, let F(I) be the result of the
+     function defined as follows:
+
+     - Let "actual type" be the dynamic type of I, and "target type" be the prime
+       type of theTargetType.
+     - If the target type is the NONE type, F(I) = raise error, else
+     - If the actual type is a subtype of the target type, F(I) = I, else
+     - If the actual type is untypedAtomic and the target type is not QName,
+       F(I) = cast(I, target type), else
+     - If the actual type is (subtype of) decimal and the target type is float,
+       F(I) = cast(I, float), else
+     - If the actual type is (subtype of) decimal or float and the target type is double,
+       F(I) = cast(I, double), else
+     - If the actual type is anyURI and the target type is string,
+       F(I) = cast(I, string), else
+     - F(I) = raise error
+
+  4. Put F(I) in the output sequence.
+
+  theErrorKind :
+  --------------
+
+  theQName:
+  ---------
+  Stores the QName of the function, if the promote expr is used to cast the
+  function's body to its result type
+
+********************************************************************************/
+class promote_expr : public cast_base_expr
+{
+  friend class ExprManager;
+  friend class ExprIterator;
+  friend class expr;
+
+protected:
+  PromoteErrorKind theErrorKind;
+  store::Item_t    theQName;
+
+protected:
+  promote_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr* input,
+      const xqtref_t& type,
+      PromoteErrorKind err,
+      store::Item* qname);
+
+public:
+  PromoteErrorKind get_err() const { return theErrorKind; }
+
+  void set_qname(const store::Item_t& qname) { theQName = qname; }
+
+  store::Item_t get_qname() const { return theQName; }
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
   TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
 
-  theCheckPrime : Normally, this is true. If false, then during runtime, only
-                  the cardinality of theInputExpr will be checked w.r.t. the
-                  quantifier of theTargetType. theCheckPrime is set to false
-                  by the optimizer, if it discovers that the prime type of the
-                  static type of theInputExpr is a subtype of the prime type of
-                  theTargetType.
+  theCheckPrime :
+  ---------------
+  Normally, this is true. If false, then during runtime, only the cardinality of
+  theInputExpr will be checked w.r.t. the quantifier of theTargetType. 
+  theCheckPrime is set to false by the optimizer, if it discovers that the prime
+  type of the static type of theInputExpr is a subtype of the prime type of 
+  theTargetType.
 
-  theFnQName    : Stores the QName of the function, if the treat expr is used
-                  to cast the function's body to its result type
+  theQName :
+  ------------
+  Stores the QName of the function, if the treat expr is used to cast the
+  function's body to its result type
 ********************************************************************************/
 class treat_expr : public cast_base_expr
 {
@@ -316,78 +394,6 @@ public:
   bool get_check_prime() const { return theCheckPrime; }
 
   void set_check_prime(bool check_prime) { theCheckPrime = check_prime; }
-
-  void set_qname(const store::Item_t& qname) { theQName = qname; }
-
-  store::Item_t get_qname() const { return theQName; }
-
-  void accept(expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-};
-
-
-/***************************************************************************//**
-  This is an internal zorba expr. Its semantics are the following:
-
-  1. Let "input sequence" be the result of theInputExpr, and "output sequence"
-     be the result of the promote_expr.
-
-  2. The input sequence is assumed to be mepty or consist of atomic items only.
-
-  4. theTargetType is always a subtype of xs:anyAtomicType*
-
-  5. Raise error if the cardinality of the input sequence is not compatible with
-     the quantifier of theTargetType.
-
-  6. For each item I in the input sequence, let F(I) be the result of the
-     function defined as follows:
-
-     - Let "actual type" be the dynamic type of I, and "target type" be the prime
-       type of theTargetType.
-     - If the target type is the NONE type, F(I) = raise error, else
-     - If the actual type is a subtype of the target type, F(I) = I, else
-     - If the actual type is untypedAtomic and the target type is not QName,
-       F(I) = cast(I, target type), else
-     - If the actual type is (subtype of) decimal and the target type is float,
-       F(I) = cast(I, target type), else
-     - If the actual type is (subtype of) decimal or float and the target type is double,
-       F(I) = cast(I, target type), else
-     - If the actual type is anyURI and the target type is string,
-       F(I) = cast(I, string), else
-     - F(I) = raise error
-
-  4. Put F(I) in the output sequence.
-
-  theFnQName:
-  -----------
-  Stores the QName of the function, if the promote expr is used to cast the
-  function's body to its result type
-
-********************************************************************************/
-class promote_expr : public cast_base_expr
-{
-  friend class ExprManager;
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-  PromoteErrorKind theErrorKind;
-  store::Item_t    theQName;
-
-protected:
-  promote_expr(
-      CompilerCB* ccb,
-      static_context* sctx,
-      user_function* udf,
-      const QueryLoc& loc,
-      expr* input,
-      const xqtref_t& type,
-      PromoteErrorKind err,
-      store::Item* qname);
-
-public:
-  PromoteErrorKind get_err() const { return theErrorKind; }
 
   void set_qname(const store::Item_t& qname) { theQName = qname; }
 
@@ -455,6 +461,7 @@ public:
   InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
 
   theCheckPrimeOnly :
+  -------------------
   Normally, this is false. It is set to true only if this is an instanceof expr
   that is created during the translation of a PredicateList (see translator.cpp).
   This flag is used during the PartialEval rule.
@@ -942,6 +949,9 @@ public:
     err_module,
     err_line_no,
     err_column_no,
+    zerr_data_uri,
+    zerr_data_line_no,
+    zerr_data_column_no,
     zerr_stack_trace
   };
 
