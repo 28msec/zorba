@@ -1245,7 +1245,7 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
     {
       if (!consumeNext(state->theContextNode, theChild.getp(), planState))
       {
-        state->reset(planState);
+        //state->reset(planState);
         return false;
       }
 

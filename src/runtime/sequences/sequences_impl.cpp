@@ -1205,26 +1205,34 @@ done:
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+
 /*******************************************************************************
   15.4.1 fn:count
 ********************************************************************************/
 bool FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lSequenceItem;
-  ulong lCount = 0;
+  store::Item_t item;
+  ulong count = 0;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while (consumeNext(lSequenceItem, theChildren[0].getp(), planState))
+  theChildren[0]->count(result, planState);
+
+  STACK_PUSH(result, state);
+
+#if 0
+  while (consumeNext(item, theChildren[0].getp(), planState))
   {
-    ++lCount;
+    ++count;
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(lCount)), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(count)), state);
+#endif
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.4.2 fn:avg
