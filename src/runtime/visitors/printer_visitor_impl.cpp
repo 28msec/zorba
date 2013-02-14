@@ -1522,7 +1522,5 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   PRINTER_VISITOR_DEFINITION(ExitCatcherIterator);
   PRINTER_VISITOR_DEFINITION(LoopIterator);
   PRINTER_VISITOR_DEFINITION(FlowCtlIterator);
-
-  PRINTER_VISITOR_DEFINITION(CountCollectionIterator);
 }
 /* vim:set et sw=2 ts=2: */

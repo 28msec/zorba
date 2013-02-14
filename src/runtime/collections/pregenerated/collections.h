@@ -233,6 +233,9 @@ public:
 
   virtual ~FnCollectionIterator();
 
+public:
+  void count(store::Item_t& result, PlanState& planState) const;
+  store::Collection_t getCollection(PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -287,6 +290,7 @@ public:
 
 public:
   bool isCountOptimizable() const;
+  void count(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

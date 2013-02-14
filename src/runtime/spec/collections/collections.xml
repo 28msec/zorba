@@ -230,6 +230,15 @@
                     brief="flag indicating whether theIterator was opened"/>
     </zorba:state>
 
+    <zorba:method name="count" const="true" return="void">
+       <zorba:param name="result" type="store::Item_t&amp;"/>
+       <zorba:param name="planState" type="PlanState&amp;"/>
+    </zorba:method>
+
+    <zorba:method name="getCollection" const="true" return="store::Collection_t">
+       <zorba:param name="planState" type="PlanState&amp;"/>
+    </zorba:method>
+
 </zorba:iterator>
 
 <!--
@@ -298,10 +307,13 @@
 
     <zorba:member type="bool" name="theIsDynamic" getterName="isDynamic"/>
 
-    <zorba:method const="true"
-                  name="isCountOptimizable"
-                  return="bool" />
+    <zorba:method const="true" name="isCountOptimizable" return="bool" />
     
+    <zorba:method const="true" name="count" return="void">
+       <zorba:param name="result" type="store::Item_t&amp;"/>
+       <zorba:param name="planState" type="PlanState&amp;"/>
+    </zorba:method>
+
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="store::Iterator_t" name="theIterator"/>
       <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"/>

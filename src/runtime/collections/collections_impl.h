@@ -24,58 +24,6 @@
 
 namespace zorba{
 
-/*******************************************************************************
-  Iterator to optimize a fn:count(collection) expression
-
-  theCollectionType:
-  ------------------
-  Whether the Collection is a W3C or Zorba Collection and if it's dynamic or 
-  static collection module.
-********************************************************************************/
-class CountCollectionIterator : public NaryBaseIterator<CountCollectionIterator, 
-                                                        PlanIteratorState>
-{
-public:
-  enum CollectionType 
-  { 
-    W3C = 0,
-    ZORBASTATIC = 1,
-    ZORBADYNAMIC = 2 
-  };
-
-protected:
-  CollectionType theCollectionType;
-
-public:
-  SERIALIZABLE_CLASS(CountCollectionIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CountCollectionIterator,
-  NaryBaseIterator<CountCollectionIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  CountCollectionIterator(
-      static_context* sctx,
-      const QueryLoc& loc,
-      std::vector<PlanIter_t>& children,
-      CollectionType collectionType);
-
-  ~CountCollectionIterator();
-
-  bool isZorbaCollection() const { return W3C != theCollectionType; }
-
-  bool isDynamic() const { return ZORBADYNAMIC == theCollectionType; }
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-
-protected:
-  store::Collection_t getZorbaCollection(PlanState& planState) const;
-
-  store::Collection_t getW3CCollection(PlanState& planState) const;
-};
 
 } //namespace zorba
 #endif /* ZORBA_RUNTIME_COLLECTIONS_COLLECTIONS_IMPL_H */

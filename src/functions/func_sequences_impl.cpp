@@ -818,36 +818,7 @@ PlanIter_t fn_count::codegen(
 {
   const std::type_info& counted_type = typeid(*argv[0]);
 
-  if (typeid(ZorbaCollectionIterator) == counted_type)
-  {
-    ZorbaCollectionIterator& collection =
-    static_cast<ZorbaCollectionIterator&>(*argv[0]);
-
-    if (collection.isCountOptimizable())
-    {
-      return new CountCollectionIterator(
-                   sctx,
-                   loc,
-                   collection.getChildren(),
-                   (
-                     collection.isDynamic()
-                       ? CountCollectionIterator::ZORBADYNAMIC
-                       : CountCollectionIterator::ZORBASTATIC
-                   )
-                 );
-    }
-  }
-  else if (typeid(FnCollectionIterator) == counted_type)
-  {
-    FnCollectionIterator& collection =
-    static_cast<FnCollectionIterator&>(*argv[0]);
-
-    return new CountCollectionIterator(sctx,
-                                       loc,
-                                       collection.getChildren(),
-                                       CountCollectionIterator::W3C);
-  }
-  else if (typeid(ProbeIndexPointValueIterator) == counted_type)
+  if (typeid(ProbeIndexPointValueIterator) == counted_type)
   {
     ProbeIndexPointValueIterator& lIter
       = static_cast<ProbeIndexPointValueIterator&>(*argv[0]);
