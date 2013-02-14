@@ -27,7 +27,6 @@
 #include "system/globalenv.h"
 
 #include "util/tracer.h"
-#include "util/utf8_string.h"
 
 #include "types/casting.h"
 #include "types/typeconstants.h"
@@ -438,7 +437,7 @@ public:
     int N;
     int minimum_size;
     int maximum_size;
-    PartInfo() :  N(-1), minimum_size(0), maximum_size(0) {};
+    PartInfo() :  N(-1), minimum_size(0), maximum_size(0) {}
   };
 
   class SubPictureInfo
@@ -456,6 +455,7 @@ public:
     decimal_separator( "." ),
     grouping_separator( "," ),
     percent( "%" ),
+    per_mille( "\xE2\x80\xB0" ),
     zero_digit( "0" ),
     digit_sign( "#" ),
     pattern_separator( ";" ),
@@ -463,8 +463,6 @@ public:
     NaN( "NaN" ),
     minus( "-" )
   {
-    utf8_string<zstring> u_per_mille( per_mille );
-    u_per_mille = (unicode::code_point)0x2030;
   }
 
   void readFormat(const DecimalFormat_t& df_t)
