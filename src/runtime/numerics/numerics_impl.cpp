@@ -500,13 +500,13 @@ public:
 
 
 // returns an error if there are two or more instances of the given pattern in the string
-static void errorIfTwoOrMore(zstring const& part, const char* sep, FormatNumberInfo& info)
+static void errorIfTwoOrMore(zstring const& part, zstring const& sep, FormatNumberInfo& info)
 {
   zstring::size_type const pos = part.find(sep);
 
   if (pos != zstring::npos)
   {
-    if (part.find(sep, strlen(sep), pos+1) != zstring::npos)
+    if (part.find(sep, pos+1) != zstring::npos)
       throw XQUERY_EXCEPTION(err::FODF1310, ERROR_PARAMS(info.pictureString, ZED(FormatNumberDuplicates), sep), ERROR_LOC(info.loc));
   }
 }
@@ -521,8 +521,8 @@ static void parsePart(
   if (str.empty())
     return;
 
-  errorIfTwoOrMore(str, info.percent.c_str(), info);
-  errorIfTwoOrMore(str, info.per_mille.c_str(), info);
+  errorIfTwoOrMore(str, info.percent, info);
+  errorIfTwoOrMore(str, info.per_mille, info);
 
   if (str.find(info.percent) != zstring::npos &&
       str.find(info.per_mille) != zstring::npos)
@@ -607,7 +607,7 @@ static void parseSubpicture(
   if (str.empty())
     return;
 
-  errorIfTwoOrMore(str, info.decimal_separator.c_str(), info);
+  errorIfTwoOrMore(str, info.decimal_separator, info);
   zstring::size_type pos = str.find(info.decimal_separator);
   if (pos != zstring::npos)
   {
@@ -651,7 +651,7 @@ static void parseSubpicture(
 
 static void parsePicture(FormatNumberInfo& info)
 {
-  errorIfTwoOrMore(info.pictureString, info.pattern_separator.c_str(), info);
+  errorIfTwoOrMore(info.pictureString, info.pattern_separator, info);
 
   zstring::size_type pos = info.pictureString.find(info.pattern_separator);
   if (pos != zstring::npos)
