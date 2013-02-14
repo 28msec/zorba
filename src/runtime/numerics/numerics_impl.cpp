@@ -475,25 +475,25 @@ public:
     for ( DecimalFormat::param_vector_type::const_iterator it = params->begin(); it != params->end(); it++)
     {
       if (it->first == decimal_separator_param)
-        decimal_separator = it->second.c_str();
+        decimal_separator = it->second;
       else if (it->first == grouping_separator_param)
-        grouping_separator = it->second.c_str();
+        grouping_separator = it->second;
       else if (it->first == infinity_param)
-        infinity = it->second.c_str();
+        infinity = it->second;
       else if (it->first == minus_sign_param)
-        minus = it->second.c_str();
+        minus = it->second;
       else if (it->first == nan_param)
-        NaN = it->second.c_str();
+        NaN = it->second;
       else if (it->first == percent_param)
-        percent = it->second.c_str();
+        percent = it->second;
       else if (it->first == per_mille_param)
-        per_mille = it->second.c_str();
+        per_mille = it->second;
       else if (it->first == zero_digit_param)
-        zero_digit = it->second.c_str();
+        zero_digit = it->second;
       else if (it->first == digit_param)
-        digit_sign = it->second.c_str();
+        digit_sign = it->second;
       else if (it->first == pattern_separator_param)
-        pattern_separator = it->second.c_str();
+        pattern_separator = it->second;
     }
   }
 };
@@ -524,14 +524,14 @@ static void parsePart(
   errorIfTwoOrMore(str, info.percent.c_str(), info);
   errorIfTwoOrMore(str, info.per_mille.c_str(), info);
 
-  if (str.find(info.percent.c_str()) != zstring::npos &&
-      str.find(info.per_mille.c_str()) != zstring::npos)
+  if (str.find(info.percent) != zstring::npos &&
+      str.find(info.per_mille) != zstring::npos)
   {
     throw XQUERY_EXCEPTION(err::FODF1310, ERROR_PARAMS(info.pictureString, ZED(FormatNumberPercentPermille)), ERROR_LOC(info.loc));
   }
 
-  if (str.find(info.digit_sign.c_str()) == zstring::npos &&
-      str.find(info.zero_digit.c_str()) == zstring::npos)
+  if (str.find(info.digit_sign) == zstring::npos &&
+      str.find(info.zero_digit) == zstring::npos)
   {
     throw XQUERY_EXCEPTION(err::FODF1310, ERROR_PARAMS(info.pictureString, ZED(FormatNumberAtLeastOneOptionalOrDecimal)), ERROR_LOC(info.loc));
   }
@@ -588,7 +588,7 @@ static void parsePart(
   part.minimum_size = zero_signs;
   if (!fractional &&
       zero_signs == 0 &&
-      str.find(info.decimal_separator.c_str()) == zstring::npos)
+      str.find(info.decimal_separator) == zstring::npos)
   {
     part.minimum_size = 1;
   }
@@ -608,7 +608,7 @@ static void parseSubpicture(
     return;
 
   errorIfTwoOrMore(str, info.decimal_separator.c_str(), info);
-  zstring::size_type pos = str.find(info.decimal_separator.c_str());
+  zstring::size_type pos = str.find(info.decimal_separator);
   if (pos != zstring::npos)
   {
     sub_picture.integer_part.str = str.substr(0, pos);
@@ -653,7 +653,7 @@ static void parsePicture(FormatNumberInfo& info)
 {
   errorIfTwoOrMore(info.pictureString, info.pattern_separator.c_str(), info);
 
-  zstring::size_type pos = info.pictureString.find(info.pattern_separator.c_str());
+  zstring::size_type pos = info.pictureString.find(info.pattern_separator);
   if (pos != zstring::npos)
   {
     info.pos_subpicture.str = info.pictureString.substr(0, pos);
