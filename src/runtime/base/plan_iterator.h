@@ -171,12 +171,13 @@ private:
 public:
 #if ZORBA_BATCHING_TYPE == 1
 public:
-  csize          theMaxItem;
-  csize          theCurrItem;
-  store::Item_t  theBatch[ZORBA_BATCHING_BATCHSIZE];
+  bool             theIsDone;
+  store::Item_t  * theEndItem;
+  store::Item_t  * theCurrItem;
+  store::Item_t    theBatch[ZORBA_BATCHING_BATCHSIZE];
 #endif
 #ifndef NDEBUG
-  bool           theIsOpened;
+  bool             theIsOpened;
 #endif
 
 public:
@@ -184,8 +185,9 @@ public:
     :
     theDuffsLine(DUFFS_ALLOCATE_RESOURCES)
 #if ZORBA_BATCHING_TYPE == 1
-    , theMaxItem(0)
-    , theCurrItem(ZORBA_BATCHING_BATCHSIZE)
+    , theIsDone(false)
+    , theEndItem(NULL)
+    , theCurrItem(NULL)
 #endif
 #ifndef NDEBUG
     , theIsOpened(false)
@@ -229,10 +231,9 @@ public:
   {
     theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
 #if ZORBA_BATCHING_TYPE == 1
-    theMaxItem = 0;
-    theCurrItem = ZORBA_BATCHING_BATCHSIZE;
-    //for (csize i = 0; i < ZORBA_BATCHING_BATCHSIZE; ++i)
-    //  theBatch[i] = NULL;
+    theIsDone = false;
+    theEndItem = NULL;
+    theCurrItem = NULL;
 #endif
   }
 };
@@ -413,18 +414,24 @@ public:
     PlanIteratorState* state =
     StateTraitsImpl<PlanIteratorState>::getState(planState, iter->getStateOffset());
 
-    if (state->theCurrItem == ZORBA_BATCHING_BATCHSIZE)
+    if (state->theCurrItem == state->theEndItem)
     {
+      // there are no more buffered items, so pruduce the next batch, if any
+
+      if (state->theIsDone)
+        return false;
+
       iter->produceNext(planState);
-      state->theCurrItem = 0;
+
+      if (state->theCurrItem == state->theEndItem)
+      {
+        // nothing was produced.
+        assert(state->theIsDone);
+        return false;
+      }
     }
 
-    if (state->theCurrItem == state->theMaxItem)
-    {
-      return false;
-    }
-
-    result.transfer(state->theBatch[state->theCurrItem]);
+    result.transfer(*state->theCurrItem);
     ++state->theCurrItem;
     return true;
   }
@@ -498,20 +505,25 @@ public:
     PlanIteratorState* state =
     StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
     assert(state->theIsOpened);
-    csize i = 0;
+    state->theEndItem = &state->theBatch[ZORBA_BATCHING_BATCHSIZE];
+    state->theCurrItem = &state->theBatch[0];
     do
     {
       // In general, to compute this iterator's next result, nextImpl() will
       // call consumeNext() on one or more of this iterator's child iterators.
-      if (!static_cast<const IterType*>(this)->nextImpl(state->theBatch[i], planState))
+      if (!static_cast<const IterType*>(this)->nextImpl(*state->theCurrItem, planState))
       {
-        state->theMaxItem = i;
+        state->theEndItem = state->theCurrItem;
+        state->theCurrItem = &state->theBatch[0];
+        state->theIsDone = true;
         return;
       }
-    }
-    while (++i < ZORBA_BATCHING_BATCHSIZE);
 
-    state->theMaxItem = ZORBA_BATCHING_BATCHSIZE;
+      ++state->theCurrItem;
+    }
+    while (state->theCurrItem < state->theEndItem);
+
+    state->theCurrItem = &state->theBatch[0];
   }
 
 #else // ZORBA_BATCHING_TYPE
