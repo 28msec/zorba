@@ -400,16 +400,16 @@ RoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 /*******************************************************************************
 
 ********************************************************************************/
-static const char* decimal_separator_param = "decimal-separator";
-static const char* grouping_separator_param = "grouping-separator";
-static const char* infinity_param = "infinity";
-static const char* minus_sign_param = "minus-sign";
-static const char* nan_param = "NaN";
-static const char* percent_param = "percent";
-static const char* per_mille_param = "per-mille";
-static const char* zero_digit_param = "zero-digit";
-static const char* digit_param = "digit";
-static const char* pattern_separator_param = "pattern-separator";
+static const char decimal_separator_param[] = "decimal-separator";
+static const char grouping_separator_param[] = "grouping-separator";
+static const char infinity_param[] = "infinity";
+static const char minus_sign_param[] = "minus-sign";
+static const char nan_param[] = "NaN";
+static const char percent_param[] = "percent";
+static const char per_mille_param[] = "per-mille";
+static const char zero_digit_param[] = "zero-digit";
+static const char digit_param[] = "digit";
+static const char pattern_separator_param[] = "pattern-separator";
 
 
 class FormatNumberInfo
