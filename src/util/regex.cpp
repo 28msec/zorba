@@ -58,10 +58,10 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef uint32_t icu_flags_t;
+typedef uint32_t icu_flags_type;
 
-static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
-  icu_flags_t icu_flags = 0;
+static icu_flags_type convert_xquery_flags( char const *xq_flags ) {
+  icu_flags_type icu_flags = 0;
   if ( xq_flags ) {
     for ( char const *f = xq_flags; *f; ++f ) {
       switch ( *f ) {
@@ -89,9 +89,15 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
   return icu_flags;
 }
 
+template<class C> inline
+typename C::value_type peek( C const &c, typename C::const_iterator i ) {
+  typedef typename C::value_type value_type;
+  return ++i != c.end() ? *i : value_type();
+}
+
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
-  icu_flags_t const icu_flags = convert_xquery_flags( xq_flags );
+  icu_flags_type const icu_flags = convert_xquery_flags( xq_flags );
   bool const i_flag = (icu_flags & UREGEX_CASE_INSENSITIVE) != 0;
   bool const m_flag = (icu_flags & UREGEX_MULTILINE) != 0;
   bool const q_flag = (icu_flags & UREGEX_LITERAL) != 0;
@@ -101,7 +107,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   icu_re->reserve( xq_re.length() );    // approximate
 
   bool got_backslash = false;
-  bool in_char_class = false;           // within [...]
+  int  in_char_class = 0;               // within [...]
   bool is_first_char = true;            // to check ^ placement
 
   bool in_backref = false;              // '\'[1-9][0-9]*
@@ -298,19 +304,28 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             cap_sub[ --cur_cap_sub ] = false;
           }
           break;
+        case '-':
+          if ( in_char_class && peek( xq_re, xq_c ) == '[' ) {
+            //
+            // ICU uses -- to indicate range subtraction, e.g.,
+            // XQuery [A-Z-[OI]] becomes ICU [A-Z--[OI]].
+            //
+            *icu_re += '-';
+          }
+          break;
         case '[':
           if ( q_flag )
             *icu_re += '\\';
           else {
-            in_char_class = true;
+            ++in_char_class;
             goto append;
           }
           break;
         case ']':
           if ( q_flag )
             *icu_re += '\\';
-          else
-            in_char_class = false;
+          else if ( in_char_class > 0 )
+            --in_char_class;
           break;
         case '^':
           if ( q_flag )
@@ -387,7 +402,8 @@ namespace unicode {
 
 void regex::compile( string const &u_pattern, char const *flags,
                      char const *pattern ) {
-  icu_flags_t const icu_flags = convert_xquery_flags( flags ) & ~UREGEX_LITERAL;
+  icu_flags_type const icu_flags =
+    convert_xquery_flags( flags ) & ~UREGEX_LITERAL;
   delete matcher_;
   UErrorCode status = U_ZERO_ERROR;
   matcher_ = new RegexMatcher( u_pattern, icu_flags, status );
