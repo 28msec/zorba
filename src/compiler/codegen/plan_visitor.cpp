@@ -476,23 +476,16 @@ void end_visit(function_item_expr& v)
 
   if (v.is_inline())
   {
-    // inline function
-    size_t lSize = v.get_subst_vars_values().size();
-
-    for (size_t i = 0; i < lSize; ++i)
-    {
-      PlanIter_t varIter = NULL;
-      PlanIter_t enclosedIter = NULL;
-
-      if (!v.get_is_global_var()[i])
-      {
-        varIter = pop_itstack();
-        enclosedIter = varIter;
-        fnInfo->theScopedVarsIterators.push_back(varIter);
-      }
+    for (csize i = 0; i < v.get_subst_vars_values().size(); ++i)
+    {      
+      if (!v.get_is_global_var()[i])     
+        fnInfo->theScopedVarsIterators.push_back(pop_itstack());
 
       // TODO: cleanup debug info
       /*
+      PlanIter_t varIter = NULL;
+      PlanIter_t enclosedIter = NULL;
+
       store::Item* var_qname = NULL;
       if (dynamic_cast<LetVarIterator*>(varIter.getp()) != NULL)
         var_qname = dynamic_cast<LetVarIterator*>(varIter.getp())->getVarName();
@@ -517,6 +510,124 @@ void end_visit(function_item_expr& v)
 
     std::reverse(fnInfo->theScopedVarsIterators.begin(), fnInfo->theScopedVarsIterators.end());
   }
+
+  /*
+  // This portion is taken from the eval iterator
+  {
+    // Create the "import" sctx. The importOuterEnv() method (called below) will
+    // register into the importSctx (a) the outer vars of the eval query and (b)
+    // the expression-level ns bindings of the outer query at the place where
+    // the eval call appears at.
+    static_context* importSctx = sctx->create_child_context();
+
+    // Create the root sctx for the eval query
+    static_context* evalSctx = importSctx->create_child_context();
+
+    // Create the ccb for the eval query
+
+    fnInfo->theCCBHolder.reset(new CompilerCB(*theCCB));
+    fnInfo->theCCB = fnInfo->theCCBHolder.get();
+    fnInfo->theCCB->theRootSctx = evalSctx;
+    (fnInfo->theCCB->theSctxMap)[1] = evalSctx;
+
+    // Create the dynamic context for the eval query
+    // std::auto_ptr<dynamic_context> evalDctx;
+    // evalDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
+    // evalDctx.reset(new dynamic_context());
+
+    // Import the outer environment.
+    // importOuterEnv(planState, evalCCB.get(), importSctx, evalDctx.get());
+
+    // Set the values for the (explicit) external vars of the eval query
+    // setExternalVariables(evalCCB.get(), importSctx, evalDctx.get());
+
+
+    // std::cerr << "--> " << toString() << ": creating function item with params: " << std::endl;
+    // for (csize i=0; i<theChildren.size(); i++)
+    //  std::cerr << "    " << (theDynamicFunctionInfo->theScopedVarsNames[i].getp() ? theDynamicFunctionInfo->theScopedVarsNames[i]->show() : "") << std::endl;
+
+    // std::cerr << "--> the body before: " << static_cast<user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody()->toString() << std::endl;
+
+    // result = new FunctionItem(theDynamicFunctionInfo, evalCCB.release(), evalDctx.release());
+
+    ulong maxOuterVarId = 1;
+    ++maxOuterVarId; // TODO: get it from the plan_visitor
+
+    csize curChild = -1;
+    csize numOuterVars = fnInfo->theScopedVarsNames.size();
+    for (csize i = 0; i < numOuterVars; ++i)
+    {
+      var_expr* ve = fnInfo->theCCB->theEM->create_var_expr(importSctx,
+                                                            NULL,
+                                                            qloc,
+                                                            var_expr::hof_var,
+                                                            fnInfo->theScopedVarsNames[i].getp());
+
+      // ve->set_type(theOuterVarTypes[i]); TODO: get types
+      if (!fnInfo->theIsGlobalVar[i])
+      {
+        ++curChild;
+        // store::Iterator_t iter = new PlanIteratorWrapper(theChildren[curChild], planState);
+        // evalDctx->add_variable(maxOuterVarId, iter);
+        ve->set_unique_id(maxOuterVarId);
+
+        // std::cerr << "--> importOuterEnv(): var: " << theDynamicFunctionInfo->theScopedVarsNames[i]->toString() << " assigned id: " << maxOuterVarId << std::endl;
+
+        if (fnInfo->theSubstVarsValues[i] != NULL
+            &&
+            fnInfo->theSubstVarsValues[i]->get_unique_id() == 0)
+        {
+          fnInfo->theSubstVarsValues[i]->set_var_info(NULL);
+          fnInfo->theSubstVarsValues[i]->set_unique_id(maxOuterVarId);
+        }
+
+        ++maxOuterVarId;
+      }
+      else
+      {
+        static_context* outerSctx = importSctx->get_parent();
+
+        VarInfo* outerGlobalVar = outerSctx->lookup_var(fnInfo->theScopedVarsNames[i]);
+
+        ulong outerGlobalVarId = 0;
+
+        if (outerGlobalVar)
+        {
+          outerGlobalVarId = outerGlobalVar->getId();
+        }
+        else
+        {
+          // std::cerr << "--> searching for var: " << theDynamicFunctionInfo->theScopedVarsNames[i]->toString() << std::endl;
+          for (csize j=0; j<fnInfo->theSubstVarsValues.size(); j++)
+          {
+            // std::cerr << "    substVar: " << (theDynamicFunctionInfo->theSubstVarsValues[j] ? theDynamicFunctionInfo->theSubstVarsValues[j]->toString() : "NULL");
+            if (fnInfo->theSubstVarsValues[j]->get_name()->equals(fnInfo->theScopedVarsNames[i].getp()))
+              outerGlobalVarId = fnInfo->theSubstVarsValues[j]->get_unique_id();
+          }
+        }
+
+        // ZORBA_ASSERT(outerGlobalVar);
+
+        // std::cerr << "--> importOuterEnv(): outerSctx: " << outerSctx->toString() << std::endl;
+
+        // std::cerr << "--> importOuterEnv(): updating id for subst_var: "
+        //           << (theDynamicFunctionInfo->theSubstVarsValues[i] ? theDynamicFunctionInfo->theSubstVarsValues[i]->toString() : "NULL\n");
+
+
+        if (fnInfo->theSubstVarsValues[i] != NULL
+            &&
+            fnInfo->theSubstVarsValues[i]->get_unique_id() == 0)
+        {
+          fnInfo->theSubstVarsValues[i]->set_unique_id(outerGlobalVarId);
+        }
+
+        ve->set_unique_id(outerGlobalVarId);
+      }
+
+      importSctx->bind_var(ve, qloc);
+    }
+  }
+  */
 
   push_itstack(new DynamicFunctionIterator(sctx, qloc, fnInfo));
 }

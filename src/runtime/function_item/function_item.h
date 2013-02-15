@@ -40,6 +40,7 @@ class DynamicFunctionInfo : public SimpleRCObject
 {
 public: // TODO: not public
 
+  std::auto_ptr<CompilerCB>     theCCBHolder;
   CompilerCB                  * theCCB;
   static_context              * theSctx;
   QueryLoc                      theLoc;

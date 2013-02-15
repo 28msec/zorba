@@ -159,8 +159,7 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     evalDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
     
     // Import the outer environment.
-    ulong maxOuterVarId;
-    importOuterEnv(planState, evalCCB.get(), importSctx, evalDctx.get(), maxOuterVarId);
+    importOuterEnv(planState, evalCCB.get(), importSctx, evalDctx.get());
 
     // Set the values for the (explicit) external vars of the eval query
     setExternalVariables(evalCCB.get(), importSctx, evalDctx.get());
@@ -214,10 +213,9 @@ void DynamicFunctionIterator::importOuterEnv(
     PlanState& planState,
     CompilerCB* evalCCB,
     static_context* importSctx,
-    dynamic_context* evalDctx,
-    ulong& maxOuterVarId) const
+    dynamic_context* evalDctx) const
 {
-  maxOuterVarId = 1;
+  ulong maxOuterVarId = 1;
 
   // Copy all the var values from the outer-query global dctx into the eval-query
   // dctx. This is need to handle the following scenario: (a) $x is an outer-query
@@ -267,6 +265,7 @@ void DynamicFunctionIterator::importOuterEnv(
   // (a) create a declaration inside the importSctx.
   // (b) Set its var id
   // (c) If it is not a global one, set its value within the eval dctx.
+
 
   csize curChild = -1;
 
@@ -318,7 +317,7 @@ void DynamicFunctionIterator::importOuterEnv(
       {
         outerGlobalVarId = outerGlobalVar->getId();
       }
-      else if (outerGlobalVar == NULL)
+      else
       {
         // std::cerr << "--> searching for var: " << theDynamicFunctionInfo->theScopedVarsNames[i]->toString() << std::endl;
         for (csize j=0; j<theDynamicFunctionInfo->theSubstVarsValues.size(); j++)
@@ -332,10 +331,10 @@ void DynamicFunctionIterator::importOuterEnv(
       // ZORBA_ASSERT(outerGlobalVar);
 
       // std::cerr << "--> importOuterEnv(): outerSctx: " << outerSctx->toString() << std::endl;
-      /*
-      std::cerr << "--> importOuterEnv(): updating id for subst_var: "
-                << (theDynamicFunctionInfo->theSubstVarsValues[i] ? theDynamicFunctionInfo->theSubstVarsValues[i]->toString() : "NULL\n");
-      */
+
+      //std::cerr << "--> importOuterEnv(): updating id for subst_var: "
+      //          << (theDynamicFunctionInfo->theSubstVarsValues[i] ? theDynamicFunctionInfo->theSubstVarsValues[i]->toString() : "NULL\n");
+
 
       if (theDynamicFunctionInfo->theSubstVarsValues[i] != NULL
           &&
@@ -349,6 +348,7 @@ void DynamicFunctionIterator::importOuterEnv(
 
     importSctx->bind_var(ve, loc);
   }
+
 
   // Import the outer-query ns bindings
   store::NsBindings::const_iterator ite = theDynamicFunctionInfo->theLocalBindings.begin();
