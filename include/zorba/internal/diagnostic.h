@@ -259,7 +259,7 @@ public:
    */
   template<typename T>
   parameters& operator,( T const &t ) {
-    params_.push_back( ztd::to_string( t ) );
+    add_param( ztd::to_string( t ) );
     return *this;
   }
 
@@ -330,6 +330,7 @@ public:
 private:
   params_type params_;
 
+  void add_param( value_type const& );
   value_type lookup_param( size_type i ) const;
   bool then_else( bool, value_type const&, value_type::size_type*,
                   value_type* ) const;
