@@ -29,7 +29,6 @@
 
 #include "runtime/collections/collections_impl.h"
 #include "runtime/collections/collections.h"
-#include "runtime/indexing/index_ddl.h"
 
 #include "system/globalenv.h"
 
@@ -45,15 +44,16 @@ namespace zorba
 
 
 /*******************************************************************************
+
 ********************************************************************************/
-bool
-rewriteSubsequenceCollection(static_context* aSctx,
-                             const QueryLoc& aLoc,
-                             std::vector<PlanIter_t>& aArgs,
-                             bool aIsIntSubsequence)
+bool rewriteSubsequenceCollection(
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    bool aIsIntSubsequence)
 {
-  ZorbaCollectionIterator* collIter 
-    = dynamic_cast<ZorbaCollectionIterator*>(aArgs[0].getp());
+  ZorbaCollectionIterator* collIter = 
+  dynamic_cast<ZorbaCollectionIterator*>(aArgs[0].getp());
   assert(collIter);
   std::vector<PlanIter_t>& lCollectionArgs = collIter->getChildren();
 
@@ -62,8 +62,10 @@ rewriteSubsequenceCollection(static_context* aSctx,
   {
     return false;
   }
+
   xs_long pos;
   const store::Item_t& lPosItem = lPosIter->getValue();
+
   try
   {
     if (aIsIntSubsequence)
@@ -81,6 +83,7 @@ rewriteSubsequenceCollection(static_context* aSctx,
   {
     return false;
   }
+
   if (pos <= 1)
   {
     // if the start position is less than 1 we can't push this down into
@@ -101,7 +104,7 @@ rewriteSubsequenceCollection(static_context* aSctx,
     // subsequence(collection(qname), 10, 20) 
     //   -> subsequence(collection(qname, 10-1), 10, 20)
     PlanIter_t& lNewCollSkipIter = aArgs[1];
-    PlanIter_t lOneIter = new SingletonIterator (aSctx, aLoc, lItemOne);
+    PlanIter_t lOneIter = new SingletonIterator(aSctx, aLoc, lItemOne);
     lCollectionArgs.push_back(
         new NumArithIterator<zorba::SubtractOperation>(
           collIter->getStaticContext(), collIter->getLocation(),
@@ -139,14 +142,17 @@ rewriteSubsequenceCollection(static_context* aSctx,
     // no collection function with 0 or >3 params
     assert(false);
   }
+
   aArgs[0] = new ZorbaCollectionIterator(collIter->getStaticContext(),
-      collIter->getLocation(), lCollectionArgs, collIter->isDynamic());
+                                         collIter->getLocation(),
+                                         lCollectionArgs,
+                                         collIter->isDynamic());
 
   // after pushing the position param down we need to rewrite the actual 
   // position to 1:
   // subsequence(collection(qname, 10+10-1), 10, 20) 
   //   -> subsequence(collection(qname, 10+10-1), 1, 20)
-  aArgs[1] = new SingletonIterator (aSctx, aLoc, lItemOne);
+  aArgs[1] = new SingletonIterator(aSctx, aLoc, lItemOne);
 
   return true;
 }
@@ -816,42 +822,6 @@ PlanIter_t fn_count::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  const std::type_info& counted_type = typeid(*argv[0]);
-
-  if (typeid(ProbeIndexPointValueIterator) == counted_type)
-  {
-    ProbeIndexPointValueIterator& lIter
-      = static_cast<ProbeIndexPointValueIterator&>(*argv[0]);
-
-    return new ProbeIndexPointValueIterator(
-        sctx, loc, lIter.getChildren(), true, lIter.hasSkip());
-  }
-  else if (typeid(ProbeIndexRangeValueIterator) == counted_type)
-  {
-    ProbeIndexRangeValueIterator& lIter
-      = static_cast<ProbeIndexRangeValueIterator&>(*argv[0]);
-
-    return new ProbeIndexRangeValueIterator(
-        sctx, loc, lIter.getChildren(), true, lIter.hasSkip());
-  }
-  else if (typeid(ProbeIndexPointGeneralIterator) == counted_type)
-  {
-    ProbeIndexPointGeneralIterator& lIter
-      = static_cast<ProbeIndexPointGeneralIterator&>(*argv[0]);
-
-    return new ProbeIndexPointGeneralIterator(
-        sctx, loc, lIter.getChildren(), true);
-  }
-  else if (typeid(ProbeIndexRangeGeneralIterator) == counted_type)
-  {
-    ProbeIndexRangeGeneralIterator& lIter
-      = static_cast<ProbeIndexRangeGeneralIterator&>(*argv[0]);
-
-    return new ProbeIndexRangeGeneralIterator(
-        sctx, loc, lIter.getChildren(), true);
-  }
-  
-  // fallback
   return new FnCountIterator(sctx, loc, argv);
 }
 

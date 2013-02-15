@@ -74,7 +74,7 @@ static void checkKeyType(
     const QueryLoc& loc,
     TypeManager* tm,
     const IndexDecl* indexDecl,
-    ulong keyNo,
+    csize keyNo,
     store::Item_t& searchKey)
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
@@ -593,14 +593,12 @@ ProbeIndexPointValueIterator::ProbeIndexPointValueIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool aCountOnly,
-    bool aSkip)
+    bool skip)
   : 
   NaryBaseIterator<ProbeIndexPointValueIterator,
                    ProbeIndexPointValueIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theCountOnly(aCountOnly),
-  theSkip(aSkip)
+  theSkip(skip)
 {
 }
 
@@ -616,7 +614,6 @@ void ProbeIndexPointValueIterator::serialize(::zorba::serialization::Archiver& a
                     ProbeIndexPointValueIteratorState>*)this);
 
   ar & theCheckKeyType;
-  ar & theCountOnly;
   ar & theSkip;
 }
 
@@ -625,115 +622,34 @@ bool ProbeIndexPointValueIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t qnameItem;
-  store::Item_t keyItem;
   store::IndexCondition_t cond;
-  ulong numChildren = (ulong)theChildren.size();
-  ulong i;
-  bool status;
-  TypeManager* tm = theSctx->get_typemanager();
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-  xs_integer lSkip = xs_integer::zero();
-  ulong numNonKeyParams = (theSkip ? 2 : 1);
+  xs_integer skip = xs_integer::zero();
 
   try
   {
     ProbeIndexPointValueIteratorState* state;
     DEFAULT_STACK_INIT(ProbeIndexPointValueIteratorState, state, planState);
 
-    status = consumeNext(qnameItem, theChildren[0], planState);
-    ZORBA_ASSERT(status);
+    getIndex(state, planState);
 
-    if (state->theQname == NULL || !state->theQname->equals(qnameItem)) 
+    cond = createCondition(state, planState);
+
+    if (cond)
     {
-      state->theQname = qnameItem;
-
-      if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
+      if (theSkip)
       {
-        RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
-        ERROR_PARAMS(qnameItem->getStringValue()));
+        store::Item_t skipItem;
+        ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
+        skip = skipItem->getIntegerValue();
+        if (skip < xs_integer::zero())
+          skip = xs_integer::zero();
       }
 
-      if (state->theIndexDecl->getNumKeyExprs() != numChildren - numNonKeyParams)
-      {
-        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(qnameItem->getStringValue(),
-                     "index",
-                     numChildren - numNonKeyParams,
-                     state->theIndexDecl->getNumKeyExprs()));
-      }
-
-      state->theIndex = (state->theIndexDecl->isTemp() ?
-                         planState.theLocalDynCtx->getIndex(qnameItem) :
-                         GENV_STORE.getIndex(state->theQname));
-      
-      if (state->theIndex == NULL)
-      {
-        RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
-        ERROR_PARAMS(qnameItem->getStringValue()));
-      }
-      
-      state->theIterator = GENV_STORE.getIteratorFactory()->
-      createIndexProbeIterator(state->theIndex);
-    }
-
-    cond = state->theIndex->createCondition(store::IndexCondition::POINT_VALUE);
-
-    // read skip
-    if (theSkip)
-    {
-      store::Item_t lSkipItem;
-      status = consumeNext(lSkipItem, theChildren[1], planState);
-      ZORBA_ASSERT(status);
-      lSkip = lSkipItem->getIntegerValue();
-      if (lSkip < xs_integer::zero())
-        lSkip = xs_integer::zero();
-    }
-
-    for (i = numNonKeyParams; i < numChildren; ++i) 
-    {
-      if (!consumeNext(keyItem, theChildren[i], planState)) 
-      {
-        // Return the empty seq if any of the search key items is the empty seq.
-        break;
-      }
-
-      if (theCheckKeyType)
-      {
-        checkKeyType(loc, tm, state->theIndexDecl, i - numNonKeyParams, keyItem);
-      }
-
-      if (state->theIndexDecl->isGeneral() &&
-          (state->theIndexDecl->getKeyTypes())[i - numNonKeyParams] == NULL)
-      {
-        xqtref_t searchKeyType = tm->create_value_type(keyItem);
+      state->theIterator->init(cond, skip);
+      state->theIterator->open();
         
-        if (TypeOps::is_equal(tm, *searchKeyType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
-        {
-          zstring str = keyItem->getStringValue();
-          GENV_ITEMFACTORY->createString(keyItem, str);
-        }
-      }
-      
-      cond->pushItem(keyItem);
-    }
-    
-    if (i == numChildren)
-    {
-      state->theIterator->init(cond, lSkip);
-
-      if (!theCountOnly)
+      while(state->theIterator->next(result)) 
       {
-        state->theIterator->open();
-        
-        while(state->theIterator->next(result)) 
-        {
-          STACK_PUSH(true, state);
-        }
-      }
-      else
-      {
-        state->theIterator->count(result);
         STACK_PUSH(true, state);
       }
     }
@@ -742,9 +658,138 @@ bool ProbeIndexPointValueIterator::nextImpl(
   }
   catch (ZorbaException& e)
   {
-    set_source(e,  loc, false);
+    set_source(e, loc, false);
     throw;
   }
+}
+
+
+void ProbeIndexPointValueIterator::count(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::IndexCondition_t cond;
+  xs_integer skip = xs_integer::zero();
+
+  ProbeIndexPointValueIteratorState* state =
+  StateTraitsImpl<ProbeIndexPointValueIteratorState>::
+  getState(planState, getStateOffset());
+
+  try
+  {
+    getIndex(state, planState);
+
+    cond = createCondition(state, planState);
+
+    if (cond)
+    {
+      if (theSkip)
+      {
+        store::Item_t skipItem;
+        ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
+        skip = skipItem->getIntegerValue();
+        if (skip < xs_integer::zero())
+          skip = xs_integer::zero();
+      }
+
+      state->theIterator->init(cond, skip);
+      state->theIterator->count(result);
+    }
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc, false);
+    throw;
+  }
+}
+
+
+void ProbeIndexPointValueIterator::getIndex(
+    ProbeIndexPointValueIteratorState* state,
+    PlanState& planState) const
+{
+  store::Item_t qnameItem;
+  csize numChildren = theChildren.size();
+  csize numNonKeyParams = (theSkip ? 2 : 1);
+
+  ZORBA_ASSERT(consumeNext(qnameItem, theChildren[0], planState));
+
+  if (state->theQname == NULL || !state->theQname->equals(qnameItem)) 
+  {
+    state->theQname = qnameItem;
+
+    if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
+    {
+      RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+      ERROR_PARAMS(qnameItem->getStringValue()));
+    }
+
+    if (state->theIndexDecl->getNumKeyExprs() != numChildren - numNonKeyParams)
+    {
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ERROR_PARAMS(qnameItem->getStringValue(),
+                   "index",
+                   numChildren - numNonKeyParams,
+                   state->theIndexDecl->getNumKeyExprs()));
+    }
+
+    state->theIndex = (state->theIndexDecl->isTemp() ?
+                       planState.theLocalDynCtx->getIndex(qnameItem) :
+                       GENV_STORE.getIndex(state->theQname));
+      
+    if (state->theIndex == NULL)
+    {
+      RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
+      ERROR_PARAMS(qnameItem->getStringValue()));
+    }
+      
+    state->theIterator = GENV_STORE.getIteratorFactory()->
+    createIndexProbeIterator(state->theIndex);
+  }
+}
+
+
+store::IndexCondition_t ProbeIndexPointValueIterator::createCondition(
+    ProbeIndexPointValueIteratorState* state,
+    PlanState& planState) const
+{
+  TypeManager* tm = theSctx->get_typemanager();
+  store::Item_t keyItem;
+  store::IndexCondition_t cond;
+  csize numChildren = theChildren.size();
+  csize numNonKeyParams = (theSkip ? 2 : 1);
+
+  cond = state->theIndex->createCondition(store::IndexCondition::POINT_VALUE);
+
+  for (csize i = numNonKeyParams; i < numChildren; ++i) 
+  {
+    if (!consumeNext(keyItem, theChildren[i], planState)) 
+    {
+      // Return the empty seq if any of the search key items is the empty seq.
+      return NULL;
+    }
+
+    if (theCheckKeyType)
+    {
+      checkKeyType(loc, tm, state->theIndexDecl, i - numNonKeyParams, keyItem);
+    }
+
+    if (state->theIndexDecl->isGeneral() &&
+        (state->theIndexDecl->getKeyTypes())[i - numNonKeyParams] == NULL)
+    {
+      store::SchemaTypeCode searchKeyType = keyItem->getTypeCode();
+        
+      if (searchKeyType == store::XS_UNTYPED_ATOMIC)
+      {
+        zstring str = keyItem->getStringValue();
+        GENV_ITEMFACTORY->createString(keyItem, str);
+      }
+    }
+      
+    cond->pushItem(keyItem);
+  }
+
+  return cond;
 }
 
 
@@ -786,13 +831,11 @@ ProbeIndexPointGeneralIteratorState::~ProbeIndexPointGeneralIteratorState()
 ProbeIndexPointGeneralIterator::ProbeIndexPointGeneralIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    bool aCountOnly)
+    std::vector<PlanIter_t>& children)
   : 
   NaryBaseIterator<ProbeIndexPointGeneralIterator,
                    ProbeIndexPointGeneralIteratorState>(sctx, loc, children),
-  theCheckKeyType(true),
-  theCountOnly(aCountOnly)
+  theCheckKeyType(true)
 {
 }
 
@@ -808,7 +851,6 @@ void ProbeIndexPointGeneralIterator::serialize(::zorba::serialization::Archiver&
   (NaryBaseIterator<ProbeIndexPointGeneralIterator,
                     ProbeIndexPointGeneralIteratorState>*)this);
 	ar & theCheckKeyType;
-  ar & theCountOnly;
 }
 
 
@@ -816,64 +858,15 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t qnameItem;
   store::Item_t keyItem;
-  ulong numChildren = (ulong)theChildren.size();
-  bool status;
 
   try
   {
     ProbeIndexPointGeneralIteratorState* state;
     DEFAULT_STACK_INIT(ProbeIndexPointGeneralIteratorState, state, planState);
 
-    status = consumeNext(qnameItem, theChildren[0], planState);
-    ZORBA_ASSERT(status);
-
-    if (state->theQname == NULL || !state->theQname->equals(qnameItem)) 
-    {
-      state->theQname = qnameItem;
-      
-      if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
-      {
-        RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
-        ERROR_PARAMS(qnameItem->getStringValue()));
-      }
-
-      if (!state->theIndexDecl->isGeneral())
-      {
-        RAISE_ERROR(zerr::ZDDY0029_INDEX_POINT_GENERAL_PROBE_NOT_ALLOWED, loc,
-        ERROR_PARAMS(qnameItem->getStringValue()));
-      }
-
-      if (state->theIndexDecl->getNumKeyExprs() != numChildren-1 ||
-          numChildren != 2)
-      {
-        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(qnameItem->getStringValue(),
-                     "index",
-                     numChildren-1,
-                     state->theIndexDecl->getNumKeyExprs()));
-      }
-
-      state->theIndex = (state->theIndexDecl->isTemp() ?
-                         planState.theLocalDynCtx->getIndex(qnameItem) :
-                         GENV_STORE.getIndex(state->theQname));
-
-      if (state->theIndex == NULL)
-      {
-        RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
-        ERROR_PARAMS(qnameItem->getStringValue()));
-      }
-
-      state->theIterator = GENV_STORE.getIteratorFactory()->
-                           createIndexProbeIterator(state->theIndex);
-    }
-    
-    if (state->theCondition == NULL)
-    {
-      state->theCondition = 
-      state->theIndex->createCondition(store::IndexCondition::POINT_GENERAL);
-    }
+    getIndex(state, planState);
+    createCondition(state);
 
     while (consumeNext(keyItem, theChildren[1], planState)) 
     {
@@ -906,6 +899,68 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
   {
     set_source(e, loc, false);
     throw;
+  }
+}
+
+
+void ProbeIndexPointGeneralIterator::getIndex(
+    ProbeIndexPointGeneralIteratorState* state,
+    PlanState& planState) const
+{
+  csize numChildren = theChildren.size();
+  store::Item_t qnameItem;
+
+  ZORBA_ASSERT(consumeNext(qnameItem, theChildren[0], planState));
+
+  if (state->theQname == NULL || !state->theQname->equals(qnameItem)) 
+  {
+    state->theQname = qnameItem;
+      
+    if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
+    {
+      RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+      ERROR_PARAMS(qnameItem->getStringValue()));
+    }
+
+    if (!state->theIndexDecl->isGeneral())
+    {
+      RAISE_ERROR(zerr::ZDDY0029_INDEX_POINT_GENERAL_PROBE_NOT_ALLOWED, loc,
+      ERROR_PARAMS(qnameItem->getStringValue()));
+    }
+
+    if (state->theIndexDecl->getNumKeyExprs() != numChildren-1 ||
+        numChildren != 2)
+    {
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ERROR_PARAMS(qnameItem->getStringValue(),
+                   "index",
+                   numChildren-1,
+                   state->theIndexDecl->getNumKeyExprs()));
+    }
+
+    state->theIndex = (state->theIndexDecl->isTemp() ?
+                       planState.theLocalDynCtx->getIndex(qnameItem) :
+                       GENV_STORE.getIndex(state->theQname));
+
+    if (state->theIndex == NULL)
+    {
+      RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
+      ERROR_PARAMS(qnameItem->getStringValue()));
+    }
+    
+    state->theIterator = GENV_STORE.getIteratorFactory()->
+                         createIndexProbeIterator(state->theIndex);
+  }
+}
+
+
+void ProbeIndexPointGeneralIterator::createCondition(
+    ProbeIndexPointGeneralIteratorState* state) const
+{
+  if (state->theCondition == NULL)
+  {
+    state->theCondition = 
+    state->theIndex->createCondition(store::IndexCondition::POINT_GENERAL);
   }
 }
 
@@ -983,14 +1038,12 @@ ProbeIndexRangeValueIterator::ProbeIndexRangeValueIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    bool aCountOnly,
-    bool aSkip)
+    bool skip)
   : 
   NaryBaseIterator<ProbeIndexRangeValueIterator,
                    ProbeIndexRangeValueIteratorState>(sctx, loc, children),
   theCheckKeyType(true),
-  theCountOnly(aCountOnly),
-  theSkip(aSkip)
+  theSkip(skip)
 {
 }
 
@@ -1007,7 +1060,6 @@ void ProbeIndexRangeValueIterator::serialize(::zorba::serialization::Archiver& a
                     ProbeIndexRangeValueIteratorState>*)this);
 
   ar & theCheckKeyType;
-  ar & theCountOnly;
   ar & theSkip;
 }
 
@@ -1016,187 +1068,32 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t qname;
-  IndexDecl_t indexDecl;
   store::IndexCondition_t cond;
-  ulong numChildren = (ulong)theChildren.size();
-  bool status;
-  TypeManager* tm = theSctx->get_typemanager();
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-  xs_integer lSkip = xs_integer::zero();
-  ulong lAmountNonKeyParams = (theSkip ? 2 : 1);
+  xs_integer skip = xs_integer::zero();
 
   try
   {
     ProbeIndexRangeValueIteratorState* state;
     DEFAULT_STACK_INIT(ProbeIndexRangeValueIteratorState, state, planState);
 
-    status = consumeNext(qname, theChildren[0], planState);
-    ZORBA_ASSERT(status);
+    getIndex(state, planState);
 
-    if (state->theQname == NULL || !state->theQname->equals(qname)) 
-    {
-      state->theQname = qname;
+    cond = createCondition(state, planState);
 
-      if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
-      {
-        RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
-        ERROR_PARAMS(qname->getStringValue()));
-      }
-
-      if (indexDecl->getMethod() != IndexDecl::TREE)
-      {
-        RAISE_ERROR(zerr::ZDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, loc,
-        ERROR_PARAMS(qname->getStringValue()));
-      }
-
-      if (numChildren < (6 + lAmountNonKeyParams) 
-       || (numChildren - lAmountNonKeyParams) % 6 != 0)
-      {
-        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(qname->getStringValue(),
-                     "index",
-                     numChildren - lAmountNonKeyParams,
-                     "multiple of 6"));
-      }
-
-      if (indexDecl->getNumKeyExprs() * 6 < numChildren-lAmountNonKeyParams)
-      {
-        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(qname->getStringValue(),
-                     "index",
-                     numChildren-lAmountNonKeyParams,
-                     indexDecl->getNumKeyExprs() * 6));
-      }
-
-      state->theIndex = (indexDecl->isTemp() ?
-                         planState.theLocalDynCtx->getIndex(qname) :
-                         GENV_STORE.getIndex(state->theQname));
-      
-      if (state->theIndex == NULL)
-      {
-        RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
-        ERROR_PARAMS(qname->getStringValue()));
-      }
-
-      state->theIterator = GENV_STORE.getIteratorFactory()->
-                           createIndexProbeIterator(state->theIndex);
-    }
-
-    cond = state->theIndex->createCondition(store::IndexCondition::BOX_VALUE);
-
-    // read skip
     if (theSkip)
     {
-      store::Item_t lSkipItem;
-      status = consumeNext(lSkipItem, theChildren[1], planState);
-      ZORBA_ASSERT(status);
-      lSkip = lSkipItem->getIntegerValue();
-      if (lSkip < xs_integer::zero())
-        lSkip = xs_integer::zero();
+      store::Item_t skipItem;
+      ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
+      skip = skipItem->getIntegerValue();
+      if (skip < xs_integer::zero())
+        skip = xs_integer::zero();
     }
 
-    ulong keyNo;
-    ulong i;
-    for (i = lAmountNonKeyParams, keyNo = 0; i < numChildren; i += 6, ++keyNo) 
-    {
-      store::Item_t tempLeft;
-      store::Item_t tempRight;
-      store::Item_t tempHaveLeft;
-      store::Item_t tempHaveRight;
-      store::Item_t tempInclLeft;
-      store::Item_t tempInclRight;
-
-      if (!consumeNext(tempLeft, theChildren[i], planState))
-        tempLeft = NULL;
- 
-      if (!consumeNext(tempRight, theChildren[i + 1], planState))
-        tempRight = NULL;
-
-      if (!consumeNext(tempHaveLeft, theChildren[i + 2], planState))
-        ZORBA_ASSERT(false);
-
-      if (!consumeNext(tempHaveRight, theChildren[i + 3], planState))
-        ZORBA_ASSERT(false);
-
-      if (!consumeNext(tempInclLeft, theChildren[i + 4], planState))
-        ZORBA_ASSERT(false);
- 
-      if (!consumeNext(tempInclRight, theChildren[i + 5], planState))
-        ZORBA_ASSERT(false);
-
-      bool haveLeft = tempHaveLeft->getBooleanValue();
-      bool haveRight = tempHaveRight->getBooleanValue();
-      bool inclLeft = tempInclLeft->getBooleanValue();
-      bool inclRight = tempInclRight->getBooleanValue();
+    state->theIterator->init(cond, skip);
+    state->theIterator->open();
       
-      if (tempLeft != NULL && theCheckKeyType)
-      {
-        checkKeyType(loc, theSctx->get_typemanager(), indexDecl, keyNo, tempLeft);
-      }
-
-      if (tempRight != NULL && theCheckKeyType)
-      {
-        checkKeyType(loc, theSctx->get_typemanager(), indexDecl, keyNo, tempRight);
-      }
-
-      if (indexDecl->isGeneral() &&
-          (indexDecl->getKeyTypes())[keyNo] == NULL)
-      {
-        xqtref_t leftType;
-        xqtref_t rightType;
-
-        if (tempLeft != NULL)
-        {
-          leftType = tm->create_value_type(tempLeft);
-          
-          if (TypeOps::is_equal(tm, *leftType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
-          {
-            zstring str = tempLeft->getStringValue();
-            GENV_ITEMFACTORY->createString(tempLeft, str);
-            leftType = rtm.STRING_TYPE_ONE;
-          }
-        }
-        
-        if (tempRight != NULL)
-        {
-          rightType = tm->create_value_type(tempRight);
-          
-          if (TypeOps::is_equal(tm, *rightType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
-          {
-            zstring str = tempRight->getStringValue();
-            GENV_ITEMFACTORY->createString(tempRight, str);
-            rightType = rtm.STRING_TYPE_ONE;
-          }
-        }
-        
-        if (leftType != NULL && rightType != NULL)
-        {
-          if (!TypeOps::is_subtype(tm, *leftType, *rightType) &&
-              !TypeOps::is_subtype(tm, *rightType, *leftType))
-          {
-            RAISE_ERROR(zerr::ZDDY0034_INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES, loc,
-            ERROR_PARAMS(qname->getStringValue()));
-          }
-        }
-      }
-      
-      cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
-    }
-
-    state->theIterator->init(cond, lSkip);
-    if (!theCountOnly)
+    while (state->theIterator->next(result)) 
     {
-      state->theIterator->open();
-      
-      while(state->theIterator->next(result)) 
-      {
-        STACK_PUSH(true, state);
-      }
-    }
-    else
-    {
-      state->theIterator->count(result);
       STACK_PUSH(true, state);
     }
     
@@ -1207,6 +1104,200 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     set_source(e, loc, false);
     throw;
   }
+}
+
+
+void ProbeIndexRangeValueIterator::count(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::IndexCondition_t cond;
+  xs_integer skip = xs_integer::zero();
+
+  ProbeIndexRangeValueIteratorState* state =
+  StateTraitsImpl<ProbeIndexRangeValueIteratorState>::
+  getState(planState, getStateOffset());
+
+  try
+  {
+    getIndex(state, planState);
+
+    cond = createCondition(state, planState);
+
+    if (theSkip)
+    {
+      store::Item_t skipItem;
+      ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
+      skip = skipItem->getIntegerValue();
+      if (skip < xs_integer::zero())
+        skip = xs_integer::zero();
+    }
+
+    state->theIterator->init(cond, skip);
+    state->theIterator->count(result);
+  }
+  catch (ZorbaException& e)
+  {
+    set_source(e, loc, false);
+    throw;
+  }
+}
+
+
+void ProbeIndexRangeValueIterator::getIndex(
+    ProbeIndexRangeValueIteratorState* state,
+    PlanState& planState) const
+{
+  store::Item_t qnameItem;
+  csize numChildren = theChildren.size();
+  csize numNonKeyParams = (theSkip ? 2 : 1);
+  IndexDecl_t indexDecl;
+
+  ZORBA_ASSERT(consumeNext(qnameItem, theChildren[0], planState));
+
+  if (state->theQname == NULL || !state->theQname->equals(qnameItem)) 
+  {
+    state->theQname = qnameItem;
+
+    if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
+    {
+      RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+      ERROR_PARAMS(qnameItem->getStringValue()));
+    }
+
+    if (state->theIndexDecl->getMethod() != IndexDecl::TREE)
+    {
+      RAISE_ERROR(zerr::ZDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, loc,
+      ERROR_PARAMS(qnameItem->getStringValue()));
+    }
+
+    if (numChildren < (6 + numNonKeyParams) ||
+        (numChildren - numNonKeyParams) % 6 != 0)
+    {
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ERROR_PARAMS(qnameItem->getStringValue(),
+                   "index",
+                   numChildren - numNonKeyParams,
+                   "multiple of 6"));
+    }
+
+    if (state->theIndexDecl->getNumKeyExprs() * 6 < numChildren - numNonKeyParams)
+    {
+      RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ERROR_PARAMS(qnameItem->getStringValue(),
+                   "index",
+                   numChildren-numNonKeyParams,
+                   state->theIndexDecl->getNumKeyExprs() * 6));
+    }
+
+    state->theIndex = (state->theIndexDecl->isTemp() ?
+                       planState.theLocalDynCtx->getIndex(qnameItem) :
+                       GENV_STORE.getIndex(state->theQname));
+      
+    if (state->theIndex == NULL)
+    {
+      RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
+      ERROR_PARAMS(qnameItem->getStringValue()));
+    }
+      
+    state->theIterator = GENV_STORE.getIteratorFactory()->
+                         createIndexProbeIterator(state->theIndex);
+  }
+}
+
+
+store::IndexCondition_t ProbeIndexRangeValueIterator::createCondition(
+    ProbeIndexRangeValueIteratorState* state,
+    PlanState& planState) const
+{
+  TypeManager* tm = theSctx->get_typemanager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+  store::IndexCondition_t cond;
+  csize numChildren = theChildren.size();
+  csize numNonKeyParams = (theSkip ? 2 : 1);
+
+  cond = state->theIndex->createCondition(store::IndexCondition::BOX_VALUE);
+
+  for (csize i = numNonKeyParams, keyNo = 0; i < numChildren; i += 6, ++keyNo) 
+  {
+    store::Item_t tempLeft;
+    store::Item_t tempRight;
+    store::Item_t tempHaveLeft;
+    store::Item_t tempHaveRight;
+    store::Item_t tempInclLeft;
+    store::Item_t tempInclRight;
+
+    if (!consumeNext(tempLeft, theChildren[i], planState))
+      tempLeft = NULL;
+ 
+    if (!consumeNext(tempRight, theChildren[i + 1], planState))
+      tempRight = NULL;
+
+    ZORBA_ASSERT(consumeNext(tempHaveLeft, theChildren[i + 2], planState));
+    ZORBA_ASSERT(consumeNext(tempHaveRight, theChildren[i + 3], planState));
+    ZORBA_ASSERT(consumeNext(tempInclLeft, theChildren[i + 4], planState));
+    ZORBA_ASSERT(consumeNext(tempInclRight, theChildren[i + 5], planState));
+
+    bool haveLeft = tempHaveLeft->getBooleanValue();
+    bool haveRight = tempHaveRight->getBooleanValue();
+    bool inclLeft = tempInclLeft->getBooleanValue();
+    bool inclRight = tempInclRight->getBooleanValue();
+      
+    if (tempLeft != NULL && theCheckKeyType)
+    {
+      checkKeyType(loc, tm, state->theIndexDecl, keyNo, tempLeft);
+    }
+
+    if (tempRight != NULL && theCheckKeyType)
+    {
+      checkKeyType(loc, tm, state->theIndexDecl, keyNo, tempRight);
+    }
+
+    if (state->theIndexDecl->isGeneral() &&
+        (state->theIndexDecl->getKeyTypes())[keyNo] == NULL)
+    {
+      xqtref_t leftType;
+      xqtref_t rightType;
+
+      if (tempLeft != NULL)
+      {
+        leftType = tm->create_value_type(tempLeft);
+          
+        if (TypeOps::is_equal(tm, *leftType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+        {
+          zstring str = tempLeft->getStringValue();
+          GENV_ITEMFACTORY->createString(tempLeft, str);
+          leftType = rtm.STRING_TYPE_ONE;
+        }
+      }
+        
+      if (tempRight != NULL)
+      {
+        rightType = tm->create_value_type(tempRight);
+          
+        if (TypeOps::is_equal(tm, *rightType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+        {
+          zstring str = tempRight->getStringValue();
+          GENV_ITEMFACTORY->createString(tempRight, str);
+          rightType = rtm.STRING_TYPE_ONE;
+        }
+      }
+        
+      if (leftType != NULL && rightType != NULL)
+      {
+        if (!TypeOps::is_subtype(tm, *leftType, *rightType) &&
+            !TypeOps::is_subtype(tm, *rightType, *leftType))
+        {
+          RAISE_ERROR(zerr::ZDDY0034_INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES, loc,
+          ERROR_PARAMS(state->theIndexDecl->getName()->getStringValue()));
+        }
+      }
+    }
+      
+    cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
+  }
+
+  return cond;
 }
 
 
@@ -1273,13 +1364,11 @@ void ProbeIndexRangeGeneralIteratorState::reset(PlanState& state)
 ProbeIndexRangeGeneralIterator::ProbeIndexRangeGeneralIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    bool aCountOnly)
+    std::vector<PlanIter_t>& children)
   : 
   NaryBaseIterator<ProbeIndexRangeGeneralIterator,
                    ProbeIndexRangeGeneralIteratorState>(sctx, loc, children),
-  theCheckKeyType(true),
-  theCountOnly(aCountOnly)
+  theCheckKeyType(true)
 {
 }
 
@@ -1296,7 +1385,6 @@ void ProbeIndexRangeGeneralIterator::serialize(::zorba::serialization::Archiver&
                     ProbeIndexRangeGeneralIteratorState>*)this);
 
   ar & theCheckKeyType;
-  ar & theCountOnly;
 }
 
 
@@ -1304,78 +1392,20 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
     store::Item_t& result, 
     PlanState& planState) const
 {
-  store::Item_t qname;
-  IndexDecl_t indexDecl;
   store::IndexCondition_t cond;
   bool haveLower = false;
   bool haveUpper = false;
   bool inclLower = false;
   bool inclUpper = false;
   bool inclBound = false;
-  xqtref_t keyType;
-  bool status;
-
-  TypeManager* tm = theSctx->get_typemanager();
 
   try
   {
     ProbeIndexRangeGeneralIteratorState* state;
     DEFAULT_STACK_INIT(ProbeIndexRangeGeneralIteratorState, state, planState);
 
-    status = consumeNext(qname, theChildren[0], planState);
-    ZORBA_ASSERT(status);
+    getIndex(state, planState);
 
-    if (state->theQname == NULL || !state->theQname->equals(qname)) 
-    {
-      state->theQname = qname;
-
-      if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
-      {
-        RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
-        ERROR_PARAMS(qname->getStringValue()));
-      }
-
-      if (indexDecl->getMethod() != IndexDecl::TREE)
-      {
-        RAISE_ERROR(zerr::ZDDY0030_INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED, loc,
-        ERROR_PARAMS(qname->getStringValue()));
-      }
-
-      if (!indexDecl->isGeneral())
-      {
-        RAISE_ERROR(zerr::ZDDY0030_INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED, loc,
-        ERROR_PARAMS(qname->getStringValue()));
-      }
-
-      state->theIndex = (indexDecl->isTemp() ?
-                         planState.theLocalDynCtx->getIndex(qname) :
-                         GENV_STORE.getIndex(state->theQname));
-      
-      if (state->theIndex == NULL)
-      {
-        RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
-        ERROR_PARAMS(qname->getStringValue()));
-      }
-
-      state->theIterator = GENV_STORE.getIteratorFactory()->
-                           createIndexProbeIterator(state->theIndex);
-
-      state->theTimezone = state->theIndex->getSpecification().getTimezone();
-      state->theCollator = state->theIndex->getCollator(0);
-
-      xqtref_t keyType = indexDecl->getKeyTypes()[0];
-
-      assert(keyType == NULL ||
-             keyType->get_quantifier() == TypeConstants::QUANT_ONE);
-
-      if (keyType != NULL && 
-          !TypeOps::is_subtype(tm, *keyType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) &&
-          !TypeOps::is_equal(tm, *keyType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
-      {
-        state->theKeyType = keyType;
-      }
-    }
-    
     {
       store::Item_t itemHaveLower;
       store::Item_t itemHaveUpper;
@@ -1431,7 +1461,7 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
         state->theIterator->init(cond);
         state->theIterator->open();
         
-        while(state->theIterator->next(result)) 
+        while (state->theIterator->next(result)) 
         {
           state->theNodeHashSet->insert(result.getp());
         }
@@ -1465,23 +1495,15 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
 
         state->theIterator->init(cond);
 
-        if (!theCountOnly)
-        {
-          state->theIterator->open();
+        state->theIterator->open();
 
-          while(state->theIterator->next(result)) 
-          {
-            if (state->theNodeHashSet->exists(result))
-              STACK_PUSH(true, state);
-          }
-          
-          state->theIterator->close();
-        }
-        else
+        while(state->theIterator->next(result)) 
         {
-          state->theIterator->count(result);
-          STACK_PUSH(true, state);
+          if (state->theNodeHashSet->exists(result))
+            STACK_PUSH(true, state);
         }
+          
+        state->theIterator->close();
       }
     }
     
@@ -1506,22 +1528,15 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
         cond->pushBound(*state->theSearchItemsIte, haveLower, inclBound);
         
         state->theIterator->init(cond);
-        if (!theCountOnly)
-        {
-          state->theIterator->open();
+
+        state->theIterator->open();
           
-          while(state->theIterator->next(result)) 
-          {
-            STACK_PUSH(true, state);
-          }
-          
-          state->theIterator->close();
-        }
-        else
+        while(state->theIterator->next(result)) 
         {
-          state->theIterator->count(result);
           STACK_PUSH(true, state);
         }
+          
+        state->theIterator->close();
       }
     }
     
@@ -1530,22 +1545,15 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
       getSearchItems(planState, state, false, false, false, false);
 
       state->theIterator->init(cond);
-      if (!theCountOnly)
-      {
-        state->theIterator->open();
+
+      state->theIterator->open();
         
-        while(state->theIterator->next(result)) 
-        {
-          STACK_PUSH(true, state);
-        }
-        
-        state->theIterator->close();
-      }
-      else
+      while(state->theIterator->next(result)) 
       {
-        state->theIterator->count(result);
         STACK_PUSH(true, state);
       }
+        
+      state->theIterator->close();
     }
 
   done:
@@ -1555,6 +1563,70 @@ bool ProbeIndexRangeGeneralIterator::nextImpl(
   {
     set_source(e, loc, false);
     throw;
+  }
+}
+
+
+void ProbeIndexRangeGeneralIterator::getIndex(
+    ProbeIndexRangeGeneralIteratorState* state,
+    PlanState& planState) const
+{
+  TypeManager* tm = theSctx->get_typemanager();
+  store::Item_t qname;
+  IndexDecl_t indexDecl;
+  xqtref_t keyType;
+
+  ZORBA_ASSERT(consumeNext(qname, theChildren[0], planState));
+
+  if (state->theQname == NULL || !state->theQname->equals(qname)) 
+  {
+    state->theQname = qname;
+
+    if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
+    {
+      RAISE_ERROR(zerr::ZDDY0021_INDEX_NOT_DECLARED, loc,
+      ERROR_PARAMS(qname->getStringValue()));
+    }
+
+    if (indexDecl->getMethod() != IndexDecl::TREE)
+    {
+      RAISE_ERROR(zerr::ZDDY0030_INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED, loc,
+      ERROR_PARAMS(qname->getStringValue()));
+    }
+
+    if (!indexDecl->isGeneral())
+    {
+      RAISE_ERROR(zerr::ZDDY0030_INDEX_RANGE_GENERAL_PROBE_NOT_ALLOWED, loc,
+      ERROR_PARAMS(qname->getStringValue()));
+    }
+
+    state->theIndex = (indexDecl->isTemp() ?
+                       planState.theLocalDynCtx->getIndex(qname) :
+                       GENV_STORE.getIndex(state->theQname));
+      
+    if (state->theIndex == NULL)
+    {
+      RAISE_ERROR(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
+      ERROR_PARAMS(qname->getStringValue()));
+    }
+
+    state->theIterator = GENV_STORE.getIteratorFactory()->
+                         createIndexProbeIterator(state->theIndex);
+
+    state->theTimezone = state->theIndex->getSpecification().getTimezone();
+    state->theCollator = state->theIndex->getCollator(0);
+
+    xqtref_t keyType = indexDecl->getKeyTypes()[0];
+
+    assert(keyType == NULL ||
+           keyType->get_quantifier() == TypeConstants::QUANT_ONE);
+
+    if (keyType != NULL && 
+        !TypeOps::is_subtype(tm, *keyType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) &&
+        !TypeOps::is_equal(tm, *keyType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
+    {
+      state->theKeyType = keyType;
+    }
   }
 }
 

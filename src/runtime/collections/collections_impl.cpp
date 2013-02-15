@@ -336,7 +336,7 @@ bool ZorbaCollectionIterator::nextImpl(
   {
     state->theIterator->open();
   }
-  catch ( std::range_error const& )
+  catch (std::range_error const&)
   {
     RAISE_ERROR(zerr::ZXQD0004_INVALID_PARAMETER, loc,
     ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), lSkip));
@@ -417,7 +417,7 @@ bool ZorbaIndexOfIterator::nextImpl(
     STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+1), state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

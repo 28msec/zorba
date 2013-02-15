@@ -1455,10 +1455,6 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   void PrinterVisitor::beginVisit ( const class& a )                 \
   {                                                                  \
     thePrinter.startBeginVisit(#class, ++theId);                     \
-    if (a.isCountOnly())                                             \
-    {                                                                \
-      thePrinter.addAttribute("count", "true");                      \
-    }                                                                \
     if (a.hasSkip())                                                 \
     {                                                                \
       thePrinter.addAttribute("skip", "true");                       \
