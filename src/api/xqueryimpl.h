@@ -45,6 +45,7 @@ class ResultIteratorImpl;
 class dynamic_context;
 class CompilerCB;
 class StaticCollectionManagerSetImpl;
+class ModuleInfo;
 
 
 /*******************************************************************************
@@ -281,6 +282,8 @@ public:
         const Zorba_CompilerHints_t& aHints);
 
   void parse(std::istream&);
+
+  void parse(std::istream& aQuery, ModuleInfo_t& aResult);
 
   const StaticContext* getStaticContext() const;
 

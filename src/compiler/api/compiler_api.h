@@ -52,6 +52,10 @@ public:
 
   parsenode_t parse(std::istream& aXQuery, const zstring& aFileName);
 
+  ModuleInfo* parseInfo(
+      std::istream& aXQuery,
+      const zstring& aFileName);
+
   PlanIter_t compile(
       std::istream& aXQuery,
       const zstring& aFileName,
