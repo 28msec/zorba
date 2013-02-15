@@ -324,6 +324,11 @@ append:
     *icu_re += *xq_c;
   } // FOR_EACH
 
+  if ( got_backslash )
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( TrailingChar_3 ), '\\' );
+  if ( in_char_class )
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), '[' );
+
   if ( !q_flag ) {
     if ( i_flag ) {
       //
@@ -375,9 +380,7 @@ void regex::compile( string const &u_pattern, char const *flags,
       icu_error_key = ZED_PREFIX;
       icu_error_key += u_errorName( status );
     }
-    throw XQUERY_EXCEPTION(
-      err::FORX0002, ERROR_PARAMS( pattern, icu_error_key )
-    );
+    throw INVALID_RE_EXCEPTION( pattern, icu_error_key );
   }
 }
 
