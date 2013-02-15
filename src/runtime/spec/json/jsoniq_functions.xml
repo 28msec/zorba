@@ -224,7 +224,7 @@
     <zorba:member type="store::Iterator_t" name="theNames" brief=""/>
   </zorba:state>
 
-  <zorba:method name="count" const="true" return="void">
+  <zorba:method name="count" const="true" return="bool">
      <zorba:param name="result" type="store::Item_t&amp;"/>
      <zorba:param name="planState" type="PlanState&amp;"/>
   </zorba:method>
@@ -355,7 +355,7 @@
     <zorba:member type="store::Iterator_t" name="theMembers" brief=""/>
   </zorba:state>
 
-  <zorba:method name="count" const="true" return="void">
+  <zorba:method name="count" const="true" return="bool">
      <zorba:param name="result" type="store::Item_t&amp;"/>
      <zorba:param name="planState" type="PlanState&amp;"/>
   </zorba:method>

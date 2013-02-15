@@ -664,19 +664,18 @@ bool ProbeIndexPointValueIterator::nextImpl(
 }
 
 
-void ProbeIndexPointValueIterator::count(
+bool ProbeIndexPointValueIterator::count(
     store::Item_t& result,
     PlanState& planState) const
 {
   store::IndexCondition_t cond;
-  xs_integer skip = xs_integer::zero();
-
-  ProbeIndexPointValueIteratorState* state =
-  StateTraitsImpl<ProbeIndexPointValueIteratorState>::
-  getState(planState, getStateOffset());
+  xs_integer skip(0);
 
   try
   {
+    ProbeIndexPointValueIteratorState* state;
+    DEFAULT_STACK_INIT(ProbeIndexPointValueIteratorState, state, planState);
+
     getIndex(state, planState);
 
     cond = createCondition(state, planState);
@@ -694,7 +693,10 @@ void ProbeIndexPointValueIterator::count(
 
       state->theIterator->init(cond, skip);
       state->theIterator->count(result);
+      STACK_PUSH(true, state);
     }
+
+    STACK_END(state);
   }
   catch (ZorbaException& e)
   {
@@ -1107,19 +1109,18 @@ bool ProbeIndexRangeValueIterator::nextImpl(
 }
 
 
-void ProbeIndexRangeValueIterator::count(
+bool ProbeIndexRangeValueIterator::count(
     store::Item_t& result,
     PlanState& planState) const
 {
   store::IndexCondition_t cond;
   xs_integer skip = xs_integer::zero();
 
-  ProbeIndexRangeValueIteratorState* state =
-  StateTraitsImpl<ProbeIndexRangeValueIteratorState>::
-  getState(planState, getStateOffset());
-
   try
   {
+    ProbeIndexRangeValueIteratorState* state;
+    DEFAULT_STACK_INIT(ProbeIndexRangeValueIteratorState, state, planState);
+
     getIndex(state, planState);
 
     cond = createCondition(state, planState);
@@ -1135,6 +1136,9 @@ void ProbeIndexRangeValueIterator::count(
 
     state->theIterator->init(cond, skip);
     state->theIterator->count(result);
+    STACK_PUSH(true, state);
+
+    STACK_END(state);
   }
   catch (ZorbaException& e)
   {

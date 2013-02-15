@@ -274,6 +274,7 @@ protected:
     csize,
     ConstCharStarHash,
     ConstCharStarComparator> Keys;
+
   typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
   class KeyIterator : public store::Iterator

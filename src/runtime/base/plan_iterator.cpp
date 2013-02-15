@@ -99,17 +99,21 @@ TypeManager* PlanIterator::getTypeManager() const
 }
 
 
-void PlanIterator::count(store::Item_t& result, PlanState& planState) const
+bool PlanIterator::count(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
-  ulong count = 0;
+  xs_integer count(0);
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   while (consumeNext(item, this, planState))
   {
     ++count;
   }
 
-  GENV_ITEMFACTORY->createInteger(result, Integer(count));
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(count)), state);
+  STACK_END(state);
 }
 
 

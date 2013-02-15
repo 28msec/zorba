@@ -369,7 +369,7 @@ public:
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
-  void count(store::Item_t& result, PlanState& planState) const;
+  bool count(store::Item_t& result, PlanState& planState) const;
 
 protected:
   void getIndex(
@@ -509,7 +509,7 @@ public:
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
-  void count(store::Item_t& result, PlanState& planState) const;
+  bool count(store::Item_t& result, PlanState& planState) const;
 
 protected:
   void getIndex(

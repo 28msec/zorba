@@ -384,9 +384,14 @@ public:
   virtual void close(PlanState& planState) = 0;
 
   /**
-   * 
+   * Return the number of items in the sequence that is computed by this
+   * iterator. The base implementation of this method simply computes the
+   * whole sequence and counts its items. However, the count() method is
+   * redefined by specific plan iterators that can compute their count
+   * without computing the whole result sequence. One such example is the
+   * iterator that computes the dml:collection() function.
    */
-  virtual void count(store::Item_t& result, PlanState& planState) const;
+  virtual bool count(store::Item_t& result, PlanState& planState) const;
 
 
 #if ZORBA_BATCHING_TYPE == 1

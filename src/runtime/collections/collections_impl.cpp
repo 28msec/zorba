@@ -146,7 +146,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   while(state->theIterator->next(result))
   {
-    STACK_PUSH (true, state);
+    STACK_PUSH(true, state);
   }
 
   // close as early as possible
@@ -157,16 +157,20 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 }
 
 
-void FnCollectionIterator::count(store::Item_t& result, PlanState& planState) const
+bool FnCollectionIterator::count(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t collection;
   xs_integer count;
+
+  FnCollectionIteratorState* state;
+  DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
 
   collection = getCollection(planState);
 
   count = collection->size();
 
-  GENV_ITEMFACTORY->createInteger(result, count);
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
+  STACK_END(state);
 }
 
 
@@ -354,7 +358,7 @@ bool ZorbaCollectionIterator::nextImpl(
 }
 
 
-void ZorbaCollectionIterator::count(store::Item_t& result, PlanState& planState) const
+bool ZorbaCollectionIterator::count(store::Item_t& result, PlanState& planState) const
 {
   if (!isCountOptimizable())
     return PlanIterator::count(result, planState);
@@ -362,6 +366,9 @@ void ZorbaCollectionIterator::count(store::Item_t& result, PlanState& planState)
   store::Item_t name;
   store::Collection_t collection;
   xs_integer count;
+
+  ZorbaCollectionIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
 
   consumeNext(name, theChildren[0].getp(), planState);
 
@@ -381,7 +388,9 @@ void ZorbaCollectionIterator::count(store::Item_t& result, PlanState& planState)
     count = (count < xs_integer::zero() ? xs_integer::zero() : count);
   }
 
-  GENV_ITEMFACTORY->createInteger(result, count);
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
+
+  STACK_END(state);
 }
 
 

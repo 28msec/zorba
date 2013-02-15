@@ -230,7 +230,7 @@
                     brief="flag indicating whether theIterator was opened"/>
     </zorba:state>
 
-    <zorba:method name="count" const="true" return="void">
+    <zorba:method name="count" const="true" return="bool">
        <zorba:param name="result" type="store::Item_t&amp;"/>
        <zorba:param name="planState" type="PlanState&amp;"/>
     </zorba:method>
@@ -309,7 +309,7 @@
 
     <zorba:method const="true" name="isCountOptimizable" return="bool" />
     
-    <zorba:method const="true" name="count" return="void">
+    <zorba:method name="count" const="true" return="bool">
        <zorba:param name="result" type="store::Item_t&amp;"/>
        <zorba:param name="planState" type="PlanState&amp;"/>
     </zorba:method>
