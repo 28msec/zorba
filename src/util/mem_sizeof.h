@@ -109,7 +109,7 @@ namespace ztd {
  * dynamically allocated by some implementations of \c std::string.
  * Some implementations use an additional "rep" object.
  * There's no way to determine whether a given implemenation uses one
- * much less how much memory it uses programatically,
+ * much less how much memory it uses programmatically,
  * but it's the best that can be done.
  *
  * An example of adding an \c alloc_size() member function is:

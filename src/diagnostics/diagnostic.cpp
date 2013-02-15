@@ -194,6 +194,19 @@ parameters const parameters::empty;
 parameters::parameters() {
 }
 
+void parameters::add_param( value_type const &s ) {
+  params_.push_back( s );
+  value_type &p = params_.back();
+  //
+  // We have to escape any literal \ characters in the parameter.
+  //
+  for ( value_type::size_type pos = 0;
+        (pos = p.find( '\\', pos )) != value_type::npos;
+        pos += 2 ) {
+    p.replace( pos, 1, "\\\\" );
+  }
+}
+
 parameters::value_type parameters::lookup_param( size_type i ) const {
   assert( i >= 1 );
   assert( i <= 9 );

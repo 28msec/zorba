@@ -432,15 +432,15 @@ void* begin_visit(const FunctionDecl& n)
             lAttrValue << " ";
 
           exprnode* lLit = (*lLits)[j].getp();
-          Literal* l = static_cast<Literal*>(lLit);
-          if (l->get_type() == Literal::STRING_LITERAL)
+          StringLiteral* l = dynamic_cast<StringLiteral*>(lLit);
+          if (l)
           {
-            StringLiteral* s = l->get_string_literal().getp();
-            lAttrValue << s->get_strval();
+            lAttrValue << l->get_strval();
           }
           else
           {
-            NumericLiteral* n = l->get_numeric_literal().getp();
+            NumericLiteral* n = dynamic_cast<NumericLiteral*>(lLit);
+            assert(n);
             lAttrValue << n->toString();
           }
         }
