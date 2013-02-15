@@ -214,10 +214,26 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         // back-reference is preceded by NN or more unescaped opening
         // parentheses.
         //
-        if ( cap_sub.size() > 9 && ascii::is_digit( *xq_c ) )
-          backref_no = backref_no * 10 + (*xq_c - '0');
-        else
+        bool prevent_multidigit_backref = false;
+        if ( ascii::is_digit( *xq_c ) ) {
+          if ( cap_sub.size() > 9 )
+            backref_no = backref_no * 10 + (*xq_c - '0');
+          else {
+            in_backref = false;
+            //
+            // Unlike XQuery, ICU always takes further digits to be part of the
+            // backreference so we have to prevent ICU from doing that.  One
+            // way to do that is by enclosing said digits in a single-character
+            // character class, i.e., [N].
+            //
+            *icu_re += '[';
+            *icu_re += *xq_c;
+            *icu_re += ']';
+            prevent_multidigit_backref = true;
+          }
+        } else
           in_backref = false;
+
         //
         // XQuery 3.0 F&O 5.6.1: The regular expression is invalid if a back-
         // reference refers to a subexpression that does not exist or whose
@@ -231,7 +247,11 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           throw INVALID_RE_EXCEPTION(
             xq_re, ZED( NonClosedBackRef_3 ), backref_no
           );
+
+        if ( prevent_multidigit_backref )
+          continue;
       }
+
       switch ( *xq_c ) {
         case '\\':
           got_backslash = true;
