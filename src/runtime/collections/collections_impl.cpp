@@ -217,7 +217,7 @@ store::Collection_t FnCollectionIterator::getCollection(PlanState& planState) co
 
   if (collResource == 0 || !(coll = collResource->getCollection()))
   {
-    RAISE_ERROR(err::FODC0004, loc, ERROR_PARAMS(resolvedURI, errorMessage));
+    RAISE_ERROR(err::FODC0002, loc, ERROR_PARAMS(resolvedURI, errorMessage));
   }
 
   return coll;
