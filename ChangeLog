@@ -12,6 +12,7 @@ New Features:
   * In store API, added ability to specify a stream's originating URI (file)
     for streamable strings and base64Binary.
   * Added millis-to-dateTime() function in datetime module.
+  * Addex xqxq:variable-value function.
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
