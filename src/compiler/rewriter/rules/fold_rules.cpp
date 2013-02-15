@@ -161,13 +161,18 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         
     if (!f->isUdf())
     {
-      if (FunctionConsts::FN_ERROR_0 <= f->getKind() &&
-          f->getKind() <= FunctionConsts::FN_TRACE_2)
+      FunctionKind fkind = f->getKind();
+
+      if (fkind == FunctionConsts::FN_ERROR_0 ||
+          fkind == FunctionConsts::FN_ERROR_1 ||
+          fkind == FunctionConsts::FN_ERROR_2 ||
+          fkind == FunctionConsts::FN_ERROR_3 ||
+          fkind == FunctionConsts::FN_TRACE_2)
       {
         curNonDiscardable = ANNOTATION_TRUE_FIXED;
         curUnfoldable = ANNOTATION_TRUE_FIXED;
       }
-      else if (f->getKind() == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
+      else if (fkind == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
       {
         curDereferencesNodes = ANNOTATION_TRUE;
       }
