@@ -27,7 +27,6 @@
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/numerics/NumericsImpl.h"
 
-#include "runtime/collections/collections_impl.h"
 #include "runtime/collections/collections.h"
 
 #include "system/globalenv.h"
@@ -55,6 +54,7 @@ bool rewriteSubsequenceCollection(
   ZorbaCollectionIterator* collIter = 
   dynamic_cast<ZorbaCollectionIterator*>(aArgs[0].getp());
   assert(collIter);
+
   std::vector<PlanIter_t>& lCollectionArgs = collIter->getChildren();
 
   SingletonIterator* lPosIter = dynamic_cast<SingletonIterator*>(aArgs[1].getp());
@@ -102,14 +102,16 @@ bool rewriteSubsequenceCollection(
     // simply move the (pos-1) of subsequence into the skip of 
     // collection function
     // subsequence(collection(qname), 10, 20) 
-    //   -> subsequence(collection(qname, 10-1), 10, 20)
+    //   -> subsequence(collection(qname, 10-1), 1, 20)
     PlanIter_t& lNewCollSkipIter = aArgs[1];
     PlanIter_t lOneIter = new SingletonIterator(aSctx, aLoc, lItemOne);
+
     lCollectionArgs.push_back(
-        new NumArithIterator<zorba::SubtractOperation>(
-          collIter->getStaticContext(), collIter->getLocation(),
-          lNewCollSkipIter, lOneIter)
-        );
+      new NumArithIterator<zorba::SubtractOperation>(aSctx,
+                                                     collIter->getLocation(),
+                                                     lNewCollSkipIter,
+                                                     lOneIter)
+                              );
   }
   else if (lNumCollArgs <= 3 && lNumCollArgs != 0)
   {
@@ -128,14 +130,17 @@ bool rewriteSubsequenceCollection(
     PlanIter_t& lOldCollSkipIter = lCollectionArgs[lSkipPosition];
     PlanIter_t lOneIter = new SingletonIterator (aSctx, aLoc, lItemOne);
     PlanIter_t& lSubseqPosIter = aArgs[1];
-    PlanIter_t lCollSkipAdditionIter
-      = new NumArithIterator<zorba::SubtractOperation>(
-          collIter->getStaticContext(), collIter->getLocation(),
-          lSubseqPosIter, lOneIter);
-    lCollectionArgs[lSkipPosition] 
-      = new NumArithIterator<zorba::AddOperation>(
-          collIter->getStaticContext(), collIter->getLocation(), 
-          lOldCollSkipIter, lCollSkipAdditionIter);
+
+    PlanIter_t lCollSkipAdditionIter = 
+    new NumArithIterator<zorba::SubtractOperation>(aSctx,
+                                                   collIter->getLocation(),
+                                                   lSubseqPosIter,
+                                                   lOneIter);
+    lCollectionArgs[lSkipPosition] = 
+    new NumArithIterator<zorba::AddOperation>(aSctx,
+                                              collIter->getLocation(), 
+                                              lOldCollSkipIter,
+                                              lCollSkipAdditionIter);
   }
   else
   {
@@ -143,7 +148,7 @@ bool rewriteSubsequenceCollection(
     assert(false);
   }
 
-  aArgs[0] = new ZorbaCollectionIterator(collIter->getStaticContext(),
+  aArgs[0] = new ZorbaCollectionIterator(aSctx,
                                          collIter->getLocation(),
                                          lCollectionArgs,
                                          collIter->isDynamic());
@@ -501,19 +506,20 @@ BoolAnnotationValue fn_reverse::ignoresDuplicateNodes(
 xqtref_t fn_subsequence::getReturnType(const fo_expr* caller) const
 {
   TypeManager* tm = caller->get_type_manager();
-  xqtref_t list_type = caller->get_arg(0)->get_return_type();
+  xqtref_t argType = caller->get_arg(0)->get_return_type();
 
   //When there is a length argument and it's 1 then we know we will return
   //a value type T? where the input sequence was type T* or T+
   if (caller->num_args() > 2 &&
       caller->get_arg(2)->get_expr_kind() == const_expr_kind)
   {
-    store::Item* len_item = static_cast<const_expr*>(caller->get_arg(2))->get_val();
+    store::Item* len = static_cast<const_expr*>(caller->get_arg(2))->get_val();
 
-    if (len_item->getDoubleValue().round().getNumber() == 1)
-      return tm->create_type(*list_type, TypeConstants::QUANT_QUESTION);
+    if (len->getDoubleValue().round().getNumber() == 1)
+      return tm->create_type(*argType, TypeConstants::QUANT_QUESTION);
   }
-  return tm->create_type_x_quant(*list_type, TypeConstants::QUANT_QUESTION);
+
+  return tm->create_type_x_quant(*argType, TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -577,8 +583,7 @@ PlanIter_t fn_subsequence::codegen(
       // we have rewritten the subsequence to start at the beginning.
       // if there is no length param we can remove the entire
       // subsequence function
-      // subsequence(collection(qname, 10),1)
-      //   -> collection(qname, 10)
+      // subsequence(collection(qname, 10), 1) -> collection(qname, 10)
       if (aArgs.size() == 2)
       {
         return aArgs[0];
@@ -597,20 +602,20 @@ PlanIter_t fn_subsequence::codegen(
 xqtref_t op_zorba_subsequence_int::getReturnType(const fo_expr* caller) const
 {
   TypeManager* tm = caller->get_type_manager();
-  xqtref_t list_type = caller->get_arg(0)->get_return_type();
+  xqtref_t argType = caller->get_arg(0)->get_return_type();
 
   //When there is a length argument and it's 1 then we know we will return
   //a value type T? where the input sequence was type T* or T+
   if (caller->num_args() > 2 &&
       caller->get_arg(2)->get_expr_kind() == const_expr_kind)
   {
-    store::Item* len_item = static_cast<const_expr*>(caller->get_arg(2))->get_val();
+    store::Item* len = static_cast<const_expr*>(caller->get_arg(2))->get_val();
 
-    if (len_item->getIntegerValue() == Integer(1))
-      return tm->create_type(*list_type, TypeConstants::QUANT_QUESTION);
+    if (len->getIntegerValue() == Integer(1))
+      return tm->create_type(*argType, TypeConstants::QUANT_QUESTION);
   }
 
-  return tm->create_type_x_quant(*list_type, TypeConstants::QUANT_QUESTION);
+  return tm->create_type_x_quant(*argType, TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -622,6 +627,7 @@ PlanIter_t op_zorba_subsequence_int::codegen(
     expr& aAnn) const
 {
   const std::type_info& lFirstArgType = typeid(*aArgs[0]);
+
   fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
   const expr* inputExpr = subseqExpr.get_arg(0);
   const expr* posExpr = subseqExpr.get_arg(1);
@@ -694,8 +700,7 @@ PlanIter_t op_zorba_subsequence_int::codegen(
       // we have rewritten the subsequence to start from the beginning.
       // if there is no length param we can remove the entire
       // subsequence function
-      // subsequence(collection(qname, 10),1)
-      //   -> collection(qname, 10)
+      // subsequence(collection(qname, 10), 1) -> collection(qname, 10)
       if (aArgs.size() == 2)
       {
         return aArgs[0];

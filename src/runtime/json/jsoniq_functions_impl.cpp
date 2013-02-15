@@ -899,6 +899,19 @@ JSONObjectNamesIterator::nextImpl(
 }
 
 
+void JSONObjectNamesIterator::count(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t obj;
+  ZORBA_ASSERT(consumeNext(obj, theChild.getp(), planState));
+
+  xs_integer count = obj->getNumObjectPairs();
+  
+  GENV_ITEMFACTORY->createInteger(result, count);
+}
+
+
 /*******************************************************************************
   json:value($o as object(), $name as xs:string) as item()?
 ********************************************************************************/
@@ -1040,8 +1053,7 @@ JSONArrayMemberIterator::nextImpl(
 /*******************************************************************************
   json:members($a as array()) as item()*
 ********************************************************************************/
-bool
-JSONArrayMembersIterator::nextImpl(
+bool JSONArrayMembersIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -1064,6 +1076,19 @@ JSONArrayMembersIterator::nextImpl(
 }
 
 
+void JSONArrayMembersIterator::count(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t array;
+  ZORBA_ASSERT(consumeNext(array, theChild.getp(), planState));
+
+  xs_integer count = array->getArraySize();
+  
+  GENV_ITEMFACTORY->createInteger(result, count);
+}
+
+
 /*******************************************************************************
   json:flatten($a as array()) as item()*
 
@@ -1079,8 +1104,7 @@ void JSONArrayFlattenIteratorState::reset(PlanState& planState)
 }
 
 
-bool
-JSONArrayFlattenIterator::nextImpl(
+bool JSONArrayFlattenIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {

@@ -57,7 +57,6 @@
 #include "runtime/misc/materialize.h"
 #include "runtime/scripting/scripting.h"
 #include "runtime/json/json_constructors.h"
-#include "runtime/collections/collections_impl.h"
 #include "runtime/collections/collections.h"
 
 #ifdef ZORBA_WITH_DEBUGGER

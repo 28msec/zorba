@@ -624,6 +624,15 @@ store::Iterator_t SimpleJSONObject::getObjectKeys() const
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
+xs_integer SimpleJSONObject::getNumObjectPairs() const
+{
+  return xs_integer(thePairs.size());
+}
+
+
 #ifndef NDEBUG
 
 /******************************************************************************

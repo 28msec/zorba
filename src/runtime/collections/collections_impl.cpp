@@ -35,7 +35,6 @@
 #include "compiler/xqddf/value_ic.h"
 
 #include "runtime/collections/collections.h"
-#include "runtime/collections/collections_impl.h"
 #include "runtime/core/apply_updates.h"
 #include "runtime/base/plan_iterator.h"
 #include "runtime/visitors/planiter_visitor.h"
