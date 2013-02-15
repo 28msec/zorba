@@ -2183,12 +2183,12 @@ void* import_schema(
     std::auto_ptr<internal::Resource> lSchema;
     internal::StreamResource* lStream = NULL;
     zstring lErrorMessage;
+    internal::EntityData lData(internal::EntityData::SCHEMA, targetNS);
     for (std::vector<zstring>::iterator lIter = lCandidates.begin();
          lIter != lCandidates.end();
          ++lIter)
     {
-      lSchema = theSctx->resolve_uri(*lIter, internal::EntityData::SCHEMA,
-                                     lErrorMessage);
+      lSchema = theSctx->resolve_uri(*lIter, lData, lErrorMessage);
       lStream = dynamic_cast<internal::StreamResource*>(lSchema.get());
       if (lStream != NULL)
       {
@@ -3000,9 +3000,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   {
     // just a test, this will throw, if the access is denied
     std::vector<zstring> candidateURIs;
-    theRootSctx->get_candidate_uris(targetNS,
-                                    internal::EntityData::MODULE,
-                                    candidateURIs);
+    internal::EntityData lData(internal::EntityData::MODULE, targetNS);
+    theRootSctx->get_candidate_uris(targetNS, lData, candidateURIs);
     theRootSctx->add_imported_builtin_module(targetNS);
 #ifdef NDEBUG
     // We cannot skip the math or the sctx introspection modules because they
@@ -3034,8 +3033,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   {
     // Note the use of versioned_uri() here, so that the namespace with any
     // version fragment will be passed through to the mappers.
-    theSctx->get_component_uris(modVer.versioned_uri(),
-                                internal::EntityData::MODULE, compURIs);
+    internal::EntityData lData(internal::EntityData::MODULE, targetNS);
+    theSctx->get_component_uris(modVer.versioned_uri(), lData, compURIs);
   }
   else
   {
@@ -3121,10 +3120,9 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       try
       {
+        internal::EntityData const lData(internal::EntityData::MODULE, targetNS);
         lResource =
-        theSctx->resolve_uri(compModVer.versioned_uri(),
-                             internal::EntityData::MODULE,
-                             lErrorMessage);
+        theSctx->resolve_uri(compModVer.versioned_uri(), lData, lErrorMessage);
 
         lStreamResource =
         dynamic_cast<internal::StreamResource*> (lResource.get());

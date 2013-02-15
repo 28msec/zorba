@@ -18,6 +18,7 @@
 #include <sstream>
 #include <vector>
 #include <memory>
+#include <cassert>
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
@@ -45,6 +46,7 @@ class MySchemaURIMapper : public URIMapper
     if (aEntityData->getKind() != EntityData::SCHEMA) {
       return;
     }
+    assert(aUri == aEntityData->getTargetNamespace());
     if(aUri == "http://www.zorba-xquery.com/helloworld") {
       oUris.push_back("http://www.zorba-xquery.com/tutorials/helloworld.xsd");
     }
@@ -66,6 +68,7 @@ class MyModuleURIMapper : public URIMapper
     if (aEntityData->getKind() != EntityData::MODULE) {
       return;
     }
+    assert(aUri == aEntityData->getTargetNamespace());
     if(aUri == "http://www.zorba-xquery.com/mymodule") {
       oUris.push_back("http://www.zorba-xquery.com/mymodule/mod1");
       oUris.push_back("http://www.zorba-xquery.com/mymodule/mod2");

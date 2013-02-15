@@ -32,13 +32,16 @@ namespace zorba
   {
   public:
     static EntityDataWrapper const* create(internal::EntityData const* aData) {
+
+      const zorba::zstring& lTargeNS = aData->getTargetNamespace();
+
       // More ugly: Create a public-API EntityData with the same Entity Kind,
       // but only if it's one of the publicly-supported kinds
       switch (aData->getKind()) {
       case internal::EntityData::MODULE:
-        return new EntityDataWrapper(EntityData::MODULE);
+        return new EntityDataWrapper(EntityData::MODULE, lTargeNS);
       case internal::EntityData::SCHEMA:
-        return new EntityDataWrapper(EntityData::SCHEMA);
+        return new EntityDataWrapper(EntityData::SCHEMA, lTargeNS);
 #ifndef ZORBA_NO_FULL_TEXT
       case internal::EntityData::THESAURUS:
         return new EntityDataWrapper(EntityData::THESAURUS);
@@ -60,12 +63,24 @@ namespace zorba
       return theKind;
     }
 
+    virtual zorba::String getTargetNamespace() const {
+      return theTargetNamespace;
+    }
+
   private:
     EntityDataWrapper(EntityData::Kind aKind)
       : theKind(aKind)
     {}
 
+    EntityDataWrapper(
+        EntityData::Kind aKind,
+        const zorba::zstring& aTargetNS)
+      : theKind(aKind),
+        theTargetNamespace(zorba::Unmarshaller::newString(aTargetNS))
+    {}
+
     EntityData::Kind const theKind;
+    zorba::String const theTargetNamespace;
   };
 
   URIMapperWrapper::URIMapperWrapper(zorba::URIMapper& aUserMapper)

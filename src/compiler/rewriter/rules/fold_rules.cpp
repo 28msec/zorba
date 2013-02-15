@@ -161,8 +161,7 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         
     if (!f->isUdf())
     {
-      if (FunctionConsts::FN_ERROR_0 <= f->getKind() &&
-          f->getKind() <= FunctionConsts::FN_TRACE_2)
+      if (FunctionConsts::FN_ERROR_0 <= f->getKind())
       {
         curNonDiscardable = ANNOTATION_TRUE_FIXED;
         curUnfoldable = ANNOTATION_TRUE_FIXED;

@@ -3,6 +3,7 @@ Zorba - The XQuery Processor
 version 2.9
 
 New Features:
+  * Added getTargetNamespace to the URLResolver EntityData information.
   * Typeswitch expression extended to allow union of types in each case clause,
     as specified by XQuery v3.0
   * In C++ API, added optional XML formatting of exceptions.

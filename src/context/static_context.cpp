@@ -1611,6 +1611,19 @@ std::auto_ptr<internal::Resource> static_context::resolve_uri(
 
 void static_context::get_component_uris(
     zstring const& aUri,
+    internal::EntityData& aEntityData,
+    std::vector<zstring>& oComponents) const
+{
+  apply_uri_mappers(aUri, &aEntityData,
+      internal::URIMapper::COMPONENT, oComponents);
+  if (oComponents.size() == 0)
+  {
+    oComponents.push_back(aUri);
+  }
+}
+
+void static_context::get_component_uris(
+    zstring const& aUri,
     internal::EntityData::Kind aEntityKind,
     std::vector<zstring>& oComponents) const
 {
@@ -1639,6 +1652,18 @@ void static_context::get_candidate_uris(
   }
 }
 
+void static_context::get_candidate_uris(
+    zstring const& aUri,
+    internal::EntityData& aEntityData,
+    std::vector<zstring>& oComponents) const
+{
+  apply_uri_mappers(aUri, &aEntityData,
+      internal::URIMapper::CANDIDATE, oComponents);
+  if (oComponents.size() == 0)
+  {
+    oComponents.push_back(aUri);
+  }
+}
 
 /***************************************************************************//**
 

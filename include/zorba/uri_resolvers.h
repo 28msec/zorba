@@ -137,6 +137,8 @@ public:
    */
   virtual Kind getKind() const = 0;
 
+  virtual zorba::String getTargetNamespace() const = 0;
+
   virtual ~EntityData() = 0;
 };
 

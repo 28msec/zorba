@@ -192,15 +192,20 @@ public:
 
   EntityData(Kind aKind);
 
+  EntityData(Kind aKind, const zstring& aTargetNS);
+
   /**
    * @brief Return the Kind of Entity for which this URI is being resolved.
    */
   virtual Kind getKind() const;
 
+  virtual const zstring& getTargetNamespace() const;
+
   virtual ~EntityData();
 
 private:
   Kind const theKind;
+  zstring const theTargetNamespace;
 };
 
 /**

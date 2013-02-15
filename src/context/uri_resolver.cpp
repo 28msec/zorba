@@ -110,9 +110,22 @@ namespace internal {
   {
   }
 
+  EntityData::EntityData(
+      EntityData::Kind aKind,
+      const zstring& aTargetNS)
+    : theKind(aKind),
+      theTargetNamespace(aTargetNS)
+  {
+  }
+
   EntityData::Kind EntityData::getKind() const
   {
     return theKind;
+  }
+
+  const zstring& EntityData::getTargetNamespace() const
+  {
+    return theTargetNamespace;
   }
 
   EntityData::~EntityData()
