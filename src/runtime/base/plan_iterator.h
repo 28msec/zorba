@@ -32,11 +32,6 @@
 #include "zorbaserialization/serialize_zorba_types.h"
 
 
-#if ZORBA_BATCHING_TYPE == 1
-#include "store/api/item.h"
-#endif
-
-
 // Info: Forcing inlining a function in g++:
 // store::Item_t next() __attribute__((always_inline)) {...}
 
@@ -171,11 +166,6 @@ private:
   uint32_t         theDuffsLine;
 
 public:
-#if ZORBA_BATCHING_TYPE == 1
-public:
-  uint32_t        theCurrItem;
-  store::Item_t   theBatch[ZORBA_BATCHING_BATCHSIZE];
-#endif
 #ifndef NDEBUG
   bool            theIsOpened;
 #endif
@@ -184,13 +174,11 @@ public:
   PlanIteratorState()
     :
     theDuffsLine(DUFFS_ALLOCATE_RESOURCES)
-#if ZORBA_BATCHING_TYPE == 1
-    , theCurrItem(ZORBA_BATCHING_BATCHSIZE)
-#endif
 #ifndef NDEBUG
     , theIsOpened(false)
 #endif
-  {}
+  {
+  }
 
   ~PlanIteratorState() {}
 
@@ -213,9 +201,6 @@ public:
   void init(PlanState&)
   {
     theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
-#if ZORBA_BATCHING_TYPE == 1
-    theCurrItem = ZORBA_BATCHING_BATCHSIZE;
-#endif
   }
 
   /**
@@ -233,12 +218,6 @@ public:
   void reset(PlanState&)
   {
     theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
-#if ZORBA_BATCHING_TYPE == 1
-    theCurrItem = ZORBA_BATCHING_BATCHSIZE;
-    // seeting the first item to NULL only is sufficient so
-    // that produceNext knows that it's not finished yet
-    theBatch[0] = NULL;
-#endif
   }
 };
 
@@ -286,12 +265,6 @@ public:
   }
 };
 
-#if ZORBA_BATCHING_TYPE == 1
-
-#error "Batching not implemented with the new iterator contract."
-
-#endif
-
 
 /*******************************************************************************
   Base class of all plan iterators.
@@ -321,11 +294,11 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  PlanIterator(static_context* aContext, const QueryLoc& aLoc)
+  PlanIterator(static_context* sctx, const QueryLoc& aLoc)
     :
     theStateOffset(0),
     loc(aLoc),
-    theSctx(aContext)
+    theSctx(sctx)
   {
   }
 
@@ -374,7 +347,19 @@ public:
    * Begin the execution of the iterator. Initializes information required for
    * the plan state and constructs the state object.
    */
-  virtual void open(PlanState& planState, uint32_t& offset) = 0;
+  void open(PlanState& planState, uint32_t& offset)
+  {
+    openImpl(planState, offset);
+#ifndef NDEBUG
+    // do this after openImpl because the state is created there
+    PlanIteratorState* state =
+    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+    ZORBA_ASSERT(!state->theIsOpened); // don't call open twice
+    state->theIsOpened = true;
+#endif
+  }
+
+  virtual void openImpl(PlanState& planState, uint32_t& offset) = 0;
 
   /**
    * Restarts the iterator so that the next 'produceNext' call will start
@@ -382,7 +367,17 @@ public:
    *
    * @param planState
    */
-  virtual void reset(PlanState& planState) const = 0;
+  void reset(PlanState& planState) const
+  {
+#ifndef NDEBUG
+    PlanIteratorState* state =
+    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+    ZORBA_ASSERT(state->theIsOpened);
+#endif
+    resetImpl(planState);
+  }
+
+  virtual void resetImpl(PlanState& planState) const = 0;
 
   /**
    * Finish the execution of the iterator. Releases all resources and destroys
@@ -391,57 +386,19 @@ public:
    *
    * @param planState
    */
-  virtual void close(PlanState& planState) = 0;
-
-
-#if ZORBA_BATCHING_TYPE == 1
-
-  /**
-   * Produce the next batch of items and place them in the batch buffer.
-   * Implicitly, the first call  of producNext() initializes the iterator and
-   * allocates resources (main memory, file descriptors, etc.).
-   *
-   * @param stateBLock
-   */
-  virtual void produceNext(PlanState& planState) const = 0;
-
-  /**
-   * Static Method: Retreives the next item from the batch buffer of the given
-   * iterator and returns it to the caller. If all the items from the iterator's
-   * batch buffer have been consumed already, then it makes the iterator produce
-   * its next batch of results and retrieves the 1st item from this new batch.
-   */
-  static store::Item_t consumeNext(
-        store::Item_t& result,
-        const PlanIterator* iter,
-        PlanState& planState)
+  void close(PlanState& planState)
   {
-    try
-    {
-      // use the given iterator's planstate to access it's batch
-      PlanIteratorState* lState =
-      StateTraitsImpl<PlanIteratorState>::getState(planState, iter->getStateOffset());
-
-      if ( lState->theCurrItem == ZORBA_BATCHING_BATCHSIZE )
-      {
-        iter->produceNext(planState);
-        lState->theCurrItem = 0;
-      }
-    }
-    catch(ZorbaException& e)
-    {
-      if(loc != NULL)
-      {
-        set_source(e, loc);
-        throw;
-      }
-    }
-
-    return lState->theBatch[lState->theCurrItem++];
+#ifndef NDEBUG
+    PlanIteratorState* state =
+    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+    closeImpl(planState);
+    state->theIsOpened = false;
+#else
+    closeImpl(planState);
+#endif
   }
 
-
-#else // ZORBA_BATCHING_TYPE
+  virtual void closeImpl(PlanState& planState) = 0;
 
   /**
    * Produce the next item and return it to the caller. Implicitly, the first
@@ -450,7 +407,17 @@ public:
    *
    * @param stateBLock
    */
-  virtual bool produceNext(store::Item_t& handle, PlanState& planState) const = 0;
+  bool produceNext(store::Item_t& result, PlanState& planState) const
+  {
+#ifndef NDEBUG
+    PlanIteratorState* state =
+    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+    ZORBA_ASSERT(state->theIsOpened);
+#endif
+    return nextImpl(result, planState);
+  }
+
+  virtual bool nextImpl(store::Item_t& result, PlanState& planState) const = 0;
 
   /**
    * Static Method: Makes the given iterator produce its next result and returns
@@ -476,108 +443,6 @@ public:
     return iter->produceNext(result, planState);
   }
 #endif
-
-#endif // ZORBA_BATCHING_TYPE
-};
-
-
-/*******************************************************************************
-  Class to implement batching
-********************************************************************************/
-template <class IterType>
-class Batcher: public PlanIterator
-{
-public:
-  SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(Batcher)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(Batcher, PlanIterator)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (PlanIterator*)this);
-  }
-
-public:
-  Batcher(const Batcher<IterType>& b)  : PlanIterator(b) {}
-
-  Batcher(static_context* sctx, const QueryLoc& loc) : PlanIterator(sctx, loc) {}
-
-  ~Batcher() {}
-
-
-#if ZORBA_BATCHING_TYPE == 1
-
-  void produceNext(PlanState& planState) const
-  {
-    PlanIteratorState* lState =
-    StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
-#ifndef NDEBUG
-    ZORBA_ASSERT(lState->theIsOpened);
-#endif
-    bool more;
-    uint32_t i = 0;
-    do
-    {
-      // In general, to compute this iterator's next result, nextImpl() will
-      // call consumeNext() on one or more of this iterator's child iterators.
-      more = static_cast<const IterType*>(this)->nextImpl(lState->theBatch[i], planState);
-    }
-    while ( more && ++i < ZORBA_BATCHING_BATCHSIZE );
-  }
-
-#else
-
-  bool produceNext(store::Item_t& result, PlanState& planState) const
-  {
-#ifndef NDEBUG
-    PlanIteratorState* lState =
-    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-    ZORBA_ASSERT(lState->theIsOpened);
-#endif
-    return static_cast<const IterType*>(this)->nextImpl(result, planState);
-  }
-
-#endif // ZORBA_BATCHING_TYPE
-
-  void open(PlanState& planState, uint32_t& offset)
-  {
-    static_cast<IterType*>(this)->openImpl(planState, offset);
-#ifndef NDEBUG
-    // do this after openImpl because the state is created there
-    PlanIteratorState* lState =
-    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-    ZORBA_ASSERT( ! lState->theIsOpened ); // don't call open twice
-    lState->theIsOpened = true;
-#endif
-  }
-
-  void reset(PlanState& planState) const
-  {
-#ifndef NDEBUG
-    PlanIteratorState* lState =
-    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-    ZORBA_ASSERT( lState->theIsOpened );
-#endif
-    static_cast<const IterType*>(this)->resetImpl(planState);
-  }
-
-  void close(PlanState& planState)
-  {
-#ifndef NDEBUG
-    PlanIteratorState* lState =
-    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
-    static_cast<IterType*>(this)->closeImpl(planState);
-    lState->theIsOpened = false;
-#else
-    static_cast<IterType*>(this)->closeImpl(planState);
-#endif
-  }
-
-  inline bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-  inline void openImpl(PlanState& planState, uint32_t& offset) const;
-
-  inline void resetImpl(PlanState& planState) const;
-
-  inline void closeImpl(PlanState& planState);
 };
 
 

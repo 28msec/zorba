@@ -31,17 +31,17 @@ namespace zorba
   data members.
 ********************************************************************************/
 template <class IterType, class StateType>
-class UnaryBaseIterator : public Batcher<IterType>
+class UnaryBaseIterator : public PlanIterator
 {
 protected:
   PlanIter_t theChild;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(UnaryBaseIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(UnaryBaseIterator, Batcher<IterType>)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(UnaryBaseIterator, PlanIterator)
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (Batcher<IterType>*)this);
+    serialize_baseclass(ar, (PlanIterator*)this);
     ar & theChild;
   }
 
@@ -51,7 +51,7 @@ public:
       const QueryLoc& loc,
       const PlanIter_t& child)
     :
-    Batcher<IterType>(sctx, loc),
+    PlanIterator(sctx, loc),
     theChild(child)
   {
 #ifndef NDEBUG

@@ -428,7 +428,7 @@ private:
   - Data Members:
 
 ********************************************************************************/
-class FLWORIterator : public Batcher<FLWORIterator>
+class FLWORIterator : public PlanIterator
 {
 private:
   std::vector<ForLetClause> theForLetClauses;
@@ -441,7 +441,7 @@ private:
          
 public:
   SERIALIZABLE_CLASS(FLWORIterator);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(FLWORIterator, Batcher<FLWORIterator>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(FLWORIterator, PlanIterator);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:

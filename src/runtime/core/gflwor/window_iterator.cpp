@@ -619,7 +619,7 @@ WindowIterator::WindowIterator(
     bool lazyEval,
     ulong maxNeededHistory)
   :
-  Batcher<WindowIterator>(sctx, loc),
+  PlanIterator(sctx, loc),
   theWindowType(windowType),
   theTupleIter(tupleIter),
   theInputIter(domainIterator),
@@ -649,7 +649,7 @@ WindowIterator::~WindowIterator()
 ********************************************************************************/
 void WindowIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (Batcher<WindowIterator>*)this);
+  serialize_baseclass(ar, (PlanIterator*)this);
   SERIALIZE_ENUM(WindowType, theWindowType);
   ar & theTupleIter;
   ar & theInputIter;
