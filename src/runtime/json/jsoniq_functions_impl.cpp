@@ -878,7 +878,6 @@ JSONObjectNamesIterator::nextImpl(
   PlanState& planState) const
 {
   store::Item_t input;
-  store::Item_t key;
 
   JSONObjectNamesIteratorState* state;
   DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
@@ -888,9 +887,8 @@ JSONObjectNamesIterator::nextImpl(
   state->theNames = input->getObjectKeys();
   state->theNames->open();
 
-  while (state->theNames->next(key))
+  while (state->theNames->next(result))
   {
-    result = key;
     STACK_PUSH (true, state);
   }
   state->theNames = NULL;
