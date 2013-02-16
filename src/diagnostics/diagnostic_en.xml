@@ -3222,6 +3222,10 @@
       <value>'$3': illegal character within { }</value>
     </entry>
 
+    <entry key="BadEndCharInRange_34">
+      <value>'$3': invalid end character in range (greater than '$4')</value>
+    </entry>
+
     <entry key="BadDecDigit_3">
       <value>'$3': invalid decimal digit</value>
     </entry>

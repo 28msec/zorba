@@ -129,6 +129,7 @@
 #define ZED_BadArgTypeForFn_2o34o "~BadArgTypeForFn_2o34o"
 #define ZED_BadCharAfter_34 "~BadCharAfter_34"
 #define ZED_BadCharInBraces_3 "~BadCharInBraces_3"
+#define ZED_BadEndCharInRange_34 "~BadEndCharInRange_34"
 #define ZED_BadDecDigit_3 "~BadDecDigit_3"
 #define ZED_BadFileURIAuthority_2 "~BadFileURIAuthority_2"
 #define ZED_BadHexSequence "~BadHexSequence"

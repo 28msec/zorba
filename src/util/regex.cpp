@@ -118,7 +118,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   // capture subgroup: true = open; false = closed
   vector<bool> cap_sub;                 // 0-based
 
-  FOR_EACH( zstring, xq_c, xq_re ) {
+  zstring::value_type prev_xq_c = 0;
+  for ( zstring::const_iterator xq_c = xq_re.begin();
+        xq_c != xq_re.end();
+        prev_xq_c = *xq_c++ ) {
     if ( got_backslash ) {
       if ( x_flag && !in_char_class && ascii::is_space( *xq_c ) ) {
         //
@@ -305,12 +308,19 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           }
           break;
         case '-':
-          if ( in_char_class && peek( xq_re, xq_c ) == '[' ) {
-            //
-            // ICU uses -- to indicate range subtraction, e.g.,
-            // XQuery [A-Z-[OI]] becomes ICU [A-Z--[OI]].
-            //
-            *icu_re += '-';
+          if ( in_char_class ) {
+            zstring::value_type const next_xq_c = peek( xq_re, xq_c );
+            if ( prev_xq_c > next_xq_c )
+              throw INVALID_RE_EXCEPTION(
+                xq_re, ZED( BadEndCharInRange_34 ), next_xq_c, prev_xq_c
+              );
+            if ( next_xq_c == '[' ) {
+              //
+              // ICU uses "--" to indicate range subtraction, e.g.,
+              // XQuery [A-Z-[OI]] becomes ICU [A-Z--[OI]].
+              //
+              *icu_re += '-';
+            }
           }
           break;
         case '[':
@@ -378,6 +388,7 @@ append:
       // single '\'.
       //
       ascii::replace_all( *icu_re, "\\p{Lu}", 6, "(?-i:\\p{Lu})", 12 );
+      ascii::replace_all( *icu_re, "\\P{Lu}", 6, "(?-i:\\P{Lu})", 12 );
     }
 
     //
@@ -392,6 +403,7 @@ append:
     // Note that the "5" below is correct since "\\" represents a single '\'.
     //
     ascii::replace_all( *icu_re, "\\p{Is", 5, "\\p{In", 5 );
+    ascii::replace_all( *icu_re, "\\P{Is", 5, "\\P{In", 5 );
   } // q_flag
 }
 
