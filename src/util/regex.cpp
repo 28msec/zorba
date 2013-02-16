@@ -106,8 +106,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   icu_re->clear();
   icu_re->reserve( xq_re.length() );    // approximate
 
+  char char_range_begin_c;              // the 'a' in [a-b]
   bool got_backslash = false;
   int  in_char_class = 0;               // within [...]
+  int  in_char_range = 0;               // [a-b]
   bool is_first_char = true;            // to check ^ placement
 
   bool in_backref = false;              // '\'[1-9][0-9]*
@@ -118,10 +120,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   // capture subgroup: true = open; false = closed
   vector<bool> cap_sub;                 // 0-based
 
-  zstring::value_type prev_xq_c = 0;
-  for ( zstring::const_iterator xq_c = xq_re.begin();
-        xq_c != xq_re.end();
-        prev_xq_c = *xq_c++ ) {
+  FOR_EACH( zstring, xq_c, xq_re ) {
     if ( got_backslash ) {
       if ( x_flag && !in_char_class && ascii::is_space( *xq_c ) ) {
         //
@@ -308,7 +307,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           }
           break;
         case '-':
-          if ( in_char_class ) {
+          if ( in_char_class && !in_char_range ) {
             zstring::value_type const next_xq_c = peek( xq_re, xq_c );
             if ( next_xq_c == '[' ) {
               //
@@ -316,10 +315,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
               // XQuery [A-Z-[OI]] becomes ICU [A-Z--[OI]].
               //
               *icu_re += '-';
-            } else if ( prev_xq_c > next_xq_c )
-              throw INVALID_RE_EXCEPTION(
-                xq_re, ZED( BadEndCharInRange_34 ), next_xq_c, prev_xq_c
-              );
+            } else {
+              char_range_begin_c = xq_c[ -1 ];
+              in_char_range = 2;
+            }
           }
           break;
         case '[':
@@ -333,8 +332,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case ']':
           if ( q_flag )
             *icu_re += '\\';
-          else if ( in_char_class > 0 )
+          else if ( in_char_class > 0 ) {
             --in_char_class;
+            in_char_range = 0;
+          }
           break;
         case '^':
           if ( q_flag )
@@ -365,7 +366,14 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
     } // else
     is_first_char = false;
 append:
+    if ( in_char_range == 1 && *xq_c < char_range_begin_c )
+      throw INVALID_RE_EXCEPTION(
+        xq_re, ZED( BadEndCharInRange_34 ), *xq_c, char_range_begin_c
+      );
+
     *icu_re += *xq_c;
+    if ( in_char_range > 0 )
+      --in_char_range;
   } // FOR_EACH
 
   if ( got_backslash )

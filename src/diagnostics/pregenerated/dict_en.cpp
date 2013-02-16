@@ -549,7 +549,7 @@ extern entry const dict_en[] = {
   { "~BadCharAfter_34", "'$3': illegal character after '$4'" },
   { "~BadCharInBraces_3", "'$3': illegal character within { }" },
   { "~BadDecDigit_3", "'$3': invalid decimal digit" },
-  { "~BadEndCharInRange_34", "'$3': invalid end character in range (greater than '$4')" },
+  { "~BadEndCharInRange_34", "'$3': invalid end character in range (less than '$4' start character)" },
   { "~BadFileURIAuthority_2", "\"$2\": invalid authority for \"file\" scheme" },
   { "~BadHexSequence", "invalid hexedecimal sequence" },
   { "~BadItem", "invalid item" },

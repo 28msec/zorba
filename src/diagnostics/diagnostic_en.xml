@@ -3223,7 +3223,7 @@
     </entry>
 
     <entry key="BadEndCharInRange_34">
-      <value>'$3': invalid end character in range (greater than '$4')</value>
+      <value>'$3': invalid end character in range (less than '$4' start character)</value>
     </entry>
 
     <entry key="BadDecDigit_3">
