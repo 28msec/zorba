@@ -310,17 +310,16 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '-':
           if ( in_char_class ) {
             zstring::value_type const next_xq_c = peek( xq_re, xq_c );
-            if ( prev_xq_c > next_xq_c )
-              throw INVALID_RE_EXCEPTION(
-                xq_re, ZED( BadEndCharInRange_34 ), next_xq_c, prev_xq_c
-              );
             if ( next_xq_c == '[' ) {
               //
               // ICU uses "--" to indicate range subtraction, e.g.,
               // XQuery [A-Z-[OI]] becomes ICU [A-Z--[OI]].
               //
               *icu_re += '-';
-            }
+            } else if ( prev_xq_c > next_xq_c )
+              throw INVALID_RE_EXCEPTION(
+                xq_re, ZED( BadEndCharInRange_34 ), next_xq_c, prev_xq_c
+              );
           }
           break;
         case '[':
