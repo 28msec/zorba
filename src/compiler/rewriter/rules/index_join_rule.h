@@ -78,8 +78,6 @@ protected:
 
   var_expr* findLoopVar(const expr* curExpr, ulong& varid);
 
-  bool checkVarDependency(expr* curExpr, ulong searchVarId);
-
   void rewriteJoin(PredicateInfo& predInfo, bool& modified);
 
   bool expandVars(expr* subExpr, ulong outerVarId, long& maxVarId);

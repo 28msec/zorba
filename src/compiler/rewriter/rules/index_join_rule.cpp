@@ -289,8 +289,6 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
     return false;
 
   // Determine the outer and inner side of the join
-  ulong outerVarId;
-
   if (var1id < var2id)
   {
     predInfo.theOuterOp = op1;
@@ -298,7 +296,6 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
     predInfo.theOuterVarId = var1id;
     predInfo.theInnerOp = op2;
     predInfo.theInnerVar = var2;
-    outerVarId = var1id;
   }
   else
   {
@@ -307,7 +304,6 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
     predInfo.theOuterVarId = var2id;
     predInfo.theInnerOp = op1;
     predInfo.theInnerVar = var1;
-    outerVarId = var2id;
   }
 
   static_context* sctx = predExpr->get_sctx();
@@ -318,11 +314,6 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
 
   // The inner var must not be an outer FOR var
   if (predInfo.theInnerVar->get_forlet_clause()->is_allowing_empty())
-    return false;
-
-  // The expr that defines the inner var must not depend on the outer var.
-  expr* innerDomainExpr = predInfo.theInnerVar->get_forlet_clause()->get_expr();
-  if (checkVarDependency(innerDomainExpr, outerVarId))
     return false;
 
   // The predicate must be in the same flwor that defines the inner var (this
@@ -369,6 +360,8 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   else
   {
     // TODO: allow domain exprs that return atomic items?
+    expr* innerDomainExpr = predInfo.theInnerVar->get_forlet_clause()->get_expr();
+
     if (! TypeOps::is_subtype(tm,
                               *innerDomainExpr->get_return_type(),
                               *rtm.ANY_NODE_TYPE_STAR,
@@ -453,38 +446,6 @@ var_expr* IndexJoinRule::findLoopVar(const expr* curExpr, ulong& varid)
   }
 
   return var;
-}
-
-
-/*******************************************************************************
-  Check if "curExpr" depends on the var V with the given prefix id. The method
-  returns true if "curExpr" references V or references another var whose domain
-  expr depends on V.
-********************************************************************************/
-bool IndexJoinRule::checkVarDependency(expr* curExpr, ulong searchVarId)
-{
-  const DynamicBitset& bitset = (*theExprVarsMap)[curExpr];
-
-  if (bitset.get(searchVarId))
-    return true;
-
-  std::vector<ulong> varidSet;
-  bitset.getSet(varidSet);
-
-  csize numVars = varidSet.size();
-  for (csize i = 0; i < numVars; ++i)
-  {
-    const var_expr* var = (*theIdVarMap)[varidSet[i]];
-
-    forletwin_clause* flwc = var->get_forletwin_clause();
-    if (flwc != NULL)
-    {
-      if (checkVarDependency(flwc->get_expr(), searchVarId))
-        return true;
-    }
-  }
-
-  return false;
 }
 
 
