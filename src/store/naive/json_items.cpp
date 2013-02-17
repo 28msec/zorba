@@ -710,6 +710,18 @@ bool SimpleJSONObject::isThisJSONItemInDescendance(const store::Item* anItem) co
 /******************************************************************************
 
 *******************************************************************************/
+zstring SimpleJSONObject::show() const
+{
+  std::stringstream str;
+  str << "{ }";
+
+  return str.str();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 SimpleJSONObject::KeyIterator::~KeyIterator() 
 {
 }
@@ -1235,6 +1247,18 @@ bool SimpleJSONArray::isThisJSONItemInDescendance(const store::Item* anItem) con
 }
 
 #endif // NDEBUG
+
+
+/******************************************************************************
+
+*******************************************************************************/
+zstring SimpleJSONArray::show() const
+{
+  std::stringstream str;
+  str << "[ ]";
+
+  return str.str();
+}
 
 
 /******************************************************************************

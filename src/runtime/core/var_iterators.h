@@ -408,18 +408,18 @@ class LetVarIterator : public NoaryBaseIterator<LetVarIterator, LetVarState>
 {
 private:
   store::Item_t  theVarName;
+
   xs_integer     theTargetPos;
   PlanIter_t     theTargetPosIter;
   PlanIter_t     theTargetLenIter;
   bool           theInfLen;
 
+  bool           theSingleItem;
+
 public:
   SERIALIZABLE_CLASS(LetVarIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  LetVarIterator, 
-  NoaryBaseIterator<LetVarIterator, LetVarState>);
-
+  LetVarIterator, NoaryBaseIterator<LetVarIterator, LetVarState>);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -429,6 +429,10 @@ public:
       store::Item* name);
 
   ~LetVarIterator() {}
+
+  void setSingleItem();
+
+  bool isSingleItemLETVar() const { return theSingleItem; }
 
   bool setTargetPos(xs_integer v);
 
@@ -443,6 +447,8 @@ public:
   PlanIterator* getTargetLenIter() const { return theTargetLenIter.getp(); }
 
   store::Item* getVarName() const { return theVarName.getp(); }
+
+  void bind(store::Item_t& value, PlanState& planState);
 
   void bind(const store::TempSeq_t& value, PlanState& planState);
 
