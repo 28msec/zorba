@@ -304,8 +304,7 @@ private:
   Pairs  thePairs;
 
 public:
-  SimpleJSONObject()
-  {}
+  SimpleJSONObject() {}
 
   virtual ~SimpleJSONObject();
 
@@ -326,6 +325,8 @@ public:
   virtual void appendStringValue(zstring& buf) const;
 
   virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  zstring show() const;
 
   // updates
   
@@ -475,6 +476,8 @@ public:
   void appendStringValue(zstring& buf) const;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  zstring show() const;
 
   // updates
   

@@ -198,9 +198,10 @@ public:
   PlanIter_t               theInputVar;
   std::vector<PlanIter_t>  theOutputVarRefs;
   bool                     theIsFakeLetVar;
+  bool                     theIsSingleItemLetVar;
 
 public:
-  VarRebind() : theIsFakeLetVar(false) {}
+  VarRebind() : theIsFakeLetVar(false), theIsSingleItemLetVar(false) {}
 };
 
 
@@ -717,7 +718,7 @@ PlanIter_t base_var_codegen(
 }
 
 
-PlanIter_t create_var_iter(const var_expr& var, bool forvar)
+PlanIter_t create_var_iter(const var_expr& var, bool forvar, bool singleItemLetVar)
 {
   PlanIter_t iter;
   if (forvar)
@@ -727,6 +728,9 @@ PlanIter_t create_var_iter(const var_expr& var, bool forvar)
   else
   {
     iter = new LetVarIterator(var.get_sctx(), var.get_loc(), var.get_name());
+    
+    if (singleItemLetVar)
+      static_cast<LetVarIterator*>(iter.getp())->setSingleItem();
   }
   return iter;
 }
@@ -771,7 +775,7 @@ void general_var_codegen(const var_expr& var)
     // or materialize clause the comes after D_C and rebinds the var to its
     // output.
     long i = stackSize - 1;
-    while(true)
+    while (true)
     {
       if ((varPos = theClauseStack[i]->find_var(&var)) >= 0)
         break;
@@ -782,13 +786,15 @@ void general_var_codegen(const var_expr& var)
 
     FlworClauseVarMap* clauseVarMap = theClauseStack[i];
     flwor_expr* flworExpr = clauseVarMap->theClause->get_flwor_expr();
-    bool isFakeLetVar = clauseVarMap->theVarRebinds[varPos]->theIsFakeLetVar;
+    bool fakeLetVar = clauseVarMap->theVarRebinds[varPos]->theIsFakeLetVar;
+    bool singleItemLetVar = clauseVarMap->theVarRebinds[varPos]->theIsSingleItemLetVar;
 
-    if (isFakeLetVar)
+    if (fakeLetVar)
       isForVar = true;
 
     // Create a var ref iter in the output of C.
-    varIter = create_var_iter(var, isForVar);
+    varIter = create_var_iter(var, isForVar, singleItemLetVar);
+
 
     clauseVarMap->theVarRebinds[varPos]->theOutputVarRefs.push_back(varIter);
 
@@ -814,9 +820,10 @@ void general_var_codegen(const var_expr& var)
           clauseVarMap->theVarRebinds.push_back(varRebind);
 
           varRebind->theInputVar = varIter;
-          varRebind->theIsFakeLetVar = isFakeLetVar;
+          varRebind->theIsFakeLetVar = fakeLetVar;
+          //varRebind->theIsSingleItemLetVar = singleItemLetVar;
 
-          varIter = create_var_iter(var, isForVar);
+          varIter = create_var_iter(var, isForVar, varRebind->theIsSingleItemLetVar);
 
           varRebind->theOutputVarRefs.push_back(varIter);
         }
@@ -989,10 +996,6 @@ bool begin_visit(flwor_expr& v)
                 k == flwor_clause::window_clause ||
                 numForClauses > 0)
             {
-              theCCB->theXQueryDiagnostics->add_warning(
-              NEW_XQUERY_WARNING(zwarn::ZWST0004_AMBIGUOUS_SEQUENTIAL_FLWOR,
-                                 WARN_LOC(c->get_loc())));
-
               if (i > 0 &&
                   v.get_clause(i-1)->get_kind() != flwor_clause::order_clause &&
                   v.get_clause(i-1)->get_kind() != flwor_clause::groupby_clause)
@@ -1224,6 +1227,8 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
 
     if (domType->get_quantifier() == TypeConstants::QUANT_ONE)
       varRebind->theIsFakeLetVar = true;
+    else if (domType->get_quantifier() == TypeConstants::QUANT_QUESTION)
+      varRebind->theIsSingleItemLetVar = true;
 
     break;
   }
@@ -1461,7 +1466,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   if (c.get_kind() != flwor_clause::where_clause)
   {
     ZORBA_ASSERT(!theClauseStack.empty());
-    ulong stackSize = (ulong)theClauseStack.size();
+    csize stackSize = theClauseStack.size();
 
     clauseVarMap = theClauseStack[stackSize-1];
     theClauseStack.resize(stackSize - 1);
@@ -1534,9 +1539,15 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
     }
     else
     {
-      return new flwor::LetIterator(sctx, var->get_loc(), var->get_name(),
-                                    PREV_ITER, domainIter, varRefs,
-                                    lc->lazyEval(), true);  // materialize
+      flwor::LetIterator* letIter =
+      new flwor::LetIterator(sctx, var->get_loc(), var->get_name(),
+                             PREV_ITER, domainIter, varRefs,
+                             lc->lazyEval(), true);  // materialize
+
+      if (clauseVarMap->theVarRebinds[0]->theIsSingleItemLetVar)
+        letIter->setSingleItem();
+
+      return letIter;
     }
   }
 
@@ -1616,16 +1627,16 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   //
   else if (c.get_kind() == flwor_clause::order_clause)
   {
-    ulong numVars = (ulong)clauseVarMap->theVarRebinds.size();
-    ulong numForVars = 0;
-    ulong numLetVars = 0;
+    csize numVars = clauseVarMap->theVarRebinds.size();
+    csize numForVars = 0;
+    csize numLetVars = 0;
 
     std::vector<ForVarIter_t> inputForVars(numVars);
     std::vector<LetVarIter_t> inputLetVars(numVars);
     std::vector<std::vector<PlanIter_t> > outputForVarsRefs(numVars);
     std::vector<std::vector<PlanIter_t> > outputLetVarsRefs(numVars);
 
-    for (ulong i = 0; i < numVars; ++i)
+    for (csize i = 0; i < numVars; ++i)
     {
       VarRebind* varRebind = clauseVarMap->theVarRebinds[i].getp();
 
@@ -1924,6 +1935,9 @@ void flwor_codegen(const flwor_expr& flworExpr)
                                                     domainIter,
                                                     lc->lazyEval(),
                                                     true)); // materialize
+
+        if (clauseVarMap->theVarRebinds[0]->theIsSingleItemLetVar)
+          forletClauses.back().setSingleItem();
       }
       break;
     }
