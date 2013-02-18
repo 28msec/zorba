@@ -514,8 +514,6 @@ void SimpleJSONObject::swap(store::Item* anotherItem)
 *******************************************************************************/
 void SimpleJSONObject::setCollectionTreeInfo(CollectionTreeInfo* collectionInfo)
 {
-  assert(collectionInfo == NULL);
-
   theCollectionInfo = static_cast<CollectionTreeInfoWithTreeId*>(collectionInfo);
 
   for (Pairs::iterator ite = thePairs.begin();
@@ -1021,8 +1019,6 @@ store::Item_t SimpleJSONArray::replace(
 *******************************************************************************/
 void SimpleJSONArray::setCollectionTreeInfo(CollectionTreeInfo* collectionInfo)
 {
-  assert(collectionInfo == NULL);
-
   theCollectionInfo = static_cast<CollectionTreeInfoWithTreeId*>(collectionInfo);
 
   for (Members::const_iterator ite = theContent.begin();
