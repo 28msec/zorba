@@ -23,6 +23,7 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
+#include "util/mem_sizeof.h"
 
 namespace zorba
 {
@@ -216,6 +217,21 @@ SimpleJSONObject::~SimpleJSONObject()
   ASSERT_INVARIANT();
 }
 
+
+/******************************************************************************
+
+*******************************************************************************/
+
+size_t SimpleJSONObject::alloc_size() const
+{
+  return  ztd::alloc_sizeof( theKeys )
+        + ztd::alloc_sizeof( thePairs );
+}
+
+size_t SimpleJSONObject::dynamic_size() const
+{
+  return sizeof( *this );
+}
 
 /******************************************************************************
 
@@ -673,6 +689,18 @@ bool SimpleJSONObject::isInSubtree(const StructuredItem* anItem) const
 /******************************************************************************
 
 *******************************************************************************/
+zstring SimpleJSONObject::show() const
+{
+  std::stringstream str;
+  str << "{ }";
+
+  return str.str();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 SimpleJSONObject::KeyIterator::~KeyIterator() 
 {
 }
@@ -762,6 +790,20 @@ SimpleJSONArray::~SimpleJSONArray()
   }
 }
 
+
+/******************************************************************************
+
+*******************************************************************************/
+
+size_t SimpleJSONArray::alloc_size() const
+{
+  return ztd::alloc_sizeof( theContent );
+}
+
+size_t SimpleJSONArray::dynamic_size() const
+{
+  return sizeof( *this );
+}
 
 /******************************************************************************
 
@@ -1203,6 +1245,18 @@ bool SimpleJSONArray::isInSubtree(const StructuredItem* anItem) const
   }
 
   return false;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+zstring SimpleJSONArray::show() const
+{
+  std::stringstream str;
+  str << "[ ]";
+
+  return str.str();
 }
 
 

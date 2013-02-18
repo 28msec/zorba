@@ -48,6 +48,7 @@
 #include "dataguide.h"
 #include "node_factory.h"
 
+#include "util/mem_sizeof.h"
 #include "util/stl_util.h"
 #include "util/string_util.h"
 
@@ -493,6 +494,11 @@ XmlNode::~XmlNode()
 }
 #endif
 
+size_t XmlNode::alloc_size() const
+{
+  return store::Item::alloc_size();
+}
+
 
 /*******************************************************************************
 
@@ -827,6 +833,7 @@ void XmlNode::swap(Item* anotherItem)
 #endif
 }
 
+
 /*******************************************************************************
   Deallocate all nodes in the subtree rooted at "this".
 ********************************************************************************/
@@ -905,6 +912,7 @@ void XmlNode::destroyInternal(bool removeType)
 
   delete this;
 }
+
 
 /*******************************************************************************
 
@@ -1001,6 +1009,20 @@ ConnectorNode::ConnectorNode(
 /*******************************************************************************
 
 ********************************************************************************/
+size_t ConnectorNode::alloc_size() const
+{
+  return XmlNode::alloc_size() + ztd::alloc_sizeof( theNode );
+}
+
+size_t ConnectorNode::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 XmlNode* ConnectorNode::copyInternal(
       InternalNode* rootParent,
       InternalNode* parent,
@@ -1011,6 +1033,7 @@ XmlNode* ConnectorNode::copyInternal(
   ZORBA_ASSERT(false);
   return NULL;
 }
+
 
 /*******************************************************************************
 
@@ -1081,6 +1104,20 @@ OrdPathNode::OrdPathNode(
   {
     setOrdPath(parent, append, pos, nodeKind);
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+size_t OrdPathNode::alloc_size() const
+{
+  return XmlNode::alloc_size() + ztd::alloc_sizeof( theOrdPath );
+}
+
+size_t OrdPathNode::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -1240,11 +1277,11 @@ void OrdPathNode::setOrdPath(
   }
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-bool
-OrdPathNode::getDescendantNodeByOrdPath(
+bool OrdPathNode::getDescendantNodeByOrdPath(
     const OrdPath& aOrdPath,
     store::Item_t& aResult,
     bool aAttribute) const
@@ -1545,6 +1582,14 @@ void OrdPathNode::swap(Item* anotherItem)
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+
+/*******************************************************************************
+
+********************************************************************************/
+size_t InternalNode::alloc_size() const
+{
+  return OrdPathNode::alloc_size() + ztd::alloc_sizeof( theNodes );
+}
 
 /*******************************************************************************
 
@@ -1883,6 +1928,22 @@ DocumentNode::DocumentNode()
   InternalNode(store::StoreConsts::documentNode)
 {
   STORE_TRACE1("Loaded doc node " << this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+size_t DocumentNode::alloc_size() const
+{
+  return  InternalNode::alloc_size()
+        + ztd::alloc_sizeof(theBaseUri)
+        + ztd::alloc_sizeof(theDocUri);
+}
+
+size_t DocumentNode::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -2611,6 +2672,25 @@ XmlNode* ElementNode::copyInternal(
 /*******************************************************************************
 
 ********************************************************************************/
+size_t ElementNode::alloc_size() const
+{
+  return InternalNode::alloc_size()
+#ifdef EMBEDED_TYPE
+       + ztd::alloc_sizeof(theTypeName)
+#endif
+       + ztd::alloc_sizeof(theName) 
+       + (haveLocalBindings() ? ztd::alloc_sizeof(theNsContext) : 0);
+}
+
+size_t ElementNode::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 #ifdef EMBEDED_TYPE
 store::Item* ElementNode::getType() const
 {
@@ -2646,6 +2726,7 @@ void ElementNode::assertInvariants() const
   assert(haveType() || getTree() == NULL || getTree()->getType(this) == NULL);
 }
 
+
 store::Item* ElementNode::getType() const
 {
 #ifndef DEBUG
@@ -2658,6 +2739,9 @@ store::Item* ElementNode::getType() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void ElementNode::setType(store::Item_t& type)
 {
 #ifndef DEBUG
@@ -3604,6 +3688,7 @@ void ElementNode::swap(Item* anotherItem)
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+
 /*******************************************************************************
   Node constructor used by FastXmlLoader only.
 ********************************************************************************/
@@ -3747,6 +3832,25 @@ AttributeNode::AttributeNode(
               << " ordpath = " << theOrdPath.show()
               << " name = " << theName->getStringValue()
               << " value = " << getStringValue());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+size_t AttributeNode::alloc_size() const
+{
+  return  OrdPathNode::alloc_size()
+        + ztd::alloc_sizeof( theName )
+#ifdef EMBEDED_TYPE
+        + ztd::alloc_sizeof( theTypeName )
+#endif
+        + ztd::alloc_sizeof( theTypedValue );
+}
+
+size_t AttributeNode::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -4258,6 +4362,24 @@ TextNode::TextNode(
 /*******************************************************************************
 
 ********************************************************************************/
+
+size_t TextNode::alloc_size() const
+{
+  return  base_type::alloc_size()
+        + (isTyped() ?
+            ztd::alloc_sizeof( theContent.getValue() ) :
+            ztd::alloc_sizeof( theContent.getText() )
+        );
+}
+
+size_t TextNode::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
 XmlNode* TextNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
@@ -4897,6 +5019,23 @@ PiNode::PiNode(
 /*******************************************************************************
 
 ********************************************************************************/
+
+size_t PiNode::alloc_size() const
+{
+  return  OrdPathNode::alloc_size()
+        + ztd::alloc_sizeof( theTarget )
+        + ztd::alloc_sizeof( theContent )
+        + ztd::alloc_sizeof( theName );
+}
+
+size_t PiNode::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
 XmlNode* PiNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
@@ -5041,6 +5180,19 @@ CommentNode::CommentNode(
 /*******************************************************************************
 
 ********************************************************************************/
+
+size_t CommentNode::alloc_size() const
+{
+  return  OrdPathNode::alloc_size() + ztd::alloc_sizeof( theContent );
+}
+
+size_t CommentNode::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 XmlNode* CommentNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,

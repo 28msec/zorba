@@ -110,7 +110,9 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
          <fots:info>
            {$env}
            <fots:query>{$zorbaQuery}</fots:query>
-           {$result/descendant::*}
+           {$result/fots:expected-result,
+            $result/fots:result,
+            $result/fots:errors}
          </fots:info>
       as last into $case,
       delete node $case/fots:description,
@@ -161,7 +163,9 @@ declare %private %ann:sequential function feedback:pass(
         <fots:info>
           {$env}
           <fots:query>{$zorbaQuery}</fots:query>
-          {$result/descendant::*}
+          {$result/fots:expected-result,
+            $result/fots:result,
+            $result/fots:errors}
         </fots:info>
       as last into $case,
       delete node $case/fots:description,
@@ -172,8 +176,7 @@ declare %private %ann:sequential function feedback:pass(
     }
   }
   else <fots:test-case  name="{data($case/@name)}"
-                        result="{$status}"
-                        executionTime="{$duration}" />
+                        result="{$status}"/>
 };
 
 
@@ -208,11 +211,14 @@ declare %ann:sequential function feedback:fail(
        if ($expectedFailure)
        then insert node attribute comment{$info} as last into $case
        else (),
+       insert node attribute executionTime{$duration} as last into $case,
        insert node
          <fots:info>
            {$env}
            <fots:query>{$zorbaQuery}</fots:query>
-           {$result/descendant::*}
+           {$result/fots:expected-result,
+            $result/fots:result,
+            $result/fots:errors}
          </fots:info>
        as last into $case,
        delete node $case/fots:description,
@@ -225,12 +231,10 @@ declare %ann:sequential function feedback:fail(
   else if ($expectedFailure)
   then <fots:test-case name="{data($case/@name)}"
                        result="{$status}"
-                       comment="{$info}"
-                       executionTime="{$duration}"/>
+                       comment="{$info}"/>
  
   else <fots:test-case name="{data($case/@name)}"
-                       result="{$status}"
-                       executionTime="{$duration}"/>
+                       result="{$status}"/>
 };
 
 

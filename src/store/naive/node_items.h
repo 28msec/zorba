@@ -447,6 +447,8 @@ public:
   virtual ~XmlNode() {}
 #endif
 
+  size_t alloc_size() const;
+
   SYNC_CODE(RCLock* getRCLock() const { return getTree()->getRCLock(); })
 
   void free()
@@ -630,6 +632,9 @@ protected:
       const XmlNode* child);
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   XmlNode* getNode() const { return theNode.getp(); }
 
   store::Item* getNodeName() const { return theNode->getNodeName(); }
@@ -694,6 +699,9 @@ protected:
   virtual ~OrdPathNode() {}
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   const OrdPath& getOrdPath() const { return theOrdPath; }
 
   OrdPath& getOrdPath() { return theOrdPath; }
@@ -805,6 +813,8 @@ public:
   //
   // SimpleStore Methods
   //
+
+  size_t alloc_size() const;
 
   // To be used by the loader ONLY!
   NodeVector& nodes() { return theNodes; }
@@ -948,6 +958,9 @@ public:
   // Item methods
   //
 
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   store::Item* getType() const;
 
   void getDocumentURI(zstring& uri) const { uri = theDocUri; }
@@ -1039,6 +1052,9 @@ public:
   //
   // Item methods
   //
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   store::Item* getNodeName() const { return theName.getp(); }
 
   store::Item* getType() const;
@@ -1208,6 +1224,7 @@ protected:
 #endif
   store::Item_t   theTypedValue;
 
+protected:
   AttributeNode(store::Item_t&  attrName);
 
   AttributeNode(
@@ -1227,6 +1244,9 @@ public:
   //
   // Item methods
   //
+
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
   store::Item* getNodeName() const { return theName.getp(); }
 
@@ -1324,11 +1344,12 @@ protected:
 
 ********************************************************************************/
 #ifdef TEXT_ORDPATH
-class TextNode : public OrdPathNode
+class TextNode : public OrdPathNode {
+  typedef OrdPathNode base_type;
 #else
-class TextNode : public XmlNode
+class TextNode : public XmlNode {
+  typedef XmlNode base_type;
 #endif
-{
   friend class XmlNode;
   friend class InternalNode;
   friend class DocumentDagNode;
@@ -1377,6 +1398,9 @@ public:
   //
   // Item methods
   //
+
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
   store::Item* getType() const;
 
@@ -1510,6 +1534,9 @@ protected:
   PiNode() {}
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   XmlNode* copyInternal(
         InternalNode* rootParent,
         InternalNode* parent,
@@ -1576,6 +1603,9 @@ protected:
   CommentNode() {}
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   XmlNode* copyInternal(
         InternalNode* rootParent,
         InternalNode* parent,

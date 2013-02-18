@@ -26,6 +26,9 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "compiler/api/compilercb.h"
 
+#include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
+
 #include "store/api/store.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -34,6 +37,7 @@
 
 #include "types/schema/schema.h"
 #include "types/schema/validate.h"
+#include "util/stream_util.h"
 
 namespace zorba
 {
@@ -50,6 +54,7 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   zstring docUri;
   std::auto_ptr<std::istringstream> iss;
   std::istream *is;
+  char const *uri;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -66,26 +71,35 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       // We can't replace "iss" with "is" since we still need the auto_ptr for
       // the case when the result is not streamable.
       is = &result->getStream();
+      uri = get_uri( *is );
     }
     else
     {
       result->getStringValue2(docString);
       iss.reset (new std::istringstream(docString.c_str()));
       is = iss.get();
+      uri = nullptr;
     }
 
-    
+
     baseUri = theSctx->get_base_uri();
-    
+
 
     try {
       store::LoadProperties loadProps;
       loadProps.setStoreDocument(false);
       result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
-    } catch (ZorbaException const& e) {
-      throw XQUERY_EXCEPTION(
-        err::FODC0006, ERROR_PARAMS("fn:parse-xml()", e.what() ), ERROR_LOC( loc )
+    }
+    catch ( ZorbaException const &e ) {
+      XQueryException xe(
+        XQUERY_EXCEPTION(
+          err::FODC0006,
+          ERROR_PARAMS( "fn:parse-xml()", e.what() ),
+          ERROR_LOC( loc )
+        )
       );
+      set_data( xe, e );
+      throw xe;
     }
 
     STACK_PUSH(true, state);
@@ -117,12 +131,10 @@ FnSerializeIterator::setSerializationParams(
   if (lElemName->getLocalName() != "serialization-parameters")
   {
     ztd::string_builder lSb;
-    lSb << "the serialization parameters element must have the name \"serialization parameters\". "
-      << "\"" << lElemName->getLocalName() << "\" was found";
-    throw XQUERY_EXCEPTION(
-      err::XQDY0027,
-      ERROR_PARAMS(lSb.str()),
-      ERROR_LOC( aLoc ));
+    lSb << lElemName->getLocalName();
+
+    RAISE_ERROR(err::XQDY0027, aLoc,
+      ERROR_PARAMS(ZED(XQDY0027_SerializationElementName_2), lSb));
   }
 
   // the provided element must be in the correct namespace otherwise
@@ -131,20 +143,12 @@ FnSerializeIterator::setSerializationParams(
   if (lElemName->getNamespace() != "http://www.w3.org/2010/xslt-xquery-serialization")
   {
     ztd::string_builder lSb;
-    zstring lFoundNs("No");
+    zstring lFoundNs("");
     if (lElemName->getNamespace().size() > 0)
-    {
-      lFoundNs = "<";
       lFoundNs += lElemName->getNamespace();
-      lFoundNs += ">";
-    }
 
-    lSb << "the serialization-parameters element must be in the <http://www.w3.org/2010/xslt-xquery-serialization> namespace. "
-      << lFoundNs << " namespace was found";
-    throw XQUERY_EXCEPTION(
-      err::XQDY0027,
-      ERROR_PARAMS(lSb .str()),
-      ERROR_LOC( aLoc ));
+    RAISE_ERROR(err::XQDY0027, aLoc,
+      ERROR_PARAMS(ZED(XQDY0027_SerializationElementNs_2), lFoundNs));
   }
 
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -260,4 +264,5 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
   STACK_END (lState);
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */
