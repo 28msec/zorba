@@ -120,9 +120,13 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   // capture subgroup: true = open; false = closed
   vector<bool> cap_sub;                 // 0-based
 
-  FOR_EACH( zstring, xq_c, xq_re ) {
+  char xq_c, prev_xq_c = 0;
+  for ( zstring::const_iterator xq_i = xq_re.begin();
+        xq_i != xq_re.end();
+        prev_xq_c = xq_c, ++xq_i ) {
+    xq_c = *xq_i;
     if ( got_backslash ) {
-      if ( x_flag && !in_char_class && ascii::is_space( *xq_c ) ) {
+      if ( x_flag && !in_char_class && ascii::is_space( xq_c ) ) {
         //
         // XQuery 3.0 F&O 5.6.1.1: If [the 'x' flag is] present, whitespace
         // characters ... in the regular expression are removed prior to
@@ -133,7 +137,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
       }
       got_backslash = false;
 
-      switch ( *xq_c ) {
+      switch ( xq_c ) {
 
         ////////// Back-References ////////////////////////////////////////////
 
@@ -147,7 +151,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '7':
         case '8':
         case '9':
-          backref_no = *xq_c - '0';
+          backref_no = xq_c - '0';
           if ( !backref_no )          // \0 is illegal
             throw INVALID_RE_EXCEPTION( xq_re, ZED( BackRef0Illegal ) );
           if ( in_char_class ) {
@@ -160,28 +164,6 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             );
           }
           in_backref = true;
-          // no break;
-
-        ////////// Single Character Escapes ///////////////////////////////////
-
-        case '$': // added in XQuery 3.0 F&O 5.6.1
-        case '(':
-        case ')':
-        case '*':
-        case '+':
-        case '-':
-        case '.':
-        case '?':
-        case '[':
-        case '\\':
-        case ']':
-        case '^':
-        case 'n': // newline
-        case 'r': // carriage return
-        case 't': // tab
-        case '{':
-        case '|':
-        case '}':
           // no break;
 
         ////////// Multi-Character & Category Escapes /////////////////////////
@@ -209,8 +191,41 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           *icu_re += "[^" bs_i "]";
           continue;
 
+        ////////// Single Character Escapes ///////////////////////////////////
+
+        case '$': // added in XQuery 3.0 F&O 5.6.1
+        case '(':
+        case ')':
+        case '*':
+        case '+':
+        case '-':
+        case '.':
+        case '?':
+        case '[':
+        case '\\':
+        case ']':
+        case '^':
+        case '{':
+        case '|':
+        case '}':
+          *icu_re += '\\';
+          break;
+
+        case 'n': // newline
+          *icu_re += '\\';
+          xq_c = '\n';
+          break;
+        case 'r': // carriage return
+          *icu_re += '\\';
+          xq_c = '\r';
+          break;
+        case 't': // tab
+          *icu_re += '\\';
+          xq_c = '\t';
+          break;
+
         default:
-          throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), *xq_c );
+          throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), xq_c );
       }
     } else {
       if ( in_backref ) {
@@ -223,9 +238,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         // parentheses.
         //
         bool prevent_multidigit_backref = false;
-        if ( ascii::is_digit( *xq_c ) ) {
+        if ( ascii::is_digit( xq_c ) ) {
           if ( cap_sub.size() > 9 )
-            backref_no = backref_no * 10 + (*xq_c - '0');
+            backref_no = backref_no * 10 + (xq_c - '0');
           else {
             in_backref = false;
             //
@@ -235,7 +250,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             // character class, i.e., [N].
             //
             *icu_re += '[';
-            *icu_re += *xq_c;
+            *icu_re += xq_c;
             *icu_re += ']';
             prevent_multidigit_backref = true;
           }
@@ -260,7 +275,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           continue;
       }
 
-      switch ( *xq_c ) {
+      switch ( xq_c ) {
         case '\\':
           got_backslash = true;
           continue;
@@ -268,7 +283,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( q_flag )
             *icu_re += '\\';
           else if ( !m_flag ) {
-            zstring::const_iterator const temp = xq_c + 1;
+            zstring::const_iterator const temp = xq_i + 1;
             if ( temp == xq_re.end() ) {
               //
               // XQuery 3.0 F&O 5.6.1: By default, ... $ matches the end of the
@@ -308,7 +323,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           break;
         case '-':
           if ( in_char_class && !in_char_range ) {
-            zstring::value_type const next_xq_c = peek( xq_re, xq_c );
+            zstring::value_type const next_xq_c = peek( xq_re, xq_i );
             if ( next_xq_c == '[' ) {
               //
               // ICU uses "--" to indicate range subtraction, e.g.,
@@ -316,7 +331,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
               //
               *icu_re += '-';
             } else {
-              char_range_begin_c = xq_c[ -1 ];
+              char_range_begin_c = prev_xq_c;
               in_char_range = 2;
             }
           }
@@ -341,7 +356,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( q_flag )
             *icu_re += '\\';
           else if ( !is_first_char && !in_char_class )
-            throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), *xq_c );
+            throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), xq_c );
           break;
         case '|':
           if ( q_flag )
@@ -352,7 +367,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           }
           break;
         default:
-          if ( x_flag && ascii::is_space( *xq_c ) ) {
+          if ( x_flag && ascii::is_space( xq_c ) ) {
             if ( !in_char_class )
               continue;
             //
@@ -366,12 +381,13 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
     } // else
     is_first_char = false;
 append:
-    if ( in_char_range == 1 && *xq_c < char_range_begin_c )
+    if ( in_char_range == 1 && xq_c < char_range_begin_c )
       throw INVALID_RE_EXCEPTION(
-        xq_re, ZED( BadEndCharInRange_34 ), *xq_c, char_range_begin_c
+        xq_re, ZED( BadEndCharInRange_34 ), ascii::printable_char( xq_c ),
+        char_range_begin_c
       );
 
-    *icu_re += *xq_c;
+    *icu_re += xq_c;
     if ( in_char_range > 0 )
       --in_char_range;
   } // FOR_EACH
