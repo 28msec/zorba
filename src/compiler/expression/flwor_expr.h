@@ -669,6 +669,8 @@ public:
 
   void set_general(bool v) { theKind = (v ? gflwor_expr_kind : flwor_expr_kind); }
 
+  bool compute_is_general();
+
   expr* get_return_expr() const { return theReturnExpr; }
 
   expr** get_return_expr_ref() { return &theReturnExpr; }

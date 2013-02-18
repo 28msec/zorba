@@ -76,7 +76,7 @@ public:
 protected:
   bool isIndexJoinPredicate(PredicateInfo& predInfo);
 
-  var_expr* findLoopVar(const expr* curExpr, ulong& varid);
+  var_expr* findLoopVar(expr* curExpr, ulong& varid);
 
   void rewriteJoin(PredicateInfo& predInfo, bool& modified);
 

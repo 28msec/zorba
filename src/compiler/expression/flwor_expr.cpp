@@ -1124,9 +1124,9 @@ void flwor_expr::get_vars(std::vector<var_expr*>& vars) const
 ********************************************************************************/
 void flwor_expr::compute_scripting_kind()
 {
-  ulong numClauses = num_clauses();
+  csize numClauses = num_clauses();
 
-  for (ulong i = 0; i < numClauses; ++i)
+  for (csize i = 0; i < numClauses; ++i)
   {
     const flwor_clause* c = theClauses[i];
     flwor_clause::ClauseKind k = c->get_kind();
@@ -1169,6 +1169,79 @@ void flwor_expr::compute_scripting_kind()
   }
 
   checkScriptingKind();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool flwor_expr::compute_is_general()
+{
+  bool has_where = false;
+  bool has_order = false;
+  bool has_group = false;
+
+  csize numClauses = num_clauses();
+
+  for (csize i = 0; i < numClauses; ++i)
+  {
+    const flwor_clause* c = get_clause(i);
+
+    switch (c->get_kind())
+    {
+    case flwor_clause::for_clause:
+    case flwor_clause::let_clause:
+    {
+      if (has_group || has_where || has_order)
+        return true;
+
+      const forlet_clause* flc = static_cast<const forlet_clause*>(c);
+
+      if (flc->is_allowing_empty())
+        return true;
+
+      break;
+    }
+    case flwor_clause::window_clause:
+    {
+      return true;
+    }
+    case flwor_clause::where_clause:
+    {
+      if (has_where || has_group || has_order)
+        return true;
+
+      has_where = true;
+      break;
+    }
+    case flwor_clause::order_clause:
+    {
+      if (has_order)
+        return true;
+
+      has_order = true;
+      break;
+    }
+    case flwor_clause::groupby_clause:
+    {
+      if (has_group || has_order)
+        return true;
+
+      has_group = true;
+      break;
+    }
+    case flwor_clause::count_clause:
+    {
+      return true;
+    }
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
+  }
+
+  return false;
 }
 
 

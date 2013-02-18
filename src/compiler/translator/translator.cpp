@@ -6591,9 +6591,10 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  window_clause* windowClause =
-    dynamic_cast<window_clause*>(theFlworClausesStack.back());
-  assert(windowClause != NULL);
+  assert(theFlworClausesStack.back()->get_kind() == flwor_clause::window_clause);
+
+  window_clause* windowClause = 
+  static_cast<window_clause*>(theFlworClausesStack.back());
 
   // Pop the window var and associate it with this window clause
   var_expr* windowVarExpr = pop_nodestack_var();
@@ -6642,8 +6643,7 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
       rchandle<WindowVars> vars = cond->get_winvars();
       pop_wincond_vars(vars, inputCondVarExprs[i]);
 
-      conds[i] = theExprManager->create_flwor_wincond(
-                                                      theSctx,
+      conds[i] = theExprManager->create_flwor_wincond(theSctx,
                                                       cond->is_only(),
                                                       inputCondVarExprs[i],
                                                       outputCondVarExprs[i],

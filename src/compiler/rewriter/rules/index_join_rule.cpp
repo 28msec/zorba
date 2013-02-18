@@ -40,6 +40,7 @@ namespace zorba
 struct PredicateInfo
 {
   flwor_expr  * theFlworExpr;
+  csize         theWherePos;
   expr        * thePredicate;
   expr        * theOuterOp;
   var_expr    * theOuterVar;
@@ -133,6 +134,7 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
       PredicateInfo predInfo;
       predInfo.theFlworExpr = flworExpr;
+      predInfo.theWherePos = i;
       predInfo.thePredicate = whereExpr;
 
       if (isIndexJoinPredicate(predInfo))
@@ -160,6 +162,7 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
         {
           PredicateInfo predInfo;
           predInfo.theFlworExpr = flworExpr;
+          predInfo.theWherePos = i;
           predInfo.thePredicate = (**iter);
           
           if (isIndexJoinPredicate(predInfo))
@@ -168,6 +171,7 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
             
             if (modified)
             {
+              // TODO: just remove the pred instead of replacing it with true.
               expr* trueExpr = rCtx.theEM->
               create_const_expr(flworExpr->get_sctx(),
                                 flworExpr->get_udf(),
@@ -215,6 +219,8 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
   if (nodeKind == trycatch_expr_kind)
   {
+    ZORBA_ASSERT(theFlworStack.back() == node);
+
     theFlworStack.pop_back();
     return node;
   }
@@ -273,7 +279,7 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   expr* op1 = foExpr->get_arg(0);
   expr* op2 = foExpr->get_arg(1);
 
-  // Analyze each operand of the eq to see if it depends on a single FOR
+  // Analyze each operand of the eq to see if it depends on a single LOOP
   // variable. If that is not true, we reject this predicate.
   ulong var1id;
   var_expr* var1 = findLoopVar(op1, var1id);
@@ -310,16 +316,58 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  ZORBA_ASSERT(predInfo.theInnerVar->get_kind() == var_expr::for_var);
+  // Make sure we don't have a pred between two groupby vars 
+  if (predInfo.theInnerVar->get_kind() != var_expr::for_var)
+    return false;
+
+  forlet_clause* innerVarClause = predInfo.theInnerVar->get_forlet_clause();
 
   // The inner var must not be an outer FOR var
-  if (predInfo.theInnerVar->get_forlet_clause()->is_allowing_empty())
+  if (innerVarClause->is_allowing_empty())
     return false;
 
   // The predicate must be in the same flwor that defines the inner var (this
   // way we can be sure that the pred acts as a filter over the inner var).
-  if (predInfo.theFlworExpr->defines_variable(predInfo.theInnerVar) < 0)
+  if (innerVarClause->get_flwor_expr() != predInfo.theFlworExpr)
     return false;
+
+  // There should be no COUNT clause and no sequential clauses between the
+  // WHERE clause and the inner var clause.
+  for (csize i = predInfo.theWherePos; i > 0; --i)
+  {
+    flwor_clause* c = predInfo.theFlworExpr->get_clause(i-1);
+
+    switch (c->get_kind())
+    {
+    case flwor_clause::for_clause:
+    case flwor_clause::let_clause:
+    case flwor_clause::window_clause:
+    {
+      forletwin_clause* flwc = static_cast<forletwin_clause*>(c);
+      if (flwc->get_expr()->is_sequential())
+        return false;
+
+      break;
+    }
+    case flwor_clause::count_clause:
+    {
+      return false;
+    }
+    case flwor_clause::order_clause:
+    case flwor_clause::where_clause:
+    {
+      break;
+    }
+    case flwor_clause::groupby_clause:
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
+    
+    if (c == innerVarClause)
+      break;
+  }
 
   // Type checks
   xqtref_t outerType = predInfo.theOuterOp->get_return_type();
@@ -378,13 +426,14 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
 
 
 /*******************************************************************************
-  Check if "curExpr" references a single var and that var is a FOR var whose
-  domain expr is not sequential and has a max cardinality > 1. If so, return
-  that FOR var and its prefix id; otherwise return NULL. If "curExpr" references
-  a single LET var, the check is applied recurdively to the domain expr of the
+  Check if "curExpr" references a single flwor or catch var and that var is a
+  LOOP var, i.e., a GROUPBY var or a FOR var whose domain expr has a max
+  cardinality > 1. If so, return that LOOP var and its prefix id; otherwise
+  return NULL. If "curExpr" references a single flwor or catch var and that
+  var is LET var, the check is applied recurdively to the domain expr of the
   LET var.
 ********************************************************************************/
-var_expr* IndexJoinRule::findLoopVar(const expr* curExpr, ulong& varid)
+var_expr* IndexJoinRule::findLoopVar(expr* curExpr, ulong& varid)
 {
   var_expr* var = NULL;
 
@@ -407,10 +456,7 @@ var_expr* IndexJoinRule::findLoopVar(const expr* curExpr, ulong& varid)
     {
       curExpr = var->get_domain_expr();
 
-      if (curExpr->is_sequential())
-        return NULL;
-
-      xqtref_t domainType = var->get_domain_expr()->get_return_type();
+      xqtref_t domainType = curExpr->get_return_type();
       TypeConstants::quantifier_t quant = domainType->get_quantifier();
 
       if (quant == TypeConstants::QUANT_STAR || quant == TypeConstants::QUANT_PLUS)
@@ -435,9 +481,6 @@ var_expr* IndexJoinRule::findLoopVar(const expr* curExpr, ulong& varid)
     else if (vkind == var_expr::let_var)
     {
       curExpr = var->get_domain_expr();
-
-      if (curExpr->is_sequential())
-        return NULL;
     }
     else
     {
@@ -521,7 +564,7 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo, bool& modified)
     // F does not define the outer var as well, then we create the index in the
     // return expr of F. Otherwise, we first break up F by creating a sub-flwor
     // expr (subF) and moving all clauses of F that appear after V's defining
-    // clause into subF, making the return expr of f be the return expr of subF,
+    // clause into subF, making the return expr of F be the return expr of subF,
     // and setting subF as the return expr of F. Then, we create the index in
     // the return expr of F.
 
@@ -544,6 +587,12 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo, bool& modified)
         mostInnerVarPos < numClauses-1)
     {
       ZORBA_ASSERT(mostInnerVarPos < numClauses-1);
+
+      for (csize i = mostInnerVarPos+1; i < numClauses; ++i)
+      {
+        if (innerFlwor->get_clause(i)->get_kind() == flwor_clause::count_clause)
+          return;
+      }
 
       const QueryLoc& nestedLoc = mostInnerVarClause->get_loc();
 
@@ -733,13 +782,15 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo, bool& modified)
 
 
 /*******************************************************************************
-
+  Return true if the given expr (a) does not reference any local vars and (b)
+  does not reference any var V that is defined after the outer loop var, unless
+  V is a LET var whose donmain expr recursively satisfies (a) and (b).
 ********************************************************************************/
-bool IndexJoinRule::expandVars(expr* subExpr, ulong outerVarId, long& maxVarId)
+bool IndexJoinRule::expandVars(expr* e, ulong outerVarId, long& maxVarId)
 {
-  if (subExpr->get_expr_kind() == wrapper_expr_kind)
+  if (e->get_expr_kind() == wrapper_expr_kind)
   {
-    wrapper_expr* wrapper = static_cast<wrapper_expr*>(subExpr);
+    wrapper_expr* wrapper = static_cast<wrapper_expr*>(e);
 
     if (wrapper->get_input()->get_expr_kind() == var_expr_kind)
     {
@@ -796,12 +847,12 @@ bool IndexJoinRule::expandVars(expr* subExpr, ulong outerVarId, long& maxVarId)
       }
     }
   }
-  else if (subExpr->get_expr_kind() == var_expr_kind)
+  else if (e->get_expr_kind() == var_expr_kind)
   {
     ZORBA_ASSERT(false);
   }
 
-  ExprIterator iter(subExpr);
+  ExprIterator iter(e);
   while (!iter.done())
   {
     if (!expandVars(**iter, outerVarId, maxVarId))

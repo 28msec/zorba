@@ -885,10 +885,12 @@ bool begin_visit(flwor_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
-  bool isGeneral = v.is_general();
-
   csize numClauses = v.num_clauses();
 
+  bool isGeneral = v.compute_is_general();
+
+  v.set_general(isGeneral);
+    
   if (v.is_sequential())
   {
     if (!isGeneral)
