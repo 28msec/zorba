@@ -103,7 +103,15 @@ store::Iterator_t SimpleCollection::getIterator(
     ERROR_PARAMS(startRef, theName->getStringValue()));
   }
 
-  return new CollectionIter(this, skip + startPos);
+  try
+  {
+    return new CollectionIter(this, skip + startPos);
+  }
+  catch (std::range_error)
+  {
+    assert(false);
+    return new CollectionIter(this, xs_integer::zero());
+  }
 }
 
 
@@ -140,9 +148,17 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
 
   position = structuredItem->getPosition();
 
-  csize pos = to_xs_unsignedInt(position);
+  csize pos = 0;
+  try
+  {
+    pos = to_xs_unsignedInt(position);
+  } catch (std::range_error)
+  {
+    assert(false);
+    return false;
+  }
 
-  StructuredItem* collectionItem = 
+  StructuredItem* collectionItem =
   static_cast<StructuredItem*>(theTrees[pos].getp());
 
   if (pos < theTrees.size() &&
@@ -174,13 +190,21 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
 ********************************************************************************/
 store::Item_t SimpleCollection::nodeAt(xs_integer position)
 {
-  csize pos = to_xs_unsignedInt(position);
-  if (pos >= theTrees.size())
+  try
   {
+    csize pos = to_xs_unsignedInt(position);
+    if (pos >= theTrees.size())
+    {
+      return NULL;
+    }
+
+    return theTrees[pos];
+  }
+  catch (std::range_error)
+  {
+    assert(false);
     return NULL;
   }
-
-  return theTrees[pos];
 }
 
 
@@ -224,25 +248,33 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
       ERROR_PARAMS(getName()->getStringValue()));
     }
   }
-
-  xs_long pos = to_xs_long(position);
-
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE););
-
-  if (pos < 0 || to_xs_unsignedLong(position) >= theTrees.size())
+  
+  try
   {
-    theTrees.push_back(item);
+    xs_long pos = to_xs_long(position);
+    SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE););
 
-    structuredItem->attachToCollection(this,
-                                       createTreeId(),
-                                       xs_integer(theTrees.size()));
+    if (pos < 0 || to_xs_unsignedLong(position) >= theTrees.size())
+    {
+      theTrees.push_back(item);
+
+      structuredItem->attachToCollection(this,
+                                         createTreeId(),
+                                         xs_integer(theTrees.size()));
+    }
+    else
+    {
+      theTrees.insert(theTrees.begin() + pos, item);
+
+      structuredItem->attachToCollection(this, createTreeId(), position);
+    }
   }
-  else
+  catch (std::range_error)
   {
-    theTrees.insert(theTrees.begin() + pos, item);
-
-    structuredItem->attachToCollection(this, createTreeId(), position);
+    assert(false);
+    return;
   }
+
 }
 
 
@@ -268,7 +300,15 @@ xs_integer SimpleCollection::addNodes(
     ERROR_PARAMS(theName->getStringValue()));
   }
 
-  csize targetPos = to_xs_unsignedInt(pos);
+  csize targetPos = 0;
+  try {
+    targetPos = to_xs_unsignedInt(pos);
+  }
+  catch (std::range_error)
+  {
+    assert(false);
+    return xs_integer::zero();
+  }
 
   if (!before)
   {
@@ -360,10 +400,18 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
     StructuredItem* structuredItem = static_cast<StructuredItem*>(item);
 
     structuredItem->detachFromCollection();
-
-    csize pos = to_xs_unsignedInt(position);
-    theTrees.erase(theTrees.begin() + pos);
-    return true;
+    
+    try
+    {
+      csize pos = to_xs_unsignedInt(position);
+      theTrees.erase(theTrees.begin() + pos);
+      return true;
+    }
+    catch (std::range_error)
+    {
+      assert(false);
+      return false;
+    }
   }
   else
   {
@@ -381,9 +429,17 @@ bool SimpleCollection::removeNode(xs_integer position)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  std::size_t pos = to_xs_unsignedInt(position);
+  std::size_t pos = 0;
+  try {
+    pos = to_xs_unsignedInt(position);
+  }
+  catch (std::range_error)
+  {
+    assert(false);
+    return false;
+  }
 
-  if (pos >= theTrees.size()) 
+  if (pos >= theTrees.size())
   {
     return false;
   }
@@ -413,8 +469,17 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  csize pos = to_xs_unsignedInt(position);
-  csize num = to_xs_unsignedInt(numNodes);
+  csize pos, num;
+  try
+  {
+    pos = to_xs_unsignedInt(position);
+    num = to_xs_unsignedInt(numNodes);
+  }
+  catch (std::range_error)
+  {
+    assert(false);
+    return xs_integer::zero();
+  }
 
   if (num == 0 || pos >= theTrees.size())
   {
