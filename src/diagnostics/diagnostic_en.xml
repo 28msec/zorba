@@ -3258,6 +3258,10 @@
       <value>invalid path</value>
     </entry>
 
+    <entry key="BadRegexQuantifierHere_3">
+      <value>'$3': quantifier illegal here</value>
+    </entry>
+
     <entry key="BadStreamState">
       <value>bad I/O stream state</value>
     </entry>

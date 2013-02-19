@@ -138,6 +138,7 @@
 #define ZED_BadLibraryModule "~BadLibraryModule"
 #define ZED_BadRegexEscape_3 "~BadRegexEscape_3"
 #define ZED_BadPath "~BadPath"
+#define ZED_BadRegexQuantifierHere_3 "~BadRegexQuantifierHere_3"
 #define ZED_BadStreamState "~BadStreamState"
 #define ZED_BadTokenInBraces_3 "~BadTokenInBraces_3"
 #define ZED_BadTraceStream "~BadTraceStream"

@@ -54,6 +54,20 @@ using namespace std;
 #define bs_c "\\p{L}_\\d.:\\p{M}-"      /* \c equivalent contents */
 #define bs_i "\\p{L}_:"                 /* \i equivalent contents */
 
+template<typename IntegralType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value,
+                        void>::type
+dec_limit( IntegralType *i, IntegralType limit = 0 ) {
+  if ( *i > limit )
+    --*i;
+}
+
+template<class C> inline
+typename C::value_type peek( C const &c, typename C::const_iterator i ) {
+  typedef typename C::value_type value_type;
+  return ++i != c.end() ? *i : value_type();
+}
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,12 +103,6 @@ static icu_flags_type convert_xquery_flags( char const *xq_flags ) {
   return icu_flags;
 }
 
-template<class C> inline
-typename C::value_type peek( C const &c, typename C::const_iterator i ) {
-  typedef typename C::value_type value_type;
-  return ++i != c.end() ? *i : value_type();
-}
-
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
   icu_flags_type const icu_flags = convert_xquery_flags( xq_flags );
@@ -112,8 +120,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   char xq_char_range_begin_cooked;      // the 'a' in [a-b]
 
   bool got_backslash = false;
+  int  got_quantifier = 0;
   int  in_char_class = 0;               // within [...]
-  int  in_char_range = 0;               // [a-b]
+  int  in_char_range = 0;               // within a-b within [...]
   bool is_first_char = true;            // to check ^ placement
 
   bool in_backref = false;              // '\'[1-9][0-9]*
@@ -279,9 +288,6 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
       }
 
       switch ( xq_c ) {
-        case '\\':
-          got_backslash = true;
-          continue;
         case '$':
           if ( q_flag )
             *icu_re += '\\';
@@ -324,6 +330,25 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             cap_sub[ --cur_cap_sub ] = false;
           }
           break;
+        case '*':
+        case '+':
+        case '?':
+        case '{':
+        case '}':
+          if ( q_flag )
+            *icu_re += '\\';
+          else {
+            //
+            // ICU allows multiple quantifiers like *?, +?, ??, *+, ++, ?+,
+            // etc., but XQuery does not so we have to check for them.
+            //
+            if ( got_quantifier )
+              throw INVALID_RE_EXCEPTION(
+                xq_re, ZED( BadRegexQuantifierHere_3 ), xq_c
+              );
+            got_quantifier = 2;
+          }
+          break;
         case '-':
           if ( in_char_class && !in_char_range ) {
             zstring::value_type const next_xq_c = peek( xq_re, xq_i );
@@ -339,18 +364,29 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             }
           }
           break;
+        case '.':
+          if ( q_flag )
+            *icu_re += '\\';
+          break;
         case '[':
           if ( q_flag )
             *icu_re += '\\';
           else {
+            if ( in_char_class && prev_xq_c_cooked != '-' )
+              throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), '[' );
             ++in_char_class;
             goto append;
           }
           break;
+        case '\\':
+          got_backslash = true;
+          continue;
         case ']':
           if ( q_flag )
             *icu_re += '\\';
-          else if ( in_char_class > 0 ) {
+          else {
+            if ( !in_char_class )
+              throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), ']' );
             --in_char_class;
             in_char_range = 0;
           }
@@ -382,7 +418,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           }
       } // switch
     } // else
+
     is_first_char = false;
+
 append:
     if ( in_char_range == 1 && xq_c_cooked < xq_char_range_begin_cooked )
       throw INVALID_RE_EXCEPTION(
@@ -392,8 +430,9 @@ append:
       );
 
     *icu_re += xq_c;
-    if ( in_char_range > 0 )
-      --in_char_range;
+
+    dec_limit( &got_quantifier );
+    dec_limit( &in_char_range  );
   } // FOR_EACH
 
   if ( got_backslash )

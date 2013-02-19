@@ -559,6 +559,7 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_ICU)
   { "~BadRegexEscape_3", "\"$3\": illegal escape character" },
 #endif
+  { "~BadRegexQuantifierHere_3", "'$3': quantifier illegal here" },
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
   { "~BadTraceStream", "trace stream not retrievable using SerializationCallback" },
