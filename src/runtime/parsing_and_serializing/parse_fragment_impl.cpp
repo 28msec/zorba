@@ -324,14 +324,15 @@ void processOptions(store::Item_t item, int& props, static_context* theSctx, con
   children->open();
   
   /*
-   XML_PARSE_NOENT = 2 : substitute entities
-   XML_PARSE_DTDLOAD = 4 : load the external subset
-   XML_PARSE_DTDATTR = 8 : default DTD attributes
-   XML_PARSE_DTDVALID = 16 : validate with the DTD
-   XML_PARSE_NOBLANKS = 256 : remove blank nodes
-   XML_PARSE_NONET = 2048 : Forbid network access
-   XML_PARSE_NSCLEAN = 8192 : remove redundant namespaces declarations
-   XML_PARSE_NOCDATA = 16384 : merge CDATA as text nodes
+   Available Options
+   xml-parse-noent : substitute entities
+   xml-parse-dtdload : load the external subset
+   xml-parse-dtdattr : default DTD attributes
+   xml-parse-dtdvalid : validate with the DTD
+   xml-parse-noblanks : remove blank nodes
+   xml-parse-noent : Forbid network access
+   xml-parse-nsclean : remove redundant namespaces declarations
+   xml-parse-nocdata : merge CDATA as text nodes
   */
 
   while (children->next(child))
@@ -339,35 +340,40 @@ void processOptions(store::Item_t item, int& props, static_context* theSctx, con
     if (child->getNodeKind() != store::StoreConsts::elementNode)
       continue;
   
-    if(child->getNodeName()->getLocalName() == "xml-parse-noent")
+    zstring lNodeName = child->getNodeName()->getLocalName();
+    std::transform(
+      lNodeName.begin(), lNodeName.end(),
+      lNodeName.begin(), tolower);
+
+    if(lNodeName == "xml-parse-noent")
     {
       props |= XML_PARSE_NOENT;
     }
-    else if(child->getNodeName()->getLocalName() == "xml-parse-dtdload")
+    else if(lNodeName == "xml-parse-dtdload")
     {
       props |= XML_PARSE_DTDLOAD;
     }
-    else if(child->getNodeName()->getLocalName() == "xml-parse-dtdattr")
+    else if(lNodeName == "xml-parse-dtdattr")
     {
       props |= XML_PARSE_DTDATTR;
     }
-    else if(child->getNodeName()->getLocalName() == "xml-parse-dtdvalid")
+    else if(lNodeName == "xml-parse-dtdvalid")
     {
       props |= XML_PARSE_DTDVALID;
     }
-    else if(child->getNodeName()->getLocalName() == "xml-parse-noblanks")
+    else if(lNodeName == "xml-parse-noblanks")
     {
       props |= XML_PARSE_NOBLANKS;
     }
-    else if(child->getNodeName()->getLocalName() == "xml-parse-nonet")
+    else if(lNodeName == "xml-parse-nonet")
     {
       props |= XML_PARSE_NONET;
     }
-    else if(child->getNodeName()->getLocalName() == "xml-parse-nsclean")
+    else if(lNodeName == "xml-parse-nsclean")
     {
       props |= XML_PARSE_NSCLEAN;
     }
-    else if(child->getNodeName()->getLocalName() == "xml-parse-nocdata")
+    else if(lNodeName == "xml-parse-nocdata")
     {
       props |= XML_PARSE_NOCDATA;
     }
@@ -392,8 +398,6 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
   // if the XML string is a streamable string it will have to be materialized
   // since the libxml2 xmlReadMemory functions can't work with streamable strings 
   consumeNext(result, theChildren[0].getp(), planState);
-  
- 
   
   // read options
   if (theChildren.size() == 2)

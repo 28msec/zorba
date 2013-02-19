@@ -421,12 +421,12 @@ declare function x:parse-xml-fragment(
 };
 
 (:~
+ : A function to canonicalize the given XML string.
+ :
  : <br/><p>
  : Note: This function is not streamable, if a streamable string is used
  : as input for the function it will be materialized
  : </p><br/>
- : 
- : A function to canonicalize the given XML string.
  :
  : @param $xml-string an XML string to canonicalize.
  :
@@ -440,12 +440,12 @@ declare function x:canonicalize(
 
 
 (:~
+ : A function to canonicalize the given XML string.
+ :
  : <br/><p>
  : Note: This function is not streamable, if a streamable string is used
  : as input for the function it will be materialized
  : </p><br/>
- : 
- : A function to canonicalize the given XML string.
  :
  : @param $xml-string an XML string to canonicalize.
  : @param $options an XML containg options for the canonicalize function. 
