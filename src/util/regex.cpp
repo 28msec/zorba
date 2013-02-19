@@ -116,7 +116,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
   char xq_c;                            // current (raw) XQuery char
   char xq_c_cooked;                     // current cooked XQuery char
-  char prev_xq_c_cooked = 0;            // previous xq_c_cooked
+  char prev_xq_c_cooked[2];             // 2 previous xq_c_cooked
   char xq_char_range_begin_cooked;      // the 'a' in [a-b]
 
   bool got_backslash = false;
@@ -133,9 +133,12 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   // capture subgroup: true = open; false = closed
   vector<bool> cap_sub;                 // 0-based
 
+  prev_xq_c_cooked[0] = prev_xq_c_cooked[1] = 0;
+
   for ( zstring::const_iterator xq_i = xq_re.begin();
         xq_i != xq_re.end();
-        prev_xq_c_cooked = xq_c_cooked, ++xq_i ) {
+        prev_xq_c_cooked[1] = prev_xq_c_cooked[0],
+        prev_xq_c_cooked[0] = xq_c_cooked, ++xq_i ) {
     xq_c = xq_c_cooked = *xq_i;
     if ( got_backslash ) {
       if ( x_flag && !in_char_class && ascii::is_space( xq_c ) ) {
@@ -357,7 +360,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
               //
               *icu_re += '-';
             } else {
-              xq_char_range_begin_cooked = prev_xq_c_cooked;
+              xq_char_range_begin_cooked = *prev_xq_c_cooked;
               in_char_range = 2;
             }
           }
@@ -371,9 +374,15 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( q_flag )
             *icu_re += '\\';
           else {
-            if ( in_char_class && prev_xq_c_cooked != '-' )
+            if ( in_char_class && *prev_xq_c_cooked != '-' )
               throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), '[' );
             ++in_char_class;
+            goto append;
+          }
+          break;
+        case ':':
+          if ( prev_xq_c_cooked[1] == '(' && prev_xq_c_cooked[0] == '?' ) {
+            is_first_char = true;
             goto append;
           }
           break;
