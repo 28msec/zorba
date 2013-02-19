@@ -314,6 +314,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( q_flag )
             *icu_re += '\\';
           else {
+            if ( peek( xq_re, xq_i ) == '?' )
+              throw INVALID_RE_EXCEPTION(
+                xq_re, ZED( BadRegexQuantifierHere_3 ), '?'
+              );
             ++open_cap_subs;
             cap_sub.push_back( true );
             cur_cap_sub = cap_sub.size();
@@ -350,8 +354,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           break;
         case '-':
           if ( in_char_class && !in_char_range ) {
-            zstring::value_type const next_xq_c = peek( xq_re, xq_i );
-            if ( next_xq_c == '[' ) {
+            if ( peek( xq_re, xq_i ) == '[' ) {
               //
               // ICU uses "--" to indicate range subtraction, e.g.,
               // XQuery [A-Z-[OI]] becomes ICU [A-Z--[OI]].
