@@ -314,10 +314,6 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( q_flag )
             *icu_re += '\\';
           else {
-            if ( peek( xq_re, xq_i ) == '?' )
-              throw INVALID_RE_EXCEPTION(
-                xq_re, ZED( BadRegexQuantifierHere_3 ), '?'
-              );
             ++open_cap_subs;
             cap_sub.push_back( true );
             cur_cap_sub = cap_sub.size();
@@ -342,8 +338,8 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             *icu_re += '\\';
           else {
             //
-            // ICU allows multiple quantifiers like *?, +?, ??, *+, ++, ?+,
-            // etc., but XQuery does not so we have to check for them.
+            // ICU allows multiple quantifiers like *+, ++, and ?+, but XQuery
+            // does not so we have to check for them.
             //
             if ( got_quantifier && xq_c != '?' )
               throw INVALID_RE_EXCEPTION(
