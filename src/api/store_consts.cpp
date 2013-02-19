@@ -70,6 +70,7 @@ std::ostream& operator<<( std::ostream &o, SchemaTypeCode c ) {
     "xs:QNAME",               // 43
     "xs:NOTATION",            // 44
     "js:null",                // 45
+    "xs:dateTimeStamp",       // 46
   };
 
   if ( c >= 0 && c < XS_LAST )

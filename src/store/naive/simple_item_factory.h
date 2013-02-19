@@ -175,6 +175,16 @@ public:
 
   bool createDateTime(store::Item_t& result, const store::Item_t&, const store::Item_t&);
 
+  bool createDateTimeStamp(store::Item_t& result, const xs_date* date, const xs_time* time);
+  
+  bool createDateTimeStamp(store::Item_t& result, const xs_dateTime* value);
+  
+  bool createDateTimeStamp(store::Item_t& result, short year , short month, short day, short hour, short minute, double second, short timeZone_hours);
+  
+  bool createDateTimeStamp(store::Item_t& result, const char* str, ulong strlen);
+  
+  bool createDateTimeStamp(store::Item_t& result, const store::Item_t&, const store::Item_t&);
+  
   bool createDate(store::Item_t& result, const xs_date* value);
 
   bool createDate(store::Item_t& result, short year, short month, short day);
