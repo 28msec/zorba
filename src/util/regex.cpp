@@ -341,7 +341,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             // ICU allows multiple quantifiers like *?, +?, ??, *+, ++, ?+,
             // etc., but XQuery does not so we have to check for them.
             //
-            if ( got_quantifier )
+            if ( got_quantifier && xq_c != '?' )
               throw INVALID_RE_EXCEPTION(
                 xq_re, ZED( BadRegexQuantifierHere_3 ), xq_c
               );
