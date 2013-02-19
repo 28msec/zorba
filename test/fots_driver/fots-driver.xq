@@ -56,6 +56,10 @@ declare namespace fots =
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
+
 (:~
  : Returns the names of all qualifying test sets.
  :
@@ -641,7 +645,7 @@ declare %ann:sequential function driver:test(
   {
     variable $queryName := trace(data($case/@name), "processing test case :");
 
-    variable $test := util:get-value($case, $testSetBaseURI, "test");
+    variable $test as xs:string := util:get-value($case, $testSetBaseURI, "test");
 
     variable $envCase := $case/fots:environment;
 
