@@ -106,7 +106,11 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   icu_re->clear();
   icu_re->reserve( xq_re.length() );    // approximate
 
-  char char_range_begin_c;              // the 'a' in [a-b]
+  char xq_c;                            // current (raw) XQuery char
+  char xq_c_cooked;                     // current cooked XQuery char
+  char prev_xq_c_cooked = 0;            // previous xq_c_cooked
+  char xq_char_range_begin_cooked;      // the 'a' in [a-b]
+
   bool got_backslash = false;
   int  in_char_class = 0;               // within [...]
   int  in_char_range = 0;               // [a-b]
@@ -120,11 +124,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   // capture subgroup: true = open; false = closed
   vector<bool> cap_sub;                 // 0-based
 
-  char xq_c, prev_xq_c = 0;
   for ( zstring::const_iterator xq_i = xq_re.begin();
         xq_i != xq_re.end();
-        prev_xq_c = xq_c, ++xq_i ) {
-    xq_c = *xq_i;
+        prev_xq_c_cooked = xq_c_cooked, ++xq_i ) {
+    xq_c = xq_c_cooked = *xq_i;
     if ( got_backslash ) {
       if ( x_flag && !in_char_class && ascii::is_space( xq_c ) ) {
         //
@@ -213,15 +216,15 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
         case 'n': // newline
           *icu_re += '\\';
-          xq_c = '\n';
+          xq_c_cooked = '\n';
           break;
         case 'r': // carriage return
           *icu_re += '\\';
-          xq_c = '\r';
+          xq_c_cooked = '\r';
           break;
         case 't': // tab
           *icu_re += '\\';
-          xq_c = '\t';
+          xq_c_cooked = '\t';
           break;
 
         default:
@@ -331,7 +334,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
               //
               *icu_re += '-';
             } else {
-              char_range_begin_c = prev_xq_c;
+              xq_char_range_begin_cooked = prev_xq_c_cooked;
               in_char_range = 2;
             }
           }
@@ -381,10 +384,11 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
     } // else
     is_first_char = false;
 append:
-    if ( in_char_range == 1 && xq_c < char_range_begin_c )
+    if ( in_char_range == 1 && xq_c_cooked < xq_char_range_begin_cooked )
       throw INVALID_RE_EXCEPTION(
-        xq_re, ZED( BadEndCharInRange_34 ), ascii::printable_char( xq_c ),
-        char_range_begin_c
+        xq_re, ZED( BadEndCharInRange_34 ),
+        ascii::printable_char( xq_c_cooked ),
+        xq_char_range_begin_cooked
       );
 
     *icu_re += xq_c;
