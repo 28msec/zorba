@@ -23,7 +23,7 @@ SET (FOTS_ARCHIVE "FOTS_030213.tgz")
 
 # Change this to modify which elements in FOTS driver results are output
 # as CDATA
-SET (FOTS_CDATA_ELEMENTS "fots:query test assert-xml")
+SET (FOTS_CDATA_ELEMENTS "test assert-xml")
 
 # Download and unpack pre-created archive
 SET (_outdir "${BUILDDIR}/test/fots")
