@@ -334,7 +334,6 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '+':
         case '?':
         case '{':
-        case '}':
           if ( q_flag )
             *icu_re += '\\';
           else {
@@ -365,6 +364,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           }
           break;
         case '.':
+        case '}':
           if ( q_flag )
             *icu_re += '\\';
           break;
