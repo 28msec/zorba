@@ -252,8 +252,6 @@ main(int argc, char** argv)
   
   std::string lResultFileString = binDir+"/QueryResults/"+lSpecNoSuffix+".res";
   zorba::file lResultFile(lResultFileString, flags);
-  if (!lResultFile.exists())
-    zorba::file(lResultFile.branch_path()).deep_mkdir();
 
   std::string lRefFileString = srcDir+"/ExpectedTestResults/"+lSpecNoSuffix+".xml.res";
   zorba::file lRefFile(lRefFileString, flags);
@@ -266,8 +264,6 @@ main(int argc, char** argv)
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
   std::auto_ptr<zorba::TestSchemaURIMapper> smapper;
-
-  std::vector<zorba::XQuery_t> lQueries;
 
   ulong numQueries = (ulong)lSpec.theStates.size();
 
@@ -481,8 +477,7 @@ main(int argc, char** argv)
             int lCanonicalRes =
             zorba::canonicalizeAndCompare(State::compareTypeStr(lState->theCompareTypes[i]),
                                           lRefFile.get_path().c_str(),
-                                          lResultFile.get_path().c_str(),
-                                          zorba::UPDATE_BINARY_DIR.c_str());
+                                          lResultFile.get_path().c_str());
             if (lCanonicalRes == 0) 
             {
               anyMatch = true;

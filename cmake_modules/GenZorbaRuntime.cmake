@@ -68,8 +68,7 @@ SET(pregen_file "${source_dir}/${gen_relfiledir}/pregenerated/${gen_relfilename}
 # If we are testing the generation, overwrite gen_file with a dummy location.
 IF(test_only)
   STRING(REGEX REPLACE "[/\\]" "_" gen_file "${gen_relfilename}")
-  SET(gen_file "${binary_dir}/gen_test.tmp.${gen_file}")
-  MESSAGE("  dobbbling: ${gen_file}")
+  SET(gen_file "${binary_dir}/test/GenZorbaRuntime/${gen_relfile}")
 ENDIF(test_only)
 
 

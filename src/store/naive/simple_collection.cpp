@@ -40,13 +40,11 @@ namespace zorba { namespace simplestore {
 SimpleCollection::SimpleCollection(
     const store::Item_t& aName,
     const std::vector<store::Annotation_t>& aAnnotations,
-    const store::Item_t& aNodeType,
     bool isDynamic)
   : 
   theName(aName),
   theIsDynamic(isDynamic),
-  theAnnotations(aAnnotations),
-  theNodeType(aNodeType)
+  theAnnotations(aAnnotations)
 {
   theId = GET_STORE().createCollectionId();
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
@@ -59,8 +57,7 @@ SimpleCollection::SimpleCollection(
 ********************************************************************************/
 SimpleCollection::SimpleCollection()
   : 
-  theIsDynamic(false),
-  theNodeType(NULL)
+  theIsDynamic(false)
 {
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
 }
@@ -441,97 +438,6 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
     }
 
     return xs_integer(last - pos);
-  }
-}
-
-/*******************************************************************************
- * Substitues content for target.
-********************************************************************************/
-bool SimpleCollection::replaceNode(store::Item* target, store::Item* content)
-{
-  XmlNode* lTargetNode = NULL;
-  XmlNode* lContentNode = NULL;
-#ifdef ZORBA_WITH_JSON
-  json::JSONItem* lTargetJSONItem = NULL;
-  json::JSONItem* lContentJSONItem = NULL;
-#endif
-
-  if (target->isNode())
-  {
-    lTargetNode = static_cast<XmlNode*>(target);
-  }
-#ifdef ZORBA_WITH_JSON
-  else if (target->isJSONItem())
-  {
-    lTargetJSONItem = static_cast<json::JSONItem*>(target);
-  }
-  else
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
-    ERROR_PARAMS(getName()->getStringValue()));
-  }
-#else
-  else
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-    ERROR_PARAMS(getName()->getStringValue()));
-  }
-#endif
-
-  if (content->isNode())
-  {
-    lContentNode = static_cast<XmlNode*>(content);
-  }
-#ifdef ZORBA_WITH_JSON
-  else if (content->isJSONItem())
-  {
-    lContentJSONItem = static_cast<json::JSONItem*>(content);
-  }
-  else
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0013_COLLECTION_ITEM_MUST_BE_STRUCTURED,
-    ERROR_PARAMS(getName()->getStringValue()));
-  }
-#else
-  else
-  {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
-    ERROR_PARAMS(getName()->getStringValue()));
-  }
-#endif
-
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
-
-  xs_integer position;
-  bool found = findNode(target, position);
-
-  if (found)
-  {
-    ZORBA_ASSERT(target->getCollection() == this);
-
-    xs_integer const &zero = xs_integer::zero();
-
-#ifdef ZORBA_WITH_JSON
-    if (lTargetJSONItem)
-      lTargetJSONItem->detachFromCollection();
-    else
-#endif
-      lTargetNode->setCollection(NULL, zero);
-
-    csize pos = to_xs_unsignedInt(position);
-    theXmlTrees[pos] = content;
-
-#ifdef ZORBA_WITH_JSON
-  if (lContentJSONItem)
-    lContentJSONItem->attachToCollection(this, createTreeId());
-  else
-#endif
-    lContentNode->setCollection(this, position);
-    return true;
-  }
-  else
-  {
-    return false;
   }
 }
 

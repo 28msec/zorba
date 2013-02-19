@@ -129,8 +129,8 @@ public:
   xqtref_t getReturnType(const fo_expr* caller) const;
 
   function* specialize(
-        static_context* sctx,
-        const std::vector<xqtref_t>& argTypes) const;
+      static_context* sctx,
+      const std::vector<xqtref_t>& argTypes) const;
 };
 
 

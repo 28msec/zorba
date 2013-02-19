@@ -134,6 +134,24 @@ namespace zorba{
 
     class DefaultCollationIterator;
 
+    class CurrentDate;
+
+    class CurrentDateTime;
+
+    class CurrentTime;
+
+    class MillisToDateTime;
+
+    class ParseDate;
+
+    class ParseDateTime;
+
+    class ParseTime;
+
+    class Timestamp;
+
+    class UTCOffset;
+
 #ifdef ZORBA_WITH_DEBUGGER
     class DebugIterator;
 #endif
@@ -305,6 +323,8 @@ namespace zorba{
     class OptionIterator;
 
     class FunctionAnnotationsIterator;
+
+    class MemSizeIterator;
 
     class JSONParseInternal;
 
@@ -564,6 +584,14 @@ namespace zorba{
     class RandomIterator;
 
     class UuidIterator;
+
+    class ReferenceIterator;
+
+    class HasReferenceIterator;
+
+    class AssignReferenceIterator;
+
+    class DereferenceIterator;
 
 #ifndef ZORBA_NO_XMLSCHEMA
     class ValidateIterator;
@@ -902,6 +930,33 @@ public:
     virtual void beginVisit ( const DefaultCollationIterator& ) = 0;
     virtual void endVisit   ( const DefaultCollationIterator& ) = 0;
 
+    virtual void beginVisit ( const CurrentDate& ) = 0;
+    virtual void endVisit   ( const CurrentDate& ) = 0;
+
+    virtual void beginVisit ( const CurrentDateTime& ) = 0;
+    virtual void endVisit   ( const CurrentDateTime& ) = 0;
+
+    virtual void beginVisit ( const CurrentTime& ) = 0;
+    virtual void endVisit   ( const CurrentTime& ) = 0;
+
+    virtual void beginVisit ( const MillisToDateTime& ) = 0;
+    virtual void endVisit   ( const MillisToDateTime& ) = 0;
+
+    virtual void beginVisit ( const ParseDate& ) = 0;
+    virtual void endVisit   ( const ParseDate& ) = 0;
+
+    virtual void beginVisit ( const ParseDateTime& ) = 0;
+    virtual void endVisit   ( const ParseDateTime& ) = 0;
+
+    virtual void beginVisit ( const ParseTime& ) = 0;
+    virtual void endVisit   ( const ParseTime& ) = 0;
+
+    virtual void beginVisit ( const Timestamp& ) = 0;
+    virtual void endVisit   ( const Timestamp& ) = 0;
+
+    virtual void beginVisit ( const UTCOffset& ) = 0;
+    virtual void endVisit   ( const UTCOffset& ) = 0;
+
 #ifdef ZORBA_WITH_DEBUGGER
     virtual void beginVisit ( const DebugIterator& ) = 0;
     virtual void endVisit   ( const DebugIterator& ) = 0;
@@ -1151,6 +1206,9 @@ public:
 
     virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
     virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
+
+    virtual void beginVisit ( const MemSizeIterator& ) = 0;
+    virtual void endVisit   ( const MemSizeIterator& ) = 0;
 
     virtual void beginVisit ( const JSONParseInternal& ) = 0;
     virtual void endVisit   ( const JSONParseInternal& ) = 0;
@@ -1529,6 +1587,18 @@ public:
 
     virtual void beginVisit ( const UuidIterator& ) = 0;
     virtual void endVisit   ( const UuidIterator& ) = 0;
+
+    virtual void beginVisit ( const ReferenceIterator& ) = 0;
+    virtual void endVisit   ( const ReferenceIterator& ) = 0;
+
+    virtual void beginVisit ( const HasReferenceIterator& ) = 0;
+    virtual void endVisit   ( const HasReferenceIterator& ) = 0;
+
+    virtual void beginVisit ( const AssignReferenceIterator& ) = 0;
+    virtual void endVisit   ( const AssignReferenceIterator& ) = 0;
+
+    virtual void beginVisit ( const DereferenceIterator& ) = 0;
+    virtual void endVisit   ( const DereferenceIterator& ) = 0;
 
 #ifndef ZORBA_NO_XMLSCHEMA
     virtual void beginVisit ( const ValidateIterator& ) = 0;

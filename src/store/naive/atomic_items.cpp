@@ -44,6 +44,7 @@
 #include "tree_id.h"
 
 #include "util/ascii_util.h"
+#include "util/mem_sizeof.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
 
@@ -395,6 +396,18 @@ store::Item* UserTypedAtomicItem::getBaseItem() const
 }
 
 
+size_t UserTypedAtomicItem::alloc_size() const
+{
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theBaseItem )
+        + ztd::alloc_sizeof( theTypeName );
+}
+
+size_t UserTypedAtomicItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 /*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
@@ -585,6 +598,17 @@ uint32_t UntypedAtomicItem::hash(long timezone, const XQPCollator* aCollation) c
 }
 
 
+size_t UntypedAtomicItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+size_t UntypedAtomicItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 bool UntypedAtomicItem::equals(
     const store::Item* other,
     long timezone,
@@ -626,8 +650,13 @@ zstring UntypedAtomicItem::show() const
 /*******************************************************************************
   class QNameItem
 ********************************************************************************/
-QNameItem::QNameItem(const char* ns, const char* prefix, const char* local)
+QNameItem::QNameItem(
+    store::SchemaTypeCode t,
+    const char* ns,
+    const char* prefix,
+    const char* local)
   :
+  AtomicItem(t),
   theNormalizedQName(NULL),
   theIsInPool(false)
 {
@@ -635,8 +664,13 @@ QNameItem::QNameItem(const char* ns, const char* prefix, const char* local)
 }
 
 
-QNameItem::QNameItem(const zstring& ns, const zstring& prefix, const zstring& local)
+QNameItem::QNameItem(
+    store::SchemaTypeCode t,
+    const zstring& ns,
+    const zstring& prefix,
+    const zstring& local)
   :
+  AtomicItem(t),
   theNormalizedQName(NULL),
   theIsInPool(false)
 {
@@ -703,6 +737,20 @@ uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   const void* tmp = theNormalizedQName;
   return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
+}
+
+
+size_t QNameItem::alloc_size() const
+{
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theNamespace )
+        + ztd::alloc_sizeof( thePrefix )
+        + ztd::alloc_sizeof( theLocal );
+}
+
+size_t QNameItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -802,14 +850,18 @@ zstring QNameItem::show() const
   return res;
 }
 
+
 /*******************************************************************************
   class NotationItem
 ********************************************************************************/
 
 NotationItem::NotationItem(
+    store::SchemaTypeCode t,
     const zstring& nameSpace,
     const zstring& prefix,
     const zstring& localName)
+  :
+  AtomicItem(t)
 {
   store::Item_t temp;
   GET_FACTORY().createQName(temp, nameSpace, prefix, localName);
@@ -817,7 +869,9 @@ NotationItem::NotationItem(
 }
 
 
-NotationItem::NotationItem(store::Item* qname)
+NotationItem::NotationItem(store::SchemaTypeCode t, store::Item* qname)
+  :
+  AtomicItem(t)
 {
   theQName = qname;
 }
@@ -830,6 +884,18 @@ bool NotationItem::equals(
 {
   return theQName->equals(
       static_cast<const NotationItem*>(item)->theQName);
+}
+
+
+size_t NotationItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theQName );
+}
+
+
+size_t NotationItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -883,6 +949,18 @@ store::Item* AnyUriItem::getType() const
 uint32_t AnyUriItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   return hashfun::h32(theValue.data(), (uint32_t)theValue.size());
+}
+
+
+size_t AnyUriItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t AnyUriItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -1113,11 +1191,13 @@ bool AnyUriItem::inSameCollection(const store::Item_t& aOther) const
 ********************************************************************************/
 
 StructuralAnyUriItem::StructuralAnyUriItem(
+    store::SchemaTypeCode t,
     ulong collectionId,
     const TreeId& treeId, 
     store::StoreConsts::NodeKind nodeKind,
     const OrdPath& ordPath)
   :
+  AtomicItem(t),
   theCollectionId(collectionId),
   theTreeId(treeId),
   theNodeKind(nodeKind),
@@ -1127,7 +1207,9 @@ StructuralAnyUriItem::StructuralAnyUriItem(
 }
 
 
-StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
+StructuralAnyUriItem::StructuralAnyUriItem(store::SchemaTypeCode t, zstring& value)
+  :
+  AtomicItem(t)
 {
   if (value == "")
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI,
@@ -1212,6 +1294,7 @@ StructuralAnyUriItem::StructuralAnyUriItem(zstring& value)
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theEncodedValue));
   }
 }
+
 
 store::Item* StructuralAnyUriItem::getType() const
 {
@@ -1797,10 +1880,33 @@ bool StructuralAnyUriItem::inSameCollection(const store::Item_t& aOther) const
   }
 }
 
+size_t StructuralAnyUriItem::alloc_size() const
+{
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theOrdPath )
+        + ztd::alloc_sizeof( theEncodedValue );
+}
+
+size_t StructuralAnyUriItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 
 /*******************************************************************************
   class StringItem
 ********************************************************************************/
+
+size_t StringItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+size_t StringItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 store::Item* StringItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_STRING];
@@ -1876,9 +1982,12 @@ FTTokenIterator_t StringItem::getTokens(
   class StreamableStringItem
 ********************************************************************************/
 StreamableStringItem::StreamableStringItem(
+    store::SchemaTypeCode t,
     std::istream& aStream,
     StreamReleaser streamReleaser,
-    bool seekable) :
+    bool seekable) 
+  :
+  StringItem(t),
   theIstream(aStream),
   theIsMaterialized(false),
   theIsConsumed(false),
@@ -1889,7 +1998,10 @@ StreamableStringItem::StreamableStringItem(
 }
 
 StreamableStringItem::StreamableStringItem(
-    store::Item_t& aStreamableDependent) :
+    store::SchemaTypeCode t,
+    store::Item_t& aStreamableDependent)
+  :
+  StringItem(t),
   theIstream(aStreamableDependent->getStream()),
   theIsMaterialized(false),
   theIsConsumed(false),
@@ -1902,6 +2014,18 @@ StreamableStringItem::StreamableStringItem(
   // We copied the dependent item's stream and seekable flag in the initializer
   // above, but did NOT copy the StreamReleaser. The dependent item maintains
   // memory ownership of the stream in this way.
+}
+
+
+size_t StreamableStringItem::alloc_size() const
+{
+  return ztd::alloc_sizeof( theStreamableDependent );
+}
+
+
+size_t StreamableStringItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -2251,40 +2375,6 @@ void DateTimeItem::appendStringValue(zstring& buf) const
 }
 
 
-store::SchemaTypeCode DateTimeItem::getTypeCode() const
-{
-  switch (theValue.getFacet())
-  {
-  case DateTime::GYEARMONTH_FACET:
-    return store::XS_GYEAR_MONTH;
-
-  case DateTime::GYEAR_FACET:
-    return store::XS_GYEAR;
-
-  case DateTime::GMONTH_FACET:
-    return store::XS_GMONTH;
-
-  case DateTime::GMONTHDAY_FACET:
-    return store::XS_GMONTH_DAY;
-
-  case DateTime::GDAY_FACET:
-    return store::XS_GDAY;
-
-  case DateTime::DATE_FACET:
-    return store::XS_DATE;
-
-  case DateTime::TIME_FACET:
-    return store::XS_TIME;
-
-  case DateTime::DATETIME_FACET:
-    return store::XS_DATETIME;
-
-  default:
-    ZORBA_ASSERT(false);
-  }
-}
-
-
 store::Item* DateTimeItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[getTypeCode()];
@@ -2411,23 +2501,6 @@ void DurationItem::getStringValue2(zstring& val) const
 void DurationItem::appendStringValue(zstring& buf) const
 {
   buf += theValue.toString();
-}
-
-
-store::SchemaTypeCode DurationItem::getTypeCode() const
-{
-  switch (theValue.getFacet())
-  {
-  case Duration::DURATION_FACET:
-    return store::XS_DURATION;
-
-  case Duration::DAYTIMEDURATION_FACET:
-    return store::XS_DT_DURATION;
-
-  case Duration::YEARMONTHDURATION_FACET:
-  default:
-    return store::XS_YM_DURATION;
-  }
 }
 
 
@@ -2590,6 +2663,18 @@ uint32_t FloatItem::hash(long timezone, const XQPCollator* aCollation) const
   class DecimalItem
 ********************************************************************************/
 
+size_t DecimalItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t DecimalItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 store::Item* DecimalItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_DECIMAL];
@@ -2639,6 +2724,19 @@ zstring DecimalItem::show() const
   class IntegerItemImpl
 ********************************************************************************/
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t IntegerItemImpl::alloc_size() const
+{
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
+size_t IntegerItemImpl::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 long IntegerItemImpl::compare( Item const *other, long,
                                const XQPCollator* ) const {
   try
@@ -2679,7 +2777,10 @@ xs_long IntegerItemImpl::getLongValue() const
   catch ( std::range_error const& )
   {
     RAISE_ERROR_NO_LOC(err::FORG0001,
-    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "long"));
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:integer",
+                 "xs:long"));
   }
 }
 
@@ -2693,7 +2794,10 @@ xs_unsignedInt IntegerItemImpl::getUnsignedIntValue() const
   catch ( std::range_error const& ) 
   {
     RAISE_ERROR_NO_LOC(err::FORG0001,
-    ERROR_PARAMS(theValue, ZED(CastFromToFailed_34), "integer", "unsignedInt"));
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:integer",
+                 "xs:unsignedInt"));
   }
 }
 
@@ -2745,6 +2849,19 @@ zstring IntegerItemImpl::show() const
 /*******************************************************************************
   class NonPositiveIntegerItem
 ********************************************************************************/
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t NonPositiveIntegerItem::alloc_size() const
+{
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
+size_t NonPositiveIntegerItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 long NonPositiveIntegerItem::compare( Item const *other, long,
                                       const XQPCollator* ) const {
   try
@@ -2793,10 +2910,11 @@ xs_long NonPositiveIntegerItem::getLongValue() const
   }
   catch ( std::range_error const& )
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
-    );
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:nonPositiveInteger",
+                 "xs:long"));
   }
 }
 
@@ -2857,6 +2975,19 @@ zstring NegativeIntegerItem::show() const
 /*******************************************************************************
   class NonNegativeIntegerItem
 ********************************************************************************/
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t NonNegativeIntegerItem::alloc_size() const
+{
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
+size_t NonNegativeIntegerItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 long NonNegativeIntegerItem::compare( Item const *other, long,
                                       const XQPCollator* ) const {
   try
@@ -2882,6 +3013,7 @@ bool NonNegativeIntegerItem::equals( const store::Item* other, long,
   }
 }
 
+
 store::Item* NonNegativeIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER];
@@ -2893,10 +3025,12 @@ xs_decimal NonNegativeIntegerItem::getDecimalValue() const
   return xs_decimal(theValue);
 }
 
+
 xs_integer NonNegativeIntegerItem::getIntegerValue() const
 {
   return xs_integer(theValue);
 }
+
 
 xs_long NonNegativeIntegerItem::getLongValue() const
 {
@@ -2904,14 +3038,16 @@ xs_long NonNegativeIntegerItem::getLongValue() const
   {
     return to_xs_long(theValue);
   }
-  catch ( std::range_error const& )
+  catch (const std::range_error& )
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( theValue, ZED( CastFromToFailed_34 ), "integer", "long" )
-    );
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 getStringValue(),
+                 "xs:nonNegativeInteger",
+                 "xs:long"));
   }
 }
+
 
 zstring NonNegativeIntegerItem::getStringValue() const
 {
@@ -3518,6 +3654,19 @@ zstring BooleanItem::show() const
 /*******************************************************************************
   class Base64BinaryItem
 ********************************************************************************/
+
+size_t Base64BinaryItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t Base64BinaryItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 bool
 Base64BinaryItem::equals(
       const store::Item* other,
@@ -3774,6 +3923,19 @@ void StreamableBase64BinaryItem::materialize() const
 /*******************************************************************************
   class HexBinaryItem
 ********************************************************************************/
+
+size_t HexBinaryItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t HexBinaryItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 store::Item* HexBinaryItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_HEXBINARY];
@@ -3816,13 +3978,22 @@ uint32_t HexBinaryItem::hash(long timezone, const XQPCollator* aCollation) const
 /*******************************************************************************
   class ErrorItem
 ********************************************************************************/
+
 ErrorItem::~ErrorItem()
 {
-  if (theError)
-  {
-    delete theError;
-    theError = NULL;
-  }
+  delete theError;
+}
+
+
+size_t ErrorItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theError );
+}
+
+
+size_t ErrorItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 

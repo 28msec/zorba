@@ -44,7 +44,8 @@ LetIterator::LetIterator (
   theVarName(aVarName),
   theLetVars(aLetVars),
   theLazyEval(lazyEval), 
-  theNeedsMat(aNeedsMaterialization) 
+  theNeedsMat(aNeedsMaterialization),
+  theSingleItemLETVar(false)
 {
 }
 
@@ -63,6 +64,7 @@ void LetIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theLetVars;
   ar & theLazyEval;
   ar & theNeedsMat;
+  ar & theSingleItemLETVar;
 }
 
 
@@ -83,20 +85,25 @@ void LetIterator::accept(PlanIterVisitor& v) const
 
 
 
-bool LetIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
+bool LetIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
-  PlanIteratorState* lState;
-  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while (consumeNext(aResult, theChild0, aPlanState)) 
+  while (consumeNext(result, theChild0, planState)) 
   {
-    bindVariables(theChild1, theLetVars, aPlanState, theLazyEval, theNeedsMat);
+    bindVariables(theChild1,
+                  theLetVars,
+                  planState,
+                  theLazyEval,
+                  theNeedsMat,
+                  theSingleItemLETVar);
 
-    STACK_PUSH(true, lState);
+    STACK_PUSH(true, state);
 
-    theChild1->reset(aPlanState);
+    theChild1->reset(planState);
   }
-  STACK_END(lState);
+  STACK_END(state);
 }
 
 

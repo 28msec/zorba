@@ -229,9 +229,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     switch (c->get_kind())
     {
-    case flwor_clause::group_clause:
+    case flwor_clause::groupby_clause:
     {
-      group_clause* gc = static_cast<group_clause *>(c);
+      groupby_clause* gc = static_cast<groupby_clause *>(c);
 
       flwor_clause::rebind_list_t::iterator ite = gc->beginNonGroupVars();
       flwor_clause::rebind_list_t::iterator end = gc->endNonGroupVars();
@@ -370,9 +370,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     {
       break;
     }
-    else if (clause->get_kind() == flwor_clause::group_clause)
+    else if (clause->get_kind() == flwor_clause::groupby_clause)
     {
-      group_clause* gc = static_cast<group_clause*>(clause);
+      groupby_clause* gc = static_cast<groupby_clause*>(clause);
 
       const flwor_clause::rebind_list_t& gVars = gc->get_grouping_vars();
 
@@ -697,9 +697,9 @@ bool EliminateUnusedLetVars::safe_to_fold_var_rec(
 
         break;
       }
-      case flwor_clause::group_clause:
+      case flwor_clause::groupby_clause:
       {
-        group_clause* cl = static_cast<group_clause*>(clause);
+        groupby_clause* cl = static_cast<groupby_clause*>(clause);
 
         csize numExprs = cl->numGroupingVars();
 
@@ -1491,7 +1491,7 @@ static bool is_positional_pred(
     {
       checkClause = flworExpr->get_clause(checkClausePos);
 
-      if (checkClause->get_kind() == flwor_clause::group_clause ||
+      if (checkClause->get_kind() == flwor_clause::groupby_clause ||
           (checkClause->get_kind() == flwor_clause::count_clause && eq))
         return false;
 
@@ -1587,7 +1587,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
           const flwor_clause* c = flwor->get_clause(i);
           
           if (c->get_kind() == flwor_clause::where_clause ||
-              c->get_kind() == flwor_clause::group_clause ||
+              c->get_kind() == flwor_clause::groupby_clause ||
               c->get_kind() == flwor_clause::order_clause)
           {
             goto next1;
@@ -1601,7 +1601,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
       {
         const flwor_clause* c = returnFlwor->get_clause(i);
         
-        if (c->get_kind() == flwor_clause::group_clause ||
+        if (c->get_kind() == flwor_clause::groupby_clause ||
             c->get_kind() == flwor_clause::order_clause)
         {
           goto next1;
@@ -1651,7 +1651,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
             if (nestedClauseKind == flwor_clause::for_clause)
             {
               xqtref_t nestedDomainType =
-                static_cast<for_clause*>(nestedClause)->get_expr()->get_return_type();
+              static_cast<for_clause*>(nestedClause)->get_expr()->get_return_type();
               
               if (nestedDomainType->get_quantifier() != TypeConstants::QUANT_ONE)
               {
@@ -1685,18 +1685,9 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
             flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
             
             if (nestedClauseKind != flwor_clause::let_clause &&
-                nestedClauseKind != flwor_clause::for_clause)
+                nestedClauseKind != flwor_clause::for_clause &&
+                nestedClauseKind != flwor_clause::where_clause)
             {
-#if 1
-              // temp hack until we have an optimized general flwor
-              if (nestedClauseKind == flwor_clause::where_clause &&
-                  i == numClauses-1 &&
-                  flwor->get_where() == NULL &&
-                  nestedFlwor->get_return_expr()->get_var() != NULL)
-              {
-                continue;
-              }
-#endif
               merge = false;
               break;
             }
@@ -1709,12 +1700,14 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
         for (csize j = 0; j < numNestedClauses; ++j)
         {
           flwor_clause* nestedClause = nestedFlwor->get_clause(j);
-#if 1
-          if (nestedClause->get_kind() == flwor_clause::where_clause)
-            flwor->add_clause(i+j+1, nestedClause);
-          else
-#endif
-            flwor->add_clause(i+j, nestedClause);
+          flwor->add_clause(i+j, nestedClause);
+
+          if (!flwor->is_general() &&
+              nestedClause->get_kind() == flwor_clause::where_clause &&
+              i != numClauses - 1)
+          {
+            flwor->set_general(true);
+          }
         }
         
         c->set_expr(nestedFlwor->get_return_expr());

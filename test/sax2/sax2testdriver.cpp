@@ -303,11 +303,6 @@ main(int argc, char** argv)
   if ( lResultFile.exists () ) { lResultFile.remove (); }
   if ( lErrorFile.exists () )  { lErrorFile.remove ();  }
 
-  // create the result directory
-  zorba::file lBucket = lResultFile.branch_path();
-  if ( ! lBucket.exists () )
-    lBucket.deep_mkdir ();
-
   // we must either have a reference file or an expected error code
   if ( (! lRefFile.exists ()) || lRefFile.is_directory ())
   {

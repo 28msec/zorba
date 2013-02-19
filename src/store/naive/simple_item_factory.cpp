@@ -41,6 +41,7 @@
 #endif
 
 #include "util/ascii_util.h"
+#include "util/stream_util.h"
 
 
 namespace zorba { namespace simplestore {
@@ -50,8 +51,8 @@ BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   :
   theUriPool(uriPool),
   theQNamePool(qnPool),
-  theTrueItem(new BooleanItem(true)),
-  theFalseItem(new BooleanItem(false))
+  theTrueItem(new BooleanItem(store::XS_BOOLEAN, true)),
+  theFalseItem(new BooleanItem(store::XS_BOOLEAN, false))
 #ifdef ZORBA_WITH_JSON
   ,theNullItem(new json::JSONNull())
 #endif
@@ -105,7 +106,7 @@ bool BasicItemFactory::createAnyURI(store::Item_t& result, zstring& value)
 {
   zstring str = value;
   theUriPool->insert(str);
-  result =  new AnyUriItem(str);
+  result =  new AnyUriItem(store::XS_ANY_URI, str);
   return true;
 }
 
@@ -114,7 +115,7 @@ bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 {
   zstring str;
   theUriPool->insertc(value, str);
-  result = new AnyUriItem(str);
+  result = new AnyUriItem(store::XS_ANY_URI, str);
   return true;
 }
 
@@ -123,7 +124,7 @@ bool BasicItemFactory::createStructuralAnyURI(
     store::Item_t& result,
     zstring& value)
 {
-  result =  new StructuralAnyUriItem(value);
+  result =  new StructuralAnyUriItem(store::XS_ANY_URI, value);
   return true;
 }
 
@@ -136,61 +137,75 @@ bool BasicItemFactory::createStructuralAnyURI(
     const OrdPath& ordPath)
 {
   ZORBA_FATAL(nodeKind,"Unexpected node kind");
-  result = new StructuralAnyUriItem(collectionId, treeId, nodeKind, ordPath);
+
+  result = new StructuralAnyUriItem(store::XS_ANY_URI,
+                                    collectionId, treeId, nodeKind, ordPath);
   return true;
 }
 
 
 bool BasicItemFactory::createString(store::Item_t& result, zstring& value)
 {
-  result = new StringItem(value);
+  result = new StringItem(store::XS_STRING, value);
   return true;
 }
 
 
 bool BasicItemFactory::createStreamableString(
     store::Item_t& result,
-    std::istream &stream,
+    std::istream& stream,
     StreamReleaser streamReleaser,
     bool seekable) 
 {
-  result = new StreamableStringItem( stream, streamReleaser, seekable );
+  result = new StreamableStringItem(store::XS_STRING, stream, streamReleaser, seekable);
+  return true;
+}
+
+bool BasicItemFactory::createStreamableString(
+    store::Item_t& result,
+    std::istream& stream,
+    StreamReleaser streamReleaser,
+    char const *uri,
+    bool seekable) 
+{
+  result = new StreamableStringItem(store::XS_STRING, stream, streamReleaser, seekable);
+  set_uri( stream, uri );
   return true;
 }
 
 bool BasicItemFactory::createSharedStreamableString(
-    store::Item_t &result,
-    store::Item_t &streamable_dependent)
+    store::Item_t& result,
+    store::Item_t& streamable_dependent)
 {
-  result = new StreamableStringItem( streamable_dependent );
+  result = new StreamableStringItem(store::XS_STRING, streamable_dependent);
   return true;
 }
 
 
 bool BasicItemFactory::createNormalizedString(store::Item_t& result, zstring& value)
 {
-  result = new NormalizedStringItem(value);
+  result = new NormalizedStringItem(store::XS_NORMALIZED_STRING, value);
   return true;
 }
 
 
 bool BasicItemFactory::createToken(store::Item_t& result, zstring& value )
 {
-  result = new TokenItem(value);
+  result = new TokenItem(store::XS_TOKEN, value);
   return true;
 }
 
 
 bool BasicItemFactory::createLanguage(store::Item_t& result, zstring& value )
 {
-  result = new LanguageItem(value);
+  result = new LanguageItem(store::XS_LANGUAGE, value);
   return true;
 }
 
 
 bool BasicItemFactory::createNMTOKEN(store::Item_t& result, zstring& value )
 {
-  result = new NMTOKENItem(value);
+  result = new NMTOKENItem(store::XS_NMTOKEN, value);
   return true;
 }
 
@@ -203,10 +218,10 @@ bool BasicItemFactory::createNMTOKENS(store::Item_t& result, zstring& value )
 
   //create VectorItem with all tokens
   std::vector<store::Item_t> typedValues;
-  for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
+  for (csize i = 0; i < atomicTextValues.size(); ++i)
   {
     store::Item_t resultItem;
-    if ( createNMTOKEN(resultItem, atomicTextValues[i]) )
+    if (createNMTOKEN(resultItem, atomicTextValues[i]))
     {
       typedValues.push_back(resultItem.getp());
     }
@@ -217,30 +232,30 @@ bool BasicItemFactory::createNMTOKENS(store::Item_t& result, zstring& value )
 }
 
 
-bool BasicItemFactory::createName(store::Item_t& result, zstring& value )
+bool BasicItemFactory::createName(store::Item_t& result, zstring& value)
 {
-  result = new NameItem(value);
+  result = new NameItem(store::XS_NAME, value);
   return true;
 }
 
 
 bool BasicItemFactory::createNCName(store::Item_t& result, zstring& value )
 {
-  result = new NCNameItem(value);
+  result = new NCNameItem(store::XS_NCNAME, value);
   return true;
 }
 
 
 bool BasicItemFactory::createID(store::Item_t& result, zstring& value )
 {
-  result = new IDItem(value);
+  result = new IDItem(store::XS_ID, value);
   return true;
 }
 
 
 bool BasicItemFactory::createIDREF(store::Item_t& result, zstring& value)
 {
-  result = new IDREFItem(value);
+  result = new IDREFItem(store::XS_IDREF, value);
   return true;
 }
 
@@ -253,10 +268,10 @@ bool BasicItemFactory::createIDREFS(store::Item_t& result, zstring& value )
 
   //create VectorItem with all tokens
   std::vector<store::Item_t> typedValues;
-  for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
+  for (csize i = 0; i < atomicTextValues.size(); i++)
   {
     store::Item_t resultItem;
-    if ( createIDREF(resultItem, atomicTextValues[i]) )
+    if (createIDREF(resultItem, atomicTextValues[i]))
     {
       typedValues.push_back(resultItem.getp());
     }
@@ -269,7 +284,7 @@ bool BasicItemFactory::createIDREFS(store::Item_t& result, zstring& value )
 
 bool BasicItemFactory::createENTITY(store::Item_t& result, zstring& value )
 {
-  result = new ENTITYItem(value);
+  result = new ENTITYItem(store::XS_ENTITY, value);
   return true;
 }
 
@@ -282,10 +297,10 @@ bool BasicItemFactory::createENTITIES(store::Item_t& result, zstring& value)
 
   //create VectorItem with all tokens
   std::vector<store::Item_t> typedValues;
-  for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
+  for (csize i = 0; i < atomicTextValues.size(); i++)
   {
     store::Item_t resultItem;
-    if ( createENTITY(resultItem, atomicTextValues[i]) )
+    if (createENTITY(resultItem, atomicTextValues[i]))
     {
       typedValues.push_back(resultItem.getp());
     }
@@ -298,7 +313,7 @@ bool BasicItemFactory::createENTITIES(store::Item_t& result, zstring& value)
 
 bool BasicItemFactory::createUntypedAtomic(store::Item_t& result, zstring& value)
 {
-  result = new UntypedAtomicItem(value);
+  result = new UntypedAtomicItem(store::XS_UNTYPED_ATOMIC, value);
   return true;
 }
 
@@ -307,28 +322,28 @@ bool BasicItemFactory::createDouble(
     store::Item_t& result,
     const xs_double& value)
 {
-  result = new DoubleItem(value);
+  result = new DoubleItem(store::XS_DOUBLE, value);
   return true;
 }
 
 
 bool BasicItemFactory::createFloat(store::Item_t& result,  const xs_float& value)
 {
-  result = new FloatItem(value);
+  result = new FloatItem(store::XS_FLOAT, value);
   return true;
 }
 
 
 bool BasicItemFactory::createDecimal(store::Item_t& result, const xs_decimal& value)
 {
-  result = new DecimalItem(value);
+  result = new DecimalItem(store::XS_DECIMAL, value);
   return true;
 }
 
 
 bool BasicItemFactory::createInteger(store::Item_t& result, const xs_integer& value)
 {
-  result = new IntegerItemImpl( value );
+  result = new IntegerItemImpl(store::XS_INTEGER, value);
   return true;
 }
 
@@ -338,7 +353,7 @@ bool BasicItemFactory::createNonPositiveInteger(
     const xs_integer& value)
 {
   ZORBA_ASSERT(value.sign() <= 0);
-  result = new NonPositiveIntegerItem( value );
+  result = new NonPositiveIntegerItem(store::XS_NON_POSITIVE_INTEGER, value);
   return true;
 }
 
@@ -348,7 +363,7 @@ bool BasicItemFactory::createNegativeInteger(
     const xs_integer& value)
 {
   ZORBA_ASSERT(value.sign() < 0);
-  result = new NegativeIntegerItem(value);
+  result = new NegativeIntegerItem(store::XS_NEGATIVE_INTEGER, value);
   return true;
 }
 
@@ -357,7 +372,7 @@ bool BasicItemFactory::createNonNegativeInteger(
     store::Item_t& result,
     const xs_nonNegativeInteger& value )
 {
-  result = new NonNegativeIntegerItem( value );
+  result = new NonNegativeIntegerItem(store::XS_NON_NEGATIVE_INTEGER, value);
   return true;
 }
 
@@ -368,81 +383,85 @@ bool BasicItemFactory::createPositiveInteger(
     const xs_positiveInteger& value)
 {
   ZORBA_ASSERT(value.sign() > 0);
-  result = new PositiveIntegerItem( value );
+  result = new PositiveIntegerItem(store::XS_POSITIVE_INTEGER,value);
   return true;
 }
 
 
 bool BasicItemFactory::createLong(store::Item_t& result,  xs_long value)
 {
-  result = new LongItem(value);
+  result = new LongItem(store::XS_LONG, value);
   return true;
 }
 
 
 bool BasicItemFactory::createInt(store::Item_t& result,  xs_int value)
 {
-  result = new IntItem(value);
+  result = new IntItem(store::XS_INT, value);
   return true;
 }
 
 
 bool BasicItemFactory::createShort(store::Item_t& result,  xs_short value)
 {
-  result = new ShortItem(value);
+  result = new ShortItem(store::XS_SHORT, value);
   return true;
 }
 
 
 bool BasicItemFactory::createByte(store::Item_t& result,  xs_byte value)
 {
-  result = new ByteItem(value);
+  result = new ByteItem(store::XS_BYTE, value);
   return true;
 }
 
 
-bool BasicItemFactory::createUnsignedLong(store::Item_t& result,
-                                          xs_unsignedLong value)
+bool BasicItemFactory::createUnsignedLong(
+    store::Item_t& result,
+    xs_unsignedLong value)
 {
-  result = new UnsignedLongItem(value);
+  result = new UnsignedLongItem(store::XS_UNSIGNED_LONG, value);
   return true;
 }
 
 
-bool BasicItemFactory::createUnsignedInt(store::Item_t& result,
-                                         xs_unsignedInt value)
+bool BasicItemFactory::createUnsignedInt(
+   store::Item_t& result,
+   xs_unsignedInt value)
 {
-  result = new UnsignedIntItem(value);
+  result = new UnsignedIntItem(store::XS_UNSIGNED_INT, value);
   return true;
 }
 
 
-bool BasicItemFactory::createUnsignedShort(store::Item_t& result,
-                                           xs_unsignedShort value)
+bool BasicItemFactory::createUnsignedShort(
+    store::Item_t& result,
+    xs_unsignedShort value)
 {
-  result = new UnsignedShortItem(value);
+  result = new UnsignedShortItem(store::XS_UNSIGNED_SHORT, value);
   return true;
 }
 
 
-bool BasicItemFactory::createUnsignedByte(store::Item_t& result,
-                                          xs_unsignedByte value)
+bool BasicItemFactory::createUnsignedByte(
+    store::Item_t& result,
+    xs_unsignedByte value)
 {
-  result = new UnsignedByteItem(value);
+  result = new UnsignedByteItem(store::XS_UNSIGNED_BYTE, value);
   return true;
 }
 
 
 bool BasicItemFactory::createBoolean(store::Item_t& result, xs_boolean value)
 {
-  result = value?theTrueItem:theFalseItem;
+  result = (value ? theTrueItem : theFalseItem);
   return true;
 }
 
 
 bool BasicItemFactory::createDateTime(store::Item_t& result, const xs_dateTime* value)
 {
-  result = new DateTimeItem(value);
+  result = new DateTimeItem(store::XS_DATETIME, value);
   return true;
 }
 
@@ -452,7 +471,7 @@ bool BasicItemFactory::createDateTime(
     const xs_date* date,
     const xs_time* time)
 {
-  std::auto_ptr<DateTimeItem> dtin(new DateTimeItem());
+  std::auto_ptr<DateTimeItem> dtin(new DateTimeItem(store::XS_DATETIME));
   int err = DateTime::createDateTime(date, time, dtin->theValue);
   if (err == 0)
   {
@@ -482,7 +501,7 @@ bool BasicItemFactory::createDateTime(
 
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_DATETIME, &dt);
     return true;
   }
   else
@@ -508,7 +527,7 @@ bool BasicItemFactory::createDateTime(
 
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_DATETIME, &dt);
     return true;
   }
   else
@@ -528,7 +547,7 @@ bool BasicItemFactory::createDateTime(
 
   if (DateTime::parseDateTime(str, strlen, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_DATETIME, &dt);
     return true;
   }
   else
@@ -553,7 +572,7 @@ bool BasicItemFactory::createDateTime(
   {
     const xs_date& d = date->getDateValue();
     const xs_time& t = time->getTimeValue();
-    if (! createDateTime(result, &d, &t))
+    if (! createDateTime( result, &d, &t))
       throw XQUERY_EXCEPTION(err::FORG0008, ERROR_PARAMS(d, t));
 
     return true;
@@ -563,7 +582,7 @@ bool BasicItemFactory::createDateTime(
 
 bool BasicItemFactory::createDate(store::Item_t& result, const xs_date* value)
 {
-  result = new DateTimeItem(value);
+  result = new DateTimeItem(store::XS_DATE, value);
   return true;
 }
 
@@ -579,7 +598,7 @@ bool BasicItemFactory::createDate(
 
   if (DateTime::createDate(year, month, day, &tz, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_DATE, &dt);
     return true;
   }
   else
@@ -599,7 +618,7 @@ bool BasicItemFactory::createDate(
 
   if (DateTime::parseDate(str, strlen, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_DATE, &dt);
     return true;
   }
   else
@@ -612,7 +631,7 @@ bool BasicItemFactory::createDate(
 
 bool BasicItemFactory::createTime(store::Item_t& result, const xs_time* value)
 {
-  result = new DateTimeItem(value);
+  result = new DateTimeItem(store::XS_TIME, value);
   return true;
 }
 
@@ -626,7 +645,7 @@ bool BasicItemFactory::createTime(
 
   if (DateTime::parseTime(str, strlen, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_TIME, &dt);
     return true;
   }
   else
@@ -648,7 +667,7 @@ bool BasicItemFactory::createTime(
 
   if( DateTime::createTime(hour, minute, second, &tz, dt) == 0 )
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_TIME, &dt);
     return true;
   }
   else
@@ -671,7 +690,7 @@ bool BasicItemFactory::createTime(
 
   if(DateTime::createTime(hour, minute, second, &tz, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_TIME, &dt);
     return true;
   }
   else
@@ -684,7 +703,7 @@ bool BasicItemFactory::createTime(
 
 bool BasicItemFactory::createGDay(store::Item_t& result, const xs_gDay* value)
 {
-  result = new DateTimeItem(value);
+  result = new DateTimeItem(store::XS_GDAY, value);
   return true;
 }
 
@@ -698,7 +717,7 @@ bool BasicItemFactory::createGDay(
 
   if (DateTime::parseGDay(str, strlen, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_GDAY, &dt);
     return true;
   }
   else
@@ -715,7 +734,7 @@ bool BasicItemFactory::createGDay(store::Item_t& result,  short day)
 
   if (DateTime::createGDay(day, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_GDAY, &dt);
     return true;
   }
   else
@@ -728,7 +747,7 @@ bool BasicItemFactory::createGDay(store::Item_t& result,  short day)
 
 bool BasicItemFactory::createGMonth(store::Item_t& result, const xs_gMonth* value)
 {
-  result = new DateTimeItem(value);
+  result = new DateTimeItem(store::XS_GMONTH, value);
   return true;
 }
 
@@ -742,7 +761,7 @@ bool BasicItemFactory::createGMonth(
 
   if (DateTime::parseGMonth(str, strlen, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_GMONTH, &dt);
     return true;
   }
   else
@@ -759,7 +778,7 @@ bool BasicItemFactory::createGMonth(store::Item_t& result, short month)
 
   if(DateTime::createGMonth(month, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_GMONTH, &dt);
     return true;
   }
   else
@@ -774,7 +793,7 @@ bool BasicItemFactory::createGMonthDay(
     store::Item_t& result,
     const xs_gMonthDay* value)
 {
-  result = new DateTimeItem(value);
+  result = new DateTimeItem(store::XS_GMONTH_DAY, value);
   return true;
 }
 
@@ -788,7 +807,7 @@ bool BasicItemFactory::createGMonthDay(
 
   if (DateTime::parseGMonthDay(str, strlen, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_GMONTH_DAY, &dt);
     return true;
   }
   else
@@ -805,7 +824,7 @@ bool BasicItemFactory::createGMonthDay(store::Item_t& result, short month, short
 
   if (DateTime::createGMonthDay(month, day, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_GMONTH_DAY, &dt);
     return true;
   }
   else
@@ -818,7 +837,7 @@ bool BasicItemFactory::createGMonthDay(store::Item_t& result, short month, short
 
 bool BasicItemFactory::createGYear(store::Item_t& result, const xs_gYear* value)
 {
-  result = new DateTimeItem(value);
+  result = new DateTimeItem(store::XS_GYEAR, value);
   return true;
 }
 
@@ -832,7 +851,7 @@ bool BasicItemFactory::createGYear(
 
   if (DateTime::parseGYear(str, strlen, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_GYEAR, &dt);
     return true;
   }
   else
@@ -849,7 +868,7 @@ bool BasicItemFactory::createGYear(store::Item_t& result,  short year)
 
   if(DateTime::createGYear(year, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_GYEAR, &dt);
     return true;
   }
   else
@@ -864,7 +883,7 @@ bool BasicItemFactory::createGYearMonth(
     store::Item_t& result,
     const xs_gYearMonth* value)
 {
-  result = new DateTimeItem(value);
+  result = new DateTimeItem(store::XS_GYEAR_MONTH, value);
   return true;
 }
 
@@ -878,7 +897,7 @@ bool BasicItemFactory::createGYearMonth(
 
   if (DateTime::parseGYearMonth(str, strlen, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_GYEAR_MONTH, &dt);
     return true;
   }
   else
@@ -898,7 +917,7 @@ bool BasicItemFactory::createGYearMonth(
 
   if (DateTime::createGYearMonth(year, month, dt) == 0)
   {
-    result = new DateTimeItem(&dt);
+    result = new DateTimeItem(store::XS_GYEAR_MONTH, &dt);
     return true;
   }
   else
@@ -913,7 +932,7 @@ bool BasicItemFactory::createDuration(
     store::Item_t& result,
     xs_duration* value)
 {
-  result = new DurationItem(value);
+  result = new DurationItem(store::XS_DURATION, value);
   return true;
 }
 
@@ -926,7 +945,7 @@ bool BasicItemFactory::createDuration(
   Duration d;
   if (Duration::parseDuration(str, strlen, d) == 0)
   {
-    result = new DurationItem(&d);
+    result = new DurationItem(store::XS_DURATION, &d);
     return true;
   }
 
@@ -945,7 +964,7 @@ bool BasicItemFactory::createDuration(
     double  seconds)
 {
   Duration d(Duration::DURATION_FACET, years, months, days, hours, minutes, seconds);
-  result = new DurationItem(&d);
+  result = new DurationItem(store::XS_DURATION, &d);
   return true;
 }
 
@@ -954,7 +973,7 @@ bool BasicItemFactory::createYearMonthDuration(
     store::Item_t& result,
     xs_yearMonthDuration* value )
 {
-  result = new DurationItem(value);
+  result = new DurationItem(store::XS_YM_DURATION, value);
   return true;
 }
 
@@ -966,7 +985,7 @@ bool BasicItemFactory::createYearMonthDuration(
   Duration d;
   if (Duration::parseYearMonthDuration(str, strlen, d) == 0)
   {
-    result = new DurationItem(&d);
+    result = new DurationItem(store::XS_YM_DURATION, &d);
     return true;
   }
 
@@ -979,7 +998,7 @@ bool BasicItemFactory::createDayTimeDuration(
     store::Item_t& result,
     xs_dayTimeDuration* value)
 {
-  result = new DurationItem(value);
+  result = new DurationItem(store::XS_DT_DURATION, value);
   return true;
 }
 
@@ -992,7 +1011,7 @@ bool BasicItemFactory::createDayTimeDuration(
   Duration d;
   if (Duration::parseDayTimeDuration(str, strlen, d) == 0)
   {
-    result = new DurationItem(&d);
+    result = new DurationItem(store::XS_DT_DURATION, &d);
     return true;
   }
 
@@ -1006,7 +1025,10 @@ bool BasicItemFactory::createBase64Binary(
     xs_base64Binary value)
 {
   const std::vector<char>& data = value.getData();
-  result = new Base64BinaryItem(data.size()!=0?&data[0]:0, data.size(), true);
+  result = new Base64BinaryItem(store::XS_BASE64BINARY,
+                                data.size() != 0 ? &data[0] : 0,
+                                data.size(),
+                                true);
   return true;
 }
 
@@ -1016,7 +1038,7 @@ bool BasicItemFactory::createBase64Binary(
     size_t size,
     bool encoded)
 {
-  result = new Base64BinaryItem(value, size, encoded);
+  result = new Base64BinaryItem(store::XS_BASE64BINARY, value, size, encoded);
   return true;
 }
 
@@ -1028,14 +1050,36 @@ bool BasicItemFactory::createStreamableBase64Binary(
     bool seekable,
     bool encoded)
 {
-  result = new StreamableBase64BinaryItem(aStream, aReleaser, seekable, encoded);
+  result = new StreamableBase64BinaryItem(store::XS_BASE64BINARY,
+                                          aStream,
+                                          aReleaser,
+                                          seekable,
+                                          encoded);
+  return true;
+}
+
+
+bool BasicItemFactory::createStreamableBase64Binary(
+    store::Item_t& result,
+    std::istream& aStream,
+    StreamReleaser aReleaser,
+    char const *uri,
+    bool seekable,
+    bool encoded)
+{
+  result = new StreamableBase64BinaryItem(store::XS_BASE64BINARY,
+                                          aStream,
+                                          aReleaser,
+                                          seekable,
+                                          encoded);
+  set_uri( aStream, uri );
   return true;
 }
 
 
 bool BasicItemFactory::createHexBinary(store::Item_t& result,  xs_hexBinary value)
 {
-  result = new HexBinaryItem(value);
+  result = new HexBinaryItem(store::XS_HEXBINARY, value);
   return true;
 }
 
@@ -1046,7 +1090,7 @@ bool BasicItemFactory::createNOTATION(
     zstring& prefix,
     zstring& local)
 {
-  result = new NotationItem(ns, prefix, local);
+  result = new NotationItem(store::XS_NOTATION, ns, prefix, local);
   return true;
 }
 
@@ -1068,14 +1112,14 @@ bool BasicItemFactory::createNOTATION(store::Item_t& result, zstring& str)
   else
     local = str;
 
-  result = new NotationItem(nsuri, prefix, local);
+  result = new NotationItem(store::XS_NOTATION, nsuri, prefix, local);
   return true;
 }
 
 
 bool BasicItemFactory::createNOTATION(store::Item_t& result, store::Item_t& qname)
 {
-  result = new NotationItem(qname);
+  result = new NotationItem(store::XS_NOTATION, qname);
   return true;
 }
 

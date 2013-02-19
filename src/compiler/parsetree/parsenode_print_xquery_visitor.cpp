@@ -133,10 +133,10 @@ void* begin_visit(const ArgList& n)
 DEFAULT_END_VISIT(ArgList)
 
 
-DEFAULT_BEGIN_VISIT(AtomicType)
+DEFAULT_BEGIN_VISIT(GeneralizedAtomicType)
 
 
-void end_visit(const AtomicType& n, void* state)
+void end_visit(const GeneralizedAtomicType& n, void* state)
 {
   os << n.get_qname()->get_qname();
 }
@@ -198,13 +198,19 @@ DEFAULT_END_VISIT (BoundarySpaceDecl)
 void* begin_visit(const CaseClause& n)
 {
   os << "case ";
-  if(n.get_varname())
+
+  if (n.get_varname())
   {
     os << "$" << n.get_varname()->get_qname() << " as ";
   }
-  n.get_type()->accept(*this);
+
+  csize numTypes = n.num_types();
+  for (csize i = 0; i < numTypes; ++i)
+    n.get_type(i)->accept(*this);
+
   os << "return ";
   n.get_expr()->accept(*this);
+
   return no_state;
 }
 
@@ -417,15 +423,15 @@ void* begin_visit(const FunctionDecl& n)
             lAttrValue << " ";
 
           exprnode* lLit = (*lLits)[j].getp();
-          Literal* l = static_cast<Literal*>(lLit);
-          if (l->get_type() == Literal::STRING_LITERAL)
+          StringLiteral* l = dynamic_cast<StringLiteral*>(lLit);
+          if (l)
           {
-            StringLiteral* s = l->get_string_literal().getp();
-            lAttrValue << s->get_strval();
+            lAttrValue << l->get_strval();
           }
           else
           {
-            NumericLiteral* n = l->get_numeric_literal().getp();
+            NumericLiteral* n = dynamic_cast<NumericLiteral*>(lLit);
+            assert(n);
             lAttrValue << n->toString();
           }
         }

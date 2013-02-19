@@ -935,86 +935,85 @@ Iterator tree for raytracer:trace-ray:
   <ReturnClause>
     <SubsequenceIntIterator>
       <FnConcatIterator>
-        <flwor::FLWORIterator>
-          <ForVariable name="shape">
-            <flwor::FLWORIterator>
-              <ForVariable name="$$context-item">
-                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,shapes)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="scene"/>
-                </ChildAxisIterator>
-              </ForVariable>
-              <ForVariable name="$$context-item">
-                <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
-                  <ForVarIterator varname="$$context-item"/>
-                </ChildAxisIterator>
-              </ForVariable>
-              <WhereClause>
-                <FnBooleanIterator>
-                  <IsSameNodeIterator>
-                    <ForVarIterator varname="$$context-item"/>
-                    <LetVarIterator varname="ignore"/>
-                  </IsSameNodeIterator>
-                </FnBooleanIterator>
-              </WhereClause>
-              <ReturnClause>
-                <ForVarIterator varname="$$context-item"/>
-              </ReturnClause>
-            </flwor::FLWORIterator>
-          </ForVariable>
-          <LetVariable name="distance" materialize="true">
-            <UDFunctionCallIterator>
-              <LetVarIterator varname="source"/>
-              <LetVarIterator varname="direction"/>
-              <ForVarIterator varname="shape"/>
-            </UDFunctionCallIterator>
-          </LetVariable>
-          <WhereClause>
-            <FnExistsIterator>
+        <flwor::TupleStreamIterator>
+          <flwor::OrderByIterator>
+            <OrderByForVariable inputVar="$$context-item : "/>
+            <OrderByLetVariable inputVar="distance : "/>
+            <OrderBySpec>
               <LetVarIterator varname="distance"/>
-            </FnExistsIterator>
-          </WhereClause>
-          <OrderBySpec>
-            <LetVarIterator varname="distance"/>
-          </OrderBySpec>
-          <ReturnClause>
-            <UDFunctionCallIterator>
-              <FunctionTraceIterator>
-                <flwor::FLWORIterator>
-                  <LetVariable name="v2" materialize="true">
-                    <FunctionTraceIterator>
-                      <flwor::FLWORIterator>
-                        <ForVariable name="y">
-                          <LetVarIterator varname="direction"/>
-                        </ForVariable>
-                        <ReturnClause>
-                          <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                            <LetVarIterator varname="distance"/>
-                            <ForVarIterator varname="y"/>
-                          </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                        </ReturnClause>
-                      </flwor::FLWORIterator>
-                    </FunctionTraceIterator>
-                  </LetVariable>
-                  <ForVariable name="x">
-                    <LetVarIterator varname="source"/>
-                  </ForVariable>
-                  <ReturnClause>
-                    <SpecificNumArithIterator_AddOperation_DOUBLE>
-                      <ForVarIterator varname="x"/>
-                      <LetVarIterator varname="v2">
-                        <ForVarIterator varname="p"/>
-                      </LetVarIterator>
-                    </SpecificNumArithIterator_AddOperation_DOUBLE>
-                  </ReturnClause>
-                </flwor::FLWORIterator>
-              </FunctionTraceIterator>
-              <LetVarIterator varname="direction"/>
-              <ForVarIterator varname="shape"/>
-              <ForVarIterator varname="scene"/>
-              <ForVarIterator varname="contribution"/>
-            </UDFunctionCallIterator>
-          </ReturnClause>
-        </flwor::FLWORIterator>
+            </OrderBySpec>
+            <flwor::WhereIterator>
+              <flwor::LetIterator>
+                <LetVariable name="distance" materialize="true"/>
+                <flwor::WhereIterator>
+                  <flwor::ForIterator>
+                    <ForVariable name="$$context-item"/>
+                    <flwor::ForIterator>
+                      <ForVariable name="$$context-item"/>
+                      <flwor::TupleSourceIterator/>
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,shapes)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="scene"/>
+                      </ChildAxisIterator>
+                    </flwor::ForIterator>
+                    <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+                      <ForVarIterator varname="$$context-item"/>
+                    </ChildAxisIterator>
+                  </flwor::ForIterator>
+                  <FnBooleanIterator>
+                    <IsSameNodeIterator>
+                      <ForVarIterator varname="$$context-item"/>
+                      <LetVarIterator varname="ignore"/>
+                    </IsSameNodeIterator>
+                  </FnBooleanIterator>
+                </flwor::WhereIterator>
+                <UDFunctionCallIterator>
+                  <LetVarIterator varname="source"/>
+                  <LetVarIterator varname="direction"/>
+                  <ForVarIterator varname="$$context-item"/>
+                </UDFunctionCallIterator>
+              </flwor::LetIterator>
+              <FnExistsIterator>
+                <LetVarIterator varname="distance"/>
+              </FnExistsIterator>
+            </flwor::WhereIterator>
+          </flwor::OrderByIterator>
+          <UDFunctionCallIterator>
+            <FunctionTraceIterator>
+              <flwor::FLWORIterator>
+                <LetVariable name="v2" materialize="true">
+                  <FunctionTraceIterator>
+                    <flwor::FLWORIterator>
+                      <ForVariable name="y">
+                        <LetVarIterator varname="direction"/>
+                      </ForVariable>
+                      <ReturnClause>
+                        <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                          <LetVarIterator varname="distance"/>
+                          <ForVarIterator varname="y"/>
+                        </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                      </ReturnClause>
+                    </flwor::FLWORIterator>
+                  </FunctionTraceIterator>
+                </LetVariable>
+                <ForVariable name="x">
+                  <LetVarIterator varname="source"/>
+                </ForVariable>
+                <ReturnClause>
+                  <SpecificNumArithIterator_AddOperation_DOUBLE>
+                    <ForVarIterator varname="x"/>
+                    <LetVarIterator varname="v2">
+                      <ForVarIterator varname="p"/>
+                    </LetVarIterator>
+                  </SpecificNumArithIterator_AddOperation_DOUBLE>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+            </FunctionTraceIterator>
+            <LetVarIterator varname="direction"/>
+            <ForVarIterator varname="$$context-item"/>
+            <ForVarIterator varname="scene"/>
+            <ForVarIterator varname="contribution"/>
+          </UDFunctionCallIterator>
+        </flwor::TupleStreamIterator>
         <FunctionTraceIterator>
           <flwor::FLWORIterator>
             <ForVariable name="a">

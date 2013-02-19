@@ -126,15 +126,15 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
             lAttrValue << " ";
 
           exprnode* lLit = (*lLits)[j].getp();
-          Literal* l = static_cast<Literal*>(lLit);
-          if (l->get_type() == Literal::STRING_LITERAL)
+          StringLiteral* l = dynamic_cast<StringLiteral*>(lLit);
+          if (l)
           {
-            StringLiteral* s = l->get_string_literal().getp();
-            lAttrValue << s->get_strval();
+            lAttrValue << l->get_strval();
           }
           else
           {
-            NumericLiteral* n = l->get_numeric_literal().getp();
+            NumericLiteral* n = dynamic_cast<NumericLiteral*>(lLit);
+            assert(n);
             lAttrValue << n->toString();
           }
         }
@@ -1338,7 +1338,7 @@ XQDOC_NO_BEGIN_END_TAG (AposAttrContentList)
 XQDOC_NO_BEGIN_END_TAG (AposAttrValueContent)
 XQDOC_NO_BEGIN_END_TAG (ArgList)
 XQDOC_NO_BEGIN_END_TAG (AssignExpr)
-XQDOC_NO_BEGIN_END_TAG (AtomicType)
+XQDOC_NO_BEGIN_END_TAG (GeneralizedAtomicType)
 XQDOC_NO_BEGIN_END_TAG (SimpleType)
 XQDOC_NO_BEGIN_END_TAG (AttributeTest)
 XQDOC_NO_BEGIN_END_TAG (AxisStep)

@@ -804,7 +804,7 @@ void Validator::processTextValue(
       {
         typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList, loc);
       }
-      else if (udt.isAtomic())
+      else if (udt.isAtomicAny())
       {
         bool res = typeManager->getSchema()->
           parseUserAtomicTypes(textValue, type.getp(), result, &nsCtx, loc);
