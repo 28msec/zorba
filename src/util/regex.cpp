@@ -51,7 +51,7 @@ U_NAMESPACE_USE
 
 using namespace std;
 
-#define bs_c "\\p{L}\\d.:\\p{M}-"       /* \c equivalent contents */
+#define bs_c "\\p{L}_\\d.:\\p{M}-"      /* \c equivalent contents */
 #define bs_i "\\p{L}_:"                 /* \i equivalent contents */
 
 namespace zorba {
