@@ -298,23 +298,19 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '$':
           if ( q_flag )
             *icu_re += '\\';
-          else if ( !m_flag ) {
-            zstring::const_iterator const temp = xq_i + 1;
-            if ( temp == xq_re.end() ) {
-              //
-              // XQuery 3.0 F&O 5.6.1: By default, ... $ matches the end of the
-              // entire string.  [Newlines are treated as any other character.]
-              //
-              // However, in ICU, $ always matches before any trailing
-              // newlines.
-              //
-              // To make ICU work as XQuery needs it to, substitute \z for $
-              // when it is the last character in the regular expression (and
-              // multi-line mode is not set).
-              //
-              icu_re->append( "\\z" );
-              continue;
-            }
+          else if ( !m_flag && xq_i + 1 == xq_re.end() ) {
+            //
+            // XQuery 3.0 F&O 5.6.1: By default, ... $ matches the end of the
+            // entire string.  [Newlines are treated as any other character.]
+            //
+            // However, in ICU, $ always matches before any trailing newlines.
+            //
+            // To make ICU work as XQuery needs it to, substitute \z for $ when
+            // it is the last character in the regular expression (and multi-
+            // line mode is not set).
+            //
+            icu_re->append( "\\z" );
+            continue;
           }
           break;
         case '(':
@@ -329,7 +325,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                   paren.push_back( false );
                   is_first_char = true;
                   goto append;
-                case '-': // Unset flag
+                case '-': // unset flag
                 case 'i': // case insensitive
                 case 'm': // multi-line
                 case 's': // dot-all
