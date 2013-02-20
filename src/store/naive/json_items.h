@@ -55,8 +55,6 @@ protected:
 public:
   JSONNull() : AtomicItem(store::JS_NULL) { }
 
-  virtual ~JSONNull() {}
-
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   zstring getStringValue() const { return "null"; }
@@ -204,7 +202,6 @@ public:
 class JSONObject : public JSONItem
 {
 public:
-  virtual ~JSONObject() {}
 
   // store API
 
@@ -310,6 +307,9 @@ public:
 
   // store API
 
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   virtual store::Iterator_t getObjectKeys() const;
 
   virtual store::Item_t getObjectValue(const store::Item_t& aKey) const;
@@ -372,8 +372,6 @@ class JSONArray : public JSONItem
 {
 public:
   JSONArray() : JSONItem() {}
-
-  virtual ~JSONArray() {}
 
   // store API
   
@@ -459,6 +457,9 @@ public:
   
   // store API
 
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   xs_integer getArraySize() const;
 
   store::Item_t getArrayValue(const xs_integer& position) const;
@@ -543,4 +544,3 @@ public:
  * End:
  */
 /* vim:set et sw=2 ts=2: */
-

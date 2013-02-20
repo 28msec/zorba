@@ -446,6 +446,9 @@ public:
 
   ////////// miscellaneous ////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+  size_t alloc_size() const;
+#endif /* ZORBA_WITH_BIG_INTEGER */
   int compare( IntegerImpl const& ) const;
   uint32_t hash() const;
   bool is_cxx_long() const;
