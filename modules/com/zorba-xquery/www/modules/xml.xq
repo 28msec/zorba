@@ -421,7 +421,8 @@ declare function x:parse-xml-fragment(
 };
 
 (:~
- : A function to canonicalize the given XML string.
+ : A function to canonicalize the given XML string, that is, transform
+ : it into Canonical XML as defined by http://www.w3.org/TR/xml-c14n .
  :
  : <br/><p>
  : Note: This function is not streamable, if a streamable string is used
@@ -440,7 +441,12 @@ declare function x:canonicalize(
 
 
 (:~
- : A function to canonicalize the given XML string.
+ : A function to canonicalize the given XML string, that is, transform
+ : it into Canonical XMl as defined by http://www.w3.org/TR/xml-c14n .
+ : This version of the function allows specifying certain options to be
+ : used when initially parsing the XML string. These options correspond
+ : to the similarly-named options in the LibXMl2 parser, as documented at
+ : http://xmlsoft.org/html/libxml-parser.html#xmlParserOption
  :
  : <br/><p>
  : Note: This function is not streamable, if a streamable string is used
