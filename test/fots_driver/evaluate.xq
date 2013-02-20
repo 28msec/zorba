@@ -391,13 +391,11 @@ declare %private %ann:sequential function eval:assert-permutation(
   try {
   {
     variable $queryText := concat(
-      "xquery version '3.0';",
-      "declare namespace o = 'http://www.zorba-xquery.com/options/features';",
-      "declare option o:enable 'hof';",
       "declare variable $x external;",
+      "declare function local:order-string-values($items){ for $item in $items order by xs:string($item) return $item};",
       "let $y := (",string(data($expResult)),") return ",
-      (: if count(intersection(M1,M2)) = count(union(M1,M2)) = count(M1) then the sequences are identical :)
-      "(count(distinct-values($x[ . = $y])) = count(distinct-values(($x, $y)))) = count(distinct-values($x))");
+      "deep-equal(local:order-string-values($x), local:order-string-values($y)) or
+       deep-equal(reverse($x), $y)");
     variable $queryKey := xqxq:prepare-main-module($queryText),
              $queryKeyResult := xqxq:bind-variable($queryKey,
                                                   xs:QName('x'),
