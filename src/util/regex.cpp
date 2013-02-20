@@ -127,11 +127,15 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
   bool in_backref = false;              // '\'[1-9][0-9]*
   unsigned backref_no = 0;              // 1-based
-  unsigned cur_cap_sub = 0;             // 1-based
-  unsigned open_cap_subs = 0;
 
   // capture subgroup: true = open; false = closed
   vector<bool> cap_sub;                 // 0-based
+  unsigned cur_cap_sub = 0;             // 1-based
+  unsigned open_cap_subs = 0;
+
+  // parentheses balancing: true = is capture subgroup; false = non-capturing
+  vector<bool> paren;                   // 0-based
+  unsigned cur_paren = 0;               // 1-based
 
   prev_xq_c_cooked[0] = prev_xq_c_cooked[1] = 0;
 
@@ -317,22 +321,52 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( q_flag )
             *icu_re += '\\';
           else {
-            ++open_cap_subs;
-            cap_sub.push_back( true );
-            cur_cap_sub = cap_sub.size();
-            is_first_char = true;
-            goto append;
+            cur_paren = paren.size() + 1;
+            zstring::const_iterator j = xq_i;
+            if ( ++j != xq_re.end() && *j == '?' && ++j != xq_re.end() ) {
+              switch ( *j ) {
+                case ':': // non-capturing parentheses
+                  paren.push_back( false );
+                  is_first_char = true;
+                  goto append;
+                case '-': // Unset flag
+                case 'i': // case insensitive
+                case 'm': // multi-line
+                case 's': // dot-all
+                case 'w': // word
+                case 'x': // allow white-space and comments
+                  paren.push_back( false );
+                  break;
+                default:
+                  throw INVALID_RE_EXCEPTION(
+                    xq_re, ZED( BadRegexParen_3 ), *j
+                  );
+              }
+            } else {
+              paren.push_back( true );
+              ++open_cap_subs;
+              cap_sub.push_back( true );
+              cur_cap_sub = cap_sub.size();
+              is_first_char = true;
+              goto append;
+            }
           }
           break;
         case ')':
           if ( q_flag )
             *icu_re += '\\';
           else {
-            if ( !open_cap_subs || cur_cap_sub == 0 )
-              throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), ')' );
-            cap_sub[ --cur_cap_sub ] = false;
+            if ( !cur_paren )
+              goto unbalanced_paren;
+            if ( paren[ --cur_paren ] ) {
+              if ( !open_cap_subs || !cur_cap_sub )
+                goto unbalanced_paren;
+              cap_sub[ --cur_cap_sub ] = false;
+            }
           }
           break;
+unbalanced_paren:
+          throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), ')' );
         case '*':
         case '+':
         case '?':

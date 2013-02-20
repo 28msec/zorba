@@ -3250,15 +3250,19 @@
       <value>invalid library module</value>
     </entry>
 
-    <entry key="BadRegexEscape_3" if="!defined(ZORBA_NO_ICU)">
-      <value>"$3": illegal escape character</value>
-    </entry>
-
     <entry key="BadPath">
       <value>invalid path</value>
     </entry>
 
-    <entry key="BadRegexQuantifierHere_3">
+    <entry key="BadRegexEscape_3" if="!defined(ZORBA_NO_ICU)">
+      <value>"$3": illegal escape character</value>
+    </entry>
+
+    <entry key="BadRegexParen_3" if="!defined(ZORBA_NO_ICU)">
+      <value>"$3": illegal character after "(?"</value>
+    </entry>
+
+    <entry key="BadRegexQuantifierHere_3" if="!defined(ZORBA_NO_ICU)">
       <value>'$3': quantifier illegal here</value>
     </entry>
 
