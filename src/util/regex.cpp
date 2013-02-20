@@ -195,18 +195,28 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case 'S': // [^\s]
         case 'w': // word char
         case 'W': // [^\w]
+          if ( in_char_range )
+            goto not_single_char_esc;
           *icu_re += '\\';
           break;
         case 'c': // NameChar
+          if ( in_char_range )
+            goto not_single_char_esc;
           *icu_re += "[" bs_c "]";
           continue;
         case 'C': // [^\c]
+          if ( in_char_range )
+            goto not_single_char_esc;
           *icu_re += "[^" bs_c "]";
           continue;
         case 'i': // initial NameChar
+          if ( in_char_range )
+            goto not_single_char_esc;
           *icu_re += "[" bs_i "]";
           continue;
         case 'I': // [^\i]
+          if ( in_char_range )
+            goto not_single_char_esc;
           *icu_re += "[^" bs_i "]";
           continue;
 
@@ -320,6 +330,12 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             cur_paren = paren.size() + 1;
             zstring::const_iterator j = xq_i;
             if ( ++j != xq_re.end() && *j == '?' && ++j != xq_re.end() ) {
+              //
+              // Got "(?" sequence: potentially start of "(?:" non-capturing
+              // subgroup or "(?f)" or "(?-f)" for turning a flag on or off.
+              // ICU also allows other characters after the "(?" that XQuery
+              // does not support, so we have to report those as errors.
+              //
               switch ( *j ) {
                 case ':': // non-capturing parentheses
                   paren.push_back( false );
@@ -339,6 +355,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                   );
               }
             } else {
+              //
+              // Start of capturing subgroup.
+              //
               paren.push_back( true );
               ++open_cap_subs;
               cap_sub.push_back( true );
@@ -353,16 +372,14 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             *icu_re += '\\';
           else {
             if ( !cur_paren )
-              goto unbalanced_paren;
+              goto unbalanced_char;
             if ( paren[ --cur_paren ] ) {
               if ( !open_cap_subs || !cur_cap_sub )
-                goto unbalanced_paren;
+                goto unbalanced_char;
               cap_sub[ --cur_cap_sub ] = false;
             }
           }
           break;
-unbalanced_paren:
-          throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), ')' );
         case '*':
         case '+':
         case '?':
@@ -376,7 +393,7 @@ unbalanced_paren:
             //
             if ( got_quantifier && xq_c != '?' )
               throw INVALID_RE_EXCEPTION(
-                xq_re, ZED( BadRegexQuantifierHere_3 ), xq_c
+                xq_re, ZED( BadQuantifierHere_3 ), xq_c
               );
             got_quantifier = 2;
           }
@@ -405,7 +422,7 @@ unbalanced_paren:
             *icu_re += '\\';
           else {
             if ( in_char_class && *prev_xq_c_cooked != '-' )
-              throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), '[' );
+              goto unescaped_char;
             ++in_char_class;
             goto append;
           }
@@ -424,7 +441,7 @@ unbalanced_paren:
             *icu_re += '\\';
           else {
             if ( !in_char_class )
-              throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), ']' );
+              goto unbalanced_char;
             --in_char_class;
             in_char_range = 0;
           }
@@ -433,7 +450,7 @@ unbalanced_paren:
           if ( q_flag )
             *icu_re += '\\';
           else if ( !is_first_char && !in_char_class )
-            throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), xq_c );
+            goto unescaped_char;
           break;
         case '|':
           if ( q_flag )
@@ -486,7 +503,7 @@ append:
       // only.
       //
       // However, ICU lower-cases everything for the 'i' flag; hence we have to
-      // turn off the 'i' flag for just the \p{Lu}.
+      // turn off the 'i' flag for the \p{Lu} and \P{Lu}.
       //
       // Note that the "6" and "12" below are correct since "\\" represents a
       // single '\'.
@@ -509,6 +526,14 @@ append:
     ascii::replace_all( *icu_re, "\\p{Is", 5, "\\p{In", 5 );
     ascii::replace_all( *icu_re, "\\P{Is", 5, "\\P{In", 5 );
   } // q_flag
+  return;
+
+not_single_char_esc:
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( NotSingleCharEsc_3 ), xq_c );
+unbalanced_char:
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), xq_c );
+unescaped_char:
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), xq_c );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

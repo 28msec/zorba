@@ -557,13 +557,13 @@ extern entry const dict_en[] = {
   { "~BadLibraryModule", "invalid library module" },
   { "~BadPath", "invalid path" },
 #if !defined(ZORBA_NO_ICU)
+  { "~BadQuantifierHere_3", "'$3': quantifier illegal here" },
+#endif
+#if !defined(ZORBA_NO_ICU)
   { "~BadRegexEscape_3", "\"$3\": illegal escape character" },
 #endif
 #if !defined(ZORBA_NO_ICU)
   { "~BadRegexParen_3", "\"$3\": illegal character after \"(?\"" },
-#endif
-#if !defined(ZORBA_NO_ICU)
-  { "~BadRegexQuantifierHere_3", "'$3': quantifier illegal here" },
 #endif
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
@@ -733,6 +733,9 @@ extern entry const dict_en[] = {
   { "~NotDocOrElementNode", "not a document or element node" },
   { "~NotInStaticCtx", "not found in static context" },
   { "~NotPlainFile", "not plain file" },
+#if !defined(ZORBA_NO_ICU)
+  { "~NotSingleCharEsc_3", "\"\\\\$3\": multi-character and category escapes not permitted in character range" },
+#endif
   { "~NotSpecified", "not specified" },
   { "~OpIsSameNodeMustHaveNodes", "op:is-same-node() must have nodes as parameters" },
   { "~OpNodeAfterMustHaveNodes", "op:node-after() must have nodes as parameters" },
