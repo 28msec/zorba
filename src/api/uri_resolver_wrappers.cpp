@@ -33,15 +33,15 @@ namespace zorba
   public:
     static EntityDataWrapper const* create(internal::EntityData const* aData) {
 
-      const zorba::zstring& lTargeNS = aData->getTargetNamespace();
+      const zorba::zstring& lTargetNS = aData->getTargetNamespace();
 
       // More ugly: Create a public-API EntityData with the same Entity Kind,
       // but only if it's one of the publicly-supported kinds
       switch (aData->getKind()) {
       case internal::EntityData::MODULE:
-        return new EntityDataWrapper(EntityData::MODULE, lTargeNS);
+        return new EntityDataWrapper(EntityData::MODULE, lTargetNS);
       case internal::EntityData::SCHEMA:
-        return new EntityDataWrapper(EntityData::SCHEMA, lTargeNS);
+        return new EntityDataWrapper(EntityData::SCHEMA, lTargetNS);
 #ifndef ZORBA_NO_FULL_TEXT
       case internal::EntityData::THESAURUS:
         return new EntityDataWrapper(EntityData::THESAURUS);
