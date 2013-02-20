@@ -230,19 +230,6 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    */
   virtual void
   parse(std::istream& aQuery) = 0;
-
-  /** 
-   * \brief Parse the given module String.
-   * 
-   * This function parses the module string and returns some information
-   * about the module.
-   *
-   * @param aQuery the query file to parse.
-   * @param aResult some information about the module
-   * @throw ZorbaException if an error occurs while parsing the query.
-   */
-  virtual void
-  parse(std::istream& aQuery, ModuleInfo_t& aResult) = 0;
   
   /** 
    * \brief Compile a query given as a String.
@@ -566,6 +553,19 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    */
   virtual double
   getDocLoadingTime() const = 0;
+
+  /** 
+   * \brief Parse the given module String.
+   * 
+   * This function parses the module string and returns some information
+   * about the module.
+   *
+   * @param aQuery the query file to parse.
+   * @param aResult some information about the module
+   * @throw ZorbaException if an error occurs while parsing the query.
+   */
+  virtual void
+  parse(std::istream& aQuery, ModuleInfo_t& aResult) = 0;
 };
   
 

@@ -283,8 +283,6 @@ public:
 
   void parse(std::istream&);
 
-  void parse(std::istream& aQuery, ModuleInfo_t& aResult);
-
   const StaticContext* getStaticContext() const;
 
   void getExternalVariables(Iterator_t& aVarsIter) const;
@@ -403,6 +401,8 @@ protected:
   void notifyAllWarnings() const;
 
   bool isBoundVariable(const String& aNamespace, const String& aLocalname) const;
+
+  void parse(std::istream& aQuery, ModuleInfo_t& aResult);
 };
 
 
