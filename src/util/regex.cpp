@@ -331,29 +331,16 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             zstring::const_iterator j = xq_i;
             if ( ++j != xq_re.end() && *j == '?' && ++j != xq_re.end() ) {
               //
-              // Got "(?" sequence: potentially start of "(?:" non-capturing
-              // subgroup or "(?f)" or "(?-f)" for turning a flag on or off.
-              // ICU also allows other characters after the "(?" that XQuery
-              // does not support, so we have to report those as errors.
+              // Got "(?" sequence: potentially start of "(?:", a non-capturing
+              // subgroup.  ICU also allows other characters after the "(?"
+              // that XQuery does not, so we have to report those as errors.
               //
-              switch ( *j ) {
-                case ':': // non-capturing parentheses
-                  paren.push_back( false );
-                  is_first_char = true;
-                  goto append;
-                case '-': // unset flag
-                case 'i': // case insensitive
-                case 'm': // multi-line
-                case 's': // dot-all
-                case 'w': // word
-                case 'x': // allow white-space and comments
-                  paren.push_back( false );
-                  break;
-                default:
-                  throw INVALID_RE_EXCEPTION(
-                    xq_re, ZED( BadRegexParen_3 ), *j
-                  );
+              if ( *j == ':' ) {        // start non-capturing subgroup
+                paren.push_back( false );
+                is_first_char = true;
+                goto append;
               }
+              throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexParen_3 ), *j );
             } else {
               //
               // Start of capturing subgroup.
