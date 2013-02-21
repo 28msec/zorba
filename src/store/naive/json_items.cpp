@@ -23,6 +23,7 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
+#include "util/mem_sizeof.h"
 
 namespace zorba
 {
@@ -242,6 +243,21 @@ SimpleJSONObject::~SimpleJSONObject()
   ASSERT_INVARIANT();
 }
 
+
+/******************************************************************************
+
+*******************************************************************************/
+
+size_t SimpleJSONObject::alloc_size() const
+{
+  return  ztd::alloc_sizeof( theKeys )
+        + ztd::alloc_sizeof( thePairs );
+}
+
+size_t SimpleJSONObject::dynamic_size() const
+{
+  return sizeof( *this );
+}
 
 /******************************************************************************
 
@@ -694,6 +710,18 @@ bool SimpleJSONObject::isThisJSONItemInDescendance(const store::Item* anItem) co
 /******************************************************************************
 
 *******************************************************************************/
+zstring SimpleJSONObject::show() const
+{
+  std::stringstream str;
+  str << "{ }";
+
+  return str.str();
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 SimpleJSONObject::KeyIterator::~KeyIterator() 
 {
 }
@@ -781,6 +809,20 @@ SimpleJSONArray::~SimpleJSONArray()
   }
 }
 
+
+/******************************************************************************
+
+*******************************************************************************/
+
+size_t SimpleJSONArray::alloc_size() const
+{
+  return ztd::alloc_sizeof( theContent );
+}
+
+size_t SimpleJSONArray::dynamic_size() const
+{
+  return sizeof( *this );
+}
 
 /******************************************************************************
 
@@ -1014,10 +1056,12 @@ uint64_t SimpleJSONArray::cast(const xs_integer& i)
   {
     return to_xs_unsignedLong(i);
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0060_RANGE_EXCEPTION,
+      ERROR_PARAMS( i )
+    );
   }
 }
 
@@ -1203,6 +1247,18 @@ bool SimpleJSONArray::isThisJSONItemInDescendance(const store::Item* anItem) con
 }
 
 #endif // NDEBUG
+
+
+/******************************************************************************
+
+*******************************************************************************/
+zstring SimpleJSONArray::show() const
+{
+  std::stringstream str;
+  str << "[ ]";
+
+  return str.str();
+}
 
 
 /******************************************************************************

@@ -15,10 +15,11 @@
  */
 #include "stdafx.h"
 
-#include <stdio.h>
+#include <cstdio>
 #include <memory.h>
 #include <string>
 #include <iostream>
+
 #include <libxml/xmlmemory.h>
 
 #include <zorba/store_consts.h>
@@ -40,7 +41,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
-
+#include "util/stream_util.h"
 
 namespace zorba {
 namespace simplestore {
@@ -98,6 +99,87 @@ XmlLoader::~XmlLoader()
 /*******************************************************************************
 
 ********************************************************************************/
+void XmlLoader::error(void *ctx, xmlErrorPtr error)
+{
+  if ( error->level == XML_ERR_NONE )
+    return;
+
+  ztd::itoa_buf_type itoa_buf;
+
+  zstring libxml_dict_key_4( ZED_PREFIX "libxml_" );
+  libxml_dict_key_4 += error->level == XML_ERR_WARNING ? "WAR_" : "ERR_";
+  libxml_dict_key_4 += ztd::itoa( error->code, itoa_buf );
+
+  char const *const error_str1_5 = error->str1 ? error->str1 : "";
+  char const *const error_str2_6 = error->str2 ? error->str2 : "";
+  char const *const error_str3_7 = error->str3 ? error->str3 : "";
+  zstring error_int1_8;
+  char const *const error_message_9 = error->message ? error->message : "";
+
+  if ( error->int1 ) {                  // assume valid only if > 0
+    switch ( error->code ) {
+      case XML_ERR_ENTITY_CHAR_ERROR:
+      case XML_ERR_INVALID_CHAR:
+      case XML_ERR_SEPARATOR_REQUIRED:
+        // For these error codes, int1 is a char.
+        error_int1_8 = static_cast<char>( error->int1 );
+        break;
+      case XML_DTD_ID_SUBSET:
+      case XML_DTD_UNKNOWN_ID:
+      case XML_ERR_ELEMCONTENT_NOT_FINISHED:
+      case XML_ERR_INTERNAL_ERROR:
+      case XML_ERR_TAG_NOT_FINISHED:
+        // For these error codes, int1 is an int.
+        error_int1_8 = ztd::itoa( error->int1, itoa_buf );
+        break;
+      default:
+        // For an unaccounted-for error code, use a heuristic to guess whether
+        // int1 is a char or an int.
+        if ( ascii::is_print( error->int1 ) )
+          error_int1_8 = static_cast<char>( error->int1 );
+        else
+          error_int1_8 = ztd::itoa( error->int1, itoa_buf );
+    } // switch
+  } // if
+
+  XmlLoader *const loader = static_cast<XmlLoader*>( ctx );
+  switch ( error->level ) {
+    case XML_ERR_ERROR:
+    case XML_ERR_FATAL: {
+      XQueryException *const xe = NEW_XQUERY_EXCEPTION(
+        zerr::ZSTR0021_LOADER_PARSING_ERROR,
+        ERROR_PARAMS(
+          error->file, error->line, error->int2 /* column */,
+          libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
+          error_int1_8, error_message_9
+        )
+      );
+      xe->set_data( error->file, error->line, error->int2 /* column */ );
+      loader->theXQueryDiagnostics->add_error( xe );
+      break;
+    }
+    case XML_ERR_WARNING: {
+      XQueryWarning *const xw = NEW_XQUERY_WARNING(
+        zwarn::ZWST0007_LOADER_PARSING_WARNING,
+        WARN_PARAMS(
+          error->file, error->line, error->int2 /* column */,
+          libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
+          error_int1_8, error_message_9
+        )
+      );
+      xw->set_data( error->file, error->line, error->int2 /* column */ );
+      loader->theXQueryDiagnostics->add_warning( xw );
+      break;
+    }
+    default:
+      ZORBA_ASSERT( false );
+  } // switch
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 FastXmlLoader::FastXmlLoader(
     store::ItemFactory* factory,
     XQueryDiagnostics* xqueryDiagnostics,
@@ -124,9 +206,7 @@ FastXmlLoader::FastXmlLoader(
   theSaxHandler.cdataBlock = &FastXmlLoader::cdataBlock;
   theSaxHandler.comment = &FastXmlLoader::comment;
   theSaxHandler.processingInstruction = &FastXmlLoader::processingInstruction;
-  theSaxHandler.warning = &FastXmlLoader::warning;
-  theSaxHandler.error = &FastXmlLoader::error;
-
+  theSaxHandler.serror = &XmlLoader::error;
   theSaxHandler.getEntity = &FastXmlLoader::getEntity;
   theSaxHandler.getParameterEntity = &FastXmlLoader::getParameterEntity;
   theSaxHandler.entityDecl = &FastXmlLoader::entityDecl;
@@ -201,9 +281,8 @@ void FastXmlLoader::abortload()
   {
     xmlCtxtReset(ctxt);
     xmlFreeParserCtxt(ctxt);
+    ctxt = NULL;
   }
-
-  ctxt = NULL;
 }
 
 
@@ -284,11 +363,16 @@ store::Item_t FastXmlLoader::loadXml(
 
   theBaseUri = baseUri;
 
+  char const *doc_uri;
+  if ( char const *const stream_uri = get_uri( stream ) )
+    doc_uri = stream_uri;
+  else
+    doc_uri = docUri.c_str();
+
   if (docUri.empty())
   {
     std::ostringstream uristream;
     uristream << "zorba://internalDocumentURI-" << theTree->getId();
-
     theDocUri = uristream.str();
   }
   else
@@ -323,7 +407,7 @@ store::Item_t FastXmlLoader::loadXml(
                                    this,
                                    theBuffer,
                                    static_cast<int>(numChars),
-                                   docUri.c_str());
+                                   doc_uri);
 
     // Apply loader options
     store::LoadProperties new_props = theLoadProperties;
@@ -336,7 +420,7 @@ store::Item_t FastXmlLoader::loadXml(
     {
       theXQueryDiagnostics->
       add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,
-                                    ERROR_PARAMS(ZED(ParserInitFailed))));
+                                    ERROR_PARAMS(ZED(XMLParserInitFailed))));
       abortload();
 			return NULL;
     }
@@ -385,18 +469,12 @@ store::Item_t FastXmlLoader::loadXml(
   }
   else if (!ok)
   {
-    if (!theDocUri.empty())
-    {
-      theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,
-                          ERROR_PARAMS(ZED(BadXMLDocument_2o), theDocUri)));
-    }
-    else
-    {
-      theXQueryDiagnostics->add_error(
-      NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,
-                          ERROR_PARAMS(ZED(BadXMLDocument_2o))));
-    }
+    theXQueryDiagnostics->add_error(
+      NEW_ZORBA_EXCEPTION(
+        zerr::ZSTR0021_LOADER_PARSING_ERROR,
+        ERROR_PARAMS( ZED( BadXMLDocument_2o ), theDocUri )
+      )
+    );
     abortload();
     return NULL;
   }
@@ -1109,48 +1187,6 @@ void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
       NEW_ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR )
     );
   }
-}
-
-
-/*******************************************************************************
-  Display and format an error messages, callback.
-
-   ctx:  an XML parser context
-   msg:  the message to display/transmit
-   ...:  extra parameters for the message display
-********************************************************************************/
-void FastXmlLoader::error(void * ctx, const char * msg, ... )
-{
-  FastXmlLoader* loader = (static_cast<FastXmlLoader *>(ctx));
-  char buf[1024];
-  va_list args;
-  va_start(args, msg);
-  vsprintf(buf, msg, args);
-  va_end(args);
-  loader->theXQueryDiagnostics->add_error(
-    NEW_ZORBA_EXCEPTION(
-      zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( buf )
-    )
-  );
-}
-
-
-/*******************************************************************************
-   Display and format a warning messages, callback.
-
-   ctx:  an XML parser context
-   msg:  the message to display/transmit
-   ...:  extra parameters for the message display
-********************************************************************************/
-void FastXmlLoader::warning(void * ctx, const char * msg, ... )
-{
-  char buf[1024];
-  va_list args;
-  va_start(args, msg);
-  vsprintf(buf, msg, args);
-  va_end(args);
-
-  std::cerr << buf << std::endl;
 }
 
 

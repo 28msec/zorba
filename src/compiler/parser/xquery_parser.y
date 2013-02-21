@@ -4622,7 +4622,7 @@ DirElemConstructor :
         {
             if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($6)->get_qname())
             {
-              error(@1, "syntax error, end tag </" + static_cast<QName*>($6)->get_qname().str() + "> does not match start tag <"
+              error(@5, "syntax error, end tag </" + static_cast<QName*>($6)->get_qname().str() + "> does not match start tag <"
                                                    + static_cast<QName*>($2)->get_qname().str() + ">");
               YYERROR;
             }
@@ -4639,7 +4639,7 @@ DirElemConstructor :
         {
             if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
             {
-              error(@1, "syntax error, end tag </" + static_cast<QName*>($7)->get_qname().str() + "> does not match start tag <"
+              error(@5, "syntax error, end tag </" + static_cast<QName*>($7)->get_qname().str() + "> does not match start tag <"
                                                    + static_cast<QName*>($2)->get_qname().str() + ">");
               YYERROR;
             }
@@ -4656,7 +4656,7 @@ DirElemConstructor :
         {
             if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
             {
-              error(@1, "syntax error, end tag </" + static_cast<QName*>($7)->get_qname().str() + "> does not match start tag <"
+              error(@5, "syntax error, end tag </" + static_cast<QName*>($7)->get_qname().str() + "> does not match start tag <"
                                                    + static_cast<QName*>($2)->get_qname().str() + ">");
               YYERROR;
             }
@@ -4673,7 +4673,7 @@ DirElemConstructor :
         {
             if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($8)->get_qname())
             {
-              error(@1, "syntax error, end tag </" + static_cast<QName*>($8)->get_qname().str() + "> does not match start tag <"
+              error(@5, "syntax error, end tag </" + static_cast<QName*>($8)->get_qname().str() + "> does not match start tag <"
                                                    + static_cast<QName*>($2)->get_qname().str() + ">");
               YYERROR;
             }

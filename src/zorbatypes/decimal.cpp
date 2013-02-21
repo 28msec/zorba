@@ -368,6 +368,10 @@ Decimal::value_type Decimal::roundHalfToEven2( value_type const &v,
 
 ////////// miscellaneous //////////////////////////////////////////////////////
 
+size_t Decimal::alloc_size() const {
+  return value_.significant_digits();
+}
+
 uint32_t Decimal::hash( value_type const &value ) {
   char buf[1024];
   char *bufp = value.exponent() + 3 > 1024 ?

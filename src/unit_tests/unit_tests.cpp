@@ -50,7 +50,10 @@ void initializeTestList()
   libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_ICU */
 
+  libunittests["mem_sizeof"] = test_mem_sizeof;
+
   libunittests["json_parser"] = test_json_parser;
+  libunittests["parameters"] = test_parameters;
   libunittests["string"] = test_string;
   libunittests["time_parse"] = test_time_parse;
 

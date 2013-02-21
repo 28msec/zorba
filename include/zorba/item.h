@@ -480,6 +480,15 @@ public:
   Item
   getCollectionName() const;
 
+  /**
+   * Gets the total amount of memory this Item and all its child Items are
+   * using.
+   *
+   * @return said total amount of memory.
+   */
+  size_t
+  mem_size() const;
+
 private:
   friend class Unmarshaller;
 

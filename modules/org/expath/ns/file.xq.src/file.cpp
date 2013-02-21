@@ -205,7 +205,7 @@ ReadTextFunction::evaluate(
   {
     try {
       lInStream.reset( new transcode::stream<std::ifstream>(lEncoding.c_str()) );
-    } catch (std::invalid_argument const& e)
+    } catch (std::invalid_argument const&)
     {
       raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
     }
@@ -216,7 +216,7 @@ ReadTextFunction::evaluate(
   }
   lFile->openInputStream(*lInStream.get(), false, true);
   lResult = theModule->getItemFactory()->createStreamableString(
-      *lInStream.release(), &FileModule::streamReleaser, true
+      *lInStream.release(), &FileModule::streamReleaser, lFileStr.c_str(), true
     );
   return ItemSequence_t(new SingletonItemSequence(lResult));
 

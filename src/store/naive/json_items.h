@@ -55,8 +55,6 @@ protected:
 public:
   JSONNull() : AtomicItem(store::JS_NULL) { }
 
-  virtual ~JSONNull() {}
-
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   zstring getStringValue() const { return "null"; }
@@ -204,7 +202,6 @@ public:
 class JSONObject : public JSONItem
 {
 public:
-  virtual ~JSONObject() {}
 
   // store API
 
@@ -304,12 +301,14 @@ private:
   Pairs  thePairs;
 
 public:
-  SimpleJSONObject()
-  {}
+  SimpleJSONObject() {}
 
   virtual ~SimpleJSONObject();
 
   // store API
+
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
   virtual store::Iterator_t getObjectKeys() const;
 
@@ -326,6 +325,8 @@ public:
   virtual void appendStringValue(zstring& buf) const;
 
   virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  zstring show() const;
 
   // updates
   
@@ -371,8 +372,6 @@ class JSONArray : public JSONItem
 {
 public:
   JSONArray() : JSONItem() {}
-
-  virtual ~JSONArray() {}
 
   // store API
   
@@ -458,6 +457,9 @@ public:
   
   // store API
 
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   xs_integer getArraySize() const;
 
   store::Item_t getArrayValue(const xs_integer& position) const;
@@ -475,6 +477,8 @@ public:
   void appendStringValue(zstring& buf) const;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  zstring show() const;
 
   // updates
   
@@ -540,4 +544,3 @@ public:
  * End:
  */
 /* vim:set et sw=2 ts=2: */
-

@@ -12,11 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# create the result directory for all tests
-IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
-    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
-ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
-
 # configure the testdriver
 CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfig.h)
 
@@ -40,6 +35,9 @@ FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ FOLLOW
 MESSAGE(STATUS "Adding update tests for CTest")
 SET(TESTCOUNTER 0)
 
+# Compute results directory for updtestdriver
+SET (_results_dir "${CMAKE_CURRENT_BINARY_DIR}/QueryResults")
+
 FOREACH(TESTFILE ${TESTFILES})
 
  STRING(LENGTH ${TESTFILE} TESTFILELENGTH)
@@ -56,10 +54,16 @@ FOREACH(TESTFILE ${TESTFILES})
 
    ZORBA_ADD_TEST("${TESTNAME}" updtestdriver ${TESTFILE})
 
+   # Create directory for output, if it doesn't exist
+   GET_FILENAME_COMPONENT(_bucket_path ${TESTFILE} PATH)
+   IF (NOT EXISTS "${_results_dir}/${_bucket_path}")
+     FILE (MAKE_DIRECTORY "${_results_dir}/${_bucket_path}")
+   ENDIF (NOT EXISTS "${_results_dir}/${_bucket_path}")
+
    MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
-   MATH(EXPR TESTMOD "${TESTCOUNTER}/100")
+   MATH(EXPR TESTMOD "${TESTCOUNTER}/500")
    IF (${TESTMOD})
-     MESSAGE(STATUS "Adding another 100 update tests")
+     MESSAGE(STATUS "Adding another 500 update tests")
      SET(TESTCOUNTER 0)
    ENDIF (${TESTMOD})
 
