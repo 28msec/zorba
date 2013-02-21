@@ -45,10 +45,16 @@ namespace store
 
 typedef StoreConsts::NodeKind NodeKind;
 
-/**
- *  Class Item represents an "item" as defined by the XQuery Data Model (XDM)
- *  [http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
- */
+/*******************************************************************************
+   Class Item represents an "item" as defined by the XQuery Data Model (XDM)
+   [http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
+
+  theUnion:
+  ---------
+  It stores either a pointer to an XmlTree or an ItemKind enum value. The 
+  low-order bit is used to distinguish between these 2 cases: a 0 bit indicates
+  an XmlTree pointer, and a 1 bit indicated an ItemKind. 
+********************************************************************************/
 class ZORBA_DLL_PUBLIC Item
 {
 public:
@@ -179,6 +185,15 @@ public:
     return ((theUnion.itemKind & 0xF) == FUNCTION);
   }
 
+
+  /**
+   *  @return  "true" if the item is a JSON item or a node
+   */
+  bool 
+  isStructuredItem() const
+  {
+    return isNode() || isJSONItem();
+  }
 
   /**
    * @return a string representation of the item's kind
@@ -454,24 +469,20 @@ public:
   virtual const xs_duration&
   getDurationValue() const;
 
-
   /** Accessor for xs:dayTimeDuration
    */
   virtual const xs_dayTimeDuration&
   getDayTimeDurationValue() const;
-
 
   /** Accessor for xs:yearMonthDuration
    */
   virtual const xs_yearMonthDuration&
   getYearMonthDurationValue() const;
 
-
   /** Accessor for xs:hexBinary
    */
   virtual xs_hexBinary
   getHexBinaryValue() const;
-
 
   /**
    * Helper method for numeric atomic items
@@ -480,7 +491,6 @@ public:
    */
   virtual bool
   isNaN() const;
-
 
   /**
    * Helper method for numeric atomic items
@@ -525,8 +535,25 @@ public:
   virtual bool
   isTextRef() const;
 
-  
-  /* -------------------  Methods for Nodes ------------------------------------- */
+  /* -------------------  Methods for XML and JSON Nodes --------------------- */
+
+  /**
+   * @return true if this node is the root node of a tree that belongs to a
+   * a collection directly.
+   */
+  virtual bool
+  isCollectionRoot() const;
+
+  /**
+   * @return true if this node is in the subtree starting at the given item.
+   *         NOTE: for the purposes of this method, XML trees that are pointed-to
+   *         by a JSON tree are considered part of that JSON tree. As a result,
+   *         an XML node may be in the subtree of a JSON node.
+   */
+  virtual bool
+  isInSubtreeOf(const store::Item_t&) const;
+
+  /* -------------------  Methods for XML Nodes ------------------------------ */
 
   /**
    *  getNodeProperty functions - Accessor of XDM (see XDM specification, Section 5)
@@ -558,10 +585,10 @@ public:
    *  @return True if this is an element node with name N and it has at least one
    *          descendant whose name is also N.
    *
-   * Note: This function is used purely for enabling certain optimizations in the
-   *       query processor. As a result, it is not necessary that a store actually
-   *       provides info about the recursivity of a node; such a store should
-   *       provide a dummy implementation of this method that simply returns true.
+   * Note: This function is used purely for enabling certain optimizations in
+   * the query processor. As a result, it is not necessary that a store actually
+   * provides info about the recursivity of a node; such a store should provide
+   * a dummy implementation of this method that simply returns true.
    */
   virtual bool
   isRecursive() const;
@@ -614,8 +641,8 @@ public:
    */
   virtual void
   getNamespaceBindings(
-        NsBindings& bindings,
-        StoreConsts::NsScoping ns_scoping = StoreConsts::ALL_NAMESPACES) const;
+      NsBindings& bindings,
+      StoreConsts::NsScoping ns_scoping = StoreConsts::ALL_NAMESPACES) const;
 
   /** Accessor for element node
    *  @return  boolean?
@@ -747,12 +774,6 @@ public:
    *
    */
   virtual bool
-  isInSubtreeOf(const store::Item_t&) const;
-
-  /**
-   *
-   */
-  virtual bool
   isDescendant(const store::Item_t&) const;
 
   /**
@@ -842,12 +863,6 @@ public:
    */
   virtual store::StoreConsts::JSONItemKind 
   getJSONItemKind() const;
-
-  /**
-   * @return true if the JSON item is a root in a collection.
-   */
-  virtual bool
-  isRoot() const;
 
   /**
    * defined on JSONArray

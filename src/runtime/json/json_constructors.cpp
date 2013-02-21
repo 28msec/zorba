@@ -304,7 +304,7 @@ bool JSONDirectObjectIterator::nextImpl(store::Item_t& result, PlanState& planSt
       consumeNext(name, theChildren[i], planState);
       consumeNext(value, theChildren[numPairs + i], planState);
 
-      if (theCopyInputs[i] && (value->isNode() || value->isJSONItem()))
+      if (theCopyInputs[i] && (value->isStructuredItem()))
         value = value->copy(NULL, copymode);
 
       names[i].transfer(name);
