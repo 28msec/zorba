@@ -994,7 +994,7 @@ bool IndexMatchingRule::matchKeyExpr(
     xqtref_t qtype = qexpr->get_return_type();
     xqtref_t vtype = ve->get_target_type();
 
-    if (TypeOps::is_subtype(tm, *qtype, *vtype) ||
+    if (TypeOps::is_subtype(tm, *vtype, *qtype) ||
         (TypeOps::is_subtype(tm, *qtype, *rtm.UNTYPED_ATOMIC_TYPE_STAR) &&
          TypeOps::is_subtype(tm, *vtype, *rtm.STRING_TYPE_STAR)))
     {
