@@ -30,10 +30,14 @@ struct PredicateInfo;
 
 /*******************************************************************************
 
-  theFlworStack:
-  --------------
-  The current "in-scope" flwor exprs, ie., flwor exprs that the rule has
-  entered but not exited yet.
+  theVarDefExprs:
+  ---------------
+  A stack Keeping track of "in-scope" variable-defining exprs. Var-defining 
+  exprs are flwors, trycatch, and block exprs (TOD: include transform exprs).
+  "in-scope" means that the rule has entered the expr but not exited it yet.
+
+  theClauses:
+  -----------
 
   theVarIdMap:
   ------------
@@ -57,8 +61,8 @@ protected:
 
   expr                     * theRootExpr;
 
-  std::vector<expr*>         theFlworStack;
-  std::vector<bool>          theInReturnClause;
+  std::vector<expr*>         theVarDefExprs;
+  std::vector<csize>         theChildPositions;
 
   expr_tools::VarIdMap     * theVarIdMap;
   expr_tools::IdVarMap     * theIdVarMap;
@@ -76,17 +80,15 @@ public:
 protected:
   bool isIndexJoinPredicate(PredicateInfo& predInfo);
 
-  var_expr* findLoopVar(expr* curExpr, ulong& varid);
+  var_expr* findLoopVar(expr* predExpr, csize& loopVarId);
 
-  void rewriteJoin(PredicateInfo& predInfo, bool& modified);
+  bool checkVarDeps(expr* idxExpr, csize outerVarId, csize& boundVarId);
 
-  bool expandVars(expr* subExpr, ulong outerVarId, long& maxVarId);
+  bool findIndexPos(PredicateInfo& predInfo, csize boundVarId);
 
-  bool findFlworForVar(
-      const var_expr* var,
-      flwor_expr*& flworExpr,
-      ulong& varPos,
-      ulong& posInStack);
+  void rewriteJoin(PredicateInfo& predInfo);
+
+  void expandVars(expr* idxExpr, csize outerVarId, csize innerVarId);
 };
 
 

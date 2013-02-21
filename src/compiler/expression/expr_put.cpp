@@ -360,7 +360,7 @@ ostream& flwor_expr::put(ostream& os) const
       static_cast<const groupby_clause *>(&c)->put(os);
       break;
     }
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       static_cast<const orderby_clause *>(&c)->put(os);
       break;

@@ -804,7 +804,7 @@ void general_var_codegen(const var_expr& var)
         ZORBA_ASSERT(clauseVarMap->find_var(&var) < 0);
 
         if (flworExpr == clauseVarMap->theClause->get_flwor_expr() &&
-            ((clauseVarMap->theClause->get_kind() == flwor_clause::order_clause &&
+            ((clauseVarMap->theClause->get_kind() == flwor_clause::orderby_clause &&
               flworExpr->is_general()) ||
              clauseVarMap->theClause->get_kind() == flwor_clause::materialize_clause))
         {
@@ -957,6 +957,7 @@ bool begin_visit(flwor_expr& v)
 
     if (isGeneral)
     {
+      static_context* sctx = v.get_sctx();
       std::vector<OrderModifier> modifiers;
       std::vector<expr*> orderingExprs;
 
@@ -966,7 +967,6 @@ bool begin_visit(flwor_expr& v)
       while (i < numClauses)
       {
         const flwor_clause* c = v.get_clause(i);
-
         flwor_clause::ClauseKind k = c->get_kind();
 
         switch (k)
@@ -985,46 +985,32 @@ bool begin_visit(flwor_expr& v)
               ++numForClauses;
           }
 
-          if (domExpr->is_sequential())
+          if (domExpr->is_sequential() &&
+              (k == flwor_clause::for_clause ||
+               k == flwor_clause::window_clause ||
+               numForClauses > 0))
           {
-            if (k == flwor_clause::for_clause ||
-                k == flwor_clause::window_clause ||
-                numForClauses > 0)
+            if (i > 0 &&
+                v.get_clause(i-1)->get_kind() != flwor_clause::orderby_clause &&
+                v.get_clause(i-1)->get_kind() != flwor_clause::groupby_clause)
             {
-              theCCB->theXQueryDiagnostics->add_warning(
-              NEW_XQUERY_WARNING(zwarn::ZWST0004_AMBIGUOUS_SEQUENTIAL_FLWOR,
-                                 WARN_LOC(c->get_loc())));
+              orderby_clause* mat = theCCB->theEM->
+              create_orderby_clause(sctx, c->get_loc(), true, modifiers, orderingExprs);
 
-              if (i > 0 &&
-                  v.get_clause(i-1)->get_kind() != flwor_clause::order_clause &&
-                  v.get_clause(i-1)->get_kind() != flwor_clause::groupby_clause)
-              {
-                orderby_clause* mat = theCCB->theEM->
-                create_orderby_clause(v.get_sctx(),
-                                      c->get_loc(),
-                                      true,
-                                      modifiers,
-                                      orderingExprs);
+              v.add_clause(i, mat);
+              ++i;
+              ++numClauses;
+            }
 
-                v.add_clause(i, mat);
-                ++i;
-                ++numClauses;
-              }
+            if (i == numClauses -1 ||
+                (i < numClauses - 1 &&
+                 v.get_clause(i+1)->get_kind() != flwor_clause::groupby_clause))
+            {
+              orderby_clause* mat = theCCB->theEM->
+              create_orderby_clause(sctx, c->get_loc(), true, modifiers, orderingExprs);
 
-              if (i == numClauses -1 ||
-                  (i < numClauses - 1 &&
-                   v.get_clause(i+1)->get_kind() != flwor_clause::groupby_clause))
-              {
-                orderby_clause* mat = theCCB->theEM->
-                create_orderby_clause(v.get_sctx(),
-                                      c->get_loc(),
-                                      true,
-                                      modifiers,
-                                      orderingExprs);
-
-                v.add_clause(i+1, mat);
-                ++numClauses;
-              }
+              v.add_clause(i+1, mat);
+              ++numClauses;
             }
           }
 
@@ -1032,7 +1018,7 @@ bool begin_visit(flwor_expr& v)
         }
         case flwor_clause::where_clause:
         case flwor_clause::groupby_clause:
-        case flwor_clause::order_clause:
+        case flwor_clause::orderby_clause:
         case flwor_clause::count_clause:
         {
           break;
@@ -1047,11 +1033,11 @@ bool begin_visit(flwor_expr& v)
       const flwor_clause* lastClause = v.get_clause(v.num_clauses()-1);
 
       if (v.get_return_expr()->is_sequential() &&
-          lastClause->get_kind() != flwor_clause::order_clause &&
+          lastClause->get_kind() != flwor_clause::orderby_clause &&
           lastClause->get_kind() != flwor_clause::groupby_clause)
       {
         orderby_clause* mat = theCCB->theEM->
-        create_orderby_clause(v.get_sctx(),
+        create_orderby_clause(sctx,
                               v.get_return_expr()->get_loc(),
                               true,
                               modifiers,
@@ -1122,7 +1108,7 @@ bool begin_visit(flwor_expr& v)
       break;
     }
 
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       const orderby_clause* oc = reinterpret_cast<const orderby_clause*>(c);
 
@@ -1267,7 +1253,7 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
     break;
   }
 
-  case flwor_clause::order_clause:
+  case flwor_clause::orderby_clause:
   case flwor_clause::materialize_clause:
   {
     break;
@@ -1616,7 +1602,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   //
   // ORDERBY
   //
-  else if (c.get_kind() == flwor_clause::order_clause)
+  else if (c.get_kind() == flwor_clause::orderby_clause)
   {
     ulong numVars = (ulong)clauseVarMap->theVarRebinds.size();
     ulong numForVars = 0;
@@ -1798,7 +1784,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
     //
     // ORDERBY
     //
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       const orderby_clause* obc = static_cast<const orderby_clause*>(&c);
       unsigned numColumns = obc->num_columns();

@@ -717,13 +717,14 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
 
 
 /*******************************************************************************
-  Let FLWOR(e) be the set of flwor exprs within the expr tree rooted at expr e.
-  Let FV(e) be the set of variables defined in any of the flwor exprs in 
-  FLWOR(e). This method assigns a prefix id to each variable in FV(e) and
-  stores the mapping between var_expr and prefix id in "varidmap" and the
-  reverse mapping in "idvapmap". It also returns the number of vars in FV(e).
+  Let VDE(e) be the set of variable-defining exprs (i.e., flwor, trycatch, or 
+  vardecl exprs) within the expr tree rooted at expr e. Let V(e) be the set of
+  variables defined in any of the exprs in VDE(e). This method assigns a prefix
+  id to each variable in V(e) and stores the mapping between var_expr and prefix
+  id in "varidmap" and the reverse mapping in "idvapmap". It also returns the
+  number of vars in V(e).
 
-  Given 2 vars v1 and v2 in FV(e), their prefix ids allows to check if v1 is
+  Given 2 vars v1 and v2 in V(e), their prefix ids allows to check if v1 is
   defined before v2: v1 is defined before v2 iff id(v1) < id(v2).
 ********************************************************************************/
 void index_flwor_vars(
@@ -815,7 +816,7 @@ void index_flwor_vars(
 
         break;
       }
-      case flwor_clause::order_clause:
+      case flwor_clause::orderby_clause:
       {
         const orderby_clause* obc = static_cast<const orderby_clause *>(c);
         csize numExprs = obc->num_columns();
@@ -860,6 +861,11 @@ void index_flwor_vars(
 
       index_flwor_vars(trycatch->get_catch_expr(i), numVars, varidmap, idvarmap);
     }
+  }
+  else if (e->get_expr_kind() == var_decl_expr_kind)
+  {
+    const var_decl_expr* vdecl = static_cast<const var_decl_expr*>(e);
+    add_var(vdecl->get_var_expr(), numVars, varidmap, idvarmap);
   }
   else
   {
@@ -914,7 +920,7 @@ static void add_var(
 {
   if (v != NULL)
   {
-    varidmap[v] = numVars++;
+    varidmap[v] = ++numVars;
     if (idvarmap)
       idvarmap->push_back(v);
   }
@@ -923,9 +929,9 @@ static void add_var(
 
 /*******************************************************************************
   For each expr E in the expr tree rooted at "e", this method computes the set
-  of variables that belong to FV(e) and are referenced by E. Let V(E) be this
+  of variables that belong to V(e) and are referenced by E. Let V(E) be this
   set. V(E) is implemented as a bitset ("freeset") whose size is equal to the
-  size of FV(e) and whose i-th bit is on iff the var with prefix id i belongs
+  size of V(e) and whose i-th bit is on iff the var with prefix id i belongs
   to V(E). The mapping between E and V(E) is stored in "freevarMap".
 ********************************************************************************/
 void build_expr_to_vars_map(
@@ -936,14 +942,14 @@ void build_expr_to_vars_map(
 {
   if (e->get_expr_kind() == var_expr_kind)
   {
-    set_bit(static_cast<var_expr *>(e), varmap, freeset, true);
+    set_bit(static_cast<var_expr*>(e), varmap, freeset, true);
     freevarMap[e] = freeset;
     return;
   }
 
   csize numVars = freeset.size();
 
-  DynamicBitset eFreeset(numVars);
+  DynamicBitset eFreeset(numVars+1);
   ExprIterator iter(e);
   while(!iter.done())
   {
@@ -965,9 +971,9 @@ void build_expr_to_vars_map(
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
-    for(flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
-        i != flwor->clause_end();
-        ++i)
+    for (flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
+         i != flwor->clause_end();
+         ++i)
     {
       const flwor_clause* c = *i;
 
@@ -1040,15 +1046,30 @@ void build_expr_to_vars_map(
       const catch_clause* clause = (*trycatch)[i];
 
       catch_clause::var_map_t& trycatchVars =
-        const_cast<catch_clause*>(clause)->get_vars();
+      const_cast<catch_clause*>(clause)->get_vars();
 
       catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
       catch_clause::var_map_t::const_iterator end = trycatchVars.end();
       for (; ite != end; ++ite)
       {
-        var_expr* trycatchVar = (*ite).second;
-        set_bit(trycatchVar, varmap, freeset, false);
+        var_expr* v = (*ite).second;
+        set_bit(v, varmap, freeset, false);
       }
+    }
+  }
+  else if (e->get_expr_kind() == block_expr_kind)
+  {
+    block_expr* block = static_cast<block_expr*>(e);
+
+    csize numArgs = block->size();
+
+    for (csize i = 0; i < numArgs; ++i)
+    {
+      if ((*block)[i]->get_expr_kind() != var_decl_expr_kind)
+        continue;
+
+      var_expr* v = static_cast<var_decl_expr*>((*block)[i])->get_var_expr();
+      set_bit(v, varmap, freeset, false);
     }
   }
 

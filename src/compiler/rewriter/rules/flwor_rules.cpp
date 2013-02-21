@@ -456,7 +456,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       theFlwor->remove_clause(0);
       continue;
     }
-    else if (clause->get_kind() == flwor_clause::order_clause)
+    else if (clause->get_kind() == flwor_clause::orderby_clause)
     {
       theFlwor->remove_clause(0);
       continue;
@@ -674,7 +674,7 @@ bool EliminateUnusedLetVars::safe_to_fold_var_rec(
 
         break;
       }
-      case flwor_clause::order_clause:
+      case flwor_clause::orderby_clause:
       {
         orderby_clause* cl = static_cast<orderby_clause*>(clause);
 
@@ -1533,7 +1533,7 @@ static bool is_positional_pred(
         var_expr* forVar = forClause->get_var();
         ulong forVarId = varidMap[forVar];
 
-        std::vector<ulong> posExprVarIds;
+        std::vector<csize> posExprVarIds;
         exprVarMap[posExpr].getSet(posExprVarIds);
 
         csize numPosExprVars = posExprVarIds.size();
@@ -1592,7 +1592,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
           
           if (c->get_kind() == flwor_clause::where_clause ||
               c->get_kind() == flwor_clause::groupby_clause ||
-              c->get_kind() == flwor_clause::order_clause)
+              c->get_kind() == flwor_clause::orderby_clause)
           {
             goto next1;
           }
@@ -1606,7 +1606,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
         const flwor_clause* c = returnFlwor->get_clause(i);
         
         if (c->get_kind() == flwor_clause::groupby_clause ||
-            c->get_kind() == flwor_clause::order_clause)
+            c->get_kind() == flwor_clause::orderby_clause)
         {
           goto next1;
         }

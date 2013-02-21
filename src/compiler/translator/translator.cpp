@@ -6274,7 +6274,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       pop_scope();
       break;
     }
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     case flwor_clause::where_clause:
     case flwor_clause::count_clause:
     {

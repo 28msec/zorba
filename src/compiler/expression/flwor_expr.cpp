@@ -653,7 +653,7 @@ orderby_clause::orderby_clause(
     const std::vector<OrderModifier>& modifiers,
     const std::vector<expr*>& orderingExprs)
   :
-  flwor_clause(sctx, ccb, loc, flwor_clause::order_clause),
+  flwor_clause(sctx, ccb, loc, flwor_clause::orderby_clause),
   theStableOrder(stable),
   theModifiers(modifiers),
   theOrderingExprs(orderingExprs)
@@ -971,7 +971,7 @@ orderby_clause* flwor_expr::get_order_clause() const
   csize numClauses = num_clauses();
   for (csize i = 0; i < numClauses; ++i)
   {
-    if (theClauses[i]->get_kind() == flwor_clause::order_clause)
+    if (theClauses[i]->get_kind() == flwor_clause::orderby_clause)
       return reinterpret_cast<orderby_clause*>(theClauses[i]);
   }
 
@@ -1004,22 +1004,34 @@ csize flwor_expr::num_forlet_clauses()
 /*******************************************************************************
 
 ********************************************************************************/
-long flwor_expr::defines_variable(const var_expr* v) const
+bool flwor_expr::defines_var(const var_expr* v) const
+{
+  return v->get_flwor_clause()->get_flwor_expr() == this;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool flwor_expr::get_var_pos(const var_expr* v, csize& pos) const
 {
   const flwor_clause* varClause = v->get_flwor_clause();
 
   if (varClause == NULL)
-    return -1;
+    return false;
 
   csize numClauses = theClauses.size();
 
   for (csize i = 0; i < numClauses; ++i)
   {
     if (theClauses[i] == varClause)
-      return i;
+    {
+      pos = i;
+      return true;
+    }
   }
 
-  return -1;
+  return false;
 }
 
 
@@ -1214,7 +1226,7 @@ bool flwor_expr::compute_is_general()
       has_where = true;
       break;
     }
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       if (has_order)
         return true;

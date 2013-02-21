@@ -56,7 +56,7 @@ public:
     let_clause,
     window_clause,
     groupby_clause,
-    order_clause,
+    orderby_clause,
     count_clause,
     where_clause,
     materialize_clause
@@ -703,7 +703,9 @@ public:
 
   clause_list_t::const_iterator clause_end() const { return theClauses.end(); }
 
-  long defines_variable(const var_expr* v) const;
+  bool defines_var(const var_expr* v) const;
+
+  bool get_var_pos(const var_expr* v, csize& pos) const;
 
   void get_vars(std::vector<var_expr*>& vars) const;
 

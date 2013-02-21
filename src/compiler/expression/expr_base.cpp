@@ -974,7 +974,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
         break;
       }
-      case flwor_clause::order_clause:
+      case flwor_clause::orderby_clause:
       {
         if (found)
           return false;
