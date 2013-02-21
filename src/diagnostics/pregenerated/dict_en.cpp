@@ -720,12 +720,12 @@ extern entry const dict_en[] = {
   { "~NodeIDNeedsBytes_2", "nodeid requires more than $2 bytes" },
   { "~NodeIDTooBig", "nodeid component too big for encoding" },
 #if !defined(ZORBA_NO_ICU)
-  { "~NonClosedBackRef_3", "'$$3': non-closed backreference" },
+  { "~NonClosedBackRef_3", "'\\$$3': non-closed backreference" },
 #endif
   { "~NonFileThesaurusURI", "non-file thesaurus URI" },
   { "~NonLocalhostAuthority", "non-localhost authority" },
 #if !defined(ZORBA_NO_ICU)
-  { "~NonexistentBackRef_3", "'$$3': non-existent backreference" },
+  { "~NonexistentBackRef_3", "'\\$$3': non-existent backreference" },
 #endif
   { "~NotAllowedForTypeName", "not allowed for typeName (use xsd:untyped instead)" },
   { "~NotAmongInScopeSchemaTypes", "not among in-scope schema types" },

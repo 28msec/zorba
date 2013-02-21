@@ -3675,7 +3675,7 @@
     </entry>
 
     <entry key="NonClosedBackRef_3" if="!defined(ZORBA_NO_ICU)">
-      <value>'$$3': non-closed backreference</value>
+      <value>'\$$3': non-closed backreference</value>
     </entry>
 
     <entry key="NonFileThesaurusURI">
@@ -3687,7 +3687,7 @@
     </entry>
 
     <entry key="NonexistentBackRef_3" if="!defined(ZORBA_NO_ICU)">
-      <value>'$$3': non-existent backreference</value>
+      <value>'\$$3': non-existent backreference</value>
     </entry>
 
     <entry key="NotAllowedForTypeName">
