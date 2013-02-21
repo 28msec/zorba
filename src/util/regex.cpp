@@ -62,6 +62,14 @@ dec_limit( IntegralType *i, IntegralType limit = 0 ) {
     --*i;
 }
 
+static unsigned digits( long n ) {
+  unsigned d = 0;
+  do {
+    ++d;
+  } while ( n /= 10 );
+  return d;
+}
+
 template<class C> inline
 typename C::value_type peek( C const &c, typename C::const_iterator i ) {
   typedef typename C::value_type value_type;
@@ -109,8 +117,7 @@ inline bool is_char_range_begin( zstring const &s,
 }
 
 #define IS_CHAR_RANGE_BEGIN (in_char_class && is_char_range_begin( xq_re, i ))
-
-#define PEEK_C peek( xq_re, i )
+#define PEEK_C              peek( xq_re, i )
 
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
@@ -273,7 +280,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         //
         bool prevent_multidigit_backref = false;
         if ( ascii::is_digit( c ) ) {
-          if ( cap_sub.size() > 9 )
+          if ( digits( cap_sub.size() ) > digits( backref_no ) )
             backref_no = backref_no * 10 + (c - '0');
           else {
             in_backref = false;
