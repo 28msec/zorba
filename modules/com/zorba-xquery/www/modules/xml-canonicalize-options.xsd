@@ -15,40 +15,41 @@
  - limitations under the License.
 -->
 
-<schema xmlns="http://www.w3.org/2001/XMLSchema"
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
   targetNamespace="http://www.zorba-xquery.com/modules/xml-canonicalize-options"
+  xmlns="http://www.zorba-xquery.com/modules/xml-canonicalize-options"
   elementFormDefault="qualified"
   attributeFormDefault="unqualified">
 
-  <element name="options"> 
-    <complexType>
-      <all>
-        <element name="xml-parse-noent" minOccurs="0" maxOccurs="1">
-          <complexType/>
-        </element>
-        <element name="xml-parse-dtdload" minOccurs="0" maxOccurs="1">
-          <complexType/>
-        </element>
-        <element name="xml-parse-dtdattr" minOccurs="0" maxOccurs="1">
-          <complexType/>
-        </element>
-        <element name="xml-parse-dtdvalid" minOccurs="0" maxOccurs="1">
-          <complexType/>
-        </element>
-        <element name="xml-parse-noblanks" minOccurs="0" maxOccurs="1">
-          <complexType/>
-        </element>
-        <element name="xml-parse-nonet" minOccurs="0" maxOccurs="1">
-          <complexType/>
-        </element>
-        <element name="xml-parse-nsclean" minOccurs="0" maxOccurs="1">
-          <complexType/>
-        </element>
-        <element name="xml-parse-nocdata" minOccurs="0" maxOccurs="1">
-          <complexType/>
-        </element>
-      </all>
-    </complexType>
-  </element>
+  <xs:element name="options"> 
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="xml-parse-noent" minOccurs="0" maxOccurs="1">
+          <xs:complexType/>
+        </xs:element>
+        <xs:element name="xml-parse-dtdload" minOccurs="0" maxOccurs="1">
+          <xs:complexType/>
+        </xs:element>
+        <xs:element name="xml-parse-dtdattr" minOccurs="0" maxOccurs="1">
+          <xs:complexType/>
+        </xs:element>
+        <xs:element name="xml-parse-dtdvalid" minOccurs="0" maxOccurs="1">
+          <xs:complexType/>
+        </xs:element>
+        <xs:element name="xml-parse-noblanks" minOccurs="0" maxOccurs="1">
+          <xs:complexType/>
+        </xs:element>
+        <xs:element name="xml-parse-nonet" minOccurs="0" maxOccurs="1">
+          <xs:complexType/>
+        </xs:element>
+        <xs:element name="xml-parse-nsclean" minOccurs="0" maxOccurs="1">
+          <xs:complexType/>
+        </xs:element>
+        <xs:element name="xml-parse-nocdata" minOccurs="0" maxOccurs="1">
+          <xs:complexType/>
+        </xs:element>
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
 
-</schema>
+</xs:schema>

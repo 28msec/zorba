@@ -60,7 +60,7 @@
         <zorba:param>xs:string</zorba:param>  <!-- string to canonicalize -->
         <zorba:output>xs:string</zorba:output>
       </zorba:signature>
-      <zorba:signature localname="canonicalize" prefix="fn-zorba-xml">
+      <zorba:signature localname="canonicalize-options-impl" prefix="fn-zorba-xml">
         <zorba:param>xs:string</zorba:param>  <!-- string to canonicalize -->
         <zorba:param>element()</zorba:param>
         <zorba:output>xs:string</zorba:output>

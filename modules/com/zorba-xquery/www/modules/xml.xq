@@ -69,6 +69,7 @@ xquery version "3.0";
  :
  :)
 module namespace x = "http://www.zorba-xquery.com/modules/xml";
+import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 import schema namespace parse-xml-options = "http://www.zorba-xquery.com/modules/xml-options";
 import schema namespace canonicalize-xml-options = "http://www.zorba-xquery.com/modules/xml-canonicalize-options";
@@ -442,7 +443,7 @@ declare function x:canonicalize(
 
 (:~
  : A function to canonicalize the given XML string, that is, transform
- : it into Canonical XMl as defined by http://www.w3.org/TR/xml-c14n .
+ : it into Canonical XML as defined by http://www.w3.org/TR/xml-c14n .
  : This version of the function allows specifying certain options to be
  : used when initially parsing the XML string. These options correspond
  : to the similarly-named options in the LibXMl2 parser, as documented at
@@ -455,22 +456,34 @@ declare function x:canonicalize(
  :
  : @param $xml-string an XML string to canonicalize.
  : @param $options an XML containg options for the canonicalize function. 
- :        The options available are the following:
- :        <options>
- :          <xml-parse-dtdload/>
- :          <xml-parse-dtdattr/>
- :          <xml-parse-dtdvalid/>
- :          <xml-parse-noblanks/>
- :          <xml-parse-nonet/>
- :          <xml-parse-nsclean/>
- :          <xml-parse-nocdata/>
- :        </options>
- :
+ :<pre>
+ : &lt;options xmlns="http://www.zorba-xquery.com/modules/xml-canonicalize-options"&gt;
+ :   &lt;xml-parse-dtdload/&gt;
+ :   &lt;xml-parse-dtdattr/&gt;
+ :   &lt;xml-parse-dtdvalid/&gt;
+ :   &lt;xml-parse-noblanks/&gt;
+ :   &lt;xml-parse-nonet/&gt;
+ :   &lt;xml-parse-nsclean/&gt;
+ :   &lt;xml-parse-nocdata/&gt;
+ : &lt;/options&gt;
+ :</pre
  : @return the canonicalized XML string.
  :
  : @error err:CANO0001 invalid input.
  :)
 declare function x:canonicalize(
+  $xml-string as xs:string,
+  $options as element(canonicalize-xml-options:options)
+  ) as xs:string
+{
+  let $canonicalize-options := 
+    if ( schema:is-validated( $options ) ) 
+      then $options
+      else validate { $options }
+  return x:canonicalize-options-impl( $xml-string , $canonicalize-options )
+};
+
+declare %private function x:canonicalize-options-impl(
   $xml-string as xs:string,
   $options as element()
   ) as xs:string external;
