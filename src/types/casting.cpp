@@ -393,7 +393,8 @@ T1_TO_T2(str, dT)
 T1_TO_T2(str, dTSt)
 {
   xs_dateTime dt;
-  if (0 == DateTime::parseDateTime(strval.c_str(), strval.size(), dt))
+  if (0 == DateTime::parseDateTime(strval.c_str(), strval.size(), dt) &&
+      dt.hasTimezone() )
   {
     aFactory->createDateTimeStamp(result, &dt);
     return;
@@ -1963,7 +1964,7 @@ const int GenericCast::theMapping[store::XS_LAST] =
   21,  // 43 XS_QNAME
   22,  // 44 XS_NOTATION
   23,  // 45 JS_NULL
-  24,  // 46 XS_DATETIME_STAMP
+  25,  // 46 XS_DATETIME_STAMP
 };
 
 
