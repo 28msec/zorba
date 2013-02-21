@@ -103,6 +103,15 @@ static icu_flags_type convert_xquery_flags( char const *xq_flags ) {
   return icu_flags;
 }
 
+inline bool is_char_range_begin( zstring const &s,
+                                 zstring::const_iterator const &i ) {
+  return peek( s, i ) == '-' && peek( s, i + 1 ) != '[';
+}
+
+#define IS_CHAR_RANGE_BEGIN (in_char_class && is_char_range_begin( xq_re, i ))
+
+#define PEEK_C peek( xq_re, i )
+
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
   icu_flags_type const icu_flags = convert_xquery_flags( xq_flags );
@@ -114,10 +123,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   icu_re->clear();
   icu_re->reserve( xq_re.length() );    // approximate
 
-  char xq_c;                            // current (raw) XQuery char
-  char xq_c_cooked;                     // current cooked XQuery char
-  char prev_xq_c_cooked[2];             // 2 previous xq_c_cooked
-  char xq_char_range_begin_cooked;      // the 'a' in [a-b]
+  char c;                               // current (raw) XQuery char
+  char c_cooked;                        // current cooked XQuery char
+  char prev_c_cooked[2];                // 2 previous c_cooked
+  char char_range_begin_cooked;         // the 'a' in [a-b]
 
   bool got_backslash = false;
   int  got_quantifier = 0;
@@ -137,15 +146,15 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   vector<bool> paren;                   // 0-based
   unsigned cur_paren = 0;               // 1-based
 
-  prev_xq_c_cooked[0] = prev_xq_c_cooked[1] = 0;
+  prev_c_cooked[0] = prev_c_cooked[1] = 0;
 
-  for ( zstring::const_iterator xq_i = xq_re.begin();
-        xq_i != xq_re.end();
-        prev_xq_c_cooked[1] = prev_xq_c_cooked[0],
-        prev_xq_c_cooked[0] = xq_c_cooked, ++xq_i ) {
-    xq_c = xq_c_cooked = *xq_i;
+  for ( zstring::const_iterator i = xq_re.begin();
+        i != xq_re.end();
+        prev_c_cooked[1] = prev_c_cooked[0],
+        prev_c_cooked[0] = c_cooked, ++i ) {
+    c = c_cooked = *i;
     if ( got_backslash ) {
-      if ( x_flag && !in_char_class && ascii::is_space( xq_c ) ) {
+      if ( x_flag && !in_char_class && ascii::is_space( c ) ) {
         //
         // XQuery 3.0 F&O 5.6.1.1: If [the 'x' flag is] present, whitespace
         // characters ... in the regular expression are removed prior to
@@ -156,7 +165,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
       }
       got_backslash = false;
 
-      switch ( xq_c ) {
+      switch ( c ) {
 
         ////////// Back-References ////////////////////////////////////////////
 
@@ -170,7 +179,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '7':
         case '8':
         case '9':
-          backref_no = xq_c - '0';
+          backref_no = c - '0';
           if ( !backref_no )          // \0 is illegal
             throw INVALID_RE_EXCEPTION( xq_re, ZED( BackRef0Illegal ) );
           if ( in_char_class ) {
@@ -195,27 +204,27 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case 'S': // [^\s]
         case 'w': // word char
         case 'W': // [^\w]
-          if ( in_char_range )
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
           *icu_re += '\\';
           break;
         case 'c': // NameChar
-          if ( in_char_range )
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
           *icu_re += "[" bs_c "]";
           continue;
         case 'C': // [^\c]
-          if ( in_char_range )
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
           *icu_re += "[^" bs_c "]";
           continue;
         case 'i': // initial NameChar
-          if ( in_char_range )
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
           *icu_re += "[" bs_i "]";
           continue;
         case 'I': // [^\i]
-          if ( in_char_range )
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
           *icu_re += "[^" bs_i "]";
           continue;
@@ -242,19 +251,19 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
         case 'n': // newline
           *icu_re += '\\';
-          xq_c_cooked = '\n';
+          c_cooked = '\n';
           break;
         case 'r': // carriage return
           *icu_re += '\\';
-          xq_c_cooked = '\r';
+          c_cooked = '\r';
           break;
         case 't': // tab
           *icu_re += '\\';
-          xq_c_cooked = '\t';
+          c_cooked = '\t';
           break;
 
         default:
-          throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), xq_c );
+          throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), c );
       }
     } else {
       if ( in_backref ) {
@@ -267,9 +276,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         // parentheses.
         //
         bool prevent_multidigit_backref = false;
-        if ( ascii::is_digit( xq_c ) ) {
+        if ( ascii::is_digit( c ) ) {
           if ( cap_sub.size() > 9 )
-            backref_no = backref_no * 10 + (xq_c - '0');
+            backref_no = backref_no * 10 + (c - '0');
           else {
             in_backref = false;
             //
@@ -279,7 +288,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             // character class, i.e., [N].
             //
             *icu_re += '[';
-            *icu_re += xq_c;
+            *icu_re += c;
             *icu_re += ']';
             prevent_multidigit_backref = true;
           }
@@ -304,11 +313,11 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           continue;
       }
 
-      switch ( xq_c ) {
+      switch ( c ) {
         case '$':
           if ( q_flag )
             *icu_re += '\\';
-          else if ( !m_flag && xq_i + 1 == xq_re.end() ) {
+          else if ( !m_flag && i + 1 == xq_re.end() ) {
             //
             // XQuery 3.0 F&O 5.6.1: By default, ... $ matches the end of the
             // entire string.  [Newlines are treated as any other character.]
@@ -328,7 +337,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             *icu_re += '\\';
           else {
             cur_paren = paren.size() + 1;
-            zstring::const_iterator j = xq_i;
+            zstring::const_iterator j = i;
             if ( ++j != xq_re.end() && *j == '?' && ++j != xq_re.end() ) {
               //
               // Got "(?" sequence: potentially start of "(?:", a non-capturing
@@ -375,26 +384,26 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             *icu_re += '\\';
           else {
             //
-            // ICU allows multiple quantifiers like *+, ++, and ?+, but XQuery
+            // ICU allows the multiple quantifiers *+, ++, and ?+, but XQuery
             // does not so we have to check for them.
             //
-            if ( got_quantifier && xq_c != '?' )
+            if ( got_quantifier && c != '?' )
               throw INVALID_RE_EXCEPTION(
-                xq_re, ZED( BadQuantifierHere_3 ), xq_c
+                xq_re, ZED( BadQuantifierHere_3 ), c
               );
             got_quantifier = 2;
           }
           break;
         case '-':
           if ( in_char_class && !in_char_range ) {
-            if ( peek( xq_re, xq_i ) == '[' ) {
+            if ( PEEK_C == '[' ) {
               //
               // ICU uses "--" to indicate range subtraction, e.g.,
               // XQuery [A-Z-[OI]] becomes ICU [A-Z--[OI]].
               //
               *icu_re += '-';
             } else {
-              xq_char_range_begin_cooked = *prev_xq_c_cooked;
+              char_range_begin_cooked = *prev_c_cooked;
               in_char_range = 2;
             }
           }
@@ -408,14 +417,14 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( q_flag )
             *icu_re += '\\';
           else {
-            if ( in_char_class && *prev_xq_c_cooked != '-' )
+            if ( in_char_class && *prev_c_cooked != '-' )
               goto unescaped_char;
             ++in_char_class;
             goto append;
           }
           break;
         case ':':
-          if ( prev_xq_c_cooked[1] == '(' && prev_xq_c_cooked[0] == '?' ) {
+          if ( prev_c_cooked[1] == '(' && prev_c_cooked[0] == '?' ) {
             is_first_char = true;
             goto append;
           }
@@ -448,7 +457,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           }
           break;
         default:
-          if ( x_flag && ascii::is_space( xq_c ) ) {
+          if ( x_flag && ascii::is_space( c ) ) {
             if ( !in_char_class )
               continue;
             //
@@ -464,14 +473,14 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
     is_first_char = false;
 
 append:
-    if ( in_char_range == 1 && xq_c_cooked < xq_char_range_begin_cooked )
+    if ( in_char_range == 1 && c_cooked < char_range_begin_cooked )
       throw INVALID_RE_EXCEPTION(
         xq_re, ZED( BadEndCharInRange_34 ),
-        ascii::printable_char( xq_c_cooked ),
-        xq_char_range_begin_cooked
+        ascii::printable_char( c_cooked ),
+        char_range_begin_cooked
       );
 
-    *icu_re += xq_c;
+    *icu_re += c;
 
     dec_limit( &got_quantifier );
     dec_limit( &in_char_range  );
@@ -516,11 +525,11 @@ append:
   return;
 
 not_single_char_esc:
-    throw INVALID_RE_EXCEPTION( xq_re, ZED( NotSingleCharEsc_3 ), xq_c );
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( NotSingleCharEsc_3 ), c );
 unbalanced_char:
-    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), xq_c );
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), c );
 unescaped_char:
-    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), xq_c );
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), c );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
