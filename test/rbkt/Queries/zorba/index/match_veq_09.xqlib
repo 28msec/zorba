@@ -1,0 +1,15 @@
+
+module namespace db28 = "http://28.io/collections";
+
+import module namespace db = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+declare collection db28:answers as object()*;
+
+declare collection db28:faqs as object()*;
+
+declare %an:value-range index db28:question-id-idx
+on nodes db:collection(xs:QName("db28:faqs"))
+by .("question_id") as xs:integer;
+
