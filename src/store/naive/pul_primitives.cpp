@@ -166,7 +166,8 @@ void UpdDelete::apply()
   
   if (theTarget->isNode())
   {
-    static_cast<zorba::simplestore::XmlNode*>(theTarget.getp())
+    assert(dynamic_cast<XmlNode*>(theTarget.getp()));
+    static_cast<XmlNode*>(theTarget.getp())
         ->unregisterReferencesToDeletedSubtree();
   }
 }
@@ -1037,22 +1038,11 @@ void UpdDeleteCollection::apply()
 
   for (uint64_t i = 0; i < size; ++i)
   {
-    long lRefCount = 0;
     store::Item* lItem = collection->nodeAt(xs_integer(i)).getp();
-    if (lItem->isNode())
-    {
-      assert(dynamic_cast<XmlNode*>(lItem));
-      XmlNode* lNode = static_cast<XmlNode*>(lItem);
-      lRefCount = lNode->getTree()->getRefCount();
-#ifdef ZORBA_WITH_JSON
-    }
-    else if (lItem->isJSONItem())
-    {
-      assert(dynamic_cast<json::JSONItem*>(lItem));
-      json::JSONItem* lJSONItem = static_cast<json::JSONItem*>(lItem);
-      lRefCount = lJSONItem->getRefCount();
-#endif
-    }
+    assert(lItem->isStructuredItem());
+    assert(dynamic_cast<StructuredItem*>(lItem));
+    StructuredItem* lNode = static_cast<StructuredItem*>(lItem);
+    long lRefCount = lNode->getCollectionTreeRefCount();
 
     if (lRefCount > 1)
     {
