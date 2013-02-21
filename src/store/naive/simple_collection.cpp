@@ -107,10 +107,12 @@ store::Iterator_t SimpleCollection::getIterator(
   {
     return new CollectionIter(this, skip + startPos);
   }
-  catch (std::range_error)
+  catch (std::range_error&)
   {
-    assert(false);
-    return new CollectionIter(this, xs_integer::zero());
+    throw ZORBA_EXCEPTION(
+        zerr::ZXQD0004_INVALID_PARAMETER,
+        ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), skip)
+      );
   }
 }
 
@@ -152,10 +154,12 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
   try
   {
     pos = to_xs_unsignedInt(position);
-  } catch (std::range_error)
+  } catch (std::range_error&)
   {
-    assert(false);
-    return false;
+    throw ZORBA_EXCEPTION(
+        zerr::ZXQD0004_INVALID_PARAMETER,
+        ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), position)
+      );
   }
 
   StructuredItem* collectionItem =
@@ -200,10 +204,12 @@ store::Item_t SimpleCollection::nodeAt(xs_integer position)
 
     return theTrees[pos];
   }
-  catch (std::range_error)
+  catch (std::range_error&)
   {
-    assert(false);
-    return NULL;
+    throw ZORBA_EXCEPTION(
+        zerr::ZXQD0004_INVALID_PARAMETER,
+        ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), position)
+      );
   }
 }
 
@@ -269,10 +275,12 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
       structuredItem->attachToCollection(this, createTreeId(), position);
     }
   }
-  catch (std::range_error)
+  catch (std::range_error&)
   {
-    assert(false);
-    return;
+    throw ZORBA_EXCEPTION(
+        zerr::ZXQD0004_INVALID_PARAMETER,
+        ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), position)
+      );
   }
 
 }
@@ -304,10 +312,12 @@ xs_integer SimpleCollection::addNodes(
   try {
     targetPos = to_xs_unsignedInt(pos);
   }
-  catch (std::range_error)
+  catch (std::range_error&)
   {
-    assert(false);
-    return xs_integer::zero();
+    throw ZORBA_EXCEPTION(
+        zerr::ZXQD0004_INVALID_PARAMETER,
+        ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), pos)
+      );
   }
 
   if (!before)
@@ -407,10 +417,12 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
       theTrees.erase(theTrees.begin() + pos);
       return true;
     }
-    catch (std::range_error)
+    catch (std::range_error&)
     {
-      assert(false);
-      return false;
+      throw ZORBA_EXCEPTION(
+          zerr::ZXQD0004_INVALID_PARAMETER,
+          ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), position)
+        );
     }
   }
   else
@@ -433,10 +445,12 @@ bool SimpleCollection::removeNode(xs_integer position)
   try {
     pos = to_xs_unsignedInt(position);
   }
-  catch (std::range_error)
+  catch (std::range_error&)
   {
-    assert(false);
-    return false;
+    throw ZORBA_EXCEPTION(
+        zerr::ZXQD0004_INVALID_PARAMETER,
+        ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), position)
+      );
   }
 
   if (pos >= theTrees.size())
@@ -473,12 +487,24 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
   try
   {
     pos = to_xs_unsignedInt(position);
+  }
+  catch (std::range_error&)
+  {
+    throw ZORBA_EXCEPTION(
+        zerr::ZXQD0004_INVALID_PARAMETER,
+        ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), position)
+      );
+  }
+  try
+  {
     num = to_xs_unsignedInt(numNodes);
   }
-  catch (std::range_error)
+  catch (std::range_error&)
   {
-    assert(false);
-    return xs_integer::zero();
+    throw ZORBA_EXCEPTION(
+        zerr::ZXQD0004_INVALID_PARAMETER,
+        ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), numNodes)
+      );
   }
 
   if (num == 0 || pos >= theTrees.size())
