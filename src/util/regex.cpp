@@ -125,14 +125,14 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
   char c;                               // current (raw) XQuery char
   char c_cooked;                        // current cooked XQuery char
-  char prev_c_cooked[2];                // 2 previous c_cooked
+  char prev_c_cooked = 0;               // previous c_cooked
   char char_range_begin_cooked;         // the 'a' in [a-b]
 
   bool got_backslash = false;
   int  got_quantifier = 0;
   int  in_char_class = 0;               // within [...]
   int  in_char_range = 0;               // within a-b within [...]
-  bool is_first_char = true;            // to check ^ placement
+  int  is_first_char = 0;               // to check ^ placement
 
   bool in_backref = false;              // '\'[1-9][0-9]*
   unsigned backref_no = 0;              // 1-based
@@ -146,12 +146,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   vector<bool> paren;                   // 0-based
   unsigned cur_paren = 0;               // 1-based
 
-  prev_c_cooked[0] = prev_c_cooked[1] = 0;
-
   for ( zstring::const_iterator i = xq_re.begin();
         i != xq_re.end();
-        prev_c_cooked[1] = prev_c_cooked[0],
-        prev_c_cooked[0] = c_cooked, ++i ) {
+        prev_c_cooked = c_cooked, ++i ) {
     c = c_cooked = *i;
     if ( got_backslash ) {
       if ( x_flag && !in_char_class && ascii::is_space( c ) ) {
@@ -194,6 +191,39 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           in_backref = true;
           // no break;
 
+        ////////// Single Character Escapes ///////////////////////////////////
+
+        case '$': // added in XQuery 3.0 F&O 5.6.1
+        case '(':
+        case ')':
+        case '*':
+        case '+':
+        case '-':
+        case '.':
+        case '?':
+        case '[':
+        case '\\':
+        case ']':
+        case '^':
+        case '{':
+        case '|':
+        case '}':
+          *icu_re += '\\';
+          break;
+
+        case 'n': // newline
+          *icu_re += '\\';
+          c_cooked = '\n';
+          break;
+        case 'r': // carriage return
+          *icu_re += '\\';
+          c_cooked = '\r';
+          break;
+        case 't': // tab
+          *icu_re += '\\';
+          c_cooked = '\t';
+          break;
+
         ////////// Multi-Character & Category Escapes /////////////////////////
 
         case 'd': // [0-9]
@@ -228,39 +258,6 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             goto not_single_char_esc;
           *icu_re += "[^" bs_i "]";
           continue;
-
-        ////////// Single Character Escapes ///////////////////////////////////
-
-        case '$': // added in XQuery 3.0 F&O 5.6.1
-        case '(':
-        case ')':
-        case '*':
-        case '+':
-        case '-':
-        case '.':
-        case '?':
-        case '[':
-        case '\\':
-        case ']':
-        case '^':
-        case '{':
-        case '|':
-        case '}':
-          *icu_re += '\\';
-          break;
-
-        case 'n': // newline
-          *icu_re += '\\';
-          c_cooked = '\n';
-          break;
-        case 'r': // carriage return
-          *icu_re += '\\';
-          c_cooked = '\r';
-          break;
-        case 't': // tab
-          *icu_re += '\\';
-          c_cooked = '\t';
-          break;
 
         default:
           throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), c );
@@ -344,12 +341,12 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
               // subgroup.  ICU also allows other characters after the "(?"
               // that XQuery does not, so we have to report those as errors.
               //
-              if ( *j == ':' ) {        // start non-capturing subgroup
-                paren.push_back( false );
-                is_first_char = true;
-                goto append;
-              }
-              throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexParen_3 ), *j );
+              if ( *j != ':' )
+                throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexParen_3 ), *j );
+              //
+              // Start of non-capturing subgroup.
+              //
+              paren.push_back( false );
             } else {
               //
               // Start of capturing subgroup.
@@ -358,8 +355,6 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
               ++open_cap_subs;
               cap_sub.push_back( true );
               cur_cap_sub = cap_sub.size();
-              is_first_char = true;
-              goto append;
             }
           }
           break;
@@ -403,7 +398,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
               //
               *icu_re += '-';
             } else {
-              char_range_begin_cooked = *prev_c_cooked;
+              char_range_begin_cooked = prev_c_cooked;
               in_char_range = 2;
             }
           }
@@ -417,16 +412,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( q_flag )
             *icu_re += '\\';
           else {
-            if ( in_char_class && *prev_c_cooked != '-' )
+            if ( in_char_class && prev_c_cooked != '-' )
               goto unescaped_char;
             ++in_char_class;
-            goto append;
-          }
-          break;
-        case ':':
-          if ( prev_c_cooked[1] == '(' && prev_c_cooked[0] == '?' ) {
-            is_first_char = true;
-            goto append;
+            is_first_char = 2;
           }
           break;
         case '\\':
@@ -445,16 +434,12 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '^':
           if ( q_flag )
             *icu_re += '\\';
-          else if ( !is_first_char && !in_char_class )
+          else if ( in_char_class && !is_first_char )
             goto unescaped_char;
           break;
         case '|':
           if ( q_flag )
             *icu_re += '\\';
-          else {
-            is_first_char = true;
-            goto append;
-          }
           break;
         default:
           if ( x_flag && ascii::is_space( c ) ) {
@@ -470,9 +455,6 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
       } // switch
     } // else
 
-    is_first_char = false;
-
-append:
     if ( in_char_range == 1 && c_cooked < char_range_begin_cooked )
       throw INVALID_RE_EXCEPTION(
         xq_re, ZED( BadEndCharInRange_34 ),
@@ -484,6 +466,7 @@ append:
 
     dec_limit( &got_quantifier );
     dec_limit( &in_char_range  );
+    dec_limit( &is_first_char );
   } // FOR_EACH
 
   if ( got_backslash )
