@@ -390,13 +390,19 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           break;
         case '-':
           if ( in_char_class && !in_char_range ) {
-            if ( PEEK_C == '[' ) {
+            char const next_c = PEEK_C;
+            if ( next_c == '[' ) {
               //
               // ICU uses "--" to indicate range subtraction, e.g.,
               // XQuery [A-Z-[OI]] becomes ICU [A-Z--[OI]].
               //
               *icu_re += '-';
-            } else {
+            } else if ( prev_c_cooked != '[' && next_c != ']' ) {
+              //
+              // The '=' is neither the first or last character within a
+              // character range (i.e., a literal '-') so therefore it's
+              // indicating a character range.
+              //
               char_range_begin_cooked = prev_c_cooked;
               in_char_range = 2;
             }
