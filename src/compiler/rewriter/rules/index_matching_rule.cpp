@@ -978,7 +978,7 @@ bool IndexMatchingRule::matchKeyExpr(
     TypeManager* tm = qe->get_type_manager();
     RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-    if (TypeOps::is_subtype(tm, *qtype, *vtype) ||
+    if (TypeOps::is_subtype(tm, *vtype, *qtype) ||
         (TypeOps::is_subtype(tm, *qtype, *rtm.UNTYPED_ATOMIC_TYPE_STAR) &&
          TypeOps::is_subtype(tm, *vtype, *rtm.STRING_TYPE_STAR)))
     {
