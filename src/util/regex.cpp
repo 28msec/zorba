@@ -146,9 +146,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   vector<bool> paren;                   // 0-based
   unsigned cur_paren = 0;               // 1-based
 
-  for ( zstring::const_iterator i = xq_re.begin();
-        i != xq_re.end();
-        prev_c_cooked = c_cooked, ++i ) {
+  FOR_EACH( zstring, i, xq_re ) {
     c = c_cooked = *i;
     if ( got_backslash ) {
       if ( x_flag && !in_char_class && ascii::is_space( c ) ) {
@@ -158,7 +156,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         // matching with one exception: whitespace characters within character
         // class expressions ... are not removed.
         //
-        continue;
+        goto next;
       }
       got_backslash = false;
 
@@ -211,6 +209,8 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           *icu_re += '\\';
           break;
 
+        ////////// Multi-Character & Category Escapes /////////////////////////
+
         case 'n': // newline
           *icu_re += '\\';
           c_cooked = '\n';
@@ -224,8 +224,6 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           c_cooked = '\t';
           break;
 
-        ////////// Multi-Character & Category Escapes /////////////////////////
-
         case 'd': // [0-9]
         case 'D': // [^\d]
         case 'p': // category escape
@@ -237,27 +235,28 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
           *icu_re += '\\';
+          ++in_char_range;
           break;
         case 'c': // NameChar
           if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
           *icu_re += "[" bs_c "]";
-          continue;
+          goto next;
         case 'C': // [^\c]
           if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
           *icu_re += "[^" bs_c "]";
-          continue;
+          goto next;
         case 'i': // initial NameChar
           if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
           *icu_re += "[" bs_i "]";
-          continue;
+          goto next;
         case 'I': // [^\i]
           if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
           *icu_re += "[^" bs_i "]";
-          continue;
+          goto next;
 
         default:
           throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), c );
@@ -307,7 +306,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           );
 
         if ( prevent_multidigit_backref )
-          continue;
+          goto next;
       }
 
       switch ( c ) {
@@ -326,7 +325,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             // line mode is not set).
             //
             icu_re->append( "\\z" );
-            continue;
+            goto next;
           }
           break;
         case '(':
@@ -420,7 +419,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           break;
         case '\\':
           got_backslash = true;
-          continue;
+          if ( in_char_range )
+            ++in_char_range;
+          goto next;
         case ']':
           if ( q_flag )
             *icu_re += '\\';
@@ -444,7 +445,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         default:
           if ( x_flag && ascii::is_space( c ) ) {
             if ( !in_char_class )
-              continue;
+              goto next;
             //
             // This is similar to the above case for removing whitespace except
             // ICU removes *all* whitespace (even within character classes)
@@ -464,9 +465,11 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
     *icu_re += c;
 
+next:
+    dec_limit( &in_char_range );
     dec_limit( &got_quantifier );
-    dec_limit( &in_char_range  );
     dec_limit( &is_first_char );
+    prev_c_cooked = c_cooked;
   } // FOR_EACH
 
   if ( got_backslash )
