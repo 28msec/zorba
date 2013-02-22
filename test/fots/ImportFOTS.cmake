@@ -76,7 +76,7 @@ FOREACH (_testset ${_testsets})
     "-e fotsPath:=${_outdir}/2011/QT3-test-suite/catalog.xml "
     "-e mode:=run-test-set -e testSetName:=${_testset} "
     "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
-    "-e verbose:=true "
+    "-e verbose:=false "
     "--disable-http-resolution --indent "
     "-z \"cdata-section-elements=${FOTS_CDATA_ELEMENTS}\")\n"
     "ZORBA_SET_TEST_PROPERTY (FOTS/${_testset} "
