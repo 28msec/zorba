@@ -53,6 +53,7 @@ using namespace std;
 
 #define bs_c "\\p{L}_\\d.:\\p{M}-"      /* \c equivalent contents */
 #define bs_i "\\p{L}_:"                 /* \i equivalent contents */
+#define bs_W "\\p{P}\\p{Z}\\p{C}"       /* \W equivalent contents */
 
 template<typename IntegralType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value,
@@ -230,20 +231,30 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           *icu_re += '\\';
           c_cooked = '\t';
           break;
-
         case 'd': // [0-9]
         case 'D': // [^\d]
         case 'p': // category escape
         case 'P': // [^\p]
         case 's': // whitespace
         case 'S': // [^\s]
-        case 'w': // word char
-        case 'W': // [^\w]
           if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
           *icu_re += '\\';
-          ++in_char_range;
           break;
+        case 'w': // word char
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
+            goto not_single_char_esc;
+          //
+          // Note that we can't simply pass \w through to ICU because what it
+          // considers a "word character" is different from what XQuery does.
+          //
+          *icu_re += "[^" bs_W "]";
+          goto next;
+        case 'W': // [^\w]
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
+            goto not_single_char_esc;
+          *icu_re += "[" bs_W "]";
+          goto next;
         case 'c': // NameChar
           if ( in_char_range || IS_CHAR_RANGE_BEGIN )
             goto not_single_char_esc;
