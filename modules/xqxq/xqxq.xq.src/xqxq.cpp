@@ -203,12 +203,6 @@ void QueryMap::destroy() throw()
 {
   if (theQueryMap)
   {
-    for (QueryMap_t::const_iterator lIter = theQueryMap->begin();
-         lIter != theQueryMap->end(); ++lIter)
-    {
-      deleteQuery(lIter->first);
-    }
-    theQueryMap->clear();
     delete theQueryMap;
   }
   delete this;
