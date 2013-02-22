@@ -106,3 +106,25 @@ declare function uri:decode(
   $s as xs:string,
   $decode-plus as xs:boolean,
   $charset as xs:string) as xs:string external;
+  
+(:~
+ : Parses the URI passed as xs:string into a uri element.
+ :
+ : @param $uri the URI as string to parse
+ :
+ : @return the URI element
+ :
+ :)
+declare function uri:parse(
+  $uri as xs:string) as element() external;
+  
+(:~
+ : Serialize the URI passed as element() into a URI represented as xs:string.
+ :
+ : @param $uri the URI element()
+ :
+ : @return the URI as xs:string
+ :
+ :)
+declare function uri:serialize(
+  $uri as element()) as xs:string external;

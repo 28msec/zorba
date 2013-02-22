@@ -760,6 +760,10 @@ namespace zorba{
 
     class DecodeURIIterator;
 
+    class ParseURIIterator;
+
+    class SerializeURIIterator;
+
     class XQDocContentIterator;
 
 
@@ -1847,6 +1851,12 @@ public:
 
     virtual void beginVisit ( const DecodeURIIterator& ) = 0;
     virtual void endVisit   ( const DecodeURIIterator& ) = 0;
+
+    virtual void beginVisit ( const ParseURIIterator& ) = 0;
+    virtual void endVisit   ( const ParseURIIterator& ) = 0;
+
+    virtual void beginVisit ( const SerializeURIIterator& ) = 0;
+    virtual void endVisit   ( const SerializeURIIterator& ) = 0;
 
     virtual void beginVisit ( const XQDocContentIterator& ) = 0;
     virtual void endVisit   ( const XQDocContentIterator& ) = 0;

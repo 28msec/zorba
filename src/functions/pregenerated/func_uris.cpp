@@ -41,6 +41,26 @@ PlanIter_t fn_zorba_uri_decode::codegen(
   return new DecodeURIIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_uri_parse::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new ParseURIIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_uri_serialize::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new SerializeURIIterator(sctx, loc, argv);
+}
+
 void populate_context_uris(static_context* sctx)
 {
 
@@ -53,6 +73,30 @@ void populate_context_uris(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_ZORBA_URI_DECODE_3);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_uri_parse,
+        (createQName("http://www.zorba-xquery.com/modules/uri","","parse"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_URI_PARSE_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_uri_serialize,
+        (createQName("http://www.zorba-xquery.com/modules/uri","","serialize"), 
+        GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_URI_SERIALIZE_1);
 
   }
 

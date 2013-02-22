@@ -32,6 +32,8 @@
 
 #include "util/uri_util.h"
 
+#include "zorbatypes/URI.h"
+
 using namespace std;
 
 namespace zorba {
@@ -98,6 +100,289 @@ DecodeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, lDecodedString), state );
+
+  STACK_END (state);
+}
+
+/******************************************************************************
+*******************************************************************************/
+bool
+ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t     lItemURI, lElementURI, lQName,
+                    lElementScheme, lElementSchemeSpecific,
+                    lElementAuthority, lElementUserInfo,
+                    lElementHost, lElementPort, lElementPath,
+                    lElementQuery, lElementFragment,
+                    lQNameUntyped, lQNameString, lQNameInt;
+  store::Item_t     lTextScheme, lTextSchemeSpecific, lTextAuthority,
+                    lTextUserInfo, lTextHost, lTextPort, lTextPath,
+                    lTextQuery, lTextFragment;
+  zstring           lStrURI, lStrHolder, lZNamespace;
+  const char        *lNamespace, *lXmlSchema;
+  store::NsBindings lNsBindings;
+  PlanIteratorState* state;
+  URI uri;
+  lNamespace = "http://www.zorba-xquery.com/modules/uri";
+  lZNamespace = zstring(lNamespace);
+  lXmlSchema = "http://www.w3.org/2001/XMLSchema";
+  
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lItemURI, theChildren[0].getp(), planState);
+  lItemURI->getStringValue2(lStrURI);
+  uri = URI(lStrURI);
+  
+  GENV_ITEMFACTORY->createQName(
+    lQName,
+    lNamespace,
+    "",
+    "uri");
+    
+  GENV_ITEMFACTORY->createQName(
+    lQNameUntyped,
+    lXmlSchema,
+    "xsd",
+    "untyped");
+    
+  GENV_ITEMFACTORY->createQName(
+    lQNameString,
+    lXmlSchema,
+    "xs",
+    "string");
+    
+  GENV_ITEMFACTORY->createQName(
+    lQNameInt,
+    lXmlSchema,
+    "xs",
+    "int");
+  
+  STACK_PUSH(
+  GENV_ITEMFACTORY->createElementNode(
+    result,
+    nullptr,
+    lQName,
+    lQNameUntyped,
+    false,
+    false,
+    lNsBindings,
+    lZNamespace),
+  state);
+      
+  GENV_ITEMFACTORY->createQName(
+    lQName,
+    lNamespace,
+    "uri",
+    "scheme");
+  
+  GENV_ITEMFACTORY->createElementNode(
+    lElementScheme,
+    result.getp(),
+    lQName,
+    lQNameUntyped,
+    false,
+    false,
+    lNsBindings,
+    lZNamespace);
+  /*  
+  lStrHolder = uri.get_scheme();
+  GENV_ITEMFACTORY->createTextNode(
+    lTextScheme,
+    lElementScheme.getp(),
+    lStrHolder);
+    
+  GENV_ITEMFACTORY->createQName(
+    lQName,
+    lNamespace,
+    "",
+    "scheme-specific-part");
+  
+  GENV_ITEMFACTORY->createElementNode(
+    lElementSchemeSpecific,
+    result.getp(),
+    lQName,
+    lQNameString,
+    true,
+    false,
+    lNsBindings,
+    lNamespace);
+    
+  // Once we have schema-specific data we will add it here
+    
+  GENV_ITEMFACTORY->createQName(
+    lQName,
+    lNamespace,
+    "",
+    "authority");
+  
+  GENV_ITEMFACTORY->createElementNode(
+    lElementAuthority,
+    result.getp(),
+    lQName,
+    lQNameString,
+    true,
+    false,
+    lNsBindings,
+    lNamespace);
+    
+  lStrHolder = uri.get_encoded_reg_based_authority();
+  GENV_ITEMFACTORY->createTextNode(
+    lTextAuthority,
+    lElementAuthority.getp(),
+    lStrHolder);
+    
+  GENV_ITEMFACTORY->createQName(
+    lQName,
+    lNamespace,
+    "",
+    "user-info");
+  
+  GENV_ITEMFACTORY->createElementNode(
+    lElementUserInfo,
+    result.getp(),
+    lQName,
+    lQNameString,
+    true,
+    false,
+    lNsBindings,
+    lNamespace);
+    
+  lStrHolder = uri.get_encoded_user_info();
+  GENV_ITEMFACTORY->createTextNode(
+    lTextUserInfo,
+    lElementUserInfo.getp(),
+    lStrHolder);
+    
+  GENV_ITEMFACTORY->createQName(
+    lQName,
+    lNamespace,
+    "",
+    "host");
+  
+  GENV_ITEMFACTORY->createElementNode(
+    lElementHost,
+    result.getp(),
+    lQName,
+    lQNameString,
+    true,
+    false,
+    lNsBindings,
+    lNamespace);
+    
+  lStrHolder = uri.get_host();
+  GENV_ITEMFACTORY->createTextNode(
+    lTextHost,
+    lElementHost.getp(),
+    lStrHolder);
+    
+  GENV_ITEMFACTORY->createQName(
+    lQName,
+    lNamespace,
+    "",
+    "port");
+  
+  GENV_ITEMFACTORY->createElementNode(
+    lElementPort,
+    result.getp(),
+    lQName,
+    lQNameInt,
+    true,
+    false,
+    lNsBindings,
+    lNamespace);
+    
+  lStrHolder = zstring("" + uri.get_port());
+  GENV_ITEMFACTORY->createTextNode(
+    lTextPort,
+    lElementPort.getp(),
+    lStrHolder);
+    
+  GENV_ITEMFACTORY->createQName(
+    lQName,
+    lNamespace,
+    "",
+    "path");
+  
+  GENV_ITEMFACTORY->createElementNode(
+    lElementPath,
+    result.getp(),
+    lQName,
+    lQNameString,
+    true,
+    false,
+    lNsBindings,
+    lNamespace);
+    
+  lStrHolder = uri.get_encoded_path();
+  GENV_ITEMFACTORY->createTextNode(
+    lTextPath,
+    lElementPath.getp(),
+    lStrHolder);
+    
+  GENV_ITEMFACTORY->createQName(
+    lQName,
+    lNamespace,
+    "",
+    "query");
+  
+  GENV_ITEMFACTORY->createElementNode(
+    lElementQuery,
+    result.getp(),
+    lQName,
+    lQNameString,
+    true,
+    false,
+    lNsBindings,
+    lNamespace);
+    
+  lStrHolder = uri.get_encoded_query();
+  GENV_ITEMFACTORY->createTextNode(
+    lTextQuery,
+    lElementQuery.getp(),
+    lStrHolder);
+    
+  GENV_ITEMFACTORY->createQName(
+    lQName,
+    lNamespace,
+    "",
+    "fragment");
+  
+  GENV_ITEMFACTORY->createElementNode(
+    lElementFragment,
+    result.getp(),
+    lQName,
+    lQNameString,
+    true,
+    false,
+    lNsBindings,
+    lNamespace);
+    
+  lStrHolder = uri.get_encoded_fragment();
+  GENV_ITEMFACTORY->createTextNode(
+    lTextFragment,
+    lElementFragment.getp(),
+    lStrHolder);
+  */
+
+  STACK_END (state);
+}
+
+/******************************************************************************
+*******************************************************************************/
+bool
+SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t lItemURI;
+  zstring       lStrURI;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lItemURI, theChildren[0].getp(), planState);
+
+  lItemURI->getStringValue2(lStrURI);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, lStrURI), state );
 
   STACK_END (state);
 }
