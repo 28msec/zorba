@@ -1046,7 +1046,8 @@ bool IndexMatchingRule::checkFreeVars(
     if (freeVar == domVar)
       continue;
 
-    if (freeVar->get_flwor_clause()->get_flwor_expr() == theQueryExpr)
+    if (freeVar->get_flwor_clause() != NULL &&
+        freeVar->get_flwor_clause()->get_flwor_expr() == theQueryExpr)
     {
       freeVar->setVisitId(1);
     }
