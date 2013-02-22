@@ -40,6 +40,9 @@ declare namespace fots =
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
 
 (:~
  : The serialization parameters for XML serialization.
@@ -52,13 +55,12 @@ declare namespace ann =
   </output:serialization-parameters>;
 
 (:~
- : The serialization parameters for XML serialization.
+ : The serialization parameters for text serialization.
  :)
- declare variable $util:writeXML :=
+ declare variable $util:writeText :=
   <output:serialization-parameters>
-    <output:method                value="xml" />
+    <output:method                value="text" />
     <output:indent                value="yes"  />
-    <output:omit-xml-declaration  value="no" />
   </output:serialization-parameters>;
 
 
@@ -87,7 +89,7 @@ declare %ann:nondeterministic function util:get-value(
     return
       if ($node/@file)
       then fn:unparsed-text(resolve-uri($node/@file, $envBaseURI))
-      else fn:data($node)
+      else fn:string($node)
   }
   catch *
   {
@@ -137,5 +139,5 @@ declare %ann:sequential function util:write-query-to-file(
 ) {
   file:write(concat("query_", $queryName, ".xq"),
              $query,
-             $util:serParamXml);
+             $util:writeText);
 };
