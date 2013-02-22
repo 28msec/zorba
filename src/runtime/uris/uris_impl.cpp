@@ -157,7 +157,6 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     "xs",
     "int");
   
-  STACK_PUSH(
   GENV_ITEMFACTORY->createElementNode(
     result,
     nullptr,
@@ -166,8 +165,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     false,
     false,
     lNsBindings,
-    lZNamespace),
-  state);
+    lZNamespace);
       
   GENV_ITEMFACTORY->createQName(
     lQName,
@@ -184,7 +182,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     false,
     lNsBindings,
     lZNamespace);
-  /*  
+  
   lStrHolder = uri.get_scheme();
   GENV_ITEMFACTORY->createTextNode(
     lTextScheme,
@@ -194,7 +192,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   GENV_ITEMFACTORY->createQName(
     lQName,
     lNamespace,
-    "",
+    "uri",
     "scheme-specific-part");
   
   GENV_ITEMFACTORY->createElementNode(
@@ -205,14 +203,14 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     true,
     false,
     lNsBindings,
-    lNamespace);
+    lZNamespace);
     
   // Once we have schema-specific data we will add it here
     
   GENV_ITEMFACTORY->createQName(
     lQName,
     lNamespace,
-    "",
+    "uri",
     "authority");
   
   GENV_ITEMFACTORY->createElementNode(
@@ -223,7 +221,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     true,
     false,
     lNsBindings,
-    lNamespace);
+    lZNamespace);
     
   lStrHolder = uri.get_encoded_reg_based_authority();
   GENV_ITEMFACTORY->createTextNode(
@@ -234,7 +232,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   GENV_ITEMFACTORY->createQName(
     lQName,
     lNamespace,
-    "",
+    "uri",
     "user-info");
   
   GENV_ITEMFACTORY->createElementNode(
@@ -245,7 +243,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     true,
     false,
     lNsBindings,
-    lNamespace);
+    lZNamespace);
     
   lStrHolder = uri.get_encoded_user_info();
   GENV_ITEMFACTORY->createTextNode(
@@ -256,7 +254,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   GENV_ITEMFACTORY->createQName(
     lQName,
     lNamespace,
-    "",
+    "uri",
     "host");
   
   GENV_ITEMFACTORY->createElementNode(
@@ -267,7 +265,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     true,
     false,
     lNsBindings,
-    lNamespace);
+    lZNamespace);
     
   lStrHolder = uri.get_host();
   GENV_ITEMFACTORY->createTextNode(
@@ -278,7 +276,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   GENV_ITEMFACTORY->createQName(
     lQName,
     lNamespace,
-    "",
+    "uri",
     "port");
   
   GENV_ITEMFACTORY->createElementNode(
@@ -289,7 +287,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     true,
     false,
     lNsBindings,
-    lNamespace);
+    lZNamespace);
     
   lStrHolder = zstring("" + uri.get_port());
   GENV_ITEMFACTORY->createTextNode(
@@ -300,7 +298,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   GENV_ITEMFACTORY->createQName(
     lQName,
     lNamespace,
-    "",
+    "uri",
     "path");
   
   GENV_ITEMFACTORY->createElementNode(
@@ -311,7 +309,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     true,
     false,
     lNsBindings,
-    lNamespace);
+    lZNamespace);
     
   lStrHolder = uri.get_encoded_path();
   GENV_ITEMFACTORY->createTextNode(
@@ -322,7 +320,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   GENV_ITEMFACTORY->createQName(
     lQName,
     lNamespace,
-    "",
+    "uri",
     "query");
   
   GENV_ITEMFACTORY->createElementNode(
@@ -333,7 +331,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     true,
     false,
     lNsBindings,
-    lNamespace);
+    lZNamespace);
     
   lStrHolder = uri.get_encoded_query();
   GENV_ITEMFACTORY->createTextNode(
@@ -344,7 +342,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   GENV_ITEMFACTORY->createQName(
     lQName,
     lNamespace,
-    "",
+    "uri",
     "fragment");
   
   GENV_ITEMFACTORY->createElementNode(
@@ -355,14 +353,15 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     true,
     false,
     lNsBindings,
-    lNamespace);
+    lZNamespace);
     
   lStrHolder = uri.get_encoded_fragment();
   GENV_ITEMFACTORY->createTextNode(
     lTextFragment,
     lElementFragment.getp(),
     lStrHolder);
-  */
+    
+  STACK_PUSH( result, state );
 
   STACK_END (state);
 }
@@ -372,17 +371,60 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItemURI;
-  zstring       lStrURI;
+  store::Item_t lItemURI, lItem, lItem2;
+  zstring       lStrVal, lTextVal;
+  store::Iterator_t    lChildren, lGrandChildren;
+  URI           uri = URI();
+  int           lIntPort;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lItemURI, theChildren[0].getp(), planState);
 
-  lItemURI->getStringValue2(lStrURI);
+  lStrVal = lItemURI->getLocalName();
+  cout << "Local Name: " << lStrVal << endl;
+  
+  lChildren = lItemURI->getChildren();
+  if(!lChildren.isNull()){
+    lChildren->open();
+    while(lChildren->next(lItem)){
+      lGrandChildren = lItem->getChildren();
+      if(!lGrandChildren.isNull()){
+        lGrandChildren->open();
+        if(lGrandChildren->next(lItem2)){
+          // assume that this is a textnode
+          lTextVal = lItem2->getStringValue();
+        } else
+          lTextVal = "";
+        lGrandChildren->close();
+      }
+      if(lItem->getLocalName() == "scheme"){
+        uri.set_scheme(lTextVal);
+      } else if(lItem->getLocalName() == "scheme-specific"){
+        // we still have to define what we are going to with this
+      } else if(lItem->getLocalName() == "authority"){
+        uri.set_reg_based_authority(lTextVal);
+      } else if(lItem->getLocalName() == "user-info"){
+        uri.set_user_info(lTextVal);
+      } else if(lItem->getLocalName() == "host"){
+        uri.set_host(lTextVal);
+      } else if(lItem->getLocalName() == "port"){
+        sscanf(lTextVal.str().c_str(), "%d", &lIntPort);
+        uri.set_port(lIntPort);
+      } else if(lItem->getLocalName() == "path"){
+        uri.set_path(lTextVal);
+      } else if(lItem->getLocalName() == "query"){
+        //uri.set_query(lTextVal);
+      } else if(lItem->getLocalName() == "fragment"){
+        uri.set_fragment(lTextVal);
+      }
+    }
+    lChildren->close();
+  }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createString(result, lStrURI), state );
+  lStrVal = zstring(uri.toString());
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, lStrVal), state );
 
   STACK_END (state);
 }
