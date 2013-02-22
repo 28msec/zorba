@@ -372,7 +372,7 @@ void  PrepareMainModuleFunction::XQXQURIMapper::mapURI(
   lIter->open();
   while (lIter->next(lItem))
   {
-    std::cout << lItem.getStringValue() << std::endl;
+    //std::cout << lItem.getStringValue() << std::endl;
     oUris.push_back(lItem.getStringValue());
   }
   lIter->close();  
@@ -495,7 +495,7 @@ zorba::ItemSequence_t PrepareMainModuleFunction::evaluate(
   
   try
   {
-    std::cout << "Hello: " << lQueryString << std::endl;
+    //std::cout << "Hello: " << lQueryString << std::endl;
     lQuery = lZorba->compileQuery(lQueryString, ltempSctx);
   }
   catch (XQueryException& xe)
