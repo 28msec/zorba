@@ -56,6 +56,10 @@ declare namespace fots =
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
+
 (:~
  : Returns the names of all qualifying test sets.
  :
@@ -641,7 +645,7 @@ declare %ann:sequential function driver:test(
   {
     variable $queryName := trace(data($case/@name), "processing test case :");
 
-    variable $test := util:get-value($case, $testSetBaseURI, "test");
+    variable $test as xs:string := util:get-value($case, $testSetBaseURI, "test");
 
     variable $envCase := $case/fots:environment;
 
@@ -773,11 +777,32 @@ declare %private function driver:create-XQXQ-query(
     if (exists($resolver)) then ($resolver, "") else (),
     if (exists($mapper)) then ($mapper, "") else (),
 
-    concat("variable $queryID := xqxq:prepare-main-module(",
+    (:
+     : We want to put the input query into a new XQuery as a string literal
+     : and compile this new XQuery. In order to do so, we must escape some
+     : things. The StringLiteral production in the XQuery grammar reads:
+     :
+     :  StringLiteral ::=
+     :      "'" (PredefinedEntityRef | CharRef | EscapeApos | [^'&])* "'"
+     :
+     : for string literals delimited by single quotes. Therefore, we need
+     : to manipulate the input query in two ways:
+     :   1. Replace ' with '' (EscapeApos)
+     :   2. Replace & with &amp; (which will block any PredefinedEntityRefs
+     :      or CharRefs in the input query from being expanded in the new
+     :      XQuery).
+     : The replacement happens here. (2) looks weird because there's one
+     : level of replacement being done right *here* when fots-driver.xq
+     : itself is compiled. Escaping sucks.
+     :)
+    let $escAposQueryText := replace($queryText,"'","''")
+    let $escAmpQueryText  := replace($escAposQueryText, '&amp;', '&amp;amp;')
+    return concat(
+           "variable $queryID := xqxq:prepare-main-module(",
            "&#xA;",
            "'",
            "&#xA;",
-           replace($queryText,"'","''"),
+           $escAmpQueryText,
            "&#xA;",
            "'",
            "&#xA;",
@@ -787,7 +812,8 @@ declare %private function driver:create-XQXQ-query(
                 else ", resolver:url-resolver#2, ());"
            else if(exists($mapper))
                 then ", (), mapper:uri-mapper#2);"
-                else");"),
+                else");
+    "),
 
     env:set-context-item($env, $envBaseURI),
     env:set-context-item($case/fots:environment, $testSetBaseURI),

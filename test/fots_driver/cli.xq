@@ -25,6 +25,9 @@ import module namespace d =
 import module namespace r =
   "http://www.zorba-xquery.com/fots-driver/reporting" at "reporting.xq";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
 
 (:~
  : Path to the FOTS catalog.xml file. If the path is relative, it will be 
