@@ -74,7 +74,7 @@ FOREACH (_testset ${_testsets})
     "ZORBA_ADD_TEST (FOTS/${_testset} zorbacmd -f -q "
     "${CMAKE_CURRENT_LIST_DIR}/../fots_driver/cli.xq "
     "-e fotsPath:=${_outdir}/2011/QT3-test-suite/catalog.xml "
-    "-e mode:=run-test-sets -e testSetPrefixes:=${_testset} "
+    "-e mode:=run-test-set -e testSetName:=${_testset} "
     "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
     "-e verbose:=true "
     "--disable-http-resolution --indent "
