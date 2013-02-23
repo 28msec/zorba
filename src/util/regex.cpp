@@ -383,6 +383,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
               ++open_cap_subs;
               cap_sub.push_back( true );
               cur_cap_sub = cap_sub.size();
+              is_first_char = 2;
             }
           }
           break;
@@ -483,6 +484,8 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '|':
           if ( q_flag )
             *icu_re += '\\';
+          else
+            is_first_char = 2;
           break;
         default:
           if ( x_flag && ascii::is_space( c ) ) {
