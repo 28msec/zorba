@@ -77,6 +77,12 @@ typename C::value_type peek( C const &c, typename C::const_iterator i ) {
   return ++i != c.end() ? *i : value_type();
 }
 
+template<class C> inline
+typename C::value_type peek_back( C const &c, typename C::const_iterator i ) {
+  typedef typename C::value_type value_type;
+  return i != c.begin() ? *--i : value_type();
+}
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -117,6 +123,11 @@ inline bool is_char_range_begin( zstring const &s,
   return peek( s, i ) == '-' && peek( s, i + 1 ) != '[';
 }
 
+inline bool is_non_capturing_begin( zstring const &s,
+                                    zstring::const_iterator const &i ) {
+  return peek_back( s, i ) == '?' && peek_back( s, i - 1 ) == '(';
+}
+
 #define IS_CHAR_RANGE_BEGIN (in_char_class && is_char_range_begin( xq_re, i ))
 #define PEEK_C              peek( xq_re, i )
 
@@ -140,7 +151,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   int  got_quantifier = 0;
   int  in_char_class = 0;               // within [...]
   int  in_char_range = 0;               // within a-b within [...]
-  int  is_first_char = 0;               // to check ^ placement
+  int  is_first_char = 1;               // to check ^ placement
 
   bool in_backref = false;              // '\'[1-9][0-9]*
   unsigned backref_no = 0;              // 1-based
@@ -388,6 +399,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             }
           }
           break;
+        case ':':
+          if ( is_non_capturing_begin( xq_re, i ) )
+            is_first_char = 2;
+          break;
         case '*':
         case '+':
         case '?':
@@ -459,8 +474,11 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '^':
           if ( q_flag )
             *icu_re += '\\';
-          else if ( in_char_class && !is_first_char )
-            goto unescaped_char;
+          else if ( !is_first_char ) {
+            if ( in_char_class )
+              goto unescaped_char;
+            *icu_re += '\\';
+          }
           break;
         case '|':
           if ( q_flag )
