@@ -404,7 +404,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( is_non_capturing_begin( xq_re, i ) ) {
             //
             // This ':' is part of a "(?:" sequence, i.e., a non-capturing
-            // subgroup.  Therefore, tHe *next* character will be a "first
+            // subgroup.  Therefore, the *next* character will be a "first
             // character" for ahe purposes of '^'.
             //
             is_first_char = 2;
