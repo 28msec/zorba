@@ -71,24 +71,24 @@ declare option op:disable "f:trace";
  : or
  : (b) the typed value of the node (assuming it is promotable to string).
  :
- : @param $case test-case element.
+ : @param $parentNode
+ : @param $baseURI
  : @param $node-name
- : @param $envBaseURI
- : @return the query text.
+ : @return the content of the node with name 'node-name'.
  :)
 declare %ann:nondeterministic function util:get-value(
-  $case       as element(fots:test-case),
-  $envBaseURI as xs:anyURI,
+  $parentNode as element(),
+  $baseURI    as xs:anyURI,
   $node-name  as xs:string
 ) as xs:string
 {
   try
   {
-    for $node in $case/descendant-or-self::*
+    for $node in $parentNode/descendant-or-self::*
     where (fn:local-name-from-QName(fn:node-name($node)) eq $node-name)
     return
       if ($node/@file)
-      then fn:unparsed-text(resolve-uri($node/@file, $envBaseURI))
+      then fn:unparsed-text(resolve-uri($node/@file, $baseURI))
       else fn:string($node)
   }
   catch *

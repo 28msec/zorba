@@ -872,7 +872,8 @@ declare %ann:sequential function driver:test(
                   eval:error((),
                              $case/fots:result/*,
                              $err:code,
-                             $err:description),
+                             $err:description,
+                             $testSetBaseURI),
                   "fots-driver.xq:driver:test catch",
                   $testSetName,
                   $env,
@@ -1005,12 +1006,9 @@ declare %private %ann:sequential function driver:xqxq-invoke(
 
       variable $queryResult := xqxq:evaluate-sequential($queryKey);
 
-      (:TODO check if this works:)
-      (:variable $expResult := util:get-value($case, $testSetBaseURI, "result");:)
-
       xqxq:delete-query($queryKey);
 
-      eval:result($queryResult, $case/fots:result/*)
+      eval:result($queryResult, $case/fots:result/*, $testSetBaseURI)
     }
   }
   catch *
@@ -1018,6 +1016,7 @@ declare %private %ann:sequential function driver:xqxq-invoke(
     eval:error((),
                $case/fots:result/*,
                $err:code,
-               $err:description)
+               $err:description,
+               $testSetBaseURI)
   }
 };
