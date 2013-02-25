@@ -26,11 +26,19 @@
 namespace zorba {
 namespace simplestore {
 
-void Collection::claimOwnership(zorba::simplestore::XmlTree* aTree)
+
+/*******************************************************************************
+
+*******************************************************************************/
+void Collection::getIndexes(std::vector<store::Index*>& indexes)
 {
-  aTree->claimedByCollection(this);
+  getIndexes(getName(), indexes);
 }
 
+
+/*******************************************************************************
+  Static method
+*******************************************************************************/
 void Collection::getIndexes(
     const store::Item* name,
     std::vector<store::Index*>& indexes)
@@ -46,9 +54,9 @@ void Collection::getIndexes(
     const store::IndexSpecification& indexSpec = index->getSpecification();
 
     const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
-    uint64_t numIndexSources = (uint64_t)indexSources.size();
+    csize numIndexSources = indexSources.size();
 
-    for (ulong i = 0; i < numIndexSources; ++i)
+    for (csize i = 0; i < numIndexSources; ++i)
     {
       if (indexSources[i]->equals(name))
       {
@@ -59,6 +67,19 @@ void Collection::getIndexes(
   }
 }
 
+
+/*******************************************************************************
+
+*******************************************************************************/
+void Collection::getActiveICs(std::vector<store::IC*>& ics)
+{
+  getActiveICs(getName(), ics);
+}
+
+
+/*******************************************************************************
+  Static method
+*******************************************************************************/
 void Collection::getActiveICs(
     const store::Item* name,
     std::vector<store::IC*>& ics)
@@ -96,18 +117,6 @@ void Collection::getActiveICs(
   activeICNames->close();
 }
 
-/*******************************************************************************
-
-*******************************************************************************/
-void Collection::getActiveICs(std::vector<store::IC*>& ics)
-{
-  getActiveICs(getName(), ics);
-}
-
-void Collection::getIndexes(std::vector<store::Index*>& indexes)
-{
-  getIndexes(getName(), indexes);
-}
 
 } /* namespace simplestore */
 } /* namespace zorba */

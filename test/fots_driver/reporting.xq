@@ -47,6 +47,10 @@ declare default element namespace
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
+
 (:~
  : Loops through the test-sets, executes them and reports results.
  : @param $FOTSCatalogFilePath path to the FOTS catalog file.
@@ -89,7 +93,7 @@ declare %ann:sequential function reporting:run-and-report(
 
       file:write("results.xml",
                  $results,
-                 $util:writeXML);
+                 $util:writeText);
 
       reporting:W3C-reporting($results,
                               $FOTSZorbaManifestPath)
