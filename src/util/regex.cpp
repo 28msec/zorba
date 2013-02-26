@@ -405,7 +405,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
             //
             // This ':' is part of a "(?:" sequence, i.e., a non-capturing
             // subgroup.  Therefore, the *next* character will be a "first
-            // character" for ahe purposes of '^'.
+            // character" for the purposes of '^'.
             //
             is_first_char = 2;
           }
@@ -439,7 +439,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
               *icu_re += '-';
             } else if ( prev_c_cooked != '[' && next_c != ']' ) {
               //
-              // The '=' is neither the first or last character within a
+              // The '-' is neither the first or last character within a
               // character range (i.e., a literal '-') so therefore it's
               // indicating a character range.
               //
