@@ -40,11 +40,17 @@ bool is_whitespace( char const *s ) {
 ostream& printable_char( ostream &o, char c ) {
   if ( ascii::is_print( c ) )
     o << c;
-  else {
-    ios::fmtflags const old_flags = o.flags();
-    o << "#x" << uppercase << hex << (static_cast<unsigned>( c ) & 0xFF);
-    o.flags( old_flags );
-  }
+  else
+    switch ( c ) {
+      case '\n': o << "\\n"; break;
+      case '\r': o << "\\r"; break;
+      case '\t': o << "\\t"; break;
+      default: {
+        ios::fmtflags const old_flags = o.flags();
+        o << "#x" << uppercase << hex << (static_cast<unsigned>( c ) & 0xFF);
+        o.flags( old_flags );
+      }
+    }
   return o;
 }
 
