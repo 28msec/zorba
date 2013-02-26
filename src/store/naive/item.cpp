@@ -225,6 +225,18 @@ void Item::removeReference()
 }
 
 
+size_t Item::alloc_size() const
+{
+  return 0;
+}
+
+
+size_t Item::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 #ifdef ZORBA_WITH_JSON
 
 bool Item::isJSONObject() const
@@ -1336,7 +1348,7 @@ store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
   );
 }
 
-bool Item::isRoot() const
+bool Item::isCollectionRoot() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

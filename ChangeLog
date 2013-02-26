@@ -6,35 +6,41 @@ New Features:
   * Typeswitch expression extended to allow union of types in each case clause,
     as specified by XQuery v3.0
   * In C++ API, added optional XML formatting of exceptions.
+  * New C++ and XQuery function (see module http://www.zorba-xquery.com/modules/item)
+    to estimate the size an item allocates in memory.
   * Extended sequence types to include unions, as specified by XQuery v3.0
+  * In store API, added ability to specify a stream's originating URI (file)
+    for streamable strings and base64Binary.
   * Added millis-to-dateTime() function in datetime module.
+  * fn:trace outputs "empty-sequence()" if the input is the empty-sequence.
+  * Addex xqxq:variable-value function.
 
 Optimizations:
-  * Extended optimization rules for subsequence function (pushing $startingLoc 
-    parameter into collection skip if $sourceSeq parameter is from a 
+  * Extended optimization rules for subsequence function (pushing $startingLoc
+    parameter into collection skip if $sourceSeq parameter is from a
     collection).
   * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1124273 (xqdoc crash because of annotation literals)
+  * Fixed bug #867027 (XQST0059 error messages inconsistent)
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
   * Fixed bug in index join rule (copy var ids after cloning index domain expr).
   * Added missing wrapper expressions around some variable references.
+  * Fixed bug #1122396 (Associate origin/destination URI to I/O stream)
+  * Fixed bug #1111786 (xml/json parse error location in catch clause).
   * NaN items are considered equal to each other during grouping
   * Fixed bug #855481 (Too small time types on Windows).
-
-
-version 2.9
-
-Bug Fixes/Other Changes:
+  * Fixed bug #1132032 (Certain regexes involving ^ should be legal)
+  * Fixed bug #1023168 (Non-single-char-escapes in regex character ranges not
+    caught)
+  * Fixed bug #866874 (regex "range subtraction" not supported for ICU)
+  * Fixed bug in computing the static type of an allowing-empty FOR variable.
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
-  * Fixed bug #1099535  (xml:parse endless loop)
-
-
-
-version 2.9
-
-Bug Fixes/Other Changes:
-  * Fixed bug #866958  (Parsing error not explicit enough)
+  * Fixed bug #1099535 (xml:parse endless loop)
+  * Fixed bug #866958 (Parsing error not explicit enough)
+  * Fixed bug #867068 (Incorrect usage of XQDY0027)
+  * Fixed bug #1023362 (xsi:type attribute ignored during validation)
 
 
 version 2.8

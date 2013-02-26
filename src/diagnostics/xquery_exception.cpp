@@ -58,6 +58,7 @@ XQueryException::XQueryException( Diagnostic const &diagnostic,
 XQueryException::XQueryException( XQueryException const &from ) :
   ZorbaException( from ),
   source_loc_( from.source_loc_ ),
+  data_loc_( from.data_loc_ ),
   applied_loc_( from.applied_loc_ ),
   query_trace_( from.query_trace_ )
 {
@@ -84,6 +85,7 @@ XQueryException& XQueryException::operator=( XQueryException const &from ) {
   if ( &from != this ) {
     ZorbaException::operator=( from );
     source_loc_  = from.source_loc_;
+    data_loc_    = from.data_loc_;
     applied_loc_ = from.applied_loc_;
     query_trace_ = from.query_trace_;
   }
@@ -107,6 +109,16 @@ void XQueryException::set_applied( char const *uri,
   if ( !uri || !*uri )
     uri = source_loc_.file();
   applied_loc_.set( uri, line, col, line_end, col_end );
+}
+
+void XQueryException::set_data( char const *uri,
+                                line_type line,
+                                column_type col,
+                                line_type line_end,
+                                column_type col_end ) {
+  if ( !uri || !*uri )
+    uri = source_loc_.file();
+  data_loc_.set( uri, line, col, line_end, col_end );
 }
 
 void XQueryException::set_source( char const *uri,
@@ -150,6 +162,16 @@ ostream& XQueryException::print_impl( ostream &o ) const {
 #endif
       o << "/>" << if_nl; // <location ...
 
+      if ( has_data() ) {
+        o << indent << "<data-location";
+        if ( data_uri() && ::strcmp( data_uri(), source_uri() ) != 0 )
+          print_uri( o, applied_uri() );
+        o << " line=\"" << data_line() << '"';
+        if ( data_column() )
+          o << " column=\"" << data_column() << '"';
+        o << "/>" << if_nl; // <data-location ...
+      }
+
       if ( has_applied() ) {
         o << indent << "<applied-at";
         if ( applied_uri() && ::strcmp( applied_uri(), source_uri() ) != 0 )
@@ -171,6 +193,18 @@ ostream& XQueryException::print_impl( ostream &o ) const {
       o << ":" << source_line();
       if ( source_column() )
         o << "," << source_column();
+
+      if ( has_data() && data_loc_ != source_loc_ ) {
+        o << " (" << diagnostic::dict::lookup( ZED( InData ) ) << ' ';
+        if ( data_uri() && ::strcmp( data_uri(), source_uri() ) != 0 ) {
+          if ( print_uri( o, data_uri() ) )
+            o << ':';
+        }
+        o << data_line();
+        if ( data_column() )
+          o << ',' << data_column();
+        o << ')';
+      }
 
       if ( has_applied() ) {
         o << " (" << diagnostic::dict::lookup( ZED( AppliedAt ) ) << ' ';
@@ -337,6 +371,24 @@ void set_applied( ZorbaException &ze, char const *file,
       ze.diagnostic(), ze.raise_file(), ze.raise_line(), ze.what()
     );
     new_xe.set_applied( file, line, col, line_end, col_end );
+    throw new_xe;
+  }
+}
+
+void set_data( ZorbaException &ze, char const *file,
+               XQueryException::line_type line,
+               XQueryException::column_type col,
+               XQueryException::line_type line_end,
+               XQueryException::column_type col_end,
+               bool overwrite ) {
+  if ( XQueryException *const xe = dynamic_cast<XQueryException*>( &ze ) ) {
+    if ( !xe->has_data() || overwrite )
+      xe->set_data( file, line, col, line_end, col_end );
+  } else {
+    XQueryException new_xe(
+      ze.diagnostic(), ze.raise_file(), ze.raise_line(), ze.what()
+    );
+    new_xe.set_data( file, line, col, line_end, col_end );
     throw new_xe;
   }
 }

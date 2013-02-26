@@ -43,22 +43,29 @@ declare namespace fots =
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
 
 (:~
  : Checks if the result matches the assertions.
  : @param $result actual result.
  : @param $expResult expected result.
+ : @param $testSetBaseURI the URI of the directory that contains the file of the
+          associated test set.
  : @return the results of assertion evaluations.
  :)
 declare %ann:sequential function eval:result(
-  $result     as item()*,
-  $expResult  as element()
+  $result         as item()*,
+  $expResult      as element(),
+  $testSetBaseURI as xs:anyURI
 ) as element()*
 {
   let $err := eval:check-assertion($result,
                                    $expResult,
                                    (),
-                                   "")
+                                   "",
+                                   $testSetBaseURI)
   return if (empty($err))
   then ()
   else
@@ -75,20 +82,24 @@ declare %ann:sequential function eval:result(
  : @param $expResult expected result.
  : @param $code err:code.
  : @param $errorDescription err:description.
+ : @param $testSetBaseURI the URI of the directory that contains the file of the
+          associated test set.
  : @return the results of error evaluation.
  :)
 declare %ann:sequential function eval:error(
   $result           as item()*,
   $expResult        as element(),
   $code             as xs:QName?,
-  $errorDescription as xs:string?
+  $errorDescription as xs:string?,
+  $testSetBaseURI   as xs:anyURI
 ) as element()*
 {
   if (empty($result))
   then
     let $err := eval:error-code($code,
                                 $errorDescription,
-                                $expResult)
+                                $expResult,
+                                $testSetBaseURI)
     return
       if (empty($err))
       then ()
@@ -111,7 +122,8 @@ declare %ann:sequential function eval:error(
 declare %private %ann:sequential function eval:error-code(
   $code             as xs:QName?,
   $errorDescription as xs:string?,
-  $expResult        as element()
+  $expResult        as element(),
+  $testSetBaseURI   as xs:anyURI
 ) as xs:string*
 {
   let $assertName := local-name($expResult)
@@ -133,7 +145,8 @@ declare %private %ann:sequential function eval:error-code(
   then eval:check-assertion((),
                             $expResult,
                             $code,
-                            $errorDescription)
+                            $errorDescription,
+                            $testSetBaseURI)
   else concat("Expected result, found error ",
               local-name-from-QName($code),
               " - ",
@@ -144,7 +157,8 @@ declare %private %ann:sequential function eval:check-assertion(
   $result           as item()*,
   $expResult        as element(),
   $code             as xs:QName?,
-  $errorDescription as xs:string?
+  $errorDescription as xs:string?,
+  $testSetBaseURI   as xs:anyURI
 ) as xs:string*
 {
   let $test := local-name($expResult)
@@ -153,12 +167,14 @@ declare %private %ann:sequential function eval:check-assertion(
       return eval:assert-all-of($result,
                                 $expResult,
                                 $code,
-                                $errorDescription)
+                                $errorDescription,
+                                $testSetBaseURI)
     case 'any-of'
       return eval:assert-any-of($result,
                                 $expResult,
                                 $code,
-                                $errorDescription)
+                                $errorDescription,
+                                $testSetBaseURI)
     case 'assert'
       return eval:assert($result,
                          $expResult)
@@ -180,10 +196,12 @@ declare %private %ann:sequential function eval:check-assertion(
                                      $expResult)
     case 'assert-xml'
       return eval:assert-xml($result,
-                             $expResult)
+                             $expResult,
+                             $testSetBaseURI)
     case 'assert-serialization-error'
       return eval:assert-serialization-error($result,
-                                             $expResult)
+                                             $expResult,
+                                             $testSetBaseURI)
     case 'assert-string-value'
       return eval:assert-string-value($result,
                                       $expResult)
@@ -199,7 +217,8 @@ declare %private %ann:sequential function eval:check-assertion(
       return eval:error($result,
                         $expResult,
                         $code,
-                        $errorDescription)
+                        $errorDescription,
+                        $testSetBaseURI)
     default
       return error($fots-err:errNA,
                    "&#xA;The requested assertion type is not implemented.")
@@ -210,7 +229,8 @@ declare %private %ann:sequential function eval:assert-any-of(
   $result           as item()*,
   $expResult        as element(),
   $code             as xs:QName?,
-  $errorDescription as xs:string?
+  $errorDescription as xs:string?,
+  $baseURI          as xs:anyURI
 ) as xs:string?
 {
   let $results :=
@@ -219,7 +239,8 @@ declare %private %ann:sequential function eval:assert-any-of(
       for $r in eval:check-assertion($result,
                                      $tmp,
                                      $code,
-                                     $errorDescription)
+                                     $errorDescription,
+                                     $baseURI)
       return <item>{$r}</item>
     } </result>
   where every $result in $results satisfies $result/item
@@ -232,14 +253,16 @@ declare %private %ann:sequential function eval:assert-all-of(
   $result           as item()*,
   $expResult        as element(),
   $code             as xs:QName?,
-  $errorDescription as xs:string?
+  $errorDescription as xs:string?,
+  $baseURI          as xs:anyURI
 ) as xs:string*
 {
   for $tmp in $expResult/*
   return eval:check-assertion($result,
                               $tmp,
                               $code,
-                              $errorDescription)
+                              $errorDescription,
+                              $baseURI)
 };
 
 (: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert :)
@@ -391,13 +414,11 @@ declare %private %ann:sequential function eval:assert-permutation(
   try {
   {
     variable $queryText := concat(
-      "xquery version '3.0';",
-      "declare namespace o = 'http://www.zorba-xquery.com/options/features';",
-      "declare option o:enable 'hof';",
       "declare variable $x external;",
+      "declare function local:order-string-values($items){ for $item in $items order by xs:string($item) return $item};",
       "let $y := (",string(data($expResult)),") return ",
-      (: if count(intersection(M1,M2)) = count(union(M1,M2)) = count(M1) then the sequences are identical :)
-      "(count(distinct-values($x[ . = $y])) = count(distinct-values(($x, $y)))) = count(distinct-values($x))");
+      "deep-equal(local:order-string-values($x), local:order-string-values($y)) or
+       deep-equal(reverse($x), $y)");
     variable $queryKey := xqxq:prepare-main-module($queryText),
              $queryKeyResult := xqxq:bind-variable($queryKey,
                                                   xs:QName('x'),
@@ -416,17 +437,19 @@ declare %private %ann:sequential function eval:assert-permutation(
 (: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-xml :)
 declare %private function eval:assert-xml(
   $result    as item()*,
-  $expResult as element()
+  $expResult as element(),
+  $baseURI   as xs:anyURI
 )
 {
 (:TODO call xml-canonicalization after bug #1076919 is implemented.:)
   try {
     let $serRes := util:serialize-result($result),
         $result1 as xs:string := string-join($serRes,''),
-        $result2 as xs:string := string-join($serRes,' ')
+        $result2 as xs:string := string-join($serRes,' '),
+        $expectedResult as xs:string := util:get-value($expResult, $baseURI, "assert-xml")
     return
-      if ((normalize-space($result1) eq normalize-space(string($expResult))) or
-         (normalize-space($result2) eq normalize-space(string($expResult))))
+      if ((normalize-space($result1) eq normalize-space(string($expectedResult))) or
+         (normalize-space($result2) eq normalize-space(string($expectedResult))))
       then ()
       else "'assert-xml' returned: result is different from the expected result."
   } catch * {
@@ -438,7 +461,9 @@ declare %private function eval:assert-xml(
 (: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-serialization-error :)
 declare %private %ann:sequential function eval:assert-serialization-error(
   $result    as item()*,
-  $expResult as element()
+  $expResult as element(),
+  $baseURI   as xs:anyURI
+  
 ) as xs:string?
 {
   try {
@@ -450,7 +475,8 @@ declare %private %ann:sequential function eval:assert-serialization-error(
     eval:error((),
               $expResult,
               $err:code,
-              $err:description)
+              $err:description,
+              $baseURI)
   }
 };
 

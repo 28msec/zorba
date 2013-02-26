@@ -44,6 +44,10 @@
 #include "store_defs.h"
 #include "text_node_content.h"
 #include "tree_id.h"
+#include "simple_store.h"
+#include "structured_item.h"
+#include "collection_tree_info.h"
+#include "collection.h"
 
 // Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h
 #ifndef EMBEDED_TYPE
@@ -65,6 +69,10 @@ namespace store
 
 namespace simplestore
 {
+
+namespace json {
+  class JSONItem;
+}
 
 class AttributeNode;
 class CommentNode;
@@ -95,6 +103,8 @@ class NodeTypeInfo;
 
 class Collection;
 
+class CollectionTreeInfoGetters;
+
 typedef std::vector<NodeTypeInfo> TypeUndoList;
 
 typedef rchandle<NsBindingsContext> NsBindingsContext_t;
@@ -111,38 +121,51 @@ class XmlNodeTokenizerCallback;
 
 /*******************************************************************************
 
-  theRefCount    : It is the sum of theRefCounts of all the nodes belonging to
-                   this tree. Individual nodes are not destroyed when their
-                   refCount goes to 0. Instead, nodes belonging to a tree are all
-                   destroyed together when theRefCount of the tree goes to 0
-                   (i.e. when there are no refs to any of the nodes in the tree).
-  theRCLock      : Protects theRefCount
+  Class XmlTree contains top-level information about an xml tree. Every node of
+  such a tree has a pointer to the associated XmlTree object.
 
-  theId          : An internally generated id for the tree. The id uniquely
-                   identifies the tree within its containing collection (see
-                   Collection::createTreeId() method). Trees that do not
-                   belong to any collection, are considered to belong to a
-                   "virtual" collection (with collection id equal to 0), and
-                   their id is created by the SimpleStore::createId() method.
-                   theId it is guaranteed to be stable during the lifetime of
-                   the tree, but may be reused after the tree is destroyed.
-                   theId is used in building node URIs that are returned to
-                   the application. It is not meant to be used (at least not
-                   directly) to sort nodes in doc order.
-  thePos         : The position of this tree within its containing collection.
-                   After inserting/deleting one or more nodes in/from the middle
+  theRefCount:
+  ------------
+  It is the sum of theRefCounts of all the nodes belonging to this tree. 
+  Individual nodes are not destroyed when their refCount goes to 0. Instead,
+  nodes belonging to a tree are all destroyed together when theRefCount of
+  the tree goes to 0 (i.e. when there are no refs to any of the nodes in the
+  tree).
 
-  theBaseUri     : The base uri property of the tree's root node.
-  theDocUri      : A user provided uri for the tree (may be NULL).
+  theRCLock:
+  ----------
+  Protects theRefCount
 
-  theCollection  : The collection where this xml tree belongs to, if any. An xml
-                   tree may belong to at most one collection at a time.
-  theRootNode    : The root node of the tree.
+  theTreeId:
+  ----------
+  A collection-relative id for this tree. Uniquely identifies the tree within a
+  collection, or if the tree does not belong to any collection, its id is unique
+  among all the other trees that do not belong to any collection either. NOTE:
+  when a tree becomes member of a colection, it gets a new id. 
+ 
+  theCollectionInfo:
+  ------------------
+  Contains info that is relevant only if the tree belongs to a collection (see
+  class CollectionTreeInfo for more details).
 
-  theIsValidated : True if the tree has ever undergone schema validation.
-  theIsRecursive : True if the tree contains at least one pair of element nodes
-                   that have the same tag name and are in an ancestor-descendant
-                   relationship with each other.
+  theRootNode:
+  ------------
+  The root node of this XML tree.
+
+  theIsValidated : 
+  ----------------
+  True if the tree has ever undergone schema validation.
+
+  theIsRecursive :
+  ----------------
+  True if the tree contains at least one pair of element nodes that have the 
+  same tag name and are in an ancestor-descendant relationship with each other.
+
+  theTypesMap:
+  ------------
+
+  theTokens:
+  ----------
 ********************************************************************************/
 class XmlTree
 {
@@ -150,6 +173,9 @@ class XmlTree
 
   // make sure that only created by the factory
   friend class NodeFactory;
+  
+  // For setting positions directly.
+  friend class SimpleCollection;
 
 #ifndef EMBEDED_TYPE
   typedef NodePointerHashMap<store::Item_t> NodeTypeMap;
@@ -159,10 +185,9 @@ protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  TreeId                    theId;
-  xs_integer                thePos;
+  CollectionTreeInfo      * theCollectionInfo;
 
-  Collection              * theCollection;
+  TreeId                    theTreeId;
 
   XmlNode                 * theRootNode;
 
@@ -198,27 +223,41 @@ public:
   long& getRefCount()      { return theRefCount; }
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
-
-  void setId(const TreeId& id) { theId = id; }
-
-  const TreeId& getId() const { return theId; }
-
-  ulong getCollectionId() const;
-
-  const Collection* getCollection() const { return theCollection; }
-
-private:
-friend class zorba::simplestore::Collection;
-  // Allows a collection to claim ownership of a node it already owns, but
-  // which does not have the backpointer yet.
-  void claimedByCollection(Collection* coll);
   
-public:
-  void setCollection(Collection* coll, xs_integer pos);
+  const TreeId& getTreeId() const { return theTreeId; }
 
-  void setPosition(xs_integer pos) { thePos = pos; }
+  CollectionTreeInfo* getCollectionTreeInfo() const { return theCollectionInfo; }
 
-  xs_integer getPosition() const { return thePos; }
+  void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo);
+
+  void attachToCollection(
+      simplestore::Collection* aCollection,
+      const TreeId& aTreeId,
+      const xs_integer& aPosition);
+
+  void detachFromCollection();
+
+  ulong getCollectionId() const
+  {
+    return (theCollectionInfo ? theCollectionInfo->getCollection()->getId() : 0);
+  }
+
+  const store::Collection* getCollection() const
+  {
+    return (theCollectionInfo ? theCollectionInfo->getCollection() : NULL);
+  }
+
+  const xs_integer& getPosition() const
+  {
+    ZORBA_ASSERT(theCollectionInfo);
+    return theCollectionInfo->getPosition();
+  }
+
+  void setPosition(const xs_integer& pos) const
+  {
+    ZORBA_ASSERT(theCollectionInfo);
+    return theCollectionInfo->setPosition(pos);
+  }
 
   XmlNode* getRoot() const { return theRootNode; }
 
@@ -264,7 +303,7 @@ public:
 
  ******************************************************************************/
 
-class XmlNode : public store::Item
+class XmlNode : public StructuredItem
 {
   friend class XmlTree;
   friend class NodeFactory;
@@ -363,7 +402,9 @@ protected:
   {
   }
 
-  XmlNode(store::StoreConsts::NodeKind k) : Item(), theParent(NULL)
+  XmlNode(store::StoreConsts::NodeKind k) :
+      StructuredItem(),
+      theParent(NULL)
   {
     theFlags = (uint32_t)k;
   }
@@ -406,6 +447,8 @@ public:
   virtual ~XmlNode() {}
 #endif
 
+  size_t alloc_size() const;
+
   SYNC_CODE(RCLock* getRCLock() const { return getTree()->getRCLock(); })
 
   void free()
@@ -426,7 +469,7 @@ public:
   const store::Collection* getCollection() const
   {
     assert(!isConnectorNode());
-    return reinterpret_cast<const store::Collection*>(getTree()->getCollection());
+    return getTree()->getCollection();
   }
 
   virtual void getDocumentURI(zstring& uri) const
@@ -437,11 +480,6 @@ public:
   store::Item* getParent() const
   {
     return reinterpret_cast<store::Item*>(theParent);
-  }
-
-  bool isRoot() const
-  {
-    return getCollection() != NULL && getParent() == NULL;
   }
 
   bool equals(
@@ -501,17 +539,9 @@ public:
 
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
-  const TreeId& getTreeId() const { return getTree()->getId(); }
-
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
-  void setCollection(Collection* coll, xs_integer pos)
-  {
-    assert(!isConnectorNode());
-    getTree()->setCollection(coll, pos);
-  }
-
-  ulong getCollectionId() const 
+  ulong getCollectionId() const
   {
     assert(!isConnectorNode());
     return getTree()->getCollectionId(); 
@@ -565,6 +595,23 @@ public:
       locale::iso639_1::type,
       bool = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
+
+  //
+  // StructuredItem Methods
+  //
+
+  virtual void attachToCollection(
+      simplestore::Collection* aCollection,
+      const TreeId& aTreeId,
+      const xs_integer& aPosition);
+
+  virtual void detachFromCollection();
+
+  virtual void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo);
+
+  virtual long getCollectionTreeRefCount() const;
+
+  virtual bool isInSubtree(const StructuredItem* anotherItem) const;
 };
 
 
@@ -585,6 +632,9 @@ protected:
       const XmlNode* child);
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   XmlNode* getNode() const { return theNode.getp(); }
 
   store::Item* getNodeName() const { return theNode->getNodeName(); }
@@ -649,6 +699,9 @@ protected:
   virtual ~OrdPathNode() {}
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   const OrdPath& getOrdPath() const { return theOrdPath; }
 
   OrdPath& getOrdPath() { return theOrdPath; }
@@ -760,6 +813,8 @@ public:
   //
   // SimpleStore Methods
   //
+
+  size_t alloc_size() const;
 
   // To be used by the loader ONLY!
   NodeVector& nodes() { return theNodes; }
@@ -903,6 +958,9 @@ public:
   // Item methods
   //
 
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   store::Item* getType() const;
 
   void getDocumentURI(zstring& uri) const { uri = theDocUri; }
@@ -994,6 +1052,9 @@ public:
   //
   // Item methods
   //
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   store::Item* getNodeName() const { return theName.getp(); }
 
   store::Item* getType() const;
@@ -1163,6 +1224,7 @@ protected:
 #endif
   store::Item_t   theTypedValue;
 
+protected:
   AttributeNode(store::Item_t&  attrName);
 
   AttributeNode(
@@ -1182,6 +1244,9 @@ public:
   //
   // Item methods
   //
+
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
   store::Item* getNodeName() const { return theName.getp(); }
 
@@ -1279,11 +1344,12 @@ protected:
 
 ********************************************************************************/
 #ifdef TEXT_ORDPATH
-class TextNode : public OrdPathNode
+class TextNode : public OrdPathNode {
+  typedef OrdPathNode base_type;
 #else
-class TextNode : public XmlNode
+class TextNode : public XmlNode {
+  typedef XmlNode base_type;
 #endif
-{
   friend class XmlNode;
   friend class InternalNode;
   friend class DocumentDagNode;
@@ -1332,6 +1398,9 @@ public:
   //
   // Item methods
   //
+
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
   store::Item* getType() const;
 
@@ -1465,6 +1534,9 @@ protected:
   PiNode() {}
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   XmlNode* copyInternal(
         InternalNode* rootParent,
         InternalNode* parent,
@@ -1531,6 +1603,9 @@ protected:
   CommentNode() {}
 
 public:
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
+
   XmlNode* copyInternal(
         InternalNode* rootParent,
         InternalNode* parent,
@@ -1584,8 +1659,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      TreeId tree1 = this->getTreeId();
-      TreeId tree2 = other->getTreeId();
+      TreeId tree1 = this->getTree()->getTreeId();
+      TreeId tree2 = other->getTree()->getTreeId();
 
       if (tree1 < tree2)
         return -1;
@@ -1634,8 +1709,8 @@ inline long XmlNode::compare2(const XmlNode* other) const
   {
     if (col1 == 0)
     {
-      const TreeId& tree1 = this->getTreeId();
-      const TreeId& tree2 = other->getTreeId();
+      const TreeId& tree1 = this->getTree()->getTreeId();
+      const TreeId& tree2 = other->getTree()->getTreeId();
 
       if (tree1 < tree2)
         return -1;

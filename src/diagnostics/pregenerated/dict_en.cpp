@@ -230,7 +230,7 @@ extern entry const dict_en[] = {
   { "XQST0055", "multiple copy-namespaces declarations" },
   { "XQST0057", "empty target namespace" },
   { "XQST0058", "\"$1\": duplicate target namespace" },
-  { "XQST0059", "\"$1\": target namespace not found for schema/module${ 2}" },
+  { "XQST0059", "$1" },
   { "XQST0060", "\"$1\": function name has a null namespace URI" },
   { "XQST0065", "multiple ordering mode declaraions" },
   { "XQST0066", "multiple element/type/function namespace declarations" },
@@ -498,6 +498,7 @@ extern entry const dict_en[] = {
   { "ZXQP0011", "\"$1\": invalid locale" },
   { "ZXQP0012", "\"$1\": unknown locale" },
   { "ZXQP0013", "FxCharHeap error: $1 ($2)" },
+  { "ZXQP0014", "${\"1\": }out of memory${: 2}" },
   { "ZXQP0016", "\"$1\": reserved module target namespace" },
   { "ZXQP0017", "file access disabled" },
   { "ZXQP0020", "\"$1\": invalid URI${: 2}" },
@@ -510,6 +511,8 @@ extern entry const dict_en[] = {
   { "ZXQP0030", "deadlock" },
   { "ZXQP0031", "malformed XQueryX XML input${: 1}" },
   { "ZXQP0032", "error transforming XQueryX to XQuery${: 1}" },
+  { "ZXQP0033", "${\"1\": }XML error in schema${: 2}" },
+  { "ZXQP0035", "${\"1\": }unexpected error in schema${: 2}" },
   { "ZXQP0036", "BreakIterator creation failed" },
   { "ZXQP0037", "\"$1\": loaded module version \"$2\" does not match import version specification" },
   { "ZXQP0038", "Query requires Zorba version \"$1\"; you are running Zorba \"$2\"" },
@@ -546,6 +549,7 @@ extern entry const dict_en[] = {
   { "~BadCharAfter_34", "'$3': illegal character after '$4'" },
   { "~BadCharInBraces_3", "'$3': illegal character within { }" },
   { "~BadDecDigit_3", "'$3': invalid decimal digit" },
+  { "~BadEndCharInRange_34", "'$3': invalid end character in range (less than '$4' start character)" },
   { "~BadFileURIAuthority_2", "\"$2\": invalid authority for \"file\" scheme" },
   { "~BadHexSequence", "invalid hexedecimal sequence" },
   { "~BadItem", "invalid item" },
@@ -553,7 +557,13 @@ extern entry const dict_en[] = {
   { "~BadLibraryModule", "invalid library module" },
   { "~BadPath", "invalid path" },
 #if !defined(ZORBA_NO_ICU)
+  { "~BadQuantifierHere_3", "'$3': quantifier illegal here" },
+#endif
+#if !defined(ZORBA_NO_ICU)
   { "~BadRegexEscape_3", "\"$3\": illegal escape character" },
+#endif
+#if !defined(ZORBA_NO_ICU)
+  { "~BadRegexParen_3", "\"$3\": illegal character after \"(?\"" },
 #endif
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
@@ -634,6 +644,7 @@ extern entry const dict_en[] = {
   { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary, json, jsoniq" },
   { "~GoodValuesAreYesNo", "valid values are: yes, no" },
   { "~GoodValuesAreYesNoOmit", "valid values are: yes, no, omit" },
+  { "~InData", "in data" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
   { "~JNDY0021_IllegalCharacter_2", "'$2': illegal JSON character" },
@@ -709,12 +720,12 @@ extern entry const dict_en[] = {
   { "~NodeIDNeedsBytes_2", "nodeid requires more than $2 bytes" },
   { "~NodeIDTooBig", "nodeid component too big for encoding" },
 #if !defined(ZORBA_NO_ICU)
-  { "~NonClosedBackRef_3", "'$$3': non-closed backreference" },
+  { "~NonClosedBackRef_3", "'\\$$3': non-closed backreference" },
 #endif
   { "~NonFileThesaurusURI", "non-file thesaurus URI" },
   { "~NonLocalhostAuthority", "non-localhost authority" },
 #if !defined(ZORBA_NO_ICU)
-  { "~NonexistentBackRef_3", "'$$3': non-existent backreference" },
+  { "~NonexistentBackRef_3", "'\\$$3': non-existent backreference" },
 #endif
   { "~NotAllowedForTypeName", "not allowed for typeName (use xsd:untyped instead)" },
   { "~NotAmongInScopeSchemaTypes", "not among in-scope schema types" },
@@ -722,6 +733,9 @@ extern entry const dict_en[] = {
   { "~NotDocOrElementNode", "not a document or element node" },
   { "~NotInStaticCtx", "not found in static context" },
   { "~NotPlainFile", "not plain file" },
+#if !defined(ZORBA_NO_ICU)
+  { "~NotSingleCharEsc_3", "\"\\\\$3\": multi-character and category escapes not permitted in character range" },
+#endif
   { "~NotSpecified", "not specified" },
   { "~OpIsSameNodeMustHaveNodes", "op:is-same-node() must have nodes as parameters" },
   { "~OpNodeAfterMustHaveNodes", "op:node-after() must have nodes as parameters" },
@@ -799,8 +813,6 @@ extern entry const dict_en[] = {
 #endif
   { "~SEPM0009_Not10", "the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
   { "~SEPM0009_NotOmit", "the standalone attribute has a value other than \"omit\"" },
-  { "~SchemaOutOfMemory", "OutOfMemoryException during parsing" },
-  { "~SchemaParseError", "error during parsing" },
   { "~SchemaUnexpected", "unexpected exception during parsing" },
   { "~SearchKeyTypeMismatch_234", "\"$2\": search key type for index \"$3\" does not match expected type \"$4\"" },
   { "~SearchKeyTypeNoProbeIndex_23", "\"$2\": search key type can not probe index \"$3\"" },
@@ -917,7 +929,11 @@ extern entry const dict_en[] = {
   { "~XPTY0004_NoTypePromote_23", "$2 can not be promoted to type $3" },
   { "~XPTY0117_NodeCast", "Cannot cast node to xs:QName" },
   { "~XPTY0117_NotationParam_23", "$2 can not be promoted to parameter type xs:NOTATION of function $3()" },
+  { "~XQDY0027_SerializationElementName_2", "\"$2\": invalid serialization parameters; element name must be \"serialization-parameters\"" },
+  { "~XQDY0027_SerializationElementNs_2", "\"$2\": invalid namespace for the \"serialization-parameters\" element; must be \"http://www.w3.org/2010/xslt-xquery-serialization\"" },
   { "~XQST0046_BadHexDigit_3", "'$3': invalid hexedecimal digit" },
+  { "~XQST0059_SpecificationMessage", "\"$2\": target namespace not found for schema/module${ \"3\"}${: 4}" },
+  { "~XQST0059_XercesMessage", "$2,$3: error in schema${ with System ID \"4\"}${ with Public ID \"5\"}${: 6}" },
   { "~XQST0106_CONFLICTING", "conflicting" },
   { "~XQST0106_THE_SAME", "the same" },
   { "~XUDY0021_AttributeName", "\"$3\": attribute with the same name already exists" },

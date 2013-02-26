@@ -56,6 +56,7 @@
 #include <store/api/copymode.h>
 
 #include "util/uri_util.h"
+#include "util/stream_util.h"
 
 #include <zorba/store_consts.h>
 #include <zorbatypes/URI.h>
@@ -809,6 +810,7 @@ JSONParseIterator::nextImpl(
 {
   store::Item_t lInput;
   bool lStripTopLevelArray = false;
+  char const *stream_uri;
 
   JSONParseIteratorState* state;
   DEFAULT_STACK_INIT(JSONParseIteratorState, state, planState);
@@ -831,12 +833,14 @@ JSONParseIterator::nextImpl(
     {
       state->theInput = lInput;
       state->theInputStream = &lInput->getStream();
+      stream_uri = get_uri( *state->theInputStream );
     }
     else
     {
       // will be deleted in the state
       state->theInputStream =
         new std::stringstream( lInput->getStringValue().c_str() );
+      stream_uri = nullptr;
     }
 
     state->loader_ = new json::loader(
@@ -852,6 +856,8 @@ JSONParseIterator::nextImpl(
         theRelativeLocation.getColumnBegin()
       );
     }
+    if ( stream_uri )
+      state->loader_->set_loc( stream_uri, 1, 1 );
 
     while ( state->loader_->next( &result ) ) {
       if ( !state->theAllowMultiple && state->theGotOne ) {
@@ -878,7 +884,6 @@ JSONObjectNamesIterator::nextImpl(
   PlanState& planState) const
 {
   store::Item_t input;
-  store::Item_t key;
 
   JSONObjectNamesIteratorState* state;
   DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
@@ -888,9 +893,8 @@ JSONObjectNamesIterator::nextImpl(
   state->theNames = input->getObjectKeys();
   state->theNames->open();
 
-  while (state->theNames->next(key))
+  while (state->theNames->next(result))
   {
-    result = key;
     STACK_PUSH (true, state);
   }
   state->theNames = NULL;
@@ -971,7 +975,7 @@ JSONObjectProjectIterator::nextImpl(
     {
       value = obj->getObjectValue(key);
 
-      if (value->isNode() || value->isJSONItem())
+      if (value->isStructuredItem())
         value = value->copy(NULL, copymode);
 
       newValues.push_back(value);
@@ -1257,7 +1261,7 @@ bool JSONObjectInsertIterator::nextImpl(
                theSctx->preserve_ns(),
                theSctx->inherit_ns());
 
-  if (content->isNode() || content->isJSONItem())
+  if (content->isStructuredItem())
   {
     content = content->copy(NULL, copymode);
   }
@@ -1304,7 +1308,7 @@ bool JSONArrayInsertIterator::nextImpl(
 
   while (consumeNext(member, theChildren[2].getp(), planState))
   {
-    if (member->isNode() || member->isJSONItem())
+    if (member->isStructuredItem())
     {
       member = member->copy(NULL, copymode);
     }
@@ -1352,7 +1356,7 @@ bool JSONArrayAppendIterator::nextImpl(
 
   while (consumeNext(member, theChildren[1].getp(), planState))
   {
-    if (member->isNode() || member->isJSONItem())
+    if (member->isStructuredItem())
     {
       member = member->copy(NULL, copymode);
     }
@@ -1477,7 +1481,7 @@ bool JSONReplaceValueIterator::nextImpl(
   consumeNext(selector, theChildren[1].getp(), planState);
   consumeNext(newValue, theChildren[2].getp(), planState);
 
-  if (theCopyInput && (newValue->isNode() || newValue->isJSONItem()))
+  if (theCopyInput && (newValue->isStructuredItem()))
   {
     copymode.set(true, 
                  theSctx->construction_mode() == StaticContextConsts::cons_preserve,

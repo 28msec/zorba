@@ -2201,7 +2201,13 @@ void* import_schema(
     }
 
     if ( lStream == NULL ) {
-      throw XQUERY_EXCEPTION(err::XQST0059, ERROR_PARAMS(lNsURI, lErrorMessage));
+      throw XQUERY_EXCEPTION(
+        err::XQST0059,
+        ERROR_PARAMS(
+          ZED( XQST0059_SpecificationMessage ),
+          lNsURI, "", lErrorMessage
+        )
+      );
     }
 
     // If we got this far, we have a valid StreamResource.
@@ -3090,7 +3096,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     if (theModulesInfo->mod_ns_map.get(compURI, importedNS))
     {
       if (importedNS != targetNS)
-        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI));
+        throw XQUERY_EXCEPTION(
+          err::XQST0059,
+          ERROR_PARAMS(
+            ZED( XQST0059_SpecificationMessage ),
+            targetNS, compURI
+          ),
+          ERROR_LOC( loc )
+        );
 
       bool found = theModulesInfo->mod_sctx_map.get(compURI, importedSctx);
       ZORBA_ASSERT(found);
@@ -3133,7 +3146,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       }
       else
       {
-        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI, lErrorMessage));
+        throw XQUERY_EXCEPTION(
+          err::XQST0059,
+          ERROR_PARAMS(
+            ZED( XQST0059_SpecificationMessage ),
+            targetNS, compURI, lErrorMessage
+          ),
+          ERROR_LOC( loc )
+        );
       }
 
       // Get the parent of the query root sctx. This is the user-specified sctx
@@ -3189,7 +3209,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Also make sure that the imported module is a library module
       LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*ast);
       if (mod_ast == NULL)
-        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI));
+        throw XQUERY_EXCEPTION(
+          err::XQST0059,
+          ERROR_PARAMS(
+            ZED( XQST0059_SpecificationMessage ),
+            targetNS, compURI
+          ),
+          ERROR_LOC( loc )
+        );
 
       importedNS = mod_ast->get_decl()->get_target_namespace().str();
 
@@ -3197,7 +3224,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
 
       if (importedNS != targetNS)
-        RAISE_ERROR(err::XQST0059, loc, ERROR_PARAMS(targetNS, compURI));
+        throw XQUERY_EXCEPTION(
+          err::XQST0059,
+          ERROR_PARAMS(
+            ZED( XQST0059_SpecificationMessage ),
+            targetNS, compURI
+          ),
+          ERROR_LOC( loc )
+        );
 
       // translate the imported module
       translate_aux(theRootTranslator,
@@ -7821,7 +7855,8 @@ void* begin_visit(const CatchExpr& v)
 
   push_scope();
 
-  store::Item_t lCode, lDesc, lValue, lModule, lLineNo, lColumnNo, lStackTrace;
+  store::Item_t lCode, lDesc, lValue, lModule, lLineNo, lColumnNo,
+                lDataURI, lDataLineNo, lDataColumnNo, lStackTrace;
 
   GENV_ITEMFACTORY->createQName(lCode, XQUERY_ERR_NS, "", "code");
   GENV_ITEMFACTORY->createQName(lDesc, XQUERY_ERR_NS, "", "description");
@@ -7829,6 +7864,9 @@ void* begin_visit(const CatchExpr& v)
   GENV_ITEMFACTORY->createQName(lModule, XQUERY_ERR_NS, "", "module");
   GENV_ITEMFACTORY->createQName(lLineNo, XQUERY_ERR_NS, "", "line-number");
   GENV_ITEMFACTORY->createQName(lColumnNo, XQUERY_ERR_NS, "", "column-number");
+  GENV_ITEMFACTORY->createQName(lDataURI, ZORBA_ERR_NS, "", "data-uri");
+  GENV_ITEMFACTORY->createQName(lDataLineNo, ZORBA_ERR_NS, "", "data-line-number");
+  GENV_ITEMFACTORY->createQName(lDataColumnNo, ZORBA_ERR_NS, "", "data-column-number");
   GENV_ITEMFACTORY->createQName(lStackTrace, ZORBA_ERR_NS, "", "stack-trace");
 
   cc->add_var(catch_clause::err_code,
@@ -7848,6 +7886,15 @@ void* begin_visit(const CatchExpr& v)
 
   cc->add_var(catch_clause::err_column_no,
       bind_var(loc, lColumnNo, var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION));
+
+  cc->add_var(catch_clause::zerr_data_uri,
+      bind_var(loc, lDataURI, var_expr::catch_var, theRTM.STRING_TYPE_QUESTION));
+
+  cc->add_var(catch_clause::zerr_data_line_no,
+      bind_var(loc, lDataLineNo, var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION));
+
+  cc->add_var(catch_clause::zerr_data_column_no,
+      bind_var(loc, lDataColumnNo, var_expr::catch_var, theRTM.INTEGER_TYPE_QUESTION));
 
   cc->add_var(catch_clause::zerr_stack_trace,
       bind_var(loc, lStackTrace, var_expr::catch_var, theRTM.ITEM_TYPE_QUESTION));

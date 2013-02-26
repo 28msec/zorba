@@ -47,6 +47,10 @@ declare default element namespace
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
+
 (:~
  : Loops through the test-sets, executes them and reports results.
  : @param $FOTSCatalogFilePath path to the FOTS catalog file.
@@ -62,7 +66,7 @@ declare %ann:sequential function reporting:run-and-report(
   $FOTSZorbaManifestPath  as xs:string,
   $exceptedTestCases      as xs:string*,
   $exceptedTestSets       as xs:string*
-)
+) as document-node()
 {
   try
   {
@@ -89,7 +93,7 @@ declare %ann:sequential function reporting:run-and-report(
 
       file:write("results.xml",
                  $results,
-                 $util:writeXML);
+                 $util:writeText);
 
       reporting:W3C-reporting($results,
                               $FOTSZorbaManifestPath)
@@ -122,7 +126,7 @@ declare %ann:sequential function reporting:report(
   try
   {
     {
-      reporting:W3C-reporting(parse-xml(file:read-text($resultsFilePath)),
+      reporting:W3C-reporting(parse-xml(file:read-text($resultsFilePath))/fots:test-cases,
                               $FOTSZorbaManifestPath)
     }
   }
@@ -139,7 +143,7 @@ declare %ann:sequential function reporting:report(
  : @return The W3C conformance submission file.
  :)
 declare %ann:sequential function reporting:W3C-reporting(
-  $results                as document-node()?,
+  $results                as element(fots:test-cases)?,
   $FOTSZorbaManifestPath  as xs:string
 ) as document-node()
 {

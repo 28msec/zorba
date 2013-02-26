@@ -56,6 +56,10 @@ declare namespace fots =
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
+
 (:~
  : Returns the names of all qualifying test sets.
  :
@@ -89,15 +93,14 @@ declare %ann:nondeterministic function driver:list-test-sets(
 (:~
  : Returns the names of all qualifying test cases.
  :
- : A test case qualifies if (a) it belongs to a qualifing test set, and (b)
+ : A test case qualifies if (a) it belongs to a qualifing test-set, and (b)
  : its applicable dependencies include a user-provided dependency, or no
  : dependency was provided by the user, and (c) its expected-result assertions
  : include at least one of the assertions in a user-provided set of assertions,
  : or no expected-result assertions were provided by the user.
  :
- : A test set qualifies if its name starts with one of the prefixes listed in
- : $testSetPrefixes. If $testSetPrefixes is the empty sequence, then all test
- : sets qualify.
+ : A test-set qualifies if its name is specified in $testSetNames.
+ : If $testSetNames is the empty sequence, then all test-sets qualify.
  :
  : The filtering dependency is given as a string, which may be empty (signifying
  : no dependency) or of the form "depValue_depSatisfied" (e.g., "XQ30+_true"),
@@ -112,7 +115,7 @@ declare %ann:nondeterministic function driver:list-test-sets(
  : filtering set.
  :
  : @param $fotsPath path to the FOTS catalog file.
- : @param $testSetPrefixes name criteria for the test sets
+ : @param $testSetNames name criteria for the test sets
  :        (empty sequence means all test sets).
  : @param $dependency dependency used to filter test-cases.
  :        (empty string means no filtering).
@@ -121,24 +124,24 @@ declare %ann:nondeterministic function driver:list-test-sets(
  : @return names of qualifying FOTS test cases.
  :)
 declare %ann:nondeterministic function driver:list-test-cases(
-  $fotsPath         as xs:string,
-  $testSetPrefixes  as xs:string*,
-  $dependency       as xs:string,
-  $assert           as xs:string*
+  $fotsPath     as xs:string,
+  $testSetNames as xs:string*,
+  $dependency   as xs:string,
+  $assert       as xs:string*
 ) as xs:string*
 {
   let $doc := doc(resolve-uri($fotsPath))
   let $baseUri:= resolve-uri(util:parent-folder($fotsPath))
   return
-    if (empty($testSetPrefixes))
+    if (empty($testSetNames))
     then
       for $testSet in $doc/fots:catalog/fots:test-set
       let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
       return driver:list-test-cases($testSetDoc, $dependency, $assert)
     else
-      for $prefix in $testSetPrefixes
-      for $testSet in $doc/fots:catalog/fots:test-set[starts-with(@name, $prefix)]
+      for $testSet in $doc/fots:catalog/fots:test-set
       let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
+      where exists(index-of($testSet/@name, $testSetNames))
       return driver:list-test-cases($testSetDoc, $dependency, $assert)
 };
 
@@ -374,7 +377,7 @@ declare %ann:sequential function driver:run-fots(
       else
       {
         let $testCaseNames := driver:list-test-cases($fotsPath,
-                                                     $testSetPrefixes,
+                                                     $testSetNames,
                                                      $dependency,
                                                      $assertions)
         return
@@ -416,10 +419,160 @@ declare %ann:sequential function driver:run-fots(
   catch *
   {
     error($err:code,
-          concat("&#xA;",
-                 $err:description,
-                 "&#xA;",
-                 "Please make sure the passed 'fotsPath' points to the",
+          concat("&#xA;Please make sure the passed 'fotsPath' points to the",
+                 " exact location of the FOTS catalog.xml:&#xA;",
+                 resolve-uri($fotsPath),
+                 "&#xA; that the passed 'fotsZorbaManifestPath' points to",
+                 " a file in the same folder as cli.xq:&#xA;",
+                 resolve-uri($zorbaManifestPath),
+                 "&#xA; that the passed 'expectedFailuresPath' points to",
+                 " the ExpectedFailures.xml file:&#xA;",
+                 $expectedFailuresPath))
+  }
+};
+
+
+(:~
+ : This function is just a thin wrapper over the driver:run() function. See
+ : driver:run() for more info.
+ :
+ : Process a specified test set and report the outcome for each containing
+ : test case.
+ :
+ : Processing a test-case results in one of the following outcomes:
+ : 1. Pass: the query was evaluated and its result matched the expected result.
+ : 2. Fail: the query was evaluated and its result did not match the expected
+ :    result.
+ : 3. Non-applicable: the query was not evaluated because at least one of its
+ :    applicable dependencies was violated.
+ : 4. Not-run: the query was not evaluated because the name of the test-case
+ :    appears in the $exceptedTestCases parameter.
+ :
+ : The subset of test-cases to process is specified via the $exceptedTestSets,
+ : $testSetName, $exceptedTestCases, $testCaseName, $dependency,
+ : and $assertions parameters.
+ : A test-case will be processed only if it satisfies all of the following
+ : conditions:
+ : (a) it belongs to a test-set whose name is not among the ones listed in the
+ :     $exceptedTestSets parameter,
+ : (b) the test-case belongs to a test-set whose name is $testSetName,
+ : (c) the name of the test-case is $testCaseName.
+ : (d) $dependency is equal to the empty string or the dependencies applicable
+ :     to the test-case include a user-provided dependency.
+ : (e) $assertions is empty or the expected-result assertions of the test-case
+ :     include at least one of the assertions in $assertions.
+ :
+ : @param $fotsPath path to the FOTS catalog file.
+ : @param $zorbaManifestPath the path to the file that describes optional
+ :        features and implementation-defined items in Zorba.
+ : @param $testSetName exact name of the test-set.
+ : @param $exceptedTestSets names of test sets that should NOT be precessed.
+ : @param $testCasePrefixes prefixes to filter the test cases to process
+ :        (empty seq means no filtering).
+ : @param $exceptedTestCases names of test cases that should NOT be run.
+ : @param $dependency dependency used to filter test-cases.
+ :        (empty string means no filtering).
+ : @param $assertions set of expected-result assertions used to filter test-cases.
+ :        (empty sequence means no filtering).
+ : @param $verbose if true, the resulting XML tree will contain more details
+ :        about each processed test-case.
+ : @param $expectedFailures the root node of the ExpectedFailures.xml file.
+ : @param $cliMode the cli command.
+ : @return an XML tree containing info about all the processed tests-cases
+ :)
+declare %ann:sequential function driver:run-test-set(
+  $fotsPath               as xs:string,
+  $zorbaManifestPath      as xs:string,
+  $testSetName            as xs:string*,
+  $exceptedTestSets       as xs:string*,
+  $testCasePrefixes       as xs:string*,
+  $exceptedTestCases      as xs:string*,
+  $dependency             as xs:string,
+  $assertions             as xs:string*,
+  $verbose                as xs:boolean,
+  $expectedFailuresPath   as xs:string,
+  $cliMode                as xs:string
+) as element(fots:test-cases)
+{
+  trace($fotsPath, "Path to FOTS catalog.xml was set to: ");
+  trace($zorbaManifestPath, "Path to FOTSZorbaManifest set to :");
+  trace($expectedFailuresPath, "Path to ExpectedFailures.xml set to:");
+
+  try
+  {
+    let $FOTSCatalog := doc(resolve-uri($fotsPath))
+
+    let $zorbaManifest := doc(resolve-uri($zorbaManifestPath))
+
+    let $testSetNames :=
+    if(empty($testSetName))
+    then
+    {
+      if(empty($exceptedTestSets))
+      then ()
+      else for $testSet in $FOTSCatalog//fots:test-set
+           where empty(index-of($testSet/@name, $exceptedTestSets))
+           return xs:string($testSet/@name)
+    }
+    else
+    {
+      if(empty($exceptedTestSets))
+      then $testSetName
+      else functx:value-except($testSetName, $exceptedTestSets)
+    }
+
+    let $testCaseNames :=
+    {
+      if (empty($testCasePrefixes) and $dependency eq '' and empty($assertions)) then
+      {
+        ()
+      }
+      else
+      {
+        let $testCaseNames := driver:list-test-cases($fotsPath,
+                                                     $testSetNames,
+                                                     $dependency,
+                                                     $assertions)
+        return
+          if (empty($testCaseNames)) then
+          {
+            exit returning <fots:test-cases/>;
+            ()
+          }
+          else if (empty($testCasePrefixes)) then
+          {
+            $testCaseNames
+          }
+          else
+          {
+            for $name in $testCaseNames
+            where some $prefix in $testCasePrefixes satisfies starts-with($name, $prefix)
+            return $name
+          }
+      }
+    }
+
+    let $expectedFailures :=
+    {
+      if ($expectedFailuresPath eq '')
+      then ()
+      else doc($expectedFailuresPath)
+    }
+
+    return driver:run-fots($FOTSCatalog,
+                           resolve-uri(util:parent-folder($fotsPath)),
+                           $zorbaManifest,
+                           $testSetNames,
+                           $testCaseNames,
+                           $exceptedTestCases,
+                           $verbose,
+                           $expectedFailures,
+                           $cliMode)
+  }
+  catch *
+  {
+    error($err:code,
+          concat("&#xA;Please make sure the passed 'fotsPath' points to the",
                  " exact location of the FOTS catalog.xml:&#xA;",
                  resolve-uri($fotsPath),
                  "&#xA; that the passed 'fotsZorbaManifestPath' points to",
@@ -644,7 +797,7 @@ declare %ann:sequential function driver:test(
   {
     variable $queryName := trace(data($case/@name), "processing test case :");
 
-    variable $test := util:get-value($case, $testSetBaseURI, "test");
+    variable $test as xs:string := util:get-value($case, $testSetBaseURI, "test");
 
     variable $envCase := $case/fots:environment;
 
@@ -719,7 +872,8 @@ declare %ann:sequential function driver:test(
                   eval:error((),
                              $case/fots:result/*,
                              $err:code,
-                             $err:description),
+                             $err:description,
+                             $testSetBaseURI),
                   "fots-driver.xq:driver:test catch",
                   $testSetName,
                   $env,
@@ -755,28 +909,64 @@ declare %private function driver:create-XQXQ-query(
                                               $env,
                                               $envBaseURI,
                                               $testSetBaseURI)
+  let $mapper as xs:string? := env:mapper($case,
+                                          $env,
+                                          $envBaseURI,
+                                          $testSetBaseURI)
   return
     string-join
     (
     (
     "",
     "import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';",
-    "",
     if (exists($resolver))
-    then ($resolver, "")
+    then "declare namespace resolver = 'http://www.zorba-xquery.com/modules/xqxq/url-resolver';"
     else (),
+    if (exists($mapper))
+    then "declare namespace mapper = 'http://www.zorba-xquery.com/modules/xqxq/uri-mapper';"
+    else (),
+    if (exists($resolver) or exists($mapper)) then $env:hof else (),
+    "",
+    if (exists($resolver)) then ($resolver, "") else (),
+    if (exists($mapper)) then ($mapper, "") else (),
 
-    concat("variable $queryID := xqxq:prepare-main-module(",
+    (:
+     : We want to put the input query into a new XQuery as a string literal
+     : and compile this new XQuery. In order to do so, we must escape some
+     : things. The StringLiteral production in the XQuery grammar reads:
+     :
+     :  StringLiteral ::=
+     :      "'" (PredefinedEntityRef | CharRef | EscapeApos | [^'&])* "'"
+     :
+     : for string literals delimited by single quotes. Therefore, we need
+     : to manipulate the input query in two ways:
+     :   1. Replace ' with '' (EscapeApos)
+     :   2. Replace & with &amp; (which will block any PredefinedEntityRefs
+     :      or CharRefs in the input query from being expanded in the new
+     :      XQuery).
+     : The replacement happens here. (2) looks weird because there's one
+     : level of replacement being done right *here* when fots-driver.xq
+     : itself is compiled. Escaping sucks.
+     :)
+    let $escAposQueryText := replace($queryText,"'","''")
+    let $escAmpQueryText  := replace($escAposQueryText, '&amp;', '&amp;amp;')
+    return concat(
+           "variable $queryID := xqxq:prepare-main-module(",
            "&#xA;",
            "'",
            "&#xA;",
-           replace($queryText,"'","''"),
+           $escAmpQueryText,
            "&#xA;",
            "'",
            "&#xA;",
            if (exists($resolver))
-           then ", resolver:url-resolver#2, ());"
-           else ");"),
+           then if(exists($mapper))
+                then ", resolver:url-resolver#2, mapper:uri-mapper#2);"
+                else ", resolver:url-resolver#2, ());"
+           else if(exists($mapper))
+                then ", (), mapper:uri-mapper#2);"
+                else");
+    "),
 
     env:set-context-item($env, $envBaseURI),
     env:set-context-item($case/fots:environment, $testSetBaseURI),
@@ -816,12 +1006,9 @@ declare %private %ann:sequential function driver:xqxq-invoke(
 
       variable $queryResult := xqxq:evaluate-sequential($queryKey);
 
-      (:TODO check if this works:)
-      (:variable $expResult := util:get-value($case, $testSetBaseURI, "result");:)
-
       xqxq:delete-query($queryKey);
 
-      eval:result($queryResult, $case/fots:result/*)
+      eval:result($queryResult, $case/fots:result/*, $testSetBaseURI)
     }
   }
   catch *
@@ -829,6 +1016,7 @@ declare %private %ann:sequential function driver:xqxq-invoke(
     eval:error((),
                $case/fots:result/*,
                $err:code,
-               $err:description)
+               $err:description,
+               $testSetBaseURI)
   }
 };
