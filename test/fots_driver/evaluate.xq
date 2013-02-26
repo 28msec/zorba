@@ -27,16 +27,19 @@ import schema namespace output =
 
 import module namespace xqxq =
   "http://www.zorba-xquery.com/modules/xqxq";
+
 import module namespace schema =
   "http://www.zorba-xquery.com/modules/schema";
 
 import module namespace fots-err =
   "http://www.zorba-xquery.com/fots-driver/errors" at "errors.xq";
+
 import module namespace util =
   "http://www.zorba-xquery.com/fots-driver/util" at "util.xq";
 
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
+
 declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
@@ -75,6 +78,7 @@ declare %ann:sequential function eval:result(
       <fots:errors>{$err}</fots:errors>
     </fots:info>
 };
+
 
 (:~
  : Checks if the error found matches the expected error (if any).
@@ -119,6 +123,7 @@ declare %ann:sequential function eval:error(
     </fots:info>
 };
 
+
 declare %private %ann:sequential function eval:error-code(
   $code             as xs:QName?,
   $errorDescription as xs:string?,
@@ -153,6 +158,7 @@ declare %private %ann:sequential function eval:error-code(
               $errorDescription)
 };
 
+
 declare %private %ann:sequential function eval:check-assertion(
   $result           as item()*,
   $expResult        as element(),
@@ -162,7 +168,8 @@ declare %private %ann:sequential function eval:check-assertion(
 ) as xs:string*
 {
   let $test := local-name($expResult)
-  return switch($test)
+  return
+    switch($test)
     case 'all-of'
       return eval:assert-all-of($result,
                                 $expResult,
@@ -176,43 +183,44 @@ declare %private %ann:sequential function eval:check-assertion(
                                 $errorDescription,
                                 $testSetBaseURI)
     case 'assert'
-      return eval:assert($result,
-                         $expResult)
+      return eval:assert($result, $expResult)
+
     case 'assert-count'
-      return eval:assert-count($result,
-                               $expResult)
+      return eval:assert-count($result, $expResult)
+
     case 'assert-deep-eq'
-      return eval:assert-deep-eq($result,
-                                 $expResult)
+      return eval:assert-deep-eq($result, $expResult)
+
     case 'assert-empty'
       return eval:assert-empty($result)
+
     case 'assert-eq'
-      return eval:assert-eq($result,
-                            $expResult)
+      return eval:assert-eq($result, $expResult)
+
     case 'assert-false'
       return eval:assert-false($result)
+
     case 'assert-permutation'
-      return eval:assert-permutation($result,
-                                     $expResult)
+      return eval:assert-permutation($result, $expResult)
+
     case 'assert-xml'
-      return eval:assert-xml($result,
-                             $expResult,
-                             $testSetBaseURI)
+      return eval:assert-xml($result, $expResult, $testSetBaseURI)
+
     case 'assert-serialization-error'
-      return eval:assert-serialization-error($result,
-                                             $expResult,
-                                             $testSetBaseURI)
+      return eval:assert-serialization-error($result, $expResult, $testSetBaseURI)
+
     case 'assert-string-value'
-      return eval:assert-string-value($result,
-                                      $expResult)
+      return eval:assert-string-value($result, $expResult)
+
     case 'assert-true'
       return eval:assert-true($result)
+
     case 'assert-type'
-      return eval:assert-type($result,
-                              $expResult)
+      return eval:assert-type($result, $expResult)
+
     case 'serialization-matches'
-      return eval:serialization-matches($result,
-                                        $expResult)
+      return eval:serialization-matches($result, $expResult)
+
     case 'error'
       return eval:error($result,
                         $expResult,
@@ -224,7 +232,10 @@ declare %private %ann:sequential function eval:check-assertion(
                    "&#xA;The requested assertion type is not implemented.")
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_any-of :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_any-of
+ :)
 declare %private %ann:sequential function eval:assert-any-of(
   $result           as item()*,
   $expResult        as element(),
@@ -248,7 +259,10 @@ declare %private %ann:sequential function eval:assert-any-of(
                 string-join(util:serialize-result($results/data(item)), ' '))
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_all-of :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_all-of
+ :)
 declare %private %ann:sequential function eval:assert-all-of(
   $result           as item()*,
   $expResult        as element(),
@@ -265,7 +279,10 @@ declare %private %ann:sequential function eval:assert-all-of(
                               $baseURI)
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert
+ :)
 declare %private %ann:sequential function eval:assert(
   $result    as item()*,
   $expResult as element()
@@ -295,7 +312,10 @@ declare %private %ann:sequential function eval:assert(
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-count :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-count
+ :)
 declare %private function eval:assert-count(
   $result    as item()*,
   $expResult as element()
@@ -306,7 +326,10 @@ declare %private function eval:assert-count(
   else "'assert-count' returned: actual number of items is different than the expected number of items."
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-deep-eq :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-deep-eq
+ :)
 declare %private %ann:sequential function eval:assert-deep-eq(
   $result    as item()*,
   $expResult as element()
@@ -336,7 +359,10 @@ declare %private %ann:sequential function eval:assert-deep-eq(
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-empty :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-empty
+ :)
 declare %private function eval:assert-empty(
   $result    as item()*
 ) as xs:string?
@@ -346,7 +372,10 @@ declare %private function eval:assert-empty(
   else "'assert-empty' returned: result is not empty as expected."
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-eq :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-eq
+ :)
 declare %private %ann:sequential function eval:assert-eq(
   $result    as item()*,
   $expResult as element()
@@ -385,7 +414,10 @@ declare %private %ann:sequential function eval:assert-eq(
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-true :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-true
+ :)
 declare %private function eval:assert-true(
   $result as item()*
 ) as xs:string?
@@ -395,7 +427,10 @@ declare %private function eval:assert-true(
   else "'assert-true' returned: query doesn't evaluate to true."
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-false :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-false
+ :)
 declare %private function eval:assert-false(
   $result as item()*
 ) as xs:string?
@@ -405,7 +440,10 @@ declare %private function eval:assert-false(
   else "'assert-false' returned: query doesn't evaluate to false."
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-permutation :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-permutation
+ :)
 declare %private %ann:sequential function eval:assert-permutation(
   $result    as item()*,
   $expResult as element()
@@ -434,7 +472,10 @@ declare %private %ann:sequential function eval:assert-permutation(
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-xml :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-xml
+ :)
 declare %private function eval:assert-xml(
   $result    as item()*,
   $expResult as element(),
@@ -458,7 +499,10 @@ declare %private function eval:assert-xml(
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-serialization-error :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-serialization-error
+ :)
 declare %private %ann:sequential function eval:assert-serialization-error(
   $result    as item()*,
   $expResult as element(),
@@ -480,7 +524,10 @@ declare %private %ann:sequential function eval:assert-serialization-error(
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_serialization-matches :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_serialization-matches
+ :)
 declare %private function eval:serialization-matches(
   $result    as item()*,
   $expResult as element()
@@ -512,7 +559,10 @@ declare %private function eval:serialization-matches(
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-string-value :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-string-value
+ :)
 declare %private function eval:assert-string-value(
   $result    as item()*,
   $expResult as element()
@@ -536,7 +586,10 @@ declare %private function eval:assert-string-value(
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-type :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-type
+ :)
 declare %private %ann:sequential function eval:assert-type(
   $result    as item()*,
   $expResult as element()
