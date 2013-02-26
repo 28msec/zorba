@@ -25,6 +25,9 @@ import module namespace d =
 import module namespace r =
   "http://www.zorba-xquery.com/fots-driver/reporting" at "reporting.xq";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
 
 (:~
  : Path to the FOTS catalog.xml file. If the path is relative, it will be 
@@ -198,7 +201,8 @@ declare function local:usage() as xs:string
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e expectedFailuresPath:=ExpectedFailures.xml -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e dependency:=higherOrderFunctions_false -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e assertions:=assert-count -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -e verbose:=false -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -e verbose:=true -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-set  -e testSetName:=fn-matches -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-and-report -o results_Zorba_XQ30.xml --indent --disable-http-resolution",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=report -e resultsFilePath:=results.xml -o results_Zorba_XQ30.xml --indent",
@@ -260,7 +264,7 @@ return
   (
   (
     d:list-test-cases($fotsPath,
-                      local:tokenize($testSetPrefixes),
+                      d:list-test-sets($fotsPath, local:tokenize($testSetPrefixes)),
                       $dependency,
                       $assertions)
   ),
@@ -305,6 +309,28 @@ return
              xs:boolean($verbose),
              $expectedFailuresPath,
              $mode)
+}
+
+case "run-test-set"
+return
+{
+  trace($testSetName, $testSetNameMsg);
+  trace($dependency, "'dependency' set to:");
+  trace($assertions, "'assertions' set to: ");
+  trace($verbose, "'verbose' set to:");
+  trace($mode, "Cli command was set to:");
+
+  d:run-test-set($fotsPath,
+                 $fotsZorbaManifestPath,
+                 $testSetName,
+                 $exceptedTestSets,
+                 (),
+                 $exceptedTestCases,
+                 $dependency,
+                 $assertions,
+                 xs:boolean($verbose),
+                 $expectedFailuresPath,
+                 $mode)
 }
 
 case "run-test-case"
