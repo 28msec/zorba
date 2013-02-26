@@ -725,7 +725,6 @@ EXPECTED_FOTS_FAILURE (prod-FunctionDecl function-decl-reserved-function-names-0
 EXPECTED_FOTS_FAILURE (prod-FunctionDecl function-decl-reserved-function-names-029 0)
 EXPECTED_FOTS_FAILURE (prod-FunctionDecl function-decl-reserved-function-names-031 0)
 EXPECTED_FOTS_FAILURE (prod-GroupByClause group-013 0)
-EXPECTED_FOTS_FAILURE (prod-GroupByClause group-014 0)
 EXPECTED_FOTS_FAILURE (prod-IfExpr CondExpr012 0)
 EXPECTED_FOTS_FAILURE (prod-IfExpr CondExpr017 0)
 EXPECTED_FOTS_FAILURE (prod-InstanceofExpr instanceof113 0)
