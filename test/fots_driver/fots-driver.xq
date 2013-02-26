@@ -58,7 +58,7 @@ declare namespace ann =
 
 declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
-declare option op:disable "f:trace";
+(:declare option op:disable "f:trace";:)
 
 (:~
  : Returns the names of all qualifying test sets.
