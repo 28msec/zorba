@@ -73,8 +73,6 @@ public:
 
   ~IndexJoinRule();
 
-  void reset();
-
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 
 protected:

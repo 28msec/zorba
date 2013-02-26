@@ -103,8 +103,17 @@ expr* HoistRule::apply(
 
   expr_tools::index_flwor_vars(node, numVars, varmap, NULL);
 
+  /*
+  expr_tools::VarIdMap::const_iterator ite = varmap.begin();
+  expr_tools::VarIdMap::const_iterator end = varmap.end();
+  for (; ite != end; ++ite)
+  {
+    std::cerr << "[ " << ite->first << " --> " << ite->second << "]" << std::endl;
+  }
+  */
+
   expr_tools::ExprVarsMap freevarMap;
-  DynamicBitset freeset(numVars);
+  DynamicBitset freeset(numVars+1);
   expr_tools::build_expr_to_vars_map(node, varmap, freeset, freevarMap);
 
   PathHolder root;
@@ -364,7 +373,7 @@ static expr* try_hoisting(
 
   assert(udf == rCtx.theUDF);
 
-  std::map<const expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
+  expr_tools::ExprVarsMap::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
   const DynamicBitset& varset = fvme->second;
 

@@ -232,9 +232,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
 
     do
     {
-     local_modified = false;
-
-      rule.reset();
+      local_modified = false;
 
       expr* e = rule.apply(rCtx, rCtx.getRoot(), local_modified);
 

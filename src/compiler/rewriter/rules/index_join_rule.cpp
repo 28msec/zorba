@@ -72,10 +72,16 @@ IndexJoinRule::IndexJoinRule(RewriterContext* rctx)
   theExprVarsMap = new expr_tools::ExprVarsMap;
 
   theIdVarMap->reserve(32);
-  theIdVarMap->push_back(NULL); // because varids are starting from 1
+  theIdVarMap->push_back(0); // because varids are starting from 1
 
   csize numVars = 0;
   expr_tools::index_flwor_vars(theRootExpr, numVars, *theVarIdMap, theIdVarMap);
+
+  DynamicBitset freeset(numVars+1);
+  expr_tools::build_expr_to_vars_map(theRootExpr,
+                                     *theVarIdMap,
+                                     freeset,
+                                     *theExprVarsMap);
 }
 
 
@@ -91,30 +97,15 @@ IndexJoinRule::~IndexJoinRule()
 
 
 /*******************************************************************************
-
-********************************************************************************/
-void IndexJoinRule::reset()
-{
-  assert(theVarDefExprs.empty());
-
-  theExprVarsMap->clear();
-
-  csize numVars = theIdVarMap->size();
-  DynamicBitset freeset(numVars+1);
-  expr_tools::build_expr_to_vars_map(theRootExpr,
-                                     *theVarIdMap,
-                                     freeset,
-                                     *theExprVarsMap);
-}
-
-
-/*******************************************************************************
   This rule analyzes the where clauses of flwor exprs to deterimne whether any
   predicate in a clause is a join predicate and whether the associated join
   can be converted into a hashjoin using an index that is built on-the-fly.
 ********************************************************************************/
 expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
+  assert(theVarDefExprs.empty());
+  assert(theChildPositions.empty());
+
   flwor_expr* flworExpr = NULL;
 
   expr_kind_t nodeKind = node->get_expr_kind();

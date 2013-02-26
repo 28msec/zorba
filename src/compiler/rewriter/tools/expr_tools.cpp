@@ -866,6 +866,9 @@ void index_flwor_vars(
   {
     const var_decl_expr* vdecl = static_cast<const var_decl_expr*>(e);
     add_var(vdecl->get_var_expr(), numVars, varidmap, idvarmap);
+
+    if (vdecl->get_init_expr())
+      index_flwor_vars(vdecl->get_init_expr(), numVars, varidmap, idvarmap);
   }
   else
   {
@@ -949,7 +952,7 @@ void build_expr_to_vars_map(
 
   csize numVars = freeset.size();
 
-  DynamicBitset eFreeset(numVars+1);
+  DynamicBitset eFreeset(numVars);
   ExprIterator iter(e);
   while(!iter.done())
   {

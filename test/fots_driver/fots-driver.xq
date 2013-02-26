@@ -416,7 +416,10 @@ declare %ann:sequential function driver:run-fots(
   catch *
   {
     error($err:code,
-          concat("&#xA;Please make sure the passed 'fotsPath' points to the",
+          concat("&#xA;",
+                 $err:description,
+                 "&#xA;",
+                 "Please make sure the passed 'fotsPath' points to the",
                  " exact location of the FOTS catalog.xml:&#xA;",
                  resolve-uri($fotsPath),
                  "&#xA; that the passed 'fotsZorbaManifestPath' points to",
