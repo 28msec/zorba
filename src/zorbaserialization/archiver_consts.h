@@ -98,9 +98,6 @@ enum TypeCode
 
   TYPE_SingletonIterator,
 
-  TYPE_DynamicFunctionIterator,
-  TYPE_DynamicFunctionInfo,
-
   TYPE_CtxVarDeclareIterator,
   TYPE_CtxVarIterator,
   TYPE_LetVarIterator,
@@ -253,8 +250,9 @@ enum TypeCode
 
 #include "runtime/iterator_enum.h"
 
+  TYPE_DynamicFunctionIterator,
+  TYPE_DynamicFunctionInfo,
   TYPE_DynamicFnCallIterator,
-
   TYPE_ArgumentPlaceholderIterator,
 
   TYPE_CountCollectionIterator,

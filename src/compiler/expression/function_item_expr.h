@@ -141,6 +141,7 @@ protected:
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
+      static_context* closureSctx,
       function* f,
       store::Item* aQName,
       uint32_t aArity,
@@ -152,8 +153,11 @@ protected:
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
+      static_context* closureSctx,
       bool isInline,
       bool needsContextItem);
+  
+  virtual ~function_item_expr();
   
 public:
   DynamicFunctionInfo* get_dynamic_fn_info() { return theDynamicFunctionInfo; }

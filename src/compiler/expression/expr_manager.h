@@ -490,10 +490,10 @@ public:
       user_function* udf,
       const QueryLoc& loc);
 
-  function_item_expr* create_function_item_expr(
-      static_context* sctx,
+  function_item_expr* create_function_item_expr(static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
+      static_context *closureSctx,
       function* f,
       store::Item* aQName,
       uint32_t aArity,
@@ -502,8 +502,9 @@ public:
 
   function_item_expr* create_function_item_expr(
       static_context* sctx,
-      user_function* udf,
+      user_function* udf,      
       const QueryLoc& loc,
+      static_context *closureSctx,
       bool isInline,
       bool needsContextItem);
 

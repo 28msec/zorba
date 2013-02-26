@@ -1383,7 +1383,7 @@ void create_inline_function(expr* body, flwor_expr* flwor, const std::vector<xqt
       argVars.push_back(argVar);
       
       // Since the inline function items can be created in one place but then 
-      // invoked in many other places, it is not feasable to perform function 
+      // invoked in many other places, it is not possible to perform function
       // call normalization. Instead the domain expressions of arg vars is 
       // wrapped in type matches.
       if (!is_coercion) 
@@ -1410,11 +1410,18 @@ void create_inline_function(expr* body, flwor_expr* flwor, const std::vector<xqt
   udf->setArgVars(argVars);
   udf->setOptimized(true); // TODO: this should not be set here
 
-
   // Get the function_item_expr and set its function to the udf created above.
   function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(theNodeStack.top());
   assert(fiExpr != NULL);
   fiExpr->set_function(udf);
+
+  // TODO: the inline function has the optimized flag set to true. When this is fixed,
+  // the optimize_cb message should be deleted from here.
+  if (theCCB->theConfig.translate_cb != NULL && theCCB->theConfig.optimize_cb == NULL)
+    theCCB->theConfig.translate_cb(udf->getBody(), udf->getName()->getStringValue().c_str());
+
+  if (theCCB->theConfig.optimize_cb != NULL)
+    theCCB->theConfig.optimize_cb(udf->getBody(), udf->getName()->getStringValue().c_str());
 }
 
 
@@ -1432,7 +1439,10 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
 
   // Create the dynamic call body
 
-  function_item_expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, true, false);
+  // TODO: use the scope sctx?
+  static_context* closureSctx = theRootSctx->create_child_context();
+  theCCB->theSctxMap[theCCB->theSctxMap.size() + 1] = closureSctx;
+  function_item_expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, closureSctx, true, false);
   push_nodestack(fiExpr);
 
   // Get the in-scope vars of the scope before opening the new scope for the
@@ -3526,7 +3536,9 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
     f = udf;
   } // if (udf != NULL || !f->isUdf())
 
-  expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, f, f->getName(), arity, false, needs_context_item);
+  static_context* closureSctx = theRootSctx->create_child_context();
+  theCCB->theSctxMap[theCCB->theSctxMap.size() + 1] = closureSctx;
+  expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, closureSctx, f, f->getName(), arity, false, needs_context_item);
 
   return fiExpr;
 }
@@ -12191,8 +12203,12 @@ void* begin_visit(const InlineFunction& v)
 
   push_scope();
 
+  // TODO: use the scope sctx?
+  static_context* closureSctx = theRootSctx->create_child_context();
+  theCCB->theSctxMap[theCCB->theSctxMap.size() + 1] = closureSctx;
+
   function_item_expr* fiExpr =
-  theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, true, false);
+  theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, closureSctx, true, false);
 
   push_nodestack(fiExpr);
 
@@ -12282,12 +12298,17 @@ void* begin_visit(const InlineFunction& v)
       subst_var = varExpr;
     }
 
-    fiExpr->add_variable(((kind == var_expr::prolog_var)? NULL:varExpr), subst_var, varExpr->get_name(), (kind == var_expr::prolog_var) /*var is global if it's a prolog var*/);
+    if (kind == var_expr::prolog_var)
+      fiExpr->add_variable(NULL, subst_var, varExpr->get_name(), 1 /*var is global if it's a prolog var*/);
+    else
+      fiExpr->add_variable(varExpr, subst_var, varExpr->get_name(), 0);
 
     // std::cerr << "--> subst_var: " << subst_var->toString() << std::endl;
 
     // ???? What about inscope vars that are hidden by param vars ???
   }
+
+  // std::cerr << "--> scoped sctx: " << theSctx->toString() << std::endl;
 
   if (flwor->num_clauses() > 0)
     push_nodestack(flwor);

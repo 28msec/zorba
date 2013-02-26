@@ -31,6 +31,11 @@ namespace zorba
 ********************************************************************************/
 #ifndef NDEBUG
 static int global_iterator_id_counter = 1000;
+
+void reset_global_iterator_id_counter()
+{
+  global_iterator_id_counter = 1000;
+}
 #endif
 
 
@@ -103,11 +108,6 @@ PlanIterator::PlanIterator(zorba::serialization::Archiver& ar)
     theStateOffset(0),
     theSctx(NULL)
 {
-// Used for debugging purposes
-#ifndef NDEBUG
-  theId = global_iterator_id_counter++;
-#endif
-
 }
 
 PlanIterator::PlanIterator(static_context* aContext, const QueryLoc& aLoc)
@@ -133,6 +133,15 @@ void PlanIterator::serialize(::zorba::serialization::Archiver& ar)
     ar.dont_allow_delay();
 
   ar & theSctx;
+
+// Used for debugging purposes
+#ifndef NDEBUG
+  ar & theId;
+  // Set the global counter to the highest id +1.
+  if (!ar.is_serializing_out())
+    if (global_iterator_id_counter < theId + 1)
+      global_iterator_id_counter = theId + 1;
+#endif
 }
 
 
@@ -158,12 +167,10 @@ bool PlanIterator::consumeNext(
 
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
-    /*
     std::cout << "next (" << iter->toString() << ") -> ?"
         << " on state: " << (void*)(planState.theBlock + iter->theStateOffset)
         << " (" << (void*)(planState.theBlock) << " + " << (void*)iter->theStateOffset << ")"
         << std::endl;
-        */
   }
 
   bool status = iter->produceNext(result, planState);

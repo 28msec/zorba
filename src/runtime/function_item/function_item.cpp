@@ -55,6 +55,7 @@ SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 
 ********************************************************************************/
 DynamicFunctionInfo::DynamicFunctionInfo(const QueryLoc& loc,
+                                         static_context* closureSctx,
                                          function* func,
                                          store::Item_t qname,
                                          uint32_t arity,
@@ -62,7 +63,7 @@ DynamicFunctionInfo::DynamicFunctionInfo(const QueryLoc& loc,
                                          bool needsContextItem)
   :
   theCCB(NULL),
-  theSctx(NULL),
+  theClosureSctx(closureSctx),
   theLoc(loc),
   theFunction(func),
   theQName(qname),
@@ -70,19 +71,26 @@ DynamicFunctionInfo::DynamicFunctionInfo(const QueryLoc& loc,
   theIsInline(isInline),
   theNeedsContextItem(needsContextItem)
 {
+//  std::cerr << "--> created DynamicFunctionInfo: " << this << " func: " << theFunction.getp() << " counter: " << (theFunction.getp()? theFunction->getRefCount() : 0) << std::endl;
 }
 
 
 DynamicFunctionInfo::DynamicFunctionInfo(::zorba::serialization::Archiver& ar)
 {
+//  std::cerr << "--> created DynamicFunctionInfo: " << this << " func: " << theFunction.getp() << " counter: " << (theFunction.getp()? theFunction->getRefCount() : 0) << std::endl;
+}
+
+DynamicFunctionInfo::~DynamicFunctionInfo()
+{
+//  std::cerr << "--> deleted ~DynamicFunctionInfo: " << this << " func: " << theFunction.getp() << " counter: " << (theFunction.getp()? theFunction->getRefCount() : 0) << std::endl;
 }
 
 
 void DynamicFunctionInfo::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theCCB;
-  ar & theSctx;
-  // ar & theLoc; TODO
+  ar & theClosureSctx;
+  ar & theLoc;
   ar & theFunction;
   ar & theQName;
   ar & theArity;
@@ -92,8 +100,10 @@ void DynamicFunctionInfo::serialize(::zorba::serialization::Archiver& ar)
   // ar & theScopedVarsValues;
   // ar & theSubstVarsValues;
   ar & theScopedVarsNames;
-  ar & theScopedVarsIterators;
   ar & theIsGlobalVar;
+  ar & theVarId;
+
+  ar & theScopedVarsIterators;
 
   if (ar.is_serializing_out())
   {
@@ -109,6 +119,7 @@ void DynamicFunctionInfo::add_variable(expr* var, var_expr* substVar, const stor
   theSubstVarsValues.push_back(substVar);
   theScopedVarsNames.push_back(name);
   theIsGlobalVar.push_back(isGlobal);
+  theVarId.push_back(0);
 }
 
 /*******************************************************************************
@@ -125,10 +136,10 @@ FunctionItem::FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
                            dynamic_context* dctx)
   :
   store::Item(store::Item::FUNCTION),
-  theCCB(ccb),
+//  theCCB(ccb),
   theDynamicFunctionInfo(dynamicFunctionInfo),
   theArity(dynamicFunctionInfo->theArity),
-  theDctx(dctx)
+  theClosureDctx(dctx)
 {
   assert(theDynamicFunctionInfo->theFunction->isUdf());
   theArgumentsValues.resize(theDynamicFunctionInfo->theArity);
@@ -167,12 +178,6 @@ uint32_t FunctionItem::getStartArity() const
 const signature& FunctionItem::getSignature() const
 {
   return theDynamicFunctionInfo->theFunction->getSignature();
-}
-
-
-const std::vector<PlanIter_t>& FunctionItem::getVariablesIterators() const
-{
-  return theDynamicFunctionInfo->theScopedVarsIterators;
 }
 
 
@@ -234,11 +239,11 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
     }
   }
 
-  expr* dummy = theDynamicFunctionInfo->theCCB->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc, false, false);
+  expr* dummy = theDynamicFunctionInfo->theCCB->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc, NULL, false, false);
   
   PlanIter_t udfCallIterator =
       theDynamicFunctionInfo->theFunction->codegen(theDynamicFunctionInfo->theCCB,
-                                                   theDynamicFunctionInfo->theSctx,
+                                                   theDynamicFunctionInfo->theClosureSctx,
                                                    theDynamicFunctionInfo->theLoc,
                                                    args,
                                                    *dummy);

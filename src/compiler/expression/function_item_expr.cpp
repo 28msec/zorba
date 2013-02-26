@@ -85,6 +85,7 @@ function_item_expr::function_item_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
+    static_context* closureSctx,
     function* f,
     store::Item* aQName,
     uint32_t aArity,
@@ -94,6 +95,7 @@ function_item_expr::function_item_expr(
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
                          loc,
+                         closureSctx,
                          f,
                          aQName,
                          aArity,
@@ -102,6 +104,9 @@ function_item_expr::function_item_expr(
 {
   assert(f != NULL);
   compute_scripting_kind();
+
+  // std::cerr << "--> created function_item_expr: " << this // << " with DynamicFunctionInfo: " << theDynamicFunctionInfo << " counter: " << theDynamicFunctionInfo->getRefCount()
+  //          << std::endl;
 }
 
 
@@ -110,12 +115,14 @@ function_item_expr::function_item_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
+    static_context* closureSctx,
     bool isInline,
     bool needsContextItem)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
                          loc,
+                         closureSctx,
                          NULL,
                          NULL,
                          0,
@@ -123,8 +130,16 @@ function_item_expr::function_item_expr(
                          needsContextItem))
 {
   theScriptingKind = SIMPLE_EXPR;
+  // std::cerr << "--> created function_item_expr: " << this // << " with DynamicFunctionInfo: " << theDynamicFunctionInfo << " counter: " << theDynamicFunctionInfo->getRefCount()
+  //            << std::endl;
 }
 
+
+function_item_expr::~function_item_expr()
+{
+  // std::cerr << "--> deleted ~function_item_expr: " << this // << " with DynamicFunctionInfo: " << theDynamicFunctionInfo << " counter: " << theDynamicFunctionInfo->getRefCount()
+  //          << std::endl;
+}
 
 void function_item_expr::add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal)
 {

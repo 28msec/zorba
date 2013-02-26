@@ -536,7 +536,9 @@ std::ostream& function_item_expr::put(std::ostream& os) const
 {
   os << indent << "funtion_item_expr" << expr_addr(this) << inc_indent;
 
-  if (theDynamicFunctionInfo->theQName != NULL)
+  // TODO: delete
+  // if (theDynamicFunctionInfo->theQName != NULL)
+  if (!is_inline())
   {
     os << " " << theDynamicFunctionInfo->theQName->getStringValue()
        << "#" << theDynamicFunctionInfo->theArity;
@@ -545,7 +547,8 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   }
   else
   {
-    os << " inline udf (" << theDynamicFunctionInfo->theFunction << ") [\n";
+    os << " " << theDynamicFunctionInfo->theQName->getStringValue()
+       << "#" << theDynamicFunctionInfo->theArity << " [\n";
 
     const signature& sig = get_function()->getSignature();
     std::vector<xqtref_t> paramTypes;

@@ -40,9 +40,10 @@ class DynamicFunctionInfo : public SimpleRCObject
 {
 public: // TODO: not public
 
-  std::auto_ptr<CompilerCB>     theCCBHolder;
+  // std::auto_ptr<CompilerCB>     theCCBHolder;
   CompilerCB                  * theCCB;
-  static_context              * theSctx;
+  static_context              * theClosureSctx;
+  //  static_context              * theImportSctx;
   QueryLoc                      theLoc;
   function_t                    theFunction;
   store::Item_t                 theQName;
@@ -53,8 +54,10 @@ public: // TODO: not public
   std::vector<expr*>            theScopedVarsValues;
   std::vector<var_expr*>        theSubstVarsValues;
   std::vector<store::Item_t>    theScopedVarsNames;
-  std::vector<PlanIter_t>       theScopedVarsIterators;
   std::vector<int>              theIsGlobalVar;
+  std::vector<ulong>            theVarId;
+
+  std::vector<PlanIter_t>       theScopedVarsIterators;
 
   store::NsBindings             theLocalBindings; // TODO: not sure these are needed, to check
 
@@ -64,7 +67,9 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFunctionInfo(const QueryLoc& loc, function* func, store::Item_t qname, uint32_t arity, bool isInline, bool needsContextItem);
+  DynamicFunctionInfo(const QueryLoc& loc, static_context* closureSctx, function* func, store::Item_t qname, uint32_t arity, bool isInline, bool needsContextItem);
+
+  virtual ~DynamicFunctionInfo();
 
   void add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal);
 };
@@ -82,8 +87,6 @@ public:
 class FunctionItem : public store::Item, public zorba::serialization::SerializeBaseClass
 {
 protected:
-  std::auto_ptr<CompilerCB>       theCCB;
-  
   DynamicFunctionInfo_t           theDynamicFunctionInfo;
 
   unsigned int                    theArity;   // The arity of the function
@@ -92,9 +95,7 @@ protected:
 
   std::vector<PlanIter_t>         theArgumentsValues;
 
-
-
-  std::auto_ptr<dynamic_context>  theDctx;
+  std::auto_ptr<dynamic_context>  theClosureDctx;
 
   SYNC_CODE(mutable RCLock        theRCLock;)
 
@@ -110,9 +111,7 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  dynamic_context* getDctx() const { return theDctx.get(); }
-
-  const std::vector<PlanIter_t>& getVariablesIterators() const;
+  dynamic_context* getDctx() const { return theClosureDctx.get(); }
 
   const std::vector<PlanIter_t>& getArgumentsValues() const;
 
@@ -138,7 +137,7 @@ public:
 
   const signature& getSignature() const;
   
-  bool isInline() const { return theDynamicFunctionInfo->theIsInline; };
+  bool isInline() const { return theDynamicFunctionInfo->theIsInline; }
   
   bool needsContextItem() const { return theDynamicFunctionInfo->theNeedsContextItem; }
 

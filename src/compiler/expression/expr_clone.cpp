@@ -375,6 +375,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
     create_function_item_expr(theSctx,
                               udf,
                               get_loc(),
+                              e->theDynamicFunctionInfo->theClosureSctx,
                               e->theDynamicFunctionInfo->theFunction,
                               e->theDynamicFunctionInfo->theFunction->getName(),
                               e->theDynamicFunctionInfo->theArity,

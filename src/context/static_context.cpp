@@ -712,12 +712,9 @@ static_context::static_context()
   theAllWarningsErrors(false),
   theFeatures(0)
 {
-  /*
-  std::cerr << "--> creating static_context(): " << this;
-  if (theParent)
-    std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
-  std::cerr << std::endl;
-  */
+//  std::cerr << "--> created static_context(): " << this;
+//  if (theParent) std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
+//  std::cerr << std::endl;
 }
 
 
@@ -770,12 +767,9 @@ static_context::static_context(static_context* parent)
   if (theParent != NULL)
     RCHelper::addReference(theParent);
 
-  /*
-  std::cerr << "--> creating static_context(): " << this;
-  if (theParent)
-    std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
-  std::cerr << std::endl;
-  */
+//  std::cerr << "--> created static_context(): " << this;
+//  if (theParent) std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
+//  std::cerr << std::endl;
 }
 
 
@@ -917,12 +911,9 @@ static_context::~static_context()
   if (theBaseUriInfo)
     delete theBaseUriInfo;
 
-  /*
-  std::cerr << "--> deleting ~static_context(): " << this;
-  if (theParent)
-    std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
-  std::cerr << std::endl;
-  */
+//  std::cerr << "--> deleted ~static_context(): " << this;
+//  if (theParent) std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
+//  std::cerr << std::endl;
 
   if (theParent)
     RCHelper::removeReference(theParent);

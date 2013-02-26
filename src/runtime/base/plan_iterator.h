@@ -588,6 +588,14 @@ public:
   inline void closeImpl(PlanState& planState);
 };
 
+#ifndef NDEBUG
+/*******************************************************************************
+  Reset the global iterator ID counter, used for debugging purposes. Called by
+  the plan serialization when loading a new plan.
+********************************************************************************/
+void reset_global_iterator_id_counter();
+#endif
+
 
 } /* namespace zorba */
 

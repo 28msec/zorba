@@ -77,6 +77,8 @@ user_function::user_function(
   resetFlag(FunctionConsts::isBuiltin);
   setDeterministic(true);
   setPrivate(false);
+
+//  std::cerr << "--> created user_function: " << this << std::endl;
 }
 
 
@@ -91,6 +93,8 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
   resetFlag(FunctionConsts::isBuiltin);
 
   theIsOptimized = true;
+
+//  std::cerr << "--> created user_function: " << this << std::endl;
 }
 
 
@@ -99,6 +103,9 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 user_function::~user_function()
 {
+//  std::cerr << "--> deleted ~user_function: " << this << " thePlan: " << thePlan.getp() << " counter: " << (thePlan.getp()?thePlan->getRefCount() : 0)
+//            // << " iter: " << (thePlan.getp() ? thePlan->toString() : "")
+//            << std::endl;
 }
 
 

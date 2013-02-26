@@ -97,7 +97,10 @@ public:
       const QueryLoc& loc,
       DynamicFunctionInfo* fnInfo);
 
-  const DynamicFunctionInfo_t getDynamicFunctionInfo() const { return theDynamicFunctionInfo; };
+  virtual ~DynamicFunctionIterator();
+
+  // Used for pretty-printing of the iterator tree
+  const DynamicFunctionInfo_t getDynamicFunctionInfo() const { return theDynamicFunctionInfo; }
 
   void accept(PlanIterVisitor& v) const;
 

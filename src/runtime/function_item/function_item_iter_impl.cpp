@@ -77,17 +77,13 @@ bool FunctionLookupIterator::nextImpl(
   
   try
   {
-    std::auto_ptr<CompilerCB> evalCCB;
-    evalCCB.reset(new CompilerCB(*planState.theCompilerCB));
-    evalCCB->theRootSctx = theSctx;
-
-    expr* fiExpr = Translator::translate_literal_function(qname, arity, evalCCB.get(), loc, true);
+    expr* fiExpr = Translator::translate_literal_function(qname, arity, planState.theCompilerCB, loc, true);
     
     DynamicFunctionInfo_t dynFnInfo = static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
-    dynFnInfo->theCCB = evalCCB.get();
-    dynFnInfo->theSctx = theSctx;
-    
-    result = new FunctionItem(dynFnInfo, evalCCB.release(), new dynamic_context(planState.theGlobalDynCtx));
+    dynFnInfo->theCCB = planState.theCompilerCB;
+    dynFnInfo->theClosureSctx = theSctx;
+
+    result = new FunctionItem(dynFnInfo, planState.theCompilerCB, new dynamic_context(planState.theGlobalDynCtx));
   }
   catch (ZorbaException const& e)
   {

@@ -468,7 +468,6 @@ void end_visit(function_item_expr& v)
 
   DynamicFunctionInfo* fnInfo = v.get_dynamic_fn_info();
   fnInfo->theCCB = theCCB;
-  fnInfo->theSctx = sctx;
   fnInfo->theLoc = qloc;
   fnInfo->theFunction = v.get_function();
   fnInfo->theQName = v.get_qname();
@@ -511,24 +510,24 @@ void end_visit(function_item_expr& v)
     std::reverse(fnInfo->theScopedVarsIterators.begin(), fnInfo->theScopedVarsIterators.end());
   }
 
-  /*
+
   // This portion is taken from the eval iterator
   {
     // Create the "import" sctx. The importOuterEnv() method (called below) will
     // register into the importSctx (a) the outer vars of the eval query and (b)
     // the expression-level ns bindings of the outer query at the place where
     // the eval call appears at.
-    static_context* importSctx = sctx->create_child_context();
+    // static_context* importSctx = sctx->create_child_context();
 
     // Create the root sctx for the eval query
-    static_context* evalSctx = importSctx->create_child_context();
+    // static_context* evalSctx = importSctx->create_child_context();
 
     // Create the ccb for the eval query
 
-    fnInfo->theCCBHolder.reset(new CompilerCB(*theCCB));
-    fnInfo->theCCB = fnInfo->theCCBHolder.get();
-    fnInfo->theCCB->theRootSctx = evalSctx;
-    (fnInfo->theCCB->theSctxMap)[1] = evalSctx;
+    // fnInfo->theCCBHolder.reset(new CompilerCB(*theCCB));
+    // fnInfo->theCCB = fnInfo->theCCBHolder.get();
+    // fnInfo->theCCB->theRootSctx = evalSctx;
+    // (fnInfo->theCCB->theSctxMap)[1] = evalSctx;
 
     // Create the dynamic context for the eval query
     // std::auto_ptr<dynamic_context> evalDctx;
@@ -550,14 +549,17 @@ void end_visit(function_item_expr& v)
 
     // result = new FunctionItem(theDynamicFunctionInfo, evalCCB.release(), evalDctx.release());
 
-    ulong maxOuterVarId = 1;
-    ++maxOuterVarId; // TODO: get it from the plan_visitor
+    // std::cerr << "--> sctx: " << sctx->toString() << std::endl;
+    // std::cerr << "--> closureSctx: " << fnInfo->theClosureSctx->toString() << std::endl;
+
+    // ulong maxOuterVarId = 1;
+    // ++maxOuterVarId; // TODO: get it from the plan_visitor
 
     csize curChild = -1;
     csize numOuterVars = fnInfo->theScopedVarsNames.size();
     for (csize i = 0; i < numOuterVars; ++i)
     {
-      var_expr* ve = fnInfo->theCCB->theEM->create_var_expr(importSctx,
+      var_expr* ve = theCCB->theEM->create_var_expr(fnInfo->theClosureSctx,
                                                             NULL,
                                                             qloc,
                                                             var_expr::hof_var,
@@ -569,23 +571,29 @@ void end_visit(function_item_expr& v)
         ++curChild;
         // store::Iterator_t iter = new PlanIteratorWrapper(theChildren[curChild], planState);
         // evalDctx->add_variable(maxOuterVarId, iter);
-        ve->set_unique_id(maxOuterVarId);
-
-        // std::cerr << "--> importOuterEnv(): var: " << theDynamicFunctionInfo->theScopedVarsNames[i]->toString() << " assigned id: " << maxOuterVarId << std::endl;
+        // ve->set_unique_id(maxOuterVarId);
 
         if (fnInfo->theSubstVarsValues[i] != NULL
             &&
             fnInfo->theSubstVarsValues[i]->get_unique_id() == 0)
         {
           fnInfo->theSubstVarsValues[i]->set_var_info(NULL);
-          fnInfo->theSubstVarsValues[i]->set_unique_id(maxOuterVarId);
+          // fnInfo->theSubstVarsValues[i]->set_unique_id(maxOuterVarId);
+          fnInfo->theSubstVarsValues[i]->set_unique_id(theNextDynamicVarId++);
         }
 
-        ++maxOuterVarId;
+        // std::cerr << "--> plan_visitor: " << fnInfo->theQName->toString() << " var: " << fnInfo->theScopedVarsNames[i]->toString() << " has id: " << fnInfo->theSubstVarsValues[i]->get_unique_id() << std::endl;
+
+        ve->set_unique_id(fnInfo->theSubstVarsValues[i]->get_unique_id());
+        fnInfo->theVarId[i] = fnInfo->theSubstVarsValues[i]->get_unique_id();
+
+        // ++maxOuterVarId;
+        // theNextDynamicVarId++;
       }
       else
       {
-        static_context* outerSctx = importSctx->get_parent();
+        // static_context* outerSctx = importSctx->get_parent();
+        static_context* outerSctx = fnInfo->theClosureSctx->get_parent();
 
         VarInfo* outerGlobalVar = outerSctx->lookup_var(fnInfo->theScopedVarsNames[i]);
 
@@ -609,10 +617,7 @@ void end_visit(function_item_expr& v)
         // ZORBA_ASSERT(outerGlobalVar);
 
         // std::cerr << "--> importOuterEnv(): outerSctx: " << outerSctx->toString() << std::endl;
-
-        // std::cerr << "--> importOuterEnv(): updating id for subst_var: "
-        //           << (theDynamicFunctionInfo->theSubstVarsValues[i] ? theDynamicFunctionInfo->theSubstVarsValues[i]->toString() : "NULL\n");
-
+        // std::cerr << "--> plan_visitor: " << fnInfo->theQName->toString() << " updating id for subst_var: " << (fnInfo->theSubstVarsValues[i] ? fnInfo->theSubstVarsValues[i]->toString() : "NULL\n");
 
         if (fnInfo->theSubstVarsValues[i] != NULL
             &&
@@ -622,14 +627,20 @@ void end_visit(function_item_expr& v)
         }
 
         ve->set_unique_id(outerGlobalVarId);
+
+        fnInfo->theVarId[i] = outerGlobalVarId;
       }
 
-      importSctx->bind_var(ve, qloc);
+      // importSctx->bind_var(ve, qloc);
+      // fnInfo->theClosureSctx->bind_var(ve, qloc);
     }
   }
-  */
 
-  push_itstack(new DynamicFunctionIterator(sctx, qloc, fnInfo));
+  // std::cerr << "--> the body now: " << static_cast<user_function*>(fnInfo->theFunction.getp())->getBody()->toString() << std::endl;
+
+  PlanIter_t tmp = new DynamicFunctionIterator(sctx, qloc, fnInfo);
+  // std::cerr << "--> plan_visitor: pushing iter: " << tmp->toString() << std::endl;
+  push_itstack(tmp);
 }
 
 
