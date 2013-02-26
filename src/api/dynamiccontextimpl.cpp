@@ -183,7 +183,50 @@ VarInfo* DynamicContextImpl::get_var_info(
 
   return var;
 }
+/****************************************************************************//**
 
+********************************************************************************/
+bool DynamicContextImpl::getVariableType(
+    const String& inNamespace,
+    const String& inLocalname,
+    String& outType)
+{
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
+    const zstring& localName = Unmarshaller::getInternalString(inLocalname);
+
+    VarInfo* var = NULL;
+
+    try
+    {
+      var = get_var_info(nameSpace, localName);
+      
+      const XQType* varType = var->getType();
+
+      if (!varType)
+        outType = "xs:anyType";
+      else
+        outType = varType->toSchemaString();
+    }
+    catch (ZorbaException const& e)
+    {
+      // Normally, we should be throwing an exception if the variable has not
+      // been declared inside the xquery program, but this cases many failures
+      // with the w3c XQTS.
+      if (e.diagnostic() == err::XPST0008)
+      {
+        return false;
+      }
+      throw;
+    }
+    return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
 
 /****************************************************************************//**
 

@@ -528,38 +528,62 @@ public:
            const zorba::DynamicContext*) const;
 };
 
-  class VariableValueFunction : public XQXQFunction{
-    protected:
-      class ValueItemSequence : public ItemSequence
-      {
-        protected:
-          Iterator_t theIterator;
 
-        public:
-          ValueItemSequence(Iterator_t& aIter)
-            : theIterator(aIter)
-          {
-          }
+/*******************************************************************************
 
-          virtual ~ValueItemSequence(){}
+********************************************************************************/
+class VariableValueFunction : public XQXQFunction{
+  protected:
+    class ValueItemSequence : public ItemSequence
+    {
+      protected:
+        Iterator_t theIterator;
 
-          Iterator_t
-          getIterator() { return theIterator; }
+      public:
+        ValueItemSequence(Iterator_t& aIter)
+          : theIterator(aIter)
+        {
+        }
 
-      };
-    public:
-      VariableValueFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+        virtual ~ValueItemSequence(){}
 
-      virtual ~VariableValueFunction() {}
+        Iterator_t
+        getIterator() { return theIterator; }
 
-      virtual zorba::String
-        getLocalName() const {return "variable-value"; }
+    };
+  public:
+    VariableValueFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
 
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
-  };
+    virtual ~VariableValueFunction() {}
+
+    virtual zorba::String
+      getLocalName() const {return "variable-value"; }
+
+    virtual zorba::ItemSequence_t
+      evaluate(const Arguments_t&,
+                const zorba::StaticContext*,
+                const zorba::DynamicContext*) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class VariableTypeFunction : public XQXQFunction
+{
+public:
+  VariableTypeFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+
+  virtual ~VariableTypeFunction() {}
+
+  virtual zorba::String
+  getLocalName() const {return "variable-type"; }
+
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
 
 
 }/*xqxq namespace*/}/*zorba namespace*/

@@ -286,6 +286,66 @@ declare %an:sequential function xqxq:bind-context-item($query-key as xs:anyURI,
 declare %an:sequential function xqxq:bind-variable($query-key as xs:anyURI,
   $var as xs:QName, $value as item()*) as empty-sequence() external ;
 
+(:~
+ : This function uses a string value to set the value of an external variable
+ : by trying to cast the string to the corresponding type defined in the query.
+ : Currently the types supported for automatic casting are: xs:string*, xs:integer*, 
+ : xs:int*, xs:long*, xs:short*, xs:decimal*, xs:double*, xs:float*, xs:date*, 
+ : xs:time*, xs:dateTime*, object()*, array()*, document-node()* and element()*.
+ : If the variable doesn't have a defined type xs:string is assumed.
+ : 
+ : NOTE: if the user wants to set the variable using an item() the use of
+ : xqxq:bind-variable is suggested.   
+ :
+ : @param $query-key the identifier for a compiled query
+ : @param $name the name of the external variable to bind
+ : @param $value the sequence of strings to which the external variable $name
+ :  should be casted and set
+ :
+ : @return the function has side effects and returns the empty
+ :   sequence.
+ :
+ : @error xqxq:NoQueryMatch if no query with the given identifier
+ :   was prepared.
+ : @error xqxq:UndeclaredVariable if the given variable is not declared
+ :   in the query.
+ :)
+declare %an:sequential function xqxq:set-variable($query-key as xs:anyURI, $var-name as 
+  xs:QName, $value as xs:string*) as empty-sequence()
+  {
+    let $type := xqxq:variable-type($query-key, $var-name)
+    let $casted-value :=                                                         
+      if ($type eq "xs:integer" or $type eq "xs:integer*") then 
+        for $val in $value return xs:integer($val) 
+      else if ($type eq "xs:int" or $type eq "xs:int*") then 
+        for $val in $value return xs:int($val)   
+      else if ($type eq "xs:long" or $type eq "xs:long*") then 
+        for $val in $value return xs:long($val)  
+      else if ($type eq "xs:short" or $type eq "xs:short*") then 
+        for $val in $value return xs:short($val)   
+      else if ($type eq "xs:decimal" or $type eq "xs:decimal*") then 
+        for $val in $value return xs:decimal($val)  
+      else if ($type eq "xs:double" or $type eq "xs:double*") then 
+        for $val in $value return xs:double($val)
+      else if ($type eq "xs:float" or $type eq "xs:float*") then 
+        for $val in $value return xs:float($val)
+      else if ($type eq "xs:date" or $type eq "xs:date*") then 
+        for $val in $value return xs:date($val) 
+      else if ($type eq "xs:time" or $type eq "xs:time*") then 
+        for $val in $value return xs:time($val)  
+      else if ($type eq "xs:dateTime" or $type eq "xs:dateTime") then 
+        for $val in $value return xs:dateTime($val)    
+      else if ($type eq "object()" or $type eq "object()*") then
+        for $val in $value return jn:parse-json($val)    
+      else if ($type eq "array()" or $type eq "array()*") then
+        for $val in $value return jn:parse-json($val)
+      else if (fn:contains($type, "document-node(")) then
+        for $val in $value return fn:parse-xml($val)  
+      else if (fn:contains($type, "element(")) then
+        for $val in $value return fn:parse-xml($val)/element()  
+      else $value                       
+    return xqxq:bind-variable($query-key, $var-name, $casted-value)
+  };    
 
 (:~
  : Evaluates the given prepared query and returns the result
@@ -387,6 +447,23 @@ declare %an:sequential function xqxq:delete-query($query-key as xs:anyURI) as
 declare function xqxq:variable-value($query-key as xs:anyURI, $var-name as 
   xs:QName) as item()* external;
 
+(:~
+ : This function returns the type of a variable that is bound in the
+ : given query.
+ :
+ : @param $query-key the identifier of a compiled query.
+ : @param $var-name the name of the variable whose value should be returned.
+ :
+ : @return the type of the given variable.
+ :
+ : @error xqxq:NoQueryMatch if no query with the given identifier
+ :   was prepared.
+ : @error xqxq:UndeclaredVariable if the given variable is not declared
+ :   in the query.
+ : @error xqxq:UnboundVariable if the given variable doesn't have a value.
+ :)
+declare function xqxq:variable-type($query-key as xs:anyURI, $var-name as 
+  xs:QName) as xs:string external;                               
 
 (:~
  : Internal helper function. Only necessary because of incomplete HOF

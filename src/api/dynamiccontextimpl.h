@@ -162,6 +162,9 @@ public:
   virtual bool
   isBoundContextItem() const;
 
+  virtual bool 
+  getVariableType(const String& inNamespace, const String& inLocalname, String& outType);
+
 protected:
   void checkNoIterators() const;
 

@@ -85,6 +85,10 @@ XQXQModule::getExternalFunction(const zorba::String& localName)
     {
       lFunc = new VariableValueFunction(this);
     }
+    else if (localName == "variable-type")
+    {
+      lFunc = new VariableTypeFunction(this);
+    }
   }
   
   return lFunc;
@@ -962,6 +966,47 @@ zorba::ItemSequence_t VariableValueFunction::evaluate(
   {
     return ItemSequence_t(new SingletonItemSequence(lItem));
   }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+zorba::ItemSequence_t VariableTypeFunction::evaluate(
+    const Arguments_t& aArgs,
+    const zorba::StaticContext* aSctx,
+    const zorba::DynamicContext* aDctx) const 
+{
+  String lQueryID = XQXQFunction::getOneStringArgument(aArgs,0);
+
+  QueryMap* lQueryMap;
+  if (!(lQueryMap= dynamic_cast<QueryMap*>(aDctx->getExternalFunctionParameter("xqxqQueryMap"))))
+  {
+    throwError("NoQueryMatch", "String identifying query does not exists.");
+  }
+  
+  XQuery_t lQuery = getQuery(aDctx, lQueryID);
+
+  Item lVarQName = XQXQFunction::getItemArgument(aArgs, 1);
+
+  zorba::DynamicContext* lCtx = lQuery->getDynamicContext();
+  zorba::String lNS = lVarQName.getNamespace(), lLocal = lVarQName.getLocalName();
+  zorba::String lType;
+  try
+  {
+    if(!lCtx->getVariableType(lNS, lLocal, lType))
+    {
+      std::ostringstream lMsg;
+      lMsg << lLocal << ": variable not bound";
+      XQXQFunction::throwError("UnboundVariable", lMsg.str());  
+    }
+  }
+  catch (ZorbaException& ze)
+  {
+    if (ze.diagnostic() == zerr::ZAPI0011_VARIABLE_NOT_DECLARED)
+      XQXQFunction::throwError("UndeclaredVariable", ze.what());  
+    throw; // should not happen
+  }
+  return ItemSequence_t(new SingletonItemSequence(XQXQModule::getItemFactory()->createString(lType)));
 }
 
  
