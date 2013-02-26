@@ -36,7 +36,8 @@ declare namespace ann =
 declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
-declare variable $fotsPath as xs:string external := "";
+declare variable $fotsPath as xs:string external :=
+  "../../../build/test/fots/2011/QT3-test-suite/catalog.xml";
 declare variable $dependency as xs:string external := "";
 declare variable $testSetPrefixes as xs:string external := "";
 
