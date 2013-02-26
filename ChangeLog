@@ -12,6 +12,8 @@ New Features:
   * In store API, added ability to specify a stream's originating URI (file)
     for streamable strings and base64Binary.
   * Added millis-to-dateTime() function in datetime module.
+  * fn:trace outputs "empty-sequence()" if the input is the empty-sequence.
+  * Addex xqxq:variable-value function.
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
@@ -26,10 +28,15 @@ Bug Fixes/Other Changes:
   * Fixed bug #1111786 (xml/json parse error location in catch clause).
   * NaN items are considered equal to each other during grouping
   * Fixed bug #855481 (Too small time types on Windows).
+  * Fixed bug #1132032 (Certain regexes involving ^ should be legal)
+  * Fixed bug #1023168 (Non-single-char-escapes in regex character ranges not
+    caught)
+  * Throw XQST0048 for groupby clause, as specified by XQuery 3.0.
+  * Fixed bug #866874 (regex "range subtraction" not supported for ICU)
   * Fixed bug in computing the static type of an allowing-empty FOR variable.
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
-  * Fixed bug #1099535  (xml:parse endless loop)
-  * Fixed bug #866958  (Parsing error not explicit enough)
+  * Fixed bug #1099535 (xml:parse endless loop)
+  * Fixed bug #866958 (Parsing error not explicit enough)
   * Fixed bug #867068 (Incorrect usage of XQDY0027)
   * Fixed bug #1023362 (xsi:type attribute ignored during validation)
 

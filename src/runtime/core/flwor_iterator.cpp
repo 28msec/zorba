@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -84,6 +84,7 @@ ForLetClause::ForLetClause(
   theType(FOR),
   theInput(input),
   theVarRefs(varRefs),
+  theSingleItemLETVar(false),
   theDoLazyEval(true)
 {
 }
@@ -109,6 +110,7 @@ ForLetClause::ForLetClause(
   theInput(input),
   theVarRefs(varRefs),
   thePosVarRefs(posVarRefs),
+  theSingleItemLETVar(false),
   theDoLazyEval(true)
 {
 }
@@ -133,6 +135,7 @@ ForLetClause::ForLetClause(
   theType(LET),
   theInput(input),
   theVarRefs(varRefs),
+  theSingleItemLETVar(false),
   theDoLazyEval(lazyEval)
 {
 }
@@ -145,7 +148,7 @@ void ForLetClause::serialize(::zorba::serialization::Archiver& ar)
 {
   //ar & theVarName;
   bool isFor;
-
+  
   if (ar.is_serializing_out())
   {
     isFor = (theType == FOR);
@@ -160,6 +163,7 @@ void ForLetClause::serialize(::zorba::serialization::Archiver& ar)
   ar & theVarRefs;
   ar & thePosVarRefs;
   ar & theInput;
+  ar & theSingleItemLETVar;
   ar & theDoLazyEval;
 }
 
@@ -218,7 +222,7 @@ OrderByClause::OrderByClause(
   theStable(stable)
 {
 }
-
+  
 
 /***************************************************************************//**
 
@@ -267,8 +271,8 @@ uint32_t OrderByClause::getStateSizeOfSubtree() const
 
 ********************************************************************************/
 void OrderByClause::open(
-    const static_context* sctx,
-    PlanState& planState,
+    const static_context* sctx, 
+    PlanState& planState, 
     uint32_t& offset)
 {
   std::vector<OrderSpec>::iterator ite = theOrderSpecs.begin();
@@ -278,7 +282,7 @@ void OrderByClause::open(
   {
     ite->open(planState, offset);
 
-    if (ite->theCollation.size() != 0)
+    if (ite->theCollation.size() != 0) 
     {
       ite->theCollator = sctx->get_collator(ite->theCollation, theLocation);
     }
@@ -388,7 +392,7 @@ void MaterializeClause::addSort(
 
 ********************************************************************************/
 void MaterializeClause::accept(PlanIterVisitor& v) const
-{
+{ 
   v.beginVisitMaterializeClause();
 
   csize numVars = theInputForVars.size();
@@ -456,8 +460,8 @@ uint32_t MaterializeClause::getStateSizeOfSubtree() const
 
 ********************************************************************************/
 void MaterializeClause::open(
-    const static_context* sctx,
-    PlanState& planState,
+    const static_context* sctx, 
+    PlanState& planState, 
     uint32_t& offset)
 {
   std::vector<ForVarIter_t>::iterator ite1 = theInputForVars.begin();
@@ -483,7 +487,7 @@ void MaterializeClause::open(
   {
     ite3->open(planState, offset);
 
-    if (ite3->theCollation.size() != 0)
+    if (ite3->theCollation.size() != 0) 
     {
       ite3->theCollator = sctx->get_collator(ite3->theCollation, theLocation);
     }
@@ -573,7 +577,7 @@ void GroupByClause::serialize(::zorba::serialization::Archiver& ar)
 
 ********************************************************************************/
 void GroupByClause::accept(PlanIterVisitor& v) const
-{
+{ 
   v.beginVisitGroupByClause();
 
   csize numSpecs = theGroupingSpecs.size();
@@ -604,7 +608,7 @@ uint32_t GroupByClause::getStateSizeOfSubtree() const
   {
     size += theGroupingSpecs[i].getStateSizeOfSubtree();
   }
-
+  
   numSpecs = theNonGroupingSpecs.size();
   for (csize i = 0; i < numSpecs; ++i)
   {
@@ -619,14 +623,14 @@ uint32_t GroupByClause::getStateSizeOfSubtree() const
 
 ********************************************************************************/
 void GroupByClause::open(static_context* sctx, PlanState& planState, uint32_t& offset)
-{
+{ 
   std::vector<GroupingSpec>::iterator groupIter = theGroupingSpecs.begin();
   std::vector<GroupingSpec>::iterator groupEnd = theGroupingSpecs.end();
   for (; groupIter != groupEnd; ++groupIter)
   {
     groupIter->open(planState, offset);
 
-    if (groupIter->theCollation.size() != 0)
+    if (groupIter->theCollation.size() != 0) 
     {
       groupIter->theCollator = sctx->get_collator(groupIter->theCollation, theLocation);
     }
@@ -693,7 +697,7 @@ void GroupByClause::close(PlanState& planState)
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-FlworState::FlworState()
+FlworState::FlworState() 
   :
   theNumTuples(0),
   theCurTuplePos(0),
@@ -745,7 +749,7 @@ void FlworState::init(
   {
     const ForLetClause& flc = *iter;
 
-    if (flc.theType == ForLetClause::LET)
+    if (flc.theType == ForLetClause::LET && !flc.theSingleItemLETVar)
     {
       (*domiter) = new PlanIteratorWrapper(flc.theInput, planState);
       (*seqiter) = GENV_STORE.createTempSeq(flc.lazyEval());
@@ -774,7 +778,7 @@ void FlworState::init(
     std::vector<GroupingSpec>* groupingSpecs)
 {
   init(planState, forletClauses);
-
+ 
   if (groupingSpecs != 0)
   {
     GroupTupleCmp cmp(groupbyLoc, planState.theLocalDynCtx, tm, groupingSpecs);
@@ -844,7 +848,7 @@ void FlworState::clearGroupMap()
     delete (*iter).first;
     delete (*iter).second;
   }
-
+  
   theGroupMap->clear();
 }
 
@@ -898,7 +902,7 @@ FLWORIterator::FLWORIterator(
                                   theOrderByClause->theOrderSpecs,
                                   theOrderByClause->theStable);
     delete theOrderByClause;
-    theOrderByClause = NULL;
+    theOrderByClause = NULL; 
   }
 }
 
@@ -919,7 +923,7 @@ FLWORIterator::~FLWORIterator()
   }
 
   if (theGroupByClause)
-  {
+  { 
     delete theGroupByClause;
   }
 }
@@ -937,7 +941,7 @@ void FLWORIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theGroupByClause;
   ar & theOrderByClause;  //can be null
   ar & theMaterializeClause;  //can be null
-  ar & theReturnClause;
+  ar & theReturnClause; 
 }
 
 
@@ -1010,18 +1014,18 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
               {
                 if (!state->theFirstResult)
                   theReturnClause->reset(planState);
-
+                
                 state->theFirstResult = false;
 
                 rebindStreamTuple(state->theSortTable[state->theCurTuplePos].theDataPos,
                                   state,
                                   planState);
 
-                while (consumeNext(result, theReturnClause, planState))
+                while (consumeNext(result, theReturnClause, planState)) 
                 {
                   STACK_PUSH(true, state);
                 }
-
+                
                 ++(state->theCurTuplePos);
               }
             }
@@ -1036,16 +1040,16 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
               {
                 if (!state->theFirstResult)
                   theReturnClause->reset(planState);
-
+                
                 state->theFirstResult = false;
-
+                
                 rebindStreamTuple(state->theCurTuplePos, state, planState);
 
-                while (consumeNext(result, theReturnClause, planState))
+                while (consumeNext(result, theReturnClause, planState)) 
                 {
                   STACK_PUSH(true, state);
                 }
-
+                
                 ++(state->theCurTuplePos);
               }
             }
@@ -1113,7 +1117,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
               rebindGroupTuple(state->theGroupMapIter, state, planState);
 
-              while(consumeNext(result, theReturnClause, planState))
+              while(consumeNext(result, theReturnClause, planState)) 
               {
                 STACK_PUSH(true, state);
               }
@@ -1129,7 +1133,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           // No more values for the current variable (and the current variable
           // is  not the 1st one). We go back to the previous variable to
           // compute its next value (if any). Then, we will come back to this
-          // variable again, and compute all its possible values from the
+          // variable again, and compute all its possible values from the 
           // begining. So, we mark this var's state as "to be reset", so that
           // the domain expr of the var will be reset before we try to compute
           // its new set of values.
@@ -1221,12 +1225,11 @@ bool FLWORIterator::bindVariable(
     // We increase the position counter
     ++bindingState;
 
-    std::vector<PlanIter_t>::const_iterator viter = flc.theVarRefs.begin();
+    std::vector<PlanIter_t>::const_iterator ite = flc.theVarRefs.begin();
     std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
-    for (; viter != end; ++viter)
+    for (; ite != end; ++ite)
     {
-      static_cast<ForVarIterator*>
-      ((*viter).getp())->bind(item.getp(), planState);
+      static_cast<ForVarIterator*>((*ite).getp())->bind(item.getp(), planState);
     }
 
     if (!flc.thePosVarRefs.empty())
@@ -1234,51 +1237,54 @@ bool FLWORIterator::bindVariable(
       store::Item_t posItem;
       GENV_ITEMFACTORY->createInteger(posItem, xs_integer(bindingState));
 
-      std::vector<PlanIter_t>::const_iterator viter = flc.thePosVarRefs.begin();
+      std::vector<PlanIter_t>::const_iterator ite = flc.thePosVarRefs.begin();
       std::vector<PlanIter_t>::const_iterator end = flc.thePosVarRefs.end();
-      for (; viter != end; ++viter)
+      for (; ite != end; ++ite)
       {
-        static_cast<ForVarIterator*>
-        ((*viter).getp())->bind(posItem.getp(), planState);
+        static_cast<ForVarIterator*>((*ite).getp())->bind(posItem.getp(), planState);
       }
     }
 
     return true;
   }
   case ForLetClause::LET :
-  {
+  {      
     // If the var is already bound, there is no next value for it, so return false.
     if (bindingState == 1)
     {
       return false;
     }
 
-    store::TempSeq_t tmpSeq = iterState->theTempSeqs[varNo].getp();
-
-    /*
-    std::cerr << "--> binding var: " << flc.theVarName << " to tempSequence: " << tmpSeq->toString() << " varNo: " << varNo;
-    PlanIteratorWrapper* piw = dynamic_cast<PlanIteratorWrapper*>(iterState->theTempSeqIters[varNo].getp());
-    if (piw != NULL)
-      std::cerr << " iter: " << piw->theIterator->getId() << " = " << piw->theIterator->getClassName();
-    else
-      std::cerr << " iter: " << iterState->theTempSeqIters[varNo]->toString();
-    std::cerr << std::endl;
-    */
-
-    tmpSeq->init(iterState->theTempSeqIters[varNo]);
-
-    /*
-    std::cerr << "--> binding to var: " << flc.theVarName << " tempSeq: "
-        << tmpSeq.getp() << " " << tmpSeq->toString()
-        << " theVarRefs count: " << flc.theVarRefs.size()
-        << std::endl;
-    */
-
-    std::vector<PlanIter_t>::const_iterator viter = flc.theVarRefs.begin();
-    std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
-    for (; viter != end; ++viter)
+    if (!flc.theSingleItemLETVar)
     {
-      static_cast<LetVarIterator*>((*viter).getp())->bind(tmpSeq, planState);
+      store::TempSeq_t tmpSeq = iterState->theTempSeqs[varNo].getp();
+      tmpSeq->init(iterState->theTempSeqIters[varNo]);
+
+      std::vector<PlanIter_t>::const_iterator ite = flc.theVarRefs.begin();
+      std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
+      for (; ite != end; ++ite)
+      {
+        static_cast<LetVarIterator*>((*ite).getp())->bind(tmpSeq, planState);
+      }
+    }
+    else
+    {
+      store::Item_t item;
+      if (!consumeNext(item, flc.theInput, planState))
+      {
+        item = NULL;
+      }
+      else
+      {
+        flc.theInput->reset(planState);
+      }
+
+      std::vector<PlanIter_t>::const_iterator ite = flc.theVarRefs.begin();
+      std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
+      for (; ite != end; ++ite)
+      {
+        static_cast<LetVarIterator*>((*ite).getp())->bind(item, planState);
+      }
     }
 
     bindingState = 1;
@@ -1401,7 +1407,7 @@ void FLWORIterator::materializeStreamTuple(
 
 /***************************************************************************//**
   All FOR and LET vars are bound when this method is called. The method computes
-  the sort tuple ST and the return-clause sequence R for the current var
+  the sort tuple ST and the return-clause sequence R for the current var 
   bindings. Then, it inserts I(R) into theReultTable, where I is an iterator over
   the temp seq storing R, and the pair (ST, P) into theSortTable, where P is the
   position of I(R) within theReultTable.
@@ -1437,7 +1443,7 @@ void FLWORIterator::materializeSortTupleAndResult(
       store::Item_t temp;
       if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))
       {
-        RAISE_ERROR(err::XPTY0004, theOrderByClause->theLocation,
+        RAISE_ERROR(err::XPTY0004, theOrderByClause->theLocation, 
         ERROR_PARAMS(ZED(SingletonExpected_2o)));
       }
     }
@@ -1484,7 +1490,7 @@ void FLWORIterator::materializeGroupTuple(
   {
     groupTupleItems.push_back(NULL);
     store::Item_t& tupleItem = groupTupleItems.back();
-
+    
     consumeNext(tupleItem, specIter->theInput, planState);
 
     specIter->reset(planState);
@@ -1501,7 +1507,7 @@ void FLWORIterator::materializeGroupTuple(
   {
     for (csize i = 0; i < numNonGroupingSpecs; ++i)
     {
-      store::Iterator_t iterWrapper =
+      store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(nongroupingSpecs[i].theInput, planState);
 
       (*nongroupVarSequences)[i]->append(iterWrapper);
@@ -1515,7 +1521,7 @@ void FLWORIterator::materializeGroupTuple(
 
     for (csize i = 0; i < numNonGroupingSpecs; ++i)
     {
-      store::Iterator_t iterWrapper =
+      store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(nongroupingSpecs[i].theInput, planState);
 
       store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, false);
@@ -1532,14 +1538,14 @@ void FLWORIterator::materializeGroupTuple(
 
 /***************************************************************************//**
   Binds the values in current tuple of the group map to the var references
-  that appear after the groupby clause.
+  that appear after the groupby clause. 
 ********************************************************************************/
-void FLWORIterator::rebindStreamTuple(
+void FLWORIterator::rebindStreamTuple( 
     ulong tuplePos,
     FlworState* iterState,
     PlanState& planState) const
 {
-  StreamTuple& streamTuple =
+  StreamTuple& streamTuple = 
   iterState->theTuplesTable[tuplePos];
 
   csize numForVarsRefs = theMaterializeClause->theOutputForVarsRefs.size();
@@ -1550,9 +1556,9 @@ void FLWORIterator::rebindStreamTuple(
                   theMaterializeClause->theOutputForVarsRefs[i],
                   planState);
   }
-
+  
   csize numLetVarsRefs = theMaterializeClause->theOutputLetVarsRefs.size();
-
+  
   for (csize i = 0; i < numLetVarsRefs; ++i)
   {
     bindVariables(streamTuple.theSequences[i],
@@ -1577,7 +1583,7 @@ void FLWORIterator::rebindGroupTuplesForSort(
   while (groupMapIter != groupMapEnd)
   {
     rebindGroupTuple(groupMapIter, iterState, planState);
-
+  
     materializeSortTupleAndResult(iterState, planState);
 
     theReturnClause->reset(planState);
@@ -1602,7 +1608,7 @@ void FLWORIterator::rebindGroupTuplesForMaterialize(
   while (groupMapIter != groupMapEnd)
   {
     rebindGroupTuple(groupMapIter, iterState, planState);
-
+  
     materializeStreamTuple(iterState, planState);
 
     ++groupMapIter;
@@ -1612,9 +1618,9 @@ void FLWORIterator::rebindGroupTuplesForMaterialize(
 
 /***************************************************************************//**
   Binds the values in current tuple of the group map to the var references
-  that appear after the groupby clause.
+  that appear after the groupby clause. 
 ********************************************************************************/
-void FLWORIterator::rebindGroupTuple(
+void FLWORIterator::rebindGroupTuple( 
     GroupHashMap::iterator groupMapIter,
     FlworState* iterState,
     PlanState& planState) const
@@ -1686,10 +1692,10 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   if (theWhereClause != NULL)
     theWhereClause->open(planState, offset);
-
+  
   if (theGroupByClause)
     theGroupByClause->open(theSctx, planState, offset);
-
+  
   if (theOrderByClause)
     theOrderByClause->open(theSctx, planState, offset);
 
@@ -1705,9 +1711,9 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
                       theForLetClauses,
                       (theOrderByClause ? &theOrderByClause->theOrderSpecs : NULL),
                       theGroupByClause->theLocation,
-                      &theGroupByClause->theGroupingSpecs);
+                      &theGroupByClause->theGroupingSpecs); 
     }
-    else if (theOrderByClause)
+    else if (theOrderByClause) 
     {
       iterState->init(planState,
                       theSctx->get_typemanager(),
@@ -1717,7 +1723,7 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
                       0);
     }
   }
-  else
+  else 
   {
     iterState->init(planState, theForLetClauses);
   }
@@ -1742,7 +1748,7 @@ void FLWORIterator::resetImpl(PlanState& planState) const
 
   if (theMaterializeClause != NULL)
     theMaterializeClause->reset(planState);
-
+  
   if (theGroupByClause != NULL)
     theGroupByClause->reset(planState);
 
@@ -1782,7 +1788,7 @@ void FLWORIterator::closeImpl(PlanState& planState)
   {
     iter->theInput->close(planState);
   }
-
+  
   StateTraitsImpl<FlworState>::destroyState(planState, theStateOffset);
 }
 
@@ -1790,9 +1796,9 @@ void FLWORIterator::closeImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-uint32_t FLWORIterator::getStateSize() const
+uint32_t FLWORIterator::getStateSize() const  
 {
-  return sizeof(FlworState);
+  return sizeof(FlworState); 
 }
 
 
@@ -1850,7 +1856,7 @@ void FLWORIterator::accept(PlanIterVisitor& v) const
 
   if (theGroupByClause)
     theGroupByClause->accept(v);
-
+ 
   if (theOrderByClause)
     theOrderByClause->accept(v);
 

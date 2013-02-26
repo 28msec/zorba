@@ -84,10 +84,17 @@ protected:
   enum ForLetType { FOR, LET };
 
   zstring                    theVarName;
+
   ForLetType                 theType;
+
   PlanIter_t                 theInput;
+
   std::vector<PlanIter_t>    theVarRefs;
+
   std::vector<PlanIter_t>    thePosVarRefs;
+
+  bool                       theSingleItemLETVar;
+
   bool                       theDoLazyEval;
 
 public:
@@ -121,6 +128,8 @@ public:
   void accept (PlanIterVisitor&) const;
 
   zstring getVarName() const;
+
+  void setSingleItem() { theSingleItemLETVar = true; }
 
   bool lazyEval() const { return theDoLazyEval; }
 };
@@ -363,7 +372,7 @@ public:
   typedef std::vector<StreamTuple> TuplesTable;
 
 protected:
-  checked_vector<long>           theVarBindingState;
+  std::vector<long>              theVarBindingState;
 
   std::vector<store::TempSeq_t>  theTempSeqs;
 

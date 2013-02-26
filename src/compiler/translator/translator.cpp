@@ -8120,6 +8120,12 @@ void* begin_visit(const GroupByClause& v)
     if (spec->get_binding_expr() == NULL)
     {
       ve = lookup_var(varname, loc, true);
+
+      if (all_vars.find(ve) == all_vars.end())
+      {
+        RAISE_ERROR(err::XQST0094, loc,
+        ERROR_PARAMS(ve->get_name()->getStringValue()));
+      }
     }
     else
     {

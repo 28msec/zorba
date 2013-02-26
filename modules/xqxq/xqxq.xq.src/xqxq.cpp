@@ -81,6 +81,10 @@ XQXQModule::getExternalFunction(const zorba::String& localName)
     {
       lFunc = new DeleteQueryFunction(this);
     }
+    else if (localName == "variable-value")
+    {
+      lFunc = new VariableValueFunction(this);
+    }
   }
   
   return lFunc;
@@ -199,12 +203,6 @@ void QueryMap::destroy() throw()
 {
   if (theQueryMap)
   {
-    for (QueryMap_t::const_iterator lIter = theQueryMap->begin();
-         lIter != theQueryMap->end(); ++lIter)
-    {
-      deleteQuery(lIter->first);
-    }
-    theQueryMap->clear();
     delete theQueryMap;
   }
   delete this;
@@ -368,7 +366,7 @@ void  PrepareMainModuleFunction::XQXQURIMapper::mapURI(
   lIter->open();
   while (lIter->next(lItem))
   {
-    std::cout << lItem.getStringValue() << std::endl;
+    //std::cout << lItem.getStringValue() << std::endl;
     oUris.push_back(lItem.getStringValue());
   }
   lIter->close();  
@@ -491,6 +489,7 @@ zorba::ItemSequence_t PrepareMainModuleFunction::evaluate(
   
   try
   {
+    //std::cout << "Hello: " << lQueryString << std::endl;
     lQuery = lZorba->compileQuery(lQueryString, ltempSctx);
   }
   catch (XQueryException& xe)
@@ -905,6 +904,64 @@ zorba::ItemSequence_t DeleteQueryFunction::evaluate(
   }
       
   return ItemSequence_t(new EmptySequence());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+zorba::ItemSequence_t VariableValueFunction::evaluate(
+    const Arguments_t& aArgs,
+    const zorba::StaticContext* aSctx,
+    const zorba::DynamicContext* aDctx) const 
+{
+  String lQueryID = XQXQFunction::getOneStringArgument(aArgs,0);
+
+  QueryMap* lQueryMap;
+  if (!(lQueryMap= dynamic_cast<QueryMap*>(aDctx->getExternalFunctionParameter("xqxqQueryMap"))))
+  {
+    throwError("NoQueryMatch", "String identifying query does not exists.");
+  }
+
+  XQuery_t lQuery = getQuery(aDctx, lQueryID);
+
+  Item lVarQName = XQXQFunction::getItemArgument(aArgs, 1);
+  bool lIsBoundVariable = false;
+
+  zorba::DynamicContext* lCtx = lQuery->getDynamicContext();
+  zorba::String lNS = lVarQName.getNamespace(), lLocal = lVarQName.getLocalName();
+
+  try
+  {
+    lIsBoundVariable = lCtx->isBoundExternalVariable(lNS, lLocal);
+  }
+  catch (ZorbaException& ze)
+  {
+    if (ze.diagnostic() == zerr::ZAPI0011_VARIABLE_NOT_DECLARED)
+      XQXQFunction::throwError("UndeclaredVariable", ze.what());  
+    throw; // should not happen
+  }
+
+  if (!lIsBoundVariable)
+  {
+    std::ostringstream lMsg;
+    lMsg << lLocal << ": variable not bound";
+    XQXQFunction::throwError("UnboundVariable", lMsg.str());  
+  }
+
+  zorba::Iterator_t lIterator;
+  zorba::Item lItem;
+
+  lCtx->getVariable(lNS, lLocal, lItem, lIterator);
+      
+  if (lIterator)
+  {
+    return ItemSequence_t(new ValueItemSequence(lIterator));
+  }
+  else
+  {
+    return ItemSequence_t(new SingletonItemSequence(lItem));
+  }
 }
 
  
