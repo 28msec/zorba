@@ -125,6 +125,16 @@ void SimpleRCObject::serialize(::zorba::serialization::Archiver& ar)
     theRefCount = 0;
 }
 
+size_t SimpleRCObject::alloc_size() const
+{
+  return 0;
+}
+
+size_t SimpleRCObject::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 
 } /* namespace zorba */
 

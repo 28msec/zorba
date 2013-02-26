@@ -15,7 +15,10 @@
  */
 #include "stdafx.h"
 
+#include <zorba/xquery_exception.h>
+
 #include "store/api/iterator.h"
+#include "util/json_parser.h"
 
 #include "common.h"
 
@@ -40,6 +43,13 @@ bool get_attribute_value( store::Item_t const &element, char const *att_name,
   }
   i->close();
   return found;
+}
+
+void set_data( XQueryException *xe, json::exception const &je ) {
+  json::location const &loc( je.get_loc() );
+  xe->set_data(
+    loc.file(), loc.line(), loc.column(), loc.line_end(), loc.column_end()
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

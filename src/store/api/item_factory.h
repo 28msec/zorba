@@ -393,6 +393,50 @@ public:
    * @param xs:time Item (might be NULL)
    */
   virtual bool createDateTime(Item_t& result, const Item_t&, const Item_t&) = 0;
+  
+  
+  virtual bool createDateTimeStamp(
+                              Item_t& result,
+                              const xs_dateTime* value) = 0;
+  
+  virtual bool createDateTimeStamp(
+                              store::Item_t& result,
+                              const xs_date* date,
+                              const xs_time* time) = 0;
+  
+  
+  /**
+   * @param year
+   * @param month
+   * @param day
+   * @param hour
+   * @param minute
+   * @param second
+   * @param timeZone_hours Difference in hours to UTC
+   */
+  virtual bool createDateTimeStamp(
+                              Item_t& result,
+                              short year,
+                              short month,
+                              short day,
+                              short hour,
+                              short minute,
+                              double second,
+                              short timeZone_hours) = 0;
+  
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
+   * @param value string representation of the value
+   */
+  virtual bool createDateTimeStamp(Item_t& result, const char* str, ulong strlen) = 0;
+  
+  /**
+   * Specification: [http://www.w3.org/TR/xpath-functions/] Section 5.2
+   *
+   * @param xs:date Item (might be NULL)
+   * @param xs:time Item (must not be NULL)
+   */
+  virtual bool createDateTimeStamp(Item_t& result, const Item_t&, const Item_t&) = 0;
 
 
   virtual bool createDateTimeStamp(

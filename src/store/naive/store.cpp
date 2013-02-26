@@ -215,6 +215,7 @@ void Store::initTypeNames()
   theSchemaTypeNames[store::XS_ENTITY] = theQNamePool->insert(ns, "xs", "ENTITY");
 
   theSchemaTypeNames[store::XS_DATETIME] = theQNamePool->insert(ns, "xs", "dateTime");
+  theSchemaTypeNames[store::XS_DATETIME_STAMP] = theQNamePool->insert(ns, "xs", "dateTimeStamp");
   theSchemaTypeNames[store::XS_DATE] = theQNamePool->insert(ns, "xs", "date");
   theSchemaTypeNames[store::XS_TIME] = theQNamePool->insert(ns, "xs", "time");
   theSchemaTypeNames[store::XS_GYEAR_MONTH] = theQNamePool->insert(ns, "xs", "gYearMonth");

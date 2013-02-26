@@ -92,6 +92,7 @@ public:
   ATOMIC_DECL(IDREF)                  // derived
   ATOMIC_DECL(ENTITY)                 // derived
   ATOMIC_DECL(DATETIME)
+  ATOMIC_DECL(DATETIME_STAMP)         // derived
   ATOMIC_DECL(DATE)
   ATOMIC_DECL(TIME)
   ATOMIC_DECL(DURATION)

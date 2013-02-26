@@ -177,7 +177,7 @@ public:
 
   bool createDateTimeStamp(store::Item_t& result, const xs_date* date, const xs_time* time);
 
-  bool createDateTimeStamp(store::Item_t& result, const xs_dateTimeStamp* value);
+  bool createDateTimeStamp(store::Item_t& result, const xs_dateTime* value);
 
   bool createDateTimeStamp(store::Item_t& result, short year , short month, short day, short hour, short minute, double second, short timeZone_hours);
 

@@ -24,7 +24,7 @@ namespace zorba { namespace store {
 
 /*******************************************************************************
   !!! ATTENTION: The order of the enum values within SchemaTypeCode is important.
-  !!! DO NOT change this order!!!!
+  !!! DO NOT change this order!!!! DO NOT insert in the middle!!!!
 ********************************************************************************/
 enum SchemaTypeCode
 {

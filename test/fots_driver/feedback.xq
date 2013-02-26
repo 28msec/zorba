@@ -110,7 +110,9 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
          <fots:info>
            {$env}
            <fots:query>{$zorbaQuery}</fots:query>
-           {$result/descendant::*}
+           {$result/fots:expected-result,
+            $result/fots:result,
+            $result/fots:errors}
          </fots:info>
       as last into $case,
       delete node $case/fots:description,
@@ -161,7 +163,9 @@ declare %private %ann:sequential function feedback:pass(
         <fots:info>
           {$env}
           <fots:query>{$zorbaQuery}</fots:query>
-          {$result/descendant::*}
+          {$result/fots:expected-result,
+            $result/fots:result,
+            $result/fots:errors}
         </fots:info>
       as last into $case,
       delete node $case/fots:description,
@@ -212,7 +216,9 @@ declare %ann:sequential function feedback:fail(
          <fots:info>
            {$env}
            <fots:query>{$zorbaQuery}</fots:query>
-           {$result/descendant::*}
+           {$result/fots:expected-result,
+            $result/fots:result,
+            $result/fots:errors}
          </fots:info>
        as last into $case,
        delete node $case/fots:description,

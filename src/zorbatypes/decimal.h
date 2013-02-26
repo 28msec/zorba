@@ -211,6 +211,8 @@ public:
 
   ////////// miscellaneous ////////////////////////////////////////////////////
 
+  size_t alloc_size() const;
+
   bool is_xs_int() const;
   bool is_xs_integer() const;
   bool is_xs_long() const;
