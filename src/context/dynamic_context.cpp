@@ -72,7 +72,7 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-dynamic_context::VarValue::~VarValue() 
+dynamic_context::VarValue::~VarValue()
 {
   switch (theState)
   {
@@ -98,7 +98,7 @@ dynamic_context::VarValue::~VarValue()
 }
 
 
-dynamic_context::VarValue::VarValue(const VarValue& other) 
+dynamic_context::VarValue::VarValue(const VarValue& other)
 {
   switch (other.theState)
   {
@@ -254,7 +254,7 @@ void dynamic_context::reset_current_date_time()
 
   set_implicit_timezone(lTimeShift);//in seconds
 
-  GENV_ITEMFACTORY->createDateTime(theCurrentDateTime,
+  GENV_ITEMFACTORY->createDateTimeStamp(theCurrentDateTime,
                                    static_cast<short>(gmtm.tm_year + 1900),
                                    static_cast<short>(gmtm.tm_mon + 1),
                                    static_cast<short>(gmtm.tm_mday),
@@ -292,20 +292,20 @@ void dynamic_context::set_environment_variables()
       int size = lstrlen(envVarsSTR);
 
       char * envVar = new char[size+1];
-      
-      
-      WideCharToMultiByte( CP_ACP, 
-                           WC_NO_BEST_FIT_CHARS|WC_COMPOSITECHECK|WC_DEFAULTCHAR, 
-                           envVarsSTR, 
-                           size+1, 
-                           envVar, 
+
+
+      WideCharToMultiByte( CP_ACP,
+                           WC_NO_BEST_FIT_CHARS|WC_COMPOSITECHECK|WC_DEFAULTCHAR,
+                           envVarsSTR,
+                           size+1,
+                           envVar,
                            size+1,
                            NULL,
                            NULL);
-      
+
 
       zstring envVarZS(envVar);
-      
+
       int eqPos = envVarZS.find_first_of("=");
 
       if (eqPos > 0)
@@ -316,48 +316,48 @@ void dynamic_context::set_environment_variables()
         if (!varname.empty() || !varvalue.empty())
           theEnvironmentVariables->insert(std::pair<zstring, zstring>(varname,varvalue));
       }
-      
+
       delete envVar;
       envVarsSTR += lstrlen(envVarsSTR) + 1;
     }
-    
+
     FreeEnvironmentStrings(envVarsCH);
-#else    
+#else
     const char* invalid_char;
     for (char **env = environ; *env; ++env)
     {
       zstring envVarZS(*env);
-      
+
       if ((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
         throw XQUERY_EXCEPTION(err::FOCH0001,
-          ERROR_PARAMS(zstring("#x") + 
-          BUILD_STRING(std::uppercase << std::hex 
+          ERROR_PARAMS(zstring("#x") +
+          BUILD_STRING(std::uppercase << std::hex
             << (static_cast<unsigned int>(*invalid_char)&0xFF))));
 
       if ((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
       {
-        throw XQUERY_EXCEPTION(err::FOCH0001, 
-        ERROR_PARAMS(zstring("#x") + 
+        throw XQUERY_EXCEPTION(err::FOCH0001,
+        ERROR_PARAMS(zstring("#x") +
         BUILD_STRING(std::uppercase << std::hex
                      << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
       }
 
       int size = envVarZS.size();
-            
+
       int eqPos = envVarZS.find_first_of("=");
-            
+
       if (eqPos > 0)
       {
         zstring varname(envVarZS.substr(0, eqPos));
         zstring varvalue(envVarZS.substr(eqPos+1, size));
-                                                  
+
         if (!varname.empty() || !varvalue.empty())
           theEnvironmentVariables->insert(std::pair<zstring, zstring>(varname,varvalue));
-      }                                                                   
+      }
     }
-     
+
 #endif
-    
+
 }
 /*******************************************************************************
 
@@ -387,7 +387,7 @@ store::Iterator_t dynamic_context::available_environment_variables()
     return NULL;
   }
 
-  return GENV_STORE.createTempSeq(lVarNames)->getIterator(); 
+  return GENV_STORE.createTempSeq(lVarNames)->getIterator();
 }
 
 /*******************************************************************************
@@ -408,7 +408,7 @@ store::Item_t dynamic_context::get_environment_variable(const zstring& varname)
     return NULL;
   }
 
-  store::Item_t value; 
+  store::Item_t value;
   zstring varvalue = lIter->second;
   GENV_ITEMFACTORY->createString(value, varvalue);
   return value;
@@ -417,7 +417,7 @@ store::Item_t dynamic_context::get_environment_variable(const zstring& varname)
 /*******************************************************************************
 
 ********************************************************************************/
-void dynamic_context::add_variable(ulong varid, store::Iterator_t& value) 
+void dynamic_context::add_variable(ulong varid, store::Iterator_t& value)
 {
   declare_variable(varid);
   set_variable(varid, NULL, QueryLoc::null, value);
@@ -427,7 +427,7 @@ void dynamic_context::add_variable(ulong varid, store::Iterator_t& value)
 /*******************************************************************************
 
 ********************************************************************************/
-void dynamic_context::add_variable(ulong varid, store::Item_t& value) 
+void dynamic_context::add_variable(ulong varid, store::Item_t& value)
 {
   declare_variable(varid);
   set_variable(varid, NULL, QueryLoc::null, value);
@@ -469,7 +469,7 @@ void dynamic_context::set_variable(
 
   // For now, use eager eval because the assignment expression may reference
   // the variable itself, and the current value of the variable is overwriten
-  // here by this temp sequence. TODO: use lazy eval if we know the the 
+  // here by this temp sequence. TODO: use lazy eval if we know the the
   // assignment expression does not reference the variable itself.
   store::TempSeq_t seq = GENV_STORE.createTempSeq(valueIter, false); // no lazy eval
 
@@ -537,7 +537,7 @@ void dynamic_context::set_variable(
   {
     assert(var.theValue.item == NULL);
   }
-  else 
+  else
   {
     ZORBA_ASSERT(false);
   }
@@ -578,7 +578,7 @@ void dynamic_context::unset_variable(
   {
     assert(var.theValue.item == NULL);
   }
-  else 
+  else
   {
     ZORBA_ASSERT(false);
   }
@@ -670,7 +670,7 @@ ulong dynamic_context::get_next_var_id() const
 /*******************************************************************************
 
 ********************************************************************************/
-void dynamic_context::destroy_dctx_value(dctx_value_t* val) 
+void dynamic_context::destroy_dctx_value(dctx_value_t* val)
 {
   switch (val->type)
   {
@@ -955,7 +955,7 @@ dynamic_context::getExternalFunctionParameter(const std::string& aName) const
 
   val = lIter.getValue();
 
-  ExternalFunctionParameter* lRes = 
+  ExternalFunctionParameter* lRes =
   static_cast<ExternalFunctionParameter*>(val.func_param);
 
   return lRes;

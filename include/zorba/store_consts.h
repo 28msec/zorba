@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -84,8 +84,9 @@ enum SchemaTypeCode
 
   XS_QNAME                 = 43,
   XS_NOTATION              = 44,
-  
+
   JS_NULL                  = 45,
+  XS_DATETIME_STAMP        = 46,
 
   XS_LAST
 };
@@ -97,7 +98,7 @@ class ZORBA_DLL_PUBLIC StoreConsts
 {
  public:
 
-  enum NsScoping 
+  enum NsScoping
   {
     ALL_NAMESPACES,
     ONLY_LOCAL_NAMESPACES,
@@ -117,7 +118,7 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
   static std::string toString(NodeKind k)
   {
-    switch(k) 
+    switch(k)
     {
     case anyNode:
       return "anyNode";
@@ -147,7 +148,7 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
   static std::string toSchemaString(NodeKind k)
   {
-    switch(k) 
+    switch(k)
     {
     case anyNode:
       return "node";
@@ -187,7 +188,7 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
   static std::string toString(JSONItemKind k)
   {
-    switch(k) 
+    switch(k)
     {
       case jsonItem:
         return "json-item";

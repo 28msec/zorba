@@ -55,5 +55,5 @@
   <dependency type="unicode-normalization-form" value="NFKC" satisfied="true"/>
   <dependency type="unicode-normalization-form" value="NFKD" satisfied="true"/>
   <dependency type="xsd-version" value="1.0" satisfied="true"/>
-  <dependency type="xsd-version" value="1.1" satisfied="false"/>
+  <dependency type="xsd-version" value="1.1" satisfied="true"/>
 </test-suite-result>
