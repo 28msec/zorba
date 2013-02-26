@@ -120,7 +120,9 @@ expr* SubstVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
   while (!iter.done())
   {
-    if (**iter == theVarExpr)
+    expr* childExpr = **iter;
+
+    if (childExpr == theVarExpr)
     {
 #if 0
       std::vector<expr*>::iterator ite = thePath.begin();
@@ -138,7 +140,13 @@ expr* SubstVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
     }
     else
     {
-      apply(rCtx, **iter, modified);
+      apply(rCtx, childExpr, modified);
+    }
+
+    if (childExpr->isNonDiscardable() && !node->isNonDiscardable())
+    {
+      node->setNonDiscardable(ANNOTATION_TRUE);
+      modified = true;
     }
 
     iter.next();

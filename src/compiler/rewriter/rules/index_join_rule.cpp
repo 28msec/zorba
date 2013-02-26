@@ -90,6 +90,9 @@ IndexJoinRule::IndexJoinRule(RewriterContext* rctx)
 ********************************************************************************/
 IndexJoinRule::~IndexJoinRule()
 {
+  assert(theVarDefExprs.empty());
+  assert(theChildPositions.empty());
+
   delete theVarIdMap;
   delete theIdVarMap;
   delete theExprVarsMap;
@@ -103,8 +106,8 @@ IndexJoinRule::~IndexJoinRule()
 ********************************************************************************/
 expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
-  assert(theVarDefExprs.empty());
-  assert(theChildPositions.empty());
+  assert(node != theRootExpr || theVarDefExprs.empty());
+  assert(node != theRootExpr || theChildPositions.empty());
 
   flwor_expr* flworExpr = NULL;
 
@@ -1104,6 +1107,9 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo)
                    qnameExpr,
                    const_cast<expr*>(predInfo.theOuterOp));
   }
+
+  DynamicBitset probeVars = (*theExprVarsMap)[predInfo.theOuterOp];
+  (*theExprVarsMap)[probeExpr] = probeVars;
 
   innerClause->set_expr(probeExpr);
 
