@@ -1,0 +1,180 @@
+Iterator tree for doc indexer:
+<flwor::FLWORIterator>
+  <ForVariable name="$$context-item">
+    <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
+  </ForVariable>
+  <ReturnClause>
+    <ValueIndexEntryBuilderIterator>
+      <ForVarIterator varname="$$context-item"/>
+      <TreatIterator quant="">
+        <CastIterator type="xs:int">
+          <FnDataIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+              <ForVarIterator varname="$$context-item"/>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+        </CastIterator>
+      </TreatIterator>
+    </ValueIndexEntryBuilderIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+
+Iterator tree for index:
+<flwor::FLWORIterator>
+  <ForVariable name="$$context-item">
+    <ZorbaCollectionIterator>
+      <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
+    </ZorbaCollectionIterator>
+  </ForVariable>
+  <ReturnClause>
+    <ValueIndexEntryBuilderIterator>
+      <ForVarIterator varname="$$context-item"/>
+      <TreatIterator quant="">
+        <CastIterator type="xs:int">
+          <FnDataIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+              <ForVarIterator varname="$$context-item"/>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+        </CastIterator>
+      </TreatIterator>
+    </ValueIndexEntryBuilderIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+
+Iterator tree for doc indexer:
+<flwor::FLWORIterator>
+  <ForVariable name="$$context-item">
+    <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
+  </ForVariable>
+  <ReturnClause>
+    <ValueIndexEntryBuilderIterator>
+      <ForVarIterator varname="$$context-item"/>
+      <PromoteIterator type="xs:string">
+        <FnDataIterator>
+          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+            <ForVarIterator varname="$$context-item"/>
+          </AttributeAxisIterator>
+        </FnDataIterator>
+      </PromoteIterator>
+    </ValueIndexEntryBuilderIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+
+Iterator tree for index:
+<flwor::FLWORIterator>
+  <ForVariable name="$$context-item">
+    <ZorbaCollectionIterator>
+      <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
+    </ZorbaCollectionIterator>
+  </ForVariable>
+  <ReturnClause>
+    <ValueIndexEntryBuilderIterator>
+      <ForVarIterator varname="$$context-item"/>
+      <PromoteIterator type="xs:string">
+        <FnDataIterator>
+          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+            <ForVarIterator varname="$$context-item"/>
+          </AttributeAxisIterator>
+        </FnDataIterator>
+      </PromoteIterator>
+    </ValueIndexEntryBuilderIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="4" varname="ca:custaccs">
+    <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
+  </CtxVarDeclareIterator>
+  <CtxVarDeclareIterator varid="5" varname="ca:orders">
+    <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,orders)"/>
+  </CtxVarDeclareIterator>
+  <CtxVarDeclareIterator varid="6" varname="ca:index-custaccs-str">
+    <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,index-custaccs-str)"/>
+  </CtxVarDeclareIterator>
+  <CtxVarDeclareIterator varid="7" varname="ca:index-custaccs-int">
+    <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,index-custaccs-int)"/>
+  </CtxVarDeclareIterator>
+  <SequentialIterator>
+    <ApplyIterator>
+      <ZorbaCreateCollectionIterator>
+        <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
+      </ZorbaCreateCollectionIterator>
+    </ApplyIterator>
+    <ApplyIterator>
+      <ZorbaCreateCollectionIterator>
+        <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,orders)"/>
+      </ZorbaCreateCollectionIterator>
+    </ApplyIterator>
+    <ApplyIterator>
+      <CreateIndexIterator>
+        <CtxVarIterator varid="6" varname="ca:index-custaccs-str" varkind="global"/>
+      </CreateIndexIterator>
+    </ApplyIterator>
+    <ApplyIterator>
+      <CreateIndexIterator>
+        <CtxVarIterator varid="7" varname="ca:index-custaccs-int" varkind="global"/>
+      </CreateIndexIterator>
+    </ApplyIterator>
+    <FnMinMaxIterator type="max">
+      <FnDataIterator>
+        <flwor::TupleStreamIterator>
+          <flwor::WhereIterator>
+            <flwor::ForIterator>
+              <ForVariable name="ord"/>
+              <flwor::ForIterator>
+                <ForVariable name="acct-id"/>
+                <flwor::ForIterator>
+                  <ForVariable name="$$context-item"/>
+                  <flwor::ForIterator>
+                    <ForVariable name="$$context-item"/>
+                    <flwor::TupleSourceIterator/>
+                    <ProbeIndexPointValueIterator>
+                      <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,index-custaccs-str)"/>
+                      <SingletonIterator value="xs:integer(4)"/>
+                    </ProbeIndexPointValueIterator>
+                  </flwor::ForIterator>
+                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,Account)" typename="*" nill allowed="0">
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,Accounts)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="$$context-item"/>
+                      </ChildAxisIterator>
+                    </ChildAxisIterator>
+                  </AttributeAxisIterator>
+                </flwor::ForIterator>
+                <FnStringIterator>
+                  <ForVarIterator varname="$$context-item"/>
+                </FnStringIterator>
+              </flwor::ForIterator>
+              <ZorbaCollectionIterator>
+                <CtxVarIterator varid="5" varname="ca:orders" varkind="global"/>
+              </ZorbaCollectionIterator>
+            </flwor::ForIterator>
+            <CompareIterator>
+              <FnDataIterator>
+                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,Acct)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="ord"/>
+                </AttributeAxisIterator>
+              </FnDataIterator>
+              <ForVarIterator varname="acct-id"/>
+            </CompareIterator>
+          </flwor::WhereIterator>
+          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,Cash)" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,OrdQty)" typename="*" nill allowed="0">
+              <ForVarIterator varname="ord"/>
+            </ChildAxisIterator>
+          </AttributeAxisIterator>
+        </flwor::TupleStreamIterator>
+      </FnDataIterator>
+    </FnMinMaxIterator>
+  </SequentialIterator>
+</SequentialIterator>
+

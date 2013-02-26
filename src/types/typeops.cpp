@@ -811,7 +811,7 @@ bool TypeOps::is_subtype(
   case XQType::STRUCTURED_ITEM_KIND:
   {
 #ifdef ZORBA_WITH_JSON
-    if (subitem->isJSONItem() || subitem->isNode())
+    if (subitem->isStructuredItem())
 #else
     if (subitem->isNode())
 #endif

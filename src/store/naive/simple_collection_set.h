@@ -45,23 +45,18 @@ public:
   virtual
   ~SimpleCollectionSet();
     
-  virtual void
-  clear();
+  virtual void clear();
     
-  virtual bool
-  insert(const store::Item* aName, store::Collection_t& aCollection);
+  virtual bool insert(const store::Item* name, store::Collection_t& collection);
     
-  virtual bool
-  get(
-      const zorba::store::Item* aName,
-      store::Collection_t& aCollection,
+  virtual bool get(
+      const zorba::store::Item* name,
+      store::Collection_t& collection,
       bool isDynamic);
   
-  virtual bool
-  remove(const store::Item* name, bool isDynamic);
+  virtual bool remove(const store::Item* name, bool isDynamic);
     
-  virtual zorba::store::Iterator_t
-  names(bool isDynamic);
+  virtual zorba::store::Iterator_t names(bool isDynamic);
 };
 
 

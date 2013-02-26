@@ -33,6 +33,9 @@ declare namespace fots =
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
 
 declare variable $env:hof as xs:string :=
   string-join(

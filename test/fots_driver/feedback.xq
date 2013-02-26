@@ -31,6 +31,10 @@ declare namespace fots =
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
+
 declare function feedback:check-pass(
   $result           as item()*,
   $testCaseName     as xs:string?,
@@ -203,8 +207,8 @@ declare %ann:sequential function feedback:fail(
   variable $info := 'Test case passed but it is marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt';
   variable $status := 'fail';
 
-  if ($verbose)
-  then
+  (:if ($verbose)
+  then:)
   {
     {
       (insert node attribute result{$status} as last into $case,
@@ -227,14 +231,14 @@ declare %ann:sequential function feedback:fail(
 
        $case
     }
-  }
+  } (:
   else if ($expectedFailure)
   then <fots:test-case name="{data($case/@name)}"
                        result="{$status}"
                        comment="{$info}"/>
  
   else <fots:test-case name="{data($case/@name)}"
-                       result="{$status}"/>
+                       result="{$status}"/>:)
 };
 
 
