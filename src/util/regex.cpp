@@ -145,7 +145,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   char c;                               // current (raw) XQuery char
   char c_cooked;                        // current cooked XQuery char
   char prev_c_cooked = 0;               // previous c_cooked
-  char char_range_begin_cooked;         // the 'a' in [a-b]
+  char char_range_begin_cooked = 0;     // the 'a' in [a-b]
 
   bool got_backslash = false;
   int  got_quantifier = 0;
