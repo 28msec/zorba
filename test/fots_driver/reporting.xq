@@ -243,7 +243,7 @@ try
         $totalFail := sum(for $testSet in $results//fots:test-set
                           return count($testSet//fots:test-case[@result ='fail'])),
         $totalNotApplicable := sum(for $testSet in $results//fots:test-set
-                                   return count($testSet//fots:test-case[@result ='not applicable'])),
+                                   return count($testSet//fots:test-case[@result ='n/a'])),
         $totalNotRun := sum(for $testSet in $results//fots:test-set
                             return count($testSet//fots:test-case[@result ='notRun']))
     return
