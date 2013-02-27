@@ -59,7 +59,7 @@ class DateTime
 public:
       
   /** Available facets for the DateTime class */
-  typedef enum 
+  enum FACET_TYPE
   {
     DATETIME_FACET = 0,
     DATE_FACET = 1,
@@ -69,12 +69,12 @@ public:
     GMONTH_FACET = 5,
     GMONTHDAY_FACET = 6,
     GDAY_FACET = 7
-  } FACET_TYPE;
+  };
 
   // Only year may be negative, all other must be positive
   // The year gives the sign of DateTime, Date, etc
       
-  typedef enum
+  enum DATA_TYPE
   {
     YEAR_DATA = 0,
     MONTH_DATA = 1,
@@ -83,7 +83,7 @@ public:
     MINUTE_DATA = 4,
     SECONDS_DATA = 5,
     FRACSECONDS_DATA = 6
-  } DATA_TYPE;
+  };
 
 
   static const int FACET_MEMBERS[8][8];

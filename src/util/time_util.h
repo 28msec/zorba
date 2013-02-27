@@ -36,6 +36,8 @@ namespace time {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+typedef time_t sec_type;
+
 #ifdef WIN32
 typedef unsigned long usec_type;
 #else
@@ -119,7 +121,7 @@ unsigned days_in_month( unsigned mon, unsigned year );
  * @param usec A pointer to the result in microseconds or \c null if this is
  * not desired.
  */
-void get_epoch( time_t *sec, usec_type *usec = nullptr );
+void get_epoch( sec_type *sec, usec_type *usec = nullptr );
 
 /**
  * Gets the Greenwich time and populates the given ztm structure.
@@ -128,7 +130,7 @@ void get_epoch( time_t *sec, usec_type *usec = nullptr );
  * @param when If &gt; 0, populates \a tm based on \a when number of seconds
  * since \e epoch; if 0, populates \a when based on \e now.
  */
-void get_gmtime( ztm *tm, time_t when = 0 );
+void get_gmtime( ztm *tm, sec_type when = 0 );
 
 /**
  * Gets the offset of the current timezone from Greenwich time.
@@ -145,7 +147,7 @@ long get_gmt_offset();
  * @param when If &gt; 0, populates \a tm based on \a when number of seconds
  * since \e epoch; if 0, populates \a when based on \e now.
  */
-void get_localtime( ztm *tm, time_t when = 0 );
+void get_localtime( ztm *tm, sec_type when = 0 );
 
 /**
  * Checks whether the given year is a leap year.

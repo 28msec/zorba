@@ -55,7 +55,7 @@ class dynamic_context
 
 public:
 
-  static enum ID_VARS 
+  static enum ID_VARS
   {
     IDVAR_CONTEXT_ITEM=1,
     IDVAR_CONTEXT_ITEM_POSITION,
@@ -105,7 +105,7 @@ protected:
     {
       no_val,
       ext_func_param, // params that can be used by ext. functions
-      ext_func_param_typed 
+      ext_func_param_typed
     } val_type_t;
 
     val_type_t    type;
@@ -121,7 +121,7 @@ protected:
 protected:
   dynamic_context            * theParent;
 
-  store::Item_t                theCurrentDateTime;
+  store::Item_t                theCurrentDateTimeStamp;
 
   long                         theTimezone;
 
@@ -186,13 +186,13 @@ public:
       store::Item_t& value);
 
   void set_variable(
-      ulong varid, 
+      ulong varid,
       const store::Item_t& varname,
       const QueryLoc& loc,
       store::Iterator_t& value);
 
   void unset_variable(
-      ulong varid, 
+      ulong varid,
       const store::Item_t& varname,
       const QueryLoc& loc);
 

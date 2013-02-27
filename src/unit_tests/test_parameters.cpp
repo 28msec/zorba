@@ -72,6 +72,12 @@ static void test_simple() {
     ASSERT_NO_EXCEPTION( p.substitute( &s ) );
     ASSERT_TRUE( s == "xy" );
   }
+  {
+    string s( "x$1y" );
+    parameters const p( MAKE_PARAMS( "\\" ) );
+    ASSERT_NO_EXCEPTION( p.substitute( &s ) );
+    ASSERT_TRUE( s == "x\\y" );
+  }
 }
 
 static void test_braces() {

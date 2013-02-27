@@ -9,13 +9,7 @@ return
     jn:parse-json( $json )
   }
   catch * {
-    (:
-     : This "if" is here temporarily until streamable strings have their
-     : filenames passed along with them.
-     :)
-    if ( exists( $zerr:data-uri ) )
-      then file:base-name( $zerr:data-uri )
-      else (),
+    file:base-name( $zerr:data-uri ),
     $zerr:data-line-number,
     $zerr:data-column-number
   }

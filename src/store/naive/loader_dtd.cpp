@@ -37,12 +37,12 @@
 #include "loader.h"
 #include "simple_item_factory.h"
 #include "node_factory.h"
-
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/URI.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
+#include "util/stream_util.h"
 
 
 namespace zorba { namespace simplestore {
@@ -197,7 +197,7 @@ store::Item_t FragmentXmlLoader::loadXml(
   if (docUri.empty())
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-" << theTree->getId();
+    uristream << "zorba://internalDocumentURI-" << theTree->getTreeId();
     theDocUri = uristream.str();
   }
   else
@@ -219,7 +219,9 @@ store::Item_t FragmentXmlLoader::loadXml(
       theFragmentStream->theBuffer[FragmentIStream::DEFAULT_BUFFER_SIZE] = 0;
       
       // Create the LibXml parser context
-      theFragmentStream->ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, NULL, 0, 0);
+      theFragmentStream->ctxt = xmlCreatePushParserCtxt(
+        &theSaxHandler, this, NULL, 0, get_uri( stream )
+      );
       if (theFragmentStream->ctxt == NULL)
       {
         theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( XMLParserInitFailed ) )));
@@ -784,11 +786,16 @@ store::Item_t DtdXmlLoader::loadXml(
 
   theBaseUri = baseUri;
 
+  char const *doc_uri;
+  if ( char const *const stream_uri = get_uri( stream ) )
+    doc_uri = stream_uri;
+  else
+    doc_uri = docUri.c_str();
+
   if (docUri.empty())
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-" << theTree->getId();
-
+    uristream << "zorba://internalDocumentURI-" << theTree->getTreeId();
     theDocUri = uristream.str();
   }
   else
@@ -832,7 +839,7 @@ store::Item_t DtdXmlLoader::loadXml(
                                    this,
                                    static_cast<char*>(&theBuffer[0]),
                                    static_cast<int>(numChars),
-                                   theDocUri.c_str());
+                                   doc_uri);
 
     if (ctxt == NULL)
     {

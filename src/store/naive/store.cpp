@@ -609,7 +609,7 @@ void Store::populateGeneralIndex(
       bool more = true;
 
 #ifdef ZORBA_WITH_JSON
-      assert(domainNode->isNode() || domainNode->isJSONItem());
+      assert(domainNode->isStructuredItem());
 #else
       assert(domainNode->isNode());
 #endif
@@ -632,7 +632,7 @@ void Store::populateGeneralIndex(
         // If current node has no keys, put it in the "null" entry and continue
         // with the next domain node, if nay.
 #ifdef ZORBA_WITH_JSON
-        if (!more || firstKeyItem->isNode() || firstKeyItem->isJSONItem())
+        if (!more || firstKeyItem->isStructuredItem())
 #else
         if (!more || firstKeyItem->isNode())
 #endif
@@ -649,7 +649,7 @@ void Store::populateGeneralIndex(
         // If current domain node has exactly 1 key, insert it in the index
         // and continue with next domain node, if any.
 #ifdef ZORBA_WITH_JSON
-        if (!more || keyItem->isNode() || keyItem->isJSONItem())
+        if (!more || keyItem->isStructuredItem())
 #else
         if (!more || keyItem->isNode())
 #endif
@@ -674,7 +674,7 @@ void Store::populateGeneralIndex(
         while ((more = sourceIter->next(keyItem)))
         {
 #ifdef ZORBA_WITH_JSON
-          if (keyItem->isNode() || keyItem->isJSONItem())
+          if (keyItem->isStructuredItem())
 #else
           if (keyItem->isNode())
 #endif
@@ -1212,11 +1212,12 @@ bool Store::getStructuralInformation(
 #ifdef TEXT_ORDPATH
   const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
 
-  return theItemFactory->createStructuralAnyURI(result,
-                                                n->getCollectionId(),
-                                                n->getTreeId(),
-                                                n->getNodeKind(),
-                                                n->getOrdPath());
+  return theItemFactory->createStructuralAnyURI(
+      result,
+      n->getCollectionId(),
+      n->getTree()->getTreeId(),
+      n->getNodeKind(),
+      n->getOrdPath());
 #else
   if (node->getNodeKind() == store::StoreConsts::textNode)
   {
@@ -1224,21 +1225,23 @@ bool Store::getStructuralInformation(
     const TextNode* n = static_cast<const TextNode*>(node);
     n->getOrdPath(ordPath);
 
-    return GET_FACTORY().createStructuralAnyURI(result,
-                                                n->getCollectionId(),
-                                                n->getTreeId(),
-                                                store::StoreConsts::textNode,
-                                                ordPath);
+    return GET_FACTORY().createStructuralAnyURI(
+        result,
+        n->getCollectionId(),
+        n->getTree()->getTreeId(),
+        store::StoreConsts::textNode,
+        ordPath);
   }
   else
   {
     const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
 
-    return GET_FACTORY().createStructuralAnyURI(result,
-                                                n->getCollectionId(),
-                                                n->getTreeId(),
-                                                n->getNodeKind(),
-                                                n->getOrdPath());
+    return GET_FACTORY().createStructuralAnyURI(
+        result,
+        n->getCollectionId(),
+        n->getTree()->getTreeId(),
+        n->getNodeKind(),
+        n->getOrdPath());
   }
 #endif
 }

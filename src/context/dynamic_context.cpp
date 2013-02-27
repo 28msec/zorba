@@ -15,18 +15,9 @@
  */
 #include "stdafx.h"
 
-#ifdef WIN32
-#include <sys/types.h>
-#include <sys/timeb.h>
-#endif
-#include "common/common.h"
 #include <assert.h>
-#include <time.h>
-#include <sys/timeb.h>
-#ifdef UNIX
-#include <sys/time.h>
-#include <unistd.h>
-#endif
+
+#include "common/common.h"
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
@@ -52,6 +43,7 @@
 
 #include "zorbautils/hashmap_itemp.h"
 #include "util/string_util.h"
+#include "util/time_util.h"
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
@@ -146,7 +138,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   }
   else
   {
-    theCurrentDateTime = parent->theCurrentDateTime;
+    theCurrentDateTimeStamp = parent->theCurrentDateTimeStamp;
     theTimezone = parent->theTimezone;
     theDefaultCollectionUri = parent->theDefaultCollectionUri;
   }
@@ -226,7 +218,7 @@ long dynamic_context::get_implicit_timezone() const
 ********************************************************************************/
 void dynamic_context::set_current_date_time(const store::Item_t& aDateTimeItem)
 {
-  this->theCurrentDateTime = aDateTimeItem;
+  this->theCurrentDateTimeStamp = aDateTimeItem;
 }
 
 
@@ -235,34 +227,24 @@ void dynamic_context::set_current_date_time(const store::Item_t& aDateTimeItem)
 ********************************************************************************/
 void dynamic_context::reset_current_date_time()
 {
-  int lTimeShift = 0;
-#if defined (WIN32)
-  struct _timeb timebuffer;
-  _ftime_s( &timebuffer );
-  struct ::tm gmtm;
-  localtime_s(&gmtm, &timebuffer.time); //thread safe localtime on Windows
-  lTimeShift = -timebuffer.timezone*60;
-  if (gmtm.tm_isdst != 0)
-    lTimeShift += 3600;
-#else
-  struct timeb timebuffer;
-  ftime( &timebuffer );
-  struct ::tm gmtm;
-  localtime_r(&timebuffer.time, &gmtm); //thread safe localtime on Linux
-  lTimeShift = gmtm.tm_gmtoff;
-#endif
+  time::sec_type sec;
+  time::usec_type usec;
+  time::get_epoch( &sec, &usec );
+  time::ztm tm;
+  time::get_localtime( &tm, sec );
 
-  set_implicit_timezone(lTimeShift);//in seconds
+  set_implicit_timezone( tm.ZTM_GMTOFF );
 
-  GENV_ITEMFACTORY->createDateTimeStamp(theCurrentDateTime,
-                                   static_cast<short>(gmtm.tm_year + 1900),
-                                   static_cast<short>(gmtm.tm_mon + 1),
-                                   static_cast<short>(gmtm.tm_mday),
-                                   static_cast<short>(gmtm.tm_hour),
-                                   static_cast<short>(gmtm.tm_min),
-                                   gmtm.tm_sec + timebuffer.millitm/1000.0,
-                                   static_cast<short>(theTimezone/3600));
-
+  GENV_ITEMFACTORY->createDateTimeStamp(
+    theCurrentDateTimeStamp,
+    static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
+    static_cast<short>( tm.tm_mon + 1 ),
+    static_cast<short>( tm.tm_mday ),
+    static_cast<short>( tm.tm_hour ),
+    static_cast<short>( tm.tm_min ),
+    tm.tm_sec + usec / 1000000.0,
+    static_cast<short>( tm.ZTM_GMTOFF / 3600 )
+  );
 }
 
 
@@ -271,7 +253,7 @@ void dynamic_context::reset_current_date_time()
 ********************************************************************************/
 store::Item_t dynamic_context::get_current_date_time() const
 {
-  return theCurrentDateTime;
+  return theCurrentDateTimeStamp;
 }
 
 

@@ -528,6 +528,38 @@ public:
            const zorba::DynamicContext*) const;
 };
 
+  class VariableValueFunction : public XQXQFunction{
+    protected:
+      class ValueItemSequence : public ItemSequence
+      {
+        protected:
+          Iterator_t theIterator;
+
+        public:
+          ValueItemSequence(Iterator_t& aIter)
+            : theIterator(aIter)
+          {
+          }
+
+          virtual ~ValueItemSequence(){}
+
+          Iterator_t
+          getIterator() { return theIterator; }
+
+      };
+    public:
+      VariableValueFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+
+      virtual ~VariableValueFunction() {}
+
+      virtual zorba::String
+        getLocalName() const {return "variable-value"; }
+
+      virtual zorba::ItemSequence_t
+        evaluate(const Arguments_t&,
+                 const zorba::StaticContext*,
+                 const zorba::DynamicContext*) const;
+  };
 
 
 }/*xqxq namespace*/}/*zorba namespace*/

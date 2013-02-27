@@ -26,25 +26,21 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
   Interface for Collection used in the SimpleStore
 
-  theName        : The user-provided qname of the collection.
+  theName: 
+  --------
+  The user-provided qname of the collection.
 ********************************************************************************/
 class Collection : public store::Collection
 {
 protected:
-  store::Item_t                 theName;
+  store::Item_t  theName;
 
 public:
   /***************************** Constructors *********************************/
 
-  Collection(const store::Item_t& aName)
-    : 
-    theName(aName)
-  {
-  }
+  Collection(const store::Item_t& name) : theName(name) { }
 
-  Collection()
-  {
-  }
+  Collection() { }
 
   virtual ~Collection() {}
 
@@ -54,20 +50,21 @@ public:
 
   zorba::xs_integer size() const  = 0;
 
-  zorba::store::Iterator_t getIterator(
-      const xs_integer& aSkip, 
-      const zstring& aStart) = 0;
+  virtual bool isDynamic() const = 0;
+
+  virtual void getAnnotations(std::vector<store::Annotation_t>&) const = 0;
+
+  store::Iterator_t getIterator(const xs_integer& skip, const zstring& start) = 0;
+
+  virtual bool findNode(const store::Item* node, xs_integer& position) const = 0;
 
   virtual zorba::store::Item_t nodeAt(xs_integer position) = 0;
 
-  virtual bool findNode(
-      const store::Item* node,
-      xs_integer& position) const = 0;
+  /***************************** ID Management ********************************/
 
-  virtual bool isDynamic() const = 0;
+  virtual ulong getId() const = 0;
 
-  virtual void getAnnotations(
-      std::vector<zorba::store::Annotation_t>&) const = 0;
+  virtual TreeId createTreeId() = 0;
 
   /************************* Updates on collection ****************************/
 
@@ -84,39 +81,28 @@ public:
 
   virtual bool removeNode(xs_integer position) = 0;
 
-  virtual zorba::xs_integer removeNodes(
-      xs_integer position,
-      xs_integer num) = 0;
+  virtual zorba::xs_integer removeNodes(xs_integer position, xs_integer num) = 0;
 
   virtual void removeAll() = 0;
   
   virtual void adjustTreePositions() = 0;
 
-  /***************************** ID Management ********************************/
-
-  virtual ulong getId() const = 0;
-
-  virtual TreeId createTreeId() = 0;
-
   /*********************** Indices ********************************************/
+
   static void getIndexes(
       const store::Item* name,
       std::vector<store::Index*>& indexes);
 
   void getIndexes(std::vector<store::Index*>& indexes);
 
-  /**** Returns active integrity constraints referencing this collection ******/
+  /*********************** Integrity Constraints ******************************/
+
   static void getActiveICs(
       const store::Item* name,
       std::vector<store::IC*>& ics);
 
   void getActiveICs(std::vector<store::IC*>& ics);
-
-  /**************************** Claim of ownership ****************************/
-protected:
-  virtual void claimOwnership(simplestore::XmlTree* aTree);
-  
-}; /* class Collection */
+};
 
 
 } /* namespace simplestore */ } /* namespace zorba */

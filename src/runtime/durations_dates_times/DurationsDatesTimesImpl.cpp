@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <cstdlib>
+
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 #include "zorbatypes/numconversions.h"
@@ -501,7 +503,7 @@ static void parse_width_modifier(
   }
   else
   {
-    if (parse_long(str.c_str(), str.size(), position, min_width, -1, -1, 1))
+    if (parse_long(str.data(), str.size(), position, min_width, -1, -1, 1))
       min_width = -3;
   }
 
@@ -520,7 +522,7 @@ static void parse_width_modifier(
   }
   else
   {
-    if (parse_long(str.c_str(), str.size(), position, max_width, -1, -1, 1))
+    if (parse_long(str.data(), str.size(), position, max_width, -1, -1, 1))
       min_width = -3;
   }
 }
@@ -669,7 +671,7 @@ bool FnFormatDateTimeIterator::nextImpl(
         switch (component)
         {
         case 'Y':
-          output_year(resultString, abs<int>(dateTimeItem->getDateTimeValue().getYear()), modifier);
+          output_year(resultString, std::abs(dateTimeItem->getDateTimeValue().getYear()), modifier);
           break;
         case 'M':
           output_month(resultString, dateTimeItem->getDateTimeValue().getMonth(), modifier);

@@ -144,6 +144,12 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     STACK_PUSH(true, state);
   }
 
+  if (state->theIndex == 1)
+  {
+    (*state->theOS) << state->theTagItem->getStringValue() << ": ";
+    (*state->theOS) << "empty-sequence()" << std::endl;
+  }
+
 
   STACK_END(state);
 }

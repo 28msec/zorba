@@ -15,6 +15,7 @@
  */
 #include "stdafx.h"
 
+#include <cstdlib>
 #include <string>
 #include <exception>
 
@@ -38,7 +39,7 @@ TimeZone::TimeZone(short hours) : Duration(DAYTIMEDURATION_FACET)
   if (hours < 0)
     is_negative = true;
 
-  data[HOUR_DATA] = abs<long>(hours);
+  data[HOUR_DATA] = std::abs(hours);
 }
 
 
@@ -105,8 +106,8 @@ int TimeZone::parseTimeZone(const char* str, ascii::size_type strlen, TimeZone& 
 int TimeZone::createTimeZone(int hours, int minutes, int seconds, TimeZone& tz)
 {
   tz = TimeZone(hours);
-  tz.data[MINUTE_DATA] = abs<long>(minutes);
-  tz.data[SECONDS_DATA] = abs<long>(seconds);
+  tz.data[MINUTE_DATA] = std::abs(minutes);
+  tz.data[SECONDS_DATA] = std::abs(seconds);
   tz.normalize(); 
   return 0;
 }
@@ -134,14 +135,10 @@ zstring TimeZone::toString() const
   if (data[HOUR_DATA] == 0 && data[MINUTE_DATA] == 0)
     return "Z";
 
-  if (isNegative())
-    result.append("-", 1);
-  else
-    result.append("+", 1);
-
-  result.append(to_string(data[HOUR_DATA], 2));
-  result.append(":", 1);
-  result.append(to_string(data[MINUTE_DATA], 2));
+  result += isNegative() ? '-' : '+';
+  result += zero_pad(data[HOUR_DATA], 2);
+  result += ':';
+  result += zero_pad(data[MINUTE_DATA], 2);
     
   return result;
 }
