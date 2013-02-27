@@ -58,7 +58,7 @@ declare namespace ann =
 
 declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
-declare option op:disable "f:trace";
+(:declare option op:disable "f:trace";:)
 
 (:~
  : Returns the names of all qualifying test sets.
@@ -431,10 +431,8 @@ declare %ann:sequential function driver:run-fots(
   }
 };
 
+
 (:~
- : This function is just a thin wrapper over the driver:run() function. See
- : driver:run() for more info.
- :
  : Process a specified test set and report the outcome for each containing
  : test case.
  :
@@ -872,7 +870,8 @@ declare %ann:sequential function driver:test(
                   eval:error((),
                              $case/fots:result/*,
                              $err:code,
-                             $err:description),
+                             $err:description,
+                             $testSetBaseURI),
                   "fots-driver.xq:driver:test catch",
                   $testSetName,
                   $env,
@@ -884,11 +883,13 @@ declare %ann:sequential function driver:test(
 
 
 (:~
- : Creates the complete query that will be evaluated via XQXQ by the fots
- : test driver.
+ : Creates the text for the complete query FQ that will be evaluated via XQXQ
+ : by the fots test driver. The actual test-case query TQ will be evaluated as
+ : a nested XQXQ query within FQ. FQ may contain additional nested XQXQ queries,
+ : for example to compute values for external variables declared in TQ.
  :
- : @param $queryText the test-case/test after all the additional prolog
- :        statements were added.
+ : @param $queryText the text for the test-case query TQ. It is content of
+ :        <test-case>/test augmented with all the necessary prolog statements.
  : @param $case the test case.
  : @param $env the environment.
  : @param $envBaseURI URI of the environment.
@@ -918,15 +919,20 @@ declare %private function driver:create-XQXQ-query(
     (
     "",
     "import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';",
+
     if (exists($resolver))
     then "declare namespace resolver = 'http://www.zorba-xquery.com/modules/xqxq/url-resolver';"
     else (),
+
     if (exists($mapper))
     then "declare namespace mapper = 'http://www.zorba-xquery.com/modules/xqxq/uri-mapper';"
     else (),
+
     if (exists($resolver) or exists($mapper)) then $env:hof else (),
     "",
+
     if (exists($resolver)) then ($resolver, "") else (),
+
     if (exists($mapper)) then ($mapper, "") else (),
 
     (:
@@ -950,7 +956,7 @@ declare %private function driver:create-XQXQ-query(
     let $escAposQueryText := replace($queryText,"'","''")
     let $escAmpQueryText  := replace($escAposQueryText, '&amp;', '&amp;amp;')
     return concat(
-           "variable $queryID := xqxq:prepare-main-module(",
+           "variable $queryID := xqxq:prepare-main-module&#xA;(",
            "&#xA;",
            "'",
            "&#xA;",
@@ -960,12 +966,11 @@ declare %private function driver:create-XQXQ-query(
            "&#xA;",
            if (exists($resolver))
            then if(exists($mapper))
-                then ", resolver:url-resolver#2, mapper:uri-mapper#2);"
-                else ", resolver:url-resolver#2, ());"
+                then ", resolver:url-resolver#2, mapper:uri-mapper#2&#xA;);"
+                else ", resolver:url-resolver#2, ()&#xA;);"
            else if(exists($mapper))
-                then ", (), mapper:uri-mapper#2);"
-                else");
-    "),
+                then ", (), mapper:uri-mapper#2&#xA;);"
+                else "&#xA;);"),
 
     env:set-context-item($env, $envBaseURI),
     env:set-context-item($case/fots:environment, $testSetBaseURI),
@@ -1005,12 +1010,9 @@ declare %private %ann:sequential function driver:xqxq-invoke(
 
       variable $queryResult := xqxq:evaluate-sequential($queryKey);
 
-      (:TODO check if this works:)
-      (:variable $expResult := util:get-value($case, $testSetBaseURI, "result");:)
-
       xqxq:delete-query($queryKey);
 
-      eval:result($queryResult, $case/fots:result/*)
+      eval:result($queryResult, $case/fots:result/*, $testSetBaseURI)
     }
   }
   catch *
@@ -1018,6 +1020,7 @@ declare %private %ann:sequential function driver:xqxq-invoke(
     eval:error((),
                $case/fots:result/*,
                $err:code,
-               $err:description)
+               $err:description,
+               $testSetBaseURI)
   }
 };

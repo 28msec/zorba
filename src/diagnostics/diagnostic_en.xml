@@ -3222,6 +3222,10 @@
       <value>'$3': illegal character within { }</value>
     </entry>
 
+    <entry key="BadEndCharInRange_34">
+      <value>'$3': invalid end character in range (less than '$4' start character)</value>
+    </entry>
+
     <entry key="BadDecDigit_3">
       <value>'$3': invalid decimal digit</value>
     </entry>
@@ -3246,12 +3250,20 @@
       <value>invalid library module</value>
     </entry>
 
+    <entry key="BadPath">
+      <value>invalid path</value>
+    </entry>
+
+    <entry key="BadQuantifierHere_3" if="!defined(ZORBA_NO_ICU)">
+      <value>'$3': quantifier illegal here</value>
+    </entry>
+
     <entry key="BadRegexEscape_3" if="!defined(ZORBA_NO_ICU)">
       <value>"$3": illegal escape character</value>
     </entry>
 
-    <entry key="BadPath">
-      <value>invalid path</value>
+    <entry key="BadRegexParen_3" if="!defined(ZORBA_NO_ICU)">
+      <value>"$3": illegal character after "(?"</value>
     </entry>
 
     <entry key="BadStreamState">
@@ -3624,6 +3636,10 @@
 
     <entry key="NoTreatAs_4">
       <value>can not treat as "$4"</value>
+    </entry>
+
+    <entry key="NotSingleCharEsc_3" if="!defined(ZORBA_NO_ICU)">
+      <value>"\\$3": multi-character and category escapes not permitted in character range</value>
     </entry>
 
     <entry key="NoTypeInMainModule_4">
