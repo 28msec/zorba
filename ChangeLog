@@ -31,6 +31,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1132032 (Certain regexes involving ^ should be legal)
   * Fixed bug #1023168 (Non-single-char-escapes in regex character ranges not
     caught)
+  * Throw XQST0048 for groupby clause, as specified by XQuery 3.0.
   * Fixed bug #866874 (regex "range subtraction" not supported for ICU)
   * Fixed bug in computing the static type of an allowing-empty FOR variable.
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
