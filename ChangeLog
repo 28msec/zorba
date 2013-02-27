@@ -13,7 +13,8 @@ New Features:
     for streamable strings and base64Binary.
   * Added millis-to-dateTime() function in datetime module.
   * fn:trace outputs "empty-sequence()" if the input is the empty-sequence.
-  * Addex xqxq:variable-value function.
+  * Added xqxq:variable-value function.
+  * Added support for xs:dateTimeStamp type from XMLSchema 1.1, bug #924754.
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
@@ -609,7 +610,7 @@ version 1.0
     changed to http://www.zorba-xquery.com/modules/math)
   * Pass the Static- and DynamicContext as parameter to the evaluate function
     of external functions.
-  * The XQuery class got a setTimeout option that allows the user to set a 
+  * The XQuery class got a setTimeout option that allows the user to set a
     maximum running time of a particular query execution.
   * The StatelessExternalFunction is now non-pure by default. There is
     a new subclass called PureStatelessExternalFunction which should
@@ -695,13 +696,13 @@ version 0.9.5 (2008.02.17)
     allow setting of tidy functions
   * Added Schema imports using target namespace or location hints
   * Added StaticContext::findFunctions and StaticContext::disableFunciton
-  * Added Functions for collections 
+  * Added Functions for collections
   * Windows packages include a zorba_simplestore.dll
   * Improved error messages for regular expression processing
   * Added functions to return an item instead of xs:string
   * Added a new signature to zorba-util:random in order to be able to call
     random within a loop and get different numbers each time.
-  * Corrected the types of some functions/operators (YM_DURATION or 
+  * Corrected the types of some functions/operators (YM_DURATION or
     DT_DURATION instead of DURATION).
   * Now possible to pass empty sequence as collection URI.
   * Now cURL is set to follow an infinite number of redirects.
@@ -759,11 +760,11 @@ version 0.9.2-4251 (2008.06.19):
   * Stabilized the Store API & build the simplestore as a separate library
 
 version 0.9.1 (2008.04.30):
-  * Initial release supporting 
-    * XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) 
+  * Initial release supporting
+    * XQuery 1.0 and XPath 2.0 (as in the W3C recommendation)
       except modules and only limited support for schema validation
     * XQuery Update Facility 1.0 (as in the evolving W3C recommendation)
-    * An In-Memory (replaceable) XML store 
+    * An In-Memory (replaceable) XML store
       (implements the XQuery Data Model (XDM) W3C recommendation)
   * This release 0.9 passes 97.6% of the W3C tests of XQuery 1.0 test suite
     and 99.4% of the XQuery Update Facility test suite.
