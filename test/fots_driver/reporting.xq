@@ -93,7 +93,7 @@ declare %ann:sequential function reporting:run-and-report(
 
       file:write("results.xml",
                  $results,
-                 $util:writeText);
+                 $util:writeXML);
 
       reporting:W3C-reporting($results,
                               $FOTSZorbaManifestPath)
