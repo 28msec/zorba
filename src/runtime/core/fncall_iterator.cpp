@@ -139,10 +139,16 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf,
   // may be a recursive udf with local block vars, all of which have the same
   // dynamic-context id, but they are distinct vars.
 
-  if (!theIsDynamic)
-    theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
-  else
+  if (theIsDynamic)
+  {
+    if (theFunctionItem->getDctx() == NULL)
+      theFunctionItem->setDctx(new dynamic_context(planState.theGlobalDynCtx));
     theLocalDCtx = new dynamic_context(theFunctionItem->getDctx());
+  }
+  else
+  {
+    theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
+  }
   
   thePlanState = new PlanState(theIsDynamic ? theFunctionItem->getDctx() : planState.theGlobalDynCtx,
                                theLocalDCtx,

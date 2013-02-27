@@ -161,12 +161,11 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
     // Create the ccb for the eval query
 
-    /*
-    std::auto_ptr<CompilerCB> evalCCB;
-    evalCCB.reset(new CompilerCB(*planState.theCompilerCB));
-    evalCCB->theRootSctx = evalSctx;
-    (evalCCB->theSctxMap)[1] = evalSctx;
-    */
+    // std::auto_ptr<CompilerCB> evalCCB;
+    // evalCCB.reset(new CompilerCB(*planState.theCompilerCB));
+    // evalCCB->theRootSctx = evalSctx;
+    // (evalCCB->theSctxMap)[1] = evalSctx;
+
     
     // Create the dynamic context for the eval query
     std::auto_ptr<dynamic_context> evalDctx;
@@ -196,7 +195,7 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     
     // std::cerr << "--> the body before: " << static_cast<user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody()->toString() << std::endl;
 
-    result = new FunctionItem(theDynamicFunctionInfo, theDynamicFunctionInfo->theCCB, evalDctx.release());
+    result = new FunctionItem(theDynamicFunctionInfo, evalDctx.release());
   }
 
   STACK_PUSH ( result != NULL, state );

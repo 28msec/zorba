@@ -42,6 +42,8 @@ public: // TODO: not public
 
   // std::auto_ptr<CompilerCB>     theCCBHolder;
   CompilerCB                  * theCCB;
+  bool                          theMustDeleteCCB;  // This is set to true if the DynamicFunctionInfo is the owner of the CCB,
+                                                   // and must delete it upon destruction.
   static_context              * theClosureSctx;
   //  static_context              * theImportSctx;
   QueryLoc                      theLoc;
@@ -67,7 +69,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFunctionInfo(const QueryLoc& loc, static_context* closureSctx, function* func, store::Item_t qname, uint32_t arity, bool isInline, bool needsContextItem);
+  DynamicFunctionInfo(CompilerCB* ccb, static_context* closureSctx, const QueryLoc& loc, function* func, store::Item_t qname, uint32_t arity, bool isInline, bool needsContextItem);
 
   virtual ~DynamicFunctionInfo();
 
@@ -106,12 +108,13 @@ public:
 
 public:
   FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
-               CompilerCB* ccb,
                dynamic_context* dctx);
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   dynamic_context* getDctx() const { return theClosureDctx.get(); }
+
+  void setDctx(dynamic_context* dctx) { theClosureDctx.reset(dctx); }
 
   const std::vector<PlanIter_t>& getArgumentsValues() const;
 

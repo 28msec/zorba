@@ -54,15 +54,17 @@ SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 /*******************************************************************************
 
 ********************************************************************************/
-DynamicFunctionInfo::DynamicFunctionInfo(const QueryLoc& loc,
+DynamicFunctionInfo::DynamicFunctionInfo(CompilerCB *ccb,
                                          static_context* closureSctx,
+                                         const QueryLoc& loc,
                                          function* func,
                                          store::Item_t qname,
                                          uint32_t arity,
                                          bool isInline,
                                          bool needsContextItem)
   :
-  theCCB(NULL),
+  theCCB(ccb),
+  theMustDeleteCCB(false),
   theClosureSctx(closureSctx),
   theLoc(loc),
   theFunction(func),
@@ -82,6 +84,8 @@ DynamicFunctionInfo::DynamicFunctionInfo(::zorba::serialization::Archiver& ar)
 
 DynamicFunctionInfo::~DynamicFunctionInfo()
 {
+  if (theMustDeleteCCB)
+    delete theCCB;
 //  std::cerr << "--> deleted ~DynamicFunctionInfo: " << this << " func: " << theFunction.getp() << " counter: " << (theFunction.getp()? theFunction->getRefCount() : 0) << std::endl;
 }
 
@@ -89,6 +93,7 @@ DynamicFunctionInfo::~DynamicFunctionInfo()
 void DynamicFunctionInfo::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theCCB;
+  ar & theMustDeleteCCB;
   ar & theClosureSctx;
   ar & theLoc;
   ar & theFunction;
@@ -132,21 +137,15 @@ FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
 }
 
 FunctionItem::FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
-                           CompilerCB* ccb,
                            dynamic_context* dctx)
   :
   store::Item(store::Item::FUNCTION),
-//  theCCB(ccb),
   theDynamicFunctionInfo(dynamicFunctionInfo),
   theArity(dynamicFunctionInfo->theArity),
   theClosureDctx(dctx)
 {
   assert(theDynamicFunctionInfo->theFunction->isUdf());
   theArgumentsValues.resize(theDynamicFunctionInfo->theArity);
-
-  // TODO: decide if it is needed
-  if (theDynamicFunctionInfo->theCCB == NULL)
-    theDynamicFunctionInfo->theCCB = ccb;
 }
 
 void FunctionItem::serialize(::zorba::serialization::Archiver& ar)

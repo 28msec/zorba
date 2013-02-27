@@ -468,7 +468,7 @@ void end_visit(function_item_expr& v)
   CODEGEN_TRACE_OUT("");
 
   DynamicFunctionInfo* fnInfo = v.get_dynamic_fn_info();
-  fnInfo->theCCB = theCCB;
+  // fnInfo->theCCB = theCCB;
   fnInfo->theLoc = qloc;
   fnInfo->theFunction = v.get_function();
   fnInfo->theQName = v.get_qname();
