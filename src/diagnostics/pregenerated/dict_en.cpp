@@ -549,6 +549,7 @@ extern entry const dict_en[] = {
   { "~BadCharAfter_34", "'$3': illegal character after '$4'" },
   { "~BadCharInBraces_3", "'$3': illegal character within { }" },
   { "~BadDecDigit_3", "'$3': invalid decimal digit" },
+  { "~BadEndCharInRange_34", "'$3': invalid end character in range (less than '$4' start character)" },
   { "~BadFileURIAuthority_2", "\"$2\": invalid authority for \"file\" scheme" },
   { "~BadHexSequence", "invalid hexedecimal sequence" },
   { "~BadItem", "invalid item" },
@@ -556,7 +557,13 @@ extern entry const dict_en[] = {
   { "~BadLibraryModule", "invalid library module" },
   { "~BadPath", "invalid path" },
 #if !defined(ZORBA_NO_ICU)
+  { "~BadQuantifierHere_3", "'$3': quantifier illegal here" },
+#endif
+#if !defined(ZORBA_NO_ICU)
   { "~BadRegexEscape_3", "\"$3\": illegal escape character" },
+#endif
+#if !defined(ZORBA_NO_ICU)
+  { "~BadRegexParen_3", "\"$3\": illegal character after \"(?\"" },
 #endif
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
@@ -713,12 +720,12 @@ extern entry const dict_en[] = {
   { "~NodeIDNeedsBytes_2", "nodeid requires more than $2 bytes" },
   { "~NodeIDTooBig", "nodeid component too big for encoding" },
 #if !defined(ZORBA_NO_ICU)
-  { "~NonClosedBackRef_3", "'$$3': non-closed backreference" },
+  { "~NonClosedBackRef_3", "'\\$$3': non-closed backreference" },
 #endif
   { "~NonFileThesaurusURI", "non-file thesaurus URI" },
   { "~NonLocalhostAuthority", "non-localhost authority" },
 #if !defined(ZORBA_NO_ICU)
-  { "~NonexistentBackRef_3", "'$$3': non-existent backreference" },
+  { "~NonexistentBackRef_3", "'\\$$3': non-existent backreference" },
 #endif
   { "~NotAllowedForTypeName", "not allowed for typeName (use xsd:untyped instead)" },
   { "~NotAmongInScopeSchemaTypes", "not among in-scope schema types" },
@@ -726,6 +733,9 @@ extern entry const dict_en[] = {
   { "~NotDocOrElementNode", "not a document or element node" },
   { "~NotInStaticCtx", "not found in static context" },
   { "~NotPlainFile", "not plain file" },
+#if !defined(ZORBA_NO_ICU)
+  { "~NotSingleCharEsc_3", "\"\\\\$3\": multi-character and category escapes not permitted in character range" },
+#endif
   { "~NotSpecified", "not specified" },
   { "~OpIsSameNodeMustHaveNodes", "op:is-same-node() must have nodes as parameters" },
   { "~OpNodeAfterMustHaveNodes", "op:node-after() must have nodes as parameters" },
