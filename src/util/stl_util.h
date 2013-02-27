@@ -283,8 +283,8 @@ inline char* new_strdup( char const *s ) {
  *
  * @tparam ContainerType A type that has the nested types of \c const_iterator
  * (which must at least be a forward iterator) and \c value_type.
- * @param i A pointer to the iterator to peek one ahead of.  It is incremented
- * by 1.
+ * @param i A pointer to the iterator to peek one ahead of.  It is assumed not
+ * already to be at <code>c.end()</code>. It is incremented by 1.
  * @return Returns the value at the next iteration or \c value_type() if none.
  */
 template<class ContainerType> inline
@@ -300,7 +300,8 @@ peek( ContainerType const &c, typename ContainerType::const_iterator *i ) {
  *
  * @tparam ContainerType A type that has the nested types of \c const_iterator
  * (which must at least be a forward iterator) and \c value_type.
- * @param i The iterator to peek one ahead of.
+ * @param i The iterator to peek one ahead of.  It is assumed not already to be
+ * at <code>c.end()</code>.
  * @return Returns the value at the next iteration or \c value_type() if none.
  */
 template<class ContainerType> inline
