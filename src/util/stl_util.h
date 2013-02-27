@@ -341,8 +341,7 @@ template<class ContainerType> inline
 typename ContainerType::value_type
 peek_behind( ContainerType const &c,
              typename ContainerType::const_iterator i ) {
-  typedef typename ContainerType::value_type value_type;
-  return i != c.begin() ? *--i : value_type();
+  return peek_behind( c, &i );
 }
 
 /**
