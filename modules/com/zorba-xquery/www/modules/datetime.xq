@@ -78,7 +78,7 @@ declare %an:nondeterministic function datetime:current-date()
  : @return the non-stable datetime value
  :)
 declare %an:nondeterministic function datetime:current-dateTime()
-  as xs:dateTimeStamp external;
+  as xs:dateTime external;
 
 (:~
  : Return the current time value in Universal time.
