@@ -785,16 +785,25 @@ void index_flwor_vars(
         const groupby_clause* gc = static_cast<const groupby_clause *>(c);
 
         const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
+        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
         csize numGroupVars = gvars.size();
+        csize numNonGroupVars = ngvars.size();
+
+        for (csize i = 0; i < numGroupVars; ++i)
+        {
+          index_flwor_vars(gvars[i].first, numVars, varidmap, idvarmap);
+        }
+
+        for (csize i = 0; i < numNonGroupVars; ++i)
+        {
+          index_flwor_vars(ngvars[i].first, numVars, varidmap, idvarmap);
+        }
 
         for (csize i = 0; i < numGroupVars; ++i)
         {
           add_var(gvars[i].second, numVars, varidmap, idvarmap);
         }
-
-        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-        csize numNonGroupVars = ngvars.size();
-
+        
         for (csize i = 0; i < numNonGroupVars; ++i)
         {
           add_var(ngvars[i].second, numVars, varidmap, idvarmap);
