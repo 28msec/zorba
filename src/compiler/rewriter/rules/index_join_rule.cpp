@@ -725,8 +725,8 @@ bool IndexJoinRule::findIndexPos(PredicateInfo& predInfo, csize boundVarId)
   ZORBA_ASSERT(found);
 
   //
-  // Make sure that there are no sequential clauses/exprs and no trycatch
-  // exprs in the path between the inner and the outer loop vars.
+  // Make sure that there are no sequential clauses/exprs and no trycatch exprs
+  // in the path between the inner and the outer loop vars.
   //
   theChildPositions[numStackedExprs-1] = innerVarPos;
 
@@ -772,6 +772,8 @@ bool IndexJoinRule::findIndexPos(PredicateInfo& predInfo, csize boundVarId)
         switch (c->get_kind())
         {
         case flwor_clause::for_clause:
+        case flwor_clause::let_clause:
+        case flwor_clause::window_clause:
         {
           forletwin_clause* flwc = static_cast<forletwin_clause*>(c);
 

@@ -37,7 +37,7 @@ private:
   bits_t   m_bits;
 
 public:
-  DynamicBitset() { }
+  DynamicBitset() : m_num_bits(0) { }
 
   DynamicBitset(csize size)
     :
