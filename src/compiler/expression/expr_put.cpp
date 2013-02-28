@@ -337,8 +337,10 @@ ostream& flwor_expr::put(ostream& os) const
     }
     case flwor_clause::count_clause:
     {
-      os << indent << "COUNT $";
-      put_qname(static_cast<const count_clause *>(&c)->get_var()->get_name(), os);
+      const count_clause* cc = static_cast<const count_clause *>(&c);
+      os << indent << "COUNT " << expr_addr(cc) << " ";
+      put_qname(cc->get_var()->get_name(), os);
+      os << expr_addr(cc->get_var());
       os << endl;
       break;
     }
@@ -358,7 +360,7 @@ ostream& flwor_expr::put(ostream& os) const
       static_cast<const groupby_clause *>(&c)->put(os);
       break;
     }
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       static_cast<const orderby_clause *>(&c)->put(os);
       break;
