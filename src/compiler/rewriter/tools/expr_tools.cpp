@@ -827,6 +827,10 @@ void index_flwor_vars(
 
         break;
       }
+      case flwor_clause::materialize_clause:
+      {
+        break;
+      }
       default:
       {
         ZORBA_ASSERT(false);
@@ -980,22 +984,20 @@ void build_expr_to_vars_map(
     {
       const flwor_clause* c = *i;
 
-      if (c->get_kind() == flwor_clause::for_clause)
+      switch (c->get_kind())
       {
-        const for_clause* fc = static_cast<const for_clause *>(c);
-
-        set_bit(fc->get_var(), varmap, freeset, false);
-        set_bit(fc->get_pos_var(), varmap, freeset, false);
-        set_bit(fc->get_score_var(), varmap, freeset, false);
-      }
-      else if (c->get_kind() == flwor_clause::let_clause)
+      case flwor_clause::for_clause:
+      case flwor_clause::let_clause:
       {
-        const let_clause* lc = static_cast<const let_clause *>(c);
+        const forlet_clause* flc = static_cast<const forlet_clause *>(c);
 
-        set_bit(lc->get_var(), varmap, freeset, false);
-        set_bit(lc->get_score_var(), varmap, freeset, false);
+        set_bit(flc->get_var(), varmap, freeset, false);
+        set_bit(flc->get_pos_var(), varmap, freeset, false);
+        set_bit(flc->get_score_var(), varmap, freeset, false);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::window_clause)
+      case flwor_clause::window_clause:
       {
         const window_clause* wc = static_cast<const window_clause *>(c);
 
@@ -1009,8 +1011,10 @@ void build_expr_to_vars_map(
 
         if (stopCond != NULL)
           remove_wincond_vars(stopCond, varmap, freeset);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::groupby_clause)
+      case flwor_clause::groupby_clause:
       {
         const groupby_clause* gc = static_cast<const groupby_clause *>(c);
 
@@ -1029,12 +1033,27 @@ void build_expr_to_vars_map(
         {
           set_bit(ngvars[i].second, varmap, freeset, false);
         }
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::count_clause)
+      case flwor_clause::count_clause:
       {
         const count_clause* cc = static_cast<const count_clause *>(c);
 
         set_bit(cc->get_var(), varmap, freeset, false);
+        
+        break;
+      }
+      case flwor_clause::where_clause:
+      case flwor_clause::orderby_clause:
+      case flwor_clause::materialize_clause:
+      {
+        break;
+      }
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
       }
     }
   }

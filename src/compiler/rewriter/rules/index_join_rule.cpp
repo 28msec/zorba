@@ -243,6 +243,7 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
           break;
         }
         case flwor_clause::count_clause:
+        case flwor_clause::materialize_clause:
         {
           numClauseChildren = 0;
           break;
@@ -483,6 +484,7 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
       break;
     }
     case flwor_clause::groupby_clause:
+    case flwor_clause::materialize_clause:
     default:
     {
       ZORBA_ASSERT(false);
@@ -1032,6 +1034,12 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo)
   function* f = BUILTIN_FUNC(OP_CREATE_INTERNAL_INDEX_2);
   fo_expr* createExpr = em->create_fo_expr(sctx, udf, loc, f, qnameExpr, buildExpr);
 
+  DynamicBitset indexVars;
+  expr_tools::build_expr_to_vars_map(createExpr,
+                                     *theVarIdMap,
+                                     indexVars, 
+                                     *theExprVarsMap);
+
   //
   // Place the create-index expr to its target position
   //
@@ -1057,6 +1065,10 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo)
       args[1] = flwor->get_return_expr();
 
       block_expr* block = em->create_block_expr(sctx, udf, loc, false, args, NULL);
+
+      DynamicBitset blockVars = indexVars;
+      blockVars.set_union((*theExprVarsMap)[flwor->get_return_expr()]);
+      (*theExprVarsMap)[block] = blockVars;
 
       flwor->set_return_expr(block);
     }

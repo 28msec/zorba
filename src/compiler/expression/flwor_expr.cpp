@@ -1246,6 +1246,10 @@ bool flwor_expr::compute_is_general()
     {
       return true;
     }
+    case flwor_clause::materialize_clause:
+    {
+      break;
+    }
     default:
     {
       ZORBA_ASSERT(false);
