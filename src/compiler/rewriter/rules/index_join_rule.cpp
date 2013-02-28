@@ -145,9 +145,7 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
         predInfo.theFlworExpr->remove_clause(c, i);
 
         expr* e = theVarDefExprs.back();
-
-        ZORBA_ASSERT(e == node || e->get_expr_kind() == block_expr_kind);
-          
+        ZORBA_ASSERT(e == node);
         theVarDefExprs.pop_back();
         theChildPositions.pop_back();
         return e;
@@ -178,9 +176,7 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
             (**iter) = trueExpr;
               
             expr* e = theVarDefExprs.back();
-              
-            ZORBA_ASSERT(e == node || e->get_expr_kind() == block_expr_kind);
-              
+            ZORBA_ASSERT(e == node);
             theVarDefExprs.pop_back();
             theChildPositions.pop_back();
             return e;
@@ -257,13 +253,8 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
       {
         expr* currChild = **iter;
         expr* newChild = apply(rCtx, currChild, modified);
-        
-        if (currChild != newChild)
-        {
-          assert(modified);
-          **iter = newChild;
-        }
-        
+        ZORBA_ASSERT(currChild == newChild);
+
         if (modified)
           break;
 
@@ -275,9 +266,7 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
     // drill out
     expr* e = theVarDefExprs.back();
-
-    ZORBA_ASSERT(e == node || e->get_expr_kind() == block_expr_kind);
-
+    ZORBA_ASSERT(e == node);
     theVarDefExprs.pop_back();
     theChildPositions.pop_back();
     return e;
@@ -293,13 +282,8 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
     {
       expr* currChild = **iter;
       expr* newChild = apply(rCtx, currChild, modified);
+      ZORBA_ASSERT(currChild == newChild);
 
-      if (currChild != newChild)
-      {
-        assert(modified);
-        **iter = newChild;
-      }
-      
       if (modified)
         break;
 
@@ -346,12 +330,7 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
     {
       expr* currChild = **iter;
       expr* newChild = apply(rCtx, currChild, modified);
-
-      if (currChild != newChild)
-      {
-        assert(modified);
-        **iter = newChild;
-      }
+      ZORBA_ASSERT(currChild == newChild);
       
       if (modified)
         break;
@@ -441,8 +420,9 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  // Make sure we don't have a pred between two groupby vars 
-  if (predInfo.theInnerVar->get_kind() != var_expr::for_var)
+  // Make sure that the inner loop var has a domain expression
+  if (predInfo.theInnerVar->get_kind() != var_expr::for_var &&
+      predInfo.theInnerVar->get_kind() != var_expr::pos_var)
     return false;
 
   forlet_clause* innerVarClause = predInfo.theInnerVar->get_forlet_clause();
@@ -592,9 +572,11 @@ var_expr* IndexJoinRule::findLoopVar(expr* curExpr, csize& varid)
 
     varid = varidSet[0];
     var = (*theIdVarMap)[varid];
-    var_expr::var_kind vkind = var->get_kind();
 
-    if (vkind == var_expr::for_var)
+    switch (var->get_kind())
+    {
+    case var_expr::for_var:
+    case var_expr::pos_var:
     {
       curExpr = var->get_domain_expr();
 
@@ -616,17 +598,23 @@ var_expr* IndexJoinRule::findLoopVar(expr* curExpr, csize& varid)
         return false;
       }
     }
-    else if (vkind == var_expr::groupby_var)
+    case var_expr::groupby_var:
+    case var_expr::wincond_out_var:
+    case var_expr::wincond_out_pos_var:
+    case var_expr::wincond_in_var:
+    case var_expr::wincond_in_pos_var:
     {
       return var;
     }
-    else if (vkind == var_expr::let_var)
+    case var_expr::let_var:
     {
       curExpr = var->get_domain_expr();
+      break;
     }
-    else
+    default:
     {
       return NULL;
+    }
     }
   }
 
