@@ -578,7 +578,8 @@ var_expr* IndexJoinRule::findLoopVar(expr* curExpr, csize& varid)
     case var_expr::for_var:
     case var_expr::pos_var:
     {
-      curExpr = var->get_domain_expr();
+      for_clause* fc = var->get_forlet_clause();
+      curExpr = fc->get_expr();
 
       xqtref_t domainType = curExpr->get_return_type();
       TypeConstants::quantifier_t quant = domainType->get_quantifier();
