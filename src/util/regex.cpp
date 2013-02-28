@@ -71,18 +71,6 @@ static unsigned digits( long n ) {
   return d;
 }
 
-template<class C> inline
-typename C::value_type peek( C const &c, typename C::const_iterator i ) {
-  typedef typename C::value_type value_type;
-  return ++i != c.end() ? *i : value_type();
-}
-
-template<class C> inline
-typename C::value_type peek_back( C const &c, typename C::const_iterator i ) {
-  typedef typename C::value_type value_type;
-  return i != c.begin() ? *--i : value_type();
-}
-
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -119,17 +107,17 @@ static icu_flags_type convert_xquery_flags( char const *xq_flags ) {
 }
 
 inline bool is_char_range_begin( zstring const &s,
-                                 zstring::const_iterator const &i ) {
-  return peek( s, i ) == '-' && peek( s, i + 1 ) != '[';
+                                 zstring::const_iterator i ) {
+  return ztd::peek( s, &i ) == '-' && ztd::peek( s, &i ) != '[';
 }
 
 inline bool is_non_capturing_begin( zstring const &s,
-                                    zstring::const_iterator const &i ) {
-  return peek_back( s, i ) == '?' && peek_back( s, i - 1 ) == '(';
+                                    zstring::const_iterator i ) {
+  return ztd::peek_behind( s, &i ) == '?' && ztd::peek_behind( s, &i ) == '(';
 }
 
 #define IS_CHAR_RANGE_BEGIN (in_char_class && is_char_range_begin( xq_re, i ))
-#define PEEK_C              peek( xq_re, i )
+#define PEEK_C              ztd::peek( xq_re, i )
 
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {

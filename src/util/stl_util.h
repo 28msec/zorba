@@ -279,6 +279,73 @@ inline char* new_strdup( char const *s ) {
 }
 
 /**
+ * Peeks one iteration ahead of the given iterator.
+ *
+ * @tparam ContainerType A type that has the nested types of \c const_iterator
+ * (which must at least be a forward iterator) and \c value_type.
+ * @param i A pointer to the iterator to peek one ahead of.  It is assumed not
+ * already to be at <code>c.end()</code>. It is incremented by 1.
+ * @return Returns the value at the next iteration or \c value_type() if none.
+ */
+template<class ContainerType> inline
+typename ContainerType::value_type
+peek( ContainerType const &c, typename ContainerType::const_iterator *i ) {
+  typedef typename ContainerType::value_type value_type;
+  typename ContainerType::const_iterator &j = *i;
+  return ++j != c.end() ? *j : value_type();
+}
+
+/**
+ * Peeks one iteration ahead of the given iterator.
+ *
+ * @tparam ContainerType A type that has the nested types of \c const_iterator
+ * (which must at least be a forward iterator) and \c value_type.
+ * @param i The iterator to peek one ahead of.  It is assumed not already to be
+ * at <code>c.end()</code>.
+ * @return Returns the value at the next iteration or \c value_type() if none.
+ */
+template<class ContainerType> inline
+typename ContainerType::value_type
+peek( ContainerType const &c, typename ContainerType::const_iterator i ) {
+  return peek( c, &i );
+}
+
+/**
+ * Peeks one iteration behind of the given iterator.
+ *
+ * @tparam ContainerType A type that has the nested types of \c const_iterator
+ * (which must at least be a bidirectional iterator) and \c value_type.
+ * @param i A pointer to the iterator to peek one behind.  It is decremented by
+ * 1.
+ * @return Returns the value at the previous iteration or \c value_type() if
+ * none.
+ */
+template<class ContainerType> inline
+typename ContainerType::value_type
+peek_behind( ContainerType const &c,
+             typename ContainerType::const_iterator *i ) {
+  typedef typename ContainerType::value_type value_type;
+  typename ContainerType::const_iterator &j = *i;
+  return j != c.begin() ? *--j : value_type();
+}
+
+/**
+ * Peeks one iteration behind of the given iterator.
+ *
+ * @tparam ContainerType A type that has the nested types of \c const_iterator
+ * (which must at least be a bidirectional iterator) and \c value_type.
+ * @param i The iterator to peek one behind.
+ * @return Returns the value at the previous iteration or \c value_type() if
+ * none.
+ */
+template<class ContainerType> inline
+typename ContainerType::value_type
+peek_behind( ContainerType const &c,
+             typename ContainerType::const_iterator i ) {
+  return peek_behind( c, &i );
+}
+
+/**
  * A less-verbose way to pop the first element from a sequence.
  */
 template<class SequenceType> inline

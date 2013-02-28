@@ -66,6 +66,43 @@ typedef /* ICU's */ UChar32 code_point;
 typedef int32_t size_type;
 
 /**
+ * Unicode codepoint categories.
+ * See: http://www.fileformat.info/info/unicode/category/
+ */
+enum category {
+  Cn, ///< Other, Not Assigned
+  Cc, ///< Other, Control
+  Cf, ///< Other, Format
+  Co, ///< Other, Private Use
+  Cs, ///< Other, Surrogate
+  Ll, ///< Letter, Lowercase
+  Lm, ///< Letter, Modifier
+  Lo, ///< Letter, Other
+  Lt, ///< Letter, Titlecase
+  Lu, ///< Letter, Uppercase
+  Mc, ///< Mark, Spacing Combining
+  Me, ///< Mark, Enclosing
+  Mn, ///< Mark, Nonspacing
+  Nd, ///< Number, Decimal Digit
+  Nl, ///< Number, Letter
+  No, ///< Number, Other
+  Pc, ///< Punctuation, Connector
+  Pd, ///< Punctuation, Dash
+  Pe, ///< Punctuation, Close
+  Pf, ///< Punctuation, Final quote (like Ps or Pe depending on usage)
+  Pi, ///< Punctuation, Initial quote (like Ps or Pe depending on usage)
+  Po, ///< Punctuation, Other
+  Ps, ///< Punctuation, Open
+  Sc, ///< Symbol, Currency
+  Sk, ///< Symbol, Modifier
+  Sm, ///< Symbol, Math
+  So, ///< Symbol, Other
+  Zl, ///< Separator, Line
+  Zp, ///< Separator, Paragraph
+  Zs  ///< Separator, Space
+};
+
+/**
  * Unicode normalization modes.
  */
 namespace normalization {
@@ -91,6 +128,26 @@ typedef zstring string;
 #endif /* ZORBA_NO_ICU */
 
 ////////// code-point checking ////////////////////////////////////////////////
+
+/**
+ * Checks whether a code-point is in a Unicode category.
+ *
+ * @param cp The code-point to check.
+ * @param c The Unicode category.
+ * @return Returns \c return only if \a cp is in \a c.
+ */
+bool is_category( code_point cp, category c );
+
+/**
+ * Checks whether a code-point is in the Unicode Nd (Number, Decimal Digit)
+ * category.
+ *
+ * @param cp The code-point to check.
+ * @param zero If non-null, set to the code-point of the zero at the start of
+ * the consecutive range of digits.
+ * @return Returns \c true only if \c cp is an Nd.
+ */
+bool is_Nd( code_point cp, code_point *zero = nullptr );
 
 /**
  * Checks whether the given character is invalid in an IRI.
