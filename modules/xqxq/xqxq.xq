@@ -24,6 +24,8 @@ xquery version "3.0";
  : @project Zorba/Programming Languages/XQuery
  :)
 module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';
+import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -287,7 +289,7 @@ declare %an:sequential function xqxq:bind-variable($query-key as xs:anyURI,
   $var as xs:QName, $value as item()*) as empty-sequence() external ;
 
 (:~
- : This function uses a string value to set the value of an external variable
+ : This function uses a string value to bind the value of an external variable
  : by trying to cast the string to the corresponding type defined in the query.
  : Currently the types supported for automatic casting are: xs:string*, xs:integer*, 
  : xs:int*, xs:long*, xs:short*, xs:decimal*, xs:double*, xs:float*, xs:date*, 
@@ -310,42 +312,42 @@ declare %an:sequential function xqxq:bind-variable($query-key as xs:anyURI,
  : @error xqxq:UndeclaredVariable if the given variable is not declared
  :   in the query.
  :)
-declare %an:sequential function xqxq:set-variable($query-key as xs:anyURI, $var-name as 
+declare %an:sequential function xqxq:bind-cast-variable($query-key as xs:anyURI, $var-name as 
   xs:QName, $value as xs:string*) as empty-sequence()
-  {
-    let $type := xqxq:variable-type($query-key, $var-name)
-    let $casted-value :=                                                         
-      if ($type eq "xs:integer" or $type eq "xs:integer*") then 
-        for $val in $value return xs:integer($val) 
-      else if ($type eq "xs:int" or $type eq "xs:int*") then 
-        for $val in $value return xs:int($val)   
-      else if ($type eq "xs:long" or $type eq "xs:long*") then 
-        for $val in $value return xs:long($val)  
-      else if ($type eq "xs:short" or $type eq "xs:short*") then 
-        for $val in $value return xs:short($val)   
-      else if ($type eq "xs:decimal" or $type eq "xs:decimal*") then 
-        for $val in $value return xs:decimal($val)  
-      else if ($type eq "xs:double" or $type eq "xs:double*") then 
-        for $val in $value return xs:double($val)
-      else if ($type eq "xs:float" or $type eq "xs:float*") then 
-        for $val in $value return xs:float($val)
-      else if ($type eq "xs:date" or $type eq "xs:date*") then 
-        for $val in $value return xs:date($val) 
-      else if ($type eq "xs:time" or $type eq "xs:time*") then 
-        for $val in $value return xs:time($val)  
-      else if ($type eq "xs:dateTime" or $type eq "xs:dateTime") then 
-        for $val in $value return xs:dateTime($val)    
-      else if ($type eq "object()" or $type eq "object()*") then
-        for $val in $value return jn:parse-json($val)    
-      else if ($type eq "array()" or $type eq "array()*") then
-        for $val in $value return jn:parse-json($val)
-      else if (fn:contains($type, "document-node(")) then
-        for $val in $value return fn:parse-xml($val)  
-      else if (fn:contains($type, "element(")) then
-        for $val in $value return fn:parse-xml($val)/element()  
-      else $value                       
-    return xqxq:bind-variable($query-key, $var-name, $casted-value)
-  };    
+{
+  variable $type := xqxq:variable-type($query-key, $var-name);
+  variable $unquanttype := fn:replace($type, "[*?+]$", "");
+  let $casted-value :=
+    if (fn:contains($unquanttype, "object")) then
+      for $val in $value return jn:parse-json($val)    
+    else if (fn:contains($unquanttype, "array")) then
+      for $val in $value return jn:parse-json($val)
+    else if (fn:contains($unquanttype, "document-node")) then
+      for $val in $value return fn:parse-xml($val)  
+    else if (fn:contains($unquanttype, "element")) then
+      for $val in $value return parse-xml:parse($val,
+        <opt:options>
+          <opt:parse-external-parsed-entity/>
+        </opt:options>)
+    else                                    
+      if ($unquanttype eq "xs:anyType")
+        then $value
+        else xqxq:caster($unquanttype, $value)                  
+  return xqxq:bind-variable($query-key, $var-name, $casted-value)
+};
+      
+declare %private %an:sequential function xqxq:caster($unquanttype as xs:string, 
+  $value as xs:string*) as item()*
+{
+  variable $caster := xqxq:prepare-main-module(
+  fn:concat("declare variable $val as xs:string* external; ",
+            "for $v in $val return $v cast as ",
+            $unquanttype));
+  xqxq:bind-variable($caster, xs:QName("val"), $value);
+  variable $casted := xqxq:evaluate($caster);
+  xqxq:delete-query($caster);
+  $casted
+};    
 
 (:~
  : Evaluates the given prepared query and returns the result
