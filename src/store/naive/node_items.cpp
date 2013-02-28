@@ -3872,32 +3872,27 @@ XmlNode* AttributeNode::copyInternal(
   XmlTree* tree = NULL;
   AttributeNode* copyNode = NULL;
   store::Item_t nodeName = theName;
-  store::Item_t typeName;
+  store::Item_t typeName = getType();
   store::Item_t typedValue;
 
   bool isListValue;
 
+  if (parent == rootParent &&
+      typeName != NULL &&
+      (typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_QNAME]) ||
+       typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_NOTATION])))
+  {
+    throw XQUERY_EXCEPTION(err::XQTY0086);
+  }
+
   if (copymode.theTypePreserve)
   {
-    typeName = getType();
     typedValue = theTypedValue;
-
     isListValue = haveListValue();
-
-    if (!copymode.theNsPreserve && parent == rootParent)
-    {
-      if (typeName != NULL &&
-          (typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_QNAME]) ||
-           typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_NOTATION])))
-      {
-        throw XQUERY_EXCEPTION(err::XQTY0086);
-      }
-    }
   }
   else
   {
     isListValue = false;
-
     typeName = NULL;
 
     if (!haveListValue() &&
