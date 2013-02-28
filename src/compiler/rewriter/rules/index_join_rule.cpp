@@ -425,6 +425,10 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
       predInfo.theInnerVar->get_kind() != var_expr::pos_var)
     return false;
 
+  if (predInfo.theInnerVar->get_flwor_clause() ==
+      predInfo.theOuterVar->get_flwor_clause())
+    return false;
+
   forlet_clause* innerVarClause = predInfo.theInnerVar->get_forlet_clause();
 
   // The inner var must not be an outer FOR var
