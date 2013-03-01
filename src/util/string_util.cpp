@@ -56,10 +56,6 @@ namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void no_digits( char const *buf ) {
-  throw std::invalid_argument( BUILD_STRING( '"', buf, "\": no digits" ) );
-}
-
 static void too_big_or_small( char const *buf, char const *last ) {
   zstring const s( buf, last );
   throw std::range_error( BUILD_STRING( '"', s, "\": number too big/small" ) );
@@ -81,7 +77,7 @@ static void check_trailing_chars_impl( char const *last ) {
 inline void check_parse_number( char const *buf, char const *last,
                                 bool check_trailing_chars ) {
   if ( last == buf )
-    no_digits( buf );
+    throw std::invalid_argument( BUILD_STRING( '"', buf, "\": no digits" ) );
   if ( check_trailing_chars )
     check_trailing_chars_impl( last );
 }
@@ -151,6 +147,27 @@ unsigned long long atoull( char const *buf, char const **last ) {
     );
   }
   return result;
+}
+
+unsigned long long atoull( char const *buf, char const *end,
+                           char const **last ) {
+  aton_context const ctx( last );
+  unsigned long long n = 0;
+  char const *s = buf;
+
+  for ( ; s < end && ascii::is_space( *s ); ++s )
+    ;
+  for ( ; s < end && ascii::is_digit( *s ); ++s ) {
+    unsigned long long const n_prev = n;
+    n = n * 10 + *s - '0';
+    if ( n < n_prev ) {
+      errno = ERANGE;
+      too_big_or_small( buf, end );
+    }
+  }
+  *last = s;
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
+  return n;
 }
 
 char* itoa( long long n, char *buf ) {

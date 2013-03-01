@@ -461,9 +461,26 @@ long long atoll( char const *buf, char const **last = nullptr );
  * @return Returns the <code>unsigned long long</code> value.
  * @throws invalid_argument if \a buf contains characters other than digits or
  * leading/trailing whitespace, or contains no digits at all.
- * @throws range_error if the number overflows/underflows.
+ * @throws range_error if the number overflows.
  */
 unsigned long long atoull( char const *buf, char const **last = nullptr );
+
+/**
+ * Parses the given string for an <code>unsigned long long</code>.
+ *
+ * @param buf The C string to parse; it need not be null-terminated.  Leading
+ * and trailing whitespace is ignored.
+ * @param end A pointer to one past the last character to parse.
+ * @param last If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
+ * @return Returns the <code>unsigned long long</code> value.
+ * @throws invalid_argument if \a buf contains characters other than digits or
+ * leading/trailing whitespace, or contains no digits at all.
+ * @throws range_error if the number overflows.
+ */
+unsigned long long atoull( char const *buf, char const *end,
+                           char const **last );
 
 /**
  * Parses the given string for a C++ signed integral type.
