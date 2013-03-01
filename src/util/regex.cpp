@@ -107,15 +107,13 @@ static icu_flags_type convert_xquery_flags( char const *xq_flags ) {
 }
 
 inline bool is_char_range_begin( zstring const &s,
-                                 zstring::const_iterator const &i ) {
-  zstring::const_iterator j( i );
-  return ztd::peek( s, &j ) == '-' && ztd::peek( s, &j ) != '[';
+                                 zstring::const_iterator i ) {
+  return ztd::peek( s, &i ) == '-' && ztd::peek( s, &i ) != '[';
 }
 
 inline bool is_non_capturing_begin( zstring const &s,
-                                    zstring::const_iterator const &i ) {
-  zstring::const_iterator j( i );
-  return ztd::peek_behind( s, &j ) == '?' && ztd::peek_behind( s, &j ) == '(';
+                                    zstring::const_iterator i ) {
+  return ztd::peek_behind( s, &i ) == '?' && ztd::peek_behind( s, &i ) == '(';
 }
 
 #define IS_CHAR_RANGE_BEGIN (in_char_class && is_char_range_begin( xq_re, i ))

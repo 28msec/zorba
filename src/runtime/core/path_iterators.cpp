@@ -1134,12 +1134,12 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     do
     {
       if (!consumeNext(state->theContextNode, theChild.getp(), planState))
-        return false;
+        goto done;
       
       if (!state->theContextNode->isNode())
       {
         assert(false);
-        throw XQUERY_EXCEPTION( err::XPTY0020, ERROR_LOC( loc ) );
+        throw XQUERY_EXCEPTION(err::XPTY0020, ERROR_LOC(loc));
       }
     }
     while (!isElementOrDocumentNode(state->theContextNode.getp()));
@@ -1172,7 +1172,8 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     state->theChildren->close();
   }
 
-  STACK_END (state);
+ done:
+  STACK_END(state);
 }
 
 
@@ -1245,8 +1246,7 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
     {
       if (!consumeNext(state->theContextNode, theChild.getp(), planState))
       {
-        state->reset(planState);
-        return false;
+        goto done;
       }
 
       if (!state->theContextNode->isNode())
@@ -1309,6 +1309,7 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
     state->clear();
   }
 
+ done:
   STACK_END(state);
 }
 
@@ -1340,7 +1341,7 @@ bool DescendantSelfAxisIterator::nextImpl(
     do
     {
       if (!consumeNext(state->theContextNode, theChild.getp(), planState))
-        return false;
+        goto done;
 
       if (!state->theContextNode->isNode())
       {
@@ -1409,7 +1410,8 @@ bool DescendantSelfAxisIterator::nextImpl(
     state->clear();
   }
 
-  STACK_END (state);
+ done:
+  STACK_END(state);
 }
 
 
@@ -1573,7 +1575,7 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
     state->clear();
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
