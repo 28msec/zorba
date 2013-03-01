@@ -436,7 +436,7 @@ double atod( char const *buf, char const **last = nullptr );
 float atof( char const *buf, char const **last = nullptr );
 
 /**
- * Parses the given string for a <code>long lomg</code>.
+ * Parses the given string for a <code>long long</code>.
  *
  * @param buf The null-terminated C string to parse.  Leading and trailing
  * whitespace is ignored.
@@ -451,7 +451,7 @@ float atof( char const *buf, char const **last = nullptr );
 long long atoll( char const *buf, char const **last = nullptr );
 
 /**
- * Parses the given string for an <code>unsigned long lomg</code>.
+ * Parses the given string for an <code>unsigned long long</code>.
  *
  * @param buf The null-terminated C string to parse.  Leading and trailing
  * whitespace is ignored.
