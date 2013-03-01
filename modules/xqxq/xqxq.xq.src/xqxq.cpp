@@ -997,7 +997,7 @@ zorba::ItemSequence_t VariableTypeFunction::evaluate(
     {
       std::ostringstream lMsg;
       lMsg << lLocal << ": variable not bound";
-      XQXQFunction::throwError("UnboundVariable", lMsg.str());  
+      XQXQFunction::throwError("UndeclaredVariable", lMsg.str());  
     }
   }
   catch (ZorbaException& ze)
