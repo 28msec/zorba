@@ -19,11 +19,15 @@ Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
     parameter into collection skip if $sourceSeq parameter is from a
     collection).
+  * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:
   * Fixed bug #1124273 (xqdoc crash because of annotation literals)
   * Fixed bug #867027 (XQST0059 error messages inconsistent)
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
+  * Fixed bug in index join rule (copy var ids after cloning index domain expr).
+  * Added missing wrapper expressions around some variable references.
+  * Fixed bug in the throwing of error XQTY0086 during node construction.
   * Fixed bug #1122396 (Associate origin/destination URI to I/O stream)
   * Fixed bug #1111786 (xml/json parse error location in catch clause).
   * NaN items are considered equal to each other during grouping

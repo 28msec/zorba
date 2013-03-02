@@ -154,21 +154,22 @@ bool SimpleCollection::findNode(const store::Item* item, xs_integer& position) c
   try
   {
     pos = to_xs_unsignedInt(position);
-  } catch (const std::range_error&)
+  }
+  catch (const std::range_error&)
   {
-    throw ZORBA_EXCEPTION(
-        zerr::ZXQD0004_INVALID_PARAMETER,
-        ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), position)
-      );
+    throw ZORBA_EXCEPTION(zerr::ZXQD0004_INVALID_PARAMETER,
+    ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), position));
   }
 
-  StructuredItem* collectionItem =
-  static_cast<StructuredItem*>(theTrees[pos].getp());
-
-  if (pos < theTrees.size() &&
-      collectionItem->getTreeId() == structuredItem->getTreeId())
+  if (pos < theTrees.size())
   {
-    return true;
+    StructuredItem* collectionItem =
+    static_cast<StructuredItem*>(theTrees[pos].getp());
+
+    if (collectionItem->getTreeId() == structuredItem->getTreeId())
+    {
+      return true;
+    }
   }
 
   csize numTrees = theTrees.size();

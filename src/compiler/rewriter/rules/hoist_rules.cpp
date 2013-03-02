@@ -41,15 +41,15 @@ namespace zorba
 static bool hoist_expressions(
     RewriterContext&,
     expr*,
-    const VarIdMap&,
-    const ExprVarsMap&,
+    const expr_tools::VarIdMap&,
+    const expr_tools::ExprVarsMap&,
     struct PathHolder*);
 
 static expr* try_hoisting(
     RewriterContext&,
     expr*,
-    const VarIdMap&,
-    const ExprVarsMap&,
+    const expr_tools::VarIdMap&,
+    const expr_tools::ExprVarsMap&,
     struct PathHolder*);
 
 static bool non_hoistable (const expr*);
@@ -58,7 +58,7 @@ static bool is_already_hoisted(const expr*);
 
 static bool contains_var(
     var_expr*,
-    const VarIdMap&,
+    const expr_tools::VarIdMap&,
     const DynamicBitset&);
 
 static bool is_enclosed_expr(const expr*);
@@ -98,13 +98,22 @@ expr* HoistRule::apply(
 {
   assert(node == rCtx.getRoot());
 
-  ulong numVars = 0;
-  VarIdMap varmap;
+  csize numVars = 0;
+  expr_tools::VarIdMap varmap;
 
   expr_tools::index_flwor_vars(node, numVars, varmap, NULL);
 
-  ExprVarsMap freevarMap;
-  DynamicBitset freeset(numVars);
+  /*
+  expr_tools::VarIdMap::const_iterator ite = varmap.begin();
+  expr_tools::VarIdMap::const_iterator end = varmap.end();
+  for (; ite != end; ++ite)
+  {
+    std::cerr << "[ " << ite->first << " --> " << ite->second << "]" << std::endl;
+  }
+  */
+
+  expr_tools::ExprVarsMap freevarMap;
+  DynamicBitset freeset(numVars+1);
   expr_tools::build_expr_to_vars_map(node, varmap, freeset, freevarMap);
 
   PathHolder root;
@@ -128,8 +137,8 @@ expr* HoistRule::apply(
 static bool hoist_expressions(
     RewriterContext& rCtx,
     expr* e,
-    const VarIdMap& varmap,
-    const ExprVarsMap& freevarMap,
+    const expr_tools::VarIdMap& varmap,
+    const expr_tools::ExprVarsMap& freevarMap,
     struct PathHolder* path)
 {
   bool status = false;
@@ -349,8 +358,8 @@ static bool hoist_expressions(
 static expr* try_hoisting(
     RewriterContext& rCtx,
     expr* e,
-    const VarIdMap& varmap,
-    const ExprVarsMap& freevarMap,
+    const expr_tools::VarIdMap& varmap,
+    const expr_tools::ExprVarsMap& freevarMap,
     struct PathHolder* path)
 {
   if (non_hoistable(e) || e->constructsNodes())
@@ -364,7 +373,7 @@ static expr* try_hoisting(
 
   assert(udf == rCtx.theUDF);
 
-  std::map<const expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
+  expr_tools::ExprVarsMap::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
   const DynamicBitset& varset = fvme->second;
 
@@ -534,7 +543,7 @@ static expr* try_hoisting(
 ********************************************************************************/
 static bool contains_var(
     var_expr* v,
-    const VarIdMap& varmap,
+    const expr_tools::VarIdMap& varmap,
     const DynamicBitset& varset)
 {
   if (v == NULL)
@@ -542,7 +551,7 @@ static bool contains_var(
     return false;
   }
 
-  VarIdMap::const_iterator i = varmap.find(v);
+  expr_tools::VarIdMap::const_iterator i = varmap.find(v);
   if (i == varmap.end())
   {
     return false;

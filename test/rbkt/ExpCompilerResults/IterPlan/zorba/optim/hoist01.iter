@@ -45,12 +45,6 @@ Iterator tree for const-folded expr:
 </UnhoistIterator>
 
 Iterator tree for const-folded expr:
-<FnConcatIterator/>
-
-Iterator tree for const-folded expr:
-<FnConcatIterator/>
-
-Iterator tree for const-folded expr:
 <UDFunctionCallIterator>
   <SingletonIterator value="xs:integer(0)"/>
 </UDFunctionCallIterator>

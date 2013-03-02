@@ -407,7 +407,7 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
       {
         break;
       }
-      case flwor_clause::order_clause:
+      case flwor_clause::orderby_clause:
       case flwor_clause::groupby_clause:
       {
         return;
