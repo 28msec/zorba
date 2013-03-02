@@ -22,6 +22,7 @@
 #include <cctype>
 #include <cstddef>
 #include <cstring>
+#include <iterator>
 
 // local
 #include "omanip.h"
@@ -966,6 +967,24 @@ void trim_whitespace( StringType &s ) {
  */
 inline void skip_whitespace( char const *s, size_type s_len, size_type *pos ) {
   *pos = trim_start_whitespace( s + *pos, s_len - *pos ) - s;
+}
+
+/**
+ * Skips any consecutive whitespace chars that are found at a given starting
+ * position within a given string.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ * @param i A pointer to the iterator to advance past the whitespace.
+ * On return, \a *i is updated with the position of the 1st non-whitespace
+ * char.
+ */
+template<class StringType> inline
+void skip_whitespace( StringType const &s,
+                      typename StringType::const_iterator *i ) {
+  typename StringType::difference_type const d = *i - s.begin();
+  char const *const sd = s.data() + d;
+  std::advance( *i, trim_start_whitespace( sd, s.size() - d ) - sd );
 }
 
 ////////// Miscellaneous //////////////////////////////////////////////////////
