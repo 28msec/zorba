@@ -31,6 +31,7 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
+#include "compiler/expression/function_item_expr.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -626,8 +627,9 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case dynamic_function_invocation_expr_kind:
   {
-    theType = rtm.ITEM_TYPE_STAR; // TODO
-    return;
+    dynamic_function_invocation_expr* e = static_cast<dynamic_function_invocation_expr*>(this);
+    newType = e->theExpr->get_return_type();
+    break;
   }
 
   case argument_placeholder_expr_kind:

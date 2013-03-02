@@ -54,7 +54,7 @@ SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 /*******************************************************************************
 
 ********************************************************************************/
-DynamicFunctionInfo::DynamicFunctionInfo(CompilerCB *ccb,
+DynamicFunctionInfo::DynamicFunctionInfo(// CompilerCB *ccb,
                                          static_context* closureSctx,
                                          const QueryLoc& loc,
                                          function* func,
@@ -63,7 +63,7 @@ DynamicFunctionInfo::DynamicFunctionInfo(CompilerCB *ccb,
                                          bool isInline,
                                          bool needsContextItem)
   :
-  theCCB(ccb),
+//  theCCB(ccb),
   theMustDeleteCCB(false),
   theClosureSctx(closureSctx),
   theLoc(loc),
@@ -213,7 +213,7 @@ void FunctionItem::setArgumentValue(unsigned int pos, const PlanIter_t& value)
   assert(false);
 }
 
-PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChildren)
+PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChildren, CompilerCB* ccb)
 {
   std::vector<PlanIter_t> args;
   args.resize(theArgumentsValues.size());
@@ -228,7 +228,6 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
     if (*ite != NULL)
     {
       *argsIte = *ite;
-      // std::cerr << "--> fnItem: " << toString() << " about to reset arg: " << (*ite)->toString() << std::endl;
       static_cast<PlanStateIteratorWrapper*>(ite->getp())->reset();
     }
     else
@@ -238,10 +237,13 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
     }
   }
 
-  expr* dummy = theDynamicFunctionInfo->theCCB->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc, NULL, false, false);
+  if (theDynamicFunctionInfo->theCCB != NULL)
+    ccb = theDynamicFunctionInfo->theCCB;
+
+  expr* dummy = ccb->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc, NULL, false, false);
   
   PlanIter_t udfCallIterator =
-      theDynamicFunctionInfo->theFunction->codegen(theDynamicFunctionInfo->theCCB,
+      theDynamicFunctionInfo->theFunction->codegen(ccb,
                                                    theDynamicFunctionInfo->theClosureSctx,
                                                    theDynamicFunctionInfo->theLoc,
                                                    args,

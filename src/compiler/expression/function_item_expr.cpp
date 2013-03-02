@@ -94,7 +94,7 @@ function_item_expr::function_item_expr(
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
-                         ccb,
+                         // ccb,
                          closureSctx,
                          loc,
                          f,
@@ -122,7 +122,7 @@ function_item_expr::function_item_expr(
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
-                         ccb,
+                         // ccb,
                          closureSctx,
                          loc,
                          NULL,

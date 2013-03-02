@@ -251,7 +251,7 @@ bool DynamicFnCallIterator::nextImpl(
     }
     else
     {
-      state->thePlan = fnItem->getImplementation(theChildren);
+      state->thePlan = fnItem->getImplementation(theChildren, planState.theCompilerCB);
       
       // must be opened after vars and params are set
       state->thePlan->open(planState, state->theUDFStateOffset);

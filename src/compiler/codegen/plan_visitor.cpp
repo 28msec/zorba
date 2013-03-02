@@ -467,8 +467,11 @@ void end_visit(function_item_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
+//  std::cerr << "--> plan_visitor() end_visit of function_item_expr" << std::endl;
+
   DynamicFunctionInfo* fnInfo = v.get_dynamic_fn_info();
-  // fnInfo->theCCB = theCCB;
+  fnInfo->theCCB = theCCB;
+  fnInfo->theMustDeleteCCB = false;
   fnInfo->theLoc = qloc;
   fnInfo->theFunction = v.get_function();
   fnInfo->theQName = v.get_qname();

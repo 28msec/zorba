@@ -69,7 +69,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFunctionInfo(CompilerCB* ccb, static_context* closureSctx, const QueryLoc& loc, function* func, store::Item_t qname, uint32_t arity, bool isInline, bool needsContextItem);
+  DynamicFunctionInfo(static_context* closureSctx, const QueryLoc& loc, function* func, store::Item_t qname, uint32_t arity, bool isInline, bool needsContextItem);
 
   virtual ~DynamicFunctionInfo();
 
@@ -129,7 +129,7 @@ public:
   // the function item itself, so it will be skipped.
   // The last element(s) of dynChildren might contain DOT vars iterators. They
   // will be picked up automatically if needed.
-  PlanIter_t getImplementation(const std::vector<PlanIter_t>& dynChildren);
+  PlanIter_t getImplementation(const std::vector<PlanIter_t>& dynChildren, CompilerCB* ccb);
 
   const store::Item_t getFunctionName() const;
 

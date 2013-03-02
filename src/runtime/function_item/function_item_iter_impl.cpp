@@ -20,6 +20,8 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/translator/translator.h"
 
+#include "functions/udf.h"
+
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/iterator_impl.h"
@@ -77,15 +79,20 @@ bool FunctionLookupIterator::nextImpl(
   
   try
   {
-    std::auto_ptr<CompilerCB> closureCCB;
-    closureCCB.reset(new CompilerCB(*planState.theCompilerCB));
-    closureCCB->theRootSctx = theSctx;
+//    std::auto_ptr<CompilerCB> closureCCB;
+//    closureCCB.reset(new CompilerCB(*planState.theCompilerCB));
+//    closureCCB->theRootSctx = theSctx;
 
-    expr* fiExpr = Translator::translate_literal_function(qname, arity, closureCCB.get(), loc, true);
+//    expr* fiExpr = Translator::translate_literal_function(qname, arity, closureCCB.get(), loc, true);
+    expr* fiExpr = Translator::translate_literal_function(qname, arity, planState.theCompilerCB, loc, true);
     
     DynamicFunctionInfo_t dynFnInfo = static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
-    dynFnInfo->theCCB = closureCCB.release();
-    dynFnInfo->theMustDeleteCCB = true;
+    // dynFnInfo->theCCB = closureCCB.release();
+    // dynFnInfo->theMustDeleteCCB = true;
+    dynFnInfo->theCCB = NULL;
+    dynFnInfo->theClosureSctx = NULL;
+    uint32_t planStateSize;
+    static_cast<user_function*>(dynFnInfo->theFunction.getp())->getPlan(planStateSize);
 
     result = new FunctionItem(dynFnInfo, new dynamic_context(planState.theGlobalDynCtx));
   }
@@ -263,7 +270,7 @@ bool FnMapPairsIterator::nextImpl(
         arguments.push_back(new PlanStateIteratorWrapper(seqIter2));
       }
       
-      state->thePlan = static_cast<FunctionItem*>(state->theFnItem.getp())->getImplementation(arguments);
+      state->thePlan = static_cast<FunctionItem*>(state->theFnItem.getp())->getImplementation(arguments, planState.theCompilerCB);
       // must be opened after vars and params are set
       state->thePlan->open(planState, state->theUDFStateOffset);
       state->theIsOpen = true;
@@ -407,7 +414,7 @@ bool FnFoldLeftIterator::nextImpl(
         if (theIsFoldRight)
           std::reverse(++arguments.begin(), arguments.end());
         
-        state->thePlan = static_cast<FunctionItem*>(state->theFnItem.getp())->getImplementation(arguments);
+        state->thePlan = static_cast<FunctionItem*>(state->theFnItem.getp())->getImplementation(arguments, planState.theCompilerCB);
         state->thePlan->open(planState, state->theUDFStateOffset);
         state->theIsOpen = true; 
       }
