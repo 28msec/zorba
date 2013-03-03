@@ -46,6 +46,7 @@
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
+#include "runtime/durations_dates_times/format_dateTime.h"
 #ifdef ZORBA_WITH_DEBUGGER
 #include "runtime/debug/debug_iterator.h"
 #endif
