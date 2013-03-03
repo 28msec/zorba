@@ -28,8 +28,8 @@ namespace std {
 
   // Windows doesn't have these functions -- add them ourselves.
 
-  static float strtof( char const *s, char **end ) {
-    double const result = std::strtod( s, end );
+  static float strtof( char const *s, char **last ) {
+    double const result = std::strtod( s, last );
     if ( !errno ) {
       if ( result < std::numeric_limits<float>::min() ||
            result > std::numeric_limits<float>::max() )
@@ -38,12 +38,12 @@ namespace std {
     return static_cast<float>( result );
   }
 
-  inline long long strtoll( char const *s, char **end, int base ) {
-    return ::_strtoi64( s, end, base );
+  inline long long strtoll( char const *s, char **last, int base ) {
+    return ::_strtoi64( s, last, base );
   }
 
-  inline unsigned long long strtoull( char const *s, char **end, int base ) {
-    return ::_strtoui64( s, end, base );
+  inline unsigned long long strtoull( char const *s, char **last, int base ) {
+    return ::_strtoui64( s, last, base );
   }
 
 } // namespace std
@@ -56,43 +56,39 @@ namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void no_digits( char const *buf ) {
-  throw std::invalid_argument( BUILD_STRING( '"', buf, "\": no digits" ) );
-}
-
-static void too_big_or_small( char const *buf, char const *end ) {
-  zstring const s( buf, end );
+static void too_big_or_small( char const *buf, char const *last ) {
+  zstring const s( buf, last );
   throw std::range_error( BUILD_STRING( '"', s, "\": number too big/small" ) );
 }
 
-inline void check_errno( char const *buf, char const *end ) {
+inline void check_errno( char const *buf, char const *last ) {
   if ( errno == ERANGE )
-    too_big_or_small( buf, end );
+    too_big_or_small( buf, last );
 }
 
-static void check_trailing_chars_impl( char const *end ) {
-  for ( ; *end; ++end )                 // remaining characters, if any, ...
-    if ( !ascii::is_space( *end ) )     // ... may only be whitespace
+static void check_trailing_chars_impl( char const *last ) {
+  for ( ; *last; ++last )               // remaining characters, if any, ...
+    if ( !ascii::is_space( *last ) )    // ... may only be whitespace
       throw std::invalid_argument(
-        BUILD_STRING( '\'', *end, "': invalid character" )
+        BUILD_STRING( '\'', *last, "': invalid character" )
       );
 }
 
-inline void check_parse_number( char const *buf, char const *end,
+inline void check_parse_number( char const *buf, char const *last,
                                 bool check_trailing_chars ) {
-  if ( end == buf )
-    no_digits( buf );
+  if ( last == buf )
+    throw std::invalid_argument( BUILD_STRING( '"', buf, "\": no digits" ) );
   if ( check_trailing_chars )
-    check_trailing_chars_impl( end );
+    check_trailing_chars_impl( last );
 }
 
 class aton_context {
 public:
-  aton_context( char const **&end ) {
-    if ( end ) {
+  aton_context( char const **&last ) {
+    if ( last ) {
       check_trailing_chars_ = false;
     } else {
-      end = &end_;
+      last = &last_;
       check_trailing_chars_ = true;
     }
     errno = 0;
@@ -102,44 +98,44 @@ public:
   }
 private:
   bool check_trailing_chars_;
-  char const *end_;
+  char const *last_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-double atod( char const *buf, char const **end ) {
-  aton_context const ctx( end );
-  double const result = std::strtod( buf, (char**)end );
-  check_parse_number( buf, *end, ctx.check_trailing_chars() );
+double atod( char const *buf, char const **last ) {
+  aton_context const ctx( last );
+  double const result = std::strtod( buf, (char**)last );
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
   return result;
 }
 
-float atof( char const *buf, char const **end ) {
-  aton_context const ctx( end );
-  float const result = std::strtof( buf, (char**)end );
-  check_parse_number( buf, *end, ctx.check_trailing_chars() );
+float atof( char const *buf, char const **last ) {
+  aton_context const ctx( last );
+  float const result = std::strtof( buf, (char**)last );
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
   return result;
 }
 
-long long atoll( char const *buf, char const **end ) {
-  aton_context const ctx( end );
-  long long const result = std::strtoll( buf, (char**)end, 10 );
-  check_errno( buf, *end );
-  check_parse_number( buf, *end, ctx.check_trailing_chars() );
+long long atoll( char const *buf, char const **last ) {
+  aton_context const ctx( last );
+  long long const result = std::strtoll( buf, (char**)last, 10 );
+  check_errno( buf, *last );
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
   return result;
 }
 
-unsigned long long atoull( char const *buf, char const **end ) {
-  aton_context const ctx( end );
+unsigned long long atoull( char const *buf, char const **last ) {
+  aton_context const ctx( last );
   //
   // We have to check for '-' ourselves since strtoull(3) allows it (oddly).
   //
   buf = ascii::trim_start_whitespace( buf );
   bool const minus = *buf == '-';
 
-  unsigned long long const result = std::strtoull( buf, (char**)end, 10 );
-  check_errno( buf, *end );
-  check_parse_number( buf, *end, ctx.check_trailing_chars() );
+  unsigned long long const result = std::strtoull( buf, (char**)last, 10 );
+  check_errno( buf, *last );
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
 
   if ( minus && result ) {
     //
@@ -151,6 +147,25 @@ unsigned long long atoull( char const *buf, char const **end ) {
     );
   }
   return result;
+}
+
+unsigned long long atoull( char const *buf, char const *end,
+                           char const **last ) {
+  aton_context const ctx( last );
+  unsigned long long n = 0;
+  char const *s = ascii::trim_start_whitespace( buf, end - buf );
+
+  for ( ; s < end && ascii::is_digit( *s ); ++s ) {
+    unsigned long long const n_prev = n;
+    n = n * 10 + *s - '0';
+    if ( n < n_prev ) {
+      errno = ERANGE;
+      too_big_or_small( buf, end );
+    }
+  }
+  *last = s;
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
+  return n;
 }
 
 char* itoa( long long n, char *buf ) {
