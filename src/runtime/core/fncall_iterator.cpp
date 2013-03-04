@@ -143,6 +143,7 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf,
   {
     if (theFunctionItem->getDctx() == NULL)
       theFunctionItem->setDctx(new dynamic_context(planState.theGlobalDynCtx));
+      // theFunctionItem->setDctx(planState.theGlobalDynCtx);
     theLocalDCtx = new dynamic_context(theFunctionItem->getDctx());
   }
   else

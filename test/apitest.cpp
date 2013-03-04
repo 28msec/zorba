@@ -194,6 +194,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   if (lProp->testPlanSerialization())
   {
+    std::cerr << "===================================================\n Starting plan serialization" << std::endl;
     try
     {
       std::string binary_path;

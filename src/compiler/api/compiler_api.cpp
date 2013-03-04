@@ -273,6 +273,9 @@ PlanIter_t XQueryCompiler::compile(
                   lTimer);
 
     rootExpr = optimize(rootExpr);
+
+    // TODO: remove debug message
+    std::cerr << "==========================================\nOptimizations finished" << std::endl;
   }
 
 #if 0

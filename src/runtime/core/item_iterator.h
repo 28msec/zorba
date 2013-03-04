@@ -106,12 +106,13 @@ public:
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
-private:
+public:
   void importOuterEnv(PlanState& planState,
       CompilerCB* evalCCB,
       static_context* importSctx,
       dynamic_context* evalDctx) const;
 
+private:
   void setExternalVariables(
       CompilerCB* ccb,
       static_context* importSctx,
