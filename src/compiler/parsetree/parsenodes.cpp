@@ -1317,15 +1317,15 @@ int Expr::numberOfChildren() const
 
 
 FLWORExpr::FLWORExpr(
-    const QueryLoc& loc_,
+    const QueryLoc& loc,
     rchandle<FLWORClauseList> clauses_,
     rchandle<exprnode> ret_,
     const QueryLoc& return_loc_,
     bool force_general)
   :
-  exprnode (loc_),
-  clauses (clauses_),
-  return_val_h (ret_),
+  exprnode(loc),
+  clauses(clauses_),
+  return_val_h(ret_),
   return_location(return_loc_)
 {
   for (unsigned i = 0; i < clauses->size (); i++)
@@ -1342,7 +1342,7 @@ FLWORExpr::FLWORExpr(
     }
   }
 
-  compute_general ();
+  compute_general();
 
   if (force_general)
     general = true;
@@ -1435,7 +1435,8 @@ void FLWORExpr::compute_general ()
     }
     else if (typeid (*cp) == typeid (GroupByClause))
     {
-      if (has_group || has_order) non_10 = general = true;
+      non_10 = true;
+      if (has_group || has_order) general = true;
       has_group = true;
     }
     else if (typeid (*cp) == typeid (CountClause))

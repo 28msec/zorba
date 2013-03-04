@@ -189,7 +189,7 @@ nextclause:
           return;
         }
 
-        case flwor_clause::order_clause:
+        case flwor_clause::orderby_clause:
         {
           orderby_clause* oc = static_cast<orderby_clause *>(c);
 
@@ -384,7 +384,7 @@ nextclause:
         }
       }
 
-      else if (c->get_kind() == flwor_clause::order_clause)
+      else if (c->get_kind() == flwor_clause::orderby_clause)
       {
         oc = static_cast<orderby_clause *>(c);
 
