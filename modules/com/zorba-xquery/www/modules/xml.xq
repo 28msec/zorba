@@ -428,7 +428,7 @@ declare function x:parse-xml-fragment(
  : <br/>Note: This function is not streamable, if a streamable string is used
  : as input for the function it will be materialized.
  :
- : @param $xml-string an XML string to canonicalize.
+ : @param $xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.
  :
  : @return the canonicalized XML string.
  :
@@ -451,7 +451,7 @@ declare function x:canonicalize(
  : <br/>Note: This function is not streamable, if a streamable string is used
  : as input for the function it will be materialized.
  :
- : @param $xml-string an XML string to canonicalize.
+ : @param $xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.
  : @param $options an XML containg options for the canonicalize function.
  : <pre class="brush: xml;">
  : &lt;options xmlns="http://www.zorba-xquery.com/modules/xml-canonicalize-options"&gt;
@@ -470,7 +470,7 @@ declare function x:canonicalize(
  :)
 declare function x:canonicalize(
   $xml-string as xs:string,
-  $options as element(canonicalize-xml-options:options)
+  $options    as element(canonicalize-xml-options:options)
   ) as xs:string
 {
   let $canonicalize-options :=
@@ -482,6 +482,6 @@ declare function x:canonicalize(
 
 declare %private function x:canonicalize-options-impl(
   $xml-string as xs:string,
-  $options as element()
+  $options    as element()
   ) as xs:string external;
 
