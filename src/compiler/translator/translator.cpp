@@ -1730,23 +1730,27 @@ flwor_expr* wrap_expr_in_flwor(
 
   if (withContextSize)
   {
-    // create a LET var equal to the seq returned by the input epxr
+    // create a LET var whose domain expr is the input epxr
     let_clause* lcInputSeq = wrap_in_letclause(inputExpr);
+    var_expr* lcInputVar = lcInputSeq->get_var();
 
     // compute the size of the input seq
-    fo_expr* countExpr = theExprManager->
-    create_fo_expr(theRootSctx,
-                   theUDF,
-                   loc,
-                   BUILTIN_FUNC(FN_COUNT_1),
-                   lcInputSeq->get_var());
+    expr* varWrapper = CREATE(wrapper)(theRootSctx, theUDF, loc, lcInputVar);
+
+    fo_expr* countExpr = CREATE(fo)(theRootSctx,
+                                    theUDF,
+                                    loc,
+                                    BUILTIN_FUNC(FN_COUNT_1),
+                                    varWrapper);
 
     normalize_fo(countExpr);
 
     forlet_clause* lcLast = wrap_in_letclause(countExpr, loc, LAST_IDX_VARNAME);
 
     // Iterate over the input seq
-    for_clause* fcDot = wrap_in_forclause(lcInputSeq->get_var(),
+    varWrapper = CREATE(wrapper)(theRootSctx, theUDF, loc, lcInputVar);
+
+    for_clause* fcDot = wrap_in_forclause(varWrapper,
                                           loc,
                                           DOT_VARNAME,
                                           DOT_POS_VARNAME);
@@ -6304,7 +6308,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       pop_scope();
       break;
     }
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     case flwor_clause::where_clause:
     case flwor_clause::count_clause:
     {
@@ -6621,9 +6625,10 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  window_clause* windowClause =
-    dynamic_cast<window_clause*>(theFlworClausesStack.back());
-  assert(windowClause != NULL);
+  assert(theFlworClausesStack.back()->get_kind() == flwor_clause::window_clause);
+
+  window_clause* windowClause = 
+  static_cast<window_clause*>(theFlworClausesStack.back());
 
   // Pop the window var and associate it with this window clause
   var_expr* windowVarExpr = pop_nodestack_var();
@@ -6672,8 +6677,7 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
       rchandle<WindowVars> vars = cond->get_winvars();
       pop_wincond_vars(vars, inputCondVarExprs[i]);
 
-      conds[i] = theExprManager->create_flwor_wincond(
-                                                      theSctx,
+      conds[i] = theExprManager->create_flwor_wincond(theSctx,
                                                       cond->is_only(),
                                                       inputCondVarExprs[i],
                                                       outputCondVarExprs[i],
@@ -6881,6 +6885,12 @@ void* begin_visit(const GroupByClause& v)
     if (spec->get_binding_expr() == NULL)
     {
       ve = lookup_var(varname, loc, true);
+
+      if (all_vars.find(ve) == all_vars.end())
+      {
+        RAISE_ERROR(err::XQST0094, loc,
+        ERROR_PARAMS(ve->get_name()->getStringValue()));
+      }
     }
     else
     {

@@ -777,6 +777,7 @@ void trim_start( InputStringType const &in, char const *chars,
  *
  * @tparam StringType The string type.
  * @param s The string.
+ * @param chars The characters to trim.
  */
 template<class StringType> inline
 void trim_start( StringType &s, char const *chars ) {

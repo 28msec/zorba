@@ -398,6 +398,8 @@ public:
 
   const store::Item* getQName() const;
 
+  expr* skip_wrappers() const;
+
   void clear_annotations();
 
   xqtref_t get_return_type_with_empty_input(const expr* input) const;

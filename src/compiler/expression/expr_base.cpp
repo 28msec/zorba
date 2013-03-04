@@ -974,7 +974,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
         break;
       }
-      case flwor_clause::order_clause:
+      case flwor_clause::orderby_clause:
       {
         if (found)
           return false;
@@ -1157,6 +1157,22 @@ FunctionConsts::FunctionKind expr::get_function_kind() const
   }
 
   return FunctionConsts::FN_UNKNOWN;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr* expr::skip_wrappers() const
+{
+  const expr* e = this;
+
+  while (e->get_expr_kind() == wrapper_expr_kind)
+  {
+    e = static_cast<const wrapper_expr*>(e)->get_input();
+  }
+
+  return const_cast<expr*>(e);
 }
 
 

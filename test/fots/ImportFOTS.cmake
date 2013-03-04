@@ -19,7 +19,7 @@
 
 
 # Change this to publish updated FOTS archives
-SET (FOTS_ARCHIVE "FOTS_030213.tgz")
+SET (FOTS_ARCHIVE "FOTS_270213.tgz")
 
 # Change this to modify which elements in FOTS driver results are output
 # as CDATA
@@ -74,9 +74,9 @@ FOREACH (_testset ${_testsets})
     "ZORBA_ADD_TEST (FOTS/${_testset} zorbacmd -f -q "
     "${CMAKE_CURRENT_LIST_DIR}/../fots_driver/cli.xq "
     "-e fotsPath:=${_outdir}/2011/QT3-test-suite/catalog.xml "
-    "-e mode:=run-test-sets -e testSetPrefixes:=${_testset} "
+    "-e mode:=run-test-set -e testSetName:=${_testset} "
     "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
-    "-e verbose:=true "
+    "-e verbose:=false "
     "--disable-http-resolution --indent "
     "-z \"cdata-section-elements=${FOTS_CDATA_ELEMENTS}\")\n"
     "ZORBA_SET_TEST_PROPERTY (FOTS/${_testset} "

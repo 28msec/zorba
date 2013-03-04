@@ -250,7 +250,7 @@ expr* MarkConsumerNodeProps::apply(
         where_clause* wc = static_cast<where_clause*>(clause);
         apply(rCtx, wc->get_expr(), modified);
       }
-      else if (clause->get_kind() == flwor_clause::order_clause)
+      else if (clause->get_kind() == flwor_clause::orderby_clause)
       {
         // apply the rule recursively on the orderby exprs
         orderby_clause* oc = static_cast<orderby_clause*>(clause);

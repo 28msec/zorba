@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <cstdlib>
+#include <cmath>
 #include <string>
 #include <exception>
 #include <cassert>
@@ -128,12 +130,12 @@ int DateTime::createDateTime(
 {
   dt.facet = DATETIME_FACET;
   dt.data[YEAR_DATA] = years;
-  dt.data[MONTH_DATA] = abs<int>(months);
-  dt.data[DAY_DATA] = abs<int>(days);
-  dt.data[HOUR_DATA] = abs<int>(hours);
-  dt.data[MINUTE_DATA] = abs<int>(minutes);
-  dt.data[SECONDS_DATA] = abs<int>(seconds);
-  dt.data[FRACSECONDS_DATA] = abs<int>(fractional_seconds);
+  dt.data[MONTH_DATA] = std::abs(months);
+  dt.data[DAY_DATA] = std::abs(days);
+  dt.data[HOUR_DATA] = std::abs(hours);
+  dt.data[MINUTE_DATA] = std::abs(minutes);
+  dt.data[SECONDS_DATA] = std::abs(seconds);
+  dt.data[FRACSECONDS_DATA] = std::abs(fractional_seconds);
   return 0;
 }
 
@@ -150,12 +152,12 @@ int DateTime::createDateTime(
 {
   dt.facet = DATETIME_FACET;
   dt.data[YEAR_DATA] = years;
-  dt.data[MONTH_DATA] = abs<int>(months);
-  dt.data[DAY_DATA] = abs<int>(days);
-  dt.data[HOUR_DATA] = abs<int>(hours);
-  dt.data[MINUTE_DATA] = abs<int>(minutes);
-  dt.data[SECONDS_DATA] = floor<double>(abs<double>(seconds));
-  dt.data[FRACSECONDS_DATA] = round(frac(abs<double>(seconds)) * FRAC_SECONDS_UPPER_LIMIT);
+  dt.data[MONTH_DATA] = std::abs(months);
+  dt.data[DAY_DATA] = std::abs(days);
+  dt.data[HOUR_DATA] = std::abs(hours);
+  dt.data[MINUTE_DATA] = std::abs(minutes);
+  dt.data[SECONDS_DATA] = std::floor(std::fabs(seconds));
+  dt.data[FRACSECONDS_DATA] = round(frac(std::fabs(seconds)) * FRAC_SECONDS_UPPER_LIMIT);
   
   if (tz != NULL)
     dt.the_time_zone = *tz;
@@ -177,12 +179,12 @@ int DateTime::createDateTime(
 {
   dt.facet = DATETIME_FACET;
   dt.data[YEAR_DATA] = years;
-  dt.data[MONTH_DATA] = abs<int>(months);
-  dt.data[DAY_DATA] = abs<int>(days);
-  dt.data[HOUR_DATA] = abs<int>(hours);
-  dt.data[MINUTE_DATA] = abs<int>(minutes);
-  dt.data[SECONDS_DATA] = abs<int>(seconds);
-  dt.data[FRACSECONDS_DATA] = abs<int>(fractional_seconds);
+  dt.data[MONTH_DATA] = std::abs(months);
+  dt.data[DAY_DATA] = std::abs(days);
+  dt.data[HOUR_DATA] = std::abs(hours);
+  dt.data[MINUTE_DATA] = std::abs(minutes);
+  dt.data[SECONDS_DATA] = std::abs(seconds);
+  dt.data[FRACSECONDS_DATA] = std::abs(fractional_seconds);
       
   if (tz != NULL)
     dt.the_time_zone = *tz;
@@ -200,8 +202,8 @@ int DateTime::createDate(
 {
   dt.facet = DATE_FACET;
   dt.data[YEAR_DATA] = years;
-  dt.data[MONTH_DATA] = abs<int>(months);
-  dt.data[DAY_DATA] = abs<int>(days);
+  dt.data[MONTH_DATA] = std::abs(months);
+  dt.data[DAY_DATA] = std::abs(days);
   dt.data[HOUR_DATA] = 0;
   dt.data[MINUTE_DATA] = 0;
   dt.data[SECONDS_DATA] = 0;
@@ -225,10 +227,10 @@ int DateTime::createTime(
   dt.data[YEAR_DATA] = 1;
   dt.data[MONTH_DATA] = 1;
   dt.data[DAY_DATA] = 1;
-  dt.data[HOUR_DATA] = abs<int>(hours);
-  dt.data[MINUTE_DATA] = abs<int>(minutes);
-  dt.data[SECONDS_DATA] = floor<double>(abs<double>(seconds));
-  dt.data[FRACSECONDS_DATA] = round(frac(abs<double>(seconds)) * FRAC_SECONDS_UPPER_LIMIT);
+  dt.data[HOUR_DATA] = std::abs(hours);
+  dt.data[MINUTE_DATA] = std::abs(minutes);
+  dt.data[SECONDS_DATA] = std::floor(std::fabs(seconds));
+  dt.data[FRACSECONDS_DATA] = round(frac(std::fabs(seconds)) * FRAC_SECONDS_UPPER_LIMIT);
       
   if (tz != NULL)
     dt.the_time_zone = *tz;
@@ -241,7 +243,7 @@ int DateTime::createGYearMonth(int years, int months, DateTime& dt)
 {
   dt.facet = GYEARMONTH_FACET;
   dt.data[YEAR_DATA] = years;
-  dt.data[MONTH_DATA] = abs<int>(months);
+  dt.data[MONTH_DATA] = std::abs(months);
   dt.data[DAY_DATA] = 1;
   dt.data[HOUR_DATA] = 0;
   dt.data[MINUTE_DATA] = 0;
@@ -271,7 +273,7 @@ int DateTime::createGMonth(int months, DateTime& dt)
 {
   dt.facet = GMONTH_FACET;
   dt.data[YEAR_DATA] = 1;
-  dt.data[MONTH_DATA] = abs<int>(months);
+  dt.data[MONTH_DATA] = std::abs(months);
   dt.data[DAY_DATA] = 1;
   dt.data[HOUR_DATA] = 0;
   dt.data[MINUTE_DATA] = 0;
@@ -286,8 +288,8 @@ int DateTime::createGMonthDay(int months, int days, DateTime& dt)
 {
   dt.facet = GMONTHDAY_FACET;
   dt.data[YEAR_DATA] = 1;
-  dt.data[MONTH_DATA] = abs<int>(months);
-  dt.data[DAY_DATA] = abs<int>(days);
+  dt.data[MONTH_DATA] = std::abs(months);
+  dt.data[DAY_DATA] = std::abs(days);
   dt.data[HOUR_DATA] = 0;
   dt.data[MINUTE_DATA] = 0;
   dt.data[SECONDS_DATA] = 0;
@@ -302,7 +304,7 @@ int DateTime::createGDay(int days, DateTime& dt)
   dt.facet = GDAY_FACET;
   dt.data[YEAR_DATA] = 1;
   dt.data[MONTH_DATA] = 1;
-  dt.data[DAY_DATA] = abs<int>(days);
+  dt.data[DAY_DATA] = std::abs(days);
   dt.data[HOUR_DATA] = 0;
   dt.data[MINUTE_DATA] = 0;
   dt.data[SECONDS_DATA] = 0;
@@ -341,29 +343,29 @@ int DateTime::getLocalTime(DateTime& dt)
 }
 
 
-int DateTime::parseDateTime(const char* str, ascii::size_type strlen, DateTime& dt)
+int DateTime::parseDateTime(const char* str, ascii::size_type len, DateTime& dt)
 {
   ascii::size_type pos = 0;
 
   // DateTime is of form: '-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
   dt.facet = DATETIME_FACET;
   
   if (parse_date(str,
-                 strlen,
+                 len,
                  pos,
                  dt.data[YEAR_DATA],
                  dt.data[MONTH_DATA],
                  dt.data[DAY_DATA]))
     return 1;
 
-  if (pos == strlen || str[pos++] != 'T')
+  if (pos == len || str[pos++] != 'T')
     return 1;
   
   if (parse_time(str,
-                 strlen,
+                 len,
                  pos,
                  dt.data[HOUR_DATA],
                  dt.data[MINUTE_DATA],
@@ -373,15 +375,15 @@ int DateTime::parseDateTime(const char* str, ascii::size_type strlen, DateTime& 
     
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
-  if (savepos != pos && pos != strlen)
+  if (savepos != pos && pos != len)
     return 1;
 
-  if (pos < strlen)
+  if (pos < len)
   {
     if (0 != TimeZone::parseTimeZone(str + pos,
-                                     strlen - pos,
+                                     len - pos,
                                      dt.the_time_zone))
       return 1;
   }
@@ -398,17 +400,17 @@ int DateTime::parseDateTime(const char* str, ascii::size_type strlen, DateTime& 
 }
 
 
-int DateTime::parseDate(const char* str, ascii::size_type strlen, DateTime& dt)
+int DateTime::parseDate(const char* str, ascii::size_type len, DateTime& dt)
 {
   TimeZone tz;
   ascii::size_type pos = 0;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
   dt.facet = DATE_FACET;
   
   if (parse_date(str,
-                 strlen,
+                 len,
                  pos,
                  dt.data[YEAR_DATA],
                  dt.data[MONTH_DATA],
@@ -417,14 +419,14 @@ int DateTime::parseDate(const char* str, ascii::size_type strlen, DateTime& dt)
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
-  if (savepos != pos && pos != strlen)
+  if (savepos != pos && pos != len)
     return 1;
 
-  if (pos < strlen)
+  if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, strlen - pos, dt.the_time_zone))
+    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
       return 1;
   }
   
@@ -432,15 +434,15 @@ int DateTime::parseDate(const char* str, ascii::size_type strlen, DateTime& dt)
 }
 
 
-int DateTime::parseTime(const char* str, ascii::size_type strlen, DateTime& dt)
+int DateTime::parseTime(const char* str, ascii::size_type len, DateTime& dt)
 {
   ascii::size_type pos = 0;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
   dt.facet = TIME_FACET;
   
-  if (parse_time(str, strlen, pos,
+  if (parse_time(str, len, pos,
                  dt.data[HOUR_DATA],
                  dt.data[MINUTE_DATA],
                  dt.data[SECONDS_DATA],
@@ -449,14 +451,14 @@ int DateTime::parseTime(const char* str, ascii::size_type strlen, DateTime& dt)
     
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
-  if (savepos != pos && pos != strlen)
+  if (savepos != pos && pos != len)
     return 1;
 
-  if (pos < strlen)
+  if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, strlen - pos, dt.the_time_zone))
+    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
       return 1;
   }
   
@@ -467,7 +469,7 @@ int DateTime::parseTime(const char* str, ascii::size_type strlen, DateTime& dt)
 }
 
 
-int DateTime::parseGYearMonth(const char* str, ascii::size_type strlen, DateTime& dt)
+int DateTime::parseGYearMonth(const char* str, ascii::size_type len, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
@@ -475,18 +477,18 @@ int DateTime::parseGYearMonth(const char* str, ascii::size_type strlen, DateTime
 
   // GYearMonth of form: '-'? yyyy '-' mm zzzzzz?
   
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
   dt.facet = GYEARMONTH_FACET;
   
   if (str[pos] == '-')
   {
-    temp.append(str + pos, (8 < strlen - pos ? 8 : strlen - pos));
+    temp.append(str + pos, (8 < len - pos ? 8 : len - pos));
     ++pos;
   }
   else
   {
-    temp.append(str + pos, (7 < strlen - pos ? 7 : strlen - pos));
+    temp.append(str + pos, (7 < len - pos ? 7 : len - pos));
   }
 
   temp += "-01";
@@ -503,14 +505,14 @@ int DateTime::parseGYearMonth(const char* str, ascii::size_type strlen, DateTime
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
-  if (savepos != pos && pos != strlen)
+  if (savepos != pos && pos != len)
     return 1;
 
-  if (pos < strlen)
+  if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, strlen - pos, dt.the_time_zone))
+    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
       return 1;
   }
 
@@ -518,7 +520,7 @@ int DateTime::parseGYearMonth(const char* str, ascii::size_type strlen, DateTime
 }
 
 
-int DateTime::parseGYear(const char* str, ascii::size_type strlen, DateTime& dt)
+int DateTime::parseGYear(const char* str, ascii::size_type len, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
@@ -526,7 +528,7 @@ int DateTime::parseGYear(const char* str, ascii::size_type strlen, DateTime& dt)
 
   // GYear of form: '-'? yyyy zzzzzz?
   
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
   dt.facet = GYEAR_FACET;
   
@@ -534,12 +536,12 @@ int DateTime::parseGYear(const char* str, ascii::size_type strlen, DateTime& dt)
 
   if (str[pos] == '-')
   {
-    temp.append(str + pos, (5 < strlen - pos ? 5 : strlen - pos));
+    temp.append(str + pos, (5 < len - pos ? 5 : len - pos));
     ++pos;
   }
   else
   {
-    temp.append(str + pos, (4 < strlen - pos ? 4 : strlen - pos));
+    temp.append(str + pos, (4 < len - pos ? 4 : len - pos));
   }
 
   temp += "-01-01";
@@ -556,14 +558,14 @@ int DateTime::parseGYear(const char* str, ascii::size_type strlen, DateTime& dt)
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
-  if (savepos != pos && pos != strlen)
+  if (savepos != pos && pos != len)
     return 1;
 
-  if (pos < strlen)
+  if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, strlen - pos, dt.the_time_zone))
+    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
       return 1;
   }
 
@@ -571,7 +573,7 @@ int DateTime::parseGYear(const char* str, ascii::size_type strlen, DateTime& dt)
 }
 
 
-int DateTime::parseGMonth(const char* str, ascii::size_type strlen, DateTime& dt)
+int DateTime::parseGMonth(const char* str, ascii::size_type len, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
@@ -580,7 +582,7 @@ int DateTime::parseGMonth(const char* str, ascii::size_type strlen, DateTime& dt
   // GMonth of form: --MM zzzzzz?
   // preceding - is not allowed.
   
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
   dt.facet = GMONTH_FACET;
   
@@ -604,14 +606,14 @@ int DateTime::parseGMonth(const char* str, ascii::size_type strlen, DateTime& dt
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
-  if (savepos != pos && pos != strlen)
+  if (savepos != pos && pos != len)
     return 1;
 
-  if (pos < strlen)
+  if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, strlen - pos, dt.the_time_zone))
+    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
       return 1;
   }
 
@@ -619,7 +621,7 @@ int DateTime::parseGMonth(const char* str, ascii::size_type strlen, DateTime& dt
 }
 
 
-int DateTime::parseGMonthDay(const char* str, ascii::size_type strlen, DateTime& dt)
+int DateTime::parseGMonthDay(const char* str, ascii::size_type len, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
@@ -628,7 +630,7 @@ int DateTime::parseGMonthDay(const char* str, ascii::size_type strlen, DateTime&
   // GMonthDay of form: --MM-DD zzzzzz?
   // preceding - is not allowed.
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
   dt.facet = GMONTHDAY_FACET;
   
@@ -653,14 +655,14 @@ int DateTime::parseGMonthDay(const char* str, ascii::size_type strlen, DateTime&
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
-  if (savepos != pos && pos != strlen)
+  if (savepos != pos && pos != len)
     return 1;
 
-  if (pos < strlen)
+  if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, strlen - pos, dt.the_time_zone))
+    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
       return 1;
   }
 
@@ -668,7 +670,7 @@ int DateTime::parseGMonthDay(const char* str, ascii::size_type strlen, DateTime&
 }
 
 
-int DateTime::parseGDay(const char* str, ascii::size_type strlen, DateTime& dt)
+int DateTime::parseGDay(const char* str, ascii::size_type len, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
@@ -677,7 +679,7 @@ int DateTime::parseGDay(const char* str, ascii::size_type strlen, DateTime& dt)
   // GDay of form: ---DD zzzzzz?
   // preceding - is not allowed.
   
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
   dt.facet = GDAY_FACET;
   
@@ -702,14 +704,14 @@ int DateTime::parseGDay(const char* str, ascii::size_type strlen, DateTime& dt)
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_whitespace(str, len, &pos);
 
-  if (savepos != pos && pos != strlen)
+  if (savepos != pos && pos != len)
     return 1;
 
-  if (pos < strlen)
+  if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, strlen - pos, dt.the_time_zone))
+    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
       return 1;
   }
 
@@ -720,7 +722,7 @@ int DateTime::parseGDay(const char* str, ascii::size_type strlen, DateTime& dt)
 // Returns 0 on success
 int DateTime::parse_date(
     const char* str,
-    ascii::size_type strlen,
+    ascii::size_type len,
     ascii::size_type& pos,
     long& year,
     long& month,
@@ -729,7 +731,7 @@ int DateTime::parse_date(
   bool is_negative = false;
   ascii::size_type temp_pos;
   
-  if (pos == strlen)
+  if (pos == len)
     return 1;
 
   if (str[pos] == '-')
@@ -741,7 +743,7 @@ int DateTime::parse_date(
   // Parse year
   temp_pos = pos;
 
-  if (pos == strlen || parse_long(str, strlen, pos, year, 4))
+  if (pos == len || parse_long(str, len, pos, year, 4))
     return 1;
 
   if (pos - temp_pos > 4 && str[temp_pos] == '0')
@@ -750,18 +752,18 @@ int DateTime::parse_date(
   if (is_negative)
     year = -year;
 
-  if (pos == strlen || str[pos++] != '-')
+  if (pos == len || str[pos++] != '-')
     return 1;
 
   // Parse month
-  if (pos == strlen || parse_long(str, strlen, pos, month, 2, 2))
+  if (pos == len || parse_long(str, len, pos, month, 2, 2))
     return 1;
 
-  if (pos == strlen || str[pos++] != '-')
+  if (pos == len || str[pos++] != '-')
     return 1;
 
   // Parse day
-  if (pos == strlen || parse_long(str, strlen, pos, day, 2, 2))
+  if (pos == len || parse_long(str, len, pos, day, 2, 2))
     return 1;
   
   // Validate the date
@@ -782,40 +784,40 @@ int DateTime::parse_date(
 // Returns 0 on success
 int DateTime::parse_time(
     const char* str,
-    ascii::size_type strlen,
+    ascii::size_type len,
     ascii::size_type& position,
     long& hour,
     long& minute,
     long& seconds,
     long& frac_seconds)
 {
-  if (position == strlen)
+  if (position == len)
     return 1;
   
   // Parse hour
-  if (position == strlen || parse_long(str, strlen, position, hour, 2, 2))
+  if (position == len || parse_long(str, len, position, hour, 2, 2))
     return 1;
 
-  if (position == strlen || str[position++] != ':')
+  if (position == len || str[position++] != ':')
     return 1;
 
   // Parse minute
-  if (position == strlen || parse_long(str, strlen, position, minute, 2, 2))
+  if (position == len || parse_long(str, len, position, minute, 2, 2))
     return 1;
 
-  if (position == strlen || str[position++] != ':')
+  if (position == len || str[position++] != ':')
     return 1;
 
   // Parse seconds
-  if (position == strlen || parse_long(str, strlen, position, seconds, 2, 2))
+  if (position == len || parse_long(str, len, position, seconds, 2, 2))
     return 1;
   
-  if (position < strlen && str[position] == '.')
+  if (position < len && str[position] == '.')
   {
     double temp_frac_seconds;
     position++;
 
-    if (parse_frac(str, strlen, position, temp_frac_seconds))
+    if (parse_frac(str, len, position, temp_frac_seconds))
       return 1;
 
     frac_seconds = round(temp_frac_seconds * FRAC_SECONDS_UPPER_LIMIT);
@@ -885,7 +887,7 @@ zstring DateTime::toString() const
   {
     if (FACET_MEMBERS[facet][i])
     {
-      result.append(to_string(abs<int>(data[i]), min_length[i]));
+      result.append(zero_pad(std::abs(data[i]), min_length[i]));
       if (FACET_MEMBERS[facet][i+1] && i<=4)
         result.push_back(separators[i]);
     }
@@ -909,7 +911,7 @@ zstring DateTime::toString() const
     while (temp%10 == 0 && temp > 0)
       temp = temp / 10;
     
-    result.append(to_string(temp));
+    result.append(ztd::to_string(temp));
   }
   
   result.append(the_time_zone.toString());
@@ -1060,7 +1062,7 @@ Duration* DateTime::toDayTimeDuration() const
 {
   if (data[YEAR_DATA] >= 0)
     return new Duration(Duration::DAYTIMEDURATION_FACET, false, 0, 0,
-                        365 * (abs<int>(data[YEAR_DATA]) - 1) +
+                        365 * (std::abs(data[YEAR_DATA]) - 1) +
                           leap_years_count(data[YEAR_DATA]) +
                           DateTime::getDayOfYear(data[YEAR_DATA],
                             data[MONTH_DATA],
@@ -1072,7 +1074,7 @@ Duration* DateTime::toDayTimeDuration() const
   else
   {
     Duration days(Duration::DAYTIMEDURATION_FACET, true, 0, 0,
-                         365 * abs<int>(data[YEAR_DATA]) -
+                         365 * std::abs(data[YEAR_DATA]) -
                          leap_years_count(data[YEAR_DATA]) -
                          DateTime::getDayOfYear(data[YEAR_DATA],
                                                data[MONTH_DATA],
@@ -1144,7 +1146,7 @@ DateTime* DateTime::addDuration(const Duration& d, bool adjust_facet) const
     else
       break;
 
-    years = years + quotient<int>(months + carry-1, 12);
+    years += quotient<int>(months + carry-1, 12);
     months = modulo<int>(months + carry -1, 12) + 1;
   }
   
