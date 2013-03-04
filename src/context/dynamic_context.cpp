@@ -143,7 +143,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
     theDefaultCollectionUri = parent->theDefaultCollectionUri;
   }
 
-  std::cerr << "--> created dynamic_context: " << this << " parent: " << (parent ? parent : 0) << std::endl;
+//  std::cerr << "--> created dynamic_context: " << this << " parent: " << (parent ? parent : 0) << std::endl;
 }
 
 
@@ -177,7 +177,7 @@ dynamic_context::~dynamic_context()
   if (theAvailableMaps)
     delete theAvailableMaps;
 
-  std::cerr << "--> deleted ~dynamic_context: " << this << std::endl;
+//  std::cerr << "--> deleted ~dynamic_context: " << this << std::endl;
 }
 
 
