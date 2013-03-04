@@ -64,7 +64,7 @@ xquery version "3.0";
  : fn:parse-xml() function in XPath and XQuery Functions and Operators 3.0</a>
  : @see <a href="http://xmlsoft.org/html/libxml-parser.html">LibXml2 parser</a>
  :
- : @author Nicolae Brinza
+ : @author Nicolae Brinza, Juan Zacarias
  : @project data processing/data converters
  :
  :)
@@ -78,7 +78,7 @@ declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace err = "http://www.w3.org/xqt-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.0";
+declare option ver:module-version "2.1";
 
 
 (:~
@@ -423,12 +423,10 @@ declare function x:parse-xml-fragment(
 
 (:~
  : A function to canonicalize the given XML string, that is, transform
- : it into Canonical XML as defined by http://www.w3.org/TR/xml-c14n .
+ : it into Canonical XML as defined by <a href="http://www.w3.org/TR/xml-c14n">Canonical XML</a>.
  :
- : <br/><p>
- : Note: This function is not streamable, if a streamable string is used
- : as input for the function it will be materialized
- : </p><br/>
+ : <br/>Note: This function is not streamable, if a streamable string is used
+ : as input for the function it will be materialized.
  :
  : @param $xml-string an XML string to canonicalize.
  :
@@ -443,20 +441,19 @@ declare function x:canonicalize(
 
 (:~
  : A function to canonicalize the given XML string, that is, transform
- : it into Canonical XML as defined by http://www.w3.org/TR/xml-c14n .
- : This version of the function allows specifying certain options to be
+ : it into Canonical XML as defined by <a href="http://www.w3.org/TR/xml-c14n">Canonical XML</a>.
+ : <br/>This version of the function allows specifying certain options to be
  : used when initially parsing the XML string. These options correspond
- : to the similarly-named options in the LibXMl2 parser, as documented at
- : http://xmlsoft.org/html/libxml-parser.html#xmlParserOption
+ : to the similarly-named options in the
+ : <a href="http://xmlsoft.org/">LibXMl2 parser</a>, as documented at
+ : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">LibXML: Enum xmlParserOption</a>
  :
- : <br/><p>
- : Note: This function is not streamable, if a streamable string is used
- : as input for the function it will be materialized
- : </p><br/>
+ : <br/>Note: This function is not streamable, if a streamable string is used
+ : as input for the function it will be materialized.
  :
  : @param $xml-string an XML string to canonicalize.
- : @param $options an XML containg options for the canonicalize function. 
- :<pre>
+ : @param $options an XML containg options for the canonicalize function.
+ : <pre class="brush: xml;">
  : &lt;options xmlns="http://www.zorba-xquery.com/modules/xml-canonicalize-options"&gt;
  :   &lt;xml-parse-dtdload/&gt;
  :   &lt;xml-parse-dtdattr/&gt;
@@ -466,7 +463,7 @@ declare function x:canonicalize(
  :   &lt;xml-parse-nsclean/&gt;
  :   &lt;xml-parse-nocdata/&gt;
  : &lt;/options&gt;
- :</pre
+ :</pre>
  : @return the canonicalized XML string.
  :
  : @error err:CANO0001 invalid input.
@@ -476,8 +473,8 @@ declare function x:canonicalize(
   $options as element(canonicalize-xml-options:options)
   ) as xs:string
 {
-  let $canonicalize-options := 
-    if ( schema:is-validated( $options ) ) 
+  let $canonicalize-options :=
+    if ( schema:is-validated( $options ) )
       then $options
       else validate { $options }
   return x:canonicalize-options-impl( $xml-string , $canonicalize-options )

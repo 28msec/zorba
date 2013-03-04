@@ -1,4 +1,4 @@
-import module namespace x = "http://www.zorba-xquery.com/modules/xml";
+import module namespace x = "http://www.zorba-xquery.com/modules/xml#2.1";
 import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-canonicalize-options";
 
 let $xml := '<document xmlns:ns="http://test">

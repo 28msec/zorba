@@ -24,7 +24,7 @@
 namespace zorba {
 
 /**
- * A class to hold an input stream for the x:parse() function
+ * A class to hold an input stream for the parse-xml:parse() function
  * Author: Nicolae Brinza
  */
 class FragmentIStream : public std::istream
