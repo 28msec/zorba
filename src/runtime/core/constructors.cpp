@@ -998,7 +998,7 @@ bool NamespaceIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   GENV_ITEMFACTORY->createNamespaceNode(result, prefix, uri);
   STACK_PUSH(true, state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

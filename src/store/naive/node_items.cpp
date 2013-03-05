@@ -655,7 +655,9 @@ store::Item* XmlNode::copy(
   assert(!isConnectorNode());
   store::StoreConsts::NodeKind kind = getNodeKind();
 
-  bool copy = (copymode.theDoCopy || kind == store::StoreConsts::attributeNode);
+  bool copy = (copymode.theDoCopy ||
+               kind == store::StoreConsts::attributeNode ||
+               kind == store::StoreConsts::namespaceNode);
 
   InternalNode* parent = NULL;
   csize pos = 0;
@@ -5354,6 +5356,8 @@ NamespaceNode::NamespaceNode(XmlTree* tree, zstring& prefix, zstring& uri)
   :
   XmlNode(tree, NULL, store::StoreConsts::namespaceNode)
 {
+  thePrefix.take(prefix);
+  theUri.take(uri);
 }
 
 
@@ -5367,7 +5371,7 @@ XmlNode* NamespaceNode::copyInternal(
     const XmlNode* rootCopy,
     const store::CopyMode& copymode) const
 {
-  ZORBA_ASSERT(rootParent == NULL);
+  ZORBA_ASSERT(rootParent == parent);
   
   if (parent != NULL)
   {

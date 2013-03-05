@@ -3086,8 +3086,8 @@ void end_visit(namespace_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  PlanIter_t prefix = pop_itstack();
   PlanIter_t uri = pop_itstack();
+  PlanIter_t prefix = pop_itstack();
   push_itstack(new NamespaceIterator(sctx, qloc, prefix, uri));
 }
 

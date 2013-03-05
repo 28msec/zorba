@@ -184,7 +184,7 @@ NamespaceNode* NodeFactory::createNamespaceNode(
     zstring& prefix,
     zstring& uri)
 {
-  return NULL;
+  return new NamespaceNode(tree, prefix, uri);
 }
 
 
