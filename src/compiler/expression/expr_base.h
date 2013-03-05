@@ -56,6 +56,7 @@ enum expr_kind_t
   doc_expr_kind,
   elem_expr_kind,
   attr_expr_kind,
+  namespace_expr_kind,
   text_expr_kind,
   pi_expr_kind,
 

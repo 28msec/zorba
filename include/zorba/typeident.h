@@ -72,6 +72,9 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject
   createPIType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
   static TypeIdentifier_t
+  createNamespaceType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
+
+  static TypeIdentifier_t
   createTextType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
   static TypeIdentifier_t

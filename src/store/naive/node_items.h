@@ -141,12 +141,15 @@ class XmlNodeTokenizerCallback;
   A collection-relative id for this tree. Uniquely identifies the tree within a
   collection, or if the tree does not belong to any collection, its id is unique
   among all the other trees that do not belong to any collection either. NOTE:
-  when a tree becomes member of a colection, it gets a new id. 
+  when a tree becomes member of a colection or gets removed from a collection,
+  it gets a new id. 
  
   theCollectionInfo:
   ------------------
   Contains info that is relevant only if the tree belongs to a collection (see
-  class CollectionTreeInfo for more details).
+  class CollectionTreeInfo for more details). Note: the object pointed to by
+  theCollectionInfo is owned by this tree iff the tree belongs to a collection
+  directly.
 
   theRootNode:
   ------------
@@ -163,6 +166,9 @@ class XmlNodeTokenizerCallback;
 
   theTypesMap:
   ------------
+  For each element/attribute node in the tree, it maps the node to its data type
+  (specified as a qname). Nodes whose type is xs:untyped are not included in this
+  map.
 
   theTokens:
   ----------
@@ -196,6 +202,7 @@ protected:
 #endif
 
   bool                      theIsValidated;
+
   bool                      theIsRecursive;
 
 #ifndef EMBEDED_TYPE
@@ -231,9 +238,9 @@ public:
   void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo);
 
   void attachToCollection(
-      simplestore::Collection* aCollection,
-      const TreeId& aTreeId,
-      const xs_integer& aPosition);
+      simplestore::Collection* collection,
+      const TreeId& treeId,
+      const xs_integer& pos);
 
   void detachFromCollection();
 
@@ -291,7 +298,7 @@ public:
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenStore& getTokenStore() { return theTokens; }
-#endif /* ZORBA_NO_FULL_TEXT */
+#endif
 };
 
 
@@ -398,21 +405,17 @@ private:
 #endif
 
 protected:
-  XmlNode() : theParent(NULL)
-  {
-  }
+  XmlNode() : theParent(NULL) { }
 
-  XmlNode(store::StoreConsts::NodeKind k) :
-      StructuredItem(),
-      theParent(NULL)
+  XmlNode(store::StoreConsts::NodeKind k)
+    :
+    StructuredItem(),
+    theParent(NULL)
   {
     theFlags = (uint32_t)k;
   }
 
-  XmlNode(
-      XmlTree* tree,
-      InternalNode* parent,
-      store::StoreConsts::NodeKind nodeKind);
+  XmlNode(XmlTree* tree, InternalNode* parent, store::StoreConsts::NodeKind k);
 
   virtual void getBaseURIInternal(zstring& uri, bool& local) const;
 
@@ -429,7 +432,7 @@ protected:
   virtual void swap(Item* anotherItem);
 
 #ifndef ZORBA_NO_FULL_TEXT
-  virtual void tokenize( XmlNodeTokenizerCallback& );
+  virtual void tokenize(XmlNodeTokenizerCallback&);
 #endif
 
 private:
@@ -447,8 +450,6 @@ public:
   virtual ~XmlNode() {}
 #endif
 
-  size_t alloc_size() const;
-
   SYNC_CODE(RCLock* getRCLock() const { return getTree()->getRCLock(); })
 
   void free()
@@ -456,6 +457,8 @@ public:
     if (getTree() != NULL)
       getTree()->free();
   }
+
+  size_t alloc_size() const;
 
   //
   // Item methods
@@ -482,10 +485,7 @@ public:
     return reinterpret_cast<store::Item*>(theParent);
   }
 
-  bool equals(
-      const store::Item* other,
-      long timezone = 0,
-      const XQPCollator* aCollation = 0) const;
+  bool equals(const store::Item* other, long tz = 0, const XQPCollator* c = 0) const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
@@ -969,8 +969,6 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  store::Item_t getAtomizationValue() const;
-
   zstring getStringValue() const;
 
   void getStringValue2(zstring& val) const;
@@ -1021,9 +1019,9 @@ class ElementNode : public InternalNode
   friend class UpdReplaceContent;
 
 protected:
-  store::Item_t         theName;
+  store::Item_t    theName;
 #ifdef EMBEDED_TYPE
-  store::Item_t         theTypeName;
+  store::Item_t    theTypeName;
 #endif
 
 protected:
@@ -1053,6 +1051,7 @@ public:
   // Item methods
   //
   size_t alloc_size() const;
+
   size_t dynamic_size() const;
 
   store::Item* getNodeName() const { return theName.getp(); }
@@ -1060,8 +1059,6 @@ public:
   store::Item* getType() const;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
-
-  store::Item_t getAtomizationValue() const;
 
   bool isId() const;
 
@@ -1143,18 +1140,15 @@ public:
 
   void removeLocalBinding(const zstring& prefix, const zstring& ns);
 
-  bool addBindingForQName(
-      store::Item_t& qname,
-      bool           isAttr,
-      bool           replacePrefix);
+  bool addBindingForQName(store::Item_t& qname, bool isAttr, bool replacePrefix);
 
   void addBindingForQName2(const store::Item* qname);
 
+  void addBindingForNSNode(const zstring& prefix, const zstring& ns);
+
   void checkNamespaceConflict(const store::Item* qname, const QueryLoc* loc) const;
 
-  void uninheritBinding(
-      NsBindingsContext* rootNSCtx,
-      const zstring& prefix);
+  void uninheritBinding(NsBindingsContext* rootNSCtx, const zstring& prefix);
 
   void checkUniqueAttr(const store::Item* attrName) const;
 
@@ -1261,8 +1255,6 @@ public:
   void getStringValue2(zstring& val) const;
 
   void appendStringValue(zstring& buf) const;
-
-  store::Item_t getAtomizationValue() const;
 
   bool isId() const;
 
@@ -1406,8 +1398,6 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  store::Item_t getAtomizationValue() const;
-
   zstring getStringValue() const;
 
   void getStringValue2(zstring& val) const;
@@ -1548,8 +1538,6 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  store::Item_t getAtomizationValue() const;
-
   zstring getStringValue() const { return theContent; }
 
   void getStringValue2(zstring& val) const { val = theContent; }
@@ -1617,8 +1605,6 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  store::Item_t getAtomizationValue() const;
-
   zstring getStringValue() const { return theContent; }
 
   void getStringValue2(zstring& val) const { val = theContent; }
@@ -1636,6 +1622,47 @@ public:
   store::Iterator_t getChildren() const;
 
   virtual void swap(Item* anotherItem);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class NamespaceNode : public XmlNode
+{
+  friend class XmlNode;
+  friend class NodeFactory;
+
+protected:
+  zstring  thePrefix;
+  zstring  theUri;
+
+protected:
+  NamespaceNode(XmlTree* tree, zstring& prefix, zstring& uri);
+
+public:
+  XmlNode* copyInternal(
+        InternalNode* rootParent,
+        InternalNode* parent,
+        csize pos,
+        const XmlNode* rootCopy,
+        const store::CopyMode& copymode) const;
+
+  store::Item* getType() const { return NULL; }
+
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  zstring getStringValue() const { return theUri; }
+
+  void getStringValue2(zstring& val) const { val = theUri; }
+
+  void appendStringValue(zstring& buf) const { buf += theUri; }
+
+  store::Item* getNodeName() const;
+
+  store::Iterator_t getChildren() const;
+
+  zstring show() const;
 };
 
 

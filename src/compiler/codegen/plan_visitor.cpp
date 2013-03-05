@@ -3075,6 +3075,23 @@ void end_visit(attr_expr& v)
 }
 
 
+bool begin_visit(namespace_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+	return true;
+}
+
+
+void end_visit(namespace_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  PlanIter_t prefix = pop_itstack();
+  PlanIter_t uri = pop_itstack();
+  push_itstack(new NamespaceIterator(sctx, qloc, prefix, uri));
+}
+
+
 bool begin_visit(text_expr& v)
 {
   CODEGEN_TRACE_IN ("");
@@ -3146,8 +3163,8 @@ void end_visit(pi_expr& v)
     isRoot = true;
   }
 
-  PlanIter_t content = pop_itstack ();
-  PlanIter_t target = pop_itstack ();
+  PlanIter_t content = pop_itstack();
+  PlanIter_t target = pop_itstack();
   push_itstack(new PiIterator(sctx, qloc, target, content, isRoot));
 }
 

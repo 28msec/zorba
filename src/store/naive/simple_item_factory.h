@@ -386,29 +386,33 @@ public:
         zstring&       content);
 
   bool createCommentNode (
-        store::Item_t& result,
-        store::Item*   parent,
-        ulong          pos,
-        zstring&       content);
+      store::Item_t& result,
+      store::Item*   parent,
+      ulong          pos,
+      zstring&       content);
 
+  bool createNamespaceNode (
+      store::Item_t& result,
+      zstring&       prefix,
+      zstring&       uri);
 
   store::PUL* createPendingUpdateList();
 
   bool createError(
-          store::Item_t& result,
-          ZorbaException* ze);
+      store::Item_t& result,
+      ZorbaException* ze);
+  
+  bool createFunction(
+      store::Item_t&,
+      const store::Item_t&,
+      const signature&,
+      const store::Iterator_t&);
 
   bool createFunction(
-          store::Item_t&,
-          const store::Item_t&,
-          const signature&,
-          const store::Iterator_t&);
-
-  bool createFunction(
-          store::Item_t&,
-          const std::vector<store::Iterator_t>&,
-          const signature&,
-          const store::Iterator_t&);
+      store::Item_t&,
+      const std::vector<store::Iterator_t>&,
+      const signature&,
+      const store::Iterator_t&);
 
 #ifdef ZORBA_WITH_JSON
   bool createJSONNull(store::Item_t& result);

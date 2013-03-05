@@ -2001,6 +2001,32 @@ bool BasicItemFactory::createCommentNode(
 /*******************************************************************************
 
 ********************************************************************************/
+bool BasicItemFactory::createNamespaceNode(
+    store::Item_t& result,
+    zstring&       prefix,
+    zstring&       uri)
+{
+  XmlTree* xmlTree = GET_NODE_FACTORY().createXmlTree();
+  NamespaceNode* n;
+
+  try
+  {
+    n = GET_NODE_FACTORY().createNamespaceNode(xmlTree, prefix, uri);
+  }
+  catch (...)
+  {
+    delete xmlTree;
+    throw;
+  }
+
+  result = n;
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 store::PUL* BasicItemFactory::createPendingUpdateList()
 {
   return new PULImpl();

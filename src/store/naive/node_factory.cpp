@@ -179,6 +179,16 @@ CommentNode* NodeFactory::createCommentNode(
 }
   
 
+NamespaceNode* NodeFactory::createNamespaceNode(
+    XmlTree* tree,
+    zstring& prefix,
+    zstring& uri)
+{
+  return NULL;
+}
+
+
+
 } /* namespace simplestore */
 
 } /* namespace store */
