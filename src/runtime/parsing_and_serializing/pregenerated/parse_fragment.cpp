@@ -97,6 +97,10 @@ FnZorbaCanonicalizeIteratorState::FnZorbaCanonicalizeIteratorState() {}
 
 FnZorbaCanonicalizeIteratorState::~FnZorbaCanonicalizeIteratorState() {}
 
+
+void FnZorbaCanonicalizeIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
 // </FnZorbaCanonicalizeIterator>
 
 

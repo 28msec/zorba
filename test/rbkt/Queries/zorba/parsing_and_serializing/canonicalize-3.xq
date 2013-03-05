@@ -1,5 +1,5 @@
 import module namespace x = "http://www.zorba-xquery.com/modules/xml#2.1";
-import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-canonicalize-options";
+import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
 let $xml := '<document xmlns:ns="http://test">
   <element1/>
@@ -15,4 +15,4 @@ let $xml := '<document xmlns:ns="http://test">
   </element3>
   <element4/>
 </document>'
-return x:canonicalize($xml, <opt:options><opt:xml-parse-noblanks/></opt:options>)
+return x:canonicalize($xml, <opt:options><opt:remove-redundant-ns/></opt:options>)

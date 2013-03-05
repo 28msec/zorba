@@ -88,7 +88,7 @@ public:
 class FnZorbaCanonicalizeIteratorState : public PlanIteratorState
 {
 public:
-  int theProperties; //value of the canonicalize properties
+  store::LoadProperties theProperties; //loader properties
 
   FnZorbaCanonicalizeIteratorState();
 

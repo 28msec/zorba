@@ -164,6 +164,8 @@ void processOptions(store::Item_t item, store::LoadProperties& props, static_con
       props.setNoCDATA(true);
     else if (child->getNodeName()->getLocalName() == "no-xinclude-nodes")
       props.setNoXIncludeNodes(true);
+    else if (child->getNodeName()->getLocalName() == "no-network-access")
+      props.setNoNetworkAccess(true);
   }
 
   children->close();
@@ -331,77 +333,6 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
 /*******************************************************************************
   14.9.1.1 fn-zorba-xml:canonicalize
 ********************************************************************************/
-void processOptions(store::Item_t item, int& props, static_context* theSctx, const QueryLoc& loc)
-{
-  store::Item_t child;  
-  
-  if (item.getp() == NULL)
-    return;
-
-  store::Iterator_t children = item->getChildren();
-  children->open();
-  
-  /*
-   Available Options
-   xml-parse-noent : substitute entities
-   xml-parse-dtdload : load the external subset
-   xml-parse-dtdattr : default DTD attributes
-   xml-parse-dtdvalid : validate with the DTD
-   xml-parse-noblanks : remove blank nodes
-   xml-parse-noent : Forbid network access
-   xml-parse-nsclean : remove redundant namespaces declarations
-   xml-parse-nocdata : merge CDATA as text nodes
-  */
-
-  while (children->next(child))
-  {
-    if (child->getNodeKind() != store::StoreConsts::elementNode)
-      continue;
-
-    zstring lNodeName = child->getNodeName()->getLocalName();
-    zstring lNodeNamespace = child->getNodeName()->getNamespace();
-
-    if(lNodeNamespace == "http://www.zorba-xquery.com/modules/xml-canonicalize-options")
-    {
-      if(lNodeName == "xml-parse-noent")
-      {
-        props |= XML_PARSE_NOENT;
-      }
-      else if(lNodeName == "xml-parse-dtdload")
-      {
-        props |= XML_PARSE_DTDLOAD;
-      }
-      else if(lNodeName == "xml-parse-dtdattr")
-      {
-        props |= XML_PARSE_DTDATTR;
-      }
-      else if(lNodeName == "xml-parse-dtdvalid")
-      {
-        props |= XML_PARSE_DTDVALID;
-      }
-      else if(lNodeName == "xml-parse-noblanks")
-      {
-        props |= XML_PARSE_NOBLANKS;
-      }
-      else if(lNodeName == "xml-parse-nonet")
-      {
-        props |= XML_PARSE_NONET;
-      }
-      else if(lNodeName == "xml-parse-nsclean")
-      {
-        props |= XML_PARSE_NSCLEAN;
-      }
-      else if(lNodeName == "xml-parse-nocdata")
-      {
-        props |= XML_PARSE_NOCDATA;
-      }
-    }
-  }
-
-  children->close();
-}
-
-
 bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   zstring lDocString;
@@ -422,7 +353,7 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
   if (theChildren.size() == 2)
   {
     consumeNext(tempItem, theChildren[1].getp(), planState);
-    processOptions(tempItem, state->theProperties, theSctx, loc);
+    zorba::processOptions(tempItem, state->theProperties, theSctx, loc);
   }
 
   try
@@ -440,7 +371,8 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
     {
       result->getStringValue2(lDocString);  
     }
-    lDoc = xmlReadMemory(lDocString.c_str(), lDocString.size(), "input.xml", NULL, state->theProperties);
+   int lOptions = XML_PARSE_NOERROR | state->theProperties.toLibXmlOptions();
+   lDoc = xmlReadMemory(lDocString.c_str(), lDocString.size(), "input.xml", NULL, lOptions);
     if (!lDoc)
     {
       zstring lErrorMsg;
@@ -463,16 +395,11 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
   STACK_END(state);
 }
 
-
-void FnZorbaCanonicalizeIteratorState::init(PlanState& planState)
-{
-  theProperties = XML_PARSE_NOERROR;
-}
-
 void FnZorbaCanonicalizeIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  theProperties = 0;
+  theProperties.reset();
+  theProperties.setStoreDocument(false);
 }
 
 /*******************************************************************************

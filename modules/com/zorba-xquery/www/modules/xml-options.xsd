@@ -79,6 +79,9 @@
         <element name="no-xinclude-nodes" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
+        <element name="no-network-access" minOccurs="0" maxOccurs="1">
+          <complexType/>
+        </element>
       </all>
     </complexType>
   </element>

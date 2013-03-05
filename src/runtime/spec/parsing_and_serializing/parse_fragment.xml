@@ -67,9 +67,10 @@
       </zorba:signature>
     </zorba:function>
 
-    <zorba:state generateReset="false" generateInit="false">
-      <zorba:member type="int" name="theProperties" brief="value of the canonicalize properties"/>
+    <zorba:state generateReset="false">
+      <zorba:member type="store::LoadProperties" name="theProperties" brief="loader properties"/>
     </zorba:state>
+
 
   </zorba:iterator>
 

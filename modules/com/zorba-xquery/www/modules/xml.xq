@@ -72,7 +72,6 @@ module namespace x = "http://www.zorba-xquery.com/modules/xml";
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 import schema namespace parse-xml-options = "http://www.zorba-xquery.com/modules/xml-options";
-import schema namespace canonicalize-xml-options = "http://www.zorba-xquery.com/modules/xml-canonicalize-options";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace err = "http://www.w3.org/xqt-errors";
@@ -453,31 +452,24 @@ declare function x:canonicalize(
  : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">LibXML: Enum xmlParserOption</a>.
  : XML_PARSE_NOERROR option is set by default.
  :
+ : <br/>Currently unavailable options for this function:
+ : <parse-xml-options:base-uri/>
+ : <parse-xml-options:schema-validate/>
+ : <parse-xml-options:parse-external-parsed-entity/> 
+ :
  : <br/>Note: This function is not streamable, if a streamable string is used
  : as input for the function it will be materialized.
  :
  : @param $xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.
  : @param $options an XML containg options for the canonicalize function.
- : XML_PARSE_NOERROR option is set by default.
  :
- : <br/><pre class="brush: xml;">
- : &lt;options xmlns="http://www.zorba-xquery.com/modules/xml-canonicalize-options"&gt;
- :   &lt;xml-parse-dtdload/&gt;
- :   &lt;xml-parse-dtdattr/&gt;
- :   &lt;xml-parse-dtdvalid/&gt;
- :   &lt;xml-parse-noblanks/&gt;
- :   &lt;xml-parse-nonet/&gt;
- :   &lt;xml-parse-nsclean/&gt;
- :   &lt;xml-parse-nocdata/&gt;
- : &lt;/options&gt;
- :</pre>
  : @return the canonicalized XML string.
  :
  : @error err:CANO0001 invalid input.
  :)
 declare function x:canonicalize(
   $xml-string as xs:string,
-  $options    as element(canonicalize-xml-options:options)
+  $options    as element(parse-xml-options:options)
   ) as xs:string
 {
   let $canonicalize-options :=
