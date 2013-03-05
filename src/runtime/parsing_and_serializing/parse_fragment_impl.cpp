@@ -357,43 +357,44 @@ void processOptions(store::Item_t item, int& props, static_context* theSctx, con
   {
     if (child->getNodeKind() != store::StoreConsts::elementNode)
       continue;
-  
-    zstring lNodeName = child->getNodeName()->getLocalName();
-    std::transform(
-      lNodeName.begin(), lNodeName.end(),
-      lNodeName.begin(), tolower);
 
-    if(lNodeName == "xml-parse-noent")
+    zstring lNodeName = child->getNodeName()->getLocalName();
+    zstring lNodeNamespace = child->getNodeName()->getNamespace();
+
+    if(lNodeNamespace == "http://www.zorba-xquery.com/modules/xml-canonicalize-options")
     {
-      props |= XML_PARSE_NOENT;
-    }
-    else if(lNodeName == "xml-parse-dtdload")
-    {
-      props |= XML_PARSE_DTDLOAD;
-    }
-    else if(lNodeName == "xml-parse-dtdattr")
-    {
-      props |= XML_PARSE_DTDATTR;
-    }
-    else if(lNodeName == "xml-parse-dtdvalid")
-    {
-      props |= XML_PARSE_DTDVALID;
-    }
-    else if(lNodeName == "xml-parse-noblanks")
-    {
-      props |= XML_PARSE_NOBLANKS;
-    }
-    else if(lNodeName == "xml-parse-nonet")
-    {
-      props |= XML_PARSE_NONET;
-    }
-    else if(lNodeName == "xml-parse-nsclean")
-    {
-      props |= XML_PARSE_NSCLEAN;
-    }
-    else if(lNodeName == "xml-parse-nocdata")
-    {
-      props |= XML_PARSE_NOCDATA;
+      if(lNodeName == "xml-parse-noent")
+      {
+        props |= XML_PARSE_NOENT;
+      }
+      else if(lNodeName == "xml-parse-dtdload")
+      {
+        props |= XML_PARSE_DTDLOAD;
+      }
+      else if(lNodeName == "xml-parse-dtdattr")
+      {
+        props |= XML_PARSE_DTDATTR;
+      }
+      else if(lNodeName == "xml-parse-dtdvalid")
+      {
+        props |= XML_PARSE_DTDVALID;
+      }
+      else if(lNodeName == "xml-parse-noblanks")
+      {
+        props |= XML_PARSE_NOBLANKS;
+      }
+      else if(lNodeName == "xml-parse-nonet")
+      {
+        props |= XML_PARSE_NONET;
+      }
+      else if(lNodeName == "xml-parse-nsclean")
+      {
+        props |= XML_PARSE_NSCLEAN;
+      }
+      else if(lNodeName == "xml-parse-nocdata")
+      {
+        props |= XML_PARSE_NOCDATA;
+      }
     }
   }
 
@@ -414,9 +415,9 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
   DEFAULT_STACK_INIT(FnZorbaCanonicalizeIteratorState, state, planState);
   // Read the XML string
   // if the XML string is a streamable string it will have to be materialized
-  // since the libxml2 xmlReadMemory functions can't work with streamable strings 
+  // since the libxml2 xmlReadMemory functions can't work with streamable strings
   consumeNext(result, theChildren[0].getp(), planState);
-  
+
   // read options
   if (theChildren.size() == 2)
   {
@@ -433,8 +434,8 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
       {
         lInstream->read(buf, 1024);
         lDocString.append(buf, lInstream->gcount());
-      }        
-    }    
+      }
+    }
     else
     {
       result->getStringValue2(lDocString);  
@@ -446,7 +447,7 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
       lErrorMsg = "\"" + lDocString + "\"";
       throw XQUERY_EXCEPTION(err::FOCZ0001, ERROR_PARAMS("x:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
     }
-  
+
     xmlC14NDocDumpMemory(lDoc, NULL, XML_C14N_1_1, NULL, 1, &lResult);
     lDocString = zstring((char*)lResult);    
     xmlFree(lResult);

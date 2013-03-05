@@ -52,15 +52,15 @@
 ********************************************************************************/
 -->
   <zorba:iterator name="FnZorbaCanonicalizeIterator">
-      
+
     <zorba:description author="Zorba Team">fn-zorba-xml:canonicalize</zorba:description>
-    
+
     <zorba:function>
       <zorba:signature localname="canonicalize" prefix="fn-zorba-xml">
         <zorba:param>xs:string</zorba:param>  <!-- string to canonicalize -->
         <zorba:output>xs:string</zorba:output>
       </zorba:signature>
-      <zorba:signature localname="canonicalize-options-impl" prefix="fn-zorba-xml">
+      <zorba:signature localname="canonicalize-impl" prefix="fn-zorba-xml">
         <zorba:param>xs:string</zorba:param>  <!-- string to canonicalize -->
         <zorba:param>element()</zorba:param>
         <zorba:output>xs:string</zorba:output>
@@ -72,7 +72,7 @@
     </zorba:state>
 
   </zorba:iterator>
-  
+
 <!--
 /*******************************************************************************
  * 14.9.2 fn:parse-xml-fragment

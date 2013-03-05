@@ -428,6 +428,10 @@ declare function x:parse-xml-fragment(
  : <br/>Note: This function is not streamable, if a streamable string is used
  : as input for the function it will be materialized.
  :
+ : <br/>Note: By default, this function sets the
+ : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">XML_PARSE_NOERROR</a>
+ : option.
+ :
  : @param $xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.
  :
  : @return the canonicalized XML string.
@@ -446,14 +450,17 @@ declare function x:canonicalize(
  : used when initially parsing the XML string. These options correspond
  : to the similarly-named options in the
  : <a href="http://xmlsoft.org/">LibXMl2 parser</a>, as documented at
- : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">LibXML: Enum xmlParserOption</a>
+ : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">LibXML: Enum xmlParserOption</a>.
+ : XML_PARSE_NOERROR option is set by default.
  :
  : <br/>Note: This function is not streamable, if a streamable string is used
  : as input for the function it will be materialized.
  :
  : @param $xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.
  : @param $options an XML containg options for the canonicalize function.
- : <pre class="brush: xml;">
+ : XML_PARSE_NOERROR option is set by default.
+ :
+ : <br/><pre class="brush: xml;">
  : &lt;options xmlns="http://www.zorba-xquery.com/modules/xml-canonicalize-options"&gt;
  :   &lt;xml-parse-dtdload/&gt;
  :   &lt;xml-parse-dtdattr/&gt;
@@ -477,10 +484,10 @@ declare function x:canonicalize(
     if ( schema:is-validated( $options ) )
       then $options
       else validate { $options }
-  return x:canonicalize-options-impl( $xml-string , $canonicalize-options )
+  return x:canonicalize-impl( $xml-string , $canonicalize-options )
 };
 
-declare %private function x:canonicalize-options-impl(
+declare %private function x:canonicalize-impl(
   $xml-string as xs:string,
   $options    as element()
   ) as xs:string external;

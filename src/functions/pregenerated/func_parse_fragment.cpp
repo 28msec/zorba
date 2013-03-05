@@ -79,11 +79,11 @@ void populate_context_parse_fragment(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_xml_canonicalize,
-        (createQName("http://www.zorba-xquery.com/modules/xml","","canonicalize-options-impl"), 
+        (createQName("http://www.zorba-xquery.com/modules/xml","","canonicalize-impl"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_XML_CANONICALIZE_OPTIONS_IMPL_2);
+        FunctionConsts::FN_ZORBA_XML_CANONICALIZE_IMPL_2);
 
   }
 
