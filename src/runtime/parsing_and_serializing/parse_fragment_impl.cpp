@@ -448,7 +448,7 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
       throw XQUERY_EXCEPTION(err::FOCZ0001, ERROR_PARAMS("x:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
     }
 
-    xmlC14NDocDumpMemory(lDoc, NULL, XML_C14N_1_1, NULL, 1, &lResult);
+    xmlC14NDocDumpMemory(lDoc, NULL, 2/*XML_C14N_1_1*/, NULL, 1, &lResult);
     lDocString = zstring((char*)lResult);    
     xmlFree(lResult);
     xmlFreeDoc(lDoc);
