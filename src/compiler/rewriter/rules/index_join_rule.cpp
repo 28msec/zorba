@@ -600,7 +600,7 @@ var_expr* IndexJoinRule::findLoopVar(expr* curExpr, csize& varid)
       }
       else
       {
-        return false;
+        return NULL;
       }
     }
     case var_expr::groupby_var:
