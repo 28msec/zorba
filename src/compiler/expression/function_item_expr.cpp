@@ -94,7 +94,6 @@ function_item_expr::function_item_expr(
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
-                         // ccb,
                          closureSctx,
                          loc,
                          f,
@@ -105,9 +104,6 @@ function_item_expr::function_item_expr(
 {
   assert(f != NULL);
   compute_scripting_kind();
-
-  // std::cerr << "--> created function_item_expr: " << this // << " with DynamicFunctionInfo: " << theDynamicFunctionInfo << " counter: " << theDynamicFunctionInfo->getRefCount()
-  //          << std::endl;
 }
 
 
@@ -122,7 +118,6 @@ function_item_expr::function_item_expr(
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
-                         // ccb,
                          closureSctx,
                          loc,
                          NULL,
@@ -132,15 +127,11 @@ function_item_expr::function_item_expr(
                          needsContextItem))
 {
   theScriptingKind = SIMPLE_EXPR;
-  // std::cerr << "--> created function_item_expr: " << this // << " with DynamicFunctionInfo: " << theDynamicFunctionInfo << " counter: " << theDynamicFunctionInfo->getRefCount()
-  //            << std::endl;
 }
 
 
 function_item_expr::~function_item_expr()
 {
-  // std::cerr << "--> deleted ~function_item_expr: " << this // << " with DynamicFunctionInfo: " << theDynamicFunctionInfo << " counter: " << theDynamicFunctionInfo->getRefCount()
-  //          << std::endl;
 }
 
 void function_item_expr::add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal)

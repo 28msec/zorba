@@ -992,9 +992,6 @@ void push_scope()
 ********************************************************************************/
 void pop_scope()
 {
-  // std::cerr << "--> pop_scope(): popping static_context: " << theSctx << " (" << theSctx->getRefCount() << ")"
-  //          << " parent: " << theSctx->get_parent() << " (" << theSctx->get_parent()->getRefCount() << ")" << std::endl;
-
 #ifdef ZORBA_WITH_DEBUGGER
   if (theCCB->theDebuggerCommons != NULL)
   {
@@ -1415,8 +1412,6 @@ void create_inline_function(expr* body, flwor_expr* flwor, const std::vector<xqt
   assert(fiExpr != NULL);
   fiExpr->set_function(udf);
 
-  // TODO: the inline function has the optimized flag set to true. When this is fixed,
-  // the optimize_cb message should be deleted from here.
   if (theCCB->theConfig.translate_cb != NULL && theCCB->theConfig.optimize_cb == NULL)
     theCCB->theConfig.translate_cb(udf->getBody(), udf->getName()->getStringValue().c_str());
 
@@ -1432,27 +1427,14 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
 {
   const FunctionXQType* func_type = static_cast<const FunctionXQType*>(targetType.getp());
 
-  // std::cerr << "--> targetType: " << targetType->toString() << std::endl;
-  // std::cerr << "----------- Argument to coercion ---------------\n";
-  // std::cerr << theExpr->toString() << std::endl;
-  // std::cerr << "------------------------------------------------\n";
-
   // Create the dynamic call body
 
-  // TODO: use the scope sctx?
   static_context* closureSctx = theRootSctx->create_child_context();
   theCCB->theSctxMap[theCCB->theSctxMap.size() + 1] = closureSctx;
   function_item_expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, closureSctx, true, false);
   push_nodestack(fiExpr);
 
-  // Get the in-scope vars of the scope before opening the new scope for the
-  // function devl
-  /*
-  std::vector<VarInfo*> scopedVars;
-  theSctx->getVariables(scopedVars);
-  */
   push_scope();
-
 
   // handle the function item expression
   flwor_expr* fnItem_flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
@@ -1462,17 +1444,10 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
   var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::hof_var);
   fiExpr->add_variable(fnItem_var, inner_subst_var, fnItem_var->get_name(), 0 /*var is not global*/);
 
-  // std::cerr << "--> subst_var: " << inner_subst_var->toString() << std::endl;
-
   // bind the function item variable in the inner flwor
   flwor_expr* inner_flwor = theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false);
   var_expr* inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::let_var);
-
-
   inner_arg_var->set_param_pos(inner_flwor->num_clauses());
-  // inner_arg_var->set_type(fn_arg_var->get_return_type());
-  // inner_flwor->add_clause(inner_lc);
-
 
   // Handle parameters. For each parameter, a let binding is added to the inner flwor.
   std::vector<expr*> arguments;    // Arguments to the dynamic function call
@@ -1513,8 +1488,6 @@ expr* wrap_in_coercion(xqtref_t targetType, expr* theExpr, const QueryLoc& loc, 
 
   // pop the scope.
   pop_scope();
-
-  // std::cerr << "--> wrapped expr: " << theExpr->toString();
 
   return theExpr;
 }
@@ -1592,7 +1565,6 @@ expr* normalize_fo_arg(csize i, expr* argExpr, const function* func, TypeManager
       if (paramType->type_kind() == XQType::FUNCTION_TYPE_KIND)
       {
         // function coercion
-        // std::cerr << "--> coerce argument argExpr: " << argExpr->toString() << std::endl;
         argExpr = wrap_in_coercion(paramType, argExpr, loc, theCCB);
       }
 
@@ -2697,7 +2669,9 @@ expr* generate_fn_body(
 
 
 /*******************************************************************************
-
+  The function will process a FunctionDecl to handle all the special function cases. It
+  should be merged with the generate_fn_body() function to enable HoFs to use these
+  special functions through function-lookup().
 ********************************************************************************/
 expr* generate_fncall(store::Item_t& qnameItem, function* f, std::vector<expr*>& arguments, QueryLoc loc)
 {
@@ -3551,7 +3525,8 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Module, VersionDecl, MainModule, LibraryModule, ModuleDecl                 //
-//                                                                             //
+//
+//
 /////////////////////////////////////////////////////////////////////////////////
 
 
@@ -12077,8 +12052,6 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   {
     const function* fn = fiExpr->get_function();
 
-    // TODO: if arity of the function is different from the arguments count, raise an error
-
     for (csize i=0; i<arguments.size(); i++)
       if (dynamic_cast<argument_placeholder_expr*>(arguments[i]) == NULL)
         arguments[i] = normalize_fo_arg(i, arguments[i], fn, fiExpr->get_type_manager(), loc);
@@ -12213,7 +12186,6 @@ void* begin_visit(const InlineFunction& v)
 
   push_scope();
 
-  // TODO: use the scope sctx?
   static_context* closureSctx = theRootSctx->create_child_context();
   theCCB->theSctxMap[theCCB->theSctxMap.size() + 1] = closureSctx;
 
@@ -12282,9 +12254,7 @@ void* begin_visit(const InlineFunction& v)
     var_expr* varExpr = (*ite)->getVar();
     var_expr::var_kind kind = varExpr->get_kind();
 
-    // std::cerr << "--> InlineFunction inscope var " << (ite-scopedVars.begin()) << ": " << varExpr->toString();
-
-    if (/*kind == var_expr::prolog_var || */kind == var_expr::local_var)
+    if (kind == var_expr::local_var)
     {
       continue;
     }
@@ -12312,13 +12282,7 @@ void* begin_visit(const InlineFunction& v)
       fiExpr->add_variable(NULL, subst_var, varExpr->get_name(), 1 /*var is global if it's a prolog var*/);
     else
       fiExpr->add_variable(varExpr, subst_var, varExpr->get_name(), 0);
-
-    // std::cerr << "--> subst_var: " << subst_var->toString() << std::endl;
-
-    // ???? What about inscope vars that are hidden by param vars ???
   }
-
-  // std::cerr << "--> scoped sctx: " << theSctx->toString() << std::endl;
 
   if (flwor->num_clauses() > 0)
     push_nodestack(flwor);
@@ -12371,16 +12335,8 @@ void end_visit(const InlineFunction& v, void* aState)
 
   create_inline_function(body, flwor, paramTypes, returnType, loc, theCCB, false);
 
-  // std::cerr << "--> the scoped sctx: " << theSctx->toString() << std::endl;
-
   // pop the scope.
   pop_scope();
-
-  /* TODO:
-  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(theNodeStack.top());
-  assert(fiExpr != NULL);
-  theUDF = fiExpr->get_udf();
-  */
 }
 
 
@@ -14234,8 +14190,6 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
     lRetXQType = pop_tstack();
   }
 
-  // TODO:
-  // TypeConstants::quantifier_t lQuant = TypeConstants::QUANT_STAR;
   TypeConstants::quantifier_t lQuant = TypeConstants::QUANT_ONE;
   theTypeStack.push (GENV_TYPESYSTEM.create_function_type(
     lParamXQTypes, lRetXQType, lQuant));

@@ -712,9 +712,6 @@ static_context::static_context()
   theAllWarningsErrors(false),
   theFeatures(0)
 {
-//  std::cerr << "--> created static_context(): " << this;
-//  if (theParent) std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
-//  std::cerr << std::endl;
 }
 
 
@@ -766,10 +763,6 @@ static_context::static_context(static_context* parent)
 {
   if (theParent != NULL)
     RCHelper::addReference(theParent);
-
-//  std::cerr << "--> created static_context(): " << this;
-//  if (theParent) std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
-//  std::cerr << std::endl;
 }
 
 
@@ -818,7 +811,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theAllWarningsErrors(false),
   theFeatures(0)
 {
-  // std::cerr << "--> created static_context(): " << this << std::endl;
 }
 
 
@@ -910,10 +902,6 @@ static_context::~static_context()
 
   if (theBaseUriInfo)
     delete theBaseUriInfo;
-
-//  std::cerr << "--> deleted ~static_context(): " << this;
-//  if (theParent) std::cerr << " theParent: " << theParent << " parent counter: " << theParent->theRefCount;
-//  std::cerr << std::endl;
 
   if (theParent)
     RCHelper::removeReference(theParent);

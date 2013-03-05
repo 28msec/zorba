@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,7 +51,7 @@ PlanWrapper::PlanWrapper(
   if (aDynamicContext == NULL)
   {
     // aDynamicContext is NULL when we try to execute the plan of an expression
-    // that is being folded by the optimizer.
+    // that is being folded by the optimizer. 
     aDynamicContext = new dynamic_context();
     theDynamicContext = aDynamicContext;
   }
@@ -64,12 +64,6 @@ PlanWrapper::PlanWrapper(
                                aStackDepth,
                                Properties::instance()->maxUdfCallDepth());
 
-  /*
-  std::cerr << "--> PlanWrapper(): theBlock: " << (void*)thePlanState->theBlock << " + " << (void*)thePlanState->theBlockSize
-      << " for new PlanState: " << thePlanState << " for PlanIterator: "
-      << theIterator->getId() << " = " << typeid (*theIterator).name() << std::endl;
-  */
-
   // set the compiler cb in the state
   thePlanState->theCompilerCB = aCompilerCB;
   thePlanState->theQuery = query;
@@ -77,7 +71,7 @@ PlanWrapper::PlanWrapper(
   thePlanState->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
 #endif
 
-  if (haveTimeout)
+  if (haveTimeout) 
   {
     StateWrapper lWrapper(*thePlanState);
     theTimeout = new Timeout(timeout, lWrapper);
@@ -93,7 +87,7 @@ PlanWrapper::~PlanWrapper()
   if (theIsOpen)
     theIterator->close(*thePlanState);
 
-  if (theTimeout)
+  if (theTimeout) 
   {
     // Terminate could throw an exception
     // but does not for this particular implementation
@@ -102,7 +96,7 @@ PlanWrapper::~PlanWrapper()
 
   delete theTimeout;
 
-  delete thePlanState;
+  delete thePlanState; 
   thePlanState = NULL;
 
   // De-allocate locally allocated dctx, if any
@@ -124,7 +118,7 @@ void PlanWrapper::open()
   uint32_t offset = 0;
   theIterator->open(*thePlanState, offset);
 
-  if (theTimeout)
+  if (theTimeout) 
   {
     // Start a thread that will suspend itself for the given amount of time,
     // and then it will wake up and set theHasToQuit flag of the plan state.
@@ -150,12 +144,12 @@ bool PlanWrapper::next(store::Item_t& result)
   // However, for reasons of lazy evaluation, we also return the result
   // that was computed before the exit expression was evaluated
   // (see test scripting/exit4.xq)
-  if (!theExitValue)
+  if (!theExitValue) 
   {
     try
     {
       return PlanIterator::consumeNext(result, theIterator, *thePlanState);
-    }
+    }  
     catch (ExitException &e)
     {
       theExitValue = e.val;
@@ -172,7 +166,7 @@ void PlanWrapper::reset()
 {
   ZORBA_ASSERT(theIsOpen);
 
-  theIterator->reset(*thePlanState);
+  theIterator->reset(*thePlanState); 
   theExitValue = 0;
 }
 
@@ -183,7 +177,7 @@ void PlanWrapper::reset()
 void PlanWrapper::close()
 {
   ZORBA_ASSERT(theIsOpen);
-
+  
   theIterator->close(*thePlanState);
   theExitValue = 0;
 

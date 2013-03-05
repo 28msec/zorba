@@ -273,9 +273,6 @@ PlanIter_t XQueryCompiler::compile(
                   lTimer);
 
     rootExpr = optimize(rootExpr);
-
-    // TODO: remove debug message
-//    std::cerr << "==========================================\nOptimizations finished" << std::endl;
   }
 
 #if 0
@@ -358,7 +355,7 @@ expr* XQueryCompiler::optimize(expr* lExpr)
   // are actually non-deterministic and mark them as such. This has to be done
   // before optimization.
   udfGraph.inferDeterminism();
-  
+
   if (theCompilerCB->theConfig.opt_level <= CompilerCB::config::O0)
   {
     theCompilerCB->setPhase(CompilerCB::NONE);

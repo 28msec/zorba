@@ -37,21 +37,16 @@
 
 #include "system/globalenv.h"
 
-// TODO: remove, used for debugging purposes
-#include "runtime/core/var_iterators.h"
-#include "runtime/visitors/printer_visitor_api.h"
-#include "runtime/visitors/iterprinter.h"
 
 namespace zorba
 {
 
 
-SERIALIZABLE_CLASS_VERSIONS(ArgumentPlaceholderIterator);
+SERIALIZABLE_CLASS_VERSIONS(ArgumentPlaceholderIterator)
 
-NOARY_ACCEPT(ArgumentPlaceholderIterator);
+NOARY_ACCEPT(ArgumentPlaceholderIterator)
 
-
-SERIALIZABLE_CLASS_VERSIONS(DynamicFnCallIterator);
+SERIALIZABLE_CLASS_VERSIONS(DynamicFnCallIterator)
 
 
 /*******************************************************************************
@@ -218,7 +213,6 @@ bool DynamicFnCallIterator::nextImpl(
         ||
         (fnItem->needsContextItem() && theChildren.size() - 1 != fnItem->getArity()))
     {
-      // TODO: customize error message and take into account partial application
       RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
     }
 
@@ -228,7 +222,7 @@ bool DynamicFnCallIterator::nextImpl(
       {
         if (dynamic_cast<ArgumentPlaceholderIterator*>(theChildren[i].getp()) == NULL)
         {
-          // TODO: The argument needs to be materialized only for local vars and only if the 
+          // The argument needs to be materialized only for local vars and only if the
           // function item is returned and used outside of the current function. It might
           // be impossible to determine if the partially applied function item will be used outside 
           // of the current function, so it is quite probable that it always needs to be materialized.          

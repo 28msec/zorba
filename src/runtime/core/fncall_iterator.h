@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,8 +39,8 @@ class StaticContextImpl;
 /*******************************************************************************
   thePlan:
   --------
-  The runtime plan for the function body. This is created during
-  UDFunctionCallIterator::openImpl(), if it has not not been created already
+  The runtime plan for the function body. This is created during 
+  UDFunctionCallIterator::openImpl(), if it has not not been created already 
   (during the openImpl() method of another UDFunctionCallIterator on the same
   udf). A pointer to this plan is also stored in the udf obj itself, and that's
   how we know if it has been created already or not.
@@ -74,7 +74,7 @@ class StaticContextImpl;
   Note: Withinh the function body, there may exist more than one references to 
   an arg var V, but these references are "mutually exclusive", ie, at most one
   of the references will actually be reached during each particular execution of
-  the body. So, it is never the case that the arg expr will have more than one
+  the body. So, it is never the case that the arg expr will have more than one 
   consumers, and as a result we can bind all those V references to the same arg
   wrapper.
 
@@ -91,7 +91,7 @@ class StaticContextImpl;
   cache didn't give a result in order to avoid duplicate evaluation of
   the arguments.
 ********************************************************************************/
-class UDFunctionCallIteratorState : public PlanIteratorState
+class UDFunctionCallIteratorState : public PlanIteratorState 
 {
 public:
   PlanIter_t                       thePlan;
@@ -110,13 +110,11 @@ public:
   void open(PlanState& planState, user_function* udf, bool theIsDynamic, store::ItemHandle<FunctionItem>& theFunctionItem);
 
   void reset(PlanState& planState);
-  
-  
 };
 
 
 /*******************************************************************************
-  theUDF:
+  theUDF: 
   -------
   Pointer to the udf object.
 
@@ -124,8 +122,8 @@ public:
   -------------
 
 ********************************************************************************/
-class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator,
-                                                       UDFunctionCallIteratorState>
+class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
+                                                       UDFunctionCallIteratorState> 
 {
   friend class PrinterVisitor;
 
@@ -148,8 +146,8 @@ public:
 public:
   UDFunctionCallIterator(
         static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& args,
+        const QueryLoc& loc, 
+        std::vector<PlanIter_t>& args, 
         const user_function* aUDF);
 
   bool isUpdating() const;
@@ -191,7 +189,7 @@ protected:
 /*******************************************************************************
 
 ********************************************************************************/
-class ExtFunctionCallIteratorState : public PlanIteratorState
+class ExtFunctionCallIteratorState : public PlanIteratorState 
 {
  public:
   std::vector<ItemSequence*> m_extArgs;
@@ -219,7 +217,7 @@ public:
   SERIALIZABLE_CLASS(ExtFunctionCallIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  ExtFunctionCallIterator,
+  ExtFunctionCallIterator, 
   NaryBaseIterator<ExtFunctionCallIterator, ExtFunctionCallIteratorState>);
 
   void serialize(serialization::Archiver& ar);

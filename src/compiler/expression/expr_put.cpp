@@ -152,10 +152,7 @@ wrapper_expr::put(std::ostream& os) const
 
     BEGIN_PUT_NO_EOL(vref) ;
     put_qname(varExpr->get_name(), os);
-    os << expr_addr(varExpr);
-    os << " kind=" << var_expr::decode_var_kind(varExpr->get_kind()); // TODO: remove this info
-    os << " uniqueId=" << varExpr->get_unique_id(); // TODO: remove this info
-    os << " ]" << endl;
+    os << expr_addr(varExpr) << " ]" << endl;
     return os;
   }
   else
@@ -232,7 +229,7 @@ ostream& forlet_clause::put(ostream& os) const
   }
 
   os << endl << indent << "[\n" << inc_indent;
-
+    
   theDomainExpr->put(os);
 
   END_PUT();
@@ -536,10 +533,8 @@ ostream& ftcontains_expr::put( ostream &os ) const
 
 std::ostream& function_item_expr::put(std::ostream& os) const
 {
-  os << indent << "funtion_item_expr" << expr_addr(this) << inc_indent;
+  os << indent << "funtion_item_expr " << expr_addr(this) << inc_indent;
 
-  // TODO: delete
-  // if (theDynamicFunctionInfo->theQName != NULL)
   if (!is_inline())
   {
     os << " " << theDynamicFunctionInfo->theQName->getStringValue()
@@ -551,15 +546,6 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   {
     os << " " << theDynamicFunctionInfo->theQName->getStringValue()
        << "#" << theDynamicFunctionInfo->theArity << " [\n";
-
-    const signature& sig = get_function()->getSignature();
-    std::vector<xqtref_t> paramTypes;
-    for (csize i=0; i < sig.paramCount(); i++)
-      paramTypes.push_back(sig[i]);
-    xqtref_t funcType = get_type_manager()->create_function_type(paramTypes, sig.returnType(), TypeConstants::QUANT_ONE);
-
-    // TODO: remove type
-    os << indent << "type: " << funcType->toString() << std::endl;
 
     for (ulong i = 0; i < theDynamicFunctionInfo->theScopedVarsValues.size(); i++)
     {
@@ -584,12 +570,12 @@ std::ostream& function_item_expr::put(std::ostream& os) const
 ostream& dynamic_function_invocation_expr::put(ostream& os) const
 {
   BEGIN_PUT( dynamic_function_invocation_expr );
- 
+
   theExpr->put(os);
- 
+
   for (csize i = 0; i < theArgs.size(); ++i)
     theArgs[i]->put(os);
-  
+
   for (csize i = 0; i < theDotVars.size(); i++)
     if (theDotVars[i] != NULL)
     {

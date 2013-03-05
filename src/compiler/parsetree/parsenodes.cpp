@@ -5717,7 +5717,6 @@ void InlineFunction::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   ACCEPT (theReturnType);
-  // TODO: this should be enabled and fixed for HoFs (but all tests are passing even without it)
   // ACCEPT (theParamList);
   ACCEPT (theEnclosedExpr);
   END_VISITOR ();

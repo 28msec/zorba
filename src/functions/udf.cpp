@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
  *
@@ -77,8 +78,6 @@ user_function::user_function(
   resetFlag(FunctionConsts::isBuiltin);
   setDeterministic(true);
   setPrivate(false);
-
-//  std::cerr << "--> created user_function: " << this << " with CompilerCB: " << ccb << std::endl;
 }
 
 
@@ -93,8 +92,6 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
   resetFlag(FunctionConsts::isBuiltin);
 
   theIsOptimized = true;
-
-//  std::cerr << "--> created user_function: " << this << std::endl;
 }
 
 
@@ -103,9 +100,6 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 user_function::~user_function()
 {
-//  std::cerr << "--> deleted ~user_function: " << this << " thePlan: " << thePlan.getp() << " counter: " << (thePlan.getp()?thePlan->getRefCount() : 0)
-//            // << " iter: " << (thePlan.getp() ? thePlan->toString() : "")
-//            << std::endl;
 }
 
 
@@ -543,14 +537,6 @@ PlanIter_t user_function::getPlan(uint32_t& planStateSize)
     for (csize i = 0; i < numArgs; ++i)
     {
       argVarToRefsMap.put((uint64_t)&*theArgVars[i], &theArgVarsRefs[i]);
-      
-      /*
-      std::cerr << "--> argVars: " << theArgVars[i]->toString()
-          << "    argVarsRefs: " << theArgVarsRefs[i].size();
-      for (csize j=0; j<theArgVarsRefs[i].size(); j++)
-        std::cerr << " " << theArgVarsRefs[i][j].getp();
-      std::cerr << std::endl;
-      */
     }
 
     ulong nextVarId = 1;
@@ -563,17 +549,6 @@ PlanIter_t user_function::getPlan(uint32_t& planStateSize)
                              theCCB,
                              nextVarId,
                              &argVarToRefsMap);
-
-    /*
-    for (csize i=0; i<numArgs; ++i)
-    {
-      std::cerr << "--> argVars: " << theArgVars[i]->toString()
-          << "    argVarsRefs: " << theArgVarsRefs[i].size();
-      for (csize j=0; j<theArgVarsRefs[i].size(); j++)
-        std::cerr << " " << theArgVarsRefs[i][j]->getId() << " = " << theArgVarsRefs[i][j]->getClassName() ;
-      std::cerr << std::endl;
-    }
-    */
   }
 
   planStateSize = thePlanStateSize;

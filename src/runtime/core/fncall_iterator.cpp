@@ -52,14 +52,7 @@
 #include "store/api/store.h"
 #include "store/api/iterator_factory.h"
 #include "store/api/temp_seq.h"
-#include "store/api/item_factory.h"
 
-
-// TODO: decide if it is really needed
-#include "compiler/expression/var_expr.h"
-// TODO: remove, used for debugging purposes
-#include "runtime/visitors/printer_visitor_api.h"
-#include "runtime/visitors/iterprinter.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -143,7 +136,6 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf,
   {
     if (theFunctionItem->getDctx() == NULL)
       theFunctionItem->setDctx(new dynamic_context(planState.theGlobalDynCtx));
-      // theFunctionItem->setDctx(planState.theGlobalDynCtx);
     theLocalDCtx = new dynamic_context(theFunctionItem->getDctx());
   }
   else
@@ -156,19 +148,6 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf,
                                thePlanStateSize,
                                planState.theStackDepth + 1,
                                planState.theMaxStackDepth);
-
-  /*
-  std::cerr << "--> UDFunctionCallIteratorState::open() " << this << " new theBlock: " << (void*)thePlanState->theBlock << " + " << (void*)thePlanState->theBlockSize
-            << " for new PlanState: " << thePlanState << " for PlanIterator: " << thePlan->getId() << " = " << thePlan->getClassName() << std::endl;
-  std::cerr << "    the PlanState: " << thePlanState << std::endl;
-  */
-
-  /*
-  std::cerr << "Iterator tree for dynamic function call:\n";
-  XMLIterPrinter vp(std::cerr);
-  print_iter_plan(vp, thePlan);
-  std::cerr << std::endl;
-  */
 
   thePlanState->theCompilerCB = planState.theCompilerCB;
 #ifdef ZORBA_WITH_DEBUGGER
@@ -481,7 +460,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
       for (size_t i = 0; i < argsRefs.size(); ++i)
       {
-        if (argWraps[i] != NULL) // TODO: should this condition be removed?
+        if (argWraps[i] != NULL)
         {
           const ArgVarRefs& argVarRefs = argsRefs[i];
           store::Iterator_t argWrapper;

@@ -147,22 +147,11 @@ bool PlanIterator::consumeNext(
 
     throw FlowCtlException(FlowCtlException::INTERRUPT);
   }
-
-  if (planState.theCompilerCB->theConfig.print_item_flow)
-  {
-    std::cout << "next (" << iter->toString() << ") -> ?"
-        << " on state: " << (void*)(planState.theBlock + iter->theStateOffset)
-        << " (" << (void*)(planState.theBlock) << " + " << (void*)iter->theStateOffset << ")"
-        << std::endl;
-  }
-
   bool status = iter->produceNext(result, planState);
 
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
-    // std::cout << "next (" << iter << " = " << typeid (*iter).name()
-    // std::cout << "next (" << iter->theId << " = " << iter->getClassName()
-    std::cout << "next (" << iter->toString()
+    std::cout << "next (" << iter << " = " << typeid (*iter).name()
               << ") -> "
               << "status: " << status << " -> "
               << ((status && result != NULL) ? result->show().c_str() : "null")

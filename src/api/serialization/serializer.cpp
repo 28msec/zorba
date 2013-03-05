@@ -455,10 +455,9 @@ void serializer::emitter::emit_item(store::Item* item)
 
     thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
   }
-  else if (item->isFunction()) // TODO: what about function items serialization?
+  else if (item->isFunction())
   {
-    // throw XQUERY_EXCEPTION(err::SENR0001, ERROR_PARAMS(item->show(), "function item node"));
-    tr << item->show();
+    throw XQUERY_EXCEPTION(err::SENR0001, ERROR_PARAMS(item->show(), "function item node"));
   }
   else if (!theEmitAttributes 
         && item->getNodeKind() == store::StoreConsts::attributeNode)

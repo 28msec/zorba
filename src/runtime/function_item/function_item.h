@@ -40,14 +40,11 @@ typedef rchandle<DynamicFunctionInfo> DynamicFunctionInfo_t;
 ********************************************************************************/
 class DynamicFunctionInfo : public SimpleRCObject
 {
-public: // TODO: not public
-
-  // std::auto_ptr<CompilerCB>     theCCBHolder;
+public:
   CompilerCB                  * theCCB;
   bool                          theMustDeleteCCB;  // This is set to true if the DynamicFunctionInfo is the owner of the CCB,
                                                    // and must delete it upon destruction.
   static_context              * theClosureSctx;
-  //  static_context              * theImportSctx;
   QueryLoc                      theLoc;
   function_t                    theFunction;
   store::Item_t                 theQName;
@@ -63,7 +60,7 @@ public: // TODO: not public
 
   std::vector<PlanIter_t>       theScopedVarsIterators;
 
-  store::NsBindings             theLocalBindings; // TODO: not sure these are needed, to check
+  store::NsBindings             theLocalBindings;
 
 public:
   SERIALIZABLE_CLASS(DynamicFunctionInfo)

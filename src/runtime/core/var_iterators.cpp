@@ -127,9 +127,6 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
         dctx->set_variable(theVarId, theVarName, loc, planIter);
       }
     }
-
-    // std::cerr << "--> planState.theGlobalDynCtx: " << planState.theGlobalDynCtx->toString();
-    // std::cerr << "--> planState.theLocalDynCtx: " << planState.theLocalDynCtx->toString();
   }
 
   STACK_END(state);
@@ -430,8 +427,6 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                            planState.theLocalDynCtx :
                            planState.theGlobalDynCtx);
 
-  // std::cerr << "--> CtxVarIterator varid: " << theVarId << " varName: " << theVarName->toString() << " used dctx: " << dctx->toString() << std::endl;
-
   CtxVarState* state;
   DEFAULT_STACK_INIT(CtxVarState, state, planState);
 
@@ -499,7 +494,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         ZORBA_ASSERT(false);
       }
-
+      
       len = lenItem->getIntegerValue();
     }
 
@@ -700,11 +695,6 @@ void LetVarState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
 
-  /*
-  std::cerr << "--> LetVarState::reset() " << this << " theSourceIter: "
-      << (theSourceIter.getp()? theSourceIter->toString() : "NULL") << " theTempSeqIter: "
-      << (theTempSeqIter.getp()? theTempSeqIter->toString() : "NULL") << std::endl;
-  */
   if (theSourceIter != NULL)
     theSourceIter->reset();
 
@@ -727,7 +717,6 @@ LetVarIterator::LetVarIterator(
   theInfLen(false),
   theSingleItem(false)
 {
-  // std::cerr << "--> created LetVarIterator: " << theId << " name: " << theVarName->show() << " theStateOffset: " << theStateOffset << std::endl;
 }
 
 
@@ -805,18 +794,6 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
   state = StateTraitsImpl<LetVarState>::getState(planState, theStateOffset);
 
   state->theSourceIter = it;
-
-  /*
-  std::cerr << "--> LetVarIterator::bind() " << theId << " name: " << theVarName->show() << " theSourceIter: " ;
-  if (dynamic_cast<PlanIterator*>(it.getp()) != NULL)
-    std::cerr << dynamic_cast<PlanIterator*>(it.getp())->getId();
-  else if (dynamic_cast<PlanIteratorWrapper*>(it.getp()) != NULL)
-    std::cerr << dynamic_cast<PlanIteratorWrapper*>(it.getp())->theIterator->getId();
-  else
-    std::cerr << (it.getp()?it->toString() : "NULL");
-  std::cerr << " state: " << state << " (" << (void*)planState.theBlock << " + " << (void*)theStateOffset << ")"
-      << std::endl;
-  */
 }
 
 
@@ -844,12 +821,6 @@ void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
 
   state->theTempSeq = value;
 
-  /*
-  std::cerr << "--> LetVarIterator::bind() " << theId << " name: " << theVarName->show() << " tempSequence: " << value->toString()
-      << " state: " << state << " (" << (void*)planState.theBlock << " + " << (void*)theStateOffset << ")"
-      << std::endl;
-  */
-
   if (theTargetPosIter == NULL)
   {
     if (theTargetPos > Integer(0))
@@ -863,8 +834,6 @@ void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
         state->theTempSeqIter = 
         GENV_STORE.getIteratorFactory()->createTempSeqIterator(false);
       }
-
-      // std::cerr << "    state->theTempSeqIter: " << state->theTempSeqIter->toString() << std::endl;
 
       state->theTempSeqIter->init(value);
       state->theTempSeqIter->open();
@@ -918,7 +887,6 @@ void LetVarIterator::openImpl(
     PlanState& planState,
     uint32_t& offset)
 {
-  // std::cerr << "--> LetVarIterator::openImpl " << theId << " name: " << theVarName->show() << ", creating state" << std::endl;
   NoaryBaseIterator<LetVarIterator, LetVarState>::openImpl(planState, offset);
 
   if (theTargetPosIter != NULL)

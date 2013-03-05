@@ -127,8 +127,6 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
 {
   if (timeout >= 0)
     theHaveTimeout = true;
-
-//  std::cerr << "--> created CompilerCB: " << this << std::endl;
 }
 
 
@@ -157,7 +155,6 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theConfig(cb.theConfig),
   theEM(new ExprManager(this))
 {
-//  std::cerr << "--> created CompilerCB: " << this << std::endl;
 }
 
 
@@ -188,8 +185,6 @@ CompilerCB::~CompilerCB()
 {
   delete theEM;
   theSctxMap.clear();
-
-//  std::cerr << "--> deleted ~CompilerCB: " << this << std::endl;
 }
 
 

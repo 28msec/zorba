@@ -467,8 +467,6 @@ void end_visit(function_item_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-//  std::cerr << "--> plan_visitor() end_visit of function_item_expr" << std::endl;
-
   DynamicFunctionInfo* fnInfo = v.get_dynamic_fn_info();
   fnInfo->theCCB = theCCB;
   fnInfo->theMustDeleteCCB = false;
@@ -483,82 +481,14 @@ void end_visit(function_item_expr& v)
     {      
       if (!v.get_is_global_var()[i])     
         fnInfo->theScopedVarsIterators.push_back(pop_itstack());
-
-      // TODO: cleanup debug info
-      /*
-      PlanIter_t varIter = NULL;
-      PlanIter_t enclosedIter = NULL;
-
-      store::Item* var_qname = NULL;
-      if (dynamic_cast<LetVarIterator*>(varIter.getp()) != NULL)
-        var_qname = dynamic_cast<LetVarIterator*>(varIter.getp())->getVarName();
-      else if (dynamic_cast<ForVarIterator*>(varIter.getp()) != NULL)
-        var_qname = dynamic_cast<ForVarIterator*>(varIter.getp())->getVarName();
-      else
-        var_qname = v.get_scoped_vars_names()[i].getp();
-
-      std::cerr << "--> PlanVisitor function_item_expr: var name: " << v.get_scoped_vars_names()[i]->show()
-          << " global: " << v.get_is_global_var()[i]
-          << " with iter: "
-          << (enclosedIter.getp()?enclosedIter->toString() : "NULL");
-      if (dynamic_cast<LetVarIterator*>(enclosedIter.getp()) != NULL)
-        std::cerr << " var name: " << dynamic_cast<LetVarIterator*>(enclosedIter.getp())->getVarName()->show();
-      else if (dynamic_cast<ForVarIterator*>(enclosedIter.getp()) != NULL)
-        std::cerr << " var name: " << dynamic_cast<ForVarIterator*>(enclosedIter.getp())->getVarName()->show();
-      else
-        std::cerr << " var name (from the expr, not the iterator): " << (var_qname? var_qname->show() : "NULL");
-      std::cerr << std::endl;
-      */
     }
 
     std::reverse(fnInfo->theScopedVarsIterators.begin(), fnInfo->theScopedVarsIterators.end());
   }
 
 
-  // This portion is taken from the eval iterator
-  {
-    // Create the "import" sctx. The importOuterEnv() method (called below) will
-    // register into the importSctx (a) the outer vars of the eval query and (b)
-    // the expression-level ns bindings of the outer query at the place where
-    // the eval call appears at.
-    // static_context* importSctx = sctx->create_child_context();
-
-    // Create the root sctx for the eval query
-    // static_context* evalSctx = importSctx->create_child_context();
-
-    // Create the ccb for the eval query
-
-    // fnInfo->theCCBHolder.reset(new CompilerCB(*theCCB));
-    // fnInfo->theCCB = fnInfo->theCCBHolder.get();
-    // fnInfo->theCCB->theRootSctx = evalSctx;
-    // (fnInfo->theCCB->theSctxMap)[1] = evalSctx;
-
-    // Create the dynamic context for the eval query
-    // std::auto_ptr<dynamic_context> evalDctx;
-    // evalDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
-    // evalDctx.reset(new dynamic_context());
-
-    // Import the outer environment.
-    // importOuterEnv(planState, evalCCB.get(), importSctx, evalDctx.get());
-
-    // Set the values for the (explicit) external vars of the eval query
-    // setExternalVariables(evalCCB.get(), importSctx, evalDctx.get());
-
-
-    // std::cerr << "--> " << toString() << ": creating function item with params: " << std::endl;
-    // for (csize i=0; i<theChildren.size(); i++)
-    //  std::cerr << "    " << (theDynamicFunctionInfo->theScopedVarsNames[i].getp() ? theDynamicFunctionInfo->theScopedVarsNames[i]->show() : "") << std::endl;
-
-    // std::cerr << "--> the body before: " << static_cast<user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody()->toString() << std::endl;
-
-    // result = new FunctionItem(theDynamicFunctionInfo, evalCCB.release(), evalDctx.release());
-
-    // std::cerr << "--> sctx: " << sctx->toString() << std::endl;
-    // std::cerr << "--> closureSctx: " << fnInfo->theClosureSctx->toString() << std::endl;
-
-    // ulong maxOuterVarId = 1;
-    // ++maxOuterVarId; // TODO: get it from the plan_visitor
-
+  // This portion is similar to the eval iterator
+  { 
     csize curChild = -1;
     csize numOuterVars = fnInfo->theScopedVarsNames.size();
     for (csize i = 0; i < numOuterVars; ++i)
@@ -569,34 +499,23 @@ void end_visit(function_item_expr& v)
                                                             var_expr::hof_var,
                                                             fnInfo->theScopedVarsNames[i].getp());
 
-      // ve->set_type(theOuterVarTypes[i]); TODO: get types
       if (!fnInfo->theIsGlobalVar[i])
       {
         ++curChild;
-        // store::Iterator_t iter = new PlanIteratorWrapper(theChildren[curChild], planState);
-        // evalDctx->add_variable(maxOuterVarId, iter);
-        // ve->set_unique_id(maxOuterVarId);
 
         if (fnInfo->theSubstVarsValues[i] != NULL
             &&
             fnInfo->theSubstVarsValues[i]->get_unique_id() == 0)
         {
           fnInfo->theSubstVarsValues[i]->set_var_info(NULL);
-          // fnInfo->theSubstVarsValues[i]->set_unique_id(maxOuterVarId);
           fnInfo->theSubstVarsValues[i]->set_unique_id(theNextDynamicVarId++);
         }
 
-        // std::cerr << "--> plan_visitor: " << fnInfo->theQName->toString() << " var: " << fnInfo->theScopedVarsNames[i]->toString() << " has id: " << fnInfo->theSubstVarsValues[i]->get_unique_id() << std::endl;
-
         ve->set_unique_id(fnInfo->theSubstVarsValues[i]->get_unique_id());
         fnInfo->theVarId[i] = fnInfo->theSubstVarsValues[i]->get_unique_id();
-
-        // ++maxOuterVarId;
-        // theNextDynamicVarId++;
       }
       else
       {
-        // static_context* outerSctx = importSctx->get_parent();
         static_context* outerSctx = fnInfo->theClosureSctx->get_parent();
 
         VarInfo* outerGlobalVar = outerSctx->lookup_var(fnInfo->theScopedVarsNames[i]);
@@ -609,19 +528,12 @@ void end_visit(function_item_expr& v)
         }
         else
         {
-          // std::cerr << "--> searching for var: " << theDynamicFunctionInfo->theScopedVarsNames[i]->toString() << std::endl;
           for (csize j=0; j<fnInfo->theSubstVarsValues.size(); j++)
           {
-            // std::cerr << "    substVar: " << (theDynamicFunctionInfo->theSubstVarsValues[j] ? theDynamicFunctionInfo->theSubstVarsValues[j]->toString() : "NULL");
             if (fnInfo->theSubstVarsValues[j]->get_name()->equals(fnInfo->theScopedVarsNames[i].getp()))
               outerGlobalVarId = fnInfo->theSubstVarsValues[j]->get_unique_id();
           }
         }
-
-        // ZORBA_ASSERT(outerGlobalVar);
-
-        // std::cerr << "--> importOuterEnv(): outerSctx: " << outerSctx->toString() << std::endl;
-        // std::cerr << "--> plan_visitor: " << fnInfo->theQName->toString() << " updating id for subst_var: " << (fnInfo->theSubstVarsValues[i] ? fnInfo->theSubstVarsValues[i]->toString() : "NULL\n");
 
         if (fnInfo->theSubstVarsValues[i] != NULL
             &&
@@ -634,17 +546,10 @@ void end_visit(function_item_expr& v)
 
         fnInfo->theVarId[i] = outerGlobalVarId;
       }
-
-      // importSctx->bind_var(ve, qloc);
-      // fnInfo->theClosureSctx->bind_var(ve, qloc);
-    }
+    } // for
   }
 
-  // std::cerr << "--> the body now: " << static_cast<user_function*>(fnInfo->theFunction.getp())->getBody()->toString() << std::endl;
-
-  PlanIter_t tmp = new DynamicFunctionIterator(sctx, qloc, fnInfo);
-  // std::cerr << "--> plan_visitor: pushing iter: " << tmp->toString() << std::endl;
-  push_itstack(tmp);
+  push_itstack(new DynamicFunctionIterator(sctx, qloc, fnInfo));
 }
 
 
@@ -672,7 +577,6 @@ void end_visit(dynamic_function_invocation_expr& v)
   {
     PlanIter_t iter = pop_itstack();
     argIters.push_back(iter);
-    // std::cerr << "--> plan_visitor dot var iterator: " << iter->toString() << std::endl; // TODO
   }
 
   for (size_t i = 0; i < numArgs-1; ++i)
@@ -929,8 +833,6 @@ void general_var_codegen(const var_expr& var)
   static_context* sctx = var.get_sctx();
 
   bool isForVar = false;
-
-  // std::cerr << "--> general_var_codegen() on var: " << var.toString();
 
   switch (var.get_kind())
   {
@@ -3768,11 +3670,6 @@ PlanIter_t result()
 #ifndef NDEBUG
   if (!itstack.empty())
   {
-    std::cout << "Plan_visitor partial iterator tree:\n"; // TODO: remove this debug output
-    XMLIterPrinter vp(std::cout);
-    print_iter_plan(vp, res);
-    std::cout<< std::endl;
-
     std::cout << "\nPlan_visitor stack still contains "
               << itstack.size() << " entries: " << std::endl;
     while (!itstack.empty())
@@ -3886,35 +3783,8 @@ PlanIter_t codegen(
 {
   plan_visitor c(ccb, nextDynamicVarId, arg_var_map);
 
-  /*
-  std::cerr << "------------------- codegen: -------------------\n";
-  if (dynamic_cast<function_item_expr*>(root) != NULL)
-    std::cerr << "--> function_item_expr " << root->get_loc() << std::endl;
-
-  std::cerr << std::endl;
-  std::cerr << root->toString() << std::endl;
-  std::cerr << "------------------------------------------------\n";
-  */
-
   root->accept(c);
   PlanIter_t result = c.result();
-
-  /*
-  std::cerr << "--> arg_var_map: " << arg_var_map << " size: " << (arg_var_map==NULL?0 : arg_var_map->size()) << " iterators: ";
-  if (arg_var_map != NULL)
-  {
-    csize i = 0;
-    for (checked_vector<hash64map<std::vector<LetVarIter_t> *>::entry>::const_iterator it = arg_var_map->begin(); it != arg_var_map->end(); ++it, ++i)
-    {
-      var_expr* var = (var_expr*)it->key;
-      std::cerr << std::endl << "--> [" << i << "] " << var->toString() << "--> [" << i << "] referenced by:";
-      for (csize j=0; j < it->val->size(); j++)
-        std::cerr << " " << (*it->val)[j]->getId() << " = LetVarIterator";
-    }
-  }
-  std::cerr << std::endl << "------------------------------------------------\n";
-  */
-
 
   if (result != NULL &&
       descr != NULL &&
