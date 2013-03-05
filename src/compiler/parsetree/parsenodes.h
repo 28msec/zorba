@@ -1895,9 +1895,9 @@ public:
         const QueryLoc& return_loc_,
         bool force_general = false);
 
-  bool is_general () const { return general; }
+  bool is_general() const { return general; }
 
-  bool is_non_10 () const { return non_10; }
+  bool is_non_10() const { return non_10; }
 
   const QueryLoc& get_return_location() const { return return_location; }
 
@@ -1914,7 +1914,7 @@ public:
   void accept(parsenode_visitor&) const;
 
 protected:
-  void compute_general ();
+  void compute_general();
 };
 
 

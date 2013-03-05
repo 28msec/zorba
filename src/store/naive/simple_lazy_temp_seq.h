@@ -97,7 +97,8 @@ class SimpleLazyTempSeq : public store::TempSeq
 
   store::Iterator_t getIterator() const;
   
-#ifndef NDEBUG  
+#ifndef NDEBUG
+  // toString() debugging method.
   virtual std::string toString() const;
 #endif  
 };

@@ -94,7 +94,7 @@ bool FunctionLookupIterator::nextImpl(
     uint32_t planStateSize;
     static_cast<user_function*>(dynFnInfo->theFunction.getp())->getPlan(planStateSize);
 
-    result = new FunctionItem(dynFnInfo, new dynamic_context(planState.theGlobalDynCtx));
+    result = new FunctionItem(dynFnInfo, NULL /* new dynamic_context(planState.theGlobalDynCtx) */);
   }
   catch (ZorbaException const& e)
   {

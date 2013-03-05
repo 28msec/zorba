@@ -91,14 +91,6 @@ bool MaterializeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 }
 
 
-store::Iterator_t MaterializeIterator::getSequenceIterator(PlanState& planState)
-{
-  MaterializeIteratorState* state = StateTraitsImpl<MaterializeIteratorState>::getState(planState, theStateOffset);
-  
-  return state->theTempSeqIter;
-}
-
-
 UNARY_ACCEPT(MaterializeIterator);
 
 

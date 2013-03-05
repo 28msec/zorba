@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,10 +18,8 @@
 #define ZORBA_RUNTIME_ITEM_ITERATOR_H
 
 #include "common/shared_types.h"
-#include "runtime/base/noarybase.h"
-#include "runtime/base/narybase.h"
-#include "runtime/function_item/function_item.h"
 
+#include "runtime/base/noarybase.h"
 
 namespace zorba {
 
@@ -33,7 +31,7 @@ typedef rchandle<SingletonIterator> singleton_t;
 /*******************************************************************************
    Class represents an empty sequence.
 ********************************************************************************/
-NOARY_ITER(EmptyIterator);
+NOARY_ITER(EmptyIterator); 
 
 
 /*******************************************************************************
@@ -64,66 +62,20 @@ public:
   }
 
   virtual ~SingletonIterator() {}
-
+  
   const store::Item_t& getValue() const { return theValue; }
 
   void accept(PlanIterVisitor& v) const;
 
-  void openImpl(PlanState& planState, uint32_t& offset);
-
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-  uint32_t getStateSizeOfSubtree() const;
-};
-
-
-/*******************************************************************************
-  An iterator that creates and returns dynamic function items
-********************************************************************************/
-class DynamicFunctionIterator : public NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>
-{
-protected:
-  DynamicFunctionInfo_t theDynamicFunctionInfo;
-
-public:
-  SERIALIZABLE_CLASS(DynamicFunctionIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DynamicFunctionIterator,
-      NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  DynamicFunctionIterator(
-      static_context* sctx,
-      const QueryLoc& loc,
-      DynamicFunctionInfo* fnInfo);
-
-  virtual ~DynamicFunctionIterator();
-
-  // Used for pretty-printing of the iterator tree
-  const DynamicFunctionInfo_t getDynamicFunctionInfo() const { return theDynamicFunctionInfo; }
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-private:
-  void importOuterEnv(PlanState& planState,
-      CompilerCB* evalCCB,
-      static_context* importSctx,
-      dynamic_context* evalDctx) const;
-
-  void setExternalVariables(
-      CompilerCB* ccb,
-      static_context* importSctx,
-      dynamic_context* evalDctx) const;
 };
 
 
 /*******************************************************************************
 
-
+  
 ********************************************************************************/
-class IfThenElseIteratorState : public PlanIteratorState
+class IfThenElseIteratorState : public PlanIteratorState 
 {
 public:
   bool theThenUsed;
@@ -137,7 +89,7 @@ private:
   PlanIter_t theThenIter;
   PlanIter_t theElseIter;
   bool theIsBooleanIter;
-
+    
 public:
   SERIALIZABLE_CLASS(IfThenElseIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(IfThenElseIterator, Batcher<IfThenElseIterator>)
@@ -150,13 +102,13 @@ public:
    * @param iterCond_arg represents condition
    * @param iterThen_arg represents then expression
    * @param iterElse_arg represents else expression
-   * @param condIsBooleanIter Optional flag. If true => condition is already an iterator
+   * @param condIsBooleanIter Optional flag. If true => condition is already an iterator 
    *                              which return true or false => the conditional value
    *                              does not have to be evaluated with the effective
    *                              boolean value function
    */
   IfThenElseIterator(
-        static_context* sctx,
+        static_context* sctx, 
         const QueryLoc& loc,
         PlanIter_t& aCondIter,
         PlanIter_t& aThenIter,
@@ -166,7 +118,7 @@ public:
   virtual uint32_t getStateSize() const { return sizeof(IfThenElseIteratorState); }
 
   virtual uint32_t getStateSizeOfSubtree() const;
-
+      
   virtual void accept(PlanIterVisitor&) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);

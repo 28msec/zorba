@@ -75,6 +75,7 @@ public:
   store::Iterator_t getIterator() const;
   
 #ifndef NDEBUG
+  // toString() and show() debugging methods.
   virtual zstring show() const;
   
   virtual std::string toString() const;

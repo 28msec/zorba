@@ -63,6 +63,14 @@ declare option op:disable "f:trace";
     <output:indent                value="yes"  />
   </output:serialization-parameters>;
 
+(:~
+ : The serialization parameters for text serialization.
+ :)
+ declare variable $util:writeXML :=
+  <output:serialization-parameters>
+    <output:method                value="xml" />
+    <output:indent                value="yes"  />
+  </output:serialization-parameters>;
 
 (:~
  : Search within a given test-case for all element nodes with a given node name.

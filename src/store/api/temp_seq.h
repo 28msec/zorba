@@ -107,7 +107,7 @@ public:
   virtual Iterator_t getIterator() const = 0;
 	
 #ifndef NDEBUG  
-  /** Method to print the contents of the sequence
+  /** Debugging aid: method to print the contents of the sequence
    */
   virtual std::string toString() const = 0;
 #endif  

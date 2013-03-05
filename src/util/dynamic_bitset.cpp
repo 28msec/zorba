@@ -25,7 +25,7 @@ namespace zorba {
 std::ostream& operator <<(std::ostream& s, const DynamicBitset& set)
 {
   s << "BitSet[" << set.size() << "] = {";
-  for(std::size_t i = 0; i < set.size(); ++i) 
+  for(csize i = 0; i < set.size(); ++i) 
   {
     if (set.get(i)) 
     {
