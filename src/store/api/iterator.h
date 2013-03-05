@@ -48,6 +48,7 @@ class Iterator : virtual public SimpleRCObject
   virtual void close() = 0;
   
 #ifndef NDEBUG
+  // toString() debugging method.
   virtual std::string toString() const { return std::string(); }
 #endif    
 };

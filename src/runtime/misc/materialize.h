@@ -69,8 +69,6 @@ public:
     UnaryBaseIterator<MaterializeIterator, MaterializeIteratorState>(sctx, loc, arg)
   {
   }
-
-  store::Iterator_t getSequenceIterator(PlanState& planState);
   
   void accept(PlanIterVisitor& v) const;
 

@@ -172,13 +172,37 @@ public:                                                                 \
 /*******************************************************************************
 
 ********************************************************************************/
+#ifdef NDEBUG
+#define SERIALIZABLE_CLASS(class_name)                                   \
+  virtual void serialize_internal(::zorba::serialization::Archiver& ar); \
+                                                                         \
+  static serialization::TypeCode theTypeCode;                            \
+                                                                         \
+  virtual serialization::TypeCode get_serializer_type_code() const       \
+  {                                                                      \
+    return theTypeCode;                                                  \
+  }                                                                      \
+                                                                         \
+  static serialization::TypeCode get_serializer_type_code_static()       \
+  {                                                                      \
+    return theTypeCode;                                                  \
+  }                                                                      \
+                                                                         \
+  SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))        \
+  static class_factory<class_name>  g_class_factory;                     \
+
+
+#else
+
+
+/* Debug version of the above definition which also creates a method to
+ * retrieve the class name
+ */
 #define SERIALIZABLE_CLASS(class_name)                                   \
                                                                          \
-/* TODO: this is for debugging purposes only, should not be placed here*/\
   virtual std::string getClassName() const {                             \
     return #class_name;                                                  \
   }                                                                      \
-                                                                         \
                                                                          \
   virtual void serialize_internal(::zorba::serialization::Archiver& ar); \
                                                                          \
@@ -196,6 +220,8 @@ public:                                                                 \
                                                                          \
   SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))        \
   static class_factory<class_name>  g_class_factory;                     \
+
+#endif
 
 
 #define SERIALIZABLE_ABSTRACT_CLASS(class_name)                          \

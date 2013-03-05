@@ -181,7 +181,16 @@ public:
 #endif
 
 public:
-  PlanIteratorState();
+  PlanIteratorState()
+    :
+    theDuffsLine(DUFFS_ALLOCATE_RESOURCES)
+#if ZORBA_BATCHING_TYPE == 1
+    , theCurrItem(ZORBA_BATCHING_BATCHSIZE)
+#endif
+#ifndef NDEBUG
+    , theIsOpened(false)
+#endif
+  {}
 
   ~PlanIteratorState() {}
 

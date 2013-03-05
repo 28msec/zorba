@@ -77,25 +77,8 @@ void PlanState::checkDepth(const QueryLoc& loc)
 
 PlanState::~PlanState()
 {
-  // std::cerr << "--> PlanState::~PlanState() " << this << " deleting theBlock: " << (void*)theBlock << std::endl;
   delete[] theBlock;
   theBlock = 0;
-}
-
-/*******************************************************************************
-  class PlanIteratorState
-********************************************************************************/
-
-PlanIteratorState::PlanIteratorState()
-  :
-  theDuffsLine(DUFFS_ALLOCATE_RESOURCES)
-#if ZORBA_BATCHING_TYPE == 1
-  , theCurrItem(ZORBA_BATCHING_BATCHSIZE)
-#endif
-#ifndef NDEBUG
-  , theIsOpened(false)
-#endif
-{
 }
 
 
@@ -158,7 +141,7 @@ bool PlanIterator::consumeNext(
     const PlanIterator* iter,
     PlanState& planState)
 {
-  if (planState.theHasToQuit)
+  if (planState.theHasToQuit) 
   {
     // std::cout << "Plan interupted" << std::endl;
 

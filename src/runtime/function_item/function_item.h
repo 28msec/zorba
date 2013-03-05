@@ -22,6 +22,8 @@
 
 #include "store/api/item.h"
 
+#include "runtime/base/narybase.h"
+
 
 namespace zorba
 {
@@ -145,6 +147,49 @@ public:
   bool needsContextItem() const { return theDynamicFunctionInfo->theNeedsContextItem; }
 
   zstring show() const;
+};
+
+
+/*******************************************************************************
+  An iterator that creates and returns dynamic function items
+********************************************************************************/
+class DynamicFunctionIterator : public NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>
+{
+protected:
+  DynamicFunctionInfo_t theDynamicFunctionInfo;
+
+public:
+  SERIALIZABLE_CLASS(DynamicFunctionIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DynamicFunctionIterator,
+      NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  DynamicFunctionIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      DynamicFunctionInfo* fnInfo);
+
+  virtual ~DynamicFunctionIterator();
+
+  // Used for pretty-printing of the iterator tree
+  const DynamicFunctionInfo_t getDynamicFunctionInfo() const { return theDynamicFunctionInfo; }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+public:
+  void importOuterEnv(PlanState& planState,
+      CompilerCB* evalCCB,
+      static_context* importSctx,
+      dynamic_context* evalDctx) const;
+
+private:
+  void setExternalVariables(
+      CompilerCB* ccb,
+      static_context* importSctx,
+      dynamic_context* evalDctx) const;
 };
 
 

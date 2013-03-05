@@ -89,9 +89,9 @@
 
 namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator);
+SERIALIZABLE_CLASS_VERSIONS(UDFunctionCallIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator);
+SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator)
 
 
 
@@ -148,9 +148,9 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf,
   }
   else
   {
-    theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
+  theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
   }
-  
+
   thePlanState = new PlanState(theIsDynamic ? theFunctionItem->getDctx() : planState.theGlobalDynCtx,
                                theLocalDCtx,
                                thePlanStateSize,
@@ -199,12 +199,12 @@ void UDFunctionCallIteratorState::reset(PlanState& planState)
 ********************************************************************************/
 UDFunctionCallIterator::UDFunctionCallIterator(
     static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& args,
+    const QueryLoc& loc, 
+    std::vector<PlanIter_t>& args, 
     const user_function* aUDF)
   :
   NaryBaseIterator<UDFunctionCallIterator,
-                   UDFunctionCallIteratorState>(sctx, loc, args),
+                   UDFunctionCallIteratorState>(sctx, loc, args), 
   theUDF(const_cast<user_function*>(aUDF)),
   theIsDynamic(false)
 {
@@ -309,7 +309,7 @@ bool UDFunctionCallIterator::probeCache(
     cond->pushItem(argValue);
   }
 
-  store::IndexProbeIterator_t probeIte =
+  store::IndexProbeIterator_t probeIte = 
   GENV_STORE.getIteratorFactory()->createIndexProbeIterator(state->theCache);
 
   probeIte->init(cond);
@@ -400,7 +400,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
     if (!argVarRefs.empty())
     {
       if ((*argWrapsIte) == NULL)
-        (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
+      (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
 
       // Cannot do the arg bind here because the state->thePlan has not been
       // opened yet, and as a result, state->thePlanState has not been
@@ -463,7 +463,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     // Open the plan, if not done already. This cannot be done in the openImpl
     // method because in the case of recursive functions, we will get into an
     // infinite loop.
-    if (!state->thePlanOpen)
+    if (!state->thePlanOpen) 
     {
       uint32_t planOffset = 0;
       state->thePlan->open(*state->thePlanState, planOffset);
@@ -495,7 +495,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
           else
           {
             if (i < argWraps.size())
-              argWrapper = argWraps[i];
+            argWrapper = argWraps[i];
           }
 
           ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
@@ -505,7 +505,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
           {
             const LetVarIter_t& argRef = (*argVarRefsIte);
             assert(argRef != NULL);
-
+            
             if (argRef != NULL)
             {
               argRef->bind(argWrapper, *state->thePlanState);
@@ -582,8 +582,8 @@ class ExtFuncArgItemSequence : public ItemSequence
     bool                     theFirstOpen;
 
   public:
-    InternalIterator(ExtFuncArgItemSequence* seq)
-      :
+    InternalIterator(ExtFuncArgItemSequence* seq) 
+      : 
       theItemSequence(seq),
       theIsOpen(false),
       theFirstOpen(true)
@@ -604,7 +604,7 @@ class ExtFuncArgItemSequence : public ItemSequence
 
     bool next(Item& item)
     {
-      if (!theIsOpen)
+      if (!theIsOpen)  
         throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
 
       store::Item_t result;
@@ -618,7 +618,7 @@ class ExtFuncArgItemSequence : public ItemSequence
 
     void close()
     {
-      if (!theIsOpen)
+      if (!theIsOpen)  
         throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
 
       theIsOpen = false;
@@ -641,7 +641,7 @@ public:
   {
   }
 
-  virtual Iterator_t getIterator()
+  virtual Iterator_t getIterator() 
   {
     if (theHasIterator)
       throw ZORBA_EXCEPTION(zerr::ZAPI0039_XQUERY_HAS_ITERATOR_ALREADY);

@@ -1163,7 +1163,6 @@ bool FunctionXQType::is_subtype(
   for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
        lIter != m_param_types.end(); ++lIter)
   {
-    // if (!TypeOps::is_subtype(tm, *lIter->getp(), *supertype[i++].getp()))
     if (!TypeOps::is_subtype(tm, *supertype[i++].getp(), *lIter->getp()))
     {
       return false;

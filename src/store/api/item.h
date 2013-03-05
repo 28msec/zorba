@@ -87,7 +87,7 @@ protected:
 #ifndef NDEBUG
   // This class member is set by some atomic type items to the
   // item's value in order to aid debugging. The debug_str might
-  // always be updated to the current value.
+  // not always be updated to the current value.
 protected:
   const char* debug_str_;      // similar to zorba_string.h
   zstring debug_holder;
