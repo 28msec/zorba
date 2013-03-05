@@ -32,6 +32,10 @@
 #include "types/schema/schema.h"
 #include "types/schema/validate.h"
 
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include <libxml/xmlreader.h>
+#include <libxml/c14n.h>
 
 namespace zorba
 {
@@ -324,6 +328,152 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
   STACK_END(state);
 }
 
+/*******************************************************************************
+  14.9.1.1 fn-zorba-xml:canonicalize
+********************************************************************************/
+void processOptions(store::Item_t item, int& props, static_context* theSctx, const QueryLoc& loc)
+{
+  store::Item_t child;  
+  
+  if (item.getp() == NULL)
+    return;
+
+  store::Iterator_t children = item->getChildren();
+  children->open();
+  
+  /*
+   Available Options
+   xml-parse-noent : substitute entities
+   xml-parse-dtdload : load the external subset
+   xml-parse-dtdattr : default DTD attributes
+   xml-parse-dtdvalid : validate with the DTD
+   xml-parse-noblanks : remove blank nodes
+   xml-parse-noent : Forbid network access
+   xml-parse-nsclean : remove redundant namespaces declarations
+   xml-parse-nocdata : merge CDATA as text nodes
+  */
+
+  while (children->next(child))
+  {
+    if (child->getNodeKind() != store::StoreConsts::elementNode)
+      continue;
+
+    zstring lNodeName = child->getNodeName()->getLocalName();
+    zstring lNodeNamespace = child->getNodeName()->getNamespace();
+
+    if(lNodeNamespace == "http://www.zorba-xquery.com/modules/xml-canonicalize-options")
+    {
+      if(lNodeName == "xml-parse-noent")
+      {
+        props |= XML_PARSE_NOENT;
+      }
+      else if(lNodeName == "xml-parse-dtdload")
+      {
+        props |= XML_PARSE_DTDLOAD;
+      }
+      else if(lNodeName == "xml-parse-dtdattr")
+      {
+        props |= XML_PARSE_DTDATTR;
+      }
+      else if(lNodeName == "xml-parse-dtdvalid")
+      {
+        props |= XML_PARSE_DTDVALID;
+      }
+      else if(lNodeName == "xml-parse-noblanks")
+      {
+        props |= XML_PARSE_NOBLANKS;
+      }
+      else if(lNodeName == "xml-parse-nonet")
+      {
+        props |= XML_PARSE_NONET;
+      }
+      else if(lNodeName == "xml-parse-nsclean")
+      {
+        props |= XML_PARSE_NSCLEAN;
+      }
+      else if(lNodeName == "xml-parse-nocdata")
+      {
+        props |= XML_PARSE_NOCDATA;
+      }
+    }
+  }
+
+  children->close();
+}
+
+
+bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  zstring lDocString;
+  xmlDocPtr lDoc;
+  xmlChar* lResult;
+  std::istream* lInstream = NULL;
+  char buf[1024];
+  store::Item_t tempItem;
+
+  FnZorbaCanonicalizeIteratorState* state;
+  DEFAULT_STACK_INIT(FnZorbaCanonicalizeIteratorState, state, planState);
+  // Read the XML string
+  // if the XML string is a streamable string it will have to be materialized
+  // since the libxml2 xmlReadMemory functions can't work with streamable strings
+  consumeNext(result, theChildren[0].getp(), planState);
+
+  // read options
+  if (theChildren.size() == 2)
+  {
+    consumeNext(tempItem, theChildren[1].getp(), planState);
+    processOptions(tempItem, state->theProperties, theSctx, loc);
+  }
+
+  try
+  {
+   if (result->isStreamable())
+    {
+      lInstream = &result->getStream();
+      while (lInstream->good())
+      {
+        lInstream->read(buf, 1024);
+        lDocString.append(buf, lInstream->gcount());
+      }
+    }
+    else
+    {
+      result->getStringValue2(lDocString);  
+    }
+    lDoc = xmlReadMemory(lDocString.c_str(), lDocString.size(), "input.xml", NULL, state->theProperties);
+    if (!lDoc)
+    {
+      zstring lErrorMsg;
+      lErrorMsg = "\"" + lDocString + "\"";
+      throw XQUERY_EXCEPTION(err::FOCZ0001, ERROR_PARAMS("x:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
+    }
+
+    xmlC14NDocDumpMemory(lDoc, NULL, 2/*XML_C14N_1_1*/, NULL, 1, &lResult);
+    lDocString = zstring((char*)lResult);    
+    xmlFree(lResult);
+    xmlFreeDoc(lDoc);
+  }
+  catch ( std::exception const& e)
+  {
+      zstring lErrorMsg;
+      lErrorMsg = "\"" + lDocString + "\"";
+      throw XQUERY_EXCEPTION(err::FOCZ0001, ERROR_PARAMS("x:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
+  }
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, lDocString), state);
+  STACK_END(state);
+}
+
+
+void FnZorbaCanonicalizeIteratorState::init(PlanState& planState)
+{
+  theProperties = XML_PARSE_NOERROR;
+}
+
+void FnZorbaCanonicalizeIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theProperties = 0;
+}
 
 /*******************************************************************************
   14.9.2 fn:parse-xml-fragment

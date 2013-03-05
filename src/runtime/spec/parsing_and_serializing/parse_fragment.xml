@@ -19,7 +19,7 @@
 
 <!--
 /*******************************************************************************
- * 14.9.1 parse-xml:parse
+ * 14.9.1 fn-zorba-xml:parse
 ********************************************************************************/
 -->
   <zorba:iterator name="FnZorbaParseXmlFragmentIterator">
@@ -46,7 +46,33 @@
     </zorba:state>
       
   </zorba:iterator>
-  
+<!--
+/*******************************************************************************
+ * 14.9.1.1 fn-zorba-xml:canonicalize
+********************************************************************************/
+-->
+  <zorba:iterator name="FnZorbaCanonicalizeIterator">
+
+    <zorba:description author="Zorba Team">fn-zorba-xml:canonicalize</zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="canonicalize" prefix="fn-zorba-xml">
+        <zorba:param>xs:string</zorba:param>  <!-- string to canonicalize -->
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+      <zorba:signature localname="canonicalize-impl" prefix="fn-zorba-xml">
+        <zorba:param>xs:string</zorba:param>  <!-- string to canonicalize -->
+        <zorba:param>element()</zorba:param>
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+    <zorba:state generateReset="false" generateInit="false">
+      <zorba:member type="int" name="theProperties" brief="value of the canonicalize properties"/>
+    </zorba:state>
+
+  </zorba:iterator>
+
 <!--
 /*******************************************************************************
  * 14.9.2 fn:parse-xml-fragment

@@ -55,6 +55,21 @@ public:
 };
 
 
+//fn-zorba-xml:canonicalize
+class fn_zorba_xml_canonicalize : public function
+{
+public:
+  fn_zorba_xml_canonicalize(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn:parse-xml-fragment
 class fn_parse_xml_fragment_3_0 : public function
 {
