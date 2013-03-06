@@ -216,7 +216,7 @@ std::string filesystem_path::getPathString() const {
 
 void file::do_stat() {
 #ifdef ZORBA_WITH_FILE_ACCESS
-  fs::size_type fs_size;
+  fs::size_type fs_size = 0;
   switch ( fs::get_type( c_str(), &fs_size ) ) {
     case fs::non_existent: type = type_non_existent; break;
     case fs::directory   : type = type_directory;    break;

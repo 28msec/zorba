@@ -275,20 +275,25 @@ void get_temp_file( char *path ) {
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
-type get_type( char const *path, size_type *size ) {
+type get_type( char const *path, bool follow_symlink, size_type *size ) {
 #ifndef WIN32
   struct stat st_buf;
-  if ( ::stat( path, &st_buf ) == -1 ) {
+  int const status = follow_symlink ?
+    ::stat( path, &st_buf ) : ::lstat( path, &st_buf );
+  if ( status == -1 ) {
     if ( errno == ENOENT )
       return non_existent;
-    throw ZORBA_IO_EXCEPTION( "stat()", path );
+    throw ZORBA_IO_EXCEPTION( follow_symlink ? "stat()" : "lstat()", path );
   }
   if ( S_ISDIR( st_buf.st_mode ) )
     return directory;
-  if ( size )
-    *size = st_buf.st_size;
-  if ( S_ISREG( st_buf.st_mode ) )
+  if ( S_ISLNK( st_buf.st_mode ) )
+    return link;
+  if ( S_ISREG( st_buf.st_mode ) ) {
+    if ( size )
+      *size = st_buf.st_size;
     return file;
+  }
   return other;
 #else
   WCHAR wpath[ MAX_PATH ];
