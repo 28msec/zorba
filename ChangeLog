@@ -14,6 +14,7 @@ New Features:
   * Added millis-to-dateTime() function in datetime module.
   * fn:trace outputs "empty-sequence()" if the input is the empty-sequence.
   * Addex xqxq:variable-value function.
+  * Added canonicalize function to modules/xml.
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
