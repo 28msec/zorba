@@ -12842,6 +12842,12 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
 void* begin_visit(const CompNamespaceConstructor& v)
 {
   TRACE_VISIT();
+
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+  {
+    RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_CompNS)));
+  }
+
   return no_state;
 }
 

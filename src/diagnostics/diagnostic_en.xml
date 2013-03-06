@@ -163,6 +163,10 @@
         <value>function and variable annotations only available in XQuery 3.0 or later</value>
       </entry>
 
+      <entry key="CompNS">
+        <value>computed namespace constructors only available in XQuery 3.0 or later</value>
+      </entry>
+
       <entry key="Scripting">
         <value>scripting feature not available</value>
       </entry>

@@ -32,6 +32,7 @@
 #define ZED_XPST0003_TypeSwitchExpr30 "~XPST0003_TypeSwitchExpr30"
 #define ZED_XPST0003_TryCatchExpr30 "~XPST0003_TryCatchExpr30"
 #define ZED_XPST0003_Annotations "~XPST0003_Annotations"
+#define ZED_XPST0003_CompNS "~XPST0003_CompNS"
 #define ZED_XPST0003_Scripting "~XPST0003_Scripting"
 #define ZED_XPST0003_PiTarget "~XPST0003_PiTarget"
 #define ZED_XPST0008_VariableName_2 "~XPST0008_VariableName_2"

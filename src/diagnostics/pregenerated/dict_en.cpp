@@ -904,6 +904,7 @@ extern entry const dict_en[] = {
   { "~XPDY0002_VariableHasNoValue_2", "\"$2\": variable has no value" },
   { "~XPDY0002_VariableUndeclared_2", "\"$2\": undeclared variable" },
   { "~XPST0003_Annotations", "function and variable annotations only available in XQuery 3.0 or later" },
+  { "~XPST0003_CompNS", "computed namespace constructors only available in XQuery 3.0 or later" },
   { "~XPST0003_CountClause30", "\"count\" clause only available in XQuery 3.0 or later" },
   { "~XPST0003_ModuleDeclNotInMain", "module declaration must not be in main module" },
   { "~XPST0003_OuterForClause30", "\"outer-for\" clause only available in XQuery 3.0 or later" },
