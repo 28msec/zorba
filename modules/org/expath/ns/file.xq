@@ -300,7 +300,7 @@ declare %an:nondeterministic function file:is-directory(
  : Tests if a path/URI points to a file.
  :
  : @param $path The path/URI to test.
- : @return true if <code>$path</coe> points to a file; for symbolic links,
+ : @return true if <code>$path</code> points to a file; for symbolic links,
  : returns true if the linked-to item is a file.
  :)
 declare %an:nondeterministic function file:is-file(
