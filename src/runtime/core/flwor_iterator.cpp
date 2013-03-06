@@ -1310,7 +1310,10 @@ bool FLWORIterator::evalToBool(
 {
   store::Item_t boolValue;
   if (!consumeNext(boolValue, predicateIter.getp(), planState))
+  {
+    predicateIter->reset(planState);
     return false;
+  }
 
   bool value = boolValue->getBooleanValue();
   predicateIter->reset(planState);

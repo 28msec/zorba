@@ -29,6 +29,7 @@ Bug Fixes/Other Changes:
   * Fixed bug in index join rule (copy var ids after cloning index domain expr).
   * Added missing wrapper expressions around some variable references.
   * Fixed bug in the throwing of error XQTY0086 during node construction.
+  * Fixed bug #1148335 (where-clause expression was not always reset when it should be)
   * Fixed bug #1122396 (Associate origin/destination URI to I/O stream)
   * Fixed bug #1111786 (xml/json parse error location in catch clause).
   * NaN items are considered equal to each other during grouping
