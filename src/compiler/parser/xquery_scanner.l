@@ -136,12 +136,15 @@ int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba:
   do {                                                                  \
     int _STATE = YY_START;                                              \
     POP_STATE();                                                        \
-    if (invoke_yy_less)                                                 \
+    if (invoke_yy_less) {                                               \
+      yylloc->columns(-1 * yyleng);                                     \
       yyless(0);                                                        \
+    }                                                                   \
     if (yy_comp_constr_qname != "") {                                   \
       unput(' ');                                                       \
       for (int i=yy_comp_constr_qname.size()-1; i>=0; i--)              \
         unput(yy_comp_constr_qname[i]);                                 \
+      yylloc->columns(-1 * (yy_comp_constr_qname.size()+1));            \
       yy_comp_constr_qname = "";                                        \
     }                                                                   \
     if (_STATE == MODE_ELEM_COMP_CONSTR)                                \
@@ -1162,6 +1165,8 @@ std::string start_state(int state)
     case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
     case MODE_ELEM_COMP_CONSTR: return "MODE_ELEM_COMP_CONSTR";
     case MODE_ATTR_COMP_CONSTR: return "MODE_ATTR_COMP_CONSTR";
+    case MODE_PI_COMP_CONSTR: return "MODE_PI_COMP_CONSTR";
+    case MODE_NS_COMP_CONSTR: return "MODE_NS_COMP_CONSTR";
     case MODE_CDATA_SECTION: return "MODE_CDATA_SECTION";
     case MODE_ELEMENT_CONTENT: return "MODE_ELEMENT_CONTENT";
     case MODE_END_TAG: return "MODE_END_TAG";
