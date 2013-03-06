@@ -1319,6 +1319,14 @@ declare variable $err:FOUT1190 as xs:QName := fn:QName($err:NS, "err:FOUT1190");
 
 (:~
  :
+ : Invalid content passed to \c x:canonicalize().
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOCZ0001 as xs:QName := fn:QName($err:NS, "err:FOCZ0001");
+
+(:~
+ :
  : It is a static error if an updating expression is used in any position
  : other than one of the following:
  : - The topmost expression in the body of a query.
