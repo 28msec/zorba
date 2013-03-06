@@ -329,6 +329,22 @@ public:
     return theNoNetworkAccess ;
   }
 
+  /**
+   * @brief Return a libxml2 options bit-field based, suitable for using
+   * while using libxml2 to parse XML. The following members of this
+   * LoadProperties object are handled; others are ignored:
+   *  - getStripWhitespace()
+   *  - getDTDValidate()
+   *  - getDTDLoad()
+   *  - getDefaultDTDAttributes
+   *  - getSubstituteEntities()
+   *  - getXincludeSubstitutions()
+   *  - getRemoveRedundantNS()
+   *  - getNoCDATA()
+   *  - getNoXIncludeNodes()
+   *  - getNoNetworkAccess()
+   * @return said bit-field.
+   */
   int toLibXmlOptions() const
   {
     int options = 0;

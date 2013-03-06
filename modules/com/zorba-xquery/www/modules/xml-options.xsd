@@ -73,6 +73,9 @@
         <element name="remove-redundant-ns" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>
+        <element name="strip-boundary-space" minOccurs="0" maxOccurs="1">
+          <complexType/>
+        </element>
         <element name="no-CDATA" minOccurs="0" maxOccurs="1">
           <complexType/>
         </element>

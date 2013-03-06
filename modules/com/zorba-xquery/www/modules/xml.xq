@@ -427,9 +427,9 @@ declare function x:parse-xml-fragment(
  : <br/>Note: This function is not streamable, if a streamable string is used
  : as input for the function it will be materialized.
  :
- : <br/>Note: By default, this function sets the
+ : <br/>Note: This function sets the
  : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">XML_PARSE_NOERROR</a>
- : option.
+ : option when parsing the XML input.
  :
  : @param $xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.
  :
@@ -446,20 +446,23 @@ declare function x:canonicalize(
  : A function to canonicalize the given XML string, that is, transform
  : it into Canonical XML as defined by <a href="http://www.w3.org/TR/xml-c14n">Canonical XML</a>.
  : <br/>This version of the function allows specifying certain options to be
- : used when initially parsing the XML string. These options correspond
- : to the similarly-named options in the
- : <a href="http://xmlsoft.org/">LibXMl2 parser</a>, as documented at
- : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">LibXML: Enum xmlParserOption</a>.
- : XML_PARSE_NOERROR option is set by default.
- :
- : <br/>Currently unavailable options for this function:
- : <parse-xml-options:base-uri/>
- : <parse-xml-options:schema-validate/>
- : <parse-xml-options:parse-external-parsed-entity/> 
- :
+ : used when initially parsing the XML string. These are of the same form
+ : as the options to x:parse#2(), although the following options are 
+ : currently ignored for this function:
+ : <ul>
+ : <li>&lt;parse-xml-options:no-error/&gt;</li>
+ : <li>&lt;parse-xml-options:base-uri/&gt;</li>
+ : <li>&lt;parse-xml-options:schema-validate/&gt;</li>
+ : <li>&lt;parse-xml-options:parse-external-parsed-entity/&gt;</li> 
+ : </ul>
+
  : <br/>Note: This function is not streamable, if a streamable string is used
  : as input for the function it will be materialized.
  :
+ : <br/>Note: This function sets the
+ : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">XML_PARSE_NOERROR</a>
+ : option when parsing the XML input.
+
  : @param $xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.
  : @param $options an XML containg options for the canonicalize function.
  :
