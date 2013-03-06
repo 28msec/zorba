@@ -4,9 +4,6 @@ let $xml-uri-test := fn:doc("uri-source.xml")//uri-element/text
 
 for $uri in $xml-uri-test
 let $parsed-uri := uri:parse($uri)
-return concat($uri/text(), "
+return concat(uri:serialize($parsed-uri), " == ", $uri/text(), "
 ")
-
-(:return concat(uri:serialize($parsed-uri), " == ", $uri/text(), "
-"):)
 
