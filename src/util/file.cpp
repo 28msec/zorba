@@ -214,37 +214,34 @@ std::string filesystem_path::getPathString() const {
   return path;
 }
 
-void file::do_stat() {
+file::filetype file::do_stat( bool follow_symlinks, file_size_t *size ) const {
 #ifdef ZORBA_WITH_FILE_ACCESS
   fs::size_type fs_size = 0;
-  switch ( fs::get_type( get_path(), &fs_size ) ) {
-    case fs::non_existent: type = type_non_existent; break;
-    case fs::directory   : type = type_directory;    break;
-    case fs::file        : type = type_file;         break;
-    case fs::link        : type = type_link;         break;
-    case fs::volume      : type = type_volume;       break;
-    case fs::other       : type = type_other;        break;
+  filetype ft;
+  switch ( fs::get_type( get_path(), follow_symlinks, &fs_size ) ) {
+    case fs::non_existent: ft = type_non_existent; break;
+    case fs::directory   : ft = type_directory;    break;
+    case fs::file        : ft = type_file;         break;
+    case fs::link        : ft = type_link;         break;
+    case fs::volume      : ft = type_volume;       break;
+    case fs::other       : ft = type_other;        break;
   }
-  size = fs_size;
+  if ( size )
+    *size = static_cast<file_size_t>( fs_size );
+  return ft;
 #else
-  type = type_non_existent;
-  size = 0;
+  if ( size )
+    *size = 0;
+  return type_non_existent;
 #endif
 }
 
 file::file( const filesystem_path &path_, int flags_ ) :
   filesystem_path( path_, flags_ )
 {
-  do_stat();
 }
 
-file::filetype file::get_filetype() {
-  if ( type == type_non_existent )
-    do_stat();
-  return type;
-}
-
-time_t file::lastModified() {
+time_t file::lastModified() const {
 #ifdef ZORBA_WITH_FILE_ACCESS
   struct stat s;
   if ( ::stat( get_path().c_str(), &s ) == 0 )
@@ -257,7 +254,6 @@ void file::create() {
 #ifdef ZORBA_WITH_FILE_ACCESS
   try {
     fs::create( get_path() );
-    set_filetype( type_file );
   }
   catch ( fs::exception const &e ) {
     throw ZORBA_IO_EXCEPTION( e.function(), e.path() );
@@ -269,7 +265,6 @@ void file::mkdir() {
 #ifdef ZORBA_WITH_FILE_ACCESS
   try {
     fs::mkdir( get_path() );
-    set_filetype( type_directory );
   }
   catch ( fs::exception const &e ) {
     throw ZORBA_IO_EXCEPTION( e.function(), e.path() );
@@ -283,7 +278,6 @@ void file::lsdir(std::vector<std::string> &list) {
     fs::iterator dir_iter( get_path() );
     while ( dir_iter.next() )
       list.push_back( dir_iter.entry_name() );
-    set_filetype( type_directory );
   }
   catch ( fs::exception const &e ) {
     throw ZORBA_IO_EXCEPTION( e.function(), e.path() );
@@ -298,18 +292,13 @@ void file::deep_mkdir() {
     files.push_back( f );
   for ( int i = files.size() - 1; i >= 0; --i )
     files[i].mkdir();
-  set_filetype( type_directory );
 #endif
 }
 
 void file::remove( bool ignore ) {
 #ifdef ZORBA_WITH_FILE_ACCESS
-  if ( !fs::remove( get_path() ) ) {
-    if ( !ignore )
-      throw ZORBA_IO_EXCEPTION( "remove()", get_path() );
-    return;
-  }
-  set_filetype( type_non_existent );
+  if ( !fs::remove( get_path() ) && !ignore )
+    throw ZORBA_IO_EXCEPTION( "remove()", get_path() );
 #endif
 }
 
