@@ -41,7 +41,7 @@ PlanIter_t fn_zorba_xml_parse::codegen(
   return new FnZorbaParseXmlFragmentIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_xml_canonicalize::codegen(
+PlanIter_t fn_zorba_xml_canonicalize_impl::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -66,19 +66,7 @@ void populate_context_parse_fragment(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_xml_canonicalize,
-        (createQName("http://www.zorba-xquery.com/modules/xml","","canonicalize"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_XML_CANONICALIZE_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_zorba_xml_canonicalize,
+    DECL_WITH_KIND(sctx, fn_zorba_xml_canonicalize_impl,
         (createQName("http://www.zorba-xquery.com/modules/xml","","canonicalize-impl"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 

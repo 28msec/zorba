@@ -71,7 +71,7 @@ xquery version "3.0";
 module namespace x = "http://www.zorba-xquery.com/modules/xml";
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
-import schema namespace parse-xml-options = "http://www.zorba-xquery.com/modules/xml-options";
+import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace err = "http://www.w3.org/xqt-errors";
@@ -231,7 +231,7 @@ declare option ver:module-version "2.1";
  :)
 declare function x:parse(
   $xml-string as xs:string?,
-  $options as element(parse-xml-options:options)?) as node()* external;
+  $options as element(opt:options)?) as node()* external;
   
 
 (:~
@@ -335,23 +335,23 @@ declare function x:parse-xml-fragment(
   $xml-string as xs:string?,
   $options as xs:string) as node()* 
 {
-  let $new_options := <parse-xml-options:options>{
+  let $new_options := <opt:options>{
       if (contains($options, "e"))
-        then <parse-xml-options:parse-external-parsed-entity/> else (),
+        then <opt:parse-external-parsed-entity/> else (),
       if (contains($options, "d"))
-        then <parse-xml-options:DTD-validate/> else (),
+        then <opt:DTD-validate/> else (),
       if (contains($options, "s"))
-        then <parse-xml-options:schema-validate parse-xml-options:mode="strict"/> 
+        then <opt:schema-validate opt:mode="strict"/> 
         else (),
       if (contains($options, "l"))
-        then <parse-xml-options:schema-validate parse-xml-options:mode="lax"/> 
+        then <opt:schema-validate opt:mode="lax"/> 
         else (),
       (: TODO: uncomment once the strip-boundary-space option is implemented
       if (contains($options, "w"))
-        then <parse-xml-options:strip-boundary-space/> else (), :)
+        then <opt:strip-boundary-space/> else (), :)
       if (contains($options, "f"))
-        then <parse-xml-options:no-error/> else ()      
-    }</parse-xml-options:options>
+        then <opt:no-error/> else ()      
+    }</opt:options>
   return
     x:parse($xml-string, $new_options)
 };
@@ -396,26 +396,26 @@ declare function x:parse-xml-fragment(
   $base-uri as xs:string,
   $options as xs:string) as node()*
 {
-    let $new_options := <parse-xml-options:options>{
+    let $new_options := <opt:options>{
       if (contains($options, "e"))
-        then <parse-xml-options:parse-external-parsed-entity/> else (),
+        then <opt:parse-external-parsed-entity/> else (),
       if (contains($options, "d"))
-        then <parse-xml-options:DTD-validate/> else (),
+        then <opt:DTD-validate/> else (),
       if (contains($options, "s"))
-        then <parse-xml-options:schema-validate parse-xml-options:mode="strict"/> 
+        then <opt:schema-validate opt:mode="strict"/> 
         else (),
       if (contains($options, "l"))
-        then <parse-xml-options:schema-validate parse-xml-options:mode="lax"/> 
+        then <opt:schema-validate opt:mode="lax"/> 
         else (),
       (: TODO: uncomment once the strip-boundary-space option is implemented
       if (contains($options, "w"))
-        then <parse-xml-options:strip-boundary-space/> else (), :)
+        then <opt:strip-boundary-space/> else (), :)
       if (contains($options, "f"))
-        then <parse-xml-options:no-error/> else (),
-      <parse-xml-options:base-uri>{
-        attribute{xs:QName("parse-xml-options:value")}{$base-uri}}
-      </parse-xml-options:base-uri>
-    }</parse-xml-options:options>
+        then <opt:no-error/> else (),
+      <opt:base-uri>{
+        attribute{xs:QName("opt:value")}{$base-uri}}
+      </opt:base-uri>
+    }</opt:options>
   return 
     x:parse($xml-string, $new_options)
 };
@@ -439,7 +439,10 @@ declare function x:parse-xml-fragment(
  :)
 declare function x:canonicalize(
   $xml-string as xs:string
-  ) as xs:string external;
+  ) as xs:string
+{
+  x:canonicalize-impl( $xml-string, validate { <opt:options/> } )
+};
 
 
 (:~
@@ -450,10 +453,10 @@ declare function x:canonicalize(
  : as the options to x:parse#2(), although the following options are 
  : currently ignored for this function:
  : <ul>
- : <li>&lt;parse-xml-options:no-error/&gt;</li>
- : <li>&lt;parse-xml-options:base-uri/&gt;</li>
- : <li>&lt;parse-xml-options:schema-validate/&gt;</li>
- : <li>&lt;parse-xml-options:parse-external-parsed-entity/&gt;</li> 
+ : <li>&lt;opt:no-error/&gt;</li>
+ : <li>&lt;opt:base-uri/&gt;</li>
+ : <li>&lt;opt:schema-validate/&gt;</li>
+ : <li>&lt;opt:parse-external-parsed-entity/&gt;</li> 
  : </ul>
 
  : <br/>Note: This function is not streamable, if a streamable string is used
@@ -472,7 +475,7 @@ declare function x:canonicalize(
  :)
 declare function x:canonicalize(
   $xml-string as xs:string,
-  $options    as element(parse-xml-options:options)
+  $options    as element(opt:options)
   ) as xs:string
 {
   let $canonicalize-options :=

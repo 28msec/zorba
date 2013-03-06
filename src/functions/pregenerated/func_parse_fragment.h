@@ -55,11 +55,11 @@ public:
 };
 
 
-//fn-zorba-xml:canonicalize
-class fn_zorba_xml_canonicalize : public function
+//fn-zorba-xml:canonicalize-impl
+class fn_zorba_xml_canonicalize_impl : public function
 {
 public:
-  fn_zorba_xml_canonicalize(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_xml_canonicalize_impl(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

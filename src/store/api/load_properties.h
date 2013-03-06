@@ -17,6 +17,7 @@
 #define ZORBA_STORE_LOAD_PROPERTIES_H
 
 #include "common/common.h"
+#include "diagnostics/assert.h"
 #include <libxml/parser.h>
 
 
@@ -158,6 +159,10 @@ public:
   // theStripWhitespace
   void setStripWhitespace(bool aStripWhitespace)
   {
+    // This flag is only passed on to libxml2; however, libxml2 does not
+    // implement this functionality correct, so (at least for now) it should
+    // not be used.
+    ZORBA_ASSERT(false);
     theStripWhitespace = aStripWhitespace;
   }
   bool getStripWhitespace() const
