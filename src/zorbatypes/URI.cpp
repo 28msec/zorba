@@ -1152,7 +1152,7 @@ void URI::set_path(const zstring& new_path)
     unset_state(QueryString);
     theFragment = new_path;
     unset_state(Fragment);
-  }
+  
   else
   {
     initializePath(new_path);
@@ -1167,7 +1167,6 @@ void URI::set_query(const zstring& new_query)
   theQueryString = new_query;
   set_state(QueryString);
 }
-
 
 /*******************************************************************************
 

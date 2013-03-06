@@ -249,6 +249,7 @@ inline const zstring& URI::get_encoded_fragment() const
 inline void URI::set_fragment(const zstring &new_fragment)
 {
   theFragment = new_fragment;
+  set_state(Fragment);
   invalidate_text();
 }
 
