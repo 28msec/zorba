@@ -167,30 +167,32 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     false,
     lNsBindings,
     lZNamespace);
-      
-  GENV_ITEMFACTORY->createQName(
-    lQName,
-    lNamespace,
-    "uri",
-    "scheme");
   
-  GENV_ITEMFACTORY->createElementNode(
-    lElementScheme,
-    result.getp(),
-    lQName,
-    lQNameUntyped,
-    false,
-    false,
-    lNsBindings,
-    lZNamespace);
-  
-  lStrHolder = uri.get_scheme();
-  GENV_ITEMFACTORY->createTextNode(
-    lTextScheme,
-    lElementScheme.getp(),
-    lStrHolder);
+  lStrHolder = uri.get_scheme();  
+  if(lStrHolder.str() != ""){
+    GENV_ITEMFACTORY->createQName(
+      lQName,
+      lNamespace,
+      "uri",
+      "scheme");
     
-  GENV_ITEMFACTORY->createQName(
+    GENV_ITEMFACTORY->createElementNode(
+      lElementScheme,
+      result.getp(),
+      lQName,
+      lQNameUntyped,
+      false,
+      false,
+      lNsBindings,
+      lZNamespace);
+    
+    GENV_ITEMFACTORY->createTextNode(
+      lTextScheme,
+      lElementScheme.getp(),
+      lStrHolder);
+  }
+    
+  /* GENV_ITEMFACTORY->createQName(
     lQName,
     lNamespace,
     "uri",
@@ -207,161 +209,176 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     lZNamespace);
     
   // Once we have schema-specific data we will add it here
-    
-  GENV_ITEMFACTORY->createQName(
-    lQName,
-    lNamespace,
-    "uri",
-    "authority");
+  */  
   
-  GENV_ITEMFACTORY->createElementNode(
-    lElementAuthority,
-    result.getp(),
-    lQName,
-    lQNameString,
-    true,
-    false,
-    lNsBindings,
-    lZNamespace);
-    
   lStrHolder = uri.get_encoded_reg_based_authority();
-  GENV_ITEMFACTORY->createTextNode(
-    lTextAuthority,
-    lElementAuthority.getp(),
-    lStrHolder);
+  if(lStrHolder.str() != ""){
+    GENV_ITEMFACTORY->createQName(
+      lQName,
+      lNamespace,
+      "uri",
+      "authority");
     
-  GENV_ITEMFACTORY->createQName(
-    lQName,
-    lNamespace,
-    "uri",
-    "user-info");
-  
-  GENV_ITEMFACTORY->createElementNode(
-    lElementUserInfo,
-    result.getp(),
-    lQName,
-    lQNameString,
-    true,
-    false,
-    lNsBindings,
-    lZNamespace);
-    
+    GENV_ITEMFACTORY->createElementNode(
+      lElementAuthority,
+      result.getp(),
+      lQName,
+      lQNameString,
+      true,
+      false,
+      lNsBindings,
+      lZNamespace);
+      
+    GENV_ITEMFACTORY->createTextNode(
+      lTextAuthority,
+      lElementAuthority.getp(),
+      lStrHolder);
+  }
+
   lStrHolder = uri.get_encoded_user_info();
-  GENV_ITEMFACTORY->createTextNode(
-    lTextUserInfo,
-    lElementUserInfo.getp(),
-    lStrHolder);
+  if(lStrHolder.str() != ""){
+    GENV_ITEMFACTORY->createQName(
+      lQName,
+      lNamespace,
+      "uri",
+      "user-info");
     
-  GENV_ITEMFACTORY->createQName(
-    lQName,
-    lNamespace,
-    "uri",
-    "host");
+    GENV_ITEMFACTORY->createElementNode(
+      lElementUserInfo,
+      result.getp(),
+      lQName,
+      lQNameString,
+      true,
+      false,
+      lNsBindings,
+      lZNamespace);
+      
+    GENV_ITEMFACTORY->createTextNode(
+      lTextUserInfo,
+      lElementUserInfo.getp(),
+      lStrHolder);
+  }
   
-  GENV_ITEMFACTORY->createElementNode(
-    lElementHost,
-    result.getp(),
-    lQName,
-    lQNameString,
-    true,
-    false,
-    lNsBindings,
-    lZNamespace);
-    
   lStrHolder = uri.get_host();
-  GENV_ITEMFACTORY->createTextNode(
-    lTextHost,
-    lElementHost.getp(),
-    lStrHolder);
+  if(lStrHolder.str() != ""){
+    GENV_ITEMFACTORY->createQName(
+      lQName,
+      lNamespace,
+      "uri",
+      "host");
     
-  GENV_ITEMFACTORY->createQName(
-    lQName,
-    lNamespace,
-    "uri",
-    "port");
+    GENV_ITEMFACTORY->createElementNode(
+      lElementHost,
+      result.getp(),
+      lQName,
+      lQNameString,
+      true,
+      false,
+      lNsBindings,
+      lZNamespace);
+    
+    GENV_ITEMFACTORY->createTextNode(
+      lTextHost,
+      lElementHost.getp(),
+      lStrHolder);
+  }
   
-  GENV_ITEMFACTORY->createElementNode(
-    lElementPort,
-    result.getp(),
-    lQName,
-    lQNameInt,
-    true,
-    false,
-    lNsBindings,
-    lZNamespace);
-    
   sprintf(lCharHost,"%d", uri.get_port());
   lStrHolder = zstring(lCharHost);
-  GENV_ITEMFACTORY->createTextNode(
-    lTextPort,
-    lElementPort.getp(),
-    lStrHolder);
+  if(uri.get_port() != 0){
+    GENV_ITEMFACTORY->createQName(
+      lQName,
+      lNamespace,
+      "uri",
+      "port");
     
-  GENV_ITEMFACTORY->createQName(
-    lQName,
-    lNamespace,
-    "uri",
-    "path");
+    GENV_ITEMFACTORY->createElementNode(
+      lElementPort,
+      result.getp(),
+      lQName,
+      lQNameInt,
+      true,
+      false,
+      lNsBindings,
+      lZNamespace);
+      
+    GENV_ITEMFACTORY->createTextNode(
+      lTextPort,
+      lElementPort.getp(),
+      lStrHolder);
+  }
   
-  GENV_ITEMFACTORY->createElementNode(
-    lElementPath,
-    result.getp(),
-    lQName,
-    lQNameString,
-    true,
-    false,
-    lNsBindings,
-    lZNamespace);
-    
   lStrHolder = uri.get_encoded_path();
-  GENV_ITEMFACTORY->createTextNode(
-    lTextPath,
-    lElementPath.getp(),
-    lStrHolder);
+  if(lStrHolder.str() != ""){  
+    GENV_ITEMFACTORY->createQName(
+      lQName,
+      lNamespace,
+      "uri",
+      "path");
     
-  GENV_ITEMFACTORY->createQName(
-    lQName,
-    lNamespace,
-    "uri",
-    "query");
+    GENV_ITEMFACTORY->createElementNode(
+      lElementPath,
+      result.getp(),
+      lQName,
+      lQNameString,
+      true,
+      false,
+      lNsBindings,
+      lZNamespace);
+      
+    GENV_ITEMFACTORY->createTextNode(
+      lTextPath,
+      lElementPath.getp(),
+      lStrHolder);
+  }
   
-  GENV_ITEMFACTORY->createElementNode(
-    lElementQuery,
-    result.getp(),
-    lQName,
-    lQNameString,
-    true,
-    false,
-    lNsBindings,
-    lZNamespace);
-    
   lStrHolder = uri.get_encoded_query();
-  GENV_ITEMFACTORY->createTextNode(
-    lTextQuery,
-    lElementQuery.getp(),
-    lStrHolder);
+  if(lStrHolder.str() != ""){
+    GENV_ITEMFACTORY->createQName(
+      lQName,
+      lNamespace,
+      "uri",
+      "query");
     
-  GENV_ITEMFACTORY->createQName(
-    lQName,
-    lNamespace,
-    "uri",
-    "fragment");
+    GENV_ITEMFACTORY->createElementNode(
+      lElementQuery,
+      result.getp(),
+      lQName,
+      lQNameString,
+      true,
+      false,
+      lNsBindings,
+      lZNamespace);
+      
+    GENV_ITEMFACTORY->createTextNode(
+      lTextQuery,
+      lElementQuery.getp(),
+      lStrHolder);
+  }
   
-  GENV_ITEMFACTORY->createElementNode(
-    lElementFragment,
-    result.getp(),
-    lQName,
-    lQNameString,
-    true,
-    false,
-    lNsBindings,
-    lZNamespace);
-    
   lStrHolder = uri.get_encoded_fragment();
-  GENV_ITEMFACTORY->createTextNode(
-    lTextFragment,
-    lElementFragment.getp(),
-    lStrHolder);
+  if(lStrHolder.str() != ""){
+    GENV_ITEMFACTORY->createQName(
+      lQName,
+      lNamespace,
+      "uri",
+      "fragment");
+    
+    GENV_ITEMFACTORY->createElementNode(
+      lElementFragment,
+      result.getp(),
+      lQName,
+      lQNameString,
+      true,
+      false,
+      lNsBindings,
+      lZNamespace);
+      
+    GENV_ITEMFACTORY->createTextNode(
+      lTextFragment,
+      lElementFragment.getp(),
+      lStrHolder);
+  }
     
   STACK_PUSH( result, state );
 
@@ -385,49 +402,48 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   consumeNext(lItemURI, theChildren[0].getp(), planState);
 
   lStrVal = lItemURI->getNodeName()->getLocalName();
-  cout << "Local Name: " << lStrVal << endl;
-  
-  lChildren = lItemURI->getChildren();
-  if(!lChildren.isNull()){
-    lChildren->open();
-    while(lChildren->next(lItem)){
-      lGrandChildren = lItem->getChildren();
-      if(!lGrandChildren.isNull()){
-        lGrandChildren->open();
-        if(lGrandChildren->next(lItem2)){
-          // assume that this is a textnode
-          lTextVal = lItem2->getStringValue();
-        } else
-          lTextVal = "";
-        lGrandChildren->close();
+  if(lStrVal == "uri") {
+    lChildren = lItemURI->getChildren();
+    if(!lChildren.isNull()){
+      lChildren->open();
+      while(lChildren->next(lItem)){
+        lGrandChildren = lItem->getChildren();
+        if(!lGrandChildren.isNull()){
+          lGrandChildren->open();
+          if(lGrandChildren->next(lItem2)){
+            // assume that this is a textnode
+            lTextVal = lItem2->getStringValue();
+          } else
+            lTextVal = "";
+          lGrandChildren->close();
+        }
+        if(lItem->getNodeName()->getLocalName() == "scheme"){
+          uri.set_scheme(lTextVal);
+        } else if(lItem->getNodeName()->getLocalName() == "scheme-specific"){
+          // we still have to define what we are going to with this
+        } else if(lItem->getNodeName()->getLocalName() == "authority"){
+          uri.set_reg_based_authority(lTextVal);
+        } else if(lItem->getNodeName()->getLocalName() == "user-info"){
+          uri.set_user_info(lTextVal);
+        } else if(lItem->getNodeName()->getLocalName() == "host"){
+          uri.set_host(lTextVal);
+        } else if(lItem->getNodeName()->getLocalName() == "port"){
+          sscanf(lTextVal.str().c_str(), "%d", &lIntPort);
+          uri.set_port(lIntPort);
+        } else if(lItem->getNodeName()->getLocalName() == "path"){
+          uri.set_path(lTextVal);
+        } else if(lItem->getNodeName()->getLocalName() == "query"){
+          uri.set_query(lTextVal);
+        } else if(lItem->getNodeName()->getLocalName() == "fragment"){
+          uri.set_fragment(lTextVal);
+        }
       }
-      if(lItem->getNodeName()->getLocalName() == "scheme"){
-        uri.set_scheme(lTextVal);
-      } else if(lItem->getNodeName()->getLocalName() == "scheme-specific"){
-        // we still have to define what we are going to with this
-      } else if(lItem->getNodeName()->getLocalName() == "authority"){
-        uri.set_reg_based_authority(lTextVal);
-      } else if(lItem->getNodeName()->getLocalName() == "user-info"){
-        uri.set_user_info(lTextVal);
-      } else if(lItem->getNodeName()->getLocalName() == "host"){
-        uri.set_host(lTextVal);
-      } else if(lItem->getNodeName()->getLocalName() == "port"){
-        sscanf(lTextVal.str().c_str(), "%d", &lIntPort);
-        uri.set_port(lIntPort);
-      } else if(lItem->getNodeName()->getLocalName() == "path"){
-        uri.set_path(lTextVal);
-      } else if(lItem->getNodeName()->getLocalName() == "query"){
-        uri.set_query(lTextVal);
-      } else if(lItem->getNodeName()->getLocalName() == "fragment"){
-        uri.set_fragment(lTextVal);
-      }
+      lChildren->close();
     }
-    lChildren->close();
   }
-
+  
   lStrVal = zstring(uri.toString());
-  GENV_ITEMFACTORY->createString(result, lStrVal);
-  STACK_PUSH(result, state );
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, lStrVal), state );
 
   STACK_END (state);
 }
