@@ -217,7 +217,7 @@ std::string filesystem_path::getPathString() const {
 void file::do_stat() {
 #ifdef ZORBA_WITH_FILE_ACCESS
   fs::size_type fs_size = 0;
-  switch ( fs::get_type( c_str(), &fs_size ) ) {
+  switch ( fs::get_type( get_path(), &fs_size ) ) {
     case fs::non_existent: type = type_non_existent; break;
     case fs::directory   : type = type_directory;    break;
     case fs::file        : type = type_file;         break;
@@ -256,7 +256,7 @@ time_t file::lastModified() {
 void file::create() {
 #ifdef ZORBA_WITH_FILE_ACCESS
   try {
-    fs::create( c_str() );
+    fs::create( get_path() );
     set_filetype( type_file );
   }
   catch ( fs::exception const &e ) {
@@ -268,7 +268,7 @@ void file::create() {
 void file::mkdir() {
 #ifdef ZORBA_WITH_FILE_ACCESS
   try {
-    fs::mkdir( c_str() );
+    fs::mkdir( get_path() );
     set_filetype( type_directory );
   }
   catch ( fs::exception const &e ) {
@@ -280,7 +280,7 @@ void file::mkdir() {
 void file::lsdir(std::vector<std::string> &list) {
 #ifdef ZORBA_WITH_FILE_ACCESS
   try {
-    fs::iterator dir_iter( c_str() );
+    fs::iterator dir_iter( get_path() );
     while ( dir_iter.next() )
       list.push_back( dir_iter.entry_name() );
     set_filetype( type_directory );
@@ -304,7 +304,7 @@ void file::deep_mkdir() {
 
 void file::remove( bool ignore ) {
 #ifdef ZORBA_WITH_FILE_ACCESS
-  if ( !fs::remove( c_str() ) ) {
+  if ( !fs::remove( get_path() ) ) {
     if ( !ignore )
       throw ZORBA_IO_EXCEPTION( "remove()", get_path() );
     return;
@@ -322,7 +322,7 @@ void file::rmdir( bool ignore ) {
 void file::chdir() {
   if ( is_directory() ) {
     try {
-      fs::chdir( c_str() );
+      fs::chdir( get_path() );
     }
     catch ( fs::exception const &e ) {
       throw ZORBA_IO_EXCEPTION( e.function(), e.path() );
@@ -335,7 +335,7 @@ void file::chdir() {
 void file::rename( std::string const& newpath ) {
 #ifdef ZORBA_WITH_FILE_ACCESS
   try {
-    fs::rename( c_str(), newpath );
+    fs::rename( get_path(), newpath );
   }
   catch ( fs::exception const &e ) {
     throw ZORBA_IO_EXCEPTION( e.function(), e.path() );
