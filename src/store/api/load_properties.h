@@ -17,6 +17,8 @@
 #define ZORBA_STORE_LOAD_PROPERTIES_H
 
 #include "common/common.h"
+#include "diagnostics/assert.h"
+#include <libxml/parser.h>
 
 
 namespace zorba
@@ -55,7 +57,8 @@ private:
   bool theRemoveRedundantNS;
   bool theNoCDATA;
   bool theNoXIncludeNodes;
-  
+  bool theNoNetworkAccess ;
+
   bool theCreateDocParentLink;  // Default true. If set to false, the parsed input
                                 // nodes will not have their parent link set to the 
                                 // the document node. This is used by the parse-fragment
@@ -83,6 +86,7 @@ public:
     theRemoveRedundantNS(false),
     theNoCDATA(false),
     theNoXIncludeNodes(false),
+    theNoNetworkAccess (false),
     theCreateDocParentLink(true)
   {
   }
@@ -111,6 +115,7 @@ public:
     theRemoveRedundantNS = false;
     theNoCDATA = false;
     theNoXIncludeNodes = false;
+    theNoNetworkAccess  = false;
   }
 
   /**
@@ -154,6 +159,10 @@ public:
   // theStripWhitespace
   void setStripWhitespace(bool aStripWhitespace)
   {
+    // This flag is only passed on to libxml2; however, libxml2 does not
+    // implement this functionality correct, so (at least for now) it should
+    // not be used.
+    ZORBA_ASSERT(false);
     theStripWhitespace = aStripWhitespace;
   }
   bool getStripWhitespace() const
@@ -313,6 +322,69 @@ public:
   bool getCreateDocParentLink() const
   {
     return theCreateDocParentLink;
+  }
+
+  // theNoNetworkAccess 
+  void setNoNetworkAccess(bool aNoNetworkAccess)
+  {
+    theNoNetworkAccess = aNoNetworkAccess;
+  }
+  bool getNoNetworkAccess() const
+  {
+    return theNoNetworkAccess ;
+  }
+
+  /**
+   * @brief Return a libxml2 options bit-field based, suitable for using
+   * while using libxml2 to parse XML. The following members of this
+   * LoadProperties object are handled; others are ignored:
+   *  - getStripWhitespace()
+   *  - getDTDValidate()
+   *  - getDTDLoad()
+   *  - getDefaultDTDAttributes
+   *  - getSubstituteEntities()
+   *  - getXincludeSubstitutions()
+   *  - getRemoveRedundantNS()
+   *  - getNoCDATA()
+   *  - getNoXIncludeNodes()
+   *  - getNoNetworkAccess()
+   * @return said bit-field.
+   */
+  int toLibXmlOptions() const
+  {
+    int options = 0;
+
+    if (theStripWhitespace)
+      options |= XML_PARSE_NOBLANKS;
+
+    if (theDTDValidate)
+      options |= XML_PARSE_DTDVALID;
+
+    if (theDTDLoad)
+      options |= XML_PARSE_DTDLOAD;
+
+    if (theDefaultDTDAttributes)
+      options |= XML_PARSE_DTDATTR;
+
+    if (theSubstituteEntities)
+      options |= XML_PARSE_NOENT;
+
+    if (theXincludeSubstitutions)
+      options |= XML_PARSE_XINCLUDE;
+
+    if (theRemoveRedundantNS)
+      options |= XML_PARSE_NSCLEAN;
+
+    if (theNoCDATA)
+      options |= XML_PARSE_NOCDATA;
+
+    if (theNoXIncludeNodes)
+      options |= XML_PARSE_NOXINCNODE;
+
+    if (theNoNetworkAccess)
+      options |= XML_PARSE_NONET; 
+
+    return options;
   }
 };
 
