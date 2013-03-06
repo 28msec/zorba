@@ -144,9 +144,14 @@ int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba:
         unput(yy_comp_constr_qname[i]);                                 \
       yy_comp_constr_qname = "";                                        \
     }                                                                   \
-    return _STATE==MODE_ELEM_COMP_CONSTR? token::ELEMENT : (            \
-           _STATE==MODE_ATTR_COMP_CONSTR? token::ATTRIBUTE :            \
-                                    token::PROCESSING_INSTRUCTION);     \
+    if (_STATE == MODE_ELEM_COMP_CONSTR)                                \
+      return token::ELEMENT;                                            \
+    else if (_STATE == MODE_ATTR_COMP_CONSTR)                           \
+      return token::ATTRIBUTE;                                          \
+    else if (_STATE == MODE_PI_COMP_CONSTR)                             \
+      return token::PROCESSING_INSTRUCTION;                             \
+    else                                                                \
+      return token::NAMESPACE;                                          \
   } while (0)
 
 /*
@@ -368,6 +373,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 %x MODE_ELEM_COMP_CONSTR
 %x MODE_ATTR_COMP_CONSTR
 %x MODE_PI_COMP_CONSTR
+%x MODE_NS_COMP_CONSTR
 %x MODE_CDATA_SECTION
 %x MODE_ELEMENT_CONTENT
 %x MODE_END_TAG
@@ -464,6 +470,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "element" {  PUSH_STATE(MODE_ELEM_COMP_CONSTR); }
 "attribute" { PUSH_STATE(MODE_ATTR_COMP_CONSTR); }
 "processing-instruction" { PUSH_STATE(MODE_PI_COMP_CONSTR); }
+"namespace" { PUSH_STATE(MODE_NS_COMP_CONSTR); }
 
 
 "if" { return token::IF; }
@@ -497,7 +504,6 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "default" { return token::DEFAULT; }
 "order" { return token::ORDER; }
 "collation" { return token::COLLATION; }
-"namespace" { return token::NAMESPACE; }
 "base-uri" { return token::BASE_URI; }
 "import" { return token::IMPORT; }
 "schema" { return token::SCHEMA; }
@@ -872,24 +878,24 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
    /*______________________________________________________________________
     |
-    | MODE_ELEM_COMP_CONSTR, MODE_ATTR_COMP_CONSTR and MODE_PI_COMP_CONSTR
-    | states
+    | MODE_ELEM_COMP_CONSTR, MODE_ATTR_COMP_CONSTR, MODE_PI_COMP_CONSTR
+    | MODE_NS_COMP_CONSTR states
     |
     |______________________________________________________________________*/
 
-<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR>{QName}                     {
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR>{QName}                                         {
   if (yy_comp_constr_qname == "")
     yy_comp_constr_qname = yytext;
   else
     COMP_CONSTR_ROLLBACK(true);
 }
-<MODE_PI_COMP_CONSTR>{NCName}                                            {
+<MODE_PI_COMP_CONSTR,MODE_NS_COMP_CONSTR>{NCName}                                            {
   if (yy_comp_constr_qname == "")
     yy_comp_constr_qname = yytext;
   else
     COMP_CONSTR_ROLLBACK(true);
 }
-<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>"{"     {
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR,MODE_NS_COMP_CONSTR>"{"     {
   if ( yy_comp_constr_qname == "")
     COMP_CONSTR_ROLLBACK(true);
   else
@@ -902,14 +908,16 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
       TRY_SVAL_TOKEN(COMP_ELEMENT_QNAME_LBRACE, put_qname(temp.c_str(), temp.size()), temp.c_str());
     else if (_STATE == MODE_ATTR_COMP_CONSTR)
       TRY_SVAL_TOKEN(COMP_ATTRIBUTE_QNAME_LBRACE, put_qname(temp.c_str(), temp.size()), temp.c_str());
-    else
+    else if (_STATE == MODE_PI_COMP_CONSTR)
       TRY_SVAL_TOKEN(COMP_PI_NCNAME_LBRACE, put_ncname(temp.c_str(), temp.size()), temp.c_str());
+    else 
+      TRY_SVAL_TOKEN(COMP_NS_NCNAME_LBRACE, put_ncname(temp.c_str(), temp.size()), temp.c_str());
   }
 }
-<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>"(:"       { PUSH_STATE(MODE_EXPR_COMMENT); }
-<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>{WSstar}   { /* continue lexing */ }
-<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR><<EOF>>    { COMP_CONSTR_ROLLBACK(false); }
-<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>{CatchAll} { COMP_CONSTR_ROLLBACK(true); }
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR,MODE_NS_COMP_CONSTR>"(:"       { PUSH_STATE(MODE_EXPR_COMMENT); }
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR,MODE_NS_COMP_CONSTR>{WSstar}   { /* continue lexing */ }
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR,MODE_NS_COMP_CONSTR><<EOF>>    { COMP_CONSTR_ROLLBACK(false); }
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR,MODE_NS_COMP_CONSTR>{CatchAll} { COMP_CONSTR_ROLLBACK(true); }
 
 
   /*______________________________________________________________________

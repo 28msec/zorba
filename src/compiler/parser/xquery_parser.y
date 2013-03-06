@@ -213,7 +213,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> COMP_ELEMENT_QNAME_LBRACE     "'element QName {'"
 %token <sval> COMP_ATTRIBUTE_QNAME_LBRACE   "'attribute QName {'"
 %token <sval> COMP_PI_NCNAME_LBRACE         "'processing-instruction NCName {'"
- //%token <sval> COMP_NS_NCNAME_LBRACE         "'naespace NCName {'"
+%token <sval> COMP_NS_NCNAME_LBRACE         "'namespace NCName {'"
 %token <sval> QNAME_SVAL                    "'QName'"
 %token <sval> EQNAME_SVAL                   "'EQName'"
 %token <sval> ANNOTATION_QNAME_SVAL         "'%QName'"
@@ -5043,20 +5043,15 @@ CompPIConstructor :
 
 
 CompNamespaceConstructor :
-    /*
     COMP_NS_NCNAME_LBRACE StatementsAndExpr RBRACE
-    NAMESPACE NCNAME LBRACE StatementsAndExpr RBRACE
     {
-      $$ = new CompNamespaceConstructor(LOC(@$), SYMTAB($2), $4);
+      $$ = new CompNamespaceConstructor(LOC(@$), SYMTAB($1), $2);
     }
-  |
-    */
-    NAMESPACE LBRACE Expr RBRACE LBRACE StatementsAndExpr RBRACE
+|   NAMESPACE LBRACE Expr RBRACE LBRACE StatementsAndExpr RBRACE
     {
       $$ = new CompNamespaceConstructor(LOC(@$), $3, $6);
     }
 ;
-
 
 
 TypeDeclaration :
