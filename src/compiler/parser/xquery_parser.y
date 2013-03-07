@@ -262,6 +262,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token INSTANCE                         "'instance'"
 %token LET                              "'let'"
 %token MOST                             "'most'"
+%token NS_NODE                          "'namespace-node'"
 %token NEXT                             "'next'"
 %token NO                               "'no'"
 %token ONLY                             "'only'"
@@ -621,6 +622,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> ModuleWithoutBOM
 %type <node> ModuleDecl
 %type <node> ModuleImport
+%type <node> NamespaceTest
 %type <node> NameTest
 %type <node> NamespaceDecl
 %type <node> NodeComp
@@ -922,7 +924,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList GeneralizedAtomicType SimpleType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList GeneralizedAtomicType SimpleType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest NamespaceTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
@@ -5191,87 +5193,96 @@ SimpleType :
 
 
 KindTest :
-        DocumentTest
-        {
-            $$ = $1;
-        }
-    |   ElementTest
-        {
-            $$ = $1;
-        }
-    |   AttributeTest
-        {
-            $$ = $1;
-        }
-    |   SchemaElementTest
-        {
-            $$ = $1;
-        }
-    |   SchemaAttributeTest
-        {
-            $$ = $1;
-        }
-    |   PITest
-        {
-            $$ = $1;
-        }
-    |   CommentTest
-        {
-            $$ = $1;
-        }
-    |   TextTest
-        {
-            $$ = $1;
-        }
-    |   AnyKindTest
-        {
-            $$ = $1;
-        }
-    ;
+    DocumentTest
+    {
+      $$ = $1;
+    }
+|   ElementTest
+    {
+      $$ = $1;
+    }
+|   AttributeTest
+    {
+      $$ = $1;
+    }
+|   SchemaElementTest
+    {
+      $$ = $1;
+    }
+|   SchemaAttributeTest
+    {
+      $$ = $1;
+    }
+|   PITest
+    {
+      $$ = $1;
+    }
+|   CommentTest
+    {
+      $$ = $1;
+    }
+|   TextTest
+    {
+      $$ = $1;
+    }
+|   NamespaceTest
+    {
+      $$ = $1;
+    }
+|   AnyKindTest
+    {
+      $$ = $1;
+    }
+;
 
-// [122]
+
 AnyKindTest :
-        NODE LPAR RPAR
-        {
-            $$ = new AnyKindTest( LOC(@$) );
-        }
-    ;
+    NODE LPAR RPAR
+    {
+      $$ = new AnyKindTest( LOC(@$) );
+    }
+;
 
-// [123]
+
 DocumentTest :
-        DOCUMENT_NODE LPAR RPAR
-        {
-            $$ = new DocumentTest( LOC(@$) );
-        }
-    |   DOCUMENT_NODE LPAR ElementTest RPAR
-        {
-            $$ = new DocumentTest( LOC(@$), dynamic_cast<ElementTest*>($3) );
-        }
-    |   DOCUMENT_NODE LPAR SchemaElementTest RPAR
-        {
-            $$ = new DocumentTest(
-                LOC(@$), dynamic_cast<SchemaElementTest*>($3)
-            );
-        }
-    ;
+    DOCUMENT_NODE LPAR RPAR
+    {
+      $$ = new DocumentTest(LOC(@$));
+    }
+|   DOCUMENT_NODE LPAR ElementTest RPAR
+    {
+      $$ = new DocumentTest(LOC(@$), dynamic_cast<ElementTest*>($3));
+    }
+|   DOCUMENT_NODE LPAR SchemaElementTest RPAR
+    {
+      $$ = new DocumentTest(LOC(@$), dynamic_cast<SchemaElementTest*>($3));
+    }
+;
 
-// [124]
+
+NamespaceTest :
+    NS_NODE LPAR RPAR
+    {
+      $$ = new NamespaceTest(LOC(@$));
+    }
+
+
 TextTest :
-        TEXT LPAR RPAR
-        {
-            $$ = new TextTest( LOC(@$) );
-        }
-    ;
+    TEXT LPAR RPAR
+    {
+      $$ = new TextTest(LOC(@$));
+    }
+;
 
-// [125]
+
 CommentTest :
-        COMMENT LPAR RPAR
-        {
-            $$ = new CommentTest( LOC(@$));
-        }
-    ;
+    COMMENT LPAR RPAR
+    {
+      $$ = new CommentTest(LOC(@$));
+    }
+;
 
-// [126]
+
 PITest :
         PROCESSING_INSTRUCTION LPAR RPAR
         {
@@ -6750,6 +6761,7 @@ QNAME :
     |   ATTRIBUTE               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("attribute"))); }
     |   COMMENT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("comment"))); }
     |   DOCUMENT_NODE           { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("document-node"))); }
+    |   NS_NODE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("namespace-node"))); }
     |   ELEMENT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("element"))); }
     |   ITEM                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("item"))); }
     |   IF                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("if"))); }

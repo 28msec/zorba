@@ -1806,6 +1806,14 @@
        node or a namespace node.
       </comment>
       <value>"$1": can not serialize $2</value>
+
+      <entry key="AttributeNode">
+        <value>attribute node</value>
+      </entry>
+
+      <entry key="NamespaceNode">
+        <value>namespace node</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="SERE0003">
@@ -3228,10 +3236,6 @@
 
     <entry key="AttributeName">
       <value>attribute name</value>
-    </entry>
-
-    <entry key="AttributeNode">
-      <value>attribute node</value>
     </entry>
 
     <entry key="BackRef0Illegal" if="!defined(ZORBA_NO_ICU)">

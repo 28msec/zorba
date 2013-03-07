@@ -503,6 +503,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "schema-attribute" { return token::SCHEMA_ATTRIBUTE; }
 "node" { return token::NODE; }
 "document-node" { return token::DOCUMENT_NODE; }
+"namespace-node" { return token::NS_NODE; }
 "construction" { return token::CONSTRUCTION; }
 "default" { return token::DEFAULT; }
 "order" { return token::ORDER; }

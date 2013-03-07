@@ -301,18 +301,6 @@ public:
         zstring&                    baseURI,
         bool                        isInSubstitutionGroup = false);
 
-  bool createElementNode(
-        store::Item_t&              result,
-        store::Item*                parent,
-        ulong                       pos,
-        store::Item_t&              nodeName,
-        store::Item_t&              typeName,
-        bool                        haveTypedValue,
-        bool                        haveEmptyValue,
-        const store::NsBindings&    localBindings,
-        zstring&                    baseURI,
-        bool                        isInSubstitutionGroup = false);
-
   bool createAttributeNode(
         store::Item_t&              result,
         store::Item*                parent,

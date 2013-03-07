@@ -13529,6 +13529,32 @@ void end_visit(const SchemaAttributeTest& v, void* /*visit_state*/)
 }
 
 
+void* begin_visit(const NamespaceTest& v)
+{
+  TRACE_VISIT();
+  // no action needed here
+  return no_state;
+}
+
+
+void end_visit(const NamespaceTest& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  axis_step_expr* axisExpr =
+  dynamic_cast<axis_step_expr*>(peek_nodestk_or_null());
+
+  if (axisExpr != NULL)
+  {
+    RAISE_ERROR(zerr::ZXQP0004_NOT_IMPLEMENTED, loc, ERROR_PARAMS("namespace axis"));
+  }
+  else
+  {
+    theTypeStack.push(GENV_TYPESYSTEM.NAMESPACE_TYPE_ONE);
+  }
+}
+
+
 void* begin_visit(const TextTest& v)
 {
   TRACE_VISIT();
@@ -13542,7 +13568,8 @@ void end_visit(const TextTest& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   axis_step_expr* axisExpr =
-    dynamic_cast<axis_step_expr*> (peek_nodestk_or_null ());
+  dynamic_cast<axis_step_expr*>(peek_nodestk_or_null());
+
   if (axisExpr != NULL)
   {
     match_expr* match = theExprManager->create_match_expr(theRootSctx, theUDF, loc);

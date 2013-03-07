@@ -660,7 +660,7 @@ namespace_expr::namespace_expr(
     expr* preExpr,
     expr* uriExpr)
   :
-  expr(ccb, sctx, udf, loc, attr_expr_kind),
+  expr(ccb, sctx, udf, loc, namespace_expr_kind),
   thePrefixExpr(preExpr),
   theUriExpr(uriExpr)
 {

@@ -2220,17 +2220,17 @@ ElementNode::ElementNode(
   NULL (but may be empty).
 ********************************************************************************/
 ElementNode::ElementNode(
-    XmlTree*                    tree,
-    InternalNode*               parent,
-    bool                        append,
-    csize                       pos,
-    store::Item_t&              nodeName,
-    store::Item_t&              typeName,
-    bool                        haveTypedValue,
-    bool                        haveEmptyValue,
-    bool                        isInSubstGroup,
-    const store::NsBindings*    localBindings,
-    zstring&                    baseUri)
+    XmlTree*                  tree,
+    InternalNode*             parent,
+    bool                      append,
+    csize                     pos,
+    store::Item_t&            nodeName,
+    store::Item_t&            typeName,
+    bool                      haveTypedValue,
+    bool                      haveEmptyValue,
+    bool                      isInSubstGroup,
+    const store::NsBindings*  localBindings,
+    zstring&                  baseUri)
   :
   InternalNode(tree, parent, append, pos, store::StoreConsts::elementNode)
 {
@@ -2339,6 +2339,15 @@ ElementNode::ElementNode(
               << " ordpath = " << theOrdPath.show()
               << " name = " << theName->getStringValue()
               << " type = " << getType()->getStringValue());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ElementNode::finalizeNode()
+{
+  //addBindingForQName(theName, false, true);
 }
 
 
@@ -3389,7 +3398,58 @@ void ElementNode::addBindingForNSNode(const zstring& prefix, const zstring& ns)
   }
   else if (ns2 != ns)
   {
-    throw XQUERY_EXCEPTION(err::XQDY0102, ERROR_PARAMS(ns2, prefix, ns));
+    bool resolvedConflict = false;
+
+    if (theName->getNamespace() == ns2 && theName->getPrefix() == prefix)
+    {
+      zstring prefix2("XXX");
+      zstring dummy;
+      
+      while (findBinding(prefix2, dummy))
+        prefix2 += "X";
+      
+      GET_FACTORY().createQName(theName, ns2, prefix2, theName->getLocalName());
+
+      addLocalBinding(prefix2, ns2);
+      removeLocalBinding(prefix, ns2);
+
+      resolvedConflict = true;
+    }
+
+    InternalNode::iterator ite = attrsBegin();
+    InternalNode::iterator end = attrsEnd();
+    for (; ite != end; ++ite)
+    {
+      AttributeNode* attr = static_cast<AttributeNode*>(*ite);
+
+      if (attr->theName->getNamespace() == ns2 && attr->theName->getPrefix() == prefix)
+      {
+        zstring prefix2("XXX");
+        zstring dummy;
+      
+        while (findBinding(prefix2, dummy))
+          prefix2 += "X";
+      
+        GET_FACTORY().createQName(attr->theName,
+                                  ns2,
+                                  prefix2,
+                                  attr->theName->getLocalName());
+
+        addLocalBinding(prefix2, ns2);
+        removeLocalBinding(prefix, ns2);
+
+        resolvedConflict = true;
+      }
+    }
+
+    if (resolvedConflict)
+    {
+      addLocalBinding(prefix, ns);
+    }
+    else
+    {
+      throw XQUERY_EXCEPTION(err::XQDY0102, ERROR_PARAMS(ns2, prefix, ns));
+    }
   }
 }
 

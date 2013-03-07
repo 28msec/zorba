@@ -373,7 +373,8 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                         true,
                                         false,
                                         bindings,
-                                        state->baseUri);
+                                        state->baseUri,
+                                        false);
   }
   else
   {
@@ -385,7 +386,8 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                         true,
                                         false,
                                         theLocalBindings->getLocalBindings(),
-                                        state->baseUri);
+                                        state->baseUri,
+                                        false);
   }
 
   path.push(result);
@@ -980,7 +982,7 @@ bool NamespaceIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   ZORBA_ASSERT(consumeNext(uriItem, theChild1, planState));
   uri = uriItem->getStringValue();
 
-  if (!GenericCast::castableToNCName(prefix))
+  if (!prefix.empty() && !GenericCast::castableToNCName(prefix))
   {
     RAISE_ERROR(err::XQDY0074, loc,
     ERROR_PARAMS(ZED(XQDY0074_NameSapceConstructor), prefix));

@@ -544,7 +544,7 @@ RootTypeManager::RootTypeManager()
 
   NODE_TYPE_DEFN(COMMENT, store::StoreConsts::commentNode, STRING_TYPE_ONE);
 
-  NODE_TYPE_DEFN(NAMESPACE, store::StoreConsts::namespaceNode, ANY_URI_TYPE_ONE);
+  NODE_TYPE_DEFN(NAMESPACE, store::StoreConsts::namespaceNode, STRING_TYPE_ONE);
 
 #undef NODE_TYPE_DEFN
 }

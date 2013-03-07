@@ -966,19 +966,26 @@ DEFAULT_END_VISIT (ReverseAxis);
       }
     }
 
-    void* begin_visit(const TextTest& n)
-    {
-      os << "text()";
-      return 0;
-    }
-    DEFAULT_END_VISIT (TextTest)
+  void* begin_visit(const NamespaceTest& n)
+  {
+    os << "namespace-node()";
+    return 0;
+  }
+  DEFAULT_END_VISIT (NamespaceTest)
 
-    void* begin_visit(const TypeName& n)
-    {
-      os << n.get_name()->get_qname();
-      return 0;
-    }
-    DEFAULT_END_VISIT (TypeName)
+  void* begin_visit(const TextTest& n)
+  {
+    os << "text()";
+    return 0;
+  }
+  DEFAULT_END_VISIT (TextTest)
+
+  void* begin_visit(const TypeName& n)
+  {
+    os << n.get_name()->get_qname();
+    return 0;
+  }
+  DEFAULT_END_VISIT (TypeName)
 
     void* begin_visit(const URILiteralList& n)
     {

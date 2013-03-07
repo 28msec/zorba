@@ -819,7 +819,7 @@ ostream& attr_expr::put(ostream& os) const
 
 ostream& namespace_expr::put(ostream& os) const
 {
-  BEGIN_PUT(attr_expr);
+  BEGIN_PUT(namespace_expr);
 
   thePrefixExpr->put(os);
   theUriExpr->put(os);

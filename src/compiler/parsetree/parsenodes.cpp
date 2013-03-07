@@ -4402,16 +4402,30 @@ void DocumentTest::accept( parsenode_visitor &v ) const
 }
 
 
+NamespaceTest::NamespaceTest(const QueryLoc& loc)
+  :
+  parsenode(loc)
+{
+}
+
+
+void NamespaceTest::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
 // [126] TextTest
 // --------------
-TextTest::TextTest(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
+TextTest::TextTest(const QueryLoc& loc)
+  :
+  parsenode(loc)
+{
+}
 
 
-void TextTest::accept( parsenode_visitor &v ) const
+void TextTest::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   END_VISITOR();

@@ -92,6 +92,7 @@ class DirElemContent;
 class DirElemContentList;
 class DirPIConstructor;
 class DocumentTest;
+class NamespaceTest;
 class ElementTest;
 class EnclosedExpr;
 class Expr;
@@ -5174,6 +5175,18 @@ public:
   {
     return schema_elem_test_h;
   }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  NamespaceTest ::= "namespace-node" "(" ")"
+********************************************************************************/
+class NamespaceTest : public parsenode
+{
+public:
+  NamespaceTest(const QueryLoc&);
 
   void accept(parsenode_visitor&) const;
 };

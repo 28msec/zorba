@@ -1050,6 +1050,8 @@ public:
   //
   // Item methods
   //
+  void finalizeNode();
+
   size_t alloc_size() const;
 
   size_t dynamic_size() const;
@@ -1647,6 +1649,10 @@ public:
         csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
+
+  zstring getNamespacePrefix() const { return thePrefix; }
+
+  zstring getNamespaceUri() const { return theUri; }
 
   store::Item* getType() const { return NULL; }
 

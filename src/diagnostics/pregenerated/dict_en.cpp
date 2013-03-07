@@ -540,7 +540,6 @@ extern entry const dict_en[] = {
   { "~ArithOpNotDefinedBetween_23", "arithmetic operation not defined between types \"$2\" and \"$3\"" },
   { "~AtomizationHasMoreThanOneValue", "atomization has more than one value" },
   { "~AttributeName", "attribute name" },
-  { "~AttributeNode", "attribute node" },
 #if !defined(ZORBA_NO_ICU)
   { "~BackRef0Illegal", "\"0\": illegal backreference" },
 #endif
@@ -813,6 +812,8 @@ extern entry const dict_en[] = {
 #if defined(ZORBA_NO_ICU)
   { "~REGEX_UNKNOWN_PZ_CONSTRUCT", "unknown \\\\p{Z?} category; supported categories: Z, Zs, Zl, Zp" },
 #endif
+  { "~SENR0001_AttributeNode", "attribute node" },
+  { "~SENR0001_NamespaceNode", "namespace node" },
   { "~SEPM0009_Not10", "the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
   { "~SEPM0009_NotOmit", "the standalone attribute has a value other than \"omit\"" },
   { "~SchemaUnexpected", "unexpected exception during parsing" },
