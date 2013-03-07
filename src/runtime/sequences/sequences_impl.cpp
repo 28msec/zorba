@@ -957,6 +957,7 @@ static bool DeepEqual(
         break;
 
       case store::StoreConsts::documentNode:
+      {
         return DeepEqual(loc,
                          sctx,
                          dctx,
@@ -966,8 +967,9 @@ static bool DeepEqual(
                          true,
                          false);
         break;
-
+      }
       case store::StoreConsts::elementNode:
+      {
         if (! item1->getNodeName()->equals(item2->getNodeName()))
           return false;
 
@@ -987,7 +989,7 @@ static bool DeepEqual(
                           true,
                           true));
         break;
-
+      }
       case store::StoreConsts::attributeNode:
       {
         if (! item1->getNodeName()->equals(item2->getNodeName()))
@@ -1007,7 +1009,7 @@ static bool DeepEqual(
 
         break;
       }
-      case store::StoreConsts::textNode:     /* deliberate fall-through */
+      case store::StoreConsts::textNode:
       case store::StoreConsts::commentNode:
       {
         return (0 == utf8::compare(item1->getStringValue(),
@@ -1031,12 +1033,29 @@ static bool DeepEqual(
         return (0 == lCmpRes);
         break;
       }
+
+      case store::StoreConsts::namespaceNode:
+      {
+        int lCmpRes = utf8::compare(item1->getNamespacePrefix(),
+                                    item2->getNamespacePrefix(),
+                                    collator);
+        if (0 != lCmpRes)
+          return false;
+
+        lCmpRes = utf8::compare(item1->getStringValue(),
+                                item2->getStringValue(),
+                                collator);
+
+        return (0 == lCmpRes);
+        break;
+      }
     }
 
     ZORBA_ASSERT(false);  // should never reach here
     return false;
   }
 }
+
 
 bool FnDeepEqualIterator::nextImpl(
     store::Item_t& result,

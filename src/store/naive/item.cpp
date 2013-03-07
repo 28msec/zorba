@@ -1019,6 +1019,21 @@ store::Item* Item::getNodeName() const
   );
 }
 
+
+zstring Item::getNamespacePrefix() const
+{
+  throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
+}
+
+
+zstring Item::getNamespaceUri() const
+{
+  throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
+}
+
+
 const store::Collection* Item::getCollection() const
 {
   throw ZORBA_EXCEPTION(

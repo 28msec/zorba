@@ -664,6 +664,21 @@ public:
   getNodeName() const;
 
   /**
+   * Accessor for namepsace nodes.
+   * @return the prefix property of the node
+   */
+  virtual zstring
+  getNamespacePrefix() const;
+
+  /**
+   * Accessor for namepsace nodes.
+   * @return the uri property of the node
+   */
+  virtual zstring
+  getNamespaceUri() const;
+
+
+  /**
    * If this item is a node and it belongs to a collection, return that
    * collection. Otherwise, return 0.
    *

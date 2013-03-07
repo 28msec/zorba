@@ -566,6 +566,19 @@ nextclause:
     return;
   }
 
+  case namespace_expr_kind:
+  {
+    namespace_expr* nsExpr = static_cast<namespace_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(nsExpr->thePrefixExpr);
+    EXPR_ITER_NEXT(nsExpr->theUriExpr);
+
+    EXPR_ITER_END();
+    return;
+  }
+
   case text_expr_kind:
   {
     text_expr* textExpr = static_cast<text_expr*>(theExpr);
