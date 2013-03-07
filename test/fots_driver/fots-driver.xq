@@ -795,7 +795,9 @@ declare %ann:sequential function driver:test(
     variable $trace := concat("processing test case : ", $case/@name,
                               " in test set : ", $testSetName);
 
-    variable $queryName := trace($trace, "");
+    trace($trace,"");
+
+    variable $queryName := $case/@name;
 
     variable $test as xs:string := util:get-value($case, $testSetBaseURI, "test");
 
