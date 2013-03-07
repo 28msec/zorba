@@ -4541,38 +4541,35 @@ UnorderedExpr :
 |
 |____________________________________________________________________*/
 FunctionCall :
-        FUNCTION_NAME LPAR RPAR
-        {
-            $$ = new FunctionCall( LOC(@$), static_cast<QName*>($1), NULL );
-        }
-    |   FUNCTION_NAME LPAR ArgList RPAR
-        {
-            $$ = new FunctionCall(
-                LOC(@$),
-                static_cast<QName*>($1),
-                dynamic_cast<ArgList*>($3)
-            );
-        }
+    FUNCTION_NAME LPAR RPAR
+    {
+      $$ = new FunctionCall( LOC(@$), static_cast<QName*>($1), NULL );
+    }
+|   FUNCTION_NAME LPAR ArgList RPAR
+    {
+      $$ = new FunctionCall(LOC(@$),
+                            static_cast<QName*>($1),
+                            dynamic_cast<ArgList*>($3));
+    }
+;
 
-    ;
 
-// [91a]
 ArgList :
-        ExprSingle
-        {
-            ArgList *al = new ArgList( LOC(@$) );
-            al->push_back( $1 );
-            $$ = al;
-        }
-    |   ArgList COMMA ExprSingle
-        {
-            if ( ArgList *al = dynamic_cast<ArgList*>($1) )
-                al->push_back( $3 );
-            $$ = $1;
-        }
-    ;
+    ExprSingle
+    {
+      ArgList *al = new ArgList( LOC(@$) );
+      al->push_back( $1 );
+      $$ = al;
+    }
+|   ArgList COMMA ExprSingle
+    {
+      if ( ArgList *al = dynamic_cast<ArgList*>($1) )
+        al->push_back( $3 );
+      $$ = $1;
+    }
+;
 
-// [92]
+
 Constructor :
     DirectConstructor
     {
