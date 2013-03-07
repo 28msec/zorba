@@ -16,9 +16,16 @@
 
 #include "stdafx.h"
 
+// standard
+#include <algorithm>
+#include <cctype>
 #include <cstdlib>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
-#include "compiler/api/compilercb.h"
+// Zorba
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "runtime/core/arithmetic_impl.h"
@@ -27,17 +34,19 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "system/globalenv.h"
-#include "types/casting.h"
 #include "util/ascii_util.h"
+#include "util/stream_util.h"
 #include "util/string_util.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/datetime/parse.h"
 #include "zorbatypes/duration.h"
-#include "zorbatypes/numconversions.h"
+#include "zorbatypes/zstring.h"
 #include "zorbautils/locale.h"
 
+// local
 #include "format_dateTime.h"
 
+using namespace std;
 using namespace zorba::locale;
 
 namespace zorba {
@@ -50,7 +59,6 @@ NARY_ACCEPT(FnFormatDateTimeIterator);
 struct modifier {
   enum first_type {
     arabic,       // '1' : 0 1 2 ... 10 11 12 ...
-    arabic0,      // '01': 00 01 02 ... 09 10 11 12 ... 99 100 101 ...
     alpha,        // 'a' : a b c ... z aa ab ac ...
     ALPHA,        // 'A' : A B C ... Z AA AB AC ...
     roman,        // 'i' : i ii iii iv v vi vii viii ix x ...
@@ -84,79 +92,250 @@ struct modifier {
   typedef unsigned long width_type;
 
   enum width_special_value {
-    unspecified = -2,
-    star = -1
-    // >= 0 means explicitly specified width
+    star = 0
+    // > 0 means explicitly specified width
   };
 
   width_type min_width;
   width_type max_width;
 
+  bool exceeds_max_width( width_type n ) const {
+    return max_width > 0 && n > max_width;
+  }
+
   modifier() {
     first = arabic;
     second_co = cardinal;
     second_at = no_second_at;
-    min_width = max_width = unspecified;
+    min_width = max_width = star;
   };
 };
 
+///////////////////////////////////////////////////////////////////////////////
+
+zstring alpha( unsigned long n, bool capital ) {
+  char const c = capital ? 'A' : 'a';
+  zstring result;
+  while ( n ) {
+    unsigned long const m = n - 1;
+    result.insert( (zstring::size_type)0, 1, c + m % 26 );
+    n = m / 26;
+  }
+  return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+namespace english_ns {
+
+// Based on code from:
+// http://www.cprogramming.com/challenges/integer-to-english-sol.html
+
+static string const ones[][2] = {
+  { "",          ""            },
+  { "one",       "first"       },
+  { "two",       "second"      },
+  { "three",     "third"       },
+  { "four",      "fourth"      },
+  { "five",      "fifth"       },
+  { "six",       "sixth"       },
+  { "seven",     "seventh"     },
+  { "eight",     "eighth"      },
+  { "nine",      "ninth"       },
+  { "ten",       "tenth"       },
+  { "eleven",    "eleventh"    },
+  { "twelve",    "twelveth"    },
+  { "thirteen",  "thirteenth"  },
+  { "fourteen",  "fourteenth"  },
+  { "fifteen",   "fifteenth"   },
+  { "sixteen",   "sixteenth"   },
+  { "seventeen", "seventeenth" },
+  { "eighteen",  "eighteenth"  },
+  { "nineteen",  "nineteenth"  }
+};
+
+static zstring const tens[][2] = {
+  { "",        ""           },
+  { "",        ""           },
+  { "twenty",  "twentieth"  },
+  { "thirty",  "thirtieth"  },
+  { "forty",   "fortieth"   },
+  { "fifty",   "fiftieth"   },
+  { "sixty",   "sixtieth"   },
+  { "seventy", "seventieth" },
+  { "eighty",  "eighteenth" },
+  { "ninety",  "ninetieth"  }
+};
+
+static zstring const big[][2] = {
+  { "",            ""              },
+  { "thousand",    "thousandth"    },
+  { "million",     "millionth"     },
+  { "billion",     "billionth"     },
+  { "trillion",    "trillionth"    },
+  { "quadrillion", "quadrillionth" },
+  { "quintillion", "quintillionth" }
+};
+
+inline zstring if_space( zstring const &s ) {
+  return s.empty() ? "" : ' ' + s;
+}
+
+zstring hundreds( int64_t n, bool ordinal ) {
+  if ( n < 20 )
+    return ones[ n ][ ordinal ];
+  zstring const tmp( if_space( ones[ n % 10 ][ ordinal ] ) );
+  return tens[ n / 10 ][ ordinal && tmp.empty() ] + tmp;
+}
+
+} // namespace english_ns
+
+static zstring english( int64_t n, bool ordinal = false ) {
+  using namespace english_ns;
+
+  if ( !n )
+    return ordinal ? "zeroth" : "zero";
+
+  bool const negative = n < 0;
+  if ( negative )
+    n = -n;
+
+  int big_count = 0;
+  bool big_ordinal = ordinal;
+  zstring r;
+
+  while ( n ) {
+    if ( int64_t const m = n % 1000 ) {
+      zstring s;
+      if ( m < 100 )
+        s = hundreds( m, ordinal );
+      else {
+        zstring const tmp( if_space( hundreds( m % 100, ordinal ) ) );
+        s = ones[ m / 100 ][0] + ' '
+          + (ordinal && tmp.empty() ? "hundredth" : "hundred") + tmp;
+      }
+      zstring const tmp( if_space( r ) );
+      r = s + if_space( big[ big_count ][ big_ordinal && tmp.empty() ] + tmp );
+      big_ordinal = false;
+    }
+    n /= 1000;
+    ++big_count;
+    ordinal = false;
+  }
+
+  if ( negative )
+    r = "negative " + r;
+  return r;
+}
+
+/**
+ * Returns the ordinal suffix for an integer, e.g., "st" for 1, "nd" for 2,
+ * etc.
+ *
+ * @param n The integer to return the ordinal suffix for.
+ * @return Returns said suffix.
+ */
+static char const* ordinal( long n ) {
+  switch ( n % 100 ) {
+    case 11:
+    case 12:
+    case 13:
+      break;
+    default:
+      switch ( n % 10 ) {
+        case 1: return "st";
+        case 2: return "nd";
+        case 3: return "rd";
+      }
+  }
+  return "th";
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A unary_function to convert a (presumed) lower-case string to title-case
+ * "Like This."
+ */
+class to_title : public unary_function<char,char> {
+public:
+  to_title() : capitalize_( true ) { }
+
+  result_type operator()( argument_type c ) {
+    if ( ascii::is_alpha( c ) ) {
+      if ( capitalize_ ) {
+        c = ascii::to_upper( c );
+        capitalize_ = false;
+      }
+    } else if ( ascii::is_space( c ) )
+      capitalize_ = true;
+    return c;
+  };
+
+private:
+  bool capitalize_;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
 static void append_number( long n, modifier const &mod, zstring *s ) {
   switch ( mod.first ) {
-    case modifier::arabic:
-    case modifier::arabic0:
+    case modifier::arabic: {
+      ztd::itoa_buf_type buf;
+      zstring temp( ztd::itoa( n, buf ) );
+      if ( mod.first_string.size() > 1 )
+        while ( temp.size() < mod.first_string.size() )
+          temp = '0' + temp;
+      *s += temp;
+      if ( mod.second_co == modifier::ordinal )
+        *s += ordinal( n );
+      break;
+    }
+
     case modifier::alpha:
     case modifier::ALPHA:
+      *s += alpha( n, mod.first == modifier::ALPHA );
+      break;
+
     case modifier::roman:
-    case modifier::ROMAN:
-      ;
+    case modifier::ROMAN: {
+      ostringstream oss;
+      if ( mod.first == modifier::ROMAN )
+        oss << uppercase;
+      oss << roman( n );
+      *s += oss.str();
+      break;
+    }
+
     case modifier::words:
-    case modifier::Words:
-    case modifier::WORDS:
-      ;
+      *s += english( n, mod.second_co == modifier::ordinal );
+      break;
+
+    case modifier::Words: {
+      zstring temp( english( n, mod.second_co == modifier::ordinal ) );
+      std::transform( temp.begin(), temp.end(), temp.begin(), to_title() );
+      *s += temp;
+      break;
+    }
+
+    case modifier::WORDS: {
+      zstring temp( english( n, mod.second_co == modifier::ordinal ) );
+      ascii::to_upper( temp );
+      *s += temp;
+      break;
+    }
+
     case modifier::name:
     case modifier::Name:
     case modifier::NAME:
       ;
   }
-
-#if 0
-  zstring temp;
-
-  if ( mod.first_string.size() > 0 && mod.first == modifier::arabic0 ) {
-    ztd::to_string( n, &temp );
-    while ( temp.size() < mod.first_string.size() )
-      temp = "0" + temp;
-  }
-  else // "1" or fallback
-  {
-    ztd::to_string(n, &temp);
-  }
-
-  if ( mod.second_co == modifier::ordinal ) {
-    long const n10 = n % 10;
-    long const n100 = n % 100;
-
-    if ( n10 == 1 && n100 != 11 )
-      temp += "st";
-    else if ( n10 == 2 && n100 != 12 )
-      temp += "nd";
-    else if ( n10 == 3 && n100 != 13 )
-      temp += "rd";
-    else
-      temp += "th";
-  }
-
-  if ( mod.min_width > 0 )
-    while ( temp.size() < (unsigned int)mod.min_width )
-      temp = "0" + temp;
-
-  str += temp;
-#endif
 }
 
 static void pad_width( zstring const &s, modifier const &mod, zstring *dest ) {
-  while ( (modifier::width_type)dest->size() < mod.max_width )
-    *dest += ' ';
+  if ( mod.max_width > 0 )
+    while ( (modifier::width_type)dest->size() < mod.max_width )
+      *dest += ' ';
 }
 
 static bool append_string( zstring const &s, modifier const &mod,
@@ -184,11 +363,6 @@ static bool append_string( zstring const &s, modifier const &mod,
   return true;
 }
 
-inline bool append_string( char const *s, modifier const &mod, zstring *dest ) {
-  zstring const temp( s );
-  return append_string( temp, mod, dest );
-}
-
 static void append_component( long n, zstring const &s, modifier const &mod,
                               zstring *dest ) {
   if ( !append_string( s, mod, dest ) )
@@ -196,44 +370,62 @@ static void append_component( long n, zstring const &s, modifier const &mod,
 }
 
 static void append_year( long year, modifier const &mod, zstring *s ) {
-#if 0
-  append_number( destination, number, mod );
+  zstring temp;
+  append_number( year, mod, &temp );
 
-  if (mod.max_width >= 0) {
-    if ( (unsigned int)mod.max_width > destination.size() )
-      mod.max_width = destination.size();
-
-    destination = destination.substr(destination.size() - mod.max_width, mod.max_width);
-  }
-#endif
+  if ( mod.first == modifier::arabic && mod.exceeds_max_width( temp.size() ) )
+    temp = temp.substr( temp.size() - mod.max_width );
+  *s += temp;
 }
 
-static void append_month( long m, iso639_1::type lang, iso3166_1::type country,
-                          modifier const &mod, zstring *dest ) {
-  zstring name( locale::get_month_name( m - 1 ), lang, country );
+static void append_month( long month, iso639_1::type lang,
+                          iso3166_1::type country, modifier const &mod,
+                          zstring *dest ) {
+  zstring name( locale::get_month_name( month - 1, lang, country ) );
   utf8_string<zstring> u_name( name );
 
-  if ( mod.max_width > 0 && u_name.size() > (unsigned int)mod.max_width )
-    u_name = u_name.substr( 0, mod.max_width );
+  if ( mod.exceeds_max_width( u_name.size() ) ) {
+    //
+    // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value exceeds
+    // the specified maximum width, then the processor should attempt to use an
+    // alternative shorter representation that fits within the maximum width.
+    // Where the presentation modifier is N, n, or Nn, this is done by
+    // abbreviating the name, using either conventional abbreviations if
+    // available, or crude right-truncation if not.
+    //
+    name = locale::get_month_abbr( month - 1, lang, country );
+    if ( mod.exceeds_max_width( u_name.size() ) )
+      u_name = u_name.substr( 0, mod.max_width );
+  }
 
-  append_component( m, name, mod, dest );
+  append_component( month, name, mod, dest );
 }
 
-static void append_weekday( long d, iso639_1::type lang,
+static void append_weekday( long day, iso639_1::type lang,
                             iso3166_1::type country, modifier &mod,
                             zstring *dest ) {
-  zstring name( locale::get_weekday_name( d, lang, country ) );
+  zstring name( locale::get_weekday_name( day, lang, country ) );
   utf8_string<zstring> u_name( name );
 
-  if ( mod.max_width > 0 && u_name.size() > (unsigned int)mod.max_width )
-    u_name = u_name.substr( 0, mod.max_width );
+  if ( mod.exceeds_max_width( u_name.size() ) ) {
+    //
+    // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value exceeds
+    // the specified maximum width, then the processor should attempt to use an
+    // alternative shorter representation that fits within the maximum width.
+    // Where the presentation modifier is N, n, or Nn, this is done by
+    // abbreviating the name, using either conventional abbreviations if
+    // available, or crude right-truncation if not.
+    //
+    name = locale::get_weekday_abbr( day, lang, country );
+    if ( mod.exceeds_max_width( u_name.size() ) )
+      u_name = u_name.substr( 0, mod.max_width );
+  }
 
-#if 0
-  if (mod.first.size() == 0)
-    mod.first = "n"; // Default for day of week is "n"
-#endif
+  modifier default_mod( mod );
+  if ( default_mod.first_string.empty() )
+    default_mod.first = modifier::name;
 
-  append_component( d, name, mod, dest );
+  append_component( day, name, default_mod, dest );
 }
 
 static bool is_grouping_separator( unicode::code_point cp ) {
@@ -263,7 +455,7 @@ static void parse_first_modifier( zstring const &picture_str,
     return;
 
   utf8_string<zstring const> const u_picture_str( picture_str );
-  utf8_string<zstring const>::const_iterator u( *i );
+  utf8_string<zstring const>::const_iterator u( u_picture_str.current( j ) );
   utf8_string<zstring> u_mod_first_string( mod->first_string );
   unicode::code_point cp = *u;
 
@@ -284,7 +476,7 @@ static void parse_first_modifier( zstring const &picture_str,
   if ( cp == '#' || unicode::is_Nd( cp, &zero[0] ) ) {
     if ( cp != '#' ) {
       got_mandatory_digit = true;
-      mod->first = cp == zero[0] ? modifier::arabic0 : modifier::arabic;
+      mod->first = modifier::arabic;
     }
     u_mod_first_string = *u;
     while ( ++u != u_picture_str.end() ) {
@@ -326,8 +518,13 @@ static void parse_first_modifier( zstring const &picture_str,
           );
         }
         got_grouping_separator = true;
-      }
+      } else
+        break;
+
       u_mod_first_string += cp;
+      if ( !mod->min_width )
+        mod->min_width = 1;
+      mod->max_width = ++mod->min_width;
     } // while
     if ( got_grouping_separator ) {
       //
@@ -587,6 +784,9 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       modifier mod;
 
       switch ( *i ) {
+        case ']':
+          in_variable_marker = false;
+          // no break;
         case ' ':
         case '\f':
         case '\n':
@@ -617,9 +817,6 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
             );
           component = *i;
           break;
-        case ']':
-          in_variable_marker = false;
-          continue;
         default:
           throw XQUERY_EXCEPTION(
             err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
@@ -635,31 +832,37 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         throw XQUERY_EXCEPTION( err::XTDE1350, ERROR_LOC( loc ) );
 
       switch ( component ) {
-        case 'C': // calendar
-#if 0
-          if ( mod.first.empty() )
-            mod.first += "n";
-#endif
-          append_string( "gregorian", mod, &result_str );
+        case 'C': { // calendar
+          modifier default_mod( mod );
+          if ( default_mod.first_string.empty() )
+            default_mod.first = modifier::name;
+          append_string( "gregorian", default_mod, &result_str );
           break;
+        }
         case 'D':
           append_number( dateTime.getDay(), mod, &result_str );
           break;
         case 'd':
           append_number( dateTime.getDayOfYear(), mod, &result_str );
           break;
-        case 'E': // era
-#if 0
-          if ( mod.first.empty() )
-            mod.first += "n";
-#endif
-          append_string( dateTime.getYear() < 0 ? "ad" : "bc", mod, &result_str );
-          break;
-        case 'F':
-          append_weekday(
-            dateTime.getDayOfWeek(), lang, country, mod, &result_str
+        case 'E': { // era
+          modifier default_mod( mod );
+          if ( default_mod.first_string.empty() )
+            default_mod.first = modifier::name;
+          append_string(
+            dateTime.getYear() < 0 ? "ad" : "bc", default_mod, &result_str
           );
           break;
+        }
+        case 'F': {
+          modifier default_mod( mod );
+          if ( default_mod.first_string.empty() )
+            default_mod.first = modifier::name;
+          append_weekday(
+            dateTime.getDayOfWeek(), lang, country, default_mod, &result_str
+          );
+          break;
+        }
         case 'f': // fractional seconds
           append_number(
             (long)(dateTime.getFractionalSeconds() * 1000.0 /
@@ -678,30 +881,30 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         case 'M':
           append_month( dateTime.getMonth(), lang, country, mod, &result_str );
           break;
-        case 'm':
-#if 0
-          if (mod.first.empty())
-            mod.first += "01";
-#endif
-          append_number( dateTime.getMinutes(), mod, &result_str );
+        case 'm': {
+          modifier default_mod( mod );
+          if ( default_mod.first_string.empty() )
+            default_mod.min_width = default_mod.max_width = 2;
+          append_number( dateTime.getMinutes(), default_mod, &result_str );
           break;
-        case 'P':
-#if 0
-          if (mod.first.empty())
-            mod.first = "n";  // Default for the AM/PM marker is "n"
-#endif
+        }
+        case 'P': {
+          modifier default_mod( mod );
+          if ( default_mod.first_string.empty() )
+            default_mod.first = modifier::name;
           append_string(
             locale::get_time_ampm( dateTime.getHours() >= 12, lang, country ),
-            mod, &result_str
+            default_mod, &result_str
           );
           break;
-        case 's':
-#if 0
-          if (mod.first.empty())
-            mod.first += "01";
-#endif
-          append_number( dateTime.getIntSeconds(), mod, &result_str );
+        }
+        case 's': {
+          modifier default_mod( mod );
+          if ( default_mod.first_string.empty() )
+            default_mod.min_width = default_mod.max_width = 2;
+          append_number( dateTime.getIntSeconds(), default_mod, &result_str );
           break;
+        }
         case 'W':
           append_number( dateTime.getWeekInYear(), mod, &result_str );
           break;
