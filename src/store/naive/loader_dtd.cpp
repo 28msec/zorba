@@ -78,36 +78,7 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 void XmlLoader::applyLoadOptions(const store::LoadProperties& props, xmlParserCtxtPtr ctxt)
 {
-  int options = 0;
-
-  if (props.getStripWhitespace())
-    options |= XML_PARSE_NOBLANKS;
-
-  if (props.getDTDValidate())
-    options |= XML_PARSE_DTDVALID;
-
-  if (props.getDTDLoad())
-    options |= XML_PARSE_DTDLOAD;
-
-  if (props.getDefaultDTDAttributes())
-    options |= XML_PARSE_DTDATTR;
-
-  if (props.getSubstituteEntities())
-    options |= XML_PARSE_NOENT;
-
-  if (props.getXincludeSubstitutions())
-    options |= XML_PARSE_XINCLUDE;
-
-  if (props.getRemoveRedundantNS())
-    options |= XML_PARSE_NSCLEAN;
-
-  if (props.getNoCDATA())
-    options |= XML_PARSE_NOCDATA;
-
-  if (props.getNoXIncludeNodes())
-    options |= XML_PARSE_NOXINCNODE;
-
-  xmlCtxtUseOptions(ctxt, options);
+  xmlCtxtUseOptions(ctxt, props.toLibXmlOptions());
 }
 
 

@@ -203,12 +203,6 @@ void QueryMap::destroy() throw()
 {
   if (theQueryMap)
   {
-    for (QueryMap_t::const_iterator lIter = theQueryMap->begin();
-         lIter != theQueryMap->end(); ++lIter)
-    {
-      deleteQuery(lIter->first);
-    }
-    theQueryMap->clear();
     delete theQueryMap;
   }
   delete this;
@@ -372,7 +366,7 @@ void  PrepareMainModuleFunction::XQXQURIMapper::mapURI(
   lIter->open();
   while (lIter->next(lItem))
   {
-    std::cout << lItem.getStringValue() << std::endl;
+    //std::cout << lItem.getStringValue() << std::endl;
     oUris.push_back(lItem.getStringValue());
   }
   lIter->close();  
@@ -495,6 +489,7 @@ zorba::ItemSequence_t PrepareMainModuleFunction::evaluate(
   
   try
   {
+    //std::cout << "Hello: " << lQueryString << std::endl;
     lQuery = lZorba->compileQuery(lQueryString, ltempSctx);
   }
   catch (XQueryException& xe)

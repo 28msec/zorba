@@ -1,7 +1,7 @@
-import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+import module namespace x = "http://www.zorba-xquery.com/modules/xml";
 import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
-parse-xml:parse("
+x:parse("
 test
 ",
   <opt:options>

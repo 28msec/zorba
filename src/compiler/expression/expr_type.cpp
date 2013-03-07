@@ -525,12 +525,13 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case attr_expr_kind:
   {
-    newType = tm->create_node_type(store::StoreConsts::attributeNode,
-                                   NULL,
-                                   rtm.UNTYPED_ATOMIC_TYPE_ONE,
-                                   TypeConstants::QUANT_ONE,
-                                   false,
-                                   false);
+    newType = rtm.ATTRIBUTE_UNTYPED_TYPE_ONE;
+    break;
+  }
+
+  case namespace_expr_kind:
+  {
+    newType = rtm.NAMESPACE_TYPE_ONE;
     break;
   }
 

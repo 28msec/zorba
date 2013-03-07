@@ -14,24 +14,37 @@ New Features:
   * Added millis-to-dateTime() function in datetime module.
   * fn:trace outputs "empty-sequence()" if the input is the empty-sequence.
   * Addex xqxq:variable-value function.
+  * Added canonicalize function to modules/xml.
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
     parameter into collection skip if $sourceSeq parameter is from a
     collection).
+  * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:
   * Fixed bug #1124273 (xqdoc crash because of annotation literals)
   * Fixed bug #867027 (XQST0059 error messages inconsistent)
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
+  * Fixed bug in index join rule (copy var ids after cloning index domain expr).
+  * Added missing wrapper expressions around some variable references.
+  * Fixed bug in the throwing of error XQTY0086 during node construction.
+  * Fixed bug #1148335 (where-clause expression was not always reset when it should be)
   * Fixed bug #1122396 (Associate origin/destination URI to I/O stream)
   * Fixed bug #1111786 (xml/json parse error location in catch clause).
   * NaN items are considered equal to each other during grouping
   * Fixed bug #855481 (Too small time types on Windows).
+  * Fixed bug #1132032 (Certain regexes involving ^ should be legal)
+  * Fixed bug #1023168 (Non-single-char-escapes in regex character ranges not
+    caught)
+  * Throw XQST0048 for groupby clause, as specified by XQuery 3.0.
+  * Fixed bug #866874 (regex "range subtraction" not supported for ICU)
   * Fixed bug in computing the static type of an allowing-empty FOR variable.
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
-  * Fixed bug #1099535  (xml:parse endless loop)
-  * Fixed bug #866958  (Parsing error not explicit enough)
+  * Fixed bug #1099535 (xml:parse endless loop)
+  * Fixed bug #866958 (Parsing error not explicit enough)
+  * Fixed bug #1125444 (input group-by exprs were not treated by index-flwor_vars()
+    functoin, leading to erroneous loop hoisting).
   * Fixed bug #867068 (Incorrect usage of XQDY0027)
   * Fixed bug #1023362 (xsi:type attribute ignored during validation)
 

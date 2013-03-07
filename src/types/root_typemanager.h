@@ -177,7 +177,7 @@ public:
    * Pre-allocate XQType objects for the following KindTest sequence types:
    *
    * N(), N()?, N()+, N()*, where N is one of node, document-node, text, comment,
-   * or processing-instruction.
+   * processing-instruction, or namespace-node.
    *
    * N(xs:untyped), N(xs:untyped)?, N(xs:untyped)+, N(xs:untyped)*, where N is
    * one of node or document.
@@ -206,6 +206,7 @@ public:
   ALL_NODE_TYPE_DECL(DOCUMENT);
   ALL_NODE_TYPE_DECL(ELEMENT);
   ALL_NODE_TYPE_DECL(ATTRIBUTE);
+  ALL_NODE_TYPE_DECL(NAMESPACE);
   ALL_NODE_TYPE_DECL(TEXT);
   ALL_NODE_TYPE_DECL(PI);
   ALL_NODE_TYPE_DECL(COMMENT);

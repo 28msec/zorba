@@ -58,7 +58,7 @@
   </zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="serialize" prefix="fn-zorba-uri">
+    <zorba:signature localname="serialize-impl" prefix="fn-zorba-uri">
       <zorba:param>element()</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>

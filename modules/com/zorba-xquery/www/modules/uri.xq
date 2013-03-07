@@ -25,8 +25,10 @@ xquery version "1.0";
  :)
 module namespace uri = "http://www.zorba-xquery.com/modules/uri";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+import schema namespace uri-schema = "http://www.zorba-xquery.com/modules/uri-format";
+import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
+declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 
@@ -112,7 +114,7 @@ declare function uri:decode(
  :
  : @param $uri the URI as string to parse
  :
- : @return the URI element
+ : @return the URI element(uri-format:uri)
  :
  :)
 declare function uri:parse(
@@ -121,10 +123,20 @@ declare function uri:parse(
 (:~
  : Serialize the URI passed as element() into a URI represented as xs:string.
  :
- : @param $uri the URI element()
+ : @param $uri the URI element(uri-format:uri)
  :
  : @return the URI as xs:string
  :
  :)
 declare function uri:serialize(
+  $uri as element(uri-format:uri)) as xs:string
+{
+  let $formatted-uri :=
+    if ( schema:is-validated( $uri ) )
+      then $uri
+      else validate { $uri }
+  return uri:serialize-impl( $formatted-uri )
+};
+
+declare %private function uri:serialize-impl(
   $uri as element()) as xs:string external;

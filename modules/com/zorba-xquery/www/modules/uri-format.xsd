@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
  
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  targetNamespace="http://www.zorba-xquery.com/modules/uri"
-  xmlns="http://www.zorba-xquery.com/modules/uri"
+  targetNamespace="http://www.zorba-xquery.com/modules/uri-format"
+  xmlns="http://www.zorba-xquery.com/modules/uri-format"
   elementFormDefault="qualified"
   attributeFormDefault="unqualified">
  

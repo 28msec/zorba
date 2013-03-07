@@ -31,6 +31,10 @@ declare namespace fots =
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
+
 declare function feedback:check-pass(
   $result           as item()*,
   $testCaseName     as xs:string?,

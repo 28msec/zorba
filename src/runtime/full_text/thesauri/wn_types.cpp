@@ -47,7 +47,7 @@ namespace part_of_speech {
 
 #define DEF_END(CHAR_ARRAY)                             \
   static char const *const *const end =                 \
-    CHAR_ARRAY + sizeof( CHAR_ARRAY ) / sizeof( char* );
+    CHAR_ARRAY + sizeof( CHAR_ARRAY ) / sizeof( char* )
 
 #define FIND(what) \
   static_cast<type>( find_index( string_of, end, what ) )

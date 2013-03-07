@@ -116,6 +116,18 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                      CLONE(e->getValueExpr(), udf, subst));
     break;
   }
+  case namespace_expr_kind:
+  {
+    const namespace_expr* e = static_cast<const namespace_expr*>(this);
+
+    newExpr = theCCB->theEM->
+    create_namespace_expr(theSctx,
+                          udf,
+                          theLoc,
+                          CLONE(e->getPrefixExpr(), udf, subst),
+                          CLONE(e->getUriExpr(), udf, subst));
+    break;
+  }
   case text_expr_kind:
   {
     const text_expr* e = static_cast<const text_expr*>(this);
@@ -602,7 +614,16 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
 
     checked_vector<expr*> seq2;
     for (csize i = 0; i < e->theArgs.size(); ++i)
+    {
       seq2.push_back(e->theArgs[i]->clone(udf, subst));
+
+      if (e->theArgs[i]->get_expr_kind() == var_decl_expr_kind)
+      {
+        var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(e->theArgs[i]);
+        var_expr* varExpr = varDeclExpr->get_var_expr();
+        varExpr->set_block_expr(e);
+      }
+    }
 
     newExpr = theCCB->theEM->
     create_block_expr(theSctx, udf, theLoc, true, seq2, NULL);
