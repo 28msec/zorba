@@ -501,7 +501,13 @@ static void parse_first_modifier( zstring const &picture_str,
     // at the start ... of the decimal-digit-pattern ....
     //
     throw XQUERY_EXCEPTION(
-      err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
+      err::FOFD1340,
+      ERROR_PARAMS(
+        picture_str,
+        ZED( FOFD1340_NoGroupSepAtStart_3 ),
+        unicode::printable_cp( cp )
+      ),
+      ERROR_LOC( loc )
     );
   }
 
@@ -525,12 +531,17 @@ static void parse_first_modifier( zstring const &picture_str,
           // signs.
           //
           throw XQUERY_EXCEPTION(
-            err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
+            err::FOFD1340,
+            ERROR_PARAMS(
+              picture_str,
+              ZED( FOFD1340_NoOptDigitAfterMandatory )
+            ),
+            ERROR_LOC( loc )
           );
         }
         got_grouping_separator = false;
       } else if ( unicode::is_Nd( cp, &zero[ got_mandatory_digit ] ) ) {
-        if ( got_mandatory_digit && zero[0] != zero[1] ) {
+        if ( got_mandatory_digit && zero[1] != zero[0] ) {
           //
           // XQuery 3.0 F&O: 4.6.1: All mandatory-digit-signs within the format
           // token must be from the same digit family, where a digit family is
@@ -538,7 +549,14 @@ static void parse_first_modifier( zstring const &picture_str,
           // having digit values 0 through 9.
           //
           throw XQUERY_EXCEPTION(
-            err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
+            err::FOFD1340,
+            ERROR_PARAMS(
+              picture_str,
+              ZED( FOFD1340_DigitNotSameFamily_34 ),
+              unicode::printable_cp( cp ),
+              unicode::printable_cp( zero[1] )
+            ),
+            ERROR_LOC( loc )
           );
         }
         got_grouping_separator = false;
@@ -552,7 +570,13 @@ static void parse_first_modifier( zstring const &picture_str,
           // ... adjacent to another grouping-separator-sign.
           //
           throw XQUERY_EXCEPTION(
-            err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
+            err::FOFD1340,
+            ERROR_PARAMS(
+              picture_str,
+              ZED( FOFD1340_NoAdjacentGroupSep_3 ),
+              unicode::printable_cp( cp )
+            ),
+            ERROR_LOC( loc )
           );
         }
         got_grouping_separator = true;
@@ -570,7 +594,13 @@ static void parse_first_modifier( zstring const &picture_str,
       // at the ... end of the decimal-digit-pattern ....
       //
       throw XQUERY_EXCEPTION(
-        err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
+        err::FOFD1340,
+        ERROR_PARAMS(
+          picture_str,
+          ZED( FOFD1340_NoGroupSepAtEnd_3 ),
+          unicode::printable_cp( cp )
+        ),
+        ERROR_LOC( loc )
       );
     }
     if ( !got_mandatory_digit ) {
@@ -579,7 +609,9 @@ static void parse_first_modifier( zstring const &picture_str,
       // sign.
       //
       throw XQUERY_EXCEPTION(
-        err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
+        err::FOFD1340,
+        ERROR_PARAMS( picture_str, ZED( FOFD1340_MustBeOneMandatoryDigit ) ),
+        ERROR_LOC( loc )
       );
     }
     mod->first_zero = zero[0];
@@ -652,7 +684,9 @@ static void parse_second_modifier( zstring const &picture_str,
     while ( true ) {
       if ( ++j == picture_str.end() )
         throw XQUERY_EXCEPTION(
-          err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
+          err::FOFD1340,
+          ERROR_PARAMS( picture_str, ZED( CharExpected_3 ), ')' ),
+          ERROR_LOC( loc )
         );
       if ( *j == ')' )
         break;
@@ -673,9 +707,7 @@ static void parse_width_modifier( zstring const &picture_str,
   ++j;
   ascii::skip_whitespace( picture_str, &j );
   if ( j == picture_str.end() )
-    throw XQUERY_EXCEPTION(
-      err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
-    );
+    goto bad_width_modifier;
   if ( *j == '*' ) {
     mod->min_width = modifier::star;
     ++j;
@@ -686,9 +718,7 @@ static void parse_width_modifier( zstring const &picture_str,
       );
     }
     catch ( std::exception const& ) {
-      throw XQUERY_EXCEPTION(
-        err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
-      );
+      goto bad_width_modifier;
     }
   }
 
@@ -700,9 +730,7 @@ static void parse_width_modifier( zstring const &picture_str,
   ++j;
   ascii::skip_whitespace( picture_str, &j );
   if ( j == picture_str.end() )
-    throw XQUERY_EXCEPTION(
-      err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
-    );
+    goto bad_width_modifier;
   if ( *j == '*' )
     ++j;
   else {
@@ -712,11 +740,18 @@ static void parse_width_modifier( zstring const &picture_str,
       );
     }
     catch ( std::exception const& ) {
-      throw XQUERY_EXCEPTION(
-        err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
-      );
+      goto bad_width_modifier;
     }
   }
+
+  return;
+
+bad_width_modifier:
+  throw XQUERY_EXCEPTION(
+    err::FOFD1340,
+    ERROR_PARAMS( picture_str, ZED( FOFD1340_BadWidthModifier ) ),
+    ERROR_LOC( loc )
+  );
 }
 
 static int get_data_type( char component ) {
@@ -855,13 +890,19 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         case 'z':
           if ( component )
             throw XQUERY_EXCEPTION(
-              err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
+              err::FOFD1340,
+              ERROR_PARAMS(
+                picture_str, ZED( FOFD1340_MultipleComponent_3 ), *i
+              ),
+              ERROR_LOC( loc )
             );
           component = *i;
           break;
         default:
           throw XQUERY_EXCEPTION(
-            err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
+            err::FOFD1340,
+            ERROR_PARAMS( picture_str, ZED( FOFD1340_BadComponent_3 ), *i ),
+            ERROR_LOC( loc )
           );
       }
 
@@ -883,7 +924,9 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
 
       int const data_type = get_data_type( component );
       if ( data_type != -1 && !DateTime::FACET_MEMBERS[facet_type][data_type] )
-        throw XQUERY_EXCEPTION( err::XTDE1350, ERROR_LOC( loc ) );
+        throw XQUERY_EXCEPTION(
+          err::FOFD1350, ERROR_PARAMS( component ), ERROR_LOC( loc )
+        );
 
       switch ( component ) {
         case 'C': { // calendar
@@ -981,7 +1024,9 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
 
     if ( in_variable_marker )
 eos:  throw XQUERY_EXCEPTION(
-        err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
+        err::FOFD1340,
+        ERROR_PARAMS( picture_str, ZED( CharExpected_3 ), ']' ),
+        ERROR_LOC( loc )
       );
 
     STACK_PUSH( GENV_ITEMFACTORY->createString( result, result_str ), state );

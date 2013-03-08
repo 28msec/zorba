@@ -188,9 +188,9 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode XQDY0096;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XTDE1310;
 
-extern ZORBA_DLL_PUBLIC XQueryErrorCode XTDE1340;
+extern ZORBA_DLL_PUBLIC XQueryErrorCode FOFD1340;
 
-extern ZORBA_DLL_PUBLIC XQueryErrorCode XTDE1350;
+extern ZORBA_DLL_PUBLIC XQueryErrorCode FOFD1350;
 
 #if !defined(ZORBA_NO_FULL_TEXT)
 extern ZORBA_DLL_PUBLIC XQueryErrorCode FTST0008;
