@@ -56,6 +56,9 @@ NARY_ACCEPT(FnFormatDateTimeIterator);
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Holds presentation modifier data.
+ */
 struct modifier {
   enum first_type {
     arabic,       // '1' : 0 1 2 ... 10 11 12 ...
@@ -83,6 +86,8 @@ struct modifier {
     traditional   // 't'
   };
 
+  typedef unsigned long width_type;
+
   first_type first;
   zstring first_string;
   unicode::code_point first_zero;
@@ -91,22 +96,15 @@ struct modifier {
   zstring second_co_string;
   second_at_type second_at;
 
-  typedef unsigned long width_type;
-
-  enum width_special_value {
-    star = 0
-    // > 0 means explicitly specified width
-  };
-
   width_type min_width;
   width_type max_width;
 
-  bool is_set() const {
-    return !first_string.empty();
-  }
-
   bool gt_max_width( width_type n ) const {
     return max_width > 0 && n > max_width;
+  }
+
+  bool is_set() const {
+    return !first_string.empty();
   }
 
   zstring const& pad_space( zstring *s ) const {
@@ -136,7 +134,7 @@ struct modifier {
     first_zero = '0';
     second_co = cardinal;
     second_at = no_second_at;
-    min_width = max_width = star;
+    min_width = max_width = 0;
   };
 };
 
@@ -715,7 +713,7 @@ static void parse_width_modifier( zstring const &picture_str,
   if ( j == picture_str.end() )
     goto bad_width_modifier;
   if ( *j == '*' ) {
-    mod->min_width = modifier::star;
+    mod->min_width = 0;
     ++j;
   } else {
     try {
@@ -728,7 +726,7 @@ static void parse_width_modifier( zstring const &picture_str,
     }
   }
 
-  mod->max_width = modifier::star;
+  mod->max_width = 0;
 
   ascii::skip_whitespace( picture_str, &j );
   if ( j == picture_str.end() || *j != '-' )
@@ -961,9 +959,9 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           modifier default_mod( mod );
           if ( !mod.is_set() )
             default_mod.first = modifier::name;
-          append_string(
-            dateTime.getYear() < 0 ? "ad" : "bc", default_mod, &result_str
-          );
+          int const year = dateTime.getYear();
+          zstring const era( year > 0 ? "ad" : year < 0 ? "bc" : "" );
+          append_string( era, default_mod, &result_str );
           break;
         }
         case 'F': {
@@ -975,20 +973,22 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           );
           break;
         }
-        case 'f': // fractional seconds
+        case 'f':
           append_number(
             (long)(dateTime.getFractionalSeconds() * 1000.0 /
               DateTime::FRAC_SECONDS_UPPER_LIMIT),
             mod, &result_str
           );
           break;
-        case 'H': // hour in day (24 hours)
+        case 'H': // hour (24 hours)
           append_number( dateTime.getHours(), mod, &result_str );
           break;
-        case 'h': // hour in half-day (12 hours)
-          // Convert hour from:      0  1  ...  12  13  ...  23   0
-          //                to:     12  1  ...  12   1  ...  11  12
-          append_number( 1 + (11 + dateTime.getHours()) % 12, mod, &result_str );
+        case 'h': // hour (12 hours)
+          // Convert hour from:  0 1 ... 12 13 ... 23
+          //                to: 12 1 ... 12  1 ... 11
+          append_number(
+            1 + (11 + dateTime.getHours()) % 12, mod, &result_str
+          );
           break;
         case 'M':
           append_month( dateTime.getMonth(), lang, country, mod, &result_str );
