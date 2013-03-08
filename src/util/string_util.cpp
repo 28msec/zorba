@@ -153,10 +153,8 @@ unsigned long long atoull( char const *buf, char const *end,
                            char const **last ) {
   aton_context const ctx( last );
   unsigned long long n = 0;
-  char const *s = buf;
+  char const *s = ascii::trim_start_whitespace( buf, end - buf );
 
-  for ( ; s < end && ascii::is_space( *s ); ++s )
-    ;
   for ( ; s < end && ascii::is_digit( *s ); ++s ) {
     unsigned long long const n_prev = n;
     n = n * 10 + *s - '0';
