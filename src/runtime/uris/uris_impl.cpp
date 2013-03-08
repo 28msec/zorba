@@ -124,7 +124,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::NsBindings lNsBindings;
   PlanIteratorState* state;
   URI uri;
-  lNamespace = "http://www.zorba-xquery.com/modules/uri";
+  lNamespace = "http://www.zorba-xquery.com/modules/uri-format";
   lZNamespace = zstring(lNamespace);
   lXmlSchema = "http://www.w3.org/2001/XMLSchema";
   
@@ -137,7 +137,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   GENV_ITEMFACTORY->createQName(
     lQName,
     lNamespace,
-    "uri",
+    "uri-format",
     "uri");
     
   GENV_ITEMFACTORY->createQName(
@@ -173,7 +173,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     GENV_ITEMFACTORY->createQName(
       lQName,
       lNamespace,
-      "uri",
+      "uri-format",
       "scheme");
     
     GENV_ITEMFACTORY->createElementNode(
@@ -216,7 +216,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     GENV_ITEMFACTORY->createQName(
       lQName,
       lNamespace,
-      "uri",
+      "uri-format",
       "authority");
     
     GENV_ITEMFACTORY->createElementNode(
@@ -240,7 +240,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     GENV_ITEMFACTORY->createQName(
       lQName,
       lNamespace,
-      "uri",
+      "uri-format",
       "user-info");
     
     GENV_ITEMFACTORY->createElementNode(
@@ -289,7 +289,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     GENV_ITEMFACTORY->createQName(
       lQName,
       lNamespace,
-      "uri",
+      "uri-format",
       "port");
     
     GENV_ITEMFACTORY->createElementNode(
@@ -313,7 +313,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     GENV_ITEMFACTORY->createQName(
       lQName,
       lNamespace,
-      "uri",
+      "uri-format",
       "path");
     
     GENV_ITEMFACTORY->createElementNode(
@@ -337,7 +337,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     GENV_ITEMFACTORY->createQName(
       lQName,
       lNamespace,
-      "uri",
+      "uri-format",
       "query");
     
     GENV_ITEMFACTORY->createElementNode(
@@ -361,7 +361,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     GENV_ITEMFACTORY->createQName(
       lQName,
       lNamespace,
-      "uri",
+      "uri-format",
       "fragment");
     
     GENV_ITEMFACTORY->createElementNode(
@@ -394,7 +394,7 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   zstring       lStrVal, lTextVal;
   store::Iterator_t    lChildren, lGrandChildren;
   URI           uri = URI();
-  int           lIntPort;
+  int           lIntPort = 0;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -411,8 +411,10 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         if(!lGrandChildren.isNull()){
           lGrandChildren->open();
           if(lGrandChildren->next(lItem2)){
-            // assume that this is a textnode
-            lTextVal = lItem2->getStringValue();
+            //if(lItem->getNodeName()->getLocalName() != "port")
+              lTextVal = lItem2->getStringValue();
+            //else
+              //lIntPort = lItem2->getIntValue();
           } else
             lTextVal = "";
           lGrandChildren->close();

@@ -54,7 +54,7 @@
 <zorba:iterator  name="SerializeURIIterator">
 
   <zorba:description author="Zorba Team">
-    uri:serialize
+    uri:serialize-impl
   </zorba:description>
 
   <zorba:function>

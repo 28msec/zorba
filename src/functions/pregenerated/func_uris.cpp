@@ -51,7 +51,7 @@ PlanIter_t fn_zorba_uri_parse::codegen(
   return new ParseURIIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_uri_serialize::codegen(
+PlanIter_t fn_zorba_uri_serialize_impl::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -92,11 +92,11 @@ void populate_context_uris(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_uri_serialize,
-        (createQName("http://www.zorba-xquery.com/modules/uri","","serialize"), 
+    DECL_WITH_KIND(sctx, fn_zorba_uri_serialize_impl,
+        (createQName("http://www.zorba-xquery.com/modules/uri","","serialize-impl"), 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_URI_SERIALIZE_1);
+        FunctionConsts::FN_ZORBA_URI_SERIALIZE_IMPL_1);
 
   }
 

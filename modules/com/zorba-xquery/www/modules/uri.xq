@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 
 (:
  : Copyright 2006-2012 The FLWOR Foundation.
@@ -25,7 +25,7 @@ xquery version "1.0";
  :)
 module namespace uri = "http://www.zorba-xquery.com/modules/uri";
 
-import schema namespace uri-schema = "http://www.zorba-xquery.com/modules/uri-format";
+import schema namespace uri-format = "http://www.zorba-xquery.com/modules/uri-format";
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";

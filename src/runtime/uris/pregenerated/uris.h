@@ -101,7 +101,7 @@ public:
 
 /**
  * 
- *    uri:serialize
+ *    uri:serialize-impl
  *  
  * Author: Zorba Team
  */
