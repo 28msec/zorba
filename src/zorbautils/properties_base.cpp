@@ -60,11 +60,21 @@ string PropertiesBase::load_file(const char* fname)
     if (line.size() == 0 || line[0] == '#')
       continue;
 
+    size_t i = 0;
+    for (; i < line.size(); ++i)
+    {
+      if (!isspace(line[i]))
+        break;
+    }
+
+    if (i == line.size())
+      continue;
+
     ++nargs;
 
     char* str = new char[line.size() + 3];
 
-    str [0] = str[1] = '-';
+    str[0] = str[1] = '-';
 
     memcpy(str + 2, line.data(), line.size());
 

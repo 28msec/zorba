@@ -1322,6 +1322,9 @@ TypeIdentifier_t TypeOps::get_type_identifier(
     case store::StoreConsts::piNode:
       return TypeIdentifier::createPIType(q);
 
+    case store::StoreConsts::namespaceNode:
+      return TypeIdentifier::createNamespaceType(q);
+
     case store::StoreConsts::commentNode:
       return TypeIdentifier::createCommentType(q);
 
@@ -1361,8 +1364,8 @@ TypeIdentifier_t TypeOps::get_type_identifier(
       if (nt.is_schema_test()) 
       {
         ZORBA_ASSERT(nodeName);
-        String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
-        String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+        String uri( Unmarshaller::newString(nodeName->getNamespace()));
+        String local( Unmarshaller::newString(nodeName->getLocalName()));
 
         return TypeIdentifier::createSchemaAttributeType(uri, local, q);
       }
