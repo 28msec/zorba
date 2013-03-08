@@ -803,14 +803,13 @@ static int get_data_type( char component ) {
 
 bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
                                          PlanState &planState ) const {
-  zstring lang_str, calendar_str, place_str;
-  zstring picture_str, result_str;
-  iso639_1::type lang;
-  iso3166_1::type country;
-  store::Item_t item;
+  zstring picture_str, result_str, calendar_str, place_str;
   xs_dateTime dateTime;
-  PlanIteratorState* state;
+  iso639_1::type lang = iso639_1::unknown;
+  iso3166_1::type country = iso3166_1::unknown;
   bool in_variable_marker;
+  store::Item_t item;
+  PlanIteratorState *state;
 
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState);
 
@@ -822,28 +821,30 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
     consumeNext( item, theChildren[1].getp(), planState );
     item->getStringValue2( picture_str );
 
-    lang = locale::get_host_lang();
-    country = locale::get_host_country();
-
     if ( theChildren.size() > 2 ) {
       consumeNext( item, theChildren[2].getp(), planState );
-      lang_str = item->getStringValue();
-
-      if ( !locale::parse( lang_str, &lang, &country ) || !lang ||
-           !locale::is_supported( lang, country ) ) {
-        // TODO: use lang in dynamic context
-      }
+      locale::parse( item->getStringValue(), &lang, &country );
 
       consumeNext( item, theChildren[3].getp(), planState );
-      calendar_str = item->getStringValue();
+      item->getStringValue2( calendar_str );
       consumeNext( item, theChildren[4].getp(), planState );
-      place_str = item->getStringValue();
+      item->getStringValue2( place_str );
+      // TODO: do something with calendar_str & place_str
+    }
+
+    if ( !lang || !locale::is_supported( lang, country ) ) {
+      //
+      // XQuery 3.0 F&O: 9.8.4.3: If the $language argument is omitted or is
+      // set to an empty sequence, or if it is set to an invalid value or a
+      // value that the implementation does not recognize, then the processor
+      // uses the default language defined in the dynamic context.
+      //
+      planState.theLocalDynCtx->get_locale( &lang, &country );
     }
 
     in_variable_marker = false;
 
     FOR_EACH( zstring, i, picture_str ) {
-
       if ( !in_variable_marker ) {
         switch ( *i ) {
           case '[':
