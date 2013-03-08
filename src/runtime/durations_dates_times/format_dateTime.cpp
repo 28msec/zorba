@@ -85,6 +85,8 @@ struct modifier {
 
   first_type first;
   zstring first_string;
+  unicode::code_point first_zero;
+
   second_co_type second_co;
   zstring second_co_string;
   second_at_type second_at;
@@ -99,12 +101,39 @@ struct modifier {
   width_type min_width;
   width_type max_width;
 
-  bool exceeds_max_width( width_type n ) const {
+  bool is_set() const {
+    return !first_string.empty();
+  }
+
+  bool gt_max_width( width_type n ) const {
     return max_width > 0 && n > max_width;
+  }
+
+  zstring const& pad_space( zstring *s ) const {
+    if ( min_width ) {
+      utf8_string<zstring> u( *s );
+      utf8_string<zstring>::size_type const u_size( u.size() );
+      if ( u_size < min_width )
+        s->append( min_width - u_size, ' ' );
+    }
+    return *s;
+  }
+
+  zstring const& zero_pad( zstring *s ) const {
+    if ( min_width ) {
+      utf8_string<zstring> u( *s );
+      utf8_string<zstring>::size_type u_size( u.size() );
+      zstring zero;
+      utf8::encode( first_zero, &zero );
+      while ( u_size++ < min_width )
+        u.insert( 0, zero );
+    }
+    return *s;
   }
 
   modifier() {
     first = arabic;
+    first_zero = '0';
     second_co = cardinal;
     second_at = no_second_at;
     min_width = max_width = star;
@@ -126,7 +155,7 @@ zstring alpha( unsigned long n, bool capital ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace english_ns {
+namespace english_impl {
 
 // Based on code from:
 // http://www.cprogramming.com/challenges/integer-to-english-sol.html
@@ -167,6 +196,7 @@ static zstring const tens[][2] = {
   { "ninety",  "ninetieth"  }
 };
 
+// Enough entries to print English for 64-bit integers.
 static zstring const big[][2] = {
   { "",            ""              },
   { "thousand",    "thousandth"    },
@@ -188,10 +218,17 @@ zstring hundreds( int64_t n, bool ordinal ) {
   return tens[ n / 10 ][ ordinal && tmp.empty() ] + tmp;
 }
 
-} // namespace english_ns
+} // namespace english_impl
 
+/**
+ * Converts a signed integer to English, e.g, 42 becomes "forty two".
+ *
+ * @param n The integer to convert.
+ * @param ordinal If \c true, ordinal words ("forty second") are returned.
+ * @return Returns \a n in English.
+ */
 static zstring english( int64_t n, bool ordinal = false ) {
-  using namespace english_ns;
+  using namespace english_impl;
 
   if ( !n )
     return ordinal ? "zeroth" : "zero";
@@ -228,9 +265,11 @@ static zstring english( int64_t n, bool ordinal = false ) {
   return r;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 /**
- * Returns the ordinal suffix for an integer, e.g., "st" for 1, "nd" for 2,
- * etc.
+ * Returns the English ordinal suffix for an integer, e.g., "st" for 1, "nd"
+ * for 2, etc.
  *
  * @param n The integer to return the ordinal suffix for.
  * @return Returns said suffix.
@@ -278,24 +317,24 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void append_number( long n, modifier const &mod, zstring *s ) {
+static void append_number( long n, modifier const &mod, zstring *dest ) {
   switch ( mod.first ) {
     case modifier::arabic: {
       ztd::itoa_buf_type buf;
-      zstring temp( ztd::itoa( n, buf ) );
-      if ( mod.first_string.size() > 1 )
-        while ( temp.size() < mod.first_string.size() )
-          temp = '0' + temp;
-      *s += temp;
+      // TODO: should use appropriate digits
+      zstring tmp( ztd::itoa( n, buf ) );
       if ( mod.second_co == modifier::ordinal )
-        *s += ordinal( n );
+        tmp += ordinal( n );
+      *dest += mod.zero_pad( &tmp );
       break;
     }
 
     case modifier::alpha:
-    case modifier::ALPHA:
-      *s += alpha( n, mod.first == modifier::ALPHA );
+    case modifier::ALPHA: {
+      zstring tmp( alpha( n, mod.first == modifier::ALPHA ) );
+      *dest += mod.pad_space( &tmp );
       break;
+    }
 
     case modifier::roman:
     case modifier::ROMAN: {
@@ -303,25 +342,28 @@ static void append_number( long n, modifier const &mod, zstring *s ) {
       if ( mod.first == modifier::ROMAN )
         oss << uppercase;
       oss << roman( n );
-      *s += oss.str();
+      zstring tmp( oss.str() );
+      *dest += mod.pad_space( &tmp );
       break;
     }
 
-    case modifier::words:
-      *s += english( n, mod.second_co == modifier::ordinal );
+    case modifier::words: {
+      zstring tmp( english( n, mod.second_co == modifier::ordinal ) );
+      *dest += mod.pad_space( &tmp );
       break;
+    }
 
     case modifier::Words: {
-      zstring temp( english( n, mod.second_co == modifier::ordinal ) );
-      std::transform( temp.begin(), temp.end(), temp.begin(), to_title() );
-      *s += temp;
+      zstring tmp( english( n, mod.second_co == modifier::ordinal ) );
+      std::transform( tmp.begin(), tmp.end(), tmp.begin(), to_title() );
+      *dest += mod.pad_space( &tmp );
       break;
     }
 
     case modifier::WORDS: {
-      zstring temp( english( n, mod.second_co == modifier::ordinal ) );
-      ascii::to_upper( temp );
-      *s += temp;
+      zstring tmp( english( n, mod.second_co == modifier::ordinal ) );
+      ascii::to_upper( tmp );
+      *dest += mod.pad_space( &tmp );
       break;
     }
 
@@ -332,50 +374,35 @@ static void append_number( long n, modifier const &mod, zstring *s ) {
   }
 }
 
-static void pad_width( zstring const &s, modifier const &mod, zstring *dest ) {
-  if ( mod.max_width > 0 )
-    while ( (modifier::width_type)dest->size() < mod.max_width )
-      *dest += ' ';
-}
-
 static bool append_string( zstring const &s, modifier const &mod,
                            zstring *dest ) {
-  zstring temp;
+  zstring tmp;
   switch ( mod.first ) {
     case modifier::name:
-      utf8::to_lower( s, &temp );
+      utf8::to_lower( s, &tmp );
       break;
     case modifier::Name: {
-      utf8::to_upper( s.substr( 0, 1 ), &temp );
-      zstring temp2;
-      utf8::to_lower( s.substr( 1 ), &temp2 );
-      temp += temp2;
+      utf8::to_upper( s.substr( 0, 1 ), &tmp );
+      zstring tmp2;
+      utf8::to_lower( s.substr( 1 ), &tmp2 );
+      tmp += tmp2;
       break;
     }
     case modifier::NAME:
-      utf8::to_upper( s, &temp );
+      utf8::to_upper( s, &tmp );
       break;
     default:
       return false;
   }
 
-  pad_width( temp, mod, dest );
+  *dest += mod.pad_space( &tmp );
   return true;
 }
 
-static void append_component( long n, zstring const &s, modifier const &mod,
+inline void append_component( long n, zstring const &s, modifier const &mod,
                               zstring *dest ) {
   if ( !append_string( s, mod, dest ) )
     append_number( n, mod, dest );
-}
-
-static void append_year( long year, modifier const &mod, zstring *s ) {
-  zstring temp;
-  append_number( year, mod, &temp );
-
-  if ( mod.first == modifier::arabic && mod.exceeds_max_width( temp.size() ) )
-    temp = temp.substr( temp.size() - mod.max_width );
-  *s += temp;
 }
 
 static void append_month( long month, iso639_1::type lang,
@@ -384,7 +411,7 @@ static void append_month( long month, iso639_1::type lang,
   zstring name( locale::get_month_name( month - 1, lang, country ) );
   utf8_string<zstring> u_name( name );
 
-  if ( mod.exceeds_max_width( u_name.size() ) ) {
+  if ( mod.gt_max_width( u_name.size() ) ) {
     //
     // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value exceeds
     // the specified maximum width, then the processor should attempt to use an
@@ -394,11 +421,20 @@ static void append_month( long month, iso639_1::type lang,
     // available, or crude right-truncation if not.
     //
     name = locale::get_month_abbr( month - 1, lang, country );
-    if ( mod.exceeds_max_width( u_name.size() ) )
+    if ( mod.gt_max_width( u_name.size() ) )
       u_name = u_name.substr( 0, mod.max_width );
   }
 
   append_component( month, name, mod, dest );
+}
+
+static void append_year( long year, modifier const &mod, zstring *s ) {
+  zstring tmp;
+  append_number( year, mod, &tmp );
+
+  if ( mod.first == modifier::arabic && mod.gt_max_width( tmp.size() ) )
+    tmp = tmp.substr( tmp.size() - mod.max_width );
+  *s += tmp;
 }
 
 static void append_weekday( long day, iso639_1::type lang,
@@ -407,7 +443,7 @@ static void append_weekday( long day, iso639_1::type lang,
   zstring name( locale::get_weekday_name( day, lang, country ) );
   utf8_string<zstring> u_name( name );
 
-  if ( mod.exceeds_max_width( u_name.size() ) ) {
+  if ( mod.gt_max_width( u_name.size() ) ) {
     //
     // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value exceeds
     // the specified maximum width, then the processor should attempt to use an
@@ -417,12 +453,12 @@ static void append_weekday( long day, iso639_1::type lang,
     // available, or crude right-truncation if not.
     //
     name = locale::get_weekday_abbr( day, lang, country );
-    if ( mod.exceeds_max_width( u_name.size() ) )
+    if ( mod.gt_max_width( u_name.size() ) )
       u_name = u_name.substr( 0, mod.max_width );
   }
 
   modifier default_mod( mod );
-  if ( default_mod.first_string.empty() )
+  if ( !mod.is_set() )
     default_mod.first = modifier::name;
 
   append_component( day, name, default_mod, dest );
@@ -493,8 +529,8 @@ static void parse_first_modifier( zstring const &picture_str,
           );
         }
         got_grouping_separator = false;
-      } else if ( unicode::is_Nd( cp, &zero[1] ) ) {
-        if ( zero[0] != zero[1] ) {
+      } else if ( unicode::is_Nd( cp, &zero[ got_mandatory_digit ] ) ) {
+        if ( got_mandatory_digit && zero[0] != zero[1] ) {
           //
           // XQuery 3.0 F&O: 4.6.1: All mandatory-digit-signs within the format
           // token must be from the same digit family, where a digit family is
@@ -507,7 +543,9 @@ static void parse_first_modifier( zstring const &picture_str,
         }
         got_grouping_separator = false;
         got_mandatory_digit = true;
-      } else if ( is_grouping_separator( cp ) ) {
+      } else if ( cp == ']' )
+        break;
+      else if ( is_grouping_separator( cp ) ) {
         if ( got_grouping_separator ) {
           //
           // XQuery 3.0 F&O: 4.6.1: A grouping-separator-sign must not appear
@@ -544,6 +582,7 @@ static void parse_first_modifier( zstring const &picture_str,
         err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
       );
     }
+    mod->first_zero = zero[0];
   } else {
     switch ( *u ) {
       case 'A':
@@ -742,6 +781,9 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
     consumeNext( item, theChildren[1].getp(), planState );
     item->getStringValue2( picture_str );
 
+    lang = locale::get_host_lang();
+    country = locale::get_host_country();
+
     if ( theChildren.size() > 2 ) {
       consumeNext( item, theChildren[2].getp(), planState );
       lang_str = item->getStringValue();
@@ -823,9 +865,21 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           );
       }
 
+      if ( ++i == picture_str.end() )
+        goto eos;
       parse_first_modifier( picture_str, &i, &mod, loc );
-      parse_second_modifier( picture_str, &i, &mod, loc );
-      parse_width_modifier( picture_str, &i, &mod, loc );
+      if ( i == picture_str.end() )
+        goto eos;
+      if ( *i != ']' ) {
+        parse_second_modifier( picture_str, &i, &mod, loc );
+        if ( i == picture_str.end() )
+          goto eos;
+        parse_width_modifier( picture_str, &i, &mod, loc );
+        if ( i == picture_str.end() )
+          goto eos;
+      }
+      if ( *i == ']' )
+        --i;
 
       int const data_type = get_data_type( component );
       if ( data_type != -1 && !DateTime::FACET_MEMBERS[facet_type][data_type] )
@@ -834,7 +888,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       switch ( component ) {
         case 'C': { // calendar
           modifier default_mod( mod );
-          if ( default_mod.first_string.empty() )
+          if ( !mod.is_set() )
             default_mod.first = modifier::name;
           append_string( "gregorian", default_mod, &result_str );
           break;
@@ -847,7 +901,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           break;
         case 'E': { // era
           modifier default_mod( mod );
-          if ( default_mod.first_string.empty() )
+          if ( !mod.is_set() )
             default_mod.first = modifier::name;
           append_string(
             dateTime.getYear() < 0 ? "ad" : "bc", default_mod, &result_str
@@ -856,7 +910,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         }
         case 'F': {
           modifier default_mod( mod );
-          if ( default_mod.first_string.empty() )
+          if ( !mod.is_set() )
             default_mod.first = modifier::name;
           append_weekday(
             dateTime.getDayOfWeek(), lang, country, default_mod, &result_str
@@ -883,14 +937,14 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           break;
         case 'm': {
           modifier default_mod( mod );
-          if ( default_mod.first_string.empty() )
+          if ( !mod.is_set() )
             default_mod.min_width = default_mod.max_width = 2;
           append_number( dateTime.getMinutes(), default_mod, &result_str );
           break;
         }
         case 'P': {
           modifier default_mod( mod );
-          if ( default_mod.first_string.empty() )
+          if ( !mod.is_set() )
             default_mod.first = modifier::name;
           append_string(
             locale::get_time_ampm( dateTime.getHours() >= 12, lang, country ),
@@ -900,7 +954,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         }
         case 's': {
           modifier default_mod( mod );
-          if ( default_mod.first_string.empty() )
+          if ( !mod.is_set() )
             default_mod.min_width = default_mod.max_width = 2;
           append_number( dateTime.getIntSeconds(), default_mod, &result_str );
           break;
@@ -917,13 +971,18 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         case 'Z': // timezone as a time offset from UTC, or if an alphabetic modifier is present the conventional name of a timezone (such as PST)
           // deliberate fall-through
         case 'z': { // timezone as a time offset using GMT, for example GMT+1
-          zstring temp( "GMT" );
-          temp += dateTime.getTimezone().toString();
-          append_string( temp, mod, &result_str );
+          zstring tmp( "GMT" );
+          tmp += dateTime.getTimezone().toString();
+          append_string( tmp, mod, &result_str );
           break;
         }
       } // switch
     } // for
+
+    if ( in_variable_marker )
+eos:  throw XQUERY_EXCEPTION(
+        err::XTDE1340, ERROR_PARAMS( picture_str ), ERROR_LOC( loc )
+      );
 
     STACK_PUSH( GENV_ITEMFACTORY->createString( result, result_str ), state );
   }
