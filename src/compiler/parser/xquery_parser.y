@@ -4315,11 +4315,11 @@ FilterExpr :
      }
   |  FilterExpr LPAR RPAR
      {
-       $$ = new DynamicFunctionInvocation(LOC (@$), $1, false);
+       $$ = new DynamicFunctionInvocation(LOC(@$), $1, false);
      }
   |  FilterExpr LPAR ArgList RPAR
      {
-       $$ = new DynamicFunctionInvocation(LOC (@$), $1, dynamic_cast<ArgList*>($3), false);
+       $$ = new DynamicFunctionInvocation(LOC(@$), $1, dynamic_cast<ArgList*>($3), false);
      }
 ;
 
@@ -4537,34 +4537,31 @@ UnorderedExpr :
 |
 |____________________________________________________________________*/
 FunctionCall :
-        FUNCTION_NAME LPAR RPAR
-        {
-            $$ = new FunctionCall( LOC(@$), static_cast<QName*>($1), NULL );
-        }
-    |   FUNCTION_NAME LPAR ArgList RPAR
-        {
-            ArgList* argList = dynamic_cast<ArgList*>($3);
+    FUNCTION_NAME LPAR RPAR
+    {
+      $$ = new FunctionCall( LOC(@$), static_cast<QName*>($1), NULL );
+    }
+|   FUNCTION_NAME LPAR ArgList RPAR
+    {
+      ArgList* argList = dynamic_cast<ArgList*>($3);
 
-            if (argList->has_placeholder())
-            {
-                $$ = new DynamicFunctionInvocation(LOC (@$),
-                           new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), new Integer(argList->size())),
-                           argList,
-                           true);
-            }
-            else
-            {
-                $$ = new FunctionCall(
-                    LOC(@$),
-                    static_cast<QName*>($1),
-                    argList
-                );
-            }
-        }
+      if (argList->has_placeholder())
+      {
+        LiteralFunctionItem* lfi = 
+        new LiteralFunctionItem(LOC(@$),
+                                dynamic_cast<QName*>($1),
+                                new Integer(argList->size()));
 
-    ;
+        $$ = new DynamicFunctionInvocation(LOC(@$), lfi, argList, true);
+      }
+      else
+      {
+        $$ = new FunctionCall(LOC(@$), static_cast<QName*>($1), argList);
+      }
+    }
+;
 
-// [91a]
+
 ArgList :
         HOOK
         {
@@ -4592,17 +4589,50 @@ ArgList :
         }
     ;
 
+
+FunctionItemExpr :
+    LiteralFunctionItem
+    {
+      $$ = $1;
+    }
+  | InlineFunction
+    {
+      $$ = $1;
+    }
+;
+
+
+LiteralFunctionItem :
+    QNAME HASH INTEGER_LITERAL
+    {
+      $$ = new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), $3);
+    }
+;
+
+
+InlineFunction :
+    FUNCTION FunctionSig EnclosedStatementsAndOptionalExpr
+    {
+      $$ = new InlineFunction(LOC(@$),
+                              &*$2->theParams,
+                              &*$2->theReturnType,
+                              $3);
+      delete $2;
+    }
+;
+
+
 // [92]
 Constructor :
-        DirectConstructor
-        {
-            $$ = $1;
-        }
-    |   ComputedConstructor
-        {
-            $$ = $1;
-        }
-    ;
+    DirectConstructor
+    {
+      $$ = $1;
+    }
+|   ComputedConstructor
+    {
+      $$ = $1;
+    }
+;
 
 // [93]
 DirectConstructor :
@@ -5463,47 +5493,6 @@ StringLiteral :
 // [157] NCName
 // [158] S  (WS)
 // [159] Char
-
-/*_______________________________________________________________________
- *                                                                       *
- *  XQuery 3.0 productions                                               *
- *  [http://www.w3.org/TR/xquery-3/]                                     *
- *                                                                       *
- *_______________________________________________________________________*/
-
-// [161] FunctionItemExpr
-// ------------
-FunctionItemExpr :
-    LiteralFunctionItem
-    {
-      $$ = $1;
-    }
-  | InlineFunction
-    {
-      $$ = $1;
-    }
-;
-
-
-LiteralFunctionItem :
-    QNAME HASH INTEGER_LITERAL
-    {
-      $$ = new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), $3);
-    }
-;
-
-
-InlineFunction :
-    FUNCTION FunctionSig EnclosedStatementsAndOptionalExpr
-    {
-      $$ = new InlineFunction(LOC(@$),
-                              &*$2->theParams,
-                              &*$2->theReturnType,
-                              $3);
-      delete $2;
-    }
-;
-
 
 FunctionTest :
     AnyFunctionTest

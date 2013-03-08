@@ -1152,7 +1152,8 @@ bool FunctionXQType::is_subtype(
     return false;
   }
 
-  if (!ignoreReturnType && !TypeOps::is_subtype(tm,
+  if (!ignoreReturnType &&
+      !TypeOps::is_subtype(tm,
                            *get_return_type().getp(),
                            *supertype.get_return_type().getp()))
   {
