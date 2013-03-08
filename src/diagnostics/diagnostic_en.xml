@@ -1475,7 +1475,16 @@
       <comment>
        This error is raised if the fn:function-lookup returns a context-dependent function and the context-dependent function is then called.
       </comment>
+
       <value>dynamic call on context-dependent function item</value>
+    </diagnostic>
+
+    <diagnostic code="FOCZ0001">
+      <comment>
+       Invalid content passed to \c x:canonicalize().
+      </comment>
+
+      <value>invalid content passed to $1: $2</value>
     </diagnostic>
 
     <!--////////// XQuery Update Facility //////////////////////////////////-->
