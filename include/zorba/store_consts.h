@@ -112,7 +112,8 @@ class ZORBA_DLL_PUBLIC StoreConsts
     attributeNode  = 3,
     textNode       = 4,
     piNode         = 5,
-    commentNode    = 6
+    commentNode    = 6,
+    namespaceNode  = 7
   };
 
   static std::string toString(NodeKind k)
@@ -139,6 +140,9 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
     case commentNode:
       return "commentNode";
+
+    case namespaceNode:
+      return "namespaceNode";
 
     default:
       return "<unknown NodeKind>";
@@ -169,6 +173,9 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
     case commentNode:
       return "comment";
+
+    case namespaceNode:
+      return "namespace-node";
 
     default:
       return "<unknown NodeKind>";

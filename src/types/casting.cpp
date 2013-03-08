@@ -2569,9 +2569,9 @@ bool GenericCast::castableToNCName(const zstring& str)
   {
     cp = cps[i];
 
-    if(!XQCharType::isLetter(cp) && !XQCharType::isDigit(cp) &&
-      (cp != '.') && (cp != '-') && (cp != '_') &&
-      !XQCharType::isCombiningChar(cp) && !XQCharType::isExtender(cp))
+    if (!XQCharType::isLetter(cp) && !XQCharType::isDigit(cp) &&
+        (cp != '.') && (cp != '-') && (cp != '_') &&
+        !XQCharType::isCombiningChar(cp) && !XQCharType::isExtender(cp))
       return false;
   }
 
