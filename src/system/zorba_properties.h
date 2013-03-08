@@ -42,7 +42,7 @@ protected:
       "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting",
       "--infer-joins", "--no-copy-optim", "--serialize-only-query",
       "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug",
-      "--compile-only", "--tz", "--external-var", "--serializer-param",
+      "--compile-only", "--lib-module", "--tz", "--external-var", "--serializer-param",
       "--iter-plan-test", "--dot-plan-file", "--plan", "--max-udf-call-depth",
       "--CLASSPATH", NULL };
 
@@ -87,6 +87,7 @@ protected:
   bool theTraceFulltext;
   bool theDebug;
   bool theCompileOnly;
+  bool theLibModule;
   int theTz;
   std::vector<std::string> theExternalVar;
   std::vector<std::string> theSerializerParam;
@@ -133,6 +134,7 @@ protected:
     theTraceFulltext = false;
     theDebug = false;
     theCompileOnly = false;
+    theLibModule = false;
     theIterPlanTest = false;
     theTestPlanSerialization = false;
     theMaxUdfCallDepth = 1024;
@@ -177,6 +179,7 @@ public:
   const bool &traceFulltext () const { return theTraceFulltext; }
   const bool &debug () const { return theDebug; }
   const bool &compileOnly () const { return theCompileOnly; }
+  const bool &libModule() const { return theLibModule; }
   const int &tz () const { return theTz; }
   const std::vector<std::string> &externalVar () const { return theExternalVar; }
   const std::vector<std::string> &serializerParam () const { return theSerializerParam; }
@@ -377,6 +380,9 @@ public:
       }
       else if (strcmp (*argv, "--compile-only") == 0) {
         theCompileOnly = true;
+      }
+      else if (strcmp (*argv, "--lib-module") == 0) {
+        theLibModule = true;
       }
       else if (strcmp (*argv, "--tz") == 0) {
         int d = 2;

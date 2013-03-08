@@ -712,7 +712,44 @@ public:
 };
 
 
-/***************************************************************************//**
+/*******************************************************************************
+
+********************************************************************************/
+class namespace_expr : public expr
+{
+  friend class ExprManager;
+  friend class ExprIterator;
+  friend class expr;
+
+protected:
+  expr  * thePrefixExpr;
+  expr  * theUriExpr;
+
+protected:
+  namespace_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr* preExpr,
+      expr* uriExpr);
+
+public:
+  expr* getPrefixExpr() const { return thePrefixExpr; }
+
+  expr* getUriExpr() const { return theUriExpr; }
+
+  const store::Item* getPrefix() const;
+
+  void compute_scripting_kind();
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 class text_expr : public expr
@@ -952,6 +989,8 @@ public:
     zerr_data_uri,
     zerr_data_line_no,
     zerr_data_column_no,
+    zerr_line_no_end,
+    zerr_column_no_end,
     zerr_stack_trace
   };
 

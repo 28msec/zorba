@@ -46,6 +46,7 @@ namespace zorba
   class attr_expr;
   class text_expr;
   class pi_expr;
+  class namespace_expr;
 
   class trycatch_expr;
   class function_item_expr;

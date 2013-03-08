@@ -448,6 +448,7 @@ expr* MarkConsumerNodeProps::apply(
 #endif
 
   case attr_expr_kind :
+  case namespace_expr_kind :
   case elem_expr_kind :
   case pi_expr_kind :
   case text_expr_kind :
@@ -674,6 +675,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
   case doc_expr_kind:
   case elem_expr_kind:
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
   {
@@ -681,7 +683,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
     // and inherit), should it be considered unsafe? The answer is no, because if
     // copy is needed, then any other construction done during the "current" one
     // will need to copy as well, so the input trees to the current constructor
-    // will be standalone. This is enforced bhy the findNodeSources() method,
+    // will be standalone. This is enforced by the findNodeSources() method,
     // which drills down inside constructors and will collect as sources any
     // nested c onstructors as well.
     break;
@@ -1208,6 +1210,7 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
   case doc_expr_kind:
   case elem_expr_kind:
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
   {

@@ -75,6 +75,7 @@ class CompCommentConstructor;
 class CompDocConstructor;
 class CompElemConstructor;
 class CompPIConstructor;
+class CompNamespaceConstructor;
 class CompTextConstructor;
 class ConstructionDecl;
 class ContextItemExpr;
@@ -91,6 +92,7 @@ class DirElemContent;
 class DirElemContentList;
 class DirPIConstructor;
 class DocumentTest;
+class NamespaceTest;
 class ElementTest;
 class EnclosedExpr;
 class Expr;
@@ -4878,7 +4880,8 @@ public:
                                 CompAttrConstructor |
                                 CompTextConstructor |
                                 CompCommentConstructor |
-                                CompPIConstructor
+                                CompPIConstructor |
+                                CompNamespaceConstructor
 ********************************************************************************/
 
 
@@ -5018,6 +5021,38 @@ public:
 
   void accept(parsenode_visitor&) const;
 };
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class CompNamespaceConstructor : public exprnode
+{
+protected:
+  zstring            thePrefix;
+  rchandle<exprnode> thePrefixExpr;
+  rchandle<exprnode> theUriExpr;
+
+public:
+  CompNamespaceConstructor(
+    const QueryLoc& loc,
+    const zstring& pre,
+    const rchandle<exprnode>& uri);
+
+  CompNamespaceConstructor(
+    const QueryLoc& loc,
+    const rchandle<exprnode>& pre,
+    const rchandle<exprnode>& uri);
+
+  const zstring& get_prefix() const { return thePrefix; }
+
+  rchandle<exprnode> get_prefix_expr() const { return thePrefixExpr; }
+
+  rchandle<exprnode> get_uri_expr() const { return theUriExpr; }
+
+  void accept(parsenode_visitor&) const;
+};
+
 
 
 /*******************************************************************************
@@ -5279,6 +5314,18 @@ public:
   {
     return schema_elem_test_h;
   }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  NamespaceTest ::= "namespace-node" "(" ")"
+********************************************************************************/
+class NamespaceTest : public parsenode
+{
+public:
+  NamespaceTest(const QueryLoc&);
 
   void accept(parsenode_visitor&) const;
 };

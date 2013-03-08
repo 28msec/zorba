@@ -1088,6 +1088,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case doc_expr_kind:
   case elem_expr_kind:
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
 #ifdef ZORBA_WITH_JSON

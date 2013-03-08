@@ -21,6 +21,7 @@
 
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/hashmap_itemp.h"
+#include "zorbautils/locale.h"
 
 #include "common/shared_types.h"
 
@@ -138,6 +139,9 @@ protected:
   //MODIFY
   EnvVarMap                  * theEnvironmentVariables;
 
+  locale::iso639_1::type       theLang;
+  locale::iso3166_1::type      theCountry;
+
 public:
   double                       theDocLoadingUserTime;
   double                       theDocLoadingTime;
@@ -170,6 +174,20 @@ public:
   void set_implicit_timezone(long tzone_seconds);
 
   long get_implicit_timezone() const;
+
+  void set_locale( locale::iso639_1::type lang,
+                   locale::iso3166_1::type country ) {
+    theLang = lang;
+    theCountry = country;
+  }
+
+  void get_locale( locale::iso639_1::type *lang,
+                   locale::iso3166_1::type *country ) {
+    if ( lang )
+      *lang = theLang;
+    if ( country )
+      *country = theCountry;
+  }
 
   const std::vector<VarValue>& get_variables() const { return theVarValues; }
 

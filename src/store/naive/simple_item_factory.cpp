@@ -1193,6 +1193,7 @@ bool BasicItemFactory::createDocumentNode(
   of this method must provide the value for these two properties, which are
   needed to implement the getTypedValue() method.
 ********************************************************************************/
+#if 0
 bool BasicItemFactory::createElementNode(
     store::Item_t&              result,
     store::Item*                parent,
@@ -1245,7 +1246,7 @@ bool BasicItemFactory::createElementNode(
   result = n;
   return n != NULL;
 }
-
+#endif
 
 /*******************************************************************************
   Create a new element node N and place it as the last child of a given parent
@@ -1300,11 +1301,11 @@ bool BasicItemFactory::createElementNode(
   XmlTree* xmlTree = NULL;
   ElementNode* n = NULL;
 
-  if ( typeName == NULL )
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0014_INVALID_ARGUMENT,
-      ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
-    );
+  if (typeName == NULL)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+    ERROR_PARAMS("null", ZED(NotAllowedForTypeName)));
+  }
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||
@@ -1995,6 +1996,32 @@ bool BasicItemFactory::createCommentNode(
 
   result = n;
   return n != NULL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BasicItemFactory::createNamespaceNode(
+    store::Item_t& result,
+    zstring&       prefix,
+    zstring&       uri)
+{
+  XmlTree* xmlTree = GET_NODE_FACTORY().createXmlTree();
+  NamespaceNode* n;
+
+  try
+  {
+    n = GET_NODE_FACTORY().createNamespaceNode(xmlTree, prefix, uri);
+  }
+  catch (...)
+  {
+    delete xmlTree;
+    throw;
+  }
+
+  result = n;
+  return true;
 }
 
 

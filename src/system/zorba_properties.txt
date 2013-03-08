@@ -37,6 +37,7 @@
 #endif
       ("debug", "compile the query in debug mode")
       ("compile-only", "only compile (don't execute)")
+      ("lib-module", "treat the query as a library module. If this is set --compile-only option is also set to true")
       ("tz", po::value<int>(), "implicit time zone (in minutes)")
       ("external-var,x", po::value<std::vector<std::string> >(), "external variables (e.g. -x x=file1.xml -x y:=strValue)")
       ("serializer-param,z", po::value<std::vector<std::string> >(), "serializer parameters (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g. -z method=xhtml, -z doctype-system='DTD/xhtml1-strict.dtd', -z indent=yes)")

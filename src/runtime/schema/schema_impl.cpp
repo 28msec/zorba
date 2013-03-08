@@ -114,9 +114,9 @@ ZorbaValidateInPlaceIterator::nextImpl(store::Item_t& result, PlanState& planSta
 bool
 ZorbaSchemaTypeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       item;
+  store::Item_t item;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren[0].getp(), planState))
@@ -126,8 +126,9 @@ ZorbaSchemaTypeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       STACK_PUSH(true, state );
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
+
 
 bool
 ZorbaIsValidatedIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -135,7 +136,7 @@ ZorbaIsValidatedIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   store::Item_t item;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren[0].getp(), planState))
@@ -145,7 +146,7 @@ ZorbaIsValidatedIterator::nextImpl(store::Item_t& result, PlanState& planState) 
     STACK_PUSH(true, state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 } // namespace zorba

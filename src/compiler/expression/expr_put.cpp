@@ -848,7 +848,18 @@ ostream& attr_expr::put(ostream& os) const
   BEGIN_PUT(attr_expr);
 
   theQNameExpr->put(os);
-  PUT_SUB("=", theValueExpr);
+  theValueExpr->put(os);
+
+  END_PUT();
+}
+
+
+ostream& namespace_expr::put(ostream& os) const
+{
+  BEGIN_PUT(namespace_expr);
+
+  thePrefixExpr->put(os);
+  theUriExpr->put(os);
 
   END_PUT();
 }
