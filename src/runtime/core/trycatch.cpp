@@ -585,6 +585,62 @@ TryCatchIterator::bindErrorVars(
         }
         break;
       }
+      case CatchClause::zerr_line_no_end:
+      {
+        LetVarConstIter lErrorLineVarIter = lIter->second.begin();
+        LetVarConstIter lErrorLineVarIterEnd = lIter->second.end();
+
+
+        for ( ; lErrorLineVarIter != lErrorLineVarIterEnd; lErrorLineVarIter++ )
+        {
+          store::Iterator_t lErrorLineIter;
+
+          XQueryException const *ue;
+	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
+               ue->has_source() ) {
+            store::Item_t lErrorLineItem;
+            GENV_ITEMFACTORY->createInteger(
+                lErrorLineItem, xs_integer(ue->source_line_end()));
+            lErrorLineIter = new ItemIterator(lErrorLineItem);
+	        }
+          else
+          {
+            lErrorLineIter = new ItemIterator();
+          }
+          lErrorLineIter->open();
+          state->theErrorIters.push_back(lErrorLineIter);
+          (*lErrorLineVarIter)->bind(lErrorLineIter, planState);
+        }
+      }
+      break;
+      case CatchClause::zerr_column_no_end:
+      {
+        LetVarConstIter lErrorColumnVarIter = lIter->second.begin();
+        LetVarConstIter lErrorColumnVarIterEnd = lIter->second.end();
+
+        for ( ; lErrorColumnVarIter != lErrorColumnVarIterEnd; lErrorColumnVarIter++ )
+        {
+          store::Iterator_t lErrorColumnIter;
+
+          XQueryException const *ue;
+	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
+               ue->has_source() ) {
+            store::Item_t lErrorColumnItem;
+            GENV_ITEMFACTORY->createInteger(
+                lErrorColumnItem, xs_integer(ue->source_column_end()));
+            lErrorColumnIter = new ItemIterator(lErrorColumnItem);
+	        }
+          else
+          {
+            lErrorColumnIter = new ItemIterator();
+          }
+          lErrorColumnIter->open();
+          state->theErrorIters.push_back(lErrorColumnIter);
+          (*lErrorColumnVarIter)->bind(lErrorColumnIter, planState);
+        }
+      break;
+      }
+
 
       case CatchClause::zerr_stack_trace:
       {

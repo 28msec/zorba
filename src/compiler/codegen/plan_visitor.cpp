@@ -2093,6 +2093,12 @@ void end_visit(trycatch_expr& v)
       case catch_clause::zerr_data_column_no:
         rcc.theVars[TryCatchIterator::CatchClause::zerr_data_column_no] = *vec;
         break;
+      case catch_clause::zerr_line_no_end:
+        rcc.theVars[TryCatchIterator::CatchClause::zerr_line_no_end] = *vec;
+        break;
+      case catch_clause::zerr_column_no_end:
+        rcc.theVars[TryCatchIterator::CatchClause::zerr_column_no_end] = *vec;
+        break;
       case catch_clause::zerr_stack_trace:
         rcc.theVars[TryCatchIterator::CatchClause::zerr_stack_trace] = *vec;
         break;
