@@ -487,8 +487,13 @@ static void parse_first_modifier( zstring const &picture_str,
                                   modifier *mod, QueryLoc const &loc ) {
   zstring::const_iterator &j = *i;
   ascii::skip_whitespace( picture_str, &j );
-  if ( j == picture_str.end() )
+  if ( j == picture_str.end() || *j == ',' ) {
+    //
+    // Assume that the ',' is the start of the width modifier (hence there is
+    // neither a first nor second modifier).
+    //
     return;
+  }
 
   utf8_string<zstring const> const u_picture_str( picture_str );
   utf8_string<zstring const>::const_iterator u( u_picture_str.current( j ) );
@@ -511,16 +516,20 @@ static void parse_first_modifier( zstring const &picture_str,
     );
   }
 
-  bool got_grouping_separator = false;
-  bool got_mandatory_digit = false;
   unicode::code_point zero[2];
 
   if ( cp == '#' || unicode::is_Nd( cp, &zero[0] ) ) {
+    bool got_grouping_separator = false;
+    bool got_mandatory_digit;
+
     if ( cp != '#' ) {
       got_mandatory_digit = true;
       mod->first = modifier::arabic;
-    }
+    } else
+      got_mandatory_digit = false;
+
     u_mod_first_string = *u;
+
     while ( ++u != u_picture_str.end() ) {
       cp = *u;
       if ( cp == '#' ) {
@@ -563,6 +572,8 @@ static void parse_first_modifier( zstring const &picture_str,
         got_mandatory_digit = true;
       } else if ( cp == ']' )
         break;
+      else if ( unicode::is_space( cp ) )
+        continue;
       else if ( is_grouping_separator( cp ) ) {
         if ( got_grouping_separator ) {
           //
@@ -615,8 +626,9 @@ static void parse_first_modifier( zstring const &picture_str,
       );
     }
     mod->first_zero = zero[0];
+    j = u.base();
   } else {
-    switch ( *u ) {
+    switch ( *j ) {
       case 'A':
         mod->first = modifier::ALPHA;
         break;
@@ -630,20 +642,18 @@ static void parse_first_modifier( zstring const &picture_str,
         mod->first = modifier::roman;
         break;
       case 'N':
-        if ( ztd::peek( picture_str, j ) == 'n' ) {
-          ++j;
-          mod->first = modifier::Name;
-        } else
+        if ( ztd::peek( picture_str, j ) == 'n' )
+          ++j, mod->first = modifier::Name;
+        else
           mod->first = modifier::NAME;
         break;
       case 'n':
         mod->first = modifier::name;
         break;
       case 'W':
-        if ( ztd::peek( picture_str, j ) == 'w' ) {
-          ++j;
-          mod->first = modifier::Words;
-        } else
+        if ( ztd::peek( picture_str, j ) == 'w' )
+          ++j, mod->first = modifier::Words;
+        else
           mod->first = modifier::WORDS;
         break;
       case 'w':
@@ -656,12 +666,8 @@ static void parse_first_modifier( zstring const &picture_str,
         // format token of 1.
         //
         mod->first = modifier::arabic;
-        break;
     } // switch
   }
-
-done:
-  j = u.base();
 }
 
 static void parse_second_modifier( zstring const &picture_str,
@@ -908,16 +914,18 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
 
       if ( ++i == picture_str.end() )
         goto eos;
-      parse_first_modifier( picture_str, &i, &mod, loc );
-      if ( i == picture_str.end() )
-        goto eos;
       if ( *i != ']' ) {
-        parse_second_modifier( picture_str, &i, &mod, loc );
+        parse_first_modifier( picture_str, &i, &mod, loc );
         if ( i == picture_str.end() )
           goto eos;
-        parse_width_modifier( picture_str, &i, &mod, loc );
-        if ( i == picture_str.end() )
-          goto eos;
+        if ( *i != ']' ) {
+          parse_second_modifier( picture_str, &i, &mod, loc );
+          if ( i == picture_str.end() )
+            goto eos;
+          parse_width_modifier( picture_str, &i, &mod, loc );
+          if ( i == picture_str.end() )
+            goto eos;
+        }
       }
       if ( *i == ']' )
         --i;
