@@ -500,7 +500,7 @@ static void parse_first_modifier( zstring const &picture_str,
   utf8_string<zstring> u_mod_first_string( mod->first_string );
   unicode::code_point cp = *u;
 
-  if ( is_grouping_separator( cp ) ) {
+  if ( cp != '#' && is_grouping_separator( cp ) ) {
     //
     // XQuery 3.0 F&O: 4.6.1: A grouping-separator-sign must not appear
     // at the start ... of the decimal-digit-pattern ....
@@ -897,6 +897,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         case 'Y':
         case 'Z':
         case 'z':
+#if 0
           if ( component )
             throw XQUERY_EXCEPTION(
               err::FOFD1340,
@@ -905,6 +906,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
               ),
               ERROR_LOC( loc )
             );
+#endif
           component = *i;
           break;
         default:

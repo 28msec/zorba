@@ -1019,7 +1019,7 @@
       </comment>
       <value>"$1": invalid picture string for date/time${: 2}</value>
       <entry key="BadComponent_3">
-        <value>'$3': invalid component specified</value>
+        <value>'$3': invalid component specifier</value>
       </entry>
       <entry key="BadWidthModifier">
         <value>invalid width modifier</value>
@@ -1034,7 +1034,7 @@
         <value>there must be at least one mandatory-digit-sign</value>
       </entry>
       <entry key="NoComponent">
-        <value>component specified expected between []</value>
+        <value>component specifier expected between []</value>
       </entry>
       <entry key="NoAdjacentGroupSep_3">
         <value>"$3": grouping separator must not be adjacent to others</value>
