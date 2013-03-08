@@ -1033,6 +1033,9 @@
       <entry key="MustBeOneMandatoryDigit">
         <value>there must be at least one mandatory-digit-sign</value>
       </entry>
+      <entry key="NoComponent">
+        <value>component specified expected between []</value>
+      </entry>
       <entry key="NoAdjacentGroupSep_3">
         <value>"$3": grouping separator must not be adjacent to others</value>
       </entry>

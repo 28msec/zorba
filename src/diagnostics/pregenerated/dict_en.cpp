@@ -619,6 +619,7 @@ extern entry const dict_en[] = {
   { "~FOFD1340_MultipleComponent_3", "'$3': multiple component specifiers between []" },
   { "~FOFD1340_MustBeOneMandatoryDigit", "there must be at least one mandatory-digit-sign" },
   { "~FOFD1340_NoAdjacentGroupSep_3", "\"$3\": grouping separator must not be adjacent to others" },
+  { "~FOFD1340_NoComponent", "component specified expected between []" },
   { "~FOFD1340_NoGroupSepAtEnd_3", "\"$3\": grouping separator illegal at end of decimal-digit-pattern" },
   { "~FOFD1340_NoGroupSepAtStart_3", "\"$3\": grouping separator illegal at start of decimal-digit-pattern" },
   { "~FOFD1340_NoOptDigitAfterMandatory", "\"#\": optional-digit-sign must precede all mandatory-digit-signs" },

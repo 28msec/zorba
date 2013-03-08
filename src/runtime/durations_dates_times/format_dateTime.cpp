@@ -842,6 +842,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       planState.theLocalDynCtx->get_locale( &lang, &country );
     }
 
+    char component;
     in_variable_marker = false;
 
     FOR_EACH( zstring, i, picture_str ) {
@@ -851,6 +852,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
             if ( ztd::peek( picture_str, i ) == '[' )
               ++i;
             else {
+              component = 0;
               in_variable_marker = true;
               continue;
             }
@@ -864,20 +866,20 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         continue;
       }
 
-      char component = 0;
-      modifier mod;
+      if ( ascii::is_space( *i ) )
+        continue;                       // ignore all whitespace
 
       switch ( *i ) {
         case ']':
+          if ( !component )
+            throw XQUERY_EXCEPTION(
+              err::FOFD1340,
+              ERROR_PARAMS( picture_str, ZED( FOFD1340_NoComponent ) ),
+              ERROR_LOC( loc )
+            );
+          component = 0;
           in_variable_marker = false;
-          // no break;
-        case ' ':
-        case '\f':
-        case '\n':
-        case '\r':
-        case '\t':
-        case '\v':
-          continue; // ignore whitespace
+          continue;
         case 'C':
         case 'D':
         case 'd':
@@ -911,10 +913,12 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
             ERROR_PARAMS( picture_str, ZED( FOFD1340_BadComponent_3 ), *i ),
             ERROR_LOC( loc )
           );
-      }
-
+      } // switch
       if ( ++i == picture_str.end() )
         goto eos;
+
+      modifier mod;
+
       if ( *i != ']' ) {
         parse_first_modifier( picture_str, &i, &mod, loc );
         if ( i == picture_str.end() )
