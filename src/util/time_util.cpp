@@ -202,6 +202,18 @@ long get_gmt_offset() {
 #endif /* WIN32 */
 }
 
+char get_military_tz( int hour ) {
+  hour %= 24;
+  if ( hour > 12 )
+    hour -= 24;
+  else if ( hour < -12 )
+    hour += 24;
+  if ( hour >= 0 && hour <= 12 )
+    return "ZABCDEFGHIKLM" [ hour ];    // no 'J' here (it means "no timezone")
+  if ( hour >= -12 && hour < 0 )
+    return " NOPQRSTUVWXY" [ -hour ];
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace time

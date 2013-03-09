@@ -150,6 +150,14 @@ long get_gmt_offset();
 void get_localtime( ztm *tm, sec_type when = 0 );
 
 /**
+ * Gets the military timezone letter code for the given GMT hour offset.
+ *
+ * @param hour The number of hours offset from GMT.
+ * @return Returns one of ABCDEFGHIKLMNOPQRSTUVWXYZ (no J).
+ */
+char get_military_tz( int hour );
+
+/**
  * Checks whether the given year is a leap year.
  *
  * @param year The year to check.
