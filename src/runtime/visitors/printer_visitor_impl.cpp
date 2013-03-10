@@ -1305,7 +1305,10 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   }
 
   PRINTER_VISITOR_DEFINITION (CommentIterator)
+
   PRINTER_VISITOR_DEFINITION (PiIterator)
+
+  PRINTER_VISITOR_DEFINITION (NamespaceIterator)
 
 #ifdef ZORBA_WITH_JSON
   PRINTER_VISITOR_DEFINITION(JSONObjectIterator)

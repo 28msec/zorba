@@ -520,6 +520,7 @@ JSONEncodeForRoundtripIterator::encodeArray(
   return false;
 }
 
+
 bool
 JSONEncodeForRoundtripIterator::encodeAtomic(
   const store::Item_t& aValue,
@@ -527,9 +528,11 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
   JSONEncodeForRoundtripIteratorState* aState) const
 {
   store::SchemaTypeCode typeCode = aValue->getTypeCode();
-  switch (typeCode) {
+  switch (typeCode)
+  {
   case store::XS_DOUBLE:
   case store::XS_FLOAT:
+  {
     if (aValue->getBaseItem() == NULL
         && ! aValue->isNaN() && ! aValue->isPosOrNegInf())
     {
@@ -537,17 +540,20 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
       return false;
     }
     break;
+  }
   case store::XS_STRING:
   case store::XS_INTEGER:
   case store::XS_DECIMAL:
   case store::XS_BOOLEAN:
   case store::JS_NULL:
+  {
     if (aValue->getBaseItem() == NULL)
     {
       // nothing to change, aResult is not set, the caller needs to use aValue
       return false;
     }
     break;
+  }
   default:
     break;
   }

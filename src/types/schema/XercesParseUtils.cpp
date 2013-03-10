@@ -1297,9 +1297,8 @@ bool XercesParseUtils::parseXSQName(
     
     if (lIndex == 0) 
     {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0074, ERROR_PARAMS( textValue.str() )
-      );
+      throw XQUERY_EXCEPTION(err::XQDY0074, 
+      ERROR_PARAMS(ZED(XQDY0074_NotCastToQName), textValue.str()));
     }
     else if ( lIndex > 0 )
     {
@@ -1310,7 +1309,8 @@ bool XercesParseUtils::parseXSQName(
     return factory->createQName(result, lNamespace, lPrefix, lLocal);
   }
 
-  throw XQUERY_EXCEPTION( err::XQDY0074, ERROR_PARAMS( textValue.str() ) );
+  throw XQUERY_EXCEPTION(err::XQDY0074,
+  ERROR_PARAMS(ZED(XQDY0074_NotCastToQName), textValue.str()));
 }
 
 } // namespace zorba

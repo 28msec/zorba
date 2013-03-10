@@ -66,6 +66,7 @@ public:
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( elem_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( doc_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( attr_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( namespace_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( text_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( pi_expr );
 

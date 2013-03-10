@@ -43,6 +43,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
   * Fixed bug #1099535 (xml:parse endless loop)
   * Fixed bug #866958 (Parsing error not explicit enough)
+  * Fixed bug #1152834 (bug in computing the scripting kind of array and object
+    constructor exprs)
   * Fixed bug #1125444 (input group-by exprs were not treated by index-flwor_vars()
     functoin, leading to erroneous loop hoisting).
   * Fixed bug #867068 (Incorrect usage of XQDY0027)

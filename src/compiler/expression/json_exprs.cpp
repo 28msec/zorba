@@ -52,7 +52,10 @@ void json_array_expr::compute_scripting_kind()
 
     theScriptingKind = theContentExpr->get_scripting_detail();
 
-    theScriptingKind &= ~VACUOUS_EXPR;
+    if (theScriptingKind == VACUOUS_EXPR)
+      theScriptingKind = SIMPLE_EXPR;
+    else
+      theScriptingKind &= ~VACUOUS_EXPR;
   }
   else
   {
@@ -92,7 +95,10 @@ void json_object_expr::compute_scripting_kind()
 
     theScriptingKind = theContentExpr->get_scripting_detail();
 
-    theScriptingKind &= ~VACUOUS_EXPR;
+    if (theScriptingKind == VACUOUS_EXPR)
+      theScriptingKind = SIMPLE_EXPR;
+    else
+      theScriptingKind &= ~VACUOUS_EXPR;
   }
   else
   {

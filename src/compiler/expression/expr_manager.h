@@ -204,6 +204,13 @@ public:
       expr* aQNameExpr,
       expr* aValueExpr);
 
+  namespace_expr* create_namespace_expr(
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr* prefixExpr,
+      expr* uriExpr);
+
   text_expr* create_text_expr(
       static_context* sctx,
       user_function* udf,

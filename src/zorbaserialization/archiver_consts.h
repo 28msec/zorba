@@ -316,6 +316,8 @@ enum TypeCode
   TYPE_FnAdjustToTimeZoneIterator_2,
   TYPE_FnAdjustToTimeZoneIterator_1,
 
+  TYPE_NamespaceIterator,
+
   TYPE_FunctionItem,
 
   TYPE_namespace_context,

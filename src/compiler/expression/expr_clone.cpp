@@ -116,6 +116,18 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                      CLONE(e->getValueExpr(), udf, subst));
     break;
   }
+  case namespace_expr_kind:
+  {
+    const namespace_expr* e = static_cast<const namespace_expr*>(this);
+
+    newExpr = theCCB->theEM->
+    create_namespace_expr(theSctx,
+                          udf,
+                          theLoc,
+                          CLONE(e->getPrefixExpr(), udf, subst),
+                          CLONE(e->getUriExpr(), udf, subst));
+    break;
+  }
   case text_expr_kind:
   {
     const text_expr* e = static_cast<const text_expr*>(this);
