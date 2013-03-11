@@ -407,6 +407,11 @@ public:
   SimpleJSONArray()
   {}
 
+  SimpleJSONArray(size_t aReservedSize)
+  {
+    theContent.reserve(aReservedSize);
+  }
+
   virtual ~SimpleJSONArray();
 
   // store API
