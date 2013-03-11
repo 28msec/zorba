@@ -22,6 +22,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "util/ascii_util.h"
 #include "util/stl_util.h"
 #include "util/time_parse.h"
 #include "zorbatypes/zstring.h"
@@ -178,13 +179,13 @@ int num_digits( int i ) {
 static void test_range( char const *conv, int low, int high,
                         ztm_int_ptr ztm_mbr,
                         unary_fn_type unary_fn = &my_identity ) {
-  ztd::itoa_buf_type buf;
+  ascii::itoa_buf_type buf;
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
 
   for ( int i = low; i <= high; ++i ) {
-    ztd::itoa( i, buf );
+    ascii::itoa( i, buf );
     size_t const len = ::strlen( buf );
     char const *bp;
     ::memset( &tm, 0, sizeof( tm ) );
@@ -196,14 +197,14 @@ static void test_range( char const *conv, int low, int high,
     time::parse( "JUNK", conv, lang, country, &tm ), invalid_value
   );
 
-  ztd::itoa( --low, buf );
+  ascii::itoa( --low, buf );
   ASSERT_EXCEPTION(
     time::parse( buf, conv, lang, country, &tm ), invalid_value
   );
 
   int const high2 = high + 1;
   if ( num_digits( high2 ) == num_digits( high ) ) {
-    ztd::itoa( ++high, buf );
+    ascii::itoa( ++high, buf );
     ASSERT_EXCEPTION(
       time::parse( buf, conv, lang, country, &tm ), invalid_value
     );
