@@ -737,6 +737,27 @@ void trim_whitespace( utf8_string<StringType> &s ) {
 ////////// Miscellaneous //////////////////////////////////////////////////////
 
 /**
+ * Pads a string to the left with a given code-point until the string is the
+ * given width.
+ *
+ * @param s The string to pad.
+ * @param width The width to pad to.
+ * @param cp The code-point to pad with.
+ * @return Returns \c *s.
+ */
+template<class StringType> inline
+StringType& left_pad( StringType *s, typename StringType::size_type width,
+                      unicode::code_point cp ) {
+  typedef typename utf8_stringify<StringType>::type u_type;
+  typedef typename u_type::size_type u_size_type;
+  u_type u( *s );
+  u_size_type const u_size( u.size() );
+  if ( u_size < width )
+    u.insert( static_cast<size_type>( 0 ), width - u_size, cp );
+  return *s;
+}
+
+/**
  * Reverses the characters in a string.
  *
  * @tparam InputStringType The input string type.

@@ -990,6 +990,24 @@ void skip_whitespace( StringType const &s,
 ////////// Miscellaneous //////////////////////////////////////////////////////
 
 /**
+ * Pads a string to the left with a given character until the string is the
+ * given width.
+ *
+ * @param s The string to pad.
+ * @param width The width to pad to.
+ * @param c The character to pad with.
+ * @return Returns \c *s.
+ */
+template<class StringType> inline
+StringType& left_pad( StringType *s, typename StringType::size_type width,
+                      char c ) {
+  typedef typename StringType::size_type size_type;
+  if ( s->size() < width )
+    s->insert( static_cast<size_type>( 0 ), width - s->size(), c );
+  return *s;
+}
+
+/**
  * Prints the given character in a printable way: if \c is_print(c) is \c true,
  * prints \a c as-is; otherwise prints \c #x followed by the hexadecimal value
  * of the character.

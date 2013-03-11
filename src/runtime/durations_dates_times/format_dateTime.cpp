@@ -37,6 +37,8 @@
 #include "util/ascii_util.h"
 #include "util/stream_util.h"
 #include "util/string_util.h"
+#include "util/time_util.h"
+#include "util/utf8_util.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/datetime/parse.h"
 #include "zorbatypes/duration.h"
@@ -66,12 +68,13 @@ struct modifier {
     ALPHA,        // 'A' : A B C ... Z AA AB AC ...
     roman,        // 'i' : i ii iii iv v vi vii viii ix x ...
     ROMAN,        // 'I' : I II III IV V VI VII VIII IX X ...
+    name,         // 'n' : name
+    Name,         // 'Nn': Name
+    NAME,         // 'N' : NAME
     words,        // 'w' : one two three four ...
     Words,        // 'Ww': One Two Three Four ...
     WORDS,        // 'W' : ONE TWO THREE FOUR ...
-    name,         // 'n' : name
-    Name,         // 'Nn': Name
-    NAME          // 'N' : NAME
+    military_tz   // 'Z' : A B C ... J ... X Y Z
   };
 
   enum second_co_type {
@@ -90,6 +93,7 @@ struct modifier {
 
   first_type first;
   zstring first_string;
+  bool first_has_grouping_separators;
   unicode::code_point first_zero;
 
   second_co_type second_co;
@@ -118,19 +122,14 @@ struct modifier {
   }
 
   zstring const& zero_pad( zstring *s ) const {
-    if ( min_width ) {
-      utf8_string<zstring> u( *s );
-      utf8_string<zstring>::size_type u_size( u.size() );
-      zstring zero;
-      utf8::encode( first_zero, &zero );
-      while ( u_size++ < min_width )
-        u.insert( 0, zero );
-    }
+    if ( min_width )
+      utf8::left_pad( s, min_width, first_zero );
     return *s;
   }
 
   modifier() {
     first = arabic;
+    first_has_grouping_separators = false;
     first_zero = '0';
     second_co = cardinal;
     second_at = no_second_at;
@@ -265,6 +264,26 @@ static zstring english( int64_t n, bool ordinal = false ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static bool is_grouping_separator( unicode::code_point cp ) {
+  using namespace unicode;
+  //
+  // XQuery 3.0 F&O: 4.6.1: a grouping-separator-sign is a non-alphanumeric
+  // character, that is a character whose Unicode category is other than Nd,
+  // Nl, No, Lu, Ll, Lt, Lm or Lo.
+  //
+  return !( is_category( cp, Nd )
+         || is_category( cp, Nl )
+         || is_category( cp, No )
+         || is_category( cp, Lu )
+         || is_category( cp, Ll )
+         || is_category( cp, Lt )
+         || is_category( cp, Lm )
+         || is_category( cp, Lo )
+  );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 /**
  * Returns the English ordinal suffix for an integer, e.g., "st" for 1, "nd"
  * for 2, etc.
@@ -365,10 +384,8 @@ static void append_number( long n, modifier const &mod, zstring *dest ) {
       break;
     }
 
-    case modifier::name:
-    case modifier::Name:
-    case modifier::NAME:
-      ;
+    default:
+      /* handled elsewhere */;
   }
 }
 
@@ -426,17 +443,184 @@ static void append_month( long month, iso639_1::type lang,
   append_component( month, name, mod, dest );
 }
 
-static void append_year( long year, modifier const &mod, zstring *s ) {
-  zstring tmp;
-  append_number( year, mod, &tmp );
+static void append_timezone( char component, TimeZone const &tz,
+                             modifier const &mod, zstring *dest ) {
+  ztd::itoa_buf_type buf;
+  zstring format, tmp;
+  bool has_grouping_separators;
 
-  if ( mod.first == modifier::arabic && mod.gt_max_width( tmp.size() ) )
-    tmp = tmp.substr( tmp.size() - mod.max_width );
-  *s += tmp;
+  if ( mod.is_set() ) {
+    format = mod.first_string;
+    has_grouping_separators = mod.first_has_grouping_separators;
+  } else {
+    format = "01:01";
+    has_grouping_separators = true;
+  }
+
+  int hour = tz.getHours();
+  int const min  = std::abs( tz.getMinutes() );
+
+  switch ( mod.first ) {
+    case modifier::NAME:
+      //
+      // XQuery 3.0 F&O: 9.8.4.2: If the first presentation modifier is N, then
+      // the timezone is output (where possible) as a timezone name, for
+      // example EST or CET. The same timezone offset has different names in
+      // different places; it is therefore recommended that this option should
+      // be used only if a country code or Olson timezone name is supplied in
+      // the $place argument. In the absence of this information, the
+      // implementation may apply a default, for example by using the timezone
+      // names that are conventional in North America. If no timezone name can
+      // be identified, the timezone offset is output using the fallback format
+      // +01:01.
+      //
+      if ( !min )
+        switch ( hour ) {
+          case  0: tmp += "GMT"; goto append;
+          case -5: tmp += "EST"; goto append;
+          case -6: tmp += "CST"; goto append;
+          case -7: tmp += "MST"; goto append;
+          case -8: tmp += "PST"; goto append;
+        }
+      // TODO: use Olson timezone names
+      goto fallback;
+
+    case modifier::military_tz:
+      //
+      // Ibid: If the first presentation modifier is Z, then the timezone is
+      // formatted as a military timezone letter, using the convention Z =
+      // +00:00, A = +01:00, B = +02:00, ..., M = +12:00, N = -01:00, O =
+      // -02:00, ... Y = -12:00.
+      //
+      if ( tz.timeZoneNotSet() ) {
+        //
+        // Ibid: The letter J (meaning local time) is used in the case of a
+        // value that does not specify a timezone offset.
+        //
+        tmp += 'J';
+        break;
+      }
+      if ( hour >= -12 && hour <= 12 && !tz.getMinutes() ) {
+        tmp += time::get_military_tz( hour );
+        break;
+      }
+      //
+      // Ibid: Timezone offsets that have no representation in this system
+      // (for example Indian Standard Time, +05:30) are output as if the
+      // format 01:01 had been requested.
+      //
+      // no break;
+
+fallback:
+      format = "01:01";
+      // no break;
+
+    default:
+      if ( component == 'z' ) {
+        //
+        // Ibid: When the component specifier is z, the output is the same as
+        // for component specifier Z, except that it is prefixed by the
+        // characters GMT or some localized equivalent. The prefix is omitted,
+        // however, in cases where the timezone is identified by name rather
+        // than by a numeric offset from UTC.
+        //
+        tmp = "GMT";
+      }
+
+      if ( mod.second_at == modifier::traditional && !hour && !min ) {
+        //
+        // Ibid: If the first presentation modifier is numeric, in any of the
+        // above formats, and the second presentation modifier is t, then a
+        // zero timezone offset (that is, UTC) is output as Z instead of a
+        // signed numeric value.
+        //
+        tmp += 'Z';
+        break;
+      }
+
+      if ( hour >= 0 )
+        tmp += '+';
+      else if ( hour < 0 )
+        tmp += '-', hour = -hour;
+
+      if ( has_grouping_separators ) {
+        //
+        // Ibid: If the first presentation modifier is numeric with a grouping-
+        // separator (for example 1:01 or 01.01), then the timezone offset is
+        // output in hours and minutes, separated by the grouping separator,
+        // even if the number of minutes is zero: for example +5:00 or +10.30.
+        //
+        int grouping_separators = 0;
+        bool got_digit = false;
+        int hm_width[] = { 0, 0 };      // hour/minute widths
+        utf8_string<zstring const> const u_format( format );
+        utf8_string<zstring> u_tmp( tmp );
+
+        FOR_EACH( utf8_string<zstring const>, i, u_format ) {
+          unicode::code_point const cp = *i;
+          if ( unicode::is_Nd( cp ) ) {
+            got_digit = true;
+            if ( grouping_separators < 2 )
+              ++hm_width[ grouping_separators ];
+            continue;
+          }
+          if ( got_digit && is_grouping_separator( cp ) ) {
+            if ( ++grouping_separators == 1 ) {
+              zstring tmp2( ztd::itoa( hour, buf ) );
+              // TODO: should use appropriate digits
+              tmp += utf8::left_pad( &tmp2, hm_width[0], '0' );
+            }
+          } else if ( grouping_separators )
+            grouping_separators = 99;
+          u_tmp += cp;
+        }
+
+        if ( hm_width[1] ) {
+          zstring tmp2( ztd::itoa( min, buf ) );
+          // TODO: should use appropriate digits
+          tmp += utf8::left_pad( &tmp2, hm_width[1], '0' );
+        }
+      } else {
+        if ( format.size() <= 2 ) {
+          //
+          // Ibid: If the first presentation modifier is numeric and comprises
+          // one or two digits with no grouping-separator (for example 1 or
+          // 01), then the timezone is formatted as a displacement from UTC in
+          // hours, preceded by a plus or minus sign: for example -5 or +03. If
+          // the actual timezone offset is not an integral number of hours,
+          // then the minutes part of the offset is appended, separated by a
+          // colon: for example +10:30 or -1:15.
+          //
+          zstring tmp2( ztd::itoa( hour, buf ) );
+          tmp += ascii::left_pad( &tmp2, format.size(), '0' );
+          if ( min ) {
+            tmp2 = ztd::itoa( min, buf );
+            tmp += ':';
+            tmp += ascii::left_pad( &tmp2, 2, '0' );
+          }
+          break;
+        }
+        if ( format.size() <= 4 ) {
+          //
+          // Ibid: If the first presentation modifier is numeric and comprises
+          // three or four digits with no grouping-separator, for example 001
+          // or 0001, then the timezone offset is shown in hours and minutes
+          // with no separator, for example -0500 or +1030.
+          //
+          int const hhmm = hour * 100 + min;
+          zstring tmp2( ztd::itoa( hhmm, buf ) );
+          tmp += ascii::left_pad( &tmp2, format.size(), '0' );
+          break;
+        }
+      } // else
+  } // switch
+
+append:
+  *dest += tmp;
 }
 
 static void append_weekday( long day, iso639_1::type lang,
-                            iso3166_1::type country, modifier &mod,
+                            iso3166_1::type country, modifier const &mod,
                             zstring *dest ) {
   zstring name( locale::get_weekday_name( day, lang, country ) );
   utf8_string<zstring> u_name( name );
@@ -462,22 +646,13 @@ static void append_weekday( long day, iso639_1::type lang,
   append_component( day, name, default_mod, dest );
 }
 
-static bool is_grouping_separator( unicode::code_point cp ) {
-  using namespace unicode;
-  //
-  // XQuery 3.0 F&O: 4.6.1: a grouping-separator-sign is a non-alphanumeric
-  // character, that is a character whose Unicode category is other than Nd,
-  // Nl, No, Lu, Ll, Lt, Lm or Lo.
-  //
-  return !( is_category( cp, Nd )
-         || is_category( cp, Nl )
-         || is_category( cp, No )
-         || is_category( cp, Lu )
-         || is_category( cp, Ll )
-         || is_category( cp, Lt )
-         || is_category( cp, Lm )
-         || is_category( cp, Lo )
-  );
+static void append_year( long year, modifier const &mod, zstring *s ) {
+  zstring tmp;
+  append_number( year, mod, &tmp );
+
+  if ( mod.first == modifier::arabic && mod.gt_max_width( tmp.size() ) )
+    tmp = tmp.substr( tmp.size() - mod.max_width );
+  *s += tmp;
 }
 
 static void parse_first_modifier( zstring const &picture_str,
@@ -533,9 +708,8 @@ static void parse_first_modifier( zstring const &picture_str,
       if ( cp == '#' ) {
         if ( got_mandatory_digit ) {
           //
-          // XQuery 3.0 F&O: 4.6.1: There may be zero or more optional-digit-
-          // signs, and (if present) these must precede all mandatory-digit-
-          // signs.
+          // Ibid: There may be zero or more optional-digit-signs, and (if
+          // present) these must precede all mandatory-digit-signs.
           //
           throw XQUERY_EXCEPTION(
             err::FOFD1340,
@@ -550,10 +724,10 @@ static void parse_first_modifier( zstring const &picture_str,
       } else if ( unicode::is_Nd( cp, &zero[ got_mandatory_digit ] ) ) {
         if ( got_mandatory_digit && zero[1] != zero[0] ) {
           //
-          // XQuery 3.0 F&O: 4.6.1: All mandatory-digit-signs within the format
-          // token must be from the same digit family, where a digit family is
-          // a sequence of ten consecutive characters in Unicode category Nd,
-          // having digit values 0 through 9.
+          // Ibid: All mandatory-digit-signs within the format token must be
+          // from the same digit family, where a digit family is a sequence of
+          // ten consecutive characters in Unicode category Nd, having digit
+          // values 0 through 9.
           //
           throw XQUERY_EXCEPTION(
             err::FOFD1340,
@@ -575,8 +749,8 @@ static void parse_first_modifier( zstring const &picture_str,
       else if ( is_grouping_separator( cp ) ) {
         if ( got_grouping_separator ) {
           //
-          // XQuery 3.0 F&O: 4.6.1: A grouping-separator-sign must not appear
-          // ... adjacent to another grouping-separator-sign.
+          // Ibid: A grouping-separator-sign must not appear ... adjacent to
+          // another grouping-separator-sign.
           //
           throw XQUERY_EXCEPTION(
             err::FOFD1340,
@@ -589,6 +763,7 @@ static void parse_first_modifier( zstring const &picture_str,
           );
         }
         got_grouping_separator = true;
+        mod->first_has_grouping_separators = true;
       } else
         break;
 
@@ -599,8 +774,8 @@ static void parse_first_modifier( zstring const &picture_str,
     } // while
     if ( got_grouping_separator ) {
       //
-      // XQuery 3.0 F&O: 4.6.1: A grouping-separator-sign must not appear
-      // at the ... end of the decimal-digit-pattern ....
+      // Ibid: A grouping-separator-sign must not appear at the ... end of the
+      // decimal-digit-pattern ....
       //
       throw XQUERY_EXCEPTION(
         err::FOFD1340,
@@ -614,8 +789,7 @@ static void parse_first_modifier( zstring const &picture_str,
     }
     if ( !got_mandatory_digit ) {
       //
-      // XQuery 3.0 F&O: 4.6.1: There must be at least one mandatory-digit-
-      // sign.
+      // Ibid: There must be at least one mandatory-digit-sign.
       //
       throw XQUERY_EXCEPTION(
         err::FOFD1340,
@@ -657,11 +831,13 @@ static void parse_first_modifier( zstring const &picture_str,
       case 'w':
         mod->first = modifier::words;
         break;
+      case 'Z':
+        mod->first = modifier::military_tz;
+        break;
       default:
         //
-        // XQuery 3.0 F&O: 4.6.1: If an implementation does not support a
-        // numbering sequence represented by the given token, it must use a
-        // format token of 1.
+        // Ibid: If an implementation does not support a numbering sequence
+        // represented by the given token, it must use a format token of 1.
         //
         mod->first = modifier::arabic;
     } // switch
@@ -760,42 +936,20 @@ bad_width_modifier:
 
 static int get_data_type( char component ) {
   switch ( component ) {
-    case 'Y':
-      return DateTime::YEAR_DATA;
-    case 'M':
-      return DateTime::MONTH_DATA;
-    case 'D':
-      return DateTime::DAY_DATA;
-    case 'd': // day in year
-      return DateTime::DAY_DATA;
-    case 'F': // day of week
-      return DateTime::DAY_DATA;
-    case 'W': // week in year
-      return DateTime::DAY_DATA;
-    case 'w': // week in month
-      return DateTime::DAY_DATA;
-    case 'H': // hour in day (24 hours)
-      return DateTime::HOUR_DATA;
-    case 'h': // hour in half-day (12 hours)
-      return DateTime::HOUR_DATA;
-    case 'P': // am/pm marker
-      return DateTime::HOUR_DATA;
-    case 'm':
-      return DateTime::MINUTE_DATA;
-    case 's':
-      return DateTime::SECONDS_DATA;
-    case 'f': // fractional seconds
-      return DateTime::FRACSECONDS_DATA;
-    case 'Z': // timezone as a time offset from UTC, or if an alphabetic modifier is present the conventional name of a timezone (such as PST)
-      return -1;
-    case 'z': // timezone as a time offset using GMT, for example GMT+1
-      return -1;
-    case 'C': // calendar: the name or abbreviation of a calendar name
-      return -1;
-    case 'E': // era: the name of a baseline for the numbering of years, for example the reign of a monarch
-      return -1;
-    default:
-      return -1;
+    case 'D': return DateTime::DAY_DATA;
+    case 'd': return DateTime::DAY_DATA;
+    case 'F': return DateTime::DAY_DATA;
+    case 'f': return DateTime::FRACSECONDS_DATA;
+    case 'H': return DateTime::HOUR_DATA;
+    case 'h': return DateTime::HOUR_DATA;
+    case 'm': return DateTime::MINUTE_DATA;
+    case 'M': return DateTime::MONTH_DATA;
+    case 'P': return DateTime::HOUR_DATA;
+    case 's': return DateTime::SECONDS_DATA;
+    case 'W': return DateTime::DAY_DATA;
+    case 'w': return DateTime::DAY_DATA;
+    case 'Y': return DateTime::YEAR_DATA;
+    default : return -1;
   }
 }
 
@@ -1026,14 +1180,12 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         case 'Y':
           append_year( std::abs( dateTime.getYear() ), mod, &result_str );
           break;
-        case 'Z': // timezone as a time offset from UTC, or if an alphabetic modifier is present the conventional name of a timezone (such as PST)
-          // deliberate fall-through
-        case 'z': { // timezone as a time offset using GMT, for example GMT+1
-          zstring tmp( "GMT" );
-          tmp += dateTime.getTimezone().toString();
-          append_string( tmp, mod, &result_str );
+        case 'Z':
+        case 'z':
+          append_timezone(
+            component, dateTime.getTimezone(), mod, &result_str
+          );
           break;
-        }
       } // switch
     } // for
 
