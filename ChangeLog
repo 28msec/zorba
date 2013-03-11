@@ -44,6 +44,7 @@ Bug Fixes/Other Changes:
   * Fixed bug in computing the static type of an allowing-empty FOR variable.
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
   * Fixed bug #1099535 (xml:parse endless loop)
+  * Fixed bug: jsoniq constructor should not be const-folded
   * Fixed bug #866958 (Parsing error not explicit enough)
   * Fixed bug #1152834 (bug in computing the scripting kind of array and object
     constructor exprs)
