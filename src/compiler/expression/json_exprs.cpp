@@ -41,6 +41,8 @@ json_array_expr::json_array_expr(
   theContentExpr(content)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -84,6 +86,8 @@ json_object_expr::json_object_expr(
   theAccumulate(accumulate)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -131,6 +135,8 @@ json_direct_object_expr::json_direct_object_expr(
   theValues.swap(values);
 
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
