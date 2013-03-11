@@ -2048,6 +2048,61 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
 /*******************************************************************************
   14.8.6 fn:unparsed-text-lines
 ********************************************************************************/
+
+template<typename CharType,class TraitsType,class Rep>
+std::basic_istream<CharType,TraitsType>&
+getline_no_endlines( std::basic_istream<CharType,TraitsType> &is, rstring<Rep> &s) {
+  typedef std::basic_istream<CharType,TraitsType> istream_type;
+  typedef typename istream_type::int_type int_type;
+  typedef std::basic_streambuf<CharType,TraitsType> streambuf_type;
+  typedef rstring<Rep> string_type;
+  typedef typename string_type::size_type size_type;
+
+  std::ios_base::iostate err = std::ios_base::iostate( std::ios_base::goodbit );
+  size_type extracted = 0;
+  int_type const idelim1 = TraitsType::to_int_type( '\r' );
+  int_type const idelim2 = TraitsType::to_int_type( '\n' );
+  int_type const eof = TraitsType::eof();
+  std::string check ="";
+  s.clear();
+  try {
+    streambuf_type *const sb = is.rdbuf();
+    int_type c = sb->sgetc();
+
+    while ( !TraitsType::eq_int_type( c, eof ) &&
+            ( !TraitsType::eq_int_type( c, idelim1 ) &&
+              !TraitsType::eq_int_type( c, idelim2 ) ) ) {
+      s += TraitsType::to_char_type( c );
+      check += TraitsType::to_char_type( c );
+      ++extracted;
+      c = sb->snextc();
+    }
+    if ( TraitsType::eq_int_type( c, eof ) )
+      err |= std::ios_base::eofbit;
+    else if ( TraitsType::eq_int_type (c, idelim1) ) {
+      ++extracted;
+      sb->sbumpc();
+      if ( TraitsType::eq_int_type( sb->sgetc(), idelim2 ) ) {
+        ++extracted;
+        sb->sbumpc();
+      }
+    }
+    else if ( TraitsType::eq_int_type( c, idelim2 ) ) {
+      ++extracted;
+      sb->sbumpc();
+    } else
+      err |= std::ios_base::failbit;
+  }
+  catch ( ... ) {
+    is.setstate( std::ios_base::badbit );
+  }
+  if ( !extracted )
+    err |= std::ios_base::failbit;
+  if ( err )
+    is.setstate( err );
+  return is;
+}
+
 FnUnparsedTextLinesIteratorState::~FnUnparsedTextLinesIteratorState()
 {
   delete theStream;
@@ -2121,7 +2176,7 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
 
   while (state->theStream->get()->good())
   {
-    getline(*state->theStream->get(), streamLine);
+    getline_no_endlines(*state->theStream->get(), streamLine);
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, streamLine), state);
   }
 
