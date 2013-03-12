@@ -121,26 +121,6 @@ declare function util:parent-folder(
 };
 
 
-declare function util:serialize-result(
-  $result as item()*
-) as xs:string*
-{
-  util:serialize-result($result, $util:serParamXml)
-};
-
-
-declare function util:serialize-result(
-  $result as item()*,
-  $SerParams
-) as xs:string*
-{
-  for $res in $result
-  return
-   if ($res instance of node())
-   then fn:serialize($res, $SerParams)
-   else fn:string($res)
-};
-
 declare %ann:sequential function util:write-query-to-file(
   $query        as xs:string,
   $queryName    as xs:string
