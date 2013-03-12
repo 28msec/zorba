@@ -318,6 +318,7 @@ declare %ann:nondeterministic function reporting:generate-expected-failures(
         for $testSet in $results//fots:test-set
         let $countFailures := count($testSet//fots:test-case[@result ="fail"])
         let $testSetName := xs:string($testSet/@name)
+        order by $testSetName
         where $countFailures gt xs:integer(0)
         return
         for $testCase in $testSet//fots:test-case[@result ="fail"]
