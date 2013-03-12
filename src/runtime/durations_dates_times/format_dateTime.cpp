@@ -337,9 +337,8 @@ private:
 static void append_number( long n, modifier const &mod, zstring *dest ) {
   switch ( mod.first ) {
     case modifier::arabic: {
-      ztd::itoa_buf_type buf;
-      // TODO: should use appropriate digits
-      zstring tmp( ztd::itoa( n, buf ) );
+      utf8::itou_buf_type buf;
+      zstring tmp( utf8::itou( n, buf, mod.first_zero ) );
       if ( mod.second_co == modifier::ordinal )
         tmp += ordinal( n );
       *dest += mod.zero_pad( &tmp );
@@ -445,7 +444,7 @@ static void append_month( long month, iso639_1::type lang,
 
 static void append_timezone( char component, TimeZone const &tz,
                              modifier const &mod, zstring *dest ) {
-  ztd::itoa_buf_type buf;
+  ascii::itoa_buf_type buf;
   zstring format, tmp;
   bool has_grouping_separators;
 
@@ -566,7 +565,7 @@ fallback:
           }
           if ( got_digit && is_grouping_separator( cp ) ) {
             if ( ++grouping_separators == 1 ) {
-              zstring tmp2( ztd::itoa( hour, buf ) );
+              zstring tmp2( ascii::itoa( hour, buf ) );
               // TODO: should use appropriate digits
               tmp += utf8::left_pad( &tmp2, hm_width[0], '0' );
             }
@@ -576,7 +575,7 @@ fallback:
         }
 
         if ( hm_width[1] ) {
-          zstring tmp2( ztd::itoa( min, buf ) );
+          zstring tmp2( ascii::itoa( min, buf ) );
           // TODO: should use appropriate digits
           tmp += utf8::left_pad( &tmp2, hm_width[1], '0' );
         }
@@ -591,10 +590,10 @@ fallback:
           // then the minutes part of the offset is appended, separated by a
           // colon: for example +10:30 or -1:15.
           //
-          zstring tmp2( ztd::itoa( hour, buf ) );
+          zstring tmp2( ascii::itoa( hour, buf ) );
           tmp += ascii::left_pad( &tmp2, format.size(), '0' );
           if ( min ) {
-            tmp2 = ztd::itoa( min, buf );
+            tmp2 = ascii::itoa( min, buf );
             tmp += ':';
             tmp += ascii::left_pad( &tmp2, 2, '0' );
           }
@@ -608,7 +607,7 @@ fallback:
           // with no separator, for example -0500 or +1030.
           //
           int const hhmm = hour * 100 + min;
-          zstring tmp2( ztd::itoa( hhmm, buf ) );
+          zstring tmp2( ascii::itoa( hhmm, buf ) );
           tmp += ascii::left_pad( &tmp2, format.size(), '0' );
           break;
         }

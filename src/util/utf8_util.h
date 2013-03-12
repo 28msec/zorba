@@ -306,6 +306,31 @@ void to_codepoints( StringType const &s, ContainerType *c ) {
   std::copy( u.begin(), u.end(), std::back_inserter( *c ) );
 }
 
+////////// Integer-to-string conversion ///////////////////////////////////////
+
+/**
+ * A type that can hold the largest possible C string equivalent of the largest
+ * possible integral value using any Unicode numeric range within the Nd
+ * ("Number, Decimal Digit") category.
+ */
+typedef storage_type itou_buf_type[
+  (sizeof( encoded_char_type ) - 1 /* subtract null */) * 20 + 1 /* add null */
+];
+
+/**
+ * Converts an <code>unsigned long long</code> to a UTF-8 encoded string.
+ *
+ * @param n The <code>unsigned long long</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @param zero The Unicode code-point of the zero at the start of a 10
+ * code-point range [zero,zero+9] for the digits to use in the Nd ("Number,
+ * Decimal Digit") category.
+ * @return Returns \a buf for convenience.
+ */
+storage_type* itou( unsigned long long n, storage_type *buf,
+                    unicode::code_point zero );
+
 ////////// Encoding conversion ////////////////////////////////////////////////
 
 #ifndef ZORBA_NO_ICU
