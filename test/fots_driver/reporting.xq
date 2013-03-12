@@ -99,7 +99,7 @@ declare %ann:sequential function reporting:run-and-report(
                               $FOTSZorbaManifestPath)
     }
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           $err:description,
@@ -205,7 +205,7 @@ declare %ann:sequential function reporting:W3C-reporting(
       $W3CTemplate
     }
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           $err:description,
@@ -282,7 +282,7 @@ try
   
   }
 }
-catch *
+catch err:FODC0002
 {
   error($err:code,
         $err:description,
@@ -318,6 +318,7 @@ declare %ann:nondeterministic function reporting:generate-expected-failures(
         for $testSet in $results//fots:test-set
         let $countFailures := count($testSet//fots:test-case[@result ="fail"])
         let $testSetName := xs:string($testSet/@name)
+        order by $testSetName
         where $countFailures gt xs:integer(0)
         return
         for $testCase in $testSet//fots:test-case[@result ="fail"]
