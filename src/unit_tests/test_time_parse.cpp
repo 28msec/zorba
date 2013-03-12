@@ -303,11 +303,11 @@ static void test_invalid_specification() {
 }
 
 static void test_j() {                  // day of year: 001-366
-  char const *const buf = "2012-1-2";
+  char const *const buf = "1";
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
-  char const *bp;
+  char const *bp = nullptr;
 
   ::memset( &tm, 0, sizeof( tm ) );
   ASSERT_NO_EXCEPTION( bp = time::parse( buf, "%j", lang, country, &tm ) )
