@@ -220,7 +220,7 @@ declare %ann:sequential function reporting:W3C-reporting(
  : @param $failures Path to the results fo the FOTS.
  : @return a report of tests run.
  :)
-declare %ann:nondeterministic function reporting:do-reporting(
+declare %ann:nondeterministic function reporting:wiki-report(
   $FOTSCatalogFilePath  as xs:string,
   $resultsFilePath      as xs:string
 ) as element(fots:report)
