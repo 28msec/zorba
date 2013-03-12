@@ -887,8 +887,7 @@ static void parse_width_modifier( zstring const &picture_str,
   ascii::skip_whitespace( picture_str, &j );
   if ( j == picture_str.end() || (*j != ',' && *j != ';') )
     return;
-  ++j;
-  ascii::skip_whitespace( picture_str, &j );
+  ascii::skip_whitespace( picture_str, &++j );
   if ( j == picture_str.end() )
     goto bad_width_modifier;
   if ( *j == '*' ) {
@@ -910,8 +909,7 @@ static void parse_width_modifier( zstring const &picture_str,
   ascii::skip_whitespace( picture_str, &j );
   if ( j == picture_str.end() || *j != '-' )
     return;
-  ++j;
-  ascii::skip_whitespace( picture_str, &j );
+  ascii::skip_whitespace( picture_str, &++j );
   if ( j == picture_str.end() )
     goto bad_width_modifier;
   if ( *j == '*' )
