@@ -91,16 +91,19 @@ struct modifier {
 
   typedef unsigned long width_type;
 
-  bool is_set;
+  struct {
+    bool parsed;
+    first_type type;
+    zstring format;
+    bool has_grouping_separators;
+    unicode::code_point zero;
+  } first;
 
-  first_type first;
-  zstring format;
-  bool first_has_grouping_separators;
-  unicode::code_point first_zero;
-
-  second_co_type second_co;
-  zstring second_co_string;
-  second_at_type second_at;
+  struct {
+    second_co_type co_type;
+    zstring co_string;
+    second_at_type at_type;
+  } second;
 
   width_type min_width;
   width_type max_width;
@@ -121,17 +124,17 @@ struct modifier {
 
   zstring const& zero_pad( zstring *s ) const {
     if ( min_width )
-      utf8::left_pad( s, min_width, first_zero );
+      utf8::left_pad( s, min_width, first.zero );
     return *s;
   }
 
   modifier() {
-    is_set = false;
-    first = arabic;
-    first_has_grouping_separators = false;
-    first_zero = '0';
-    second_co = cardinal;
-    second_at = no_second_at;
+    first.parsed = false;
+    first.type = arabic;
+    first.has_grouping_separators = false;
+    first.zero = '0';
+    second.co_type = cardinal;
+    second.at_type = no_second_at;
     min_width = max_width = 0;
   };
 };
@@ -334,11 +337,11 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 static void append_number( long n, modifier const &mod, zstring *dest ) {
-  switch ( mod.first ) {
+  switch ( mod.first.type ) {
     case modifier::arabic: {
       utf8::itou_buf_type buf;
-      zstring tmp( utf8::itou( n, buf, mod.first_zero ) );
-      if ( mod.second_co == modifier::ordinal )
+      zstring tmp( utf8::itou( n, buf, mod.first.zero ) );
+      if ( mod.second.co_type == modifier::ordinal )
         tmp += ordinal( n );
       *dest += mod.zero_pad( &tmp );
       break;
@@ -346,7 +349,7 @@ static void append_number( long n, modifier const &mod, zstring *dest ) {
 
     case modifier::alpha:
     case modifier::ALPHA: {
-      zstring tmp( alpha( n, mod.first == modifier::ALPHA ) );
+      zstring tmp( alpha( n, mod.first.type == modifier::ALPHA ) );
       *dest += mod.pad_space( &tmp );
       break;
     }
@@ -354,7 +357,7 @@ static void append_number( long n, modifier const &mod, zstring *dest ) {
     case modifier::roman:
     case modifier::ROMAN: {
       ostringstream oss;
-      if ( mod.first == modifier::ROMAN )
+      if ( mod.first.type == modifier::ROMAN )
         oss << uppercase;
       oss << roman( n );
       zstring tmp( oss.str() );
@@ -363,20 +366,20 @@ static void append_number( long n, modifier const &mod, zstring *dest ) {
     }
 
     case modifier::words: {
-      zstring tmp( english( n, mod.second_co == modifier::ordinal ) );
+      zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
       *dest += mod.pad_space( &tmp );
       break;
     }
 
     case modifier::Words: {
-      zstring tmp( english( n, mod.second_co == modifier::ordinal ) );
+      zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
       std::transform( tmp.begin(), tmp.end(), tmp.begin(), to_title() );
       *dest += mod.pad_space( &tmp );
       break;
     }
 
     case modifier::WORDS: {
-      zstring tmp( english( n, mod.second_co == modifier::ordinal ) );
+      zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
       ascii::to_upper( tmp );
       *dest += mod.pad_space( &tmp );
       break;
@@ -390,7 +393,7 @@ static void append_number( long n, modifier const &mod, zstring *dest ) {
 static bool append_string( zstring const &s, modifier const &mod,
                            zstring *dest ) {
   zstring tmp;
-  switch ( mod.first ) {
+  switch ( mod.first.type ) {
     case modifier::name:
       utf8::to_lower( s, &tmp );
       break;
@@ -447,18 +450,18 @@ static void append_timezone( char component, TimeZone const &tz,
   zstring format, tmp;
   bool has_grouping_separators;
 
-  if ( mod.format.empty() ) {
+  if ( mod.first.format.empty() ) {
     format = "01:01";
     has_grouping_separators = true;
   } else {
-    format = mod.format;
-    has_grouping_separators = mod.first_has_grouping_separators;
+    format = mod.first.format;
+    has_grouping_separators = mod.first.has_grouping_separators;
   }
 
   int hour = tz.getHours();
   int const min  = std::abs( tz.getMinutes() );
 
-  switch ( mod.first ) {
+  switch ( mod.first.type ) {
     case modifier::NAME:
       //
       // XQuery 3.0 F&O: 9.8.4.2: If the first presentation modifier is N, then
@@ -525,7 +528,7 @@ fallback:
         tmp = "GMT";
       }
 
-      if ( mod.second_at == modifier::traditional && !hour && !min ) {
+      if ( mod.second.at_type == modifier::traditional && !hour && !min ) {
         //
         // Ibid: If the first presentation modifier is numeric, in any of the
         // above formats, and the second presentation modifier is t, then a
@@ -637,18 +640,18 @@ static void append_weekday( long day, iso639_1::type lang,
       u_name = u_name.substr( 0, mod.max_width );
   }
 
-  modifier default_mod( mod );
-  if ( !mod.is_set )
-    default_mod.first = modifier::name;
+  modifier mod_copy( mod );
+  if ( !mod.first.parsed )
+    mod_copy.first.type = modifier::name;
 
-  append_component( day, name, default_mod, dest );
+  append_component( day, name, mod_copy, dest );
 }
 
 static void append_year( long year, modifier const &mod, zstring *s ) {
   zstring tmp;
   append_number( year, mod, &tmp );
 
-  if ( mod.first == modifier::arabic && mod.gt_max_width( tmp.size() ) )
+  if ( mod.first.type == modifier::arabic && mod.gt_max_width( tmp.size() ) )
     tmp = tmp.substr( tmp.size() - mod.max_width );
   *s += tmp;
 }
@@ -668,7 +671,7 @@ static void parse_first_modifier( zstring const &picture_str,
 
   utf8_string<zstring const> const u_picture_str( picture_str );
   utf8_string<zstring const>::const_iterator u( u_picture_str.current( j ) );
-  utf8_string<zstring> u_mod_format( mod->format );
+  utf8_string<zstring> u_mod_format( mod->first.format );
   unicode::code_point cp = *u;
 
   if ( cp != '#' && is_grouping_separator( cp ) ) {
@@ -765,7 +768,7 @@ static void parse_first_modifier( zstring const &picture_str,
           );
         }
         got_grouping_separator = true;
-        mod->first_has_grouping_separators = true;
+        mod->first.has_grouping_separators = true;
       } else
         break;
 
@@ -796,52 +799,52 @@ static void parse_first_modifier( zstring const &picture_str,
         ERROR_LOC( loc )
       );
     }
-    mod->first_zero = zero[0];
+    mod->first.zero = zero[0];
     j = u.base();
   } else {
     switch ( *j++ ) {
       case 'A':
-        mod->first = modifier::ALPHA;
+        mod->first.type = modifier::ALPHA;
         break;
       case 'a':
-        mod->first = modifier::alpha;
+        mod->first.type = modifier::alpha;
         break;
       case 'I':
-        mod->first = modifier::ROMAN;
+        mod->first.type = modifier::ROMAN;
         break;
       case 'i':
-        mod->first = modifier::roman;
+        mod->first.type = modifier::roman;
         break;
       case 'N':
         if ( j != picture_str.end() && *j == 'n' )
-          mod->first = modifier::Name, ++j;
+          mod->first.type = modifier::Name, ++j;
         else
-          mod->first = modifier::NAME;
+          mod->first.type = modifier::NAME;
         break;
       case 'n':
-        mod->first = modifier::name;
+        mod->first.type = modifier::name;
         break;
       case 'W':
         if ( j != picture_str.end() && *j == 'w' )
-          mod->first = modifier::Words, ++j;
+          mod->first.type = modifier::Words, ++j;
         else
-          mod->first = modifier::WORDS;
+          mod->first.type = modifier::WORDS;
         break;
       case 'w':
-        mod->first = modifier::words;
+        mod->first.type = modifier::words;
         break;
       case 'Z':
-        mod->first = modifier::military_tz;
+        mod->first.type = modifier::military_tz;
         break;
       default:
         //
         // Ibid: If an implementation does not support a numbering sequence
         // represented by the given token, it must use a format token of 1.
         //
-        mod->first = modifier::arabic;
+        mod->first.type = modifier::arabic;
     } // switch
   }
-  mod->is_set = true;
+  mod->first.parsed = true;
 }
 
 static void parse_second_modifier( zstring const &picture_str,
@@ -852,10 +855,10 @@ static void parse_second_modifier( zstring const &picture_str,
   if ( j == picture_str.end() )
     return;
   switch ( *j ) {
-    case 'c': mod->second_co = modifier::cardinal   ; break;
-    case 'o': mod->second_co = modifier::ordinal    ; break;
-    case 'a': mod->second_at = modifier::alphabetic ; ++j; return;
-    case 't': mod->second_at = modifier::traditional; ++j; return;
+    case 'c': mod->second.co_type = modifier::cardinal   ; break;
+    case 'o': mod->second.co_type = modifier::ordinal    ; break;
+    case 'a': mod->second.at_type = modifier::alphabetic ; ++j; return;
+    case 't': mod->second.at_type = modifier::traditional; ++j; return;
     default : return;
   }
   if ( ++j == picture_str.end() )
@@ -870,7 +873,7 @@ static void parse_second_modifier( zstring const &picture_str,
         );
       if ( *j == ')' )
         break;
-      mod->second_co_string += *j;
+      mod->second.co_string += *j;
     } 
     ++j;
   }
@@ -1097,10 +1100,10 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
 
       switch ( component ) {
         case 'C': { // calendar
-          modifier default_mod( mod );
-          if ( !mod.is_set )
-            default_mod.first = modifier::name;
-          append_string( "gregorian", default_mod, &result_str );
+          modifier mod_copy( mod );
+          if ( !mod.first.parsed )
+            mod_copy.first.type = modifier::name;
+          append_string( "gregorian", mod_copy, &result_str );
           break;
         }
         case 'D':
@@ -1110,20 +1113,20 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           append_number( dateTime.getDayOfYear(), mod, &result_str );
           break;
         case 'E': { // era
-          modifier default_mod( mod );
-          if ( !mod.is_set )
-            default_mod.first = modifier::name;
+          modifier mod_copy( mod );
+          if ( !mod.first.parsed )
+            mod_copy.first.type = modifier::name;
           int const year = dateTime.getYear();
           zstring const era( year > 0 ? "ad" : year < 0 ? "bc" : "" );
-          append_string( era, default_mod, &result_str );
+          append_string( era, mod_copy, &result_str );
           break;
         }
         case 'F': {
-          modifier default_mod( mod );
-          if ( !mod.is_set )
-            default_mod.first = modifier::name;
+          modifier mod_copy( mod );
+          if ( !mod.first.parsed )
+            mod_copy.first.type = modifier::name;
           append_weekday(
-            dateTime.getDayOfWeek(), lang, country, default_mod, &result_str
+            dateTime.getDayOfWeek(), lang, country, mod_copy, &result_str
           );
           break;
         }
@@ -1148,27 +1151,27 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           append_month( dateTime.getMonth(), lang, country, mod, &result_str );
           break;
         case 'm': {
-          modifier default_mod( mod );
-          if ( mod.format.empty() )
-            default_mod.min_width = default_mod.max_width = 2;
-          append_number( dateTime.getMinutes(), default_mod, &result_str );
+          modifier mod_copy( mod );
+          if ( mod.first.format.empty() )
+            mod_copy.min_width = mod_copy.max_width = 2;
+          append_number( dateTime.getMinutes(), mod_copy, &result_str );
           break;
         }
         case 'P': {
-          modifier default_mod( mod );
-          if ( !mod.is_set )
-            default_mod.first = modifier::name;
+          modifier mod_copy( mod );
+          if ( !mod.first.parsed )
+            mod_copy.first.type = modifier::name;
           append_string(
             locale::get_time_ampm( dateTime.getHours() >= 12, lang, country ),
-            default_mod, &result_str
+            mod_copy, &result_str
           );
           break;
         }
         case 's': {
-          modifier default_mod( mod );
-          if ( mod.format.empty() )
-            default_mod.min_width = default_mod.max_width = 2;
-          append_number( dateTime.getIntSeconds(), default_mod, &result_str );
+          modifier mod_copy( mod );
+          if ( mod.first.format.empty() )
+            mod_copy.min_width = mod_copy.max_width = 2;
+          append_number( dateTime.getIntSeconds(), mod_copy, &result_str );
           break;
         }
         case 'W':
