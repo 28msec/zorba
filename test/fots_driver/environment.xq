@@ -459,15 +459,20 @@ declare %private function env:get-schema-import(
                                 then xs:string($namespace/@prefix)
                                 else "p"
     return
-      if ($prefix eq "")
-      then concat('import schema default element namespace "',
-                  $env/fots:schema/@uri,
-                  '";&#xA;')
-      else concat('import schema namespace ',
-                  $prefix,
-                  ' = "',
-                  $env/fots:schema/@uri,
-                  '";&#xA;')
+      if (empty($env/fots:schema/@uri))
+      then 'import schema default element namespace "";'
+      else
+      {
+        if ($prefix eq "")
+        then concat('import schema default element namespace "',
+                    $env/fots:schema/@uri,
+                    '";&#xA;')
+        else concat('import schema namespace ',
+                    $prefix,
+                    ' = "',
+                    $env/fots:schema/@uri,
+                    '";&#xA;')
+      }
 };
 
 
