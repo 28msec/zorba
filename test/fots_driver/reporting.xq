@@ -99,7 +99,7 @@ declare %ann:sequential function reporting:run-and-report(
                               $FOTSZorbaManifestPath)
     }
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           $err:description,
@@ -205,7 +205,7 @@ declare %ann:sequential function reporting:W3C-reporting(
       $W3CTemplate
     }
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           $err:description,
@@ -220,7 +220,7 @@ declare %ann:sequential function reporting:W3C-reporting(
  : @param $failures Path to the results fo the FOTS.
  : @return a report of tests run.
  :)
-declare %ann:nondeterministic function reporting:do-reporting(
+declare %ann:nondeterministic function reporting:wiki-report(
   $FOTSCatalogFilePath  as xs:string,
   $resultsFilePath      as xs:string
 ) as element(fots:report)
@@ -266,7 +266,7 @@ try
         $executionTime := sum(for $testCase in $results//fots:test-set[@name = $testSetName]//fots:test-case
                               return xs:dayTimeDuration($testCase/@executionTime))
     where count($totalFailures) gt 0
-    order by count($totalFailures) descending
+    order by count($totalFailures) descending, $testSetName
     return
     <fots:test-set  name="{$testSetName}"
                     noFailures="{count($totalFailures)}"
@@ -282,7 +282,7 @@ try
   
   }
 }
-catch *
+catch err:FODC0002
 {
   error($err:code,
         $err:description,
