@@ -457,22 +457,17 @@ declare %private function env:get-schema-import(
     let $namespace := $env/fots:namespace[@uri eq $env/fots:schema/@uri]
     let $prefix as xs:string := if (exists($namespace))
                                 then xs:string($namespace/@prefix)
-                                else "p"
+                                else ""
     return
-      if (empty($env/fots:schema/@uri))
-      then 'import schema default element namespace "";'
-      else
-      {
-        if ($prefix eq "")
-        then concat('import schema default element namespace "',
-                    $env/fots:schema/@uri,
-                    '";&#xA;')
-        else concat('import schema namespace ',
-                    $prefix,
-                    ' = "',
-                    $env/fots:schema/@uri,
-                    '";&#xA;')
-      }
+      if ($prefix ne "")
+      then concat('import schema namespace ',
+                  $prefix,
+                  ' = "',
+                  $env/fots:schema/@uri,
+                  '";&#xA;')
+      else concat('import schema default element namespace "',
+                  $env/fots:schema/@uri,
+                  '";&#xA;')
 };
 
 
