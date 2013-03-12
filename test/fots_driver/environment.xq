@@ -451,7 +451,7 @@ declare %private function env:get-schema-import(
 ) as xs:string
 {
   if (empty($env))
-  then 
+  then
     ""
   else
     let $namespace := $env/fots:namespace[@uri eq $env/fots:schema/@uri]
