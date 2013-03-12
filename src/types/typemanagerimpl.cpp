@@ -217,9 +217,9 @@ xqtref_t TypeManagerImpl::create_any_function_type(
 
 *******************************************************************************/
 xqtref_t TypeManagerImpl::create_function_type(
-        const std::vector<xqtref_t>& paramTypes,
-        const xqtref_t& returnType,
-        TypeConstants::quantifier_t quant) const
+    const std::vector<xqtref_t>& paramTypes,
+    const xqtref_t& returnType,
+    TypeConstants::quantifier_t quant) const
 {
   return new FunctionXQType(this, paramTypes, returnType, quant);
 }
@@ -831,26 +831,26 @@ xqtref_t TypeManagerImpl::create_value_type(
 
   else if (item->isFunction())
   {
-    const FunctionItem* lFItem = static_cast<const FunctionItem*>(item);
-    const signature& lSig = lFItem->getSignature();
-    const xqtref_t& lRetType = lSig.returnType();
-    const xqtref_t& lNonOptimizedRetType = lSig.getNonOptimizedReturnType();
-    std::vector<xqtref_t> lParamTypes;
+    const FunctionItem* fitem = static_cast<const FunctionItem*>(item);
+    const signature& sig = fitem->getSignature();
+    const xqtref_t& retType = sig.returnType();
+    const xqtref_t& nonOptimizedRetType = sig.getNonOptimizedReturnType();
+    std::vector<xqtref_t> paramTypes;
     
     assert(lFItem->getStartArity() <= lSig.paramCount());
     
-    for (uint32_t i = 0; i < lFItem->getStartArity(); ++i)
+    for (csize i = 0; i < fitem->getStartArity(); ++i)
     {
       // In case some of the parameters of the function have been partially applied,
       // the type of the function needs to be adjusted accordingly -- by skipping
       // the corresponding signature parameter types.
-      if ( ! lFItem->isArgumentApplied(i))
-        lParamTypes.push_back(lSig[i]);
+      if ( ! fitem->isArgumentApplied(i))
+        paramTypes.push_back(sig[i]);
     }
 
     return new FunctionXQType(this,
-                              lParamTypes,
-                              lNonOptimizedRetType.getp() ? lNonOptimizedRetType : lRetType,
+                              paramTypes,
+                              nonOptimizedRetType.getp() ? nonOptimizedRetType : retType,
                               quant);
   }
 
