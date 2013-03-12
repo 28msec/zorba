@@ -105,7 +105,7 @@ static void test_literals() {
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
-  char const *bp;
+  char const *bp = nullptr;
 
   ::memset( &tm, 0, sizeof( tm ) );
   ASSERT_NO_EXCEPTION( bp = time::parse( buf, fmt, lang, country, &tm ) );
@@ -127,7 +127,7 @@ static void test_locale( char const *conv, locale_fn_type locale_fn, int limit,
   ztm tm;
 
   for ( int i = 0; i < limit; ++i ) {
-    char const *bp;
+    char const *bp = nullptr;
     {
       zstring const buf = (*locale_fn)( i, lang, country );
       ::memset( &tm, 0, sizeof( tm ) );
@@ -187,7 +187,7 @@ static void test_range( char const *conv, int low, int high,
   for ( int i = low; i <= high; ++i ) {
     ascii::itoa( i, buf );
     size_t const len = ::strlen( buf );
-    char const *bp;
+    char const *bp = nullptr;
     ::memset( &tm, 0, sizeof( tm ) );
     ASSERT_NO_EXCEPTION( bp = time::parse( buf, conv, lang, country, &tm ) )
     ASSERT_TRUE( bp == buf + len );
@@ -241,7 +241,7 @@ static void test_bad_dates() {
     { "%j %F",  "33 2013-02-01" },      // day is 32
     { "%j %F",  "60 2012-03-01" },      // day is 61
     { "%j %F",  "62 2012-03-01" },      // day is 61
-    0
+    { 0, 0 }
   };
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
@@ -260,7 +260,7 @@ static void test_D() {                  // %m/%d/%y
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
-  char const *bp;
+  char const *bp = nullptr;
 
   ::memset( &tm, 0, sizeof( tm ) );
   ASSERT_NO_EXCEPTION( bp = time::parse( buf, "%D", lang, country, &tm ) )
@@ -275,7 +275,7 @@ static void test_F() {                  // %Y-%m-%d
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
   ztm tm;
-  char const *bp;
+  char const *bp = nullptr;
 
   ::memset( &tm, 0, sizeof( tm ) );
   ASSERT_NO_EXCEPTION( bp = time::parse( buf, "%F", lang, country, &tm ) )
@@ -302,7 +302,7 @@ static void test_invalid_specification() {
   }
 }
 
-static void test_j() {                  // dat of year: 001-366
+static void test_j() {                  // day of year: 001-366
   char const *const buf = "2012-1-2";
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
@@ -310,7 +310,7 @@ static void test_j() {                  // dat of year: 001-366
   char const *bp;
 
   ::memset( &tm, 0, sizeof( tm ) );
-  ASSERT_NO_EXCEPTION( bp = time::parse( buf, "%F", lang, country, &tm ) )
+  ASSERT_NO_EXCEPTION( bp = time::parse( buf, "%j", lang, country, &tm ) )
   ASSERT_TRUE( bp == buf + ::strlen( buf ) );
   ASSERT_TRUE( tm.tm_yday == 0 );
 }
@@ -354,7 +354,7 @@ static void test_zZ() {
   ztm tm;
 
   for ( gmt_test const *p = gmt_tests; p->s_off; ++p ) {
-    char const *bp;
+    char const *bp = nullptr;
     ::memset( &tm, 0, sizeof( tm ) );
     ASSERT_NO_EXCEPTION(
       bp = time::parse( p->s_off, "%z", lang, country, &tm )
@@ -408,6 +408,7 @@ int test_time_parse( int, char*[] ) {
   test_D();
   test_F();
   test_invalid_specification();
+  test_j();
   test_literals();
   test_zZ();
 
