@@ -3352,20 +3352,7 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
   {
     // validate the number of parameters on certain functions
     switch (f->getKind())
-    {
-      case FunctionConsts::FN_NUMBER_0:
-      case FunctionConsts::FN_NUMBER_1:
-      {
-        if (arity != 0 && arity != 1)
-          RAISE_ERROR(err::XPST0017, loc, ERROR_PARAMS("fn:number", ZED(FunctionUndeclared_3), arity));
-        break;
-      }
-      case FunctionConsts::FN_STATIC_BASE_URI_0:
-      {
-        if (arity != 0)
-          RAISE_ERROR(err::XPST0017, loc, ERROR_PARAMS("fn:static-base-uri", ZED(FunctionUndeclared_3), arity));
-        break;
-      }
+    {      
       case FunctionConsts::FN_CONCAT_N:
       {
         if (arity < 2)
@@ -3377,7 +3364,7 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
         break;
     }
 
-    //  Check if it is a zorba builtin function, and if so,
+    // Check if it is a zorba builtin function, and if so,
     // make sure that the module it belongs to has been imported.
     const zstring& fn_ns = qnameItem->getNamespace();
     if (f->isBuiltin() &&
