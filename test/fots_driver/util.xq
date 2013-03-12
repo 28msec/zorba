@@ -96,7 +96,12 @@ declare %ann:nondeterministic function util:get-value(
     where (fn:local-name-from-QName(fn:node-name($node)) eq $node-name)
     return
       if ($node/@file)
-      then fn:unparsed-text(resolve-uri($node/@file, $baseURI))
+      then
+      {
+        if(ends-with($node/@file, ".xml"))
+        then fn:serialize(doc(resolve-uri($node/@file, $baseURI)), $util:serParamXml)
+        else fn:unparsed-text(resolve-uri($node/@file, $baseURI))
+      }
       else fn:string($node)
   }
   catch *

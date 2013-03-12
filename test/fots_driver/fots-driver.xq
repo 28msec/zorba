@@ -416,7 +416,7 @@ declare %ann:sequential function driver:run-fots(
                            $expectedFailures,
                            $cliMode)
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           concat("&#xA;Please make sure the passed 'fotsPath' points to the",
@@ -566,7 +566,7 @@ declare %ann:sequential function driver:run-test-set(
                            $expectedFailures,
                            $cliMode)
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           concat("&#xA;Please make sure the passed 'fotsPath' points to the",
