@@ -94,6 +94,9 @@ declare variable $testCasePrefixes as xs:string external := "";
  : Used by the run-test-sets, run-and-report, and report commands.
  :)
 declare variable $exceptedTestCases as xs:string* := (
+  "fn-function-lookup-428",
+  "fn-function-lookup-430",
+  "fn-function-lookup-432",
   "fn-unparsed-text-lines-052",
   "cbcl-subsequence-011",
   "cbcl-subsequence-012",
