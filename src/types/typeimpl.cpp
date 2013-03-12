@@ -1130,6 +1130,28 @@ bool FunctionXQType::is_equal(
     const TypeManager* tm,
     const FunctionXQType& other) const
 {
+  if (this->get_number_params() != other.get_number_params())
+  {
+    return false;
+  }
+
+  if ( ! TypeOps::is_equal(tm,
+                           *get_return_type().getp(),
+                           *other.get_return_type().getp()))
+  {
+    return false;
+  }
+
+  size_t i = 0;
+  for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
+       lIter != m_param_types.end(); ++lIter, ++i)
+  {
+    if ( ! TypeOps::is_equal(tm, *other[i].getp(), *lIter->getp()))
+    {
+      return false;
+    }
+  }
+
   return true;
 }
 
@@ -1162,9 +1184,9 @@ bool FunctionXQType::is_subtype(
 
   size_t i = 0;
   for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
-       lIter != m_param_types.end(); ++lIter)
+       lIter != m_param_types.end(); ++lIter, ++i)
   {
-    if (!TypeOps::is_subtype(tm, *supertype[i++].getp(), *lIter->getp()))
+    if (!TypeOps::is_subtype(tm, *supertype[i].getp(), *lIter->getp()))
     {
       return false;
     }
