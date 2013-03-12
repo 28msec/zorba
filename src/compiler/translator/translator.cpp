@@ -12076,8 +12076,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   TypeManager* tm = sourceExpr->get_type_manager();
   xqtref_t srcType = sourceExpr->get_return_type();
 
-  if (!theSctx->is_feature_set(feature::hof) ||
-      TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR))
   {
     if (numArgs != 1)
     {
@@ -12137,12 +12136,6 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 void* begin_visit(const LiteralFunctionItem& v)
 {
   TRACE_VISIT();
-
-  if ( !theSctx->is_feature_set(feature::hof) )
-  {
-    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
-    ERROR_PARAMS("higher-order functions (hof)"));
-  }
   return no_state;
 }
 
@@ -12180,12 +12173,6 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 void* begin_visit(const InlineFunction& v)
 {
   TRACE_VISIT();
-
-  if ( !theSctx->is_feature_set(feature::hof) )
-  {
-    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, loc,
-    ERROR_PARAMS("higher-order functions (hof)"));
-  }
 
   // Get the in-scope vars of the scope before opening the new scope for the
   // function devl
