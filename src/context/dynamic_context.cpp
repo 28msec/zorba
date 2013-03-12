@@ -135,12 +135,16 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   if(parent == NULL)
   {
     reset_current_date_time();
+    theLang = locale::get_host_lang();
+    theCountry = locale::get_host_country();
   }
   else
   {
     theCurrentDateTimeStamp = parent->theCurrentDateTimeStamp;
     theTimezone = parent->theTimezone;
     theDefaultCollectionUri = parent->theDefaultCollectionUri;
+    theLang = parent->theLang;
+    theCountry = parent->theCountry;
   }
 }
 

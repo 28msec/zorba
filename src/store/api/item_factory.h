@@ -748,6 +748,19 @@ public:
         zstring& content) = 0;
 
   /**
+   * Create a new namespace node N as the root (and single node) of a new XML tree.
+   *
+   * @param result  The new node N created by this method
+   * @param prefix  The prefix of the new node.
+   * @param uri     The uri of the new node
+   * @return        Always true (if any errors occur, the method throws exceptions)
+   */
+  virtual bool createNamespaceNode(
+        Item_t&  result,
+        zstring& prefix,
+        zstring& uri) = 0;
+
+  /**
    * Create a pending updates list.
    */
   virtual PUL* createPendingUpdateList() = 0;

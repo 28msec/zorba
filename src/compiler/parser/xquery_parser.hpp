@@ -1,10 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/home/markos/zorba/repo/union-sequence-types/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/markos/zorba/repo/ns-nodes/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -86,32 +84,12 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 90 "/home/markos/zorba/repo/union-sequence-types/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 88 "/home/markos/zorba/repo/ns-nodes/build-opt/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
 #include <iostream>
 #include "stack.hh"
-
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-namespace zorba {
-
-/* Line 35 of lalr1.cc  */
-#line 104 "/home/markos/zorba/repo/union-sequence-types/build-opt/src/compiler/parser/xquery_parser.hpp"
-  class position;
-  class location;
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-} // zorba
-
-/* Line 35 of lalr1.cc  */
-#line 114 "/home/markos/zorba/repo/union-sequence-types/build-opt/src/compiler/parser/xquery_parser.hpp"
-
 #include "location.hh"
 
 /* Enabling traces.  */
@@ -132,33 +110,11 @@ namespace zorba {
 # define YYTOKEN_TABLE 0
 #endif
 
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)		\
-do {							\
-  if (N)						\
-    {							\
-      (Current).begin = (Rhs)[1].begin;			\
-      (Current).end   = (Rhs)[N].end;			\
-    }							\
-  else							\
-    {							\
-      (Current).begin = (Current).end = (Rhs)[0].end;	\
-    }							\
-} while (false)
-#endif
-
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 162 "/home/markos/zorba/repo/union-sequence-types/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 118 "/home/markos/zorba/repo/ns-nodes/build-opt/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -170,7 +126,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/home/markos/zorba/repo/union-sequence-types/src/compiler/parser/xquery_parser.y"
+#line 155 "/home/markos/zorba/repo/ns-nodes/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -194,7 +150,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 198 "/home/markos/zorba/repo/union-sequence-types/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 154 "/home/markos/zorba/repo/ns-nodes/build-opt/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -227,314 +183,316 @@ namespace zorba {
      COMP_ELEMENT_QNAME_LBRACE = 276,
      COMP_ATTRIBUTE_QNAME_LBRACE = 277,
      COMP_PI_NCNAME_LBRACE = 278,
-     QNAME_SVAL = 279,
-     EQNAME_SVAL = 280,
-     ANNOTATION_QNAME_SVAL = 281,
-     ANNOTATION_EQNAME_SVAL = 282,
-     QUOTE_ATTR_CONTENT = 283,
-     STRING_LITERAL = 284,
-     XML_COMMENT_LITERAL = 285,
-     DECLARE = 288,
-     MODULE = 289,
-     BLANK = 290,
-     ALLOWING = 291,
-     BASE_URI = 292,
-     BOUNDARY_SPACE = 293,
-     COMMENT = 294,
-     CONSTRUCTION = 295,
-     COPY_NAMESPACES = 296,
-     COUNT = 297,
-     DOCUMENT = 298,
-     DOCUMENT_NODE = 299,
-     ELEMENT = 300,
-     FOR = 301,
-     FUNCTION = 302,
-     IF = 303,
-     IMPORT = 304,
-     INSTANCE = 305,
-     LET = 306,
-     MOST = 307,
-     NEXT = 308,
-     NO = 309,
-     ONLY = 310,
-     OPTION = 311,
-     ORDERING = 312,
-     PREVIOUS = 313,
-     PROCESSING_INSTRUCTION = 314,
-     SCHEMA = 315,
-     SCHEMA_ATTRIBUTE = 316,
-     SCHEMA_ELEMENT = 317,
-     SEQUENTIAL = 318,
-     SET = 319,
-     SIMPLE = 320,
-     SLIDING = 321,
-     SOME = 322,
-     SPACE = 323,
-     STABLE = 324,
-     TEXT = 325,
-     TUMBLING = 326,
-     SWITCH = 327,
-     TYPESWITCH = 328,
-     UPDATING = 329,
-     VALIDATE = 330,
-     TYPE = 331,
-     WHEN = 332,
-     WORD = 333,
-     DECIMAL_FORMAT = 334,
-     DECIMAL_SEPARATOR = 335,
-     GROUPING_SEPARATOR = 336,
-     INFINITY_VALUE = 337,
-     MINUS_SIGN = 338,
-     NaN = 339,
-     PERCENT = 340,
-     PER_MILLE = 341,
-     ZERO_DIGIT = 342,
-     DIGIT = 343,
-     PATTERN_SEPARATOR = 344,
-     ANCESTOR = 345,
-     ANCESTOR_OR_SELF = 346,
-     AND = 347,
-     APOS = 348,
-     AS = 349,
-     ASCENDING = 350,
-     AT = 351,
-     ATTRIBUTE = 352,
-     AT_SIGN = 353,
-     CONCAT = 354,
-     CASE = 355,
-     CASTABLE = 356,
-     CAST = 357,
-     CDATA_BEGIN = 358,
-     CDATA_END = 359,
-     CHILD = 360,
-     COLLATION = 361,
-     COMMA = 362,
-     COMMENT_BEGIN = 363,
-     COMMENT_END = 364,
-     DECIMAL_LITERAL = 365,
-     CONTEXT = 366,
-     VARIABLE = 367,
-     DEFAULT = 368,
-     DESCENDANT = 369,
-     DESCENDANT_OR_SELF = 370,
-     DESCENDING = 371,
-     DIV = 372,
-     DOLLAR = 373,
-     DOT = 374,
-     DOT_DOT = 375,
-     COLON = 376,
-     DOUBLE_COLON = 377,
-     DOUBLE_LBRACE = 378,
-     DOUBLE_LITERAL = 379,
-     DOUBLE_RBRACE = 380,
-     ELSE = 381,
-     _EMPTY = 382,
-     GREATEST = 383,
-     LEAST = 384,
-     EMPTY_TAG_END = 385,
-     ENCODING = 386,
-     EQUALS = 387,
-     ESCAPE_APOS = 388,
-     ESCAPE_QUOTE = 389,
-     EVERY = 390,
-     EXCEPT = 391,
-     EXTERNAL = 392,
-     FOLLOWING = 393,
-     FOLLOWING_SIBLING = 394,
-     FOLLOWS = 395,
-     GE = 396,
-     GETS = 397,
-     GT = 398,
-     HOOK = 399,
-     HASH = 400,
-     IDIV = 401,
-     _IN = 402,
-     INHERIT = 403,
-     INTEGER_LITERAL = 404,
-     INTERSECT = 405,
-     IS = 406,
-     ITEM = 407,
-     LBRACE = 408,
-     LBRACK = 409,
-     LE = 410,
-     LPAR = 411,
-     LT_OR_START_TAG = 412,
-     MINUS = 413,
-     MOD = 414,
-     NAMESPACE = 415,
-     _NAN = 416,
-     NE = 417,
-     NODECOMP = 418,
-     NOT_OPERATOR_KEYWORD = 419,
-     NO_INHERIT = 420,
-     NO_PRESERVE = 421,
-     OR = 422,
-     ORDER = 423,
-     ORDERED = 424,
-     BY = 425,
-     GROUP = 426,
-     PARENT = 427,
-     PERCENTAGE = 428,
-     PI_BEGIN = 429,
-     PI_END = 430,
-     PLUS = 431,
-     PRAGMA_BEGIN = 432,
-     PRAGMA_END = 433,
-     PRECEDES = 434,
-     PRECEDING = 435,
-     PRECEDING_SIBLING = 436,
-     PRESERVE = 437,
-     QUOTE = 438,
-     RBRACE = 439,
-     RBRACK = 440,
-     RETURN = 441,
-     RPAR = 442,
-     SATISFIES = 443,
-     SELF = 444,
-     SEMI = 445,
-     SLASH = 446,
-     SLASH_SLASH = 447,
-     BANG = 448,
-     STAR = 449,
-     START_TAG_END = 450,
-     STRIP = 451,
-     TAG_END = 452,
-     THEN = 453,
-     TO = 454,
-     TREAT = 455,
-     UNION = 456,
-     UNORDERED = 457,
-     VAL_EQ = 458,
-     VAL_GE = 459,
-     VAL_GT = 460,
-     VAL_LE = 461,
-     VAL_LT = 462,
-     VAL_NE = 463,
-     VALUECOMP = 464,
-     VBAR = 465,
-     EMPTY_SEQUENCE = 466,
-     WHERE = 467,
-     XML_COMMENT_BEGIN = 468,
-     XML_COMMENT_END = 469,
-     XQUERY = 470,
-     VERSION = 471,
-     START = 472,
-     AFTER = 473,
-     BEFORE = 474,
-     REVALIDATION = 475,
-     _STRICT = 476,
-     LAX = 477,
-     SKIP = 478,
-     _DELETE = 479,
-     NODE = 480,
-     INSERT = 481,
-     NODES = 482,
-     RENAME = 483,
-     REPLACE = 484,
-     VALUE = 485,
-     OF = 486,
-     FIRST = 487,
-     INTO = 488,
-     LAST = 489,
-     MODIFY = 490,
-     COPY = 491,
-     WITH = 492,
-     BREAK = 493,
-     CONTINUE = 494,
-     EXIT = 495,
-     LOOP = 496,
-     RETURNING = 497,
-     WHILE = 498,
-     TRY = 499,
-     CATCH = 500,
-     USING = 501,
-     ALL = 502,
-     ANY = 503,
-     CONTAINS = 504,
-     CONTENT = 505,
-     DIACRITICS = 506,
-     DIFFERENT = 507,
-     DISTANCE = 508,
-     END = 509,
-     ENTIRE = 510,
-     EXACTLY = 511,
-     FROM = 512,
-     FTAND = 513,
-     FTNOT = 514,
-     NOT = 515,
-     FT_OPTION = 516,
-     FTOR = 517,
-     INSENSITIVE = 518,
-     LANGUAGE = 519,
-     LEVELS = 520,
-     LOWERCASE = 521,
-     OCCURS = 522,
-     PARAGRAPH = 523,
-     PARAGRAPHS = 524,
-     PHRASE = 525,
-     RELATIONSHIP = 526,
-     SAME = 527,
-     SCORE = 528,
-     SENSITIVE = 529,
-     SENTENCE = 530,
-     SENTENCES = 531,
-     STEMMING = 532,
-     STOP = 533,
-     THESAURUS = 534,
-     TIMES = 535,
-     UPPERCASE = 536,
-     WEIGHT = 537,
-     WILDCARDS = 538,
-     WINDOW = 539,
-     WITHOUT = 540,
-     WORDS = 541,
-     COLLECTION = 542,
-     CONSTOPT = 543,
-     APPEND_ONLY = 544,
-     QUEUE = 545,
-     MUTABLE = 546,
-     READ_ONLY = 547,
-     UNIQUE = 548,
-     NON = 549,
-     INDEX = 550,
-     MANUALLY = 551,
-     AUTOMATICALLY = 552,
-     MAINTAINED = 553,
-     ON = 554,
-     RANGE = 555,
-     EQUALITY = 556,
-     GENERAL = 557,
-     INTEGRITY = 558,
-     CONSTRAINT = 559,
-     CHECK = 560,
-     KEY = 561,
-     FOREACH = 562,
-     FOREIGN = 563,
-     KEYS = 564,
-     L_SIMPLE_OBJ_UNION = 565,
-     R_SIMPLE_OBJ_UNION = 566,
-     L_ACCUMULATOR_OBJ_UNION = 567,
-     R_ACCUMULATOR_OBJ_UNION = 568,
-     JSON = 569,
-     APPEND = 570,
-     POSITION = 571,
-     OBJECT = 572,
-     ARRAY = 573,
-     JSON_ITEM = 574,
-     STRUCTURED_ITEM = 575,
-     BYTE_ORDER_MARK_UTF8 = 576,
-     SHEBANG = 577,
-     RANGE_REDUCE = 578,
-     SEQUENCE_TYPE_REDUCE = 579,
-     ADDITIVE_REDUCE = 580,
-     UNION_REDUCE = 581,
-     INTERSECT_EXCEPT_REDUCE = 582,
-     QVARINDECLLIST_REDUCE = 583,
-     COMMA_DOLLAR = 584,
-     UNARY_PREC = 585,
-     STEP_REDUCE = 586,
-     SIMPLEMAPEXPR_REDUCE = 587,
-     MULTIPLICATIVE_REDUCE = 588
+     COMP_NS_NCNAME_LBRACE = 279,
+     QNAME_SVAL = 280,
+     EQNAME_SVAL = 281,
+     ANNOTATION_QNAME_SVAL = 282,
+     ANNOTATION_EQNAME_SVAL = 283,
+     QUOTE_ATTR_CONTENT = 284,
+     STRING_LITERAL = 285,
+     XML_COMMENT_LITERAL = 286,
+     DECLARE = 289,
+     MODULE = 290,
+     BLANK = 291,
+     ALLOWING = 292,
+     BASE_URI = 293,
+     BOUNDARY_SPACE = 294,
+     COMMENT = 295,
+     CONSTRUCTION = 296,
+     COPY_NAMESPACES = 297,
+     COUNT = 298,
+     DOCUMENT = 299,
+     DOCUMENT_NODE = 300,
+     ELEMENT = 301,
+     FOR = 302,
+     FUNCTION = 303,
+     IF = 304,
+     IMPORT = 305,
+     INSTANCE = 306,
+     LET = 307,
+     MOST = 308,
+     NS_NODE = 309,
+     NEXT = 310,
+     NO = 311,
+     ONLY = 312,
+     OPTION = 313,
+     ORDERING = 314,
+     PREVIOUS = 315,
+     PROCESSING_INSTRUCTION = 316,
+     SCHEMA = 317,
+     SCHEMA_ATTRIBUTE = 318,
+     SCHEMA_ELEMENT = 319,
+     SEQUENTIAL = 320,
+     SET = 321,
+     SIMPLE = 322,
+     SLIDING = 323,
+     SOME = 324,
+     SPACE = 325,
+     STABLE = 326,
+     TEXT = 327,
+     TUMBLING = 328,
+     SWITCH = 329,
+     TYPESWITCH = 330,
+     UPDATING = 331,
+     VALIDATE = 332,
+     TYPE = 333,
+     WHEN = 334,
+     WORD = 335,
+     DECIMAL_FORMAT = 336,
+     DECIMAL_SEPARATOR = 337,
+     GROUPING_SEPARATOR = 338,
+     INFINITY_VALUE = 339,
+     MINUS_SIGN = 340,
+     NaN = 341,
+     PERCENT = 342,
+     PER_MILLE = 343,
+     ZERO_DIGIT = 344,
+     DIGIT = 345,
+     PATTERN_SEPARATOR = 346,
+     ANCESTOR = 347,
+     ANCESTOR_OR_SELF = 348,
+     AND = 349,
+     APOS = 350,
+     AS = 351,
+     ASCENDING = 352,
+     AT = 353,
+     ATTRIBUTE = 354,
+     AT_SIGN = 355,
+     CONCAT = 356,
+     CASE = 357,
+     CASTABLE = 358,
+     CAST = 359,
+     CDATA_BEGIN = 360,
+     CDATA_END = 361,
+     CHILD = 362,
+     COLLATION = 363,
+     COMMA = 364,
+     COMMENT_BEGIN = 365,
+     COMMENT_END = 366,
+     DECIMAL_LITERAL = 367,
+     CONTEXT = 368,
+     VARIABLE = 369,
+     DEFAULT = 370,
+     DESCENDANT = 371,
+     DESCENDANT_OR_SELF = 372,
+     DESCENDING = 373,
+     DIV = 374,
+     DOLLAR = 375,
+     DOT = 376,
+     DOT_DOT = 377,
+     COLON = 378,
+     DOUBLE_COLON = 379,
+     DOUBLE_LBRACE = 380,
+     DOUBLE_LITERAL = 381,
+     DOUBLE_RBRACE = 382,
+     ELSE = 383,
+     _EMPTY = 384,
+     GREATEST = 385,
+     LEAST = 386,
+     EMPTY_TAG_END = 387,
+     ENCODING = 388,
+     EQUALS = 389,
+     ESCAPE_APOS = 390,
+     ESCAPE_QUOTE = 391,
+     EVERY = 392,
+     EXCEPT = 393,
+     EXTERNAL = 394,
+     FOLLOWING = 395,
+     FOLLOWING_SIBLING = 396,
+     FOLLOWS = 397,
+     GE = 398,
+     GETS = 399,
+     GT = 400,
+     HOOK = 401,
+     HASH = 402,
+     IDIV = 403,
+     _IN = 404,
+     INHERIT = 405,
+     INTEGER_LITERAL = 406,
+     INTERSECT = 407,
+     IS = 408,
+     ITEM = 409,
+     LBRACE = 410,
+     LBRACK = 411,
+     LE = 412,
+     LPAR = 413,
+     LT_OR_START_TAG = 414,
+     MINUS = 415,
+     MOD = 416,
+     NAMESPACE = 417,
+     _NAN = 418,
+     NE = 419,
+     NODECOMP = 420,
+     NOT_OPERATOR_KEYWORD = 421,
+     NO_INHERIT = 422,
+     NO_PRESERVE = 423,
+     OR = 424,
+     ORDER = 425,
+     ORDERED = 426,
+     BY = 427,
+     GROUP = 428,
+     PARENT = 429,
+     PERCENTAGE = 430,
+     PI_BEGIN = 431,
+     PI_END = 432,
+     PLUS = 433,
+     PRAGMA_BEGIN = 434,
+     PRAGMA_END = 435,
+     PRECEDES = 436,
+     PRECEDING = 437,
+     PRECEDING_SIBLING = 438,
+     PRESERVE = 439,
+     QUOTE = 440,
+     RBRACE = 441,
+     RBRACK = 442,
+     RETURN = 443,
+     RPAR = 444,
+     SATISFIES = 445,
+     SELF = 446,
+     SEMI = 447,
+     SLASH = 448,
+     SLASH_SLASH = 449,
+     BANG = 450,
+     STAR = 451,
+     START_TAG_END = 452,
+     STRIP = 453,
+     TAG_END = 454,
+     THEN = 455,
+     TO = 456,
+     TREAT = 457,
+     UNION = 458,
+     UNORDERED = 459,
+     VAL_EQ = 460,
+     VAL_GE = 461,
+     VAL_GT = 462,
+     VAL_LE = 463,
+     VAL_LT = 464,
+     VAL_NE = 465,
+     VALUECOMP = 466,
+     VBAR = 467,
+     EMPTY_SEQUENCE = 468,
+     WHERE = 469,
+     XML_COMMENT_BEGIN = 470,
+     XML_COMMENT_END = 471,
+     XQUERY = 472,
+     VERSION = 473,
+     START = 474,
+     AFTER = 475,
+     BEFORE = 476,
+     REVALIDATION = 477,
+     _STRICT = 478,
+     LAX = 479,
+     SKIP = 480,
+     _DELETE = 481,
+     NODE = 482,
+     INSERT = 483,
+     NODES = 484,
+     RENAME = 485,
+     REPLACE = 486,
+     VALUE = 487,
+     OF = 488,
+     FIRST = 489,
+     INTO = 490,
+     LAST = 491,
+     MODIFY = 492,
+     COPY = 493,
+     WITH = 494,
+     BREAK = 495,
+     CONTINUE = 496,
+     EXIT = 497,
+     LOOP = 498,
+     RETURNING = 499,
+     WHILE = 500,
+     TRY = 501,
+     CATCH = 502,
+     USING = 503,
+     ALL = 504,
+     ANY = 505,
+     CONTAINS = 506,
+     CONTENT = 507,
+     DIACRITICS = 508,
+     DIFFERENT = 509,
+     DISTANCE = 510,
+     END = 511,
+     ENTIRE = 512,
+     EXACTLY = 513,
+     FROM = 514,
+     FTAND = 515,
+     FTNOT = 516,
+     NOT = 517,
+     FT_OPTION = 518,
+     FTOR = 519,
+     INSENSITIVE = 520,
+     LANGUAGE = 521,
+     LEVELS = 522,
+     LOWERCASE = 523,
+     OCCURS = 524,
+     PARAGRAPH = 525,
+     PARAGRAPHS = 526,
+     PHRASE = 527,
+     RELATIONSHIP = 528,
+     SAME = 529,
+     SCORE = 530,
+     SENSITIVE = 531,
+     SENTENCE = 532,
+     SENTENCES = 533,
+     STEMMING = 534,
+     STOP = 535,
+     THESAURUS = 536,
+     TIMES = 537,
+     UPPERCASE = 538,
+     WEIGHT = 539,
+     WILDCARDS = 540,
+     WINDOW = 541,
+     WITHOUT = 542,
+     WORDS = 543,
+     COLLECTION = 544,
+     CONSTOPT = 545,
+     APPEND_ONLY = 546,
+     QUEUE = 547,
+     MUTABLE = 548,
+     READ_ONLY = 549,
+     UNIQUE = 550,
+     NON = 551,
+     INDEX = 552,
+     MANUALLY = 553,
+     AUTOMATICALLY = 554,
+     MAINTAINED = 555,
+     ON = 556,
+     RANGE = 557,
+     EQUALITY = 558,
+     GENERAL = 559,
+     INTEGRITY = 560,
+     CONSTRAINT = 561,
+     CHECK = 562,
+     KEY = 563,
+     FOREACH = 564,
+     FOREIGN = 565,
+     KEYS = 566,
+     L_SIMPLE_OBJ_UNION = 567,
+     R_SIMPLE_OBJ_UNION = 568,
+     L_ACCUMULATOR_OBJ_UNION = 569,
+     R_ACCUMULATOR_OBJ_UNION = 570,
+     JSON = 571,
+     APPEND = 572,
+     POSITION = 573,
+     OBJECT = 574,
+     ARRAY = 575,
+     JSON_ITEM = 576,
+     STRUCTURED_ITEM = 577,
+     BYTE_ORDER_MARK_UTF8 = 578,
+     SHEBANG = 579,
+     RANGE_REDUCE = 580,
+     SEQUENCE_TYPE_REDUCE = 581,
+     ADDITIVE_REDUCE = 582,
+     UNION_REDUCE = 583,
+     INTERSECT_EXCEPT_REDUCE = 584,
+     QVARINDECLLIST_REDUCE = 585,
+     COMMA_DOLLAR = 586,
+     UNARY_PREC = 587,
+     STEP_REDUCE = 588,
+     SIMPLEMAPEXPR_REDUCE = 589,
+     MULTIPLICATIVE_REDUCE = 590
    };
 
     };
@@ -608,6 +566,14 @@ namespace zorba {
     /// The location stack.
     location_stack_type yylocation_stack_;
 
+    /// Whether the given \c yypact_ value indicates a defaulted state.
+    /// \param yyvalue   the value to check
+    static bool yy_pact_value_is_default_ (int yyvalue);
+
+    /// Whether the given \c yytable_ value indicates a syntax error.
+    /// \param yyvalue   the value to check
+    static bool yy_table_value_is_error_ (int yyvalue);
+
     /// Internal symbol numbers.
     typedef unsigned short int token_number_type;
     /* Tables.  */
@@ -615,7 +581,7 @@ namespace zorba {
     static const short int yypact_[];
     static const short int yypact_ninf_;
 
-    /// For a state, default rule to reduce.
+    /// For a state, default reduction number.
     /// Unless\a  yytable_ specifies something else to do.
     /// Zero means the default is an error.
     static const unsigned short int yydefact_[];
@@ -646,10 +612,8 @@ namespace zorba {
     static const char* const yytname_[];
 #endif
 
-#if YYERROR_VERBOSE
     /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    virtual std::string yytnamerr_ (const char *n);
-#endif
+    static std::string yytnamerr_ (const char *n);
 
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
@@ -705,13 +669,10 @@ namespace zorba {
     xquery_driver& driver;
   };
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 715 "/home/markos/zorba/repo/union-sequence-types/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 676 "/home/markos/zorba/repo/ns-nodes/build-opt/src/compiler/parser/xquery_parser.hpp"
 
 
 

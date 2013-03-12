@@ -189,7 +189,7 @@ nextclause:
           return;
         }
 
-        case flwor_clause::order_clause:
+        case flwor_clause::orderby_clause:
         {
           orderby_clause* oc = static_cast<orderby_clause *>(c);
 
@@ -384,7 +384,7 @@ nextclause:
         }
       }
 
-      else if (c->get_kind() == flwor_clause::order_clause)
+      else if (c->get_kind() == flwor_clause::orderby_clause)
       {
         oc = static_cast<orderby_clause *>(c);
 
@@ -561,6 +561,19 @@ nextclause:
 
     if (attrExpr->theValueExpr)
       EXPR_ITER_NEXT(attrExpr->theValueExpr);
+
+    EXPR_ITER_END();
+    return;
+  }
+
+  case namespace_expr_kind:
+  {
+    namespace_expr* nsExpr = static_cast<namespace_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(nsExpr->thePrefixExpr);
+    EXPR_ITER_NEXT(nsExpr->theUriExpr);
 
     EXPR_ITER_END();
     return;

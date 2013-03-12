@@ -161,8 +161,9 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         
     if (!f->isUdf())
     {
-      if (FunctionConsts::FN_ERROR_0 <= f->getKind() &&
-          f->getKind() <= FunctionConsts::FN_TRACE_2)
+      if (f->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_2 ||
+          (FunctionConsts::FN_ERROR_0 <= f->getKind() &&
+           f->getKind() <= FunctionConsts::FN_TRACE_2))
       {
         curNonDiscardable = ANNOTATION_TRUE_FIXED;
         curUnfoldable = ANNOTATION_TRUE_FIXED;
@@ -562,7 +563,7 @@ static bool execute(
   - Replace empty(E) with true if the return type of E is the emtpy sequence, or
     false if the return type of E has QUANT_ONE or QUANT_PLUS.
   - Replace exists(E) with false if the return type of E is the emtpy sequence, or
-    truee if the return type of E has QUANT_ONE or QUANT_PLUS.
+    true if the return type of E has QUANT_ONE or QUANT_PLUS.
 
   Replace EBV(E) with true if the return type of E is subtype on node()+ and E
   is not NONDISCARDABLE.

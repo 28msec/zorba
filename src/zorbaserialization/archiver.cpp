@@ -67,7 +67,9 @@ archive_field::archive_field(
   theOnlyForEval(only_for_eval),
   theAllowDelay2(allow_delay)
 {
-  assert(theKind == ARCHIVE_FIELD_NORMAL);
+  assert(theKind == ARCHIVE_FIELD_NORMAL || 
+         (theKind == ARCHIVE_FIELD_PTR && 
+          (type == TYPE_COLLATOR || type == TYPE_STD_STRING)));
 
   theValue.uint64v = 0;
 

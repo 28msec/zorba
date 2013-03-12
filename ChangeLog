@@ -6,6 +6,8 @@ New Features:
   * Typeswitch expression extended to allow union of types in each case clause,
     as specified by XQuery v3.0
   * In C++ API, added optional XML formatting of exceptions.
+  * Bind zerr:line-number-end and zerr:column-number-end variables in the body
+    of a catch clause.
   * New C++ and XQuery function (see module http://www.zorba-xquery.com/modules/item)
     to estimate the size an item allocates in memory.
   * Extended sequence types to include unions, as specified by XQuery v3.0
@@ -14,17 +16,23 @@ New Features:
   * Added millis-to-dateTime() function in datetime module.
   * fn:trace outputs "empty-sequence()" if the input is the empty-sequence.
   * Added xqxq:variable-value function.
+  * Added canonicalize function to modules/xml.
   * Added support for xs:dateTimeStamp type from XMLSchema 1.1, bug #924754.
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
     parameter into collection skip if $sourceSeq parameter is from a
     collection).
+  * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:
   * Fixed bug #1124273 (xqdoc crash because of annotation literals)
   * Fixed bug #867027 (XQST0059 error messages inconsistent)
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
+  * Fixed bug in index join rule (copy var ids after cloning index domain expr).
+  * Added missing wrapper expressions around some variable references.
+  * Fixed bug in the throwing of error XQTY0086 during node construction.
+  * Fixed bug #1148335 (where-clause expression was not always reset when it should be)
   * Fixed bug #1122396 (Associate origin/destination URI to I/O stream)
   * Fixed bug #1111786 (xml/json parse error location in catch clause).
   * NaN items are considered equal to each other during grouping
@@ -37,7 +45,12 @@ Bug Fixes/Other Changes:
   * Fixed bug in computing the static type of an allowing-empty FOR variable.
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
   * Fixed bug #1099535 (xml:parse endless loop)
+  * Fixed bug: jsoniq constructor should not be const-folded
   * Fixed bug #866958 (Parsing error not explicit enough)
+  * Fixed bug #1152834 (bug in computing the scripting kind of array and object
+    constructor exprs)
+  * Fixed bug #1125444 (input group-by exprs were not treated by index-flwor_vars()
+    functoin, leading to erroneous loop hoisting).
   * Fixed bug #867068 (Incorrect usage of XQDY0027)
   * Fixed bug #1023362 (xsi:type attribute ignored during validation)
 
