@@ -1947,10 +1947,34 @@ static void readDocument(
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
   }
+
+
   StreamReleaser lStreamReleaser = lStreamResource->getStreamReleaser();
   std::unique_ptr<std::istream, StreamReleaser> lStream(lStreamResource->getStream(), lStreamReleaser);
-
+  
   lStreamResource->setStreamReleaser(nullptr);  
+
+   //Check for bom utf-8 start line and remove it since bom in utf-8 is practically useless
+  if ( lStream.get()->peek() == 0xEF )
+  {
+    lStream.get()->get();
+    if ( lStream.get()->peek() == 0xBB )
+    {
+      lStream.get()->get();
+      if ( lStream.get()->peek() == 0xBF )
+      {
+        lStream.get()->get();
+      }
+      else
+      {
+        lStream.get()->unget();
+      }
+    }
+    else
+    {
+      lStream.get()->unget();
+    }
+  }
 
   //check if encoding is needed
   if (transcode::is_necessary(aEncoding.c_str()))
@@ -2163,6 +2187,28 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   lStreamReleaser = state->theStreamResource->getStreamReleaser();
   state->theStream = new std::unique_ptr<std::istream, StreamReleaser> (state->theStreamResource->getStream(), lStreamReleaser);
   state->theStreamResource->setStreamReleaser(nullptr);
+
+  //Check for bom utf-8 start line and remove it since bom in utf-8 is practically useless
+  if ( state->theStream->get()->peek() == 0xEF )
+  {
+    state->theStream->get()->get();
+    if ( state->theStream->get()->peek() == 0xBB )
+    {
+      state->theStream->get()->get();
+      if ( state->theStream->get()->peek() == 0xBF )
+      {
+        state->theStream->get()->get();
+      }
+      else
+      {
+        state->theStream->get()->unget();
+      }
+    }
+    else
+    {
+      state->theStream->get()->unget();
+    }
+  }
 
   //check if encoding is needed
   if (transcode::is_necessary(encodingString.c_str()))
