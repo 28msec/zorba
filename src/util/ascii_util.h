@@ -665,9 +665,9 @@ bool replace_all( StringType &s, FromStringType const &from,
 
 /**
  * A type that can hold the largest possible C string equivalent of the largest
- * possible integral value.
+ * possible integral value (assuming 8 bytes for a <code>long long</code>).
  */
-typedef char itoa_buf_type[48];
+typedef char itoa_buf_type[ 20 + 1 /* for null */ ];
 
 /**
  * Converts a <code>long long</code> to a C string.
