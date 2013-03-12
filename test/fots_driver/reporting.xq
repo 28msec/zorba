@@ -266,7 +266,7 @@ try
         $executionTime := sum(for $testCase in $results//fots:test-set[@name = $testSetName]//fots:test-case
                               return xs:dayTimeDuration($testCase/@executionTime))
     where count($totalFailures) gt 0
-    order by count($totalFailures) descending
+    order by count($totalFailures) descending, $testSetName
     return
     <fots:test-set  name="{$testSetName}"
                     noFailures="{count($totalFailures)}"
