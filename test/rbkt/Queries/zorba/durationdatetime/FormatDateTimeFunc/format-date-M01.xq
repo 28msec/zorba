@@ -1,2 +1,2 @@
 (: M as a 2-digit number :)
-fn:format-date(xs:date("2010-12-31"), "[M01]") eq "12"
+fn:format-date(xs:date("2010-01-31"), "[M01]") eq "01"

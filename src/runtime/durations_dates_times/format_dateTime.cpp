@@ -91,8 +91,10 @@ struct modifier {
 
   typedef unsigned long width_type;
 
+  bool is_set;
+
   first_type first;
-  zstring first_string;
+  zstring format;
   bool first_has_grouping_separators;
   unicode::code_point first_zero;
 
@@ -105,10 +107,6 @@ struct modifier {
 
   bool gt_max_width( width_type n ) const {
     return max_width > 0 && n > max_width;
-  }
-
-  bool is_set() const {
-    return !first_string.empty();
   }
 
   zstring const& pad_space( zstring *s ) const {
@@ -128,6 +126,7 @@ struct modifier {
   }
 
   modifier() {
+    is_set = false;
     first = arabic;
     first_has_grouping_separators = false;
     first_zero = '0';
@@ -448,12 +447,12 @@ static void append_timezone( char component, TimeZone const &tz,
   zstring format, tmp;
   bool has_grouping_separators;
 
-  if ( mod.is_set() ) {
-    format = mod.first_string;
-    has_grouping_separators = mod.first_has_grouping_separators;
-  } else {
+  if ( mod.format.empty() ) {
     format = "01:01";
     has_grouping_separators = true;
+  } else {
+    format = mod.format;
+    has_grouping_separators = mod.first_has_grouping_separators;
   }
 
   int hour = tz.getHours();
@@ -639,7 +638,7 @@ static void append_weekday( long day, iso639_1::type lang,
   }
 
   modifier default_mod( mod );
-  if ( !mod.is_set() )
+  if ( !mod.is_set )
     default_mod.first = modifier::name;
 
   append_component( day, name, default_mod, dest );
@@ -669,7 +668,7 @@ static void parse_first_modifier( zstring const &picture_str,
 
   utf8_string<zstring const> const u_picture_str( picture_str );
   utf8_string<zstring const>::const_iterator u( u_picture_str.current( j ) );
-  utf8_string<zstring> u_mod_first_string( mod->first_string );
+  utf8_string<zstring> u_mod_format( mod->format );
   unicode::code_point cp = *u;
 
   if ( cp != '#' && is_grouping_separator( cp ) ) {
@@ -692,16 +691,9 @@ static void parse_first_modifier( zstring const &picture_str,
 
   if ( cp == '#' || unicode::is_Nd( cp, &zero[0] ) ) {
     bool got_grouping_separator = false;
-    bool got_mandatory_digit;
+    bool got_mandatory_digit = cp != '#';
 
-    if ( cp != '#' ) {
-      got_mandatory_digit = true;
-      mod->first = modifier::arabic;
-    } else
-      got_mandatory_digit = false;
-
-    u_mod_first_string = *u;
-
+    u_mod_format = *u;
     while ( ++u != u_picture_str.end() ) {
       cp = *u;
       if ( cp == '#' ) {
@@ -721,26 +713,37 @@ static void parse_first_modifier( zstring const &picture_str,
         }
         got_grouping_separator = false;
       } else if ( unicode::is_Nd( cp, &zero[ got_mandatory_digit ] ) ) {
-        if ( got_mandatory_digit && zero[1] != zero[0] ) {
+        if ( got_mandatory_digit ) {
+          if ( zero[1] != zero[0] ) {
+            //
+            // Ibid: All mandatory-digit-signs within the format token must be
+            // from the same digit family, where a digit family is a sequence
+            // of ten consecutive characters in Unicode category Nd, having
+            // digit values 0 through 9.
+            //
+            throw XQUERY_EXCEPTION(
+              err::FOFD1340,
+              ERROR_PARAMS(
+                picture_str,
+                ZED( FOFD1340_DigitNotSameFamily_34 ),
+                unicode::printable_cp( cp ),
+                unicode::printable_cp( zero[1] )
+              ),
+              ERROR_LOC( loc )
+            );
+          }
           //
-          // Ibid: All mandatory-digit-signs within the format token must be
-          // from the same digit family, where a digit family is a sequence of
-          // ten consecutive characters in Unicode category Nd, having digit
-          // values 0 through 9.
+          // Ibid: A format token containing more than one digit, such as 001
+          // or 9999, sets the minimum and maximum width to the number of
+          // digits appearing in the format token.
           //
-          throw XQUERY_EXCEPTION(
-            err::FOFD1340,
-            ERROR_PARAMS(
-              picture_str,
-              ZED( FOFD1340_DigitNotSameFamily_34 ),
-              unicode::printable_cp( cp ),
-              unicode::printable_cp( zero[1] )
-            ),
-            ERROR_LOC( loc )
-          );
-        }
+          if ( !mod->min_width )
+            mod->min_width = mod->max_width = 2;
+          else
+            mod->min_width = ++mod->max_width;
+        } else
+          got_mandatory_digit = true;
         got_grouping_separator = false;
-        got_mandatory_digit = true;
       } else if ( cp == ']' )
         break;
       else if ( unicode::is_space( cp ) )
@@ -766,10 +769,7 @@ static void parse_first_modifier( zstring const &picture_str,
       } else
         break;
 
-      u_mod_first_string += cp;
-      if ( !mod->min_width )
-        mod->min_width = 1;
-      mod->max_width = ++mod->min_width;
+      u_mod_format += cp;
     } // while
     if ( got_grouping_separator ) {
       //
@@ -799,7 +799,7 @@ static void parse_first_modifier( zstring const &picture_str,
     mod->first_zero = zero[0];
     j = u.base();
   } else {
-    switch ( *j ) {
+    switch ( *j++ ) {
       case 'A':
         mod->first = modifier::ALPHA;
         break;
@@ -813,8 +813,8 @@ static void parse_first_modifier( zstring const &picture_str,
         mod->first = modifier::roman;
         break;
       case 'N':
-        if ( ztd::peek( picture_str, j ) == 'n' )
-          ++j, mod->first = modifier::Name;
+        if ( j != picture_str.end() && *j == 'n' )
+          mod->first = modifier::Name, ++j;
         else
           mod->first = modifier::NAME;
         break;
@@ -822,8 +822,8 @@ static void parse_first_modifier( zstring const &picture_str,
         mod->first = modifier::name;
         break;
       case 'W':
-        if ( ztd::peek( picture_str, j ) == 'w' )
-          ++j, mod->first = modifier::Words;
+        if ( j != picture_str.end() && *j == 'w' )
+          mod->first = modifier::Words, ++j;
         else
           mod->first = modifier::WORDS;
         break;
@@ -841,6 +841,7 @@ static void parse_first_modifier( zstring const &picture_str,
         mod->first = modifier::arabic;
     } // switch
   }
+  mod->is_set = true;
 }
 
 static void parse_second_modifier( zstring const &picture_str,
@@ -1097,7 +1098,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       switch ( component ) {
         case 'C': { // calendar
           modifier default_mod( mod );
-          if ( !mod.is_set() )
+          if ( !mod.is_set )
             default_mod.first = modifier::name;
           append_string( "gregorian", default_mod, &result_str );
           break;
@@ -1110,7 +1111,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           break;
         case 'E': { // era
           modifier default_mod( mod );
-          if ( !mod.is_set() )
+          if ( !mod.is_set )
             default_mod.first = modifier::name;
           int const year = dateTime.getYear();
           zstring const era( year > 0 ? "ad" : year < 0 ? "bc" : "" );
@@ -1119,7 +1120,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         }
         case 'F': {
           modifier default_mod( mod );
-          if ( !mod.is_set() )
+          if ( !mod.is_set )
             default_mod.first = modifier::name;
           append_weekday(
             dateTime.getDayOfWeek(), lang, country, default_mod, &result_str
@@ -1148,14 +1149,14 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           break;
         case 'm': {
           modifier default_mod( mod );
-          if ( !mod.is_set() )
+          if ( mod.format.empty() )
             default_mod.min_width = default_mod.max_width = 2;
           append_number( dateTime.getMinutes(), default_mod, &result_str );
           break;
         }
         case 'P': {
           modifier default_mod( mod );
-          if ( !mod.is_set() )
+          if ( !mod.is_set )
             default_mod.first = modifier::name;
           append_string(
             locale::get_time_ampm( dateTime.getHours() >= 12, lang, country ),
@@ -1165,7 +1166,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         }
         case 's': {
           modifier default_mod( mod );
-          if ( !mod.is_set() )
+          if ( mod.format.empty() )
             default_mod.min_width = default_mod.max_width = 2;
           append_number( dateTime.getIntSeconds(), default_mod, &result_str );
           break;
