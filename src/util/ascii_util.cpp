@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 // standard
+#include <algorithm>
 #include <cstring>
 #include <iomanip>
 
@@ -51,27 +52,20 @@ char* itoa( long long n, char *buf ) {
 
   if ( n_prev < 0 ) *s++ = '-';
   *s = '\0';
-
-  for ( char *t = buf; t < s; ++t ) {
-    char const c = *--s; *s = *t; *t = c;
-  }
+  std::reverse( buf, s );
   return buf;
 }
 
 char* itoa( unsigned long long n, char *buf ) {
   char *s = buf;
-  unsigned long long n_prev;
   do { 
-    n_prev = n;
+    unsigned long long const n_prev = n;
     n /= 10; 
     *s++ = "0123456789" [ n_prev - n * 10 ];
   } while ( n );
 
   *s = '\0';
-
-  for ( char *t = buf; t < s; ++t ) {
-    char const c = *--s; *s = *t; *t = c;
-  }
+  std::reverse( buf, s );
   return buf;
 }
 
