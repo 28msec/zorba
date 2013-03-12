@@ -641,6 +641,16 @@ void expr::compute_return_type(bool deep, bool* modified)
   case function_item_expr_kind:
   {
     theType = rtm.ANY_FUNCTION_TYPE_ONE;
+    function_item_expr* fiExpr = static_cast<function_item_expr*>(this);
+    if (fiExpr->get_function() != NULL)
+    {
+      const xqtref_t& retType = fiExpr->get_function()->getSignature().returnType();
+      std::vector<xqtref_t> paramTypes;
+      for (csize i=1; i<fiExpr->get_function()->getSignature().paramCount(); i++ )
+        paramTypes.push_back(fiExpr->get_function()->getSignature()[i]);
+
+      theType = new FunctionXQType(&rtm, paramTypes, retType, TypeConstants::QUANT_ONE);
+    }
     return;
   }
 

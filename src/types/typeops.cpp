@@ -743,13 +743,14 @@ bool TypeOps::is_subtype(
 
     switch (subtype->type_kind())
     {
-    case XQType::ANY_FUNCTION_TYPE_KIND:
     case XQType::FUNCTION_TYPE_KIND:
     {
       const FunctionXQType& f1 = static_cast<const FunctionXQType&>(*subtype);
       const FunctionXQType& f2 = static_cast<const FunctionXQType&>(supertype);
       return f1.is_subtype(tm, f2);
     }
+    case XQType::ANY_FUNCTION_TYPE_KIND:
+      // Deliberate fall-through
     default:
       return false;
     }
