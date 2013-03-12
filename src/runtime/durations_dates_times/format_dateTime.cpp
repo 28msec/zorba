@@ -651,8 +651,22 @@ static void append_year( long year, modifier const &mod, zstring *s ) {
   zstring tmp;
   append_number( year, mod, &tmp );
 
-  if ( mod.first.type == modifier::arabic && mod.gt_max_width( tmp.size() ) )
-    tmp = tmp.substr( tmp.size() - mod.max_width );
+  if ( mod.first.type == modifier::arabic ) {
+    utf8_string<zstring> u_tmp( tmp );
+    utf8_string<zstring>::size_type const u_size = u_tmp.size();
+    if ( mod.gt_max_width( u_size ) ) {
+      //
+      // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
+      // exceeds the specified maximum width, then the processor should attempt
+      // to use an alternative shorter representation that fits within the
+      // maximum width.  ... In the case of the year component, setting
+      // max-width requests omission of high-order digits from the year, for
+      // example, if max-width is set to 2 then the year 2003 will be output as
+      // 03.
+      //
+      u_tmp = u_tmp.substr( u_size - mod.max_width );
+    }
+  }
   *s += tmp;
 }
 
