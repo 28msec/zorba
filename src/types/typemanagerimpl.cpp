@@ -837,7 +837,7 @@ xqtref_t TypeManagerImpl::create_value_type(
     const xqtref_t& nonOptimizedRetType = sig.getNonOptimizedReturnType();
     std::vector<xqtref_t> paramTypes;
     
-    assert(lFItem->getStartArity() <= lSig.paramCount());
+    assert(fitem->getStartArity() <= sig.paramCount());
     
     for (csize i = 0; i < fitem->getStartArity(); ++i)
     {
