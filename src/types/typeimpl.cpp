@@ -140,7 +140,8 @@ const char* AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST] =
   "xs:anyURI",
   "xs:QName",
   "xs:NOTATION",
-  "jdm:null"
+  "jdm:null",
+  "xs:dateTimeStamp"
 };
 
 

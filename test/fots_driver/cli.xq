@@ -370,6 +370,13 @@ return
            $resultsFilePath)
 }
 
+case "wiki-report"
+return
+{
+  r:wiki-report($fotsPath,
+                $resultsFilePath)
+}
+
 case "generate-expected-failures"
 return
 {
