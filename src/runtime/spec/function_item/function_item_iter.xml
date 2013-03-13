@@ -35,7 +35,13 @@
       Returns the function having a given name and arity, if there is one.
     </zorba:description>
 
-    <zorba:function >
+    <zorba:member type="CompilerCB*" name="theCompilerCB"/>
+
+    <zorba:constructor>
+      <zorba:parameter type="CompilerCB*" name="aCompilerCB"/>
+    </zorba:constructor>
+
+    <zorba:function  generateCodegen="false">
 
       <zorba:signature localname="function-lookup" prefix="fn" version="3.0">
         <zorba:param>xs:QName</zorba:param>

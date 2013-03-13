@@ -71,7 +71,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  PlanIter_t codegen(CompilerCB* cb,
+  PlanIter_t codegen(CompilerCB* ccb,
                      static_context* sctx,
                      const QueryLoc& loc,
                      std::vector<PlanIter_t>& argv,
@@ -86,7 +86,7 @@ public:
 
 ********************************************************************************/
 PlanIter_t fn_fold_left_3_0::codegen(
-  CompilerCB*,
+  CompilerCB* ccb,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
@@ -100,13 +100,27 @@ PlanIter_t fn_fold_left_3_0::codegen(
 
 ********************************************************************************/
 PlanIter_t fn_fold_right_3_0::codegen(
-  CompilerCB*,
+  CompilerCB* ccb,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
   return new FnFoldLeftIterator(sctx, loc, argv, true);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_function_lookup_3_0::codegen(
+  CompilerCB* ccb,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FunctionLookupIterator(sctx, loc, argv, ccb);
 }
 
 

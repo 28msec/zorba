@@ -43,6 +43,8 @@ void FunctionLookupIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
   (NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>*)this);
+
+    ar & theCompilerCB;
 }
 
 

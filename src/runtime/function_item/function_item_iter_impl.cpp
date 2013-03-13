@@ -79,20 +79,11 @@ bool FunctionLookupIterator::nextImpl(
   
   try
   {
-//    std::auto_ptr<CompilerCB> closureCCB;
-//    closureCCB.reset(new CompilerCB(*planState.theCompilerCB));
-//    closureCCB->theRootSctx = theSctx;
-
-//    expr* fiExpr = Translator::translate_literal_function(qname, arity, closureCCB.get(), loc, true);
-    expr* fiExpr = Translator::translate_literal_function(qname, arity, planState.theCompilerCB, loc, true);
+    expr* fiExpr = Translator::translate_literal_function(qname, arity, theCompilerCB, loc, true);
     
     DynamicFunctionInfo_t dynFnInfo = static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
-    // dynFnInfo->theCCB = closureCCB.release();
-    // dynFnInfo->theMustDeleteCCB = true;
-    dynFnInfo->theCCB = NULL;
-    dynFnInfo->theClosureSctx = NULL;
-    uint32_t planStateSize;
-    static_cast<user_function*>(dynFnInfo->theFunction.getp())->getPlan(planStateSize);
+    dynFnInfo->theCCB = theCompilerCB;
+    // dynFnInfo->theClosureSctx = NULL;
 
     result = new FunctionItem(dynFnInfo, NULL /* new dynamic_context(planState.theGlobalDynCtx) */);
   }

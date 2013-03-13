@@ -242,8 +242,10 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
     }
   }
 
-  if (theDynamicFunctionInfo->theCCB != NULL)
-    ccb = theDynamicFunctionInfo->theCCB;
+//  if (theDynamicFunctionInfo->theCCB != NULL)
+//    ccb = theDynamicFunctionInfo->theCCB;
+
+  std::cerr << "--> FunctionItem::getImplementation() using CompilerCB: " << ccb << std::endl;
 
   expr* dummy = ccb->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc, NULL, false, false);
   
