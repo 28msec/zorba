@@ -848,7 +848,8 @@ ostream& attr_expr::put(ostream& os) const
   BEGIN_PUT(attr_expr);
 
   theQNameExpr->put(os);
-  theValueExpr->put(os);
+  if (theValueExpr)
+    theValueExpr->put(os);
 
   END_PUT();
 }

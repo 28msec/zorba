@@ -133,7 +133,7 @@ class function_item_expr: public expr
   friend class ExprManager;
 
 protected:
-  DynamicFunctionInfo_t       theDynamicFunctionInfo;
+  DynamicFunctionInfo_t  theDynamicFunctionInfo;
   
 protected:
   function_item_expr(
@@ -162,13 +162,26 @@ protected:
 public:
   DynamicFunctionInfo* get_dynamic_fn_info() { return theDynamicFunctionInfo; }
 
-  void add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal);
+  void add_variable(
+      expr* var,
+      var_expr* substVar,
+      const store::Item_t& name,
+      int isGlobal);
 
-  const std::vector<var_expr*>& get_subst_vars_values() const { return theDynamicFunctionInfo->theSubstVarsValues; }
+  const std::vector<var_expr*>& get_subst_vars_values() const
+  {
+    return theDynamicFunctionInfo->theSubstVarsValues;
+  }
 
-  const std::vector<store::Item_t>& get_scoped_vars_names() const { return theDynamicFunctionInfo->theScopedVarsNames; }
+  const std::vector<store::Item_t>& get_scoped_vars_names() const
+  {
+    return theDynamicFunctionInfo->theScopedVarsNames;
+  }
 
-  const std::vector<int>& get_is_global_var() const { return theDynamicFunctionInfo->theIsGlobalVar; }
+  const std::vector<int>& get_is_global_var() const
+  {
+    return theDynamicFunctionInfo->theIsGlobalVar;
+  }
 
   void set_function(user_function* udf);
 

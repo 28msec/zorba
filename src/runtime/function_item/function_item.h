@@ -37,13 +37,21 @@ typedef rchandle<DynamicFunctionInfo> DynamicFunctionInfo_t;
 /*******************************************************************************
   A class to hold information about a dynamic function. This info is shared
   between the DynamicFunctionIterator and the FunctionItems it creates.
+
+  theCCB :
+  --------
+
+  theMustDeleteCCB :
+  ------------------
+  This is set to true if the DynamicFunctionInfo is the owner of the CCB,
+  and must delete it upon destruction.  
 ********************************************************************************/
 class DynamicFunctionInfo : public SimpleRCObject
 {
 public:
   CompilerCB                  * theCCB;
-  bool                          theMustDeleteCCB;  // This is set to true if the DynamicFunctionInfo is the owner of the CCB,
-                                                   // and must delete it upon destruction.
+  bool                          theMustDeleteCCB;
+
   static_context              * theClosureSctx;
   QueryLoc                      theLoc;
   function_t                    theFunction;
@@ -68,11 +76,22 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFunctionInfo(static_context* closureSctx, const QueryLoc& loc, function* func, store::Item_t qname, uint32_t arity, bool isInline, bool needsContextItem);
+  DynamicFunctionInfo(
+      static_context* closureSctx,
+      const QueryLoc& loc,
+      function* func,
+      store::Item_t qname,
+      uint32_t arity,
+      bool isInline,
+      bool needsContextItem);
 
   virtual ~DynamicFunctionInfo();
 
-  void add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal);
+  void add_variable(
+      expr* var,
+      var_expr* substVar,
+      const store::Item_t& name,
+      int isGlobal);
 };
 
 
@@ -158,7 +177,7 @@ protected:
 public:
   SERIALIZABLE_CLASS(DynamicFunctionIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DynamicFunctionIterator,
-      NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>)
+  NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -170,7 +189,10 @@ public:
   virtual ~DynamicFunctionIterator();
 
   // Used for pretty-printing of the iterator tree
-  const DynamicFunctionInfo_t getDynamicFunctionInfo() const { return theDynamicFunctionInfo; }
+  const DynamicFunctionInfo_t getDynamicFunctionInfo() const
+  {
+    return theDynamicFunctionInfo;
+  }
 
   void accept(PlanIterVisitor& v) const;
 

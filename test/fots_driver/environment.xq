@@ -38,14 +38,15 @@ declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
 declare option op:disable "f:trace";
 
-declare variable $env:hof as xs:string := "";
-  (:
+(:
+declare variable $env:hof as xs:string :=
   string-join(
     ( "declare namespace op = 'http://www.zorba-xquery.com/options/features';",
       "declare namespace f = 'http://www.zorba-xquery.com/features';",
       "declare option op:enable 'f:hof';"),
     "&#xA;");
-  :)
+:)
+
 
 (:~
  : If there is a dependency on the HOF feature, return the text for enabling
@@ -54,7 +55,6 @@ declare variable $env:hof as xs:string := "";
  : @param $deps the dependencies of the test set and test case
  : @param $test the raw query text.
  : @return the text for enabling the HOF feature
- :)
 declare function env:enable-HOF-feature(
   $deps as element(fots:dependency)*,
   $test as xs:string
@@ -68,6 +68,7 @@ declare function env:enable-HOF-feature(
     then $env:hof
     else ()
 };
+ :)
 
 
 (:~
