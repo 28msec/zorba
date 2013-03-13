@@ -3454,7 +3454,7 @@ expr* generate_literal_function(store::Item_t& qnameItem, unsigned int arity, Qu
       case FunctionConsts::FN_MAP_2:
       case FunctionConsts::FN_FILTER_2:
       {
-        // create the function flwor, wrap params in for clauses
+        // create the function flwor, wrap params in let clauses
         flwor_expr* flwor = theExprManager->create_flwor_expr(theSctx, theUDF, loc, false);
         std::vector<expr*> arguments;
         for (csize i=0; i<foArgs.size(); i++)
@@ -12054,8 +12054,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
   flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
 
-  const for_clause* fc =
-      reinterpret_cast<const for_clause*>(flworExpr->get_clause(0));
+  for_clause* fc = reinterpret_cast<for_clause*>(flworExpr->get_clause(0));
+  fc->set_allowing_empty(true); // this is needed if the FunctionItem expression is an empty sequence
 
   expr* flworVarExpr = fc->get_var();
 
