@@ -317,6 +317,8 @@ public:
       
   TimeZone getTimezone() const;
 
+  bool hasTimezone() const;
+
   /**
    *  Returns -1 if the DateTime is less than the given DateTime
    *  Returns 0 if the DateTimes are equal

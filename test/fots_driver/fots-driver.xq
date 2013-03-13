@@ -141,7 +141,7 @@ declare %ann:nondeterministic function driver:list-test-cases(
     else
       for $testSet in $doc/fots:catalog/fots:test-set
       let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
-      where exists(index-of($testSet/@name, $testSetNames))
+      where exists(index-of($testSetNames, $testSet/@name))
       return driver:list-test-cases($testSetDoc, $dependency, $assert)
 };
 
