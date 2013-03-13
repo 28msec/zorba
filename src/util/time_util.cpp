@@ -16,7 +16,9 @@
 
 #include "stdafx.h"
 
+#include <algorithm>
 #include <cassert>
+#include <cstring>
 #ifdef WIN32
 # include <windows.h>
 # include <time.h>                      /* for gmtime_s() */
@@ -33,8 +35,69 @@
 // local
 #include "time_util.h"
 
+#define DEF_END(CHAR_ARRAY)                             \
+  static char const *const *const end =                 \
+    CHAR_ARRAY + sizeof( CHAR_ARRAY ) / sizeof( char* )
+
+#define FIND(WHAT) \
+  static_cast<type>( find_index( string_of, end, WHAT ) )
+
+using namespace std;
+
+/**
+ * A less-verbose way to use std::lower_bound.
+ */
+inline int find_index( char const *const *begin, char const *const *end,
+                       char const *s ) {
+  char const *const *const entry =
+    ::lower_bound( begin, end, s, less<char const*>() );
+  return entry != end && ::strcmp( s, *entry ) == 0 ? entry - begin : 0;
+}
+
 namespace zorba {
 namespace time {
+
+///////////////////////////////////////////////////////////////////////////////
+
+namespace calendar {
+
+char const *const string_of[] = {
+  "#UNKNOWN",
+  "AD",   // Anno Domini (Christian Era)
+  "AH",   // Anno Hegirae (Muhammedan Era)
+  "AM",   // Anno Mundi (Jewish Calendar)
+  "AME",  // Mauludi Era (solar years since Mohammed's birth)
+  "AP",   // Anno Persici
+  "AS",   // Aji Saka Era (Java)
+  "BE",   // Buddhist Era
+  "CB",   // Cooch Behar Era
+  "CE",   // Common Era
+  "CL",   // Chinese Lunar Era
+  "CS",   // Chula Sakarat Era
+  "EE",   // Ethiopian Era
+  "FE",   // Fasli Era
+  "ISO",  // ISO 8601 calendar
+  "JE",   // Japanese Calendar
+  "KE",   // Khalsa Era (Sikh calendar)
+  "KY",   // Kali Yuga
+  "ME",   // Malabar Era
+  "MS",   // Monarchic Solar Era
+  "OS",   // Old Style (Julian Calendar)
+  "RS",   // Rattanakosin (Bangkok) Era
+  "SE",   // Saka Era
+  "SH",   // Mohammedan Solar Era (Iran)
+  "SS",   // Saka Samvat
+  "TE",   // Tripurabda Era
+  "VE",   // Vikrama Era
+  "VS"    // Vikrama Samvat Era
+};
+
+type find( char const *calendar ) {
+  DEF_END( string_of );
+  return FIND( calendar );
+}
+
+} // namespace calendar
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -210,8 +273,7 @@ char get_military_tz( int hour ) {
     hour += 24;
   if ( hour >= 0 && hour <= 12 )
     return "ZABCDEFGHIKLM" [ hour ];    // no 'J' here (it means "no timezone")
-  if ( hour >= -12 && hour < 0 )
-    return " NOPQRSTUVWXY" [ -hour ];
+  return " NOPQRSTUVWXY" [ -hour ];
 }
 
 ///////////////////////////////////////////////////////////////////////////////

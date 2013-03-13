@@ -26,6 +26,7 @@
 // Zorba
 #include <zorba/config.h>
 #include "cxx_util.h"
+#include "string_util.h"
 
 #ifndef TM_YEAR_BASE
 # define TM_YEAR_BASE 1900
@@ -50,6 +51,8 @@ typedef unsigned long usec_type;
 typedef suseconds_t usec_type;
 #endif /* WIN32 */
 
+///////////////////////////////////////////////////////////////////////////////
+
 //
 // If the OS's tm struct has a GMT-timezone offset field, simply typedef tm as
 // ztm; otherwise declare ztm as a struct derived from tm that adds a
@@ -73,6 +76,78 @@ struct ztm : tm {
 #else
 # define ZTM_GMTOFF tm_gmtoff
 #endif
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * XQuery 3.0 F&O: 9.8.4.3: The calendars listed below were known to be in use
+ * during the last hundred years.
+ */
+namespace calendar {
+  enum type {
+    unknown,
+    AD,   ///< Anno Domini (Christian Era)
+    AH,   ///< Anno Hegirae (Muhammedan Era)
+    AM,   ///< Anno Mundi (Jewish Calendar)
+    AME,  ///< Mauludi Era (solar years since Mohammed's birth)
+    AP,   ///< Anno Persici
+    AS,   ///< Aji Saka Era (Java)
+    BE,   ///< Buddhist Era
+    CB,   ///< Cooch Behar Era
+    CE,   ///< Common Era
+    CL,   ///< Chinese Lunar Era
+    CS,   ///< Chula Sakarat Era
+    EE,   ///< Ethiopian Era
+    FE,   ///< Fasli Era
+    ISO,  ///< ISO 8601 calendar
+    JE,   ///< Japanese Calendar
+    KE,   ///< Khalsa Era (Sikh calendar)
+    KY,   ///< Kali Yuga
+    ME,   ///< Malabar Era
+    MS,   ///< Monarchic Solar Era
+    OS,   ///< Old Style (Julian Calendar)
+    RS,   ///< Rattanakosin (Bangkok) Era
+    SE,   ///< Saka Era
+    SH,   ///< Mohammedan Solar Era (Iran)
+    SS,   ///< Saka Samvat
+    TE,   ///< Tripurabda Era
+    VE,   ///< Vikrama Era
+    VS    ///< Vikrama Samvat Era
+  };
+  extern char const* const string_of[];
+
+  /**
+   * Emits a calendar::type to an ostream.
+   *
+   * @param o The ostream to emit to.
+   * @param t The type to emit.
+   * @return Returns \a o.
+   */
+  inline std::ostream& operator<<( std::ostream &o, type t ) {
+    return o << string_of[ t ];
+  }
+
+  /**
+   * Finds a calendar designator from the given string.
+   *
+   * @param calendar The calendar designator to find.
+   * @return Returns said enumeration or \c unknown.
+   */
+  type find( char const *calendar );
+
+  //
+  // Template version of find().
+  //
+  template<class StringType> inline
+  typename std::enable_if<
+    ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+    type
+  >::type
+  find( StringType const &country ) {
+    return find( country.c_str() );
+  } 
+
+} // namespace calendar
 
 ///////////////////////////////////////////////////////////////////////////////
 
