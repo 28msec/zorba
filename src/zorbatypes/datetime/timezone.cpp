@@ -108,6 +108,8 @@ int TimeZone::createTimeZone(int hours, int minutes, int seconds, TimeZone& tz)
   tz = TimeZone(hours);
   tz.data[MINUTE_DATA] = std::abs(minutes);
   tz.data[SECONDS_DATA] = std::abs(seconds);
+  if ( minutes < 0 || seconds < 0 )     // hours is checked in TimeZone() ctor
+    tz.is_negative = true;
   tz.normalize(); 
   return 0;
 }
