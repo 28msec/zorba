@@ -647,7 +647,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     {
       const xqtref_t& retType = fiExpr->get_function()->getSignature().returnType();
       std::vector<xqtref_t> paramTypes;
-      for (csize i=1; i<fiExpr->get_function()->getSignature().paramCount(); i++ )
+      for (csize i=0; i<fiExpr->get_function()->getSignature().paramCount(); i++ )
         paramTypes.push_back(fiExpr->get_function()->getSignature()[i]);
 
       theType = new FunctionXQType(&rtm, paramTypes, retType, TypeConstants::QUANT_ONE);
