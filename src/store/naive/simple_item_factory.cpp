@@ -2172,13 +2172,13 @@ bool BasicItemFactory::createJSONArray(
     const std::vector<store::Iterator_t>& sources,
     const std::vector<store::CopyMode>& copyModes)
 {
-  result = new json::SimpleJSONArray();
+  csize numSources = sources.size();
+
+  result = new json::SimpleJSONArray(numSources);
 
   json::JSONArray* array = static_cast<json::JSONArray*>(result.getp());
 
   store::Item_t item;
-
-  csize numSources = sources.size();
   for (csize i = 0; i < numSources; ++i)
   {
     store::Iterator* source = sources[i].getp();
@@ -2233,12 +2233,8 @@ bool BasicItemFactory::createJSONArray(
 
   json::JSONArray* array = static_cast<json::JSONArray*>(result.getp());
 
-  std::vector<store::Item_t>::const_iterator ite = items.begin();
-  std::vector<store::Item_t>::const_iterator end = items.end();
-  for (; ite != end; ++ite)
-  {
-    array->push_back(*ite);
-  }
+  array->push_back(items);
+
   return true;
 }
 
