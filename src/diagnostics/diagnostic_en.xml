@@ -163,6 +163,10 @@
         <value>function and variable annotations only available in XQuery 3.0 or later</value>
       </entry>
 
+      <entry key="CompNS">
+        <value>computed namespace constructors only available in XQuery 3.0 or later</value>
+      </entry>
+
       <entry key="Scripting">
         <value>scripting feature not available</value>
       </entry>
@@ -938,7 +942,19 @@
        QName (for example, because it contains a namespace prefix not found in
        statically known namespaces).
       </comment>
-      <value>${"1": }can not convert to expanded QName${: 2}</value>
+      <value>$1</value>
+
+      <entry key="NotCastToQName">
+        <value>$2: can not convert to xs:QName</value>
+      </entry>
+
+      <entry key="NoEmptyLocalname">
+        <value>can not convert empty local name to xs:QName</value>
+      </entry>
+
+      <entry key="NameSapceConstructor">
+        <value>$2: cannot cast prefix to xs:NCName</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQDY0084">
@@ -979,6 +995,20 @@
          <code>http://www.w3.org/XML/1998/namespace</code>.
       </comment>
       <value>"$1": invalid node-name</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0101">
+      <comment>
+       Invalid prefix and/or uri in computed namespace constructor
+      </comment>
+      <value>Invalid prefix and/or uri in computed namespace constructor: prefix = $1, namespace URI = $2.</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0102">
+      <comment>
+      In an element constructor, if two or more namespace bindings in the in-scope bindings would have the same prefix, then an error is raised if they have different URIs; if they would have the same prefix and URI, duplicate bindings are ignored.
+      </comment>
+      <value>"$1": uri causes namespace binding conflict: prefix $2 already bound to $3</value>
     </diagnostic>
 
     <diagnostic code="XTDE1310">
@@ -1475,7 +1505,16 @@
       <comment>
        This error is raised if the fn:function-lookup returns a context-dependent function and the context-dependent function is then called.
       </comment>
+
       <value>dynamic call on context-dependent function item</value>
+    </diagnostic>
+
+    <diagnostic code="FOCZ0001">
+      <comment>
+       Invalid content passed to \c x:canonicalize().
+      </comment>
+
+      <value>invalid content passed to $1: $2</value>
     </diagnostic>
 
     <!--////////// XQuery Update Facility //////////////////////////////////-->
@@ -1708,7 +1747,7 @@
        affects an element node by introducing a new namespace binding that
        conflicts with one of its existing namespace bindings.
       </comment>
-      <value>"$1": qname causes namespace binding conflict: prefix $2 cannot be bound to both $3 and $4</value>
+      <value>"$1": uri causes namespace binding conflict: prefix $2 already bound to $3</value>
     </diagnostic>
 
     <diagnostic code="XUDY0024">
@@ -1716,7 +1755,7 @@
        It is a dynamic error if the effect of a set of updating expressions is
        to introduce conflicting namespace bindings into an element node.
       </comment>
-      <value>"$1": namespace binding conflicts with $2=$3</value>
+      <value>"$1": uri causes namespace binding conflict: prefix $2 already bound to $3</value>
     </diagnostic>
 
     <diagnostic code="XUDY0027">
@@ -1784,6 +1823,14 @@
        node or a namespace node.
       </comment>
       <value>"$1": can not serialize $2</value>
+
+      <entry key="AttributeNode">
+        <value>attribute node</value>
+      </entry>
+
+      <entry key="NamespaceNode">
+        <value>namespace node</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="SERE0003">
@@ -3208,10 +3255,6 @@
       <value>attribute name</value>
     </entry>
 
-    <entry key="AttributeNode">
-      <value>attribute node</value>
-    </entry>
-
     <entry key="BackRef0Illegal" if="!defined(ZORBA_NO_ICU)">
       <value>"0": illegal backreference</value>
     </entry>
@@ -3550,10 +3593,6 @@
 
     <entry key="NoDriveSpecification">
       <value>missing drive specification</value>
-    </entry>
-
-    <entry key="NoEmptyLocalname">
-      <value>local-name can not be empty</value>
     </entry>
 
     <entry key="NoEmptySeqAsBaseURI">

@@ -327,6 +327,17 @@ attr_expr* ExprManager::create_attr_expr(
 }
 
 
+namespace_expr* ExprManager::create_namespace_expr(
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc,
+    expr* prefixExpr,
+    expr* uriExpr)
+{
+  CREATE_AND_RETURN_EXPR(namespace_expr, sctx, udf, loc, prefixExpr, uriExpr);
+}
+
+
 text_expr* ExprManager::create_text_expr(
     static_context* sctx,
     user_function* udf,

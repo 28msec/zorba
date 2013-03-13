@@ -141,7 +141,7 @@ declare %ann:nondeterministic function driver:list-test-cases(
     else
       for $testSet in $doc/fots:catalog/fots:test-set
       let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
-      where exists(index-of($testSet/@name, $testSetNames))
+      where exists(index-of($testSetNames, $testSet/@name))
       return driver:list-test-cases($testSetDoc, $dependency, $assert)
 };
 
@@ -416,7 +416,7 @@ declare %ann:sequential function driver:run-fots(
                            $expectedFailures,
                            $cliMode)
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           concat("&#xA;Please make sure the passed 'fotsPath' points to the",
@@ -566,7 +566,7 @@ declare %ann:sequential function driver:run-test-set(
                            $expectedFailures,
                            $cliMode)
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           concat("&#xA;Please make sure the passed 'fotsPath' points to the",
@@ -792,7 +792,12 @@ declare %ann:sequential function driver:test(
   try
   {
   {
-    variable $queryName := trace(data($case/@name), "processing test case :");
+    variable $trace := concat("processing test case : ", $case/@name,
+                              " in test set : ", $testSetName);
+
+    trace($trace,"");
+
+    variable $queryName := $case/@name;
 
     variable $test as xs:string := util:get-value($case, $testSetBaseURI, "test");
 

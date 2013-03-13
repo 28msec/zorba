@@ -265,6 +265,12 @@ XQueryErrorCode XQDY0092( "XQDY0092" );
 XQueryErrorCode XQDY0096( "XQDY0096" );
 
 
+XQueryErrorCode XQDY0101( "XQDY0101" );
+
+
+XQueryErrorCode XQDY0102( "XQDY0102" );
+
+
 XQueryErrorCode XTDE1310( "XTDE1310" );
 
 
@@ -436,6 +442,9 @@ XQueryErrorCode FOUT1190( "FOUT1190" );
 
 
 XQueryErrorCode FOFL0001( "FOFL0001" );
+
+
+XQueryErrorCode FOCZ0001( "FOCZ0001" );
 
 
 XQueryErrorCode XUST0001( "XUST0001" );

@@ -839,6 +839,22 @@ declare variable $err:XQDY0096 as xs:QName := fn:QName($err:NS, "err:XQDY0096");
 
 (:~
  :
+ : Invalid prefix and/or uri in computed namespace constructor
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0101 as xs:QName := fn:QName($err:NS, "err:XQDY0101");
+
+(:~
+ :
+ : In an element constructor, if two or more namespace bindings in the in-scope bindings would have the same prefix, then an error is raised if they have different URIs; if they would have the same prefix and URI, duplicate bindings are ignored.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0102 as xs:QName := fn:QName($err:NS, "err:XQDY0102");
+
+(:~
+ :
  : It is a non-recoverable dynamic error if the picture string does not
  : satisfy the format-number function rules.
  : 
@@ -1316,6 +1332,14 @@ declare variable $err:FOUT1190 as xs:QName := fn:QName($err:NS, "err:FOUT1190");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:FOFL0001 as xs:QName := fn:QName($err:NS, "err:FOFL0001");
+
+(:~
+ :
+ : Invalid content passed to \c x:canonicalize().
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOCZ0001 as xs:QName := fn:QName($err:NS, "err:FOCZ0001");
 
 (:~
  :

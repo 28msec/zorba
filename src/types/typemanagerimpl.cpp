@@ -565,6 +565,7 @@ xqtref_t TypeManagerImpl::create_node_type(
 
   case store::StoreConsts::textNode:
   case store::StoreConsts::commentNode:
+  case store::StoreConsts::namespaceNode:
     return create_builtin_node_type(nodeKind, quant, true);
 
   case store::StoreConsts::piNode:
@@ -701,6 +702,23 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
     }
   }
 
+  case store::StoreConsts::namespaceNode:
+  {
+    switch(quantifier)
+    {
+    case TypeConstants::QUANT_ONE:
+    return GENV_TYPESYSTEM.NAMESPACE_TYPE_ONE;
+    case TypeConstants::QUANT_QUESTION:
+      return GENV_TYPESYSTEM.NAMESPACE_TYPE_QUESTION;
+    case TypeConstants::QUANT_STAR:
+      return GENV_TYPESYSTEM.NAMESPACE_TYPE_STAR;
+    case TypeConstants::QUANT_PLUS:
+      return GENV_TYPESYSTEM.NAMESPACE_TYPE_PLUS;
+    default:
+      ZORBA_ASSERT(false);
+    }
+  }
+
   default:
     ZORBA_ASSERT(false);
     return GENV_TYPESYSTEM.NONE_TYPE;
@@ -792,6 +810,10 @@ xqtref_t TypeManagerImpl::create_value_type(
     case store::StoreConsts::commentNode:
     {
       return GENV_TYPESYSTEM.COMMENT_TYPE_ONE;
+    }
+    case store::StoreConsts::namespaceNode:
+    {
+      return GENV_TYPESYSTEM.NAMESPACE_TYPE_ONE;
     }
     default:
     {
@@ -1171,6 +1193,9 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 
   case IdentTypes::COMMENT_TYPE:
     return create_builtin_node_type(store::StoreConsts::commentNode, q, false);
+
+  case IdentTypes::NAMESPACE_TYPE:
+    return create_builtin_node_type(store::StoreConsts::namespaceNode, q, false);
 
   case IdentTypes::ANY_NODE_TYPE:
     return create_builtin_node_type(store::StoreConsts::anyNode, q, false);

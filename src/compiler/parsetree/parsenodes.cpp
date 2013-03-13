@@ -4157,35 +4157,69 @@ void CompCommentConstructor::accept( parsenode_visitor &v ) const
 // [116] CompPIConstructor
 // -----------------------
 CompPIConstructor::CompPIConstructor(
-  const QueryLoc& loc_,
-  zstring const& _target,
-  rchandle<exprnode> _content_expr_h)
-:
+    const QueryLoc& loc_,
+    zstring const& _target,
+    rchandle<exprnode> _content_expr_h)
+  :
   exprnode(loc_),
   target(_target),
   target_expr_h(NULL),
   content_expr_h(_content_expr_h)
-{}
+{
+}
+
 
 CompPIConstructor::CompPIConstructor(
-  const QueryLoc& loc_,
-  rchandle<exprnode> _target_expr_h,
-  rchandle<exprnode> _content_expr_h)
-:
+    const QueryLoc& loc_,
+    rchandle<exprnode> _target_expr_h,
+    rchandle<exprnode> _content_expr_h)
+  :
   exprnode(loc_),
   target(""),
   target_expr_h(_target_expr_h),
   content_expr_h(_content_expr_h)
-{}
+{
+}
 
-
-//-CompPIConstructor::
 
 void CompPIConstructor::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT (target_expr_h);
   ACCEPT (content_expr_h);
+  END_VISITOR();
+}
+
+
+CompNamespaceConstructor::CompNamespaceConstructor(
+    const QueryLoc& loc,
+    const zstring& pre,
+    const rchandle<exprnode>& uri)
+  :
+  exprnode(loc),
+  thePrefix(pre),
+  theUriExpr(uri)
+{
+}
+
+
+CompNamespaceConstructor::CompNamespaceConstructor(
+    const QueryLoc& loc,
+    const rchandle<exprnode>& pre,
+    const rchandle<exprnode>& uri)
+  :
+  exprnode(loc),
+  thePrefixExpr(pre),
+  theUriExpr(uri)
+{
+}
+
+
+void CompNamespaceConstructor::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(thePrefixExpr);
+  ACCEPT(theUriExpr);
   END_VISITOR();
 }
 
@@ -4384,16 +4418,30 @@ void DocumentTest::accept( parsenode_visitor &v ) const
 }
 
 
+NamespaceTest::NamespaceTest(const QueryLoc& loc)
+  :
+  parsenode(loc)
+{
+}
+
+
+void NamespaceTest::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
 // [126] TextTest
 // --------------
-TextTest::TextTest(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
+TextTest::TextTest(const QueryLoc& loc)
+  :
+  parsenode(loc)
+{
+}
 
 
-void TextTest::accept( parsenode_visitor &v ) const
+void TextTest::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   END_VISITOR();

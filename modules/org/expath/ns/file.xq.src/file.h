@@ -162,6 +162,22 @@ namespace zorba {
 
 //*****************************************************************************
 
+  class IsSymlinkFunction : public FileFunction
+  {
+    public:
+      IsSymlinkFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "is-symlink"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const ExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
   class LastModifiedFunction : public FileFunction
   {
     public:

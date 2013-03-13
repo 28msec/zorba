@@ -542,6 +542,7 @@ MapRemoveIterator::nextImpl(
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 MapKeysIterator::nextImpl(
@@ -605,8 +606,7 @@ MapKeysIterator::nextImpl(
       store::Item_t& lValue = (*lIter);
       if (! lValue.isNull())
       {
-        GENV_ITEMFACTORY->createQName(lValueAttrName,
-            "", "", "value");
+        GENV_ITEMFACTORY->createQName(lValueAttrName, "", "", "value");
 
         lTypeName = lValue->getType();
 

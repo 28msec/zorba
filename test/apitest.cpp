@@ -117,6 +117,12 @@ int _tmain(int argc, _TCHAR* argv[])
     chints.for_serialization_only = true;
   }
 
+  // default is false
+  if (lProp->libModule())
+  {
+    chints.lib_module = true;
+  }
+
   // output file (either a file or the standard out if no file is specified)
   auto_ptr<ostream> outputFile (lProp->resultFile ().empty ()
                                 ? NULL : new ofstream (lProp->resultFile().c_str()));
@@ -271,7 +277,7 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   int return_code = 0;
-  if (! lProp->compileOnly()) 
+  if (! lProp->compileOnly() && ! lProp->libModule())
   {
     // output the result (either using xml serialization or using show)
 

@@ -214,8 +214,8 @@ int serializer::emitter::emit_expanded_string(
 
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
-        ztd::itoa_buf_type cp_buf;
-        tr << "&#" << ztd::itoa(cp, cp_buf) << ';';
+        ascii::itoa_buf_type cp_buf;
+        tr << "&#" << ascii::itoa(cp, cp_buf) << ';';
         chars += (char_length-1);
       }
       else
@@ -431,18 +431,6 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
 ********************************************************************************/
 void serializer::emitter::emit_item(store::Item* item)
 {
-#ifdef ZORBA_WITH_JSON
-  if (item->isJSONItem())
-  {
-    zstring lMethod;
-    ser->getSerializationMethod(lMethod);
-    throw ZORBA_EXCEPTION(
-        jerr::JNSE0022,
-        ERROR_PARAMS(lMethod, item->getType()->getStringValue())
-      );
-  }
-#endif
-
   if (item->isAtomic())
   {
     if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
@@ -455,21 +443,31 @@ void serializer::emitter::emit_item(store::Item* item)
 
     thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
   }
-  else if (item->isFunction()) // TODO: what about function items serialization?
+  else if (item->isNode())
+  {
+    if (!theEmitAttributes &&
+        item->getNodeKind() == store::StoreConsts::attributeNode)
+    {
+      throw XQUERY_EXCEPTION(err::SENR0001,
+      ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_AttributeNode)));
+    }
+    emit_node(item, 0);
+  }
+  else if (item->isFunction()) // TODO: what about function items serialization? 
   {
     // throw XQUERY_EXCEPTION(err::SENR0001, ERROR_PARAMS(item->show(), "function item node"));
     tr << item->show();
   }
-  else if (!theEmitAttributes 
-        && item->getNodeKind() == store::StoreConsts::attributeNode)
+#ifdef ZORBA_WITH_JSON
+  else if (item->isJSONItem())
   {
-    throw XQUERY_EXCEPTION(err::SENR0001,
-    ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
+    zstring lMethod;
+    ser->getSerializationMethod(lMethod);
+
+    throw ZORBA_EXCEPTION(jerr::JNSE0022,
+    ERROR_PARAMS(lMethod, item->getType()->getStringValue()));
   }
-  else
-  {
-    emit_node(item, 0);
-  }
+#endif
 }
 
 
@@ -589,6 +587,12 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
 
     thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
+    break;
+  }
+  case store::StoreConsts::namespaceNode:
+  {
+    throw XQUERY_EXCEPTION(err::SENR0001,
+    ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_NamespaceNode)));
     break;
   }
   default:
@@ -2077,7 +2081,7 @@ void serializer::text_emitter::emit_item(store::Item* item)
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
     throw XQUERY_EXCEPTION(err::SENR0001,
-    ERROR_PARAMS(item->getStringValue(), ZED( AttributeNode)));
+    ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_AttributeNode)));
   }
   else
   {

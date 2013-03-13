@@ -233,6 +233,7 @@ void endVisitWindowVariable();
   DECLARE_VISITOR (AtomicValuesEquivalenceIterator)
   DECLARE_VISITOR (ElementIterator)
   DECLARE_VISITOR (AttributeIterator)
+  DECLARE_VISITOR (NamespaceIterator)
   DECLARE_VISITOR (DocumentIterator)
   DECLARE_VISITOR (CommentIterator)
   DECLARE_VISITOR (PiIterator)

@@ -144,6 +144,13 @@ public:
   virtual Item
   getDefaultCollection() const;
 
+  virtual void
+  setLocale( locale::iso639_1::type aLang, locale::iso3166_1::type aCountry );
+
+  virtual void
+  getLocale( locale::iso639_1::type *aLang, 
+             locale::iso3166_1::type *aCountry ) const;
+
   virtual bool
   addExternalFunctionParam(const String& aName, void* aValue);
 

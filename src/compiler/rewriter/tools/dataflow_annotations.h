@@ -53,11 +53,6 @@ private:
   void compute_match_expr(match_expr* e);
   void compute_const_expr(const_expr* e);
   void compute_order_expr(order_expr* e);
-  void compute_elem_expr(elem_expr* e);
-  void compute_doc_expr(doc_expr* e);
-  void compute_attr_expr(attr_expr* e);
-  void compute_text_expr(text_expr* e);
-  void compute_pi_expr(pi_expr* e);
   
   void default_walk(expr* e);
   bool generic_compute(expr* e);

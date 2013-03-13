@@ -415,6 +415,30 @@ IsFileFunction::evaluate(
 
 //*****************************************************************************
 
+IsSymlinkFunction::IsSymlinkFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+IsSymlinkFunction::evaluate(
+  const ExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                 aSctxCtx,
+  const DynamicContext*                aDynCtx) const
+{
+  bool   lResult = false;
+  String lFileStr = getFilePathString(aArgs, 0);
+
+  File_t lFile = File::createFile(lFileStr.c_str());
+  if (lFile->isLink()) {
+    lResult = true;
+  }
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lResult)));
+}
+
+//*****************************************************************************
+
 CopyFileImplFunction::CopyFileImplFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {

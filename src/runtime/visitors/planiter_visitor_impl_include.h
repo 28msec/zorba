@@ -24,13 +24,14 @@ class ValidateIterator;
 #endif
 class OrIterator;
 class AndIterator;
-  class CompareIterator;
-  class AtomicValuesEquivalenceIterator;
-  class UDFunctionCallIterator;
-  class ExtFunctionCallIterator;
-  class ElementIterator;
-  class AttributeIterator;
-  class CommentIterator;
+class CompareIterator;
+class AtomicValuesEquivalenceIterator;
+class UDFunctionCallIterator;
+class ExtFunctionCallIterator;
+class ElementIterator;
+class AttributeIterator;
+class NamespaceIterator;
+class CommentIterator;
 
 #ifdef ZORBA_WITH_JSON
 class JSONObjectIterator;
