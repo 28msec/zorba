@@ -36,8 +36,14 @@ namespace time {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A type to hold a number of seconds (at least since epoch).
+ */
 typedef time_t sec_type;
 
+/**
+ * A type to hold a number of microseconds.
+ */
 #ifdef WIN32
 typedef unsigned long usec_type;
 #else
