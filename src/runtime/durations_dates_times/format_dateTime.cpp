@@ -108,6 +108,12 @@ struct modifier {
   width_type min_width;
   width_type max_width;
 
+  //
+  // The calendar isn't part of the "presentation modifier" as discussed in the
+  // XQuery3.0 F&O spec, but this is a convenient place to put it nonetheless.
+  //
+  time::calendar::type calendar;
+
   bool gt_max_width( width_type n ) const {
     return max_width > 0 && n > max_width;
   }
@@ -136,6 +142,7 @@ struct modifier {
     second.co_type = cardinal;
     second.at_type = no_second_at;
     min_width = max_width = 0;
+    calendar = time::calendar::unknown;
   };
 };
 
@@ -294,6 +301,7 @@ static bool is_grouping_separator( unicode::code_point cp ) {
  * @return Returns said suffix.
  */
 static char const* ordinal( long n ) {
+  n = std::abs( n );
   switch ( n % 100 ) {
     case 11:
     case 12:
@@ -390,7 +398,7 @@ static void append_number( long n, modifier const &mod, zstring *dest ) {
   }
 }
 
-static bool append_string( zstring const &s, modifier const &mod,
+static void append_string( zstring const &s, modifier const &mod,
                            zstring *dest ) {
   zstring tmp;
   switch ( mod.first.type ) {
@@ -408,40 +416,41 @@ static bool append_string( zstring const &s, modifier const &mod,
       utf8::to_upper( s, &tmp );
       break;
     default:
-      return false;
+      break;
   }
-
   *dest += mod.pad_space( &tmp );
-  return true;
-}
-
-inline void append_component( long n, zstring const &s, modifier const &mod,
-                              zstring *dest ) {
-  if ( !append_string( s, mod, dest ) )
-    append_number( n, mod, dest );
 }
 
 static void append_month( long month, iso639_1::type lang,
                           iso3166_1::type country, modifier const &mod,
                           zstring *dest ) {
-  zstring name( locale::get_month_name( month - 1, lang, country ) );
-  utf8_string<zstring> u_name( name );
-
-  if ( mod.gt_max_width( u_name.size() ) ) {
-    //
-    // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value exceeds
-    // the specified maximum width, then the processor should attempt to use an
-    // alternative shorter representation that fits within the maximum width.
-    // Where the presentation modifier is N, n, or Nn, this is done by
-    // abbreviating the name, using either conventional abbreviations if
-    // available, or crude right-truncation if not.
-    //
-    name = locale::get_month_abbr( month - 1, lang, country );
-    if ( mod.gt_max_width( u_name.size() ) )
-      u_name = u_name.substr( 0, mod.max_width );
+  switch ( mod.first.type ) {
+    case modifier::name:
+    case modifier::Name:
+    case modifier::NAME: {
+      --month;                          // 1-12 -> 0-11
+      zstring name( locale::get_month_name( month, lang, country ) );
+      utf8_string<zstring> u_name( name );
+      if ( mod.gt_max_width( u_name.size() ) ) {
+        //
+        // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
+        // exceeds the specified maximum width, then the processor should
+        // attempt to use an alternative shorter representation that fits
+        // within the maximum width.  Where the presentation modifier is N, n,
+        // or Nn, this is done by abbreviating the name, using either
+        // conventional abbreviations if available, or crude right-truncation
+        // if not.
+        //
+        name = locale::get_month_abbr( month, lang, country );
+        if ( mod.gt_max_width( u_name.size() ) )
+          u_name = u_name.substr( 0, mod.max_width );
+      }
+      append_string( name, mod, dest );
+      break;
+    }
+    default:
+      append_number( month, mod, dest );
   }
-
-  append_component( month, name, mod, dest );
 }
 
 static void append_timezone( char component, TimeZone const &tz,
@@ -620,31 +629,55 @@ append:
   *dest += tmp;
 }
 
-static void append_weekday( long day, iso639_1::type lang,
+static void append_weekday( long wday, iso639_1::type lang,
                             iso3166_1::type country, modifier const &mod,
                             zstring *dest ) {
-  zstring name( locale::get_weekday_name( day, lang, country ) );
-  utf8_string<zstring> u_name( name );
-
-  if ( mod.gt_max_width( u_name.size() ) ) {
-    //
-    // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value exceeds
-    // the specified maximum width, then the processor should attempt to use an
-    // alternative shorter representation that fits within the maximum width.
-    // Where the presentation modifier is N, n, or Nn, this is done by
-    // abbreviating the name, using either conventional abbreviations if
-    // available, or crude right-truncation if not.
-    //
-    name = locale::get_weekday_abbr( day, lang, country );
-    if ( mod.gt_max_width( u_name.size() ) )
-      u_name = u_name.substr( 0, mod.max_width );
-  }
-
   modifier mod_copy( mod );
   if ( !mod.first.parsed )
     mod_copy.first.type = modifier::name;
 
-  append_component( day, name, mod_copy, dest );
+  switch ( mod_copy.first.type ) {
+    case modifier::name:
+    case modifier::Name:
+    case modifier::NAME: {
+      zstring name( locale::get_weekday_name( wday, lang, country ) );
+      utf8_string<zstring> u_name( name );
+      if ( mod.gt_max_width( u_name.size() ) ) {
+        //
+        // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
+        // exceeds the specified maximum width, then the processor should
+        // attempt to use an alternative shorter representation that fits
+        // within the maximum width.  Where the presentation modifier is N, n,
+        // or Nn, this is done by abbreviating the name, using either
+        // conventional abbreviations if available, or crude right-truncation
+        // if not.
+        //
+        name = locale::get_weekday_abbr( wday, lang, country );
+        if ( mod.gt_max_width( u_name.size() ) )
+          u_name = u_name.substr( 0, mod.max_width );
+      }
+      append_string( name, mod_copy, dest );
+      break;
+    }
+    default: {
+      int const new_wday = time::calendar::convert_wday( wday, mod.calendar );
+      if ( new_wday == -1 ) {
+        //
+        // Ibid: If the fallback representation uses a different calendar from
+        // that requested, the output string must identify the calendar
+        // actually used, for example by prefixing the string with [Calendar:
+        // X] (where X is the calendar actually used), localized as appropriate
+        // to the requested language.
+        //
+        ostringstream oss;
+        // TODO: localize "Calendar"
+        oss << "[Calendar:" << time::calendar::get_default();
+        *dest += oss.str();
+      } else
+        wday = new_wday;
+      append_number( wday, mod_copy, dest );
+    }
+  }
 }
 
 static void append_year( long year, modifier const &mod, zstring *s ) {
@@ -970,8 +1003,9 @@ static int get_data_type( char component ) {
 
 bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
                                          PlanState &planState ) const {
-  zstring picture_str, result_str, calendar_str, place_str;
+  zstring picture_str, result_str, item_str;
   xs_dateTime dateTime;
+  time::calendar::type calendar = time::calendar::unknown;
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
   bool in_variable_marker;
@@ -993,18 +1027,33 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       locale::parse( item->getStringValue(), &lang, &country );
 
       consumeNext( item, theChildren[3].getp(), planState );
-      item->getStringValue2( calendar_str );
+      item->getStringValue2( item_str );
+      // TODO: handle calendar being a QName.
+      calendar = time::calendar::find( item_str );
+      if ( !calendar ) {
+        // TODO: throw exception?
+      }
+
       consumeNext( item, theChildren[4].getp(), planState );
-      item->getStringValue2( place_str );
-      // TODO: do something with calendar_str & place_str
+      item->getStringValue2( item_str );
+      // TODO: do something with place
+    }
+
+    if ( !calendar ) {
+      //
+      // XQuery 3.0 F&O: 9.8.4.3: If the $calendar argument is omitted or is
+      // set to an empty sequence then the default calendar defined in the
+      // dynamic context is used.
+      //
+      calendar = planState.theLocalDynCtx->get_calendar();
     }
 
     if ( !lang || !locale::is_supported( lang, country ) ) {
       //
-      // XQuery 3.0 F&O: 9.8.4.3: If the $language argument is omitted or is
-      // set to an empty sequence, or if it is set to an invalid value or a
-      // value that the implementation does not recognize, then the processor
-      // uses the default language defined in the dynamic context.
+      // Ibid: If the $language argument is omitted or is set to an empty
+      // sequence, or if it is set to an invalid value or a value that the
+      // implementation does not recognize, then the processor uses the default
+      // language defined in the dynamic context.
       //
       planState.theLocalDynCtx->get_locale( &lang, &country );
     }
@@ -1087,6 +1136,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         goto eos;
 
       modifier mod;
+      mod.calendar = calendar;
 
       if ( *i != ']' ) {
         parse_first_modifier( picture_str, &i, &mod, loc );

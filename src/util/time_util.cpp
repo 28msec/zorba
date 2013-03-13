@@ -92,6 +92,32 @@ char const *const string_of[] = {
   "VS"    // Vikrama Samvat Era
 };
 
+int convert_wday( unsigned wday, type to, type from ) {
+  if ( from == to )
+    return static_cast<int>( wday );
+  switch ( from ) {
+    case AD:
+      switch ( to ) {
+        case ISO:
+          return wday == 0 /* Sunday */ ? 7 : wday;
+        default:
+          break;
+      }
+      break;
+    case ISO:
+      switch ( to ) {
+        case AD:
+          return wday == 7 /* Sunday */ ? 0 : wday;
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+  return -1;
+}
+
 type find( char const *calendar ) {
   DEF_END( string_of );
   return FIND( calendar );

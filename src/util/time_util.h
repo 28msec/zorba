@@ -25,6 +25,7 @@
 
 // Zorba
 #include <zorba/config.h>
+#include <zorba/time.h>
 #include "cxx_util.h"
 #include "string_util.h"
 
@@ -84,36 +85,6 @@ struct ztm : tm {
  * during the last hundred years.
  */
 namespace calendar {
-  enum type {
-    unknown,
-    AD,   ///< Anno Domini (Christian Era)
-    AH,   ///< Anno Hegirae (Muhammedan Era)
-    AM,   ///< Anno Mundi (Jewish Calendar)
-    AME,  ///< Mauludi Era (solar years since Mohammed's birth)
-    AP,   ///< Anno Persici
-    AS,   ///< Aji Saka Era (Java)
-    BE,   ///< Buddhist Era
-    CB,   ///< Cooch Behar Era
-    CE,   ///< Common Era
-    CL,   ///< Chinese Lunar Era
-    CS,   ///< Chula Sakarat Era
-    EE,   ///< Ethiopian Era
-    FE,   ///< Fasli Era
-    ISO,  ///< ISO 8601 calendar
-    JE,   ///< Japanese Calendar
-    KE,   ///< Khalsa Era (Sikh calendar)
-    KY,   ///< Kali Yuga
-    ME,   ///< Malabar Era
-    MS,   ///< Monarchic Solar Era
-    OS,   ///< Old Style (Julian Calendar)
-    RS,   ///< Rattanakosin (Bangkok) Era
-    SE,   ///< Saka Era
-    SH,   ///< Mohammedan Solar Era (Iran)
-    SS,   ///< Saka Samvat
-    TE,   ///< Tripurabda Era
-    VE,   ///< Vikrama Era
-    VS    ///< Vikrama Samvat Era
-  };
   extern char const* const string_of[];
 
   /**
@@ -128,9 +99,30 @@ namespace calendar {
   }
 
   /**
+   * Gets the default calendar to use.
+   *
+   * @return Returns said calendar;
+   */
+  inline type get_default() {
+    return AD; // i.e., the Gregorian calendar
+  }
+
+  /**
+   * Converts a weekday number from one calendar to another.
+   *
+   * @param wday The weekday to convert.
+   * @param to The calendar designator to convert \a wday to.
+   * @param from The calendar designator to convert \a wday from.
+   * @return Returns \a wday converted to \a to or -1 if it is unknown how to
+   * perform the conversion.
+   */
+  int convert_wday( unsigned wday, type to, type from = get_default() );
+
+  /**
    * Finds a calendar designator from the given string.
    *
-   * @param calendar The calendar designator to find.
+   * @param calendar The calendar designator to find.  It is presumed to be in
+   * upper-case.
    * @return Returns said enumeration or \c unknown.
    */
   type find( char const *calendar );

@@ -18,6 +18,7 @@
 #define ZORBA_DYNAMIC_CONTEXT_H
 
 #include <zorba/external_function_parameter.h>
+#include <zorba/time.h>
 
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/hashmap_itemp.h"
@@ -141,6 +142,7 @@ protected:
 
   locale::iso639_1::type       theLang;
   locale::iso3166_1::type      theCountry;
+  time::calendar::type         theCalendar;
 
 public:
   double                       theDocLoadingUserTime;
@@ -187,6 +189,14 @@ public:
       *lang = theLang;
     if ( country )
       *country = theCountry;
+  }
+
+  void set_calendar( time::calendar::type calendar ) {
+    theCalendar = calendar;
+  }
+
+  time::calendar::type get_calendar() const {
+    return theCalendar;
   }
 
   const std::vector<VarValue>& get_variables() const { return theVarValues; }
