@@ -501,7 +501,7 @@ static void append_timezone( char component, TimeZone const &tz,
         tmp += 'J';
         break;
       }
-      if ( hour >= -12 && hour <= 12 && !tz.getMinutes() ) {
+      if ( hour >= -12 && hour <= 12 && !min ) {
         tmp += time::get_military_tz( hour );
         break;
       }
@@ -539,10 +539,10 @@ fallback:
         break;
       }
 
-      if ( hour >= 0 )
+      if ( tz.isNegative() )
+        tmp += '-', hour = std::abs( hour );
+      else
         tmp += '+';
-      else if ( hour < 0 )
-        tmp += '-', hour = -hour;
 
       if ( has_grouping_separators ) {
         //
