@@ -31,15 +31,6 @@ namespace zorba{
 
 
 
-PlanIter_t fn_function_lookup_3_0::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new FunctionLookupIterator(sctx, loc, argv);
-}
 
 PlanIter_t fn_function_name_3_0::codegen(
   CompilerCB*,
