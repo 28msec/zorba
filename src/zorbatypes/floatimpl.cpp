@@ -140,6 +140,9 @@ bool FloatImpl<FloatType>::parse_etc( char const *s ) {
   } else if ( strncmp( s, "NaN", 3 ) == 0 ) {
     value_ = FloatImpl<FloatType>::nan().value_;
     s += 3;
+  } else if ( strncmp( s, "+INF", 4 ) == 0 ) {
+    value_ = FloatImpl<FloatType>::pos_inf().value_;
+    s += 4;
   } else
     return false;
 

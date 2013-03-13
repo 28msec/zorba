@@ -25,6 +25,7 @@
 #include <string>
 
 #include <zorba/internal/ztd.h>
+#include "ascii_util.h"
 #include "cxx_util.h"
 #include "stl_util.h"
 
@@ -657,140 +658,6 @@ using internal::ztd::has_toString;
 using internal::ztd::to_string;
 
 /**
- * A type that can hold the largest possible C string equivalent of the largest
- * possible integral value.
- */
-typedef char itoa_buf_type[48];
-
-/**
- * Converts a <code>long long</code> to a C string.
- *
- * @param n The <code>long long</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-char* itoa( long long n, char *buf );
-
-/**
- * Converts a \c char to a C string.
- *
- * @param n The \c char to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( char n, char *buf ) {
-  return itoa( static_cast<long long>( n ), buf );
-}
-
-/**
- * Converts a <code>signed char</code> to a C string.
- *
- * @param n The <code>signed char</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( signed char n, char *buf ) {
-  return itoa( static_cast<long long>( n ), buf );
-}
-
-/**
- * Converts a \c short to a C string.
- *
- * @param n The \c short to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( short n, char *buf ) {
-  return itoa( static_cast<long long>( n ), buf );
-}
-
-/**
- * Converts an \c int to a C string.
- *
- * @param n The \c int to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( int n, char *buf ) {
-  return itoa( static_cast<long long>( n ), buf );
-}
-
-/**
- * Converts a \c long to a C string.
- *
- * @param n The \c long to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( long n, char *buf ) {
-  return itoa( static_cast<long long>( n ), buf );
-}
-
-/**
- * Converts an <code>unsigned long long</code> to a C string.
- *
- * @param n The <code>unsigned long long</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-char* itoa( unsigned long long n, char *buf );
-
-/**
- * Converts an <code>unsigned char</code> to a C string.
- *
- * @param n The <code>unsigned char</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( unsigned char n, char *buf ) {
-  return itoa( static_cast<unsigned long long>( n ), buf );
-}
-
-/**
- * Converts an <code>unsigned short</code> to a C string.
- *
- * @param n The <code>unsigned short</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( unsigned short n, char *buf ) {
-  return itoa( static_cast<unsigned long long>( n ), buf );
-}
-
-/**
- * Converts an <code>unsigned int</code> to a C string.
- *
- * @param n The <code>unsigned int</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( unsigned int n, char *buf ) {
-  return itoa( static_cast<unsigned long long>( n ), buf );
-}
-
-/**
- * Converts an <code>unsigned long</code> to a C string.
- *
- * @param n The <code>unsigned long</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( unsigned long n, char *buf ) {
-  return itoa( static_cast<unsigned long long>( n ), buf );
-}
-
-/**
  * Converts an object to its string representation.
  *
  * @tparam T The object type that:
@@ -823,8 +690,8 @@ to_string( T const &t, OutputStringType *out ) {
 template<typename T,class OutputStringType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_integral<T>::value,void>::type
 to_string( T t, OutputStringType *out ) {
-  itoa_buf_type buf;
-  *out = itoa( t, buf );
+  ascii::itoa_buf_type buf;
+  *out = ascii::itoa( t, buf );
 }
 
 /**

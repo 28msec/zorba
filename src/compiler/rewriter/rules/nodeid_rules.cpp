@@ -441,8 +441,11 @@ expr* MarkConsumerNodeProps::apply(
   case json_array_expr_kind :
   {
     json_array_expr* e = static_cast<json_array_expr *>(node);
-    set_ignores_duplicate_nodes(e->get_expr(), ANNOTATION_FALSE);
-    set_ignores_sorted_nodes(e->get_expr(), ANNOTATION_FALSE);
+    if (e->get_expr())
+    {
+      set_ignores_duplicate_nodes(e->get_expr(), ANNOTATION_FALSE);
+      set_ignores_sorted_nodes(e->get_expr(), ANNOTATION_FALSE);
+    }
     break;
   }
 #endif
@@ -722,7 +725,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
     // TODO improve this
     json_array_expr* e = static_cast<json_array_expr *>(node);
 
-    if (sctx->preserve_ns() && sctx->inherit_ns())
+    if (sctx->preserve_ns() && sctx->inherit_ns() && e->get_expr())
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(e->get_expr(), sources);

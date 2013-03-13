@@ -37,6 +37,9 @@ import module namespace fots-err =
 import module namespace util =
   "http://www.zorba-xquery.com/fots-driver/util" at "util.xq";
 
+import module namespace zorba-xml =
+  "http://www.zorba-xquery.com/modules/xml#2.1";
+
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
 
@@ -256,7 +259,7 @@ declare %private %ann:sequential function eval:assert-any-of(
     } </result>
   where every $result in $results satisfies $result/item
   return concat("'Assert-any-of' returned: ",
-                string-join(util:serialize-result($results/data(item)), ' '))
+                fn:serialize($results/data(item), $util:serParamXml))
 };
 
 
@@ -478,17 +481,14 @@ declare %private function eval:assert-xml(
   $baseURI   as xs:anyURI
 )
 {
-(:TODO call xml-canonicalization after bug #1076919 is implemented.:)
   try {
-    let $serRes := util:serialize-result($result),
-        $result1 as xs:string := string-join($serRes,''),
-        $result2 as xs:string := string-join($serRes,' '),
-        $expectedResult as xs:string := util:get-value($expResult, $baseURI, "assert-xml")
+    let $actualResult   := zorba-xml:canonicalize(concat('<root>', fn:serialize($result, $util:serParamXml), '</root>'))
+    let $expectedResult := zorba-xml:canonicalize(concat('<root>', util:get-value($expResult, $baseURI, "assert-xml"), '</root>'))
+    
     return
-      if ((normalize-space($result1) eq normalize-space(string($expectedResult))) or
-         (normalize-space($result2) eq normalize-space(string($expectedResult))))
+      if ($actualResult eq $expectedResult)
       then ()
-      else "'assert-xml' returned: result is different from the expected result."
+      else concat("'assert-xml' returned: result &#xA;'", $actualResult, "'&#xA; is different from the expected result &#xA;'", $expectedResult,"'&#xA;")
   } catch * {
     concat("'assert-xml' returned: fail with error ",
             $err:code, " : ", $err:description)
@@ -507,8 +507,7 @@ declare %private %ann:sequential function eval:assert-serialization-error(
 ) as xs:string?
 {
   try {
-  let $serializedResult as xs:string := string-join(
-                                            util:serialize-result($result), '')
+  let $serializedResult as xs:string := fn:serialize($result, $util:serParamXml)
   return
    "'assert-serialization-error' returned: expected serialization error but got result."
   } catch * {
@@ -530,12 +529,8 @@ declare %private function eval:serialization-matches(
 ) as xs:string?
 {
   try {
-  let $serResult := string-join(util:serialize-result($result,
-                                                      $util:serParamXml),
-                                ''),
-      $serExpResult := string-join(util:serialize-result(data($expResult),
-                                                        $util:serParamXml),
-                                  '')
+  let $serResult    := fn:serialize($result, $util:serParamXml)
+  let $serExpResult := fn:serialize($expResult, $util:serParamXml)
   let $matchesFlags := data($expResult/@flags)
   return
     if (exists($matchesFlags))
@@ -565,11 +560,11 @@ declare %private function eval:assert-string-value(
 ) as xs:string?
 {
   try {
-    let $serRes := string-join(util:serialize-result($result), ' '),
-        $res := if (empty($expResult[@normalize-space="true"]))
+    let $serRes := string-join(for $r in $result return string($r), " ")
+    let $res := if (empty($expResult[@normalize-space="true"]))
                 then $serRes
-                else normalize-space($serRes),
-        $expRes :=  if (empty($expResult[@normalize-space="true"]))
+                else normalize-space($serRes)
+    let $expRes :=  if (empty($expResult[@normalize-space="true"]))
                     then xs:string($expResult)
                     else normalize-space(xs:string($expResult))
     return
