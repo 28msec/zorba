@@ -412,9 +412,18 @@ static void append_fractional_seconds( int n, modifier const &mod,
           n = (int)( f * p + 0.5 );
         } else
           n = (int)( n * 1000.0 / DateTime::FRAC_SECONDS_UPPER_LIMIT );
+
         ascii::itoa_buf_type buf;
         zstring tmp( ascii::itoa( n, buf ) );
-        *dest += ascii::right_pad( &tmp, mod.min_width, '0' );
+
+        if ( tmp.size() < mod.min_width )
+          ascii::right_pad( &tmp, mod.min_width, '0' );
+        else if ( mod.min_width > 0 )
+          while ( tmp.size() > mod.min_width &&
+                  tmp[ tmp.size() - 1 ] == '0' ) {
+            tmp = tmp.substr( 0, tmp.size() - 1 );
+          }
+        *dest += tmp;
         break;
       }
       n = (int)( n * 1000.0 / DateTime::FRAC_SECONDS_UPPER_LIMIT );
