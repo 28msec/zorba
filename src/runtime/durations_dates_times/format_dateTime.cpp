@@ -1044,6 +1044,7 @@ static int get_data_type( char component ) {
   switch ( component ) {
     case 'D': return DateTime::DAY_DATA;
     case 'd': return DateTime::DAY_DATA;
+    case 'E': return DateTime::YEAR_DATA;
     case 'F': return DateTime::DAY_DATA;
     case 'f': return DateTime::FRACSECONDS_DATA;
     case 'H': return DateTime::HOUR_DATA;
