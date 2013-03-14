@@ -3068,8 +3068,10 @@ store::Item_t ElementNode::getNilled() const
   for (; ite != end; ++ite)
   {
     XmlNode* attr = *ite;
-    if (ZSTREQ(attr->getNodeName()->getNamespace(), "xsi") &&
-        ZSTREQ(attr->getNodeName()->getLocalName(), "nil"))
+    if (ZSTREQ(attr->getNodeName()->getNamespace(), "http://www.w3.org/2001/XMLSchema-instance") &&
+        ZSTREQ(attr->getNodeName()->getLocalName(), "nil") &&
+        ( ZSTREQ(attr->getStringValue(), "true") || ZSTREQ(attr->getStringValue(), "1") ) &&
+        isValidated())
     {
       nilled = true;
       break;

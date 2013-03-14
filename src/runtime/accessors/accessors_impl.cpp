@@ -97,7 +97,6 @@ bool NodeNameIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 bool NilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;
-  bool a;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -106,7 +105,7 @@ bool NilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (inNode->isNode())
     {
-        result = inNode->getNilled();
+      result = inNode->getNilled();
       STACK_PUSH(result != NULL, state);
     }
     else
