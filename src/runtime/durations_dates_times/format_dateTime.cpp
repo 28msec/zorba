@@ -19,6 +19,7 @@
 // standard
 #include <algorithm>
 #include <cctype>
+#include <cmath>
 #include <cstdlib>
 #include <functional>
 #include <iomanip>
@@ -90,7 +91,7 @@ struct modifier {
     traditional   // 't'
   };
 
-  typedef unsigned long width_type;
+  typedef unsigned width_type;
 
   struct {
     bool parsed;
@@ -129,7 +130,7 @@ struct modifier {
     return *s;
   }
 
-  zstring const& zero_pad( zstring *s ) const {
+  zstring const& left_pad_zero( zstring *s ) const {
     if ( min_width )
       utf8::left_pad( s, min_width, first.zero );
     return *s;
@@ -149,11 +150,11 @@ struct modifier {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-zstring alpha( unsigned long n, bool capital ) {
+zstring alpha( unsigned n, bool capital ) {
   char const c = capital ? 'A' : 'a';
   zstring result;
   while ( n ) {
-    unsigned long const m = n - 1;
+    unsigned const m = n - 1;
     result.insert( (zstring::size_type)0, 1, c + m % 26 );
     n = m / 26;
   }
@@ -301,7 +302,7 @@ static bool is_grouping_separator( unicode::code_point cp ) {
  * @param n The integer to return the ordinal suffix for.
  * @return Returns said suffix.
  */
-static char const* ordinal( long n ) {
+static char const* ordinal( int n ) {
   n = std::abs( n );
   switch ( n % 100 ) {
     case 11:
@@ -345,14 +346,14 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void append_number( long n, modifier const &mod, zstring *dest ) {
+static void append_number( int n, modifier const &mod, zstring *dest ) {
   switch ( mod.first.type ) {
     case modifier::arabic: {
       utf8::itou_buf_type buf;
       zstring tmp( utf8::itou( n, buf, mod.first.zero ) );
       if ( mod.second.co_type == modifier::ordinal )
         tmp += ordinal( n );
-      *dest += mod.zero_pad( &tmp );
+      *dest += mod.left_pad_zero( &tmp );
       break;
     }
 
@@ -399,6 +400,29 @@ static void append_number( long n, modifier const &mod, zstring *dest ) {
   }
 }
 
+static void append_fractional_seconds( int n, modifier const &mod,
+                                       zstring *dest ) {
+  switch ( mod.first.type ) {
+    case modifier::arabic:
+      if ( mod.min_width || mod.max_width ) {
+        if ( mod.max_width ) {
+          double const f = (double)n / DateTime::FRAC_SECONDS_UPPER_LIMIT;
+          double const p = ::pow( 10, mod.max_width );
+          n = (int)( f * p + 0.5 );
+        } else
+          n = (int)( n * 1000.0 / DateTime::FRAC_SECONDS_UPPER_LIMIT );
+        ascii::itoa_buf_type buf;
+        zstring tmp( ascii::itoa( n, buf ) );
+        *dest += ascii::right_pad( &tmp, mod.min_width, '0' );
+        break;
+      }
+      n = (int)( n * 1000.0 / DateTime::FRAC_SECONDS_UPPER_LIMIT );
+      // no break;
+    default:
+      append_number( n, mod, dest );
+  }
+}
+
 static void append_string( zstring const &s, modifier const &mod,
                            zstring *dest ) {
   zstring tmp;
@@ -422,7 +446,7 @@ static void append_string( zstring const &s, modifier const &mod,
   *dest += mod.pad_space( &tmp );
 }
 
-static void append_month( long month, iso639_1::type lang,
+static void append_month( int month, iso639_1::type lang,
                           iso3166_1::type country, modifier const &mod,
                           zstring *dest ) {
   switch ( mod.first.type ) {
@@ -630,7 +654,7 @@ append:
   *dest += tmp;
 }
 
-static void append_weekday( long wday, iso639_1::type lang,
+static void append_weekday( int wday, iso639_1::type lang,
                             iso3166_1::type country, modifier const &mod,
                             zstring *dest ) {
   modifier mod_copy( mod );
@@ -681,7 +705,7 @@ static void append_weekday( long wday, iso639_1::type lang,
   }
 }
 
-static void append_year( long year, modifier const &mod, zstring *s ) {
+static void append_year( int year, modifier const &mod, zstring *s ) {
   zstring tmp;
   append_number( year, mod, &tmp );
 
@@ -1195,10 +1219,8 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           break;
         }
         case 'f':
-          append_number(
-            (long)(dateTime.getFractionalSeconds() * 1000.0 /
-              DateTime::FRAC_SECONDS_UPPER_LIMIT),
-            mod, &result_str
+          append_fractional_seconds(
+            dateTime.getFractionalSeconds(), mod, &result_str
           );
           break;
         case 'H': // hour (24 hours)
