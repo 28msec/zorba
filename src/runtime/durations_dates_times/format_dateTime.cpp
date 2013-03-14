@@ -50,6 +50,7 @@
 
 using namespace std;
 using namespace zorba::locale;
+using namespace zorba::time;
 
 namespace zorba {
 
@@ -112,7 +113,7 @@ struct modifier {
   // The calendar isn't part of the "presentation modifier" as discussed in the
   // XQuery3.0 F&O spec, but this is a convenient place to put it nonetheless.
   //
-  time::calendar::type calendar;
+  calendar::type cal;
 
   bool gt_max_width( width_type n ) const {
     return max_width > 0 && n > max_width;
@@ -142,7 +143,7 @@ struct modifier {
     second.co_type = cardinal;
     second.at_type = no_second_at;
     min_width = max_width = 0;
-    calendar = time::calendar::unknown;
+    cal = calendar::unknown;
   };
 };
 
@@ -660,7 +661,7 @@ static void append_weekday( long wday, iso639_1::type lang,
       break;
     }
     default: {
-      int const new_wday = time::calendar::convert_wday( wday, mod.calendar );
+      int const new_wday = calendar::convert_wday_to( wday, mod.cal );
       if ( new_wday == -1 ) {
         //
         // Ibid: If the fallback representation uses a different calendar from
@@ -671,7 +672,7 @@ static void append_weekday( long wday, iso639_1::type lang,
         //
         ostringstream oss;
         // TODO: localize "Calendar"
-        oss << "[Calendar:" << time::calendar::get_default();
+        oss << "[Calendar:" << calendar::get_default();
         *dest += oss.str();
       } else
         wday = new_wday;
@@ -1005,7 +1006,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
                                          PlanState &planState ) const {
   zstring picture_str, result_str, item_str;
   xs_dateTime dateTime;
-  time::calendar::type calendar = time::calendar::unknown;
+  calendar::type cal = calendar::unknown;
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
   bool in_variable_marker;
@@ -1029,8 +1030,8 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       consumeNext( item, theChildren[3].getp(), planState );
       item->getStringValue2( item_str );
       // TODO: handle calendar being a QName.
-      calendar = time::calendar::find( item_str );
-      if ( !calendar ) {
+      cal = calendar::find( item_str );
+      if ( !cal ) {
         // TODO: throw exception?
       }
 
@@ -1039,13 +1040,13 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       // TODO: do something with place
     }
 
-    if ( !calendar ) {
+    if ( !cal ) {
       //
       // XQuery 3.0 F&O: 9.8.4.3: If the $calendar argument is omitted or is
       // set to an empty sequence then the default calendar defined in the
       // dynamic context is used.
       //
-      calendar = planState.theLocalDynCtx->get_calendar();
+      cal = planState.theLocalDynCtx->get_calendar();
     }
 
     if ( !lang || !locale::is_supported( lang, country ) ) {
@@ -1136,7 +1137,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         goto eos;
 
       modifier mod;
-      mod.calendar = calendar;
+      mod.cal = cal;
 
       if ( *i != ']' ) {
         parse_first_modifier( picture_str, &i, &mod, loc );

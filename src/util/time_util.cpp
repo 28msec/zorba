@@ -92,30 +92,20 @@ char const *const string_of[] = {
   "VS"    // Vikrama Samvat Era
 };
 
-int convert_wday( unsigned wday, type to, type from ) {
-  if ( from == to )
-    return static_cast<int>( wday );
+int convert_wday_from( unsigned wday, type from ) {
   switch ( from ) {
-    case AD:
-      switch ( to ) {
-        case ISO:
-          return wday == 0 /* Sunday */ ? 7 : wday;
-        default:
-          break;
-      }
-      break;
-    case ISO:
-      switch ( to ) {
-        case AD:
-          return wday == 7 /* Sunday */ ? 0 : wday;
-        default:
-          break;
-      }
-      break;
-    default:
-      break;
+    case AD : return static_cast<int>( wday );
+    case ISO: return wday == 7 /* Sunday */ ? 0 : wday;
+    default : return -1;
   }
-  return -1;
+}
+
+int convert_wday_to( unsigned wday, type to ) {
+  switch ( to ) {
+    case AD : return static_cast<int>( wday );
+    case ISO: return wday == 0 /* Sunday */ ? 7 : wday;
+    default : return -1;
+  }
 }
 
 type find( char const *calendar ) {

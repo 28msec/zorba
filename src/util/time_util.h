@@ -108,15 +108,26 @@ namespace calendar {
   }
 
   /**
-   * Converts a weekday number from one calendar to another.
+   * Converts a weekday number from a given calendar to the Unix interpretation
+   * [0-6] where 0 = Sunday.
    *
-   * @param wday The weekday to convert.
-   * @param to The calendar designator to convert \a wday to.
+   * @param wday The weekday to convert where the meaning of the value is
+   * determined by \a from.
    * @param from The calendar designator to convert \a wday from.
    * @return Returns \a wday converted to \a to or -1 if it is unknown how to
    * perform the conversion.
    */
-  int convert_wday( unsigned wday, type to, type from = get_default() );
+  int convert_wday_from( unsigned wday, type from );
+
+  /**
+   * Converts a weekday number to a specific calendar.
+   *
+   * @param wday The weekday to convert: [0-6] where 0 = Sunday.
+   * @param to The calendar designator to convert \a wday to.
+   * @return Returns \a wday converted to \a to or -1 if it is unknown how to
+   * perform the conversion.
+   */
+  int convert_wday_to( unsigned wday, type to );
 
   /**
    * Finds a calendar designator from the given string.
@@ -146,10 +157,10 @@ namespace calendar {
 /**
  * Calculates the day of the month and month from the given day of the year.
  *
- * @param yday The year day (0-365) where 0 = January 1.
- * @param mday A pointer to the result for the month day (1-31) or \c null if
+ * @param yday The year day [0-365] where 0 = January 1.
+ * @param mday A pointer to the result for the month day [1-31] or \c null if
  * this is not desired.
- * @param mon A pointer to the result for the month (0-11) or \c null if this
+ * @param mon A pointer to the result for the month [0-11] or \c null if this
  * is not desired.
  * @param year The year.
  * @return Returns \c true if \a yday and \a year are a valid combination and
@@ -161,29 +172,29 @@ bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
 /**
  * Calculates the weekday for the given date.
  *
- * @param mday The month day (1-31).
- * @param mon The month (0-11).
+ * @param mday The month day [1-31].
+ * @param mon The month [0-11].
  * @param year The year.
- * @return Returns the weekday (0-6) where 0 = Sunday.
+ * @return Returns the weekday [0-6] where 0 = Sunday.
  */
 unsigned calc_wday( unsigned mday, unsigned mon, unsigned year );
 
 /**
  * Calculates the day of the year for the given date.
  *
- * @param mday The month day (1-31).
- * @param mon The month (0-11).
+ * @param mday The month day [1-31].
+ * @param mon The month [0-11].
  * @param year The year.
- * @return Returns the day of the year (0-365) where 0 = January 1.
+ * @return Returns the day of the year [0-365] where 0 = January 1.
  */
 unsigned calc_yday( unsigned mday, unsigned mon, unsigned year );
 
 /**
  * Gets the number of days in the given month.
  *
- * @param mon The month (0-11).
+ * @param mon The month [0-11].
  * @param year The year.
- * @return Returns said number of days (1-31).
+ * @return Returns said number of days [1-31].
  */
 unsigned days_in_month( unsigned mon, unsigned year );
 
@@ -243,8 +254,8 @@ inline bool is_leap_year( unsigned year ) {
 /**
  * Checks whether the given day of the month is valid.
  *
- * @param mday The month day (1-31).
- * @param mon The month (0-11).
+ * @param mday The month day [1-31].
+ * @param mon The month [0-11].
  * @param year The year.
  * @return Returns \a true only if the given day of the month is valid.
  */
@@ -255,9 +266,9 @@ inline bool is_mday_valid( unsigned mday, unsigned mon, unsigned year ) {
 /**
  * Checks whether the given weekday is valid.
  *
- * @param wday The weekday (0-6) where 0 = Sunday.
- * @param mday The month day (1-31).
- * @param mon The month (0-11).
+ * @param wday The weekday [0-6] where 0 = Sunday.
+ * @param mday The month day [1-31].
+ * @param mon The month [0-11].
  * @param year The year.
  * @return Returns \a true only if the given weekday is valid.
  */
@@ -269,9 +280,9 @@ inline bool is_wday_valid( unsigned wday, unsigned mday, unsigned mon,
 /**
  * Checks whether the given day of the year is valid.
  *
- * @param yday The day of the year (0-365).
- * @param mday The month day (1-31).
- * @param mon The month (0-11).
+ * @param yday The day of the year [0-365].
+ * @param mday The month day [1-31].
+ * @param mon The month [0-11].
  * @param year The year.
  * @return Returns \a true only if the given day of the year is valid.
  */
