@@ -117,7 +117,7 @@ struct modifier {
   calendar::type cal;
 
   void default_width( width_type width ) {
-    if ( first.format.empty() && !min_width && !max_width )
+    if ( !(first.parsed || min_width || max_width) )
       min_width = max_width = width;
   }
 
@@ -152,13 +152,16 @@ struct modifier {
 ///////////////////////////////////////////////////////////////////////////////
 
 zstring alpha( unsigned n, bool capital ) {
-  char const c = capital ? 'A' : 'a';
   zstring result;
-  while ( n ) {
-    unsigned const m = n - 1;
-    result.insert( (zstring::size_type)0, 1, c + m % 26 );
-    n = m / 26;
-  }
+  if ( n ) {
+    char const c = capital ? 'A' : 'a';
+    while ( n ) {
+      unsigned const m = n - 1;
+      result.insert( (zstring::size_type)0, 1, c + m % 26 );
+      n = m / 26;
+    }
+  } else
+    result = "0";
   return result;
 }
 
