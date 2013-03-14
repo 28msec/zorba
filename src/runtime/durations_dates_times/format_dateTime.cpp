@@ -1032,7 +1032,8 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       // TODO: handle calendar being a QName.
       cal = calendar::find( item_str );
       if ( !cal ) {
-        // TODO: throw exception?
+        // TODO: handle invalid calendar
+        cal = calendar::get_default();
       }
 
       consumeNext( item, theChildren[4].getp(), planState );
