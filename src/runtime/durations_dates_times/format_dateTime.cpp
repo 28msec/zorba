@@ -763,6 +763,22 @@ static void parse_first_modifier( zstring const &picture_str,
     );
   }
 
+  //
+  // Because of:
+  //
+  //    Ibid: if a variable marker contains one or more commas, then the last
+  //    comma is treated as introducing the width modifier, and all others are
+  //    treated as grouping separators.
+  //
+  // we have to count the number of commas in order to know when we've reached
+  // the last one.
+  //
+  int num_commas = 0;
+  for ( zstring::const_iterator c( *i ); c != picture_str.end(); ++c )
+    if ( *c == ',' )
+      ++num_commas;
+  int comma_count = 0;
+
   unicode::code_point zero[2];
 
   if ( cp == '#' || unicode::is_Nd( cp, &zero[0] ) ) {
@@ -820,11 +836,19 @@ static void parse_first_modifier( zstring const &picture_str,
         } else
           got_mandatory_digit = true;
         got_grouping_separator = false;
-      } else if ( cp == ']' )
+      } else if ( cp == ';' || cp == ']' )
         break;
       else if ( unicode::is_space( cp ) )
         continue;
       else if ( is_grouping_separator( cp ) ) {
+        if ( cp == ',' && ++comma_count == num_commas ) {
+          //
+          // Ibid: if a variable marker contains one or more commas, then the
+          // last comma is treated as introducing the width modifier, and all
+          // others are treated as grouping separators.
+          //
+          break;
+        }
         if ( got_grouping_separator ) {
           //
           // Ibid: A grouping-separator-sign must not appear ... adjacent to
