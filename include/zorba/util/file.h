@@ -49,37 +49,36 @@ public:
   typedef zorba::File::FileSize_t file_size_t;
 
 protected:
-  filetype type; 
-
-// file attributes
-  file_size_t size;          // size in bytes
-
-  void do_stat();
+  filetype do_stat( bool follow_symlinks = true, file_size_t *size = 0 ) const;
 
 public:
   file(const filesystem_path &path, int flags = 0);
 
 public: // common methods
   void set_path(std::string const& _path ) { *((filesystem_path *) this) = _path; }
-  void set_filetype(enum filetype _type ) { type = _type ; }
-  enum filetype get_filetype();
+  void set_filetype(filetype)   { /* do nothing */ }  // deprecated
+  filetype get_filetype() const { return do_stat(); }
 
-  bool is_directory() const { return (type==type_directory); }  
-  bool is_file() const { return (type==type_file); }  
-  bool is_link() const { return (type==type_link); }  
-  bool is_volume() const { return (type==type_volume); }  
+  bool is_directory() const     { return do_stat() == type_directory; }  
+  bool is_file() const          { return do_stat() == type_file; }  
+  bool is_link() const          { return do_stat( false ) == type_link; }  
+  bool is_volume() const        { return do_stat() == type_volume; }  
 
-  bool is_invalid() const { return (type==type_invalid); }  
-  bool exists() const { return (type!=type_non_existent && type!=type_invalid); }  
+  bool is_invalid() const       { return false; }     // deprecated
+  bool exists() const           { return do_stat() != type_non_existent; }
 
-  time_t lastModified();
+  time_t lastModified() const;
 
 public: // file methods
   void create();
   void remove(bool ignore = true);
   void rename(std::string const& newpath);
 
-  file_size_t get_size() const        { return size; }
+  file_size_t get_size() const {
+    file_size_t size;
+    do_stat( true, &size );
+    return size;
+  }
 
 public: // directory methods
   void mkdir();
@@ -90,7 +89,7 @@ public: // directory methods
   void chdir();
 #endif
 
-  bool is_empty() const { return (size == (file_size_t)0); }
+  bool is_empty() const { return get_size() == 0; }
 };
 
 

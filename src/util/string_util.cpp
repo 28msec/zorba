@@ -153,10 +153,8 @@ unsigned long long atoull( char const *buf, char const *end,
                            char const **last ) {
   aton_context const ctx( last );
   unsigned long long n = 0;
-  char const *s = buf;
+  char const *s = ascii::trim_start_whitespace( buf, end - buf );
 
-  for ( ; s < end && ascii::is_space( *s ); ++s )
-    ;
   for ( ; s < end && ascii::is_digit( *s ); ++s ) {
     unsigned long long const n_prev = n;
     n = n * 10 + *s - '0';
@@ -168,44 +166,6 @@ unsigned long long atoull( char const *buf, char const *end,
   *last = s;
   check_parse_number( buf, *last, ctx.check_trailing_chars() );
   return n;
-}
-
-char* itoa( long long n, char *buf ) {
-  //
-  // This implementation is much faster than using sprintf(3).
-  //
-  char *s = buf;
-  long long n_prev;
-  do { 
-    n_prev = n;
-    n /= 10; 
-    *s++ = "9876543210123456789" [ 9 + n_prev - n * 10 ];
-  } while ( n );
-
-  if ( n_prev < 0 ) *s++ = '-';
-  *s = '\0';
-
-  for ( char *t = buf; t < s; ++t ) {
-    char const c = *--s; *s = *t; *t = c;
-  }
-  return buf;
-}
-
-char* itoa( unsigned long long n, char *buf ) {
-  char *s = buf;
-  unsigned long long n_prev;
-  do { 
-    n_prev = n;
-    n /= 10; 
-    *s++ = "0123456789" [ n_prev - n * 10 ];
-  } while ( n );
-
-  *s = '\0';
-
-  for ( char *t = buf; t < s; ++t ) {
-    char const c = *--s; *s = *t; *t = c;
-  }
-  return buf;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

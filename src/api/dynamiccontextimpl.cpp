@@ -675,6 +675,18 @@ Item DynamicContextImpl::getDefaultCollection() const
   return Item();
 }
 
+/****************************************************************************//**
+
+********************************************************************************/
+void DynamicContextImpl::setLocale( locale::iso639_1::type aLang,
+                                    locale::iso3166_1::type aCountry ) {
+  theCtx->set_locale( aLang, aCountry );
+}
+
+void DynamicContextImpl::getLocale( locale::iso639_1::type *aLang,
+                                    locale::iso3166_1::type *aCountry ) const {
+  theCtx->get_locale( aLang, aCountry );
+}
 
 /****************************************************************************//**
 

@@ -220,6 +220,7 @@ bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type)
     case store::XS_DATE:
     case store::XS_TIME:
     case store::XS_DATETIME:
+    case store::XS_DATETIME_STAMP:
     case store::XS_GYEAR_MONTH:
     case store::XS_GYEAR:
     case store::XS_GMONTH_DAY:
