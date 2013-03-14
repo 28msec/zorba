@@ -773,11 +773,10 @@ static void parse_first_modifier( zstring const &picture_str,
   // we have to count the number of commas in order to know when we've reached
   // the last one.
   //
-  int num_commas = 0;
+  int commas = 0;
   for ( zstring::const_iterator c( *i ); c != picture_str.end(); ++c )
     if ( *c == ',' )
-      ++num_commas;
-  int comma_count = 0;
+      ++commas;
 
   unicode::code_point zero[2];
 
@@ -841,7 +840,7 @@ static void parse_first_modifier( zstring const &picture_str,
       else if ( unicode::is_space( cp ) )
         continue;
       else if ( is_grouping_separator( cp ) ) {
-        if ( cp == ',' && ++comma_count == num_commas ) {
+        if ( cp == ',' && !--commas ) {
           //
           // Ibid: if a variable marker contains one or more commas, then the
           // last comma is treated as introducing the width modifier, and all
