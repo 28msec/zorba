@@ -116,6 +116,11 @@ struct modifier {
   //
   calendar::type cal;
 
+  void default_width( width_type width ) {
+    if ( first.format.empty() && !min_width && !max_width )
+      min_width = max_width = width;
+  }
+
   bool gt_max_width( width_type n ) const {
     return max_width > 0 && n > max_width;
   }
@@ -1234,8 +1239,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           break;
         case 'm': {
           modifier mod_copy( mod );
-          if ( mod.first.format.empty() )
-            mod_copy.min_width = mod_copy.max_width = 2;
+          mod_copy.default_width( 2 );
           append_number( dateTime.getMinutes(), mod_copy, &result_str );
           break;
         }
@@ -1251,8 +1255,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         }
         case 's': {
           modifier mod_copy( mod );
-          if ( mod.first.format.empty() )
-            mod_copy.min_width = mod_copy.max_width = 2;
+          mod_copy.default_width( 2 );
           append_number( dateTime.getIntSeconds(), mod_copy, &result_str );
           break;
         }
