@@ -120,13 +120,9 @@ struct modifier {
     return max_width > 0 && n > max_width;
   }
 
-  zstring const& pad_space( zstring *s ) const {
-    if ( min_width ) {
-      utf8_string<zstring> u( *s );
-      utf8_string<zstring>::size_type const u_size( u.size() );
-      if ( u_size < min_width )
-        s->append( min_width - u_size, ' ' );
-    }
+  zstring const& right_pad_space( zstring *s ) const {
+    if ( min_width )
+      utf8::right_pad( s, min_width, ' ' );
     return *s;
   }
 
@@ -360,7 +356,7 @@ static void append_number( int n, modifier const &mod, zstring *dest ) {
     case modifier::alpha:
     case modifier::ALPHA: {
       zstring tmp( alpha( n, mod.first.type == modifier::ALPHA ) );
-      *dest += mod.pad_space( &tmp );
+      *dest += mod.right_pad_space( &tmp );
       break;
     }
 
@@ -371,27 +367,27 @@ static void append_number( int n, modifier const &mod, zstring *dest ) {
         oss << uppercase;
       oss << roman( n );
       zstring tmp( oss.str() );
-      *dest += mod.pad_space( &tmp );
+      *dest += mod.right_pad_space( &tmp );
       break;
     }
 
     case modifier::words: {
       zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
-      *dest += mod.pad_space( &tmp );
+      *dest += mod.right_pad_space( &tmp );
       break;
     }
 
     case modifier::Words: {
       zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
       std::transform( tmp.begin(), tmp.end(), tmp.begin(), to_title() );
-      *dest += mod.pad_space( &tmp );
+      *dest += mod.right_pad_space( &tmp );
       break;
     }
 
     case modifier::WORDS: {
       zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
       ascii::to_upper( tmp );
-      *dest += mod.pad_space( &tmp );
+      *dest += mod.right_pad_space( &tmp );
       break;
     }
 
@@ -443,7 +439,7 @@ static void append_string( zstring const &s, modifier const &mod,
     default:
       break;
   }
-  *dest += mod.pad_space( &tmp );
+  *dest += mod.right_pad_space( &tmp );
 }
 
 static void append_month( int month, iso639_1::type lang,
