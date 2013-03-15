@@ -34,8 +34,7 @@ class PlanState;
 ********************************************************************************/
 class PlanIteratorWrapper : public store::Iterator
 {
-// private: TODO: debugging purposes
-public:
+private:
   const PlanIterator * theIterator;
   PlanState          * theStateBlock;
 
@@ -63,7 +62,7 @@ public:
 class PlanStateIteratorWrapper : public PlanIterator
 {
 protected:
-  PlanIterator      * theIterator;          // only one of these is used
+  PlanIterator            * theIterator;          // only one of these is used
   const store::Iterator_t   theStoreIterator; 
   
   PlanState               * theStateBlock;

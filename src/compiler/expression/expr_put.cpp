@@ -538,8 +538,6 @@ std::ostream& function_item_expr::put(std::ostream& os) const
 {
   os << indent << "funtion_item_expr" << expr_addr(this) << inc_indent;
 
-  // TODO: delete
-  // if (theDynamicFunctionInfo->theQName != NULL)
   if (!is_inline())
   {
     os << " " << theDynamicFunctionInfo->theQName->getStringValue()
@@ -862,6 +860,7 @@ ostream& attr_expr::put(ostream& os) const
   BEGIN_PUT(attr_expr);
 
   theQNameExpr->put(os);
+  if (theValueExpr)
   theValueExpr->put(os);
 
   END_PUT();

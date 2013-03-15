@@ -453,11 +453,6 @@ void serializer::emitter::emit_item(store::Item* item)
     }
     emit_node(item, 0);
   }
-  else if (item->isFunction()) // TODO: what about function items serialization? 
-  {
-    // throw XQUERY_EXCEPTION(err::SENR0001, ERROR_PARAMS(item->show(), "function item node"));
-    tr << item->show();
-  }
 #ifdef ZORBA_WITH_JSON
   else if (item->isJSONItem())
   {
@@ -468,6 +463,11 @@ void serializer::emitter::emit_item(store::Item* item)
     ERROR_PARAMS(lMethod, item->getType()->getStringValue()));
   }
 #endif
+  else if (item->isFunction())
+  {
+    throw XQUERY_EXCEPTION(err::SENR0001,
+    ERROR_PARAMS(item->show(), "function item node"));
+  }
 }
 
 
