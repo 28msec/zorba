@@ -51,6 +51,14 @@ namespace zorba {
        */
       type find( char const *country );
 
+      /**
+       * Gets the "default" country that speaks the given language.
+       *
+       * @param lang The language to get the default country for.
+       * @return Returns said country or \c unknown.
+       */
+      type get_default( iso639_1::type lang );
+
       //
       // Template version of find().
       //

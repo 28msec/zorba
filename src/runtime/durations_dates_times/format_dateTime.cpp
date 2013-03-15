@@ -111,18 +111,39 @@ struct modifier {
   width_type max_width;
 
   //
-  // The calendar isn't part of the "presentation modifier" as discussed in the
+  // This stuff isn't part of the "presentation modifier" as discussed in the
   // XQuery3.0 F&O spec, but this is a convenient place to put it nonetheless.
   //
+  iso639_1::type lang;
+  bool lang_is_fallback;
+  iso3166_1::type country;
   calendar::type cal;
+  bool cal_is_fallback;
 
-  void default_width( width_type width ) {
-    if ( !(first.parsed || min_width || max_width) )
-      min_width = max_width = width;
+  void append_if_fallback_lang( zstring *s ) const {
+    if ( lang_is_fallback ) {
+      //
+      // XQuery 3.0 F&O: 9.8.4.3: If the fallback representation uses a
+      // different language from that requested, the output string must
+      // identify the language actually used, for example by prefixing the
+      // string with [Language: Y] (where Y is the language actually used)
+      // localized in an implementation-dependent way.
+      //
+      ostringstream oss;
+      // TODO: localize "Language"
+      oss << "[Language: " << lang << ']';
+      *s += oss.str();
+    }
   }
 
   bool gt_max_width( width_type n ) const {
     return max_width > 0 && n > max_width;
+  }
+
+  zstring const& left_pad_zero( zstring *s ) const {
+    if ( min_width )
+      utf8::left_pad( s, min_width, first.zero );
+    return *s;
   }
 
   zstring const& right_pad_space( zstring *s ) const {
@@ -131,10 +152,9 @@ struct modifier {
     return *s;
   }
 
-  zstring const& left_pad_zero( zstring *s ) const {
-    if ( min_width )
-      utf8::left_pad( s, min_width, first.zero );
-    return *s;
+  void set_default_width( width_type width ) {
+    if ( !(first.parsed || min_width || max_width) )
+      min_width = max_width = width;
   }
 
   modifier() {
@@ -145,7 +165,6 @@ struct modifier {
     second.co_type = cardinal;
     second.at_type = no_second_at;
     min_width = max_width = 0;
-    cal = calendar::unknown;
   };
 };
 
@@ -459,15 +478,13 @@ static void append_string( zstring const &s, modifier const &mod,
   *dest += mod.right_pad_space( &tmp );
 }
 
-static void append_month( int month, iso639_1::type lang,
-                          iso3166_1::type country, modifier const &mod,
-                          zstring *dest ) {
+static void append_month( int month, modifier const &mod, zstring *dest ) {
   switch ( mod.first.type ) {
     case modifier::name:
     case modifier::Name:
     case modifier::NAME: {
       --month;                          // 1-12 -> 0-11
-      zstring name( locale::get_month_name( month, lang, country ) );
+      zstring name( locale::get_month_name( month, mod.lang, mod.country ) );
       utf8_string<zstring> u_name( name );
       if ( mod.gt_max_width( u_name.size() ) ) {
         //
@@ -479,10 +496,11 @@ static void append_month( int month, iso639_1::type lang,
         // conventional abbreviations if available, or crude right-truncation
         // if not.
         //
-        name = locale::get_month_abbr( month, lang, country );
+        name = locale::get_month_abbr( month, mod.lang, mod.country );
         if ( mod.gt_max_width( u_name.size() ) )
           u_name = u_name.substr( 0, mod.max_width );
       }
+      mod.append_if_fallback_lang( dest );
       append_string( name, mod, dest );
       break;
     }
@@ -667,9 +685,7 @@ append:
   *dest += tmp;
 }
 
-static void append_weekday( int wday, iso639_1::type lang,
-                            iso3166_1::type country, modifier const &mod,
-                            zstring *dest ) {
+static void append_weekday( int wday, modifier const &mod, zstring *dest ) {
   modifier mod_copy( mod );
   if ( !mod.first.parsed )
     mod_copy.first.type = modifier::name;
@@ -678,7 +694,7 @@ static void append_weekday( int wday, iso639_1::type lang,
     case modifier::name:
     case modifier::Name:
     case modifier::NAME: {
-      zstring name( locale::get_weekday_name( wday, lang, country ) );
+      zstring name( locale::get_weekday_name( wday, mod.lang, mod.country ) );
       utf8_string<zstring> u_name( name );
       if ( mod.gt_max_width( u_name.size() ) ) {
         //
@@ -690,16 +706,17 @@ static void append_weekday( int wday, iso639_1::type lang,
         // conventional abbreviations if available, or crude right-truncation
         // if not.
         //
-        name = locale::get_weekday_abbr( wday, lang, country );
+        name = locale::get_weekday_abbr( wday, mod.lang, mod.country );
         if ( mod.gt_max_width( u_name.size() ) )
           u_name = u_name.substr( 0, mod.max_width );
       }
+      mod.append_if_fallback_lang( dest );
       append_string( name, mod_copy, dest );
       break;
     }
     default: {
       int const new_wday = calendar::convert_wday_to( wday, mod.cal );
-      if ( new_wday == -1 ) {
+      if ( mod.cal_is_fallback || new_wday == -1 ) {
         //
         // Ibid: If the fallback representation uses a different calendar from
         // that requested, the output string must identify the calendar
@@ -709,7 +726,8 @@ static void append_weekday( int wday, iso639_1::type lang,
         //
         ostringstream oss;
         // TODO: localize "Calendar"
-        oss << "[Calendar:" << calendar::get_default();
+        oss << "[Calendar: "
+            << ( new_wday == -1 ? calendar::get_default() : mod.cal ) << ']';
         *dest += oss.str();
       } else
         wday = new_wday;
@@ -1070,6 +1088,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
   calendar::type cal = calendar::unknown;
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
+  bool cal_is_fallback = false, lang_is_fallback = false;
   bool in_variable_marker;
   store::Item_t item;
   PlanIteratorState *state;
@@ -1086,16 +1105,18 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
 
     if ( theChildren.size() > 2 ) {
       consumeNext( item, theChildren[2].getp(), planState );
-      locale::parse( item->getStringValue(), &lang, &country );
+      if ( !locale::parse( item->getStringValue(), &lang, &country ) ||
+           !locale::is_supported( lang, country ) ) {
+        lang = iso639_1::unknown;
+        lang_is_fallback = true;
+      }
 
       consumeNext( item, theChildren[3].getp(), planState );
       item->getStringValue2( item_str );
       // TODO: handle calendar being a QName.
       cal = calendar::find( item_str );
-      if ( !cal ) {
-        // TODO: handle invalid calendar
-        cal = calendar::get_default();
-      }
+      if ( !cal )
+        cal_is_fallback = true;
 
       consumeNext( item, theChildren[4].getp(), planState );
       item->getStringValue2( item_str );
@@ -1111,7 +1132,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       cal = planState.theLocalDynCtx->get_calendar();
     }
 
-    if ( !lang || !locale::is_supported( lang, country ) ) {
+    if ( !lang ) {
       //
       // Ibid: If the $language argument is omitted or is set to an empty
       // sequence, or if it is set to an invalid value or a value that the
@@ -1199,7 +1220,11 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         goto eos;
 
       modifier mod;
+      mod.lang = lang;
+      mod.lang_is_fallback = lang_is_fallback;
+      mod.country = country;
       mod.cal = cal;
+      mod.cal_is_fallback = cal_is_fallback;
 
       if ( *i != ']' ) {
         parse_first_modifier( picture_str, &i, &mod, loc );
@@ -1250,9 +1275,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           modifier mod_copy( mod );
           if ( !mod.first.parsed )
             mod_copy.first.type = modifier::name;
-          append_weekday(
-            dateTime.getDayOfWeek(), lang, country, mod_copy, &result_str
-          );
+          append_weekday( dateTime.getDayOfWeek(), mod_copy, &result_str );
           break;
         }
         case 'f':
@@ -1271,11 +1294,11 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           );
           break;
         case 'M':
-          append_month( dateTime.getMonth(), lang, country, mod, &result_str );
+          append_month( dateTime.getMonth(), mod, &result_str );
           break;
         case 'm': {
           modifier mod_copy( mod );
-          mod_copy.default_width( 2 );
+          mod_copy.set_default_width( 2 );
           append_number( dateTime.getMinutes(), mod_copy, &result_str );
           break;
         }
@@ -1291,7 +1314,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         }
         case 's': {
           modifier mod_copy( mod );
-          mod_copy.default_width( 2 );
+          mod_copy.set_default_width( 2 );
           append_number( dateTime.getIntSeconds(), mod_copy, &result_str );
           break;
         }

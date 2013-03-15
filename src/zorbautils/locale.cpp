@@ -169,6 +169,8 @@ static zstring get_locale_info( int constant, iso639_1::type lang,
   LPCWSTR wlocale_name;
   unique_ptr<WCHAR[]> wlocale_name_ptr;
 
+  if ( !country )
+    country = iso3166_1::get_default( lang );
   if ( lang && country ) {
     wlocale_name_ptr = get_wlocale_name( lang, country );
     wlocale_name = wlocale_name_ptr.get();
@@ -277,6 +279,8 @@ static locale_t get_unix_locale_t( iso639_1::type lang,
 static zstring get_locale_info( nl_item item, iso639_1::type lang,
                                 iso3166_1::type country ) {
   if ( lang ) {
+    if ( !country )
+      country = iso3166_1::get_default( lang );
     if ( locale_t const loc = get_unix_locale_t( lang, country ) ) {
       char const *const info = nl_langinfo_l( item, loc );
       ::freelocale( loc );
@@ -546,6 +550,200 @@ char const *const string_of[] = {
 type find( char const *country ) {
   DEF_END( string_of );
   return FIND( country );
+}
+
+type get_default( iso639_1::type lang ) {
+  static type const lang_to_country[] = {
+    unknown,
+    unknown, // aa: Afar
+    unknown, // ab: Abkhazian
+    unknown, // ae: Avestan
+    ZA     , // af: Afrikaans => South Africa
+    unknown, // ak: Akan
+    unknown, // am: Amharic
+    unknown, // an: Aragonese
+    unknown, // ar: Arabic
+    unknown, // as: Assamese
+    unknown, // av: Avaric
+    unknown, // ay: Aymara
+    unknown, // az: Azerbaijani
+    unknown, // ba: Bashkir
+    unknown, // be: Byelorussian
+    BG     , // bg: Bulgarian => Bulgaria
+    unknown, // bh: Bihari
+    unknown, // bi: Bislama
+    unknown, // bm: Bambara
+    unknown, // bn: Bengali; Bangla
+    CN     , // bo: Tibetan => China
+    unknown, // br: Breton
+    BA     , // bs: Bosnian => Bosnia
+    unknown, // ca: Catalan
+    unknown, // ce: Chechen
+    unknown, // ch: Chamorro
+    unknown, // co: Corsican
+    unknown, // cr: Cree
+    CZ     , // cs: Czech => Czech Republic
+    unknown, // cu: Church Slavic; Church Slavonic
+    unknown, // cv: Chuvash
+    GB     , // cy: Welsh => United Kingdom
+    DK     , // da: Danish => Denmark
+    DE     , // de: German => Germany
+    unknown, // dv: Divehi
+    unknown, // dz: Bhutani
+    unknown, // ee: Ewe
+    GR     , // el: Greek => Greece
+    GB     , // en: English => United Kingdom
+    unknown, // eo: Esperanto
+    ES     , // es: Spanish => Spain
+    EE     , // et: Estonian => Estonia
+    unknown, // eu: Basque
+    IR     , // fa: Persian => Iran
+    unknown, // ff: Fulah
+    FI     , // fi: Finnish => Finland
+    unknown, // fj: Fiji
+    unknown, // fo: Faroese
+    FR     , // fr: French => France
+    unknown, // fy: Frisian
+    IE     , // ga: Irish => Ireland
+    GB     , // gd: Scots Gaelic => United Kingdom
+    unknown, // gl: Galician
+    unknown, // gn: Guarani
+    unknown, // gu: Gujarati
+    unknown, // gv: Manx
+    unknown, // ha: Hausa
+    IL     , // he: Hebrew => Israel
+    unknown, // hi: Hindi
+    unknown, // ho: Hiri Motu
+    HR     , // hr: Croatian => Croatia
+    HT     , // ht: Haitian Creole => Haiti
+    HU     , // hu: Hungarian => Hungary
+    AM     , // hy: Armenian => Armenia
+    unknown, // hz: Herero
+    unknown, // ia: Interlingua
+    ID     , // id: Indonesian => Indonesia
+    unknown, // ie: Interlingue
+    unknown, // ig: Igbo
+    unknown, // ii: Nuosu
+    unknown, // ik: Inupiak
+    unknown, // io: Ido
+    IS     , // is: Icelandic => Island
+    IT     , // it: Italian => Italy
+    unknown, // iu: Inuktitut
+    JP     , // ja: Japanese => Japan
+    ID     , // jv: Javanese => Indonesia
+    GE     , // ka: Georgian => Georgia
+    unknown, // kg: Kongo
+    unknown, // ki: Gikuyu
+    unknown, // kj: Kuanyama
+    unknown, // kk: Kazakh
+    GL     , // kl: Greenlandic => Greenland
+    KH     , // km: Cambodian => Cambodia
+    unknown, // kn: Kannada
+    KR     , // ko: Korean => Korea
+    unknown, // kr: Kanuri
+    unknown, // ks: Kashmiri
+    unknown, // ku: Kurdish
+    unknown, // kv: Komi
+    unknown, // kw: Cornish
+    unknown, // ky: Kirghiz
+    unknown, // la: Latin
+    unknown, // lb: Letzeburgesch
+    unknown, // lg: Ganda
+    unknown, // li: Limburgan; Limburger; Limburgish
+    unknown, // ln: Lingala
+    unknown, // lo: Laothian
+    LT     , // lt: Lithuanian => Lithuania
+    unknown, // lu: Luba-Katanga
+    unknown, // lv: Latvian
+    unknown, // mg: Malagasy
+    unknown, // mh: Marshallese
+    unknown, // mi: Maori
+    MK     , // mk: Macedonian => Macedonia
+    unknown, // ml: Malayalam
+    unknown, // mn: Mongolian
+    unknown, // mo: Moldavian
+    unknown, // mr: Marathi
+    MY     , // ms: Malay => Malaysia
+    unknown, // mt: Maltese
+    MM     , // my: Burmese => Myanmar (Burma)
+    unknown, // na: Nauru
+    NO     , // nb: Norwegian Bokmal => Norway
+    unknown, // nd: Ndebele, North
+    NP     , // ne: Nepali => Nepal
+    unknown, // ng: Ndonga
+    NL     , // nl: Dutch => Netherlands
+    unknown, // nn: Norwegian Nynorsk
+    NO     , // no: Norwegian => Norway
+    unknown, // nr: Ndebele, South
+    US     , // nv: Navajo; Navaho => United States
+    unknown, // ny: Chichewa; Chewa; Nyanja
+    unknown, // oc: Occitan
+    unknown, // oj: Ojibwa
+    unknown, // om: Oromo
+    unknown, // or: Oriya
+    unknown, // os: Ossetian; Ossetic
+    unknown, // pa: Panjabi; Punjabi
+    unknown, // pi: Pali
+    PL     , // pl: Polish => Poland
+    unknown, // ps: Pashto, Pushto
+    PT     , // pt: Portuguese => Portugal
+    unknown, // qu: Quechua
+    unknown, // rm: Romansh
+    unknown, // rn: Kirundi
+    RO     , // ro: Romanian => Romania
+    RU     , // ru: Russian => Russian Federation
+    unknown, // rw: Kinyarwanda
+    unknown, // sa: Sanskrit
+    unknown, // sc: Sardinian
+    unknown, // sd: Sindhi
+    unknown, // se: Northern Sami
+    unknown, // sg: Sangho
+    RS     , // sh: Serbo-Croatian => Serbia
+    unknown, // si: Sinhalese
+    unknown, // sk: Slovak
+    unknown, // sl: Slovenian
+    AS     , // sm: Samoan => American Samoa
+    unknown, // sn: Shona
+    SO     , // so: Somali => Somalia
+    AL     , // sq: Albanian => Albania
+    RS     , // sr: Serbian => Serbia
+    unknown, // ss: Siswati
+    unknown, // st: Sesotho
+    SD     , // su: Sundanese => Sudan
+    SE     , // sv: Swedish => Sweden
+    KE     , // sw: Swahili => Kenya
+    unknown, // ta: Tamil
+    unknown, // te: Telugu
+    unknown, // tg: Tajik
+    TH     , // th: Thai => Thailand
+    unknown, // ti: Tigrinya
+    unknown, // tk: Turkmen
+    PH     , // tl: Tagalog => Philippines
+    unknown, // tn: Setswana
+    TO     , // to: Tonga => Tonga
+    TR     , // tr: Turkish => Turkey
+    unknown, // ts: Tsonga
+    unknown, // tt: Tatar
+    unknown, // tw: Twi
+    unknown, // ty: Tahitian
+    unknown, // ug: Uighur
+    UA     , // uk: Ukrainian => Ukrain
+    PK     , // ur: Urdu => Pakistan
+    unknown, // uz: Uzbek
+    unknown, // ve: Venda
+    VN     , // vi: Vietnamese => Viet Nam
+    unknown, // vo: Volapuk
+    unknown, // wa: Walloon
+    SN     , // wo: Wolof => Senegal
+    unknown, // xh: Xhosa => South Africa
+    IL     , // yi: Yiddish => Israel
+    unknown, // yo: Yoruba
+    CN     , // za: Zhuang => China
+    CN     , // zh: Chinese => China
+    ZA     , // zu: Zulu => South Africa
+  };
+  assert( lang < iso639_1::NUM_ENTRIES );
+  return lang_to_country[ lang ];
 }
 
 } // namespace iso3166_1
@@ -1301,6 +1499,8 @@ zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
 }
 
 bool is_supported( iso639_1::type lang, iso3166_1::type country ) {
+  if ( !country )
+    country = iso3166_1::get_default( lang );
 #ifdef WIN32
   unique_ptr<WCHAR[]> const wlocale_name( get_wlocale_name( lang, country ) );
   return Zorba_IsValidLocaleName( wlocale_name.get() );
