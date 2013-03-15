@@ -632,9 +632,8 @@ fallback:
           }
           if ( got_digit && is_grouping_separator( cp ) ) {
             if ( ++grouping_separators == 1 ) {
-              zstring tmp2( ascii::itoa( hour, buf ) );
-              // TODO: should use appropriate digits
-              tmp += utf8::left_pad( &tmp2, hm_width[0], '0' );
+              zstring tmp2( utf8::itou( hour, buf, mod.first.zero ) );
+              tmp += utf8::left_pad( &tmp2, hm_width[0], mod.first.zero );
             }
           } else if ( grouping_separators )
             grouping_separators = 99;
@@ -642,9 +641,8 @@ fallback:
         }
 
         if ( hm_width[1] ) {
-          zstring tmp2( ascii::itoa( min, buf ) );
-          // TODO: should use appropriate digits
-          tmp += utf8::left_pad( &tmp2, hm_width[1], '0' );
+          zstring tmp2( utf8::itou( min, buf, mod.first.zero ) );
+          tmp += utf8::left_pad( &tmp2, hm_width[1], mod.first.zero );
         }
       } else {
         if ( format.size() <= 2 ) {
