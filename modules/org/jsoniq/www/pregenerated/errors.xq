@@ -157,6 +157,11 @@ declare variable $jerr:JNTY0024 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0024
 declare variable $jerr:JNTY0020 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0020");
 
 (:~
+ :array or object selector on heterogeneous sequence
+:)
+declare variable $jerr:JNTY0021 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0021");
+
+(:~
  :parser error raised by jn:parse-json
 :)
 declare variable $jerr:JNDY0021 as xs:QName := fn:QName($jerr:NS, "jerr:JNDY0021");
