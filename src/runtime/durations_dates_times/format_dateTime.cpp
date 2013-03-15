@@ -242,7 +242,7 @@ inline zstring if_space( zstring const &s ) {
   return s.empty() ? "" : ' ' + s;
 }
 
-zstring hundreds( int64_t n, bool ordinal ) {
+static zstring hundreds( int64_t n, bool ordinal ) {
   if ( n < 20 )
     return ones[ n ][ ordinal ];
   zstring const tmp( if_space( ones[ n % 10 ][ ordinal ] ) );
