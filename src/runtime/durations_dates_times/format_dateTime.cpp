@@ -645,7 +645,10 @@ fallback:
           tmp += utf8::left_pad( &tmp2, hm_width[1], mod.first.zero );
         }
       } else {
-        if ( format.size() <= 2 ) {
+        utf8_string<zstring const> const u_format( format );
+        utf8_string<zstring const>::size_type const u_size( u_format.size() );
+
+        if ( u_size <= 2 ) {
           //
           // Ibid: If the first presentation modifier is numeric and comprises
           // one or two digits with no grouping-separator (for example 1 or
@@ -655,16 +658,16 @@ fallback:
           // then the minutes part of the offset is appended, separated by a
           // colon: for example +10:30 or -1:15.
           //
-          zstring tmp2( ascii::itoa( hour, buf ) );
-          tmp += ascii::left_pad( &tmp2, format.size(), '0' );
+          zstring tmp2( utf8::itou( hour, buf, mod.first.zero ) );
+          tmp += utf8::left_pad( &tmp2, u_size, mod.first.zero );
           if ( min ) {
-            tmp2 = ascii::itoa( min, buf );
+            tmp2 = utf8::itou( min, buf, mod.first.zero );
             tmp += ':';
-            tmp += ascii::left_pad( &tmp2, 2, '0' );
+            tmp += utf8::left_pad( &tmp2, 2, mod.first.zero );
           }
           break;
         }
-        if ( format.size() <= 4 ) {
+        if ( u_size <= 4 ) {
           //
           // Ibid: If the first presentation modifier is numeric and comprises
           // three or four digits with no grouping-separator, for example 001
@@ -672,8 +675,8 @@ fallback:
           // with no separator, for example -0500 or +1030.
           //
           int const hhmm = hour * 100 + min;
-          zstring tmp2( ascii::itoa( hhmm, buf ) );
-          tmp += ascii::left_pad( &tmp2, format.size(), '0' );
+          zstring tmp2( utf8::itou( hhmm, buf, mod.first.zero ) );
+          tmp += utf8::left_pad( &tmp2, u_size, mod.first.zero );
           break;
         }
       } // else
