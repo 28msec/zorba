@@ -553,191 +553,196 @@ type find( char const *country ) {
 }
 
 type get_default( iso639_1::type lang ) {
+  //
+  // In cases where a language maps to multiple countries, if the language is
+  // the official language of a single country, that country is the one the
+  // language is mapped to.
+  //
   static type const lang_to_country[] = {
     unknown,
-    unknown, // aa: Afar
-    unknown, // ab: Abkhazian
-    unknown, // ae: Avestan
+    DJ     , // aa: Afar => Djibouti
+    GE     , // ab: Abkhazian => Georgia
+    IR     , // ae: Avestan => Iran
     ZA     , // af: Afrikaans => South Africa
-    unknown, // ak: Akan
-    unknown, // am: Amharic
-    unknown, // an: Aragonese
-    unknown, // ar: Arabic
-    unknown, // as: Assamese
-    unknown, // av: Avaric
-    unknown, // ay: Aymara
-    unknown, // az: Azerbaijani
-    unknown, // ba: Bashkir
-    unknown, // be: Byelorussian
+    GH     , // ak: Akan => Ghana
+    ET     , // am: Amharic => Ethiopia
+    ES     , // an: Aragonese => Spain
+    unknown, // ar: Arabic => (maps to multiple countries)
+    IN_    , // as: Assamese => India
+    AZ     , // av: Avaric => Azerbaijan
+    BO     , // ay: Aymara => Bolivia
+    AZ     , // az: Azerbaijani => Azerbaijan
+    RU     , // ba: Bashkir => Russian Federation
+    RU     , // be: Byelorussian => Russian Federation
     BG     , // bg: Bulgarian => Bulgaria
-    unknown, // bh: Bihari
-    unknown, // bi: Bislama
-    unknown, // bm: Bambara
-    unknown, // bn: Bengali; Bangla
+    IN_    , // bh: Bihari => India
+    VU     , // bi: Bislama => Vanuatu
+    ML     , // bm: Bambara => Mali
+    BD     , // bn: Bengali; Bangla => Bangladesh
     CN     , // bo: Tibetan => China
-    unknown, // br: Breton
+    FR     , // br: Breton => France
     BA     , // bs: Bosnian => Bosnia
-    unknown, // ca: Catalan
-    unknown, // ce: Chechen
-    unknown, // ch: Chamorro
-    unknown, // co: Corsican
-    unknown, // cr: Cree
+    AD     , // ca: Catalan => Andorra
+    RU     , // ce: Chechen => Russian Federation
+    MP     , // ch: Chamorro => Northern Mariana Islands
+    FR     , // co: Corsican => France
+    US     , // cr: Cree => United States
     CZ     , // cs: Czech => Czech Republic
-    unknown, // cu: Church Slavic; Church Slavonic
-    unknown, // cv: Chuvash
+    RU     , // cu: Church Slavic; Church Slavonic => Russian Federation
+    RU     , // cv: Chuvash => Russian Federation
     GB     , // cy: Welsh => United Kingdom
     DK     , // da: Danish => Denmark
     DE     , // de: German => Germany
-    unknown, // dv: Divehi
-    unknown, // dz: Bhutani
-    unknown, // ee: Ewe
+    MV     , // dv: Divehi => Maldives
+    PK     , // dz: Bhutani => Pakistan
+    unknown, // ee: Ewe => (maps to multiple countries)
     GR     , // el: Greek => Greece
     GB     , // en: English => United Kingdom
-    unknown, // eo: Esperanto
+    unknown, // eo: Esperanto => (constructed language)
     ES     , // es: Spanish => Spain
     EE     , // et: Estonian => Estonia
-    unknown, // eu: Basque
+    ES     , // eu: Basque => Spain
     IR     , // fa: Persian => Iran
-    unknown, // ff: Fulah
+    unknown, // ff: Fulah => (maps to multiple countries)
     FI     , // fi: Finnish => Finland
-    unknown, // fj: Fiji
-    unknown, // fo: Faroese
+    FJ     , // fj: Fiji => Fiji
+    FO     , // fo: Faroese => Faroe Islands
     FR     , // fr: French => France
-    unknown, // fy: Frisian
+    NL     , // fy: Frisian => Netherlands
     IE     , // ga: Irish => Ireland
     GB     , // gd: Scots Gaelic => United Kingdom
-    unknown, // gl: Galician
-    unknown, // gn: Guarani
-    unknown, // gu: Gujarati
-    unknown, // gv: Manx
-    unknown, // ha: Hausa
+    ES     , // gl: Galician => Spain
+    PY     , // gn: Guarani => Paraguay
+    IN_    , // gu: Gujarati => India
+    IM     , // gv: Manx => Isle of Man
+    unknown, // ha: Hausa => (maps to multiple languages)
     IL     , // he: Hebrew => Israel
-    unknown, // hi: Hindi
-    unknown, // ho: Hiri Motu
+    IN_    , // hi: Hindi => India
+    PG     , // ho: Hiri Motu => Papua New Guinea
     HR     , // hr: Croatian => Croatia
     HT     , // ht: Haitian Creole => Haiti
     HU     , // hu: Hungarian => Hungary
     AM     , // hy: Armenian => Armenia
-    unknown, // hz: Herero
-    unknown, // ia: Interlingua
+    unknown, // hz: Herero => (maps to multiple countries)
+    unknown, // ia: Interlingua => (constructed language)
     ID     , // id: Indonesian => Indonesia
-    unknown, // ie: Interlingue
-    unknown, // ig: Igbo
-    unknown, // ii: Nuosu
-    unknown, // ik: Inupiak
-    unknown, // io: Ido
+    unknown, // ie: Interlingue => (constructed language)
+    NG     , // ig: Igbo => Nigeria
+    CN     , // ii: Nuosu => China
+    US     , // ik: Inupiak => United States
+    unknown, // io: Ido => (constructed language)
     IS     , // is: Icelandic => Island
     IT     , // it: Italian => Italy
-    unknown, // iu: Inuktitut
+    CA     , // iu: Inuktitut => Canada
     JP     , // ja: Japanese => Japan
     ID     , // jv: Javanese => Indonesia
     GE     , // ka: Georgian => Georgia
-    unknown, // kg: Kongo
-    unknown, // ki: Gikuyu
-    unknown, // kj: Kuanyama
-    unknown, // kk: Kazakh
+    unknown, // kg: Kongo => (maps to multiple countries)
+    KE     , // ki: Gikuyu => Kenya
+    unknown, // kj: Kuanyama => (maps to multiple countries)
+    KZ     , // kk: Kazakh => Kazakhstan
     GL     , // kl: Greenlandic => Greenland
     KH     , // km: Cambodian => Cambodia
-    unknown, // kn: Kannada
+    IN_    , // kn: Kannada => India
     KR     , // ko: Korean => Korea
-    unknown, // kr: Kanuri
-    unknown, // ks: Kashmiri
-    unknown, // ku: Kurdish
-    unknown, // kv: Komi
-    unknown, // kw: Cornish
-    unknown, // ky: Kirghiz
-    unknown, // la: Latin
-    unknown, // lb: Letzeburgesch
-    unknown, // lg: Ganda
-    unknown, // li: Limburgan; Limburger; Limburgish
-    unknown, // ln: Lingala
-    unknown, // lo: Laothian
+    unknown, // kr: Kanuri => (maps to multiple countries)
+    IN_    , // ks: Kashmiri => India
+    IQ     , // ku: Kurdish => Iraq
+    RU     , // kv: Komi => Russian Federation
+    GB     , // kw: Cornish => United Kingdom
+    KG     , // ky: Kirghiz => Kyrgyzstan
+    unknown, // la: Latin => (maps to multiple countries)
+    LU     , // lb: Letzeburgesch => Luxembourg
+    UG     , // lg: Ganda => Uganda
+    NL     , // li: Limburgan; Limburger; Limburgish => Netherands
+    unknown, // ln: Lingala => (maps to multiple countries)
+    LA     , // lo: Laotian => Lao
     LT     , // lt: Lithuanian => Lithuania
-    unknown, // lu: Luba-Katanga
-    unknown, // lv: Latvian
-    unknown, // mg: Malagasy
-    unknown, // mh: Marshallese
-    unknown, // mi: Maori
+    CD     , // lu: Luba-Katanga => Democratic Republic of the Congo
+    LV     , // lv: Latvian => Latvia
+    MG     , // mg: Malagasy => Madagascar
+    MH     , // mh: Marshallese => Marshall Islands
+    NZ     , // mi: Maori => New Zealand
     MK     , // mk: Macedonian => Macedonia
-    unknown, // ml: Malayalam
-    unknown, // mn: Mongolian
-    unknown, // mo: Moldavian
-    unknown, // mr: Marathi
+    IN_    , // ml: Malayalam => India
+    MN     , // mn: Mongolian => Mongolia
+    MD     , // mo: Moldavian => Moldova
+    IN_    , // mr: Marathi => India
     MY     , // ms: Malay => Malaysia
-    unknown, // mt: Maltese
+    MT     , // mt: Maltese => Malta
     MM     , // my: Burmese => Myanmar (Burma)
-    unknown, // na: Nauru
+    NR     , // na: Nauru => Nauru
     NO     , // nb: Norwegian Bokmal => Norway
-    unknown, // nd: Ndebele, North
+    ZW     , // nd: Ndebele, North => Zimbabwe
     NP     , // ne: Nepali => Nepal
-    unknown, // ng: Ndonga
+    NA     , // ng: Ndonga => Namibia
     NL     , // nl: Dutch => Netherlands
-    unknown, // nn: Norwegian Nynorsk
+    NO     , // nn: Norwegian Nynorsk => Norway
     NO     , // no: Norwegian => Norway
-    unknown, // nr: Ndebele, South
+    ZA     , // nr: Ndebele, South => South Africa
     US     , // nv: Navajo; Navaho => United States
-    unknown, // ny: Chichewa; Chewa; Nyanja
-    unknown, // oc: Occitan
-    unknown, // oj: Ojibwa
-    unknown, // om: Oromo
-    unknown, // or: Oriya
-    unknown, // os: Ossetian; Ossetic
-    unknown, // pa: Panjabi; Punjabi
-    unknown, // pi: Pali
+    MW     , // ny: Chichewa; Chewa; Nyanja => Malawi
+    unknown, // oc: Occitan => (maps to multiple countries)
+    CA     , // oj: Ojibwa => Canada
+    unknown, // om: Oromo => (maps to multiple countries)
+    IN_    , // or: Oriya => India
+    unknown, // os: Ossetian; Ossetic => (maps to multiple countries)
+    PK     , // pa: Panjabi; Punjabi => Pakistan
+    unknown, // pi: Pali => (maps to multiple countries)
     PL     , // pl: Polish => Poland
-    unknown, // ps: Pashto, Pushto
+    AF     , // ps: Pashto, Pushto => Afghanistan
     PT     , // pt: Portuguese => Portugal
-    unknown, // qu: Quechua
-    unknown, // rm: Romansh
-    unknown, // rn: Kirundi
+    unknown, // qu: Quechua => (maps to multiple countries)
+    CH     , // rm: Romansh => Switzerland
+    BI     , // rn: Kirundi => Burundi
     RO     , // ro: Romanian => Romania
     RU     , // ru: Russian => Russian Federation
-    unknown, // rw: Kinyarwanda
-    unknown, // sa: Sanskrit
-    unknown, // sc: Sardinian
-    unknown, // sd: Sindhi
-    unknown, // se: Northern Sami
-    unknown, // sg: Sangho
+    RW     , // rw: Kinyarwanda => Rwanda
+    IN_    , // sa: Sanskrit => India
+    IT     , // sc: Sardinian => Italy
+    PK     , // sd: Sindhi => Pakistan
+    NO     , // se: Northern Sami => Norway
+    CF     , // sg: Sangho => Central African Republic
     RS     , // sh: Serbo-Croatian => Serbia
-    unknown, // si: Sinhalese
-    unknown, // sk: Slovak
-    unknown, // sl: Slovenian
+    LK     , // si: Sinhalese => Sri Lanka
+    SK     , // sk: Slovak => Slovakia
+    SI     , // sl: Slovenian => Slovenia
     AS     , // sm: Samoan => American Samoa
-    unknown, // sn: Shona
+    ZW     , // sn: Shona => Zimbabwe
     SO     , // so: Somali => Somalia
     AL     , // sq: Albanian => Albania
     RS     , // sr: Serbian => Serbia
-    unknown, // ss: Siswati
-    unknown, // st: Sesotho
+    SZ     , // ss: Siswati => Swaziland
+    LS     , // st: Sesotho => Lesotho
     SD     , // su: Sundanese => Sudan
     SE     , // sv: Swedish => Sweden
     KE     , // sw: Swahili => Kenya
-    unknown, // ta: Tamil
-    unknown, // te: Telugu
-    unknown, // tg: Tajik
+    IN_    , // ta: Tamil => India
+    IN_    , // te: Telugu => India
+    TJ     , // tg: Tajik => Tajikistan
     TH     , // th: Thai => Thailand
-    unknown, // ti: Tigrinya
-    unknown, // tk: Turkmen
+    ER     , // ti: Tigrinya => Eritrea
+    TM     , // tk: Turkmen => Turkmenistan
     PH     , // tl: Tagalog => Philippines
-    unknown, // tn: Setswana
+    ZA     , // tn: Setswana => South Africa
     TO     , // to: Tonga => Tonga
     TR     , // tr: Turkish => Turkey
-    unknown, // ts: Tsonga
-    unknown, // tt: Tatar
-    unknown, // tw: Twi
-    unknown, // ty: Tahitian
-    unknown, // ug: Uighur
+    ZA     , // ts: Tsonga => South Africa
+    RU     , // tt: Tatar => Russian Federation
+    GH     , // tw: Twi => Ghana
+    PF     , // ty: Tahitian => French Polynesia
+    CN     , // ug: Uighur => China
     UA     , // uk: Ukrainian => Ukrain
     PK     , // ur: Urdu => Pakistan
-    unknown, // uz: Uzbek
-    unknown, // ve: Venda
+    UZ     , // uz: Uzbek => Uzbekistan
+    ZA     , // ve: Venda => South Africa
     VN     , // vi: Vietnamese => Viet Nam
-    unknown, // vo: Volapuk
-    unknown, // wa: Walloon
+    DE     , // vo: Volapuk => Germany
+    BE     , // wa: Walloon => Belgium
     SN     , // wo: Wolof => Senegal
-    unknown, // xh: Xhosa => South Africa
+    ZA     , // xh: Xhosa => South Africa
     IL     , // yi: Yiddish => Israel
-    unknown, // yo: Yoruba
+    NG     , // yo: Yoruba => Nigeria
     CN     , // za: Zhuang => China
     CN     , // zh: Chinese => China
     ZA     , // zu: Zulu => South Africa
