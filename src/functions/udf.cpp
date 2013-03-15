@@ -78,7 +78,7 @@ user_function::user_function(
   setDeterministic(true);
   setPrivate(false);
 
-//  std::cerr << "--> created user_function: " << this << " with CompilerCB: " << ccb << std::endl;
+  std::cerr << "--> created user_function: " << this << " with CompilerCB: " << ccb << std::endl;
 }
 
 

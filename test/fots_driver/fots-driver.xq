@@ -815,8 +815,6 @@ declare %ann:sequential function driver:test(
 
         env:decl-namespaces($env, $envCase, $test),
 
-        env:enable-HOF-feature(($deps, $case//fots:dependency), $test),
-
         env:decl-decimal-formats(($env/fots:decimal-format,
                                   $envCase/fots:decimal-format)),
 
@@ -932,7 +930,6 @@ declare %private function driver:create-XQXQ-query(
     then "declare namespace mapper = 'http://www.zorba-xquery.com/modules/xqxq/uri-mapper';"
     else (),
 
-    if (exists($resolver) or exists($mapper)) then $env:hof else (),
     "",
 
     if (exists($resolver)) then ($resolver, "") else (),
