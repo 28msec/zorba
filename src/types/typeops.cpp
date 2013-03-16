@@ -327,7 +327,7 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
 
     const UserDefinedXQType& udt = static_cast<const UserDefinedXQType&>(type);
 
-    if (udt.isAtomicAny())
+    if (udt.isGenAtomicAny())
     {
       return tm->create_type(type, TypeConstants::QUANT_ONE);
     }
@@ -484,8 +484,7 @@ bool TypeOps::is_subtype(
       const UserDefinedXQType& udSubType = 
       static_cast<const UserDefinedXQType&>(subtype);
       
-      // What about union of atomic types ????
-      return udSubType.isAtomicAny();
+      return udSubType.isGenAtomicAny();
     }
     
     default:
@@ -1130,7 +1129,7 @@ xqtref_t TypeOps::intersect_type(
     }
     else
     {
-      ZORBA_ASSERT(false);
+      //ZORBA_ASSERT(false);
       return rtm.ITEM_TYPE_STAR;
     }
   }

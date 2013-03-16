@@ -628,7 +628,9 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case dynamic_function_invocation_expr_kind:
   {    
-    dynamic_function_invocation_expr* e = static_cast<dynamic_function_invocation_expr*>(this);
+    dynamic_function_invocation_expr* e =
+    static_cast<dynamic_function_invocation_expr*>(this);
+
     xqtref_t fiType = e->theExpr->get_return_type();
     if (fiType->type_kind() == XQType::FUNCTION_TYPE_KIND)
     {

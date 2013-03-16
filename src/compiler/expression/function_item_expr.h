@@ -56,12 +56,22 @@ public:
 
 /*******************************************************************************
 
-  [121] FilterExpr ::= PrimaryExpr (Predicate | DynamicFunctionInvocation)*
+  PostfixExpr ::= PrimaryExpr (Predicate | ArgumentList)*
 
-  [164] DynamicFunctionInvocation ::= "(" (ExprSingle ("," ExprSingle)*)? ")"
+  ArgumentList ::= "(" (Argument ("," Argument)*)? ")"
 
-  theExpr : The input expr that produces a function item
-  theArgs : The arg exprs to pass to the function.
+  Argument ::= ExprSingle
+
+  theExpr:
+  --------
+  The input expr that produces a function item
+
+  theArgs:
+  --------
+  The arg exprs to pass to the function.
+ 
+  theDotVars:
+  ----------- 
 ********************************************************************************/
 class dynamic_function_invocation_expr : public expr
 {
@@ -72,8 +82,7 @@ class dynamic_function_invocation_expr : public expr
 protected:
   expr                * theExpr;
   std::vector<expr*>    theArgs;
-  
-  std::vector<expr*>    theDotVars; // context item vars
+  expr                * theDotVar;
 
 protected:
   dynamic_function_invocation_expr(CompilerCB* ccb,
@@ -82,14 +91,14 @@ protected:
       const QueryLoc& loc,
       expr* anExpr,
       const std::vector<expr*>& args,
-      const std::vector<expr*>& dotVars);
+      expr* dotVar);
 
 public:
   const expr* get_function() const { return theExpr; }
 
   const std::vector<expr*>& get_args() const { return theArgs; }
   
-  const std::vector<expr*>& get_dot_vars() const { return theDotVars; }
+  expr* get_dot_var() const { return theDotVar; }
 
   void compute_scripting_kind();
 

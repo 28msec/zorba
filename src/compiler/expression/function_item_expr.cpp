@@ -39,12 +39,12 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
     const QueryLoc& loc,
     expr* anExpr,
     const std::vector<expr*>& args,
-    const std::vector<expr*>& dotVars)
+    expr* dotVar)
   :
   expr(ccb, sctx, udf, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
   theArgs(args),
-  theDotVars(dotVars)
+  theDotVar(dotVar)
 {
   assert(anExpr != 0);
   compute_scripting_kind();

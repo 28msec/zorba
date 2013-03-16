@@ -490,7 +490,7 @@ public:
       const QueryLoc& loc,
       expr* anExpr,
       const std::vector<expr*>& args,
-      const std::vector<expr*>& dotVars);
+      expr* dotVar);
 
   argument_placeholder_expr* create_argument_placeholder_expr(
       static_context* sctx,

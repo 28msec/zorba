@@ -34,10 +34,8 @@ class ArgumentPlaceholderIterator: public NoaryBaseIterator<ArgumentPlaceholderI
 {
 public:
   SERIALIZABLE_CLASS(ArgumentPlaceholderIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ArgumentPlaceholderIterator,
-                                   NoaryBaseIterator<ArgumentPlaceholderIterator, PlanIteratorState>);
-
+  NoaryBaseIterator<ArgumentPlaceholderIterator, PlanIteratorState>);
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
@@ -91,8 +89,7 @@ protected:
   // This variable counts the number of children that hold DOT variables. They 
   // are placed at the end of the children array.
   unsigned int theDotVarsCount; 
-  
-  bool theIsPartialApply;
+  bool         theIsPartialApply;
   
 public:
   SERIALIZABLE_CLASS(DynamicFnCallIterator);
