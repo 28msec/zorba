@@ -742,7 +742,7 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
     }
     else
     {
-      Base64 tmp((const unsigned char*)c, s);
+      Base64 tmp(c, s);
       ar & tmp;
     }
     

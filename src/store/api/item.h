@@ -481,7 +481,7 @@ public:
 
   /** Accessor for xs:hexBinary
    */
-  virtual xs_hexBinary
+  virtual xs_hexBinary const&
   getHexBinaryValue() const;
 
   /**

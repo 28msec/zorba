@@ -26,7 +26,15 @@
 
 #include "util/ascii_util.h"
 #include "util/base64_util.h"
+#include "util/hash/hash.h"
+#include "util/hexbinary_util.h"
 #include "util/stl_util.h"
+
+using namespace std;
+
+namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
 
 #define CATCH_BASE64_EXCEPTION()                                        \
   catch (const base64::exception& e)                                    \
@@ -34,35 +42,30 @@
     throw XQUERY_EXCEPTION(err::FORG0001,                               \
     ERROR_PARAMS(ZED(FORG0001_Base64BadChar_2), e.invalid_char()));     \
   }                                                                     \
-  catch (const std::invalid_argument& )                                 \
+  catch (const std::invalid_argument&)                                  \
   {                                                                     \
     throw XQUERY_EXCEPTION(err::FORG0001,                               \
     ERROR_PARAMS(ZED(FORG0001_Base64Multiple4)));                       \
   }
 
-using namespace std;
-
-namespace zorba {
-
-static size_t copy_without_ws( char const *from, size_t len, char *to ) {
-  char const *const end = from + len;
+static size_t copy_without_ws( char const *from, size_t from_len, char *to ) {
   char const *const to_orig = to;
-  for ( ; from < end; ++from )
+  for ( char const *const from_end = from + from_len; from < from_end; ++from )
     if ( !ascii::is_space( *from ) )
       *to++ = *from;
   return to - to_orig;
 }
 
 
-bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64)
+bool Base64::parseString(char const *s, size_t len, Base64& aBase64)
 {
-  if ( aLength ) {
+  if ( len ) {
     try 
     {
-      base64::validate( aString, aLength, base64::dopt_ignore_ws );
-      aBase64.theData.resize( aLength );
+      base64::validate( s, len, base64::dopt_ignore_ws );
+      aBase64.theData.resize( len );
       aBase64.theData.resize(
-        copy_without_ws( aString, aLength, &aBase64.theData[0] )
+        copy_without_ws( s, len, &aBase64.theData[0] )
       );
     }
     catch (...) 
@@ -75,19 +78,16 @@ bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64)
 }
 
 
-bool Base64::parseString(
-    const char* aString,
-    size_t aLength,
-    Base64& aBase64, 
-    string& lErrorMessage)
+bool Base64::parseString( char const *s, size_t len, Base64 &aBase64, 
+                          string &lErrorMessage )
 {
-  if ( aLength ) {
+  if ( len ) {
     try 
     {
-      base64::validate( aString, aLength, base64::dopt_ignore_ws );
-      aBase64.theData.resize( aLength );
+      base64::validate( s, len, base64::dopt_ignore_ws );
+      aBase64.theData.resize( len );
       aBase64.theData.resize(
-        copy_without_ws( aString, aLength, &aBase64.theData[0] )
+        copy_without_ws( s, len, &aBase64.theData[0] )
       );
     }
     catch (ZorbaException const& e) 
@@ -101,58 +101,53 @@ bool Base64::parseString(
 }
 
 
-void Base64::encode(const zstring& aString, Base64& aResult)
+void Base64::encode( zstring const &s, Base64 &to )
 {
-  base64::encode( aString.data(), aString.size(), &aResult.theData );
+  base64::encode( s.data(), s.size(), &to.theData );
 }
 
 
-void Base64::encode(istream& aStream, Base64& aResult)
+void Base64::encode( istream &is, Base64 &to )
 {
-  base64::encode( aStream, &aResult.theData );
+  base64::encode( is, &to.theData );
 }
 
 
-zstring Base64::encode(istream& aStream)
+zstring Base64::encode( istream &is )
 {
   zstring result;
-  base64::encode( aStream, &result );
+  base64::encode( is, &result );
   return result;
 }
 
 
-void Base64::encode(const vector<char>& aSource, vector<char>& aResult)
+void Base64::encode( vector<char> const &from, vector<char> &to )
 {
-  if ( !aSource.empty() )
-    base64::encode( &aSource[0], aSource.size(), &aResult );
+  if ( !from.empty() )
+    base64::encode( &from[0], from.size(), &to );
 }
 
 
-void Base64::encode(
-    const unsigned char* aSource, 
-    unsigned int in_len,
-    Base64& aResult)
+void Base64::encode( char const *from, size_t from_len, Base64 &to )
 {
-  base64::encode( (char*)aSource, in_len, &aResult.theData );
+  base64::encode( from, from_len, &to.theData );
 }
 
 
-void Base64::decode(istream& aStream, zstring *result)
+void Base64::decode( istream &is, zstring *to )
 {
   try {
-    base64::decode(
-      aStream, result, base64::dopt_any_len | base64::dopt_ignore_ws
-    );
+    base64::decode( is, to, base64::dopt_any_len | base64::dopt_ignore_ws );
   }
   CATCH_BASE64_EXCEPTION()
 }
 
-void Base64::decode(const vector<char>& aSource, vector<char>& aResult)
+void Base64::decode(vector<char> const &from, vector<char> &to )
 {
-  if ( !aSource.empty() ) {
+  if ( !from.empty() ) {
     try {
       base64::decode(
-        &aSource[0], aSource.size(), &aResult,
+        &from[0], from.size(), &to,
         base64::dopt_any_len | base64::dopt_ignore_ws
       );
     }
@@ -170,52 +165,37 @@ void Base64::decode( char const *from, size_t from_len, zstring *to ) {
 }
 
 
-Base64::Base64(const Base16& aBase16)
+Base64::Base64( Base16 const &aBase16 )
 {
-  vector<char> lOrig;
-  Base16::decode(aBase16.getData(), lOrig);
-  Base64::encode(lOrig, theData);
+  vector<char> tmp;
+  Base16::decode( aBase16.getData(), tmp );
+  Base64::encode( tmp, theData );
 }
 
 
-Base64::Base64(const unsigned char *bin_data, size_t len)
+Base64::Base64( char const *bin_data, size_t len )
 {
   try {
-    base64::encode( (char const*)bin_data, len, &theData );
+    base64::encode( bin_data, len, &theData );
   }
   CATCH_BASE64_EXCEPTION()
 }
 
 
 
-bool Base64::equal(const Base64& aBase64) const
+bool Base64::equal( Base64 const &aBase64 ) const
 {
-  if (size() != aBase64.size())
+  if ( size() != aBase64.size() )
     return false;
-
-  vector<char>::const_iterator lIter0 = theData.begin();
-  vector<char>::const_iterator lEnd0 = theData.end();
-  vector<char>::const_iterator lIter1 = aBase64.theData.begin();
-
-  while ( lIter0 != lEnd0 )
-  {
-    if (*lIter0 != *lIter1)
-      return false;
-    ++lIter0; ++lIter1;
-  }
-  return true;
+  return ::strncmp( &theData[0], &aBase64.theData[0], size() ) == 0;
 }
 
 
 zstring Base64::str() const 
 {
   zstring result;
-  vector<char>::const_iterator lIter = theData.begin();
-  vector<char>::const_iterator lEnd = theData.end();
-  for( ; lIter != lEnd ; ++lIter)
-  {
-    result.push_back( *lIter );
-  }
+  if ( theData.size() )
+    result.assign( &theData[0], theData.size() );
   return result;
 }
 
@@ -229,73 +209,41 @@ zstring Base64::decode() const
 }
 
 
-void Base64::decode(vector<char>& aResult)
+void Base64::decode( vector<char> &to )
 {
   if ( !theData.empty() )
-    base64::decode( &theData[0], theData.size(), &aResult );
+    base64::decode( &theData[0], theData.size(), &to );
 }
 
 
 uint32_t Base64::hash() const
 {
-  uint32_t lHash = 0;
-  vector<char>::const_iterator lIter = theData.begin();
-  vector<char>::const_iterator lEnd = theData.end();
-  for(;lIter!=lEnd;++lIter)
-  {
-    uint32_t lDiff = 65535-*lIter;
-    if (lDiff < lHash)
-    {
-      lHash = lHash - lDiff;
-    } else {
-      lHash += *lIter; 
-    }
-  }
-  return lHash;
+  return theData.size() ? ztd::hash_bytes( &theData[0], theData.size() ) : 0;
 }
 
 
 ostream& operator<<(ostream& os, const Base64& aBase64)
 {
-  vector<char>::const_iterator lIter = aBase64.getData().begin();
-  vector<char>::const_iterator lEnd = aBase64.getData().end();
-  for( ; lIter != lEnd ; ++lIter)
-  {
-    os << *lIter;
-  }
+  if ( aBase64.size() )
+    os.write( &aBase64.getData()[0], aBase64.size() );
   return os;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const char* Base16::ENCODE_TABLE = "0123456789ABCDEF";
+#define CATCH_HEXBINARY_EXCEPTION()                                     \
+  catch (const hexbinary::exception& e)                                 \
+  {                                                                     \
+    throw XQUERY_EXCEPTION(err::FORG0001,                               \
+    ERROR_PARAMS(ZED(FORG0001_BadHexDigit_2), e.invalid_char()));       \
+  }                                                                     \
+  catch (const std::invalid_argument&)                                  \
+  {                                                                     \
+    throw XQUERY_EXCEPTION(err::FORG0001,                               \
+    ERROR_PARAMS(ZED(FORG0001_HexBinaryMustBeEven)));                   \
+  }
 
-const unsigned char Base16::DECODE_TABLE[ 0x80 ] = {
-  /*00-07*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*08-0f*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*10-17*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*18-1f*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*20-27*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*28-2f*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*30-37*/ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, //8 = '0'-'7'
-  /*38-3f*/ 0x08, 0x09, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //2 = '8'-'9'
-  /*40-47*/ 0xFF, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xFF, //6 = 'A'-'F'
-  /*48-4f*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*50-57*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*58-5f*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*60-67*/ 0xFF, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xFF, //6 = 'a'-'f' (same as 'A'-'F')
-  /*68-6f*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*70-77*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-  /*78-7f*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
-};
-
-size_t Base16::ENCODE_INPUT = 1;
-size_t Base16::ENCODE_OUTPUT = 2;
-size_t Base16::DECODE_INPUT = 2;
-size_t Base16::DECODE_OUTPUT = 1;
-
-
-Base16::Base16(const Base64& aBase64)
+Base16::Base16(Base64 const &aBase64)
 {
   vector<char> lOrig;
   Base64::decode(aBase64.getData(), lOrig);
@@ -303,12 +251,12 @@ Base16::Base16(const Base64& aBase64)
 }
 
 
-bool Base16::parseString(const char* aString, size_t aLength, Base16& aBase16)
+bool Base16::parseString(char const *aString, size_t len, Base16& aBase16)
 {
   aBase16.theData.clear();
   try 
   {
-    aBase16.insertData(aString, aLength);
+    aBase16.insertData(aString, len);
   }
   catch (...)
   {
@@ -318,7 +266,7 @@ bool Base16::parseString(const char* aString, size_t aLength, Base16& aBase16)
 }
 
 
-void Base16::insertData(const char* str, size_t len)
+void Base16::insertData(char const *str, size_t len)
 {
   zstring_b wrap;
   wrap.wrap_memory(str, len);
@@ -328,136 +276,60 @@ void Base16::insertData(const char* str, size_t len)
   len = wrap.size();
   str = wrap.data();
 
-  if (len % 2 != 0) 
-  {
-    throw XQUERY_EXCEPTION(err::FORG0001,
-    ERROR_PARAMS(ZED(FORG0001_HexBinaryMustBeEven)));
+  try {
+    hexbinary::encode( str, len, &theData );
   }
-
-  for (size_t i = 0; i < len; ++i)
-  {
-    char lChar = str[i];
-    if ((lChar >= 65 && lChar <= 70)  // A-F
-     || (lChar >= 48 && lChar <= 57))  // 0-9
-    {
-      theData.push_back(lChar);
-    }
-    else if (lChar >= 97 && lChar <= 102) // a-f
-    {
-      theData.push_back(lChar-32);
-    }
-    else
-    {
-      throw XQUERY_EXCEPTION(err::FORG0001,
-      ERROR_PARAMS(ZED(FORG0001_BadHexDigit_2), lChar));
-    }
-  }
+  CATCH_HEXBINARY_EXCEPTION()
 }
 
 
-bool Base16::equal(const Base16& aBase16) const
+bool Base16::equal(Base16 const &aBase16) const
 {
-  if (size() != aBase16.size())
+  if ( size() != aBase16.size() )
     return false;
-
-  vector<char>::const_iterator lIter0 = theData.begin();
-  vector<char>::const_iterator lEnd0 = theData.end();
-  vector<char>::const_iterator lIter1 = aBase16.theData.begin();
-
-  for (; lIter0 != lEnd0 ; )
-  {
-    if (*lIter0 != *lIter1)
-      return false;
-    ++lIter0; ++lIter1;
-  }
-  return true;
+  return ::strncmp( &theData[0], &aBase16.theData[0], theData.size() ) == 0;
 }
 
 
 zstring Base16::str() const 
 {
-  stringstream lStream;
-  lStream << *this;
-  return zstring(lStream.str());
+  if ( size() )
+    return zstring( &theData[0], size() );
+  return zstring();
 }
 
 
-void Base16::encode(const vector<char>& aSource, vector<char>& aResult)
+void Base16::encode(vector<char> const &from, vector<char> &to)
 {
-  size_t lSrcPos = 0;
-  size_t lSrcSize = aSource.size();
-
-  while (lSrcSize >= 1)
-  {
-    // 1 input...
-    char ch = aSource[lSrcPos++];
-    lSrcSize -= ENCODE_INPUT; //1
-
-    // 2 outputs...
-    aResult.push_back(ENCODE_TABLE[ (ch & 0xf0) >> 4 ]);
-    aResult.push_back(ENCODE_TABLE[ (ch & 0x0f)      ]);
+  if ( !from.empty() ) {
+    try {
+      hexbinary::encode( &from[0], from.size(), &to );
+    }
+    CATCH_HEXBINARY_EXCEPTION()
   }
 }
 
 
-void Base16::decode(const vector<char>& aSource, vector<char>& aResult)
+void Base16::decode(const vector<char>& from, vector<char> &to)
 {
-  size_t lSrcSize = aSource.size();
-  size_t lSrcPos = 0;
-  assert(lSrcSize % DECODE_INPUT == 0);
-
-  while (lSrcSize >= 1)
-  {
-    // 2 inputs...
-    char in1 = aSource[lSrcPos++];
-    char in2 = aSource[lSrcPos++];
-    lSrcSize -= DECODE_INPUT;
-
-    // Validate ascii...
-    assert( 0 <= in1 /*&& in1 <= 0x7f*/ );
-    assert( 0 <= in2 /*&& in2 <= 0x7f*/ );
-
-    // Convert ascii to base16...
-    in1 = DECODE_TABLE[ int(in1) ];
-    in2 = DECODE_TABLE[ int(in2) ];
-
-    // Validate base16...
-    /*assert( in1 != 0xff );*/
-    assert( 0 <= in1 && in1 <= 15 );
-    assert( 0 <= in2 && in2 <= 15 );
-
-    // 1 output...
-    aResult.push_back(((in1 << 4) | in2));
+  if ( !from.empty() ) {
+    try {
+      hexbinary::decode( &from[0], from.size(), &to );
+    }
+    CATCH_HEXBINARY_EXCEPTION()
   }
 }
 
 uint32_t Base16::hash() const
 {
-  uint32_t lHash = 0;
-  vector<char>::const_iterator lIter = theData.begin();
-  vector<char>::const_iterator lEnd = theData.end();
-  for(;lIter!=lEnd;++lIter)
-  {
-    uint32_t lDiff = 65535-*lIter;
-    if (lDiff < lHash)
-    {
-      lHash = lHash - lDiff;
-    } else {
-      lHash += *lIter; 
-    }
-  }
-  return lHash;
+  return theData.size() ? ztd::hash_bytes( &theData[0], theData.size() ) : 0;
 }
 
 
 ostream& operator<<(ostream& os, const Base16& aBase16)
 {
-  vector<char>::const_iterator lIter = aBase16.getData().begin();
-  vector<char>::const_iterator lEnd = aBase16.getData().end();
-  for( ; lIter != lEnd ; ++lIter)
-  {
-    os << *lIter;
-  }
+  if ( aBase16.size() )
+    os.write( &aBase16.getData()[0], aBase16.size() );
   return os;
 }
 

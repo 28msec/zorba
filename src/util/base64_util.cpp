@@ -15,9 +15,12 @@
  */
 
 #include "stdafx.h"
+
+// standard
 #include <algorithm>
 #include <cstring>
 
+// local
 #include "ascii_util.h"
 #include "base64_util.h"
 #include "string_util.h"
@@ -114,21 +117,6 @@ inline void encode_chunk( char const *from, char *to ) {
   to[3] = alphabet[   u[2] & 0x3F                      ];
 }
 
-streamsize read_without_whitespace( istream &is, char *buf, streamsize n ) {
-  char const *const buf_orig = buf;
-  char const *const buf_end = buf + n;
-
-  while ( buf < buf_end ) {
-    is.read( buf, n );
-    if ( streamsize read = is.gcount() ) {
-      read = ascii::remove_whitespace( buf, read );
-      buf += read, n -= read;
-    } else
-      break;
-  }
-  return buf - buf_orig;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 size_type decode( char const *from, size_type from_len, char *to,
@@ -149,13 +137,13 @@ size_type decode( char const *from, size_type from_len, char *to,
         // and that the byte preceding '=' is valid.
         //
         case 2:
-          if ( !strchr( "AQgw", from[-1] ) )
+          if ( !::strchr( "AQgw", from[-1] ) )
             throw base64::exception(
               c, pos, BUILD_STRING( '\'', c, "': invalid character before '='" )
             );
           break;
         case 3:
-          if ( !strchr( "=048AEIMQUYcgkosw", from[-1] ) )
+          if ( !::strchr( "=048AEIMQUYcgkosw", from[-1] ) )
             throw base64::exception(
               c, pos, BUILD_STRING( '\'', c, "': invalid character before '='" )
             );
@@ -192,7 +180,7 @@ size_type decode( char const *from, size_type from_len, char *to,
           }
         } else
           ++chunk_len;
-    }
+    } // switch
   } // for
 
   if ( (chunk_len % 4) && !(options & dopt_any_len) )

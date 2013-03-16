@@ -3936,6 +3936,13 @@ size_t HexBinaryItem::dynamic_size() const
 }
 
 
+HexBinaryItem::HexBinaryItem( store::SchemaTypeCode t, char const *data,
+                              size_t size, bool encoded ) :
+  AtomicItem( t )
+{
+  // TODO
+}
+
 store::Item* HexBinaryItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_HEXBINARY];

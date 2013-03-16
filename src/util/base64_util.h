@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "cxx_util.h"
+#include "stream_util.h"
 
 namespace zorba {
 namespace base64 {
@@ -67,19 +68,6 @@ private:
 };
 
 ////////// Decoding ///////////////////////////////////////////////////////////
-
-/**
- * \internal
- * Reads from the given istream until \a n non-whitespace characters are read
- * or until EOF is encountered.
- *
- * @param is The istream to read from.
- * @param buf A pointer to the start of a buffer to read into.
- * @param n The number of non-whitespace characters to read.
- * @return Returns the number of non-whitespace characters read.
- */
-std::streamsize read_without_whitespace( std::istream &is, char *buf,
-                                         std::streamsize n );
 
 /**
  * Calculates the number of bytes required to decode \a n Base64-encoded bytes.
@@ -164,8 +152,6 @@ size_type decode( char const *from, size_type from_len, ToStringType *to,
  * @param from The istream to read from until EOF is reached.
  * @param to The ostream to write the decoded bytes to.
  * @param options The options to use.
- * 4 otherwise an exception is thrown; if \a false, missing trailing bytes are
- * assumed to be padding.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
  * set and the number of Base64 bytes decoded is not a multiple of 4.
@@ -183,8 +169,6 @@ size_type decode( std::istream &from, std::ostream &to,
  * @param from The istream to read from until EOF is reached.
  * @param to The string to append the decoded bytes to.
  * @param options The options to use.
- * 4 otherwise an exception is thrown; if \a false, missing trailing bytes are
- * assumed to be padding.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
  * set and the number of Base64 bytes decoded is not a multiple of 4.

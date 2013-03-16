@@ -162,7 +162,7 @@ public:
     return theBaseItem->getBase64BinaryValue(s);
   }
 
-  xs_hexBinary getHexBinaryValue() const { return theBaseItem->getHexBinaryValue(); }
+  xs_hexBinary const& getHexBinaryValue() const { return theBaseItem->getHexBinaryValue(); }
 
   bool getBooleanValue() const { return theBaseItem->getBooleanValue(); }
 
@@ -2554,18 +2554,6 @@ public:
   void appendStringValue(zstring& buf) const;
 
   zstring show() const;
-  
-protected:
-  // used in hash doing simple xor of the data
-  struct hash_functor
-  {
-    uint32_t hash_value;
-
-    void operator() (char c)
-    {
-      hash_value ^= (uint32_t) c;
-    }
-  };
 };
 
 
@@ -2648,12 +2636,15 @@ protected:
   xs_hexBinary theValue;
 
 protected:
-  HexBinaryItem(store::SchemaTypeCode t, xs_hexBinary v)
+  HexBinaryItem(store::SchemaTypeCode t, xs_hexBinary const &v)
     :
     AtomicItem(t),
     theValue(v)
   {
   }
+
+  HexBinaryItem(store::SchemaTypeCode t, char const *data, size_t size,
+                bool encoded);
 
   HexBinaryItem(store::SchemaTypeCode t) : AtomicItem(t) {}
 
@@ -2661,7 +2652,7 @@ public:
   size_t alloc_size() const;
   size_t dynamic_size() const;
 
-  xs_hexBinary getHexBinaryValue() const { return theValue; }
+  xs_hexBinary const& getHexBinaryValue() const { return theValue; }
 
   store::Item* getType() const;
 
