@@ -316,7 +316,7 @@ void mkdir( char const *path ) {
 #endif
 }
 
-iterator::iterator( char const *path ) : dir_path_( path ) {
+void iterator::ctor_impl() {
   make_absolute( dir_path_ );
 #ifndef WIN32
   if ( !(dir_ = ::opendir( dir_path_.c_str() )) )

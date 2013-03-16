@@ -6,6 +6,8 @@ New Features:
   * Typeswitch expression extended to allow union of types in each case clause,
     as specified by XQuery v3.0
   * In C++ API, added optional XML formatting of exceptions.
+  * Bind zerr:line-number-end and zerr:column-number-end variables in the body
+    of a catch clause.
   * New C++ and XQuery function (see module http://www.zorba-xquery.com/modules/item)
     to estimate the size an item allocates in memory.
   * Extended sequence types to include unions, as specified by XQuery v3.0
@@ -26,6 +28,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1124273 (xqdoc crash because of annotation literals)
   * Fixed bug #867027 (XQST0059 error messages inconsistent)
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
+  * Fixed nug in index join rule (no index join if inner clause has positional var).
   * Fixed bug in index join rule (copy var ids after cloning index domain expr).
   * Added missing wrapper expressions around some variable references.
   * Fixed bug in the throwing of error XQTY0086 during node construction.

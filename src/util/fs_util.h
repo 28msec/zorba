@@ -168,16 +168,35 @@ mkdir( PathStringType const &path ) {
 ////////// Directory iteration ////////////////////////////////////////////////
 
 /**
- * An fs::iterator iterates over the entries in a directory.
+ * An %fs::iterator iterates over the entries in a directory.
  */
 class iterator {
 public:
   /**
-   * Constructs an %itertor.
+   * Constructs an %iterator.
    *
+   * @param path The full path to the directory to iterate over.
    * @throws fs::exception if the construction failed, e.g., path not found.
    */
-  iterator( char const *path );
+  iterator( char const *path ) : dir_path_( path ) {
+    ctor_impl();
+  }
+
+  /**
+   * Constructs an %iterator.
+   *
+   * @tparam PathStringType The \a path string type.
+   * @param path The full path to the directory to iterate over.
+   * @throws fs::exception if the construction failed, e.g., path not found.
+   */
+  template<class PathStringType>
+  iterator( PathStringType const &path,
+            typename std::enable_if<
+              ztd::has_c_str<PathStringType,
+              char const* (PathStringType::*)() const>::value
+            >::type* = 0 ) : dir_path_( path.c_str() ) {
+    ctor_impl();
+  }
 
   /**
    * Destroys this %iterator.
@@ -243,6 +262,8 @@ private:
   void win32_opendir( char const *path );
   void win32_closedir();
 #endif /* WIN32 */
+
+  void ctor_impl();
 
   // forbid
   iterator( iterator const& );
