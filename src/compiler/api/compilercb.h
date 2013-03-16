@@ -156,6 +156,7 @@ public:
     expr_callback  translate_cb;
     expr_callback  optimize_cb;
     bool           print_item_flow;  // TODO: move to RuntimeCB
+    bool           jsoniq_mode;
 
    public:
     SERIALIZABLE_CLASS(config);
