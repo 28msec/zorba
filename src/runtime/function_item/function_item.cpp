@@ -332,6 +332,13 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
                    theDynamicFunctionInfo->theClosureSctx,
                    evalDctx.get());
 
+    if (theDynamicFunctionInfo->theIsCoercion)
+    {
+      DynamicFunctionIterator* child = dynamic_cast<DynamicFunctionIterator*>(theChildren[0].getp());
+      if (child != NULL)
+        theDynamicFunctionInfo->theQName = child->theDynamicFunctionInfo->theQName;
+    }
+
     result = new FunctionItem(theDynamicFunctionInfo, evalDctx.release());
   }
 
