@@ -60,7 +60,8 @@ DynamicFunctionInfo::DynamicFunctionInfo(
     store::Item_t qname,
     uint32_t arity,
     bool isInline,
-    bool needsContextItem)
+    bool needsContextItem,
+    bool isCoercion)
   :
   theMustDeleteCCB(false),
   theClosureSctx(closureSctx),
@@ -256,6 +257,7 @@ PlanIter_t FunctionItem::getImplementation(
                             NULL,
                             theDynamicFunctionInfo->theLoc,
                             NULL,
+                            false,
                             false,
                             false);
   

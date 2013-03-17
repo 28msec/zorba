@@ -86,7 +86,8 @@ public:
       store::Item_t qname,
       uint32_t arity,
       bool isInline,
-      bool needsContextItem);
+      bool needsContextItem,
+      bool isCoercion);
 
   virtual ~DynamicFunctionInfo();
 
