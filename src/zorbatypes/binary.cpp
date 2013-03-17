@@ -243,6 +243,14 @@ ostream& operator<<(ostream& os, const Base64& aBase64)
     ERROR_PARAMS(ZED(FORG0001_HexBinaryMustBeEven)));                   \
   }
 
+Base16::Base16( char const *bin_data, size_t len )
+{
+  try {
+    hexbinary::encode( bin_data, len, &theData );
+  }
+  CATCH_HEXBINARY_EXCEPTION()
+}
+
 Base16::Base16(Base64 const &aBase64)
 {
   vector<char> lOrig;
@@ -283,11 +291,11 @@ void Base16::insertData(char const *str, size_t len)
 }
 
 
-bool Base16::equal(Base16 const &aBase16) const
+bool Base16::equal( Base16 const &other ) const
 {
-  if ( size() != aBase16.size() )
+  if ( size() != other.size() )
     return false;
-  return ::strncmp( &theData[0], &aBase16.theData[0], theData.size() ) == 0;
+  return ::strncmp( &theData[0], &other.theData[0], theData.size() ) == 0;
 }
 
 
@@ -299,7 +307,7 @@ zstring Base16::str() const
 }
 
 
-void Base16::encode(vector<char> const &from, vector<char> &to)
+void Base16::encode( vector<char> const &from, vector<char> &to )
 {
   if ( !from.empty() ) {
     try {
@@ -309,8 +317,12 @@ void Base16::encode(vector<char> const &from, vector<char> &to)
   }
 }
 
+void Base16::encode( char const *from, size_t from_len, Base16 &to )
+{
+  hexbinary::encode( from, from_len, &to.theData );
+}
 
-void Base16::decode(const vector<char>& from, vector<char> &to)
+void Base16::decode( vector<char> const &from, vector<char> &to )
 {
   if ( !from.empty() ) {
     try {
@@ -326,10 +338,10 @@ uint32_t Base16::hash() const
 }
 
 
-ostream& operator<<(ostream& os, const Base16& aBase16)
+ostream& operator<<( ostream &os, Base16 const &b16 )
 {
-  if ( aBase16.size() )
-    os.write( &aBase16.getData()[0], aBase16.size() );
+  if ( b16.size() )
+    os.write( &b16.getData()[0], b16.size() );
   return os;
 }
 

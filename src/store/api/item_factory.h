@@ -238,7 +238,7 @@ public:
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
-   * @param value)?
+   * @param value
    */
   virtual bool createBase64Binary(
       Item_t& result,

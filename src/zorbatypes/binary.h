@@ -47,12 +47,12 @@ private:
   std::vector<char> theData;            // stored encoded
 
 public:
-  static bool parseString(const zstring& aString, Base64& aBase64) 
+  static bool parseString( zstring const &s, Base64 &to )
   {
-    return parseString(aString.data(), aString.size(), aBase64);
+    return parseString( s.data(), s.size(), to );
   }
 
-  static bool parseString(const char* aString, size_t aLength, Base64& aBase64);
+  static bool parseString(char const *s, size_t aLength, Base64& to);
 
   static bool parseString(
         const char* aString, 
@@ -140,13 +140,17 @@ public:
 
   static void encode( std::vector<char> const&, std::vector<char>& );
 
+  static void encode( char const *from, size_t from_len, Base16 &to );
+
   static void decode( std::vector<char> const&, std::vector<char>& );
 
 public:
   Base16() { }
   
   Base16( Base16 const &from ) : theData( from.theData ) { }
-  
+
+  Base16( char const *bin_data, size_t len );
+
   explicit Base16( Base64 const& );
   
   const std::vector<char>& getData() const { return theData; }

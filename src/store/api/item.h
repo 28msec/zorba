@@ -481,8 +481,8 @@ public:
 
   /** Accessor for xs:hexBinary
    */
-  virtual xs_hexBinary const&
-  getHexBinaryValue() const;
+  virtual char const*
+  getHexBinaryValue(size_t& size) const;
 
   /**
    * Helper method for numeric atomic items

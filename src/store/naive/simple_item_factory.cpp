@@ -1185,9 +1185,13 @@ bool BasicItemFactory::createStreamableBase64Binary(
 }
 
 
-bool BasicItemFactory::createHexBinary(store::Item_t& result,  xs_hexBinary const &value)
+bool BasicItemFactory::createHexBinary(store::Item_t& result,
+                                       xs_hexBinary const &value)
 {
-  result = new HexBinaryItem(store::XS_HEXBINARY, value);
+  std::vector<char> const &data = value.getData();
+  result = new HexBinaryItem(
+    store::XS_HEXBINARY, data.empty() ? 0 : &data[0], data.size(), true
+  );
   return true;
 }
 
