@@ -71,9 +71,6 @@ void DynamicFnCallIteratorState::init(PlanState& planState)
   thePlanState = &planState;
   thePlan = NULL;
   theIsOpen = false;
-#ifdef ZORBA_WITH_JSON
-  theIterator = NULL;
-#endif
 }
 
 
@@ -87,9 +84,6 @@ void DynamicFnCallIteratorState::reset(PlanState& planState)
   {
     thePlan->reset(planState);
   }
-#ifdef ZORBA_WITH_JSON
-  theIterator = NULL;
-#endif
 }
 
 
@@ -152,6 +146,8 @@ bool DynamicFnCallIterator::nextImpl(
 #ifdef ZORBA_WITH_JSON
   store::Item_t selectorItem1;
   store::Item_t selectorItem2;
+  store::Item_t selectorItem3;
+  bool isObjectNav;
   bool selectorError;
 #endif
   FunctionItem* fnItem;
@@ -234,7 +230,7 @@ bool DynamicFnCallIterator::nextImpl(
     }
     else if (theChildren.size() == 2)
     {
-      state->theIsObjectNav = targetItem->isJSONObject();
+      isObjectNav = targetItem->isJSONObject();
       selectorError = false;
 
       if (!consumeNext(selectorItem1, theChildren[1], planState))
@@ -273,9 +269,9 @@ bool DynamicFnCallIterator::nextImpl(
             else
             {
               store::SchemaTypeCode selectorType = 
-              (state->theIsObjectNav ? store::XS_STRING : store::XS_INTEGER);
+              (isObjectNav ? store::XS_STRING : store::XS_INTEGER);
 
-              GenericCast::castToBuiltinAtomic(state->theSelector,
+              GenericCast::castToBuiltinAtomic(selectorItem3,
                                                selectorItem2,
                                                selectorType,
                                                NULL,
@@ -300,42 +296,24 @@ bool DynamicFnCallIterator::nextImpl(
         ERROR_PARAMS(ZED(XPTY0004_JSONIQ_SELECTOR), selectorType));
       }
 
-      do {
-        if ((state->theIsObjectNav && !targetItem->isJSONObject()) ||
-            (!state->theIsObjectNav && !targetItem->isJSONArray()))
-        {
-          zstring itemType = tm->create_value_type(targetItem)->toSchemaString();
-          RAISE_ERROR(jerr::JNTY0021, loc,
-            ERROR_PARAMS(itemType,
-              state->theIsObjectNav?
-              GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE->toSchemaString() :
-              GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE->toSchemaString()));
-        }
-        if (state->theIsObjectNav)
-          result = targetItem->getObjectValue(state->theSelector);
-        else
-          result = targetItem->getArrayValue(state->theSelector->getIntegerValue());
-        STACK_PUSH(true, state);
-      } while (consumeNext(targetItem, theChildren[0], planState));
+      if (isObjectNav)
+        result = targetItem->getObjectValue(selectorItem3);
+      else
+        result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
+      STACK_PUSH(true, state);
     }
     else
     {
-      do {
-        if (targetItem->isJSONArray())
-        {
-          state->theIterator = targetItem->getArrayValues();
-        }
-        else if (targetItem->isJSONObject())
-        {
-          state->theIterator = targetItem->getObjectKeys();
-        }
-        state->theIterator->open();
-        while (state->theIterator->next(result))
-        {
-          STACK_PUSH(true, state);
-        }
-        state->theIterator->close();
-      } while (consumeNext(targetItem, theChildren[0], planState));
+      if (targetItem->isJSONArray())
+        state->theIterator = targetItem->getArrayValues();
+      else if (targetItem->isJSONObject())
+        state->theIterator = targetItem->getObjectKeys();
+      state->theIterator->open();
+      while (state->theIterator->next(result))
+      {
+        STACK_PUSH(true, state);
+      }
+      state->theIterator->close();
     }
   }
 #endif

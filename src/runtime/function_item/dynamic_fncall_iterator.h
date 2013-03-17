@@ -38,8 +38,6 @@ public:
   uint32_t     theUDFStateOffset;
 
 #ifdef ZORBA_WITH_JSON
-  bool              theIsObjectNav;
-  store::Item_t     theSelector;
   store::Iterator_t theIterator;
 #endif
 
