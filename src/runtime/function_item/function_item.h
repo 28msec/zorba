@@ -59,6 +59,9 @@ public:
   unsigned int                  theArity;
   bool                          theIsInline;
   bool                          theNeedsContextItem;
+  bool                          theIsCoercion;     // This is set to true if the function item is a function coercion. In this
+                                                   // case the newly created function item's name is taken from the coerced
+                                                   // function.
 
   std::vector<expr*>            theScopedVarsValues;
   std::vector<var_expr*>        theSubstVarsValues;
@@ -161,6 +164,8 @@ public:
   bool isInline() const { return theDynamicFunctionInfo->theIsInline; }
   
   bool needsContextItem() const { return theDynamicFunctionInfo->theNeedsContextItem; }
+
+  bool isCoercion() const { return theDynamicFunctionInfo->theIsCoercion; }
 
   zstring show() const;
 };

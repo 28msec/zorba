@@ -155,7 +155,8 @@ protected:
       store::Item* aQName,
       uint32_t aArity,
       bool isInline,
-      bool needsContextItem);
+      bool needsContextItem,
+      bool isCoercion);
 
   function_item_expr(
       CompilerCB* ccb,
@@ -164,7 +165,8 @@ protected:
       const QueryLoc& loc,
       static_context* closureSctx,
       bool isInline,
-      bool needsContextItem);
+      bool needsContextItem,
+      bool isCoercion);
   
   virtual ~function_item_expr();
   
@@ -203,6 +205,8 @@ public:
   bool is_inline() const { return theDynamicFunctionInfo->theIsInline; }
   
   bool needs_context_item() const { return theDynamicFunctionInfo->theNeedsContextItem; }
+
+  bool is_coercion() const { return theDynamicFunctionInfo->theIsCoercion; }
 
   void compute_scripting_kind();
 

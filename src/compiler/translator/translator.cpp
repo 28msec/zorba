@@ -1350,7 +1350,7 @@ expr* wrap_in_coercion(
 
   static_context* closureSctx = theRootSctx->create_child_context();
   theCCB->theSctxMap[theCCB->theSctxMap.size() + 1] = closureSctx;
-  function_item_expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, closureSctx, true, false);
+  function_item_expr* fiExpr = theExprManager->create_function_item_expr(theRootSctx, theUDF, loc, closureSctx, true, false, true /* isCoercion */);
   push_nodestack(fiExpr);
 
   push_scope();
@@ -11920,7 +11920,8 @@ expr* generate_literal_function(
                                        f->getName(),
                                        arity,
                                        false,
-                                       needs_context_item);
+                                       needs_context_item,
+                                       false);
 
   return fiExpr;
 }
@@ -11945,7 +11946,7 @@ void* begin_visit(const InlineFunction& v)
   theCCB->theSctxMap[theCCB->theSctxMap.size() + 1] = closureSctx;
 
   function_item_expr* fiExpr =
-  CREATE(function_item)(theRootSctx, theUDF, loc, closureSctx, true, false);
+  CREATE(function_item)(theRootSctx, theUDF, loc, closureSctx, true, false, false);
 
   push_nodestack(fiExpr);
 

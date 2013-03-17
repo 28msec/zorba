@@ -69,7 +69,8 @@ DynamicFunctionInfo::DynamicFunctionInfo(
   theQName(qname),
   theArity(arity),
   theIsInline(isInline),
-  theNeedsContextItem(needsContextItem)
+  theNeedsContextItem(needsContextItem),
+  theIsCoercion(isCoercion)
 {
 }
 
@@ -97,6 +98,7 @@ void DynamicFunctionInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theArity;
   ar & theIsInline;
   ar & theNeedsContextItem;
+  ar & theIsCoercion;
 
   // These are not serialized
   // ar & theScopedVarsValues;

@@ -505,7 +505,8 @@ public:
       store::Item* aQName,
       uint32_t aArity,
       bool isInline,
-      bool needsContextItem);
+      bool needsContextItem,
+      bool isCoercion);
 
   function_item_expr* create_function_item_expr(
       static_context* sctx,
@@ -513,7 +514,8 @@ public:
       const QueryLoc& loc,
       static_context *closureSctx,
       bool isInline,
-      bool needsContextItem);
+      bool needsContextItem,
+      bool isCoercion);
 
   ftcontains_expr* create_ftcontains_expr(
       static_context*,
