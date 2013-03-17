@@ -21,7 +21,6 @@
 #include <cstring>
 
 // local
-#include "ascii_util.h"
 #include "hexbinary_util.h"
 #include "string_util.h"
 
