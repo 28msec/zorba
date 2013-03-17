@@ -76,28 +76,28 @@ size_type decode( char const *from, size_type from_len, char *to ) {
   if ( from_len % 2 )
     throw invalid_argument( "HexBinary length is not a multiple of 2" );
 
+  char const *const from_orig = from;
+  char const *const from_end = from + from_len;
   char const *const to_orig = to;
+  char c;
 
-  for ( size_type pos = 0; pos < from_len; pos += 2 ) {
-    signed char c;
-
-    if ( (c = *from++) == -1 )
-      throw hexbinary::exception(
-        c, pos, BUILD_STRING( '\'', c, "': invalid character" )
-      );
-    signed char const high = decode_table[ (unsigned char)c ];
-
-    if ( (c = *from++) == -1 )
-      throw hexbinary::exception(
-        c, pos, BUILD_STRING( '\'', c, "': invalid character" )
-      );
-    signed char const low = decode_table[ (unsigned char)c ];
-
+  while ( from < from_end ) {
+    signed char const high = decode_table[ (unsigned char)(c = *from++) ];
+    if ( high == -1 )
+      goto bad_char;
+    signed char const low  = decode_table[ (unsigned char)(c = *from++) ];
+    if ( low == -1 )
+      goto bad_char;
     if ( to )
       *to++ = ((unsigned char)high << 4) | ((unsigned char)low);
-  } // for
+  }
 
   return to - to_orig;
+
+bad_char:
+  throw hexbinary::exception(
+    c, from - from_orig, BUILD_STRING( '\'', c, "': invalid character" )
+  );
 }
 
 size_type decode( char const *from, size_type from_len,
