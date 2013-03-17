@@ -61,7 +61,7 @@ ELSE (GENERATE_BISON_FILES)
         MESSAGE(STATUS "         GNU Bison is not available -- the parser will not be regenerated")
     ENDIF (BISON_EXECUTABLE)
     MESSAGE(STATUS "         Using repository files " ${CMAKE_CURRENT_SOURCE_DIR}/xquery_parser.cpp ${CMAKE_CURRENT_SOURCE_DIR}/jsoniq_parser.cpp)
-    LIST(APPEND PARSER_SRCS xquery_parser.cpp)
+    LIST(APPEND PARSER_SRCS xquery_parser.cpp jsoniq_parser.cpp)
 ENDIF (GENERATE_BISON_FILES)
 
 ###################################################################
