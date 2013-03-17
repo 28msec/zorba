@@ -101,6 +101,8 @@ bad_char:
 
 size_type decode( char const *from, size_type from_len,
                   std::vector<char> *to ) {
+  if ( from_len % 2 )
+    throw invalid_argument( "HexBinary length is not a multiple of 2" );
   if ( from_len ) {
     std::vector<char>::size_type const orig_size = to->size();
     to->resize( orig_size + decoded_size( from_len ) );
