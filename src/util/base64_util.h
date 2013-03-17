@@ -18,7 +18,6 @@
 #ifndef ZORBA_BASE64_UTIL_H
 #define ZORBA_BASE64_UTIL_H
 
-#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 #include <sys/types.h>                  /* for size_t */

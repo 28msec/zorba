@@ -18,14 +18,12 @@
 #ifndef ZORBA_HEXBINARY_UTIL_H
 #define ZORBA_HEXBINARY_UTIL_H
 
-#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 #include <sys/types.h>                  /* for size_t */
 #include <vector>
 
 #include "cxx_util.h"
-#include "stream_util.h"
 
 namespace zorba {
 namespace hexbinary {
@@ -82,8 +80,7 @@ inline size_type decoded_size( size_type n ) {
  * terminated.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if \a from_len is not a multiple of 2.
- * @throws hexbinary::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  * @see decoded_size()
  */
 size_type decode( char const *from, size_type from_len, char *to );
@@ -99,8 +96,7 @@ size_type decode( char const *from, size_type from_len, char *to );
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if the number of hexBinary bytes decoded is not a
  * multiple of 2.
- * @throws hexbinary::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  */
 size_type decode( char const *from, size_type from_len, std::vector<char> *to );
 
@@ -115,8 +111,7 @@ size_type decode( char const *from, size_type from_len, std::vector<char> *to );
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if the number of hexBinary bytes decoded is not a
  * multiple of 2.
- * @throws hexbinary::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  */
 template<class ToStringType>
 size_type decode( char const *from, size_type from_len, ToStringType *to ) {
@@ -125,7 +120,6 @@ size_type decode( char const *from, size_type from_len, ToStringType *to ) {
     typename ToStringType::size_type const orig_size = to->size();
     to->resize( orig_size + decoded_size( from_len ) );
     total_decoded = decode( from, from_len, &to->at( orig_size ) );
-    to->resize( orig_size + total_decoded );
   }
   return total_decoded;
 }
@@ -139,8 +133,7 @@ size_type decode( char const *from, size_type from_len, ToStringType *to ) {
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if the number of hexBinary bytes decoded is not a
  * multiple of 2.
- * @throws hexbinary::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  */
 size_type decode( std::istream &from, std::ostream &to );
 
@@ -156,8 +149,7 @@ size_type decode( std::istream &from, std::ostream &to );
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if the number of hexBinary bytes decoded is not a
  * multiple of 2.
- * @throws hexbinary::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  */
 template<class ToStringType>
 size_type decode( std::istream &from, ToStringType *to ) {
@@ -184,8 +176,7 @@ size_type decode( std::istream &from, ToStringType *to ) {
  * @param Returns the number of decoded bytes.
  * @throws invalid_argument if \a the number of hexBinary bytes decoded is not
  * a multiple of 2.
- * @throws hexbinary::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  */
 size_type decode( std::istream &from, std::vector<char> *to );
 
@@ -197,8 +188,7 @@ size_type decode( std::istream &from, std::vector<char> *to );
  * @param buf_len The number of bytes to validate.
  * @throws invalid_argument if the number of hexBinary bytes validated is not a
  * multiple of 2.
- * @throws hexbinary::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  * @see decoded_size()
  */
 inline void validate( char const *buf, size_type buf_len ) {
@@ -257,7 +247,6 @@ size_type encode( char const *from, size_type from_len, ToStringType *to ) {
     typename ToStringType::size_type const orig_size = to->size();
     to->resize( orig_size + encoded_size( from_len ) );
     total_encoded = encode( from, from_len, &to->at( orig_size ) );
-    to->resize( orig_size + total_encoded );
   }
   return total_encoded;
 }
