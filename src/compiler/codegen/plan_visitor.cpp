@@ -661,14 +661,14 @@ void end_visit(dynamic_function_invocation_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  ulong numArgs = (ulong)v.get_args().size() + 1;
+  csize numArgs = v.get_args().size() + 1;
 
   std::vector<PlanIter_t> argIters;
   
   bool isPartialApply = false;
   
   // the arguments are reversed on the stack
-  for (csize i=0; i<v.get_dot_vars().size(); i++)
+  if (v.get_dot_var())
   {
     PlanIter_t iter = pop_itstack();
     argIters.push_back(iter);
@@ -687,7 +687,10 @@ void end_visit(dynamic_function_invocation_expr& v)
 
   std::reverse(argIters.begin(), argIters.end());
 
-  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, v.get_dot_vars().size(), isPartialApply));
+  push_itstack(new DynamicFnCallIterator(sctx, qloc,
+                                         argIters,
+                                         v.get_dot_var() ? 1 : 0,
+                                         isPartialApply));
 }
 
 

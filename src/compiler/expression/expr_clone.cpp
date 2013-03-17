@@ -357,12 +357,10 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
       newArgs.push_back((*ite)->clone(udf, subst));
     }
     
-    checked_vector<expr*> newDotVars;
-    for (checked_vector<expr*>::const_iterator ite = e->theDotVars.begin();
-         ite != e->theDotVars.end();
-         ++ite)
+    expr* newDotVar = NULL;
+    if (e->theDotVar)
     {
-      newDotVars.push_back((*ite)->clone(udf, subst));
+      newDotVar = e->theDotVar->clone(udf, subst);
     }
 
     newExpr = theCCB->theEM->
@@ -371,7 +369,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                                             theLoc,
                                             e->theExpr->clone(udf, subst),
                                             newArgs,
-                                            newDotVars);
+                                            newDotVar);
     break;
   }
   case argument_placeholder_expr_kind:

@@ -587,13 +587,12 @@ ostream& dynamic_function_invocation_expr::put(ostream& os) const
  
   for (csize i = 0; i < theArgs.size(); ++i)
     theArgs[i]->put(os);
-  
-  for (csize i = 0; i < theDotVars.size(); i++)
-    if (theDotVars[i] != NULL)
-    {
-      os << indent << "using $"; 
-      theDotVars[i]->put(os);
-    }
+
+  if (theDotVar)
+  {
+    os << indent << "using $"; 
+    theDotVar->put(os);
+  }
 
   END_PUT();
 }

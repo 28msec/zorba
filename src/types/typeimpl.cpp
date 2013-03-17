@@ -1387,7 +1387,7 @@ bool UserDefinedXQType::isSuperTypeOf(
       return false;
     }
   }
-  while(true);
+  while (subtype != NULL);
 
   return false;
 }

@@ -1411,13 +1411,13 @@ expr* wrap_in_coercion(
     inner_flwor = NULL;
   }
 
-  expr* body = theExprManager->create_dynamic_function_invocation_expr(
+  expr* body = CREATE(dynamic_function_invocation)(
                 theRootSctx,
                 theUDF,
                 loc,
-                theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, inner_subst_var),
+                CREATE(wrapper)(theRootSctx, theUDF, loc, inner_subst_var),
                 arguments,
-                std::vector<expr*>()); // empty array for dot vars
+                NULL);
 
   create_inline_function(body,
                          inner_flwor,
@@ -1446,28 +1446,35 @@ expr* normalize_fo_arg(
     csize i,
     expr* argExpr,
     const function* func,
-    TypeManager* tm,
     const QueryLoc& loc)
 {
   xqtref_t paramType;
 
   const signature& sign = func->getSignature();
 
-  if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
+  TypeManager* tm = argExpr->get_type_manager();
+
+  switch (func->getKind())
+  {
+  case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N:
   {
     if (i == 0)
       paramType = sign[i];
     else
       paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+
+    break;
   }
-  else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N)
+  case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_SKIP_N:
   {
     if (i <= 1)
       paramType = sign[i];
     else
       paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+
+    break;
   }
-  else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
+  case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N:
   {
     if (i == 0)
       paramType = sign[i];
@@ -1475,8 +1482,10 @@ expr* normalize_fo_arg(
       paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
     else
       paramType = theRTM.BOOLEAN_TYPE_ONE;
+
+    break;
   }
-  else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
+  case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N:
   {
     if (i <= 1)
       paramType = sign[i];
@@ -1484,20 +1493,25 @@ expr* normalize_fo_arg(
       paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
     else
       paramType = theRTM.BOOLEAN_TYPE_ONE;
+
+    break;
   }
-  else if (func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N ||
-           func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_N_N ||
-           func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_U_N ||
-           func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_S_N)
+  case FunctionConsts::FN_ZORBA_INVOKE_N:
+  case FunctionConsts::FN_ZORBA_INVOKE_N_N:
+  case FunctionConsts::FN_ZORBA_INVOKE_U_N:
+  case FunctionConsts::FN_ZORBA_INVOKE_S_N:
   {
     if (i == 0)
       paramType = sign[i];
     else
       paramType = NULL; // Nothing to check as the target function is not known
+
+    break;
   }
-  else
+  default:
   {
     paramType = sign[i];
+  }
   }
 
   // A NULL value for the parameter's type to signal that no type promotion
@@ -1538,8 +1552,6 @@ void normalize_fo(fo_expr* foExpr)
 {
   const QueryLoc& loc = foExpr->get_loc();
 
-  TypeManager* tm = foExpr->get_type_manager();
-
   csize n = foExpr->num_args();
 
   const function* func = foExpr->get_func();
@@ -1578,7 +1590,7 @@ void normalize_fo(fo_expr* foExpr)
   {
     expr* argExpr = foExpr->get_arg(i);
 
-    argExpr = normalize_fo_arg(i, argExpr, func, tm, loc);
+    argExpr = normalize_fo_arg(i, argExpr, func, loc);
 
     foExpr->set_arg(i, argExpr);
   }
@@ -1590,11 +1602,7 @@ void normalize_fo(fo_expr* foExpr)
 ********************************************************************************/
 expr* wrap_in_atomization(expr* e)
 {
-  return CREATE(fo)(theRootSctx,
-                    theUDF,
-                    e->get_loc(),
-                    BUILTIN_FUNC(FN_DATA_1),
-                    e);
+  return CREATE(fo)(theRootSctx, theUDF, e->get_loc(), BUILTIN_FUNC(FN_DATA_1), e);
 }
 
 
@@ -10761,6 +10769,8 @@ void end_visit(const UnorderedExpr& v, void* /*visit_state*/)
 
 /*******************************************************************************
   FunctionCall ::= QName "(" ArgList? ")"
+
+  Note: The parser makes sure that ArgList does not contain any place holder.
 ********************************************************************************/
 void* begin_visit(const FunctionCall& v)
 {
@@ -11408,8 +11418,6 @@ expr* generate_fn_body(
 {
   expr* resultExpr = NULL;
   
-  csize numArgs = arguments.size();
-  
   switch (f->getKind())
   {
   case FunctionConsts::FN_POSITION_0:
@@ -11447,24 +11455,8 @@ expr* generate_fn_body(
     resultExpr = foExpr;
     break;
   }
-  case FunctionConsts::FN_NUMBER_0:
   case FunctionConsts::FN_NUMBER_1:
   {
-    switch (numArgs)
-    {
-    case 0:
-    {
-      arguments.push_back(DOT_REF);
-      f = BUILTIN_FUNC(FN_NUMBER_1);
-      break;
-    }
-    case 1:
-      break;
-    default:
-      RAISE_ERROR(err::XPST0017, loc,
-                  ERROR_PARAMS("fn:number", ZED(FunctionUndeclared_3), numArgs));
-    }
-
     var_expr* tv = create_temp_var(loc, var_expr::let_var);
 
     expr* nanExpr = CREATE(const)(theRootSctx, theUDF, loc, xs_double::nan());
@@ -11478,16 +11470,13 @@ expr* generate_fn_body(
 
     expr* ret = CREATE(if)(theRootSctx, theUDF, loc, condExpr, castExpr, nanExpr);
 
-    expr* data_expr = wrap_in_atomization(arguments[0]);
+    expr* dataExpr = 
+    wrap_in_type_promotion(arguments[0], 
+                           theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                           PROMOTE_FUNC_PARAM,
+                           f->getName());
 
-    resultExpr = wrap_in_let_flwor(CREATE(treat)(theRootSctx,
-                                                 theUDF,
-                                                 loc,
-                                                 data_expr,
-                                                 theRTM.ANY_ATOMIC_TYPE_QUESTION,
-                                                 TREAT_TYPE_MATCH),
-                                   tv,
-                                   ret);
+    resultExpr = wrap_in_let_flwor(dataExpr, tv, ret);
     break;
   }
   case FunctionConsts::FN_STATIC_BASE_URI_0:
@@ -11515,14 +11504,12 @@ expr* generate_fn_body(
     std::vector<expr*> fncall_args;
     fncall_args.push_back(CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()));
 
-    expr* dynamic_fncall = theExprManager->create_dynamic_function_invocation_expr(
-          theRootSctx,
-          theUDF,
-          loc,
-          arguments[0],
-          fncall_args,
-          std::vector<expr*>());
-
+    expr* dynamic_fncall = 
+    CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
+                                        arguments[0],
+                                        fncall_args,
+                                        NULL);
+    
     flwor->set_return_expr(dynamic_fncall);
 
     resultExpr = flwor;
@@ -11545,19 +11532,17 @@ expr* generate_fn_body(
     std::vector<expr*> fncall_args;
     fncall_args.push_back(CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()));
     
-    expr* dynamic_fncall = theExprManager->create_dynamic_function_invocation_expr(
-                                theRootSctx,
-                                theUDF,
-                                loc,
-                                arguments[0],
-                                fncall_args,
-                                std::vector<expr*>()); // Empty array for dot vars
+    expr* dynamic_fncall =
+    CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
+                                        arguments[0],
+                                        fncall_args,
+                                        NULL);
 
     expr* if_expr = 
-        CREATE(if)(theRootSctx, theUDF, loc,
-                 dynamic_fncall,
-                 CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()),
-                 create_empty_seq(loc));
+    CREATE(if)(theRootSctx, theUDF, loc,
+               dynamic_fncall,
+               CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()),
+               create_empty_seq(loc));
       
     flwor->set_return_expr(if_expr);
 
@@ -11651,24 +11636,34 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   expr* sourceExpr = pop_nodestack();
   ZORBA_ASSERT(sourceExpr != 0);
 
-  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(sourceExpr);
-  if (v.normalizeArgs() && fiExpr != NULL)
+  if (v.normalizeArgs() && sourceExpr->get_expr_kind() == function_item_expr_kind)
   {
+    function_item_expr* fiExpr = static_cast<function_item_expr*>(sourceExpr);
     const function* fn = fiExpr->get_function();
 
     // TODO: if arity of the function is different from the arguments count, raise an error
 
     for (csize i = 0; i < arguments.size(); i++)
-      if (dynamic_cast<argument_placeholder_expr*>(arguments[i]) == NULL)
-        arguments[i] = normalize_fo_arg(i, arguments[i], fn, fiExpr->get_type_manager(), loc);
+    {
+      if (arguments[i]->get_expr_kind() != argument_placeholder_expr_kind)
+        arguments[i] = normalize_fo_arg(i, arguments[i], fn, loc);
+    }
   }
 
+   expr* dotVar = NULL;
+   if (lookup_var(getDotVarName(), loc, false))
+     dotVar = DOT_REF;
+
+   // Implementing implicit iteration over the sequence returned by the source expr
   flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
 
   for_clause* fc = reinterpret_cast<for_clause*>(flworExpr->get_clause(0));
-  fc->set_allowing_empty(true); // this is needed if the FunctionItem expression is an empty sequence
 
-  expr* flworVarExpr = fc->get_var();
+  // This is needed to make sure that the flwor is not thrown away by the optimizer
+  // when the FunctionItem expression is an empty sequence.
+  fc->set_allowing_empty(true); 
+
+  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
 
 #ifdef ZORBA_WITH_JSON
   TypeManager* tm = sourceExpr->get_type_manager();
@@ -11696,11 +11691,9 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
       func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
     }
 
-    fo_expr* accessorExpr = theExprManager->create_fo_expr(theRootSctx, theUDF,
-                                                           loc,
-                                                           func,
-                                                           flworVarExpr,
-                                                           arguments[0]);
+    fo_expr* accessorExpr = 
+    CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, arguments[0]);
+
     normalize_fo(accessorExpr);
 
     flworExpr->set_return_expr(accessorExpr);
@@ -11708,16 +11701,11 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   else
 #endif
   {
-    std::vector<expr*> dotVars;
-    if (lookup_var(getDotVarName(), loc, false))
-      dotVars.push_back(DOT_REF);
-
     expr* dynFuncInvocation =
-    theExprManager->create_dynamic_function_invocation_expr(theRootSctx, theUDF,
-                                                            loc,
-                                                            flworVarExpr,
-                                                            arguments,
-                                                            dotVars);
+    CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
+                                        flworVarExpr,
+                                        arguments,
+                                        dotVar);
 
     flworExpr->set_return_expr(dynFuncInvocation);
   }
@@ -11917,10 +11905,23 @@ expr* generate_literal_function(
         
         break;
       }
+      case FunctionConsts::FN_RESOLVE_URI_1:
+      {
+        zstring baseUri = theSctx->get_base_uri();
+        foArgs.push_back(CREATE(const)(theRootSctx, theUDF, loc, baseUri));
+        f = BUILTIN_FUNC(FN_RESOLVE_URI_2);
+
+        fo_expr* fo = CREATE(fo)(theRootSctx, udf, loc, f, foArgs);
+        normalize_fo(fo);
+
+        body = fo;
+        break;
+      }
       default:
       {
         fo_expr* fo = CREATE(fo)(theRootSctx, udf, loc, f, foArgs);
         normalize_fo(fo);
+
         body = fo;
         break;
       }
@@ -12192,7 +12193,6 @@ void create_inline_function(
         letClause->set_expr(normalize_fo_arg(i,
                                              letClause->get_expr(),
                                              udf.getp(),
-                                             flwor->get_type_manager(),
                                              loc));
     }
   }

@@ -59,15 +59,14 @@ SERIALIZABLE_CLASS_VERSIONS(DynamicFunctionIterator)
 /*******************************************************************************
 
 ********************************************************************************/
-DynamicFunctionInfo::DynamicFunctionInfo(// CompilerCB *ccb,
-                                         static_context* closureSctx,
-                                         const QueryLoc& loc,
-                                         function* func,
-                                         store::Item_t qname,
-                                         uint32_t arity,
-                                         bool isInline,
-                                         bool needsContextItem,
-                                         bool isCoercion)
+DynamicFunctionInfo::DynamicFunctionInfo(
+    static_context* closureSctx,
+    const QueryLoc& loc,
+    function* func,
+    store::Item_t qname,
+    uint32_t arity,
+    bool isInline,
+    bool needsContextItem)
   :
 //  theCCB(ccb),
   theMustDeleteCCB(false),
@@ -88,6 +87,7 @@ DynamicFunctionInfo::DynamicFunctionInfo(::zorba::serialization::Archiver& ar)
 {
 //  std::cerr << "--> created DynamicFunctionInfo: " << this << " func: " << theFunction.getp() << " counter: " << (theFunction.getp()? theFunction->getRefCount() : 0) << std::endl;
 }
+
 
 DynamicFunctionInfo::~DynamicFunctionInfo()
 {
@@ -126,7 +126,11 @@ void DynamicFunctionInfo::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void DynamicFunctionInfo::add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal)
+void DynamicFunctionInfo::add_variable(
+    expr* var,
+    var_expr* substVar,
+    const store::Item_t& name,
+    int isGlobal)
 {
   theScopedVarsValues.push_back(var);
   theSubstVarsValues.push_back(substVar);
@@ -134,6 +138,7 @@ void DynamicFunctionInfo::add_variable(expr* var, var_expr* substVar, const stor
   theIsGlobalVar.push_back(isGlobal);
   theVarId.push_back(0);
 }
+
 
 /*******************************************************************************
 
@@ -144,8 +149,10 @@ FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
 {
 }
 
-FunctionItem::FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
-                           dynamic_context* dctx)
+
+FunctionItem::FunctionItem(
+    const DynamicFunctionInfo_t& dynamicFunctionInfo,
+    dynamic_context* dctx)
   :
   store::Item(store::Item::FUNCTION),
   theDynamicFunctionInfo(dynamicFunctionInfo),
@@ -155,6 +162,7 @@ FunctionItem::FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
   assert(theDynamicFunctionInfo->theFunction->isUdf());
   theArgumentsValues.resize(theDynamicFunctionInfo->theArity);
 }
+
 
 void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
 {
@@ -221,7 +229,10 @@ void FunctionItem::setArgumentValue(unsigned int pos, const PlanIter_t& value)
   assert(false);
 }
 
-PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChildren, CompilerCB* ccb)
+
+PlanIter_t FunctionItem::getImplementation(
+    const std::vector<PlanIter_t>& dynChildren,
+    CompilerCB* ccb)
 {
   std::vector<PlanIter_t> args;
   args.resize(theArgumentsValues.size());
@@ -250,15 +261,21 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
 
 //  std::cerr << "--> FunctionItem::getImplementation() using CompilerCB: " << ccb << std::endl;
 
-  expr* dummy = ccb->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc, NULL, false, false, false);
+  expr* dummy = ccb->theEM->
+  create_function_item_expr(NULL,
+                            NULL,
+                            theDynamicFunctionInfo->theLoc,
+                            NULL,
+                            false,
+                            false);
   
-  PlanIter_t udfCallIterator =
-      theDynamicFunctionInfo->theFunction->codegen(ccb,
-                                                   theDynamicFunctionInfo->theClosureSctx,
-                                                   theDynamicFunctionInfo->theLoc,
-                                                   args,
-                                                   *dummy);
-      
+  PlanIter_t udfCallIterator = theDynamicFunctionInfo->theFunction->
+  codegen(ccb,
+          theDynamicFunctionInfo->theClosureSctx,
+          theDynamicFunctionInfo->theLoc,
+          args,
+          *dummy);
+
   /* TODO: remove this code and also clean-up the code in item_iterator.cpp
   PlanIter_t udfCallIterator =
       theDynamicFunctionInfo->theFunction->codegen(theCCB.get(),
@@ -275,7 +292,9 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
   std::cerr << std::endl;
   */
 
-  UDFunctionCallIterator* udfIter = static_cast<UDFunctionCallIterator*>(udfCallIterator.getp());
+  UDFunctionCallIterator* udfIter =
+  static_cast<UDFunctionCallIterator*>(udfCallIterator.getp());
+
   udfIter->setDynamic();
   udfIter->setFunctionItem(this);
   return udfCallIterator;
@@ -291,15 +310,6 @@ zstring FunctionItem::show() const
   return lRes.str();
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void DynamicFunctionIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>*)this);
-  ar & theDynamicFunctionInfo;
-}
 
 
 /*******************************************************************************
@@ -317,11 +327,21 @@ DynamicFunctionIterator::DynamicFunctionIterator(
 //            <<  " with DynamicFunctionInfo: " << theDynamicFunctionInfo << " counter: " << (theDynamicFunctionInfo.getp() ? theDynamicFunctionInfo->getRefCount() : 0) << std::endl;
 }
 
+
 DynamicFunctionIterator::~DynamicFunctionIterator()
 {
 //  std::cerr << "--> deleted ~DynamicFunctionIterator: " << this // << " id: " << getId()
 //            << " with DynamicFunctionInfo: " << theDynamicFunctionInfo << " counter: " << (theDynamicFunctionInfo.getp() ? theDynamicFunctionInfo->getRefCount() : 0) << std::endl;
 }
+
+
+void DynamicFunctionIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>*)this);
+  ar & theDynamicFunctionInfo;
+}
+
 
 bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -357,7 +377,10 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
     // Import the outer environment.
     // importOuterEnv(planState, evalCCB.get(), importSctx, evalDctx.get());
-    importOuterEnv(planState, theDynamicFunctionInfo->theCCB, theDynamicFunctionInfo->theClosureSctx, evalDctx.get());
+    importOuterEnv(planState,
+                   theDynamicFunctionInfo->theCCB,
+                   theDynamicFunctionInfo->theClosureSctx,
+                   evalDctx.get());
 
     if (theDynamicFunctionInfo->theIsCoercion)
     {
@@ -475,8 +498,6 @@ void DynamicFunctionIterator::importOuterEnv(
   // (a) create a declaration inside the importSctx.
   // (b) Set its var id
   // (c) If it is not a global one, set its value within the eval dctx.
-
-
   csize curChild = -1;
 
   csize numOuterVars = theDynamicFunctionInfo->theScopedVarsNames.size();

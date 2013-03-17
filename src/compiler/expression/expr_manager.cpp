@@ -801,9 +801,10 @@ ExprManager::create_dynamic_function_invocation_expr(static_context* sctx,
     const QueryLoc& loc,
     expr* anExpr,
     const std::vector<expr*>& args,
-    const std::vector<expr*>& dotVars)
+    expr* dotVar)
 {
-  CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, udf, loc, anExpr, args, dotVars);
+  CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, udf, loc,
+                         anExpr, args, dotVar);
 }
 
 

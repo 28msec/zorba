@@ -77,19 +77,6 @@ DynamicFnCallIteratorState::~DynamicFnCallIteratorState()
 /*******************************************************************************
 
 ********************************************************************************/
-void DynamicFnCallIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>*)this);
-
-  ar & theDotVarsCount;
-  ar & theIsPartialApply;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void DynamicFnCallIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
@@ -115,6 +102,19 @@ void DynamicFnCallIteratorState::reset(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
+void DynamicFnCallIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>*)this);
+
+  ar & theDotVarsCount;
+  ar & theIsPartialApply;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 uint32_t DynamicFnCallIterator::getStateSizeOfSubtree() const
 {
   uint32_t size = NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>::
@@ -129,14 +129,15 @@ uint32_t DynamicFnCallIterator::getStateSizeOfSubtree() const
 ********************************************************************************/
 void DynamicFnCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<DynamicFnCallIteratorState>::createState(planState,
-                                                           theStateOffset,
-                                                           offset);
+  StateTraitsImpl<DynamicFnCallIteratorState>::
+  createState(planState, theStateOffset, offset);
 
-  StateTraitsImpl<DynamicFnCallIteratorState>::initState(planState, theStateOffset);
+  StateTraitsImpl<DynamicFnCallIteratorState>::
+  initState(planState, theStateOffset);
 
-  DynamicFnCallIteratorState* state =
-  StateTraitsImpl<DynamicFnCallIteratorState>::getState(planState, theStateOffset);
+  DynamicFnCallIteratorState* state = 
+  StateTraitsImpl<DynamicFnCallIteratorState>::
+  getState(planState, theStateOffset);
 
   state->theUDFStateOffset = offset;
 
@@ -157,7 +158,8 @@ void DynamicFnCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 void DynamicFnCallIterator::resetImpl(PlanState& planState) const
 {
   DynamicFnCallIteratorState* state = 
-  StateTraitsImpl<DynamicFnCallIteratorState>::getState(planState, theStateOffset);
+  StateTraitsImpl<DynamicFnCallIteratorState>::
+  getState(planState, theStateOffset);
   
   if (state->theIsOpen)
   {
@@ -165,7 +167,8 @@ void DynamicFnCallIterator::resetImpl(PlanState& planState) const
     state->theIsOpen = false;
   }
   
-  NaryBaseIterator<DynamicFnCallIterator,DynamicFnCallIteratorState>::resetImpl(planState);
+  NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>::
+  resetImpl(planState);
 }
 
 
@@ -195,7 +198,7 @@ bool DynamicFnCallIterator::nextImpl(
 
   // first child must return exactly one item which is a function item
   // otherwise XPTY0004 is raised
-  if (!consumeNext(targetItem, theChildren[0], planState))
+  if (!consumeNext(targetItem, theChildren[0], planState) || targetItem == NULL)
   {
     RAISE_ERROR(err::XPTY0004, loc, 
     ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
@@ -214,28 +217,34 @@ bool DynamicFnCallIterator::nextImpl(
 
     fnItem = static_cast<FunctionItem*>(targetItem.getp());
 
-    if (( ! fnItem->needsContextItem() && theChildren.size() - 1 - theDotVarsCount != fnItem->getArity())
+    if ((!fnItem->needsContextItem() &&
+         theChildren.size() - 1 - theDotVarsCount != fnItem->getArity())
         ||
-        (fnItem->needsContextItem() && theChildren.size() - 1 != fnItem->getArity()))
+        (fnItem->needsContextItem()
+         && theChildren.size() - 1 != fnItem->getArity()))
     {
       // TODO: customize error message and take into account partial application
-      RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
     }
 
     if (theIsPartialApply)
     {
-      for (unsigned int i=1, pos=0; i<theChildren.size() - theDotVarsCount; i++)
+      for (csize i = 1, pos = 0; i < theChildren.size() - theDotVarsCount; ++i)
       {
         if (dynamic_cast<ArgumentPlaceholderIterator*>(theChildren[i].getp()) == NULL)
         {
-          // TODO: The argument needs to be materialized only for local vars and only if the 
-          // function item is returned and used outside of the current function. It might
-          // be impossible to determine if the partially applied function item will be used outside 
-          // of the current function, so it is quite probable that it always needs to be materialized.          
+          // The argument needs to be materialized only for local vars and only
+          // if the function item is returned and used outside of the current
+          // function. It might be impossible to determine if the partially
+          // applied function item will be used outside of the current function,
+          // so it is quite probable that it always needs to be materialized.          
           std::vector<store::Item_t> argValues;
           store::Item_t tempItem;
+
           while (consumeNext(tempItem, theChildren[i], planState))
             argValues.push_back(tempItem);
+
           store::TempSeq_t argSeq = GENV_STORE.createTempSeq(argValues);
           store::Iterator_t argSeqIter = argSeq->getIterator();
           PlanIter_t value = new PlanStateIteratorWrapper(argSeqIter);
