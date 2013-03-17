@@ -66,7 +66,8 @@ DynamicFunctionInfo::DynamicFunctionInfo(// CompilerCB *ccb,
                                          store::Item_t qname,
                                          uint32_t arity,
                                          bool isInline,
-                                         bool needsContextItem)
+                                         bool needsContextItem,
+                                         bool isCoercion)
   :
 //  theCCB(ccb),
   theMustDeleteCCB(false),
@@ -76,7 +77,8 @@ DynamicFunctionInfo::DynamicFunctionInfo(// CompilerCB *ccb,
   theQName(qname),
   theArity(arity),
   theIsInline(isInline),
-  theNeedsContextItem(needsContextItem)
+  theNeedsContextItem(needsContextItem),
+  theIsCoercion(isCoercion)
 {
 //  std::cerr << "--> created DynamicFunctionInfo: " << this << " func: " << theFunction.getp() << " counter: " << (theFunction.getp()? theFunction->getRefCount() : 0) << std::endl;
 }
@@ -106,6 +108,7 @@ void DynamicFunctionInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theArity;
   ar & theIsInline;
   ar & theNeedsContextItem;
+  ar & theIsCoercion;
 
   // ar & theScopedVarsValues;
   // ar & theSubstVarsValues;
@@ -245,9 +248,9 @@ PlanIter_t FunctionItem::getImplementation(const std::vector<PlanIter_t>& dynChi
 //  if (theDynamicFunctionInfo->theCCB != NULL)
 //    ccb = theDynamicFunctionInfo->theCCB;
 
-  std::cerr << "--> FunctionItem::getImplementation() using CompilerCB: " << ccb << std::endl;
+//  std::cerr << "--> FunctionItem::getImplementation() using CompilerCB: " << ccb << std::endl;
 
-  expr* dummy = ccb->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc, NULL, false, false);
+  expr* dummy = ccb->theEM->create_function_item_expr(NULL, NULL, theDynamicFunctionInfo->theLoc, NULL, false, false, false);
   
   PlanIter_t udfCallIterator =
       theDynamicFunctionInfo->theFunction->codegen(ccb,
@@ -355,6 +358,13 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     // Import the outer environment.
     // importOuterEnv(planState, evalCCB.get(), importSctx, evalDctx.get());
     importOuterEnv(planState, theDynamicFunctionInfo->theCCB, theDynamicFunctionInfo->theClosureSctx, evalDctx.get());
+
+    if (theDynamicFunctionInfo->theIsCoercion)
+    {
+      DynamicFunctionIterator* child = dynamic_cast<DynamicFunctionIterator*>(theChildren[0].getp());
+      if (child != NULL)
+        theDynamicFunctionInfo->theQName = child->theDynamicFunctionInfo->theQName;
+    }
 
     // std::cerr << "--> after impotOuterEnv(): evalDctx: " << evalDctx->toString() << std::endl;
 

@@ -80,8 +80,7 @@ void argument_placeholder_expr::compute_scripting_kind()
 DEF_EXPR_ACCEPT (function_item_expr);
 
 
-function_item_expr::function_item_expr(
-    CompilerCB* ccb,
+function_item_expr::function_item_expr(CompilerCB* ccb,
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
@@ -90,7 +89,8 @@ function_item_expr::function_item_expr(
     store::Item* aQName,
     uint32_t aArity,
     bool isInline,
-    bool needsContextItem)
+    bool needsContextItem,
+    bool isCoercion)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
@@ -101,7 +101,8 @@ function_item_expr::function_item_expr(
                          aQName,
                          aArity,
                          isInline,
-                         needsContextItem))
+                         needsContextItem,
+                         isCoercion))
 {
   assert(f != NULL);
   compute_scripting_kind();
@@ -111,14 +112,14 @@ function_item_expr::function_item_expr(
 }
 
 
-function_item_expr::function_item_expr(
-    CompilerCB* ccb,
+function_item_expr::function_item_expr(CompilerCB* ccb,
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
     static_context* closureSctx,
     bool isInline,
-    bool needsContextItem)
+    bool needsContextItem,
+    bool isCoercion)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theDynamicFunctionInfo(new DynamicFunctionInfo(
@@ -129,7 +130,8 @@ function_item_expr::function_item_expr(
                          NULL,
                          0,
                          isInline,
-                         needsContextItem))
+                         needsContextItem,
+                         isCoercion))
 {
   theScriptingKind = SIMPLE_EXPR;
   // std::cerr << "--> created function_item_expr: " << this // << " with DynamicFunctionInfo: " << theDynamicFunctionInfo << " counter: " << theDynamicFunctionInfo->getRefCount()

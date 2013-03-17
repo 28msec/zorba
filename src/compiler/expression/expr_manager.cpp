@@ -817,8 +817,7 @@ ExprManager::create_argument_placeholder_expr(
 }
 
 
-function_item_expr* ExprManager::create_function_item_expr(
-    static_context* sctx,
+function_item_expr* ExprManager::create_function_item_expr(static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
     static_context* closureSctx,
@@ -826,9 +825,10 @@ function_item_expr* ExprManager::create_function_item_expr(
     store::Item* aQName,
     uint32_t aArity,
     bool isInline,
-    bool needsContextItem)
+    bool needsContextItem,
+    bool isCoercion)
 {
-  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, closureSctx, f, aQName, aArity, isInline, needsContextItem);
+  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, closureSctx, f, aQName, aArity, isInline, needsContextItem, isCoercion);
 }
 
 
@@ -837,9 +837,10 @@ function_item_expr* ExprManager::create_function_item_expr(static_context* sctx,
     const QueryLoc& loc,
     static_context *closureSctx,
     bool isInline,
-    bool needsContextItem)
+    bool needsContextItem,
+    bool isCoercion)
 {
-  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, closureSctx, isInline, needsContextItem);
+  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, closureSctx, isInline, needsContextItem, isCoercion);
 }
 
 

@@ -120,7 +120,11 @@ bool FunctionNameIterator::nextImpl(
 
   lFunctionItem = static_cast<FunctionItem*>(lFItem.getp());
 
-  if (!lFunctionItem->isInline() && lFunctionItem->getFunctionName())
+  if ((!lFunctionItem->isInline() || lFunctionItem->isCoercion())
+      &&
+      lFunctionItem->getFunctionName()
+      &&
+      (lFunctionItem->getArity() == lFunctionItem->getStartArity()))
   {
     // non-inline function
     r = lFunctionItem->getFunctionName();
