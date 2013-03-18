@@ -118,7 +118,7 @@ void populate_context_context(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, fn_current_dateTime,
         (createQName("http://www.w3.org/2005/xpath-functions","","current-dateTime"), 
-        GENV_TYPESYSTEM.DATETIME_TYPE_ONE),
+        GENV_TYPESYSTEM.DATETIME_STAMP_TYPE_ONE),
         FunctionConsts::FN_CURRENT_DATETIME_0);
 
   }
