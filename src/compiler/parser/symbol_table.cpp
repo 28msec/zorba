@@ -32,11 +32,6 @@ using namespace std;
 
 namespace zorba {
 
-/**
- * Whitespace characters used in the functions below
- */
-static const char* whitespace = " \t\r\n\f\v";
-
 
 static bool decode_string(const char *yytext, uint32_t yyleng, string *result) {
   char delim = yytext [0];
@@ -116,14 +111,14 @@ off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_st
 {
   if (do_trim_start)
   {
-    char const* temp = ascii::trim_start(text, length, whitespace);
+    char const* temp = ascii::trim_start_whitespace(text, length);
     length -= (temp-text);
     text = temp;
   }
 
   if (do_trim_end)
   {
-    length = ascii::trim_end(text, length, whitespace);
+    length = ascii::trim_end(text, length);
   }
 
   if (!is_eqname)
@@ -151,12 +146,12 @@ off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_st
 off_t symbol_table::put_uri(char const* text, uint32_t length)
 {
   // trim start
-  char const* temp = ascii::trim_start(text, length, whitespace);
+  char const* temp = ascii::trim_start(text, length);
   length -= (temp-text);
   text = temp;
 
   // trim end
-  length = ascii::trim_end(text, length, whitespace);
+  length = ascii::trim_end(text, length);
 
   // normalize whitespace
   string result;

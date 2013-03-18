@@ -126,8 +126,8 @@ char const* trim_start( char const *s, char const *chars ) {
   return s;
 }
 
-char const* trim_start( char const *s, size_type s_len, char const *chars ) {
-  for ( ; s_len-- > 0; ++s ) {
+char const* trim_start( char const *s, size_type *s_len, char const *chars ) {
+  for ( ; *s_len > 0; --*slen_, ++s ) {
     if ( !std::strchr( chars, *s ) )
       break;
   }
