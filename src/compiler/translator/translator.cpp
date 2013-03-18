@@ -10781,12 +10781,20 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   }
   else
   {
-    const char* local = qname->get_localname().c_str();
-
-    GENV_ITEMFACTORY->
-    createQName(qnameItem, XML_SCHEMA_NS, "", local);
-
     // Check if this is a call to a type constructor function
+    const zstring& local = qname->get_localname();
+    const zstring& prefix = qname->get_prefix();
+
+    if (prefix.empty())
+    {
+      GENV_ITEMFACTORY->
+      createQName(qnameItem, XML_SCHEMA_NS, "", local);
+    }
+    else
+    {
+      expand_function_qname(qnameItem, qname, loc);
+    }
+
     xqtref_t type = CTX_TM->create_named_type(qnameItem,
                                               TypeConstants::QUANT_QUESTION,
                                               loc);
