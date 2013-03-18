@@ -4184,7 +4184,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
   }
 
   //if (recognised)
-    theAnnotations->push_back(expandedQName, lLiterals);
+  theAnnotations->push_back(expandedQName, lLiterals);
 }
 
 
