@@ -662,6 +662,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "entire" { return token::ENTIRE; }
 "content" { return token::CONTENT; }
 "exactly" { return token::EXACTLY; }
+"from" { return token::FROM; }
 "language" { return token::LANGUAGE; }
 "levels" { return token::LEVELS; }
 "lowercase" { return token::LOWERCASE; }
