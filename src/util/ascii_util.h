@@ -888,13 +888,12 @@ char const* trim_start( char const *s, char const *chars );
  * Skips leading specified characters.
  *
  * @param s The string to trim.
- * @param s_len A pointer to the length of \a s.  It is updated with the new
- * length.
+ * @param s_len The length of \a s.
  * @param chars The characters to trim.
  * @return Returns a pointer to the first character in \a s that is not among
  * the characters in \a chars.
  */
-char const* trim_start( char const *s, size_type *s_len, char const *chars );
+char const* trim_start( char const *s, size_type s_len, char const *chars );
 
 /**
  * Removes all leading specified characters.
@@ -938,12 +937,11 @@ inline char const* trim_start_whitespace( char const *s ) {
  * Skips leading whitespace characters.
  *
  * @param s The string to trim.
- * @param s_len A pointer to the length of \a s.  It is updated with the new
- * length.
+ * @param s_len The length of \a s.
  * @return Returns a pointer to the first character in \a s that is not a
  * whitespace character.
  */
-inline char const* trim_start_whitespace( char const *s, size_type *s_len ) {
+inline char const* trim_start_whitespace( char const *s, size_type s_len ) {
   return trim_start( s, s_len, whitespace );
 }
 
