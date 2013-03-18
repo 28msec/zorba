@@ -901,6 +901,7 @@ public:
       const zstring& pre,
       const zstring& local,
       csize arity,
+      bool allowMultipleDefaultNamespaces,
       const QueryLoc& loc);
 
   function* lookup_fn(

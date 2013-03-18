@@ -2569,6 +2569,7 @@ function* static_context::lookup_fn(
     const zstring& pre,
     const zstring& local,
     csize arity,
+    bool allowMultipleDefaultNamespaces,
     const QueryLoc& loc)
 {
   store::Item_t qnameItem;
@@ -2588,7 +2589,7 @@ function* static_context::lookup_fn(
     
     f = lookup_fn(qnameItem, arity, true);
   }
-  else
+  else if (allowMultipleDefaultNamespaces)
   {
     static_context* sctx = this;
 
@@ -2605,6 +2606,12 @@ function* static_context::lookup_fn(
 
       sctx = sctx->theParent;
     }
+  }
+  else
+  {
+    expand_qname(qnameItem, default_function_ns(), pre, local, loc);
+    
+    f = lookup_fn(qnameItem, arity, true);
   }
 
   return f;
