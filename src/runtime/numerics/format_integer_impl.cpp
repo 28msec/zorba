@@ -28,10 +28,10 @@
 
 #include "system/globalenv.h"
 
-#include "util/tracer.h"
 #include "util/ascii_util.h"
+#include "util/tracer.h"
+#include "util/unicode_util.h"
 #include "util/utf8_string.h"
-#include "util/unicode_categories.h"
 
 #include "types/casting.h"
 #include "types/typeconstants.h"
@@ -539,7 +539,7 @@ bool FormatIntegerIterator::isDecimalDigitPattern(utf8_string<zstring> &utf8_pic
   pictureit = utf8_picture.begin();
   if(*pictureit == '#')
     is_optional = true;
-  else if(unicode::is_UnicodeNd(*pictureit, &zerotemp))
+  else if(unicode::is_Nd(*pictureit, &zerotemp))
   {
     *utf8zero = zerotemp;
     has_digits = true;
@@ -556,7 +556,7 @@ bool FormatIntegerIterator::isDecimalDigitPattern(utf8_string<zstring> &utf8_pic
         return false;
       prev_is_grouping = false;
     }
-    else if(unicode::is_UnicodeNd(*pictureit, &zerotemp))
+    else if(unicode::is_Nd(*pictureit, &zerotemp))
     {
       if(*utf8zero)
       {
@@ -569,14 +569,14 @@ bool FormatIntegerIterator::isDecimalDigitPattern(utf8_string<zstring> &utf8_pic
       has_digits = true;
       prev_is_grouping = false;
     }
-    else if(!check_codepoint_category(*pictureit, unicode::UNICODE_Nd) &&
-            !check_codepoint_category(*pictureit, unicode::UNICODE_Nl) &&
-            !check_codepoint_category(*pictureit, unicode::UNICODE_No) &&
-            !check_codepoint_category(*pictureit, unicode::UNICODE_Lu) &&
-            !check_codepoint_category(*pictureit, unicode::UNICODE_Ll) &&
-            !check_codepoint_category(*pictureit, unicode::UNICODE_Lt) &&
-            !check_codepoint_category(*pictureit, unicode::UNICODE_Lm) &&
-            !check_codepoint_category(*pictureit, unicode::UNICODE_Lo))
+    else if(!is_category(*pictureit, unicode::Nd) &&
+            !is_category(*pictureit, unicode::Nl) &&
+            !is_category(*pictureit, unicode::No) &&
+            !is_category(*pictureit, unicode::Lu) &&
+            !is_category(*pictureit, unicode::Ll) &&
+            !is_category(*pictureit, unicode::Lt) &&
+            !is_category(*pictureit, unicode::Lm) &&
+            !is_category(*pictureit, unicode::Lo))
     {
       //is grouping
       if(prev_is_grouping)
@@ -688,7 +688,7 @@ void FormatIntegerIterator::formatIntegerDecimalPattern(zstring::const_reverse_i
 
   if(valueit == valueit_rend)
   {
-    if(unicode::check_codepoint_category(*pictureit, unicode::UNICODE_Nd))
+    if(unicode::is_category(*pictureit, unicode::Nd))
     {
       formatIntegerDecimalPattern(valueit, valueit_rend, pictureit+1, pictureit_rend, picture_pos+1, grouping_interval, grouping_char, utf8zero, utf8_result);
       utf8_result += (utf8zero);
@@ -701,7 +701,7 @@ void FormatIntegerIterator::formatIntegerDecimalPattern(zstring::const_reverse_i
   {
     if(pictureit != pictureit_rend)
     {
-      if(*pictureit == '#' || unicode::check_codepoint_category(*pictureit, unicode::UNICODE_Nd))
+      if(*pictureit == '#' || unicode::is_category(*pictureit, unicode::Nd))
       {
         formatIntegerDecimalPattern(valueit+1, valueit_rend, pictureit+1, pictureit_rend, picture_pos+1, grouping_interval, grouping_char, utf8zero, utf8_result);
         utf8_result += (utf8zero + *valueit - '0');
@@ -762,7 +762,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   utf8_string<zstring>  utf8_picture(pictureString);
   xs_integer valueInteger;
   bool  is_neg = false;
-  const TypeManager* tm = theSctx->get_typemanager();
+  TypeManager* tm = theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
@@ -788,10 +788,11 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     {
       consumeNext(language_item, theChildren[2].getp(), planState);
       languageString = language_item->getStringValue();
+
       if(!GenericCast::isCastable(languageString, &*rtm.LANGUAGE_TYPE_ONE, tm))
       {
-        throw XQUERY_EXCEPTION(err::FOFI0001, ERROR_PARAMS( languageString ), ERROR_LOC( loc )
-        );
+        throw XQUERY_EXCEPTION(err::FOFI0001,
+        ERROR_PARAMS(languageString), ERROR_LOC(loc));
       }
     }
 

@@ -146,6 +146,8 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
   bool isSource() const { return true; }
 
   FunctionConsts::AnnotationValue producesDistinctNodes() const 
@@ -502,6 +504,29 @@ public:
   bool accessesDynCtx() const { return true; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-dml:edit
+class static_collections_dml_edit : public function
+{
+public:
+  static_collections_dml_edit(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  void processPragma(expr*, const std::vector<pragma*>&) const;
 
   CODEGEN_DECL();
 };

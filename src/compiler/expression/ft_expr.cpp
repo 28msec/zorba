@@ -35,12 +35,13 @@ namespace zorba {
 ftcontains_expr::ftcontains_expr(
   CompilerCB* ccb,
   static_context* sctx,
+  user_function* udf,
   QueryLoc const &loc,
   expr* range,
   ftnode *ftselection,
   expr* ftignore
 ) :
-  expr(ccb, sctx, loc, ft_expr_kind ),
+  expr(ccb, sctx, udf, loc, ft_expr_kind ),
   range_( range ),
   ftselection_( ftselection ),
   ftignore_( ftignore )
@@ -49,6 +50,7 @@ ftcontains_expr::ftcontains_expr(
   ZORBA_ASSERT( ftselection );
   compute_scripting_kind();
 }
+
 
 void ftcontains_expr::accept( expr_visitor &v ) {
   if ( v.begin_visit( *this ) ) {
@@ -59,20 +61,19 @@ void ftcontains_expr::accept( expr_visitor &v ) {
   v.end_visit( *this );
 }
 
-expr* ftcontains_expr::cloneImpl( substitution_t &s ) const {
-  return theCCB->theEM->create_ftcontains_expr(
-    theSctx, get_loc(),
-    range_->clone( s ),
-    ftselection_->clone( s ).release(),
-    ftignore_ == NULL ? 0 : ftignore_->clone( s )
-  );
-}
 
-void ftcontains_expr::compute_scripting_kind() {
+void ftcontains_expr::compute_scripting_kind() 
+{
   checkSimpleExpr(range_);
 
   theScriptingKind = SIMPLE_EXPR;
   // TODO: checkIsSimple for all sub-expr
+}
+
+
+ftnode_t ftcontains_expr::get_ftselection() const
+{
+  return ftselection_;
 }
 
 

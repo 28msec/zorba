@@ -23,9 +23,13 @@
 #include "common/shared_types.h"
 #include <zorba/api_shared_types.h>
 
-namespace zorba {
+namespace zorba 
+{
 
 
+/********************************************************************************
+
+********************************************************************************/
 class XQueryCompiler
 {
 public:
@@ -59,7 +63,6 @@ public:
       ulong& nextDynamicVarId,
       audit::ScopedRecord& aAuditRecord);
 
-protected:
   expr* normalize(parsenode_t ast);
 
   expr* optimize(expr* expr);
@@ -72,6 +75,9 @@ private:
 };
 
 
+/********************************************************************************
+
+********************************************************************************/
 class XQueryCompilerSubsystem
 {
   friend class GlobalEnvironment;

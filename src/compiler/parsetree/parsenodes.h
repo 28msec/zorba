@@ -53,7 +53,8 @@ class AnyKindTest;
 class AposAttrContentList;
 class AposAttrValueContent;
 class ArgList;
-class AtomicType;
+class GeneralizedAtomicType;
+class SimpleType;
 class AttributeTest;
 class AxisStep;
 class BaseURIDecl;
@@ -74,6 +75,7 @@ class CompCommentConstructor;
 class CompDocConstructor;
 class CompElemConstructor;
 class CompPIConstructor;
+class CompNamespaceConstructor;
 class CompTextConstructor;
 class ConstructionDecl;
 class ContextItemExpr;
@@ -90,6 +92,7 @@ class DirElemContent;
 class DirElemContentList;
 class DirPIConstructor;
 class DocumentTest;
+class NamespaceTest;
 class ElementTest;
 class EnclosedExpr;
 class Expr;
@@ -223,6 +226,7 @@ class SchemaElementTest;
 class SchemaImport;
 class SchemaPrefix;
 class SequenceType;
+class SequenceTypeList;
 class SignList;
 class SingleType;
 class StringLiteral;
@@ -525,20 +529,15 @@ public:
 class CopyNamespacesDecl : public parsenode
 {
 protected:
-  StaticContextConsts::preserve_mode_t preserve_mode;
-  StaticContextConsts::inherit_mode_t inherit_mode;
+  bool thePreserveNamespaces;
+  bool theInheritNamespaces;
 
 public:
-  CopyNamespacesDecl(
-    const QueryLoc&,
-    StaticContextConsts::preserve_mode_t preserve_mode,
-    StaticContextConsts::inherit_mode_t  inherit_mode);
+  CopyNamespacesDecl(const QueryLoc&, bool preserve_ns, bool inherit_ns);
 
-  StaticContextConsts::preserve_mode_t get_preserve_mode() const
-  { return preserve_mode; }
+  bool preserve_ns() const { return thePreserveNamespaces; }
 
-  StaticContextConsts::inherit_mode_t  get_inherit_mode() const
-  { return inherit_mode; }
+  bool inherit_ns() const { return theInheritNamespaces; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1292,8 +1291,6 @@ public:
 
   IndexKeySpec := PathExpr TypeDeclaration? IndexKeyOrderModifier
 
-  AtomicType := QName
-
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 *******************************************************************************/
 class AST_IndexDecl : public XQDocumentable
@@ -1900,9 +1897,9 @@ public:
         const QueryLoc& return_loc_,
         bool force_general = false);
 
-  bool is_general () const { return general; }
+  bool is_general() const { return general; }
 
-  bool is_non_10 () const { return non_10; }
+  bool is_non_10() const { return non_10; }
 
   const QueryLoc& get_return_location() const { return return_location; }
 
@@ -1919,7 +1916,7 @@ public:
   void accept(parsenode_visitor&) const;
 
 protected:
-  void compute_general ();
+  void compute_general();
 };
 
 
@@ -2705,7 +2702,8 @@ public:
 
 
 /*******************************************************************************
-  [71] SwitchExpr ::= "switch" "(" Expr ")" SwitchCaseClause+ "default" "return" ExprSingle
+  SwitchExpr ::= "switch" "(" Expr ")"
+                  SwitchCaseClause+ "default" "return" ExprSingle
 ********************************************************************************/
 class SwitchExpr : public exprnode
 {
@@ -2862,67 +2860,82 @@ public:
 class CaseClauseList : public parsenode
 {
 protected:
-  std::vector<rchandle<CaseClause> > clause_hv;
+  std::vector<rchandle<CaseClause> > theClauses;
 
 public:
   CaseClauseList(const QueryLoc&);
 
   void push_back(rchandle<CaseClause> clause_h)
-  { clause_hv.push_back(clause_h); }
+  { theClauses.push_back(clause_h); }
 
-  rchandle<CaseClause> operator[](int i) const
-  { return clause_hv[i]; }
+  const CaseClause* operator[](csize i) const
+  { return theClauses[i]; }
 
   std::vector<rchandle<CaseClause> >::const_iterator begin() const
-  { return clause_hv.begin(); }
+  { return theClauses.begin(); }
 
   std::vector<rchandle<CaseClause> >::const_iterator end() const
-  { return clause_hv.end(); }
+  { return theClauses.end(); }
 
   std::vector<rchandle<CaseClause> >::const_reverse_iterator rbegin() const
-  { return clause_hv.rbegin(); }
+  { return theClauses.rbegin(); }
 
   std::vector<rchandle<CaseClause> >::const_reverse_iterator rend() const
-  { return clause_hv.rend(); }
+  { return theClauses.rend(); }
 
-  uint32_t size () const
-  { return (uint32_t)clause_hv.size (); }
+  csize size() const
+  { return theClauses.size(); }
 
   void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-  [67] CaseClause ::= "case" ("$" VarName "as")? SequenceType "return" ExprSingle
+  CaseClause ::= "case" ("$" VarName "as")? SequenceTypeList "return" ExprSingle
 ********************************************************************************/
 class CaseClause : public parsenode
 {
 protected:
-  rchandle<QName> varname;
-  rchandle<SequenceType> type_h;
-  rchandle<exprnode> val_h;
+  rchandle<QName> theVarName;
+  std::vector<rchandle<SequenceType> > theTypes;
+  rchandle<exprnode> theExpr;
 
 public:
-  CaseClause(
-    const QueryLoc&,
-    rchandle<QName> varname,
-    rchandle<SequenceType>,
-    rchandle<exprnode>);
+  CaseClause(const QueryLoc&, QName* vname, SequenceTypeList*, exprnode*);
 
-  CaseClause(
-    const QueryLoc&,
-    rchandle<SequenceType>,
-    rchandle<exprnode>);
+  CaseClause(const QueryLoc&, SequenceTypeList*, exprnode*);
 
-  const QName* get_varname() const { return varname.getp(); }
+  const QName* get_varname() const { return theVarName.getp(); }
 
-  rchandle<SequenceType> get_type() const { return type_h; }
+  csize num_types() const { return theTypes.size(); }
 
-  rchandle<exprnode> get_expr() const { return val_h; }
+  SequenceType* get_type(csize i) const { return theTypes[i].getp(); }
+
+  exprnode* get_expr() const { return theExpr.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
 
+
+/*******************************************************************************
+  SequenceTypeList := SequenceType ("|" SequenceType)*
+
+  This is an auxiliary parse node, that will never appear in an actual AST.
+********************************************************************************/
+class SequenceTypeList : public parsenode
+{
+  friend class CaseClause;
+
+protected:
+  std::vector<rchandle<SequenceType> > theTypes;
+
+public:
+  SequenceTypeList(const QueryLoc& loc) : parsenode(loc) {}
+
+  void push_back(SequenceType* t) { theTypes.push_back(t); }
+
+  void accept(parsenode_visitor&) const;
+};
 
 
 /*******************************************************************************
@@ -3329,16 +3342,17 @@ public:
 class CastableExpr : public exprnode
 {
 protected:
-  rchandle<exprnode> cast_expr_h;
+  rchandle<exprnode>   cast_expr_h;
   rchandle<SingleType> singletype_h;
 
 public:
   CastableExpr(
-    const QueryLoc&,
-    rchandle<exprnode>,
-    rchandle<SingleType>);
+      const QueryLoc&,
+      rchandle<exprnode>,
+      rchandle<SingleType>);
 
   rchandle<exprnode> cast_expr() const { return cast_expr_h; }
+
   rchandle<SingleType> singletype() const { return singletype_h; }
 
   virtual void accept(parsenode_visitor&) const;
@@ -3351,16 +3365,17 @@ public:
 class CastExpr : public exprnode
 {
 protected:
-  rchandle<exprnode> unary_expr_h;
+  rchandle<exprnode>   unary_expr_h;
   rchandle<SingleType> singletype_h;
 
 public:
   CastExpr(
-    const QueryLoc&,
-    rchandle<exprnode>,
-    rchandle<SingleType>);
+      const QueryLoc&,
+      rchandle<exprnode>,
+      rchandle<SingleType>);
 
   rchandle<exprnode> get_unary_expr() const { return unary_expr_h; }
+
   rchandle<SingleType> get_singletype() const { return singletype_h; }
 
   virtual void accept(parsenode_visitor&) const;
@@ -4360,13 +4375,13 @@ protected:
 public:
   DirAttributeList(const QueryLoc&);
 
-  void push_back(rchandle<DirAttr> attr) { theAttributes.push_back(attr); }
+  void push_back(rchandle<DirAttr> attr);
 
   rchandle<DirAttr> operator[](int i) { return theAttributes[i]; }
 
-  const DirAttr *operator[] (int i) const { return theAttributes[i]; }
+  const DirAttr* operator[](int i) const { return theAttributes[i]; }
 
-  ulong size () const { return (ulong)theAttributes.size (); }
+  csize size() const { return theAttributes.size(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -4390,6 +4405,7 @@ public:
 
 public:
   rchandle<QName> get_name() const { return theName; }
+
   rchandle<DirAttributeValue> get_value() const { return theValue; }
 
 public:
@@ -4733,7 +4749,8 @@ public:
                                 CompAttrConstructor |
                                 CompTextConstructor |
                                 CompCommentConstructor |
-                                CompPIConstructor
+                                CompPIConstructor |
+                                CompNamespaceConstructor
 ********************************************************************************/
 
 
@@ -4876,89 +4893,134 @@ public:
 
 
 /*******************************************************************************
-  [143] SingleType ::= AtomicType "?"?
 
-  [144] TypeDeclaration ::= "as" SequenceType
-
-  [145] SequenceType ::= ("empty-sequence" "(" ")") | (ItemType OccurrenceIndicator?)
-
-  [146] OccurrenceIndicator ::= "?" | "*" | "+"
-
-  [147] ItemType ::= KindTest | ("item" "(" ")") | AtomicType
-
-  [148] AtomicType ::= QName
-
-  [149] KindTest ::= DocumentTest |
-                     ElementTest |
-                     AttributeTest |
-                     SchemaElementTest |
-                     SchemaAttributeTest |
-                     PITest |
-                     CommentTest |
-                     TextTest |
-                     AnyKindTest
-
-  [150] AnyKindTest ::= "node" "(" ")"
-
-  [151] DocumentTest ::= "document-node" "(" (ElementTest | SchemaElementTest)? ")"
-
-  [152] TextTest ::= "text" "(" ")"
-
-  [153] CommentTest ::= "comment" "(" ")"
-
-  [154] NamespaceNodeTest ::= "namespace-node" "(" ")"
-
-  [155] PITest ::= "processing-instruction" "(" (NCName | StringLiteral)? ")"
-
-  [156] AttributeTest ::= "attribute" "(" (AttribNameOrWildcard ("," TypeName)?)? ")"
-
-  [157] AttribNameOrWildcard ::= AttributeName | "*"
-
-  [158] SchemaAttributeTest ::= "schema-attribute" "(" AttributeDeclaration ")"
-
-  [159] AttributeDeclaration ::= AttributeName
-
-  [160] ElementTest ::= "element" "(" (ElementNameOrWildcard ("," TypeName "?"?)?)? ")"
-
-  [161] ElementNameOrWildcard ::= ElementName | "*"
-
-  [162] SchemaElementTest ::= "schema-element" "(" ElementDeclaration ")"
-
-  [163] ElementDeclaration ::= ElementName
-
-  [164] AttributeName ::= QName
-
-  [165] ElementName ::= QName
-
-  [166] TypeName ::= QName
-
-  [167] URILiteral ::= StringLiteral
-
-  [168] Prefix ::= NCName
 ********************************************************************************/
+class CompNamespaceConstructor : public exprnode
+{
+protected:
+  zstring            thePrefix;
+  rchandle<exprnode> thePrefixExpr;
+  rchandle<exprnode> theUriExpr;
+
+public:
+  CompNamespaceConstructor(
+    const QueryLoc& loc,
+    const zstring& pre,
+    const rchandle<exprnode>& uri);
+
+  CompNamespaceConstructor(
+    const QueryLoc& loc,
+    const rchandle<exprnode>& pre,
+    const rchandle<exprnode>& uri);
+
+  const zstring& get_prefix() const { return thePrefix; }
+
+  rchandle<exprnode> get_prefix_expr() const { return thePrefixExpr; }
+
+  rchandle<exprnode> get_uri_expr() const { return theUriExpr; }
+
+  void accept(parsenode_visitor&) const;
+};
+
 
 
 /*******************************************************************************
-  [143] SingleType ::= AtomicType "?"?
+  SingleType ::= SimpleType "?"?
 ********************************************************************************/
 class SingleType : public parsenode
 {
 protected:
-  rchandle<AtomicType> atomic_type_h;
-  bool hook_b;
+  rchandle<SimpleType> theType;
+  bool                 theHook;
 
 public:
-  SingleType(
-    const QueryLoc&,
-    rchandle<AtomicType>,
-    bool hook_b);
+  SingleType(const QueryLoc& loc, rchandle<SimpleType> type, bool hook);
 
-  rchandle<AtomicType> get_atomic_type() const { return atomic_type_h; }
+  rchandle<SimpleType> get_type() const { return theType; }
 
-  bool get_hook_bit() const { return hook_b; }
+  bool get_hook_bit() const { return theHook; }
 
   void accept(parsenode_visitor&) const;
 };
+
+
+/*******************************************************************************
+  SimpleType ::= QName
+********************************************************************************/
+class SimpleType : public parsenode
+{
+protected:
+  rchandle<QName> qname_h;
+
+public:
+  SimpleType(const QueryLoc&, rchandle<QName>);
+
+  rchandle<QName> get_qname() const { return qname_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+  TypeDeclaration ::= "as" SequenceType
+
+  SequenceType ::= ("empty-sequence" "(" ")") | (ItemType OccurrenceIndicator?)
+
+  OccurrenceIndicator ::= "?" | "*" | "+"
+
+  ItemType ::= KindTest | ("item" "(" ")") | GeneralizedAtomicType
+
+  GeneralizedAtomicType ::= QName
+
+  KindTest ::= DocumentTest |
+               ElementTest |
+               AttributeTest |
+               SchemaElementTest |
+               SchemaAttributeTest |
+               PITest |
+               CommentTest |
+               TextTest |
+               AnyKindTest
+
+  AnyKindTest ::= "node" "(" ")"
+
+  DocumentTest ::= "document-node" "(" (ElementTest | SchemaElementTest)? ")"
+
+  TextTest ::= "text" "(" ")"
+
+  CommentTest ::= "comment" "(" ")"
+
+  NamespaceNodeTest ::= "namespace-node" "(" ")"
+
+  PITest ::= "processing-instruction" "(" (NCName | StringLiteral)? ")"
+
+  AttributeTest ::= "attribute" "(" (AttribNameOrWildcard ("," TypeName)?)? ")"
+
+  AttribNameOrWildcard ::= AttributeName | "*"
+
+  SchemaAttributeTest ::= "schema-attribute" "(" AttributeDeclaration ")"
+
+  AttributeDeclaration ::= AttributeName
+
+  ElementTest ::= "element" "(" (ElementNameOrWildcard ("," TypeName "?"?)?)? ")"
+
+  ElementNameOrWildcard ::= ElementName | "*"
+
+  SchemaElementTest ::= "schema-element" "(" ElementDeclaration ")"
+
+  ElementDeclaration ::= ElementName
+
+  AttributeName ::= QName
+
+  ElementName ::= QName
+
+  TypeName ::= QName
+
+  URILiteral ::= StringLiteral
+
+  Prefix ::= NCName
+********************************************************************************/
 
 
 /*******************************************************************************
@@ -5012,7 +5074,7 @@ public:
 
 
 /*******************************************************************************
-  [147] ItemType ::= KindTest | ("item" "(" ")") | AtomicType
+  [147] ItemType ::= KindTest | ("item" "(" ")") | GeneralizedAtomicType
 ********************************************************************************/
 class ItemType : public parsenode
 {
@@ -5047,15 +5109,15 @@ public:
 
 
 /*******************************************************************************
-  [148] AtomicType ::= QName
+  GeneralizedAtomicType ::= QName
 ********************************************************************************/
-class AtomicType : public parsenode
+class GeneralizedAtomicType : public parsenode
 {
 protected:
   rchandle<QName> qname_h;
 
 public:
-  AtomicType(const QueryLoc&, rchandle<QName>);
+  GeneralizedAtomicType(const QueryLoc&, rchandle<QName>);
 
   rchandle<QName> get_qname() const { return qname_h; }
 
@@ -5113,6 +5175,18 @@ public:
   {
     return schema_elem_test_h;
   }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  NamespaceTest ::= "namespace-node" "(" ")"
+********************************************************************************/
+class NamespaceTest : public parsenode
+{
+public:
+  NamespaceTest(const QueryLoc&);
 
   void accept(parsenode_visitor&) const;
 };

@@ -17,11 +17,14 @@
 #ifndef ZORBA_STRING_UTIL_ASCII_UTIL_H
 #define ZORBA_STRING_UTIL_ASCII_UTIL_H
 
+// standard
 #include <algorithm>
 #include <cctype>
 #include <cstddef>
 #include <cstring>
 
+// local
+#include "omanip.h"
 #include "stl_util.h"
 
 namespace zorba {
@@ -658,6 +661,142 @@ bool replace_all( StringType &s, FromStringType const &from,
   return replace_all( s, from.data(), from.size(), to.data(), to.size() );
 }
 
+////////// Integer-to-string conversion ///////////////////////////////////////
+
+/**
+ * A type that can hold the largest possible C string equivalent of the largest
+ * possible integral value (assuming 8 bytes for a <code>long long</code>).
+ */
+typedef char itoa_buf_type[ 20 + 1 /* for null */ ];
+
+/**
+ * Converts a <code>long long</code> to a C string.
+ *
+ * @param n The <code>long long</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+char* itoa( long long n, char *buf );
+
+/**
+ * Converts a \c char to a C string.
+ *
+ * @param n The \c char to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( char n, char *buf ) {
+  return itoa( static_cast<long long>( n ), buf );
+}
+
+/**
+ * Converts a <code>signed char</code> to a C string.
+ *
+ * @param n The <code>signed char</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( signed char n, char *buf ) {
+  return itoa( static_cast<long long>( n ), buf );
+}
+
+/**
+ * Converts a \c short to a C string.
+ *
+ * @param n The \c short to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( short n, char *buf ) {
+  return itoa( static_cast<long long>( n ), buf );
+}
+
+/**
+ * Converts an \c int to a C string.
+ *
+ * @param n The \c int to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( int n, char *buf ) {
+  return itoa( static_cast<long long>( n ), buf );
+}
+
+/**
+ * Converts a \c long to a C string.
+ *
+ * @param n The \c long to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( long n, char *buf ) {
+  return itoa( static_cast<long long>( n ), buf );
+}
+
+/**
+ * Converts an <code>unsigned long long</code> to a C string.
+ *
+ * @param n The <code>unsigned long long</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+char* itoa( unsigned long long n, char *buf );
+
+/**
+ * Converts an <code>unsigned char</code> to a C string.
+ *
+ * @param n The <code>unsigned char</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( unsigned char n, char *buf ) {
+  return itoa( static_cast<unsigned long long>( n ), buf );
+}
+
+/**
+ * Converts an <code>unsigned short</code> to a C string.
+ *
+ * @param n The <code>unsigned short</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( unsigned short n, char *buf ) {
+  return itoa( static_cast<unsigned long long>( n ), buf );
+}
+
+/**
+ * Converts an <code>unsigned int</code> to a C string.
+ *
+ * @param n The <code>unsigned int</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( unsigned int n, char *buf ) {
+  return itoa( static_cast<unsigned long long>( n ), buf );
+}
+
+/**
+ * Converts an <code>unsigned long</code> to a C string.
+ *
+ * @param n The <code>unsigned long</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( unsigned long n, char *buf ) {
+  return itoa( static_cast<unsigned long long>( n ), buf );
+}
+
 ////////// Whitespace /////////////////////////////////////////////////////////
 
 /**
@@ -774,6 +913,7 @@ void trim_start( InputStringType const &in, char const *chars,
  *
  * @tparam StringType The string type.
  * @param s The string.
+ * @param chars The characters to trim.
  */
 template<class StringType> inline
 void trim_start( StringType &s, char const *chars ) {
@@ -919,7 +1059,7 @@ void trim_end_whitespace( InputStringType const &in, OutputStringType *out ) {
  * @param s The string.
  */
 template<class StringType> inline
-void trim_end_whitespace( StringType &s, char const *chars ) {
+void trim_end_whitespace( StringType &s ) {
   trim_end( s, whitespace );
 }
 
@@ -965,6 +1105,20 @@ inline void skip_whitespace( char const *s, size_type s_len, size_type *pos ) {
 }
 
 ////////// Miscellaneous //////////////////////////////////////////////////////
+
+/**
+ * Prints the given character in a printable way: if \c is_print(c) is \c true,
+ * prints \a c as-is; otherwise prints \c #x followed by the hexadecimal value
+ * of the character.
+ *
+ * @param o The ostream to print to.
+ * @param c The \c char to print.
+ * @return Returns \a o.
+ */
+std::ostream& printable_char( std::ostream &o, char c );
+
+// An ostream manipulator version of the above.
+DEF_OMANIP1( printable_char, char )
 
 /**
  * Reverses the characters in a string.

@@ -210,7 +210,8 @@ void AvailableDocumentsIteratorState::init(PlanState& planState)
 void AvailableDocumentsIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  if ( theNameIterator != NULL ) {
+  if ( theNameIterator != NULL )
+  {
     theNameIterator->close();
     theNameIterator = NULL;
   }
@@ -225,7 +226,7 @@ bool AvailableDocumentsIterator::nextImpl(
   DEFAULT_STACK_INIT(AvailableDocumentsIteratorState, state, aPlanState);
 
   state->theNameIterator = GENV_STORE.getDocumentNames();
-  state->theNameIterator->open ();
+  state->theNameIterator->open();
   while (state->theNameIterator->next(result)) 
   {
     STACK_PUSH( true, state);
@@ -235,6 +236,7 @@ bool AvailableDocumentsIterator::nextImpl(
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   declare function

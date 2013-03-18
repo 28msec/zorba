@@ -39,28 +39,45 @@ void initializeTestList()
 {
   libunittests["base64"] = test_base64;
   libunittests["base64_streambuf"] = test_base64_streambuf;
+
+#ifdef ZORBA_WITH_FILE_ACCESS
   libunittests["fs_iterator"] = test_fs_iterator;
-  //libunittests["memory_manager"] = test_mem_manager;
+#endif /* ZORBA_WITH_FILE_ACCESS */
+
+  libunittests["hashmaps"] = test_hashmaps;
+
 #ifndef ZORBA_NO_ICU
   libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_ICU */
+
+  libunittests["mem_sizeof"] = test_mem_sizeof;
+
   libunittests["json_parser"] = test_json_parser;
+  libunittests["parameters"] = test_parameters;
   libunittests["string"] = test_string;
+  libunittests["time_parse"] = test_time_parse;
+
 #ifndef ZORBA_NO_FULL_TEXT
   libunittests["stemmer"] = test_stemmer;
   libunittests["thesaurus"] = test_thesaurus;
   libunittests["tokenizer"] = test_tokenizer;
 #endif /* ZORBA_NO_FULL_TEXT */
+
 #ifndef ZORBA_HAVE_UNIQUE_PTR
   libunittests["unique_ptr"] = test_unique_ptr;
 #endif /* ZORBA_HAVE_UNIQUE_PTR */
+
+  libunittests["utf8_streambuf"] = test_utf8_streambuf;
   libunittests["uuid"] = test_uuid;
+
 #ifndef ZORBA_HAVE_UNORDERED_MAP
   libunittests["unordered_map"] = test_unordered_map;
 #endif /* ZORBA_HAVE_UNORDERED_MAP */
+
 #ifndef ZORBA_HAVE_UNORDERED_SET
   libunittests["unordered_set"] = test_unordered_set;
 #endif /* ZORBA_HAVE_UNORDERED_SET */
+
   libunittests["uri"] = runUriTest;
 
 #ifdef ZORBA_WITH_DEBUGGER

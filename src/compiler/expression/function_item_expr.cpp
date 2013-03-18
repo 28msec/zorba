@@ -33,11 +33,12 @@ DEF_EXPR_ACCEPT (dynamic_function_invocation_expr)
 dynamic_function_invocation_expr::dynamic_function_invocation_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     expr* anExpr,
     const std::vector<expr*>& args)
   :
-  expr(ccb, sctx, loc, dynamic_function_invocation_expr_kind),
+  expr(ccb, sctx, udf, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
   theArgs(args)
 {
@@ -56,23 +57,6 @@ void dynamic_function_invocation_expr::compute_scripting_kind()
 }
 
 
-expr* dynamic_function_invocation_expr::cloneImpl(substitution_t& s) const
-{
-  checked_vector<expr*> lNewArgs;
-  for (checked_vector<expr*>::const_iterator lIter = theArgs.begin();
-       lIter != theArgs.end();
-       ++lIter)
-  {
-    lNewArgs.push_back((*lIter)->clone(s));
-  }
-
-  return theCCB->theEM->create_dynamic_function_invocation_expr(theSctx,
-                                              get_loc(),
-                                              theExpr->clone(s),
-                                              lNewArgs);
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -83,12 +67,13 @@ DEF_EXPR_ACCEPT (function_item_expr)
 function_item_expr::function_item_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc,
     const store::Item* aQName,
     function* f,
     uint32_t aArity)
   :
-  expr(ccb, sctx, loc, function_item_expr_kind),
+  expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theQName(const_cast<store::Item*>(aQName)),
   theFunction(f),
   theArity(aArity)
@@ -101,9 +86,10 @@ function_item_expr::function_item_expr(
 function_item_expr::function_item_expr(
     CompilerCB* ccb,
     static_context* sctx,
+    user_function* udf,
     const QueryLoc& loc)
   :
-  expr(ccb, sctx, loc, function_item_expr_kind),
+  expr(ccb, sctx, udf, loc, function_item_expr_kind),
   theQName(0),
   theFunction(NULL),
   theArity(0)
@@ -114,6 +100,13 @@ function_item_expr::function_item_expr(
 
 function_item_expr::~function_item_expr()
 {
+}
+
+
+user_function* function_item_expr::get_function() const 
+{
+  assert(theFunction->isUdf());
+  return static_cast<user_function*>(theFunction.getp());
 }
 
 
@@ -141,28 +134,6 @@ void function_item_expr::compute_scripting_kind()
 {
   // ???? TODO
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-expr* function_item_expr::cloneImpl(substitution_t& s) const
-{
-  std::auto_ptr<function_item_expr> lNewExpr(
-      theCCB->theEM->create_function_item_expr(theSctx,
-                             get_loc(),
-                             theFunction->getName(),
-                             theFunction.getp(),
-                             theArity)
-  );
-
-  std::vector<expr*> lNewVariables;
-  for (std::vector<expr*>::const_iterator lIter = theScopedVariables.begin();
-       lIter != theScopedVariables.end();
-       ++lIter)
-  {
-    lNewExpr->add_variable((*lIter)->clone(s));
-  }
-
-  return lNewExpr.release();
 }
 
 

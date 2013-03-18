@@ -446,6 +446,9 @@ public:
 
   ////////// miscellaneous ////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+  size_t alloc_size() const;
+#endif /* ZORBA_WITH_BIG_INTEGER */
   int compare( IntegerImpl const& ) const;
   uint32_t hash() const;
   bool is_cxx_long() const;
@@ -524,6 +527,8 @@ private:
 
   friend xs_int to_xs_int( INTEGER_IMPL_LL const& );
   friend xs_long to_xs_long( INTEGER_IMPL_LL const& );
+  friend xs_unsignedByte to_xs_unsignedByte( INTEGER_IMPL_LL const& );
+  friend xs_unsignedShort to_xs_unsignedShort( INTEGER_IMPL_LL const& );
   friend xs_unsignedInt to_xs_unsignedInt( INTEGER_IMPL_LL const& );
   friend xs_unsignedLong to_xs_unsignedLong( INTEGER_IMPL_LL const& );
 
@@ -576,23 +581,31 @@ inline INTEGER_IMPL(I)::IntegerImpl( long long n ) :
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( unsigned char c ) :
-  value_( static_cast<long>( c ) )
+  value_( static_cast<long>( (unsigned long)c ) )
 {
 }
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( unsigned short n ) :
-  value_( static_cast<long>( n ) )
+  value_( static_cast<long>( (unsigned long)n ) )
 {
 }
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+#if ZORBA_SIZEOF_INT != ZORBA_SIZEOF_LONG
+TEMPLATE_DECL(T)
+inline INTEGER_IMPL(T)::IntegerImpl( unsigned int n ) :
+  value_( static_cast<long>( (unsigned long)n ) )
+{
+}
+#endif /* ZORBA_SIZEOF_INT == ZORBA_SIZEOF_LONG */
+#else /* ZORBA_WITH_BIG_INTEGER */
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( unsigned int n ) :
-  value_( static_cast<long>( n ) )
+  value_( static_cast<value_type>( n ) )
 {
 }
 
-#ifndef ZORBA_WITH_BIG_INTEGER
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( unsigned long n ) :
   value_( static_cast<value_type>( n ) )

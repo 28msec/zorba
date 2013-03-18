@@ -35,6 +35,7 @@ namespace zorba
 ********************************************************************************/
 class json_array_expr : public expr
 {
+  friend class expr;
   friend class ExprIterator;
   friend class ExprManager;
 
@@ -45,6 +46,7 @@ protected:
   json_array_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* content);
 
@@ -52,8 +54,6 @@ public:
   expr* get_expr() const { return theContentExpr; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -70,6 +70,7 @@ public:
 ********************************************************************************/
 class json_object_expr : public expr
 {
+  friend class expr;
   friend class ExprIterator;
   friend class ExprManager;
 
@@ -81,6 +82,7 @@ protected:
   json_object_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* content,
       bool accumulate);
@@ -91,8 +93,6 @@ public:
   bool is_accumulating() const { return theAccumulate; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -110,6 +110,7 @@ public:
 ********************************************************************************/
 class json_direct_object_expr : public expr
 {
+  friend class expr;
   friend class ExprIterator;
   friend class ExprManager;
 
@@ -121,6 +122,7 @@ protected:
   json_direct_object_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       std::vector<expr*>& names,
       std::vector<expr*>& values);
@@ -133,8 +135,6 @@ public:
   expr* get_name_expr(csize i) const { return theNames[i]; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

@@ -18,6 +18,7 @@
 #define ZORBA_TRANSCODE_STREAMBUF_H
 
 #include <zorba/config.h>
+#include <zorba/transcode_stream.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 

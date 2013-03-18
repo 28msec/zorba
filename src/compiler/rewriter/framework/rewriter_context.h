@@ -32,10 +32,6 @@ namespace zorba
 
 class user_function;
 
-typedef std::map<var_expr *, ulong> VarIdMap;
-typedef std::vector<var_expr*> IdVarMap;
-typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
-
 
 /*******************************************************************************
 
@@ -43,32 +39,6 @@ typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
   --------
   The root node of the expr DAG that is going to be optimized using this context.
 
-  theVarIdMap:
-  ------------
-  Maps a var_expr to its unique "prefix" id. The "prefix" id has the following
-  property: for 2 vars v1 and v2, v1 is defined before v2 if and only if
-  prefix-id(v1) < prefix-id(v2). See index_flwor_vars() function in
-  tools/expr_tools.cpp for more details.
-
-  theIdVarMap:
-  ------------
-  This is the reverse mapping of theVarIdMap.
-
-  theExprVarsMap:
-  ---------------
-  An entry into this map maps an expr to the variables that are referenced by
-  that expr and/or its sub-exprs. (Note: given that the domain expr of a var
-  $x is not considered a sub-expr of $x, if $x is referenced by an expr E and
-  the domain expr of $x references another var $y, $y is NOT considered to be
-  referenced by E). Only variables that have been assigned a prolog id (i.e.,
-  the ones that appear in theVarIdMap) are considered. The set of vars referenced
-  by an expr is implemented by a bitset that is indexed by prolog var ids and
-  whose size (in number of bits) is equal to the size of theVarIdMap.
-
-  theFlworStack:
-  --------------
-  The current "in-scope" flwor exprs, ie., flwor exprs that the rule has
-  entered but not exited yet.
 ********************************************************************************/
 class RewriterContext
 {
@@ -85,13 +55,9 @@ public:
 
   int                          m_tempvarCounter;
 
-  bool                         theIsInOrderedMode;
+  bool                         theForSerializationOnly;
 
-  VarIdMap                   * theVarIdMap;
-  IdVarMap                   * theIdVarMap;
-  ExprVarsMap                * theExprVarsMap;
-  std::vector<expr*>           theFlworStack;
-  std::vector<bool>            theInReturnClause;
+  bool                         theIsInOrderedMode;
 
 public:
   RewriterContext(
@@ -105,33 +71,16 @@ public:
 
   CompilerCB* getCompilerCB() const { return theCCB; }
 
-  expr* getRoot();
+  expr* getRoot() const;
 
   void setRoot(expr* root);
+
+  void setForSerializationOnly(bool v) { theForSerializationOnly = v; }
 
   var_expr* createTempVar(
       static_context* sctx,
       const QueryLoc& loc,
       var_expr::var_kind kind);
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-struct UDFCallChain
-{
-  fo_expr      * theFo;
-  UDFCallChain * thePrev;
-
-  UDFCallChain() : theFo(NULL), thePrev(NULL) {}
-
-  UDFCallChain(fo_expr* caller, UDFCallChain* prevCaller)
-    :
-    theFo(caller),
-    thePrev(prevCaller)
-  {
-  }
 };
 
 

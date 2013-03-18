@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -16,6 +16,7 @@
 #ifndef ZORBA_STORE_STORE_CONSTS_H
 #define ZORBA_STORE_STORE_CONSTS_H
 
+#include <iostream>
 #include <string>
 #include <zorba/config.h>
 
@@ -23,7 +24,7 @@ namespace zorba { namespace store {
 
 /*******************************************************************************
   !!! ATTENTION: The order of the enum values within SchemaTypeCode is important.
-  !!! DO NOT change this order!!!!
+  !!! DO NOT change this order!!!! DO NOT insert in the middle!!!!
 ********************************************************************************/
 enum SchemaTypeCode
 {
@@ -83,18 +84,21 @@ enum SchemaTypeCode
 
   XS_QNAME                 = 43,
   XS_NOTATION              = 44,
-  
+
   JS_NULL                  = 45,
+  XS_DATETIME_STAMP        = 46,
 
   XS_LAST
 };
+
+std::ostream& operator<<( std::ostream&, SchemaTypeCode );
 
 
 class ZORBA_DLL_PUBLIC StoreConsts
 {
  public:
 
-  enum NsScoping 
+  enum NsScoping
   {
     ALL_NAMESPACES,
     ONLY_LOCAL_NAMESPACES,
@@ -109,12 +113,13 @@ class ZORBA_DLL_PUBLIC StoreConsts
     attributeNode  = 3,
     textNode       = 4,
     piNode         = 5,
-    commentNode    = 6
+    commentNode    = 6,
+    namespaceNode  = 7
   };
 
   static std::string toString(NodeKind k)
   {
-    switch(k) 
+    switch(k)
     {
     case anyNode:
       return "anyNode";
@@ -137,6 +142,9 @@ class ZORBA_DLL_PUBLIC StoreConsts
     case commentNode:
       return "commentNode";
 
+    case namespaceNode:
+      return "namespaceNode";
+
     default:
       return "<unknown NodeKind>";
     }
@@ -144,7 +152,7 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
   static std::string toSchemaString(NodeKind k)
   {
-    switch(k) 
+    switch(k)
     {
     case anyNode:
       return "node";
@@ -167,6 +175,9 @@ class ZORBA_DLL_PUBLIC StoreConsts
     case commentNode:
       return "comment";
 
+    case namespaceNode:
+      return "namespace-node";
+
     default:
       return "<unknown NodeKind>";
     }
@@ -184,7 +195,7 @@ class ZORBA_DLL_PUBLIC StoreConsts
 
   static std::string toString(JSONItemKind k)
   {
-    switch(k) 
+    switch(k)
     {
       case jsonItem:
         return "json-item";

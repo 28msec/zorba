@@ -399,15 +399,11 @@ MapInsertIterator::nextImpl(
 
   if (lSpec.getNumColumns() != theChildren.size() - 2)
   {
-    RAISE_ERROR(
-      zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-      loc,
-      ERROR_PARAMS(
-        lQName->getStringValue(),
-        "map",
-        theChildren.size() - 2,
-        lSpec.getNumColumns() )
-    );
+    RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+    ERROR_PARAMS(lQName->getStringValue(),
+                 "map",
+                 theChildren.size() - 2,
+                 lSpec.getNumColumns()));
   }
 
   lKey.resize(theChildren.size() - 2);
@@ -497,16 +493,11 @@ MapRemoveIterator::nextImpl(
 
   if (lSpec.getNumColumns() != theChildren.size() - 1)
   {
-    RAISE_ERROR(
-      zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
-      loc,
-      ERROR_PARAMS(
-        lQName->getStringValue(),
-        "map",
-        theChildren.size() - 1,
-        lSpec.getNumColumns()
-      )
-    );
+    RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+    ERROR_PARAMS(lQName->getStringValue(),
+                 "map",
+                 theChildren.size() - 1,
+                 lSpec.getNumColumns()));
   }
 
   lKey.resize(theChildren.size()-1);
@@ -551,6 +542,7 @@ MapRemoveIterator::nextImpl(
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 MapKeysIterator::nextImpl(
@@ -614,8 +606,7 @@ MapKeysIterator::nextImpl(
       store::Item_t& lValue = (*lIter);
       if (! lValue.isNull())
       {
-        GENV_ITEMFACTORY->createQName(lValueAttrName,
-            "", "", "value");
+        GENV_ITEMFACTORY->createQName(lValueAttrName, "", "", "value");
 
         lTypeName = lValue->getType();
 

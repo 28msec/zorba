@@ -25,9 +25,6 @@ namespace zorba {
   
 namespace simplestore {
 
-class CollectionIterator;
-
-
 /*******************************************************************************
   Collections container to ease the implementation of stores which contain 
   a different kind of memory management.
@@ -54,35 +51,7 @@ public:
   
   virtual store::Iterator_t
   names(bool dynamic) = 0;
-    
-  virtual CollectionSetIterator_t
-  
-  collections(bool dynamic) = 0;
 };
-    
-
-/*******************************************************************************
-  Collection set iterator
-  Returned by the CollectionSet::collections function
-********************************************************************************/
-class CollectionSetIterator : public SimpleRCObject
-{
-public:
-  virtual ~CollectionSetIterator() {}
-
-  virtual void
-  open() = 0;
-    
-  virtual bool
-  next(store::Collection_t&) = 0;
-    
-  virtual void
-  reset() = 0;
-    
-  virtual void
-  close() throw() = 0;
-};
-
 
 } /* namespace simplestore */
 } /* namespace zorba */

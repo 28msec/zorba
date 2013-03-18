@@ -45,24 +45,30 @@ namespace store
 
 typedef StoreConsts::NodeKind NodeKind;
 
-/**
- *  Class Item represents an "item" as defined by the XQuery Data Model (XDM)
- *  [http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
- */
+/*******************************************************************************
+   Class Item represents an "item" as defined by the XQuery Data Model (XDM)
+   [http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
+
+  theUnion:
+  ---------
+  It stores either a pointer to an XmlTree or an ItemKind enum value. The 
+  low-order bit is used to distinguish between these 2 cases: a 0 bit indicates
+  an XmlTree pointer, and a 1 bit indicated an ItemKind. 
+********************************************************************************/
 class ZORBA_DLL_PUBLIC Item
 {
 public:
   enum ItemKind
   {
-    NODE       = 0x10,
-    ATOMIC     = 0x21,
-    PUL        = 0x41, 
-    FUNCTION   = 0x81,
-    LIST       = 0x101,
+    NODE       = 0x0,
+    ATOMIC     = 0x1,
+    PUL        = 0x3, 
+    FUNCTION   = 0x5,
+    LIST       = 0x7,
 #ifdef ZORBA_WITH_JSON
-    JSONIQ     = 0x201,
+    JSONIQ     = 0x9,
 #endif
-    ERROR_     = 0x401
+    ERROR_     = 0xB
   };
 
 protected:
@@ -104,57 +110,90 @@ public:
 
   void removeReference();
 
+  virtual size_t alloc_size() const;
+  virtual size_t dynamic_size() const;
 
   /* -------------------   General Methods for Items ------------------------- */
 
   /**
    * @return the kind of the item
    */
-  ItemKind getKind() const;
+  ItemKind getKind() const
+  {
+    if ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0)
+      return NODE;
+
+    return static_cast<ItemKind>(theUnion.itemKind & 0xF);
+  }
 
   /**
    *  @return  "true" if the item is a node
    */
-  bool 
-  isNode() const;
+  bool isNode() const 
+  {
+    return ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0 &&
+            theUnion.treeRCPtr != 0);
+  }
 
 #ifdef ZORBA_WITH_JSON
   /**
    *  @return  "true" if the item is a JSON item
    */
-  bool
-  isJSONItem() const;
+  bool isJSONItem() const
+  {
+    return ((theUnion.itemKind & 0xF) == JSONIQ); 
+  }
 #endif
 
   /**
    *  @return  "true" if the item is an atomic value
    */
-  bool 
-  isAtomic() const;
+  bool isAtomic() const 
+  {
+    return ((theUnion.itemKind & 0xF) == ATOMIC); 
+  }
 
   /**
    * @return  "true" if the item is an list of atomic values
    */
-  bool 
-  isList() const;
+  bool isList() const
+  {
+    return ((theUnion.itemKind & 0xF) == LIST); 
+  }
 
   /**
    *  @return  "true" if the item is a pending update list
    */
-  bool 
-  isPul() const;
+  bool isPul() const
+  {
+    return ((theUnion.itemKind & 0xF) == PUL);
+  }
 
   /**
    * @return "true" if the item is an error.
    */
-  bool
-  isError() const;
+  bool isError() const
+  {
+    return ((theUnion.itemKind & 0xF) == ERROR_);
+  }
 
   /**
    * @return "true" if the item is a function.
    */
-  bool
-  isFunction() const;
+  bool isFunction() const
+  {
+    return ((theUnion.itemKind & 0xF) == FUNCTION);
+  }
+
+
+  /**
+   *  @return  "true" if the item is a JSON item or a node
+   */
+  bool 
+  isStructuredItem() const
+  {
+    return isNode() || isJSONItem();
+  }
 
   /**
    * @return a string representation of the item's kind
@@ -176,7 +215,7 @@ public:
 #endif
 
   /**
-   *  @return  (dynamic) XQuery type of the item
+   *  @return the qname identifying the XQuery type of the item
    */
   virtual Item*
   getType() const;
@@ -193,7 +232,7 @@ public:
    * @return The hash value
    */
   virtual uint32_t 
-  hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  hash(long timezone = 0, const XQPCollator* collation = 0) const;
   
   /**
    * Compares (by value) two items for equality. 
@@ -206,7 +245,7 @@ public:
    *         the table of http://www.w3.org/TR/xquery/#mapping.  
    */
   virtual bool 
-  equals(const Item*, long timezone = 0, const XQPCollator* aCollation = 0) const;
+  equals(const Item*, long timezone = 0, const XQPCollator* collation = 0) const;
 
   /**
    *  Compares (by value) two items, returning < 0 if "this" is less than "other",
@@ -223,7 +262,7 @@ public:
    *         or xs:float and at leat one of the items is NaN.
    */
   virtual long
-  compare(const Item* other, long timezone = 0, const XQPCollator* aCollation = 0) const;
+  compare(const Item* other, long timezone = 0, const XQPCollator* collation = 0) const;
   
   /**
    *  Computes the Effective Boolean Value for that item as specified in the
@@ -278,7 +317,7 @@ public:
   /**
    * @return The numeric code coresponding to the data type of this item.
    */
-  virtual SchemaTypeCode getTypeCode() const;
+  SchemaTypeCode getTypeCode() const;
 
   /**
    * @return If this is an atomic item with a user-defined data type UT, return
@@ -430,24 +469,20 @@ public:
   virtual const xs_duration&
   getDurationValue() const;
 
-
   /** Accessor for xs:dayTimeDuration
    */
   virtual const xs_dayTimeDuration&
   getDayTimeDurationValue() const;
-
 
   /** Accessor for xs:yearMonthDuration
    */
   virtual const xs_yearMonthDuration&
   getYearMonthDurationValue() const;
 
-
   /** Accessor for xs:hexBinary
    */
   virtual xs_hexBinary
   getHexBinaryValue() const;
-
 
   /**
    * Helper method for numeric atomic items
@@ -456,7 +491,6 @@ public:
    */
   virtual bool
   isNaN() const;
-
 
   /**
    * Helper method for numeric atomic items
@@ -501,8 +535,25 @@ public:
   virtual bool
   isTextRef() const;
 
-  
-  /* -------------------  Methods for Nodes ------------------------------------- */
+  /* -------------------  Methods for XML and JSON Nodes --------------------- */
+
+  /**
+   * @return true if this node is the root node of a tree that belongs to a
+   * a collection directly.
+   */
+  virtual bool
+  isCollectionRoot() const;
+
+  /**
+   * @return true if this node is in the subtree starting at the given item.
+   *         NOTE: for the purposes of this method, XML trees that are pointed-to
+   *         by a JSON tree are considered part of that JSON tree. As a result,
+   *         an XML node may be in the subtree of a JSON node.
+   */
+  virtual bool
+  isInSubtreeOf(const store::Item_t&) const;
+
+  /* -------------------  Methods for XML Nodes ------------------------------ */
 
   /**
    *  getNodeProperty functions - Accessor of XDM (see XDM specification, Section 5)
@@ -534,10 +585,10 @@ public:
    *  @return True if this is an element node with name N and it has at least one
    *          descendant whose name is also N.
    *
-   * Note: This function is used purely for enabling certain optimizations in the
-   *       query processor. As a result, it is not necessary that a store actually
-   *       provides info about the recursivity of a node; such a store should
-   *       provide a dummy implementation of this method that simply returns true.
+   * Note: This function is used purely for enabling certain optimizations in
+   * the query processor. As a result, it is not necessary that a store actually
+   * provides info about the recursivity of a node; such a store should provide
+   * a dummy implementation of this method that simply returns true.
    */
   virtual bool
   isRecursive() const;
@@ -590,8 +641,8 @@ public:
    */
   virtual void
   getNamespaceBindings(
-        NsBindings& bindings,
-        StoreConsts::NsScoping ns_scoping = StoreConsts::ALL_NAMESPACES) const;
+      NsBindings& bindings,
+      StoreConsts::NsScoping ns_scoping = StoreConsts::ALL_NAMESPACES) const;
 
   /** Accessor for element node
    *  @return  boolean?
@@ -611,6 +662,21 @@ public:
    */
   virtual Item*
   getNodeName() const;
+
+  /**
+   * Accessor for namepsace nodes.
+   * @return the prefix property of the node
+   */
+  virtual zstring
+  getNamespacePrefix() const;
+
+  /**
+   * Accessor for namepsace nodes.
+   * @return the uri property of the node
+   */
+  virtual zstring
+  getNamespaceUri() const;
+
 
   /**
    * If this item is a node and it belongs to a collection, return that
@@ -718,12 +784,6 @@ public:
    */
   virtual bool
   isFollowing(const store::Item_t&) const;
-
-  /**
-   *
-   */
-  virtual bool
-  isInSubtreeOf(const store::Item_t&) const;
 
   /**
    *
@@ -923,6 +983,15 @@ public:
             locale::iso639_1::type lang, bool wildcards = false) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
+  /* --------------------- Method for Full swap ---------------------- */
+  
+  /**
+   * Performs a full memory swap with the other item. It can also be seen as
+   * a swap of their locations in memory.
+   *
+   * @param anotherItem The item with which this must be swapped.
+   */
+  virtual void swap(Item* anotherItem);
 
 private:
   Item(const Item& other);

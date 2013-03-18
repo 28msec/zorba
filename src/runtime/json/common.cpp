@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <zorba/xquery_exception.h>
+
 #include "store/api/iterator.h"
 
 #include "common.h"

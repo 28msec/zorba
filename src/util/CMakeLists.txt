@@ -24,17 +24,24 @@ SET(UTIL_SRCS
   json_util.cpp
   mem_streambuf.cpp
   regex.cpp
+  stream_util.cpp
   string_util.cpp
+  time_util.cpp
+  time_parse.cpp
   unicode_util.cpp
   unicode_categories.cpp
   uri_util.cpp
   utf8_util.cpp
-  uuid.cpp
+  utf8_streambuf.cpp
   xml_util.cpp
   fx/fxcharheap.cpp
   string/empty_rep_base.cpp
   http_util.h
   http_util.cpp)
+
+IF (NOT ZORBA_CXX_NULLPTR)
+  LIST(APPEND UTIL_SRCS cxx_util.cpp)
+ENDIF (NOT ZORBA_CXX_NULLPTR)
 
 IF(ZORBA_WITH_FILE_ACCESS)
   LIST(APPEND UTIL_SRCS mmap_file.cpp)
@@ -52,6 +59,4 @@ ENDIF(ZORBA_NO_ICU)
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS fx)
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS win32)
 
-IF (NOT (ZORBA_HAVE_UNORDERED_MAP AND ZORBA_HAVE_UNORDERED_SET))
-  ADD_SRC_SUBFOLDER(UTIL_SRCS hash UTIL_HASH_SRCS)
-ENDIF (NOT (ZORBA_HAVE_UNORDERED_MAP AND ZORBA_HAVE_UNORDERED_SET))
+ADD_SRC_SUBFOLDER(UTIL_SRCS hash UTIL_HASH_SRCS)

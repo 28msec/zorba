@@ -17,18 +17,11 @@
 #ifndef ZORBA_TRANSCODE_STREAM_API_H
 #define ZORBA_TRANSCODE_STREAM_API_H
 
-#include <stdexcept>
-#include <streambuf>
-
 #include <zorba/config.h>
-#include <zorba/internal/proxy.h>
 #include <zorba/internal/streambuf.h>
 #include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
-
-typedef internal::ztd::proxy<std::streambuf> proxy_streambuf;
-
 namespace transcode {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -108,7 +101,7 @@ protected:
   std::streamsize xsputn( char_type const*, std::streamsize );
 
 private:
-  std::unique_ptr<proxy_streambuf> proxy_buf_;
+  std::unique_ptr<internal::proxy_streambuf> proxy_buf_;
 
   // forbid
   streambuf( streambuf const& );
@@ -146,7 +139,7 @@ namespace transcode {
  * nothing.
  * @param charset The name of the character encoding to convert from/to.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 void attach( std::basic_ios<charT,Traits> &ios, char const *charset ) {
   int const index = internal::transcode::get_streambuf_index();
   void *&pword = ios.pword( index );
@@ -167,7 +160,7 @@ void attach( std::basic_ios<charT,Traits> &ios, char const *charset ) {
  * stream doesn't have a transcode::streambuf attached to it, this function
  * does nothing.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 void detach( std::basic_ios<charT,Traits> &ios ) {
   int const index = internal::transcode::get_streambuf_index();
   if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
@@ -183,7 +176,7 @@ void detach( std::basic_ios<charT,Traits> &ios ) {
  * @param ios The stream to check.
  * @return \c true only if a transcode::streambuf is attached.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 bool is_attached( std::basic_ios<charT,Traits> &ios ) {
   return !!ios.pword( internal::transcode::get_streambuf_index() );
 }
@@ -194,7 +187,7 @@ bool is_attached( std::basic_ios<charT,Traits> &ios ) {
  * @param ios The stream to get the original streambuf of.
  * @return the original streambuf.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 std::streambuf* orig_streambuf( std::basic_ios<charT,Traits> &ios ) {
   std::streambuf *const buf = ios.rdbuf();
   if ( streambuf *const tbuf = dynamic_cast<streambuf*>( buf ) )

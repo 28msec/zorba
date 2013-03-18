@@ -1,0 +1,6 @@
+
+module namespace coll = "http://www.28msec.com/rbkt/collections";
+
+declare variable $coll:data := xs:QName("coll:data");
+
+declare collection coll:data as node()*;

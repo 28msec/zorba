@@ -9,6 +9,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
+<zorba:header>
+  <zorba:include form="Angle-bracket">context/uri_resolver.h</zorba:include>
+  <zorba:include form="Quoted">runtime/json/json_loader.h</zorba:include>
+</zorba:header>
+  
 <!--
 /*******************************************************************************
 ********************************************************************************/
@@ -39,6 +44,18 @@
   <zorba:state>
     <zorba:member type="zstring" name="thePrefix" brief=""/>
   </zorba:state>
+
+  <zorba:method static="true" name="extractChildOfKind" return="void">
+    <zorba:param type="const store::Item_t&amp;" name="aParent"/>
+    <zorba:param type="const store::NodeKind&amp;" name="aKind"/>
+    <zorba:param type="store::Item_t&amp;" name="aChild"/>
+  </zorba:method>
+
+  <zorba:method const="true" name="decodeNode" return="bool">
+    <zorba:param type="const store::Item_t&amp;" name="aSerializedNode"/>
+    <zorba:param type="const store::NodeKind&amp;" name="aKind"/>
+    <zorba:param type="store::Item_t&amp;" name="aResult"/>
+  </zorba:method>
 
   <zorba:method const="true" name="decodeXDM" return="bool">
     <zorba:param type="const store::Item_t&amp;" name="anObj"/>
@@ -164,6 +181,7 @@
     <zorba:member type="store::Item_t" name="theInput" brief=""/>
     <zorba:member type="std::istream*" name="theInputStream" brief=""/>
     <zorba:member type="bool" name="theGotOne"/>
+    <zorba:member type="json::loader*" name="loader_" brief=""/>
   </zorba:state>
 
   <zorba:constructor>
@@ -172,9 +190,10 @@
 
   <zorba:member type="QueryLoc" name="theRelativeLocation" />
 
-  <zorba:method return="void" name="processOptions" const="true">
-    <zorba:param type="const store::Item_t&amp;" name="aOptions"/>
-    <zorba:param type="bool&amp;" name="aAllowMultiple"/>
+  <zorba:method return="bool" name="processBooleanOption" const="true">
+    <zorba:param type="const store::Item_t&amp;" name="options"/>
+    <zorba:param type="char const*" name="option_name"/>
+    <zorba:param type="bool*" name="option_value"/>
   </zorba:method>
 
 </zorba:iterator>
@@ -365,6 +384,37 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONDocIterator"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
+  
+  <zorba:description author="Zorba Team">jn:json-doc</zorba:description>
+  
+  <zorba:function>
+    
+    <zorba:signature localname="json-doc" prefix="fn-jsoniq">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>json-item()*</zorba:output>
+    </zorba:signature>
+    
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
+    
+  </zorba:function>
+  
+  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+    <zorba:member type="std::auto_ptr&lt;internal::Resource&gt;" name="theResource" brief=""/>
+    <zorba:member type="std::istream*" name="theStream" brief=""/>
+    <zorba:member type="bool" name="theGotOne" brief=""/>
+    <zorba:member type="json::loader*" name="loader_" brief=""/>
+  </zorba:state>
+  
+</zorba:iterator>
 
 <!--
 /*******************************************************************************
@@ -646,5 +696,6 @@
     </zorba:function>
 
 </zorba:iterator>
+
 
 </zorba:iterators>

@@ -102,7 +102,7 @@ bool StaticNamespaceBindingIterator::nextImpl(
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc, zerr::ZXQP0000_NO_ERROR))
+  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc, false))
   {
     STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, ns), state);
   }
@@ -245,8 +245,8 @@ bool StaticallyKnownDocumentTypeIterator::nextImpl(
   }
   else
   {
-    aResult = type->get_qname();
-    STACK_PUSH(true, state);
+    temp_str = type->toSchemaString();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp_str), state);
   }
 
   STACK_END(state);
@@ -435,12 +435,12 @@ bool CopyNamespacesModeIterator::nextImpl(
   PlanIteratorState* state;
   zstring inherit, preserve;
 
-  if (theSctx->inherit_mode() == StaticContextConsts::inherit_ns)
+  if (theSctx->inherit_ns())
     inherit = "inherit";
   else
     inherit = "no-inherit";
 
-  if (theSctx->preserve_mode() == StaticContextConsts::preserve_ns)
+  if (theSctx->preserve_ns())
     preserve = "preserve";
   else
     preserve = "no-preserve";

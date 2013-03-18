@@ -129,11 +129,11 @@ VarInfo* DynamicContextImpl::get_var_info(const zstring& inVarName)
   if (!var)
   {
     throw XQUERY_EXCEPTION(err::XPST0008,
-    ERROR_PARAMS(BUILD_STRING('{',
+    ERROR_PARAMS(ZED(XPST0008_VariableName_2),
+                 BUILD_STRING('{',
                               qnameItem->getNamespace(),
                               '}',
-                              qnameItem->getLocalName()),
-                 ZED(Variable)));
+                              qnameItem->getLocalName())));
   }
 
   return var;
@@ -177,7 +177,8 @@ VarInfo* DynamicContextImpl::get_var_info(
   if (!var)
   {
     throw XQUERY_EXCEPTION(err::XPST0008,
-    ERROR_PARAMS(BUILD_STRING('{', inVarUri, '}', inVarLocalName ), ZED(Variable)));
+    ERROR_PARAMS(ZED(XPST0008_VariableName_2),
+                 BUILD_STRING('{', inVarUri, '}', inVarLocalName )));
   }
 
   return var;
@@ -294,19 +295,19 @@ bool DynamicContextImpl::setVariable(
 
     // For string items, check that the value is a valid Unicode codepoint sequence
     const char* invalid_char;
-    TypeManager* tm = theStaticContext->get_typemanager();
-    RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-    xqtref_t itemType = tm->create_value_type(value);
-
-    if (value->isStreamable() == false &&
-        TypeOps::is_equal(tm, *itemType, *rtm.STRING_TYPE_ONE, QueryLoc::null) &&
-        (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
+    if (value->isStreamable() == false && value->isAtomic())
     {
-      throw XQUERY_EXCEPTION(err::FOCH0001,
-      ERROR_PARAMS(zstring("#x") +
-      BUILD_STRING(std::uppercase << std::hex
-                   << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
+      store::SchemaTypeCode itemTypeCode = value->getTypeCode();
+
+      if (TypeOps::is_subtype(itemTypeCode, store::XS_STRING) &&
+          (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
+      {
+        throw XQUERY_EXCEPTION(err::FOCH0001,
+        ERROR_PARAMS(zstring("#x") +
+        BUILD_STRING(std::uppercase << std::hex
+                     << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
+      }
     }
 
     VarInfo* var = NULL;
@@ -674,6 +675,18 @@ Item DynamicContextImpl::getDefaultCollection() const
   return Item();
 }
 
+/****************************************************************************//**
+
+********************************************************************************/
+void DynamicContextImpl::setLocale( locale::iso639_1::type aLang,
+                                    locale::iso3166_1::type aCountry ) {
+  theCtx->set_locale( aLang, aCountry );
+}
+
+void DynamicContextImpl::getLocale( locale::iso639_1::type *aLang,
+                                    locale::iso3166_1::type *aCountry ) const {
+  theCtx->get_locale( aLang, aCountry );
+}
 
 /****************************************************************************//**
 
@@ -715,7 +728,7 @@ bool DynamicContextImpl::getExternalFunctionParam(
 bool
 DynamicContextImpl::addExternalFunctionParameter (
     const String& aName,
-    ExternalFunctionParameter* aValue )
+    ExternalFunctionParameter* aValue ) const
 {
   ZORBA_DCTX_TRY
   {

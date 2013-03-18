@@ -41,15 +41,15 @@ namespace zorba
 static bool hoist_expressions(
     RewriterContext&,
     expr*,
-    const VarIdMap&,
-    const ExprVarsMap&,
+    const expr_tools::VarIdMap&,
+    const expr_tools::ExprVarsMap&,
     struct PathHolder*);
 
 static expr* try_hoisting(
     RewriterContext&,
     expr*,
-    const VarIdMap&,
-    const ExprVarsMap&,
+    const expr_tools::VarIdMap&,
+    const expr_tools::ExprVarsMap&,
     struct PathHolder*);
 
 static bool non_hoistable (const expr*);
@@ -58,7 +58,7 @@ static bool is_already_hoisted(const expr*);
 
 static bool contains_var(
     var_expr*,
-    const VarIdMap&,
+    const expr_tools::VarIdMap&,
     const DynamicBitset&);
 
 static bool is_enclosed_expr(const expr*);
@@ -98,13 +98,22 @@ expr* HoistRule::apply(
 {
   assert(node == rCtx.getRoot());
 
-  ulong numVars = 0;
-  VarIdMap varmap;
+  csize numVars = 0;
+  expr_tools::VarIdMap varmap;
 
   expr_tools::index_flwor_vars(node, numVars, varmap, NULL);
 
-  ExprVarsMap freevarMap;
-  DynamicBitset freeset(numVars);
+  /*
+  expr_tools::VarIdMap::const_iterator ite = varmap.begin();
+  expr_tools::VarIdMap::const_iterator end = varmap.end();
+  for (; ite != end; ++ite)
+  {
+    std::cerr << "[ " << ite->first << " --> " << ite->second << "]" << std::endl;
+  }
+  */
+
+  expr_tools::ExprVarsMap freevarMap;
+  DynamicBitset freeset(numVars+1);
   expr_tools::build_expr_to_vars_map(node, varmap, freeset, freevarMap);
 
   PathHolder root;
@@ -128,8 +137,8 @@ expr* HoistRule::apply(
 static bool hoist_expressions(
     RewriterContext& rCtx,
     expr* e,
-    const VarIdMap& varmap,
-    const ExprVarsMap& freevarMap,
+    const expr_tools::VarIdMap& varmap,
+    const expr_tools::ExprVarsMap& freevarMap,
     struct PathHolder* path)
 {
   bool status = false;
@@ -349,16 +358,22 @@ static bool hoist_expressions(
 static expr* try_hoisting(
     RewriterContext& rCtx,
     expr* e,
-    const VarIdMap& varmap,
-    const ExprVarsMap& freevarMap,
+    const expr_tools::VarIdMap& varmap,
+    const expr_tools::ExprVarsMap& freevarMap,
     struct PathHolder* path)
 {
-  if (non_hoistable(e) || e->contains_node_construction())
+  if (non_hoistable(e) || e->constructsNodes())
   {
     return NULL;
   }
 
-  std::map<const expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
+  const QueryLoc& loc = e->get_loc();
+  static_context* sctx = e->get_sctx();
+  user_function* udf = e->get_udf();
+
+  assert(udf == rCtx.theUDF);
+
+  expr_tools::ExprVarsMap::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
   const DynamicBitset& varset = fvme->second;
 
@@ -384,7 +399,7 @@ static expr* try_hoisting(
         const catch_clause* clause = (*trycatch)[i];
 
         catch_clause::var_map_t& trycatchVars =
-          const_cast<catch_clause*>(clause)->get_vars();
+        const_cast<catch_clause*>(clause)->get_vars();
 
         catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
         catch_clause::var_map_t::const_iterator end = trycatchVars.end();
@@ -402,7 +417,7 @@ static expr* try_hoisting(
       assert(step->theExpr->get_expr_kind() == flwor_expr_kind);
 
       flwor_expr* flwor = static_cast<flwor_expr*>(step->theExpr);
-      group_clause* gc = flwor->get_group_clause();
+      groupby_clause* gc = flwor->get_group_clause();
 
       // If any free variable is a group-by variable, give up.
       if (gc != NULL)
@@ -434,8 +449,8 @@ static expr* try_hoisting(
       // cannot be hoisted.
       for (i = step->clauseCount - 1; i >= 0; --i)
       {
-        const forletwin_clause* flc =
-        static_cast<const forletwin_clause*>(flwor->get_clause(i));
+        const forlet_clause* flc =
+        static_cast<const forlet_clause*>(flwor->get_clause(i));
 
         if (flc->get_expr()->is_sequential())
         {
@@ -473,18 +488,15 @@ static expr* try_hoisting(
   // var: $$temp := op:hoist(e) (b) we place the $$temp declaration right after
   // variable V, and (c) we replace e with op:unhoist($$temp).
 
-  var_expr* letvar(rCtx.createTempVar(e->get_sctx(), e->get_loc(), var_expr::let_var));
+  var_expr* letvar(rCtx.createTempVar(sctx, loc, var_expr::let_var));
 
-  expr* hoisted = rCtx.theEM->create_fo_expr(e->get_sctx(),
-                               e->get_loc(),
-                               GET_BUILTIN_FUNCTION(OP_HOIST_1),
-                               e);
+  expr* hoisted = rCtx.theEM->
+  create_fo_expr(sctx, udf, loc, BUILTIN_FUNC(OP_HOIST_1), e);
 
-  hoisted->setFlags(e->getFlags());
-  letvar->setFlags(e->getFlags());
+  hoisted->setAnnotationFlags(e->getAnnotationFlags());
+  //letvar->setFlags(e->getFlags());
 
-  let_clause* flref(
-    rCtx.theEM->create_let_clause(e->get_sctx(), e->get_loc(), letvar, hoisted));
+  let_clause* flref(rCtx.theEM->create_let_clause(sctx, loc, letvar, hoisted));
 
   letvar->set_flwor_clause(flref);
 
@@ -492,7 +504,7 @@ static expr* try_hoisting(
   {
     if (step->theExpr == NULL)
     {
-      step->theExpr= rCtx.theEM->create_flwor_expr(e->get_sctx(), e->get_loc(), false);
+      step->theExpr= rCtx.theEM->create_flwor_expr(sctx, udf, loc, false);
     }
     static_cast<flwor_expr*>(step->theExpr)->add_clause(flref);
   }
@@ -507,20 +519,20 @@ static expr* try_hoisting(
 
     trycatch_expr* trycatchExpr = static_cast<trycatch_expr*>(step->theExpr);
 
-    flwor_expr* flwor = rCtx.theEM->create_flwor_expr(e->get_sctx(), e->get_loc(), false);
+    flwor_expr* flwor = rCtx.theEM->create_flwor_expr(sctx, udf, loc, false);
     flwor->add_clause(flref);
     flwor->set_return_expr(trycatchExpr->get_try_expr());
 
     trycatchExpr->set_try_expr(flwor);
   }
 
-  expr* unhoisted = rCtx.theEM->create_fo_expr(e->get_sctx(),
-                                 e->get_loc(),
-                                 GET_BUILTIN_FUNCTION(OP_UNHOIST_1),
-                                 rCtx.theEM->create_wrapper_expr(e->get_sctx(),
-                                                  e->get_loc(),
-                                                  letvar));
-  unhoisted->setFlags(e->getFlags());
+  expr* unhoisted = rCtx.theEM->
+  create_fo_expr(sctx,
+                 udf,
+                 loc,
+                 BUILTIN_FUNC(OP_UNHOIST_1),
+                 rCtx.theEM->create_wrapper_expr(sctx, udf, loc, letvar));
+  unhoisted->setAnnotationFlags(e->getAnnotationFlags());
 
   return unhoisted;
 }
@@ -531,7 +543,7 @@ static expr* try_hoisting(
 ********************************************************************************/
 static bool contains_var(
     var_expr* v,
-    const VarIdMap& varmap,
+    const expr_tools::VarIdMap& varmap,
     const DynamicBitset& varset)
 {
   if (v == NULL)
@@ -539,7 +551,7 @@ static bool contains_var(
     return false;
   }
 
-  VarIdMap::const_iterator i = varmap.find(v);
+  expr_tools::VarIdMap::const_iterator i = varmap.find(v);
   if (i == varmap.end())
   {
     return false;
@@ -561,7 +573,7 @@ static bool non_hoistable(const expr* e)
       k == axis_step_expr_kind ||
       k == match_expr_kind ||
       (k == wrapper_expr_kind &&
-       non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
+       non_hoistable(static_cast<const wrapper_expr*>(e)->get_input())) ||
       is_already_hoisted(e) ||
       is_enclosed_expr(e) ||
       e->containsRecursiveCall() ||

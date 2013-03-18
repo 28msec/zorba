@@ -26,6 +26,7 @@
 #include "store/api/collection.h"
 #include "store/api/item.h"
 #include "system/globalenv.h"
+#include <context/static_context.h>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -33,6 +34,24 @@
 namespace zorba {
 
 namespace internal {
+
+/**
+ * Utility function that identifies URL schemes that will be handled
+ * by the HttpStream class.
+ */
+bool
+HTTPURLResolver::isHTTPScheme(zstring const& aUrl)
+{
+  uri::scheme lScheme = uri::get_scheme(aUrl);
+  switch (lScheme) {
+    case uri::http:
+    case uri::https:
+    case uri::ftp:
+      return true;
+    default:
+      return false;
+  }
+}
 
 /******
  * http: (and https: and ftp:) URL resolver.
@@ -42,26 +61,29 @@ Resource*
 HTTPURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
+  // HTTP resolution doesn't make sense for collections or thesauri. For
+  // schemas and modules, we also want to abort if the http-uri-resolution
+  // feature is disabled.
   switch ( aEntityData->getKind() ) {
     case EntityData::COLLECTION:
 #ifndef ZORBA_NO_FULL_TEXT
     case EntityData::THESAURUS:
 #endif /* ZORBA_NO_FULL_TEXT */
       return nullptr;
+
+    case EntityData::SCHEMA:
+    case EntityData::MODULE:
+      if (!GENV.getRootStaticContext().is_feature_set(feature::http_resolution)) {
+        return nullptr;
+      }
+      break;
+
     default:
       break;
   }
 
-  uri::scheme lScheme = uri::get_scheme(aUrl);
-  switch (lScheme) {
-    case uri::http:
-    case uri::https:
-    case uri::ftp:
-      // Fall through to actual implementation
-      break;
-    default:
-      // We don't implement other schemes
-      return NULL;
+  if (!isHTTPScheme(aUrl)) {
+    return nullptr;
   }
   try {
     std::auto_ptr<HttpStream> lStream(new HttpStream(aUrl));
@@ -75,7 +97,6 @@ HTTPURLResolver::resolveURL
     throw os_error::exception("", aUrl.c_str(), "Could not create stream resource");
   }
 }
-
 
 /******
  * file: URL resolver.

@@ -24,8 +24,10 @@
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 
+#include "util/ascii_util.h"
+#include "util/cxx_util.h"
 #include "util/mem_streambuf.h"
-#include "util/string_util.h"
+#include "util/stream_util.h"
 
 #include "jsonml_array.h"
 #include "snelson.h"
@@ -65,6 +67,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
   istringstream iss;
   mem_streambuf buf;
   zstring s;
+  char const *stream_uri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
@@ -79,19 +82,24 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
   istream *is;
   if ( cur_item->isStreamable() ) {
     is = &cur_item->getStream();
+    stream_uri = get_uri( *is );
   } else {
     cur_item->getStringValue2( s );
     // Doing it this way uses the string data in-place with no copy.
     buf.set( s.data(), s.size() );
     iss.ios::rdbuf( &buf );
     is = &iss;
+    stream_uri = nullptr;
   }
 
   try {
     json::parser p( *is );
-    p.set_loc(
-      loc.getFilename().c_str(), loc.getLineBegin(), loc.getColumnBegin()
-    );
+    if ( stream_uri )
+      p.set_loc( stream_uri, 1, 1 );
+    else
+      p.set_loc(
+        loc.getFilename().c_str(), loc.getLineBegin(), loc.getColumnBegin()
+      );
 
     options_type::mapped_type const &format = options[ "json-format" ];
     ZORBA_ASSERT( !format.empty() );
@@ -103,52 +111,78 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
       ZORBA_ASSERT( false );
   }
   catch ( json::illegal_character const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0001_ILLEGAL_CHARACTER,
-      ERROR_PARAMS(zstring("#x") + 
-      BUILD_STRING(std::uppercase << std::hex
-                   << (static_cast<unsigned int>(e.get_char()) & 0xFF)) ),
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0001_ILLEGAL_CHARACTER,
+        ERROR_PARAMS( ascii::printable_char( e.get_char() ) ),
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::illegal_codepoint const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0002_ILLEGAL_CODEPOINT,
-      ERROR_PARAMS( e.get_codepoint() ),
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0002_ILLEGAL_CODEPOINT,
+        ERROR_PARAMS( e.get_codepoint() ),
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::illegal_escape const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0003_ILLEGAL_ESCAPE,
-      ERROR_PARAMS( e.get_escape() ),
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0003_ILLEGAL_ESCAPE,
+        ERROR_PARAMS( e.get_escape() ),
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::illegal_literal const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0004_ILLEGAL_LITERAL,
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0004_ILLEGAL_LITERAL,
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::illegal_number const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0005_ILLEGAL_NUMBER,
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0005_ILLEGAL_NUMBER,
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::unexpected_token const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0006_UNEXPECTED_TOKEN,
-      ERROR_PARAMS( e.get_token() ),
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0006_UNEXPECTED_TOKEN,
+        ERROR_PARAMS( e.get_token() ),
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
   catch ( json::unterminated_string const &e ) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0007_UNTERMINATED_STRING,
-      ERROR_LOC( e.get_loc() )
+    XQueryException xe(
+      XQUERY_EXCEPTION(
+        zerr::ZJPE0007_UNTERMINATED_STRING,
+        ERROR_LOC( e.get_loc() )
+      )
     );
+    set_data( &xe, e );
+    throw xe;
   }
 
   STACK_PUSH( !!result, state );

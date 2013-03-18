@@ -67,8 +67,9 @@ Zorba specific features presented in the following are declared in this namespac
 <li><b>scripting:</b> This local name can be used to enable or disable the 
 Zorba Scripting Extension. Per default, the feature is enabled.
 </li>
-<li><b>xqddf:</b> The <tt>xqddf</tt> local name refers to the Zorba specific
-XQuery Data Definition Facility. The feature is enabled by default.
+<li><b>ddl:</b> The <tt>ddl</tt> local name refers to the static
+(language-level) Data Description Language portion of the \ref xqddf.
+The feature is enabled by default.
 </li>
 <li><b>trace:</b> The 
 <a href="http://www.w3.org/TR/xpath-functions-30/#func-trace">fn:trace</a> 
@@ -86,6 +87,20 @@ DTD validation when parsing resources retrieved by
 <a href="http://www.w3.org/TR/xpath-functions-30/#func-doc">fn:doc</a>. DTD 
 validation is disabled by default.
 </li>
+<li><b>http-uri-resolution:</b> When resolving URIs for schema and module
+import statements, Zorba always first attempts to map the URI to a local
+filesystem location (see \ref builtin_uri_resolver). As a fallback, Zorba
+will then by default attempt to use HTTP, HTTPS, or FTP (depending on the
+URI scheme) to download the resource from the internet. The local name
+<tt>http-uri-resolution</tt> can be used to enable or disable this network
+fallback. By default it is enabled.
+\note Because XQuery options must appear in queries after import statements,
+unfortunately the <tt>http-uri-resolution</tt> option can have no effect if
+it is specified inside query text. It must be specified using the C++ API
+or a Zorba command-line option. An error will be raised if this option is
+specified inside query text to avoid confusion.
+\note Also note that, unlike other features, this feature is always set or
+unset Zorba-wide.
 </ul>
 
 

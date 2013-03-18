@@ -20,8 +20,9 @@
 #include <zorba/zorba_exception.h>
 #include <zorba/diagnostic_handler.h>
 
-#include "zorbautils/lock.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "util/mem_sizeof.h"
+#include "zorbautils/lock.h"
 
 #include "system/globalenv.h"
 
@@ -87,6 +88,12 @@ Item::~Item()
   close();
 }
 
+
+size_t
+Item::mem_size() const
+{
+  return ztd::mem_sizeof( m_item );
+}
 
 void
 Item::close()
@@ -233,6 +240,7 @@ String Item::getStringValue() const
   return String((const char*)0);
 }
 
+
 int32_t Item::getIntValue() const
 {
   ITEM_TRY
@@ -245,6 +253,7 @@ int32_t Item::getIntValue() const
   return 0;
 }
 
+
 uint32_t Item::getUnsignedIntValue() const
 {
   ITEM_TRY
@@ -252,18 +261,6 @@ uint32_t Item::getUnsignedIntValue() const
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return m_item->getUnsignedIntValue();
-
-  ITEM_CATCH
-  return 0;
-}
-
-double Item::getDoubleValue() const
-{
-  ITEM_TRY
-
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-
-    return m_item->getDoubleValue().getNumber();
 
   ITEM_CATCH
   return 0;
@@ -281,6 +278,19 @@ xs_long Item::getLongValue() const
   ITEM_CATCH
   return 0;
 
+}
+
+
+double Item::getDoubleValue() const
+{
+  ITEM_TRY
+
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getDoubleValue().getNumber();
+
+  ITEM_CATCH
+  return 0;
 }
 
 

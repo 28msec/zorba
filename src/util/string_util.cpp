@@ -21,14 +21,15 @@
 #include "ascii_util.h"
 #include "cxx_util.h"
 #include "string_util.h"
+#include "zorbatypes/zstring.h"
 
 #ifdef WIN32
 namespace std {
 
   // Windows doesn't have these functions -- add them ourselves.
 
-  static float strtof( char const *s, char **end ) {
-    double const result = std::strtod( s, end );
+  static float strtof( char const *s, char **last ) {
+    double const result = std::strtod( s, last );
     if ( !errno ) {
       if ( result < std::numeric_limits<float>::min() ||
            result > std::numeric_limits<float>::max() )
@@ -37,12 +38,12 @@ namespace std {
     return static_cast<float>( result );
   }
 
-  inline long long strtoll( char const *s, char **end, int base ) {
-    return ::_strtoi64( s, end, base );
+  inline long long strtoll( char const *s, char **last, int base ) {
+    return ::_strtoi64( s, last, base );
   }
 
-  inline unsigned long long strtoull( char const *s, char **end, int base ) {
-    return ::_strtoui64( s, end, base );
+  inline unsigned long long strtoull( char const *s, char **last, int base ) {
+    return ::_strtoui64( s, last, base );
   }
 
 } // namespace std
@@ -55,67 +56,86 @@ namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#define ENABLE_CLIPPING 0
+static void too_big_or_small( char const *buf, char const *last ) {
+  zstring const s( buf, last );
+  throw std::range_error( BUILD_STRING( '"', s, "\": number too big/small" ) );
+}
 
-template<typename T>
-static void check_parse_number( char const *s, char *end,  T *result ) {
-  if ( errno == ERANGE ) {
-    if ( result ) {
-#if ENABLE_CLIPPING
-      if ( *ascii::trim_start_whitespace( s ) == '-' )
-        *result = numeric_limits<T>::min();
-      else
-        *result = numeric_limits<T>::max();
-#endif /* ENABLE_CLIPPING */
-    } else
-      throw std::range_error(
-        BUILD_STRING( '"', s, "\": number too big/small" )
-      );
-  }
-  if ( end == s )
-    throw std::invalid_argument( BUILD_STRING( '"', s, "\": no digits" ) );
-  for ( ; *end; ++end )                 // remaining characters, if any, ...
-    if ( !ascii::is_space( *end ) )     // ... may only be whitespace
+inline void check_errno( char const *buf, char const *last ) {
+  if ( errno == ERANGE )
+    too_big_or_small( buf, last );
+}
+
+static void check_trailing_chars_impl( char const *last ) {
+  for ( ; *last; ++last )               // remaining characters, if any, ...
+    if ( !ascii::is_space( *last ) )    // ... may only be whitespace
       throw std::invalid_argument(
-        BUILD_STRING( '"', *end, "\": invalid character" )
+        BUILD_STRING( '\'', *last, "': invalid character" )
       );
 }
 
-double atod( char const *s ) {
-  char *end;
-  errno = 0;
-  double result = std::strtod( s, &end );
-  check_parse_number( s, end, &result );
+inline void check_parse_number( char const *buf, char const *last,
+                                bool check_trailing_chars ) {
+  if ( last == buf )
+    throw std::invalid_argument( BUILD_STRING( '"', buf, "\": no digits" ) );
+  if ( check_trailing_chars )
+    check_trailing_chars_impl( last );
+}
+
+class aton_context {
+public:
+  aton_context( char const **&last ) {
+    if ( last ) {
+      check_trailing_chars_ = false;
+    } else {
+      last = &last_;
+      check_trailing_chars_ = true;
+    }
+    errno = 0;
+  }
+  bool check_trailing_chars() const {
+    return check_trailing_chars_;
+  }
+private:
+  bool check_trailing_chars_;
+  char const *last_;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+double atod( char const *buf, char const **last ) {
+  aton_context const ctx( last );
+  double const result = std::strtod( buf, (char**)last );
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
   return result;
 }
 
-float atof( char const *s ) {
-  char *end;
-  errno = 0;
-  float result = std::strtof( s, &end );
-  check_parse_number( s, end, &result );
+float atof( char const *buf, char const **last ) {
+  aton_context const ctx( last );
+  float const result = std::strtof( buf, (char**)last );
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
   return result;
 }
 
-long long atoll( char const *s ) {
-  char *end;
-  errno = 0;
-  long long const result = std::strtoll( s, &end, 10 );
-  check_parse_number( s, end, static_cast<long long*>( nullptr ) );
+long long atoll( char const *buf, char const **last ) {
+  aton_context const ctx( last );
+  long long const result = std::strtoll( buf, (char**)last, 10 );
+  check_errno( buf, *last );
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
   return result;
 }
 
-unsigned long long atoull( char const *s ) {
+unsigned long long atoull( char const *buf, char const **last ) {
+  aton_context const ctx( last );
   //
   // We have to check for '-' ourselves since strtoull(3) allows it (oddly).
   //
-  s = ascii::trim_start_whitespace( s );
-  bool const minus = *s == '-';
+  buf = ascii::trim_start_whitespace( buf );
+  bool const minus = *buf == '-';
 
-  char *end;
-  errno = 0;
-  unsigned long long const result = std::strtoull( s, &end, 10 );
-  check_parse_number( s, end, static_cast<unsigned long long*>( nullptr ) );
+  unsigned long long const result = std::strtoull( buf, (char**)last, 10 );
+  check_errno( buf, *last );
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
 
   if ( minus && result ) {
     //
@@ -123,48 +143,29 @@ unsigned long long atoull( char const *s ) {
     // Hence, this allows "-0" and treats it as "0".
     //
     throw std::invalid_argument(
-      "\"-\": invalid character for unsigned integer"
+      "'-': invalid character for unsigned integer"
     );
   }
   return result;
 }
 
-char* itoa( long long n, char *buf ) {
-  //
-  // This implementation is much faster than using sprintf(3).
-  //
-  char *s = buf;
-  long long n_prev;
-  do { 
-    n_prev = n;
-    n /= 10; 
-    *s++ = "9876543210123456789" [ 9 + n_prev - n * 10 ];
-  } while ( n );
+unsigned long long atoull( char const *buf, char const *end,
+                           char const **last ) {
+  aton_context const ctx( last );
+  unsigned long long n = 0;
+  char const *s = ascii::trim_start_whitespace( buf, end - buf );
 
-  if ( n_prev < 0 ) *s++ = '-';
-  *s = '\0';
-
-  for ( char *t = buf; t < s; ++t ) {
-    char const c = *--s; *s = *t; *t = c;
+  for ( ; s < end && ascii::is_digit( *s ); ++s ) {
+    unsigned long long const n_prev = n;
+    n = n * 10 + *s - '0';
+    if ( n < n_prev ) {
+      errno = ERANGE;
+      too_big_or_small( buf, end );
+    }
   }
-  return buf;
-}
-
-char* itoa( unsigned long long n, char *buf ) {
-  char *s = buf;
-  unsigned long long n_prev;
-  do { 
-    n_prev = n;
-    n /= 10; 
-    *s++ = "0123456789" [ n_prev - n * 10 ];
-  } while ( n );
-
-  *s = '\0';
-
-  for ( char *t = buf; t < s; ++t ) {
-    char const c = *--s; *s = *t; *t = c;
-  }
-  return buf;
+  *last = s;
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
+  return n;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

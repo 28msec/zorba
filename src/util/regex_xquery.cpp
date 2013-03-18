@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "stdafx.h"
+
 #include <ctype.h>
+#include <string.h>
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "util/ascii_util.h"
+#include "util/unicode_util.h"
+#include "util/utf8_string.h"
+#include "zorbatypes/chartype.h"
 
 #include "regex_xquery.h"
-#include <string.h>
-#include "zorbatypes/chartype.h"
-#include "util/unicode_categories.h"
-#include "util/ascii_util.h"
-#include "util/utf8_string.h"
 
 namespace zorba {
   namespace regex_xquery{
@@ -383,17 +385,17 @@ CRegexXQuery_charmatch* CRegexXQuery_parser::readChar(const char *pattern,
         switch(pattern[(*char_len)+1])
         {
         case '}':
-          c = unicode::UNICODE_Ll + 50;break;
+          c = unicode::Ll + 50;break;
         case 'u':
-          c = unicode::UNICODE_Lu; (*char_len)++;break;
+          c = unicode::Lu; (*char_len)++;break;
         case 'l':
-          c = unicode::UNICODE_Ll; (*char_len)++;break;
+          c = unicode::Ll; (*char_len)++;break;
         case 't':
-          c = unicode::UNICODE_Lt; (*char_len)++;break;
+          c = unicode::Lt; (*char_len)++;break;
         case 'm':
-          c = unicode::UNICODE_Lm; (*char_len)++;break;
+          c = unicode::Lm; (*char_len)++;break;
         case 'o':
-          c = unicode::UNICODE_Lo; (*char_len)++;break;
+          c = unicode::Lo; (*char_len)++;break;
         default:
           throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_UNKNOWN_PL_CONSTRUCT)) );
         }
@@ -403,13 +405,13 @@ CRegexXQuery_charmatch* CRegexXQuery_parser::readChar(const char *pattern,
         switch(pattern[(*char_len)+1])
         {
         case '}':
-          c = unicode::UNICODE_Mc + 50;break;
+          c = unicode::Mc + 50;break;
         case 'n':
-          c = unicode::UNICODE_Mn; (*char_len)++;break;
+          c = unicode::Mn; (*char_len)++;break;
         case 'c':
-          c = unicode::UNICODE_Mc; (*char_len)++;break;
+          c = unicode::Mc; (*char_len)++;break;
         case 'e':
-          c = unicode::UNICODE_Me; (*char_len)++;break;
+          c = unicode::Me; (*char_len)++;break;
         default:
           throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_UNKNOWN_PM_CONSTRUCT)) );
         }
@@ -419,13 +421,13 @@ CRegexXQuery_charmatch* CRegexXQuery_parser::readChar(const char *pattern,
         switch(pattern[(*char_len)+1])
         {
         case '}':
-          c = unicode::UNICODE_Nd + 50;break;
+          c = unicode::Nd + 50;break;
         case 'd':
-          c = unicode::UNICODE_Nd; (*char_len)++;break;
+          c = unicode::Nd; (*char_len)++;break;
         case 'l':
-          c = unicode::UNICODE_Nl; (*char_len)++;break;
+          c = unicode::Nl; (*char_len)++;break;
         case 'o':
-          c = unicode::UNICODE_No; (*char_len)++;break;
+          c = unicode::No; (*char_len)++;break;
         default:
           throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_UNKNOWN_PN_CONSTRUCT)) );
         }
@@ -435,21 +437,21 @@ CRegexXQuery_charmatch* CRegexXQuery_parser::readChar(const char *pattern,
         switch(pattern[(*char_len)+1])
         {
         case '}':
-          c = unicode::UNICODE_Pc + 50;break;
+          c = unicode::Pc + 50;break;
         case 'c':
-          c = unicode::UNICODE_Pc; (*char_len)++;break;
+          c = unicode::Pc; (*char_len)++;break;
         case 'd':
-          c = unicode::UNICODE_Pd; (*char_len)++;break;
+          c = unicode::Pd; (*char_len)++;break;
         case 's':
-          c = unicode::UNICODE_Ps; (*char_len)++;break;
+          c = unicode::Ps; (*char_len)++;break;
         case 'e':
-          c = unicode::UNICODE_Pe; (*char_len)++;break;
+          c = unicode::Pe; (*char_len)++;break;
         case 'i':
-          c = unicode::UNICODE_Pi; (*char_len)++;break;
+          c = unicode::Pi; (*char_len)++;break;
         case 'f':
-          c = unicode::UNICODE_Pf; (*char_len)++;break;
+          c = unicode::Pf; (*char_len)++;break;
         case 'o':
-          c = unicode::UNICODE_Po; (*char_len)++;break;
+          c = unicode::Po; (*char_len)++;break;
         default:
           throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_UNKNOWN_PP_CONSTRUCT)) );
         }
@@ -459,13 +461,13 @@ CRegexXQuery_charmatch* CRegexXQuery_parser::readChar(const char *pattern,
         switch(pattern[(*char_len)+1])
         {
         case '}':
-          c = unicode::UNICODE_Zl + 50;break;
+          c = unicode::Zl + 50;break;
         case 's':
-          c = unicode::UNICODE_Zs; (*char_len)++;break;
+          c = unicode::Zs; (*char_len)++;break;
         case 'l':
-          c = unicode::UNICODE_Zl; (*char_len)++;break;
+          c = unicode::Zl; (*char_len)++;break;
         case 'p':
-          c = unicode::UNICODE_Zp; (*char_len)++;break;
+          c = unicode::Zp; (*char_len)++;break;
         default:
           throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_UNKNOWN_PZ_CONSTRUCT)) );
         }
@@ -475,15 +477,15 @@ CRegexXQuery_charmatch* CRegexXQuery_parser::readChar(const char *pattern,
         switch(pattern[(*char_len)+1])
         {
         case '}':
-          c = unicode::UNICODE_Sc + 50;break;
+          c = unicode::Sc + 50;break;
         case 'm':
-          c = unicode::UNICODE_Sm; (*char_len)++;break;
+          c = unicode::Sm; (*char_len)++;break;
         case 'c':
-          c = unicode::UNICODE_Sc; (*char_len)++;break;
+          c = unicode::Sc; (*char_len)++;break;
         case 'k':
-          c = unicode::UNICODE_Sk; (*char_len)++;break;
+          c = unicode::Sk; (*char_len)++;break;
         case 'o':
-          c = unicode::UNICODE_So; (*char_len)++;break;
+          c = unicode::So; (*char_len)++;break;
         default:
           throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_UNKNOWN_PS_CONSTRUCT)) );
         }
@@ -493,15 +495,15 @@ CRegexXQuery_charmatch* CRegexXQuery_parser::readChar(const char *pattern,
         switch(pattern[(*char_len)+1])
         {
         case '}':
-          c = unicode::UNICODE_Cc + 50;break;
+          c = unicode::Cc + 50;break;
         case 'c':
-          c = unicode::UNICODE_Cc; (*char_len)++;break;
+          c = unicode::Cc; (*char_len)++;break;
         case 'f':
-          c = unicode::UNICODE_Cf; (*char_len)++;break;
+          c = unicode::Cf; (*char_len)++;break;
         case 'o':
-          c = unicode::UNICODE_Co; (*char_len)++;break;
+          c = unicode::Co; (*char_len)++;break;
         case 'n':
-          c = unicode::UNICODE_Cn; (*char_len)++;break;
+          c = unicode::Cn; (*char_len)++;break;
         default:
           throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_UNKNOWN_PC_CONSTRUCT)) );
         }
@@ -1974,12 +1976,12 @@ bool CRegexXQuery_multicharP::match_internal(const char *source, int *start_from
   unicode::code_point utf8c = utf8::next_char(temp_source);
   switch(multichar_type)
   {
-  case unicode::UNICODE_Ll + 50:
-    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Ll) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Lm) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Lo) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Lt) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Lu))
+  case unicode::Ll + 50:
+    if(unicode::is_category(utf8c, unicode::Ll) ||
+        unicode::is_category(utf8c, unicode::Lm) ||
+        unicode::is_category(utf8c, unicode::Lo) ||
+        unicode::is_category(utf8c, unicode::Lt) ||
+        unicode::is_category(utf8c, unicode::Lu))
     {
       if(!is_reverse)
         found = true;
@@ -1990,10 +1992,10 @@ bool CRegexXQuery_multicharP::match_internal(const char *source, int *start_from
         found = true;
     }
     break;
-  case unicode::UNICODE_Mc + 50:
-    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Mn) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Mc) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Me))
+  case unicode::Mc + 50:
+    if(unicode::is_category(utf8c, unicode::Mn) ||
+        unicode::is_category(utf8c, unicode::Mc) ||
+        unicode::is_category(utf8c, unicode::Me))
     {
       if(!is_reverse)
         found = true;
@@ -2004,10 +2006,10 @@ bool CRegexXQuery_multicharP::match_internal(const char *source, int *start_from
         found = true;
     }
     break;
-  case unicode::UNICODE_Nd + 50:
-    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Nd) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Nl) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_No))
+  case unicode::Nd + 50:
+    if(unicode::is_category(utf8c, unicode::Nd) ||
+        unicode::is_category(utf8c, unicode::Nl) ||
+        unicode::is_category(utf8c, unicode::No))
     {
       if(!is_reverse)
         found = true;
@@ -2018,14 +2020,14 @@ bool CRegexXQuery_multicharP::match_internal(const char *source, int *start_from
         found = true;
     }
     break;
-  case unicode::UNICODE_Pc + 50:
-    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pc) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pd) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Ps) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pe) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pi) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pf) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Po))
+  case unicode::Pc + 50:
+    if(unicode::is_category(utf8c, unicode::Pc) ||
+        unicode::is_category(utf8c, unicode::Pd) ||
+        unicode::is_category(utf8c, unicode::Ps) ||
+        unicode::is_category(utf8c, unicode::Pe) ||
+        unicode::is_category(utf8c, unicode::Pi) ||
+        unicode::is_category(utf8c, unicode::Pf) ||
+        unicode::is_category(utf8c, unicode::Po))
     {
       if(!is_reverse)
         found = true;
@@ -2036,10 +2038,10 @@ bool CRegexXQuery_multicharP::match_internal(const char *source, int *start_from
         found = true;
     }
     break;
-  case unicode::UNICODE_Zl + 50:
-    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zs) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zl) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zp))
+  case unicode::Zl + 50:
+    if(unicode::is_category(utf8c, unicode::Zs) ||
+        unicode::is_category(utf8c, unicode::Zl) ||
+        unicode::is_category(utf8c, unicode::Zp))
     {
       if(!is_reverse)
         found = true;
@@ -2050,11 +2052,11 @@ bool CRegexXQuery_multicharP::match_internal(const char *source, int *start_from
         found = true;
     }
     break;
-  case unicode::UNICODE_Sc + 50:
-    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Sm) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Sc) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Sk) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_So))
+  case unicode::Sc + 50:
+    if(unicode::is_category(utf8c, unicode::Sm) ||
+        unicode::is_category(utf8c, unicode::Sc) ||
+        unicode::is_category(utf8c, unicode::Sk) ||
+        unicode::is_category(utf8c, unicode::So))
     {
       if(!is_reverse)
         found = true;
@@ -2065,10 +2067,10 @@ bool CRegexXQuery_multicharP::match_internal(const char *source, int *start_from
         found = true;
     }
     break;
-  case unicode::UNICODE_Cc + 50:
-    if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Cc) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Cf) ||
-        unicode::check_codepoint_category(utf8c, unicode::UNICODE_Co))//ignore unicode::UNICODE_Cn
+  case unicode::Cc + 50:
+    if(unicode::is_category(utf8c, unicode::Cc) ||
+        unicode::is_category(utf8c, unicode::Cf) ||
+        unicode::is_category(utf8c, unicode::Co))//ignore unicode::Cn
     {
       if(!is_reverse)
         found = true;
@@ -2080,7 +2082,7 @@ bool CRegexXQuery_multicharP::match_internal(const char *source, int *start_from
     }
     break;
   default:
-    if(unicode::check_codepoint_category(utf8c, (unicode::category)multichar_type))
+    if(unicode::is_category(utf8c, (unicode::category)multichar_type))
     {
       if(!is_reverse)
         found = true;
@@ -2192,24 +2194,24 @@ bool CRegexXQuery_multicharOther::match_internal(const char *source, int *start_
       break;
     case 'D':value_true = false;//[^\d]
     case 'd':
-      if(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Nd))
+      if(unicode::is_category(utf8c, unicode::Nd))
         found = true;
       break;
     case 'W':value_true = false;//[^\w]
     case 'w':
-      found = !(unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pc) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pd) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Ps) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pe) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pi) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Pf) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Po) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zs) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zl) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Zp) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Cc) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Cf) ||
-                unicode::check_codepoint_category(utf8c, unicode::UNICODE_Co));//ignore unicode::UNICODE_Cn
+      found = !(unicode::is_category(utf8c, unicode::Pc) ||
+                unicode::is_category(utf8c, unicode::Pd) ||
+                unicode::is_category(utf8c, unicode::Ps) ||
+                unicode::is_category(utf8c, unicode::Pe) ||
+                unicode::is_category(utf8c, unicode::Pi) ||
+                unicode::is_category(utf8c, unicode::Pf) ||
+                unicode::is_category(utf8c, unicode::Po) ||
+                unicode::is_category(utf8c, unicode::Zs) ||
+                unicode::is_category(utf8c, unicode::Zl) ||
+                unicode::is_category(utf8c, unicode::Zp) ||
+                unicode::is_category(utf8c, unicode::Cc) ||
+                unicode::is_category(utf8c, unicode::Cf) ||
+                unicode::is_category(utf8c, unicode::Co));//ignore unicode::Cn
       break;
     default:
       throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(source, ZED(REGEX_UNIMPLEMENTED)) );

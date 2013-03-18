@@ -193,7 +193,7 @@ void PrinterVisitor::beginVisit ( const TreatIterator& a )
 {
   thePrinter.startBeginVisit("TreatIterator", ++theId);
   if (a.theCheckPrime)
-    thePrinter.addAttribute("type", TypeOps::toString(*a.theTreatType));
+    thePrinter.addAttribute("type", a.theTreatType->toString());
   thePrinter.addAttribute("quant", TypeOps::decode_quantifier(a.theQuantifier));
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
@@ -1305,7 +1305,10 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   }
 
   PRINTER_VISITOR_DEFINITION (CommentIterator)
+
   PRINTER_VISITOR_DEFINITION (PiIterator)
+
+  PRINTER_VISITOR_DEFINITION (NamespaceIterator)
 
 #ifdef ZORBA_WITH_JSON
   PRINTER_VISITOR_DEFINITION(JSONObjectIterator)

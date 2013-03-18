@@ -215,6 +215,7 @@ void Store::initTypeNames()
   theSchemaTypeNames[store::XS_ENTITY] = theQNamePool->insert(ns, "xs", "ENTITY");
 
   theSchemaTypeNames[store::XS_DATETIME] = theQNamePool->insert(ns, "xs", "dateTime");
+  theSchemaTypeNames[store::XS_DATETIME_STAMP] = theQNamePool->insert(ns, "xs", "dateTimeStamp");
   theSchemaTypeNames[store::XS_DATE] = theQNamePool->insert(ns, "xs", "date");
   theSchemaTypeNames[store::XS_TIME] = theQNamePool->insert(ns, "xs", "time");
   theSchemaTypeNames[store::XS_GYEAR_MONTH] = theQNamePool->insert(ns, "xs", "gYearMonth");
@@ -608,7 +609,7 @@ void Store::populateGeneralIndex(
       bool more = true;
 
 #ifdef ZORBA_WITH_JSON
-      assert(domainNode->isNode() || domainNode->isJSONItem());
+      assert(domainNode->isStructuredItem());
 #else
       assert(domainNode->isNode());
 #endif
@@ -631,7 +632,7 @@ void Store::populateGeneralIndex(
         // If current node has no keys, put it in the "null" entry and continue
         // with the next domain node, if nay.
 #ifdef ZORBA_WITH_JSON
-        if (!more || firstKeyItem->isNode() || firstKeyItem->isJSONItem())
+        if (!more || firstKeyItem->isStructuredItem())
 #else
         if (!more || firstKeyItem->isNode())
 #endif
@@ -648,7 +649,7 @@ void Store::populateGeneralIndex(
         // If current domain node has exactly 1 key, insert it in the index
         // and continue with next domain node, if any.
 #ifdef ZORBA_WITH_JSON
-        if (!more || keyItem->isNode() || keyItem->isJSONItem())
+        if (!more || keyItem->isStructuredItem())
 #else
         if (!more || keyItem->isNode())
 #endif
@@ -673,7 +674,7 @@ void Store::populateGeneralIndex(
         while ((more = sourceIter->next(keyItem)))
         {
 #ifdef ZORBA_WITH_JSON
-          if (keyItem->isNode() || keyItem->isJSONItem())
+          if (keyItem->isStructuredItem())
 #else
           if (keyItem->isNode())
 #endif
@@ -714,7 +715,7 @@ store::Index_t Store::refreshIndex(
 
   if (!theIndices.get(non_const_items, index))
   {
-    throw ZORBA_EXCEPTION(zerr::ZSTR0002_INDEX_DOES_NOT_EXIST,
+    throw ZORBA_EXCEPTION(zerr::ZDDY0023_INDEX_DOES_NOT_EXIST,
     ERROR_PARAMS(qname->getStringValue()));
   }
 
@@ -1211,11 +1212,12 @@ bool Store::getStructuralInformation(
 #ifdef TEXT_ORDPATH
   const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
 
-  return theItemFactory->createStructuralAnyURI(result,
-                                                n->getCollectionId(),
-                                                n->getTreeId(),
-                                                n->getNodeKind(),
-                                                n->getOrdPath());
+  return theItemFactory->createStructuralAnyURI(
+      result,
+      n->getCollectionId(),
+      n->getTree()->getTreeId(),
+      n->getNodeKind(),
+      n->getOrdPath());
 #else
   if (node->getNodeKind() == store::StoreConsts::textNode)
   {
@@ -1223,21 +1225,23 @@ bool Store::getStructuralInformation(
     const TextNode* n = static_cast<const TextNode*>(node);
     n->getOrdPath(ordPath);
 
-    return GET_FACTORY().createStructuralAnyURI(result,
-                                                n->getCollectionId(),
-                                                n->getTreeId(),
-                                                store::StoreConsts::textNode,
-                                                ordPath);
+    return GET_FACTORY().createStructuralAnyURI(
+        result,
+        n->getCollectionId(),
+        n->getTree()->getTreeId(),
+        store::StoreConsts::textNode,
+        ordPath);
   }
   else
   {
     const OrdPathNode* n = static_cast<const OrdPathNode*>(node);
 
-    return GET_FACTORY().createStructuralAnyURI(result,
-                                                n->getCollectionId(),
-                                                n->getTreeId(),
-                                                n->getNodeKind(),
-                                                n->getOrdPath());
+    return GET_FACTORY().createStructuralAnyURI(
+        result,
+        n->getCollectionId(),
+        n->getTree()->getTreeId(),
+        n->getNodeKind(),
+        n->getOrdPath());
   }
 #endif
 }

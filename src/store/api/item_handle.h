@@ -16,7 +16,6 @@
 #ifndef ZORBA_STORE_ITEM_HANDLE_H
 #define ZORBA_STORE_ITEM_HANDLE_H
 
-
 namespace zorba 
 {
 
@@ -111,13 +110,15 @@ public:
   {
 		if (p != rhs)
     {
-			if (p) 
-        p->removeReference();
+      T* tmp = p;
 
 			p = const_cast<T*>(rhs);
 
       if (p)
-        p->addReference();      
+        p->addReference();
+
+			if (tmp) 
+        tmp->removeReference();    
 		}
 
 		return *this;
@@ -127,13 +128,15 @@ public:
   {
 		if (p != rhs)
     {
-			if (p)
-        p->removeReference();
+      T* tmp = p;
 
 			p = static_cast<T*>(const_cast<otherT*>(rhs));
 
       if (p)
         p->addReference();
+
+			if (tmp)
+        tmp->removeReference();
 		}
 		return *this;
   }
@@ -209,8 +212,8 @@ protected:
   }
 };
 
-
 } // namespace store
+
 } // namespace zorba
 
 #endif

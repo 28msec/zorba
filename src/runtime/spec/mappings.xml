@@ -23,6 +23,10 @@
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-reference"
                      define="ZORBA_NODEREF_FN_NS"
                      prefix="fn-zorba-ref"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/reference"
+                     define="ZORBA_REF_FN_NS"
+                     prefix="fn-reference"/>
     
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-position"
                      define="ZORBA_NODEPOS_FN_NS"
@@ -81,6 +85,11 @@
       define="ZORBA_FULL_TEXT_FN_NS"
       prefix="full-text"/>
 
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/datetime"
+      define="ZORBA_DATETIME_FN_NS"
+      prefix="fn-zorba-dateTime"/>
+
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" 
                      define="ZORBA_XQDOC_FN_NS" 
                      prefix="fn-zorba-xqdoc"/>
@@ -120,10 +129,14 @@
 		<zorba:namespace uri="http://www.zorba-xquery.com/modules/node"
                      define="ZORBA_NODE_FN_NS" 
                      prefix="fn-zorba-node"/>
+
+		<zorba:namespace uri="http://www.zorba-xquery.com/modules/item"
+                     define="ZORBA_ITEM_FN_NS" 
+                     prefix="fn-zorba-item"/>
                      
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xml"
                      define="ZORBA_XML_FN_NS" 
-                     prefix="fn-zorba-xml"/>                     
+                     prefix="fn-zorba-xml"/>
 
     <zorba:namespace uri="http://www.zorba-xquery.com/internal/xquery-ops"
                      define="XQUERY_OP_NS"
@@ -208,6 +221,7 @@
     <zorba:type zorbaType="JSON_ARRAY">array()</zorba:type>
     <zorba:type zorbaType="JSON_OBJECT">object()</zorba:type>
     <zorba:type zorbaType="JS_NULL">js:null</zorba:type>
+    <zorba:type zorbaType="DATETIME_STAMP">xs:dateTimeStamp</zorba:type>
   </zorba:types>
 
   <!-- XQuery Occurrence Indicators -->

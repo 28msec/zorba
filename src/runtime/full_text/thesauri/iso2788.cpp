@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 
-#include <algorithm>                    /* for lower_bound() */
+#include <algorithm>                    /* for equal_range() */
 #include <cstring>
 
 #include "util/less.h"

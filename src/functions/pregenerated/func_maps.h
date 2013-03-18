@@ -127,6 +127,8 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
+
   CODEGEN_DECL();
 };
 

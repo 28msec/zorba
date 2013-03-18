@@ -22,11 +22,15 @@
 #include <zorba/config.h>
 #include "util/unordered_map.h"
 
+#include "diagnostics/assert.h"
+
 #include "store/api/item_handle.h"
 #include "store/api/iterator.h"
 
 #include "atomic_items.h"
+#include "collection_tree_info.h"
 #include "simple_collection.h"
+#include "structured_item.h"
 
 
 namespace zorba
@@ -39,6 +43,8 @@ class CopyMode;
 
 namespace simplestore
 {
+
+class CollectionTreeInfoGetters;
 
 namespace json
 {
@@ -53,9 +59,7 @@ protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
 public:
-  JSONNull() : AtomicItem() { }
-
-  virtual ~JSONNull() {}
+  JSONNull() : AtomicItem(store::JS_NULL) { }
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
@@ -86,64 +90,20 @@ public:
 
 *******************************************************************************/
 
-class JSONTree
+class JSONItem : public StructuredItem
 {
-private:
-  simplestore::Collection * theCollection;
-  TreeId                    theId;
-  JSONItem                * theRoot;
+  // Used to access collection tree information.
+  friend class zorba::simplestore::CollectionTreeInfoGetters;
 
-public:
-  JSONTree() : theCollection(NULL), theId(), theRoot(NULL)
-  {}
-
-  simplestore::Collection* getCollection() const
-  {
-    return theCollection;
-  }
-
-  void setCollection(simplestore::Collection* aCollection)
-  {
-    theCollection = aCollection;
-  }
-
-  const TreeId& getTreeId() const
-  {
-    return theId;
-  }
-
-  void setTreeId(const TreeId& aId)
-  {
-    theId = aId;
-  }
-
-  JSONItem* getRoot() const
-  {
-    return theRoot;
-  }
-
-  void setRoot(JSONItem* aRoot)
-  {
-    theRoot = aRoot;
-  }
-};
-
-
-/******************************************************************************
-
-*******************************************************************************/
-
-class JSONItem : public store::Item
-{
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-  JSONTree  * theTree;
+  CollectionTreeInfoWithTreeId * theCollectionInfo;
 
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  JSONItem() : store::Item(JSONIQ), theTree(NULL) {}
+  JSONItem() : StructuredItem(store::Item::JSONIQ), theCollectionInfo(NULL) {}
 
   virtual ~JSONItem();
   
@@ -151,25 +111,27 @@ public:
 
   virtual void destroy();
 
-  const simplestore::Collection* getCollection() const;
+  // StructuredItem API
 
-  virtual void setTree(JSONTree* aTree) = 0;
-
-  JSONTree* getTree() const
-  {
-    return theTree;
-  }
-
-  // These two functions are only to be called if in a collection.
-  const TreeId& getTreeId() const;
-
-  JSONItem* getRoot() const;
-  
-  void attachToCollection(Collection* aCollection, const TreeId& aTreeId);
+  void attachToCollection(
+      Collection* aCollection,
+      const TreeId& aTreeId,
+      const xs_integer& aPosition);
 
   void detachFromCollection();
   
+  CollectionTreeInfo* getCollectionTreeInfo() const { return theCollectionInfo; }
+
+  void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo) = 0;
+  
+  long getCollectionTreeRefCount() const;
+
   // store API
+
+  const store::Collection* getCollection() const
+  {
+    return (theCollectionInfo ? theCollectionInfo->getCollection() : NULL);
+  }
 
   virtual bool equals(
       const store::Item* other,
@@ -183,9 +145,8 @@ public:
 #ifndef NDEBUG
   virtual void assertInvariant() const;
 
-  virtual bool isThisTreeOfAllDescendants(const JSONTree* aTree) const = 0;
-
-  virtual bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const = 0;
+  virtual bool isThisTreeOfAllDescendants(
+      const CollectionTreeInfo* collectionInfo) const = 0;
 #endif
 };
 
@@ -197,7 +158,6 @@ public:
 class JSONObject : public JSONItem
 {
 public:
-  virtual ~JSONObject() {}
 
   // store API
 
@@ -297,12 +257,14 @@ private:
   Pairs  thePairs;
 
 public:
-  SimpleJSONObject()
-  {}
+  SimpleJSONObject() {}
 
   virtual ~SimpleJSONObject();
 
   // store API
+
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
   virtual store::Iterator_t getObjectKeys() const;
 
@@ -319,6 +281,8 @@ public:
   virtual void appendStringValue(zstring& buf) const;
 
   virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  zstring show() const;
 
   // updates
   
@@ -337,19 +301,19 @@ public:
       const store::Item_t& aName,
       const store::Item_t& aNewName);
 
-  // root management
-  
-protected:
-  void setTree(JSONTree* aTree);
+  // StructuredItem API
+
+  void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo);
+
+  bool isInSubtree(const StructuredItem* aJSONItem) const;
+
+  virtual void swap(store::Item* anotherItem);
 
   // Invariant handling
-public:
 #ifndef NDEBUG
   void assertInvariant() const;
   
-  bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
-
-  bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
+  bool isThisTreeOfAllDescendants(const CollectionTreeInfo* collectionInfo) const;
 #endif
 };
 
@@ -362,8 +326,6 @@ class JSONArray : public JSONItem
 {
 public:
   JSONArray() : JSONItem() {}
-
-  virtual ~JSONArray() {}
 
   // store API
   
@@ -445,9 +407,17 @@ public:
   SimpleJSONArray()
   {}
 
+  SimpleJSONArray(size_t aReservedSize)
+  {
+    theContent.reserve(aReservedSize);
+  }
+
   virtual ~SimpleJSONArray();
-  
+
   // store API
+
+  size_t alloc_size() const;
+  size_t dynamic_size() const;
 
   xs_integer getArraySize() const;
 
@@ -466,6 +436,8 @@ public:
   void appendStringValue(zstring& buf) const;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  zstring show() const;
 
   // updates
   
@@ -493,9 +465,13 @@ public:
   virtual store::Item_t
   replace(const xs_integer& aPos, const store::Item_t& value);
 
-  // root management
-public:
-  void setTree(JSONTree* aTree);
+  // StructuredItem API
+  
+  void setCollectionTreeInfo(CollectionTreeInfo* collectionInfo);
+
+  virtual void swap(Item* anotherItem);
+
+  bool isInSubtree(const StructuredItem* aJSONItem) const;
 
 protected:
   void add(uint64_t pos, const std::vector<store::Item_t>& aNewMembers);
@@ -505,9 +481,7 @@ protected:
   // Invariant handling
 public:
 #ifndef NDEBUG
-  bool isThisTreeOfAllDescendants(const JSONTree* aTree) const;
-
-  bool isThisJSONItemInDescendance(const store::Item* aJSONItem) const;
+  bool isThisTreeOfAllDescendants(const CollectionTreeInfo* colectionInfo) const;
 #endif
 };
 
@@ -529,4 +503,3 @@ public:
  * End:
  */
 /* vim:set et sw=2 ts=2: */
-

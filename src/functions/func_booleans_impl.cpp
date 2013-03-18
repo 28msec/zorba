@@ -47,9 +47,8 @@ public:
     :
     function(sig, kind)
   {
+    setFlag(FunctionConsts::IsComparison);
   }
-
-  bool isComparisonFunction() const { return true; }
 
   virtual const char* comparison_name() const { return ""; }
 
@@ -94,11 +93,10 @@ function* GenericOpComparison::specialize(
     static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const
 {
-  const TypeManager* tm = sctx->get_typemanager();
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
 
-  if (! (TypeOps::is_builtin_atomic(tm, *t0) && TypeOps::is_builtin_atomic(tm, *t1)))
+  if (! (t0->isBuiltinAtomicOne() && t1->isBuiltinAtomicOne()))
     return NULL;
 
   store::SchemaTypeCode tc0 = TypeOps::get_atomic_type_code(*t0);
@@ -131,8 +129,8 @@ public:
   xqtref_t getReturnType(const fo_expr* caller) const;
 
   function* specialize(
-        static_context* sctx,
-        const std::vector<xqtref_t>& argTypes) const;
+      static_context* sctx,
+      const std::vector<xqtref_t>& argTypes) const;
 };
 
 
@@ -168,22 +166,22 @@ xqtref_t ValueOpComparison::getReturnType(const fo_expr* caller) const
   switch (kind)                                                     \
   {                                                                 \
   case FunctionConsts::OP_VALUE_EQUAL_2:                            \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_##type##_2);         \
+    return BUILTIN_FUNC(OP_VALUE_EQUAL_##type##_2);         \
                                                                     \
   case FunctionConsts::OP_VALUE_NOT_EQUAL_2:                        \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_NOT_EQUAL_##type##_2);     \
+    return BUILTIN_FUNC(OP_VALUE_NOT_EQUAL_##type##_2);     \
                                                                     \
   case FunctionConsts::OP_VALUE_LESS_EQUAL_2:                       \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_LESS_EQUAL_##type##_2);    \
+    return BUILTIN_FUNC(OP_VALUE_LESS_EQUAL_##type##_2);    \
                                                                     \
   case FunctionConsts::OP_VALUE_LESS_2:                             \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_LESS_##type##_2);          \
+    return BUILTIN_FUNC(OP_VALUE_LESS_##type##_2);          \
                                                                     \
   case FunctionConsts::OP_VALUE_GREATER_EQUAL_2:                    \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_EQUAL_##type##_2); \
+    return BUILTIN_FUNC(OP_VALUE_GREATER_EQUAL_##type##_2); \
                                                                     \
   case FunctionConsts::OP_VALUE_GREATER_2:                          \
-    return GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_##type##_2);       \
+    return BUILTIN_FUNC(OP_VALUE_GREATER_##type##_2);       \
                                                                     \
   default:                                                          \
     ZORBA_ASSERT(false);                                            \
@@ -194,11 +192,10 @@ function* ValueOpComparison::specialize(
     static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const
 {
-  const TypeManager* tm = sctx->get_typemanager();
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
 
-  if (TypeOps::is_builtin_simple(tm, *t0) && TypeOps::is_builtin_simple(tm, *t1))
+  if (t0->isBuiltinAtomicAny() && t1->isBuiltinAtomicAny())
   {
     store::SchemaTypeCode tc0 = TypeOps::get_atomic_type_code(*t0);
     store::SchemaTypeCode tc1 = TypeOps::get_atomic_type_code(*t1);
@@ -389,7 +386,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2);
+    return BUILTIN_FUNC(OP_VALUE_EQUAL_2);
   }
 
   CompareConsts::CompareType comparisonKind() const
@@ -427,7 +424,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_NOT_EQUAL_2);
+    return BUILTIN_FUNC(OP_VALUE_NOT_EQUAL_2);
   }
 };
 
@@ -460,7 +457,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_LESS_EQUAL_2);
+    return BUILTIN_FUNC(OP_VALUE_LESS_EQUAL_2);
   }
 };
 
@@ -493,7 +490,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_LESS_2);
+    return BUILTIN_FUNC(OP_VALUE_LESS_2);
   }
 };
 
@@ -526,7 +523,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_EQUAL_2);
+    return BUILTIN_FUNC(OP_VALUE_GREATER_EQUAL_2);
   }
 };
 
@@ -559,7 +556,7 @@ public:
 
   function* toValueComp(static_context* sctx) const
   {
-    return GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_2);
+    return BUILTIN_FUNC(OP_VALUE_GREATER_2);
   }
 };
 

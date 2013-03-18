@@ -51,17 +51,34 @@ U_NAMESPACE_USE
 
 using namespace std;
 
-#define bs_c "\\p{L}\\d.:\\p{M}-"       /* \c equivalent contents */
+#define bs_c "\\p{L}_\\d.:\\p{M}-"      /* \c equivalent contents */
 #define bs_i "\\p{L}_:"                 /* \i equivalent contents */
+#define bs_W "\\p{P}\\p{Z}\\p{C}"       /* \W equivalent contents */
+
+template<typename IntegralType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value,
+                        void>::type
+dec_limit( IntegralType *i, IntegralType limit = 0 ) {
+  if ( *i > limit )
+    --*i;
+}
+
+static unsigned digits( long n ) {
+  unsigned d = 0;
+  do {
+    ++d;
+  } while ( n /= 10 );
+  return d;
+}
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef uint32_t icu_flags_t;
+typedef uint32_t icu_flags_type;
 
-static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
-  icu_flags_t icu_flags = 0;
+static icu_flags_type convert_xquery_flags( char const *xq_flags ) {
+  icu_flags_type icu_flags = 0;
   if ( xq_flags ) {
     for ( char const *f = xq_flags; *f; ++f ) {
       switch ( *f ) {
@@ -89,9 +106,22 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
   return icu_flags;
 }
 
+inline bool is_char_range_begin( zstring const &s,
+                                 zstring::const_iterator i ) {
+  return ztd::peek( s, &i ) == '-' && ztd::peek( s, &i ) != '[';
+}
+
+inline bool is_non_capturing_begin( zstring const &s,
+                                    zstring::const_iterator i ) {
+  return ztd::peek_behind( s, &i ) == '?' && ztd::peek_behind( s, &i ) == '(';
+}
+
+#define IS_CHAR_RANGE_BEGIN (in_char_class && is_char_range_begin( xq_re, i ))
+#define PEEK_C              ztd::peek( xq_re, i )
+
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
-  icu_flags_t const icu_flags = convert_xquery_flags( xq_flags );
+  icu_flags_type const icu_flags = convert_xquery_flags( xq_flags );
   bool const i_flag = (icu_flags & UREGEX_CASE_INSENSITIVE) != 0;
   bool const m_flag = (icu_flags & UREGEX_MULTILINE) != 0;
   bool const q_flag = (icu_flags & UREGEX_LITERAL) != 0;
@@ -100,32 +130,44 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   icu_re->clear();
   icu_re->reserve( xq_re.length() );    // approximate
 
+  char c;                               // current (raw) XQuery char
+  char c_cooked;                        // current cooked XQuery char
+  char prev_c_cooked = 0;               // previous c_cooked
+  char char_range_begin_cooked = 0;     // the 'a' in [a-b]
+
   bool got_backslash = false;
-  bool in_char_class = false;           // within [...]
-  bool is_first_char = true;            // to check ^ placement
+  int  got_quantifier = 0;
+  int  in_char_class = 0;               // within [...]
+  int  in_char_range = 0;               // within a-b within [...]
+  int  is_first_char = 1;               // to check ^ placement
 
   bool in_backref = false;              // '\'[1-9][0-9]*
   unsigned backref_no = 0;              // 1-based
-  unsigned cur_cap_sub = 0;             // 1-based
-  unsigned open_cap_subs = 0;
 
   // capture subgroup: true = open; false = closed
   vector<bool> cap_sub;                 // 0-based
+  unsigned cur_cap_sub = 0;             // 1-based
+  unsigned open_cap_subs = 0;
 
-  FOR_EACH( zstring, xq_c, xq_re ) {
+  // parentheses balancing: true = is capture subgroup; false = non-capturing
+  vector<bool> paren;                   // 0-based
+  unsigned cur_paren = 0;               // 1-based
+
+  FOR_EACH( zstring, i, xq_re ) {
+    c = c_cooked = *i;
     if ( got_backslash ) {
-      if ( x_flag && !in_char_class && ascii::is_space( *xq_c ) ) {
+      if ( x_flag && !in_char_class && ascii::is_space( c ) ) {
         //
         // XQuery 3.0 F&O 5.6.1.1: If [the 'x' flag is] present, whitespace
         // characters ... in the regular expression are removed prior to
         // matching with one exception: whitespace characters within character
         // class expressions ... are not removed.
         //
-        continue;
+        goto next;
       }
       got_backslash = false;
 
-      switch ( *xq_c ) {
+      switch ( c ) {
 
         ////////// Back-References ////////////////////////////////////////////
 
@@ -139,7 +181,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '7':
         case '8':
         case '9':
-          backref_no = *xq_c - '0';
+          backref_no = c - '0';
           if ( !backref_no )          // \0 is illegal
             throw INVALID_RE_EXCEPTION( xq_re, ZED( BackRef0Illegal ) );
           if ( in_char_class ) {
@@ -168,41 +210,73 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '\\':
         case ']':
         case '^':
-        case 'n': // newline
-        case 'r': // carriage return
-        case 't': // tab
         case '{':
         case '|':
         case '}':
-          // no break;
+          *icu_re += '\\';
+          break;
 
         ////////// Multi-Character & Category Escapes /////////////////////////
 
+        case 'n': // newline
+          *icu_re += '\\';
+          c_cooked = '\n';
+          break;
+        case 'r': // carriage return
+          *icu_re += '\\';
+          c_cooked = '\r';
+          break;
+        case 't': // tab
+          *icu_re += '\\';
+          c_cooked = '\t';
+          break;
         case 'd': // [0-9]
         case 'D': // [^\d]
         case 'p': // category escape
         case 'P': // [^\p]
         case 's': // whitespace
         case 'S': // [^\s]
-        case 'w': // word char
-        case 'W': // [^\w]
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
+            goto not_single_char_esc;
           *icu_re += '\\';
           break;
+        case 'w': // word char
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
+            goto not_single_char_esc;
+          //
+          // Note that we can't simply pass \w through to ICU because what it
+          // considers a "word character" is different from what XQuery does.
+          //
+          *icu_re += "[^" bs_W "]";
+          goto next;
+        case 'W': // [^\w]
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
+            goto not_single_char_esc;
+          *icu_re += "[" bs_W "]";
+          goto next;
         case 'c': // NameChar
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
+            goto not_single_char_esc;
           *icu_re += "[" bs_c "]";
-          continue;
+          goto next;
         case 'C': // [^\c]
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
+            goto not_single_char_esc;
           *icu_re += "[^" bs_c "]";
-          continue;
+          goto next;
         case 'i': // initial NameChar
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
+            goto not_single_char_esc;
           *icu_re += "[" bs_i "]";
-          continue;
+          goto next;
         case 'I': // [^\i]
+          if ( in_char_range || IS_CHAR_RANGE_BEGIN )
+            goto not_single_char_esc;
           *icu_re += "[^" bs_i "]";
-          continue;
+          goto next;
 
         default:
-          throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), *xq_c );
+          throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexEscape_3 ), c );
       }
     } else {
       if ( in_backref ) {
@@ -214,10 +288,26 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         // back-reference is preceded by NN or more unescaped opening
         // parentheses.
         //
-        if ( cap_sub.size() > 9 && ascii::is_digit( *xq_c ) )
-          backref_no = backref_no * 10 + (*xq_c - '0');
-        else
+        bool prevent_multidigit_backref = false;
+        if ( ascii::is_digit( c ) ) {
+          if ( digits( cap_sub.size() ) > digits( backref_no ) )
+            backref_no = backref_no * 10 + (c - '0');
+          else {
+            in_backref = false;
+            //
+            // Unlike XQuery, ICU always takes further digits to be part of the
+            // backreference so we have to prevent ICU from doing that.  One
+            // way to do that is by enclosing said digits in a single-character
+            // character class, i.e., [N].
+            //
+            *icu_re += '[';
+            *icu_re += c;
+            *icu_re += ']';
+            prevent_multidigit_backref = true;
+          }
+        } else
           in_backref = false;
+
         //
         // XQuery 3.0 F&O 5.6.1: The regular expression is invalid if a back-
         // reference refers to a subexpression that does not exist or whose
@@ -231,85 +321,170 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           throw INVALID_RE_EXCEPTION(
             xq_re, ZED( NonClosedBackRef_3 ), backref_no
           );
+
+        if ( prevent_multidigit_backref )
+          goto next;
       }
-      switch ( *xq_c ) {
-        case '\\':
-          got_backslash = true;
-          continue;
+
+      switch ( c ) {
         case '$':
           if ( q_flag )
             *icu_re += '\\';
-          else if ( !m_flag ) {
-            zstring::const_iterator const temp = xq_c + 1;
-            if ( temp == xq_re.end() ) {
-              //
-              // XQuery 3.0 F&O 5.6.1: By default, ... $ matches the end of the
-              // entire string.  [Newlines are treated as any other character.]
-              //
-              // However, in ICU, $ always matches before any trailing
-              // newlines.
-              //
-              // To make ICU work as XQuery needs it to, substitute \z for $
-              // when it is the last character in the regular expression (and
-              // multi-line mode is not set).
-              //
-              icu_re->append( "\\z" );
-              continue;
-            }
+          else if ( !m_flag && i + 1 == xq_re.end() ) {
+            //
+            // XQuery 3.0 F&O 5.6.1: By default, ... $ matches the end of the
+            // entire string.  [Newlines are treated as any other character.]
+            //
+            // However, in ICU, $ always matches before any trailing newlines.
+            //
+            // To make ICU work as XQuery needs it to, substitute \z for $ when
+            // it is the last character in the regular expression (and multi-
+            // line mode is not set).
+            //
+            icu_re->append( "\\z" );
+            goto next;
           }
           break;
         case '(':
           if ( q_flag )
             *icu_re += '\\';
           else {
-            ++open_cap_subs;
-            cap_sub.push_back( true );
-            cur_cap_sub = cap_sub.size();
-            is_first_char = true;
-            goto append;
+            cur_paren = paren.size() + 1;
+            zstring::const_iterator j = i;
+            if ( ++j != xq_re.end() && *j == '?' && ++j != xq_re.end() ) {
+              //
+              // Got "(?" sequence: potentially start of "(?:", a non-capturing
+              // subgroup.  ICU also allows other characters after the "(?"
+              // that XQuery does not, so we have to report those as errors.
+              //
+              if ( *j != ':' )
+                throw INVALID_RE_EXCEPTION( xq_re, ZED( BadRegexParen_3 ), *j );
+              //
+              // Start of non-capturing subgroup.
+              //
+              paren.push_back( false );
+            } else {
+              //
+              // Start of capturing subgroup.
+              //
+              paren.push_back( true );
+              ++open_cap_subs;
+              cap_sub.push_back( true );
+              cur_cap_sub = cap_sub.size();
+              is_first_char = 2;
+            }
           }
           break;
         case ')':
           if ( q_flag )
             *icu_re += '\\';
           else {
-            if ( !open_cap_subs || cur_cap_sub == 0 )
-              throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), ')' );
-            cap_sub[ --cur_cap_sub ] = false;
+            if ( !cur_paren )
+              goto unbalanced_char;
+            if ( paren[ --cur_paren ] ) {
+              if ( !open_cap_subs || !cur_cap_sub )
+                goto unbalanced_char;
+              cap_sub[ --cur_cap_sub ] = false;
+            }
           }
+          break;
+        case ':':
+          if ( is_non_capturing_begin( xq_re, i ) ) {
+            //
+            // This ':' is part of a "(?:" sequence, i.e., a non-capturing
+            // subgroup.  Therefore, the *next* character will be a "first
+            // character" for the purposes of '^'.
+            //
+            is_first_char = 2;
+          }
+          break;
+        case '*':
+        case '+':
+        case '?':
+        case '{':
+          if ( q_flag )
+            *icu_re += '\\';
+          else {
+            //
+            // ICU allows the multiple quantifiers *+, ++, and ?+, but XQuery
+            // does not so we have to check for them.
+            //
+            if ( got_quantifier && c != '?' )
+              throw INVALID_RE_EXCEPTION(
+                xq_re, ZED( BadQuantifierHere_3 ), c
+              );
+            got_quantifier = 2;
+          }
+          break;
+        case '-':
+          if ( in_char_class && !in_char_range ) {
+            char const next_c = PEEK_C;
+            if ( next_c == '[' ) {
+              //
+              // ICU uses "--" to indicate range subtraction, e.g.,
+              // XQuery [A-Z-[OI]] becomes ICU [A-Z--[OI]].
+              //
+              *icu_re += '-';
+            } else if ( prev_c_cooked != '[' && next_c != ']' ) {
+              //
+              // The '-' is neither the first or last character within a
+              // character range (i.e., a literal '-') so therefore it's
+              // indicating a character range.
+              //
+              char_range_begin_cooked = prev_c_cooked;
+              in_char_range = 2;
+            }
+          }
+          break;
+        case '.':
+        case '}':
+          if ( q_flag )
+            *icu_re += '\\';
           break;
         case '[':
           if ( q_flag )
             *icu_re += '\\';
           else {
-            in_char_class = true;
-            goto append;
+            if ( in_char_class && prev_c_cooked != '-' )
+              goto unescaped_char;
+            ++in_char_class;
+            is_first_char = 2;
           }
           break;
+        case '\\':
+          got_backslash = true;
+          if ( in_char_range )
+            ++in_char_range;
+          goto next;
         case ']':
           if ( q_flag )
             *icu_re += '\\';
-          else
-            in_char_class = false;
+          else {
+            if ( !in_char_class )
+              goto unbalanced_char;
+            --in_char_class;
+            in_char_range = 0;
+          }
           break;
         case '^':
           if ( q_flag )
             *icu_re += '\\';
-          else if ( !is_first_char && !in_char_class )
-            throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), *xq_c );
+          else if ( !is_first_char ) {
+            if ( in_char_class )
+              goto unescaped_char;
+            *icu_re += '\\';
+          }
           break;
         case '|':
           if ( q_flag )
             *icu_re += '\\';
-          else {
-            is_first_char = true;
-            goto append;
-          }
+          else
+            is_first_char = 2;
           break;
         default:
-          if ( x_flag && ascii::is_space( *xq_c ) ) {
+          if ( x_flag && ascii::is_space( c ) ) {
             if ( !in_char_class )
-              continue;
+              goto next;
             //
             // This is similar to the above case for removing whitespace except
             // ICU removes *all* whitespace (even within character classes)
@@ -319,10 +494,27 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           }
       } // switch
     } // else
-    is_first_char = false;
-append:
-    *icu_re += *xq_c;
+
+    if ( in_char_range == 1 && c_cooked < char_range_begin_cooked )
+      throw INVALID_RE_EXCEPTION(
+        xq_re, ZED( BadEndCharInRange_34 ),
+        ascii::printable_char( c_cooked ),
+        char_range_begin_cooked
+      );
+
+    *icu_re += c;
+
+next:
+    dec_limit( &in_char_range );
+    dec_limit( &got_quantifier );
+    dec_limit( &is_first_char );
+    prev_c_cooked = c_cooked;
   } // FOR_EACH
+
+  if ( got_backslash )
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( TrailingChar_3 ), '\\' );
+  if ( in_char_class )
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), '[' );
 
   if ( !q_flag ) {
     if ( i_flag ) {
@@ -332,12 +524,13 @@ append:
       // only.
       //
       // However, ICU lower-cases everything for the 'i' flag; hence we have to
-      // turn off the 'i' flag for just the \p{Lu}.
+      // turn off the 'i' flag for the \p{Lu} and \P{Lu}.
       //
       // Note that the "6" and "12" below are correct since "\\" represents a
       // single '\'.
       //
       ascii::replace_all( *icu_re, "\\p{Lu}", 6, "(?-i:\\p{Lu})", 12 );
+      ascii::replace_all( *icu_re, "\\P{Lu}", 6, "(?-i:\\P{Lu})", 12 );
     }
 
     //
@@ -352,7 +545,16 @@ append:
     // Note that the "5" below is correct since "\\" represents a single '\'.
     //
     ascii::replace_all( *icu_re, "\\p{Is", 5, "\\p{In", 5 );
+    ascii::replace_all( *icu_re, "\\P{Is", 5, "\\P{In", 5 );
   } // q_flag
+  return;
+
+not_single_char_esc:
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( NotSingleCharEsc_3 ), c );
+unbalanced_char:
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), c );
+unescaped_char:
+    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), c );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -362,7 +564,8 @@ namespace unicode {
 
 void regex::compile( string const &u_pattern, char const *flags,
                      char const *pattern ) {
-  icu_flags_t const icu_flags = convert_xquery_flags( flags ) & ~UREGEX_LITERAL;
+  icu_flags_type const icu_flags =
+    convert_xquery_flags( flags ) & ~UREGEX_LITERAL;
   delete matcher_;
   UErrorCode status = U_ZERO_ERROR;
   matcher_ = new RegexMatcher( u_pattern, icu_flags, status );
@@ -375,9 +578,7 @@ void regex::compile( string const &u_pattern, char const *flags,
       icu_error_key = ZED_PREFIX;
       icu_error_key += u_errorName( status );
     }
-    throw XQUERY_EXCEPTION(
-      err::FORX0002, ERROR_PARAMS( pattern, icu_error_key )
-    );
+    throw INVALID_RE_EXCEPTION( pattern, icu_error_key );
   }
 }
 

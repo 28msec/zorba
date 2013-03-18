@@ -46,7 +46,9 @@ namespace zorba
 namespace expr_tools
 {
 
-int count_variable_uses(const expr* root, const var_expr* var, int limit);
+bool match_exact(expr* query, expr* ast, expr::substitution_t& subst);
+
+int count_variable_uses(expr* root, var_expr* v, int limit, std::vector<expr**>* path);
 
 
 /*******************************************************************************
@@ -56,10 +58,39 @@ expr* fix_annotations(expr* new_expr, const expr* old_expr = NULL);
 
 
 /*******************************************************************************
+  Each entry of VarIdMap maps a var_expr to its unique "prefix" id. The "prefix"
+  id has the following property: for 2 vars v1 and v2, v1 is defined before v2
+  if and only if prefix-id(v1) < prefix-id(v2). See the index_flwor_vars()
+  function in expr_tools.cpp for more details.
+********************************************************************************/
+typedef std::map<var_expr *, ulong> VarIdMap;
+
+
+/*******************************************************************************
+  This is the reverse mapping of VarIdMap.
+********************************************************************************/
+typedef std::vector<var_expr*> IdVarMap;
+
+
+/*******************************************************************************
+  An entry into this map maps an expr to the variables that are referenced by
+  that expr and/or its sub-exprs. (Note: in this context, the domain expr of a
+  var $x is not considered a sub-expr of $x, and as a result, if $x is 
+  referenced by an expr E and the domain expr of $x references another var $y,
+  $y is NOT considered to be referenced by E). Only variables that have been
+  assigned a prefix id (i.e., vars that appear in an associated VarIdMap) are
+  considered. The set of vars referenced by an expr is implemented by a bitset
+  that is indexed by prefix var id and whose size (in number of bits) is equal
+  to the size of the associated VarIdMap.
+********************************************************************************/
+typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
+
+
+/*******************************************************************************
   Util functions used by rules: HoistExprsOutOfLoops and IndexJoin.
 ********************************************************************************/
 
-void index_flwor_vars(const expr*, ulong&, VarIdMap&, IdVarMap*);
+void index_flwor_vars(const expr*, csize&, VarIdMap&, IdVarMap*);
 
 void build_expr_to_vars_map(expr*, const VarIdMap&, DynamicBitset&, ExprVarsMap&);
 

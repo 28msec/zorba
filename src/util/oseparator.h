@@ -40,6 +40,14 @@ public:
   }
 
   /**
+   * Constructs an %oseparator.
+   *
+   * @param sep The separator character.
+   */
+  explicit oseparator( char sep ) : sep_( 1, sep ), print_( false ) {
+  }
+
+  /**
    * Gets the printing state of this %oseparator.
    *
    * @return Returns \c true only if this %oseparator is currently printing.

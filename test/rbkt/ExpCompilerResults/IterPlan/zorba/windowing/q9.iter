@@ -14,20 +14,16 @@ Iterator tree for main query:
             <LetVariable name="person" materialize="true"/>
             <flwor::WindowIterator>
               <WindowVariable name="w">
-                <NodeSortIterator distinct="true" ascending="true">
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
-                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
-                      <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                        <CtxVarIterator varid="4" varname="seq" varkind="global"/>
-                      </TreatIterator>
-                    </ChildAxisIterator>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
+                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
+                    <CtxVarIterator varid="4" varname="seq" varkind="global"/>
                   </ChildAxisIterator>
-                </NodeSortIterator>
+                </ChildAxisIterator>
               </WindowVariable>
               <WinCondVariable name="start-CurrentIn"/>
               <WinCondVariable name="start-CurrentInCurrentOut"/>
               <FnBooleanIterator>
-                <CompareIterator>
+                <TypedValueCompareIterator_STRING>
                   <PromoteIterator type="xs:anyAtomicType">
                     <FnDataIterator>
                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill allowed="0">
@@ -36,12 +32,12 @@ Iterator tree for main query:
                     </FnDataIterator>
                   </PromoteIterator>
                   <SingletonIterator value="xs:string(in)"/>
-                </CompareIterator>
+                </TypedValueCompareIterator_STRING>
               </FnBooleanIterator>
               <WinCondVariable name="end-CurrentIn"/>
               <WinCondVariable name="end-CurrentInCurrentOut"/>
               <AndIterator>
-                <CompareIterator>
+                <TypedValueCompareIterator_STRING>
                   <PromoteIterator type="xs:anyAtomicType">
                     <FnDataIterator>
                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
@@ -56,8 +52,8 @@ Iterator tree for main query:
                       </ChildAxisIterator>
                     </FnDataIterator>
                   </PromoteIterator>
-                </CompareIterator>
-                <CompareIterator>
+                </TypedValueCompareIterator_STRING>
+                <TypedValueCompareIterator_STRING>
                   <PromoteIterator type="xs:anyAtomicType">
                     <FnDataIterator>
                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill allowed="0">
@@ -66,7 +62,7 @@ Iterator tree for main query:
                     </FnDataIterator>
                   </PromoteIterator>
                   <SingletonIterator value="xs:string(out)"/>
-                </CompareIterator>
+                </TypedValueCompareIterator_STRING>
               </AndIterator>
               <flwor::TupleSourceIterator/>
             </flwor::WindowIterator>

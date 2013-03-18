@@ -276,15 +276,9 @@ PULPrimitiveFactory::createUpdCreateCollection(
     const QueryLoc* aLoc,
     store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
-    const store::Item_t& nodeType,
     bool isDynamic)
 {
-  return new UpdCreateCollection(pul,
-                                 aLoc,
-                                 name,
-                                 annotations,
-                                 nodeType,
-                                 isDynamic);
+  return new UpdCreateCollection(pul, aLoc, name, annotations, isDynamic);
 }
     
     
@@ -390,6 +384,28 @@ PULPrimitiveFactory::createUpdDeleteNodesFromCollection(
     bool isDynamic)
 {
   return new UpdDeleteNodesFromCollection(pul, aLoc, name, nodes, isLast, isDynamic);
+}
+    
+
+/***************************************************************************
+
+****************************************************************************/
+UpdEditInCollection*
+PULPrimitiveFactory::createUpdEditInCollection(
+    CollectionPul* pul,
+    const QueryLoc* aLoc,
+    store::Item_t& name,
+    store::Item_t& target,
+    store::Item_t& content,
+    bool isDynamic)
+{
+  return new UpdEditInCollection(
+      pul,
+      aLoc,
+      name,
+      target,
+      content,
+      isDynamic);
 }
     
 

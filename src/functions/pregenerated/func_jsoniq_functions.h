@@ -238,6 +238,26 @@ public:
 #endif
 #ifdef ZORBA_WITH_JSON
 
+//fn-jsoniq:json-doc
+class fn_jsoniq_json_doc : public function
+{
+public:
+  fn_jsoniq_json_doc(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool isSource() const { return true; }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifdef ZORBA_WITH_JSON
+
 //op-zorba:json-item-accessor
 class op_zorba_json_item_accessor : public function
 {

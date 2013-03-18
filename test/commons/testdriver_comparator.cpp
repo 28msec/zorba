@@ -34,11 +34,9 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
-int canonicalizeAndCompare(
-    const std::string& aComparisonMethod,
+int canonicalizeAndCompare(const std::string& aComparisonMethod,
     const char* aRefFile,
     const char* aResultFile,
-    const std::string& aRBKTBinDir,
     std::ostream& aOutput)
 {
   xmlDocPtr lRefResult_ptr;
@@ -177,8 +175,12 @@ int canonicalizeAndCompare(
     return 8;
   }
 
-  std::string lCanonicalRefFile = aRBKTBinDir + "/canonical_ref.xml";
-  std::string lCanonicalResFile = aRBKTBinDir + "/canonical_res.xml";
+  // Form filenames to output canonicalized files based on the *actual* result
+  // filename, since that will be in the build dir and unique to this test
+  std::string lCanonicalRefFile(aResultFile);
+  lCanonicalRefFile.append( ".canonical_ref.xml");
+  std::string lCanonicalResFile(aResultFile);
+  lCanonicalResFile.append(".canonical_res.xml");
 
   int lRefResultRes = xmlC14NDocSave(lRefResult_ptr, 0, 0, NULL, 0, lCanonicalRefFile.c_str(), 0);
   int lResultRes    = xmlC14NDocSave(lResult_ptr, 0, 0, NULL, 0, lCanonicalResFile.c_str(), 0);

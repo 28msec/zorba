@@ -149,7 +149,7 @@ namespace base64 {
  * already has a base64::streambuf attached to it, this function does
  * nothing.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 void attach( std::basic_ios<charT,Traits> &ios ) {
   int const index = internal::base64::get_streambuf_index();
   void *&pword = ios.pword( index );
@@ -170,7 +170,7 @@ void attach( std::basic_ios<charT,Traits> &ios ) {
  * stream doesn't have a base64::streambuf attached to it, this function
  * does nothing.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 void detach( std::basic_ios<charT,Traits> &ios ) {
   int const index = internal::base64::get_streambuf_index();
   if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
@@ -186,7 +186,7 @@ void detach( std::basic_ios<charT,Traits> &ios ) {
  * @param ios The stream to check.
  * @return \c true only if a base64::streambuf is attached.
  */
-template<typename charT,typename Traits> inline
+template<typename charT,class Traits> inline
 bool is_attached( std::basic_ios<charT,Traits> &ios ) {
   return !!ios.pword( internal::base64::get_streambuf_index() );
 }

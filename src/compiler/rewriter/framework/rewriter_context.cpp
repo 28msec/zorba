@@ -44,11 +44,10 @@ RewriterContext::RewriterContext(
   theUDF(udf),
   theMessage(msg),
   m_tempvarCounter(0),
-  theIsInOrderedMode(orderedMode),
-  theVarIdMap(NULL),
-  theIdVarMap(NULL),
-  theExprVarsMap(NULL)
+  theIsInOrderedMode(orderedMode)
 {
+  theForSerializationOnly = theCCB->theConfig.for_serialization_only;
+
   if (msg.empty())
   {
     if (udf != NULL)
@@ -62,15 +61,10 @@ RewriterContext::RewriterContext(
 
 RewriterContext::~RewriterContext()
 {
-  delete theVarIdMap;
-
-  delete theIdVarMap;
-
-  delete theExprVarsMap;
 }
 
 
-expr* RewriterContext::getRoot()
+expr* RewriterContext::getRoot() const
 {
   return theRoot;
 }
@@ -92,7 +86,7 @@ var_expr* RewriterContext::createTempVar(
   std::string varname = ss.str();
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
-  var_expr* var = theEM->create_var_expr(sctx, loc, kind, qname);
+  var_expr* var = theEM->create_var_expr(sctx, theUDF, loc, kind, qname);
 
   return var;
 }

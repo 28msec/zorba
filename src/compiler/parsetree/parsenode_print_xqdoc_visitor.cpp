@@ -126,15 +126,15 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
             lAttrValue << " ";
 
           exprnode* lLit = (*lLits)[j].getp();
-          Literal* l = static_cast<Literal*>(lLit);
-          if (l->get_type() == Literal::STRING_LITERAL)
+          StringLiteral* l = dynamic_cast<StringLiteral*>(lLit);
+          if (l)
           {
-            StringLiteral* s = l->get_string_literal().getp();
-            lAttrValue << s->get_strval();
+            lAttrValue << l->get_strval();
           }
           else
           {
-            NumericLiteral* n = l->get_numeric_literal().getp();
+            NumericLiteral* n = dynamic_cast<NumericLiteral*>(lLit);
+            assert(n);
             lAttrValue << n->toString();
           }
         }
@@ -1338,7 +1338,8 @@ XQDOC_NO_BEGIN_END_TAG (AposAttrContentList)
 XQDOC_NO_BEGIN_END_TAG (AposAttrValueContent)
 XQDOC_NO_BEGIN_END_TAG (ArgList)
 XQDOC_NO_BEGIN_END_TAG (AssignExpr)
-XQDOC_NO_BEGIN_END_TAG (AtomicType)
+XQDOC_NO_BEGIN_END_TAG (GeneralizedAtomicType)
+XQDOC_NO_BEGIN_END_TAG (SimpleType)
 XQDOC_NO_BEGIN_END_TAG (AttributeTest)
 XQDOC_NO_BEGIN_END_TAG (AxisStep)
 XQDOC_NO_BEGIN_END_TAG (BaseURIDecl)
@@ -1359,6 +1360,7 @@ XQDOC_NO_BEGIN_END_TAG (CompCommentConstructor)
 XQDOC_NO_BEGIN_END_TAG (CompDocConstructor)
 XQDOC_NO_BEGIN_END_TAG (CompElemConstructor)
 XQDOC_NO_BEGIN_END_TAG (CompPIConstructor)
+XQDOC_NO_BEGIN_END_TAG (CompNamespaceConstructor)
 XQDOC_NO_BEGIN_END_TAG (CompTextConstructor)
 XQDOC_NO_BEGIN_END_TAG (ConstructionDecl)
 XQDOC_NO_BEGIN_END_TAG (ContextItemExpr)
@@ -1497,6 +1499,7 @@ XQDOC_NO_BEGIN_END_TAG (SIND_DeclList)
 XQDOC_NO_BEGIN_END_TAG (SingleType)
 XQDOC_NO_BEGIN_END_TAG (StringConcatExpr)
 XQDOC_NO_BEGIN_END_TAG (TextTest)
+XQDOC_NO_BEGIN_END_TAG (NamespaceTest)
 XQDOC_NO_BEGIN_END_TAG (TransformExpr)
 XQDOC_NO_BEGIN_END_TAG (TreatExpr)
 XQDOC_NO_BEGIN_END_TAG (TryExpr)

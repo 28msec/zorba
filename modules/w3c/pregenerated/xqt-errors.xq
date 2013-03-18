@@ -166,6 +166,15 @@ declare variable $err:XPTY0020 as xs:QName := fn:QName($err:NS, "err:XPTY0020");
 
 (:~
  :
+ : Attempt to cast to a namespace-sensitive type failed because the namespace
+ : bindings for the result can not be determined.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XPTY0117 as xs:QName := fn:QName($err:NS, "err:XPTY0117");
+
+(:~
+ :
  : It is a type error if the content sequence in an element constructor
  : contains an attribute node following a node that is not an attribute node.
  : 
@@ -385,6 +394,15 @@ declare variable $err:XQST0049 as xs:QName := fn:QName($err:NS, "err:XQST0049");
 
 (:~
  :
+ : The type must be the name of a type defined in the in-scope schema types,
+ : and the {variety} of the type must be simple.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0052 as xs:QName := fn:QName($err:NS, "err:XQST0052");
+
+(:~
+ :
  : It is a static error if a variable depends on itself.
  : 
  : @see http://www.w3.org/2005/xqt-errors
@@ -402,8 +420,8 @@ declare variable $err:XQST0055 as xs:QName := fn:QName($err:NS, "err:XQST0055");
 
 (:~
  :
- : It is a static error if a schema import binds a namespace prefix but does
- : not specify a target namespace other than a zero-length string.
+ : It is a static error if a schema import binds a namespace prefix but
+ : does not specify a target namespace other than a zero-length string.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -421,8 +439,8 @@ declare variable $err:XQST0058 as xs:QName := fn:QName($err:NS, "err:XQST0058");
 (:~
  :
  : It is a static error if an implementation is unable to process a schema
- : or module import by finding a schema or module with the specified target
- : namespace.
+ : or module import by finding a schema or module with the specified
+ : target namespace.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -586,6 +604,17 @@ declare variable $err:XQST0090 as xs:QName := fn:QName($err:NS, "err:XQST0090");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0093 as xs:QName := fn:QName($err:NS, "err:XQST0093");
+
+(:~
+ :
+ : In the group by clause of a FLWOR expression, it is a static error if the
+ : name of a grouping variable is not equal (by the eq operator on expanded
+ : QNames) to the name of a variable that is bound by a for or let clause
+ : that precedes the group by clause.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0094 as xs:QName := fn:QName($err:NS, "err:XQST0094");
 
 (:~
  :
@@ -799,6 +828,22 @@ declare variable $err:XQDY0092 as xs:QName := fn:QName($err:NS, "err:XQDY0092");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQDY0096 as xs:QName := fn:QName($err:NS, "err:XQDY0096");
+
+(:~
+ :
+ : Invalid prefix and/or uri in computed namespace constructor
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0101 as xs:QName := fn:QName($err:NS, "err:XQDY0101");
+
+(:~
+ :
+ : In an element constructor, if two or more namespace bindings in the in-scope bindings would have the same prefix, then an error is raised if they have different URIs; if they would have the same prefix and URI, duplicate bindings are ignored.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0102 as xs:QName := fn:QName($err:NS, "err:XQDY0102");
 
 (:~
  :
@@ -1264,13 +1309,21 @@ declare variable $err:FOUT1170 as xs:QName := fn:QName($err:NS, "err:FOUT1170");
 
 (:~
  :
- : Retrieved resource contains octets that cannot be decoded into Unicode 
- : using the specified encoding, the resulting characters are not 
+ : Retrieved resource contains octets that cannot be decoded into Unicode
+ : using the specified encoding, the resulting characters are not
  : permitted XML characters or requested encoding not supported
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:FOUT1190 as xs:QName := fn:QName($err:NS, "err:FOUT1190");
+
+(:~
+ :
+ : Invalid content passed to \c x:canonicalize().
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOCZ0001 as xs:QName := fn:QName($err:NS, "err:FOCZ0001");
 
 (:~
  :

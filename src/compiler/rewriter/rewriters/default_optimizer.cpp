@@ -17,36 +17,27 @@
 
 #include "compiler/rewriter/framework/rule_driver.h"
 #include "compiler/rewriter/rules/ruleset.h"
+#include "compiler/rewriter/rules/fold_rules.h"
+#include "compiler/rewriter/rules/index_matching_rule.h"
+#include "compiler/rewriter/rules/index_join_rule.h"
 #include "compiler/rewriter/rewriters/common_rewriter.h"
 #include "compiler/rewriter/rewriters/default_optimizer.h"
 #include "compiler/rewriter/tools/expr_tools.h"
-//#include "compiler/rewriter/tools/udf_graph.h"
+
+#include "compiler/xqddf/value_index.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "functions/udf.h"
 
 #include "system/properties.h"
 
+#include "context/static_context.h"
+
+
 
 namespace zorba
 {
-
-class FoldRules : public RuleMajorDriver
-{
-public:
-  FoldRules()
-  {
-    //ADD_RULE(MarkExpensiveOps);
-    // Most rules try to update the freevars annotations, but for now let's stay on the safe side
-    ADD_RULE(MarkExprs);
-    ADD_RULE(MarkFreeVars);
-    ADD_RULE(FoldConst(false));
-    ADD_RULE(PartialEval);
-    ADD_RULE(RefactorPredFLWOR);
-    ADD_RULE(EliminateUnusedLetVars);
-    ADD_RULE(MergeFLWOR);
-  }
-};
 
 
 DefaultOptimizer::DefaultOptimizer()
@@ -65,7 +56,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
 
   SingletonRuleMajorDriver<EliminateTypeEnforcingOperations> driverTypeRules;
   SingletonRuleMajorDriver<EliminateExtraneousPathSteps> driverPathSimplify;
-  //SingletonRuleMajorDriver<ReplaceExprWithConstantOneWhenPossible> driverExprSimplify;
   RuleOnceDriver<EliminateUnusedLetVars> driverEliminateVars;
   RuleOnceDriver<MarkProducerNodeProps> driverMarkProducerNodeProps;
   RuleOnceDriver<MarkConsumerNodeProps> driverMarkConsumerNodeProps;
@@ -84,14 +74,21 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       modified = true;
   }
 
+  // PathSimplification
+  if (driverPathSimplify.rewrite(rCtx))
+    modified = true;
+
+  if (rCtx.theUDF != NULL)
+  {
+    RuleOnceDriver<MarkExprs> driverMarkLocalExprs;
+    driverMarkLocalExprs.getRule()->setLocal(true);
+    driverMarkLocalExprs.rewrite(rCtx);
+  }
+
  repeat1:
 
   // TypeRules
   if (driverTypeRules.rewrite(rCtx))
-    modified = true;
-
-  // PathSimplification
-  if (driverPathSimplify.rewrite(rCtx))
     modified = true;
 
   // FoldRules
@@ -106,14 +103,11 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     goto repeat1;
   }
 
+  /*
  repeat2:
-
-  // This rule has been merged into the PartialEval rule
-  //driverExprSimplify.rewrite(rCtx);
 
   //
   driverMarkFreeVars.rewrite(rCtx);
-
   //
   driverEliminateVars.rewrite(rCtx);
 
@@ -125,6 +119,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     //std::cout << "TYPES MODIFIED 2 !!!" << std::endl << std::endl;
     goto repeat2;
   }
+  */
 
   //
   driverMarkProducerNodeProps.rewrite(rCtx);
@@ -181,36 +176,62 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     }
   }
 
-  // formatSparqlXml getSparqlResult optional matches
+  // index matching
+  if (Properties::instance()->useIndexes())
+  {
+    static_context* sctx = rCtx.theRoot->get_sctx();
+
+    std::vector<IndexDecl*> indexDecls;
+    sctx->get_index_decls(indexDecls);
+
+    if (!indexDecls.empty())
+    {
+      MarkFreeVars freeVarsRule;
+      bool modified;
+      freeVarsRule.apply(rCtx, rCtx.theRoot, modified);
+    }
+
+    std::vector<IndexDecl*>::const_iterator ite = indexDecls.begin();
+    std::vector<IndexDecl*>::const_iterator end = indexDecls.end();
+    for (; ite != end; ++ite)
+    {
+      bool local_modified = false;
+
+      //store::Index* idx = GENV_STORE.getIndex((*ite)->getName());
+
+      //if (idx != NULL)
+      if (!(*ite)->isTemp())
+      {
+        IndexMatchingRule rule(*ite);
+
+        expr* e = rule.apply(rCtx, rCtx.getRoot(), local_modified);
+
+        if (e != rCtx.getRoot())
+          rCtx.setRoot(e);
+      }
+
+      if (local_modified)
+      {
+        if (Properties::instance()->printIntermediateOpt())
+        {
+          std::cout << "After index matching : " << std::endl;
+          rCtx.getRoot()->put(std::cout) << std::endl;
+        }
+
+        modified = true;
+      }
+    }
+  }
 
   // Index Joins
   if (Properties::instance()->inferJoins())
   {
-    IndexJoinRule rule;
     bool local_modified = false;
 
-    rCtx.theVarIdMap = new VarIdMap;
-    rCtx.theIdVarMap = new IdVarMap;
-    rCtx.theExprVarsMap = new ExprVarsMap;
-
-    ulong numVars = 0;
-    expr_tools::index_flwor_vars(rCtx.getRoot(),
-                                 numVars,
-                                 *rCtx.theVarIdMap,
-                                 rCtx.theIdVarMap);
+    IndexJoinRule rule(&rCtx);
 
     do
     {
-      assert(rCtx.theFlworStack.empty());
-
-      rCtx.theExprVarsMap->clear();
-
-      DynamicBitset freeset(numVars);
-      expr_tools::build_expr_to_vars_map(rCtx.getRoot(),
-                                         *rCtx.theVarIdMap,
-                                         freeset,
-                                         *rCtx.theExprVarsMap);
-
       local_modified = false;
 
       expr* e = rule.apply(rCtx, rCtx.getRoot(), local_modified);

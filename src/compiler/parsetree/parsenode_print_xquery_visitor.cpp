@@ -130,12 +130,22 @@ void* begin_visit(const ArgList& n)
 }
 
 
-DEFAULT_END_VISIT (ArgList)
-
-DEFAULT_BEGIN_VISIT (AtomicType)
+DEFAULT_END_VISIT(ArgList)
 
 
-void end_visit(const AtomicType& n, void* state)
+DEFAULT_BEGIN_VISIT(GeneralizedAtomicType)
+
+
+void end_visit(const GeneralizedAtomicType& n, void* state)
+{
+  os << n.get_qname()->get_qname();
+}
+
+
+DEFAULT_BEGIN_VISIT(SimpleType)
+
+
+void end_visit(const SimpleType& n, void* state)
 {
   os << n.get_qname()->get_qname();
 }
@@ -188,13 +198,19 @@ DEFAULT_END_VISIT (BoundarySpaceDecl)
 void* begin_visit(const CaseClause& n)
 {
   os << "case ";
-  if(n.get_varname())
+
+  if (n.get_varname())
   {
     os << "$" << n.get_varname()->get_qname() << " as ";
   }
-  n.get_type()->accept(*this);
+
+  csize numTypes = n.num_types();
+  for (csize i = 0; i < numTypes; ++i)
+    n.get_type(i)->accept(*this);
+
   os << "return ";
   n.get_expr()->accept(*this);
+
   return no_state;
 }
 
@@ -237,29 +253,17 @@ DEFAULT_END_VISIT (ConstructionDecl)
 void* begin_visit(const CopyNamespacesDecl& n)
 {
   os << "declare copy-namespaces ";
-  switch(n.get_preserve_mode())
-  {
-  case StaticContextConsts::preserve_ns:
-    os << "preserve,";
-    break;
-  case StaticContextConsts::no_preserve_ns:
-    os << "no-preserve,";
-    break;
-  default:
-    ZORBA_ASSERT(false);
-  }
 
-  switch(n.get_inherit_mode())
-  {
-  case StaticContextConsts::inherit_ns:
+  if (n.preserve_ns())
+    os << "preserve,";
+  else
+    os << "no-preserve,";
+
+  if (n.inherit_ns())
     os << "inherit";
-    break;
-  case StaticContextConsts::no_inherit_ns:
+  else
     os << "no-inherit";
-    break;
-  default:
-    ZORBA_ASSERT(false);
-  }
+
   return 0;
 }
 
@@ -419,15 +423,15 @@ void* begin_visit(const FunctionDecl& n)
             lAttrValue << " ";
 
           exprnode* lLit = (*lLits)[j].getp();
-          Literal* l = static_cast<Literal*>(lLit);
-          if (l->get_type() == Literal::STRING_LITERAL)
+          StringLiteral* l = dynamic_cast<StringLiteral*>(lLit);
+          if (l)
           {
-            StringLiteral* s = l->get_string_literal().getp();
-            lAttrValue << s->get_strval();
+            lAttrValue << l->get_strval();
           }
           else
           {
-            NumericLiteral* n = l->get_numeric_literal().getp();
+            NumericLiteral* n = dynamic_cast<NumericLiteral*>(lLit);
+            assert(n);
             lAttrValue << n->toString();
           }
         }
@@ -962,19 +966,26 @@ DEFAULT_END_VISIT (ReverseAxis);
       }
     }
 
-    void* begin_visit(const TextTest& n)
-    {
-      os << "text()";
-      return 0;
-    }
-    DEFAULT_END_VISIT (TextTest)
+  void* begin_visit(const NamespaceTest& n)
+  {
+    os << "namespace-node()";
+    return 0;
+  }
+  DEFAULT_END_VISIT (NamespaceTest)
 
-    void* begin_visit(const TypeName& n)
-    {
-      os << n.get_name()->get_qname();
-      return 0;
-    }
-    DEFAULT_END_VISIT (TypeName)
+  void* begin_visit(const TextTest& n)
+  {
+    os << "text()";
+    return 0;
+  }
+  DEFAULT_END_VISIT (TextTest)
+
+  void* begin_visit(const TypeName& n)
+  {
+    os << n.get_name()->get_qname();
+    return 0;
+  }
+  DEFAULT_END_VISIT (TypeName)
 
     void* begin_visit(const URILiteralList& n)
     {
@@ -1389,6 +1400,30 @@ DEFAULT_END_VISIT (ReverseAxis);
       return 0;
     }
     DEFAULT_END_VISIT (CompPIConstructor)
+
+
+    void* begin_visit(const CompNamespaceConstructor& n)
+    {
+      os << "namespace";
+
+      if (!n.get_prefix().empty())
+      {
+        os << n.get_prefix();
+      }
+      else
+      {
+        os << '{';
+        n.get_prefix_expr()->accept(*this);
+        os << '}';
+      }
+
+      os << '{';
+      n.get_uri_expr()->accept(*this);
+      os << '}';
+      return 0;
+    }
+    DEFAULT_END_VISIT(CompNamespaceConstructor)
+
 
     void* begin_visit(const CompTextConstructor& n)
     {

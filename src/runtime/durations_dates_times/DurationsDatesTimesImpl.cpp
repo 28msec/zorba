@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <cstdlib>
+
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 #include "zorbatypes/numconversions.h"
@@ -112,7 +114,9 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
 
   // If $arg is the empty sequence, then the result is the empty sequence.
   if (!consumeNext(item0, theChild.getp(), planState))
+  {
     STACK_PUSH(false, state);
+  }
   else
   {
     try
@@ -120,14 +124,30 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
       dt = std::auto_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(
         planState.theLocalDynCtx->get_implicit_timezone()));
     }
-    catch (InvalidTimezoneException const&)
+    catch (InvalidTimezoneException const &e)
     {
-      throw XQUERY_EXCEPTION(err::FODT0003);
+      throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
     }
-    STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
+
+    if (item0->getTypeCode() == store::XS_DATETIME)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
+    }
+    else if (item0->getTypeCode() == store::XS_DATE)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createDate(result, dt.get()), state);
+    }
+    else if (item0->getTypeCode() == store::XS_TIME)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createTime(result, dt.get()), state);
+    }
+    else
+    {
+      ZORBA_ASSERT(false);
+    }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -143,7 +163,9 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (!consumeNext(item0, theChild0.getp(), planState))
+  {
     STACK_PUSH(false, state);
+  }
   else
   {
     s1 = consumeNext(item1, theChild1.getp(), planState);
@@ -151,15 +173,32 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
     {
       dt = std::auto_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(!s1 ? NULL : &item1->getDayTimeDurationValue()));
     }
-    catch (InvalidTimezoneException const&)
+    catch (InvalidTimezoneException const &e)
     {
-      throw XQUERY_EXCEPTION(err::FODT0003);
+      throw XQUERY_EXCEPTION(err::FODT0003, ERROR_PARAMS(e.get_tz_seconds()));
     }
-    STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
+
+    if (item0->getTypeCode() == store::XS_DATETIME)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
+    }
+    else if (item0->getTypeCode() == store::XS_DATE)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createDate(result, dt.get()), state);
+    }
+    else if (item0->getTypeCode() == store::XS_TIME)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createTime(result, dt.get()), state);
+    }
+    else
+    {
+      ZORBA_ASSERT(false);
+    }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
+
 
 /**
  *______________________________________________________________________
@@ -464,7 +503,7 @@ static void parse_width_modifier(
   }
   else
   {
-    if (parse_long(str.c_str(), str.size(), position, min_width, -1, -1, 1))
+    if (parse_long(str.data(), str.size(), position, min_width, -1, -1, 1))
       min_width = -3;
   }
 
@@ -483,7 +522,7 @@ static void parse_width_modifier(
   }
   else
   {
-    if (parse_long(str.c_str(), str.size(), position, max_width, -1, -1, 1))
+    if (parse_long(str.data(), str.size(), position, max_width, -1, -1, 1))
       min_width = -3;
   }
 }
@@ -632,7 +671,7 @@ bool FnFormatDateTimeIterator::nextImpl(
         switch (component)
         {
         case 'Y':
-          output_year(resultString, abs<int>(dateTimeItem->getDateTimeValue().getYear()), modifier);
+          output_year(resultString, std::abs(dateTimeItem->getDateTimeValue().getYear()), modifier);
           break;
         case 'M':
           output_month(resultString, dateTimeItem->getDateTimeValue().getMonth(), modifier);

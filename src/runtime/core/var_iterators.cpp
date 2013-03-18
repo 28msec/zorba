@@ -464,9 +464,9 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       RAISE_ERROR(err::XPDY0002, loc,
-      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
+      ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), theVarName->getStringValue()));
     }
-  } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
+  } // if (theTargetPosIter != NULL && theTargetLenIter == NULL && theInfLen == false)
 
   else if (theTargetPosIter != NULL)
   {
@@ -500,7 +500,9 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (startPos <= Integer(0))
     {
-      len += startPos - Integer(1);
+      if (!theInfLen)
+        len += startPos - Integer(1);
+
       startPos = 1;
     }
 
@@ -530,7 +532,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       RAISE_ERROR(err::XPDY0002, loc,
-      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
+      ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), theVarName->getStringValue()));
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter != NULL)
 
@@ -563,7 +565,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       RAISE_ERROR(err::XPDY0002, loc,
-      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
+      ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), theVarName->getStringValue()));
     }
   } // if (theTargetPos > 0)
 
@@ -594,7 +596,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       RAISE_ERROR(err::XPDY0002, loc,
-      ERROR_PARAMS(theVarName->getStringValue(), ZED(VariabledUndeclared)));
+      ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), theVarName->getStringValue()));
     }
 	}
 
@@ -712,7 +714,8 @@ LetVarIterator::LetVarIterator(
   NoaryBaseIterator<LetVarIterator, LetVarState>(sctx, loc),
   theVarName(name),
   theTargetPos(0),
-  theInfLen(false)
+  theInfLen(false),
+  theSingleItem(false)
 {
 }
 
@@ -725,6 +728,17 @@ void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theTargetPosIter;
   ar & theTargetLenIter;
   ar & theInfLen;
+  ar & theSingleItem;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void LetVarIterator::setSingleItem()
+{
+  theSingleItem = true;
+  assert(theTargetPosIter == NULL && theTargetLenIter == NULL && theTargetPos == 0);
 }
 
 
@@ -733,7 +747,7 @@ void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 bool LetVarIterator::setTargetPos(xs_integer v)
 {
-  if (theTargetPos == Integer(0) && theTargetPosIter == NULL)
+  if (!theSingleItem && theTargetPos == 0 && theTargetPosIter == NULL)
   {
     theTargetPos = v;
     return true;
@@ -744,7 +758,7 @@ bool LetVarIterator::setTargetPos(xs_integer v)
 
 bool LetVarIterator::setTargetPosIter(const PlanIter_t& v)
 {
-  if (theTargetPos == Integer(0) && theTargetPosIter == NULL)
+  if (!theSingleItem && theTargetPos == 0 && theTargetPosIter == NULL)
   {
     theTargetPosIter = v;
     return true;
@@ -755,7 +769,8 @@ bool LetVarIterator::setTargetPosIter(const PlanIter_t& v)
 
 bool LetVarIterator::setTargetLenIter(const PlanIter_t& v)
 {
-  if (theTargetPos == Integer(0) &&
+  if (!theSingleItem &&
+      theTargetPos == 0 &&
       theTargetLenIter == NULL && 
       theInfLen == false)
   {
@@ -785,6 +800,20 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
+void LetVarIterator::bind(store::Item_t& value, PlanState& planState)
+{
+  assert(theSingleItem);
+
+  LetVarState* state;
+  state = StateTraitsImpl<LetVarState>::getState(planState, theStateOffset);
+
+  state->theItem = value;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
 {
   LetVarState* state;
@@ -801,8 +830,10 @@ void LetVarIterator::bind(const store::TempSeq_t& value, PlanState& planState)
     else
     {
       if (state->theTempSeqIter == NULL)
-        state->theTempSeqIter = GENV_STORE.getIteratorFactory()->
-                                createTempSeqIterator(false);
+      {
+        state->theTempSeqIter = 
+        GENV_STORE.getIteratorFactory()->createTempSeqIterator(false);
+      }
 
       state->theTempSeqIter->init(value);
       state->theTempSeqIter->open();
@@ -916,7 +947,15 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   LetVarState* state;
   DEFAULT_STACK_INIT(LetVarState, state, planState);
 
-  if (theTargetPosIter != NULL)
+  if (theSingleItem)
+  {
+    if (state->theItem != NULL)
+    {
+      result = state->theItem;
+      STACK_PUSH(true, state);
+    }
+  }
+  else if (theTargetPosIter != NULL)
   {
     result = NULL;
 
@@ -957,7 +996,9 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
       if (startPos <= Integer(0))
       {
-        len += startPos - Integer(1);
+        if (!theInfLen)
+          len += startPos - Integer(1);
+
         startPos = 1;
       }
 

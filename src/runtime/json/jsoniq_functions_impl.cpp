@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,19 +40,29 @@
 #include "zorba/internal/diagnostic.h"
 
 #include "context/static_context.h"
+#include "context/namespace_context.h"
 
 #include "types/casting.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
 
-#include "store/api/pul.h"
-#include "store/api/item.h"
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
-#include "store/api/copymode.h"
+#include <runtime/util/doc_uri_heuristics.h>
+
+#include <store/api/pul.h>
+#include <store/api/item.h>
+#include <store/api/item_factory.h>
+#include <store/api/store.h>
+#include <store/api/copymode.h>
+
+#include "util/uri_util.h"
+#include "util/stream_util.h"
 
 #include <zorba/store_consts.h>
+#include <zorbatypes/URI.h>
+
+#include "json_loader.h"
+
 
 namespace zorba {
 
@@ -66,6 +76,72 @@ const zstring VALUE_KEY("value");
 
 const char * OPTIONS_KEY_PREFIX = "prefix";
 const char * OPTIONS_KEY_SER_PARAMS = "serialization-parameters";
+
+const char * SEQTYPE_ANYNODE  = "node()";
+const char * SEQTYPE_COMMENT  = "comment()";
+const char * SEQTYPE_DOCUMENT = "document-node()";
+const char * SEQTYPE_ELEMENT  = "element()";
+const char * SEQTYPE_PROCINST = "processing-instruction()";
+const char * SEQTYPE_TEXT     = "text()";
+
+const char * kind2str(const store::NodeKind& aKind)
+{
+  // we do not support attibutes and namespaces as they cannot be serialized
+  switch (aKind)
+  {
+  case store::StoreConsts::anyNode:      return SEQTYPE_ANYNODE;
+  case store::StoreConsts::commentNode:  return SEQTYPE_COMMENT;
+  case store::StoreConsts::documentNode: return SEQTYPE_DOCUMENT;
+  case store::StoreConsts::elementNode:  return SEQTYPE_ELEMENT;
+  case store::StoreConsts::piNode:       return SEQTYPE_PROCINST;
+  case store::StoreConsts::textNode:     return SEQTYPE_TEXT;
+  default: return "";
+  }
+}
+
+bool str2kind(const zstring& aString, store::NodeKind& aKind)
+{
+  switch(aString.at(0))
+  {
+  case 'c':
+    if (aString == SEQTYPE_COMMENT)
+    {
+      aKind = store::StoreConsts::commentNode;
+      return true;
+    }
+    break;
+  case 'd':
+    if (aString == SEQTYPE_DOCUMENT)
+    {
+      aKind = store::StoreConsts::documentNode;
+      return true;
+    }
+    break;
+  case 'e':
+  case 'n': // "node()" maps to element for backwards compatibility
+    if (aString == SEQTYPE_ELEMENT || aString == SEQTYPE_ANYNODE)
+    {
+      aKind = store::StoreConsts::elementNode;
+      return true;
+    }
+    break;
+  case 'p':
+    if (aString == SEQTYPE_PROCINST)
+    {
+      aKind = store::StoreConsts::piNode;
+      return true;
+    }
+    break;
+  case 't':
+    if (aString == SEQTYPE_TEXT)
+    {
+      aKind = store::StoreConsts::textNode;
+      return true;
+    }
+    break;
+  }
+  return false;
+}
 
 /*******************************************************************************
   json:decode-from-roundtrip($items as json-item()*,
@@ -97,6 +173,82 @@ parseQName(store::Item_t& aResult,
   }
 }
 
+void
+JSONDecodeFromRoundtripIterator::extractChildOfKind(
+  const store::Item_t& aParent,
+  const store::NodeKind& aKind,
+  store::Item_t& aChild)
+{
+  store::Iterator_t lIt = aParent->getChildren();
+  bool lFound = false;
+  lIt->open();
+  while (! lFound && lIt->next(aChild))
+  {
+    lFound = aChild->getNodeKind() == aKind;
+  }
+  lIt->close();
+  ZORBA_ASSERT(lFound);
+}
+
+bool
+JSONDecodeFromRoundtripIterator::decodeNode(
+  const store::Item_t& aSerializedNode,
+  const store::NodeKind& aKind,
+  store::Item_t& aResult) const
+{
+  store::LoadProperties lProperties;
+  lProperties.setStoreDocument(false);
+  store::Item_t lDoc;
+  zstring lXmlString;
+  switch (aKind)
+  {
+  case store::StoreConsts::commentNode:
+  case store::StoreConsts::piNode:
+  case store::StoreConsts::textNode:
+    {
+      // we have to wrap these 3 node kinds, so we cannot care about streams
+      aSerializedNode->getStringValue2(lXmlString);
+      lXmlString = "<a>" + lXmlString + "</a>";
+      std::istringstream lStream(lXmlString.c_str());
+      lDoc = GENV.getStore().loadDocument("", "", lStream, lProperties);
+    }
+    break;
+  default:
+    if (aSerializedNode->isStreamable())
+    {
+      lDoc = GENV.getStore().loadDocument(
+            "", "", aSerializedNode->getStream(), lProperties);
+    }
+    else
+    {
+      aSerializedNode->getStringValue2(lXmlString);
+      std::istringstream lStream(lXmlString.c_str());
+      lDoc = GENV.getStore().loadDocument("", "", lStream, lProperties);
+    }
+    break;
+  }
+  if (aKind == store::StoreConsts::documentNode)
+  {
+    aResult = lDoc;
+  }
+  else
+  {
+    store::Item_t lRootElem;
+    extractChildOfKind(lDoc, store::StoreConsts::elementNode, lRootElem);
+    if (aKind == store::StoreConsts::elementNode)
+    {
+      // if we needed an element we're done
+      aResult = lRootElem;
+    }
+    else
+    {
+      // otherwise we have to pass through the wrapper that we've created
+      extractChildOfKind(lRootElem, aKind, aResult);
+    }
+  }
+  return true;
+}
+
 bool
 JSONDecodeFromRoundtripIterator::decodeXDM(
   const store::Item_t& anObj,
@@ -125,32 +277,10 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
 
   zstring lTypeNameString;
   lTypeValueItem->getStringValue2(lTypeNameString);
-  if (lTypeNameString == "node()")
+  store::NodeKind lNodeKind;
+  if (str2kind(lTypeNameString, lNodeKind))
   {
-    store::LoadProperties lProperties;
-    lProperties.setStoreDocument(false);
-    store::Item_t lDoc;
-    if (lValueValueItem->isStreamable())
-    {
-      lDoc = GENV.getStore().loadDocument(
-            "", "", lValueValueItem->getStream(), lProperties);
-    }
-    else
-    {
-      zstring lXmlString;
-      lValueValueItem->getStringValue2(lXmlString);
-      std::istringstream lStream(lXmlString.c_str());
-      lDoc = GENV.getStore().loadDocument("", "", lStream, lProperties);
-    }
-    store::Iterator_t lIt = lDoc->getChildren();
-    bool lFound = false;
-    lIt->open();
-    while (! lFound && lIt->next(aResult))
-    {
-       lFound = aResult->getNodeKind() == store::StoreConsts::elementNode;
-    }
-    lIt->close();
-    ZORBA_ASSERT(lFound);
+    return decodeNode(lValueValueItem, lNodeKind, aResult);
   }
   else
   {
@@ -184,8 +314,8 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
                                 &lTmpNsCtx,
                                 loc);
     }
+    return true;
   }
-  return true;
 }
 
 bool
@@ -390,6 +520,7 @@ JSONEncodeForRoundtripIterator::encodeArray(
   return false;
 }
 
+
 bool
 JSONEncodeForRoundtripIterator::encodeAtomic(
   const store::Item_t& aValue,
@@ -397,9 +528,11 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
   JSONEncodeForRoundtripIteratorState* aState) const
 {
   store::SchemaTypeCode typeCode = aValue->getTypeCode();
-  switch (typeCode) {
+  switch (typeCode)
+  {
   case store::XS_DOUBLE:
   case store::XS_FLOAT:
+  {
     if (aValue->getBaseItem() == NULL
         && ! aValue->isNaN() && ! aValue->isPosOrNegInf())
     {
@@ -407,17 +540,20 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
       return false;
     }
     break;
+  }
   case store::XS_STRING:
   case store::XS_INTEGER:
   case store::XS_DECIMAL:
   case store::XS_BOOLEAN:
   case store::JS_NULL:
+  {
     if (aValue->getBaseItem() == NULL)
     {
       // nothing to change, aResult is not set, the caller needs to use aValue
       return false;
     }
     break;
+  }
   default:
     break;
   }
@@ -478,23 +614,12 @@ JSONEncodeForRoundtripIterator::encodeNode(
     store::Item_t& aResult,
     JSONEncodeForRoundtripIteratorState* aState) const
 {
-  if (aNode->getNodeKind() != store::StoreConsts::elementNode)
-  {
-    // this is a temporary solution until we decide if/how we encode
-    // node kinds
-    RAISE_ERROR(
-      zerr::ZXQP0004_NOT_IMPLEMENTED,
-      loc,
-      ERROR_PARAMS(store::StoreConsts::toString(aNode->getNodeKind()))
-    );
-  }
-
   std::vector<store::Item_t> names(2);
   std::vector<store::Item_t> values(2);
 
   {
     zstring typeKey = aState->thePrefix + TYPE_KEY;
-    zstring typeValue = "node()";
+    zstring typeValue = kind2str(aNode->getNodeKind());
     GENV_ITEMFACTORY->createString(names.at(0), typeKey);
     GENV_ITEMFACTORY->createString(values.at(0), typeValue);
   }
@@ -629,51 +754,59 @@ JSONParseIteratorState::init(PlanState& aState)
 {
   PlanIteratorState::init(aState);
   theAllowMultiple = true; // default
-  theInputStream = 0;
+  theInputStream = nullptr;
   theGotOne = false;
+  loader_ = nullptr;
 }
 
 void
 JSONParseIteratorState::reset(PlanState& aState)
 {
   PlanIteratorState::reset(aState);
-  if (theInput == NULL && theInputStream)
-  {
+  if (theInput == NULL) {
     delete theInputStream;
+    theInputStream = nullptr;
   }
+  theGotOne = false;
+  delete loader_;
+  loader_ = nullptr;
 }
 
 JSONParseIteratorState::~JSONParseIteratorState()
 {
-  if (theInput == NULL && theInputStream)
-  {
+  if (theInput == NULL)
     delete theInputStream;
-  }
+  delete loader_;
 }
 
-void
-JSONParseIterator::processOptions(
-    const store::Item_t& aOptions,
-    bool& aAllowMultiple) const
+bool JSONParseIterator::processBooleanOption( store::Item_t const &options,
+                                              char const *option_name,
+                                              bool *option_value ) const
 {
-  store::Item_t lOptionName, lOptionValue;
+  store::Item_t i_option_name;
+  zstring z_option_name( option_name );
+  GENV_ITEMFACTORY->createString( i_option_name, z_option_name );
+  store::Item_t i_option_value = options->getObjectValue( i_option_name );
 
-  zstring s("jsoniq-multiple-top-level-items");
-  GENV_ITEMFACTORY->createString(lOptionName, s);
-  lOptionValue = aOptions->getObjectValue(lOptionName);
-
-  if (lOptionValue != NULL)
-  {
-    store::SchemaTypeCode lType = lOptionValue->getTypeCode();
-    if (!TypeOps::is_subtype(lType, store::XS_BOOLEAN))
-    {
-      const TypeManager* tm = theSctx->get_typemanager();
-      xqtref_t lType = tm->create_value_type(lOptionValue, loc);
-      RAISE_ERROR(jerr::JNTY0020, loc,
-      ERROR_PARAMS(lType->toSchemaString(), s, "xs:boolean"));
+  if ( i_option_value ) {
+    store::SchemaTypeCode const option_type = i_option_value->getTypeCode();
+    if ( !TypeOps::is_subtype( option_type, store::XS_BOOLEAN ) ) {
+      TypeManager const *const tm = theSctx->get_typemanager();
+      xqtref_t const option_type = tm->create_value_type( i_option_value, loc );
+      throw XQUERY_EXCEPTION(
+        jerr::JNTY0020,
+        ERROR_PARAMS(
+          option_type->toSchemaString(),
+          z_option_name,
+          "xs:boolean"
+        ),
+        ERROR_LOC( loc )
+      );
     }
-    aAllowMultiple = lOptionValue->getBooleanValue();
+    *option_value = i_option_value->getBooleanValue();
+    return true;
   }
+  return false;
 }
 
 bool
@@ -682,6 +815,8 @@ JSONParseIterator::nextImpl(
   PlanState& planState) const
 {
   store::Item_t lInput;
+  bool lStripTopLevelArray = false;
+  char const *stream_uri;
 
   JSONParseIteratorState* state;
   DEFAULT_STACK_INIT(JSONParseIteratorState, state, planState);
@@ -692,70 +827,56 @@ JSONParseIterator::nextImpl(
     {
       store::Item_t lOptions;
       consumeNext(lOptions, theChildren[1].getp(), planState);
-      processOptions(lOptions, state->theAllowMultiple);
+      processBooleanOption(
+        lOptions, "jsoniq-multiple-top-level-items", &state->theAllowMultiple
+      );
+      processBooleanOption(
+        lOptions, "jsoniq-strip-top-level-array", &lStripTopLevelArray
+      );
     }
 
     if (lInput->isStreamable())
     {
       state->theInput = lInput;
       state->theInputStream = &lInput->getStream();
+      stream_uri = get_uri( *state->theInputStream );
     }
     else
     {
       // will be deleted in the state
-      state->theInputStream = new std::stringstream(
-          lInput->getStringValue().c_str());
+      state->theInputStream =
+        new std::stringstream( lInput->getStringValue().c_str() );
+      stream_uri = nullptr;
     }
 
-    while (true)
-    {
-      try
-      {
-        // streamable string or non-literal string
-        if (state->theInput != NULL || theRelativeLocation == QueryLoc::null)
-        {
-          result = GENV_STORE.parseJSON(*state->theInputStream, 0);
-        }
-        else
-        {
-          // pass the query location of the StringLiteral to the JSON
-          // parser such that it can give better error locations.
-          zorba::internal::diagnostic::location lLoc;
-          lLoc = ERROR_LOC(theRelativeLocation);
-          result = GENV_STORE.parseJSON(*state->theInputStream, &lLoc);
-        }
-      }
-      catch (zorba::XQueryException& e)
-      {
-        // rethrow with JNDY0021
-        XQueryException xq = XQUERY_EXCEPTION(
-            jerr::JNDY0021,
-            ERROR_PARAMS(e.what()),
-            ERROR_LOC(loc));
+    state->loader_ = new json::loader(
+      *state->theInputStream, true, lStripTopLevelArray
+    );
 
-        // use location of e in case of literal string
-        if (!(theRelativeLocation == QueryLoc::null)) set_source(xq, e);
-        throw xq;
-      }
+    if ( state->theInput == NULL && theRelativeLocation ) {
+      // pass the query location of the StringLiteral to the JSON
+      // parser such that it can give better error locations.
+      state->loader_->set_loc(
+        theRelativeLocation.getFilename().c_str(),
+        theRelativeLocation.getLineBegin(),
+        theRelativeLocation.getColumnBegin()
+      );
+    }
+    if ( stream_uri )
+      state->loader_->set_loc( stream_uri, 1, 1 );
 
-      if (result != NULL)
-      {
-        if (!state->theAllowMultiple && state->theGotOne)
-        {
-          RAISE_ERROR(jerr::JNDY0021, loc,
-          ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
-        }
-        state->theGotOne = true;
-        STACK_PUSH(true, state);
-        continue;
+    while ( state->loader_->next( &result ) ) {
+      if ( !state->theAllowMultiple && state->theGotOne ) {
+        throw XQUERY_EXCEPTION(
+          jerr::JNDY0021,
+          ERROR_PARAMS( ZED( JNDY0021_UnexpectedExtraContent ) ),
+          ERROR_LOC( loc )
+        );
       }
-      else
-      {
-        break;
-      }
+      state->theGotOne = true;
+      STACK_PUSH( true, state );
     }
   }
-
   STACK_END(state);
 }
 
@@ -769,7 +890,6 @@ JSONObjectNamesIterator::nextImpl(
   PlanState& planState) const
 {
   store::Item_t input;
-  store::Item_t key;
 
   JSONObjectNamesIteratorState* state;
   DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
@@ -779,9 +899,8 @@ JSONObjectNamesIterator::nextImpl(
   state->theNames = input->getObjectKeys();
   state->theNames->open();
 
-  while (state->theNames->next(key))
+  while (state->theNames->next(result))
   {
-    result = key;
     STACK_PUSH (true, state);
   }
   state->theNames = NULL;
@@ -862,7 +981,7 @@ JSONObjectProjectIterator::nextImpl(
     {
       value = obj->getObjectValue(key);
 
-      if (value->isNode() || value->isJSONItem())
+      if (value->isStructuredItem())
         value = value->copy(NULL, copymode);
 
       newValues.push_back(value);
@@ -1045,7 +1164,7 @@ JSONItemAccessorIterator::nextImpl(
       xqtref_t type = tm->create_value_type(selector, loc);
 
       RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_23),
+      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
                    type->toSchemaString(),
                    GENV_TYPESYSTEM.INTEGER_TYPE_ONE->toSchemaString()));
     }
@@ -1063,7 +1182,7 @@ JSONItemAccessorIterator::nextImpl(
       xqtref_t type = tm->create_value_type(selector, loc);
 
       RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoTypePromotion_23),
+      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
                    type->toSchemaString(),
                    GENV_TYPESYSTEM.STRING_TYPE_ONE->toSchemaString()));
     }
@@ -1145,9 +1264,10 @@ bool JSONObjectInsertIterator::nextImpl(
 
   copymode.set(true,
                theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-               theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-               theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
-  if (content->isNode() || content->isJSONItem())
+               theSctx->preserve_ns(),
+               theSctx->inherit_ns());
+
+  if (content->isStructuredItem())
   {
     content = content->copy(NULL, copymode);
   }
@@ -1189,12 +1309,12 @@ bool JSONArrayInsertIterator::nextImpl(
 
   copymode.set(true, 
                theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-               theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-               theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+               theSctx->preserve_ns(),
+               theSctx->inherit_ns());
 
   while (consumeNext(member, theChildren[2].getp(), planState))
   {
-    if (member->isNode() || member->isJSONItem())
+    if (member->isStructuredItem())
     {
       member = member->copy(NULL, copymode);
     }
@@ -1237,12 +1357,12 @@ bool JSONArrayAppendIterator::nextImpl(
 
   copymode.set(true, 
                theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-               theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-               theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+               theSctx->preserve_ns(),
+               theSctx->inherit_ns());
 
   while (consumeNext(member, theChildren[1].getp(), planState))
   {
-    if (member->isNode() || member->isJSONItem())
+    if (member->isStructuredItem())
     {
       member = member->copy(NULL, copymode);
     }
@@ -1367,12 +1487,12 @@ bool JSONReplaceValueIterator::nextImpl(
   consumeNext(selector, theChildren[1].getp(), planState);
   consumeNext(newValue, theChildren[2].getp(), planState);
 
-  if (theCopyInput && (newValue->isNode() || newValue->isJSONItem()))
+  if (theCopyInput && (newValue->isStructuredItem()))
   {
     copymode.set(true, 
-      theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-      theSctx->preserve_mode() == StaticContextConsts::preserve_ns,
-      theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+                 theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+                 theSctx->preserve_ns(),
+                 theSctx->inherit_ns());
 
     newValue = newValue->copy(NULL, copymode);
   }
@@ -1487,8 +1607,94 @@ bool JSONBoxIterator::nextImpl(
   STACK_END(state);
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+
+void
+JSONDocIteratorState::init(PlanState& aState)
+{
+  PlanIteratorState::init(aState);
+  theStream = nullptr;
+  theGotOne = false;
+  loader_ = nullptr;
+}
+
+void
+JSONDocIteratorState::reset(PlanState& aState)
+{
+  PlanIteratorState::reset(aState);
+  theGotOne = false;
+  delete loader_;
+  loader_ = nullptr;
+}
+
+JSONDocIteratorState::~JSONDocIteratorState()
+{
+  delete loader_;
+}
+
+bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t uriItem;
+  JSONDocIteratorState* state;
+  zstring uriString;
+  zstring lErrorMessage;
+  internal::StreamResource* lStreamResource;
+  zstring lNormUri;
+  DEFAULT_STACK_INIT(JSONDocIteratorState, state, planState);
+
+  if (consumeNext(uriItem, theChildren[0].getp(), planState))
+  {
+    uriItem->getStringValue2(uriString);
+    // Normalize input to handle filesystem paths, etc.
+    normalizeInputUri(uriString, theSctx, loc, &lNormUri);
+
+    // Resolve URI to a stream
+    state->theResource = theSctx->resolve_uri(
+        lNormUri,
+        internal::EntityData::DOCUMENT,
+        lErrorMessage);
+
+    lStreamResource =
+        dynamic_cast<internal::StreamResource*>(state->theResource.get());
+    if (lStreamResource == NULL) {
+      throw XQUERY_EXCEPTION(
+          err::FODC0002,
+          ERROR_PARAMS(uriString, lErrorMessage),
+          ERROR_LOC(loc));
+    }
+
+    state->theStream = lStreamResource->getStream();
+    if (state->theStream == NULL) {
+      throw XQUERY_EXCEPTION(
+          err::FODC0002,
+          ERROR_PARAMS( uriString ),
+          ERROR_LOC(loc));
+    }
+
+    state->theGotOne = false;
+    state->loader_ = new json::loader( *state->theStream, true );
+
+    while ( state->loader_->next( &result ) )
+    {
+      if (!state->theGotOne)
+      {
+        state->theGotOne = true;
+        STACK_PUSH(true, state);
+      } else {
+        RAISE_ERROR(
+            jerr::JNDY0021,
+            loc,
+            ERROR_PARAMS(ZED(JNDY0021_UnexpectedExtraContent)));
+      }
+    }
+  }
+  
+  STACK_END(state);
+}
 
 } /* namespace zorba */
-/* vim:set et sw=2 ts=2: */
 
 #endif /* ZORBA_WITH_JSON */
+/* vim:set et sw=2 ts=2: */

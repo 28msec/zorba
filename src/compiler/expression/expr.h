@@ -28,7 +28,7 @@
 
 #include "functions/signature.h"
 
-#include "compiler/expression/var_expr.h"
+#include "compiler/expression/expr_base.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -37,7 +37,6 @@
 
 #include "store/api/item.h"
 
-#include "runtime/core/sequencetypes.h"
 
 namespace zorba
 {
@@ -47,6 +46,7 @@ class expr_visitor;
 class NodeNameTest;
 class signature;
 class pragma;
+
 
 /*******************************************************************************
   [68] IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
@@ -58,14 +58,15 @@ class if_expr : public expr
   friend class expr;
 
 protected:
-  expr* theCondExpr;
-  expr* theThenExpr;
-  expr* theElseExpr;
+  expr  * theCondExpr;
+  expr  * theThenExpr;
+  expr  * theElseExpr;
 
 protected:
   if_expr(
         CompilerCB* ccb,
         static_context* sctx,
+        user_function* udf,
         const QueryLoc& loc,
         expr* c,
         expr* t,
@@ -79,8 +80,6 @@ public:
   expr* get_else_expr() const { return theElseExpr; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -97,28 +96,25 @@ class order_expr : public expr
   friend class ExprIterator;
   friend class expr;
 
-public:
-  enum order_type_t
-  {
-    ordered,
-    unordered
-  };
+protected:
+  expr         * theInput;
+  DocOrderMode   theType;
 
 protected:
-  order_type_t theType;
-  expr*       theExpr;
-
-protected:
-  order_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, order_type_t, expr*);
+  order_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      DocOrderMode,
+      expr*);
 
 public:
-  order_type_t get_type() const { return theType; }
+  expr* get_input() const { return theInput; }
 
-  expr* get_expr() const { return theExpr; }
+  DocOrderMode get_type() const { return theType; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -136,23 +132,24 @@ class validate_expr : public expr
   friend class expr;
 
 protected:
-  ParseConstants::validation_mode_t theMode;
-  store::Item_t                     theTypeName;
-  rchandle<TypeManager>             theTypeMgr;
-  expr*                            theExpr;
+  expr                             * theInput;
+  ParseConstants::validation_mode_t  theMode;
+  store::Item_t                      theTypeName;
+  rchandle<TypeManager>              theTypeMgr;
 
 protected:
   validate_expr(
-        CompilerCB* ccb,
-        static_context* sctx,
-        const QueryLoc&,
-        ParseConstants::validation_mode_t,
-        const store::Item_t& aTypeName,
-        expr*,
-        rchandle<TypeManager>);
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      ParseConstants::validation_mode_t,
+      const store::Item_t& aTypeName,
+      expr*,
+      rchandle<TypeManager>);
 
 public:
-  expr* get_expr() const { return theExpr; }
+  expr* get_input() const { return theInput; }
 
   const store::Item* get_type_name() const { return theTypeName; }
 
@@ -161,8 +158,6 @@ public:
   ParseConstants::validation_mode_t get_valmode() const { return theMode; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -184,6 +179,7 @@ protected:
   namespace_context_base_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr_kind_t kind,
       const namespace_context* aNSCtx);
@@ -193,7 +189,7 @@ public:
 };
 
 
-/***************************************************************************//**
+/*******************************************************************************
   Base for cast, treat, promote, castable, instanceof
 ********************************************************************************/
 class cast_or_castable_base_expr : public expr
@@ -202,20 +198,21 @@ class cast_or_castable_base_expr : public expr
   friend class expr;
 
 protected:
-  expr*   theInputExpr;
-  xqtref_t theTargetType;
+  expr     * theInput;
+  xqtref_t   theTargetType;
 
 protected:
   cast_or_castable_base_expr(
-        CompilerCB* ccb,
-        static_context* sctx,
-        const QueryLoc& loc,
-        expr_kind_t kind,
-        expr* input,
-        const xqtref_t& type);
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr_kind_t kind,
+      expr* input,
+      const xqtref_t& type);
 
 public:
-  expr* get_input() const { return theInputExpr; }
+  expr* get_input() const { return theInput; }
 
   xqtref_t get_target_type() const;
 
@@ -225,8 +222,8 @@ public:
 };
 
 
-/***************************************************************************//**
-  Base for cast, treat, promote
+/*******************************************************************************
+  Base for cast, promote, treat
 ********************************************************************************/
 class cast_base_expr : public cast_or_castable_base_expr
 {
@@ -234,16 +231,17 @@ class cast_base_expr : public cast_or_castable_base_expr
 
 protected:
   cast_base_expr(
-        CompilerCB* ccb,
-        static_context* sctx,
-        const QueryLoc& loc,
-        expr_kind_t kind,
-        expr* input,
-        const xqtref_t& type);
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr_kind_t kind,
+      expr* input,
+      const xqtref_t& type);
 };
 
 
-/***************************************************************************//**
+/*******************************************************************************
   CastExpr ::= UnaryExpr ( "cast" "as" SingleType )?
 
   SingleType ::= AtomicType "?"?
@@ -255,71 +253,20 @@ class cast_expr : public cast_base_expr
   friend class expr;
 
 protected:
+  bool theAllowsEmtpyInput;
+
+protected:
   cast_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*,
-      const xqtref_t&);
+      const xqtref_t&,
+      bool allowsEmptyInput);
 
 public:
-  bool is_optional() const;
-
-  expr* cloneImpl(substitution_t& s) const;
-
-  void accept(expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-};
-
-
-/***************************************************************************//**
-  TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
-
-  theCheckPrime : Normally, this is true. If false, then during runtime, only
-                  the cardinality of theInputExpr will be checked w.r.t. the
-                  quantifier of theTargetType. theCheckPrime is set to false
-                  by the optimizer, if it discovers that the prime type of the
-                  static type of theInputExpr is a subtype of the prime type of
-                  theTargetType.
-
-  theFnQName    : Stores the QName of the function, if the treat expr is used
-                  to cast the function's body to its result type
-********************************************************************************/
-class treat_expr : public cast_base_expr
-{
-  friend class ExprManager;
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-  TreatIterator::ErrorKind theErrorKind;
-  bool                     theCheckPrime;
-  store::Item_t            theQName;
-
-protected:
-  treat_expr(
-        CompilerCB* ccb,
-        static_context* sctx,
-        const QueryLoc&,
-        expr*,
-        const xqtref_t&,
-        TreatIterator::ErrorKind err,
-        bool check_prime = true,
-        store::Item* qname = NULL);
-
-public:
-  TreatIterator::ErrorKind get_err() const { return theErrorKind; }
-
-  bool get_check_prime() const { return theCheckPrime; }
-
-  void set_check_prime(bool check_prime) { theCheckPrime = check_prime; }
-
-  void set_qname(const store::Item_t& qname) { theQName = qname; }
-
-  store::Item_t get_qname() const { return theQName; }
-
-  expr* cloneImpl(substitution_t& s) const;
+  bool allows_empty_input() const { return theAllowsEmtpyInput; }
 
   void accept(expr_visitor&);
 
@@ -333,31 +280,37 @@ public:
   1. Let "input sequence" be the result of theInputExpr, and "output sequence"
      be the result of the promote_expr.
 
-  2. Raise error if the cardinality of the input sequence is not compatible with
+  2. The input sequence is assumed to be empty or consist of atomic items only.
+
+  4. theTargetType is always a subtype of xs:anyAtomicType*
+
+  5. Raise error if the cardinality of the input sequence is not compatible with
      the quantifier of theTargetType.
 
-  3. For each item I in the input sequence, let F(I) be the result of the
+  6. For each item I in the input sequence, let F(I) be the result of the
      function defined as follows:
 
      - Let "actual type" be the dynamic type of I, and "target type" be the prime
        type of theTargetType.
-     - If the target type is the NONE type, F(I) = error, else
+     - If the target type is the NONE type, F(I) = raise error, else
      - If the actual type is a subtype of the target type, F(I) = I, else
-     - If the target type is not an atomic type, F(I) = error, else
      - If the actual type is untypedAtomic and the target type is not QName,
        F(I) = cast(I, target type), else
      - If the actual type is (subtype of) decimal and the target type is float,
-       F(I) = cast(I, target type), else
+       F(I) = cast(I, float), else
      - If the actual type is (subtype of) decimal or float and the target type is double,
-       F(I) = cast(I, target type), else
+       F(I) = cast(I, double), else
      - If the actual type is anyURI and the target type is string,
        F(I) = cast(I, string), else
-     - F(I) = error
+     - F(I) = raise error
 
   4. Put F(I) in the output sequence.
 
-  theFnQName:
-  -----------
+  theErrorKind :
+  --------------
+
+  theQName:
+  ---------
   Stores the QName of the function, if the promote expr is used to cast the
   function's body to its result type
 
@@ -369,23 +322,78 @@ class promote_expr : public cast_base_expr
   friend class expr;
 
 protected:
-  PromoteIterator::ErrorKind theErrorKind;
-  store::Item_t              theQName;
+  PromoteErrorKind theErrorKind;
+  store::Item_t    theQName;
 
 protected:
   promote_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* input,
       const xqtref_t& type,
-      PromoteIterator::ErrorKind err,
+      PromoteErrorKind err,
       store::Item* qname);
 
 public:
-  expr* cloneImpl(substitution_t& s) const;
+  PromoteErrorKind get_err() const { return theErrorKind; }
 
-  PromoteIterator::ErrorKind get_err() const { return theErrorKind; }
+  void set_qname(const store::Item_t& qname) { theQName = qname; }
+
+  store::Item_t get_qname() const { return theQName; }
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+  TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
+
+  theCheckPrime :
+  ---------------
+  Normally, this is true. If false, then during runtime, only the cardinality of
+  theInputExpr will be checked w.r.t. the quantifier of theTargetType. 
+  theCheckPrime is set to false by the optimizer, if it discovers that the prime
+  type of the static type of theInputExpr is a subtype of the prime type of 
+  theTargetType.
+
+  theQName :
+  ------------
+  Stores the QName of the function, if the treat expr is used to cast the
+  function's body to its result type
+********************************************************************************/
+class treat_expr : public cast_base_expr
+{
+  friend class ExprManager;
+  friend class ExprIterator;
+  friend class expr;
+
+protected:
+  TreatErrorKind  theErrorKind;
+  bool            theCheckPrime;
+  store::Item_t   theQName;
+
+protected:
+  treat_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      expr*,
+      const xqtref_t&,
+      TreatErrorKind err,
+      bool check_prime = true,
+      store::Item* qname = NULL);
+
+public:
+  TreatErrorKind get_err() const { return theErrorKind; }
+
+  bool get_check_prime() const { return theCheckPrime; }
+
+  void set_check_prime(bool check_prime) { theCheckPrime = check_prime; }
 
   void set_qname(const store::Item_t& qname) { theQName = qname; }
 
@@ -406,12 +414,13 @@ class castable_base_expr : public cast_or_castable_base_expr
 
 protected:
   castable_base_expr(
-        CompilerCB* ccb,
-        static_context* sctx,
-        const QueryLoc&,
-        expr_kind_t kind,
-        expr*,
-        const xqtref_t&);
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      expr_kind_t kind,
+      expr*,
+      const xqtref_t&);
 };
 
 
@@ -427,17 +436,20 @@ class castable_expr : public castable_base_expr
   friend class expr;
 
 protected:
+  bool theAllowsEmtpyInput;
+
+protected:
   castable_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*,
-      const xqtref_t&);
+      const xqtref_t&,
+      bool allowsEmtpyInput);
 
 public:
-  bool is_optional() const;
-
-  expr* cloneImpl(substitution_t& s) const;
+  bool allows_empty_input() const { return theAllowsEmtpyInput; }
 
   void accept(expr_visitor&);
 
@@ -449,6 +461,7 @@ public:
   InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
 
   theCheckPrimeOnly :
+  -------------------
   Normally, this is false. It is set to true only if this is an instanceof expr
   that is created during the translation of a PredicateList (see translator.cpp).
   This flag is used during the PartialEval rule.
@@ -467,6 +480,7 @@ protected:
   instanceof_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*,
       const xqtref_t&,
@@ -474,8 +488,6 @@ protected:
 
 public:
   bool getCheckPrimeOnly() const { return theCheckPrimeOnly; }
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -500,13 +512,14 @@ class name_cast_expr : public namespace_context_base_expr
   friend class expr;
 
 private:
-  expr*             theInputExpr;
-  bool               theIsAttrName;
+  expr  * theInputExpr;
+  bool    theIsAttrName;
 
 protected:
   name_cast_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
       expr*,
       const namespace_context*,
@@ -518,8 +531,6 @@ public:
   bool is_attr_name() const { return theIsAttrName; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -537,11 +548,17 @@ class doc_expr : public expr
   friend class expr;
 
 protected:
-  expr* theContent;
-  bool   theCopyInputNodes;
+  expr  * theContent;
+  bool    theCopyInputNodes;
 
 protected:
-  doc_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr* content, bool copyNodes);
+  doc_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      expr* content,
+      bool copyNodes);
 
 public:
   expr* getContent() const { return theContent; }
@@ -551,8 +568,6 @@ public:
   void setCopyInputNodes() { theCopyInputNodes = true; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -593,25 +608,27 @@ class elem_expr : public namespace_context_base_expr
   friend class expr;
 
 protected:
-  expr* theQNameExpr;
-  expr* theAttrs;
-  expr* theContent;
-  bool   theCopyInputNodes;
+  expr  * theQNameExpr;
+  expr  * theAttrs;
+  expr  * theContent;
+  bool    theCopyInputNodes;
 
 protected:
   elem_expr(
-        CompilerCB* ccb,
-        static_context* sctx,
-        const QueryLoc&,
-        expr* qnameExpr,
-        expr* attrs,
-        expr* content,
-        const namespace_context* nsCtx,
-        bool copyNodes);
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      expr* qnameExpr,
+      expr* attrs,
+      expr* content,
+      const namespace_context* nsCtx,
+      bool copyNodes);
 
   elem_expr(
         CompilerCB* ccb,
         static_context* sctx,
+        user_function* udf,
         const QueryLoc&,
         expr* qnameExpr,
         expr* content,
@@ -631,8 +648,6 @@ public:
 
   void compute_scripting_kind();
   
-  expr* cloneImpl(substitution_t& s) const;  
-
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
@@ -670,16 +685,17 @@ class attr_expr : public expr
   friend class expr;
 
 protected:
-  expr* theQNameExpr;
-  expr* theValueExpr;
+  expr  * theQNameExpr;
+  expr  * theValueExpr;
 
 protected:
   attr_expr(
-    CompilerCB* ccb,
-    static_context* sctx,
-    const QueryLoc& loc,
-    expr* aQNameExpr,
-    expr* aValueExpr);
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr* aQNameExpr,
+      expr* aValueExpr);
 
 public:
   expr* getQNameExpr() const { return theQNameExpr; }
@@ -690,7 +706,42 @@ public:
 
   void compute_scripting_kind();
 
-  expr* cloneImpl(substitution_t& s) const;
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class namespace_expr : public expr
+{
+  friend class ExprManager;
+  friend class ExprIterator;
+  friend class expr;
+
+protected:
+  expr  * thePrefixExpr;
+  expr  * theUriExpr;
+
+protected:
+  namespace_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr* preExpr,
+      expr* uriExpr);
+
+public:
+  expr* getPrefixExpr() const { return thePrefixExpr; }
+
+  expr* getUriExpr() const { return theUriExpr; }
+
+  const store::Item* getPrefix() const;
+
+  void compute_scripting_kind();
 
   void accept(expr_visitor&);
 
@@ -698,7 +749,7 @@ public:
 };
 
 
-/***************************************************************************//**
+/*******************************************************************************
 
 ********************************************************************************/
 class text_expr : public expr
@@ -707,33 +758,25 @@ class text_expr : public expr
   friend class ExprIterator;
   friend class expr;
 
-public:
-  typedef enum
-  {
-    text_constructor,
-    comment_constructor
-  } text_constructor_type;
-
 protected:
-  text_constructor_type type;
-  expr*                theContentExpr;
+  TextConstructorType   type;
+  expr                * theContentExpr;
 
 protected:
   text_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc&,
-      text_constructor_type,
+      TextConstructorType,
       expr*);
 
 public:
   expr* get_text() const { return theContentExpr; }
 
-  text_constructor_type get_type() const { return type; }
+  TextConstructorType get_type() const { return type; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;  
 
   void accept(expr_visitor&);
 
@@ -751,11 +794,17 @@ class pi_expr : public expr
   friend class expr;
 
 protected:
-  expr* theTargetExpr;
-  expr* theContentExpr;
+  expr * theTargetExpr;
+  expr * theContentExpr;
 
 protected:
-  pi_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr*, expr*);
+  pi_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      expr*,
+      expr*);
 
 public:
   expr* get_target_expr() const { return theTargetExpr; }
@@ -763,8 +812,6 @@ public:
   expr* get_content_expr() const { return theContentExpr; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;  
 
   void accept(expr_visitor&);
 
@@ -785,30 +832,75 @@ protected:
   store::Item_t theValue;
 
 protected:
-  const_expr(CompilerCB*, static_context*, const QueryLoc&, zstring& sval);
+  const_expr(
+      CompilerCB*,
+      static_context*,
+      user_function* udf,
+      const QueryLoc&,
+      zstring& sval);
 
-  const_expr(CompilerCB*, static_context*, const QueryLoc&, const std::string& sval);
+  const_expr(
+      CompilerCB*,
+      static_context*,
+      user_function* udf,
+      const QueryLoc&,
+      const std::string& sval);
 
-  const_expr(CompilerCB*, static_context*, const QueryLoc&, const char* sval);
+  const_expr(
+      CompilerCB*,
+      static_context*,
+      user_function* udf,
+      const QueryLoc&,
+      const char* sval);
 
-  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_integer);
+  const_expr(
+      CompilerCB*,
+      static_context*,
+      user_function* udf,
+      const QueryLoc&,
+      xs_integer);
 
-  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_decimal);
+  const_expr(
+      CompilerCB*,
+      static_context*,
+      user_function* udf,
+      const QueryLoc&,
+      xs_decimal);
 
-  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_double);
+  const_expr(
+      CompilerCB*,
+      static_context*,
+      user_function* udf,
+      const QueryLoc&,
+      xs_double);
 
-  const_expr(CompilerCB*, static_context*, const QueryLoc&, xs_boolean);
+  const_expr(
+      CompilerCB*,
+      static_context*,
+      user_function* udf,
+      const QueryLoc&,
+      xs_boolean);
 
-  const_expr(CompilerCB*, static_context*, const QueryLoc&, const store::Item_t&);
+  const_expr(
+      CompilerCB*,
+      static_context*,
+      user_function* udf,
+      const QueryLoc&,
+      const store::Item_t&);
 
-  const_expr(CompilerCB*, static_context*, const QueryLoc&, const char* ns, const char* pre, const char* local);
+  const_expr(
+      CompilerCB*,
+      static_context*,
+      user_function* udf,
+      const QueryLoc&,
+      const char* ns,
+      const char* pre,
+      const char* local);
 
 public:
   store::Item* get_val() const { return theValue.getp(); }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -826,13 +918,22 @@ class extension_expr : public expr
   friend class expr;
 
 protected:
-  std::vector<pragma*> thePragmas;
-  expr*                theExpr;
+  std::vector<pragma*>   thePragmas;
+  expr                 * theExpr;
 
 protected:
-  extension_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&);
+  extension_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&);
 
-  extension_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr*);
+  extension_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      expr*);
 
 public:
   void add(pragma* p) { thePragmas.push_back(p); }
@@ -840,8 +941,6 @@ public:
   expr* get_expr() const { return theExpr; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 
@@ -887,6 +986,11 @@ public:
     err_module,
     err_line_no,
     err_column_no,
+    zerr_data_uri,
+    zerr_data_line_no,
+    zerr_data_column_no,
+    zerr_line_no_end,
+    zerr_column_no_end,
     zerr_stack_trace
   };
 
@@ -931,7 +1035,12 @@ protected:
   std::vector<catch_clause*> theCatchClauses;
 
 protected:
-  trycatch_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc&, expr* tryExpr);
+  trycatch_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc&,
+      expr* tryExpr);
 
 public:
   expr* get_try_expr() const { return theTryExpr; }
@@ -949,8 +1058,6 @@ public:
   const catch_clause* operator[](csize i) const { return theCatchClauses[i]; }
 
   void compute_scripting_kind();
-
-  expr* cloneImpl(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 
@@ -976,21 +1083,24 @@ class wrapper_expr : public expr
   friend class ExprManager;
 
 protected:
-  expr* theWrappedExpr;
+  expr    * theInput;
 
 protected:
-  wrapper_expr(CompilerCB* ccb, static_context* sctx, const QueryLoc& loc, expr* wrapped);
+  wrapper_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr* wrapped);
 
 public:
-  expr* get_expr() const { return theWrappedExpr; }
+  expr* get_input() const { return theInput; }
 
-  void set_expr(expr* e) { theWrappedExpr = e;}
+  void set_expr(expr* e) { theInput = e;}
 
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
-
-  expr* cloneImpl(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -1006,33 +1116,34 @@ class function_trace_expr : public expr
   friend class ExprManager;
 
 protected:
-  expr*        theExpr;
-  store::Item_t theFunctionName;
-  QueryLoc      theFunctionLocation;
-  QueryLoc      theFunctionCallLocation;
-  unsigned int  theFunctionArity;
+  expr         * theInput;
+  store::Item_t  theFunctionName;
+  QueryLoc       theFunctionLocation;
+  QueryLoc       theFunctionCallLocation;
+  unsigned int   theFunctionArity;
 
 protected:
   function_trace_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* aChild);
 
-  function_trace_expr(expr* aExpr);
+  function_trace_expr(
+      user_function* udf,
+      expr* aExpr);
 
 public:
   virtual ~function_trace_expr();
+
+  expr* get_input() const { return theInput; }
 
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
 
-  expr* cloneImpl(substitution_t& s) const;
-
   std::ostream& put(std::ostream&) const;
-
-  expr* get_expr() const { return theExpr; }
 
   void setFunctionName(store::Item_t aFunctionName)
   {
@@ -1084,16 +1195,21 @@ public:
   --------
   The expr that computes the query string to be evaluated by eval.
 
-  theVars:
-  --------
-  There is one "eval" var (of kind var_expr::eval_var) for each var that is in
-  scope where the call to the eval function appears at.
+  theOuterVarNames:
+  -----------------
+  The names of all the in-scope variables at the place where the call to the
+  eval function appears at.
+
+  theOuterVarTypes:
+  -----------------
+  The types of all the in-scope variables at the place where the call to the
+  eval function appears at.
 
   theArgs:
   --------
-  The domain expr of each eval var. Initially, the domain expr of an eval var
-  is always another var. However, that other var may be later inlined, so in
-  general, the domain expr of an eval var may be any expr.
+  For each in-scope var, the vector contains an expr that returns the value of
+  the var. The expr is either a reference to the var itself, or the domain expr
+  of that var, if that var was inlined.
 
   theInnerScriptingKind:
   ----------------------
@@ -1109,19 +1225,23 @@ class eval_expr : public namespace_context_base_expr
   friend class ExprManager;
 
 protected:
-  expr*                      theExpr;
+  expr                      * theExpr;
 
-  std::vector<var_expr*>     theVars;
-  std::vector<expr*>         theArgs;
+  std::vector<store::Item_t>  theOuterVarNames;
+
+  std::vector<xqtref_t>       theOuterVarTypes;
+
+  std::vector<expr*>          theArgs;
 
   expr_script_kind_t          theInnerScriptingKind;
+
   bool                        theDoNodeCopy;
 
 protected:
   eval_expr(
-      CompilerCB* creating_ccb,
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* e,
       expr_script_kind_t scriptingKind,
@@ -1132,15 +1252,13 @@ public:
 
   expr* get_arg_expr(csize i) { return theArgs[i]; }
 
-  csize var_count() const { return theVars.size(); }
+  csize num_vars() const { return theOuterVarNames.size(); }
 
-  const var_expr* get_var(csize i) const { return theVars[i]; }
+  const std::vector<store::Item_t>& get_var_names() const { return theOuterVarNames; }
 
-  void add_var(var_expr* var, expr* arg)
-  {
-    theVars.push_back(var);
-    theArgs.push_back(arg);
-  }
+  const std::vector<xqtref_t>& get_var_types() const { return theOuterVarTypes; }
+
+  void add_var(var_expr* var);
 
   expr_script_kind_t get_inner_scripting_kind() const;
 
@@ -1151,8 +1269,6 @@ public:
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
-
-  expr* cloneImpl(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -1185,12 +1301,13 @@ private:
   expr*                      theExpr;
   checked_vector<var_expr*>  theVars;
   std::vector<expr*>         theArgs;
-  bool                        theIsVarDeclaration;
+  bool                       theIsVarDeclaration;
 
 protected:
   debugger_expr(
       CompilerCB* ccb,
       static_context* sctx,
+      user_function* udf,
       const QueryLoc& loc,
       expr* aChild,
       namespace_context* nsCtx,
@@ -1209,11 +1326,7 @@ public:
 
   const var_expr* get_var(csize i) const { return theVars[i]; }
 
-  void add_var(var_expr* var, expr* arg)
-  {
-    theVars.push_back(var);
-    theArgs.push_back(arg);
-  }
+  void add_var(var_expr* var, expr* arg);
 
   void compute_scripting_kind();
 };

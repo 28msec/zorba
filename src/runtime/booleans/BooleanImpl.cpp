@@ -629,26 +629,27 @@ void CompareIterator::valueCasting(
   store::SchemaTypeCode type1 = item1->getTypeCode();
 
   // all untyped Atomics to String
-  if (TypeOps::is_subtype(type0, store::XS_UNTYPED_ATOMIC))
+  if (type0 == store::XS_UNTYPED_ATOMIC)
   {
-    GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
-
-    if  (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
+    if  (type1 == store::XS_UNTYPED_ATOMIC)
     {
-      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+      castItem0.transfer(item0);
+      castItem1.transfer(item1);
     }
     else
     {
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_STRING, NULL, loc);
+
       if (!GenericCast::promote(castItem1, item1, store::XS_STRING, tm, loc))
         castItem1.transfer(item1);
     }
   }
-  else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
+  else if (type1 == store::XS_UNTYPED_ATOMIC)
   {
     if (!GenericCast::promote(castItem0, item0, store::XS_STRING, tm, loc))
       castItem0.transfer(item0);
 
-    GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+    GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_STRING, NULL, loc);
   }
   else
   {
@@ -810,45 +811,45 @@ void CompareIterator::generalCasting(
   store::SchemaTypeCode type0 = item0->getTypeCode();
   store::SchemaTypeCode type1 = item1->getTypeCode();
 
-  if (TypeOps::is_subtype(type0, store::XS_UNTYPED_ATOMIC))
+  if (type0 == store::XS_UNTYPED_ATOMIC)
   {
     if (TypeOps::is_numeric(type1))
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_DOUBLE, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_DOUBLE, NULL, loc);
 
       GenericCast::promote(castItem1, item1, store::XS_DOUBLE, tm, loc);
     }
-    else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
+    else if (type1 == store::XS_UNTYPED_ATOMIC)
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
-      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+      castItem0.transfer(item0);
+      castItem1.transfer(item1);
     }
     else if (TypeOps::is_subtype(type1, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_STRING, NULL, loc);
       castItem1.transfer(item1);
     }
     else
     {
-      GenericCast::castToAtomic(castItem0, item0, type1, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, type1, NULL, loc);
       castItem1.transfer(item1);
     }
   }
-  else if (TypeOps::is_subtype(type1, store::XS_UNTYPED_ATOMIC))
+  else if (type1 == store::XS_UNTYPED_ATOMIC)
   {
     if (TypeOps::is_numeric(type0))
     {
-      GenericCast::castToAtomic(castItem1, item1, store::XS_DOUBLE, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_DOUBLE, NULL, loc);
       GenericCast::promote(castItem0, item0, store::XS_DOUBLE, tm, loc);
     }
     else if (TypeOps::is_subtype(type0, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_STRING, NULL, loc);
       castItem0.transfer(item0);
     }
     else
     {
-      GenericCast::castToAtomic(castItem1, item1, type0, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, type0, NULL, loc);
       castItem0.transfer(item0);
     }
   }

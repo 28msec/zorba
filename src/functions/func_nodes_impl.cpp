@@ -45,10 +45,8 @@ xqtref_t fn_zorba_node_copy::getReturnType(const fo_expr* caller) const
 ********************************************************************************/
 bool fn_zorba_node_copy::mustCopyInputNodes(expr* fo, csize input) const
 {
-  static_context* lSctx = fo->get_sctx();
-  return
-    lSctx->preserve_mode() == StaticContextConsts::no_preserve_ns ||
-    lSctx->construction_mode() == StaticContextConsts::cons_strip;
+  static_context* sctx = fo->get_sctx();
+  return (sctx->preserve_ns() && sctx->inherit_ns());
 }
  
 } /* namespace zorba */
