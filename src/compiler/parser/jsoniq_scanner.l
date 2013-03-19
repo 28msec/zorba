@@ -31,7 +31,7 @@
 #include <iostream>
 #include <string>
 
-#include "compiler/parser/xquery_driver.h"
+#include "compiler/parser/jsoniq_driver.h"
 #include "util/xml_util.h"
 
 #ifdef __GNUC__
@@ -40,17 +40,17 @@
 #  pragma GCC diagnostic ignored "-Wparentheses"
 #endif
 
-#include "compiler/parser/xquery_parser.hpp"
+#include "compiler/parser/jsoniq_parser.hpp"
 
 #ifdef __GNUC__
 #  pragma GCC diagnostic warning "-Wparentheses"
 #endif
 
-#include "compiler/parser/xquery_scanner.h"
+#include "compiler/parser/jsoniq_scanner.h"
 
 
-typedef zorba::xquery_parser::token token;
-typedef zorba::xquery_parser::token_type token_type;
+typedef zorba::jsoniq_parser::token token;
+typedef zorba::jsoniq_parser::token_type token_type;
 
   /*______________________________________________________________________
    |
@@ -105,7 +105,7 @@ typedef zorba::xquery_parser::token_type token_type;
   TRY_TOKEN_INTERNAL(ttype, put_uri(yytext, yyleng), yytext, unrecognizedToken)
 
   // Returns 0 on success, non-zero on error
-int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba::xquery_scanner* scanner, zorba::xquery_parser::location_type* yylloc)
+int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba::jsoniq_scanner* scanner, zorba::jsoniq_parser::location_type* yylloc)
 {
   std::string entity;
   const char* temp;
@@ -174,7 +174,7 @@ int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba:
 #define yyterminate() return token::_EOF
 
 
-std::string start_xquery_state(int);   /* forward declaration, used by YY_USER_ACTION */
+std::string start_jsoniq_state(int);   /* forward declaration, used by YY_USER_ACTION */
 
 /*
   The macro YY_USER_ACTION can be defined to provide an action which is
@@ -195,7 +195,7 @@ std::string start_xquery_state(int);   /* forward declaration, used by YY_USER_A
 #define YY_USER_ACTION \
 { \
   if (yy_flex_debug) { \
-    std::cerr << "<" << start_xquery_state(YY_START) << ">" << "\""<<yytext<<"\"" << std::endl; \
+    std::cerr << "<" << start_jsoniq_state(YY_START) << ">" << "\""<<yytext<<"\"" << std::endl; \
   } \
   \
   int last_endl = 0;\
@@ -219,14 +219,14 @@ std::string start_xquery_state(int);   /* forward declaration, used by YY_USER_A
    *  Scanner options                                                     *
    *______________________________________________________________________*/
 
-%option outfile="xquery_scanner.yy.cpp"
+%option outfile="jsoniq_scanner.yy.cpp"
 %option noyywrap
 %option batch
 %option debug
 %option stack
 %option nounistd
 %option c++
-%option prefix="Zorba"
+%option prefix="ZorbaJSONiq"
 
   /*_____________________________________________________________________
    |
@@ -281,7 +281,7 @@ EscapeQuot  {Quote}{Quote}
    |  NCName definition
    |______________________________________________________________________*/
 NCNameStartChar       ({Letter}|"_")
-NCNameChar            ({Letter}|{Digit}|[._-])
+NCNameChar            ({Letter}|{Digit}|[_-])
 
 NCName                ({NCNameStartChar}{NCNameChar}*)
 
@@ -392,7 +392,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
 
 %{
-  typedef zorba::xquery_parser::token token;
+  typedef zorba::jsoniq_parser::token token;
 %}
 
 
@@ -513,6 +513,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "schema" { return token::SCHEMA; }
 "copy-namespaces" { return token::COPY_NAMESPACES; }
 "for" { return token::FOR; }
+"from" { return token::FOR; }
 "let" { return token::LET; }
 "allowing" { return token::ALLOWING; }
 "sliding" { return token::SLIDING; }
@@ -710,6 +711,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "stable" { return token::STABLE; }
 "or" { return token::OR; }
 "return" { return token::RETURN; }
+"select" { return token::RETURN; }
 "satisfies" { return token::SATISFIES; }
 "to" { return token::TO; }
 "union" { return token::UNION; }
@@ -1155,7 +1157,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
 %%
 
-std::string start_xquery_state(int state)
+std::string start_jsoniq_state(int state)
 {
   switch (state)
   {
@@ -1180,39 +1182,39 @@ std::string start_xquery_state(int state)
     case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
     case MODE_START_TAG: return "MODE_START_TAG";
     case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
-    default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_xquery_state() in xquery_scanner.l \n";
+    default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_jsoniq_state() in xquery_scanner.l \n";
   }
 }
 
 
 namespace zorba {
 
-xquery_scanner::xquery_scanner(
-  xquery_driver* aDriver,
+jsoniq_scanner::jsoniq_scanner(
+  jsoniq_driver* aDriver,
   std::istream* i,
   std::ostream* o)
   :
-  ZorbaFlexLexer(i, o), theDriver(aDriver), cond_stk_depth(0), yy_comp_constr_qname("")
+  ZorbaJSONiqFlexLexer(i, o), theDriver(aDriver), cond_stk_depth(0), yy_comp_constr_qname("")
 {
 }
 
-xquery_scanner::~xquery_scanner()
+jsoniq_scanner::~jsoniq_scanner()
 {
 }
 
-void xquery_scanner::set_yy_flex_debug(bool aBool)
+void jsoniq_scanner::set_yy_flex_debug(bool aBool)
 {
   yy_flex_debug = aBool;
 }
 
-int xquery_scanner::interpretAsLessThan()
+int jsoniq_scanner::interpretAsLessThan()
 {
   BEGIN INITIAL;
   POP_STATE();
   return 0;
 }
 
-int xquery_scanner::yy_get_start_stack_ptr() const
+int jsoniq_scanner::yy_get_start_stack_ptr() const
 {
   return yy_start_stack_ptr;
 }
@@ -1223,7 +1225,7 @@ int xquery_scanner::yy_get_start_stack_ptr() const
 #undef yylex
 #endif
 
-int ZorbaFlexLexer::yylex()
+int ZorbaJSONiqFlexLexer::yylex()
 {
   return 0;
 }

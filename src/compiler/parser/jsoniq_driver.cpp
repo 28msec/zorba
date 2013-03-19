@@ -17,7 +17,7 @@
 
 #include <fstream>
 #include "system/properties.h"
-#include "compiler/parser/xquery_driver.h"
+#include "compiler/parser/jsoniq_driver.h"
 
 #ifdef __GNUC__
   // disable a warning in location.hh which comes with bison
@@ -25,8 +25,8 @@
 #  pragma GCC diagnostic ignored "-Wparentheses"
 #endif
 
-#include "compiler/parser/xquery_scanner.h"
-#include "compiler/parser/xquery_parser.hpp"
+#include "compiler/parser/jsoniq_scanner.h"
+#include "compiler/parser/jsoniq_parser.hpp"
 
 #ifdef __GNUC__
 #  pragma GCC diagnostic warning "-Wparentheses"
@@ -42,7 +42,7 @@
 namespace zorba
 {
 
-xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
+jsoniq_driver::jsoniq_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
   :
   symtab(initial_heapsize),
   expr_p (NULL),
@@ -51,14 +51,14 @@ xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
 {
 }
 
-xquery_driver::~xquery_driver()
+jsoniq_driver::~jsoniq_driver()
 {
   if (parserError)
     delete parserError;
 }
 
 // Error generators
-ZorbaParserError* xquery_driver::unrecognizedCharErr(const char* _error_token, const location& loc)
+ZorbaParserError* jsoniq_driver::unrecognizedCharErr(const char* _error_token, const location& loc)
 {
   std::string token;
     // translate some common non-printable characters for better readability.
@@ -77,31 +77,31 @@ ZorbaParserError* xquery_driver::unrecognizedCharErr(const char* _error_token, c
   return parserError;
 };
 
-ZorbaParserError* xquery_driver::unterminatedCommentErr(const location& loc)
+ZorbaParserError* jsoniq_driver::unterminatedCommentErr(const location& loc)
 {
   parserError = new ZorbaParserError("syntax error, unexpected end of file, unterminated comment", loc);
   return parserError;
 }
 
-ZorbaParserError* xquery_driver::unterminatedElementConstructor(const location& loc)
+ZorbaParserError* jsoniq_driver::unterminatedElementConstructor(const location& loc)
 {
   parserError = new ZorbaParserError("syntax error, unexpected end of file, unterminated direct element constructor", loc);
   return parserError;
 }
 
-ZorbaParserError* xquery_driver::noClosingTagForElementConstructor(const location& loc)
+ZorbaParserError* jsoniq_driver::noClosingTagForElementConstructor(const location& loc)
 {
   parserError = new ZorbaParserError("syntax error, unexpected end of file, no closing tag for direct element constructor", loc);
   return parserError;
 }
 
-ZorbaParserError* xquery_driver::unrecognizedToken(const char* _error_token, const location& loc)
+ZorbaParserError* jsoniq_driver::unrecognizedToken(const char* _error_token, const location& loc)
 {
   parserError = new ZorbaParserError(std::string("syntax error, unexpected \"") + _error_token + "\"", loc);
   return parserError;
 }
 
-ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const location& loc)
+ZorbaParserError* jsoniq_driver::invalidCharRef(const char* _message, const location& loc)
 {
   std::string ref = "";
   std::string temp = _message;
@@ -130,19 +130,19 @@ ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const loca
   return parserError;
 }
 
-ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const location& loc, Error const &code)
+ZorbaParserError* jsoniq_driver::parserErr(const std::string& _message, const location& loc, Error const &code)
 {
   parserError = new ZorbaParserError(_message, loc, code);
   return parserError;
 }
 
-ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const QueryLoc& loc, Error const &code)
+ZorbaParserError* jsoniq_driver::parserErr(const std::string& _message, const QueryLoc& loc, Error const &code)
 {
   parserError = new ZorbaParserError(_message, loc, code);
   return parserError;
 }
 
-bool xquery_driver::parse_stream(std::istream& in, const zstring& aFilename)
+bool jsoniq_driver::parse_stream(std::istream& in, const zstring& aFilename)
 {
   int ch[3];
 
@@ -173,31 +173,31 @@ bool xquery_driver::parse_stream(std::istream& in, const zstring& aFilename)
     // transcode the input to UTF8
   //}
 
-  xquery_scanner scanner(this, &in);
+  jsoniq_scanner scanner(this, &in);
   scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
   this->lexer = &scanner;
   // scanner.set_yy_flex_debug(true); // debugging purposes
 
-  xquery_parser parser(*this);
+  jsoniq_parser parser(*this);
   parser.set_debug_level(Properties::instance()->traceParsing());
   // parser.set_debug_level(true); // debugging purposes
 
   return (parser.parse() == 0);
 }
 
-bool xquery_driver::parse_file(const zstring& aFilename)
+bool jsoniq_driver::parse_file(const zstring& aFilename)
 {
   std::ifstream in(aFilename.c_str());
   return parse_stream(in, aFilename);
 }
 
-bool xquery_driver::parse_string(const zstring& input)
+bool jsoniq_driver::parse_string(const zstring& input)
 {
   std::istringstream iss(input.str());
   return parse_stream(iss);
 }
 
-void xquery_driver::set_expr(parsenode* e_p)
+void jsoniq_driver::set_expr(parsenode* e_p)
 {
   if (theCompilerCB->theConfig.parse_cb != NULL)
   {
@@ -208,7 +208,7 @@ void xquery_driver::set_expr(parsenode* e_p)
   expr_p = e_p;
 }
 
-QueryLoc xquery_driver::createQueryLoc(const location& aLoc) const
+QueryLoc jsoniq_driver::createQueryLoc(const location& aLoc) const
 {
   QueryLoc lLoc;
   lLoc.setFilename(theFilename);
