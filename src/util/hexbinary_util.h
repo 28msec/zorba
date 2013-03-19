@@ -274,6 +274,7 @@ size_type encode( char const *from, size_type from_len, ToStringType *to ) {
     typename ToStringType::size_type const orig_size = to->size();
     to->resize( orig_size + encoded_size( from_len ) );
     total_encoded = encode( from, from_len, &to->at( orig_size ) );
+    to->resize( orig_size + total_encoded );
   }
   return total_encoded;
 }
