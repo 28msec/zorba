@@ -25,11 +25,11 @@
 %require "2.4"
 %defines
 %name-prefix="zorba"
-%define "parser_class_name" "xquery_parser"
+%define "parser_class_name" "jsoniq_parser"
 %error-verbose
 
-// Expect 4 shift/reduce conflicts
-%expect 4
+// Expect 3 shift/reduce conflicts
+%expect 3
 
 
 %code requires {
@@ -78,7 +78,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /*
-**  Because the parser uses the xquery_driver and reciprocally, both
+**  Because the parser uses the jsoniq_driver and reciprocally, both
 **  cannot include the header of the other. Because the driver's header
 **  needs detailed knowledge about the parser class (in particular its
 **  inner types), it is the parser's header which will use a forward
@@ -97,7 +97,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 #include "compiler/parser/parse_constants.h"
 #include "compiler/api/compilercb.h"
 #include "store/api/update_consts.h"
-#include "compiler/parser/xquery_driver.h"
+#include "compiler/parser/jsoniq_driver.h"
 #include "compiler/parser/parser_helpers.h"
 
 #define SYMTAB( n ) driver.symtab.get( (off_t)n )
@@ -119,7 +119,7 @@ using namespace zorba;
 **  This provides a simple but effective pure interface, not relying on
 **  global variables.
 */
-%parse-param { xquery_driver& driver }
+%parse-param { jsoniq_driver& driver }
 
 
 /*
@@ -562,11 +562,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* Leading slash handling expression */
 /* --------------------------------- */
-%type <expr> LeadingSlash
+//%type <expr> LeadingSlash
 
 /* left-hand sides: syntax only */
 /* ---------------------------- */
-%type <node> AbbrevForwardStep
+//%type <node> AbbrevForwardStep
 %type <node> AnyKindTest
 %type <node> Annotation
 %type <node> AnnotationList
@@ -599,8 +599,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> ForLetWinClause
 %type <node> FLWORClause
 %type <node> FLWORClauseList
-%type <node> ForwardAxis
-%type <node> ForwardStep
+//%type <node> ForwardAxis
+//%type <node> ForwardStep
 %type <node> FunctionDecl
 %type <node> FunctionDecl2
 %type <node> FunctionDeclSimple
@@ -619,7 +619,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> NameTest
 %type <node> NamespaceDecl
 %type <node> NodeComp
-%type <node> NodeTest
+//%type <node> NodeTest
 %type <node> OccurrenceIndicator
 %type <node> OptionDecl
 %type <node> GroupByClause
@@ -646,8 +646,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> QuoteAttrValueContent
 %type <node> QuoteAttrContentList
 %type <node> opt_QuoteAttrContentList
-%type <node> ReverseAxis
-%type <node> ReverseStep
+//%type <node> ReverseAxis
+//%type <node> ReverseStep
 %type <node> SIND_Decl
 %type <node> SIND_DeclList
 %type <node> SchemaAttributeTest
@@ -698,7 +698,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* ---------------------------- */
 %type <expr> AdditiveExpr
 %type <expr> AndExpr
-%type <expr> AxisStep
+//%type <expr> AxisStep
 %type <expr> CDataSection
 %type <expr> CastExpr
 %type <expr> CastableExpr
@@ -916,8 +916,8 @@ template<typename T> inline void release_hack( T *ref ) {
 }
 %}
 
-// parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep ForwardAxis ForwardStep NodeTest ReverseAxis ReverseStep
+//// parsenodes
+//%destructor { release_hack( $$ ); } AbbrevForwardStep ForwardAxis ForwardStep NodeTest ReverseAxis ReverseStep
 
 // parsenodes
 %destructor { release_hack( $$ ); } AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList GeneralizedAtomicType SimpleType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest NamespaceTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
@@ -928,9 +928,9 @@ template<typename T> inline void release_hack( T *ref ) {
 // parsenodes: JSON
 %destructor { release_hack( $$ ); } JSONObjectConstructor JSONPairList JSONArrayConstructor JSONSimpleObjectUnion JSONAccumulatorObjectUnion JSONDeleteExpr JSONInsertExpr JSONRenameExpr JSONReplaceExpr JSONAppendExpr
 
-// exprnodes: AxisStep
-%destructor { release_hack( $$ ); } AxisStep
-
+//// exprnodes: AxisStep
+//%destructor { release_hack( $$ ); } AxisStep
+//
 // exprnodes
 %destructor { release_hack( $$ ); } AdditiveExpr AndExpr CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompNamespaceConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
@@ -1037,7 +1037,7 @@ template<typename T> inline void release_hack( T *ref ) {
 **  driver.
 */
 %{
-#include "compiler/parser/xquery_scanner.h"
+#include "compiler/parser/jsoniq_scanner.h"
 
 #undef yylex
 #define yylex driver.lexer->lex
@@ -4036,31 +4036,32 @@ Pragma :
 
 // [67]
 PathExpr :
-    LeadingSlash %prec STEP_REDUCE
-    {
-      $$ = new PathExpr(LOC(@$), ParseConstants::path_leading_lone_slash, NULL);
-    }
-  | LeadingSlash RelativePathExpr
-    {
-      RelativePathExpr* rpe;
-
-      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, NULL, $2, false);
-
-      $$ = new PathExpr(LOC(@$),
-                        ParseConstants::path_leading_slash,
-                        rpe);
-    }
-  | SLASH_SLASH RelativePathExpr
-    {
-      RelativePathExpr* rpe;
-
-      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, NULL, $2, false);
-
-      $$ = new PathExpr(LOC(@$),
-                        ParseConstants::path_leading_slashslash,
-                        rpe);
-    }
-  | RelativePathExpr        /* gn: leading-lone-slashXQ */
+//    LeadingSlash %prec STEP_REDUCE
+//    {
+//      $$ = new PathExpr(LOC(@$), ParseConstants::path_leading_lone_slash, NULL);
+//    }
+//  | LeadingSlash RelativePathExpr
+//    {
+//      RelativePathExpr* rpe;
+//
+//      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, NULL, $2, false);
+//
+//      $$ = new PathExpr(LOC(@$),
+//                        ParseConstants::path_leading_slash,
+//                        rpe);
+//    }
+//  | SLASH_SLASH RelativePathExpr
+//    {
+//      RelativePathExpr* rpe;
+//
+//      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, NULL, $2, false);
+//
+//      $$ = new PathExpr(LOC(@$),
+//                        ParseConstants::path_leading_slashslash,
+//                        rpe);
+//    }
+//  | 
+  RelativePathExpr        /* gn: leading-lone-slashXQ */
     {
       RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>($1);
       $$ = (!rpe ?
@@ -4072,12 +4073,12 @@ PathExpr :
 
 // Leading slash promotion
 // -----------------------
-LeadingSlash :
-    SLASH
-    {
-      $$ = NULL;
-    }
-;
+//LeadingSlash :
+//    SLASH
+//    {
+//      $$ = NULL;
+//    }
+//;
 
 
 // [68]
@@ -4092,24 +4093,24 @@ RelativePathExpr :
             :
             $1);
     }
-  | StepExpr SLASH RelativePathExpr
-    {
-      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, $1, $3, false);
-    }
-  | StepExpr SLASH_SLASH RelativePathExpr
-    {
-      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3, false);
-    }
+//  | StepExpr SLASH RelativePathExpr
+//    {
+//      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, $1, $3, false);
+//    }
+//  | StepExpr SLASH_SLASH RelativePathExpr
+//    {
+//      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3, false);
+//    }
 ;
 
 
 // [69]
 StepExpr :
-    AxisStep
-    {
-      $$ = $1;
-    }
-  |
+//    AxisStep
+//    {
+//      $$ = $1;
+//    }
+//  |
   FilterExpr
     {
       $$ = $1;
@@ -4118,160 +4119,160 @@ StepExpr :
 
 
 // [70]
-AxisStep :
-        ForwardStep
-        {
-            $$ = new AxisStep(
-                LOC(@$), dynamic_cast<ForwardStep*>($1), NULL
-            );
-        }
-    |   ForwardStep PredicateList
-        {
-            $$ = new AxisStep(
-                LOC(@$),
-                dynamic_cast<ForwardStep*>($1),
-                dynamic_cast<PredicateList*>($2)
-            );
-        }
-    |   ReverseStep
-        {
-            $$ = new AxisStep(
-                LOC(@$), dynamic_cast<ReverseStep*>($1), NULL
-            );
-        }
-    |   ReverseStep PredicateList
-        {
-            $$ = new AxisStep(
-                LOC(@$),
-                dynamic_cast<ReverseStep*>($1),
-                dynamic_cast<PredicateList*>($2)
-            );
-        }
-    ;
-
-// [71]
-ForwardStep :
-        ForwardAxis NodeTest
-        {
-            $$ = new ForwardStep(
-                LOC(@$), dynamic_cast<ForwardAxis*>($1), $2
-            );
-        }
-    |   AbbrevForwardStep
-        {
-            $$ = new ForwardStep(
-                LOC(@$), dynamic_cast<AbbrevForwardStep*>($1)
-            );
-        }
-    ;
-
-// [72]
-ForwardAxis :
-        CHILD  DOUBLE_COLON
-        {
-            $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_child );
-        }
-    |   DESCENDANT  DOUBLE_COLON
-        {
-            $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_descendant);
-        }
-    |   ATTRIBUTE  DOUBLE_COLON
-        {
-            $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_attribute );
-        }
-    |   SELF  DOUBLE_COLON
-        {
-            $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_self );
-        }
-    |   DESCENDANT_OR_SELF  DOUBLE_COLON
-        {
-            $$ = new ForwardAxis(
-                LOC(@$), ParseConstants::axis_descendant_or_self
-            );
-        }
-    |   FOLLOWING_SIBLING  DOUBLE_COLON
-        {
-            $$ = new ForwardAxis(
-                LOC(@$), ParseConstants::axis_following_sibling
-            );
-        }
-    |   FOLLOWING  DOUBLE_COLON
-        {
-            $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_following );
-        }
-    ;
-
-// [73]
-AbbrevForwardStep :
-        NodeTest
-        {
-            $$ = new AbbrevForwardStep( LOC(@$), $1, false );
-        }
-    |   AT_SIGN NodeTest
-        {
-            $$ = new AbbrevForwardStep( LOC(@$), $2, true );
-        }
-    ;
-
-// [74]
-ReverseStep :
-        ReverseAxis NodeTest
-        {
-            $$ = new ReverseStep( LOC(@$), dynamic_cast<ReverseAxis*>($1), $2 );
-        }
-    |   DOT_DOT
-        {
-            ReverseAxis *ra = new ReverseAxis(
-                LOC(@$), ParseConstants::axis_parent
-            );
-            $$ = new ReverseStep( LOC(@$), ra, NULL );
-        }
-    ;
-
-// [75]
-ReverseAxis :
-        PARENT  DOUBLE_COLON
-        {
-            $$ = new ReverseAxis( LOC(@$), ParseConstants::axis_parent );
-        }
-    |   ANCESTOR  DOUBLE_COLON
-        {
-            $$ = new ReverseAxis( LOC(@$), ParseConstants::axis_ancestor );
-        }
-    |   PRECEDING_SIBLING  DOUBLE_COLON
-        {
-            $$ = new ReverseAxis(
-                LOC(@$), ParseConstants::axis_preceding_sibling
-            );
-        }
-    |   PRECEDING  DOUBLE_COLON
-        {
-            $$ = new ReverseAxis( LOC(@$), ParseConstants::axis_preceding );
-        }
-    |   ANCESTOR_OR_SELF  DOUBLE_COLON
-        {
-            $$ = new ReverseAxis(
-                LOC(@$), ParseConstants::axis_ancestor_or_self
-            );
-        }
-    ;
-
-// [76]
-// AbbrevReverseStep
-// folded into [74]
-
-// [77]
-NodeTest :
-        KindTest
-        {
-            $$ = $1;
-        }
-    |   NameTest
-        {
-            $$ = $1;
-        }
-    ;
-
+//AxisStep :
+//        ForwardStep
+//        {
+//            $$ = new AxisStep(
+//                LOC(@$), dynamic_cast<ForwardStep*>($1), NULL
+//            );
+//        }
+//    |   ForwardStep PredicateList
+//        {
+//            $$ = new AxisStep(
+//                LOC(@$),
+//                dynamic_cast<ForwardStep*>($1),
+//                dynamic_cast<PredicateList*>($2)
+//            );
+//        }
+//    |   ReverseStep
+//        {
+//            $$ = new AxisStep(
+//                LOC(@$), dynamic_cast<ReverseStep*>($1), NULL
+//            );
+//        }
+//    |   ReverseStep PredicateList
+//        {
+//            $$ = new AxisStep(
+//                LOC(@$),
+//                dynamic_cast<ReverseStep*>($1),
+//                dynamic_cast<PredicateList*>($2)
+//            );
+//        }
+//    ;
+//
+//// [71]
+//ForwardStep :
+//        ForwardAxis NodeTest
+//        {
+//            $$ = new ForwardStep(
+//                LOC(@$), dynamic_cast<ForwardAxis*>($1), $2
+//            );
+//        }
+//    |   AbbrevForwardStep
+//        {
+//            $$ = new ForwardStep(
+//                LOC(@$), dynamic_cast<AbbrevForwardStep*>($1)
+//            );
+//        }
+//    ;
+//
+//// [72]
+//ForwardAxis :
+//        CHILD  DOUBLE_COLON
+//        {
+//            $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_child );
+//        }
+//    |   DESCENDANT  DOUBLE_COLON
+//        {
+//            $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_descendant);
+//        }
+//    |   ATTRIBUTE  DOUBLE_COLON
+//        {
+//            $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_attribute );
+//        }
+//    |   SELF  DOUBLE_COLON
+//        {
+//            $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_self );
+//        }
+//    |   DESCENDANT_OR_SELF  DOUBLE_COLON
+//        {
+//            $$ = new ForwardAxis(
+//                LOC(@$), ParseConstants::axis_descendant_or_self
+//            );
+//        }
+//    |   FOLLOWING_SIBLING  DOUBLE_COLON
+//        {
+//            $$ = new ForwardAxis(
+//                LOC(@$), ParseConstants::axis_following_sibling
+//            );
+//        }
+//    |   FOLLOWING  DOUBLE_COLON
+//        {
+//            $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_following );
+//        }
+//    ;
+//
+//// [73]
+//AbbrevForwardStep :
+//        NodeTest
+//        {
+//            $$ = new AbbrevForwardStep( LOC(@$), $1, false );
+//        }
+//    |   AT_SIGN NodeTest
+//        {
+//            $$ = new AbbrevForwardStep( LOC(@$), $2, true );
+//        }
+//    ;
+//
+//// [74]
+//ReverseStep :
+//        ReverseAxis NodeTest
+//        {
+//            $$ = new ReverseStep( LOC(@$), dynamic_cast<ReverseAxis*>($1), $2 );
+//        }
+//    |   DOT_DOT
+//        {
+//            ReverseAxis *ra = new ReverseAxis(
+//                LOC(@$), ParseConstants::axis_parent
+//            );
+//            $$ = new ReverseStep( LOC(@$), ra, NULL );
+//        }
+//    ;
+//
+//// [75]
+//ReverseAxis :
+//        PARENT  DOUBLE_COLON
+//        {
+//            $$ = new ReverseAxis( LOC(@$), ParseConstants::axis_parent );
+//        }
+//    |   ANCESTOR  DOUBLE_COLON
+//        {
+//            $$ = new ReverseAxis( LOC(@$), ParseConstants::axis_ancestor );
+//        }
+//    |   PRECEDING_SIBLING  DOUBLE_COLON
+//        {
+//            $$ = new ReverseAxis(
+//                LOC(@$), ParseConstants::axis_preceding_sibling
+//            );
+//        }
+//    |   PRECEDING  DOUBLE_COLON
+//        {
+//            $$ = new ReverseAxis( LOC(@$), ParseConstants::axis_preceding );
+//        }
+//    |   ANCESTOR_OR_SELF  DOUBLE_COLON
+//        {
+//            $$ = new ReverseAxis(
+//                LOC(@$), ParseConstants::axis_ancestor_or_self
+//            );
+//        }
+//    ;
+//
+//// [76]
+//// AbbrevReverseStep
+//// folded into [74]
+//
+//// [77]
+//NodeTest :
+//        KindTest
+//        {
+//            $$ = $1;
+//        }
+//    |   NameTest
+//        {
+//            $$ = $1;
+//        }
+//    ;
+//
 // [78]
 NameTest :
         QNAME
@@ -4409,6 +4410,13 @@ PrimaryExpr :
     |   JSONAccumulatorObjectUnion
         {
           $$ = $1;
+        }
+    |   PrimaryExpr DOT NCNAME
+        {
+          StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
+          ArgList *al = new ArgList( LOC(@$) );
+          al->push_back(sl);
+          $$ = new DynamicFunctionInvocation(LOC(@$), $1, al); 
         }
     ;
 
@@ -6995,7 +7003,7 @@ namespace zorba {
 /*
  *  The error member function registers the errors to the driver.
  */
-void xquery_parser::error(zorba::xquery_parser::location_type const& loc, string const& msg)
+void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string const& msg)
 {
   if (driver.parserError != NULL)
   {

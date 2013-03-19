@@ -325,7 +325,9 @@ main(int argc, char** argv)
     lQuery = engine->createQuery(&errHandler);
     lQuery->setFileName(lQueryFile.get_path());
 
-    lQuery->compile(lQueryString.c_str(), lContext, getCompilerHints());
+    bool lJSONiqMode = lQueryFile.get_path().rfind(".jq") == lQueryFile.get_path().size() - 3;
+
+    lQuery->compile(lQueryString.c_str(), lContext, getCompilerHints(lJSONiqMode));
 
     errors = -1;
     if ( errHandler.errors() )

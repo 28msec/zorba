@@ -19,8 +19,11 @@ SET(PARSER_SRCS
     ft_types.cpp
     symbol_table.cpp
     xquery_driver.cpp
+    jsoniq_driver.cpp
     query_loc.cpp
-    xqdoc_comment.cpp)
+    xqdoc_comment.cpp
+    parser_helpers.cpp
+    zorba_parser_error.cpp)
 
 SET(PARSER_BUILD_SRCS)
 
@@ -49,14 +52,16 @@ IF (GENERATE_BISON_FILES)
     SET(BISON_GENERATE_DEFINES TRUE)
     BISON_FILE(compiler/parser/xquery_parser.y)
     LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/xquery_parser.cpp)
+    BISON_FILE(compiler/parser/jsoniq_parser.y)
+    LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/jsoniq_parser.cpp)
 ELSE (GENERATE_BISON_FILES)
     IF (BISON_EXECUTABLE)
         MESSAGE(STATUS "         GNU Bison's version " ${BISON_VERSION_FULL} " is less than required (2.4) -- the parser will not be regenerated")
     ELSE (BISON_EXECUTABLE)
         MESSAGE(STATUS "         GNU Bison is not available -- the parser will not be regenerated")
     ENDIF (BISON_EXECUTABLE)
-    MESSAGE(STATUS "         Using repository files " ${CMAKE_CURRENT_SOURCE_DIR}/xquery_parser.cpp)
-    LIST(APPEND PARSER_SRCS xquery_parser.cpp)
+    MESSAGE(STATUS "         Using repository files " ${CMAKE_CURRENT_SOURCE_DIR}/xquery_parser.cpp ${CMAKE_CURRENT_SOURCE_DIR}/jsoniq_parser.cpp)
+    LIST(APPEND PARSER_SRCS xquery_parser.cpp jsoniq_parser.cpp)
 ENDIF (GENERATE_BISON_FILES)
 
 ###################################################################
@@ -67,7 +72,7 @@ SET (GENERATE_FLEX_FILES TRUE)
 MACRO(COMPARE_FLEX_VERSION a b)
   COMPARE_VERSION_STRINGS("${a}" "${b}" result)
     IF(result LESS 0)
-        SET (GENERATE_FLEX_FILES FALSE)
+        SET(GENERATE_FLEX_FILES FALSE)
         MESSAGE(STATUS "Flex: ${a} <  ${b}")
      ELSE(result LESS 0)
        IF(result GREATER 0)
@@ -84,8 +89,9 @@ COMPARE_FLEX_VERSION("${FLEX_VERSION_FULL}" "2.5.33")
 IF (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
     SET(FLEX_PREFIX_OUTPUTS TRUE)
     FLEX_FILE(compiler/parser/xquery_scanner.l)
+    FLEX_FILE(compiler/parser/jsoniq_scanner.l)
     ADD_DEFINITIONS(-DFLEX_FILES_REGENERATED)
-    LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/xquery_scanner.cpp)
+    LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/xquery_scanner.cpp ${CMAKE_BINARY_DIR}/src/compiler/parser/jsoniq_scanner.cpp)
 ELSE (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
     IF (NOT ZORBA_HAVE_FLEXLEXER_H)
         MESSAGE(STATUS "         FlexLexer.h has not been found -- the lexer will not be regenerated")
@@ -96,8 +102,8 @@ ELSE (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
             MESSAGE(STATUS "         GNU Flex is not available -- the lexer will not be regenerated")
         ENDIF (FLEX_EXECUTABLE)
     ENDIF (NOT ZORBA_HAVE_FLEXLEXER_H)
-    MESSAGE(STATUS "         Using repository file " ${CMAKE_CURRENT_SOURCE_DIR}/xquery_scanner.cpp)
-    LIST(APPEND PARSER_SRCS xquery_scanner.cpp)
+    MESSAGE(STATUS "         Using repository file " ${CMAKE_CURRENT_SOURCE_DIR}/xquery_scanner.cpp ${CMAKE_CURRENT_SOURCE_DIR}/jsoniq_scanner.cpp)
+    LIST(APPEND PARSER_SRCS xquery_scanner.cpp jsoniq_scanner.cpp)
 ENDIF (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
 
 # generate a script that copies the generated parser and scanner files from the build
