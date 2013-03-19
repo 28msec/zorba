@@ -1009,6 +1009,13 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc MULTIPLICATIVE_REDUCE
 %left STAR DIV IDIV MOD
 
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ *_____________________________________________________________________*/
+%nonassoc JSONLOOKUPEXPR_REDUCE
+%left DOT
+
 
 /*_____________________________________________________________________
  *
@@ -4310,7 +4317,7 @@ Wildcard :
 
 // [80]
 FilterExpr :
-     PrimaryExpr
+     PrimaryExpr %prec JSONLOOKUPEXPR_REDUCE
      {
        $$ = $1;
      }
@@ -4326,7 +4333,37 @@ FilterExpr :
      {
        $$ = new DynamicFunctionInvocation(LOC (@$), $1, dynamic_cast<ArgList*>($3));
      }
+  |  FilterExpr DOT NCNAME
+     {
+       StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
+       ArgList *al = new ArgList( LOC(@$) );
+       al->push_back( sl );
+       $$ = new DynamicFunctionInvocation(LOC(@$), $1, al);
+     }
+  |  FilterExpr DOT ParenthesizedExpr
+     {
+       ArgList *al = new ArgList( LOC(@$) );
+       al->push_back( $3 );
+       $$ = new DynamicFunctionInvocation(LOC(@$), $1, al);
+     }
+  |  FilterExpr DOT VarRef
+     {
+       ArgList *al = new ArgList( LOC(@$) );
+       al->push_back( $3 );
+       $$ = new DynamicFunctionInvocation(LOC(@$), $1, al);
+     }
+  |  FilterExpr DOT StringLiteral
+     {
+       ArgList *al = new ArgList( LOC(@$) );
+       al->push_back( $3 );
+       $$ = new DynamicFunctionInvocation(LOC(@$), $1, al);
+     }
+  |  FilterExpr DOT STAR
+     {
+       $$ = new DynamicFunctionInvocation(LOC(@$), $1);
+     }
 ;
+
 
 // [81]
 PredicateList :
@@ -4410,13 +4447,6 @@ PrimaryExpr :
     |   JSONAccumulatorObjectUnion
         {
           $$ = $1;
-        }
-    |   PrimaryExpr DOT NCNAME
-        {
-          StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
-          ArgList *al = new ArgList( LOC(@$) );
-          al->push_back(sl);
-          $$ = new DynamicFunctionInvocation(LOC(@$), $1, al); 
         }
     ;
 
