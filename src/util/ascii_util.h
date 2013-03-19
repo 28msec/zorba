@@ -888,12 +888,27 @@ char const* trim_start( char const *s, char const *chars );
  * Skips leading specified characters.
  *
  * @param s The string to trim.
+ * @param s_len A pointer to the length of \a s.  It is updated with the new
+ * length.
+ * @param chars The characters to trim.
+ * @return Returns a pointer to the first character in \a s that is not among
+ * the characters in \a chars.
+ */
+char const* trim_start( char const *s, size_type *s_len, char const *chars );
+
+/**
+ * Skips leading specified characters.
+ *
+ * @param s The string to trim.
  * @param s_len The length of \a s.
  * @param chars The characters to trim.
  * @return Returns a pointer to the first character in \a s that is not among
  * the characters in \a chars.
  */
-char const* trim_start( char const *s, size_type s_len, char const *chars );
+inline char const* trim_start( char const *s, size_type s_len,
+                               char const *chars ) {
+  return trim_start( s, &s_len, chars );
+}
 
 /**
  * Removes all leading specified characters.
@@ -931,6 +946,19 @@ void trim_start( StringType &s, char const *chars ) {
  */
 inline char const* trim_start_whitespace( char const *s ) {
   return trim_start( s, whitespace );
+}
+
+/**
+ * Skips leading whitespace characters.
+ *
+ * @param s The string to trim.
+ * @param s_len A pointer to the length of \a s.  It is updated with the new
+ * length.
+ * @return Returns a pointer to the first character in \a s that is not a
+ * whitespace character.
+ */
+inline char const* trim_start_whitespace( char const *s, size_type *s_len ) {
+  return trim_start( s, s_len, whitespace );
 }
 
 /**
@@ -1061,6 +1089,21 @@ void trim_end_whitespace( InputStringType const &in, OutputStringType *out ) {
 template<class StringType> inline
 void trim_end_whitespace( StringType &s ) {
   trim_end( s, whitespace );
+}
+
+/**
+ * Removed sll leading and trailing whitespace.
+ *
+ * @param s The input C string.
+ * @param s_len A pointer to the length of \a s.  It is updated with the new
+ * length.
+ * @return Returns a pointer to the first character in \a s that is not
+ * whitespace.
+ */
+inline char const* trim_whitespace( char const *s, size_type *s_len ) {
+  s = trim_start_whitespace( s, s_len );
+  *s_len = trim_end_whitespace( s, *s_len );
+  return s;
 }
 
 /**
