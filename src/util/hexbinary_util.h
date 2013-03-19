@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "cxx_util.h"
+#include "stream_util.h"
 
 namespace zorba {
 namespace hexbinary {
@@ -31,6 +32,14 @@ namespace hexbinary {
 ////////// Types //////////////////////////////////////////////////////////////
 
 typedef size_t size_type;
+
+/**
+ * Options to use for decoding.
+ */
+enum decode_options {
+  dopt_none       = 0x00, ///< No options.
+  dopt_ignore_ws  = 0x01, ///< Ignore all whitespace.
+};
 
 ////////// Exception //////////////////////////////////////////////////////////
 
@@ -70,94 +79,107 @@ inline size_type decoded_size( size_type n ) {
 }
 
 /**
- * Decodes a hexBinary-encoded buffer.  Embedded newlines and carriage-returns
- * are skipped.
+ * Decodes a hexBinary-encoded buffer.
  *
  * @param from A pointer to the hexBinary buffer to be decoded.
  * @param from_len The number of bytes to decode.
  * @paran to A pointer to the buffer to receive the decoded bytes.  The buffer
  * must be large enough to contain them.  Note that the buffer is \e not null
  * terminated.
+ * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if \a from_len is not a multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  * @see decoded_size()
  */
-size_type decode( char const *from, size_type from_len, char *to );
+size_type decode( char const *from, size_type from_len, char *to,
+                  int options = dopt_none );
 
 /**
  * Decodes a hexBinary-encoded buffer and appends the decoded bytes onto a
- * vector&lt;char&gt;.  Embedded newlines and carriage-returns are skipped.
+ * vector&lt;char&gt;.
  *
  * @param from A pointer to the buffer to be encoded.
  * @param from_len The number of bytes to encode.
  * @param to A pointer to the vector to append the encoded bytes appended onto.
  * The vector is made large enough to contain the additional bytes.
+ * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if the number of hexBinary bytes decoded is not a
  * multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
-size_type decode( char const *from, size_type from_len, std::vector<char> *to );
+size_type decode( char const *from, size_type from_len, std::vector<char> *to,
+                  int options = dopt_none );
 
 /**
  * Decodes a hexBinary-encoded buffer and appends the decoded bytes onto a
- * string.  Embedded newlines and carriage-returns are skipped.
+ * string.
  *
  * @tparam ToStringType The string type.
  * @param from A pointer to the hexBinary buffer to be decoded.
  * @param from_len The number of bytes to decode.
  * @param to The string to append the decoded bytes to.
+ * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if the number of hexBinary bytes decoded is not a
  * multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
 template<class ToStringType>
-size_type decode( char const *from, size_type from_len, ToStringType *to ) {
+size_type decode( char const *from, size_type from_len, ToStringType *to,
+                  int options = dopt_none ) {
   if ( from_len ) {
     typename ToStringType::size_type const orig_size = to->size();
     to->resize( orig_size + decoded_size( from_len ) );
-    return decode( from, from_len, &to->at( orig_size ) );
+    return decode( from, from_len, &to->at( orig_size ), options );
   }
   return 0;
 }
 
 /**
- * Decodes a hexBinary-encoded istream.  Embedded newlines and carriage-returns
- * are skipped.
+ * Decodes a hexBinary-encoded istream.
  *
  * @param from The istream to read from until EOF is reached.
  * @param to The ostream to write the decoded bytes to.
+ * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if the number of hexBinary bytes decoded is not a
  * multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
-size_type decode( std::istream &from, std::ostream &to );
+size_type decode( std::istream &from, std::ostream &to,
+                  int options = dopt_none );
 
 /**
  * Decodes a hexBinary-encoded istream and appends the decoded bytes to a
- * string.  Embedded newlines and carriage-returns are skipped.
+ * string.
  *
  * @tparam ToStringType The string type.
  * @param from The istream to read from until EOF is reached.
  * @param to The string to append the decoded bytes to.
- * 4 otherwise an exception is thrown; if \a false, missing trailing bytes are
- * assumed to be padding.
+ * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if the number of hexBinary bytes decoded is not a
  * multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
 template<class ToStringType>
-size_type decode( std::istream &from, ToStringType *to ) {
+size_type decode( std::istream &from, ToStringType *to,
+                  int options = dopt_none ) {
+  bool const ignore_ws = !!(options & dopt_ignore_ws);
   size_type total_decoded = 0;
   while ( !from.eof() ) {
-    char from_buf[ 1024 * 4 ], to_buf[ 1024 * 3 ];
-    from.read( from_buf, sizeof from_buf );
-    if ( std::streamsize const gcount = from.gcount() ) {
-      size_type const decoded = decode( from_buf, gcount, to_buf );
+    char from_buf[ 1024 * 2 ], to_buf[ 1024 ];
+    std::streamsize gcount;
+    if ( ignore_ws )
+      gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
+    else {
+      from.read( from_buf, sizeof from_buf );
+      gcount = from.gcount();
+    }
+    if ( gcount ) {
+      size_type const decoded = decode( from_buf, gcount, to_buf, options );
       to->append( to_buf, decoded );
       total_decoded += decoded;
     } else
@@ -172,26 +194,29 @@ size_type decode( std::istream &from, ToStringType *to ) {
  *
  * @param from The istream to read from until EOF is reached.
  * @param to The string to append the decoded bytes to.
+ * @param options The decoding options to use.
  * @param Returns the number of decoded bytes.
  * @throws invalid_argument if \a the number of hexBinary bytes decoded is not
  * a multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
-size_type decode( std::istream &from, std::vector<char> *to );
+size_type decode( std::istream &from, std::vector<char> *to,
+                  int options = dopt_none );
 
 /**
- * Validates a hexBinary-encoded buffer.  Embedded newlines and
- * carriage-returns are skipped.
+ * Validates a hexBinary-encoded buffer.
  *
  * @param buf A pointer to the hexBinary buffer to be validated.
  * @param buf_len The number of bytes to validate.
+ * @param options The decoding options to use.
  * @throws invalid_argument if the number of hexBinary bytes validated is not a
  * multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  * @see decoded_size()
  */
-inline void validate( char const *buf, size_type buf_len ) {
-  decode( buf, buf_len, static_cast<char*>( nullptr ) );
+inline void validate( char const *buf, size_type buf_len,
+                      int options = dopt_none ) {
+  decode( buf, buf_len, static_cast<char*>( nullptr ), options );
 }
 
 ////////// Encoding ///////////////////////////////////////////////////////////

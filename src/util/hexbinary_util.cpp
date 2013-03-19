@@ -71,7 +71,11 @@ static signed char const decode_table[] = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-size_type decode( char const *from, size_type from_len, char *to ) {
+size_type decode( char const *from, size_type from_len, char *to,
+                  int options ) {
+  bool const ignore_ws = !!(options & dopt_ignore_ws);
+  if ( ignore_ws )
+    from = ascii::trim_whitespace( from, &from_len );
   if ( from_len % 2 )
     throw invalid_argument( "HexBinary length is not a multiple of 2" );
 
@@ -100,24 +104,34 @@ bad_char:
 }
 
 size_type decode( char const *from, size_type from_len,
-                  std::vector<char> *to ) {
+                  std::vector<char> *to, int options ) {
+  bool const ignore_ws = !!(options & dopt_ignore_ws);
+  if ( ignore_ws )
+    from = ascii::trim_whitespace( from, &from_len );
   if ( from_len % 2 )
     throw invalid_argument( "HexBinary length is not a multiple of 2" );
   if ( from_len ) {
     std::vector<char>::size_type const orig_size = to->size();
     to->resize( orig_size + decoded_size( from_len ) );
-    return decode( from, from_len, &(*to)[ orig_size ] );
+    return decode( from, from_len, &(*to)[ orig_size ], options );
   }
   return 0;
 }
 
-size_type decode( istream &from, ostream &to ) {
+size_type decode( istream &from, ostream &to, int options ) {
+  bool const ignore_ws = !!(options & dopt_ignore_ws);
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 2 ], to_buf[ 1024 ];
-    from.read( from_buf, sizeof from_buf );
-    if ( streamsize const gcount = from.gcount() ) {
-      size_type const decoded = decode( from_buf, gcount, to_buf );
+    streamsize gcount;
+    if ( ignore_ws )
+      gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
+    else {
+      from.read( from_buf, sizeof from_buf );
+      gcount = from.gcount();
+    }
+    if ( gcount ) {
+      size_type const decoded = decode( from_buf, gcount, to_buf, options );
       to.write( to_buf, decoded );
       total_decoded += decoded;
     } else
@@ -126,15 +140,23 @@ size_type decode( istream &from, ostream &to ) {
   return total_decoded;
 }
 
-size_type decode( istream &from, vector<char> *to ) {
+size_type decode( istream &from, vector<char> *to, int options ) {
+  bool const ignore_ws = !!(options & dopt_ignore_ws);
   vector<char>::size_type const orig_size = to->size();
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 4 ];
-    from.read( from_buf, sizeof from_buf );
-    if ( streamsize const gcount = from.gcount() ) {
+    streamsize gcount;
+    if ( ignore_ws )
+      gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
+    else {
+      from.read( from_buf, sizeof from_buf );
+      gcount = from.gcount();
+    }
+    if ( gcount ) {
       to->resize( to->size() + decoded_size( gcount ) );
-      total_decoded += decode( from_buf, gcount, &(*to)[ total_decoded ] );
+      total_decoded +=
+        decode( from_buf, gcount, &(*to)[ total_decoded ], options );
     } else
       break;
   }

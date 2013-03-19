@@ -264,7 +264,7 @@ bool Base16::parseString(char const *s, size_t len, Base16& aBase16)
   if ( len ) {
     try 
     {
-      hexbinary::validate( s, len );
+      hexbinary::validate( s, len, hexbinary::dopt_ignore_ws );
       aBase16.theData.resize( len );
       aBase16.theData.resize(
         copy_without_ws( s, len, &aBase16.theData[0] )
@@ -325,7 +325,9 @@ void Base16::decode( vector<char> const &from, vector<char> &to )
 {
   if ( !from.empty() ) {
     try {
-      hexbinary::decode( &from[0], from.size(), &to );
+      hexbinary::decode(
+        &from[0], from.size(), &to, hexbinary::dopt_ignore_ws
+      );
     }
     CATCH_HEXBINARY_EXCEPTION()
   }
