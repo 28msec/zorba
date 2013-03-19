@@ -441,13 +441,17 @@ expr* MarkConsumerNodeProps::apply(
   case json_array_expr_kind :
   {
     json_array_expr* e = static_cast<json_array_expr *>(node);
-    set_ignores_duplicate_nodes(e->get_expr(), ANNOTATION_FALSE);
-    set_ignores_sorted_nodes(e->get_expr(), ANNOTATION_FALSE);
+    if (e->get_expr())
+    {
+      set_ignores_duplicate_nodes(e->get_expr(), ANNOTATION_FALSE);
+      set_ignores_sorted_nodes(e->get_expr(), ANNOTATION_FALSE);
+    }
     break;
   }
 #endif
 
   case attr_expr_kind :
+  case namespace_expr_kind :
   case elem_expr_kind :
   case pi_expr_kind :
   case text_expr_kind :
@@ -672,6 +676,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
   case doc_expr_kind:
   case elem_expr_kind:
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
   {
@@ -679,7 +684,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
     // and inherit), should it be considered unsafe? The answer is no, because if
     // copy is needed, then any other construction done during the "current" one
     // will need to copy as well, so the input trees to the current constructor
-    // will be standalone. This is enforced bhy the findNodeSources() method,
+    // will be standalone. This is enforced by the findNodeSources() method,
     // which drills down inside constructors and will collect as sources any
     // nested c onstructors as well.
     break;
@@ -718,7 +723,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
     // TODO improve this
     json_array_expr* e = static_cast<json_array_expr *>(node);
 
-    if (sctx->preserve_ns() && sctx->inherit_ns())
+    if (sctx->preserve_ns() && sctx->inherit_ns() && e->get_expr())
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(e->get_expr(), sources);
@@ -1204,6 +1209,7 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
   case doc_expr_kind:
   case elem_expr_kind:
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
   {

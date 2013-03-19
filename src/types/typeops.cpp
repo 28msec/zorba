@@ -220,6 +220,7 @@ bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type)
     case store::XS_DATE:
     case store::XS_TIME:
     case store::XS_DATETIME:
+    case store::XS_DATETIME_STAMP:
     case store::XS_GYEAR_MONTH:
     case store::XS_GYEAR:
     case store::XS_GMONTH_DAY:
@@ -1322,6 +1323,9 @@ TypeIdentifier_t TypeOps::get_type_identifier(
     case store::StoreConsts::piNode:
       return TypeIdentifier::createPIType(q);
 
+    case store::StoreConsts::namespaceNode:
+      return TypeIdentifier::createNamespaceType(q);
+
     case store::StoreConsts::commentNode:
       return TypeIdentifier::createCommentType(q);
 
@@ -1361,8 +1365,8 @@ TypeIdentifier_t TypeOps::get_type_identifier(
       if (nt.is_schema_test()) 
       {
         ZORBA_ASSERT(nodeName);
-        String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
-        String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+        String uri( Unmarshaller::newString(nodeName->getNamespace()));
+        String local( Unmarshaller::newString(nodeName->getLocalName()));
 
         return TypeIdentifier::createSchemaAttributeType(uri, local, q);
       }

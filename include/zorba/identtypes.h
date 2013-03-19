@@ -34,6 +34,7 @@ public:
     PI_TYPE,
     TEXT_TYPE,
     COMMENT_TYPE,
+    NAMESPACE_TYPE,
     ANY_NODE_TYPE,          // node()
     STRUCTURED_ITEM_TYPE,   // structured-item
 #ifdef ZORBA_WITH_JSON

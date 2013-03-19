@@ -1,43 +1,37 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ * Copyright 2013 The FLWOR Foundation.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_NORMALIZER_H
-#define ZORBA_NORMALIZER_H
+#pragma once
+#ifndef ZORBA_PARSER_HELPERS_H
+#define ZORBA_PARSER_HELPERS_H
 
-#include "common/shared_types.h"
+#include <ostream>
+#include <string>
+#include <zorba/config.h>
 
-namespace zorba 
-{
+namespace zorba {
 
-class XQType;
-class CompilerCB;
+  namespace parser {
 
+    extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_declare, *the_create;
 
-void normalize_expr_tree(
-    const char* descr,
-    CompilerCB* cb,
-    expr_t& root,
-    const XQType* rType);
+    // transform a parser location into a QueryLoc
+    QueryLoc createQueryLoc(const location& aLoc);
+
+  }
+
 
 }
-
-#endif /* ZORBA_NORMALIZER_H */
-
-/*
- * Local variables:
- * mode: c++
- * End:
- */
-/* vim:set et sw=2 ts=2: */
+#endif

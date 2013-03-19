@@ -190,6 +190,16 @@ public:
 
   bool createDateTime(store::Item_t& result, const store::Item_t&, const store::Item_t&);
 
+  bool createDateTimeStamp(store::Item_t& result, const xs_date* date, const xs_time* time);
+
+  bool createDateTimeStamp(store::Item_t& result, const xs_dateTime* value);
+
+  bool createDateTimeStamp(store::Item_t& result, short year , short month, short day, short hour, short minute, double second, short timeZone_hours);
+
+  bool createDateTimeStamp(store::Item_t& result, const char* str, ulong strlen);
+
+  bool createDateTimeStamp(store::Item_t& result, const store::Item_t&, const store::Item_t&);
+
   bool createDate(store::Item_t& result, const xs_date* value);
 
   bool createDate(store::Item_t& result, short year, short month, short day);
@@ -301,18 +311,6 @@ public:
         zstring&                    baseURI,
         bool                        isInSubstitutionGroup = false);
 
-  bool createElementNode(
-        store::Item_t&              result,
-        store::Item*                parent,
-        ulong                       pos,
-        store::Item_t&              nodeName,
-        store::Item_t&              typeName,
-        bool                        haveTypedValue,
-        bool                        haveEmptyValue,
-        const store::NsBindings&    localBindings,
-        zstring&                    baseURI,
-        bool                        isInSubstitutionGroup = false);
-
   bool createAttributeNode(
         store::Item_t&              result,
         store::Item*                parent,
@@ -386,29 +384,33 @@ public:
         zstring&       content);
 
   bool createCommentNode (
-        store::Item_t& result,
-        store::Item*   parent,
-        ulong          pos,
-        zstring&       content);
+      store::Item_t& result,
+      store::Item*   parent,
+      ulong          pos,
+      zstring&       content);
 
+  bool createNamespaceNode (
+      store::Item_t& result,
+      zstring&       prefix,
+      zstring&       uri);
 
   store::PUL* createPendingUpdateList();
 
   bool createError(
-          store::Item_t& result,
-          ZorbaException* ze);
+      store::Item_t& result,
+      ZorbaException* ze);
+  
+  bool createFunction(
+      store::Item_t&,
+      const store::Item_t&,
+      const signature&,
+      const store::Iterator_t&);
 
   bool createFunction(
-          store::Item_t&,
-          const store::Item_t&,
-          const signature&,
-          const store::Iterator_t&);
-
-  bool createFunction(
-          store::Item_t&,
-          const std::vector<store::Iterator_t>&,
-          const signature&,
-          const store::Iterator_t&);
+      store::Item_t&,
+      const std::vector<store::Iterator_t>&,
+      const signature&,
+      const store::Iterator_t&);
 
 #ifdef ZORBA_WITH_JSON
   bool createJSONNull(store::Item_t& result);

@@ -2119,11 +2119,9 @@ bool FnAnalyzeStringIterator::nextImpl(
     //see if regex can match empty strings
     bool   reachedEnd = false;
     rx.set_string("", 0);
-    if(rx.find_next_match(&reachedEnd))
+    if (rx.find_next_match(&reachedEnd))
     {
-      throw XQUERY_EXCEPTION(
-        err::FORX0003, ERROR_PARAMS( lib_pattern )
-      );
+      throw XQUERY_EXCEPTION(err::FORX0003, ERROR_PARAMS(lib_pattern));
 
     }
 
@@ -2143,7 +2141,7 @@ bool FnAnalyzeStringIterator::nextImpl(
     do
     {
       const char *instr;
-      if(!is_input_stream)
+      if (!is_input_stream)
       {
         rx.set_string(input.data(), input.size());
         instr = input.c_str();
@@ -2152,13 +2150,13 @@ bool FnAnalyzeStringIterator::nextImpl(
       else
       {
         unsigned int reducebytes = 0;
-        if(!instream->eof())
+        if (!instream->eof())
         {
           //check the last bytes, maybe it is a truncated utf8 char
           unsigned int maxbytes = 6;
-          if(maxbytes > streambuf_read)
+          if (maxbytes > streambuf_read)
             maxbytes = streambuf_read;
-          for(reducebytes=1;reducebytes<=maxbytes;reducebytes++)
+          for (reducebytes=1;reducebytes<=maxbytes;reducebytes++)
           {
             utf8::size_type clen = utf8::char_length(streambuf.ptr[streambuf_read-reducebytes]);
             if((clen > 1) && (clen > reducebytes))

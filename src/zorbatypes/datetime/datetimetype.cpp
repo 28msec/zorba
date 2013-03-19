@@ -999,6 +999,12 @@ TimeZone DateTime::getTimezone() const
 }
 
 
+bool DateTime::hasTimezone() const
+{
+  return !the_time_zone.timeZoneNotSet();
+}
+  
+  
 int DateTime::compare(const DateTime* dt, long timezone_seconds) const
 {
   std::auto_ptr<DateTime> d1_t;

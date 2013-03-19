@@ -180,7 +180,7 @@ void setModulePaths(
     std::string paths,
     zorba::StaticContext_t& sctx);
 
-Zorba_CompilerHints getCompilerHints();
+Zorba_CompilerHints getCompilerHints(bool aJSONiqMode = false);
 
 zorba::Item createItem(
     DriverContext& driverCtx,

@@ -140,7 +140,8 @@ const char* AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST] =
   "xs:anyURI",
   "xs:QName",
   "xs:NOTATION",
-  "jdm:null"
+  "jdm:null",
+  "xs:dateTimeStamp"
 };
 
 
@@ -960,7 +961,7 @@ bool NodeXQType::is_supertype(
     }
   }
 
-  // document-node( E ) matches any document node that contains exactly one element
+  // document-node(E) matches any document node that contains exactly one element
   // node, optionally accompanied by one or more comment and processing instruction
   // nodes, if E is an ElementTest or SchemaElementTest that matches the element node.
   bool is_element_test = (

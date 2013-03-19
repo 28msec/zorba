@@ -55,6 +55,7 @@
 #include <vector>
 
 #include "compiler/parsetree/parsenodes.h"
+#include "compiler/parser/zorba_parser_error.h"
 #include "zorbatypes/zstring.h"
 
 #ifdef __GNUC__
@@ -97,20 +98,12 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 #include "compiler/api/compilercb.h"
 #include "store/api/update_consts.h"
 #include "compiler/parser/xquery_driver.h"
+#include "compiler/parser/parser_helpers.h"
 
 #define SYMTAB( n ) driver.symtab.get( (off_t)n )
 #define SYMTAB_PUT( s ) driver.symtab.put( s )
 #define LOC( p ) driver.createQueryLoc( p )
 
-
-namespace zorba
-{
-namespace parser
-{
-  extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_declare, *the_create;
-
-}
-}
 
 #define YYDEBUG 1
 
@@ -213,6 +206,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> COMP_ELEMENT_QNAME_LBRACE     "'element QName {'"
 %token <sval> COMP_ATTRIBUTE_QNAME_LBRACE   "'attribute QName {'"
 %token <sval> COMP_PI_NCNAME_LBRACE         "'processing-instruction NCName {'"
+%token <sval> COMP_NS_NCNAME_LBRACE         "'namespace NCName {'"
 %token <sval> QNAME_SVAL                    "'QName'"
 %token <sval> EQNAME_SVAL                   "'EQName'"
 %token <sval> ANNOTATION_QNAME_SVAL         "'%QName'"
@@ -261,6 +255,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token INSTANCE                         "'instance'"
 %token LET                              "'let'"
 %token MOST                             "'most'"
+%token NS_NODE                          "'namespace-node'"
 %token NEXT                             "'next'"
 %token NO                               "'no'"
 %token ONLY                             "'only'"
@@ -620,6 +615,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> ModuleWithoutBOM
 %type <node> ModuleDecl
 %type <node> ModuleImport
+%type <node> NamespaceTest
 %type <node> NameTest
 %type <node> NamespaceDecl
 %type <node> NodeComp
@@ -713,6 +709,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> CompDocConstructor
 %type <expr> CompElemConstructor
 %type <expr> CompPIConstructor
+%type <expr> CompNamespaceConstructor
 %type <expr> CompTextConstructor
 %type <expr> ComputedConstructor
 %type <expr> Constructor
@@ -920,7 +917,10 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList GeneralizedAtomicType SimpleType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AbbrevForwardStep ForwardAxis ForwardStep NodeTest ReverseAxis ReverseStep
+
+// parsenodes
+%destructor { release_hack( $$ ); } AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList GeneralizedAtomicType SimpleType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest NamespaceTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
@@ -928,8 +928,11 @@ template<typename T> inline void release_hack( T *ref ) {
 // parsenodes: JSON
 %destructor { release_hack( $$ ); } JSONObjectConstructor JSONPairList JSONArrayConstructor JSONSimpleObjectUnion JSONAccumulatorObjectUnion JSONDeleteExpr JSONInsertExpr JSONRenameExpr JSONReplaceExpr JSONAppendExpr
 
+// exprnodes: AxisStep
+%destructor { release_hack( $$ ); } AxisStep
+
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompNamespaceConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -4106,7 +4109,8 @@ StepExpr :
     {
       $$ = $1;
     }
-  | FilterExpr
+  |
+  FilterExpr
     {
       $$ = $1;
     }
@@ -4537,382 +4541,365 @@ UnorderedExpr :
 |
 |____________________________________________________________________*/
 FunctionCall :
-        FUNCTION_NAME LPAR RPAR
-        {
-            $$ = new FunctionCall( LOC(@$), static_cast<QName*>($1), NULL );
-        }
-    |   FUNCTION_NAME LPAR ArgList RPAR
-        {
-            $$ = new FunctionCall(
-                LOC(@$),
-                static_cast<QName*>($1),
-                dynamic_cast<ArgList*>($3)
-            );
-        }
+    FUNCTION_NAME LPAR RPAR
+    {
+      $$ = new FunctionCall( LOC(@$), static_cast<QName*>($1), NULL );
+    }
+|   FUNCTION_NAME LPAR ArgList RPAR
+    {
+      $$ = new FunctionCall(LOC(@$),
+                            static_cast<QName*>($1),
+                            dynamic_cast<ArgList*>($3));
+    }
+;
 
-    ;
 
-// [91a]
 ArgList :
-        ExprSingle
-        {
-            ArgList *al = new ArgList( LOC(@$) );
-            al->push_back( $1 );
-            $$ = al;
-        }
-    |   ArgList COMMA ExprSingle
-        {
-            if ( ArgList *al = dynamic_cast<ArgList*>($1) )
-                al->push_back( $3 );
-            $$ = $1;
-        }
-    ;
+    ExprSingle
+    {
+      ArgList *al = new ArgList( LOC(@$) );
+      al->push_back( $1 );
+      $$ = al;
+    }
+|   ArgList COMMA ExprSingle
+    {
+      if ( ArgList *al = dynamic_cast<ArgList*>($1) )
+        al->push_back( $3 );
+      $$ = $1;
+    }
+;
 
-// [92]
+
 Constructor :
-        DirectConstructor
-        {
-            $$ = $1;
-        }
-    |   ComputedConstructor
-        {
-            $$ = $1;
-        }
-    ;
+    DirectConstructor
+    {
+      $$ = $1;
+    }
+  | ComputedConstructor
+    {
+      $$ = $1;
+    }
+;
 
-// [93]
+
 DirectConstructor :
-        DirElemConstructor
-        {
-            $$ = $1;
-        }
-    |   DirCommentConstructor
-        {
-            $$ = $1;
-        }
-    |   DirPIConstructor
-        {
-            $$ = $1;
-        }
-    ;
+    DirElemConstructor
+    {
+      $$ = $1;
+    }
+  | DirCommentConstructor
+    {
+      $$ = $1;
+    }
+  | DirPIConstructor
+    {
+      $$ = $1;
+    }
+;
 
-// [94]
+
 DirElemConstructor :
-        LT_OR_START_TAG QNAME OptionalBlank EMPTY_TAG_END /* ws: explicitXQ */
-        {
-            $$ = new DirElemConstructor(
-                LOC(@$),
-                static_cast<QName*>($2),
-                NULL,
-                NULL,
-                NULL
-            );
-        }
-    |   LT_OR_START_TAG QNAME DirAttributeList OptionalBlank EMPTY_TAG_END /* ws: explicitXQ */
-        {
-            $$ = new DirElemConstructor(
-                LOC(@$),
-                static_cast<QName*>($2),
-                NULL,
-                dynamic_cast<DirAttributeList*>($3),
-                NULL
-            );
-        }
-    |   LT_OR_START_TAG QNAME OptionalBlank TAG_END START_TAG_END QNAME OptionalBlank TAG_END
-        {
-            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($6)->get_qname())
-            {
-              error(@5, "syntax error, end tag </" + static_cast<QName*>($6)->get_qname().str() + "> does not match start tag <"
-                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
-              YYERROR;
-            }
+    LT_OR_START_TAG QNAME OptionalBlank EMPTY_TAG_END /* ws: explicitXQ */
+    {
+      $$ = new DirElemConstructor(LOC(@$),
+                                  static_cast<QName*>($2),
+                                  NULL,
+                                  NULL,
+                                  NULL);
+    }
+  | LT_OR_START_TAG QNAME OptionalBlank TAG_END START_TAG_END QNAME OptionalBlank TAG_END
+    {
+      if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($6)->get_qname())
+      {
+        error(@5, "syntax error, end tag </" +
+                  static_cast<QName*>($6)->get_qname().str() +
+                  "> does not match start tag <" +
+                  static_cast<QName*>($2)->get_qname().str() + ">");
+        YYERROR;
+      }
 
-            $$ = new DirElemConstructor(
-                LOC(@$),
-                static_cast<QName*>($2),
-                static_cast<QName*>($6),
-                NULL,
-                NULL
-            );
-        }
-    |   LT_OR_START_TAG QNAME OptionalBlank TAG_END DirElemContentList START_TAG_END QNAME OptionalBlank TAG_END
-        {
-            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
-            {
-              error(@5, "syntax error, end tag </" + static_cast<QName*>($7)->get_qname().str() + "> does not match start tag <"
-                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
-              YYERROR;
-            }
+      $$ = new DirElemConstructor(LOC(@$),
+                                  static_cast<QName*>($2),
+                                  static_cast<QName*>($6),
+                                  NULL,
+                                  NULL);
+    }
+  | LT_OR_START_TAG QNAME DirAttributeList OptionalBlank EMPTY_TAG_END /* ws:explicitXQ */
+    {
+      $$ = new DirElemConstructor(LOC(@$),
+                                  static_cast<QName*>($2),
+                                  NULL,
+                                  dynamic_cast<DirAttributeList*>($3),
+                                  NULL);
+    }
+  | LT_OR_START_TAG QNAME DirAttributeList OptionalBlank TAG_END START_TAG_END QNAME OptionalBlank TAG_END
+    {
+      if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
+      {
+        error(@5, "syntax error, end tag </" +
+                  static_cast<QName*>($7)->get_qname().str() +
+                  "> does not match start tag <" +
+                  static_cast<QName*>($2)->get_qname().str() + ">");
+        YYERROR;
+      }
 
-            $$ = new DirElemConstructor(
-                LOC(@$),
-                static_cast<QName*>($2),
-                static_cast<QName*>($7),
-                NULL,
-                dynamic_cast<DirElemContentList*>($5)
-            );
-        }
-    |   LT_OR_START_TAG QNAME DirAttributeList OptionalBlank TAG_END START_TAG_END QNAME OptionalBlank TAG_END
-        {
-            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
-            {
-              error(@5, "syntax error, end tag </" + static_cast<QName*>($7)->get_qname().str() + "> does not match start tag <"
-                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
-              YYERROR;
-            }
+      $$ = new DirElemConstructor(LOC(@$),
+                                  static_cast<QName*>($2),
+                                  static_cast<QName*>($7),
+                                  dynamic_cast<DirAttributeList*>($3),
+                                  NULL);
+    }
+  | LT_OR_START_TAG QNAME OptionalBlank TAG_END
+    DirElemContentList
+    START_TAG_END QNAME OptionalBlank TAG_END
+    {
+      if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($7)->get_qname())
+      {
+        error(@5, "syntax error, end tag </" +
+                  static_cast<QName*>($7)->get_qname().str() +
+                  "> does not match start tag <" +
+                  static_cast<QName*>($2)->get_qname().str() + ">");
+        YYERROR;
+      }
 
-            $$ = new DirElemConstructor(
-                LOC(@$),
-                static_cast<QName*>($2),
-                static_cast<QName*>($7),
-                dynamic_cast<DirAttributeList*>($3),
-                NULL
-            );
-        }
-    |   LT_OR_START_TAG QNAME DirAttributeList OptionalBlank TAG_END DirElemContentList START_TAG_END QNAME OptionalBlank TAG_END
-        {
-            if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($8)->get_qname())
-            {
-              error(@5, "syntax error, end tag </" + static_cast<QName*>($8)->get_qname().str() + "> does not match start tag <"
-                                                   + static_cast<QName*>($2)->get_qname().str() + ">");
-              YYERROR;
-            }
+      $$ = new DirElemConstructor(LOC(@$),
+                                  static_cast<QName*>($2),
+                                  static_cast<QName*>($7),
+                                  NULL,
+                                  dynamic_cast<DirElemContentList*>($5));
+    }
+  | LT_OR_START_TAG QNAME DirAttributeList OptionalBlank TAG_END
+    DirElemContentList
+    START_TAG_END QNAME OptionalBlank TAG_END
+    {
+      if (static_cast<QName*>($2)->get_qname() != static_cast<QName*>($8)->get_qname())
+      {
+        error(@5, "syntax error, end tag </" +
+                  static_cast<QName*>($8)->get_qname().str() +
+                  "> does not match start tag <" +
+                  static_cast<QName*>($2)->get_qname().str() + ">");
+        YYERROR;
+      }
 
-            $$ = new DirElemConstructor(
-                LOC(@$),
-                static_cast<QName*>($2),
-                static_cast<QName*>($8),
-                dynamic_cast<DirAttributeList*>($3),
-                dynamic_cast<DirElemContentList*>($6)
-            );
-        }
-        /* ws: explicitXQ */
-    ;
+      $$ = new DirElemConstructor(LOC(@$),
+                                  static_cast<QName*>($2),
+                                  static_cast<QName*>($8),
+                                  dynamic_cast<DirAttributeList*>($3),
+                                  dynamic_cast<DirElemContentList*>($6));
+    }
+/* ws: explicitXQ */
+;
 
-// [94a]
+
 DirElemContentList :
-        DirElemContent
-        {
-            DirElemContentList *decl = new DirElemContentList( LOC(@$) );
-            decl->push_back( dynamic_cast<DirElemContent*>($1) );
-            $$ = decl;
-        }
-    |   DirElemContentList DirElemContent
-        {
-            DirElemContentList *decl = dynamic_cast<DirElemContentList*>($1);
-            if ( decl )
-                decl->push_back( dynamic_cast<DirElemContent*>($2) );
-            $$ = $1;
-        }
-    ;
+    DirElemContent
+    {
+      DirElemContentList *decl = new DirElemContentList( LOC(@$) );
+      decl->push_back( dynamic_cast<DirElemContent*>($1) );
+      $$ = decl;
+    }
+  | DirElemContentList DirElemContent
+    {
+      DirElemContentList *decl = dynamic_cast<DirElemContentList*>($1);
+      if ( decl )
+        decl->push_back( dynamic_cast<DirElemContent*>($2) );
+      $$ = $1;
+    }
+;
 
-// [95]
+
 DirAttributeList :
-        DirAttr
-        {
-            DirAttributeList *dal = new DirAttributeList( LOC(@$) );
-            dal->push_back( dynamic_cast<DirAttr*>($1) );
-            $$ = dal;
-        }
-    |   DirAttributeList DirAttr
-        {
-            DirAttributeList *dal = dynamic_cast<DirAttributeList*>($1);
-            if ( dal )
-                dal->push_back( dynamic_cast<DirAttr*>($2) );
-            $$ = $1;
-        }
-    ;
+    DirAttr
+    {
+      DirAttributeList *dal = new DirAttributeList( LOC(@$) );
+      dal->push_back( dynamic_cast<DirAttr*>($1) );
+      $$ = dal;
+    }
+  | DirAttributeList DirAttr
+    {
+      DirAttributeList *dal = dynamic_cast<DirAttributeList*>($1);
+      if ( dal )
+        dal->push_back( dynamic_cast<DirAttr*>($2) );
+      $$ = $1;
+    }
+;
 
-// [95a]
+
 DirAttr :
-        BLANK QNAME OptionalBlank EQUALS OptionalBlank DirAttributeValue /* ws: explicitXQ */
-        {
-            $$ = new DirAttr(
-                LOC(@$),
-                static_cast<QName*>($2),
-                dynamic_cast<DirAttributeValue*>($6)
-            );
-        }
-    ;
+    BLANK QNAME OptionalBlank EQUALS OptionalBlank DirAttributeValue /* ws: explicitXQ */
+    {
+      $$ = new DirAttr(LOC(@$),
+                       static_cast<QName*>($2),
+                       dynamic_cast<DirAttributeValue*>($6));
+    }
+;
 
 // OptionaBlank used in the DirElemConstr
 OptionalBlank :
-        /* empty */
-    |   BLANK;
+      /* empty */
+  |   BLANK;
 
-// [96]
+
 DirAttributeValue :
-        QUOTE opt_QuoteAttrContentList QUOTE
-        {
-            $$ = new DirAttributeValue( LOC(@$),
-                                dynamic_cast<QuoteAttrContentList*>($2));
-        }
-    |   APOS opt_AposAttrContentList APOS     /* ws: explicitXQ */
-        {
-            $$ = new DirAttributeValue( LOC(@$),
-                                dynamic_cast<AposAttrContentList*>($2));
-        }
-    ;
+    QUOTE opt_QuoteAttrContentList QUOTE
+    {
+      $$ = new DirAttributeValue(LOC(@$),
+                                 dynamic_cast<QuoteAttrContentList*>($2));
+    }
+  | APOS opt_AposAttrContentList APOS     /* ws: explicitXQ */
+    {
+      $$ = new DirAttributeValue( LOC(@$),
+                                  dynamic_cast<AposAttrContentList*>($2));
+    }
+;
 
-// [96a]
+
 opt_QuoteAttrContentList :
-        /* empty */
-        {
-            $$ = new QuoteAttrContentList( LOC(@$) );
-        }
-    |   QuoteAttrContentList
-        {
-            $$ = $1;
-        }
-    ;
+    /* empty */
+    {
+      $$ = new QuoteAttrContentList( LOC(@$) );
+    }
+  | QuoteAttrContentList
+    {
+      $$ = $1;
+    }
+;
 
 QuoteAttrContentList :
-        ESCAPE_QUOTE
-        {
-            QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC(@$) );
-            qacl->push_back( new QuoteAttrValueContent( LOC(@$), "\"" ) );
-            $$ = qacl;
-        }
-    |   QuoteAttrValueContent
-        {
-            QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC(@$) );
-            qacl->push_back( dynamic_cast<QuoteAttrValueContent*>($1) );
-            $$ = qacl;
-        }
-    |   QuoteAttrContentList ESCAPE_QUOTE
-        {
-            QuoteAttrContentList *qacl =
-                dynamic_cast<QuoteAttrContentList*>($1);
-            if ( qacl )
-                qacl->push_back( new QuoteAttrValueContent( LOC(@$), "\"" ) );
-            $$ = $1;
-        }
-    |   QuoteAttrContentList QuoteAttrValueContent
-        {
-            QuoteAttrContentList *qacl =
-                dynamic_cast<QuoteAttrContentList*>($1);
-            if ( qacl )
-                qacl->push_back( dynamic_cast<QuoteAttrValueContent*>($2) );
-            $$ = $1;
-        }
-    ;
+    ESCAPE_QUOTE
+    {
+      QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC(@$) );
+      qacl->push_back( new QuoteAttrValueContent( LOC(@$), "\"" ) );
+      $$ = qacl;
+    }
+  | QuoteAttrValueContent
+    {
+      QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC(@$) );
+      qacl->push_back( dynamic_cast<QuoteAttrValueContent*>($1) );
+      $$ = qacl;
+    }
+  | QuoteAttrContentList ESCAPE_QUOTE
+    {
+      QuoteAttrContentList* qacl = dynamic_cast<QuoteAttrContentList*>($1);
+      if ( qacl )
+        qacl->push_back( new QuoteAttrValueContent( LOC(@$), "\"" ) );
+      $$ = $1;
+    }
+  | QuoteAttrContentList QuoteAttrValueContent
+    {
+      QuoteAttrContentList *qacl = dynamic_cast<QuoteAttrContentList*>($1);
+      if ( qacl )
+        qacl->push_back( dynamic_cast<QuoteAttrValueContent*>($2) );
+      $$ = $1;
+    }
+;
 
-// [96b]
+
 opt_AposAttrContentList :
-        /* empty */
-        {
-            $$ = new AposAttrContentList( LOC(@$) );
-        }
-    |   AposAttrContentList
-        {
-            $$ = $1;
-        }
-    ;
+    /* empty */
+    {
+      $$ = new AposAttrContentList( LOC(@$) );
+    }
+  | AposAttrContentList
+    {
+      $$ = $1;
+    }
+;
 
 AposAttrContentList :
-        ESCAPE_APOS
-        {
-            AposAttrContentList *aacl = new AposAttrContentList( LOC(@$) );
-            aacl->push_back( new AposAttrValueContent( LOC(@$),"'") );
-            $$ = aacl;
-        }
-    |   AposAttrValueContent
-        {
-            AposAttrContentList *aacl = new AposAttrContentList( LOC(@$) );
-            aacl->push_back( dynamic_cast<AposAttrValueContent*>($1) );
-            $$ = aacl;
-        }
-    |   AposAttrContentList ESCAPE_APOS
-        {
-            AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>($1);
-            if (aacl)
-                aacl->push_back( new AposAttrValueContent( LOC(@$),"'") );
-            $$ = $1;
-        }
-    |   AposAttrContentList AposAttrValueContent
-        {
-            AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>($1);
-            if ( aacl )
-                aacl->push_back( dynamic_cast<AposAttrValueContent*>($2) );
-            $$ = $1;
-        }
-    ;
+    ESCAPE_APOS
+    {
+      AposAttrContentList *aacl = new AposAttrContentList( LOC(@$) );
+      aacl->push_back( new AposAttrValueContent( LOC(@$),"'") );
+      $$ = aacl;
+    }
+  | AposAttrValueContent
+    {
+      AposAttrContentList *aacl = new AposAttrContentList( LOC(@$) );
+      aacl->push_back( dynamic_cast<AposAttrValueContent*>($1) );
+      $$ = aacl;
+    }
+  | AposAttrContentList ESCAPE_APOS
+    {
+      AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>($1);
+      if (aacl)
+        aacl->push_back( new AposAttrValueContent( LOC(@$),"'") );
+      $$ = $1;
+    }
+  | AposAttrContentList AposAttrValueContent
+    {
+      AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>($1);
+      if ( aacl )
+        aacl->push_back( dynamic_cast<AposAttrValueContent*>($2) );
+      $$ = $1;
+    }
+;
 
-// [97]
+
 QuoteAttrValueContent :
-        QUOTE_ATTR_CONTENT
-        {
-            $$ = new QuoteAttrValueContent( LOC(@$), SYMTAB($1) );
-        }
-    |   CommonContent
-        {
-            $$ = new QuoteAttrValueContent(
-                LOC(@$), dynamic_cast<CommonContent*>($1)
-            );
-        }
-    ;
+    QUOTE_ATTR_CONTENT
+    {
+      $$ = new QuoteAttrValueContent( LOC(@$), SYMTAB($1) );
+    }
+  | CommonContent
+    {
+      $$ = new QuoteAttrValueContent(LOC(@$), dynamic_cast<CommonContent*>($1));
+    }
+;
 
-// [98]
+
 AposAttrValueContent :
-        APOS_ATTR_CONTENT
-        {
-            $$ = new AposAttrValueContent( LOC(@$), SYMTAB($1) );
-        }
-    |   CommonContent
-        {
-            $$ = new AposAttrValueContent(
-                LOC(@$), dynamic_cast<CommonContent*>($1)
-            );
-        }
-    ;
+    APOS_ATTR_CONTENT
+    {
+      $$ = new AposAttrValueContent( LOC(@$), SYMTAB($1) );
+    }
+  | CommonContent
+    {
+      $$ = new AposAttrValueContent(LOC(@$), dynamic_cast<CommonContent*>($1));
+    }
+;
 
-// [99]
+
 DirElemContent :
-        DirectConstructor
-        {
-            $$ = new DirElemContent( LOC(@$), $1 );
-        }
-    |   ELEMENT_CONTENT
-        {
-            $$ = new DirElemContent( LOC(@$), SYMTAB($1) );
-        }
-    |   CDataSection
-        {
-            rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>($1);
-            $$ = new DirElemContent( LOC(@$), cdata_h );
-        }
-    |   CommonContent
-        {
-            rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>($1);
-            $$ = new DirElemContent( LOC(@$), cont_h );
-        }
-    ;
+    DirectConstructor
+    {
+      $$ = new DirElemContent( LOC(@$), $1 );
+    }
+  | ELEMENT_CONTENT
+    {
+      $$ = new DirElemContent( LOC(@$), SYMTAB($1) );
+    }
+  | CDataSection
+    {
+      rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>($1);
+      $$ = new DirElemContent( LOC(@$), cdata_h );
+    }
+  | CommonContent
+    {
+      rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>($1);
+      $$ = new DirElemContent( LOC(@$), cont_h );
+    }
+;
 
-// [100]
+
 CommonContent :
-        CHAR_REF_LITERAL
-        {
-            $$ = new CommonContent(
-                LOC(@$), ParseConstants::cont_charref, SYMTAB($1)
-            );
-        }
-    |   DOUBLE_LBRACE
-        {
-            $$ = new CommonContent(
-                LOC(@$), ParseConstants::cont_escape_lbrace
-            );
-        }
-    |   DOUBLE_RBRACE
-        {
-            $$ = new CommonContent(
-                LOC(@$), ParseConstants::cont_escape_rbrace
-            );
-        }
-    |   LBRACE StatementsAndExpr RBRACE
-        {
-            $$ = new CommonContent(LOC(@$), new EnclosedExpr(LOC(@$), $2));
-        }
-    ;
+    CHAR_REF_LITERAL
+    {
+      $$ = new CommonContent(LOC(@$), ParseConstants::cont_charref, SYMTAB($1));
+    }
+  | DOUBLE_LBRACE
+    {
+      $$ = new CommonContent(LOC(@$), ParseConstants::cont_escape_lbrace);
+    }
+  | DOUBLE_RBRACE
+    {
+      $$ = new CommonContent(LOC(@$), ParseConstants::cont_escape_rbrace);
+    }
+  | LBRACE StatementsAndExpr RBRACE
+    {
+      $$ = new CommonContent(LOC(@$), new EnclosedExpr(LOC(@$), $2));
+    }
+;
 
 
 DirCommentConstructor :
@@ -4979,28 +4966,30 @@ ComputedConstructor :
     {
       $$ = $1;
     }
+  |
+    CompNamespaceConstructor
 ;
 
 
-// [108]
-CompDocConstructor :
-        DOCUMENT LBRACE StatementsAndExpr RBRACE
-        {
-            $$ = new CompDocConstructor( LOC(@$), $3 );
-        }
-    ;
 
-// [109]
+CompDocConstructor :
+    DOCUMENT LBRACE StatementsAndExpr RBRACE
+    {
+      $$ = new CompDocConstructor( LOC(@$), $3 );
+    }
+;
+
+
 CompElemConstructor :
-        COMP_ELEMENT_QNAME_LBRACE StatementsAndOptionalExpr RBRACE
-        {
-            $$ = new CompElemConstructor(LOC(@$), new QName(LOC(@$), SYMTAB($1)), $2);
-        }
-    |   ELEMENT LBRACE Expr RBRACE LBRACE StatementsAndOptionalExpr RBRACE
-        {
-            $$ = new CompElemConstructor( LOC(@$), $3, $6 );
-        }
-    ;
+    COMP_ELEMENT_QNAME_LBRACE StatementsAndOptionalExpr RBRACE
+    {
+      $$ = new CompElemConstructor(LOC(@$), new QName(LOC(@$), SYMTAB($1)), $2);
+    }
+|   ELEMENT LBRACE Expr RBRACE LBRACE StatementsAndOptionalExpr RBRACE
+    {
+      $$ = new CompElemConstructor( LOC(@$), $3, $6 );
+    }
+;
 
 // [110]
 /*
@@ -5011,45 +5000,57 @@ ContentExpr :
     ;
 */
 
-// [111]
+
 CompAttrConstructor :
-        COMP_ATTRIBUTE_QNAME_LBRACE StatementsAndOptionalExpr RBRACE
-        {
-          $$ = new CompAttrConstructor( LOC(@$), new QName(LOC(@$), SYMTAB($1)), $2 );
-        }
-    |   ATTRIBUTE LBRACE Expr RBRACE LBRACE StatementsAndOptionalExpr RBRACE
-        {
-            $$ = new CompAttrConstructor( LOC(@$), $3, $6 );
-        }
-    ;
+    COMP_ATTRIBUTE_QNAME_LBRACE StatementsAndOptionalExpr RBRACE
+    {
+      $$ = new CompAttrConstructor( LOC(@$), new QName(LOC(@$), SYMTAB($1)), $2 );
+    }
+|   ATTRIBUTE LBRACE Expr RBRACE LBRACE StatementsAndOptionalExpr RBRACE
+    {
+      $$ = new CompAttrConstructor( LOC(@$), $3, $6 );
+    }
+;
 
-// [112]
+
 CompTextConstructor :
-        TEXT LBRACE StatementsAndExpr RBRACE
-        {
-            $$ = new CompTextConstructor( LOC(@$), $3 );
-        }
-    ;
+    TEXT LBRACE StatementsAndExpr RBRACE
+    {
+      $$ = new CompTextConstructor( LOC(@$), $3 );
+    }
+;
 
-// [113]
+
 CompCommentConstructor :
-        COMMENT LBRACE StatementsAndExpr RBRACE
-        {
-            $$ = new CompCommentConstructor( LOC(@$), $3 );
-        }
-    ;
+    COMMENT LBRACE StatementsAndExpr RBRACE
+    {
+      $$ = new CompCommentConstructor( LOC(@$), $3 );
+    }
+;
 
-// [114]
+
 CompPIConstructor :
-        COMP_PI_NCNAME_LBRACE StatementsAndOptionalExpr RBRACE
-        {
-            $$ = new CompPIConstructor( LOC(@$), SYMTAB($1), $2 );
-        }
-    |   PROCESSING_INSTRUCTION LBRACE Expr RBRACE LBRACE StatementsAndOptionalExpr RBRACE
-        {
-            $$ = new CompPIConstructor( LOC(@$), $3, $6 );
-        }
-    ;
+    COMP_PI_NCNAME_LBRACE StatementsAndOptionalExpr RBRACE
+    {
+      $$ = new CompPIConstructor(LOC(@$), SYMTAB($1), $2);
+    }
+|   PROCESSING_INSTRUCTION LBRACE Expr RBRACE LBRACE StatementsAndOptionalExpr RBRACE
+    {
+      $$ = new CompPIConstructor(LOC(@$), $3, $6);
+    }
+;
+
+
+CompNamespaceConstructor :
+    COMP_NS_NCNAME_LBRACE StatementsAndExpr RBRACE
+    {
+      $$ = new CompNamespaceConstructor(LOC(@$), SYMTAB($1), $2);
+    }
+|   NAMESPACE LBRACE Expr RBRACE LBRACE StatementsAndExpr RBRACE
+    {
+      $$ = new CompNamespaceConstructor(LOC(@$), $3, $6);
+    }
+;
 
 
 TypeDeclaration :
@@ -5189,87 +5190,96 @@ SimpleType :
 
 
 KindTest :
-        DocumentTest
-        {
-            $$ = $1;
-        }
-    |   ElementTest
-        {
-            $$ = $1;
-        }
-    |   AttributeTest
-        {
-            $$ = $1;
-        }
-    |   SchemaElementTest
-        {
-            $$ = $1;
-        }
-    |   SchemaAttributeTest
-        {
-            $$ = $1;
-        }
-    |   PITest
-        {
-            $$ = $1;
-        }
-    |   CommentTest
-        {
-            $$ = $1;
-        }
-    |   TextTest
-        {
-            $$ = $1;
-        }
-    |   AnyKindTest
-        {
-            $$ = $1;
-        }
-    ;
+    DocumentTest
+    {
+      $$ = $1;
+    }
+|   ElementTest
+    {
+      $$ = $1;
+    }
+|   AttributeTest
+    {
+      $$ = $1;
+    }
+|   SchemaElementTest
+    {
+      $$ = $1;
+    }
+|   SchemaAttributeTest
+    {
+      $$ = $1;
+    }
+|   PITest
+    {
+      $$ = $1;
+    }
+|   CommentTest
+    {
+      $$ = $1;
+    }
+|   TextTest
+    {
+      $$ = $1;
+    }
+|   NamespaceTest
+    {
+      $$ = $1;
+    }
+|   AnyKindTest
+    {
+      $$ = $1;
+    }
+;
 
-// [122]
+
 AnyKindTest :
-        NODE LPAR RPAR
-        {
-            $$ = new AnyKindTest( LOC(@$) );
-        }
-    ;
+    NODE LPAR RPAR
+    {
+      $$ = new AnyKindTest( LOC(@$) );
+    }
+;
 
-// [123]
+
 DocumentTest :
-        DOCUMENT_NODE LPAR RPAR
-        {
-            $$ = new DocumentTest( LOC(@$) );
-        }
-    |   DOCUMENT_NODE LPAR ElementTest RPAR
-        {
-            $$ = new DocumentTest( LOC(@$), dynamic_cast<ElementTest*>($3) );
-        }
-    |   DOCUMENT_NODE LPAR SchemaElementTest RPAR
-        {
-            $$ = new DocumentTest(
-                LOC(@$), dynamic_cast<SchemaElementTest*>($3)
-            );
-        }
-    ;
+    DOCUMENT_NODE LPAR RPAR
+    {
+      $$ = new DocumentTest(LOC(@$));
+    }
+|   DOCUMENT_NODE LPAR ElementTest RPAR
+    {
+      $$ = new DocumentTest(LOC(@$), dynamic_cast<ElementTest*>($3));
+    }
+|   DOCUMENT_NODE LPAR SchemaElementTest RPAR
+    {
+      $$ = new DocumentTest(LOC(@$), dynamic_cast<SchemaElementTest*>($3));
+    }
+;
 
-// [124]
+
+NamespaceTest :
+    NS_NODE LPAR RPAR
+    {
+      $$ = new NamespaceTest(LOC(@$));
+    }
+
+
 TextTest :
-        TEXT LPAR RPAR
-        {
-            $$ = new TextTest( LOC(@$) );
-        }
-    ;
+    TEXT LPAR RPAR
+    {
+      $$ = new TextTest(LOC(@$));
+    }
+;
 
-// [125]
+
 CommentTest :
-        COMMENT LPAR RPAR
-        {
-            $$ = new CommentTest( LOC(@$));
-        }
-    ;
+    COMMENT LPAR RPAR
+    {
+      $$ = new CommentTest(LOC(@$));
+    }
+;
 
-// [126]
+
 PITest :
         PROCESSING_INSTRUCTION LPAR RPAR
         {
@@ -6748,6 +6758,7 @@ QNAME :
     |   ATTRIBUTE               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("attribute"))); }
     |   COMMENT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("comment"))); }
     |   DOCUMENT_NODE           { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("document-node"))); }
+    |   NS_NODE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("namespace-node"))); }
     |   ELEMENT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("element"))); }
     |   ITEM                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("item"))); }
     |   IF                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("if"))); }
@@ -6980,14 +6991,6 @@ EQNAME :
 %%
 
 namespace zorba {
-
-namespace parser {
-
-const char *the_tumbling = "tumbling", *the_sliding = "sliding",
-  *the_start = "start", *the_end = "end", *the_only_end = "only end",
-  *the_declare = "declare", *the_create = "create";
-
-} // namespace parser
 
 /*
  *  The error member function registers the errors to the driver.
