@@ -326,7 +326,7 @@ size_type encode( std::istream &from, ToStringType *to ) {
  * vector&lt;char;&gt;.
  *
  * @param from The istream to read from until EOF is reached.
- * @param to The string to append the encoded bytes to.
+ * @param to The vector to append the encoded bytes to.
  * @param Returns the number of encoded bytes.
  */
 size_type encode( std::istream &from, std::vector<char> *to );
