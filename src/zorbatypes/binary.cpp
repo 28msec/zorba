@@ -280,18 +280,11 @@ bool Base16::parseString(char const *s, size_t len, Base16& aBase16)
 }
 
 
-void Base16::insertData(char const *str, size_t len)
+void Base16::insertData(char const *s, size_t len)
 {
-  zstring_b wrap;
-  wrap.wrap_memory(str, len);
-
-  ascii::trim_whitespace(wrap);
-
-  len = wrap.size();
-  str = wrap.data();
-
+  s = ascii::trim_whitespace( s, &len );
   try {
-    hexbinary::encode( str, len, &theData );
+    hexbinary::encode( s, len, &theData );
   }
   CATCH_HEXBINARY_EXCEPTION()
 }
