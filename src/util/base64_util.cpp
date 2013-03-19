@@ -218,11 +218,12 @@ size_type decode( char const *from, size_type from_len, std::vector<char> *to,
 }
 
 size_type decode( istream &from, ostream &to, int options ) {
+  bool const ignore_ws = !!(options & dopt_ignore_ws);
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 4 ], to_buf[ 1024 * 3 ];
     streamsize gcount;
-    if ( options & dopt_ignore_ws )
+    if ( ignore_ws )
       gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
     else {
       from.read( from_buf, sizeof from_buf );
@@ -239,12 +240,13 @@ size_type decode( istream &from, ostream &to, int options ) {
 }
 
 size_type decode( istream &from, vector<char> *to, int options ) {
+  bool const ignore_ws = !!(options & dopt_ignore_ws);
   vector<char>::size_type const orig_size = to->size();
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 4 ];
     streamsize gcount;
-    if ( options & dopt_ignore_ws )
+    if ( ignore_ws )
       gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
     else {
       from.read( from_buf, sizeof from_buf );

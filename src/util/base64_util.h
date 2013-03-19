@@ -177,11 +177,12 @@ size_type decode( std::istream &from, std::ostream &to,
 template<class ToStringType>
 size_type decode( std::istream &from, ToStringType *to,
                   int options = dopt_none ) {
+  bool const ignore_ws = !!(options & dopt_ignore_ws);
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 4 ], to_buf[ 1024 * 3 ];
     std::streamsize gcount;
-    if ( options & dopt_ignore_ws )
+    if ( ignore_ws )
       gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
     else {
       from.read( from_buf, sizeof from_buf );
