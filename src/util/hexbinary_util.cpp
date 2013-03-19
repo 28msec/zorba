@@ -186,6 +186,7 @@ size_type encode( char const *from, size_type from_len,
     std::vector<char>::size_type const orig_size = to->size();
     to->resize( orig_size + encoded_size( from_len ) );
     encoded = encode( from, from_len, &(*to)[ orig_size ] );
+    to->resize( orig_size + encoded );
   }
   return encoded;
 }
