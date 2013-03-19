@@ -641,11 +641,23 @@ declare function env:mapper(
   $testSetBaseURI as xs:anyURI
 ) as xs:string?
 {
-  let $envSchema := $env/fots:schema,
-      $tcSchema := $case/fots:environment/fots:schema,
-      $schemas := ($envSchema, $tcSchema)
+  let $envSchema := $env/fots:schema
+  let $tcSchema := $case/fots:environment/fots:schema
+  (:
+  Schema documents are identified in the environment in a similar way to source
+  documents. The role attribute indicates whether the schema is imported into
+  the query, or used for source document validation.
+  :)
+  let $schemas := ($envSchema, $tcSchema)
+  let $envSource := for $s in $env/fots:source
+                    where empty($s[@role = "."])
+                    return $s
+  let $tcSource := for $s in $case/fots:environment/fots:source
+                   where empty($s[@role = "."])
+                   return $s
+  let $sources := ($envSource, $tcSource)
   return
-    if (empty($schemas))
+    if (empty($schemas) and empty($sources))
     then ()
     else string-join(
             ("declare function mapper:uri-mapper($namespace as xs:string, $entity as xs:string) {",
@@ -664,6 +676,24 @@ declare function env:mapper(
                                    data($schema/@uri),
                                    "' return '",
                                    resolve-uri($schema/@file, $testSetBaseURI),
+                                   "'"),
+                      "    default return ()")),
+                      "&#xA;")
+    else (),
+    if (exists($sources))
+    then string-join(("case ''",
+                     "  return switch($namespace)",
+                    (for $source in $envSource
+                     return concat("    case '",
+                                   data($source/@uri),
+                                   "' return '",
+                                   resolve-uri($source/@file, $envBaseURI),
+                                   "'"),
+                      for $source in $tcSource
+                      return concat("    case '",
+                                   data($source/@uri),
+                                   "' return '",
+                                   resolve-uri($source/@file, $testSetBaseURI),
                                    "'"),
                       "    default return ()")),
                       "&#xA;")

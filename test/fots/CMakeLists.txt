@@ -675,7 +675,6 @@ EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature prohibit-all-optional-feature
 EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature require-all-optional-features-5-ns 0)
 EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature require-all-optional-features-7-s 0)
 EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature separate-modules-8-ns 0)
-EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema016 0)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema031 0)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema032c 0)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema040 21339)
