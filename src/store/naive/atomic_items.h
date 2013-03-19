@@ -2640,13 +2640,7 @@ protected:
   }
 
   HexBinaryItem( store::SchemaTypeCode t, char const *data, size_t size,
-                 bool encoded = true ) :
-    AtomicItem(t),
-    theIsEncoded(encoded)
-  {
-    theValue.reserve( size );
-    theValue.insert( theValue.begin(), data, data + size );
-  }
+                 bool encoded = true );
 
 public:
   size_t alloc_size() const;

@@ -16,6 +16,7 @@
 #include "stdafx.h"
 #include "atomic_items.h"
 
+#include <algorithm>
 #include <limits.h>
 
 #include <zorba/internal/unique_ptr.h>
@@ -3927,6 +3928,20 @@ size_t HexBinaryItem::dynamic_size() const
   return sizeof( *this );
 }
 
+
+HexBinaryItem::HexBinaryItem( store::SchemaTypeCode t, char const *data,
+                              size_t size, bool encoded ) :
+  AtomicItem(t),
+  theIsEncoded(encoded)
+{
+  theValue.reserve( size );
+  theValue.insert( theValue.begin(), data, data + size );
+  if ( theIsEncoded )
+    std::transform(
+      theValue.begin(), theValue.end(),
+      theValue.begin(), static_cast<char (*)(char)>( ascii::to_upper )
+    );
+}
 
 bool HexBinaryItem::equals( store::Item const *other, long timezone,
                             XQPCollator const *aCollation ) const

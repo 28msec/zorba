@@ -259,17 +259,23 @@ Base16::Base16(Base64 const &aBase64)
 }
 
 
-bool Base16::parseString(char const *aString, size_t len, Base16& aBase16)
+bool Base16::parseString(char const *s, size_t len, Base16& aBase16)
 {
-  aBase16.theData.clear();
-  try 
-  {
-    aBase16.insertData(aString, len);
-  }
-  catch (...)
-  {
-    return false;
-  }
+  if ( len ) {
+    try 
+    {
+      hexbinary::validate( s, len );
+      aBase16.theData.resize( len );
+      aBase16.theData.resize(
+        copy_without_ws( s, len, &aBase16.theData[0] )
+      );
+    }
+    catch (...)
+    {
+      return false;
+    }
+  } else
+    aBase16.theData.clear();
   return true;
 }
 
