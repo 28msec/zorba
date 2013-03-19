@@ -88,7 +88,8 @@ inline size_type decoded_size( size_type n ) {
  * terminated.
  * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if \a from_len is not a multiple of 2.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  * @see decoded_size()
  */
@@ -105,8 +106,8 @@ size_type decode( char const *from, size_type from_len, char *to,
  * The vector is made large enough to contain the additional bytes.
  * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if the number of hexBinary bytes decoded is not a
- * multiple of 2.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
 size_type decode( char const *from, size_type from_len, std::vector<char> *to,
@@ -122,8 +123,8 @@ size_type decode( char const *from, size_type from_len, std::vector<char> *to,
  * @param to The string to append the decoded bytes to.
  * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if the number of hexBinary bytes decoded is not a
- * multiple of 2.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
 template<class ToStringType>
@@ -146,8 +147,8 @@ size_type decode( char const *from, size_type from_len, ToStringType *to,
  * @param to The ostream to write the decoded bytes to.
  * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if the number of hexBinary bytes decoded is not a
- * multiple of 2.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
 size_type decode( std::istream &from, std::ostream &to,
@@ -162,8 +163,8 @@ size_type decode( std::istream &from, std::ostream &to,
  * @param to The string to append the decoded bytes to.
  * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if the number of hexBinary bytes decoded is not a
- * multiple of 2.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
 template<class ToStringType>
@@ -198,8 +199,8 @@ size_type decode( std::istream &from, ToStringType *to,
  * @param to The string to append the decoded bytes to.
  * @param options The decoding options to use.
  * @param Returns the number of decoded bytes.
- * @throws invalid_argument if \a the number of hexBinary bytes decoded is not
- * a multiple of 2.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
 size_type decode( std::istream &from, std::vector<char> *to,
@@ -211,8 +212,8 @@ size_type decode( std::istream &from, std::vector<char> *to,
  * @param buf A pointer to the hexBinary buffer to be validated.
  * @param buf_len The number of bytes to validate.
  * @param options The decoding options to use.
- * @throws invalid_argument if the number of hexBinary bytes validated is not a
- * multiple of 2.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
  * @throws hexbinary::exception if an invalid byte is encountered.
  * @see decoded_size()
  */
