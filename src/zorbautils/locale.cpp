@@ -204,7 +204,8 @@ static bool Zorba_IsValidLocaleName( LPCWSTR lpLocaleName ) {
     init = true;
   }
 
-  return IsValidLocaleName_ptr ? IsValidLocaleName_ptr( lpLocaleName )!=0 : false;
+  return IsValidLocaleName_ptr ?
+    !!IsValidLocaleName_ptr( lpLocaleName ) : false;
 }
 
 #else /* WIN32 */
