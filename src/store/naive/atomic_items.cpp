@@ -3962,8 +3962,7 @@ bool HexBinaryItem::equals( store::Item const *other, long timezone,
 
 char const* HexBinaryItem::getHexBinaryValue( size_t &size ) const
 {
-  size = theValue.size();
-  return size > 0 ? &theValue[0] : "";
+  return theValue.empty() ? "" : &theValue[0];
 }
 
 store::Item* HexBinaryItem::getType() const
@@ -3996,7 +3995,6 @@ void HexBinaryItem::appendStringValue(zstring& buf) const
   else
   {
     std::vector<char> encoded;
-    encoded.reserve(theValue.size());
     Base16::encode(theValue, encoded);
     buf.insert(buf.size(), &encoded[0], encoded.size());
   }
