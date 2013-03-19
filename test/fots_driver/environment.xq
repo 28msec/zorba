@@ -420,7 +420,7 @@ declare %private function env:compute-context-item(
 {
   let $ciURI := resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
   return
-  if (empty($env/fots:source[@validation = "strict"]))
+  if (empty($env/fots:source/@validation))
   then
     concat('variable $contextItem := doc("', $ciURI, '");')
   else 
@@ -433,7 +433,7 @@ declare %private function env:compute-context-item(
     "(",
     "'",
     env:get-schema-import($env),
-    concat('validate { doc("', $ciURI, '")', " }"),
+    concat('validate ', xs:string($env/fots:source/@validation),' { doc("', $ciURI, '")', " }"),
     "',",
     "(), mapper:uri-mapper#2",
     ");",
