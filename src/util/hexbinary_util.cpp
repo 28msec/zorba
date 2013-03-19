@@ -110,12 +110,14 @@ size_type decode( char const *from, size_type from_len,
     from = ascii::trim_whitespace( from, &from_len );
   if ( from_len % 2 )
     throw invalid_argument( "HexBinary length is not a multiple of 2" );
+  size_type total_decoded = 0;
   if ( from_len ) {
     std::vector<char>::size_type const orig_size = to->size();
     to->resize( orig_size + decoded_size( from_len ) );
-    return decode( from, from_len, &(*to)[ orig_size ], options );
+    total_decoded = decode( from, from_len, &(*to)[ orig_size ], options );
+    to->resize( orig_size + total_decoded );
   }
-  return 0;
+  return total_decoded;
 }
 
 size_type decode( istream &from, ostream &to, int options ) {
