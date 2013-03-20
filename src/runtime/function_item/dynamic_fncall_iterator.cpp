@@ -300,7 +300,7 @@ bool DynamicFnCallIterator::nextImpl(
         result = targetItem->getObjectValue(selectorItem3);
       else
         result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
-      STACK_PUSH(true, state);
+      STACK_PUSH(result != NULL, state);
     }
     else
     {

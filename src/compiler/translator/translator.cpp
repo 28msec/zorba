@@ -11414,26 +11414,29 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   expr* sourceExpr = pop_nodestack();
   ZORBA_ASSERT(sourceExpr != 0);
 
+   // Implementing implicit iteration over the sequence returned by the source expr
+  flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
+
+  for_clause* fc = reinterpret_cast<for_clause*>(flworExpr->get_clause(0));
+
+  // This is needed to make sure that the flwor is not thrown away by the optimizer
+  // when the FunctionItem expression is an empty sequence.
+  fc->set_allowing_empty(true); 
+
+  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
+
 #ifdef ZORBA_WITH_JSON
   TypeManager* tm = sourceExpr->get_type_manager();
   xqtref_t srcType = sourceExpr->get_return_type();
 
-  if (!theSctx->is_feature_set(feature::hof) ||
-      (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR)))
+  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR))
   {
     if (numArgs > 1)
     {
       RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
     }
+
     function* func;
-
-    flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
-    fo_expr* accessorExpr = NULL;
-
-    const for_clause* fc =
-    reinterpret_cast<const for_clause*>(flworExpr->get_clause(0));
-
-    expr* flworVarExpr = fc->get_var();
 
     if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
     {
@@ -11453,36 +11456,29 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
         BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2) :
         BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
     }
+    fo_expr* accessorExpr = 
     accessorExpr = numArgs==1 ?
-      theExprManager->create_fo_expr(
-          theRootSctx, theUDF, loc, func, flworVarExpr, arguments[0]) :
-      theExprManager->create_fo_expr(
-          theRootSctx, theUDF, loc, func, flworVarExpr);
+    CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, arguments[0]) :
+    CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr);
 
     normalize_fo(accessorExpr);
 
     flworExpr->set_return_expr(accessorExpr);
-
-    pop_scope();
-
-    push_nodestack(flworExpr);
-
-    return;
   }
+  else
 #endif
-
-  if (!theSctx->is_feature_set(feature::hof))
   {
-    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, loc,
-    ERROR_PARAMS("higher-order functions (hof)"));
+    expr* dynFuncInvocation =
+    CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
+                                        flworVarExpr,
+                                        arguments);
+
+    flworExpr->set_return_expr(dynFuncInvocation);
   }
 
-  expr* dynFuncInvocation =
-  theExprManager->create_dynamic_function_invocation_expr(theRootSctx, theUDF,
-                                                          loc,
-                                                          sourceExpr,
-                                                          arguments);
-  push_nodestack(dynFuncInvocation);
+  pop_scope();
+
+  push_nodestack(flworExpr);
 }
 
 
