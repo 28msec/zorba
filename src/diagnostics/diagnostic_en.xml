@@ -3095,7 +3095,7 @@
     <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
 
-      <value>object or array selection needs exactly one parameter</value>
+      <value>object or array selection needs zero or one parameter</value>
     </diagnostic>
 
     <diagnostic code="JNUP0019" if="defined(ZORBA_WITH_JSON)">
@@ -3118,6 +3118,11 @@
     <diagnostic code="JNTY0020" if="defined(ZORBA_WITH_JSON)">
       <comment>parser error for invalid option type</comment>
       <value>$1: invalid option type for option $2 (expected $3)</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0021" if="defined(ZORBA_WITH_JSON)">
+      <comment>array or object selector on heterogeneous sequence</comment>
+      <value>$1: invalid json-item() type (expected $2)</value>
     </diagnostic>
 
     <diagnostic code="JNDY0021" if="defined(ZORBA_WITH_JSON)">
