@@ -17,6 +17,7 @@ New Features:
   * Added setCalendar(), getCalendar(), setLocale(), and getLocale() to
     DynamicContext class in C++ API.
   * fn:trace outputs "empty-sequence()" if the input is the empty-sequence.
+  * Allow multiple default function namespaces.
   * Added xqxq:variable-value function.
   * Added canonicalize function to modules/xml.
   * Added support for xs:dateTimeStamp type from XMLSchema 1.1, bug #924754.
@@ -25,6 +26,7 @@ Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
     parameter into collection skip if $sourceSeq parameter is from a
     collection).
+  * Optimized fn:index-of function
   * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:
