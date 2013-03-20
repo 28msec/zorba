@@ -19,7 +19,7 @@
 
 
 # Change this to publish updated FOTS archives
-SET (FOTS_ARCHIVE "FOTS_170313.tgz")
+SET (FOTS_ARCHIVE "FOTS_200313.tgz")
 
 # Change this to modify which elements in FOTS driver results are output
 # as CDATA
@@ -27,16 +27,21 @@ SET (FOTS_CDATA_ELEMENTS "fots:query test assert-xml")
 
 # Download and unpack pre-created archive
 SET (_outdir "${BUILDDIR}/test/fots")
-MESSAGE (STATUS "Downloading FOTS archive '${FOTS_ARCHIVE}'...")
-FILE (DOWNLOAD http://zorbatest.lambda.nu:8080/~spungi/${FOTS_ARCHIVE}
-  "${_outdir}/${FOTS_ARCHIVE}" STATUS _dlstat SHOW_PROGRESS)
-LIST (GET _dlstat 0 _dlcode)
-IF (NOT _dlcode EQUAL 0)
-  LIST (GET _dlstat 1 _dlmsg)
-  MESSAGE (FATAL_ERROR "Error downloading FOTS archive: ${_dlmsg}")
-ENDIF (NOT _dlcode EQUAL 0)
+IF(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
+  MESSAGE (STATUS "FOTS archive '${FOTS_ARCHIVE}' already downloaded.")
+ELSEIF(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
+  MESSAGE (STATUS "Downloading FOTS archive '${FOTS_ARCHIVE}'...")
+  FILE (DOWNLOAD http://zorbatest.lambda.nu:8080/~spungi/${FOTS_ARCHIVE}
+    "${_outdir}/${FOTS_ARCHIVE}" STATUS _dlstat SHOW_PROGRESS)
+  LIST (GET _dlstat 0 _dlcode)
+  IF (NOT _dlcode EQUAL 0)
+    LIST (GET _dlstat 1 _dlmsg)
+    MESSAGE (FATAL_ERROR "Error downloading FOTS archive: ${_dlmsg}")
+  ENDIF (NOT _dlcode EQUAL 0)
+ENDIF(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
 
 # Remove old version of the FOTS testsuite (if it exists)
+MESSAGE (STATUS "Remove old version of the FOTS testsuite (if it exists)...")
 EXECUTE_PROCESS (COMMAND "${CMAKE_COMMAND}" -E remove_directory "${_outdir}/2011"
   RESULT_VARIABLE _remove)
 
