@@ -28,8 +28,8 @@
 %define "parser_class_name" "jsoniq_parser"
 %error-verbose
 
-// Expect 3 shift/reduce conflicts
-%expect 3
+// Expect 4 shift/reduce conflicts
+%expect 4
 
 
 %code requires {
@@ -2712,13 +2712,13 @@ FLWORClauseList :
 
 
 ForClause :
-    FOR DOLLAR VarInDeclList
+    ForOrFrom DOLLAR VarInDeclList
     {
       $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
     }
   //  ============================ Improved error messages ============================ 
   |
-    FOR error VarInDeclList
+    ForOrFrom error VarInDeclList
     {
       $$ = $3; // to prevent the Bison warning
       error(@2, "syntax error, unexpected qualified name \""
@@ -2727,11 +2727,17 @@ ForClause :
       YYERROR;
     }
   |
-    FOR UNRECOGNIZED
+    ForOrFrom UNRECOGNIZED
     {
       $$ = NULL; // to prevent the Bison warning
       error(@2, ""); // the error message is already set in the driver's parseError member
       YYERROR;
+    }
+;
+
+ForOrFrom: FOR | FROM
+    {
+      // this adds on shift-reduce conflict (probably with FTRange expression)
     }
 ;
 
