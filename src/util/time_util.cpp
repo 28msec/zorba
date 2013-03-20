@@ -59,13 +59,28 @@ namespace time {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+namespace iso8601 {
+  /**
+   * Weekday values as used by the ISO 8601 specification.
+   */
+  enum weekday {
+    mon = 1,
+    tue = 2,
+    wed = 3,
+    thu = 4,
+    fri = 5,
+    sat = 6,
+    sun = 7
+  };
+}
+
 namespace calendar {
 
 char const *const string_of[] = {
   "#UNKNOWN",
   "AD",   // Anno Domini (Christian Era)
   "AH",   // Anno Hegirae (Muhammedan Era)
-  "AM",   // Anno Mundi (Jewish Calendar)
+  "AM",   // Anno Mundi (Jewish)
   "AME",  // Mauludi Era (solar years since Mohammed's birth)
   "AP",   // Anno Persici
   "AS",   // Aji Saka Era (Java)
@@ -77,12 +92,12 @@ char const *const string_of[] = {
   "EE",   // Ethiopian Era
   "FE",   // Fasli Era
   "ISO",  // ISO 8601 calendar
-  "JE",   // Japanese Calendar
+  "JE",   // Japanese
   "KE",   // Khalsa Era (Sikh calendar)
   "KY",   // Kali Yuga
   "ME",   // Malabar Era
   "MS",   // Monarchic Solar Era
-  "OS",   // Old Style (Julian Calendar)
+  "OS",   // Old Style (Julian)
   "RS",   // Rattanakosin (Bangkok) Era
   "SE",   // Saka Era
   "SH",   // Mohammedan Solar Era (Iran)
@@ -92,10 +107,48 @@ char const *const string_of[] = {
   "VS"    // Vikrama Samvat Era
 };
 
+int calc_week_in_mon( unsigned mday, unsigned mon, unsigned year, type cal ) {
+  return 0;
+}
+
+int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal ) {
+  int yday = time::calc_yday( mday, mon, year );
+  int jan1_wday = time::calc_wday( 1, time::jan, year );
+
+  switch ( cal ) {
+    case AD:
+      return (jan1_wday + yday) / 7 + 1;
+    case ISO: {
+      // Based on http://www.personal.ecu.edu/mccartyr/ISOwdALG.txt
+      ++yday; // code assumes [1-366]
+      jan1_wday = convert_wday_to( jan1_wday, cal );
+
+      if ( jan1_wday > iso8601::thu && jan1_wday + yday <= 8 ) {
+        // date falls in week 52 or 53 of the previous year
+        return  52
+              + (jan1_wday == iso8601::fri ||
+                (jan1_wday == iso8601::sat && time::is_leap_year( year - 1 )));
+      }
+
+      int const wday =
+        convert_wday_to( time::calc_wday( mday, mon, year ), cal );
+
+      int const days_in_year = 365 + time::is_leap_year( year );
+      if ( days_in_year - yday < 4 - wday )
+        return 1;
+
+      return  (yday + (7 - wday) + (jan1_wday - 1)) / 7
+            - (jan1_wday > iso8601::thu);
+    }
+    default:
+      return -1;
+  }
+}
+
 int convert_wday_from( unsigned wday, type from ) {
   switch ( from ) {
     case AD : return static_cast<int>( wday );
-    case ISO: return wday == 7 /* Sunday */ ? 0 : wday;
+    case ISO: return wday == iso8601::sun ? time::sun : wday;
     default : return -1;
   }
 }
@@ -103,7 +156,7 @@ int convert_wday_from( unsigned wday, type from ) {
 int convert_wday_to( unsigned wday, type to ) {
   switch ( to ) {
     case AD : return static_cast<int>( wday );
-    case ISO: return wday == 0 /* Sunday */ ? 7 : wday;
+    case ISO: return wday == time::sun ? iso8601::sun : wday;
     default : return -1;
   }
 }
@@ -220,7 +273,7 @@ unsigned days_in_month( unsigned mon, unsigned year ) {
     31  // 11: Dec
   };
   assert( mon < 12 );
-  return days[ mon ] + (mon == 1 /* Feb */ && is_leap_year( year ));
+  return days[ mon ] + (mon == feb && is_leap_year( year ));
 }
 
 void get_epoch( sec_type *sec, usec_type *usec ) {

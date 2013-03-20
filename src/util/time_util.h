@@ -107,6 +107,20 @@ namespace calendar {
     return AD; // i.e., the Gregorian calendar
   }
 
+  int calc_week_in_mon( unsigned mday, unsigned mon, unsigned year, type cal );
+
+  /**
+   * Calculates the week number for the given date and calendar.
+   *
+   * @param mday The month day [1-31].
+   * @param mon The month [0-11].
+   * @param year The year.
+   * @param cal The calendar.
+   * @return Returns the week [1-53] or -1 if it is unknown how to perform the
+   * calculation for \a cal.
+   */
+  int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal );
+
   /**
    * Converts a weekday number from a given calendar to the Unix interpretation
    * [0-6] where 0 = Sunday.
@@ -120,7 +134,7 @@ namespace calendar {
   int convert_wday_from( unsigned wday, type from );
 
   /**
-   * Converts a weekday number to a specific calendar.
+   * Converts a Unix weekday number to a specific calendar.
    *
    * @param wday The weekday to convert: [0-6] where 0 = Sunday.
    * @param to The calendar designator to convert \a wday to.
@@ -153,6 +167,37 @@ namespace calendar {
 } // namespace calendar
 
 ///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Month (<code>mod</code>) values as used by the \c tm structure.
+ */
+enum month {
+  jan = 0,
+  feb = 1,
+  mar = 2,
+  apr = 3,
+  may = 4,
+  jun = 5,
+  jul = 6,
+  aug = 7,
+  sep = 8,
+  oct = 9,
+  nov = 10,
+  dec = 11
+};
+
+/**
+ * Weekday (<code>wday</code>) values as used by the \c tm structure.
+ */
+enum weekday {
+  sun = 0,
+  mon = 1,
+  tue = 2,
+  wed = 3,
+  thu = 4,
+  fri = 5,
+  sat = 6
+};
 
 /**
  * Calculates the day of the month and month from the given day of the year.
@@ -194,7 +239,7 @@ unsigned calc_yday( unsigned mday, unsigned mon, unsigned year );
  *
  * @param mon The month [0-11].
  * @param year The year.
- * @return Returns said number of days [1-31].
+ * @return Returns said number of days, one of: 28, 29, 30, or 31.
  */
 unsigned days_in_month( unsigned mon, unsigned year );
 
@@ -249,6 +294,16 @@ char get_military_tz( int hour );
  */
 inline bool is_leap_year( unsigned year ) {
   return !(year % 4) && ((year % 100) || !(year % 400));
+}
+
+/**
+ * Gets the number of days in the given year.
+ *
+ * @param year The year.
+ * @return Returns said number of days, either: 365 or 366.
+ */
+inline unsigned days_in_year( unsigned year ) {
+  return 365 + is_leap_year( year );
 }
 
 /**

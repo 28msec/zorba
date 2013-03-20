@@ -686,7 +686,10 @@ append:
   *dest += tmp;
 }
 
-static void append_weekday( int wday, modifier const &mod, zstring *dest ) {
+static void append_weekday( unsigned day, unsigned mon, unsigned year,
+                            modifier const &mod, zstring *dest ) {
+  unsigned wday = time::calc_wday( day, mon, year );
+
   modifier mod_copy( mod );
   if ( !mod.first.parsed )
     mod_copy.first.type = modifier::name;
@@ -735,6 +738,19 @@ static void append_weekday( int wday, modifier const &mod, zstring *dest ) {
       append_number( wday, mod_copy, dest );
     }
   }
+}
+
+static void append_week_in_year( unsigned day, unsigned mon, unsigned year,
+                                 modifier const &mod, zstring *dest ) {
+  int week = time::calendar::calc_week_in_year( day, mon, year, mod.cal );
+  if ( week == -1 ) {
+    week = time::calendar::calc_week_in_year( day, mon, year, calendar::ISO );
+    ostringstream oss;
+    // TODO: localize "Calendar"
+    oss << "[Calendar: " << calendar::string_of[ calendar::ISO ] << ']';
+    *dest += oss.str();
+  }
+  append_number( week, mod, dest );
 }
 
 static void append_year( int year, modifier const &mod, zstring *s ) {
@@ -1276,7 +1292,10 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           modifier mod_copy( mod );
           if ( !mod.first.parsed )
             mod_copy.first.type = modifier::name;
-          append_weekday( dateTime.getDayOfWeek(), mod_copy, &result_str );
+          append_weekday(
+            dateTime.getDay(), dateTime.getMonth(), dateTime.getYear(),
+            mod_copy, &result_str
+          );
           break;
         }
         case 'f':
@@ -1320,7 +1339,10 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           break;
         }
         case 'W':
-          append_number( dateTime.getWeekInYear(), mod, &result_str );
+          append_week_in_year(
+            dateTime.getDay(), dateTime.getMonth(), dateTime.getYear(),
+            mod, &result_str
+          );
           break;
         case 'w':
           append_number( dateTime.getWeekInMonth(), mod, &result_str );
