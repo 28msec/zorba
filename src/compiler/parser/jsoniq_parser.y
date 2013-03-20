@@ -2653,7 +2653,7 @@ FLWORWinCond :
 
 
 WindowClause :
-    FOR WindowType WindowVarDecl FLWORWinCond FLWORWinCond
+    ForOrFrom WindowType WindowVarDecl FLWORWinCond FLWORWinCond
     {
       $$ = new WindowClause (LOC (@$),
                              ($2 == parser::the_tumbling ?
@@ -2663,7 +2663,7 @@ WindowClause :
                              dynamic_cast<FLWORWinCond *> ($4),
                              dynamic_cast<FLWORWinCond *> ($5));
     }
-  | FOR WindowType WindowVarDecl FLWORWinCond
+  | ForOrFrom WindowType WindowVarDecl FLWORWinCond
     {
       $$ = new WindowClause (LOC (@$),
                              ($2 == parser::the_tumbling ?

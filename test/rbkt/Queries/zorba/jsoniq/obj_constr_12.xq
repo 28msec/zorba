@@ -1,1 +1,1 @@
-{ null : 1 }("null")
+{ null() : 1 }("null")
