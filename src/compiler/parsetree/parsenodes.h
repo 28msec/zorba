@@ -4091,6 +4091,30 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
+/*******************************************************************************
+********************************************************************************/
+class BooleanLiteral : public exprnode
+{
+protected:
+  bool const boolval;
+
+public:
+  BooleanLiteral(const QueryLoc&, bool);
+
+  bool const& get_boolval() const { return boolval; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+/*******************************************************************************
+********************************************************************************/
+class NullLiteral : public exprnode
+{
+public:
+  NullLiteral(const QueryLoc&);
+
+  void accept(parsenode_visitor&) const;
+};
 
 /*******************************************************************************
   [110] VarRef ::= "$" VarName

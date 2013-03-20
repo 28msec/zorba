@@ -10388,6 +10388,43 @@ void end_visit(const StringLiteral& v, void* /*visit_state*/)
   push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, v.get_strval().str()));
 }
 
+
+/*******************************************************************************
+********************************************************************************/
+void* begin_visit(const BooleanLiteral& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const BooleanLiteral& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  push_nodestack(
+      theExprManager->create_const_expr(
+        theRootSctx, theUDF, loc, v.get_boolval()));
+}
+
+/*******************************************************************************
+********************************************************************************/
+void* begin_visit(const NullLiteral& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const NullLiteral& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  store::Item_t lNull;
+  GENV_ITEMFACTORY->createJSONNull(lNull);
+  push_nodestack(
+      theExprManager->create_const_expr(
+        theRootSctx, theUDF, loc, lNull));
+}
+
 /*******************************************************************************
    StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
 *******************************************************************************/

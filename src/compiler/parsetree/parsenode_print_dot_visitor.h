@@ -176,6 +176,8 @@ public:
   void *begin_visit(const RelativePathExpr &);
   void *begin_visit(const BangExpr &);
   void *begin_visit(const StringLiteral &);
+  void *begin_visit(const BooleanLiteral &);
+  void *begin_visit(const NullLiteral &);
   void *begin_visit(const StringConcatExpr &);
   void *begin_visit(const TreatExpr &);
   void *begin_visit(const TypeswitchExpr &);
@@ -383,6 +385,8 @@ public:
   void end_visit(const RelativePathExpr&, void *visit_state);
   void end_visit(const BangExpr&, void *visit_state);
   void end_visit(const StringLiteral&, void *visit_state);
+  void end_visit(const BooleanLiteral&, void *visit_state);
+  void end_visit(const NullLiteral&, void *visit_state);
   void end_visit(const StringConcatExpr&, void *visit_state);
   void end_visit(const TreatExpr&, void *visit_state);
   void end_visit(const TypeswitchExpr&, void *visit_state);

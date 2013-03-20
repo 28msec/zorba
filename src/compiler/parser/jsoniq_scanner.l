@@ -764,6 +764,9 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "descending" { return token::DESCENDING; }
 "encoding" { return token::ENCODING; }
 
+"null" { return token::NULL_TOKEN; }
+"true" { return token::TRUE_TOKEN; }
+"false" { return token::FALSE_TOKEN; }
 
   /*______________________________________________________________________
    |

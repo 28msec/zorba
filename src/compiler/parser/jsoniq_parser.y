@@ -426,6 +426,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token VERSION                          "'version'"
 %token START                            "'start'"
 
+%token NULL_TOKEN                       "'null'"
+%token TRUE_TOKEN                       "'true'"
+%token FALSE_TOKEN                      "'false'"
+
 /* update-related */
 /* -------------- */
 %token AFTER                            "'after'"
@@ -766,6 +770,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> RelativePathExpr
 %type <expr> StepExpr
 %type <expr> StringLiteral
+%type <expr> BooleanLiteral
 %type <expr> SwitchExpr
 %type <expr> TreatExpr
 %type <expr> TypeswitchExpr
@@ -4466,6 +4471,14 @@ Literal :
         {
             $$ = $1;
         }
+    |   BooleanLiteral
+        {
+            $$ = $1;
+        }
+    |   NULL_TOKEN
+        {
+            $$ = new NullLiteral(LOC(@$));
+        }
     ;
 
 // [85]
@@ -4490,6 +4503,17 @@ NumericLiteral :
                 LOC(@$), ParseConstants::num_double, *$1
             );
             delete yylval.dval;
+        }
+    ;
+
+BooleanLiteral :
+        TRUE_TOKEN
+        {
+          $$ = new BooleanLiteral(LOC(@$), true);
+        }
+    |   FALSE_TOKEN
+        {
+          $$ = new BooleanLiteral(LOC(@$), false);
         }
     ;
 
