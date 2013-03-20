@@ -76,18 +76,16 @@ static XQPCollator* getCollator(
   store::Item_t temp;
 
   if (!PlanIterator::consumeNext(lCollationItem, iter, planState))
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( NoEmptySeqAsCollationParam ) ),
-      ERROR_LOC( loc )
-    );
+  {
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(NoEmptySeqAsCollationParam)));
+  }
 
   if (PlanIterator::consumeNext(temp, iter, planState))
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( NoSeqAsCollationParam ) ),
-      ERROR_LOC( loc )
-    );
+  {
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(NoSeqAsCollationParam)));
+  }
 
   return sctx->get_collator(lCollationItem->getStringValue().str(), loc);
 }
@@ -147,11 +145,9 @@ bool FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 bool
 FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lSequenceItem;
-  store::Item_t lCollationItem;
-  xqtref_t      lCollationItemType;
+  store::Item_t seqItem;
   store::Item_t searchItem;
-  TypeManager* typemgr = theSctx->get_typemanager();
+  TypeManager* tm = theSctx->get_typemanager();
   long timezone = 0;
   bool found;
 
@@ -163,26 +159,39 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 		RAISE_ERROR(err::FORG0006, loc, ERROR_PARAMS(ZED(EmptySeqNoSearchItem)));
   }
 
-  if ( theChildren.size() == 3 )
-    state->theCollator = getCollator(theSctx, loc,
-                                     planState, theChildren[2].getp());
+  if (theChildren.size() == 3)
+  {
+    state->theCollator = 
+    getCollator(theSctx, loc, planState, theChildren[2].getp());
+  }
 
-  while ( consumeNext(lSequenceItem, theChildren[0].getp(), planState))
+  while (consumeNext(seqItem, theChildren[0].getp(), planState))
   {
     // inc the position in the sequence; do it at the beginning of the loop
     // because index-of starts with one
     ++state->theCurrentPos;
 
-    searchItem = state->theSearchItem;
-
     try
     {
-      found = CompareIterator::valueEqual(loc,
-                                          lSequenceItem,
-                                          searchItem,
-                                          typemgr,
-                                          timezone,
-                                          state->theCollator);
+      if (theFastComp == 1)
+      {
+        found = seqItem->equals(state->theSearchItem, timezone, state->theCollator);
+      }
+      else if (theFastComp == 2)
+      {
+        found = state->theSearchItem->equals(seqItem, timezone, state->theCollator);
+      }
+      else
+      {
+        searchItem = state->theSearchItem;
+
+        found = CompareIterator::valueEqual(loc,
+                                            seqItem,
+                                            searchItem,
+                                            tm,
+                                            timezone,
+                                            state->theCollator);
+      }
     }
     catch (ZorbaException const& e)
     {
@@ -202,6 +211,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.1.4 fn:empty

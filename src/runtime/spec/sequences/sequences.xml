@@ -102,7 +102,7 @@
   The result sequence is in ascending numeric order.
   </zorba:description>
 
-  <zorba:function >
+  <zorba:function generateCodegen="false">
 
     <zorba:signature localname="index-of" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
@@ -124,11 +124,17 @@
                   brief="the current position in the sequence"/>
 
     <zorba:member type="store::Item_t" name="theSearchItem" defaultValue="NULL"
-      brief="the item to search for"/>
+                  brief="the item to search for"/>
 
     <zorba:member type="XQPCollator*" name="theCollator" defaultValue="0"
-      brief="the collator"/>
+                  brief="the collator"/>
   </zorba:state>
+
+  <zorba:constructor>
+    <zorba:parameter type="int" name="fastComp"/>
+  </zorba:constructor>
+
+  <zorba:member type="int" name="theFastComp"/>
 
 </zorba:iterator>
 
