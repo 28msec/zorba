@@ -478,13 +478,12 @@ static void append_string( zstring const &s, modifier const &mod,
   *dest += mod.right_pad_space( &tmp );
 }
 
-static void append_month( int month, modifier const &mod, zstring *dest ) {
+static void append_month( unsigned mon, modifier const &mod, zstring *dest ) {
   switch ( mod.first.type ) {
     case modifier::name:
     case modifier::Name:
     case modifier::NAME: {
-      --month;                          // 1-12 -> 0-11
-      zstring name( locale::get_month_name( month, mod.lang, mod.country ) );
+      zstring name( locale::get_month_name( mon, mod.lang, mod.country ) );
       utf8_string<zstring> u_name( name );
       if ( mod.gt_max_width( u_name.size() ) ) {
         //
@@ -496,7 +495,7 @@ static void append_month( int month, modifier const &mod, zstring *dest ) {
         // conventional abbreviations if available, or crude right-truncation
         // if not.
         //
-        name = locale::get_month_abbr( month, mod.lang, mod.country );
+        name = locale::get_month_abbr( mon, mod.lang, mod.country );
         if ( mod.gt_max_width( u_name.size() ) )
           u_name = u_name.substr( 0, mod.max_width );
       }
@@ -505,7 +504,7 @@ static void append_month( int month, modifier const &mod, zstring *dest ) {
       break;
     }
     default:
-      append_number( month, mod, dest );
+      append_number( mon + 1, mod, dest );
   }
 }
 
@@ -1293,7 +1292,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           if ( !mod.first.parsed )
             mod_copy.first.type = modifier::name;
           append_weekday(
-            dateTime.getDay(), dateTime.getMonth(), dateTime.getYear(),
+            dateTime.getDay(), dateTime.getMonth() - 1, dateTime.getYear(),
             mod_copy, &result_str
           );
           break;
@@ -1314,7 +1313,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           );
           break;
         case 'M':
-          append_month( dateTime.getMonth(), mod, &result_str );
+          append_month( dateTime.getMonth() - 1, mod, &result_str );
           break;
         case 'm': {
           modifier mod_copy( mod );
@@ -1340,7 +1339,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         }
         case 'W':
           append_week_in_year(
-            dateTime.getDay(), dateTime.getMonth(), dateTime.getYear(),
+            dateTime.getDay(), dateTime.getMonth() - 1, dateTime.getYear(),
             mod, &result_str
           );
           break;

@@ -107,10 +107,6 @@ char const *const string_of[] = {
   "VS"    // Vikrama Samvat Era
 };
 
-int calc_week_in_mon( unsigned mday, unsigned mon, unsigned year, type cal ) {
-  return 0;
-}
-
 int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal ) {
   int yday = time::calc_yday( mday, mon, year );
   int jan1_wday = time::calc_wday( 1, time::jan, year );
@@ -129,14 +125,12 @@ int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal ) {
               + (jan1_wday == iso8601::fri ||
                 (jan1_wday == iso8601::sat && time::is_leap_year( year - 1 )));
       }
-
       int const wday =
         convert_wday_to( time::calc_wday( mday, mon, year ), cal );
-
-      int const days_in_year = 365 + time::is_leap_year( year );
-      if ( days_in_year - yday < 4 - wday )
+      if ( (int)time::days_in_year( year ) - yday < 4 - wday ) {
+        // date falls in week 1 of the next year
         return 1;
-
+      }
       return  (yday + (7 - wday) + (jan1_wday - 1)) / 7
             - (jan1_wday > iso8601::thu);
     }

@@ -99,17 +99,6 @@ namespace calendar {
   }
 
   /**
-   * Gets the default calendar to use.
-   *
-   * @return Returns said calendar;
-   */
-  inline type get_default() {
-    return AD; // i.e., the Gregorian calendar
-  }
-
-  int calc_week_in_mon( unsigned mday, unsigned mon, unsigned year, type cal );
-
-  /**
    * Calculates the week number for the given date and calendar.
    *
    * @param mday The month day [1-31].
@@ -163,6 +152,15 @@ namespace calendar {
   find( StringType const &country ) {
     return find( country.c_str() );
   } 
+
+  /**
+   * Gets the default calendar to use.
+   *
+   * @return Returns said calendar.
+   */
+  inline type get_default() {
+    return AD; // i.e., the Gregorian calendar
+  }
 
 } // namespace calendar
 
