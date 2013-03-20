@@ -6628,7 +6628,14 @@ JSONObjectConstructor :
     ;
 
 JSONPairList :
-        ExprSingle COLON ExprSingle
+        NCNAME COLON ExprSingle
+        {
+          StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($1) );
+          JSONPairList* jpl = new JSONPairList(LOC(@$));
+          jpl->push_back(new JSONPairConstructor(LOC(@$), sl, $3));
+          $$ = jpl;
+        }
+    |   ExprSingle COLON ExprSingle
         {
           JSONPairList* jpl = new JSONPairList(LOC(@$));
           jpl->push_back(new JSONPairConstructor(LOC(@$), $1, $3));
@@ -6639,6 +6646,14 @@ JSONPairList :
           JSONPairList* jpl = dynamic_cast<JSONPairList*>($1);
           assert(jpl);
           jpl->push_back(new JSONPairConstructor(LOC(@$), $3, $5));
+          $$ = jpl;
+        }
+    |   JSONPairList COMMA NCNAME COLON ExprSingle
+        {
+          JSONPairList* jpl = dynamic_cast<JSONPairList*>($1);
+          assert(jpl);
+          StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
+          jpl->push_back(new JSONPairConstructor(LOC(@$), sl, $5));
           $$ = jpl;
         }
     ;
