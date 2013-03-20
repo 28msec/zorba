@@ -1327,7 +1327,7 @@ function* lookup_fn(const QName* qname, csize arity, const QueryLoc& loc)
                             qname->get_prefix(),
                             qname->get_localname(),
                             arity,
-                            false,
+                            theCCB->theConfig.jsoniq_mode,
                             loc);
 }
 
@@ -8648,9 +8648,19 @@ void end_visit(const SimpleType& v, void* /*visit_state*/)
 
   rchandle<QName> qname = v.get_qname();
   store::Item_t qnameItem;
-  expand_elem_qname(qnameItem, qname, loc);
+
+  if (!qname->get_prefix().empty() || !theCCB->theConfig.jsoniq_mode)
+  {
+    expand_elem_qname(qnameItem, qname, loc);
+  }
+  else
+  {
+    GENV_ITEMFACTORY->
+    createQName(qnameItem, XML_SCHEMA_NS, "", qname->get_localname());
+  }
 
   xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
+
   if (t == NULL)
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
@@ -10806,6 +10816,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
     if (theHaveModuleImportCycle)
     {
+      fn_ns = qnameItem->getNamespace();
+
       std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
       std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
 
@@ -13091,7 +13103,16 @@ void end_visit(const GeneralizedAtomicType& v, void* /*visit_state*/)
 
   rchandle<QName> qname = v.get_qname();
   store::Item_t qnameItem;
-  expand_elem_qname(qnameItem, qname, loc);
+
+  if (!qname->get_prefix().empty() || !theCCB->theConfig.jsoniq_mode)
+  {
+    expand_elem_qname(qnameItem, qname, loc);
+  }
+  else
+  {
+    GENV_ITEMFACTORY->
+    createQName(qnameItem, XML_SCHEMA_NS, "", qname->get_localname());
+  }
 
   xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
 

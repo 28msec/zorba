@@ -13,25 +13,25 @@ declare %an:sequential function local:collapse-general($x)
          case array() return { append json . into $arr; }
          default return { append json . into $val; });
 
-   if (size($val) eq 0)
+   if (jn:size($val) eq 0)
    then ()
-   else ["_VAL", members($val)],
+   else ["_VAL", jn:members($val)],
 
-   if (size($obj) eq 0)
+   if (jn:size($obj) eq 0)
    then ()
-   else ["_OBJ", local:collapse-objects(members($obj))],
+   else ["_OBJ", local:collapse-objects(jn:members($obj))],
 
-   if (size($arr) eq 0)
+   if (jn:size($arr) eq 0)
    then ()
-   else  ["_ARR", local:collapse-general(members($arr) ! members(.)) ]
+   else  ["_ARR", local:collapse-general(jn:members($arr) ! jn:members(.)) ]
 };
 
 
 declare %an:sequential function local:collapse-objects($x as object()*)
 {
-  object(for $y in distinct-values($x ! (keys(.)))
-         let $z := $x($y)
-         return {$y : local:collapse-general($z)})
+  jn:object(for $y in distinct-values($x ! (jn:keys(.)))
+            let $z := $x($y)
+            return {$y : local:collapse-general($z)})
 };
 
 

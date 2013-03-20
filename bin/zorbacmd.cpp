@@ -673,6 +673,8 @@ compileAndExecute(
   std::auto_ptr<std::fstream> planFile;
   std::fstream* planFilep = NULL;
 
+  lHints.jsoniq_mode = (qfilepath.rfind(".jq") == qfilepath.size() - 3);
+
   if (serializePlan)
   {
     if (savePlan || loadPlan)
@@ -724,6 +726,7 @@ compileAndExecute(
   }
 
   Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
+
   createSerializerOptions(lSerOptions, properties);
 
   zorba::XQuery_t query;
