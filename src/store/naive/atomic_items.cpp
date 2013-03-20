@@ -3962,7 +3962,8 @@ bool HexBinaryItem::equals( store::Item const *other, long timezone,
 
 char const* HexBinaryItem::getHexBinaryValue( size_t &size ) const
 {
-  return theValue.empty() ? "" : &theValue[0];
+  size = theValue.size();
+  return size ? &theValue[0] : "";
 }
 
 store::Item* HexBinaryItem::getType() const
