@@ -6631,6 +6631,26 @@ private:
 //  JSON productions                                                         //
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
+class JSONObjectLookup : public exprnode
+{
+protected:
+  const exprnode* theObjectExpr;
+  const exprnode* theSelectorExpr;
+
+public:
+  JSONObjectLookup(
+      const QueryLoc&,
+      const exprnode* aObjectExpr,
+      const exprnode* aSelectorExpr = 0);
+
+  ~JSONObjectLookup();
+
+  const exprnode* get_object_expr() const { return theObjectExpr; }
+
+  const exprnode* get_selector_expr() const { return theSelectorExpr; }
+
+  void accept(parsenode_visitor&) const;
+};
 
 
 class JSONArrayConstructor : public exprnode

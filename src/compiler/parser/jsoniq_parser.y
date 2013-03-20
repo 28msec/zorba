@@ -4347,31 +4347,23 @@ FilterExpr :
   |  FilterExpr DOT NCNAME
      {
        StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
-       ArgList *al = new ArgList( LOC(@$) );
-       al->push_back( sl );
-       $$ = new DynamicFunctionInvocation(LOC(@$), $1, al);
+       $$ = new JSONObjectLookup(LOC(@$), $1, sl);
      }
   |  FilterExpr DOT ParenthesizedExpr
      {
-       ArgList *al = new ArgList( LOC(@$) );
-       al->push_back( $3 );
-       $$ = new DynamicFunctionInvocation(LOC(@$), $1, al);
+       $$ = new JSONObjectLookup(LOC(@$), $1, $3);
      }
   |  FilterExpr DOT VarRef
      {
-       ArgList *al = new ArgList( LOC(@$) );
-       al->push_back( $3 );
-       $$ = new DynamicFunctionInvocation(LOC(@$), $1, al);
+       $$ = new JSONObjectLookup(LOC(@$), $1, $3);
      }
   |  FilterExpr DOT StringLiteral
      {
-       ArgList *al = new ArgList( LOC(@$) );
-       al->push_back( $3 );
-       $$ = new DynamicFunctionInvocation(LOC(@$), $1, al);
+       $$ = new JSONObjectLookup(LOC(@$), $1, $3);
      }
   |  FilterExpr DOT STAR
      {
-       $$ = new DynamicFunctionInvocation(LOC(@$), $1);
+       $$ = new JSONObjectLookup(LOC(@$), $1);
      }
 ;
 

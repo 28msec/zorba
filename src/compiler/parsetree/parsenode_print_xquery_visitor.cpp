@@ -2044,6 +2044,8 @@ DEFAULT_END_VISIT (ReverseAxis);
   DEFAULT_VISIT (FTWordsValue);
 
   /* JSON-related */
+  DEFAULT_VISIT (JSONObjectLookup);
+
   DEFAULT_VISIT (JSONArrayConstructor);
 
   DEFAULT_VISIT (JSONObjectConstructor);

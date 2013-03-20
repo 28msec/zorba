@@ -11457,9 +11457,9 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
         BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
     }
     fo_expr* accessorExpr = 
-    accessorExpr = numArgs==1 ?
-    CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, arguments[0]) :
-    CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr);
+      numArgs==1 ?
+      CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, arguments[0]) :
+      CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr);
 
     normalize_fo(accessorExpr);
 
@@ -11767,6 +11767,52 @@ void end_visit(const InlineFunction& v, void* aState)
   theUDF = fiExpr->get_udf();
 }
 
+/*******************************************************************************
+   FilterExpr ::= FilterExpr
+   (. (NCName | ParenthesizedExpr | VarRef | StringLiteral)
+********************************************************************************/
+void* begin_visit(const JSONObjectLookup& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+
+void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  expr* selectExpr = 0;
+  if (v.get_selector_expr())
+    selectExpr = pop_nodestack();
+
+  expr* objectExpr = pop_nodestack();
+  ZORBA_ASSERT(objectExpr != 0);
+
+  flwor_expr* flworExpr = wrap_expr_in_flwor(objectExpr, false);
+
+  for_clause* fc = reinterpret_cast<for_clause*>(flworExpr->get_clause(0));
+
+  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
+
+  function* func = 
+    selectExpr ?
+      BUILTIN_FUNC(FN_JSONIQ_VALUE_2) :
+      BUILTIN_FUNC(FN_JSONIQ_KEYS_1);
+
+  fo_expr* accessorExpr = 
+    selectExpr ?
+      CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, selectExpr) :
+      CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr);
+
+  normalize_fo(accessorExpr);
+
+  flworExpr->set_return_expr(accessorExpr);
+
+  pop_scope();
+
+  push_nodestack(flworExpr);
+}
 
 /*******************************************************************************
   JSONConstructor ::= ArrayConstructor |

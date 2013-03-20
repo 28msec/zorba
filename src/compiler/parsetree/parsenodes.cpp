@@ -5824,6 +5824,30 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 }
 
 ////////// JSON ///////////////////////////////////////////////////////////////
+JSONObjectLookup::JSONObjectLookup(
+    const QueryLoc& loc,
+    const exprnode* aObjectExpr,
+    const exprnode* aSelectorExpr)
+  : exprnode(loc),
+    theObjectExpr(aObjectExpr),
+    theSelectorExpr(aSelectorExpr)
+{
+}
+
+
+JSONObjectLookup::~JSONObjectLookup()
+{
+}
+
+
+void JSONObjectLookup::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theObjectExpr);
+  if (theSelectorExpr != 0) ACCEPT(theSelectorExpr);
+  END_VISITOR();
+}
+
 
 JSONArrayConstructor::JSONArrayConstructor(
     const QueryLoc& loc,

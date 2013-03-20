@@ -1060,6 +1060,7 @@ BEGIN_END_TAG( FTWordsTimes )
 BEGIN_END_TAG( FTWordsValue )
 
 ////////// JSON ///////////////////////////////////////////////////////////////
+BEGIN_END_TAG(JSONObjectLookup)
 
 BEGIN_END_TAG(JSONArrayConstructor)
 
