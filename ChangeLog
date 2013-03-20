@@ -35,6 +35,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
   * Fixed bug in index join rule (no index join if inner clause has positional var).
   * Fixed bug in index join rule (copy var ids after cloning index domain expr).
+  * Fixed bug #1123162 (FOTS: formatting dates and times failures)
   * Added missing wrapper expressions around some variable references.
   * Fixed bug in the throwing of error XQTY0086 during node construction.
   * Fixed bug #1148335 (where-clause expression was not always reset when it should be)
