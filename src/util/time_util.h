@@ -220,7 +220,7 @@ bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
  * @param year The year.
  * @return Returns the weekday [0-6] where 0 = Sunday.
  */
-unsigned calc_wday( unsigned mday, unsigned mon, unsigned year );
+int calc_wday( unsigned mday, unsigned mon, unsigned year );
 
 /**
  * Calculates the day of the year for the given date.
@@ -230,7 +230,7 @@ unsigned calc_wday( unsigned mday, unsigned mon, unsigned year );
  * @param year The year.
  * @return Returns the day of the year [0-365] where 0 = January 1.
  */
-unsigned calc_yday( unsigned mday, unsigned mon, unsigned year );
+int calc_yday( unsigned mday, unsigned mon, unsigned year );
 
 /**
  * Gets the number of days in the given month.
@@ -239,7 +239,7 @@ unsigned calc_yday( unsigned mday, unsigned mon, unsigned year );
  * @param year The year.
  * @return Returns said number of days, one of: 28, 29, 30, or 31.
  */
-unsigned days_in_month( unsigned mon, unsigned year );
+int days_in_month( unsigned mon, unsigned year );
 
 /**
  * Gets the number of seconds and microseconds since epoch.
@@ -300,7 +300,7 @@ inline bool is_leap_year( unsigned year ) {
  * @param year The year.
  * @return Returns said number of days, either: 365 or 366.
  */
-inline unsigned days_in_year( unsigned year ) {
+inline int days_in_year( unsigned year ) {
   return 365 + is_leap_year( year );
 }
 

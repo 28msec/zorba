@@ -127,7 +127,7 @@ int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal ) {
       }
       int const wday =
         convert_wday_to( time::calc_wday( mday, mon, year ), cal );
-      if ( (int)time::days_in_year( year ) - yday < 4 - wday ) {
+      if ( time::days_in_year( year ) - yday < 4 - wday ) {
         // date falls in week 1 of the next year
         return 1;
       }
@@ -174,7 +174,7 @@ static unsigned const yday_mon[][13] = {
 
 bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
                     unsigned year ) {
-  assert( yday < 365 + is_leap_year( year ) );
+  assert( yday < days_in_year( year ) );
 
   unsigned const *const ym = yday_mon[ is_leap_year( year ) ];
   for ( unsigned m = 1; m <= 12; ++m ) 
@@ -233,26 +233,26 @@ bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
  * @param year Year.
  * @return Returns the weekday where 0 = Sunday.
  */
-unsigned calc_wday( unsigned mday, unsigned mon, unsigned year ) {
+int calc_wday( unsigned mday, unsigned mon, unsigned year ) {
   assert( mday >= 1 );
   assert( mday <= days_in_month( mon, year ) );
   assert( mon < 12 );
 
   ++mon; // Tondering's algorithm assumes month value in range 1-12.
-  unsigned const a = (14 - mon) / 12;
-  unsigned const y = year - a;
-  unsigned const m = mon + 12 * a - 2;
+  int const a = (14 - mon) / 12;
+  int const y = year - a;
+  int const m = mon + 12 * a - 2;
   return (mday + y + y/4 - y/100 + y/400 + (31 * m) / 12) % 7;
 }
 
-unsigned calc_yday( unsigned mday, unsigned mon, unsigned year ) {
+int calc_yday( unsigned mday, unsigned mon, unsigned year ) {
   assert( mday >= 1 );
   assert( mday <= days_in_month( mon, year ) );
-  return yday_mon[ is_leap_year( year ) ][ mon ] + mday - 1;
+  return (int)yday_mon[ is_leap_year( year ) ][ mon ] + mday - 1;
 }
 
-unsigned days_in_month( unsigned mon, unsigned year ) {
-  static unsigned const days[] = {
+int days_in_month( unsigned mon, unsigned year ) {
+  static int const days[] = {
     31, //  0: Jan
     28, //  1: Feb
     31, //  2: Mar

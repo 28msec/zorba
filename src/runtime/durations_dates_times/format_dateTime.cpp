@@ -685,9 +685,9 @@ append:
   *dest += tmp;
 }
 
-static void append_weekday( unsigned day, unsigned mon, unsigned year,
+static void append_weekday( unsigned mday, unsigned mon, unsigned year,
                             modifier const &mod, zstring *dest ) {
-  unsigned wday = time::calc_wday( day, mon, year );
+  int wday = time::calc_wday( mday, mon, year );
 
   modifier mod_copy( mod );
   if ( !mod.first.parsed )
@@ -739,11 +739,11 @@ static void append_weekday( unsigned day, unsigned mon, unsigned year,
   }
 }
 
-static void append_week_in_year( unsigned day, unsigned mon, unsigned year,
+static void append_week_in_year( unsigned mday, unsigned mon, unsigned year,
                                  modifier const &mod, zstring *dest ) {
-  int week = time::calendar::calc_week_in_year( day, mon, year, mod.cal );
+  int week = time::calendar::calc_week_in_year( mday, mon, year, mod.cal );
   if ( week == -1 ) {
-    week = time::calendar::calc_week_in_year( day, mon, year, calendar::ISO );
+    week = time::calendar::calc_week_in_year( mday, mon, year, calendar::ISO );
     ostringstream oss;
     // TODO: localize "Calendar"
     oss << "[Calendar: " << calendar::string_of[ calendar::ISO ] << ']';
