@@ -24,6 +24,7 @@ Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
     parameter into collection skip if $sourceSeq parameter is from a
     collection).
+  * Optimized fn:index-of function
   * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:

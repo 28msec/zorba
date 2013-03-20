@@ -1053,6 +1053,42 @@ void expand_function_qname(
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void expand_type_qname(
+    store::Item_t& qnameItem,
+    const QName* qname,
+    const QueryLoc& loc) const
+{
+  if (!qname->get_prefix().empty() || !theCCB->theConfig.jsoniq_mode)
+  {
+    expand_elem_qname(qnameItem, qname, loc);
+  }
+  else
+  {
+    zstring local = qname->get_localname();
+    zstring ns;
+
+    if (local == "null")
+    {
+      ns = static_context::JSONIQ_DM_NS;
+    }
+    else if (local == "atomic")
+    {
+      ns = XML_SCHEMA_NS;
+      local = "anyAtomicType";
+    }
+    else
+    {
+      ns = XML_SCHEMA_NS;
+    }
+
+    GENV_ITEMFACTORY->createQName(qnameItem, ns, "", local);
+  }
+}
+
+
+/*******************************************************************************
   Convert a lexical qname representing an element tag name or a type name to an
   expanded qname item. If the lexical qname does not have a prefix, the default
   element namespace (if any) will be used to build the expanded qname item.
@@ -8648,16 +8684,7 @@ void end_visit(const SimpleType& v, void* /*visit_state*/)
 
   rchandle<QName> qname = v.get_qname();
   store::Item_t qnameItem;
-
-  if (!qname->get_prefix().empty() || !theCCB->theConfig.jsoniq_mode)
-  {
-    expand_elem_qname(qnameItem, qname, loc);
-  }
-  else
-  {
-    GENV_ITEMFACTORY->
-    createQName(qnameItem, XML_SCHEMA_NS, "", qname->get_localname());
-  }
+  expand_type_qname(qnameItem, qname, loc);
 
   xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
 
@@ -10793,7 +10820,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   else
   {
     // Check if this is a call to a type constructor function
-    expand_function_qname(qnameItem, qname, loc);
+    expand_type_qname(qnameItem, qname, loc);
 
     xqtref_t type = CTX_TM->create_named_type(qnameItem,
                                               TypeConstants::QUANT_QUESTION,
@@ -13103,16 +13130,7 @@ void end_visit(const GeneralizedAtomicType& v, void* /*visit_state*/)
 
   rchandle<QName> qname = v.get_qname();
   store::Item_t qnameItem;
-
-  if (!qname->get_prefix().empty() || !theCCB->theConfig.jsoniq_mode)
-  {
-    expand_elem_qname(qnameItem, qname, loc);
-  }
-  else
-  {
-    GENV_ITEMFACTORY->
-    createQName(qnameItem, XML_SCHEMA_NS, "", qname->get_localname());
-  }
+  expand_type_qname(qnameItem, qname, loc);
 
   xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
 
