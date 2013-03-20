@@ -1396,8 +1396,8 @@ int DateTime::getDayOfYear(int year, int month, int day)
 
 int DateTime::getWeekInMonth(int year, int month, int day)
 {
-  unsigned first_day_of_week = time::calc_wday(1, month-1, year);
-  return ((day + first_day_of_week - 2) / 7) + (first_day_of_week < 5 ? 1 : 0);
+  int const wday = time::calc_wday(1, month-1, year);
+  return ((day + wday - 2) / 7) + (wday < 5 ? 1 : 0);
 }
 
 
