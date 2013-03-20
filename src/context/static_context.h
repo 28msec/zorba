@@ -352,9 +352,9 @@ public:
   ----------------------------
   The namespace URI to be used for element and type qnames whose prefix is empty.
 
-  theDefaultFunctionNamespace :
-  -----------------------------
-  The namespace URI to be used for function qnames whose prefix is empty.
+  theDefaultFunctionNamespaces :
+  ------------------------------
+  The namespace URIs to be used for function qnames whose prefix is empty.
 
   theContextItemType :
   --------------------
@@ -598,8 +598,7 @@ protected:
   zstring                                 theDefaultElementNamespace;
   bool                                    theHaveDefaultElementNamespace;
 
-  zstring                                 theDefaultFunctionNamespace;
-  bool                                    theHaveDefaultFunctionNamespace;
+  std::vector<zstring>                    theDefaultFunctionNamespaces;
 
   xqtref_t                                theContextItemType;
 
@@ -893,18 +892,26 @@ public:
   //
   // Functions
   //
-  void bind_fn(function_t& f, ulong arity, const QueryLoc& loc);
+  void bind_fn(function_t& f, csize arity, const QueryLoc& loc);
 
-  void unbind_fn(const store::Item* qname, ulong arity);
+  void unbind_fn(const store::Item* qname, csize arity);
+
+  function* lookup_fn(
+      const zstring& ns,
+      const zstring& pre,
+      const zstring& local,
+      csize arity,
+      bool allowMultipleDefaultNamespaces,
+      const QueryLoc& loc);
 
   function* lookup_fn(
       const store::Item* qname,
-      ulong arity,
+      csize arity,
       bool skipDisabled = true);
 
   function* lookup_local_fn(
       const store::Item* qname,
-      ulong arity,
+      csize arity,
       bool skipDisabled = true);
 
   void get_functions(std::vector<function*>& functions) const;

@@ -667,12 +667,10 @@ declare %private %ann:sequential function driver:run-fots(
           return
             if ($isExcepted)
             then
-              feedback:not-run($testCase, $verbose)
+              feedback:not-run($testCase)
             else
               feedback:not-applicable($testCase,
-                                      $envTestSet,
-                                      string-join($depMet,''),
-                                      $verbose)
+                                      string-join($depMet,''))
         }
         </fots:test-set>
       }
@@ -711,14 +709,12 @@ declare %private %ann:sequential function driver:run-fots(
                               $verbose,
                               fn:false())
                else
-                 feedback:not-run($testCase, $verbose)
+                 feedback:not-run($testCase)
             }
             else if (exists($depMet)) then
             {
               feedback:not-applicable($testCase,
-                                      $envTestSet,
-                                      string-join($depMet, ''),
-                                      $verbose)
+                                      string-join($depMet, ''))
             }
             else if (empty($envTestSet)) then
             {

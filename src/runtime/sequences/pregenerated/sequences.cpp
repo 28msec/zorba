@@ -72,6 +72,8 @@ void FnIndexOfIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
   (NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>*)this);
+
+    ar & theFastComp;
 }
 
 
