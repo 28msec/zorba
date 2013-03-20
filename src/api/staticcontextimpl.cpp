@@ -316,7 +316,7 @@ StaticContextImpl::setDefaultFunctionNamespace(const String& aURI)
 
 ********************************************************************************/
 String
-StaticContextImpl::getDefaultFunctionNamespace( ) const
+StaticContextImpl::getDefaultFunctionNamespace() const
 {
   try
   {

@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/home/markos/zorba/repo/hof-merge/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/markos/zorba/repo/hof-merge/src/compiler/parser/jsoniq_parser.y"
 
 
 /*
@@ -85,7 +85,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 89 "/home/markos/zorba/repo/hof-merge/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 89 "/home/markos/zorba/repo/hof-merge/build-opt/src/compiler/parser/jsoniq_parser.hpp"
 
 
 #include <string>
@@ -115,10 +115,10 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 119 "/home/markos/zorba/repo/hof-merge/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 119 "/home/markos/zorba/repo/hof-merge/build-opt/src/compiler/parser/jsoniq_parser.hpp"
 
   /// A Bison parser.
-  class xquery_parser
+  class jsoniq_parser
   {
   public:
     /// Symbol semantic values.
@@ -127,7 +127,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 148 "/home/markos/zorba/repo/hof-merge/src/compiler/parser/xquery_parser.y"
+#line 148 "/home/markos/zorba/repo/hof-merge/src/compiler/parser/jsoniq_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -151,7 +151,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/home/markos/zorba/repo/hof-merge/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 155 "/home/markos/zorba/repo/hof-merge/build-opt/src/compiler/parser/jsoniq_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -501,8 +501,8 @@ namespace zorba {
     typedef token::yytokentype token_type;
 
     /// Build a parser object.
-    xquery_parser (xquery_driver& driver_yyarg);
-    virtual ~xquery_parser ();
+    jsoniq_parser (jsoniq_driver& driver_yyarg);
+    virtual ~jsoniq_parser ();
 
     /// Parse.
     /// \returns  0 iff parsing succeeded.
@@ -667,13 +667,13 @@ namespace zorba {
     static const token_number_type yyundef_token_;
 
     /* User arguments.  */
-    xquery_driver& driver;
+    jsoniq_driver& driver;
   };
 
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 677 "/home/markos/zorba/repo/hof-merge/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 677 "/home/markos/zorba/repo/hof-merge/build-opt/src/compiler/parser/jsoniq_parser.hpp"
 
 
 

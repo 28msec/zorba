@@ -250,7 +250,7 @@ void Store::initTypeNames()
   theSchemaTypeNames[store::XS_HEXBINARY] = theQNamePool->insert(ns, "xs", "hexBinary");
   theSchemaTypeNames[store::XS_BOOLEAN] = theQNamePool->insert(ns, "xs", "boolean");
 
-  for (ulong i = 0; i < store::XS_LAST; ++i)
+  for (csize i = 0; i < store::XS_LAST; ++i)
   {
     theSchemaTypeCodes[theSchemaTypeNames[i].getp()] = 
     static_cast<store::SchemaTypeCode>(i);

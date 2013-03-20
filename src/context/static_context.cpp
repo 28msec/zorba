@@ -680,7 +680,6 @@ static_context::static_context()
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
-  theHaveDefaultFunctionNamespace(false),
   theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
@@ -727,7 +726,6 @@ static_context::static_context(static_context* parent)
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
-  theHaveDefaultFunctionNamespace(false),
   theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
@@ -779,7 +777,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
-  theHaveDefaultFunctionNamespace(false),
   theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
@@ -1089,8 +1086,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theNamespaceBindings;
   ar & theDefaultElementNamespace;
   ar & theHaveDefaultElementNamespace;
-  ar & theDefaultFunctionNamespace;
-  ar & theHaveDefaultFunctionNamespace;
+  ar & theDefaultFunctionNamespaces;
 
   ar & theContextItemType;
 
@@ -2042,9 +2038,9 @@ void static_context::set_default_elem_type_ns(
 ********************************************************************************/
 const zstring& static_context::default_function_ns() const
 {
-  if (theHaveDefaultFunctionNamespace || theParent == NULL)
+  if (!theDefaultFunctionNamespaces.empty() || theParent == NULL)
   {
-    return theDefaultFunctionNamespace;
+    return theDefaultFunctionNamespaces[0];
   }
   else
   {
@@ -2061,10 +2057,9 @@ void static_context::set_default_function_ns(
    bool raiseError,
    const QueryLoc& loc)
 {
-  if (!theHaveDefaultFunctionNamespace)
+  if (theDefaultFunctionNamespaces.empty())
   {
-    theDefaultFunctionNamespace = ns;
-    theHaveDefaultFunctionNamespace = true;
+    theDefaultFunctionNamespaces.push_back(ns);
   }
   else if (raiseError)
   {
@@ -2072,7 +2067,7 @@ void static_context::set_default_function_ns(
   }
   else
   {
-    theDefaultFunctionNamespace = ns;
+    theDefaultFunctionNamespaces.insert(theDefaultFunctionNamespaces.begin(), ns);
   }
 }
 
@@ -2432,7 +2427,7 @@ const XQType* static_context::get_context_item_type() const
 ********************************************************************************/
 void static_context::bind_fn(
     function_t& f,
-    ulong arity,
+    csize arity,
     const QueryLoc& loc)
 {
   store::Item* qname = f->getName();
@@ -2444,7 +2439,7 @@ void static_context::bind_fn(
 
   if (theFunctionMap == NULL)
   {
-    ulong size = (is_global_root_sctx() ? 500 : 32);
+    csize size = (is_global_root_sctx() ? 500 : 32);
     theFunctionMap = new FunctionMap(HashMapItemPointerCmp(0, NULL), size, false);
   }
 
@@ -2506,7 +2501,7 @@ void static_context::bind_fn(
 ********************************************************************************/
 void static_context::unbind_fn(
     const store::Item* qname,
-    ulong arity)
+    csize arity)
 {
   ZORBA_ASSERT(!is_global_root_sctx());
 
@@ -2566,6 +2561,66 @@ void static_context::unbind_fn(
 }
 
 
+/*******************************************************************************
+  Search in the sctx, starting from "this" and moving upwards, for the function
+  object for a function with a given prefix local name and arity. Raise error if
+  the prefix is non-empty and does not have an associated namespace. Return NULL
+  if such a function is not found.
+********************************************************************************/
+function* static_context::lookup_fn(
+    const zstring& ns,
+    const zstring& pre,
+    const zstring& local,
+    csize arity,
+    bool allowMultipleDefaultNamespaces,
+    const QueryLoc& loc)
+{
+  store::Item_t qnameItem;
+  std::vector<zstring>::const_iterator ite;
+  std::vector<zstring>::const_iterator end;
+  function* f = NULL;
+
+  if (!ns.empty())
+  {
+    ITEM_FACTORY->createQName(qnameItem, ns, "", local);
+
+    f = lookup_fn(qnameItem, arity, true);
+  }
+  else if (!pre.empty())
+  {
+    expand_qname(qnameItem, "", pre, local, loc);
+    
+    f = lookup_fn(qnameItem, arity, true);
+  }
+  else if (allowMultipleDefaultNamespaces)
+  {
+    static_context* sctx = this;
+
+    while (f == NULL && sctx != NULL)
+    {
+      ite = sctx->theDefaultFunctionNamespaces.begin();
+      end = sctx->theDefaultFunctionNamespaces.end();
+
+      for (; f == NULL && ite != end; ++ite)
+      {
+        ITEM_FACTORY->createQName(qnameItem, *ite, "", local);
+        f = lookup_fn(qnameItem, arity, true);
+      }
+
+      sctx = sctx->theParent;
+    }
+  }
+  else
+  {
+    expand_qname(qnameItem, default_function_ns(), pre, local, loc);
+    
+    f = lookup_fn(qnameItem, arity, true);
+  }
+
+  return f;
+}
+
+
 /***************************************************************************//**
   Search the static-context tree, starting from "this" and moving upwards,
   looking for the 1st sctx obj that contains a binding for a function with
@@ -2575,7 +2630,7 @@ void static_context::unbind_fn(
 ********************************************************************************/
 function* static_context::lookup_fn(
     const store::Item* qname,
-    ulong arity,
+    csize arity,
     bool skipDisabled)
 {
   FunctionInfo fi;
@@ -2630,7 +2685,7 @@ function* static_context::lookup_fn(
 ********************************************************************************/
 function* static_context::lookup_local_fn(
     const store::Item* qname,
-    ulong arity,
+    csize arity,
     bool skipDisabled)
 {
   FunctionInfo fi;

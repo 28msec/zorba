@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_XQUERY_DRIVER_H
-#define ZORBA_XQUERY_DRIVER_H
+#ifndef ZORBA_JSONIQ_DRIVER_H
+#define ZORBA_JSONIQ_DRIVER_H
 
 #include <ostream>
 #include <string>
 #include <zorba/config.h>
 #include "compiler/parser/symbol_table.h"
+#include "compiler/parser/zorba_parser_error.h"
 
 // needed because we have to delete the main module node
 #include "compiler/parsetree/parsenode_base.h"
@@ -34,7 +35,7 @@ class ZorbaParserError;
 
 
 // exported for unit testing only
-class ZORBA_DLL_PUBLIC xquery_driver
+class ZORBA_DLL_PUBLIC jsoniq_driver
 {
 public:
   std::stringstream theDocComment;
@@ -45,11 +46,11 @@ public:
   rchandle<parsenode> expr_p;
   CompilerCB* theCompilerCB;
   ZorbaParserError* parserError;
-  class xquery_scanner* lexer;
+  class jsoniq_scanner* lexer;
 
-  xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize = 1024);
+  jsoniq_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize = 1024);
 
-  virtual ~xquery_driver();
+  virtual ~jsoniq_driver();
 
   bool parse_stream(std::istream& in, const zstring& aFilename = "");
 
@@ -75,7 +76,7 @@ public:
 };
 
 }	/* namespace zorba */
-#endif /* ZORBA_XQUERY_DRIVER_H */
+#endif /* ZORBA_JSONIQ_DRIVER_H */
 
 /*
  * Local variables:

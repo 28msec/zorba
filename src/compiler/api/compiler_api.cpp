@@ -39,6 +39,7 @@
 #include "compiler/api/compilercb.h"
 
 #include "compiler/parser/xquery_driver.h"
+#include "compiler/parser/jsoniq_driver.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
@@ -179,10 +180,21 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
 
   theCompilerCB->setPhase(CompilerCB::PARSING);
 
-  xquery_driver lDriver(&*theCompilerCB);
-  lDriver.parse_stream(*xquery_stream, aFileName);
-
+  parsenode_t node;
   theCompilerCB->setPhase(CompilerCB::NONE);
+
+  if (theCompilerCB->theConfig.jsoniq_mode)
+  {
+    jsoniq_driver lDriver(&*theCompilerCB);
+    lDriver.parse_stream(*xquery_stream, aFileName);
+    node =  lDriver.get_expr();
+  }
+  else
+  {
+    xquery_driver lDriver(&*theCompilerCB);
+    lDriver.parse_stream(*xquery_stream, aFileName);
+    node =  lDriver.get_expr();
+  }
 
 #ifdef ZORBA_XQUERYX
   delete xquery_stream;
@@ -192,7 +204,7 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
   }
 #endif
 
-  parsenode_t node = lDriver.get_expr();
+
 
   if (typeid (*node) == typeid (ParseErrorNode))
   {

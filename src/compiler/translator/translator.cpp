@@ -1032,6 +1032,11 @@ void pop_elem_scope()
   Convert a lexical qname identifying a function to an expanded qname item.
   If the lexical qname does not have a prefix, the default function namespace
   (if any) will be used to build the expanded qname item.
+
+  Raise error is the prefix is non-empty and there is no ns associated with it.
+
+  This method is used during the processing of function declarations (when the
+  function object is not supposed to exist already).
 ********************************************************************************/
 void expand_function_qname(
     store::Item_t& qnameItem,
@@ -1045,6 +1050,42 @@ void expand_function_qname(
                         qname->get_prefix(),
                         qname->get_localname(),
                         loc);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void expand_type_qname(
+    store::Item_t& qnameItem,
+    const QName* qname,
+    const QueryLoc& loc) const
+{
+  if (!qname->get_prefix().empty() || !theCCB->theConfig.jsoniq_mode)
+  {
+    expand_elem_qname(qnameItem, qname, loc);
+  }
+  else
+  {
+    zstring local = qname->get_localname();
+    zstring ns;
+
+    if (local == "null")
+    {
+      ns = static_context::JSONIQ_DM_NS;
+    }
+    else if (local == "atomic")
+    {
+      ns = XML_SCHEMA_NS;
+      local = "anyAtomicType";
+    }
+    else
+    {
+      ns = XML_SCHEMA_NS;
+    }
+
+    GENV_ITEMFACTORY->createQName(qnameItem, ns, "", local);
+  }
 }
 
 
@@ -1298,7 +1339,7 @@ var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, bool raiseEr
 ********************************************************************************/
 void bind_fn(
     function_t& f,
-    ulong nargs,
+    csize nargs,
     const QueryLoc& loc)
 {
   theSctx->bind_fn(f, nargs, loc);
@@ -1314,14 +1355,17 @@ void bind_fn(
 
 /*******************************************************************************
   Lookup in the sctx the function object for a function with a given prefix
-  local name and arity. Return NULL if such a function is not found
+  local name and arity. Raise error if the prefix is non-empty and does not have
+  an associated namespace. Return NULL if such a function is not found.
 ********************************************************************************/
-function* lookup_fn(const QName* qname, ulong arity, const QueryLoc& loc)
+function* lookup_fn(const QName* qname, csize arity, const QueryLoc& loc)
 {
-  store::Item_t qnameItem;
-  expand_function_qname(qnameItem, qname, loc);
-
-  return theSctx->lookup_fn(qnameItem, arity);
+  return theSctx->lookup_fn(qname->get_namespace(),
+                            qname->get_prefix(),
+                            qname->get_localname(),
+                            arity,
+                            theCCB->theConfig.jsoniq_mode,
+                            loc);
 }
 
 
@@ -4252,10 +4296,10 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 
   //bool recognised = false;
 
-  store::Item_t lExpandedQName;
-  expand_function_qname(lExpandedQName, v.get_qname(), loc);
+  store::Item_t expandedQName;
+  expand_function_qname(expandedQName, v.get_qname(), loc);
 
-  zstring annotNS = lExpandedQName->getNamespace();
+  zstring annotNS = expandedQName->getNamespace();
 
   if (annotNS == static_context::W3C_XML_NS ||
       annotNS == XML_SCHEMA_NS ||
@@ -4264,10 +4308,10 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
       annotNS == XQUERY_MATH_FN_NS ||
       annotNS == ZORBA_ANNOTATIONS_NS)
   {
-    if (AnnotationInternal::lookup(lExpandedQName) == AnnotationInternal::zann_end)
+    if (AnnotationInternal::lookup(expandedQName) == AnnotationInternal::zann_end)
     {
       RAISE_ERROR(err::XQST0045, loc,
-      ERROR_PARAMS(lExpandedQName->getLocalName(), ZED(ANNOTATION), annotNS));
+      ERROR_PARAMS(expandedQName->getLocalName(), ZED(ANNOTATION), annotNS));
     }
 
     //recognised = true;
@@ -4289,7 +4333,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
   }
 
   //if (recognised)
-    theAnnotations->push_back(lExpandedQName, lLiterals);
+  theAnnotations->push_back(expandedQName, lLiterals);
 }
 
 
@@ -8752,9 +8796,10 @@ void end_visit(const SimpleType& v, void* /*visit_state*/)
 
   rchandle<QName> qname = v.get_qname();
   store::Item_t qnameItem;
-  expand_elem_qname(qnameItem, qname, loc);
+  expand_type_qname(qnameItem, qname, loc);
 
   xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
+
   if (t == NULL)
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
@@ -10852,18 +10897,6 @@ void* begin_visit(const FunctionCall& v)
 void end_visit(const FunctionCall& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-  
-  // Expand the function qname
-  rchandle<QName> qname = v.get_fname();
-
-  store::Item_t qnameItem;
-  expand_function_qname(qnameItem, qname, loc);
-
-  if (static_context::is_reserved_module(qnameItem->getNamespace()))
-  {
-    RAISE_ERROR(zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
-    ERROR_PARAMS(qnameItem->getNamespace()));
-  }
 
   // Collect the arguments of this function in reverse order
   std::vector<expr*> arguments;
@@ -10878,9 +10911,15 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     arguments.push_back(argExpr);
   }
 
-  function* f = theSctx->lookup_fn(qnameItem, arguments.size());
+  csize numArgs = arguments.size();
 
-  expr* resultExpr = generate_fncall(qnameItem, f, arguments, loc);
+  // Lookup the function
+  store::Item_t qnameItem;
+  const QName* qname = v.get_fname();
+
+  function* f = lookup_fn(qname, numArgs, loc);
+
+  expr* resultExpr = generate_fncall(qname, f, arguments, loc);
   
   push_nodestack(resultExpr);
 }
@@ -10891,22 +10930,24 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   cases. 
 ********************************************************************************/
 expr* generate_fncall(
-    store::Item_t& qnameItem,
+    const QName* qname,
     function* f,
     std::vector<expr*>& arguments,
     const QueryLoc& loc)
 {
+  TypeManager* tm = CTX_TM;
+
   expr* resultExpr = NULL;
-  
-  const zstring& fn_ns = qnameItem->getNamespace();
+
+  store::Item_t qnameItem;
+  zstring fn_ns;
   
   csize numArgs = arguments.size();
-  
-  TypeManager* tm = CTX_TM;
 
   if (f == NULL)
   {
     // Check if this is a call to a type constructor function; if not raise error
+    expand_type_qname(qnameItem, qname, loc);
 
     xqtref_t type = 
     tm->create_named_type(qnameItem, TypeConstants::QUANT_QUESTION, loc);
@@ -10926,9 +10967,11 @@ expr* generate_fncall(
 
     if (theHaveModuleImportCycle)
     {
+      fn_ns = qnameItem->getNamespace();
+
       std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
       std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
-      
+
       --end;
       assert((*end).second == theModuleNamespace);
 
@@ -10941,6 +10984,15 @@ expr* generate_fncall(
     
     RAISE_ERROR(err::XPST0017, loc,
     ERROR_PARAMS(qnameItem->getStringValue(), ZED(FunctionUndeclared_3), numArgs));
+  }
+
+  qnameItem = f->getName();
+  fn_ns = qnameItem->getNamespace();
+
+  if (static_context::is_reserved_module(fn_ns))
+  {
+    RAISE_ERROR(zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+    ERROR_PARAMS(fn_ns));
   }
 
   // Add context-item for functions with zero arguments which implicitly
@@ -13502,7 +13554,7 @@ void end_visit(const GeneralizedAtomicType& v, void* /*visit_state*/)
 
   rchandle<QName> qname = v.get_qname();
   store::Item_t qnameItem;
-  expand_elem_qname(qnameItem, qname, loc);
+  expand_type_qname(qnameItem, qname, loc);
 
   xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
 
