@@ -497,16 +497,23 @@ PlanIter_t fn_index_of::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    expr& ann) const
+    expr& caller) const
 {
-  fo_expr* fo = static_cast<fo_expr*>(&ann);
+  TypeManager* tm = caller.get_type_manager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  fo_expr* fo = static_cast<fo_expr*>(&caller);
   expr* seqArg = fo->get_arg(0);
   expr* keyArg = fo->get_arg(1);
   xqtref_t seqType = seqArg->get_return_type();
+  xqtref_t pseqType = TypeOps::prime_type(tm, *seqType);
   xqtref_t keyType = keyArg->get_return_type();
 
-  TypeManager* tm = fo->get_type_manager();
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
+  if (TypeOps::is_equal(tm, *keyType, *rtm.ANY_ATOMIC_TYPE_ONE) ||
+      TypeOps::is_equal(tm, *pseqType, *rtm.ANY_ATOMIC_TYPE_ONE))
+  {
+    return new FnIndexOfIterator(sctx, loc, argv, 0);
+  }
 
   if (TypeOps::is_subtype(tm, *keyType, *seqType) ||
       (TypeOps::is_subtype(tm, *keyType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) &&
@@ -517,8 +524,10 @@ PlanIter_t fn_index_of::codegen(
     return new FnIndexOfIterator(sctx, loc, argv, 1);
   }
 
-  if (TypeOps::is_subtype(tm, *TypeOps::prime_type(tm, *seqType), *keyType))
+  if (TypeOps::is_subtype(tm, *pseqType, *keyType))
+  {
     return new FnIndexOfIterator(sctx, loc, argv, 2);
+  }
 
   return new FnIndexOfIterator(sctx, loc, argv, 0);
 }
