@@ -803,8 +803,10 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
         AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
         assert(input != NULL);
 
+        
         if (input->setTargetPos(pos2 - 1))
           return aArgs[0];
+        
       }
     }
     else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)

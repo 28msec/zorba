@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,18 +22,18 @@
 #include "compiler/expression/expr_visitor.h"
 
 /*______________________________________________________________________
-|  
+|
 |  Design note: Visitor pattern.  See, for example:
 |  "Modern C++ Design" by Andrei Alexandrescu,
 |  Addison Wesley (2001), Chapter 10.
 |_______________________________________________________________________*/
 
-namespace zorba 
+namespace zorba
 {
 
 class abstract_expr_visitor : public expr_visitor
 {
-public: 
+public:
   virtual ~abstract_expr_visitor() {}
 
 public:
@@ -80,6 +80,7 @@ public:
   EXPR_VISITOR_METHODS(trycatch_expr);
   EXPR_VISITOR_METHODS(function_item_expr);
   EXPR_VISITOR_METHODS(dynamic_function_invocation_expr);
+  EXPR_VISITOR_METHODS(argument_placeholder_epxr);
 
   EXPR_VISITOR_METHODS (delete_expr);
   EXPR_VISITOR_METHODS (insert_expr);
