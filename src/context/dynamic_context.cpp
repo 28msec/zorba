@@ -137,6 +137,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
     reset_current_date_time();
     theLang = locale::get_host_lang();
     theCountry = locale::get_host_country();
+    theCalendar = time::calendar::get_default();
   }
   else
   {
@@ -145,6 +146,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
     theDefaultCollectionUri = parent->theDefaultCollectionUri;
     theLang = parent->theLang;
     theCountry = parent->theCountry;
+    theCalendar = parent->theCalendar;
   }
 }
 

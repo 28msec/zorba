@@ -41,6 +41,7 @@ namespace UnitTests {
   int test_mem_sizeof( int, char*[] );
   int test_parameters( int, char*[] );
   int test_string( int, char*[] );
+  int test_time( int, char*[] );
   int test_time_parse( int, char*[] );
 
 #ifdef ZORBA_WITH_FILE_ACCESS
