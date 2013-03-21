@@ -1022,7 +1022,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc RBRACE
 
 
-%right FOR WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
+%right FOR FROM WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
 %right DESCENDING ELSE _EMPTY IS OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
 %right AT
 %right MODIFY WITH CONTAINS END LEVELS PARAGRAPHS SENTENCES TIMES
@@ -2706,6 +2706,11 @@ FLWORClauseList :
 
 ForClause :
     FOR DOLLAR VarInDeclList
+    {
+      $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
+    }
+  |
+    FROM DOLLAR VarInDeclList
     {
       $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
     }
@@ -6718,7 +6723,8 @@ JSONTest :
 ;
 
 JSONItemTest :
-        JSON_ITEM LPAR RPAR
+        // JSON_ITEM LPAR RPAR
+        JSON_ITEM
         {
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
         }
@@ -6984,7 +6990,7 @@ FUNCTION_NAME :
     |   JSON                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json"))); }
     |   APPEND                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("append"))); }
     |   POSITION                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("position"))); }
-    |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
+  //  |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
     |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
     |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
     |   STRUCTURED_ITEM         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("structured-item"))); }
