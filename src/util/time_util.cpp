@@ -33,6 +33,7 @@
 #endif /* WIN32 */
 
 // local
+#include "less.h"
 #include "time_util.h"
 
 #define DEF_END(CHAR_ARRAY)                             \
