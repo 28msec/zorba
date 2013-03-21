@@ -1390,13 +1390,13 @@ int DateTime::getDayOfYear(int year, int month, int day)
 {
   if (month > 12)
     return -1;
-  return time::calc_yday( day, month, year );
+  return time::calc_yday( day, month - 1, year ) + 1;
 }
 
 
 int DateTime::getWeekInMonth(int year, int month, int day)
 {
-  int const wday = time::calc_wday(1, month-1, year);
+  int const wday = time::calc_wday( 1, month - 1, year );
   return ((day + wday - 2) / 7) + (wday < 5 ? 1 : 0);
 }
 
