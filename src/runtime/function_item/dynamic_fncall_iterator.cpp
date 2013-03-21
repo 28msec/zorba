@@ -300,6 +300,7 @@ bool DynamicFnCallIterator::nextImpl(
         result = targetItem->getObjectValue(selectorItem3);
       else
         result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
+
       STACK_PUSH(true, state);
     }
     else
@@ -308,7 +309,9 @@ bool DynamicFnCallIterator::nextImpl(
         state->theIterator = targetItem->getArrayValues();
       else if (targetItem->isJSONObject())
         state->theIterator = targetItem->getObjectKeys();
+
       state->theIterator->open();
+
       while (state->theIterator->next(result))
       {
         STACK_PUSH(true, state);

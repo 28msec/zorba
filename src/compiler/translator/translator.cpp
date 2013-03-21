@@ -11442,33 +11442,35 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     fo_expr* accessorExpr = NULL;
 
     const for_clause* fc =
-    reinterpret_cast<const for_clause*>(flworExpr->get_clause(0));
+    static_cast<const for_clause*>(flworExpr->get_clause(0));
 
     expr* flworVarExpr = fc->get_var();
 
     if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
     {
-      func = numArgs==1 ?
-        BUILTIN_FUNC(FN_JSONIQ_MEMBER_2) :
-        BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1);
+      func = (numArgs == 1 ?
+              BUILTIN_FUNC(FN_JSONIQ_MEMBER_2) :
+              BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1));
     }
     else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
     {
-      func = numArgs==1 ?
-        BUILTIN_FUNC(FN_JSONIQ_VALUE_2) :
-        BUILTIN_FUNC(FN_JSONIQ_KEYS_1);
+      func = (numArgs == 1 ?
+              BUILTIN_FUNC(FN_JSONIQ_VALUE_2) :
+              BUILTIN_FUNC(FN_JSONIQ_KEYS_1));
     }
     else
     {
-      func = numArgs==1 ?
-        BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2) :
-        BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
+      func = (numArgs == 1 ?
+              BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2) :
+              BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1));
     }
-    accessorExpr = numArgs==1 ?
-      theExprManager->create_fo_expr(
-          theRootSctx, theUDF, loc, func, flworVarExpr, arguments[0]) :
-      theExprManager->create_fo_expr(
-          theRootSctx, theUDF, loc, func, flworVarExpr);
+
+    accessorExpr = (numArgs == 1 ?
+                    CREATE(fo)(theRootSctx, theUDF, loc,
+                               func, flworVarExpr, arguments[0])
+                    :
+      
+                    CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr));
 
     normalize_fo(accessorExpr);
 
