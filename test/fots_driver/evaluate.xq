@@ -396,7 +396,11 @@ declare %private %ann:sequential function eval:assert-eq(
       "$x eq ",
       if (starts-with(data($expResult), $type))
       then data($expResult)
-      else concat($type,"(", data($expResult), ")"));
+      else concat($type,"(",
+                  if(ends-with($expResult,'INF') or ends-with($expResult,'NaN'))
+                  then concat("'",$expResult,"'")
+                  else $expResult,
+                  ")"));
     variable  $queryKey := xqxq:prepare-main-module($queryText);
    
     xqxq:bind-variable($queryKey,
