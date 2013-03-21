@@ -313,7 +313,7 @@ inline int days_in_year( unsigned year ) {
  * @return Returns \a true only if the given day of the month is valid.
  */
 inline bool is_mday_valid( unsigned mday, unsigned mon, unsigned year ) {
-  return mday >= 1 && mday <= days_in_month( mon, year );
+  return mday >= 1 && (int)mday <= days_in_month( mon, year );
 }
 
 /**
@@ -327,7 +327,7 @@ inline bool is_mday_valid( unsigned mday, unsigned mon, unsigned year ) {
  */
 inline bool is_wday_valid( unsigned wday, unsigned mday, unsigned mon,
                            unsigned year ) {
-  return wday == calc_wday( mday, mon, year );
+  return (int)wday == calc_wday( mday, mon, year );
 }
 
 /**
@@ -341,7 +341,7 @@ inline bool is_wday_valid( unsigned wday, unsigned mday, unsigned mon,
  */
 inline bool is_yday_valid( unsigned yday, unsigned mday, unsigned mon,
                            unsigned year ) {
-  return yday == calc_yday( mday, mon, year );
+  return (int)yday == calc_yday( mday, mon, year );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
