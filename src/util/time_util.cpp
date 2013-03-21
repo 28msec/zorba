@@ -229,10 +229,10 @@ bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
  *     ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  *     USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * @param mday Month day: 1-31.
- * @param mon Month: 0-11.
- * @param year Year.
- * @return Returns the weekday where 0 = Sunday.
+ * @param mday The month day [1-31].
+ * @param mon The month [0-11].
+ * @param year The year.
+ * @return Returns the weekday [0-6] where 0 = Sunday.
  */
 int calc_wday( unsigned mday, unsigned mon, unsigned year ) {
   assert( mday >= 1 );
