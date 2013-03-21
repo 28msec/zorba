@@ -149,8 +149,8 @@ namespace calendar {
     ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
     type
   >::type
-  find( StringType const &country ) {
-    return find( country.c_str() );
+  find( StringType const &calendar ) {
+    return find( calendar.c_str() );
   } 
 
   /**
