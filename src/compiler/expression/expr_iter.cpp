@@ -195,9 +195,9 @@ nextclause:
 
           theArgsIter = oc->theOrderingExprs.begin();
           theArgsEnd = oc->theOrderingExprs.end();
-          
+
           theCurrentChild = &(*theArgsIter);
-          
+
           ++theArgsIter;
           theState = 3;
           return;
@@ -242,7 +242,7 @@ nextclause:
       while (theWincondIter < 2)
       {
         window_clause* wc = static_cast<window_clause *>(*theClausesIter);
-            
+
         flwor_wincond* wincond = (theWincondIter == 0 ?
                                   wc->theWinStartCond :
                                   wc->theWinStopCond );
@@ -269,7 +269,7 @@ nextclause:
         ++theArgsIter;
         return;
       }
-      
+
       theState = 1;
       ++theClausesIter;
       goto nextclause;
@@ -704,10 +704,12 @@ nextclause:
 
     EXPR_ITER_BEGIN();
 
-    theArgsIter = fiExpr->theScopedVariables.begin();
-    theArgsEnd = fiExpr->theScopedVariables.end();
+    theArgsIter = fiExpr->theDynamicFunctionInfo->theScopedVarsValues.begin();
+    theArgsEnd = fiExpr->theDynamicFunctionInfo->theScopedVarsValues.end();
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {
+      if ( ! *theArgsIter) // TODO: the vars values for prolog variables is null, so they have to be skipped, or the optimizer will trip and fall off. Maybe null vars values need not be remembered
+        continue;
       EXPR_ITER_NEXT(*theArgsIter);
     }
 
@@ -730,8 +732,17 @@ nextclause:
     {
       EXPR_ITER_NEXT(*theArgsIter);
     }
+    
+    if (dfiExpr->theDotVar)
+      EXPR_ITER_NEXT(dfiExpr->theDotVar);
 
     EXPR_ITER_END();
+    return;
+  }
+
+  case argument_placeholder_expr_kind:
+  {
+    theIsDone = true;
     return;
   }
 

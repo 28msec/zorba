@@ -796,35 +796,52 @@ match_expr* ExprManager::create_match_expr(
 ////////////////////////////////////////////////////////////////////////////////
 
 dynamic_function_invocation_expr*
-ExprManager::create_dynamic_function_invocation_expr(
-    static_context* sctx,
+ExprManager::create_dynamic_function_invocation_expr(static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
     expr* anExpr,
-    const std::vector<expr*>& args)
+    const std::vector<expr*>& args,
+    expr* dotVar)
 {
-  CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, udf, loc, anExpr, args);
+  CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, udf, loc,
+                         anExpr, args, dotVar);
 }
 
 
-function_item_expr* ExprManager::create_function_item_expr(
-    static_context* sctx,
-    user_function* udf,
-    const QueryLoc& loc,
-    const store::Item* aQName,
-    function* f,
-    uint32_t aArity)
-{
-  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, aQName, f, aArity);
-}
-
-
-function_item_expr* ExprManager::create_function_item_expr(
+argument_placeholder_expr*
+ExprManager::create_argument_placeholder_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc)
 {
-  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc);
+  CREATE_AND_RETURN_EXPR(argument_placeholder_expr, sctx, udf, loc);
+}
+
+
+function_item_expr* ExprManager::create_function_item_expr(static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc,
+    static_context* closureSctx,
+    function* f,
+    store::Item* aQName,
+    uint32_t aArity,
+    bool isInline,
+    bool needsContextItem,
+    bool isCoercion)
+{
+  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, closureSctx, f, aQName, aArity, isInline, needsContextItem, isCoercion);
+}
+
+
+function_item_expr* ExprManager::create_function_item_expr(static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc,
+    static_context *closureSctx,
+    bool isInline,
+    bool needsContextItem,
+    bool isCoercion)
+{
+  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, closureSctx, isInline, needsContextItem, isCoercion);
 }
 
 

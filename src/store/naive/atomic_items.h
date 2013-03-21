@@ -491,6 +491,13 @@ protected:
 
     assert(isNormalized());
     assert(isValid());
+    
+#ifndef NDEBUG
+    debug_holder = theLocal.c_str();
+    if (!thePrefix.empty())
+      debug_holder = thePrefix + ":" + debug_holder;
+    debug_str_ = debug_holder.c_str();
+#endif        
   }
   
   void initializeAsUnnormalizedQName(
@@ -507,6 +514,13 @@ protected:
 
     assert(!isNormalized());
     assert(isValid());
+    
+#ifndef NDEBUG
+    debug_holder = theLocal.c_str();
+    if (!thePrefix.empty())
+      debug_holder = thePrefix + ":" + debug_holder;
+    debug_str_ = debug_holder.c_str();
+#endif
   }
 
   void initializeAsQNameNotInPool(
@@ -608,7 +622,7 @@ protected:
   AnyUriItem(store::SchemaTypeCode t) : AtomicItem(t) {}
 
 public:
-  virtual AnyUriTypeCode getAnyUriTypeCode() const 
+  virtual AnyUriTypeCode getAnyUriTypeCode() const
   {
     return NON_SPECIALIZED_ANY_URI;
   }
@@ -919,7 +933,7 @@ public:
   virtual zstring show() const;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getTokens( 
+  FTTokenIterator_t getTokens(
       TokenizerProvider const&,
       Tokenizer::State&,
       locale::iso639_1::type,
@@ -931,7 +945,7 @@ public:
 /*******************************************************************************
   class StreamableStringItem
 ********************************************************************************/
-class StreamableStringItem : public StringItem 
+class StreamableStringItem : public StringItem
 {
   friend class BasicItemFactory;
 
@@ -983,7 +997,7 @@ public:
 
   virtual ~StreamableStringItem()
   {
-    if (theStreamReleaser) 
+    if (theStreamReleaser)
     {
       theStreamReleaser(&theIstream);
     }

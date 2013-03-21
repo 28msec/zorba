@@ -463,6 +463,11 @@ void serializer::emitter::emit_item(store::Item* item)
     ERROR_PARAMS(lMethod, item->getType()->getStringValue()));
   }
 #endif
+  else if (item->isFunction())
+  {
+    throw XQUERY_EXCEPTION(err::SENR0001,
+    ERROR_PARAMS(item->show(), "function item node"));
+  }
 }
 
 

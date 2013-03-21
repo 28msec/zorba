@@ -69,7 +69,7 @@ public:
     UnaryBaseIterator<MaterializeIterator, MaterializeIteratorState>(sctx, loc, arg)
   {
   }
-
+  
   void accept(PlanIterVisitor& v) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);

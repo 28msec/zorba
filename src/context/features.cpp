@@ -34,11 +34,6 @@ namespace zorba {
         res = scripting;
         return true;
       }
-      else if ( ztd::equals(s, "hof") )
-      {
-        res = hof;
-        return true;
-      }
       else if ( ztd::equals(s, "trace") )
       {
         res = trace;

@@ -21,9 +21,41 @@
 
 #include "runtime/base/narybase.h"
 
+#include "runtime/base/noarybase.h"
 
-namespace zorba 
+
+namespace zorba
 {
+
+/*******************************************************************************
+
+********************************************************************************/
+class ArgumentPlaceholderIterator: public NoaryBaseIterator<ArgumentPlaceholderIterator,PlanIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(ArgumentPlaceholderIterator);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ArgumentPlaceholderIterator,
+  NoaryBaseIterator<ArgumentPlaceholderIterator, PlanIteratorState>);
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NoaryBaseIterator<ArgumentPlaceholderIterator, PlanIteratorState>*)this);
+  }
+
+public:
+   ArgumentPlaceholderIterator(
+      static_context* sctx,
+      const QueryLoc& loc)
+    :
+    NoaryBaseIterator<ArgumentPlaceholderIterator, PlanIteratorState>(sctx, loc)
+  {
+  }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const { return false; };
+};
+
 
 /*******************************************************************************
 
@@ -52,30 +84,35 @@ public:
 ********************************************************************************/
 class DynamicFnCallIterator : public NaryBaseIterator<DynamicFnCallIterator,
                                                       DynamicFnCallIteratorState>
-{ 
+{
+protected:
+  // This variable counts the number of children that hold DOT variables. They 
+  // are placed at the end of the children array.
+  unsigned int theDotVarsCount; 
+  bool         theIsPartialApply;
+  
 public:
   SERIALIZABLE_CLASS(DynamicFnCallIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DynamicFnCallIterator,
   NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>*)this);
-  }
+  void serialize( ::zorba::serialization::Archiver& ar);
 
 public:
   DynamicFnCallIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      std::vector<PlanIter_t>& args)
+      std::vector<PlanIter_t>& args,
+      unsigned int dotVarsCount,
+      bool isPartialApply,
+      xqtref_t coercionTargetType = NULL)
     :
-    NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>(sctx, loc, args)
+    NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>(sctx, loc, args),
+    theDotVarsCount(dotVarsCount),
+    theIsPartialApply(isPartialApply)
   {
   }
-
-  virtual ~DynamicFnCallIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -84,6 +121,8 @@ public:
   void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void resetImpl(PlanState& planState) const;
 };
 
 
@@ -94,5 +133,5 @@ public:
  * Local variables:
  * mode: c++
  * End:
- */ 
+ */
 /* vim:set et sw=2 ts=2: */

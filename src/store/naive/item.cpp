@@ -1103,6 +1103,12 @@ zstring Item::show() const
 }
 
 
+zstring Item::toString() const
+{
+  return show();
+}
+
+
 void Item::finalizeNode()
 {
   throw ZORBA_EXCEPTION(

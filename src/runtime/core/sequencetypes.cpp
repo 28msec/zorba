@@ -598,7 +598,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(result, theChild.getp(), planState))
   {
-    if (theQuantifier == TypeConstants::QUANT_PLUS || 
+    if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
     {
       raiseError("empty-sequence()");
