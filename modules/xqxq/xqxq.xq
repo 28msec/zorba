@@ -387,6 +387,15 @@ declare function xqxq:variable-value($query-key as xs:anyURI, $var-name as
   xs:QName) as item()* external;
 
 
+declare function xqxq:query-plan($query-key as xs:anyURI) 
+  as xs:base64Binary external;
+  
+declare function xqxq:load-from-query-plan($plan as xs:base64Binary)
+  as xs:anyURI external;
+  
+declare function xqxq:load-from-query-plan($plan as xs:base64Binary,
+  $resolver as item()?, $mapper as item()?) as xs:anyURI external;
+
 (:~
  : Internal helper function. Only necessary because of incomplete HOF
  : support in Zorba.

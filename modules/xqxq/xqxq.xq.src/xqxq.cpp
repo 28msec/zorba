@@ -85,6 +85,14 @@ XQXQModule::getExternalFunction(const zorba::String& localName)
     {
       lFunc = new VariableValueFunction(this);
     }
+    else if (localName == "query-plan")
+    {
+      lFunc = new QueryPlanFunction(this);
+    }
+    else if (localName == "load-from-query-plan")
+    {
+      lFunc = new LoadFromQueryPlanFunction(this);
+    }
   }
   
   return lFunc;
@@ -325,7 +333,7 @@ XQuery_t XQXQFunction::getQuery(
 /*******************************************************************************
 
 ********************************************************************************/
-void  PrepareMainModuleFunction::XQXQURIMapper::mapURI(
+void  XQXQURIMapper::mapURI(
     String aUri,
     EntityData const* aEntityData,
     std::vector<String>& oUris)
@@ -376,7 +384,7 @@ void  PrepareMainModuleFunction::XQXQURIMapper::mapURI(
 /*******************************************************************************
 
 ********************************************************************************/
-Resource* PrepareMainModuleFunction::XQXQURLResolver::resolveURL(
+Resource* XQXQURLResolver::resolveURL(
     const String& aUrl,
     EntityData const* aEntityData)
 { 
@@ -964,7 +972,124 @@ zorba::ItemSequence_t VariableValueFunction::evaluate(
   }
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+zorba::ItemSequence_t QueryPlanFunction::evaluate(
+    const Arguments_t& aArgs,
+    const zorba::StaticContext* aSctx,
+    const zorba::DynamicContext* aDctx) const 
+{
+  String lQueryID = XQXQFunction::getOneStringArgument(aArgs,0);
+
+  QueryMap* lQueryMap;
+  if (!(lQueryMap= dynamic_cast<QueryMap*>(aDctx->getExternalFunctionParameter("xqxqQueryMap"))))
+  {
+    throwError("NoQueryMatch", "String identifying query does not exists.");
+  }
+
+  XQuery_t lQuery = getQuery(aDctx, lQueryID);
+
+  std::stringstream* lExcPlan = new std::stringstream();
+  if (!lQuery->saveExecutionPlan(*lExcPlan, ZORBA_USE_BINARY_ARCHIVE))
+  {
+    throwError("QueryPlanError", "FAILED getting query execution plan.");
+  }
+  
+  return ItemSequence_t(new SingletonItemSequence(XQXQModule::getItemFactory()->createStreamableBase64Binary(*lExcPlan, &streamReleaser)));
+}
  
+
+/*******************************************************************************
+
+********************************************************************************/
+zorba::ItemSequence_t LoadFromQueryPlanFunction::evaluate(
+    const Arguments_t& aArgs,
+    const zorba::StaticContext* aSctx,
+    const zorba::DynamicContext* aDctx) const 
+{
+  Item lQueryPlanItem = XQXQFunction::getItemArgument(aArgs,0);
+  std::istream& lQueryPlanStream = lQueryPlanItem.getStream();
+
+  DynamicContext* lDynCtx = const_cast<DynamicContext*>(aDctx);
+  StaticContext_t lSctxChild = aSctx->createChildContext();
+   
+  QueryMap* lQueryMap;
+  if (!(lQueryMap = dynamic_cast<QueryMap*>(lDynCtx->getExternalFunctionParameter("xqxqQueryMap"))))
+  {
+    lQueryMap = new QueryMap();
+    lDynCtx->addExternalFunctionParameter("xqxqQueryMap", lQueryMap);     
+  }
+
+  Zorba* lZorba = Zorba::getInstance(0);
+  XQuery_t lQuery;
+
+  //StaticContext_t ltempSctx = lZorba->createStaticContext();
+  std::auto_ptr<XQXQURLResolver> lResolver;
+  std::auto_ptr<XQXQURIMapper> lMapper;
+
+  if ( aArgs.size() > 2)
+  {
+    Item lMapperFunctionItem = getItemArgument(aArgs, 2);
+    if (!lMapperFunctionItem.isNull())
+    {
+      lMapper.reset(new XQXQURIMapper(lMapperFunctionItem, lSctxChild));
+      //vMapper.push_back(lMapper.get());
+      //ltempSctx->registerURIMapper(lMapper.get());
+    }
+  }
+  if ( aArgs.size() > 1 )
+  {
+    Item lResolverFunctionItem = getItemArgument(aArgs, 1);
+    if (!lResolverFunctionItem.isNull())
+    {
+      lResolver.reset(new XQXQURLResolver(lResolverFunctionItem, lSctxChild));
+      //vResolver.push_back(lResolver.get());
+      //ltempSctx->registerURLResolver(lResolver.get());
+    }
+  }
+
+  try
+  {
+    lQuery = lZorba->createQuery();
+    lQuery->loadExecutionPlan(lQueryPlanStream);
+  }
+  catch (XQueryException& xe)
+  {
+    lQuery = NULL;
+    std::ostringstream err;
+    err << "The query loaded from the query plan raised an error at"
+      << " file" << xe.source_uri() << " line" << xe.source_line()
+      << " column" << xe.source_column() << ": " << xe.what();
+    Item errQName = XQXQModule::getItemFactory()->createQName(
+      xe.diagnostic().qname().ns(),
+      xe.diagnostic().qname().localname());
+    throw USER_EXCEPTION(errQName, err.str());
+  }
+  catch (ZorbaException& ze)
+  {
+    lQuery = NULL;
+    std::ostringstream err;
+    err << "The query loaded from the query plan raised an error: "
+      << ze.what();
+    Item errQName = XQXQModule::getItemFactory()->createQName(
+      ze.diagnostic().qname().ns(),
+      ze.diagnostic().qname().localname());
+    throw USER_EXCEPTION(errQName, err.str());
+  }
+
+  uuid lUUID;
+  uuid::create(&lUUID);
+
+  std::stringstream lStream;
+  lStream << lUUID;
+
+  String lStrUUID = lStream.str();
+
+  lQueryMap->storeQuery(lStrUUID, lQuery, lMapper.release(), lResolver.release());
+  return ItemSequence_t(new SingletonItemSequence(XQXQModule::getItemFactory()->createAnyURI(lStrUUID)));
+}
+
 }/*namespace xqxq*/ }/*namespace zorba*/
 
 #ifdef WIN32
