@@ -775,7 +775,7 @@ declare %private %ann:sequential function driver:run-fots(
  : @param $expectedFailure the Test element from the ExpectedFailures.xml file.
  : @param $cliMode the cli command.
  : @param $mayNeedDTDValidation true if the test case may need DTD validation
- :        for the document boud as context item.
+ :        for the document bound as context item.
  : @return an XML tree containing info about the result of running the test case.
  :)
 declare %ann:sequential function driver:test(
@@ -829,13 +829,21 @@ declare %ann:sequential function driver:test(
       ),
       "&#xA;"
       );
+   variable $needsDTDValidation :=
+    if (not($mayNeedDTDValidation))
+    then fn:false()
+    else if (($testSetName = 'app-FunctxFunctx') and (xs:string($case/@name) = 'functx-functx-id-from-element-1'))
+    then fn:true()
+    else if(($testSetName = 'fn-id') and starts-with(xs:string($case/@name), 'fn-id-dtd-'))
+    then fn:true()
+    else (($testSetName = 'fn-idref') and starts-with(xs:string($case/@name), 'fn-idref-dtd-'));
 
     variable $xqxqQuery := driver:create-XQXQ-query($query,
                                                     $case,
                                                     $env,
                                                     $envBaseURI,
                                                     $testSetBaseURI,
-                                                    $mayNeedDTDValidation);
+                                                    $needsDTDValidation);
 
     (:if $verbose then print the query to a file:)
     if ($verbose and
@@ -903,17 +911,17 @@ declare %ann:sequential function driver:test(
  : @param $envBaseURI URI of the environment.
  : @param $testSetBaseURI the URI of the directory that contains the file of the
           associated test set.
- : @param $mayNeedDTDValidation true if the test case may need DTD validation
- :        for the document boud as context item.
+ : @param $needsDTDValidation true if the test case needs DTD validation
+ :        for the document bound as context item.
  : @return the query that will be evaluated.
  :)
 declare %private function driver:create-XQXQ-query(
-  $queryText            as xs:string,
-  $case                 as element(fots:test-case),
-  $env                  as element(fots:environment)?,
-  $envBaseURI           as xs:anyURI?,
-  $testSetBaseURI       as xs:anyURI,
-  $mayNeedDTDValidation as xs:boolean
+  $queryText          as xs:string,
+  $case               as element(fots:test-case),
+  $env                as element(fots:environment)?,
+  $envBaseURI         as xs:anyURI?,
+  $testSetBaseURI     as xs:anyURI,
+  $needsDTDValidation as xs:boolean
 ) as xs:string
 {
   let $resolver as xs:string? := env:resolver($case,
@@ -924,11 +932,6 @@ declare %private function driver:create-XQXQ-query(
                                           $env,
                                           $envBaseURI,
                                           $testSetBaseURI)
-  let $needsDTDValidation := if (not($mayNeedDTDValidation))
-                             then $mayNeedDTDValidation
-                             else ((xs:string($case/@name) = 'functx-functx-id-from-element-1') or
-                                   starts-with(xs:string($case/@name), 'fn-id-dtd-') or
-                                   starts-with(xs:string($case/@name), 'fn-idref-dtd-'))
   return
     string-join
     (
