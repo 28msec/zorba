@@ -673,7 +673,10 @@ compileAndExecute(
   std::auto_ptr<std::fstream> planFile;
   std::fstream* planFilep = NULL;
 
-  lHints.jsoniq_mode = (qfilepath.rfind(".jq") == qfilepath.size() - 3);
+  if (qfilepath.rfind(".jq") == qfilepath.size() - 3)
+  {
+    staticContext->setJSONiqVersion(zorba::jsoniq_version_1_0);
+  }
 
   if (serializePlan)
   {

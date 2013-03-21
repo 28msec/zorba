@@ -423,6 +423,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token XML_COMMENT_BEGIN                "'<!--'"
 %token XML_COMMENT_END                  "'-->'"
 %token XQUERY                           "'xquery'"
+%token JSONIQ                           "'jsoniq'"
 %token VERSION                          "'version'"
 %token START                            "'start'"
 
@@ -1139,6 +1140,16 @@ VersionDecl :
     XQUERY VERSION STRING_LITERAL ENCODING STRING_LITERAL SEMI
     {
       $$ = new VersionDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
+    }
+  | JSONIQ VERSION STRING_LITERAL SEMI
+    {
+      $$ = new VersionDecl( LOC(@$), SYMTAB($3), "utf-8", VersionDecl::jsoniq );
+    }
+  |
+    JSONIQ VERSION STRING_LITERAL ENCODING STRING_LITERAL SEMI
+    {
+      $$ = new VersionDecl(
+        LOC(@$), SYMTAB($3), SYMTAB($5), VersionDecl::jsoniq );
     }
 ;
 

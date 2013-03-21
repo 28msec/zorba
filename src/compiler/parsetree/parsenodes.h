@@ -290,9 +290,16 @@ public:
 ********************************************************************************/
 class VersionDecl : public parsenode
 {
+public:
+  enum LanguageKind {
+    xquery = 0,
+    jsoniq
+  };
+
 protected:
   zstring version;
   zstring encoding;
+  LanguageKind lang_kind;
 
   friend class ParseNodePrintXMLVisitor;
 
@@ -302,8 +309,15 @@ public:
     zstring const& version,
     zstring const& encoding);
 
+  VersionDecl(
+    const QueryLoc&,
+    zstring const& version,
+    zstring const& encoding,
+    LanguageKind const& lang_kind);
+
   zstring const& get_version() const { return version; }
   zstring const& get_encoding() const { return encoding; }
+  LanguageKind const& get_language_kind() const { return lang_kind; }
 
   void accept(parsenode_visitor&) const;
 };

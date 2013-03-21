@@ -96,7 +96,21 @@ VersionDecl::VersionDecl(
   :
   parsenode(loc_),
   version(_version),
-  encoding(_encoding)
+  encoding(_encoding),
+  lang_kind(VersionDecl::xquery)
+{
+}
+
+VersionDecl::VersionDecl(
+    const QueryLoc& loc_,
+    zstring const& _version,
+    zstring const& _encoding,
+    VersionDecl::LanguageKind const& _lang_kind)
+  :
+  parsenode(loc_),
+  version(_version),
+  encoding(_encoding),
+  lang_kind(_lang_kind)
 {
 }
 

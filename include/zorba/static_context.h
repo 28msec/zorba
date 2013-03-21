@@ -205,6 +205,15 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   virtual bool
   setXQueryVersion( xquery_version_t aMode ) = 0;
 
+  /** \brief Set the JSONiq processing mode
+   *
+   *
+   * @param aMode the JSONiq version
+   * @return true if the version was set, false otherwise.
+   */
+  virtual bool
+  setJSONiqVersion( jsoniq_version_t aMode ) = 0;
+
   /** \brief Get the XQuery processing mode (version 1.0 or 3.0).
    *
    *
@@ -212,6 +221,14 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    */
   virtual xquery_version_t
   getXQueryVersion( ) const = 0;
+
+  /** \brief Get the JSONiq processing mode.
+   *
+   *
+   * @return jsoniq_version_t the JSONiq version processing mode.
+   */
+  virtual jsoniq_version_t
+  getJSONiqVersion( ) const = 0;
 
   /** \brief Set the XPath 1.0 compatibility mode.
    *         (see http://www.w3.org/TR/xquery/#static_context)

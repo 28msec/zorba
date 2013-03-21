@@ -530,6 +530,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "boundary-space" { return token::BOUNDARY_SPACE; }
 "ordering" { return token::ORDERING; }
 "xquery" { return token::XQUERY; }
+"jsoniq" { return token::JSONIQ; }
 "version" { return token::VERSION; }
 "option" { return token::OPTION; }
 "at" { return token::AT; }
@@ -1184,7 +1185,7 @@ std::string start_jsoniq_state(int state)
     case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
     case MODE_START_TAG: return "MODE_START_TAG";
     case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
-    default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_jsoniq_state() in xquery_scanner.l \n";
+    default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_jsoniq_state() in jsoniq_scanner.l \n";
   }
 }
 

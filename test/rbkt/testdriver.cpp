@@ -328,7 +328,8 @@ main(int argc, char** argv)
     bool lJSONiqMode = 
     (lQueryFile.get_path().rfind(".jq") == lQueryFile.get_path().size() - 3);
 
-    lQuery->compile(lQueryString.c_str(), lContext, getCompilerHints(lJSONiqMode));
+    if (lJSONiqMode) lContext->setJSONiqVersion(zorba::jsoniq_version_1_0);
+    lQuery->compile(lQueryString.c_str(), lContext, getCompilerHints());
 
     errors = -1;
     if ( errHandler.errors() )
