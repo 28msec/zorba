@@ -23,16 +23,55 @@
 
 #include "store/naive/shared_types.h"
 
+#include "runtime/function_item/function_item.h"
+
+
 namespace zorba {
 
 /*******************************************************************************
+  [133]     ArgumentPlaceholder      ::=      "?"
+********************************************************************************/
+class argument_placeholder_expr : public expr
+{
+  friend class ExprIterator;
+  friend class expr;
+  friend class ExprManager;
 
-  [121] FilterExpr ::= PrimaryExpr (Predicate | DynamicFunctionInvocation)*
+protected:
+  argument_placeholder_expr(CompilerCB* ccb, static_context* sctx, user_function* udf, const QueryLoc& loc)
+    :
+    expr(ccb, sctx, udf, loc, argument_placeholder_expr_kind)
+  {
+    compute_scripting_kind();
+  }
 
-  [164] DynamicFunctionInvocation ::= "(" (ExprSingle ("," ExprSingle)*)? ")"
+public:
+  void compute_scripting_kind();
 
-  theExpr : The input expr that produces a function item
-  theArgs : The arg exprs to pass to the function.
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream& os) const;
+};
+
+
+/*******************************************************************************
+
+  PostfixExpr ::= PrimaryExpr (Predicate | ArgumentList)*
+
+  ArgumentList ::= "(" (Argument ("," Argument)*)? ")"
+
+  Argument ::= ExprSingle
+
+  theExpr:
+  --------
+  The input expr that produces a function item
+
+  theArgs:
+  --------
+  The arg exprs to pass to the function.
+ 
+  theDotVars:
+  ----------- 
 ********************************************************************************/
 class dynamic_function_invocation_expr : public expr
 {
@@ -43,20 +82,23 @@ class dynamic_function_invocation_expr : public expr
 protected:
   expr                * theExpr;
   std::vector<expr*>    theArgs;
+  expr                * theDotVar;
 
 protected:
-  dynamic_function_invocation_expr(
-      CompilerCB* ccb,
+  dynamic_function_invocation_expr(CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
       expr* anExpr,
-      const std::vector<expr*>& args);
+      const std::vector<expr*>& args,
+      expr* dotVar);
 
 public:
   const expr* get_function() const { return theExpr; }
 
   const std::vector<expr*>& get_args() const { return theArgs; }
+  
+  expr* get_dot_var() const { return theDotVar; }
 
   void compute_scripting_kind();
 
@@ -73,10 +115,6 @@ public:
   LiteralFunctionItem ::= QName "#" IntegerLiteral
 
   InlineFunction ::= "function" "(" ParamList? ")" ("as" SequenceType)? EnclosedExpr
-
-  theQName :
-  NULL in case of inline function. Otherwise, the qname of the named function
-  in the LiteralFunctionItem.
 
   theFunction :
   This is always a pointer to a user_function obj. In case of an inline function
@@ -103,50 +141,83 @@ class function_item_expr: public expr
   friend class expr;
   friend class ExprManager;
 
-private:
-  store::Item_t       theQName;
-  function_t          theFunction;
-  uint32_t            theArity;
-  std::vector<expr*>  theScopedVariables;
-
-public:
-
+protected:
+  DynamicFunctionInfo_t  theDynamicFunctionInfo;
+  
 protected:
   function_item_expr(
       CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      const store::Item* aQName,
+      static_context* closureSctx,
       function* f,
-      uint32_t aArity);
+      store::Item* aQName,
+      uint32_t aArity,
+      bool isInline,
+      bool needsContextItem,
+      bool isCoercion);
 
   function_item_expr(
       CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc);
-
+      const QueryLoc& loc,
+      static_context* closureSctx,
+      bool isInline,
+      bool needsContextItem,
+      bool isCoercion);
+  
+  virtual ~function_item_expr();
+  
 public:
-  ~function_item_expr();
+  DynamicFunctionInfo* get_dynamic_fn_info() { return theDynamicFunctionInfo; }
 
-  void add_variable(expr* var);
+  void add_variable(
+      expr* var,
+      var_expr* substVar,
+      const store::Item_t& name,
+      int isGlobal);
 
-  void set_function(user_function_t& udf);
+  const std::vector<var_expr*>& get_subst_vars_values() const
+  {
+    return theDynamicFunctionInfo->theSubstVarsValues;
+  }
 
-  user_function* get_function() const;
+  const std::vector<store::Item_t>& get_scoped_vars_names() const
+  {
+    return theDynamicFunctionInfo->theScopedVarsNames;
+  }
 
-  const store::Item_t& get_qname() const { return theQName; }
+  const std::vector<int>& get_is_global_var() const
+  {
+    return theDynamicFunctionInfo->theIsGlobalVar;
+  }
 
-  uint32_t get_arity() const { return theArity; }
+  void set_function(user_function* udf);
 
-  const std::vector<expr*>& get_vars() const;
+  function* get_function() const { return theDynamicFunctionInfo->theFunction; }
+
+  const store::Item_t& get_qname() const { return theDynamicFunctionInfo->theQName; }
+
+  uint32_t get_arity() const { return theDynamicFunctionInfo->theArity; }
+  
+  bool is_inline() const { return theDynamicFunctionInfo->theIsInline; }
+  
+  bool needs_context_item() const { return theDynamicFunctionInfo->theNeedsContextItem; }
+
+  bool is_coercion() const { return theDynamicFunctionInfo->theIsCoercion; }
 
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream& os) const;
+  
+public:
+  // Given a location, will create an inline function name string such 
+  // as "inline function(loc)"
+  static store::Item_t create_inline_fname(const QueryLoc& loc);
 };
 
 } //end of namespace

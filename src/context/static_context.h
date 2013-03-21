@@ -352,9 +352,9 @@ public:
   ----------------------------
   The namespace URI to be used for element and type qnames whose prefix is empty.
 
-  theDefaultFunctionNamespace :
-  -----------------------------
-  The namespace URI to be used for function qnames whose prefix is empty.
+  theDefaultFunctionNamespaces :
+  ------------------------------
+  The namespace URIs to be used for function qnames whose prefix is empty.
 
   theContextItemType :
   --------------------
@@ -500,6 +500,8 @@ public:
   static const char* W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
 
   static const char* W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
+  
+  static const char* W3C_ERR_NS;    // http://www.w3.org/2005/xqt-errors
 
   //
   // Zorba namespaces
@@ -598,8 +600,7 @@ protected:
   zstring                                 theDefaultElementNamespace;
   bool                                    theHaveDefaultElementNamespace;
 
-  zstring                                 theDefaultFunctionNamespace;
-  bool                                    theHaveDefaultFunctionNamespace;
+  std::vector<zstring>                    theDefaultFunctionNamespaces;
 
   xqtref_t                                theContextItemType;
 
@@ -893,18 +894,26 @@ public:
   //
   // Functions
   //
-  void bind_fn(function_t& f, ulong arity, const QueryLoc& loc);
+  void bind_fn(function_t& f, csize arity, const QueryLoc& loc);
 
-  void unbind_fn(const store::Item* qname, ulong arity);
+  void unbind_fn(const store::Item* qname, csize arity);
+
+  function* lookup_fn(
+      const zstring& ns,
+      const zstring& pre,
+      const zstring& local,
+      csize arity,
+      bool allowMultipleDefaultNamespaces,
+      const QueryLoc& loc);
 
   function* lookup_fn(
       const store::Item* qname,
-      ulong arity,
+      csize arity,
       bool skipDisabled = true);
 
   function* lookup_local_fn(
       const store::Item* qname,
-      ulong arity,
+      csize arity,
       bool skipDisabled = true);
 
   void get_functions(std::vector<function*>& functions) const;
@@ -1082,7 +1091,7 @@ public:
   void add_decimal_format(const DecimalFormat_t& format, const QueryLoc& loc);
 
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
-
+  
 #ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options const* get_match_options() const { return theFTMatchOptions; }
 
@@ -1106,6 +1115,13 @@ public:
   bool isWarningDisabled(const char* ns, const char* localname);
 
   bool isWarningAnError(const char* ns, const char* localname);
+
+  
+#ifndef NDEBUG
+  // Debugging purposes printing. Currently will display the parent chain
+  // and the variables defined in the context
+  std::string toString();
+#endif  
 
 
 protected:

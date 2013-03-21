@@ -157,7 +157,8 @@ void root_static_context::init()
 
   set_default_elem_type_ns(zstring(), true, loc);   
 
-  set_default_function_ns(W3C_FN_NS, true, loc);
+  set_default_function_ns(JSONIQ_FN_NS, false, loc);
+  set_default_function_ns(W3C_FN_NS, false, loc);
 
   add_collation(ZORBA_DEF_COLLATION_NS, QueryLoc::null);
   add_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
@@ -267,7 +268,6 @@ void root_static_context::init()
   append_env_var ("ZORBA_LIB_PATH", lRootLibPath);
 
 #endif
-
 } 
 
 

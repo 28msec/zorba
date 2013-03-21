@@ -166,7 +166,7 @@ void printErrors(const TestDiagnosticHandler& errHandler, const char* msg, bool 
 /*******************************************************************************
 
 ********************************************************************************/
-Zorba_CompilerHints getCompilerHints()
+Zorba_CompilerHints getCompilerHints(bool aJSONiqMode)
 {
   Zorba_CompilerHints lHints;
 
@@ -194,6 +194,8 @@ Zorba_CompilerHints getCompilerHints()
   {
     lHints.for_serialization_only = true;
   }
+
+  lHints.jsoniq_mode = aJSONiqMode;
 
   return lHints;
 }

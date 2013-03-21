@@ -125,6 +125,7 @@ LIST(APPEND RUNTIME_SRCS
   core/gflwor/outerfor_iterator.cpp
   core/internal_operators.cpp
   durations_dates_times/DurationsDatesTimesImpl.cpp
+  durations_dates_times/format_dateTime.cpp
   indexing/doc_indexer.cpp
   indexing/index_ddl.cpp
   json/common.cpp

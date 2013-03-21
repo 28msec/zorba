@@ -217,9 +217,9 @@ xqtref_t TypeManagerImpl::create_any_function_type(
 
 *******************************************************************************/
 xqtref_t TypeManagerImpl::create_function_type(
-        const std::vector<xqtref_t>& paramTypes,
-        const xqtref_t& returnType,
-        TypeConstants::quantifier_t quant) const
+    const std::vector<xqtref_t>& paramTypes,
+    const xqtref_t& returnType,
+    TypeConstants::quantifier_t quant) const
 {
   return new FunctionXQType(this, paramTypes, returnType, quant);
 }
@@ -831,16 +831,27 @@ xqtref_t TypeManagerImpl::create_value_type(
 
   else if (item->isFunction())
   {
-    const FunctionItem* lFItem = static_cast<const FunctionItem*>(item);
-    const signature& lSig = lFItem->getSignature();
-    const xqtref_t& lRetType = lSig.returnType();
-    std::vector<xqtref_t> lParamTypes;
-    for (uint32_t i = 0; i < lSig.paramCount(); ++i)
+    const FunctionItem* fitem = static_cast<const FunctionItem*>(item);
+    const signature& sig = fitem->getSignature();
+    const xqtref_t& retType = sig.returnType();
+    const xqtref_t& nonOptimizedRetType = sig.getNonOptimizedReturnType();
+    std::vector<xqtref_t> paramTypes;
+    
+    assert(fitem->getStartArity() <= sig.paramCount());
+    
+    for (csize i = 0; i < fitem->getStartArity(); ++i)
     {
-      lParamTypes.push_back(lSig[i]);
+      // In case some of the parameters of the function have been partially applied,
+      // the type of the function needs to be adjusted accordingly -- by skipping
+      // the corresponding signature parameter types.
+      if ( ! fitem->isArgumentApplied(i))
+        paramTypes.push_back(sig[i]);
     }
 
-    return new FunctionXQType(this, lParamTypes, lRetType, quant);
+    return new FunctionXQType(this,
+                              paramTypes,
+                              nonOptimizedRetType.getp() ? nonOptimizedRetType : retType,
+                              quant);
   }
 
   else

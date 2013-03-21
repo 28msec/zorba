@@ -55,6 +55,7 @@
 #include <vector>
 
 #include "compiler/parsetree/parsenodes.h"
+#include "compiler/parser/zorba_parser_error.h"
 #include "zorbatypes/zstring.h"
 
 #ifdef __GNUC__
@@ -97,20 +98,12 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 #include "compiler/api/compilercb.h"
 #include "store/api/update_consts.h"
 #include "compiler/parser/xquery_driver.h"
+#include "compiler/parser/parser_helpers.h"
 
 #define SYMTAB( n ) driver.symtab.get( (off_t)n )
 #define SYMTAB_PUT( s ) driver.symtab.put( s )
 #define LOC( p ) driver.createQueryLoc( p )
 
-
-namespace zorba
-{
-namespace parser
-{
-  extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_declare, *the_create;
-
-}
-}
 
 #define YYDEBUG 1
 
@@ -924,7 +917,10 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList GeneralizedAtomicType SimpleType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest NamespaceTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AbbrevForwardStep ForwardAxis ForwardStep NodeTest ReverseAxis ReverseStep
+
+// parsenodes
+%destructor { release_hack( $$ ); } AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList GeneralizedAtomicType SimpleType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest NamespaceTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
@@ -932,8 +928,11 @@ template<typename T> inline void release_hack( T *ref ) {
 // parsenodes: JSON
 %destructor { release_hack( $$ ); } JSONObjectConstructor JSONPairList JSONArrayConstructor JSONSimpleObjectUnion JSONAccumulatorObjectUnion JSONDeleteExpr JSONInsertExpr JSONRenameExpr JSONReplaceExpr JSONAppendExpr
 
+// exprnodes: AxisStep
+%destructor { release_hack( $$ ); } AxisStep
+
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompNamespaceConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompNamespaceConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -4061,7 +4060,8 @@ PathExpr :
                         ParseConstants::path_leading_slashslash,
                         rpe);
     }
-  | RelativePathExpr        /* gn: leading-lone-slashXQ */
+  | 
+    RelativePathExpr        /* gn: leading-lone-slashXQ */
     {
       RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>($1);
       $$ = (!rpe ?
@@ -4110,7 +4110,8 @@ StepExpr :
     {
       $$ = $1;
     }
-  | FilterExpr
+  |
+  FilterExpr
     {
       $$ = $1;
     }
@@ -4319,11 +4320,11 @@ FilterExpr :
      }
   |  FilterExpr LPAR RPAR
      {
-       $$ = new DynamicFunctionInvocation(LOC (@$), $1);
+       $$ = new DynamicFunctionInvocation(LOC(@$), $1, false);
      }
   |  FilterExpr LPAR ArgList RPAR
      {
-       $$ = new DynamicFunctionInvocation(LOC (@$), $1, dynamic_cast<ArgList*>($3));
+       $$ = new DynamicFunctionInvocation(LOC(@$), $1, dynamic_cast<ArgList*>($3), false);
      }
 ;
 
@@ -4410,6 +4411,13 @@ PrimaryExpr :
         {
           $$ = $1;
         }
+//    |   PrimaryExpr DOT NCNAME
+//        {
+//          StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
+//          ArgList *al = new ArgList( LOC(@$) );
+//          al->push_back(sl);
+//          $$ = new DynamicFunctionInvocation(LOC(@$), $1, al, false); 
+//        }
     ;
 
 // [84]
@@ -4547,15 +4555,39 @@ FunctionCall :
     }
 |   FUNCTION_NAME LPAR ArgList RPAR
     {
-      $$ = new FunctionCall(LOC(@$),
-                            static_cast<QName*>($1),
-                            dynamic_cast<ArgList*>($3));
+      ArgList* argList = dynamic_cast<ArgList*>($3);
+
+      if (argList->has_placeholder())
+      {
+        LiteralFunctionItem* lfi = 
+        new LiteralFunctionItem(LOC(@$),
+                                dynamic_cast<QName*>($1),
+                                new Integer(argList->size()));
+
+        $$ = new DynamicFunctionInvocation(LOC(@$), lfi, argList, true);
+      }
+      else
+      {
+        $$ = new FunctionCall(LOC(@$), static_cast<QName*>($1), argList);
+      }
     }
 ;
 
 
 ArgList :
-    ExprSingle
+    HOOK
+    {
+      ArgList *al = new ArgList( LOC(@$) );
+      al->push_back(new ArgumentPlaceholder(LOC(@$)));
+      $$ = al;
+    }
+|   ArgList COMMA HOOK
+    {
+      if ( ArgList *al = dynamic_cast<ArgList*>($1) )
+        al->push_back( new ArgumentPlaceholder(LOC(@$)) );
+      $$ = $1;
+    }
+|   ExprSingle
     {
       ArgList *al = new ArgList( LOC(@$) );
       al->push_back( $1 );
@@ -4570,12 +4602,44 @@ ArgList :
 ;
 
 
+FunctionItemExpr :
+    LiteralFunctionItem
+    {
+      $$ = $1;
+    }
+  | InlineFunction
+    {
+      $$ = $1;
+    }
+;
+
+
+LiteralFunctionItem :
+    QNAME HASH INTEGER_LITERAL
+    {
+      $$ = new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), $3);
+    }
+;
+
+
+InlineFunction :
+    FUNCTION FunctionSig EnclosedStatementsAndOptionalExpr
+    {
+      $$ = new InlineFunction(LOC(@$),
+                              &*$2->theParams,
+                              &*$2->theReturnType,
+                              $3);
+      delete $2;
+    }
+;
+
+
 Constructor :
     DirectConstructor
     {
       $$ = $1;
     }
-  | ComputedConstructor
+|   ComputedConstructor
     {
       $$ = $1;
     }
@@ -5449,47 +5513,6 @@ StringLiteral :
 // [157] NCName
 // [158] S  (WS)
 // [159] Char
-
-/*_______________________________________________________________________
- *                                                                       *
- *  XQuery 3.0 productions                                               *
- *  [http://www.w3.org/TR/xquery-3/]                                     *
- *                                                                       *
- *_______________________________________________________________________*/
-
-// [161] FunctionItemExpr
-// ------------
-FunctionItemExpr :
-    LiteralFunctionItem
-    {
-      $$ = $1;
-    }
-  | InlineFunction
-    {
-      $$ = $1;
-    }
-;
-
-
-LiteralFunctionItem :
-    QNAME HASH INTEGER_LITERAL
-    {
-      $$ = new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), $3);
-    }
-;
-
-
-InlineFunction :
-    FUNCTION FunctionSig EnclosedStatementsAndOptionalExpr
-    {
-      $$ = new InlineFunction(LOC(@$),
-                              &*$2->theParams,
-                              &*$2->theReturnType,
-                              $3);
-      delete $2;
-    }
-;
-
 
 FunctionTest :
     AnyFunctionTest
@@ -6991,14 +7014,6 @@ EQNAME :
 %%
 
 namespace zorba {
-
-namespace parser {
-
-const char *the_tumbling = "tumbling", *the_sliding = "sliding",
-  *the_start = "start", *the_end = "end", *the_only_end = "only end",
-  *the_declare = "declare", *the_create = "create";
-
-} // namespace parser
 
 /*
  *  The error member function registers the errors to the driver.

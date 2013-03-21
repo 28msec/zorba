@@ -19,9 +19,6 @@
 
 #include "compiler/parser/symbol_table.h"
 
-// Include the driver for the createQueryLoc() function
-#include "compiler/parser/xquery_driver.h"
-
 #include "util/ascii_util.h"
 #include "util/xml_util.h"
 
