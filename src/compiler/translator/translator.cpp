@@ -2345,6 +2345,17 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
 
+  if (v.get_language_kind() == VersionDecl::jsoniq)
+  {
+    theSctx->set_language_kind(StaticContextConsts::language_kind_jsoniq);
+    std::string versionStr = v.get_version().str();
+    if (versionStr == "1.0")
+      theSctx->set_jsoniq_version(StaticContextConsts::jsoniq_version_1_0);
+    else
+      theSctx->set_jsoniq_version(StaticContextConsts::jsoniq_version_unknown);
+    return no_state;
+  }
+
   if (v.get_encoding() != "utf-8" &&
       !utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
     RAISE_ERROR(err::XQST0087, loc, ERROR_PARAMS(v.get_encoding()));

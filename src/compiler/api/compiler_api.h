@@ -68,6 +68,8 @@ public:
   expr* optimize(expr* expr);
 
 private:
+  bool getLanguageMode(std::stringstream& s) const;
+
   parsenode_t createMainModule(
       parsenode_t libModule,
       std::istream& xquery,

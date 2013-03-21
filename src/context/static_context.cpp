@@ -695,7 +695,9 @@ static_context::static_context()
 #ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
 #endif /* ZORBA_NO_FULL_TEXT */
+  theLanguageKind(StaticContextConsts::language_kind_unknown),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
+  theJSONiqVersion(StaticContextConsts::jsoniq_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
   theInheritNamespaces(true),
@@ -741,7 +743,9 @@ static_context::static_context(static_context* parent)
 #ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
 #endif /* ZORBA_NO_FULL_TEXT */
+  theLanguageKind(StaticContextConsts::language_kind_unknown),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
+  theJSONiqVersion(StaticContextConsts::jsoniq_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
   theInheritNamespaces(parent->theInheritNamespaces),
@@ -792,7 +796,9 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
 #ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
 #endif /* ZORBA_NO_FULL_TEXT */
+  theLanguageKind(StaticContextConsts::language_kind_unknown),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
+  theJSONiqVersion(StaticContextConsts::jsoniq_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
   theInheritNamespaces(true),
@@ -1113,7 +1119,9 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theFTMatchOptions;
 #endif /* ZORBA_NO_FULL_TEXT */
 
+  SERIALIZE_ENUM(StaticContextConsts::language_kind_t,  theLanguageKind);
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
+  SERIALIZE_ENUM(StaticContextConsts::jsoniq_version_t, theJSONiqVersion);
   SERIALIZE_ENUM(StaticContextConsts::xpath_compatibility_t, theXPathCompatibility);
   SERIALIZE_ENUM(StaticContextConsts::construction_mode_t, theConstructionMode);
   ar & theInheritNamespaces;
@@ -3804,6 +3812,34 @@ audit::Event* static_context::get_audit_event() const
 /***************************************************************************//**
 
 ********************************************************************************/
+StaticContextConsts::language_kind_t static_context::language_kind() const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theLanguageKind != StaticContextConsts::language_kind_unknown)
+      return sctx->theLanguageKind;
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return StaticContextConsts::language_kind_unknown;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_language_kind(StaticContextConsts::language_kind_t k)
+{
+  theLanguageKind = k;
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
 StaticContextConsts::xquery_version_t static_context::xquery_version() const
 {
   const static_context* sctx = this;
@@ -3827,6 +3863,35 @@ StaticContextConsts::xquery_version_t static_context::xquery_version() const
 void static_context::set_xquery_version(StaticContextConsts::xquery_version_t v)
 {
   theXQueryVersion = v;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+StaticContextConsts::jsoniq_version_t static_context::jsoniq_version() const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theJSONiqVersion != StaticContextConsts::jsoniq_version_unknown)
+      return sctx->theJSONiqVersion;
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return StaticContextConsts::jsoniq_version_unknown;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_jsoniq_version(StaticContextConsts::jsoniq_version_t v)
+{
+  theJSONiqVersion = v;
 }
 
 

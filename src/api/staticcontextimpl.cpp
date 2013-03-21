@@ -386,10 +386,32 @@ String StaticContextImpl::getDefaultCollation() const
 bool StaticContextImpl::setXQueryVersion(xquery_version_t version)
 {
   ZORBA_TRY
+    theCtx->set_language_kind(StaticContextConsts::language_kind_xquery);
     if ( version == xquery_version_1_0)
       theCtx->set_xquery_version(StaticContextConsts::xquery_version_1_0);
     else
       theCtx->set_xquery_version(StaticContextConsts::xquery_version_3_0);
+    return true;
+  ZORBA_CATCH
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool StaticContextImpl::setJSONiqVersion(jsoniq_version_t version)
+{
+  ZORBA_TRY
+    if ( version == jsoniq_version_1_0)
+    {
+      theCtx->set_language_kind(StaticContextConsts::language_kind_jsoniq);
+      theCtx->set_jsoniq_version(StaticContextConsts::jsoniq_version_1_0);
+    }
+    else
+    {
+      theCtx->set_language_kind(StaticContextConsts::language_kind_unknown);
+    }
     return true;
   ZORBA_CATCH
   return false;
@@ -410,6 +432,25 @@ xquery_version_t StaticContextImpl::getXQueryVersion() const
     ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
   }
   return xquery_version_1_0;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+jsoniq_version_t StaticContextImpl::getJSONiqVersion() const
+{
+  try {
+    if (theCtx->language_kind() != StaticContextConsts::language_kind_jsoniq)
+      return jsoniq_version_undefined;
+    return theCtx->jsoniq_version()==StaticContextConsts::jsoniq_version_1_0?
+      jsoniq_version_1_0:jsoniq_version_undefined;
+  } catch (ZorbaException const& e) {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  } catch (std::exception const& e) {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
+  }
+  return jsoniq_version_undefined;
 }
 
 
