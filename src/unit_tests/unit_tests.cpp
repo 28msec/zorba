@@ -45,6 +45,7 @@ void initializeTestList()
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
   libunittests["hashmaps"] = test_hashmaps;
+  libunittests["hexbinary"] = test_hexbinary;
 
 #ifndef ZORBA_NO_ICU
   libunittests["icu_streambuf"] = test_icu_streambuf;

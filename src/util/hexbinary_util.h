@@ -15,8 +15,8 @@
  */
 
 #pragma once
-#ifndef ZORBA_BASE64_UTIL_H
-#define ZORBA_BASE64_UTIL_H
+#ifndef ZORBA_HEXBINARY_UTIL_H
+#define ZORBA_HEXBINARY_UTIL_H
 
 #include <iostream>
 #include <stdexcept>
@@ -27,7 +27,7 @@
 #include "stream_util.h"
 
 namespace zorba {
-namespace base64 {
+namespace hexbinary {
 
 ////////// Types //////////////////////////////////////////////////////////////
 
@@ -38,15 +38,14 @@ typedef size_t size_type;
  */
 enum decode_options {
   dopt_none       = 0x00, ///< No options.
-  dopt_any_len    = 0x01, ///< Input length may be non-multiple of 4.
-  dopt_ignore_ws  = 0x02, ///< Ignore all whitespace.
+  dopt_ignore_ws  = 0x01, ///< Ignore all whitespace.
 };
 
 ////////// Exception //////////////////////////////////////////////////////////
 
 /**
- * A %base64::exception is-an invalid_argument that contains additional details
- * about the exception such as the invalid character and its offset.
+ * A %hexbinary::exception is-an invalid_argument that contains additional
+ * details about the exception such as the invalid character and its offset.
  */
 class exception : public std::invalid_argument {
 public:
@@ -69,38 +68,37 @@ private:
 ////////// Decoding ///////////////////////////////////////////////////////////
 
 /**
- * Calculates the number of bytes required to decode \a n Base64-encoded bytes.
+ * Calculates the number of bytes required to decode \a n hexBinary-encoded
+ * bytes.
  *
  * @param n The number of bytes to decode.
- * @return Returns the number of bytes needed for Base64 decoding.
+ * @return Returns the number of bytes needed for hexBinary decoding.
  */
 inline size_type decoded_size( size_type n ) {
-  return ((n / 4) + !!(n % 4)) * 3;
+  return n / 2;
 }
 
 /**
- * Decodes a Base64-encoded buffer.  Embedded newlines and carriage-returns are
- * skipped.
+ * Decodes a hexBinary-encoded buffer.
  *
- * @param from A pointer to the Base64 buffer to be decoded.
+ * @param from A pointer to the hexBinary buffer to be decoded.
  * @param from_len The number of bytes to decode.
  * @paran to A pointer to the buffer to receive the decoded bytes.  The buffer
  * must be large enough to contain them.  Note that the buffer is \e not null
  * terminated.
  * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if \a options does not have the \c dtop_any_len bit
- * set and \a from_len is not a multiple of 4.
- * @throws base64::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  * @see decoded_size()
  */
 size_type decode( char const *from, size_type from_len, char *to,
                   int options = dopt_none );
 
 /**
- * Decodes a Base64-encoded buffer and appends the decoded bytes onto a
- * vector&lt;char&gt;.  Embedded newlines and carriage-returns are skipped.
+ * Decodes a hexBinary-encoded buffer and appends the decoded bytes onto a
+ * vector&lt;char&gt;.
  *
  * @param from A pointer to the buffer to be encoded.
  * @param from_len The number of bytes to encode.
@@ -108,28 +106,26 @@ size_type decode( char const *from, size_type from_len, char *to,
  * The vector is made large enough to contain the additional bytes.
  * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and the number of Base64 bytes decoded is not a multiple of 4.
- * @throws base64::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  */
 size_type decode( char const *from, size_type from_len, std::vector<char> *to,
                   int options = dopt_none );
 
 /**
- * Decodes a Base64-encoded buffer and appends the decoded bytes onto a string.
- * Embedded newlines and carriage-returns are skipped.
+ * Decodes a hexBinary-encoded buffer and appends the decoded bytes onto a
+ * string.
  *
  * @tparam ToStringType The string type.
- * @param from A pointer to the Base64 buffer to be decoded.
+ * @param from A pointer to the hexBinary buffer to be decoded.
  * @param from_len The number of bytes to decode.
  * @param to The string to append the decoded bytes to.
- * @param options The options to use.
+ * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and the number of Base64 bytes decoded is not a multiple of 4.
- * @throws base64::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  */
 template<class ToStringType>
 size_type decode( char const *from, size_type from_len, ToStringType *to,
@@ -145,34 +141,31 @@ size_type decode( char const *from, size_type from_len, ToStringType *to,
 }
 
 /**
- * Decodes a Base64-encoded istream.  Embedded newlines and carriage-returns
- * are skipped.
+ * Decodes a hexBinary-encoded istream.
  *
  * @param from The istream to read from until EOF is reached.
  * @param to The ostream to write the decoded bytes to.
- * @param options The options to use.
+ * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and the number of Base64 bytes decoded is not a multiple of 4.
- * @throws base64::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  */
 size_type decode( std::istream &from, std::ostream &to,
                   int options = dopt_none );
 
 /**
- * Decodes a Base64-encoded istream and appends the decoded bytes to a string.
- * Embedded newlines and carriage-returns are skipped.
+ * Decodes a hexBinary-encoded istream and appends the decoded bytes to a
+ * string.
  *
  * @tparam ToStringType The string type.
  * @param from The istream to read from until EOF is reached.
  * @param to The string to append the decoded bytes to.
- * @param options The options to use.
+ * @param options The decoding options to use.
  * @return Returns the number of decoded bytes.
- * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and the number of Base64 bytes decoded is not a multiple of 4.
- * @throws base64::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  */
 template<class ToStringType>
 size_type decode( std::istream &from, ToStringType *to,
@@ -180,7 +173,7 @@ size_type decode( std::istream &from, ToStringType *to,
   bool const ignore_ws = !!(options & dopt_ignore_ws);
   size_type total_decoded = 0;
   while ( !from.eof() ) {
-    char from_buf[ 1024 * 4 ], to_buf[ 1024 * 3 ];
+    char from_buf[ 1024 * 2 ], to_buf[ 1024 ];
     std::streamsize gcount;
     if ( ignore_ws )
       gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
@@ -199,32 +192,29 @@ size_type decode( std::istream &from, ToStringType *to,
 }
 
 /**
- * Decodes a Base64-encoded stream and appends the decoded bytes onto a
+ * Decodes a hexBinary-encoded stream and appends the decoded bytes onto a
  * vector&lt;char;&gt;.
  *
  * @param from The istream to read from until EOF is reached.
  * @param to The string to append the decoded bytes to.
- * @param options The options to use.
+ * @param options The decoding options to use.
  * @param Returns the number of decoded bytes.
- * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and the number of Base64 bytes decoded is not a multiple of 4.
- * @throws base64::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  */
 size_type decode( std::istream &from, std::vector<char> *to,
                   int options = dopt_none );
 
 /**
- * Validates a Base64-encoded buffer.  Embedded newlines and carriage-returns
- * are skipped.
+ * Validates a hexBinary-encoded buffer.
  *
- * @param buf A pointer to the Base64 buffer to be validated.
+ * @param buf A pointer to the hexBinary buffer to be validated.
  * @param buf_len The number of bytes to validate.
- * @param options The options to use.
- * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
- * set and the number of Base64 bytes validated is not a multiple of 4.
- * @throws base64::exception if an \c = is encountered unexpectedly or an
- * invalid byte is encountered.
+ * @param options The decoding options to use.
+ * @throws invalid_argument if \a from_len (minus the amount of whitespace if
+ * \a options contains \c dopt_ignore_ws) is not a multiple of 2.
+ * @throws hexbinary::exception if an invalid byte is encountered.
  * @see decoded_size()
  */
 inline void validate( char const *buf, size_type buf_len,
@@ -235,17 +225,17 @@ inline void validate( char const *buf, size_type buf_len,
 ////////// Encoding ///////////////////////////////////////////////////////////
 
 /**
- * Calculates the number of bytes required to Base64-encode \a n bytes.
+ * Calculates the number of bytes required to hexBinary-encode \a n bytes.
  *
  * @param n The number of bytes to encode.
- * @return Returns the number of bytes needed for Base64 encoding.
+ * @return Returns the number of bytes needed for hexBinary encoding.
  */
 inline size_type encoded_size( size_type n ) {
-  return (n + 2) / 3 * 4;
+  return n * 2;
 }
 
 /**
- * Base64-encodes a buffer.
+ * HexBinary-encodes a buffer.
  *
  * @param from A pointer to the buffer to be encoded.
  * @param from_len The number of bytes to encode.
@@ -258,7 +248,7 @@ inline size_type encoded_size( size_type n ) {
 size_type encode( char const *from, size_type from_len, char *to );
 
 /**
- * Base64-encodes a buffer and appends the encoded bytes onto a
+ * HexBinary-encodes a buffer and appends the encoded bytes onto a
  * vector&lt;char&gt;.
  *
  * @param from A pointer to the buffer to be encoded.
@@ -269,10 +259,10 @@ size_type encode( char const *from, size_type from_len, char *to );
 size_type encode( char const *from, size_type from_len, std::vector<char> *to );
 
 /**
- * Base64-encodes a buffer and appends the encoded bytes onto a string.
+ * HexBinary-encodes a buffer and appends the encoded bytes onto a string.
  *
  * @tparam ToStringType The string type.
- * @param from A pointer to the Base64 buffer to be encoded.
+ * @param from A pointer to the hexBinary buffer to be encoded.
  * @param from_len The number of bytes to encode.
  * @param to A pointer to the string to append the encoded bytes onto.
  * @return Returns the number of encoded bytes.
@@ -290,7 +280,7 @@ size_type encode( char const *from, size_type from_len, ToStringType *to ) {
 }
 
 /**
- * Base64-encodes one stream and write the encoded bytes to another.
+ * HexBinary-encodes one stream and write the encoded bytes to another.
  *
  * @param from The istream to read from until EOF is reached.
  * @param to The ostream to write the encoded bytes to.
@@ -298,7 +288,7 @@ size_type encode( char const *from, size_type from_len, ToStringType *to ) {
 size_type encode( std::istream &from, std::ostream &to );
 
 /**
- * Encodes a stream to Base64 and appends the encoded bytes to a string.
+ * Encodes a stream to hexBinary and appends the encoded bytes to a string.
  *
  * @tparam ToStringType The string type.
  * @param from The istream to read from until EOF is reached.
@@ -309,7 +299,7 @@ template<class ToStringType>
 size_type encode( std::istream &from, ToStringType *to ) {
   size_type total_encoded = 0;
   while ( !from.eof() ) {
-    char from_buf[ 1024 * 3 ], to_buf[ 1024 * 4 ];
+    char from_buf[ 1024 * 2 ], to_buf[ 1024 ];
     from.read( from_buf, sizeof from_buf );
     if ( std::streamsize const gcount = from.gcount() ) {
       size_type const encoded = encode( from_buf, gcount, to_buf );
@@ -322,7 +312,7 @@ size_type encode( std::istream &from, ToStringType *to ) {
 }
 
 /**
- * Base64-encodes a stream and appends the encoded bytes onto a
+ * HexBinary-encodes a stream and appends the encoded bytes onto a
  * vector&lt;char;&gt;.
  *
  * @param from The istream to read from until EOF is reached.
@@ -333,10 +323,10 @@ size_type encode( std::istream &from, std::vector<char> *to );
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace base64
+} // namespace hexbinary
 } // namespace zorba
 
-#endif /* ZORBA_BASE64_UTIL_H */
+#endif /* ZORBA_HEXBINARY_UTIL_H */
 /*
  * Local variables:
  * mode: c++

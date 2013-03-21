@@ -1130,7 +1130,7 @@ bool BasicItemFactory::createDayTimeDuration(
 
 bool BasicItemFactory::createBase64Binary(
     store::Item_t& result,
-    xs_base64Binary value)
+    xs_base64Binary const &value)
 {
   const std::vector<char>& data = value.getData();
   result = new Base64BinaryItem(store::XS_BASE64BINARY,
@@ -1185,9 +1185,22 @@ bool BasicItemFactory::createStreamableBase64Binary(
 }
 
 
-bool BasicItemFactory::createHexBinary(store::Item_t& result,  xs_hexBinary value)
+bool BasicItemFactory::createHexBinary(store::Item_t& result,
+                                       xs_hexBinary const &value)
 {
-  result = new HexBinaryItem(store::XS_HEXBINARY, value);
+  std::vector<char> const &data = value.getData();
+  result = new HexBinaryItem(
+    store::XS_HEXBINARY, data.empty() ? 0 : &data[0], data.size(), true
+  );
+  return true;
+}
+
+
+bool BasicItemFactory::createHexBinary( store::Item_t& result,
+                                        char const *data, size_t size,
+                                        bool encoded )
+{
+  result = new HexBinaryItem(store::XS_HEXBINARY, data, size, encoded);
   return true;
 }
 
