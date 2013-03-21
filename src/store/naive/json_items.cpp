@@ -46,6 +46,21 @@ store::Item* JSONNull::getType() const
 /******************************************************************************
 
 *******************************************************************************/
+long JSONNull::compare(
+      const store::Item* other,
+      long /* tz */,
+      const XQPCollator* /* c */) const
+{
+  if (other->getTypeCode() == store::JS_NULL)
+    return 0;
+  else
+    return 1;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 bool JSONNull::equals(
     const store::Item* other,
     long /* timezone */,

@@ -4633,6 +4633,43 @@ void StringLiteral::accept( parsenode_visitor &v ) const
 }
 
 
+// BooleanLiteral
+// -------------------
+BooleanLiteral::BooleanLiteral(
+  const QueryLoc& loc_,
+  bool val)
+:
+  exprnode(loc_),
+  boolval(val)
+{}
+
+
+//-BooleanLiteral::
+
+void BooleanLiteral::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
+// NullLiteral
+// -------------------
+NullLiteral::NullLiteral(const QueryLoc& loc_)
+:
+  exprnode(loc_)
+{}
+
+
+//-NullLiteral::
+
+void NullLiteral::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
 /* lexical rules, see xquery.l */
 /* --------------------------- */
 
@@ -5787,6 +5824,30 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 }
 
 ////////// JSON ///////////////////////////////////////////////////////////////
+JSONObjectLookup::JSONObjectLookup(
+    const QueryLoc& loc,
+    const exprnode* aObjectExpr,
+    const exprnode* aSelectorExpr)
+  : exprnode(loc),
+    theObjectExpr(aObjectExpr),
+    theSelectorExpr(aSelectorExpr)
+{
+}
+
+
+JSONObjectLookup::~JSONObjectLookup()
+{
+}
+
+
+void JSONObjectLookup::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theObjectExpr);
+  if (theSelectorExpr != 0) ACCEPT(theSelectorExpr);
+  END_VISITOR();
+}
+
 
 JSONArrayConstructor::JSONArrayConstructor(
     const QueryLoc& loc,

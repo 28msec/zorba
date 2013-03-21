@@ -513,7 +513,6 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "schema" { return token::SCHEMA; }
 "copy-namespaces" { return token::COPY_NAMESPACES; }
 "for" { return token::FOR; }
-"from" { return token::FOR; }
 "let" { return token::LET; }
 "allowing" { return token::ALLOWING; }
 "sliding" { return token::SLIDING; }
@@ -765,6 +764,9 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "descending" { return token::DESCENDING; }
 "encoding" { return token::ENCODING; }
 
+"null" { return token::NULL_TOKEN; }
+"true" { return token::TRUE_TOKEN; }
+"false" { return token::FALSE_TOKEN; }
 
   /*______________________________________________________________________
    |

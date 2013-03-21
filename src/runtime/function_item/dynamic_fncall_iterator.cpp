@@ -224,83 +224,97 @@ bool DynamicFnCallIterator::nextImpl(
 #ifdef ZORBA_WITH_JSON
   else if (targetItem->isJSONObject() || targetItem->isJSONArray())
   {
-    if (theChildren.size() != 2)
+    if (theChildren.size() > 2)
     {
       RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
     }
-
-    isObjectNav = targetItem->isJSONObject();
-    selectorError = false;
-
-    if (!consumeNext(selectorItem1, theChildren[1], planState))
+    else if (theChildren.size() == 2)
     {
-      selectorError = true;
-    }
-    else
-    {
-      try
-      {
-        if (selectorItem1->isNode())
-        {
-          store::Iterator_t iter;
-          
-          selectorItem1->getTypedValue(selectorItem2, iter);
+      isObjectNav = targetItem->isJSONObject();
+      selectorError = false;
 
-          if (iter != NULL)
-          {
-            if (!iter->next(selectorItem2) || iter->next(item))
-            {
-              selectorError = true;
-            }
-          }
-        }
-        else
-        {
-          selectorItem2.transfer(selectorItem1);
-        }
-
-        if (!selectorError)
-        {
-          if (!selectorItem2->isAtomic())
-          {
-            selectorError = true;
-          }
-          else
-          {
-            store::SchemaTypeCode selectorType = 
-            (isObjectNav ? store::XS_STRING : store::XS_INTEGER);
-
-            GenericCast::castToBuiltinAtomic(selectorItem3,
-                                             selectorItem2,
-                                             selectorType,
-                                             NULL,
-                                             loc);
-            selectorError = false;
-          }
-        }
-      }
-      catch (...)
+      if (!consumeNext(selectorItem1, theChildren[1], planState))
       {
         selectorError = true;
       }
+      else
+      {
+        try
+        {
+          if (selectorItem1->isNode())
+          {
+            store::Iterator_t iter;
+            
+            selectorItem1->getTypedValue(selectorItem2, iter);
+
+            if (iter != NULL)
+            {
+              if (!iter->next(selectorItem2) || iter->next(item))
+              {
+                selectorError = true;
+              }
+            }
+          }
+          else
+          {
+            selectorItem2.transfer(selectorItem1);
+          }
+
+          if (!selectorError)
+          {
+            if (!selectorItem2->isAtomic())
+            {
+              selectorError = true;
+            }
+            else
+            {
+              store::SchemaTypeCode selectorType = 
+              (isObjectNav ? store::XS_STRING : store::XS_INTEGER);
+
+              GenericCast::castToBuiltinAtomic(selectorItem3,
+                                               selectorItem2,
+                                               selectorType,
+                                               NULL,
+                                               loc);
+              selectorError = false;
+            }
+          }
+        }
+        catch (...)
+        {
+          selectorError = true;
+        }
+      }
+        
+      if (selectorError)
+      {
+        item = (selectorItem1 == NULL ? selectorItem2 : selectorItem1);
+
+        zstring selectorType = tm->create_value_type(item)->toSchemaString();
+
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS(ZED(XPTY0004_JSONIQ_SELECTOR), selectorType));
+      }
+
+      if (isObjectNav)
+        result = targetItem->getObjectValue(selectorItem3);
+      else
+        result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
+      STACK_PUSH(result != NULL, state);
     }
-      
-    if (selectorError)
-    {
-      item = (selectorItem1 == NULL ? selectorItem2 : selectorItem1);
-
-      zstring selectorType = tm->create_value_type(item)->toSchemaString();
-
-      RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(XPTY0004_JSONIQ_SELECTOR), selectorType));
-    }
-
-    if (isObjectNav)
-      result = targetItem->getObjectValue(selectorItem3);
     else
-      result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
-
-    STACK_PUSH(true, state);
+    {
+      if (targetItem->isJSONArray())
+        state->theIterator = targetItem->getArrayValues();
+      else if (targetItem->isJSONObject())
+        state->theIterator = targetItem->getObjectKeys();
+      state->theIterator->open();
+      while (state->theIterator->next(result))
+      {
+        STACK_PUSH(true, state);
+      }
+      state->theIterator->close();
+    }
   }
 #endif
   else

@@ -488,23 +488,19 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (consumeNext(item0, theChild0.getp(), planState) &&
         consumeNext(item1, theChild1.getp(), planState))
     {
-      if (item0->getTypeCode() != store::JS_NULL &&
-          item1->getTypeCode() != store::JS_NULL)
-      {
-        STACK_PUSH(GENV_ITEMFACTORY->
-                   createBoolean(result,
-                                 CompareIterator::valueComparison(loc,
-                                                                  item0,
-                                                                  item1,
-                                                                  theCompType,
-                                                                  theTypeManager,
-                                                                  theTimezone,
-                                                                  theCollation)),
-                   state);
+      STACK_PUSH(GENV_ITEMFACTORY->
+                 createBoolean(result,
+                               CompareIterator::valueComparison(loc,
+                                                                item0,
+                                                                item1,
+                                                                theCompType,
+                                                                theTypeManager,
+                                                                theTimezone,
+                                                                theCollation)),
+                 state);
 
-        assert(!consumeNext(item0, theChild0.getp(), planState) &&
-               !consumeNext(item1, theChild1.getp(), planState));
-      }
+      assert(!consumeNext(item0, theChild0.getp(), planState) &&
+             !consumeNext(item1, theChild1.getp(), planState));
     }
   }
 
@@ -690,11 +686,6 @@ bool CompareIterator::generalComparison(
     long timezone,
     XQPCollator* aCollation)
 {
-  if (aItem0->getTypeCode() == store::JS_NULL ||
-      aItem1->getTypeCode() == store::JS_NULL)
-  {
-    return false;
-  }
   try
   {
     switch(aCompType)

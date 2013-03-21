@@ -28,7 +28,7 @@
 %define "parser_class_name" "jsoniq_parser"
 %error-verbose
 
-// Expect 3 shift/reduce conflicts
+// Expect 4 shift/reduce conflicts
 %expect 3
 
 
@@ -426,6 +426,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token VERSION                          "'version'"
 %token START                            "'start'"
 
+%token NULL_TOKEN                       "'null'"
+%token TRUE_TOKEN                       "'true'"
+%token FALSE_TOKEN                      "'false'"
+
 /* update-related */
 /* -------------- */
 %token AFTER                            "'after'"
@@ -766,6 +770,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> RelativePathExpr
 %type <expr> StepExpr
 %type <expr> StringLiteral
+%type <expr> BooleanLiteral
 %type <expr> SwitchExpr
 %type <expr> TreatExpr
 %type <expr> TypeswitchExpr
@@ -1008,6 +1013,13 @@ template<typename T> inline void release_hack( T *ref ) {
  *_____________________________________________________________________*/
 %nonassoc MULTIPLICATIVE_REDUCE
 %left STAR DIV IDIV MOD
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ *_____________________________________________________________________*/
+%nonassoc JSONLOOKUPEXPR_REDUCE
+%left DOT
 
 
 /*_____________________________________________________________________
@@ -2641,7 +2653,7 @@ FLWORWinCond :
 
 
 WindowClause :
-    FOR WindowType WindowVarDecl FLWORWinCond FLWORWinCond
+    ForOrFrom WindowType WindowVarDecl FLWORWinCond FLWORWinCond
     {
       $$ = new WindowClause (LOC (@$),
                              ($2 == parser::the_tumbling ?
@@ -2651,7 +2663,7 @@ WindowClause :
                              dynamic_cast<FLWORWinCond *> ($4),
                              dynamic_cast<FLWORWinCond *> ($5));
     }
-  | FOR WindowType WindowVarDecl FLWORWinCond
+  | ForOrFrom WindowType WindowVarDecl FLWORWinCond
     {
       $$ = new WindowClause (LOC (@$),
                              ($2 == parser::the_tumbling ?
@@ -2705,18 +2717,13 @@ FLWORClauseList :
 
 
 ForClause :
-    FOR DOLLAR VarInDeclList
-    {
-      $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
-    }
-  |
-    FROM DOLLAR VarInDeclList
+    ForOrFrom DOLLAR VarInDeclList
     {
       $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
     }
   //  ============================ Improved error messages ============================ 
   |
-    FOR error VarInDeclList
+    ForOrFrom error VarInDeclList
     {
       $$ = $3; // to prevent the Bison warning
       error(@2, "syntax error, unexpected qualified name \""
@@ -2725,11 +2732,19 @@ ForClause :
       YYERROR;
     }
   |
-    FOR UNRECOGNIZED
+    ForOrFrom UNRECOGNIZED
     {
       $$ = NULL; // to prevent the Bison warning
       error(@2, ""); // the error message is already set in the driver's parseError member
       YYERROR;
+    }
+;
+
+ForOrFrom :
+    FOR
+  | FROM
+    {
+      // this adds on shift-reduce conflict (probably with FTRange expression)
     }
 ;
 
@@ -4315,7 +4330,7 @@ Wildcard :
 
 // [80]
 FilterExpr :
-     PrimaryExpr
+     PrimaryExpr %prec JSONLOOKUPEXPR_REDUCE
      {
        $$ = $1;
      }
@@ -4331,7 +4346,29 @@ FilterExpr :
      {
        $$ = new DynamicFunctionInvocation(LOC (@$), $1, dynamic_cast<ArgList*>($3));
      }
+  |  FilterExpr DOT NCNAME
+     {
+       StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
+       $$ = new JSONObjectLookup(LOC(@$), $1, sl);
+     }
+  |  FilterExpr DOT ParenthesizedExpr
+     {
+       $$ = new JSONObjectLookup(LOC(@$), $1, $3);
+     }
+  |  FilterExpr DOT VarRef
+     {
+       $$ = new JSONObjectLookup(LOC(@$), $1, $3);
+     }
+  |  FilterExpr DOT StringLiteral
+     {
+       $$ = new JSONObjectLookup(LOC(@$), $1, $3);
+     }
+  |  FilterExpr DOT STAR
+     {
+       $$ = new JSONObjectLookup(LOC(@$), $1);
+     }
 ;
+
 
 // [81]
 PredicateList :
@@ -4416,13 +4453,6 @@ PrimaryExpr :
         {
           $$ = $1;
         }
-    |   PrimaryExpr DOT NCNAME
-        {
-          StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
-          ArgList *al = new ArgList( LOC(@$) );
-          al->push_back(sl);
-          $$ = new DynamicFunctionInvocation(LOC(@$), $1, al); 
-        }
     ;
 
 // [84]
@@ -4434,6 +4464,14 @@ Literal :
     |   StringLiteral
         {
             $$ = $1;
+        }
+    |   BooleanLiteral
+        {
+            $$ = $1;
+        }
+    |   NULL_TOKEN
+        {
+            $$ = new NullLiteral(LOC(@$));
         }
     ;
 
@@ -4459,6 +4497,17 @@ NumericLiteral :
                 LOC(@$), ParseConstants::num_double, *$1
             );
             delete yylval.dval;
+        }
+    ;
+
+BooleanLiteral :
+        TRUE_TOKEN
+        {
+          $$ = new BooleanLiteral(LOC(@$), true);
+        }
+    |   FALSE_TOKEN
+        {
+          $$ = new BooleanLiteral(LOC(@$), false);
         }
     ;
 
@@ -6581,7 +6630,14 @@ JSONObjectConstructor :
     ;
 
 JSONPairList :
-        ExprSingle COLON ExprSingle
+        NCNAME COLON ExprSingle
+        {
+          StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($1) );
+          JSONPairList* jpl = new JSONPairList(LOC(@$));
+          jpl->push_back(new JSONPairConstructor(LOC(@$), sl, $3));
+          $$ = jpl;
+        }
+    |   ExprSingle COLON ExprSingle
         {
           JSONPairList* jpl = new JSONPairList(LOC(@$));
           jpl->push_back(new JSONPairConstructor(LOC(@$), $1, $3));
@@ -6592,6 +6648,14 @@ JSONPairList :
           JSONPairList* jpl = dynamic_cast<JSONPairList*>($1);
           assert(jpl);
           jpl->push_back(new JSONPairConstructor(LOC(@$), $3, $5));
+          $$ = jpl;
+        }
+    |   JSONPairList COMMA NCNAME COLON ExprSingle
+        {
+          JSONPairList* jpl = dynamic_cast<JSONPairList*>($1);
+          assert(jpl);
+          StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
+          jpl->push_back(new JSONPairConstructor(LOC(@$), sl, $5));
           $$ = jpl;
         }
     ;

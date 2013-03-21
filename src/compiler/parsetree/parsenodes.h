@@ -4091,6 +4091,30 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
+/*******************************************************************************
+********************************************************************************/
+class BooleanLiteral : public exprnode
+{
+protected:
+  bool const boolval;
+
+public:
+  BooleanLiteral(const QueryLoc&, bool);
+
+  bool const& get_boolval() const { return boolval; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+/*******************************************************************************
+********************************************************************************/
+class NullLiteral : public exprnode
+{
+public:
+  NullLiteral(const QueryLoc&);
+
+  void accept(parsenode_visitor&) const;
+};
 
 /*******************************************************************************
   [110] VarRef ::= "$" VarName
@@ -6607,6 +6631,26 @@ private:
 //  JSON productions                                                         //
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
+class JSONObjectLookup : public exprnode
+{
+protected:
+  const exprnode* theObjectExpr;
+  const exprnode* theSelectorExpr;
+
+public:
+  JSONObjectLookup(
+      const QueryLoc&,
+      const exprnode* aObjectExpr,
+      const exprnode* aSelectorExpr = 0);
+
+  ~JSONObjectLookup();
+
+  const exprnode* get_object_expr() const { return theObjectExpr; }
+
+  const exprnode* get_selector_expr() const { return theSelectorExpr; }
+
+  void accept(parsenode_visitor&) const;
+};
 
 
 class JSONArrayConstructor : public exprnode
