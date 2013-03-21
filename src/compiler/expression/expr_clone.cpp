@@ -204,7 +204,8 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
     create_json_array_expr(theSctx,
                            udf,
                            theLoc,
-                           e->theContentExpr->clone(udf, subst));
+                           (e->theContentExpr ?
+                            e->theContentExpr->clone(udf, subst) : NULL));
 
     break;
   }
