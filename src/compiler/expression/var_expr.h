@@ -152,6 +152,8 @@ public:
 
     prolog_var,
 
+    hof_var,      // used by HoF functions, behaves similarly to prolog vars
+
     local_var,
 
     arg_var

@@ -203,6 +203,14 @@ declare variable $err:XQTY0086 as xs:QName := fn:QName($err:NS, "err:XQTY0086");
 
 (:~
  :
+ : It is a type error if the content sequence in an element constructor contains a function item.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQTY0105 as xs:QName := fn:QName($err:NS, "err:XQTY0105");
+
+(:~
+ :
  : An implementation that does not support the Schema Import Feature must
  : raise a static error if a Prolog contains a schema import.
  : 
@@ -1316,6 +1324,14 @@ declare variable $err:FOUT1170 as xs:QName := fn:QName($err:NS, "err:FOUT1170");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:FOUT1190 as xs:QName := fn:QName($err:NS, "err:FOUT1190");
+
+(:~
+ :
+ : This error is raised if the fn:function-lookup returns a context-dependent function and the context-dependent function is then called.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOFL0001 as xs:QName := fn:QName($err:NS, "err:FOFL0001");
 
 (:~
  :

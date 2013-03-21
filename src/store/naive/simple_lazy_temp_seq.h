@@ -96,6 +96,11 @@ class SimpleLazyTempSeq : public store::TempSeq
   bool containsItem(xs_integer pos);
 
   store::Iterator_t getIterator() const;
+  
+#ifndef NDEBUG
+  // toString() debugging method.
+  virtual std::string toString() const;
+#endif  
 };
  
  

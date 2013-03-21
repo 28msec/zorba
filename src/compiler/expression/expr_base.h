@@ -71,6 +71,7 @@ enum expr_kind_t
 
   fo_expr_kind,
   dynamic_function_invocation_expr_kind,
+  argument_placeholder_expr_kind,
   function_item_expr_kind,
 
   castable_expr_kind,
@@ -269,6 +270,8 @@ public:
   virtual std::ostream& put(std::ostream&) const = 0;
 
   std::string toString() const;
+
+  std::string show() const; // to mirror the Item's class show() method
 
 public:
   //

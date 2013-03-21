@@ -500,6 +500,8 @@ public:
   static const char* W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
 
   static const char* W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
+  
+  static const char* W3C_ERR_NS;    // http://www.w3.org/2005/xqt-errors
 
   //
   // Zorba namespaces
@@ -1089,7 +1091,7 @@ public:
   void add_decimal_format(const DecimalFormat_t& format, const QueryLoc& loc);
 
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
-
+  
 #ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options const* get_match_options() const { return theFTMatchOptions; }
 
@@ -1113,6 +1115,13 @@ public:
   bool isWarningDisabled(const char* ns, const char* localname);
 
   bool isWarningAnError(const char* ns, const char* localname);
+
+  
+#ifndef NDEBUG
+  // Debugging purposes printing. Currently will display the parent chain
+  // and the variables defined in the context
+  std::string toString();
+#endif  
 
 
 protected:
