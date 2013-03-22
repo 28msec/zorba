@@ -28,7 +28,7 @@
 %define "parser_class_name" "jsoniq_parser"
 %error-verbose
 
-// Expect 4 shift/reduce conflicts
+// Expect 3 shift/reduce conflicts
 %expect 3
 
 
@@ -1038,7 +1038,7 @@ template<typename T> inline void release_hack( T *ref ) {
 
 
 %right FOR FROM WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
-%right DESCENDING ELSE _EMPTY IS OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
+%right DESCENDING ELSE _EMPTY IS NODES OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
 %right AT
 %right MODIFY WITH CONTAINS END LEVELS PARAGRAPHS SENTENCES TIMES
 %right LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
@@ -6727,12 +6727,37 @@ JSONInsertExpr :
         {
           $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
         }
+        // New jsoniq grammar:
+    |   INSERT ExprSingle INTO ExprSingle
+        {
+          $$ = new JSONObjectInsertExpr(LOC(@$),
+                                        $2,
+                                        $4);
+        }
+    |   INSERT JSONPairList INTO ExprSingle
+        {
+          JSONPairList* jpl = dynamic_cast<JSONPairList*>($2);
+          $$ = new JSONObjectInsertExpr(
+              LOC(@$),
+              new JSONDirectObjectConstructor(
+                  LOC(@$),
+                  jpl),
+              $4);
+        }
+    |   INSERT ExprSingle INTO ExprSingle AT POSITION ExprSingle
+        {
+          $$ = new JSONArrayInsertExpr(LOC(@$), $2, $4, $7);
+        }
     ;
 
 JSONAppendExpr :
         APPEND JSON ExprSingle INTO ExprSingle
         {
           $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
+        }
+    |   APPEND ExprSingle INTO ExprSingle
+        {
+          $$ = new JSONArrayAppendExpr(LOC(@$), $2, $4);
         }
     ;
 
@@ -6751,6 +6776,28 @@ JSONDeleteExpr :
           if (lDynamicFunctionInvocation->getArgList()->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            YYERROR;
+          }
+
+          $$ = new JSONDeleteExpr(
+                LOC(@$),
+                lDynamicFunctionInvocation->getPrimaryExpr(),
+                lDynamicFunctionInvocation->getArgList()->operator[](0));
+        }
+    |   _DELETE FilterExpr
+        {
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
+          dynamic_cast<DynamicFunctionInvocation*>($2);
+
+          if (lDynamicFunctionInvocation == NULL)
+          {
+            error(@2, "An object invocation is expected. A filter was found instead.");
+            YYERROR;
+          }
+
+          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
+          {
+            error(@2, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
             YYERROR;
           }
 
@@ -6787,6 +6834,31 @@ JSONRenameExpr :
                 lDynamicFunctionInvocation->getArgList()->operator[](0),
                 $5);
         }
+    |   RENAME FilterExpr AS ExprSingle
+        {
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
+          dynamic_cast<DynamicFunctionInvocation*>($2);
+
+          if(lDynamicFunctionInvocation == NULL)
+          {
+            error(@2, "An object invocation is expected. A filter was found instead.");
+            delete $4;
+            YYERROR;
+          }
+
+          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
+          {
+            error(@2, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            delete $4;
+            YYERROR;
+          }
+
+          $$ = new JSONRenameExpr(
+                LOC(@$),
+                lDynamicFunctionInvocation->getPrimaryExpr(),
+                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                $4);
+        }
     ;
 
 JSONReplaceExpr :
@@ -6814,6 +6886,31 @@ JSONReplaceExpr :
                 lDynamicFunctionInvocation->getPrimaryExpr(),
                 lDynamicFunctionInvocation->getArgList()->operator[](0),
                 $7);
+        }
+    |   REPLACE VALUE OF FilterExpr WITH ExprSingle
+        {
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
+          dynamic_cast<DynamicFunctionInvocation*>($4);
+
+          if(lDynamicFunctionInvocation == NULL)
+          {
+            error(@2, "An object invocation is expected. A filter was found instead.");
+            delete $6;
+            YYERROR;
+          }
+
+          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
+          {
+            error(@2, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            delete $6;
+            YYERROR;
+          }
+
+          $$ = new JSONReplaceExpr(
+                LOC(@$),
+                lDynamicFunctionInvocation->getPrimaryExpr(),
+                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                $6);
         }
     ;
 
@@ -7028,18 +7125,18 @@ FUNCTION_NAME :
     |   PHRASE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("phrase"))); }
     |   PARAGRAPH               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("paragraph"))); }
     |   PARAGRAPHS              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("paragraphs"))); }
-    |   REPLACE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("replace"))); }
+  //  |   REPLACE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("replace"))); }
     |   MODIFY                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("modify"))); }
     |   FIRST                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("first"))); }
-    |   INSERT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("insert"))); }
+  //  |   INSERT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("insert"))); }
     |   BEFORE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("before"))); }
     |   AFTER                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("after"))); }
     |   REVALIDATION            { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("revalidation"))); }
     |   WITH                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("with"))); }
     |   NODES                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("nodes"))); }
-    |   RENAME                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("rename"))); }
+  //  |   RENAME                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("rename"))); }
     |   LAST                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("last"))); }
-    |   _DELETE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("delete"))); }
+  //  |   _DELETE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("delete"))); }
     |   INTO                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("into"))); }
     |   SIMPLE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("simple"))); }
     |   SEQUENTIAL              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("sequential"))); }
@@ -7099,8 +7196,8 @@ FUNCTION_NAME :
     |   DESCENDANT_OR_SELF      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
     |   FOLLOWING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     |   PRECEDING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
-    |   JSON                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json"))); }
-    |   APPEND                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("append"))); }
+  //  |   JSON                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json"))); }
+  //  |   APPEND                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("append"))); }
     |   POSITION                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("position"))); }
   //  |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
   //  |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
