@@ -204,7 +204,7 @@ static string const ones[][2] = {
   { "nine",      "ninth"       },
   { "ten",       "tenth"       },
   { "eleven",    "eleventh"    },
-  { "twelve",    "twelveth"    },
+  { "twelve",    "twelfth"     },
   { "thirteen",  "thirteenth"  },
   { "fourteen",  "fourteenth"  },
   { "fifteen",   "fifteenth"   },
