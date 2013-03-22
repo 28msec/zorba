@@ -310,6 +310,27 @@ SimpleLazyTempSeqIter::SimpleLazyTempSeqIter()
 
 
 /*******************************************************************************
+********************************************************************************/
+#ifndef NDEBUG
+std::string SimpleLazyTempSeq::toString() const
+{
+  std::stringstream result;
+  
+  result << "{";
+  for (unsigned int i=0; i < theItems.size(); i++)
+  {
+    if (i != 0)
+      result << " , ";
+    result << theItems[i]->show();
+  }
+  result << "}";
+  
+  return result.str();
+}
+#endif
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 SimpleLazyTempSeqIter::SimpleLazyTempSeqIter(
@@ -445,6 +466,7 @@ void SimpleLazyTempSeqIter::close()
 {
 }
 
-  } // namespace store
+
+} // namespace simplestore
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

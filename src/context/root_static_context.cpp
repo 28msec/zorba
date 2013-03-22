@@ -269,7 +269,6 @@ void root_static_context::init()
   append_env_var ("ZORBA_LIB_PATH", lRootLibPath);
 
 #endif
-
 } 
 
 

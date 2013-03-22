@@ -168,7 +168,7 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       theFactory->createAttributeNode(
         lPrefixQName, lAnnotationElem, lPrefixQName,
         lTypeName, lAttrPrefixItem);
-     
+
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createAttributeNode(
         lNamespaceQName, lAnnotationElem, lNamespaceQName,
@@ -785,7 +785,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   theFactory->createElementNode(
       lSigElem, lFuncElem, lSigQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
-     
+
   const ParamList* paramList = n.get_paramlist();
   if(paramList != NULL) {
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -800,28 +800,28 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
       store::Item_t lParamElem;
       theFactory->createQName(lParamQName, theXQDocNS, theXQDocPrefix, "parameter");
       theFactory->createElementNode(lParamElem, lParamsElem, lParamQName, lTypeName, true, false, theNSBindings, theBaseURI);
-     
+
       store::Item_t lParamNameElem, lParamNameQName;
       theFactory->createQName(lParamNameQName, theXQDocNS, theXQDocPrefix, "name");
       theFactory->createElementNode(lParamNameElem, lParamElem, lParamNameQName, lTypeName, true, false, theNSBindings, theBaseURI);
-      
+
       zstring lParamNameVal(lParam->get_name()->get_qname());
       store::Item_t lParamNameText;
       theFactory->createTextNode(lParamNameText, lParamNameElem, lParamNameVal);
-      
+
       if(lParam->get_typedecl()) {
         if(lParam->get_typedecl()->get_itemtype()) {
           ostringstream lType;
           print_parsetree_xquery(lType, lParam->get_typedecl()->get_itemtype());
           zstring lParamTypeStr(lType.str());
-          
+
           store::Item_t lParamTypeElem, lParamTypeQName;
           theFactory->createQName(lParamTypeQName, theXQDocNS, theXQDocPrefix, "type");
           theFactory->createElementNode(lParamTypeElem, lParamElem, lParamTypeQName, lTypeName, true, false, theNSBindings, theBaseURI);
-      
+
           store::Item_t lParamTypeText;
           theFactory->createTextNode(lParamTypeText, lParamTypeElem, lParamTypeStr);
-          
+
           if(lParam->get_typedecl()->get_occur()){
             stringstream os;
             print_parsetree_xquery(os, lParam->get_typedecl()->get_occur());
@@ -841,11 +841,11 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   }
 
   if(n.get_return_type()) {
-    
+
     store::Item_t lReturnElem, lReturnQName, lTypeElem, lTypeQName;
     theFactory->createQName(lReturnQName, theXQDocNS, theXQDocPrefix, "return");
     theFactory->createElementNode(
-      lReturnElem, lFuncElem, lReturnQName, lTypeName, true, false, theNSBindings, theBaseURI     
+      lReturnElem, lFuncElem, lReturnQName, lTypeName, true, false, theNSBindings, theBaseURI
     );
 
     ostringstream lType;
@@ -855,10 +855,10 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
     store::Item_t lReturnTypeElem, lReturnTypeQName;
     theFactory->createQName(lReturnTypeQName, theXQDocNS, theXQDocPrefix, "type");
     theFactory->createElementNode(lReturnTypeElem, lReturnElem, lReturnTypeQName, lTypeName, true, false, theNSBindings, theBaseURI);
-  
+
     store::Item_t lReturnTypeText;
     theFactory->createTextNode(lReturnTypeText, lReturnTypeElem, lReturnType);
-          
+
     if(n.get_return_type()->get_occur()){
       stringstream os;
       print_parsetree_xquery(os, n.get_return_type()->get_occur());
@@ -1153,7 +1153,7 @@ void end_visit(const SchemaImport& n, void*)
 {
   // info: (theOptions & xqdoc_component_imports) check not done
   //       because imported namespaces are needed by other components
-  
+
   store::Item_t lImportQName, lUriQName, lTypeQName;
   store::Item_t lImportElem, lUriElem, lUriText, lTypeAttr;
 
@@ -1309,7 +1309,7 @@ void end_visit(const AST_IndexDecl& n, void*)
     theFactory->createElementNode(
         lUriElem, lSourceElem, lUriQName, lTypeName,
         true, false, theNSBindings, theBaseURI);
-    
+
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createElementNode(
         lNameElem, lSourceElem, lNameQName, lTypeName,
@@ -1337,6 +1337,7 @@ XQDOC_NO_BEGIN_END_TAG (AnyKindTest)
 XQDOC_NO_BEGIN_END_TAG (AposAttrContentList)
 XQDOC_NO_BEGIN_END_TAG (AposAttrValueContent)
 XQDOC_NO_BEGIN_END_TAG (ArgList)
+XQDOC_NO_BEGIN_END_TAG (ArgumentPlaceholder)
 XQDOC_NO_BEGIN_END_TAG (AssignExpr)
 XQDOC_NO_BEGIN_END_TAG (GeneralizedAtomicType)
 XQDOC_NO_BEGIN_END_TAG (SimpleType)
