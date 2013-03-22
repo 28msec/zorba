@@ -3285,7 +3285,11 @@ static yyconst flex_int16_t yy_rule_linenum[354] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
+<<<<<<< TREE
 #line 1 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
  *
@@ -3301,7 +3305,11 @@ static yyconst flex_int16_t yy_rule_linenum[354] =
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+<<<<<<< TREE
 #line 17 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 17 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 
 
 #if defined (WIN32)
@@ -3579,13 +3587,21 @@ std::string start_jsoniq_state(int);   /* forward declaration, used by YY_USER_A
 
 
 
+<<<<<<< TREE
 #line 395 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 395 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
   typedef zorba::jsoniq_parser::token token;
 /*______________________________________________________________________
 |
 |  Override Flex's starting state here.
 |______________________________________________________________________*/
+<<<<<<< TREE
 #line 404 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 404 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 #define YY_USER_INIT      \
 {                         \
   BEGIN MODE_SHEBANG;     \
@@ -3767,7 +3783,11 @@ YY_DECL
 	register int yy_act;
     
 /* %% [7.0] user's declarations go here */
+<<<<<<< TREE
 #line 411 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 411 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 
 
 
@@ -3890,13 +3910,21 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 422 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 422 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SHEBANG; }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 423 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 423 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN INITIAL; yyless(0); }
 	YY_BREAK
 
@@ -3910,107 +3938,191 @@ YY_RULE_SETUP
 
 case 3:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 437 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 437 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::LPAR; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 438 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 438 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SEMI; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 439 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 439 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::COMMA; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 440 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 440 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::MINUS; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 441 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 441 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PLUS; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 442 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 442 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SLASH; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 443 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 443 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SLASH_SLASH; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 444 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 444 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::BANG; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 445 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 445 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::AT_SIGN; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 446 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 446 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::RPAR; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 447 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 447 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::STAR; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 448 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 448 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOT_DOT; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 449 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 449 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOT; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 450 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 450 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::HOOK; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 451 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 451 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOLLAR; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 452 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 452 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::HASH; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 453 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 453 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::COLON; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 454 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 454 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOUBLE_COLON; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 455 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 455 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PERCENTAGE; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 456 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 456 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CONCAT; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 458 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 458 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
   std::string lDocComment = theDriver->theDocComment.str();
   yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
@@ -4020,7 +4132,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 465 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 465 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
   std::string lDocComment = theDriver->theDocComment.str();
   yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
@@ -4031,434 +4147,778 @@ YY_RULE_SETUP
 /* Tokens with state transitions */
 case 25:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 473 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 473 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {  PUSH_STATE(MODE_ELEM_COMP_CONSTR); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 474 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 474 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_ATTR_COMP_CONSTR); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 475 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 475 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_PI_COMP_CONSTR); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 476 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 476 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_NS_COMP_CONSTR); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 479 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 479 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::IF; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 480 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 480 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::RETURNING; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 482 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 482 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::EXIT; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 483 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 483 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::WITH; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 484 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 484 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::BREAK; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 485 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 485 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::LOOP; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 486 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 486 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CONTINUE; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 487 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 487 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::WHILE; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 488 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 488 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SET; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 489 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 489 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::VALIDATE; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 490 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 490 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::TYPE; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 491 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 491 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SWITCH; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 492 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 492 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::TYPESWITCH; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 493 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 493 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOCUMENT; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 494 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 494 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::TEXT; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 495 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 495 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::COMMENT; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 496 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 496 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FUNCTION; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 497 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 497 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SIMPLE; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 498 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 498 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::UPDATING; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 499 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 499 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SEQUENTIAL; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 500 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 500 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ORDERED;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 501 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 501 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::UNORDERED; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 502 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 502 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SCHEMA_ELEMENT; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 503 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 503 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SCHEMA_ATTRIBUTE; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 504 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 504 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NODE; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 505 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 505 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOCUMENT_NODE; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 506 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 506 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NS_NODE; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 507 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 507 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CONSTRUCTION; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 508 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 508 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DEFAULT; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 509 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 509 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ORDER; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 510 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 510 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::COLLATION; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 511 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 511 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::BASE_URI; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 512 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 512 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::IMPORT; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 513 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 513 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SCHEMA; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 514 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 514 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::COPY_NAMESPACES; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 515 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 515 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FOR; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 516 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 516 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::LET; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 517 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 517 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ALLOWING; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 518 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 518 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SLIDING; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 519 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 519 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::TUMBLING; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 520 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 520 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PREVIOUS; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 521 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 521 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NEXT; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 522 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 522 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ONLY; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 523 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 523 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::WHEN; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 524 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 524 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::COUNT; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 525 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 525 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::USING; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 526 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 526 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SOME; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 527 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 527 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::EVERY; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 528 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 528 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CONTEXT; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 529 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 529 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::VARIABLE; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 530 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 530 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::BOUNDARY_SPACE; }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 531 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 531 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ORDERING; }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 532 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 532 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::XQUERY; }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 533 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 533 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::JSONIQ; }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 534 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 534 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::VERSION; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 535 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 535 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::OPTION; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 536 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 536 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::AT; }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 537 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 537 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::REVALIDATION; }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 538 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 538 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::AS; }
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 539 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 539 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::TRY; }
 	YY_BREAK
 /* Axes */
 case 89:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 542 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 542 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ANCESTOR_OR_SELF; }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 543 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 543 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ANCESTOR; }
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 544 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 544 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CHILD; }
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 545 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 545 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DESCENDANT_OR_SELF; }
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 546 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 546 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DESCENDANT; }
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 547 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 547 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FOLLOWING_SIBLING; }
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 548 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 548 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FOLLOWING; }
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 549 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 549 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PARENT; }
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 550 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 550 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PRECEDING_SIBLING; }
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 551 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 551 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PRECEDING; }
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 552 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 552 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SELF;}
 	YY_BREAK
 /* Decimal format */
 case 100:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 555 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 555 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DECIMAL_FORMAT; }
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 556 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 556 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DECIMAL_SEPARATOR; }
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 557 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 557 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::GROUPING_SEPARATOR; }
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 558 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 558 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::INFINITY_VALUE; }
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 559 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 559 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::MINUS_SIGN; }
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 560 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 560 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NaN; }
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 561 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 561 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PERCENT; }
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 562 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 562 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PER_MILLE; }
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 563 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 563 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ZERO_DIGIT; }
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 564 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 564 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DIGIT; }
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 565 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 565 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PATTERN_SEPARATOR; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4467,117 +4927,209 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 111:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 572 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 572 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::COLLECTION; }
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 573 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 573 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CONSTOPT; }
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 574 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 574 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::APPEND_ONLY; }
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 575 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 575 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::QUEUE; }
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 576 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 576 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::MUTABLE; }
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 577 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 577 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::READ_ONLY; }
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 579 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 579 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::INDEX; }
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 580 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 580 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::UNIQUE; }
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 581 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 581 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NON; }
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 582 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 582 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::MANUALLY; }
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 583 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 583 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::AUTOMATICALLY; }
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 584 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 584 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::MAINTAINED; }
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 585 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 585 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::RANGE; }
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 586 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 586 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::EQUALITY; }
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 587 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 587 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ON; }
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 588 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 588 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::GENERAL; }
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 590 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 590 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::INTEGRITY; }
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 591 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 591 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CONSTRAINT; }
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 592 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 592 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CHECK; }
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 593 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 593 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::KEY; }
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 594 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 594 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FOREACH; }
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 595 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 595 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FOREIGN; }
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 596 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 596 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::KEYS; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4588,22 +5140,38 @@ YY_RULE_SETUP
      of the "{[ ]}" grammar construct */
 case 134:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 606 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 606 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(INITIAL); return token::LBRACK; }
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 607 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 607 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { POP_STATE(); return token::RBRACK; }
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 609 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 609 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(INITIAL_ACCUMULATOR); return token::L_ACCUMULATOR_OBJ_UNION; }
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 610 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 610 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
         // This if() disambiguates between the "{[ ]}" grammar construct and the
         // plain "[ ]" predicate
@@ -4622,47 +5190,83 @@ YY_RULE_SETUP
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 626 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 626 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::L_SIMPLE_OBJ_UNION; }
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 627 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 627 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::R_SIMPLE_OBJ_UNION; }
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 628 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 628 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::JSON; }
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 629 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 629 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::APPEND; }
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 630 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 630 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::POSITION; }
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 631 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 631 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::JSON_ITEM; }
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 632 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 632 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::STRUCTURED_ITEM; }
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 633 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 633 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {  return token::ARRAY; }
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 634 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 634 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {  return token::OBJECT; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4671,402 +5275,722 @@ YY_RULE_SETUP
      |______________________________________________________________________*/
 case 147:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 642 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 642 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CONTAINS; }
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 643 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 643 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FTAND; }
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 644 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 644 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FTOR; }
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 645 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 645 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FTNOT; }
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 646 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 646 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NOT; }
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 647 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 647 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::_IN; }
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 648 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 648 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ALL; }
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 649 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 649 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::WORDS; }
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 650 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 650 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ANY; }
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 651 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 651 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::WORD; }
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 652 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 652 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::END; }
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 653 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 653 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::LEAST; }
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 654 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 654 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::MOST; }
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 655 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 655 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::START; }
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 656 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 656 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CASE; }
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 657 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 657 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::INSENSITIVE; }
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 658 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 658 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SENSITIVE; }
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 659 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 659 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FT_OPTION; }
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 660 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 660 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DIACRITICS; }
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 661 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 661 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DIFFERENT; }
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 662 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 662 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DISTANCE; }
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 663 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 663 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ENTIRE; }
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 664 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 664 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CONTENT; }
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 665 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 665 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::EXACTLY; }
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 666 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 666 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FROM; }
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 667 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 667 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::LANGUAGE; }
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 668 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 668 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::LEVELS; }
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 669 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 669 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::LOWERCASE; }
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 670 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 670 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NO; }
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 671 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 671 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::OCCURS; }
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 672 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 672 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PARAGRAPH; }
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 673 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 673 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PARAGRAPHS; }
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 674 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 674 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PHRASE; }
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 675 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 675 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::RELATIONSHIP; }
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 676 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 676 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SAME; }
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 677 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 677 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SCORE; }
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 678 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 678 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SENTENCE; }
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 679 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 679 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SENTENCES; }
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 680 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 680 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::TIMES; }
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 681 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 681 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::UPPERCASE; }
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 682 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 682 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::WEIGHT; }
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 683 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 683 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::WINDOW; }
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 684 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 684 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::WITHOUT; }
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 685 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 685 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::STEMMING; }
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 686 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 686 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::STOP; }
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 687 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 687 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::THESAURUS; }
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 688 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 688 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::WILDCARDS; }
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 689 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 689 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::GETS; }
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 690 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 690 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DIV; }
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 691 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 691 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::EQUALS; }
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 692 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 692 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::EXCEPT; }
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 693 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 693 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::VAL_EQ; }
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 694 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 694 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::VAL_GE; }
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 695 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 695 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::VAL_GT; }
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 696 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 696 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::VAL_LE; }
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 697 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 697 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::VAL_LT; }
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 698 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 698 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::VAL_NE; }
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 699 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 699 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::GE; }
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 700 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 700 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FOLLOWS; }
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 701 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 701 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::GT; }
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 702 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 702 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::IDIV; }
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 703 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 703 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::INTERSECT; }
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 704 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 704 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::IS; }
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 705 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 705 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::LE; }
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 706 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 706 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PRECEDES; }
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 707 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 707 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::MOD; }
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 708 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 708 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NE; }
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 709 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 709 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::GROUP; }
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 710 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 710 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::BY; }
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 711 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 711 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::STABLE; }
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 712 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 712 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::OR; }
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 713 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 713 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::RETURN; }
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 714 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 714 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::RETURN; }
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 715 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 715 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SATISFIES; }
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 716 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 716 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::TO; }
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 717 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 717 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::UNION; }
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 718 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 718 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::VBAR; }
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 719 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 719 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::WHERE; }
 	YY_BREAK
 case 225:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 720 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 720 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::PRESERVE; }
 	YY_BREAK
 case 226:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 721 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 721 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::STRIP; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5075,197 +5999,353 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 227:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 729 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 729 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::INSERT; }
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 730 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 730 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::_DELETE; }
 	YY_BREAK
 case 229:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 731 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 731 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::REPLACE; }
 	YY_BREAK
 case 230:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 732 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 732 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::VALUE; }
 	YY_BREAK
 case 231:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 733 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 733 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::OF; }
 	YY_BREAK
 case 232:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 734 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 734 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::RENAME; }
 	YY_BREAK
 case 233:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 735 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 735 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::COPY; }
 	YY_BREAK
 case 234:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 736 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 736 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NODES; }
 	YY_BREAK
 case 235:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 737 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 737 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::INTO; }
 	YY_BREAK
 case 236:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 738 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 738 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::AFTER; }
 	YY_BREAK
 case 237:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 739 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 739 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::BEFORE; }
 	YY_BREAK
 case 238:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 740 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 740 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::MODIFY; }
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 742 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 742 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::_STRICT; }
 	YY_BREAK
 case 240:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 743 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 743 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::LAX; }
 	YY_BREAK
 case 241:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 744 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 744 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::SKIP; }
 	YY_BREAK
 case 242:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 745 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 745 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::THEN; }
 	YY_BREAK
 case 243:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 746 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 746 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ELSE; }
 	YY_BREAK
 case 244:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 747 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 747 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::EXTERNAL; }
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 748 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 748 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::AND; }
 	YY_BREAK
 case 246:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 750 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 750 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::INHERIT; }
 	YY_BREAK
 case 247:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 751 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 751 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NO_INHERIT; }
 	YY_BREAK
 case 248:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 752 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 752 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NO_PRESERVE; }
 	YY_BREAK
 case 249:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 753 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 753 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::EMPTY_SEQUENCE; }
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 754 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 754 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ITEM; }
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 755 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 755 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CAST; }
 	YY_BREAK
 case 252:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 756 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 756 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CASTABLE; }
 	YY_BREAK
 case 253:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 757 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 757 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::INSTANCE;}
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 758 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 758 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::TREAT; }
 	YY_BREAK
 case 255:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 759 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 759 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FIRST; }
 	YY_BREAK
 case 256:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 760 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 760 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::LAST; }
 	YY_BREAK
 case 257:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 761 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 761 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::CATCH; }
 	YY_BREAK
 case 258:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 762 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 762 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::_EMPTY; }
 	YY_BREAK
 case 259:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 763 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 763 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::GREATEST; }
 	YY_BREAK
 case 260:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 764 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 764 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ASCENDING; }
 	YY_BREAK
 case 261:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 765 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 765 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DESCENDING; }
 	YY_BREAK
 case 262:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 766 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 766 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ENCODING; }
 	YY_BREAK
 case 263:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 768 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 768 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::NULL_TOKEN; }
 	YY_BREAK
 case 264:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 769 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 769 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::TRUE_TOKEN; }
 	YY_BREAK
 case 265:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 770 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 770 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::FALSE_TOKEN; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5274,7 +6354,11 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 266:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 777 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 777 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
   yylval->ival = getDriver()->symtab.integerval(yytext, yyleng);
   if (yylval->ival == NULL)
@@ -5288,7 +6372,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 267:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 788 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 788 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
   yylval->decval = getDriver()->symtab.decimalval(yytext, yyleng);
   return token::DECIMAL_LITERAL;
@@ -5296,7 +6384,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 268:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 793 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 793 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
   yylval->dval = getDriver()->symtab.doubleval(yytext, yyleng);
   if (yylval->dval == NULL)
@@ -5311,7 +6403,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 269:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 805 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 805 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
   /* invalid integer literal */
   yylval->err = getDriver()->parserErr(std::string("syntax error, unexpected \"") + yytext + "\", separator needed after numeric literal", *yylloc);
@@ -5320,59 +6416,99 @@ YY_RULE_SETUP
 	YY_BREAK
 case 270:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 811 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 811 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(ELEM_WILDCARD, put_ncname(yytext, yyleng-2), yytext); }
 	YY_BREAK
 case 271:
 /* rule 271 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 813 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 813 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(ELEM_EQNAME_WILDCARD, put_ncname(yytext+2, yyleng-4), yytext+2); }
 	YY_BREAK
 case 272:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 815 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 815 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 	YY_BREAK
 case 273:
 /* rule 273 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 817 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 817 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, false, false, true), yytext); }
 	YY_BREAK
 case 274:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 819 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 819 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(ANNOTATION_QNAME_SVAL, put_qname(yytext+1, yyleng-1), yytext+1); /* skip the % sign */ }
 	YY_BREAK
 case 275:
 /* rule 275 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 821 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 821 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(ANNOTATION_EQNAME_SVAL, put_qname(yytext+1, yyleng-1, false, false, true), yytext+1); /* skip the % sign */ }
 	YY_BREAK
 case 276:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 823 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 823 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2), yytext); }
 	YY_BREAK
 case 277:
 /* rule 277 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 825 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 825 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { if (checkXmlRefs(&yylval->err, yytext, yyleng, this, yylloc)) return token::UNRECOGNIZED; TRY_STRING_LITERAL(STRING_LITERAL, yytext, yyleng); }
 	YY_BREAK
 /* Invalid string literals */
 case 278:
 /* rule 278 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 828 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 828 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { yylval->err = getDriver()->invalidCharRef(yytext, *yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 case 279:
 /* rule 279 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 829 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 829 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { yylval->err = getDriver()->parserErr(std::string("syntax error, unterminated string literal \"") + yytext + "\"", *yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5383,69 +6519,109 @@ YY_RULE_SETUP
 /* ------------------------------ */
 case 280:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 838 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 838 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
 	YY_BREAK
 /* transition to PROCESSING_INSTRUCTION */
 /* ------------------------------------ */
 case 281:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 843 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 843 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_PROCESSING_INSTRUCTION);return token::PI_BEGIN; }
 	YY_BREAK
 /* transition to CDATA_SECTION */
 /* --------------------------- */
 case 282:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 848 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 848 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { /* PUSH_AND_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR); */ return token::CDATA_BEGIN; }
 	YY_BREAK
 /* transition to MODE_START_TAG */
 /* ---------------------------- */
 case 283:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 853 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 853 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 	YY_BREAK
 /* transition to MODE_EXPR_DOC_COMMENT */
 /* ----------------------------------- */
 case 284:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 858 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 858 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_EXPR_DOC_COMMENT); }
 	YY_BREAK
 /* transition to MODE_EXPR_COMMENT */
 /* ------------------------------- */
 case 285:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 863 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 863 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_EXPR_COMMENT); }
 	YY_BREAK
 /* transition to PRAGMA */
 /* -------------------- */
 case 286:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 868 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 868 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN MODE_PRAGMA; return token::PRAGMA_BEGIN;}
 	YY_BREAK
 /* push initial state */
 /* ------------------ */
 case 287:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 873 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 873 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 /* pop previous state */
 /* ------------------ */
 case 288:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 878 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 878 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { POP_STATE(); return token::RBRACE; }
 	YY_BREAK
 case 289:
 /* rule 289 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 881 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 881 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
   /* eat up whitespace */
 }
@@ -5459,7 +6635,11 @@ YY_RULE_SETUP
     |______________________________________________________________________*/
 case 290:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 895 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 895 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
   if (yy_comp_constr_qname == "")
     yy_comp_constr_qname = yytext;
@@ -5469,7 +6649,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 291:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 901 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 901 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
   if (yy_comp_constr_qname == "")
     yy_comp_constr_qname = yytext;
@@ -5479,7 +6663,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 292:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 907 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 907 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
   if ( yy_comp_constr_qname == "")
     COMP_CONSTR_ROLLBACK(true);
@@ -5502,25 +6690,41 @@ YY_RULE_SETUP
 	YY_BREAK
 case 293:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 926 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 926 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_EXPR_COMMENT); }
 	YY_BREAK
 case 294:
 /* rule 294 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 927 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 927 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { /* continue lexing */ }
 	YY_BREAK
 case YY_STATE_EOF(MODE_ELEM_COMP_CONSTR):
 case YY_STATE_EOF(MODE_ATTR_COMP_CONSTR):
 case YY_STATE_EOF(MODE_PI_COMP_CONSTR):
 case YY_STATE_EOF(MODE_NS_COMP_CONSTR):
+<<<<<<< TREE
 #line 928 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 928 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { COMP_CONSTR_ROLLBACK(false); }
 	YY_BREAK
 case 295:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 929 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 929 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { COMP_CONSTR_ROLLBACK(true); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5534,30 +6738,50 @@ YY_RULE_SETUP
 case 296:
 /* rule 296 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 941 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 941 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL,  put_qname(yytext, yyleng, true, true), yytext); }
 	YY_BREAK
 case 297:
 /* rule 297 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 942 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 942 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
 	YY_BREAK
 case 298:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 943 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 943 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA,  put_qname(yytext, yyleng-2), yytext); }
 	YY_BREAK
 case 299:
 /* rule 299 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 944 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 944 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN INITIAL; TRY_SVAL_TOKEN(EQNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2), yytext); }
 	YY_BREAK
 case 300:
 /* rule 300 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 945 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 945 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { /* continue lexing */ }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5570,7 +6794,11 @@ YY_RULE_SETUP
 case 301:
 /* rule 301 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 956 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 956 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN INITIAL; TRY_SVAL_TOKEN(PRAGMA_LITERAL_AND_END_PRAGMA, put(yytext, yyleng-2), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5585,47 +6813,83 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 302:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 970 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 970 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN MODE_ELEMENT_CONTENT; return token::TAG_END; }
 	YY_BREAK
 case 303:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 971 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 971 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT; return token::QUOTE; }
 	YY_BREAK
 case 304:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 972 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 972 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN MODE_APOS_ATTRIBUTE_CONTENT; return token::APOS; }
 	YY_BREAK
 case 305:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 973 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 973 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::EQUALS; }
 	YY_BREAK
 case 306:
 /* rule 306 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 974 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 974 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::BLANK; }
 	YY_BREAK
 case 307:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 975 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 975 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { POP_STATE(); return token::EMPTY_TAG_END; }
 	YY_BREAK
 case 308:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 976 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 976 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 	YY_BREAK
 case 309:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 977 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 977 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { yylval->err = getDriver()->unrecognizedCharErr(yytext, *yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 case YY_STATE_EOF(MODE_START_TAG):
+<<<<<<< TREE
 #line 978 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 978 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { yylval->err = getDriver()->unterminatedElementConstructor(*yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5643,62 +6907,110 @@ case YY_STATE_EOF(MODE_START_TAG):
    |______________________________________________________________________*/
 case 310:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 995 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 995 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN MODE_END_TAG; return token::START_TAG_END; }
 	YY_BREAK
 case 311:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 996 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 996 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 case 312:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 997 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 997 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
 	YY_BREAK
 case 313:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 998 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 998 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_PROCESSING_INSTRUCTION); return token::PI_BEGIN; }
 	YY_BREAK
 case 314:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 999 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 999 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_CDATA_SECTION); return token::CDATA_BEGIN; }
 	YY_BREAK
 case 315:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1000 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1000 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 	YY_BREAK
 case 316:
 /* rule 316 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1001 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1001 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(ELEMENT_CONTENT, put(yytext, yyleng, 1), yytext); }
 	YY_BREAK
 case 317:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1002 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1002 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(ELEMENT_CONTENT, put_entityref(yytext, yyleng), yytext); }
 	YY_BREAK
 case 318:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1003 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1003 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_CHARREF_LITERAL(CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 319:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1004 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1004 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 320:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1005 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1005 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 case YY_STATE_EOF(MODE_ELEMENT_CONTENT):
+<<<<<<< TREE
 #line 1006 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1006 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { yylval->err = getDriver()->noClosingTagForElementConstructor(*yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5710,17 +7022,29 @@ case YY_STATE_EOF(MODE_ELEMENT_CONTENT):
    |______________________________________________________________________*/
 case 321:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1017 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1017 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { POP_STATE(); return token::TAG_END; }
 	YY_BREAK
 case 322:
 /* rule 322 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1018 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1018 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true), yytext); }
 	YY_BREAK
 case YY_STATE_EOF(MODE_END_TAG):
+<<<<<<< TREE
 #line 1019 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1019 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { yylval->err = getDriver()->noClosingTagForElementConstructor(*yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5732,13 +7056,21 @@ case YY_STATE_EOF(MODE_END_TAG):
    |______________________________________________________________________*/
 case 323:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1030 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1030 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { POP_STATE(); return token::XML_COMMENT_END; }
 	YY_BREAK
 case 324:
 /* rule 324 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1031 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1031 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng, 1), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5751,27 +7083,47 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 325:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1043 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1043 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { POP_STATE(); }
 	YY_BREAK
 case 326:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1044 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1044 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(MODE_EXPR_COMMENT); }
 	YY_BREAK
 case 327:
 /* rule 327 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1045 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1045 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { /* do nothing */ }
 	YY_BREAK
 case 328:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1046 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1046 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { /* do nothing */ }
 	YY_BREAK
 case YY_STATE_EOF(MODE_EXPR_COMMENT):
+<<<<<<< TREE
 #line 1047 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1047 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { yylval->err = getDriver()->unterminatedCommentErr(*yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5785,22 +7137,38 @@ case YY_STATE_EOF(MODE_EXPR_COMMENT):
 case 329:
 /* rule 329 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1059 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1059 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { getDriver()->theDocComment << yytext; }
 	YY_BREAK
 case 330:
 /* rule 330 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1060 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1060 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { getDriver()->theDocComment << yytext; }
 	YY_BREAK
 case 331:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1061 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1061 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { POP_STATE(); }
 	YY_BREAK
 case YY_STATE_EOF(MODE_EXPR_DOC_COMMENT):
+<<<<<<< TREE
 #line 1062 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1062 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { yylval->err = getDriver()->unterminatedCommentErr(*yylloc); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5813,17 +7181,29 @@ case YY_STATE_EOF(MODE_EXPR_DOC_COMMENT):
 case 332:
 /* rule 332 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1073 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1073 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
 	YY_BREAK
 case 333:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1074 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1074 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { POP_STATE(); return token::PI_END; }
 	YY_BREAK
 case 334:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1075 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1075 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 /* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5836,7 +7216,11 @@ YY_RULE_SETUP
 case 335:
 /* rule 335 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1086 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1086 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
   POP_STATE();
   TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2), yytext);
@@ -5852,7 +7236,11 @@ YY_RULE_SETUP
 case 336:
 /* rule 336 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1100 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1100 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3, 1), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5870,43 +7258,75 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 337:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1117 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1117 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN MODE_START_TAG; return token::QUOTE; }
 	YY_BREAK
 case 338:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1118 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1118 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 case 339:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1119 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1119 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ESCAPE_QUOTE; }
 	YY_BREAK
 case 340:
 /* rule 340 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1120 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1120 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
 	YY_BREAK
 case 341:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1121 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1121 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
 	YY_BREAK
 case 342:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1122 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1122 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_CHARREF_LITERAL(CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 343:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1123 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1123 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 344:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1124 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1124 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5919,43 +7339,75 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 345:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1136 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1136 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { BEGIN MODE_START_TAG; return token::APOS; }
 	YY_BREAK
 case 346:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1137 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1137 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT); return token::LBRACE; }
 	YY_BREAK
 case 347:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1138 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1138 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::ESCAPE_APOS; }
 	YY_BREAK
 case 348:
 /* rule 348 can match eol */
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1139 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1139 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(APOS_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
 	YY_BREAK
 case 349:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1140 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1140 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_SVAL_TOKEN(APOS_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
 	YY_BREAK
 case 350:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1141 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1141 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { TRY_CHARREF_LITERAL(CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 351:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1142 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1142 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 352:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1143 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1143 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5964,7 +7416,11 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 353:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1152 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1152 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 {
     yylval->err = getDriver()->unrecognizedCharErr(yytext, *yylloc);
     return token::UNRECOGNIZED;
@@ -5973,7 +7429,11 @@ YY_RULE_SETUP
 /* END OF FLEX RULES */
 case 354:
 YY_RULE_SETUP
+<<<<<<< TREE
 #line 1161 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1161 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 ECHO;
 	YY_BREAK
 #line 5980 "jsoniq_scanner.yy.cpp"
@@ -7018,7 +8478,11 @@ void ZorbaJSONiqfree (void * ptr )
 
 /* %ok-for-header */
 
+<<<<<<< TREE
 #line 1161 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_scanner.l"
+=======
+#line 1161 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_scanner.l"
+>>>>>>> MERGE-SOURCE
 
 
 
