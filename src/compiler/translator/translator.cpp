@@ -8424,6 +8424,10 @@ void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
     case ParseConstants::op_val_ge:
       f = BUILTIN_FUNC(OP_VALUE_GREATER_EQUAL_2);
       break;
+    // New jsoniq grammar:
+    case ParseConstants::op_val_not:
+      f = BUILTIN_FUNC(FN_NOT_1);
+      break;
     }
   }
   else if (v.get_nodecomp() != NULL)
@@ -8442,10 +8446,20 @@ void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
     }
   }
 
-  expr* e1 = pop_nodestack();
-  expr* e2 = pop_nodestack();
+  fo_expr* fo;
 
-  fo_expr* fo = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, e2, e1);
+  expr* e1 = pop_nodestack();
+
+  // New jsoniq grammar:
+  if (f != BUILTIN_FUNC(FN_NOT_1))
+  {
+    expr* e2 = pop_nodestack();
+    fo = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, e2, e1);
+  }
+  else
+  {
+    fo = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, e1);
+  }
 
   normalize_fo(fo);
 

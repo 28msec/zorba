@@ -1,4 +1,4 @@
-xquery version "1.0";
+jsoniq version "1.0";
 
 (:
  : Copyright 2006-2012 The FLWOR Foundation.
@@ -55,7 +55,7 @@ declare option ver:module-version "1.0";
  : @return the decoded items.
  :)
 declare function jn:decode-from-roundtrip(
-    $items as item()*) as item()* external;
+    $items as item*) as item* external;
 
 
 (:~
@@ -92,8 +92,8 @@ declare function jn:decode-from-roundtrip(
  : @return the decoded items.
  :)
 declare function jn:decode-from-roundtrip(
-    $items as item()*,
-    $options as object()) as item()* external;
+    $items as item*,
+    $options as object) as item* external;
 
 
 (:~
@@ -114,7 +114,7 @@ declare function jn:decode-from-roundtrip(
  : @return the encoded items.
  :)
 declare function jn:encode-for-roundtrip(
-    $items as item()*) as item()* external;
+    $items as item*) as item* external;
 
 
 (:~
@@ -142,8 +142,8 @@ declare function jn:encode-for-roundtrip(
  : @return the encoded items.
  :)
 declare function jn:encode-for-roundtrip(
-    $items as item()*,
-    $options as object()) as item()* external;
+    $items as item*,
+    $options as object) as item* external;
 
 
 (:~
@@ -159,7 +159,7 @@ declare function jn:encode-for-roundtrip(
  :
  : @error jerr:JNDY0021 if the given string is not valid JSON.
  :)
-declare function jn:parse-json($j as xs:string?) as json-item()* external;
+declare function jn:parse-json($j as xs:string?) as json-item* external;
 
 (:~
  : This function parses a given string as JSON and returns a sequence
@@ -183,7 +183,7 @@ declare function jn:parse-json($j as xs:string?) as json-item()* external;
  :)
 declare function jn:parse-json(
   $j as xs:string?,
-  $o as object()) as json-item()* external;
+  $o as object) as json-item* external;
 
 
 (:~
@@ -193,7 +193,7 @@ declare function jn:parse-json(
  : @param $o A JSON Object.
  : @return The names of pairs in the object.
  :)
-declare function jn:keys($o as object()) as xs:string* external;
+declare function jn:keys($o as object) as xs:string* external;
 
 
 (:~
@@ -205,7 +205,7 @@ declare function jn:keys($o as object()) as xs:string* external;
  : @return the value of specified pair within the given object, or the empty sequence.
  :)
 (: obsolete - use $o($name) instead :)
-declare function jn:value($o as object(), $name as xs:string) as item()? external;
+declare function jn:value($o as object, $name as xs:string) as item? external;
 
 
 (:~
@@ -215,7 +215,7 @@ declare function jn:value($o as object(), $name as xs:string) as item()? externa
  : @param $j A JSON Array.
  : @return The number of items in $j.
  :)
-declare function jn:size($j as array()) as xs:integer external;
+declare function jn:size($j as array) as xs:integer external;
 
 
 (:~
@@ -227,7 +227,7 @@ declare function jn:size($j as array()) as xs:integer external;
  : @return The member at the specified position, or empty sequence.
  :)
 (: obsolete - use $a($p) instead :)
-declare function jn:member($a as array(), $p as xs:integer) as item()? external;
+declare function jn:member($a as array, $p as xs:integer) as item? external;
 
 
 (:~
@@ -239,7 +239,7 @@ declare function jn:member($a as array(), $p as xs:integer) as item()? external;
  : @param $names The names of the pairs to copy out of $o and insert into the new object
  : @return The new object.
  :)
-declare function jn:project($o as object(), $names as xs:string*) as object() external;
+declare function jn:project($o as object, $names as xs:string*) as object external;
 
 (:~
  : Returns the members of an Array.
@@ -247,17 +247,17 @@ declare function jn:project($o as object(), $names as xs:string*) as object() ex
  : @param $a A JSON Array.
  : @return The members of the specified array.
  :)
-declare function jn:members($o as array()) as item()* external;
+declare function jn:members($o as array) as item* external;
 
 
 (:~
  : Recursively "flatten" a JSON Array, by replacing any arrays with their
  : members. Equivalent to
  :
- :   define function jn:flatten($arg as array()) {
+ :   define function jn:flatten($arg as array {
  :     for $value in jn:values($arg)
  :     return
- :       if ($value instance of array())
+ :       if ($value instance of array
  :       then jn:flatten($value)
  :       else $value
  :   };
@@ -265,7 +265,7 @@ declare function jn:members($o as array()) as item()* external;
  : @param $a A JSON Array.
  : @return The flattened version of $a.
  :)
-declare function jn:flatten($a as array()) as item()* external;
+declare function jn:flatten($a as array) as item* external;
 
 (:~
  : This function allows dynamic object construction by merging all
@@ -281,7 +281,7 @@ declare function jn:flatten($a as array()) as item()* external;
  :
  : @error jerr:JNDY0003 if there is a pair collision.
  :)
-declare function jn:object($o as object()*) as object() external;
+declare function jn:object($o as object*) as object external;
 
 (:~
  : Returns the JSON null.

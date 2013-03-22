@@ -758,6 +758,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> IntersectExceptExpr
 %type <expr> Literal
 %type <expr> MultiplicativeExpr
+%type <expr> NotExpr
 %type <expr> NumericLiteral
 %type <expr> OrExpr
 %type <expr> OrderedExpr
@@ -938,7 +939,7 @@ template<typename T> inline void release_hack( T *ref ) {
 //%destructor { release_hack( $$ ); } AxisStep
 //
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompNamespaceConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompNamespaceConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NotExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -1031,6 +1032,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %right LBRACK
 %right LPAR
 %right CATCH
+%right NOT
 
 %nonassoc RBRACE
 
@@ -3560,15 +3562,31 @@ OrExpr :
 
 // [47]
 AndExpr :
-        ComparisonExpr
+        NotExpr
         {
             $$ = $1;
         }
-    |   AndExpr  AND  ComparisonExpr
+    |   AndExpr  AND  NotExpr
         {
             $$ = new AndExpr( LOC(@$), $1, $3 );
         }
     ;
+
+NotExpr :
+        ComparisonExpr
+        {
+          $$ = $1;
+        }
+     |  NOT NotExpr
+        {
+          $$ = new ComparisonExpr(
+              LOC(@$),
+              new ValueComp( LOC(@$), ParseConstants::op_val_not ),
+              $2,
+              NULL
+          );
+        }
+     ;
 
 // [50]
 ComparisonExpr :
@@ -5199,7 +5217,8 @@ SequenceType :
         {
             $$ = new SequenceType(LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2));
         }
-    |   EMPTY_SEQUENCE LPAR RPAR
+    |   // EMPTY_SEQUENCE LPAR RPAR  // New jsoniq grammar:
+        LPAR RPAR
         {
             $$ = new SequenceType( LOC(@$), NULL, NULL );
         }
@@ -5264,7 +5283,8 @@ ItemType :
         {
             $$ = $1;
         }
-    |   ITEM LPAR RPAR
+    |   // ITEM LPAR RPAR  // New jsoniq grammar:
+        ITEM
         {
             $$ = new ItemType( LOC(@$), true );
         }
@@ -6813,7 +6833,7 @@ JSONTest :
 ;
 
 JSONItemTest :
-        // JSON_ITEM LPAR RPAR
+        // JSON_ITEM LPAR RPAR  // New jsoniq grammar:
         JSON_ITEM
         {
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
@@ -6821,14 +6841,16 @@ JSONItemTest :
 ;
 
 JSONObjectTest :
-        OBJECT LPAR RPAR
+        // OBJECT LPAR RPAR  // New jsoniq grammar:
+        OBJECT
         {
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
         }
 ;
 
 JSONArrayTest :
-        ARRAY LPAR RPAR
+        // ARRAY LPAR RPAR // New jsoniq grammar:
+        ARRAY
         {
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
         }
@@ -6864,7 +6886,7 @@ QNAME :
     |   DOCUMENT_NODE           { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("document-node"))); }
     |   NS_NODE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("namespace-node"))); }
     |   ELEMENT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("element"))); }
-    |   ITEM                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("item"))); }
+  //  |   ITEM                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("item"))); }
     |   IF                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("if"))); }
     |   NODE                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("node"))); }
     |   PROCESSING_INSTRUCTION  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("processing-instruction"))); }
@@ -7081,8 +7103,8 @@ FUNCTION_NAME :
     |   APPEND                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("append"))); }
     |   POSITION                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("position"))); }
   //  |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
-    |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
-    |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
+  //  |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
+  //  |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
     |   STRUCTURED_ITEM         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("structured-item"))); }
     ;
 

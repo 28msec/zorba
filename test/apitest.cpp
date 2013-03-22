@@ -171,6 +171,8 @@ int _tmain(int argc, _TCHAR* argv[])
   // start processing
   Zorba* zengine = Zorba::getInstance(store);
 
+  zorba::StaticContext_t staticContext = zengine->createStaticContext();
+
   // start parsing the query
   XQuery_t query = zengine->createQuery ();
 
@@ -183,13 +185,19 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 #endif
 
-  if (! lProp->inlineQuery()) {
+  if (! lProp->inlineQuery())
+  {
     query->setFileName(path.get_path());
+  }
+
+  if (lProp->jsoniqParser())
+  {
+    staticContext->setJSONiqVersion(zorba::jsoniq_version_1_0);
   }
 
   try 
   {
-    query->compile(*qfile, chints);
+    query->compile(*qfile, staticContext, chints);
   }
   catch (ZorbaException& e)
   {
@@ -200,7 +208,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
   if (lProp->testPlanSerialization())
   {
-    std::cerr << "===================================================\n Starting plan serialization" << std::endl;
     try
     {
       std::string binary_path;
@@ -320,7 +327,9 @@ int _tmain(int argc, _TCHAR* argv[])
     }
   }
 
-  query->close();
+  staticContext->removeReference();  // force destruction
+  staticContext = NULL;
+  query->close();  
   zengine->shutdown();
   zorba::StoreManager::shutdownStore(store);
   return return_code;
