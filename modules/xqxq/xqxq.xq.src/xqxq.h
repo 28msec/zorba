@@ -620,19 +620,27 @@ protected:
     std::vector<URLResolver*>theUrlResolvers;
 
   public:
-    QueryPlanSerializationCallback(const std::vector<URIMapper*>& aUriMapper, 
-      const std::vector<URLResolver*>& aUrlResolver)
-      : theUriMappers(aUriMapper), theUrlResolvers(aUrlResolver)
+    QueryPlanSerializationCallback()
     {
     }
 
     virtual ~QueryPlanSerializationCallback() {}
 
+    void add_URIMapper(URIMapper* aMapper)
+    {
+      theUriMappers.push_back(aMapper);
+    }
+
+    void add_URLResolver(URLResolver* aResolver)
+    {
+      theUrlResolvers.push_back(aResolver);
+    }
+
     virtual URIMapper*
-    getURIMapper(size_t  i ) const { return theUriMappers[i]; }
+      getURIMapper(size_t  i ) const { return theUriMappers.size() < i? NULL : theUriMappers[i]; }
 
     virtual URLResolver*
-    getURLResolver(size_t i) const { return theUrlResolvers[i]; }
+    getURLResolver(size_t i) const { return theUrlResolvers.size() < i? NULL : theUrlResolvers[i]; }
   };
 };
 }/*xqxq namespace*/}/*zorba namespace*/

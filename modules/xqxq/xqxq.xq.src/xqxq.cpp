@@ -1023,36 +1023,36 @@ zorba::ItemSequence_t LoadFromQueryPlanFunction::evaluate(
 
   Zorba* lZorba = Zorba::getInstance(0);
   XQuery_t lQuery;
-
-  //StaticContext_t ltempSctx = lZorba->createStaticContext();
+  
   std::auto_ptr<XQXQURLResolver> lResolver;
   std::auto_ptr<XQXQURIMapper> lMapper;
-
-  if ( aArgs.size() > 2)
-  {
-    Item lMapperFunctionItem = getItemArgument(aArgs, 2);
-    if (!lMapperFunctionItem.isNull())
-    {
-      lMapper.reset(new XQXQURIMapper(lMapperFunctionItem, lSctxChild));
-      //vMapper.push_back(lMapper.get());
-      //ltempSctx->registerURIMapper(lMapper.get());
-    }
-  }
-  if ( aArgs.size() > 1 )
-  {
-    Item lResolverFunctionItem = getItemArgument(aArgs, 1);
-    if (!lResolverFunctionItem.isNull())
-    {
-      lResolver.reset(new XQXQURLResolver(lResolverFunctionItem, lSctxChild));
-      //vResolver.push_back(lResolver.get());
-      //ltempSctx->registerURLResolver(lResolver.get());
-    }
-  }
-
   try
   {
     lQuery = lZorba->createQuery();
-    lQuery->loadExecutionPlan(lQueryPlanStream);
+    if ( aArgs.size() > 2)
+    {
+      QueryPlanSerializationCallback lPlanSer;
+
+      Item lMapperFunctionItem = getItemArgument(aArgs, 2);
+      if (!lMapperFunctionItem.isNull())
+      {
+        lMapper.reset(new XQXQURIMapper(lMapperFunctionItem, lSctxChild));
+        lPlanSer.add_URIMapper(lMapper.get());
+      }
+
+      Item lResolverFunctionItem = getItemArgument(aArgs, 1);
+      if (!lResolverFunctionItem.isNull())
+      {
+        lResolver.reset(new XQXQURLResolver(lResolverFunctionItem, lSctxChild));
+        lPlanSer.add_URLResolver(lResolver.get());
+      }
+
+      lQuery->loadExecutionPlan(lQueryPlanStream, &lPlanSer);
+    }
+    else
+    { 
+      lQuery->loadExecutionPlan(lQueryPlanStream);
+    }
   }
   catch (XQueryException& xe)
   {
@@ -1070,8 +1070,10 @@ zorba::ItemSequence_t LoadFromQueryPlanFunction::evaluate(
   {
     lQuery = NULL;
     std::ostringstream err;
-    err << "The query loaded from the query plan raised an error: "
-      << ze.what();
+    if (ze.diagnostic() == zerr::ZCSE0013_UNABLE_TO_LOAD_QUERY)
+      err << "The query loaded from the query plan raised an error: failed to load pre-compiled query: document, collection, or module resolver required but not given.";
+    else
+      err << "The query loaded from the query plan raised an error: "<< ze.what();
     Item errQName = XQXQModule::getItemFactory()->createQName(
       ze.diagnostic().qname().ns(),
       ze.diagnostic().qname().localname());
