@@ -134,7 +134,7 @@
       <zorba:signature localname="format-number" prefix="fn" version="3.0">
         <zorba:param>xs:anyAtomicType?</zorba:param>
         <zorba:param>xs:string</zorba:param>
-        <zorba:param>xs:string</zorba:param>
+        <zorba:param>xs:string?</zorba:param>
         <zorba:output>xs:string</zorba:output>
       </zorba:signature>
     </zorba:function>
@@ -158,7 +158,7 @@
     <zorba:signature localname="format-integer" prefix="fn" version="3.0">
       <zorba:param>xs:integer?</zorba:param>
       <zorba:param>xs:string</zorba:param>
-      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
   </zorba:function>

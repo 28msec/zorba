@@ -79,6 +79,9 @@ XQueryErrorCode XQTY0030( "XQTY0030" );
 XQueryErrorCode XQTY0086( "XQTY0086" );
 
 
+XQueryErrorCode XQTY0105( "XQTY0105" );
+
+
 XQueryErrorCode XQST0009( "XQST0009" );
 
 
@@ -436,6 +439,9 @@ XQueryErrorCode FOUT1170( "FOUT1170" );
 
 
 XQueryErrorCode FOUT1190( "FOUT1190" );
+
+
+XQueryErrorCode FOFL0001( "FOFL0001" );
 
 
 XQueryErrorCode FOCZ0001( "FOCZ0001" );

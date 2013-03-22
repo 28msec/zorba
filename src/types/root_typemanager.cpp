@@ -291,7 +291,7 @@ RootTypeManager::RootTypeManager()
 #ifdef ZORBA_WITH_JSON
   GENV_STORE.getItemFactory()->createQName(JS_NULL_QNAME,
                                            static_context::JSONIQ_DM_NS,
-                                           "jn",
+                                           "js",
                                            "null");
 #endif
 

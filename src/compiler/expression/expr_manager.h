@@ -489,20 +489,33 @@ public:
       user_function* udf,
       const QueryLoc& loc,
       expr* anExpr,
-      const std::vector<expr*>& args);
+      const std::vector<expr*>& args,
+      expr* dotVar);
 
-  function_item_expr* create_function_item_expr(
-      static_context* sctx,
-      user_function* udf,
-      const QueryLoc& loc,
-      const store::Item* aQName,
-      function* f,
-      uint32_t aArity);
-
-  function_item_expr* create_function_item_expr(
+  argument_placeholder_expr* create_argument_placeholder_expr(
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc);
+
+  function_item_expr* create_function_item_expr(static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      static_context *closureSctx,
+      function* f,
+      store::Item* aQName,
+      uint32_t aArity,
+      bool isInline,
+      bool needsContextItem,
+      bool isCoercion);
+
+  function_item_expr* create_function_item_expr(
+      static_context* sctx,
+      user_function* udf,      
+      const QueryLoc& loc,
+      static_context *closureSctx,
+      bool isInline,
+      bool needsContextItem,
+      bool isCoercion);
 
   ftcontains_expr* create_ftcontains_expr(
       static_context*,
@@ -616,7 +629,7 @@ public:
       user_function* udf,
       const QueryLoc& loc,
       bool general);
- 
+
   pragma* create_pragma(
       const store::Item_t&,
       const zstring&);

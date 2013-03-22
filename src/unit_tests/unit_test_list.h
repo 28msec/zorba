@@ -31,6 +31,7 @@ namespace UnitTests {
   int test_base64( int, char*[] );
   int test_base64_streambuf( int, char*[] );
   int test_hashmaps( int argc, char* argv[] );
+  int test_hexbinary( int argc, char* argv[] );
 
 #ifndef ZORBA_NO_ICU
   int test_icu_streambuf( int, char*[] );

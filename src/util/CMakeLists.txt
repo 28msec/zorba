@@ -19,6 +19,7 @@ SET(UTIL_SRCS
   error_util.cpp
   file.cpp
   fs_util.cpp
+  hexbinary_util.cpp
   indent.cpp
   json_parser.cpp
   json_util.cpp
