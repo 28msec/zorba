@@ -20,6 +20,7 @@
 
 #include <iostream>
 
+#include "omanip.h"
 #include "string_util.h"
 
 namespace zorba {
@@ -72,6 +73,19 @@ char const* get_uri( std::basic_ios<charT,Traits> &ios ) {
  */
 std::streamsize read_without_whitespace( std::istream &is, char *buf,
                                          std::streamsize n );
+
+/**
+ * Emits an integer as Roman numerals to the given ostream.  By default,
+ * numerals are emitted in lower-case.  To emit in upper-case, set the
+ * \c uppercase format flag on the stream.
+ *
+ * @param o The ostream to emit to.
+ * @param n The integer to emit.
+ * @return Returns \a o.
+ */
+std::ostream& roman( std::ostream &o, unsigned n );
+
+DEF_OMANIP1( roman, unsigned )
 
 ///////////////////////////////////////////////////////////////////////////////
 
