@@ -1327,7 +1327,6 @@ function* lookup_fn(const QName* qname, csize arity, const QueryLoc& loc)
                             qname->get_prefix(),
                             qname->get_localname(),
                             arity,
-                            theCCB->theConfig.jsoniq_mode,
                             loc);
 }
 
@@ -8660,7 +8659,8 @@ void end_visit(const SimpleType& v, void* /*visit_state*/)
   rchandle<QName> qname = v.get_qname();
   store::Item_t qnameItem;
 
-  if (!qname->get_prefix().empty() || !theCCB->theConfig.jsoniq_mode)
+  if (!qname->get_prefix().empty() ||
+      theSctx->language_kind() == StaticContextConsts::language_kind_xquery)
   {
     expand_elem_qname(qnameItem, qname, loc);
   }
@@ -13132,7 +13132,8 @@ void end_visit(const GeneralizedAtomicType& v, void* /*visit_state*/)
   rchandle<QName> qname = v.get_qname();
   store::Item_t qnameItem;
 
-  if (!qname->get_prefix().empty() || !theCCB->theConfig.jsoniq_mode)
+  if (!qname->get_prefix().empty() ||
+      theSctx->language_kind() == StaticContextConsts::language_kind_xquery)
   {
     expand_elem_qname(qnameItem, qname, loc);
   }

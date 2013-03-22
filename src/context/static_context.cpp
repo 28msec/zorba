@@ -2577,7 +2577,6 @@ function* static_context::lookup_fn(
     const zstring& pre,
     const zstring& local,
     csize arity,
-    bool allowMultipleDefaultNamespaces,
     const QueryLoc& loc)
 {
   store::Item_t qnameItem;
@@ -2597,7 +2596,7 @@ function* static_context::lookup_fn(
     
     f = lookup_fn(qnameItem, arity, true);
   }
-  else if (allowMultipleDefaultNamespaces)
+  else if (language_kind() == StaticContextConsts::language_kind_jsoniq)
   {
     static_context* sctx = this;
 
