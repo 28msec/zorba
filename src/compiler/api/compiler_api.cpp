@@ -199,7 +199,7 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
 #ifndef NDEBUG
     printf ("\n\n%s", converted_xquery_str);  // debug
 #endif
-    xquery_stream << concverted_xquery_str;
+    xquery_stream << converted_xquery_str;
   }
   else
   {
