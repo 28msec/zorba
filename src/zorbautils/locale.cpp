@@ -597,7 +597,7 @@ type get_default( iso639_1::type lang ) {
     PK     , // dz: Bhutani => Pakistan
     unknown, // ee: Ewe => (maps to multiple countries)
     GR     , // el: Greek => Greece
-    GB     , // en: English => United Kingdom
+    US     , // en: English => United States
     unknown, // eo: Esperanto => (constructed language)
     ES     , // es: Spanish => Spain
     EE     , // et: Estonian => Estonia
@@ -1298,7 +1298,10 @@ zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
   } // for
   return format;
 #else
-  return get_locale_info( D_FMT, lang, country );
+  zstring fmt( get_locale_info( D_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%d-%b-%Y";                   // dd-Mon-yyyy
+  return fmt;
 #endif /* WIN32 */
 }
 
@@ -1311,7 +1314,10 @@ zstring get_date_time_format( iso639_1::type lang, iso3166_1::type country ) {
   return get_date_format( lang, country ) + ' ' +
          get_time_format( lang, country );
 #else
-  return get_locale_info( D_T_FMT, lang, country );
+  zstring fmt( get_locale_info( D_T_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%a %b %e %X %Y";
+  return fmt;
 #endif /* WIN32 */
 }
 
@@ -1419,7 +1425,10 @@ zstring get_time_ampm( bool pm, iso639_1::type lang, iso3166_1::type country ) {
     AM_STR, PM_STR
 #endif /* WIN32 */
   };
-  return get_locale_info( ampm[ pm ], lang, country );
+  zstring s( get_locale_info( ampm[ pm ], lang, country ) );
+  if ( s.empty() && lang == iso639_1::en )
+    s = pm ? "PM" : "AM";
+  return s;
 }
 
 zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
@@ -1473,7 +1482,10 @@ zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
   } // for
   return format;
 #else
-  return get_locale_info( T_FMT, lang, country );
+  zstring fmt( get_locale_info( T_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%H:%M:%S";
+  return fmt;
 #endif /* WIN32 */
 }
 
@@ -1541,6 +1553,8 @@ bool is_supported( iso639_1::type lang, iso3166_1::type country ) {
   unique_ptr<WCHAR[]> const wlocale_name( get_wlocale_name( lang, country ) );
   return Zorba_IsValidLocaleName( wlocale_name.get() );
 #else
+  if ( lang == iso639_1::en )
+    return true;                        // Always support English
   if ( locale_t const loc = get_unix_locale_t( lang, country ) ) {
     ::freelocale( loc );
     return true;
