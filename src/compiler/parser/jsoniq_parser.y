@@ -5217,8 +5217,12 @@ SequenceType :
         {
             $$ = new SequenceType(LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2));
         }
-    |   // EMPTY_SEQUENCE LPAR RPAR  // New jsoniq grammar:
-        LPAR RPAR
+    |   EMPTY_SEQUENCE LPAR RPAR
+        {
+            $$ = new SequenceType( LOC(@$), NULL, NULL );
+        }
+        // New jsoniq grammar:
+    |   LPAR RPAR
         {
             $$ = new SequenceType( LOC(@$), NULL, NULL );
         }
@@ -5283,12 +5287,21 @@ ItemType :
         {
             $$ = $1;
         }
-    |   // ITEM LPAR RPAR  // New jsoniq grammar:
-        ITEM
+    |   ITEM LPAR RPAR
+        {
+            $$ = new ItemType( LOC(@$), true );
+        }
+        // New jsoniq grammar:
+    |   ITEM
         {
             $$ = new ItemType( LOC(@$), true );
         }
     |   STRUCTURED_ITEM LPAR RPAR
+        {
+            $$ = new StructuredItemType(LOC(@$));
+        }
+        // New jsoniq grammar:
+    |   STRUCTURED_ITEM
         {
             $$ = new StructuredItemType(LOC(@$));
         }
@@ -6930,24 +6943,36 @@ JSONTest :
 ;
 
 JSONItemTest :
-        // JSON_ITEM LPAR RPAR  // New jsoniq grammar:
-        JSON_ITEM
+        JSON_ITEM LPAR RPAR
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
+        }
+        // New jsoniq grammar:
+    |   JSON_ITEM
         {
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
         }
 ;
 
 JSONObjectTest :
-        // OBJECT LPAR RPAR  // New jsoniq grammar:
-        OBJECT
+        OBJECT LPAR RPAR
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
+        }
+        // New jsoniq grammar:
+    |   OBJECT
         {
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
         }
 ;
 
 JSONArrayTest :
-        // ARRAY LPAR RPAR // New jsoniq grammar:
-        ARRAY
+        ARRAY LPAR RPAR
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
+        }
+        // New jsoniq grammar:
+    |   ARRAY
         {
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
         }
@@ -7202,7 +7227,7 @@ FUNCTION_NAME :
   //  |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
   //  |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
   //  |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
-    |   STRUCTURED_ITEM         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("structured-item"))); }
+  //  |   STRUCTURED_ITEM         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("structured-item"))); }
     ;
 
 // [196]
