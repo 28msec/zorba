@@ -29,7 +29,7 @@
 %error-verbose
 
 // Expect 4 shift/reduce conflicts
-%expect 3
+%expect 4
 
 
 %code requires {
@@ -737,6 +737,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> TryStatement
 %type <expr> CatchListStatement
 %type <expr> CatchStatement
+%type <expr> VoidStatement
 %type <expr> ApplyStatement
 %type <expr> IfStatement
 %type <expr> FLWORStatement
@@ -2266,6 +2267,7 @@ Statement :
   | TypeswitchStatement
   | SwitchStatement
   | TryStatement
+  | VoidStatement
 ;
 
 
@@ -2273,11 +2275,6 @@ BlockStatement :
     LBRACE Statements RBRACE
     {
       $$ = $2;
-    }
-  |
-    LBRACE RBRACE
-    {
-      $$ = new BlockBody(LOC(@$));
     }
 ;
 
@@ -2522,6 +2519,12 @@ CatchStatement :
     }
   ;
 
+
+VoidStatement :
+    SEMI
+    {
+      $$ = new BlockBody(LOC(@$));
+    }
 
 
 Expr :
@@ -6648,7 +6651,11 @@ JSONAccumulatorObjectUnion :
 
 
 JSONObjectConstructor :
-        LBRACE JSONPairList RBRACE
+        LBRACE RBRACE
+        {
+          $$ = new JSONDirectObjectConstructor(LOC(@$));
+        }
+    |   LBRACE JSONPairList RBRACE
         {
           $$ = new JSONDirectObjectConstructor(LOC(@$),
                                                dynamic_cast<JSONPairList*>($2));

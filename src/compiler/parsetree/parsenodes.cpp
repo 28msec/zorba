@@ -5929,6 +5929,13 @@ void JSONObjectConstructor::accept(parsenode_visitor& v) const
 }
 
 
+JSONDirectObjectConstructor::JSONDirectObjectConstructor(const QueryLoc& loc)
+  : exprnode(loc),
+    thePairs(0)
+{
+}
+
+
 JSONDirectObjectConstructor::JSONDirectObjectConstructor(
     const QueryLoc& loc,
     const JSONPairList* pairs)
@@ -5947,14 +5954,14 @@ JSONDirectObjectConstructor::~JSONDirectObjectConstructor()
 
 csize JSONDirectObjectConstructor::numPairs() const
 {
-  return thePairs->size();
+  return thePairs ? thePairs->size() : 0;
 }
 
 
 void JSONDirectObjectConstructor::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(thePairs);
+  if (thePairs) ACCEPT(thePairs);
   END_VISITOR();
 }
 

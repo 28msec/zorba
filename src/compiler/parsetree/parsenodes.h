@@ -6785,6 +6785,8 @@ private:
   const JSONPairList  * thePairs;
 
 public:
+  JSONDirectObjectConstructor(const QueryLoc& loc);
+
   JSONDirectObjectConstructor(const QueryLoc& loc, const JSONPairList* pairs);
 
   ~JSONDirectObjectConstructor();
