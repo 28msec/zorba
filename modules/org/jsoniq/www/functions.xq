@@ -1,4 +1,4 @@
-xquery version "1.0";
+jsoniq version "1.0";
 
 (:
  : Copyright 2006-2012 The FLWOR Foundation.
