@@ -38,11 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
 #line 35 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_parser.y"
-=======
-#line 35 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_parser.y"
->>>>>>> MERGE-SOURCE
 
 
 /*
@@ -89,11 +85,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
 #line 89 "/home/mbrantner/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
-=======
-#line 89 "/home/colea/xquery_bzr/new-jsoniq/build/src/compiler/parser/jsoniq_parser.hpp"
->>>>>>> MERGE-SOURCE
 
 
 #include <string>
@@ -123,11 +115,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
 #line 119 "/home/mbrantner/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
-=======
-#line 119 "/home/colea/xquery_bzr/new-jsoniq/build/src/compiler/parser/jsoniq_parser.hpp"
->>>>>>> MERGE-SOURCE
 
   /// A Bison parser.
   class jsoniq_parser
@@ -139,11 +127,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
 #line 148 "/home/mbrantner/zorba/sandbox/src/compiler/parser/jsoniq_parser.y"
-=======
-#line 148 "/home/colea/xquery_bzr/new-jsoniq/src/compiler/parser/jsoniq_parser.y"
->>>>>>> MERGE-SOURCE
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -167,11 +151,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
 #line 155 "/home/mbrantner/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
-=======
-#line 155 "/home/colea/xquery_bzr/new-jsoniq/build/src/compiler/parser/jsoniq_parser.hpp"
->>>>>>> MERGE-SOURCE
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -698,11 +678,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-<<<<<<< TREE
 #line 682 "/home/mbrantner/zorba/build/src/compiler/parser/jsoniq_parser.hpp"
-=======
-#line 682 "/home/colea/xquery_bzr/new-jsoniq/build/src/compiler/parser/jsoniq_parser.hpp"
->>>>>>> MERGE-SOURCE
 
 
 
