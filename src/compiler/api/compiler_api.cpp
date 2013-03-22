@@ -145,9 +145,16 @@ bool XQueryCompiler::getLanguageMode(std::stringstream& s) const
   }
   else
   {
-    StaticContextConsts::language_kind_t lKind
-      = theCompilerCB->theRootSctx->language_kind();
-    lXQueryMode = (lKind != StaticContextConsts::language_kind_jsoniq);
+    if (theCompilerCB->theRootSctx) // could be null in eval
+    {
+      StaticContextConsts::language_kind_t lKind
+        = theCompilerCB->theRootSctx->language_kind();
+      lXQueryMode = (lKind != StaticContextConsts::language_kind_jsoniq);
+    }
+    else
+    {
+      lXQueryMode = true;
+    }
   }
   return lXQueryMode;
 }
