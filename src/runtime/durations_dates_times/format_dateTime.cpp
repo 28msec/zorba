@@ -166,6 +166,9 @@ struct modifier {
     second.at_type = no_second_at;
     min_width = max_width = 0;
   };
+
+  // default modifier(modifier const&) is fine
+  // default modifier& operator(modifier const&) is fine
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -479,32 +482,43 @@ static void append_string( zstring const &s, modifier const &mod,
 }
 
 static void append_month( unsigned mon, modifier const &mod, zstring *dest ) {
+  modifier mod_copy( mod );
   switch ( mod.first.type ) {
     case modifier::name:
     case modifier::Name:
     case modifier::NAME: {
       zstring name( locale::get_month_name( mon, mod.lang, mod.country ) );
-      utf8_string<zstring> u_name( name );
-      if ( mod.gt_max_width( u_name.size() ) ) {
-        //
-        // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
-        // exceeds the specified maximum width, then the processor should
-        // attempt to use an alternative shorter representation that fits
-        // within the maximum width.  Where the presentation modifier is N, n,
-        // or Nn, this is done by abbreviating the name, using either
-        // conventional abbreviations if available, or crude right-truncation
-        // if not.
-        //
-        name = locale::get_month_abbr( mon, mod.lang, mod.country );
-        if ( mod.gt_max_width( u_name.size() ) )
-          u_name = u_name.substr( 0, mod.max_width );
+      if ( !name.empty() ) {
+        utf8_string<zstring> u_name( name );
+        if ( mod.gt_max_width( u_name.size() ) ) {
+          //
+          // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
+          // exceeds the specified maximum width, then the processor should
+          // attempt to use an alternative shorter representation that fits
+          // within the maximum width.  Where the presentation modifier is N,
+          // n, or Nn, this is done by abbreviating the name, using either
+          // conventional abbreviations if available, or crude right-truncation
+          // if not.
+          //
+          zstring abbr = locale::get_month_abbr( mon, mod.lang, mod.country );
+          if ( !abbr.empty() ) {
+            utf8_string<zstring> u_abbr( abbr );
+            if ( mod.gt_max_width( u_abbr.size() ) )
+              u_abbr = u_abbr.substr( 0, mod.max_width );
+            name = abbr;
+          } else
+            u_name = u_name.substr( 0, mod.max_width );
+        }
+        mod.append_if_fallback_lang( dest );
+        append_string( name, mod, dest );
+        break;
       }
-      mod.append_if_fallback_lang( dest );
-      append_string( name, mod, dest );
-      break;
+      mod_copy.first.type = modifier::arabic;
+      mod_copy.first.format.clear();
+      // no break;
     }
     default:
-      append_number( mon + 1, mod, dest );
+      append_number( mon + 1, mod_copy, dest );
   }
 }
 
@@ -698,24 +712,35 @@ static void append_weekday( unsigned mday, unsigned mon, unsigned year,
     case modifier::Name:
     case modifier::NAME: {
       zstring name( locale::get_weekday_name( wday, mod.lang, mod.country ) );
-      utf8_string<zstring> u_name( name );
-      if ( mod.gt_max_width( u_name.size() ) ) {
-        //
-        // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
-        // exceeds the specified maximum width, then the processor should
-        // attempt to use an alternative shorter representation that fits
-        // within the maximum width.  Where the presentation modifier is N, n,
-        // or Nn, this is done by abbreviating the name, using either
-        // conventional abbreviations if available, or crude right-truncation
-        // if not.
-        //
-        name = locale::get_weekday_abbr( wday, mod.lang, mod.country );
-        if ( mod.gt_max_width( u_name.size() ) )
-          u_name = u_name.substr( 0, mod.max_width );
+      if ( !name.empty() ) {
+        utf8_string<zstring> u_name( name );
+        if ( mod.gt_max_width( u_name.size() ) ) {
+          //
+          // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
+          // exceeds the specified maximum width, then the processor should
+          // attempt to use an alternative shorter representation that fits
+          // within the maximum width.  Where the presentation modifier is N,
+          // n, or Nn, this is done by abbreviating the name, using either
+          // conventional abbreviations if available, or crude right-truncation
+          // if not.
+          //
+          zstring abbr =
+            locale::get_weekday_abbr( wday, mod.lang, mod.country );
+          if ( !abbr.empty() ) {
+            utf8_string<zstring> u_abbr( abbr );
+            if ( mod.gt_max_width( u_abbr.size() ) )
+              u_abbr = u_abbr.substr( 0, mod.max_width );
+            name = abbr;
+          } else
+            u_name = u_name.substr( 0, mod.max_width );
+        }
+        mod.append_if_fallback_lang( dest );
+        append_string( name, mod_copy, dest );
+        break;
       }
-      mod.append_if_fallback_lang( dest );
-      append_string( name, mod_copy, dest );
-      break;
+      mod_copy.first.type = modifier::arabic;
+      mod_copy.first.format.clear();
+      // no break;
     }
     default: {
       int const new_wday = calendar::convert_wday_to( wday, mod.cal );
