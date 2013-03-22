@@ -201,6 +201,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
   ar & theIsEval;
   ar & theIsLoadProlog;
   ar & theIsUpdating;
+  ar & theIsSequential;
   ar & theSctxMap;
   ar & theRootSctx;
 #ifdef ZORBA_WITH_DEBUGGER
