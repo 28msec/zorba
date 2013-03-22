@@ -1019,21 +1019,51 @@
       <value>"$1": picture string does not satisfy format-number() function rules</value>
     </diagnostic>
 
-    <diagnostic code="XTDE1340">
+    <diagnostic code="FOFD1340">
       <comment>
-       It is a non-recoverable dynamic error if the syntax of the picture is
-       incorrect.
+        It is a non-recoverable dynamic error if the syntax of the picture is
+        incorrect.
       </comment>
-      <value>"$1": invalid picture string for date/time</value>
+      <value>"$1": invalid picture string for date/time${: 2}</value>
+      <entry key="BadComponent_3">
+        <value>'$3': invalid component specifier</value>
+      </entry>
+      <entry key="BadWidthModifier">
+        <value>invalid width modifier</value>
+      </entry>
+      <entry key="DigitNotSameFamily_34">
+        <value>"$3": digit not from same digit family as $4</value>
+      </entry>
+      <entry key="MultipleComponent_3">
+        <value>'$3': multiple component specifiers between []</value>
+      </entry>
+      <entry key="MustBeOneMandatoryDigit">
+        <value>there must be at least one mandatory-digit-sign</value>
+      </entry>
+      <entry key="NoComponent">
+        <value>component specifier expected between []</value>
+      </entry>
+      <entry key="NoAdjacentGroupSep_3">
+        <value>"$3": grouping separator must not be adjacent to others</value>
+      </entry>
+      <entry key="NoGroupSepAtStart_3">
+        <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoGroupSepAtEnd_3">
+        <value>"$3": grouping separator illegal at end of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoOptDigitAfterMandatory">
+        <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
+      </entry>
     </diagnostic>
 
-    <diagnostic code="XTDE1350">
+    <diagnostic code="FOFD1350">
       <comment>
-       It is a non-recoverable dynamic error if a component specifier within the
-       picture refers to components that are not available in the given type of
-       \c $value.
+        It is a non-recoverable dynamic error if a component specifier within
+        the picture refers to components that are not available in the given
+        type of $value.
       </comment>
-      <value>component specifier not available</value>
+      <value>"$1": component specifier not available</value>
     </diagnostic>
 
     <!--////////// XQuery Full-Text Errors /////////////////////////////////-->

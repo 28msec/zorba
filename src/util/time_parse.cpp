@@ -170,18 +170,18 @@ struct rfc2822_obs_zone {
 // Time."
 //
 static rfc2822_obs_zone const rfc2822_obs_zones[] = {
-  { "GMT",  0                 },
-  { "UTC",  0                 }, // non-RFC: be liberal in what you accept....
-  { "UT" ,  0                 }, // must go after "UTC"
-  { "EDT", -4 * 60 * 60, true },
-  { "EST", -5 * 60 * 60       },
-  { "CDT", -5 * 60 * 60, true },
-  { "CST", -6 * 60 * 60       },
-  { "MDT", -6 * 60 * 60, true },
-  { "MST", -7 * 60 * 60       },
-  { "PDT", -7 * 60 * 60, true },
-  { "PST", -8 * 60 * 60       },
-  { 0, 0, 0 }
+  { "GMT",  0          , false },
+  { "UTC",  0          , false }, // non-RFC: be liberal in what you accept....
+  { "UT" ,  0          , false }, // must go after "UTC"
+  { "EDT", -4 * 60 * 60, true  },
+  { "EST", -5 * 60 * 60, false },
+  { "CDT", -5 * 60 * 60, true  },
+  { "CST", -6 * 60 * 60, false },
+  { "MDT", -6 * 60 * 60, true  },
+  { "MST", -7 * 60 * 60, false },
+  { "PDT", -7 * 60 * 60, true  },
+  { "PST", -8 * 60 * 60, false },
+  { 0, 0, false }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
