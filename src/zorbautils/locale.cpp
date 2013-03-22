@@ -1373,7 +1373,15 @@ zstring get_month_abbr( unsigned month_index, iso639_1::type lang,
 
   if ( month_index > 11 )
     throw invalid_argument( BUILD_STRING( month_index, " not in range 0-11" ) );
-  return get_locale_info( month_abbr[ month_index ], lang, country );
+  zstring abbr( get_locale_info( month_abbr[ month_index ], lang, country ) );
+  if ( abbr.empty() && lang == iso639_1::en ) {
+    static char const *const abbr_str[] = {
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+    abbr = abbr_str[ month_index ];
+  }
+  return abbr;
 }
 
 zstring get_month_name( unsigned month_index, iso639_1::type lang,
@@ -1392,7 +1400,15 @@ zstring get_month_name( unsigned month_index, iso639_1::type lang,
 
   if ( month_index > 11 )
     throw invalid_argument( BUILD_STRING( month_index, " not in range 0-11" ) );
-  return get_locale_info( month_name[ month_index ], lang, country );
+  zstring name( get_locale_info( month_name[ month_index ], lang, country ) );
+  if ( name.empty() && lang == iso639_1::en ) {
+    static char const *const name_str[] = {
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "Sepember", "October", "November", "December"
+    };
+    name = name_str[ month_index ];
+  }
+  return name;
 }
 
 zstring get_time_ampm( bool pm, iso639_1::type lang, iso3166_1::type country ) {
@@ -1479,7 +1495,14 @@ zstring get_weekday_abbr( unsigned day_index, iso639_1::type lang,
 
   if ( day_index > 6 )
     throw invalid_argument( BUILD_STRING( day_index, " not in range 0-6" ) );
-  return get_locale_info( weekday_abbr[ day_index ], lang, country );
+  zstring abbr( get_locale_info( weekday_abbr[ day_index ], lang, country ) );
+  if ( abbr.empty() && lang == iso639_1::en ) {
+    static char const *const abbr_str[] = {
+      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+    };
+    abbr = abbr_str[ day_index ];
+  }
+  return abbr;
 }
 
 zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
@@ -1500,7 +1523,15 @@ zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
 
   if ( day_index > 6 )
     throw invalid_argument( BUILD_STRING( day_index, " not in range 0-6" ) );
-  return get_locale_info( weekday_name[ day_index ], lang, country );
+  zstring name( get_locale_info( weekday_name[ day_index ], lang, country ) );
+  if ( name.empty() && lang == iso639_1::en ) {
+    static char const *const name_str[] = {
+      "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+      "Saturday"
+    };
+    name = name_str[ day_index ];
+  }
+  return name;
 }
 
 bool is_supported( iso639_1::type lang, iso3166_1::type country ) {
