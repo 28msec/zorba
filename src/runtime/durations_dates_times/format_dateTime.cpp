@@ -168,7 +168,7 @@ struct modifier {
   };
 
   // default modifier(modifier const&) is fine
-  // default modifier& operator(modifier const&) is fine
+  // default modifier& operator=(modifier const&) is fine
 };
 
 ///////////////////////////////////////////////////////////////////////////////
