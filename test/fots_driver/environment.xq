@@ -391,11 +391,14 @@ declare %private function env:add-var-decls(
  :             test case.
  : @param $envBaseURI The absolute pathname of the directory containing the
  :        file that defines the environment.
+ : @param $needsDTDValidation If true then the document that is bound as
+ :        context item needs to be DTD validated.
  : @return the string for setting the context item if needed.
  :)
 declare function env:set-context-item(
-  $env        as element(fots:environment)?,
-  $envBaseURI as xs:anyURI?
+  $env                as element(fots:environment)?,
+  $envBaseURI         as xs:anyURI?,
+  $needsDTDValidation as xs:boolean
 ) as xs:string?
 {
   if (exists($env/fots:source[@role = "."]))
@@ -403,7 +406,7 @@ declare function env:set-context-item(
     string-join
     (
     (
-    env:compute-context-item($env, $envBaseURI),
+    env:compute-context-item($env, $envBaseURI, $needsDTDValidation),
     "",
     'xqxq:bind-context-item($queryID, $contextItem);'
     )
@@ -416,15 +419,22 @@ declare function env:set-context-item(
 
 
 declare %private function env:compute-context-item(
-  $env        as element(fots:environment)?,
-  $envBaseURI as xs:anyURI?
+  $env                as element(fots:environment)?,
+  $envBaseURI         as xs:anyURI?,
+  $needsDTDValidation as xs:boolean
 ) as xs:string
 {
   let $ciURI := resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
   return
   if (empty($env/fots:source[@validation = "strict"]))
   then
-    concat('variable $contextItem := doc("', $ciURI, '");')
+  {
+    if($needsDTDValidation)
+    then concat('variable $contextItem := zorba-xml:parse(fn:unparsed-text("',
+                $ciURI,
+                '"),<opt:options><opt:DTD-validate/></opt:options> );')
+    else concat('variable $contextItem := doc("', $ciURI, '");')
+  }
   else 
     string-join
     (

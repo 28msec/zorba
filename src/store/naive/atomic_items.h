@@ -162,7 +162,10 @@ public:
     return theBaseItem->getBase64BinaryValue(s);
   }
 
-  xs_hexBinary getHexBinaryValue() const { return theBaseItem->getHexBinaryValue(); }
+  char const* getHexBinaryValue(size_t& s) const
+  {
+    return theBaseItem->getHexBinaryValue(s);
+  }
 
   bool getBooleanValue() const { return theBaseItem->getBooleanValue(); }
 
@@ -2524,62 +2527,43 @@ protected:
   bool              theIsEncoded;
 
 protected:
-  Base64BinaryItem(store::SchemaTypeCode t, bool aIsEncoded)
-    :
+  Base64BinaryItem( store::SchemaTypeCode t, bool aIsEncoded ) :
     AtomicItem(t),
     theIsEncoded(aIsEncoded)
   {
   }
 
-  Base64BinaryItem(
-      store::SchemaTypeCode t,
-      const char* aValue,
-      size_t aSize,
-      bool aIsEncoded = true)
-    :
+  Base64BinaryItem( store::SchemaTypeCode t, char const *data,
+                    size_t size, bool aIsEncoded = true ) :
     AtomicItem(t),
     theIsEncoded(aIsEncoded)
   {
-    theValue.reserve(aSize);
-    theValue.insert(theValue.begin(), aValue, aValue + aSize);
+    theValue.reserve( size );
+    theValue.insert( theValue.begin(), data, data + size );
   }
 
 public:
   size_t alloc_size() const;
   size_t dynamic_size() const;
 
-  const char* getBase64BinaryValue(size_t& data) const;
+  char const* getBase64BinaryValue( size_t &data ) const;
 
   store::Item* getType() const;
 
   bool isEncoded() const { return theIsEncoded; }
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  uint32_t hash( long timezone = 0, XQPCollator const* = 0 ) const;
 
-  bool equals(
-        const store::Item* other,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const;
+  bool equals( store::Item const *other, long timezone = 0,
+               XQPCollator const* = 0 ) const;
 
   zstring getStringValue() const;
 
-  void getStringValue2(zstring& val) const;
+  void getStringValue2( zstring& val ) const;
 
-  void appendStringValue(zstring& buf) const;
+  void appendStringValue( zstring &buf ) const;
 
   zstring show() const;
-  
-protected:
-  // used in hash doing simple xor of the data
-  struct hash_functor
-  {
-    uint32_t hash_value;
-
-    void operator() (char c)
-    {
-      hash_value ^= (uint32_t) c;
-    }
-  };
 };
 
 
@@ -2659,38 +2643,39 @@ class HexBinaryItem : public AtomicItem
   friend class BasicItemFactory;
 
 protected:
-  xs_hexBinary theValue;
+  std::vector<char> theValue;
+  bool              theIsEncoded;
 
 protected:
-  HexBinaryItem(store::SchemaTypeCode t, xs_hexBinary v)
-    :
+  HexBinaryItem(store::SchemaTypeCode t, bool aIsEncoded) :
     AtomicItem(t),
-    theValue(v)
+    theIsEncoded(aIsEncoded)
   {
   }
 
-  HexBinaryItem(store::SchemaTypeCode t) : AtomicItem(t) {}
+  HexBinaryItem( store::SchemaTypeCode t, char const *data, size_t size,
+                 bool encoded = true );
 
 public:
   size_t alloc_size() const;
   size_t dynamic_size() const;
 
-  xs_hexBinary getHexBinaryValue() const { return theValue; }
+  char const* getHexBinaryValue( size_t &size ) const;
 
   store::Item* getType() const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* coll = 0) const;
+  bool isEncoded() const { return theIsEncoded; }
 
-  bool equals(const store::Item* other, long tz = 0, const XQPCollator* coll = 0) const
-  {
-    return theValue.equal(other->getHexBinaryValue());
-  }
+  uint32_t hash( long timezone = 0, XQPCollator const* = 0 ) const;
+
+  bool equals( store::Item const *other, long timezone = 0,
+               XQPCollator const* = 0) const;
 
   zstring getStringValue() const;
 
-  void getStringValue2(zstring& val) const;
+  void getStringValue2( zstring &val ) const;
 
-  void appendStringValue(zstring& buf) const;
+  void appendStringValue( zstring &buf ) const;
 
   zstring show() const;
 };

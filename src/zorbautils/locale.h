@@ -62,6 +62,15 @@ namespace zorba {
       find( StringType const &country ) {
         return find( country.c_str() );
       }
+
+      /**
+       * Gets the "default" country that speaks the given language.
+       *
+       * @param lang The language to get the default country for.
+       * @return Returns said country or \c unknown.
+       */
+      type get_default( iso639_1::type lang );
+
     } // namespace iso3166_1
 
     /////////////////////////////////////////////////////////////////////////// 

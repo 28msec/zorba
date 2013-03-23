@@ -864,7 +864,7 @@ const xs_yearMonthDuration& Item::getYearMonthDurationValue() const
 /**
  * Accessor for xs:hexBinary
  */
-xs_hexBinary Item::getHexBinaryValue() const
+char const* Item::getHexBinaryValue(size_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,

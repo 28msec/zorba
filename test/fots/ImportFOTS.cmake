@@ -19,7 +19,7 @@
 
 
 # Change this to publish updated FOTS archives
-SET (FOTS_ARCHIVE "FOTS_200313.tgz")
+SET (FOTS_ARCHIVE "FOTS_210313.tgz")
 
 # Change this to modify which elements in FOTS driver results are output
 # as CDATA
@@ -29,7 +29,7 @@ SET (FOTS_CDATA_ELEMENTS "fots:query fots:result test assert-xml")
 SET (_outdir "${BUILDDIR}/test/fots")
 IF(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
   MESSAGE (STATUS "FOTS archive '${FOTS_ARCHIVE}' already downloaded.")
-ELSEIF(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
+ELSE(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
   MESSAGE (STATUS "Downloading FOTS archive '${FOTS_ARCHIVE}'...")
   FILE (DOWNLOAD http://zorbatest.lambda.nu:8080/~spungi/${FOTS_ARCHIVE}
     "${_outdir}/${FOTS_ARCHIVE}" STATUS _dlstat SHOW_PROGRESS)

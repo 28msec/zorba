@@ -29,8 +29,14 @@ namespace zorba {
   std::range_error( BUILD_STRING( '"', (N), "\": number can not be represented as an " TYPE ) )
 
 xs_int to_xs_int( xs_double const &d ) {
+#ifdef ZORBA_WITH_BIG_INTEGER
   zstring const temp( d.toIntegerString() );
   return ztd::aton<xs_int>( temp.c_str() );
+#else
+  if ( d.is_xs_int() )
+    return static_cast<xs_int>( d.getNumber() );
+  throw RANGE_ERROR( d, "xs:int" );
+#endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
 xs_int to_xs_int( xs_integer const &i ) {

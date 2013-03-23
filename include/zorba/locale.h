@@ -263,7 +263,7 @@ namespace zorba {
         BZ,   ///< Belize
         CA,   ///< Canada
         CC,   ///< Cocos Islands
-        CD,   ///< Congo
+        CD,   ///< Congo, the Democratic Republic of the
         CF,   ///< Central African Republic
         CG,   ///< Congo
         CH,   ///< Switzerland

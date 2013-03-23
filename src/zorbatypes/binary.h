@@ -37,24 +37,22 @@ namespace serialization
   void operator&(Archiver& ar, Base16& obj);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
-/*******************************************************************************
-
-********************************************************************************/
-class ZORBA_DLL_PUBLIC Base64
+class Base64
 {
-  friend void serialization::operator&(serialization::Archiver& ar, Base64& obj);
+  friend void serialization::operator&(serialization::Archiver&, Base64&);
 
 private:
-  std::vector<char> theData;
+  std::vector<char> theData;            // stored encoded
 
 public:
-  static bool parseString(const zstring& aString, Base64& aBase64) 
+  static bool parseString( zstring const &s, Base64 &to )
   {
-    return parseString(aString.c_str(), aString.size(), aBase64);
+    return parseString( s.data(), s.size(), to );
   }
 
-  static bool parseString(const char* aString, size_t aLength, Base64& aBase64);
+  static bool parseString(char const *s, size_t aLength, Base64& to);
 
   static bool parseString(
         const char* aString, 
@@ -64,16 +62,17 @@ public:
 
   static zstring encode(std::istream& aStream);
 
-  static void encode(std::istream& aStream, Base64& aResult);
+  static void encode(std::istream& aStream, Base64& to);
 
   static void encode(const zstring& aString, Base64&);
 
   static void encode(const std::vector<char>&, std::vector<char>&);
 
-  static void encode(
-        const unsigned char* aSource, 
-        unsigned int in_len,
-        Base64& aResult);
+  static void encode(char const *from, size_t from_len, Base64 &to);
+
+  static void encode(unsigned char const *from, size_t from_len, Base64& to) {
+    return encode( (char const*)from, from_len, to );
+  }
 
   static void decode(const std::vector<char>&, std::vector<char>&);
 
@@ -89,9 +88,9 @@ public:
 
   explicit Base64(const Base16& aBase16);
 
-  Base64(const unsigned char *bin_data, size_t len);
+  Base64(char const *bin_data, size_t len);
 
-  Base64() {}
+  Base64() { }
 
   const std::vector<char>& getData() const { return theData; }
 
@@ -112,56 +111,53 @@ public:
   }
 };
 
+inline bool operator==( Base64 const &a, Base64 const &b ) {
+  return a.equal( b );
+}
 
-std::ostream& operator<<(std::ostream& os, const Base64& aBase64);
+inline bool operator!=( Base64 const &a, Base64 const &b ) {
+  return !(a == b);
+}
 
+std::ostream& operator<<( std::ostream&, Base64 const& );
 
-/*******************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-********************************************************************************/
-class ZORBA_DLL_PUBLIC Base16
+class Base16
 {
-  friend void serialization::operator&(serialization::Archiver& ar, Base16& obj);
+  friend void serialization::operator&(serialization::Archiver&, Base16&);
 
 private:
-  std::vector<char> theData;
-
-  static const char* ENCODE_TABLE; 
-  static const unsigned char DECODE_TABLE[0x80];
-  static size_t ENCODE_INPUT;
-  static size_t ENCODE_OUTPUT;
-  static size_t DECODE_INPUT;
-  static size_t DECODE_OUTPUT;
+  std::vector<char> theData;            // stored encoded
 
 public:
-  static bool parseString(const zstring& aString, Base16& aBase16) 
+  static bool parseString( zstring const &s, Base16 &to )
   {
-    return parseString(aString.c_str(), aString.size(), aBase16);
+    return parseString( s.data(), s.size(), to );
   }
 
-  static bool parseString(const char* aString, size_t aLength, Base16& aBase16);
+  static bool parseString( char const *from, size_t from_len, Base16 &to );
 
-  static void encode(const std::vector<char>&, std::vector<char>&);
+  static void encode( std::vector<char> const&, std::vector<char>& );
 
-  static void decode(const std::vector<char>&, std::vector<char>&);
+  static void encode( char const *from, size_t from_len, Base16 &to );
+
+  static void decode( std::vector<char> const&, std::vector<char>& );
 
 public:
-  Base16(const Base16& aBase16) 
-  {
-    theData = aBase16.theData;
-  }
+  Base16() { }
   
-  explicit Base16(const Base64& aBase64);
-  
-  Base16() {}
-  
-  virtual ~Base16() {}
+  Base16( Base16 const &from ) : theData( from.theData ) { }
 
+  Base16( char const *bin_data, size_t len );
+
+  explicit Base16( Base64 const& );
+  
   const std::vector<char>& getData() const { return theData; }
 
   size_t size() const { return theData.size(); }
 
-  bool equal(const Base16& aBase16) const;
+  bool equal( Base16 const& ) const;
 
   zstring str() const;
 
@@ -172,16 +168,24 @@ public:
   }
 
 private:
-  void insertData(const char* aCharStar, size_t len);
+  void insertData( char const *from, size_t len );
 };
 
+inline bool operator==( Base16 const &a, Base16 const &b ) {
+  return a.equal( b );
+}
 
-std::ostream& operator<<(std::ostream& os, const Base16& aBase16);
+inline bool operator!=( Base16 const &a, Base16 const &b ) {
+  return !(a == b);
+}
+
+std::ostream& operator<<(std::ostream&s, const Base16& );
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 
-#endif
-
+#endif /* ZORBA_ZORBATYPES_BINARY_H */
 /*
  * Local variables:
  * mode: c++
