@@ -44,7 +44,71 @@ typedef rchandle<DynamicFunctionInfo> DynamicFunctionInfo_t;
   theMustDeleteCCB :
   ------------------
   This is set to true if the DynamicFunctionInfo is the owner of the CCB,
-  and must delete it upon destruction.  
+  and must delete it upon destruction.
+
+  theLoc:
+  -------
+  The location where the function item expr or inline function expr appear at.
+
+  theClosureSctx:
+  ---------------
+  The static context to be used when the function item is actually invoked.
+
+  theFunction:
+  ------------
+  The function obj that represents the implementation of this function item.
+  This is always a pointer to a user_function obj. In case of an inline function
+  expr, it is an anonymous user_function obj that is created on-the-fly by the
+  translator to represent the body and signature of the inline function. In case
+  of a function item expr where the named function is a UDF, it is the
+  user_function obj of that UDF. Finally, in case of a function item expr where
+  the named function F is not a UDF, it is a user_function obj UF that is created
+  on-the-fly by the translator. The signature of UF is the same as that of F, and
+  its body simply invokes F. The reason why UF is built is to unify the
+  implemenation of dynamic function invocation.
+
+  theQName:
+  ---------
+
+  theArity:
+  ---------
+  We need to store the arity also here because the function obj above doesn't
+  know about its arity in case it's a variadic function.
+
+  theIsInline:
+  ------------
+
+  theNeedsContextItem:
+  --------------------
+  Whether the function is a contextual one, i.e., accesses the context item, or
+  context position, or context size directly.
+
+  theIsCoercion:
+  --------------
+  This is set to true if the function item is a function coercion. In this
+  case the newly created function item's name is taken from the coerced
+  function.
+
+  theScopedVarsValues:
+  --------------------
+  Empty in the case of LiteralFunctionItem. Otherwise, the vars that are in
+  scope at the place where the InlineFunction expr appears at.
+
+  theSubstVarsValues:
+  -------------------
+
+  theScopedVarsNames:
+  -------------------
+
+  theIsGlobalVar:
+  ---------------
+
+  theVarId:
+  ---------
+
+  theScopedVarsIteratosr:
+  -----------------------
+
 ********************************************************************************/
 class DynamicFunctionInfo : public SimpleRCObject
 {
@@ -52,16 +116,14 @@ public:
   CompilerCB                  * theCCB;
   bool                          theMustDeleteCCB;
 
-  static_context              * theClosureSctx;
   QueryLoc                      theLoc;
+  static_context              * theClosureSctx;
   function_t                    theFunction;
   store::Item_t                 theQName;
   unsigned int                  theArity;
   bool                          theIsInline;
   bool                          theNeedsContextItem;
-  bool                          theIsCoercion;     // This is set to true if the function item is a function coercion. In this
-                                                   // case the newly created function item's name is taken from the coerced
-                                                   // function.
+  bool                          theIsCoercion;
 
   std::vector<expr*>            theScopedVarsValues;
   std::vector<var_expr*>        theSubstVarsValues;
@@ -102,7 +164,6 @@ public:
 /*******************************************************************************
   A FunctionItem is created during codegen, when a function_item_expr is reached.
 
-  theCCB            :
   theSctx           : The static context of the function_item_expr.
   theExpr           : The associated function_item_expr.
   theVariableValues : Vector of var iterators representing the values of the
@@ -129,8 +190,9 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  FunctionItem(const DynamicFunctionInfo_t& dynamicFunctionInfo,
-               dynamic_context* dctx);
+  FunctionItem(
+      const DynamicFunctionInfo_t& dynamicFunctionInfo,
+      dynamic_context* dctx);
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
