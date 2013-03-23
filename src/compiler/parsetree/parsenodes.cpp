@@ -1181,6 +1181,18 @@ void BlockBody::add(parsenode* statement)
   }
 }
 
+bool BlockBody::isEmpty() const
+{
+  for (csize i=0; i<theStatements.size(); i++)
+  {
+    BlockBody* body = dynamic_cast<BlockBody*>(theStatements[i].getp());
+
+    if (body == NULL || !body->isEmpty())
+      return false;
+  }
+
+  return true;
+}
 
 /*******************************************************************************
 

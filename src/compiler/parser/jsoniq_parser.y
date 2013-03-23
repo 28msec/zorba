@@ -29,7 +29,7 @@
 %error-verbose
 
 // Expect 4 shift/reduce conflicts
-%expect 4
+%expect 2
 
 
 %code requires {
@@ -1034,9 +1034,6 @@ template<typename T> inline void release_hack( T *ref ) {
 %right LPAR
 %right CATCH
 %right NOT
-
-%nonassoc RBRACE
-
 
 %right FOR FROM WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
 %right DESCENDING ELSE _EMPTY IS NODES OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
@@ -2284,7 +2281,12 @@ BlockStatement :
 BlockExpr :
     LBRACE StatementsAndOptionalExpr RBRACE
     {
-      if (dynamic_cast<BlockBody*>($2) == NULL)
+      BlockBody* block = dynamic_cast<BlockBody*>($2);
+      if ($2 == NULL || (block != NULL && block->isEmpty()))
+      {        
+        $$ = new JSONDirectObjectConstructor(LOC(@$));
+      }
+      else if (block == NULL)
       {
         BlockBody* blk = new BlockBody(LOC(@$));
         blk->add($2);
@@ -6684,11 +6686,7 @@ JSONAccumulatorObjectUnion :
 
 
 JSONObjectConstructor :
-        LBRACE RBRACE
-        {
-          $$ = new JSONDirectObjectConstructor(LOC(@$));
-        }
-    |   LBRACE JSONPairList RBRACE
+        LBRACE JSONPairList RBRACE
         {
           $$ = new JSONDirectObjectConstructor(LOC(@$),
                                                dynamic_cast<JSONPairList*>($2));

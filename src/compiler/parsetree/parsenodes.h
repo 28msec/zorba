@@ -1640,6 +1640,8 @@ public:
 
   void setTopLevel(bool v) { theIsTopLevel =  v; }
 
+  bool isEmpty() const;
+
   void add(parsenode* statement);
 
   void accept(parsenode_visitor&) const;
