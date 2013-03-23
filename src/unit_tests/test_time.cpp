@@ -90,7 +90,7 @@ static void test_calc_week_in_year() {
     /* 30 */ {  3, time::jan, 2010, calendar::ISO, 53 },
     /* 31 */ {  4, time::jan, 2010, calendar::ISO,  1 },
 
-    {  0 },
+    { 0, 0, 0, calendar::unknown, 0 }
   };
 
   for ( test_type const *t = test; t->mday; ++t ) {
