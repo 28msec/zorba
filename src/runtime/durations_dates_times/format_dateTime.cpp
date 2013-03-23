@@ -500,7 +500,7 @@ static void append_month( unsigned mon, modifier const &mod, zstring *dest ) {
           // conventional abbreviations if available, or crude right-truncation
           // if not.
           //
-          zstring abbr = locale::get_month_abbr( mon, mod.lang, mod.country );
+          zstring abbr( locale::get_month_abbr( mon, mod.lang, mod.country ) );
           if ( !abbr.empty() ) {
             utf8_string<zstring> u_abbr( abbr );
             if ( mod.gt_max_width( u_abbr.size() ) )
@@ -724,8 +724,9 @@ static void append_weekday( unsigned mday, unsigned mon, unsigned year,
           // conventional abbreviations if available, or crude right-truncation
           // if not.
           //
-          zstring abbr =
-            locale::get_weekday_abbr( wday, mod.lang, mod.country );
+          zstring abbr(
+            locale::get_weekday_abbr( wday, mod.lang, mod.country )
+          );
           if ( !abbr.empty() ) {
             utf8_string<zstring> u_abbr( abbr );
             if ( mod.gt_max_width( u_abbr.size() ) )
