@@ -109,7 +109,7 @@ PlanIter_t fn_zorba_ddl_probe_index_point_value::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ProbeIndexPointValueIterator(sctx, loc, argv, false, false);
+  return new ProbeIndexPointValueIterator(sctx, loc, argv, false);
 }
 
 
@@ -120,7 +120,7 @@ PlanIter_t fn_zorba_ddl_probe_index_point_value_skip::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ProbeIndexPointValueIterator(sctx, loc, argv, false, true);
+  return new ProbeIndexPointValueIterator(sctx, loc, argv, true);
 }
 
 
@@ -142,7 +142,7 @@ PlanIter_t fn_zorba_ddl_probe_index_range_value::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ProbeIndexRangeValueIterator(sctx, loc, argv, false, false);
+  return new ProbeIndexRangeValueIterator(sctx, loc, argv, false);
 }
 
 
@@ -153,7 +153,7 @@ PlanIter_t fn_zorba_ddl_probe_index_range_value_skip::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new ProbeIndexRangeValueIterator(sctx, loc, argv, false, true);
+  return new ProbeIndexRangeValueIterator(sctx, loc, argv, true);
 }
 
 

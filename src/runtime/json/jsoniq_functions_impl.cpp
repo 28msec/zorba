@@ -884,8 +884,7 @@ JSONParseIterator::nextImpl(
 /*******************************************************************************
   json:names($o as object()) as xs:string*
 ********************************************************************************/
-bool
-JSONObjectNamesIterator::nextImpl(
+bool JSONObjectNamesIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -905,6 +904,25 @@ JSONObjectNamesIterator::nextImpl(
   }
   state->theNames = NULL;
 
+  STACK_END(state);
+}
+
+
+bool JSONObjectNamesIterator::count(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t obj;
+  xs_integer count;
+
+  JSONObjectNamesIteratorState* state;
+  DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
+
+  ZORBA_ASSERT(consumeNext(obj, theChild.getp(), planState));
+
+  count = obj->getNumObjectPairs();
+  
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
   STACK_END(state);
 }
 
@@ -1050,8 +1068,7 @@ JSONArrayMemberIterator::nextImpl(
 /*******************************************************************************
   json:members($a as array()) as item()*
 ********************************************************************************/
-bool
-JSONArrayMembersIterator::nextImpl(
+bool JSONArrayMembersIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -1074,6 +1091,22 @@ JSONArrayMembersIterator::nextImpl(
 }
 
 
+bool JSONArrayMembersIterator::count(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t array;
+
+  JSONArrayMembersIteratorState* state;
+  DEFAULT_STACK_INIT(JSONArrayMembersIteratorState, state, planState);
+
+  ZORBA_ASSERT(consumeNext(array, theChild.getp(), planState));
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, array->getArraySize()), state);
+  STACK_END(state);
+}
+
+
 /*******************************************************************************
   json:flatten($a as array()) as item()*
 
@@ -1089,8 +1122,7 @@ void JSONArrayFlattenIteratorState::reset(PlanState& planState)
 }
 
 
-bool
-JSONArrayFlattenIterator::nextImpl(
+bool JSONArrayFlattenIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {

@@ -233,6 +233,8 @@ public:
 
   virtual ~JSONObjectNamesIterator();
 
+public:
+  bool count(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -406,6 +408,8 @@ public:
 
   virtual ~JSONArrayMembersIterator();
 
+public:
+  bool count(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

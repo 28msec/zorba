@@ -9,9 +9,11 @@ Iterator tree for main query:
         <CtxVarIterator varid="4" varname="coll" varkind="global"/>
       </UDFunctionCallIterator>
     </ApplyIterator>
-    <CountCollectionIterator>
-      <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-    </CountCollectionIterator>
+    <FnCountIterator>
+      <FnCollectionIterator>
+        <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+      </FnCollectionIterator>
+    </FnCountIterator>
   </SequentialIterator>
 </SequentialIterator>
 
