@@ -15,6 +15,10 @@
  */
 #include "stdafx.h"
 
+// standard
+#include <algorithm>
+#include <cstring>
+#include <stdexcept>
 #ifdef WIN32
 # include <windows.h>
 # include "zorbautils/fatal.h"
@@ -25,13 +29,8 @@
 # include <xlocale.h>                   /* for newlocale(3) */
 #endif /* WIN32 */
 
-#include <algorithm>
-#include <cstring>
-#include <stdexcept>
-
-#include <zorba/internal/unique_ptr.h>
-
 // Zorba
+#include <zorba/internal/unique_ptr.h>
 #include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/less.h"
