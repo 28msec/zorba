@@ -496,16 +496,6 @@ wrapper_expr* ExprManager::create_wrapper_expr(
   CREATE_AND_RETURN_EXPR(wrapper_expr, sctx, udf, loc, wrapped);
 }
 
-#if 0
-function_trace_expr* ExprManager::create_function_trace_expr(
-    static_context* sctx,
-    user_function* udf,
-    const QueryLoc& loc,
-    expr* aChild)
-{
-  CREATE_AND_RETURN_EXPR(function_trace_expr, sctx, udf, loc, aChild);
-}
-#endif
 
 function_trace_expr* ExprManager::create_function_trace_expr(
     user_function* udf,
@@ -818,30 +808,32 @@ ExprManager::create_argument_placeholder_expr(
 }
 
 
-function_item_expr* ExprManager::create_function_item_expr(static_context* sctx,
+function_item_expr* ExprManager::create_function_item_expr(
+    static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    static_context* closureSctx,
     function* f,
-    store::Item* aQName,
-    uint32_t aArity,
+    store::Item* qname,
+    uint32_t arity,
     bool isInline,
     bool needsContextItem,
     bool isCoercion)
 {
-  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, closureSctx, f, aQName, aArity, isInline, needsContextItem, isCoercion);
+  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc,
+                         f, qname, arity, isInline, needsContextItem, isCoercion);
 }
 
 
-function_item_expr* ExprManager::create_function_item_expr(static_context* sctx,
+function_item_expr* ExprManager::create_function_item_expr(
+    static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    static_context *closureSctx,
     bool isInline,
     bool needsContextItem,
     bool isCoercion)
 {
-  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, closureSctx, isInline, needsContextItem, isCoercion);
+  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc,
+                         isInline, needsContextItem, isCoercion);
 }
 
 
