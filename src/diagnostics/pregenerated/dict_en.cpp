@@ -726,6 +726,7 @@ extern entry const dict_en[] = {
   { "~NoSerializationCallbackForModule", "no SerializationCallback for required external module \"$2\"" },
   { "~NoSerializationCallbackForTraceStream", "no SerializationCallback for required trace stream" },
   { "~NoSourceURI", "no URI" },
+  { "~NoStrictCompareWithType_4", "can not compare for strict inequality to type \"$4\"" },
   { "~NoTreatAs_4", "can not treat as \"$4\"" },
   { "~NoTypeInMainModule_4", "type of variable \"$4\" is not among the in-scope types of the main module" },
   { "~NoTypeInModule_45", "type of variable \"$4\" is not among the in-scope types module \"$5\"" },

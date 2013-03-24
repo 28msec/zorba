@@ -1000,14 +1000,15 @@ long CompareIterator::compare(
   }
   catch(const ZorbaException& e)
   {
-    // For example, two QName items do not have an order relationship.
+    // For example, two QName or null items do not have
+    // an order relationship.
     if (e.diagnostic() == zerr::ZSTR0040_TYPE_ERROR)
     {
       xqtref_t type0 = tm->create_value_type(item0.getp());
       xqtref_t type1 = tm->create_value_type(item1.getp());
 
       RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
+      ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoStrictCompareWithType_4), *type1));
     }
 
     throw;

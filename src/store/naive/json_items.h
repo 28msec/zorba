@@ -80,11 +80,6 @@ public:
       long timezone = 0,
       const XQPCollator* collation = 0) const;
 
-  long compare(
-      const store::Item* i,
-      long tz = 0,
-      const XQPCollator* c = 0) const;
-
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   bool getEBV() const { return false; }

@@ -3614,6 +3614,10 @@
       <value>can not compare for equality to type "$4"</value>
     </entry>
 
+    <entry key="NoStrictCompareWithType_4">
+      <value>can not compare for strict inequality to type "$4"</value>
+    </entry>
+
     <entry key="NoDriveSpecification">
       <value>missing drive specification</value>
     </entry>
