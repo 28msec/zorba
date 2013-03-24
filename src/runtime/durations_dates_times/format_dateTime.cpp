@@ -592,6 +592,7 @@ static void append_timezone( char component, TimeZone const &tz,
 
 fallback:
       format = "01:01";
+      has_grouping_separators = true;
       // no break;
 
     default:
@@ -1182,6 +1183,14 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       // language defined in the dynamic context.
       //
       planState.theLocalDynCtx->get_locale( &lang, &country );
+      if ( !locale::is_supported( lang, country ) ) {
+        //
+        // If the language defined in the dynamic context isn't supported
+        // either, try the host's language and hope for the best.
+        //
+        lang = locale::get_host_lang();
+        lang_is_fallback = true;
+      }
     }
 
     char component;
