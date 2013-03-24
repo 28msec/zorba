@@ -64,8 +64,8 @@ DynamicFunctionInfo::DynamicFunctionInfo(
     bool isCoercion)
   :
   theMustDeleteCCB(false),
-  theClosureSctx(closureSctx),
   theLoc(loc),
+  theClosureSctx(closureSctx),
   theFunction(func),
   theQName(qname),
   theArity(arity),
@@ -249,14 +249,10 @@ PlanIter_t FunctionItem::getImplementation(
     }
   }
 
-//  if (theDynamicFunctionInfo->theCCB != NULL)
-//    ccb = theDynamicFunctionInfo->theCCB;
-
   expr* dummy = ccb->theEM->
   create_function_item_expr(NULL,
                             NULL,
                             theDynamicFunctionInfo->theLoc,
-                            NULL,
                             false,
                             false,
                             false);
