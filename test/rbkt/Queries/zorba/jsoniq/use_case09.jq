@@ -21,7 +21,7 @@ return
       "last" :   $u.lastname,
       "holdings" : [
            for $h in $holdings()
-           where $h.userid = $u.userid
+           where $h.userid eq $u.userid
            order by $h.ticker
            return {
               "ticker" : $h.ticker,
