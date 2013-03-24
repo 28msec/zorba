@@ -1149,52 +1149,66 @@ JSONItemAccessorIterator::nextImpl(
 
   const TypeManager* tm = theSctx->get_typemanager();
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  JSONItemAccessorIteratorState* state;
+  DEFAULT_STACK_INIT(JSONItemAccessorIteratorState, state, planState);
 
   consumeNext(input, theChild0.getp(), planState);
-  consumeNext(selector, theChild1.getp(), planState);
-
-  if (input->isJSONArray())
+  ZORBA_ASSERT(input->isJSONArray() || input->isJSONObject());
+  if (consumeNext(selector, theChild1.getp(), planState))
   {
-    store::SchemaTypeCode type = selector->getTypeCode();
-
-    if (!TypeOps::is_subtype(type, store::XS_INTEGER))
+    if (input->isJSONArray())
     {
-      xqtref_t type = tm->create_value_type(selector, loc);
+      store::SchemaTypeCode type = selector->getTypeCode();
 
-      RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
-                   type->toSchemaString(),
-                   GENV_TYPESYSTEM.INTEGER_TYPE_ONE->toSchemaString()));
+      if (!TypeOps::is_subtype(type, store::XS_INTEGER))
+      {
+        xqtref_t type = tm->create_value_type(selector, loc);
+
+        RAISE_ERROR(err::XPTY0004, loc, 
+        ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
+                     type->toSchemaString(),
+                     GENV_TYPESYSTEM.INTEGER_TYPE_ONE->toSchemaString()));
+      }
+
+      result = input->getArrayValue(selector->getIntegerValue());
     }
-
-    result = input->getArrayValue(selector->getIntegerValue());
-  }
-  else if (input->isJSONObject())
-  {
-    store::SchemaTypeCode type = selector->getTypeCode();
-
-    if (!TypeOps::is_subtype(type, store::XS_STRING) &&
-        !TypeOps::is_subtype(type, store::XS_UNTYPED_ATOMIC) &&
-        !TypeOps::is_subtype(type, store::XS_ANY_URI))
+    else if (input->isJSONObject())
     {
-      xqtref_t type = tm->create_value_type(selector, loc);
+      store::SchemaTypeCode type = selector->getTypeCode();
 
-      RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
-                   type->toSchemaString(),
-                   GENV_TYPESYSTEM.STRING_TYPE_ONE->toSchemaString()));
+      if (!TypeOps::is_subtype(type, store::XS_STRING) &&
+          !TypeOps::is_subtype(type, store::XS_UNTYPED_ATOMIC) &&
+          !TypeOps::is_subtype(type, store::XS_ANY_URI))
+      {
+        xqtref_t type = tm->create_value_type(selector, loc);
+
+        RAISE_ERROR(err::XPTY0004, loc, 
+        ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
+                     type->toSchemaString(),
+                     GENV_TYPESYSTEM.STRING_TYPE_ONE->toSchemaString()));
+      }
+
+      result = input->getObjectValue(selector);
     }
-
-    result = input->getObjectValue(selector);
+    STACK_PUSH(result != 0, state);
   }
   else
   {
-    ZORBA_ASSERT(false);
+    if (input->isJSONArray())
+    {
+      state->theIterator = input->getArrayValues();
+    }
+    else if (input->isJSONObject())
+    {
+      state->theIterator = input->getObjectKeys();
+    }
+    state->theIterator->open();
+    while (state->theIterator->next(result))
+    {
+      STACK_PUSH(true, state);
+    }
+    state->theIterator->close();
   }
-
-  STACK_PUSH(result != 0, state);
 
   STACK_END(state);
 }

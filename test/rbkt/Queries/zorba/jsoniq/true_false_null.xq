@@ -1,3 +1,3 @@
-let $a := [ null, true, false ]
-let $o := { "null" : null, "true" : true, "false" : false }
+let $a := [ jn:null(), true(), false() ]
+let $o := { "null" : jn:null(), "true" : true(), "false" : false() }
 return ($a, $o)

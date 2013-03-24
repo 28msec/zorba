@@ -1061,7 +1061,8 @@ void expand_type_qname(
     const QName* qname,
     const QueryLoc& loc) const
 {
-  if (!qname->get_prefix().empty() || !theCCB->theConfig.jsoniq_mode)
+  if (!qname->get_prefix().empty() ||
+      theSctx->language_kind() == StaticContextConsts::language_kind_xquery)
   {
     expand_elem_qname(qnameItem, qname, loc);
   }
@@ -1364,7 +1365,6 @@ function* lookup_fn(const QName* qname, csize arity, const QueryLoc& loc)
                             qname->get_prefix(),
                             qname->get_localname(),
                             arity,
-                            theCCB->theConfig.jsoniq_mode,
                             loc);
 }
 
@@ -2491,6 +2491,17 @@ expr* wrap_in_validate_expr_strict(
 void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
+
+  if (v.get_language_kind() == VersionDecl::jsoniq)
+  {
+    theSctx->set_language_kind(StaticContextConsts::language_kind_jsoniq);
+    std::string versionStr = v.get_version().str();
+    if (versionStr == "1.0")
+      theSctx->set_jsoniq_version(StaticContextConsts::jsoniq_version_1_0);
+    else
+      theSctx->set_jsoniq_version(StaticContextConsts::jsoniq_version_unknown);
+    return no_state;
+  }
 
   if (v.get_encoding() != "utf-8" &&
       !utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
@@ -8414,6 +8425,10 @@ void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
     case ParseConstants::op_val_ge:
       f = BUILTIN_FUNC(OP_VALUE_GREATER_EQUAL_2);
       break;
+    // New jsoniq grammar:
+    case ParseConstants::op_val_not:
+      f = BUILTIN_FUNC(FN_NOT_1);
+      break;
     }
   }
   else if (v.get_nodecomp() != NULL)
@@ -8432,10 +8447,20 @@ void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
     }
   }
 
-  expr* e1 = pop_nodestack();
-  expr* e2 = pop_nodestack();
+  fo_expr* fo;
 
-  fo_expr* fo = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, e2, e1);
+  expr* e1 = pop_nodestack();
+
+  // New jsoniq grammar:
+  if (f != BUILTIN_FUNC(FN_NOT_1))
+  {
+    expr* e2 = pop_nodestack();
+    fo = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, e2, e1);
+  }
+  else
+  {
+    fo = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, e1);
+  }
 
   normalize_fo(fo);
 
@@ -9285,73 +9310,6 @@ void* begin_visit(const PathExpr& v)
   const PathExpr& pe = v;
 
   ParseConstants::pathtype_t pe_type = pe.get_type();
-
-  // terrible hack to allow for a standalone true, false or null to be
-  // interpreted as a boolean. User must use ./true, ./false or ./null for
-  // navigating XML elements named that way.
-#ifdef ZORBA_WITH_JSON
-  if (pe_type == ParseConstants::path_relative)
-  {
-    RelativePathExpr* lRootRelPathExpr =
-    dynamic_cast<RelativePathExpr*>(pe.get_relpath_expr().getp());
-
-    ContextItemExpr* lStepExpr =
-    dynamic_cast<ContextItemExpr*>(lRootRelPathExpr->get_step_expr());
-
-    AxisStep* lRelPathExpr =
-    dynamic_cast<AxisStep*>(lRootRelPathExpr->get_relpath_expr());
-
-    // Only rewrites if expression consists of a context item step on the left
-    // and of an axis step on the right,
-    // AND if this context item was set implicitly by the parser, meaning,
-    // the original expression was only an axis step.
-    if (lRelPathExpr && lStepExpr && lRootRelPathExpr->is_implicit())
-    {
-      ForwardStep* lFwdStep =
-      dynamic_cast<ForwardStep*>(lRelPathExpr->get_forward_step());
-
-      if (lFwdStep && lFwdStep->get_axis_kind() == ParseConstants::axis_child)
-      {
-        AbbrevForwardStep* lAbbrFwdStep =
-        dynamic_cast<AbbrevForwardStep*>(lFwdStep->get_abbrev_step());
-
-        if (lAbbrFwdStep)
-        {
-          const NameTest* lNodetest =
-          dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
-
-          if (lNodetest)
-          {
-            const rchandle<QName> lQName = lNodetest->getQName();
-
-            if (lQName && lQName->get_prefix() == "")
-            {
-              const zstring& lLocal = lQName->get_localname();
-
-              if (lLocal == "true")
-              {
-                push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, true));
-                return (void*)1;
-              }
-              else if (lLocal == "false")
-              {
-                push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, false));
-                return (void*)1;
-              }
-              else if (lLocal == "null")
-              {
-                store::Item_t lNull;
-                GENV_ITEMFACTORY->createJSONNull(lNull);
-                push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, lNull));
-                return (void*)1;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-#endif
 
   relpath_expr* pathExpr = NULL;
 
@@ -10546,6 +10504,43 @@ void end_visit(const StringLiteral& v, void* /*visit_state*/)
   push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, v.get_strval().str()));
 }
 
+
+/*******************************************************************************
+********************************************************************************/
+void* begin_visit(const BooleanLiteral& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const BooleanLiteral& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  push_nodestack(
+      theExprManager->create_const_expr(
+        theRootSctx, theUDF, loc, v.get_boolval()));
+}
+
+/*******************************************************************************
+********************************************************************************/
+void* begin_visit(const NullLiteral& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const NullLiteral& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  store::Item_t lNull;
+  GENV_ITEMFACTORY->createJSONNull(lNull);
+  push_nodestack(
+      theExprManager->create_const_expr(
+        theRootSctx, theUDF, loc, lNull));
+}
+
 /*******************************************************************************
    StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
 *******************************************************************************/
@@ -11693,7 +11688,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
   if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR))
   {
-    if (numArgs != 1)
+    if (numArgs > 1)
     {
       RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
     }
@@ -11702,19 +11697,27 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
     if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
     {
-      func = BUILTIN_FUNC(FN_JSONIQ_MEMBER_2);
+      func = (numArgs == 1 ?
+              BUILTIN_FUNC(FN_JSONIQ_MEMBER_2) :
+              BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1));
     }
     else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
     {
-      func = BUILTIN_FUNC(FN_JSONIQ_VALUE_2);
+      func = (numArgs == 1 ?
+              BUILTIN_FUNC(FN_JSONIQ_VALUE_2) :
+              BUILTIN_FUNC(FN_JSONIQ_KEYS_1));
     }
     else
     {
-      func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
+      func = (numArgs == 1 ?
+              BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2) :
+              BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1));
     }
 
     fo_expr* accessorExpr = 
-    CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, arguments[0]);
+    (numArgs == 1 ?
+     CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, arguments[0]) :
+     CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr));
 
     normalize_fo(accessorExpr);
 
@@ -12206,6 +12209,52 @@ void create_inline_function(
                                   udf->getName()->getStringValue().c_str());
 }
 
+/*******************************************************************************
+   FilterExpr ::= FilterExpr
+   (. (NCName | ParenthesizedExpr | VarRef | StringLiteral)
+********************************************************************************/
+void* begin_visit(const JSONObjectLookup& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+
+void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  expr* selectExpr = 0;
+  if (v.get_selector_expr())
+    selectExpr = pop_nodestack();
+
+  expr* objectExpr = pop_nodestack();
+  ZORBA_ASSERT(objectExpr != 0);
+
+  flwor_expr* flworExpr = wrap_expr_in_flwor(objectExpr, false);
+
+  for_clause* fc = reinterpret_cast<for_clause*>(flworExpr->get_clause(0));
+
+  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
+
+  function* func = 
+    selectExpr ?
+      BUILTIN_FUNC(FN_JSONIQ_VALUE_2) :
+      BUILTIN_FUNC(FN_JSONIQ_KEYS_1);
+
+  fo_expr* accessorExpr = 
+    selectExpr ?
+      CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, selectExpr) :
+      CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr);
+
+  normalize_fo(accessorExpr);
+
+  flworExpr->set_return_expr(accessorExpr);
+
+  pop_scope();
+
+  push_nodestack(flworExpr);
+}
 
 /*******************************************************************************
   JSONConstructor ::= ArrayConstructor |

@@ -32,6 +32,15 @@ std::ostream& operator<<( std::ostream &o, xquery_version_t v ) {
   }
 }
 
+std::ostream& operator<<( std::ostream &o, jsoniq_version_t v ) {
+  switch ( v ) {
+    case jsoniq_version_1_0:
+      return o << "1.0";
+    default:
+      return o << "unknown";
+  }
+}
+
 std::string toString(declaration_property_t prop)
 {
   switch (prop)

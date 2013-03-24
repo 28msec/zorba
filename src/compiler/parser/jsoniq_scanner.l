@@ -513,7 +513,6 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "schema" { return token::SCHEMA; }
 "copy-namespaces" { return token::COPY_NAMESPACES; }
 "for" { return token::FOR; }
-"from" { return token::FOR; }
 "let" { return token::LET; }
 "allowing" { return token::ALLOWING; }
 "sliding" { return token::SLIDING; }
@@ -531,6 +530,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "boundary-space" { return token::BOUNDARY_SPACE; }
 "ordering" { return token::ORDERING; }
 "xquery" { return token::XQUERY; }
+"jsoniq" { return token::JSONIQ; }
 "version" { return token::VERSION; }
 "option" { return token::OPTION; }
 "at" { return token::AT; }
@@ -765,6 +765,9 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "descending" { return token::DESCENDING; }
 "encoding" { return token::ENCODING; }
 
+"null" { return token::NULL_TOKEN; }
+"true" { return token::TRUE_TOKEN; }
+"false" { return token::FALSE_TOKEN; }
 
   /*______________________________________________________________________
    |
@@ -1182,7 +1185,7 @@ std::string start_jsoniq_state(int state)
     case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
     case MODE_START_TAG: return "MODE_START_TAG";
     case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
-    default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_jsoniq_state() in xquery_scanner.l \n";
+    default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_jsoniq_state() in jsoniq_scanner.l \n";
   }
 }
 

@@ -18,6 +18,7 @@ New Features:
     DynamicContext class in C++ API.
   * fn:trace outputs "empty-sequence()" if the input is the empty-sequence.
   * Allow multiple default function namespaces.
+  * $array() => jn:members($array), $object() => jn:keys($object)
   * Added xqxq:variable-value function.
   * Added canonicalize function to modules/xml.
   * Added support for xs:dateTimeStamp type from XMLSchema 1.1, bug #924754.
