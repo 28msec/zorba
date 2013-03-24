@@ -4397,10 +4397,6 @@ FilterExpr :
      {
        $$ = new JSONObjectLookup(LOC(@$), $1, $3);
      }
-  |  FilterExpr DOT STAR
-     {
-       $$ = new JSONObjectLookup(LOC(@$), $1);
-     }
 ;
 
 

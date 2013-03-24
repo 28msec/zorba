@@ -55,8 +55,8 @@ dml:insert-last(xs:QName("stores"),
             $category : 
             {|
               for $sales in dml:collection(xs:QName("sales"))
-              where $sales."store number" eq $store."store number"
-                 and $sales.product eq $product.name
+              where exists($store."store number"[. eq $sales."store number"])
+                 and exists($product.name[. eq $sales.product])
               let $pname := $sales.product
               group by $pname
               return { $pname : sum( $sales.quantity ) }
