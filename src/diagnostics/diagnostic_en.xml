@@ -373,6 +373,13 @@
       </comment>
       <value>typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve</value>
     </diagnostic>
+    
+    <diagnostic code="XQTY0105">
+      <comment>
+        It is a type error if the content sequence in an element constructor contains a function item.
+      </comment>
+      <value>element constructor must not contain a function item</value>
+    </diagnostic>
 
     <diagnostic code="XQST0009">
       <comment>
@@ -1012,21 +1019,51 @@
       <value>"$1": picture string does not satisfy format-number() function rules</value>
     </diagnostic>
 
-    <diagnostic code="XTDE1340">
+    <diagnostic code="FOFD1340">
       <comment>
-       It is a non-recoverable dynamic error if the syntax of the picture is
-       incorrect.
+        It is a non-recoverable dynamic error if the syntax of the picture is
+        incorrect.
       </comment>
-      <value>"$1": invalid picture string for date/time</value>
+      <value>"$1": invalid picture string for date/time${: 2}</value>
+      <entry key="BadComponent_3">
+        <value>'$3': invalid component specifier</value>
+      </entry>
+      <entry key="BadWidthModifier">
+        <value>invalid width modifier</value>
+      </entry>
+      <entry key="DigitNotSameFamily_34">
+        <value>"$3": digit not from same digit family as $4</value>
+      </entry>
+      <entry key="MultipleComponent_3">
+        <value>'$3': multiple component specifiers between []</value>
+      </entry>
+      <entry key="MustBeOneMandatoryDigit">
+        <value>there must be at least one mandatory-digit-sign</value>
+      </entry>
+      <entry key="NoComponent">
+        <value>component specifier expected between []</value>
+      </entry>
+      <entry key="NoAdjacentGroupSep_3">
+        <value>"$3": grouping separator must not be adjacent to others</value>
+      </entry>
+      <entry key="NoGroupSepAtStart_3">
+        <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoGroupSepAtEnd_3">
+        <value>"$3": grouping separator illegal at end of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoOptDigitAfterMandatory">
+        <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
+      </entry>
     </diagnostic>
 
-    <diagnostic code="XTDE1350">
+    <diagnostic code="FOFD1350">
       <comment>
-       It is a non-recoverable dynamic error if a component specifier within the
-       picture refers to components that are not available in the given type of
-       \c $value.
+        It is a non-recoverable dynamic error if a component specifier within
+        the picture refers to components that are not available in the given
+        type of $value.
       </comment>
-      <value>component specifier not available</value>
+      <value>"$1": component specifier not available</value>
     </diagnostic>
 
     <!--////////// XQuery Full-Text Errors /////////////////////////////////-->
@@ -1319,53 +1356,41 @@
 
     <diagnostic code="FORG0001">
       <comment>
-       Invalid value for cast/constructor.
+        Invalid value for cast/constructor.
       </comment>
-
       <value>$1</value>
-
-      <entry key="NoCastTo_234">
-        <value>"$2": value of type $3 is not castable to type $4</value>
-      </entry>
-
-      <entry key="NoCastTo_234o">
-        <value>"$2": value is not castable to type $3${: 4}</value>
-      </entry>
-
-      <entry key="LocalNotNCName_2">
-        <value>"$2": local name in qname is not an xs:NCName</value>
-      </entry>
-
-      <entry key="PrefixNotNCName_2">
-        <value>"$2": prefix in qname is not an xs:NCName</value>
-      </entry>
-
-      <entry key="NameNotNCName_2">
-        <value>"$2": name is not an xs:NCName</value>
-      </entry>
-
-      <entry key="PrefixNotBound_2">
-        <value>"$2": prefix has no known namespace binding</value>
-      </entry>
-
-      <entry key="Base64BadChar_2">
-        <value>"$2": invalid Base64 character</value>
-      </entry>
-
-      <entry key="Base64Multiple4">
-        <value>Base64 data must be a multiple of 4 characters</value>
-      </entry>
-
-      <entry key="HexBinaryMustBeEven">
-        <value>HexBinary value must contain an even number of characters</value>
-      </entry>
-
       <entry key="BadHexDigit_2">
         <value>'$2': invalid hexedecimal digit</value>
       </entry>
-
+      <entry key="Base64BadChar_2">
+        <value>'$2': invalid Base64 character</value>
+      </entry>
+      <entry key="Base64Multiple4">
+        <value>Base64 data must be a multiple of 4 bytes</value>
+      </entry>
+      <entry key="HexBinaryMustBeEven">
+        <value>hexBinary value must contain an even number of bytes</value>
+      </entry>
+      <entry key="LocalNotNCName_2">
+        <value>"$2": local name in qname is not an xs:NCName</value>
+      </entry>
+      <entry key="NameNotNCName_2">
+        <value>"$2": name is not an xs:NCName</value>
+      </entry>
+      <entry key="NoCastTo_234">
+        <value>"$2": value of type $3 is not castable to type $4</value>
+      </entry>
+      <entry key="NoCastTo_234o">
+        <value>"$2": value is not castable to type $3${: 4}</value>
+      </entry>
       <entry key="NoTypeInCtx_2">
         <value>"$2": type no defined in current context</value>
+      </entry>
+      <entry key="PrefixNotBound_2">
+        <value>"$2": prefix has no known namespace binding</value>
+      </entry>
+      <entry key="PrefixNotNCName_2">
+        <value>"$2": prefix in qname is not an xs:NCName</value>
       </entry>
     </diagnostic>
 
@@ -1494,9 +1519,19 @@
       <value>"$1": can not decode resource retrieved</value>
     </diagnostic>
 
-    <diagnostic code="FOCZ0001"> <comment>
+    <diagnostic code="FOFL0001">
+      <comment>
+       This error is raised if the fn:function-lookup returns a context-dependent function and the context-dependent function is then called.
+      </comment>
+
+      <value>dynamic call on context-dependent function item</value>
+    </diagnostic>
+
+    <diagnostic code="FOCZ0001">
+      <comment>
        Invalid content passed to \c x:canonicalize().
       </comment>
+
       <value>invalid content passed to $1: $2</value>
     </diagnostic>
 

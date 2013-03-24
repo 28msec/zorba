@@ -32,8 +32,39 @@
 #include "context/static_context.h"
 #include "compiler/api/compilercb.h"
 #include "context/dynamic_context.h"
+#include "store/api/temp_seq.h"
 
 namespace zorba {
+
+// <FunctionLookupIterator>
+SERIALIZABLE_CLASS_VERSIONS(FunctionLookupIterator)
+
+void FunctionLookupIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>*)this);
+
+    ar & theCompilerCB;
+}
+
+
+void FunctionLookupIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FunctionLookupIterator::~FunctionLookupIterator() {}
+
+// </FunctionLookupIterator>
+
 
 // <FunctionNameIterator>
 SERIALIZABLE_CLASS_VERSIONS(FunctionNameIterator)
@@ -91,17 +122,17 @@ FunctionArityIterator::~FunctionArityIterator() {}
 // </FunctionArityIterator>
 
 
-// <PartialApplyIterator>
-SERIALIZABLE_CLASS_VERSIONS(PartialApplyIterator)
+// <FnMapPairsIterator>
+SERIALIZABLE_CLASS_VERSIONS(FnMapPairsIterator)
 
-void PartialApplyIterator::serialize(::zorba::serialization::Archiver& ar)
+void FnMapPairsIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<PartialApplyIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>*)this);
 }
 
 
-void PartialApplyIterator::accept(PlanIterVisitor& v) const
+void FnMapPairsIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -114,9 +145,43 @@ void PartialApplyIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-PartialApplyIterator::~PartialApplyIterator() {}
+FnMapPairsIterator::~FnMapPairsIterator() {}
 
-// </PartialApplyIterator>
+FnMapPairsIteratorState::FnMapPairsIteratorState() {}
+
+// </FnMapPairsIterator>
+
+
+// <FnFoldLeftIterator>
+SERIALIZABLE_CLASS_VERSIONS(FnFoldLeftIterator)
+
+void FnFoldLeftIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>*)this);
+
+    ar & theIsFoldRight;
+}
+
+
+void FnFoldLeftIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnFoldLeftIterator::~FnFoldLeftIterator() {}
+
+FnFoldLeftIteratorState::FnFoldLeftIteratorState() {}
+
+// </FnFoldLeftIterator>
 
 
 

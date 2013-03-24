@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- #include "stdafx.h"
+#include "stdafx.h"
 
 #include "diagnostics/util_macros.h"
 
@@ -21,31 +21,38 @@
 #include "runtime/function_item/function_item.h"
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
 #include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "store/api/temp_seq.h"
 
 #include "types/root_typemanager.h"
 #include "types/casting.h"
+#include "types/typeops.h"
 
 #include "system/globalenv.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 
-SERIALIZABLE_CLASS_VERSIONS(DynamicFnCallIterator)
+SERIALIZABLE_CLASS_VERSIONS(ArgumentPlaceholderIterator)
 
+NOARY_ACCEPT(ArgumentPlaceholderIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(DynamicFnCallIterator)
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-DynamicFnCallIteratorState::DynamicFnCallIteratorState() 
+DynamicFnCallIteratorState::DynamicFnCallIteratorState()
 {
 }
 
@@ -55,7 +62,7 @@ DynamicFnCallIteratorState::DynamicFnCallIteratorState()
 ********************************************************************************/
 DynamicFnCallIteratorState::~DynamicFnCallIteratorState()
 {
-  if (theIsOpen) 
+  if (theIsOpen)
   {
     thePlan->close(*thePlanState);
   }
@@ -80,7 +87,7 @@ void DynamicFnCallIteratorState::init(PlanState& planState)
 void DynamicFnCallIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  if (theIsOpen) 
+  if (theIsOpen)
   {
     thePlan->reset(planState);
   }
@@ -90,8 +97,13 @@ void DynamicFnCallIteratorState::reset(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-DynamicFnCallIterator::~DynamicFnCallIterator() 
+void DynamicFnCallIterator::serialize(::zorba::serialization::Archiver& ar)
 {
+  serialize_baseclass(ar,
+  (NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>*)this);
+
+  ar & theDotVarsCount;
+  ar & theIsPartialApply;
 }
 
 
@@ -112,25 +124,46 @@ uint32_t DynamicFnCallIterator::getStateSizeOfSubtree() const
 ********************************************************************************/
 void DynamicFnCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<DynamicFnCallIteratorState>::createState(planState,
-                                                           theStateOffset,
-                                                           offset);
+  StateTraitsImpl<DynamicFnCallIteratorState>::
+  createState(planState, theStateOffset, offset);
 
-  StateTraitsImpl<DynamicFnCallIteratorState>::initState(planState, theStateOffset);
+  StateTraitsImpl<DynamicFnCallIteratorState>::
+  initState(planState, theStateOffset);
 
-  DynamicFnCallIteratorState* state =
-  StateTraitsImpl<DynamicFnCallIteratorState>::getState(planState, theStateOffset);
+  DynamicFnCallIteratorState* state = 
+  StateTraitsImpl<DynamicFnCallIteratorState>::
+  getState(planState, theStateOffset);
 
   state->theUDFStateOffset = offset;
 
   offset += sizeof(UDFunctionCallIteratorState);
 
-  std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
+  std::vector<PlanIter_t>::iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
   for ( ; lIter != lEnd; ++lIter )
-	{
+  {
     (*lIter)->open(planState, offset);
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void DynamicFnCallIterator::resetImpl(PlanState& planState) const
+{
+  DynamicFnCallIteratorState* state = 
+  StateTraitsImpl<DynamicFnCallIteratorState>::
+  getState(planState, theStateOffset);
+  
+  if (state->theIsOpen)
+  {
+    state->thePlan->close(planState);
+    state->theIsOpen = false;
+  }
+  
+  NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>::
+  resetImpl(planState);
 }
 
 
@@ -143,6 +176,7 @@ bool DynamicFnCallIterator::nextImpl(
 {
   store::Item_t item;
   store::Item_t targetItem;
+  FunctionItem* fnItem;
 #ifdef ZORBA_WITH_JSON
   store::Item_t selectorItem1;
   store::Item_t selectorItem2;
@@ -150,11 +184,6 @@ bool DynamicFnCallIterator::nextImpl(
   bool isObjectNav;
   bool selectorError;
 #endif
-  FunctionItem* fnItem;
-  std::vector<PlanIter_t> argIters;
-  std::vector<PlanIter_t>::iterator ite;
-  std::vector<PlanIter_t>::const_iterator ite2;
-  std::vector<PlanIter_t>::const_iterator end2;
 
   TypeManager* tm = theSctx->get_typemanager();
 
@@ -164,7 +193,7 @@ bool DynamicFnCallIterator::nextImpl(
 
   // first child must return exactly one item which is a function item
   // otherwise XPTY0004 is raised
-  if (!consumeNext(targetItem, theChildren[0], planState))
+  if (!consumeNext(targetItem, theChildren[0], planState) || targetItem == NULL)
   {
     RAISE_ERROR(err::XPTY0004, loc, 
     ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
@@ -183,52 +212,75 @@ bool DynamicFnCallIterator::nextImpl(
 
     fnItem = static_cast<FunctionItem*>(targetItem.getp());
 
-    argIters.resize(theChildren.size() - 1 + fnItem->getVariables().size());
-
-    ite = argIters.begin();
-
-    ite2 = theChildren.begin();
-    end2 = theChildren.end();
-    ++ite2;
-
-    for (; ite2 != end2; ++ite2, ++ite)
+    if ((!fnItem->needsContextItem() &&
+         theChildren.size() - 1 - theDotVarsCount != fnItem->getArity())
+        ||
+        (fnItem->needsContextItem()
+         && theChildren.size() - 1 != fnItem->getArity()))
     {
-      *ite = *ite2;
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
     }
 
-    ite2 = fnItem->getVariables().begin();
-    end2 = fnItem->getVariables().end();
+    if (theIsPartialApply)
+    {
+      for (csize i = 1, pos = 0; i < theChildren.size() - theDotVarsCount; ++i)
+      {
+        if (dynamic_cast<ArgumentPlaceholderIterator*>(theChildren[i].getp()) == NULL)
+        {
+          // The argument needs to be materialized only for local vars and only
+          // if the function item is returned and used outside of the current
+          // function. It might be impossible to determine if the partially
+          // applied function item will be used outside of the current function,
+          // so it is quite probable that it always needs to be materialized.          
+          std::vector<store::Item_t> argValues;
+          store::Item_t tempItem;
 
-    for(; ite2 != end2; ++ite2, ++ite) 
-    {
-      *ite = *ite2;
-    }
-    
-    state->thePlan = fnItem->getImplementation(argIters);
-    
-    // must be opened after vars and params are set
-    state->thePlan->open(planState, state->theUDFStateOffset);
-    state->theIsOpen = true;
-    
-    while(consumeNext(result, state->thePlan, planState)) 
-    {
+          while (consumeNext(tempItem, theChildren[i], planState))
+            argValues.push_back(tempItem);
+
+          store::TempSeq_t argSeq = GENV_STORE.createTempSeq(argValues);
+          store::Iterator_t argSeqIter = argSeq->getIterator();
+          PlanIter_t value = new PlanStateIteratorWrapper(argSeqIter);
+                    
+          fnItem->setArgumentValue(pos, value);
+        }
+        else
+          pos++;
+      }
+
+      result = fnItem;
       STACK_PUSH(true, state);
     }
+    else
+    {
+      state->thePlan = fnItem->getImplementation(theChildren, planState.theCompilerCB);
+      
+      // must be opened after vars and params are set
+      state->thePlan->open(planState, state->theUDFStateOffset);
+      state->theIsOpen = true;
 
-    // need to close here early in case the plan is completely
-    // consumed. Otherwise, the plan would still be opened
-    // if destroyed from the state's destructor.
-    state->thePlan->close(planState);
-    state->theIsOpen = false;
-  }
+      while (consumeNext(result, state->thePlan, planState))
+      {
+        STACK_PUSH(true, state);
+      }
+
+      // need to close here early in case the plan is completely
+      // consumed. Otherwise, the plan would still be opened
+      // if destroyed from the state's destructor.
+      state->thePlan->close(planState);
+      state->theIsOpen = false;
+    } // if (theIsPartialApply)
+
+  } // if (targetItem->isFunction())
 #ifdef ZORBA_WITH_JSON
   else if (targetItem->isJSONObject() || targetItem->isJSONArray())
   {
-    if (theChildren.size() > 2)
+    if (theChildren.size() - theDotVarsCount > 2)
     {
       RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
     }
-    else if (theChildren.size() == 2)
+    else if (theChildren.size() - theDotVarsCount == 2)
     {
       isObjectNav = targetItem->isJSONObject();
       selectorError = false;
@@ -300,8 +352,7 @@ bool DynamicFnCallIterator::nextImpl(
         result = targetItem->getObjectValue(selectorItem3);
       else
         result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
-
-      STACK_PUSH(true, state);
+      STACK_PUSH(result != NULL, state);
     }
     else
     {
@@ -316,6 +367,7 @@ bool DynamicFnCallIterator::nextImpl(
       {
         STACK_PUSH(true, state);
       }
+
       state->theIterator->close();
     }
   }

@@ -38,6 +38,21 @@ void populate_context_function_item_iter(static_context* sctx);
 
 
 
+//fn:function-lookup
+class fn_function_lookup_3_0 : public function
+{
+public:
+  fn_function_lookup_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn:function-name
 class fn_function_name_3_0 : public function
 {
@@ -68,11 +83,41 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 };
 
 
-//fn:partial-apply
-class fn_partial_apply_3_0 : public function
+//fn:map-pairs
+class fn_map_pairs_3_0 : public function
 {
 public:
-  fn_partial_apply_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_map_pairs_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:fold-left
+class fn_fold_left_3_0 : public function
+{
+public:
+  fn_fold_left_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:fold-right
+class fn_fold_right_3_0 : public function
+{
+public:
+  fn_fold_right_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

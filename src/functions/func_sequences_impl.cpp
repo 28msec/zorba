@@ -492,6 +492,50 @@ BoolAnnotationValue fn_reverse::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
+PlanIter_t fn_index_of::codegen(
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& caller) const
+{
+  TypeManager* tm = caller.get_type_manager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  fo_expr* fo = static_cast<fo_expr*>(&caller);
+  expr* seqArg = fo->get_arg(0);
+  expr* keyArg = fo->get_arg(1);
+  xqtref_t seqType = seqArg->get_return_type();
+  xqtref_t pseqType = TypeOps::prime_type(tm, *seqType);
+  xqtref_t keyType = keyArg->get_return_type();
+
+  if (TypeOps::is_equal(tm, *keyType, *rtm.ANY_ATOMIC_TYPE_ONE) ||
+      TypeOps::is_equal(tm, *pseqType, *rtm.ANY_ATOMIC_TYPE_ONE))
+  {
+    return new FnIndexOfIterator(sctx, loc, argv, 0);
+  }
+
+  if (TypeOps::is_subtype(tm, *keyType, *seqType) ||
+      (TypeOps::is_subtype(tm, *keyType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) &&
+       TypeOps::is_subtype(tm, *seqType, *rtm.STRING_TYPE_STAR)) ||
+      (TypeOps::is_subtype(tm, *keyType, *rtm.STRING_TYPE_ONE) &&
+       TypeOps::is_subtype(tm, *seqType, *rtm.UNTYPED_ATOMIC_TYPE_STAR)))
+  {
+    return new FnIndexOfIterator(sctx, loc, argv, 1);
+  }
+
+  if (TypeOps::is_subtype(tm, *pseqType, *keyType))
+  {
+    return new FnIndexOfIterator(sctx, loc, argv, 2);
+  }
+
+  return new FnIndexOfIterator(sctx, loc, argv, 0);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t fn_subsequence::getReturnType(const fo_expr* caller) const
 {
   TypeManager* tm = caller->get_type_manager();
@@ -759,8 +803,10 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
         AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
         assert(input != NULL);
 
+        
         if (input->setTargetPos(pos2 - 1))
           return aArgs[0];
+        
       }
     }
     else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
