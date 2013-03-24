@@ -592,6 +592,7 @@ static void append_timezone( char component, TimeZone const &tz,
 
 fallback:
       format = "01:01";
+      has_grouping_separators = true;
       // no break;
 
     default:
