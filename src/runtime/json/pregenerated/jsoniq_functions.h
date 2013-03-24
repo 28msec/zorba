@@ -517,13 +517,26 @@ public:
  * 
  * Author: 
  */
-class JSONItemAccessorIterator : public BinaryBaseIterator<JSONItemAccessorIterator, PlanIteratorState>
+class JSONItemAccessorIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theIterator; //
+
+  JSONItemAccessorIteratorState();
+
+  ~JSONItemAccessorIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONItemAccessorIterator : public BinaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONItemAccessorIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONItemAccessorIterator,
-    BinaryBaseIterator<JSONItemAccessorIterator, PlanIteratorState>);
+    BinaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
@@ -532,7 +545,7 @@ public:
     const QueryLoc& loc,
     PlanIter_t& child1, PlanIter_t& child2)
     : 
-    BinaryBaseIterator<JSONItemAccessorIterator, PlanIteratorState>(sctx, loc, child1, child2)
+    BinaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>(sctx, loc, child1, child2)
   {}
 
   virtual ~JSONItemAccessorIterator();

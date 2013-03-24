@@ -39,6 +39,7 @@ extern entry const dict_en[] = {
   { "FOCH0002", "\"$1\": unsuported collation${: 2}" },
   { "FOCH0003", "\"$1\": unsupported normalization form" },
   { "FOCH0004", "\"$1\": collation does not support collation units" },
+  { "FOCZ0001", "invalid content passed to $1: $2" },
   { "FODC0001", "no context document for $1() function" },
   { "FODC0002", "\"$1\": error retrieving resource${: 2}" },
   { "FODC0003", "function stability not defined" },
@@ -52,8 +53,11 @@ extern entry const dict_en[] = {
   { "FODT0002", "overflow/underflow in duration operation" },
   { "FODT0003", "\"$1\": invalid timezone value (in seconds)" },
   { "FOER0000", "unidentifier error" },
+  { "FOFD1340", "\"$1\": invalid picture string for date/time${: 2}" },
+  { "FOFD1350", "\"$1\": component specifier not available" },
   { "FOFI0001", "\"$1\": not castable to xs:language" },
   { "FOFI0002", "invalid argument in format-integer: $1" },
+  { "FOFL0001", "dynamic call on context-dependent function item" },
   { "FONS0004", "\"$1\": no namespace found for prefix" },
   { "FONS0005", "base-URI not defined in the static context" },
   { "FORG0001", "$1" },
@@ -125,10 +129,13 @@ extern entry const dict_en[] = {
   { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0018", "object or array selection needs exactly one parameter" },
+  { "JNTY0018", "object or array selection needs zero or one parameter" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0020", "$1: invalid option type for option $2 (expected $3)" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0021", "$1: invalid json-item() type (expected $2)" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0023", "$1: value of \"$2\" is not a $3" },
@@ -202,11 +209,13 @@ extern entry const dict_en[] = {
   { "XQDY0061", "invalid validate expression operand${: 1}" },
   { "XQDY0064", "\"XML\": invalid name expression" },
   { "XQDY0072", "comment must not contain \"--\" or end with \"-\"" },
-  { "XQDY0074", "${\"1\": }can not convert to expanded QName${: 2}" },
+  { "XQDY0074", "$1" },
   { "XQDY0084", "validated element does not have a top-level element declaration in the in-scope element declarations${: 1}" },
   { "XQDY0091", "\"xml:id\" encountered" },
   { "XQDY0092", "\"$1\": must be either \"preserve\" or \"default\"" },
   { "XQDY0096", "\"$1\": invalid node-name" },
+  { "XQDY0101", "Invalid prefix and/or uri in computed namespace constructor: prefix = $1, namespace URI = $2." },
+  { "XQDY0102", "\"$1\": uri causes namespace binding conflict: prefix $2 already bound to $3" },
   { "XQST0009", "schema import not supported" },
   { "XQST0012", "invalid schema definitions" },
   { "XQST0013", "invalid pragma content" },
@@ -256,6 +265,7 @@ extern entry const dict_en[] = {
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
   { "XQTY0030", "validate argument must be exactly one document or element node" },
   { "XQTY0086", "typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve" },
+  { "XQTY0105", "element constructor must not contain a function item" },
   { "XSST0001", "\"$1\": function cannot be declared as both updating and sequential" },
   { "XSST0002", "\"$1\": function declared sequential but has updating body" },
   { "XSST0003", "\"$1\": function declared updating but has sequential body" },
@@ -267,8 +277,6 @@ extern entry const dict_en[] = {
   { "XSST0009", "\"break loop\" statement not inside while statement" },
   { "XSST0010", "\"continue loop\" statement not inside while statement" },
   { "XTDE1310", "\"$1\": picture string does not satisfy format-number() function rules" },
-  { "XTDE1340", "\"$1\": invalid picture string for date/time" },
-  { "XTDE1350", "component specifier not available" },
   { "XUDY0009", "node has no parent in \"replace\" expression (without \"value of\")" },
   { "XUDY0014", "\"modify\" can not modify node not created by \"copy\"" },
   { "XUDY0015", "node is target of multiple \"rename\" expressions in same query" },
@@ -277,8 +285,8 @@ extern entry const dict_en[] = {
   { "XUDY0018", "\"$1\": function declared external, non-updating returns non-empty pending update list" },
   { "XUDY0019", "\"$1\": function declared external, updating returns non-empty data model instance" },
   { "XUDY0021", "$1${ 2}" },
-  { "XUDY0023", "\"$1\": qname causes namespace binding conflict: prefix $2 cannot be bound to both $3 and $4" },
-  { "XUDY0024", "\"$1\": namespace binding conflicts with $2=$3" },
+  { "XUDY0023", "\"$1\": uri causes namespace binding conflict: prefix $2 already bound to $3" },
+  { "XUDY0024", "\"$1\": uri causes namespace binding conflict: prefix $2 already bound to $3" },
   { "XUDY0027", "target expression is empty sequence" },
   { "XUDY0029", "node has no parent in \"insert\" expression (with \"before\" or \"after\")" },
   { "XUDY0030", "insertion of attrhbute node before or after document node child" },
@@ -537,7 +545,6 @@ extern entry const dict_en[] = {
   { "~ArithOpNotDefinedBetween_23", "arithmetic operation not defined between types \"$2\" and \"$3\"" },
   { "~AtomizationHasMoreThanOneValue", "atomization has more than one value" },
   { "~AttributeName", "attribute name" },
-  { "~AttributeNode", "attribute node" },
 #if !defined(ZORBA_NO_ICU)
   { "~BackRef0Illegal", "\"0\": illegal backreference" },
 #endif
@@ -549,6 +556,7 @@ extern entry const dict_en[] = {
   { "~BadCharAfter_34", "'$3': illegal character after '$4'" },
   { "~BadCharInBraces_3", "'$3': illegal character within { }" },
   { "~BadDecDigit_3", "'$3': invalid decimal digit" },
+  { "~BadEndCharInRange_34", "'$3': invalid end character in range (less than '$4' start character)" },
   { "~BadFileURIAuthority_2", "\"$2\": invalid authority for \"file\" scheme" },
   { "~BadHexSequence", "invalid hexedecimal sequence" },
   { "~BadItem", "invalid item" },
@@ -556,7 +564,13 @@ extern entry const dict_en[] = {
   { "~BadLibraryModule", "invalid library module" },
   { "~BadPath", "invalid path" },
 #if !defined(ZORBA_NO_ICU)
+  { "~BadQuantifierHere_3", "'$3': quantifier illegal here" },
+#endif
+#if !defined(ZORBA_NO_ICU)
   { "~BadRegexEscape_3", "\"$3\": illegal escape character" },
+#endif
+#if !defined(ZORBA_NO_ICU)
+  { "~BadRegexParen_3", "\"$3\": illegal character after \"(?\"" },
 #endif
   { "~BadStreamState", "bad I/O stream state" },
   { "~BadTokenInBraces_3", "\"$3\": illegal token within { }" },
@@ -604,10 +618,20 @@ extern entry const dict_en[] = {
   { "~FOCA0002_BadLexicalQName_2", "\"$2\": value is not a valid lexical QName" },
   { "~FOCA0002_NoCastTo_234", "\"$2\": value of type $3 is not castable to type $4" },
   { "~FOCA0002_NoURIforPrefix_2", "no namespace URI provided for prefix in lexical QName \"$2\"" },
+  { "~FOFD1340_BadComponent_3", "'$3': invalid component specifier" },
+  { "~FOFD1340_BadWidthModifier", "invalid width modifier" },
+  { "~FOFD1340_DigitNotSameFamily_34", "\"$3\": digit not from same digit family as $4" },
+  { "~FOFD1340_MultipleComponent_3", "'$3': multiple component specifiers between []" },
+  { "~FOFD1340_MustBeOneMandatoryDigit", "there must be at least one mandatory-digit-sign" },
+  { "~FOFD1340_NoAdjacentGroupSep_3", "\"$3\": grouping separator must not be adjacent to others" },
+  { "~FOFD1340_NoComponent", "component specifier expected between []" },
+  { "~FOFD1340_NoGroupSepAtEnd_3", "\"$3\": grouping separator illegal at end of decimal-digit-pattern" },
+  { "~FOFD1340_NoGroupSepAtStart_3", "\"$3\": grouping separator illegal at start of decimal-digit-pattern" },
+  { "~FOFD1340_NoOptDigitAfterMandatory", "\"#\": optional-digit-sign must precede all mandatory-digit-signs" },
   { "~FORG0001_BadHexDigit_2", "'$2': invalid hexedecimal digit" },
-  { "~FORG0001_Base64BadChar_2", "\"$2\": invalid Base64 character" },
-  { "~FORG0001_Base64Multiple4", "Base64 data must be a multiple of 4 characters" },
-  { "~FORG0001_HexBinaryMustBeEven", "HexBinary value must contain an even number of characters" },
+  { "~FORG0001_Base64BadChar_2", "'$2': invalid Base64 character" },
+  { "~FORG0001_Base64Multiple4", "Base64 data must be a multiple of 4 bytes" },
+  { "~FORG0001_HexBinaryMustBeEven", "hexBinary value must contain an even number of bytes" },
   { "~FORG0001_LocalNotNCName_2", "\"$2\": local name in qname is not an xs:NCName" },
   { "~FORG0001_NameNotNCName_2", "\"$2\": name is not an xs:NCName" },
   { "~FORG0001_NoCastTo_234", "\"$2\": value of type $3 is not castable to type $4" },
@@ -679,7 +703,6 @@ extern entry const dict_en[] = {
   { "~NoCompareTypes_23", "can not compare item of type $2 with item of type $3" },
   { "~NoCompareWithType_4", "can not compare for equality to type \"$4\"" },
   { "~NoDriveSpecification", "missing drive specification" },
-  { "~NoEmptyLocalname", "local-name can not be empty" },
   { "~NoEmptySeqAsBaseURI", "can't treat empty sequence as base URI" },
   { "~NoEmptySeqAsCollationParam", "empty-sequence not allowed as collation parameter" },
   { "~NoExternalFunction_2", "\"$2\": external function not found" },
@@ -703,6 +726,7 @@ extern entry const dict_en[] = {
   { "~NoSerializationCallbackForModule", "no SerializationCallback for required external module \"$2\"" },
   { "~NoSerializationCallbackForTraceStream", "no SerializationCallback for required trace stream" },
   { "~NoSourceURI", "no URI" },
+  { "~NoStrictCompareWithType_4", "can not compare for strict inequality to type \"$4\"" },
   { "~NoTreatAs_4", "can not treat as \"$4\"" },
   { "~NoTypeInMainModule_4", "type of variable \"$4\" is not among the in-scope types of the main module" },
   { "~NoTypeInModule_45", "type of variable \"$4\" is not among the in-scope types module \"$5\"" },
@@ -713,12 +737,12 @@ extern entry const dict_en[] = {
   { "~NodeIDNeedsBytes_2", "nodeid requires more than $2 bytes" },
   { "~NodeIDTooBig", "nodeid component too big for encoding" },
 #if !defined(ZORBA_NO_ICU)
-  { "~NonClosedBackRef_3", "'$$3': non-closed backreference" },
+  { "~NonClosedBackRef_3", "'\\$$3': non-closed backreference" },
 #endif
   { "~NonFileThesaurusURI", "non-file thesaurus URI" },
   { "~NonLocalhostAuthority", "non-localhost authority" },
 #if !defined(ZORBA_NO_ICU)
-  { "~NonexistentBackRef_3", "'$$3': non-existent backreference" },
+  { "~NonexistentBackRef_3", "'\\$$3': non-existent backreference" },
 #endif
   { "~NotAllowedForTypeName", "not allowed for typeName (use xsd:untyped instead)" },
   { "~NotAmongInScopeSchemaTypes", "not among in-scope schema types" },
@@ -726,6 +750,9 @@ extern entry const dict_en[] = {
   { "~NotDocOrElementNode", "not a document or element node" },
   { "~NotInStaticCtx", "not found in static context" },
   { "~NotPlainFile", "not plain file" },
+#if !defined(ZORBA_NO_ICU)
+  { "~NotSingleCharEsc_3", "\"\\\\$3\": multi-character and category escapes not permitted in character range" },
+#endif
   { "~NotSpecified", "not specified" },
   { "~OpIsSameNodeMustHaveNodes", "op:is-same-node() must have nodes as parameters" },
   { "~OpNodeAfterMustHaveNodes", "op:node-after() must have nodes as parameters" },
@@ -801,6 +828,8 @@ extern entry const dict_en[] = {
 #if defined(ZORBA_NO_ICU)
   { "~REGEX_UNKNOWN_PZ_CONSTRUCT", "unknown \\\\p{Z?} category; supported categories: Z, Zs, Zl, Zp" },
 #endif
+  { "~SENR0001_AttributeNode", "attribute node" },
+  { "~SENR0001_NamespaceNode", "namespace node" },
   { "~SEPM0009_Not10", "the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
   { "~SEPM0009_NotOmit", "the standalone attribute has a value other than \"omit\"" },
   { "~SchemaUnexpected", "unexpected exception during parsing" },
@@ -893,6 +922,7 @@ extern entry const dict_en[] = {
   { "~XPDY0002_VariableHasNoValue_2", "\"$2\": variable has no value" },
   { "~XPDY0002_VariableUndeclared_2", "\"$2\": undeclared variable" },
   { "~XPST0003_Annotations", "function and variable annotations only available in XQuery 3.0 or later" },
+  { "~XPST0003_CompNS", "computed namespace constructors only available in XQuery 3.0 or later" },
   { "~XPST0003_CountClause30", "\"count\" clause only available in XQuery 3.0 or later" },
   { "~XPST0003_ModuleDeclNotInMain", "module declaration must not be in main module" },
   { "~XPST0003_OuterForClause30", "\"outer-for\" clause only available in XQuery 3.0 or later" },
@@ -921,6 +951,9 @@ extern entry const dict_en[] = {
   { "~XPTY0117_NotationParam_23", "$2 can not be promoted to parameter type xs:NOTATION of function $3()" },
   { "~XQDY0027_SerializationElementName_2", "\"$2\": invalid serialization parameters; element name must be \"serialization-parameters\"" },
   { "~XQDY0027_SerializationElementNs_2", "\"$2\": invalid namespace for the \"serialization-parameters\" element; must be \"http://www.w3.org/2010/xslt-xquery-serialization\"" },
+  { "~XQDY0074_NameSapceConstructor", "$2: cannot cast prefix to xs:NCName" },
+  { "~XQDY0074_NoEmptyLocalname", "can not convert empty local name to xs:QName" },
+  { "~XQDY0074_NotCastToQName", "$2: can not convert to xs:QName" },
   { "~XQST0046_BadHexDigit_3", "'$3': invalid hexedecimal digit" },
   { "~XQST0059_SpecificationMessage", "\"$2\": target namespace not found for schema/module${ \"3\"}${: 4}" },
   { "~XQST0059_XercesMessage", "$2,$3: error in schema${ with System ID \"4\"}${ with Public ID \"5\"}${: 6}" },

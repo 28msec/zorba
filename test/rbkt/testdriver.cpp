@@ -201,7 +201,6 @@ main(int argc, char** argv)
       zorba::Item lDisable
         = engine->getItemFactory()->createQName(
             "http://www.zorba-xquery.com/options/features", "", "disable");
-      lContext->declareOption(lEnable, "hof");
       lContext->declareOption(lDisable, "scripting");
     }
 
@@ -216,15 +215,7 @@ main(int argc, char** argv)
     zorba::file lResultFile (rbkt_bin_dir + "/QueryResults/" 
                              + lQueryWithoutSuffix + ".xml.res", path_flags);
 
-    zorba::file lErrorFile  (rbkt_bin_dir + "/" 
-                             + lQueryWithoutSuffix + ".err", path_flags);
-
     if ( lResultFile.exists () ) { lResultFile.remove (); }
-    if ( lErrorFile.exists () )  { lErrorFile.remove ();  }
-
-    zorba::file lBucket (lResultFile.branch_path());
-    if ( ! lBucket.exists () )
-      lBucket.deep_mkdir (); // create deep directories
 
     // Form the full pathname for the .spec file that may be associated
     // with this query. If the .spec file exists, read its contents to
@@ -333,6 +324,10 @@ main(int argc, char** argv)
     lQuery = engine->createQuery(&errHandler);
     lQuery->setFileName(lQueryFile.get_path());
 
+    bool lJSONiqMode = 
+    (lQueryFile.get_path().rfind(".jq") == lQueryFile.get_path().size() - 3);
+
+    if (lJSONiqMode) lContext->setJSONiqVersion(zorba::jsoniq_version_1_0);
     lQuery->compile(lQueryString.c_str(), lContext, getCompilerHints());
 
     errors = -1;

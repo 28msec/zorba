@@ -44,10 +44,7 @@ RewriterContext::RewriterContext(
   theUDF(udf),
   theMessage(msg),
   m_tempvarCounter(0),
-  theIsInOrderedMode(orderedMode),
-  theVarIdMap(NULL),
-  theIdVarMap(NULL),
-  theExprVarsMap(NULL)
+  theIsInOrderedMode(orderedMode)
 {
   theForSerializationOnly = theCCB->theConfig.for_serialization_only;
 
@@ -55,8 +52,7 @@ RewriterContext::RewriterContext(
   {
     if (udf != NULL)
     {
-      theMessage = "Optimizing UDF ";
-      theMessage += udf->getName()->getStringValue();
+      theMessage = "Optimizing UDF " + udf->getName()->getStringValue();
     }
   }
 }
@@ -64,11 +60,6 @@ RewriterContext::RewriterContext(
 
 RewriterContext::~RewriterContext()
 {
-  delete theVarIdMap;
-
-  delete theIdVarMap;
-
-  delete theExprVarsMap;
 }
 
 

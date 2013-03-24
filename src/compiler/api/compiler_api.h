@@ -70,6 +70,8 @@ public:
   PlanIter_t codegen(expr* e, ulong& nextDynamicVarId, audit::ScopedRecord& ar);
 
 private:
+  bool getLanguageMode(std::stringstream& s) const;
+
   parsenode_t createMainModule(
       parsenode_t libModule,
       std::istream& xquery,

@@ -39,6 +39,7 @@ namespace simplestore
   class TextNode;
   class PiNode;
   class CommentNode;
+  class NamespaceNode;
 
 
 /*******************************************************************************
@@ -138,7 +139,12 @@ public:
         bool          append,
         csize         pos,
         zstring&      content);
-}; /* class NodeFactory */
+
+  virtual NamespaceNode* createNamespaceNode(
+        XmlTree* tree,
+        zstring& prefix,
+        zstring& uri);
+};
 
 
 } /* namespace simplestore */

@@ -29,6 +29,9 @@ void printNameOrKindTest(const AxisIteratorHelper* a);
 void beginVisit(const SingletonIterator& a);
 void endVisit(const SingletonIterator& a);
 
+void beginVisit(const DynamicFunctionIterator& a);
+void endVisit(const DynamicFunctionIterator& a);
+
 void beginVisit(const EnclosedIterator& a);
 void endVisit(const EnclosedIterator& a);
 
@@ -230,6 +233,7 @@ void endVisitWindowVariable();
   DECLARE_VISITOR (AtomicValuesEquivalenceIterator)
   DECLARE_VISITOR (ElementIterator)
   DECLARE_VISITOR (AttributeIterator)
+  DECLARE_VISITOR (NamespaceIterator)
   DECLARE_VISITOR (DocumentIterator)
   DECLARE_VISITOR (CommentIterator)
   DECLARE_VISITOR (PiIterator)
@@ -306,6 +310,7 @@ void endVisitWindowVariable();
   DECLARE_VISITOR(DeleteIndexIterator);
 
   DECLARE_VISITOR(DynamicFnCallIterator);
+  DECLARE_VISITOR(ArgumentPlaceholderIterator);
 
   DECLARE_VISITOR(EvalIterator);
 

@@ -864,7 +864,7 @@ const xs_yearMonthDuration& Item::getYearMonthDurationValue() const
 /**
  * Accessor for xs:hexBinary
  */
-xs_hexBinary Item::getHexBinaryValue() const
+char const* Item::getHexBinaryValue(size_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
@@ -1019,6 +1019,21 @@ store::Item* Item::getNodeName() const
   );
 }
 
+
+zstring Item::getNamespacePrefix() const
+{
+  throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
+}
+
+
+zstring Item::getNamespaceUri() const
+{
+  throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
+}
+
+
 const store::Collection* Item::getCollection() const
 {
   throw ZORBA_EXCEPTION(
@@ -1085,6 +1100,12 @@ const zstring& Item::getTarget() const
 zstring Item::show() const
 {
   return  std::string ( typeid ( *this ).name() ) + ": 'show' not implemented!";
+}
+
+
+zstring Item::toString() const
+{
+  return show();
 }
 
 
@@ -1348,7 +1369,7 @@ store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
   );
 }
 
-bool Item::isRoot() const
+bool Item::isCollectionRoot() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

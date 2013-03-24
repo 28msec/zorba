@@ -587,6 +587,7 @@ void XQueryImpl::doCompile(
   // If lib_module is set to true the query will be considered a library module
   theCompilerCB->theConfig.lib_module = aHints.lib_module;
   theCompilerCB->theConfig.for_serialization_only = aHints.for_serialization_only;
+
   CompilerCB::config::opt_level_t optLevel;
   if (aHints.opt_level == ZORBA_OPT_LEVEL_O0)
     optLevel = CompilerCB::config::O0;

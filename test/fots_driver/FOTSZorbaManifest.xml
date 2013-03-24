@@ -1,7 +1,7 @@
 <test-suite-result xmlns="http://www.w3.org/2010/09/qt-fots-catalog">
   <dependency type="feature" value="collection-stability" satisfied="true"/>          <!-- Is this correct? -->
   <dependency type="feature" value="directory-as-collection-uri" satisfied="true"/>   <!-- Is this correct? -->
-  <dependency type="feature" value="higherOrderFunctions" satisfied="false"/>
+  <dependency type="feature" value="higherOrderFunctions" satisfied="true"/>
   <dependency type="feature" value="moduleImport" satisfied="true"/>
   <dependency type="feature" value="namespace-axis" satisfied="false"/>               <!-- Is this correct? -->
   <dependency type="feature" value="schema-location-hint" satisfied="false"/>         <!-- Is this correct? -->
@@ -54,6 +54,6 @@
   <dependency type="unicode-normalization-form" value="NFD" satisfied="true"/>
   <dependency type="unicode-normalization-form" value="NFKC" satisfied="true"/>
   <dependency type="unicode-normalization-form" value="NFKD" satisfied="true"/>
-  <dependency type="xsd-version" value="1.0" satisfied="true"/>
-  <dependency type="xsd-version" value="1.1" satisfied="false"/>
+  <dependency type="xsd-version" value="1.0" satisfied="false"/>
+  <dependency type="xsd-version" value="1.1" satisfied="true"/>
 </test-suite-result>

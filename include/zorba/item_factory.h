@@ -66,6 +66,24 @@ namespace zorba {
                               StreamReleaser streamReleaser,
                               bool seekable = false ) = 0;
 
+      /** \brief Creates a streamable String Item
+       *         see [http://www.w3.org/TR/xmlschema-2/#string]
+       *
+       * @param stream An istream from where to read the string's content.
+       * @param streamReleaser A function pointer which is invoked once
+       *        the StreamableStringItem is destroyed. Normally this function
+       *        will delete the std::istream object passed to it.
+       * @param uri The URI is intended to be used to note the origination URI
+       *        (e.g., file) that data is coming from.
+       * @param seekable
+       * @return The streamable String Item
+       */
+      virtual Item
+      createStreamableString( std::istream &stream,
+                              StreamReleaser streamReleaser,
+                              char const *uri,
+                              bool seekable = false ) = 0;
+
       /** \brief Creates an AnyURI Item
        *         see [http://www.w3.org/TR/xmlschema-2/#anyURI]
        *
@@ -165,6 +183,28 @@ namespace zorba {
       createStreamableBase64Binary(
           std::istream &stream,
           StreamReleaser streamReleaser,
+          bool seekable = false,
+          bool encoded = false) = 0;
+
+      /** \brief Creates a streamable Base64Binary Item
+       *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+       *
+       * @param stream An istream from where to read the binary's content.
+       * @param streamReleaser A function pointer which is invoked once
+       *        the StreamableBase64Binary is destroyed. Normally this function
+       *        will delete the std::istream object passed to it.
+       * @param uri The URI is intended to be used to note the origination URI
+       *        (e.g., file) that data is coming from.
+       * @param seekable is the given stream seekable
+       * @param encoded is the contents of the given stream already base64
+       *        encoded
+       * @return The streamable String Item
+       */
+      virtual Item
+      createStreamableBase64Binary(
+          std::istream &stream,
+          StreamReleaser streamReleaser,
+          char const *uri,
           bool seekable = false,
           bool encoded = false) = 0;
 
@@ -503,12 +543,15 @@ namespace zorba {
       /** \brief Creates a HexBinary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#hexBinary]
        *
-       * @param aHexData pointer to the hexdata.
-       * @param aSize size of the hexdata.
+       * @param aData pointer to the data.
+       * @param aSize size of the data in bytes.
+       * @param aIsEncoded if \c true, the \a aData is already HexBinary
+       * encoded.
        * @return The HexBinary Item.
        */
       virtual Item
-      createHexBinary ( const char* aHexData, size_t aSize ) = 0;
+      createHexBinary( const char* aData, size_t aSize,
+                       bool aIsEncoded = true ) = 0;
 
       /** \brief Creates a negativeInteger Item
        *         see [http://www.w3.org/TR/xmlschema-2/#negativeInteger]

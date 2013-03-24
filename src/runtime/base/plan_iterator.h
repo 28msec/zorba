@@ -297,27 +297,26 @@ public:
   QueryLoc           loc;
   static_context   * theSctx;
 
+
+// Stable IDs for debugging purposes. An individual ID is assigned to each iterator
+// and this can be used to identify it in the debug information.
+#ifndef NDEBUG
+public:
+  int                theId;
+  int getId() const  { return theId;}
+  void setId(int id) { theId = id;}
+  virtual std::string toString() const { std::stringstream ss; ss << getId() << " = " << getClassName(); return ss.str(); }
+#endif
+
 public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanIterator);
 
-  PlanIterator(zorba::serialization::Archiver& ar)
-    :
-    SimpleRCObject(ar),
-    theStateOffset(0),
-    theSctx(NULL)
-  {
-  }
+  PlanIterator(zorba::serialization::Archiver& ar);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  PlanIterator(static_context* aContext, const QueryLoc& aLoc)
-    :
-    theStateOffset(0),
-    loc(aLoc),
-    theSctx(aContext)
-  {
-  }
+  PlanIterator(static_context* aContext, const QueryLoc& aLoc);
 
   PlanIterator(const PlanIterator& it)
     :
@@ -325,6 +324,9 @@ public:
     theStateOffset(0),
     loc(it.loc),
     theSctx(it.theSctx)
+#ifndef NDEBUG
+    , theId(it.theId)
+#endif
   {
   }
 
@@ -599,6 +601,14 @@ public:
 
   inline void closeImpl(PlanState& planState);
 };
+
+#ifndef NDEBUG
+/*******************************************************************************
+  Reset the global iterator ID counter, used for debugging purposes. Called by
+  the plan serialization when loading a new plan.
+********************************************************************************/
+void reset_global_iterator_id_counter();
+#endif
 
 
 } /* namespace zorba */

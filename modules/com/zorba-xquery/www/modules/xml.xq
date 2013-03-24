@@ -30,9 +30,9 @@ xquery version "3.0";
  : them in a streaming fashion - each at a time:</p>
  :
  : <pre class="brush: xquery;">
- : import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+ : import module namespace x = "http://www.zorba-xquery.com/modules/xml";
  : import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
- : parse-xml:parse( 
+ : x:parse( 
  :   "&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>",
  :   &lt;opt:options>
  :     &lt;opt:parse-external-parsed-entity/>
@@ -44,9 +44,9 @@ xquery version "3.0";
  : before returning a sequence of nodes as shown in the following example:</p>
  :
  : <pre class="brush: xquery;">
- : import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+ : import module namespace x = "http://www.zorba-xquery.com/modules/xml";
  : import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
- : parse-xml:parse(
+ : x:parse(
  :   "&lt;root>
  :     &lt;from1>Jani1&lt;/from1>
  :     &lt;from2>Jani2&lt;/from2>
@@ -64,19 +64,20 @@ xquery version "3.0";
  : fn:parse-xml() function in XPath and XQuery Functions and Operators 3.0</a>
  : @see <a href="http://xmlsoft.org/html/libxml-parser.html">LibXml2 parser</a>
  :
- : @author Nicolae Brinza
+ : @author Nicolae Brinza, Juan Zacarias
  : @project data processing/data converters
  :
  :)
-module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+module namespace x = "http://www.zorba-xquery.com/modules/xml";
+import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
-import schema namespace parse-xml-options = "http://www.zorba-xquery.com/modules/xml-options";
+import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace err = "http://www.w3.org/xqt-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.0";
+declare option ver:module-version "2.1";
 
 
 (:~
@@ -193,9 +194,9 @@ declare option ver:module-version "2.0";
  : An example that sets the base-uri of the parsed external entities:
  : </p>
  : <pre class="brush: xquery;">
- :   import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
+ :   import module namespace x = "http://www.zorba-xquery.com/modules/xml";
  :   import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
- :   parse-xml:parse("&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>",
+ :   x:parse("&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>",
  :     &lt;opt:options>
  :       &lt;opt:base-uri opt:value="urn:test"/>
  :       &lt;opt:parse-external-parsed-entity/>
@@ -228,15 +229,15 @@ declare option ver:module-version "2.0";
  : @example test/rbkt/Queries/zorba/parsing_and_serializing/parse-xml-fragment-07.xq
  :
  :)
-declare function parse-xml:parse(
+declare function x:parse(
   $xml-string as xs:string?,
-  $options as element(parse-xml-options:options)?) as node()* external;
+  $options as element(opt:options)?) as node()* external;
   
 
 (:~
  : <br/><p>
  : Note: this function is included for backwards compatibility purposes. It 
- : is recommended that you use the parse-xml:parse() function instead.
+ : is recommended that you use the x:parse() function instead.
  : </p><br/>
  :
  : A function to parse XML files and fragments (i.e. 
@@ -330,36 +331,36 @@ declare function parse-xml:parse(
  : @deprecated
  :
  :)
-declare function parse-xml:parse-xml-fragment(
+declare function x:parse-xml-fragment(
   $xml-string as xs:string?,
   $options as xs:string) as node()* 
 {
-  let $new_options := <parse-xml-options:options>{
+  let $new_options := <opt:options>{
       if (contains($options, "e"))
-        then <parse-xml-options:parse-external-parsed-entity/> else (),
+        then <opt:parse-external-parsed-entity/> else (),
       if (contains($options, "d"))
-        then <parse-xml-options:DTD-validate/> else (),
+        then <opt:DTD-validate/> else (),
       if (contains($options, "s"))
-        then <parse-xml-options:schema-validate parse-xml-options:mode="strict"/> 
+        then <opt:schema-validate opt:mode="strict"/> 
         else (),
       if (contains($options, "l"))
-        then <parse-xml-options:schema-validate parse-xml-options:mode="lax"/> 
+        then <opt:schema-validate opt:mode="lax"/> 
         else (),
       (: TODO: uncomment once the strip-boundary-space option is implemented
       if (contains($options, "w"))
-        then <parse-xml-options:strip-boundary-space/> else (), :)
+        then <opt:strip-boundary-space/> else (), :)
       if (contains($options, "f"))
-        then <parse-xml-options:no-error/> else ()      
-    }</parse-xml-options:options>
+        then <opt:no-error/> else ()      
+    }</opt:options>
   return
-    parse-xml:parse($xml-string, $new_options)
+    x:parse($xml-string, $new_options)
 };
 
 
 (:~
  : <br/><p>
  : Note: this function is included for backwards compatibility purposes. It 
- : is recommended that you use the parse-xml:parse() function instead.
+ : is recommended that you use the x:parse() function instead.
  : </p><br/>
  :
  : A function to parse XML files and fragments. The behavior is the
@@ -390,31 +391,102 @@ declare function parse-xml:parse-xml-fragment(
  : @deprecated
  :
  :)
-declare function parse-xml:parse-xml-fragment(
+declare function x:parse-xml-fragment(
   $xml-string as xs:string?,
   $base-uri as xs:string,
   $options as xs:string) as node()*
 {
-    let $new_options := <parse-xml-options:options>{
+    let $new_options := <opt:options>{
       if (contains($options, "e"))
-        then <parse-xml-options:parse-external-parsed-entity/> else (),
+        then <opt:parse-external-parsed-entity/> else (),
       if (contains($options, "d"))
-        then <parse-xml-options:DTD-validate/> else (),
+        then <opt:DTD-validate/> else (),
       if (contains($options, "s"))
-        then <parse-xml-options:schema-validate parse-xml-options:mode="strict"/> 
+        then <opt:schema-validate opt:mode="strict"/> 
         else (),
       if (contains($options, "l"))
-        then <parse-xml-options:schema-validate parse-xml-options:mode="lax"/> 
+        then <opt:schema-validate opt:mode="lax"/> 
         else (),
       (: TODO: uncomment once the strip-boundary-space option is implemented
       if (contains($options, "w"))
-        then <parse-xml-options:strip-boundary-space/> else (), :)
+        then <opt:strip-boundary-space/> else (), :)
       if (contains($options, "f"))
-        then <parse-xml-options:no-error/> else (),
-      <parse-xml-options:base-uri>{
-        attribute{xs:QName("parse-xml-options:value")}{$base-uri}}
-      </parse-xml-options:base-uri>
-    }</parse-xml-options:options>
+        then <opt:no-error/> else (),
+      <opt:base-uri>{
+        attribute{xs:QName("opt:value")}{$base-uri}}
+      </opt:base-uri>
+    }</opt:options>
   return 
-    parse-xml:parse($xml-string, $new_options)
+    x:parse($xml-string, $new_options)
 };
+
+(:~
+ : A function to canonicalize the given XML string, that is, transform
+ : it into Canonical XML as defined by <a href="http://www.w3.org/TR/xml-c14n">Canonical XML</a>.
+ :
+ : <br/>Note: This function is not streamable, if a streamable string is used
+ : as input for the function it will be materialized.
+ :
+ : <br/>Note: This function sets the
+ : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">XML_PARSE_NOERROR</a>
+ : option when parsing the XML input.
+ :
+ : @param $xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.
+ :
+ : @return the canonicalized XML string.
+ :
+ : @error err:CANO0001 invalid input.
+ :)
+declare function x:canonicalize(
+  $xml-string as xs:string
+  ) as xs:string
+{
+  x:canonicalize-impl( $xml-string, validate { <opt:options/> } )
+};
+
+
+(:~
+ : A function to canonicalize the given XML string, that is, transform
+ : it into Canonical XML as defined by <a href="http://www.w3.org/TR/xml-c14n">Canonical XML</a>.
+ : <br/>This version of the function allows specifying certain options to be
+ : used when initially parsing the XML string. These are of the same form
+ : as the options to x:parse#2(), although the following options are 
+ : currently ignored for this function:
+ : <ul>
+ : <li>&lt;opt:no-error/&gt;</li>
+ : <li>&lt;opt:base-uri/&gt;</li>
+ : <li>&lt;opt:schema-validate/&gt;</li>
+ : <li>&lt;opt:parse-external-parsed-entity/&gt;</li> 
+ : </ul>
+
+ : <br/>Note: This function is not streamable, if a streamable string is used
+ : as input for the function it will be materialized.
+ :
+ : <br/>Note: This function sets the
+ : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">XML_PARSE_NOERROR</a>
+ : option when parsing the XML input.
+
+ : @param $xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.
+ : @param $options an XML containg options for the canonicalize function.
+ :
+ : @return the canonicalized XML string.
+ :
+ : @error err:CANO0001 invalid input.
+ :)
+declare function x:canonicalize(
+  $xml-string as xs:string,
+  $options    as element(opt:options)
+  ) as xs:string
+{
+  let $canonicalize-options :=
+    if ( schema:is-validated( $options ) )
+      then $options
+      else validate { $options }
+  return x:canonicalize-impl( $xml-string , $canonicalize-options )
+};
+
+declare %private function x:canonicalize-impl(
+  $xml-string as xs:string,
+  $options    as element()
+  ) as xs:string external;
+

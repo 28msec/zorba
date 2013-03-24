@@ -31,7 +31,6 @@ declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
 
 declare option ver:module-version "1.0";
-declare option op:enable "f:hof";
 
 (:~
  : The function prepares a given XQuery program for execution.
@@ -368,6 +367,24 @@ declare %an:sequential function xqxq:evaluate-sequential($query-key as
  :)
 declare %an:sequential function xqxq:delete-query($query-key as xs:anyURI) as
   empty-sequence() external;
+
+(:~
+ : This function returns the value of a variable that is bound in the
+ : given query.
+ :
+ : @param $query-key the identifier of a compiled query.
+ : @param $var-name the name of the variable whose value should be returned.
+ :
+ : @return the value bound to the given variable.
+ :
+ : @error xqxq:NoQueryMatch if no query with the given identifier
+ :   was prepared.
+ : @error xqxq:UndeclaredVariable if the given variable is not declared
+ :   in the query.
+ : @error xqxq:UnboundVariable if the given variable doesn't have a value.
+ :)
+declare function xqxq:variable-value($query-key as xs:anyURI, $var-name as 
+  xs:QName) as item()* external;
 
 
 (:~

@@ -124,6 +124,8 @@ public:
 
 class FnIndexOfIterator : public NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>
 { 
+protected:
+  int theFastComp; //
 public:
   SERIALIZABLE_CLASS(FnIndexOfIterator);
 
@@ -135,9 +137,11 @@ public:
   FnIndexOfIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+    std::vector<PlanIter_t>& children,
+    int fastComp)
     : 
-    NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>(sctx, loc, children)
+    NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>(sctx, loc, children),
+    theFastComp(fastComp)
   {}
 
   virtual ~FnIndexOfIterator();

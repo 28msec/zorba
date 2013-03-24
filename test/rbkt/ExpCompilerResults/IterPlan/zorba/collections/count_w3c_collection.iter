@@ -5,7 +5,7 @@ Iterator tree for main query:
   </CtxVarDeclareIterator>
   <SequentialIterator>
     <ApplyIterator>
-      <UDFunctionCallIterator>
+      <UDFunctionCallIterator function="ddl:create">
         <CtxVarIterator varid="4" varname="coll" varkind="global"/>
       </UDFunctionCallIterator>
     </ApplyIterator>

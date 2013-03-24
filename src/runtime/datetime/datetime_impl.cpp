@@ -175,7 +175,7 @@ bool CurrentDate::nextImpl( store::Item_t& result,
 
 bool CurrentDateTime::nextImpl( store::Item_t& result,
                                 PlanState &plan_state ) const {
-  time_t sec;
+  time::sec_type sec;
   time::usec_type usec;
   time::get_epoch( &sec, &usec );
   time::ztm tm;
@@ -184,7 +184,7 @@ bool CurrentDateTime::nextImpl( store::Item_t& result,
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  GENV_ITEMFACTORY->createDateTime(
+  GENV_ITEMFACTORY->createDateTimeStamp(
     result,
     static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
     static_cast<short>( tm.tm_mon + 1 ),
@@ -201,7 +201,7 @@ bool CurrentDateTime::nextImpl( store::Item_t& result,
 
 bool CurrentTime::nextImpl( store::Item_t& result,
                             PlanState &plan_state ) const {
-  time_t sec;
+  time::sec_type sec;
   time::usec_type usec;
   time::get_epoch( &sec, &usec );
   time::ztm tm;
@@ -234,7 +234,7 @@ bool MillisToDateTime::nextImpl( store::Item_t& result,
   consumeNext( item, theChildren[0], plan_state );
   millis = item->getLongValue();
 
-  time::get_gmtime( &tm, static_cast<time_t>( millis / 1000 ) );
+  time::get_gmtime( &tm, static_cast<time::sec_type>( millis / 1000 ) );
   GENV_ITEMFACTORY->createDateTime(
     result,
     static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
@@ -360,7 +360,7 @@ bool ParseTime::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
 
 bool Timestamp::nextImpl( store::Item_t& result,
                           PlanState &plan_state ) const {
-  time_t sec;
+  time::sec_type sec;
   time::get_epoch( &sec );
 
   PlanIteratorState *state;

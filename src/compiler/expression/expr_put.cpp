@@ -185,6 +185,11 @@ ostream& var_expr::put(ostream& os) const
     put_qname(get_name(), os);
   }
 
+  if (get_kind() == prolog_var || get_kind() == hof_var)
+  {
+    os << " uniqueId=" << theUniqueId;
+  }
+
 #if VERBOSE
   if (theDeclaredType != NULL)
   {
@@ -337,8 +342,10 @@ ostream& flwor_expr::put(ostream& os) const
     }
     case flwor_clause::count_clause:
     {
-      os << indent << "COUNT $";
-      put_qname(static_cast<const count_clause *>(&c)->get_var()->get_name(), os);
+      const count_clause* cc = static_cast<const count_clause *>(&c);
+      os << indent << "COUNT " << expr_addr(cc) << " ";
+      put_qname(cc->get_var()->get_name(), os);
+      os << expr_addr(cc->get_var());
       os << endl;
       break;
     }
@@ -358,7 +365,7 @@ ostream& flwor_expr::put(ostream& os) const
       static_cast<const groupby_clause *>(&c)->put(os);
       break;
     }
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       static_cast<const orderby_clause *>(&c)->put(os);
       break;
@@ -500,7 +507,7 @@ ostream& if_expr::put(ostream& os) const
 ostream& fo_expr::put(ostream& os) const
 {
   const store::Item* qname = theFunction->getName();
-  BEGIN_PUT_MSG( qname->getStringValue() << "/" << num_args() );
+  BEGIN_PUT_MSG( qname->getStringValue() << "#" << num_args() );
   csize numArgs = num_args();
 
   for (csize i = 0; i < numArgs; ++i)
@@ -528,16 +535,33 @@ std::ostream& function_item_expr::put(std::ostream& os) const
 {
   os << indent << "funtion_item_expr " << expr_addr(this) << inc_indent;
 
-  if (theQName != NULL)
+  if (!is_inline())
   {
-    os << " " << theQName->getStringValue() << "/" << theArity;
+    os << " " << theDynamicFunctionInfo->theQName->getStringValue()
+       << "#" << theDynamicFunctionInfo->theArity;
     os << dec_indent << endl;
     return os;
   }
   else
   {
-    os << " inline udf (" << theFunction.getp() << ") [\n";
-    reinterpret_cast<const user_function*>(theFunction.getp())->getBody()->put(os);
+    os << " " << theDynamicFunctionInfo->theQName->getStringValue()
+       << "#" << theDynamicFunctionInfo->theArity << " [\n";
+
+    for (ulong i = 0; i < theDynamicFunctionInfo->theScopedVarsValues.size(); i++)
+    {
+      os << indent << "using $"
+         << theDynamicFunctionInfo->theScopedVarsNames[i]->getStringValue()
+         << (theDynamicFunctionInfo->theIsGlobalVar[i] ? " global=1" : "") << " := [";
+      os << endl << inc_indent;
+      if (theDynamicFunctionInfo->theScopedVarsValues[i])
+        theDynamicFunctionInfo->theScopedVarsValues[i]->put(os);
+      os << dec_indent << indent << "]" << endl;
+    }
+
+    if (theDynamicFunctionInfo->theFunction != NULL &&
+        static_cast<user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody() != NULL)
+      static_cast<user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody()->put(os);
+
     END_PUT();
   }
 }
@@ -552,7 +576,21 @@ ostream& dynamic_function_invocation_expr::put(ostream& os) const
   for (csize i = 0; i < theArgs.size(); ++i)
     theArgs[i]->put(os);
 
+  if (theDotVar)
+  {
+    os << indent << "using $"; 
+    theDotVar->put(os);
+  }
+
   END_PUT();
+}
+
+
+ostream& argument_placeholder_expr::put(ostream& os) const
+{
+  BEGIN_PUT_NO_EOL( argument_placeholder_expr );
+  os << "? ]\n";
+  return os;
 }
 
 
@@ -743,7 +781,7 @@ ostream& const_expr::put(ostream& os) const
 
   if (theValue->isFunction())
   {
-    os << "functrion item [ " << theValue->show() << " ]";
+    os << "function item [ " << theValue->show() << " ]";
   }
   else
   {
@@ -809,7 +847,19 @@ ostream& attr_expr::put(ostream& os) const
   BEGIN_PUT(attr_expr);
 
   theQNameExpr->put(os);
-  PUT_SUB("=", theValueExpr);
+  if (theValueExpr)
+    theValueExpr->put(os);
+
+  END_PUT();
+}
+
+
+ostream& namespace_expr::put(ostream& os) const
+{
+  BEGIN_PUT(namespace_expr);
+
+  thePrefixExpr->put(os);
+  theUriExpr->put(os);
 
   END_PUT();
 }

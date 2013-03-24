@@ -131,6 +131,7 @@ class ExprManager;
   ------------------------
   Pointer to the function to call to print the expr tree that results from
   translating the query AST.
+
 ********************************************************************************/
 class CompilerCB : public zorba::serialization::SerializeBaseClass
 {

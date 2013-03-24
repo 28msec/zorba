@@ -76,6 +76,18 @@ Item ItemFactoryImpl::createStreamableString(
 }
 
 
+Item ItemFactoryImpl::createStreamableString(
+    std::istream &stream,
+    StreamReleaser streamReleaser,
+    char const *uri,
+    bool seekable)
+{
+  store::Item_t lItem;
+  theItemFactory->createStreamableString(lItem, stream, streamReleaser, uri, seekable);
+  return &*lItem;
+}
+
+
 Item ItemFactoryImpl::createAnyURI(const String& aURI)
 {
   zstring lString = Unmarshaller::getInternalString(aURI);
@@ -251,6 +263,22 @@ ItemFactoryImpl::createStreamableBase64Binary(
   store::Item_t lItem;
   theItemFactory->createStreamableBase64Binary(
       lItem, stream, streamReleaser, seekable, encoded
+    );
+  return &*lItem;
+}
+
+
+Item
+ItemFactoryImpl::createStreamableBase64Binary(
+    std::istream &stream,
+    StreamReleaser streamReleaser,
+    char const *uri,
+    bool seekable,
+    bool encoded)
+{
+  store::Item_t lItem;
+  theItemFactory->createStreamableBase64Binary(
+      lItem, stream, streamReleaser, uri, seekable, encoded
     );
   return &*lItem;
 }
@@ -514,13 +542,11 @@ Item ItemFactoryImpl::createFloat ( float aValue )
 }
 
   
-Item ItemFactoryImpl::createHexBinary ( const char* aHexData, size_t aSize )
+Item ItemFactoryImpl::createHexBinary( const char* aHexData, size_t aSize,
+                                       bool aIsEncoded )
 {
   store::Item_t lItem;
-  xs_hexBinary n;
-  if (xs_hexBinary::parseString(aHexData, aSize, n))
-    theItemFactory->createHexBinary(lItem, n);
-
+  theItemFactory->createHexBinary(lItem, aHexData, aSize, aIsEncoded);
   return &*lItem;
 }
 

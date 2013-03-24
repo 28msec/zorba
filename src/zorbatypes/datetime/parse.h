@@ -17,12 +17,14 @@
 #ifndef ZORBA_DATETIME_UTILS_H
 #define ZORBA_DATETIME_UTILS_H
 
+#include <cmath>
 #include <string>
+#include <sys/types.h>
+
 #include <zorba/config.h>
 
 #include "zorbatypes/numconversions.h"
 
-#include "util/ascii_util.h"
 #include "util/string_util.h"
 
 namespace zorba
@@ -36,7 +38,7 @@ namespace zorba
   must obey these conditions, or the function will return an error.
 
   @param str The source string to parse
-  @param str_len the length of the input string
+  @param len the length of the input string
   @param position The position to start parsing from
   @param result Contains the result of the parsing
   @param min_digits Minimum number of digits
@@ -48,12 +50,12 @@ namespace zorba
 ********************************************************************************/
 int parse_long(
     const char* str,
-    ascii::size_type str_len,
-    ascii::size_type& position,
+    size_t len,
+    size_t& position,
     long& result,
     long min_digits = -1,
     long max_digits = -1,
-    long delta = 0);
+    size_t delta = 0);
 
 
 /*******************************************************************************
@@ -64,43 +66,13 @@ int parse_long(
   @param result
   @return Returns 0 on success and a positive value on an error
 ********************************************************************************/
-ZORBA_DLL_PUBLIC inline int parse_frac(
+int parse_frac(
     const char* str,
-    ascii::size_type strlen,
-    ascii::size_type& position,
-    double& result)
-{
-  if (position >= strlen) {
-    return 1;
-  }
+    size_t len,
+    size_t& position,
+    double& result);
 
-  if (str[position] < '0' || str[position] > '9') {
-    return 1;
-  }
-
-  double temp = 0.1;
-  result = 0;
-  while (position < strlen && str[position] >= '0' && str[position] <= '9') {
-    result += temp * (str[position] - '0');
-    temp /= 10;
-    position++;
-  }
-
-  return 0;
-}
-
-
-ZORBA_DLL_PUBLIC inline std::string to_string(int value, unsigned int min_digits = 0)
-{
-  std::string zeros;
-  std::string temp;
-  ztd::to_string(value, &temp);
-
-  for (unsigned int i=(unsigned int)temp.size(); i<min_digits; i++)
-    zeros += '0';
-
-  return zeros + temp;
-}
+std::string zero_pad(int value, unsigned int min_digits = 0);
 
 
 /**
@@ -108,84 +80,48 @@ ZORBA_DLL_PUBLIC inline std::string to_string(int value, unsigned int min_digits
  * @param year
  * @return
  */
-ZORBA_DLL_PUBLIC int leap_years_count(int year);
+int leap_years_count(int year);
 
 
-template <typename T>
+template <typename T> inline
 T quotient(T a, T b)
 {
-  if (a >= 0)
-    return a / b;
-  else
-    return (a+1) / b - 1;
+  return a >= 0 ? a / b : (a + 1) / b - 1;
 }
 
 
-template <typename T>
+template <typename T> inline
 T modulo(T a, T b)
 {
-  a = a % b;
+  a %= b;
   if (a<0)
     a += b;
-
   return a;
-}
-
-
-template <typename T>
-int floor(T a)
-{
-  if (a>=0)
-    return (int)a;
-  else if (a - ((int)a) == 0)
-    return (int)a;
-  else
-    return (int)(a-1);
-}
-
-
-template <typename T>
-T abs(T value)
-{
-  if (value < 0)
-    return -value;
-  else
-    return value;
 }
 
 
 /**
  * Rounds to the nearest integer
  */
-ZORBA_DLL_PUBLIC inline int round(double value)
+inline int round(double value)
 {
-  if (value >= 0)
-    return int(value+0.5);
-  else
-    return int(value-0.5);
+  return int( value >= 0 ? value + 0.5 : value - 0.5 );
 }
 
 
-ZORBA_DLL_PUBLIC inline double frac(double value)
+inline double frac(double value)
 {
-  return value - floor<double>(value);
+  return value - std::floor(value);
 }
-
-
-ZORBA_DLL_PUBLIC bool is_digit(char ch);
-
-
-ZORBA_DLL_PUBLIC bool are_digits(std::string& s, unsigned int& position, int count);
 
 
 // Returns the last day of the given year and month. E.g. for 1980 and 2 it
 // will return 29. Returns 0 on an error
-ZORBA_DLL_PUBLIC int get_last_day(int year, int month);
+int get_last_day(int year, int month);
 
 } // namespace zorba
 
-#endif
-
+#endif /* ZORBA_DATETIME_UTILS_H */
 /*
  * Local variables:
  * mode: c++

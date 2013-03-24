@@ -39,6 +39,7 @@
 #include "compiler/api/compilercb.h"
 
 #include "compiler/parser/xquery_driver.h"
+#include "compiler/parser/jsoniq_driver.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
@@ -125,6 +126,42 @@ void XQueryCompiler::xqdoc(
 /*******************************************************************************
 
 ********************************************************************************/
+bool XQueryCompiler::getLanguageMode(std::stringstream& s) const
+{
+  char lPeek[6];
+  s.get(lPeek, 7, ' ');
+  s.clear();
+  s.seekg(0, s.beg);
+
+  bool lXQueryMode;
+
+  if (strncmp(lPeek, "jsoniq", 6) == 0)
+  {
+    lXQueryMode = false;
+  }
+  else if (strncmp(lPeek, "xquery", 6) == 0)
+  {
+    lXQueryMode = true;
+  }
+  else
+  {
+    if (theCompilerCB->theRootSctx) // could be null in eval
+    {
+      StaticContextConsts::language_kind_t lKind
+        = theCompilerCB->theRootSctx->language_kind();
+      lXQueryMode = (lKind != StaticContextConsts::language_kind_jsoniq);
+    }
+    else
+    {
+      lXQueryMode = true;
+    }
+  }
+  return lXQueryMode;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileName)
 {
   // TODO: move these out
@@ -133,7 +170,7 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
     theCompilerCB->theConfig.parse_cb = print_ast_tree;
   }
 
-  std::istream* xquery_stream = &aXQuery;
+  std::stringstream xquery_stream;
 
 #ifdef ZORBA_XQUERYX
   char* converted_xquery_str = NULL;
@@ -169,30 +206,45 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
 #ifndef NDEBUG
     printf ("\n\n%s", converted_xquery_str);  // debug
 #endif
-    xquery_stream = new std::istringstream(converted_xquery_str);
+    xquery_stream << converted_xquery_str;
   }
   else
   {
-    xquery_stream = new std::istringstream(xquery_str);
+    xquery_stream << xquery_str;
   }
-#endif // ZORBA_XQUERYX
+#else // ZORBA_XQUERYX
+
+  xquery_stream << aXQuery.rdbuf();
+#endif
 
   theCompilerCB->setPhase(CompilerCB::PARSING);
 
-  xquery_driver lDriver(&*theCompilerCB);
-  lDriver.parse_stream(*xquery_stream, aFileName);
-
+  parsenode_t node;
   theCompilerCB->setPhase(CompilerCB::NONE);
+  
+  bool lXQueryMode = getLanguageMode(xquery_stream);
+
+  if (!lXQueryMode)
+  {
+    jsoniq_driver lDriver(&*theCompilerCB);
+    lDriver.parse_stream(xquery_stream, aFileName);
+    node =  lDriver.get_expr();
+  }
+  else
+  {
+    xquery_driver lDriver(&*theCompilerCB);
+    lDriver.parse_stream(xquery_stream, aFileName);
+    node =  lDriver.get_expr();
+  }
 
 #ifdef ZORBA_XQUERYX
-  delete xquery_stream;
   if (is_xqueryx)
   {
     xqxconvertor->freeResult(converted_xquery_str);
   }
 #endif
 
-  parsenode_t node = lDriver.get_expr();
+
 
   if (typeid (*node) == typeid (ParseErrorNode))
   {

@@ -437,6 +437,11 @@
 
     <zorba:signature localname="json-item-accessor" prefix="op-zorba">
       <zorba:param>json-item()</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="json-item-accessor" prefix="op-zorba">
+      <zorba:param>json-item()</zorba:param>
       <zorba:param>xs:anyAtomicType</zorba:param>
       <zorba:output>item()?</zorba:output>
     </zorba:signature>
@@ -447,6 +452,10 @@
     </zorba:methods>
 
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="store::Iterator_t" name="theIterator" brief=""/>
+  </zorba:state>
 
 </zorba:iterator>
 

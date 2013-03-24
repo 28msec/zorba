@@ -189,15 +189,15 @@ nextclause:
           return;
         }
 
-        case flwor_clause::order_clause:
+        case flwor_clause::orderby_clause:
         {
           orderby_clause* oc = static_cast<orderby_clause *>(c);
 
           theArgsIter = oc->theOrderingExprs.begin();
           theArgsEnd = oc->theOrderingExprs.end();
-          
+
           theCurrentChild = &(*theArgsIter);
-          
+
           ++theArgsIter;
           theState = 3;
           return;
@@ -242,7 +242,7 @@ nextclause:
       while (theWincondIter < 2)
       {
         window_clause* wc = static_cast<window_clause *>(*theClausesIter);
-            
+
         flwor_wincond* wincond = (theWincondIter == 0 ?
                                   wc->theWinStartCond :
                                   wc->theWinStopCond );
@@ -269,7 +269,7 @@ nextclause:
         ++theArgsIter;
         return;
       }
-      
+
       theState = 1;
       ++theClausesIter;
       goto nextclause;
@@ -384,7 +384,7 @@ nextclause:
         }
       }
 
-      else if (c->get_kind() == flwor_clause::order_clause)
+      else if (c->get_kind() == flwor_clause::orderby_clause)
       {
         oc = static_cast<orderby_clause *>(c);
 
@@ -566,6 +566,19 @@ nextclause:
     return;
   }
 
+  case namespace_expr_kind:
+  {
+    namespace_expr* nsExpr = static_cast<namespace_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(nsExpr->thePrefixExpr);
+    EXPR_ITER_NEXT(nsExpr->theUriExpr);
+
+    EXPR_ITER_END();
+    return;
+  }
+
   case text_expr_kind:
   {
     text_expr* textExpr = static_cast<text_expr*>(theExpr);
@@ -691,10 +704,12 @@ nextclause:
 
     EXPR_ITER_BEGIN();
 
-    theArgsIter = fiExpr->theScopedVariables.begin();
-    theArgsEnd = fiExpr->theScopedVariables.end();
+    theArgsIter = fiExpr->theDynamicFunctionInfo->theScopedVarsValues.begin();
+    theArgsEnd = fiExpr->theDynamicFunctionInfo->theScopedVarsValues.end();
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {
+      if ( ! *theArgsIter) // TODO: the vars values for prolog variables is null, so they have to be skipped, or the optimizer will trip and fall off. Maybe null vars values need not be remembered
+        continue;
       EXPR_ITER_NEXT(*theArgsIter);
     }
 
@@ -717,8 +732,17 @@ nextclause:
     {
       EXPR_ITER_NEXT(*theArgsIter);
     }
+    
+    if (dfiExpr->theDotVar)
+      EXPR_ITER_NEXT(dfiExpr->theDotVar);
 
     EXPR_ITER_END();
+    return;
+  }
+
+  case argument_placeholder_expr_kind:
+  {
+    theIsDone = true;
     return;
   }
 
