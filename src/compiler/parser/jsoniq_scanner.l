@@ -299,11 +299,16 @@ CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+)";"
 PredefinedEntityRef   "&"(lt|gt|amp|quot|apos|nbsp)";"
 Ref                   {CharRef}|{PredefinedEntityRef}
 
+JsoniqCharRef         \\"u"([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])
+PredefinedCharRef     \\(\\|"/"|\"|"'"|"b"|"f"|"n"|"r"|"t")
+
   /*_____________________________________________________________________
    |
    |  EQName definition
    |______________________________________________________________________*/
-BracedURILiteral      "Q{"({PredefinedEntityRef}|{CharRef}|[^&{}])*"}"
+
+  /* BracedURILiteral      "Q{"({PredefinedEntityRef}|{CharRef}|[^&{}])*"}" */
+BracedURILiteral      "Q{"({PredefinedCharRef}|{JsoniqCharRef}|[^\{}])*"}"
 EQName                {BracedURILiteral}{NCName}
 
   /*_____________________________________________________________________
@@ -327,11 +332,13 @@ IntegerLiteral        [0-9]+
    |______________________________________________________________________*/
 NonQuotAnd                      [^""&]
 NonAposAnd                      [^''&]
-StringLiteral                   ({Quote}({EscapeQuot}|{Ref}|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|{Ref}|{NonAposAnd})*{Apos})
+  /* StringLiteral                   ({Quote}({EscapeQuot}|{Ref}|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|{Ref}|{NonAposAnd})*{Apos}) */
+StringLiteral                   (\"({PredefinedCharRef}|{JsoniqCharRef}|[^\"\\])*\")|("'"({PredefinedEntityRef}|{JsoniqCharRef}|[^'\\])*"'")
 
   /* Invalid strings */
-InvalidRefStringLiteral         ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|"&"|{NonAposAnd})*{Apos})
-UnterminatedStringLiteral       ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*)|({Apos}({EscapeApos}|"&"|{NonAposAnd})*)
+  /* InvalidRefStringLiteral         ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|"&"|{NonAposAnd})*{Apos}) */
+  /* UnterminatedStringLiteral       ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*)|({Apos}({EscapeApos}|"&"|{NonAposAnd})*) */
+UnterminatedStringLiteral       (\"({PredefinedCharRef}|{JsoniqCharRef}|[^\"\\])*)|("'"({PredefinedEntityRef}|{JsoniqCharRef}|[^'\\])*)
 
 
   /*_____________________________________________________________________
@@ -825,7 +832,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 {StringLiteral}               { if (checkXmlRefs(&yylval->err, yytext, yyleng, this, yylloc)) return token::UNRECOGNIZED; TRY_STRING_LITERAL(STRING_LITERAL, yytext, yyleng); }
 
   /* Invalid string literals */
-{InvalidRefStringLiteral}     { yylval->err = getDriver()->invalidCharRef(yytext, *yylloc); return token::UNRECOGNIZED; }
+  /* {InvalidRefStringLiteral}     { yylval->err = getDriver()->invalidCharRef(yytext, *yylloc); return token::UNRECOGNIZED; } */
 {UnterminatedStringLiteral}   { yylval->err = getDriver()->parserErr(std::string("syntax error, unterminated string literal \"") + yytext + "\"", *yylloc); return token::UNRECOGNIZED; }
 
   /*______________________________________________________________________
