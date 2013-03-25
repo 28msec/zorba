@@ -176,6 +176,7 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIter_t iter;
   store::Item_t itemNode;
+  store::Item_t isNilled;
 
   FnDataIteratorState* state;
   DEFAULT_STACK_INIT(FnDataIteratorState, state, planState);
@@ -187,6 +188,10 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (result->isNode())
     {
+      isNilled = result->getNilled();
+      if (isNilled != NULL && isNilled->getBooleanValue())
+        STACK_PUSH(false, state);
+
       itemNode.transfer(result);
 
       try 
