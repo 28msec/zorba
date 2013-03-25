@@ -634,7 +634,11 @@ protected:
   ftmatch_options                       * theFTMatchOptions;
 #endif /* ZORBA_NO_FULL_TEXT */
 
+  StaticContextConsts::language_kind_t       theLanguageKind;
+
   StaticContextConsts::xquery_version_t      theXQueryVersion;
+
+  StaticContextConsts::jsoniq_version_t      theJSONiqVersion;
 
   StaticContextConsts::xpath_compatibility_t theXPathCompatibility;
 
@@ -903,7 +907,6 @@ public:
       const zstring& pre,
       const zstring& local,
       csize arity,
-      bool allowMultipleDefaultNamespaces,
       const QueryLoc& loc);
 
   function* lookup_fn(
@@ -1050,6 +1053,14 @@ public:
   //
   //  Misc
   //
+  StaticContextConsts::language_kind_t language_kind() const;
+
+  void set_language_kind(StaticContextConsts::language_kind_t k);
+
+  StaticContextConsts::jsoniq_version_t jsoniq_version() const;
+
+  void set_jsoniq_version(StaticContextConsts::jsoniq_version_t v);
+
   StaticContextConsts::xquery_version_t xquery_version() const;
 
   void set_xquery_version(StaticContextConsts::xquery_version_t v);

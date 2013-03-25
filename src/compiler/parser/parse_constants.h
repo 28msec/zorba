@@ -89,7 +89,9 @@ class ParseConstants
       op_val_lt,
       op_val_le,
       op_val_gt,
-      op_val_ge
+      op_val_ge,
+
+      op_val_not  // New jsoniq grammar
     };
 
     enum nodecomp_t 

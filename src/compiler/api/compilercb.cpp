@@ -61,8 +61,7 @@ CompilerCB::config::config()
   opt_level(O1),
   lib_module(false),
   for_serialization_only(false),
-  parse_cb(NULL),
-  jsoniq_mode(false)
+  parse_cb(NULL)
 {
   translate_cb = optimize_cb = NULL;
 
@@ -101,7 +100,6 @@ void CompilerCB::config::serialize(::zorba::serialization::Archiver& ar)
   ar & lib_module;
   ar & for_serialization_only;
   ar & print_item_flow;
-  ar & jsoniq_mode;
 }
 
 

@@ -58,7 +58,6 @@
 #include "runtime/misc/materialize.h"
 #include "runtime/scripting/scripting.h"
 #include "runtime/json/json_constructors.h"
-#include "runtime/collections/collections_impl.h"
 #include "runtime/collections/collections.h"
 
 #include "functions/udf.h"
@@ -1489,10 +1488,6 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   void PrinterVisitor::beginVisit ( const class& a )                 \
   {                                                                  \
     thePrinter.startBeginVisit(#class, ++theId);                     \
-    if (a.isCountOnly())                                             \
-    {                                                                \
-      thePrinter.addAttribute("count", "true");                      \
-    }                                                                \
     if (a.hasSkip())                                                 \
     {                                                                \
       thePrinter.addAttribute("skip", "true");                       \
@@ -1557,7 +1552,5 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   PRINTER_VISITOR_DEFINITION(ExitCatcherIterator);
   PRINTER_VISITOR_DEFINITION(LoopIterator);
   PRINTER_VISITOR_DEFINITION(FlowCtlIterator);
-
-  PRINTER_VISITOR_DEFINITION(CountCollectionIterator);
 }
 /* vim:set et sw=2 ts=2: */

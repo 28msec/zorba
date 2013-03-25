@@ -1713,6 +1713,22 @@ DEFAULT_END_VISIT (ReverseAxis);
     DEFAULT_END_VISIT (StringLiteral);
 
 
+    void* begin_visit(const BooleanLiteral& n)
+    {
+      os << "\"" << n.get_boolval() << '"';
+      return 0;
+    }
+    DEFAULT_END_VISIT (BooleanLiteral);
+
+
+    void* begin_visit(const NullLiteral& n)
+    {
+      os << "\"null\"";
+      return 0;
+    }
+    DEFAULT_END_VISIT (NullLiteral);
+
+
     void* begin_visit(const StringConcatExpr& n)
     {
       n.get_left_expr()->accept(*this);
@@ -2037,6 +2053,8 @@ DEFAULT_END_VISIT (ReverseAxis);
   DEFAULT_VISIT (FTWordsValue);
 
   /* JSON-related */
+  DEFAULT_VISIT (JSONObjectLookup);
+
   DEFAULT_VISIT (JSONArrayConstructor);
 
   DEFAULT_VISIT (JSONObjectConstructor);

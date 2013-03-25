@@ -129,10 +129,13 @@ extern entry const dict_en[] = {
   { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
 #endif
 #if defined(ZORBA_WITH_JSON)
-  { "JNTY0018", "object or array selection needs exactly one parameter" },
+  { "JNTY0018", "object or array selection needs zero or one parameter" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0020", "$1: invalid option type for option $2 (expected $3)" },
+#endif
+#if defined(ZORBA_WITH_JSON)
+  { "JNTY0021", "$1: invalid json-item() type (expected $2)" },
 #endif
 #if defined(ZORBA_WITH_JSON)
   { "JNTY0023", "$1: value of \"$2\" is not a $3" },
@@ -723,6 +726,7 @@ extern entry const dict_en[] = {
   { "~NoSerializationCallbackForModule", "no SerializationCallback for required external module \"$2\"" },
   { "~NoSerializationCallbackForTraceStream", "no SerializationCallback for required trace stream" },
   { "~NoSourceURI", "no URI" },
+  { "~NoStrictCompareWithType_4", "can not compare for strict inequality to type \"$4\"" },
   { "~NoTreatAs_4", "can not treat as \"$4\"" },
   { "~NoTypeInMainModule_4", "type of variable \"$4\" is not among the in-scope types of the main module" },
   { "~NoTypeInModule_45", "type of variable \"$4\" is not among the in-scope types module \"$5\"" },

@@ -222,6 +222,7 @@
 #define ZED_NoCastTo_45o "~NoCastTo_45o"
 #define ZED_NoCompareTypes_23 "~NoCompareTypes_23"
 #define ZED_NoCompareWithType_4 "~NoCompareWithType_4"
+#define ZED_NoStrictCompareWithType_4 "~NoStrictCompareWithType_4"
 #define ZED_NoDriveSpecification "~NoDriveSpecification"
 #define ZED_NoEmptySeqAsBaseURI "~NoEmptySeqAsBaseURI"
 #define ZED_NoEmptySeqAsCollationParam "~NoEmptySeqAsCollationParam"
