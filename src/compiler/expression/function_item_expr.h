@@ -85,7 +85,8 @@ protected:
   expr                * theDotVar;
 
 protected:
-  dynamic_function_invocation_expr(CompilerCB* ccb,
+  dynamic_function_invocation_expr(
+      CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
@@ -116,24 +117,6 @@ public:
 
   InlineFunction ::= "function" "(" ParamList? ")" ("as" SequenceType)? EnclosedExpr
 
-  theFunction :
-  This is always a pointer to a user_function obj. In case of an inline function
-  expr, it is an anonymous user_function obj that is created on-the-fly by the
-  translator to represent the body and signature of the inline function. In case
-  of LiteralFunctionItem where the named function is a UDF, it is the
-  user_function obj of that UDF. Finally, in case of LiteralFunctionItem where
-  the named function F is not a UDF, it is an anonymous user_function obj UF
-  that is created on-the-fly by the translator. The signature of UF is the same
-  as that of F, and its body simply invokes F. The reason why UF is built is to
-  unify the implemenation of dynamic function invocation.
-
-  theArity :
-  We need to store the arity also here because the function above doesn't know
-  about its arity in case it's a variadic function.
-
-  theScopedVariables :
-  Empty in the case of LiteralFunctionItem. Otherwise, the FLWOR vars that are
-  in scope at the place where the InlineFunction expr appears at.
 ********************************************************************************/
 class function_item_expr: public expr
 {
@@ -150,7 +133,6 @@ protected:
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      static_context* closureSctx,
       function* f,
       store::Item* aQName,
       uint32_t aArity,
@@ -163,7 +145,6 @@ protected:
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      static_context* closureSctx,
       bool isInline,
       bool needsContextItem,
       bool isCoercion);

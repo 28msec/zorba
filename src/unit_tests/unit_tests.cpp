@@ -56,6 +56,7 @@ void initializeTestList()
   libunittests["json_parser"] = test_json_parser;
   libunittests["parameters"] = test_parameters;
   libunittests["string"] = test_string;
+  libunittests["time"] = test_time;
   libunittests["time_parse"] = test_time_parse;
 
 #ifndef ZORBA_NO_FULL_TEXT

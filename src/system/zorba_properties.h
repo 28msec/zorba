@@ -43,7 +43,7 @@ protected:
       "--infer-joins", "--no-copy-optim", "--serialize-only-query",
       "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug",
       "--compile-only", "--lib-module", "--tz", "--external-var", "--serializer-param",
-      "--iter-plan-test", "--dot-plan-file", "--plan", "--max-udf-call-depth",
+      "--iter-plan-test", "--dot-plan-file", "--plan", "jsoniq", "--max-udf-call-depth",
       "--CLASSPATH", NULL };
 
     return result;
@@ -94,6 +94,7 @@ protected:
   bool theIterPlanTest;
   std::string theDotPlanFile;
   bool theTestPlanSerialization;
+  bool theJsoniqParser;
   uint32_t theMaxUdfCallDepth;
   std::string theCLASSPATH;
 
@@ -137,6 +138,7 @@ protected:
     theLibModule = false;
     theIterPlanTest = false;
     theTestPlanSerialization = false;
+    theJsoniqParser = false;
     theMaxUdfCallDepth = 1024;
   }
 
@@ -186,6 +188,7 @@ public:
   const bool &iterPlanTest () const { return theIterPlanTest; }
   const std::string &dotPlanFile () const { return theDotPlanFile; }
   const bool& testPlanSerialization() const { return theTestPlanSerialization; }
+  const bool& jsoniqParser() const { return theJsoniqParser; }
   const uint32_t &maxUdfCallDepth () const { return theMaxUdfCallDepth; }
   const std::string &CLASSPATH () const { return theCLASSPATH; }
 
@@ -418,6 +421,9 @@ public:
       else if (strcmp (*argv, "--plan") == 0) {
         theTestPlanSerialization = true;
       } 
+      else if (strcmp (*argv, "--jsoniq") == 0 || strncmp(*argv, "-j", 2) == 0) {
+        theJsoniqParser = true;
+      }
       else if (strcmp (*argv, "--max-udf-call-depth") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }

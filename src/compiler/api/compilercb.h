@@ -132,9 +132,6 @@ class ExprManager;
   Pointer to the function to call to print the expr tree that results from
   translating the query AST.
 
-  theConfig.jsoniq_mode :
-  -----------------------
-  If true, the JSONiq parser will be used instead of the XQuery parser.
 ********************************************************************************/
 class CompilerCB : public zorba::serialization::SerializeBaseClass
 {
@@ -160,7 +157,6 @@ public:
     expr_callback  translate_cb;
     expr_callback  optimize_cb;
     bool           print_item_flow;  // TODO: move to RuntimeCB
-    bool           jsoniq_mode;
 
    public:
     SERIALIZABLE_CLASS(config);

@@ -116,8 +116,14 @@ public:
   virtual bool
   setXQueryVersion(xquery_version_t mode);
 
+  virtual bool
+  setJSONiqVersion(jsoniq_version_t aMode);
+
   virtual xquery_version_t
   getXQueryVersion() const;
+
+  virtual jsoniq_version_t
+  getJSONiqVersion( ) const;
 
   virtual bool
   setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode );

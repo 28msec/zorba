@@ -1418,8 +1418,16 @@ Item::getObjectValue(const store::Item_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue())
   );
+}
+
+
+xs_integer
+Item::getNumObjectPairs() const
+{
+  throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
 }
 
 #endif // ZORBA_WITH_JSON

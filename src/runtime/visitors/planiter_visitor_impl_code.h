@@ -367,6 +367,4 @@ PLAN_ITER_VISITOR(ExitIterator);
 PLAN_ITER_VISITOR(ExitCatcherIterator);
 PLAN_ITER_VISITOR(FlowCtlIterator);
 
-PLAN_ITER_VISITOR(CountCollectionIterator);
-
 /* vim:set et sw=2 ts=2: */

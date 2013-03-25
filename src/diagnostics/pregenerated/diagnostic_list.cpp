@@ -274,10 +274,10 @@ XQueryErrorCode XQDY0102( "XQDY0102" );
 XQueryErrorCode XTDE1310( "XTDE1310" );
 
 
-XQueryErrorCode XTDE1340( "XTDE1340" );
+XQueryErrorCode FOFD1340( "FOFD1340" );
 
 
-XQueryErrorCode XTDE1350( "XTDE1350" );
+XQueryErrorCode FOFD1350( "FOFD1350" );
 
 
 #if !defined(ZORBA_NO_FULL_TEXT)
@@ -1343,6 +1343,9 @@ JSONiqErrorCode JNTY0024( "JNTY0024" );
 
 
 JSONiqErrorCode JNTY0020( "JNTY0020" );
+
+
+JSONiqErrorCode JNTY0021( "JNTY0021" );
 
 
 JSONiqErrorCode JNDY0021( "JNDY0021" );

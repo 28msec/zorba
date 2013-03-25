@@ -29,7 +29,9 @@
 namespace zorba {
 
 
-DEF_EXPR_ACCEPT (dynamic_function_invocation_expr);
+/*******************************************************************************
+
+********************************************************************************/
 
 
 dynamic_function_invocation_expr::dynamic_function_invocation_expr(
@@ -61,11 +63,12 @@ void dynamic_function_invocation_expr::compute_scripting_kind()
 }
 
 
+DEF_EXPR_ACCEPT(dynamic_function_invocation_expr);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
-
-DEF_EXPR_ACCEPT (argument_placeholder_expr);
 
 void argument_placeholder_expr::compute_scripting_kind()
 {
@@ -73,35 +76,34 @@ void argument_placeholder_expr::compute_scripting_kind()
 }
 
 
+DEF_EXPR_ACCEPT (argument_placeholder_expr);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
-
-DEF_EXPR_ACCEPT (function_item_expr);
 
 
 function_item_expr::function_item_expr(CompilerCB* ccb,
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    static_context* closureSctx,
     function* f,
-    store::Item* aQName,
-    uint32_t aArity,
+    store::Item* qname,
+    uint32_t arity,
     bool isInline,
     bool needsContextItem,
     bool isCoercion)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
-  theDynamicFunctionInfo(new DynamicFunctionInfo(
-                         closureSctx,
-                         loc,
-                         f,
-                         aQName,
-                         aArity,
-                         isInline,
-                         needsContextItem,
-                         isCoercion))
+  theDynamicFunctionInfo(new DynamicFunctionInfo(sctx,
+                                                 loc,
+                                                 f,
+                                                 qname,
+                                                 arity,
+                                                 isInline,
+                                                 needsContextItem,
+                                                 isCoercion))
 {
   assert(f != NULL);
   compute_scripting_kind();
@@ -112,21 +114,19 @@ function_item_expr::function_item_expr(CompilerCB* ccb,
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    static_context* closureSctx,
     bool isInline,
     bool needsContextItem,
     bool isCoercion)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
-  theDynamicFunctionInfo(new DynamicFunctionInfo(
-                         closureSctx,
-                         loc,
-                         NULL,
-                         NULL,
-                         0,
-                         isInline,
-                         needsContextItem,
-                         isCoercion))
+  theDynamicFunctionInfo(new DynamicFunctionInfo(sctx,
+                                                 loc,
+                                                 NULL,
+                                                 NULL,
+                                                 0,
+                                                 isInline,
+                                                 needsContextItem,
+                                                 isCoercion))
 {
   theScriptingKind = SIMPLE_EXPR;
 }
@@ -136,7 +136,12 @@ function_item_expr::~function_item_expr()
 {
 }
 
-void function_item_expr::add_variable(expr* var, var_expr* substVar, const store::Item_t& name, int isGlobal)
+
+void function_item_expr::add_variable(
+    expr* var,
+    var_expr* substVar,
+    const store::Item_t& name,
+    int isGlobal)
 {
   theDynamicFunctionInfo->add_variable(var, substVar, name, isGlobal);
 }
@@ -157,6 +162,7 @@ void function_item_expr::compute_scripting_kind()
   theScriptingKind = SIMPLE_EXPR;
 }
 
+
 store::Item_t function_item_expr::create_inline_fname(const QueryLoc& loc) 
 {
   store::Item_t name;
@@ -167,6 +173,9 @@ store::Item_t function_item_expr::create_inline_fname(const QueryLoc& loc)
   GENV_ITEMFACTORY->createQName(name, "", "", ss.str());
   return name;
 }
+
+
+DEF_EXPR_ACCEPT (function_item_expr);
 
 
 }//end of namespace

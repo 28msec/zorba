@@ -291,9 +291,16 @@ public:
 ********************************************************************************/
 class VersionDecl : public parsenode
 {
+public:
+  enum LanguageKind {
+    xquery = 0,
+    jsoniq
+  };
+
 protected:
   zstring version;
   zstring encoding;
+  LanguageKind lang_kind;
 
   friend class ParseNodePrintXMLVisitor;
 
@@ -303,8 +310,15 @@ public:
     zstring const& version,
     zstring const& encoding);
 
+  VersionDecl(
+    const QueryLoc&,
+    zstring const& version,
+    zstring const& encoding,
+    LanguageKind const& lang_kind);
+
   zstring const& get_version() const { return version; }
   zstring const& get_encoding() const { return encoding; }
+  LanguageKind const& get_language_kind() const { return lang_kind; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1625,6 +1639,8 @@ public:
   bool isTopLevel() const { return theIsTopLevel; }
 
   void setTopLevel(bool v) { theIsTopLevel =  v; }
+
+  bool isEmpty() const;
 
   void add(parsenode* statement);
 
@@ -3083,6 +3099,7 @@ public:
 
 /*******************************************************************************
   [84] ValueComp ::= "eq" | "ne" | "lt" | "le" | "gt" | "ge"
+  !!! New jsoniq grammar:                                    | "not"
 ********************************************************************************/
 class ValueComp : public parsenode
 {
@@ -4141,6 +4158,30 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
+/*******************************************************************************
+********************************************************************************/
+class BooleanLiteral : public exprnode
+{
+protected:
+  bool const boolval;
+
+public:
+  BooleanLiteral(const QueryLoc&, bool);
+
+  bool const& get_boolval() const { return boolval; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+/*******************************************************************************
+********************************************************************************/
+class NullLiteral : public exprnode
+{
+public:
+  NullLiteral(const QueryLoc&);
+
+  void accept(parsenode_visitor&) const;
+};
 
 /*******************************************************************************
   [110] VarRef ::= "$" VarName
@@ -6681,6 +6722,26 @@ private:
 //  JSON productions                                                         //
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
+class JSONObjectLookup : public exprnode
+{
+protected:
+  const exprnode* theObjectExpr;
+  const exprnode* theSelectorExpr;
+
+public:
+  JSONObjectLookup(
+      const QueryLoc&,
+      const exprnode* aObjectExpr,
+      const exprnode* aSelectorExpr = 0);
+
+  ~JSONObjectLookup();
+
+  const exprnode* get_object_expr() const { return theObjectExpr; }
+
+  const exprnode* get_selector_expr() const { return theSelectorExpr; }
+
+  void accept(parsenode_visitor&) const;
+};
 
 
 class JSONArrayConstructor : public exprnode
@@ -6727,6 +6788,8 @@ private:
   const JSONPairList  * thePairs;
 
 public:
+  JSONDirectObjectConstructor(const QueryLoc& loc);
+
   JSONDirectObjectConstructor(const QueryLoc& loc, const JSONPairList* pairs);
 
   ~JSONDirectObjectConstructor();

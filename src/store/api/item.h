@@ -933,6 +933,14 @@ public:
   virtual store::Item_t
   getObjectValue(const store::Item_t& key) const;
 
+  /**
+   * defined on JSONObject
+   * 
+   * @return the number of pairs in the object
+   */
+  virtual xs_integer
+  getNumObjectPairs() const;
+
 #endif // ZORBA_WITH_JSON
 
 
