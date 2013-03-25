@@ -3468,7 +3468,7 @@ typedef zorba::jsoniq_parser::token_type token_type;
   TRY_TOKEN_INTERNAL(ttype, put (yytext, yyleng), yytext, unrecognizedToken)
 
 #define TRY_STRING_LITERAL(ttype, yytext, yyleng) \
-  TRY_TOKEN_INTERNAL(ttype, put_stringlit(yytext, yyleng), yytext, invalidCharRef)
+  TRY_TOKEN_INTERNAL(ttype, put_json_stringliteral(yytext, yyleng), yytext, invalidCharRef)
 
 #define TRY_URI_LITERAL(ttype, yytext, yyleng ) \
   TRY_TOKEN_INTERNAL(ttype, put_uri(yytext, yyleng), yytext, unrecognizedToken)

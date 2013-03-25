@@ -21,6 +21,8 @@
 
 #include "util/ascii_util.h"
 #include "util/xml_util.h"
+#include "util/uri_util.h"
+#include "util/utf8_util.h"
 
 #include <cstdlib>
 #include <string>
@@ -60,7 +62,7 @@ symbol_table::~symbol_table()
 
 size_t symbol_table::size() const
 {
-	return (size_t)heap.size();
+  return (size_t)heap.size();
 }
 
 // bool attribute == true when an attribute value is normalized
@@ -95,7 +97,7 @@ off_t symbol_table::put(char const* text, size_t length, int normalizationType)
     length = normStr.size ();
   }
 
-	return heap.put(text, 0, length);
+  return heap.put(text, 0, length);
 }
 
 off_t symbol_table::put_ncname(char const* text, size_t length)
@@ -154,7 +156,7 @@ off_t symbol_table::put_uri(char const* text, size_t length)
 
 off_t symbol_table::put_varname(char const* text, size_t length)
 {
-	return heap.put(text, 0, length);
+  return heap.put(text, 0, length);
 }
 
 off_t symbol_table::put_entityref(char const* text, size_t length)
@@ -167,17 +169,60 @@ off_t symbol_table::put_entityref(char const* text, size_t length)
 
 off_t symbol_table::put_charref(char const* text, size_t length)
 {
-	return heap.put (text + 1, 0, length - 1);
+  return heap.put (text + 1, 0, length - 1);
 }
 
 off_t symbol_table::put_stringlit(char const* yytext, size_t yyleng)
 {
   string eolNorm;
   normalize_eol (yytext, yyleng, &eolNorm);
-  yytext = eolNorm.c_str (); yyleng = eolNorm.size ();
+  yytext = eolNorm.c_str ();
+  yyleng = eolNorm.size ();
   string result;
-  if (! decode_string (yytext, yyleng, &result)) return -1;
-	return heap.put (result.c_str (), 0, result.length ());
+  if (! decode_string (yytext, yyleng, &result))
+    return -1;
+  return heap.put (result.c_str (), 0, result.length ());
+}
+
+off_t symbol_table::put_json_stringliteral(char const* yytext, size_t yyleng)
+{
+  string result;
+  unsigned int cp;
+  size_t len;
+
+  for (const char* chr = yytext+1; (unsigned int)(chr-yytext)<yyleng-1; chr+=1)
+  {
+    if (*chr == '\\')
+    {
+      chr += 1;
+      switch (*chr)
+      {
+      case '\\': result += '\\'; break;
+      case '/': result += '/'; break;
+      case '\"': result += '\"'; break;
+      case '\'': result += '\''; break;
+      case 'b': result += '\b'; break;
+      case 'f': result += '\f'; break;
+      case 'n': result += '\n'; break;
+      case 'r': result += '\r'; break;
+      case 't': result += '\t'; break;
+      case 'u':
+        cp = 0;        
+        for (unsigned int i=0; i<4; i++, chr+=1)
+          cp = (cp << 4) + uri::hex2dec[(unsigned int)*(chr+1)];
+        char tmp[10];
+        len = utf8::encode(cp, tmp);
+        result.append(tmp, len);
+        break;
+      default:
+        result += *chr;
+        break;
+      }
+    }
+    else
+      result += *chr;
+  }
+  return heap.put (result.c_str (), 0, result.length ());
 }
 
 off_t symbol_table::put_commentcontent(char const* yytext, size_t yyleng)
