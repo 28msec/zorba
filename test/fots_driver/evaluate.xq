@@ -486,17 +486,25 @@ declare %private function eval:assert-xml(
 )
 {
   try {
-    let $actualResult   := zorba-xml:canonicalize(concat('<root>', fn:serialize($result, $util:serParamXml), '</root>'))
-    let $expectedResult := zorba-xml:canonicalize(concat('<root>', util:get-value($expResult, $baseURI, "assert-xml"), '</root>'))
-    
+    let $actualResult   := concat('<root>', fn:serialize($result, $util:serParamXml), '</root>')
+    let $expectedResult := concat('<root>', util:get-value($expResult, $baseURI, "assert-xml"), '</root>')
     return
-      if(empty($expResult[@ignore-prefixes='true']) and
-         ($actualResult eq $expectedResult))
-      then ()
-      else if(exists($expResult[@ignore-prefixes='true']) and
-             fn:parse-xml($actualResult) eq fn:parse-xml($expectedResult)) (: the namespace prefixes are ignored in this comparison :)
-      then ()
-      else concat("'assert-xml' returned: result &#xA;'", $actualResult, "'&#xA; is different from the expected result &#xA;'", $expectedResult,"'&#xA;")
+    (: first try to see if deep-equal is true:)
+    if(deep-equal(parse-xml($actualResult), parse-xml($expectedResult)))
+    then ()
+    else (: second try to canonicalize :)
+    {
+      let $canActualResult   := zorba-xml:canonicalize($actualResult)
+      let $canExpectedResult := zorba-xml:canonicalize($expectedResult)
+      return
+        if(empty($expResult[@ignore-prefixes='true']) and
+           ($canActualResult eq $canExpectedResult))
+        then ()
+        else if(exists($expResult[@ignore-prefixes='true']) and
+              fn:parse-xml($canActualResult) eq fn:parse-xml($canExpectedResult)) (: the namespace prefixes are ignored in this comparison :)
+        then ()
+        else concat("'assert-xml' returned: result &#xA;'", $canActualResult, "'&#xA; is different from the expected result &#xA;'", $canExpectedResult,"'&#xA;")
+    }
   } catch * {
     concat("'assert-xml' returned: fail with error ",
             $err:code, " : ", $err:description)
