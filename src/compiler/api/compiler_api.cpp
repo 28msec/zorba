@@ -130,7 +130,7 @@ bool XQueryCompiler::getLanguageMode(std::stringstream& s) const
 {
   const size_t lPeekSize = 7;
   char lPeek[lPeekSize];
-  s.get(lPeek, lPeekSize, ' ');
+  s.get(lPeek, lPeekSize);
   s.clear();
   s.seekg(0, s.beg);
 

@@ -143,7 +143,7 @@ int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal ) {
 int convert_wday_from( unsigned wday, type from ) {
   switch ( from ) {
     case AD : return static_cast<int>( wday );
-    case ISO: return wday == iso8601::sun ? time::sun : wday;
+    case ISO: return wday == (unsigned)iso8601::sun ? time::sun : wday;
     default : return -1;
   }
 }
@@ -151,7 +151,7 @@ int convert_wday_from( unsigned wday, type from ) {
 int convert_wday_to( unsigned wday, type to ) {
   switch ( to ) {
     case AD : return static_cast<int>( wday );
-    case ISO: return wday == time::sun ? iso8601::sun : wday;
+    case ISO: return wday == (unsigned)time::sun ? iso8601::sun : wday;
     default : return -1;
   }
 }
@@ -175,7 +175,7 @@ static unsigned const yday_mon[][13] = {
 
 bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
                     unsigned year ) {
-  assert( yday < days_in_year( year ) );
+  assert( (int)yday < days_in_year( year ) );
 
   unsigned const *const ym = yday_mon[ is_leap_year( year ) ];
   for ( unsigned m = 1; m <= 12; ++m ) 
@@ -236,7 +236,7 @@ bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
  */
 int calc_wday( unsigned mday, unsigned mon, unsigned year ) {
   assert( mday >= 1 );
-  assert( mday <= days_in_month( mon, year ) );
+  assert( (int)mday <= days_in_month( mon, year ) );
   assert( mon < 12 );
 
   ++mon; // Tondering's algorithm assumes month value in range 1-12.
@@ -248,7 +248,7 @@ int calc_wday( unsigned mday, unsigned mon, unsigned year ) {
 
 int calc_yday( unsigned mday, unsigned mon, unsigned year ) {
   assert( mday >= 1 );
-  assert( mday <= days_in_month( mon, year ) );
+  assert( (int)mday <= days_in_month( mon, year ) );
   return (int)yday_mon[ is_leap_year( year ) ][ mon ] + mday - 1;
 }
 
