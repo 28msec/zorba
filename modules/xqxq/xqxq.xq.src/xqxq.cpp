@@ -990,13 +990,14 @@ zorba::ItemSequence_t QueryPlanFunction::evaluate(
 
   XQuery_t lQuery = getQuery(aDctx, lQueryID);
 
-  std::stringstream* lExcPlan = new std::stringstream();
-  if (!lQuery->saveExecutionPlan(*lExcPlan, ZORBA_USE_BINARY_ARCHIVE))
+  std::auto_ptr<std::stringstream> lExcPlan;
+  lExcPlan.reset(new std::stringstream());
+  if (!lQuery->saveExecutionPlan(*lExcPlan.get(), ZORBA_USE_BINARY_ARCHIVE))
   {
     throwError("QueryPlanError", "FAILED getting query execution plan.");
   }
   
-  return ItemSequence_t(new SingletonItemSequence(XQXQModule::getItemFactory()->createStreamableBase64Binary(*lExcPlan, &streamReleaser)));
+  return ItemSequence_t(new SingletonItemSequence(XQXQModule::getItemFactory()->createStreamableBase64Binary(*lExcPlan.release(), &streamReleaser)));
 }
  
 
