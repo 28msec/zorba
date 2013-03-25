@@ -18,7 +18,6 @@
 
 // standard
 #include <algorithm>
-#include <cctype>
 #include <cmath>
 #include <cstdlib>
 #include <functional>
@@ -189,118 +188,6 @@ zstring alpha( unsigned n, bool capital ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace english_impl {
-
-// Based on code from:
-// http://www.cprogramming.com/challenges/integer-to-english-sol.html
-
-static string const ones[][2] = {
-  { "",          ""            },
-  { "one",       "first"       },
-  { "two",       "second"      },
-  { "three",     "third"       },
-  { "four",      "fourth"      },
-  { "five",      "fifth"       },
-  { "six",       "sixth"       },
-  { "seven",     "seventh"     },
-  { "eight",     "eighth"      },
-  { "nine",      "ninth"       },
-  { "ten",       "tenth"       },
-  { "eleven",    "eleventh"    },
-  { "twelve",    "twelfth"     },
-  { "thirteen",  "thirteenth"  },
-  { "fourteen",  "fourteenth"  },
-  { "fifteen",   "fifteenth"   },
-  { "sixteen",   "sixteenth"   },
-  { "seventeen", "seventeenth" },
-  { "eighteen",  "eighteenth"  },
-  { "nineteen",  "nineteenth"  }
-};
-
-static zstring const tens[][2] = {
-  { "",        ""           },
-  { "",        ""           },
-  { "twenty",  "twentieth"  },
-  { "thirty",  "thirtieth"  },
-  { "forty",   "fortieth"   },
-  { "fifty",   "fiftieth"   },
-  { "sixty",   "sixtieth"   },
-  { "seventy", "seventieth" },
-  { "eighty",  "eighteenth" },
-  { "ninety",  "ninetieth"  }
-};
-
-// Enough entries to print English for 64-bit integers.
-static zstring const big[][2] = {
-  { "",            ""              },
-  { "thousand",    "thousandth"    },
-  { "million",     "millionth"     },
-  { "billion",     "billionth"     },
-  { "trillion",    "trillionth"    },
-  { "quadrillion", "quadrillionth" },
-  { "quintillion", "quintillionth" }
-};
-
-inline zstring if_space( zstring const &s ) {
-  return s.empty() ? "" : ' ' + s;
-}
-
-static zstring hundreds( int64_t n, bool ordinal ) {
-  if ( n < 20 )
-    return ones[ n ][ ordinal ];
-  zstring const tmp( if_space( ones[ n % 10 ][ ordinal ] ) );
-  return tens[ n / 10 ][ ordinal && tmp.empty() ] + tmp;
-}
-
-} // namespace english_impl
-
-/**
- * Converts a signed integer to English, e.g, 42 becomes "forty two".
- *
- * @param n The integer to convert.
- * @param ordinal If \c true, ordinal words ("forty second") are returned.
- * @return Returns \a n in English.
- */
-static zstring english( int64_t n, bool ordinal = false ) {
-  using namespace english_impl;
-
-  if ( !n )
-    return ordinal ? "zeroth" : "zero";
-
-  bool const negative = n < 0;
-  if ( negative )
-    n = -n;
-
-  int big_count = 0;
-  bool big_ordinal = ordinal;
-  zstring r;
-
-  while ( n ) {
-    if ( int64_t const m = n % 1000 ) {
-      zstring s;
-      if ( m < 100 )
-        s = hundreds( m, ordinal );
-      else {
-        zstring const tmp( if_space( hundreds( m % 100, ordinal ) ) );
-        s = ones[ m / 100 ][0] + ' '
-          + (ordinal && tmp.empty() ? "hundredth" : "hundred") + tmp;
-      }
-      zstring const tmp( if_space( r ) );
-      r = s + if_space( big[ big_count ][ big_ordinal && tmp.empty() ] + tmp );
-      big_ordinal = false;
-    }
-    n /= 1000;
-    ++big_count;
-    ordinal = false;
-  }
-
-  if ( negative )
-    r = "negative " + r;
-  return r;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 static bool is_grouping_separator( unicode::code_point cp ) {
   using namespace unicode;
   //
@@ -402,20 +289,20 @@ static void append_number( int n, modifier const &mod, zstring *dest ) {
     }
 
     case modifier::words: {
-      zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
+      zstring tmp( ztd::english( n, mod.second.co_type == modifier::ordinal ) );
       *dest += mod.right_pad_space( &tmp );
       break;
     }
 
     case modifier::Words: {
-      zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
+      zstring tmp( ztd::english( n, mod.second.co_type == modifier::ordinal ) );
       std::transform( tmp.begin(), tmp.end(), tmp.begin(), to_title() );
       *dest += mod.right_pad_space( &tmp );
       break;
     }
 
     case modifier::WORDS: {
-      zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
+      zstring tmp( ztd::english( n, mod.second.co_type == modifier::ordinal ) );
       ascii::to_upper( tmp );
       *dest += mod.right_pad_space( &tmp );
       break;

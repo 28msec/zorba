@@ -170,6 +170,111 @@ unsigned long long atoull( char const *buf, char const *end,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+namespace english_impl {
+
+// Based on code from:
+// http://www.cprogramming.com/challenges/integer-to-english-sol.html
+
+static zstring const ones[][2] = {
+  { "",          ""            },
+  { "one",       "first"       },
+  { "two",       "second"      },
+  { "three",     "third"       },
+  { "four",      "fourth"      },
+  { "five",      "fifth"       },
+  { "six",       "sixth"       },
+  { "seven",     "seventh"     },
+  { "eight",     "eighth"      },
+  { "nine",      "ninth"       },
+  { "ten",       "tenth"       },
+  { "eleven",    "eleventh"    },
+  { "twelve",    "twelfth"     },
+  { "thirteen",  "thirteenth"  },
+  { "fourteen",  "fourteenth"  },
+  { "fifteen",   "fifteenth"   },
+  { "sixteen",   "sixteenth"   },
+  { "seventeen", "seventeenth" },
+  { "eighteen",  "eighteenth"  },
+  { "nineteen",  "nineteenth"  }
+};
+
+static zstring const tens[][2] = {
+  { "",        ""           },
+  { "",        ""           },
+  { "twenty",  "twentieth"  },
+  { "thirty",  "thirtieth"  },
+  { "forty",   "fortieth"   },
+  { "fifty",   "fiftieth"   },
+  { "sixty",   "sixtieth"   },
+  { "seventy", "seventieth" },
+  { "eighty",  "eighteenth" },
+  { "ninety",  "ninetieth"  }
+};
+
+// Enough entries to print English for 64-bit integers.
+static zstring const big[][2] = {
+  { "",            ""              },
+  { "thousand",    "thousandth"    },
+  { "million",     "millionth"     },
+  { "billion",     "billionth"     },
+  { "trillion",    "trillionth"    },
+  { "quadrillion", "quadrillionth" },
+  { "quintillion", "quintillionth" }
+};
+
+inline zstring if_space( zstring const &s ) {
+  return s.empty() ? "" : ' ' + s;
+}
+
+static zstring hundreds( int64_t n, bool ordinal ) {
+  if ( n < 20 )
+    return ones[ n ][ ordinal ];
+  zstring const tmp( if_space( ones[ n % 10 ][ ordinal ] ) );
+  return tens[ n / 10 ][ ordinal && tmp.empty() ] + tmp;
+}
+
+} // namespace english_impl
+
+zstring english( int64_t n, bool ordinal ) {
+  using namespace english_impl;
+
+  if ( !n )
+    return ordinal ? "zeroth" : "zero";
+
+  bool const negative = n < 0;
+  if ( negative )
+    n = -n;
+
+  int big_count = 0;
+  bool big_ordinal = ordinal;
+  zstring r;
+
+  while ( n ) {
+    if ( int64_t const m = n % 1000 ) {
+      zstring s;
+      if ( m < 100 )
+        s = hundreds( m, ordinal );
+      else {
+        zstring const tmp( if_space( hundreds( m % 100, ordinal ) ) );
+        s = ones[ m / 100 ][0] + ' '
+          + (ordinal && tmp.empty() ? "hundredth" : "hundred") + tmp;
+      }
+      zstring const tmp( if_space( r ) );
+      r = s + if_space( big[ big_count ][ big_ordinal && tmp.empty() ] + tmp );
+      big_ordinal = false;
+    }
+    n /= 1000;
+    ++big_count;
+    ordinal = false;
+  }
+
+  if ( negative )
+    r = "negative " + r;
+  return r;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace ztd
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
