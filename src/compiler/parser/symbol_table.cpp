@@ -215,6 +215,7 @@ off_t symbol_table::put_json_stringliteral(char const* yytext, size_t yyleng)
         result.append(tmp, len);
         break;
       default:
+        result += *(chr-1);
         result += *chr;
         break;
       }
