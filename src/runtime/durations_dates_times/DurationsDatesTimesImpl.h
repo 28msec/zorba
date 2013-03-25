@@ -24,52 +24,11 @@
 #include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
 
+namespace zorba {
 
-namespace zorba
-{
+///////////////////////////////////////////////////////////////////////////////
 
 BINARY_ITER(FnDateTimeConstructorIterator);
-
-
-// XQuery 3.0 DateTime formatting
-class FnFormatDateTimeIterator : public NaryBaseIterator<FnFormatDateTimeIterator,
-                                                         PlanIteratorState >
-{
-private:
-  DateTime::FACET_TYPE facet_type;
-
-public:
-  SERIALIZABLE_CLASS(FnFormatDateTimeIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  FnFormatDateTimeIterator,
-  NaryBaseIterator<FnFormatDateTimeIterator, PlanIteratorState >);
-
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnFormatDateTimeIterator, PlanIteratorState >*)this);
-
-    SERIALIZE_ENUM(DateTime::FACET_TYPE, facet_type);
-  }
-
-public:
-  FnFormatDateTimeIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& aChildren,
-        DateTime::FACET_TYPE a_facet_type = DateTime::DATETIME_FACET)
-    :
-    NaryBaseIterator<FnFormatDateTimeIterator, PlanIteratorState>(sctx, loc, aChildren),
-    facet_type(a_facet_type)
-  {
-  }
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
 
 /*
 10.7 Timezone Adjustment Functions on Dates and Time Values
@@ -88,14 +47,14 @@ UNARY_ITER(FnAdjustToTimeZoneIterator_1);
 */
 BINARY_ITER(FnAdjustToTimeZoneIterator_2);
 
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
 
-#endif
-
+#endif /* ZORBA_RUNTIME_DURATIONSDATESTIMES */
 /*
  * Local variables:
  * mode: c++
  * End:
  */
-
 /* vim:set et sw=2 ts=2: */

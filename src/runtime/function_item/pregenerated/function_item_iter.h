@@ -39,6 +39,42 @@ namespace zorba {
 
 /**
  * 
+ *      Returns the function having a given name and arity, if there is one.
+ *    
+ * Author: Zorba Team
+ */
+class FunctionLookupIterator : public NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>
+{ 
+protected:
+  CompilerCB* theCompilerCB; //
+public:
+  SERIALIZABLE_CLASS(FunctionLookupIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionLookupIterator,
+    NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FunctionLookupIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    CompilerCB* aCompilerCB)
+    : 
+    NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>(sctx, loc, children),
+    theCompilerCB(aCompilerCB)
+  {}
+
+  virtual ~FunctionLookupIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      Returns the name of the function identified by a function item.
  *    
  * Author: Zorba Team
@@ -103,34 +139,111 @@ public:
 
 /**
  * 
- *      Returns the new function item obtained by binding one of the arguments of a supplied function item to a value.
- *      That is, it curries the supplied function.
+ *      Applies the function item $f to successive pairs of items taken one from $seq1 and one from $seq2, returning the concatenation of the resulting sequences in order.
  *    
  * Author: Zorba Team
  */
-class PartialApplyIterator : public NaryBaseIterator<PartialApplyIterator, PlanIteratorState>
+class FnMapPairsIteratorState : public PlanIteratorState
+{
+public:
+  PlanState* thePlanState; //
+  PlanIter_t thePlan; //
+  bool theIsOpen; //
+  uint32_t theUDFStateOffset; //
+  store::Item_t theFnItem; //
+
+  FnMapPairsIteratorState();
+
+  ~FnMapPairsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnMapPairsIterator : public NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(PartialApplyIterator);
+  SERIALIZABLE_CLASS(FnMapPairsIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PartialApplyIterator,
-    NaryBaseIterator<PartialApplyIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnMapPairsIterator,
+    NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  PartialApplyIterator(
+  FnMapPairsIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<PartialApplyIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~PartialApplyIterator();
+  virtual ~FnMapPairsIterator();
+
+  uint32_t getStateSizeOfSubtree() const;
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void openImpl(PlanState&, uint32_t&);
+};
+
+
+/**
+ * 
+ *      Processes the supplied sequence from left to right or right to left, applying the supplied function repeatedly to each item in turn, together with an accumulated result value.
+ *    
+ * Author: Zorba Team
+ */
+class FnFoldLeftIteratorState : public PlanIteratorState
+{
+public:
+  PlanState* thePlanState; //
+  PlanIter_t thePlan; //
+  bool theIsOpen; //
+  uint32_t theUDFStateOffset; //
+  store::Item_t theFnItem; //
+
+  FnFoldLeftIteratorState();
+
+  ~FnFoldLeftIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnFoldLeftIterator : public NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>
+{ 
+protected:
+  bool theIsFoldRight; //
+public:
+  SERIALIZABLE_CLASS(FnFoldLeftIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnFoldLeftIterator,
+    NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FnFoldLeftIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool aIsFoldRight)
+    : 
+    NaryBaseIterator<FnFoldLeftIterator, FnFoldLeftIteratorState>(sctx, loc, children),
+    theIsFoldRight(aIsFoldRight)
+  {}
+
+  virtual ~FnFoldLeftIterator();
+
+  uint32_t getStateSizeOfSubtree() const;
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void openImpl(PlanState&, uint32_t&);
 };
 
 

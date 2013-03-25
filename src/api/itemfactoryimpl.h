@@ -197,7 +197,7 @@ namespace zorba {
       createGYearMonth ( short aYear, short aMonth );
     
       virtual Item
-      createHexBinary ( const char* aHexData, size_t aSize );
+      createHexBinary ( const char* aHexData, size_t aSize, bool aIsEncoded );
 
       virtual Item
       createNegativeInteger ( long long aValue );

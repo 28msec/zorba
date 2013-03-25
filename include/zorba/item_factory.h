@@ -543,12 +543,15 @@ namespace zorba {
       /** \brief Creates a HexBinary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#hexBinary]
        *
-       * @param aHexData pointer to the hexdata.
-       * @param aSize size of the hexdata.
+       * @param aData pointer to the data.
+       * @param aSize size of the data in bytes.
+       * @param aIsEncoded if \c true, the \a aData is already HexBinary
+       * encoded.
        * @return The HexBinary Item.
        */
       virtual Item
-      createHexBinary ( const char* aHexData, size_t aSize ) = 0;
+      createHexBinary( const char* aData, size_t aSize,
+                       bool aIsEncoded = true ) = 0;
 
       /** \brief Creates a negativeInteger Item
        *         see [http://www.w3.org/TR/xmlschema-2/#negativeInteger]

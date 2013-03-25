@@ -9,9 +9,11 @@ Iterator tree for main query:
         <CtxVarIterator varid="4" varname="coll" varkind="global"/>
       </ZorbaCreateCollectionIterator>
     </ApplyIterator>
-    <CountCollectionIterator>
-      <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-    </CountCollectionIterator>
+    <FnCountIterator>
+      <ZorbaCollectionIterator>
+        <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+      </ZorbaCollectionIterator>
+    </FnCountIterator>
   </SequentialIterator>
 </SequentialIterator>
 

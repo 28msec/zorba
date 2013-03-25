@@ -295,8 +295,6 @@ declare %private %ann:sequential function eval:assert(
   {
     variable $queryText := concat(
       "xquery version '3.0';",
-      "declare namespace o = 'http://www.zorba-xquery.com/options/features';",
-      "declare option o:enable 'hof';",
       "declare variable $result external; ",
       xs:string($expResult));
     variable $queryKey := xqxq:prepare-main-module($queryText),
@@ -342,8 +340,6 @@ declare %private %ann:sequential function eval:assert-deep-eq(
   {
     variable $queryText := concat(
       "xquery version '3.0';",
-      "declare namespace o = 'http://www.zorba-xquery.com/options/features';",
-      "declare option o:enable 'hof';",
       "declare variable $x external;",
       "let $y := (",string(data($expResult)),") return ",
       "every $i in 1 to max((count($x),count($y))) satisfies deep-equal($x[$i],$y[$i])");
@@ -400,7 +396,11 @@ declare %private %ann:sequential function eval:assert-eq(
       "$x eq ",
       if (starts-with(data($expResult), $type))
       then data($expResult)
-      else concat($type,"(", data($expResult), ")"));
+      else concat($type,"(",
+                  if(ends-with($expResult,'INF') or ends-with($expResult,'NaN'))
+                  then concat("'",$expResult,"'")
+                  else $expResult,
+                  ")"));
     variable  $queryKey := xqxq:prepare-main-module($queryText);
    
     xqxq:bind-variable($queryKey,

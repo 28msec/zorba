@@ -51,6 +51,8 @@ PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR (SingletonIterator);
 
+  PLAN_ITER_VISITOR (DynamicFunctionIterator);
+
   PLAN_ITER_VISITOR (EmptyIterator);
 
   PLAN_ITER_VISITOR (ForVarIterator);
@@ -353,6 +355,7 @@ PLAN_ITER_VISITOR (AndIterator);
   PLAN_ITER_VISITOR(DeleteIndexIterator);
 
   PLAN_ITER_VISITOR(DynamicFnCallIterator);
+  PLAN_ITER_VISITOR(ArgumentPlaceholderIterator);
 
   PLAN_ITER_VISITOR(EvalIterator);
 
@@ -363,7 +366,5 @@ PLAN_ITER_VISITOR(LoopIterator);
 PLAN_ITER_VISITOR(ExitIterator);
 PLAN_ITER_VISITOR(ExitCatcherIterator);
 PLAN_ITER_VISITOR(FlowCtlIterator);
-
-PLAN_ITER_VISITOR(CountCollectionIterator);
 
 /* vim:set et sw=2 ts=2: */

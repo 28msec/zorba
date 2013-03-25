@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,7 +35,7 @@
 #include "store/api/ft_token_iterator.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
-namespace zorba 
+namespace zorba
 {
 
 class ZorbaException;
@@ -83,6 +83,15 @@ protected:
 protected:
   mutable long      theRefCount;
   mutable ItemUnion theUnion;
+
+#ifndef NDEBUG
+  // This class member is set by some atomic type items to the
+  // item's value in order to aid debugging. The debug_str might
+  // not always be updated to the current value.
+protected:
+  const char* debug_str_;      // similar to zorba_string.h
+  zstring debug_holder;
+#endif
 
 protected:
 
@@ -235,14 +244,14 @@ public:
   hash(long timezone = 0, const XQPCollator* collation = 0) const;
   
   /**
-   * Compares (by value) two items for equality. 
+   * Compares (by value) two items for equality.
    *
    * @param  An optional XQPCollator that is used for comparing string items
    * @return true, if the two items are the "same"
    * @throws ZSTR0040_TYPE_ERROR if the items are not equality-comparable. For two
    *         items to be equality-comparable, one has to be a subtype of the other
    *         and they must also be comparable by the eq operator as specified in
-   *         the table of http://www.w3.org/TR/xquery/#mapping.  
+   *         the table of http://www.w3.org/TR/xquery/#mapping.
    */
   virtual bool 
   equals(const Item*, long timezone = 0, const XQPCollator* collation = 0) const;
@@ -257,7 +266,7 @@ public:
    * @throws ZSTR0040_TYPE_ERROR if the items are not order-comparable. For two
    *         items to be order-comparable, one has to be a subtype of the other
    *         and they must also be comparable by the gt operator as specified in
-   *         the table of http://www.w3.org/TR/xquery/#mapping.  
+   *         the table of http://www.w3.org/TR/xquery/#mapping.
    * @throws ZSTR0041_NAN_COMPARISON if both "this" and "other" are xs:double
    *         or xs:float and at leat one of the items is NaN.
    */
@@ -277,7 +286,7 @@ public:
    *  @return string value of the item as defined in XQuery data model
    *          specification (Section 2.6.5).
    */
-  virtual zstring 
+  virtual zstring
   getStringValue() const;
 
   virtual void
@@ -298,7 +307,7 @@ public:
    * value is the item itself. If it is a node, its typed value is defined
    * according to the XDM.
    *
-   * @param val If the typed value consists of a single atomic value, it is 
+   * @param val If the typed value consists of a single atomic value, it is
    *        returned in val. Otherwise, val is set to NULL.
    * @param iter If the typed value is a sequence of atomic values, an iterator
    *        is created to iterate over the values of the sequence. Otherwise,
@@ -311,6 +320,11 @@ public:
    */
   virtual zstring
   show() const;
+  
+  /** Method to print to content of the Item. Added for uniformity.
+   */
+  virtual zstring
+  toString() const;
 
   /* -------------------  Methods for AtomicValues ------------------------------ */
 
@@ -332,7 +346,7 @@ public:
    *
    * Assuming that the item is an AtomicValue of a particular kind X, return the
    * value of the item. Implementations of X, e.g., a specific DoubleValue
-   * implementation, will override its specific getXValue method (i.e., 
+   * implementation, will override its specific getXValue method (i.e.,
    * getDoubleValue) and not change any of the other methods. Implementations of
    * the seven kinds of nodes should not override the definition of these methods.
    */
@@ -360,12 +374,12 @@ public:
    */
   virtual xs_double getDoubleValue() const;
 
-  /** 
+  /**
    * Accessor for xs:float
    */
   virtual xs_float getFloatValue() const;
 
-  /** 
+  /**
    * Accessor for xs:decimal, xs:nonPositiveInteger, negativeInteger,
    * nonNegativeInteger, positive)integer, xs:long, xs:unsignedLong,
    * xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
@@ -375,7 +389,7 @@ public:
   /** Accessor for xs:(nonPositive | negative | nonNegativeInteger | positive)integer,
    * xs:(unsigned)long, xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
    */
-  virtual xs_integer 
+  virtual xs_integer
   getIntegerValue() const;
 
   /** Accessor for xs:nonNegativeInteager, xs:positiveInteger
@@ -385,12 +399,12 @@ public:
 
   /** Accessor for xs:long
    */
-  virtual xs_long 
+  virtual xs_long
   getLongValue() const;
 
   /** Accessor for xs:int
    */
-  virtual xs_int 
+  virtual xs_int
   getIntValue() const;
 
   /** Accessor for xs:short
@@ -481,8 +495,8 @@ public:
 
   /** Accessor for xs:hexBinary
    */
-  virtual xs_hexBinary
-  getHexBinaryValue() const;
+  virtual char const*
+  getHexBinaryValue(size_t& size) const;
 
   /**
    * Helper method for numeric atomic items
@@ -568,7 +582,7 @@ public:
   /**
    * If isValidated() is invoked on some item, it returns true if markValidated()
    * has been called before on the root of the tree where the item belongs to,
-   * otherwise it returns false. Notice that validation is not done by the store, 
+   * otherwise it returns false. Notice that validation is not done by the store,
    * so the store itself cannot invoke the markValidated() method; it has to be
    * invoked by the "user" of the store.
    */
@@ -611,7 +625,7 @@ public:
    */
   virtual Iterator_t
   getAttributes() const;
-  
+
   /** Accessor for document node, element node
    *  @return  node*
    */
@@ -635,7 +649,7 @@ public:
    */
   virtual bool
   isInSubstitutionGroup() const;
-  
+
   /** Accessor for element node
    *  @return  returns prefix namespace pairs
    */
@@ -747,16 +761,16 @@ public:
    *                 P may be NULL, in which case the copied tree becomes a
    *                 new standalone xml tree.
    * @param copymode Encapsulates the construction-mode and copy-namespace-mode
-   *                 components of the query's static context. 
+   *                 components of the query's static context.
    * @return         A pointer to the root node of the copied tree, or to this
-   *                 node if no copy was actually done. 
+   *                 node if no copy was actually done.
    */
   virtual Item* 
   copy(Item* parent, const CopyMode& copymode) const;
 
   /**
    * An optimization method used to indicate to the store that the construction
-   * of this node (including its children and attributes) is complete. Some 
+   * of this node (including its children and attributes) is complete. Some
    * stores may benefit from this information to do internal cleanup, memory
    * management, or other optimizations when they know that a node has reached a
    * "stable" state (e.g. after the initial creation of this node or after a
@@ -919,6 +933,14 @@ public:
   virtual store::Item_t
   getObjectValue(const store::Item_t& key) const;
 
+  /**
+   * defined on JSONObject
+   * 
+   * @return the number of pairs in the object
+   */
+  virtual xs_integer
+  getNumObjectPairs() const;
+
 #endif // ZORBA_WITH_JSON
 
 
@@ -996,7 +1018,7 @@ public:
 private:
   Item(const Item& other);
   Item& operator=(const Item&);
-}; 
+};
 
 } // namespace store
 } // namespace zorba

@@ -25,7 +25,9 @@
 
 // Zorba
 #include <zorba/config.h>
+#include <zorba/time.h>
 #include "cxx_util.h"
+#include "string_util.h"
 
 #ifndef TM_YEAR_BASE
 # define TM_YEAR_BASE 1900
@@ -36,13 +38,21 @@ namespace time {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A type to hold a number of seconds (at least since epoch).
+ */
 typedef time_t sec_type;
 
+/**
+ * A type to hold a number of microseconds.
+ */
 #ifdef WIN32
 typedef unsigned long usec_type;
 #else
 typedef suseconds_t usec_type;
 #endif /* WIN32 */
+
+///////////////////////////////////////////////////////////////////////////////
 
 //
 // If the OS's tm struct has a GMT-timezone offset field, simply typedef tm as
@@ -71,12 +81,129 @@ struct ztm : tm {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * XQuery 3.0 F&O: 9.8.4.3: The calendars listed below were known to be in use
+ * during the last hundred years.
+ */
+namespace calendar {
+  extern char const* const string_of[];
+
+  /**
+   * Emits a calendar::type to an ostream.
+   *
+   * @param o The ostream to emit to.
+   * @param t The type to emit.
+   * @return Returns \a o.
+   */
+  inline std::ostream& operator<<( std::ostream &o, type t ) {
+    return o << string_of[ t ];
+  }
+
+  /**
+   * Calculates the week number for the given date and calendar.
+   *
+   * @param mday The month day [1-31].
+   * @param mon The month [0-11].
+   * @param year The year.
+   * @param cal The calendar.
+   * @return Returns the week [1-53] or -1 if it is unknown how to perform the
+   * calculation for \a cal.
+   */
+  int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal );
+
+  /**
+   * Converts a weekday number from a given calendar to the Unix interpretation
+   * [0-6] where 0 = Sunday.
+   *
+   * @param wday The weekday to convert where the meaning of the value is
+   * determined by \a from.
+   * @param from The calendar designator to convert \a wday from.
+   * @return Returns \a wday converted to \a to or -1 if it is unknown how to
+   * perform the conversion.
+   */
+  int convert_wday_from( unsigned wday, type from );
+
+  /**
+   * Converts a Unix weekday number to a specific calendar.
+   *
+   * @param wday The weekday to convert: [0-6] where 0 = Sunday.
+   * @param to The calendar designator to convert \a wday to.
+   * @return Returns \a wday converted to \a to or -1 if it is unknown how to
+   * perform the conversion.
+   */
+  int convert_wday_to( unsigned wday, type to );
+
+  /**
+   * Finds a calendar designator from the given string.
+   *
+   * @param calendar The calendar designator to find.  It is presumed to be in
+   * upper-case.
+   * @return Returns said enumeration or \c unknown.
+   */
+  type find( char const *calendar );
+
+  //
+  // Template version of find().
+  //
+  template<class StringType> inline
+  typename std::enable_if<
+    ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+    type
+  >::type
+  find( StringType const &calendar ) {
+    return find( calendar.c_str() );
+  } 
+
+  /**
+   * Gets the default calendar to use.
+   *
+   * @return Returns said calendar.
+   */
+  inline type get_default() {
+    return AD; // i.e., the Gregorian calendar
+  }
+
+} // namespace calendar
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Month (<code>mod</code>) values as used by the \c tm structure.
+ */
+enum month {
+  jan = 0,
+  feb = 1,
+  mar = 2,
+  apr = 3,
+  may = 4,
+  jun = 5,
+  jul = 6,
+  aug = 7,
+  sep = 8,
+  oct = 9,
+  nov = 10,
+  dec = 11
+};
+
+/**
+ * Weekday (<code>wday</code>) values as used by the \c tm structure.
+ */
+enum weekday {
+  sun = 0,
+  mon = 1,
+  tue = 2,
+  wed = 3,
+  thu = 4,
+  fri = 5,
+  sat = 6
+};
+
+/**
  * Calculates the day of the month and month from the given day of the year.
  *
- * @param yday The year day (0-365) where 0 = January 1.
- * @param mday A pointer to the result for the month day (1-31) or \c null if
+ * @param yday The year day [0-365] where 0 = January 1.
+ * @param mday A pointer to the result for the month day [1-31] or \c null if
  * this is not desired.
- * @param mon A pointer to the result for the month (0-11) or \c null if this
+ * @param mon A pointer to the result for the month [0-11] or \c null if this
  * is not desired.
  * @param year The year.
  * @return Returns \c true if \a yday and \a year are a valid combination and
@@ -88,31 +215,31 @@ bool calc_mday_mon( unsigned yday, unsigned *mday, unsigned *mon,
 /**
  * Calculates the weekday for the given date.
  *
- * @param mday The month day (1-31).
- * @param mon The month (0-11).
+ * @param mday The month day [1-31].
+ * @param mon The month [0-11].
  * @param year The year.
- * @return Returns the weekday (0-6) where 0 = Sunday.
+ * @return Returns the weekday [0-6] where 0 = Sunday.
  */
-unsigned calc_wday( unsigned mday, unsigned mon, unsigned year );
+int calc_wday( unsigned mday, unsigned mon, unsigned year );
 
 /**
  * Calculates the day of the year for the given date.
  *
- * @param mday The month day (1-31).
- * @param mon The month (0-11).
+ * @param mday The month day [1-31].
+ * @param mon The month [0-11].
  * @param year The year.
- * @return Returns the day of the year (0-365) where 0 = January 1.
+ * @return Returns the day of the year [0-365] where 0 = January 1.
  */
-unsigned calc_yday( unsigned mday, unsigned mon, unsigned year );
+int calc_yday( unsigned mday, unsigned mon, unsigned year );
 
 /**
  * Gets the number of days in the given month.
  *
- * @param mon The month (0-11).
+ * @param mon The month [0-11].
  * @param year The year.
- * @return Returns said number of days (1-31).
+ * @return Returns said number of days, one of: 28, 29, 30, or 31.
  */
-unsigned days_in_month( unsigned mon, unsigned year );
+int days_in_month( unsigned mon, unsigned year );
 
 /**
  * Gets the number of seconds and microseconds since epoch.
@@ -150,6 +277,14 @@ long get_gmt_offset();
 void get_localtime( ztm *tm, sec_type when = 0 );
 
 /**
+ * Gets the military timezone letter code for the given GMT hour offset.
+ *
+ * @param hour The number of hours offset from GMT.
+ * @return Returns one of ABCDEFGHIKLMNOPQRSTUVWXYZ (no J).
+ */
+char get_military_tz( int hour );
+
+/**
  * Checks whether the given year is a leap year.
  *
  * @param year The year to check.
@@ -160,43 +295,53 @@ inline bool is_leap_year( unsigned year ) {
 }
 
 /**
+ * Gets the number of days in the given year.
+ *
+ * @param year The year.
+ * @return Returns said number of days, either: 365 or 366.
+ */
+inline int days_in_year( unsigned year ) {
+  return 365 + is_leap_year( year );
+}
+
+/**
  * Checks whether the given day of the month is valid.
  *
- * @param mday The month day (1-31).
- * @param mon The month (0-11).
+ * @param mday The month day [1-31].
+ * @param mon The month [0-11].
  * @param year The year.
  * @return Returns \a true only if the given day of the month is valid.
  */
 inline bool is_mday_valid( unsigned mday, unsigned mon, unsigned year ) {
-  return mday >= 1 && mday <= days_in_month( mon, year );
+  return mday >= 1 && (int)mday <= days_in_month( mon, year );
 }
 
 /**
  * Checks whether the given weekday is valid.
  *
- * @param wday The weekday (0-6) where 0 = Sunday.
- * @param mday The month day (1-31).
- * @param mon The month (0-11).
+ * @param wday The weekday [0-6] where 0 = Sunday.
+ * @param mday The month day [1-31].
+ * @param mon The month [0-11].
  * @param year The year.
  * @return Returns \a true only if the given weekday is valid.
  */
 inline bool is_wday_valid( unsigned wday, unsigned mday, unsigned mon,
                            unsigned year ) {
-  return wday == calc_wday( mday, mon, year );
+  return (int)wday == calc_wday( mday, mon, year );
 }
 
 /**
  * Checks whether the given day of the year is valid.
  *
- * @param yday The day of the year (0-365).
- * @param mday The month day (1-31).
- * @param mon The month (0-11).
+ * @param yday The day of the year [0-365].
+ * @param mday The month day [1-31].
+ * @param mon The month [0-11].
  * @param year The year.
  * @return Returns \a true only if the given day of the year is valid.
  */
 inline bool is_yday_valid( unsigned yday, unsigned mday, unsigned mon,
                            unsigned year ) {
-  return yday == calc_yday( mday, mon, year );
+  return (int)yday == calc_yday( mday, mon, year );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

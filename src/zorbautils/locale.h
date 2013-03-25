@@ -62,6 +62,15 @@ namespace zorba {
       find( StringType const &country ) {
         return find( country.c_str() );
       }
+
+      /**
+       * Gets the "default" country that speaks the given language.
+       *
+       * @param lang The language to get the default country for.
+       * @return Returns said country or \c unknown.
+       */
+      type get_default( iso639_1::type lang );
+
     } // namespace iso3166_1
 
     /////////////////////////////////////////////////////////////////////////// 
@@ -288,8 +297,8 @@ namespace zorba {
     }
 
     /**
-     * Gets the date format for the current locale.  The format is that used by
-     * strptime(3).
+     * Gets the date format in the locale specified by the given language and
+     * country.  The format is that used by \c strptime(3).
      *
      * @param lang The language to use.  Defaults to host language.
      * @param country The country to use.  Defaults to host country.
@@ -299,8 +308,8 @@ namespace zorba {
                              iso3166_1::type country = iso3166_1::unknown );
 
     /**
-     * Gets the date and time format for the current locale.  The format is
-     * that used by strptime(3).
+     * Gets the date and time format in the locale specified by the given
+     * language and country.  The format is that used by \c strptime(3).
      *
      * @param lang The language to use.  Defaults to host language.
      * @param country The country to use.  Defaults to host country.
@@ -324,7 +333,8 @@ namespace zorba {
     iso639_1::type get_host_lang();
 
     /**
-     * Gets a month's abbreviation in the current locale.
+     * Gets a month's abbreviation in the locale specified by the given
+     * language and country.
      *
      * @param month_index The index of the month to get in the range 0-11.
      * @param lang The language to use.  Defaults to host language.
@@ -336,7 +346,8 @@ namespace zorba {
                             iso3166_1::type country = iso3166_1::unknown );
 
     /**
-     * Gets a month's full name in the current locale.
+     * Gets a month's full name in the locale specified by the given language
+     * and country.
      *
      * @param month_index The index of the month to get in the range 0-11.
      * @param lang The language to use.  Defaults to host language.
@@ -348,7 +359,8 @@ namespace zorba {
                             iso3166_1::type country = iso3166_1::unknown );
 
     /**
-     * Gets the time AM or PM string in the current locale.
+     * Gets the time AM or PM string in the locale specified by the given
+     * language and country.
      *
      * @param pm If \c true, gets the PM string; else the AM string.
      * @param lang The language to use.  Defaults to host language.
@@ -359,8 +371,8 @@ namespace zorba {
                            iso3166_1::type country = iso3166_1::unknown );
 
     /**
-     * Gets the time format for the current locale.  The format is that used by
-     * strptime(3).
+     * Gets the time format in the locale specified by the given language and
+     * country.  The format is that used by \c strptime(3).
      *
      * @param lang The language to use.  Defaults to host language.
      * @param country The country to use.  Defaults to host country.
@@ -370,7 +382,8 @@ namespace zorba {
                              iso3166_1::type country = iso3166_1::unknown );
 
     /**
-     * Gets a weekday's abbreviation in the current locale.
+     * Gets a weekday's abbreviation in the locale specified by the given
+     * language and country.
      *
      * @param day_index The index of the weekday to get in the range 0-6.
      * @param lang The language to use.  Defaults to host language.
@@ -382,7 +395,8 @@ namespace zorba {
                               iso3166_1::type country = iso3166_1::unknown );
 
     /**
-     * Gets a weekday's full name in the current locale.
+     * Gets a weekday's full name in the locale specified by the given language
+     * and country.
      *
      * @param day_index The index of the month to get in the range 0-6.
      * @param lang The language to use.  Defaults to host language.
@@ -394,7 +408,8 @@ namespace zorba {
                               iso3166_1::type country = iso3166_1::unknown );
 
     /**
-     * Checks if the given locale is supported by the OS.
+     * Checks if the locale specified by the given language and country is
+     * supported by the OS.
      *
      * @param lang The language to use.
      * @param country The country to use.  Defaults to none.

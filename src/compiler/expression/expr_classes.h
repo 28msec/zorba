@@ -51,6 +51,7 @@ namespace zorba
   class trycatch_expr;
   class function_item_expr;
   class dynamic_function_invocation_expr;
+  class argument_placeholder_expr;
 
   class insert_expr;
   class delete_expr;

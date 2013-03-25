@@ -32,6 +32,7 @@
 # include <unicode/unistr.h>
 #endif /* ZORBA_NO_ICU */
 
+#include "omanip.h"
 #include "stl_util.h"
 
 namespace zorba {
@@ -425,6 +426,22 @@ inline bool is_low_surrogate( unsigned long n ) {
 inline bool is_supplementary_plane( code_point c ) {
   return c >= 0x10000 && c <= 0x10FFFF;
 }
+
+////////// Miscellaneous //////////////////////////////////////////////////////
+
+/**
+ * Prints the given code-point in a printable way: if \c ascii::is_print(c) is
+ * \c true, prints \a c as-is; otherwise prints \c #x followed by the
+ * hexadecimal value of the character.
+ *
+ * @param o The ostream to print to.
+ * @param cp The \c code-point to print.
+ * @return Returns \a o.
+ */
+std::ostream& printable_cp( std::ostream &o, code_point cp );
+
+// An ostream manipulator version of the above.
+DEF_OMANIP1( printable_cp, code_point )
 
 ///////////////////////////////////////////////////////////////////////////////
 
