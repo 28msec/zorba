@@ -490,7 +490,11 @@ declare %private function eval:assert-xml(
     let $expectedResult := zorba-xml:canonicalize(concat('<root>', util:get-value($expResult, $baseURI, "assert-xml"), '</root>'))
     
     return
-      if ($actualResult eq $expectedResult)
+      if(empty($expResult[@ignore-prefixes='true']) and
+         ($actualResult eq $expectedResult))
+      then ()
+      else if(exists($expResult[@ignore-prefixes='true']) and
+             fn:parse-xml($actualResult) eq fn:parse-xml($expectedResult)) (: the namespace prefixes are ignored in this comparison :)
       then ()
       else concat("'assert-xml' returned: result &#xA;'", $actualResult, "'&#xA; is different from the expected result &#xA;'", $expectedResult,"'&#xA;")
   } catch * {
