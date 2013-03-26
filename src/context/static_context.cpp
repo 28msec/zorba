@@ -2056,6 +2056,19 @@ const zstring& static_context::default_function_ns() const
   }
 }
 
+const std::vector<zstring>& static_context::default_function_namespaces() const
+{
+  if (theDefaultFunctionNamespaces.empty())
+  {
+    assert(theParent); // root static context always has one or two declared
+    return theParent->default_function_namespaces();
+  }
+  else
+  {
+    return theDefaultFunctionNamespaces;
+  }
+}
+
 
 /***************************************************************************//**
  Set the default namespace for function qnames to the given namespace.
@@ -2601,20 +2614,15 @@ function* static_context::lookup_fn(
   }
   else /* if (language_kind() == StaticContextConsts::language_kind_jsoniq) */
   {
-    static_context* sctx = this;
+    const std::vector<zstring>& lDefaults = default_function_namespaces();
 
-    while (f == NULL && sctx != NULL)
+    ite = lDefaults.begin();
+    end = lDefaults.end();
+
+    for (; f == NULL && ite != end; ++ite)
     {
-      ite = sctx->theDefaultFunctionNamespaces.begin();
-      end = sctx->theDefaultFunctionNamespaces.end();
-
-      for (; f == NULL && ite != end; ++ite)
-      {
-        ITEM_FACTORY->createQName(qnameItem, *ite, "", local);
-        f = lookup_fn(qnameItem, arity, true);
-      }
-
-      sctx = sctx->theParent;
+      ITEM_FACTORY->createQName(qnameItem, *ite, "", local);
+      f = lookup_fn(qnameItem, arity, true);
     }
   }
 #if 0

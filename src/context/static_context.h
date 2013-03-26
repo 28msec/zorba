@@ -853,6 +853,8 @@ public:
 
   const zstring& default_function_ns() const;
 
+  const std::vector<zstring>& default_function_namespaces() const; 
+
   void set_default_function_ns(
       const zstring& ns,
       bool raiseError,
