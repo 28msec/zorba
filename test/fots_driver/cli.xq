@@ -94,17 +94,20 @@ declare variable $testCasePrefixes as xs:string external := "";
  : Used by the run-test-sets, run-and-report, and report commands.
  :)
 declare variable $exceptedTestCases as xs:string* := (
-  "instanceof139",
-  "CastAs-UnionType-26",
-  "CastAs-UnionType-30",
-  "fn-unparsed-text-lines-052",
-  "cbcl-subsequence-011",
-  "cbcl-subsequence-012",
-  "cbcl-subsequence-013",
-  "cbcl-subsequence-014"        (:see bug lp:1069794 :)
-, "re00975",
-  "re00976",
-  "re00976a"                    (:see bug lp:1070533 :)
+(: "re00987",
+   "itunes",
+   "raytracer", :)
+   "instanceof139",
+   "CastAs-UnionType-26",
+   "CastAs-UnionType-30",
+   "fn-unparsed-text-lines-052",
+   "cbcl-subsequence-011",
+   "cbcl-subsequence-012",
+   "cbcl-subsequence-013",
+   "cbcl-subsequence-014"        (:see bug lp:1069794 :)
+,  "re00975",
+   "re00976",
+   "re00976a"                    (:see bug lp:1070533 :)
 );
 
 
