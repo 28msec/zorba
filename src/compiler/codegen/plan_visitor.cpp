@@ -467,7 +467,7 @@ void end_visit(function_item_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  DynamicFunctionInfo* fnInfo = v.get_dynamic_fn_info();
+  FunctionItemInfo* fnInfo = v.get_dynamic_fn_info();
   fnInfo->theCCB = theCCB;
   fnInfo->theMustDeleteCCB = false;
   fnInfo->theLoc = qloc;

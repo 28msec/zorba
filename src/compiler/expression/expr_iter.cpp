@@ -704,8 +704,8 @@ nextclause:
 
     EXPR_ITER_BEGIN();
 
-    theArgsIter = fiExpr->theDynamicFunctionInfo->theScopedVarsValues.begin();
-    theArgsEnd = fiExpr->theDynamicFunctionInfo->theScopedVarsValues.end();
+    theArgsIter = fiExpr->theFunctionItemInfo->theScopedVarsValues.begin();
+    theArgsEnd = fiExpr->theFunctionItemInfo->theScopedVarsValues.end();
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {
       if ( ! *theArgsIter) // TODO: the vars values for prolog variables is null, so they have to be skipped, or the optimizer will trip and fall off. Maybe null vars values need not be remembered

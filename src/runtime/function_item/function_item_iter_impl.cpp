@@ -81,7 +81,7 @@ bool FunctionLookupIterator::nextImpl(
   {
     expr* fiExpr = Translator::translate_literal_function(qname, arity, theCompilerCB, loc, true);
     
-    DynamicFunctionInfo_t dynFnInfo = static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
+    FunctionItemInfo_t dynFnInfo = static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
     dynFnInfo->theCCB = theCompilerCB;
     // dynFnInfo->theClosureSctx = NULL;
 

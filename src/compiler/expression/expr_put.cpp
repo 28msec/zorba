@@ -537,30 +537,30 @@ std::ostream& function_item_expr::put(std::ostream& os) const
 
   if (!is_inline())
   {
-    os << " " << theDynamicFunctionInfo->theQName->getStringValue()
-       << "#" << theDynamicFunctionInfo->theArity;
+    os << " " << theFunctionItemInfo->theQName->getStringValue()
+       << "#" << theFunctionItemInfo->theArity;
     os << dec_indent << endl;
     return os;
   }
   else
   {
-    os << " " << theDynamicFunctionInfo->theQName->getStringValue()
-       << "#" << theDynamicFunctionInfo->theArity << " [\n";
+    os << " " << theFunctionItemInfo->theQName->getStringValue()
+       << "#" << theFunctionItemInfo->theArity << " [\n";
 
-    for (ulong i = 0; i < theDynamicFunctionInfo->theScopedVarsValues.size(); i++)
+    for (ulong i = 0; i < theFunctionItemInfo->theScopedVarsValues.size(); i++)
     {
       os << indent << "using $"
-         << theDynamicFunctionInfo->theScopedVarsNames[i]->getStringValue()
-         << (theDynamicFunctionInfo->theIsGlobalVar[i] ? " global=1" : "") << " := [";
+         << theFunctionItemInfo->theScopedVarsNames[i]->getStringValue()
+         << (theFunctionItemInfo->theIsGlobalVar[i] ? " global=1" : "") << " := [";
       os << endl << inc_indent;
-      if (theDynamicFunctionInfo->theScopedVarsValues[i])
-        theDynamicFunctionInfo->theScopedVarsValues[i]->put(os);
+      if (theFunctionItemInfo->theScopedVarsValues[i])
+        theFunctionItemInfo->theScopedVarsValues[i]->put(os);
       os << dec_indent << indent << "]" << endl;
     }
 
-    if (theDynamicFunctionInfo->theFunction != NULL &&
-        static_cast<user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody() != NULL)
-      static_cast<user_function*>(theDynamicFunctionInfo->theFunction.getp())->getBody()->put(os);
+    if (theFunctionItemInfo->theFunction != NULL &&
+        static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody() != NULL)
+      static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody()->put(os);
 
     END_PUT();
   }
