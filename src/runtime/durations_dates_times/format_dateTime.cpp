@@ -26,8 +26,6 @@
 
 // Zorba
 #include "context/dynamic_context.h"
-#include "context/static_context.h"
-#include "runtime/core/arithmetic_impl.h"
 #include "runtime/visitors/planiter_visitor.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -39,8 +37,6 @@
 #include "util/time_util.h"
 #include "util/utf8_util.h"
 #include "zorbatypes/datetime.h"
-#include "zorbatypes/datetime/parse.h"
-#include "zorbatypes/duration.h"
 #include "zorbatypes/zstring.h"
 #include "zorbautils/locale.h"
 
