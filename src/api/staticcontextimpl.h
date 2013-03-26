@@ -104,6 +104,9 @@ public:
 
   virtual String getDefaultFunctionNamespace() const;
 
+  virtual bool
+  setDefaultFunctionNamespaces( const std::vector<String>& aURIs );
+
   virtual void
   addCollation( const String& URI );
 
