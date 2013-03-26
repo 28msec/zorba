@@ -11678,7 +11678,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
   // This is needed to make sure that the flwor is not thrown away by the optimizer
   // when the FunctionItem expression is an empty sequence.
-  fc->set_allowing_empty(true); 
+  // TODO: incompatibility with JSONiq selectors
+  // fc->set_allowing_empty(true); 
 
   expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
 

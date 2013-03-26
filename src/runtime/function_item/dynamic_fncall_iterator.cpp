@@ -191,6 +191,10 @@ bool DynamicFnCallIterator::nextImpl(
 
   DEFAULT_STACK_INIT(DynamicFnCallIteratorState, state, planState);
 
+  // TODO: we have to take a decision:
+  // (1) be compatible with W3C or
+  // (2) change JSONiq
+#if 0
   // first child must return exactly one item which is a function item
   // otherwise XPTY0004 is raised
   if (!consumeNext(targetItem, theChildren[0], planState) || targetItem == NULL)
@@ -199,7 +203,9 @@ bool DynamicFnCallIterator::nextImpl(
     ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
                  "empty-sequence()",
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
-  }
+  
+#endif
+  consumeNext(targetItem, theChildren[0], planState);
 
   if (targetItem->isFunction())
   {
