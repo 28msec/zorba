@@ -29,7 +29,7 @@ namespace zorba {
  *
  * @param d The \c xs:double value to convert.
  * @return Returns said value.
- * @throws std::range_error if the \c xs:double value can not be accurately
+ * @throws std::range_error if \c floor(xs:double) value can not be accurately
  * represented as an \c xs:int.
  */
 xs_int to_xs_int( xs_double const &d );
@@ -65,6 +65,14 @@ xs_long to_xs_long( xs_decimal const &d );
 xs_long to_xs_long( xs_integer const &i );
 
 #ifndef ZORBA_WITH_BIG_INTEGER
+/**
+ * Converts an \c xs:nonNegativeInteger value to an \c xs:long.
+ *
+ * @param i The \c xs:nonNegativeInteger value to convert.
+ * @return Returns said value.
+ * @throws std::range_error if the \c xs:nonNegativeInteger value can not be
+ * accurately represented as an \c xs:long.
+ */
 xs_long to_xs_long( xs_nonNegativeInteger const &i );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 

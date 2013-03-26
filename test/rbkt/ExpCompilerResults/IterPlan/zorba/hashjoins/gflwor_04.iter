@@ -18,7 +18,7 @@ Iterator tree for main query:
           <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
             <flwor::FLWORIterator>
               <ForVariable name="$$opt_temp_0">
-                <UDFunctionCallIterator>
+                <UDFunctionCallIterator function="local:foo">
                   <ForVarIterator varname="a"/>
                 </UDFunctionCallIterator>
               </ForVariable>

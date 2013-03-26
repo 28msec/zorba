@@ -22,6 +22,7 @@
 #include <cctype>
 #include <cstddef>
 #include <cstring>
+#include <iterator>
 
 // local
 #include "omanip.h"
@@ -888,12 +889,27 @@ char const* trim_start( char const *s, char const *chars );
  * Skips leading specified characters.
  *
  * @param s The string to trim.
+ * @param s_len A pointer to the length of \a s.  It is updated with the new
+ * length.
+ * @param chars The characters to trim.
+ * @return Returns a pointer to the first character in \a s that is not among
+ * the characters in \a chars.
+ */
+char const* trim_start( char const *s, size_type *s_len, char const *chars );
+
+/**
+ * Skips leading specified characters.
+ *
+ * @param s The string to trim.
  * @param s_len The length of \a s.
  * @param chars The characters to trim.
  * @return Returns a pointer to the first character in \a s that is not among
  * the characters in \a chars.
  */
-char const* trim_start( char const *s, size_type s_len, char const *chars );
+inline char const* trim_start( char const *s, size_type s_len,
+                               char const *chars ) {
+  return trim_start( s, &s_len, chars );
+}
 
 /**
  * Removes all leading specified characters.
@@ -931,6 +947,19 @@ void trim_start( StringType &s, char const *chars ) {
  */
 inline char const* trim_start_whitespace( char const *s ) {
   return trim_start( s, whitespace );
+}
+
+/**
+ * Skips leading whitespace characters.
+ *
+ * @param s The string to trim.
+ * @param s_len A pointer to the length of \a s.  It is updated with the new
+ * length.
+ * @return Returns a pointer to the first character in \a s that is not a
+ * whitespace character.
+ */
+inline char const* trim_start_whitespace( char const *s, size_type *s_len ) {
+  return trim_start( s, s_len, whitespace );
 }
 
 /**
@@ -1064,6 +1093,21 @@ void trim_end_whitespace( StringType &s ) {
 }
 
 /**
+ * Removed sll leading and trailing whitespace.
+ *
+ * @param s The input C string.
+ * @param s_len A pointer to the length of \a s.  It is updated with the new
+ * length.
+ * @return Returns a pointer to the first character in \a s that is not
+ * whitespace.
+ */
+inline char const* trim_whitespace( char const *s, size_type *s_len ) {
+  s = trim_start_whitespace( s, s_len );
+  *s_len = trim_end_whitespace( s, *s_len );
+  return s;
+}
+
+/**
  * Removes all leading and trailing whitespace.
  *
  * @tparam InputStringType The input string type.
@@ -1104,7 +1148,60 @@ inline void skip_whitespace( char const *s, size_type s_len, size_type *pos ) {
   *pos = trim_start_whitespace( s + *pos, s_len - *pos ) - s;
 }
 
+/**
+ * Skips any consecutive whitespace chars that are found at a given starting
+ * position within a given string.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ * @param i A pointer to the iterator to advance past the whitespace.
+ * On return, \a *i is updated with the position of the 1st non-whitespace
+ * char.
+ */
+template<class StringType> inline
+void skip_whitespace( StringType const &s,
+                      typename StringType::const_iterator *i ) {
+  typename StringType::difference_type const d = *i - s.begin();
+  char const *const sd = s.data() + d;
+  std::advance( *i, trim_start_whitespace( sd, s.size() - d ) - sd );
+}
+
 ////////// Miscellaneous //////////////////////////////////////////////////////
+
+/**
+ * Pads a string to the left with a given character until the string is the
+ * given width.
+ *
+ * @param s The string to pad.
+ * @param width The width to pad to.
+ * @param c The character to pad with.
+ * @return Returns \c *s.
+ */
+template<class StringType> inline
+StringType& left_pad( StringType *s, typename StringType::size_type width,
+                      char c ) {
+  typedef typename StringType::size_type size_type;
+  if ( s->size() < width )
+    s->insert( static_cast<size_type>( 0 ), width - s->size(), c );
+  return *s;
+}
+
+/**
+ * Pads a string to the right with a given character until the string is the
+ * given width.
+ *
+ * @param s The string to pad.
+ * @param width The width to pad to.
+ * @param c The character to pad with.
+ * @return Returns \c *s.
+ */
+template<class StringType> inline
+StringType& right_pad( StringType *s, typename StringType::size_type width,
+                       char c ) {
+  if ( s->size() < width )
+    s->append( width - s->size(), c );
+  return *s;
+}
 
 /**
  * Prints the given character in a printable way: if \c is_print(c) is \c true,

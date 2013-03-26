@@ -216,13 +216,33 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#hexBinary]
    * @param value
    */
-  virtual bool createHexBinary(Item_t& result, xs_hexBinary value) = 0;
+  virtual bool createHexBinary(
+      Item_t& result,
+      xs_hexBinary const &value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#hexBinary]
+   * creates a hexBinary item with the given content.
+   *
+   * @param result The resulting item.
+   * @param data The data to use.
+   * @param size The number of bytes of \a data.
+   * @param encoded specifies whether the given content is already hexBinary
+   * encoded or not.
+   */
+  virtual bool createHexBinary(
+      Item_t& result,
+      const char* data,
+      size_t size,
+      bool encoded) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
-   * @param value)?
+   * @param value
    */
-  virtual bool createBase64Binary(Item_t& result, xs_base64Binary value) = 0;
+  virtual bool createBase64Binary(
+      Item_t& result,
+      xs_base64Binary const &value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
