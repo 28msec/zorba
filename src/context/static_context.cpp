@@ -2056,6 +2056,11 @@ const zstring& static_context::default_function_ns() const
   }
 }
 
+
+/*******************************************************************************
+  Get the list of default function namespaces from this static context if
+  its list is non-empty or from the parent otherwise.
+********************************************************************************/
 const std::vector<zstring>& static_context::default_function_namespaces() const
 {
   if (theDefaultFunctionNamespaces.empty())
@@ -2612,7 +2617,7 @@ function* static_context::lookup_fn(
     
     f = lookup_fn(qnameItem, arity, true);
   }
-  else /* if (language_kind() == StaticContextConsts::language_kind_jsoniq) */
+  else
   {
     const std::vector<zstring>& lDefaults = default_function_namespaces();
 
@@ -2625,14 +2630,6 @@ function* static_context::lookup_fn(
       f = lookup_fn(qnameItem, arity, true);
     }
   }
-#if 0
-  else
-  {
-    expand_qname(qnameItem, default_function_ns(), pre, local, loc);
-    
-    f = lookup_fn(qnameItem, arity, true);
-  }
-#endif
 
   return f;
 }
