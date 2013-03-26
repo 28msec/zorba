@@ -333,7 +333,8 @@ IntegerLiteral        [0-9]+
 NonQuotAnd                      [^""&]
 NonAposAnd                      [^''&]
   /* StringLiteral                   ({Quote}({EscapeQuot}|{Ref}|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|{Ref}|{NonAposAnd})*{Apos}) */
-StringLiteral                   (\"({PredefinedCharRef}|{JsoniqCharRef}|[^\"\\])*\")|("'"({PredefinedEntityRef}|{JsoniqCharRef}|[^'\\])*"'")
+StringLiteral                   (\"({PredefinedCharRef}|{JsoniqCharRef}|[^\"\\])*\")
+  /* |("'"({PredefinedEntityRef}|{JsoniqCharRef}|[^'\\])*"'") */
 
   /* Invalid strings */
   /* InvalidRefStringLiteral         ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|"&"|{NonAposAnd})*{Apos}) */
