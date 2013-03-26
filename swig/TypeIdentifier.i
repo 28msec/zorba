@@ -19,7 +19,7 @@
   zorba::IdentTypes::quantifier_t 
   TypeIdentifier::convertQuantifier(IdentTypes::Quantifier quantifier)
   {
-    zorba::IdentTypes::quantifier_t result;
+    zorba::IdentTypes::quantifier_t result = zorba::IdentTypes::QUANT_ONE;
     switch (quantifier) {
       case IdentTypes::QUANT_ONE:
         result = zorba::IdentTypes::QUANT_ONE;
@@ -44,7 +44,7 @@
   IdentTypes::Kind TypeIdentifier::getKind()
   {
     zorba::IdentTypes::kind_t lKind = theTypeIdentifier->getKind();
-    IdentTypes::Kind result;
+    IdentTypes::Kind result = IdentTypes::ANY_NODE_TYPE;
     switch (lKind) {
       case zorba::IdentTypes::NAMED_TYPE:
         result = IdentTypes::NAMED_TYPE;
@@ -92,7 +92,7 @@
   IdentTypes::Quantifier TypeIdentifier::getQuantifier()
   {
     zorba::IdentTypes::quantifier_t lQuantifier = theTypeIdentifier->getQuantifier();
-    IdentTypes::Quantifier result;
+    IdentTypes::Quantifier result = IdentTypes::QUANT_ONE;
     switch (lQuantifier) {
       case zorba::IdentTypes::QUANT_ONE:
         result = IdentTypes::QUANT_ONE;
