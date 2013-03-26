@@ -79,23 +79,23 @@ ostream& roman( ostream &o, unsigned n ) {
     char const *numeral[2];
   };
   static roman_data const data[] = {
-    1000, {  "m",  "M" },
-     900, { "cm", "CM" },
-     500, {  "d",  "D" },
-     400, { "cd", "CD" },
-     100, {  "c",  "C" },
-      90, { "xc", "XC" },
-      50, {  "l",  "L" },
-      40, { "xl", "XL" },
-      10, {  "x",  "X" },
-       9, { "ix", "IX" },
-       5, {  "v",  "V" },
-       4, { "iv", "IV" },
-       1, {  "i",  "I" },
-       0, {    0,    0 }
+    { 1000, {  "m",  "M" } },
+    {  900, { "cm", "CM" } },
+    {  500, {  "d",  "D" } },
+    {  400, { "cd", "CD" } },
+    {  100, {  "c",  "C" } },
+    {   90, { "xc", "XC" } },
+    {   50, {  "l",  "L" } },
+    {   40, { "xl", "XL" } },
+    {   10, {  "x",  "X" } },
+    {    9, { "ix", "IX" } },
+    {    5, {  "v",  "V" } },
+    {    4, { "iv", "IV" } },
+    {    1, {  "i",  "I" } },
+    {    0, {    0,    0 } }
   };
   bool const uc = !!(o.flags() & ios::uppercase);
-  for ( roman_data const *r = data; r->value > 0; ++r )
+  for ( roman_data const *r = data; r->value; ++r )
     for ( ; n >= r->value; n -= r->value )
       o << r->numeral[ uc ];
   return o;
