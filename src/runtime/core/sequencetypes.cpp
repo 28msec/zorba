@@ -84,17 +84,21 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   store::Item_t item;
   TypeConstants::quantifier_t quant;
   bool res = false;
-
+  store::Item_t temp;
   const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   quant = theSequenceType->get_quantifier();
-
   if (consumeNext(item, theChild.getp(), planState))
   {
-    if (theSequenceType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
+    if (item->isNode() && item->getNilled()->getBooleanValue())
+    {
+      const NodeXQType* lNodeType = static_cast<const NodeXQType*>(theSequenceType.getp());
+      res = lNodeType->get_nillable();
+    }
+    else if (theSequenceType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
         item->isAtomic())
     {
       store::SchemaTypeCode targetType = 
