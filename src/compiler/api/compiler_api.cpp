@@ -128,18 +128,19 @@ void XQueryCompiler::xqdoc(
 ********************************************************************************/
 bool XQueryCompiler::getLanguageMode(std::stringstream& s) const
 {
-  char lPeek[6];
-  s.get(lPeek, 7, ' ');
+  const size_t lPeekSize = 7;
+  char lPeek[lPeekSize];
+  s.get(lPeek, lPeekSize);
   s.clear();
   s.seekg(0, s.beg);
 
   bool lXQueryMode;
 
-  if (strncmp(lPeek, "jsoniq", 6) == 0)
+  if (strncmp(lPeek, "jsoniq", lPeekSize - 1) == 0)
   {
     lXQueryMode = false;
   }
-  else if (strncmp(lPeek, "xquery", 6) == 0)
+  else if (strncmp(lPeek, "xquery", lPeekSize - 1) == 0)
   {
     lXQueryMode = true;
   }

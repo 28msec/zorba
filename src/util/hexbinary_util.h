@@ -130,14 +130,14 @@ size_type decode( char const *from, size_type from_len, std::vector<char> *to,
 template<class ToStringType>
 size_type decode( char const *from, size_type from_len, ToStringType *to,
                   int options = dopt_none ) {
-  size_type total_decoded = 0;
+  size_type decoded = 0;
   if ( from_len ) {
     typename ToStringType::size_type const orig_size = to->size();
     to->resize( orig_size + decoded_size( from_len ) );
-    total_decoded = decode( from, from_len, &to->at( orig_size ), options );
-    to->resize( orig_size + total_decoded );
+    decoded = decode( from, from_len, &to->at( orig_size ), options );
+    to->resize( orig_size + decoded );
   }
-  return total_decoded;
+  return decoded;
 }
 
 /**
@@ -269,14 +269,13 @@ size_type encode( char const *from, size_type from_len, std::vector<char> *to );
  */
 template<class ToStringType>
 size_type encode( char const *from, size_type from_len, ToStringType *to ) {
-  size_type total_encoded = 0;
+  size_type encoded = 0;
   if ( from_len ) {
     typename ToStringType::size_type const orig_size = to->size();
     to->resize( orig_size + encoded_size( from_len ) );
-    total_encoded = encode( from, from_len, &to->at( orig_size ) );
-    to->resize( orig_size + total_encoded );
+    encoded = encode( from, from_len, &to->at( orig_size ) );
   }
-  return total_encoded;
+  return encoded;
 }
 
 /**
