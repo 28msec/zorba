@@ -25,7 +25,7 @@
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/iterator_impl.h"
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 #include "runtime/core/fncall_iterator.h"
 
 #include "context/dynamic_context.h"

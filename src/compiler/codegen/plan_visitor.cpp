@@ -92,9 +92,9 @@
 #include "runtime/debug/debug_iterator.h"
 #endif
 #include "runtime/eval/eval.h"
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 #include "runtime/function_item/function_item_iter.h"
-#include "runtime/function_item/dynamic_fncall_iterator.h"
+#include "runtime/hof/dynamic_fncall_iterator.h"
 #include "runtime/misc/materialize.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
