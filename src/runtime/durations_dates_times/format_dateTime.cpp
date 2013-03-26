@@ -20,7 +20,6 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
-#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -208,64 +207,13 @@ static bool is_grouping_separator( unicode::code_point cp ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-/**
- * Returns the English ordinal suffix for an integer, e.g., "st" for 1, "nd"
- * for 2, etc.
- *
- * @param n The integer to return the ordinal suffix for.
- * @return Returns said suffix.
- */
-static char const* ordinal( int n ) {
-  n = std::abs( n );
-  switch ( n % 100 ) {
-    case 11:
-    case 12:
-    case 13:
-      break;
-    default:
-      switch ( n % 10 ) {
-        case 1: return "st";
-        case 2: return "nd";
-        case 3: return "rd";
-      }
-  }
-  return "th";
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * A unary_function to convert a (presumed) lower-case string to title-case
- * "Like This."
- */
-class to_title : public unary_function<char,char> {
-public:
-  to_title() : capitalize_( true ) { }
-
-  result_type operator()( argument_type c ) {
-    if ( ascii::is_alpha( c ) ) {
-      if ( capitalize_ ) {
-        c = ascii::to_upper( c );
-        capitalize_ = false;
-      }
-    } else if ( ascii::is_space( c ) )
-      capitalize_ = true;
-    return c;
-  };
-
-private:
-  bool capitalize_;
-};
-
-///////////////////////////////////////////////////////////////////////////////
-
 static void append_number( int n, modifier const &mod, zstring *dest ) {
   switch ( mod.first.type ) {
     case modifier::arabic: {
       utf8::itou_buf_type buf;
       zstring tmp( utf8::itou( n, buf, mod.first.zero ) );
       if ( mod.second.co_type == modifier::ordinal )
-        tmp += ordinal( n );
+        tmp += ztd::ordinal( n );
       *dest += mod.left_pad_zero( &tmp );
       break;
     }
@@ -296,7 +244,7 @@ static void append_number( int n, modifier const &mod, zstring *dest ) {
 
     case modifier::Words: {
       zstring tmp( ztd::english( n, mod.second.co_type == modifier::ordinal ) );
-      std::transform( tmp.begin(), tmp.end(), tmp.begin(), to_title() );
+      std::transform( tmp.begin(), tmp.end(), tmp.begin(), ascii::to_title() );
       *dest += mod.right_pad_space( &tmp );
       break;
     }

@@ -805,6 +805,15 @@ void to_string( char const *s, OutputStringType *out ) {
  */
 zstring english( int64_t n, bool ordinal = false );
 
+/**
+ * Returns the English ordinal suffix for an integer, e.g., "st" for 1, "nd"
+ * for 2, etc.
+ *
+ * @param n The integer to return the ordinal suffix for.
+ * @return Returns said suffix.
+ */
+char const* ordinal( long long n );
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace ztd

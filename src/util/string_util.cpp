@@ -273,6 +273,23 @@ zstring english( int64_t n, bool ordinal ) {
   return r;
 }
 
+char const* ordinal( long long n ) {
+  n = std::abs( n );
+  switch ( n % 100 ) {
+    case 11:
+    case 12:
+    case 13:
+      break;
+    default:
+      switch ( n % 10 ) {
+        case 1: return "st";
+        case 2: return "nd";
+        case 3: return "rd";
+      }
+  }
+  return "th";
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace ztd
