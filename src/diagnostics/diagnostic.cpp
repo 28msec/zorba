@@ -178,7 +178,6 @@ namespace diagnostic {
 location const location::empty;
 
 bool operator!=( location const &i, location const &j ) {
-{
   return !(i == j);
 }
 

@@ -1,6 +1,6 @@
 <?
 /*
- * Copyright 2006-2012 The FLWOR Foundation.
+ * Copyright 2006-2013 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,39 +15,51 @@
  * limitations under the License.
  */
 
-require '@phpPath@/Zorba/zorba_api_wrapper.php';
+require 'zorba_api_wrapper.php';
 
-function test(Zorba $aZorba) {
-  $filename = 'books.xml';
-  $f = fopen($filename, 'r');
-  $contents = fread($f, filesize($filename));
-  fclose($f);
-
-  $dataManager = $aZorba->getXmlDataManager();
-  $docIter = $dataManager->parseXML($contents);
-  $docIter->open();
-
-  $doc = Item::createEmptyItem();
-  $docIter->next($doc);
-
-  $docIter->close();
-  $docIter->destroy();
-
-  $xquery = $aZorba->compileQuery(".");
-  $dynCtx = $xquery->getDynamicContext();
-  $dynCtx->setContextItem($doc);
-  print $xquery->execute()."\n";
-  
-  return;
+class MyDiagnosticHandler extends DiagnosticHandler {
+  public function error($args) {
+    print "Error caught in DiagnosticHandler: " . $args->getDescription() . "\n";
+  }
 }
 
+function test(Zorba $aZorba, $query)
+{
+  $diagnosticHandler = new MyDiagnosticHandler();
+  $xquery = $aZorba->compileQuery($query, $diagnosticHandler);
+  try {
+    print $xquery->execute();
+  } catch (Exception $e) {
+    print "Caught error: " . $e;
+    exit();
+  }
+  $xquery->destroy();
+  return;
+}
 
 $store = InMemoryStore::getInstance();
 $zorba = Zorba::getInstance($store);
 
-print "Running: XQuery execute - Get Iterator and print info from its items\n";
-test($zorba);
-print "Success";
+print "Running: Compile query string using JSONiq \n";
+
+$query = <<<'eoquery'
+ let $sats:=jn:json-doc("@phpPath@/tests/satellites.json")('satellites') 
+ return { 
+   'visible' : [ 
+      for $sat in jn:keys($sats) 
+      where $sats($sat)('visible') 
+      return $sat 
+   ], 
+   'invisible' : [ 
+      for $sat in jn:keys($sats) 
+      where not($sats($sat)('visible')) 
+      return $sat 
+   ] 
+ } 
+eoquery;
+
+test($zorba, $query);
+print "Success\n";
 
 $zorba->shutdown();
 InMemoryStore::shutdown($store);

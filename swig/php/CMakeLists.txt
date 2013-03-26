@@ -32,6 +32,7 @@ IF (PHP5_FOUND)
     SWIG_LINK_LIBRARIES (zorba_api_php zorba_simplestore)
   ENDIF (APPLE)
 
+  #fix for library path, using windows backslash causes error
   IF (WIN32)
     STRING(REGEX REPLACE "\\\\" "/" PHP5_LIBRARY "${PHP5_LIBRARY}")
     SWIG_LINK_LIBRARIES (zorba_api_php ${PHP5_LIBRARY})
