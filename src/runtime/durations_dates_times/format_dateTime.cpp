@@ -171,22 +171,6 @@ struct modifier {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-zstring alpha( unsigned n, bool capital ) {
-  zstring result;
-  if ( n ) {
-    char const c = capital ? 'A' : 'a';
-    while ( n ) {
-      unsigned const m = n - 1;
-      result.insert( (zstring::size_type)0, 1, c + m % 26 );
-      n = m / 26;
-    }
-  } else
-    result = "0";
-  return result;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 static bool is_grouping_separator( unicode::code_point cp ) {
   using namespace unicode;
   //
@@ -220,7 +204,7 @@ static void append_number( int n, modifier const &mod, zstring *dest ) {
 
     case modifier::alpha:
     case modifier::ALPHA: {
-      zstring tmp( alpha( n, mod.first.type == modifier::ALPHA ) );
+      zstring tmp( ztd::alpha( n, mod.first.type == modifier::ALPHA ) );
       *dest += mod.right_pad_space( &tmp );
       break;
     }

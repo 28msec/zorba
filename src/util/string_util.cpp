@@ -170,6 +170,19 @@ unsigned long long atoull( char const *buf, char const *end,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+zstring alpha( unsigned long long n, bool capital ) {
+  if ( !n )
+    return "0";
+  zstring result;
+  char const c = capital ? 'A' : 'a';
+  while ( n ) {
+    unsigned long long const m = n - 1;
+    result.insert( (zstring::size_type)0, 1, c + m % 26 );
+    n = m / 26;
+  }
+  return result;
+}
+
 namespace english_impl {
 
 // Based on code from:

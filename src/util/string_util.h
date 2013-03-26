@@ -797,6 +797,17 @@ void to_string( char const *s, OutputStringType *out ) {
 ////////// Miscellaneous ///////////////////////////////////////////////////////
 
 /**
+ * Converts an integer to an alphabetic string: 1 = A, 2 = B, ..., 26 = Z, 27 =
+ * AA, 28 = AB, ....  Note that 0 remains 0.
+ *
+ * @param n The integer to convert.
+ * @param capital If \c true, capital letters are used; if \c false, lower case
+ * letters are used.
+ * @return Returns \a n as an alphabetic string or "0" if \a n is zero.
+ */
+zstring alpha( unsigned long long n, bool capital );
+
+/**
  * Converts a signed integer to English, e.g, 42 becomes "forty two".
  *
  * @param n The integer to convert.
