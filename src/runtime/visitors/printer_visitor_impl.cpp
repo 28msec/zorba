@@ -115,16 +115,16 @@ void PrinterVisitor::endVisit(const SingletonIterator&)
 }
 
 
-void PrinterVisitor::beginVisit(const DynamicFunctionIterator& a)
+void PrinterVisitor::beginVisit(const FunctionItemIterator& a)
 {
-  thePrinter.startBeginVisit("DynamicFunctionIterator", ++theId);
+  thePrinter.startBeginVisit("FunctionItemIterator", ++theId);
   if (a.getFunctionItemInfo()->theQName.getp() != NULL)
     thePrinter.addAttribute("function", a.getFunctionItemInfo()->theQName->getStringValue().str());
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const DynamicFunctionIterator&)
+void PrinterVisitor::endVisit(const FunctionItemIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();

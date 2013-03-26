@@ -250,7 +250,7 @@ enum TypeCode
 
 #include "runtime/iterator_enum.h"
 
-  TYPE_DynamicFunctionIterator,
+  TYPE_FunctionItemIterator,
   TYPE_FunctionItemInfo,
   TYPE_DynamicFnCallIterator,
   TYPE_ArgumentPlaceholderIterator,
