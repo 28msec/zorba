@@ -449,6 +449,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "." { return token::DOT; }
 "?" { return token::HOOK; }
 "$" { return token::DOLLAR; }
+"$$" { return token::DOLLAR_DOLLAR; }
 "#" { return token::HASH; }
 ":" { return token::COLON; }
 "::" { return token::DOUBLE_COLON; }
