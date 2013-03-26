@@ -2599,7 +2599,7 @@ function* static_context::lookup_fn(
     
     f = lookup_fn(qnameItem, arity, true);
   }
-  else if (language_kind() == StaticContextConsts::language_kind_jsoniq)
+  else /* if (language_kind() == StaticContextConsts::language_kind_jsoniq) */
   {
     static_context* sctx = this;
 
@@ -2617,12 +2617,14 @@ function* static_context::lookup_fn(
       sctx = sctx->theParent;
     }
   }
+#if 0
   else
   {
     expand_qname(qnameItem, default_function_ns(), pre, local, loc);
     
     f = lookup_fn(qnameItem, arity, true);
   }
+#endif
 
   return f;
 }
