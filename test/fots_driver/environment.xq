@@ -424,28 +424,32 @@ declare %private function env:compute-context-item(
   $needsDTDValidation as xs:boolean
 ) as xs:string
 {
-  let $ciURI := resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
+  let $ciURI := if(exists($env/fots:source[@role = "."]/@uri))
+                then xs:string($env/fots:source[@role = "."]/@uri)
+                else resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
+  let $needsSchemaValidation := exists($env/fots:source/@validation)
   return
-  if (empty($env/fots:source/@validation))
-  then
-  {
-    if($needsDTDValidation)
+  if($needsDTDValidation)
     then concat('variable $contextItem := zorba-xml:parse(fn:unparsed-text("',
                 $ciURI,
                 '"),<opt:options><opt:DTD-validate/></opt:options> );')
-    else concat('variable $contextItem := doc("', $ciURI, '");')
-  }
-  else 
-    string-join
-    (
+  else if(empty($env/fots:source[@role = "."]/@uri) and
+          not($needsSchemaValidation))
+    then concat('variable $contextItem := doc("', $ciURI, '");')
+  else
+  {
+    string-join(
     (
     "&#xA;",
-
     "variable $contextItemQuery := xqxq:prepare-main-module",
     "(",
     "'",
-    env:get-schema-import($env),
-    concat('validate ', xs:string($env/fots:source/@validation),' { doc("', $ciURI, '")', " }"),
+    if ($needsSchemaValidation) then env:get-schema-import($env) else (),
+    if ($needsSchemaValidation)
+    then concat('validate ', xs:string($env/fots:source/@validation),' { ',
+                concat(' doc("', $ciURI, '")'),
+                " }")
+    else concat(' doc("', $ciURI, '")'),
     "',",
     "(), mapper:uri-mapper#2",
     ");",
@@ -453,8 +457,8 @@ declare %private function env:compute-context-item(
     "variable $contextItem := xqxq:evaluate($contextItemQuery);"
     )
     ,
-    "&#xA;"
-    )
+    "&#xA;")
+  }
 };
 
 
@@ -662,10 +666,10 @@ declare function env:mapper(
   :)
   let $schemas := ($envSchema, $tcSchema)
   let $envSource := for $s in $env/fots:source
-                    where empty($s[@role = "."])
+                    where exists($s/@uri)
                     return $s
   let $tcSource := for $s in $case/fots:environment/fots:source
-                   where empty($s[@role = "."])
+                   where exists($s/@uri)
                    return $s
   let $sources := ($envSource, $tcSource)
   return
