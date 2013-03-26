@@ -230,7 +230,7 @@
     std::vector< std::pair< zorba::Item, zorba::Item > > names;
     names.reserve(aNames.size());
  
-    for(auto iter = aNames.begin(); iter != aNames.end(); iter++) {
+    for(std::vector< std::pair< zorba::Item, zorba::Item > >::iterator iter = aNames.begin(); iter != aNames.end(); iter++) {
       std::pair< zorba::Item, zorba::Item > pair;
       pair.first = (*iter).first.theItem;
       pair.second = (*iter).second.theItem;
@@ -243,7 +243,7 @@
     std::vector< std::pair< zorba::Item, zorba::Item > > names;
     names.reserve(aNames.size());
  
-    for(auto iter = aNames.begin(); iter != aNames.end(); iter++) {
+    for(std::vector< std::pair< zorba::Item, zorba::Item > >::iterator iter = aNames.begin(); iter != aNames.end(); iter++) {
       std::pair< zorba::Item, zorba::Item > pair;
       pair.first = theItemFactory->createString( (*iter).first );
       pair.second = theItemFactory->createString( (*iter).second );
@@ -256,7 +256,7 @@
     std::vector< zorba::Item > items;
     items.reserve(aItems.size());
  
-    for(auto iter = aItems.begin(); iter != aItems.end(); iter++) {
+    for(std::vector< zorba::Item >::iterator iter = aItems.begin(); iter != aItems.end(); iter++) {
       zorba::Item item = (*iter).theItem;
       items.push_back(item);
     }
@@ -267,7 +267,7 @@
     std::vector< zorba::Item > items;
     items.reserve(aItems.size());
 
-    for(auto iter = aItems.begin(); iter != aItems.end(); iter++) {
+    for(std::vector< zorba::Item >::iterator iter = aItems.begin(); iter != aItems.end(); iter++) {
       zorba::Item item = theItemFactory->createString(*iter);
       items.push_back(item);
     }
