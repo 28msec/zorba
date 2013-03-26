@@ -584,7 +584,7 @@ bool BasicItemFactory::createDateTimeStamp(store::Item_t& result, const xs_dateT
 {
   if( value->hasTimezone() )
   {
-    result = new DateTimeItem(store::XS_DATETIME, value);
+    result = new DateTimeItem(store::XS_DATETIME_STAMP, value);
     return true;
   }
   else
