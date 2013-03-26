@@ -171,26 +171,6 @@ struct modifier {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool is_grouping_separator( unicode::code_point cp ) {
-  using namespace unicode;
-  //
-  // XQuery 3.0 F&O: 4.6.1: a grouping-separator-sign is a non-alphanumeric
-  // character, that is a character whose Unicode category is other than Nd,
-  // Nl, No, Lu, Ll, Lt, Lm or Lo.
-  //
-  return !( is_category( cp, Nd )
-         || is_category( cp, Nl )
-         || is_category( cp, No )
-         || is_category( cp, Lu )
-         || is_category( cp, Ll )
-         || is_category( cp, Lt )
-         || is_category( cp, Lm )
-         || is_category( cp, Lo )
-  );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 static void append_number( int n, modifier const &mod, zstring *dest ) {
   switch ( mod.first.type ) {
     case modifier::arabic: {
@@ -463,7 +443,7 @@ fallback:
               ++hm_width[ grouping_separators ];
             continue;
           }
-          if ( got_digit && is_grouping_separator( cp ) ) {
+          if ( got_digit && unicode::is_grouping_separator( cp ) ) {
             if ( ++grouping_separators == 1 ) {
               zstring tmp2( utf8::itou( hour, buf, mod.first.zero ) );
               tmp += utf8::left_pad( &tmp2, hm_width[0], mod.first.zero );
@@ -639,7 +619,7 @@ static void parse_first_modifier( zstring const &picture_str,
   utf8_string<zstring> u_mod_format( mod->first.format );
   unicode::code_point cp = *u;
 
-  if ( cp != '#' && is_grouping_separator( cp ) ) {
+  if ( cp != '#' && unicode::is_grouping_separator( cp ) ) {
     //
     // XQuery 3.0 F&O: 4.6.1: A grouping-separator-sign must not appear
     // at the start ... of the decimal-digit-pattern ....
@@ -731,7 +711,7 @@ static void parse_first_modifier( zstring const &picture_str,
         break;
       else if ( unicode::is_space( cp ) )
         continue;
-      else if ( is_grouping_separator( cp ) ) {
+      else if ( unicode::is_grouping_separator( cp ) ) {
         if ( cp == ',' && !--commas ) {
           //
           // Ibid: if a variable marker contains one or more commas, then the
