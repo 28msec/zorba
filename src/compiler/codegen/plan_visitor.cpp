@@ -549,7 +549,7 @@ void end_visit(function_item_expr& v)
     } // for
   }
 
-  push_itstack(new DynamicFunctionIterator(sctx, qloc, fnInfo));
+  push_itstack(new FunctionItemIterator(sctx, qloc, fnInfo));
 }
 
 

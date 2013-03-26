@@ -47,7 +47,7 @@ SERIALIZABLE_CLASS_VERSIONS(FunctionItemInfo)
 
 SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 
-SERIALIZABLE_CLASS_VERSIONS(DynamicFunctionIterator)
+SERIALIZABLE_CLASS_VERSIONS(FunctionItemIterator)
 
 
 /*******************************************************************************
@@ -287,31 +287,31 @@ zstring FunctionItem::show() const
 /*******************************************************************************
 
 ********************************************************************************/
-DynamicFunctionIterator::DynamicFunctionIterator(
+FunctionItemIterator::FunctionItemIterator(
       static_context* sctx,
       const QueryLoc& loc,
       FunctionItemInfo* fnInfo)
   :
-  NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>(sctx, loc, fnInfo->theScopedVarsIterators),
+  NaryBaseIterator<FunctionItemIterator, PlanIteratorState>(sctx, loc, fnInfo->theScopedVarsIterators),
   theFunctionItemInfo(fnInfo)
 {
 }
 
 
-DynamicFunctionIterator::~DynamicFunctionIterator()
+FunctionItemIterator::~FunctionItemIterator()
 {
 }
 
 
-void DynamicFunctionIterator::serialize(::zorba::serialization::Archiver& ar)
+void FunctionItemIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<FunctionItemIterator, PlanIteratorState>*)this);
   ar & theFunctionItemInfo;
 }
 
 
-bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool FunctionItemIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -330,7 +330,7 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
     if (theFunctionItemInfo->theIsCoercion)
     {
-      DynamicFunctionIterator* child = dynamic_cast<DynamicFunctionIterator*>(theChildren[0].getp());
+      FunctionItemIterator* child = dynamic_cast<FunctionItemIterator*>(theChildren[0].getp());
       if (child != NULL)
         theFunctionItemInfo->theQName = child->theFunctionItemInfo->theQName;
     }
@@ -366,7 +366,7 @@ bool DynamicFunctionIterator::nextImpl(store::Item_t& result, PlanState& planSta
       the varids that will be generated for the eval query will not conflict with
       the varids of the outer vars and the outer-query global vars.
 ********************************************************************************/
-void DynamicFunctionIterator::importOuterEnv(
+void FunctionItemIterator::importOuterEnv(
     PlanState& planState,
     CompilerCB* evalCCB,
     static_context* importSctx,
@@ -453,7 +453,7 @@ void DynamicFunctionIterator::importOuterEnv(
 /****************************************************************************//**
 
 ********************************************************************************/
-void DynamicFunctionIterator::setExternalVariables(
+void FunctionItemIterator::setExternalVariables(
     CompilerCB* ccb,
     static_context* importSctx,
     dynamic_context* evalDctx) const
@@ -503,7 +503,7 @@ void DynamicFunctionIterator::setExternalVariables(
   }
 }
 
-NARY_ACCEPT(DynamicFunctionIterator)
+NARY_ACCEPT(FunctionItemIterator)
 
 
 } //namespace zorba

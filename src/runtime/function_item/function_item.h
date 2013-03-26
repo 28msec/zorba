@@ -36,7 +36,7 @@ typedef rchandle<FunctionItemInfo> FunctionItemInfo_t;
 
 /*******************************************************************************
   A class to hold information about a dynamic function. This info is shared
-  between the DynamicFunctionIterator and the FunctionItems it creates.
+  between the FunctionItemIterator and the FunctionItems it creates.
 
   theCCB :
   --------
@@ -237,24 +237,24 @@ public:
 /*******************************************************************************
   An iterator that creates and returns dynamic function items
 ********************************************************************************/
-class DynamicFunctionIterator : public NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>
+class FunctionItemIterator : public NaryBaseIterator<FunctionItemIterator, PlanIteratorState>
 {
 protected:
   FunctionItemInfo_t theFunctionItemInfo;
 
 public:
-  SERIALIZABLE_CLASS(DynamicFunctionIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DynamicFunctionIterator,
-  NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>)
+  SERIALIZABLE_CLASS(FunctionItemIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionItemIterator,
+  NaryBaseIterator<FunctionItemIterator, PlanIteratorState>)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFunctionIterator(
+  FunctionItemIterator(
       static_context* sctx,
       const QueryLoc& loc,
       FunctionItemInfo* fnInfo);
 
-  virtual ~DynamicFunctionIterator();
+  virtual ~FunctionItemIterator();
 
   // Used for pretty-printing of the iterator tree
   const FunctionItemInfo_t getFunctionItemInfo() const
