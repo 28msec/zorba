@@ -20,7 +20,7 @@
 // dynamic_context object.
 #include "context/dynamic_context.h"
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/base/plan_iterator.h"
 #include "runtime/api/plan_iterator_wrapper.h"

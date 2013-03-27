@@ -23,7 +23,7 @@
 
 #include "store/naive/shared_types.h"
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 
 namespace zorba {
@@ -38,7 +38,11 @@ class argument_placeholder_expr : public expr
   friend class ExprManager;
 
 protected:
-  argument_placeholder_expr(CompilerCB* ccb, static_context* sctx, user_function* udf, const QueryLoc& loc)
+  argument_placeholder_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc)
     :
     expr(ccb, sctx, udf, loc, argument_placeholder_expr_kind)
   {

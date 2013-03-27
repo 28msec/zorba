@@ -51,7 +51,7 @@
 #include "runtime/debug/debug_iterator.h"
 #endif
 #include "runtime/indexing/index_ddl.h"
-#include "runtime/function_item/dynamic_fncall_iterator.h"
+#include "runtime/hof/dynamic_fncall_iterator.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
 #include "runtime/eval/eval.h"
