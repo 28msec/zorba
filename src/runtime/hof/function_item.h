@@ -22,8 +22,6 @@
 
 #include "store/api/item.h"
 
-#include "runtime/base/narybase.h"
-
 
 namespace zorba
 {
@@ -231,52 +229,6 @@ public:
   bool isCoercion() const { return theFunctionItemInfo->theIsCoercion; }
 
   zstring show() const;
-};
-
-
-/*******************************************************************************
-  An iterator that creates and returns dynamic function items
-********************************************************************************/
-class FunctionItemIterator : public NaryBaseIterator<FunctionItemIterator, PlanIteratorState>
-{
-protected:
-  FunctionItemInfo_t theFunctionItemInfo;
-
-public:
-  SERIALIZABLE_CLASS(FunctionItemIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionItemIterator,
-  NaryBaseIterator<FunctionItemIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  FunctionItemIterator(
-      static_context* sctx,
-      const QueryLoc& loc,
-      FunctionItemInfo* fnInfo);
-
-  virtual ~FunctionItemIterator();
-
-  // Used for pretty-printing of the iterator tree
-  const FunctionItemInfo_t getFunctionItemInfo() const
-  {
-    return theFunctionItemInfo;
-  }
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-public:
-  void importOuterEnv(PlanState& planState,
-      CompilerCB* evalCCB,
-      static_context* importSctx,
-      dynamic_context* evalDctx) const;
-
-private:
-  void setExternalVariables(
-      CompilerCB* ccb,
-      static_context* importSctx,
-      dynamic_context* evalDctx) const;
 };
 
 

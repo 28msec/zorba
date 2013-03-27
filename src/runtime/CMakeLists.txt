@@ -141,6 +141,7 @@ LIST(APPEND RUNTIME_SRCS
   util/flowctl_exception.cpp
   util/doc_uri_heuristics.cpp
   hof/function_item.cpp
+  hof/function_item_iter.cpp
   hof/dynamic_fncall_iterator.cpp
   eval/eval.cpp
   collections/collections_base.cpp
