@@ -493,7 +493,6 @@ public:
       user_function* udf,
       const QueryLoc& loc,
       function* f,
-      store::Item* qname,
       uint32_t arity,
       bool isInline,
       bool needsContextItem,

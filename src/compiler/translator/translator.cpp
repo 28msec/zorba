@@ -1568,8 +1568,6 @@ expr* wrap_in_coercion(
 
   // bind the function item variable in the inner flwor
   flwor_expr* inner_flwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
-  var_expr* inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::let_var);
-  inner_arg_var->set_param_pos(inner_flwor->num_clauses());
 
   // Handle parameters. For each parameter, a let binding is added to the inner flwor.
   std::vector<expr*> arguments;    // Arguments to the dynamic function call
@@ -11934,7 +11932,6 @@ expr* generate_literal_function(
 
   expr* fiExpr = CREATE(function_item)(theRootSctx, theUDF, loc,
                                        f,
-                                       f->getName(),
                                        arity,
                                        false,  // not inline
                                        needs_context_item,
@@ -11964,39 +11961,6 @@ void* begin_visit(const InlineFunction& v)
 
   push_nodestack(fiExpr);
 
-  // Translate the return tyoe
-  xqtref_t returnType = theRTM.ITEM_TYPE_STAR;
-  if (v.getReturnType() != 0)
-  {
-    v.getReturnType()->accept(*this);
-    returnType = pop_tstack();
-  }
-
-  // Translate the type declarations for the function params
-  rchandle<ParamList> params = v.getParamList();
-  std::vector<xqtref_t> paramTypes;
-
-  if (params != 0)
-  {
-    std::vector<rchandle<Param> >::const_iterator lIt = params->begin();
-    for(; lIt != params->end(); ++lIt)
-    {
-      const Param* param = lIt->getp();
-      const SequenceType* paramType = param->get_typedecl();
-      if (paramType == 0)
-      {
-        paramTypes.push_back(theRTM.ITEM_TYPE_STAR);
-      }
-      else
-      {
-        paramType->accept(*this);
-        paramTypes.push_back(pop_tstack());
-      }
-    }
-  }
-
-  flwor_expr* flwor = NULL;
-
   // Handle function parameters. Translation of the params, if any, results to
   // a flwor expr with one let binding for each function parameter:
   //
@@ -12005,6 +11969,8 @@ void* begin_visit(const InlineFunction& v)
   // let $xN as TN := _xN
   //
   // where each _xi is an arg var.
+  rchandle<ParamList> params = v.getParamList();
+  flwor_expr* flwor = NULL;
   if (params)
   {
     params->accept(*this);
@@ -12015,8 +11981,7 @@ void* begin_visit(const InlineFunction& v)
     flwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
   }
 
-  // Handle inscope variables. For each inscope var, a let binding is added to
-  // the flwor.
+  // Handle inscope variables.
   std::vector<VarInfo*>::iterator ite = scopedVars.begin();
 
   for(; ite != scopedVars.end(); ++ite)
@@ -12045,16 +12010,14 @@ void* begin_visit(const InlineFunction& v)
         else
           throw;
       }
+
+      fiExpr->add_variable(varExpr, subst_var, varExpr->get_name(), 0);
     }
     else
     {
       subst_var = varExpr;
+      fiExpr->add_variable(NULL, subst_var, varExpr->get_name(), 1);
     }
-
-    if (kind == var_expr::prolog_var)
-      fiExpr->add_variable(NULL, subst_var, varExpr->get_name(), 1 /*var is global if it's a prolog var*/);
-    else
-      fiExpr->add_variable(varExpr, subst_var, varExpr->get_name(), 0);
   }
 
   if (flwor->num_clauses() > 0)
@@ -12203,10 +12166,6 @@ void create_inline_function(
   if (theCCB->theConfig.translate_cb != NULL && theCCB->theConfig.optimize_cb == NULL)
     theCCB->theConfig.translate_cb(udf->getBody(),
                                    udf->getName()->getStringValue().c_str());
-
-  if (theCCB->theConfig.optimize_cb != NULL)
-    theCCB->theConfig.optimize_cb(udf->getBody(),
-                                  udf->getName()->getStringValue().c_str());
 }
 
 /*******************************************************************************

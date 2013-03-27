@@ -20,9 +20,9 @@
 
 #include "functions/function.h"
 #include "functions/function_impl.h"
-#include "functions/func_function_item_iter.h"
+#include "functions/func_fn_hof_functions.h"
 
-#include "runtime/function_item/function_item_iter.h"
+#include "runtime/hof/fn_hof_functions.h"
 
 #include "system/globalenv.h"
 

@@ -424,28 +424,32 @@ declare %private function env:compute-context-item(
   $needsDTDValidation as xs:boolean
 ) as xs:string
 {
-  let $ciURI := resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
+  let $ciURI := if(exists($env/fots:source[@role = "."]/@uri))
+                then xs:string($env/fots:source[@role = "."]/@uri)
+                else resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
+  let $needsSchemaValidation := exists($env/fots:source/@validation)
   return
-  if (empty($env/fots:source[@validation = "strict"]))
-  then
-  {
-    if($needsDTDValidation)
+  if($needsDTDValidation)
     then concat('variable $contextItem := zorba-xml:parse(fn:unparsed-text("',
                 $ciURI,
                 '"),<opt:options><opt:DTD-validate/></opt:options> );')
-    else concat('variable $contextItem := doc("', $ciURI, '");')
-  }
-  else 
-    string-join
-    (
+  else if(empty($env/fots:source[@role = "."]/@uri) and
+          not($needsSchemaValidation))
+    then concat('variable $contextItem := doc("', $ciURI, '");')
+  else
+  {
+    string-join(
     (
     "&#xA;",
-
     "variable $contextItemQuery := xqxq:prepare-main-module",
     "(",
     "'",
-    env:get-schema-import($env),
-    concat('validate { doc("', $ciURI, '")', " }"),
+    if ($needsSchemaValidation) then env:get-schema-import($env) else (),
+    if ($needsSchemaValidation)
+    then concat('validate ', xs:string($env/fots:source/@validation),' { ',
+                concat(' doc("', $ciURI, '")'),
+                " }")
+    else concat(' doc("', $ciURI, '")'),
     "',",
     "(), mapper:uri-mapper#2",
     ");",
@@ -453,8 +457,8 @@ declare %private function env:compute-context-item(
     "variable $contextItem := xqxq:evaluate($contextItemQuery);"
     )
     ,
-    "&#xA;"
-    )
+    "&#xA;")
+  }
 };
 
 
@@ -653,11 +657,23 @@ declare function env:mapper(
   $testSetBaseURI as xs:anyURI
 ) as xs:string?
 {
-  let $envSchema := $env/fots:schema,
-      $tcSchema := $case/fots:environment/fots:schema,
-      $schemas := ($envSchema, $tcSchema)
+  let $envSchema := $env/fots:schema
+  let $tcSchema := $case/fots:environment/fots:schema
+  (:
+  Schema documents are identified in the environment in a similar way to source
+  documents. The role attribute indicates whether the schema is imported into
+  the query, or used for source document validation.
+  :)
+  let $schemas := ($envSchema, $tcSchema)
+  let $envSource := for $s in $env/fots:source
+                    where exists($s/@uri)
+                    return $s
+  let $tcSource := for $s in $case/fots:environment/fots:source
+                   where exists($s/@uri)
+                   return $s
+  let $sources := ($envSource, $tcSource)
   return
-    if (empty($schemas))
+    if (empty($schemas) and empty($sources))
     then ()
     else string-join(
             ("declare function mapper:uri-mapper($namespace as xs:string, $entity as xs:string) {",
@@ -676,6 +692,24 @@ declare function env:mapper(
                                    data($schema/@uri),
                                    "' return '",
                                    resolve-uri($schema/@file, $testSetBaseURI),
+                                   "'"),
+                      "    default return ()")),
+                      "&#xA;")
+    else (),
+    if (exists($sources))
+    then string-join(("case ''",
+                     "  return switch($namespace)",
+                    (for $source in $envSource
+                     return concat("    case '",
+                                   data($source/@uri),
+                                   "' return '",
+                                   resolve-uri($source/@file, $envBaseURI),
+                                   "'"),
+                      for $source in $tcSource
+                      return concat("    case '",
+                                   data($source/@uri),
+                                   "' return '",
+                                   resolve-uri($source/@file, $testSetBaseURI),
                                    "'"),
                       "    default return ()")),
                       "&#xA;")

@@ -49,7 +49,7 @@
 #include "runtime/fetch/fetch.h"
 #include "runtime/fnput/fnput.h"
 #include "runtime/full_text/ft_module.h"
-#include "runtime/function_item/function_item_iter.h"
+#include "runtime/hof/fn_hof_functions.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/indexing/index_func.h"
 #include "runtime/introspection/sctx.h"
