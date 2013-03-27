@@ -363,9 +363,9 @@ sctx_test_6(Zorba* zorba)
   std::stringstream queryString;
 
   queryString
-    << "jsoniq version '1.0';\n"
+    << "jsoniq version \"1.0\";\n"
     << "declare function local:concat() { fn:current-dateTime() };\n"
-    << "trace(concat(), 'concat') instance of xs:dateTime";
+    << "trace(concat(), \"concat\") instance of xs:dateTime";
 
   StaticContext_t sctx = zorba->createStaticContext();
 
