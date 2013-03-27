@@ -28,8 +28,8 @@
 %define "parser_class_name" "jsoniq_parser"
 %error-verbose
 
-// Expect 1 shift/reduce conflicts
-%expect 1
+// Expect 2 shift/reduce conflicts
+%expect 2
 
 
 %code requires {
@@ -2280,9 +2280,14 @@ BlockStatement :
 
 
 BlockExpr :
-    LBRACE StatementsAndExpr RBRACE
+    LBRACE StatementsAndOptionalExpr RBRACE
     {
-      if (dynamic_cast<BlockBody*>($2) == NULL)
+      BlockBody* block = dynamic_cast<BlockBody*>($2);
+      if ($2 == NULL || (block != NULL && block->isEmpty()))
+      {
+        $$ = new JSONDirectObjectConstructor(LOC(@$));
+      }
+      else if (block == NULL)
       {
         BlockBody* blk = new BlockBody(LOC(@$));
         blk->add($2);
@@ -6686,11 +6691,11 @@ JSONObjectConstructor :
         {
           $$ = new JSONDirectObjectConstructor(LOC(@$),
                                                dynamic_cast<JSONPairList*>($2));
-        }
+        }/*
     |   LBRACE RBRACE
         {
           $$ = new JSONDirectObjectConstructor(LOC(@$));
-        }
+        }*/
     ;
 
 JSONPairList :
