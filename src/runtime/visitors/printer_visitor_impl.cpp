@@ -51,7 +51,7 @@
 #include "runtime/debug/debug_iterator.h"
 #endif
 #include "runtime/indexing/index_ddl.h"
-#include "runtime/function_item/dynamic_fncall_iterator.h"
+#include "runtime/hof/dynamic_fncall_iterator.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
 #include "runtime/eval/eval.h"
@@ -115,16 +115,16 @@ void PrinterVisitor::endVisit(const SingletonIterator&)
 }
 
 
-void PrinterVisitor::beginVisit(const DynamicFunctionIterator& a)
+void PrinterVisitor::beginVisit(const FunctionItemIterator& a)
 {
-  thePrinter.startBeginVisit("DynamicFunctionIterator", ++theId);
-  if (a.getDynamicFunctionInfo()->theQName.getp() != NULL)
-    thePrinter.addAttribute("function", a.getDynamicFunctionInfo()->theQName->getStringValue().str());
+  thePrinter.startBeginVisit("FunctionItemIterator", ++theId);
+  if (a.getFunctionItemInfo()->theQName.getp() != NULL)
+    thePrinter.addAttribute("function", a.getFunctionItemInfo()->theQName->getStringValue().str());
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const DynamicFunctionIterator&)
+void PrinterVisitor::endVisit(const FunctionItemIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();

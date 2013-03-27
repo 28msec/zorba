@@ -30,20 +30,20 @@ namespace zorba
 
 class signature;
 class function_item_expr;
-class DynamicFunctionInfo;
+class FunctionItemInfo;
 
-typedef rchandle<DynamicFunctionInfo> DynamicFunctionInfo_t;
+typedef rchandle<FunctionItemInfo> FunctionItemInfo_t;
 
 /*******************************************************************************
   A class to hold information about a dynamic function. This info is shared
-  between the DynamicFunctionIterator and the FunctionItems it creates.
+  between the FunctionItemIterator and the FunctionItems it creates.
 
   theCCB :
   --------
 
   theMustDeleteCCB :
   ------------------
-  This is set to true if the DynamicFunctionInfo is the owner of the CCB,
+  This is set to true if the FunctionItemInfo is the owner of the CCB,
   and must delete it upon destruction.
 
   theLoc:
@@ -110,7 +110,7 @@ typedef rchandle<DynamicFunctionInfo> DynamicFunctionInfo_t;
   -----------------------
 
 ********************************************************************************/
-class DynamicFunctionInfo : public SimpleRCObject
+class FunctionItemInfo : public SimpleRCObject
 {
 public:
   CompilerCB                  * theCCB;
@@ -136,12 +136,12 @@ public:
   store::NsBindings             theLocalBindings;
 
 public:
-  SERIALIZABLE_CLASS(DynamicFunctionInfo)
-  DynamicFunctionInfo(::zorba::serialization::Archiver& ar);
+  SERIALIZABLE_CLASS(FunctionItemInfo)
+  FunctionItemInfo(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFunctionInfo(
+  FunctionItemInfo(
       static_context* closureSctx,
       const QueryLoc& loc,
       function* func,
@@ -151,7 +151,7 @@ public:
       bool needsContextItem,
       bool isCoercion);
 
-  virtual ~DynamicFunctionInfo();
+  virtual ~FunctionItemInfo();
 
   void add_variable(
       expr* var,
@@ -172,7 +172,7 @@ public:
 class FunctionItem : public store::Item, public zorba::serialization::SerializeBaseClass
 {
 protected:
-  DynamicFunctionInfo_t           theDynamicFunctionInfo;
+  FunctionItemInfo_t           theFunctionItemInfo;
 
   unsigned int                    theArity;   // The arity of the function
                                               // item will decrease when a
@@ -191,7 +191,7 @@ public:
 
 public:
   FunctionItem(
-      const DynamicFunctionInfo_t& dynamicFunctionInfo,
+      const FunctionItemInfo_t& dynamicFunctionInfo,
       dynamic_context* dctx);
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
@@ -224,11 +224,11 @@ public:
 
   const signature& getSignature() const;
   
-  bool isInline() const { return theDynamicFunctionInfo->theIsInline; }
+  bool isInline() const { return theFunctionItemInfo->theIsInline; }
   
-  bool needsContextItem() const { return theDynamicFunctionInfo->theNeedsContextItem; }
+  bool needsContextItem() const { return theFunctionItemInfo->theNeedsContextItem; }
 
-  bool isCoercion() const { return theDynamicFunctionInfo->theIsCoercion; }
+  bool isCoercion() const { return theFunctionItemInfo->theIsCoercion; }
 
   zstring show() const;
 };
@@ -237,29 +237,29 @@ public:
 /*******************************************************************************
   An iterator that creates and returns dynamic function items
 ********************************************************************************/
-class DynamicFunctionIterator : public NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>
+class FunctionItemIterator : public NaryBaseIterator<FunctionItemIterator, PlanIteratorState>
 {
 protected:
-  DynamicFunctionInfo_t theDynamicFunctionInfo;
+  FunctionItemInfo_t theFunctionItemInfo;
 
 public:
-  SERIALIZABLE_CLASS(DynamicFunctionIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DynamicFunctionIterator,
-  NaryBaseIterator<DynamicFunctionIterator, PlanIteratorState>)
+  SERIALIZABLE_CLASS(FunctionItemIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionItemIterator,
+  NaryBaseIterator<FunctionItemIterator, PlanIteratorState>)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  DynamicFunctionIterator(
+  FunctionItemIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      DynamicFunctionInfo* fnInfo);
+      FunctionItemInfo* fnInfo);
 
-  virtual ~DynamicFunctionIterator();
+  virtual ~FunctionItemIterator();
 
   // Used for pretty-printing of the iterator tree
-  const DynamicFunctionInfo_t getDynamicFunctionInfo() const
+  const FunctionItemInfo_t getFunctionItemInfo() const
   {
-    return theDynamicFunctionInfo;
+    return theFunctionItemInfo;
   }
 
   void accept(PlanIterVisitor& v) const;

@@ -23,8 +23,8 @@
 
 
 #include "stdafx.h"
-#include "runtime/function_item/function_item_iter.h"
-#include "functions/func_function_item_iter.h"
+#include "runtime/hof/fn_hof_functions.h"
+#include "functions/func_fn_hof_functions.h"
 
 
 namespace zorba{
@@ -64,7 +64,7 @@ PlanIter_t fn_map_pairs_3_0::codegen(
 
 
 
-void populate_context_function_item_iter(static_context* sctx)
+void populate_context_fn_hof_functions(static_context* sctx)
 {
 
 

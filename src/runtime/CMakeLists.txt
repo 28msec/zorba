@@ -140,8 +140,8 @@ LIST(APPEND RUNTIME_SRCS
   util/timeout.cpp
   util/flowctl_exception.cpp
   util/doc_uri_heuristics.cpp
-  function_item/function_item.cpp
-  function_item/dynamic_fncall_iterator.cpp
+  hof/function_item.cpp
+  hof/dynamic_fncall_iterator.cpp
   eval/eval.cpp
   collections/collections_base.cpp
   misc/materialize.cpp
