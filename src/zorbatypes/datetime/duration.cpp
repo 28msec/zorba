@@ -41,6 +41,7 @@ static const long max_value[] =
   0, 12, 30, 24, 60, 60, Duration::FRAC_SECONDS_UPPER_LIMIT
 };
 
+static const long seconds_per_year = 60 * 60 * 24 * 30 * 12;
 
 /******************************************************************************
   Parse a 'nS' string, with fractional seconds, returns 0 on success and a
@@ -728,7 +729,8 @@ Duration* Duration::operator-(const Duration& d) const
 Duration* Duration::operator*(const xs_double& value) const
 {
   xs_double result;
-  xs_double dSeconds;
+  xs_integer totalSeconds;
+  int32_t years;
   int32_t seconds;
   int32_t frac_seconds;
 
@@ -738,19 +740,20 @@ Duration* Duration::operator*(const xs_double& value) const
     return NULL;
   }
 
-  Integer significants = Integer(FRAC_SECONDS_UPPER_LIMIT);
-
   try {
     result = getTotalSeconds() * value;
-    result = result.round(significants);
-    seconds = to_xs_int(result.floor());
+    result = result.round(Integer(FRAC_SECONDS_UPPER_LIMIT));
+    totalSeconds = result.floor();
     result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
+
+    years = to_xs_int(totalSeconds / seconds_per_year);
+    seconds = to_xs_int(totalSeconds % seconds_per_year);
     frac_seconds = to_xs_int(result.round());
   } catch ( std::range_error const& ) {
     throw XQUERY_EXCEPTION(err::FODT0002);
   }
 
-  Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
+  Duration* d = new Duration(facet, totalSeconds<0, years, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
 }
 
@@ -758,7 +761,8 @@ Duration* Duration::operator*(const xs_double& value) const
 Duration* Duration::operator/(const xs_double& value) const
 {
   xs_double result;
-  xs_double dSeconds;
+  xs_integer totalSeconds;
+  int32_t years;
   int32_t seconds;
   int32_t frac_seconds;
 
@@ -768,20 +772,20 @@ Duration* Duration::operator/(const xs_double& value) const
     return NULL;
   }
 
-  Integer significants = Integer(FRAC_SECONDS_UPPER_LIMIT);
-
   try {
     result = getTotalSeconds() / value;
-    result = result.round(significants);
-    dSeconds = result.round();
-    seconds = to_xs_int(dSeconds.floor());
-    result = (result - dSeconds) * FRAC_SECONDS_UPPER_LIMIT;
+    result = result.round(Integer(FRAC_SECONDS_UPPER_LIMIT));
+    totalSeconds = result.floor();
+    result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
+
+    years = to_xs_int(totalSeconds / seconds_per_year);
+    seconds = to_xs_int(totalSeconds % seconds_per_year);
     frac_seconds = to_xs_int(result.round());
   } catch ( std::range_error const& ) {
     throw XQUERY_EXCEPTION(err::FODT0002);
   }
 
-  Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
+  Duration* d = new Duration(facet, totalSeconds<0, years, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
 }
 
