@@ -610,6 +610,10 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
   {
     SERIALIZE_ATOMIC_ITEM(xs_dateTime, getDateTimeValue());
   }
+  case store::XS_DATETIME_STAMP:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_dateTimeStamp, getDateTimeValue());
+  }
   case store::XS_DATE:
   {
     SERIALIZE_ATOMIC_ITEM(xs_date, getDateValue());
@@ -921,6 +925,10 @@ void deserialize_atomic_item(Archiver& ar, store::Item*& obj, int id)
   case store::XS_DATETIME:
   {
     DESERIALIZE_ATOMIC_ITEM2(xs_dateTime, createDateTime);
+  }
+  case store::XS_DATETIME_STAMP:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_dateTimeStamp, createDateTimeStamp);
   }
   case store::XS_DATE:
   {
