@@ -170,7 +170,7 @@ public:
 class FunctionItem : public store::Item, public zorba::serialization::SerializeBaseClass
 {
 protected:
-  FunctionItemInfo_t           theFunctionItemInfo;
+  FunctionItemInfo_t              theFunctionItemInfo;
 
   unsigned int                    theArity;   // The arity of the function
                                               // item will decrease when a

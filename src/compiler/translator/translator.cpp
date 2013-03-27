@@ -1568,8 +1568,6 @@ expr* wrap_in_coercion(
 
   // bind the function item variable in the inner flwor
   flwor_expr* inner_flwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
-  var_expr* inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::let_var);
-  inner_arg_var->set_param_pos(inner_flwor->num_clauses());
 
   // Handle parameters. For each parameter, a let binding is added to the inner flwor.
   std::vector<expr*> arguments;    // Arguments to the dynamic function call
@@ -11934,7 +11932,6 @@ expr* generate_literal_function(
 
   expr* fiExpr = CREATE(function_item)(theRootSctx, theUDF, loc,
                                        f,
-                                       f->getName(),
                                        arity,
                                        false,  // not inline
                                        needs_context_item,

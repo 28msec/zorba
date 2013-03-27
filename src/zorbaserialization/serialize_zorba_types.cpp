@@ -45,6 +45,7 @@
 #include "zorbatypes/decimal.h"
 
 #include "functions/function.h"
+
 #include "runtime/hof/function_item.h"
 
 #include "context/static_context.h"

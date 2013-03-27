@@ -138,8 +138,7 @@ protected:
       user_function* udf,
       const QueryLoc& loc,
       function* f,
-      store::Item* aQName,
-      uint32_t aArity,
+      csize arity,
       bool isInline,
       bool needsContextItem,
       bool isCoercion);
