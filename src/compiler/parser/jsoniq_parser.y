@@ -326,6 +326,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token DESCENDING                       "'descending'"
 %token DIV                              "'div'"
 %token DOLLAR                           "'$'"
+%token DOLLAR_DOLLAR                    "'$_'"
 %token DOT                              "'.'"
 %token DOT_DOT                          "'..'"
 %token COLON                            "':'"
@@ -4559,6 +4560,10 @@ ParenthesizedExpr :
 // [88]
 ContextItemExpr :
         DOT
+        {
+            $$ = new ContextItemExpr( LOC(@$) );
+        }
+    |   DOLLAR_DOLLAR
         {
             $$ = new ContextItemExpr( LOC(@$) );
         }

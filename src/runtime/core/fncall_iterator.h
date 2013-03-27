@@ -22,7 +22,7 @@
 
 #include "common/shared_types.h"
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 // TODO remove the next three includes
 #include "api/unmarshaller.h"
@@ -107,7 +107,11 @@ public:
 
   ~UDFunctionCallIteratorState();
 
-  void open(PlanState& planState, user_function* udf, bool theIsDynamic, store::ItemHandle<FunctionItem>& theFunctionItem);
+  void open(
+      PlanState& planState,
+      user_function* udf,
+      bool theIsDynamic,
+      store::ItemHandle<FunctionItem>& theFunctionItem);
 
   void reset(PlanState& planState);
 };
@@ -130,8 +134,8 @@ class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator,
   typedef std::vector<LetVarIter_t> ArgVarRefs;
 
 protected:
-  user_function  * theUDF;
-  bool             theIsDynamic;
+  user_function                 * theUDF;
+  bool                            theIsDynamic;
   store::ItemHandle<FunctionItem> theFunctionItem;
 
 public:
@@ -145,10 +149,10 @@ public:
 
 public:
   UDFunctionCallIterator(
-        static_context* sctx,
-        const QueryLoc& loc, 
-        std::vector<PlanIter_t>& args, 
-        const user_function* aUDF);
+      static_context* sctx,
+      const QueryLoc& loc, 
+      std::vector<PlanIter_t>& args, 
+      const user_function* aUDF);
 
   bool isUpdating() const;
 

@@ -128,18 +128,19 @@ void XQueryCompiler::xqdoc(
 ********************************************************************************/
 bool XQueryCompiler::getLanguageMode(std::stringstream& s) const
 {
-  char lPeek[6];
-  s.get(lPeek, 7, ' ');
+  const size_t lPeekSize = 7;
+  char lPeek[lPeekSize];
+  s.get(lPeek, lPeekSize);
   s.clear();
   s.seekg(0, s.beg);
 
   bool lXQueryMode;
 
-  if (strncmp(lPeek, "jsoniq", 6) == 0)
+  if (strncmp(lPeek, "jsoniq", lPeekSize - 1) == 0)
   {
     lXQueryMode = false;
   }
-  else if (strncmp(lPeek, "xquery", 6) == 0)
+  else if (strncmp(lPeek, "xquery", lPeekSize - 1) == 0)
   {
     lXQueryMode = true;
   }
@@ -301,107 +302,65 @@ PlanIter_t XQueryCompiler::compile(
     const parsenode_t& ast,
     bool applyPUL,
     ulong& nextDynamicVarId,
-    audit::ScopedRecord& aAuditRecord)
+    audit::ScopedRecord& auditRecord)
 {
   expr* rootExpr;
 
-  {
-    time::Timer lTimer;
+  rootExpr = translate(ast, auditRecord);
 
-    audit::DurationAuditor
-    durationAudit(aAuditRecord,
-                  audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
-                  lTimer);
+  rootExpr = optimize(rootExpr, auditRecord);
 
-    rootExpr = normalize(ast); // also does the translation
-  }
-
-  {
-    time::Timer lTimer;
-
-    audit::DurationAuditor
-    durationAudit(aAuditRecord,
-                  audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
-                  lTimer);
-
-    rootExpr = optimize(rootExpr);
-  }
-
-#if 0
-  rootExpr = rootExpr->clone();
-#endif
-
-  PlanIter_t plan;
-
-  {
-    time::Timer lTimer;
-
-    audit::DurationAuditor
-    durationAudit(aAuditRecord,
-                  audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
-                  lTimer);
-
-    theCompilerCB->setPhase(CompilerCB::CODEGEN);
-
-    plan = codegen("main query", rootExpr, theCompilerCB, nextDynamicVarId);
-
-    theCompilerCB->setPhase(CompilerCB::NONE);
-  }
-
-  //theCompilerCB->getExprManager()->garbageCollect();
-  return plan;
+  return codegen(rootExpr, nextDynamicVarId, auditRecord);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-expr* XQueryCompiler::normalize(parsenode_t aParsenode)
+expr* XQueryCompiler::translate(
+    parsenode_t parsenode,
+    audit::ScopedRecord& auditRecord)
 {
-#if 0
-  time::walltime startTime;
-  time::walltime stopTime;
-  double elapsedTime;
+  time::Timer timer;
 
-  time::get_current_walltime(startTime);
-#endif
+  audit::DurationAuditor
+  durationAudit(auditRecord,
+                audit::XQUERY_COMPILATION_TRANSLATION_DURATION,
+                timer);
 
   theCompilerCB->setPhase(CompilerCB::TRANSLATION);
 
-  expr* lExpr = translate(*aParsenode, theCompilerCB);
+  expr* rootExpr = zorba::translate(*parsenode, theCompilerCB);
 
   theCompilerCB->setPhase(CompilerCB::NONE);
 
-#if 0
-  std::cout << "Num exprs after translation = "
-            << theCompilerCB->getExprManager()->numExprs()
-            << std::endl << std::endl;
-
-  time::get_current_walltime(stopTime);
-  elapsedTime = time::get_walltime_elapsed(startTime, stopTime);      
-  std::cout << "Translation time = " << elapsedTime << std::endl;
-#endif
-
-  if ( lExpr == NULL )
+  if (rootExpr == NULL)
   {
     // TODO: can this happen?
     throw ZORBA_EXCEPTION(zerr::ZAPI0002_XQUERY_COMPILATION_FAILED);
   }
 
-  return lExpr;
+  return rootExpr;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-expr* XQueryCompiler::optimize(expr* lExpr)
+expr* XQueryCompiler::optimize(expr* rootExpr, audit::ScopedRecord& auditRecord)
 {
+  time::Timer timer;
+
+  audit::DurationAuditor
+  durationAudit(auditRecord,
+                audit::XQUERY_COMPILATION_OPTIMIZATION_DURATION,
+                timer);
+
   theCompilerCB->setPhase(CompilerCB::OPTIMIZATION);
 
   // Build the call-graph among the udfs that are actually used in the query
   // program.
-  UDFGraph udfGraph(lExpr);
+  UDFGraph udfGraph(rootExpr);
 
   // By default all UDFs are marked as deterministic. Now, we find which udfs
   // are actually non-deterministic and mark them as such. This has to be done
@@ -411,7 +370,7 @@ expr* XQueryCompiler::optimize(expr* lExpr)
   if (theCompilerCB->theConfig.opt_level <= CompilerCB::config::O0)
   {
     theCompilerCB->setPhase(CompilerCB::NONE);
-    return lExpr;
+    return rootExpr;
   }
 
   // Optimize the udfs.
@@ -419,21 +378,49 @@ expr* XQueryCompiler::optimize(expr* lExpr)
 
   // Optimize the main expr (i.e., the top expr of the main module).
   RewriterContext rCtx(theCompilerCB,
-                       lExpr,
+                       rootExpr,
                        NULL,
                        "Optimizing main program",
-                       lExpr->get_sctx()->is_in_ordered_mode());
+                       rootExpr->get_sctx()->is_in_ordered_mode());
 
   GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
 
-  lExpr = rCtx.getRoot();
+  rootExpr = rCtx.getRoot();
 
-  if ( theCompilerCB->theConfig.optimize_cb != NULL )
-    theCompilerCB->theConfig.optimize_cb(lExpr, "main query");
+  if (theCompilerCB->theConfig.optimize_cb != NULL)
+    theCompilerCB->theConfig.optimize_cb(rootExpr, "main query");
 
   theCompilerCB->setPhase(CompilerCB::NONE);
 
-  return lExpr;
+  return rootExpr;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t XQueryCompiler::codegen(
+    expr* rootExpr,
+    ulong& nextDynamicVarId,
+    audit::ScopedRecord& auditRecord)
+{
+  time::Timer timer;
+
+  audit::DurationAuditor
+  durationAudit(auditRecord,
+                audit::XQUERY_COMPILATION_CODEGENERATION_DURATION,
+                timer);
+
+  theCompilerCB->setPhase(CompilerCB::CODEGEN);
+
+  PlanIter_t plan = zorba::codegen("main query",
+                                   rootExpr,
+                                   theCompilerCB,
+                                   nextDynamicVarId);
+
+  theCompilerCB->setPhase(CompilerCB::NONE);
+
+  return plan;
 }
 
 

@@ -43,7 +43,7 @@ class JSONObjectInsertIterator;
   class PiIterator;
   class RefIterator;
   class SingletonIterator;
-  class DynamicFunctionIterator;
+  class FunctionItemIterator;
   class EmptyIterator;
   class ForVarIterator;
   typedef rchandle<ForVarIterator> ForVarIter_t;
@@ -186,8 +186,6 @@ class ExitIterator;
 class ExitCatcherIterator;
 class LoopIterator;
 class FlowCtlIterator;
-
-class CountCollectionIterator;
 
 #define PLAN_ITER_VISITOR(class)                \
 virtual void beginVisit ( const class& ) = 0;  \

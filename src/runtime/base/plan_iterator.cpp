@@ -23,6 +23,12 @@
 
 #include "runtime/util/flowctl_exception.h"
 
+#include "system/globalenv.h"
+
+#include "store/api/store.h"
+#include "store/api/item_factory.h"
+
+
 namespace zorba
 {
 
@@ -134,6 +140,26 @@ TypeManager* PlanIterator::getTypeManager() const
 }
 
 
+bool PlanIterator::count(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t item;
+  xs_integer count(0);
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  while (consumeNext(item, this, planState))
+  {
+    ++count;
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(count)), state);
+  STACK_END(state);
+}
+
+
+#if ZORBA_BATCHING_TYPE == 0
+
 #ifndef NDEBUG
 
 bool PlanIterator::consumeNext(
@@ -161,6 +187,7 @@ bool PlanIterator::consumeNext(
 }
 #endif
 
+#endif
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

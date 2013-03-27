@@ -32,7 +32,7 @@
 #  include "json_items.h"
 #endif
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 
 namespace zorba
@@ -1418,8 +1418,16 @@ Item::getObjectValue(const store::Item_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue())
   );
+}
+
+
+xs_integer
+Item::getNumObjectPairs() const
+{
+  throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
 }
 
 #endif // ZORBA_WITH_JSON
