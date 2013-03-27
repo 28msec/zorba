@@ -890,13 +890,14 @@ bool CompareIterator::equal(
   }
   else
   {
-    // There are 2 cases when two types are comparable without one being a
+    // There are 3 cases when two types are comparable without one being a
     // subtype of the other: (a) they belong to different branches under of
     // the type-inheritance subtree rooted at xs:integer, (b) they belong to
     // different branches under of the type-inheritance subtree rooted at
     // xs::duration (i.e. one is xs:yearMonthDuration and the other is
     // xs:dayTimeDuration).
     // The same case happens when there are two types derived from xs:NOTATION.
+    // (c) either of the types is a subtype of NULL.
     if (TypeOps::is_subtype(type0, store::XS_INTEGER) &&
         TypeOps::is_subtype(type1, store::XS_INTEGER))
     {
@@ -911,6 +912,14 @@ bool CompareIterator::equal(
              TypeOps::is_subtype(type1, store::XS_NOTATION))
     {
       return item0->equals(item1);
+    }
+    else if (TypeOps::is_subtype(type0, store::JS_NULL))
+    {
+      return item0->equals(item1);
+    }
+    else if (TypeOps::is_subtype(type1, store::JS_NULL))
+    {
+      return item1->equals(item0);
     }
     else
     {
