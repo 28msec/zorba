@@ -22,6 +22,8 @@
 
 #include "common/shared_types.h"
 
+#include "runtime/hof/function_item.h"
+
 // TODO remove the next three includes
 #include "api/unmarshaller.h"
 #include "context/static_context.h"
@@ -105,7 +107,11 @@ public:
 
   ~UDFunctionCallIteratorState();
 
-  void open(PlanState& planState, user_function* udf);
+  void open(
+      PlanState& planState,
+      user_function* udf,
+      bool theIsDynamic,
+      store::ItemHandle<FunctionItem>& theFunctionItem);
 
   void reset(PlanState& planState);
 };
@@ -123,11 +129,14 @@ public:
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
                                                        UDFunctionCallIteratorState> 
 {
+  friend class PrinterVisitor;
+
   typedef std::vector<LetVarIter_t> ArgVarRefs;
 
 protected:
   user_function  * theUDF;
   bool             theIsDynamic;
+  store::ItemHandle<FunctionItem> theFunctionItem;
 
 public:
   SERIALIZABLE_CLASS(UDFunctionCallIterator);
@@ -145,11 +154,11 @@ public:
         std::vector<PlanIter_t>& args, 
         const user_function* aUDF);
 
-  ~UDFunctionCallIterator() {}
-    
   bool isUpdating() const;
 
   void setDynamic() { theIsDynamic = true; }
+
+  void setFunctionItem(const FunctionItem* fnItem) { theFunctionItem = fnItem; }
 
   bool isCached() const;
 

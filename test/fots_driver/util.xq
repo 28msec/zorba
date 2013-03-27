@@ -96,7 +96,12 @@ declare %ann:nondeterministic function util:get-value(
     where (fn:local-name-from-QName(fn:node-name($node)) eq $node-name)
     return
       if ($node/@file)
-      then fn:unparsed-text(resolve-uri($node/@file, $baseURI))
+      then
+      {
+        if(ends-with($node/@file, ".xml"))
+        then fn:serialize(doc(resolve-uri($node/@file, $baseURI)), $util:serParamXml)
+        else fn:unparsed-text(resolve-uri($node/@file, $baseURI))
+      }
       else fn:string($node)
   }
   catch *
@@ -120,26 +125,6 @@ declare function util:parent-folder(
   xs:anyURI(fn:substring-before($path, file:base-name($path)))
 };
 
-
-declare function util:serialize-result(
-  $result as item()*
-) as xs:string*
-{
-  util:serialize-result($result, $util:serParamXml)
-};
-
-
-declare function util:serialize-result(
-  $result as item()*,
-  $SerParams
-) as xs:string*
-{
-  for $res in $result
-  return
-   if ($res instance of node())
-   then fn:serialize($res, $SerParams)
-   else fn:string($res)
-};
 
 declare %ann:sequential function util:write-query-to-file(
   $query        as xs:string,

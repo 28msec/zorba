@@ -38,12 +38,14 @@ declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
 declare option op:disable "f:trace";
 
+(:
 declare variable $env:hof as xs:string :=
   string-join(
     ( "declare namespace op = 'http://www.zorba-xquery.com/options/features';",
       "declare namespace f = 'http://www.zorba-xquery.com/features';",
       "declare option op:enable 'f:hof';"),
     "&#xA;");
+:)
 
 
 (:~
@@ -53,7 +55,6 @@ declare variable $env:hof as xs:string :=
  : @param $deps the dependencies of the test set and test case
  : @param $test the raw query text.
  : @return the text for enabling the HOF feature
- :)
 declare function env:enable-HOF-feature(
   $deps as element(fots:dependency)*,
   $test as xs:string
@@ -67,6 +68,7 @@ declare function env:enable-HOF-feature(
     then $env:hof
     else ()
 };
+ :)
 
 
 (:~
@@ -389,11 +391,14 @@ declare %private function env:add-var-decls(
  :             test case.
  : @param $envBaseURI The absolute pathname of the directory containing the
  :        file that defines the environment.
+ : @param $needsDTDValidation If true then the document that is bound as
+ :        context item needs to be DTD validated.
  : @return the string for setting the context item if needed.
  :)
 declare function env:set-context-item(
-  $env        as element(fots:environment)?,
-  $envBaseURI as xs:anyURI?
+  $env                as element(fots:environment)?,
+  $envBaseURI         as xs:anyURI?,
+  $needsDTDValidation as xs:boolean
 ) as xs:string?
 {
   if (exists($env/fots:source[@role = "."]))
@@ -401,7 +406,7 @@ declare function env:set-context-item(
     string-join
     (
     (
-    env:compute-context-item($env, $envBaseURI),
+    env:compute-context-item($env, $envBaseURI, $needsDTDValidation),
     "",
     'xqxq:bind-context-item($queryID, $contextItem);'
     )
@@ -414,15 +419,22 @@ declare function env:set-context-item(
 
 
 declare %private function env:compute-context-item(
-  $env        as element(fots:environment)?,
-  $envBaseURI as xs:anyURI?
+  $env                as element(fots:environment)?,
+  $envBaseURI         as xs:anyURI?,
+  $needsDTDValidation as xs:boolean
 ) as xs:string
 {
   let $ciURI := resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
   return
   if (empty($env/fots:source[@validation = "strict"]))
   then
-    concat('variable $contextItem := doc("', $ciURI, '");')
+  {
+    if($needsDTDValidation)
+    then concat('variable $contextItem := zorba-xml:parse(fn:unparsed-text("',
+                $ciURI,
+                '"),<opt:options><opt:DTD-validate/></opt:options> );')
+    else concat('variable $contextItem := doc("', $ciURI, '");')
+  }
   else 
     string-join
     (
@@ -451,21 +463,21 @@ declare %private function env:get-schema-import(
 ) as xs:string
 {
   if (empty($env))
-  then 
+  then
     ""
   else
     let $namespace := $env/fots:namespace[@uri eq $env/fots:schema/@uri]
     let $prefix as xs:string := if (exists($namespace))
                                 then xs:string($namespace/@prefix)
-                                else "p"
+                                else ""
     return
-      if ($prefix eq "")
-      then concat('import schema default element namespace "',
-                  $env/fots:schema/@uri,
-                  '";&#xA;')
-      else concat('import schema namespace ',
+      if ($prefix ne "")
+      then concat('import schema namespace ',
                   $prefix,
                   ' = "',
+                  $env/fots:schema/@uri,
+                  '";&#xA;')
+      else concat('import schema default element namespace "',
                   $env/fots:schema/@uri,
                   '";&#xA;')
 };

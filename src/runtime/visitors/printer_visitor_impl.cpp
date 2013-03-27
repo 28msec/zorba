@@ -46,19 +46,21 @@
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
+#include "runtime/durations_dates_times/format_dateTime.h"
 #ifdef ZORBA_WITH_DEBUGGER
 #include "runtime/debug/debug_iterator.h"
 #endif
 #include "runtime/indexing/index_ddl.h"
-#include "runtime/function_item/dynamic_fncall_iterator.h"
+#include "runtime/hof/dynamic_fncall_iterator.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
 #include "runtime/eval/eval.h"
 #include "runtime/misc/materialize.h"
 #include "runtime/scripting/scripting.h"
 #include "runtime/json/json_constructors.h"
-#include "runtime/collections/collections_impl.h"
 #include "runtime/collections/collections.h"
+
+#include "functions/udf.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -107,6 +109,22 @@ void PrinterVisitor::beginVisit(const SingletonIterator& a)
 }
 
 void PrinterVisitor::endVisit(const SingletonIterator&)
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void PrinterVisitor::beginVisit(const FunctionItemIterator& a)
+{
+  thePrinter.startBeginVisit("FunctionItemIterator", ++theId);
+  if (a.getFunctionItemInfo()->theQName.getp() != NULL)
+    thePrinter.addAttribute("function", a.getFunctionItemInfo()->theQName->getStringValue().str());
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit(theId);
+}
+
+void PrinterVisitor::endVisit(const FunctionItemIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -730,7 +748,11 @@ void PrinterVisitor::beginVisitFlworLetVariable(
   csize numRefs = varRefs.size();
   for (csize i = 0; i < numRefs; i++)
   {
+#ifndef NDEBUG
+    str << varRefs[i]->getId();
+#else
     str << varRefs[i].getp();
+#endif
     if (i < numRefs-1)
       str << " ";
   }
@@ -763,7 +785,11 @@ void PrinterVisitor::beginVisitFlworForVariable(
   csize numRefs = varRefs.size();
   for (csize i = 0; i < numRefs; i++)
   {
+#ifndef NDEBUG
+    str << varRefs[i]->getId();
+#else
     str << varRefs[i].getp();
+#endif
     if (i < numRefs-1)
       str << " ";
   }
@@ -1143,13 +1169,13 @@ void PrinterVisitor::beginVisit(const CastIterator& a)
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const CastIterator&) 
+void PrinterVisitor::endVisit(const CastIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const PromoteIterator& a) 
+void PrinterVisitor::beginVisit(const PromoteIterator& a)
 {
   thePrinter.startBeginVisit("PromoteIterator", ++theId);
   std::ostringstream lStream;
@@ -1159,13 +1185,13 @@ void PrinterVisitor::beginVisit(const PromoteIterator& a)
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const PromoteIterator&) 
+void PrinterVisitor::endVisit(const PromoteIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const CastableIterator& a) 
+void PrinterVisitor::beginVisit(const CastableIterator& a)
 {
   thePrinter.startBeginVisit("CastableIterator", ++theId);
   std::ostringstream lStream;
@@ -1232,11 +1258,15 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   void PrinterVisitor::beginVisit ( const UDFunctionCallIterator& a )
   {
     thePrinter.startBeginVisit("UDFunctionCallIterator", ++theId);
-    printCommons(  &a, theId );
     if (a.isCached())
     {
       thePrinter.addAttribute("cached", "true");
     }
+    if (a.theUDF->getSignature().getName() != NULL)
+      thePrinter.addAttribute("function", a.theUDF->getSignature().getName()->getStringValue().str());
+    else
+      thePrinter.addAttribute("function", "inline function");
+    printCommons(  &a, theId );
     thePrinter.endBeginVisit( theId);
   }
 
@@ -1265,9 +1295,9 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   }
 
   void PrinterVisitor::endVisit(const DocumentIterator&)
-  {                            
+  {
     thePrinter.startEndVisit();
-    thePrinter.endEndVisit(); 
+    thePrinter.endEndVisit();
   }
 
   void PrinterVisitor::beginVisit(const ElementIterator& a)
@@ -1282,9 +1312,9 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   }
 
   void PrinterVisitor::endVisit(const ElementIterator&)
-  {                            
+  {
     thePrinter.startEndVisit();
-    thePrinter.endEndVisit(); 
+    thePrinter.endEndVisit();
   }
 
   void PrinterVisitor::beginVisit(const AttributeIterator& a)
@@ -1458,10 +1488,6 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   void PrinterVisitor::beginVisit ( const class& a )                 \
   {                                                                  \
     thePrinter.startBeginVisit(#class, ++theId);                     \
-    if (a.isCountOnly())                                             \
-    {                                                                \
-      thePrinter.addAttribute("count", "true");                      \
-    }                                                                \
     if (a.hasSkip())                                                 \
     {                                                                \
       thePrinter.addAttribute("skip", "true");                       \
@@ -1515,6 +1541,7 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
 #undef PRINTER_INSERT_NODES_VISITOR_DEFINITION
 
   PRINTER_VISITOR_DEFINITION(DynamicFnCallIterator);
+  PRINTER_VISITOR_DEFINITION(ArgumentPlaceholderIterator);
 
   PRINTER_VISITOR_DEFINITION(EvalIterator);
 
@@ -1525,7 +1552,5 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
   PRINTER_VISITOR_DEFINITION(ExitCatcherIterator);
   PRINTER_VISITOR_DEFINITION(LoopIterator);
   PRINTER_VISITOR_DEFINITION(FlowCtlIterator);
-
-  PRINTER_VISITOR_DEFINITION(CountCollectionIterator);
 }
 /* vim:set et sw=2 ts=2: */

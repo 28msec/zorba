@@ -45,7 +45,7 @@
 #include "zorbatypes/decimal.h"
 
 #include "functions/function.h"
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 #include "context/static_context.h"
 
@@ -726,7 +726,25 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
 
   case store::XS_HEXBINARY:
   {
-    SERIALIZE_ATOMIC_ITEM(xs_hexBinary, getHexBinaryValue());
+    ar.set_is_temp_field(true);
+
+    size_t s;
+    const char* c = obj->getHexBinaryValue(s);
+    if (obj->isEncoded())
+    {
+      Base16 tmp;
+      Base16::parseString(c, s, tmp);
+      ar & tmp;
+    }
+    else
+    {
+      Base16 tmp(c, s);
+      ar & tmp;
+    }
+    
+    ar.set_is_temp_field(false);
+
+    break;
   }
   case store::XS_BASE64BINARY:
   {
@@ -742,7 +760,7 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
     }
     else
     {
-      Base64 tmp((const unsigned char*)c, s);
+      Base64 tmp(c, s);
       ar & tmp;
     }
     

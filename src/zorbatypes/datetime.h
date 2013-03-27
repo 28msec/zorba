@@ -250,15 +250,9 @@ public:
    */
   static int parseGDay(const char* str, ascii::size_type strlen, DateTime& dt);
 
-  static int getDayOfWeek(int year, int month, int day);
-
   static int getDayOfYear(int year, int month, int day);
 
-  static int getWeekInYear(int year, int month, int day);
-
   static int getWeekInMonth(int year, int month, int day);
-
-  static bool isLeapYear(int year);  
 
 protected:
   static int parse_date(
@@ -317,6 +311,8 @@ public:
       
   TimeZone getTimezone() const;
 
+  bool hasTimezone() const;
+
   /**
    *  Returns -1 if the DateTime is less than the given DateTime
    *  Returns 0 if the DateTimes are equal
@@ -359,11 +355,8 @@ public:
    *  with the index being 0 based, with 0 being Sunday, 1 Monday, etc. If the give 
    *  DateTime does not have a Date or DateTime facet, the function will return -1.
    */ 
-  int getDayOfWeek() const;
   int getDayOfYear() const;
-  int getWeekInYear() const;
   int getWeekInMonth() const;
-  bool isLeapYear() const;
       
 protected:
   Duration* toDayTimeDuration() const;

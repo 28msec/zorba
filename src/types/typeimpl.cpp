@@ -140,7 +140,8 @@ const char* AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST] =
   "xs:anyURI",
   "xs:QName",
   "xs:NOTATION",
-  "jdm:null"
+  "js:null",
+  "xs:dateTimeStamp"
 };
 
 
@@ -1130,6 +1131,28 @@ bool FunctionXQType::is_equal(
     const TypeManager* tm,
     const FunctionXQType& other) const
 {
+  if (this->get_number_params() != other.get_number_params())
+  {
+    return false;
+  }
+
+  if ( ! TypeOps::is_equal(tm,
+                           *get_return_type().getp(),
+                           *other.get_return_type().getp()))
+  {
+    return false;
+  }
+
+  size_t i = 0;
+  for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
+       lIter != m_param_types.end(); ++lIter, ++i)
+  {
+    if ( ! TypeOps::is_equal(tm, *other[i].getp(), *lIter->getp()))
+    {
+      return false;
+    }
+  }
+
   return true;
 }
 
@@ -1144,14 +1167,16 @@ bool FunctionXQType::is_equal(
 ********************************************************************************/
 bool FunctionXQType::is_subtype(
     const TypeManager* tm,
-    const FunctionXQType& supertype) const
+    const FunctionXQType& supertype,
+    bool ignoreReturnType) const
 {
   if (this->get_number_params() != supertype.get_number_params())
   {
     return false;
   }
 
-  if (!TypeOps::is_subtype(tm,
+  if (!ignoreReturnType &&
+      !TypeOps::is_subtype(tm,
                            *get_return_type().getp(),
                            *supertype.get_return_type().getp()))
   {
@@ -1160,9 +1185,9 @@ bool FunctionXQType::is_subtype(
 
   size_t i = 0;
   for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
-       lIter != m_param_types.end(); ++lIter)
+       lIter != m_param_types.end(); ++lIter, ++i)
   {
-    if (!TypeOps::is_subtype(tm, *lIter->getp(), *supertype[i++].getp()))
+    if (!TypeOps::is_subtype(tm, *supertype[i].getp(), *lIter->getp()))
     {
       return false;
     }
@@ -1362,7 +1387,7 @@ bool UserDefinedXQType::isSuperTypeOf(
       return false;
     }
   }
-  while(true);
+  while (subtype != NULL);
 
   return false;
 }

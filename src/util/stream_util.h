@@ -20,6 +20,7 @@
 
 #include <iostream>
 
+#include "omanip.h"
 #include "string_util.h"
 
 namespace zorba {
@@ -58,6 +59,33 @@ template<typename charT,class Traits> inline
 char const* get_uri( std::basic_ios<charT,Traits> &ios ) {
   return static_cast<char const*>( ios.pword( get_stream_uri_index() ) );
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Reads from the given istream until \a n non-whitespace characters are read
+ * or until EOF is encountered.
+ *
+ * @param is The istream to read from.
+ * @param buf A pointer to the start of a buffer to read into.
+ * @param n The number of non-whitespace characters to read.
+ * @return Returns the number of non-whitespace characters read.
+ */
+std::streamsize read_without_whitespace( std::istream &is, char *buf,
+                                         std::streamsize n );
+
+/**
+ * Emits an integer as Roman numerals to the given ostream.  By default,
+ * numerals are emitted in lower-case.  To emit in upper-case, set the
+ * \c uppercase format flag on the stream.
+ *
+ * @param o The ostream to emit to.
+ * @param n The integer to emit.
+ * @return Returns \a o.
+ */
+std::ostream& roman( std::ostream &o, unsigned n );
+
+DEF_OMANIP1( roman, unsigned )
 
 ///////////////////////////////////////////////////////////////////////////////
 

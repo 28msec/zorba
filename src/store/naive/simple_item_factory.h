@@ -120,7 +120,7 @@ public:
       store::Item_t& result,
       store::Item_t& streamable_dependent);
 
-  bool createBase64Binary(store::Item_t& result, xs_base64Binary value);
+  bool createBase64Binary(store::Item_t& result, xs_base64Binary const &value);
 
   bool createBase64Binary(
       store::Item_t& result,
@@ -190,6 +190,16 @@ public:
 
   bool createDateTime(store::Item_t& result, const store::Item_t&, const store::Item_t&);
 
+  bool createDateTimeStamp(store::Item_t& result, const xs_date* date, const xs_time* time);
+
+  bool createDateTimeStamp(store::Item_t& result, const xs_dateTime* value);
+
+  bool createDateTimeStamp(store::Item_t& result, short year , short month, short day, short hour, short minute, double second, short timeZone_hours);
+
+  bool createDateTimeStamp(store::Item_t& result, const char* str, ulong strlen);
+
+  bool createDateTimeStamp(store::Item_t& result, const store::Item_t&, const store::Item_t&);
+
   bool createDate(store::Item_t& result, const xs_date* value);
 
   bool createDate(store::Item_t& result, short year, short month, short day);
@@ -253,7 +263,9 @@ public:
   bool createENTITY(store::Item_t& result, zstring& value);
 
 
-  bool createHexBinary (store::Item_t& result,  xs_hexBinary value );
+  bool createHexBinary (store::Item_t& result,  xs_hexBinary const &value );
+
+  bool createHexBinary (store::Item_t& result,  char const *data, size_t size, bool encoded);
 
   bool createID (store::Item_t& result, zstring& value );
 

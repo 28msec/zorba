@@ -214,8 +214,8 @@ int serializer::emitter::emit_expanded_string(
 
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
-        ztd::itoa_buf_type cp_buf;
-        tr << "&#" << ztd::itoa(cp, cp_buf) << ';';
+        ascii::itoa_buf_type cp_buf;
+        tr << "&#" << ascii::itoa(cp, cp_buf) << ';';
         chars += (char_length-1);
       }
       else
@@ -463,6 +463,11 @@ void serializer::emitter::emit_item(store::Item* item)
     ERROR_PARAMS(lMethod, item->getType()->getStringValue()));
   }
 #endif
+  else if (item->isFunction())
+  {
+    throw XQUERY_EXCEPTION(err::SENR0001,
+    ERROR_PARAMS(item->show(), "function item node"));
+  }
 }
 
 

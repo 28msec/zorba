@@ -22,6 +22,7 @@
 #include <cctype>
 #include <cstddef>
 #include <cstring>
+#include <iterator>
 
 // local
 #include "omanip.h"
@@ -661,6 +662,142 @@ bool replace_all( StringType &s, FromStringType const &from,
   return replace_all( s, from.data(), from.size(), to.data(), to.size() );
 }
 
+////////// Integer-to-string conversion ///////////////////////////////////////
+
+/**
+ * A type that can hold the largest possible C string equivalent of the largest
+ * possible integral value (assuming 8 bytes for a <code>long long</code>).
+ */
+typedef char itoa_buf_type[ 20 + 1 /* for null */ ];
+
+/**
+ * Converts a <code>long long</code> to a C string.
+ *
+ * @param n The <code>long long</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+char* itoa( long long n, char *buf );
+
+/**
+ * Converts a \c char to a C string.
+ *
+ * @param n The \c char to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( char n, char *buf ) {
+  return itoa( static_cast<long long>( n ), buf );
+}
+
+/**
+ * Converts a <code>signed char</code> to a C string.
+ *
+ * @param n The <code>signed char</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( signed char n, char *buf ) {
+  return itoa( static_cast<long long>( n ), buf );
+}
+
+/**
+ * Converts a \c short to a C string.
+ *
+ * @param n The \c short to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( short n, char *buf ) {
+  return itoa( static_cast<long long>( n ), buf );
+}
+
+/**
+ * Converts an \c int to a C string.
+ *
+ * @param n The \c int to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( int n, char *buf ) {
+  return itoa( static_cast<long long>( n ), buf );
+}
+
+/**
+ * Converts a \c long to a C string.
+ *
+ * @param n The \c long to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( long n, char *buf ) {
+  return itoa( static_cast<long long>( n ), buf );
+}
+
+/**
+ * Converts an <code>unsigned long long</code> to a C string.
+ *
+ * @param n The <code>unsigned long long</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+char* itoa( unsigned long long n, char *buf );
+
+/**
+ * Converts an <code>unsigned char</code> to a C string.
+ *
+ * @param n The <code>unsigned char</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( unsigned char n, char *buf ) {
+  return itoa( static_cast<unsigned long long>( n ), buf );
+}
+
+/**
+ * Converts an <code>unsigned short</code> to a C string.
+ *
+ * @param n The <code>unsigned short</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( unsigned short n, char *buf ) {
+  return itoa( static_cast<unsigned long long>( n ), buf );
+}
+
+/**
+ * Converts an <code>unsigned int</code> to a C string.
+ *
+ * @param n The <code>unsigned int</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( unsigned int n, char *buf ) {
+  return itoa( static_cast<unsigned long long>( n ), buf );
+}
+
+/**
+ * Converts an <code>unsigned long</code> to a C string.
+ *
+ * @param n The <code>unsigned long</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( unsigned long n, char *buf ) {
+  return itoa( static_cast<unsigned long long>( n ), buf );
+}
+
 ////////// Whitespace /////////////////////////////////////////////////////////
 
 /**
@@ -752,12 +889,27 @@ char const* trim_start( char const *s, char const *chars );
  * Skips leading specified characters.
  *
  * @param s The string to trim.
+ * @param s_len A pointer to the length of \a s.  It is updated with the new
+ * length.
+ * @param chars The characters to trim.
+ * @return Returns a pointer to the first character in \a s that is not among
+ * the characters in \a chars.
+ */
+char const* trim_start( char const *s, size_type *s_len, char const *chars );
+
+/**
+ * Skips leading specified characters.
+ *
+ * @param s The string to trim.
  * @param s_len The length of \a s.
  * @param chars The characters to trim.
  * @return Returns a pointer to the first character in \a s that is not among
  * the characters in \a chars.
  */
-char const* trim_start( char const *s, size_type s_len, char const *chars );
+inline char const* trim_start( char const *s, size_type s_len,
+                               char const *chars ) {
+  return trim_start( s, &s_len, chars );
+}
 
 /**
  * Removes all leading specified characters.
@@ -795,6 +947,19 @@ void trim_start( StringType &s, char const *chars ) {
  */
 inline char const* trim_start_whitespace( char const *s ) {
   return trim_start( s, whitespace );
+}
+
+/**
+ * Skips leading whitespace characters.
+ *
+ * @param s The string to trim.
+ * @param s_len A pointer to the length of \a s.  It is updated with the new
+ * length.
+ * @return Returns a pointer to the first character in \a s that is not a
+ * whitespace character.
+ */
+inline char const* trim_start_whitespace( char const *s, size_type *s_len ) {
+  return trim_start( s, s_len, whitespace );
 }
 
 /**
@@ -928,6 +1093,21 @@ void trim_end_whitespace( StringType &s ) {
 }
 
 /**
+ * Removed sll leading and trailing whitespace.
+ *
+ * @param s The input C string.
+ * @param s_len A pointer to the length of \a s.  It is updated with the new
+ * length.
+ * @return Returns a pointer to the first character in \a s that is not
+ * whitespace.
+ */
+inline char const* trim_whitespace( char const *s, size_type *s_len ) {
+  s = trim_start_whitespace( s, s_len );
+  *s_len = trim_end_whitespace( s, *s_len );
+  return s;
+}
+
+/**
  * Removes all leading and trailing whitespace.
  *
  * @tparam InputStringType The input string type.
@@ -968,7 +1148,60 @@ inline void skip_whitespace( char const *s, size_type s_len, size_type *pos ) {
   *pos = trim_start_whitespace( s + *pos, s_len - *pos ) - s;
 }
 
+/**
+ * Skips any consecutive whitespace chars that are found at a given starting
+ * position within a given string.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ * @param i A pointer to the iterator to advance past the whitespace.
+ * On return, \a *i is updated with the position of the 1st non-whitespace
+ * char.
+ */
+template<class StringType> inline
+void skip_whitespace( StringType const &s,
+                      typename StringType::const_iterator *i ) {
+  typename StringType::difference_type const d = *i - s.begin();
+  char const *const sd = s.data() + d;
+  std::advance( *i, trim_start_whitespace( sd, s.size() - d ) - sd );
+}
+
 ////////// Miscellaneous //////////////////////////////////////////////////////
+
+/**
+ * Pads a string to the left with a given character until the string is the
+ * given width.
+ *
+ * @param s The string to pad.
+ * @param width The width to pad to.
+ * @param c The character to pad with.
+ * @return Returns \c *s.
+ */
+template<class StringType> inline
+StringType& left_pad( StringType *s, typename StringType::size_type width,
+                      char c ) {
+  typedef typename StringType::size_type size_type;
+  if ( s->size() < width )
+    s->insert( static_cast<size_type>( 0 ), width - s->size(), c );
+  return *s;
+}
+
+/**
+ * Pads a string to the right with a given character until the string is the
+ * given width.
+ *
+ * @param s The string to pad.
+ * @param width The width to pad to.
+ * @param c The character to pad with.
+ * @return Returns \c *s.
+ */
+template<class StringType> inline
+StringType& right_pad( StringType *s, typename StringType::size_type width,
+                       char c ) {
+  if ( s->size() < width )
+    s->append( width - s->size(), c );
+  return *s;
+}
 
 /**
  * Prints the given character in a printable way: if \c is_print(c) is \c true,

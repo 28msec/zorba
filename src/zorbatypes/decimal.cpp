@@ -21,7 +21,6 @@
 
 #include "common/common.h"
 #include "util/ascii_util.h"
-#include "util/string_util.h"
 
 #include "decimal.h"
 #include "integer.h"
@@ -180,18 +179,18 @@ void Decimal::reduce( char *s ) {
 ////////// constructors ///////////////////////////////////////////////////////
 
 Decimal::Decimal( long long n ) {
-  ztd::itoa_buf_type buf;
-  value_ = ztd::itoa( n, buf );
+  ascii::itoa_buf_type buf;
+  value_ = ascii::itoa( n, buf );
 }
 
 Decimal::Decimal( unsigned long n ) {
-  ztd::itoa_buf_type buf;
-  value_ = ztd::itoa( n, buf );
+  ascii::itoa_buf_type buf;
+  value_ = ascii::itoa( n, buf );
 }
 
 Decimal::Decimal( unsigned long long n ) {
-  ztd::itoa_buf_type buf;
-  value_ = ztd::itoa( n, buf );
+  ascii::itoa_buf_type buf;
+  value_ = ascii::itoa( n, buf );
 }
 
 Decimal::Decimal( float f ) {
@@ -233,14 +232,14 @@ template Decimal::Decimal( INTEGER_IMPL_ULL const& );
 ////////// assignment operators ///////////////////////////////////////////////
 
 Decimal& Decimal::operator=( long long n ) {
-  ztd::itoa_buf_type buf;
-  value_ = ztd::itoa( n, buf );
+  ascii::itoa_buf_type buf;
+  value_ = ascii::itoa( n, buf );
   return *this;
 }
 
 Decimal& Decimal::operator=( unsigned long long n ) {
-  ztd::itoa_buf_type buf;
-  value_ = ztd::itoa( n, buf );
+  ascii::itoa_buf_type buf;
+  value_ = ascii::itoa( n, buf );
   return *this;
 }
 
