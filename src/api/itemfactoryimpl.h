@@ -144,7 +144,7 @@ namespace zorba {
                      short aTimezone_hours);
 
       virtual Item
-      createDateTimeStamp( const String& aDateTimeValue );
+      createDateTimeStamp( const String& aDateTimeStampValue );
 
       virtual Item
       createDouble ( double aValue );
