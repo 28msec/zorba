@@ -205,186 +205,188 @@ bool DynamicFnCallIterator::nextImpl(
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
 #endif
-
-  if (targetItem->isFunction())
+  if (consumeNext(targetItem, theChildren[0], planState))
   {
-    if (consumeNext(item, theChildren[0], planState))
+    if (targetItem->isFunction())
     {
-      RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion_2),
-                   GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
-    }
-
-    fnItem = static_cast<FunctionItem*>(targetItem.getp());
-
-    if ((!fnItem->needsContextItem() &&
-         theChildren.size() - 1 - theDotVarsCount != fnItem->getArity())
-        ||
-        (fnItem->needsContextItem()
-         && theChildren.size() - 1 != fnItem->getArity()))
-    {
-      RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
-    }
-
-    if (theIsPartialApply)
-    {
-      for (csize i = 1, pos = 0; i < theChildren.size() - theDotVarsCount; ++i)
+      if (consumeNext(item, theChildren[0], planState))
       {
-        if (dynamic_cast<ArgumentPlaceholderIterator*>(theChildren[i].getp()) == NULL)
+        RAISE_ERROR(err::XPTY0004, loc, 
+        ERROR_PARAMS(ZED(XPTY0004_NoMultiSeqTypePromotion_2),
+                     GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
+      }
+
+      fnItem = static_cast<FunctionItem*>(targetItem.getp());
+
+      if ((!fnItem->needsContextItem() &&
+           theChildren.size() - 1 - theDotVarsCount != fnItem->getArity())
+          ||
+          (fnItem->needsContextItem()
+           && theChildren.size() - 1 != fnItem->getArity()))
+      {
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
+      }
+
+      if (theIsPartialApply)
+      {
+        for (csize i = 1, pos = 0; i < theChildren.size() - theDotVarsCount; ++i)
         {
-          // The argument needs to be materialized only for local vars and only
-          // if the function item is returned and used outside of the current
-          // function. It might be impossible to determine if the partially
-          // applied function item will be used outside of the current function,
-          // so it is quite probable that it always needs to be materialized.          
-          std::vector<store::Item_t> argValues;
-          store::Item_t tempItem;
+          if (dynamic_cast<ArgumentPlaceholderIterator*>(theChildren[i].getp()) == NULL)
+          {
+            // The argument needs to be materialized only for local vars and only
+            // if the function item is returned and used outside of the current
+            // function. It might be impossible to determine if the partially
+            // applied function item will be used outside of the current function,
+            // so it is quite probable that it always needs to be materialized.          
+            std::vector<store::Item_t> argValues;
+            store::Item_t tempItem;
 
-          while (consumeNext(tempItem, theChildren[i], planState))
-            argValues.push_back(tempItem);
+            while (consumeNext(tempItem, theChildren[i], planState))
+              argValues.push_back(tempItem);
 
-          store::TempSeq_t argSeq = GENV_STORE.createTempSeq(argValues);
-          store::Iterator_t argSeqIter = argSeq->getIterator();
-          PlanIter_t value = new PlanStateIteratorWrapper(argSeqIter);
-                    
-          fnItem->setArgumentValue(pos, value);
+            store::TempSeq_t argSeq = GENV_STORE.createTempSeq(argValues);
+            store::Iterator_t argSeqIter = argSeq->getIterator();
+            PlanIter_t value = new PlanStateIteratorWrapper(argSeqIter);
+                      
+            fnItem->setArgumentValue(pos, value);
+          }
+          else
+            pos++;
         }
-        else
-          pos++;
-      }
 
-      result = fnItem;
-      STACK_PUSH(true, state);
-    }
-    else
-    {
-      state->thePlan = fnItem->getImplementation(theChildren, planState.theCompilerCB);
-      
-      // must be opened after vars and params are set
-      state->thePlan->open(planState, state->theUDFStateOffset);
-      state->theIsOpen = true;
-
-      while (consumeNext(result, state->thePlan, planState))
-      {
+        result = fnItem;
         STACK_PUSH(true, state);
-      }
-
-      // need to close here early in case the plan is completely
-      // consumed. Otherwise, the plan would still be opened
-      // if destroyed from the state's destructor.
-      state->thePlan->close(planState);
-      state->theIsOpen = false;
-    } // if (theIsPartialApply)
-
-  } // if (targetItem->isFunction())
-#ifdef ZORBA_WITH_JSON
-  else if (targetItem->isJSONObject() || targetItem->isJSONArray())
-  {
-    if (theChildren.size() - theDotVarsCount > 2)
-    {
-      RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
-    }
-    else if (theChildren.size() - theDotVarsCount == 2)
-    {
-      isObjectNav = targetItem->isJSONObject();
-      selectorError = false;
-
-      if (!consumeNext(selectorItem1, theChildren[1], planState))
-      {
-        selectorError = true;
       }
       else
       {
-        try
+        state->thePlan = fnItem->getImplementation(theChildren, planState.theCompilerCB);
+        
+        // must be opened after vars and params are set
+        state->thePlan->open(planState, state->theUDFStateOffset);
+        state->theIsOpen = true;
+
+        while (consumeNext(result, state->thePlan, planState))
         {
-          if (selectorItem1->isNode())
-          {
-            store::Iterator_t iter;
-            
-            selectorItem1->getTypedValue(selectorItem2, iter);
-
-            if (iter != NULL)
-            {
-              if (!iter->next(selectorItem2) || iter->next(item))
-              {
-                selectorError = true;
-              }
-            }
-          }
-          else
-          {
-            selectorItem2.transfer(selectorItem1);
-          }
-
-          if (!selectorError)
-          {
-            if (!selectorItem2->isAtomic())
-            {
-              selectorError = true;
-            }
-            else
-            {
-              store::SchemaTypeCode selectorType = 
-              (isObjectNav ? store::XS_STRING : store::XS_INTEGER);
-
-              GenericCast::castToBuiltinAtomic(selectorItem3,
-                                               selectorItem2,
-                                               selectorType,
-                                               NULL,
-                                               loc);
-              selectorError = false;
-            }
-          }
+          STACK_PUSH(true, state);
         }
-        catch (...)
+
+        // need to close here early in case the plan is completely
+        // consumed. Otherwise, the plan would still be opened
+        // if destroyed from the state's destructor.
+        state->thePlan->close(planState);
+        state->theIsOpen = false;
+      } // if (theIsPartialApply)
+
+    } // if (targetItem->isFunction())
+#ifdef ZORBA_WITH_JSON
+    else if (targetItem->isJSONObject() || targetItem->isJSONArray())
+    {
+      if (theChildren.size() - theDotVarsCount > 2)
+      {
+        RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
+      }
+      else if (theChildren.size() - theDotVarsCount == 2)
+      {
+        isObjectNav = targetItem->isJSONObject();
+        selectorError = false;
+
+        if (!consumeNext(selectorItem1, theChildren[1], planState))
         {
           selectorError = true;
         }
+        else
+        {
+          try
+          {
+            if (selectorItem1->isNode())
+            {
+              store::Iterator_t iter;
+              
+              selectorItem1->getTypedValue(selectorItem2, iter);
+
+              if (iter != NULL)
+              {
+                if (!iter->next(selectorItem2) || iter->next(item))
+                {
+                  selectorError = true;
+                }
+              }
+            }
+            else
+            {
+              selectorItem2.transfer(selectorItem1);
+            }
+
+            if (!selectorError)
+            {
+              if (!selectorItem2->isAtomic())
+              {
+                selectorError = true;
+              }
+              else
+              {
+                store::SchemaTypeCode selectorType = 
+                (isObjectNav ? store::XS_STRING : store::XS_INTEGER);
+
+                GenericCast::castToBuiltinAtomic(selectorItem3,
+                                                 selectorItem2,
+                                                 selectorType,
+                                                 NULL,
+                                                 loc);
+                selectorError = false;
+              }
+            }
+          }
+          catch (...)
+          {
+            selectorError = true;
+          }
+        }
+          
+        if (selectorError)
+        {
+          item = (selectorItem1 == NULL ? selectorItem2 : selectorItem1);
+
+          zstring selectorType = tm->create_value_type(item)->toSchemaString();
+
+          RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(ZED(XPTY0004_JSONIQ_SELECTOR), selectorType));
+        }
+
+        if (isObjectNav)
+          result = targetItem->getObjectValue(selectorItem3);
+        else
+          result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
+        STACK_PUSH(result != NULL, state);
       }
-        
-      if (selectorError)
-      {
-        item = (selectorItem1 == NULL ? selectorItem2 : selectorItem1);
-
-        zstring selectorType = tm->create_value_type(item)->toSchemaString();
-
-        RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(XPTY0004_JSONIQ_SELECTOR), selectorType));
-      }
-
-      if (isObjectNav)
-        result = targetItem->getObjectValue(selectorItem3);
       else
-        result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
-      STACK_PUSH(result != NULL, state);
+      {
+        if (targetItem->isJSONArray())
+          state->theIterator = targetItem->getArrayValues();
+        else if (targetItem->isJSONObject())
+          state->theIterator = targetItem->getObjectKeys();
+
+        state->theIterator->open();
+
+        while (state->theIterator->next(result))
+        {
+          STACK_PUSH(true, state);
+        }
+
+        state->theIterator->close();
+      }
     }
+#endif
     else
     {
-      if (targetItem->isJSONArray())
-        state->theIterator = targetItem->getArrayValues();
-      else if (targetItem->isJSONObject())
-        state->theIterator = targetItem->getObjectKeys();
+      xqtref_t type = tm->create_value_type(targetItem);
 
-      state->theIterator->open();
-
-      while (state->theIterator->next(result))
-      {
-        STACK_PUSH(true, state);
-      }
-
-      state->theIterator->close();
+      RAISE_ERROR(err::XPTY0004, loc, 
+      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
+                   type->toSchemaString(),
+                   GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
     }
-  }
-#endif
-  else
-  {
-    xqtref_t type = tm->create_value_type(targetItem);
-
-    RAISE_ERROR(err::XPTY0004, loc, 
-    ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
-                 type->toSchemaString(),
-                 GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
   }
 
   STACK_END(state);
