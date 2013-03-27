@@ -22,9 +22,9 @@
 
 #include "functions/udf.h"
 
-#include "runtime/function_item/function_item_iter.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/iterator_impl.h"
+#include "runtime/hof/fn_hof_functions.h"
 #include "runtime/hof/function_item.h"
 #include "runtime/core/fncall_iterator.h"
 
@@ -81,11 +81,12 @@ bool FunctionLookupIterator::nextImpl(
   {
     expr* fiExpr = Translator::translate_literal_function(qname, arity, theCompilerCB, loc, true);
     
-    FunctionItemInfo_t dynFnInfo = static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
-    dynFnInfo->theCCB = theCompilerCB;
-    // dynFnInfo->theClosureSctx = NULL;
+    FunctionItemInfo_t dynFnInfo =
+    static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
 
-    result = new FunctionItem(dynFnInfo, NULL /* new dynamic_context(planState.theGlobalDynCtx) */);
+    dynFnInfo->theCCB = theCompilerCB;
+
+    result = new FunctionItem(dynFnInfo, NULL);
   }
   catch (ZorbaException const& e)
   {
