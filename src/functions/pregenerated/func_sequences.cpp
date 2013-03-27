@@ -44,15 +44,6 @@ PlanIter_t op_concatenate::codegen(
   return new FnConcatIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_index_of::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new FnIndexOfIterator(sctx, loc, argv);
-}
 
 PlanIter_t fn_empty::codegen(
   CompilerCB*,

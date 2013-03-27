@@ -306,14 +306,6 @@ public:
       const QueryLoc& loc,
       expr* wrapped);
 
-#if 0
-  function_trace_expr* create_function_trace_expr(
-      static_context* sctx,
-      user_function* udf,
-      const QueryLoc& loc,
-      expr* aChild);
-#endif
-
   function_trace_expr* create_function_trace_expr(
       user_function* udf,
       expr* aExpr);
@@ -489,20 +481,30 @@ public:
       user_function* udf,
       const QueryLoc& loc,
       expr* anExpr,
-      const std::vector<expr*>& args);
+      const std::vector<expr*>& args,
+      expr* dotVar);
 
-  function_item_expr* create_function_item_expr(
-      static_context* sctx,
-      user_function* udf,
-      const QueryLoc& loc,
-      const store::Item* aQName,
-      function* f,
-      uint32_t aArity);
-
-  function_item_expr* create_function_item_expr(
+  argument_placeholder_expr* create_argument_placeholder_expr(
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc);
+
+  function_item_expr* create_function_item_expr(static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      function* f,
+      uint32_t arity,
+      bool isInline,
+      bool needsContextItem,
+      bool isCoercion);
+
+  function_item_expr* create_function_item_expr(
+      static_context* sctx,
+      user_function* udf,      
+      const QueryLoc& loc,
+      bool isInline,
+      bool needsContextItem,
+      bool isCoercion);
 
   ftcontains_expr* create_ftcontains_expr(
       static_context*,
@@ -616,7 +618,7 @@ public:
       user_function* udf,
       const QueryLoc& loc,
       bool general);
- 
+
   pragma* create_pragma(
       const store::Item_t&,
       const zstring&);

@@ -28,8 +28,8 @@
 %define "parser_class_name" "jsoniq_parser"
 %error-verbose
 
-// Expect 3 shift/reduce conflicts
-%expect 3
+// Expect 1 shift/reduce conflicts
+%expect 1
 
 
 %code requires {
@@ -326,6 +326,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token DESCENDING                       "'descending'"
 %token DIV                              "'div'"
 %token DOLLAR                           "'$'"
+%token DOLLAR_DOLLAR                    "'$_'"
 %token DOT                              "'.'"
 %token DOT_DOT                          "'..'"
 %token COLON                            "':'"
@@ -423,8 +424,13 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token XML_COMMENT_BEGIN                "'<!--'"
 %token XML_COMMENT_END                  "'-->'"
 %token XQUERY                           "'xquery'"
+%token JSONIQ                           "'jsoniq'"
 %token VERSION                          "'version'"
 %token START                            "'start'"
+
+%token NULL_TOKEN                       "'null'"
+%token TRUE_TOKEN                       "'true'"
+%token FALSE_TOKEN                      "'false'"
 
 /* update-related */
 /* -------------- */
@@ -618,7 +624,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> NamespaceTest
 %type <node> NameTest
 %type <node> NamespaceDecl
-%type <node> NodeComp
+//%type <node> NodeComp
 //%type <node> NodeTest
 %type <node> OccurrenceIndicator
 %type <node> OptionDecl
@@ -732,6 +738,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> TryStatement
 %type <expr> CatchListStatement
 %type <expr> CatchStatement
+%type <expr> VoidStatement
 %type <expr> ApplyStatement
 %type <expr> IfStatement
 %type <expr> FLWORStatement
@@ -753,6 +760,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> IntersectExceptExpr
 %type <expr> Literal
 %type <expr> MultiplicativeExpr
+%type <expr> NotExpr
 %type <expr> NumericLiteral
 %type <expr> OrExpr
 %type <expr> OrderedExpr
@@ -766,6 +774,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> RelativePathExpr
 %type <expr> StepExpr
 %type <expr> StringLiteral
+%type <expr> BooleanLiteral
 %type <expr> SwitchExpr
 %type <expr> TreatExpr
 %type <expr> TypeswitchExpr
@@ -920,7 +929,7 @@ template<typename T> inline void release_hack( T *ref ) {
 //%destructor { release_hack( $$ ); } AbbrevForwardStep ForwardAxis ForwardStep NodeTest ReverseAxis ReverseStep
 
 // parsenodes
-%destructor { release_hack( $$ ); } AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList GeneralizedAtomicType SimpleType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest NamespaceTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList GeneralizedAtomicType SimpleType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest NamespaceTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
@@ -932,7 +941,7 @@ template<typename T> inline void release_hack( T *ref ) {
 //%destructor { release_hack( $$ ); } AxisStep
 //
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompNamespaceConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompNamespaceConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NotExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -1009,6 +1018,13 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc MULTIPLICATIVE_REDUCE
 %left STAR DIV IDIV MOD
 
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ *_____________________________________________________________________*/
+%nonassoc JSONLOOKUPEXPR_REDUCE
+%left DOT
+
 
 /*_____________________________________________________________________
  *
@@ -1018,12 +1034,10 @@ template<typename T> inline void release_hack( T *ref ) {
 %right LBRACK
 %right LPAR
 %right CATCH
+%right NOT
 
-%nonassoc RBRACE
-
-
-%right FOR WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
-%right DESCENDING ELSE _EMPTY IS OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
+%right FOR FROM WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
+%right DESCENDING ELSE _EMPTY IS NODES OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
 %right AT
 %right MODIFY WITH CONTAINS END LEVELS PARAGRAPHS SENTENCES TIMES
 %right LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
@@ -1127,6 +1141,16 @@ VersionDecl :
     XQUERY VERSION STRING_LITERAL ENCODING STRING_LITERAL SEMI
     {
       $$ = new VersionDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
+    }
+  | JSONIQ VERSION STRING_LITERAL SEMI
+    {
+      $$ = new VersionDecl( LOC(@$), SYMTAB($3), "utf-8", VersionDecl::jsoniq );
+    }
+  |
+    JSONIQ VERSION STRING_LITERAL ENCODING STRING_LITERAL SEMI
+    {
+      $$ = new VersionDecl(
+        LOC(@$), SYMTAB($3), SYMTAB($5), VersionDecl::jsoniq );
     }
 ;
 
@@ -2243,6 +2267,7 @@ Statement :
   | TypeswitchStatement
   | SwitchStatement
   | TryStatement
+  | VoidStatement
 ;
 
 
@@ -2251,16 +2276,11 @@ BlockStatement :
     {
       $$ = $2;
     }
-  |
-    LBRACE RBRACE
-    {
-      $$ = new BlockBody(LOC(@$));
-    }
 ;
 
 
 BlockExpr :
-    LBRACE StatementsAndOptionalExpr RBRACE
+    LBRACE StatementsAndExpr RBRACE
     {
       if (dynamic_cast<BlockBody*>($2) == NULL)
       {
@@ -2500,6 +2520,12 @@ CatchStatement :
   ;
 
 
+VoidStatement :
+    SEMI
+    {
+      $$ = new BlockBody(LOC(@$));
+    }
+
 
 Expr :
     ExprSingle
@@ -2641,7 +2667,7 @@ FLWORWinCond :
 
 
 WindowClause :
-    FOR WindowType WindowVarDecl FLWORWinCond FLWORWinCond
+    ForOrFrom WindowType WindowVarDecl FLWORWinCond FLWORWinCond
     {
       $$ = new WindowClause (LOC (@$),
                              ($2 == parser::the_tumbling ?
@@ -2651,7 +2677,7 @@ WindowClause :
                              dynamic_cast<FLWORWinCond *> ($4),
                              dynamic_cast<FLWORWinCond *> ($5));
     }
-  | FOR WindowType WindowVarDecl FLWORWinCond
+  | ForOrFrom WindowType WindowVarDecl FLWORWinCond
     {
       $$ = new WindowClause (LOC (@$),
                              ($2 == parser::the_tumbling ?
@@ -2705,13 +2731,13 @@ FLWORClauseList :
 
 
 ForClause :
-    FOR DOLLAR VarInDeclList
+    ForOrFrom DOLLAR VarInDeclList
     {
       $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
     }
   //  ============================ Improved error messages ============================ 
   |
-    FOR error VarInDeclList
+    ForOrFrom error VarInDeclList
     {
       $$ = $3; // to prevent the Bison warning
       error(@2, "syntax error, unexpected qualified name \""
@@ -2720,11 +2746,19 @@ ForClause :
       YYERROR;
     }
   |
-    FOR UNRECOGNIZED
+    ForOrFrom UNRECOGNIZED
     {
       $$ = NULL; // to prevent the Bison warning
       error(@2, ""); // the error message is already set in the driver's parseError member
       YYERROR;
+    }
+;
+
+ForOrFrom :
+    FOR
+  | FROM
+    {
+      // this adds on shift-reduce conflict (probably with FTRange expression)
     }
 ;
 
@@ -3529,15 +3563,31 @@ OrExpr :
 
 // [47]
 AndExpr :
-        ComparisonExpr
+        NotExpr
         {
             $$ = $1;
         }
-    |   AndExpr  AND  ComparisonExpr
+    |   AndExpr  AND  NotExpr
         {
             $$ = new AndExpr( LOC(@$), $1, $3 );
         }
     ;
+
+NotExpr :
+        ComparisonExpr
+        {
+          $$ = $1;
+        }
+     |  NOT NotExpr
+        {
+          $$ = new ComparisonExpr(
+              LOC(@$),
+              new ValueComp( LOC(@$), ParseConstants::op_val_not ),
+              $2,
+              NULL
+          );
+        }
+     ;
 
 // [50]
 ComparisonExpr :
@@ -3555,72 +3605,72 @@ ComparisonExpr :
                 $3
             );
         }
-    |   FTContainsExpr NodeComp FTContainsExpr
-        {
-            /*  ::=  "is" | "<<" | ">>" */
-            $$ = new ComparisonExpr(
-                LOC(@$), dynamic_cast<NodeComp*>($2), $1, $3
-            );
-        }
-    |   FTContainsExpr EQUALS FTContainsExpr
-        {
-            $$ = new ComparisonExpr(
-                LOC(@$),
-                new GeneralComp( LOC(@$), ParseConstants::op_eq ),
-                $1,
-                $3
-            );
-        }
-    |   FTContainsExpr NE FTContainsExpr
-        {
-            $$ = new ComparisonExpr(
-                LOC(@$),
-                new GeneralComp( LOC(@$), ParseConstants::op_ne ),
-                $1,
-                $3
-            );
-        }
-    |   FTContainsExpr LT_OR_START_TAG
-        {
-            /* this call is needed */
-            driver.lexer->interpretAsLessThan();
-        }
-        FTContainsExpr
-        {
-            $$ = new ComparisonExpr(
-                LOC(@$),
-                new GeneralComp( LOC(@$), ParseConstants::op_lt ),
-                $1,
-                $4
-            );
-        }
-    |   FTContainsExpr LE FTContainsExpr
-        {
-            $$ = new ComparisonExpr(
-                LOC(@$),
-                new GeneralComp( LOC(@$), ParseConstants::op_le ),
-                $1,
-                $3
-            );
-        }
-    |   FTContainsExpr GT FTContainsExpr
-        {
-            $$ = new ComparisonExpr(
-                LOC(@$),
-                new GeneralComp( LOC(@$), ParseConstants::op_gt ),
-                $1,
-                $3
-            );
-        }
-    |   FTContainsExpr GE FTContainsExpr
-        {
-            $$ = new ComparisonExpr(
-                LOC(@$),
-                new GeneralComp( LOC(@$), ParseConstants::op_ge ),
-                $1,
-                $3
-            );
-        }
+//    |   FTContainsExpr NodeComp FTContainsExpr
+//      {
+//          /*  ::=  "is" | "<<" | ">>" */
+//          $$ = new ComparisonExpr(
+//              LOC(@$), dynamic_cast<NodeComp*>($2), $1, $3
+//          );
+//      }
+//  |   FTContainsExpr EQUALS FTContainsExpr
+//      {
+//          $$ = new ComparisonExpr(
+//              LOC(@$),
+//              new GeneralComp( LOC(@$), ParseConstants::op_eq ),
+//              $1,
+//              $3
+//          );
+//      }
+//  |   FTContainsExpr NE FTContainsExpr
+//      {
+//          $$ = new ComparisonExpr(
+//              LOC(@$),
+//              new GeneralComp( LOC(@$), ParseConstants::op_ne ),
+//              $1,
+//              $3
+//          );
+//      }
+//  |   FTContainsExpr LT_OR_START_TAG
+//      {
+//          /* this call is needed */
+//          driver.lexer->interpretAsLessThan();
+//      }
+//      FTContainsExpr
+//      {
+//          $$ = new ComparisonExpr(
+//              LOC(@$),
+//              new GeneralComp( LOC(@$), ParseConstants::op_lt ),
+//              $1,
+//              $4
+//          );
+//      }
+//  |   FTContainsExpr LE FTContainsExpr
+//      {
+//          $$ = new ComparisonExpr(
+//              LOC(@$),
+//              new GeneralComp( LOC(@$), ParseConstants::op_le ),
+//              $1,
+//              $3
+//          );
+//      }
+//  |   FTContainsExpr GT FTContainsExpr
+//      {
+//          $$ = new ComparisonExpr(
+//              LOC(@$),
+//              new GeneralComp( LOC(@$), ParseConstants::op_gt ),
+//              $1,
+//              $3
+//          );
+//      }
+//  |   FTContainsExpr GE FTContainsExpr
+//      {
+//          $$ = new ComparisonExpr(
+//              LOC(@$),
+//              new GeneralComp( LOC(@$), ParseConstants::op_ge ),
+//              $1,
+//              $3
+//          );
+//      }
     ;
 
 // [51]
@@ -3918,20 +3968,20 @@ ValueComp :
     ;
 
 // [62]
-NodeComp :
-        IS
-        {
-            $$ = new NodeComp( LOC(@$), ParseConstants::op_is );
-        }
-    |   PRECEDES
-        {
-            $$ = new NodeComp( LOC(@$), ParseConstants::op_precedes );
-        }
-    |   FOLLOWS
-        {
-            $$ = new NodeComp( LOC(@$), ParseConstants::op_follows );
-        }
-    ;
+//NodeComp :
+//        IS
+//        {
+//            $$ = new NodeComp( LOC(@$), ParseConstants::op_is );
+//        }
+//    |   PRECEDES
+//        {
+//            $$ = new NodeComp( LOC(@$), ParseConstants::op_precedes );
+//        }
+//    |   FOLLOWS
+//        {
+//            $$ = new NodeComp( LOC(@$), ParseConstants::op_follows );
+//        }
+//    ;
 
 // [63]
 ValidateExpr :
@@ -4061,7 +4111,7 @@ PathExpr :
 //                        rpe);
 //    }
 //  | 
-  RelativePathExpr        /* gn: leading-lone-slashXQ */
+    RelativePathExpr        /* gn: leading-lone-slashXQ */
     {
       RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>($1);
       $$ = (!rpe ?
@@ -4310,7 +4360,7 @@ Wildcard :
 
 // [80]
 FilterExpr :
-     PrimaryExpr
+     PrimaryExpr %prec JSONLOOKUPEXPR_REDUCE
      {
        $$ = $1;
      }
@@ -4320,13 +4370,31 @@ FilterExpr :
      }
   |  FilterExpr LPAR RPAR
      {
-       $$ = new DynamicFunctionInvocation(LOC (@$), $1);
+       $$ = new DynamicFunctionInvocation(LOC (@$), $1, false);
      }
   |  FilterExpr LPAR ArgList RPAR
      {
-       $$ = new DynamicFunctionInvocation(LOC (@$), $1, dynamic_cast<ArgList*>($3));
+       $$ = new DynamicFunctionInvocation(LOC (@$), $1, dynamic_cast<ArgList*>($3), false);
+     }
+  |  FilterExpr DOT NCNAME
+     {
+       StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
+       $$ = new JSONObjectLookup(LOC(@$), $1, sl);
+     }
+  |  FilterExpr DOT ParenthesizedExpr
+     {
+       $$ = new JSONObjectLookup(LOC(@$), $1, $3);
+     }
+  |  FilterExpr DOT VarRef
+     {
+       $$ = new JSONObjectLookup(LOC(@$), $1, $3);
+     }
+  |  FilterExpr DOT StringLiteral
+     {
+       $$ = new JSONObjectLookup(LOC(@$), $1, $3);
      }
 ;
+
 
 // [81]
 PredicateList :
@@ -4411,13 +4479,6 @@ PrimaryExpr :
         {
           $$ = $1;
         }
-    |   PrimaryExpr DOT NCNAME
-        {
-          StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
-          ArgList *al = new ArgList( LOC(@$) );
-          al->push_back(sl);
-          $$ = new DynamicFunctionInvocation(LOC(@$), $1, al); 
-        }
     ;
 
 // [84]
@@ -4429,6 +4490,14 @@ Literal :
     |   StringLiteral
         {
             $$ = $1;
+        }
+    |   BooleanLiteral
+        {
+            $$ = $1;
+        }
+    |   NULL_TOKEN
+        {
+            $$ = new NullLiteral(LOC(@$));
         }
     ;
 
@@ -4457,6 +4526,17 @@ NumericLiteral :
         }
     ;
 
+BooleanLiteral :
+        TRUE_TOKEN
+        {
+          $$ = new BooleanLiteral(LOC(@$), true);
+        }
+    |   FALSE_TOKEN
+        {
+          $$ = new BooleanLiteral(LOC(@$), false);
+        }
+    ;
+
 // [86]
 VarRef :
         DOLLAR QNAME
@@ -4480,6 +4560,10 @@ ParenthesizedExpr :
 // [88]
 ContextItemExpr :
         DOT
+        {
+            $$ = new ContextItemExpr( LOC(@$) );
+        }
+    |   DOLLAR_DOLLAR
         {
             $$ = new ContextItemExpr( LOC(@$) );
         }
@@ -4555,15 +4639,39 @@ FunctionCall :
     }
 |   FUNCTION_NAME LPAR ArgList RPAR
     {
-      $$ = new FunctionCall(LOC(@$),
-                            static_cast<QName*>($1),
-                            dynamic_cast<ArgList*>($3));
+      ArgList* argList = dynamic_cast<ArgList*>($3);
+
+      if (argList->has_placeholder())
+      {
+        LiteralFunctionItem* lfi = 
+        new LiteralFunctionItem(LOC(@$),
+                                dynamic_cast<QName*>($1),
+                                new Integer(argList->size()));
+
+        $$ = new DynamicFunctionInvocation(LOC(@$), lfi, argList, true);
+      }
+      else
+      {
+        $$ = new FunctionCall(LOC(@$), static_cast<QName*>($1), argList);
+      }
     }
 ;
 
 
 ArgList :
-    ExprSingle
+    HOOK
+    {
+      ArgList *al = new ArgList( LOC(@$) );
+      al->push_back(new ArgumentPlaceholder(LOC(@$)));
+      $$ = al;
+    }
+|   ArgList COMMA HOOK
+    {
+      if ( ArgList *al = dynamic_cast<ArgList*>($1) )
+        al->push_back( new ArgumentPlaceholder(LOC(@$)) );
+      $$ = $1;
+    }
+|   ExprSingle
     {
       ArgList *al = new ArgList( LOC(@$) );
       al->push_back( $1 );
@@ -4574,6 +4682,38 @@ ArgList :
       if ( ArgList *al = dynamic_cast<ArgList*>($1) )
         al->push_back( $3 );
       $$ = $1;
+    }
+;
+
+
+FunctionItemExpr :
+    LiteralFunctionItem
+    {
+      $$ = $1;
+    }
+  | InlineFunction
+    {
+      $$ = $1;
+    }
+;
+
+
+LiteralFunctionItem :
+    QNAME HASH INTEGER_LITERAL
+    {
+      $$ = new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), $3);
+    }
+;
+
+
+InlineFunction :
+    FUNCTION FunctionSig EnclosedStatementsAndOptionalExpr
+    {
+      $$ = new InlineFunction(LOC(@$),
+                              &*$2->theParams,
+                              &*$2->theReturnType,
+                              $3);
+      delete $2;
     }
 ;
 
@@ -5082,6 +5222,11 @@ SequenceType :
         {
             $$ = new SequenceType( LOC(@$), NULL, NULL );
         }
+        // New jsoniq grammar:
+    |   LPAR RPAR
+        {
+            $$ = new SequenceType( LOC(@$), NULL, NULL );
+        }
     ;
 
 // [118]
@@ -5147,7 +5292,17 @@ ItemType :
         {
             $$ = new ItemType( LOC(@$), true );
         }
+        // New jsoniq grammar:
+    |   ITEM
+        {
+            $$ = new ItemType( LOC(@$), true );
+        }
     |   STRUCTURED_ITEM LPAR RPAR
+        {
+            $$ = new StructuredItemType(LOC(@$));
+        }
+        // New jsoniq grammar:
+    |   STRUCTURED_ITEM
         {
             $$ = new StructuredItemType(LOC(@$));
         }
@@ -5457,47 +5612,6 @@ StringLiteral :
 // [157] NCName
 // [158] S  (WS)
 // [159] Char
-
-/*_______________________________________________________________________
- *                                                                       *
- *  XQuery 3.0 productions                                               *
- *  [http://www.w3.org/TR/xquery-3/]                                     *
- *                                                                       *
- *_______________________________________________________________________*/
-
-// [161] FunctionItemExpr
-// ------------
-FunctionItemExpr :
-    LiteralFunctionItem
-    {
-      $$ = $1;
-    }
-  | InlineFunction
-    {
-      $$ = $1;
-    }
-;
-
-
-LiteralFunctionItem :
-    QNAME HASH INTEGER_LITERAL
-    {
-      $$ = new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), $3);
-    }
-;
-
-
-InlineFunction :
-    FUNCTION FunctionSig EnclosedStatementsAndOptionalExpr
-    {
-      $$ = new InlineFunction(LOC(@$),
-                              &*$2->theParams,
-                              &*$2->theReturnType,
-                              $3);
-      delete $2;
-    }
-;
-
 
 FunctionTest :
     AnyFunctionTest
@@ -6573,10 +6687,21 @@ JSONObjectConstructor :
           $$ = new JSONDirectObjectConstructor(LOC(@$),
                                                dynamic_cast<JSONPairList*>($2));
         }
+    |   LBRACE RBRACE
+        {
+          $$ = new JSONDirectObjectConstructor(LOC(@$));
+        }
     ;
 
 JSONPairList :
-        ExprSingle COLON ExprSingle
+        NCNAME COLON ExprSingle
+        {
+          StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($1) );
+          JSONPairList* jpl = new JSONPairList(LOC(@$));
+          jpl->push_back(new JSONPairConstructor(LOC(@$), sl, $3));
+          $$ = jpl;
+        }
+    |   ExprSingle COLON ExprSingle
         {
           JSONPairList* jpl = new JSONPairList(LOC(@$));
           jpl->push_back(new JSONPairConstructor(LOC(@$), $1, $3));
@@ -6587,6 +6712,14 @@ JSONPairList :
           JSONPairList* jpl = dynamic_cast<JSONPairList*>($1);
           assert(jpl);
           jpl->push_back(new JSONPairConstructor(LOC(@$), $3, $5));
+          $$ = jpl;
+        }
+    |   JSONPairList COMMA NCNAME COLON ExprSingle
+        {
+          JSONPairList* jpl = dynamic_cast<JSONPairList*>($1);
+          assert(jpl);
+          StringLiteral* sl = new StringLiteral( LOC(@$), SYMTAB($3) );
+          jpl->push_back(new JSONPairConstructor(LOC(@$), sl, $5));
           $$ = jpl;
         }
     ;
@@ -6612,12 +6745,37 @@ JSONInsertExpr :
         {
           $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
         }
+        // New jsoniq grammar:
+    |   INSERT ExprSingle INTO ExprSingle
+        {
+          $$ = new JSONObjectInsertExpr(LOC(@$),
+                                        $2,
+                                        $4);
+        }
+    |   INSERT JSONPairList INTO ExprSingle
+        {
+          JSONPairList* jpl = dynamic_cast<JSONPairList*>($2);
+          $$ = new JSONObjectInsertExpr(
+              LOC(@$),
+              new JSONDirectObjectConstructor(
+                  LOC(@$),
+                  jpl),
+              $4);
+        }
+    |   INSERT ExprSingle INTO ExprSingle AT POSITION ExprSingle
+        {
+          $$ = new JSONArrayInsertExpr(LOC(@$), $2, $4, $7);
+        }
     ;
 
 JSONAppendExpr :
         APPEND JSON ExprSingle INTO ExprSingle
         {
           $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
+        }
+    |   APPEND ExprSingle INTO ExprSingle
+        {
+          $$ = new JSONArrayAppendExpr(LOC(@$), $2, $4);
         }
     ;
 
@@ -6636,6 +6794,28 @@ JSONDeleteExpr :
           if (lDynamicFunctionInvocation->getArgList()->size() != 1)
           {
             error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            YYERROR;
+          }
+
+          $$ = new JSONDeleteExpr(
+                LOC(@$),
+                lDynamicFunctionInvocation->getPrimaryExpr(),
+                lDynamicFunctionInvocation->getArgList()->operator[](0));
+        }
+    |   _DELETE FilterExpr
+        {
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
+          dynamic_cast<DynamicFunctionInvocation*>($2);
+
+          if (lDynamicFunctionInvocation == NULL)
+          {
+            error(@2, "An object invocation is expected. A filter was found instead.");
+            YYERROR;
+          }
+
+          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
+          {
+            error(@2, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
             YYERROR;
           }
 
@@ -6672,6 +6852,31 @@ JSONRenameExpr :
                 lDynamicFunctionInvocation->getArgList()->operator[](0),
                 $5);
         }
+    |   RENAME FilterExpr AS ExprSingle
+        {
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
+          dynamic_cast<DynamicFunctionInvocation*>($2);
+
+          if(lDynamicFunctionInvocation == NULL)
+          {
+            error(@2, "An object invocation is expected. A filter was found instead.");
+            delete $4;
+            YYERROR;
+          }
+
+          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
+          {
+            error(@2, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            delete $4;
+            YYERROR;
+          }
+
+          $$ = new JSONRenameExpr(
+                LOC(@$),
+                lDynamicFunctionInvocation->getPrimaryExpr(),
+                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                $4);
+        }
     ;
 
 JSONReplaceExpr :
@@ -6700,6 +6905,31 @@ JSONReplaceExpr :
                 lDynamicFunctionInvocation->getArgList()->operator[](0),
                 $7);
         }
+    |   REPLACE VALUE OF FilterExpr WITH ExprSingle
+        {
+          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
+          dynamic_cast<DynamicFunctionInvocation*>($4);
+
+          if(lDynamicFunctionInvocation == NULL)
+          {
+            error(@2, "An object invocation is expected. A filter was found instead.");
+            delete $6;
+            YYERROR;
+          }
+
+          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
+          {
+            error(@2, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
+            delete $6;
+            YYERROR;
+          }
+
+          $$ = new JSONReplaceExpr(
+                LOC(@$),
+                lDynamicFunctionInvocation->getPrimaryExpr(),
+                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                $6);
+        }
     ;
 
 JSONTest :
@@ -6722,6 +6952,11 @@ JSONItemTest :
         {
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
         }
+        // New jsoniq grammar:
+    |   JSON_ITEM
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
+        }
 ;
 
 JSONObjectTest :
@@ -6729,10 +6964,20 @@ JSONObjectTest :
         {
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
         }
+        // New jsoniq grammar:
+    |   OBJECT
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
+        }
 ;
 
 JSONArrayTest :
         ARRAY LPAR RPAR
+        {
+          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
+        }
+        // New jsoniq grammar:
+    |   ARRAY
         {
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
         }
@@ -6768,7 +7013,7 @@ QNAME :
     |   DOCUMENT_NODE           { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("document-node"))); }
     |   NS_NODE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("namespace-node"))); }
     |   ELEMENT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("element"))); }
-    |   ITEM                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("item"))); }
+  //  |   ITEM                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("item"))); }
     |   IF                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("if"))); }
     |   NODE                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("node"))); }
     |   PROCESSING_INSTRUCTION  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("processing-instruction"))); }
@@ -6910,18 +7155,18 @@ FUNCTION_NAME :
     |   PHRASE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("phrase"))); }
     |   PARAGRAPH               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("paragraph"))); }
     |   PARAGRAPHS              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("paragraphs"))); }
-    |   REPLACE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("replace"))); }
+  //  |   REPLACE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("replace"))); }
     |   MODIFY                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("modify"))); }
     |   FIRST                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("first"))); }
-    |   INSERT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("insert"))); }
+  //  |   INSERT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("insert"))); }
     |   BEFORE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("before"))); }
     |   AFTER                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("after"))); }
     |   REVALIDATION            { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("revalidation"))); }
     |   WITH                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("with"))); }
     |   NODES                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("nodes"))); }
-    |   RENAME                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("rename"))); }
+  //  |   RENAME                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("rename"))); }
     |   LAST                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("last"))); }
-    |   _DELETE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("delete"))); }
+  //  |   _DELETE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("delete"))); }
     |   INTO                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("into"))); }
     |   SIMPLE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("simple"))); }
     |   SEQUENTIAL              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("sequential"))); }
@@ -6981,13 +7226,13 @@ FUNCTION_NAME :
     |   DESCENDANT_OR_SELF      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
     |   FOLLOWING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     |   PRECEDING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
-    |   JSON                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json"))); }
-    |   APPEND                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("append"))); }
+  //  |   JSON                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json"))); }
+  //  |   APPEND                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("append"))); }
     |   POSITION                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("position"))); }
-    |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
-    |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
-    |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
-    |   STRUCTURED_ITEM         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("structured-item"))); }
+  //  |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
+  //  |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
+  //  |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
+  //  |   STRUCTURED_ITEM         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("structured-item"))); }
     ;
 
 // [196]

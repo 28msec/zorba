@@ -28,6 +28,7 @@
 # include <unicode/ustring.h>
 #endif /* ZORBA_NO_ICU */
 
+#include "ascii_util.h"
 #include "cxx_util.h"
 #include "unicode_util.h"
 #include "utf8_util.h"
@@ -2203,6 +2204,23 @@ bool is_ucschar( code_point c ) {
 
 bool is_upper( code_point c ) {
   return is_case<upper>( c );
+}
+
+ostream& printable_cp( ostream &o, code_point cp ) {
+  if ( ascii::is_print( cp ) )
+    o << static_cast<char>( cp );
+  else
+    switch ( cp ) {
+      case '\n': o << "\\n"; break;
+      case '\r': o << "\\r"; break;
+      case '\t': o << "\\t"; break;
+      default: {
+        ios::fmtflags const old_flags = o.flags();
+        o << "#x" << uppercase << hex << static_cast<uint32_t>( cp );
+        o.flags( old_flags );
+      }
+    }
+  return o;
 }
 
 code_point to_lower( code_point c ) {

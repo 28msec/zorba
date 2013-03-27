@@ -691,6 +691,17 @@ void DynamicContextImpl::getLocale( locale::iso639_1::type *aLang,
 /****************************************************************************//**
 
 ********************************************************************************/
+void DynamicContextImpl::setCalendar( time::calendar::type aCalendar ) {
+  theCtx->set_calendar( aCalendar );
+}
+
+time::calendar::type DynamicContextImpl::getCalendar() const {
+  return theCtx->get_calendar();
+}
+
+/****************************************************************************//**
+
+********************************************************************************/
 bool DynamicContextImpl::addExternalFunctionParam(
     const String& aName,
     void* aValue)

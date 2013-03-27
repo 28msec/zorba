@@ -28,12 +28,12 @@ Iterator tree for main query:
     </ElementIterator>
   </CtxVarDeclareIterator>
   <FnConcatIterator>
-    <UDFunctionCallIterator>
+    <UDFunctionCallIterator function="local:foo">
       <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
         <CtxVarIterator varid="4" varname="d1" varkind="local"/>
       </TreatIterator>
     </UDFunctionCallIterator>
-    <UDFunctionCallIterator>
+    <UDFunctionCallIterator function="local:foo">
       <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="">
         <CtxVarIterator varid="5" varname="d2" varkind="local"/>
       </TreatIterator>
@@ -50,7 +50,7 @@ Iterator tree for local:foo:
       </ChildAxisIterator>
     </ForVariable>
     <ReturnClause>
-      <UDFunctionCallIterator>
+      <UDFunctionCallIterator function="local:parent">
         <ForVarIterator varname="child"/>
       </UDFunctionCallIterator>
     </ReturnClause>

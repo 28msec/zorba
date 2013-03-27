@@ -14,7 +14,11 @@ New Features:
   * In store API, added ability to specify a stream's originating URI (file)
     for streamable strings and base64Binary.
   * Added millis-to-dateTime() function in datetime module.
+  * Added setCalendar(), getCalendar(), setLocale(), and getLocale() to
+    DynamicContext class in C++ API.
   * fn:trace outputs "empty-sequence()" if the input is the empty-sequence.
+  * Allow multiple default function namespaces.
+  * $array() => jn:members($array), $object() => jn:keys($object)
   * Added xqxq:variable-value function.
   * Added canonicalize function to modules/xml.
   * Added support for xs:dateTimeStamp type from XMLSchema 1.1, bug #924754.
@@ -23,6 +27,12 @@ Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
     parameter into collection skip if $sourceSeq parameter is from a
     collection).
+  * Introduced generic framework for optimizing fn:count() during runtime:
+    Virtual PlanIterator::count() method provides the base (unoptimized)
+    implementation of fn:count(). This base method is redefined by other plan
+    iterators who have a way of returning the cardinality of their result
+    sequence without actually computing the full result sequence.
+  * Optimized fn:index-of function
   * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:
@@ -31,11 +41,13 @@ Bug Fixes/Other Changes:
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
   * Fixed bug in index join rule (no index join if inner clause has positional var).
   * Fixed bug in index join rule (copy var ids after cloning index domain expr).
+  * Fixed bug #1123162 (FOTS: formatting dates and times failures)
   * Added missing wrapper expressions around some variable references.
   * Fixed bug in the throwing of error XQTY0086 during node construction.
   * Fixed bug #1148335 (where-clause expression was not always reset when it should be)
   * Fixed bug #1122396 (Associate origin/destination URI to I/O stream)
   * Fixed bug #1111786 (xml/json parse error location in catch clause).
+  * Fixed bug #1153800 (construct hexBinary without encoding the data)
   * NaN items are considered equal to each other during grouping
   * Fixed bug #855481 (Too small time types on Windows).
   * Fixed bug #1132032 (Certain regexes involving ^ should be legal)
@@ -45,6 +57,12 @@ Bug Fixes/Other Changes:
   * Fixed bug #866874 (regex "range subtraction" not supported for ICU)
   * Fixed bug in computing the static type of an allowing-empty FOR variable.
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
+<<<<<<< TREE
+  * Fixed bug #1099535  (xml:parse endless loop)
+  * Fixed bug in optimizing fn:count over general-index probes
+  * Fixed bug #866958  (Parsing error not explicit enough)
+  * Fixed bug #867068: (Incorrect usage of XQDY0027)
+=======
   * Fixed bug #1099535 (xml:parse endless loop)
   * Fixed bug: jsoniq constructor should not be const-folded
   * Fixed bug #866958 (Parsing error not explicit enough)
@@ -53,6 +71,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1125444 (input group-by exprs were not treated by index-flwor_vars()
     functoin, leading to erroneous loop hoisting).
   * Fixed bug #867068 (Incorrect usage of XQDY0027)
+>>>>>>> MERGE-SOURCE
   * Fixed bug #1023362 (xsi:type attribute ignored during validation)
 
 
