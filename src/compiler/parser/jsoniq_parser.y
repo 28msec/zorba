@@ -28,8 +28,8 @@
 %define "parser_class_name" "jsoniq_parser"
 %error-verbose
 
-// Expect 4 shift/reduce conflicts
-%expect 2
+// Expect 1 shift/reduce conflicts
+%expect 1
 
 
 %code requires {
@@ -326,6 +326,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token DESCENDING                       "'descending'"
 %token DIV                              "'div'"
 %token DOLLAR                           "'$'"
+%token DOLLAR_DOLLAR                    "'$_'"
 %token DOT                              "'.'"
 %token DOT_DOT                          "'..'"
 %token COLON                            "':'"
@@ -2279,14 +2280,9 @@ BlockStatement :
 
 
 BlockExpr :
-    LBRACE StatementsAndOptionalExpr RBRACE
+    LBRACE StatementsAndExpr RBRACE
     {
-      BlockBody* block = dynamic_cast<BlockBody*>($2);
-      if ($2 == NULL || (block != NULL && block->isEmpty()))
-      {        
-        $$ = new JSONDirectObjectConstructor(LOC(@$));
-      }
-      else if (block == NULL)
+      if (dynamic_cast<BlockBody*>($2) == NULL)
       {
         BlockBody* blk = new BlockBody(LOC(@$));
         blk->add($2);
@@ -4567,6 +4563,10 @@ ContextItemExpr :
         {
             $$ = new ContextItemExpr( LOC(@$) );
         }
+    |   DOLLAR_DOLLAR
+        {
+            $$ = new ContextItemExpr( LOC(@$) );
+        }
     ;
 
 // [89]
@@ -6686,6 +6686,10 @@ JSONObjectConstructor :
         {
           $$ = new JSONDirectObjectConstructor(LOC(@$),
                                                dynamic_cast<JSONPairList*>($2));
+        }
+    |   LBRACE RBRACE
+        {
+          $$ = new JSONDirectObjectConstructor(LOC(@$));
         }
     ;
 

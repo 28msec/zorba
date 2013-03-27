@@ -122,25 +122,30 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 /*******************************************************************************
   Called by the openImpl method of UDFunctionCallIterator.
 ********************************************************************************/
-void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf, bool theIsDynamic, store::ItemHandle<FunctionItem>& theFunctionItem)
+void UDFunctionCallIteratorState::open(
+    PlanState& planState,
+    user_function* udf,
+    bool theIsDynamic,
+    store::ItemHandle<FunctionItem>& theFunctionItem)
 {
   thePlan = udf->getPlan(thePlanStateSize).getp();
 
   thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
-  // Must allocate new dctx, as child of the "current" dctx, because the udf
-  // may be a recursive udf with local block vars, all of which have the same
-  // dynamic-context id, but they are distinct vars.
+  // Must allocate new dctx because the udf may be a recursive udf with local
+  // block vars, all of which have the same dynamic-context id, but they are
+  // distinct vars.
 
   if (theIsDynamic)
   {
     if (theFunctionItem->getDctx() == NULL)
       theFunctionItem->setDctx(new dynamic_context(planState.theGlobalDynCtx));
+
     theLocalDCtx = new dynamic_context(theFunctionItem->getDctx());
   }
   else
   {
-  theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
+    theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
   }
 
   thePlanState = new PlanState(theIsDynamic ? theFunctionItem->getDctx() : planState.theGlobalDynCtx,

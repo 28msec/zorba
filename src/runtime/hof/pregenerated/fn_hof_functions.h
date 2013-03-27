@@ -20,8 +20,8 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
-#ifndef ZORBA_RUNTIME_FUNCTION_ITEM_FUNCTION_ITEM_ITER_H
-#define ZORBA_RUNTIME_FUNCTION_ITEM_FUNCTION_ITEM_ITER_H
+#ifndef ZORBA_RUNTIME_HOF_FN_HOF_FUNCTIONS_H
+#define ZORBA_RUNTIME_HOF_FN_HOF_FUNCTIONS_H
 
 
 #include "common/shared_types.h"

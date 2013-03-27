@@ -11,6 +11,7 @@ test/rbkt/w3c_testsuite/XQueryX/SchemaValidation/ValidateExpression/validateexpr
 test/rbkt/w3c_testsuite/XQueryX/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-7
 test/rbkt/w3c_testsuite/XQueryX/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-8
 test/rbkt/w3c_testsuite/XQueryX/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-10
+test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-044
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-009
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-008
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-021

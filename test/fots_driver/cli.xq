@@ -92,19 +92,27 @@ declare variable $testCasePrefixes as xs:string external := "";
  : (because they segfault, or hang, or take too long, etc).
  :
  : Used by the run-test-sets, run-and-report, and report commands.
+ :
+ : Please remember to add an equivalent for each test case in test/fots/CMakeLists.txt
+ :
+ : EXPECTED_FOTS_FAILURE (SLOW  TEST_SET_NAME TEST_CASE_NAME BUG_NO) or
+ : EXPECTED_FOTS_FAILURE (CRASH TEST_SET_NAME TEST_CASE_NAME BUG_NO)
  :)
 declare variable $exceptedTestCases as xs:string* := (
-  "instanceof139",
+  ("instanceof139",
   "CastAs-UnionType-26",
-  "CastAs-UnionType-30",
-  "fn-unparsed-text-lines-052",
-  "cbcl-subsequence-011",
+  "CastAs-UnionType-30"),       (:see bug lp:1160559 :)
+  "fn-unparsed-text-lines-052", (:see bug lp:1123835 :)
+  ("cbcl-subsequence-011",
   "cbcl-subsequence-012",
   "cbcl-subsequence-013",
-  "cbcl-subsequence-014"        (:see bug lp:1069794 :)
-, "re00975",
+  "cbcl-subsequence-014"),      (:see bug lp:1069794. Actually passing but too slow :)
+  ("re00975",
   "re00976",
-  "re00976a"                    (:see bug lp:1070533 :)
+  "re00976a"),                  (:see bug lp:1070533 :)
+  "re00987",                    (:see bug lp:1131313 :)
+  ("raytracer",
+  "itunes")                     (: Actually passing but too slow :)
 );
 
 

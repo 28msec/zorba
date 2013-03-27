@@ -43,7 +43,7 @@ class JSONObjectInsertIterator;
   class PiIterator;
   class RefIterator;
   class SingletonIterator;
-  class DynamicFunctionIterator;
+  class FunctionItemIterator;
   class EmptyIterator;
   class ForVarIterator;
   typedef rchandle<ForVarIterator> ForVarIter_t;

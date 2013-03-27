@@ -1216,9 +1216,14 @@ T1_TO_T2(dat, dT)
 
 T1_TO_T2(dT, dTSt)
 {
-  DateTime dt;
-  dt = aItem->getDateTimeValue(); //.createWithNewFacet(DateTime::DATETIME_FACET, dt);
-  aFactory->createDateTimeStamp(result, &dt);
+  xs_dateTime dt = aItem->getDateTimeValue(); //.createWithNewFacet(DateTime::DATETIME_FACET, dt);
+  if (dt.hasTimezone() )
+  {
+    aFactory->createDateTimeStamp(result, &dt);
+    return;
+  }
+
+  throwFORG0001Exception(strval, errInfo);
 }
   
   
