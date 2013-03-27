@@ -387,18 +387,15 @@ declare function xqxq:variable-value($query-key as xs:anyURI, $var-name as
   xs:QName) as item()* external;
 
 (:~
- : Returns the compiled query identified by the given query-key serialized 
+ : Returns the compiled query identified by the given query-key 
  : as binary data.
  :
  : @param $query-key the identifier of a compiled query.
  :
- : @return the query serialized as xs:Base64Binary.
+ : @return the query as xs:base64Binary.
  :
  : @error xqxq:NoQueryMatch if no query with the given identifier
  :   was prepared.
- : @error xqxq:UndeclaredVariable if the given variable is not declared
- :   in the query.
- : @error xqxq:UnboundVariable if the given variable doesn't have a value.
  : @error xqxq:QueryPlanError if there is an error serializing the query.
  :)
 declare function xqxq:query-plan($query-key as xs:anyURI) 
@@ -406,8 +403,8 @@ declare function xqxq:query-plan($query-key as xs:anyURI)
   
   
 (:~
- : The function loads a given XQuery program for execution from a serialized 
- : xs:Base64Binary query plan, obtained through the xqxq:query-plan function.
+ : The function loads a given XQuery program for execution from a 
+ : xs:base64Binary query plan, obtained through the xqxq:query-plan function.
  : If the program was successfully loaded, the function returns an
  : identifier as xs:anyURI. This URI can be passed to other functions
  : of this module (e.g. to actually evaluate the program). The URI
@@ -432,8 +429,8 @@ declare function xqxq:load-from-query-plan($plan as xs:base64Binary)
   as xs:anyURI external;
 
 (:~
- : The function loads a given XQuery program for execution from a serialized 
- : xs:Base64Binary query plan, obtained through the xqxq:query-plan function.
+ : The function loads a given XQuery program for execution from a 
+ : xs:base64Binary query plan, obtained through the xqxq:query-plan function.
  : If the program was successfully loaded, the function returns an
  : identifier as xs:anyURI. This URI can be passed to other functions
  : of this module (e.g. to actually evaluate the program). The URI
