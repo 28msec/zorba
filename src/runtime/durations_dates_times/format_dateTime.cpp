@@ -106,7 +106,7 @@ struct modifier {
 
   //
   // This stuff isn't part of the "presentation modifier" as discussed in the
-  // XQuery3.0 F&O spec, but this is a convenient place to put it nonetheless.
+  // XQuery 3.0 F&O spec, but this is a convenient place to put it nonetheless.
   //
   iso639_1::type lang;
   bool lang_is_fallback;
@@ -828,6 +828,13 @@ static void parse_second_modifier( zstring const &picture_str,
   if ( ++j == picture_str.end() )
     return;
   if ( *j == '(' ) {
+    //
+    // XQuery F&O 3.0 4.6.1: The string of characters between the parentheses,
+    // if present, is used to select between other possible variations of
+    // cardinal or ordinal numbering sequences. The interpretation of this
+    // string is implementation-defined. No error occurs if the implementation
+    // does not define any interpretation for the defined string.
+    //
     while ( true ) {
       if ( ++j == picture_str.end() )
         throw XQUERY_EXCEPTION(
@@ -931,7 +938,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
   store::Item_t item;
   PlanIteratorState *state;
 
-  DEFAULT_STACK_INIT( PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
   if ( !consumeNext( item, theChildren[0].getp(), planState ) ) {
     // Got the empty sequence -- return same
