@@ -22,7 +22,7 @@
 
 #include "common/shared_types.h"
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 // TODO remove the next three includes
 #include "api/unmarshaller.h"
@@ -107,7 +107,11 @@ public:
 
   ~UDFunctionCallIteratorState();
 
-  void open(PlanState& planState, user_function* udf, bool theIsDynamic, store::ItemHandle<FunctionItem>& theFunctionItem);
+  void open(
+      PlanState& planState,
+      user_function* udf,
+      bool theIsDynamic,
+      store::ItemHandle<FunctionItem>& theFunctionItem);
 
   void reset(PlanState& planState);
 };
