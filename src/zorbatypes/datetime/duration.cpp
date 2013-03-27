@@ -733,6 +733,7 @@ Duration* Duration::operator*(const xs_double& value) const
   int32_t years;
   int32_t seconds;
   int32_t frac_seconds;
+  bool negative = false;
 
   if (facet == DURATION_FACET)
   {
@@ -742,6 +743,11 @@ Duration* Duration::operator*(const xs_double& value) const
 
   try {
     result = getTotalSeconds() * value;
+    if (result < 0)
+    {
+      negative = true;
+      result = -result;
+    }
     result = result.round(Integer(FRAC_SECONDS_UPPER_LIMIT));
     totalSeconds = result.floor();
     result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
@@ -753,7 +759,7 @@ Duration* Duration::operator*(const xs_double& value) const
     throw XQUERY_EXCEPTION(err::FODT0002);
   }
 
-  Duration* d = new Duration(facet, totalSeconds<0, years, 0, 0, 0, 0, seconds, frac_seconds);
+  Duration* d = new Duration(facet, negative, years, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
 }
 
@@ -765,6 +771,7 @@ Duration* Duration::operator/(const xs_double& value) const
   int32_t years;
   int32_t seconds;
   int32_t frac_seconds;
+  bool negative = false;
 
   if (facet == DURATION_FACET)
   {
@@ -774,6 +781,11 @@ Duration* Duration::operator/(const xs_double& value) const
 
   try {
     result = getTotalSeconds() / value;
+    if (result < 0)
+    {
+      negative = true;
+      result = -result;
+    }
     result = result.round(Integer(FRAC_SECONDS_UPPER_LIMIT));
     totalSeconds = result.floor();
     result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
@@ -785,7 +797,7 @@ Duration* Duration::operator/(const xs_double& value) const
     throw XQUERY_EXCEPTION(err::FODT0002);
   }
 
-  Duration* d = new Duration(facet, totalSeconds<0, years, 0, 0, 0, 0, seconds, frac_seconds);
+  Duration* d = new Duration(facet, negative, years, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
 }
 
