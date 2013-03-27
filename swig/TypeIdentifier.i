@@ -147,9 +147,9 @@
   }
 
   TypeIdentifier 
-  TypeIdentifier::createDocumentType (TypeIdentifier contentType, IdentTypes::Quantifier quantifier)
+  TypeIdentifier::createDocumentType ()
   {
-    return TypeIdentifier( zorba::TypeIdentifier::createDocumentType(contentType.theTypeIdentifier, convertQuantifier(quantifier) ) );
+    return TypeIdentifier( zorba::TypeIdentifier::createDocumentType(NULL) );
   }
 
   TypeIdentifier 

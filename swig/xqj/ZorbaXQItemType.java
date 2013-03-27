@@ -67,7 +67,7 @@ public class ZorbaXQItemType implements javax.xml.xquery.XQItemType {
             case XQITEMKIND_DOCUMENT:
             case XQITEMKIND_DOCUMENT_ELEMENT:
             case XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT:
-                result = TypeIdentifier.createDocumentType(TypeIdentifier.createAnyNodeType());
+                result = TypeIdentifier.createDocumentType();
                 break;
             case XQITEMKIND_ELEMENT:
                 result = TypeIdentifier.createElementType(schemaURI.toString(), true, nodeName.getLocalPart(), true, TypeIdentifier.createAnyNodeType());

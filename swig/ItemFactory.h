@@ -644,6 +644,32 @@ class ItemFactory
      */
     Item createJSONArray(std::vector<std::string>& aItems);
 
+    /** \brief Creates a DateTime Item
+     *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
+     *
+     * @param aYear short-valued representation of the year.
+     * @param aMonth short-valued representation of the month.
+     * @param aDay short-valued representation of the day.
+     * @param aHour short-valued representation of the hour.
+     * @param aMinute short-valued representation of the minute.
+     * @param aSecond double-valued representation of the seconds and fractional seconds.
+     * @param aTimeZone_hours short-valued representation of the difference in hours to UTC.
+     * @return The DateTime Item.
+     */
+    Item
+    createDateTimeStamp(short aYear, short aMonth, short aDay,
+                   short aHour, short aMinute, double aSecond,
+                   short aTimeZone_hours);
+
+    /** \brief Creates a DateTime Item
+     *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
+     *
+     * @param aDateTimeValue String representation of the datetime value
+     *        (for example, 2002-10-10T12:00:00-05:00).
+     * @return The DateTime Item.
+     */
+    Item
+    createDateTimeStamp( const std::string &aValue );
     
 }; // class ItemFactory
 

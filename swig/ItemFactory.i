@@ -274,7 +274,19 @@
     return Item( theItemFactory->createJSONArray (items) );
   }
 
-
+  Item
+  ItemFactory::createDateTimeStamp(short aYear, short aMonth, short aDay,
+                                   short aHour, short aMinute, double aSecond,
+                                   short aTimeZone_hours) {
+    return Item( theItemFactory->createDateTimeStamp(aYear, aMonth, aDay,
+                                   aHour, aMinute, aSecond,
+                                   aTimeZone_hours) );
+  }
+  
+  Item ItemFactory::createDateTimeStamp( const std::string &aValue ) {
+    return Item( theItemFactory->createDateTimeStamp(aValue) );
+  }
+    
 %}  // end Implementation
 
 %include "ItemFactory.h"
