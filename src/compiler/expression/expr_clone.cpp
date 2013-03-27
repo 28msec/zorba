@@ -387,7 +387,6 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                               udf,
                               get_loc(),
                               e->theFunctionItemInfo->theFunction,
-                              e->theFunctionItemInfo->theFunction->getName(),
                               e->theFunctionItemInfo->theArity,
                               e->is_inline(),
                               e->needs_context_item(),

@@ -134,8 +134,8 @@ class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator,
   typedef std::vector<LetVarIter_t> ArgVarRefs;
 
 protected:
-  user_function  * theUDF;
-  bool             theIsDynamic;
+  user_function                 * theUDF;
+  bool                            theIsDynamic;
   store::ItemHandle<FunctionItem> theFunctionItem;
 
 public:
@@ -149,10 +149,10 @@ public:
 
 public:
   UDFunctionCallIterator(
-        static_context* sctx,
-        const QueryLoc& loc, 
-        std::vector<PlanIter_t>& args, 
-        const user_function* aUDF);
+      static_context* sctx,
+      const QueryLoc& loc, 
+      std::vector<PlanIter_t>& args, 
+      const user_function* aUDF);
 
   bool isUpdating() const;
 

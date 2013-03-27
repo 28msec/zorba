@@ -90,8 +90,7 @@ function_item_expr::function_item_expr(
     user_function* udf,
     const QueryLoc& loc,
     function* f,
-    store::Item* qname,
-    uint32_t arity,
+    csize arity,
     bool isInline,
     bool needsContextItem,
     bool isCoercion)
@@ -100,7 +99,7 @@ function_item_expr::function_item_expr(
   theFunctionItemInfo(new FunctionItemInfo(sctx,
                                            loc,
                                            f,
-                                           qname,
+                                           f->getName(),
                                            arity,
                                            isInline,
                                            needsContextItem,
@@ -130,12 +129,19 @@ function_item_expr::function_item_expr(
                                            needsContextItem,
                                            isCoercion))
 {
-  theScriptingKind = SIMPLE_EXPR;
+  compute_scripting_kind();
 }
 
 
 function_item_expr::~function_item_expr()
 {
+}
+
+
+void function_item_expr::compute_scripting_kind()
+{
+  // ???? TODO
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -158,13 +164,6 @@ void function_item_expr::set_function(user_function* udf)
 }
 
 
-void function_item_expr::compute_scripting_kind()
-{
-  // ???? TODO
-  theScriptingKind = SIMPLE_EXPR;
-}
-
-
 store::Item_t function_item_expr::create_inline_fname(const QueryLoc& loc) 
 {
   store::Item_t name;
@@ -177,7 +176,7 @@ store::Item_t function_item_expr::create_inline_fname(const QueryLoc& loc)
 }
 
 
-DEF_EXPR_ACCEPT (function_item_expr);
+DEF_EXPR_ACCEPT(function_item_expr);
 
 
 }//end of namespace

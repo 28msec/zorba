@@ -472,9 +472,6 @@ void end_visit(function_item_expr& v)
   fnInfo->theCCB = theCCB;
   fnInfo->theMustDeleteCCB = false;
   fnInfo->theLoc = qloc;
-  fnInfo->theFunction = v.get_function();
-  fnInfo->theQName = v.get_qname();
-  fnInfo->theArity = v.get_arity();
 
   if (v.is_inline())
   {
@@ -484,7 +481,8 @@ void end_visit(function_item_expr& v)
         fnInfo->theScopedVarsIterators.push_back(pop_itstack());
     }
 
-    std::reverse(fnInfo->theScopedVarsIterators.begin(), fnInfo->theScopedVarsIterators.end());
+    std::reverse(fnInfo->theScopedVarsIterators.begin(),
+                 fnInfo->theScopedVarsIterators.end());
   }
 
 
@@ -494,30 +492,22 @@ void end_visit(function_item_expr& v)
     csize numOuterVars = fnInfo->theScopedVarsNames.size();
     for (csize i = 0; i < numOuterVars; ++i)
     {
-      var_expr* ve = theCCB->theEM->create_var_expr(fnInfo->theClosureSctx,
-                                                            NULL,
-                                                            qloc,
-                                                            var_expr::hof_var,
-                                                            fnInfo->theScopedVarsNames[i].getp());
-
       if (!fnInfo->theIsGlobalVar[i])
       {
         ++curChild;
 
-        if (fnInfo->theSubstVarsValues[i] != NULL
-            &&
+        if (fnInfo->theSubstVarsValues[i] != NULL &&
             fnInfo->theSubstVarsValues[i]->get_unique_id() == 0)
         {
           fnInfo->theSubstVarsValues[i]->set_var_info(NULL);
           fnInfo->theSubstVarsValues[i]->set_unique_id(theNextDynamicVarId++);
         }
 
-        ve->set_unique_id(fnInfo->theSubstVarsValues[i]->get_unique_id());
         fnInfo->theVarId[i] = fnInfo->theSubstVarsValues[i]->get_unique_id();
       }
       else
       {
-        static_context* outerSctx = fnInfo->theClosureSctx->get_parent();
+        static_context* outerSctx = fnInfo->theClosureSctx;
 
         VarInfo* outerGlobalVar = outerSctx->lookup_var(fnInfo->theScopedVarsNames[i]);
 
@@ -536,14 +526,11 @@ void end_visit(function_item_expr& v)
           }
         }
 
-        if (fnInfo->theSubstVarsValues[i] != NULL
-            &&
+        if (fnInfo->theSubstVarsValues[i] != NULL &&
             fnInfo->theSubstVarsValues[i]->get_unique_id() == 0)
         {
           fnInfo->theSubstVarsValues[i]->set_unique_id(outerGlobalVarId);
         }
-
-        ve->set_unique_id(outerGlobalVarId);
 
         fnInfo->theVarId[i] = outerGlobalVarId;
       }
