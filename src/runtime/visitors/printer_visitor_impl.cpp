@@ -52,6 +52,7 @@
 #endif
 #include "runtime/indexing/index_ddl.h"
 #include "runtime/hof/dynamic_fncall_iterator.h"
+#include "runtime/hof/function_item_iter.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
 #include "runtime/eval/eval.h"

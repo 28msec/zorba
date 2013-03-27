@@ -93,6 +93,7 @@
 #endif
 #include "runtime/eval/eval.h"
 #include "runtime/hof/function_item.h"
+#include "runtime/hof/function_item_iter.h"
 #include "runtime/hof/fn_hof_functions.h"
 #include "runtime/hof/dynamic_fncall_iterator.h"
 #include "runtime/misc/materialize.h"
