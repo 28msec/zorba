@@ -813,14 +813,13 @@ function_item_expr* ExprManager::create_function_item_expr(
     user_function* udf,
     const QueryLoc& loc,
     function* f,
-    store::Item* qname,
     uint32_t arity,
     bool isInline,
     bool needsContextItem,
     bool isCoercion)
 {
   CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc,
-                         f, qname, arity, isInline, needsContextItem, isCoercion);
+                         f, arity, isInline, needsContextItem, isCoercion);
 }
 
 

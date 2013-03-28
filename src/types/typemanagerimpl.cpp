@@ -35,7 +35,7 @@
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 #include "compiler/parser/query_loc.h"
 

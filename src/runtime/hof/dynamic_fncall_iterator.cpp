@@ -17,8 +17,8 @@
 
 #include "diagnostics/util_macros.h"
 
-#include "runtime/function_item/dynamic_fncall_iterator.h"
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/dynamic_fncall_iterator.h"
+#include "runtime/hof/function_item.h"
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/api/plan_iterator_wrapper.h"

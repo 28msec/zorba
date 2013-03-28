@@ -22,8 +22,8 @@
 // ******************************************
 
 
-#ifndef ZORBA_FUNCTIONS_FUNCTION_ITEM_ITER_H
-#define ZORBA_FUNCTIONS_FUNCTION_ITEM_ITER_H
+#ifndef ZORBA_FUNCTIONS_FN_HOF_FUNCTIONS_H
+#define ZORBA_FUNCTIONS_FN_HOF_FUNCTIONS_H
 
 
 #include "common/shared_types.h"
@@ -33,7 +33,7 @@
 namespace zorba {
 
 
-void populate_context_function_item_iter(static_context* sctx);
+void populate_context_fn_hof_functions(static_context* sctx);
 
 
 
