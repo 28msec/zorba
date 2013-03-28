@@ -80,6 +80,7 @@
 #define ZED_FOCA0002_BadLexicalQName_2 "~FOCA0002_BadLexicalQName_2"
 #define ZED_FOCA0002_NoURIforPrefix_2 "~FOCA0002_NoURIforPrefix_2"
 #define ZED_FOCA0002_NoCastTo_234 "~FOCA0002_NoCastTo_234"
+#define ZED_FODF1310_BadCharacter_3 "~FODF1310_BadCharacter_3"
 #define ZED_FODF1310_DigitNotSameFamily_34 "~FODF1310_DigitNotSameFamily_34"
 #define ZED_FODF1310_EmptyPictureString "~FODF1310_EmptyPictureString"
 #define ZED_FODF1310_MustBeOneMandatoryDigit "~FODF1310_MustBeOneMandatoryDigit"

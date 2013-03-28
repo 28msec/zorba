@@ -616,6 +616,7 @@ extern entry const dict_en[] = {
   { "~FOCA0002_BadLexicalQName_2", "\"$2\": value is not a valid lexical QName" },
   { "~FOCA0002_NoCastTo_234", "\"$2\": value of type $3 is not castable to type $4" },
   { "~FOCA0002_NoURIforPrefix_2", "no namespace URI provided for prefix in lexical QName \"$2\"" },
+  { "~FODF1310_BadCharacter_3", "'$3': invalid character" },
   { "~FODF1310_DigitNotSameFamily_34", "\"$3\": digit not from same digit family as $4" },
   { "~FODF1310_EmptyPictureString", "empty" },
   { "~FODF1310_MustBeOneMandatoryDigit", "there must be at least one mandatory-digit-sign" },

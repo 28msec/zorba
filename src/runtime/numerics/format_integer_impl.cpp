@@ -56,7 +56,7 @@ struct picture {
     WORDS         // 'W' : ONE TWO THREE FOUR ...
   };
 
-  enum modifier_co_type {
+  enum co_type {
     no_co,
     cardinal,     // 'c': 7 or seven
     ordinal       // 'o': 7th or seventh
@@ -68,9 +68,6 @@ struct picture {
     traditional,  // 't'
   };
 
-  typedef unsigned width_type;
-  typedef long int_type;
-
   struct {
     bool parsed;
     primary_type type;
@@ -80,13 +77,10 @@ struct picture {
   } primary;
 
   struct {
-    modifier_co_type co;
+    co_type co;
     zstring co_string;
     modifier_at_type at;
   } modifier;
-
-  width_type min_width;
-  width_type max_width;
 
   //
   // This stuff isn't part of the "presentation modifier" as discussed in the
@@ -96,27 +90,6 @@ struct picture {
   bool lang_is_fallback;
   iso3166_1::type country;
 
-  bool gt_max_width( width_type n ) const {
-    return max_width > 0 && n > max_width;
-  }
-
-  zstring const& left_pad_zero( zstring *s ) const {
-    if ( min_width )
-      utf8::left_pad( s, min_width, primary.zero );
-    return *s;
-  }
-
-  zstring const& right_pad_space( zstring *s ) const {
-    if ( min_width )
-      utf8::right_pad( s, min_width, ' ' );
-    return *s;
-  }
-
-  void set_default_width( width_type width ) {
-    if ( !(primary.parsed || min_width || max_width) )
-      min_width = max_width = width;
-  }
-
   picture() {
     primary.parsed = false;
     primary.type = arabic;
@@ -124,7 +97,6 @@ struct picture {
     primary.zero = '0';
     modifier.co = cardinal;
     modifier.at = no_at;
-    min_width = max_width = 0;
   }
 
   // default picture(picture const&) is fine
@@ -151,57 +123,6 @@ void FormatIntegerIterator::formatIntegerAZ(xs_integer valueInteger, char c0, zs
   xs_integer  mod_integer = valueInteger % integer_digit;
   xs_int      mod_int = to_xs_int(mod_integer);
   resultString += (c0 + mod_int);
-}
-
-void formatIntegerDecimalPattern(
-      zstring::const_reverse_iterator valueit,
-      zstring::const_reverse_iterator &valueit_rend,
-      std::vector<unicode::code_point>::const_reverse_iterator pictureit,
-      std::vector<unicode::code_point>::const_reverse_iterator &pictureit_rend,
-      unsigned int picture_pos,
-      unsigned int grouping_interval,
-      utf8_string<zstring>::value_type grouping_char,
-      utf8_string<zstring>::value_type utf8zero,
-      utf8_string<zstring> &utf8_result )
-
-{
-  if ( valueit == valueit_rend )
-    if ( pictureit == pictureit_rend || *pictureit == '#' )
-      return;
-
-  if ( grouping_interval && !((picture_pos+1) % grouping_interval) ) {
-    if ( pictureit != pictureit_rend && *pictureit == grouping_char ) {
-      pictureit++;//ignore it automatically
-      if ( valueit == valueit_rend )
-        if ( pictureit == pictureit_rend || *pictureit == '#' )
-          return;
-    }
-    formatIntegerDecimalPattern( valueit, valueit_rend, pictureit, pictureit_rend, picture_pos+1, grouping_interval, grouping_char, utf8zero, utf8_result );
-    utf8_result += grouping_char;
-    return;
-  }
-
-  if ( valueit == valueit_rend ) {
-    if ( unicode::is_category( *pictureit, unicode::Nd ) ) {
-      formatIntegerDecimalPattern( valueit, valueit_rend, pictureit+1, pictureit_rend, picture_pos+1, grouping_interval, grouping_char, utf8zero, utf8_result );
-      utf8_result += utf8zero;
-    }
-    return;
-  }
-
-  if ( pictureit != pictureit_rend ) {
-    if ( *pictureit == '#' || unicode::is_category(*pictureit, unicode::Nd ) ) {
-      formatIntegerDecimalPattern(valueit+1, valueit_rend, pictureit+1, pictureit_rend, picture_pos+1, grouping_interval, grouping_char, utf8zero, utf8_result );
-      utf8_result += utf8zero + *valueit - '0';
-    } else {
-      formatIntegerDecimalPattern(valueit, valueit_rend, pictureit+1, pictureit_rend, picture_pos+1, grouping_interval, grouping_char, utf8zero, utf8_result );
-      utf8_result += *pictureit;
-    }
-    return;
-  }
-
-  formatIntegerDecimalPattern( valueit+1, valueit_rend, pictureit, pictureit_rend, picture_pos+1, grouping_interval, grouping_char, utf8zero, utf8_result );
-  utf8_result += utf8zero + *valueit - '0';
 }
 #endif
 
@@ -255,7 +176,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
         if ( get_one_range( pic.primary.one, &min, &max ) &&
             n >= min && n <= max ) {
           utf8_string<zstring> u_dest( *dest );
-          u_dest += (unicode::code_point)(pic.primary.one + n - 1);
+          u_dest = (unicode::code_point)(pic.primary.one + n - 1);
           break;
         }
         //
@@ -278,7 +199,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
       xs_integer xs_n2( xs_n );
       if ( xs_n2.sign() < 0 ) {
         xs_n2 = -xs_n2;
-        *dest += '-';
+        *dest = '-';
       }
 
       zstring const s( xs_n2.toString() );
@@ -293,8 +214,9 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
 
       utf8_string<zstring> u_dest( *dest );
 
-      unicode::code_point digit_cp, pic_cp;
-      int pos = 0;
+      unicode::code_point digit_cp, grouping_cp, pic_cp;
+      int digit_pos = 0;
+      bool just_inserted_grouping_separator = false;
 
       while ( n_i != n_end || pic_i != pic_end ) {
         digit_cp = pic.primary.zero;
@@ -302,28 +224,32 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
           digit_cp += *n_i - '0';
         if ( pic_i != pic_end ) {
           pic_cp = *pic_i++;
+          if ( pic_cp == '#' && n_i == n_end )
+            break;
           if ( pic_cp == '#' || unicode::is_Nd( pic_cp ) ) {
-            if ( pic_cp == '#' && n_i == n_end )
-              break;
             u_dest.insert( 0, 1, digit_cp );
             if ( n_i != n_end ) ++n_i;
-            ++pos;
-          } else if ( unicode::is_grouping_separator( pic_cp ) ) {
-            u_dest.insert( 0, 1, pic_cp );
+            ++digit_pos;
+          } else {                      // must be a grouping-separator
+            grouping_cp = pic_cp;       // remember for later
+            u_dest.insert( 0, 1, grouping_cp );
           }
         } else {
-          if ( pic.primary.grouping_interval ) {
-            if ( pos % pic.primary.grouping_interval == 0 ) {
-              u_dest.insert( 0, 1, pic_cp );
+          if ( pic.primary.grouping_interval &&
+               digit_pos % pic.primary.grouping_interval == 0 ) {
+            if ( just_inserted_grouping_separator )
+              just_inserted_grouping_separator = false;
+            else {
+              u_dest.insert( 0, 1, grouping_cp );
+              just_inserted_grouping_separator = true;
               continue;
             }
           }
           u_dest.insert( 0, 1, digit_cp );
           if ( n_i != n_end ) ++n_i;
-          ++pos;
+          ++digit_pos;
         }
       } // while
-      pic.left_pad_zero( dest );
       break;
     }
 
@@ -331,8 +257,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
     case picture::ALPHA:
       try {
         xs_long const n = to_xs_long( xs_n );
-        zstring s( ztd::alpha( n, pic.primary.type == picture::ALPHA ) );
-        *dest += pic.right_pad_space( &s );
+        *dest = ztd::alpha( n, pic.primary.type == picture::ALPHA );
       }
       catch ( range_error const& ) {
         picture default_pic;
@@ -348,8 +273,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
         if ( pic.primary.type == picture::ROMAN )
           oss << uppercase;
         oss << roman( n );
-        zstring s( oss.str() );
-        *dest += pic.right_pad_space( &s );
+        *dest = oss.str();
       }
       catch ( range_error const& ) {
         picture default_pic;
@@ -360,8 +284,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
     case picture::words:
       try {
         xs_long const n = to_xs_long( xs_n );
-        zstring s( ztd::english( n, pic.modifier.co == picture::ordinal ) );
-        *dest += pic.right_pad_space( &s );
+        *dest = ztd::english( n, pic.modifier.co == picture::ordinal );
       }
       catch ( range_error const& ) {
         picture default_pic;
@@ -372,9 +295,10 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
     case picture::Words:
       try {
         xs_long const n = to_xs_long( xs_n );
-        zstring s( ztd::english( n, pic.modifier.co == picture::ordinal ) );
-        std::transform( s.begin(), s.end(), s.begin(), ascii::to_title() );
-        *dest += pic.right_pad_space( &s );
+        *dest = ztd::english( n, pic.modifier.co == picture::ordinal );
+        std::transform(
+          dest->begin(), dest->end(), dest->begin(), ascii::to_title()
+        );
       }
       catch ( range_error const& ) {
         picture default_pic;
@@ -385,9 +309,8 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
     case picture::WORDS:
       try {
         xs_long const n = to_xs_long( xs_n );
-        zstring s( ztd::english( n, pic.modifier.co == picture::ordinal ) );
-        ascii::to_upper( s );
-        *dest += pic.right_pad_space( &s );
+        *dest = ztd::english( n, pic.modifier.co == picture::ordinal );
+        ascii::to_upper( *dest );
       }
       catch ( range_error const& ) {
         picture default_pic;
@@ -412,9 +335,10 @@ static void parse_primary( zstring const &picture_str,
     );
   }
 
+  pic->primary.format = picture_str;
+
   utf8_string<zstring const> const u_picture_str( picture_str );
   utf8_string<zstring const>::const_iterator u( u_picture_str.current( *i ) );
-  utf8_string<zstring> u_pic_format( pic->primary.format );
   unicode::code_point cp = *u;
 
   if ( cp != '#' && unicode::is_grouping_separator( cp ) ) {
@@ -457,7 +381,6 @@ static void parse_primary( zstring const &picture_str,
     zstring::size_type pos = 0, prev_grouping_pos = zstring::npos;
     unicode::code_point prev_grouping_separator = 0;
 
-    u_pic_format = *u;
     while ( ++u != u_picture_str.end() ) {
       cp = *u, ++pos;
       if ( cp == '#' ) {
@@ -496,21 +419,10 @@ static void parse_primary( zstring const &picture_str,
               ERROR_LOC( loc )
             );
           }
-          //
-          // Ibid: A format token containing more than one digit, such as 001
-          // or 9999, sets the minimum and maximum width to the number of
-          // digits appearing in the format token.
-          //
-          if ( !pic->min_width )
-            pic->min_width = pic->max_width = 2;
-          else
-            pic->min_width = ++pic->max_width;
         } else
           got_mandatory_digit = true;
         got_grouping_separator = false;
-      } else if ( cp == ';' )
-        break;
-      else if ( unicode::is_grouping_separator( cp ) ) {
+      } else if ( unicode::is_grouping_separator( cp ) ) {
         if ( cp == ';' && !--semicolons ) {
           //
           // Ibid: If the string contains one or more semicolons then
@@ -552,20 +464,26 @@ static void parse_primary( zstring const &picture_str,
           if ( !prev_grouping_separator )
             prev_grouping_separator = cp;
           else if ( cp != prev_grouping_separator )
-            goto no_gi;
+            goto no_inter;
           else if ( !pic->primary.grouping_interval )
             pic->primary.grouping_interval = pos - prev_grouping_pos;
           else if ( pos - prev_grouping_pos !=
                     pic->primary.grouping_interval ) {
-no_gi:      pic->primary.grouping_interval = 0;
+no_inter:   pic->primary.grouping_interval = 0;
             grouping_interval_possible = false;
           }
           prev_grouping_pos = pos;
         }
       } else
-        break;
-
-      u_pic_format += cp;
+        throw XQUERY_EXCEPTION(
+          err::FODF1310,
+          ERROR_PARAMS(
+            picture_str,
+            ZED( FODF1310_BadCharacter_3 ),
+            unicode::printable_cp( cp )
+          ),
+          ERROR_LOC( loc )
+        );
     } // while
     if ( got_grouping_separator ) {
       //
@@ -592,6 +510,8 @@ no_gi:      pic->primary.grouping_interval = 0;
         ERROR_LOC( loc )
       );
     }
+    if ( prev_grouping_separator && !pic->primary.grouping_interval )
+      pic->primary.grouping_interval = pos - prev_grouping_pos;
     pic->primary.zero = zero[0];
   } else {
     using namespace unicode;
