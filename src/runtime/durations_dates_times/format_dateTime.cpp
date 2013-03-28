@@ -73,13 +73,13 @@ struct modifier {
     military_tz   // 'Z' : A B C ... J ... X Y Z
   };
 
-  enum second_co_type {
+  enum co_type {
     no_second_co,
     cardinal,     // 'c': 7 or seven
     ordinal       // 'o': 7th or seventh
   };
 
-  enum second_at_type {
+  enum at_type {
     no_second_at,
     alphabetic,   // 'a'
     traditional   // 't'
@@ -96,9 +96,9 @@ struct modifier {
   } first;
 
   struct {
-    second_co_type co_type;
+    co_type co;
     zstring co_string;
-    second_at_type at_type;
+    at_type at;
   } second;
 
   width_type min_width;
@@ -156,8 +156,8 @@ struct modifier {
     first.type = arabic;
     first.has_grouping_separators = false;
     first.zero = '0';
-    second.co_type = cardinal;
-    second.at_type = no_second_at;
+    second.co = cardinal;
+    second.at = no_second_at;
     min_width = max_width = 0;
   };
 
@@ -172,7 +172,7 @@ static void append_number( int n, modifier const &mod, zstring *dest ) {
     case modifier::arabic: {
       utf8::itou_buf_type buf;
       zstring tmp( utf8::itou( n, buf, mod.first.zero ) );
-      if ( mod.second.co_type == modifier::ordinal )
+      if ( mod.second.co == modifier::ordinal )
         tmp += ztd::ordinal( n );
       *dest += mod.left_pad_zero( &tmp );
       break;
@@ -197,20 +197,20 @@ static void append_number( int n, modifier const &mod, zstring *dest ) {
     }
 
     case modifier::words: {
-      zstring tmp( ztd::english( n, mod.second.co_type == modifier::ordinal ) );
+      zstring tmp( ztd::english( n, mod.second.co == modifier::ordinal ) );
       *dest += mod.right_pad_space( &tmp );
       break;
     }
 
     case modifier::Words: {
-      zstring tmp( ztd::english( n, mod.second.co_type == modifier::ordinal ) );
+      zstring tmp( ztd::english( n, mod.second.co == modifier::ordinal ) );
       std::transform( tmp.begin(), tmp.end(), tmp.begin(), ascii::to_title() );
       *dest += mod.right_pad_space( &tmp );
       break;
     }
 
     case modifier::WORDS: {
-      zstring tmp( ztd::english( n, mod.second.co_type == modifier::ordinal ) );
+      zstring tmp( ztd::english( n, mod.second.co == modifier::ordinal ) );
       ascii::to_upper( tmp );
       *dest += mod.right_pad_space( &tmp );
       break;
@@ -402,7 +402,7 @@ fallback:
         tmp = "GMT";
       }
 
-      if ( mod.second.at_type == modifier::traditional && !hour && !min ) {
+      if ( mod.second.at == modifier::traditional && !hour && !min ) {
         //
         // Ibid: If the first presentation modifier is numeric, in any of the
         // above formats, and the second presentation modifier is t, then a
@@ -819,10 +819,10 @@ static void parse_second_modifier( zstring const &picture_str,
   if ( j == picture_str.end() )
     return;
   switch ( *j ) {
-    case 'c': mod->second.co_type = modifier::cardinal   ; break;
-    case 'o': mod->second.co_type = modifier::ordinal    ; break;
-    case 'a': mod->second.at_type = modifier::alphabetic ; ++j; return;
-    case 't': mod->second.at_type = modifier::traditional; ++j; return;
+    case 'c': mod->second.co = modifier::cardinal   ; break;
+    case 'o': mod->second.co = modifier::ordinal    ; break;
+    case 'a': mod->second.at = modifier::alphabetic ; ++j; return;
+    case 't': mod->second.at = modifier::traditional; ++j; return;
     default : return;
   }
   if ( ++j == picture_str.end() )
