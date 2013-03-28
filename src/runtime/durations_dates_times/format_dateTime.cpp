@@ -1189,6 +1189,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         // either, try the host's language and hope for the best.
         //
         lang = locale::get_host_lang();
+        country = locale::get_host_country();
         lang_is_fallback = true;
       }
     }
