@@ -128,6 +128,23 @@ typedef U_NAMESPACE_QUALIFIER UnicodeString string;
 typedef zstring string;
 #endif /* ZORBA_NO_ICU */
 
+////////// constants //////////////////////////////////////////////////////////
+
+//
+// Various '1' digits.
+//
+code_point const CIRCLED_DIGIT_ONE                             = 0x2460;
+code_point const CIRCLED_IDEOGRAPH_ONE                         = 0x3280;
+code_point const DIGIT_ONE_FULL_STOP                           = 0x2488;
+code_point const DINGBAT_CIRCLED_SANS_SERIF_DIGIT_ONE          = 0x2780;
+code_point const DINGBAT_NEGATIVE_CIRCLED_DIGIT_ONE            = 0x2776;
+code_point const DINGBAT_NEGATIVE_CIRCLED_SANS_SERIF_DIGIT_ONE = 0x278A;
+code_point const DOUBLE_CIRCLED_DIGIT_ONE                      = 0x24F5;
+code_point const PARENTHESIZED_DIGIT_ONE                       = 0x2474;
+code_point const PARENTHESIZED_IDEOGRAPH_ONE                   = 0x3220;
+code_point const SUBSCRIPT_ONE                                 = 0x2081;
+code_point const SUPERSCRIPT_ONE                               = 0x00B9;
+
 ////////// code-point checking ////////////////////////////////////////////////
 
 /**
