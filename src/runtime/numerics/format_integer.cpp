@@ -268,12 +268,16 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
     case picture::roman:
     case picture::ROMAN:
       try {
-        xs_long const n = to_xs_long( xs_n );
+        xs_long n = to_xs_long( xs_n );
+        if ( n < 0 ) {
+          *dest = '-';
+          n = -n;
+        }
         ostringstream oss;
         if ( pic.primary.type == picture::ROMAN )
           oss << uppercase;
         oss << roman( n );
-        *dest = oss.str();
+        *dest += oss.str();
       }
       catch ( range_error const& ) {
         picture default_pic;
