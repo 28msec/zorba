@@ -863,35 +863,35 @@ static void parse_second_modifier( zstring const &picture_str,
         return;
       case 'c':
         if ( got_c )
-          goto dup_second_modifier;
+          goto dup_2nd_modifier;
         if ( got_o || got_a || got_t )
-          goto bad_second_modifier_here;
+          goto bad_2nd_modifier_here;
         got_c = true;
         mod->second.co = modifier::cardinal;
         parse_variation( u_picture_str, &u, mod, loc );
         break;
       case 'o':
         if ( got_o )
-          goto dup_second_modifier;
+          goto dup_2nd_modifier;
         if ( got_c || got_a || got_t )
-          goto bad_second_modifier_here;
+          goto bad_2nd_modifier_here;
         got_o = true;
         mod->second.co = modifier::ordinal;
         parse_variation( u_picture_str, &u, mod, loc );
         break;
       case 'a':
         if ( got_a )
-          goto dup_second_modifier;
+          goto dup_2nd_modifier;
         if ( got_t )
-          goto bad_second_modifier_here;
+          goto bad_2nd_modifier_here;
         got_a = true;
         mod->second.at = modifier::alphabetic;
         break;
       case 't':
         if ( got_t )
-          goto dup_second_modifier;
+          goto dup_2nd_modifier;
         if ( got_a )
-          goto bad_second_modifier_here;
+          goto bad_2nd_modifier_here;
         got_t = true;
         mod->second.at = modifier::traditional;
         break;
@@ -900,7 +900,7 @@ static void parse_second_modifier( zstring const &picture_str,
           err::FOFD1340,
           ERROR_PARAMS(
             picture_str,
-            ZED( FOFD1340_BadSecondModifier_3 ),
+            ZED( FOFD1340_Bad2ndModifier_3 ),
             unicode::printable_cp( cp )
           ),
           ERROR_LOC( loc )
@@ -910,22 +910,22 @@ static void parse_second_modifier( zstring const &picture_str,
   j = u.base();
   return;
 
-bad_second_modifier_here:
+bad_2nd_modifier_here:
   throw XQUERY_EXCEPTION(
     err::FOFD1340,
     ERROR_PARAMS(
       picture_str,
-      ZED( FOFD1340_BadSecondModifierHere_3 ),
+      ZED( FOFD1340_Bad2ndModifierHere_3 ),
       unicode::printable_cp( cp )
     )
   );
 
-dup_second_modifier:
+dup_2nd_modifier:
   throw XQUERY_EXCEPTION(
     err::FOFD1340,
     ERROR_PARAMS(
       picture_str,
-      ZED( FOFD1340_DupSecondModifier_3 ),
+      ZED( FOFD1340_Dup2ndModifier_3 ),
       unicode::printable_cp( cp )
     )
   );
