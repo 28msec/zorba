@@ -105,29 +105,6 @@ struct picture {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#if 0
-/*
-  represent integer as sequence of letters A, B, ... Z, AA, AB, ....
-  'A' is 1
-  0 is empty string
-  The sequence includes the characters 'I' and 'O'
-  There is no upper limit for the input integer
-*/
-void FormatIntegerIterator::formatIntegerAZ(xs_integer valueInteger, char c0, zstring &resultString)
-{
-  static const unsigned int letter_range = 'Z' - 'A' + 1;
-  static xs_integer integer_digit(letter_range);
-  xs_integer  upper_int = valueInteger/integer_digit;
-  if(upper_int > 0)
-    formatIntegerAZ(upper_int - 1, c0, resultString);
-  xs_integer  mod_integer = valueInteger % integer_digit;
-  xs_int      mod_int = to_xs_int(mod_integer);
-  resultString += (c0 + mod_int);
-}
-#endif
-
-///////////////////////////////////////////////////////////////////////////////
-
 static bool get_one_range( unicode::code_point cp, int *min, int *max ) {
   using namespace unicode;
   switch ( cp ) {
@@ -179,9 +156,6 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
           u_dest = (unicode::code_point)(pic.primary.one + n - 1);
           break;
         }
-        //
-        // Ibid: If an implementation does not support a numbering sequence
-        // represented by the given token, it must use a format token of 1.
         //
         // Ibid: Numbers that fall outside this range must be formatted using
         // the format token 1.
@@ -255,34 +229,52 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
 
     case picture::alpha:
     case picture::ALPHA:
-      try {
-        xs_long const n = to_xs_long( xs_n );
-        *dest = ztd::alpha( n, pic.primary.type == picture::ALPHA );
-      }
-      catch ( range_error const& ) {
-        picture default_pic;
-        format_number( xs_n, default_pic, dest );
-      }
+      if ( xs_n.sign() == 0 ) {
+        //
+        // Ibid: Numbers that fall outside this range must be formatted using
+        // the format token 1.
+        //
+        *dest = '0';
+      } else
+        try {
+          xs_long n = to_xs_long( xs_n );
+          if ( n < 0 ) {
+            *dest = '-';
+            n = -n;
+          }
+          *dest += ztd::alpha( n, pic.primary.type == picture::ALPHA );
+        }
+        catch ( range_error const& ) {
+          picture default_pic;
+          format_number( xs_n, default_pic, dest );
+        }
       break;
 
     case picture::roman:
     case picture::ROMAN:
-      try {
-        xs_long n = to_xs_long( xs_n );
-        if ( n < 0 ) {
-          *dest = '-';
-          n = -n;
+      if ( xs_n.sign() == 0 ) {
+        //
+        // Ibid: Numbers that fall outside this range must be formatted using
+        // the format token 1.
+        //
+        *dest = '0';
+      } else
+        try {
+          xs_long n = to_xs_long( xs_n );
+          if ( n < 0 ) {
+            *dest = '-';
+            n = -n;
+          }
+          ostringstream oss;
+          if ( pic.primary.type == picture::ROMAN )
+            oss << uppercase;
+          oss << roman( n );
+          *dest += oss.str();
         }
-        ostringstream oss;
-        if ( pic.primary.type == picture::ROMAN )
-          oss << uppercase;
-        oss << roman( n );
-        *dest += oss.str();
-      }
-      catch ( range_error const& ) {
-        picture default_pic;
-        format_number( xs_n, default_pic, dest );
-      }
+        catch ( range_error const& ) {
+          picture default_pic;
+          format_number( xs_n, default_pic, dest );
+        }
       break;
 
     case picture::words:
