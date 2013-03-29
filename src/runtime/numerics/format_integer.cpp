@@ -179,10 +179,8 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
 
     case picture::arabic: {
       xs_integer xs_n2( xs_n );
-      if ( xs_n2.sign() < 0 ) {
+      if ( xs_n2.sign() < 0 )
         xs_n2 = -xs_n2;
-        *dest = '-';
-      }
 
       zstring const s( xs_n2.toString() );
       zstring::const_reverse_iterator n_i( s.rbegin() );
@@ -236,6 +234,8 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
           ++digit_pos;
         }
       } // while
+      if ( xs_n.sign() < 0 )
+        dest->insert( (zstring::size_type)0, 1, '-' );
       break;
     }
 
