@@ -1028,11 +1028,20 @@
       <entry key="BadComponent_3">
         <value>'$3': invalid component specifier</value>
       </entry>
+      <entry key="BadSecondModifier_3">
+        <value>'$3': invalid second presentation modifier</value>
+      </entry>
+      <entry key="BadSecondModifierHere_3">
+        <value>'$3': valid second presentation modifier invalid here</value>
+      </entry>
       <entry key="BadWidthModifier">
         <value>invalid width modifier</value>
       </entry>
       <entry key="DigitNotSameFamily_34">
         <value>"$3": digit not from same digit family as $4</value>
+      </entry>
+      <entry key="DupSecondModifier_3">
+        <value>"$3": duplicate second presentation modifier</value>
       </entry>
       <entry key="MultipleComponent_3">
         <value>'$3': multiple component specifiers between []</value>

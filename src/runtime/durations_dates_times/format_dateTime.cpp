@@ -811,23 +811,13 @@ static void parse_first_modifier( zstring const &picture_str,
   mod->first.parsed = true;
 }
 
-static void parse_second_modifier( zstring const &picture_str,
-                                   zstring::const_iterator *i, modifier *mod,
-                                   QueryLoc const &loc ) {
-  zstring::const_iterator &j = *i;
-  ascii::skip_whitespace( picture_str, &j );
-  if ( j == picture_str.end() )
+static void parse_variation( utf8_string<zstring const> const &u_picture_str,
+                             utf8_string<zstring const>::const_iterator *u,
+                             modifier *mod, QueryLoc const &loc ) {
+  utf8_string<zstring const>::const_iterator &v = *u;
+  if ( v == u_picture_str.end() )
     return;
-  switch ( *j ) {
-    case 'c': mod->second.co = modifier::cardinal   ; break;
-    case 'o': mod->second.co = modifier::ordinal    ; break;
-    case 'a': mod->second.at = modifier::alphabetic ; ++j; return;
-    case 't': mod->second.at = modifier::traditional; ++j; return;
-    default : return;
-  }
-  if ( ++j == picture_str.end() )
-    return;
-  if ( *j == '(' ) {
+  if ( *v == '(' ) {
     //
     // XQuery F&O 3.0 4.6.1: The string of characters between the parentheses,
     // if present, is used to select between other possible variations of
@@ -835,19 +825,110 @@ static void parse_second_modifier( zstring const &picture_str,
     // string is implementation-defined. No error occurs if the implementation
     // does not define any interpretation for the defined string.
     //
+    utf8_string<zstring> u_pic_co_string( mod->second.co_string );
     while ( true ) {
-      if ( ++j == picture_str.end() )
+      if ( ++v == u_picture_str.end() )
         throw XQUERY_EXCEPTION(
           err::FOFD1340,
-          ERROR_PARAMS( picture_str, ZED( CharExpected_3 ), ')' ),
+          ERROR_PARAMS( *u_picture_str.get(), ZED( CharExpected_3 ), ')' ),
           ERROR_LOC( loc )
         );
-      if ( *j == ')' )
+      unicode::code_point const cp = *v;
+      if ( cp == ')' )
         break;
-      mod->second.co_string += *j;
-    } 
-    ++j;
+      u_pic_co_string += cp;
+    }
+    ++v;
   }
+}
+
+static void parse_second_modifier( zstring const &picture_str,
+                                   zstring::const_iterator *i, modifier *mod,
+                                   QueryLoc const &loc ) {
+  zstring::const_iterator &j = *i;
+  ascii::skip_whitespace( picture_str, &j );
+  if ( j == picture_str.end() )
+    return;
+
+  unicode::code_point cp;
+  bool got_c, got_o, got_a, got_t;
+  got_c = got_o = got_a = got_t = false;
+  utf8_string<zstring const> const u_picture_str( picture_str );
+  utf8_string<zstring const>::const_iterator u( u_picture_str.current( j ) );
+
+  while ( u != u_picture_str.end() ) {
+    cp = *u++;
+    switch ( cp ) {
+      case ']':
+        return;
+      case 'c':
+        if ( got_c )
+          goto dup_second_modifier;
+        if ( got_o || got_a || got_t )
+          goto bad_second_modifier_here;
+        got_c = true;
+        mod->second.co = modifier::cardinal;
+        parse_variation( u_picture_str, &u, mod, loc );
+        break;
+      case 'o':
+        if ( got_o )
+          goto dup_second_modifier;
+        if ( got_c || got_a || got_t )
+          goto bad_second_modifier_here;
+        got_o = true;
+        mod->second.co = modifier::ordinal;
+        parse_variation( u_picture_str, &u, mod, loc );
+        break;
+      case 'a':
+        if ( got_a )
+          goto dup_second_modifier;
+        if ( got_t )
+          goto bad_second_modifier_here;
+        got_a = true;
+        mod->second.at = modifier::alphabetic;
+        break;
+      case 't':
+        if ( got_t )
+          goto dup_second_modifier;
+        if ( got_a )
+          goto bad_second_modifier_here;
+        got_t = true;
+        mod->second.at = modifier::traditional;
+        break;
+      default:
+        throw XQUERY_EXCEPTION(
+          err::FOFD1340,
+          ERROR_PARAMS(
+            picture_str,
+            ZED( FOFD1340_BadSecondModifier_3 ),
+            unicode::printable_cp( cp )
+          ),
+          ERROR_LOC( loc )
+        );
+    } // switch
+  } // while
+  j = u.base();
+  return;
+
+bad_second_modifier_here:
+  throw XQUERY_EXCEPTION(
+    err::FOFD1340,
+    ERROR_PARAMS(
+      picture_str,
+      ZED( FOFD1340_BadSecondModifierHere_3 ),
+      unicode::printable_cp( cp )
+    )
+  );
+
+dup_second_modifier:
+  throw XQUERY_EXCEPTION(
+    err::FOFD1340,
+    ERROR_PARAMS(
+      picture_str,
+      ZED( FOFD1340_DupSecondModifier_3 ),
+      unicode::printable_cp( cp )
+    )
+  );
 }
 
 static void parse_width_modifier( zstring const &picture_str,
@@ -1085,9 +1166,11 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         if ( i == picture_str.end() )
           goto eos;
         if ( *i != ']' ) {
-          parse_second_modifier( picture_str, &i, &mod, loc );
-          if ( i == picture_str.end() )
-            goto eos;
+          if ( *i != ',' && *i != ';' ) {
+            parse_second_modifier( picture_str, &i, &mod, loc );
+            if ( i == picture_str.end() )
+              goto eos;
+          }
           parse_width_modifier( picture_str, &i, &mod, loc );
           if ( i == picture_str.end() )
             goto eos;
