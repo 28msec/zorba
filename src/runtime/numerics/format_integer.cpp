@@ -141,9 +141,10 @@ static bool get_one_range( unicode::code_point cp, int *min, int *max ) {
   return true;
 }
 
-static void format_number( xs_integer const &xs_n, picture const &pic,
-                           zstring *dest ) {
-  unicode::code_point zero = pic.primary.zero;
+static void format_integer( xs_integer const &xs_n, picture const &pic,
+                            zstring *dest ) {
+  picture default_pic;
+
   switch ( pic.primary.type ) {
     case picture::one:
       //
@@ -168,14 +169,12 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
         // Ibid: Numbers that fall outside this range must be formatted using
         // the format token 1.
         //
-        zero = '0';
+        format_integer( xs_n, default_pic, dest );
       }
       catch ( range_error const& ) {
-        picture default_pic;
-        format_number( xs_n, default_pic, dest );
-        break;
+        format_integer( xs_n, default_pic, dest );
       }
-      // no break;
+      break;
 
     case picture::arabic: {
       xs_integer xs_n2( xs_n );
@@ -234,6 +233,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
           ++digit_pos;
         }
       } // while
+
       if ( xs_n.sign() < 0 )
         dest->insert( (zstring::size_type)0, 1, '-' );
       break;
@@ -257,8 +257,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
           *dest += ztd::alpha( n, pic.primary.type == picture::ALPHA );
         }
         catch ( range_error const& ) {
-          picture default_pic;
-          format_number( xs_n, default_pic, dest );
+          format_integer( xs_n, default_pic, dest );
         }
       break;
 
@@ -284,8 +283,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
           *dest += oss.str();
         }
         catch ( range_error const& ) {
-          picture default_pic;
-          format_number( xs_n, default_pic, dest );
+          format_integer( xs_n, default_pic, dest );
         }
       break;
 
@@ -295,8 +293,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
         *dest = ztd::english( n, pic.modifier.co == picture::ordinal );
       }
       catch ( range_error const& ) {
-        picture default_pic;
-        format_number( xs_n, default_pic, dest );
+        format_integer( xs_n, default_pic, dest );
       }
       break;
 
@@ -309,8 +306,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
         );
       }
       catch ( range_error const& ) {
-        picture default_pic;
-        format_number( xs_n, default_pic, dest );
+        format_integer( xs_n, default_pic, dest );
       }
       break;
 
@@ -321,8 +317,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
         ascii::to_upper( *dest );
       }
       catch ( range_error const& ) {
-        picture default_pic;
-        format_number( xs_n, default_pic, dest );
+        format_integer( xs_n, default_pic, dest );
       }
       break;
   } // switch
@@ -380,7 +375,7 @@ static void parse_primary( zstring const &picture_str,
     if ( *c == ';' )
       ++semicolons;
 
-  unicode::code_point zero[2];
+  unicode::code_point zero[2] = { '0', '0' };
 
   if ( cp == '#' || unicode::is_Nd( cp, &zero[0] ) ) {
     bool got_grouping_separator = false;
@@ -509,16 +504,6 @@ no_inter:   pic->primary.grouping_interval = 0;
           ZED( FODF1310_NoGroupSepAtEnd_3 ),
           unicode::printable_cp( cp )
         ),
-        ERROR_LOC( loc )
-      );
-    }
-    if ( !got_mandatory_digit ) {
-      //
-      // Ibid: There must be at least one mandatory-digit-sign.
-      //
-      throw XQUERY_EXCEPTION(
-        err::FODF1310,
-        ERROR_PARAMS( picture_str, ZED( FODF1310_MustBeOneMandatoryDigit ) ),
         ERROR_LOC( loc )
       );
     }
@@ -753,7 +738,7 @@ bool FormatIntegerIterator::nextImpl( store::Item_t &result,
     if ( pic_i != picture_str.end() )
       parse_format_modifier( picture_str, &pic_i, &pic, loc );
 
-    format_number( value, pic, &result_str );
+    format_integer( value, pic, &result_str );
     STACK_PUSH( GENV_ITEMFACTORY->createString( result, result_str ), state );
   }
   STACK_END( state );

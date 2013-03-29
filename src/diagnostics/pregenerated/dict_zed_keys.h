@@ -89,7 +89,6 @@
 #define ZED_FODF1310_DigitNotSameFamily_34 "~FODF1310_DigitNotSameFamily_34"
 #define ZED_FODF1310_DupFormatModifier_3 "~FODF1310_DupFormatModifier_3"
 #define ZED_FODF1310_EmptyPictureString "~FODF1310_EmptyPictureString"
-#define ZED_FODF1310_MustBeOneMandatoryDigit "~FODF1310_MustBeOneMandatoryDigit"
 #define ZED_FODF1310_NoAdjacentGroupSep_3 "~FODF1310_NoAdjacentGroupSep_3"
 #define ZED_FODF1310_NoGroupSepAtStart_3 "~FODF1310_NoGroupSepAtStart_3"
 #define ZED_FODF1310_NoGroupSepAtEnd_3 "~FODF1310_NoGroupSepAtEnd_3"

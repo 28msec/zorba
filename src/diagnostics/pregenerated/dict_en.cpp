@@ -622,7 +622,6 @@ extern entry const dict_en[] = {
   { "~FODF1310_DigitNotSameFamily_34", "\"$3\": digit not from same digit family as $4" },
   { "~FODF1310_DupFormatModifier_3", "\"$3\": duplicate format modifier" },
   { "~FODF1310_EmptyPictureString", "empty" },
-  { "~FODF1310_MustBeOneMandatoryDigit", "there must be at least one mandatory-digit-sign" },
   { "~FODF1310_NoAdjacentGroupSep_3", "\"$3\": grouping separator must not be adjacent to others" },
   { "~FODF1310_NoGroupSepAtEnd_3", "\"$3\": grouping separator illegal at end of decimal-digit-pattern" },
   { "~FODF1310_NoGroupSepAtStart_3", "\"$3\": grouping separator illegal at start of decimal-digit-pattern" },
