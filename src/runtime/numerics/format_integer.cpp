@@ -69,7 +69,6 @@ struct picture {
   };
 
   struct {
-    bool parsed;
     primary_type type;
     zstring format;
     int grouping_interval;
@@ -91,7 +90,6 @@ struct picture {
   iso3166_1::type country;
 
   picture() {
-    primary.parsed = false;
     primary.type = arabic;
     primary.grouping_interval = 0;
     primary.zero = '0';
@@ -565,7 +563,6 @@ no_inter:   pic->primary.grouping_interval = 0;
     } // switch
   }
   *i = u.base();
-  pic->primary.parsed = true;
 }
 
 static void parse_format_modifier( zstring const &picture_str,
