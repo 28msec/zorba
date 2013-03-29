@@ -1,1 +1,1 @@
-fn:format-integer( 3, "Io" ) eq "III"
+fn:format-integer( 3, "I;o" ) eq "III"

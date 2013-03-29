@@ -72,6 +72,7 @@ struct picture {
     primary_type type;
     zstring format;
     int grouping_interval;
+    int mandatory_digits;
     unicode::code_point zero, one;
   } primary;
 
@@ -92,6 +93,7 @@ struct picture {
   picture() {
     primary.type = arabic;
     primary.grouping_interval = 0;
+    primary.mandatory_digits = 0;
     primary.zero = '0';
     modifier.co = cardinal;
     modifier.at = no_at;
@@ -197,6 +199,7 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
       unicode::code_point digit_cp, grouping_cp, pic_cp;
       int digit_pos = 0;
       bool just_inserted_grouping_separator = false;
+      int mandatory_digits = pic.primary.mandatory_digits;
 
       while ( n_i != n_end || pic_i != pic_end ) {
         digit_cp = pic.primary.zero;
@@ -204,9 +207,10 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
           digit_cp += *n_i - '0';
         if ( pic_i != pic_end ) {
           pic_cp = *pic_i++;
-          if ( pic_cp == '#' && n_i == n_end )
+          bool const is_mandatory_digit = unicode::is_Nd( pic_cp );
+          if ( !mandatory_digits && n_i == n_end )
             break;
-          if ( pic_cp == '#' || unicode::is_Nd( pic_cp ) ) {
+          if ( pic_cp == '#' || is_mandatory_digit ) {
             u_dest.insert( 0, 1, digit_cp );
             if ( n_i != n_end ) ++n_i;
             ++digit_pos;
@@ -214,6 +218,8 @@ static void format_number( xs_integer const &xs_n, picture const &pic,
             grouping_cp = pic_cp;       // remember for later
             u_dest.insert( 0, 1, grouping_cp );
           }
+          if ( is_mandatory_digit )
+            --mandatory_digits;
         } else {
           if ( pic.primary.grouping_interval &&
                digit_pos % pic.primary.grouping_interval == 0 ) {
@@ -383,6 +389,9 @@ static void parse_primary( zstring const &picture_str,
     zstring::size_type pos = 0, prev_grouping_pos = zstring::npos;
     unicode::code_point prev_grouping_separator = 0;
 
+    if ( got_mandatory_digit )
+      ++pic->primary.mandatory_digits;
+
     while ( ++u != u_picture_str.end() ) {
       cp = *u, ++pos;
       if ( cp == '#' ) {
@@ -424,6 +433,7 @@ static void parse_primary( zstring const &picture_str,
         } else
           got_mandatory_digit = true;
         got_grouping_separator = false;
+        ++pic->primary.mandatory_digits;
       } else if ( unicode::is_grouping_separator( cp ) ) {
         if ( cp == ';' && !--semicolons ) {
           //
@@ -565,20 +575,13 @@ no_inter:   pic->primary.grouping_interval = 0;
   *i = u.base();
 }
 
-static void parse_format_modifier( zstring const &picture_str,
-                                   zstring::const_iterator *i, picture *pic,
-                                   QueryLoc const &loc ) {
-  zstring::const_iterator &j = *i;
-  switch ( *j ) {
-    case 'c': pic->modifier.co = picture::cardinal   ; break;
-    case 'o': pic->modifier.co = picture::ordinal    ; break;
-    case 'a': pic->modifier.at = picture::alphabetic ; ++j; return;
-    case 't': pic->modifier.at = picture::traditional; ++j; return;
-    default : return;
-  }
-  if ( ++j == picture_str.end() )
+static void parse_variation( utf8_string<zstring const> const &u_picture_str,
+                             utf8_string<zstring const>::const_iterator *u,
+                             picture *pic, QueryLoc const &loc ) {
+  utf8_string<zstring const>::const_iterator &v = *u;
+  if ( v == u_picture_str.end() )
     return;
-  if ( *j == '(' ) {
+  if ( *v == '(' ) {
     //
     // XQuery F&O 3.0 4.6.1: The string of characters between the parentheses,
     // if present, is used to select between other possible variations of
@@ -586,19 +589,110 @@ static void parse_format_modifier( zstring const &picture_str,
     // string is implementation-defined. No error occurs if the implementation
     // does not define any interpretation for the defined string.
     //
+    utf8_string<zstring> u_pic_co_string( pic->modifier.co_string );
     while ( true ) {
-      if ( ++j == picture_str.end() )
+      if ( ++v == u_picture_str.end() )
         throw XQUERY_EXCEPTION(
           err::FODF1310,
-          ERROR_PARAMS( picture_str, ZED( CharExpected_3 ), ')' ),
+          ERROR_PARAMS( *u_picture_str.get(), ZED( CharExpected_3 ), ')' ),
           ERROR_LOC( loc )
         );
-      if ( *j == ')' )
+      unicode::code_point const cp = *v;
+      if ( cp == ')' )
         break;
-      pic->modifier.co_string += *j;
+      u_pic_co_string += cp;
     }
-    ++j;
+    ++v;
   }
+}
+
+static void parse_format_modifier( zstring const &picture_str,
+                                   zstring::const_iterator *i, picture *pic,
+                                   QueryLoc const &loc ) {
+  utf8_string<zstring const> const u_picture_str( picture_str );
+  utf8_string<zstring const>::const_iterator u( u_picture_str.current( *i ) );
+
+  unicode::code_point cp = *u++;
+  if ( cp != ';' )
+    goto bad_format_modifier;
+
+  bool got_c, got_o, got_a, got_t;
+  got_c = got_o = got_a = got_t = false;
+
+  while ( u != u_picture_str.end() ) {
+    cp = *u++;
+    switch ( cp ) {
+      case 'c':
+        if ( got_c )
+          goto dup_format_modifier;
+        if ( got_o || got_a || got_t )
+          goto bad_format_modifier_here;
+        got_c = true;
+        pic->modifier.co = picture::cardinal;
+        parse_variation( u_picture_str, &u, pic, loc );
+        break;
+      case 'o':
+        if ( got_o )
+          goto dup_format_modifier;
+        if ( got_c || got_a || got_t )
+          goto bad_format_modifier_here;
+        got_o = true;
+        pic->modifier.co = picture::ordinal;
+        parse_variation( u_picture_str, &u, pic, loc );
+        break;
+      case 'a':
+        if ( got_a )
+          goto dup_format_modifier;
+        if ( got_t )
+          goto bad_format_modifier_here;
+        got_a = true;
+        pic->modifier.at = picture::alphabetic;
+        break;
+      case 't':
+        if ( got_t )
+          goto dup_format_modifier;
+        if ( got_a )
+          goto bad_format_modifier_here;
+        got_t = true;
+        pic->modifier.at = picture::traditional;
+        break;
+      default:
+        goto bad_format_modifier;
+    } // switch
+  } // while
+  *i = u.base();
+  return;
+
+bad_format_modifier:
+  throw XQUERY_EXCEPTION(
+    err::FODF1310,
+    ERROR_PARAMS(
+      picture_str,
+      ZED( FODF1310_BadFormatModifier_3 ),
+      unicode::printable_cp( cp )
+    ),
+    ERROR_LOC( loc )
+  );
+
+bad_format_modifier_here:
+  throw XQUERY_EXCEPTION(
+    err::FODF1310,
+    ERROR_PARAMS(
+      picture_str,
+      ZED( FODF1310_BadFormatModifierHere_3 ),
+      unicode::printable_cp( cp )
+    )
+  );
+
+dup_format_modifier:
+  throw XQUERY_EXCEPTION(
+    err::FODF1310,
+    ERROR_PARAMS(
+      picture_str,
+      ZED( FODF1310_DupFormatModifier_3 ),
+      unicode::printable_cp( cp )
+    )
+  );
 }
 
 bool FormatIntegerIterator::nextImpl( store::Item_t &result,

@@ -1306,8 +1306,17 @@
       <entry key="BadCharacter_3">
         <value>'$3': invalid character</value>
       </entry>
+      <entry key="BadFormatModifier_3">
+        <value>'$3': invalid format modifier</value>
+      </entry>
+      <entry key="BadFormatModifierHere_3">
+        <value>'$3': valid format modifier invalid here</value>
+      </entry>
       <entry key="DigitNotSameFamily_34">
         <value>"$3": digit not from same digit family as $4</value>
+      </entry>
+      <entry key="DupFormatModifier_3">
+        <value>"$3": duplicate format modifier</value>
       </entry>
       <entry key="EmptyPictureString">
         <value>empty</value>

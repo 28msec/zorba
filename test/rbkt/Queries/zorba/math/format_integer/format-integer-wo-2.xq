@@ -1,1 +1,1 @@
-fn:format-integer( 42, "wo", "en_US" ) eq "forty second"
+fn:format-integer( 42, "w;o", "en_US" ) eq "forty second"
