@@ -105,6 +105,14 @@ struct picture {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * For a code-point of a format token that represents the number 1, gets the
+ * range of values said token can be used to format.
+ *
+ * @param cp The code-point of a format token that represents the number 1.
+ * @param min A pointer to an \c int to receive the minimum value of the range.
+ * @param max A pointer to an \c int to receive the maximum value of the range.
+ */
 static bool get_one_range( unicode::code_point cp, int *min, int *max ) {
   using namespace unicode;
   switch ( cp ) {
