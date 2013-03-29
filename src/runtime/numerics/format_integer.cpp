@@ -62,7 +62,7 @@ struct picture {
     ordinal       // 'o': 7th or seventh
   };
 
-  enum modifier_at_type {
+  enum at_type {
     no_at,
     alphabetic,   // 'a'
     traditional,  // 't'
@@ -79,7 +79,7 @@ struct picture {
   struct {
     co_type co;
     zstring co_string;
-    modifier_at_type at;
+    at_type at;
   } modifier;
 
   //
