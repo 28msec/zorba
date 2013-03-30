@@ -191,22 +191,21 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
       utf8_string<zstring const>::const_reverse_iterator const
         pic_end( u_pic_format.rend() );
 
-      utf8_string<zstring> u_dest( *dest );
-
-      unicode::code_point digit_cp, grouping_cp, pic_cp;
       int digit_pos = 0;
+      unicode::code_point grouping_cp;
       bool just_inserted_grouping_separator = false;
       int mandatory_digits = pic.primary.mandatory_digits;
+      utf8_string<zstring> u_dest( *dest );
 
       //
       // Step through both the integer and picture from right-to-left.
       //
       while ( n_i != n_end || pic_i != pic_end ) {
-        digit_cp = pic.primary.zero;
+        unicode::code_point digit_cp = pic.primary.zero;
         if ( n_i != n_end )
           digit_cp += *n_i - '0';
         if ( pic_i != pic_end ) {       // haven't exhausted the picture
-          pic_cp = *pic_i++;
+          unicode::code_point const pic_cp = *pic_i++;
           bool const is_mandatory_digit = unicode::is_Nd( pic_cp );
           if ( !mandatory_digits && n_i == n_end )
             break;
