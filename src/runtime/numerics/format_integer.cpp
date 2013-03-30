@@ -198,11 +198,14 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
       bool just_inserted_grouping_separator = false;
       int mandatory_digits = pic.primary.mandatory_digits;
 
+      //
+      // Step through both the integer and picture from right-to-left.
+      //
       while ( n_i != n_end || pic_i != pic_end ) {
         digit_cp = pic.primary.zero;
         if ( n_i != n_end )
           digit_cp += *n_i - '0';
-        if ( pic_i != pic_end ) {
+        if ( pic_i != pic_end ) {       // haven't exhausted the picture
           pic_cp = *pic_i++;
           bool const is_mandatory_digit = unicode::is_Nd( pic_cp );
           if ( !mandatory_digits && n_i == n_end )
@@ -217,7 +220,7 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
           }
           if ( is_mandatory_digit )
             --mandatory_digits;
-        } else {
+        } else {                        // have exhausted the picture
           if ( pic.primary.grouping_interval &&
                digit_pos % pic.primary.grouping_interval == 0 ) {
             if ( just_inserted_grouping_separator )
@@ -338,8 +341,6 @@ static void parse_primary( zstring const &picture_str,
     );
   }
 
-  pic->primary.format = picture_str;
-
   utf8_string<zstring const> const u_picture_str( picture_str );
   utf8_string<zstring const>::const_iterator u( u_picture_str.current( *i ) );
   unicode::code_point cp = *u;
@@ -359,6 +360,9 @@ static void parse_primary( zstring const &picture_str,
       ERROR_LOC( loc )
     );
   }
+
+  utf8_string<zstring> u_pic_format( pic->primary.format );
+  u_pic_format += cp;
 
   //
   // Because of:
@@ -383,6 +387,7 @@ static void parse_primary( zstring const &picture_str,
     bool grouping_interval_possible = true;
     zstring::size_type pos = 0, prev_grouping_pos = zstring::npos;
     unicode::code_point prev_grouping_separator = 0;
+    unicode::code_point weird_cp = 0;
 
     if ( got_mandatory_digit )
       ++pic->primary.mandatory_digits;
@@ -481,16 +486,25 @@ no_inter:   pic->primary.grouping_interval = 0;
           }
           prev_grouping_pos = pos;
         }
-      } else
-        throw XQUERY_EXCEPTION(
-          err::FODF1310,
-          ERROR_PARAMS(
-            picture_str,
-            ZED( FODF1310_BadCharacter_3 ),
-            unicode::printable_cp( cp )
-          ),
-          ERROR_LOC( loc )
-        );
+      } else {
+        //
+        // We got a character that is not a #, digit, or grouping-separator.
+        // Per <https://www.w3.org/Bugs/Public/show_bug.cgi?id=19004#c18>, this
+        // is not illegal: it forms part of a token that represents some
+        // numering sequence that we don't support.  Therefore we MUST treat it
+        // as if it's a format token of "1", hence we substitute '#' for it
+        // here so format_integer() will understand it.
+        //
+        // However, if we ever get at least one mandatory-digit-sign, then the
+        // format must be treated as a decimal-digit-pattern.  In that case,
+        // the weird character invalidates the pattern, hence we remember the
+        // weird character for later to include it in an error message.
+        //
+        if ( !weird_cp )
+          weird_cp = cp;
+        cp = '#';
+      }
+      u_pic_format += cp;
     } // while
     if ( got_grouping_separator ) {
       //
@@ -503,6 +517,17 @@ no_inter:   pic->primary.grouping_interval = 0;
           picture_str,
           ZED( FODF1310_NoGroupSepAtEnd_3 ),
           unicode::printable_cp( cp )
+        ),
+        ERROR_LOC( loc )
+      );
+    }
+    if ( weird_cp && got_mandatory_digit ) {
+      throw XQUERY_EXCEPTION(
+        err::FODF1310,
+        ERROR_PARAMS(
+          picture_str,
+          ZED( FODF1310_BadCharacter_3 ),
+          unicode::printable_cp( weird_cp )
         ),
         ERROR_LOC( loc )
       );
