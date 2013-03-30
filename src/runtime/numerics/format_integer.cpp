@@ -117,7 +117,10 @@ static bool get_one_range( unicode::code_point cp, int *min, int *max ) {
   using namespace unicode;
   switch ( cp ) {
     case CIRCLED_DIGIT_ONE:
-      *min = 0, *max = 50;
+    case DIGIT_ONE_FULL_STOP:
+    case DINGBAT_NEGATIVE_CIRCLED_DIGIT_ONE:
+    case PARENTHESIZED_DIGIT_ONE:
+      *min = 1, *max = 20;
       break;
     case CIRCLED_IDEOGRAPH_ONE:
     case DINGBAT_CIRCLED_SANS_SERIF_DIGIT_ONE:
@@ -126,10 +129,9 @@ static bool get_one_range( unicode::code_point cp, int *min, int *max ) {
     case PARENTHESIZED_IDEOGRAPH_ONE:
       *min = 1, *max = 10;
       break;
-    case DIGIT_ONE_FULL_STOP:
-    case DINGBAT_NEGATIVE_CIRCLED_DIGIT_ONE:
-    case PARENTHESIZED_DIGIT_ONE:
-      *min = 1, *max = 20;
+    case ROMAN_NUMERAL_ONE:
+    case SMALL_ROMAN_NUMERAL_ONE:
+      *min = 1, *max = 12;
       break;
     case SUBSCRIPT_ONE:
     case SUPERSCRIPT_ONE:

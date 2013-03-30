@@ -142,6 +142,8 @@ code_point const DINGBAT_NEGATIVE_CIRCLED_SANS_SERIF_DIGIT_ONE = 0x278A;
 code_point const DOUBLE_CIRCLED_DIGIT_ONE                      = 0x24F5;
 code_point const PARENTHESIZED_DIGIT_ONE                       = 0x2474;
 code_point const PARENTHESIZED_IDEOGRAPH_ONE                   = 0x3220;
+code_point const ROMAN_NUMERAL_ONE                             = 0x2160;
+code_point const SMALL_ROMAN_NUMERAL_ONE                       = 0x2170;
 code_point const SUBSCRIPT_ONE                                 = 0x2081;
 code_point const SUPERSCRIPT_ONE                               = 0x00B9;
 
