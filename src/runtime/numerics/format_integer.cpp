@@ -754,10 +754,7 @@ bool FormatIntegerIterator::nextImpl( store::Item_t &result,
 
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
-  if ( !consumeNext( item, theChildren[0].getp(), planState ) ) {
-    // Got the empty sequence -- return same
-    STACK_PUSH( false, state );
-  } else {
+  if ( consumeNext( item, theChildren[0].getp(), planState ) ) {
     value = item->getIntegerValue();
     consumeNext( item, theChildren[1].getp(), planState );
     item->getStringValue2( picture_str );
@@ -799,8 +796,8 @@ bool FormatIntegerIterator::nextImpl( store::Item_t &result,
       parse_format_modifier( picture_str, &pic_i, &pic, loc );
 
     format_integer( value, pic, &result_str );
-    STACK_PUSH( GENV_ITEMFACTORY->createString( result, result_str ), state );
   }
+  STACK_PUSH( GENV_ITEMFACTORY->createString( result, result_str ), state );
   STACK_END( state );
 }
 
