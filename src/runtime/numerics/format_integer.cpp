@@ -145,6 +145,30 @@ static bool get_one_range( unicode::code_point cp, int *min, int *max ) {
   return true;
 }
 
+static char const* ordinal( xs_integer const &i ) {
+  xs_integer a( i );
+  if ( a.sign() < 0 )
+    a = -a;
+  static xs_integer const ten( 10 );
+  xs_integer const a_mod_10( a % ten );
+  switch ( to_xs_int( a_mod_10 ) ) {
+    case 11:
+    case 12:
+    case 13:
+      break;
+    default: {
+      static xs_integer const hundred( 100 );
+      xs_integer const a_mod_100( a % hundred );
+      switch ( to_xs_int( a_mod_100 ) ) {
+        case 1: return "st";
+        case 2: return "nd";
+        case 3: return "rd";
+      }
+    }
+  }
+  return "th";
+}
+
 static void format_integer( xs_integer const &xs_n, picture const &pic,
                             zstring *dest ) {
   picture default_pic;
@@ -244,6 +268,8 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
 
       if ( xs_n.sign() < 0 )
         dest->insert( (zstring::size_type)0, 1, '-' );
+      if ( pic.modifier.co == picture::ordinal )
+        *dest += ordinal( xs_n );
       break;
     }
 
