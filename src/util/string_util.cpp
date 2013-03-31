@@ -282,7 +282,7 @@ zstring english( int64_t n, bool ordinal ) {
   }
 
   if ( negative )
-    r = "negative " + r;
+    r.insert( 0, "negative " );
   return r;
 }
 
