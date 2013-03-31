@@ -615,6 +615,20 @@ static void parse_primary( zstring const &picture_str,
         // represented by the given token, it must use a format token of 1.
         //
         pic->primary.type = picture::arabic;
+        pic->primary.format = "1";
+
+        //
+        // Ibid: If the string contains one or more semicolons then
+        // everything that precedes the last semicolon is taken as the
+        // primary format token and everything that follows is taken as the
+        // format modifier.
+        //
+        // Hence, we have to skip everything up to (but not including) the last
+        // semicolon (if any).
+        //
+        for ( ; u != u_picture_str.end(); ++u )
+          if ( *u == ';' && !--semicolons )
+            break;
     } // switch
   }
   *i = u.base();
