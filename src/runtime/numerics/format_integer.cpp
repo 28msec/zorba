@@ -73,6 +73,7 @@ struct picture {
     zstring format;
     int grouping_interval;
     int mandatory_digits;
+    int mandatory_grouping_seps;
     unicode::code_point zero, one;
   } primary;
 
@@ -94,6 +95,7 @@ struct picture {
     primary.type = arabic;
     primary.grouping_interval = 0;
     primary.mandatory_digits = 0;
+    primary.mandatory_grouping_seps = 0;
     primary.zero = '0';
     modifier.co = cardinal;
     modifier.at = no_at;
@@ -197,6 +199,7 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
       unicode::code_point grouping_cp;
       bool just_inserted_grouping_separator = false;
       int mandatory_digits = pic.primary.mandatory_digits;
+      int mandatory_grouping_seps = pic.primary.mandatory_grouping_seps;
       utf8_string<zstring> u_dest( *dest );
 
       //
@@ -209,7 +212,7 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
         if ( pic_i != pic_end ) {       // haven't exhausted the picture
           unicode::code_point const pic_cp = *pic_i++;
           bool const is_mandatory_digit = unicode::is_Nd( pic_cp );
-          if ( !mandatory_digits && n_i == n_end )
+          if ( !mandatory_digits && !mandatory_grouping_seps && n_i == n_end )
             break;
           if ( pic_cp == '#' || is_mandatory_digit ) {
             u_dest.insert( 0, 1, digit_cp );
@@ -218,6 +221,7 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
           } else {                      // must be a grouping-separator
             grouping_cp = pic_cp;       // remember for later
             u_dest.insert( 0, 1, grouping_cp );
+            --mandatory_grouping_seps;
           }
           if ( is_mandatory_digit )
             --mandatory_digits;
@@ -385,7 +389,9 @@ static void parse_primary( zstring const &picture_str,
   if ( cp == '#' || unicode::is_Nd( cp, &zero[0] ) ) {
     bool got_grouping_separator = false;
     bool got_mandatory_digit = cp != '#';
+    int grouping_interval = 0;
     bool grouping_interval_possible = true;
+    int grouping_separators = 0;
     zstring::size_type pos = 0, prev_grouping_pos = zstring::npos;
     unicode::code_point prev_grouping_separator = 0;
     unicode::code_point weird_cp = 0;
@@ -461,6 +467,7 @@ static void parse_primary( zstring const &picture_str,
           );
         }
         got_grouping_separator = true;
+        ++grouping_separators;
 
         if ( grouping_interval_possible ) {
           //
@@ -477,14 +484,11 @@ static void parse_primary( zstring const &picture_str,
           if ( !prev_grouping_separator )
             prev_grouping_separator = cp;
           else if ( cp != prev_grouping_separator )
-            goto no_inter;
-          else if ( !pic->primary.grouping_interval )
-            pic->primary.grouping_interval = pos - prev_grouping_pos;
-          else if ( pos - prev_grouping_pos !=
-                    pic->primary.grouping_interval ) {
-no_inter:   pic->primary.grouping_interval = 0;
             grouping_interval_possible = false;
-          }
+          else if ( !grouping_interval )
+            grouping_interval = pos - prev_grouping_pos;
+          else if ( pos - prev_grouping_pos != grouping_interval )
+            grouping_interval_possible = false;
           prev_grouping_pos = pos;
         }
       } else {
@@ -533,8 +537,12 @@ no_inter:   pic->primary.grouping_interval = 0;
         ERROR_LOC( loc )
       );
     }
-    if ( prev_grouping_separator && !pic->primary.grouping_interval )
-      pic->primary.grouping_interval = pos - prev_grouping_pos;
+    if ( grouping_interval_possible ) {
+      if ( !grouping_interval && prev_grouping_separator )
+        grouping_interval = pos - prev_grouping_pos;
+      pic->primary.grouping_interval = grouping_interval;
+    } else
+      pic->primary.mandatory_grouping_seps = grouping_separators;
     pic->primary.zero = zero[0];
   } else {
     using namespace unicode;
