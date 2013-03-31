@@ -234,10 +234,10 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
         if ( n_i != n_end )
           digit_cp += *n_i - '0';
         if ( pic_i != pic_end ) {       // haven't exhausted the picture
-          unicode::code_point const pic_cp = *pic_i++;
-          bool const is_mandatory_digit = unicode::is_Nd( pic_cp );
           if ( !mandatory_digits && !mandatory_grouping_seps && n_i == n_end )
             break;
+          unicode::code_point const pic_cp = *pic_i++;
+          bool const is_mandatory_digit = unicode::is_Nd( pic_cp );
           if ( pic_cp == '#' || is_mandatory_digit ) {
             u_dest.insert( 0, 1, digit_cp );
             if ( n_i != n_end ) ++n_i;
