@@ -13,9 +13,9 @@ declare %an:sequential function collapse-general($x)
    variable $val := [], $obj := [], $arr := [];
 
    $x ! (typeswitch (.)
-         case object() return  { append json . into $obj; ()}
-         case array() return { append json . into $arr; ()}
-         default return { append json . into $val; ()});
+         case object() return  { append json . into $obj; }
+         case array() return { append json . into $arr; }
+         default return { append json . into $val; });
 
    if (size($val) eq 0)
    then ()
