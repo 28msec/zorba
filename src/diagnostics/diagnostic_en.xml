@@ -1327,8 +1327,8 @@
       <entry key="DupFormatModifier_3">
         <value>"$3": duplicate format modifier</value>
       </entry>
-      <entry key="EmptyPictureString">
-        <value>empty</value>
+      <entry key="EmptyFormat">
+        <value>empty primary format</value>
       </entry>
       <entry key="NoAdjacentGroupSep_3">
         <value>"$3": grouping separator must not be adjacent to others</value>

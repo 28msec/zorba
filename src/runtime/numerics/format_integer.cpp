@@ -365,35 +365,13 @@ static void parse_primary( zstring const &picture_str,
     // XQuery 3.0 F&O: 4.6.1: The primary format token is always present and
     // must not be zero-length.
     //
+empty_format:
     throw XQUERY_EXCEPTION(
       err::FODF1310,
-      ERROR_PARAMS( ZED( FODF1310_EmptyPictureString ) ),
+      ERROR_PARAMS( ZED( FODF1310_EmptyFormat ) ),
       ERROR_LOC( loc )
     );
   }
-
-  utf8_string<zstring const> const u_picture_str( picture_str );
-  utf8_string<zstring const>::const_iterator u( u_picture_str.current( *i ) );
-  unicode::code_point cp = *u;
-
-  if ( cp != '#' && unicode::is_grouping_separator( cp ) ) {
-    //
-    // XQuery 3.0 F&O: 4.6.1: A grouping-separator-sign must not appear
-    // at the start ... of the decimal-digit-pattern ....
-    //
-    throw XQUERY_EXCEPTION(
-      err::FODF1310,
-      ERROR_PARAMS(
-        picture_str,
-        ZED( FODF1310_NoGroupSepAtStart_3 ),
-        unicode::printable_cp( cp )
-      ),
-      ERROR_LOC( loc )
-    );
-  }
-
-  utf8_string<zstring> u_pic_format( pic->primary.format );
-  u_pic_format += cp;
 
   //
   // Because of:
@@ -405,26 +383,95 @@ static void parse_primary( zstring const &picture_str,
   // we have to count the number of semicolons in order to know when we've
   // reached the last one.
   //
-  int semicolons = 0;
-  for ( zstring::const_iterator c( *i ); c != picture_str.end(); ++c )
+  int semicolon_counter = 0;
+  FOR_EACH( zstring, c, picture_str )
     if ( *c == ';' )
-      ++semicolons;
+      ++semicolon_counter;
+  int const semicolons = semicolon_counter;
 
-  unicode::code_point zero[2] = { '0', '0' };
+  if ( semicolons == 1 && picture_str[0] == ';' ) {
+    //
+    // This also means that the primary format token is zero-length.
+    //
+    goto empty_format;
+  }
 
-  if ( cp == '#' || unicode::is_Nd( cp, &zero[0] ) ) {
+  unicode::code_point cp;
+  utf8_string<zstring const> const u_picture_str( picture_str );
+  utf8_string<zstring const>::const_iterator u;
+
+  //
+  // Determine whether the primary format token is a decimal-digit-pattern:
+  //
+  //    Ibid: If the primary format token contains at least one Unicode digit
+  //    then it is taken as a decimal digit pattern.
+  //
+  // and whether all digits are from the same digit family:
+  //
+  //    Ibid: All mandatory-digit-signs within the format token must be from
+  //    the same digit family, where a digit family is a sequence of ten
+  //    consecutive characters in Unicode category Nd, having digit values 0
+  //    through 9.
+  //
+  bool is_decimal_digit_pattern = false;
+  unicode::code_point zero[] = { '0', '0' };
+  semicolon_counter = semicolons;
+  for ( u = u_picture_str.begin(); u != u_picture_str.end(); ++u ) {
+    cp = *u;
+    if ( cp == ';' && !--semicolon_counter )
+      break;
+    if ( unicode::is_Nd( cp, &zero[ is_decimal_digit_pattern ] ) ) {
+      if ( is_decimal_digit_pattern && zero[1] != zero[0] ) {
+        throw XQUERY_EXCEPTION(
+          err::FODF1310,
+          ERROR_PARAMS(
+            picture_str,
+            ZED( FODF1310_DigitNotSameFamily_34 ),
+            unicode::printable_cp( cp ),
+            unicode::printable_cp( zero[0] )
+          ),
+          ERROR_LOC( loc )
+        );
+      }
+      is_decimal_digit_pattern = true;
+      ++pic->primary.mandatory_digits;
+    }
+  }
+
+  u = u_picture_str.begin();
+  cp = *u;
+
+  if ( is_decimal_digit_pattern ) {
+    if ( cp != '#' && unicode::is_grouping_separator( cp ) ) {
+      //
+      // Ibid: 4.6.1: A grouping-separator-sign must not appear at the start
+      // ... of the decimal-digit-pattern ....
+      //
+      throw XQUERY_EXCEPTION(
+        err::FODF1310,
+        ERROR_PARAMS(
+          picture_str,
+          ZED( FODF1310_NoGroupSepAtStart_3 ),
+          unicode::printable_cp( cp )
+        ),
+        ERROR_LOC( loc )
+      );
+    }
+
+    pic->primary.zero = zero[0];
+
+    utf8_string<zstring> u_pic_format( pic->primary.format );
+    u_pic_format += cp;
+
     bool got_grouping_separator = false;
     bool got_mandatory_digit = cp != '#';
     int grouping_interval = 0;
     bool grouping_interval_possible = true;
+    unicode::code_point grouping_separator_cp = 0;
     int grouping_separators = 0;
     zstring::size_type pos = 0, prev_grouping_pos = zstring::npos;
-    unicode::code_point prev_grouping_separator = 0;
-    unicode::code_point weird_cp = 0;
 
-    if ( got_mandatory_digit )
-      ++pic->primary.mandatory_digits;
-
+    semicolon_counter = semicolons;
     while ( ++u != u_picture_str.end() ) {
       cp = *u, ++pos;
       if ( cp == '#' ) {
@@ -443,32 +490,11 @@ static void parse_primary( zstring const &picture_str,
           );
         }
         got_grouping_separator = false;
-      } else if ( unicode::is_Nd( cp, &zero[ got_mandatory_digit ] ) ) {
-        if ( got_mandatory_digit ) {
-          if ( zero[1] != zero[0] ) {
-            //
-            // Ibid: All mandatory-digit-signs within the format token must be
-            // from the same digit family, where a digit family is a sequence
-            // of ten consecutive characters in Unicode category Nd, having
-            // digit values 0 through 9.
-            //
-            throw XQUERY_EXCEPTION(
-              err::FODF1310,
-              ERROR_PARAMS(
-                picture_str,
-                ZED( FODF1310_DigitNotSameFamily_34 ),
-                unicode::printable_cp( cp ),
-                unicode::printable_cp( zero[1] )
-              ),
-              ERROR_LOC( loc )
-            );
-          }
-        } else
-          got_mandatory_digit = true;
+      } else if ( unicode::is_Nd( cp ) ) {
+        got_mandatory_digit = true;
         got_grouping_separator = false;
-        ++pic->primary.mandatory_digits;
       } else if ( unicode::is_grouping_separator( cp ) ) {
-        if ( cp == ';' && !--semicolons ) {
+        if ( cp == ';' && !--semicolon_counter ) {
           //
           // Ibid: If the string contains one or more semicolons then
           // everything that precedes the last semicolon is taken as the
@@ -507,9 +533,9 @@ static void parse_primary( zstring const &picture_str,
           // number one million will be formatted as 1'000'000, while the
           // number fifteen will be formatted as 0'015.
           //
-          if ( !prev_grouping_separator )
-            prev_grouping_separator = cp;
-          else if ( cp != prev_grouping_separator )
+          if ( !grouping_separator_cp )
+            grouping_separator_cp = cp;
+          else if ( cp != grouping_separator_cp )
             grouping_interval_possible = false;
           else if ( !grouping_interval )
             grouping_interval = pos - prev_grouping_pos;
@@ -518,25 +544,19 @@ static void parse_primary( zstring const &picture_str,
           prev_grouping_pos = pos;
         }
       } else {
-        //
-        // We got a character that is not a #, digit, or grouping-separator.
-        // Per <https://www.w3.org/Bugs/Public/show_bug.cgi?id=19004#c18>, this
-        // is not illegal: it forms part of a token that represents some
-        // numering sequence that we don't support.  Therefore we MUST treat it
-        // as if it's a format token of "1", hence we substitute '#' for it
-        // here so format_integer() will understand it.
-        //
-        // However, if we ever get at least one mandatory-digit-sign, then the
-        // format must be treated as a decimal-digit-pattern.  In that case,
-        // the weird character invalidates the pattern, hence we remember the
-        // weird character for later to include it in an error message.
-        //
-        if ( !weird_cp )
-          weird_cp = cp;
-        cp = '#';
+        throw XQUERY_EXCEPTION(
+          err::FODF1310,
+          ERROR_PARAMS(
+            picture_str,
+            ZED( FODF1310_BadCharacter_3 ),
+            unicode::printable_cp( cp )
+          ),
+          ERROR_LOC( loc )
+        );
       }
       u_pic_format += cp;
     } // while
+
     if ( got_grouping_separator ) {
       //
       // Ibid: A grouping-separator-sign must not appear at the ... end of the
@@ -552,27 +572,17 @@ static void parse_primary( zstring const &picture_str,
         ERROR_LOC( loc )
       );
     }
-    if ( weird_cp && got_mandatory_digit ) {
-      throw XQUERY_EXCEPTION(
-        err::FODF1310,
-        ERROR_PARAMS(
-          picture_str,
-          ZED( FODF1310_BadCharacter_3 ),
-          unicode::printable_cp( weird_cp )
-        ),
-        ERROR_LOC( loc )
-      );
-    }
     if ( grouping_interval_possible ) {
-      if ( !grouping_interval && prev_grouping_separator )
+      if ( !grouping_interval && grouping_separator_cp )
         grouping_interval = pos - prev_grouping_pos;
       pic->primary.grouping_interval = grouping_interval;
     } else
       pic->primary.mandatory_grouping_seps = grouping_separators;
-    pic->primary.zero = zero[0];
+
   } else {
+
     using namespace unicode;
-    cp = *u++;
+    ++u;
     switch ( cp ) {
       case 'A':
         pic->primary.type = picture::ALPHA;
@@ -626,8 +636,9 @@ static void parse_primary( zstring const &picture_str,
         // Hence, we have to skip everything up to (but not including) the last
         // semicolon (if any).
         //
+        semicolon_counter = semicolons;
         for ( ; u != u_picture_str.end(); ++u )
-          if ( *u == ';' && !--semicolons )
+          if ( *u == ';' && !--semicolon_counter )
             break;
     } // switch
   }
