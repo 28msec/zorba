@@ -225,7 +225,7 @@ public:
   typedef typename string_traits_type::std_string_arg std_string_arg;
   typedef typename string_traits_type::str_return_type str_return_type;
 
-  static size_type const npos = StringType::npos;
+  static size_type const npos = static_cast<size_type>( -1 );
 
   ////////// constructors & destructor ////////////////////////////////////////
 
