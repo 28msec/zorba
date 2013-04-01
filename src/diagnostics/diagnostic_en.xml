@@ -1316,7 +1316,7 @@
       <comment>
        Overflow/underflow in duration operation.
       </comment>
-      <value>overflow/underflow in duration operation</value>
+      <value>overflow/underflow in duration operation${: 1}</value>
     </diagnostic>
 
     <diagnostic code="FODT0003">

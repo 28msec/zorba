@@ -726,6 +726,18 @@ Duration* Duration::operator-(const Duration& d) const
 }
 
 
+#define TRY_XS_INT_CONVERT(target, value, xs_type)                    \
+  {                                                                   \
+    try {                                                             \
+      target = to_xs_int(value);                                      \
+    } catch (std::range_error const&) {                               \
+      xs_type res = (value);                                          \
+      zstring strval(res.toString());                                 \
+      throw XQUERY_EXCEPTION(err::FODT0002, ERROR_PARAMS(strval));    \
+    }                                                                 \
+  }
+
+
 Duration* Duration::operator*(const xs_double& value) const
 {
   xs_double result;
@@ -743,21 +755,22 @@ Duration* Duration::operator*(const xs_double& value) const
 
   try {
     result = getTotalSeconds() * value;
-    if (result < 0)
-    {
-      negative = true;
-      result = -result;
-    }
-    result = result.round(Integer(FRAC_SECONDS_UPPER_LIMIT));
-    totalSeconds = result.floor();
-    result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
-
-    years = to_xs_int(totalSeconds / seconds_per_year);
-    seconds = to_xs_int(totalSeconds % seconds_per_year);
-    frac_seconds = to_xs_int(result.round());
-  } catch ( std::range_error const& ) {
+  } catch (std::range_error const&) {
     throw XQUERY_EXCEPTION(err::FODT0002);
   }
+
+  if (result < 0)
+  {
+    negative = true;
+    result = -result;
+  }
+  result = result.round(Integer(FRAC_SECONDS_UPPER_LIMIT));
+  totalSeconds = result.floor();
+  result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
+
+  TRY_XS_INT_CONVERT(years, totalSeconds / seconds_per_year, xs_integer);
+  TRY_XS_INT_CONVERT(seconds, totalSeconds % seconds_per_year, xs_integer);
+  TRY_XS_INT_CONVERT(frac_seconds, result.round(), xs_double);
 
   Duration* d = new Duration(facet, negative, years, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
@@ -781,25 +794,28 @@ Duration* Duration::operator/(const xs_double& value) const
 
   try {
     result = getTotalSeconds() / value;
-    if (result < 0)
-    {
-      negative = true;
-      result = -result;
-    }
-    result = result.round(Integer(FRAC_SECONDS_UPPER_LIMIT));
-    totalSeconds = result.floor();
-    result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
-
-    years = to_xs_int(totalSeconds / seconds_per_year);
-    seconds = to_xs_int(totalSeconds % seconds_per_year);
-    frac_seconds = to_xs_int(result.round());
-  } catch ( std::range_error const& ) {
+  } catch (std::range_error const&) {
     throw XQUERY_EXCEPTION(err::FODT0002);
   }
+
+  if (result < 0)
+  {
+    negative = true;
+    result = -result;
+  }
+  result = result.round(Integer(FRAC_SECONDS_UPPER_LIMIT));
+  totalSeconds = result.floor();
+  result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
+
+  TRY_XS_INT_CONVERT(years, totalSeconds / seconds_per_year, xs_integer);
+  TRY_XS_INT_CONVERT(seconds, totalSeconds % seconds_per_year, xs_integer);
+  TRY_XS_INT_CONVERT(frac_seconds, result.round(), xs_double);
 
   Duration* d = new Duration(facet, negative, years, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
 }
+
+#undef TRY_XS_INT_CONVERT
 
 
 Decimal Duration::operator/(const Duration& d) const
