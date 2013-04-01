@@ -93,7 +93,8 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   quant = theSequenceType->get_quantifier();
   if (consumeNext(item, theChild.getp(), planState))
   {
-    if (item->isNode() && item->getNilled()->getBooleanValue())
+    store::Item_t lIsNilled = item->getNilled();
+    if (item->isNode() && lIsNilled != NULL && lIsNilled->getBooleanValue())
     {
       const NodeXQType* lNodeType = static_cast<const NodeXQType*>(theSequenceType.getp());
       res = lNodeType->get_nillable();
