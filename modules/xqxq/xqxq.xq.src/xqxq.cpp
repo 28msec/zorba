@@ -238,7 +238,7 @@ XQXQFunction::XQXQFunction(const XQXQModule* aModule)
   :
   theModule(aModule)
 {
-  srand(time(NULL));
+  srand(::time(NULL));
 }
     
 

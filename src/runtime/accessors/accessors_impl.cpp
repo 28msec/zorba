@@ -238,8 +238,9 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 #endif
     else //(result->isFunction())
     {
-			RAISE_ERROR(err::FOTY0013, loc,
-      ERROR_PARAMS(result->getFunctionName()->getStringValue()));
+      store::Item_t fnName = result->getFunctionName();
+      RAISE_ERROR(err::FOTY0013, loc, 
+                  ERROR_PARAMS(fnName.getp() ? result->getFunctionName()->getStringValue() : result->show()));
     }
   }
 

@@ -657,7 +657,7 @@ LastModifiedFunction::evaluate(
 int
 LastModifiedFunction::getGmtOffset()
 {
-  time_t t = time(0);
+  time_t t = ::time(0);
   struct tm* data;
   data = localtime(&t);
   data->tm_isdst = 0;

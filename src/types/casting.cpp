@@ -1216,9 +1216,14 @@ T1_TO_T2(dat, dT)
 
 T1_TO_T2(dT, dTSt)
 {
-  DateTime dt;
-  dt = aItem->getDateTimeValue(); //.createWithNewFacet(DateTime::DATETIME_FACET, dt);
-  aFactory->createDateTimeStamp(result, &dt);
+  xs_dateTime dt = aItem->getDateTimeValue(); //.createWithNewFacet(DateTime::DATETIME_FACET, dt);
+  if (dt.hasTimezone() )
+  {
+    aFactory->createDateTimeStamp(result, &dt);
+    return;
+  }
+
+  throwFORG0001Exception(strval, errInfo);
 }
   
   
@@ -1400,15 +1405,11 @@ T1_TO_T2(b64, hxB)
 {
   size_t s;
   const char* c = aItem->getBase64BinaryValue(s);
-  Base64 tmp;
+  xs_base64Binary tmp;
   if (aItem->isEncoded())
-  {
-    Base64::parseString(c, s, tmp);
-  }
+    xs_base64Binary::parseString(c, s, tmp);
   else
-  {
-    Base64::encode((const unsigned char*)c, s, tmp);
-  }
+    xs_base64Binary::encode(c, s, tmp);
   aFactory->createHexBinary(result, xs_hexBinary(tmp));
 }
 
@@ -1429,8 +1430,14 @@ T1_TO_T2(hxB, str)
 
 T1_TO_T2(hxB, b64)
 {
-  aFactory->
-  createBase64Binary(result, xs_base64Binary(aItem->getHexBinaryValue()));
+  size_t s;
+  char const *const c = aItem->getHexBinaryValue(s);
+  xs_hexBinary tmp;
+  if (aItem->isEncoded())
+    xs_hexBinary::parseString(c, s, tmp);
+  else
+    xs_hexBinary::encode(c, s, tmp);
+  aFactory->createBase64Binary(result, xs_base64Binary(tmp));
 }
 
 

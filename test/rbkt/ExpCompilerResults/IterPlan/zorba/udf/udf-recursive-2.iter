@@ -1,5 +1,5 @@
 Iterator tree for const-folded expr:
-<UDFunctionCallIterator>
+<UDFunctionCallIterator function="local:recursion">
   <FnConcatIterator/>
 </UDFunctionCallIterator>
 
@@ -13,7 +13,7 @@ Iterator tree for local:recursion:
       <FnBooleanIterator>
         <LetVarIterator varname="param"/>
       </FnBooleanIterator>
-      <UDFunctionCallIterator>
+      <UDFunctionCallIterator function="local:recursion">
         <FnConcatIterator/>
       </UDFunctionCallIterator>
       <SingletonIterator value="xs:boolean(false)"/>
@@ -25,7 +25,7 @@ Iterator tree for const-folded expr:
 <SingletonIterator value="xs:boolean(false)"/>
 
 Iterator tree for main query:
-<UDFunctionCallIterator>
+<UDFunctionCallIterator function="local:recursion">
   <TreatIterator type="[NodeXQType elementNode content=[UserDefinedXQType  Content@http://foo.com/schemas/schema isComplex emptyContent base:[XQType ANY_TYPE_KIND*]]]" quant="?">
     <ValidateIterator>
       <ElementIterator>

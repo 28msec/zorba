@@ -207,8 +207,12 @@ public:
   typedef typename StringType::const_pointer const_storage_pointer;
   typedef typename StringType::reference storage_reference;
   typedef typename StringType::const_reference const_storage_reference;
+
   typedef typename StringType::iterator storage_iterator;
   typedef typename StringType::const_iterator const_storage_iterator;
+  typedef typename StringType::reverse_iterator storage_reverse_iterator;
+  typedef typename StringType::const_reverse_iterator
+    const_storage_reverse_iterator;
 
   typedef typename utf8::iterator<storage_iterator> iterator;
   typedef typename utf8::iterator<const_storage_iterator> const_iterator;
@@ -221,7 +225,7 @@ public:
   typedef typename string_traits_type::std_string_arg std_string_arg;
   typedef typename string_traits_type::str_return_type str_return_type;
 
-  static size_type const npos = static_cast<size_type>( -1 );
+  static size_type const npos = StringType::npos;
 
   ////////// constructors & destructor ////////////////////////////////////////
 
@@ -1005,6 +1009,16 @@ public:
   }
 
   /**
+   * Returns a read-only iterator positioned at the same byte as the given
+   * iterator of the string.
+   * 
+   * @return Returns said iterator.
+   */
+  const_iterator current( const_storage_iterator const &i ) const {
+    return const_iterator( i );
+  }
+
+  /**
    * Returns a read-only reverse iterator positioned at the first character
    * (not byte) of the string.
    * 
@@ -1022,6 +1036,17 @@ public:
    */
   const_reverse_iterator rend() const {
     return const_reverse_iterator( begin() );
+  }
+
+  /**
+   * Returns a read-only reverse iterator positioned at the same byte as the
+   * given reverse iterator of the string.
+   * 
+   * @return Returns said iterator.
+   */
+  const_reverse_iterator
+  current( const_storage_reverse_iterator const &i ) const {
+    return const_reverse_iterator( i );
   }
 
   ////////// miscellaneous ////////////////////////////////////////////////////

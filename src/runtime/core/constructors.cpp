@@ -87,7 +87,7 @@ DocumentIterator::DocumentIterator(
 
 void DocumentIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, 
+  serialize_baseclass(ar,
   (UnaryBaseIterator<DocumentIterator, PlanIteratorState>*)this);
 
   ar & theTypePreserve;
@@ -889,7 +889,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (consumeNext(temp, theChild0, planState))
   {
     // translator places a cast to xs:NCName op
-    ZORBA_ASSERT(false);  
+    ZORBA_ASSERT(false);
   }
 
   lItem->getStringValue2(target);
@@ -1205,6 +1205,13 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 #endif
       else
       {
+        if (result->isFunction())
+        {
+          store::Item_t fnName = result->getFunctionName();
+          RAISE_ERROR(err::FOTY0013, loc,
+                      ERROR_PARAMS(fnName.getp() ? result->getFunctionName()->getStringValue() : result->show()));
+        }
+
         assert(result->isAtomic());
 
         result->getStringValue2(strval);
@@ -1304,6 +1311,11 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 #endif
         else
         {
+          if (result->isFunction())
+          {
+            RAISE_ERROR_NO_PARAMS(err::XQTY0105, loc);
+          }
+
           assert(result->isAtomic());
 
           result->getStringValue2(strval);

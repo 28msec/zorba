@@ -194,21 +194,23 @@ Iterator tree for main query:
     </flwor::FLWORIterator>
     <FnConcatIterator>
       <FunctionTraceIterator>
-        <ProbeIndexRangeValueIterator count="true">
-          <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
-          <SingletonIterator value="xs:string(/zorba/repo)"/>
-          <SingletonIterator value="xs:string(/zorba/repo)"/>
-          <SingletonIterator value="xs:boolean(true)"/>
-          <SingletonIterator value="xs:boolean(true)"/>
-          <SingletonIterator value="xs:boolean(true)"/>
-          <SingletonIterator value="xs:boolean(true)"/>
-          <FnConcatIterator/>
-          <FnConcatIterator/>
-          <SingletonIterator value="xs:boolean(false)"/>
-          <SingletonIterator value="xs:boolean(false)"/>
-          <SingletonIterator value="xs:boolean(false)"/>
-          <SingletonIterator value="xs:boolean(false)"/>
-        </ProbeIndexRangeValueIterator>
+        <FnCountIterator>
+          <ProbeIndexRangeValueIterator>
+            <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
+            <SingletonIterator value="xs:string(/zorba/repo)"/>
+            <SingletonIterator value="xs:string(/zorba/repo)"/>
+            <SingletonIterator value="xs:boolean(true)"/>
+            <SingletonIterator value="xs:boolean(true)"/>
+            <SingletonIterator value="xs:boolean(true)"/>
+            <SingletonIterator value="xs:boolean(true)"/>
+            <FnConcatIterator/>
+            <FnConcatIterator/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+          </ProbeIndexRangeValueIterator>
+        </FnCountIterator>
       </FunctionTraceIterator>
       <SingletonIterator value="xs:string(
 )"/>

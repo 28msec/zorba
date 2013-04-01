@@ -328,6 +328,7 @@ public:
   store::Index                 * theIndex; 
   store::IndexProbeIterator_t    theIterator;
 
+public:
   ProbeIndexPointValueIteratorState();
 
   ~ProbeIndexPointValueIteratorState();
@@ -345,32 +346,39 @@ class ProbeIndexPointValueIterator
 {
 protected:
   bool theCheckKeyType;
-  bool theCountOnly;
   bool theSkip;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexPointValueIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ProbeIndexPointValueIterator,
   NaryBaseIterator<ProbeIndexPointValueIterator, ProbeIndexPointValueIteratorState>);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
+public:
   ProbeIndexPointValueIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& children,
-        bool aCountOnly,
-        bool aSkip);
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& children,
+      bool skip);
 
   ~ProbeIndexPointValueIterator();
 
-  bool isCountOnly() const { return theCountOnly; }
   bool hasSkip() const { return theSkip; }
 
   void accept(PlanIterVisitor& v) const;
 
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  bool count(store::Item_t& result, PlanState& planState) const;
+
+protected:
+  void getIndex(
+      ProbeIndexPointValueIteratorState* state,
+      PlanState& planState) const;
+
+  store::IndexCondition_t createCondition(
+      ProbeIndexPointValueIteratorState* state,
+      PlanState& planState) const;
 };
 
 
@@ -401,28 +409,32 @@ public NaryBaseIterator<ProbeIndexPointGeneralIterator,
 {
 protected:
   bool theCheckKeyType;
-  bool theCountOnly;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexPointGeneralIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ProbeIndexPointGeneralIterator,
   NaryBaseIterator<ProbeIndexPointGeneralIterator, ProbeIndexPointGeneralIteratorState>);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   ProbeIndexPointGeneralIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      std::vector<PlanIter_t>& children,
-      bool aCountOnly = false);
+      std::vector<PlanIter_t>& children);
   
   ~ProbeIndexPointGeneralIterator();
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+protected:
+  void getIndex(
+      ProbeIndexPointGeneralIteratorState* state,
+      PlanState& planState) const;
+
+  void createCondition(
+      ProbeIndexPointGeneralIteratorState* state) const;
 };
 
 
@@ -453,6 +465,7 @@ class ProbeIndexRangeValueIteratorState : public PlanIteratorState
 {
 public:
   const store::Item           * theQname;
+  const IndexDecl             * theIndexDecl;
   store::Index                * theIndex;
   store::IndexProbeIterator_t   theIterator;
 
@@ -473,15 +486,12 @@ public NaryBaseIterator<ProbeIndexRangeValueIterator,
 {
 protected:
   bool theCheckKeyType;
-  bool theCountOnly;
   bool theSkip;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexRangeValueIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ProbeIndexRangeValueIterator,
   NaryBaseIterator<ProbeIndexRangeValueIterator, ProbeIndexRangeValueIteratorState>);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -489,17 +499,26 @@ public:
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
-      bool aCountOnly,
-      bool aSkip);
+      bool skip);
 
   ~ProbeIndexRangeValueIterator();
 
-  bool isCountOnly() const { return theCountOnly; }
   bool hasSkip() const { return theSkip; }
 
   void accept(PlanIterVisitor& v) const;
 
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  bool count(store::Item_t& result, PlanState& planState) const;
+
+protected:
+  void getIndex(
+      ProbeIndexRangeValueIteratorState* state,
+      PlanState& planState) const;
+
+  store::IndexCondition_t createCondition(
+      ProbeIndexRangeValueIteratorState* state,
+      PlanState& planState) const;
 };
 
 
@@ -551,22 +570,18 @@ public NaryBaseIterator<ProbeIndexRangeGeneralIterator,
 {
 protected:
   bool theCheckKeyType;
-  bool theCountOnly;
 
 public:
   SERIALIZABLE_CLASS(ProbeIndexRangeGeneralIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ProbeIndexRangeGeneralIterator,
   NaryBaseIterator<ProbeIndexRangeGeneralIterator, ProbeIndexRangeGeneralIteratorState>);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   ProbeIndexRangeGeneralIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      std::vector<PlanIter_t>& children,
-      bool aCountOnly = false);
+      std::vector<PlanIter_t>& children);
   
   ~ProbeIndexRangeGeneralIterator();
 
@@ -582,6 +597,10 @@ private:
       bool haveUpper,
       bool inclLower,
       bool inclUpper) const;
+
+  void getIndex(
+      ProbeIndexRangeGeneralIteratorState* state,
+      PlanState& planState) const;
 };
 
 

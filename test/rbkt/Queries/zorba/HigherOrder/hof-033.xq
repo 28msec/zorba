@@ -3,8 +3,5 @@ xquery version "3.0";
 (: Context item is a function item :)
 (: Author - Michael Kay, Saxonica :)
 
-declare namespace o = "http://www.zorba-xquery.com/options/features";
-declare option o:enable "hof";
-
 function-name((upper-case#1, lower-case#1)[.("Mike") = "MIKE"])
 

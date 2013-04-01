@@ -31,7 +31,6 @@ declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
 
 declare option ver:module-version "1.0";
-declare option op:enable "f:hof";
 
 (:~
  : The function prepares a given XQuery program for execution.

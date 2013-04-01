@@ -15,11 +15,14 @@
  */
 #include "stdafx.h"
 
+// standard
 #include <algorithm>                    /* for lower_bound */
 
+// Zorba
 #include "util/less.h"
 #include "diagnostics/assert.h"
 
+// local
 #include "wn_types.h"
 
 using namespace std;

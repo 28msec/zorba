@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/home/markos/zorba/repo/ns-nodes/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/colea/xquery_bzr/feature-empty_object/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -62,6 +62,7 @@
 #include <vector>
 
 #include "compiler/parsetree/parsenodes.h"
+#include "compiler/parser/zorba_parser_error.h"
 #include "zorbatypes/zstring.h"
 
 #ifdef __GNUC__
@@ -84,7 +85,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 88 "/home/markos/zorba/repo/ns-nodes/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 89 "/home/colea/xquery_bzr/feature-empty_object/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -114,7 +115,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 118 "/home/markos/zorba/repo/ns-nodes/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 119 "/home/colea/xquery_bzr/feature-empty_object/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -126,7 +127,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/home/markos/zorba/repo/ns-nodes/src/compiler/parser/xquery_parser.y"
+#line 148 "/home/colea/xquery_bzr/feature-empty_object/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -150,7 +151,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 154 "/home/markos/zorba/repo/ns-nodes/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 155 "/home/colea/xquery_bzr/feature-empty_object/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -672,7 +673,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 676 "/home/markos/zorba/repo/ns-nodes/build-opt/src/compiler/parser/xquery_parser.hpp"
+#line 677 "/home/colea/xquery_bzr/feature-empty_object/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
