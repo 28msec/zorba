@@ -165,7 +165,7 @@ bool is_category( code_point cp, category c );
  * Lo.
  *
  * @param cp The code-point to check.
- * @return Returns \c true only if \a c is a grouping-separator.
+ * @return Returns \c true only if \a cp is a grouping-separator.
  */
 bool is_grouping_separator( code_point cp );
 
