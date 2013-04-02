@@ -295,7 +295,9 @@ QName                 ({NCName}":")?{NCName}
    |
    |  Entity definitions
    |______________________________________________________________________*/
-CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+)";"
+  // CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+)";"
+
+CharRef               "&#"([1-9][0-9]*|x(([1-9]|[a-f]|[A-F])([0-9]|[a-f]|[A-F])*))";"
 PredefinedEntityRef   "&"(lt|gt|amp|quot|apos|nbsp)";"
 Ref                   {CharRef}|{PredefinedEntityRef}
 

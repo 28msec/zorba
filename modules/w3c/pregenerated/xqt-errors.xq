@@ -674,6 +674,14 @@ declare variable $err:XQST0111 as xs:QName := fn:QName($err:NS, "err:XQST0111");
 
 (:~
  :
+ : It is a static error if the name of a feature in require-feature is not recognized by the implementation.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0123 as xs:QName := fn:QName($err:NS, "err:XQST0123");
+
+(:~
+ :
  : It is a dynamic error if evaluation of an expression relies on some part
  : of the dynamic context that has not been assigned a value.
  : 

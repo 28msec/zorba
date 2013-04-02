@@ -262,6 +262,7 @@ extern entry const dict_en[] = {
   { "XQST0103", "$1: non-distinct variable in window clause" },
   { "XQST0106", "$1: multiple annotations with $2 names" },
   { "XQST0111", "$1" },
+  { "XQST0123", "$1" },
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
   { "XQTY0030", "validate argument must be exactly one document or element node" },
   { "XQTY0086", "typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve" },
@@ -914,6 +915,7 @@ extern entry const dict_en[] = {
   { "~UnescapedChar_3", "character '$3' must be escaped here" },
 #endif
   { "~UnexpectedElement", "unexpected element" },
+  { "~UnrecognizedXQueryOption", "\"$2\": unrecognized XQuery namespace option" },
   { "~VarValMustBeSingleItem_2", "\"$2\": variable value must be single item" },
   { "~XMLParserInitFailed", "XML parser initialization failed" },
   { "~XMLParserNoCreateTree", "XML tree creation failed" },

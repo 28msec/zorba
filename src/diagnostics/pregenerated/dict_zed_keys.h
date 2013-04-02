@@ -510,6 +510,7 @@
 #define ZED_libxml_ERR_539 "~libxml_ERR_539"
 #define ZED_libxml_ERR_540 "~libxml_ERR_540"
 #define ZED_libxml_ERR_541 "~libxml_ERR_541"
+#define ZED_UnrecognizedXQueryOption "~UnrecognizedXQueryOption"
 
 #endif /* ZORBA_DIAGNOSTICS_ZED_KEYS */
 /*
