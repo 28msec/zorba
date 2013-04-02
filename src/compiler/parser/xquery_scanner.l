@@ -174,7 +174,7 @@ int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba:
 #define yyterminate() return token::_EOF
 
 
-std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION */
+std::string start_xquery_state(int);   /* forward declaration, used by YY_USER_ACTION */
 
 /*
   The macro YY_USER_ACTION can be defined to provide an action which is
@@ -195,7 +195,7 @@ std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION *
 #define YY_USER_ACTION \
 { \
   if (yy_flex_debug) { \
-    std::cerr << "<" << start_state(YY_START) << ">" << "\""<<yytext<<"\"" << std::endl; \
+    std::cerr << "<" << start_xquery_state(YY_START) << ">" << "\""<<yytext<<"\"" << std::endl; \
   } \
   \
   int last_endl = 0;\
@@ -295,7 +295,7 @@ QName                 ({NCName}":")?{NCName}
    |
    |  Entity definitions
    |______________________________________________________________________*/
-CharRef               "&#"([1-9][0-9]*|x([1-9][a-f][A-F])([0-9]|[a-f]|[A-F])*)";"
+CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+)";"
 PredefinedEntityRef   "&"(lt|gt|amp|quot|apos|nbsp)";"
 Ref                   {CharRef}|{PredefinedEntityRef}
 
@@ -1155,8 +1155,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
 %%
 
-
-std::string start_state(int state)
+std::string start_xquery_state(int state)
 {
   switch (state)
   {
@@ -1181,7 +1180,7 @@ std::string start_state(int state)
     case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
     case MODE_START_TAG: return "MODE_START_TAG";
     case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
-    default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_state() in xquery_scanner.l \n";
+    default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_xquery_state() in xquery_scanner.l \n";
   }
 }
 

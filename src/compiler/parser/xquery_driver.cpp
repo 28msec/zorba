@@ -32,31 +32,15 @@
 #  pragma GCC diagnostic warning "-Wparentheses"
 #endif
 
+#include "compiler/parser/zorba_parser_error.h"
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "util/xml_util.h"
 
+
 namespace zorba
 {
-
-ZorbaParserError::ZorbaParserError(std::string _msg, Error const &code)
-  :
-  msg(_msg), err_code(code)
-{
-}
-
-ZorbaParserError::ZorbaParserError(std::string _msg, const location& aLoc, Error const &code)
-  :
-  msg(_msg), loc(xquery_driver::createQueryLocStatic(aLoc)), err_code(code)
-{
-}
-
-ZorbaParserError::ZorbaParserError(std::string _msg, const QueryLoc& aLoc, Error const &code)
-  :
-  msg(_msg), loc(aLoc), err_code(code)
-{
-}
 
 xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
   :
@@ -123,8 +107,6 @@ ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const loca
   std::string temp = _message;
   std::string out;
   temp = temp.substr(temp.find("&"));
-
-  std::cout << "-- Inside invalidCharref" << std::endl;
 
   while (temp.size()>0 && xml::parse_entity(temp, &out) != -1)
   {
@@ -230,17 +212,6 @@ QueryLoc xquery_driver::createQueryLoc(const location& aLoc) const
 {
   QueryLoc lLoc;
   lLoc.setFilename(theFilename);
-  lLoc.setLineBegin(aLoc.begin.line);
-  lLoc.setColumnBegin(aLoc.begin.column);
-  lLoc.setLineEnd(aLoc.end.line);
-  lLoc.setColumnEnd(aLoc.end.column);
-  return lLoc;
-}
-
-QueryLoc xquery_driver::createQueryLocStatic(const location& aLoc)
-{
-  QueryLoc lLoc;
-  lLoc.setFilename(aLoc.begin.filename->c_str());
   lLoc.setLineBegin(aLoc.begin.line);
   lLoc.setColumnBegin(aLoc.begin.column);
   lLoc.setLineEnd(aLoc.end.line);
