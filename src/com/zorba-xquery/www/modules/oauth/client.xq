@@ -567,7 +567,7 @@ as item()*
   let $signature   := trace(encode-for-uri(oauth:signature($base-signature, $signature-method, $key)),"signature")
   let $authorization-header   := trace(oauth:authorization-header($params,$realm,$signature),"authorization-header")
   let $authorization-header   := <http:header name="Authorization" value="{$authorization-header}" />
-  let $request := copy $request := $protected-resource modify (insert node $authorization-header into $request) return $request
+  let $request := copy $request := $protected-resource modify (insert node $authorization-header as first into $request) return $request
   return http-client:send-request(
     $request
   )
