@@ -1113,7 +1113,7 @@ declare variable $err:FODF1280 as xs:QName := fn:QName($err:NS, "err:FODF1280");
 
 (:~
  :
- : Invalid \c fn:format-number() picture string.
+ : Invalid decimal/integer format picture string.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -1142,22 +1142,6 @@ declare variable $err:FODT0002 as xs:QName := fn:QName($err:NS, "err:FODT0002");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:FODT0003 as xs:QName := fn:QName($err:NS, "err:FODT0003");
-
-(:~
- :
- : format-integer: Cannot cast $language to \c xs:language.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:FOFI0001 as xs:QName := fn:QName($err:NS, "err:FOFI0001");
-
-(:~
- :
- : format-integer: invalid parameter.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:FOFI0002 as xs:QName := fn:QName($err:NS, "err:FOFI0002");
 
 (:~
  :
