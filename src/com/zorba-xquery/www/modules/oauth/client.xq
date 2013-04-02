@@ -612,23 +612,41 @@ as item()*
     {$additional-parameters/p:parameter}
     </p:parameters>
   }
-  let $response := oauth:http-request($consumer-secret, $protected-resource, $oauth-token-secret, $params, $realm, $signature-method)
+  let $response := {
+    (: Unless the user explicitly sets follow-redirect, we set it to false.
+       We have to handle redirects manually to provide a new nonce each time. :)
+    if (fn:empty($protected-resource/@follow-redirect))
+    then
+      insert node attribute { "follow-redirect" } { "false" }
+      into $protected-resource;
+    else ();
+    oauth:http-request($consumer-secret, $protected-resource, $oauth-token-secret, $params, $realm, $signature-method)
+  }
   let $head := $response[1]
   let $body := if($response[2] instance of xs:base64Binary) then base64:decode($response[2]) else $response[2]
-  return 
-    if($head/@status = 200)
+  let $status := xs:integer($head/@status)
+  return
+    if($status eq 200)
     then 
       if ($format-params) then
         oauth:parse-parameters($body)
       else 
         $response
-    else if ($head/@status = 401) then 
+    else if ( ($status ge 301 and $status le 303) or $status eq 307 ) then { 
+      replace value of node $protected-resource/@href with
+        data($head/http-client:header[@name eq "Location"]/@value);
+      oauth:format-request(
+        $consumer-key, $consumer-secret, $protected-resource, $oauth-token,
+        $oauth-token-secret, $realm, $signature-method, $additional-parameters,
+        $format-params)
+    }
+    else if ($status eq 401) then 
       error(
         xs:QName("oerr:OC003"),
         concat("Authorization header unauthorized: ", $body)
       )
     else
-      error($oerr:OC004, concat("Service Provider Error: ", $body))
+      error($oerr:OC004, concat("Service Provider Error ", $status, ": ", $body))
 
 };
 
