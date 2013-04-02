@@ -262,10 +262,6 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode FODT0002;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode FODT0003;
 
-extern ZORBA_DLL_PUBLIC XQueryErrorCode FOFI0001;
-
-extern ZORBA_DLL_PUBLIC XQueryErrorCode FOFI0002;
-
 extern ZORBA_DLL_PUBLIC XQueryErrorCode FONS0004;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode FONS0005;

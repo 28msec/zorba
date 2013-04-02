@@ -375,12 +375,6 @@ XQueryErrorCode FODT0002( "FODT0002" );
 XQueryErrorCode FODT0003( "FODT0003" );
 
 
-XQueryErrorCode FOFI0001( "FOFI0001" );
-
-
-XQueryErrorCode FOFI0002( "FOFI0002" );
-
-
 XQueryErrorCode FONS0004( "FONS0004" );
 
 

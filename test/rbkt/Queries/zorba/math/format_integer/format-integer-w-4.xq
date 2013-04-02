@@ -1,0 +1,1 @@
+fn:format-integer( 9223372036854775807, "w", "en_US" ) eq "nine quintillion two hundred twenty three quadrillion three hundred seventy two trillion thirty six billion eight hundred fifty four million seven hundred seventy five thousand eight hundred seven"
