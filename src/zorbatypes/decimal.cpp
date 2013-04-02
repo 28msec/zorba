@@ -441,8 +441,6 @@ zstring Decimal::toString( value_type const &value, bool minusZero, int precisio
   if ( minusZero )
   {
     buf[0] = '-';
-//    buf[1] = '0';
-//    buf[2] = '\0';
   }
 
   value.toFixPtString( buf + minusZero, precision );

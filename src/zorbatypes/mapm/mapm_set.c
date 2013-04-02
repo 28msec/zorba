@@ -339,7 +339,7 @@ void m_apm_set_string(M_APM ctmp, char* s_in)
   if (zflag)
   {
     ctmp->m_apm_exponent   = 0;
-    ctmp->m_apm_sign       = 0; //this line is commented to implement xsd 1.1 -0 change.
+    ctmp->m_apm_sign       = 0;
     ctmp->m_apm_datalength = 1;
   }
   else

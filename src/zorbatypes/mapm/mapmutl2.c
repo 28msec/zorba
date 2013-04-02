@@ -232,11 +232,6 @@ int	m_apm_compare(M_APM ltmp, M_APM rtmp)
   lexp  = ltmp->m_apm_exponent;
   rexp  = rtmp->m_apm_exponent;
 
-/*  if (lexp == rexp && lexp == 0 && llen == rlen && llen == 1 &&
-      ltmp->m_apm_data[0] == rtmp->m_apm_data[0] &&
-      ltmp->m_apm_data[0] == 0)
-    return 0;
-*/
   if (rsign == 0)
     return(lsign);
 
