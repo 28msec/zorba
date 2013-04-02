@@ -719,13 +719,20 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
   # Now, do things that should be done at the end of *any* project, not
   # just the top-level project.
 
-  # Generate project's projectConfig.cmake file.
+  # Generate project's projectConfig.cmake file, unless the project told
+  # us not to by setting the global property ZORBA_PROJECT_UNAVAILABLE to true.
   # QQQ need to create an installable version of this too, once we know
   # how installing a module package should work.
-  GET_PROPERTY (ZORBA_MODULE_LIBRARIES
-    GLOBAL PROPERTY "${PROJECT_NAME}_LIBRARIES")
-  CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
-    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
+  GET_PROPERTY (_unavailable GLOBAL PROPERTY ZORBA_PROJECT_UNAVAILABLE)
+  IF (NOT _unavailable)
+    GET_PROPERTY (ZORBA_MODULE_LIBRARIES
+      GLOBAL PROPERTY "${PROJECT_NAME}_LIBRARIES")
+    CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
+      "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
+  ELSE (NOT _unavailable)
+    # Reset this variable so next project will still work
+    SET_PROPERTY (GLOBAL PROPERTY ZORBA_PROJECT_UNAVAILABLE)
+  ENDIF (NOT _unavailable)
 
 ENDMACRO (DONE_DECLARING_ZORBA_URIS)
 
