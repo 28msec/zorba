@@ -91,9 +91,19 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   quant = theSequenceType->get_quantifier();
+
   if (consumeNext(item, theChild.getp(), planState))
   {
-    if (theSequenceType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
+    
+    store::Item_t lIsNilledItem = (item && item->isNode()) ? item->getNilled(): NULL;
+    bool lIsNilled = lIsNilledItem ? lIsNilledItem->getBooleanValue() : false; 
+
+    if (lIsNilled)
+    {
+      const NodeXQType* lNodeType = static_cast<const NodeXQType*>(theSequenceType.getp());
+      res = lNodeType->get_nillable();
+    }
+    else if (theSequenceType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
         item->isAtomic())
     {
       store::SchemaTypeCode targetType = 
@@ -157,16 +167,6 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       else
       {
         res = true;
-      }
-    }
-    
-    if (item->isNode())
-    {
-      store::Item_t lIsNilled = item->getNilled();
-      if (lIsNilled && lIsNilled->getBooleanValue())
-      {
-        const NodeXQType* lNodeType = static_cast<const NodeXQType*>(theSequenceType.getp());
-        res = lNodeType->get_nillable();
       }
     }
   }
