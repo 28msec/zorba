@@ -726,17 +726,15 @@ Duration* Duration::operator-(const Duration& d) const
 }
 
 
-#define TRY_XS_INT_CONVERT(target, value, xs_type)                    \
-  {                                                                   \
-    try {                                                             \
-      target = to_xs_int(value);                                      \
-    } catch (std::range_error const&) {                               \
-      xs_type res = (value);                                          \
-      zstring strval(res.toString());                                 \
-      throw XQUERY_EXCEPTION(err::FODT0002, ERROR_PARAMS(strval));    \
-    }                                                                 \
+#define TRY_XS_INT_CONVERT(target, value, xs_type)                         \
+  {                                                                        \
+    xs_type const res(value);                                              \
+    try {                                                                  \
+      target = to_xs_int(res);                                             \
+    } catch (std::range_error const&) {                                    \
+      throw XQUERY_EXCEPTION(err::FODT0002, ERROR_PARAMS(res.toString())); \
+    }                                                                      \
   }
-
 
 Duration* Duration::operator*(const xs_double& value) const
 {
