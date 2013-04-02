@@ -41,12 +41,14 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Decimal::parse( char const *s, value_type *result, int parse_options ) {
+void Decimal::parse( char const *s, value_type *result, bool *minusZero, int parse_options ) {
   if ( !*s )
     throw std::invalid_argument( "empty string" );
 
   s = ascii::trim_start_whitespace( s );
   char const *const first_non_ws = s;
+  bool hasMinus = (*s == '-');
+
   if ( *s == '+' || *s == '-' )
     ++s;
   while ( ascii::is_digit( *s ) )
@@ -77,6 +79,10 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
     delete[] copy;
   } else
     *result = first_non_ws;
+
+  *minusZero = false;
+  if( hasMinus && result->is_zero() )
+    *minusZero = true;
 }
 
 /**
@@ -181,16 +187,19 @@ void Decimal::reduce( char *s ) {
 Decimal::Decimal( long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  minusZero_ = false;
 }
 
 Decimal::Decimal( unsigned long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  minusZero_ = false;
 }
 
 Decimal::Decimal( unsigned long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  minusZero_ = false;
 }
 
 Decimal::Decimal( float f ) {
@@ -199,6 +208,7 @@ Decimal::Decimal( float f ) {
        f == -std::numeric_limits<float>::infinity() )
     throw std::invalid_argument( "float value = infinity" );
   value_ = f;
+  minusZero_ = false; //(f == -0.0);
 }
 
 Decimal::Decimal( double d ) {
@@ -207,22 +217,26 @@ Decimal::Decimal( double d ) {
        d == -std::numeric_limits<double>::infinity() )
     throw std::invalid_argument( "double value = infinity" );
   value_ = d;
+  minusZero_ = false; //(d == -0.0);
 }
 
 Decimal::Decimal( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "double value = infinity" );
   value_ = d.getNumber();
+  minusZero_ = false;
 }
 
 Decimal::Decimal( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "float value = infinity" );
   value_ = f.getNumber();
+  minusZero_ = false;
 }
 
 TEMPLATE_DECL(I)
-Decimal::Decimal( INTEGER_IMPL(I) const &i ) : value_( i.itod() ) {
+Decimal::Decimal( INTEGER_IMPL(I) const &i ) :
+    value_( i.itod() ), minusZero_(false) {
 }
 #ifndef ZORBA_WITH_BIG_INTEGER
 template Decimal::Decimal( INTEGER_IMPL_LL const& );
@@ -234,18 +248,21 @@ template Decimal::Decimal( INTEGER_IMPL_ULL const& );
 Decimal& Decimal::operator=( long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  minusZero_ = false;
   return *this;
 }
 
 Decimal& Decimal::operator=( unsigned long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  minusZero_ = false;
   return *this;
 }
 
 TEMPLATE_DECL(I)
 Decimal& Decimal::operator=( INTEGER_IMPL(I) const &i ) {
   value_ = i.itod();
+  minusZero_ = false;
   return *this;
 }
 #ifndef ZORBA_WITH_BIG_INTEGER
@@ -257,6 +274,7 @@ Decimal& Decimal::operator=( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "not finite" );
   value_ = d.getNumber();
+  minusZero_ = false;
   return *this;
 }
 
@@ -264,6 +282,7 @@ Decimal& Decimal::operator=( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "not finite" );
   value_ = f.getNumber();
+  minusZero_ = false;
   return *this;
 }
 
@@ -416,9 +435,17 @@ Decimal const& Decimal::one() {
   return d;
 }
 
-zstring Decimal::toString( value_type const &value, int precision ) {
+zstring Decimal::toString( value_type const &value, bool minusZero, int precision ) {
   char buf[ 1024 ];
-  value.toFixPtString( buf, precision );
+
+  if ( minusZero )
+  {
+    buf[0] = '-';
+//    buf[1] = '0';
+//    buf[2] = '\0';
+  }
+
+  value.toFixPtString( buf + minusZero, precision );
 
   //
   // Note that in the canonical representation, the decimal point is required

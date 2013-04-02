@@ -128,8 +128,8 @@ EXPECTED_FOTS_FAILURE (fn-adjust-dateTime-to-timezone cbcl-adjust-dateTime-to-ti
 EXPECTED_FOTS_FAILURE (fn-adjust-dateTime-to-timezone cbcl-adjust-dateTime-to-timezone-003 0)
 EXPECTED_FOTS_FAILURE (fn-adjust-dateTime-to-timezone cbcl-adjust-dateTime-to-timezone-004 0)
 EXPECTED_FOTS_FAILURE (fn-available-environment-variables fn-available-environment-variables-011 0)
-EXPECTED_FOTS_FAILURE (fn-avg cbcl-avg-002 0)
-EXPECTED_FOTS_FAILURE (fn-avg cbcl-avg-003 0)
+#EXPECTED_FOTS_FAILURE (fn-avg cbcl-avg-002 0) #
+#EXPECTED_FOTS_FAILURE (fn-avg cbcl-avg-003 0) #
 EXPECTED_FOTS_FAILURE (fn-collection fn-collection-4 0)
 EXPECTED_FOTS_FAILURE (fn-collection fn-collection-4d 0)
 EXPECTED_FOTS_FAILURE (fn-collection fn-collection-5 0)

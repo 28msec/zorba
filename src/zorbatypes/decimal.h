@@ -233,8 +233,9 @@ private:
   typedef long int_cast_type;
 
   value_type value_;
+  bool minusZero_;
 
-  Decimal( value_type const &v ) : value_( v ) { }
+  Decimal( value_type const &v ) : value_( v ), minusZero_(false) { }
 
   static uint32_t hash( value_type const& );
 
@@ -243,7 +244,7 @@ private:
     parse_decimal
   };
 
-  static void parse( char const *s, value_type *result,
+  static void parse( char const *s, value_type *result, bool *minusZero,
                      int parse_options = parse_decimal );
 
   static void reduce( char *s );
@@ -253,7 +254,7 @@ private:
   static value_type roundHalfToEven2( value_type const &v,
                                       value_type const &precision );
 
-  static zstring toString( value_type const&,
+  static zstring toString( value_type const&, bool,
                            int precision = ZORBA_FLOAT_POINT_PRECISION );
 
   TEMPLATE_DECL(I) friend class IntegerImpl;
@@ -265,7 +266,7 @@ private:
 ////////// constructors ///////////////////////////////////////////////////////
 
 #define ZORBA_DECIMAL_CTOR(T) \
-  inline Decimal::Decimal( T n ) : value_( static_cast<int_cast_type>( n ) ) { }
+  inline Decimal::Decimal( T n ) : value_( static_cast<int_cast_type>( n ) ), minusZero_(false) { }
 
 ZORBA_DECIMAL_CTOR(char)
 ZORBA_DECIMAL_CTOR(signed char)
@@ -278,10 +279,11 @@ ZORBA_DECIMAL_CTOR(unsigned int)
 #undef ZORBA_DECIMAL_CTOR
 
 inline Decimal::Decimal( char const *s ) {
-  parse( s, &value_ );
+  minusZero_ = false;
+  parse( s, &value_, &minusZero_ );
 }
 
-inline Decimal::Decimal( Decimal const &d ) : value_( d.value_ )
+inline Decimal::Decimal( Decimal const &d ) : value_( d.value_ ), minusZero_(d.minusZero_)
 {
 }
 
@@ -289,12 +291,14 @@ inline Decimal::Decimal( Decimal const &d ) : value_( d.value_ )
 
 inline Decimal& Decimal::operator=( Decimal const &d ) {
   value_ = d.value_;
+  minusZero_ = d.minusZero_;
   return *this;
 }
 
 #define ZORBA_DECIMAL_OP(T)                   \
   inline Decimal& Decimal::operator=( T n ) { \
     value_ = static_cast<int_cast_type>( n ); \
+    minusZero_ = false;                       \
     return *this;                             \
   }
 
@@ -310,7 +314,8 @@ ZORBA_DECIMAL_OP(unsigned long)
 #undef ZORBA_DECIMAL_OP
 
 inline Decimal& Decimal::operator=( char const *s ) {
-  parse( s, &value_ );
+  minusZero_ = false;
+  parse( s, &value_, &minusZero_ );
   return *this;
 }
 
@@ -414,7 +419,7 @@ inline int Decimal::sign() const {
 }
 
 inline zstring Decimal::toString( int precision ) const {
-  return toString( value_, precision );
+  return toString( value_, minusZero_, precision );
 }
 
 inline std::ostream& operator<<( std::ostream &os, Decimal const &d ) {
