@@ -18,16 +18,20 @@
 #ifndef ZORBA_STRING_UTIL_H
 #define ZORBA_STRING_UTIL_H
 
+// standard
+#include <cctype>
 #include <cstring>
 #include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 
+// Zorba
 #include <zorba/internal/ztd.h>
 #include "ascii_util.h"
 #include "cxx_util.h"
 #include "stl_util.h"
+#include "zorbatypes/zstring.h"
 
 #ifdef WIN32
 // Windows annoyingly defines these as macros.
@@ -789,6 +793,37 @@ template<class OutputStringType> inline
 void to_string( char const *s, OutputStringType *out ) {
   *out = s ? s : "<null>";
 }
+
+////////// Miscellaneous ///////////////////////////////////////////////////////
+
+/**
+ * Converts an integer to an alphabetic string: 1 = A, 2 = B, ..., 26 = Z, 27 =
+ * AA, 28 = AB, ....  Note that 0 remains 0.
+ *
+ * @param n The integer to convert.
+ * @param capital If \c true, capital letters are used; if \c false, lower case
+ * letters are used.
+ * @return Returns \a n as an alphabetic string or "0" if \a n is zero.
+ */
+zstring alpha( unsigned long long n, bool capital );
+
+/**
+ * Converts a signed integer to English, e.g, 42 becomes "forty two".
+ *
+ * @param n The integer to convert.
+ * @param ordinal If \c true, ordinal words ("forty second") are returned.
+ * @return Returns \a n in English.
+ */
+zstring english( int64_t n, bool ordinal = false );
+
+/**
+ * Returns the English ordinal suffix for an integer, e.g., "st" for 1, "nd"
+ * for 2, etc.
+ *
+ * @param n The integer to return the ordinal suffix for.
+ * @return Returns said suffix.
+ */
+char const* ordinal( long long n );
 
 ///////////////////////////////////////////////////////////////////////////////
 

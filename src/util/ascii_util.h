@@ -22,6 +22,7 @@
 #include <cctype>
 #include <cstddef>
 #include <cstring>
+#include <functional>
 #include <iterator>
 
 // local
@@ -588,6 +589,29 @@ void to_upper( InputStringType const &in, OutputStringType *out ) {
     static_cast<char (*)(char)>( to_upper )
   );
 }
+
+/**
+ * A unary_function to convert a (presumed) lower-case string to title-case
+ * "Like This."
+ */
+class to_title : public std::unary_function<char,char> {
+public:
+  to_title() : capitalize_( true ) { }
+
+  result_type operator()( argument_type c ) {
+    if ( is_alpha( c ) ) {
+      if ( capitalize_ ) {
+        c = to_upper( c );
+        capitalize_ = false;
+      }
+    } else if ( is_space( c ) )
+      capitalize_ = true;
+    return c;
+  };
+
+private:
+  bool capitalize_;
+};
 
 ////////// Replacement ////////////////////////////////////////////////////////
 

@@ -1035,11 +1035,20 @@
       <entry key="BadComponent_3">
         <value>'$3': invalid component specifier</value>
       </entry>
+      <entry key="Bad2ndModifier_3">
+        <value>'$3': invalid second presentation modifier</value>
+      </entry>
+      <entry key="Bad2ndModifierHere_3">
+        <value>'$3': valid second presentation modifier invalid here</value>
+      </entry>
       <entry key="BadWidthModifier">
         <value>invalid width modifier</value>
       </entry>
       <entry key="DigitNotSameFamily_34">
         <value>"$3": digit not from same digit family as $4</value>
+      </entry>
+      <entry key="Dup2ndModifier_3">
+        <value>"$3": duplicate second presentation modifier</value>
       </entry>
       <entry key="MultipleComponent_3">
         <value>'$3': multiple component specifiers between []</value>
@@ -1307,9 +1316,39 @@
 
     <diagnostic code="FODF1310">
       <comment>
-       Invalid \c fn:format-number() picture string.
+        Invalid decimal/integer format picture string.
       </comment>
-      <value>"$1": invalid fn:format-number() picture string$2</value>
+      <value>"$1": invalid picture string for decimal/integer${: 2}</value>
+      <entry key="BadCharacter_3">
+        <value>'$3': invalid character</value>
+      </entry>
+      <entry key="BadFormatModifier_3">
+        <value>'$3': invalid format modifier</value>
+      </entry>
+      <entry key="BadFormatModifierHere_3">
+        <value>'$3': valid format modifier invalid here</value>
+      </entry>
+      <entry key="DigitNotSameFamily_34">
+        <value>"$3": digit not from same digit family as $4</value>
+      </entry>
+      <entry key="DupFormatModifier_3">
+        <value>"$3": duplicate format modifier</value>
+      </entry>
+      <entry key="EmptyFormat">
+        <value>empty primary format</value>
+      </entry>
+      <entry key="NoAdjacentGroupSep_3">
+        <value>"$3": grouping separator must not be adjacent to others</value>
+      </entry>
+      <entry key="NoGroupSepAtStart_3">
+        <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoGroupSepAtEnd_3">
+        <value>"$3": grouping separator illegal at end of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoOptDigitAfterMandatory">
+        <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="FODT0001">
@@ -1331,20 +1370,6 @@
        Invalid timezone value.
       </comment>
       <value>"$1": invalid timezone value (in seconds)</value>
-    </diagnostic>
-
-    <diagnostic code="FOFI0001">
-      <comment>
-       format-integer: Cannot cast $language to \c xs:language.
-      </comment>
-      <value>"$1": not castable to xs:language</value>
-    </diagnostic>
-
-    <diagnostic code="FOFI0002">
-      <comment>
-       format-integer: invalid parameter.
-      </comment>
-      <value>invalid argument in format-integer: $1</value>
     </diagnostic>
 
     <diagnostic code="FONS0004">
@@ -4220,38 +4245,6 @@
 
     <entry key="error">
       <value>error</value>
-    </entry>
-
-    <entry key="format_integer_bad_picture_format">
-      <value>bad $picture format: $2</value>
-    </entry>
-
-    <entry key="format_integer_duplicated_optional_format_modifier">
-      <value>duplicated optional format modifier '$2'</value>
-    </entry>
-
-    <entry key="format_integer_optional_format_modifier_not_closed">
-      <value>bad optional format modifier ($2), cannot find closing ')' </value>
-    </entry>
-
-    <entry key="format_integer_picture_empty">
-      <value>$picture parameter should not be empty</value>
-    </entry>
-
-    <entry key="format_integer_unknown_optional_format_modifier_character">
-      <value>unknown optional format modifier character '$2'</value>
-    </entry>
-
-    <entry key="format_integer_value_1_10">
-      <value>$value ($2) should be between 1 and 10 for this formatting picture</value>
-    </entry>
-
-    <entry key="format_integer_value_1_20">
-      <value>$value ($2) should be between 1 and 20 for this formatting picture</value>
-    </entry>
-
-    <entry key="format_integer_value_gt_3000">
-      <value>$value ($2) should be less than 3000 for Roman representation</value>
     </entry>
 
     <entry key="full-text dynamic error">
