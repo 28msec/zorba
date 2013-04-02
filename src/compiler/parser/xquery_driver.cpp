@@ -124,6 +124,8 @@ ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const loca
   std::string out;
   temp = temp.substr(temp.find("&"));
 
+  std::cout << "-- Inside invalidCharref" << std::endl;
+
   while (temp.size()>0 && xml::parse_entity(temp, &out) != -1)
   {
     temp = temp.substr(temp.find(";") + 1);

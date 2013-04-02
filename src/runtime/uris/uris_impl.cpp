@@ -109,7 +109,7 @@ DecodeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t     lItemURI, lElementURI, lQName,
+  store::Item_t     lItemURI, lQName,
                     lElementScheme, lElementSchemeSpecific,
                     lElementAuthority, lElementUserInfo,
                     lElementHost, lElementPort, lElementPath,
@@ -192,25 +192,6 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       lStrHolder);
   }
     
-  /* GENV_ITEMFACTORY->createQName(
-    lQName,
-    lNamespace,
-    "uri",
-    "scheme-specific-part");
-  
-  GENV_ITEMFACTORY->createElementNode(
-    lElementSchemeSpecific,
-    result.getp(),
-    lQName,
-    lQNameString,
-    true,
-    false,
-    lNsBindings,
-    lZNamespace);
-    
-  // Once we have schema-specific data we will add it here
-  */  
-  
   lStrHolder = uri.get_encoded_reg_based_authority();
   if(lStrHolder.str() != ""){
     GENV_ITEMFACTORY->createQName(
@@ -391,7 +372,7 @@ bool
 SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lItemURI, lItem, lItem2;
-  zstring       lStrVal, lTextVal;
+  zstring       lStrVal, lTextVal, lName;
   store::Iterator_t    lChildren, lGrandChildren;
   URI           uri = URI();
   int           lIntPort = 0;
@@ -411,32 +392,30 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         if(!lGrandChildren.isNull()){
           lGrandChildren->open();
           if(lGrandChildren->next(lItem2)){
-            //if(lItem->getNodeName()->getLocalName() != "port")
-              lTextVal = lItem2->getStringValue();
-            //else
-              //lIntPort = lItem2->getIntValue();
+            lTextVal = lItem2->getStringValue();
           } else
             lTextVal = "";
           lGrandChildren->close();
         }
-        if(lItem->getNodeName()->getLocalName() == "scheme"){
+        lName = lItem->getNodeName()->getLocalName();
+        if(lName == "scheme" && lTextVal != ""){
           uri.set_scheme(lTextVal);
-        } else if(lItem->getNodeName()->getLocalName() == "scheme-specific"){
-          // we still have to define what we are going to with this
-        } else if(lItem->getNodeName()->getLocalName() == "authority"){
+        } else if(lName == "authority" && lTextVal != ""){
           uri.set_reg_based_authority(lTextVal);
-        } else if(lItem->getNodeName()->getLocalName() == "user-info"){
+        } else if(lName == "user-info" && lTextVal != ""){
           uri.set_user_info(lTextVal);
-        } else if(lItem->getNodeName()->getLocalName() == "host"){
+        } else if(lName == "host" && lTextVal != ""){
           uri.set_host(lTextVal);
-        } else if(lItem->getNodeName()->getLocalName() == "port"){
+        } else if(lName == "port"){
           sscanf(lTextVal.str().c_str(), "%d", &lIntPort);
-          uri.set_port(lIntPort);
-        } else if(lItem->getNodeName()->getLocalName() == "path"){
+          if(lIntPort != 0){
+            uri.set_port(lIntPort);
+          }
+        } else if(lName == "path" && lTextVal != ""){
           uri.set_path(lTextVal);
-        } else if(lItem->getNodeName()->getLocalName() == "query"){
+        } else if(lName == "query" && lTextVal != ""){
           uri.set_query(lTextVal);
-        } else if(lItem->getNodeName()->getLocalName() == "fragment"){
+        } else if(lName == "fragment" && lTextVal != ""){
           uri.set_fragment(lTextVal);
         }
       }
