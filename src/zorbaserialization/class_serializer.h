@@ -51,16 +51,16 @@ class ClassDeserializer;
 
   The classes and macros defined in this file provide a generic infrastructure
   for making an arbitrary c++ class serializable. This infrastructure is provided
-  for convenience; not every c++ type has to adopt this inftrasture. Class that 
+  for convenience; not every c++ type has to adopt this inftrasture. Class that
   do follow this infrastructure can be serialized via the template operators:
 
-  void operator&(Archiver& ar, T& obj) and 
+  void operator&(Archiver& ar, T& obj) and
   void operator&(Archiver& ar, T*& obj),
 
   which are defined in serialize_template_types.h. These operators assume that
-  T is a class that has the following 2 methods: 
+  T is a class that has the following 2 methods:
 
-  get_class_name_str() and serialize_internal() 
+  get_class_name_str() and serialize_internal()
 ********************************************************************************/
 
 
@@ -71,8 +71,8 @@ class ClassDeserializer;
   ------------------
   This map associates the name of a class C with a pointer to the ClassDeserializer
   obj associated with C (if any such obj actually exists). The map is populated
-  "automatically", during the instantiation of each ClassDeserializer obj; the 
-  constructor of each such obj places an entry into the map.  
+  "automatically", during the instantiation of each ClassDeserializer obj; the
+  constructor of each such obj places an entry into the map.
 
   harcoded_objects_archive:
   -------------------------
@@ -117,13 +117,13 @@ public:
 
 
 /*******************************************************************************
-  A class that may be used as the base for other c++ classes that need to be 
+  A class that may be used as the base for other c++ classes that need to be
   serialized.
 
   The serialize_internal() method is called by the template operators:
-  void operator&(Archiver& ar, T& obj) and 
+  void operator&(Archiver& ar, T& obj) and
   void operator&(Archiver& ar, T*& obj).
-  
+
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC SerializeBaseClass
 {
@@ -172,6 +172,7 @@ public:                                                                 \
 /*******************************************************************************
 
 ********************************************************************************/
+#ifdef NDEBUG
 #define SERIALIZABLE_CLASS(class_name)                                   \
   virtual void serialize_internal(::zorba::serialization::Archiver& ar); \
                                                                          \
@@ -189,7 +190,39 @@ public:                                                                 \
                                                                          \
   SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))        \
   static class_factory<class_name>  g_class_factory;                     \
-  
+
+
+#else
+
+
+/* Debug version of the above definition which also creates a method to
+ * retrieve the class name
+ */
+#define SERIALIZABLE_CLASS(class_name)                                   \
+                                                                         \
+  virtual std::string getClassName() const {                             \
+    return #class_name;                                                  \
+  }                                                                      \
+                                                                         \
+  virtual void serialize_internal(::zorba::serialization::Archiver& ar); \
+                                                                         \
+  static serialization::TypeCode theTypeCode;                            \
+                                                                         \
+  virtual serialization::TypeCode get_serializer_type_code() const       \
+  {                                                                      \
+    return theTypeCode;                                                  \
+  }                                                                      \
+                                                                         \
+  static serialization::TypeCode get_serializer_type_code_static()       \
+  {                                                                      \
+    return theTypeCode;                                                  \
+  }                                                                      \
+                                                                         \
+  SERIALIZABLE_CLASS_FACTORY_DECL(class_name, new class_name(ar))        \
+  static class_factory<class_name>  g_class_factory;                     \
+
+#endif
+
 
 #define SERIALIZABLE_ABSTRACT_CLASS(class_name)                          \
   virtual void serialize_internal(::zorba::serialization::Archiver& ar); \
@@ -269,7 +302,7 @@ void class_name::serialize_internal(::zorba::serialization::Archiver& ar) \
   {                                                                     \
     return serialization::TYPE_LAST;                                    \
   }
-  
+
 
 //
 // Static members of template classes with one template param.
@@ -280,7 +313,7 @@ void class_name::serialize_internal(::zorba::serialization::Archiver& ar) \
 // Example:
 //
 // SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(
-//     TypedValueCompareIterator, 
+//     TypedValueCompareIterator,
 //     TypedValueCompareIterator<store::XS_DOUBLE>,
 //     1)
 //
@@ -301,8 +334,8 @@ serialization::TYPE_##template_name##_##index;
 //  Example:
 //
 // SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(
-//     serializable_HashEntry, 
-//     serializable_HashEntry<store::Item*, 
+//     serializable_HashEntry,
+//     serializable_HashEntry<store::Item*,
 //     StaticallyKnownCollection_t>,
 //     1)
 //

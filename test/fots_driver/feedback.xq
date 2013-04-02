@@ -31,6 +31,10 @@ declare namespace fots =
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
+
 declare function feedback:check-pass(
   $result           as item()*,
   $testCaseName     as xs:string?,
@@ -75,11 +79,7 @@ declare %ann:sequential function feedback:pass(
                                             $env,
                                             $verbose)
   else feedback:pass( $case,
-                      $result,
-                      $zorbaQuery,
-                      $env,
-                      $duration,
-                      $verbose)
+                      $result)
 };
 
 
@@ -132,51 +132,19 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
  : Gives feedback on a test case run with success.
  :
  : @param $case test case.
- : @return the test case after certain information was added.
+ : @param $result test result of running the test case.
+ : @return info about test case that passed.
  :)
-declare %private %ann:sequential function feedback:pass(
+declare %private function feedback:pass(
   $case             as element(fots:test-case),
-  $result           as item()*,
-  $zorbaQuery       as xs:string,
-  $env              as element(fots:environment)?,
-  $duration         as xs:dayTimeDuration,
-  $verbose          as xs:boolean
+  $result           as item()*
 ) as element(fots:test-case)?
 {
   let $status := if(exists($result/fots:errors))
                  then 'wrongError'
                  else 'pass'
-  return
-  if ($verbose)
-  then
-  {
-    {
-      (insert node attribute result{$status} as last into $case,
-       if (exists($result/fots:errors))
-       then
-         insert node
-         attribute comment{$result/fots:errors}
-         as last into $case
-       else (),
-       insert node attribute executionTime{$duration} as last into $case,
-       insert node
-        <fots:info>
-          {$env}
-          <fots:query>{$zorbaQuery}</fots:query>
-          {$result/fots:expected-result,
-            $result/fots:result,
-            $result/fots:errors}
-        </fots:info>
-      as last into $case,
-      delete node $case/fots:description,
-      delete node $case/fots:created,
-      delete node $case/fots:result);
-
-      $case
-    }
-  }
-  else <fots:test-case  name="{data($case/@name)}"
-                        result="{$status}"/>
+  return 
+  <fots:test-case name="{data($case/@name)}" result="{$status}"/>
 };
 
 
@@ -245,32 +213,14 @@ declare %ann:sequential function feedback:fail(
  : @param $case test case.
  : @return the test case.
  :)
-declare %ann:sequential function feedback:not-run(
-  $case     as element(fots:test-case),
-  $verbose  as xs:boolean
+declare function feedback:not-run(
+  $case as element(fots:test-case)
 ) as element(fots:test-case)?
 {
   trace(data($case/@name), "processing test case :");
   trace("Above test case was not run.","");
 
-  let $status := 'notRun'
-  return
-  if ($verbose)
-  then
-  {
-    {
-      (insert node attribute result {$status} as last into $case,
-       delete node $case/fots:description,
-       delete node $case/fots:created);
-     
-      $case
-    }
-  }
-  else
-  {
-    <fots:test-case name="{$case/@name}"
-                    result="{$status}" />
-  }
+  <fots:test-case name="{$case/@name}" result="notRun" />
 };
 
 
@@ -281,35 +231,15 @@ declare %ann:sequential function feedback:not-run(
  : @param $dependencyError test error returned by the dependency checking.
  : @return the test case.
  :)
-declare %ann:sequential function feedback:not-applicable(
+declare function feedback:not-applicable(
   $case             as element(fots:test-case),
-  $env              as element(fots:environment)?,
-  $dependencyError  as xs:string,
-  $verbose          as xs:boolean
+  $dependencyError  as xs:string
 ) as element(fots:test-case)?
 {
   trace(data($case/@name), "processing test case :");
   trace($dependencyError, "Dependency error :");
 
-  let $status := 'n/a'
-  return
-  if ($verbose)
-  then
-  {
-   {
-    (insert node attribute result{$status} as last into $case,
-     insert node attribute comment{$dependencyError} as last into $case,
-     insert node
-       <fots:info>{$env}</fots:info>
-     as last into $case,
-     delete node $case/fots:description,
-     delete node $case/fots:created);
-
-    $case
-   }
-  }
-  else
-    <fots:test-case name="{data($case/@name)}"
-                    result="{$status}"
-                    comment="{$dependencyError}" />
+  <fots:test-case name="{data($case/@name)}"
+                  result="n/a"
+                  comment="{$dependencyError}" />
 };

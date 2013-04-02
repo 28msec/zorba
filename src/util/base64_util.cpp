@@ -15,9 +15,12 @@
  */
 
 #include "stdafx.h"
+
+// standard
 #include <algorithm>
 #include <cstring>
 
+// local
 #include "ascii_util.h"
 #include "base64_util.h"
 #include "string_util.h"
@@ -114,21 +117,6 @@ inline void encode_chunk( char const *from, char *to ) {
   to[3] = alphabet[   u[2] & 0x3F                      ];
 }
 
-streamsize read_without_whitespace( istream &is, char *buf, streamsize n ) {
-  char const *const buf_orig = buf;
-  char const *const buf_end = buf + n;
-
-  while ( buf < buf_end ) {
-    is.read( buf, n );
-    if ( streamsize read = is.gcount() ) {
-      read = ascii::remove_whitespace( buf, read );
-      buf += read, n -= read;
-    } else
-      break;
-  }
-  return buf - buf_orig;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 size_type decode( char const *from, size_type from_len, char *to,
@@ -149,13 +137,13 @@ size_type decode( char const *from, size_type from_len, char *to,
         // and that the byte preceding '=' is valid.
         //
         case 2:
-          if ( !strchr( "AQgw", from[-1] ) )
+          if ( !::strchr( "AQgw", from[-1] ) )
             throw base64::exception(
               c, pos, BUILD_STRING( '\'', c, "': invalid character before '='" )
             );
           break;
         case 3:
-          if ( !strchr( "=048AEIMQUYcgkosw", from[-1] ) )
+          if ( !::strchr( "=048AEIMQUYcgkosw", from[-1] ) )
             throw base64::exception(
               c, pos, BUILD_STRING( '\'', c, "': invalid character before '='" )
             );
@@ -192,7 +180,7 @@ size_type decode( char const *from, size_type from_len, char *to,
           }
         } else
           ++chunk_len;
-    }
+    } // switch
   } // for
 
   if ( (chunk_len % 4) && !(options & dopt_any_len) )
@@ -219,22 +207,23 @@ size_type decode( char const *from, size_type from_len, char *to,
 
 size_type decode( char const *from, size_type from_len, std::vector<char> *to,
                   int options ) {
-  size_type total_decoded = 0;
+  size_type decoded = 0;
   if ( from_len ) {
     std::vector<char>::size_type const orig_size = to->size();
     to->resize( orig_size + decoded_size( from_len ) );
-    total_decoded = decode( from, from_len, &(*to)[ orig_size ], options );
-    to->resize( orig_size + total_decoded );
+    decoded = decode( from, from_len, &(*to)[ orig_size ], options );
+    to->resize( orig_size + decoded );
   }
-  return total_decoded;
+  return decoded;
 }
 
 size_type decode( istream &from, ostream &to, int options ) {
+  bool const ignore_ws = !!(options & dopt_ignore_ws);
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 4 ], to_buf[ 1024 * 3 ];
     streamsize gcount;
-    if ( options & dopt_ignore_ws )
+    if ( ignore_ws )
       gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
     else {
       from.read( from_buf, sizeof from_buf );
@@ -251,25 +240,27 @@ size_type decode( istream &from, ostream &to, int options ) {
 }
 
 size_type decode( istream &from, vector<char> *to, int options ) {
-  vector<char>::size_type const orig_size = to->size();
+  bool const ignore_ws = !!(options & dopt_ignore_ws);
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 4 ];
     streamsize gcount;
-    if ( options & dopt_ignore_ws )
+    if ( ignore_ws )
       gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
     else {
       from.read( from_buf, sizeof from_buf );
       gcount = from.gcount();
     }
     if ( gcount ) {
-      to->resize( to->size() + decoded_size( gcount ) );
-      total_decoded +=
+      vector<char>::size_type const orig_size = to->size();
+      to->resize( orig_size + decoded_size( gcount ) );
+      size_type const decoded =
         decode( from_buf, gcount, &(*to)[ total_decoded ], options );
+      to->resize( orig_size + decoded );
+      total_decoded += decoded;
     } else
       break;
   }
-  to->resize( orig_size + total_decoded );
   return total_decoded;
 }
 

@@ -52,6 +52,7 @@ namespace zorba
       | AtomicType
       | JSONTest
       | StructuredItemTest
+      | FunctionTest
 
   OccurrenceIndicator ::= "?" | "*" | "+"
 
@@ -111,6 +112,12 @@ namespace zorba
   
   StructuredItemTest ::= "structured-item" "(" ")"
 
+  FunctionTest ::= Annotation* (AnyFunctionTest | TypedFunctionTest)
+
+  AnyFunctionTest ::= "function" "(" "*" ")"
+
+  TypedFunctionTest ::= "function" "(" (SequenceType ("," SequenceType)*)? ")"
+                        "as" SequenceType
 
   ******************
   XML Schema Types:
@@ -654,8 +661,8 @@ public:
 class FunctionXQType : public XQType
 {
 private:
-  std::vector<xqtref_t>         m_param_types;
-  xqtref_t                      m_return_type;
+  std::vector<xqtref_t>   m_param_types;
+  xqtref_t                m_return_type;
 
 public:
   SERIALIZABLE_CLASS(FunctionXQType)
@@ -673,17 +680,18 @@ public:
   const std::vector<xqtref_t>&
   get_param_types() const { return m_param_types; }
 
-  const xqtref_t&
-  operator[](size_t i) const { return m_param_types[i]; }
+  const xqtref_t& operator[](size_t i) const { return m_param_types[i]; }
 
-  size_t
-  get_number_params() const { return m_param_types.size(); }
+  size_t get_number_params() const { return m_param_types.size(); }
 
   xqtref_t get_return_type() const { return m_return_type; }
 
   bool is_equal(const TypeManager* tm, const FunctionXQType& supertype) const;
 
-  bool is_subtype(const TypeManager* tm, const FunctionXQType& supertype) const;
+  bool is_subtype(
+      const TypeManager* tm,
+      const FunctionXQType& supertype,
+      bool ignoreReturnType = false) const;
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };

@@ -557,14 +557,17 @@ bool ProbeValueHashIndexIterator::next(store::Item_t& result)
 ********************************************************************************/
 void ProbeValueHashIndexIterator::count(store::Item_t& result)
 {
-  xs_integer lRes = xs_integer(0);
+  xs_integer res = xs_integer(0);
 
   open();
-  store::Item_t lTmp;
-  while (next(lTmp)) ++lRes;
+
+  store::Item_t tmp;
+  while (next(tmp))
+    ++res;
+
   close();
 
-  GET_FACTORY().createInteger(result, lRes);
+  GET_FACTORY().createInteger(result, res);
 }
 
 
@@ -1088,14 +1091,17 @@ bool ProbeValueTreeIndexIterator::next(store::Item_t& result)
 ********************************************************************************/
 void ProbeValueTreeIndexIterator::count(store::Item_t& result)
 {
-  xs_integer lRes = xs_integer(0);
+  xs_integer res = xs_integer(0);
 
   open();
-  store::Item_t lTmp;
-  while (next(lTmp)) ++lRes;
+
+  store::Item_t tmp;
+  while (next(tmp))
+    ++res;
+
   close();
 
-  GET_FACTORY().createInteger(result, lRes);
+  GET_FACTORY().createInteger(result, res);
 }
 
 

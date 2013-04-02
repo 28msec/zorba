@@ -41,6 +41,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
+#include "util/ascii_util.h"
 #include "util/stream_util.h"
 
 namespace zorba {
@@ -104,11 +105,11 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
   if ( error->level == XML_ERR_NONE )
     return;
 
-  ztd::itoa_buf_type itoa_buf;
+  ascii::itoa_buf_type itoa_buf;
 
   zstring libxml_dict_key_4( ZED_PREFIX "libxml_" );
   libxml_dict_key_4 += error->level == XML_ERR_WARNING ? "WAR_" : "ERR_";
-  libxml_dict_key_4 += ztd::itoa( error->code, itoa_buf );
+  libxml_dict_key_4 += ascii::itoa( error->code, itoa_buf );
 
   char const *const error_str1_5 = error->str1 ? error->str1 : "";
   char const *const error_str2_6 = error->str2 ? error->str2 : "";
@@ -130,7 +131,7 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
       case XML_ERR_INTERNAL_ERROR:
       case XML_ERR_TAG_NOT_FINISHED:
         // For these error codes, int1 is an int.
-        error_int1_8 = ztd::itoa( error->int1, itoa_buf );
+        error_int1_8 = ascii::itoa( error->int1, itoa_buf );
         break;
       default:
         // For an unaccounted-for error code, use a heuristic to guess whether
@@ -138,7 +139,7 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
         if ( ascii::is_print( error->int1 ) )
           error_int1_8 = static_cast<char>( error->int1 );
         else
-          error_int1_8 = ztd::itoa( error->int1, itoa_buf );
+          error_int1_8 = ascii::itoa( error->int1, itoa_buf );
     } // switch
   } // if
 
@@ -372,7 +373,8 @@ store::Item_t FastXmlLoader::loadXml(
   if (docUri.empty())
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-" << theTree->getId();
+    uristream << "zorba://internalDocumentURI-" << theTree->getTreeId();
+
     theDocUri = uristream.str();
   }
   else

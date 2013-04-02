@@ -59,7 +59,7 @@ class DateTime
 public:
       
   /** Available facets for the DateTime class */
-  typedef enum 
+  enum FACET_TYPE
   {
     DATETIME_FACET = 0,
     DATE_FACET = 1,
@@ -69,12 +69,12 @@ public:
     GMONTH_FACET = 5,
     GMONTHDAY_FACET = 6,
     GDAY_FACET = 7
-  } FACET_TYPE;
+  };
 
   // Only year may be negative, all other must be positive
   // The year gives the sign of DateTime, Date, etc
       
-  typedef enum
+  enum DATA_TYPE
   {
     YEAR_DATA = 0,
     MONTH_DATA = 1,
@@ -83,7 +83,7 @@ public:
     MINUTE_DATA = 4,
     SECONDS_DATA = 5,
     FRACSECONDS_DATA = 6
-  } DATA_TYPE;
+  };
 
 
   static const int FACET_MEMBERS[8][8];
@@ -250,15 +250,9 @@ public:
    */
   static int parseGDay(const char* str, ascii::size_type strlen, DateTime& dt);
 
-  static int getDayOfWeek(int year, int month, int day);
-
   static int getDayOfYear(int year, int month, int day);
 
-  static int getWeekInYear(int year, int month, int day);
-
   static int getWeekInMonth(int year, int month, int day);
-
-  static bool isLeapYear(int year);  
 
 protected:
   static int parse_date(
@@ -317,6 +311,8 @@ public:
       
   TimeZone getTimezone() const;
 
+  bool hasTimezone() const;
+
   /**
    *  Returns -1 if the DateTime is less than the given DateTime
    *  Returns 0 if the DateTimes are equal
@@ -359,11 +355,8 @@ public:
    *  with the index being 0 based, with 0 being Sunday, 1 Monday, etc. If the give 
    *  DateTime does not have a Date or DateTime facet, the function will return -1.
    */ 
-  int getDayOfWeek() const;
   int getDayOfYear() const;
-  int getWeekInYear() const;
   int getWeekInMonth() const;
-  bool isLeapYear() const;
       
 protected:
   Duration* toDayTimeDuration() const;

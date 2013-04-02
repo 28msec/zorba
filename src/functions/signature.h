@@ -40,6 +40,9 @@ class signature: public SimpleRCObject
  protected:
   store::Item_t            theQName;
   checked_vector<xqtref_t> theTypes;
+  xqtref_t                 theNonOptimizedReturnType; // This is the original, non-optimized
+                                                      // return type of a function. Used in
+                                                      // function literals type checks.
   bool                     theIsVariadic;
 
  public:
@@ -174,6 +177,13 @@ public:
   const xqtref_t& returnType() const { return theTypes[0]; }
 
   xqtref_t& returnType() { return theTypes[0]; }
+
+  const xqtref_t& getNonOptimizedReturnType() const { return theNonOptimizedReturnType; }
+
+  void setNonOptimizedReturnType(const xqtref_t& nonOptimizedReturnType)
+  {
+    theNonOptimizedReturnType = nonOptimizedReturnType;
+  }
 
   bool equals(
       const TypeManager* tm,

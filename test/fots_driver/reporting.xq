@@ -47,6 +47,10 @@ declare default element namespace
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
+
 (:~
  : Loops through the test-sets, executes them and reports results.
  : @param $FOTSCatalogFilePath path to the FOTS catalog file.
@@ -95,7 +99,7 @@ declare %ann:sequential function reporting:run-and-report(
                               $FOTSZorbaManifestPath)
     }
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           $err:description,
@@ -180,7 +184,7 @@ declare %ann:sequential function reporting:W3C-reporting(
 
       (: add test set results:)
       insert nodes
-      for $testSet in $results/fots:test-cases/fots:test-set
+      for $testSet in $results/fots:test-set
       return
       <test-set name="{$testSet/@name}">
         {
@@ -201,7 +205,7 @@ declare %ann:sequential function reporting:W3C-reporting(
       $W3CTemplate
     }
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           $err:description,
@@ -212,45 +216,42 @@ declare %ann:sequential function reporting:W3C-reporting(
 
 (:~
  : Loops through the test-sets and creates statistics.
- : @param $FOTSCatalog  FOTS catalog file.
- : @param $failures the test reported by Zorba as failed.
- : @param $exceptedTestCases lists of test cases that are not run(empty string
- : means all tests will be run).
- : @param $exceptedTestSets lists of test sets that are not run(empty string
- : means all tests will be run).
- : @param $verbose is set to TRUE it will also output the actual failures.
+ : @param $FOTSCatalogFilePath  Path to the FOTS catalog file.
+ : @param $failures Path to the results fo the FOTS.
  : @return a report of tests run.
  :)
-declare %ann:nondeterministic function reporting:do-reporting(
-  $FOTSCatalog        as document-node(),
-  $catalogBaseURI     as xs:anyURI,
-  $failures,
-  $exceptedTestCases  as xs:string*,
-  $exceptedTestSets   as xs:string*,
-  $verbose            as xs:boolean
+declare %ann:nondeterministic function reporting:wiki-report(
+  $FOTSCatalogFilePath  as xs:string,
+  $resultsFilePath      as xs:string
 ) as element(fots:report)
 {
-  let $excepted := count($exceptedTestCases)
-  return
+try
+{
+  {
+    variable $FOTSCatalog := doc(trace(resolve-uri($FOTSCatalogFilePath),
+                                "Path to FOTS catalog.xml set to: "));
+
+    variable $catalogBaseURI := resolve-uri(util:parent-folder($FOTSCatalogFilePath));
+
+    variable $results := parse-xml(file:read-text($resultsFilePath));
+
   <fots:report>
   {
-    let $totalNoTests := count($failures//fots:test-set//fots:test-case),
-        $totalPass := sum(for $testSet in $failures//fots:test-set
+    let $totalNoTests := count($results//fots:test-set//fots:test-case),
+        $totalPass := sum(for $testSet in $results//fots:test-set
                           return count($testSet//fots:test-case[@result ='pass'])),
-        $totalFail := sum(for $testSet in $failures//fots:test-set
+        $totalFail := sum(for $testSet in $results//fots:test-set
                           return count($testSet//fots:test-case[@result ='fail'])),
-        $totalNotApplicable := sum(for $testSet in $failures//fots:test-set
-                                   return count($testSet//fots:test-case[@result ='not applicable'])),
-        $totalNotRun := sum(for $testSet in $failures//fots:test-set
-                            return count($testSet//fots:test-case[@result ='notRun'])),
-        $executionTime := sum(for $testCase in $failures//fots:test-set//fots:test-case return xs:dayTimeDuration($testCase/@executionTime))
+        $totalNotApplicable := sum(for $testSet in $results//fots:test-set
+                                   return count($testSet//fots:test-case[@result ='n/a'])),
+        $totalNotRun := sum(for $testSet in $results//fots:test-set
+                            return count($testSet//fots:test-case[@result ='notRun']))
     return
     <fots:brief totalTests="{$totalNoTests}"
                 totalPass="{$totalPass}"
                 totalFail="{$totalFail}"
                 totalNotApplicable="{$totalNotApplicable}"
-                totalNotRun="{$totalNotRun}"
-                totalExecutionTime="{$executionTime}"/>
+                totalNotRun="{$totalNotRun}"/>
   }
   {
     for $testSetFile in $FOTSCatalog//fots:test-set
@@ -259,15 +260,15 @@ declare %ann:nondeterministic function reporting:do-reporting(
         $testSetDoc := doc($testSetURI),
         $testSetName := data($testSetDoc/fots:test-set/@name),
         $totalNoTestCases := count($testSetDoc//fots:test-case),
-        $totalFailures := for $testCase in $failures//fots:test-set[@name = $testSetName]//fots:test-case[@result ="fail"]
+        $totalFailures := for $testCase in $results//fots:test-set[@name = $testSetName]//fots:test-case[@result ="fail"]
                           return $testCase,
         $percent := round((1 - (count($totalFailures) div $totalNoTestCases))*100,2),
-        $executionTime := sum(for $testCase in $failures//fots:test-set[@name = $testSetName]//fots:test-case
+        $executionTime := sum(for $testCase in $results//fots:test-set[@name = $testSetName]//fots:test-case
                               return xs:dayTimeDuration($testCase/@executionTime))
-    order by count($totalFailures) descending
+    where count($totalFailures) gt 0
+    order by count($totalFailures) descending, $testSetName
     return
     <fots:test-set  name="{$testSetName}"
-                    executionTime="{$executionTime}"
                     noFailures="{count($totalFailures)}"
                     noTestCases="{$totalNoTestCases}"
                     percent="{$percent}"
@@ -275,12 +276,20 @@ declare %ann:nondeterministic function reporting:do-reporting(
                                                 order by data($failure/@name)
                                                 return data($failure/@name)
                                               ,",")}">
-   {if (not($verbose))
-    then $totalFailures
-    else ()}
     </fots:test-set>
    }
-   </fots:report>
+  </fots:report>
+  
+  }
+}
+catch err:FODC0002
+{
+  error($err:code,
+        $err:description,
+        concat("&#xA;Please make sure the passed 'fotsPath' points to the ",
+               "exact location of the FOTS catalog.xml:&#xA;",
+               resolve-uri($FOTSCatalogFilePath)))
+}
 };
 
 (:~
@@ -309,6 +318,7 @@ declare %ann:nondeterministic function reporting:generate-expected-failures(
         for $testSet in $results//fots:test-set
         let $countFailures := count($testSet//fots:test-case[@result ="fail"])
         let $testSetName := xs:string($testSet/@name)
+        order by $testSetName
         where $countFailures gt xs:integer(0)
         return
         for $testCase in $testSet//fots:test-case[@result ="fail"]

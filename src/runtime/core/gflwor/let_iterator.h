@@ -48,14 +48,12 @@ private:
   std::vector<PlanIter_t> theLetVars;
   bool                    theLazyEval;
   bool                    theNeedsMat;
-  
+  bool                    theSingleItemLETVar;
+
 public:
   SERIALIZABLE_CLASS(LetIterator);
-
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  LetIterator,
-  BinaryBaseIterator<LetIterator, PlanIteratorState>);
-
+  LetIterator, BinaryBaseIterator<LetIterator, PlanIteratorState>);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -72,6 +70,8 @@ public:
   ~LetIterator();
 
   store::Item* getVarName() const { return theVarName.getp(); }
+
+  void setSingleItem() { theSingleItemLETVar = true; }
 
   void accept(PlanIterVisitor& v) const;
 

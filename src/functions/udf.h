@@ -118,8 +118,8 @@ private:
 
   unsigned short              theScriptingKind;
 
-  expr*                      theBodyExpr;
-  std::vector<var_expr*>     theArgVars;
+  expr*                       theBodyExpr;
+  std::vector<var_expr*>      theArgVars;
 
   std::vector<unsigned char>  theIgnoresSortedNodes;
   std::vector<unsigned char>  theIgnoresDuplicateNodes;

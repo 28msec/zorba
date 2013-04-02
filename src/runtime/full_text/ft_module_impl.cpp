@@ -630,7 +630,7 @@ bool TokenizeNodeIterator::nextImpl( store::Item_t &result,
     if ( theChildren.size() > 1 ) {
       consumeNext( item, theChildren[1], plan_state );
       lang = get_lang_from( item, loc );
-    } {
+    } else {
       static_context const *const sctx = getStaticContext();
       ZORBA_ASSERT( sctx );
       lang = get_lang_from( sctx );

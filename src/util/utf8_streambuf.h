@@ -194,7 +194,7 @@ bool is_attached( std::basic_ios<charT,Traits> &ios ) {
  * and automatically detaches it when the %auto_attach object is destroyed.
  * \code
  *  void f( ostream &os ) {
- *    utf8::auto_attach<ostream> const raii( os, "ISO-8859-1" );
+ *    utf8::auto_attach<ostream> const raii( os );
  *    // ...
  *  }
  * \endcode

@@ -54,6 +54,8 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new IsDirectoryFunction(this);
     } else if (aLocalname == "is-file") {
       lFunc = new IsFileFunction(this);
+    } else if (aLocalname == "is-symlink") {
+      lFunc = new IsSymlinkFunction(this);
     } else if (aLocalname == "copy-file-impl") {
       lFunc = new CopyFileImplFunction(this);
     } else if (aLocalname == "write-text") {

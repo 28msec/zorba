@@ -25,6 +25,9 @@ import module namespace d =
 import module namespace r =
   "http://www.zorba-xquery.com/fots-driver/reporting" at "reporting.xq";
 
+declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace f = "http://www.zorba-xquery.com/features";
+declare option op:disable "f:trace";
 
 (:~
  : Path to the FOTS catalog.xml file. If the path is relative, it will be 
@@ -89,15 +92,27 @@ declare variable $testCasePrefixes as xs:string external := "";
  : (because they segfault, or hang, or take too long, etc).
  :
  : Used by the run-test-sets, run-and-report, and report commands.
+ :
+ : Please remember to add an equivalent for each test case in test/fots/CMakeLists.txt
+ :
+ : EXPECTED_FOTS_FAILURE (SLOW  TEST_SET_NAME TEST_CASE_NAME BUG_NO) or
+ : EXPECTED_FOTS_FAILURE (CRASH TEST_SET_NAME TEST_CASE_NAME BUG_NO)
  :)
 declare variable $exceptedTestCases as xs:string* := (
-  "cbcl-subsequence-011",
+  ("instanceof139",
+  "CastAs-UnionType-26",
+  "CastAs-UnionType-30"),       (:see bug lp:1160559 :)
+  "fn-unparsed-text-lines-052", (:see bug lp:1123835 :)
+  ("cbcl-subsequence-011",
   "cbcl-subsequence-012",
   "cbcl-subsequence-013",
-  "cbcl-subsequence-014"        (:see bug lp:1069794 :)
-, "re00975",
+  "cbcl-subsequence-014"),      (:see bug lp:1069794. Actually passing but too slow :)
+  ("re00975",
   "re00976",
-  "re00976a"                    (:see bug lp:1070533 :)
+  "re00976a"),                  (:see bug lp:1070533 :)
+  "re00987",                    (:see bug lp:1131313 :)
+  ("raytracer",
+  "itunes")                     (: Actually passing but too slow :)
 );
 
 
@@ -197,7 +212,8 @@ declare function local:usage() as xs:string
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e expectedFailuresPath:=ExpectedFailures.xml -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e dependency:=higherOrderFunctions_false -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e assertions:=assert-count -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -e verbose:=false -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -e verbose:=true -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-set  -e testSetName:=fn-matches -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-and-report -o results_Zorba_XQ30.xml --indent --disable-http-resolution",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=report -e resultsFilePath:=results.xml -o results_Zorba_XQ30.xml --indent",
@@ -259,7 +275,7 @@ return
   (
   (
     d:list-test-cases($fotsPath,
-                      local:tokenize($testSetPrefixes),
+                      d:list-test-sets($fotsPath, local:tokenize($testSetPrefixes)),
                       $dependency,
                       $assertions)
   ),
@@ -306,6 +322,28 @@ return
              $mode)
 }
 
+case "run-test-set"
+return
+{
+  trace($testSetName, $testSetNameMsg);
+  trace($dependency, "'dependency' set to:");
+  trace($assertions, "'assertions' set to: ");
+  trace($verbose, "'verbose' set to:");
+  trace($mode, "Cli command was set to:");
+
+  d:run-test-set($fotsPath,
+                 $fotsZorbaManifestPath,
+                 $testSetName,
+                 $exceptedTestSets,
+                 (),
+                 $exceptedTestCases,
+                 $dependency,
+                 $assertions,
+                 xs:boolean($verbose),
+                 $expectedFailuresPath,
+                 $mode)
+}
+
 case "run-test-case"
 return
 {
@@ -341,6 +379,13 @@ return
 {
   r:report($fotsZorbaManifestPath,
            $resultsFilePath)
+}
+
+case "wiki-report"
+return
+{
+  r:wiki-report($fotsPath,
+                $resultsFilePath)
 }
 
 case "generate-expected-failures"

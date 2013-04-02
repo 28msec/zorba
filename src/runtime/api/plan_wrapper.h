@@ -105,6 +105,9 @@ public:
 
   dynamic_context* dctx() { return theDynamicContext; }
 
+#ifndef NDEBUG
+  virtual std::string toString() const;
+#endif    
 };
 
 } /* namespace zorba */

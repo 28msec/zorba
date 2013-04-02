@@ -1274,7 +1274,18 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
   {
     result = GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE;
   }
-  // YearMonthDuration and DayTimeDuration are not in schema spec
+  else if ( XMLString::equals(XMLChArray("dayTimeDuration").get (), local) )
+  {
+    result = GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
+  }
+  else if ( XMLString::equals(XMLChArray("yearMonthDuration").get (), local) )
+  {
+    result = GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE;
+  }
+  else if ( XMLString::equals(XMLChArray("dateTimeStamp").get (), local) )
+  {
+    result = GENV_TYPESYSTEM.DATETIME_STAMP_TYPE_ONE;
+  }
   else
   {
     // type not covered

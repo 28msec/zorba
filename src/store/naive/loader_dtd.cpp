@@ -37,7 +37,6 @@
 #include "loader.h"
 #include "simple_item_factory.h"
 #include "node_factory.h"
-
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/URI.h"
 
@@ -79,36 +78,7 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 void XmlLoader::applyLoadOptions(const store::LoadProperties& props, xmlParserCtxtPtr ctxt)
 {
-  int options = 0;
-
-  if (props.getStripWhitespace())
-    options |= XML_PARSE_NOBLANKS;
-
-  if (props.getDTDValidate())
-    options |= XML_PARSE_DTDVALID;
-
-  if (props.getDTDLoad())
-    options |= XML_PARSE_DTDLOAD;
-
-  if (props.getDefaultDTDAttributes())
-    options |= XML_PARSE_DTDATTR;
-
-  if (props.getSubstituteEntities())
-    options |= XML_PARSE_NOENT;
-
-  if (props.getXincludeSubstitutions())
-    options |= XML_PARSE_XINCLUDE;
-
-  if (props.getRemoveRedundantNS())
-    options |= XML_PARSE_NSCLEAN;
-
-  if (props.getNoCDATA())
-    options |= XML_PARSE_NOCDATA;
-
-  if (props.getNoXIncludeNodes())
-    options |= XML_PARSE_NOXINCNODE;
-
-  xmlCtxtUseOptions(ctxt, options);
+  xmlCtxtUseOptions(ctxt, props.toLibXmlOptions());
 }
 
 
@@ -198,7 +168,7 @@ store::Item_t FragmentXmlLoader::loadXml(
   if (docUri.empty())
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-" << theTree->getId();
+    uristream << "zorba://internalDocumentURI-" << theTree->getTreeId();
     theDocUri = uristream.str();
   }
   else
@@ -796,7 +766,7 @@ store::Item_t DtdXmlLoader::loadXml(
   if (docUri.empty())
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-" << theTree->getId();
+    uristream << "zorba://internalDocumentURI-" << theTree->getTreeId();
     theDocUri = uristream.str();
   }
   else
