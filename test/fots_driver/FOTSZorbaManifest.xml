@@ -53,12 +53,12 @@
   <dependency type="unicode-normalization-form" value="NFD" satisfied="true"/>
   <dependency type="unicode-normalization-form" value="NFKC" satisfied="true"/>
   <dependency type="unicode-normalization-form" value="NFKD" satisfied="true"/>
+  <dependency type="calendar" value="CB" satisfied="false"/>
 
   <dependency type="xsd-version" value="1.0" satisfied="false"/>
   <dependency type="xsd-version" value="1.1" satisfied="true"/>
 
 
   <!-- Are these correct? -->
-  <dependency type="calendar" value="CB" satisfied="true"/>
   <dependency type="limits" value="year_lt_0" satisfied="true"/>
 </test-suite-result>
