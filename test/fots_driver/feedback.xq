@@ -211,16 +211,20 @@ declare %ann:sequential function feedback:fail(
  : in the $exceptedTestCases global var).
  :
  : @param $case test case.
+ : @param $error the reason for which the test case was not run.
  : @return the test case.
  :)
 declare function feedback:not-run(
-  $case as element(fots:test-case)
+  $case   as element(fots:test-case),
+  $error  as xs:string?
 ) as element(fots:test-case)?
 {
   trace(data($case/@name), "processing test case :");
   trace("Above test case was not run.","");
 
-  <fots:test-case name="{$case/@name}" result="notRun" />
+  if(exists($error))
+  then <fots:test-case name="{$case/@name}" result="notRun" comment="{$error}"/>
+  else <fots:test-case name="{$case/@name}" result="notRun" />
 };
 
 

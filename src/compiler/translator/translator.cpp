@@ -1517,14 +1517,21 @@ expr* normalize_fo_arg(
                                        PROMOTE_FUNC_PARAM,
                                        func->getName());
     }
+    else if (paramType->type_kind() == XQType::FUNCTION_TYPE_KIND)
+    {
+      // function coercion
+      argExpr = wrap_in_coercion(paramType, argExpr, loc);
+
+      xqtref_t cardType = tm->create_any_item_type(paramType->get_quantifier());
+
+      argExpr = wrap_in_type_match(argExpr,
+                                   cardType,
+                                   loc,
+                                   TREAT_FUNC_PARAM,
+                                   func->getName());
+    }
     else
     {
-      if (paramType->type_kind() == XQType::FUNCTION_TYPE_KIND)
-      {
-        // function coercion
-        argExpr = wrap_in_coercion(paramType, argExpr, loc, theCCB);
-      }
-
       argExpr = wrap_in_type_match(argExpr,
                                    paramType,
                                    loc,
@@ -1538,85 +1545,94 @@ expr* normalize_fo_arg(
 
 
 /*******************************************************************************
+ The coersion expr is a flwor that looks like this:
+
+  for $fi in argExpr
+  return function($p1 as t1, ... $pn as tn) { $fi(p1, ..., pn) }
 
 ********************************************************************************/
 expr* wrap_in_coercion(
     xqtref_t targetType,
-    expr* theExpr,
-    const QueryLoc& loc,
-    CompilerCB* theCCB,
-    bool is_func_return = false)
+    expr* argExpr,
+    const QueryLoc& loc)
 {
-  const FunctionXQType* func_type = static_cast<const FunctionXQType*>(targetType.getp());
+  const FunctionXQType* funcType =
+  static_cast<const FunctionXQType*>(targetType.getp());
 
-  // Create the dynamic call body
-
-  function_item_expr* fiExpr = 
-  CREATE(function_item)(theRootSctx, theUDF, loc, true, false, true);
-
-  push_nodestack(fiExpr);
+  xqtref_t returnType = funcType->get_return_type();
 
   push_scope();
 
-  // handle the function item expression
-  flwor_expr* fnItem_flwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
-  for_clause* fnItem_fc = wrap_in_forclause(theExpr, NULL);
-  var_expr* fnItem_var = fnItem_fc->get_var();
-  fnItem_flwor->add_clause(fnItem_fc);
-  var_expr* inner_subst_var = bind_var(loc, fnItem_var->get_name(), var_expr::hof_var);
-  fiExpr->add_variable(fnItem_var, inner_subst_var, fnItem_var->get_name(), 0 /*var is not global*/);
+  flwor_expr* coersionFlwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
+  for_clause* fiClause = wrap_in_forclause(argExpr, NULL);
+  var_expr* fiVar = fiClause->get_var();
+  coersionFlwor->add_clause(fiClause);
 
-  // bind the function item variable in the inner flwor
-  flwor_expr* inner_flwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
-  var_expr* inner_arg_var = create_var(loc, fnItem_var->get_name(), var_expr::let_var);
-  inner_arg_var->set_param_pos(inner_flwor->num_clauses());
+  function_item_expr* inlineFuncExpr = 
+  CREATE(function_item)(theRootSctx, theUDF, loc, true, false, true);
 
-  // Handle parameters. For each parameter, a let binding is added to the inner flwor.
+  coersionFlwor->set_return_expr(inlineFuncExpr);
+
+  var_expr* fiSubstVar = bind_var(loc, fiVar->get_name(), var_expr::hof_var);
+
+  inlineFuncExpr->add_variable(fiVar, fiSubstVar, fiVar->get_name(), 0);
+
+  // Create the inline udf obj.
+  user_function_t inlineUDF = 
+  new user_function(loc,
+                    signature(function_item_expr::create_inline_fname(loc),
+                              funcType->get_param_types(),
+                              returnType),
+                    NULL,
+                    SIMPLE_EXPR,
+                    theCCB);
+
+  inlineFuncExpr->set_function(inlineUDF);
+
+  std::vector<var_expr*> argVars;
   std::vector<expr*> arguments;    // Arguments to the dynamic function call
-  for(csize i = 0; i < func_type->get_number_params(); i++)
+  csize numParams = funcType->get_number_params();
+  for(csize i = 0; i < numParams; ++i)
   {
-    xqtref_t paramType = func_type->operator[](i);
+    xqtref_t paramType = funcType->operator[](i);
 
-    var_expr* arg_var = create_temp_var(loc, var_expr::arg_var);
-    var_expr* subst_var = bind_var(loc, arg_var->get_name(), var_expr::let_var);
-    let_clause* lc = wrap_in_letclause(&*arg_var, subst_var);
+    var_expr* argVar = create_temp_var(loc, var_expr::arg_var);
+    argVar->set_param_pos(i);
+    argVar->set_type(paramType);
+    argVars.push_back(argVar);
 
-    arg_var->set_param_pos(inner_flwor->num_clauses());
-    arg_var->set_type(paramType);
-
-    inner_flwor->add_clause(lc);
-
-    arguments.push_back(CREATE(wrapper)(theRootSctx, theUDF, loc, subst_var));
-  }
-
-  if (inner_flwor->num_clauses() == 0)
-  {
-    inner_flwor = NULL;
+    expr* arg = CREATE(wrapper)(theRootSctx, theUDF, loc, argVar);
+    arg = normalize_fo_arg(i, arg, inlineUDF, loc);
+    arguments.push_back(arg);
   }
 
   expr* body = 
   CREATE(dynamic_function_invocation)(theRootSctx,
                                       theUDF,
                                       loc,
-                                      CREATE(wrapper)(theRootSctx, theUDF, loc, inner_subst_var),
+                                      CREATE(wrapper)(theRootSctx, theUDF, loc,
+                                                      fiSubstVar),
                                       arguments,
                                       NULL);
 
-  create_inline_function(body,
-                         inner_flwor,
-                         func_type->get_param_types(),
-                         func_type->get_return_type(),
-                         loc,
-                         true);
+  if (returnType->isBuiltinAtomicAny())
+  {
+    body = wrap_in_type_promotion(body, returnType, PROMOTE_TYPE_PROMOTION);
+  }
+  else
+  {
+    body = wrap_in_type_match(body, returnType, loc, TREAT_TYPE_MATCH);
+  }
 
-  theExpr = pop_nodestack();
-  fnItem_flwor->set_return_expr(theExpr);
-  theExpr = fnItem_flwor;
+  inlineUDF->setBody(body);
+  inlineUDF->setScriptingKind(body->get_scripting_detail());
+  inlineUDF->setArgVars(argVars);
+  inlineUDF->setOptimized(true);
 
   // pop the scope.
   pop_scope();
 
-  return theExpr;
+  return coersionFlwor;
 }
 
 
@@ -3986,7 +4002,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     // Wrap in coercion if the return type is a function item
     if (returnType->type_kind() == XQType::FUNCTION_TYPE_KIND)
     {
-      body = wrap_in_coercion(returnType, body, loc, theCCB, true);
+      body = wrap_in_coercion(returnType, body, loc);
     }
 
     // If function has any params, they have been wraped in a flwor expr. Set the
@@ -11934,7 +11950,6 @@ expr* generate_literal_function(
 
   expr* fiExpr = CREATE(function_item)(theRootSctx, theUDF, loc,
                                        f,
-                                       f->getName(),
                                        arity,
                                        false,  // not inline
                                        needs_context_item,
@@ -11964,39 +11979,6 @@ void* begin_visit(const InlineFunction& v)
 
   push_nodestack(fiExpr);
 
-  // Translate the return tyoe
-  xqtref_t returnType = theRTM.ITEM_TYPE_STAR;
-  if (v.getReturnType() != 0)
-  {
-    v.getReturnType()->accept(*this);
-    returnType = pop_tstack();
-  }
-
-  // Translate the type declarations for the function params
-  rchandle<ParamList> params = v.getParamList();
-  std::vector<xqtref_t> paramTypes;
-
-  if (params != 0)
-  {
-    std::vector<rchandle<Param> >::const_iterator lIt = params->begin();
-    for(; lIt != params->end(); ++lIt)
-    {
-      const Param* param = lIt->getp();
-      const SequenceType* paramType = param->get_typedecl();
-      if (paramType == 0)
-      {
-        paramTypes.push_back(theRTM.ITEM_TYPE_STAR);
-      }
-      else
-      {
-        paramType->accept(*this);
-        paramTypes.push_back(pop_tstack());
-      }
-    }
-  }
-
-  flwor_expr* flwor = NULL;
-
   // Handle function parameters. Translation of the params, if any, results to
   // a flwor expr with one let binding for each function parameter:
   //
@@ -12005,6 +11987,8 @@ void* begin_visit(const InlineFunction& v)
   // let $xN as TN := _xN
   //
   // where each _xi is an arg var.
+  rchandle<ParamList> params = v.getParamList();
+  flwor_expr* flwor = NULL;
   if (params)
   {
     params->accept(*this);
@@ -12015,8 +11999,7 @@ void* begin_visit(const InlineFunction& v)
     flwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
   }
 
-  // Handle inscope variables. For each inscope var, a let binding is added to
-  // the flwor.
+  // Handle inscope variables.
   std::vector<VarInfo*>::iterator ite = scopedVars.begin();
 
   for(; ite != scopedVars.end(); ++ite)
@@ -12045,16 +12028,14 @@ void* begin_visit(const InlineFunction& v)
         else
           throw;
       }
+
+      fiExpr->add_variable(varExpr, subst_var, varExpr->get_name(), 0);
     }
     else
     {
       subst_var = varExpr;
+      fiExpr->add_variable(NULL, subst_var, varExpr->get_name(), 1);
     }
-
-    if (kind == var_expr::prolog_var)
-      fiExpr->add_variable(NULL, subst_var, varExpr->get_name(), 1 /*var is global if it's a prolog var*/);
-    else
-      fiExpr->add_variable(varExpr, subst_var, varExpr->get_name(), 0);
   }
 
   if (flwor->num_clauses() > 0)
@@ -12106,7 +12087,7 @@ void end_visit(const InlineFunction& v, void* aState)
     }
   }
 
-  create_inline_function(body, flwor, paramTypes, returnType, loc, false);
+  create_inline_function(body, flwor, paramTypes, returnType, loc);
 
   // pop the scope.
   pop_scope();
@@ -12121,8 +12102,7 @@ void create_inline_function(
     flwor_expr* flwor,
     const std::vector<xqtref_t>& paramTypes,
     xqtref_t returnType,
-    const QueryLoc& loc,
-    bool is_coercion)
+    const QueryLoc& loc)
 {
   std::vector<var_expr*> argVars;
 
@@ -12168,11 +12148,10 @@ void create_inline_function(
       // invoked in many other places, it is not possible to perform function
       // call normalization. Instead the domain expressions of arg vars is 
       // wrapped in type matches.
-      if (!is_coercion) 
-        letClause->set_expr(normalize_fo_arg(i,
-                                             letClause->get_expr(),
-                                             udf.getp(),
-                                             loc));
+      letClause->set_expr(normalize_fo_arg(i,
+                                           letClause->get_expr(),
+                                           udf.getp(),
+                                           loc));
     }
   }
 
@@ -12203,10 +12182,6 @@ void create_inline_function(
   if (theCCB->theConfig.translate_cb != NULL && theCCB->theConfig.optimize_cb == NULL)
     theCCB->theConfig.translate_cb(udf->getBody(),
                                    udf->getName()->getStringValue().c_str());
-
-  if (theCCB->theConfig.optimize_cb != NULL)
-    theCCB->theConfig.optimize_cb(udf->getBody(),
-                                  udf->getName()->getStringValue().c_str());
 }
 
 /*******************************************************************************
