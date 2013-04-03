@@ -65,7 +65,7 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(Schema)
 
 //#define DO_TRACE
-#define DO_PRINT_SCHEMA_INFO
+//#define DO_PRINT_SCHEMA_INFO
 
 #ifdef DO_TRACE
 
