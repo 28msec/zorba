@@ -152,11 +152,11 @@ void throwFOCA0002Exception(const zstring& str, const ErrorInfo& info)
 }
 
 
-void throwFORG0001Exception(const zstring& str, const ErrorInfo& info)
+void throwCastToException(const zstring& str, const ErrorInfo& info, Diagnostic const& anError)
 {              
   if (info.theTargetType)
   {                      
-    RAISE_ERROR(err::FORG0001, info.theLoc,
+    RAISE_ERROR(anError, info.theLoc,
     ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
                  str,
                  info.theSourceType->toSchemaString(),
@@ -174,7 +174,7 @@ void throwFORG0001Exception(const zstring& str, const ErrorInfo& info)
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
                                   TypeConstants::QUANT_ONE);
 
-    RAISE_ERROR(err::FORG0001, info.theLoc,
+    RAISE_ERROR(anError, info.theLoc,
     ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
                  str,
                  sourceType->toSchemaString(),
