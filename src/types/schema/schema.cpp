@@ -929,14 +929,14 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
 
         xqtref_t baseXQType;
         XSTypeDefinition* baseTypeDef = xsTypeDef->getBaseType();
-        if (!baseTypeDef)
+        if (baseTypeDef)
         {
           baseXQType = createXQTypeFromTypeDefinition(tm, baseTypeDef);
         }
 
-        //cout << " creating UDT Simple Union Type: " <<
-        // qname->getLocalName()->c_str() << "@" <<
-        // qname->getNamespace()->c_str() << " of: ";
+        //std::cout << " creating UDT Simple Union Type: " <<
+        // qname->getLocalName() << "@" <<
+        // qname->getNamespace() << " of: ";
         std::vector<xqtref_t> unionItemTypes;
 
         for (csize i = 0; i < memberTypesDefList->size(); ++i)
@@ -947,7 +947,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
           xqtref_t itemXQType = createXQTypeFromTypeDefinition(tm, itemTypeDef);
 
           unionItemTypes.push_back(itemXQType);
-          //cout << " " << itemXQType->toString();
+          //std::cout << " " << itemXQType->toString();
 
           if (itemXQType->type_kind() == XQType::USER_DEFINED_KIND)
           {
@@ -955,7 +955,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
             addTypeToCache(itemXQType);
           }
         }
-        //cout << endl; cout.flush();
+        //std::cout << std::endl; std::cout.flush();
 
         xqtref_t xqType = new UserDefinedXQType(tm,
                                                 qname,
@@ -963,8 +963,8 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                 TypeConstants::QUANT_ONE,
                                                 unionItemTypes);
 
-        //cout << "   created UDT Union Type: " << xqType->toString() << endl;
-        //  cout.flush();
+        //std::cout << "   created UDT Union Type: " << xqType->toString() << std::endl;
+        //  std::cout.flush();
         addTypeToCache(xqType);
 
         result = xqType;
