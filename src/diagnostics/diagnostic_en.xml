@@ -1355,7 +1355,7 @@
       <comment>
        Overflow/underflow in date/time operation.
       </comment>
-      <value>overflow/underflow in date/time operation</value>
+      <value>overflow/underflow in date/time operation${: 1}</value>
     </diagnostic>
 
     <diagnostic code="FODT0002">
