@@ -103,9 +103,9 @@ EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00975 1070533)
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976 1070533)
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
 EXPECTED_FOTS_FAILURE (CRASH fn-unparsed-text-lines fn-unparsed-text-lines-052 1123835)
-EXPECTED_FOTS_FAILURE (CRASH prod-InstanceofExpr instanceof139 1160559)
-EXPECTED_FOTS_FAILURE (CRASH prod-CastExpr.schema CastAs-UnionType-26 1160559)
-EXPECTED_FOTS_FAILURE (CRASH prod-CastExpr.schema CastAs-UnionType-30 1160559)
+#EXPECTED_FOTS_FAILURE (CRASH prod-InstanceofExpr instanceof139 1160559)
+#EXPECTED_FOTS_FAILURE (CRASH prod-CastExpr.schema CastAs-UnionType-26 1160559)
+#EXPECTED_FOTS_FAILURE (CRASH prod-CastExpr.schema CastAs-UnionType-30 1160559)
 
 # Next three possibly unique to old RQ machine, but they need to be
 # marked for the RQ to pass.
