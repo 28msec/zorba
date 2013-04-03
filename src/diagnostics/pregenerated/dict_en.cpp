@@ -49,7 +49,7 @@ extern entry const dict_en[] = {
   { "FODC0007", "\"$1\": base URI passed to fn:parse() is not a valid absolute URI" },
   { "FODF1280", "\"$1\": invalid decimal format name for fn:format-number()" },
   { "FODF1310", "\"$1\": invalid picture string for decimal/integer${: 2}" },
-  { "FODT0001", "overflow/underflow in date/time operation" },
+  { "FODT0001", "overflow/underflow in date/time operation${: 1}" },
   { "FODT0002", "overflow/underflow in duration operation${: 1}" },
   { "FODT0003", "\"$1\": invalid timezone value (in seconds)" },
   { "FOER0000", "unidentifier error" },

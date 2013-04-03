@@ -182,6 +182,36 @@ void throwFORG0001Exception(const zstring& str, const ErrorInfo& info)
   }                                           
 }
 
+void throwFODT0001Exception(const zstring& str, const ErrorInfo& info)
+{
+  if (info.theTargetType)
+  {
+    RAISE_ERROR(err::FODT0001, info.theLoc,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 str,
+                 info.theSourceType->toSchemaString(),
+                 info.theTargetType->toSchemaString()));
+  }
+  else
+  {
+    TypeManager& tm = GENV_TYPESYSTEM;
+
+    xqtref_t sourceType =
+    tm.create_builtin_atomic_type(info.theSourceTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    xqtref_t targetType =
+    tm.create_builtin_atomic_type(info.theTargetTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    RAISE_ERROR(err::FODT0001, info.theLoc,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 str,
+                 sourceType->toSchemaString(),
+                 targetType->toSchemaString()));
+  }
+}
+
 
 /*******************************************************************************
   Identity casting functions: target type is the same as the source one, so no
@@ -343,7 +373,7 @@ T1_TO_T2(str, dur)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
 
 
@@ -358,7 +388,7 @@ T1_TO_T2(str, yMD)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
 
 
@@ -373,7 +403,7 @@ T1_TO_T2(str, dTD)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
 
 
@@ -386,7 +416,7 @@ T1_TO_T2(str, dT)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
 
 
@@ -400,7 +430,7 @@ T1_TO_T2(str, dTSt)
     return;
   }
     
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
   
   
@@ -413,7 +443,7 @@ T1_TO_T2(str, tim)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
 
 
@@ -426,7 +456,7 @@ T1_TO_T2(str, dat)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
 
 
@@ -439,7 +469,7 @@ T1_TO_T2(str, gYM)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
 
 
@@ -452,7 +482,7 @@ T1_TO_T2(str, gYr)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
 
 
@@ -465,7 +495,7 @@ T1_TO_T2(str, gMD)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
 
 
@@ -478,7 +508,7 @@ T1_TO_T2(str, gDay)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
 
 
@@ -491,7 +521,7 @@ T1_TO_T2(str, gMon)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFODT0001Exception(strval, errInfo);
 }
 
 
