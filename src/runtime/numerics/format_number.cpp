@@ -151,9 +151,9 @@ static bool is_allowed_type( store::Item const *type_qname ) {
       || type_qname->equals( rtm.XS_UNSIGNED_BYTE_QNAME );
 }
 
-static void parse_part( picture const &pic, picture::part &part,
-                        QueryLoc const &loc, bool fractional = false ) {
-  if ( part.format.empty() )
+static void parse_part( picture::part *part, picture const &pic,
+                        QueryLoc const &loc, bool is_fractional = false ) {
+  if ( part->format.empty() )
     return;
 
 #if 0
@@ -172,9 +172,9 @@ static void parse_part( picture const &pic, picture::part &part,
   // get grouping separators
   int digit_signs = 0;
   int zero_signs = 0;
-  int start = fractional? 0 : (int)part.format.size()-1;
-  int end = fractional? (int)part.format.size() : -1;
-  int delta = fractional? 1 : -1;
+  int start = is_fractional? 0 : (int)part.format.size()-1;
+  int end = is_fractional? (int)part.format.size() : -1;
+  int delta = is_fractional? 1 : -1;
   int first_digit_sign = -1;
   int last_zero_sign = -1;
 
@@ -193,13 +193,13 @@ static void parse_part( picture const &pic, picture::part &part,
   }
 
   if ( first_digit_sign != -1 && last_zero_sign != -1 ) {
-    if (!fractional && first_digit_sign > last_zero_sign)
+    if (!is_fractional && first_digit_sign > last_zero_sign)
       throw XQUERY_EXCEPTION(
         err::FODF1310,
         ERROR_PARAMS( pic.format, ZED( FormatNumberIntegerPart ) ),
         ERROR_LOC( loc )
       );
-    else if ( fractional && first_digit_sign < last_zero_sign )
+    else if ( is_fractional && first_digit_sign < last_zero_sign )
       throw XQUERY_EXCEPTION(
         err::FODF1310,
         ERROR_PARAMS( pic.format, ZED( FormatNumberFractionalPart ) ),
@@ -227,13 +227,13 @@ static void parse_part( picture const &pic, picture::part &part,
   }
 
   part.minimum_size = zero_signs;
-  if ( !fractional &&
+  if ( !is_fractional &&
        zero_signs == 0 &&
        part.format.find(pic.decimal_separator) == zstring::npos) {
     part.minimum_size = 1;
   }
 
-  if ( fractional )
+  if ( is_fractional )
     part.maximum_size = digit_signs + zero_signs;
 #endif
 }
@@ -241,8 +241,7 @@ static void parse_part( picture const &pic, picture::part &part,
 
 static void parse_subpicture( picture::sub_picture *sub_pic,
                               picture const &pic, QueryLoc const &loc ) {
-  zstring &format = sub_pic->format;
-  if ( format.empty() )
+  if ( sub_pic->format.empty() )
     return;
 
   //
@@ -265,16 +264,17 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
     );
   }
 
-  zstring::size_type pos = format.find( pic.VAR( decimal_separator_sign ) );
+  zstring::size_type pos
+    = sub_pic->format.find( pic.VAR( decimal_separator_sign ) );
   if ( pos != zstring::npos ) {
-    sub_pic->integer_part.format = format.substr( 0, pos );
+    sub_pic->integer_part.format = sub_pic->format.substr( 0, pos );
     sub_pic->fractional_part.format =
-      format.substr( pos + pic.VAR( decimal_separator_sign ).size() );
+      sub_pic->format.substr( pos + pic.VAR( decimal_separator_sign ).size() );
   } else
-    sub_pic->integer_part.format = format;
+    sub_pic->integer_part.format = sub_pic->format;
 
-  parse_part( pic, sub_pic->integer_part, loc );
-  parse_part( pic, sub_pic->fractional_part, loc, true );
+  parse_part( &sub_pic->integer_part, pic, loc );
+  parse_part( &sub_pic->fractional_part, pic, loc, true );
 
   //
   // Ibid: The prefix is set to contain all passive characters in the
@@ -283,10 +283,10 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
   zstring::size_type left_pos = zstring::npos;
   for ( int i = 0; i < picture::NUM_VARS; ++i ) {
     if ( is_active( i ) )
-      if ( (pos = format.find( pic.var[ i ] )) < left_pos )
+      if ( (pos = sub_pic->format.find( pic.var[ i ] )) < left_pos )
         left_pos = pos;
   }
-  sub_pic->prefix = format.substr( 0, left_pos );
+  sub_pic->prefix = sub_pic->format.substr( 0, left_pos );
 
   //
   // Ibid: The suffix is set to contain all passive characters to the right of
@@ -300,7 +300,7 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
         right_pos = pos;
     }
   }
-  sub_pic->suffix = format.substr( right_pos );
+  sub_pic->suffix = sub_pic->fractional_part.format.substr( right_pos );
 }
 
 static void format_groupings( zstring &result, zstring const &format,
@@ -464,9 +464,8 @@ static void parse_picture( picture *pic, QueryLoc const &loc ) {
     // order.
     //
     pic->neg_subpicture = pic->pos_subpicture;
-    zstring temp( pic->VAR( minus_sign ) );
-    temp.append( pic->pos_subpicture.prefix );
-    pic->neg_subpicture.prefix = temp;
+    pic->neg_subpicture.prefix = pic->VAR( minus_sign );
+    pic->neg_subpicture.prefix += pic->pos_subpicture.prefix;
   } else
     parse_subpicture( &pic->neg_subpicture, *pic, loc );
 }
