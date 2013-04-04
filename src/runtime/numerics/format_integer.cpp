@@ -237,18 +237,17 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
           if ( !mandatory_digits && !mandatory_grouping_seps && n_i == n_end )
             break;
           unicode::code_point const pic_cp = *pic_i++;
-          bool const is_mandatory_digit = unicode::is_Nd( pic_cp );
-          if ( pic_cp == '#' || is_mandatory_digit ) {
+          if ( pic_cp == '#' || unicode::is_Nd( pic_cp ) ) {
             u_dest.insert( 0, 1, digit_cp );
             if ( n_i != n_end ) ++n_i;
             ++digit_pos;
+            if ( pic_cp != '#' )
+              --mandatory_digits;
           } else {                      // must be a grouping-separator
             grouping_cp = pic_cp;       // remember for later
             u_dest.insert( 0, 1, grouping_cp );
             --mandatory_grouping_seps;
           }
-          if ( is_mandatory_digit )
-            --mandatory_digits;
         } else {                        // have exhausted the picture
           if ( pic.primary.grouping_interval &&
                digit_pos % pic.primary.grouping_interval == 0 ) {
