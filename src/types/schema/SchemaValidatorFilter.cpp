@@ -1028,7 +1028,7 @@ const XMLCh* SchemaValidatorFilter::getTypeUri()
     {
       const ElemStack::StackElem* topElem = fElemStack.topElement();
       DatatypeValidator *currentDV = 0;
-      if(topElem->fThisElement->isDeclared() ||
+      if(topElem->fThisElement->isDeclared()  ||
          theXsiType  // this is when there is no schema import but xsiType is used
         )
       {
