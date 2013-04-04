@@ -220,6 +220,9 @@ XQueryErrorCode XQST0106( "XQST0106" );
 XQueryErrorCode XQST0111( "XQST0111" );
 
 
+XQueryErrorCode XQST0123( "XQST0123" );
+
+
 XQueryErrorCode XPDY0002( "XPDY0002" );
 
 

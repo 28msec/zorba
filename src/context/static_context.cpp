@@ -512,6 +512,10 @@ static_context::ZORBA_OPTION_OPTIM_NS =
 "http://www.zorba-xquery.com/options/optimizer";
 
 const char*
+static_context::XQUERY_NS =
+"http://www.w3.org/2012/xquery";
+
+const char*
 static_context::XQUERY_OPTION_NS =
 "http://www.w3.org/2011/xquery-options";
 
