@@ -100,7 +100,7 @@ struct picture {
 
 static bool is_active( int pic_var_type ) {
   //
-  // See XQuery F&O 3.0 4.7.3: The ... variables decimal-separator-sign,
+  // XQuery F&O 3.0 4.7.3: The ... variables decimal-separator-sign,
   // grouping-sign, decimal-digit-family, optional-digit-sign and
   // pattern-separator-sign are classified as active characters, and all other
   // characters (including the percent-sign and per-mille-sign) are classified
@@ -109,7 +109,7 @@ static bool is_active( int pic_var_type ) {
   switch ( pic_var_type ) {
     case picture::decimal_separator_sign:
     case picture::grouping_separator_sign:
-    case picture::mandatory_digit_sign:
+    case picture::mandatory_digit_sign: // aka, decimal-digit-family
     case picture::optional_digit_sign:
     case picture::pattern_separator_sign:
       return true;
