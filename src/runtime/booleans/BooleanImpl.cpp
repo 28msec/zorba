@@ -997,6 +997,15 @@ long CompareIterator::compare(
       {
         return item0->getIntegerValue().compare(item1->getIntegerValue());
       }
+      // jn:null is always smaller than any other atomic value type
+      else if (TypeOps::is_subtype(type0, store::JS_NULL))
+      {
+        return -1;
+      }
+      else if (TypeOps::is_subtype(type1, store::JS_NULL))
+      {
+        return 1;
+      }
       else
       {
         xqtref_t type0 = tm->create_value_type(item0.getp());
@@ -1009,8 +1018,7 @@ long CompareIterator::compare(
   }
   catch(const ZorbaException& e)
   {
-    // For example, two QName or null items do not have
-    // an order relationship.
+    // For example, two QName items do not have an order relationship.
     if (e.diagnostic() == zerr::ZSTR0040_TYPE_ERROR)
     {
       xqtref_t type0 = tm->create_value_type(item0.getp());
