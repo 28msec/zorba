@@ -2902,9 +2902,9 @@ void* begin_visit(const DecimalFormatNode& v)
     expand_no_default_qname(qnameItem, v.format_name, loc);
   }
 
-  DecimalFormat_t df = new DecimalFormat(v.is_default, qnameItem, v.param_list);
-  df->validate(loc);
-  theSctx->add_decimal_format(df, loc);
+  theSctx->add_decimal_format(
+    new DecimalFormat( v.is_default, qnameItem, v.param_list, loc ), loc
+  );
 
   return no_state;
 }

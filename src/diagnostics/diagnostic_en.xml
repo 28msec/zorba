@@ -293,8 +293,8 @@
         <value>$2 can not be treated as type $3</value>
       </entry>
 
-      <entry key="FormatNumber_2">
-        <value>first parameter to format-number() function is type $2 that is not allowed</value>
+      <entry key="FormatNumberBadType_2">
+        <value>"$2": type of first parameter to format-number() is illegal</value>
       </entry>
 
       <entry key="JSONIQ_SELECTOR">
@@ -765,15 +765,23 @@
       <value>"$1": grouping variable not defined in the same flwor expression as the group-by clause</value>
     </diagnostic>
 
+    <diagnostic code="XQST0097">
+      <comment>
+        It is a static error for a decimal-format to specify a value that is
+        not valid for a given property.
+      </comment>
+      <value>"$1": illegal value for decimal format property "$2" (must be a single character)</value>
+    </diagnostic>
+
     <diagnostic code="XQST0098">
       <comment>
-       It is a static error if, for any named or unnamed decimal format, the
-       properties representing characters used in a picture string do not each
-       have distinct values. These properties are decimal-separator-sign,
-       grouping-separator, percent-sign, per-mille-sign, zero-digit,
-       digit-sign, and pattern-separator-sign.
+        It is a static error if, for any named or unnamed decimal format, the
+        properties representing characters used in a picture string do not each
+        have distinct values. These properties are decimal-separator-sign,
+        grouping-separator, percent-sign, per-mille-sign, zero-digit,
+        digit-sign, and pattern-separator-sign.
       </comment>
-      <value>properties "$1" and "$2", representing characters used in picture string, do not have distinct values</value>
+      <value>"$1": value of properties "$1" and "$2" for characters used a in picture string is the same but must be distinct</value>
     </diagnostic>
 
     <diagnostic code="XQST0099">
@@ -812,6 +820,14 @@
        with the same name, or to contain two default decimal formats.
       </comment>
       <value>$1</value>
+    </diagnostic>
+
+    <diagnostic code="XQST0114">
+      <comment>
+        It is a static error for a decimal format declaration to define the
+        same property more than once.
+      </comment>
+      <value>"$1": duplicate decimal format property</value>
     </diagnostic>
 
     <diagnostic code="XPDY0002">
@@ -1329,6 +1345,9 @@
       </entry>
       <entry key="EmptyFormat">
         <value>empty primary format</value>
+      </entry>
+      <entry key="MultipleSign_3">
+        <value>"$3": multiple such signs are illegal</value>
       </entry>
       <entry key="NoAdjacentGroupSep_3">
         <value>"$3": grouping separator must not be adjacent to others</value>
@@ -4354,10 +4373,6 @@
 
     <entry key="ParseFragmentDoctypeNotAllowedHere">
       <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
-    </entry>
-
-    <entry key="FormatNumberDuplicates">
-      <value>: a sub-picture must not contain more than one of the "$3" sign</value>
     </entry>
 
     <entry key="FormatNumberGroupingAdjacentToDecimal">
