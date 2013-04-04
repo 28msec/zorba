@@ -596,8 +596,12 @@ bool MultiplyOperation::compute<store::XS_YM_DURATION,store::XS_DOUBLE>(
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if (i1->getDoubleValue().isNaN())
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d.reset(i0->getYearMonthDurationValue() * (i1->getDoubleValue()));
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
   
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
@@ -618,8 +622,12 @@ bool MultiplyOperation::compute<store::XS_DT_DURATION,store::XS_DOUBLE>(
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if (i1->getDoubleValue().isNaN())
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d.reset(i0->getDayTimeDurationValue() * (i1->getDoubleValue()));
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
   
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -674,8 +682,12 @@ bool DivideOperation::compute<store::XS_YM_DURATION,store::XS_DOUBLE>(
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() / i1->getDoubleValue());
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
 
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
@@ -700,8 +712,12 @@ bool DivideOperation::compute<store::XS_DT_DURATION,store::XS_DOUBLE>
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d.reset(i0->getDayTimeDurationValue() / i1->getDoubleValue());
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
 
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
