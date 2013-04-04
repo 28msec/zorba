@@ -3525,7 +3525,7 @@ void* begin_visit(const VFO_DeclList& v)
       {
         theSctx->expand_qname(
            qnameItem,
-           static_context::XQUERY_OPTION_NS,
+           static_context::XQUERY_NS,
            "",
            lQName->get_localname(),
            lQName->get_location());
@@ -3539,6 +3539,14 @@ void* begin_visit(const VFO_DeclList& v)
         }
       }
 
+      if (qnameItem->getNamespace() == static_context::XQUERY_NS
+          &&
+          qnameItem->getLocalName() != "require-feature"
+          &&
+          qnameItem->getLocalName() != "prohibit-feature")
+      {
+        RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(ZED(UnrecognizedXQueryOption), qnameItem->getLocalName()));
+      }
 
       if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_FEATURE_NS &&
           value == "http-uri-resolution")

@@ -830,6 +830,14 @@
       <value>"$1": duplicate decimal format property</value>
     </diagnostic>
 
+    <diagnostic code="XQST0123">
+      <comment>
+       It is a static error if the name of a feature in require-feature is not
+       recognized by the implementation.
+      </comment>
+      <value>$1</value>
+    </diagnostic>
+
     <diagnostic code="XPDY0002">
       <comment>
        It is a dynamic error if evaluation of an expression relies on some part
@@ -1367,14 +1375,14 @@
       <comment>
        Overflow/underflow in date/time operation.
       </comment>
-      <value>overflow/underflow in date/time operation</value>
+      <value>overflow/underflow in date/time operation${: 1}</value>
     </diagnostic>
 
     <diagnostic code="FODT0002">
       <comment>
        Overflow/underflow in duration operation.
       </comment>
-      <value>overflow/underflow in duration operation</value>
+      <value>overflow/underflow in duration operation${: 1}</value>
     </diagnostic>
 
     <diagnostic code="FODT0003">
@@ -5020,6 +5028,10 @@
 
     <entry key="libxml_ERR_541"> <!-- XML_DTD_DUP_TOKEN -->
       <value>"$5": duplicate attribute enumeration value token</value>
+    </entry>
+
+    <entry key="UnrecognizedXQueryOption">
+      <value>"$2": unrecognized XQuery namespace option</value>
     </entry>
 
   </subvalues>
