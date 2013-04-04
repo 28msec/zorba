@@ -2220,12 +2220,6 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   {
     normalizeInputUri(uriString, theSctx, loc, &lNormUri);
   }
-  catch (ZorbaException const& e)
-    {
-      std::cout << e.what();
-      if (e.diagnostic() == err::XPTY0004)
-        std::cout << "test";
-   }
   catch (...)
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc)); 
@@ -2240,6 +2234,12 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));    
   }
 
+  lUri.reset(new zorba::URI(theSctx->get_base_uri()));
+  if (lUri->get_encoded_fragment() == "UNDEFINED")
+  {
+    throw XQUERY_EXCEPTION(err::XPST0001, ERROR_PARAMS("", uriString), ERROR_LOC(loc));
+  }
+
   //Resolve URI to stream
   lResource = theSctx->resolve_uri
     (lNormUri, internal::EntityData::SOME_CONTENT, lErrorMessage);
@@ -2249,7 +2249,6 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
 
   if (state->theStreamResource == NULL)
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));
-    //throw XQUERY_EXCEPTION(err::XPST0001, ERROR_PARAMS("", uriString), ERROR_LOC(loc));
   
   lStreamReleaser = state->theStreamResource->getStreamReleaser();
   state->theStream = new std::unique_ptr<std::istream, StreamReleaser> (state->theStreamResource->getStream(), lStreamReleaser);
