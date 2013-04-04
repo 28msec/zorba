@@ -534,7 +534,7 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
     if ( theChildren.size() >= 3 )
       consumeNext( format_name_item, theChildren[2].getp(), planState );
 
-    if ( theChildren.size() < 3 || !format_name_item.getp() ) {
+    if ( theChildren.size() < 3 || !format_name_item ) {
       df = planState.theCompilerCB->theRootSctx->get_decimal_format( NULL );
     } else {
 
@@ -580,7 +580,9 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
         throw XQUERY_EXCEPTION(
           err::FODF1280, ERROR_PARAMS( "<null>" ), ERROR_LOC( loc )
         );
-      if ( !(df = planState.theCompilerCB->theRootSctx->get_decimal_format( format_name_item ) ).getp() )
+      df = planState.theCompilerCB->theRootSctx->
+        get_decimal_format( format_name_item );
+      if ( !df )
         throw XQUERY_EXCEPTION(
           err::FODF1280, ERROR_PARAMS( format_name_item->getStringValue() ),
           ERROR_LOC( loc )
