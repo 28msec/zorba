@@ -44,7 +44,7 @@ DecimalFormat::DecimalFormat( bool is_default, const store::Item_t& qname,
         continue;
       if ( properties[i].first == properties[j].first ) {
         //
-        // XQuery 3.0: 4.10: It is a static error for a decimal format
+        // XQuery 3.0 4.10: It is a static error for a decimal format
         // declaration to define the same property more than once.
         //
         throw XQUERY_EXCEPTION(
@@ -111,10 +111,10 @@ DecimalFormat::DecimalFormat( bool is_default, const store::Item_t& qname,
   }
 
   //
-  // XQuery 3.0: 2.1.1: zero-digit specifies the character used for the
-  // zero-digit-symbol; the default value is the digit zero (0). This character
-  // must be a digit (category Nd in the Unicode property database), and it
-  // must have the numeric value zero.
+  // XQuery 3.0 2.1.1: zero-digit specifies the character used for the zero-
+  // digit-symbol; the default value is the digit zero (0). This character must
+  // be a digit (category Nd in the Unicode property database), and it must
+  // have the numeric value zero.
   //
   value_type const &zero_digit = properties_[ "zero-digit" ];
   unicode::code_point const zero_digit_cp = utf8::decode( zero_digit.c_str() );

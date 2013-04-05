@@ -69,7 +69,7 @@ struct picture {
   zstring format;                       // original $picture
   sub_picture pos_subpicture, neg_subpicture;
 
-  // See XQuery F&O 3.0: 4.7.1.
+  // See XQuery F&O 3.0 4.7.1.
   enum var_type {
     decimal_separator_sign,
     grouping_separator_sign,
@@ -202,7 +202,7 @@ static void format_number( store::Item_t &number, picture const &pic,
                            zstring *dest ) {
   if ( number->isNaN() ) {
     //
-    // XQuery F&O 3.0: 4.7.5: If the input number is NaN (not a number), the
+    // XQuery F&O 3.0 4.7.5: If the input number is NaN (not a number), the
     // result is the specified NaN-symbol (with no prefix or suffix).
     //
     *dest = pic.NaN;
@@ -496,14 +496,14 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
       decimal_separator_cp = 0;
       if ( decimal_separator_pos != zstring::npos ) {
         //
-        // XQuery F&O 3.0 4.7.4: The fractional-part-grouping-positions is a
-        // sequence of integers representing the positions of grouping
-        // separators within the fractional part of the sub-picture. For each
-        // grouping-separator-sign that appears within the fractional part of
-        // the sub-picture, this sequence contains an integer that is equal to
-        // the total number of optional-digit-sign and decimal-digit-family
-        // characters that appear within the fractional part of the sub-picture
-        // and to the left of the grouping-separator-sign.
+        // Ibid 4.7.4: The fractional-part-grouping-positions is a sequence of
+        // integers representing the positions of grouping separators within
+        // the fractional part of the sub-picture. For each grouping-separator-
+        // sign that appears within the fractional part of the sub-picture,
+        // this sequence contains an integer that is equal to the total number
+        // of optional-digit-sign and decimal-digit-family characters that
+        // appear within the fractional part of the sub-picture and to the left
+        // of the grouping-separator-sign.
         //
         int const total_digits = part_mandatory_digits + part_optional_digits;
         sub_pic->fractional_part.grouping_pos.push_back( total_digits );
@@ -524,16 +524,16 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
     if ( cp == pic.VAR_CP( optional_digit_sign ) ) {
       if ( decimal_separator_pos != zstring::npos ) {
         //
-        // XQuery F&O 3.0 4.7.4: The maximum-fractional-part-size is set to the
-        // total number of optional-digit-sign and decimal-digit-family
-        // characters found in the fractional part of the sub-picture.
+        // Ibid 4.7.4: The maximum-fractional-part-size is set to the total
+        // number of optional-digit-sign and decimal-digit-family characters
+        // found in the fractional part of the sub-picture.
         //
         ++sub_pic->fractional_part.maximum_size;
       } else if ( part_mandatory_digits ) {
         //
-        // XQuery F&O 3.0 4.7.3: The integer part of a sub-picture must not
-        // contain a member of the decimal-digit-family that is followed by an
-        // optional-digit-sign.
+        // Ibid 4.7.3: The integer part of a sub-picture must not contain a
+        // member of the decimal-digit-family that is followed by an optional-
+        // digit-sign.
         //
         throw XQUERY_EXCEPTION(
           err::FODF1310,
@@ -552,8 +552,8 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
 
     if ( cp == pic.VAR_CP( percent_sign ) ) {
       //
-      // XQuery F&O 3.0 4.7.3: A sub-picture must not contain more than one
-      // percent-sign or per-mille-sign, and it must not contain one of each.
+      // Ibid 4.7.3: A sub-picture must not contain more than one percent-sign
+      // or per-mille-sign, and it must not contain one of each.
       //
       if ( sub_pic->has_percent )
         goto got_multiple_signs;
@@ -607,9 +607,9 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
           );
         }
         //
-        // XQuery F&O 3.0 4.7.4: The maximum-fractional-part-size is set to the
-        // total number of optional-digit-sign and decimal-digit-family
-        // characters found in the fractional part of the sub-picture.
+        // Ibid 4.7.4: The maximum-fractional-part-size is set to the total
+        // number of optional-digit-sign and decimal-digit-family characters
+        // found in the fractional part of the sub-picture.
         //
         ++sub_pic->fractional_part.maximum_size;
       }
@@ -617,11 +617,10 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
       ++part_mandatory_digits;
 
       //
-      // XQuery F&O 3.0 4.7.4: The minimum-integer-part-size is an integer
-      // indicating the minimum number of digits that will appear to the left
-      // of the decimal-separator-sign. It is normally set to the number of
-      // decimal-digit-family characters found in the integer part of the
-      // sub-picture.
+      // Ibid 4.7.4: The minimum-integer-part-size is an integer indicating the
+      // minimum number of digits that will appear to the left of the decimal-
+      // separator-sign. It is normally set to the number of decimal-digit-
+      // family characters found in the integer part of the sub-picture.
       //
       // Ibid: The minimum-fractional-part-size is set to the number of
       // decimal-digit-family characters found in the fractional part of the
@@ -637,9 +636,9 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
 set_active:
     if ( got_active && got_passive ) {
       //
-      // XQuery F&O 3.0 4.7.3: A sub-picture must not contain a passive
-      // character that is preceded by an active character and that is followed
-      // by another active character.
+      // Ibid 4.7.3: A sub-picture must not contain a passive character that is
+      // preceded by an active character and that is followed by another active
+      // character.
       //
       throw XQUERY_EXCEPTION(
         err::FODF1310,
@@ -663,9 +662,8 @@ set_active:
   if ( !(got_optional_digit || got_mandatory_digit) ) {
     throw XQUERY_EXCEPTION(
       //
-      // XQuery F&O 3.0 4.7.3: A sub-picture must contain at least one
-      // character that is an optional-digit-sign or a member of the
-      // decimal-digit-family.
+      // Ibid 4.7.3: A sub-picture must contain at least one character that is
+      // an optional-digit-sign or a member of the decimal-digit-family.
       //
       err::FODF1310,
       ERROR_PARAMS( ZED( FODF1310_MustHaveOptOrMandatoryDigit ) ),
@@ -674,9 +672,9 @@ set_active:
   }
 
   //
-  // XQuery F&O 3.0 4.7.4: [I]f the sub-picture contains no decimal-digit-
-  // family character and no decimal-separator-sign, [the minimum-integer-part-
-  // size] is set to one.
+  // Ibid 4.7.4: [I]f the sub-picture contains no decimal-digit-family
+  // character and no decimal-separator-sign, [the minimum-integer-part-size]
+  // is set to one.
   //
   if ( !got_mandatory_digit && decimal_separator_pos == zstring::npos )
     sub_pic->integer_part.minimum_size = 1;
@@ -812,9 +810,9 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
 
   if ( !consumeNext( value, theChildren[0].getp(), planState ) ) {
     //
-    // XQuery F&O 3.0: 4.7.2: If the supplied value of the $value argument is
-    // an empty sequence, the function behaves as if the supplied value were
-    // the xs:double value NaN.
+    // XQuery F&O 3.0 4.7.2: If the supplied value of the $value argument is an
+    // empty sequence, the function behaves as if the supplied value were the
+    // xs:double value NaN.
     //
     GENV_ITEMFACTORY->createDouble( result, xs_double::nan() );
   } else {
