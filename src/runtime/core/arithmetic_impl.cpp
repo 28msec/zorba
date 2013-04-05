@@ -115,28 +115,24 @@ bool GenericArithIterator<Operation>::nextImpl(
   {
     if (this->consumeNext(n1, this->theChild1.getp(), planState))
     {
-      if (n0->getTypeCode() != store::JS_NULL &&
-          n1->getTypeCode() != store::JS_NULL)
+      status = compute(result,
+                       planState.theLocalDynCtx,
+                       this->theSctx->get_typemanager(),
+                       this->loc,
+                       n0,
+                       n1);
+      /*
+      if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
+          this->consumeNext(n1, this->theChild1.getp(), planState))
       {
-        status = compute(result,
-                         planState.theLocalDynCtx,
-                         this->theSctx->get_typemanager(),
-                         this->loc,
-                         n0,
-                         n1);
-        /*
-        if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
-            this->consumeNext(n1, this->theChild1.getp(), planState))
-        {
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS( ZED( NoSeqAsArithOp ) ),
-            ERROR_LOC( this->loc )
-          );
-        }
-        */
-        STACK_PUSH ( status, state );
+        throw XQUERY_EXCEPTION(
+          err::XPTY0004,
+          ERROR_PARAMS( ZED( NoSeqAsArithOp ) ),
+          ERROR_LOC( this->loc )
+        );
       }
+      */
+      STACK_PUSH ( status, state );
     }
   }
 
@@ -600,8 +596,12 @@ bool MultiplyOperation::compute<store::XS_YM_DURATION,store::XS_DOUBLE>(
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if (i1->getDoubleValue().isNaN())
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d.reset(i0->getYearMonthDurationValue() * (i1->getDoubleValue()));
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
   
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
@@ -622,8 +622,12 @@ bool MultiplyOperation::compute<store::XS_DT_DURATION,store::XS_DOUBLE>(
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if (i1->getDoubleValue().isNaN())
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d.reset(i0->getDayTimeDurationValue() * (i1->getDoubleValue()));
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
   
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -678,8 +682,12 @@ bool DivideOperation::compute<store::XS_YM_DURATION,store::XS_DOUBLE>(
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() / i1->getDoubleValue());
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
 
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
@@ -704,8 +712,12 @@ bool DivideOperation::compute<store::XS_DT_DURATION,store::XS_DOUBLE>
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d.reset(i0->getDayTimeDurationValue() / i1->getDoubleValue());
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
 
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }

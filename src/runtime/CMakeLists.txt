@@ -125,13 +125,14 @@ LIST(APPEND RUNTIME_SRCS
   core/gflwor/outerfor_iterator.cpp
   core/internal_operators.cpp
   durations_dates_times/DurationsDatesTimesImpl.cpp
+  durations_dates_times/format_dateTime.cpp
   indexing/doc_indexer.cpp
   indexing/index_ddl.cpp
   json/common.cpp
   json/jsonml_array.cpp
   json/snelson.cpp
   numerics/NumericsImpl.cpp
-  numerics/format_integer_impl.cpp
+  numerics/format_integer.cpp
   sequences/SequencesImpl.cpp
   visitors/iterprinter.cpp
   update/update.cpp
@@ -139,8 +140,9 @@ LIST(APPEND RUNTIME_SRCS
   util/timeout.cpp
   util/flowctl_exception.cpp
   util/doc_uri_heuristics.cpp
-  function_item/function_item.cpp
-  function_item/dynamic_fncall_iterator.cpp
+  hof/function_item.cpp
+  hof/function_item_iter.cpp
+  hof/dynamic_fncall_iterator.cpp
   eval/eval.cpp
   collections/collections_base.cpp
   misc/materialize.cpp

@@ -33,7 +33,7 @@ protected:  // state
   off_t last_qname; // will store the offset of the last added qname or ncname
 
 public:     // ctor,dtor
-  symbol_table(uint32_t initial_heapsize=1024);
+  symbol_table(size_t initial_heapsize=1024);
   ~symbol_table();
 
 public:     // table interface
@@ -44,27 +44,28 @@ public:     // table interface
    * normalizationType = 1 -- EOL normalization
    * normalizationType = 2 -- Attribute value normalization
    */
-  off_t put(char const* text, uint32_t length, int normalizationType = 0);
+  off_t put(char const* text, size_t length, int normalizationType = 0);
 
-  off_t put_ncname(char const* text, uint32_t length);
-  off_t put_qname(char const* text, uint32_t length,
+  off_t put_ncname(char const* text, size_t length);
+  off_t put_qname(char const* text, size_t length,
                   bool do_trim_start = false, bool do_trim_end = false, bool is_eqname = false);
-  off_t put_uri(char const* text, uint32_t length);
-  off_t put_varname(char const* text, uint32_t length);
-  off_t put_entityref(char const* text, uint32_t length);
-  off_t put_charref(char const* text, uint32_t length);
-  off_t put_stringlit(char const* text, uint32_t length);
-  off_t put_commentcontent(char const* text, uint32_t length);
+  off_t put_uri(char const* text, size_t length);
+  off_t put_varname(char const* text, size_t length);
+  off_t put_entityref(char const* text, size_t length);
+  off_t put_charref(char const* text, size_t length);
+  off_t put_stringlit(char const* text, size_t length);
+  off_t put_json_stringliteral(char const* yytext, size_t yyleng);
+  off_t put_commentcontent(char const* text, size_t length);
   
-  uint32_t size() const;
+  size_t size() const;
   
   std::string get(off_t id);
   
   std::string get_last_qname(); // It will return the last added qname or ncname
 
-  xs_decimal* decimalval(char const* text, uint32_t length);
-  xs_double* doubleval(char const* text, uint32_t length);   // Will return NULL if std::range_error is raised
-  xs_integer* integerval(char const* text, uint32_t length); // Will return NULL if std::range_error is raised
+  xs_decimal* decimalval(char const* text, size_t length);
+  xs_double* doubleval(char const* text, size_t length);   // Will return NULL if std::range_error is raised
+  xs_integer* integerval(char const* text, size_t length); // Will return NULL if std::range_error is raised
 
 };
 

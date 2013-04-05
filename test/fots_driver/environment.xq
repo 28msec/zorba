@@ -38,12 +38,14 @@ declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
 declare option op:disable "f:trace";
 
+(:
 declare variable $env:hof as xs:string :=
   string-join(
     ( "declare namespace op = 'http://www.zorba-xquery.com/options/features';",
       "declare namespace f = 'http://www.zorba-xquery.com/features';",
       "declare option op:enable 'f:hof';"),
     "&#xA;");
+:)
 
 
 (:~
@@ -53,7 +55,6 @@ declare variable $env:hof as xs:string :=
  : @param $deps the dependencies of the test set and test case
  : @param $test the raw query text.
  : @return the text for enabling the HOF feature
- :)
 declare function env:enable-HOF-feature(
   $deps as element(fots:dependency)*,
   $test as xs:string
@@ -67,6 +68,7 @@ declare function env:enable-HOF-feature(
     then $env:hof
     else ()
 };
+ :)
 
 
 (:~
@@ -389,11 +391,14 @@ declare %private function env:add-var-decls(
  :             test case.
  : @param $envBaseURI The absolute pathname of the directory containing the
  :        file that defines the environment.
+ : @param $needsDTDValidation If true then the document that is bound as
+ :        context item needs to be DTD validated.
  : @return the string for setting the context item if needed.
  :)
 declare function env:set-context-item(
-  $env        as element(fots:environment)?,
-  $envBaseURI as xs:anyURI?
+  $env                as element(fots:environment)?,
+  $envBaseURI         as xs:anyURI?,
+  $needsDTDValidation as xs:boolean
 ) as xs:string?
 {
   if (exists($env/fots:source[@role = "."]))
@@ -401,7 +406,7 @@ declare function env:set-context-item(
     string-join
     (
     (
-    env:compute-context-item($env, $envBaseURI),
+    env:compute-context-item($env, $envBaseURI, $needsDTDValidation),
     "",
     'xqxq:bind-context-item($queryID, $contextItem);'
     )
@@ -414,26 +419,37 @@ declare function env:set-context-item(
 
 
 declare %private function env:compute-context-item(
-  $env        as element(fots:environment)?,
-  $envBaseURI as xs:anyURI?
+  $env                as element(fots:environment)?,
+  $envBaseURI         as xs:anyURI?,
+  $needsDTDValidation as xs:boolean
 ) as xs:string
 {
-  let $ciURI := resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
+  let $ciURI := if(exists($env/fots:source[@role = "."]/@uri))
+                then xs:string($env/fots:source[@role = "."]/@uri)
+                else resolve-uri($env/fots:source[@role = "."]/@file, $envBaseURI)
+  let $needsSchemaValidation := exists($env/fots:source/@validation)
   return
-  if (empty($env/fots:source[@validation = "strict"]))
-  then
-    concat('variable $contextItem := doc("', $ciURI, '");')
-  else 
-    string-join
-    (
+  if($needsDTDValidation)
+    then concat('variable $contextItem := zorba-xml:parse(fn:unparsed-text("',
+                $ciURI,
+                '"),<opt:options><opt:DTD-validate/></opt:options> );')
+  else if(empty($env/fots:source[@role = "."]/@uri) and
+          not($needsSchemaValidation))
+    then concat('variable $contextItem := doc("', $ciURI, '");')
+  else
+  {
+    string-join(
     (
     "&#xA;",
-
     "variable $contextItemQuery := xqxq:prepare-main-module",
     "(",
     "'",
-    env:get-schema-import($env),
-    concat('validate { doc("', $ciURI, '")', " }"),
+    if ($needsSchemaValidation) then env:get-schema-import($env) else (),
+    if ($needsSchemaValidation)
+    then concat('validate ', xs:string($env/fots:source/@validation),' { ',
+                concat(' doc("', $ciURI, '")'),
+                " }")
+    else concat(' doc("', $ciURI, '")'),
     "',",
     "(), mapper:uri-mapper#2",
     ");",
@@ -441,8 +457,8 @@ declare %private function env:compute-context-item(
     "variable $contextItem := xqxq:evaluate($contextItemQuery);"
     )
     ,
-    "&#xA;"
-    )
+    "&#xA;")
+  }
 };
 
 
@@ -451,21 +467,21 @@ declare %private function env:get-schema-import(
 ) as xs:string
 {
   if (empty($env))
-  then 
+  then
     ""
   else
     let $namespace := $env/fots:namespace[@uri eq $env/fots:schema/@uri]
     let $prefix as xs:string := if (exists($namespace))
                                 then xs:string($namespace/@prefix)
-                                else "p"
+                                else ""
     return
-      if ($prefix eq "")
-      then concat('import schema default element namespace "',
-                  $env/fots:schema/@uri,
-                  '";&#xA;')
-      else concat('import schema namespace ',
+      if ($prefix ne "")
+      then concat('import schema namespace ',
                   $prefix,
                   ' = "',
+                  $env/fots:schema/@uri,
+                  '";&#xA;')
+      else concat('import schema default element namespace "',
                   $env/fots:schema/@uri,
                   '";&#xA;')
 };
@@ -641,11 +657,23 @@ declare function env:mapper(
   $testSetBaseURI as xs:anyURI
 ) as xs:string?
 {
-  let $envSchema := $env/fots:schema,
-      $tcSchema := $case/fots:environment/fots:schema,
-      $schemas := ($envSchema, $tcSchema)
+  let $envSchema := $env/fots:schema
+  let $tcSchema := $case/fots:environment/fots:schema
+  (:
+  Schema documents are identified in the environment in a similar way to source
+  documents. The role attribute indicates whether the schema is imported into
+  the query, or used for source document validation.
+  :)
+  let $schemas := ($envSchema, $tcSchema)
+  let $envSource := for $s in $env/fots:source
+                    where exists($s/@uri)
+                    return $s
+  let $tcSource := for $s in $case/fots:environment/fots:source
+                   where exists($s/@uri)
+                   return $s
+  let $sources := ($envSource, $tcSource)
   return
-    if (empty($schemas))
+    if (empty($schemas) and empty($sources))
     then ()
     else string-join(
             ("declare function mapper:uri-mapper($namespace as xs:string, $entity as xs:string) {",
@@ -664,6 +692,24 @@ declare function env:mapper(
                                    data($schema/@uri),
                                    "' return '",
                                    resolve-uri($schema/@file, $testSetBaseURI),
+                                   "'"),
+                      "    default return ()")),
+                      "&#xA;")
+    else (),
+    if (exists($sources))
+    then string-join(("case ''",
+                     "  return switch($namespace)",
+                    (for $source in $envSource
+                     return concat("    case '",
+                                   data($source/@uri),
+                                   "' return '",
+                                   resolve-uri($source/@file, $envBaseURI),
+                                   "'"),
+                      for $source in $tcSource
+                      return concat("    case '",
+                                   data($source/@uri),
+                                   "' return '",
+                                   resolve-uri($source/@file, $testSetBaseURI),
                                    "'"),
                       "    default return ()")),
                       "&#xA;")
@@ -712,4 +758,24 @@ declare function env:check-dependencies(
                ", satisfied=", $satisfied, ") was not met. ")
       else ()
   }
+};
+
+(:~
+ : Checks if a test case should be run. Possible reasons for not running a test
+ : according to http://dev.w3.org/2011/QT3-test-suite/guide/running.html:
+ : - the environment requires the setting of collections
+ : - the environment requires the setting of collation URIs
+ :
+ :
+ :)
+declare function env:check-prerequisites(
+  $case as element(fots:test-case),
+  $env  as element(fots:environment)?
+) as xs:string?
+{
+  if(exists($case/fots:environment/fots:collection) or exists($env/fots:collection))
+  then 'Default collection is always an empty sequence.'
+  else if (exists($case/fots:environment/fots:collation) or exists($env/fots:collation))
+  then 'Can not define any other collations (other than the Unicode Codepoint Collation).'
+  else ()
 };

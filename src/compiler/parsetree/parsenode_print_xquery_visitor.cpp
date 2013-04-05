@@ -116,6 +116,15 @@ void* begin_visit(const AposAttrValueContent& n)
 DEFAULT_END_VISIT (AposAttrValueContent)
 
 
+void * begin_visit(const ArgumentPlaceholder& n)
+{
+  os << "?";
+  return 0;
+}
+
+
+DEFAULT_END_VISIT (ArgumentPlaceholder)
+
 void* begin_visit(const ArgList& n)
 {
   for (int i=0; i<(int)n.size(); ++i) {
@@ -1704,6 +1713,22 @@ DEFAULT_END_VISIT (ReverseAxis);
     DEFAULT_END_VISIT (StringLiteral);
 
 
+    void* begin_visit(const BooleanLiteral& n)
+    {
+      os << "\"" << n.get_boolval() << '"';
+      return 0;
+    }
+    DEFAULT_END_VISIT (BooleanLiteral);
+
+
+    void* begin_visit(const NullLiteral& n)
+    {
+      os << "\"null\"";
+      return 0;
+    }
+    DEFAULT_END_VISIT (NullLiteral);
+
+
     void* begin_visit(const StringConcatExpr& n)
     {
       n.get_left_expr()->accept(*this);
@@ -1711,7 +1736,7 @@ DEFAULT_END_VISIT (ReverseAxis);
       n.get_right_expr()->accept(*this);
       return 0;
     }
-    DEFAULT_END_VISIT(StringConcatExpr);   
+    DEFAULT_END_VISIT(StringConcatExpr);
 
     void* begin_visit(const TreatExpr& n)
     {
@@ -1962,17 +1987,17 @@ DEFAULT_END_VISIT (ReverseAxis);
       return 0;
     }
     DEFAULT_END_VISIT (AnyFunctionTest);
-    
+
     void* begin_visit(const TypedFunctionTest& n)
     {
       os << "function (";
-      n.getArgumentTypes()->accept(*this); 
+      n.getArgumentTypes()->accept(*this);
       os << ") as ";
-      n.getReturnType()->accept(*this); 
-      return 0; 
+      n.getReturnType()->accept(*this);
+      return 0;
     }
     DEFAULT_END_VISIT (TypedFunctionTest);
-    
+
     void* begin_visit(const TypeList& n)
     {
       for (size_t i = 0; i < n.size(); ++i)
@@ -2028,6 +2053,8 @@ DEFAULT_END_VISIT (ReverseAxis);
   DEFAULT_VISIT (FTWordsValue);
 
   /* JSON-related */
+  DEFAULT_VISIT (JSONObjectLookup);
+
   DEFAULT_VISIT (JSONArrayConstructor);
 
   DEFAULT_VISIT (JSONObjectConstructor);

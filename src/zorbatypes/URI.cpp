@@ -572,6 +572,7 @@ void URI::initialize(const zstring& uri, bool have_base)
   thePath.clear();
   theQueryString.clear();
   theFragment.clear();
+  theSchemeSpecificPart.clear();
 
   // first, we need to normalize the spaces in the uri
   // and only work with the normalized version from this point on
@@ -705,6 +706,22 @@ void URI::initialize(const zstring& uri, bool have_base)
         ERROR_PARAMS( lTrimmedURI, ZED( BadURISyntaxForScheme_3 ), theScheme )
       );
      }
+  }
+  else
+  {
+    // Here it comes the opaque URI part
+    std::string str = theScheme.str();
+    std::string rest = lTrimmedURI.substr(lIndex).str();
+    // assume it is an opaque uri
+    if(lFragmentIdx == zstring::npos)
+    {
+      set_scheme_specific_part(lTrimmedURI.substr(lIndex, lTrimmedURILength - lIndex));
+    }
+    else
+    {
+      set_scheme_specific_part(lTrimmedURI.substr(lIndex, lFragmentIdx - lIndex));
+      set_fragment(lTrimmedURI.substr(lFragmentIdx+1, lTrimmedURILength - lFragmentIdx - 1));
+    }
   }
 
   // stop, if we're done here
@@ -1168,6 +1185,20 @@ void URI::set_query(const zstring& new_query)
   set_state(QueryString);
 }
 
+void URI::set_scheme_specific_part(const zstring& new_scheme_specific)
+{
+  if (new_scheme_specific.empty())
+  {
+    theSchemeSpecificPart = new_scheme_specific;
+    unset_state(SchemeSpecificPart);
+  }
+  else
+  {
+    theSchemeSpecificPart = new_scheme_specific;
+    set_state(SchemeSpecificPart);
+  }
+}
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1592,6 +1623,12 @@ void URI::build_path_notation() const
   std::ostringstream lPathNotation;
 
   std::string lToTokenize;
+
+//  if(is_set(SchemeSpecificPart))
+//  {
+//    lToTokenize = theSchemeSpecificPart.str();
+//  }
+//  else
   if (is_set(Host)) 
   {
     lToTokenize = theHost.str();
@@ -1645,37 +1682,45 @@ void URI::build_full_text() const
   if ( is_set(Scheme) )
     lURI << theScheme << ":";
 
-  // Authority
-  if ( is_set(Host) || is_set(RegBasedAuthority) ) 
+  if(is_set(SchemeSpecificPart))
   {
-    lURI << "//";
-    if ( is_set(Host) ) 
-    {
-      if ( is_set(UserInfo) )
-        lURI << theUserInfo << "@";
-
-      lURI << theHost;
-
-      if ( is_set(Port) )
-        lURI << ":" << thePort;
-    }
-    else
-    {
-      lURI << theRegBasedAuthority;
-    }
+    // opaque URL
+    lURI << theSchemeSpecificPart;
   }
-
-  if ( is_set(Path) )
+  else
   {
-  #ifdef WIN32
-    if(ZSTREQ(theScheme, "file") && !thePath.empty() && (thePath[0] != '/'))
-        lURI << "/";
-  #endif
-    lURI << thePath;
-  }
+    // Authority
+    if ( is_set(Host) || is_set(RegBasedAuthority) )
+    {
+      lURI << "//";
+      if ( is_set(Host) )
+      {
+        if ( is_set(UserInfo) )
+          lURI << theUserInfo << "@";
 
-  if ( is_set(QueryString) )
-    lURI << "?" << theQueryString;
+        lURI << theHost;
+
+        if ( is_set(Port) )
+          lURI << ":" << thePort;
+      }
+      else
+      {
+        lURI << theRegBasedAuthority;
+      }
+    }
+
+    if ( is_set(Path) )
+    {
+    #ifdef WIN32
+      if(ZSTREQ(theScheme, "file") && !thePath.empty() && (thePath[0] != '/'))
+          lURI << "/";
+    #endif
+      lURI << thePath;
+    }
+
+    if ( is_set(QueryString) )
+      lURI << "?" << theQueryString;
+  }
 
   if ( is_set(Fragment) )
     lURI << "#" << theFragment;
@@ -1695,38 +1740,46 @@ void URI::build_ascii_full_text() const
   if ( is_set(Scheme) )
     lURI << theScheme << ":";
 
-  // Authority
-  if ( is_set(Host) || is_set(RegBasedAuthority) ) 
+  if (is_set(SchemeSpecificPart))
   {
-    lURI << "//";
-    
-    if ( is_set(Host) ) 
-    {
-      if ( is_set(UserInfo) )
-        lURI << theUserInfo << "@";
-
-      lURI << theHost;
-
-      if ( is_set(Port) )
-        lURI << ":" << thePort;
-    }
-    else 
-    {
-      lURI << theRegBasedAuthority;
-    }
+    // opaque uri
+    lURI << theSchemeSpecificPart;
   }
-
-  if ( is_set(Path) )
+  else
   {
-  #ifdef WIN32
-    if(ZSTREQ(theScheme, "file") && !thePath.empty() && (thePath[0] != '/'))
-        lURI << "/";
-  #endif
-    lURI << thePath;
-  }
+    // Authority
+    if ( is_set(Host) || is_set(RegBasedAuthority) )
+    {
+      lURI << "//";
 
-  if ( is_set(QueryString) )
-    lURI << "?" << theQueryString;
+      if ( is_set(Host) )
+      {
+        if ( is_set(UserInfo) )
+          lURI << theUserInfo << "@";
+
+        lURI << theHost;
+
+        if ( is_set(Port) )
+          lURI << ":" << thePort;
+      }
+      else
+      {
+        lURI << theRegBasedAuthority;
+      }
+    }
+
+    if ( is_set(Path) )
+    {
+    #ifdef WIN32
+      if(ZSTREQ(theScheme, "file") && !thePath.empty() && (thePath[0] != '/'))
+          lURI << "/";
+    #endif
+      lURI << thePath;
+    }
+
+    if ( is_set(QueryString) )
+      lURI << "?" << theQueryString;
+  }
 
   if ( is_set(Fragment) )
     lURI << "#" << theFragment;

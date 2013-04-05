@@ -395,7 +395,7 @@ SERIALIZABLE_CLASS_VERSIONS(JSONItemAccessorIterator)
 void JSONItemAccessorIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (BinaryBaseIterator<JSONItemAccessorIterator, PlanIteratorState>*)this);
+  (BinaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>*)this);
 }
 
 
@@ -411,6 +411,18 @@ theChild1->accept(v);
 
 JSONItemAccessorIterator::~JSONItemAccessorIterator() {}
 
+JSONItemAccessorIteratorState::JSONItemAccessorIteratorState() {}
+
+JSONItemAccessorIteratorState::~JSONItemAccessorIteratorState() {}
+
+
+void JSONItemAccessorIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void JSONItemAccessorIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </JSONItemAccessorIterator>
 
 #endif

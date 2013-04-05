@@ -141,7 +141,7 @@ declare %ann:nondeterministic function driver:list-test-cases(
     else
       for $testSet in $doc/fots:catalog/fots:test-set
       let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
-      where exists(index-of($testSet/@name, $testSetNames))
+      where exists(index-of($testSetNames, $testSet/@name))
       return driver:list-test-cases($testSetDoc, $dependency, $assert)
 };
 
@@ -416,7 +416,7 @@ declare %ann:sequential function driver:run-fots(
                            $expectedFailures,
                            $cliMode)
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           concat("&#xA;Please make sure the passed 'fotsPath' points to the",
@@ -566,7 +566,7 @@ declare %ann:sequential function driver:run-test-set(
                            $expectedFailures,
                            $cliMode)
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           concat("&#xA;Please make sure the passed 'fotsPath' points to the",
@@ -667,12 +667,10 @@ declare %private %ann:sequential function driver:run-fots(
           return
             if ($isExcepted)
             then
-              feedback:not-run($testCase, $verbose)
+              feedback:not-run($testCase, ())
             else
               feedback:not-applicable($testCase,
-                                      $envTestSet,
-                                      string-join($depMet,''),
-                                      $verbose)
+                                      string-join($depMet,''))
         }
         </fots:test-set>
       }
@@ -692,6 +690,8 @@ declare %private %ann:sequential function driver:run-fots(
 
           let $depMet := env:check-dependencies($testCase/fots:dependency,
                                                 $FOTSZorbaManifest)
+          (: the following 3 test sets contain some test cases that need DTD validation for the document bound as context item :)
+          let $mayNeedDTDValidation := exists(index-of(('fn-id', 'fn-idref', 'app-FunctxFunctx'), $testSetName))
 
           where empty($testCaseNames) or $testCaseNames[. eq $testCase/@name]
 
@@ -711,14 +711,12 @@ declare %private %ann:sequential function driver:run-fots(
                               $verbose,
                               fn:false())
                else
-                 feedback:not-run($testCase, $verbose)
+                 feedback:not-run($testCase,())
             }
             else if (exists($depMet)) then
             {
               feedback:not-applicable($testCase,
-                                      $envTestSet,
-                                      string-join($depMet, ''),
-                                      $verbose)
+                                      string-join($depMet, ''))
             }
             else if (empty($envTestSet)) then
             {
@@ -731,7 +729,8 @@ declare %private %ann:sequential function driver:run-fots(
                           $testSetURI,
                           $verbose,
                           $expectedFailures//TestSet[@name eq $testSetName]/Test[@name eq $testCase/@name],
-                          $cliMode)
+                          $cliMode,
+                          $mayNeedDTDValidation)
             }
             else
             {
@@ -744,7 +743,8 @@ declare %private %ann:sequential function driver:run-fots(
                           $testSetURI,
                           $verbose,
                           $expectedFailures//TestSet[@name eq $testSetName]/Test[@name eq $testCase/@name],
-                          $cliMode)
+                          $cliMode,
+                          $mayNeedDTDValidation)
             }
           }
         }
@@ -774,18 +774,21 @@ declare %private %ann:sequential function driver:run-fots(
  :        about the test-case.
  : @param $expectedFailure the Test element from the ExpectedFailures.xml file.
  : @param $cliMode the cli command.
+ : @param $mayNeedDTDValidation true if the test case may need DTD validation
+ :        for the document bound as context item.
  : @return an XML tree containing info about the result of running the test case.
  :)
 declare %ann:sequential function driver:test(
-  $case               as element(fots:test-case),
-  $env                as element(fots:environment)?,
-  $envBaseURI         as xs:anyURI?,
-  $deps               as element(fots:dependency)*,
-  $testSetName        as xs:string?,
-  $testSetBaseURI     as xs:anyURI,
-  $verbose            as xs:boolean,
-  $expectedFailure    as element(Test)?,
-  $cliMode            as xs:string
+  $case                 as element(fots:test-case),
+  $env                  as element(fots:environment)?,
+  $envBaseURI           as xs:anyURI?,
+  $deps                 as element(fots:dependency)*,
+  $testSetName          as xs:string?,
+  $testSetBaseURI       as xs:anyURI,
+  $verbose              as xs:boolean,
+  $expectedFailure      as element(Test)?,
+  $cliMode              as xs:string,
+  $mayNeedDTDValidation as xs:boolean
 ) as element(fots:test-case)?
 {
 (:TODO Cover the "(:%VARDECL%:)"when there are tests in FOTS that use it:)
@@ -815,7 +818,7 @@ declare %ann:sequential function driver:test(
 
         env:decl-namespaces($env, $envCase, $test),
 
-        env:enable-HOF-feature(($deps, $case//fots:dependency), $test),
+        (:env:enable-HOF-feature(($deps, $case//fots:dependency), $test), :)
 
         env:decl-decimal-formats(($env/fots:decimal-format,
                                   $envCase/fots:decimal-format)),
@@ -826,12 +829,21 @@ declare %ann:sequential function driver:test(
       ),
       "&#xA;"
       );
+   variable $needsDTDValidation :=
+    if (not($mayNeedDTDValidation))
+    then fn:false()
+    else if (($testSetName = 'app-FunctxFunctx') and (xs:string($case/@name) = 'functx-functx-id-from-element-1'))
+    then fn:true()
+    else if(($testSetName = 'fn-id') and starts-with(xs:string($case/@name), 'fn-id-dtd-'))
+    then fn:true()
+    else (($testSetName = 'fn-idref') and starts-with(xs:string($case/@name), 'fn-idref-dtd-'));
 
     variable $xqxqQuery := driver:create-XQXQ-query($query,
                                                     $case,
                                                     $env,
                                                     $envBaseURI,
-                                                    $testSetBaseURI);
+                                                    $testSetBaseURI,
+                                                    $needsDTDValidation);
 
     (:if $verbose then print the query to a file:)
     if ($verbose and
@@ -847,6 +859,8 @@ declare %ann:sequential function driver:test(
                                            $testSetBaseURI);
 
     variable $duration := (datetime:current-dateTime() - $startDateTime);
+    
+    variable $prerequisitesError as xs:string? := env:check-prerequisites($case, $env);
 
     if (feedback:check-pass($result, $queryName, $testSetName, $expectedFailure))
     then
@@ -857,6 +871,16 @@ declare %ann:sequential function driver:test(
                     $duration,
                     $verbose,
                     exists($expectedFailure))
+    (: 
+      If the test case did not pass, we check to see if the failure is caused
+      by a environment that requires setting of a COLLATION or COLLECTION.
+      There are over 130 test cases that are using an environment that requires
+      setting a COLLATION or COLLECTION but they still PASS even if this setting
+      is not done. That is why we first run the test case.
+     :)
+    else if(exists($prerequisitesError))
+    then
+      feedback:not-run($case, $prerequisitesError)
     else
       feedback:fail($case,
                     $result,
@@ -899,14 +923,17 @@ declare %ann:sequential function driver:test(
  : @param $envBaseURI URI of the environment.
  : @param $testSetBaseURI the URI of the directory that contains the file of the
           associated test set.
+ : @param $needsDTDValidation true if the test case needs DTD validation
+ :        for the document bound as context item.
  : @return the query that will be evaluated.
  :)
 declare %private function driver:create-XQXQ-query(
-  $queryText      as xs:string,
-  $case           as element(fots:test-case),
-  $env            as element(fots:environment)?,
-  $envBaseURI     as xs:anyURI?,
-  $testSetBaseURI as xs:anyURI
+  $queryText          as xs:string,
+  $case               as element(fots:test-case),
+  $env                as element(fots:environment)?,
+  $envBaseURI         as xs:anyURI?,
+  $testSetBaseURI     as xs:anyURI,
+  $needsDTDValidation as xs:boolean
 ) as xs:string
 {
   let $resolver as xs:string? := env:resolver($case,
@@ -923,7 +950,12 @@ declare %private function driver:create-XQXQ-query(
     (
     "",
     "import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';",
-
+    
+    if ($needsDTDValidation) 
+    then ("import module namespace zorba-xml = 'http://www.zorba-xquery.com/modules/xml#2.1';",
+          "import schema namespace opt       = 'http://www.zorba-xquery.com/modules/xml-options';")
+    else (),
+    
     if (exists($resolver))
     then "declare namespace resolver = 'http://www.zorba-xquery.com/modules/xqxq/url-resolver';"
     else (),
@@ -932,7 +964,6 @@ declare %private function driver:create-XQXQ-query(
     then "declare namespace mapper = 'http://www.zorba-xquery.com/modules/xqxq/uri-mapper';"
     else (),
 
-    if (exists($resolver) or exists($mapper)) then $env:hof else (),
     "",
 
     if (exists($resolver)) then ($resolver, "") else (),
@@ -976,8 +1007,8 @@ declare %private function driver:create-XQXQ-query(
                 then ", (), mapper:uri-mapper#2&#xA;);"
                 else "&#xA;);"),
 
-    env:set-context-item($env, $envBaseURI),
-    env:set-context-item($case/fots:environment, $testSetBaseURI),
+    env:set-context-item($env, $envBaseURI, $needsDTDValidation),
+    env:set-context-item($case/fots:environment, $testSetBaseURI, $needsDTDValidation),
     env:set-variables($env, $envBaseURI),
     env:set-variables($case/fots:environment, $testSetBaseURI),
 

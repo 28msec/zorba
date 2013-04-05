@@ -45,7 +45,7 @@ Iterator tree for const-folded expr:
 </UnhoistIterator>
 
 Iterator tree for const-folded expr:
-<UDFunctionCallIterator>
+<UDFunctionCallIterator function="testlib:searchUser">
   <SingletonIterator value="xs:integer(0)"/>
 </UDFunctionCallIterator>
 

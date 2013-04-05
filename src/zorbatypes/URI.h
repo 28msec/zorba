@@ -52,14 +52,15 @@ public:
 protected:
   enum States 
   {
-    Scheme            = 1,
-    UserInfo          = 2,
-    Host              = 4,
-    Port              = 8,
-    RegBasedAuthority = 16,
-    Path              = 32,
-    QueryString       = 64,
-    Fragment          = 128
+    Scheme             = 1,
+    UserInfo           = 2,
+    Host               = 4,
+    Port               = 8,
+    RegBasedAuthority  = 16,
+    Path               = 32,
+    QueryString        = 64,
+    Fragment           = 128,
+    SchemeSpecificPart = 256
   };
 
   // keep track whether particular components of a uri are defined or undefined
@@ -81,6 +82,7 @@ protected:
   zstring          thePath;
   zstring          theQueryString;
   zstring          theFragment;
+  zstring          theSchemeSpecificPart;
 
   // true if the constructed URI is valid
   bool             valid;
@@ -153,6 +155,12 @@ public:
   void set_fragment(const zstring& new_fragment);
 
   void clear_fragment();
+
+  void set_scheme_specific_part(const zstring& new_scheme_specific_part);
+
+  const zstring& get_scheme_specific_part() const;
+
+  void clear_scheme_specific_part();
 
 protected:
   void build_full_text() const;
@@ -246,6 +254,11 @@ inline const zstring& URI::get_encoded_fragment() const
   return theFragment;
 }
 
+inline const zstring& URI::get_scheme_specific_part() const
+{
+  return theSchemeSpecificPart;
+}
+
 inline void URI::set_fragment(const zstring &new_fragment)
 {
   theFragment = new_fragment;
@@ -257,6 +270,13 @@ inline void URI::clear_fragment()
 {
   theFragment.clear();
   unset_state(Fragment);
+  invalidate_text();
+}
+
+inline void URI::clear_scheme_specific_part()
+{
+  theSchemeSpecificPart.clear();
+  unset_state(SchemeSpecificPart);
   invalidate_text();
 }
 
