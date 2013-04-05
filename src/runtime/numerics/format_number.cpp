@@ -264,24 +264,29 @@ static void format_number( store::Item_t &number, picture const &pic,
 
   zstring const converted( adjusted_number.toString( true ) );
 
-  // process min sizes
-  zstring integer_part;
-  zstring fractional_part;
-  zstring::size_type pos = converted.find( ".", 0, 1 );
+  //
+  // Ibid: If the number of digits to the left of the decimal-separator-sign is
+  // less than minimum-integer-part-size, leading zero-digit-sign characters
+  // are added to pad out to that size.
+  //
+  // Ibid: If the number of digits to the right of the decimal-separator-sign
+  // is less than minimum-fractional-part-size, trailing zero-digit-sign
+  // characters are added to pad out to that size.
+  //
+  zstring integer_part, fractional_part;
+  zstring::size_type const pos = converted.find( '.' );
   if ( pos == zstring::npos ) {
     integer_part = converted;
   } else {
     integer_part = converted.substr( 0, pos );
     fractional_part = converted.substr( pos + 1 );
+    ascii::right_pad(
+      &fractional_part, sub_pic.fractional_part.minimum_size, '0'
+    );
   }
+  ascii::left_pad( &integer_part, sub_pic.integer_part.minimum_size, '0' );
 
 #if 0
-  // Add zeros
-  zstring temp = createZeros((int)(sub_pic.integer_part.minimum_size - integer_part.size()));
-  temp.append(integer_part);
-  integer_part = temp;
-  fractional_part.append(createZeros((int)(sub_pic.fractional_part.minimum_size - fractional_part.size())));
-
   // groupings
   zstring integer_part_result;
   zstring fractional_part_result;
@@ -301,13 +306,13 @@ static void format_number( store::Item_t &number, picture const &pic,
     fractional_part_result, fractional_part, sub_pic.fractional_part, pic
   );
 
-  dest->append( sub_pic.prefix );
-  dest->append( integer_part_result );
-  if ( fractional_part.size() != 0 ) {
-    dest->append( pic.VAR( decimal_separator_sign ) );
-    dest->append( fractional_part_result );
+  *dest += sub_pic.prefix;
+  *dest += integer_part_result;
+  if ( !fractional_part.empty() ) {
+    *dest += pic.VAR( decimal_separator_sign );
+    *dest += fractional_part_result;
   }
-  dest->append( sub_pic.suffix );
+  *dest += sub_pic.suffix;
 #endif
 }
 
@@ -489,6 +494,28 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
         goto got_decimal_grouping_adjacent;
       }
       decimal_separator_cp = 0;
+      if ( decimal_separator_pos != zstring::npos ) {
+        //
+        // XQuery F&O 3.0 4.7.4: The fractional-part-grouping-positions is a
+        // sequence of integers representing the positions of grouping
+        // separators within the fractional part of the sub-picture. For each
+        // grouping-separator-sign that appears within the fractional part of
+        // the sub-picture, this sequence contains an integer that is equal to
+        // the total number of optional-digit-sign and decimal-digit-family
+        // characters that appear within the fractional part of the sub-picture
+        // and to the left of the grouping-separator-sign.
+        //
+        int const total_digits = part_mandatory_digits + part_optional_digits;
+        sub_pic->fractional_part.grouping_pos.push_back( total_digits );
+#if 0
+        // The spec doesn't say anything about the fractional part grouping
+        // positions forming a sequence of N, 2N, 3N, ....
+        if ( sub_pic->fractional_part.grouping_pos.size() == 1 )
+          sub_pic->fractional_part.N = total_digits;
+        else if ( total_digits % sub_pic->fractional_part.N )
+          sub_pic->fractional_part.N = -1;
+#endif
+      }
       goto set_active;
     }
 
@@ -608,7 +635,12 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
     continue;
 
 set_active:
-    if ( got_active && got_passive )
+    if ( got_active && got_passive ) {
+      //
+      // XQuery F&O 3.0 4.7.3: A sub-picture must not contain a passive
+      // character that is preceded by an active character and that is followed
+      // by another active character.
+      //
       throw XQUERY_EXCEPTION(
         err::FODF1310,
         ERROR_PARAMS(
@@ -618,6 +650,7 @@ set_active:
         ),
         ERROR_LOC( loc )
       );
+    }
     got_active = true;
 
     zstring::size_type const cur_pos = u.base() - sub_pic->format.begin();
