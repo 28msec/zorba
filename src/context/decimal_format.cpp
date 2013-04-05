@@ -104,11 +104,27 @@ DecimalFormat::DecimalFormat( bool is_default, const store::Item_t& qname,
       //
       throw XQUERY_EXCEPTION(
         err::XQST0097,
-        ERROR_PARAMS( value, attr->name ),
+        ERROR_PARAMS( value, attr->name, ZED( XQST0097_MustBeChar ) ),
         ERROR_LOC( loc )
       );
     }
   }
+
+  //
+  // XQuery 3.0: 2.1.1: zero-digit specifies the character used for the
+  // zero-digit-symbol; the default value is the digit zero (0). This character
+  // must be a digit (category Nd in the Unicode property database), and it
+  // must have the numeric value zero.
+  //
+  value_type const &zero_digit = properties_[ "zero-digit" ];
+  unicode::code_point const zero_digit_cp = utf8::decode( zero_digit.c_str() );
+  unicode::code_point zero_cp;
+  if ( !unicode::is_Nd( zero_digit_cp, &zero_cp ) || zero_digit_cp == zero_cp )
+    throw XQUERY_EXCEPTION(
+      err::XQST0097,
+      ERROR_PARAMS( zero_digit, "zero-digit", ZED( XQST0097_MustBeZeroDigit ) ),
+      ERROR_LOC( loc )
+    );
 }
 
 void DecimalFormat::serialize( serialization::Archiver &ar ) {

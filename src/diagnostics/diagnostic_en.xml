@@ -770,7 +770,13 @@
         It is a static error for a decimal-format to specify a value that is
         not valid for a given property.
       </comment>
-      <value>"$1": illegal value for decimal format property "$2" (must be a single character)</value>
+      <value>"$1": illegal value for decimal format property "$2"${: 3}</value>
+      <entry key="MustBeChar">
+        <value>must be a single character</value>
+      </entry>
+      <entry key="MustBeZeroDigit">
+        <value>must be a digit (Unicode category Nd) and represent zero</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQST0098">
@@ -1336,6 +1342,12 @@
         Invalid decimal/integer format picture string.
       </comment>
       <value>"$1": invalid picture string for decimal/integer${: 2}</value>
+      <entry key="NoOptDigitAfterMandatory_3">
+        <value>'$3': optional-digit-sign in integer part of sub-picture may not follow a member of the decimal-digit-family</value>
+      </entry>
+      <entry key="NoMandatoryDigitAfterOpt_3">
+        <value>'$3': member of decimal-digit-family in fractional part of a sub-picture may not follow an optional-digit-sign</value>
+      </entry>
       <entry key="BadCharacter_3">
         <value>'$3': invalid character</value>
       </entry>
@@ -1357,8 +1369,17 @@
       <entry key="MultipleSign_3">
         <value>"$3": multiple such signs are illegal</value>
       </entry>
+      <entry key="MustHaveOptOrMandatoryDigit">
+        <value>sub-picture must contain at least one optional or mandatory digit</value>
+      </entry>
+      <entry key="NoActivePassiveActive">
+        <value>"$3": active character may not follow passive that follows active</value>
+      </entry>
       <entry key="NoAdjacentGroupSep_3">
         <value>"$3": grouping separator must not be adjacent to others</value>
+      </entry>
+      <entry key="NoDecimalGroupingAdjacent_34">
+        <value>decimal-separator-sign ('$3') and grouping-separator-sign ('$4') may not be adjacent</value>
       </entry>
       <entry key="NoGroupSepAtStart_3">
         <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
@@ -1368,6 +1389,9 @@
       </entry>
       <entry key="NoOptDigitAfterMandatory">
         <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
+      </entry>
+      <entry key="NoPercentPermille">
+        <value>sub-picture must not contain more than one percent-sign or per-mille-sign or one of each</value>
       </entry>
     </diagnostic>
 
@@ -4381,26 +4405,6 @@
 
     <entry key="ParseFragmentDoctypeNotAllowedHere">
       <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
-    </entry>
-
-    <entry key="FormatNumberGroupingAdjacentToDecimal">
-      <value>: a sub-picture must not contain a grouping-separator-sign adjacent to a decimal-separator-sign</value>
-    </entry>
-
-    <entry key="FormatNumberIntegerPart">
-      <value>: the integer part of a sub-picture must not contain a member of the decimal-digit-family that is followed by an optional-digit-sign</value>
-    </entry>
-
-    <entry key="FormatNumberFractionalPart">
-      <value>: the fractional part of a sub-picture must not contain an optional-digit-sign that is followed by a member of the decimal-digit-family</value>
-    </entry>
-
-    <entry key="FormatNumberPercentPermille">
-      <value>: a sub-picture must not contain more than one percent-sign or per-mille-sign, and it must not contain one of each</value>
-    </entry>
-
-    <entry key="FormatNumberAtLeastOneOptionalOrDecimal">
-      <value>: a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family</value>
     </entry>
 
     <entry key="FUNCTION">
