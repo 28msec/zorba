@@ -1941,6 +1941,15 @@ static void readDocument(
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));    
   }
+  lUri.reset(new zorba::URI(aSctx->get_base_uri()));
+  if (lUri->get_encoded_fragment() == "UNDEFINED")
+  {
+    throw XQUERY_EXCEPTION(err::XPST0001, ERROR_PARAMS("", aUri), ERROR_LOC(loc));
+  }
+  if (!transcode::is_supported(aEncoding.c_str()))
+  {
+    throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri), ERROR_LOC(loc));
+  }
 
   //Resolve URI to stream
   zstring lErrorMessage;
@@ -1949,7 +1958,7 @@ static void readDocument(
 
   internal::StreamResource* lStreamResource =
     dynamic_cast<internal::StreamResource*>(lResource.get());
-    
+
   if (lStreamResource == NULL)
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
@@ -1999,10 +2008,6 @@ static void readDocument(
   //check if encoding is needed
   if (transcode::is_necessary(aEncoding.c_str()))
   {
-    if (!transcode::is_supported(aEncoding.c_str()))
-    {
-      throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri), ERROR_LOC(loc));
-    }
     transcode::attach(*lStream.get(), aEncoding.c_str());
   }
   //creates stream item
@@ -2082,6 +2087,8 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
   }
   catch (XQueryException const& e)
   {
+    if (e.diagnostic() == err::XPST0001)
+        throw e;
     unparsedText = NULL;
   }
 
