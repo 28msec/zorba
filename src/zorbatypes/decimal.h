@@ -236,6 +236,8 @@ private:
   bool minusZero_;
 
   Decimal( value_type const &v ) : value_( v ), minusZero_(false) { }
+  Decimal( value_type const &v, bool minusZero ) :
+    value_( v ), minusZero_(minusZero) { }
 
   static uint32_t hash( value_type const& );
 
@@ -347,6 +349,9 @@ ZORBA_DECIMAL_OP(%=)
 #undef ZORBA_DECIMAL_OP
 
 inline Decimal Decimal::operator-() const {
+  if ( value_.is_zero() )
+    return Decimal(value_, !minusZero_);
+
   return -value_;
 }
 
