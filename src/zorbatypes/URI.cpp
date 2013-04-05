@@ -572,7 +572,7 @@ void URI::initialize(const zstring& uri, bool have_base)
   thePath.clear();
   theQueryString.clear();
   theFragment.clear();
-  theSchemeSpecificPart.clear();
+  theOpaquePart.clear();
 
   // first, we need to normalize the spaces in the uri
   // and only work with the normalized version from this point on
@@ -715,11 +715,11 @@ void URI::initialize(const zstring& uri, bool have_base)
     // assume it is an opaque uri
     if(lFragmentIdx == zstring::npos)
     {
-      set_scheme_specific_part(lTrimmedURI.substr(lIndex, lTrimmedURILength - lIndex));
+      set_opaque_part(lTrimmedURI.substr(lIndex, lTrimmedURILength - lIndex));
     }
     else
     {
-      set_scheme_specific_part(lTrimmedURI.substr(lIndex, lFragmentIdx - lIndex));
+      set_opaque_part(lTrimmedURI.substr(lIndex, lFragmentIdx - lIndex));
       set_fragment(lTrimmedURI.substr(lFragmentIdx+1, lTrimmedURILength - lFragmentIdx - 1));
     }
   }
@@ -1185,17 +1185,17 @@ void URI::set_query(const zstring& new_query)
   set_state(QueryString);
 }
 
-void URI::set_scheme_specific_part(const zstring& new_scheme_specific)
+void URI::set_opaque_part(const zstring& new_scheme_specific)
 {
   if (new_scheme_specific.empty())
   {
-    theSchemeSpecificPart = new_scheme_specific;
-    unset_state(SchemeSpecificPart);
+    theOpaquePart = new_scheme_specific;
+    unset_state(OpaquePart);
   }
   else
   {
-    theSchemeSpecificPart = new_scheme_specific;
-    set_state(SchemeSpecificPart);
+    theOpaquePart = new_scheme_specific;
+    set_state(OpaquePart);
   }
 }
 
@@ -1624,11 +1624,11 @@ void URI::build_path_notation() const
 
   std::string lToTokenize;
 
-//  if(is_set(SchemeSpecificPart))
-//  {
-//    lToTokenize = theSchemeSpecificPart.str();
-//  }
-//  else
+  if(is_set(OpaquePart))
+  {
+    lToTokenize = theOpaquePart.str();
+  }
+  else
   if (is_set(Host)) 
   {
     lToTokenize = theHost.str();
@@ -1682,10 +1682,10 @@ void URI::build_full_text() const
   if ( is_set(Scheme) )
     lURI << theScheme << ":";
 
-  if(is_set(SchemeSpecificPart))
+  if(is_set(OpaquePart))
   {
     // opaque URL
-    lURI << theSchemeSpecificPart;
+    lURI << theOpaquePart;
   }
   else
   {
@@ -1740,10 +1740,10 @@ void URI::build_ascii_full_text() const
   if ( is_set(Scheme) )
     lURI << theScheme << ":";
 
-  if (is_set(SchemeSpecificPart))
+  if (is_set(OpaquePart))
   {
     // opaque uri
-    lURI << theSchemeSpecificPart;
+    lURI << theOpaquePart;
   }
   else
   {

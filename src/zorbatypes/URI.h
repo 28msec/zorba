@@ -60,7 +60,7 @@ protected:
     Path               = 32,
     QueryString        = 64,
     Fragment           = 128,
-    SchemeSpecificPart = 256
+    OpaquePart         = 256
   };
 
   // keep track whether particular components of a uri are defined or undefined
@@ -82,7 +82,7 @@ protected:
   zstring          thePath;
   zstring          theQueryString;
   zstring          theFragment;
-  zstring          theSchemeSpecificPart;
+  zstring          theOpaquePart;
 
   // true if the constructed URI is valid
   bool             valid;
@@ -156,11 +156,11 @@ public:
 
   void clear_fragment();
 
-  void set_scheme_specific_part(const zstring& new_scheme_specific_part);
+  void set_opaque_part(const zstring& new_opaque_part);
 
-  const zstring& get_scheme_specific_part() const;
+  const zstring& get_opaque_part() const;
 
-  void clear_scheme_specific_part();
+  void clear_opaque_part();
 
 protected:
   void build_full_text() const;
@@ -254,9 +254,9 @@ inline const zstring& URI::get_encoded_fragment() const
   return theFragment;
 }
 
-inline const zstring& URI::get_scheme_specific_part() const
+inline const zstring& URI::get_opaque_part() const
 {
-  return theSchemeSpecificPart;
+  return theOpaquePart;
 }
 
 inline void URI::set_fragment(const zstring &new_fragment)
@@ -273,10 +273,10 @@ inline void URI::clear_fragment()
   invalidate_text();
 }
 
-inline void URI::clear_scheme_specific_part()
+inline void URI::clear_opaque_part()
 {
-  theSchemeSpecificPart.clear();
-  unset_state(SchemeSpecificPart);
+  theOpaquePart.clear();
+  unset_state(OpaquePart);
   invalidate_text();
 }
 
