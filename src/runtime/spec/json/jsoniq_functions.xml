@@ -430,7 +430,7 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONItemAccessorIterator" arity="binary"
+<zorba:iterator name="JSONItemAccessorIterator"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
   <zorba:function isDeterministic="true">

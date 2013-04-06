@@ -19,6 +19,7 @@
 #include <cerrno>
 #include <cstdlib>
 
+#include <zorba/internal/unique_ptr.h>
 #include "util/cxx_util.h"
 #include "util/string_util.h"
 
@@ -365,11 +366,9 @@ INTEGER_IMPL(T)::roundHalfToEven( IntegerImpl const &precision ) const {
 TEMPLATE_DECL(T)
 typename INTEGER_IMPL(T)::value_type INTEGER_IMPL(T)::ftoi( MAPM const &d ) {
   MAPM const temp( d.sign() >= 0 ? d.floor() : d.ceil() );
-  char *const buf = new char[ temp.exponent() + 3 ];
-  temp.toIntegerString( buf );
-  value_type const result( ztd::aton<value_type>( buf ) );
-  delete[] buf;
-  return result;
+  unique_ptr<char[]> const buf( new char[ temp.exponent() + 3 ] );
+  temp.toIntegerString( buf.get() );
+  return ztd::aton<value_type>( buf.get() );
 }
 
 TEMPLATE_DECL(T)
@@ -432,11 +431,9 @@ INTEGER_IMPL(T) const& INTEGER_IMPL(T)::one() {
 TEMPLATE_DECL(T)
 zstring INTEGER_IMPL(T)::toString() const {
 #ifdef ZORBA_WITH_BIG_INTEGER
-  char *const buf = new char[ value_.exponent() + 3 ];
-  value_.toIntegerString( buf );
-  zstring const result( buf );
-  delete[] buf;
-  return result;
+  unique_ptr<char[]> const buf( new char[ value_.exponent() + 3 ] );
+  value_.toIntegerString( buf.get() );
+  return buf.get();
 #else
   ascii::itoa_buf_type buf;
   return ascii::itoa( value_, buf );

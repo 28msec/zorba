@@ -337,6 +337,35 @@ StaticContextImpl::getDefaultFunctionNamespace() const
 /*******************************************************************************
 
 ********************************************************************************/
+bool
+StaticContextImpl::setDefaultFunctionNamespaces(
+    const std::vector<String>& aURIs)
+{
+  try
+  {
+    for (std::vector<String>::const_reverse_iterator lIter = aURIs.rbegin();
+         lIter != aURIs.rend(); ++lIter)
+    {
+      const zstring& lURI = Unmarshaller::getInternalString(*lIter);
+      QueryLoc loc;
+      theCtx->set_default_function_ns(lURI, false, loc);
+    }
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
+  }
+  return "";
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::addCollation( const String& URI )
 {

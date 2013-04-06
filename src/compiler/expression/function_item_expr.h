@@ -23,7 +23,7 @@
 
 #include "store/naive/shared_types.h"
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 
 namespace zorba {
@@ -38,7 +38,11 @@ class argument_placeholder_expr : public expr
   friend class ExprManager;
 
 protected:
-  argument_placeholder_expr(CompilerCB* ccb, static_context* sctx, user_function* udf, const QueryLoc& loc)
+  argument_placeholder_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc)
     :
     expr(ccb, sctx, udf, loc, argument_placeholder_expr_kind)
   {
@@ -125,7 +129,7 @@ class function_item_expr: public expr
   friend class ExprManager;
 
 protected:
-  DynamicFunctionInfo_t  theDynamicFunctionInfo;
+  FunctionItemInfo_t  theFunctionItemInfo;
   
 protected:
   function_item_expr(
@@ -134,8 +138,7 @@ protected:
       user_function* udf,
       const QueryLoc& loc,
       function* f,
-      store::Item* aQName,
-      uint32_t aArity,
+      csize arity,
       bool isInline,
       bool needsContextItem,
       bool isCoercion);
@@ -152,7 +155,7 @@ protected:
   virtual ~function_item_expr();
   
 public:
-  DynamicFunctionInfo* get_dynamic_fn_info() { return theDynamicFunctionInfo; }
+  FunctionItemInfo* get_dynamic_fn_info() { return theFunctionItemInfo; }
 
   void add_variable(
       expr* var,
@@ -162,32 +165,32 @@ public:
 
   const std::vector<var_expr*>& get_subst_vars_values() const
   {
-    return theDynamicFunctionInfo->theSubstVarsValues;
+    return theFunctionItemInfo->theSubstVarsValues;
   }
 
   const std::vector<store::Item_t>& get_scoped_vars_names() const
   {
-    return theDynamicFunctionInfo->theScopedVarsNames;
+    return theFunctionItemInfo->theScopedVarsNames;
   }
 
   const std::vector<int>& get_is_global_var() const
   {
-    return theDynamicFunctionInfo->theIsGlobalVar;
+    return theFunctionItemInfo->theIsGlobalVar;
   }
 
   void set_function(user_function* udf);
 
-  function* get_function() const { return theDynamicFunctionInfo->theFunction; }
+  function* get_function() const { return theFunctionItemInfo->theFunction; }
 
-  const store::Item_t& get_qname() const { return theDynamicFunctionInfo->theQName; }
+  const store::Item_t& get_qname() const { return theFunctionItemInfo->theQName; }
 
-  uint32_t get_arity() const { return theDynamicFunctionInfo->theArity; }
+  uint32_t get_arity() const { return theFunctionItemInfo->theArity; }
   
-  bool is_inline() const { return theDynamicFunctionInfo->theIsInline; }
+  bool is_inline() const { return theFunctionItemInfo->theIsInline; }
   
-  bool needs_context_item() const { return theDynamicFunctionInfo->theNeedsContextItem; }
+  bool needs_context_item() const { return theFunctionItemInfo->theNeedsContextItem; }
 
-  bool is_coercion() const { return theDynamicFunctionInfo->theIsCoercion; }
+  bool is_coercion() const { return theFunctionItemInfo->theIsCoercion; }
 
   void compute_scripting_kind();
 

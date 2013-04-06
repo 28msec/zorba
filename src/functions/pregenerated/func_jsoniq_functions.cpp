@@ -161,7 +161,7 @@ PlanIter_t op_zorba_json_item_accessor::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONItemAccessorIterator(sctx, loc, argv[0], argv[1]);
+  return new JSONItemAccessorIterator(sctx, loc, argv);
 }
 
 #endif

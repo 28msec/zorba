@@ -674,6 +674,14 @@ declare variable $err:XQST0111 as xs:QName := fn:QName($err:NS, "err:XQST0111");
 
 (:~
  :
+ : It is a static error if the name of a feature in require-feature is not recognized by the implementation.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0123 as xs:QName := fn:QName($err:NS, "err:XQST0123");
+
+(:~
+ :
  : It is a dynamic error if evaluation of an expression relies on some part
  : of the dynamic context that has not been assigned a value.
  : 
@@ -1113,7 +1121,7 @@ declare variable $err:FODF1280 as xs:QName := fn:QName($err:NS, "err:FODF1280");
 
 (:~
  :
- : Invalid \c fn:format-number() picture string.
+ : Invalid decimal/integer format picture string.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -1142,22 +1150,6 @@ declare variable $err:FODT0002 as xs:QName := fn:QName($err:NS, "err:FODT0002");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:FODT0003 as xs:QName := fn:QName($err:NS, "err:FODT0003");
-
-(:~
- :
- : format-integer: Cannot cast $language to \c xs:language.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:FOFI0001 as xs:QName := fn:QName($err:NS, "err:FOFI0001");
-
-(:~
- :
- : format-integer: invalid parameter.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:FOFI0002 as xs:QName := fn:QName($err:NS, "err:FOFI0002");
 
 (:~
  :

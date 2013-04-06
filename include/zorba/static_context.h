@@ -803,6 +803,16 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   virtual void
   clearBaseURI() = 0;
 
+  /** \brief Sets a list of default function namespaces that will be
+   *   used in order during the lookup of functions.
+   *
+   * @param aURIs the list of default function namespaces.
+   * @return true if the said namespaces have been set, false otherwise
+   *         if an DiagnosticHandler has been registered.
+   * @throw ZorbaException if an error occured.
+   */
+  virtual bool
+  setDefaultFunctionNamespaces( const std::vector<String>& aURIs ) = 0;
 };
 
 } /* namespace zorba */

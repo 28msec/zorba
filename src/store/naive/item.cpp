@@ -32,7 +32,7 @@
 #  include "json_items.h"
 #endif
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 
 namespace zorba

@@ -84,33 +84,34 @@ DEF_EXPR_ACCEPT (argument_placeholder_expr);
 ********************************************************************************/
 
 
-function_item_expr::function_item_expr(CompilerCB* ccb,
+function_item_expr::function_item_expr(
+    CompilerCB* ccb,
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
     function* f,
-    store::Item* qname,
-    uint32_t arity,
+    csize arity,
     bool isInline,
     bool needsContextItem,
     bool isCoercion)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
-  theDynamicFunctionInfo(new DynamicFunctionInfo(sctx,
-                                                 loc,
-                                                 f,
-                                                 qname,
-                                                 arity,
-                                                 isInline,
-                                                 needsContextItem,
-                                                 isCoercion))
+  theFunctionItemInfo(new FunctionItemInfo(sctx,
+                                           loc,
+                                           f,
+                                           f->getName(),
+                                           arity,
+                                           isInline,
+                                           needsContextItem,
+                                           isCoercion))
 {
   assert(f != NULL);
   compute_scripting_kind();
 }
 
 
-function_item_expr::function_item_expr(CompilerCB* ccb,
+function_item_expr::function_item_expr(
+    CompilerCB* ccb,
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
@@ -119,21 +120,28 @@ function_item_expr::function_item_expr(CompilerCB* ccb,
     bool isCoercion)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
-  theDynamicFunctionInfo(new DynamicFunctionInfo(sctx,
-                                                 loc,
-                                                 NULL,
-                                                 NULL,
-                                                 0,
-                                                 isInline,
-                                                 needsContextItem,
-                                                 isCoercion))
+  theFunctionItemInfo(new FunctionItemInfo(sctx,
+                                           loc,
+                                           NULL,
+                                           NULL,
+                                           0,
+                                           isInline,
+                                           needsContextItem,
+                                           isCoercion))
 {
-  theScriptingKind = SIMPLE_EXPR;
+  compute_scripting_kind();
 }
 
 
 function_item_expr::~function_item_expr()
 {
+}
+
+
+void function_item_expr::compute_scripting_kind()
+{
+  // ???? TODO
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -143,23 +151,16 @@ void function_item_expr::add_variable(
     const store::Item_t& name,
     int isGlobal)
 {
-  theDynamicFunctionInfo->add_variable(var, substVar, name, isGlobal);
+  theFunctionItemInfo->add_variable(var, substVar, name, isGlobal);
 }
 
 
 void function_item_expr::set_function(user_function* udf)
 {
-  theDynamicFunctionInfo->theFunction = udf;
-  theDynamicFunctionInfo->theArity = udf->getArity();
-  theDynamicFunctionInfo->theQName = udf->getName();
+  theFunctionItemInfo->theFunction = udf;
+  theFunctionItemInfo->theArity = udf->getArity();
+  theFunctionItemInfo->theQName = udf->getName();
   // compute_scripting_kind();
-}
-
-
-void function_item_expr::compute_scripting_kind()
-{
-  // ???? TODO
-  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -175,7 +176,7 @@ store::Item_t function_item_expr::create_inline_fname(const QueryLoc& loc)
 }
 
 
-DEF_EXPR_ACCEPT (function_item_expr);
+DEF_EXPR_ACCEPT(function_item_expr);
 
 
 }//end of namespace

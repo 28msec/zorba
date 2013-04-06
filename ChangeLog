@@ -36,9 +36,12 @@ Optimizations:
   * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1123836 (overflows in date/time casts now return FODT0001 and in durations return FODT0002)
+  * Fixed bug #1114228 (unrecognized options in the XQuery namespace now raise an error)
   * Fixed bug #1124273 (xqdoc crash because of annotation literals)
   * Fixed bug #867027 (XQST0059 error messages inconsistent)
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
+  * Fixed bug #1123163 (fn:format-integer failures)
   * Fixed bug in index join rule (no index join if inner clause has positional var).
   * Fixed bug in index join rule (copy var ids after cloning index domain expr).
   * Fixed bug #1123162 (FOTS: formatting dates and times failures)
