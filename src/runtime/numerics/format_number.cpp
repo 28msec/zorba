@@ -795,16 +795,11 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
       zstring format_name( format_name_item->getStringValue() );
       zstring prefix, local;
       if ( !xml::split_name( format_name, &prefix, &local ) ) {
-        GENV_ITEMFACTORY->createQName(
-          format_name_item, "", "", format_name
-        );
+        GENV_ITEMFACTORY->createQName( format_name_item, "", "", format_name );
       } else {
         zstring ns;
         if ( theSctx->lookup_ns( ns, prefix, loc, false ) ) {
-          GENV_ITEMFACTORY->createQName(
-            format_name_item, ns, prefix,
-            format_name.substr(format_name.find(':')+1)
-          );
+          GENV_ITEMFACTORY->createQName( format_name_item, ns, prefix, local );
         } else {
           //
           // The prefix is not in the known namespaces so the only posibility
@@ -847,9 +842,7 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
     if ( !df.isNull() )
       set_format( df, &pic );
     parse_picture( &pic, loc );
-
     format_number( result, pic, theSctx->get_typemanager(), loc, &result_str );
-
     STACK_PUSH( GENV_ITEMFACTORY->createString( result, result_str ), state );
   }
 
