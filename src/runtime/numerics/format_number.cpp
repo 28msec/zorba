@@ -41,14 +41,15 @@ struct picture {
 
   struct part {
     zstring format;
-    std::vector<int> grouping_pos;
-    int N;
+    int mandatory_grouping_seps;
     int minimum_size;
-    int maximum_size;
+    union {
+      int maximum_size;                 // only in fractional part
+      int grouping_interval;            // only in integer part
+    };
 
     part() {
-      N = -1;
-      minimum_size = maximum_size = 0;
+      mandatory_grouping_seps = minimum_size = maximum_size = 0;
     }
   };
 
@@ -87,56 +88,50 @@ struct picture {
   zstring var[ NUM_VARS ];
   unicode::code_point var_cp[ NUM_VARS ];
 
-# define VAR(NAME) var[ ::zorba::picture::NAME ]
-# define VAR_CP(NAME) var_cp[ ::zorba::picture::NAME ]
-
   picture() {
-    VAR( decimal_separator_sign ) = ".";
-    VAR( grouping_separator_sign ) = ",";
-    VAR( infinity ) = "Infinity";
-    VAR( mandatory_digit_sign ) = "0";
-    VAR( minus_sign ) = "-";
-    VAR( NaN ) = "NaN";
-    VAR( optional_digit_sign ) = "#";
-    VAR( pattern_separator_sign ) = ";";
-    VAR( percent_sign ) = "%";
-    VAR( per_mille_sign ) = "\xE2\x80\xB0";
+    var[ decimal_separator_sign ] = ".";
+    var[ grouping_separator_sign ] = ",";
+    var[ infinity ] = "Infinity";
+    var[ mandatory_digit_sign ] = "0";
+    var[ minus_sign ] = "-";
+    var[ NaN ] = "NaN";
+    var[ optional_digit_sign ] = "#";
+    var[ pattern_separator_sign ] = ";";
+    var[ percent_sign ] = "%";
+    var[ per_mille_sign ] = "\xE2\x80\xB0";
     set_format_codepoints();
   }
 
   // default picture(picture const&) is fine
   // default picture& operator=(picture const&) is fine
 
+  bool is_active( unicode::code_point cp ) {
+    //
+    // XQuery F&O 3.0 4.7.3: The ... variables decimal-separator-sign,
+    // grouping-sign, decimal-digit-family, optional-digit-sign and pattern-
+    // separator-sign are classified as active characters, and all other
+    // characters (including the percent-sign and per-mille-sign) are
+    // classified as passive characters.
+    //
+    unicode::code_point zero_cp;
+    return cp == var_cp[ decimal_separator_sign ]
+        || cp == var_cp[ grouping_separator_sign ]
+        || cp == var_cp[ optional_digit_sign ]
+        || (unicode::is_Nd( cp, &zero_cp ) &&
+            zero_cp == var_cp[ mandatory_digit_sign ] )
+        || cp == var_cp[ pattern_separator_sign ];
+  }
+
   void set_format_codepoints() {
     for ( int i = 0; i < NUM_VARS; ++i )
       var_cp[i] = utf8::decode( var[i].c_str() );
   }
-
 };
 
-///////////////////////////////////////////////////////////////////////////////
+#define VAR(NAME) var[ ::zorba::picture::NAME ]
+#define VAR_CP(NAME) var_cp[ ::zorba::picture::NAME ]
 
-#if 0
-static bool is_active( int pic_var_type ) {
-  //
-  // XQuery F&O 3.0 4.7.3: The ... variables decimal-separator-sign,
-  // grouping-sign, decimal-digit-family, optional-digit-sign and
-  // pattern-separator-sign are classified as active characters, and all other
-  // characters (including the percent-sign and per-mille-sign) are classified
-  // as passive characters.
-  //
-  switch ( pic_var_type ) {
-    case picture::decimal_separator_sign:
-    case picture::grouping_separator_sign:
-    case picture::mandatory_digit_sign: // aka, decimal-digit-family
-    case picture::optional_digit_sign:
-    case picture::pattern_separator_sign:
-      return true;
-    default:
-      return false;
-  }
-}
-#endif
+///////////////////////////////////////////////////////////////////////////////
 
 static void check_multiple( zstring const &sub_pic, zstring const &sign,
                             picture const &pic, QueryLoc const &loc ) {
@@ -151,50 +146,118 @@ static void check_multiple( zstring const &sub_pic, zstring const &sign,
   }
 }
 
-static void format_groupings( zstring &result, zstring const &format,
-                              picture::part const &part, picture const &pic ) {
-#if 0
-  unsigned int grouping_index = 0;
+static void format_integer_part( zstring const &part,
+                                 picture::sub_picture const &sub_pic,
+                                 picture const &pic, zstring *dest ) {
+  zstring::const_reverse_iterator n_i( part.rbegin() );
+  zstring::const_reverse_iterator const n_end( part.rend() );
 
-  result.clear();
+  utf8_string<zstring const> const u_format( sub_pic.format );
+  utf8_string<zstring const>::const_reverse_iterator
+    format_i( u_format.rbegin() );
+  utf8_string<zstring const>::const_reverse_iterator const
+    pic_end( u_format.rend() );
 
-  long len = (long)format.size();
+  int digit_pos = 0;
+  bool just_inserted_grouping_separator = false;
+  int minimum_size = sub_pic.integer_part.minimum_size;
+  int mandatory_grouping_seps = sub_pic.integer_part.mandatory_grouping_seps;
+  utf8_string<zstring> u_dest( *dest );
 
-  for ( long i = len-1; i >= 0; --i ) {
-    char ch = format[i];
-
-    if (((grouping_index < part.grouping_pos.size()
-        &&
-        len-i-1 == part.grouping_pos[grouping_index])
-      ||
-      (part.N != -1
-        &&
-        len-1-i != 0
-        &&
-        ((len-1-i) % part.N) == 0))
-      &&
-      ch != '-')
-    {
-      result.append( pic.VAR( grouping_separator_sign ) );
-      if ( grouping_index < part.grouping_pos.size() )
-        ++grouping_index;
-      while (grouping_index < part.grouping_pos.size()
-          &&
-          part.grouping_pos[grouping_index] == part.grouping_pos[grouping_index-1])
-      {
-        result.append( pic.VAR( grouping_separator_sign ) );
-        ++grouping_index;
+  //
+  // Step through both the integer part and sub-picture from right-to-left.
+  //
+  while ( n_i != n_end || format_i != pic_end ) {
+    unicode::code_point digit_cp = pic.VAR_CP( mandatory_digit_sign );
+    if ( n_i != n_end )
+      digit_cp += *n_i - '0';
+    if ( format_i != pic_end ) {       // haven't exhausted the picture
+      if ( !minimum_size && !mandatory_grouping_seps && n_i == n_end )
+        break;
+      unicode::code_point const pic_cp = *format_i++;
+      if ( pic_cp == pic.VAR_CP( optional_digit_sign ) ||
+           unicode::is_Nd( pic_cp ) ) {
+        u_dest.insert( 0, 1, digit_cp );
+        if ( n_i != n_end ) ++n_i;
+        ++digit_pos;
+        if ( pic_cp != pic.VAR_CP( optional_digit_sign ) )
+          --minimum_size;
+      } else {                      // must be a grouping-separator
+        u_dest.insert( 0, 1, pic.VAR_CP( grouping_separator_sign ) );
+        --mandatory_grouping_seps;
       }
+    } else {                        // have exhausted the picture
+      if ( sub_pic.integer_part.grouping_interval &&
+            digit_pos % sub_pic.integer_part.grouping_interval == 0 ) {
+        if ( just_inserted_grouping_separator )
+          just_inserted_grouping_separator = false;
+        else {
+          u_dest.insert( 0, 1, pic.VAR_CP( grouping_separator_sign ) );
+          just_inserted_grouping_separator = true;
+          continue;
+        }
+      }
+      u_dest.insert( 0, 1, digit_cp );
+      if ( n_i != n_end ) ++n_i;
+      ++digit_pos;
     }
+  } // while
+}
 
-    if ( ch == '0' )
-      result.append( pic.zero_digit );
-    else if ( ch == '-' )
-      ; // skip the '-' sign
-    else
-      result.push_back( ch );
-  }
-#endif
+static void format_fractional_part( zstring const &part,
+                                    picture::sub_picture const &sub_pic,
+                                    picture const &pic, zstring *dest ) {
+  zstring::const_iterator n_i( sub_pic.fractional_part.format.begin() );
+  zstring::const_iterator n_end( part.end() );
+
+  utf8_string<zstring const> const u_format( sub_pic.format );
+  utf8_string<zstring const>::const_iterator format_i( u_format.begin() );
+  utf8_string<zstring const>::const_iterator const pic_end( u_format.end() );
+
+  int digit_pos = 0;
+  bool just_inserted_grouping_separator = false;
+  int minumum_size = sub_pic.fractional_part.minimum_size;
+  int mandatory_grouping_seps = sub_pic.fractional_part.mandatory_grouping_seps;
+  utf8_string<zstring> u_dest( *dest );
+
+  //
+  // Step through both the fractional part and sub-picture from left-to-right.
+  //
+  while ( n_i != n_end || format_i != pic_end ) {
+    unicode::code_point digit_cp = pic.VAR_CP( mandatory_digit_sign );
+    if ( n_i != n_end )
+      digit_cp += *n_i - '0';
+    if ( format_i != pic_end ) {       // haven't exhausted the picture
+      if ( !minumum_size && !mandatory_grouping_seps && n_i == n_end )
+        break;
+      unicode::code_point const pic_cp = *format_i++;
+      if ( pic_cp == pic.VAR_CP( optional_digit_sign ) ||
+           unicode::is_Nd( pic_cp ) ) {
+        u_dest.insert( 0, 1, digit_cp );
+        if ( n_i != n_end ) ++n_i;
+        ++digit_pos;
+        if ( pic_cp != pic.VAR_CP( optional_digit_sign ) )
+          --minumum_size;
+      } else {                      // must be a grouping-separator
+        u_dest.insert( 0, 1, pic.VAR_CP( grouping_separator_sign ) );
+        --mandatory_grouping_seps;
+      }
+    } else {                        // have exhausted the picture
+      if ( sub_pic.fractional_part.grouping_interval &&
+            digit_pos % sub_pic.fractional_part.grouping_interval == 0 ) {
+        if ( just_inserted_grouping_separator )
+          just_inserted_grouping_separator = false;
+        else {
+          u_dest.insert( 0, 1, pic.VAR_CP( grouping_separator_sign ) );
+          just_inserted_grouping_separator = true;
+          continue;
+        }
+      }
+      u_dest.insert( 0, 1, digit_cp );
+      if ( n_i != n_end ) ++n_i;
+      ++digit_pos;
+    }
+  } // while
 }
 
 static void format_number( store::Item_t &number, picture const &pic,
@@ -232,9 +295,9 @@ static void format_number( store::Item_t &number, picture const &pic,
     // is the concatenation of the appropriate prefix, the infinity-symbol, and
     // the appropriate suffix.
     //
-    dest->append( sub_pic.prefix );
-    dest->append( pic.VAR( infinity ) );
-    dest->append( sub_pic.suffix );
+    *dest  = sub_pic.prefix;
+    *dest += pic.VAR( infinity );
+    *dest += sub_pic.suffix;
     return;
   }
 
@@ -274,46 +337,25 @@ static void format_number( store::Item_t &number, picture const &pic,
   // characters are added to pad out to that size.
   //
   zstring integer_part, fractional_part;
-  zstring::size_type const pos = converted.find( '.' );
-  if ( pos == zstring::npos ) {
+  zstring::size_type const decimal_separator_pos = converted.find( '.' );
+  if ( decimal_separator_pos == zstring::npos ) {
     integer_part = converted;
   } else {
-    integer_part = converted.substr( 0, pos );
-    fractional_part = converted.substr( pos + 1 );
+    integer_part = converted.substr( 0, decimal_separator_pos );
+    fractional_part = converted.substr( decimal_separator_pos + 1 );
     ascii::right_pad(
       &fractional_part, sub_pic.fractional_part.minimum_size, '0'
     );
   }
   ascii::left_pad( &integer_part, sub_pic.integer_part.minimum_size, '0' );
 
-#if 0
-  // groupings
-  zstring integer_part_result;
-  zstring fractional_part_result;
-  format_groupings(
-    integer_part_result, integer_part, sub_pic.integer_part, pic
-  );
-
-  zstring tmp;
-  ascii::reverse( integer_part_result, &tmp );
-  integer_part_result.swap( tmp );
-
-  tmp.clear();
-  ascii::reverse( fractional_part, &tmp );
-  fractional_part.swap( tmp );
-
-  format_groupings(
-    fractional_part_result, fractional_part, sub_pic.fractional_part, pic
-  );
-
   *dest += sub_pic.prefix;
-  *dest += integer_part_result;
-  if ( !fractional_part.empty() ) {
+  format_integer_part( integer_part, sub_pic, pic, dest );
+  if ( decimal_separator_pos != zstring::npos && !fractional_part.empty() ) {
     *dest += pic.VAR( decimal_separator_sign );
-    *dest += fractional_part_result;
+    format_fractional_part( fractional_part, sub_pic, pic, dest );
   }
   *dest += sub_pic.suffix;
-#endif
 }
 
 static bool is_allowed_type( store::Item const *type_qname ) {
@@ -336,97 +378,6 @@ static bool is_allowed_type( store::Item const *type_qname ) {
       || type_qname->equals( rtm.XS_UNSIGNED_BYTE_QNAME );
 }
 
-static void parse_part( picture::part *part, picture const &pic,
-                        QueryLoc const &loc, bool is_fractional = false ) {
-  if ( part->format.empty() )
-    return;
-
-  // get grouping separators
-  int mandatory_digit_signs = 0;
-  int optional_digit_signs = 0;
-
-  zstring::size_type pos, end, delta;
-  if ( is_fractional )
-    pos = 0, end = part->format.size() - 1, delta = 1;
-  else
-    pos = part->format.size() - 1, end = -1, delta = -1;
-
-  int first_optional_digit_sign_pos = -1;
-  int last_mandatory_digit_sign_pos = -1;
-
-#if 0
-  for ( ; pos != end; pos += delta ) {
-    zstring::value_type ch = part->format[ pos ];
-    if ( pic.VAR( mandatory_digit_sign ) == ch ) {
-      if ( first_optional_digit_sign_pos == -1 )
-        first_optional_digit_sign_pos = pos;
-      ++digit_signs;
-    } else if ( pic.zero_digit[0] == ch ) {
-      last_mandatory_digit_sign_pos = pos;
-      ++zero_signs;
-    } else if ( pic.grouping_separator[0] == ch )
-      part->grouping_pos.push_back( digit_signs + zero_signs );
-  }
-
-  if ( part.format.find( pic.mandatory_digit_sign ) == zstring::npos &&
-       part.format.find( pic.zero_digit ) == zstring::npos ) {
-    throw XQUERY_EXCEPTION(
-      err::FODF1310,
-      ERROR_PARAMS(
-        pic.format,
-        ZED( FormatNumberAtLeastOneOptionalOrDecimal )
-      ),
-      ERROR_LOC( pic.loc )
-    );
-  }
-
-  if ( first_digit_sign != -1 && last_zero_sign != -1 ) {
-    if (!is_fractional && first_digit_sign > last_zero_sign)
-      throw XQUERY_EXCEPTION(
-        err::FODF1310,
-        ERROR_PARAMS( pic.format, ZED( FormatNumberIntegerPart ) ),
-        ERROR_LOC( loc )
-      );
-    else if ( is_fractional && first_digit_sign < last_zero_sign )
-      throw XQUERY_EXCEPTION(
-        err::FODF1310,
-        ERROR_PARAMS( pic.format, ZED( FormatNumberFractionalPart ) ),
-        ERROR_LOC( loc )
-      );
-  }
-
-  if ( part.grouping_pos.size() > 0 && part.grouping_pos[0] == 0 )
-    throw XQUERY_EXCEPTION(
-      err::FODF1310,
-      ERROR_PARAMS(
-        pic.format,
-        ZED( FormatNumberGroupingAdjacentToDecimal )
-      ),
-      ERROR_LOC(pic.loc)
-    );
-
-  if (part.grouping_pos.size() > 0) {
-    part.N = part.grouping_pos[0];
-    for (unsigned int i=1; i<part.grouping_pos.size(); i++)
-      if ( part.grouping_pos[i] % part.N ) {
-        part.N = -1;
-        break;
-      }
-  }
-
-  part.minimum_size = zero_signs;
-  if ( !is_fractional &&
-       zero_signs == 0 &&
-       part.format.find(pic.decimal_separator) == zstring::npos) {
-    part.minimum_size = 1;
-  }
-
-  if ( is_fractional )
-    part.maximum_size = digit_signs + zero_signs;
-#endif
-}
-
-
 static void parse_subpicture( picture::sub_picture *sub_pic,
                               picture const &pic, QueryLoc const &loc ) {
   if ( sub_pic->format.empty() )
@@ -439,26 +390,29 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
   zstring::size_type leftmost_active_pos = zstring::npos;
   zstring::size_type rightmost_active_pos = zstring::npos;
 
-  unicode::code_point decimal_separator_cp = 0;
-  unicode::code_point grouping_separator_cp = 0;
-
   bool got_active = false;
+  bool got_grouping_separator = false;    // used only for integer part
   bool got_mandatory_digit = false;
   bool got_optional_digit = false;
+  bool got_part_mandatory_digit = false;
+  bool got_part_optional_digit = false;
   bool got_passive = false;
+  bool grouping_interval_possible = true; // used only for integer part
+  bool just_got_decimal_separator = false;
+  bool just_got_grouping_separator = false;
 
-  int part_mandatory_digits = 0;
-  int part_optional_digits = 0;
+  int grouping_interval = 0;              // used only for integer part
+  int grouping_separators = 0;
 
-  unicode::code_point cp;
-  unicode::code_point zero[2];
-  unicode::is_Nd( pic.VAR_CP( mandatory_digit_sign ), &zero[0] );
+  utf8::size_type pos = 0, prev_grouping_pos = utf8::npos;
+
+  unicode::code_point cp, zero_cp;
 
   utf8_string<zstring> u_sub_pic_format( sub_pic->format );
   utf8_string<zstring>::const_iterator u( u_sub_pic_format.begin() );
   utf8_string<zstring>::const_iterator const u_end( u_sub_pic_format.end() );
 
-  for ( ; u != u_end; ++u ) {
+  for ( ; u != u_end; ++u, ++pos ) {
     cp = *u;
 
     if ( cp == pic.VAR_CP( decimal_separator_sign ) ) {
@@ -469,8 +423,7 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
         //
         goto got_multiple_signs;
       }
-      decimal_separator_cp = cp;
-      if ( grouping_separator_cp ) {
+      if ( just_got_grouping_separator ) {
         //
         // Ibid: A sub-picture must not contain a grouping-separator-sign
         // adjacent to a decimal-separator-sign.
@@ -479,47 +432,46 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
       }
       cur_part = &picture::sub_picture::fractional_part;
       decimal_separator_pos = u.base() - sub_pic->format.begin();
-      part_mandatory_digits = part_optional_digits = 0;
-      grouping_separator_cp = 0;
+      got_part_mandatory_digit = got_part_optional_digit = false;
+      just_got_decimal_separator = true;
+      just_got_grouping_separator = false;
       goto set_active;
     }
 
     if ( cp == pic.VAR_CP( grouping_separator_sign ) ) {
-      grouping_separator_cp = cp;
-      if ( decimal_separator_cp ) {
+      if ( just_got_decimal_separator ) {
         //
         // Ibid: A sub-picture must not contain a grouping-separator-sign
         // adjacent to a decimal-separator-sign.
         //
         goto got_decimal_grouping_adjacent;
       }
-      decimal_separator_cp = 0;
-      if ( decimal_separator_pos != zstring::npos ) {
+      just_got_decimal_separator = false;
+      just_got_grouping_separator = true;
+      ++(sub_pic->*cur_part).mandatory_grouping_seps;
+
+      if ( decimal_separator_pos == zstring::npos &&
+           grouping_interval_possible ) {
         //
-        // Ibid 4.7.4: The fractional-part-grouping-positions is a sequence of
-        // integers representing the positions of grouping separators within
-        // the fractional part of the sub-picture. For each grouping-separator-
-        // sign that appears within the fractional part of the sub-picture,
-        // this sequence contains an integer that is equal to the total number
-        // of optional-digit-sign and decimal-digit-family characters that
-        // appear within the fractional part of the sub-picture and to the left
-        // of the grouping-separator-sign.
+        // [I]f these integer-part-grouping-positions are at regular intervals
+        // (that is, if they form a sequence N, 2N, 3N, ... for some integer
+        // value N, including the case where there is only one number in the
+        // list), then the sequence contains all integer multiples of N as far
+        // as necessary to accommodate the largest possible number.
         //
-        int const total_digits = part_mandatory_digits + part_optional_digits;
-        sub_pic->fractional_part.grouping_pos.push_back( total_digits );
-#if 0
-        // The spec doesn't say anything about the fractional part grouping
-        // positions forming a sequence of N, 2N, 3N, ....
-        if ( sub_pic->fractional_part.grouping_pos.size() == 1 )
-          sub_pic->fractional_part.N = total_digits;
-        else if ( total_digits % sub_pic->fractional_part.N )
-          sub_pic->fractional_part.N = -1;
-#endif
+        if ( !got_grouping_separator )
+          got_grouping_separator = true;
+        else if ( !grouping_interval )
+          grouping_interval = pos = prev_grouping_pos;
+        else if ( pos - prev_grouping_pos != grouping_interval )
+          grouping_interval_possible = false;
+        prev_grouping_pos = pos + 1;
       }
+
       goto set_active;
     }
 
-    decimal_separator_cp = grouping_separator_cp = 0;
+    just_got_decimal_separator = just_got_grouping_separator = false;
 
     if ( cp == pic.VAR_CP( optional_digit_sign ) ) {
       if ( decimal_separator_pos != zstring::npos ) {
@@ -529,7 +481,7 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
         // found in the fractional part of the sub-picture.
         //
         ++sub_pic->fractional_part.maximum_size;
-      } else if ( part_mandatory_digits ) {
+      } else if ( got_part_mandatory_digit ) {
         //
         // Ibid 4.7.3: The integer part of a sub-picture must not contain a
         // member of the decimal-digit-family that is followed by an optional-
@@ -545,8 +497,7 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
           ERROR_LOC( loc )
         );
       }
-      got_optional_digit = true;
-      ++part_optional_digits;
+      got_optional_digit = got_part_optional_digit = true;
       goto set_active;
     }
 
@@ -560,10 +511,9 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
       if ( sub_pic->has_per_mille )
         goto got_percent_per_mille;
       sub_pic->has_percent = true;
-      continue;
     }
 
-    if ( cp == pic.VAR_CP( per_mille_sign ) ) {
+    else if ( cp == pic.VAR_CP( per_mille_sign ) ) {
       //
       // Ibid: A sub-picture must not contain more than one percent-sign or
       // per-mille-sign, and it must not contain one of each.
@@ -573,24 +523,12 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
       if ( sub_pic->has_percent )
         goto got_percent_per_mille;
       sub_pic->has_per_mille = true;
-      continue;
     }
 
-    if ( unicode::is_Nd( cp, &zero[1] ) ) {
-      if ( zero[1] != zero[0] ) {
-        throw XQUERY_EXCEPTION(
-          err::FODF1310,
-          ERROR_PARAMS(
-            pic.format,
-            ZED( FODF1310_DigitNotSameFamily_34 ),
-            unicode::printable_cp( cp ),
-            unicode::printable_cp( zero[0] )
-          ),
-          ERROR_LOC( loc )
-        );
-      }
+    else if ( unicode::is_Nd( cp, &zero_cp ) &&
+              zero_cp == pic.VAR_CP( mandatory_digit_sign ) ) {
       if ( decimal_separator_pos != zstring::npos ) {
-        if ( part_optional_digits ) {
+        if ( got_part_optional_digit ) {
           //
           // Ibid: The fractional part of a sub-picture must not contain an
           // optional-digit-sign that is followed by a member of the decimal-
@@ -613,8 +551,7 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
         //
         ++sub_pic->fractional_part.maximum_size;
       }
-      got_mandatory_digit = true;
-      ++part_mandatory_digits;
+      got_mandatory_digit = got_part_mandatory_digit = true;
 
       //
       // Ibid 4.7.4: The minimum-integer-part-size is an integer indicating the
@@ -631,6 +568,7 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
       goto set_active;
     }
 
+    got_passive = true;
     continue;
 
 set_active:
@@ -671,6 +609,25 @@ set_active:
     );
   }
 
+  if ( grouping_interval_possible ) {
+    if ( !grouping_interval ) {
+      if ( got_grouping_separator ) {
+        //
+        // There's only a single grouping separator, e.g., "1,000".
+        //
+        grouping_interval = pos - prev_grouping_pos;
+      }
+    } else if ( pos - prev_grouping_pos != grouping_interval ) {
+      //
+      // There are multiple grouping separators, but they're not equally spaced
+      // from the last digit, e.g., "1,000,00".  (This is most likely a mistake
+      // on the part of the user.)
+      //
+      grouping_interval = 0;
+    }
+    sub_pic->integer_part.grouping_interval = grouping_interval;
+  }
+
   //
   // Ibid 4.7.4: [I]f the sub-picture contains no decimal-digit-family
   // character and no decimal-separator-sign, [the minimum-integer-part-size]
@@ -679,33 +636,32 @@ set_active:
   if ( !got_mandatory_digit && decimal_separator_pos == zstring::npos )
     sub_pic->integer_part.minimum_size = 1;
 
-  if ( decimal_separator_pos != zstring::npos ) {
-    sub_pic->integer_part.format =
-      sub_pic->format.substr( 0, decimal_separator_pos );
-    sub_pic->fractional_part.format = sub_pic->format.substr(
-      decimal_separator_pos + pic.VAR( decimal_separator_sign ).size()
-    );
-  } else
-    sub_pic->integer_part.format = sub_pic->format;
-
-  parse_part( &sub_pic->integer_part, pic, loc );
-  parse_part( &sub_pic->fractional_part, pic, loc, true );
-
   if ( leftmost_active_pos != zstring::npos ) {
     //
     // Ibid: The prefix is set to contain all passive characters in the
     // sub-picture to the left of the leftmost active character.
     //
     sub_pic->prefix = sub_pic->format.substr( 0, leftmost_active_pos );
+    sub_pic->format.erase( 0, leftmost_active_pos );
+    if ( decimal_separator_pos != zstring::npos )
+      decimal_separator_pos -= leftmost_active_pos;
   }
-  if ( rightmost_active_pos != zstring::npos ) {
+  if ( rightmost_active_pos + 1 < sub_pic->format.size() ) {
     //
     // Ibid: The suffix is set to contain all passive characters to the right
     // of the rightmost active character in the fractional part of the
     // sub-picture.
     //
-    sub_pic->suffix = sub_pic->format.substr( rightmost_active_pos );
+    sub_pic->suffix = sub_pic->format.substr( rightmost_active_pos + 1 );
+    sub_pic->format.erase( rightmost_active_pos + 1 );
   }
+
+  sub_pic->integer_part.format =
+    sub_pic->format.substr( 0, decimal_separator_pos );
+  if ( decimal_separator_pos != zstring::npos )
+    sub_pic->fractional_part.format = sub_pic->format.substr(
+      decimal_separator_pos + pic.VAR( decimal_separator_sign ).size()
+    );
 
   return;
 
@@ -715,8 +671,8 @@ got_decimal_grouping_adjacent:
     ERROR_PARAMS(
       pic.format,
       ZED( FODF1310_NoDecimalGroupingAdjacent_34 ),
-      unicode::printable_cp( decimal_separator_cp ),
-      unicode::printable_cp( grouping_separator_cp )
+      unicode::printable_cp( pic.VAR_CP( decimal_separator_sign )  ),
+      unicode::printable_cp( pic.VAR_CP( grouping_separator_sign ) )
     ),
     ERROR_LOC( loc )
   );
@@ -806,7 +762,7 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
   zstring result_str;
   PlanIteratorState *state;
 
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
   if ( !consumeNext( value, theChildren[0].getp(), planState ) ) {
     //
@@ -816,7 +772,7 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
     //
     GENV_ITEMFACTORY->createDouble( result, xs_double::nan() );
   } else {
-    if ( !is_allowed_type( result->getType() ) )
+    if ( !is_allowed_type( value->getType() ) )
       throw XQUERY_EXCEPTION(
         err::XPTY0004,
         ERROR_PARAMS(
@@ -827,7 +783,7 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
       );
 
     consumeNext( item, theChildren[1].getp(), planState );
-    item->getStringValue2( pic.format );
+    pic.format = item->getStringValue();
 
     if ( theChildren.size() >= 3 )
       consumeNext( format_name_item, theChildren[2].getp(), planState );
