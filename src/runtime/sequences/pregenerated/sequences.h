@@ -422,6 +422,7 @@ class FnSubsequenceIteratorState : public PlanIteratorState
 {
 public:
   xs_long theRemaining; //
+  bool theRemainingIsPosInf; //
   bool theIsChildReset; //
 
   FnSubsequenceIteratorState();
