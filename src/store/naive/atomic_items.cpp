@@ -2737,30 +2737,18 @@ size_t IntegerItemImpl::dynamic_size() const
 }
 
 
-long IntegerItemImpl::compare( Item const *other, long,
-                               const XQPCollator* ) const {
-  try
-  {
-    return theValue.compare( other->getIntegerValue() );
-  }
-  catch ( ZorbaException const& )
-  {
-    return getDecimalValue().compare( other->getDecimalValue() );
-  }
-}
-
-bool IntegerItemImpl::equals( const store::Item* other, long,
-                              const XQPCollator*) const
+long IntegerItemImpl::compare(Item const* other, long, const XQPCollator*) const
 {
   try
   {
-    return theValue == other->getIntegerValue();
+    return theValue.compare(other->getIntegerValue());
   }
-  catch (ZorbaException const&)
+  catch (ZorbaException const& )
   {
-    return getDecimalValue() == other->getDecimalValue();
+    return getDecimalValue().compare(other->getDecimalValue());
   }
 }
+
 
 xs_decimal IntegerItemImpl::getDecimalValue() const
 {
@@ -2862,20 +2850,24 @@ size_t NonPositiveIntegerItem::dynamic_size() const
   return sizeof( *this );
 }
 
-long NonPositiveIntegerItem::compare( Item const *other, long,
-                                      const XQPCollator* ) const {
+
+long NonPositiveIntegerItem::compare(Item const* other, long, const XQPCollator*) const
+{
   try
   {
-    return theValue.compare( other->getIntegerValue() );
+    return theValue.compare(other->getIntegerValue());
   }
-  catch ( ZorbaException const& )
+  catch (ZorbaException const&)
   {
-    return getDecimalValue().compare( other->getDecimalValue() );
+    return getDecimalValue().compare(other->getDecimalValue());
   }
 }
 
-bool NonPositiveIntegerItem::equals( const store::Item* other, long,
-                                     const XQPCollator* ) const
+
+bool NonPositiveIntegerItem::equals(
+    const store::Item* other,
+    long,
+    const XQPCollator* ) const
 {
   try
   {
@@ -2887,20 +2879,24 @@ bool NonPositiveIntegerItem::equals( const store::Item* other, long,
   }
 }
 
+
 store::Item* NonPositiveIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NON_POSITIVE_INTEGER];
 }
+
 
 xs_decimal NonPositiveIntegerItem::getDecimalValue() const
 {
   return xs_decimal(theValue);
 }
 
+
 xs_integer NonPositiveIntegerItem::getIntegerValue() const
 {
   return xs_integer(theValue);
 }
+
 
 xs_long NonPositiveIntegerItem::getLongValue() const
 {

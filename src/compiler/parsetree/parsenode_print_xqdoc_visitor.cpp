@@ -48,6 +48,48 @@ namespace zorba {
 
 class ParseNodePrintXQDocVisitor : public parsenode_visitor
 {
+protected:
+  store::Item_t&       theResult;
+
+  store::Item_t        theModule;
+  store::Item_t        theImports;
+  store::Item_t        theVariables;
+  store::Item_t        theFunctions;
+  store::Item_t        theCollections;
+  store::Item_t        theIndexes;
+
+  // set of functions being invoked in the function
+  // whoes declaration is currently being processed
+  map<string, store::Item_t>  theInvokedFunc;
+
+  // prefix -> uri
+  map<zstring, zstring> theNamespaceMap;
+
+  // prefix -> uri for the schema imports
+  map<zstring, zstring> theNamespaceSchemaMap;
+
+  const char*          theXQDocNS;
+  const char*          theXQDocPrefix;
+
+  zstring              theFileName;
+  zstring              theBaseURI;
+  zstring              theVersion;
+  store::NsBindings    theNSBindings;
+
+  store::ItemFactory * theFactory;
+
+  string               theQuery;
+  zstring              theEncoding;
+  zstring              theXQueryVersion;
+
+  uint32_t             theOptions;
+
+  // helper vars to compute index sources
+  bool                 theIsIndexDecl;
+  bool                 theWaitForIndexSourceLiteral;
+  std::vector<pair<zstring,zstring> > theIndexSources;
+
+
 private:
 
 string getFileName(const string& aFileName)
@@ -457,48 +499,6 @@ void printCommentFragment(store::Item_t& aParent, string aString, zstring aTag, 
   }
 }
 
-
-protected:
-  store::Item_t&       theResult;
-
-  store::Item_t        theModule;
-  store::Item_t        theImports;
-  store::Item_t        theVariables;
-  store::Item_t        theFunctions;
-  store::Item_t        theCollections;
-  store::Item_t        theIndexes;
-
-  // set of functions being invoked in the function
-  // whoes declaration is currently being processed
-  map<string, store::Item_t>  theInvokedFunc;
-
-  // prefix -> uri
-  map<zstring, zstring> theNamespaceMap;
-
-  // prefix -> uri for the schema imports
-  map<zstring, zstring> theNamespaceSchemaMap;
-
-  const char*          theXQDocNS;
-  const char*          theXQDocPrefix;
-
-  zstring              theFileName;
-  zstring              theBaseURI;
-  zstring              theVersion;
-  store::NsBindings    theNSBindings;
-
-  store::ItemFactory * theFactory;
-
-  string               theQuery;
-  zstring              theEncoding;
-  zstring              theXQueryVersion;
-
-  uint32_t             theOptions;
-
-  // helper vars to compute index sources
-  bool                 theIsIndexDecl;
-  bool                 theWaitForIndexSourceLiteral;
-  std::vector<pair<zstring,zstring> >
-                       theIndexSources;
 
 public:
 

@@ -1549,17 +1549,26 @@ public:
 
   store::Item* getType() const;
 
-  uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const;
+  uint32_t hash(long = 0, const XQPCollator* c = 0) const;
 
-  long compare(
-        const Item* other,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0) const;
+  long compare(const Item* other, long tz = 0, const XQPCollator* c = 0) const;
 
-  bool equals(
-        const store::Item* other,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0) const;
+  bool equals(const Item* other, long tz = 0, const XQPCollator* c = 0) const
+  {
+    try
+    {
+      if (other->getTypeCode() == store::XS_INTEGER)
+      {
+        return theValue == static_cast<const IntegerItemImpl*>(other)->theValue;
+      }
+
+      return theValue == other->getIntegerValue();
+    }
+    catch (ZorbaException const&)
+    {
+      return getDecimalValue() == other->getDecimalValue();
+    }
+  }
 
   bool getEBV() const;
 
