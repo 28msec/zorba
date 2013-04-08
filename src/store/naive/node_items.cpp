@@ -797,9 +797,8 @@ void XmlNode::swap(Item* anotherItem)
   assert(lOtherItem->theParent == NULL);
 
   // But some things must be "unswapped"
-  std::swap(getTree()->thePos, lOtherItem->getTree()->thePos);
-  std::swap(getTree()->theId, lOtherItem->getTree()->theId);
-  std::swap(getTree()->theCollection, lOtherItem->getTree()->theCollection);
+  std::swap(getTree()->theCollectionInfo, lOtherItem->getTree()->theCollectionInfo);
+  std::swap(getTree()->theTreeId, lOtherItem->getTree()->theTreeId);
 
   // Before unswapping root nodes as well, their references in the type maps
   // must be erased.
@@ -840,10 +839,14 @@ void XmlNode::swap(Item* anotherItem)
   if(lHasReference)
   {
     setHaveReference();
+  } else {
+    resetHaveReference();
   }
   if(lOtherHasReference)
   {
-    setHaveReference();
+    lOtherItem->setHaveReference();
+  } else {
+    lOtherItem->resetHaveReference();
   }
 
 }
