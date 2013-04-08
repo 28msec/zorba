@@ -114,8 +114,6 @@ protected:
     theTypeName.transfer(typeName);
   }
 
-  //UserTypedAtomicItem() {}
-
 public:
   size_t alloc_size() const;
   size_t dynamic_size() const;
@@ -1574,11 +1572,6 @@ public:
   {
     try
     {
-      if (other->getTypeCode() == store::XS_INTEGER)
-      {
-        return theValue == static_cast<const IntegerItemImpl*>(other)->theValue;
-      }
-
       return theValue == other->getIntegerValue();
     }
     catch (ZorbaException const&)
