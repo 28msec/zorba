@@ -26,14 +26,29 @@ namespace zorba
 namespace StaticContextConsts 
 {
 
+  enum language_kind_t
+  {
+    language_kind_unknown = 0,
+    language_kind_xquery,
+    language_kind_jsoniq
+  };
+
   enum xquery_version_t
   {
     xquery_version_unknown = 0,
     xquery_version_1_0 = 100,
-    xquery_version_3_0 = 300
+    xquery_version_3_0 = 300,
+  };
+
+  enum jsoniq_version_t
+  {
+    jsoniq_version_unknown = 0,
+    jsoniq_version_1_0 = 100,
   };
 
   std::ostream& operator<<(std::ostream& o, xquery_version_t v);
+
+  std::ostream& operator<<(std::ostream& o, jsoniq_version_t v);
 
 
   enum xpath_compatibility_t 

@@ -373,6 +373,13 @@
       </comment>
       <value>typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve</value>
     </diagnostic>
+    
+    <diagnostic code="XQTY0105">
+      <comment>
+        It is a type error if the content sequence in an element constructor contains a function item.
+      </comment>
+      <value>element constructor must not contain a function item</value>
+    </diagnostic>
 
     <diagnostic code="XQST0009">
       <comment>
@@ -807,6 +814,13 @@
       <value>$1</value>
     </diagnostic>
 
+    <diagnostic code="XQST0123">
+      <comment>
+       It is a static error if the name of a feature in require-feature is not recognized by the implementation.
+      </comment>
+      <value>$1</value>
+    </diagnostic>
+
     <diagnostic code="XPDY0002">
       <comment>
        It is a dynamic error if evaluation of an expression relies on some part
@@ -1012,21 +1026,60 @@
       <value>"$1": picture string does not satisfy format-number() function rules</value>
     </diagnostic>
 
-    <diagnostic code="XTDE1340">
+    <diagnostic code="FOFD1340">
       <comment>
-       It is a non-recoverable dynamic error if the syntax of the picture is
-       incorrect.
+        It is a non-recoverable dynamic error if the syntax of the picture is
+        incorrect.
       </comment>
-      <value>"$1": invalid picture string for date/time</value>
+      <value>"$1": invalid picture string for date/time${: 2}</value>
+      <entry key="BadComponent_3">
+        <value>'$3': invalid component specifier</value>
+      </entry>
+      <entry key="Bad2ndModifier_3">
+        <value>'$3': invalid second presentation modifier</value>
+      </entry>
+      <entry key="Bad2ndModifierHere_3">
+        <value>'$3': valid second presentation modifier invalid here</value>
+      </entry>
+      <entry key="BadWidthModifier">
+        <value>invalid width modifier</value>
+      </entry>
+      <entry key="DigitNotSameFamily_34">
+        <value>"$3": digit not from same digit family as $4</value>
+      </entry>
+      <entry key="Dup2ndModifier_3">
+        <value>"$3": duplicate second presentation modifier</value>
+      </entry>
+      <entry key="MultipleComponent_3">
+        <value>'$3': multiple component specifiers between []</value>
+      </entry>
+      <entry key="MustBeOneMandatoryDigit">
+        <value>there must be at least one mandatory-digit-sign</value>
+      </entry>
+      <entry key="NoComponent">
+        <value>component specifier expected between []</value>
+      </entry>
+      <entry key="NoAdjacentGroupSep_3">
+        <value>"$3": grouping separator must not be adjacent to others</value>
+      </entry>
+      <entry key="NoGroupSepAtStart_3">
+        <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoGroupSepAtEnd_3">
+        <value>"$3": grouping separator illegal at end of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoOptDigitAfterMandatory">
+        <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
+      </entry>
     </diagnostic>
 
-    <diagnostic code="XTDE1350">
+    <diagnostic code="FOFD1350">
       <comment>
-       It is a non-recoverable dynamic error if a component specifier within the
-       picture refers to components that are not available in the given type of
-       \c $value.
+        It is a non-recoverable dynamic error if a component specifier within
+        the picture refers to components that are not available in the given
+        type of $value.
       </comment>
-      <value>component specifier not available</value>
+      <value>"$1": component specifier not available</value>
     </diagnostic>
 
     <!--////////// XQuery Full-Text Errors /////////////////////////////////-->
@@ -1263,23 +1316,53 @@
 
     <diagnostic code="FODF1310">
       <comment>
-       Invalid \c fn:format-number() picture string.
+        Invalid decimal/integer format picture string.
       </comment>
-      <value>"$1": invalid fn:format-number() picture string$2</value>
+      <value>"$1": invalid picture string for decimal/integer${: 2}</value>
+      <entry key="BadCharacter_3">
+        <value>'$3': invalid character</value>
+      </entry>
+      <entry key="BadFormatModifier_3">
+        <value>'$3': invalid format modifier</value>
+      </entry>
+      <entry key="BadFormatModifierHere_3">
+        <value>'$3': valid format modifier invalid here</value>
+      </entry>
+      <entry key="DigitNotSameFamily_34">
+        <value>"$3": digit not from same digit family as $4</value>
+      </entry>
+      <entry key="DupFormatModifier_3">
+        <value>"$3": duplicate format modifier</value>
+      </entry>
+      <entry key="EmptyFormat">
+        <value>empty primary format</value>
+      </entry>
+      <entry key="NoAdjacentGroupSep_3">
+        <value>"$3": grouping separator must not be adjacent to others</value>
+      </entry>
+      <entry key="NoGroupSepAtStart_3">
+        <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoGroupSepAtEnd_3">
+        <value>"$3": grouping separator illegal at end of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoOptDigitAfterMandatory">
+        <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="FODT0001">
       <comment>
        Overflow/underflow in date/time operation.
       </comment>
-      <value>overflow/underflow in date/time operation</value>
+      <value>overflow/underflow in date/time operation${: 1}</value>
     </diagnostic>
 
     <diagnostic code="FODT0002">
       <comment>
        Overflow/underflow in duration operation.
       </comment>
-      <value>overflow/underflow in duration operation</value>
+      <value>overflow/underflow in duration operation${: 1}</value>
     </diagnostic>
 
     <diagnostic code="FODT0003">
@@ -1287,20 +1370,6 @@
        Invalid timezone value.
       </comment>
       <value>"$1": invalid timezone value (in seconds)</value>
-    </diagnostic>
-
-    <diagnostic code="FOFI0001">
-      <comment>
-       format-integer: Cannot cast $language to \c xs:language.
-      </comment>
-      <value>"$1": not castable to xs:language</value>
-    </diagnostic>
-
-    <diagnostic code="FOFI0002">
-      <comment>
-       format-integer: invalid parameter.
-      </comment>
-      <value>invalid argument in format-integer: $1</value>
     </diagnostic>
 
     <diagnostic code="FONS0004">
@@ -1319,53 +1388,41 @@
 
     <diagnostic code="FORG0001">
       <comment>
-       Invalid value for cast/constructor.
+        Invalid value for cast/constructor.
       </comment>
-
       <value>$1</value>
-
-      <entry key="NoCastTo_234">
-        <value>"$2": value of type $3 is not castable to type $4</value>
-      </entry>
-
-      <entry key="NoCastTo_234o">
-        <value>"$2": value is not castable to type $3${: 4}</value>
-      </entry>
-
-      <entry key="LocalNotNCName_2">
-        <value>"$2": local name in qname is not an xs:NCName</value>
-      </entry>
-
-      <entry key="PrefixNotNCName_2">
-        <value>"$2": prefix in qname is not an xs:NCName</value>
-      </entry>
-
-      <entry key="NameNotNCName_2">
-        <value>"$2": name is not an xs:NCName</value>
-      </entry>
-
-      <entry key="PrefixNotBound_2">
-        <value>"$2": prefix has no known namespace binding</value>
-      </entry>
-
-      <entry key="Base64BadChar_2">
-        <value>"$2": invalid Base64 character</value>
-      </entry>
-
-      <entry key="Base64Multiple4">
-        <value>Base64 data must be a multiple of 4 characters</value>
-      </entry>
-
-      <entry key="HexBinaryMustBeEven">
-        <value>HexBinary value must contain an even number of characters</value>
-      </entry>
-
       <entry key="BadHexDigit_2">
         <value>'$2': invalid hexedecimal digit</value>
       </entry>
-
+      <entry key="Base64BadChar_2">
+        <value>'$2': invalid Base64 character</value>
+      </entry>
+      <entry key="Base64Multiple4">
+        <value>Base64 data must be a multiple of 4 bytes</value>
+      </entry>
+      <entry key="HexBinaryMustBeEven">
+        <value>hexBinary value must contain an even number of bytes</value>
+      </entry>
+      <entry key="LocalNotNCName_2">
+        <value>"$2": local name in qname is not an xs:NCName</value>
+      </entry>
+      <entry key="NameNotNCName_2">
+        <value>"$2": name is not an xs:NCName</value>
+      </entry>
+      <entry key="NoCastTo_234">
+        <value>"$2": value of type $3 is not castable to type $4</value>
+      </entry>
+      <entry key="NoCastTo_234o">
+        <value>"$2": value is not castable to type $3${: 4}</value>
+      </entry>
       <entry key="NoTypeInCtx_2">
         <value>"$2": type no defined in current context</value>
+      </entry>
+      <entry key="PrefixNotBound_2">
+        <value>"$2": prefix has no known namespace binding</value>
+      </entry>
+      <entry key="PrefixNotNCName_2">
+        <value>"$2": prefix in qname is not an xs:NCName</value>
       </entry>
     </diagnostic>
 
@@ -1494,9 +1551,19 @@
       <value>"$1": can not decode resource retrieved</value>
     </diagnostic>
 
-    <diagnostic code="FOCZ0001"> <comment>
+    <diagnostic code="FOFL0001">
+      <comment>
+       This error is raised if the fn:function-lookup returns a context-dependent function and the context-dependent function is then called.
+      </comment>
+
+      <value>dynamic call on context-dependent function item</value>
+    </diagnostic>
+
+    <diagnostic code="FOCZ0001">
+      <comment>
        Invalid content passed to \c x:canonicalize().
       </comment>
+
       <value>invalid content passed to $1: $2</value>
     </diagnostic>
 
@@ -3095,7 +3162,7 @@
     <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
 
-      <value>object or array selection needs exactly one parameter</value>
+      <value>object or array selection needs zero or one parameter</value>
     </diagnostic>
 
     <diagnostic code="JNUP0019" if="defined(ZORBA_WITH_JSON)">
@@ -3118,6 +3185,11 @@
     <diagnostic code="JNTY0020" if="defined(ZORBA_WITH_JSON)">
       <comment>parser error for invalid option type</comment>
       <value>$1: invalid option type for option $2 (expected $3)</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0021" if="defined(ZORBA_WITH_JSON)">
+      <comment>array or object selector on heterogeneous sequence</comment>
+      <value>$1: invalid json-item() type (expected $2)</value>
     </diagnostic>
 
     <diagnostic code="JNDY0021" if="defined(ZORBA_WITH_JSON)">
@@ -3572,6 +3644,10 @@
 
     <entry key="NoCompareWithType_4">
       <value>can not compare for equality to type "$4"</value>
+    </entry>
+
+    <entry key="NoStrictCompareWithType_4">
+      <value>can not compare for strict inequality to type "$4"</value>
     </entry>
 
     <entry key="NoDriveSpecification">
@@ -4169,38 +4245,6 @@
 
     <entry key="error">
       <value>error</value>
-    </entry>
-
-    <entry key="format_integer_bad_picture_format">
-      <value>bad $picture format: $2</value>
-    </entry>
-
-    <entry key="format_integer_duplicated_optional_format_modifier">
-      <value>duplicated optional format modifier '$2'</value>
-    </entry>
-
-    <entry key="format_integer_optional_format_modifier_not_closed">
-      <value>bad optional format modifier ($2), cannot find closing ')' </value>
-    </entry>
-
-    <entry key="format_integer_picture_empty">
-      <value>$picture parameter should not be empty</value>
-    </entry>
-
-    <entry key="format_integer_unknown_optional_format_modifier_character">
-      <value>unknown optional format modifier character '$2'</value>
-    </entry>
-
-    <entry key="format_integer_value_1_10">
-      <value>$value ($2) should be between 1 and 10 for this formatting picture</value>
-    </entry>
-
-    <entry key="format_integer_value_1_20">
-      <value>$value ($2) should be between 1 and 20 for this formatting picture</value>
-    </entry>
-
-    <entry key="format_integer_value_gt_3000">
-      <value>$value ($2) should be less than 3000 for Roman representation</value>
     </entry>
 
     <entry key="full-text dynamic error">
@@ -4968,6 +5012,10 @@
 
     <entry key="libxml_ERR_541"> <!-- XML_DTD_DUP_TOKEN -->
       <value>"$5": duplicate attribute enumeration value token</value>
+    </entry>
+
+    <entry key="UnrecognizedXQueryOption">
+      <value>"$2": unrecognized XQuery namespace option</value>
     </entry>
 
   </subvalues>

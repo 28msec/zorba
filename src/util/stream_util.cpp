@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+// local
+#include "ascii_util.h"
 #include "stream_util.h"
 
 using namespace std;
@@ -40,7 +42,7 @@ int get_stream_uri_index() {
   return index;
 }
 
-void delete_stream_uri_callback( ios_base::event e, ::ios_base &ios,
+void delete_stream_uri_callback( ios_base::event e, ios_base &ios,
                                  int index ) {
   //
   // See: "Standard C++ IOStreams and Locales: Advanced Programmer's Guide and
@@ -49,6 +51,54 @@ void delete_stream_uri_callback( ios_base::event e, ::ios_base &ios,
   //
   if ( e == ios_base::erase_event )
     delete[] static_cast<char const*>( ios.pword( index ) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+streamsize read_without_whitespace( istream &is, char *buf, streamsize n ) {
+  char const *const buf_orig = buf;
+  char const *const buf_end = buf + n;
+
+  while ( buf < buf_end ) {
+    is.read( buf, n );
+    if ( streamsize read = is.gcount() ) {
+      read = ascii::remove_whitespace( buf, read );
+      buf += read, n -= read;
+    } else
+      break;
+  }
+  return buf - buf_orig;
+}
+
+ostream& roman( ostream &o, unsigned n ) {
+  //
+  // Based on http://rosettacode.org/wiki/Roman_numerals/Encode#C.2B.2B
+  //
+  struct roman_data {
+    unsigned value;
+    char const *numeral[2];
+  };
+  static roman_data const data[] = {
+    { 1000, {  "m",  "M" } },
+    {  900, { "cm", "CM" } },
+    {  500, {  "d",  "D" } },
+    {  400, { "cd", "CD" } },
+    {  100, {  "c",  "C" } },
+    {   90, { "xc", "XC" } },
+    {   50, {  "l",  "L" } },
+    {   40, { "xl", "XL" } },
+    {   10, {  "x",  "X" } },
+    {    9, { "ix", "IX" } },
+    {    5, {  "v",  "V" } },
+    {    4, { "iv", "IV" } },
+    {    1, {  "i",  "I" } },
+    {    0, {    0,    0 } }
+  };
+  bool const uc = !!(o.flags() & ios::uppercase);
+  for ( roman_data const *r = data; r->value; ++r )
+    for ( ; n >= r->value; n -= r->value )
+      o << r->numeral[ uc ];
+  return o;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

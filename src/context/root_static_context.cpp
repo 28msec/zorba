@@ -131,6 +131,7 @@ void root_static_context::init()
   theImplementationBaseUri = ZORBA_NS;
   compute_base_uri();
 
+  set_language_kind(StaticContextConsts::language_kind_xquery);
   set_xquery_version(StaticContextConsts::xquery_version_3_0);
   set_xpath_compatibility(StaticContextConsts::xpath2_0);
 
@@ -268,7 +269,6 @@ void root_static_context::init()
   append_env_var ("ZORBA_LIB_PATH", lRootLibPath);
 
 #endif
-
 } 
 
 

@@ -65885,6 +65885,22 @@ bool is_category( code_point cp, category c ) {
   return false;
 }
 
+bool is_grouping_separator( code_point cp ) {
+  //
+  // XQuery 3.0 F&O: 4.6.1: a grouping-separator-sign is a non-alphanumeric
+  // character, that is a character whose Unicode category is other than Nd,
+  // Nl, No, Lu, Ll, Lt, Lm or Lo.
+  //
+  return !( is_category( cp, Nd )
+         || is_category( cp, Nl )
+         || is_category( cp, No )
+         || is_category( cp, Lu )
+         || is_category( cp, Ll )
+         || is_category( cp, Lt )
+         || is_category( cp, Lm )
+         || is_category( cp, Lo ) );
+}
+
 bool is_Nd( code_point cp, code_point *zero ) {
   for ( code_point const *z = Nd_zeros; z < Nd_zeros_end; ++z ) {
     if ( cp <= *z + 9 ) {

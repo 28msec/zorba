@@ -65,6 +65,7 @@ public:
   }
 
   bool isNull () const { return p == NULL; }
+  bool operator!() const { return !p; }
 
   void setNull() { p = NULL; }
 

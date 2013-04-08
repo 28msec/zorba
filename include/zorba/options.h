@@ -65,12 +65,6 @@ typedef struct Zorba_CompilerHints
    */
   bool for_serialization_only;
 
-  /**
-   * \brief By default, the flag is set to false. If set to true, the JSONiq
-   * parser will be used.
-   */
-  bool jsoniq_mode;
-
 #ifdef __cplusplus
   /** \brief Default constructor for CompilerHints which assigns default values to all hints (C++ only).
    *

@@ -295,8 +295,6 @@ declare %private %ann:sequential function eval:assert(
   {
     variable $queryText := concat(
       "xquery version '3.0';",
-      "declare namespace o = 'http://www.zorba-xquery.com/options/features';",
-      "declare option o:enable 'hof';",
       "declare variable $result external; ",
       xs:string($expResult));
     variable $queryKey := xqxq:prepare-main-module($queryText),
@@ -342,8 +340,6 @@ declare %private %ann:sequential function eval:assert-deep-eq(
   {
     variable $queryText := concat(
       "xquery version '3.0';",
-      "declare namespace o = 'http://www.zorba-xquery.com/options/features';",
-      "declare option o:enable 'hof';",
       "declare variable $x external;",
       "let $y := (",string(data($expResult)),") return ",
       "every $i in 1 to max((count($x),count($y))) satisfies deep-equal($x[$i],$y[$i])");
@@ -400,7 +396,11 @@ declare %private %ann:sequential function eval:assert-eq(
       "$x eq ",
       if (starts-with(data($expResult), $type))
       then data($expResult)
-      else concat($type,"(", data($expResult), ")"));
+      else concat($type,"(",
+                  if(ends-with($expResult,'INF') or ends-with($expResult,'NaN'))
+                  then concat("'",$expResult,"'")
+                  else $expResult,
+                  ")"));
     variable  $queryKey := xqxq:prepare-main-module($queryText);
    
     xqxq:bind-variable($queryKey,
@@ -486,13 +486,25 @@ declare %private function eval:assert-xml(
 )
 {
   try {
-    let $actualResult   := zorba-xml:canonicalize(concat('<root>', fn:serialize($result, $util:serParamXml), '</root>'))
-    let $expectedResult := zorba-xml:canonicalize(concat('<root>', util:get-value($expResult, $baseURI, "assert-xml"), '</root>'))
-    
+    let $actualResult   := concat('<root>', fn:serialize($result, $util:serParamXml), '</root>')
+    let $expectedResult := concat('<root>', util:get-value($expResult, $baseURI, "assert-xml"), '</root>')
     return
-      if ($actualResult eq $expectedResult)
-      then ()
-      else concat("'assert-xml' returned: result &#xA;'", $actualResult, "'&#xA; is different from the expected result &#xA;'", $expectedResult,"'&#xA;")
+    (: first try to see if deep-equal is true:)
+    if(deep-equal(parse-xml($actualResult), parse-xml($expectedResult)))
+    then ()
+    else (: second try to canonicalize :)
+    {
+      let $canActualResult   := zorba-xml:canonicalize($actualResult)
+      let $canExpectedResult := zorba-xml:canonicalize($expectedResult)
+      return
+        if(empty($expResult[@ignore-prefixes='true']) and
+           ($canActualResult eq $canExpectedResult))
+        then ()
+        else if(exists($expResult[@ignore-prefixes='true']) and
+              fn:parse-xml($canActualResult) eq fn:parse-xml($canExpectedResult)) (: the namespace prefixes are ignored in this comparison :)
+        then ()
+        else concat("'assert-xml' returned: result &#xA;'", $canActualResult, "'&#xA; is different from the expected result &#xA;'", $canExpectedResult,"'&#xA;")
+    }
   } catch * {
     concat("'assert-xml' returned: fail with error ",
             $err:code, " : ", $err:description)

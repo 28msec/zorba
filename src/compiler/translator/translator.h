@@ -25,6 +25,21 @@ namespace zorba
 
 expr* translate (const parsenode& ast, CompilerCB* ccb);
 
+
+// Publicly avialable translation and normalization services, used currently
+// by the higher order functions at runtime.
+class Translator 
+{
+public:
+  // Given a QName and the arity of a function, it will generate a function 
+  // item expression that can be used in dynamic function calls to invoke 
+  // the requested function. If the errIfContextDependent is set to true,
+  // then the returned function item will invoke error(FOFL0001) if the 
+  // requested function is context dependent.
+  static expr* translate_literal_function(store::Item_t& qname, unsigned int arity, CompilerCB* ccb, const QueryLoc& loc, bool errIfContextDependent);
+  
+};
+
 }
 #endif
 

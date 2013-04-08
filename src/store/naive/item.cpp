@@ -32,7 +32,7 @@
 #  include "json_items.h"
 #endif
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 
 namespace zorba
@@ -847,7 +847,7 @@ const xs_yearMonthDuration& Item::getYearMonthDurationValue() const
 /**
  * Accessor for xs:hexBinary
  */
-xs_hexBinary Item::getHexBinaryValue() const
+char const* Item::getHexBinaryValue(size_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
@@ -1083,6 +1083,12 @@ const zstring& Item::getTarget() const
 zstring Item::show() const
 {
   return  std::string ( typeid ( *this ).name() ) + ": 'show' not implemented!";
+}
+
+
+zstring Item::toString() const
+{
+  return show();
 }
 
 
@@ -1395,8 +1401,16 @@ Item::getObjectValue(const store::Item_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue())
   );
+}
+
+
+xs_integer
+Item::getNumObjectPairs() const
+{
+  throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
 }
 
 #endif // ZORBA_WITH_JSON

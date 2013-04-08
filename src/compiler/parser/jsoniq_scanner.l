@@ -99,7 +99,7 @@ typedef zorba::jsoniq_parser::token_type token_type;
   TRY_TOKEN_INTERNAL(ttype, put (yytext, yyleng), yytext, unrecognizedToken)
 
 #define TRY_STRING_LITERAL(ttype, yytext, yyleng) \
-  TRY_TOKEN_INTERNAL(ttype, put_stringlit(yytext, yyleng), yytext, invalidCharRef)
+  TRY_TOKEN_INTERNAL(ttype, put_json_stringliteral(yytext, yyleng), yytext, invalidCharRef)
 
 #define TRY_URI_LITERAL(ttype, yytext, yyleng ) \
   TRY_TOKEN_INTERNAL(ttype, put_uri(yytext, yyleng), yytext, unrecognizedToken)
@@ -299,11 +299,16 @@ CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+)";"
 PredefinedEntityRef   "&"(lt|gt|amp|quot|apos|nbsp)";"
 Ref                   {CharRef}|{PredefinedEntityRef}
 
+JsoniqCharRef         \\"u"([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])
+PredefinedCharRef     \\(\\|"/"|\"|"'"|"b"|"f"|"n"|"r"|"t")
+
   /*_____________________________________________________________________
    |
    |  EQName definition
    |______________________________________________________________________*/
-BracedURILiteral      "Q{"({PredefinedEntityRef}|{CharRef}|[^&{}])*"}"
+
+  /* BracedURILiteral      "Q{"({PredefinedEntityRef}|{CharRef}|[^&{}])*"}" */
+BracedURILiteral      "Q{"({PredefinedCharRef}|{JsoniqCharRef}|[^\{}])*"}"
 EQName                {BracedURILiteral}{NCName}
 
   /*_____________________________________________________________________
@@ -327,11 +332,14 @@ IntegerLiteral        [0-9]+
    |______________________________________________________________________*/
 NonQuotAnd                      [^""&]
 NonAposAnd                      [^''&]
-StringLiteral                   ({Quote}({EscapeQuot}|{Ref}|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|{Ref}|{NonAposAnd})*{Apos})
+  /* StringLiteral                   ({Quote}({EscapeQuot}|{Ref}|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|{Ref}|{NonAposAnd})*{Apos}) */
+StringLiteral                   (\"({PredefinedCharRef}|{JsoniqCharRef}|[^\"\\])*\")
+  /* |("'"({PredefinedEntityRef}|{JsoniqCharRef}|[^'\\])*"'") */
 
   /* Invalid strings */
-InvalidRefStringLiteral         ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|"&"|{NonAposAnd})*{Apos})
-UnterminatedStringLiteral       ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*)|({Apos}({EscapeApos}|"&"|{NonAposAnd})*)
+  /* InvalidRefStringLiteral         ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|"&"|{NonAposAnd})*{Apos}) */
+  /* UnterminatedStringLiteral       ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*)|({Apos}({EscapeApos}|"&"|{NonAposAnd})*) */
+UnterminatedStringLiteral       (\"({PredefinedCharRef}|{JsoniqCharRef}|[^\"\\])*)|("'"({PredefinedEntityRef}|{JsoniqCharRef}|[^'\\])*)
 
 
   /*_____________________________________________________________________
@@ -449,6 +457,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "." { return token::DOT; }
 "?" { return token::HOOK; }
 "$" { return token::DOLLAR; }
+"$$" { return token::DOLLAR_DOLLAR; }
 "#" { return token::HASH; }
 ":" { return token::COLON; }
 "::" { return token::DOUBLE_COLON; }
@@ -513,7 +522,6 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "schema" { return token::SCHEMA; }
 "copy-namespaces" { return token::COPY_NAMESPACES; }
 "for" { return token::FOR; }
-"from" { return token::FOR; }
 "let" { return token::LET; }
 "allowing" { return token::ALLOWING; }
 "sliding" { return token::SLIDING; }
@@ -531,6 +539,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "boundary-space" { return token::BOUNDARY_SPACE; }
 "ordering" { return token::ORDERING; }
 "xquery" { return token::XQUERY; }
+"jsoniq" { return token::JSONIQ; }
 "version" { return token::VERSION; }
 "option" { return token::OPTION; }
 "at" { return token::AT; }
@@ -765,6 +774,9 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "descending" { return token::DESCENDING; }
 "encoding" { return token::ENCODING; }
 
+"null" { return token::NULL_TOKEN; }
+"true" { return token::TRUE_TOKEN; }
+"false" { return token::FALSE_TOKEN; }
 
   /*______________________________________________________________________
    |
@@ -822,7 +834,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 {StringLiteral}               { if (checkXmlRefs(&yylval->err, yytext, yyleng, this, yylloc)) return token::UNRECOGNIZED; TRY_STRING_LITERAL(STRING_LITERAL, yytext, yyleng); }
 
   /* Invalid string literals */
-{InvalidRefStringLiteral}     { yylval->err = getDriver()->invalidCharRef(yytext, *yylloc); return token::UNRECOGNIZED; }
+  /* {InvalidRefStringLiteral}     { yylval->err = getDriver()->invalidCharRef(yytext, *yylloc); return token::UNRECOGNIZED; } */
 {UnterminatedStringLiteral}   { yylval->err = getDriver()->parserErr(std::string("syntax error, unterminated string literal \"") + yytext + "\"", *yylloc); return token::UNRECOGNIZED; }
 
   /*______________________________________________________________________
@@ -1182,7 +1194,7 @@ std::string start_jsoniq_state(int state)
     case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
     case MODE_START_TAG: return "MODE_START_TAG";
     case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
-    default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_jsoniq_state() in xquery_scanner.l \n";
+    default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_jsoniq_state() in jsoniq_scanner.l \n";
   }
 }
 

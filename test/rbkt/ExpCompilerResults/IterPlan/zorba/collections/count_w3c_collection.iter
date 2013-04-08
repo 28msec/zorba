@@ -5,13 +5,15 @@ Iterator tree for main query:
   </CtxVarDeclareIterator>
   <SequentialIterator>
     <ApplyIterator>
-      <UDFunctionCallIterator>
+      <UDFunctionCallIterator function="ddl:create">
         <CtxVarIterator varid="4" varname="coll" varkind="global"/>
       </UDFunctionCallIterator>
     </ApplyIterator>
-    <CountCollectionIterator>
-      <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-    </CountCollectionIterator>
+    <FnCountIterator>
+      <FnCollectionIterator>
+        <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+      </FnCollectionIterator>
+    </FnCountIterator>
   </SequentialIterator>
 </SequentialIterator>
 

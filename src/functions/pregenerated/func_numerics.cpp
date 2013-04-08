@@ -218,7 +218,7 @@ void populate_context_numerics(static_context* sctx)
         (createQName("http://www.w3.org/2005/xpath-functions","","format-number"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_FORMAT_NUMBER_3);
 
@@ -245,7 +245,7 @@ void populate_context_numerics(static_context* sctx)
         (createQName("http://www.w3.org/2005/xpath-functions","","format-integer"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_FORMAT_INTEGER_3);
 

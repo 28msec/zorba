@@ -251,38 +251,36 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
 
 declare function local:add-methods ($iter) as xs:string?
 {
-  fn:concat("public:", $gen:newline,
-    fn:string-join(
+  fn:concat(
+    "public:",
+    $gen:newline,
+    fn:string-join
+    (
       for $method in $iter/zorba:method
-      return fn:concat(
-        $gen:indent,
-        if ($method/@static eq "true")
-        then
-         "static "
-        else
-          "",
-        $method/@return,
-        " ",
-        $method/@name,
-        "(",
-        local:get-method-arguments($method),
-        ")",
-        if ($method/@const eq "true") then
-          " const;"
-        else ";"), $gen:newline),
-      $gen:newline)
+      return fn:concat($gen:indent,
+                       if ($method/@static eq "true") then "static " else "",
+                       $method/@return,
+                       " ",
+                       $method/@name,
+                       "(",
+                       local:get-method-arguments($method),
+                       ")",
+                       if ($method/@const eq "true") then " const;" else ";"),
+      $gen:newline
+    ),
+    $gen:newline
+  )
 };
 
 
 declare function local:get-method-arguments($method) as xs:string?
 {
-  fn:string-join(
+  fn:string-join
+  (
     for $param in $method/zorba:param
-    return fn:concat(
-      $param/@type,
-      " ",
-      $param/@name),
-    ", ")
+    return fn:concat($param/@type, " ", $param/@name),
+    ", "
+  )
 };
 
 

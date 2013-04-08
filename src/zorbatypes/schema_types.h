@@ -52,7 +52,6 @@ typedef UInteger  xs_nonNegativeInteger;  // i.e., "unsigned"
 typedef Integer   xs_nonPositiveInteger;  // this isn't quite right either
 typedef UInteger  xs_positiveInteger;
 typedef DateTime  xs_time;
-typedef UInteger  xs_uinteger;            // old, deprecated name
 typedef Duration  xs_yearMonthDuration;
 
 ///////////////////////////////////////////////////////////////////////////////
