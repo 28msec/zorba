@@ -783,7 +783,7 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
       );
 
     consumeNext( item, theChildren[1].getp(), planState );
-    pic.format = item->getStringValue();
+    item->getStringValue2( pic.format );
 
     if ( theChildren.size() >= 3 )
       consumeNext( format_name_item, theChildren[2].getp(), planState );
