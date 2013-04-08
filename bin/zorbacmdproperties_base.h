@@ -94,6 +94,7 @@ protected:
   bool theSerializePlan;
   bool theSavePlan;
   bool theLoadPlan;
+  bool theFparm;
 
   void initialize () 
   {
@@ -106,7 +107,7 @@ protected:
     theByteOrderMark = false;
     theOmitXmlDeclaration = false;
     theMultiple = 1;
-    theAsFiles = false;
+    theAsFiles = true;
     theOptimizationLevel = "O1";
     theLibModule = false;
     theParseOnly = false;
@@ -121,6 +122,7 @@ protected:
     theSerializePlan = false;
     theSavePlan = false;
     theLoadPlan = false;
+    theFparm = false;
   }
 
 public:
@@ -279,6 +281,8 @@ public:
       else if (strcmp (*argv, "--query") == 0 || strncmp (*argv, "-q", 2) == 0) 
       {
         int d = 2;
+        if(theFparm == false)
+          theAsFiles = false;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL)
         {
@@ -288,6 +292,7 @@ public:
       }
       else if (strcmp (*argv, "--as-files") == 0 || strncmp (*argv, "-f", 2) == 0) 
       {
+        theFparm = true;
         theAsFiles = true;
       }
       else if (strcmp (*argv, "--external-variable") == 0 || strncmp (*argv, "-e", 2) == 0) 
@@ -453,8 +458,8 @@ public:
       }
       else
       {
+        init_val(*argv, theQueriesOrFiles, 0);
         copy_args (argv);
-        break;
       }
     }
 
@@ -481,7 +486,7 @@ public:
         "--ordering-mode\nSet the ordering mode ('ordered' or 'unordered') in the static context.\n\n"
         "--multiple, -m\nExecute the given queries multiple times.\n\n"
         "--query, -q\nQuery test or file URI (file://...)\n\n"
-        "--as-files, -f\nTreat all -q arguments as file paths instead of URIs or inline queries.\n\n"
+        "--as-files, -f\nTreat all -q arguments as file paths instead of URIs or inline queries. This option is deprecated and will be defaulted to true in the future, so any entry in the command line is going to be treated as files.\n\n"
         "--external-variable, -e\nProvide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
         "--context-item\nSet the context item to the XML document in a given file.\n\n"
         "--optimization-level\nOptimization level for the query compiler (O0, O1 or O2 - default: O1)\n\n"
