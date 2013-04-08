@@ -1008,6 +1008,7 @@ self:
     case store::StoreConsts::textNode:
     case store::StoreConsts::piNode:
     case store::StoreConsts::commentNode:
+    case store::StoreConsts::namespaceNode:
       return create_axis_step_type(tm, inNodeKind, testNodeName, inQuant, false);
 
     case store::StoreConsts::anyNode:
@@ -1023,6 +1024,7 @@ self:
       case store::StoreConsts::textNode:
       case store::StoreConsts::piNode:
       case store::StoreConsts::commentNode:
+      case store::StoreConsts::namespaceNode:
         return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, false);
 
       default:
