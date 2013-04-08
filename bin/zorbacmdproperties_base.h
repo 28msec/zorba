@@ -521,7 +521,7 @@ public:
         "--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
         "--serialize-plan, -s\nSerialize and then load the query execution plan.\n\n"
         "--compile-plan,\nDo not execute the query; just compile it and save the execution plan in the file specified with the -o option.\n\n"
-        "--execute-plan\nDo not compile the query; instead load the execution plan from the file specified by the -f -q options, and execute the loaded plan.\n\n"
+        "--execute-plan\nDo not compile the query; instead load the execution plan from the file specified by the -f -q options (or by any file specified without any other argument), and execute the loaded plan.\n\n"
         "--disable-http-resolution\nDo not use HTTP to resolve URIs\n\n"
         ;
   }
