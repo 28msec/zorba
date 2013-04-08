@@ -759,3 +759,23 @@ declare function env:check-dependencies(
       else ()
   }
 };
+
+(:~
+ : Checks if a test case should be run. Possible reasons for not running a test
+ : according to http://dev.w3.org/2011/QT3-test-suite/guide/running.html:
+ : - the environment requires the setting of collections
+ : - the environment requires the setting of collation URIs
+ :
+ :
+ :)
+declare function env:check-prerequisites(
+  $case as element(fots:test-case),
+  $env  as element(fots:environment)?
+) as xs:string?
+{
+  if(exists($case/fots:environment/fots:collection) or exists($env/fots:collection))
+  then 'Default collection is always an empty sequence.'
+  else if (exists($case/fots:environment/fots:collation) or exists($env/fots:collation))
+  then 'Can not define any other collations (other than the Unicode Codepoint Collation).'
+  else ()
+};

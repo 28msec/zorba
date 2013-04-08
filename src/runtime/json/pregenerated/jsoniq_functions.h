@@ -530,22 +530,22 @@ public:
   void reset(PlanState&);
 };
 
-class JSONItemAccessorIterator : public BinaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>
+class JSONItemAccessorIterator : public NaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONItemAccessorIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONItemAccessorIterator,
-    BinaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>);
+    NaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONItemAccessorIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    PlanIter_t& child1, PlanIter_t& child2)
+    std::vector<PlanIter_t>& children)
     : 
-    BinaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>(sctx, loc, child1, child2)
+    NaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>(sctx, loc, children)
   {}
 
   virtual ~JSONItemAccessorIterator();
