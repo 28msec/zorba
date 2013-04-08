@@ -991,6 +991,7 @@ self:
     }
 
     if (testNodeName != NULL &&
+        nodeTest->getWildKind() == match_no_wild &&
         inNodeName != NULL &&
         !inNodeName->equals(testNodeName))
     {
