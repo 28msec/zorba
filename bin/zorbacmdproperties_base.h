@@ -95,6 +95,8 @@ protected:
   bool theSavePlan;
   bool theLoadPlan;
   bool theFparm;
+  bool theQBeforeF;
+  bool theUnknownOption;
 
   void initialize () 
   {
@@ -123,6 +125,8 @@ protected:
     theSavePlan = false;
     theLoadPlan = false;
     theFparm = false;
+    theQBeforeF = false;
+    theUnknownOption = false;
   }
 
 public:
@@ -169,6 +173,8 @@ public:
   const bool& serializePlan () const { return theSerializePlan; }
   const bool& loadPlan () const { return theLoadPlan; }
   const bool& savePlan () const { return theSavePlan; }
+  const bool& qBeforeF () const { return theQBeforeF; }
+  const bool& unknownOption() const { return theUnknownOption; }
 
   std::string load_argv (int argc, const char **argv) 
   {
@@ -283,6 +289,11 @@ public:
         int d = 2;
         if(theFparm == false)
           theAsFiles = false;
+        if(!strncmp(*(argv+1), "-f", 2))
+        {
+          theQBeforeF = true; // is it "-q -f <filename>" perhaps?
+          break;           // stop functionality here
+        }
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL)
         {
@@ -454,7 +465,8 @@ public:
       }
       else if ((*argv) [0] == '-')
       {
-        result = "unknown command line option "; result += *argv; break; 
+        result = "unknown command line option "; result += *argv; 
+        theUnknownOption = true; break; 
       }
       else
       {
