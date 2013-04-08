@@ -263,13 +263,13 @@ bool GenericArithIterator<Operation>::compute(
     else if (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE ))
     {
       return Operation::template
-             compute<store::XS_DATETIME,store::XS_YM_DURATION>
+             compute<store::XS_DATETIME,store::XS_DURATION>
             (result, dctx, tm, &aLoc, n0, n1);
     }
     else if (TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE ))
     {
       return Operation::template
-             compute<store::XS_DATETIME,store::XS_DT_DURATION>
+             compute<store::XS_DATETIME,store::XS_DURATION>
             (result, dctx, tm, &aLoc, n0, n1);
     }
   }
@@ -284,13 +284,13 @@ bool GenericArithIterator<Operation>::compute(
     else if (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE))
     {
       return Operation::template
-             compute<store::XS_DATE,store::XS_YM_DURATION>
+             compute<store::XS_DATE,store::XS_DURATION>
              (result, dctx, tm, &aLoc, n0, n1);
     }
     else if (TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE))
     {
       return Operation::template
-             compute<store::XS_DATE,store::XS_DT_DURATION>
+             compute<store::XS_DATE,store::XS_DURATION>
              (result, dctx, tm, &aLoc, n0, n1);
     }
   }
@@ -305,7 +305,7 @@ bool GenericArithIterator<Operation>::compute(
     else if (TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE))
     {
       return Operation::template 
-             compute<store::XS_TIME,store::XS_DT_DURATION>
+             compute<store::XS_TIME,store::XS_DURATION>
              (result, dctx, tm, &aLoc, n0, n1);
     }
   }
