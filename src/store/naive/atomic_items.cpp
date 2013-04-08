@@ -16,6 +16,7 @@
 #include "stdafx.h"
 #include "atomic_items.h"
 
+#include <algorithm>
 #include <limits.h>
 
 #include <zorba/internal/unique_ptr.h>
@@ -44,6 +45,7 @@
 #include "tree_id.h"
 
 #include "util/ascii_util.h"
+#include "util/mem_sizeof.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
 
@@ -395,6 +397,18 @@ store::Item* UserTypedAtomicItem::getBaseItem() const
 }
 
 
+size_t UserTypedAtomicItem::alloc_size() const
+{
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theBaseItem )
+        + ztd::alloc_sizeof( theTypeName );
+}
+
+size_t UserTypedAtomicItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 /*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
@@ -585,6 +599,17 @@ uint32_t UntypedAtomicItem::hash(long timezone, const XQPCollator* aCollation) c
 }
 
 
+size_t UntypedAtomicItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+size_t UntypedAtomicItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 bool UntypedAtomicItem::equals(
     const store::Item* other,
     long timezone,
@@ -670,6 +695,13 @@ void QNameItem::initializeAsQNameNotInPool(
   initializeAsUnnormalizedQName(lNormalized, aPrefix);
 
   theIsInPool = false;
+  
+#ifndef NDEBUG
+  debug_holder = theLocal.c_str();
+  if (!thePrefix.empty())
+    debug_holder = thePrefix + ":" + debug_holder;
+  debug_str_ = debug_holder.c_str();
+#endif  
 }
 
 
@@ -713,6 +745,20 @@ uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   const void* tmp = theNormalizedQName;
   return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
+}
+
+
+size_t QNameItem::alloc_size() const
+{
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theNamespace )
+        + ztd::alloc_sizeof( thePrefix )
+        + ztd::alloc_sizeof( theLocal );
+}
+
+size_t QNameItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -849,6 +895,18 @@ bool NotationItem::equals(
 }
 
 
+size_t NotationItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theQName );
+}
+
+
+size_t NotationItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 store::Item* NotationItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NOTATION];
@@ -899,6 +957,18 @@ store::Item* AnyUriItem::getType() const
 uint32_t AnyUriItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   return hashfun::h32(theValue.data(), (uint32_t)theValue.size());
+}
+
+
+size_t AnyUriItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t AnyUriItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -1232,6 +1302,7 @@ StructuralAnyUriItem::StructuralAnyUriItem(store::SchemaTypeCode t, zstring& val
     throw ZORBA_EXCEPTION(zerr::ZAPI0028_INVALID_NODE_URI, ERROR_PARAMS(theEncodedValue));
   }
 }
+
 
 store::Item* StructuralAnyUriItem::getType() const
 {
@@ -1817,10 +1888,33 @@ bool StructuralAnyUriItem::inSameCollection(const store::Item_t& aOther) const
   }
 }
 
+size_t StructuralAnyUriItem::alloc_size() const
+{
+  return  AtomicItem::alloc_size()
+        + ztd::alloc_sizeof( theOrdPath )
+        + ztd::alloc_sizeof( theEncodedValue );
+}
+
+size_t StructuralAnyUriItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 
 /*******************************************************************************
   class StringItem
 ********************************************************************************/
+
+size_t StringItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+size_t StringItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 store::Item* StringItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_STRING];
@@ -1928,6 +2022,18 @@ StreamableStringItem::StreamableStringItem(
   // We copied the dependent item's stream and seekable flag in the initializer
   // above, but did NOT copy the StreamReleaser. The dependent item maintains
   // memory ownership of the stream in this way.
+}
+
+
+size_t StreamableStringItem::alloc_size() const
+{
+  return ztd::alloc_sizeof( theStreamableDependent );
+}
+
+
+size_t StreamableStringItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 
@@ -2565,6 +2671,18 @@ uint32_t FloatItem::hash(long timezone, const XQPCollator* aCollation) const
   class DecimalItem
 ********************************************************************************/
 
+size_t DecimalItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t DecimalItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 store::Item* DecimalItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_DECIMAL];
@@ -2613,6 +2731,19 @@ zstring DecimalItem::show() const
 /*******************************************************************************
   class IntegerItemImpl
 ********************************************************************************/
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t IntegerItemImpl::alloc_size() const
+{
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
+size_t IntegerItemImpl::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 
 long IntegerItemImpl::compare( Item const *other, long,
                                const XQPCollator* ) const {
@@ -2726,6 +2857,19 @@ zstring IntegerItemImpl::show() const
 /*******************************************************************************
   class NonPositiveIntegerItem
 ********************************************************************************/
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t NonPositiveIntegerItem::alloc_size() const
+{
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
+size_t NonPositiveIntegerItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 long NonPositiveIntegerItem::compare( Item const *other, long,
                                       const XQPCollator* ) const {
   try
@@ -2839,6 +2983,19 @@ zstring NegativeIntegerItem::show() const
 /*******************************************************************************
   class NonNegativeIntegerItem
 ********************************************************************************/
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+size_t NonNegativeIntegerItem::alloc_size() const
+{
+  return IntegerItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
+size_t NonNegativeIntegerItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
 long NonNegativeIntegerItem::compare( Item const *other, long,
                                       const XQPCollator* ) const {
   try
@@ -3505,13 +3662,23 @@ zstring BooleanItem::show() const
 /*******************************************************************************
   class Base64BinaryItem
 ********************************************************************************/
-bool
-Base64BinaryItem::equals(
-      const store::Item* other,
-      long timezone,
-      const XQPCollator* aCollation) const
+
+size_t Base64BinaryItem::alloc_size() const
 {
-  if (isEncoded() == other->isEncoded())
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t Base64BinaryItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
+bool Base64BinaryItem::equals( store::Item const *other, long timezone,
+                               XQPCollator const *aCollation ) const
+{
+  if ( isEncoded() == other->isEncoded() )
   {
     size_t this_size, other_size;
     const char* this_data = getBase64BinaryValue(this_size);
@@ -3532,12 +3699,11 @@ Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
   // always need to hash on the string-value because otherwise
   // a base64 item that is encoded would have a different hash-value
   // as a base64 item that is decoded but represents the same binary content
-  return utf8::hash(getStringValue(), aCollation);
+  return utf8::hash( getStringValue(), aCollation );
 }
 
 
-const char*
-Base64BinaryItem::getBase64BinaryValue(size_t& size) const
+char const* Base64BinaryItem::getBase64BinaryValue( size_t &size ) const
 {
   size = theValue.size();
   return size > 0 ? &theValue[0] : "";
@@ -3568,13 +3734,9 @@ void Base64BinaryItem::getStringValue2(zstring& val) const
 void Base64BinaryItem::appendStringValue(zstring& buf) const
 {
   if (theValue.empty())
-  {
     return;
-  }
   if (theIsEncoded)
-  {
     buf.insert(buf.size(), &theValue[0], theValue.size());
-  }
   else
   {
     std::vector<char> encoded;
@@ -3761,6 +3923,56 @@ void StreamableBase64BinaryItem::materialize() const
 /*******************************************************************************
   class HexBinaryItem
 ********************************************************************************/
+
+size_t HexBinaryItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theValue );
+}
+
+
+size_t HexBinaryItem::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
+HexBinaryItem::HexBinaryItem( store::SchemaTypeCode t, char const *data,
+                              size_t size, bool encoded ) :
+  AtomicItem(t),
+  theIsEncoded(encoded)
+{
+  theValue.reserve( size );
+  theValue.insert( theValue.begin(), data, data + size );
+  if ( theIsEncoded )
+    std::transform(
+      theValue.begin(), theValue.end(),
+      theValue.begin(), static_cast<char (*)(char)>( ascii::to_upper )
+    );
+}
+
+bool HexBinaryItem::equals( store::Item const *other, long timezone,
+                            XQPCollator const *aCollation ) const
+{
+  if ( isEncoded() == other->isEncoded() )
+  {
+    size_t this_size, other_size;
+    const char* this_data = getHexBinaryValue(this_size);
+    const char* other_data = other->getHexBinaryValue(other_size);
+    return this_size == other_size &&
+      memcmp(this_data, other_data, this_size) == 0;
+  }
+  else
+  {
+    return getStringValue().compare(other->getStringValue()) == 0;
+  }
+}
+
+char const* HexBinaryItem::getHexBinaryValue( size_t &size ) const
+{
+  size = theValue.size();
+  return size ? &theValue[0] : "";
+}
+
 store::Item* HexBinaryItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_HEXBINARY];
@@ -3769,19 +3981,31 @@ store::Item* HexBinaryItem::getType() const
 
 zstring HexBinaryItem::getStringValue() const
 {
-  return theValue.str();
+  zstring lRes;
+  getStringValue2(lRes);
+  return lRes;
 }
 
 
 void HexBinaryItem::getStringValue2(zstring& val) const
 {
-  val = theValue.str();
+  val.clear();
+  appendStringValue(val);
 }
 
 
 void HexBinaryItem::appendStringValue(zstring& buf) const
 {
-  buf += theValue.str();
+  if (theValue.empty())
+    return;
+  if (theIsEncoded)
+    buf.insert(buf.size(), &theValue[0], theValue.size());
+  else
+  {
+    std::vector<char> encoded;
+    Base16::encode(theValue, encoded);
+    buf.insert(buf.size(), &encoded[0], encoded.size());
+  }
 }
 
 
@@ -3796,20 +4020,32 @@ zstring HexBinaryItem::show() const
 
 uint32_t HexBinaryItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  return theValue.hash();
+  // always need to hash on the string-value because otherwise
+  // a base64 item that is encoded would have a different hash-value
+  // as a hexBinary item that is decoded but represents the same binary content
+  return utf8::hash( getStringValue(), aCollation );
 }
 
 
 /*******************************************************************************
   class ErrorItem
 ********************************************************************************/
+
 ErrorItem::~ErrorItem()
 {
-  if (theError)
-  {
-    delete theError;
-    theError = NULL;
-  }
+  delete theError;
+}
+
+
+size_t ErrorItem::alloc_size() const
+{
+  return AtomicItem::alloc_size() + ztd::alloc_sizeof( theError );
+}
+
+
+size_t ErrorItem::dynamic_size() const
+{
+  return sizeof( *this );
 }
 
 

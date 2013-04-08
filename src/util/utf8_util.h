@@ -306,6 +306,31 @@ void to_codepoints( StringType const &s, ContainerType *c ) {
   std::copy( u.begin(), u.end(), std::back_inserter( *c ) );
 }
 
+////////// Integer-to-string conversion ///////////////////////////////////////
+
+/**
+ * A type that can hold the largest possible C string equivalent of the largest
+ * possible integral value using any Unicode numeric range within the Nd
+ * ("Number, Decimal Digit") category.
+ */
+typedef storage_type itou_buf_type[
+  (sizeof( encoded_char_type ) - 1 /* subtract null */) * 20 + 1 /* add null */
+];
+
+/**
+ * Converts an <code>unsigned long long</code> to a UTF-8 encoded string.
+ *
+ * @param n The <code>unsigned long long</code> to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @param zero The Unicode code-point of the zero at the start of a 10
+ * code-point range [zero,zero+9] for the digits to use in the Nd ("Number,
+ * Decimal Digit") category.
+ * @return Returns \a buf for convenience.
+ */
+storage_type* itou( unsigned long long n, storage_type *buf,
+                    unicode::code_point zero );
+
 ////////// Encoding conversion ////////////////////////////////////////////////
 
 #ifndef ZORBA_NO_ICU
@@ -735,6 +760,48 @@ void trim_whitespace( utf8_string<StringType> &s ) {
 }
 
 ////////// Miscellaneous //////////////////////////////////////////////////////
+
+/**
+ * Pads a string to the left with a given code-point until the string is the
+ * given width.
+ *
+ * @param s The string to pad.
+ * @param width The width to pad to.
+ * @param cp The code-point to pad with.
+ * @return Returns \c *s.
+ */
+template<class StringType> inline
+StringType& left_pad( StringType *s, typename StringType::size_type width,
+                      unicode::code_point cp ) {
+  typedef typename utf8_stringify<StringType>::type u_type;
+  typedef typename u_type::size_type u_size_type;
+  u_type u( *s );
+  u_size_type const u_size( u.size() );
+  if ( u_size < width )
+    u.insert( static_cast<size_type>( 0 ), width - u_size, cp );
+  return *s;
+}
+
+/**
+ * Pads a string to the right with a given code-point until the string is the
+ * given width.
+ *
+ * @param s The string to pad.
+ * @param width The width to pad to.
+ * @param cp The code-point to pad with.
+ * @return Returns \c *s.
+ */
+template<class StringType> inline
+StringType& right_pad( StringType *s, typename StringType::size_type width,
+                       unicode::code_point cp ) {
+  typedef typename utf8_stringify<StringType>::type u_type;
+  typedef typename u_type::size_type u_size_type;
+  u_type u( *s );
+  u_size_type const u_size( u.size() );
+  if ( u_size < width )
+    u.append( width - u_size, cp );
+  return *s;
+}
 
 /**
  * Reverses the characters in a string.

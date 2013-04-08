@@ -56,6 +56,7 @@ enum expr_kind_t
   doc_expr_kind,
   elem_expr_kind,
   attr_expr_kind,
+  namespace_expr_kind,
   text_expr_kind,
   pi_expr_kind,
 
@@ -70,6 +71,7 @@ enum expr_kind_t
 
   fo_expr_kind,
   dynamic_function_invocation_expr_kind,
+  argument_placeholder_expr_kind,
   function_item_expr_kind,
 
   castable_expr_kind,
@@ -269,6 +271,8 @@ public:
 
   std::string toString() const;
 
+  std::string show() const; // to mirror the Item's class show() method
+
 public:
   //
   void setVisitId(uint8_t id) { theVisitId = id; }
@@ -397,6 +401,8 @@ public:
   const var_expr* get_var() const;
 
   const store::Item* getQName() const;
+
+  expr* skip_wrappers() const;
 
   void clear_annotations();
 

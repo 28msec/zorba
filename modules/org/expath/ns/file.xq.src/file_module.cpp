@@ -54,6 +54,8 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new IsDirectoryFunction(this);
     } else if (aLocalname == "is-file") {
       lFunc = new IsFileFunction(this);
+    } else if (aLocalname == "is-symlink") {
+      lFunc = new IsSymlinkFunction(this);
     } else if (aLocalname == "copy-file-impl") {
       lFunc = new CopyFileImplFunction(this);
     } else if (aLocalname == "write-text") {
@@ -88,10 +90,11 @@ FileModule::getExternalFunction(const String& aLocalname)
 void
 FileModule::destroy()
 {
-  if (!dynamic_cast<FileModule*>(this)) {
-    return;
+  if (dynamic_cast<FileModule*>(this)) {
+    delete this;
   }
-  delete this;
 }
 
-} /* namespace filemodule */ } /* namespace zorba */
+} // namespace filemodule
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

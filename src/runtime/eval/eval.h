@@ -120,7 +120,15 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const
+  {
+    return nextORcount(false, result, planState);
+  }
+
+  bool count(store::Item_t& result, PlanState& planState) const
+  {
+    return nextORcount(true, result, planState);
+  }
 
 private:
   void importOuterEnv(
@@ -139,7 +147,13 @@ private:
   PlanIter_t compile(
       CompilerCB* ccb,
       const zstring& query,
-      ulong maxOuterVarId) const;
+      ulong maxOuterVarId,
+      bool doCount) const;
+
+  bool nextORcount(
+      bool doCount,
+      store::Item_t& result,
+      PlanState& planState) const;
 };
 
 

@@ -49,10 +49,11 @@
 #include "runtime/fetch/fetch.h"
 #include "runtime/fnput/fnput.h"
 #include "runtime/full_text/ft_module.h"
-#include "runtime/function_item/function_item_iter.h"
+#include "runtime/hof/fn_hof_functions.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/indexing/index_func.h"
 #include "runtime/introspection/sctx.h"
+#include "runtime/item/item.h"
 #include "runtime/json/json.h"
 #include "runtime/json/jsoniq_functions.h"
 #include "runtime/maths/maths.h"
@@ -86,7 +87,11 @@ void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
     if (Properties::instance()->stableIteratorIds())
       lStream << theId;
     else
+#ifndef NDEBUG
+      lStream << aIter->getId();
+#else
       lStream << aIter;
+#endif
     thePrinter.addAttribute("id", lStream.str());
   }
 }
@@ -1490,6 +1495,20 @@ void PrinterVisitor::endVisit ( const TokenizeStringIterator& ) {
 
 #endif
 
+// <FunctionLookupIterator>
+void PrinterVisitor::beginVisit ( const FunctionLookupIterator& a) {
+  thePrinter.startBeginVisit("FunctionLookupIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FunctionLookupIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FunctionLookupIterator>
+
+
 // <FunctionNameIterator>
 void PrinterVisitor::beginVisit ( const FunctionNameIterator& a) {
   thePrinter.startBeginVisit("FunctionNameIterator", ++theId);
@@ -1518,18 +1537,32 @@ void PrinterVisitor::endVisit ( const FunctionArityIterator& ) {
 // </FunctionArityIterator>
 
 
-// <PartialApplyIterator>
-void PrinterVisitor::beginVisit ( const PartialApplyIterator& a) {
-  thePrinter.startBeginVisit("PartialApplyIterator", ++theId);
+// <FnMapPairsIterator>
+void PrinterVisitor::beginVisit ( const FnMapPairsIterator& a) {
+  thePrinter.startBeginVisit("FnMapPairsIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const PartialApplyIterator& ) {
+void PrinterVisitor::endVisit ( const FnMapPairsIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </PartialApplyIterator>
+// </FnMapPairsIterator>
+
+
+// <FnFoldLeftIterator>
+void PrinterVisitor::beginVisit ( const FnFoldLeftIterator& a) {
+  thePrinter.startBeginVisit("FnFoldLeftIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnFoldLeftIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnFoldLeftIterator>
 
 
 // <ActivateICIterator>
@@ -1936,6 +1969,20 @@ void PrinterVisitor::endVisit ( const FunctionAnnotationsIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FunctionAnnotationsIterator>
+
+
+// <MemSizeIterator>
+void PrinterVisitor::beginVisit ( const MemSizeIterator& a) {
+  thePrinter.startBeginVisit("MemSizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MemSizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MemSizeIterator>
 
 
 // <JSONParseInternal>
@@ -3413,6 +3460,20 @@ void PrinterVisitor::endVisit ( const FnZorbaParseXmlFragmentIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnZorbaParseXmlFragmentIterator>
+
+
+// <FnZorbaCanonicalizeIterator>
+void PrinterVisitor::beginVisit ( const FnZorbaCanonicalizeIterator& a) {
+  thePrinter.startBeginVisit("FnZorbaCanonicalizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnZorbaCanonicalizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnZorbaCanonicalizeIterator>
 
 
 // <FnParseXmlFragmentIterator>

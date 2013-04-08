@@ -102,6 +102,10 @@ public:
     theVarExpr(var),
     theSubstExpr(subst)
   {
+    while (theSubstExpr->get_expr_kind() == wrapper_expr_kind)
+    {
+      theSubstExpr = static_cast<wrapper_expr*>(theSubstExpr)->get_input();
+    }
   }
 
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
@@ -116,7 +120,9 @@ expr* SubstVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
   while (!iter.done())
   {
-    if (**iter == theVarExpr)
+    expr* childExpr = **iter;
+
+    if (childExpr == theVarExpr)
     {
 #if 0
       std::vector<expr*>::iterator ite = thePath.begin();
@@ -134,7 +140,13 @@ expr* SubstVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
     }
     else
     {
-      apply(rCtx, **iter, modified);
+      apply(rCtx, childExpr, modified);
+    }
+
+    if (childExpr->isNonDiscardable() && !node->isNonDiscardable())
+    {
+      node->setNonDiscardable(ANNOTATION_TRUE);
+      modified = true;
     }
 
     iter.next();
@@ -452,7 +464,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       theFlwor->remove_clause(0);
       continue;
     }
-    else if (clause->get_kind() == flwor_clause::order_clause)
+    else if (clause->get_kind() == flwor_clause::orderby_clause)
     {
       theFlwor->remove_clause(0);
       continue;
@@ -670,7 +682,7 @@ bool EliminateUnusedLetVars::safe_to_fold_var_rec(
 
         break;
       }
-      case flwor_clause::order_clause:
+      case flwor_clause::orderby_clause:
       {
         orderby_clause* cl = static_cast<orderby_clause*>(clause);
 
@@ -1518,18 +1530,18 @@ static bool is_positional_pred(
                               *rtm.INTEGER_TYPE_QUESTION,
                               posExpr->get_loc()))
       {
-        VarIdMap varidMap;
-        ulong numFlworVars = 0;
+        expr_tools::VarIdMap varidMap;
+        csize numFlworVars = 0;
         expr_tools::index_flwor_vars(flworExpr, numFlworVars, varidMap, NULL);
         
         DynamicBitset varset(numFlworVars);
-        ExprVarsMap exprVarMap;
+        expr_tools::ExprVarsMap exprVarMap;
         expr_tools::build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
         
         var_expr* forVar = forClause->get_var();
         ulong forVarId = varidMap[forVar];
 
-        std::vector<ulong> posExprVarIds;
+        std::vector<csize> posExprVarIds;
         exprVarMap[posExpr].getSet(posExprVarIds);
 
         csize numPosExprVars = posExprVarIds.size();
@@ -1588,7 +1600,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
           
           if (c->get_kind() == flwor_clause::where_clause ||
               c->get_kind() == flwor_clause::groupby_clause ||
-              c->get_kind() == flwor_clause::order_clause)
+              c->get_kind() == flwor_clause::orderby_clause)
           {
             goto next1;
           }
@@ -1602,7 +1614,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
         const flwor_clause* c = returnFlwor->get_clause(i);
         
         if (c->get_kind() == flwor_clause::groupby_clause ||
-            c->get_kind() == flwor_clause::order_clause)
+            c->get_kind() == flwor_clause::orderby_clause)
         {
           goto next1;
         }
@@ -1634,7 +1646,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
       
       if (c->get_kind() == flwor_clause::let_clause)
       {
-        expr* domainExpr = static_cast<let_clause*>(c)->get_expr();
+        expr* domainExpr = static_cast<let_clause*>(c)->get_expr()->skip_wrappers();
         
         if (domainExpr->get_expr_kind() == flwor_expr_kind &&
             !domainExpr->is_sequential())
@@ -1670,7 +1682,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
       else if (c->get_kind() == flwor_clause::for_clause &&
                static_cast<for_clause*>(c)->get_pos_var() == NULL)
       {
-        expr* domainExpr = static_cast<for_clause*>(c)->get_expr();
+        expr* domainExpr = static_cast<for_clause*>(c)->get_expr()->skip_wrappers();
 
         if (domainExpr->get_expr_kind() == flwor_expr_kind &&
             !domainExpr->is_sequential())

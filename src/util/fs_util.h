@@ -168,16 +168,35 @@ mkdir( PathStringType const &path ) {
 ////////// Directory iteration ////////////////////////////////////////////////
 
 /**
- * An fs::iterator iterates over the entries in a directory.
+ * An %fs::iterator iterates over the entries in a directory.
  */
 class iterator {
 public:
   /**
-   * Constructs an %itertor.
+   * Constructs an %iterator.
    *
+   * @param path The full path to the directory to iterate over.
    * @throws fs::exception if the construction failed, e.g., path not found.
    */
-  iterator( char const *path );
+  iterator( char const *path ) : dir_path_( path ) {
+    ctor_impl();
+  }
+
+  /**
+   * Constructs an %iterator.
+   *
+   * @tparam PathStringType The \a path string type.
+   * @param path The full path to the directory to iterate over.
+   * @throws fs::exception if the construction failed, e.g., path not found.
+   */
+  template<class PathStringType>
+  iterator( PathStringType const &path,
+            typename std::enable_if<
+              ztd::has_c_str<PathStringType,
+              char const* (PathStringType::*)() const>::value
+            >::type* = 0 ) : dir_path_( path.c_str() ) {
+    ctor_impl();
+  }
 
   /**
    * Destroys this %iterator.
@@ -243,6 +262,8 @@ private:
   void win32_opendir( char const *path );
   void win32_closedir();
 #endif /* WIN32 */
+
+  void ctor_impl();
 
   // forbid
   iterator( iterator const& );
@@ -500,27 +521,37 @@ base_name( PathStringType const &path ) {
  * Gets the type of the given file.
  *
  * @param path The full path to check.
+ * @param follow_symlink If \c true follows symbolic links.
  * @param size A pointer to a receive the size of the file in bytes.  The size
  * is set only if it's not \c nullptr and the file's type is \c file.
- * @return Returns said type.
+ * @return If \a path refers to a symbolic link and \a follow_symlink is
+ * \c true, the type returned is of that to which the link refers; if \a path
+ * refers to a symbolic and \a follow_symlink is \c false, returns \c link; if
+ * \a path does not refer to a symbolic link, returns the type of \a path.
  */
-type get_type( char const *path, size_type *size = nullptr );
+type get_type( char const *path, bool follow_symlink = true,
+               size_type *size = nullptr );
 
 /**
  * Gets the type of the given file.
  *
  * @tparam PathStringType The \a path string type.
  * @param path The full path to check.
+ * @param follow_symlink If \c true follows symbolic links.
  * @param size A pointer to a receive the size of the file in bytes.  The size
  * is set only if it's not \c nullptr and the file's type is \c file.
- * @return Returns said type.
+ * @return If \a path refers to a symbolic link and \a follow_symlink is
+ * \c true, the type returned is of that to which the link refers; if \a path
+ * refers to a symbolic and \a follow_symlink is \c false, returns \c link; if
+ * \a path does not refer to a symbolic link, returns the type of \a path.
  */
 template<class PathStringType> inline
 typename std::enable_if<ztd::has_c_str<PathStringType,
                           char const* (PathStringType::*)() const>::value,
                         type>::type
-get_type( PathStringType const &path, size_type *size = nullptr ) {
-  return get_type( path.c_str(), size );
+get_type( PathStringType const &path, bool follow_symlink = true,
+          size_type *size = nullptr ) {
+  return get_type( path.c_str(), follow_symlink, size );
 }
 
 /**
@@ -648,7 +679,7 @@ typename std::enable_if<ztd::has_c_str<PathStringType,
                           char const* (PathStringType::*)() const>::value,
                         zstring>::type
 get_normalized_path( PathStringType const &path,
-                             PathStringType const &base = "" ) {
+                     PathStringType const &base = "" ) {
   return get_normalized_path( path.c_str(), base.c_str() );
 }
 

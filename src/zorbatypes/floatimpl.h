@@ -256,6 +256,8 @@ public:
 
   uint32_t hash() const;
 
+  bool is_xs_int() const;
+
   bool isNaN() const;
   bool isFinite() const;
   bool isPosInf() const;
@@ -932,6 +934,11 @@ inline int FloatImpl<F>::compare( FloatImpl<G> const &f ) const {
 template<typename F>
 inline uint32_t FloatImpl<F>::hash() const {
   return static_cast<uint32_t>( value_ );
+}
+
+template<typename F>
+inline bool FloatImpl<F>::is_xs_int() const {
+  return ZORBA_IN_RANGE( value_, xs_int );
 }
 
 template<typename F>

@@ -262,8 +262,13 @@ public:
         else {
           // We didn't find it. If we return NULL here, Xerces will try to
           // resolve it its own way, which we don't want to happen.
-          throw XQUERY_EXCEPTION( err::XQST0059,
-              ERROR_PARAMS( lResolved ));
+          throw XQUERY_EXCEPTION(
+            err::XQST0059,
+            ERROR_PARAMS(
+              ZED( XQST0059_SpecificationMessage ),
+              lResolved
+            )
+          );
         }
       }
       catch (ZorbaException const& e) {
@@ -478,25 +483,31 @@ void Schema::registerXSD(
   }
   catch (const OutOfMemoryException&)
   {
-    throw XQUERY_EXCEPTION( err::XQST0059,
-        ERROR_PARAMS( std::string(xsdURL), ZED( SchemaOutOfMemory )),
-        ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0014_OUT_OF_MEMORY,
+      ERROR_PARAMS( xsdURL ),
+      ERROR_LOC( loc )
+    );
   }
   catch (const XMLException& e)
   {
-    throw XQUERY_EXCEPTION( err::XQST0059,
-        ERROR_PARAMS( std::string(xsdURL), ZED( SchemaParseError ), StrX(e.getMessage())),
-        ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0033_SCHEMA_XML_ERROR,
+      ERROR_PARAMS( xsdURL, e.getMessage() ),
+      ERROR_LOC( loc )
+    );
   }
-  catch (const ZorbaException& /* e */)
+  catch (const ZorbaException&)
   {
     throw;
   }
   catch (...)
   {
-    throw XQUERY_EXCEPTION( err::XQST0059,
-        ERROR_PARAMS( std::string(xsdURL), ZED( SchemaUnexpected )),
-        ERROR_LOC( loc ) );
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0035_SCHEMA_UNEXPECTED_ERROR,
+      ERROR_PARAMS( xsdURL ),
+      ERROR_LOC( loc )
+    );
   }
 
 #ifdef DO_PRINT_SCHEMA_INFO
@@ -918,14 +929,14 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
 
         xqtref_t baseXQType;
         XSTypeDefinition* baseTypeDef = xsTypeDef->getBaseType();
-        if (!baseTypeDef)
+        if (baseTypeDef)
         {
           baseXQType = createXQTypeFromTypeDefinition(tm, baseTypeDef);
         }
 
-        //cout << " creating UDT Simple Union Type: " <<
-        // qname->getLocalName()->c_str() << "@" <<
-        // qname->getNamespace()->c_str() << " of: ";
+        //std::cout << " creating UDT Simple Union Type: " <<
+        // qname->getLocalName() << "@" <<
+        // qname->getNamespace() << " of: ";
         std::vector<xqtref_t> unionItemTypes;
 
         for (csize i = 0; i < memberTypesDefList->size(); ++i)
@@ -936,7 +947,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
           xqtref_t itemXQType = createXQTypeFromTypeDefinition(tm, itemTypeDef);
 
           unionItemTypes.push_back(itemXQType);
-          //cout << " " << itemXQType->toString();
+          //std::cout << " " << itemXQType->toString();
 
           if (itemXQType->type_kind() == XQType::USER_DEFINED_KIND)
           {
@@ -944,7 +955,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
             addTypeToCache(itemXQType);
           }
         }
-        //cout << endl; cout.flush();
+        //std::cout << std::endl; std::cout.flush();
 
         xqtref_t xqType = new UserDefinedXQType(tm,
                                                 qname,
@@ -952,8 +963,8 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                 TypeConstants::QUANT_ONE,
                                                 unionItemTypes);
 
-        //cout << "   created UDT Union Type: " << xqType->toString() << endl;
-        //  cout.flush();
+        //std::cout << "   created UDT Union Type: " << xqType->toString() << std::endl;
+        //  std::cout.flush();
         addTypeToCache(xqType);
 
         result = xqType;
@@ -1263,7 +1274,18 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
   {
     result = GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE;
   }
-  // YearMonthDuration and DayTimeDuration are not in schema spec
+  else if ( XMLString::equals(XMLChArray("dayTimeDuration").get (), local) )
+  {
+    result = GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
+  }
+  else if ( XMLString::equals(XMLChArray("yearMonthDuration").get (), local) )
+  {
+    result = GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE;
+  }
+  else if ( XMLString::equals(XMLChArray("dateTimeStamp").get (), local) )
+  {
+    result = GENV_TYPESYSTEM.DATETIME_STAMP_TYPE_ONE;
+  }
   else
   {
     // type not covered

@@ -5,31 +5,76 @@ version 2.9
 New Features:
   * Typeswitch expression extended to allow union of types in each case clause,
     as specified by XQuery v3.0
+  * In C++ API, added optional XML formatting of exceptions.
+  * Bind zerr:line-number-end and zerr:column-number-end variables in the body
+    of a catch clause.
+  * New C++ and XQuery function (see module http://www.zorba-xquery.com/modules/item)
+    to estimate the size an item allocates in memory.
   * Extended sequence types to include unions, as specified by XQuery v3.0
+  * In store API, added ability to specify a stream's originating URI (file)
+    for streamable strings and base64Binary.
   * Added millis-to-dateTime() function in datetime module.
+  * Added setCalendar(), getCalendar(), setLocale(), and getLocale() to
+    DynamicContext class in C++ API.
+  * fn:trace outputs "empty-sequence()" if the input is the empty-sequence.
+  * Allow multiple default function namespaces.
+  * $array() => jn:members($array), $object() => jn:keys($object)
+  * Added xqxq:variable-value function.
+  * Added canonicalize function to modules/xml.
+  * Added support for xs:dateTimeStamp type from XMLSchema 1.1, bug #924754.
 
 Optimizations:
-  * Extended optimization rules for subsequence function (pushing $startingLoc 
-    parameter into collection skip if $sourceSeq parameter is from a 
+  * Extended optimization rules for subsequence function (pushing $startingLoc
+    parameter into collection skip if $sourceSeq parameter is from a
     collection).
+  * Introduced generic framework for optimizing fn:count() during runtime:
+    Virtual PlanIterator::count() method provides the base (unoptimized)
+    implementation of fn:count(). This base method is redefined by other plan
+    iterators who have a way of returning the cardinality of their result
+    sequence without actually computing the full result sequence.
+  * Optimized fn:index-of function
+  * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1114228 (unrecognized options in the XQuery namespace now raise an error)
+  * Fixed bug #1124273 (xqdoc crash because of annotation literals)
+  * Fixed bug #867027 (XQST0059 error messages inconsistent)
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
+  * Fixed bug #1123163 (fn:format-integer failures)
+  * Fixed bug in index join rule (no index join if inner clause has positional var).
+  * Fixed bug in index join rule (copy var ids after cloning index domain expr).
+  * Fixed bug #1123162 (FOTS: formatting dates and times failures)
+  * Added missing wrapper expressions around some variable references.
+  * Fixed bug in the throwing of error XQTY0086 during node construction.
+  * Fixed bug #1148335 (where-clause expression was not always reset when it should be)
+  * Fixed bug #1122396 (Associate origin/destination URI to I/O stream)
+  * Fixed bug #1111786 (xml/json parse error location in catch clause).
+  * Fixed bug #1153800 (construct hexBinary without encoding the data)
   * NaN items are considered equal to each other during grouping
-
-
-version 2.9
-
-Bug Fixes/Other Changes:
+  * Fixed bug #855481 (Too small time types on Windows).
+  * Fixed bug #1132032 (Certain regexes involving ^ should be legal)
+  * Fixed bug #1023168 (Non-single-char-escapes in regex character ranges not
+    caught)
+  * Throw XQST0048 for groupby clause, as specified by XQuery 3.0.
+  * Fixed bug #866874 (regex "range subtraction" not supported for ICU)
+  * Fixed bug in computing the static type of an allowing-empty FOR variable.
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
+<<<<<<< TREE
   * Fixed bug #1099535  (xml:parse endless loop)
-
-
-
-version 2.9
-
-Bug Fixes/Other Changes:
+  * Fixed bug in optimizing fn:count over general-index probes
   * Fixed bug #866958  (Parsing error not explicit enough)
+  * Fixed bug #867068: (Incorrect usage of XQDY0027)
+=======
+  * Fixed bug #1099535 (xml:parse endless loop)
+  * Fixed bug: jsoniq constructor should not be const-folded
+  * Fixed bug #866958 (Parsing error not explicit enough)
+  * Fixed bug #1152834 (bug in computing the scripting kind of array and object
+    constructor exprs)
+  * Fixed bug #1125444 (input group-by exprs were not treated by index-flwor_vars()
+    functoin, leading to erroneous loop hoisting).
+  * Fixed bug #867068 (Incorrect usage of XQDY0027)
+>>>>>>> MERGE-SOURCE
+  * Fixed bug #1023362 (xsi:type attribute ignored during validation)
 
 
 version 2.8
@@ -183,6 +228,7 @@ New Features:
     http://www.zorba-xquery.com/modules/store/data-structures/unordered-map module.
   * Added support for fragments to fn:path
   * Positional pagination support for collections
+  * Pagination by reference support for collections
   * http://www.zorba-xquery.com/modules/archive module for creating,
     reading, and updating various (compressed) archives (e.g. zip, tar.gz,
     or tar.bz2)
@@ -599,7 +645,7 @@ version 1.0
     changed to http://www.zorba-xquery.com/modules/math)
   * Pass the Static- and DynamicContext as parameter to the evaluate function
     of external functions.
-  * The XQuery class got a setTimeout option that allows the user to set a 
+  * The XQuery class got a setTimeout option that allows the user to set a
     maximum running time of a particular query execution.
   * The StatelessExternalFunction is now non-pure by default. There is
     a new subclass called PureStatelessExternalFunction which should
@@ -685,13 +731,13 @@ version 0.9.5 (2008.02.17)
     allow setting of tidy functions
   * Added Schema imports using target namespace or location hints
   * Added StaticContext::findFunctions and StaticContext::disableFunciton
-  * Added Functions for collections 
+  * Added Functions for collections
   * Windows packages include a zorba_simplestore.dll
   * Improved error messages for regular expression processing
   * Added functions to return an item instead of xs:string
   * Added a new signature to zorba-util:random in order to be able to call
     random within a loop and get different numbers each time.
-  * Corrected the types of some functions/operators (YM_DURATION or 
+  * Corrected the types of some functions/operators (YM_DURATION or
     DT_DURATION instead of DURATION).
   * Now possible to pass empty sequence as collection URI.
   * Now cURL is set to follow an infinite number of redirects.
@@ -749,11 +795,11 @@ version 0.9.2-4251 (2008.06.19):
   * Stabilized the Store API & build the simplestore as a separate library
 
 version 0.9.1 (2008.04.30):
-  * Initial release supporting 
-    * XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) 
+  * Initial release supporting
+    * XQuery 1.0 and XPath 2.0 (as in the W3C recommendation)
       except modules and only limited support for schema validation
     * XQuery Update Facility 1.0 (as in the evolving W3C recommendation)
-    * An In-Memory (replaceable) XML store 
+    * An In-Memory (replaceable) XML store
       (implements the XQuery Data Model (XDM) W3C recommendation)
   * This release 0.9 passes 97.6% of the W3C tests of XQuery 1.0 test suite
     and 99.4% of the XQuery Update Facility test suite.

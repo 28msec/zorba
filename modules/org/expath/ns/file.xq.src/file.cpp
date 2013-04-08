@@ -205,7 +205,7 @@ ReadTextFunction::evaluate(
   {
     try {
       lInStream.reset( new transcode::stream<std::ifstream>(lEncoding.c_str()) );
-    } catch (std::invalid_argument const& e)
+    } catch (std::invalid_argument const&)
     {
       raiseFileError("FOFL0006", "Unsupported encoding", lEncoding.c_str());
     }
@@ -216,7 +216,7 @@ ReadTextFunction::evaluate(
   }
   lFile->openInputStream(*lInStream.get(), false, true);
   lResult = theModule->getItemFactory()->createStreamableString(
-      *lInStream.release(), &FileModule::streamReleaser, true
+      *lInStream.release(), &FileModule::streamReleaser, lFileStr.c_str(), true
     );
   return ItemSequence_t(new SingletonItemSequence(lResult));
 
@@ -407,6 +407,30 @@ IsFileFunction::evaluate(
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->isFile()) {
+    lResult = true;
+  }
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lResult)));
+}
+
+//*****************************************************************************
+
+IsSymlinkFunction::IsSymlinkFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+IsSymlinkFunction::evaluate(
+  const ExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                 aSctxCtx,
+  const DynamicContext*                aDynCtx) const
+{
+  bool   lResult = false;
+  String lFileStr = getFilePathString(aArgs, 0);
+
+  File_t lFile = File::createFile(lFileStr.c_str());
+  if (lFile->isLink()) {
     lResult = true;
   }
   return ItemSequence_t(new SingletonItemSequence(
@@ -633,7 +657,7 @@ LastModifiedFunction::evaluate(
 int
 LastModifiedFunction::getGmtOffset()
 {
-  time_t t = time(0);
+  time_t t = ::time(0);
   struct tm* data;
   data = localtime(&t);
   data->tm_isdst = 0;

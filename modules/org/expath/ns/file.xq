@@ -228,7 +228,7 @@ declare %an:nondeterministic %an:sequential function file:delete(
 ) as empty-sequence()
 {
   if (file:exists($path)) then
-    if (file:is-directory($path)) then
+    if (not(file:is-symlink($path)) and file:is-directory($path)) then
       file:delete-directory-impl($path)
     else
       file:delete-file-impl($path)
@@ -275,32 +275,47 @@ declare %private %an:nondeterministic %an:sequential function file:delete-direct
 (:~
  : Tests if a path/URI is already used in the file system.
  :
- : @param $path The path/URI to test for existence.
- : @return true if the path/URI points to an existing file system item.
+ : @param $path The path/URI to test.
+ : @return true if <code>$path</code> points to an existing file system item;
+ : for symbolic links, retuns true if the symbolic link itself exists and not
+ : whether the linked-to item exists.
  :)
 declare %an:nondeterministic function file:exists(
   $path as xs:string
 ) as xs:boolean external;
 
 (:~
- : Tests if a path/URI points to a directory. On UNIX-based systems, the root
+ : Tests if a path/URI points to a directory. On Unix-based systems, the root
  : and the volume roots are considered directories.
  :
- : @param $dir The path/URI to test.
- : @return true if the path/URI points to a directory.
+ : @param $path The path/URI to test.
+ : @return true if <code>$path</code> points to a directory; for symbolic
+ : links, returns true if the linked-to item is a directory.
  :)
 declare %an:nondeterministic function file:is-directory(
-  $dir as xs:string
+  $path as xs:string
 ) as xs:boolean external;
 
 (:~
  : Tests if a path/URI points to a file.
  :
- : @param $dir The path/URI to test.
- : @return true if the path/URI points to a file.
+ : @param $path The path/URI to test.
+ : @return true if <code>$path</code> points to a file; for symbolic links,
+ : returns true if the linked-to item is a file.
  :)
 declare %an:nondeterministic function file:is-file(
-  $file as xs:string
+  $path as xs:string
+) as xs:boolean external;
+
+(:~
+ : Tests if a path/URI points to symbolic link.  This works on all Unix-based
+ : systems as well as Windows Vista or later.
+ :
+ : @param $path The path/URI to test.
+ : @return true if <code>$path</code> points to a symbolic link.
+ :)
+declare %an:nondeterministic function file:is-symlink(
+  $path as xs:string
 ) as xs:boolean external;
 
 (:~
@@ -363,11 +378,11 @@ declare %an:nondeterministic function file:read-text(
  : Reads the content of a file using the specified encoding and returns a
  : string representation of the content.
  :
- : In Zorba only the following encodings are currently supported: "UTF-8",
- : "UTF8". The encoding parameter is case insensitive.
- :
  : @param $file The file to read.
  : @param $encoding The encoding used when reading the file.
+ : If compiled with ICU, then Zorba supports any encoding that ICU supports;
+ : otherwise Zorba only supports ASCII and UTF-8.
+ : The encoding parameter is case insensitive.
  : @return The content of the file as string.
  : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
@@ -408,11 +423,11 @@ declare %an:nondeterministic function file:read-text-lines(
  : trimmed as well. This implementation will uniformly treat LF and CRLF as
  : line separators.
  :
- : In Zorba only the following encodings are currently supported: "UTF-8",
- : "UTF8". The encoding parameter is case insensitive.
- :
  : @param $file The file to read.
  : @param $encoding The encoding used when reading the file.
+ : If compiled with ICU, then Zorba supports any encoding that ICU supports;
+ : otherwise Zorba only supports ASCII and UTF-8.
+ : The encoding parameter is case insensitive.
  : @return The content of the file as a sequence of strings.
  : @error file:FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error file:FOFL0004 If <pre>$source</pre> points to a directory.
@@ -656,7 +671,7 @@ declare %an:nondeterministic function file:size(
 
 (:~
  : This function returns the value of the operating system specific directory
- : separator. For example, <pre>/</pre> on UNIX-based systems and <pre>\</pre>
+ : separator. For example, <pre>/</pre> on Unix-based systems and <pre>\</pre>
  : on Windows systems.
  :
  : @return The operating system specific directory separator.
@@ -665,7 +680,7 @@ declare function file:directory-separator() as xs:string external;
 
 (:~
  : This function returns the value of the operating system specific path
- : separator. For example, <pre>:</pre> on UNIX-based systems and <pre>;</pre>
+ : separator. For example, <pre>:</pre> on Unix-based systems and <pre>;</pre>
  : on Windows systems.
  :
  : @return The operating system specific path separator.

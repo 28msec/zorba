@@ -352,9 +352,9 @@ public:
   ----------------------------
   The namespace URI to be used for element and type qnames whose prefix is empty.
 
-  theDefaultFunctionNamespace :
-  -----------------------------
-  The namespace URI to be used for function qnames whose prefix is empty.
+  theDefaultFunctionNamespaces :
+  ------------------------------
+  The namespace URIs to be used for function qnames whose prefix is empty.
 
   theContextItemType :
   --------------------
@@ -500,6 +500,8 @@ public:
   static const char* W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
 
   static const char* W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
+  
+  static const char* W3C_ERR_NS;    // http://www.w3.org/2005/xqt-errors
 
   //
   // Zorba namespaces
@@ -543,6 +545,7 @@ public:
 
   static const char* ZORBA_FETCH_FN_NS;
   static const char* ZORBA_NODE_FN_NS;
+  static const char* ZORBA_ITEM_FN_NS;
   static const char* ZORBA_XML_FN_NS;
 #ifndef ZORBA_NO_FULL_TEXT
   static const char* ZORBA_FULL_TEXT_FN_NS;
@@ -564,7 +567,8 @@ public:
   static const char* ZORBA_OPTION_WARN_NS;
   static const char* ZORBA_OPTION_FEATURE_NS;
   static const char* ZORBA_OPTION_OPTIM_NS;
-  static const char* XQUERY_OPTION_NS;
+  static const char* XQUERY_NS;                 // http://www.w3.org/2012/xquery
+  static const char* XQUERY_OPTION_NS;          // http://www.w3.org/2011/xquery-options
   static const char* ZORBA_VERSIONING_NS;
 
 protected:
@@ -597,8 +601,7 @@ protected:
   zstring                                 theDefaultElementNamespace;
   bool                                    theHaveDefaultElementNamespace;
 
-  zstring                                 theDefaultFunctionNamespace;
-  bool                                    theHaveDefaultFunctionNamespace;
+  std::vector<zstring>                    theDefaultFunctionNamespaces;
 
   xqtref_t                                theContextItemType;
 
@@ -632,7 +635,11 @@ protected:
   ftmatch_options                       * theFTMatchOptions;
 #endif /* ZORBA_NO_FULL_TEXT */
 
+  StaticContextConsts::language_kind_t       theLanguageKind;
+
   StaticContextConsts::xquery_version_t      theXQueryVersion;
+
+  StaticContextConsts::jsoniq_version_t      theJSONiqVersion;
 
   StaticContextConsts::xpath_compatibility_t theXPathCompatibility;
 
@@ -892,18 +899,25 @@ public:
   //
   // Functions
   //
-  void bind_fn(function_t& f, ulong arity, const QueryLoc& loc);
+  void bind_fn(function_t& f, csize arity, const QueryLoc& loc);
 
-  void unbind_fn(const store::Item* qname, ulong arity);
+  void unbind_fn(const store::Item* qname, csize arity);
+
+  function* lookup_fn(
+      const zstring& ns,
+      const zstring& pre,
+      const zstring& local,
+      csize arity,
+      const QueryLoc& loc);
 
   function* lookup_fn(
       const store::Item* qname,
-      ulong arity,
+      csize arity,
       bool skipDisabled = true);
 
   function* lookup_local_fn(
       const store::Item* qname,
-      ulong arity,
+      csize arity,
       bool skipDisabled = true);
 
   void get_functions(std::vector<function*>& functions) const;
@@ -1040,6 +1054,14 @@ public:
   //
   //  Misc
   //
+  StaticContextConsts::language_kind_t language_kind() const;
+
+  void set_language_kind(StaticContextConsts::language_kind_t k);
+
+  StaticContextConsts::jsoniq_version_t jsoniq_version() const;
+
+  void set_jsoniq_version(StaticContextConsts::jsoniq_version_t v);
+
   StaticContextConsts::xquery_version_t xquery_version() const;
 
   void set_xquery_version(StaticContextConsts::xquery_version_t v);
@@ -1081,7 +1103,7 @@ public:
   void add_decimal_format(const DecimalFormat_t& format, const QueryLoc& loc);
 
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
-
+  
 #ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options const* get_match_options() const { return theFTMatchOptions; }
 
@@ -1105,6 +1127,13 @@ public:
   bool isWarningDisabled(const char* ns, const char* localname);
 
   bool isWarningAnError(const char* ns, const char* localname);
+
+  
+#ifndef NDEBUG
+  // Debugging purposes printing. Currently will display the parent chain
+  // and the variables defined in the context
+  std::string toString();
+#endif  
 
 
 protected:

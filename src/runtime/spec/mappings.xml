@@ -129,10 +129,14 @@
 		<zorba:namespace uri="http://www.zorba-xquery.com/modules/node"
                      define="ZORBA_NODE_FN_NS" 
                      prefix="fn-zorba-node"/>
+
+		<zorba:namespace uri="http://www.zorba-xquery.com/modules/item"
+                     define="ZORBA_ITEM_FN_NS" 
+                     prefix="fn-zorba-item"/>
                      
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xml"
                      define="ZORBA_XML_FN_NS" 
-                     prefix="fn-zorba-xml"/>                     
+                     prefix="fn-zorba-xml"/>
 
     <zorba:namespace uri="http://www.zorba-xquery.com/internal/xquery-ops"
                      define="XQUERY_OP_NS"
@@ -217,6 +221,7 @@
     <zorba:type zorbaType="JSON_ARRAY">array()</zorba:type>
     <zorba:type zorbaType="JSON_OBJECT">object()</zorba:type>
     <zorba:type zorbaType="JS_NULL">js:null</zorba:type>
+    <zorba:type zorbaType="DATETIME_STAMP">xs:dateTimeStamp</zorba:type>
   </zorba:types>
 
   <!-- XQuery Occurrence Indicators -->
