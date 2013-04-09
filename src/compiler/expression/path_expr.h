@@ -22,6 +22,7 @@
 
 #include "zorbatypes/zstring.h"
 
+#include <zorba/store_consts.h>
 
 namespace zorba
 {

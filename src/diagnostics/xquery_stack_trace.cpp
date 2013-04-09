@@ -25,6 +25,7 @@
 #include <zorba/xquery_exception.h>
 
 #include "diagnostic.h"
+#include "qname.h"
 
 namespace zorba {
 

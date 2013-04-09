@@ -22,6 +22,8 @@
 #include "zorbaserialization/archiver.h"
 #include "zorbaserialization/base64impl.h"
 
+#include "zorbatypes/floatimpl.h"
+
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/assert.h"
