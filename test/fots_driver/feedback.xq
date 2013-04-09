@@ -136,15 +136,13 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
  : @return info about test case that passed.
  :)
 declare %private function feedback:pass(
-  $case             as element(fots:test-case),
-  $result           as item()*
+  $case     as element(fots:test-case),
+  $result   as item()*
 ) as element(fots:test-case)?
 {
-  let $status := if(exists($result/fots:errors))
-                 then 'wrongError'
-                 else 'pass'
-  return 
-  <fots:test-case name="{data($case/@name)}" result="{$status}"/>
+  if(exists($result/fots:errors))
+  then <fots:test-case name="{data($case/@name)}" result="wrongError" comment="{$result/fots:errors}"/>
+  else <fots:test-case name="{data($case/@name)}" result="pass"/>
 };
 
 
@@ -200,7 +198,7 @@ declare %ann:sequential function feedback:fail(
   then <fots:test-case name="{data($case/@name)}"
                        result="{$status}"
                        comment="{$info}"/>
- 
+
   else <fots:test-case name="{data($case/@name)}"
                        result="{$status}"/>
 };

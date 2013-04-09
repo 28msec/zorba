@@ -30,7 +30,7 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
 
-declare option ver:module-version "1.0";
+declare option ver:module-version "2.0";
 
 (:~
  : The function prepares a given XQuery program for execution.
@@ -408,7 +408,7 @@ declare function xqxq:query-plan($query-key as xs:anyURI)
  : If the program was successfully loaded, the function returns an
  : identifier as xs:anyURI. This URI can be passed to other functions
  : of this module (e.g. to actually evaluate the program). The URI
- : is opaque and its lilfetime is bound by the lifetime of the XQuery
+ : is opaque and its lifetime is bound by the lifetime of the XQuery
  : program that invoked this function. Further reference or uses
  : of the identifier lead to unexpected results.
  :
