@@ -661,7 +661,7 @@ public:
   /** Accessor for element node
    *  @return  boolean?
    */
-  virtual Item_t
+  virtual bool
   getNilled() const;
 
   /** Accessor for document node, element node, attribute node, namespace node,

@@ -883,10 +883,18 @@ bool NodeXQType::is_subtype(
   }
 
   if (theContentType == supertype.theContentType)
+  {
+    if (supertype.m_nillable == false && m_nillable == true)
+      return false;
+
     return true;
+  }
 
   if (theContentType != NULL && supertype.theContentType != NULL)
   {
+    if (supertype.m_nillable == false && m_nillable == true)
+      return false;
+
     return TypeOps::is_subtype(tm, *theContentType, *supertype.theContentType);
   }
   else if (supertype.theContentType == NULL)
@@ -983,6 +991,12 @@ bool NodeXQType::is_supertype(
   {
     xqtref_t documentNodeType = tm->create_value_type(subitem, loc);
     return TypeOps::is_subtype(tm, *documentNodeType, *this);
+  }
+
+  if (m_node_kind == store::StoreConsts::elementNode && !m_nillable)
+  {
+    if (subitem->getNilled())
+      return false;
   }
 
   xqtref_t subContentType = tm->create_named_type(subitem->getType(),

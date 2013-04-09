@@ -3026,17 +3026,14 @@ void ElementNode::appendStringValue(zstring& buf) const
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t ElementNode::getNilled() const
+bool ElementNode::getNilled() const
 {
   store::Item_t val;
 
   if (getType()->equals(GET_STORE().XS_UNTYPED_QNAME))
   {
-    GET_FACTORY().createBoolean(val, false);
-    return val;
+    return false;
   }
-
-  bool nilled = true;
 
   const_iterator ite = childrenBegin();
   const_iterator end = childrenEnd();
@@ -3046,21 +3043,9 @@ store::Item_t ElementNode::getNilled() const
     if ((*ite)->getNodeKind() == store::StoreConsts::elementNode ||
         (*ite)->getNodeKind() == store::StoreConsts::textNode)
     {
-      nilled = false;
-      break;
+      return false;
     }
   }
-
-  if (!nilled)
-  {
-    GET_FACTORY().createBoolean(val, false);
-    return val;
-  }
-
-  nilled = false;
-
-  //const char* xsi = "http://www.w3.org/2001/XMLSchema-instance";
-  //ulong xsilen = strlen(xsi);
 
   ite = attrsBegin();
   end = attrsEnd();
@@ -3068,18 +3053,22 @@ store::Item_t ElementNode::getNilled() const
   for (; ite != end; ++ite)
   {
     XmlNode* attr = *ite;
-    if (ZSTREQ(attr->getNodeName()->getNamespace(), "http://www.w3.org/2001/XMLSchema-instance") &&
+
+    zstring strval;
+    attr->getStringValue2(strval);
+
+    if (ZSTREQ(attr->getNodeName()->getNamespace(),
+               "http://www.w3.org/2001/XMLSchema-instance") &&
         ZSTREQ(attr->getNodeName()->getLocalName(), "nil") &&
-        ( ZSTREQ(attr->getStringValue(), "true") || ZSTREQ(attr->getStringValue(), "1") ) &&
+        (ZSTREQ(strval, "true") || ZSTREQ(strval, "1") ) &&
         isValidated())
     {
-      nilled = true;
+      return true;
       break;
     }
   }
 
-  GET_FACTORY().createBoolean(val, nilled);
-  return val;
+  return false;
 }
 
 

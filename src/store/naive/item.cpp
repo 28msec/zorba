@@ -993,7 +993,7 @@ void Item::getNamespaceBindings(
 }
 
 
-store::Item_t Item::getNilled() const
+bool Item::getNilled() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

@@ -94,16 +94,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   if (consumeNext(item, theChild.getp(), planState))
   {
-    
-    store::Item_t lIsNilledItem = (item && item->isNode()) ? item->getNilled(): NULL;
-    bool lIsNilled = lIsNilledItem ? lIsNilledItem->getBooleanValue() : false; 
-
-    if (lIsNilled)
-    {
-      const NodeXQType* lNodeType = static_cast<const NodeXQType*>(theSequenceType.getp());
-      res = lNodeType->get_nillable();
-    }
-    else if (theSequenceType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
+    if (theSequenceType->type_kind() == XQType::ATOMIC_TYPE_KIND &&
         item->isAtomic())
     {
       store::SchemaTypeCode targetType = 

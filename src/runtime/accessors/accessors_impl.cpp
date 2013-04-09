@@ -105,8 +105,15 @@ bool NilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (inNode->isNode())
     {
-      result = inNode->getNilled();
-      STACK_PUSH(result != NULL, state);
+      if (inNode->getNodeKind() == store::StoreConsts::elementNode)
+      {
+        GENV_ITEMFACTORY->createBoolean(result, inNode->getNilled());
+        STACK_PUSH(true, state);
+      }
+      else
+      {
+        STACK_PUSH(false, state);
+      }
     }
     else
     {
@@ -176,7 +183,7 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIter_t iter;
   store::Item_t itemNode;
-  store::Item_t isNilled;
+  bool isNilled;
 
   FnDataIteratorState* state;
   DEFAULT_STACK_INIT(FnDataIteratorState, state, planState);
@@ -188,9 +195,12 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (result->isNode())
     {
-      isNilled = result->getNilled();
-      if (isNilled != NULL && isNilled->getBooleanValue())
+      if (result->getNodeKind() == store::StoreConsts::elementNode &&
+          result->getNilled())
+      {
         STACK_PUSH(false, state);
+        goto done;
+      }
 
       itemNode.transfer(result);
 
@@ -245,6 +255,8 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   state->theTypedValueIter = 0; // TODO remove???
+
+ done:
   STACK_END(state);
 }
 
