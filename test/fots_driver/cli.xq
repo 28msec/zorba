@@ -99,9 +99,9 @@ declare variable $testCasePrefixes as xs:string external := "";
  : EXPECTED_FOTS_FAILURE (CRASH TEST_SET_NAME TEST_CASE_NAME BUG_NO)
  :)
 declare variable $exceptedTestCases as xs:string* := (
-  ("instanceof139",
+(:  ("instanceof139",
   "CastAs-UnionType-26",
-  "CastAs-UnionType-30"),       (:see bug lp:1160559 :)
+  "CastAs-UnionType-30")  , :)      (:see bug lp:1160559 :)
   "fn-unparsed-text-lines-052", (:see bug lp:1123835 :)
   ("cbcl-subsequence-011",
   "cbcl-subsequence-012",

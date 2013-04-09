@@ -191,6 +191,8 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
     return store::StoreConsts::piNode;
   case match_text_test:
     return store::StoreConsts::textNode;
+  case match_namespace_test:
+    return store::StoreConsts::namespaceNode;
   case match_comment_test:
     return store::StoreConsts::commentNode;
   case match_anykind_test:

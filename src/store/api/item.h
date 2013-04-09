@@ -29,6 +29,8 @@
 #include <zorba/store_consts.h>
 #include "store/api/shared_types.h"
 
+#include "diagnostics/xquery_diagnostics.h"
+
 #ifndef ZORBA_NO_FULL_TEXT
 #include <zorba/locale.h>
 #include <zorba/tokenizer.h>
@@ -120,6 +122,7 @@ public:
   void removeReference();
 
   virtual size_t alloc_size() const;
+
   virtual size_t dynamic_size() const;
 
   /* -------------------   General Methods for Items ------------------------- */
@@ -331,7 +334,17 @@ public:
   /**
    * @return The numeric code coresponding to the data type of this item.
    */
-  SchemaTypeCode getTypeCode() const;
+  SchemaTypeCode getTypeCode() const
+  {
+    if (isAtomic())
+    {
+      return static_cast<SchemaTypeCode>(theUnion.itemKind >> 4);
+    }
+
+    throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS(__FUNCTION__, typeid(*this).name()));
+  }
 
   /**
    * @return If this is an atomic item with a user-defined data type UT, return

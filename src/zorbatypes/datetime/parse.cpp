@@ -53,6 +53,8 @@ int parse_long(
     long max_digits,
     size_t delta)
 {
+  int tmp_result = 0; // We have to downgrade the precision here from long to int so that some FOTS tests will throw a FOTD0001 date/time overflow. 
+                      // When alternative correct results will be available, this precision downgrading can be removed.
   long digits = 0;
 
   if (position + delta >= len)
@@ -61,15 +63,13 @@ int parse_long(
   if (str[position+delta] < '0' || str[position+delta] > '9')
     return 1;
 
-  result = 0;
-
   while ( position + delta < len && ascii::is_digit( str[position+delta] ) )
   {
-    result = 10 * result + str[position + delta] - '0';
+    tmp_result = 10 * tmp_result + str[position + delta] - '0';
     position++;
     digits++;
 
-    if (result < 0) // we've had an overflow
+    if (tmp_result < 0) // we've had an overflow
       return 2;
   }
 
@@ -79,6 +79,7 @@ int parse_long(
   if (max_digits >= 0 && digits > max_digits)
     return 1;
 
+  result = tmp_result;
   return 0;
 }
 
