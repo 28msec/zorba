@@ -1301,7 +1301,7 @@ T1_TO_T2(dT, dTSt)
     return;
   }
 
-  throwFORG0001Exception(strval, errInfo);
+  throwFORG0001Exception(dt.toString(), errInfo);
 }
   
   
