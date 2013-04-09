@@ -46,8 +46,8 @@ struct picture {
     int mandatory_grouping_seps;
     int minimum_size;
     union {
-      int maximum_size;                 // only in fractional part
       int grouping_interval;            // only in integer part
+      int maximum_size;                 // only in fractional part
     };
 
     part() {
@@ -188,11 +188,12 @@ static void format_integer_part( zstring const &value,
         u_dest.insert( 0, 1, digit_cp );
         if ( n_i != n_end ) ++n_i;
         ++digit_pos;
-        if ( format_cp != pic.VAR_CP( optional_digit_sign ) )
+        if ( minimum_size )
           --minimum_size;
       } else {                          // must be a grouping-separator
         u_dest.insert( 0, 1, pic.VAR_CP( grouping_separator_sign ) );
-        --mandatory_grouping_seps;
+        if ( mandatory_grouping_seps )
+          --mandatory_grouping_seps;
       }
     } else {                            // have exhausted the picture
       if ( part.grouping_interval && !(digit_pos % part.grouping_interval) ) {
@@ -457,7 +458,7 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
       }
       just_got_decimal_separator = false;
       just_got_grouping_separator = true;
-      ++(sub_pic->*cur_part).mandatory_grouping_seps;
+      ++grouping_separators;
 
       if ( decimal_separator_pos == zstring::npos &&
            grouping_interval_possible ) {
@@ -647,7 +648,8 @@ set_active:
       grouping_interval = 0;
     }
     sub_pic->integer_part.grouping_interval = grouping_interval;
-  }
+  } else
+    sub_pic->integer_part.mandatory_grouping_seps = grouping_separators;
 
   //
   // Ibid 4.7.4: [I]f the sub-picture contains no decimal-digit-family
@@ -827,7 +829,8 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
 
     zstring format_name( format_name_item->getStringValue() );
     zstring prefix, local;
-    if ( !xml::split_name( format_name, &prefix, &local ) ) {
+    if ( !xml::split_name( format_name, &prefix, &local ) ||
+         prefix.empty() ) {
       GENV_ITEMFACTORY->createQName( format_name_item, "", "", format_name );
     } else {
       zstring ns;
