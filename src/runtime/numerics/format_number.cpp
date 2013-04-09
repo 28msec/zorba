@@ -274,7 +274,7 @@ static void format_number( store::Item_t &number, picture const &pic,
     // XQuery F&O 3.0 4.7.5: If the input number is NaN (not a number), the
     // result is the specified NaN-symbol (with no prefix or suffix).
     //
-    *dest = pic.NaN;
+    *dest = pic.VAR( NaN );
     return;
   }
 
@@ -652,7 +652,8 @@ set_active:
     if ( decimal_separator_pos != zstring::npos )
       decimal_separator_pos -= leftmost_active_pos;
   }
-  if ( rightmost_active_pos + 1 < sub_pic->format.size() ) {
+  if ( rightmost_active_pos != zstring::npos &&
+       rightmost_active_pos + 1 < sub_pic->format.size() ) {
     //
     // Ibid: The suffix is set to contain all passive characters to the right
     // of the rightmost active character in the fractional part of the
@@ -775,82 +776,84 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
     // empty sequence, the function behaves as if the supplied value were the
     // xs:double value NaN.
     //
-    GENV_ITEMFACTORY->createDouble( result, xs_double::nan() );
+    GENV_ITEMFACTORY->createDouble( value, xs_double::nan() );
+  } else if ( !is_allowed_type( value->getType() ) ) {
+    //
+    // Ibid: The $value argument may be of any numeric data type (xs:double,
+    // xs:float, xs:decimal, or their subtypes including xs:integer).
+    //
+    throw XQUERY_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS(
+        ZED( XPTY0004_FormatNumberBadType_2 ),
+        value->getType()->getStringValue()
+      ),
+      ERROR_LOC( loc )
+    );
+  }
+
+  consumeNext( item, theChildren[1].getp(), planState );
+  item->getStringValue2( pic.format );
+
+  if ( theChildren.size() >= 3 )
+    consumeNext( format_name_item, theChildren[2].getp(), planState );
+
+  if ( theChildren.size() < 3 || !format_name_item ) {
+    df = planState.theCompilerCB->theRootSctx->get_decimal_format( NULL );
   } else {
-    if ( !is_allowed_type( value->getType() ) )
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( XPTY0004_FormatNumberBadType_2 ),
-          value->getType()->getStringValue()
-        ),
-        ERROR_LOC( loc )
-      );
 
-    consumeNext( item, theChildren[1].getp(), planState );
-    item->getStringValue2( pic.format );
-
-    if ( theChildren.size() >= 3 )
-      consumeNext( format_name_item, theChildren[2].getp(), planState );
-
-    if ( theChildren.size() < 3 || !format_name_item ) {
-      df = planState.theCompilerCB->theRootSctx->get_decimal_format( NULL );
+    zstring format_name( format_name_item->getStringValue() );
+    zstring prefix, local;
+    if ( !xml::split_name( format_name, &prefix, &local ) ) {
+      GENV_ITEMFACTORY->createQName( format_name_item, "", "", format_name );
     } else {
-
-      zstring format_name( format_name_item->getStringValue() );
-      zstring prefix, local;
-      if ( !xml::split_name( format_name, &prefix, &local ) ) {
-        GENV_ITEMFACTORY->createQName( format_name_item, "", "", format_name );
+      zstring ns;
+      if ( theSctx->lookup_ns( ns, prefix, loc, false ) ) {
+        GENV_ITEMFACTORY->createQName( format_name_item, ns, prefix, local );
       } else {
-        zstring ns;
-        if ( theSctx->lookup_ns( ns, prefix, loc, false ) ) {
-          GENV_ITEMFACTORY->createQName( format_name_item, ns, prefix, local );
-        } else {
-          //
-          // The prefix is not in the known namespaces so the only posibility
-          // left is for the function to be invoked from an EnclosedIterator.
-          //
-          if ( planState.theNodeConstuctionPath.empty() )
-            throw XQUERY_EXCEPTION(
-              err::FODF1280,
-              ERROR_PARAMS( format_name ),
-              ERROR_LOC( loc )
+        //
+        // The prefix is not in the known namespaces so the only posibility
+        // left is for the function to be invoked from an EnclosedIterator.
+        //
+        if ( planState.theNodeConstuctionPath.empty() )
+          throw XQUERY_EXCEPTION(
+            err::FODF1280,
+            ERROR_PARAMS( format_name ),
+            ERROR_LOC( loc )
+          );
+        store::NsBindings bindings;
+        planState.theNodeConstuctionPath.top()->
+          getNamespaceBindings( bindings );
+        FOR_EACH( store::NsBindings, binding, bindings ) {
+          if ( prefix == binding->first ) {
+            GENV_ITEMFACTORY->createQName(
+              format_name_item, binding->second, prefix, local
             );
-          store::NsBindings bindings;
-          planState.theNodeConstuctionPath.top()->
-            getNamespaceBindings( bindings );
-          FOR_EACH( store::NsBindings, binding, bindings ) {
-            if ( prefix == binding->first ) {
-              GENV_ITEMFACTORY->createQName(
-                format_name_item, binding->second, prefix, local
-              );
-              break;
-            }
+            break;
           }
         }
       }
+    }
 
-      if ( format_name_item.isNull() )
-        throw XQUERY_EXCEPTION(
-          err::FODF1280, ERROR_PARAMS( "<null>" ), ERROR_LOC( loc )
-        );
-      df = planState.theCompilerCB->theRootSctx->
-        get_decimal_format( format_name_item );
-      if ( !df )
-        throw XQUERY_EXCEPTION(
-          err::FODF1280, ERROR_PARAMS( format_name_item->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+    if ( format_name_item.isNull() )
+      throw XQUERY_EXCEPTION(
+        err::FODF1280, ERROR_PARAMS( "<null>" ), ERROR_LOC( loc )
+      );
+    df = planState.theCompilerCB->theRootSctx->
+      get_decimal_format( format_name_item );
+    if ( !df )
+      throw XQUERY_EXCEPTION(
+        err::FODF1280, ERROR_PARAMS( format_name_item->getStringValue() ),
+        ERROR_LOC( loc )
+      );
 
-    } // if ( theChildren.size() < 3 ... )
+  } // if ( theChildren.size() < 3 ... )
 
-    if ( !df.isNull() )
-      set_format( df, &pic );
-    parse_picture( &pic, loc );
-    format_number( value, pic, theSctx->get_typemanager(), loc, &result_str );
-    STACK_PUSH( GENV_ITEMFACTORY->createString( result, result_str ), state );
-  }
-
+  if ( !df.isNull() )
+    set_format( df, &pic );
+  parse_picture( &pic, loc );
+  format_number( value, pic, theSctx->get_typemanager(), loc, &result_str );
+  STACK_PUSH( GENV_ITEMFACTORY->createString( result, result_str ), state );
   STACK_END (state);
 }
 
