@@ -266,10 +266,10 @@ static void format_fractional_part( zstring const &value,
   } // while
 }
 
-static void format_number( store::Item_t &number, picture const &pic,
+static void format_number( store::Item_t &number_item, picture const &pic,
                            TypeManager const *tm, QueryLoc const &loc,
                            zstring *dest ) {
-  if ( number->isNaN() ) {
+  if ( number_item->isNaN() ) {
     //
     // XQuery F&O 3.0 4.7.5: If the input number is NaN (not a number), the
     // result is the specified NaN-symbol (with no prefix or suffix).
@@ -278,9 +278,10 @@ static void format_number( store::Item_t &number, picture const &pic,
     return;
   }
 
-  store::Item_t double_number;
+  store::Item_t double_item;
   GenericCast::castToAtomic(
-    double_number, number, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, tm, nullptr, loc
+    double_item, number_item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, tm, nullptr,
+    loc
   );
 
   store::Item_t zero;
@@ -291,11 +292,11 @@ static void format_number( store::Item_t &number, picture const &pic,
   // the input number is positive, and the negative sub-picture and its
   // associated variables are used otherwise.
   //
+  bool const is_negative = double_item->compare( zero ) < 0;
   picture::sub_picture const &sub_pic =
-    double_number->compare( zero ) > 0 ?
-      pic.pos_subpicture : pic.neg_subpicture;
+    is_negative ? pic.neg_subpicture : pic.pos_subpicture;
 
-  if ( double_number->isPosOrNegInf() ) {
+  if ( double_item->isPosOrNegInf() ) {
     //
     // Ibid: If the input number is positive or negative infinity, the result
     // is the concatenation of the appropriate prefix, the infinity-symbol, and
@@ -313,7 +314,7 @@ static void format_number( store::Item_t &number, picture const &pic,
   // multiplied by 1000. The resulting number is referred to ... as the
   // adjusted number.
   //
-  xs_double adjusted_number( double_number->getDoubleValue() );
+  xs_double adjusted_number( double_item->getDoubleValue().abs() );
   if ( sub_pic.has_percent )
     adjusted_number *= 100;
   else if ( sub_pic.has_per_mille )
@@ -353,8 +354,8 @@ static void format_number( store::Item_t &number, picture const &pic,
     );
   }
 
-  *dest += sub_pic.prefix;
   format_integer_part( integer_part, sub_pic, pic, dest );
+  dest->insert( 0, sub_pic.prefix );
   if ( decimal_separator_pos != zstring::npos && !fractional_part.empty() ) {
     *dest += pic.VAR( decimal_separator_sign );
     format_fractional_part( fractional_part, sub_pic, pic, dest );
