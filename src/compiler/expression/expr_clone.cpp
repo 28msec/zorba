@@ -386,19 +386,26 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
     create_function_item_expr(theSctx,
                               udf,
                               get_loc(),
-                              e->theDynamicFunctionInfo->theClosureSctx,
-                              e->theDynamicFunctionInfo->theFunction,
-                              e->theDynamicFunctionInfo->theFunction->getName(),
-                              e->theDynamicFunctionInfo->theArity,
+                              e->theFunctionItemInfo->theFunction,
+                              e->theFunctionItemInfo->theArity,
                               e->is_inline(),
                               e->needs_context_item(),
                               e->is_coercion());
 
-    std::vector<expr*>::const_iterator varIter = e->theDynamicFunctionInfo->theScopedVarsValues.begin();
-    std::vector<var_expr*>::const_iterator substVarIter = e->theDynamicFunctionInfo->theSubstVarsValues.begin();
-    std::vector<store::Item_t>::const_iterator nameIter = e->theDynamicFunctionInfo->theScopedVarsNames.begin();
-    std::vector<int>::const_iterator isGlobalIter = e->theDynamicFunctionInfo->theIsGlobalVar.begin();
-    for (; varIter != e->theDynamicFunctionInfo->theScopedVarsValues.end(); ++varIter, ++substVarIter, ++nameIter, ++isGlobalIter)
+    std::vector<expr*>::const_iterator varIter = 
+    e->theFunctionItemInfo->theScopedVarsValues.begin();
+
+    std::vector<var_expr*>::const_iterator substVarIter = 
+    e->theFunctionItemInfo->theSubstVarsValues.begin();
+
+    std::vector<store::Item_t>::const_iterator nameIter = 
+    e->theFunctionItemInfo->theScopedVarsNames.begin();
+
+    std::vector<int>::const_iterator isGlobalIter =
+    e->theFunctionItemInfo->theIsGlobalVar.begin();
+
+    for (; varIter != e->theFunctionItemInfo->theScopedVarsValues.end();
+         ++varIter, ++substVarIter, ++nameIter, ++isGlobalIter)
     {
       cloneExpr->add_variable((*varIter) ? (*varIter)->clone(udf, subst) : NULL,
                               (*substVarIter) ? static_cast<var_expr*>((*substVarIter)->clone(udf, subst)) : NULL,

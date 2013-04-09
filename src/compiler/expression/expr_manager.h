@@ -306,14 +306,6 @@ public:
       const QueryLoc& loc,
       expr* wrapped);
 
-#if 0
-  function_trace_expr* create_function_trace_expr(
-      static_context* sctx,
-      user_function* udf,
-      const QueryLoc& loc,
-      expr* aChild);
-#endif
-
   function_trace_expr* create_function_trace_expr(
       user_function* udf,
       expr* aExpr);
@@ -500,10 +492,8 @@ public:
   function_item_expr* create_function_item_expr(static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      static_context *closureSctx,
       function* f,
-      store::Item* aQName,
-      uint32_t aArity,
+      uint32_t arity,
       bool isInline,
       bool needsContextItem,
       bool isCoercion);
@@ -512,7 +502,6 @@ public:
       static_context* sctx,
       user_function* udf,      
       const QueryLoc& loc,
-      static_context *closureSctx,
       bool isInline,
       bool needsContextItem,
       bool isCoercion);

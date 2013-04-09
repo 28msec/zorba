@@ -33,9 +33,9 @@ declare %an:sequential function collapse-general($x)
 
 declare %an:sequential function collapse-objects($x as object()*)
 {
-  object(for $y in distinct-values($x ! (keys(.)))
+  {| for $y in distinct-values($x ! (keys(.)))
          let $z := $x($y)
-         return {$y : collapse-general($z)})
+         return {$y : collapse-general($z)} |}
 };
 
 

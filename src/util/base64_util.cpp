@@ -207,14 +207,14 @@ size_type decode( char const *from, size_type from_len, char *to,
 
 size_type decode( char const *from, size_type from_len, std::vector<char> *to,
                   int options ) {
-  size_type total_decoded = 0;
+  size_type decoded = 0;
   if ( from_len ) {
     std::vector<char>::size_type const orig_size = to->size();
     to->resize( orig_size + decoded_size( from_len ) );
-    total_decoded = decode( from, from_len, &(*to)[ orig_size ], options );
-    to->resize( orig_size + total_decoded );
+    decoded = decode( from, from_len, &(*to)[ orig_size ], options );
+    to->resize( orig_size + decoded );
   }
-  return total_decoded;
+  return decoded;
 }
 
 size_type decode( istream &from, ostream &to, int options ) {
@@ -241,7 +241,6 @@ size_type decode( istream &from, ostream &to, int options ) {
 
 size_type decode( istream &from, vector<char> *to, int options ) {
   bool const ignore_ws = !!(options & dopt_ignore_ws);
-  vector<char>::size_type const orig_size = to->size();
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 4 ];
@@ -253,13 +252,15 @@ size_type decode( istream &from, vector<char> *to, int options ) {
       gcount = from.gcount();
     }
     if ( gcount ) {
-      to->resize( to->size() + decoded_size( gcount ) );
-      total_decoded +=
+      vector<char>::size_type const orig_size = to->size();
+      to->resize( orig_size + decoded_size( gcount ) );
+      size_type const decoded =
         decode( from_buf, gcount, &(*to)[ total_decoded ], options );
+      to->resize( orig_size + decoded );
+      total_decoded += decoded;
     } else
       break;
   }
-  to->resize( orig_size + total_decoded );
   return total_decoded;
 }
 

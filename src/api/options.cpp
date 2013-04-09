@@ -23,8 +23,7 @@ Zorba_CompilerHints::Zorba_CompilerHints()
   :
   opt_level(ZORBA_OPT_LEVEL_O1),
   lib_module(false),
-  for_serialization_only(false),
-  jsoniq_mode(false)
+  for_serialization_only(false)
 {
 }
 

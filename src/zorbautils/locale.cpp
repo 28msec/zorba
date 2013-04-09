@@ -261,9 +261,13 @@ static locale_t get_unix_locale_t( iso639_1::type lang,
     locale_name += '_';
     locale_name += iso3166_1::string_of[ country ];
   }
+  locale_name += ".UTF-8";
   locale_t loc = ::newlocale( LC_TIME_MASK, locale_name.c_str(), nullptr );
-  if ( !loc && country )                // try it without the country
-    loc = ::newlocale( LC_TIME_MASK, iso639_1::string_of[ lang ], nullptr );
+  if ( !loc && country ) {              // try it without the country
+    locale_name = iso639_1::string_of[ lang ];
+    locale_name += ".UTF-8";
+    loc = ::newlocale( LC_TIME_MASK, locale_name.c_str(), nullptr );
+  }
   return loc;
 }
 
@@ -597,7 +601,7 @@ type get_default( iso639_1::type lang ) {
     PK     , // dz: Bhutani => Pakistan
     unknown, // ee: Ewe => (maps to multiple countries)
     GR     , // el: Greek => Greece
-    GB     , // en: English => United Kingdom
+    US     , // en: English => United States
     unknown, // eo: Esperanto => (constructed language)
     ES     , // es: Spanish => Spain
     EE     , // et: Estonian => Estonia
@@ -1298,7 +1302,10 @@ zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
   } // for
   return format;
 #else
-  return get_locale_info( D_FMT, lang, country );
+  zstring fmt( get_locale_info( D_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%d-%b-%Y";                   // dd-Mon-yyyy
+  return fmt;
 #endif /* WIN32 */
 }
 
@@ -1311,7 +1318,10 @@ zstring get_date_time_format( iso639_1::type lang, iso3166_1::type country ) {
   return get_date_format( lang, country ) + ' ' +
          get_time_format( lang, country );
 #else
-  return get_locale_info( D_T_FMT, lang, country );
+  zstring fmt( get_locale_info( D_T_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%a %b %e %X %Y";
+  return fmt;
 #endif /* WIN32 */
 }
 
@@ -1373,7 +1383,15 @@ zstring get_month_abbr( unsigned month_index, iso639_1::type lang,
 
   if ( month_index > 11 )
     throw invalid_argument( BUILD_STRING( month_index, " not in range 0-11" ) );
-  return get_locale_info( month_abbr[ month_index ], lang, country );
+  zstring abbr( get_locale_info( month_abbr[ month_index ], lang, country ) );
+  if ( abbr.empty() && lang == iso639_1::en ) {
+    static char const *const abbr_str[] = {
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+    abbr = abbr_str[ month_index ];
+  }
+  return abbr;
 }
 
 zstring get_month_name( unsigned month_index, iso639_1::type lang,
@@ -1392,7 +1410,15 @@ zstring get_month_name( unsigned month_index, iso639_1::type lang,
 
   if ( month_index > 11 )
     throw invalid_argument( BUILD_STRING( month_index, " not in range 0-11" ) );
-  return get_locale_info( month_name[ month_index ], lang, country );
+  zstring name( get_locale_info( month_name[ month_index ], lang, country ) );
+  if ( name.empty() && lang == iso639_1::en ) {
+    static char const *const name_str[] = {
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "Sepember", "October", "November", "December"
+    };
+    name = name_str[ month_index ];
+  }
+  return name;
 }
 
 zstring get_time_ampm( bool pm, iso639_1::type lang, iso3166_1::type country ) {
@@ -1403,7 +1429,10 @@ zstring get_time_ampm( bool pm, iso639_1::type lang, iso3166_1::type country ) {
     AM_STR, PM_STR
 #endif /* WIN32 */
   };
-  return get_locale_info( ampm[ pm ], lang, country );
+  zstring s( get_locale_info( ampm[ pm ], lang, country ) );
+  if ( s.empty() && lang == iso639_1::en )
+    s = pm ? "PM" : "AM";
+  return s;
 }
 
 zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
@@ -1457,7 +1486,10 @@ zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
   } // for
   return format;
 #else
-  return get_locale_info( T_FMT, lang, country );
+  zstring fmt( get_locale_info( T_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%H:%M:%S";
+  return fmt;
 #endif /* WIN32 */
 }
 
@@ -1479,7 +1511,14 @@ zstring get_weekday_abbr( unsigned day_index, iso639_1::type lang,
 
   if ( day_index > 6 )
     throw invalid_argument( BUILD_STRING( day_index, " not in range 0-6" ) );
-  return get_locale_info( weekday_abbr[ day_index ], lang, country );
+  zstring abbr( get_locale_info( weekday_abbr[ day_index ], lang, country ) );
+  if ( abbr.empty() && lang == iso639_1::en ) {
+    static char const *const abbr_str[] = {
+      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+    };
+    abbr = abbr_str[ day_index ];
+  }
+  return abbr;
 }
 
 zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
@@ -1500,7 +1539,15 @@ zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
 
   if ( day_index > 6 )
     throw invalid_argument( BUILD_STRING( day_index, " not in range 0-6" ) );
-  return get_locale_info( weekday_name[ day_index ], lang, country );
+  zstring name( get_locale_info( weekday_name[ day_index ], lang, country ) );
+  if ( name.empty() && lang == iso639_1::en ) {
+    static char const *const name_str[] = {
+      "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+      "Saturday"
+    };
+    name = name_str[ day_index ];
+  }
+  return name;
 }
 
 bool is_supported( iso639_1::type lang, iso3166_1::type country ) {
@@ -1510,6 +1557,8 @@ bool is_supported( iso639_1::type lang, iso3166_1::type country ) {
   unique_ptr<WCHAR[]> const wlocale_name( get_wlocale_name( lang, country ) );
   return Zorba_IsValidLocaleName( wlocale_name.get() );
 #else
+  if ( lang == iso639_1::en )
+    return true;                        // Always support English
   if ( locale_t const loc = get_unix_locale_t( lang, country ) ) {
     ::freelocale( loc );
     return true;

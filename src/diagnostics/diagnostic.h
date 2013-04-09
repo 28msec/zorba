@@ -22,29 +22,10 @@
 #include <zorba/xquery_exception.h>
 
 #include "compiler/parser/query_loc.h"
-#include "store/api/item.h"
+#include "store/api/shared_types.h"
 
 namespace zorba {
 namespace diagnostic {
-
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * Given a store::Item_t that represents a QName, creates an instance of
- * QNameType having the same QName.
- *
- * @tparam QNameType The type of QName to create.
- * @param qname The QName item.
- * @return Returns said QNameType.
- */
-template<class QNameType> inline
-QNameType to_QName( store::Item_t const &qname ) {
-  return QNameType(
-    qname->getNamespace().c_str(),
-    qname->getPrefix().c_str(),
-    qname->getLocalName().c_str()
-  );
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 

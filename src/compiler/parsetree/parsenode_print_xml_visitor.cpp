@@ -815,6 +815,8 @@ BEGIN_END_TAG (SIND_DeclList)
 BEGIN_END_TAG (DecimalFormatNode)
 BEGIN_END_TAG (SingleType)
 BEGIN_END_TAG (StringLiteral)
+BEGIN_END_TAG (BooleanLiteral)
+BEGIN_END_TAG (NullLiteral)
 BEGIN_END_TAG (StringConcatExpr)
 BEGIN_END_TAG (TextTest)
 BEGIN_END_TAG (NamespaceTest)
@@ -1059,6 +1061,7 @@ BEGIN_END_TAG( FTWordsTimes )
 BEGIN_END_TAG( FTWordsValue )
 
 ////////// JSON ///////////////////////////////////////////////////////////////
+BEGIN_END_TAG(JSONObjectLookup)
 
 BEGIN_END_TAG(JSONArrayConstructor)
 

@@ -18,18 +18,14 @@
 
 // standard
 #include <algorithm>
-#include <cctype>
 #include <cmath>
 #include <cstdlib>
-#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 
 // Zorba
 #include "context/dynamic_context.h"
-#include "context/static_context.h"
-#include "runtime/core/arithmetic_impl.h"
 #include "runtime/visitors/planiter_visitor.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -41,8 +37,6 @@
 #include "util/time_util.h"
 #include "util/utf8_util.h"
 #include "zorbatypes/datetime.h"
-#include "zorbatypes/datetime/parse.h"
-#include "zorbatypes/duration.h"
 #include "zorbatypes/zstring.h"
 #include "zorbautils/locale.h"
 
@@ -79,13 +73,13 @@ struct modifier {
     military_tz   // 'Z' : A B C ... J ... X Y Z
   };
 
-  enum second_co_type {
+  enum co_type {
     no_second_co,
     cardinal,     // 'c': 7 or seven
     ordinal       // 'o': 7th or seventh
   };
 
-  enum second_at_type {
+  enum at_type {
     no_second_at,
     alphabetic,   // 'a'
     traditional   // 't'
@@ -102,9 +96,9 @@ struct modifier {
   } first;
 
   struct {
-    second_co_type co_type;
+    co_type co;
     zstring co_string;
-    second_at_type at_type;
+    at_type at;
   } second;
 
   width_type min_width;
@@ -112,7 +106,7 @@ struct modifier {
 
   //
   // This stuff isn't part of the "presentation modifier" as discussed in the
-  // XQuery3.0 F&O spec, but this is a convenient place to put it nonetheless.
+  // XQuery 3.0 F&O spec, but this is a convenient place to put it nonetheless.
   //
   iso639_1::type lang;
   bool lang_is_fallback;
@@ -162,209 +156,13 @@ struct modifier {
     first.type = arabic;
     first.has_grouping_separators = false;
     first.zero = '0';
-    second.co_type = cardinal;
-    second.at_type = no_second_at;
+    second.co = cardinal;
+    second.at = no_second_at;
     min_width = max_width = 0;
   };
-};
 
-///////////////////////////////////////////////////////////////////////////////
-
-zstring alpha( unsigned n, bool capital ) {
-  zstring result;
-  if ( n ) {
-    char const c = capital ? 'A' : 'a';
-    while ( n ) {
-      unsigned const m = n - 1;
-      result.insert( (zstring::size_type)0, 1, c + m % 26 );
-      n = m / 26;
-    }
-  } else
-    result = "0";
-  return result;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-namespace english_impl {
-
-// Based on code from:
-// http://www.cprogramming.com/challenges/integer-to-english-sol.html
-
-static string const ones[][2] = {
-  { "",          ""            },
-  { "one",       "first"       },
-  { "two",       "second"      },
-  { "three",     "third"       },
-  { "four",      "fourth"      },
-  { "five",      "fifth"       },
-  { "six",       "sixth"       },
-  { "seven",     "seventh"     },
-  { "eight",     "eighth"      },
-  { "nine",      "ninth"       },
-  { "ten",       "tenth"       },
-  { "eleven",    "eleventh"    },
-  { "twelve",    "twelfth"     },
-  { "thirteen",  "thirteenth"  },
-  { "fourteen",  "fourteenth"  },
-  { "fifteen",   "fifteenth"   },
-  { "sixteen",   "sixteenth"   },
-  { "seventeen", "seventeenth" },
-  { "eighteen",  "eighteenth"  },
-  { "nineteen",  "nineteenth"  }
-};
-
-static zstring const tens[][2] = {
-  { "",        ""           },
-  { "",        ""           },
-  { "twenty",  "twentieth"  },
-  { "thirty",  "thirtieth"  },
-  { "forty",   "fortieth"   },
-  { "fifty",   "fiftieth"   },
-  { "sixty",   "sixtieth"   },
-  { "seventy", "seventieth" },
-  { "eighty",  "eighteenth" },
-  { "ninety",  "ninetieth"  }
-};
-
-// Enough entries to print English for 64-bit integers.
-static zstring const big[][2] = {
-  { "",            ""              },
-  { "thousand",    "thousandth"    },
-  { "million",     "millionth"     },
-  { "billion",     "billionth"     },
-  { "trillion",    "trillionth"    },
-  { "quadrillion", "quadrillionth" },
-  { "quintillion", "quintillionth" }
-};
-
-inline zstring if_space( zstring const &s ) {
-  return s.empty() ? "" : ' ' + s;
-}
-
-static zstring hundreds( int64_t n, bool ordinal ) {
-  if ( n < 20 )
-    return ones[ n ][ ordinal ];
-  zstring const tmp( if_space( ones[ n % 10 ][ ordinal ] ) );
-  return tens[ n / 10 ][ ordinal && tmp.empty() ] + tmp;
-}
-
-} // namespace english_impl
-
-/**
- * Converts a signed integer to English, e.g, 42 becomes "forty two".
- *
- * @param n The integer to convert.
- * @param ordinal If \c true, ordinal words ("forty second") are returned.
- * @return Returns \a n in English.
- */
-static zstring english( int64_t n, bool ordinal = false ) {
-  using namespace english_impl;
-
-  if ( !n )
-    return ordinal ? "zeroth" : "zero";
-
-  bool const negative = n < 0;
-  if ( negative )
-    n = -n;
-
-  int big_count = 0;
-  bool big_ordinal = ordinal;
-  zstring r;
-
-  while ( n ) {
-    if ( int64_t const m = n % 1000 ) {
-      zstring s;
-      if ( m < 100 )
-        s = hundreds( m, ordinal );
-      else {
-        zstring const tmp( if_space( hundreds( m % 100, ordinal ) ) );
-        s = ones[ m / 100 ][0] + ' '
-          + (ordinal && tmp.empty() ? "hundredth" : "hundred") + tmp;
-      }
-      zstring const tmp( if_space( r ) );
-      r = s + if_space( big[ big_count ][ big_ordinal && tmp.empty() ] + tmp );
-      big_ordinal = false;
-    }
-    n /= 1000;
-    ++big_count;
-    ordinal = false;
-  }
-
-  if ( negative )
-    r = "negative " + r;
-  return r;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-static bool is_grouping_separator( unicode::code_point cp ) {
-  using namespace unicode;
-  //
-  // XQuery 3.0 F&O: 4.6.1: a grouping-separator-sign is a non-alphanumeric
-  // character, that is a character whose Unicode category is other than Nd,
-  // Nl, No, Lu, Ll, Lt, Lm or Lo.
-  //
-  return !( is_category( cp, Nd )
-         || is_category( cp, Nl )
-         || is_category( cp, No )
-         || is_category( cp, Lu )
-         || is_category( cp, Ll )
-         || is_category( cp, Lt )
-         || is_category( cp, Lm )
-         || is_category( cp, Lo )
-  );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * Returns the English ordinal suffix for an integer, e.g., "st" for 1, "nd"
- * for 2, etc.
- *
- * @param n The integer to return the ordinal suffix for.
- * @return Returns said suffix.
- */
-static char const* ordinal( int n ) {
-  n = std::abs( n );
-  switch ( n % 100 ) {
-    case 11:
-    case 12:
-    case 13:
-      break;
-    default:
-      switch ( n % 10 ) {
-        case 1: return "st";
-        case 2: return "nd";
-        case 3: return "rd";
-      }
-  }
-  return "th";
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * A unary_function to convert a (presumed) lower-case string to title-case
- * "Like This."
- */
-class to_title : public unary_function<char,char> {
-public:
-  to_title() : capitalize_( true ) { }
-
-  result_type operator()( argument_type c ) {
-    if ( ascii::is_alpha( c ) ) {
-      if ( capitalize_ ) {
-        c = ascii::to_upper( c );
-        capitalize_ = false;
-      }
-    } else if ( ascii::is_space( c ) )
-      capitalize_ = true;
-    return c;
-  };
-
-private:
-  bool capitalize_;
+  // default modifier(modifier const&) is fine
+  // default modifier& operator=(modifier const&) is fine
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -374,15 +172,15 @@ static void append_number( int n, modifier const &mod, zstring *dest ) {
     case modifier::arabic: {
       utf8::itou_buf_type buf;
       zstring tmp( utf8::itou( n, buf, mod.first.zero ) );
-      if ( mod.second.co_type == modifier::ordinal )
-        tmp += ordinal( n );
+      if ( mod.second.co == modifier::ordinal )
+        tmp += ztd::ordinal( n );
       *dest += mod.left_pad_zero( &tmp );
       break;
     }
 
     case modifier::alpha:
     case modifier::ALPHA: {
-      zstring tmp( alpha( n, mod.first.type == modifier::ALPHA ) );
+      zstring tmp( ztd::alpha( n, mod.first.type == modifier::ALPHA ) );
       *dest += mod.right_pad_space( &tmp );
       break;
     }
@@ -399,20 +197,20 @@ static void append_number( int n, modifier const &mod, zstring *dest ) {
     }
 
     case modifier::words: {
-      zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
+      zstring tmp( ztd::english( n, mod.second.co == modifier::ordinal ) );
       *dest += mod.right_pad_space( &tmp );
       break;
     }
 
     case modifier::Words: {
-      zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
-      std::transform( tmp.begin(), tmp.end(), tmp.begin(), to_title() );
+      zstring tmp( ztd::english( n, mod.second.co == modifier::ordinal ) );
+      std::transform( tmp.begin(), tmp.end(), tmp.begin(), ascii::to_title() );
       *dest += mod.right_pad_space( &tmp );
       break;
     }
 
     case modifier::WORDS: {
-      zstring tmp( english( n, mod.second.co_type == modifier::ordinal ) );
+      zstring tmp( ztd::english( n, mod.second.co == modifier::ordinal ) );
       ascii::to_upper( tmp );
       *dest += mod.right_pad_space( &tmp );
       break;
@@ -479,32 +277,43 @@ static void append_string( zstring const &s, modifier const &mod,
 }
 
 static void append_month( unsigned mon, modifier const &mod, zstring *dest ) {
+  modifier mod_copy( mod );
   switch ( mod.first.type ) {
     case modifier::name:
     case modifier::Name:
     case modifier::NAME: {
       zstring name( locale::get_month_name( mon, mod.lang, mod.country ) );
-      utf8_string<zstring> u_name( name );
-      if ( mod.gt_max_width( u_name.size() ) ) {
-        //
-        // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
-        // exceeds the specified maximum width, then the processor should
-        // attempt to use an alternative shorter representation that fits
-        // within the maximum width.  Where the presentation modifier is N, n,
-        // or Nn, this is done by abbreviating the name, using either
-        // conventional abbreviations if available, or crude right-truncation
-        // if not.
-        //
-        name = locale::get_month_abbr( mon, mod.lang, mod.country );
-        if ( mod.gt_max_width( u_name.size() ) )
-          u_name = u_name.substr( 0, mod.max_width );
+      if ( !name.empty() ) {
+        utf8_string<zstring> u_name( name );
+        if ( mod.gt_max_width( u_name.size() ) ) {
+          //
+          // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
+          // exceeds the specified maximum width, then the processor should
+          // attempt to use an alternative shorter representation that fits
+          // within the maximum width.  Where the presentation modifier is N,
+          // n, or Nn, this is done by abbreviating the name, using either
+          // conventional abbreviations if available, or crude right-truncation
+          // if not.
+          //
+          zstring abbr( locale::get_month_abbr( mon, mod.lang, mod.country ) );
+          if ( !abbr.empty() ) {
+            utf8_string<zstring> u_abbr( abbr );
+            if ( mod.gt_max_width( u_abbr.size() ) )
+              u_abbr = u_abbr.substr( 0, mod.max_width );
+            name = abbr;
+          } else
+            u_name = u_name.substr( 0, mod.max_width );
+        }
+        mod.append_if_fallback_lang( dest );
+        append_string( name, mod, dest );
+        break;
       }
-      mod.append_if_fallback_lang( dest );
-      append_string( name, mod, dest );
-      break;
+      mod_copy.first.type = modifier::arabic;
+      mod_copy.first.format.clear();
+      // no break;
     }
     default:
-      append_number( mon + 1, mod, dest );
+      append_number( mon + 1, mod_copy, dest );
   }
 }
 
@@ -578,6 +387,7 @@ static void append_timezone( char component, TimeZone const &tz,
 
 fallback:
       format = "01:01";
+      has_grouping_separators = true;
       // no break;
 
     default:
@@ -592,7 +402,7 @@ fallback:
         tmp = "GMT";
       }
 
-      if ( mod.second.at_type == modifier::traditional && !hour && !min ) {
+      if ( mod.second.at == modifier::traditional && !hour && !min ) {
         //
         // Ibid: If the first presentation modifier is numeric, in any of the
         // above formats, and the second presentation modifier is t, then a
@@ -629,7 +439,7 @@ fallback:
               ++hm_width[ grouping_separators ];
             continue;
           }
-          if ( got_digit && is_grouping_separator( cp ) ) {
+          if ( got_digit && unicode::is_grouping_separator( cp ) ) {
             if ( ++grouping_separators == 1 ) {
               zstring tmp2( utf8::itou( hour, buf, mod.first.zero ) );
               tmp += utf8::left_pad( &tmp2, hm_width[0], mod.first.zero );
@@ -698,24 +508,36 @@ static void append_weekday( unsigned mday, unsigned mon, unsigned year,
     case modifier::Name:
     case modifier::NAME: {
       zstring name( locale::get_weekday_name( wday, mod.lang, mod.country ) );
-      utf8_string<zstring> u_name( name );
-      if ( mod.gt_max_width( u_name.size() ) ) {
-        //
-        // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
-        // exceeds the specified maximum width, then the processor should
-        // attempt to use an alternative shorter representation that fits
-        // within the maximum width.  Where the presentation modifier is N, n,
-        // or Nn, this is done by abbreviating the name, using either
-        // conventional abbreviations if available, or crude right-truncation
-        // if not.
-        //
-        name = locale::get_weekday_abbr( wday, mod.lang, mod.country );
-        if ( mod.gt_max_width( u_name.size() ) )
-          u_name = u_name.substr( 0, mod.max_width );
+      if ( !name.empty() ) {
+        utf8_string<zstring> u_name( name );
+        if ( mod.gt_max_width( u_name.size() ) ) {
+          //
+          // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
+          // exceeds the specified maximum width, then the processor should
+          // attempt to use an alternative shorter representation that fits
+          // within the maximum width.  Where the presentation modifier is N,
+          // n, or Nn, this is done by abbreviating the name, using either
+          // conventional abbreviations if available, or crude right-truncation
+          // if not.
+          //
+          zstring abbr(
+            locale::get_weekday_abbr( wday, mod.lang, mod.country )
+          );
+          if ( !abbr.empty() ) {
+            utf8_string<zstring> u_abbr( abbr );
+            if ( mod.gt_max_width( u_abbr.size() ) )
+              u_abbr = u_abbr.substr( 0, mod.max_width );
+            name = abbr;
+          } else
+            u_name = u_name.substr( 0, mod.max_width );
+        }
+        mod.append_if_fallback_lang( dest );
+        append_string( name, mod_copy, dest );
+        break;
       }
-      mod.append_if_fallback_lang( dest );
-      append_string( name, mod_copy, dest );
-      break;
+      mod_copy.first.type = modifier::arabic;
+      mod_copy.first.format.clear();
+      // no break;
     }
     default: {
       int const new_wday = calendar::convert_wday_to( wday, mod.cal );
@@ -793,7 +615,7 @@ static void parse_first_modifier( zstring const &picture_str,
   utf8_string<zstring> u_mod_format( mod->first.format );
   unicode::code_point cp = *u;
 
-  if ( cp != '#' && is_grouping_separator( cp ) ) {
+  if ( cp != '#' && unicode::is_grouping_separator( cp ) ) {
     //
     // XQuery 3.0 F&O: 4.6.1: A grouping-separator-sign must not appear
     // at the start ... of the decimal-digit-pattern ....
@@ -885,7 +707,7 @@ static void parse_first_modifier( zstring const &picture_str,
         break;
       else if ( unicode::is_space( cp ) )
         continue;
-      else if ( is_grouping_separator( cp ) ) {
+      else if ( unicode::is_grouping_separator( cp ) ) {
         if ( cp == ',' && !--commas ) {
           //
           // Ibid: if a variable marker contains one or more commas, then the
@@ -989,6 +811,37 @@ static void parse_first_modifier( zstring const &picture_str,
   mod->first.parsed = true;
 }
 
+static void parse_variation( utf8_string<zstring const> const &u_picture_str,
+                             utf8_string<zstring const>::const_iterator *u,
+                             modifier *mod, QueryLoc const &loc ) {
+  utf8_string<zstring const>::const_iterator &v = *u;
+  if ( v == u_picture_str.end() )
+    return;
+  if ( *v == '(' ) {
+    //
+    // XQuery F&O 3.0 4.6.1: The string of characters between the parentheses,
+    // if present, is used to select between other possible variations of
+    // cardinal or ordinal numbering sequences. The interpretation of this
+    // string is implementation-defined. No error occurs if the implementation
+    // does not define any interpretation for the defined string.
+    //
+    utf8_string<zstring> u_pic_co_string( mod->second.co_string );
+    while ( true ) {
+      if ( ++v == u_picture_str.end() )
+        throw XQUERY_EXCEPTION(
+          err::FOFD1340,
+          ERROR_PARAMS( *u_picture_str.get(), ZED( CharExpected_3 ), ')' ),
+          ERROR_LOC( loc )
+        );
+      unicode::code_point const cp = *v;
+      if ( cp == ')' )
+        break;
+      u_pic_co_string += cp;
+    }
+    ++v;
+  }
+}
+
 static void parse_second_modifier( zstring const &picture_str,
                                    zstring::const_iterator *i, modifier *mod,
                                    QueryLoc const &loc ) {
@@ -996,29 +849,86 @@ static void parse_second_modifier( zstring const &picture_str,
   ascii::skip_whitespace( picture_str, &j );
   if ( j == picture_str.end() )
     return;
-  switch ( *j ) {
-    case 'c': mod->second.co_type = modifier::cardinal   ; break;
-    case 'o': mod->second.co_type = modifier::ordinal    ; break;
-    case 'a': mod->second.at_type = modifier::alphabetic ; ++j; return;
-    case 't': mod->second.at_type = modifier::traditional; ++j; return;
-    default : return;
-  }
-  if ( ++j == picture_str.end() )
-    return;
-  if ( *j == '(' ) {
-    while ( true ) {
-      if ( ++j == picture_str.end() )
+
+  unicode::code_point cp;
+  bool got_c, got_o, got_a, got_t;
+  got_c = got_o = got_a = got_t = false;
+  utf8_string<zstring const> const u_picture_str( picture_str );
+  utf8_string<zstring const>::const_iterator u( u_picture_str.current( j ) );
+
+  while ( u != u_picture_str.end() ) {
+    cp = *u++;
+    switch ( cp ) {
+      case ']':
+        return;
+      case 'c':
+        if ( got_c )
+          goto dup_2nd_modifier;
+        if ( got_o || got_a || got_t )
+          goto bad_2nd_modifier_here;
+        got_c = true;
+        mod->second.co = modifier::cardinal;
+        parse_variation( u_picture_str, &u, mod, loc );
+        break;
+      case 'o':
+        if ( got_o )
+          goto dup_2nd_modifier;
+        if ( got_c || got_a || got_t )
+          goto bad_2nd_modifier_here;
+        got_o = true;
+        mod->second.co = modifier::ordinal;
+        parse_variation( u_picture_str, &u, mod, loc );
+        break;
+      case 'a':
+        if ( got_a )
+          goto dup_2nd_modifier;
+        if ( got_t )
+          goto bad_2nd_modifier_here;
+        got_a = true;
+        mod->second.at = modifier::alphabetic;
+        break;
+      case 't':
+        if ( got_t )
+          goto dup_2nd_modifier;
+        if ( got_a )
+          goto bad_2nd_modifier_here;
+        got_t = true;
+        mod->second.at = modifier::traditional;
+        break;
+      default:
         throw XQUERY_EXCEPTION(
           err::FOFD1340,
-          ERROR_PARAMS( picture_str, ZED( CharExpected_3 ), ')' ),
+          ERROR_PARAMS(
+            picture_str,
+            ZED( FOFD1340_Bad2ndModifier_3 ),
+            unicode::printable_cp( cp )
+          ),
           ERROR_LOC( loc )
         );
-      if ( *j == ')' )
-        break;
-      mod->second.co_string += *j;
-    } 
-    ++j;
-  }
+    } // switch
+  } // while
+  j = u.base();
+  return;
+
+bad_2nd_modifier_here:
+  throw XQUERY_EXCEPTION(
+    err::FOFD1340,
+    ERROR_PARAMS(
+      picture_str,
+      ZED( FOFD1340_Bad2ndModifierHere_3 ),
+      unicode::printable_cp( cp )
+    )
+  );
+
+dup_2nd_modifier:
+  throw XQUERY_EXCEPTION(
+    err::FOFD1340,
+    ERROR_PARAMS(
+      picture_str,
+      ZED( FOFD1340_Dup2ndModifier_3 ),
+      unicode::printable_cp( cp )
+    )
+  );
 }
 
 static void parse_width_modifier( zstring const &picture_str,
@@ -1109,7 +1019,7 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
   store::Item_t item;
   PlanIteratorState *state;
 
-  DEFAULT_STACK_INIT( PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
   if ( !consumeNext( item, theChildren[0].getp(), planState ) ) {
     // Got the empty sequence -- return same
@@ -1156,6 +1066,15 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       // language defined in the dynamic context.
       //
       planState.theLocalDynCtx->get_locale( &lang, &country );
+      if ( !locale::is_supported( lang, country ) ) {
+        //
+        // If the language defined in the dynamic context isn't supported
+        // either, try the host's language and hope for the best.
+        //
+        lang = locale::get_host_lang();
+        country = locale::get_host_country();
+        lang_is_fallback = true;
+      }
     }
 
     char component;
@@ -1247,9 +1166,11 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         if ( i == picture_str.end() )
           goto eos;
         if ( *i != ']' ) {
-          parse_second_modifier( picture_str, &i, &mod, loc );
-          if ( i == picture_str.end() )
-            goto eos;
+          if ( *i != ',' && *i != ';' ) {
+            parse_second_modifier( picture_str, &i, &mod, loc );
+            if ( i == picture_str.end() )
+              goto eos;
+          }
           parse_width_modifier( picture_str, &i, &mod, loc );
           if ( i == picture_str.end() )
             goto eos;

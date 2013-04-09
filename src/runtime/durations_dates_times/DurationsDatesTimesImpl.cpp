@@ -180,6 +180,10 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
     {
       STACK_PUSH(GENV_ITEMFACTORY->createTime(result, dt.get()), state);
     }
+    else if (item0->getTypeCode() == store::XS_DATETIME_STAMP)
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createDateTimeStamp(result, dt.get()), state);
+    }
     else
     {
       ZORBA_ASSERT(false);
