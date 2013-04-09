@@ -250,7 +250,8 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
           } else {                      // must be a grouping-separator
             grouping_cp = pic_cp;       // remember for later
             u_dest.insert( 0, 1, grouping_cp );
-            --mandatory_grouping_seps;
+            if ( mandatory_grouping_seps )
+              --mandatory_grouping_seps;
           }
         } else {                        // have exhausted the picture
           if ( pic.primary.grouping_interval &&
