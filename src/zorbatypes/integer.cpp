@@ -59,8 +59,7 @@ namespace zorba {
 TEMPLATE_DECL(I)
 void INTEGER_IMPL(I)::parse( char const *s ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
-  bool minusZero = false;
-  Decimal::parse( s, &value_, &minusZero, Decimal::parse_integer );
+  Decimal::parse( s, &value_, Decimal::parse_integer );
 #else
   value_type const temp( ztd::aton<value_type>( s ) );
   if ( is_too_big( temp ) )
