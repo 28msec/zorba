@@ -107,6 +107,7 @@ struct picture {
   // default picture(picture const&) is fine
   // default picture& operator=(picture const&) is fine
 
+#if 0
   bool is_active( unicode::code_point cp ) {
     //
     // XQuery F&O 3.0 4.7.3: The ... variables decimal-separator-sign,
@@ -123,6 +124,7 @@ struct picture {
             zero_cp == var_cp[ mandatory_digit_sign ] )
         || cp == var_cp[ pattern_separator_sign ];
   }
+#endif
 
   void set_format_codepoints() {
     for ( int i = 0; i < NUM_VARS; ++i )
@@ -579,6 +581,13 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
     continue;
 
 set_active:
+    //
+    // XQuery F&O 3.0 4.7.3: The ... variables decimal-separator-sign,
+    // grouping-sign, decimal-digit-family, optional-digit-sign and pattern-
+    // separator-sign are classified as active characters, and all other
+    // characters (including the percent-sign and per-mille-sign) are
+    // classified as passive characters.
+    //
     if ( got_active && got_passive ) {
       //
       // Ibid 4.7.3: A sub-picture must not contain a passive character that is
@@ -600,15 +609,15 @@ set_active:
     zstring::size_type const cur_pos = u.base() - sub_pic->format.begin();
     if ( leftmost_active_pos == zstring::npos )
       leftmost_active_pos = cur_pos;
-    if ( decimal_separator_pos != zstring::npos )
+    //if ( decimal_separator_pos != zstring::npos )
       rightmost_active_pos = cur_pos;
   } // for
 
   if ( !(got_optional_digit || got_mandatory_digit) ) {
     throw XQUERY_EXCEPTION(
       //
-      // Ibid 4.7.3: A sub-picture must contain at least one character that is
-      // an optional-digit-sign or a member of the decimal-digit-family.
+      // Ibid: A sub-picture must contain at least one character that is an
+      // optional-digit-sign or a member of the decimal-digit-family.
       //
       err::FODF1310,
       ERROR_PARAMS( ZED( FODF1310_MustHaveOptOrMandatoryDigit ) ),
