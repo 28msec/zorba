@@ -405,7 +405,7 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
   bool got_optional_digit = false;
   bool got_part_mandatory_digit = false;
   bool got_part_optional_digit = false;
-  bool got_passive = false;
+  bool got_passive_after_active = false;
   bool grouping_interval_possible = true; // used only for integer part
   bool just_got_decimal_separator = false;
   bool just_got_grouping_separator = false;
@@ -577,7 +577,8 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
       goto set_active;
     }
 
-    got_passive = true;
+    if ( got_active )
+      got_passive_after_active = true;
     continue;
 
 set_active:
@@ -588,11 +589,13 @@ set_active:
     // characters (including the percent-sign and per-mille-sign) are
     // classified as passive characters.
     //
-    if ( got_active && got_passive ) {
+    if ( got_passive_after_active && got_active ) {
       //
       // Ibid 4.7.3: A sub-picture must not contain a passive character that is
       // preceded by an active character and that is followed by another active
       // character.
+      //
+      // In other words, you can't have active-passive-active.
       //
       throw XQUERY_EXCEPTION(
         err::FODF1310,
