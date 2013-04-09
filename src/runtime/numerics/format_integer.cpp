@@ -43,6 +43,8 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+namespace {
+
 struct picture {
   enum primary_type {
     arabic,       // '1' : 0 1 2 ... 10 11 12 ...
@@ -104,6 +106,8 @@ struct picture {
   // default picture(picture const&) is fine
   // default picture& operator=(picture const&) is fine
 };
+
+} // namespace
 
 ///////////////////////////////////////////////////////////////////////////////
 
