@@ -119,7 +119,7 @@ DecimalFormat::DecimalFormat( bool is_default, const store::Item_t& qname,
   value_type const &zero_digit = properties_[ "zero-digit" ];
   unicode::code_point const zero_digit_cp = utf8::decode( zero_digit.c_str() );
   unicode::code_point zero_cp;
-  if ( !unicode::is_Nd( zero_digit_cp, &zero_cp ) || zero_digit_cp == zero_cp )
+  if ( !unicode::is_Nd( zero_digit_cp, &zero_cp ) || zero_digit_cp != zero_cp )
     throw XQUERY_EXCEPTION(
       err::XQST0097,
       ERROR_PARAMS( zero_digit, "zero-digit", ZED( XQST0097_MustBeZeroDigit ) ),
