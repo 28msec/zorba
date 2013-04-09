@@ -454,6 +454,7 @@
 #define ZED_libxml_ERR_94 "~libxml_ERR_94"
 #define ZED_libxml_ERR_95 "~libxml_ERR_95"
 #define ZED_libxml_ERR_96 "~libxml_ERR_96"
+#define ZED_libxml_ERR_99 "~libxml_ERR_99"
 #define ZED_libxml_WAR_97 "~libxml_WAR_97"
 #define ZED_libxml_WAR_98 "~libxml_WAR_98"
 #define ZED_libxml_WAR_99 "~libxml_WAR_99"

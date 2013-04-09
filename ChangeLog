@@ -55,6 +55,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1122396 (Associate origin/destination URI to I/O stream)
   * Fixed bug #1111786 (xml/json parse error location in catch clause).
   * Fixed bug #1153800 (construct hexBinary without encoding the data)
+  * Fixed bug #1076402 (bug in CastIterator when target is QName)
   * NaN items are considered equal to each other during grouping
   * Fixed bug #855481 (Too small time types on Windows).
   * Fixed bug #1132032 (Certain regexes involving ^ should be legal)
@@ -74,6 +75,8 @@ Bug Fixes/Other Changes:
     constructor exprs)
   * Fixed bug #1125444 (input group-by exprs were not treated by index-flwor_vars()
     function, leading to erroneous loop hoisting).
+  * Raise XQST0046, if needed, from namespace declaration attribute inside
+    direct element constructor.
   * Fixed bug #1023362 (xsi:type attribute ignored during validation)
 
 
