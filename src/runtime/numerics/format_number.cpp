@@ -355,7 +355,9 @@ static void format_number( store::Item_t &number_item, picture const &pic,
   }
 
   format_integer_part( integer_part, sub_pic, pic, dest );
+  // Insert prefix afterwards so as not to complicate format_integer_part().
   dest->insert( 0, sub_pic.prefix );
+
   if ( decimal_separator_pos != zstring::npos && !fractional_part.empty() ) {
     *dest += pic.VAR( decimal_separator_sign );
     format_fractional_part( fractional_part, sub_pic, pic, dest );
