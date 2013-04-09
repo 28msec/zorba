@@ -654,16 +654,6 @@ set_active:
   if ( !got_mandatory_digit && decimal_separator_pos == zstring::npos )
     sub_pic->integer_part.minimum_size = 1;
 
-  if ( leftmost_active_pos != zstring::npos ) {
-    //
-    // Ibid: The prefix is set to contain all passive characters in the
-    // sub-picture to the left of the leftmost active character.
-    //
-    sub_pic->prefix = sub_pic->format.substr( 0, leftmost_active_pos );
-    sub_pic->format.erase( 0, leftmost_active_pos );
-    if ( decimal_separator_pos != zstring::npos )
-      decimal_separator_pos -= leftmost_active_pos;
-  }
   if ( rightmost_active_pos != zstring::npos &&
        rightmost_active_pos + 1 < sub_pic->format.size() ) {
     //
@@ -671,8 +661,26 @@ set_active:
     // of the rightmost active character in the fractional part of the
     // sub-picture.
     //
+    // Note: must do suffix first so calling erase() won't invalidate
+    // leftmost_active_pos.
+    // 
     sub_pic->suffix = sub_pic->format.substr( rightmost_active_pos + 1 );
     sub_pic->format.erase( rightmost_active_pos + 1 );
+  }
+  if ( leftmost_active_pos != zstring::npos ) {
+    //
+    // Ibid: The prefix is set to contain all passive characters in the
+    // sub-picture to the left of the leftmost active character.
+    //
+    sub_pic->prefix = sub_pic->format.substr( 0, leftmost_active_pos );
+    sub_pic->format.erase( 0, leftmost_active_pos );
+
+    if ( decimal_separator_pos != zstring::npos ) {
+      //
+      // Adjust decimal_separator_pos by number of characters erased above.
+      //
+      decimal_separator_pos -= leftmost_active_pos;
+    }
   }
 
   sub_pic->integer_part.format =
