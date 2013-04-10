@@ -194,13 +194,6 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (result->isNode())
     {
-      if (result->getNodeKind() == store::StoreConsts::elementNode &&
-          result->getNilled())
-      {
-        STACK_PUSH(false, state);
-        goto done;
-      }
-
       itemNode.transfer(result);
 
       try 

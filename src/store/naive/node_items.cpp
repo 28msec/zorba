@@ -2946,6 +2946,17 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
     {
       zstring rch;
       getStringValue2(rch);
+
+      if (rch.empty())
+      {
+        if (getNilled())
+        {
+          val = NULL;
+          iter = NULL;
+          return;
+        }
+      }
+
       GET_FACTORY().createUntypedAtomic(val, rch);
     }
   }
@@ -3031,9 +3042,10 @@ bool ElementNode::getNilled() const
   store::Item_t val;
 
   if (getType()->equals(GET_STORE().XS_UNTYPED_QNAME))
-  {
     return false;
-  }
+
+  if (!isValidated())
+    return false;
 
   const_iterator ite = childrenBegin();
   const_iterator end = childrenEnd();
@@ -3060,8 +3072,7 @@ bool ElementNode::getNilled() const
     if (ZSTREQ(attr->getNodeName()->getNamespace(),
                "http://www.w3.org/2001/XMLSchema-instance") &&
         ZSTREQ(attr->getNodeName()->getLocalName(), "nil") &&
-        (ZSTREQ(strval, "true") || ZSTREQ(strval, "1") ) &&
-        isValidated())
+        (ZSTREQ(strval, "true") || ZSTREQ(strval, "1") ))
     {
       return true;
       break;
