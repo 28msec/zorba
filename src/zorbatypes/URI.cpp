@@ -632,11 +632,24 @@ void URI::initialize(const zstring& uri, bool have_base)
     lIndex = (ulong)theScheme.size() + 1;
   }
 
+  if(is_set(Scheme) && (lTrimmedURI.compare(lIndex, 1, "/") != 0))
+  {
+    // assume it is an opaque uri
+    if(lFragmentIdx == zstring::npos)
+    {
+      set_opaque_part(lTrimmedURI.substr(lIndex, lTrimmedURILength - lIndex));
+    }
+    else
+    {
+      set_opaque_part(lTrimmedURI.substr(lIndex, lFragmentIdx - lIndex));
+      set_fragment(lTrimmedURI.substr(lFragmentIdx+1, lTrimmedURILength - lFragmentIdx - 1));
+    }
+  }
   /**
    * Authority
    * two slashes means generic URI syntax, so we get the authority
    */
-  if ( (lTrimmedURI.compare(lIndex, 2, "//") == 0) ||
+  else if ( (lTrimmedURI.compare(lIndex, 2, "//") == 0) ||
         // allow JAVA FILE constructs without authority, i.e.: file:/D:/myFile 
        (ZSTREQ(theScheme, "file") && (lTrimmedURI.compare(lIndex, 1, "/") == 0)))
   {
@@ -706,22 +719,6 @@ void URI::initialize(const zstring& uri, bool have_base)
         ERROR_PARAMS( lTrimmedURI, ZED( BadURISyntaxForScheme_3 ), theScheme )
       );
      }
-  }
-  else
-  {
-    // Here it comes the opaque URI part
-    std::string str = theScheme.str();
-    std::string rest = lTrimmedURI.substr(lIndex).str();
-    // assume it is an opaque uri
-    if(lFragmentIdx == zstring::npos)
-    {
-      set_opaque_part(lTrimmedURI.substr(lIndex, lTrimmedURILength - lIndex));
-    }
-    else
-    {
-      set_opaque_part(lTrimmedURI.substr(lIndex, lFragmentIdx - lIndex));
-      set_fragment(lTrimmedURI.substr(lFragmentIdx+1, lTrimmedURILength - lFragmentIdx - 1));
-    }
   }
 
   // stop, if we're done here
