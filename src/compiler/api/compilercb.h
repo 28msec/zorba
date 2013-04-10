@@ -131,6 +131,7 @@ class ExprManager;
   ------------------------
   Pointer to the function to call to print the expr tree that results from
   translating the query AST.
+
 ********************************************************************************/
 class CompilerCB : public zorba::serialization::SerializeBaseClass
 {
@@ -252,6 +253,8 @@ public:
   static_context* getStaticContext(int id);
 
   ExprManager* getExprManager() const { return theEM; }
+
+  uint8_t getVisitId() { return theNextVisitId++; }
 
   //
   // Pragmas

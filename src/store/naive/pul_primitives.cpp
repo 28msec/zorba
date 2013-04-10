@@ -166,7 +166,8 @@ void UpdDelete::apply()
   
   if (theTarget->isNode())
   {
-    static_cast<zorba::simplestore::XmlNode*>(theTarget.getp())
+    assert(dynamic_cast<XmlNode*>(theTarget.getp()));
+    static_cast<XmlNode*>(theTarget.getp())
         ->unregisterReferencesToDeletedSubtree();
   }
 }
@@ -202,14 +203,17 @@ UpdInsertChildren::UpdInsertChildren(
   std::size_t numChildren = children.size();
   theNewChildren.resize(numChildren);
 
-  for (std::size_t i = 0; i < numChildren; i++)
+  for (csize i = 0; i < numChildren; ++i)
   {
     if (i > 0 &&
         children[i]->getNodeKind() == store::StoreConsts::textNode &&
-        theNewChildren[i-1]->getNodeKind() == store::StoreConsts::textNode)
+        theNewChildren[numNewChildren-1]->getNodeKind() == store::StoreConsts::textNode)
     {
-      TextNode* node1 = reinterpret_cast<TextNode*>(theNewChildren[i-1].getp());
-      TextNode* node2 = reinterpret_cast<TextNode*>(children[i].getp());
+      TextNode* node1 = 
+      reinterpret_cast<TextNode*>(theNewChildren[numNewChildren-1].getp());
+
+      TextNode* node2 = 
+      reinterpret_cast<TextNode*>(children[i].getp());
 
       zstring newText;
       newText.reserve(node1->getText().size() + node2->getText().size());
@@ -219,13 +223,15 @@ UpdInsertChildren::UpdInsertChildren(
     }
     else
     {
-      theNewChildren[i].transfer(children[i]);
+      theNewChildren[numNewChildren].transfer(children[i]);
       ++numNewChildren;
     }
 
     if (theRemoveType == false)
     {
-      store::StoreConsts::NodeKind childKind = theNewChildren[i]->getNodeKind();
+      store::StoreConsts::NodeKind childKind = 
+      theNewChildren[numNewChildren-1]->getNodeKind();
+
       if (childKind == store::StoreConsts::elementNode ||
           childKind == store::StoreConsts::textNode)
         theRemoveType = true;
@@ -965,10 +971,7 @@ UpdCollection::UpdCollection(
 void UpdCreateCollection::apply()
 {
   // Error is raised if collection exists already.
-  GET_STORE().createCollection(theName,
-                               theAnnotations,
-                               theNodeType,
-                               theIsDynamic);
+  GET_STORE().createCollection(theName, theAnnotations, theIsDynamic);
   theIsApplied = true;
 }
 
@@ -1022,31 +1025,24 @@ void UpdDeleteCollection::apply()
   {
     size = to_xs_unsignedLong(collection->size());
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
     RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
-    ERROR_PARAMS(BUILD_STRING("collection too big ("
-                              << e.what() << "; " << theName << ")")));
+      ERROR_PARAMS(
+        collection->size(),
+        ZED( ZSTR0060_ForCollection_3 ),
+        theName
+      )
+    );
   }
 
   for (uint64_t i = 0; i < size; ++i)
   {
-    long lRefCount = 0;
     store::Item* lItem = collection->nodeAt(xs_integer(i)).getp();
-    if (lItem->isNode())
-    {
-      assert(dynamic_cast<XmlNode*>(lItem));
-      XmlNode* lNode = static_cast<XmlNode*>(lItem);
-      lRefCount = lNode->getTree()->getRefCount();
-#ifdef ZORBA_WITH_JSON
-    }
-    else if (lItem->isJSONItem())
-    {
-      assert(dynamic_cast<json::JSONItem*>(lItem));
-      json::JSONItem* lJSONItem = static_cast<json::JSONItem*>(lItem);
-      lRefCount = lJSONItem->getRefCount();
-#endif
-    }
+    assert(lItem->isStructuredItem());
+    assert(dynamic_cast<StructuredItem*>(lItem));
+    StructuredItem* lNode = static_cast<StructuredItem*>(lItem);
+    long lRefCount = lNode->getCollectionTreeRefCount();
 
     if (lRefCount > 1)
     {
@@ -1099,11 +1095,15 @@ void UpdInsertIntoCollection::undo()
   {
     lastPos = to_xs_unsignedLong(lColl->size()) - 1;
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
     RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
-    ERROR_PARAMS(BUILD_STRING("collection too big ("
-                              << e.what() << "; " << theName << ")")));
+      ERROR_PARAMS(
+        lColl->size(),
+        ZED( ZSTR0060_ForCollection_3 ),
+        theName
+      )
+    );
   }
 
   for (long i = theNumApplied-1; i >= 0; --i)
@@ -1190,11 +1190,15 @@ void UpdInsertLastIntoCollection::undo()
   {
     lastPos = to_xs_unsignedLong(lColl->size()) - 1;
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
     RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
-    ERROR_PARAMS(BUILD_STRING("collection too big ("
-                              << e.what() << "; " << theName << ")")));
+      ERROR_PARAMS(
+        lColl->size(),
+        ZED( ZSTR0060_ForCollection_3 ),
+        theName
+      )
+    );
   }
 
   xs_integer const xs_lastPos( lastPos );
@@ -1277,23 +1281,27 @@ void UpdInsertAfterIntoCollection::undo()
 ********************************************************************************/
 void UpdDeleteNodesFromCollection::apply()
 {
-  Collection* lColl = static_cast<Collection*>
+  Collection* coll = static_cast<Collection*>
   (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
-  assert(lColl);
+  assert(coll);
 
   theIsApplied = true;
 
   uint64_t size;
   try
   {
-    size = to_xs_unsignedLong(lColl->size());
+    size = to_xs_unsignedLong(coll->size());
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
     RAISE_ERROR(zerr::ZSTR0060_RANGE_EXCEPTION, theLoc,
-    ERROR_PARAMS(BUILD_STRING("collection too big ("
-                              << e.what() << "; " << theName << ")")));
+      ERROR_PARAMS(
+        coll->size(),
+        ZED( ZSTR0060_ForCollection_3 ),
+        theName
+      )
+    );
   }
 
   csize numNodes = theNodes.size();
@@ -1304,7 +1312,7 @@ void UpdDeleteNodesFromCollection::apply()
   {
     for (csize i = numNodes; i > 0; --i)
     {
-      if (theNodes[i-1] != lColl->nodeAt(xs_integer(size - i)))
+      if (theNodes[i-1] != coll->nodeAt(xs_integer(size - i)))
       {
         isLast = false;
         break;
@@ -1320,27 +1328,61 @@ void UpdDeleteNodesFromCollection::apply()
   theFound.resize(numNodes);
   thePositions.resize(numNodes);
 
-  for (std::size_t i = 0; i < numNodes; ++i)
+  for (csize i = 0; i < numNodes; ++i)
   {
-    theFound[i] = lColl->removeNode(theNodes[i], thePositions[i]);
+    theFound[i] = coll->removeNode(theNodes[i], thePositions[i]);
     ++theNumApplied;
   }
 }
 
 void UpdDeleteNodesFromCollection::undo()
 {
-  Collection* lColl = static_cast<Collection*>
+  Collection* coll = static_cast<Collection*>
   (GET_STORE().getCollection(theName, theIsDynamic).getp());
 
-  assert(lColl);
+  assert(coll);
 
   for (csize i = 0; i < theNumApplied; ++i)
   {
     if (theFound[i])
     {
-      lColl->addNode(theNodes[i], thePositions[i]);
+      coll->addNode(theNodes[i], thePositions[i]);
     }
   }
+}
+
+
+/*******************************************************************************
+  UpdEditInCollection
+********************************************************************************/
+void UpdEditInCollection::apply()
+{
+#ifndef NDEBUG
+  Collection* coll = static_cast<Collection*>
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
+
+  assert(coll);
+#endif
+
+  theTarget->swap(theContent.getp());
+
+  theIsApplied = true;
+}
+
+
+void UpdEditInCollection::undo()
+{
+  if (!theFound)
+    return;
+
+#ifndef NDEBUG
+  Collection* coll = static_cast<Collection*>
+  (GET_STORE().getCollection(theName, theIsDynamic).getp());
+
+  assert(coll);
+#endif
+
+  theTarget->swap(theContent.getp());
 }
 
 

@@ -29,6 +29,7 @@ class copy_clause;
 class var_expr;
 class VarInfo;
 class var_set_expr;
+class block_expr;
 
 
 /******************************************************************************
@@ -74,6 +75,12 @@ class var_set_expr;
   ----------------
   The type, if any, specified in the declaration of the variable
 
+  theBlockExpr:
+  -------------
+  If this is a prolog or a local var, theBlockExpr points to the block expr
+  where the var is declared at (prolog and local vars are always declared 
+  in block exprs).
+
   theFlworClause:
   ---------------
   If this is a var declared in flwor clause, theFlworClause points to the
@@ -88,8 +95,8 @@ class var_set_expr;
 
   theParamPos:
   ------------
-  For arg vars, it is the position, within the param list, of parameter that is
-  bound to this arg var.
+  For arg vars, it is the position, within the param list, of the parameter that
+  is bound to this arg var.
 
   theSetExprs:
   ------------
@@ -129,8 +136,8 @@ public:
     for_var,
     let_var,
     pos_var,
-    win_var,
     score_var,
+    win_var,
     wincond_out_var,
     wincond_out_pos_var,
     wincond_in_var,
@@ -145,6 +152,8 @@ public:
 
     prolog_var,
 
+    hof_var,      // used by HoF functions, behaves similarly to prolog vars
+
     local_var,
 
     arg_var
@@ -158,6 +167,8 @@ protected:
   store::Item_t         theName;
 
   xqtref_t              theDeclaredType;
+
+  block_expr          * theBlockExpr;
 
   flwor_clause        * theFlworClause;
 
@@ -227,6 +238,10 @@ public:
   xqtref_t get_type() const;
 
   void set_type(xqtref_t t);
+
+  void set_block_expr(const block_expr* b) { theBlockExpr = const_cast<block_expr*>(b); }
+
+  block_expr* get_block_expr() const { return theBlockExpr; }
 
   void set_flwor_clause(flwor_clause* c) { theFlworClause = c; }
 

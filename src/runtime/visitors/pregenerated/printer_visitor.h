@@ -149,6 +149,9 @@ namespace zorba {
     void beginVisit( const ZorbaDeleteNodesLastIterator& );
     void endVisit  ( const ZorbaDeleteNodesLastIterator& );
 
+    void beginVisit( const ZorbaEditNodesIterator& );
+    void endVisit  ( const ZorbaEditNodesIterator& );
+
     void beginVisit( const ZorbaTruncateCollectionIterator& );
     void endVisit  ( const ZorbaTruncateCollectionIterator& );
 
@@ -199,6 +202,33 @@ namespace zorba {
 
     void beginVisit( const DefaultCollationIterator& );
     void endVisit  ( const DefaultCollationIterator& );
+
+    void beginVisit( const CurrentDate& );
+    void endVisit  ( const CurrentDate& );
+
+    void beginVisit( const CurrentDateTime& );
+    void endVisit  ( const CurrentDateTime& );
+
+    void beginVisit( const CurrentTime& );
+    void endVisit  ( const CurrentTime& );
+
+    void beginVisit( const MillisToDateTime& );
+    void endVisit  ( const MillisToDateTime& );
+
+    void beginVisit( const ParseDate& );
+    void endVisit  ( const ParseDate& );
+
+    void beginVisit( const ParseDateTime& );
+    void endVisit  ( const ParseDateTime& );
+
+    void beginVisit( const ParseTime& );
+    void endVisit  ( const ParseTime& );
+
+    void beginVisit( const Timestamp& );
+    void endVisit  ( const Timestamp& );
+
+    void beginVisit( const UTCOffset& );
+    void endVisit  ( const UTCOffset& );
 
 #ifdef ZORBA_WITH_DEBUGGER
     void beginVisit( const DebugIterator& );
@@ -370,14 +400,20 @@ namespace zorba {
     void endVisit  ( const TokenizeStringIterator& );
 #endif
 
+    void beginVisit( const FunctionLookupIterator& );
+    void endVisit  ( const FunctionLookupIterator& );
+
     void beginVisit( const FunctionNameIterator& );
     void endVisit  ( const FunctionNameIterator& );
 
     void beginVisit( const FunctionArityIterator& );
     void endVisit  ( const FunctionArityIterator& );
 
-    void beginVisit( const PartialApplyIterator& );
-    void endVisit  ( const PartialApplyIterator& );
+    void beginVisit( const FnMapPairsIterator& );
+    void endVisit  ( const FnMapPairsIterator& );
+
+    void beginVisit( const FnFoldLeftIterator& );
+    void endVisit  ( const FnFoldLeftIterator& );
 
     void beginVisit( const ActivateICIterator& );
     void endVisit  ( const ActivateICIterator& );
@@ -466,6 +502,9 @@ namespace zorba {
     void beginVisit( const FunctionAnnotationsIterator& );
     void endVisit  ( const FunctionAnnotationsIterator& );
 
+    void beginVisit( const MemSizeIterator& );
+    void endVisit  ( const MemSizeIterator& );
+
     void beginVisit( const JSONParseInternal& );
     void endVisit  ( const JSONParseInternal& );
 
@@ -522,8 +561,10 @@ namespace zorba {
     void endVisit  ( const JSONArrayFlattenIterator& );
 #endif
 
+#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONDocIterator& );
     void endVisit  ( const JSONDocIterator& );
+#endif
 
 #ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONItemAccessorIterator& );
@@ -818,6 +859,9 @@ namespace zorba {
     void beginVisit( const FnZorbaParseXmlFragmentIterator& );
     void endVisit  ( const FnZorbaParseXmlFragmentIterator& );
 
+    void beginVisit( const FnZorbaCanonicalizeIterator& );
+    void endVisit  ( const FnZorbaCanonicalizeIterator& );
+
     void beginVisit( const FnParseXmlFragmentIterator& );
     void endVisit  ( const FnParseXmlFragmentIterator& );
 
@@ -859,6 +903,18 @@ namespace zorba {
 
     void beginVisit( const UuidIterator& );
     void endVisit  ( const UuidIterator& );
+
+    void beginVisit( const ReferenceIterator& );
+    void endVisit  ( const ReferenceIterator& );
+
+    void beginVisit( const HasReferenceIterator& );
+    void endVisit  ( const HasReferenceIterator& );
+
+    void beginVisit( const AssignReferenceIterator& );
+    void endVisit  ( const AssignReferenceIterator& );
+
+    void beginVisit( const DereferenceIterator& );
+    void endVisit  ( const DereferenceIterator& );
 
 #ifndef ZORBA_NO_XMLSCHEMA
     void beginVisit( const ValidateIterator& );

@@ -141,7 +141,7 @@ PlanIter_t fn_jsoniq_flatten::codegen(
 }
 
 #endif
-
+#ifdef ZORBA_WITH_JSON
 PlanIter_t fn_jsoniq_json_doc::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -151,6 +151,8 @@ PlanIter_t fn_jsoniq_json_doc::codegen(
 {
   return new JSONDocIterator(sctx, loc, argv);
 }
+
+#endif
 #ifdef ZORBA_WITH_JSON
 PlanIter_t op_zorba_json_item_accessor::codegen(
   CompilerCB*,
@@ -159,7 +161,7 @@ PlanIter_t op_zorba_json_item_accessor::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONItemAccessorIterator(sctx, loc, argv[0], argv[1]);
+  return new JSONItemAccessorIterator(sctx, loc, argv);
 }
 
 #endif
@@ -480,6 +482,8 @@ void populate_context_jsoniq_functions(static_context* sctx)
 #endif
 
 
+#ifdef ZORBA_WITH_JSON
+
 
       {
     DECL_WITH_KIND(sctx, fn_jsoniq_json_doc,
@@ -490,6 +494,24 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
   }
 
+
+#endif
+
+
+#ifdef ZORBA_WITH_JSON
+
+
+      {
+    DECL_WITH_KIND(sctx, op_zorba_json_item_accessor,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-item-accessor"), 
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::OP_ZORBA_JSON_ITEM_ACCESSOR_1);
+
+  }
+
+
+#endif
 
 
 #ifdef ZORBA_WITH_JSON

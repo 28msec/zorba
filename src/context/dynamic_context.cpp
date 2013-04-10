@@ -15,18 +15,9 @@
  */
 #include "stdafx.h"
 
-#ifdef WIN32
-#include <sys/types.h>
-#include <sys/timeb.h>
-#endif
-#include "common/common.h"
 #include <assert.h>
-#include <time.h>
-#include <sys/timeb.h>
-#ifdef UNIX
-#include <sys/time.h>
-#include <unistd.h>
-#endif
+
+#include "common/common.h"
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
@@ -52,6 +43,7 @@
 
 #include "zorbautils/hashmap_itemp.h"
 #include "util/string_util.h"
+#include "util/time_util.h"
 
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
@@ -72,7 +64,7 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-dynamic_context::VarValue::~VarValue() 
+dynamic_context::VarValue::~VarValue()
 {
   switch (theState)
   {
@@ -98,7 +90,7 @@ dynamic_context::VarValue::~VarValue()
 }
 
 
-dynamic_context::VarValue::VarValue(const VarValue& other) 
+dynamic_context::VarValue::VarValue(const VarValue& other)
 {
   switch (other.theState)
   {
@@ -143,12 +135,18 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   if(parent == NULL)
   {
     reset_current_date_time();
+    theLang = locale::get_host_lang();
+    theCountry = locale::get_host_country();
+    theCalendar = time::calendar::get_default();
   }
   else
   {
-    theCurrentDateTime = parent->theCurrentDateTime;
+    theCurrentDateTimeStamp = parent->theCurrentDateTimeStamp;
     theTimezone = parent->theTimezone;
     theDefaultCollectionUri = parent->theDefaultCollectionUri;
+    theLang = parent->theLang;
+    theCountry = parent->theCountry;
+    theCalendar = parent->theCalendar;
   }
 }
 
@@ -226,7 +224,7 @@ long dynamic_context::get_implicit_timezone() const
 ********************************************************************************/
 void dynamic_context::set_current_date_time(const store::Item_t& aDateTimeItem)
 {
-  this->theCurrentDateTime = aDateTimeItem;
+  this->theCurrentDateTimeStamp = aDateTimeItem;
 }
 
 
@@ -235,34 +233,24 @@ void dynamic_context::set_current_date_time(const store::Item_t& aDateTimeItem)
 ********************************************************************************/
 void dynamic_context::reset_current_date_time()
 {
-  int lTimeShift = 0;
-#if defined (WIN32)
-  struct _timeb timebuffer;
-  _ftime_s( &timebuffer );
-  struct ::tm gmtm;
-  localtime_s(&gmtm, &timebuffer.time); //thread safe localtime on Windows
-  lTimeShift = -timebuffer.timezone*60;
-  if (gmtm.tm_isdst != 0)
-    lTimeShift += 3600;
-#else
-  struct timeb timebuffer;
-  ftime( &timebuffer );
-  struct ::tm gmtm;
-  localtime_r(&timebuffer.time, &gmtm); //thread safe localtime on Linux
-  lTimeShift = gmtm.tm_gmtoff;
-#endif
+  time::sec_type sec;
+  time::usec_type usec;
+  time::get_epoch( &sec, &usec );
+  time::ztm tm;
+  time::get_localtime( &tm, sec );
 
-  set_implicit_timezone(lTimeShift);//in seconds
+  set_implicit_timezone( tm.ZTM_GMTOFF );
 
-  GENV_ITEMFACTORY->createDateTime(theCurrentDateTime,
-                                   static_cast<short>(gmtm.tm_year + 1900),
-                                   static_cast<short>(gmtm.tm_mon + 1),
-                                   static_cast<short>(gmtm.tm_mday),
-                                   static_cast<short>(gmtm.tm_hour),
-                                   static_cast<short>(gmtm.tm_min),
-                                   gmtm.tm_sec + timebuffer.millitm/1000.0,
-                                   static_cast<short>(theTimezone/3600));
-
+  GENV_ITEMFACTORY->createDateTimeStamp(
+    theCurrentDateTimeStamp,
+    static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
+    static_cast<short>( tm.tm_mon + 1 ),
+    static_cast<short>( tm.tm_mday ),
+    static_cast<short>( tm.tm_hour ),
+    static_cast<short>( tm.tm_min ),
+    tm.tm_sec + usec / 1000000.0,
+    static_cast<short>( tm.ZTM_GMTOFF / 3600 )
+  );
 }
 
 
@@ -271,7 +259,7 @@ void dynamic_context::reset_current_date_time()
 ********************************************************************************/
 store::Item_t dynamic_context::get_current_date_time() const
 {
-  return theCurrentDateTime;
+  return theCurrentDateTimeStamp;
 }
 
 
@@ -292,20 +280,20 @@ void dynamic_context::set_environment_variables()
       int size = lstrlen(envVarsSTR);
 
       char * envVar = new char[size+1];
-      
-      
-      WideCharToMultiByte( CP_ACP, 
-                           WC_NO_BEST_FIT_CHARS|WC_COMPOSITECHECK|WC_DEFAULTCHAR, 
-                           envVarsSTR, 
-                           size+1, 
-                           envVar, 
+
+
+      WideCharToMultiByte( CP_ACP,
+                           WC_NO_BEST_FIT_CHARS|WC_COMPOSITECHECK|WC_DEFAULTCHAR,
+                           envVarsSTR,
+                           size+1,
+                           envVar,
                            size+1,
                            NULL,
                            NULL);
-      
+
 
       zstring envVarZS(envVar);
-      
+
       int eqPos = envVarZS.find_first_of("=");
 
       if (eqPos > 0)
@@ -316,48 +304,48 @@ void dynamic_context::set_environment_variables()
         if (!varname.empty() || !varvalue.empty())
           theEnvironmentVariables->insert(std::pair<zstring, zstring>(varname,varvalue));
       }
-      
+
       delete envVar;
       envVarsSTR += lstrlen(envVarsSTR) + 1;
     }
-    
+
     FreeEnvironmentStrings(envVarsCH);
-#else    
+#else
     const char* invalid_char;
     for (char **env = environ; *env; ++env)
     {
       zstring envVarZS(*env);
-      
+
       if ((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
         throw XQUERY_EXCEPTION(err::FOCH0001,
-          ERROR_PARAMS(zstring("#x") + 
-          BUILD_STRING(std::uppercase << std::hex 
+          ERROR_PARAMS(zstring("#x") +
+          BUILD_STRING(std::uppercase << std::hex
             << (static_cast<unsigned int>(*invalid_char)&0xFF))));
 
       if ((invalid_char = utf8::validate(envVarZS.c_str())) != NULL)
       {
-        throw XQUERY_EXCEPTION(err::FOCH0001, 
-        ERROR_PARAMS(zstring("#x") + 
+        throw XQUERY_EXCEPTION(err::FOCH0001,
+        ERROR_PARAMS(zstring("#x") +
         BUILD_STRING(std::uppercase << std::hex
                      << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
       }
 
       int size = envVarZS.size();
-            
+
       int eqPos = envVarZS.find_first_of("=");
-            
+
       if (eqPos > 0)
       {
         zstring varname(envVarZS.substr(0, eqPos));
         zstring varvalue(envVarZS.substr(eqPos+1, size));
-                                                  
+
         if (!varname.empty() || !varvalue.empty())
           theEnvironmentVariables->insert(std::pair<zstring, zstring>(varname,varvalue));
-      }                                                                   
+      }
     }
-     
+
 #endif
-    
+
 }
 /*******************************************************************************
 
@@ -387,7 +375,7 @@ store::Iterator_t dynamic_context::available_environment_variables()
     return NULL;
   }
 
-  return GENV_STORE.createTempSeq(lVarNames)->getIterator(); 
+  return GENV_STORE.createTempSeq(lVarNames)->getIterator();
 }
 
 /*******************************************************************************
@@ -408,7 +396,7 @@ store::Item_t dynamic_context::get_environment_variable(const zstring& varname)
     return NULL;
   }
 
-  store::Item_t value; 
+  store::Item_t value;
   zstring varvalue = lIter->second;
   GENV_ITEMFACTORY->createString(value, varvalue);
   return value;
@@ -417,7 +405,7 @@ store::Item_t dynamic_context::get_environment_variable(const zstring& varname)
 /*******************************************************************************
 
 ********************************************************************************/
-void dynamic_context::add_variable(ulong varid, store::Iterator_t& value) 
+void dynamic_context::add_variable(ulong varid, store::Iterator_t& value)
 {
   declare_variable(varid);
   set_variable(varid, NULL, QueryLoc::null, value);
@@ -427,7 +415,7 @@ void dynamic_context::add_variable(ulong varid, store::Iterator_t& value)
 /*******************************************************************************
 
 ********************************************************************************/
-void dynamic_context::add_variable(ulong varid, store::Item_t& value) 
+void dynamic_context::add_variable(ulong varid, store::Item_t& value)
 {
   declare_variable(varid);
   set_variable(varid, NULL, QueryLoc::null, value);
@@ -462,14 +450,14 @@ void dynamic_context::set_variable(
       theVarValues[varid].theState == VarValue::undeclared)
   {
     RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(varname->getStringValue(), ZED(VariabledUndeclared)));
+    ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varname->getStringValue()));
   }
 
   valueIter->open();
 
   // For now, use eager eval because the assignment expression may reference
   // the variable itself, and the current value of the variable is overwriten
-  // here by this temp sequence. TODO: use lazy eval if we know the the 
+  // here by this temp sequence. TODO: use lazy eval if we know the the
   // assignment expression does not reference the variable itself.
   store::TempSeq_t seq = GENV_STORE.createTempSeq(valueIter, false); // no lazy eval
 
@@ -516,7 +504,7 @@ void dynamic_context::set_variable(
       theVarValues[varid].theState == VarValue::undeclared)
   {
     RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(varname->getStringValue(), ZED(VariabledUndeclared)));
+    ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varname->getStringValue()));
   }
 
   VarValue& var = theVarValues[varid];
@@ -537,7 +525,7 @@ void dynamic_context::set_variable(
   {
     assert(var.theValue.item == NULL);
   }
-  else 
+  else
   {
     ZORBA_ASSERT(false);
   }
@@ -559,7 +547,7 @@ void dynamic_context::unset_variable(
       theVarValues[varid].theState == VarValue::undeclared)
   {
     RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(varname->getStringValue(), ZED(VariabledUndeclared)));
+    ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varname->getStringValue()));
   }
 
   VarValue& var = theVarValues[varid];
@@ -578,7 +566,7 @@ void dynamic_context::unset_variable(
   {
     assert(var.theValue.item == NULL);
   }
-  else 
+  else
   {
     ZORBA_ASSERT(false);
   }
@@ -606,14 +594,14 @@ void dynamic_context::get_variable(
   {
     zstring varName = static_context::var_name(varname.getp());
     RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(varName, ZED(VariabledUndeclared)));
+    ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varName));
   }
 
   if (theVarValues[varid].theState == VarValue::declared)
   {
     zstring varName = static_context::var_name(varname.getp());
     RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(varName, ZED(VariabledHasNoValue)));
+    ERROR_PARAMS(ZED(XPDY0002_VariableHasNoValue_2), varName));
   }
 
   const VarValue& var = theVarValues[varid];
@@ -670,7 +658,7 @@ ulong dynamic_context::get_next_var_id() const
 /*******************************************************************************
 
 ********************************************************************************/
-void dynamic_context::destroy_dctx_value(dctx_value_t* val) 
+void dynamic_context::destroy_dctx_value(dctx_value_t* val)
 {
   switch (val->type)
   {
@@ -955,12 +943,43 @@ dynamic_context::getExternalFunctionParameter(const std::string& aName) const
 
   val = lIter.getValue();
 
-  ExternalFunctionParameter* lRes = 
+  ExternalFunctionParameter* lRes =
   static_cast<ExternalFunctionParameter*>(val.func_param);
 
   return lRes;
 }
 
+
+/*******************************************************************************
+ Debugging info
+********************************************************************************/
+#ifndef NDEBUG
+std::string dynamic_context::toString()
+{
+  std::stringstream ss;
+  
+  ss << "dynamic_context: " << this;
+  dynamic_context* parent = getParent();
+  while (parent != NULL)
+  {
+    ss << " -> " << parent;
+    parent = parent->getParent();
+  }
+  ss << std::endl;
+  
+  for (csize i=0; i < theVarValues.size(); i++)
+  {
+    ss << "    var[" << i << "]: ";
+    if (theVarValues[i].hasItemValue())
+      ss << theVarValues[i].theValue.item->toString();
+    else if (theVarValues[i].hasSeqValue())
+      ss << theVarValues[i].theValue.temp_seq->toString();
+    ss << std::endl;
+  }
+  
+  return ss.str();
+}
+#endif
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

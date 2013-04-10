@@ -84,7 +84,8 @@ passthru_streambuf::int_type passthru_streambuf::overflow( int_type c ) {
 }
 
 passthru_streambuf::int_type passthru_streambuf::pbackfail( int_type c ) {
-  return original()->sputbackc( traits_type::to_char_type( c ) );
+  return  traits_type::eq_int_type( c, traits_type::eof() ) ?
+          c : proxy_buf_->sputbackc( traits_type::to_char_type( c ) );
 }
 
 passthru_streambuf::int_type passthru_streambuf::uflow() {

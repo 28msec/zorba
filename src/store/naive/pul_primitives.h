@@ -945,7 +945,6 @@ class UpdCreateCollection : public UpdCollection
 
 protected:
   const std::vector<store::Annotation_t> theAnnotations;
-  store::Item_t                          theNodeType;
 
 protected:
   UpdCreateCollection(
@@ -953,12 +952,10 @@ protected:
         const QueryLoc* aLoc,
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
-        const store::Item_t& nodeType,
         bool isDynamic)
     :
     UpdCollection(pul, aLoc, name, isDynamic),
-    theAnnotations(annotations),
-    theNodeType(nodeType)
+    theAnnotations(annotations)
   {
   }
 
@@ -1203,6 +1200,54 @@ public:
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_REMOVE_FROM_COLLECTION;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdEditInCollection: public  UpdCollection
+{
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t theTarget;
+  store::Item_t theContent;
+  bool          theFound;
+
+  UpdEditInCollection(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::Item_t& name,
+        store::Item_t& target,
+        store::Item_t& content,
+        bool isDynamic)
+    :
+    UpdCollection(pul, aLoc, name, isDynamic),
+    theTarget(target),
+    theContent(content),
+    theFound(false)
+  {
+  }
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  { 
+    return store::UpdateConsts::UP_REPLACE_IN_COLLECTION;
+  }
+  
+  store::Item* getTarget() const
+  {
+    return theTarget.getp();
+  }
+
+  store::Item* getContent() const
+  {
+    return theContent.getp();
   }
 
   void apply();

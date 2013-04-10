@@ -53,6 +53,7 @@ std::string var_expr::decode_var_kind(enum var_kind k)
   case count_var: return "CNT"; break;
   case score_var: return "SCORE"; break;
   case prolog_var: return "PROLOG"; break;
+  case hof_var: return "HOF"; break;
   case local_var: return "LOCAL"; break;
   case catch_var: return "CATCH"; break;
   case copy_var: return "COPY"; break;
@@ -255,12 +256,12 @@ expr* var_expr::get_domain_expr() const
     }
     else if (theVarKind == groupby_var)
     {
-      return reinterpret_cast<group_clause*>(theFlworClause)->
+      return reinterpret_cast<groupby_clause*>(theFlworClause)->
              get_input_for_group_var(this);
     }
     else if (theVarKind == non_groupby_var)
     {
-      return reinterpret_cast<group_clause*>(theFlworClause)->
+      return reinterpret_cast<groupby_clause*>(theFlworClause)->
              get_input_for_nongroup_var(this);
     }
   }
@@ -315,7 +316,7 @@ void var_expr::add_set_expr(expr* e)
 ********************************************************************************/
 void var_expr::remove_set_expr(expr* e)
 {
-  assert(theVarKind == local_var || theVarKind == prolog_var);
+  assert(theVarKind == local_var || theVarKind == prolog_var || theVarKind == hof_var);
 
   bool found = false;
   VarSetExprs::iterator ite = theSetExprs.begin();

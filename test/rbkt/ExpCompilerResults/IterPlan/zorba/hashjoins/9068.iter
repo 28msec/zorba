@@ -8,72 +8,68 @@ Iterator tree for main query:
       </OpToIterator>
     </HoistIterator>
   </LetVariable>
-  <ReturnClause>
-    <SequentialIterator>
-      <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-        <flwor::FLWORIterator>
-          <ForVariable name="$$opt_temp_3">
-            <UnhoistIterator>
-              <LetVarIterator varname="$$opt_temp_0"/>
-            </UnhoistIterator>
-          </ForVariable>
-          <ReturnClause>
-            <ValueIndexEntryBuilderIterator>
-              <ForVarIterator varname="$$opt_temp_3"/>
-              <ForVarIterator varname="$$opt_temp_3"/>
-            </ValueIndexEntryBuilderIterator>
-          </ReturnClause>
-        </flwor::FLWORIterator>
-      </CreateInternalIndexIterator>
+  <LetVariable name="$$opt_temp_5" materialize="true">
+    <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
       <flwor::FLWORIterator>
-        <ForVariable name="b">
-          <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
-            <FnDocIterator>
-              <SingletonIterator value="xs:string(books.xml)"/>
-            </FnDocIterator>
-          </DescendantAxisIterator>
-        </ForVariable>
-        <LetVariable name="$$opt_temp_2" materialize="true">
-          <HoistIterator>
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,title)" typename="*" nill allowed="0">
-              <ForVarIterator varname="b"/>
-            </ChildAxisIterator>
-          </HoistIterator>
-        </LetVariable>
-        <LetVariable name="$$opt_temp_1" materialize="true">
-          <HoistIterator>
-            <FnCountIterator>
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
-                <ForVarIterator varname="b"/>
-              </ChildAxisIterator>
-            </FnCountIterator>
-          </HoistIterator>
-        </LetVariable>
-        <ForVariable name="er">
-          <ProbeIndexPointValueIterator>
-            <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-            <UnhoistIterator>
-              <LetVarIterator varname="$$opt_temp_1"/>
-            </UnhoistIterator>
-          </ProbeIndexPointValueIterator>
+        <ForVariable name="$$opt_temp_3">
+          <UnhoistIterator>
+            <LetVarIterator varname="$$opt_temp_0"/>
+          </UnhoistIterator>
         </ForVariable>
         <ReturnClause>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,gruppe)"/>
-            <AttributeIterator qname="xs:QName(,,anzahl)">
-              <EnclosedIterator attr_cont="true">
-                <ForVarIterator varname="er"/>
-              </EnclosedIterator>
-            </AttributeIterator>
-            <EnclosedIterator attr_cont="false">
-              <UnhoistIterator>
-                <LetVarIterator varname="$$opt_temp_2"/>
-              </UnhoistIterator>
-            </EnclosedIterator>
-          </ElementIterator>
+          <ValueIndexEntryBuilderIterator>
+            <ForVarIterator varname="$$opt_temp_3"/>
+            <ForVarIterator varname="$$opt_temp_3"/>
+          </ValueIndexEntryBuilderIterator>
         </ReturnClause>
       </flwor::FLWORIterator>
-    </SequentialIterator>
+    </CreateInternalIndexIterator>
+  </LetVariable>
+  <ForVariable name="b">
+    <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
+      <FnDocIterator>
+        <SingletonIterator value="xs:string(books.xml)"/>
+      </FnDocIterator>
+    </DescendantAxisIterator>
+  </ForVariable>
+  <LetVariable name="$$opt_temp_2" materialize="true">
+    <HoistIterator>
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,title)" typename="*" nill allowed="0">
+        <ForVarIterator varname="b"/>
+      </ChildAxisIterator>
+    </HoistIterator>
+  </LetVariable>
+  <ForVariable name="$$opt_temp_1">
+    <HoistIterator>
+      <FnCountIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
+          <ForVarIterator varname="b"/>
+        </ChildAxisIterator>
+      </FnCountIterator>
+    </HoistIterator>
+  </ForVariable>
+  <ForVariable name="er">
+    <ProbeIndexPointValueIterator>
+      <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+      <UnhoistIterator>
+        <ForVarIterator varname="$$opt_temp_1"/>
+      </UnhoistIterator>
+    </ProbeIndexPointValueIterator>
+  </ForVariable>
+  <ReturnClause>
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,gruppe)"/>
+      <AttributeIterator qname="xs:QName(,,anzahl)">
+        <EnclosedIterator attr_cont="true">
+          <ForVarIterator varname="er"/>
+        </EnclosedIterator>
+      </AttributeIterator>
+      <EnclosedIterator attr_cont="false">
+        <UnhoistIterator>
+          <LetVarIterator varname="$$opt_temp_2"/>
+        </UnhoistIterator>
+      </EnclosedIterator>
+    </ElementIterator>
   </ReturnClause>
 </flwor::FLWORIterator>
 

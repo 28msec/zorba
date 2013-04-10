@@ -224,6 +224,11 @@
     <zorba:member type="store::Iterator_t" name="theNames" brief=""/>
   </zorba:state>
 
+  <zorba:method name="count" const="true" return="bool">
+     <zorba:param name="result" type="store::Item_t&amp;"/>
+     <zorba:param name="planState" type="PlanState&amp;"/>
+  </zorba:method>
+
 </zorba:iterator>
 
 
@@ -350,6 +355,11 @@
     <zorba:member type="store::Iterator_t" name="theMembers" brief=""/>
   </zorba:state>
 
+  <zorba:method name="count" const="true" return="bool">
+     <zorba:param name="result" type="store::Item_t&amp;"/>
+     <zorba:param name="planState" type="PlanState&amp;"/>
+  </zorba:method>
+
 </zorba:iterator>
 
 
@@ -388,7 +398,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONDocIterator">
+<zorba:iterator name="JSONDocIterator"
+  preprocessorGuard="#ifdef ZORBA_WITH_JSON">
   
   <zorba:description author="Zorba Team">jn:json-doc</zorba:description>
   
@@ -419,10 +430,15 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONItemAccessorIterator" arity="binary"
+<zorba:iterator name="JSONItemAccessorIterator"
   preprocessorGuard="#ifdef ZORBA_WITH_JSON">
 
   <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="json-item-accessor" prefix="op-zorba">
+      <zorba:param>json-item()</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
 
     <zorba:signature localname="json-item-accessor" prefix="op-zorba">
       <zorba:param>json-item()</zorba:param>
@@ -436,6 +452,10 @@
     </zorba:methods>
 
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="store::Iterator_t" name="theIterator" brief=""/>
+  </zorba:state>
 
 </zorba:iterator>
 

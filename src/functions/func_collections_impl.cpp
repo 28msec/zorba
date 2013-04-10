@@ -78,7 +78,7 @@ xqtref_t static_collections_dml_collection::getReturnType(const fo_expr* caller)
 
   static_context* sctx = caller->get_sctx();
 
-  const store::Item* qname = caller->get_arg(0)->getQName(sctx);
+  const store::Item* qname = caller->get_arg(0)->getQName();
 
   if (qname != NULL)
   {
@@ -90,8 +90,10 @@ xqtref_t static_collections_dml_collection::getReturnType(const fo_expr* caller)
     }
     else
     {
-      RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, caller->get_loc(),
-      ERROR_PARAMS(qname->getStringValue()));
+      return theSignature.returnType();
+
+      //RAISE_ERROR(zerr::ZDDY0001_COLLECTION_NOT_DECLARED, caller->get_loc(),
+      //ERROR_PARAMS(qname->getStringValue()));
     }
   }
   else
@@ -582,6 +584,35 @@ BoolAnnotationValue static_collections_dml_delete_nodes::ignoresDuplicateNodes(
   return ANNOTATION_TRUE;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t static_collections_dml_edit::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  const zstring& ns = getName()->getNamespace();
+
+  bool const lDynamic =
+    ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
+
+  bool const lCopy = !hasNoCopyPragma(ann);
+
+  return new ZorbaEditNodesIterator(sctx, loc, argv, lDynamic, lCopy);
+}
+
+
+void
+zorba::static_collections_dml_edit::processPragma(
+    zorba::expr* e,
+    const std::vector<zorba::pragma*>& p) const
+{
+  processPragmaInternal(e, p);
+}
 
 /*******************************************************************************
 

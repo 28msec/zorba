@@ -23,9 +23,13 @@
 #include "common/shared_types.h"
 #include <zorba/api_shared_types.h>
 
-namespace zorba {
+namespace zorba 
+{
 
 
+/********************************************************************************
+
+********************************************************************************/
 class XQueryCompiler
 {
 public:
@@ -50,21 +54,24 @@ public:
 
   PlanIter_t compile(
       std::istream& aXQuery,
-      const zstring& aFileName,
+      const zstring& fileName,
       ulong& nextDynamicVarId);
 
   PlanIter_t compile(
       const parsenode_t& ast,
       bool applyPUL,
       ulong& nextDynamicVarId,
-      audit::ScopedRecord& aAuditRecord);
+      audit::ScopedRecord& auditRecord);
 
-protected:
-  expr* normalize(parsenode_t ast);
+  expr* translate(parsenode_t ast, audit::ScopedRecord& ar);
 
-  expr* optimize(expr* expr);
+  expr* optimize(expr* e, audit::ScopedRecord& ar);
+
+  PlanIter_t codegen(expr* e, ulong& nextDynamicVarId, audit::ScopedRecord& ar);
 
 private:
+  bool getLanguageMode(std::stringstream& s) const;
+
   parsenode_t createMainModule(
       parsenode_t libModule,
       std::istream& xquery,
@@ -72,6 +79,9 @@ private:
 };
 
 
+/********************************************************************************
+
+********************************************************************************/
 class XQueryCompilerSubsystem
 {
   friend class GlobalEnvironment;

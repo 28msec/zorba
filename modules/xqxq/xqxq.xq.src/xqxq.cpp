@@ -81,6 +81,10 @@ XQXQModule::getExternalFunction(const zorba::String& localName)
     {
       lFunc = new DeleteQueryFunction(this);
     }
+    else if (localName == "variable-value")
+    {
+      lFunc = new VariableValueFunction(this);
+    }
   }
   
   return lFunc;
@@ -113,11 +117,128 @@ XQXQModule::~XQXQModule()
 /*******************************************************************************
 
 ********************************************************************************/
+QueryData::QueryData(XQuery_t aQuery, URIMapper *aMapper, URLResolver *aResolver)
+  :
+  theQuery(aQuery),
+  theURIMapper(aMapper),
+  theURLResolver(aResolver)
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+QueryData::~QueryData()
+{
+  theQuery->close();
+  delete theURIMapper;
+  delete theURLResolver;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+QueryMap::QueryMap()
+{
+  theQueryMap = new QueryMap_t();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool  QueryMap::storeQuery(
+    const String& aKeyName,
+    XQuery_t aQuery,
+    URIMapper* aMapper,
+    URLResolver* aResolver)
+{
+  QueryData_t lQueryData(new QueryData(aQuery, aMapper, aResolver));
+
+  std::pair<QueryMap_t::iterator,bool> ret;
+
+  ret = theQueryMap->insert(std::pair<String, QueryData_t>(aKeyName, lQueryData));
+
+  return ret.second;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+XQuery_t QueryMap::getQuery(const String& aKeyName)
+{
+  QueryMap::QueryMap_t::iterator lIter = theQueryMap->find(aKeyName);
+
+  if (lIter == theQueryMap->end())
+    return NULL;
+    
+  XQuery_t lQuery = lIter->second->getQuery();
+
+  return lQuery;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool QueryMap::deleteQuery(const String& aKeyName)
+{
+  QueryMap::QueryMap_t::iterator lIter = theQueryMap->find(aKeyName);
+
+  if (lIter == theQueryMap->end())
+    return false;
+
+  theQueryMap->erase(lIter);
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void QueryMap::destroy() throw()
+{
+  if (theQueryMap)
+  {
+    delete theQueryMap;
+  }
+  delete this;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+static void streamReleaser(std::istream* aStream)
+{
+  delete aStream;
+}  
+  
+
+/*******************************************************************************
+
+********************************************************************************/
+void XQXQFunction::throwError(const char *err_localname, const std::string& aErrorMessage)
+{
+  String errNS(XQXQ_MODULE_NAMESPACE);
+  String errName(err_localname);
+  Item errQName = XQXQModule::getItemFactory()->createQName(errNS, errName);
+  String errDescription(aErrorMessage);
+  throw USER_EXCEPTION(errQName, errDescription);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 XQXQFunction::XQXQFunction(const XQXQModule* aModule)
   :
   theModule(aModule)
 {
-  srand(time(NULL));
+  srand(::time(NULL));
 }
     
 
@@ -186,7 +307,9 @@ XQuery_t XQXQFunction::getQuery(
     const zorba::String& aIdent) const
 {
   QueryMap* lQueryMap;
-  if (!(lQueryMap= dynamic_cast<QueryMap*>(aDctx->getExternalFunctionParameter("xqxqQueryMap"))))
+
+  if (!(lQueryMap =
+        dynamic_cast<QueryMap*>(aDctx->getExternalFunctionParameter("xqxqQueryMap"))))
   {
     throwError("NoQueryMatch", "No query with the given identifier was found");
   }
@@ -198,123 +321,6 @@ XQuery_t XQXQFunction::getQuery(
   return lQuery;
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void XQXQFunction::throwError(const char *err_localname, const std::string aErrorMessage)
-{
-  String errNS(XQXQ_MODULE_NAMESPACE);
-  String errName(err_localname);
-  Item errQName = XQXQModule::getItemFactory()->createQName(errNS, errName);
-  String errDescription(aErrorMessage);
-  throw USER_EXCEPTION(errQName, errDescription);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-QueryData::QueryData(XQuery_t aQuery, URIMapper *aMapper, URLResolver *aResolver)
-  :
-  theQuery(aQuery),
-  theURIMapper(aMapper),
-  theURLResolver(aResolver)
-{
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-QueryData::~QueryData()
-{
-  theQuery->close();
-  delete theURIMapper;
-  delete theURLResolver;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-QueryMap::QueryMap()
-{
-  QueryMap::queryMap = new QueryMap_t();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool  QueryMap::storeQuery(const String& aKeyName, XQuery_t aQuery,
-                           URIMapper* aMapper, URLResolver* aResolver)
-{
-  QueryData_t lQueryData(new QueryData(aQuery, aMapper, aResolver));
-  std::pair<QueryMap_t::iterator,bool> ret;
-  ret = queryMap->insert(std::pair<String, QueryData_t>(aKeyName, lQueryData));
-  return ret.second;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-XQuery_t QueryMap::getQuery(const String& aKeyName)
-{
-  QueryMap::QueryMap_t::iterator lIter = queryMap->find(aKeyName);
-
-  if(lIter == queryMap->end())
-    return NULL;
-    
-  XQuery_t lQuery = lIter->second->getQuery();
-
-  return lQuery;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool QueryMap::deleteQuery(const String& aKeyName)
-{
-  QueryMap::QueryMap_t::iterator lIter = queryMap->find(aKeyName);
-
-  if(lIter == queryMap->end())
-    return false;
-
-  queryMap->erase(lIter);
-  return true;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void QueryMap::destroy() throw()
-{
-  if(queryMap)
-  {
-    for (QueryMap_t::const_iterator lIter = queryMap->begin();
-         lIter != queryMap->end(); ++lIter)
-    {
-      deleteQuery(lIter->first);
-    }
-    queryMap->clear();
-    delete queryMap;
-  }
-  delete this;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-static void streamReleaser(std::istream* aStream)
-{
-  delete aStream;
-}  
-  
 
 /*******************************************************************************
 
@@ -360,7 +366,7 @@ void  PrepareMainModuleFunction::XQXQURIMapper::mapURI(
   lIter->open();
   while (lIter->next(lItem))
   {
-    std::cout << lItem.getStringValue() << std::endl;
+    //std::cout << lItem.getStringValue() << std::endl;
     oUris.push_back(lItem.getStringValue());
   }
   lIter->close();  
@@ -427,7 +433,8 @@ Resource* PrepareMainModuleFunction::XQXQURLResolver::resolveURL(
   lSer->serialize(lResult, lSerResult);
   
   //return resource
-  return StreamResource::create(new std::istringstream(lSerResult.str()), &streamReleaser);
+  return StreamResource::create(new std::istringstream(lSerResult.str()),
+                                &streamReleaser);
 }
 
 
@@ -482,6 +489,7 @@ zorba::ItemSequence_t PrepareMainModuleFunction::evaluate(
   
   try
   {
+    //std::cout << "Hello: " << lQueryString << std::endl;
     lQuery = lZorba->compileQuery(lQueryString, ltempSctx);
   }
   catch (XQueryException& xe)
@@ -489,8 +497,9 @@ zorba::ItemSequence_t PrepareMainModuleFunction::evaluate(
     lQuery = NULL;
     std::ostringstream err;
     err << "The query compiled using xqxq:prepare-main-module raised an error at"
-        << " line " << xe.source_line() << " column " << xe.source_column()
-        << ": " << xe.what();
+        << " file " << xe.source_uri() << " line " << xe.source_line()
+        << " column " << xe.source_column() << ": " << xe.what();
+    // << " -- Query string : " << std::endl << lQueryString;
 
     Item errQName = XQXQModule::getItemFactory()->createQName(
                                 xe.diagnostic().qname().ns(),
@@ -609,7 +618,7 @@ zorba::ItemSequence_t IsBoundVariableFunction::evaluate(
   }
   catch (ZorbaException& ze)
   {
-    if (ze.diagnostic() == zerr::ZAPI0011_ELEMENT_NOT_DECLARED)
+    if (ze.diagnostic() == zerr::ZAPI0011_VARIABLE_NOT_DECLARED)
       XQXQFunction::throwError("UndeclaredVariable", ze.what());  
     throw; // should not happen
   }
@@ -895,6 +904,64 @@ zorba::ItemSequence_t DeleteQueryFunction::evaluate(
   }
       
   return ItemSequence_t(new EmptySequence());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+zorba::ItemSequence_t VariableValueFunction::evaluate(
+    const Arguments_t& aArgs,
+    const zorba::StaticContext* aSctx,
+    const zorba::DynamicContext* aDctx) const 
+{
+  String lQueryID = XQXQFunction::getOneStringArgument(aArgs,0);
+
+  QueryMap* lQueryMap;
+  if (!(lQueryMap= dynamic_cast<QueryMap*>(aDctx->getExternalFunctionParameter("xqxqQueryMap"))))
+  {
+    throwError("NoQueryMatch", "String identifying query does not exists.");
+  }
+
+  XQuery_t lQuery = getQuery(aDctx, lQueryID);
+
+  Item lVarQName = XQXQFunction::getItemArgument(aArgs, 1);
+  bool lIsBoundVariable = false;
+
+  zorba::DynamicContext* lCtx = lQuery->getDynamicContext();
+  zorba::String lNS = lVarQName.getNamespace(), lLocal = lVarQName.getLocalName();
+
+  try
+  {
+    lIsBoundVariable = lCtx->isBoundExternalVariable(lNS, lLocal);
+  }
+  catch (ZorbaException& ze)
+  {
+    if (ze.diagnostic() == zerr::ZAPI0011_VARIABLE_NOT_DECLARED)
+      XQXQFunction::throwError("UndeclaredVariable", ze.what());  
+    throw; // should not happen
+  }
+
+  if (!lIsBoundVariable)
+  {
+    std::ostringstream lMsg;
+    lMsg << lLocal << ": variable not bound";
+    XQXQFunction::throwError("UnboundVariable", lMsg.str());  
+  }
+
+  zorba::Iterator_t lIterator;
+  zorba::Item lItem;
+
+  lCtx->getVariable(lNS, lLocal, lItem, lIterator);
+      
+  if (lIterator)
+  {
+    return ItemSequence_t(new ValueItemSequence(lIterator));
+  }
+  else
+  {
+    return ItemSequence_t(new SingletonItemSequence(lItem));
+  }
 }
 
  

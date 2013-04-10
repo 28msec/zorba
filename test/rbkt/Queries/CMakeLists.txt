@@ -18,8 +18,11 @@ ENDIF(COMMAND cmake_policy AND POLICY CMP0009)
 
 MESSAGE(STATUS "Adding tests for CTest")
 
+# Compute results directory for testdriver
+SET (_results_dir "${CMAKE_CURRENT_BINARY_DIR}/../QueryResults")
+
 FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS
-  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.xq")
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.xq" "*.jq")
 IF(ZORBA_TEST_XQUERYX)
   FILE(GLOB_RECURSE TESTFILES_XQX FOLLOW_SYMLINKS
     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS "*.xqx")
@@ -91,6 +94,10 @@ IF(${cxqNO} STRGREATER "0")
     # finally add the test
     ZORBA_ADD_TEST("${TEST_NAME}" testdriver ${CHAINED_TESTS_FILES})
 
+    # Create directory for output, if it doesn't exit
+    IF (NOT EXISTS "${_results_dir}/${CT}")
+      FILE (MAKE_DIRECTORY "${_results_dir}/${CT}")
+    ENDIF (NOT EXISTS "${_results_dir}/${CT}")
 
     # clear the list of testfiles, args and also the name of the test
     SET(CHAINED_TESTS_FILES)
@@ -197,6 +204,12 @@ FOREACH(TESTFILE ${TESTFILES})
 
     ZORBA_ADD_TEST("${TESTNAME}" testdriver ${TESTFILE})
 
+    # Create directory for output, if it doesn't exist
+    GET_FILENAME_COMPONENT(_bucket_path ${TESTFILE} PATH)
+    IF (NOT EXISTS "${_results_dir}/${_bucket_path}")
+      FILE (MAKE_DIRECTORY "${_results_dir}/${_bucket_path}")
+    ENDIF (NOT EXISTS "${_results_dir}/${_bucket_path}")
+
     MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
     MATH(EXPR TESTMOD "${TESTCOUNTER}/1000")
     IF (${TESTMOD})
@@ -230,8 +243,15 @@ MARK_AS_ADVANCED(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 ####
 IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
-  #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-8a 3408285)
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2 872732)
+
+  # HoF incorrect results. Bug report is here -- https://www.w3.org/Bugs/Public/show_bug.cgi?id=12661
+  EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/FoldRight/fold-right-006 12661)
+  EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/FoldRight/fold-right-007 12661)
+
+  # Incorrect expected error in HoF tests. W3C bug report -- https://www.w3.org/Bugs/Public/show_bug.cgi?id=12637
+  EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-915 12637)
+  EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-916 12637)  
 
   IF (NOT ZORBA_WITH_BIG_INTEGER)
     # These test will never pass without big integers beause the integers used
@@ -261,11 +281,16 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes013 3355019)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes014 3355019)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes015 3355019)
-  ENDIF (ZORBA_TEST_XQUERYX)
 
-  #this is marked as expected failure because the RQ uses XQTS_1_0_3. In that version the expected result is err:FODC0004 instead of err:FODC0002.
-  #W3C has changed the expected result for this test in the meantime: please see http://www.w3.org/Bugs/Public/show_bug.cgi?id=12542
-  #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-2 882002)
+    # HoF incorrect results. Bug report is here -- https://www.w3.org/Bugs/Public/show_bug.cgi?id=12661
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/FoldRight/fold-right-006 12661)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/FoldRight/fold-right-007 12661)
+
+    # Incorrect expected error in HoF tests. W3C bug report -- https://www.w3.org/Bugs/Public/show_bug.cgi?id=12637
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-915 12637)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-916 12637)  
+
+  ENDIF (ZORBA_TEST_XQUERYX)
 
 ENDIF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
@@ -490,13 +515,13 @@ EXPECTED_FAILURE (test/rbkt/zorba/testdriver/bom_bug 3381121)
 # Bug 921624. If this test takes more than a couple seconds, it must be
 # hitting w3.org for the DTD, which is bad.
 SET_TESTS_PROPERTIES(test/rbkt/zorba/schemas/local-xhtml
-  PROPERTIES TIMEOUT 5)
+  PROPERTIES TIMEOUT 10)
 # Bug 867363. These should fail or pass quickly because HTTP download
 # is disabled.
 SET_TESTS_PROPERTIES(test/rbkt/zorba/uris/disable-http
-  PROPERTIES TIMEOUT 5)
+  PROPERTIES TIMEOUT 10)
 SET_TESTS_PROPERTIES(test/rbkt/zorba/uris/disable-http-2
-  PROPERTIES TIMEOUT 5)
+  PROPERTIES TIMEOUT 10)
 
 
 # --------------------------------------------------------------------------
@@ -523,8 +548,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
-EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_3_0 867035)
-
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xmlid/valid-ncname 1010728)
@@ -541,15 +564,13 @@ EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
 EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 IF(NOT ZORBA_NO_ICU)
   IF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
+    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m11 866874)
     EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m40 866874)
     EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m41 866874)
-    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err17 1023168)
   ELSE ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
     EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err10 994610)
     EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err15 866874)
-    EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_err16 1023168)
   ENDIF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
-  EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m11 866874)
 ENDIF(NOT ZORBA_NO_ICU)
 
 IF(ZORBA_NO_ICU)

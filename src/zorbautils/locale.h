@@ -21,262 +21,15 @@
 
 #include <zorba/locale.h>
 
+#include "util/string_util.h"
+#include "zorbatypes/zstring.h"
+
 namespace zorba {
   namespace locale {
 
     /////////////////////////////////////////////////////////////////////////// 
 
     namespace iso3166_1 {
-      enum type {
-        unknown,
-        AD,   ///< Andorra
-        AE,   ///< United Arab Emirates
-        AF,   ///< Afghanistan
-        AG,   ///< Antigua and Barbuda
-        AI,   ///< Anguilla
-        AL,   ///< Albania
-        AM,   ///< Armenia
-        AN,   ///< Netherlands Antilles
-        AO,   ///< Angola
-        AQ,   ///< Antarctica
-        AR,   ///< Argentina
-        AS,   ///< American Samoa
-        AT,   ///< Austria
-        AU,   ///< Australia
-        AW,   ///< Aruba
-        AX,   ///< Aland Islands
-        AZ,   ///< Azerbaijan
-        BA,   ///< Bosnia and Herzegovina
-        BB,   ///< Barbados
-        BD,   ///< Bangladesh
-        BE,   ///< Belgium
-        BF,   ///< Burkina Faso
-        BG,   ///< Bulgaria
-        BH,   ///< Bahrain
-        BI,   ///< Burundi
-        BJ,   ///< Benin
-        BL,   ///< Saint Barthelemy
-        BM,   ///< Bermuda
-        BN,   ///< Brunei Darussalam
-        BO,   ///< Bolivia
-        BR,   ///< Brazil
-        BS,   ///< Bahamas
-        BT,   ///< Bhutan
-        BV,   ///< Bouvet Island
-        BW,   ///< Botswana
-        BY,   ///< Belarus
-        BZ,   ///< Belize
-        CA,   ///< Canada
-        CC,   ///< Cocos Islands
-        CD,   ///< Congo
-        CF,   ///< Central African Republic
-        CG,   ///< Congo
-        CH,   ///< Switzerland
-        CI,   ///< Cote D'Ivoire
-        CK,   ///< Cook Islands
-        CL,   ///< Chile
-        CM,   ///< Cameroon
-        CN,   ///< China
-        CO,   ///< Colombia
-        CR,   ///< Costa Rica
-        CU,   ///< Cuba
-        CV,   ///< Cape Verde
-        CX,   ///< Christmas Island
-        CY,   ///< Cyprus
-        CZ,   ///< Czech Republic
-        DE,   ///< Germany
-        DJ,   ///< Djibouti
-        DK,   ///< Denmark
-        DM,   ///< Dominica
-        DO,   ///< Dominican Republic
-        DZ,   ///< Algeria
-        EC,   ///< Ecuador
-        EE,   ///< Estonia
-        EG,   ///< Egypt
-        EH,   ///< Western Sahara
-        ER,   ///< Eritrea
-        ES,   ///< Spain
-        ET,   ///< Ethiopia
-        FI,   ///< Finland
-        FJ,   ///< Fiji
-        FK,   ///< Falkland Islands
-        FM,   ///< Micronesia
-        FO,   ///< Faroe Islands
-        FR,   ///< France
-        GA,   ///< Gabon
-        GB,   ///< United Kingdom
-        GD,   ///< Grenada
-        GE,   ///< Georgia
-        GF,   ///< French Guiana
-        GG,   ///< Guernsey
-        GH,   ///< Ghana
-        GI,   ///< Gibraltar
-        GL,   ///< Greenland
-        GM,   ///< Gambia
-        GN,   ///< Guinea
-        GP,   ///< Guadeloupe
-        GQ,   ///< Equatorial Guinea
-        GR,   ///< Greece
-        GS,   ///< South Georgia and the South Sandwich Islands
-        GT,   ///< Guatemala
-        GU,   ///< Guam
-        GW,   ///< Guinea-Bissau
-        GY,   ///< Guyana
-        HK,   ///< Hong Kong
-        HM,   ///< Heard Island and Mcdonald Islands
-        HN,   ///< Honduras
-        HR,   ///< Croatia
-        HT,   ///< Haiti
-        HU,   ///< Hungary
-        ID,   ///< Indonesia
-        IE,   ///< Ireland
-        IL,   ///< Israel
-        IM,   ///< Isle of Man
-        IN_,  ///< India [without '_', it clashes with an identifier on Windows]
-        IO,   ///< British Indian Ocean Territory
-        IQ,   ///< Iraq
-        IR,   ///< Iran
-        IS,   ///< Iceland
-        IT,   ///< Italy
-        JE,   ///< Jersey
-        JM,   ///< Jamaica
-        JO,   ///< Jordan
-        JP,   ///< Japan
-        KE,   ///< Kenya
-        KG,   ///< Kyrgyzstan
-        KH,   ///< Cambodia
-        KI,   ///< Kiribati
-        KM,   ///< Comoros
-        KN,   ///< Saint Kitts and Nevis
-        KP,   ///< Korea (Democratic People's Republic)
-        KR,   ///< Korea
-        KW,   ///< Kuwait
-        KY,   ///< Cayman Islands
-        KZ,   ///< Kazakhstan
-        LA,   ///< Lao
-        LB,   ///< Lebanon
-        LC,   ///< Saint Lucia
-        LI,   ///< Liechtenstein
-        LK,   ///< Sri Lanka
-        LR,   ///< Liberia
-        LS,   ///< Lesotho
-        LT,   ///< Lithuania
-        LU,   ///< Luxembourg
-        LV,   ///< Latvia
-        LY,   ///< Libyan Arab Jamahiriya
-        MA,   ///< Morocco
-        MC,   ///< Monaco
-        MD,   ///< Moldova
-        ME,   ///< Montenegro
-        MF,   ///< Saint Martin
-        MG,   ///< Madagascar
-        MH,   ///< Marshall Islands
-        MK,   ///< Macedonia
-        ML,   ///< Mali
-        MM,   ///< Myanmar
-        MN,   ///< Mongolia
-        MO,   ///< Macao
-        MP,   ///< Northern Mariana Islands
-        MQ,   ///< Martinique
-        MR,   ///< Mauritania
-        MS,   ///< Montserrat
-        MT,   ///< Malta
-        MU,   ///< Mauritius
-        MV,   ///< Maldives
-        MW,   ///< Malawi
-        MX,   ///< Mexico
-        MY,   ///< Malaysia
-        MZ,   ///< Mozambique
-        NA,   ///< Namibia
-        NC,   ///< New Caledonia
-        NE,   ///< Niger
-        NF,   ///< Norfolk Island
-        NG,   ///< Nigeria
-        NI,   ///< Nicaragua
-        NL,   ///< Netherlands
-        NO,   ///< Norway
-        NP,   ///< Nepal
-        NR,   ///< Nauru
-        NU,   ///< Niue
-        NZ,   ///< New Zealand
-        OM,   ///< Oman
-        PA,   ///< Panama
-        PE,   ///< Peru
-        PF,   ///< French Polynesia
-        PG,   ///< Papua New Guinea
-        PH,   ///< Philippines
-        PK,   ///< Pakistan
-        PL,   ///< Poland
-        PM,   ///< Saint Pierre and Miquelon
-        PN,   ///< Pitcairn
-        PR,   ///< Puerto Rico
-        PS,   ///< Palestinian Territory
-        PT,   ///< Portugal
-        PW,   ///< Palau
-        PY,   ///< Paraguay
-        QA,   ///< Qatar
-        RE,   ///< Reunion
-        RO,   ///< Romania
-        RS,   ///< Serbia
-        RU,   ///< Russian Federation
-        RW,   ///< Rwanda
-        SA,   ///< Saudi Arabia
-        SB,   ///< Solomon Islands
-        SC,   ///< Seychelles
-        SD,   ///< Sudan
-        SE,   ///< Sweden
-        SG,   ///< Singapore
-        SH,   ///< Saint Helena
-        SI,   ///< Slovenia
-        SJ,   ///< Svalbard and Jan Mayen
-        SK,   ///< Slovakia
-        SL,   ///< Sierra Leone
-        SM,   ///< San Marino
-        SN,   ///< Senegal
-        SO,   ///< Somalia
-        SR,   ///< Suriname
-        ST,   ///< Sao Tome and Principe
-        SV,   ///< El Salvador
-        SY,   ///< Syria
-        SZ,   ///< Swaziland
-        TC,   ///< Turks and Caicos Islands
-        TD,   ///< Chad
-        TF,   ///< French Southern Territories
-        TG,   ///< Togo
-        TH,   ///< Thailand
-        TJ,   ///< Tajikistan
-        TK,   ///< Tokelau
-        TL,   ///< Timor-Leste
-        TM,   ///< Turkmenistan
-        TN,   ///< Tunisia
-        TO,   ///< Tonga
-        TR,   ///< Turkey
-        TT,   ///< Trinidad and Tobago
-        TV,   ///< Tuvalu
-        TW,   ///< Taiwan
-        TZ,   ///< Tanzania
-        UA,   ///< Ukraine
-        UG,   ///< Uganda
-        UM,   ///< United States Minor Outlying Islands
-        US,   ///< United States
-        UY,   ///< Uruguay
-        UZ,   ///< Uzbekistan
-        VA,   ///< Vatican
-        VC,   ///< Saint Vincent and the Grenadines
-        VE,   ///< Venezuela
-        VG,   ///< Virgin Islands (British)
-        VI,   ///< Virgin Islands (USA)
-        VN,   ///< Viet Nam
-        VU,   ///< Vanuatu
-        WF,   ///< Wallis and Futuna
-        WS,   ///< Samoa
-        YE,   ///< Yemen
-        YT,   ///< Mayotte
-        ZA,   ///< South Africa
-        ZM,   ///< Zambia
-        ZW,   ///< Zimbabwe
-        NUM_ENTRIES
-      };
       extern char const *const string_of[];
 
       /**
@@ -297,7 +50,28 @@ namespace zorba {
        * @return Returns said enumeration or \c unknown.
        */
       type find( char const *country );
-    }
+
+      //
+      // Template version of find().
+      //
+      template<class StringType> inline
+      typename std::enable_if<
+        ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+        type
+      >::type
+      find( StringType const &country ) {
+        return find( country.c_str() );
+      }
+
+      /**
+       * Gets the "default" country that speaks the given language.
+       *
+       * @param lang The language to get the default country for.
+       * @return Returns said country or \c unknown.
+       */
+      type get_default( iso639_1::type lang );
+
+    } // namespace iso3166_1
 
     /////////////////////////////////////////////////////////////////////////// 
 
@@ -322,7 +96,19 @@ namespace zorba {
        * @return Returns said enumeration or \c unknown.
        */
       type find( char const *lang );
-    }
+
+      //
+      // Template version of find().
+      //
+      template<class StringType> inline
+      typename std::enable_if<
+        ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+        type
+      >::type
+      find( StringType const &lang ) {
+        return find( lang.c_str() );
+      }
+    } // namespace iso639_1
 
     /////////////////////////////////////////////////////////////////////////// 
 
@@ -474,7 +260,19 @@ namespace zorba {
        * @return Returns said enumeration or \c unknown.
        */
       type find( char const *lang );
-    }
+
+      //
+      // Template version of find().
+      //
+      template<class StringType> inline
+      typename std::enable_if<
+        ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+        type
+      >::type
+      find( StringType const &lang ) {
+        return find( lang.c_str() );
+      }
+    } // namespace iso639_2
 
     /////////////////////////////////////////////////////////////////////////// 
 
@@ -485,6 +283,40 @@ namespace zorba {
      * @return Returns said enumeration or \c unknown.
      */
     iso639_1::type find_lang( char const *lang );
+
+    //
+    // Template version of find_lang().
+    //
+    template<class StringType> inline
+    typename std::enable_if<
+      ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+      iso639_1::type
+    >::type
+    find_lang( StringType const &lang ) {
+      return find_lang( lang.c_str() );
+    }
+
+    /**
+     * Gets the date format in the locale specified by the given language and
+     * country.  The format is that used by \c strptime(3).
+     *
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said date format.
+     */
+    zstring get_date_format( iso639_1::type lang = iso639_1::unknown,
+                             iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets the date and time format in the locale specified by the given
+     * language and country.  The format is that used by \c strptime(3).
+     *
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said date format.
+     */
+    zstring get_date_time_format( iso639_1::type lang = iso639_1::unknown,
+                                  iso3166_1::type country = iso3166_1::unknown);
 
     /**
      * Gets the ISO 3166-1 country code enumeration for the host system.
@@ -500,12 +332,123 @@ namespace zorba {
      */
     iso639_1::type get_host_lang();
 
+    /**
+     * Gets a month's abbreviation in the locale specified by the given
+     * language and country.
+     *
+     * @param month_index The index of the month to get in the range 0-11.
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said abbreviation.
+     */
+    zstring get_month_abbr( unsigned month_index,
+                            iso639_1::type lang = iso639_1::unknown,
+                            iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets a month's full name in the locale specified by the given language
+     * and country.
+     *
+     * @param month_index The index of the month to get in the range 0-11.
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said full name.
+     */
+    zstring get_month_name( unsigned month_index,
+                            iso639_1::type lang = iso639_1::unknown,
+                            iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets the time AM or PM string in the locale specified by the given
+     * language and country.
+     *
+     * @param pm If \c true, gets the PM string; else the AM string.
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said string.
+     */
+    zstring get_time_ampm( bool pm, iso639_1::type lang = iso639_1::unknown,
+                           iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets the time format in the locale specified by the given language and
+     * country.  The format is that used by \c strptime(3).
+     *
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said time format.
+     */
+    zstring get_time_format( iso639_1::type lang = iso639_1::unknown,
+                             iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets a weekday's abbreviation in the locale specified by the given
+     * language and country.
+     *
+     * @param day_index The index of the weekday to get in the range 0-6.
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said abbreviation.
+     */
+    zstring get_weekday_abbr( unsigned day_index,
+                              iso639_1::type lang = iso639_1::unknown,
+                              iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Gets a weekday's full name in the locale specified by the given language
+     * and country.
+     *
+     * @param day_index The index of the month to get in the range 0-6.
+     * @param lang The language to use.  Defaults to host language.
+     * @param country The country to use.  Defaults to host country.
+     * @return Returns said full name.
+     */
+    zstring get_weekday_name( unsigned day_index,
+                              iso639_1::type lang = iso639_1::unknown,
+                              iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Checks if the locale specified by the given language and country is
+     * supported by the OS.
+     *
+     * @param lang The language to use.
+     * @param country The country to use.  Defaults to none.
+     * @return Returns \a true only if the given locale is supported by the OS.
+     */
+    bool is_supported( iso639_1::type lang,
+                       iso3166_1::type country = iso3166_1::unknown );
+
+    /**
+     * Parses a locale string.
+     *
+     * @param locale_str A locale string of the form \c ll{-_}CC[.enc] where
+     * \c ll is a 2 letter ISO 639-1 (or 3 letter 639-2) language code, \c CC
+     * is a 2 letter ISO 3166-1 country code, and \c enc is an optional
+     * encoding (which is ignored).
+     * @param lang A pointer to receive the language, if any.
+     * @param country A pointer to receive the country, if any.
+     * @return Returns \c true if at least a language is parsed.
+     */
+    bool parse( char const *locale_str, iso639_1::type *lang = nullptr,
+                iso3166_1::type *country = nullptr );
+
+    //
+    // Template version of parse().
+    //
+    template<class StringType> inline
+    typename std::enable_if<
+      ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+      bool
+    >::type
+    parse( StringType const &locale_str, iso639_1::type *lang = nullptr,
+           iso3166_1::type *country = nullptr ) {
+      return parse( locale_str.c_str(), lang, country );
+    }
+
     ///////////////////////////////////////////////////////////////////////////
 
   } // namespace locale
 } // namespace zorba
-
-#undef DEF_OSTREAM_INSERT_OPERATOR
 
 #endif  /* ZORBA_CORE_LOCALE_H */
 /* vim:set et sw=2 ts=2: */

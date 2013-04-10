@@ -488,23 +488,19 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (consumeNext(item0, theChild0.getp(), planState) &&
         consumeNext(item1, theChild1.getp(), planState))
     {
-      if (item0->getTypeCode() != store::JS_NULL &&
-          item1->getTypeCode() != store::JS_NULL)
-      {
-        STACK_PUSH(GENV_ITEMFACTORY->
-                   createBoolean(result,
-                                 CompareIterator::valueComparison(loc,
-                                                                  item0,
-                                                                  item1,
-                                                                  theCompType,
-                                                                  theTypeManager,
-                                                                  theTimezone,
-                                                                  theCollation)),
-                   state);
+      STACK_PUSH(GENV_ITEMFACTORY->
+                 createBoolean(result,
+                               CompareIterator::valueComparison(loc,
+                                                                item0,
+                                                                item1,
+                                                                theCompType,
+                                                                theTypeManager,
+                                                                theTimezone,
+                                                                theCollation)),
+                 state);
 
-        assert(!consumeNext(item0, theChild0.getp(), planState) &&
-               !consumeNext(item1, theChild1.getp(), planState));
-      }
+      assert(!consumeNext(item0, theChild0.getp(), planState) &&
+             !consumeNext(item1, theChild1.getp(), planState));
     }
   }
 
@@ -638,7 +634,7 @@ void CompareIterator::valueCasting(
     }
     else
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_STRING, NULL, loc);
 
       if (!GenericCast::promote(castItem1, item1, store::XS_STRING, tm, loc))
         castItem1.transfer(item1);
@@ -649,7 +645,7 @@ void CompareIterator::valueCasting(
     if (!GenericCast::promote(castItem0, item0, store::XS_STRING, tm, loc))
       castItem0.transfer(item0);
 
-    GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+    GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_STRING, NULL, loc);
   }
   else
   {
@@ -690,11 +686,6 @@ bool CompareIterator::generalComparison(
     long timezone,
     XQPCollator* aCollation)
 {
-  if (aItem0->getTypeCode() == store::JS_NULL ||
-      aItem1->getTypeCode() == store::JS_NULL)
-  {
-    return false;
-  }
   try
   {
     switch(aCompType)
@@ -815,7 +806,7 @@ void CompareIterator::generalCasting(
   {
     if (TypeOps::is_numeric(type1))
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_DOUBLE, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_DOUBLE, NULL, loc);
 
       GenericCast::promote(castItem1, item1, store::XS_DOUBLE, tm, loc);
     }
@@ -826,12 +817,12 @@ void CompareIterator::generalCasting(
     }
     else if (TypeOps::is_subtype(type1, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_STRING, NULL, loc);
       castItem1.transfer(item1);
     }
     else
     {
-      GenericCast::castToAtomic(castItem0, item0, type1, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, type1, NULL, loc);
       castItem1.transfer(item1);
     }
   }
@@ -839,17 +830,17 @@ void CompareIterator::generalCasting(
   {
     if (TypeOps::is_numeric(type0))
     {
-      GenericCast::castToAtomic(castItem1, item1, store::XS_DOUBLE, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_DOUBLE, NULL, loc);
       GenericCast::promote(castItem0, item0, store::XS_DOUBLE, tm, loc);
     }
     else if (TypeOps::is_subtype(type0, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_STRING, NULL, loc);
       castItem0.transfer(item0);
     }
     else
     {
-      GenericCast::castToAtomic(castItem1, item1, type0, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, type0, NULL, loc);
       castItem0.transfer(item0);
     }
   }
@@ -899,13 +890,14 @@ bool CompareIterator::equal(
   }
   else
   {
-    // There are 2 cases when two types are comparable without one being a
+    // There are 3 cases when two types are comparable without one being a
     // subtype of the other: (a) they belong to different branches under of
     // the type-inheritance subtree rooted at xs:integer, (b) they belong to
     // different branches under of the type-inheritance subtree rooted at
     // xs::duration (i.e. one is xs:yearMonthDuration and the other is
     // xs:dayTimeDuration).
     // The same case happens when there are two types derived from xs:NOTATION.
+    // (c) either of the types is a subtype of NULL.
     if (TypeOps::is_subtype(type0, store::XS_INTEGER) &&
         TypeOps::is_subtype(type1, store::XS_INTEGER))
     {
@@ -920,6 +912,14 @@ bool CompareIterator::equal(
              TypeOps::is_subtype(type1, store::XS_NOTATION))
     {
       return item0->equals(item1);
+    }
+    else if (TypeOps::is_subtype(type0, store::JS_NULL))
+    {
+      return item0->equals(item1);
+    }
+    else if (TypeOps::is_subtype(type1, store::JS_NULL))
+    {
+      return item1->equals(item0);
     }
     else
     {
@@ -1009,14 +1009,15 @@ long CompareIterator::compare(
   }
   catch(const ZorbaException& e)
   {
-    // For example, two QName items do not have an order relationship.
+    // For example, two QName or null items do not have
+    // an order relationship.
     if (e.diagnostic() == zerr::ZSTR0040_TYPE_ERROR)
     {
       xqtref_t type0 = tm->create_value_type(item0.getp());
       xqtref_t type1 = tm->create_value_type(item1.getp());
 
       RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
+      ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoStrictCompareWithType_4), *type1));
     }
 
     throw;

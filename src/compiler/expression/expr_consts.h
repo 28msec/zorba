@@ -28,7 +28,8 @@ enum PromoteErrorKind
   PROMOTE_TYPE_PROMOTION,
   PROMOTE_JSONIQ_ARRAY_SELECTOR,
   PROMOTE_JSONIQ_OBJECT_SELECTOR,
-  PROMOTE_JSONIQ_SELECTOR
+  PROMOTE_JSONIQ_SELECTOR,
+  PROMOTE_INDEX_KEY
 };
 
 
@@ -109,7 +110,8 @@ enum match_test_t
   match_xs_attr_test,
   match_pi_test,
   match_comment_test,
-  match_text_test
+  match_text_test,
+  match_namespace_test
 };
 
 std::string toString(match_test_t a);
@@ -164,18 +166,34 @@ enum BoolAnnotationValue
 };
 
 
+/*******************************************************************************
+  ATTENTION !!! 
+  The ordering of the enum values in IKMPORTANT. DO NOT CHANGE IT.
+  ATTENTION !!!
+********************************************************************************/
 class CompareConsts
 {
 public:
   enum CompareType
   {
-    UNKNOWN,
-    VALUE_EQUAL, GENERAL_EQUAL, NODE_EQUAL,
-    VALUE_NOT_EQUAL, GENERAL_NOT_EQUAL, NODE_NOT_EQUAL,
-    VALUE_LESS, GENERAL_LESS,
-    VALUE_LESS_EQUAL, GENERAL_LESS_EQUAL,
-    VALUE_GREATER, GENERAL_GREATER,
-    VALUE_GREATER_EQUAL, GENERAL_GREATER_EQUAL
+    UNKNOWN = 0,
+
+    VALUE_EQUAL           = 1,
+    GENERAL_EQUAL         = 2,
+    NODE_EQUAL            = 3,
+    VALUE_NOT_EQUAL       = 4,
+    GENERAL_NOT_EQUAL     = 5,
+    NODE_NOT_EQUAL        = 6,
+
+    VALUE_LESS            = 7,
+    GENERAL_LESS          = 8,
+    VALUE_LESS_EQUAL      = 9,
+    GENERAL_LESS_EQUAL    = 10,
+
+    VALUE_GREATER         = 11,
+    GENERAL_GREATER       = 12,
+    VALUE_GREATER_EQUAL   = 13,
+    GENERAL_GREATER_EQUAL = 14
   };
 };
 

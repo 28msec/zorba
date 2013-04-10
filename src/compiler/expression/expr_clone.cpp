@@ -31,6 +31,7 @@
 #include "compiler/api/compilercb.h"
 
 #include "functions/function.h"
+#include "functions/udf.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
@@ -116,6 +117,18 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                      CLONE(e->getValueExpr(), udf, subst));
     break;
   }
+  case namespace_expr_kind:
+  {
+    const namespace_expr* e = static_cast<const namespace_expr*>(this);
+
+    newExpr = theCCB->theEM->
+    create_namespace_expr(theSctx,
+                          udf,
+                          theLoc,
+                          CLONE(e->getPrefixExpr(), udf, subst),
+                          CLONE(e->getUriExpr(), udf, subst));
+    break;
+  }
   case text_expr_kind:
   {
     const text_expr* e = static_cast<const text_expr*>(this);
@@ -147,7 +160,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
 
     std::vector<expr*> names;
     std::vector<expr*> values;
-    
+
     names.reserve(e->theNames.size());
     values.reserve(e->theValues.size());
 
@@ -192,7 +205,8 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
     create_json_array_expr(theSctx,
                            udf,
                            theLoc,
-                           e->theContentExpr->clone(udf, subst));
+                           (e->theContentExpr ?
+                            e->theContentExpr->clone(udf, subst) : NULL));
 
     break;
   }
@@ -252,7 +266,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
     const flwor_expr* e = static_cast<const flwor_expr*>(this);
 
     flwor_expr* cloneExpr = theCCB->theEM->
-    create_flwor_expr(theSctx, udf, theLoc, e->theIsGeneral);
+    create_flwor_expr(theSctx, udf, theLoc, e->is_general());
 
     csize numClauses = e->num_clauses();
 
@@ -333,7 +347,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
   }
   case dynamic_function_invocation_expr_kind:
   {
-    const dynamic_function_invocation_expr* e = 
+    const dynamic_function_invocation_expr* e =
     static_cast<const dynamic_function_invocation_expr*>(this);
 
     checked_vector<expr*> newArgs;
@@ -344,12 +358,24 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
       newArgs.push_back((*ite)->clone(udf, subst));
     }
     
+    expr* newDotVar = NULL;
+    if (e->theDotVar)
+    {
+      newDotVar = e->theDotVar->clone(udf, subst);
+    }
+
     newExpr = theCCB->theEM->
     create_dynamic_function_invocation_expr(theSctx,
                                             udf,
                                             theLoc,
                                             e->theExpr->clone(udf, subst),
-                                            newArgs);
+                                            newArgs,
+                                            newDotVar);
+    break;
+  }
+  case argument_placeholder_expr_kind:
+  {
+    newExpr = theCCB->theEM->create_argument_placeholder_expr(theSctx, udf, theLoc);
     break;
   }
   case function_item_expr_kind:
@@ -359,17 +385,32 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
     function_item_expr* cloneExpr = theCCB->theEM->
     create_function_item_expr(theSctx,
                               udf,
-                              theLoc,
-                              e->theFunction->getName(),
-                              e->theFunction.getp(),
-                              e->theArity);
+                              get_loc(),
+                              e->theFunctionItemInfo->theFunction,
+                              e->theFunctionItemInfo->theArity,
+                              e->is_inline(),
+                              e->needs_context_item(),
+                              e->is_coercion());
 
-    std::vector<expr*> lNewVariables;
-    for (std::vector<expr*>::const_iterator ite = e->theScopedVariables.begin();
-         ite != e->theScopedVariables.end();
-         ++ite)
+    std::vector<expr*>::const_iterator varIter = 
+    e->theFunctionItemInfo->theScopedVarsValues.begin();
+
+    std::vector<var_expr*>::const_iterator substVarIter = 
+    e->theFunctionItemInfo->theSubstVarsValues.begin();
+
+    std::vector<store::Item_t>::const_iterator nameIter = 
+    e->theFunctionItemInfo->theScopedVarsNames.begin();
+
+    std::vector<int>::const_iterator isGlobalIter =
+    e->theFunctionItemInfo->theIsGlobalVar.begin();
+
+    for (; varIter != e->theFunctionItemInfo->theScopedVarsValues.end();
+         ++varIter, ++substVarIter, ++nameIter, ++isGlobalIter)
     {
-      cloneExpr->add_variable((*ite)->clone(udf, subst));
+      cloneExpr->add_variable((*varIter) ? (*varIter)->clone(udf, subst) : NULL,
+                              (*substVarIter) ? static_cast<var_expr*>((*substVarIter)->clone(udf, subst)) : NULL,
+                              *nameIter,
+                              *isGlobalIter);
     }
 
     newExpr = cloneExpr;
@@ -384,7 +425,8 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                          udf,
                          theLoc,
                          e->get_input()->clone(udf, subst),
-                         e->get_target_type());
+                         e->get_target_type(),
+                         e->allows_empty_input());
 
     break;
   }
@@ -397,7 +439,8 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                      udf,
                      theLoc,
                      e->get_input()->clone(udf, subst),
-                     e->get_target_type());
+                     e->get_target_type(),
+                     e->allows_empty_input());
     break;
   }
   case instanceof_expr_kind:
@@ -579,7 +622,7 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
 
     transform_expr* cloneExpr = theCCB->theEM->
     create_transform_expr(theSctx, udf, theLoc);
-    
+
     for (std::vector<copy_clause*>::const_iterator ite = e->theCopyClauses.begin();
          ite != e->theCopyClauses.end();
          ++ite)
@@ -600,7 +643,16 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
 
     checked_vector<expr*> seq2;
     for (csize i = 0; i < e->theArgs.size(); ++i)
+    {
       seq2.push_back(e->theArgs[i]->clone(udf, subst));
+
+      if (e->theArgs[i]->get_expr_kind() == var_decl_expr_kind)
+      {
+        var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(e->theArgs[i]);
+        var_expr* varExpr = varDeclExpr->get_var_expr();
+        varExpr->set_block_expr(e);
+      }
+    }
 
     newExpr = theCCB->theEM->
     create_block_expr(theSctx, udf, theLoc, true, seq2, NULL);
@@ -675,10 +727,10 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
     for (; ite != end; ++ite)
     {
       assert(subst.find(*ite) != subst.end());
-      
+
       clonedExits.push_back(subst[*ite]);
     }
-    
+
     newExpr = theCCB->theEM->
     create_exit_catcher_expr(theSctx, udf, theLoc, clonedInput, clonedExits);
 

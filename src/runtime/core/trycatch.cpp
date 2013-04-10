@@ -498,6 +498,150 @@ TryCatchIterator::bindErrorVars(
         }
       break;
       }
+
+      case CatchClause::zerr_data_uri:
+      {
+        LetVarConstIter lErrorDataURIVarIter = lIter->second.begin();
+        LetVarConstIter const lErrorDataURIVarIterEnd = lIter->second.end();
+
+        for ( ; lErrorDataURIVarIter != lErrorDataURIVarIterEnd;
+              ++lErrorDataURIVarIter )
+        {
+          store::Iterator_t lErrorDataURIIter;
+
+          XQueryException const *const xe =
+            dynamic_cast<XQueryException const*>( &e );
+	        if ( xe && xe->has_data() ) {
+            store::Item_t lErrorDataURIItem;
+            zstring uri( xe->data_uri() );
+            GENV_ITEMFACTORY->createString( lErrorDataURIItem, uri );
+            lErrorDataURIIter = new ItemIterator(lErrorDataURIItem);
+	        }
+          else
+          {
+            lErrorDataURIIter = new ItemIterator();
+          }
+          lErrorDataURIIter->open();
+          state->theErrorIters.push_back(lErrorDataURIIter);
+          (*lErrorDataURIVarIter)->bind(lErrorDataURIIter, planState);
+        }
+        break;
+      }
+
+      case CatchClause::zerr_data_line_no:
+      {
+        LetVarConstIter lErrorDataLineVarIter = lIter->second.begin();
+        LetVarConstIter const lErrorDataLineVarIterEnd = lIter->second.end();
+
+        for ( ; lErrorDataLineVarIter != lErrorDataLineVarIterEnd;
+              ++lErrorDataLineVarIter )
+        {
+          store::Iterator_t lErrorDataLineIter;
+
+          XQueryException const *const xe =
+            dynamic_cast<XQueryException const*>( &e );
+	        if ( xe && xe->has_data() ) {
+            store::Item_t lErrorDataLineItem;
+            GENV_ITEMFACTORY->createInteger(
+                lErrorDataLineItem, xs_integer(xe->data_line()));
+            lErrorDataLineIter = new ItemIterator(lErrorDataLineItem);
+	        }
+          else
+          {
+            lErrorDataLineIter = new ItemIterator();
+          }
+          lErrorDataLineIter->open();
+          state->theErrorIters.push_back(lErrorDataLineIter);
+          (*lErrorDataLineVarIter)->bind(lErrorDataLineIter, planState);
+        }
+        break;
+      }
+
+      case CatchClause::zerr_data_column_no:
+      {
+        LetVarConstIter lErrorDataColumnVarIter = lIter->second.begin();
+        LetVarConstIter const lErrorDataColumnVarIterEnd = lIter->second.end();
+
+        for ( ; lErrorDataColumnVarIter != lErrorDataColumnVarIterEnd;
+              ++lErrorDataColumnVarIter )
+        {
+          store::Iterator_t lErrorDataColumnIter;
+
+          XQueryException const *const xe =
+            dynamic_cast<XQueryException const*>( &e );
+	        if ( xe && xe->has_data() ) {
+            store::Item_t lErrorDataColumnItem;
+            GENV_ITEMFACTORY->createInteger(
+                lErrorDataColumnItem, xs_integer(xe->data_column()));
+            lErrorDataColumnIter = new ItemIterator(lErrorDataColumnItem);
+	        }
+          else
+          {
+            lErrorDataColumnIter = new ItemIterator();
+          }
+          lErrorDataColumnIter->open();
+          state->theErrorIters.push_back(lErrorDataColumnIter);
+          (*lErrorDataColumnVarIter)->bind(lErrorDataColumnIter, planState);
+        }
+        break;
+      }
+      case CatchClause::zerr_line_no_end:
+      {
+        LetVarConstIter lErrorLineVarIter = lIter->second.begin();
+        LetVarConstIter lErrorLineVarIterEnd = lIter->second.end();
+
+
+        for ( ; lErrorLineVarIter != lErrorLineVarIterEnd; lErrorLineVarIter++ )
+        {
+          store::Iterator_t lErrorLineIter;
+
+          XQueryException const *ue;
+	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
+               ue->has_source() ) {
+            store::Item_t lErrorLineItem;
+            GENV_ITEMFACTORY->createInteger(
+                lErrorLineItem, xs_integer(ue->source_line_end()));
+            lErrorLineIter = new ItemIterator(lErrorLineItem);
+	        }
+          else
+          {
+            lErrorLineIter = new ItemIterator();
+          }
+          lErrorLineIter->open();
+          state->theErrorIters.push_back(lErrorLineIter);
+          (*lErrorLineVarIter)->bind(lErrorLineIter, planState);
+        }
+      }
+      break;
+      case CatchClause::zerr_column_no_end:
+      {
+        LetVarConstIter lErrorColumnVarIter = lIter->second.begin();
+        LetVarConstIter lErrorColumnVarIterEnd = lIter->second.end();
+
+        for ( ; lErrorColumnVarIter != lErrorColumnVarIterEnd; lErrorColumnVarIter++ )
+        {
+          store::Iterator_t lErrorColumnIter;
+
+          XQueryException const *ue;
+	        if ( ( ue = dynamic_cast<XQueryException const*>( &e ) ) &&
+               ue->has_source() ) {
+            store::Item_t lErrorColumnItem;
+            GENV_ITEMFACTORY->createInteger(
+                lErrorColumnItem, xs_integer(ue->source_column_end()));
+            lErrorColumnIter = new ItemIterator(lErrorColumnItem);
+	        }
+          else
+          {
+            lErrorColumnIter = new ItemIterator();
+          }
+          lErrorColumnIter->open();
+          state->theErrorIters.push_back(lErrorColumnIter);
+          (*lErrorColumnVarIter)->bind(lErrorColumnIter, planState);
+        }
+      break;
+      }
+
+
       case CatchClause::zerr_stack_trace:
       {
         LetVarConstIter lStackTraceVarIter = lIter->second.begin();

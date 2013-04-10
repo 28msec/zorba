@@ -144,7 +144,7 @@ public:
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
-#if 1
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -159,7 +159,7 @@ public:
 
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
-#endif
+
 
 /*******************************************************************************
 
@@ -234,18 +234,6 @@ public:
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class IndexJoinRule : public RewriteRule
-{
-public:
-  IndexJoinRule() : RewriteRule(RewriteRule::IndexJoin, "IndexJoin") {}
-
-  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
-};
 
 
 }

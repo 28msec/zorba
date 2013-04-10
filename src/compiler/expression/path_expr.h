@@ -22,6 +22,7 @@
 
 #include "zorbatypes/zstring.h"
 
+#include <zorba/store_consts.h>
 
 namespace zorba
 {
@@ -159,9 +160,25 @@ public:
                      PITest | CommentTest | TextTest | AnyKindTest
 
   If a match_expr represents a KindTest, then theWildKind and theWildName data
-  members are not used. If a match_expr represents a NameTest, then theTypeName
-  and theNilledAllowed data members are not used.
+  members are not used. 
 
+  If a match_expr represents a NameTest, then theTypeName and theNilledAllowed
+  data members are not used. In this case, theWildKind is used to distinguish
+  among 4 subcases:
+
+  1. no wildcard: 
+     theQName holds the expanded qname to match against an element or attribute
+     node. theWildName is not used.
+
+  2. full wildcard (*):
+     Neither theQName nor theWildName are used.
+
+  3. localname wildcard (pre:*):
+     theQName holds an artificial qname: "ns:wildcard", where ns is the URI
+     associated with pre. theWildName holds the pre.
+
+  4. prefix wildcard (*:name):
+     theQName is not used and theWildName holds the local name.
 ********************************************************************************/
 class match_expr : public expr
 {
@@ -177,6 +194,7 @@ protected:
   zstring           theWildName;
 
   store::Item_t     theQName;
+
   store::Item_t     theTypeName;
   bool              theNilledAllowed;
 
@@ -202,8 +220,7 @@ public:
 
   const zstring& getWildName() const { return theWildName; }
 
-  template<class StringType>
-  void setWildName(const StringType& v) { theWildName = v; }
+  void setWildName(const zstring& v) { theWildName = v; }
 
   store::Item* getQName() const { return theQName.getp(); }
 
@@ -220,6 +237,8 @@ public:
   store::StoreConsts::NodeKind getNodeKind() const;
 
   void compute_scripting_kind();
+
+  bool matches(const match_expr* other) const;
 
   void accept(expr_visitor&);
 

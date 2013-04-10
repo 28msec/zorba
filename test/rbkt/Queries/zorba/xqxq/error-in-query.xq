@@ -2,7 +2,6 @@ import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';
 
 declare namespace op = 'http://www.zorba-xquery.com/options/features';
 declare namespace f = 'http://www.zorba-xquery.com/features';
-declare option op:enable 'f:hof';
 
 declare function local:url-resolver($namespace as xs:string, $entity as xs:string) {
 switch($entity)

@@ -1,0 +1,6 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml2-transitional.dtd">
+<html><body>Doesn't matter what's here, so long as it's not really a
+    schema and it references the XHTML DTD - in this case a
+    non-existent variation of the XHTML DTD, so even Zorba's local
+    copy of the XHTML1 can't save it
+</body></html>

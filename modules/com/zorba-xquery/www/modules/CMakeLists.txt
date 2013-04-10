@@ -60,10 +60,14 @@ DECLARE_ZORBA_MODULE(FILE math.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/math")
 DECLARE_ZORBA_MODULE(FILE node-reference.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node-reference")
+DECLARE_ZORBA_MODULE(FILE reference.xq VERSION 1.0
+  URI "http://www.zorba-xquery.com/modules/reference")
 DECLARE_ZORBA_MODULE(FILE node-position.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node-position")
 DECLARE_ZORBA_MODULE(FILE node.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node")
+DECLARE_ZORBA_MODULE(FILE item.xq VERSION 1.0
+  URI "http://www.zorba-xquery.com/modules/item")
 DECLARE_ZORBA_MODULE(FILE project_xqdoc.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/project_xqdoc")
 DECLARE_ZORBA_MODULE(FILE random.xq VERSION 2.0
@@ -75,7 +79,7 @@ DECLARE_ZORBA_MODULE(FILE schema.xq VERSION 2.0
 DECLARE_ZORBA_MODULE(FILE string.xq VERSION 2.1
   URI "http://www.zorba-xquery.com/modules/string")
 DECLARE_ZORBA_SCHEMA(FILE xml-options.xsd 
-  URI "http://www.zorba-xquery.com/modules/xml-options") 
+  URI "http://www.zorba-xquery.com/modules/xml-options")
 DECLARE_ZORBA_MODULE(FILE uri.xq VERSION 1.0
   URI "http://www.zorba-xquery.com/modules/uri")
 DECLARE_ZORBA_MODULE(FILE xml.xq VERSION 2.0

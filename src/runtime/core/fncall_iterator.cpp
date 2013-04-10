@@ -53,6 +53,7 @@
 #include "store/api/iterator_factory.h"
 #include "store/api/temp_seq.h"
 
+
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
 
@@ -121,18 +122,33 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 /*******************************************************************************
   Called by the openImpl method of UDFunctionCallIterator.
 ********************************************************************************/
-void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
+void UDFunctionCallIteratorState::open(
+    PlanState& planState,
+    user_function* udf,
+    bool theIsDynamic,
+    store::ItemHandle<FunctionItem>& theFunctionItem)
 {
   thePlan = udf->getPlan(thePlanStateSize).getp();
 
   thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
-  // Must allocate new dctx, as child of the "current" dctx, because the udf
-  // may be a recursive udf with local block vars, all of which have the same
-  // dynamic-context id, but they are distinct vars.
-  theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
+  // Must allocate new dctx because the udf may be a recursive udf with local
+  // block vars, all of which have the same dynamic-context id, but they are
+  // distinct vars.
 
-  thePlanState = new PlanState(planState.theGlobalDynCtx,
+  if (theIsDynamic)
+  {
+    if (theFunctionItem->getDctx() == NULL)
+      theFunctionItem->setDctx(new dynamic_context(planState.theGlobalDynCtx));
+
+    theLocalDCtx = new dynamic_context(theFunctionItem->getDctx());
+  }
+  else
+  {
+    theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
+  }
+
+  thePlanState = new PlanState(theIsDynamic ? theFunctionItem->getDctx() : planState.theGlobalDynCtx,
                                theLocalDCtx,
                                thePlanStateSize,
                                planState.theStackDepth + 1,
@@ -234,7 +250,7 @@ void UDFunctionCallIterator::createCache(
 
     for (csize i = 0; i < numArgs; ++i)
     {
-      lSpec.theKeyTypes[i] = sig[i]->getBaseBuiltinType()->get_qname().getp();
+      lSpec.theKeyTypes[i] = sig[i]->getBaseBuiltinType()->getQName().getp();
     }
 
     lIndex = GENV_STORE.createIndex(theUDF->getName(), lSpec, 0);
@@ -341,7 +357,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   // Create the plan for the udf body (if not done already) and allocate
   // the plan state (but not the state block) and dynamic context.
-  state->open(planState, theUDF);
+  state->open(planState, theUDF, theIsDynamic, theFunctionItem);
 
   // if the results of the function should be cached (prereq: atomic in and out)
   // this functions stores an index in the dynamic context that contains
@@ -367,6 +383,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
     if (!argVarRefs.empty())
     {
+      if ((*argWrapsIte) == NULL)
       (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
 
       // Cannot do the arg bind here because the state->thePlan has not been
@@ -461,6 +478,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
           }
           else
           {
+            if (i < argWraps.size())
             argWrapper = argWraps[i];
           }
 

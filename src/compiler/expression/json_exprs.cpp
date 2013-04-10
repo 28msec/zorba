@@ -41,6 +41,8 @@ json_array_expr::json_array_expr(
   theContentExpr(content)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -52,7 +54,10 @@ void json_array_expr::compute_scripting_kind()
 
     theScriptingKind = theContentExpr->get_scripting_detail();
 
-    theScriptingKind &= ~VACUOUS_EXPR;
+    if (theScriptingKind == VACUOUS_EXPR)
+      theScriptingKind = SIMPLE_EXPR;
+    else
+      theScriptingKind &= ~VACUOUS_EXPR;
   }
   else
   {
@@ -81,6 +86,8 @@ json_object_expr::json_object_expr(
   theAccumulate(accumulate)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -92,7 +99,10 @@ void json_object_expr::compute_scripting_kind()
 
     theScriptingKind = theContentExpr->get_scripting_detail();
 
-    theScriptingKind &= ~VACUOUS_EXPR;
+    if (theScriptingKind == VACUOUS_EXPR)
+      theScriptingKind = SIMPLE_EXPR;
+    else
+      theScriptingKind &= ~VACUOUS_EXPR;
   }
   else
   {
@@ -125,6 +135,8 @@ json_direct_object_expr::json_direct_object_expr(
   theValues.swap(values);
 
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 

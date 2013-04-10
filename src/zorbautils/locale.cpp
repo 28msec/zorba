@@ -15,23 +15,29 @@
  */
 #include "stdafx.h"
 
+// standard
+#include <algorithm>
+#include <cstring>
+#include <stdexcept>
 #ifdef WIN32
 # include <windows.h>
 # include "zorbautils/fatal.h"
 #else
 # include <clocale>
 # include <cstdlib>                     /* for getenv(3) */
+# include <langinfo.h>                  /* for nl_langinfo(3) */
+# include <xlocale.h>                   /* for newlocale(3) */
 #endif /* WIN32 */
 
-#include <algorithm>
-#include <cstring>
-
+// Zorba
 #include <zorba/internal/unique_ptr.h>
-
+#include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/less.h"
 #include "util/stl_util.h"
+#include "util/string_util.h"
 
+// local
 #include "locale.h"
 
 #define DEF_END(CHAR_ARRAY)                             \
@@ -45,6 +51,12 @@ using namespace std;
 
 namespace zorba {
 namespace locale {
+
+#ifdef WIN32
+typedef LCTYPE locale_index_type;
+#else
+typedef nl_item locale_index_type;
+#endif /* WIN32 */
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -61,19 +73,140 @@ inline int find_index( char const *const *begin, char const *const *end,
 #ifdef WIN32
 
 /**
+ * Gets the name of the locale for the given language and country in the format
+ * that Windows expects.
+ *
+ * @param lang The language to use.
+ * @param country The country to use, if any.
+ * @return Returns a pointre to the UTF-16 buffer containing the locale name.
+ */
+static unique_ptr<WCHAR[]> get_wlocale_name( iso639_1::type lang,
+                                             iso3166_1::type country ) {
+  assert( lang );
+
+  zstring locale_name( iso639_1::string_of[ lang ] );
+  if ( country ) {
+    locale_name += '-';
+    locale_name += iso3166_1::string_of[ country ];
+  }
+
+  unique_ptr<WCHAR[]> wlocale_name( new WCHAR[ LOCALE_NAME_MAX_LENGTH ] );
+  MultiByteToWideChar(
+    CP_UTF8, 0, locale_name.c_str(), -1,
+    wlocale_name.get(), LOCALE_NAME_MAX_LENGTH
+  );
+  return wlocale_name;
+}
+
+/**
+ * Converts a wide character (UTF-16) string to a multibyte (UTF-8) string.
+ *
+ * @param ws The wide string to convert.
+ * @return Returns the equivalent multi-byte string.
+ */
+static unique_ptr<char[]> wtoa( LPCWSTR ws ) {
+  int const len = ::WideCharToMultiByte(
+    CP_UTF8, 0, ws, -1, NULL, 0, NULL, NULL
+  );
+  unique_ptr<char[]> s( new char[ len ] );
+  ::WideCharToMultiByte( CP_UTF8, 0, ws, -1, s.get(), len, NULL, NULL );
+  return s;
+}
+
+/**
  * Gets a particular piece of information from the user's default locale.
  *
  * @param constant The constant specifying which piece of locale information to
  * get.
- * @return Returns said information or \c nullptr.
+ * @return Returns said information or an emptr string.
  */
-static char* get_win32_locale_info( int constant ) {
-  int bytes = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, constant, NULL, 0 );
-  ZORBA_FATAL( bytes, "GetLocaleInfoA() failed" );
-  unique_ptr<char[]> info( new char[ bytes ] );
-  bytes = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, constant, info.get(), bytes );
-  ZORBA_FATAL( bytes, "GetLocaleInfoA() failed" );
-  return info.release();
+static zstring get_locale_info( int constant ) {
+  int wlen = ::GetLocaleInfo( LOCALE_USER_DEFAULT, constant, NULL, 0 );
+  if ( !wlen )
+    return zstring();
+  unique_ptr<WCHAR[]> winfo( new WCHAR[ wlen ] );
+  wlen = ::GetLocaleInfo( LOCALE_USER_DEFAULT, constant, winfo.get(), wlen );
+  ZORBA_FATAL( wlen, "GetLocaleInfo() failed" );
+  unique_ptr<char[]> const info( wtoa( winfo.get() ) );
+  return zstring( info.get() );
+}
+
+/**
+ * GetLocaleInfoEx() is available only on Windows Vista and later so we can't
+ * call it directly since we might be running on Windows XP.  Hence, check to
+ * see if it's available and call it indirectly if so.
+ */
+static int Zorba_GetLocaleInfoEx( LPCWSTR lpLocaleName, LCTYPE LCType,
+                                  LPWSTR lpLCData, int cchData ) {
+  typedef int (WINAPI *GetLocaleInfoEx_type)( LPCWSTR, LCTYPE, LPWSTR, int );
+
+  static GetLocaleInfoEx_type GetLocaleInfoEx_ptr;
+  static bool init;
+
+  if ( !init ) {
+    GetLocaleInfoEx_ptr = (GetLocaleInfoEx_type)::GetProcAddress(
+      ::GetModuleHandle( TEXT( "kernel32.dll" ) ), "GetLocaleInfoEx"
+    );
+    init = true;
+  }
+
+  return GetLocaleInfoEx_ptr ?
+    GetLocaleInfoEx_ptr( lpLocaleName, LCType, lpLCData, cchData ) : 0;
+}
+
+/**
+ * Gets a particular piece of information from a locale.
+ *
+ * @param constant The constant specifying which piece of locale information to
+ * get.
+ * @param lang The language to use, if any.
+ * @param country The country to use, if any.
+ * @return Returns said information or an empty string.
+ */
+static zstring get_locale_info( int constant, iso639_1::type lang,
+                                iso3166_1::type country ) {
+  LPCWSTR wlocale_name;
+  unique_ptr<WCHAR[]> wlocale_name_ptr;
+
+  if ( !country )
+    country = iso3166_1::get_default( lang );
+  if ( lang && country ) {
+    wlocale_name_ptr = get_wlocale_name( lang, country );
+    wlocale_name = wlocale_name_ptr.get();
+  } else
+    wlocale_name = LOCALE_NAME_USER_DEFAULT;
+
+  int wlen = Zorba_GetLocaleInfoEx( wlocale_name, constant, NULL, 0 );
+  if ( !wlen )
+    return zstring();
+  unique_ptr<WCHAR[]> winfo( new WCHAR[ wlen ] );
+  wlen = Zorba_GetLocaleInfoEx( wlocale_name, constant, winfo.get(), wlen );
+  ZORBA_FATAL( wlen, "GetLocaleInfoEx() failed" );
+
+  unique_ptr<char[]> const info( wtoa( winfo.get() ) );
+  return zstring( info.get() );
+}
+
+/**
+ * IsValidLocaleName() is available only on Windows Vista and later so we can't
+ * call it directly since we might be running on Windows XP.  Hence, check to
+ * see if it's available and call it indirectly if so.
+ */
+static bool Zorba_IsValidLocaleName( LPCWSTR lpLocaleName ) {
+  typedef int (WINAPI *IsValidLocaleName_type)( LPCWSTR );
+
+  static IsValidLocaleName_type IsValidLocaleName_ptr;
+  static bool init;
+
+  if ( !init ) {
+    IsValidLocaleName_ptr = (IsValidLocaleName_type)::GetProcAddress(
+      ::GetModuleHandle( TEXT( "kernel32.dll" ) ), "IsValidLocaleName"
+    );
+    init = true;
+  }
+
+  return IsValidLocaleName_ptr ?
+    !!IsValidLocaleName_ptr( lpLocaleName ) : false;
 }
 
 #else /* WIN32 */
@@ -96,7 +229,7 @@ inline char const* filter_useless_locale( char const *loc ) {
  *
  * @return Returns said locale, e.g., "en_US.UTF-8" or \c nullptr.
  */
-static char* get_unix_locale() {
+static zstring get_unix_locale() {
   //
   // Try the environment locale first.
   //
@@ -107,7 +240,59 @@ static char* get_unix_locale() {
     //
     loc = filter_useless_locale( ::getenv( "LANG" ) );
   }
-  return loc ? ztd::new_strdup( loc ) : nullptr;
+  zstring result;
+  if ( loc && *loc )
+    result = loc;
+  return result;
+}
+
+/**
+ * Gets the locale_t corresponding to the given language and country.  It is
+ * the caller's responsibility to call \c freelocale(3) on the result.
+ *
+ * @param lang The language.
+ * @param country The country.
+ * @return Returns said \c locale_t or \c (locale_t)0.
+ */
+static locale_t get_unix_locale_t( iso639_1::type lang,
+                                   iso3166_1::type country ) {
+  zstring locale_name( iso639_1::string_of[ lang ] );
+  if ( country ) {
+    locale_name += '_';
+    locale_name += iso3166_1::string_of[ country ];
+  }
+  locale_name += ".UTF-8";
+  locale_t loc = ::newlocale( LC_TIME_MASK, locale_name.c_str(), nullptr );
+  if ( !loc && country ) {              // try it without the country
+    locale_name = iso639_1::string_of[ lang ];
+    locale_name += ".UTF-8";
+    loc = ::newlocale( LC_TIME_MASK, locale_name.c_str(), nullptr );
+  }
+  return loc;
+}
+
+/**
+ * Gets a particular piece of information from a locale.
+ *
+ * @param item The constant specifying which piece of locale information to
+ * get.
+ * @param lang The language to use, if any.
+ * @param country The country to use, if any.
+ * @return Returns said information or an empty string.
+ */
+static zstring get_locale_info( nl_item item, iso639_1::type lang,
+                                iso3166_1::type country ) {
+  if ( lang ) {
+    if ( !country )
+      country = iso3166_1::get_default( lang );
+    if ( locale_t const loc = get_unix_locale_t( lang, country ) ) {
+      char const *const info = nl_langinfo_l( item, loc );
+      ::freelocale( loc );
+      return info;
+    }
+    return zstring();
+  }
+  return nl_langinfo( item );
 }
 
 #endif /* WIN32 */
@@ -369,6 +554,205 @@ char const *const string_of[] = {
 type find( char const *country ) {
   DEF_END( string_of );
   return FIND( country );
+}
+
+type get_default( iso639_1::type lang ) {
+  //
+  // In cases where a language maps to multiple countries, if the language is
+  // the official language of a single country, that country is the one the
+  // language is mapped to.
+  //
+  static type const lang_to_country[] = {
+    unknown,
+    DJ     , // aa: Afar => Djibouti
+    GE     , // ab: Abkhazian => Georgia
+    IR     , // ae: Avestan => Iran
+    ZA     , // af: Afrikaans => South Africa
+    GH     , // ak: Akan => Ghana
+    ET     , // am: Amharic => Ethiopia
+    ES     , // an: Aragonese => Spain
+    unknown, // ar: Arabic => (maps to multiple countries)
+    IN_    , // as: Assamese => India
+    AZ     , // av: Avaric => Azerbaijan
+    BO     , // ay: Aymara => Bolivia
+    AZ     , // az: Azerbaijani => Azerbaijan
+    RU     , // ba: Bashkir => Russian Federation
+    RU     , // be: Byelorussian => Russian Federation
+    BG     , // bg: Bulgarian => Bulgaria
+    IN_    , // bh: Bihari => India
+    VU     , // bi: Bislama => Vanuatu
+    ML     , // bm: Bambara => Mali
+    BD     , // bn: Bengali; Bangla => Bangladesh
+    CN     , // bo: Tibetan => China
+    FR     , // br: Breton => France
+    BA     , // bs: Bosnian => Bosnia
+    AD     , // ca: Catalan => Andorra
+    RU     , // ce: Chechen => Russian Federation
+    MP     , // ch: Chamorro => Northern Mariana Islands
+    FR     , // co: Corsican => France
+    US     , // cr: Cree => United States
+    CZ     , // cs: Czech => Czech Republic
+    RU     , // cu: Church Slavic; Church Slavonic => Russian Federation
+    RU     , // cv: Chuvash => Russian Federation
+    GB     , // cy: Welsh => United Kingdom
+    DK     , // da: Danish => Denmark
+    DE     , // de: German => Germany
+    MV     , // dv: Divehi => Maldives
+    PK     , // dz: Bhutani => Pakistan
+    unknown, // ee: Ewe => (maps to multiple countries)
+    GR     , // el: Greek => Greece
+    US     , // en: English => United States
+    unknown, // eo: Esperanto => (constructed language)
+    ES     , // es: Spanish => Spain
+    EE     , // et: Estonian => Estonia
+    ES     , // eu: Basque => Spain
+    IR     , // fa: Persian => Iran
+    unknown, // ff: Fulah => (maps to multiple countries)
+    FI     , // fi: Finnish => Finland
+    FJ     , // fj: Fiji => Fiji
+    FO     , // fo: Faroese => Faroe Islands
+    FR     , // fr: French => France
+    NL     , // fy: Frisian => Netherlands
+    IE     , // ga: Irish => Ireland
+    GB     , // gd: Scots Gaelic => United Kingdom
+    ES     , // gl: Galician => Spain
+    PY     , // gn: Guarani => Paraguay
+    IN_    , // gu: Gujarati => India
+    IM     , // gv: Manx => Isle of Man
+    unknown, // ha: Hausa => (maps to multiple languages)
+    IL     , // he: Hebrew => Israel
+    IN_    , // hi: Hindi => India
+    PG     , // ho: Hiri Motu => Papua New Guinea
+    HR     , // hr: Croatian => Croatia
+    HT     , // ht: Haitian Creole => Haiti
+    HU     , // hu: Hungarian => Hungary
+    AM     , // hy: Armenian => Armenia
+    unknown, // hz: Herero => (maps to multiple countries)
+    unknown, // ia: Interlingua => (constructed language)
+    ID     , // id: Indonesian => Indonesia
+    unknown, // ie: Interlingue => (constructed language)
+    NG     , // ig: Igbo => Nigeria
+    CN     , // ii: Nuosu => China
+    US     , // ik: Inupiak => United States
+    unknown, // io: Ido => (constructed language)
+    IS     , // is: Icelandic => Island
+    IT     , // it: Italian => Italy
+    CA     , // iu: Inuktitut => Canada
+    JP     , // ja: Japanese => Japan
+    ID     , // jv: Javanese => Indonesia
+    GE     , // ka: Georgian => Georgia
+    unknown, // kg: Kongo => (maps to multiple countries)
+    KE     , // ki: Gikuyu => Kenya
+    unknown, // kj: Kuanyama => (maps to multiple countries)
+    KZ     , // kk: Kazakh => Kazakhstan
+    GL     , // kl: Greenlandic => Greenland
+    KH     , // km: Cambodian => Cambodia
+    IN_    , // kn: Kannada => India
+    KR     , // ko: Korean => Korea
+    unknown, // kr: Kanuri => (maps to multiple countries)
+    IN_    , // ks: Kashmiri => India
+    IQ     , // ku: Kurdish => Iraq
+    RU     , // kv: Komi => Russian Federation
+    GB     , // kw: Cornish => United Kingdom
+    KG     , // ky: Kirghiz => Kyrgyzstan
+    unknown, // la: Latin => (maps to multiple countries)
+    LU     , // lb: Letzeburgesch => Luxembourg
+    UG     , // lg: Ganda => Uganda
+    NL     , // li: Limburgan; Limburger; Limburgish => Netherands
+    unknown, // ln: Lingala => (maps to multiple countries)
+    LA     , // lo: Laotian => Lao
+    LT     , // lt: Lithuanian => Lithuania
+    CD     , // lu: Luba-Katanga => Democratic Republic of the Congo
+    LV     , // lv: Latvian => Latvia
+    MG     , // mg: Malagasy => Madagascar
+    MH     , // mh: Marshallese => Marshall Islands
+    NZ     , // mi: Maori => New Zealand
+    MK     , // mk: Macedonian => Macedonia
+    IN_    , // ml: Malayalam => India
+    MN     , // mn: Mongolian => Mongolia
+    MD     , // mo: Moldavian => Moldova
+    IN_    , // mr: Marathi => India
+    MY     , // ms: Malay => Malaysia
+    MT     , // mt: Maltese => Malta
+    MM     , // my: Burmese => Myanmar (Burma)
+    NR     , // na: Nauru => Nauru
+    NO     , // nb: Norwegian Bokmal => Norway
+    ZW     , // nd: Ndebele, North => Zimbabwe
+    NP     , // ne: Nepali => Nepal
+    NA     , // ng: Ndonga => Namibia
+    NL     , // nl: Dutch => Netherlands
+    NO     , // nn: Norwegian Nynorsk => Norway
+    NO     , // no: Norwegian => Norway
+    ZA     , // nr: Ndebele, South => South Africa
+    US     , // nv: Navajo; Navaho => United States
+    MW     , // ny: Chichewa; Chewa; Nyanja => Malawi
+    unknown, // oc: Occitan => (maps to multiple countries)
+    CA     , // oj: Ojibwa => Canada
+    unknown, // om: Oromo => (maps to multiple countries)
+    IN_    , // or: Oriya => India
+    unknown, // os: Ossetian; Ossetic => (maps to multiple countries)
+    PK     , // pa: Panjabi; Punjabi => Pakistan
+    unknown, // pi: Pali => (maps to multiple countries)
+    PL     , // pl: Polish => Poland
+    AF     , // ps: Pashto, Pushto => Afghanistan
+    PT     , // pt: Portuguese => Portugal
+    unknown, // qu: Quechua => (maps to multiple countries)
+    CH     , // rm: Romansh => Switzerland
+    BI     , // rn: Kirundi => Burundi
+    RO     , // ro: Romanian => Romania
+    RU     , // ru: Russian => Russian Federation
+    RW     , // rw: Kinyarwanda => Rwanda
+    IN_    , // sa: Sanskrit => India
+    IT     , // sc: Sardinian => Italy
+    PK     , // sd: Sindhi => Pakistan
+    NO     , // se: Northern Sami => Norway
+    CF     , // sg: Sangho => Central African Republic
+    RS     , // sh: Serbo-Croatian => Serbia
+    LK     , // si: Sinhalese => Sri Lanka
+    SK     , // sk: Slovak => Slovakia
+    SI     , // sl: Slovenian => Slovenia
+    AS     , // sm: Samoan => American Samoa
+    ZW     , // sn: Shona => Zimbabwe
+    SO     , // so: Somali => Somalia
+    AL     , // sq: Albanian => Albania
+    RS     , // sr: Serbian => Serbia
+    SZ     , // ss: Siswati => Swaziland
+    LS     , // st: Sesotho => Lesotho
+    SD     , // su: Sundanese => Sudan
+    SE     , // sv: Swedish => Sweden
+    KE     , // sw: Swahili => Kenya
+    IN_    , // ta: Tamil => India
+    IN_    , // te: Telugu => India
+    TJ     , // tg: Tajik => Tajikistan
+    TH     , // th: Thai => Thailand
+    ER     , // ti: Tigrinya => Eritrea
+    TM     , // tk: Turkmen => Turkmenistan
+    PH     , // tl: Tagalog => Philippines
+    ZA     , // tn: Setswana => South Africa
+    TO     , // to: Tonga => Tonga
+    TR     , // tr: Turkish => Turkey
+    ZA     , // ts: Tsonga => South Africa
+    RU     , // tt: Tatar => Russian Federation
+    GH     , // tw: Twi => Ghana
+    PF     , // ty: Tahitian => French Polynesia
+    CN     , // ug: Uighur => China
+    UA     , // uk: Ukrainian => Ukrain
+    PK     , // ur: Urdu => Pakistan
+    UZ     , // uz: Uzbek => Uzbekistan
+    ZA     , // ve: Venda => South Africa
+    VN     , // vi: Vietnamese => Viet Nam
+    DE     , // vo: Volapuk => Germany
+    BE     , // wa: Walloon => Belgium
+    SN     , // wo: Wolof => Senegal
+    ZA     , // xh: Xhosa => South Africa
+    IL     , // yi: Yiddish => Israel
+    NG     , // yo: Yoruba => Nigeria
+    CN     , // za: Zhuang => China
+    CN     , // zh: Chinese => China
+    ZA     , // zu: Zulu => South Africa
+  };
+  assert( lang < iso639_1::NUM_ENTRIES );
+  return lang_to_country[ lang ];
 }
 
 } // namespace iso3166_1
@@ -849,44 +1233,113 @@ iso639_1::type find_lang( char const *lang ) {
   return iso639_2_to_639_1[ iso639_2::find( lang ) ];
 }
 
-iso3166_1::type get_host_country() {
+zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
+#ifdef WIN32
+  zstring const w32_format(
+    get_locale_info( LOCALE_SSHORTDATE, lang, country )
+  );
+  zstring format;
   //
-  // ICU's Locale::getDefault().getLanguage() should be used here, but it
-  // sometimes returns "root" which isn't useful.
+  // Convert Windows' date format for that used by strptime(3); see:
+  // http://msdn.microsoft.com/en-us/library/windows/desktop/dd317787(v=vs.85).aspx
   //
-  static unique_ptr<char[]> country_name;
-  static iso3166_1::type country_code;
+  for ( char const *i = w32_format.c_str(); *i; ++i ) {
+    switch ( *i ) {
 
-  if ( !country_name ) {
+      case 'd':
+        if ( i[1] == 'd' )
+          if ( i[2] == 'd' )
+            if ( i[3] == 'd' )
+              format += "%A", i += 3;   // dddd = full weekday name
+            else
+              format += "%a", i += 2;   // ddd = abbreviated weekday name
+          else
+            format += "%d", i += 1;     // dd = day of month: 01-31
+        else
+          format += "%e";               // d = day of month: 1-31
+        break;
+
+      case 'g':                         // period/era
+        //
+        // There's no equivalent strftime(3) conversion specification: just
+        // ignore it and hope for the best.
+        //
+        if ( i[1] == 'g' )
+          ++i;                          // gg = same as g
+        break;
+
+      case 'M':
+        if ( i[1] == 'M' )
+          if ( i[2] == 'M' )
+            if ( i[3] == 'M' )
+              format += "%B", i += 3;   // MMMM = full month name
+            else
+              format += "%b", i += 2;   // MMM = abbreviated month name
+          else
+            format += "%m", i += 1;     // MM = month: 01-12
+        else
+          format += "%m";               // M = month: 1-12
+        break;
+
+      case 'y':
+        if ( i[1] == 'y' )
+          if ( i[2] == 'y' )
+            if ( i[3] == 'y' ) {
+              format += "%Y", i += 3;   // yyyy = 4-digit year
+              if ( i[3] == 'y' )
+                ++i;                    // yyyyy = same as yyyy
+            } else
+              ;
+          else
+            format += "%y", i += 1;     // yy = 2-digit year
+        else
+          format += "%y";               // y = 1-digit year
+        break;
+
+      default:
+        format += *i;
+    } // switch
+  } // for
+  return format;
+#else
+  zstring fmt( get_locale_info( D_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%d-%b-%Y";                   // dd-Mon-yyyy
+  return fmt;
+#endif /* WIN32 */
+}
+
+zstring get_date_time_format( iso639_1::type lang, iso3166_1::type country ) {
+#ifdef WIN32
+  //
+  // Windows has no equivalent for both date and time, so glue its date and
+  // time together and hope for the best.
+  //
+  return get_date_format( lang, country ) + ' ' +
+         get_time_format( lang, country );
+#else
+  zstring fmt( get_locale_info( D_T_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%a %b %e %X %Y";
+  return fmt;
+#endif /* WIN32 */
+}
+
+iso3166_1::type get_host_country() {
+  static bool got;
+  static iso3166_1::type country;
+
+  if ( !got ) {
 #   ifdef WIN32
-    char *loc_info = get_win32_locale_info( LOCALE_SISO3166CTRYNAME );
+    zstring const name( get_locale_info( LOCALE_SISO3166CTRYNAME ) );
+    country = iso3166_1::find( name );
 #   else
-    char *loc_info = get_unix_locale();
-    if ( loc_info ) {
-      //
-      // Extract just the country's name from the locale, e.g., convert
-      // "en_US.UTF-8" to "US".
-      //
-      if ( char *const sep = ::strchr( loc_info, '.' ) )
-        *sep = '\0';
-      if ( char *const sep = ::strpbrk( loc_info, "_-" ) ) {
-        //
-        // We have to allocate a new string for just the country since
-        // unique_ptr can't point to a character that isn't the first otherwise
-        // its call to delete[] will be undefined.
-        //
-        unique_ptr<char[]> const old_loc_info( loc_info );
-        loc_info = ztd::new_strdup( sep + 1 );
-      }
-    }
+    zstring const loc_info( get_unix_locale() );
+    parse( loc_info, nullptr, &country );
 #   endif /* WIN32 */
-    if ( loc_info ) {
-      country_name.reset( loc_info );
-      if ( iso3166_1::type const found_code = iso3166_1::find( loc_info ) )
-        country_code = found_code;
-    }
+    got = true;
   }
-  return country_code;
+  return country;
 }
 
 iso639_1::type get_host_lang() {
@@ -894,30 +1347,260 @@ iso639_1::type get_host_lang() {
   // ICU's Locale::getDefault().getLanguage() should be used here, but it
   // sometimes returns "root" which isn't useful.
   //
-  static unique_ptr<char[]> lang_name;
-  static iso639_1::type lang_code = iso639_1::en;
+  static bool got;
+  static iso639_1::type lang;
 
-  if ( !lang_name ) {
+  if ( !got ) {
 #   ifdef WIN32
-    char *const loc_info = get_win32_locale_info( LOCALE_SISO639LANGNAME );
+    zstring const name( get_locale_info( LOCALE_SISO639LANGNAME ) );
+    lang = find_lang( name );
 #   else
-    char *const loc_info = get_unix_locale();
-    if ( loc_info ) {
-      //
-      // Extract just the language from the locale, e.g., convert "en_US.UTF-8"
-      // to "en".
-      //
-      if ( char *const sep = ::strpbrk( loc_info, "-_" ) )
-        *sep = '\0';
-    }
+    zstring const loc_info( get_unix_locale() );
+    parse( loc_info, &lang );
 #   endif /* WIN32 */
-    if ( loc_info ) {
-      lang_name.reset( loc_info );
-      if ( iso639_1::type const found_code = find_lang( loc_info ) )
-        lang_code = found_code;
+    if ( !lang )
+      lang = iso639_1::en;              // default to English
+    got = true;
+  }
+  return lang;
+}
+
+zstring get_month_abbr( unsigned month_index, iso639_1::type lang,
+                        iso3166_1::type country ) {
+  static locale_index_type const month_abbr[] = {
+#ifdef WIN32
+    LOCALE_SABBREVMONTHNAME1, LOCALE_SABBREVMONTHNAME2,
+    LOCALE_SABBREVMONTHNAME3, LOCALE_SABBREVMONTHNAME4,
+    LOCALE_SABBREVMONTHNAME5, LOCALE_SABBREVMONTHNAME6,
+    LOCALE_SABBREVMONTHNAME7, LOCALE_SABBREVMONTHNAME8,
+    LOCALE_SABBREVMONTHNAME9, LOCALE_SABBREVMONTHNAME10,
+    LOCALE_SABBREVMONTHNAME11, LOCALE_SABBREVMONTHNAME12
+#else
+    ABMON_1, ABMON_2, ABMON_3, ABMON_4, ABMON_5, ABMON_6,
+    ABMON_7, ABMON_8, ABMON_9, ABMON_10, ABMON_11, ABMON_12
+#endif /* WIN32 */
+  };
+
+  if ( month_index > 11 )
+    throw invalid_argument( BUILD_STRING( month_index, " not in range 0-11" ) );
+  zstring abbr( get_locale_info( month_abbr[ month_index ], lang, country ) );
+  if ( abbr.empty() && lang == iso639_1::en ) {
+    static char const *const abbr_str[] = {
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+    abbr = abbr_str[ month_index ];
+  }
+  return abbr;
+}
+
+zstring get_month_name( unsigned month_index, iso639_1::type lang,
+                        iso3166_1::type country ) {
+  static locale_index_type const month_name[] = {
+#ifdef WIN32
+    LOCALE_SMONTHNAME1, LOCALE_SMONTHNAME2, LOCALE_SMONTHNAME3,
+    LOCALE_SMONTHNAME4, LOCALE_SMONTHNAME5, LOCALE_SMONTHNAME6,
+    LOCALE_SMONTHNAME7, LOCALE_SMONTHNAME8, LOCALE_SMONTHNAME9,
+    LOCALE_SMONTHNAME10, LOCALE_SMONTHNAME11, LOCALE_SMONTHNAME12
+#else
+    MON_1, MON_2, MON_3, MON_4, MON_5, MON_6,
+    MON_7, MON_8, MON_9, MON_10, MON_11, MON_12
+#endif /* WIN32 */
+  };
+
+  if ( month_index > 11 )
+    throw invalid_argument( BUILD_STRING( month_index, " not in range 0-11" ) );
+  zstring name( get_locale_info( month_name[ month_index ], lang, country ) );
+  if ( name.empty() && lang == iso639_1::en ) {
+    static char const *const name_str[] = {
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "Sepember", "October", "November", "December"
+    };
+    name = name_str[ month_index ];
+  }
+  return name;
+}
+
+zstring get_time_ampm( bool pm, iso639_1::type lang, iso3166_1::type country ) {
+  static locale_index_type const ampm[] = {
+#ifdef WIN32
+    LOCALE_S1159, LOCALE_S2359
+#else
+    AM_STR, PM_STR
+#endif /* WIN32 */
+  };
+  zstring s( get_locale_info( ampm[ pm ], lang, country ) );
+  if ( s.empty() && lang == iso639_1::en )
+    s = pm ? "PM" : "AM";
+  return s;
+}
+
+zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
+#ifdef WIN32
+  zstring const w32_format(
+    get_locale_info( LOCALE_STIMEFORMAT, lang, country )
+  );
+  zstring format;
+  //
+  // Convert Windows' time format for that used by strptime(3); see:
+  // http://msdn.microsoft.com/en-us/library/windows/desktop/dd318148(v=vs.85).aspx
+  //
+  for ( char const *i = w32_format.c_str(); *i; ++i ) {
+    switch ( *i ) {
+
+      case 'h':
+        if ( i[1] == 'h' )
+          format += "%I", ++i;
+        else
+          format += "%l";
+        break;
+
+      case 'H':
+        if ( i[1] == 'H' )
+          format += "%H", ++i;
+        else
+          format += "%k";
+        break;
+
+      case 'm':
+        format += "%M";
+        if ( i[1] == 'm' )
+          ++i;
+        break;
+
+      case 's':
+        format += "%S";
+        if ( i[1] == 's' )
+          ++i;
+        break;
+
+      case 't':
+        format += "%p";
+        if ( i[1] == 't' )
+          ++i;
+        break;
+
+      default:
+        format += *i;
+    } // switch
+  } // for
+  return format;
+#else
+  zstring fmt( get_locale_info( T_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%H:%M:%S";
+  return fmt;
+#endif /* WIN32 */
+}
+
+zstring get_weekday_abbr( unsigned day_index, iso639_1::type lang,
+                          iso3166_1::type country ) {
+  static locale_index_type const weekday_abbr[] = {
+#ifdef WIN32
+    LOCALE_SABBREVDAYNAME7 /* Sun */,
+    LOCALE_SABBREVDAYNAME1 /* Mon */,
+    LOCALE_SABBREVDAYNAME2 /* Tue */,
+    LOCALE_SABBREVDAYNAME3 /* Wed */,
+    LOCALE_SABBREVDAYNAME4 /* Thu */,
+    LOCALE_SABBREVDAYNAME5 /* Fri */,
+    LOCALE_SABBREVDAYNAME6 /* Sat */
+#else
+    ABDAY_1, ABDAY_2, ABDAY_3, ABDAY_4, ABDAY_5, ABDAY_6, ABDAY_7
+#endif /* WIN32 */
+  };
+
+  if ( day_index > 6 )
+    throw invalid_argument( BUILD_STRING( day_index, " not in range 0-6" ) );
+  zstring abbr( get_locale_info( weekday_abbr[ day_index ], lang, country ) );
+  if ( abbr.empty() && lang == iso639_1::en ) {
+    static char const *const abbr_str[] = {
+      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+    };
+    abbr = abbr_str[ day_index ];
+  }
+  return abbr;
+}
+
+zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
+                          iso3166_1::type country ) {
+  static locale_index_type const weekday_name[] = {
+#ifdef WIN32
+    LOCALE_SDAYNAME7 /* Sun */,
+    LOCALE_SDAYNAME1 /* Mon */,
+    LOCALE_SDAYNAME2 /* Tue */,
+    LOCALE_SDAYNAME3 /* Wed */,
+    LOCALE_SDAYNAME4 /* Thu */,
+    LOCALE_SDAYNAME5 /* Fri */,
+    LOCALE_SDAYNAME6 /* Sat */
+#else
+    DAY_1, DAY_2, DAY_3, DAY_4, DAY_5, DAY_6, DAY_7
+#endif /* WIN32 */
+  };
+
+  if ( day_index > 6 )
+    throw invalid_argument( BUILD_STRING( day_index, " not in range 0-6" ) );
+  zstring name( get_locale_info( weekday_name[ day_index ], lang, country ) );
+  if ( name.empty() && lang == iso639_1::en ) {
+    static char const *const name_str[] = {
+      "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+      "Saturday"
+    };
+    name = name_str[ day_index ];
+  }
+  return name;
+}
+
+bool is_supported( iso639_1::type lang, iso3166_1::type country ) {
+  if ( !country )
+    country = iso3166_1::get_default( lang );
+#ifdef WIN32
+  unique_ptr<WCHAR[]> const wlocale_name( get_wlocale_name( lang, country ) );
+  return Zorba_IsValidLocaleName( wlocale_name.get() );
+#else
+  if ( lang == iso639_1::en )
+    return true;                        // Always support English
+  if ( locale_t const loc = get_unix_locale_t( lang, country ) ) {
+    ::freelocale( loc );
+    return true;
+  }
+  return false;
+#endif /* WIN32 */
+}
+
+bool parse( char const *locale_str, iso639_1::type *lang,
+            iso3166_1::type *country ) {
+  zstring lang_str, country_str;
+  char const *p = locale_str;
+
+  if ( !(ascii::is_alpha( *p++ ) && ascii::is_alpha( *p++ )) )
+    return false;
+  lang_str.assign( locale_str, 2 );
+  if ( *p ) {
+    if ( ascii::is_alpha( *p ) )        // ISO 639-2 3-letter code
+      lang_str += *p++;
+    if ( *p ) {
+      if ( !(*p == '-' || *p == '_') )
+        return false;
+      ++p;
+      if ( !(ascii::is_alpha( p[0] ) && ascii::is_alpha( p[1] )) )
+        return false;
+      country_str.assign( p, 2 );
+      if ( *(p += 2) && *p != '.' )
+        return false;
     }
   }
-  return lang_code;
+
+  if ( lang ) {
+    ascii::to_lower( lang_str );
+    *lang = find_lang( lang_str );
+  }
+  if ( country ) {
+    ascii::to_upper( country_str );
+    *country = country_str.empty() ?
+      iso3166_1::unknown : iso3166_1::find( country_str );
+  }
+
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

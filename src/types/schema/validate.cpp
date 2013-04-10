@@ -157,10 +157,16 @@ bool Validator::realValidationValue(
       // validation is used so we need to set up schema in the typeManager anyway
       // validation has to work for xsiType and built-in types
 
-      TypeManagerImpl *typeManagerImpl = static_cast<TypeManagerImpl*>(typeManager);
+      TypeManagerImpl* typeManagerImpl = static_cast<TypeManagerImpl*>(typeManager);
       typeManagerImpl->initializeSchema();
       schema = typeManager->getSchema();
     }
+  }
+  else if (validationMode == ParseConstants::val_dtd_lax && !schema->hasXSD())
+  {
+    // when dtd validation enabled avoid using schema object
+    result = sourceNode;
+    return true;
   }
 
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -798,7 +804,7 @@ void Validator::processTextValue(
       {
         typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList, loc);
       }
-      else if (udt.isAtomic())
+      else if (udt.isAtomicAny())
       {
         bool res = typeManager->getSchema()->
           parseUserAtomicTypes(textValue, type.getp(), result, &nsCtx, loc);
@@ -816,13 +822,16 @@ void Validator::processTextValue(
           xqtref_t baseType = udt.getBaseType();
           
           while ( baseType->type_kind() == XQType::USER_DEFINED_KIND &&
-			      static_cast<const UserDefinedXQType&>(*baseType).isComplex() )
+                  static_cast<const UserDefinedXQType&>(*baseType).isComplex() )
           {
-            const UserDefinedXQType udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
+            const UserDefinedXQType udBaseType = 
+            static_cast<const UserDefinedXQType&>(*baseType);
+
             baseType = udBaseType.getBaseType();
           }
-          bool res = GenericCast::castToSimple(textValue, baseType.getp(),
-                                               resultList, typeManager, loc);
+
+          bool res = typeManager->getSchema()->
+          parseUserSimpleTypes(textValue, baseType, resultList, loc); 
 
           // if this assert fails it means the validator and zorba casting code
           // don't follow the same rules
@@ -840,15 +849,17 @@ void Validator::processTextValue(
     {
       try
       {
-        bool res = GenericCast::castToAtomic(result, textValue, type.getp(),
-                                             typeManager, &nsCtx, loc);
+        bool res = GenericCast::castStringToAtomic(result, textValue, type.getp(),
+                                                   typeManager, &nsCtx, loc);
         ZORBA_ASSERT(res);
         resultList.push_back(result);
       }
       catch(ZorbaException const& /*err*/)
       {
-        // do nothing here, the validator will throw the right error at end elemet event call
-        //std::cout << "validate.cpp: processTextValue2 '" << textValue << "' err:" << err.toString() << std::endl; std::cout.flush();
+        // do nothing here, the validator will throw the right error at end 
+        // elemet event call
+        //std::cout << "validate.cpp: processTextValue2 '" << textValue
+        // << "' err:" << err.toString() << std::endl; std::cout.flush();
       } 
     }
     else

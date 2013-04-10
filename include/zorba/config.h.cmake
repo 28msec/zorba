@@ -50,6 +50,7 @@
 #cmakedefine ZORBA_HAVE_STDLIB_H
 #cmakedefine ZORBA_HAVE_SYS_MOUNT_H
 #cmakedefine ZORBA_HAVE_SYS_TYPES_H
+#cmakedefine ZORBA_HAVE_TZFILE_H
 #cmakedefine ZORBA_HAVE_USTRING_H
 #cmakedefine ZORBA_HAVE_UTYPES_H
 #cmakedefine ZORBA_HAVE_UUID_H
@@ -69,6 +70,10 @@
 #cmakedefine ZORBA_HAVE_MS_INT32
 #cmakedefine ZORBA_HAVE_MS_UINT32
 #cmakedefine ZORBA_HAVE_UINT32_T
+#cmakedefine ZORBA_HAVE_STRUCT_TM_TM_GMTOFF
+#cmakedefine ZORBA_HAVE_STRUCT_TM___TM_GMTOFF
+
+// Platform type sizes
 #cmakedefine ZORBA_SIZEOF_DOUBLE        @ZORBA_SIZEOF_DOUBLE@
 #cmakedefine ZORBA_SIZEOF_FLOAT         @ZORBA_SIZEOF_FLOAT@
 #cmakedefine ZORBA_SIZEOF_INT           @ZORBA_SIZEOF_INT@
@@ -159,6 +164,8 @@ typedef __int64 int64_t;
 #endif
 
 ////////// Zorba //////////////////////////////////////////////////////////////
+
+#cmakedefine ZORBA_STORE_NAME "zorba_${ZORBA_STORE_NAME}"
 
 // Version
 #define ZORBA_VERSION "${ZORBA_VERSION}"

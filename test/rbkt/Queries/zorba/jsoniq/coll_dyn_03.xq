@@ -5,7 +5,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
-declare namespace xqsx = "http://www.zorba-xquery.com/zorba/scripting";
+import module namespace xqsx = "http://www.zorba-xquery.com/zorba/scripting";
 
 declare variable $coll1 := xs:QName("collection1");
 

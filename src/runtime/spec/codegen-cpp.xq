@@ -381,7 +381,9 @@ declare function local:create-zorba-type($param, $mapping) as xs:string?
                    else if(ends-with($param,'*')) then 'TYPE_STAR'
                    else 'TYPE_ONE'                   
     
-    let $prefix as xs:string := string($mapping/zorba:types//zorba:type[starts-with($param, text())][1]/@zorbaType)
+    let $prefix as xs:string := string($mapping/zorba:types//zorba:type[text() = string($param)]/@zorbaType)
+    let $prefix              := if ($prefix = "") then string($mapping/zorba:types//zorba:type[starts-with($param, text())][1]/@zorbaType)
+                                else $prefix
     
     return string-join (('GENV_TYPESYSTEM.', $prefix, '_', $suffix), '')
   else

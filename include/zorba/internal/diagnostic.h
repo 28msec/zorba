@@ -200,9 +200,33 @@ private:
   line_type line_end_;
   column_type column_end_;
 
+  friend bool operator==( location const&, location const& );
+
   // for plan serialization
   friend void serialization::operator&( serialization::Archiver&, location& );
 };
+
+/**
+ * \internal
+ * Compares two locations for equality.
+ *
+ * @param i The first location.
+ * @param j The second location.
+ * @return Returns \c true only if the two locations are equal.
+ */
+bool operator==( location const &i, location const &j );
+
+/**
+ * \internal
+ * Compares two locations for inequality.
+ *
+ * @param i The first location.
+ * @param j The second location.
+ * @return Returns \c true only if the two locations are not equal.
+ */
+inline bool operator!=( location const &i, location const &j ) {
+  return !(i == j);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -235,7 +259,7 @@ public:
    */
   template<typename T>
   parameters& operator,( T const &t ) {
-    params_.push_back( ztd::to_string( t ) );
+    add_param( ztd::to_string( t ) );
     return *this;
   }
 
@@ -251,19 +275,53 @@ public:
   }
 
   /**
-   * Substitutes substrings of the given string.  There are two forms:
+   * Substitutes substrings of the given string.  Substitutions are in three
+   * forms:
    *
    * - <code>$</code><em>i</em>
-   * - <code>${</code><em>chars i chars</em><code>}</code>
+   * - <code>${</code>[<em>chars</em>]<em>i</em>[<em>chars</em>]<code>}</code>
+   * - <code>$</code><em>i</em><code>?</code><em>then</em>[<code>:</code><em>else</em>]
    *
-   * where <em>i</em> is an integer in the range <code>[1,9]</code>
-   * and <em>chars</em> are any characters except <code>[1-9}]</code>.
+   * where \e i is a digit in the range <code>[1,9]</code> and refers to the
+   * value of the \e ith parameter, \e chars may be any characters except
+   * <code>[1-9}]</code>, and \e then and \e else are of one of the two forms:
    *
-   * The second form elides the addition characacters if the value of the
-   * <em>ith</em> parameter is empty.  For example, <code>${"1"}</code> will
-   * substitute the value of the 1st parameter quoted if non-empty; if empty,
-   * the entire substitution set of characters (everything from the
-   * <code>$</code> to the <code>}</code>) will be elided.
+   *  - <em>j</em>
+   *  - <code>{</code>[<em>chars j chars k chars ...</em>]<code>}</code>
+   *
+   * where \e j is likewise a digit in the range <code>[1,9]</code> and refers
+   * to the value of the \e jth parameter.
+   *
+   * The first substitution form replaces <code>$</code><em>i</em> with the
+   * value of the \e ith parameter.
+   *
+   * The second form replaces everything from the \c $ to the \c } with the
+   * contents of the \c {} where \e i is replaced with the value of the \e ith
+   * parameter.  However, if the value is empty, then everything from the \c $
+   * to the \c } is instead erased.
+   *
+   * For example, <code>${"1": }</code> will substitute the value of the 1st
+   * parameter quoted followed by a \c : and a space if non-empty; if empty,
+   * then everything from the \c $ to the \c } will instead be erased.
+   *
+   * The third form tests the value of the \c ith parameter: if non-empty, then
+   * the \e then portion is substituted; if empty, then the \e else portion is.
+   * Both the \e then and \e else portions can be either a digit in the range
+   * [1,9] or \e chars enclosed by \c {}.  The \c {} here can contain multiple
+   * parameter indicies.  If at least one is non-empty, then the substitution
+   * for the portion will be done; if all are empty, then everything for the
+   * portion will be erased.
+   * 
+   * 
+   * The \c \\ character can be used to escape the meaning of the
+   * <code>$</code>, <code>[1-9]</code>, <code>?</code>, <code>:</code>, and
+   * <code>}</code> characters and instead treat them as ordinary characters.
+   *
+   * Substitution is performed by making at most 9 passes over the string, one
+   * pass per parameter starting at 1.  Substitutions may themselves have
+   * further substitutions, but, due to the way that substitution is performed,
+   * should only refer to parameters having higher digits.  (Digits less than
+   * or equal to the current one will not be substituted.)
    *
    * @param s The string to perform the substitutions on.
    */
@@ -272,7 +330,11 @@ public:
 private:
   params_type params_;
 
+  void add_param( value_type const& );
   value_type lookup_param( size_type i ) const;
+  bool then_else( bool, value_type const&, value_type::size_type*,
+                  value_type* ) const;
+  size_type to_index( value_type::value_type ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

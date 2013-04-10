@@ -9,7 +9,7 @@ Iterator tree for main query:
       </ChildAxisIterator>
     </ChildAxisIterator>
   </CtxVarDeclareIterator>
-  <UDFunctionCallIterator>
+  <UDFunctionCallIterator function="local:collapseNodesSameName">
     <TreatIterator quant="+">
       <CtxVarIterator varid="4" varname="input" varkind="global"/>
     </TreatIterator>
@@ -48,14 +48,14 @@ Iterator tree for local:collapseNodesSameName:
         </NodeSortIterator>
       </CtxVarDeclareIterator>
       <CtxVarDeclareIterator varid="5" varname="ca">
-        <UDFunctionCallIterator>
+        <UDFunctionCallIterator function="local:collapseNodes">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
             <CtxVarIterator varid="3" varname="a" varkind="local"/>
           </TreatIterator>
         </UDFunctionCallIterator>
       </CtxVarDeclareIterator>
       <CtxVarDeclareIterator varid="6" varname="cc">
-        <UDFunctionCallIterator>
+        <UDFunctionCallIterator function="local:collapseNodes">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
             <CtxVarIterator varid="4" varname="c" varkind="local"/>
           </TreatIterator>
@@ -116,7 +116,7 @@ Iterator tree for local:collapseNodes:
     </FnStringIterator>
   </OrderBySpec>
   <ReturnClause>
-    <UDFunctionCallIterator>
+    <UDFunctionCallIterator function="local:collapseNodesSameName">
       <TreatIterator quant="+">
         <LetVarIterator varname="y"/>
       </TreatIterator>

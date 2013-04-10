@@ -27,33 +27,44 @@
 #include "functions/func_accessors.h"
 #include "functions/func_accessors_impl.h"
 #include "functions/func_any_uri.h"
+#include "functions/func_apply.h"
 #include "functions/func_arithmetic.h"
 #include "functions/func_base64.h"
 #include "functions/func_booleans.h"
 #include "functions/func_booleans_impl.h"
 #include "functions/func_collections.h"
 #include "functions/func_context.h"
-#include "functions/func_other_diagnostics.h"
+#include "functions/func_datetime.h"
+#include "functions/func_documents.h"
 #include "functions/func_durations_dates_times.h"
 #include "functions/func_durations_dates_times_impl.h"
 #include "functions/func_enclosed.h"
 #include "functions/func_errors_and_diagnostics.h"
+#include "functions/func_eval.h"
+#include "functions/func_fetch.h"
 #include "functions/func_fnput.h"
 #include "functions/func_hoist.h"
+#include "functions/func_ic_ddl.h"
 #include "functions/func_index_ddl.h"
 #include "functions/func_index_func.h"
-#include "functions/func_ic_ddl.h"
+#include "functions/func_item.h"
+#include "functions/func_json.h"
+#include "functions/func_maps.h"
 #include "functions/func_maths.h"
 #include "functions/func_nodes.h"
+#include "functions/func_reference.h"
 #include "functions/func_node_position.h"
 #include "functions/func_node_sort_distinct.h"
+#include "functions/func_nodes.h"
 #include "functions/func_numerics.h"
 #include "functions/func_numerics_impl.h"
-#include "functions/func_parsing_and_serializing.h"
+#include "functions/func_other_diagnostics.h"
 #include "functions/func_parse_fragment.h"
 #include "functions/func_parse_fragment_impl.h"
+#include "functions/func_parsing_and_serializing.h"
 #include "functions/func_qnames.h"
 #include "functions/func_random.h"
+#include "functions/func_reflection.h"
 #include "functions/func_schema.h"
 #include "functions/func_sctx.h"
 #include "functions/func_sequences.h"
@@ -61,21 +72,15 @@
 #include "functions/func_strings.h"
 #include "functions/func_strings_impl.h"
 #include "functions/func_uris.h"
-#include "functions/func_json.h"
 #include "functions/func_var_decl.h"
 #include "functions/func_xqdoc.h"
-#include "functions/func_documents.h"
-#include "functions/func_maps.h"
-#include "functions/func_eval.h"
-#include "functions/func_reflection.h"
-#include "functions/func_apply.h"
-#include "functions/func_fetch.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "functions/func_ft_module.h"
 #include "runtime/full_text/ft_module_impl.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#include "functions/func_function_item_iter.h"
+#include "functions/func_fn_hof_functions.h"
+#include "functions/func_fn_hof_functions_impl.h"
 
 #include "zorbaserialization/archiver.h"
 
@@ -118,6 +123,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_booleans_impl(sctx);
   populate_context_collections(sctx);
   populate_context_context(sctx);
+  populate_context_datetime(sctx);
   populate_context_durations_dates_times(sctx);
   populate_context_durations_dates_times_impl(sctx);
   populate_context_errors_and_diagnostics(sctx);
@@ -128,6 +134,8 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_json(sctx);
   populate_context_maths(sctx);
   populate_context_nodes(sctx);
+  populate_context_item(sctx);
+  populate_context_reference(sctx);
   populate_context_node_position(sctx);
   populate_context_numerics(sctx);
   populate_context_other_diagnostics(sctx);
@@ -144,7 +152,8 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
   populate_context_xqdoc(sctx);
-  populate_context_function_item_iter(sctx);
+  populate_context_fn_hof_functions(sctx);
+  populate_context_hof_impl(sctx);
   populate_context_documents(sctx);
   populate_context_maps(sctx);
 

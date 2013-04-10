@@ -865,7 +865,8 @@ bool
 FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   zstring resultString;
-  store::Item_t numberItem, pictureItem, formatName;
+  store::Item_t numberItem, pictureItem;
+  store::Item_t formatName = NULL;
   FormatNumberInfo info;
   DecimalFormat_t df_t;
 
@@ -887,8 +888,11 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     }
 
     consumeNext(pictureItem, theChildren[1].getp(), planState);
+    
+    if (theChildren.size() == 3)
+      consumeNext(formatName, theChildren[2].getp(), planState);
 
-    if (theChildren.size() < 3)
+    if (theChildren.size() < 3 || formatName.getp() == NULL)
     {
       df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(NULL);
     }
@@ -898,7 +902,6 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         // The formatName is a string, which must be interpreted as a QName -> 
         // must resolve the namespace, if any
-        consumeNext(formatName, theChildren[2].getp(), planState);
         zstring tmpFormatName = formatName->getStringValue();
         formatName = NULL;
         if (tmpFormatName.find(':') ==  zstring::npos)
@@ -909,27 +912,34 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
         zstring ns;
         zstring prefix = tmpFormatName.substr(0, tmpFormatName.find(':'));
-        if (theSctx->lookup_ns(ns, prefix, loc, zerr::ZXQP0000_NO_ERROR))
+        if (theSctx->lookup_ns(ns, prefix, loc, false))
         {
-          GENV_ITEMFACTORY->createQName(formatName, ns, prefix, tmpFormatName.substr(tmpFormatName.find(':')+1));
+          GENV_ITEMFACTORY->createQName(formatName,
+                                        ns,
+                                        prefix,
+                                        tmpFormatName.substr(tmpFormatName.find(':')+1));
           break;
         }
 
         // The prefix is not in the known namespaces, the only posibility left is for the function to be invoked from an EnclosedIterator
         if (planState.theNodeConstuctionPath.empty())
         {
-          throw XQUERY_EXCEPTION(err::FODF1280, ERROR_PARAMS(tmpFormatName), ERROR_LOC(loc));
+          RAISE_ERROR(err::FODF1280, loc, ERROR_PARAMS(tmpFormatName));
         }
 
         store::NsBindings bindings;
         planState.theNodeConstuctionPath.top()->getNamespaceBindings(bindings);
-        for (unsigned int i=0; i<bindings.size(); i++)
+        for (unsigned int i = 0; i < bindings.size(); i++)
+        {
           if (prefix == bindings[i].first)
           {
-            GENV_ITEMFACTORY->createQName(formatName, bindings[i].second, prefix, tmpFormatName.substr(tmpFormatName.find(':')+1));
+            GENV_ITEMFACTORY->createQName(formatName,
+                                          bindings[i].second,
+                                          prefix,
+                                          tmpFormatName.substr(tmpFormatName.find(':')+1));
             break;
           }
-
+        }
       } while(0);
 
       if (formatName.isNull())

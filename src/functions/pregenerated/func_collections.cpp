@@ -71,6 +71,7 @@ PlanIter_t static_collections_dml_collection_name::codegen(
 
 
 
+
 PlanIter_t zorba_store_indexes_static_ddl_is_available_index::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -319,7 +320,7 @@ void populate_context_collections(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, fn_collection,
         (createQName("http://www.w3.org/2005/xpath-functions","","collection"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
         FunctionConsts::FN_COLLECTION_1);
 
@@ -1180,6 +1181,32 @@ void populate_context_collections(static_context* sctx)
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::DYNAMIC_COLLECTIONS_DML_DELETE_LAST_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, static_collections_dml_edit,
+        (createQName("http://www.zorba-xquery.com/modules/store/static/collections/dml","","edit"), 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::STATIC_COLLECTIONS_DML_EDIT_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, static_collections_dml_edit,
+        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/dml","","edit"), 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.EMPTY_TYPE),
+        FunctionConsts::DYNAMIC_COLLECTIONS_DML_EDIT_2);
 
   }
 

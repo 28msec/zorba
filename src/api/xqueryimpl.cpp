@@ -587,6 +587,7 @@ void XQueryImpl::doCompile(
   // If lib_module is set to true the query will be considered a library module
   theCompilerCB->theConfig.lib_module = aHints.lib_module;
   theCompilerCB->theConfig.for_serialization_only = aHints.for_serialization_only;
+
   CompilerCB::config::opt_level_t optLevel;
   if (aHints.opt_level == ZORBA_OPT_LEVEL_O0)
     optLevel = CompilerCB::config::O0;
@@ -848,12 +849,11 @@ bool XQueryImpl::isBoundVariable(
     
     if (!var)
     {
-      throw XQUERY_EXCEPTION(zerr::ZAPI0011_ELEMENT_NOT_DECLARED,
+      throw XQUERY_EXCEPTION(zerr::ZAPI0011_VARIABLE_NOT_DECLARED,
       ERROR_PARAMS(BUILD_STRING('{',
                                 qname->getNamespace(),
                                 '}',
-                                qname->getLocalName()),
-                   ZED(Variable)));
+                                qname->getLocalName())));
     }
 
     if (var->hasInitializer())

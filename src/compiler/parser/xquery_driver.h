@@ -30,20 +30,7 @@ namespace zorba {
 class location;
 class parsenode;
 class CompilerCB;
-
-
-class ZorbaParserError
-{
-public:
-  std::string msg;
-  QueryLoc loc;
-  Error const &err_code;
-
-public:
-  ZorbaParserError(std::string _msg, Error const &code = err::XPST0003);
-  ZorbaParserError(std::string _msg, const location& aLoc, Error const &code = err::XPST0003);
-  ZorbaParserError(std::string _msg, const QueryLoc& aLoc, Error const &code = err::XPST0003);
-};
+class ZorbaParserError;
 
 
 // exported for unit testing only
@@ -70,9 +57,9 @@ public:
 
   bool parse_file(const zstring& aFilename);
 
-	void set_expr(parsenode* e_p);
+  void set_expr(parsenode* e_p);
 
-	parsenode* get_expr() { return expr_p; }
+  parsenode* get_expr() { return expr_p; }
 
   QueryLoc createQueryLoc(const location& aLoc) const;
 
@@ -85,10 +72,6 @@ public:
   ZorbaParserError* invalidCharRef(const char* _error_token, const location& loc);
   ZorbaParserError* parserErr(const std::string& _message, const location& loc, Error const &code = err::XPST0003);
   ZorbaParserError* parserErr(const std::string& _message, const QueryLoc& loc, Error const &code = err::XPST0003);
-
-public:
-  // transform a parser location into a QueryLoc
-  static QueryLoc createQueryLocStatic(const location& aLoc);
 };
 
 }	/* namespace zorba */

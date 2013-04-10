@@ -102,6 +102,10 @@ public:
     theVarExpr(var),
     theSubstExpr(subst)
   {
+    while (theSubstExpr->get_expr_kind() == wrapper_expr_kind)
+    {
+      theSubstExpr = static_cast<wrapper_expr*>(theSubstExpr)->get_input();
+    }
   }
 
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
@@ -116,7 +120,9 @@ expr* SubstVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
   while (!iter.done())
   {
-    if (**iter == theVarExpr)
+    expr* childExpr = **iter;
+
+    if (childExpr == theVarExpr)
     {
 #if 0
       std::vector<expr*>::iterator ite = thePath.begin();
@@ -134,7 +140,13 @@ expr* SubstVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
     }
     else
     {
-      apply(rCtx, **iter, modified);
+      apply(rCtx, childExpr, modified);
+    }
+
+    if (childExpr->isNonDiscardable() && !node->isNonDiscardable())
+    {
+      node->setNonDiscardable(ANNOTATION_TRUE);
+      modified = true;
     }
 
     iter.next();
@@ -218,9 +230,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // (a) Remove, if possible, FOR/LET vars that are not referenced anywhere
   // (b) Replace, if possible, FOR/LET vars that are referenced only once, with
   //     their domain expr.
-  // (c) Change a LET var into a FOR var, if its domain expr consists of
-  //     exactly one item.
-  // (d) Remove any unused non-group variables from GROUP BY clauses.
+  // (c) Remove any unused non-group variables from GROUP BY clauses.
   for (csize i = 0; i < numClauses; ++i)
   {
     int numRefs;
@@ -231,9 +241,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     switch (c->get_kind())
     {
-    case flwor_clause::group_clause:
+    case flwor_clause::groupby_clause:
     {
-      group_clause* gc = static_cast<group_clause *>(c);
+      groupby_clause* gc = static_cast<groupby_clause *>(c);
 
       flwor_clause::rebind_list_t::iterator ite = gc->beginNonGroupVars();
       flwor_clause::rebind_list_t::iterator end = gc->endNonGroupVars();
@@ -309,7 +319,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
           subst_vars(rCtx, pvar, constExpr, 2);
           fc->set_pos_var(NULL);
-          folded = true;
+          modified = true;
         }
 
         if (safe_to_fold_var(i, numRefs))
@@ -327,7 +337,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     {
       let_clause* lc = static_cast<let_clause *>(c);
       expr* domExpr = lc->get_expr();
-      TypeConstants::quantifier_t domQuant = domExpr->get_return_type()->get_quantifier();
       var = lc->get_var();
 
       if (safe_to_fold_var(i, numRefs))
@@ -336,12 +345,6 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           subst_vars(rCtx, var, domExpr, numRefs);
 
         folded = true;
-      }
-      else if (domQuant == TypeConstants::QUANT_ONE)
-      {
-        lc->set_kind(flwor_clause::for_clause);
-        var->set_kind(var_expr::for_var);
-        modified = true;
       }
     }
     default:
@@ -357,13 +360,13 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
       if (c->get_kind() == flwor_clause::for_clause)
         theFlwor->compute_return_type(false, NULL);
+    }
 
-      if (Properties::instance()->printIntermediateOpt())
-      {
-        std::cout << rCtx.theMessage << std::endl
-                  << "After folding var : " << var << " :" << std::endl;
-        rCtx.getRoot()->put(std::cout) << std::endl;
-      }
+    if (modified && Properties::instance()->printIntermediateOpt())
+    {
+      std::cout << rCtx.theMessage << std::endl
+                << "After folding var : " << var << " :" << std::endl;
+      rCtx.getRoot()->put(std::cout) << std::endl;
     }
   } // for each clause
 
@@ -379,9 +382,9 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     {
       break;
     }
-    else if (clause->get_kind() == flwor_clause::group_clause)
+    else if (clause->get_kind() == flwor_clause::groupby_clause)
     {
-      group_clause* gc = static_cast<group_clause*>(clause);
+      groupby_clause* gc = static_cast<groupby_clause*>(clause);
 
       const flwor_clause::rebind_list_t& gVars = gc->get_grouping_vars();
 
@@ -461,7 +464,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       theFlwor->remove_clause(0);
       continue;
     }
-    else if (clause->get_kind() == flwor_clause::order_clause)
+    else if (clause->get_kind() == flwor_clause::orderby_clause)
     {
       theFlwor->remove_clause(0);
       continue;
@@ -679,7 +682,7 @@ bool EliminateUnusedLetVars::safe_to_fold_var_rec(
 
         break;
       }
-      case flwor_clause::order_clause:
+      case flwor_clause::orderby_clause:
       {
         orderby_clause* cl = static_cast<orderby_clause*>(clause);
 
@@ -706,9 +709,9 @@ bool EliminateUnusedLetVars::safe_to_fold_var_rec(
 
         break;
       }
-      case flwor_clause::group_clause:
+      case flwor_clause::groupby_clause:
       {
-        group_clause* cl = static_cast<group_clause*>(clause);
+        groupby_clause* cl = static_cast<groupby_clause*>(clause);
 
         csize numExprs = cl->numGroupingVars();
 
@@ -1500,7 +1503,7 @@ static bool is_positional_pred(
     {
       checkClause = flworExpr->get_clause(checkClausePos);
 
-      if (checkClause->get_kind() == flwor_clause::group_clause ||
+      if (checkClause->get_kind() == flwor_clause::groupby_clause ||
           (checkClause->get_kind() == flwor_clause::count_clause && eq))
         return false;
 
@@ -1527,18 +1530,18 @@ static bool is_positional_pred(
                               *rtm.INTEGER_TYPE_QUESTION,
                               posExpr->get_loc()))
       {
-        VarIdMap varidMap;
-        ulong numFlworVars = 0;
+        expr_tools::VarIdMap varidMap;
+        csize numFlworVars = 0;
         expr_tools::index_flwor_vars(flworExpr, numFlworVars, varidMap, NULL);
         
         DynamicBitset varset(numFlworVars);
-        ExprVarsMap exprVarMap;
+        expr_tools::ExprVarsMap exprVarMap;
         expr_tools::build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
         
         var_expr* forVar = forClause->get_var();
         ulong forVarId = varidMap[forVar];
 
-        std::vector<ulong> posExprVarIds;
+        std::vector<csize> posExprVarIds;
         exprVarMap[posExpr].getSet(posExprVarIds);
 
         csize numPosExprVars = posExprVarIds.size();
@@ -1596,8 +1599,8 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
           const flwor_clause* c = flwor->get_clause(i);
           
           if (c->get_kind() == flwor_clause::where_clause ||
-              c->get_kind() == flwor_clause::group_clause ||
-              c->get_kind() == flwor_clause::order_clause)
+              c->get_kind() == flwor_clause::groupby_clause ||
+              c->get_kind() == flwor_clause::orderby_clause)
           {
             goto next1;
           }
@@ -1610,8 +1613,8 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
       {
         const flwor_clause* c = returnFlwor->get_clause(i);
         
-        if (c->get_kind() == flwor_clause::group_clause ||
-            c->get_kind() == flwor_clause::order_clause)
+        if (c->get_kind() == flwor_clause::groupby_clause ||
+            c->get_kind() == flwor_clause::orderby_clause)
         {
           goto next1;
         }
@@ -1643,7 +1646,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
       
       if (c->get_kind() == flwor_clause::let_clause)
       {
-        expr* domainExpr = static_cast<let_clause*>(c)->get_expr();
+        expr* domainExpr = static_cast<let_clause*>(c)->get_expr()->skip_wrappers();
         
         if (domainExpr->get_expr_kind() == flwor_expr_kind &&
             !domainExpr->is_sequential())
@@ -1660,7 +1663,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
             if (nestedClauseKind == flwor_clause::for_clause)
             {
               xqtref_t nestedDomainType =
-                static_cast<for_clause*>(nestedClause)->get_expr()->get_return_type();
+              static_cast<for_clause*>(nestedClause)->get_expr()->get_return_type();
               
               if (nestedDomainType->get_quantifier() != TypeConstants::QUANT_ONE)
               {
@@ -1679,7 +1682,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
       else if (c->get_kind() == flwor_clause::for_clause &&
                static_cast<for_clause*>(c)->get_pos_var() == NULL)
       {
-        expr* domainExpr = static_cast<for_clause*>(c)->get_expr();
+        expr* domainExpr = static_cast<for_clause*>(c)->get_expr()->skip_wrappers();
 
         if (domainExpr->get_expr_kind() == flwor_expr_kind &&
             !domainExpr->is_sequential())
@@ -1694,36 +1697,29 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
             flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
             
             if (nestedClauseKind != flwor_clause::let_clause &&
-                nestedClauseKind != flwor_clause::for_clause)
+                nestedClauseKind != flwor_clause::for_clause &&
+                nestedClauseKind != flwor_clause::where_clause)
             {
-#if 1
-              // temp hack until we have an optimized general flwor
-              if (nestedClauseKind == flwor_clause::where_clause &&
-                  i == numClauses-1 &&
-                  flwor->get_where() == NULL &&
-                  nestedFlwor->get_return_expr()->get_var() != NULL)
-              {
-                continue;
-              }
-#endif
               merge = false;
               break;
             }
           }
         }
-    }
+      }
       
       if (merge)
       {
         for (csize j = 0; j < numNestedClauses; ++j)
         {
           flwor_clause* nestedClause = nestedFlwor->get_clause(j);
-#if 1
-          if (nestedClause->get_kind() == flwor_clause::where_clause)
-            flwor->add_clause(i+j+1, nestedClause);
-          else
-#endif
-            flwor->add_clause(i+j, nestedClause);
+          flwor->add_clause(i+j, nestedClause);
+
+          if (!flwor->is_general() &&
+              nestedClause->get_kind() == flwor_clause::where_clause &&
+              i != numClauses - 1)
+          {
+            flwor->set_general(true);
+          }
         }
         
         c->set_expr(nestedFlwor->get_return_expr());

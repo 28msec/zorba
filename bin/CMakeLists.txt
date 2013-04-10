@@ -15,6 +15,8 @@
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR})
 
+INCLUDE("${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake")
+
 IF (ZORBA_WITH_DEBUGGER)
   IF (NOT WIN32)
     FIND_PACKAGE (Libedit)
@@ -44,14 +46,11 @@ ENDIF (ZORBA_WITH_DEBUGGER)
 SET(SRCS
   zorbacmd.cpp
   zorbacmdproperties.cpp
-  error_printer.cpp
   util.cpp
   path_util.cpp
 )
 
-INCLUDE("${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake")
 ZORBA_GENERATE_EXE("zorbacmd" "${SRCS}" "" "zorba" "bin")
-
 
 IF(UNIX)
   ADD_CUSTOM_TARGET(zorbacmd_man help2man -N -s1 -n Zorba -S "FLWOR Foundation" ./zorba > "${PROJECT_BINARY_DIR}/doc/zorba.1")
@@ -79,12 +78,12 @@ ZORBA_ADD_TEST(bin/zorba_compilechk1 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/te
 ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk1 PASS_REGULAR_EXPRESSION ".*mymod.xq>:22,8:.*:XPST0008.*")
 
 ZORBA_ADD_TEST(bin/zorba_compilechk2 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l -x)
-ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk2 PASS_REGULAR_EXPRESSION ".*XPST0008.*mymod.xq' lineStart='22' columnStart='8' lineEnd='22' columnEnd='10'.*")
+ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk2 PASS_REGULAR_EXPRESSION ".*XPST0008.*mymod.xq.*lineStart=['\"]22['\"] columnStart=['\"]8['\"] lineEnd=['\"]22['\"] columnEnd=['\"]10['\"].*")
 
 # test compile checking to work with library modules that have an invalid target namespace uri
 # test for bug #2934414
 ZORBA_ADD_TEST(bin/zorba_compilechk3 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod2.xq" -f -l -x)
-ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk3 PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq' lineStart='17' columnStart='1' lineEnd='17' columnEnd='26'.*")
+ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk3 PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq.*lineStart=['\"]17['\"] columnStart=['\"]1['\"] lineEnd=['\"]17['\"] columnEnd=['\"]26['\"].*")
 
 # test the --option option to set an option in the static context
 ZORBA_ADD_TEST(bin/zorba_option zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/option.xq" -f --option "{http://www.zorba-xquery.com}option=value")
@@ -134,4 +133,7 @@ ZORBA_SET_TEST_PROPERTY(bin/zorba_module_path_1
   PASS_REGULAR_EXPRESSION "hello, v2")
 
 # test compilation of the perf script
-ZORBA_ADD_TEST(bin/zorba_compilechk4 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/../test/zperf/src/start.xq" -f --compile-only)
+ZORBA_ADD_TEST(bin/zorba_compilechk4 zorbacmd 
+  -q "${CMAKE_CURRENT_SOURCE_DIR}/../test/zperf/src/start.xq" -f --compile-only)
+ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk4
+  PASS_REGULAR_EXPRESSION "[]|[XQST0059]")

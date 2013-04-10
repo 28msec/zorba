@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<!-- ////////////////////////////////////////////////////////////////////// -->
+
+<zorba:header>
+  <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
+</zorba:header>
+
+<zorba:iterator name="CurrentDate">
+  <zorba:description author="Zorba Team">
+    function for getting the current date
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="current-date" prefix="fn-zorba-dateTime">
+      <zorba:output>xs:date</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="CurrentDateTime">
+  <zorba:description author="Zorba Team">
+    function for getting the current date and time
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="current-dateTime" prefix="fn-zorba-dateTime">
+      <zorba:output>xs:dateTimeStamp</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="CurrentTime">
+  <zorba:description author="Zorba Team">
+    function for getting the current time
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="current-time" prefix="fn-zorba-dateTime">
+      <zorba:output>xs:time</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="MillisToDateTime">
+  <zorba:description author="Zorba Team">
+    function for converting seconds since epoch to an xs:dateTime
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="millis-to-dateTime" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:long</zorba:param>    <!-- millis -->
+      <zorba:output>xs:dateTime</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="ParseDate">
+  <zorba:description author="Zorba Team">
+    function for parsing strings into a date
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="parse-date" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:output>xs:date</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="parse-date" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:param>xs:string</zorba:param>  <!-- locale -->
+      <zorba:output>xs:date</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="ParseDateTime">
+  <zorba:description author="Zorba Team">
+    function for parsing strings into a dateTime
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="parse-dateTime" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:output>xs:dateTime</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="parse-dateTime" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:param>xs:string</zorba:param>  <!-- locale -->
+      <zorba:output>xs:dateTime</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="ParseTime">
+  <zorba:description author="Zorba Team">
+    function for parsing strings into a time
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="parse-time" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:output>xs:time</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="parse-time" prefix="fn-zorba-dateTime">
+      <zorba:param>xs:string</zorba:param>  <!-- buf -->
+      <zorba:param>xs:string</zorba:param>  <!-- fmt -->
+      <zorba:param>xs:string</zorba:param>  <!-- locale -->
+      <zorba:output>xs:time</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="Timestamp">
+  <zorba:description author="Zorba Team">
+    function for getting the current number of seconds since epoch
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="timestamp" prefix="fn-zorba-dateTime">
+      <zorba:output>xs:long</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<zorba:iterator name="UTCOffset">
+  <zorba:description author="Zorba Team">
+    function for getting the current offset from UTC
+  </zorba:description>
+  <zorba:function>
+    <zorba:signature localname="utc-offset" prefix="fn-zorba-dateTime">
+      <zorba:output>xs:long</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!-- ////////////////////////////////////////////////////////////////////// -->
+
+</zorba:iterators>
+
+<!-- vim:set et sw=2 ts=2: -->

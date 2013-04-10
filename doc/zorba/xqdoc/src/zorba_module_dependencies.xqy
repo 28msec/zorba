@@ -58,17 +58,17 @@ declare %private variable $z:ZorbaManifest := <manifest/>;
 (:=========================================================================================================:)
 declare variable $z:level1Weight as xs:string* := 
 ("www.w3.org", "XDM", "store", "introspection", "reflection",
- "external", "xqdoc","data processing", "programming languages", "excel",
- "cryptography", "geo", "image", "OAuth", "expath.org",
- "www.functx.com", "communication", "debugger", "error", "utils", 
- "www.zorba-xquery.com");
+ "external", "xqdoc","data processing", "cryptography", "geo",
+ "image", "OAuth", "expath.org", "www.functx.com", "EXPath",
+ "Zorba", "debugger", "error", "information extraction", "jsoniq.org",
+ "other data sources", "utils", "www.zorba-xquery.com");
  
 declare variable $z:level1Colors as xs:string* :=
 ("mediumvioletred", "lightsteelblue", "sienna", "dimgray", "slategray",
  "Gold", "moccasin","tan", "RosyBrown", "wheat",
  "LightGreen", "forestgreen", "olivedrab", "darkkhaki", "cornflowerblue",
  "yellow", "Chartreuse", "DarkGoldenRod", "DarkSeaGreen", "DarkSlateBlue ",
- "DodgerBlue");
+ "DodgerBlue", "AntiqueWhite", "Aquamarine");
  
 
 declare variable $z:collection as xs:QName := xs:QName("z:collection");
@@ -199,14 +199,17 @@ declare %an:sequential function z:fill_edgesCollector()
     (: add imported modules :)
     if (fn:count($xqdoc/xqdoc:imports//xqdoc:import[@type = "library"]) > 0) then
       for $import in $xqdoc/xqdoc:imports//xqdoc:import[@type = "library"]
+      let $tmpTo := if(contains(string($import/xqdoc:uri/text()),"#"))
+                    then substring-before(string($import/xqdoc:uri/text()),"#")
+                    else string($import/xqdoc:uri/text())
       let $from := $z:nodesCollector//module[@uri=data($xqdoc/xqdoc:module/xqdoc:uri)]
-      let $to := $z:nodesCollector//module[@uri=string($import/xqdoc:uri/text())]
+      let $to := $z:nodesCollector//module[@uri=$tmpTo]
       return
         z:collect-edge(data($z:nodesCollector//module[@uri = data($xqdoc/xqdoc:module/xqdoc:uri)]/@catUri),
                        fn:string(data($from/@index)),
                        data($xqdoc/xqdoc:module/xqdoc:uri),
                        fn:string(data($to/@index)),
-                       string($import/xqdoc:uri/text()),
+                       $tmpTo,
                        $z:typeModule)
     else
       (),
@@ -390,12 +393,13 @@ declare function z:create_subgraph_libraries() as xs:string
  :)
 declare function z:create_subgraph(
   $category   as xs:string,
-  $subGraphs  as xs:string*) as xs:string
+  $subGraphs  as xs:string*,
+  $level1     as xs:string*) as xs:string
 {
   concat('
     subgraph cluster',
-      index-of($z:level1Weight, $category),
-      ' { style=filled; color=',$z:level1Colors[index-of($z:level1Weight,$category)],'; node [style="filled", color=white];
+      index-of($level1, $category),
+      ' { style=filled; color=',$z:level1Colors[index-of($level1,$category)],'; node [style="filled", color=white];
     ',
     z:create_subgraph-rec($category,
                           for $tmp in $subGraphs
@@ -441,15 +445,17 @@ z:nodes_modules($newSg),'
 declare function z:create_graph() as xs:string
 {
 let $subgraphs := z:get_subgraphs()
+let $l1 := distinct-values(for $str in $subgraphs return tokenize($str,'/')[1])
 return
     concat('digraph G { penwidth=1; pencolor=black; label="Zorba modules dependency graph"; tooltip="Zorba modules dependency graph"
 ' ,
             string-join(
-              for $cat1 in  $z:level1Weight
+              for $cat1 in $l1
               return z:create_subgraph( $cat1, 
                                         for $val in $subgraphs
                                         where starts-with($val, $cat1)
-                                        return $val
+                                        return $val,
+                                        $l1
                                        )
               ,('
   ')), z:create_subgraph_libraries()

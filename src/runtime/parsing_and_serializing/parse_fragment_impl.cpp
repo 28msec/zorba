@@ -32,6 +32,10 @@
 #include "types/schema/schema.h"
 #include "types/schema/validate.h"
 
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include <libxml/xmlreader.h>
+#include <libxml/c14n.h>
 
 namespace zorba
 {
@@ -160,6 +164,8 @@ void processOptions(store::Item_t item, store::LoadProperties& props, static_con
       props.setNoCDATA(true);
     else if (child->getNodeName()->getLocalName() == "no-xinclude-nodes")
       props.setNoXIncludeNodes(true);
+    else if (child->getNodeName()->getLocalName() == "no-network-access")
+      props.setNoNetworkAccess(true);
   }
 
   children->close();
@@ -232,11 +238,20 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
       {
         try {
           result = lStore.loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
-        } catch (ZorbaException const& e) {
-          if ( ! state->theProperties.getNoError())
-            throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse()", e.what()), ERROR_LOC( loc ));
-          else
-            result = NULL;
+        }
+        catch ( ZorbaException const &e ) {
+          if ( !state->theProperties.getNoError() ) {
+            XQueryException xe(
+              XQUERY_EXCEPTION(
+                err::FODC0006,
+                ERROR_PARAMS( "parse-xml:parse()", e.what() ),
+                ERROR_LOC( loc )
+              )
+            );
+            set_data( xe, e );
+            throw xe;
+          }
+          result = nullptr;
         }
 
         if (result == NULL)
@@ -260,11 +275,20 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
     {
       try {
         result = lStore.loadDocument(state->baseUri, state->docUri, *state->theFragmentStream.theStream, state->theProperties);
-      } catch (ZorbaException const& e) {
-        if ( ! state->theProperties.getNoError())
-          throw XQUERY_EXCEPTION( err::FODC0006, ERROR_PARAMS("parse-xml:parse()", e.what()), ERROR_LOC( loc ));
-        else
-          result = NULL;
+      }
+      catch ( ZorbaException const &e ) {
+        if ( !state->theProperties.getNoError() ) {
+          XQueryException xe(
+            XQUERY_EXCEPTION(
+              err::FODC0006,
+              ERROR_PARAMS( "parse-xml:parse()", e.what() ),
+              ERROR_LOC( loc )
+            )
+          );
+          set_data( xe, e );
+          throw xe;
+        }
+        result = nullptr;
       }
 
       if (result != NULL)
@@ -306,6 +330,77 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState&
   STACK_END(state);
 }
 
+/*******************************************************************************
+  14.9.1.1 fn-zorba-xml:canonicalize
+********************************************************************************/
+bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  zstring lDocString;
+  xmlDocPtr lDoc;
+  xmlChar* lResult;
+  std::istream* lInstream = NULL;
+  char buf[1024];
+  store::Item_t tempItem;
+
+  FnZorbaCanonicalizeIteratorState* state;
+  DEFAULT_STACK_INIT(FnZorbaCanonicalizeIteratorState, state, planState);
+  // Read the XML string
+  // if the XML string is a streamable string it will have to be materialized
+  // since the libxml2 xmlReadMemory functions can't work with streamable strings
+  consumeNext(result, theChildren[0].getp(), planState);
+
+  // read options
+  if (theChildren.size() == 2)
+  {
+    consumeNext(tempItem, theChildren[1].getp(), planState);
+    zorba::processOptions(tempItem, state->theProperties, theSctx, loc);
+  }
+
+  try
+  {
+   if (result->isStreamable())
+    {
+      lInstream = &result->getStream();
+      while (lInstream->good())
+      {
+        lInstream->read(buf, 1024);
+        lDocString.append(buf, lInstream->gcount());
+      }
+    }
+    else
+    {
+      result->getStringValue2(lDocString);  
+    }
+   int lOptions = XML_PARSE_NOERROR | state->theProperties.toLibXmlOptions();
+   lDoc = xmlReadMemory(lDocString.c_str(), lDocString.size(), "input.xml", NULL, lOptions);
+    if (!lDoc)
+    {
+      zstring lErrorMsg;
+      lErrorMsg = "\"" + lDocString + "\"";
+      throw XQUERY_EXCEPTION(err::FOCZ0001, ERROR_PARAMS("x:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
+    }
+
+    xmlC14NDocDumpMemory(lDoc, NULL, 2/*XML_C14N_1_1*/, NULL, 1, &lResult);
+    lDocString = zstring((char*)lResult);    
+    xmlFree(lResult);
+    xmlFreeDoc(lDoc);
+  }
+  catch ( std::exception const& e)
+  {
+      zstring lErrorMsg;
+      lErrorMsg = "\"" + lDocString + "\"";
+      throw XQUERY_EXCEPTION(err::FOCZ0001, ERROR_PARAMS("x:canonicalize()", lErrorMsg ), ERROR_LOC(loc));
+  }
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, lDocString), state);
+  STACK_END(state);
+}
+
+void FnZorbaCanonicalizeIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theProperties.reset();
+  theProperties.setStoreDocument(false);
+}
 
 /*******************************************************************************
   14.9.2 fn:parse-xml-fragment
@@ -338,11 +433,20 @@ bool FnParseXmlFragmentIterator::nextImpl(store::Item_t& result, PlanState& plan
     try {
       state->theProperties.setStoreDocument(false);
       result = GENV.getStore().loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
-    } catch (ZorbaException const& e) {
-      if( ! state->theProperties.getNoError())
-        throw XQUERY_EXCEPTION(err::FODC0006, ERROR_PARAMS("fn:parse-xml-fragment()", e.what() ), ERROR_LOC(loc));
-      else
-        result = NULL;
+    }
+    catch ( ZorbaException const &e ) {
+      if ( !state->theProperties.getNoError() ) {
+        XQueryException xe(
+          XQUERY_EXCEPTION(
+            err::FODC0006,
+            ERROR_PARAMS( "fn:parse-xml-fragment()", e.what() ),
+            ERROR_LOC( loc )
+          )
+        );
+        set_data( xe, e );
+        throw xe;
+      }
+      result = nullptr;
     }
 
     if (result != NULL)
@@ -362,4 +466,5 @@ void FnParseXmlFragmentIteratorState::reset(PlanState& planState)
   docUri = "";
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

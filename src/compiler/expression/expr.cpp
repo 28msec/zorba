@@ -328,20 +328,17 @@ cast_expr::cast_expr(
     user_function* udf,
     const QueryLoc& loc,
     expr* inputExpr,
-    const xqtref_t& type)
+    const xqtref_t& type,
+    bool allowsEmptyInput)
   :
-  cast_base_expr(ccb, sctx, udf, loc, cast_expr_kind, inputExpr, type)
+  cast_base_expr(ccb, sctx, udf, loc, cast_expr_kind, inputExpr, type),
+  theAllowsEmtpyInput(allowsEmptyInput)
 {
   assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
-         type->get_quantifier() == TypeConstants::QUANT_QUESTION);
+         type->get_quantifier() == TypeConstants::QUANT_QUESTION ||
+         type->get_quantifier() == TypeConstants::QUANT_STAR);
 
   setNonDiscardable(ANNOTATION_TRUE_FIXED);
-}
-
-
-bool cast_expr::is_optional() const
-{
-  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION;
 }
 
 
@@ -421,16 +418,12 @@ castable_expr::castable_expr(
     user_function* udf,
     const QueryLoc& loc,
     expr* inputExpr,
-    const xqtref_t& type)
+    const xqtref_t& type,
+    bool allowsEmtpyInput)
   :
-  castable_base_expr(ccb, sctx, udf, loc, castable_expr_kind, inputExpr, type)
+  castable_base_expr(ccb, sctx, udf, loc, castable_expr_kind, inputExpr, type),
+  theAllowsEmtpyInput(allowsEmtpyInput)
 {
-}
-
-
-bool castable_expr::is_optional() const 
-{
-  return theTargetType->get_quantifier() == TypeConstants::QUANT_QUESTION; 
 }
 
 
@@ -654,6 +647,66 @@ void attr_expr::compute_scripting_kind()
 
 
 DEF_EXPR_ACCEPT(attr_expr)
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+namespace_expr::namespace_expr(
+    CompilerCB* ccb,
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc,
+    expr* preExpr,
+    expr* uriExpr)
+  :
+  expr(ccb, sctx, udf, loc, namespace_expr_kind),
+  thePrefixExpr(preExpr),
+  theUriExpr(uriExpr)
+{
+  compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
+  setConstructsNodes(ANNOTATION_TRUE_FIXED);
+}
+
+
+const store::Item* namespace_expr::getPrefix() const
+{
+  if (thePrefixExpr->get_expr_kind() == const_expr_kind)
+  {
+    return static_cast<const_expr*>(thePrefixExpr)->get_val();
+  }
+
+  return NULL;
+}
+
+
+void namespace_expr::compute_scripting_kind()
+{
+  checkNonUpdating(thePrefixExpr);
+  checkNonUpdating(theUriExpr);
+
+  short nameExprKind = thePrefixExpr->get_scripting_detail();
+  short valueExprKind = theUriExpr->get_scripting_detail();
+
+  theScriptingKind |= (nameExprKind | valueExprKind);
+
+  if (is_vacuous())
+  {
+    theScriptingKind = SIMPLE_EXPR;
+  }
+  else
+  {
+    theScriptingKind &= ~VACUOUS_EXPR;
+
+    if (is_sequential())
+      theScriptingKind &= ~SIMPLE_EXPR;
+  }
+}
+
+
+DEF_EXPR_ACCEPT(namespace_expr)
 
 
 /***************************************************************************//**

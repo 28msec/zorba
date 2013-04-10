@@ -129,11 +129,11 @@ VarInfo* DynamicContextImpl::get_var_info(const zstring& inVarName)
   if (!var)
   {
     throw XQUERY_EXCEPTION(err::XPST0008,
-    ERROR_PARAMS(BUILD_STRING('{',
+    ERROR_PARAMS(ZED(XPST0008_VariableName_2),
+                 BUILD_STRING('{',
                               qnameItem->getNamespace(),
                               '}',
-                              qnameItem->getLocalName()),
-                 ZED(Variable)));
+                              qnameItem->getLocalName())));
   }
 
   return var;
@@ -177,7 +177,8 @@ VarInfo* DynamicContextImpl::get_var_info(
   if (!var)
   {
     throw XQUERY_EXCEPTION(err::XPST0008,
-    ERROR_PARAMS(BUILD_STRING('{', inVarUri, '}', inVarLocalName ), ZED(Variable)));
+    ERROR_PARAMS(ZED(XPST0008_VariableName_2),
+                 BUILD_STRING('{', inVarUri, '}', inVarLocalName )));
   }
 
   return var;
@@ -674,6 +675,29 @@ Item DynamicContextImpl::getDefaultCollection() const
   return Item();
 }
 
+/****************************************************************************//**
+
+********************************************************************************/
+void DynamicContextImpl::setLocale( locale::iso639_1::type aLang,
+                                    locale::iso3166_1::type aCountry ) {
+  theCtx->set_locale( aLang, aCountry );
+}
+
+void DynamicContextImpl::getLocale( locale::iso639_1::type *aLang,
+                                    locale::iso3166_1::type *aCountry ) const {
+  theCtx->get_locale( aLang, aCountry );
+}
+
+/****************************************************************************//**
+
+********************************************************************************/
+void DynamicContextImpl::setCalendar( time::calendar::type aCalendar ) {
+  theCtx->set_calendar( aCalendar );
+}
+
+time::calendar::type DynamicContextImpl::getCalendar() const {
+  return theCtx->get_calendar();
+}
 
 /****************************************************************************//**
 

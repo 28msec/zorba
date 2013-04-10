@@ -503,7 +503,6 @@ DWORD WINAPI thread_main(LPVOID param)
       zorba::Item lDisable
         = zorba->getItemFactory()->createQName(
             "http://www.zorba-xquery.com/options/features", "", "disable");
-      sctx->declareOption(lEnable, "hof");
       sctx->declareOption(lDisable, "scripting");
       sctx->setTraceStream(queries->theOutput);
     }
@@ -710,7 +709,6 @@ DWORD WINAPI thread_main(LPVOID param)
         int lCanonicalRes = zorba::canonicalizeAndCompare(querySpec.getComparisonMethod(),
                                                           refFilePath.c_str(),
                                                           resFilePath.c_str(),
-                                                          rbkt_bin_dir,
                                                           queries->theOutput);
         if (lCanonicalRes == 0)
         {
@@ -953,9 +951,9 @@ _tmain(int argc, _TCHAR* argv[])
     exit(2);
   }
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
-  queries.theQueriesDir = path.native_directory_string();
+  queries.theQueriesDir = path.file_string();
 #else
-  queries.theQueriesDir = path.parent_path().generic_string();
+  queries.theQueriesDir = path.generic_string();
 #endif
 
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2

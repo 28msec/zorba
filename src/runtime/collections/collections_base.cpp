@@ -39,10 +39,10 @@ void checkNodeType(
 
   const TypeManager* tm = sctx->get_typemanager();
 
-  if (!TypeOps::is_treatable(tm, node, *(collectionDecl->getNodeType()), loc))
+  if (!TypeOps::is_subtype(tm, node, *(collectionDecl->getNodeType()), loc))
   {
     RAISE_ERROR(zerr::ZDTY0001_COLLECTION_INVALID_NODE_TYPE, loc,
-    ERROR_PARAMS(TypeOps::toString(*tm->create_value_type(node)),
+    ERROR_PARAMS(tm->create_value_type(node)->toSchemaString(),
                  collectionDecl->getName()->getStringValue()));
   }
 }

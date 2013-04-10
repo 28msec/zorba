@@ -111,13 +111,26 @@ void DataflowAnnotationsComputer::compute(expr* e)
     break;
 
   case promote_expr_kind:
+  case cast_expr_kind:
+  case name_cast_expr_kind:
   case castable_expr_kind:
   case instanceof_expr_kind:
   {
     default_walk(e);
-    cast_or_castable_base_expr* ue = static_cast<cast_or_castable_base_expr*>(e);
-    PROPOGATE_SORTED_NODES(ue->get_input(), e);
-    PROPOGATE_DISTINCT_NODES(ue->get_input(), e);
+    SORTED_NODES(e);
+    DISTINCT_NODES(e);
+    break;
+  }
+
+  case treat_expr_kind:
+  {
+    default_walk(e);
+    if (!generic_compute(e))
+    {
+      treat_expr* ue = static_cast<treat_expr*>(e);
+      PROPOGATE_SORTED_NODES(ue->get_input(), e);
+      PROPOGATE_DISTINCT_NODES(ue->get_input(), e);
+    }
     break;
   }
 
@@ -160,18 +173,6 @@ void DataflowAnnotationsComputer::compute(expr* e)
     compute_fo_expr(static_cast<fo_expr *>(e));
     break;
 
-  case treat_expr_kind:
-    compute_treat_expr(static_cast<treat_expr *>(e));
-    break;
-
-  case cast_expr_kind:
-    compute_cast_expr(static_cast<cast_expr *>(e));
-    break;
-
-  case name_cast_expr_kind:
-    compute_name_cast_expr(static_cast<name_cast_expr *>(e));
-    break;
-
   case validate_expr_kind:
     compute_validate_expr(static_cast<validate_expr *>(e));
     break;
@@ -201,24 +202,17 @@ void DataflowAnnotationsComputer::compute(expr* e)
     break;
 
   case elem_expr_kind:
-    compute_elem_expr(static_cast<elem_expr *>(e));
-    break;
-
   case doc_expr_kind:
-    compute_doc_expr(static_cast<doc_expr *>(e));
-    break;
-
   case attr_expr_kind:
-    compute_attr_expr(static_cast<attr_expr *>(e));
-    break;
-
+  case namespace_expr_kind:
   case text_expr_kind:
-    compute_text_expr(static_cast<text_expr *>(e));
-    break;
-
   case pi_expr_kind:
-    compute_pi_expr(static_cast<pi_expr *>(e));
+  {
+    default_walk(e);
+    SORTED_NODES(e);
+    DISTINCT_NODES(e);
     break;
+  }
 
 #ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
@@ -232,6 +226,7 @@ void DataflowAnnotationsComputer::compute(expr* e)
 #endif
 
   case dynamic_function_invocation_expr_kind: // TODO
+  case argument_placeholder_expr_kind: // TODO
   case function_item_expr_kind: // TODO
   case delete_expr_kind:        // TODO
   case insert_expr_kind:        // TODO
@@ -284,6 +279,16 @@ bool DataflowAnnotationsComputer::generic_compute(expr* e)
   TypeConstants::quantifier_t quant = rt->get_quantifier();
 
   if (quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_QUESTION)
+  {
+    SORTED_NODES(e);
+    DISTINCT_NODES(e);
+    return true;
+  }
+
+  if (TypeOps::is_subtype(e->get_type_manager(),
+                          *rt,
+                          *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE,
+                          e->get_loc()))
   {
     SORTED_NODES(e);
     DISTINCT_NODES(e);
@@ -396,8 +401,8 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
       {
         break;
       }
-      case flwor_clause::order_clause:
-      case flwor_clause::group_clause:
+      case flwor_clause::orderby_clause:
+      case flwor_clause::groupby_clause:
       {
         return;
       }
@@ -522,40 +527,6 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute_treat_expr(treat_expr *e)
-{
-  default_walk(e);
-  if (!generic_compute(e))
-  {
-    PROPOGATE_SORTED_NODES(e->get_input(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void DataflowAnnotationsComputer::compute_cast_expr(cast_expr* e)
-{
-  default_walk(e);
-  if (!generic_compute(e))
-  {
-    PROPOGATE_SORTED_NODES(e->get_input(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
-  }
-}
-
-void DataflowAnnotationsComputer::compute_name_cast_expr(name_cast_expr* e)
-{
-  default_walk(e);
-  if (!generic_compute(e))
-  {
-    PROPOGATE_SORTED_NODES(e->get_input(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
-  }
-}
-
 void DataflowAnnotationsComputer::compute_validate_expr(validate_expr* e)
 {
   default_walk(e);
@@ -694,46 +665,6 @@ void DataflowAnnotationsComputer::compute_order_expr(order_expr* e)
 }
 
 
-void DataflowAnnotationsComputer::compute_elem_expr(elem_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_doc_expr(doc_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_attr_expr(attr_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_text_expr(text_expr* e)
-{
- default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_pi_expr(pi_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                                                            //
@@ -800,7 +731,7 @@ void SourceFinder::findNodeSourcesRec(
 
   xqtref_t retType = node->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR, node->get_loc()))
+  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_SIMPLE_TYPE, node->get_loc()))
     return;
 
   switch(node->get_expr_kind())
@@ -870,6 +801,7 @@ void SourceFinder::findNodeSourcesRec(
 
     case var_expr::prolog_var:
     case var_expr::local_var:
+    case var_expr::hof_var:
     {
       VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 
@@ -919,7 +851,7 @@ void SourceFinder::findNodeSourcesRec(
 
     case var_expr::arg_var:
     {
-      theVarSourcesMap.insert(VarSourcesPair(e, NULL));
+      theVarSourcesMap.insert(VarSourcesPair(e, nullptr));
 
       return;
     }
@@ -1046,6 +978,7 @@ void SourceFinder::findNodeSourcesRec(
   }
 
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
   {
@@ -1173,6 +1106,11 @@ void SourceFinder::findNodeSourcesRec(
     break;
   }
 
+  case argument_placeholder_expr_kind:
+  {
+    return;
+  }
+
   case function_item_expr_kind:
   {
     //function_item_expr* e = static_cast<function_item_expr*>(node);
@@ -1225,7 +1163,7 @@ void SourceFinder::findLocalNodeSources(
 
   xqtref_t retType = node->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_ATOMIC_TYPE_STAR, node->get_loc()))
+  if (TypeOps::is_subtype(tm, *retType, *rtm.ANY_SIMPLE_TYPE, node->get_loc()))
     return;
 
   switch(node->get_expr_kind())
@@ -1300,6 +1238,7 @@ void SourceFinder::findLocalNodeSources(
 
     case var_expr::prolog_var:
     case var_expr::local_var:
+    case var_expr::hof_var:
     {
       VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 
@@ -1380,6 +1319,7 @@ void SourceFinder::findLocalNodeSources(
   }
 
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
   {

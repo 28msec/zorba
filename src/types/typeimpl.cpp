@@ -106,7 +106,7 @@ const char* AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST] =
   "xs:ID",
   "xs:IDREF",
   "xs:ENTITY",
-  "UNTYPED_ATOMIC",
+  "xs:untypedAtomic",
   "xs:dateTime",
   "xs:date",
   "xs:time",
@@ -140,7 +140,8 @@ const char* AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[store::XS_LAST] =
   "xs:anyURI",
   "xs:QName",
   "xs:NOTATION",
-  "jdm:null"
+  "js:null",
+  "xs:dateTimeStamp"
 };
 
 
@@ -236,6 +237,179 @@ int XQType::card() const
     return  RootTypeManager::QUANT_MIN_CNT[q];
 
   return -1;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool XQType::isComplex() const
+{
+  if (type_kind() == XQType::USER_DEFINED_KIND)
+  {
+    return static_cast<const UserDefinedXQType*>(this)->theUDTKind == COMPLEX_UDT; 
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool XQType::isList() const
+{
+  if (type_kind() == XQType::USER_DEFINED_KIND)
+  {
+    return static_cast<const UserDefinedXQType*>(this)->theUDTKind == LIST_UDT; 
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool XQType::isUnion() const
+{
+  if (type_kind() == XQType::USER_DEFINED_KIND)
+  {
+    return static_cast<const UserDefinedXQType*>(this)->theUDTKind == UNION_UDT; 
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+  Returns true if the ItemType of the given sequence type is an atomic type.
+********************************************************************************/
+bool XQType::isGenAtomicAny() const
+{
+  if (type_kind() == XQType::ATOMIC_TYPE_KIND)
+  {
+    return true;
+  }
+  else if (type_kind() == XQType::USER_DEFINED_KIND)
+  {
+    const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(this);
+
+    if (udt->isAtomicAny())
+      return true;
+
+    if (udt->isUnion())
+    {
+      std::vector<xqtref_t>::const_iterator ite = udt->m_unionItemTypes.begin();
+      std::vector<xqtref_t>::const_iterator end = udt->m_unionItemTypes.end();
+      for (; ite != end; ++ite)
+      {
+        if ((*ite)->get_quantifier() != TypeConstants::QUANT_ONE &&
+            (*ite)->get_quantifier() != TypeConstants::QUANT_QUESTION)
+          return false;
+      }
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+  Returns true if the ItemType of the given sequence type is an atomic type.
+********************************************************************************/
+bool XQType::isAtomicAny() const
+{
+  if (type_kind() == XQType::ATOMIC_TYPE_KIND)
+  {
+    return true;
+  }
+  else if (type_kind() == XQType::USER_DEFINED_KIND)
+  {
+    return static_cast<const UserDefinedXQType*>(this)->theUDTKind == ATOMIC_UDT;
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+  Returns true if the quantifier of the given sequence type is QUANT_ONE and
+  its ItemType is an atomic type.
+********************************************************************************/
+bool XQType::isAtomicOne() const
+{
+  if (get_quantifier() == TypeConstants::QUANT_ONE)
+  {
+    if (type_kind() == XQType::ATOMIC_TYPE_KIND)
+    {
+      return true;
+    }
+    else if (type_kind() == XQType::USER_DEFINED_KIND)
+    {
+      return static_cast<const UserDefinedXQType*>(this)->theUDTKind == ATOMIC_UDT;
+    }
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool XQType::isBuiltinAtomicAny() const
+{
+  return type_kind() == XQType::ATOMIC_TYPE_KIND;
+}
+
+
+/*******************************************************************************
+  Returns true if the quantifier of the given sequence type is QUANT_ONE and
+  its ItemType is a builtin atomic type.
+********************************************************************************/
+bool XQType::isBuiltinAtomicOne() const
+{
+  return get_quantifier() == TypeConstants::QUANT_ONE &&
+         type_kind() == XQType::ATOMIC_TYPE_KIND;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t XQType::getQName() const
+{
+  switch (type_kind())
+  {
+  case ATOMIC_TYPE_KIND:
+  {
+    store::SchemaTypeCode type = 
+    static_cast<const AtomicXQType*>(this)->theAtomicCode;
+
+    return GENV_TYPESYSTEM.m_atomic_typecode_qname_map[type];
+  }
+  case USER_DEFINED_KIND:
+  {
+    return static_cast<const UserDefinedXQType*>(this)->theQName;
+  }
+  case ANY_TYPE_KIND:
+  {
+    return GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME;
+  }
+  case UNTYPED_KIND:
+  {
+    return GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  }
+  case ANY_SIMPLE_TYPE_KIND:
+  {
+    return GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME;
+  }
+  default:
+    ZORBA_ASSERT(false);
+  }
 }
 
 
@@ -441,7 +615,7 @@ void ItemXQType::serialize(::zorba::serialization::Archiver& ar)
 void AtomicXQType::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (XQType*)this);
-  SERIALIZE_ENUM(store::SchemaTypeCode, m_type_code);
+  SERIALIZE_ENUM(store::SchemaTypeCode, theAtomicCode);
 }
 
 
@@ -452,15 +626,6 @@ std::ostream& AtomicXQType::serialize_ostream(std::ostream& os) const
 {
   return os << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
             << TypeOps::decode_quantifier(get_quantifier());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Item_t AtomicXQType::get_qname() const
-{
-  return GENV_TYPESYSTEM.m_atomic_typecode_qname_map[m_type_code];
 }
 
 
@@ -748,7 +913,15 @@ bool NodeXQType::is_supertype(
   assert(subitem->isNode());
 
   if (m_node_kind == store::StoreConsts::anyNode)
+  {
+    if (theContentType != NULL &&
+        theContentType->type_kind() == XQType::UNTYPED_KIND)
+    {
+      return (subitem->getType()->equals(GENV_TYPESYSTEM.XS_UNTYPED_QNAME));
+    }
+
     return true;
+  }
 
   if (m_node_kind != subitem->getNodeKind())
     return false;
@@ -788,14 +961,14 @@ bool NodeXQType::is_supertype(
     }
   }
 
-  // document-node( E ) matches any document node that contains exactly one element
+  // document-node(E) matches any document node that contains exactly one element
   // node, optionally accompanied by one or more comment and processing instruction
   // nodes, if E is an ElementTest or SchemaElementTest that matches the element node.
   bool is_element_test = (
       m_node_kind == store::StoreConsts::documentNode &&
       theContentType != NULL &&
       theContentType->type_kind() == XQType::NODE_TYPE_KIND &&
-      dynamic_cast<const NodeXQType*>(theContentType.getp())->m_schema_test == false);
+      static_cast<const NodeXQType*>(theContentType.getp())->m_schema_test == false);
 
   if (m_node_kind != store::StoreConsts::elementNode &&
       m_node_kind != store::StoreConsts::attributeNode &&
@@ -815,7 +988,7 @@ bool NodeXQType::is_supertype(
   xqtref_t subContentType = tm->create_named_type(subitem->getType(),
                                                   TypeConstants::QUANT_ONE,
                                                   loc,
-                                                  err::XPTY0004);
+                                                  true);
 
   return TypeOps::is_subtype(tm, *subContentType, *theContentType);
 }
@@ -958,6 +1131,28 @@ bool FunctionXQType::is_equal(
     const TypeManager* tm,
     const FunctionXQType& other) const
 {
+  if (this->get_number_params() != other.get_number_params())
+  {
+    return false;
+  }
+
+  if ( ! TypeOps::is_equal(tm,
+                           *get_return_type().getp(),
+                           *other.get_return_type().getp()))
+  {
+    return false;
+  }
+
+  size_t i = 0;
+  for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
+       lIter != m_param_types.end(); ++lIter, ++i)
+  {
+    if ( ! TypeOps::is_equal(tm, *other[i].getp(), *lIter->getp()))
+    {
+      return false;
+    }
+  }
+
   return true;
 }
 
@@ -972,14 +1167,16 @@ bool FunctionXQType::is_equal(
 ********************************************************************************/
 bool FunctionXQType::is_subtype(
     const TypeManager* tm,
-    const FunctionXQType& supertype) const
+    const FunctionXQType& supertype,
+    bool ignoreReturnType) const
 {
   if (this->get_number_params() != supertype.get_number_params())
   {
     return false;
   }
 
-  if (!TypeOps::is_subtype(tm,
+  if (!ignoreReturnType &&
+      !TypeOps::is_subtype(tm,
                            *get_return_type().getp(),
                            *supertype.get_return_type().getp()))
   {
@@ -988,9 +1185,9 @@ bool FunctionXQType::is_subtype(
 
   size_t i = 0;
   for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
-       lIter != m_param_types.end(); ++lIter)
+       lIter != m_param_types.end(); ++lIter, ++i)
   {
-    if (!TypeOps::is_subtype(tm, *lIter->getp(), *supertype[i++].getp()))
+    if (!TypeOps::is_subtype(tm, *supertype[i].getp(), *lIter->getp()))
     {
       return false;
     }
@@ -1044,22 +1241,23 @@ UserDefinedXQType::UserDefinedXQType(
     store::Item_t qname,
     const xqtref_t& baseType,
     TypeConstants::quantifier_t quantifier,
-    type_category_t typeCategory,
-    content_kind_t contentKind)
+    UDTKind udtKind,
+    content_kind_t contentKind,
+    bool builtin)
   :
-  XQType(manager, USER_DEFINED_KIND, quantifier, false),
-  m_qname(qname),
+  XQType(manager, USER_DEFINED_KIND, quantifier, builtin),
+  theQName(qname),
   m_baseType(baseType),
-  m_typeCategory(typeCategory),
+  theUDTKind(udtKind),
   m_contentKind(contentKind)
 {
-  assert(typeCategory == ATOMIC_TYPE || typeCategory == COMPLEX_TYPE);
+  assert(udtKind == ATOMIC_UDT || udtKind == COMPLEX_UDT);
 
   ZORBA_ASSERT(baseType != NULL);
-  ZORBA_ASSERT(typeCategory == ATOMIC_TYPE || quantifier == TypeConstants::QUANT_ONE);
+  ZORBA_ASSERT(udtKind == ATOMIC_UDT || quantifier == TypeConstants::QUANT_ONE);
 
-  TRACE("UserDefinedXQType c2: " << m_qname->getLocalName()->str() << "@"
-        << m_qname->getNamespace()->str() << " " << typeCategoryStr(m_typeCategory)
+  TRACE("UserDefinedXQType c2: " << theQName->getLocalName() << "@"
+        << theQName->getNamespace() << " " << decodeUDTKind(theUDTKind)
         << " " << contentKindStr(m_contentKind));
 }
 
@@ -1071,17 +1269,16 @@ UserDefinedXQType::UserDefinedXQType(
     const TypeManager* manager,
     store::Item_t qname,
     const xqtref_t& baseType,
-    TypeConstants::quantifier_t quantifier,
-    const XQType* listItemType)
+    const XQType* listItemType,
+    bool builtin)
   :
-  XQType(manager, USER_DEFINED_KIND, quantifier, false),
-  m_qname(qname),
+  XQType(manager, USER_DEFINED_KIND, TypeConstants::QUANT_STAR, builtin),
+  theQName(qname),
   m_baseType(baseType),
-  m_typeCategory(LIST_TYPE),
+  theUDTKind(LIST_UDT),
   m_contentKind(SIMPLE_CONTENT_KIND),
   m_listItemType(listItemType)
 {
-  ZORBA_ASSERT(quantifier == TypeConstants::QUANT_ONE);
   ZORBA_ASSERT(listItemType);
 }
 
@@ -1094,16 +1291,22 @@ UserDefinedXQType::UserDefinedXQType(
     store::Item_t qname,
     const xqtref_t& baseType,
     TypeConstants::quantifier_t quantifier,
-    std::vector<xqtref_t>& unionItemTypes)
+    const std::vector<xqtref_t>& unionItemTypes,
+    bool builtin)
   :
-  XQType(manager, USER_DEFINED_KIND, quantifier, false),
-  m_qname(qname),
+  XQType(manager, USER_DEFINED_KIND, quantifier, builtin),
+  theQName(qname),
   m_baseType(baseType),
-  m_typeCategory(UNION_TYPE),
+  theUDTKind(UNION_UDT),
   m_contentKind(SIMPLE_CONTENT_KIND),
   m_unionItemTypes(unionItemTypes)
 {
-  ZORBA_ASSERT(quantifier == TypeConstants::QUANT_ONE);
+  std::vector<xqtref_t>::const_iterator ite = unionItemTypes.begin();
+  std::vector<xqtref_t>::const_iterator end = unionItemTypes.end();
+  for (; ite != end; ++ite)
+  {
+    theQuantifier = TypeOps::union_quant(theQuantifier, (*ite)->get_quantifier());
+  }
 }
 
 
@@ -1113,9 +1316,9 @@ UserDefinedXQType::UserDefinedXQType(
 void UserDefinedXQType::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (XQType*)this);
-  ar & m_qname;
+  ar & theQName;
   ar & m_baseType;
-  SERIALIZE_ENUM(type_category_t, m_typeCategory);
+  SERIALIZE_ENUM(UDTKind, theUDTKind);
   SERIALIZE_ENUM(content_kind_t, m_contentKind);
   ar & m_listItemType;
   ar & m_unionItemTypes;
@@ -1132,7 +1335,7 @@ xqtref_t UserDefinedXQType::getBaseBuiltinType() const
   while (builtinType->type_kind() == XQType::USER_DEFINED_KIND)
   {
     const UserDefinedXQType* tmp =
-    reinterpret_cast<const UserDefinedXQType*>(builtinType.getp());
+    static_cast<const UserDefinedXQType*>(builtinType.getp());
 
     builtinType = tmp->getBaseType();
   }
@@ -1146,8 +1349,22 @@ xqtref_t UserDefinedXQType::getBaseBuiltinType() const
 ********************************************************************************/
 bool UserDefinedXQType::isSuperTypeOf(
     const TypeManager* tm,
-    const XQType& subType) const
+    const XQType& subType,
+    const QueryLoc& loc) const
 {
+  if (isUnion() && isGenAtomicAny() && subType.isAtomicAny())
+  {
+    std::vector<xqtref_t>::const_iterator ite = m_unionItemTypes.begin();
+    std::vector<xqtref_t>::const_iterator end = m_unionItemTypes.end();
+    for (; ite != end; ++ite)
+    {
+      if (TypeOps::is_subtype(tm, subType, *(*ite), loc))
+        return true;
+    }
+
+    return false;
+  }
+
   if (subType.type_kind() != XQType::USER_DEFINED_KIND)
     return false;
 
@@ -1155,8 +1372,11 @@ bool UserDefinedXQType::isSuperTypeOf(
 
   do
   {
-    if (TypeOps::is_equal(tm, *this, *subtype))
+    if (getUDTKind() == subtype->getUDTKind() &&
+        getQName()->equals(subtype->getQName()))
+    {
       return true;
+    }
 
     if (subtype->type_kind() == XQType::USER_DEFINED_KIND)
     {
@@ -1167,14 +1387,14 @@ bool UserDefinedXQType::isSuperTypeOf(
       return false;
     }
   }
-  while(true);
+  while (subtype != NULL);
 
   return false;
 }
 
 
 /*******************************************************************************
-
+  TODO: fix this method ?????
 ********************************************************************************/
 bool UserDefinedXQType::isSubTypeOf(
     const TypeManager* tm,
@@ -1200,7 +1420,7 @@ bool UserDefinedXQType::isSubTypeOf(
       return TypeOps::is_subtype(tm, *subtype, supertype);
     }
   }
-  while(true);
+  while(subtype != NULL);
 
   return false;
 }
@@ -1209,17 +1429,17 @@ bool UserDefinedXQType::isSubTypeOf(
 /*******************************************************************************
 
 ********************************************************************************/
-std::string UserDefinedXQType::typeCategoryStr(type_category_t typeCategory)
+std::string UserDefinedXQType::decodeUDTKind(UDTKind typeCategory)
 {
   switch(typeCategory)
   {
-  case UserDefinedXQType::ATOMIC_TYPE:
+  case ATOMIC_UDT:
     return "atomic";
-  case UserDefinedXQType::COMPLEX_TYPE:
+  case COMPLEX_UDT:
     return "complex";
-  case UserDefinedXQType::LIST_TYPE:
+  case LIST_UDT:
     return "list";
-  case UserDefinedXQType::UNION_TYPE:
+  case UNION_UDT:
     return "union";
   default:
     return "unknownTypeCategory";
@@ -1234,38 +1454,55 @@ std::ostream& UserDefinedXQType::serialize_ostream(std::ostream& os) const
 {
   std::ostringstream info;
 
-  switch (m_typeCategory)
+  switch (theUDTKind)
   {
-  case ATOMIC_TYPE:
+  case ATOMIC_UDT:
+  {
     info << "isAtomic";
     break;
-  case COMPLEX_TYPE:
+  }
+  case COMPLEX_UDT:
+  {
     info << "isComplex";
     break;
-  case LIST_TYPE:
+  }
+  case LIST_UDT:
+  {
     info << " isList itemType:" << m_listItemType->toString();
     break;
-  case UNION_TYPE:
-    info << " isUnion " << m_unionItemTypes.size() << ":";
-    for ( unsigned int i = 0; i < m_unionItemTypes.size(); i++)
+  }
+  case UNION_UDT:
+  {
+    csize numMembers = m_unionItemTypes.size();
+    info << " Union (" ;
+
+    if (numMembers > 0)
     {
-      info << m_unionItemTypes[i]->toString();
+      for (csize i = 0; i < numMembers-1; ++i)
+      {
+        info << m_unionItemTypes[i]->toString() << ", ";
+      }
+      info << m_unionItemTypes[numMembers-1]->toString();
     }
+
+    info << ")";
+
     break;
+  }
   default:
     ZORBA_ASSERT(false);
   }
 
   info << " " << contentKindStr(m_contentKind);
 
-  return os << "[UserDefinedXQType " << " "
-            << TypeOps::decode_quantifier (get_quantifier()) << " "
-            << m_qname->getLocalName() << "@"
-            << m_qname->getNamespace() << " "
+  return os << "[UserDefinedXQType "
+            << TypeOps::decode_quantifier(get_quantifier()) << " "
+            << theQName->getLocalName() << "@"
+            << theQName->getNamespace() << " "
             << info.str()
             << " base:"
-            << ( m_baseType ? TypeOps::toString(*m_baseType) : "NULL" )
-            << " ]";
+            << ( m_baseType ? m_baseType->toString() : "NULL" )
+            << "]";
 }
 
 
@@ -1285,9 +1522,19 @@ void AnyXQType::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-store::Item_t AnyXQType::get_qname() const
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  UntypedXQType                                                              //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UntypedXQType::serialize(::zorba::serialization::Archiver& ar)
 {
-  return GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME;
+  serialize_baseclass(ar, (XQType*)this);
 }
 
 
@@ -1305,35 +1552,6 @@ void AnySimpleXQType::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (XQType*)this);
 }
-
-
-store::Item_t AnySimpleXQType::get_qname() const
-{
-  return GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  UntypedXQType                                                              //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UntypedXQType::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (XQType*)this);
-}
-
-
-store::Item_t UntypedXQType::get_qname() const
-{
-  return GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-}
-
 
 }  // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -19,21 +19,30 @@ SET(UTIL_SRCS
   error_util.cpp
   file.cpp
   fs_util.cpp
+  hexbinary_util.cpp
   indent.cpp
   json_parser.cpp
   json_util.cpp
   mem_streambuf.cpp
   regex.cpp
+  stream_util.cpp
   string_util.cpp
+  time_util.cpp
+  time_parse.cpp
   unicode_util.cpp
   unicode_categories.cpp
   uri_util.cpp
   utf8_util.cpp
+  utf8_streambuf.cpp
   xml_util.cpp
   fx/fxcharheap.cpp
   string/empty_rep_base.cpp
   http_util.h
   http_util.cpp)
+
+IF (NOT ZORBA_CXX_NULLPTR)
+  LIST(APPEND UTIL_SRCS cxx_util.cpp)
+ENDIF (NOT ZORBA_CXX_NULLPTR)
 
 IF(ZORBA_WITH_FILE_ACCESS)
   LIST(APPEND UTIL_SRCS mmap_file.cpp)

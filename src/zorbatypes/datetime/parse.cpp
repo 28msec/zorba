@@ -15,8 +15,13 @@
  */
 #include "stdafx.h"
 
-#include "zorbatypes/datetime/parse.h"
+#include <sstream>
 #include <string>
+#include <iomanip>
+
+#include "util/ascii_util.h"
+#include "util/time_util.h"
+#include "zorbatypes/datetime/parse.h"
 
 namespace zorba
 {
@@ -29,7 +34,7 @@ namespace zorba
   must obey these conditions, or the function will return an error.
 
   @param str The source string to parse
-  @param str_len the length of the input string
+  @param len the length of the input string
   @param position The position to start parsing from
   @param result Contains the result of the parsing
   @param min_digits Minimum number of digits
@@ -41,31 +46,30 @@ namespace zorba
 ********************************************************************************/
 int parse_long(
     const char* str,
-    ascii::size_type str_len,
-    ascii::size_type& position,
+    size_t len,
+    size_t& position,
     long& result,
     long min_digits,
     long max_digits,
-    long delta)
+    size_t delta)
 {
+  int tmp_result = 0; // We have to downgrade the precision here from long to int so that some FOTS tests will throw a FOTD0001 date/time overflow. 
+                      // When alternative correct results will be available, this precision downgrading can be removed.
   long digits = 0;
 
-  if (position + delta >= str_len)
+  if (position + delta >= len)
     return 1;
 
   if (str[position+delta] < '0' || str[position+delta] > '9')
     return 1;
 
-  result = 0;
-
-  while (position + delta < str_len &&
-         str[position+delta] >= '0' && str[position+delta] <= '9')
+  while ( position + delta < len && ascii::is_digit( str[position+delta] ) )
   {
-    result = 10 * result + str[position + delta] - '0';
+    tmp_result = 10 * tmp_result + str[position + delta] - '0';
     position++;
     digits++;
 
-    if (result < 0) // we've had an overflow
+    if (tmp_result < 0) // we've had an overflow
       return 2;
   }
 
@@ -75,56 +79,50 @@ int parse_long(
   if (max_digits >= 0 && digits > max_digits)
     return 1;
 
+  result = tmp_result;
   return 0;
 }
 
 
 
-bool is_digit(char ch)
-{
-  return (ch >= '0' && ch <= '9');
-}
-
-
-// checks if a number of count chars, starting with position, are digits
-bool are_digits(std::string& s, unsigned int& position, int count)
-{
-  for(unsigned int i = position; i < position+count; i++)
-    if (s[i] < '0' || s[i] > '9')
-      return false;
-
-  return true;
-}
-
-
-static bool is_leap_year(int year)
-{
-  if (((year%4 == 0) && (year%100 != 0))
-        ||
-        (year%400 == 0))
-    return true;
-  else
-    return false;
-}
-
-
-int get_last_day(int year, int month)
-{
-  static const int days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-  year = year + quotient<int>(month-1, 12);
-  month = modulo<int>(month-1, 12) + 1;
-
-  if (is_leap_year(year) && month == 2)
-    return 29;
-  else
-    return days[month-1];
+int get_last_day( int year, int month ) {
+  --month;
+  year += quotient<int>( month, 12 );
+  month = modulo<int>( month, 12 );
+  return time::days_in_month( month, year );
 }
 
 int leap_years_count(int year)
 {
   year--;
   return year/4 - year/100 + year/400;
+}
+
+
+int parse_frac( char const *str, size_t len, size_t &pos, double &result )
+{
+  if (pos >= len)
+    return 1;
+
+  if ( !ascii::is_digit( str[pos] ) )
+    return 1;
+
+  double temp = 0.1;
+  result = 0;
+  while ( pos < len && ascii::is_digit( str[pos] ) ) {
+    result += temp * (str[pos] - '0');
+    temp /= 10;
+    ++pos;
+  }
+
+  return 0;
+}
+
+std::string zero_pad(int value, unsigned int min_digits)
+{
+  std::ostringstream oss;
+  oss << std::setfill('0') << std::setw( min_digits ) << value;
+  return oss.str();
 }
 
 } // namespace zorba

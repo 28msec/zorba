@@ -35,7 +35,6 @@
 #include "compiler/xqddf/value_ic.h"
 
 #include "runtime/collections/collections.h"
-#include "runtime/collections/collections_impl.h"
 #include "runtime/core/apply_updates.h"
 #include "runtime/base/plan_iterator.h"
 #include "runtime/visitors/planiter_visitor.h"
@@ -132,196 +131,97 @@ void FnCollectionIteratorState::reset(PlanState& planState)
 
 bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lURI, resolvedURIItem;
   store::Collection_t coll;
-  std::auto_ptr<internal::Resource> lResource;
-  internal::CollectionResource* lCollResource;
-  zstring resolvedURIString;
   zstring lErrorMessage;
 
-  FnCollectionIteratorState *state;
+  FnCollectionIteratorState* state;
   DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
 
-  if (theChildren.size() == 1 &&
-      consumeNext(lURI, theChildren[0].getp(), planState))
-  {
-    try
-    {
-      resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValue());
-    }
-    catch (ZorbaException const&)
-    {
-      RAISE_ERROR(err::FODC0004, loc,
-      ERROR_PARAMS(lURI->getStringValue(), ZED(BadAnyURI)));
-    }
-  }
-  else
-  {
-    resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
+  coll = getCollection(planState);
 
-    if (NULL == resolvedURIItem)
-    {
-      RAISE_ERROR(err::FODC0002, loc,
-      ERROR_PARAMS(ZED(DefaultCollation), ZED(NotDefInDynamicCtx)));
-    }
-
-    resolvedURIString = theSctx->resolve_relative_uri(resolvedURIItem->getStringValue());
-  }
-
-  lResource = theSctx->resolve_uri(resolvedURIString,
-                                   internal::EntityData::COLLECTION,
-                                   lErrorMessage);
-
-  lCollResource = dynamic_cast<internal::CollectionResource*>(lResource.get());
-
-  if ( lCollResource == 0 || !(coll = lCollResource->getCollection()) )
-  {
-    RAISE_ERROR(err::FODC0002, loc,
-    ERROR_PARAMS(resolvedURIString, lErrorMessage));
-  }
-
-  /** return the nodes of the collection */
   state->theIterator = coll->getIterator();
   ZORBA_ASSERT(state->theIterator!=NULL);
   state->theIterator->open();
   state->theIteratorOpened = true;
 
   while(state->theIterator->next(result))
-    STACK_PUSH (true, state);
+  {
+    STACK_PUSH(true, state);
+  }
 
   // close as early as possible
   state->theIterator->close();
   state->theIteratorOpened = false;
 
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-  Iterator for optimizing fn:count when applied to collections
-********************************************************************************/
-CountCollectionIterator::CountCollectionIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    CollectionType collectionType)
-  :
-  NaryBaseIterator<CountCollectionIterator, PlanIteratorState>(sctx, loc, children),
-  theCollectionType(collectionType)
-{
-}
-
-
-CountCollectionIterator::~CountCollectionIterator() 
-{
-}
-
-
-void CountCollectionIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<CountCollectionIterator, PlanIteratorState>*)this);
-
-  SERIALIZE_ENUM(enum CollectionType, theCollectionType);
-}
-
-
-bool CountCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Collection_t coll;
-  store::Item_t name;
-  xs_integer lCount;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if (isZorbaCollection())
-  {
-    ZORBA_ASSERT(consumeNext(name, theChildren[0].getp(), planState));
-
-    (void)getCollection(theSctx, name, loc, isDynamic(), coll);
-  }
-  else
-  {
-    coll = getW3CCollection(planState);
-  }
-
-  lCount = coll->size();
-  if (theChildren.size() > 1) 
-  {
-    // skip parameter passed
-    store::Item_t lSkipItem;
-    consumeNext(lSkipItem, theChildren[1].getp(), planState);
-    xs_integer lSkip = lSkipItem->getIntegerValue(); 
-    // negative is transformed into 0
-    lCount -= ( lSkip <= xs_integer::zero() ? xs_integer::zero() : lSkip );
-    // negative is transformed into 0
-    lCount = ( lCount < xs_integer::zero() ? xs_integer::zero() : lCount );
-  }
-
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lCount), state);
-
   STACK_END(state);
 }
 
 
-store::Collection_t CountCollectionIterator::getW3CCollection(PlanState& planState) const
+bool FnCollectionIterator::count(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lURI;
+  store::Collection_t collection;
+  xs_integer count;
+
+  FnCollectionIteratorState* state;
+  DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
+
+  collection = getCollection(planState);
+
+  count = collection->size();
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
+  STACK_END(state);
+}
+
+
+store::Collection_t FnCollectionIterator::getCollection(PlanState& planState) const
+{
+  store::Item_t uriItem;
   store::Collection_t coll;
-  std::auto_ptr<internal::Resource> lResource;
-  internal::CollectionResource* lCollResource;
-  zstring resolvedURIString;
-  zstring lErrorMessage;
+  std::auto_ptr<internal::Resource> resource;
+  internal::CollectionResource* collResource;
+  zstring resolvedURI;
+  zstring errorMessage;
 
-  if (!theChildren.empty()) //if a URI was given
+  if (!theChildren.empty() && 
+      consumeNext(uriItem, theChildren[0].getp(), planState))
   {
-    ZORBA_ASSERT(consumeNext(lURI, theChildren[0].getp(), planState));
-
     try
     {
-      resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValue());
+      resolvedURI = theSctx->resolve_relative_uri(uriItem->getStringValue());
     }
     catch (ZorbaException const&)
     {
       RAISE_ERROR(err::FODC0004, loc,
-      ERROR_PARAMS(lURI->getStringValue(), ZED(BadAnyURI)));
+      ERROR_PARAMS(uriItem->getStringValue(), ZED(BadAnyURI)));
     }
   }
   else
   {
-    lURI = planState.theGlobalDynCtx->get_default_collection();
+    uriItem = planState.theGlobalDynCtx->get_default_collection();
 
-    if( NULL == lURI)
+    if (NULL == uriItem)
     {
       RAISE_ERROR(err::FODC0002, loc,
       ERROR_PARAMS(ZED(DefaultCollation), ZED(NotDefInDynamicCtx)));
     }
 
-    resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValue());
+    resolvedURI = theSctx->resolve_relative_uri(uriItem->getStringValue());
   }
 
+  resource = theSctx->resolve_uri(resolvedURI, 
+                                  internal::EntityData::COLLECTION,
+                                  errorMessage);
 
-  lResource = theSctx->resolve_uri(resolvedURIString, 
-                                   internal::EntityData::COLLECTION,
-                                   lErrorMessage);
+  collResource = dynamic_cast<internal::CollectionResource*>(resource.get());
 
-  lCollResource = dynamic_cast<internal::CollectionResource*>(lResource.get());
-
-  if (lCollResource == 0 || !(coll = lCollResource->getCollection()))
+  if (collResource == 0 || !(coll = collResource->getCollection()))
   {
-    RAISE_ERROR(err::FODC0004, loc,
-    ERROR_PARAMS(resolvedURIString, lErrorMessage));
+    RAISE_ERROR(err::FODC0002, loc, ERROR_PARAMS(resolvedURI, errorMessage));
   }
 
   return coll;
 }
-
-
-SERIALIZABLE_CLASS_VERSIONS(CountCollectionIterator)
-
-
-NARY_ACCEPT(CountCollectionIterator);
 
 
 /*******************************************************************************
@@ -439,14 +339,10 @@ bool ZorbaCollectionIterator::nextImpl(
   {
     state->theIterator->open();
   }
-  catch ( std::range_error const& )
+  catch (std::range_error const&)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQD0004_INVALID_PARAMETER,
-      ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE),
-                  lSkip),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZXQD0004_INVALID_PARAMETER, loc,
+    ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), lSkip));
   }
 
   state->theIteratorOpened = true;
@@ -460,6 +356,43 @@ bool ZorbaCollectionIterator::nextImpl(
 
   STACK_END(state);
 }
+
+
+bool ZorbaCollectionIterator::count(store::Item_t& result, PlanState& planState) const
+{
+  if (!isCountOptimizable())
+    return PlanIterator::count(result, planState);
+
+  store::Item_t name;
+  store::Collection_t collection;
+  xs_integer count;
+
+  ZorbaCollectionIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
+
+  consumeNext(name, theChildren[0].getp(), planState);
+
+  (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
+
+  count = collection->size();
+
+  if (theChildren.size() == 2) 
+  {
+    // skip parameter passed
+    store::Item_t skipItem;
+    consumeNext(skipItem, theChildren[1].getp(), planState);
+    xs_integer skip = skipItem->getIntegerValue(); 
+
+    count -= (skip <= xs_integer::zero() ? xs_integer::zero() : skip);
+
+    count = (count < xs_integer::zero() ? xs_integer::zero() : count);
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
+
+  STACK_END(state);
+}
+
 
 /*******************************************************************************
   declare function index-of($name as xs:QName,
@@ -492,7 +425,7 @@ bool ZorbaIndexOfIterator::nextImpl(
     STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, pos+1), state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -516,7 +449,6 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   store::Item_t node;
   store::Item_t copyNode;
   std::auto_ptr<store::PUL> pul;
-  store::Item_t lNodeType;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -545,7 +477,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
     lAnn->theName = AnnotationInternal::lookup(AnnotationInternal::zann_mutable_nodes);
     lAnnotations.push_back(lAnn);
 
-    pul->addCreateCollection(&loc, name, lAnnotations, NULL, true);
+    pul->addCreateCollection(&loc, name, lAnnotations, true);
   }
   else
   {
@@ -566,9 +498,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
       lAnnotations.push_back(lAnn);
     }
 
-    lNodeType = collectionDecl->getNodeType()->get_qname();
-
-    pul->addCreateCollection(&loc, name, lAnnotations, lNodeType, false);
+    pul->addCreateCollection(&loc, name, lAnnotations, false);
   }
 
   // also add some optional nodes to the collection
@@ -792,7 +722,7 @@ ZorbaInsertNodesFirstIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
       ERROR_PARAMS(name->getStringValue(), "insert" ));
@@ -872,7 +802,7 @@ ZorbaInsertNodesLastIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
       ERROR_PARAMS(name->getStringValue(), "insert"));
@@ -960,7 +890,7 @@ ZorbaInsertNodesBeforeIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
       ERROR_PARAMS(name->getStringValue(), "insert" ));
@@ -1051,7 +981,7 @@ ZorbaInsertNodesAfterIterator::getCollection(
         ZORBA_ASSERT(false);
     }
 
-    if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+    if (collectionDecl && !collectionDecl->isOrdered())
     {
       RAISE_ERROR(zerr::ZDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
       ERROR_PARAMS(name->getStringValue()));
@@ -1681,8 +1611,7 @@ ZorbaDeleteNodesFirstIterator::getCollection(
     }
   }
 
-  if (collectionDecl &&
-      collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+  if (collectionDecl && !collectionDecl->isOrdered())
   {
     RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
     ERROR_PARAMS(name->getStringValue(), "delete" ));
@@ -1778,11 +1707,133 @@ ZorbaDeleteNodesLastIterator::getCollection(
     }
   }
 
-  if (collectionDecl &&
-      collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
+  if (collectionDecl && !collectionDecl->isOrdered())
   {
     RAISE_ERROR(zerr::ZDDY0012_COLLECTION_UNORDERED_BAD_OPERATION, loc,
     ERROR_PARAMS(name->getStringValue(), "delete"));
+  }
+
+  return collectionDecl;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool ZorbaEditNodesIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Collection_t              collection;
+  store::Item_t                    collectionName;
+  const StaticallyKnownCollection* collectionDecl;
+
+  store::Item_t                    target;
+
+  store::Item_t                    content;
+  store::CopyMode lCopyMode;
+
+  std::auto_ptr<store::PUL>        pul;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  consumeNext(target, theChildren[0].getp(), planState);
+  consumeNext(content, theChildren[1].getp(), planState);
+
+  // Target check.
+  if (!target->getCollection() || !target->isStructuredItem())
+  {
+    throw XQUERY_EXCEPTION(zerr::ZDDY0017_NODE_IS_ORPHAN, ERROR_LOC(loc));
+  }
+
+  if (!target->isCollectionRoot())
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0039_NON_ROOT_NODE_EDIT,
+      ERROR_PARAMS(target->getCollection()->getName()->getStringValue()),
+      ERROR_LOC( loc )
+    );
+  }
+  if (target->getKind() != content->getKind())
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0040_INCONSISTENT_EDIT,
+      ERROR_LOC( loc )
+    );
+  }
+  if (target->isNode() && (target->getNodeKind() != content->getNodeKind()))
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZDDY0040_INCONSISTENT_EDIT,
+      ERROR_LOC( loc )
+    );
+  }
+  collection = target->getCollection();
+  collectionName = collection->getName();
+  collectionDecl = getCollection(collectionName, collection);
+
+  // Content check & copy.
+  getCopyMode(lCopyMode, this->theSctx);
+  lCopyMode.theDoCopy &= theNeedToCopy;
+  lCopyMode.theDoCopy &= !this->theChildren[1]->isConstructor();
+  checkNodeType(this->theSctx,
+                content,
+                collectionDecl,
+                this->loc,
+                theIsDynamic);
+  content = content->copy(NULL, lCopyMode);
+
+  // create the pul and add the primitive
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+  pul->addEditInCollection(
+      &loc,
+      collectionName,
+      target,
+      content,
+      theIsDynamic);
+
+  result = pul.release();
+  STACK_PUSH( result != NULL, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+const StaticallyKnownCollection*
+ZorbaEditNodesIterator::getCollection(
+    const store::Item_t& name,
+    store::Collection_t& coll) const
+{
+  const StaticallyKnownCollection* collectionDecl = 
+  zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
+
+  if (!theIsDynamic) 
+  {
+    switch(collectionDecl->getUpdateProperty())
+    {
+      case StaticContextConsts::decl_const:
+        RAISE_ERROR(zerr::ZDDY0004_COLLECTION_CONST_UPDATE, loc,
+        ERROR_PARAMS(name->getStringValue()));
+
+      case StaticContextConsts::decl_append_only:
+        RAISE_ERROR(zerr::ZDDY0037_COLLECTION_APPEND_BAD_EDIT, loc,
+        ERROR_PARAMS(name->getStringValue()));
+
+      case StaticContextConsts::decl_queue:
+        RAISE_ERROR(zerr::ZDDY0038_COLLECTION_QUEUE_BAD_EDIT, loc,
+        ERROR_PARAMS(name->getStringValue()));
+
+      case StaticContextConsts::decl_mutable:
+        // good to go
+        break;
+
+      default:
+        ZORBA_ASSERT(false);
+    }
   }
 
   return collectionDecl;

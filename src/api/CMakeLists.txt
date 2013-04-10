@@ -46,7 +46,6 @@ SET(API_SRCS
     invoke_item_sequence.cpp
     item_sequence_chainer.cpp
     empty_sequence.cpp
-    fileimpl.cpp
     serializerimpl.cpp
     base64impl.cpp
     base64_streambuf.cpp
@@ -63,6 +62,11 @@ SET(API_SRCS
     uuid.cpp
     )
 
+IF (ZORBA_WITH_FILE_ACCESS)
+  LIST(APPEND API_SRCS
+    fileimpl.cpp)
+ENDIF (ZORBA_WITH_FILE_ACCESS)  
+
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND API_SRCS
     stemmer.cpp
@@ -77,4 +81,28 @@ SET(API_BUILD_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/api/version.cpp
   )
 
+SET(AUDIT_HEADER_GENERATOR "${CMAKE_SOURCE_DIR}/src/api/auditprops_h.xq")
+SET(AUDIT_CPP_GENERATOR    "${CMAKE_SOURCE_DIR}/src/api/auditprops_cpp.xq")
+SET(AUDIT_HEADER           "${CMAKE_BINARY_DIR}/src/api/auditprops.h")
+SET(AUDIT_CPP              "${CMAKE_BINARY_DIR}/src/api/auditprops.cpp")
+SET(AUDIT_PROPS_SPEC       "${CMAKE_SOURCE_DIR}/src/api/audit.xml")
+
+ZORBA_AUDIT_GENERATOR(
+    ${AUDIT_CPP_GENERATOR}
+    "auditspecfile:=${AUDIT_PROPS_SPEC}"
+    ${AUDIT_PROPS_SPEC}
+    ${AUDIT_CPP})
+
+ZORBA_AUDIT_GENERATOR(
+    ${AUDIT_HEADER_GENERATOR}
+    "auditspecfile:=${AUDIT_PROPS_SPEC}"
+    ${AUDIT_PROPS_SPEC}
+    ${AUDIT_HEADER})
+
+SET_SOURCE_FILES_PROPERTIES("${CMAKE_SOURCE_DIR}/src/api/auditimpl.cpp"
+                              PROPERTIES OBJECT_DEPENDS
+                              "${CMAKE_BINARY_DIR}/src/api/auditprops.cpp;${CMAKE_BINARY_DIR}/src/api/auditprops.h")
+SET_SOURCE_FILES_PROPERTIES("${CMAKE_SOURCE_DIR}/src/api/auditimpl.h"
+                              PROPERTIES OBJECT_DEPENDS
+                              "${CMAKE_BINARY_DIR}/src/api/auditprops.h")
 # vim:set et sw=2 ts=2:
