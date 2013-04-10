@@ -315,7 +315,7 @@ declare %an:sequential function xqxq:bind-cast-variable($query-key as xs:anyURI,
   xs:QName, $value as xs:string*) as empty-sequence()
 {
   variable $type := xqxq:variable-type($query-key, $var-name);
-  variable $unquanttype := fn:replace($type, "[*?+]$", "");
+  variable $unquanttype := fn:replace($type, "[*,?,+]$", "");
   let $casted-value :=
     if (fn:contains($unquanttype, "object")) then
       for $val in $value return jn:parse-json($val)    
