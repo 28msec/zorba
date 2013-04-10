@@ -818,6 +818,7 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
   } else {
 
     zstring format_name( format_name_item->getStringValue() );
+    ascii::trim_whitespace( format_name );
     zstring prefix, local;
     if ( !xml::split_name( format_name, &prefix, &local ) ||
          prefix.empty() ) {
