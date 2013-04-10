@@ -17,7 +17,9 @@ ADD_CUSTOM_TARGET(fots-import
   COMMAND "${CMAKE_COMMAND}" 
   -D "ZORBA=${ZORBA_EXE}"
   -D "BUILDDIR=${PROJECT_BINARY_DIR}"
-  -P "${CMAKE_CURRENT_SOURCE_DIR}/ImportFOTS.cmake")
+  -P "${CMAKE_CURRENT_SOURCE_DIR}/ImportFOTS.cmake"
+  COMMAND "${CMAKE_COMMAND}" "${PROJECT_SOURCE_DIR}"
+  WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
 
 # Create cached version of activate setting
 SET (ZORBA_FOTS_ACTIVATE inactive CACHE STRING "Which FOTS tests to activate")
@@ -259,8 +261,6 @@ EXPECTED_FOTS_FAILURE (fn-unparsed-text-lines fn-unparsed-text-lines-053 0)
 EXPECTED_FOTS_FAILURE (fn-unparsed-text-lines fn-unparsed-text-lines-054 0)
 EXPECTED_FOTS_FAILURE (math-acos math-acos-003 0)
 EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes FOAR0001_9 0)
-EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes XQST0046_13 0)
-EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes XQST0046_14 0)
 EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes XQST0085 0)
 EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes XQST0093a 0)
 EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes XQTY0086_3 0)

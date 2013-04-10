@@ -1160,6 +1160,7 @@ extern entry const dict_en[] = {
   { "~libxml_ERR_94", "validation failed: no DTD found" },
   { "~libxml_ERR_95", "\"IGNORE\" or \"INCLUDE\" expected" },
   { "~libxml_ERR_96", "XML version expected" },
+  { "~libxml_ERR_99", "xmlns$6?{:5}\\: URI \"$6?6:5\": invalid URI" },
   { "~libxml_WAR_100", "xmlns$6?{:5}\\: URI \"$6?6:5\": invalid URI" },
   { "~libxml_WAR_102", "\"$5\": invalid value for \"xml:space\"; either \"default\" or \"preserve\" expected" },
   { "~libxml_WAR_106", "\"$5\": avoid attribute ending with ':'" },

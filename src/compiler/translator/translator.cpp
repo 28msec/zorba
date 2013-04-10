@@ -12697,6 +12697,8 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
         RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(uri, ZED(NoBindURI)));
       }
 
+      URI parsedUri(uri);
+
       theSctx->bind_ns(prefix, uri, loc);
       theNSCtx->bind_ns(prefix, uri);
 
