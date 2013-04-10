@@ -17,7 +17,9 @@ ADD_CUSTOM_TARGET(fots-import
   COMMAND "${CMAKE_COMMAND}" 
   -D "ZORBA=${ZORBA_EXE}"
   -D "BUILDDIR=${PROJECT_BINARY_DIR}"
-  -P "${CMAKE_CURRENT_SOURCE_DIR}/ImportFOTS.cmake")
+  -P "${CMAKE_CURRENT_SOURCE_DIR}/ImportFOTS.cmake"
+  COMMAND "${CMAKE_COMMAND}" "${PROJECT_SOURCE_DIR}"
+  WORKING_DIRECTORY "${PROJECT_BINARY_DIR}")
 
 # Create cached version of activate setting
 SET (ZORBA_FOTS_ACTIVATE inactive CACHE STRING "Which FOTS tests to activate")
