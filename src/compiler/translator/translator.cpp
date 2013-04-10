@@ -12697,6 +12697,8 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
         RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(uri, ZED(NoBindURI)));
       }
 
+      URI parsedUri(uri);
+
       theSctx->bind_ns(prefix, uri, loc);
       theNSCtx->bind_ns(prefix, uri);
 
@@ -14015,7 +14017,9 @@ void end_visit(const NamespaceTest& v, void* /*visit_state*/)
 
   if (axisExpr != NULL)
   {
-    RAISE_ERROR(zerr::ZXQP0004_NOT_IMPLEMENTED, loc, ERROR_PARAMS("namespace axis"));
+    match_expr* match = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
+    match->setTestKind(match_namespace_test);
+    axisExpr->setTest(match);
   }
   else
   {
