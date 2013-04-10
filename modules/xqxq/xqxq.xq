@@ -30,7 +30,7 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
 
-declare option ver:module-version "1.0";
+declare option ver:module-version "2.0";
 
 (:~
  : The function prepares a given XQuery program for execution.
@@ -386,6 +386,80 @@ declare %an:sequential function xqxq:delete-query($query-key as xs:anyURI) as
 declare function xqxq:variable-value($query-key as xs:anyURI, $var-name as 
   xs:QName) as item()* external;
 
+(:~
+ : Returns the compiled query identified by the given query-key 
+ : as binary data.
+ :
+ : @param $query-key the identifier of a compiled query.
+ :
+ : @return the query as xs:base64Binary.
+ :
+ : @error xqxq:NoQueryMatch if no query with the given identifier
+ :   was prepared.
+ : @error xqxq:QueryPlanError if there is an error serializing the query.
+ :)
+declare function xqxq:query-plan($query-key as xs:anyURI) 
+  as xs:base64Binary external;
+  
+  
+(:~
+ : The function loads a given XQuery program for execution from a 
+ : xs:base64Binary query plan, obtained through the xqxq:query-plan function.
+ : If the program was successfully loaded, the function returns an
+ : identifier as xs:anyURI. This URI can be passed to other functions
+ : of this module (e.g. to actually evaluate the program). The URI
+ : is opaque and its lifetime is bound by the lifetime of the XQuery
+ : program that invoked this function. Further reference or uses
+ : of the identifier lead to unexpected results.
+ :
+ : Successfully prepared queries need to be deleted by passing the resulting
+ : identifier to the xqxq:delete-query function of this module.
+ :
+ : @param $main-module-text the XQuery program that should be prepared.
+ :   The program needs to be a XQuery main module.
+ :
+ : @return an identifier for the compiled program that can be passed
+ :   as arguments to other functions of this module.
+ :
+ : @error any (static or type) error that may be raised during the compilation
+ : of the query. For example, err:XPST0003 if the given XQuery program could
+ : not be parsed.
+ :)    
+declare function xqxq:load-from-query-plan($plan as xs:base64Binary)
+  as xs:anyURI external;
+
+(:~
+ : The function loads a given XQuery program for execution from a 
+ : xs:base64Binary query plan, obtained through the xqxq:query-plan function.
+ : If the program was successfully loaded, the function returns an
+ : identifier as xs:anyURI. This URI can be passed to other functions
+ : of this module (e.g. to actually evaluate the program). The URI
+ : is opaque and its lilfetime is bound by the lifetime of the XQuery
+ : program that invoked this function. Further reference or uses
+ : of the identifier lead to unexpected results.
+ : 
+ : For important notes regarding the second and third parameters of the 
+ : function, review the comments in xqxq:prepare-main-module#3.
+ :
+ : Successfully prepared queries need to be deleted by passing the resulting
+ : identifier to the xqxq:delete-query function of this module.
+ :
+ : @param $main-module-text the XQuery program that should be prepared.
+ :   The program needs to be a XQuery main module.
+ :
+ : @param $resolver the URL resolver function.
+ : 
+ : @param $mapper the URI mapper function.
+ :
+ : @return an identifier for the compiled program that can be passed
+ :   as arguments to other functions of this module.
+ :
+ : @error any (static or type) error that may be raised during the compilation
+ : of the query. For example, err:XPST0003 if the given XQuery program could
+ : not be parsed.
+ :)  
+declare function xqxq:load-from-query-plan($plan as xs:base64Binary,
+  $resolver as item()?, $mapper as item()?) as xs:anyURI external;
 
 (:~
  : Internal helper function. Only necessary because of incomplete HOF

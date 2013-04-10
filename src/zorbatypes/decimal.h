@@ -256,6 +256,9 @@ private:
   static zstring toString( value_type const&,
                            int precision = ZORBA_FLOAT_POINT_PRECISION );
 
+  static zstring toString( value_type const&, bool,
+                           int precision = ZORBA_FLOAT_POINT_PRECISION );
+
   TEMPLATE_DECL(I) friend class IntegerImpl;
   template<typename F> friend class FloatImpl;
 

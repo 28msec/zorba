@@ -4748,6 +4748,10 @@
       <value>XML version expected</value>
     </entry>
 
+    <entry key="libxml_ERR_99"> <!-- XML_ERR_NS_URI -->
+      <value>xmlns$6?{:5}\: URI "$6?6:5": invalid URI</value>
+    </entry>
+
     <entry key="libxml_WAR_97"> <!-- XML_WAR_UNKNOWN_VERSION -->
       <value>"$5": unsupported XML version</value>
     </entry>
