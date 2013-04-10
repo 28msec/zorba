@@ -56,7 +56,7 @@ public:
     let_clause,
     window_clause,
     groupby_clause,
-    order_clause,
+    orderby_clause,
     count_clause,
     where_clause,
     materialize_clause
@@ -442,7 +442,10 @@ public:
 
   void set_nongrouping_ars(rebind_list_t& v) { theNonGroupVars = v; }
 
-  void removeNonGroupingVar(rebind_list_t::iterator ite) { theNonGroupVars.erase(ite); }
+  rebind_list_t::iterator removeNonGroupingVar(rebind_list_t::iterator& ite)
+  {
+    return theNonGroupVars.erase(ite);
+  }
 
   rebind_list_t::iterator beginGroupVars() { return theGroupVars.begin(); }
 
@@ -669,6 +672,8 @@ public:
 
   void set_general(bool v) { theKind = (v ? gflwor_expr_kind : flwor_expr_kind); }
 
+  bool compute_is_general();
+
   expr* get_return_expr() const { return theReturnExpr; }
 
   expr** get_return_expr_ref() { return &theReturnExpr; }
@@ -693,13 +698,17 @@ public:
 
   void remove_clause(csize pos);
 
+  void remove_clause(flwor_clause* c, csize posHint);
+
   flwor_clause* get_clause(csize i) const;
 
   clause_list_t::const_iterator clause_begin() const { return theClauses.begin(); }
 
   clause_list_t::const_iterator clause_end() const { return theClauses.end(); }
 
-  long defines_variable(const var_expr* v) const;
+  bool defines_var(const var_expr* v) const;
+
+  bool get_var_pos(const var_expr* v, csize& pos) const;
 
   void get_vars(std::vector<var_expr*>& vars) const;
 
@@ -707,7 +716,6 @@ public:
   // removed eventually.
   expr* get_where() const;
   void set_where(expr* e);
-  void remove_where_clause();
   groupby_clause* get_group_clause() const;
   orderby_clause* get_order_clause() const;
   csize num_forlet_clauses();

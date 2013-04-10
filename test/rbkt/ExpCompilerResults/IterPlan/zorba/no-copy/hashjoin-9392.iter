@@ -19,45 +19,41 @@ Iterator tree for main query:
                     </DescendantAxisIterator>
                   </HoistIterator>
                 </LetVariable>
-                <ReturnClause>
-                  <SequentialIterator>
-                    <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-                      <flwor::FLWORIterator>
-                        <ForVariable name="$$opt_temp_1">
-                          <UnhoistIterator>
-                            <LetVarIterator varname="$$opt_temp_0"/>
-                          </UnhoistIterator>
-                        </ForVariable>
-                        <ReturnClause>
-                          <ValueIndexEntryBuilderIterator>
-                            <ForVarIterator varname="$$opt_temp_1"/>
-                            <FnCountIterator>
-                              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
-                                <ForVarIterator varname="$$opt_temp_1"/>
-                              </ChildAxisIterator>
-                            </FnCountIterator>
-                          </ValueIndexEntryBuilderIterator>
-                        </ReturnClause>
-                      </flwor::FLWORIterator>
-                    </CreateInternalIndexIterator>
+                <LetVariable name="$$opt_temp_3" materialize="true">
+                  <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
                     <flwor::FLWORIterator>
-                      <ForVariable name="anzahl">
-                        <OpToIterator>
-                          <SingletonIterator value="xs:integer(1)"/>
-                          <SingletonIterator value="xs:integer(2)"/>
-                        </OpToIterator>
-                      </ForVariable>
-                      <ForVariable name="karte">
-                        <ProbeIndexPointValueIterator>
-                          <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-                          <ForVarIterator varname="anzahl"/>
-                        </ProbeIndexPointValueIterator>
+                      <ForVariable name="$$opt_temp_1">
+                        <UnhoistIterator>
+                          <LetVarIterator varname="$$opt_temp_0"/>
+                        </UnhoistIterator>
                       </ForVariable>
                       <ReturnClause>
-                        <ForVarIterator varname="anzahl"/>
+                        <ValueIndexEntryBuilderIterator>
+                          <ForVarIterator varname="$$opt_temp_1"/>
+                          <FnCountIterator>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
+                              <ForVarIterator varname="$$opt_temp_1"/>
+                            </ChildAxisIterator>
+                          </FnCountIterator>
+                        </ValueIndexEntryBuilderIterator>
                       </ReturnClause>
                     </flwor::FLWORIterator>
-                  </SequentialIterator>
+                  </CreateInternalIndexIterator>
+                </LetVariable>
+                <ForVariable name="anzahl">
+                  <OpToIterator>
+                    <SingletonIterator value="xs:integer(1)"/>
+                    <SingletonIterator value="xs:integer(2)"/>
+                  </OpToIterator>
+                </ForVariable>
+                <ForVariable name="karte">
+                  <ProbeIndexPointValueIterator>
+                    <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+                    <ForVarIterator varname="anzahl"/>
+                  </ProbeIndexPointValueIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ForVarIterator varname="anzahl"/>
                 </ReturnClause>
               </flwor::FLWORIterator>
             </EnclosedIterator>

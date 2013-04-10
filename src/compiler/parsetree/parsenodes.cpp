@@ -96,7 +96,21 @@ VersionDecl::VersionDecl(
   :
   parsenode(loc_),
   version(_version),
-  encoding(_encoding)
+  encoding(_encoding),
+  lang_kind(VersionDecl::xquery)
+{
+}
+
+VersionDecl::VersionDecl(
+    const QueryLoc& loc_,
+    zstring const& _version,
+    zstring const& _encoding,
+    VersionDecl::LanguageKind const& _lang_kind)
+  :
+  parsenode(loc_),
+  version(_version),
+  encoding(_encoding),
+  lang_kind(_lang_kind)
 {
 }
 
@@ -1167,6 +1181,18 @@ void BlockBody::add(parsenode* statement)
   }
 }
 
+bool BlockBody::isEmpty() const
+{
+  for (csize i=0; i<theStatements.size(); i++)
+  {
+    BlockBody* body = dynamic_cast<BlockBody*>(theStatements[i].getp());
+
+    if (body == NULL || !body->isEmpty())
+      return false;
+  }
+
+  return true;
+}
 
 /*******************************************************************************
 
@@ -1317,15 +1343,15 @@ int Expr::numberOfChildren() const
 
 
 FLWORExpr::FLWORExpr(
-    const QueryLoc& loc_,
+    const QueryLoc& loc,
     rchandle<FLWORClauseList> clauses_,
     rchandle<exprnode> ret_,
     const QueryLoc& return_loc_,
     bool force_general)
   :
-  exprnode (loc_),
-  clauses (clauses_),
-  return_val_h (ret_),
+  exprnode(loc),
+  clauses(clauses_),
+  return_val_h(ret_),
   return_location(return_loc_)
 {
   for (unsigned i = 0; i < clauses->size (); i++)
@@ -1342,7 +1368,7 @@ FLWORExpr::FLWORExpr(
     }
   }
 
-  compute_general ();
+  compute_general();
 
   if (force_general)
     general = true;
@@ -1435,7 +1461,8 @@ void FLWORExpr::compute_general ()
     }
     else if (typeid (*cp) == typeid (GroupByClause))
     {
-      if (has_group || has_order) non_10 = general = true;
+      non_10 = true;
+      if (has_group || has_order) general = true;
       has_group = true;
     }
     else if (typeid (*cp) == typeid (CountClause))
@@ -3531,6 +3558,22 @@ void ArgList::accept( parsenode_visitor &v ) const
 }
 
 
+bool ArgList::has_placeholder() const
+{
+  for (unsigned int i=0; i<arg_hv.size(); i++)
+    if (dynamic_cast<ArgumentPlaceholder*>(arg_hv[i].getp()) != NULL)
+      return true;
+
+  return false;
+}
+
+void ArgumentPlaceholder::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
 // [94] Constructor
 // ----------------
 
@@ -4140,35 +4183,69 @@ void CompCommentConstructor::accept( parsenode_visitor &v ) const
 // [116] CompPIConstructor
 // -----------------------
 CompPIConstructor::CompPIConstructor(
-  const QueryLoc& loc_,
-  zstring const& _target,
-  rchandle<exprnode> _content_expr_h)
-:
+    const QueryLoc& loc_,
+    zstring const& _target,
+    rchandle<exprnode> _content_expr_h)
+  :
   exprnode(loc_),
   target(_target),
   target_expr_h(NULL),
   content_expr_h(_content_expr_h)
-{}
+{
+}
+
 
 CompPIConstructor::CompPIConstructor(
-  const QueryLoc& loc_,
-  rchandle<exprnode> _target_expr_h,
-  rchandle<exprnode> _content_expr_h)
-:
+    const QueryLoc& loc_,
+    rchandle<exprnode> _target_expr_h,
+    rchandle<exprnode> _content_expr_h)
+  :
   exprnode(loc_),
   target(""),
   target_expr_h(_target_expr_h),
   content_expr_h(_content_expr_h)
-{}
+{
+}
 
-
-//-CompPIConstructor::
 
 void CompPIConstructor::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT (target_expr_h);
   ACCEPT (content_expr_h);
+  END_VISITOR();
+}
+
+
+CompNamespaceConstructor::CompNamespaceConstructor(
+    const QueryLoc& loc,
+    const zstring& pre,
+    const rchandle<exprnode>& uri)
+  :
+  exprnode(loc),
+  thePrefix(pre),
+  theUriExpr(uri)
+{
+}
+
+
+CompNamespaceConstructor::CompNamespaceConstructor(
+    const QueryLoc& loc,
+    const rchandle<exprnode>& pre,
+    const rchandle<exprnode>& uri)
+  :
+  exprnode(loc),
+  thePrefixExpr(pre),
+  theUriExpr(uri)
+{
+}
+
+
+void CompNamespaceConstructor::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(thePrefixExpr);
+  ACCEPT(theUriExpr);
   END_VISITOR();
 }
 
@@ -4367,16 +4444,30 @@ void DocumentTest::accept( parsenode_visitor &v ) const
 }
 
 
+NamespaceTest::NamespaceTest(const QueryLoc& loc)
+  :
+  parsenode(loc)
+{
+}
+
+
+void NamespaceTest::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
 // [126] TextTest
 // --------------
-TextTest::TextTest(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
+TextTest::TextTest(const QueryLoc& loc)
+  :
+  parsenode(loc)
+{
+}
 
 
-void TextTest::accept( parsenode_visitor &v ) const
+void TextTest::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -4578,6 +4669,43 @@ StringLiteral::StringLiteral(
 //-StringLiteral::
 
 void StringLiteral::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
+// BooleanLiteral
+// -------------------
+BooleanLiteral::BooleanLiteral(
+  const QueryLoc& loc_,
+  bool val)
+:
+  exprnode(loc_),
+  boolval(val)
+{}
+
+
+//-BooleanLiteral::
+
+void BooleanLiteral::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
+// NullLiteral
+// -------------------
+NullLiteral::NullLiteral(const QueryLoc& loc_)
+:
+  exprnode(loc_)
+{}
+
+
+//-NullLiteral::
+
+void NullLiteral::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -5699,8 +5827,8 @@ void LiteralFunctionItem::accept(parsenode_visitor& v) const
 void InlineFunction::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  //ACCEPT (theReturnType);
-  //ACCEPT (theParamList);
+  ACCEPT (theReturnType);
+  // ACCEPT (theParamList);
   ACCEPT (theEnclosedExpr);
   END_VISITOR ();
 }
@@ -5738,6 +5866,30 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 }
 
 ////////// JSON ///////////////////////////////////////////////////////////////
+JSONObjectLookup::JSONObjectLookup(
+    const QueryLoc& loc,
+    const exprnode* aObjectExpr,
+    const exprnode* aSelectorExpr)
+  : exprnode(loc),
+    theObjectExpr(aObjectExpr),
+    theSelectorExpr(aSelectorExpr)
+{
+}
+
+
+JSONObjectLookup::~JSONObjectLookup()
+{
+}
+
+
+void JSONObjectLookup::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theObjectExpr);
+  if (theSelectorExpr != 0) ACCEPT(theSelectorExpr);
+  END_VISITOR();
+}
+
 
 JSONArrayConstructor::JSONArrayConstructor(
     const QueryLoc& loc,
@@ -5789,6 +5941,13 @@ void JSONObjectConstructor::accept(parsenode_visitor& v) const
 }
 
 
+JSONDirectObjectConstructor::JSONDirectObjectConstructor(const QueryLoc& loc)
+  : exprnode(loc),
+    thePairs(0)
+{
+}
+
+
 JSONDirectObjectConstructor::JSONDirectObjectConstructor(
     const QueryLoc& loc,
     const JSONPairList* pairs)
@@ -5807,14 +5966,14 @@ JSONDirectObjectConstructor::~JSONDirectObjectConstructor()
 
 csize JSONDirectObjectConstructor::numPairs() const
 {
-  return thePairs->size();
+  return thePairs ? thePairs->size() : 0;
 }
 
 
 void JSONDirectObjectConstructor::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(thePairs);
+  if (thePairs) ACCEPT(thePairs);
   END_VISITOR();
 }
 

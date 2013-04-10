@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2012 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -84,7 +84,7 @@ bool
 XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lCodeItem, lFileNameItem, lOptionsItem;
-  bool lIgnoreComments = true;
+  //bool lIgnoreComments = true;
   uint32_t lXQDocOptions;
 
   PlanIteratorState* state;
@@ -107,14 +107,14 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     lXQDocOptions = 0xFFFFFFFF;
   }
 
-  try 
+  try
   {
     std::istringstream is(lCodeItem->getStringValue().c_str());
 
-    // setup a new CompilerCB and a new XQueryCompiler 
+    // setup a new CompilerCB and a new XQueryCompiler
     CompilerCB lCompilerCB(*planState.theCompilerCB);
 
-    // the XQueryCompiler's constructor destroys the existing type manager 
+    // the XQueryCompiler's constructor destroys the existing type manager
     // in the static context. Hence, we create a new one
     XQueryCompiler lCompiler(&lCompilerCB);
 
@@ -125,7 +125,7 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                     planState.theLocalDynCtx->get_current_date_time(),
                     lXQDocOptions);
   }
-  catch (XQueryException& e) 
+  catch (XQueryException& e)
   {
     set_source( e, loc );
     throw;

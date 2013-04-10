@@ -24,13 +24,14 @@ class ValidateIterator;
 #endif
 class OrIterator;
 class AndIterator;
-  class CompareIterator;
-  class AtomicValuesEquivalenceIterator;
-  class UDFunctionCallIterator;
-  class ExtFunctionCallIterator;
-  class ElementIterator;
-  class AttributeIterator;
-  class CommentIterator;
+class CompareIterator;
+class AtomicValuesEquivalenceIterator;
+class UDFunctionCallIterator;
+class ExtFunctionCallIterator;
+class ElementIterator;
+class AttributeIterator;
+class NamespaceIterator;
+class CommentIterator;
 
 #ifdef ZORBA_WITH_JSON
 class JSONObjectIterator;
@@ -42,6 +43,7 @@ class JSONObjectInsertIterator;
   class PiIterator;
   class RefIterator;
   class SingletonIterator;
+  class FunctionItemIterator;
   class EmptyIterator;
   class ForVarIterator;
   typedef rchandle<ForVarIterator> ForVarIter_t;
@@ -173,6 +175,7 @@ class CreateInternalIndexIterator;
 class DeleteIndexIterator;
 
 class DynamicFnCallIterator;
+class ArgumentPlaceholderIterator;
 
 class EvalIterator;
 
@@ -183,8 +186,6 @@ class ExitIterator;
 class ExitCatcherIterator;
 class LoopIterator;
 class FlowCtlIterator;
-
-class CountCollectionIterator;
 
 #define PLAN_ITER_VISITOR(class)                \
 virtual void beginVisit ( const class& ) = 0;  \

@@ -21,7 +21,6 @@
 
 #include "common/common.h"
 #include "util/ascii_util.h"
-#include "util/string_util.h"
 
 #include "decimal.h"
 #include "integer.h"
@@ -48,6 +47,7 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
 
   s = ascii::trim_start_whitespace( s );
   char const *const first_non_ws = s;
+
   if ( *s == '+' || *s == '-' )
     ++s;
   while ( ascii::is_digit( *s ) )
@@ -78,6 +78,7 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
     delete[] copy;
   } else
     *result = first_non_ws;
+
 }
 
 /**
@@ -180,18 +181,18 @@ void Decimal::reduce( char *s ) {
 ////////// constructors ///////////////////////////////////////////////////////
 
 Decimal::Decimal( long long n ) {
-  ztd::itoa_buf_type buf;
-  value_ = ztd::itoa( n, buf );
+  ascii::itoa_buf_type buf;
+  value_ = ascii::itoa( n, buf );
 }
 
 Decimal::Decimal( unsigned long n ) {
-  ztd::itoa_buf_type buf;
-  value_ = ztd::itoa( n, buf );
+  ascii::itoa_buf_type buf;
+  value_ = ascii::itoa( n, buf );
 }
 
 Decimal::Decimal( unsigned long long n ) {
-  ztd::itoa_buf_type buf;
-  value_ = ztd::itoa( n, buf );
+  ascii::itoa_buf_type buf;
+  value_ = ascii::itoa( n, buf );
 }
 
 Decimal::Decimal( float f ) {
@@ -223,7 +224,8 @@ Decimal::Decimal( Float const &f ) {
 }
 
 TEMPLATE_DECL(I)
-Decimal::Decimal( INTEGER_IMPL(I) const &i ) : value_( i.itod() ) {
+Decimal::Decimal( INTEGER_IMPL(I) const &i ) :
+    value_( i.itod() ) {
 }
 #ifndef ZORBA_WITH_BIG_INTEGER
 template Decimal::Decimal( INTEGER_IMPL_LL const& );
@@ -233,14 +235,14 @@ template Decimal::Decimal( INTEGER_IMPL_ULL const& );
 ////////// assignment operators ///////////////////////////////////////////////
 
 Decimal& Decimal::operator=( long long n ) {
-  ztd::itoa_buf_type buf;
-  value_ = ztd::itoa( n, buf );
+  ascii::itoa_buf_type buf;
+  value_ = ascii::itoa( n, buf );
   return *this;
 }
 
 Decimal& Decimal::operator=( unsigned long long n ) {
-  ztd::itoa_buf_type buf;
-  value_ = ztd::itoa( n, buf );
+  ascii::itoa_buf_type buf;
+  value_ = ascii::itoa( n, buf );
   return *this;
 }
 
@@ -418,8 +420,18 @@ Decimal const& Decimal::one() {
 }
 
 zstring Decimal::toString( value_type const &value, int precision ) {
+  return toString(value, false, precision);
+}
+
+zstring Decimal::toString( value_type const &value, bool minusZero, int precision ) {
   char buf[ 1024 ];
-  value.toFixPtString( buf, precision );
+
+  if ( minusZero )
+  {
+    buf[0] = '-';
+  }
+
+  value.toFixPtString( buf + minusZero, precision );
 
   //
   // Note that in the canonical representation, the decimal point is required

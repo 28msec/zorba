@@ -19,6 +19,7 @@
 #include "functions/function_impl.h"
 
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
+#include "runtime/durations_dates_times/format_dateTime.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "zorbamisc/ns_consts.h"

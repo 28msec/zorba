@@ -203,6 +203,14 @@ declare variable $err:XQTY0086 as xs:QName := fn:QName($err:NS, "err:XQTY0086");
 
 (:~
  :
+ : It is a type error if the content sequence in an element constructor contains a function item.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQTY0105 as xs:QName := fn:QName($err:NS, "err:XQTY0105");
+
+(:~
+ :
  : An implementation that does not support the Schema Import Feature must
  : raise a static error if a Prolog contains a schema import.
  : 
@@ -666,6 +674,14 @@ declare variable $err:XQST0111 as xs:QName := fn:QName($err:NS, "err:XQST0111");
 
 (:~
  :
+ : It is a static error if the name of a feature in require-feature is not recognized by the implementation.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0123 as xs:QName := fn:QName($err:NS, "err:XQST0123");
+
+(:~
+ :
  : It is a dynamic error if evaluation of an expression relies on some part
  : of the dynamic context that has not been assigned a value.
  : 
@@ -831,6 +847,22 @@ declare variable $err:XQDY0096 as xs:QName := fn:QName($err:NS, "err:XQDY0096");
 
 (:~
  :
+ : Invalid prefix and/or uri in computed namespace constructor
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0101 as xs:QName := fn:QName($err:NS, "err:XQDY0101");
+
+(:~
+ :
+ : In an element constructor, if two or more namespace bindings in the in-scope bindings would have the same prefix, then an error is raised if they have different URIs; if they would have the same prefix and URI, duplicate bindings are ignored.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0102 as xs:QName := fn:QName($err:NS, "err:XQDY0102");
+
+(:~
+ :
  : It is a non-recoverable dynamic error if the picture string does not
  : satisfy the format-number function rules.
  : 
@@ -845,17 +877,17 @@ declare variable $err:XTDE1310 as xs:QName := fn:QName($err:NS, "err:XTDE1310");
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
-declare variable $err:XTDE1340 as xs:QName := fn:QName($err:NS, "err:XTDE1340");
+declare variable $err:FOFD1340 as xs:QName := fn:QName($err:NS, "err:FOFD1340");
 
 (:~
  :
- : It is a non-recoverable dynamic error if a component specifier within the
- : picture refers to components that are not available in the given type of
- : \c $value.
+ : It is a non-recoverable dynamic error if a component specifier within
+ : the picture refers to components that are not available in the given
+ : type of $value.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
-declare variable $err:XTDE1350 as xs:QName := fn:QName($err:NS, "err:XTDE1350");
+declare variable $err:FOFD1350 as xs:QName := fn:QName($err:NS, "err:FOFD1350");
 
 (:~
  :
@@ -1089,7 +1121,7 @@ declare variable $err:FODF1280 as xs:QName := fn:QName($err:NS, "err:FODF1280");
 
 (:~
  :
- : Invalid \c fn:format-number() picture string.
+ : Invalid decimal/integer format picture string.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -1118,22 +1150,6 @@ declare variable $err:FODT0002 as xs:QName := fn:QName($err:NS, "err:FODT0002");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:FODT0003 as xs:QName := fn:QName($err:NS, "err:FODT0003");
-
-(:~
- :
- : format-integer: Cannot cast $language to \c xs:language.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:FOFI0001 as xs:QName := fn:QName($err:NS, "err:FOFI0001");
-
-(:~
- :
- : format-integer: invalid parameter.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:FOFI0002 as xs:QName := fn:QName($err:NS, "err:FOFI0002");
 
 (:~
  :
@@ -1300,6 +1316,22 @@ declare variable $err:FOUT1170 as xs:QName := fn:QName($err:NS, "err:FOUT1170");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:FOUT1190 as xs:QName := fn:QName($err:NS, "err:FOUT1190");
+
+(:~
+ :
+ : This error is raised if the fn:function-lookup returns a context-dependent function and the context-dependent function is then called.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOFL0001 as xs:QName := fn:QName($err:NS, "err:FOFL0001");
+
+(:~
+ :
+ : Invalid content passed to \c x:canonicalize().
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:FOCZ0001 as xs:QName := fn:QName($err:NS, "err:FOCZ0001");
 
 (:~
  :

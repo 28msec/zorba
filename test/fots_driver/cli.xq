@@ -92,15 +92,27 @@ declare variable $testCasePrefixes as xs:string external := "";
  : (because they segfault, or hang, or take too long, etc).
  :
  : Used by the run-test-sets, run-and-report, and report commands.
+ :
+ : Please remember to add an equivalent for each test case in test/fots/CMakeLists.txt
+ :
+ : EXPECTED_FOTS_FAILURE (SLOW  TEST_SET_NAME TEST_CASE_NAME BUG_NO) or
+ : EXPECTED_FOTS_FAILURE (CRASH TEST_SET_NAME TEST_CASE_NAME BUG_NO)
  :)
 declare variable $exceptedTestCases as xs:string* := (
-  "cbcl-subsequence-011",
+(:  ("instanceof139",
+  "CastAs-UnionType-26",
+  "CastAs-UnionType-30")  , :)      (:see bug lp:1160559 :)
+  "fn-unparsed-text-lines-052", (:see bug lp:1123835 :)
+  ("cbcl-subsequence-011",
   "cbcl-subsequence-012",
   "cbcl-subsequence-013",
-  "cbcl-subsequence-014"        (:see bug lp:1069794 :)
-, "re00975",
+  "cbcl-subsequence-014"),      (:see bug lp:1069794. Actually passing but too slow :)
+  ("re00975",
   "re00976",
-  "re00976a"                    (:see bug lp:1070533 :)
+  "re00976a"),                  (:see bug lp:1070533 :)
+  "re00987",                    (:see bug lp:1131313 :)
+  ("raytracer",
+  "itunes")                     (: Actually passing but too slow :)
 );
 
 
@@ -172,12 +184,23 @@ declare variable $flags as xs:string external := "";
 declare variable $verbose as xs:string external := "false";
 
 
+(:~
+ : Enable or disable plan serializer usage. When this is set to true the query
+ : plan is saved then loaded and executed by XQXQ.
+ :)
+declare variable $usePlanSerializer as xs:string external := "false";
+
+
 declare function local:usage() as xs:string
 {
   string-join((
     "Zorba FOTS driver usage examples:",
     "If you run Zorba from a checkout of the trunk and the build/bin folder,",
     "- /path/to/cli.xq can be set to ../../test/fots_driver/cli.xq",
+    "",
+  	"'fotsPath' is set by default to the location where 'make fots-import' added the FOTS snapshot.",
+  	"Currently this location is ZORBA_BUILD_FOLDER/test/fots/2011/QT3-test-suite/catalog.xml.",
+  	"If you want to use other location please set 'fotsPath'.",
     "",
     "Always try to output the result back to an XML file with nice indentation:",
     "./zorba -f -q ../../test/fots_driver/cli.xq -e SET_CLI_OPTIONS_HERE -o output.xml --indent",
@@ -189,22 +212,23 @@ declare function local:usage() as xs:string
   	" is written down into a query_TESTCASENAME.xq file, where TESTCASENAME is",
   	" the test case name.",
   	"",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e fotsZorbaManifestPath:=/path/to/Zorba_manifest.xml -e mode:=list-test-sets",
+    "zorba -f -q /path/to/cli.xq -e fotsZorbaManifestPath:=/path/to/Zorba_manifest.xml -e mode:=list-test-sets",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-sets",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-sets -e testSetPrefixes:=prod,app",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-cases -e testSetPrefixes:=prod-Literal",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-cases -e dependency:=higherOrderFunctions",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-cases -e dependency:=higherOrderFunctions -e assertions:=assert-count",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-matching-test-cases -e pattern:=catch",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e expectedFailuresPath:=ExpectedFailures.xml -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e dependency:=higherOrderFunctions_false -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e assertions:=assert-count -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -e verbose:=true -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-set  -e testSetName:=fn-matches -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-and-report -o results_Zorba_XQ30.xml --indent --disable-http-resolution",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=report -e resultsFilePath:=results.xml -o results_Zorba_XQ30.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=list-test-sets -e testSetPrefixes:=prod,app",
+    "zorba -f -q /path/to/cli.xq -e mode:=list-test-cases -e testSetPrefixes:=prod-Literal",
+    "zorba -f -q /path/to/cli.xq -e mode:=list-test-cases -e dependency:=higherOrderFunctions",
+    "zorba -f -q /path/to/cli.xq -e mode:=list-test-cases -e dependency:=higherOrderFunctions -e assertions:=assert-count",
+    "zorba -f -q /path/to/cli.xq -e mode:=list-matching-test-cases -e pattern:=catch",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-sets -e testSetPrefixes:=prod -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-sets -e testSetPrefixes:=prod -e expectedFailuresPath:=ExpectedFailures.xml -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-sets -e testSetPrefixes:=prod -e dependency:=higherOrderFunctions_false -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-sets -e testSetPrefixes:=prod -e assertions:=assert-count -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -e verbose:=true -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-set  -e testSetName:=fn-matches -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-set  -e testSetName:=fn-matches -e usePlanSerializer:=true -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-and-report -o results_Zorba_XQ30.xml --indent --disable-http-resolution",
+    "zorba -f -q /path/to/cli.xq -e mode:=report -e resultsFilePath:=results.xml -o results_Zorba_XQ30.xml --indent",
     "zorba -f -q /path/to/cli.xq -e mode:=generate-expected-failures -e resultsFilePath:=failures.xml -o ExpectedFailures.xml --indent",
     ""
     ), "&#xA;")
@@ -295,7 +319,7 @@ return
   trace($dependency, "'dependency' set to:");
   trace($assertions, "'assertions' set to: ");
   trace($verbose, "'verbose' set to:");
-  trace($mode, "Cli command was set to:");
+  trace($mode, "Cli command set to:");
 
   d:run-fots($fotsPath,
              $fotsZorbaManifestPath,
@@ -307,7 +331,8 @@ return
              $assertions,
              xs:boolean($verbose),
              $expectedFailuresPath,
-             $mode)
+             $mode,
+             xs:boolean($usePlanSerializer))
 }
 
 case "run-test-set"
@@ -317,7 +342,7 @@ return
   trace($dependency, "'dependency' set to:");
   trace($assertions, "'assertions' set to: ");
   trace($verbose, "'verbose' set to:");
-  trace($mode, "Cli command was set to:");
+  trace($mode, "Cli command set to:");
 
   d:run-test-set($fotsPath,
                  $fotsZorbaManifestPath,
@@ -329,7 +354,8 @@ return
                  $assertions,
                  xs:boolean($verbose),
                  $expectedFailuresPath,
-                 $mode)
+                 $mode,
+                 xs:boolean($usePlanSerializer))
 }
 
 case "run-test-case"
@@ -338,7 +364,7 @@ return
   trace($testSetName, $testSetNameMsg);
   trace($testCaseName, $testCaseNameMsg);
   trace($verbose, "'verbose' set to:");
-  trace($mode, "Cli command was set to:");
+  trace($mode, "Cli command set to:");
 
   d:run-fots($fotsPath,
              $fotsZorbaManifestPath,
@@ -350,7 +376,8 @@ return
              (),
              xs:boolean($verbose),
              $expectedFailuresPath,
-             $mode)
+             $mode,
+             xs:boolean($usePlanSerializer))
 }
 
 case "run-and-report"
@@ -367,6 +394,13 @@ return
 {
   r:report($fotsZorbaManifestPath,
            $resultsFilePath)
+}
+
+case "wiki-report"
+return
+{
+  r:wiki-report($fotsPath,
+                $resultsFilePath)
 }
 
 case "generate-expected-failures"

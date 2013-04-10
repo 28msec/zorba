@@ -84,6 +84,20 @@ Zorba defines additional implicit variables:
     <th>Value</th>
   </tr>
   <tr>
+    <td>\c $zerr:line-number-end</td>
+    <td>\c xs:integer?</td>
+    <td>
+      The ending line number within the query where the error occurred.
+    </td>
+  </tr>
+  <tr>
+    <td>\c $zerr:column-number-end</td>
+    <td>\c xs:integer?</td>
+    <td>
+      The ending column number within the query where the error occurred.
+    </td>
+  </tr>
+  <tr>
     <td>\c $zerr:data-uri</td>
     <td>\c xs:string?</td>
     <td>

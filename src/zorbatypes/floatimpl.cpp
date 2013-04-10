@@ -140,6 +140,9 @@ bool FloatImpl<FloatType>::parse_etc( char const *s ) {
   } else if ( strncmp( s, "NaN", 3 ) == 0 ) {
     value_ = FloatImpl<FloatType>::nan().value_;
     s += 3;
+  } else if ( strncmp( s, "+INF", 4 ) == 0 ) {
+    value_ = FloatImpl<FloatType>::pos_inf().value_;
+    s += 4;
   } else
     return false;
 
@@ -397,7 +400,7 @@ zstring FloatImpl<FloatType>::toString( bool no_scientific_format ) const {
     // the spec in  http://www.w3.org/TR/xpath-functions/#casting
     MAPM decimal_mapm( value_ );
     decimal_mapm = decimal_mapm.round( precision_ );
-    return Decimal::toString(decimal_mapm, max_precision());
+    return Decimal::toString(decimal_mapm, isNegZero(), max_precision());
 #else
     std::stringstream stream;
     stream.precision(7);

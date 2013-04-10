@@ -256,7 +256,7 @@ bool IndexMatchingRule::matchIndex()
           break;
         }
         case flwor_clause::window_clause:
-        case flwor_clause::order_clause:
+        case flwor_clause::orderby_clause:
         {
           if (firstMatchedFOR != NULL)
           {
@@ -321,7 +321,7 @@ bool IndexMatchingRule::matchIndex()
       getWherePreds(qi, static_cast<where_clause*>(qc), theUnmatchedQPreds);
       break;
     }
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       if (firstOrderByPos == 0)
         firstOrderByPos = qi;
@@ -415,7 +415,7 @@ bool IndexMatchingRule::matchIndex()
       return false;
     }
     case flwor_clause::where_clause:
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       break;
     }
@@ -554,7 +554,7 @@ bool IndexMatchingRule::matchIndex()
 
       break;
     }
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       orderby_clause* oc = static_cast<orderby_clause*>(c);
 

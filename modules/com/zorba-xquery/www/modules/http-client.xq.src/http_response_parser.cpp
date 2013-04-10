@@ -286,6 +286,9 @@ namespace http_client {
 
   static void streamReleaser(std::istream* aStream)
   {
+    if (!aStream)
+      return;
+
     // This istream contains our curl stream buffer, so we have to delete it too
     std::streambuf *const sbuf = aStream->rdbuf();
     if ( transcode::streambuf *tbuf =

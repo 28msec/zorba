@@ -260,11 +260,15 @@ namespace zorba{
 #ifndef ZORBA_NO_FULL_TEXT
     class TokenizeStringIterator;
 #endif
+    class FunctionLookupIterator;
+
     class FunctionNameIterator;
 
     class FunctionArityIterator;
 
-    class PartialApplyIterator;
+    class FnMapPairsIterator;
+
+    class FnFoldLeftIterator;
 
     class ActivateICIterator;
 
@@ -554,6 +558,8 @@ namespace zorba{
     class FormatIntegerIterator;
 
     class FnZorbaParseXmlFragmentIterator;
+
+    class FnZorbaCanonicalizeIterator;
 
     class FnParseXmlFragmentIterator;
 
@@ -1109,14 +1115,20 @@ public:
     virtual void beginVisit ( const TokenizeStringIterator& ) = 0;
     virtual void endVisit   ( const TokenizeStringIterator& ) = 0;
 #endif
+    virtual void beginVisit ( const FunctionLookupIterator& ) = 0;
+    virtual void endVisit   ( const FunctionLookupIterator& ) = 0;
+
     virtual void beginVisit ( const FunctionNameIterator& ) = 0;
     virtual void endVisit   ( const FunctionNameIterator& ) = 0;
 
     virtual void beginVisit ( const FunctionArityIterator& ) = 0;
     virtual void endVisit   ( const FunctionArityIterator& ) = 0;
 
-    virtual void beginVisit ( const PartialApplyIterator& ) = 0;
-    virtual void endVisit   ( const PartialApplyIterator& ) = 0;
+    virtual void beginVisit ( const FnMapPairsIterator& ) = 0;
+    virtual void endVisit   ( const FnMapPairsIterator& ) = 0;
+
+    virtual void beginVisit ( const FnFoldLeftIterator& ) = 0;
+    virtual void endVisit   ( const FnFoldLeftIterator& ) = 0;
 
     virtual void beginVisit ( const ActivateICIterator& ) = 0;
     virtual void endVisit   ( const ActivateICIterator& ) = 0;
@@ -1540,6 +1552,9 @@ public:
 
     virtual void beginVisit ( const FnZorbaParseXmlFragmentIterator& ) = 0;
     virtual void endVisit   ( const FnZorbaParseXmlFragmentIterator& ) = 0;
+
+    virtual void beginVisit ( const FnZorbaCanonicalizeIterator& ) = 0;
+    virtual void endVisit   ( const FnZorbaCanonicalizeIterator& ) = 0;
 
     virtual void beginVisit ( const FnParseXmlFragmentIterator& ) = 0;
     virtual void endVisit   ( const FnParseXmlFragmentIterator& ) = 0;
