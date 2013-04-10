@@ -812,12 +812,12 @@ zorba::ItemSequence_t EvaluateFunction::evaluate(
 
   XQuery_t lQuery = getQuery(aDctx, lQueryID);
 
-  if(lQuery->isUpdating())
+  if (lQuery->isUpdating())
   {
     throwError("QueryIsUpdating", "Executing Query shouldn't be updating.");
   }
      
-  if(lQuery->isSequential())
+  if (lQuery->isSequential())
   {
     throwError("QueryIsSequential", "Executing Query shouldn't be sequential.");
   }
@@ -840,7 +840,7 @@ zorba::ItemSequence_t EvaluateUpdatingFunction::evaluate(
   
   XQuery_t lQuery = getQuery(aDctx, lQueryID);
     
-  if(lQuery->isSequential())
+  if (lQuery->isSequential())
   {
     throwError("QueryIsSequential", "Executing Query shouldn't be sequential.");   
   }

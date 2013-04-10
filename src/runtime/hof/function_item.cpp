@@ -151,6 +151,12 @@ FunctionItem::FunctionItem(
 }
 
 
+FunctionItem::~FunctionItem()
+{
+  //std::cerr << "Deallocating FunctionItem: " << this << std::endl;
+}
+
+
 void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theFunctionItemInfo;
