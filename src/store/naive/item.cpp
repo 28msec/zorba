@@ -32,7 +32,7 @@
 #  include "json_items.h"
 #endif
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 
 namespace zorba
@@ -220,7 +220,6 @@ void Item::removeReference()
     ZORBA_ASSERT(false);
   }
   }
-
 #endif
 }
 
@@ -289,19 +288,6 @@ Item* Item::getBaseItem() const
 }
 
 
-store::SchemaTypeCode Item::getTypeCode() const
-{
-  if (isAtomic())
-  {
-    return static_cast<SchemaTypeCode>(theUnion.itemKind >> 4);
-  }
-
-  throw ZORBA_EXCEPTION(
-    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS(__FUNCTION__, typeid(*this).name()));
-}
-
-
 Item* Item::getType() const
 {
   throw ZORBA_EXCEPTION(
@@ -318,10 +304,7 @@ uint32_t Item::hash(long timezone, const XQPCollator* coll) const
 };
 
 
-bool Item::equals(
-    const store::Item* other,
-    long timezone,
-    const XQPCollator* aCollation) const
+bool Item::equals(const store::Item* other, long tz, const XQPCollator* c) const
 {
   throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
   ERROR_PARAMS(ZED(NoCompareTypes_23),
@@ -864,7 +847,7 @@ const xs_yearMonthDuration& Item::getYearMonthDurationValue() const
 /**
  * Accessor for xs:hexBinary
  */
-xs_hexBinary Item::getHexBinaryValue() const
+char const* Item::getHexBinaryValue(size_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
@@ -1100,6 +1083,12 @@ const zstring& Item::getTarget() const
 zstring Item::show() const
 {
   return  std::string ( typeid ( *this ).name() ) + ": 'show' not implemented!";
+}
+
+
+zstring Item::toString() const
+{
+  return show();
 }
 
 
@@ -1412,8 +1401,16 @@ Item::getObjectValue(const store::Item_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue())
   );
+}
+
+
+xs_integer
+Item::getNumObjectPairs() const
+{
+  throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
 }
 
 #endif // ZORBA_WITH_JSON

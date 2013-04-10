@@ -17,10 +17,12 @@ SET(UNIT_TEST_SRCS
   test_base64.cpp
   test_base64_streambuf.cpp
   test_hashmaps.cpp
+  test_hexbinary.cpp
   test_json_parser.cpp
   test_mem_sizeof.cpp
   test_parameters.cpp
   test_string.cpp
+  test_time.cpp
   test_time_parse.cpp
   test_uri.cpp
   test_uuid.cpp

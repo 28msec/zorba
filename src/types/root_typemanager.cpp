@@ -291,7 +291,7 @@ RootTypeManager::RootTypeManager()
 #ifdef ZORBA_WITH_JSON
   GENV_STORE.getItemFactory()->createQName(JS_NULL_QNAME,
                                            static_context::JSONIQ_DM_NS,
-                                           "jn",
+                                           "js",
                                            "null");
 #endif
 
@@ -585,6 +585,7 @@ RootTypeManager::~RootTypeManager()
   DELETE_TYPE(ANY_NODE_UNTYPED)
   DELETE_TYPE(ANY_NODE)
   DELETE_TYPE(STRUCTURED_ITEM)
+  DELETE_TYPE(NAMESPACE)
 
   // These must be deallocated first because they may reference other types
   delete XS_NMTOKENS_TYPE.getp();

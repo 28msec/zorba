@@ -226,6 +226,7 @@ void DataflowAnnotationsComputer::compute(expr* e)
 #endif
 
   case dynamic_function_invocation_expr_kind: // TODO
+  case argument_placeholder_expr_kind: // TODO
   case function_item_expr_kind: // TODO
   case delete_expr_kind:        // TODO
   case insert_expr_kind:        // TODO
@@ -800,6 +801,7 @@ void SourceFinder::findNodeSourcesRec(
 
     case var_expr::prolog_var:
     case var_expr::local_var:
+    case var_expr::hof_var:
     {
       VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 
@@ -1104,6 +1106,11 @@ void SourceFinder::findNodeSourcesRec(
     break;
   }
 
+  case argument_placeholder_expr_kind:
+  {
+    return;
+  }
+
   case function_item_expr_kind:
   {
     //function_item_expr* e = static_cast<function_item_expr*>(node);
@@ -1231,6 +1238,7 @@ void SourceFinder::findLocalNodeSources(
 
     case var_expr::prolog_var:
     case var_expr::local_var:
+    case var_expr::hof_var:
     {
       VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 

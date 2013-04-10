@@ -319,7 +319,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
           subst_vars(rCtx, pvar, constExpr, 2);
           fc->set_pos_var(NULL);
-          folded = true;
+          modified = true;
         }
 
         if (safe_to_fold_var(i, numRefs))
@@ -360,13 +360,13 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
       if (c->get_kind() == flwor_clause::for_clause)
         theFlwor->compute_return_type(false, NULL);
+    }
 
-      if (Properties::instance()->printIntermediateOpt())
-      {
-        std::cout << rCtx.theMessage << std::endl
-                  << "After folding var : " << var << " :" << std::endl;
-        rCtx.getRoot()->put(std::cout) << std::endl;
-      }
+    if (modified && Properties::instance()->printIntermediateOpt())
+    {
+      std::cout << rCtx.theMessage << std::endl
+                << "After folding var : " << var << " :" << std::endl;
+      rCtx.getRoot()->put(std::cout) << std::endl;
     }
   } // for each clause
 

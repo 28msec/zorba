@@ -320,7 +320,7 @@ void populate_context_collections(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, fn_collection,
         (createQName("http://www.w3.org/2005/xpath-functions","","collection"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
         FunctionConsts::FN_COLLECTION_1);
 

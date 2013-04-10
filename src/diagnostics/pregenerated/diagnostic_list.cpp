@@ -79,6 +79,9 @@ XQueryErrorCode XQTY0030( "XQTY0030" );
 XQueryErrorCode XQTY0086( "XQTY0086" );
 
 
+XQueryErrorCode XQTY0105( "XQTY0105" );
+
+
 XQueryErrorCode XQST0009( "XQST0009" );
 
 
@@ -217,6 +220,9 @@ XQueryErrorCode XQST0106( "XQST0106" );
 XQueryErrorCode XQST0111( "XQST0111" );
 
 
+XQueryErrorCode XQST0123( "XQST0123" );
+
+
 XQueryErrorCode XPDY0002( "XPDY0002" );
 
 
@@ -271,10 +277,10 @@ XQueryErrorCode XQDY0102( "XQDY0102" );
 XQueryErrorCode XTDE1310( "XTDE1310" );
 
 
-XQueryErrorCode XTDE1340( "XTDE1340" );
+XQueryErrorCode FOFD1340( "FOFD1340" );
 
 
-XQueryErrorCode XTDE1350( "XTDE1350" );
+XQueryErrorCode FOFD1350( "FOFD1350" );
 
 
 #if !defined(ZORBA_NO_FULL_TEXT)
@@ -372,12 +378,6 @@ XQueryErrorCode FODT0002( "FODT0002" );
 XQueryErrorCode FODT0003( "FODT0003" );
 
 
-XQueryErrorCode FOFI0001( "FOFI0001" );
-
-
-XQueryErrorCode FOFI0002( "FOFI0002" );
-
-
 XQueryErrorCode FONS0004( "FONS0004" );
 
 
@@ -436,6 +436,9 @@ XQueryErrorCode FOUT1170( "FOUT1170" );
 
 
 XQueryErrorCode FOUT1190( "FOUT1190" );
+
+
+XQueryErrorCode FOFL0001( "FOFL0001" );
 
 
 XQueryErrorCode FOCZ0001( "FOCZ0001" );
@@ -1337,6 +1340,9 @@ JSONiqErrorCode JNTY0024( "JNTY0024" );
 
 
 JSONiqErrorCode JNTY0020( "JNTY0020" );
+
+
+JSONiqErrorCode JNTY0021( "JNTY0021" );
 
 
 JSONiqErrorCode JNDY0021( "JNDY0021" );

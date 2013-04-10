@@ -16,6 +16,7 @@
 #include "stdafx.h"
 #include "atomic_items.h"
 
+#include <algorithm>
 #include <limits.h>
 
 #include <zorba/internal/unique_ptr.h>
@@ -694,6 +695,13 @@ void QNameItem::initializeAsQNameNotInPool(
   initializeAsUnnormalizedQName(lNormalized, aPrefix);
 
   theIsInPool = false;
+  
+#ifndef NDEBUG
+  debug_holder = theLocal.c_str();
+  if (!thePrefix.empty())
+    debug_holder = thePrefix + ":" + debug_holder;
+  debug_str_ = debug_holder.c_str();
+#endif  
 }
 
 
@@ -2737,30 +2745,18 @@ size_t IntegerItemImpl::dynamic_size() const
 }
 
 
-long IntegerItemImpl::compare( Item const *other, long,
-                               const XQPCollator* ) const {
-  try
-  {
-    return theValue.compare( other->getIntegerValue() );
-  }
-  catch ( ZorbaException const& )
-  {
-    return getDecimalValue().compare( other->getDecimalValue() );
-  }
-}
-
-bool IntegerItemImpl::equals( const store::Item* other, long,
-                              const XQPCollator*) const
+long IntegerItemImpl::compare(Item const* other, long, const XQPCollator*) const
 {
   try
   {
-    return theValue == other->getIntegerValue();
+    return theValue.compare(other->getIntegerValue());
   }
-  catch (ZorbaException const&)
+  catch (ZorbaException const& )
   {
-    return getDecimalValue() == other->getDecimalValue();
+    return getDecimalValue().compare(other->getDecimalValue());
   }
 }
+
 
 xs_decimal IntegerItemImpl::getDecimalValue() const
 {
@@ -2862,20 +2858,24 @@ size_t NonPositiveIntegerItem::dynamic_size() const
   return sizeof( *this );
 }
 
-long NonPositiveIntegerItem::compare( Item const *other, long,
-                                      const XQPCollator* ) const {
+
+long NonPositiveIntegerItem::compare(Item const* other, long, const XQPCollator*) const
+{
   try
   {
-    return theValue.compare( other->getIntegerValue() );
+    return theValue.compare(other->getIntegerValue());
   }
-  catch ( ZorbaException const& )
+  catch (ZorbaException const&)
   {
-    return getDecimalValue().compare( other->getDecimalValue() );
+    return getDecimalValue().compare(other->getDecimalValue());
   }
 }
 
-bool NonPositiveIntegerItem::equals( const store::Item* other, long,
-                                     const XQPCollator* ) const
+
+bool NonPositiveIntegerItem::equals(
+    const store::Item* other,
+    long,
+    const XQPCollator* ) const
 {
   try
   {
@@ -2887,20 +2887,24 @@ bool NonPositiveIntegerItem::equals( const store::Item* other, long,
   }
 }
 
+
 store::Item* NonPositiveIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_NON_POSITIVE_INTEGER];
 }
+
 
 xs_decimal NonPositiveIntegerItem::getDecimalValue() const
 {
   return xs_decimal(theValue);
 }
 
+
 xs_integer NonPositiveIntegerItem::getIntegerValue() const
 {
   return xs_integer(theValue);
 }
+
 
 xs_long NonPositiveIntegerItem::getLongValue() const
 {
@@ -3667,13 +3671,10 @@ size_t Base64BinaryItem::dynamic_size() const
 }
 
 
-bool
-Base64BinaryItem::equals(
-      const store::Item* other,
-      long timezone,
-      const XQPCollator* aCollation) const
+bool Base64BinaryItem::equals( store::Item const *other, long timezone,
+                               XQPCollator const *aCollation ) const
 {
-  if (isEncoded() == other->isEncoded())
+  if ( isEncoded() == other->isEncoded() )
   {
     size_t this_size, other_size;
     const char* this_data = getBase64BinaryValue(this_size);
@@ -3694,12 +3695,11 @@ Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
   // always need to hash on the string-value because otherwise
   // a base64 item that is encoded would have a different hash-value
   // as a base64 item that is decoded but represents the same binary content
-  return utf8::hash(getStringValue(), aCollation);
+  return utf8::hash( getStringValue(), aCollation );
 }
 
 
-const char*
-Base64BinaryItem::getBase64BinaryValue(size_t& size) const
+char const* Base64BinaryItem::getBase64BinaryValue( size_t &size ) const
 {
   size = theValue.size();
   return size > 0 ? &theValue[0] : "";
@@ -3730,13 +3730,9 @@ void Base64BinaryItem::getStringValue2(zstring& val) const
 void Base64BinaryItem::appendStringValue(zstring& buf) const
 {
   if (theValue.empty())
-  {
     return;
-  }
   if (theIsEncoded)
-  {
     buf.insert(buf.size(), &theValue[0], theValue.size());
-  }
   else
   {
     std::vector<char> encoded;
@@ -3936,6 +3932,43 @@ size_t HexBinaryItem::dynamic_size() const
 }
 
 
+HexBinaryItem::HexBinaryItem( store::SchemaTypeCode t, char const *data,
+                              size_t size, bool encoded ) :
+  AtomicItem(t),
+  theIsEncoded(encoded)
+{
+  theValue.reserve( size );
+  theValue.insert( theValue.begin(), data, data + size );
+  if ( theIsEncoded )
+    std::transform(
+      theValue.begin(), theValue.end(),
+      theValue.begin(), static_cast<char (*)(char)>( ascii::to_upper )
+    );
+}
+
+bool HexBinaryItem::equals( store::Item const *other, long timezone,
+                            XQPCollator const *aCollation ) const
+{
+  if ( isEncoded() == other->isEncoded() )
+  {
+    size_t this_size, other_size;
+    const char* this_data = getHexBinaryValue(this_size);
+    const char* other_data = other->getHexBinaryValue(other_size);
+    return this_size == other_size &&
+      memcmp(this_data, other_data, this_size) == 0;
+  }
+  else
+  {
+    return getStringValue().compare(other->getStringValue()) == 0;
+  }
+}
+
+char const* HexBinaryItem::getHexBinaryValue( size_t &size ) const
+{
+  size = theValue.size();
+  return size ? &theValue[0] : "";
+}
+
 store::Item* HexBinaryItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_HEXBINARY];
@@ -3944,19 +3977,31 @@ store::Item* HexBinaryItem::getType() const
 
 zstring HexBinaryItem::getStringValue() const
 {
-  return theValue.str();
+  zstring lRes;
+  getStringValue2(lRes);
+  return lRes;
 }
 
 
 void HexBinaryItem::getStringValue2(zstring& val) const
 {
-  val = theValue.str();
+  val.clear();
+  appendStringValue(val);
 }
 
 
 void HexBinaryItem::appendStringValue(zstring& buf) const
 {
-  buf += theValue.str();
+  if (theValue.empty())
+    return;
+  if (theIsEncoded)
+    buf.insert(buf.size(), &theValue[0], theValue.size());
+  else
+  {
+    std::vector<char> encoded;
+    Base16::encode(theValue, encoded);
+    buf.insert(buf.size(), &encoded[0], encoded.size());
+  }
 }
 
 
@@ -3971,7 +4016,10 @@ zstring HexBinaryItem::show() const
 
 uint32_t HexBinaryItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  return theValue.hash();
+  // always need to hash on the string-value because otherwise
+  // a base64 item that is encoded would have a different hash-value
+  // as a hexBinary item that is decoded but represents the same binary content
+  return utf8::hash( getStringValue(), aCollation );
 }
 
 

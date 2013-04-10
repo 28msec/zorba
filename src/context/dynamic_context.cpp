@@ -137,6 +137,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
     reset_current_date_time();
     theLang = locale::get_host_lang();
     theCountry = locale::get_host_country();
+    theCalendar = time::calendar::get_default();
   }
   else
   {
@@ -145,6 +146,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
     theDefaultCollectionUri = parent->theDefaultCollectionUri;
     theLang = parent->theLang;
     theCountry = parent->theCountry;
+    theCalendar = parent->theCalendar;
   }
 }
 
@@ -947,6 +949,37 @@ dynamic_context::getExternalFunctionParameter(const std::string& aName) const
   return lRes;
 }
 
+
+/*******************************************************************************
+ Debugging info
+********************************************************************************/
+#ifndef NDEBUG
+std::string dynamic_context::toString()
+{
+  std::stringstream ss;
+  
+  ss << "dynamic_context: " << this;
+  dynamic_context* parent = getParent();
+  while (parent != NULL)
+  {
+    ss << " -> " << parent;
+    parent = parent->getParent();
+  }
+  ss << std::endl;
+  
+  for (csize i=0; i < theVarValues.size(); i++)
+  {
+    ss << "    var[" << i << "]: ";
+    if (theVarValues[i].hasItemValue())
+      ss << theVarValues[i].theValue.item->toString();
+    else if (theVarValues[i].hasSeqValue())
+      ss << theVarValues[i].theValue.temp_seq->toString();
+    ss << std::endl;
+  }
+  
+  return ss.str();
+}
+#endif
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

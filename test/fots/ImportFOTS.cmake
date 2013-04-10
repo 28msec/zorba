@@ -19,24 +19,29 @@
 
 
 # Change this to publish updated FOTS archives
-SET (FOTS_ARCHIVE "FOTS_120313.tgz")
+SET (FOTS_ARCHIVE "FOTS_090413.tgz")
 
 # Change this to modify which elements in FOTS driver results are output
 # as CDATA
-SET (FOTS_CDATA_ELEMENTS "fots:query test assert-xml")
+SET (FOTS_CDATA_ELEMENTS "fots:query fots:result test assert-xml")
 
 # Download and unpack pre-created archive
 SET (_outdir "${BUILDDIR}/test/fots")
-MESSAGE (STATUS "Downloading FOTS archive '${FOTS_ARCHIVE}'...")
-FILE (DOWNLOAD http://zorbatest.lambda.nu:8080/~spungi/${FOTS_ARCHIVE}
-  "${_outdir}/${FOTS_ARCHIVE}" STATUS _dlstat SHOW_PROGRESS)
-LIST (GET _dlstat 0 _dlcode)
-IF (NOT _dlcode EQUAL 0)
-  LIST (GET _dlstat 1 _dlmsg)
-  MESSAGE (FATAL_ERROR "Error downloading FOTS archive: ${_dlmsg}")
-ENDIF (NOT _dlcode EQUAL 0)
+IF(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
+  MESSAGE (STATUS "FOTS archive '${FOTS_ARCHIVE}' already downloaded.")
+ELSE(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
+  MESSAGE (STATUS "Downloading FOTS archive '${FOTS_ARCHIVE}'...")
+  FILE (DOWNLOAD http://zorbatest.lambda.nu:8080/~spungi/${FOTS_ARCHIVE}
+    "${_outdir}/${FOTS_ARCHIVE}" STATUS _dlstat SHOW_PROGRESS)
+  LIST (GET _dlstat 0 _dlcode)
+  IF (NOT _dlcode EQUAL 0)
+    LIST (GET _dlstat 1 _dlmsg)
+    MESSAGE (FATAL_ERROR "Error downloading FOTS archive: ${_dlmsg}")
+  ENDIF (NOT _dlcode EQUAL 0)
+ENDIF(EXISTS "${_outdir}/${FOTS_ARCHIVE}")
 
 # Remove old version of the FOTS testsuite (if it exists)
+MESSAGE (STATUS "Remove old version of the FOTS testsuite (if it exists)...")
 EXECUTE_PROCESS (COMMAND "${CMAKE_COMMAND}" -E remove_directory "${_outdir}/2011"
   RESULT_VARIABLE _remove)
 
@@ -76,7 +81,7 @@ FOREACH (_testset ${_testsets})
     "-e fotsPath:=${_outdir}/2011/QT3-test-suite/catalog.xml "
     "-e mode:=run-test-set -e testSetName:=${_testset} "
     "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
-    "-e verbose:=false "
+    "-e verbose:=true "
     "--disable-http-resolution --indent "
     "-z \"cdata-section-elements=${FOTS_CDATA_ELEMENTS}\")\n"
     "ZORBA_SET_TEST_PROPERTY (FOTS/${_testset} "

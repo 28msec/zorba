@@ -43,8 +43,6 @@ namespace audit {
     const char** m_path;
   };
 
-  extern const PropertyGroupImpl XQUERY_COMPILATION;
-
   class PropertyImpl : public Property {
   public:
 
@@ -73,12 +71,6 @@ namespace audit {
     const long           m_id;
     const Type           m_type;
   };
-
-  extern const PropertyImpl XQUERY_COMPILATION_FILENAME;
-  extern const PropertyImpl XQUERY_COMPILATION_PARSE_DURATION;
-  extern const PropertyImpl XQUERY_COMPILATION_TRANSLATION_DURATION;
-  extern const PropertyImpl XQUERY_COMPILATION_OPTIMIZATION_DURATION;
-  extern const PropertyImpl XQUERY_COMPILATION_CODEGENERATION_DURATION;
 
   class ObservationImpl : public Observation {
   public:
@@ -210,6 +202,8 @@ namespace audit {
   };
 
   extern ProviderImpl PROVIDER_IMPL;
+
+#include "api/auditprops.h"
 }
 }
 
