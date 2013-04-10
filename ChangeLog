@@ -58,7 +58,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1076402 (bug in CastIterator when target is QName)
   * NaN items are considered equal to each other during grouping
   * Fixed bug #855481 (Too small time types on Windows).
-  * Fixed bug #1154984 (windows build crashes if a vector iterator is reused after it is used to erase an element of the vector)
+  * Fixed bug #1154984 (windows build crashes if a vector iterator is reused
+    after it is used to erase an element of the vector)
   * Fixed bug #1132032 (Certain regexes involving ^ should be legal)
   * Fixed bug #1023168 (Non-single-char-escapes in regex character ranges not
     caught)
