@@ -155,10 +155,10 @@ void function_item_expr::add_variable(
 }
 
 
-void function_item_expr::set_function(user_function* udf)
+  void function_item_expr::set_function(user_function* udf, csize arity)
 {
   theFunctionItemInfo->theFunction = udf;
-  theFunctionItemInfo->theArity = udf->getArity();
+  theFunctionItemInfo->theArity = arity;
   theFunctionItemInfo->theQName = udf->getName();
   // compute_scripting_kind();
 }

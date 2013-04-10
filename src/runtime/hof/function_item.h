@@ -39,11 +39,6 @@ typedef rchandle<FunctionItemInfo> FunctionItemInfo_t;
   theCCB :
   --------
 
-  theMustDeleteCCB :
-  ------------------
-  This is set to true if the FunctionItemInfo is the owner of the CCB,
-  and must delete it upon destruction.
-
   theLoc:
   -------
   The location where the function item expr or inline function expr appear at.
@@ -112,10 +107,9 @@ class FunctionItemInfo : public SimpleRCObject
 {
 public:
   CompilerCB                  * theCCB;
-  bool                          theMustDeleteCCB;
 
   QueryLoc                      theLoc;
-  static_context              * theClosureSctx;
+  static_context_t              theClosureSctx;
   function_t                    theFunction;
   store::Item_t                 theQName;
   unsigned int                  theArity;

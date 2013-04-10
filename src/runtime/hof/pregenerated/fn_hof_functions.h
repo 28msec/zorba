@@ -45,8 +45,6 @@ namespace zorba {
  */
 class FunctionLookupIterator : public NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>
 { 
-protected:
-  CompilerCB* theCompilerCB; //
 public:
   SERIALIZABLE_CLASS(FunctionLookupIterator);
 
@@ -58,11 +56,9 @@ public:
   FunctionLookupIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    CompilerCB* aCompilerCB)
+    std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>(sctx, loc, children),
-    theCompilerCB(aCompilerCB)
+    NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
   virtual ~FunctionLookupIterator();

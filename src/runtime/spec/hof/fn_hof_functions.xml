@@ -35,17 +35,23 @@
       Returns the function having a given name and arity, if there is one.
     </zorba:description>
 
-    <zorba:member type="CompilerCB*" name="theCompilerCB"/>
-
-    <zorba:constructor>
-      <zorba:parameter type="CompilerCB*" name="aCompilerCB"/>
-    </zorba:constructor>
-
     <zorba:function  generateCodegen="false">
 
       <zorba:signature localname="function-lookup" prefix="fn" version="3.0">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:integer</zorba:param>
+        <zorba:output>function()?</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+
+    <zorba:function generateCodegen="false">
+      <zorba:signature localname="function-lookup" prefix="op-zorba" version="3.0">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:param>item()?</zorba:param>
+        <zorba:param>xs:integer?</zorba:param>
+        <zorba:param>xs:integer?</zorba:param>
         <zorba:output>function()?</zorba:output>
       </zorba:signature>
 

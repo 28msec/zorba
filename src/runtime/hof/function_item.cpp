@@ -61,7 +61,6 @@ FunctionItemInfo::FunctionItemInfo(
     bool needsContextItem,
     bool isCoercion)
   :
-  theMustDeleteCCB(false),
   theLoc(loc),
   theClosureSctx(closureSctx),
   theFunction(func),
@@ -81,15 +80,12 @@ FunctionItemInfo::FunctionItemInfo(::zorba::serialization::Archiver& ar)
 
 FunctionItemInfo::~FunctionItemInfo()
 {
-  if (theMustDeleteCCB)
-    delete theCCB;
 }
 
 
 void FunctionItemInfo::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theCCB;
-  ar & theMustDeleteCCB;
   ar & theClosureSctx;
   ar & theLoc;
   ar & theFunction;
@@ -127,7 +123,7 @@ void FunctionItemInfo::add_variable(
   theSubstVarsValues.push_back(substVar);
   theScopedVarsNames.push_back(name);
   theIsGlobalVar.push_back(isGlobal);
-  theVarId.push_back(0);
+  theVarId.push_back(substVar->get_unique_id());
 }
 
 

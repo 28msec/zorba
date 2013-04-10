@@ -829,14 +829,18 @@ declare %ann:sequential function driver:test(
       ),
       "&#xA;"
       );
+
    variable $needsDTDValidation :=
     if (not($mayNeedDTDValidation))
     then fn:false()
-    else if (($testSetName = 'app-FunctxFunctx') and (xs:string($case/@name) = 'functx-functx-id-from-element-1'))
+    else if (($testSetName = 'app-FunctxFunctx') and
+             (xs:string($case/@name) = 'functx-functx-id-from-element-1'))
     then fn:true()
-    else if(($testSetName = 'fn-id') and starts-with(xs:string($case/@name), 'fn-id-dtd-'))
+    else if (($testSetName = 'fn-id') and
+             starts-with(xs:string($case/@name), 'fn-id-dtd-'))
     then fn:true()
-    else (($testSetName = 'fn-idref') and starts-with(xs:string($case/@name), 'fn-idref-dtd-'));
+    else (($testSetName = 'fn-idref') and
+         starts-with(xs:string($case/@name), 'fn-idref-dtd-'));
 
     variable $xqxqQuery := driver:create-XQXQ-query($query,
                                                     $case,
