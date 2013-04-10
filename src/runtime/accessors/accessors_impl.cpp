@@ -183,7 +183,6 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIter_t iter;
   store::Item_t itemNode;
-  bool isNilled;
 
   FnDataIteratorState* state;
   DEFAULT_STACK_INIT(FnDataIteratorState, state, planState);

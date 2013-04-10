@@ -567,11 +567,11 @@ class NodeXQType : public XQType
   friend class XQType;
 
 private:
-  store::StoreConsts::NodeKind  m_node_kind;
-  store::Item_t                 m_node_name;
+  store::StoreConsts::NodeKind  theNodeKind;
+  store::Item_t                 theNodeName;
   xqtref_t                      theContentType;
-  bool                          m_nillable;
-  bool                          m_schema_test;
+  bool                          theNillable;
+  bool                          theIsSchemaTest;
 
 public:
   SERIALIZABLE_CLASS(NodeXQType)
@@ -589,19 +589,17 @@ public:
       bool schematest,
       bool builtin = false);
 
-  NodeXQType(
-      const NodeXQType& source,
-      TypeConstants::quantifier_t quantifier);
+  NodeXQType(const NodeXQType& source, TypeConstants::quantifier_t quant);
 
-  store::StoreConsts::NodeKind get_node_kind() const { return m_node_kind; }
+  store::StoreConsts::NodeKind get_node_kind() const { return theNodeKind; }
 
-  store::Item* get_node_name() const { return m_node_name.getp(); }
+  store::Item* get_node_name() const { return theNodeName.getp(); }
 
-  bool is_schema_test() const { return m_schema_test; }
+  bool is_schema_test() const { return theIsSchemaTest; }
 
   const XQType* get_content_type() const { return theContentType.getp(); }
 
-  bool get_nillable() const { return m_nillable; }
+  bool get_nillable() const { return theNillable; }
 
   bool is_untyped() const;
 
