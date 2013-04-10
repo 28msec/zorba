@@ -264,13 +264,12 @@
 
     <diagnostic code="XPTY0004">
       <comment>
-       It is a type error if, during the static analysis phase, an expression
-       is found to have a static type that is not appropriate for the context
-       in which the expression occurs, or during the dynamic evaluation phase,
-       the dynamic type of a value does not match a required type as specified
-       by the matching rules in 2.5.4 SequenceType Matching.
+        It is a type error if, during the static analysis phase, an expression
+        is found to have a static type that is not appropriate for the context
+        in which the expression occurs, or during the dynamic evaluation phase,
+        the dynamic type of a value does not match a required type as specified
+        by the matching rules in 2.5.4 SequenceType Matching.
       </comment>
-
       <value>$1</value>
 
       <entry key="NoReturnTypePromote_234">
@@ -291,10 +290,6 @@
 
       <entry key="NoTreatAs_23">
         <value>$2 can not be treated as type $3</value>
-      </entry>
-
-      <entry key="FormatNumberBadType_2">
-        <value>"$2": type of first parameter to format-number() is illegal</value>
       </entry>
 
       <entry key="JSONIQ_SELECTOR">

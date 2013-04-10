@@ -45,7 +45,6 @@
 #define ZED_XPTY0004_NoTypePromote_23 "~XPTY0004_NoTypePromote_23"
 #define ZED_XPTY0004_NoMultiSeqTypePromotion_2 "~XPTY0004_NoMultiSeqTypePromotion_2"
 #define ZED_XPTY0004_NoTreatAs_23 "~XPTY0004_NoTreatAs_23"
-#define ZED_XPTY0004_FormatNumberBadType_2 "~XPTY0004_FormatNumberBadType_2"
 #define ZED_XPTY0004_JSONIQ_SELECTOR "~XPTY0004_JSONIQ_SELECTOR"
 #define ZED_XPTY0004_MultiValuedGroupingKey "~XPTY0004_MultiValuedGroupingKey"
 #define ZED_XPTY0117_NodeCast "~XPTY0117_NodeCast"

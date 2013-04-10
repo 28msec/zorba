@@ -955,7 +955,6 @@ extern entry const dict_en[] = {
   { "~XPST0008_VariableName_2", "\"$2\": undeclared variable" },
   { "~XPST0051_Atomic_2", "\"$2\": not defined an atomic type" },
   { "~XPST0051_GenAtomic_2", "\"$2\": not defined a generalized atomic type" },
-  { "~XPTY0004_FormatNumberBadType_2", "\"$2\": type of first parameter to format-number() is illegal" },
   { "~XPTY0004_JSONIQ_SELECTOR", "can not atomize and/or cast value of type $2 to string" },
   { "~XPTY0004_MultiValuedGroupingKey", "atomization of grouping variable produces more than one item" },
   { "~XPTY0004_NoMultiSeqTypePromotion_2", "sequence of more than one item can not be promoted to type $2" },
