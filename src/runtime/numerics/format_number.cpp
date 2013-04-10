@@ -794,26 +794,17 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
 
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
-  if ( !consumeNext( value, theChildren[0].getp(), planState ) ) {
+  if ( !consumeNext( value, theChildren[0].getp(), planState ) ||
+       !is_allowed_type( value->getType() ) ) {
     //
     // XQuery F&O 3.0 4.7.2: If the supplied value of the $value argument is an
     // empty sequence, the function behaves as if the supplied value were the
     // xs:double value NaN.
     //
-    GENV_ITEMFACTORY->createDouble( value, xs_double::nan() );
-  } else if ( !is_allowed_type( value->getType() ) ) {
-    //
     // Ibid: The $value argument may be of any numeric data type (xs:double,
     // xs:float, xs:decimal, or their subtypes including xs:integer).
     //
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS(
-        ZED( XPTY0004_FormatNumberBadType_2 ),
-        value->getType()->getStringValue()
-      ),
-      ERROR_LOC( loc )
-    );
+    GENV_ITEMFACTORY->createDouble( value, xs_double::nan() );
   }
 
   consumeNext( item, theChildren[1].getp(), planState );
