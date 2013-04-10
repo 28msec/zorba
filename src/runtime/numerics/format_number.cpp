@@ -57,15 +57,14 @@ struct picture {
 
   struct sub_picture {
     zstring format;
-    zstring prefix;
-    zstring suffix;
+    zstring prefix, suffix;
+    bool has_decimal_separator;
     bool has_percent;
     bool has_per_mille;
-    part integer_part;
-    part fractional_part;
+    part integer_part, fractional_part;
 
     sub_picture() {
-      has_percent = has_per_mille = false;
+      has_decimal_separator = has_percent = has_per_mille = false;
     }
   };
 
@@ -335,8 +334,6 @@ static void format_number( store::Item_t &number_item, picture const &pic,
     xs_integer( sub_pic.fractional_part.maximum_size )
   );
 
-  zstring const converted( adjusted_number.toString( true ) );
-
   //
   // Ibid: If the number of digits to the left of the decimal-separator-sign is
   // less than minimum-integer-part-size, leading zero-digit-sign characters
@@ -346,24 +343,25 @@ static void format_number( store::Item_t &number_item, picture const &pic,
   // is less than minimum-fractional-part-size, trailing zero-digit-sign
   // characters are added to pad out to that size.
   //
-  zstring integer_part, fractional_part;
-  zstring::size_type const decimal_separator_pos = converted.find( '.' );
-  integer_part = converted.substr( 0, decimal_separator_pos );
-  ascii::left_pad( &integer_part, sub_pic.integer_part.minimum_size, '0' );
+  zstring const number_str( adjusted_number.toString( true ) );
+  zstring integer_str, fractional_str;
+  zstring::size_type const decimal_separator_pos = number_str.find( '.' );
+  integer_str = number_str.substr( 0, decimal_separator_pos );
+  ascii::left_pad( &integer_str, sub_pic.integer_part.minimum_size, '0' );
   if ( decimal_separator_pos != zstring::npos ) {
-    fractional_part = converted.substr( decimal_separator_pos + 1 );
-    ascii::right_pad(
-      &fractional_part, sub_pic.fractional_part.minimum_size, '0'
-    );
+    fractional_str = number_str.substr( decimal_separator_pos + 1 );
   }
+  ascii::right_pad(
+    &fractional_str, sub_pic.fractional_part.minimum_size, '0'
+  );
 
-  format_integer_part( integer_part, sub_pic, pic, dest );
+  format_integer_part( integer_str, sub_pic, pic, dest );
   // Insert prefix afterwards so as not to complicate format_integer_part().
   dest->insert( 0, sub_pic.prefix );
 
-  if ( decimal_separator_pos != zstring::npos && !fractional_part.empty() ) {
+  if ( sub_pic.has_decimal_separator && !fractional_str.empty() ) {
     *dest += pic.VAR( decimal_separator_sign );
-    format_fractional_part( fractional_part, sub_pic, pic, dest );
+    format_fractional_part( fractional_str, sub_pic, pic, dest );
   }
   *dest += sub_pic.suffix;
 }
@@ -445,6 +443,7 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
       got_part_mandatory_digit = got_part_optional_digit = false;
       just_got_decimal_separator = true;
       just_got_grouping_separator = false;
+      sub_pic->has_decimal_separator = true;
       goto set_active;
     }
 
