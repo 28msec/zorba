@@ -45,6 +45,7 @@ namespace zorba {
   class File;
   class DirectoryIterator;
   class Serializer;
+  class ModuleInfo;
 
   class DiagnosticHandler;
   class QueryLocation;
@@ -67,6 +68,7 @@ namespace zorba {
   typedef zorba::SmartPtr<DirectoryIterator>       DirectoryIterator_t;
   typedef zorba::SmartPtr<Serializer>              Serializer_t;
   typedef zorba::SmartPtr<ItemSequence>            ItemSequence_t;
+  typedef zorba::SmartPtr<ModuleInfo>              ModuleInfo_t;
 
   // data handlers
   class Item;

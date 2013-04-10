@@ -817,7 +817,9 @@ Duration* Duration::operator/(const xs_double& value) const
 
 
 Decimal Duration::operator/(const Duration& d) const
-{
+{ 
+  if (d.isZero())
+    XQUERY_EXCEPTION(err::FOAR0001);    
   return Decimal( getTotalSeconds() ) / Decimal( d.getTotalSeconds() );
 }
 

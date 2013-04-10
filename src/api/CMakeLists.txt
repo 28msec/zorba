@@ -60,6 +60,7 @@ SET(API_SRCS
     streambuf.cpp
     transcode_streambuf.cpp
     uuid.cpp
+    module_info_impl.cpp
     )
 
 IF (ZORBA_WITH_FILE_ACCESS)

@@ -248,16 +248,19 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor_clause::rebind_list_t::iterator ite = gc->beginNonGroupVars();
       flwor_clause::rebind_list_t::iterator end = gc->endNonGroupVars();
 
-      for(; ite != end; ++ite)
+      while(ite != end)
       {
         var_expr* var = ite->second;
         int uses = expr_tools::count_variable_uses(theFlwor, var, 1, NULL);
 
         if (uses == 0 && !ite->first->isNonDiscardable())
         {
-          gc->removeNonGroupingVar(ite);
-          --ite;
+          ite = gc->removeNonGroupingVar(ite);
           end = gc->endNonGroupVars();
+        }
+        else
+        {
+          ++ite;
         }
       }
 
