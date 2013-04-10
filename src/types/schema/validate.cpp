@@ -202,11 +202,13 @@ bool Validator::realValidationValue(
         if ( child->isNode() &&
              child->getNodeKind()==store::StoreConsts::elementNode )
         {
+          bool nillable;
           typeManager->getSchema()->
-            createXQTypeFromElementName(typeManager,
-                                        child->getNodeName(),
-                                        false,
-                                        loc);
+          createXQTypeFromElementName(typeManager,
+                                      child->getNodeName(),
+                                      false,
+                                      nillable,
+                                      loc);
           break;
         }
       }
@@ -261,11 +263,13 @@ bool Validator::realValidationValue(
 
       // ask for the type of the root element to populate the cache
       // with anonymous types
+      bool nillable;
       typeManager->getSchema()->
-        createXQTypeFromElementName(typeManager,
-                                    sourceNode->getNodeName(),
-                                    false,
-                                    loc);
+      createXQTypeFromElementName(typeManager,
+                                  sourceNode->getNodeName(),
+                                  false,
+                                  nillable,
+                                  loc);
     }
     
     store::Item_t newElem = processElement(sctx,

@@ -523,15 +523,18 @@ void Schema::registerXSD(
 void Schema::getTypeNameFromElementName(
     const store::Item* qname,
     store::Item_t& typeName,
+    bool& nillable,
     const QueryLoc& loc)
 {
-  XSTypeDefinition* typeDef = getTypeDefForElement(qname);
+  XSElementDeclaration* decl = getDeclForElement(qname);
 
-  if (!typeDef)
+  if (!decl)
   {
     RAISE_ERROR(err::XPST0008, loc,
     ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), qname->getStringValue()));
   }
+
+  XSTypeDefinition* typeDef = decl->getTypeDefinition();
 
   const XMLCh* typeNameStr = typeDef->getName();
   const XMLCh* typeUri = typeDef->getNamespace();
@@ -540,6 +543,8 @@ void Schema::getTypeNameFromElementName(
                                 StrX(typeUri).localForm(),
                                 "",
                                 StrX(typeNameStr).localForm());
+
+  nillable = decl->getNillable();
 }
 
 
@@ -576,24 +581,30 @@ void Schema::getTypeNameFromAttributeName(
 xqtref_t Schema::createXQTypeFromElementName(
     const TypeManager* typeManager,
     const store::Item* qname,
-    const bool riseErrors,
+    const bool raiseErrors,
+    bool& nillable,
     const QueryLoc& loc)
 {
   TRACE("qn:" << qname->getLocalName() << " @ " <<
         qname->getNamespace() );
 
-  XSTypeDefinition* typeDef = getTypeDefForElement(qname);
+  XSElementDeclaration* decl = getDeclForElement(qname);
 
-  if (!riseErrors && !typeDef)
+  if (!raiseErrors && !decl)
       return NULL;
 
-  if (!typeDef)
+  if (!decl)
   {
     RAISE_ERROR(err::XPST0008, loc,
     ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), qname->getStringValue()));
   }
 
+  nillable = decl->getNillable();
+
+  XSTypeDefinition* typeDef = decl->getTypeDefinition();
+
   xqtref_t res = createXQTypeFromTypeDefinition(typeManager, typeDef);
+
   TRACE("res:" << res->get_qname()->getLocalName() << " @ " <<
         res->get_qname()->getNamespace());
 
@@ -744,12 +755,10 @@ void Schema::getSubstitutionHeadForElement(
 
 
 /*******************************************************************************
-  Get the type definition for a globally declared element
+  Get the declaration for a globally declared element
 *******************************************************************************/
-XSTypeDefinition* Schema::getTypeDefForElement(const store::Item* qname)
+XSElementDeclaration* Schema::getDeclForElement(const store::Item* qname)
 {
-  XSTypeDefinition* typeDef = NULL;
-
   TRACE(" element qname: " << qname->getLocalName() << "@" <<
         qname->getNamespace());
 
@@ -762,25 +771,7 @@ XSTypeDefinition* Schema::getTypeDefForElement(const store::Item* qname)
   bool xsModelWasChanged;
   XSModel* model = theGrammarPool->getXSModel(xsModelWasChanged);
 
-  XSElementDeclaration* decl = model->getElementDeclaration(local, uri);
-
-  if (decl)
-  {
-    typeDef = decl->getTypeDefinition();
-
-    // this works only on the element that is a substitution,
-    // not on substitution base element
-    //XSElementDeclaration * substGroup =
-    //  decl->getSubstitutionGroupAffiliation();
-
-    //if ( substGroup )
-    //{
-    //    TRACE(" substitutionGroup qname: " << StrX(substGroup->getName()) <<
-    //      "@" << StrX(substGroup->getNamespace()) << "\n");
-    //}
-  }
-
-  return typeDef;
+  return model->getElementDeclaration(local, uri);
 }
 
 

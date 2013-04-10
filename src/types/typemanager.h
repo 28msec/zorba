@@ -162,7 +162,8 @@ public:
   virtual void get_schema_element_typename(
         const store::Item* elemName,
         store::Item_t& typeName,
-        const QueryLoc& loc) = 0;
+        bool& nillable,
+        const QueryLoc& loc) const = 0;
 
   virtual xqtref_t create_schema_attribute_type(
         const store::Item_t& aName,

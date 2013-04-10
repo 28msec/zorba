@@ -133,9 +133,11 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
 #ifndef ZORBA_NO_XMLSCHEMA
       if (ntype.get_node_kind() == store::StoreConsts::elementNode)
       {
+        bool nillable;
         return (schema->createXQTypeFromElementName(tm,
                                                     ntype.get_node_name(),
                                                     false,
+                                                    nillable,
                                                     QueryLoc::null) != NULL);
       }
       else

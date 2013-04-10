@@ -43,6 +43,7 @@
 namespace XERCES_CPP_NAMESPACE {
   class InputSource;
   class XSTypeDefinition;
+  class XSElementDeclaration;
   class XSParticle;
   class XMLGrammarPool;
 }
@@ -117,6 +118,7 @@ public:
   void getTypeNameFromElementName(
         const store::Item* qname,
         store::Item_t& typeName,
+        bool& nillable,
         const QueryLoc& loc);
 
   void getTypeNameFromAttributeName(
@@ -127,7 +129,8 @@ public:
   xqtref_t createXQTypeFromElementName(
         const TypeManager* typeManager,
         const store::Item* qname,
-        const bool riseErrors,
+        const bool raiseErrors,
+        bool& nillable,
         const QueryLoc& loc);
 
   xqtref_t createXQTypeFromAttributeName(
@@ -194,11 +197,11 @@ public:
 private:
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  XERCES_CPP_NAMESPACE::XSTypeDefinition*
-    getTypeDefForElement(const store::Item* qname);
+  XERCES_CPP_NAMESPACE::XSElementDeclaration* getDeclForElement(
+      const store::Item* qname);
 
-  XERCES_CPP_NAMESPACE::XSTypeDefinition*
-    getTypeDefForAttribute(const store::Item* qname);
+  XERCES_CPP_NAMESPACE::XSTypeDefinition* getTypeDefForAttribute(
+      const store::Item* qname);
 
   xqtref_t createXQTypeFromTypeDefinition(
         const TypeManager* typeManager,

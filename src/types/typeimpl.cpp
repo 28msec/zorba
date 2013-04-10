@@ -1005,7 +1005,17 @@ bool NodeXQType::is_supertype(
                                                       loc,
                                                       true);
 
-      return TypeOps::is_subtype(tm, *subContentType, *theContentType);
+      if (!TypeOps::is_subtype(tm, *subContentType, *theContentType))
+        return false;
+
+      bool nillable;
+      store::Item_t typeName;
+      tm->get_schema_element_typename(subitem->getNodeName(), typeName, nillable, loc);
+
+      if (!nillable && subitem->getNilled())
+        return false;
+
+      return true;
     }
     else
     {
@@ -1324,7 +1334,7 @@ UserDefinedXQType::UserDefinedXQType(
   :
   XQType(manager, USER_DEFINED_KIND, quantifier, builtin),
   theQName(qname),
-  m_baseType(baseType),
+  theBaseType(baseType),
   theUDTKind(udtKind),
   m_contentKind(contentKind)
 {
@@ -1351,7 +1361,7 @@ UserDefinedXQType::UserDefinedXQType(
   :
   XQType(manager, USER_DEFINED_KIND, TypeConstants::QUANT_STAR, builtin),
   theQName(qname),
-  m_baseType(baseType),
+  theBaseType(baseType),
   theUDTKind(LIST_UDT),
   m_contentKind(SIMPLE_CONTENT_KIND),
   m_listItemType(listItemType)
@@ -1373,7 +1383,7 @@ UserDefinedXQType::UserDefinedXQType(
   :
   XQType(manager, USER_DEFINED_KIND, quantifier, builtin),
   theQName(qname),
-  m_baseType(baseType),
+  theBaseType(baseType),
   theUDTKind(UNION_UDT),
   m_contentKind(SIMPLE_CONTENT_KIND),
   m_unionItemTypes(unionItemTypes)
@@ -1394,7 +1404,7 @@ void UserDefinedXQType::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (XQType*)this);
   ar & theQName;
-  ar & m_baseType;
+  ar & theBaseType;
   SERIALIZE_ENUM(UDTKind, theUDTKind);
   SERIALIZE_ENUM(content_kind_t, m_contentKind);
   ar & m_listItemType;
@@ -1407,7 +1417,7 @@ void UserDefinedXQType::serialize(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 xqtref_t UserDefinedXQType::getBaseBuiltinType() const
 {
-  xqtref_t builtinType = m_baseType;
+  xqtref_t builtinType = theBaseType;
 
   while (builtinType->type_kind() == XQType::USER_DEFINED_KIND)
   {
@@ -1578,7 +1588,7 @@ std::ostream& UserDefinedXQType::serialize_ostream(std::ostream& os) const
             << theQName->getNamespace() << " "
             << info.str()
             << " base:"
-            << ( m_baseType ? m_baseType->toString() : "NULL" )
+            << ( theBaseType ? theBaseType->toString() : "NULL" )
             << "]";
 }
 

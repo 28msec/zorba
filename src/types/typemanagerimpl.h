@@ -151,7 +151,8 @@ public:
   void get_schema_element_typename(
       const store::Item* elemName,
       store::Item_t& typeName,
-      const QueryLoc& loc);
+      bool& nillable,
+      const QueryLoc& loc) const;
 
   xqtref_t create_schema_attribute_type(
       const store::Item_t& attrName,

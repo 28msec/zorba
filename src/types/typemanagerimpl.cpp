@@ -881,14 +881,16 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
     ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
   }
 
+  bool nillable;
+
   xqtref_t contentType =
-  m_schema->createXQTypeFromElementName(this, elemName, true, loc);
+  m_schema->createXQTypeFromElementName(this, elemName, true, nillable, loc);
 
   return create_node_type(store::StoreConsts::elementNode,
                           elemName,
                           contentType,
                           quant,
-                          false, // nillable
+                          nillable,
                           true); // schematest
 }
 
@@ -899,7 +901,8 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
 void TypeManagerImpl::get_schema_element_typename(
     const store::Item* elemName,
     store::Item_t& typeName,
-    const QueryLoc& loc)
+    bool& nillable,
+    const QueryLoc& loc) const
 {
   if (m_schema == NULL)
   {
@@ -907,7 +910,7 @@ void TypeManagerImpl::get_schema_element_typename(
     ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
   }
 
-  m_schema->getTypeNameFromElementName(elemName, typeName, loc);
+  m_schema->getTypeNameFromElementName(elemName, typeName, nillable, loc);
 }
 
 

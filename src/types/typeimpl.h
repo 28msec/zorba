@@ -716,7 +716,7 @@ public:
   ------------
   The baseType of this type. NULL for list or union types.
 
-  m_typeCategory:
+  theUDTKind:
   ---------------
   Whether this is an atomic, list, union, or complex type.
 
@@ -743,7 +743,7 @@ public:
 private:
   store::Item_t           theQName;
 
-  xqtref_t                m_baseType;
+  xqtref_t                theBaseType;
 
   UDTKind                 theUDTKind;
 
@@ -795,7 +795,7 @@ public:
 
   UDTKind getUDTKind() const { return theUDTKind; }
 
-  xqtref_t getBaseType() const { return m_baseType; }
+  xqtref_t getBaseType() const { return theBaseType; }
 
   xqtref_t getBaseBuiltinType() const;
 

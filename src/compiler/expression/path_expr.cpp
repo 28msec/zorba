@@ -165,7 +165,7 @@ match_expr::match_expr(
   theWildKind(match_no_wild),
   theQName(NULL),
   theTypeName(NULL),
-  theNilledAllowed(true)
+  theNilledAllowed(false)
 {
   compute_scripting_kind();
 }
