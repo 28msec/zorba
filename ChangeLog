@@ -11,6 +11,7 @@ New Features:
   * New C++ and XQuery function (see module http://www.zorba-xquery.com/modules/item)
     to estimate the size an item allocates in memory.
   * Extended sequence types to include unions, as specified by XQuery v3.0
+  * Added XQuery::parse(std::istream& aQuery, ModuleInfo_t& aResult) function.
   * In store API, added ability to specify a stream's originating URI (file)
     for streamable strings and base64Binary.
   * Added millis-to-dateTime() function in datetime module.
