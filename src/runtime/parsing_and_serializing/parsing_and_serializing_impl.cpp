@@ -89,19 +89,19 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       loadProps.setStoreDocument(false);
       result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
     }
-    catch ( ZorbaException const &e )
+    catch (const ZorbaException& e)
     {
       XQueryException xe(XQUERY_EXCEPTION(err::FODC0006,
-                                          ERROR_PARAMS("fn:parse-xml()", e.what()),
-                                          ERROR_LOC(loc))
-      );
-      set_data( xe, e );
+      ERROR_PARAMS("fn:parse-xml()", e.what()), ERROR_LOC(loc)));
+
+      set_data(xe, e);
       throw xe;
     }
 
     STACK_PUSH(true, state);
   }
-  STACK_END (state);
+
+  STACK_END(state);
 }
 
 

@@ -1184,9 +1184,11 @@ JSONItemAccessorIterator::nextImpl(
   JSONItemAccessorIteratorState* state;
   DEFAULT_STACK_INIT(JSONItemAccessorIteratorState, state, planState);
 
-  consumeNext(input, theChild0.getp(), planState);
+  consumeNext(input, theChildren[0].getp(), planState);
   ZORBA_ASSERT(input->isJSONArray() || input->isJSONObject());
-  if (consumeNext(selector, theChild1.getp(), planState))
+
+  if (theChildren.size() == 2 &&
+      consumeNext(selector, theChildren[1].getp(), planState))
   {
     if (input->isJSONArray())
     {
