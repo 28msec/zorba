@@ -106,25 +106,6 @@ struct picture {
   // default picture(picture const&) is fine
   // default picture& operator=(picture const&) is fine
 
-#if 0
-  bool is_active( unicode::code_point cp ) {
-    //
-    // XQuery F&O 3.0 4.7.3: The ... variables decimal-separator-sign,
-    // grouping-sign, decimal-digit-family, optional-digit-sign and pattern-
-    // separator-sign are classified as active characters, and all other
-    // characters (including the percent-sign and per-mille-sign) are
-    // classified as passive characters.
-    //
-    unicode::code_point zero_cp;
-    return cp == var_cp[ decimal_separator_sign ]
-        || cp == var_cp[ grouping_separator_sign ]
-        || cp == var_cp[ optional_digit_sign ]
-        || (unicode::is_Nd( cp, &zero_cp ) &&
-            zero_cp == var_cp[ mandatory_digit_sign ] )
-        || cp == var_cp[ pattern_separator_sign ];
-  }
-#endif
-
   void set_format_codepoints() {
     for ( int i = 0; i < NUM_VARS; ++i )
       var_cp[i] = utf8::decode( var[i].c_str() );
