@@ -4398,6 +4398,10 @@ FilterExpr :
      {
        $$ = new JSONObjectLookup(LOC(@$), $1, $3);
      }
+  |  FilterExpr DOT ContextItemExpr
+     {
+       $$ = new JSONObjectLookup(LOC(@$), $1, $3);
+     }
 ;
 
 
@@ -4564,11 +4568,7 @@ ParenthesizedExpr :
 
 // [88]
 ContextItemExpr :
-        DOT
-        {
-            $$ = new ContextItemExpr( LOC(@$) );
-        }
-    |   DOLLAR_DOLLAR
+        DOLLAR_DOLLAR
         {
             $$ = new ContextItemExpr( LOC(@$) );
         }
