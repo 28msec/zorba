@@ -1706,7 +1706,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
             if (nestedClauseKind == flwor_clause::let_clause)
               continue;
 
-            if (nestedClauseKind == flwor_clause::for_clause &&
+            if (nestedClauseKind == flwor_clause::for_clause ||
                 nestedClauseKind == flwor_clause::where_clause)
             {
               if (isOuter || hasPosVar)
