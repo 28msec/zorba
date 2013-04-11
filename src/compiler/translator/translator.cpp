@@ -11700,10 +11700,6 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
   for_clause* fc = reinterpret_cast<for_clause*>(flworExpr->get_clause(0));
 
-  // This is needed to make sure that the flwor is not thrown away by the optimizer
-  // when the FunctionItem expression is an empty sequence.
-  fc->set_allowing_empty(true); 
-
   expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
 
 #ifdef ZORBA_WITH_JSON
@@ -11750,6 +11746,10 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   else
 #endif
   {
+    // This is needed to make sure that the flwor is not thrown away by the optimizer
+    // when the FunctionItem expression is an empty sequence.
+    fc->set_allowing_empty(true); 
+
     expr* dynFuncInvocation =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
                                         flworVarExpr,
