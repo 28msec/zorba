@@ -67,6 +67,7 @@ SimpleTempSeq::SimpleTempSeq(const store::Iterator_t& iter)
   catch (...)
   {
     clear();
+    throw;
   }
 }
 
