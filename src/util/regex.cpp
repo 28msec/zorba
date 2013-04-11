@@ -404,7 +404,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '{':
           if ( q_flag )
             *icu_re += '\\';
-          else {
+          else if ( !in_char_class ) {
             //
             // ICU allows the multiple quantifiers *+, ++, and ?+, but XQuery
             // does not so we have to check for them.
