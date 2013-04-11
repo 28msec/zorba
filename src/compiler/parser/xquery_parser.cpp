@@ -3757,7 +3757,7 @@ namespace zorba {
 
 /* Line 690 of lalr1.cc  */
 #line 1602 "/home/colea/xquery/new-jsoniq/src/compiler/parser/xquery_parser.y"
-    { (yyval.strval) = "infinty"; }
+    { (yyval.strval) = "infinity"; }
     break;
 
   case 96:
