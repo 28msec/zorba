@@ -581,8 +581,7 @@ set_active:
 
     if ( leftmost_active_pos == utf8::npos )
       leftmost_active_pos = pos;
-    //if ( decimal_separator_pos != utf8::npos )
-      rightmost_active_pos = pos;
+    rightmost_active_pos = pos;
   } // for
 
   if ( !(got_optional_digit || got_mandatory_digit) ) {
