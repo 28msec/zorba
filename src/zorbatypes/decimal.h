@@ -233,6 +233,7 @@ private:
   typedef long int_cast_type;
 
   value_type value_;
+  static value_type const round_precision_limit;
 
   Decimal( value_type const &v ) : value_( v ) { }
 
