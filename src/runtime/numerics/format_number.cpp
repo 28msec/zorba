@@ -168,10 +168,12 @@ static void format_integer_part( zstring const &value,
         u_dest.insert( 0, 1, digit_cp );
         if ( n_i != n_end ) ++n_i;
         ++digit_pos;
+        just_inserted_grouping_separator = false;
         if ( minimum_size )
           --minimum_size;
       } else {                          // must be a grouping-separator
         u_dest.insert( 0, 1, pic.VAR_CP( grouping_separator_sign ) );
+        just_inserted_grouping_separator = true;
         if ( mandatory_grouping_seps )
           --mandatory_grouping_seps;
       }
