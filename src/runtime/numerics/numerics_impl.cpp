@@ -372,7 +372,9 @@ bool RoundHalfToEvenIterator::nextImpl( store::Item_t &result,
       );
 
     else if ( TypeOps::is_subtype( tm, *type, *rtm.INTEGER_TYPE_ONE ) )
-      /* do nothing -- integers don't need to be rounded */;
+      GENV_ITEMFACTORY->createInteger(
+        result, result->getIntegerValue().roundHalfToEven( precision )
+      );
 
     else if ( TypeOps::is_subtype( tm, *type, *rtm.DECIMAL_TYPE_ONE ) )
       GENV_ITEMFACTORY->createDecimal(
