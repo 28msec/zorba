@@ -710,10 +710,10 @@ static void parse_picture( picture *pic, QueryLoc const &loc ) {
   if ( pic->neg_subpicture.format.empty() ) {
     pic->neg_subpicture = pic->pos_subpicture;
     //
-    // Ibid: If the picture string contains only one sub-picture, the prefix
-    // for the negative sub-picture is set by concatenating the minus-sign
-    // character and the prefix for the positive sub-picture (if any), in that
-    // order.
+    // XQuery F&O 3.0 4.7.4: If the picture string contains only one sub-
+    // picture, the prefix for the negative sub-picture is set by concatenating
+    // the minus-sign character and the prefix for the positive sub-picture (if
+    // any), in that order.
     //
     pic->neg_subpicture.prefix = pic->VAR( minus_sign );
     pic->neg_subpicture.prefix += pic->pos_subpicture.prefix;
