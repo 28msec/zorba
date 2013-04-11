@@ -1053,6 +1053,7 @@ xqtref_t TypeManagerImpl::create_type(
     if (udt.isList())
     {
       return new UserDefinedXQType(this,
+                                   udt.isAnonymous(),
                                    udt.getQName(),
                                    udt.getBaseType(),
                                    udt.getListItemType());
@@ -1060,6 +1061,7 @@ xqtref_t TypeManagerImpl::create_type(
     else if (udt.isUnion())
     {
       return new UserDefinedXQType(this,
+                                   udt.isAnonymous(),
                                    udt.getQName(),
                                    udt.getBaseType(),
                                    quantifier,
@@ -1068,6 +1070,7 @@ xqtref_t TypeManagerImpl::create_type(
     else
     {
       return new UserDefinedXQType(this,
+                                   udt.isAnonymous(),
                                    udt.getQName(),
                                    udt.getBaseType(),
                                    quantifier,

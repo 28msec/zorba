@@ -375,6 +375,8 @@ public:
 
   int card() const;
 
+  virtual bool isAnonymous() const {  return false; }
+
   bool isComplex() const;
 
   bool isList() const;
@@ -741,6 +743,8 @@ public:
 
 
 private:
+  bool                    theIsAnonymous;
+
   store::Item_t           theQName;
 
   xqtref_t                theBaseType;
@@ -765,6 +769,7 @@ public:
   // constructor for Atomic and Complex types
   UserDefinedXQType(
       const TypeManager* manager,
+      bool isAnonymous,
       store::Item_t qname,
       const xqtref_t& baseType,
       TypeConstants::quantifier_t quantifier,
@@ -775,6 +780,7 @@ public:
   // Constructor for List types
   UserDefinedXQType(
       const TypeManager* manager,
+      bool isAnonymous,
       store::Item_t qname,
       const xqtref_t& baseType,
       const XQType* listItemType,
@@ -783,6 +789,7 @@ public:
   // Constructor for Union types
   UserDefinedXQType(
       const TypeManager* manager,
+      bool isAnonymous,
       store::Item_t qname,
       const xqtref_t& baseType,
       TypeConstants::quantifier_t quantifier,
@@ -790,6 +797,8 @@ public:
       bool builtin = false);
 
   virtual ~UserDefinedXQType() {}
+
+  virtual bool isAnonymous() const {  return theIsAnonymous; }
 
   virtual content_kind_t content_kind() const { return m_contentKind; };
 

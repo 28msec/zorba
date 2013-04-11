@@ -896,6 +896,29 @@ bool NodeXQType::is_subtype(
     if (supertype.theNillable == false && theNillable == true)
       return false;
 
+    // if the supertype is in a different TypeManager try to bring it on this TypeManager
+    if (tm != supertype.get_manager() )
+    {
+      if ( get_node_kind()==store::StoreConsts::elementNode )
+      {
+        store::Item_t typeName;
+        bool nillable;
+        tm->getSchema()->getTypeNameFromElementName(get_node_name(), typeName, nillable, loc);
+
+        xqtref_t newSubType = tm->getSchema()->createXQTypeFromTypeName(tm, typeName);
+        return TypeOps::is_subtype(tm, *theContentType, *newSubType);
+      }
+
+      if ( get_node_kind()==store::StoreConsts::attributeNode )
+      {
+        store::Item_t typeName;
+        tm->getSchema()->getTypeNameFromAttributeName(get_node_name(), typeName, loc);
+
+        xqtref_t newSubType = tm->getSchema()->createXQTypeFromTypeName(tm, typeName);
+        return TypeOps::is_subtype(tm, *theContentType, *newSubType);
+      }
+    }
+
     return TypeOps::is_subtype(tm, *theContentType, *supertype.theContentType);
   }
   else if (supertype.theContentType == NULL)
@@ -1325,6 +1348,7 @@ FunctionXQType::serialize_ostream(std::ostream& os) const
 ********************************************************************************/
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager* manager,
+    bool isAnonymous,
     store::Item_t qname,
     const xqtref_t& baseType,
     TypeConstants::quantifier_t quantifier,
@@ -1333,6 +1357,7 @@ UserDefinedXQType::UserDefinedXQType(
     bool builtin)
   :
   XQType(manager, USER_DEFINED_KIND, quantifier, builtin),
+  theIsAnonymous(isAnonymous),
   theQName(qname),
   theBaseType(baseType),
   theUDTKind(udtKind),
@@ -1354,12 +1379,14 @@ UserDefinedXQType::UserDefinedXQType(
 ********************************************************************************/
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager* manager,
+    bool isAnonymous,
     store::Item_t qname,
     const xqtref_t& baseType,
     const XQType* listItemType,
     bool builtin)
   :
   XQType(manager, USER_DEFINED_KIND, TypeConstants::QUANT_STAR, builtin),
+  theIsAnonymous(isAnonymous),
   theQName(qname),
   theBaseType(baseType),
   theUDTKind(LIST_UDT),
@@ -1375,6 +1402,7 @@ UserDefinedXQType::UserDefinedXQType(
 ********************************************************************************/
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager* manager,
+    bool isAnonymous,
     store::Item_t qname,
     const xqtref_t& baseType,
     TypeConstants::quantifier_t quantifier,
@@ -1382,6 +1410,7 @@ UserDefinedXQType::UserDefinedXQType(
     bool builtin)
   :
   XQType(manager, USER_DEFINED_KIND, quantifier, builtin),
+  theIsAnonymous(isAnonymous),
   theQName(qname),
   theBaseType(baseType),
   theUDTKind(UNION_UDT),
@@ -1459,10 +1488,24 @@ bool UserDefinedXQType::isSuperTypeOf(
 
   do
   {
-    if (getUDTKind() == subtype->getUDTKind() &&
-        getQName()->equals(subtype->getQName()))
+    if (getUDTKind() == subtype->getUDTKind())
     {
-      return true;
+      if ( !isAnonymous() && !subtype->isAnonymous() &&
+           subtype->getQName()->equals(subtype->getQName()) )
+      {
+        return true;
+      }
+
+      if ( isAnonymous() && subtype->isAnonymous() )
+      {
+        if (get_manager() == subtype->get_manager() )
+        {
+          if ( subtype->getQName()->equals(subtype->getQName()) )
+            return true;
+          else
+            ZORBA_ASSERT(false);
+        }
+      }
     }
 
     if (subtype->type_kind() == XQType::USER_DEFINED_KIND)

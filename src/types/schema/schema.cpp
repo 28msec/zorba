@@ -859,6 +859,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         xqtref_t baseXQType = createXQTypeFromTypeDefinition(tm, baseTypeDef);
 
         xqtref_t xqType = new UserDefinedXQType(tm,
+                                                xsTypeDef->getAnonymous(),
                                                 qname,
                                                 baseXQType,
                                                 TypeConstants::QUANT_ONE,
@@ -894,6 +895,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         //    << endl; cout.flush();
 
         xqtref_t xqType = new UserDefinedXQType(tm,
+                                                xsTypeDef->getAnonymous(),
                                                 qname,
                                                 NULL,
                                                 itemXQType.getp());
@@ -949,6 +951,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         //std::cout << std::endl; std::cout.flush();
 
         xqtref_t xqType = new UserDefinedXQType(tm,
+                                                xsTypeDef->getAnonymous(),
                                                 qname,
                                                 baseXQType,
                                                 TypeConstants::QUANT_ONE,
@@ -1050,6 +1053,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
       }
 
       xqtref_t xqType = new UserDefinedXQType(tm,
+                                              xsTypeDef->getAnonymous(),
                                               qname,
                                               baseXQType,
                                               TypeConstants::QUANT_ONE,
@@ -1520,6 +1524,7 @@ void Schema::addAnonymousTypeToCache(
 
       xqtref_t xqType =
         xqtref_t(new UserDefinedXQType(typeManager,
+                                       xsTypeDef->getAnonymous(),
                                        qname,
                                        baseXQType,
                                        TypeConstants::QUANT_ONE,
