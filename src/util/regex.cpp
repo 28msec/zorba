@@ -405,15 +405,17 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( q_flag )
             *icu_re += '\\';
           else {
-            //
-            // ICU allows the multiple quantifiers *+, ++, and ?+, but XQuery
-            // does not so we have to check for them.
-            //
-            if ( got_quantifier && c != '?' )
-              throw INVALID_RE_EXCEPTION(
-                xq_re, ZED( BadQuantifierHere_3 ), c
-              );
-            got_quantifier = 2;
+            if ( !in_char_class ) {
+              //
+              // ICU allows the multiple quantifiers *+, ++, and ?+, but XQuery
+              // does not so we have to check for them.
+              //
+              if ( got_quantifier && c != '?' )
+                throw INVALID_RE_EXCEPTION(
+                  xq_re, ZED( BadQuantifierHere_3 ), c
+                );
+              got_quantifier = 2;
+            }
           }
           break;
         case '-':
