@@ -904,9 +904,10 @@ bool NodeXQType::is_subtype(
         store::Item_t typeName;
         bool nillable;
         Schema* schema = tm->getSchema();
-        if ( schema )
+        store::Item* nodeName = get_node_name();
+        if ( schema && nodeName)
         {
-          schema->getTypeNameFromElementName(get_node_name(), typeName, nillable, loc);
+          schema->getTypeNameFromElementName(nodeName, typeName, nillable, loc);
 
           xqtref_t newSubType = schema->createXQTypeFromTypeName(tm, typeName);
           return TypeOps::is_subtype(tm, *theContentType, *newSubType);
