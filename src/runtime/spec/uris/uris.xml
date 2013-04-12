@@ -46,7 +46,7 @@
   <zorba:function>
     <zorba:signature localname="parse" prefix="fn-zorba-uri">
       <zorba:param>xs:string</zorba:param>
-      <zorba:output>element()</zorba:output>
+      <zorba:output>object()</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -54,12 +54,12 @@
 <zorba:iterator  name="SerializeURIIterator">
 
   <zorba:description author="Zorba Team">
-    uri:serialize-impl
+    uri:serialize
   </zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="serialize-impl" prefix="fn-zorba-uri">
-      <zorba:param>element()</zorba:param>
+    <zorba:signature localname="serialize" prefix="fn-zorba-uri">
+      <zorba:param>object()</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
   </zorba:function>

@@ -25,7 +25,6 @@ xquery version "3.0";
  :)
 module namespace uri = "http://www.zorba-xquery.com/modules/uri";
 
-import schema namespace uri-format = "http://www.zorba-xquery.com/modules/uri-format";
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
@@ -110,33 +109,24 @@ declare function uri:decode(
   $charset as xs:string) as xs:string external;
   
 (:~
- : Parses the URI passed as xs:string into a uri element.
+ : Parses the URI passed as xs:string into a uri JSONiq object.
  :
  : @param $uri the URI as string to parse
  :
- : @return the URI element(uri-format:uri)
+ : @return the URI JSONiq object
  :
  :)
 declare function uri:parse(
-  $uri as xs:string) as element() external;
+  $uri as xs:string) as object() external;
   
 (:~
- : Serialize the URI passed as element() into a URI represented as xs:string.
+ : Serialize the URI passed as JSONiq object into a URI represented as xs:string.
  :
- : @param $uri the URI element(uri-format:uri)
+ : @param $uri the URI JSONiq object
  :
  : @return the URI as xs:string
  :
  :)
 declare function uri:serialize(
-  $uri as element(uri-format:uri)) as xs:string
-{
-  let $formatted-uri :=
-    if ( schema:is-validated( $uri ) )
-      then $uri
-      else validate { $uri }
-  return uri:serialize-impl( $formatted-uri )
-};
+  $uri as object()) as xs:string external;
 
-declare %private function uri:serialize-impl(
-  $uri as element()) as xs:string external;

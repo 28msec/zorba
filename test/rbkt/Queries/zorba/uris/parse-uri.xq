@@ -1,7 +1,6 @@
 import module namespace uri = "http://www.zorba-xquery.com/modules/uri";
 
-let $xml-uri-test := fn:doc("uri-source.xml")//uri-element/text
+let $xml-uri-test := fn:doc("uri-source.xml")//uri-element/text/text()
 
 for $uri in $xml-uri-test
-return  ( uri:parse($uri), "
-")
+return uri:parse($uri)

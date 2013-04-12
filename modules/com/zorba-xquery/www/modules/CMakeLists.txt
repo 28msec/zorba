@@ -82,8 +82,6 @@ DECLARE_ZORBA_SCHEMA(FILE xml-options.xsd
   URI "http://www.zorba-xquery.com/modules/xml-options")
 DECLARE_ZORBA_MODULE(FILE uri.xq VERSION 1.0
   URI "http://www.zorba-xquery.com/modules/uri")
-DECLARE_ZORBA_SCHEMA(FILE uri-format.xsd
-  URI "http://www.zorba-xquery.com/modules/uri-format")
 DECLARE_ZORBA_MODULE(FILE xml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xml")
 DECLARE_ZORBA_MODULE(FILE xqdoc.xq VERSION 2.0

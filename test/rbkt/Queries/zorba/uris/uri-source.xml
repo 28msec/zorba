@@ -532,4 +532,32 @@
     <query></query>
     <path-notation>localhost/Ãƒâ€¦ngstrÃƒÂ¶m/b/c</path-notation>
   </uri-element>
+  <uri-element>
+    <base></base>
+    <uri>file:opaque-uri-part#frag</uri>
+    <text>file:opaque-uri-part#frag</text>
+    <scheme>file</scheme>
+    <port>0</port>
+    <fragment>frag</fragment>
+    <host></host>
+    <authority></authority>
+    <path></path>
+    <user-info></user-info>
+    <query></query>
+    <path-notation>opaque-uri-part</path-notation>
+  </uri-element>
+  <uri-element>
+    <base></base>
+    <uri>file:text-file.txt</uri>
+    <text>file:text-file.txt</text>
+    <scheme>file</scheme>
+    <port>0</port>
+    <fragment></fragment>
+    <host></host>
+    <authority></authority>
+    <path></path>
+    <user-info></user-info>
+    <query></query>
+    <path-notation>text-file.txt</path-notation>
+  </uri-element>
 </uri-test>

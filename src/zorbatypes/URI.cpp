@@ -644,6 +644,7 @@ void URI::initialize(const zstring& uri, bool have_base)
       set_opaque_part(lTrimmedURI.substr(lIndex, lFragmentIdx - lIndex));
       set_fragment(lTrimmedURI.substr(lFragmentIdx+1, lTrimmedURILength - lFragmentIdx - 1));
     }
+    lIndex = lTrimmedURILength;
   }
   /**
    * Authority

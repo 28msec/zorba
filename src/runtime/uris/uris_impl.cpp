@@ -109,259 +109,124 @@ DecodeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t     lItemURI, lQName,
-                    lElementScheme, lElementSchemeSpecific,
-                    lElementAuthority, lElementUserInfo,
-                    lElementHost, lElementPort, lElementPath,
-                    lElementQuery, lElementFragment,
-                    lQNameUntyped, lQNameString, lQNameInt;
-  store::Item_t     lTextScheme, lTextSchemeSpecific, lTextAuthority,
-                    lTextUserInfo, lTextHost, lTextPort, lTextPath,
-                    lTextQuery, lTextFragment;
-  zstring           lStrURI, lStrHolder, lZNamespace;
-  const char        *lNamespace, *lXmlSchema;
-  char              lCharHost[11];
-  store::NsBindings lNsBindings;
+  store::Item_t              lItemURI, lName, lValue;
+  std::vector<store::Item_t> lNames;
+  std::vector<store::Item_t> lValues;
+  zorba::zstring             lStrURI, lStrHolder, lZKey, lZVal;
+  char                       lCharHost[11];
+  int                        lPort;
   PlanIteratorState* state;
   URI uri;
-  lNamespace = "http://www.zorba-xquery.com/modules/uri-format";
-  lZNamespace = zstring(lNamespace);
-  lXmlSchema = "http://www.w3.org/2001/XMLSchema";
   
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lItemURI, theChildren[0].getp(), planState);
   lItemURI->getStringValue2(lStrURI);
   uri = URI(lStrURI);
-  
-  GENV_ITEMFACTORY->createQName(
-    lQName,
-    lNamespace,
-    "uri-format",
-    "uri");
-    
-  GENV_ITEMFACTORY->createQName(
-    lQNameUntyped,
-    lXmlSchema,
-    "xsd",
-    "untyped");
-    
-  GENV_ITEMFACTORY->createQName(
-    lQNameString,
-    lXmlSchema,
-    "xs",
-    "string");
-    
-  GENV_ITEMFACTORY->createQName(
-    lQNameInt,
-    lXmlSchema,
-    "xs",
-    "int");
-  
-  GENV_ITEMFACTORY->createElementNode(
-    result,
-    nullptr,
-    lQName,
-    lQNameUntyped,
-    false,
-    false,
-    lNsBindings,
-    lZNamespace);
-  
-  lStrHolder = uri.get_scheme();  
-  if(lStrHolder.str() != ""){
-    GENV_ITEMFACTORY->createQName(
-      lQName,
-      lNamespace,
-      "uri-format",
-      "scheme");
-    
-    GENV_ITEMFACTORY->createElementNode(
-      lElementScheme,
-      result.getp(),
-      lQName,
-      lQNameUntyped,
-      false,
-      false,
-      lNsBindings,
-      lZNamespace);
-    
-    GENV_ITEMFACTORY->createTextNode(
-      lTextScheme,
-      lElementScheme.getp(),
-      lStrHolder);
+
+  lStrHolder = uri.get_scheme();
+  if(lStrHolder.str() != "")
+  {
+    lZKey = zorba::zstring("scheme");
+    lZVal = uri.get_scheme();
+    GENV_ITEMFACTORY->createString(lName, lZKey);
+    GENV_ITEMFACTORY->createString(lValue, lZVal);
+    lNames.push_back(lName);
+    lValues.push_back(lValue);
   }
-    
+
+  lStrHolder = uri.get_opaque_part();
+  if(lStrHolder.str() != "")
+  {
+    lZKey = zorba::zstring("opaque-part");
+    lZVal = uri.get_opaque_part();
+    GENV_ITEMFACTORY->createString(lName, lZKey);
+    GENV_ITEMFACTORY->createString(lValue, lZVal);
+    lNames.push_back(lName);
+    lValues.push_back(lValue);
+  }
+
   lStrHolder = uri.get_encoded_reg_based_authority();
-  if(lStrHolder.str() != ""){
-    GENV_ITEMFACTORY->createQName(
-      lQName,
-      lNamespace,
-      "uri-format",
-      "authority");
-    
-    GENV_ITEMFACTORY->createElementNode(
-      lElementAuthority,
-      result.getp(),
-      lQName,
-      lQNameString,
-      true,
-      false,
-      lNsBindings,
-      lZNamespace);
-      
-    GENV_ITEMFACTORY->createTextNode(
-      lTextAuthority,
-      lElementAuthority.getp(),
-      lStrHolder);
+  if(lStrHolder.str() != "")
+  {
+    lZKey = zorba::zstring("authority");
+    lZVal = uri.get_encoded_reg_based_authority();
+    GENV_ITEMFACTORY->createString(lName, lZKey);
+    GENV_ITEMFACTORY->createString(lValue, lZVal);
+    lNames.push_back(lName);
+    lValues.push_back(lValue);
   }
 
   lStrHolder = uri.get_encoded_user_info();
-  if(lStrHolder.str() != ""){
-    GENV_ITEMFACTORY->createQName(
-      lQName,
-      lNamespace,
-      "uri-format",
-      "user-info");
-    
-    GENV_ITEMFACTORY->createElementNode(
-      lElementUserInfo,
-      result.getp(),
-      lQName,
-      lQNameString,
-      true,
-      false,
-      lNsBindings,
-      lZNamespace);
-      
-    GENV_ITEMFACTORY->createTextNode(
-      lTextUserInfo,
-      lElementUserInfo.getp(),
-      lStrHolder);
+  if(lStrHolder.str() != "")
+  {
+    lZKey = zorba::zstring("user-info");
+    lZVal = uri.get_encoded_user_info();
+    GENV_ITEMFACTORY->createString(lName, lZKey);
+    GENV_ITEMFACTORY->createString(lValue, lZVal);
+    lNames.push_back(lName);
+    lValues.push_back(lValue);
   }
   
   lStrHolder = uri.get_host();
-  if(lStrHolder.str() != ""){
-    GENV_ITEMFACTORY->createQName(
-      lQName,
-      lNamespace,
-      "uri",
-      "host");
-    
-    GENV_ITEMFACTORY->createElementNode(
-      lElementHost,
-      result.getp(),
-      lQName,
-      lQNameString,
-      true,
-      false,
-      lNsBindings,
-      lZNamespace);
-    
-    GENV_ITEMFACTORY->createTextNode(
-      lTextHost,
-      lElementHost.getp(),
-      lStrHolder);
+  if(lStrHolder.str() != "")
+  {
+    lZKey = zorba::zstring("host");
+    lZVal = uri.get_host();
+    GENV_ITEMFACTORY->createString(lName, lZKey);
+    GENV_ITEMFACTORY->createString(lValue, lZVal);
+    lNames.push_back(lName);
+    lValues.push_back(lValue);
   }
   
   sprintf(lCharHost,"%d", uri.get_port());
   lStrHolder = zstring(lCharHost);
-  if(uri.get_port() != 0){
-    GENV_ITEMFACTORY->createQName(
-      lQName,
-      lNamespace,
-      "uri-format",
-      "port");
-    
-    GENV_ITEMFACTORY->createElementNode(
-      lElementPort,
-      result.getp(),
-      lQName,
-      lQNameInt,
-      true,
-      false,
-      lNsBindings,
-      lZNamespace);
-      
-    GENV_ITEMFACTORY->createTextNode(
-      lTextPort,
-      lElementPort.getp(),
-      lStrHolder);
+  if(uri.get_port() != 0)
+  {
+    lZKey = zorba::zstring("port");
+    lPort = uri.get_port();
+    GENV_ITEMFACTORY->createString(lName, lZKey);
+    GENV_ITEMFACTORY->createInt(lValue, lPort);
+    lNames.push_back(lName);
+    lValues.push_back(lValue);
   }
   
   lStrHolder = uri.get_encoded_path();
-  if(lStrHolder.str() != ""){  
-    GENV_ITEMFACTORY->createQName(
-      lQName,
-      lNamespace,
-      "uri-format",
-      "path");
-    
-    GENV_ITEMFACTORY->createElementNode(
-      lElementPath,
-      result.getp(),
-      lQName,
-      lQNameString,
-      true,
-      false,
-      lNsBindings,
-      lZNamespace);
-      
-    GENV_ITEMFACTORY->createTextNode(
-      lTextPath,
-      lElementPath.getp(),
-      lStrHolder);
+  if(lStrHolder.str() != "")
+  {
+    lZKey = zorba::zstring("path");
+    lZVal = uri.get_encoded_path();
+    GENV_ITEMFACTORY->createString(lName, lZKey);
+    GENV_ITEMFACTORY->createString(lValue, lZVal);
+    lNames.push_back(lName);
+    lValues.push_back(lValue);
   }
   
   lStrHolder = uri.get_encoded_query();
-  if(lStrHolder.str() != ""){
-    GENV_ITEMFACTORY->createQName(
-      lQName,
-      lNamespace,
-      "uri-format",
-      "query");
-    
-    GENV_ITEMFACTORY->createElementNode(
-      lElementQuery,
-      result.getp(),
-      lQName,
-      lQNameString,
-      true,
-      false,
-      lNsBindings,
-      lZNamespace);
-      
-    GENV_ITEMFACTORY->createTextNode(
-      lTextQuery,
-      lElementQuery.getp(),
-      lStrHolder);
+  if(lStrHolder.str() != "")
+  {
+    lZKey = zorba::zstring("query");
+    lZVal = uri.get_encoded_query();
+    GENV_ITEMFACTORY->createString(lName, lZKey);
+    GENV_ITEMFACTORY->createString(lValue, lZVal);
+    lNames.push_back(lName);
+    lValues.push_back(lValue);
   }
   
   lStrHolder = uri.get_encoded_fragment();
-  if(lStrHolder.str() != ""){
-    GENV_ITEMFACTORY->createQName(
-      lQName,
-      lNamespace,
-      "uri-format",
-      "fragment");
-    
-    GENV_ITEMFACTORY->createElementNode(
-      lElementFragment,
-      result.getp(),
-      lQName,
-      lQNameString,
-      true,
-      false,
-      lNsBindings,
-      lZNamespace);
-      
-    GENV_ITEMFACTORY->createTextNode(
-      lTextFragment,
-      lElementFragment.getp(),
-      lStrHolder);
+  if(lStrHolder.str() != "")
+  {
+    lZKey = zorba::zstring("fragment");
+    lZVal = uri.get_encoded_fragment();
+    GENV_ITEMFACTORY->createString(lName, lZKey);
+    GENV_ITEMFACTORY->createString(lValue, lZVal);
+    lNames.push_back(lName);
+    lValues.push_back(lValue);
   }
-    
-  STACK_PUSH( result, state );
+
+  GENV_ITEMFACTORY->createJSONObject(result, lNames, lValues);
+
+  STACK_PUSH(result, state );
 
   STACK_END (state);
 }
@@ -371,60 +236,53 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItemURI, lItem, lItem2;
-  zstring       lStrVal, lTextVal, lName;
-  store::Iterator_t    lChildren, lGrandChildren;
-  URI           uri = URI();
-  int           lIntPort = 0;
+  store::Item_t     lItemURI, lItemKey;
+  zorba::zstring    lStrValue, lStrKey, lStrRes;
+  store::Iterator_t lKeys;
+  URI               uri = URI();
+  int               lIntPort = 0;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lItemURI, theChildren[0].getp(), planState);
 
-  lStrVal = lItemURI->getNodeName()->getLocalName();
-  if(lStrVal == "uri") {
-    lChildren = lItemURI->getChildren();
-    if(!lChildren.isNull()){
-      lChildren->open();
-      while(lChildren->next(lItem)){
-        lGrandChildren = lItem->getChildren();
-        if(!lGrandChildren.isNull()){
-          lGrandChildren->open();
-          if(lGrandChildren->next(lItem2)){
-            lTextVal = lItem2->getStringValue();
-          } else
-            lTextVal = "";
-          lGrandChildren->close();
-        }
-        lName = lItem->getNodeName()->getLocalName();
-        if(lName == "scheme" && lTextVal != ""){
-          uri.set_scheme(lTextVal);
-        } else if(lName == "authority" && lTextVal != ""){
-          uri.set_reg_based_authority(lTextVal);
-        } else if(lName == "user-info" && lTextVal != ""){
-          uri.set_user_info(lTextVal);
-        } else if(lName == "host" && lTextVal != ""){
-          uri.set_host(lTextVal);
-        } else if(lName == "port"){
-          sscanf(lTextVal.str().c_str(), "%d", &lIntPort);
+  if(lItemURI->isJSONObject()) {
+    lKeys = lItemURI->getObjectKeys();
+    if(!lKeys.isNull()){
+      lKeys->open();
+      while(lKeys->next(lItemKey)){
+        lStrKey = lItemKey->getStringValue();
+        lStrValue = lItemURI->getObjectValue(lItemKey)->getStringValue();
+        if(lStrKey == "scheme" && lStrValue != ""){
+          uri.set_scheme(lStrValue);
+        } else if(lStrKey == "opaque-part" && lStrValue != ""){
+          uri.set_opaque_part(lStrValue);
+        } else if(lStrKey == "authority" && lStrValue != ""){
+          uri.set_reg_based_authority(lStrValue);
+        } else if(lStrKey == "user-info" && lStrValue != ""){
+          uri.set_user_info(lStrValue);
+        } else if(lStrKey == "host" && lStrValue != ""){
+          uri.set_host(lStrValue);
+        } else if(lStrKey == "port"){
+          sscanf(lStrValue.str().c_str(), "%d", &lIntPort);
           if(lIntPort != 0){
             uri.set_port(lIntPort);
           }
-        } else if(lName == "path" && lTextVal != ""){
-          uri.set_path(lTextVal);
-        } else if(lName == "query" && lTextVal != ""){
-          uri.set_query(lTextVal);
-        } else if(lName == "fragment" && lTextVal != ""){
-          uri.set_fragment(lTextVal);
+        } else if(lStrKey == "path" && lStrValue != ""){
+          uri.set_path(lStrValue);
+        } else if(lStrKey == "query" && lStrValue != ""){
+          uri.set_query(lStrValue);
+        } else if(lStrKey == "fragment" && lStrValue != ""){
+          uri.set_fragment(lStrValue);
         }
       }
-      lChildren->close();
+      lKeys->close();
     }
   }
   
-  lStrVal = zstring(uri.toString());
-  STACK_PUSH(GENV_ITEMFACTORY->createString(result, lStrVal), state );
+  lStrRes = zorba::zstring(uri.toString());
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, lStrRes), state );
 
   STACK_END (state);
 }

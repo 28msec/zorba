@@ -68,11 +68,11 @@ public:
 };
 
 
-//fn-zorba-uri:serialize-impl
-class fn_zorba_uri_serialize_impl : public function
+//fn-zorba-uri:serialize
+class fn_zorba_uri_serialize : public function
 {
 public:
-  fn_zorba_uri_serialize_impl(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_uri_serialize(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

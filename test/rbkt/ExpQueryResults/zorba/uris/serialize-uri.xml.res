@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-http:///
+http:/
  http://www.zorba-xquery.com/
  http://www.zorba-xquery.com/?abc=true
  http://www.zorba-xquery.com:8080/?abc=true
@@ -34,6 +34,8 @@ http:///
  http://www.example.com/dir/file
  http://www.msb.de
  http://www.msb.de/lib/helpers
- file:///d:/a/b/c
+ file:/d:/a/b/c
  file://localhost/d:/a/b/c
  file://localhost/Ãƒâ€¦ngstrÃƒÂ¶m/b/c
+ file:opaque-uri-part#frag
+ file:text-file.txt
