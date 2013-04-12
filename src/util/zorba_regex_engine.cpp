@@ -16,19 +16,18 @@
 
 #include "stdafx.h"
 
-#include <ctype.h>
-#include <string.h>
+#include <cctype>
+#include <cstring>
 
+#include "ascii_util.h"
 #include "diagnostics/xquery_diagnostics.h"
-#include "util/ascii_util.h"
-#include "util/unicode_util.h"
-#include "util/utf8_string.h"
+#include "unicode_util.h"
+#include "utf8_string.h"
+#include "zorba_regex_engine.h"
 #include "zorbatypes/chartype.h"
 
-#include "regex_xquery.h"
-
 namespace zorba {
-  namespace regex_xquery{
+  namespace regex_engine{
 //ascii regular expression matching
 
 /*http://www.w3.org/TR/xmlschema-2/#regexs
@@ -2525,6 +2524,6 @@ bool CRegexXQuery_pinstart::match_internal(const char *source, int *start_from_b
   return false;
 }
 
-  }//end namespace regex_xquery
+  }//end namespace regex_engine
 }//end namespace zorba
 /* vim:set et sw=2 ts=2: */

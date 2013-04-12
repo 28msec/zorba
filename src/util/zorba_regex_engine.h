@@ -21,7 +21,7 @@
 #include <vector>
 #include <util/unicode_util.h>
 namespace zorba {
-  namespace regex_xquery{
+  namespace regex_engine{
 
 //matching flags
 #define REGEX_ASCII_CASE_INSENSITIVE    1   //i
@@ -456,7 +456,7 @@ private:
 };
 
 }
-}//end namespace zorba::regex_xquery
+}//end namespace zorba::regex_engine
 
 #endif
 /* vim:set et sw=2 ts=2: */
