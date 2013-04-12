@@ -474,6 +474,7 @@ public:
 
 private:
   U_NAMESPACE_QUALIFIER RegexMatcher *matcher_;
+  string s_;
 
   enum re_type_t {
     re_is_match,                        // RE specifies what to match

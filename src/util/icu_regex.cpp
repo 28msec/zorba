@@ -696,9 +696,8 @@ bool regex::replace_all( char const *in, char const *replacement,
 
 void regex::set_string( char const *s, size_type s_len ) {
   ZORBA_ASSERT( matcher_ );
-  string u_s;
-  to_string( s, s_len, &u_s );
-  matcher_->reset( u_s );
+  to_string( s, s_len, &s_ );
+  matcher_->reset( s_ );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
