@@ -38,8 +38,9 @@
 
 namespace zorba {
 
-
 ///////////////////////////////////////////////////////////////////////////////
+
+Decimal::value_type const Decimal::round_precision_limit( 64 );
 
 void Decimal::parse( char const *s, value_type *result, int parse_options ) {
   if ( !*s )
@@ -338,6 +339,11 @@ template Decimal Decimal::round( INTEGER_IMPL_ULL const& ) const;
 
 Decimal::value_type Decimal::round2( value_type const &v,
                                      value_type const &precision ) {
+  if ( precision < -round_precision_limit )
+    return round2( v, -round_precision_limit );
+  if ( precision > round_precision_limit )
+    return round2( v, round_precision_limit );
+
   value_type const exp( value_type(10).pow( precision ) );
   value_type result( v * exp );
   result += MAPM::get0_5();
@@ -357,6 +363,11 @@ template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_ULL const& ) const;
 
 Decimal::value_type Decimal::roundHalfToEven2( value_type const &v,
                                                value_type const &precision ) {
+  if ( precision < -round_precision_limit )
+    return roundHalfToEven2( v, -round_precision_limit );
+  if ( precision > round_precision_limit )
+    return roundHalfToEven2( v, round_precision_limit );
+
   value_type const exp( value_type(10).pow( precision ) );
   value_type result( v * exp );
   bool const aHalfVal = (result - MAPM::get0_5()) == result.floor();
