@@ -15,14 +15,17 @@
  */
 #include "stdafx.h"
 
+#include <zorba/config.h>
+
+#ifndef ZORBA_NO_ICU
+
 #include <cstring>
 #include <vector>
 
 #include <zorba/diagnostic_list.h>
-#include "diagnostics/xquery_exception.h"
-
 #include "diagnostics/assert.h"
 #include "diagnostics/dict.h"
+#include "diagnostics/xquery_exception.h"
 
 #include "ascii_util.h"
 #include "cxx_util.h"
@@ -32,13 +35,12 @@
 #define INVALID_RE_EXCEPTION(...) \
   XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS( __VA_ARGS__ ) )
 
-#ifndef ZORBA_NO_ICU
-# include <unicode/uversion.h>
+#include <unicode/uversion.h>
 U_NAMESPACE_USE
 
-# ifndef U_ICU_VERSION_MAJOR_NUM
-#   error "U_ICU_VERSION_MAJOR_NUM not defined"
-# elif U_ICU_VERSION_MAJOR_NUM < 4
+#ifndef U_ICU_VERSION_MAJOR_NUM
+# error "U_ICU_VERSION_MAJOR_NUM not defined"
+#elif U_ICU_VERSION_MAJOR_NUM < 4
     //
     // UREGEX_LITERAL is only in ICU since 4.0.  For earlier versions, we
     // define it ourselves.  Of course it won't have any effect since it's not
@@ -46,8 +48,8 @@ U_NAMESPACE_USE
     // though the constant is defined in 4.0, it's not actually implemented as
     // of 4.4.
     //
-#   define UREGEX_LITERAL 16
-# endif /* U_ICU_VERSION_MAJOR_NUM */
+# define UREGEX_LITERAL 16
+#endif /* U_ICU_VERSION_MAJOR_NUM */
 
 using namespace std;
 
@@ -559,7 +561,6 @@ unescaped_char:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-
 namespace unicode {
 
 void regex::compile( string const &u_pattern, char const *flags,
@@ -582,10 +583,27 @@ void regex::compile( string const &u_pattern, char const *flags,
   }
 }
 
+int regex::get_group_count() {
+  ZORBA_ASSERT( matcher_ );
+  return matcher_->groupCount();
+}
+
+int regex::get_group_start( int group ) {
+  ZORBA_ASSERT( matcher_ );
+  UErrorCode status = U_ZERO_ERROR;
+  return matcher_->start( group, status );
+}
+
+int regex::get_group_end( int group ) {
+  ZORBA_ASSERT( matcher_ );
+  UErrorCode status = U_ZERO_ERROR;
+  return matcher_->end( group, status );
+}
+
 bool regex::match_part( string const &s ) {
   ZORBA_ASSERT( matcher_ );
   matcher_->reset( s );
-  return matcher_->find() != 0;
+  return !!matcher_->find();
 }
 
 bool regex::match_whole( string const &s ) {
@@ -645,6 +663,19 @@ bool regex::next( re_type_t re_type, string const &s, size_type *pos,
   return false;
 }
 
+bool regex::next_match( bool *reached_end ) {
+  ZORBA_ASSERT( matcher_ );
+  bool const found = !!matcher_->find();
+  if ( reached_end ) {
+#if U_ICU_VERSION_MAJOR_NUM >= 4
+    *reached_end = !!matcher_->hitEnd();
+#else
+    *reached_end = true;
+#endif /* U_ICU_VERSION_MAJOR_NUM */
+  }
+  return found;
+}
+
 bool regex::replace_all( string const &in, string const &replacement,
                          string *out ) {
   ZORBA_ASSERT( matcher_ );
@@ -663,290 +694,17 @@ bool regex::replace_all( char const *in, char const *replacement,
           replace_all( u_in, u_replacement, out );
 }
 
-void regex::set_string( char const *in, size_type len ) {
+void regex::set_string( char const *s, size_type s_len ) {
   ZORBA_ASSERT( matcher_ );
-  to_string( in, len, &s_in_ );
-  matcher_->reset( s_in_ );
+  string u_s;
+  to_string( s, s_len, &u_s );
+  matcher_->reset( u_s );
 }
-
-bool regex::find_next_match( bool *reachedEnd ) {
-  ZORBA_ASSERT( matcher_ );
-  UBool retfind = matcher_->find();
-  if ( reachedEnd ) {
-#if U_ICU_VERSION_MAJOR_NUM >= 4
-    *reachedEnd = matcher_->hitEnd() != 0;
-#else
-    *reachedEnd = true;
-#endif
-  }
-  return retfind != 0;
-}
-
-int regex::get_pattern_group_count() {
-  ZORBA_ASSERT( matcher_ );
-  return matcher_->groupCount();
-}
-
-int regex::get_match_start( int groupId ) {
-  ZORBA_ASSERT( matcher_ );
-  UErrorCode status = U_ZERO_ERROR;
-  return matcher_->start( groupId, status );
-}
-
-int regex::get_match_end( int groupId ) {
-  ZORBA_ASSERT( matcher_ );
-  UErrorCode status = U_ZERO_ERROR;
-  return matcher_->end( groupId, status );
-}
-
-} // namespace unicode
-} // namespace zorba
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#else /* ZORBA_NO_ICU */
-
-#include "zorbatypes/zstring.h"
-
-namespace zorba {
-//no convertion
-void convert_xquery_re( zstring const &xq_re, zstring *lib_re,
-                        char const *flags)
-{
-  *lib_re = xq_re;
-}
-
-namespace unicode {
-
-uint32_t regex::parse_regex_flags(const char* flag_cstr) 
-{
-  uint32_t flags = 0;
-  for (const char* p = flag_cstr; *p != '\0'; ++p) 
-  {
-    switch (*p) 
-    {
-    case 'i': flags |= REGEX_ASCII_CASE_INSENSITIVE; break;
-    case 's': flags |= REGEX_ASCII_DOTALL; break;
-    case 'm': flags |= REGEX_ASCII_MULTILINE; break;
-    case 'x': flags |= REGEX_ASCII_NO_WHITESPACE; break;
-    case 'q': flags |= REGEX_ASCII_LITERAL; break;
-    default:
-      throw XQUERY_EXCEPTION( err::FORX0001, ERROR_PARAMS( *p ) );
-      break;
-    }
-  }
-  return flags;
-}
-
-void regex::compile( char const *pattern, char const *flags)
-{
-  parsed_flags = parse_regex_flags(flags);
-  regex_xquery::CRegexXQuery_parser regex_parser;
-  regex_matcher = regex_parser.parse(pattern, parsed_flags);
-  if(!regex_matcher)
-    throw INVALID_RE_EXCEPTION(pattern);
-}
-
-bool regex::match_part( char const *s )
-{
-  bool  retval;
-  int   match_pos;
-  int   matched_len;
-
-  retval = regex_matcher->match_anywhere(s, parsed_flags, &match_pos, &matched_len);
-
-  return retval;
-}
-
-bool regex::next_match( char const *s, size_type *pos, zstring *match )
-{
-  bool  retval;
-  int   match_pos;
-  int   matched_len;
-
-  retval = regex_matcher->match_anywhere(s+*pos, parsed_flags, &match_pos, &matched_len);
-  if(retval)
-  {
-    match->assign(s+*pos+match_pos, matched_len);
-    *pos += match_pos + matched_len;
-  }
-  return retval;
-}
-
-bool regex::next_token( char const *s, size_type *pos, zstring *token,
-                  bool *matched)
-{
-  if(!s[*pos])
-    return false;
-  bool  retval;
-  int   match_pos;
-  int   matched_len;
-
-  retval = regex_matcher->match_anywhere(s+*pos, parsed_flags, &match_pos, &matched_len);
-  if(retval)
-  {
-    if(token)
-      token->assign(s+*pos, match_pos);
-    *pos += match_pos + matched_len;
-    if(matched)
-      *matched = true;
-    return true;
-  }
-  else
-  {
-    if(token)
-      token->assign(s+*pos);
-    *pos += strlen(s+*pos);
-    if(matched)
-      *matched = false;
-    return true;
-  }
-}
-
-bool regex::match_whole( char const *s )
-{
-  bool  retval;
-  int   matched_pos;
-  int   matched_len;
-
-  retval = regex_matcher->match_anywhere(s, parsed_flags|REGEX_ASCII_WHOLE_MATCH, &matched_pos, &matched_len);
-  if(!retval)
-    return false;
-  return true;
-}
-
-bool regex::replace_all( char const *in, char const *replacement, zstring *result )
-{
-  int   match_pos;
-  int   matched_len;
-
-  const char  *start_str = in;
-  int  subregex_count = regex_matcher->get_indexed_regex_count();
-  bool retval = false;
-
-  while(regex_matcher->match_anywhere(start_str, parsed_flags, &match_pos, &matched_len))
-  {
-    if(match_pos)
-      result->append(start_str , match_pos);
-    retval = true;
-    const char *temprepl = replacement;
-    const char *submatched_source;
-    int   submatched_len;
-    int index;
-    while(*temprepl)
-    {
-      //look for dollars
-      if(*temprepl == '\\')
-      {
-        if(!(parsed_flags & REGEX_ASCII_LITERAL))
-        {
-          temprepl++;
-          if(!*temprepl) 
-            temprepl--;
-          else if((*temprepl != '\\') && (*temprepl != '$'))//Invalid replacement string.
-            throw XQUERY_EXCEPTION( err::FORX0004, ERROR_PARAMS( replacement ) );
-        }
-        result->append(1, *temprepl);
-        temprepl++;
-        continue;
-      }
-      if((*temprepl == '$') && !(parsed_flags & REGEX_ASCII_LITERAL))
-      {
-        temprepl++;
-        index = 0;
-        int   nr_digits = 0;
-        while(isdigit(*temprepl))
-        {
-          if(nr_digits && ((index*10 + (*temprepl)-'0') > subregex_count))
-            break;
-          index = index*10 + (*temprepl)-'0';
-          temprepl++;
-          nr_digits++;
-        }
-        if(!nr_digits)//Invalid replacement string.
-          throw XQUERY_EXCEPTION( err::FORX0004, ERROR_PARAMS( replacement ) );
-        else if(!index)
-        {
-          result->append(start_str+match_pos, matched_len);
-        }
-        else if(regex_matcher->get_indexed_match(index, &submatched_source, &submatched_len))
-        {
-          if(submatched_source && submatched_len)
-            result->append(submatched_source, submatched_len);
-        }
-      }
-      else
-      {
-        result->append(1, *temprepl);
-        temprepl++;
-      }
-    }
-    start_str += match_pos + matched_len;
-  }
-  result->append(start_str);
-
-  return retval;
-}
-
-void regex::set_string( const char* in, size_type len )
-{
-  s_in_.assign(in, len);
-  m_pos = 0;
-  m_match_pos = 0;
-  m_matched_len = 0;
-}
-
-bool regex::find_next_match( bool *reachedEnd )
-{
-  bool  retval;
-
-  retval = regex_matcher->match_anywhere(s_in_.c_str()+m_pos, parsed_flags, &m_match_pos, &m_matched_len);
-  if(retval)
-  {
-    m_match_pos += m_pos;
-    m_pos = m_match_pos + m_matched_len;
-  }
-  else
-  {
-    m_pos = s_in_.length();
-    m_match_pos = 0;
-    m_matched_len = 0;
-  }
-  if(reachedEnd)
-    *reachedEnd = regex_matcher->get_reachedEnd();
-  return retval;
-}
-
-int regex::get_pattern_group_count()
-{
-  return (int)regex_matcher->get_indexed_regex_count();
-}
-
-bool regex::get_match_start_end_bytes( int groupId, int *start, int *end )
-{
-  *start = -1;
-  *end = -1;
-  if(groupId == 0)
-  {
-    *start = m_match_pos;
-    *end = m_match_pos + m_matched_len;
-    return true;
-  }
-  if(groupId > (int)regex_matcher->get_indexed_regex_count())
-    return false;
-  const char *submatched_source;
-  int   submatched_len;
-  if(!regex_matcher->get_indexed_match(groupId, &submatched_source, &submatched_len))
-    return false;
-  *start = submatched_source - s_in_.c_str();
-  *end = *start + submatched_len;
-  return true;
-}
-
 } // namespace unicode
 } // namespace zorba
+
 #endif /* ZORBA_NO_ICU */
-
-///////////////////////////////////////////////////////////////////////////////
-
 /* vim:set et sw=2 ts=2: */
