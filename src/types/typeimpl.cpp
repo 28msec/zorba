@@ -903,19 +903,27 @@ bool NodeXQType::is_subtype(
       {
         store::Item_t typeName;
         bool nillable;
-        tm->getSchema()->getTypeNameFromElementName(get_node_name(), typeName, nillable, loc);
+        Schema* schema = tm->getSchema();
+        if ( schema )
+        {
+          schema->getTypeNameFromElementName(get_node_name(), typeName, nillable, loc);
 
-        xqtref_t newSubType = tm->getSchema()->createXQTypeFromTypeName(tm, typeName);
-        return TypeOps::is_subtype(tm, *theContentType, *newSubType);
+          xqtref_t newSubType = schema->createXQTypeFromTypeName(tm, typeName);
+          return TypeOps::is_subtype(tm, *theContentType, *newSubType);
+        }
       }
 
       if ( get_node_kind()==store::StoreConsts::attributeNode )
       {
         store::Item_t typeName;
-        tm->getSchema()->getTypeNameFromAttributeName(get_node_name(), typeName, loc);
+        Schema* schema = tm->getSchema();
+        if ( schema )
+        {
+          schema->getTypeNameFromAttributeName(get_node_name(), typeName, loc);
 
-        xqtref_t newSubType = tm->getSchema()->createXQTypeFromTypeName(tm, typeName);
-        return TypeOps::is_subtype(tm, *theContentType, *newSubType);
+          xqtref_t newSubType = schema->createXQTypeFromTypeName(tm, typeName);
+          return TypeOps::is_subtype(tm, *theContentType, *newSubType);
+        }
       }
     }
 
