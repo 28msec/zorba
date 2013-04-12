@@ -1512,20 +1512,11 @@ expr* normalize_fo_arg(
   {
     if (TypeOps::is_subtype(tm, *paramType, *theRTM.ANY_ATOMIC_TYPE_STAR, loc))
     {
-      if (func->getKind() == FunctionConsts::FN_JSONIQ_VALUE_2)
-      {
-        argExpr = wrap_in_type_match(argExpr,
-                                         paramType,
-                                         loc,
-                                         TREAT_TYPE_MATCH);
-      }
-      else
-      {
-        argExpr = wrap_in_type_promotion(argExpr,
-                                         paramType,
-                                         PROMOTE_FUNC_PARAM,
-                                         func->getName());
-      }
+      argExpr = wrap_in_type_promotion(argExpr,
+                                       paramType,
+                                       PROMOTE_FUNC_PARAM,
+                                       func->getName());
+      
     }
     else if (paramType->type_kind() == XQType::FUNCTION_TYPE_KIND)
     {
