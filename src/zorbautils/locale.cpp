@@ -1414,7 +1414,7 @@ zstring get_month_name( unsigned month_index, iso639_1::type lang,
   if ( name.empty() && lang == iso639_1::en ) {
     static char const *const name_str[] = {
       "January", "February", "March", "April", "May", "June",
-      "July", "August", "Sepember", "October", "November", "December"
+      "July", "August", "September", "October", "November", "December"
     };
     name = name_str[ month_index ];
   }

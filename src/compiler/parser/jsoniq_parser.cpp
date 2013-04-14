@@ -3713,7 +3713,7 @@ namespace zorba {
 
 /* Line 690 of lalr1.cc  */
 #line 1626 "/home/colea/xquery/new-jsoniq/src/compiler/parser/jsoniq_parser.y"
-    { (yyval.strval) = "infinty"; }
+    { (yyval.strval) = "infinity"; }
     break;
 
   case 98:
