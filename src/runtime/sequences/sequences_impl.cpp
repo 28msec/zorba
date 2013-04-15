@@ -473,28 +473,30 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   store::Item_t startPosItem;
   xs_long startPos;
   store::Item_t lengthItem;
+  xs_double startPosDouble; 
 
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
 
   state->theIsChildReset = false;
-
+  
   CONSUME(startPosItem, 1);
-
+  startPosDouble = startPosItem->getDoubleValue();
   //If starting position is set to +INF return empty sequence
-  if (startPosItem->getDoubleValue().isPosInf())
+  if (startPosDouble.isPosInf())
     goto done;
 
   startPos =
-  static_cast<xs_long>(startPosItem->getDoubleValue().round().getNumber()) - 1;
+  static_cast<xs_long>(startPosDouble.round().getNumber()) - 1;
 
   if (theChildren.size() == 3)
   {
     CONSUME(lengthItem, 2);
-    if (lengthItem->getDoubleValue().isPosInf())
+    xs_double lengthDouble = lengthItem->getDoubleValue();
+    if (lengthDouble.isPosInf())
     {
       //if startPos is -INF and length is +INF return empty sequence because -INF + INF = NaN
-      if (startPosItem->getDoubleValue().isNegInf())
+      if (startPosDouble.isNegInf())
         goto done;
 
       //the remaining is set as +INF to return all the values after the start position
@@ -503,7 +505,7 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
     }
     else
       state->theRemaining =
-      static_cast<xs_long>(lengthItem->getDoubleValue().round().getNumber());
+      static_cast<xs_long>(lengthDouble.round().getNumber());
   }
 
   if (startPos < 0)
