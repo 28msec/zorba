@@ -896,38 +896,6 @@ bool NodeXQType::is_subtype(
     if (supertype.theNillable == false && theNillable == true)
       return false;
 
-    // if the supertype is in a different TypeManager try to bring it on this TypeManager
-    if (tm != supertype.get_manager() )
-    {
-      if ( get_node_kind()==store::StoreConsts::elementNode )
-      {
-        store::Item_t typeName;
-        bool nillable;
-        Schema* schema = tm->getSchema();
-        store::Item* nodeName = get_node_name();
-        if ( schema && nodeName)
-        {
-          schema->getTypeNameFromElementName(nodeName, typeName, nillable, loc);
-
-          xqtref_t newSubType = schema->createXQTypeFromTypeName(tm, typeName);
-          return TypeOps::is_subtype(tm, *theContentType, *newSubType);
-        }
-      }
-
-      if ( get_node_kind()==store::StoreConsts::attributeNode )
-      {
-        store::Item_t typeName;
-        Schema* schema = tm->getSchema();
-        if ( schema )
-        {
-          schema->getTypeNameFromAttributeName(get_node_name(), typeName, loc);
-
-          xqtref_t newSubType = schema->createXQTypeFromTypeName(tm, typeName);
-          return TypeOps::is_subtype(tm, *theContentType, *newSubType);
-        }
-      }
-    }
-
     return TypeOps::is_subtype(tm, *theContentType, *supertype.theContentType);
   }
   else if (supertype.theContentType == NULL)
@@ -1497,24 +1465,10 @@ bool UserDefinedXQType::isSuperTypeOf(
 
   do
   {
-    if (getUDTKind() == subtype->getUDTKind())
+    if (getUDTKind() == subtype->getUDTKind() &&
+        getQName()->equals(subtype->getQName()))
     {
-      if ( !isAnonymous() && !subtype->isAnonymous() &&
-           subtype->getQName()->equals(subtype->getQName()) )
-      {
-        return true;
-      }
-
-      if ( isAnonymous() && subtype->isAnonymous() )
-      {
-        if (get_manager() == subtype->get_manager() )
-        {
-          if ( subtype->getQName()->equals(subtype->getQName()) )
-            return true;
-          else
-            ZORBA_ASSERT(false);
-        }
-      }
+      return true;
     }
 
     if (subtype->type_kind() == XQType::USER_DEFINED_KIND)
