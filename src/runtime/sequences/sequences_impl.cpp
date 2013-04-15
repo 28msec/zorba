@@ -474,6 +474,7 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   xs_long startPos;
   store::Item_t lengthItem;
   xs_double startPosDouble; 
+  xs_double lengthDouble;
 
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
@@ -482,33 +483,32 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   
   CONSUME(startPosItem, 1);
   startPosDouble = startPosItem->getDoubleValue();
+
   //If starting position is set to +INF return empty sequence
   if (startPosDouble.isPosInf())
     goto done;
 
   startPos =
-  static_cast<xs_long>(startPosDouble.round().getNumber()) - 1;
+    static_cast<xs_long>(startPosDouble.round().getNumber());
 
   if (theChildren.size() == 3)
   {
     CONSUME(lengthItem, 2);
-    xs_double lengthDouble = lengthItem->getDoubleValue();
+    lengthDouble = lengthItem->getDoubleValue();
     if (lengthDouble.isPosInf())
     {
       //if startPos is -INF and length is +INF return empty sequence because -INF + INF = NaN
       if (startPosDouble.isNegInf())
         goto done;
 
-      //the remaining is set as +INF to return all the values after the start position
-      state->theRemainingIsPosInf = true;
       state->theRemaining = 1;
     }
     else
       state->theRemaining =
-      static_cast<xs_long>(lengthDouble.round().getNumber());
+        static_cast<xs_long>(lengthDouble.round().getNumber());
   }
 
-  if (startPos < 0)
+  if (startPos < 1)
   {
     if (theChildren.size() >= 3)
       state->theRemaining += startPos;
@@ -521,13 +521,13 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
     goto done;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > 0; --startPos)
+  for (; startPos > 1; --startPos)
   {
     if (!CONSUME(result, 0))
       goto done;
   }
 
-  if (theChildren.size() < 3 || state->theRemainingIsPosInf)
+  if (theChildren.size() < 3 || lengthDouble.isPosInf())
   {
     while (CONSUME(result, 0))
     {

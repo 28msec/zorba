@@ -363,14 +363,12 @@ FnSubsequenceIteratorState::~FnSubsequenceIteratorState() {}
 void FnSubsequenceIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
   theRemaining = 0;
-  theRemainingIsPosInf = false;
   theIsChildReset = false;
 }
 
 void FnSubsequenceIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   theRemaining = 0;
-  theRemainingIsPosInf = false;
   theIsChildReset = false;
 }
 // </FnSubsequenceIterator>
