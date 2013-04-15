@@ -579,6 +579,10 @@ public:
 
   int is_odd(void) const {return m_apm_is_odd(cval());}
 
+  int is_zero(void) const {return (m_apm_compare(cval(), MM_Zero) == 0);}
+
+  int is_one(void) const {return (m_apm_compare(cval(), MM_One) == 0);}
+
   /* Functions: */
   MAPM abs(void) const
   {MAPM ret;m_apm_absolute_value(ret.val(),cval());return ret;}

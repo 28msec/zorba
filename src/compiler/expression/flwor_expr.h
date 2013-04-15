@@ -442,7 +442,10 @@ public:
 
   void set_nongrouping_ars(rebind_list_t& v) { theNonGroupVars = v; }
 
-  void removeNonGroupingVar(rebind_list_t::iterator ite) { theNonGroupVars.erase(ite); }
+  rebind_list_t::iterator removeNonGroupingVar(rebind_list_t::iterator& ite)
+  {
+    return theNonGroupVars.erase(ite);
+  }
 
   rebind_list_t::iterator beginGroupVars() { return theGroupVars.begin(); }
 

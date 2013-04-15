@@ -1,10 +1,27 @@
-xquery version "3.0";
+declare namespace an = "http://www.zorba-xquery.com/annotations";
 
-declare namespace o = "http://www.zorba-xquery.com/options/features";
-declare option o:enable "hof";
+declare %private variable $handlers := ();
 
-declare function local:Y($f) {
-function($a) { $f(local:Y($f), $a) }
+declare %an:sequential function local:add($handler)
+{
+  $handlers := ($handlers, $handler);
 };
 
-local:Y(function($f, $a) { $a, $f($a + 1) })(1)
+declare function local:emit($message)
+{
+  for $h in $handlers
+  return $h($message)
+};
+
+declare function local:handle($message)
+{
+  ("Message:", $message)
+};
+
+declare %an:sequential function local:test($message)
+{
+  local:add(local:handle#1);
+  local:emit($message)
+};
+
+local:test("This is a test.")

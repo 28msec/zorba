@@ -128,6 +128,25 @@ typedef U_NAMESPACE_QUALIFIER UnicodeString string;
 typedef zstring string;
 #endif /* ZORBA_NO_ICU */
 
+////////// constants //////////////////////////////////////////////////////////
+
+//
+// Various '1' digits.
+//
+code_point const CIRCLED_DIGIT_ONE                             = 0x2460;
+code_point const CIRCLED_IDEOGRAPH_ONE                         = 0x3280;
+code_point const DIGIT_ONE_FULL_STOP                           = 0x2488;
+code_point const DINGBAT_CIRCLED_SANS_SERIF_DIGIT_ONE          = 0x2780;
+code_point const DINGBAT_NEGATIVE_CIRCLED_DIGIT_ONE            = 0x2776;
+code_point const DINGBAT_NEGATIVE_CIRCLED_SANS_SERIF_DIGIT_ONE = 0x278A;
+code_point const DOUBLE_CIRCLED_DIGIT_ONE                      = 0x24F5;
+code_point const PARENTHESIZED_DIGIT_ONE                       = 0x2474;
+code_point const PARENTHESIZED_IDEOGRAPH_ONE                   = 0x3220;
+code_point const ROMAN_NUMERAL_ONE                             = 0x2160;
+code_point const SMALL_ROMAN_NUMERAL_ONE                       = 0x2170;
+code_point const SUBSCRIPT_ONE                                 = 0x2081;
+code_point const SUPERSCRIPT_ONE                               = 0x00B9;
+
 ////////// code-point checking ////////////////////////////////////////////////
 
 /**
@@ -135,9 +154,20 @@ typedef zstring string;
  *
  * @param cp The code-point to check.
  * @param c The Unicode category.
- * @return Returns \c return only if \a cp is in \a c.
+ * @return Returns \c true only if \a cp is in \a c.
  */
 bool is_category( code_point cp, category c );
+
+/**
+ * Checks whether a code-point is a grouping-separator.  From XQuery 3.0 F&O
+ * 4.6.1: a grouping-separator-sign is a non-alphanumeric character, that is a
+ * character whose Unicode category is other than Nd, Nl, No, Lu, Ll, Lt, Lm or
+ * Lo.
+ *
+ * @param cp The code-point to check.
+ * @return Returns \c true only if \a cp is a grouping-separator.
+ */
+bool is_grouping_separator( code_point cp );
 
 /**
  * Checks whether a code-point is in the Unicode Nd (Number, Decimal Digit)
@@ -146,7 +176,7 @@ bool is_category( code_point cp, category c );
  * @param cp The code-point to check.
  * @param zero If non-null, set to the code-point of the zero at the start of
  * the consecutive range of digits.
- * @return Returns \c true only if \c cp is an Nd.
+ * @return Returns \c true only if \a cp is an Nd.
  */
 bool is_Nd( code_point cp, code_point *zero = nullptr );
 
@@ -154,7 +184,7 @@ bool is_Nd( code_point cp, code_point *zero = nullptr );
  * Checks whether the given character is invalid in an IRI.
  *
  * @param c The character.
- * @return Returns \c true only if the character is invalid in an IRI.
+ * @return Returns \c true only if \a c is invalid in an IRI.
  * See RFC 3987.
  */
 bool is_invalid_in_iri( code_point c );
@@ -163,7 +193,7 @@ bool is_invalid_in_iri( code_point c );
  * Checks whether the given character is a "iprivate".
  *
  * @param c The character.
- * @return Returns \c true only if the character is a "iprivate".
+ * @return Returns \c true only if \c is a "iprivate".
  * See RFC 3987.
  */
 bool is_iprivate( code_point c );

@@ -30,10 +30,7 @@ namespace audit {
 // PropertyGroupImpl
 //************************************************************************
 
-const char* XQUERY_COMPILATION_PATH[] = { "xquery", "compilation" };
-
 const PropertyGroupImpl EMPTY_OBJECT      (0, NULL);
-const PropertyGroupImpl XQUERY_COMPILATION(2, XQUERY_COMPILATION_PATH);
 
 PropertyGroupImpl::PropertyGroupImpl(const size_t pathLength, const char** path)
   : m_pathLength(pathLength), m_path(path) {
@@ -59,29 +56,6 @@ Property::~Property() {
 //************************************************************************
 
 const PropertyImpl INVALID("");
-
-const PropertyImpl XQUERY_COMPILATION_FILENAME(
-    XQUERY_COMPILATION, "filename", 0, Property::STRING);
-
-const PropertyImpl XQUERY_COMPILATION_PARSE_DURATION(
-    XQUERY_COMPILATION, "parse-duration", 1, Property::INT);
-
-const PropertyImpl XQUERY_COMPILATION_TRANSLATION_DURATION(
-    XQUERY_COMPILATION, "translation-duration", 2, Property::INT);
-
-const PropertyImpl XQUERY_COMPILATION_OPTIMIZATION_DURATION(
-    XQUERY_COMPILATION, "optimization-duration", 3, Property::INT);
-
-const PropertyImpl XQUERY_COMPILATION_CODEGENERATION_DURATION(
-    XQUERY_COMPILATION, "codegeneration-duration", 4, Property::INT);
-
-const PropertyImpl* PROPERTIES[] = {
-  &XQUERY_COMPILATION_FILENAME,
-  &XQUERY_COMPILATION_PARSE_DURATION,
-  &XQUERY_COMPILATION_TRANSLATION_DURATION,
-  &XQUERY_COMPILATION_OPTIMIZATION_DURATION,
-  &XQUERY_COMPILATION_CODEGENERATION_DURATION
-};
 
 PropertyImpl::PropertyImpl(const PropertyGroup& g, const char n[], long i, Type t)
   : m_group(g), m_id(i), m_type(t) {
@@ -119,6 +93,8 @@ long PropertyImpl::id() const {
 Property::Type PropertyImpl::type() const {
   return m_type;
 }
+
+#include "api/auditprops.cpp"
 
 //************************************************************************
 // Observation

@@ -133,7 +133,7 @@ void encode( unicode::code_point c, StringType *out ) {
 }
 
 /**
- * Decodes the next Unicode character.
+ * Decodes the next Unicode character and advances the iterator.
  *
  * @tparam OctetIterator The iterator to use to iterate over the underlying
  * byte sequence.
@@ -144,6 +144,17 @@ void encode( unicode::code_point c, StringType *out ) {
  */
 template<class OctetIterator>
 unicode::code_point next_char( OctetIterator &i );
+
+/**
+ * Decodes the next Unicode character.
+ *
+ * @param p A pointer to the first byte of a UTF-8 byte sequence comprising a
+ * Unicode character.
+ * @return Returns the Unicode code-point of the next character.
+ */
+inline unicode::code_point decode( storage_type const *p ) {
+  return next_char( p );
+}
 
 /**
  * Decodes the previous Unicode character.

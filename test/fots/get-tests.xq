@@ -16,7 +16,6 @@
 
 declare namespace c = "http://www.w3.org/2010/09/qt-fots-catalog";
 
-declare variable $fotsPath as xs:string external := "";
 declare variable $testSet as xs:string external := "";
 
 let $catalog := fn:doc(fn:static-base-uri())/c:catalog

@@ -49,13 +49,6 @@
 namespace zorba
 {
 
-void castToUserDefinedAtomicType(
-    store::Item_t& result,
-    const store::Item_t& aItem,
-    const XQType* aSourceType,
-    const XQType* aTargetType,
-    const QueryLoc& loc);
-
 
 #define ATOMIC_TYPE(type) \
   GENV_TYPESYSTEM.create_atomic_type(store::XS_##type, TypeConstants::QUANT_ONE)
@@ -180,6 +173,67 @@ void throwFORG0001Exception(const zstring& str, const ErrorInfo& info)
                  sourceType->toSchemaString(),
                  targetType->toSchemaString()));
   }                                           
+}
+
+void throwFODT0001Exception(const zstring& str, const ErrorInfo& info)
+{
+  if (info.theTargetType)
+  {
+    RAISE_ERROR(err::FODT0001, info.theLoc,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 str,
+                 info.theSourceType->toSchemaString(),
+                 info.theTargetType->toSchemaString()));
+  }
+  else
+  {
+    TypeManager& tm = GENV_TYPESYSTEM;
+
+    xqtref_t sourceType =
+    tm.create_builtin_atomic_type(info.theSourceTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    xqtref_t targetType =
+    tm.create_builtin_atomic_type(info.theTargetTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    RAISE_ERROR(err::FODT0001, info.theLoc,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 str,
+                 sourceType->toSchemaString(),
+                 targetType->toSchemaString()));
+  }
+}
+
+
+void throwFODT0002Exception(const zstring& str, const ErrorInfo& info)
+{
+  if (info.theTargetType)
+  {
+    RAISE_ERROR(err::FODT0002, info.theLoc,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 str,
+                 info.theSourceType->toSchemaString(),
+                 info.theTargetType->toSchemaString()));
+  }
+  else
+  {
+    TypeManager& tm = GENV_TYPESYSTEM;
+
+    xqtref_t sourceType =
+    tm.create_builtin_atomic_type(info.theSourceTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    xqtref_t targetType =
+    tm.create_builtin_atomic_type(info.theTargetTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    RAISE_ERROR(err::FODT0002, info.theLoc,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 str,
+                 sourceType->toSchemaString(),
+                 targetType->toSchemaString()));
+  }
 }
 
 
@@ -335,163 +389,180 @@ T1_TO_T2(str, uint)
 T1_TO_T2(str, dur)
 {
   Duration d;
-  int err;
 
-  if (0 == (err = Duration::parseDuration(strval.c_str(), strval.size(), d)))
-  {
+  int err = Duration::parseDuration(strval.c_str(), strval.size(), d);
+
+  if (err == 0)
     aFactory->createDuration(result, &d);
-    return;
-  }
-
-  throwFORG0001Exception(strval, errInfo);
+  else if (err == 2)
+    throwFODT0002Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, yMD)
 {
   Duration d;
-  int err;
 
-  if (0 == (err = Duration::parseYearMonthDuration(strval.c_str(), strval.size(), d)))
-  {
+  int err = Duration::parseYearMonthDuration(strval.c_str(), strval.size(), d);
+
+  if (err == 0)
     aFactory->createYearMonthDuration(result, &d);
-    return;
-  }
-
-  throwFORG0001Exception(strval, errInfo);
+  else if (err == 2)
+    throwFODT0002Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, dTD)
 {
   Duration d;
-  int err;
 
-  if (0 == (err = Duration::parseDayTimeDuration(strval.c_str(), strval.size(), d)))
-  {
+  int err = Duration::parseDayTimeDuration(strval.c_str(), strval.size(), d);
+
+  if (err == 0)
     aFactory->createDayTimeDuration(result, &d);
-    return;
-  }
-
-  throwFORG0001Exception(strval, errInfo);
+  else if (err == 2)
+    throwFODT0002Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, dT)
 {
   xs_dateTime dt;
-  if (0 == DateTime::parseDateTime(strval.c_str(), strval.size(), dt))
-  {
-    aFactory->createDateTime(result, &dt);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseDateTime(strval.c_str(), strval.size(), dt);
+
+  if (err == 0)
+    aFactory->createDateTime(result, &dt);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, dTSt)
 {
   xs_dateTime dt;
-  if (0 == DateTime::parseDateTime(strval.c_str(), strval.size(), dt) &&
-      dt.hasTimezone() )
-  {
+
+  int err = DateTime::parseDateTime(strval.c_str(), strval.size(), dt);
+
+  if (err == 0 && dt.hasTimezone())
     aFactory->createDateTimeStamp(result, &dt);
-    return;
-  }
-    
-  throwFORG0001Exception(strval, errInfo);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
   
   
 T1_TO_T2(str, tim)
 {
   xs_time t;
-  if (0 == DateTime::parseTime(strval.c_str(), strval.size(), t))
-  {
-    aFactory->createTime(result, &t);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseTime(strval.c_str(), strval.size(), t);
+
+  if (err == 0)
+    aFactory->createTime(result, &t);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, dat)
 {
   xs_date d;
-  if (0 == DateTime::parseDate(strval.c_str(), strval.size(), d))
-  {
-    aFactory->createDate(result, &d);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseDate(strval.c_str(), strval.size(), d);
+
+  if (err == 0)
+    aFactory->createDate(result, &d);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, gYM)
 {
   xs_gYearMonth ym;
-  if (0 == DateTime::parseGYearMonth(strval.c_str(), strval.size(), ym))
-  {
-    aFactory->createGYearMonth(result, &ym);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseGYearMonth(strval.c_str(), strval.size(), ym);
+
+  if (err == 0)
+    aFactory->createGYearMonth(result, &ym);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, gYr)
 {
   xs_gYear y;
-  if (0 == DateTime::parseGYear(strval.c_str(), strval.size(), y))
-  {
-    aFactory->createGYear(result, &y);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseGYear(strval.c_str(), strval.size(), y);
+
+  if (err == 0)
+    aFactory->createGYear(result, &y);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, gMD)
 {
   xs_gMonthDay md;
-  if (0 == DateTime::parseGMonthDay(strval.c_str(), strval.size(), md))
-  {
-    aFactory->createGMonthDay(result, &md);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseGMonthDay(strval.c_str(), strval.size(), md);
+
+  if (err == 0)
+    aFactory->createGMonthDay(result, &md);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, gDay)
 {
   xs_gDay d;
-  if (0 == DateTime::parseGDay(strval.c_str(), strval.size(), d))
-  {
-    aFactory->createGDay(result, &d);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseGDay(strval.c_str(), strval.size(), d);
+
+  if (err == 0)
+    aFactory->createGDay(result, &d);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, gMon)
 {
   xs_gMonth m;
-  if (0 == DateTime::parseGMonth(strval.c_str(), strval.size(), m))
-  {
-    aFactory->createGMonth(result, &m);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseGMonth(strval.c_str(), strval.size(), m);
+
+  if (err == 0)
+    aFactory->createGMonth(result, &m);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
@@ -1216,9 +1287,14 @@ T1_TO_T2(dat, dT)
 
 T1_TO_T2(dT, dTSt)
 {
-  DateTime dt;
-  dt = aItem->getDateTimeValue(); //.createWithNewFacet(DateTime::DATETIME_FACET, dt);
-  aFactory->createDateTimeStamp(result, &dt);
+  xs_dateTime dt = aItem->getDateTimeValue(); //.createWithNewFacet(DateTime::DATETIME_FACET, dt);
+  if (dt.hasTimezone() )
+  {
+    aFactory->createDateTimeStamp(result, &dt);
+    return;
+  }
+
+  throwFORG0001Exception(dt.toString(), errInfo);
 }
   
   
@@ -2194,10 +2270,8 @@ bool GenericCast::castToSimple(
       return true;
     }
   }
-  else
+  else if (targetType->type_kind() == XQType::USER_DEFINED_KIND)
   {
-    ZORBA_ASSERT(targetType->type_kind() == XQType::USER_DEFINED_KIND);
-
 #ifndef ZORBA_NO_XMLSCHEMA
     tm->initializeSchema();
 
@@ -2221,7 +2295,7 @@ bool GenericCast::castToSimple(
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(*sourceType, ZED(NoCastTo_34o), *targetType));
       }
-
+      // to do: must validate before returning
       return schema->parseUserListTypes(textValue, targetType, resultList, loc);
     }
     else
@@ -2239,13 +2313,7 @@ bool GenericCast::castToSimple(
 
           if (success)
           {
-            /*
-            zstring textValue = item->getStringValue();
-            store::Item_t tmp;
-
-            resultList.clear();
-            if (schema->parseUserUnionTypes(textValue, targetType, resultList, loc))
-            */
+            // to do: must validate before returning
             return true;
           }
         }
@@ -2264,6 +2332,8 @@ bool GenericCast::castToSimple(
     } // union
 #endif // ZORBA_NO_XMLSCHEMA
   } // list or union
+  else
+    ZORBA_ASSERT(false); // simple types should be only atomic or user defined
 }
 
 

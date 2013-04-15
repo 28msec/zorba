@@ -261,9 +261,13 @@ static locale_t get_unix_locale_t( iso639_1::type lang,
     locale_name += '_';
     locale_name += iso3166_1::string_of[ country ];
   }
+  locale_name += ".UTF-8";
   locale_t loc = ::newlocale( LC_TIME_MASK, locale_name.c_str(), nullptr );
-  if ( !loc && country )                // try it without the country
-    loc = ::newlocale( LC_TIME_MASK, iso639_1::string_of[ lang ], nullptr );
+  if ( !loc && country ) {              // try it without the country
+    locale_name = iso639_1::string_of[ lang ];
+    locale_name += ".UTF-8";
+    loc = ::newlocale( LC_TIME_MASK, locale_name.c_str(), nullptr );
+  }
   return loc;
 }
 
@@ -1410,7 +1414,7 @@ zstring get_month_name( unsigned month_index, iso639_1::type lang,
   if ( name.empty() && lang == iso639_1::en ) {
     static char const *const name_str[] = {
       "January", "February", "March", "April", "May", "June",
-      "July", "August", "Sepember", "October", "November", "December"
+      "July", "August", "September", "October", "November", "December"
     };
     name = name_str[ month_index ];
   }

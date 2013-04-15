@@ -205,6 +205,9 @@ XQueryErrorCode XQST0093( "XQST0093" );
 XQueryErrorCode XQST0094( "XQST0094" );
 
 
+XQueryErrorCode XQST0097( "XQST0097" );
+
+
 XQueryErrorCode XQST0098( "XQST0098" );
 
 
@@ -218,6 +221,12 @@ XQueryErrorCode XQST0106( "XQST0106" );
 
 
 XQueryErrorCode XQST0111( "XQST0111" );
+
+
+XQueryErrorCode XQST0114( "XQST0114" );
+
+
+XQueryErrorCode XQST0123( "XQST0123" );
 
 
 XQueryErrorCode XPDY0002( "XPDY0002" );
@@ -373,12 +382,6 @@ XQueryErrorCode FODT0002( "FODT0002" );
 
 
 XQueryErrorCode FODT0003( "FODT0003" );
-
-
-XQueryErrorCode FOFI0001( "FOFI0001" );
-
-
-XQueryErrorCode FOFI0002( "FOFI0002" );
 
 
 XQueryErrorCode FONS0004( "FONS0004" );

@@ -60,6 +60,7 @@ SET(API_SRCS
     streambuf.cpp
     transcode_streambuf.cpp
     uuid.cpp
+    module_info_impl.cpp
     )
 
 IF (ZORBA_WITH_FILE_ACCESS)
@@ -81,4 +82,28 @@ SET(API_BUILD_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/api/version.cpp
   )
 
+SET(AUDIT_HEADER_GENERATOR "${CMAKE_SOURCE_DIR}/src/api/auditprops_h.xq")
+SET(AUDIT_CPP_GENERATOR    "${CMAKE_SOURCE_DIR}/src/api/auditprops_cpp.xq")
+SET(AUDIT_HEADER           "${CMAKE_BINARY_DIR}/src/api/auditprops.h")
+SET(AUDIT_CPP              "${CMAKE_BINARY_DIR}/src/api/auditprops.cpp")
+SET(AUDIT_PROPS_SPEC       "${CMAKE_SOURCE_DIR}/src/api/audit.xml")
+
+ZORBA_AUDIT_GENERATOR(
+    ${AUDIT_CPP_GENERATOR}
+    "auditspecfile:=${AUDIT_PROPS_SPEC}"
+    ${AUDIT_PROPS_SPEC}
+    ${AUDIT_CPP})
+
+ZORBA_AUDIT_GENERATOR(
+    ${AUDIT_HEADER_GENERATOR}
+    "auditspecfile:=${AUDIT_PROPS_SPEC}"
+    ${AUDIT_PROPS_SPEC}
+    ${AUDIT_HEADER})
+
+SET_SOURCE_FILES_PROPERTIES("${CMAKE_SOURCE_DIR}/src/api/auditimpl.cpp"
+                              PROPERTIES OBJECT_DEPENDS
+                              "${CMAKE_BINARY_DIR}/src/api/auditprops.cpp;${CMAKE_BINARY_DIR}/src/api/auditprops.h")
+SET_SOURCE_FILES_PROPERTIES("${CMAKE_SOURCE_DIR}/src/api/auditimpl.h"
+                              PROPERTIES OBJECT_DEPENDS
+                              "${CMAKE_BINARY_DIR}/src/api/auditprops.h")
 # vim:set et sw=2 ts=2:

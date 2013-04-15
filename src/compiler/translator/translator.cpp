@@ -2890,9 +2890,9 @@ void* begin_visit(const DecimalFormatNode& v)
     expand_no_default_qname(qnameItem, v.format_name, loc);
   }
 
-  DecimalFormat_t df = new DecimalFormat(v.is_default, qnameItem, v.param_list);
-  df->validate(loc);
-  theSctx->add_decimal_format(df, loc);
+  theSctx->add_decimal_format(
+    new DecimalFormat( v.is_default, qnameItem, v.param_list, loc ), loc
+  );
 
   return no_state;
 }
@@ -3513,7 +3513,7 @@ void* begin_visit(const VFO_DeclList& v)
       {
         theSctx->expand_qname(
            qnameItem,
-           static_context::XQUERY_OPTION_NS,
+           static_context::XQUERY_NS,
            "",
            lQName->get_localname(),
            lQName->get_location());
@@ -3527,6 +3527,14 @@ void* begin_visit(const VFO_DeclList& v)
         }
       }
 
+      if (qnameItem->getNamespace() == static_context::XQUERY_NS
+          &&
+          qnameItem->getLocalName() != "require-feature"
+          &&
+          qnameItem->getLocalName() != "prohibit-feature")
+      {
+        RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(ZED(UnrecognizedXQueryOption), qnameItem->getLocalName()));
+      }
 
       if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_FEATURE_NS &&
           value == "http-uri-resolution")
@@ -11706,10 +11714,6 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
   for_clause* fc = reinterpret_cast<for_clause*>(flworExpr->get_clause(0));
 
-  // This is needed to make sure that the flwor is not thrown away by the optimizer
-  // when the FunctionItem expression is an empty sequence.
-  fc->set_allowing_empty(true); 
-
   expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
 
 #ifdef ZORBA_WITH_JSON
@@ -11756,6 +11760,10 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   else
 #endif
   {
+    // This is needed to make sure that the flwor is not thrown away by the optimizer
+    // when the FunctionItem expression is an empty sequence.
+    fc->set_allowing_empty(true); 
+
     expr* dynFuncInvocation =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
                                         flworVarExpr,
@@ -12736,6 +12744,8 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       {
         RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(uri, ZED(NoBindURI)));
       }
+
+      URI parsedUri(uri);
 
       theSctx->bind_ns(prefix, uri, loc);
       theNSCtx->bind_ns(prefix, uri);
@@ -14055,7 +14065,9 @@ void end_visit(const NamespaceTest& v, void* /*visit_state*/)
 
   if (axisExpr != NULL)
   {
-    RAISE_ERROR(zerr::ZXQP0004_NOT_IMPLEMENTED, loc, ERROR_PARAMS("namespace axis"));
+    match_expr* match = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
+    match->setTestKind(match_namespace_test);
+    axisExpr->setTest(match);
   }
   else
   {

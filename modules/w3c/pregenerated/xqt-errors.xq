@@ -626,6 +626,15 @@ declare variable $err:XQST0094 as xs:QName := fn:QName($err:NS, "err:XQST0094");
 
 (:~
  :
+ : It is a static error for a decimal-format to specify a value that is
+ : not valid for a given property.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0097 as xs:QName := fn:QName($err:NS, "err:XQST0097");
+
+(:~
+ :
  : It is a static error if, for any named or unnamed decimal format, the
  : properties representing characters used in a picture string do not each
  : have distinct values. These properties are decimal-separator-sign,
@@ -671,6 +680,24 @@ declare variable $err:XQST0106 as xs:QName := fn:QName($err:NS, "err:XQST0106");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0111 as xs:QName := fn:QName($err:NS, "err:XQST0111");
+
+(:~
+ :
+ : It is a static error for a decimal format declaration to define the
+ : same property more than once.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0114 as xs:QName := fn:QName($err:NS, "err:XQST0114");
+
+(:~
+ :
+ : It is a static error if the name of a feature in require-feature is not
+ : recognized by the implementation.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0123 as xs:QName := fn:QName($err:NS, "err:XQST0123");
 
 (:~
  :
@@ -1113,7 +1140,7 @@ declare variable $err:FODF1280 as xs:QName := fn:QName($err:NS, "err:FODF1280");
 
 (:~
  :
- : Invalid \c fn:format-number() picture string.
+ : Invalid decimal/integer format picture string.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -1142,22 +1169,6 @@ declare variable $err:FODT0002 as xs:QName := fn:QName($err:NS, "err:FODT0002");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:FODT0003 as xs:QName := fn:QName($err:NS, "err:FODT0003");
-
-(:~
- :
- : format-integer: Cannot cast $language to \c xs:language.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:FOFI0001 as xs:QName := fn:QName($err:NS, "err:FOFI0001");
-
-(:~
- :
- : format-integer: invalid parameter.
- : 
- : @see http://www.w3.org/2005/xqt-errors
-:)
-declare variable $err:FOFI0002 as xs:QName := fn:QName($err:NS, "err:FOFI0002");
 
 (:~
  :
