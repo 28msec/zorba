@@ -11,6 +11,7 @@ New Features:
   * New C++ and XQuery function (see module http://www.zorba-xquery.com/modules/item)
     to estimate the size an item allocates in memory.
   * Extended sequence types to include unions, as specified by XQuery v3.0
+  * Added XQuery::parse(std::istream& aQuery, ModuleInfo_t& aResult) function.
   * In store API, added ability to specify a stream's originating URI (file)
     for streamable strings and base64Binary.
   * Added millis-to-dateTime() function in datetime module.
@@ -39,6 +40,7 @@ Optimizations:
 Bug Fixes/Other Changes:
   * Fixed bug #1123836 (overflows in date/time casts now return FODT0001 and
     in durations return FODT0002)
+  * Fixed bug #1147518 (fn:round-half-to-even (at least 11 failures))
   * Fixed bug #1114228 (unrecognized options in the XQuery namespace now raise an error)
   * Fixed bug #1124273 (xqdoc crash because of annotation literals)
   * Fixed bug #867027 (XQST0059 error messages inconsistent)
@@ -58,6 +60,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1076402 (bug in CastIterator when target is QName)
   * NaN items are considered equal to each other during grouping
   * Fixed bug #855481 (Too small time types on Windows).
+  * Fixed bug #1154984 (windows build crashes if a vector iterator is reused
+    after it is used to erase an element of the vector)
   * Fixed bug #1132032 (Certain regexes involving ^ should be legal)
   * Fixed bug #1023168 (Non-single-char-escapes in regex character ranges not
     caught)
@@ -68,6 +72,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1099535  (xml:parse endless loop)
   * Fixed bug in optimizing fn:count over general-index probes
   * Fixed bug #866958  (Parsing error not explicit enough)
+  * Fixed bug #1123164 (fn:format-number failures (at least 19))
+  * Fixed memory leak in temp sequence
   * Fixed bug in computing the static type of a self-axis path step.
   * Fixed bug #867068: (Incorrect usage of XQDY0027)
   * Fixed bug: jsoniq constructor should not be const-folded

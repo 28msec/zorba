@@ -167,7 +167,7 @@ namespace calendar {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Month (<code>mod</code>) values as used by the \c tm structure.
+ * Month (<code>mon</code>) values as used by the \c tm structure.
  */
 enum month {
   jan = 0,

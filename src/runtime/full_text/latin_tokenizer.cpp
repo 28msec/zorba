@@ -210,7 +210,7 @@ void LatinTokenizer::tokenize_string( char const *s, size_type s_len,
           // no break;
         case '!':
         case '?':
-          ++numbers().sent;
+          ++state().sent;
       }
   } // for
 
@@ -229,11 +229,11 @@ bool LatinTokenizer::send_token( string_type const &token, iso639_1::type lang,
          << ": \"" << token << "\"\n";
 #endif /* PRINT_TOKENS */
 
-    callback(
+    callback.token(
       token.data(), token.size(), lang,
-      numbers().token, numbers().sent, numbers().para, item
+      state().token, state().sent, state().para, item
     );
-    ++numbers().token;
+    ++state().token;
     return true;
   }
   return false;
