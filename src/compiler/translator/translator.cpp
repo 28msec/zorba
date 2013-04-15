@@ -15649,7 +15649,7 @@ expr* translate(const parsenode& root, CompilerCB* ccb)
 ********************************************************************************/
 expr* Translator::translate_literal_function(
     store::Item_t& qname,
-    unsigned int arity,
+    csize arity,
     CompilerCB* ccb,
     static_context_t& sctx,
     const QueryLoc& loc)
