@@ -109,7 +109,7 @@ public:
   CompilerCB                  * theCCB;
 
   QueryLoc                      theLoc;
-  static_context_t              theClosureSctx;
+  static_context*               theClosureSctx;
   function_t                    theFunction;
   store::Item_t                 theQName;
   unsigned int                  theArity;

@@ -70,8 +70,8 @@ bool FunctionLookupIterator::nextImpl(
   uint32_t arity;
   result = NULL;
   
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  FunctionLookupIteratorState* state;
+  DEFAULT_STACK_INIT(FunctionLookupIteratorState, state, planState);
 
   consumeNext(qname, theChildren[0], planState);
   consumeNext(arityItem, theChildren[1], planState);
@@ -100,7 +100,8 @@ bool FunctionLookupIterator::nextImpl(
   
   try
   {
-    static_context_t importSctx = theSctx->create_child_context();
+    state->theImportSctx = theSctx->create_child_context();
+    static_context* impSctx = state->theImportSctx.getp();
 
     std::auto_ptr<dynamic_context> fiDctx;
     fiDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
@@ -111,12 +112,12 @@ bool FunctionLookupIterator::nextImpl(
       factory->createQName(ctxItemName, "", "", static_context::DOT_VAR_NAME);
 
       var_expr* ve = ccb->theEM->
-      create_var_expr(importSctx, NULL, loc, var_expr::prolog_var, ctxItemName);
+      create_var_expr(impSctx, NULL, loc, var_expr::prolog_var, ctxItemName);
 
       ve->set_external(true);
       ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM);
 
-      importSctx->bind_var(ve, loc);
+      impSctx->bind_var(ve, loc);
 
       fiDctx->add_variable(dynamic_context::IDVAR_CONTEXT_ITEM, ctxItem);
     }
@@ -127,12 +128,12 @@ bool FunctionLookupIterator::nextImpl(
       factory->createQName(ctxPosName, "", "", static_context::DOT_POS_VAR_NAME);
 
       var_expr* ve = ccb->theEM->
-      create_var_expr(importSctx, NULL, loc, var_expr::prolog_var, ctxPosName);
+      create_var_expr(impSctx, NULL, loc, var_expr::prolog_var, ctxPosName);
 
       ve->set_external(true);
       ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION);
 
-      importSctx->bind_var(ve, loc);
+      impSctx->bind_var(ve, loc);
 
       fiDctx->add_variable(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION, ctxPosItem);
     }
@@ -143,18 +144,18 @@ bool FunctionLookupIterator::nextImpl(
       factory->createQName(ctxSizeName, "", "", static_context::DOT_SIZE_VAR_NAME);
 
       var_expr* ve = ccb->theEM->
-      create_var_expr(importSctx, NULL, loc, var_expr::prolog_var, ctxSizeName);
+      create_var_expr(impSctx, NULL, loc, var_expr::prolog_var, ctxSizeName);
 
       ve->set_external(true);
       ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE);
 
-      importSctx->bind_var(ve, loc);
+      impSctx->bind_var(ve, loc);
 
       fiDctx->add_variable(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE, ctxSizeItem);
     }
 
     expr* fiExpr = 
-    Translator::translate_literal_function(qname, arity, ccb, importSctx, loc);
+    Translator::translate_literal_function(qname, arity, ccb, impSctx, loc);
     
     FunctionItemInfo_t dynFnInfo =
     static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();

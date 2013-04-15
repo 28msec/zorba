@@ -38,7 +38,7 @@ public:
     store::Item_t& qname,
     csize arity,
     CompilerCB* ccb,
-    static_context_t& sctx,
+    static_context* sctx,
     const QueryLoc& loc);
   
 };

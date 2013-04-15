@@ -197,8 +197,6 @@ UDFunctionCallIterator::UDFunctionCallIterator(
 
 UDFunctionCallIterator::~UDFunctionCallIterator()
 {
-  if (theUDF)
-    theUDF->invalidatePlan();
 }
 
 

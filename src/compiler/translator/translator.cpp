@@ -15651,7 +15651,7 @@ expr* Translator::translate_literal_function(
     store::Item_t& qname,
     csize arity,
     CompilerCB* ccb,
-    static_context_t& sctx,
+    static_context* sctx,
     const QueryLoc& loc)
 {
   std::map<zstring, zstring> modulesStack;
