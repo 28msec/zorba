@@ -135,6 +135,7 @@ function_item_expr::function_item_expr(
 
 function_item_expr::~function_item_expr()
 {
+  std::cerr << "Deallocating function_item_expr: " << this << std::endl;
 }
 
 

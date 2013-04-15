@@ -70,6 +70,23 @@ FunctionItemInfo::FunctionItemInfo(
   theNeedsContextItem(needsContextItem),
   theIsCoercion(isCoercion)
 {
+#if 0
+  std::cerr << std::endl;
+
+  if (theFunction && theFunction->getName() != NULL)
+    std::cerr << "Allocated FunctionItemInfo " << this << " for function: "
+              << theFunction->getName()->getStringValue()
+              << std::endl;
+  else if (theQName != NULL)
+    std::cerr << "Allocated FunctionItemInfo " << this << " for function: "
+              << theQName->getStringValue()
+              << std::endl;
+  else
+    std::cerr << "Allocated FunctionItemInfo " << this
+              << " for anonymous function at loc: " << loc << std::endl;
+
+  std::cerr << std::endl;
+#endif
 }
 
 
@@ -80,6 +97,19 @@ FunctionItemInfo::FunctionItemInfo(::zorba::serialization::Archiver& ar)
 
 FunctionItemInfo::~FunctionItemInfo()
 {
+#if 0
+  std::cerr << std::endl;
+
+  if (theFunction->getName() != NULL)
+    std::cerr << "DeAllocated FunctionItemInfo " << this << " for function: "
+              << theFunction->getName()->getStringValue()
+              << std::endl;
+  else
+    std::cerr << "DeAllocated FunctionItemInfo " << this << " for anonymous function"
+              << std::endl;
+
+  std::cerr << std::endl;
+#endif
 }
 
 
@@ -148,12 +178,30 @@ FunctionItem::FunctionItem(
 {
   assert(theFunctionItemInfo->theFunction->isUdf());
   theArgumentsValues.resize(theFunctionItemInfo->theArity);
+
+#if 0
+  if (theFunctionItemInfo->theFunction->getName() != NULL)
+    std::cerr << "Allocated FunctionItem " << this << " for function: "
+              << theFunctionItemInfo->theFunction->getName()->getStringValue()
+              << std::endl;
+  else
+    std::cerr << "Allocated FunctionItem " << this << " for anonymous function"
+              << std::endl;
+#endif
 }
 
 
 FunctionItem::~FunctionItem()
 {
-  //std::cerr << "Deallocating FunctionItem: " << this << std::endl;
+#if 0
+  if (theFunctionItemInfo->theFunction->getName() != NULL)
+    std::cerr << "DeAllocated FunctionItem " << this << " for function: "
+              << theFunctionItemInfo->theFunction->getName()->getStringValue()
+              << std::endl;
+  else
+    std::cerr << "DeAllocated FunctionItem " << this << " for anonymous function"
+              << std::endl;
+#endif
 }
 
 

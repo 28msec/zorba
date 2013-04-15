@@ -195,6 +195,13 @@ UDFunctionCallIterator::UDFunctionCallIterator(
 }
 
 
+UDFunctionCallIterator::~UDFunctionCallIterator()
+{
+  if (theUDF)
+    theUDF->invalidatePlan();
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -479,7 +486,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
           else
           {
             if (i < argWraps.size())
-            argWrapper = argWraps[i];
+              argWrapper = argWraps[i];
           }
 
           ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();

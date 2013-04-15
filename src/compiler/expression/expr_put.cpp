@@ -533,7 +533,8 @@ ostream& ftcontains_expr::put( ostream &os ) const
 
 std::ostream& function_item_expr::put(std::ostream& os) const
 {
-  os << indent << "funtion_item_expr " << expr_addr(this) << inc_indent;
+  os << indent << "funtion_item_expr " << expr_addr(this) << 
+    " fiInfo" << expr_addr(theFunctionItemInfo.getp()) << inc_indent;
 
   os << " " << theFunctionItemInfo->theQName->getStringValue()
      << "#" << theFunctionItemInfo->theArity << " [\n";
