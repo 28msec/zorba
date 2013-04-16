@@ -470,12 +470,10 @@ void end_visit(function_item_expr& v)
 
   FunctionItemInfo* fnInfo = v.get_dynamic_fn_info();
   fnInfo->theCCB = theCCB;
-  fnInfo->theMustDeleteCCB = false;
   fnInfo->theLoc = qloc;
 
-  if (v.is_inline())
   {
-    for (csize i = 0; i < v.get_subst_vars_values().size(); ++i)
+    for (csize i = 0; i < v.get_subst_vars().size(); ++i)
     {      
       if (!v.get_is_global_var()[i])     
         fnInfo->theScopedVarsIterators.push_back(pop_itstack());
@@ -2473,8 +2471,8 @@ void end_visit(fo_expr& v)
 
   if (v.is_sequential())
   {
-    ulong numArgs = v.num_args();
-    for (ulong i = 0; i < numArgs; ++i)
+    csize numArgs = v.num_args();
+    for (csize i = 0; i < numArgs; ++i)
     {
       if (v.get_arg(i)->is_sequential())
       {

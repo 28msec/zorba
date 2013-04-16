@@ -151,6 +151,43 @@ bool function::isSequential() const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+bool function::isContextual() const 
+{
+  switch (getKind())
+  {
+  case FunctionConsts::FN_POSITION_0:
+  case FunctionConsts::FN_LAST_0:
+  case FunctionConsts::FN_STRING_LENGTH_0: 
+  case FunctionConsts::FN_NORMALIZE_SPACE_0:
+  case FunctionConsts::FN_ROOT_0:
+  case FunctionConsts::FN_BASE_URI_0:
+  case FunctionConsts::FN_NAMESPACE_URI_0:
+  case FunctionConsts::FN_LOCAL_NAME_0:
+  case FunctionConsts::FN_NAME_0:     
+  case FunctionConsts::FN_STRING_0:
+  case FunctionConsts::FN_GENERATE_ID_0:
+  case FunctionConsts::FN_DATA_0:
+  case FunctionConsts::FN_DOCUMENT_URI_0:
+  case FunctionConsts::FN_NODE_NAME_0:
+  case FunctionConsts::FN_NILLED_0:
+  case FunctionConsts::FN_HAS_CHILDREN_0:
+  case FunctionConsts::FN_PATH_0:
+  case FunctionConsts::FN_NUMBER_0:
+  case FunctionConsts::FN_LANG_1:
+  case FunctionConsts::FN_IDREF_1:
+  case FunctionConsts::FN_ID_1:
+  case FunctionConsts::FN_ELEMENT_WITH_ID_1:
+  case FunctionConsts::FN_FUNCTION_LOOKUP_2:
+    return true;
+  default:
+    return false;
+  }
+}
+
+
+/*******************************************************************************
   This is a virstual method. It is NOT redefined by udf and external-function
   classes. However, for UDFs it is possible that the user-declared type is
   narrowed down to a subtypes; see UDFGraph::optimizeUDFs() in udf_graph.cpp
