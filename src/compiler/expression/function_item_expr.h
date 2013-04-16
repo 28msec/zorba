@@ -74,8 +74,6 @@ public:
   --------
   The arg exprs to pass to the function.
  
-  theDotVars:
-  ----------- 
 ********************************************************************************/
 class dynamic_function_invocation_expr : public expr
 {
@@ -86,7 +84,6 @@ class dynamic_function_invocation_expr : public expr
 protected:
   expr                * theExpr;
   std::vector<expr*>    theArgs;
-  expr                * theDotVar;
 
 protected:
   dynamic_function_invocation_expr(
@@ -95,16 +92,13 @@ protected:
       user_function* udf,
       const QueryLoc& loc,
       expr* anExpr,
-      const std::vector<expr*>& args,
-      expr* dotVar);
+      const std::vector<expr*>& args);
 
 public:
   const expr* get_function() const { return theExpr; }
 
   const std::vector<expr*>& get_args() const { return theArgs; }
   
-  expr* get_dot_var() const { return theDotVar; }
-
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
@@ -140,7 +134,6 @@ protected:
       function* f,
       csize arity,
       bool isInline,
-      bool needsContextItem,
       bool isCoercion);
 
   function_item_expr(
@@ -149,7 +142,6 @@ protected:
       user_function* udf,
       const QueryLoc& loc,
       bool isInline,
-      bool needsContextItem,
       bool isCoercion);
   
   virtual ~function_item_expr();
@@ -184,14 +176,10 @@ public:
 
   const store::Item_t& get_qname() const { return theFunctionItemInfo->theQName; }
 
-  uint32_t get_arity() const { return theFunctionItemInfo->theArity; }
+  csize get_arity() const { return theFunctionItemInfo->theArity; }
   
   bool is_inline() const { return theFunctionItemInfo->theIsInline; }
   
-  bool needs_context_item() const { return theFunctionItemInfo->theNeedsContextItem; }
-
-  void set_needs_ctx_item(bool v) { theFunctionItemInfo->theNeedsContextItem = v; }
-
   bool is_coercion() const { return theFunctionItemInfo->theIsCoercion; }
 
   void compute_scripting_kind();
