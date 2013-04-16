@@ -277,8 +277,8 @@ streamsize icu_streambuf::xsgetn( char_type *to, streamsize size ) {
   if ( streamsize const gsize = egptr() - gptr() ) {
     // must first get any chars in g_.utf8_char_
     streamsize const n = min( gsize, size );
-    traits_type::copy( to, gptr(), static_cast<size_t>(n) );
-    gbump( static_cast<int>(n) );
+    traits_type::copy( to, gptr(), static_cast<size_t>( n ) );
+    gbump( static_cast<int>( n ) );
     to += n;
     size -= n, return_size += n;
   }
