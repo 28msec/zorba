@@ -16,7 +16,6 @@
 
 #include "stdafx.h"
 #include <iostream>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 
