@@ -27,7 +27,7 @@ import module namespace r =
 
 declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
-declare option op:disable "f:trace";
+(:declare option op:disable "f:trace";:)
 
 (:~
  : Path to the FOTS catalog.xml file. If the path is relative, it will be 
@@ -41,7 +41,7 @@ declare variable $fotsPath as xs:string external :=
 
 (:~ 
  : Path to the FOTSZorbaManifest.xml file. If the path is relative, it will be
- : resolved relative to the diractory containing this cli.xq file
+ : resolved relative to the directory containing this cli.xq file
  :)
 declare variable $fotsZorbaManifestPath as xs:string external :=
   "FOTSZorbaManifest.xml";
@@ -58,7 +58,8 @@ declare variable $resultsFilePath as xs:string external := "";
 (:~
  : Path to the ExpectedFailures file.
  :)
-declare variable $expectedFailuresPath as xs:string external :="";
+declare variable $expectedFailuresPath as xs:string external :=
+  "../../build/FOTSExpectedFailures.xml";
 
 
 (:~ 
@@ -69,7 +70,7 @@ declare variable $mode as xs:string external := "";
 
 (:~ 
  : A list of comma-seperated prefixes that acts as a filter for the test-sets
- : to be processed: a test-set is going to be proccesed only if its name starts
+ : to be processed: a test-set is going to be processed only if its name starts
  : with a prefix in this list. An empty string means no filtering.
  :
  : Used by the list-test-sets, list-test-cases, and run-test-sets commands.
@@ -79,37 +80,12 @@ declare variable $testSetPrefixes as xs:string external := "";
 
 (:~ 
  : A list of comma-seperated prefixes that acts as a filter for the test-cases
- : to be processed: a test-case is going to be proccesed only if its name starts
+ : to be processed: a test-case is going to be processed only if its name starts
  : with a prefix in this list. An empty string means no filtering.
  :
  : Used by the list-test-cases, and run-test-sets commands.
  :)
 declare variable $testCasePrefixes as xs:string external := "";
-
-
-(:~
- : The test cases in this list should not have their queries evaluated at all
- : (because they segfault, or hang, or take too long, etc).
- :
- : Used by the run-test-sets, run-and-report, and report commands.
- :
- : Please remember to add an equivalent for each test case in test/fots/CMakeLists.txt
- :
- : EXPECTED_FOTS_FAILURE (SLOW  TEST_SET_NAME TEST_CASE_NAME BUG_NO) or
- : EXPECTED_FOTS_FAILURE (CRASH TEST_SET_NAME TEST_CASE_NAME BUG_NO)
- :)
-declare variable $exceptedTestCases as xs:string* := (
-  ("cbcl-subsequence-011",
-  "cbcl-subsequence-012",
-  "cbcl-subsequence-013",
-  "cbcl-subsequence-014"),      (:see bug lp:1069794. Actually passing but too slow :)
-  ("re00975",
-  "re00976",
-  "re00976a"),                  (:see bug lp:1070533 :)
-  "re00987",                    (:see bug lp:1131313 :)
-  ("raytracer",
-  "itunes")                     (: Actually passing but too slow :)
-);
 
 
 (:~
@@ -153,7 +129,7 @@ declare variable $dependency as xs:string external := "";
  : commands to filter the test-cases that will actually be listed/run. A test
  : case qualifies if there is at least one element node under the <result>
  : node of the <test-case> whose local name is equal to one of the strings
- : in the filtering set. If $assrtType is set to the empty sequence, no
+ : in the filtering set. If $assertions is set to the empty sequence, no
  : filtering is done.
  :
  : Used in the list-test-cases and run-test-sets commands.
@@ -197,6 +173,9 @@ declare function local:usage() as xs:string
   	"'fotsPath' is set by default to the location where 'make fots-import' added the FOTS snapshot.",
   	"Currently this location is ZORBA_BUILD_FOLDER/test/fots/2011/QT3-test-suite/catalog.xml.",
   	"If you want to use other location please set 'fotsPath'.",
+  	"",
+  	"'expectedFailuresPath' is set by default to ${BUILDDIR}/FOTSExpectedFailures.xml.",
+  	"If you want to use other location please set 'expectedFailuresPath'.",
     "",
     "Always try to output the result back to an XML file with nice indentation:",
     "./zorba -f -q ../../test/fots_driver/cli.xq -e SET_CLI_OPTIONS_HERE -o output.xml --indent",
@@ -322,7 +301,6 @@ return
              local:tokenize($testSetPrefixes),
              $exceptedTestSets,
              local:tokenize($testCasePrefixes),
-             $exceptedTestCases,
              $dependency,
              $assertions,
              xs:boolean($verbose),
@@ -345,7 +323,6 @@ return
                  $testSetName,
                  $exceptedTestSets,
                  (),
-                 $exceptedTestCases,
                  $dependency,
                  $assertions,
                  xs:boolean($verbose),
@@ -367,7 +344,6 @@ return
              $testSetName,
              $exceptedTestSets,
              $testCaseName,
-             $exceptedTestCases,
              "",
              (),
              xs:boolean($verbose),
@@ -381,7 +357,7 @@ return
 { 
   r:run-and-report($fotsPath,
                    $fotsZorbaManifestPath,
-                   $exceptedTestCases,
+                   $expectedFailuresPath,
                    $exceptedTestSets)
 }
 
