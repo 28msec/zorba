@@ -45,6 +45,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1147518 (fn:round-half-to-even (at least 11 failures))
   * Fixed bug #1114228 (unrecognized options in the XQuery namespace now raise an error)
   * Fixed bug #1124273 (xqdoc crash because of annotation literals)
+  * Fixed bug #1085408 (xs:date(): casting large year values)
   * Fixed bug #867027 (XQST0059 error messages inconsistent)
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
   * Fixed bug #1123163 (fn:format-integer failures)
