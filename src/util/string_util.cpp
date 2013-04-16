@@ -205,7 +205,7 @@ unsigned long long atoull( char const *buf, char const *end,
       if ( n < n_prev )
         throw_range_error( buf, end );
     }
-    if ( s == s0 );
+    if ( s == s0 )
       s = buf;
   }
 
