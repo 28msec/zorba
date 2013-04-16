@@ -58,10 +58,6 @@
 
   </zorba:function>
   
-  <zorba:state>
-    <zorba:member type="static_context_t" name="theImportSctx"/>
-  </zorba:state>
-
 </zorba:iterator>
 
 

@@ -11824,7 +11824,7 @@ expr* generate_literal_function(
     const QueryLoc& loc)
 {
   xqtref_t type;
-  user_function* udf = NULL;
+  rchandle<user_function> udf;
   expr* body;
   
   function_item_expr* fiExpr =

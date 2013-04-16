@@ -42,7 +42,7 @@ SERIALIZABLE_CLASS_VERSIONS(FunctionLookupIterator)
 void FunctionLookupIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<FunctionLookupIterator, FunctionLookupIteratorState>*)this);
+  (NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>*)this);
 }
 
 
@@ -61,18 +61,6 @@ void FunctionLookupIterator::accept(PlanIterVisitor& v) const
 
 FunctionLookupIterator::~FunctionLookupIterator() {}
 
-FunctionLookupIteratorState::FunctionLookupIteratorState() {}
-
-FunctionLookupIteratorState::~FunctionLookupIteratorState() {}
-
-
-void FunctionLookupIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-
-void FunctionLookupIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
 // </FunctionLookupIterator>
 
 

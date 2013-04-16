@@ -926,6 +926,17 @@ static bool DeepEqualNodes(
       if (! item1->getNodeName()->equals(item2->getNodeName()))
         return false;
 
+      TypeManager* tm = sctx->get_typemanager();
+
+      xqtref_t type1 = tm->create_value_type(item1.getp());
+      xqtref_t type2 = tm->create_value_type(item2.getp());
+
+      const NodeXQType* nodeType1 = static_cast<const NodeXQType *>(type1.getp());
+      const NodeXQType* nodeType2 = static_cast<const NodeXQType *>(type2.getp());
+
+      if ( nodeType1->get_content_type()->content_kind() != nodeType2->get_content_type()->content_kind() )
+        return false;
+
       return (DeepEqualAttributes(loc,
                                   sctx,
                                   dctx,
@@ -1093,6 +1104,13 @@ static bool DeepEqual(
       item1->isJSONArray() != item2->isJSONArray())
     return false;
 
+
+  xqtref_t type1 = tm->create_value_type(item1.getp());
+  xqtref_t type2 = tm->create_value_type(item2.getp());
+
+  if ( type1->content_kind() != type2->content_kind() )
+    return false;
+
   if (item1->isAtomic())
   {
     assert(item2->isAtomic());
@@ -1102,9 +1120,6 @@ static bool DeepEqual(
       collator = sctx->get_default_collator(QueryLoc::null);
 
     // check NaN
-    xqtref_t type1 = tm->create_value_type(item1.getp());
-    xqtref_t type2 = tm->create_value_type(item2.getp());
-
     if (((TypeOps::is_subtype(tm, *type1, *rtm.FLOAT_TYPE_ONE)
           &&
           item1->getFloatValue().isNaN())
