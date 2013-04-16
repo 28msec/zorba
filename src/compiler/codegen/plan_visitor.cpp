@@ -477,6 +477,8 @@ void end_visit(function_item_expr& v)
     {      
       if (!v.get_is_global_var()[i])     
         fnInfo->theScopedVarsIterators.push_back(pop_itstack());
+      else if (fnInfo->theScopedVarsValues[i] != NULL)
+        pop_itstack();
     }
 
     std::reverse(fnInfo->theScopedVarsIterators.begin(),
@@ -558,14 +560,7 @@ void end_visit(dynamic_function_invocation_expr& v)
   
   bool isPartialApply = false;
   
-  // the arguments are reversed on the stack
-  if (v.get_dot_var())
-  {
-    PlanIter_t iter = pop_itstack();
-    argIters.push_back(iter);
-  }
-
-  for (size_t i = 0; i < numArgs-1; ++i)
+  for (csize i = 0; i < numArgs-1; ++i)
   {
     if (v.get_args()[i]->get_expr_kind() == argument_placeholder_expr_kind)
       isPartialApply = true;
@@ -577,10 +572,7 @@ void end_visit(dynamic_function_invocation_expr& v)
 
   std::reverse(argIters.begin(), argIters.end());
 
-  push_itstack(new DynamicFnCallIterator(sctx, qloc,
-                                         argIters,
-                                         v.get_dot_var() ? 1 : 0,
-                                         isPartialApply));
+  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, isPartialApply));
 }
 
 
