@@ -214,7 +214,7 @@ public:
   csize getArity() const;
   
   // returns the arity of the function before any partial application
-  unsigned int getStartArity() const;
+  csize getStartArity() const;
 
   const signature& getSignature() const;
   
