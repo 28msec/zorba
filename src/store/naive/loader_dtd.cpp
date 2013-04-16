@@ -355,6 +355,16 @@ store::Item_t FragmentXmlLoader::loadXml(
 
     FragmentXmlLoader::endDocument(theFragmentStream->ctxt->userData); // this would not be called otherwise
   }
+  catch( std::exception const &e )
+  {
+    theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR,
+                                      ERROR_PARAMS( e.what() )));
+
+    abortload();
+    thePathStack.clear();
+    return NULL;
+  }
   catch (...)
   {
     abortload();
@@ -849,8 +859,19 @@ store::Item_t DtdXmlLoader::loadXml(
       return NULL;
     }
   }
+  catch( std::exception const &e )
+  {
+    theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() )));
+
+    abortload();
+    return NULL;
+  }
   catch(...)
   {
+    theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
+
     abortload();
     thePathStack.clear();
     return NULL;
@@ -1070,6 +1091,12 @@ void DtdXmlLoader::startDocument(void * ctx)
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
+  catch( std::exception const &e )
+  {
+    loader.theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+                                      ERROR_PARAMS( e.what() )));
+  }
   catch (...)
   {
     loader.theXQueryDiagnostics->add_error(
@@ -1151,6 +1178,12 @@ void DtdXmlLoader::endDocument(void * ctx)
   catch (ZorbaException const& e)
   {
     loader.theXQueryDiagnostics->add_error( e );
+  }
+  catch( std::exception const &e )
+  {
+    loader.theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+                                      ERROR_PARAMS( e.what() )));
   }
   catch (...)
   {
@@ -1446,6 +1479,12 @@ void DtdXmlLoader::startElement(
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
+  catch( std::exception const &e )
+  {
+    loader.theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+                                      ERROR_PARAMS( e.what() )));
+  }
   catch (...)
   {
     loader.theXQueryDiagnostics->
@@ -1578,6 +1617,12 @@ void  DtdXmlLoader::endElement(
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
+  catch( std::exception const &e )
+  {
+    loader.theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+                                      ERROR_PARAMS( e.what() )));
+  }
   catch (...)
   {
     loader.theXQueryDiagnostics->add_error(
@@ -1628,6 +1673,12 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   catch (ZorbaException const& e)
   {
     loader.theXQueryDiagnostics->add_error( e );
+  }
+  catch( std::exception const &e )
+  {
+    loader.theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+                                      ERROR_PARAMS( e.what() )));
   }
   catch (...)
   {
@@ -1682,6 +1733,12 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
+  catch( std::exception const &e )
+  {
+    loader.theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+                                      ERROR_PARAMS( e.what() )));
+  }
   catch (...)
   {
     loader.theXQueryDiagnostics->add_error(
@@ -1732,6 +1789,12 @@ void DtdXmlLoader::processingInstruction(
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
+  catch( std::exception const &e )
+  {
+    loader.theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+                                      ERROR_PARAMS( e.what() )));
+  }
   catch (...)
   {
     loader.theXQueryDiagnostics->add_error(
@@ -1774,6 +1837,12 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
   catch (ZorbaException const& e)
   {
     loader.theXQueryDiagnostics->add_error( e );
+  }
+  catch( std::exception const &e )
+  {
+    loader.theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZXQP0003_INTERNAL_ERROR,
+                                      ERROR_PARAMS( e.what() )));
   }
   catch (...)
   {
