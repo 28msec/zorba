@@ -30,6 +30,7 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+#include "stdafx.h"
 // Take the name prefix into account.
 #define yylex   zorbalex
 
@@ -207,12 +208,12 @@ namespace zorba {
               if (*++yyp != '\\')
                 goto do_not_strip_quotes;
               /* Fall through.  */
+            case '"':
+              return yyr;
             default:
               yyr += *yyp;
               break;
 
-            case '"':
-              return yyr;
             }
       do_not_strip_quotes: ;
       }
@@ -247,11 +248,13 @@ namespace zorba {
   {
     YYUSE (yylocationp);
     YYUSE (yyvaluep);
+    /*  useless
     switch (yytype)
       {
          default:
 	  break;
       }
+    */
   }
 
 

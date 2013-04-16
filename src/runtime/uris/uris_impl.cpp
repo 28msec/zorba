@@ -84,7 +84,7 @@ DecodeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       while (lTranscoder.good())
       {
         lTranscoder.read(buf, 1024);
-        lDecodedString.append(buf, lTranscoder.gcount());
+        lDecodedString.append(buf, static_cast<zstring::size_type>(lTranscoder.gcount()));
       }
     }
     catch (ZorbaException& e)

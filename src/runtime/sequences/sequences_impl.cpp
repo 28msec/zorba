@@ -1347,7 +1347,7 @@ bool FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   theChildren[0]->count(result, planState);
 
-  STACK_PUSH(result, state);
+  STACK_PUSH(!!result, state);
 
   STACK_END(state);
 }
@@ -2143,7 +2143,7 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
   {
     readDocument(uriString, encodingString, theSctx, planState, loc, unparsedText);
   }
-  catch (XQueryException const& e)
+  catch (XQueryException const&)
   {
     unparsedText = NULL;
   }

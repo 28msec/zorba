@@ -1,6 +1,6 @@
-#line 2 "xquery_scanner.yy.cpp"
+//#line 2 "xquery_scanner.yy.cpp"
 
-#line 4 "xquery_scanner.yy.cpp"
+//#line 4 "xquery_scanner.yy.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -81,6 +81,7 @@ typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
 #endif /* ! C99 */
 
+#if _MSC_VER<1500  /* Error defining this on VS2010/2012  */
 /* Limits of integral types. */
 #ifndef INT8_MIN
 #define INT8_MIN               (-128)
@@ -109,6 +110,7 @@ typedef unsigned int flex_uint32_t;
 #ifndef UINT32_MAX
 #define UINT32_MAX             (4294967295U)
 #endif
+#endif /* _MSC_VER<1500 */
 
 #endif /* ! FLEXINT_H */
 
@@ -6169,7 +6171,7 @@ int yyFlexLexer::LexerInput( char* buf, int max_size )
 	if ( yyin->bad() )
 		return -1;
 	else
-		return yyin->gcount();
+		return static_cast<int>(yyin->gcount());
 #endif
 }
 

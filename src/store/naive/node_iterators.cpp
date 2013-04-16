@@ -443,9 +443,9 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
     if (theDistinct)
     {
       result = theNodes[theCurrentNode++];
-
-      while (theCurrentNode < (long)theNodes.size() &&
-             theNodes[theCurrentNode] == result)
+      zorba::csize size = static_cast<zorba::csize>(theNodes.size());
+      while ( (theCurrentNode < size) &&
+              (theNodes[theCurrentNode] == result) )
       {
         theCurrentNode++;
       }

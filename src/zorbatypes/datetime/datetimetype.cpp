@@ -157,7 +157,7 @@ int DateTime::createDateTime(
   dt.data[DAY_DATA] = std::abs(days);
   dt.data[HOUR_DATA] = std::abs(hours);
   dt.data[MINUTE_DATA] = std::abs(minutes);
-  dt.data[SECONDS_DATA] = std::floor(std::fabs(seconds));
+  dt.data[SECONDS_DATA] = static_cast<long>(std::floor(std::fabs(seconds)));
   dt.data[FRACSECONDS_DATA] = round(frac(std::fabs(seconds)) * FRAC_SECONDS_UPPER_LIMIT);
 
   if (tz != NULL)
@@ -230,7 +230,7 @@ int DateTime::createTime(
   dt.data[DAY_DATA] = 1;
   dt.data[HOUR_DATA] = std::abs(hours);
   dt.data[MINUTE_DATA] = std::abs(minutes);
-  dt.data[SECONDS_DATA] = std::floor(std::fabs(seconds));
+  dt.data[SECONDS_DATA] = static_cast<long>(std::floor(std::fabs(seconds)));
   dt.data[FRACSECONDS_DATA] = round(frac(std::fabs(seconds)) * FRAC_SECONDS_UPPER_LIMIT);
 
   if (tz != NULL)

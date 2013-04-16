@@ -80,7 +80,7 @@ static bool test_read( test const *t ) {
   char raw_buf[ 1024 ];
   iss.read( raw_buf, sizeof raw_buf );
   if ( iss.gcount() ) {
-    string const raw_str( raw_buf, iss.gcount() );
+    string const raw_str( raw_buf, static_cast<string::size_type>(iss.gcount()) );
     return raw_str == t->raw_str;
   }
   return false;
