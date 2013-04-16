@@ -70,8 +70,8 @@ bool FunctionLookupIterator::nextImpl(
   uint32_t arity;
   result = NULL;
   
-  FunctionLookupIteratorState* state;
-  DEFAULT_STACK_INIT(FunctionLookupIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(qname, theChildren[0], planState);
   consumeNext(arityItem, theChildren[1], planState);
