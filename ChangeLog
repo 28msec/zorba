@@ -38,6 +38,8 @@ Optimizations:
   * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1102997 (Swapping referenced nodes)
+  * Fixed bug #1111487 (Swapping nodes that are in collections)
   * Fixed bug #1123836 (overflows in date/time casts now return FODT0001 and
     in durations return FODT0002)
   * Fixed bug #1147518 (fn:round-half-to-even (at least 11 failures))
