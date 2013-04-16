@@ -1511,10 +1511,12 @@ void static_context::compute_base_uri()
     if (found)
     {
       URI base(entityUri);
-      URI resolvedURI(base, userBaseUri);
-      theBaseUriInfo->theBaseUri = resolvedURI.toString();
-      theBaseUriInfo->theHaveBaseUri = true;
-      return;
+      if (base.is_absolute()) {
+        URI resolvedURI(base, userBaseUri);
+        theBaseUriInfo->theBaseUri = resolvedURI.toString();
+        theBaseUriInfo->theHaveBaseUri = true;
+        return;
+      }
     }
 
     URI base(get_implementation_baseuri());
