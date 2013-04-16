@@ -70,7 +70,7 @@ int parse_long(
     return 1;
 
   while ( position + delta < len && ascii::is_digit( str[position+delta] ) ) {
-    unsigned const tmp_prev = tmp_result;
+    int const tmp_prev = tmp_result;
     tmp_result *= 10;
     // See <http://stackoverflow.com/q/199333/99089>
     if ( tmp_result / 10 != tmp_prev )
