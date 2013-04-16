@@ -360,33 +360,6 @@ namespace zorba {
       virtual Item
       createDateTime( const String& aDateTimeValue ) = 0;
 
-    /** \brief Creates a DateTimeStamp Item
-     *         see [www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
-     *
-     * @param aYear short-valued representation of the year.
-     * @param aMonth short-valued representation of the month.
-     * @param aDay short-valued representation of the day.
-     * @param aHour short-valued representation of the hour.
-     * @param aMinute short-valued representation of the minute.
-     * @param aSecond double-valued representation of the seconds and fractional seconds.
-     * @param aTimeZone_hours short-valued representation of the difference in hours to UTC.
-     * @return The DateTimeStamp Item.
-     */
-    virtual Item
-    createDateTimeStamp(short aYear, short aMonth, short aDay,
-                   short aHour, short aMinute, double aSecond,
-                   short aTimeZone_hours) = 0;
-
-    /** \brief Creates a DateTimeStamp Item
-     *         see [www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
-     *
-     * @param aDateTimeStampValue String representation of the datetimeStamp value
-     *        (for example, 2002-10-10T12:00:00-05:00).
-     * @return The DateTimeStamp Item.
-     */
-    virtual Item
-    createDateTimeStamp( const String& aDateTimeStampValue ) = 0;
-
       /** \brief Creates a Double Item
        *         see [http://www.w3.org/TR/xmlschema-2/#double]
        *
@@ -868,6 +841,33 @@ namespace zorba {
 
   }; // class ItemFactory
 
+      /** \brief Creates a DateTimeStamp Item
+       *         see [www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
+       *
+       * @param aYear short-valued representation of the year.
+       * @param aMonth short-valued representation of the month.
+       * @param aDay short-valued representation of the day.
+       * @param aHour short-valued representation of the hour.
+       * @param aMinute short-valued representation of the minute.
+       * @param aSecond double-valued representation of the seconds and fractional seconds.
+       * @param aTimeZone_hours short-valued representation of the difference in hours to UTC.
+       * @return The DateTimeStamp Item.
+       */
+      virtual Item
+      createDateTimeStamp(short aYear, short aMonth, short aDay,
+                          short aHour, short aMinute, double aSecond,
+                          short aTimeZone_hours) = 0;
+
+      /** \brief Creates a DateTimeStamp Item
+       *         see [www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
+       *
+       * @param aDateTimeStampValue String representation of the datetimeStamp value
+       *        (for example, 2002-10-10T12:00:00-05:00).
+       * @return The DateTimeStamp Item.
+       */
+      virtual Item
+      createDateTimeStamp( const String& aDateTimeStampValue ) = 0;
+    
 } // namespace zorba
 #endif
 /* vim:set et sw=2 ts=2: */
