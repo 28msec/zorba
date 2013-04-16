@@ -4615,7 +4615,7 @@ FunctionItemExpr :
 
 
 LiteralFunctionItem :
-    QNAME HASH INTEGER_LITERAL
+    FUNCTION_NAME HASH INTEGER_LITERAL
     {
       $$ = new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), $3);
     }

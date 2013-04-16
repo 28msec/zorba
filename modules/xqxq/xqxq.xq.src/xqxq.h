@@ -406,7 +406,7 @@ protected:
   protected:
     Iterator_t theIterator;
 
-    String theQueryID;
+    String     theQueryID;
 
   public:
     EvaluateIterator(Iterator_t& aIter, String aQueryID)
@@ -428,6 +428,8 @@ protected:
   };
 
   typedef zorba::SmartPtr<EvaluateIterator> EvaluateIterator_t;
+
+protected:
   EvaluateIterator_t theIter; 
 
 public:
