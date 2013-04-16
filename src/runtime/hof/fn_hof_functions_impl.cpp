@@ -67,7 +67,9 @@ bool FunctionLookupIterator::nextImpl(
   store::Item_t ctxItem;
   store::Item_t ctxPosItem;
   store::Item_t ctxSizeItem;
-  uint32_t arity;
+  csize arity;
+  function* f;
+
   result = NULL;
   
   PlanIteratorState* state;
@@ -78,24 +80,29 @@ bool FunctionLookupIterator::nextImpl(
 
   try
   {
-    consumeNext(ctxItem, theChildren[2], planState);
-    consumeNext(ctxPosItem, theChildren[3], planState);
-    consumeNext(ctxSizeItem, theChildren[4], planState);
-  }
-  catch (const ZorbaException& e)
-  {
-    if (e.diagnostic() != err::XPDY0002)
-      throw;
-  }
-
-  try
-  {
-    arity = to_xs_unsignedInt(arityItem->getIntegerValue());
+    arity = to_xs_unsignedLong(arityItem->getIntegerValue());
   }
   catch ( std::range_error const& )
   {
     RAISE_ERROR(err::XPST0017, loc,
     ERROR_PARAMS(arityItem->getIntegerValue(), ZED(NoParseFnArity)));
+  }
+
+  f = theSctx->lookup_fn(qname, arity);
+
+  if (f != NULL && f->isContextual())
+  {
+    try
+    {
+      consumeNext(ctxItem, theChildren[2], planState);
+      consumeNext(ctxPosItem, theChildren[3], planState);
+      consumeNext(ctxSizeItem, theChildren[4], planState);
+    }
+    catch (const ZorbaException& e)
+    {
+      if (e.diagnostic() != err::XPDY0002)
+        throw;
+    }
   }
   
   try
