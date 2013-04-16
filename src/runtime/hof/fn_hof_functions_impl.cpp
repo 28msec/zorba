@@ -44,7 +44,10 @@
 #include "zorbamisc/ns_consts.h"
 
 
-using namespace std;
+#include "compiler/expression/expr_manager.h"
+#include "compiler/expression/var_expr.h"
+
+
 
 namespace zorba {
 
@@ -56,9 +59,17 @@ bool FunctionLookupIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
+  CompilerCB* ccb = planState.theCompilerCB;
+  store::ItemFactory* factory = GENV_ITEMFACTORY;
+
   store::Item_t qname;
   store::Item_t arityItem;
-  uint32_t arity;
+  store::Item_t ctxItem;
+  store::Item_t ctxPosItem;
+  store::Item_t ctxSizeItem;
+  csize arity;
+  function* f;
+
   result = NULL;
   
   PlanIteratorState* state;
@@ -66,29 +77,101 @@ bool FunctionLookupIterator::nextImpl(
 
   consumeNext(qname, theChildren[0], planState);
   consumeNext(arityItem, theChildren[1], planState);
-  
+
   try
   {
-    arity = to_xs_unsignedInt(arityItem->getIntegerValue());
+    arity = to_xs_unsignedLong(arityItem->getIntegerValue());
   }
   catch ( std::range_error const& )
   {
     RAISE_ERROR(err::XPST0017, loc,
     ERROR_PARAMS(arityItem->getIntegerValue(), ZED(NoParseFnArity)));
   }
+
+  f = theSctx->lookup_fn(qname, arity);
+
+  if (f != NULL && f->isContextual())
+  {
+    try
+    {
+      consumeNext(ctxItem, theChildren[2], planState);
+      consumeNext(ctxPosItem, theChildren[3], planState);
+      consumeNext(ctxSizeItem, theChildren[4], planState);
+    }
+    catch (const ZorbaException& e)
+    {
+      if (e.diagnostic() != err::XPDY0002)
+        throw;
+    }
+  }
   
   try
   {
-    expr* fiExpr = Translator::translate_literal_function(qname, arity, theCompilerCB, loc, true);
+    static_context_t impSctx = theSctx->create_child_context();
+    ccb->theSctxMap[ccb->theSctxMap.size()] = impSctx;
+
+    std::auto_ptr<dynamic_context> fiDctx;
+    fiDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
+
+    if (ctxItem)
+    {
+      store::Item_t ctxItemName;
+      factory->createQName(ctxItemName, "", "", static_context::DOT_VAR_NAME);
+
+      var_expr* ve = ccb->theEM->
+      create_var_expr(impSctx, NULL, loc, var_expr::prolog_var, ctxItemName);
+
+      ve->set_external(true);
+      ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM);
+
+      impSctx->bind_var(ve, loc);
+
+      fiDctx->add_variable(dynamic_context::IDVAR_CONTEXT_ITEM, ctxItem);
+    }
+
+    if (ctxPosItem)
+    {
+      store::Item_t ctxPosName;
+      factory->createQName(ctxPosName, "", "", static_context::DOT_POS_VAR_NAME);
+
+      var_expr* ve = ccb->theEM->
+      create_var_expr(impSctx, NULL, loc, var_expr::prolog_var, ctxPosName);
+
+      ve->set_external(true);
+      ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION);
+
+      impSctx->bind_var(ve, loc);
+
+      fiDctx->add_variable(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION, ctxPosItem);
+    }
+
+    if (ctxSizeItem)
+    {
+      store::Item_t ctxSizeName;
+      factory->createQName(ctxSizeName, "", "", static_context::DOT_SIZE_VAR_NAME);
+
+      var_expr* ve = ccb->theEM->
+      create_var_expr(impSctx, NULL, loc, var_expr::prolog_var, ctxSizeName);
+
+      ve->set_external(true);
+      ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE);
+
+      impSctx->bind_var(ve, loc);
+
+      fiDctx->add_variable(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE, ctxSizeItem);
+    }
+
+    expr* fiExpr = 
+    Translator::translate_literal_function(qname, arity, ccb, impSctx, loc);
     
     FunctionItemInfo_t dynFnInfo =
     static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
 
-    dynFnInfo->theCCB = theCompilerCB;
+    dynFnInfo->theCCB = ccb;
 
-    result = new FunctionItem(dynFnInfo, NULL);
+    result = new FunctionItem(dynFnInfo, fiDctx.release());
   }
-  catch (ZorbaException const& e)
+  catch (const ZorbaException& e)
   {
     if (e.diagnostic() != err::XPST0017)
       throw;

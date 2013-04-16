@@ -39,11 +39,6 @@ typedef rchandle<FunctionItemInfo> FunctionItemInfo_t;
   theCCB :
   --------
 
-  theMustDeleteCCB :
-  ------------------
-  This is set to true if the FunctionItemInfo is the owner of the CCB,
-  and must delete it upon destruction.
-
   theLoc:
   -------
   The location where the function item expr or inline function expr appear at.
@@ -112,10 +107,9 @@ class FunctionItemInfo : public SimpleRCObject
 {
 public:
   CompilerCB                  * theCCB;
-  bool                          theMustDeleteCCB;
 
   QueryLoc                      theLoc;
-  static_context              * theClosureSctx;
+  static_context*               theClosureSctx;
   function_t                    theFunction;
   store::Item_t                 theQName;
   unsigned int                  theArity;
@@ -192,6 +186,8 @@ public:
       const FunctionItemInfo_t& dynamicFunctionInfo,
       dynamic_context* dctx);
 
+  ~FunctionItem();
+
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   dynamic_context* getDctx() const { return theClosureDctx.get(); }
@@ -211,7 +207,9 @@ public:
   // the function item itself, so it will be skipped.
   // The last element(s) of dynChildren might contain DOT vars iterators. They
   // will be picked up automatically if needed.
-  PlanIter_t getImplementation(const std::vector<PlanIter_t>& dynChildren, CompilerCB* ccb);
+  PlanIter_t getImplementation(
+      const std::vector<PlanIter_t>& dynChildren,
+      CompilerCB* ccb);
 
   const store::Item_t getFunctionName() const;
 

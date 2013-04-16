@@ -163,7 +163,7 @@ public:
       const store::Item_t& name,
       int isGlobal);
 
-  const std::vector<var_expr*>& get_subst_vars_values() const
+  const std::vector<var_expr*>& get_subst_vars() const
   {
     return theFunctionItemInfo->theSubstVarsValues;
   }
@@ -178,7 +178,7 @@ public:
     return theFunctionItemInfo->theIsGlobalVar;
   }
 
-  void set_function(user_function* udf);
+  void set_function(user_function* udf, csize arity);
 
   function* get_function() const { return theFunctionItemInfo->theFunction; }
 
@@ -189,6 +189,8 @@ public:
   bool is_inline() const { return theFunctionItemInfo->theIsInline; }
   
   bool needs_context_item() const { return theFunctionItemInfo->theNeedsContextItem; }
+
+  void set_needs_ctx_item(bool v) { theFunctionItemInfo->theNeedsContextItem = v; }
 
   bool is_coercion() const { return theFunctionItemInfo->theIsCoercion; }
 

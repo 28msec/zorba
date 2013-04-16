@@ -80,7 +80,9 @@ bool FunctionItemIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
     if (theFunctionItemInfo->theIsCoercion)
     {
-      FunctionItemIterator* child = dynamic_cast<FunctionItemIterator*>(theChildren[0].getp());
+      FunctionItemIterator* child = 
+      dynamic_cast<FunctionItemIterator*>(theChildren[0].getp());
+
       if (child != NULL)
         theFunctionItemInfo->theQName = child->theFunctionItemInfo->theQName;
     }
@@ -88,8 +90,8 @@ bool FunctionItemIterator::nextImpl(store::Item_t& result, PlanState& planState)
     result = new FunctionItem(theFunctionItemInfo, evalDctx.release());
   }
 
-  STACK_PUSH ( result != NULL, state );
-  STACK_END (state);
+  STACK_PUSH(result != NULL, state);
+  STACK_END(state);
 }
 
 
@@ -122,8 +124,6 @@ void FunctionItemIterator::importOuterEnv(
     static_context* importSctx,
     dynamic_context* evalDctx) const
 {
-  ulong maxOuterVarId = 1;
-
   // Copy all the var values from the outer-query global dctx into the eval-query
   // dctx. This is need to handle the following scenario: (a) $x is an outer-query
   // global var that is not among the outer vars of the eval query (because $x was
@@ -148,9 +148,6 @@ void FunctionItemIterator::importOuterEnv(
 
     ulong outerVarId = static_cast<ulong>(i);
 
-    if (outerVarId > maxOuterVarId)
-      maxOuterVarId = outerVarId;
-
     store::Item_t itemValue;
     store::TempSeq_t seqValue;
 
@@ -166,8 +163,6 @@ void FunctionItemIterator::importOuterEnv(
     }
   }
 
-  ++maxOuterVarId;
-
   // Import the outer vars. Specifically, for each outer var:
   // (a) create a declaration inside the importSctx.
   // (b) Set its var id
@@ -175,7 +170,6 @@ void FunctionItemIterator::importOuterEnv(
   csize curChild = -1;
 
   csize numOuterVars = theFunctionItemInfo->theScopedVarsNames.size();
-
 
   for (csize i = 0; i < numOuterVars; ++i)
   {
