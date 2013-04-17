@@ -839,8 +839,6 @@ namespace zorba {
       virtual Item
       createUserTypedAtomicItem(Item& aBaseItem, Item& aTypeName) = 0;
 
-  }; // class ItemFactory
-
       /** \brief Creates a DateTimeStamp Item
        *         see [www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
        *
@@ -868,6 +866,8 @@ namespace zorba {
       virtual Item
       createDateTimeStamp( const String& aDateTimeStampValue ) = 0;
     
+  }; // class ItemFactory
+
 } // namespace zorba
 #endif
 /* vim:set et sw=2 ts=2: */
