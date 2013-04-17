@@ -40,10 +40,10 @@ class StaticContextImpl;
   thePlan:
   --------
   The runtime plan for the function body. This is created during 
-  UDFunctionCallIterator::openImpl(), if it has not not been created already 
-  (during the openImpl() method of another UDFunctionCallIterator on the same
-  udf). A pointer to this plan is also stored in the udf obj itself, and that's
-  how we know if it has been created already or not.
+  UDFunctionCallIterator::openImpl(), if it has not been created already (during
+  the openImpl() method of another UDFunctionCallIterator on the same udf). A
+  pointer to this plan is also stored in the udf obj itself, and that's how we
+  know if it has been created already or not.
 
   thePlanState:
   -------------
@@ -124,6 +124,12 @@ public:
 
   theIsDynamic:
   -------------
+  True if this is a UDFunctionCallIterator that is allocated on the fly during
+  DynamicFnCallIterator::nextImpl().
+
+
+  theFunctionItem:
+  ----------------
 
 ********************************************************************************/
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
@@ -153,6 +159,8 @@ public:
       const QueryLoc& loc, 
       std::vector<PlanIter_t>& args, 
       const user_function* aUDF);
+
+  virtual ~UDFunctionCallIterator();
 
   bool isUpdating() const;
 

@@ -36,14 +36,14 @@ public:
   DynamicContext(const DynamicContext& aCtx):theContext(aCtx.theContext) {}
   DynamicContext(zorba::DynamicContext* aCtx):theContext(aCtx) {}
 
-  bool 	getContextItem (Item& aItem);
+  bool  getContextItem (Item& aItem);
 
   /** \brief Retrieve the dateTime Item used at the time the query is executed
    *         (see setCurrentDateTime()).
    *
    * @return Item the dateTime Item used at the time the query is executed.
    */
-  Item 	getCurrentDateTime ();
+  Item  getCurrentDateTime ();
 
   /** \brief Return the value of the default collection that is used when calling the
    *         fn:collection function without a parameter.
@@ -51,7 +51,7 @@ public:
    * @return Item the default collection that is set in this dynamic context.
    * @throw ZorbaException if an error occured.
    */
-  Item 	getDefaultCollection ();
+  Item  getDefaultCollection ();
 
   /** \brief Retrieve the implicit timezone used in comparisons or arithmetic operations
    *         of date, time, or dateTime values.
@@ -60,7 +60,7 @@ public:
    *         and an DiagnosticHandler is used.
    * @throw ZorbaException if an error occured.
    */
-  int 	getImplicitTimezone ();
+  int  getImplicitTimezone ();
 
   /** \brief Returns the current value of an external
    * variable. Exactly one of the two return values (aItem or
@@ -78,7 +78,7 @@ public:
    * @return true if the variable has been retrieved successfully, false otherwise.
    * @throw ZorbaException if an error occured.
    */
-  bool 	getVariable (const std::string& aNamespace, const std::string& aLocalname, Item& aItem, Iterator& aIterator);
+  bool  getVariable (const std::string& aNamespace, const std::string& aLocalname, Item& aItem, Iterator& aIterator);
   
   /** \brief Defines the context item.
    *

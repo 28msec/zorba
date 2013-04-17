@@ -175,6 +175,8 @@ public:
 
   void setScriptingKind(unsigned short k);
 
+  csize numArgs() const { return theArgVars.size(); }
+
   void setArgVars(std::vector<var_expr*>& args);
 
   const std::vector<var_expr*>& getArgVars() const;

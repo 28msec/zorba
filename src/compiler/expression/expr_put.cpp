@@ -533,37 +533,31 @@ ostream& ftcontains_expr::put( ostream &os ) const
 
 std::ostream& function_item_expr::put(std::ostream& os) const
 {
-  os << indent << "funtion_item_expr " << expr_addr(this) << inc_indent;
+  os << indent << "funtion_item_expr " << expr_addr(this) << 
+    " fiInfo" << expr_addr(theFunctionItemInfo.getp()) << inc_indent;
 
-  if (!is_inline())
+  os << " " << theFunctionItemInfo->theQName->getStringValue()
+     << "#" << theFunctionItemInfo->theArity << " [\n";
+
+  for (csize i = 0; i < theFunctionItemInfo->theScopedVarsValues.size(); ++i)
   {
-    os << " " << theFunctionItemInfo->theQName->getStringValue()
-       << "#" << theFunctionItemInfo->theArity;
-    os << dec_indent << endl;
-    return os;
+    os << indent << "using $"
+       << theFunctionItemInfo->theScopedVarsNames[i]->getStringValue()
+       << expr_addr(theFunctionItemInfo->theSubstVarsValues[i])
+       << (theFunctionItemInfo->theIsGlobalVar[i] ? " global=1" : "") << " := [";
+    os << endl << inc_indent;
+
+    if (theFunctionItemInfo->theScopedVarsValues[i])
+      theFunctionItemInfo->theScopedVarsValues[i]->put(os);
+
+    os << dec_indent << indent << "]" << endl;
   }
-  else
-  {
-    os << " " << theFunctionItemInfo->theQName->getStringValue()
-       << "#" << theFunctionItemInfo->theArity << " [\n";
 
-    for (ulong i = 0; i < theFunctionItemInfo->theScopedVarsValues.size(); i++)
-    {
-      os << indent << "using $"
-         << theFunctionItemInfo->theScopedVarsNames[i]->getStringValue()
-         << (theFunctionItemInfo->theIsGlobalVar[i] ? " global=1" : "") << " := [";
-      os << endl << inc_indent;
-      if (theFunctionItemInfo->theScopedVarsValues[i])
-        theFunctionItemInfo->theScopedVarsValues[i]->put(os);
-      os << dec_indent << indent << "]" << endl;
-    }
+  if (theFunctionItemInfo->theFunction != NULL &&
+      static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody() != NULL)
+    static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody()->put(os);
 
-    if (theFunctionItemInfo->theFunction != NULL &&
-        static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody() != NULL)
-      static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody()->put(os);
-
-    END_PUT();
-  }
+  END_PUT();
 }
 
 
@@ -575,12 +569,6 @@ ostream& dynamic_function_invocation_expr::put(ostream& os) const
 
   for (csize i = 0; i < theArgs.size(); ++i)
     theArgs[i]->put(os);
-
-  if (theDotVar)
-  {
-    os << indent << "using $"; 
-    theDotVar->put(os);
-  }
 
   END_PUT();
 }

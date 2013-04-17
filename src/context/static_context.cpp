@@ -512,6 +512,10 @@ static_context::ZORBA_OPTION_OPTIM_NS =
 "http://www.zorba-xquery.com/options/optimizer";
 
 const char*
+static_context::XQUERY_NS =
+"http://www.w3.org/2012/xquery";
+
+const char*
 static_context::XQUERY_OPTION_NS =
 "http://www.w3.org/2011/xquery-options";
 
@@ -713,6 +717,9 @@ static_context::static_context()
   theAllWarningsErrors(false),
   theFeatures(0)
 {
+#if 0
+  std::cout << "Allocating SCTX : " << this << std::endl;
+#endif
 }
 
 
@@ -763,6 +770,11 @@ static_context::static_context(static_context* parent)
   // easy to set and unset them
   theFeatures(parent->theFeatures)
 {
+#if 0
+  std::cout << "Allocating SCTX : " << this << " under parent SCTX : "
+            << parent << std::endl;
+#endif
+
   if (theParent != NULL)
     RCHelper::addReference(theParent);
 }
@@ -822,6 +834,10 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 static_context::~static_context()
 {
+#if 0
+  std::cout << "Deallocating SCTX : " << this << std::endl;
+#endif
+
   if (theExternalModulesMap)
   {
     ExternalModuleMap::iterator ite = theExternalModulesMap->begin();
@@ -1495,10 +1511,12 @@ void static_context::compute_base_uri()
     if (found)
     {
       URI base(entityUri);
-      URI resolvedURI(base, userBaseUri);
-      theBaseUriInfo->theBaseUri = resolvedURI.toString();
-      theBaseUriInfo->theHaveBaseUri = true;
-      return;
+      if (base.is_absolute()) {
+        URI resolvedURI(base, userBaseUri);
+        theBaseUriInfo->theBaseUri = resolvedURI.toString();
+        theBaseUriInfo->theHaveBaseUri = true;
+        return;
+      }
     }
 
     URI base(get_implementation_baseuri());
