@@ -191,65 +191,40 @@ declare %ann:sequential function reporting:W3C-reporting(
 
 (:~
  : Loops through the test-sets and creates statistics.
- : @param $FOTSCatalogFilePath  Path to the FOTS catalog file.
  : @param $failures Path to the results fo the FOTS.
  : @return a report of tests run.
  :)
 declare %ann:nondeterministic function reporting:wiki-report(
-  $FOTSCatalogFilePath  as xs:string,
   $resultsFilePath      as xs:string
 ) as element(fots:report)
 {
 try
 {
   {
-    variable $FOTSCatalog := doc(resolve-uri($FOTSCatalogFilePath));
-
-    variable $catalogBaseURI := resolve-uri(util:parent-folder($FOTSCatalogFilePath));
-
     variable $results := parse-xml(file:read-text($resultsFilePath));
 
   <fots:report>
   {
-    let $totalNoTests := count($results//fots:test-set//fots:test-case),
-        $totalPass := sum(for $testSet in $results//fots:test-set
-                          return count($testSet//fots:test-case[@result ='pass'])),
-        $totalFail := sum(for $testSet in $results//fots:test-set
-                          return count($testSet//fots:test-case[@result ='fail'])),
-        $totalNotApplicable := sum(for $testSet in $results//fots:test-set
-                                   return count($testSet//fots:test-case[@result ='n/a'])),
-        $totalNotRun := sum(for $testSet in $results//fots:test-set
-                            return count($testSet//fots:test-case[@result ='notRun']))
-    return
-    <fots:brief totalTests="{$totalNoTests}"
-                totalPass="{$totalPass}"
-                totalFail="{$totalFail}"
-                totalNotApplicable="{$totalNotApplicable}"
-                totalNotRun="{$totalNotRun}"/>
+    comment {(concat('total=',count($results//fots:test-set//fots:test-case)),
+             for $res in ('pass', 'fail', 'n/a', 'notRun', 'wrongError', 'disputed', 'tooBig')
+             return concat(" ", $res, "=", count($results//fots:test-set//fots:test-case[@result = $res])))}
   }
   {
-    for $testSetFile in $FOTSCatalog//fots:test-set
-    let $testSetURI := resolve-uri($testSetFile/@file,
-                                   $catalogBaseURI),
-        $testSetDoc := doc($testSetURI),
-        $testSetName := data($testSetDoc/fots:test-set/@name),
-        $totalNoTestCases := count($testSetDoc//fots:test-case),
-        $totalFailures := for $testCase in $results//fots:test-set[@name = $testSetName]//fots:test-case[@result ="fail"]
-                          return $testCase,
-        $percent := round((1 - (count($totalFailures) div $totalNoTestCases))*100,2),
-        $executionTime := sum(for $testCase in $results//fots:test-set[@name = $testSetName]//fots:test-case
-                              return xs:dayTimeDuration($testCase/@executionTime))
+    for $ts in $results//fots:test-set
+    let $noTC := count($ts//fots:test-case)
+    let $totalFailures := $ts//fots:test-case[@result = "fail"]
+    let $percent := round((1 - (count($totalFailures) div $noTC))*100,2)
     where count($totalFailures) gt 0
-    order by count($totalFailures) descending, $testSetName
+    order by count($totalFailures) descending, $ts/@name
     return
-    <fots:test-set  name="{$testSetName}"
+    <fots:test-set  name="{$ts/@name}"
                     noFailures="{count($totalFailures)}"
-                    noTestCases="{$totalNoTestCases}"
+                    noTestCases="{$noTC}"
                     percent="{$percent}"
-                  failedTestNames="{string-join(for $failure in $totalFailures
-                                                order by data($failure/@name)
-                                                return data($failure/@name)
-                                              ,",")}">
+                    failedTestNames="{string-join(for $failure in $totalFailures
+                                                  order by data($failure/@name)
+                                                  return data($failure/@name)
+                                                  ,",")}">
     </fots:test-set>
    }
   </fots:report>
@@ -262,51 +237,6 @@ catch err:FODC0002
         $err:description,
         concat("&#xA;Please make sure the passed 'fotsPath' points to the ",
                "exact location of the FOTS catalog.xml:&#xA;",
-               resolve-uri($FOTSCatalogFilePath)))
+               resolve-uri($resultsFilePath)))
 }
-};
-
-(:~
- : Loops through the results and creates ExpectedFailures.xml.
- : @param $pathResults path to the FOTS results.
- : @return ExpectedFailures.xml.
- :)
-declare %ann:nondeterministic function reporting:generate-expected-failures(
-  $pathResults  as xs:string
-)
-{
-  try
-  {
-    {
-      if (not(file:is-file($pathResults)))
-      then
-      {
-        error($fots-err:errNA,
-              "The file results file was not found. Suggestion: use driver:run-fots to generate it.");
-      }
-      else ();
-
-      variable $results := parse-xml(file:read-text($pathResults));
-    
-      {
-        for $testSet in $results//fots:test-set
-        let $countFailures := count($testSet//fots:test-case[@result ="fail"])
-        let $testSetName := xs:string($testSet/@name)
-        order by $testSetName
-        where $countFailures gt xs:integer(0)
-        return
-        for $testCase in $testSet//fots:test-case[@result ="fail"]
-        return
-          concat('EXPECTED_FOTS_FAILURE (',
-                $testSetName,
-                ' ',
-                $testCase/@name,
-                ' 0)&#xA;')
-      }
-    }
-  }
-  catch *
-  {
-    error($err:code, $err:description)
-  }
 };

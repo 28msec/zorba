@@ -176,18 +176,14 @@ declare %ann:sequential function feedback:fail(
   $env              as element(fots:environment)?,
   $duration         as xs:dayTimeDuration,
   $verbose          as xs:boolean,
-  $expectedFailure  as xs:boolean,
-  $comment          as xs:string?,
   $info             as xs:string?
 ) as element(fots:test-case)
 {
-  variable $status := 'fail';
-
   if ($verbose) then
   {
     {
-      (insert node attribute result{$status} as last into $case,
-       if ($expectedFailure)
+      (insert node attribute result{'fail'} as last into $case,
+       if (exists($info))
        then insert node attribute comment{$info} as last into $case
        else (),
        insert node attribute executionTime{$duration} as last into $case,
@@ -210,12 +206,9 @@ declare %ann:sequential function feedback:fail(
   else
   {
     variable $ret := <fots:test-case name="{data($case/@name)}"
-                                     result="{$status}"/>;
+                                     result="fail"/>;
 
-    (if(exists($comment))
-     then insert node attribute comment{$comment} as last into $ret
-     else (),
-     if(exists($info))
+    (if(exists($info))
      then insert node attribute info{$info} as last into $ret
      else ());
     

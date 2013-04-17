@@ -358,8 +358,7 @@ return
 case "wiki-report"
 return
 {
-  r:wiki-report($fotsPath,
-                $resultsFilePath)
+  r:wiki-report($resultsFilePath)
 }
 
 default

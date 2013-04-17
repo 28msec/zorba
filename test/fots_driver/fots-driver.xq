@@ -687,7 +687,7 @@ return
   for $testCase in $tsDoc/fots:test-set/fots:test-case
   where empty($testCaseNames) or $testCaseNames[. eq $testCase/@name]
   return
-  driver:check-test-case($expFailuresTS/Test[@name = $testCase/@name],
+  driver:check-test-case($expFailuresTS/Test[@name = $testCase/@name][1],
                         
                          $ctestMode,
                         
@@ -929,8 +929,10 @@ try
     variable $duration := (datetime:current-dateTime() - $startDateTime);
    
     variable $prerequisitesError as xs:string? := env:check-prerequisites($case, $env);
+    
+    variable $checkPass := feedback:check-pass($result, $queryName, $testSetName, $expFailureTC, $ctestMode);
 
-    if (feedback:check-pass($result, $queryName, $testSetName, $expFailureTC, $ctestMode)) then
+    if ($checkPass) then
       feedback:pass($case,
                     $result,
                     $xqxqQuery,
@@ -952,17 +954,17 @@ try
       feedback:disputed($case,
                         concat("For details please see https://www.w3.org/Bugs/Public/show_bug.cgi?id=",
                                $expFailureTC/@bug))
-     else
-      feedback:fail($case,
-                    $result,
-                    $xqxqQuery,
-                    $testSetName,
-                    $env,
-                    $duration,
-                    $verbose,
-                    exists($expFailureTC),
-                    (),
-                    ())
+    else
+     feedback:fail($case,
+                   $result,
+                   $xqxqQuery,
+                   $testSetName,
+                   $env,
+                   $duration,
+                   $verbose,
+                   if(not($checkPass) and $ctestMode)
+                   then "Test case passed but it is marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt"
+                   else ())
   }
 }
 catch *
@@ -978,8 +980,6 @@ catch *
                 $env,
                 xs:dayTimeDuration("PT0S"),
                 $verbose,
-                exists($expFailureTC),
-                (),
                 ())
 }
 };
