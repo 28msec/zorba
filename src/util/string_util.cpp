@@ -56,14 +56,15 @@ namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void too_big_or_small( char const *buf, char const *last ) {
+static void throw_range_error( char const *buf, char const *last ) {
+  errno = ERANGE;
   zstring const s( buf, last );
   throw std::range_error( BUILD_STRING( '"', s, "\": number too big/small" ) );
 }
 
 inline void check_errno( char const *buf, char const *last ) {
   if ( errno == ERANGE )
-    too_big_or_small( buf, last );
+    throw_range_error( buf, last );
 }
 
 static void check_trailing_chars_impl( char const *last ) {
@@ -149,20 +150,65 @@ unsigned long long atoull( char const *buf, char const **last ) {
   return result;
 }
 
+long long atoll( char const *buf, char const *end, char const **last ) {
+  aton_context const ctx( last );
+  long long n = 0;
+  char const *s0 = ascii::trim_start_whitespace( buf, end - buf );
+  char const *s = s0;
+
+  if ( s < end ) {
+    bool minus = false;
+    switch ( *s ) {
+      case '-':
+        minus = true;
+        // no break;
+      case '+':
+        s0 = ++s;
+        break;
+    }
+    for ( ; s < end && ascii::is_digit( *s ); ++s ) {
+      long long const n_prev = n;
+      n *= 10;
+      if ( n / 10 != n_prev ) // see <http://stackoverflow.com/q/199333/99089>
+        throw_range_error( buf, end );
+      n += *s - '0';
+      if ( n < n_prev )
+        throw_range_error( buf, end );
+    }
+    if ( s == s0 )
+      s = buf;
+    else if ( minus )
+      n = -n;
+  }
+
+  *last = s;
+  check_parse_number( buf, *last, ctx.check_trailing_chars() );
+  return n;
+}
+
 unsigned long long atoull( char const *buf, char const *end,
                            char const **last ) {
   aton_context const ctx( last );
   unsigned long long n = 0;
-  char const *s = ascii::trim_start_whitespace( buf, end - buf );
+  char const *s0 = ascii::trim_start_whitespace( buf, end - buf );
+  char const *s = s0;
 
-  for ( ; s < end && ascii::is_digit( *s ); ++s ) {
-    unsigned long long const n_prev = n;
-    n = n * 10 + *s - '0';
-    if ( n < n_prev ) {
-      errno = ERANGE;
-      too_big_or_small( buf, end );
+  if ( s < end ) {
+    if ( *s == '+' )
+      s0 = ++s;
+    for ( ; s < end && ascii::is_digit( *s ); ++s ) {
+      unsigned long long const n_prev = n;
+      n *= 10;
+      if ( n / 10 != n_prev ) // see <http://stackoverflow.com/q/199333/99089>
+        throw_range_error( buf, end );
+      n += *s - '0';
+      if ( n < n_prev )
+        throw_range_error( buf, end );
     }
+    if ( s == s0 )
+      s = buf;
   }
+
   *last = s;
   check_parse_number( buf, *last, ctx.check_trailing_chars() );
   return n;

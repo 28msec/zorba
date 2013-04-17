@@ -1599,7 +1599,7 @@ DecimalFormatParamName :
       DECIMAL_SEPARATOR   { $$ = "decimal-separator"; }
     | DIGIT               { $$ = "digit"; }
     | GROUPING_SEPARATOR  { $$ = "grouping-separator"; }
-    | INFINITY_VALUE      { $$ = "infinty"; }
+    | INFINITY_VALUE      { $$ = "infinity"; }
     | MINUS_SIGN          { $$ = "minus-sign"; }
     | NaN                 { $$ = "NaN"; }
     | PATTERN_SEPARATOR   { $$ = "pattern-separator"; }
@@ -4615,7 +4615,7 @@ FunctionItemExpr :
 
 
 LiteralFunctionItem :
-    QNAME HASH INTEGER_LITERAL
+    FUNCTION_NAME HASH INTEGER_LITERAL
     {
       $$ = new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), $3);
     }

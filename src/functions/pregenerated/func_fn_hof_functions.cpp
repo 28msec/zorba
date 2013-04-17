@@ -32,6 +32,7 @@ namespace zorba{
 
 
 
+
 PlanIter_t fn_function_name_3_0::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -75,6 +76,22 @@ void populate_context_fn_hof_functions(static_context* sctx)
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_QUESTION),
         FunctionConsts::FN_FUNCTION_LOOKUP_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, op_zorba_function_lookup_3_0,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","function-lookup"), 
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_QUESTION),
+        FunctionConsts::OP_ZORBA_FUNCTION_LOOKUP_5);
 
   }
 

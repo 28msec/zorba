@@ -260,7 +260,13 @@ bool GenericArithIterator<Operation>::compute(
              compute<store::XS_DATETIME,store::XS_DATETIME>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DURATION_TYPE_ONE ))
+    else if (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE ))
+    {
+      return Operation::template
+             compute<store::XS_DATETIME,store::XS_DURATION>
+            (result, dctx, tm, &aLoc, n0, n1);
+    }
+    else if (TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE ))
     {
       return Operation::template
              compute<store::XS_DATETIME,store::XS_DURATION>
@@ -275,7 +281,13 @@ bool GenericArithIterator<Operation>::compute(
              compute<store::XS_DATE,store::XS_DATE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DURATION_TYPE_ONE))
+    else if (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE))
+    {
+      return Operation::template
+             compute<store::XS_DATE,store::XS_DURATION>
+             (result, dctx, tm, &aLoc, n0, n1);
+    }
+    else if (TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE))
     {
       return Operation::template
              compute<store::XS_DATE,store::XS_DURATION>
@@ -732,7 +744,10 @@ bool DivideOperation::compute<store::XS_YM_DURATION, store::XS_YM_DURATION>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  xs_decimal d = i0->getYearMonthDurationValue() / i1->getYearMonthDurationValue();
+  xs_yearMonthDuration otherYMDuration = i1->getYearMonthDurationValue();
+  if (otherYMDuration.isZero())
+    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );  
+  xs_decimal d = i0->getYearMonthDurationValue() / otherYMDuration;
   return GENV_ITEMFACTORY->createDecimal(result, d);
 }
 
@@ -746,8 +761,10 @@ bool DivideOperation::compute<store::XS_DT_DURATION, store::XS_DT_DURATION>(
     const store::Item* i0,
     const store::Item* i1 )
 {
-  xs_decimal d = i0->getDayTimeDurationValue() / i1->getDayTimeDurationValue();
-
+  xs_dayTimeDuration otherDTDuration = i1->getDayTimeDurationValue();
+  if (otherDTDuration.isZero())  
+      throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC(loc));
+  xs_decimal d = i0->getDayTimeDurationValue() / otherDTDuration;
   return GENV_ITEMFACTORY->createDecimal(result, d);
 }
 
