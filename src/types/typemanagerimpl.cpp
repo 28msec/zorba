@@ -884,7 +884,7 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
   bool nillable;
 
   xqtref_t contentType =
-  m_schema->createXQTypeFromElementName(this, elemName, true, nillable, loc);
+  m_schema->getTypeInfoFromGlobalElementDecl(this, elemName, true, nillable, loc);
 
   return create_node_type(store::StoreConsts::elementNode,
                           elemName,
@@ -898,7 +898,7 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
 /***************************************************************************//**
   Get the name of the type associated with a given globally declared element name.
 ********************************************************************************/
-void TypeManagerImpl::get_schema_element_typename(
+void TypeManagerImpl::get_schema_element_typeinfo(
     const store::Item* elemName,
     store::Item_t& typeName,
     bool& nillable,
@@ -910,7 +910,7 @@ void TypeManagerImpl::get_schema_element_typename(
     ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
   }
 
-  m_schema->getTypeNameFromElementName(elemName, typeName, nillable, loc);
+  m_schema->getTypeInfoFromGlobalElementDecl(elemName, typeName, nillable, loc);
 }
 
 
@@ -932,7 +932,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
   }
 
   xqtref_t contentType =
-  m_schema->createXQTypeFromAttributeName(this, attrName, true, loc);
+  m_schema->getTypeInfoFromGlobalAttributeDecl(this, attrName, true, loc);
 
   return create_node_type(store::StoreConsts::attributeNode,
                           attrName,
@@ -947,7 +947,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
   Get the name of the type associated with a given globally declared attribute
   name.
 ********************************************************************************/
-void TypeManagerImpl::get_schema_attribute_typename(
+void TypeManagerImpl::get_schema_attribute_typeinfo(
     const store::Item* attrName,
     store::Item_t& typeName,
     const QueryLoc& loc)
@@ -958,7 +958,7 @@ void TypeManagerImpl::get_schema_attribute_typename(
     ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), attrName->getStringValue()));
   }
 
-  m_schema->getTypeNameFromAttributeName(attrName, typeName, loc);
+  m_schema->getTypeInfoFromGlobalAttributeDecl(attrName, typeName, loc);
 }
 
 

@@ -259,7 +259,8 @@ public:
             
           return lRetval;
         }
-        else {
+        else
+        {
           // We didn't find it. If we return NULL here, Xerces will try to
           // resolve it its own way, which we don't want to happen.
           throw XQUERY_EXCEPTION(
@@ -271,7 +272,8 @@ public:
           );
         }
       }
-      catch (ZorbaException const& e) {
+      catch (ZorbaException const& e)
+      {
         TRACE("!!! ZorbaException: " << e );
         if ( e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED ||
              e.diagnostic() == err::XQST0059 )
@@ -518,9 +520,11 @@ void Schema::registerXSD(
 
 
 /*******************************************************************************
-  For the given element name find out its declared schema type
+  Find a global element declaration for a given element name and return the name
+  of the associated schema type and whether the element can be nillable.
+  Raise an error if no global element declaration is found for the given name.
 *******************************************************************************/
-void Schema::getTypeNameFromElementName(
+void Schema::getTypeInfoFromGlobalElementDecl(
     const store::Item* qname,
     store::Item_t& typeName,
     bool& nillable,
@@ -549,36 +553,12 @@ void Schema::getTypeNameFromElementName(
 
 
 /*******************************************************************************
-  For a given global attribute find out its declared schema type
+  Find a global element declaration for a given element name and return an
+  XQType for the associated schema type and whether the element can be nillable.
+  Raise an error if the raiseErrors param is true and no global element
+  declaration is found for the given name.
 *******************************************************************************/
-void Schema::getTypeNameFromAttributeName(
-    const store::Item* qname,
-    store::Item_t& typeName,
-    const QueryLoc& loc)
-{
-  XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
-
-  if (!typeDef)
-  {
-    RAISE_ERROR(err::XPST0008, loc,
-    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), qname->getStringValue()));
-  }
-
-  const XMLCh* typeNameStr = typeDef->getName();
-  const XMLCh* typeUri = typeDef->getNamespace();
-
-  GENV_ITEMFACTORY->createQName(typeName,
-                                StrX(typeUri).localForm(),
-                                "",
-                                StrX(typeNameStr).localForm());
-}
-
-
-/*******************************************************************************
-  Returns an XQType for a global schema element definition if defined,
-  otherwise NULL
-*******************************************************************************/
-xqtref_t Schema::createXQTypeFromElementName(
+xqtref_t Schema::getTypeInfoFromGlobalElementDecl(
     const TypeManager* typeManager,
     const store::Item* qname,
     const bool raiseErrors,
@@ -613,18 +593,46 @@ xqtref_t Schema::createXQTypeFromElementName(
 
 
 /*******************************************************************************
-  Returns an XQType for a global schema attribute definition if defined,
-  otherwise NULL
+  Find a global attribute declaration for a given attribute name and return the
+  name of the associated schema type. Raise an error if no global attribute
+  declaration is found for the given name.
 *******************************************************************************/
-xqtref_t Schema::createXQTypeFromAttributeName(
-    const TypeManager* typeManager,
+void Schema::getTypeInfoFromGlobalAttributeDecl(
     const store::Item* qname,
-    const bool riseErrors,
+    store::Item_t& typeName,
     const QueryLoc& loc)
 {
   XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
 
-  if (!riseErrors && !typeDef)
+  if (!typeDef)
+  {
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), qname->getStringValue()));
+  }
+
+  const XMLCh* typeNameStr = typeDef->getName();
+  const XMLCh* typeUri = typeDef->getNamespace();
+
+  GENV_ITEMFACTORY->createQName(typeName,
+                                StrX(typeUri).localForm(),
+                                "",
+                                StrX(typeNameStr).localForm());
+}
+
+
+/*******************************************************************************
+  Returns an XQType for a global schema attribute definition if defined,
+  otherwise NULL
+*******************************************************************************/
+xqtref_t Schema::getTypeInfoFromGlobalAttributeDecl(
+    const TypeManager* typeManager,
+    const store::Item* qname,
+    const bool raiseErrors,
+    const QueryLoc& loc)
+{
+  XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
+
+  if (!raiseErrors && !typeDef)
       return NULL;
 
   if (!typeDef)
@@ -1305,9 +1313,10 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
   bool xsModelWasChanged;
   XSModel* model = theGrammarPool->getXSModel(xsModelWasChanged);
 
-  XSNamedMap<XSObject> * typeDefs =
-      model->getComponents(XSConstants::TYPE_DEFINITION);
-  for( uint i = 0; i<typeDefs->getLength(); i++)
+  XSNamedMap<XSObject>* typeDefs =
+  model->getComponents(XSConstants::TYPE_DEFINITION);
+
+  for( uint i = 0; i < typeDefs->getLength(); i++)
   {
     XSTypeDefinition* typeDef = (XSTypeDefinition*)(typeDefs->item(i));
     checkForAnonymousTypesInType(typeManager, typeDef);

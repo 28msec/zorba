@@ -159,7 +159,7 @@ public:
         TypeConstants::quantifier_t quant,
         const QueryLoc& loc) const = 0;
 
-  virtual void get_schema_element_typename(
+  virtual void get_schema_element_typeinfo(
         const store::Item* elemName,
         store::Item_t& typeName,
         bool& nillable,
@@ -170,7 +170,7 @@ public:
         TypeConstants::quantifier_t quant,
         const QueryLoc& loc) const = 0;
 
-  virtual void get_schema_attribute_typename(
+  virtual void get_schema_attribute_typeinfo(
         const store::Item* attrName,
         store::Item_t& typeName,
         const QueryLoc& loc) = 0;

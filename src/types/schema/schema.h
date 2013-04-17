@@ -107,33 +107,33 @@ public:
 
   void registerXSD(
         const char* xsdURL,
-        static_context * aSctx,
-        internal::StreamResource* aStreamResource,
+        static_context* sctx,
+        internal::StreamResource* streamResource,
         const QueryLoc& loc);
 
   void getSubstitutionHeadForElement(
         const store::Item* qname,
         store::Item_t& result);
 
-  void getTypeNameFromElementName(
+  void getTypeInfoFromGlobalElementDecl(
         const store::Item* qname,
         store::Item_t& typeName,
         bool& nillable,
         const QueryLoc& loc);
 
-  void getTypeNameFromAttributeName(
-        const store::Item* qname,
-        store::Item_t& typeName,
-        const QueryLoc& loc);
-
-  xqtref_t createXQTypeFromElementName(
+  xqtref_t getTypeInfoFromGlobalElementDecl(
         const TypeManager* typeManager,
         const store::Item* qname,
         const bool raiseErrors,
         bool& nillable,
         const QueryLoc& loc);
 
-  xqtref_t createXQTypeFromAttributeName(
+  void getTypeInfoFromGlobalAttributeDecl(
+        const store::Item* qname,
+        store::Item_t& typeName,
+        const QueryLoc& loc);
+
+  xqtref_t getTypeInfoFromGlobalAttributeDecl(
         const TypeManager* typeManager,
         const store::Item* qname,
         const bool riseErrors,

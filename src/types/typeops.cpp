@@ -131,22 +131,32 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
         return false;
 
 #ifndef ZORBA_NO_XMLSCHEMA
-      if (ntype.get_node_kind() == store::StoreConsts::elementNode)
+      try
       {
         bool nillable;
-        return (schema->createXQTypeFromElementName(tm,
-                                                    ntype.get_node_name(),
-                                                    false,
-                                                    nillable,
-                                                    QueryLoc::null) != NULL);
+        store::Item_t typeName;
+        if (ntype.get_node_kind() == store::StoreConsts::elementNode)
+        {
+          schema->getTypeInfoFromGlobalElementDecl(ntype.get_node_name(),
+                                                   typeName,
+                                                   nillable,
+                                                   QueryLoc::null);
+        }
+        else
+        {
+          schema->getTypeInfoFromGlobalAttributeDecl(ntype.get_node_name(),
+                                                     typeName,
+                                                     QueryLoc::null);
+        }
       }
-      else
+      catch (ZorbaException& e)
       {
-        return (schema->createXQTypeFromAttributeName(tm,
-                                                      ntype.get_node_name(),
-                                                      false,
-                                                      QueryLoc::null) != NULL);
+        if (e.diagnostic() == err::XPST0008)
+          return false;
+
+        throw;
       }
+
 #else
       throw ZORBA_EXCEPTION(err::XQST0009);
 #endif

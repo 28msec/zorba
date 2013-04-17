@@ -1010,7 +1010,7 @@ bool NodeXQType::is_supertype(
 
       bool nillable;
       store::Item_t typeName;
-      tm->get_schema_element_typename(subitem->getNodeName(), typeName, nillable, loc);
+      tm->get_schema_element_typeinfo(subitem->getNodeName(), typeName, nillable, loc);
 
       if (!nillable && subitem->getNilled())
         return false;
