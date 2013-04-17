@@ -51,6 +51,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1123163 (fn:format-integer failures)
   * Fixed bug in index join rule (no index join if inner clause has positional var).
   * Fixed bug in index join rule (copy var ids after cloning index domain expr).
+  * Fixed bug #1131988 (re00732 fails)
+  * Fixed bug #1131990 (re00737 fails)
   * Fixed bug #1123162 (FOTS: formatting dates and times failures)
   * Added missing wrapper expressions around some variable references.
   * Fixed optimizer bug: elimination of positional variable sometimes caused
@@ -69,6 +71,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1023168 (Non-single-char-escapes in regex character ranges not
     caught)
   * Throw XQST0048 for groupby clause, as specified by XQuery 3.0.
+  * Fixed bug in raising XQTY0086 (copying of namespace-sensitive values during
+    node construction).
   * Fixed bug #866874 (regex "range subtraction" not supported for ICU)
   * Fixed bug in computing the static type of an allowing-empty FOR variable.
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
