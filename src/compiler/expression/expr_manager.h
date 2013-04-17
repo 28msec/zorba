@@ -481,21 +481,20 @@ public:
       user_function* udf,
       const QueryLoc& loc,
       expr* anExpr,
-      const std::vector<expr*>& args,
-      expr* dotVar);
+      const std::vector<expr*>& args);
 
   argument_placeholder_expr* create_argument_placeholder_expr(
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc);
 
-  function_item_expr* create_function_item_expr(static_context* sctx,
+  function_item_expr* create_function_item_expr(
+      static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
       function* f,
-      uint32_t arity,
+      csize arity,
       bool isInline,
-      bool needsContextItem,
       bool isCoercion);
 
   function_item_expr* create_function_item_expr(
@@ -503,7 +502,6 @@ public:
       user_function* udf,      
       const QueryLoc& loc,
       bool isInline,
-      bool needsContextItem,
       bool isCoercion);
 
   ftcontains_expr* create_ftcontains_expr(

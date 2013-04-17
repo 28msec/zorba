@@ -56,9 +56,8 @@ FunctionItemInfo::FunctionItemInfo(
     const QueryLoc& loc,
     function* func,
     store::Item_t qname,
-    uint32_t arity,
+    csize arity,
     bool isInline,
-    bool needsContextItem,
     bool isCoercion)
   :
   theLoc(loc),
@@ -67,7 +66,6 @@ FunctionItemInfo::FunctionItemInfo(
   theQName(qname),
   theArity(arity),
   theIsInline(isInline),
-  theNeedsContextItem(needsContextItem),
   theIsCoercion(isCoercion)
 {
 #if 0
@@ -122,7 +120,6 @@ void FunctionItemInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theQName;
   ar & theArity;
   ar & theIsInline;
-  ar & theNeedsContextItem;
   ar & theIsCoercion;
 
   // These are not serialized
@@ -219,13 +216,13 @@ const store::Item_t FunctionItem::getFunctionName() const
 }
 
 
-uint32_t FunctionItem::getArity() const
+csize FunctionItem::getArity() const
 {
   return theArity;
 }
 
 
-uint32_t FunctionItem::getStartArity() const
+csize FunctionItem::getStartArity() const
 {
   return theFunctionItemInfo->theArity;
 }
@@ -301,7 +298,6 @@ PlanIter_t FunctionItem::getImplementation(
   create_function_item_expr(NULL,
                             NULL,
                             theFunctionItemInfo->theLoc,
-                            false,
                             false,
                             false);
   

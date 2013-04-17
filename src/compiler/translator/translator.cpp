@@ -1556,7 +1556,7 @@ expr* wrap_in_coercion(
   coersionFlwor->add_clause(fiClause);
 
   function_item_expr* inlineFuncExpr = 
-  CREATE(function_item)(theRootSctx, theUDF, loc, true, false, true);
+  CREATE(function_item)(theRootSctx, theUDF, loc, true, true);
 
   coersionFlwor->set_return_expr(inlineFuncExpr);
 
@@ -1598,8 +1598,7 @@ expr* wrap_in_coercion(
                                       loc,
                                       CREATE(wrapper)(theRootSctx, theUDF, loc,
                                                       fiSubstVar),
-                                      arguments,
-                                      NULL);
+                                      arguments);
 
   if (returnType->isBuiltinAtomicAny())
   {
@@ -11554,8 +11553,7 @@ expr* generate_fn_body(
     expr* dynamic_fncall = 
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
                                         arguments[0],
-                                        fncall_args,
-                                        NULL);
+                                        fncall_args);
     
     flwor->set_return_expr(dynamic_fncall);
 
@@ -11584,8 +11582,7 @@ expr* generate_fn_body(
     expr* dynamic_fncall =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
                                         arguments[0],
-                                        fncall_args,
-                                        NULL);
+                                        fncall_args);
 
     expr* if_expr = 
     CREATE(if)(theRootSctx, theUDF, loc,
@@ -11705,10 +11702,6 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     }
   }
 
-   expr* dotVar = NULL;
-   if (lookup_var(getDotVarName(), loc, false))
-     dotVar = DOT_REF;
-
    // Implementing implicit iteration over the sequence returned by the source expr
   flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
 
@@ -11767,8 +11760,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     expr* dynFuncInvocation =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
                                         flworVarExpr,
-                                        arguments,
-                                        dotVar);
+                                        arguments);
 
     flworExpr->set_return_expr(dynFuncInvocation);
   }
@@ -11828,7 +11820,7 @@ expr* generate_literal_function(
   expr* body;
   
   function_item_expr* fiExpr =
-  CREATE(function_item)(theRootSctx, theUDF, loc, false, false, false);
+  CREATE(function_item)(theRootSctx, theUDF, loc, false, false);
 
   function* f = theSctx->lookup_fn(qnameItem, arity, loc);
 
@@ -11987,6 +11979,61 @@ expr* generate_literal_function(
 
         break;
       }
+      case FunctionConsts::FN_FUNCTION_LOOKUP_2:
+      {
+        expr* ctxItemVRef = NULL;
+        expr* ctxPosVRef = NULL;
+        expr* ctxSizeVRef = NULL;
+
+        var_expr* ctxItemVar = lookup_var(getDotVarName(), loc, false);
+        var_expr* ctxPosVar = lookup_var(getDotPosVarName(), loc, false);
+        var_expr* ctxSizeVar = lookup_var(getLastIdxVarName(), loc, false);
+
+        if (ctxItemVar)
+          ctxItemVRef = DOT_REF;
+
+        if (ctxPosVar)
+          ctxPosVRef = DOT_POS_REF;
+
+        if (ctxSizeVar)
+          ctxSizeVRef = DOT_SIZE_REF;
+
+        push_scope();
+
+        var_expr* substItemVar = bind_var(loc, getDotVarName(), var_expr::hof_var);
+        var_expr* substPosVar = bind_var(loc, getDotPosVarName(), var_expr::hof_var);
+        var_expr* substSizeVar = bind_var(loc, getLastIdxVarName(), var_expr::hof_var);
+
+        if (ctxItemVar)
+          substItemVar->set_unique_id(ctxItemVar->get_unique_id());
+
+        if (ctxPosVar)
+          substPosVar->set_unique_id(ctxPosVar->get_unique_id());
+
+        if (ctxSizeVar)
+          substSizeVar->set_unique_id(ctxSizeVar->get_unique_id());
+
+        fiExpr->add_variable(ctxItemVRef,
+                             substItemVar,
+                             substItemVar->get_name(),
+                             ctxItemVar->get_kind() == var_expr::prolog_var ? 1 : 0);
+
+        fiExpr->add_variable(ctxPosVRef,
+                             substPosVar,
+                             substPosVar->get_name(),
+                             ctxPosVar->get_kind() == var_expr::prolog_var ? 1 : 0);
+
+        fiExpr->add_variable(ctxSizeVRef,
+                             substSizeVar,
+                             substSizeVar->get_name(),
+                             ctxSizeVar->get_kind() == var_expr::prolog_var ? 1 : 0);
+
+        body = generate_fn_body(f, foArgs, loc);
+
+        pop_scope();
+
+        break;
+      }
       default:
       {
         body = generate_fn_body(f, foArgs, loc);
@@ -12031,7 +12078,7 @@ void* begin_visit(const InlineFunction& v)
   push_scope();
 
   function_item_expr* fiExpr =
-  CREATE(function_item)(theRootSctx, theUDF, loc, true, false, false);
+  CREATE(function_item)(theRootSctx, theUDF, loc, true, false);
 
   push_nodestack(fiExpr);
 

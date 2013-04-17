@@ -112,9 +112,8 @@ public:
   static_context*               theClosureSctx;
   function_t                    theFunction;
   store::Item_t                 theQName;
-  unsigned int                  theArity;
+  csize                         theArity;
   bool                          theIsInline;
-  bool                          theNeedsContextItem;
   bool                          theIsCoercion;
 
   std::vector<expr*>            theScopedVarsValues;
@@ -138,9 +137,8 @@ public:
       const QueryLoc& loc,
       function* func,
       store::Item_t qname,
-      uint32_t arity,
+      csize arity,
       bool isInline,
-      bool needsContextItem,
       bool isCoercion);
 
   virtual ~FunctionItemInfo();
@@ -166,7 +164,7 @@ class FunctionItem : public store::Item, public zorba::serialization::SerializeB
 protected:
   FunctionItemInfo_t              theFunctionItemInfo;
 
-  unsigned int                    theArity;   // The arity of the function
+  csize                           theArity;   // The arity of the function
                                               // item will decrease when a
                                               // partial application is used.
 
@@ -213,17 +211,15 @@ public:
 
   const store::Item_t getFunctionName() const;
 
-  unsigned int getArity() const;
+  csize getArity() const;
   
   // returns the arity of the function before any partial application
-  unsigned int getStartArity() const;
+  csize getStartArity() const;
 
   const signature& getSignature() const;
   
   bool isInline() const { return theFunctionItemInfo->theIsInline; }
   
-  bool needsContextItem() const { return theFunctionItemInfo->theNeedsContextItem; }
-
   bool isCoercion() const { return theFunctionItemInfo->theIsCoercion; }
 
   zstring show() const;
