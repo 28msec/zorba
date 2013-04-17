@@ -51,6 +51,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1123163 (fn:format-integer failures)
   * Fixed bug in index join rule (no index join if inner clause has positional var).
   * Fixed bug in index join rule (copy var ids after cloning index domain expr).
+  * Fixed bug #1131988 (re00732 fails)
+  * Fixed bug #1131990 (re00737 fails)
   * Fixed bug #1123162 (FOTS: formatting dates and times failures)
   * Added missing wrapper expressions around some variable references.
   * Fixed optimizer bug: elimination of positional variable sometimes caused
