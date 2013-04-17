@@ -89,7 +89,8 @@ declare %ann:sequential function reporting:run-and-report(
                                            (),
                                            fn:false(),
                                            '',
-                                           'run-test-sets');
+                                           'run-test-sets',
+                                           fn:false());
 
       file:write("results.xml",
                  $results,

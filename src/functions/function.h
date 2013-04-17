@@ -172,6 +172,8 @@ public:
 
   bool isSequential() const;
 
+  bool isContextual() const;
+
   virtual unsigned short getScriptingKind() const;
 
   virtual xqtref_t getReturnType(const fo_expr* caller) const;

@@ -1,5 +1,5 @@
-const char* XQUERY_COMPILATION_PATH[] = { "xquery", "compilation" };
-const PropertyGroupImpl XQUERY_COMPILATION(2, XQUERY_COMPILATION_PATH);
+const char* XQUERY_COMPILATION_[] = { "xquery", "compilation" };
+const PropertyGroupImpl XQUERY_COMPILATION(2, XQUERY_COMPILATION_);
 const PropertyImpl XQUERY_COMPILATION_FILENAME(XQUERY_COMPILATION, "filename", 0, Property::STRING);
 const PropertyImpl XQUERY_COMPILATION_PARSE_DURATION(XQUERY_COMPILATION, "parse-duration", 1, Property::INT);
 const PropertyImpl XQUERY_COMPILATION_TRANSLATION_DURATION(XQUERY_COMPILATION, "translation-duration", 2, Property::INT);

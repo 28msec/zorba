@@ -25,8 +25,6 @@ xquery version "3.0";
  :)
 module namespace uri = "http://www.zorba-xquery.com/modules/uri";
 
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
-
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";

@@ -60,4 +60,4 @@ ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 DECLARE_ZORBA_URI_FILE(FILE "random-file.txt"
   URI "http://zorba-tests.28msec.us/random-file" TEST_ONLY)
 
-#ADD_SUBDIRECTORY(java)
+ADD_SUBDIRECTORY(java)
