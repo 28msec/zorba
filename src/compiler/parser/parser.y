@@ -44,7 +44,7 @@
 #endif
 
 
-#if XQUERY_PARSER
+#ifdef XQUERY_PARSER
 %define "parser_class_name" "xquery_parser"
 #else
 %define "parser_class_name" "jsoniq_parser"

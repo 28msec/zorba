@@ -35,18 +35,16 @@
 #define YY_USER_ACTION    YY_USER_ACTION_func(yylloc);
 #endif
 
-// #ifndef __FLEX_LEXER_H
+
 #ifndef yyFlexLexer
-// # undef yyFlexLexer
-# define yyFlexLexer ZorbaJSONiqFlexLexer
-# define ZORBAJSONIQFLEXLEXER_DEFINED
-# if defined(ZORBA_HAVE_FLEXLEXER_H) && defined(FLEX_FILES_REGENERATED)
-#   include <FlexLexer.h>
-# else
-#   include "compiler/parser/FlexLexer.h"
+#  define yyFlexLexer ZorbaJSONiqFlexLexer
+#  define ZORBAJSONIQFLEXLEXER_DEFINED
+#  if defined(ZORBA_HAVE_FLEXLEXER_H) && defined(FLEX_FILES_REGENERATED)
+#    include <FlexLexer.h>
+#  else
+#    include "compiler/parser/FlexLexer.h"
 #  endif
 #endif
-// #endif
 
 
 #ifdef __GNUC__

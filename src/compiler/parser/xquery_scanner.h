@@ -36,13 +36,13 @@
 #endif
 #define YY_USER_ACTION    YY_USER_ACTION_func(yylloc);
 
-#ifndef __FLEX_LEXER_H
-# undef yyFlexLexer
-# define yyFlexLexer ZorbaFlexLexer
-# if defined(ZORBA_HAVE_FLEXLEXER_H) && defined(FLEX_FILES_REGENERATED)
-#   include <FlexLexer.h>
-# else
-#   include "compiler/parser/FlexLexer.h"
+
+#ifndef yyFlexLexer
+#  define yyFlexLexer ZorbaFlexLexer
+#  if defined(ZORBA_HAVE_FLEXLEXER_H) && defined(FLEX_FILES_REGENERATED)
+#    include <FlexLexer.h>
+#  else
+#    include "compiler/parser/FlexLexer.h"
 #  endif
 #endif
 

@@ -53,8 +53,8 @@ MACRO(GENERATE_GRAMMAR_FILE PARSER_TYPE)
   STRING(TOUPPER ${PARSER_TYPE} PARSER_DEFINE)
   ADD_CUSTOM_COMMAND(
       OUTPUT ${TARGET_PATH}/${PARSER_TYPE}.y
-      COMMAND "echo"
-      ARGS "-e" "\"%{\\n#define" "${PARSER_DEFINE}\\n%}\">${TARGET_PATH}/${PARSER_TYPE}.y"
+      COMMAND "printf"
+      ARGS "\"%%{\\n#define" "${PARSER_DEFINE}\\n%%}\\n\">${TARGET_PATH}/${PARSER_TYPE}.y"
       COMMAND "cat"
       ARGS "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser_y_includes.h" 
             ">>"
@@ -109,7 +109,7 @@ MACRO(COMPARE_FLEX_VERSION a b)
      ENDIF(result LESS 0)
 ENDMACRO(COMPARE_FLEX_VERSION)
 
-COMPARE_FLEX_VERSION("${FLEX_VERSION_FULL}" "2.5.33")
+COMPARE_FLEX_VERSION("${FLEX_VERSION_FULL}" "2.5.35")
 
 MACRO(GENERATE_FLEX_FILE SCANNER_TYPE)
   SET(TARGET_PATH ${CMAKE_CURRENT_BINARY_DIR}/compiler/parser)  
@@ -118,8 +118,8 @@ MACRO(GENERATE_FLEX_FILE SCANNER_TYPE)
   
   ADD_CUSTOM_COMMAND(
       OUTPUT ${TARGET_PATH}/${SCANNER_TYPE}.l
-      COMMAND "echo"
-      ARGS "-e" "\"%{\\n#define" "${SCANNER_DEFINE}\\n%}\">${TARGET_PATH}/${SCANNER_TYPE}.l"
+      COMMAND "printf"
+      ARGS "\"%%{\\n#define" "${SCANNER_DEFINE}\\n%%}\\n\">${TARGET_PATH}/${SCANNER_TYPE}.l"
       COMMAND "cat"
       ARGS "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/scanner_l_includes.h" 
             ">>"
