@@ -110,7 +110,7 @@ EXPECTED_FOTS_FAILURE (SLOW fn-matches.re re00987 1131313)
 EXPECTED_FOTS_FAILURE (SLOW app-Demos itunes 0)
 EXPECTED_FOTS_FAILURE (SLOW app-Demos raytracer 0)
 
-#"crashing/hanging" tests. These are not run but marked as 'fail' by FOTS driver.
+#"crashing/hanging" tests. These are not run but marked as 'tooBig' by FOTS driver.
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00975 1070533)
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976 1070533)
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
@@ -511,19 +511,10 @@ FOREACH (_test_set ${_test_sets})
       SET (_finalStatus " finalStatus=\"${_finalStatus}\"")
     ENDIF (_finalStatus)
     IF (_disputed)
-      SET (_disputed " finalStatus=\"pass\"")
+      SET (_disputed " finalStatus=\"disputed\"")
     ENDIF (_disputed)
     FILE (APPEND "${fots_expected_failures_file}"
-      "    <Test name=\"${_test_case}\" bug=\"${_bugnum}\"${_notrun}${_finalStatus}${_disputed}/>")
-    IF (_disputed)
-      FILE (APPEND "${fots_expected_failures_file}"
-        " <!-- Disputed test case -->")
-    ENDIF (_disputed)
-    IF (_notrun)
-      FILE (APPEND "${fots_expected_failures_file}"
-        " <!-- Test case that is either SLOW or is CRASHING/HANGING so it will not be run -->")
-    ENDIF (_notrun)
-    FILE (APPEND "${fots_expected_failures_file}" "\n")
+      "    <Test name=\"${_test_case}\" bug=\"${_bugnum}\"${_notrun}${_finalStatus}${_disputed}/>\n")
   ENDWHILE (_test_cases)
   FILE (APPEND "${fots_expected_failures_file}"  "  </TestSet>\n")
 ENDFOREACH (_test_set)

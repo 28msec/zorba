@@ -930,16 +930,15 @@ try
    
     variable $prerequisitesError as xs:string? := env:check-prerequisites($case, $env);
 
-    if (feedback:check-pass($result, $queryName, $testSetName, $expFailureTC)) then
+    if (feedback:check-pass($result, $queryName, $testSetName, $expFailureTC, $ctestMode)) then
       feedback:pass($case,
                     $result,
                     $xqxqQuery,
                     $env,
                     $duration,
                     $verbose,
-                    exists($expFailureTC),
-                    (),
-                    ())
+                    $expFailureTC,
+                    $ctestMode)
     (:
       If the test case did not pass, we check to see if the failure is caused
       by a environment that requires setting of a COLLATION or COLLECTION.
@@ -949,20 +948,10 @@ try
      :)
     else if(exists($prerequisitesError)) then
       feedback:not-run($case, $prerequisitesError)
-    else if($expFailureTC/@finalStatus = "pass") then
+    else if($expFailureTC/@finalStatus = "disputed") then
       feedback:disputed($case,
                         concat("For details please see https://www.w3.org/Bugs/Public/show_bug.cgi?id=",
                                $expFailureTC/@bug))
-    else if($ctestMode) then
-      feedback:pass($case,
-                $result,
-                $xqxqQuery,
-                $env,
-                $duration,
-                $verbose,
-                exists($expFailureTC),
-                (),
-                'Test case marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt')
      else
       feedback:fail($case,
                     $result,

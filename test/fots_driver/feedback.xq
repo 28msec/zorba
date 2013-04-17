@@ -35,7 +35,8 @@ declare function feedback:check-pass(
   $result           as item()*,
   $testCaseName     as xs:string?,
   $testSetName      as xs:string?,
-  $expectedFailure  as element(Test)?
+  $expFailureTC     as element(Test)?,
+  $ctestMode        as xs:boolean
 ) as xs:boolean
 {
 (: if the exact error code was not found, report the test as 'Pass'
@@ -47,7 +48,8 @@ declare function feedback:check-pass(
       contains(string-join($result/fots:errors,''), "Found error:")))
 
   let $expectedFailure as xs:boolean :=
-    if (exists($expectedFailure))
+   if(exists($expFailureTC) and
+      $ctestMode)
     then fn:true()
     else fn:false()
 
@@ -65,22 +67,21 @@ declare %ann:sequential function feedback:pass(
   $env              as element(fots:environment)?,
   $duration         as xs:dayTimeDuration,
   $verbose          as xs:boolean,
-  $expectedFailure  as xs:boolean,
-  $comment          as xs:string?,
-  $info             as xs:string?
+  $expectedFailure  as element(Test)?,
+  $ctestMode        as xs:boolean
 ) as element(fots:test-case)
 {
-  if ($expectedFailure) then
+  if (exists($expectedFailure) and $ctestMode) then
     feedback:pass-expected-FOTS-failure($case,
                                         $result,
                                         $zorbaQuery,
                                         $env,
                                         $verbose,
-                                        $info)
+                                        "Test case failed but it is marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt")
   else feedback:pass($case,
                      $result,
-                     $comment,
-                     $info)
+                     (),
+                     ())
 };
 
 
@@ -115,7 +116,6 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
       as last into $case,
       delete node $case/fots:description,
       delete node $case/fots:created,
-      delete node $case/fots:result,
       delete node $case/fots:modified);
 
       $case
@@ -123,7 +123,7 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
   }
   else <fots:test-case  name="{data($case/@name)}"
                         result="pass"
-                        info="{$info}" />
+                        info="{$info}"/>
 };
 
 
@@ -202,7 +202,6 @@ declare %ann:sequential function feedback:fail(
        as last into $case,
        delete node $case/fots:description,
        delete node $case/fots:created,
-       delete node $case/fots:result,
        delete node $case/fots:modified);
 
        $case
@@ -240,7 +239,7 @@ declare function feedback:not-run(
 {
   if(exists($error))
   then <fots:test-case name="{$case/@name}" result="notRun" comment="{$error}"/>
-  else <fots:test-case name="{$case/@name}" result="notRun" />
+  else <fots:test-case name="{$case/@name}" result="notRun"/>
 };
 
 
@@ -258,14 +257,14 @@ declare function feedback:not-applicable(
 {
   <fots:test-case name="{data($case/@name)}"
                   result="n/a"
-                  comment="{$dependencyError}" />
+                  comment="{$dependencyError}"/>
 };
 
 (:~
  : Gives feedback on a test case that is failing because of an error in FOTS.
  :
  : @param $case test case.
- : @param $comment details about the bug opened on W3C bugzilla.
+ : @param $comment details about the bug opened on W3C Bugzilla.
  : @return the test case.
  :)
 declare function feedback:disputed(
@@ -275,7 +274,7 @@ declare function feedback:disputed(
 {
   <fots:test-case name="{data($case/@name)}"
                   result="disputed"
-                  comment="{$comment}" />
+                  comment="{$comment}"/>
 };
 
 (:~
@@ -292,5 +291,5 @@ declare function feedback:too-big(
 {
   <fots:test-case name="{data($case/@name)}"
                   result="tooBig"
-                  comment="{$comment}" />
+                  comment="{$comment}"/>
 };
