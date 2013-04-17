@@ -19,7 +19,12 @@ require 'zorba_api_wrapper.php';
 
 class MyDiagnosticHandler extends DiagnosticHandler {
   public function error($args) {
-    print "Error caught in DiagnosticHandler: " . $args->getDescription() . "\n";
+    if (is_object($args)) {
+      print "Error caught in DiagnosticHandler: " . $args->getDescription() . "\n";
+    } else {
+      print "Error caught in DiagnosticHandler: " . $args . "\n";
+    }
+    
   }
 }
 

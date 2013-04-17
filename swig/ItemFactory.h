@@ -401,7 +401,6 @@ class ItemFactory
        */
     Item  createInt (int aInt);
 
-#ifndef SWIGPHP // Seems that this kind of overloading is causing conflinct among some versions of SWIG/PHP
       /** \brief Creates an Integer Item
        *         see [http://www.w3.org/TR/xmlschema-2/#integer]
        *
@@ -409,8 +408,8 @@ class ItemFactory
        * @return The Integer Item.
        */
     Item  createInteger (const std::string &aInteger);
-#endif /*  SWIGPHP   */
 
+#ifndef SWIGPHP // Seems that this kind of overloading is causing conflinct among some versions of SWIG/PHP
       /** \brief Creates an Integer Item
        *         see [http://www.w3.org/TR/xmlschema-2/#integer]
        *
@@ -418,6 +417,7 @@ class ItemFactory
        * @return The Integer Item.
        */
     Item  createInteger (long long aInteger);
+#endif /*  SWIGPHP   */
 
       /** \brief Creates a Long Item
        *         see [http://www.w3.org/TR/xmlschema-2/#long]
