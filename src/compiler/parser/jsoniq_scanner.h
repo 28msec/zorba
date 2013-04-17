@@ -35,15 +35,18 @@
 #define YY_USER_ACTION    YY_USER_ACTION_func(yylloc);
 #endif
 
-#ifndef __FLEX_LEXER_H
-# undef yyFlexLexer
+// #ifndef __FLEX_LEXER_H
+#ifndef yyFlexLexer
+// # undef yyFlexLexer
 # define yyFlexLexer ZorbaJSONiqFlexLexer
+# define ZORBAJSONIQFLEXLEXER_DEFINED
 # if defined(ZORBA_HAVE_FLEXLEXER_H) && defined(FLEX_FILES_REGENERATED)
 #   include <FlexLexer.h>
 # else
 #   include "compiler/parser/FlexLexer.h"
 #  endif
 #endif
+// #endif
 
 
 #ifdef __GNUC__
@@ -61,12 +64,12 @@
 
 namespace zorba {
 
-class jsoniq_driver;
+class xquery_driver;
 
 class jsoniq_scanner : public ZorbaJSONiqFlexLexer
 {
 protected:
-  jsoniq_driver* theDriver;
+  xquery_driver* theDriver;
   int cond_stk_depth;
   std::string yy_comp_constr_qname; // used by the scanner to temporarely save the qname of a computed constructor expression
 
@@ -74,7 +77,7 @@ public:
   /** Create a new scanner object. The streams arg_yyin and arg_yyout default
    * to cin and cout, but that assignment is only made when initializing in
    * yylex(). */
-  jsoniq_scanner(jsoniq_driver* aDriver, std::istream* arg_yyin = 0, std::ostream* arg_yyout = 0);
+  jsoniq_scanner(xquery_driver* aDriver, std::istream* arg_yyin = 0, std::ostream* arg_yyout = 0);
 
   /** Required for virtual functions */
   virtual ~jsoniq_scanner();
@@ -88,7 +91,7 @@ public:
     zorba::jsoniq_parser::location_type* yylloc
   );
 
-  jsoniq_driver* getDriver() const { return theDriver; }
+  xquery_driver* getDriver() const { return theDriver; }
   void set_yy_flex_debug(bool aBool);
 
   int interpretAsLessThan();

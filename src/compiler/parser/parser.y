@@ -35,6 +35,7 @@
 %pure-parser
 %error-verbose
 
+
 // Expected shift/reduce conflicts
 #ifdef XQUERY_PARSER
 %expect 4
@@ -42,22 +43,20 @@
 %expect 2
 #endif
 
+
 #if XQUERY_PARSER
 %define "parser_class_name" "xquery_parser"
 #else
 %define "parser_class_name" "jsoniq_parser"
 #endif
 
+
 /*
 **  The driver is passed by reference to the parser and to the scanner.
 **  This provides a simple but effective pure interface, not relying on
 **  global variables.
 */
-#ifdef XQUERY_PARSER
 %parse-param { xquery_driver& driver }
-#else
-%parse-param { jsoniq_driver& driver }
-#endif
 
 
 /*
@@ -1025,18 +1024,6 @@ template<typename T> inline void release_hack( T *ref ) {
 
 %left COMMA
 
-
-/*
-**  The code between `%{' and `%}' after the introduction of the `%union'
-**  is output in the *.cc file; it needs detailed knowledge about the
-**  driver.
-*/
-%{
-
-#undef yylex
-#define yylex driver.lexer->lex
-
-%}
 
 /*
     The grammar
@@ -3678,7 +3665,11 @@ ComparisonExpr :
     |   FTContainsExpr LT_OR_START_TAG
         {
             /* this call is needed */
-            driver.lexer->interpretAsLessThan();
+#ifdef XQUERY_PARSER            
+            driver.getXqueryLexer()->interpretAsLessThan();
+#else
+            driver.getJsoniqLexer()->interperetAsLessThan();
+#endif
         }
         FTContainsExpr
         {

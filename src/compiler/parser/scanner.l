@@ -360,7 +360,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "as" { return token::AS; }
 "try" { return token::TRY; }
 
-#ifdef JSONIQ_XQUERY
+#ifdef JSONIQ_SCANNER
 "jsoniq" { return token::JSONIQ; }
 #endif
 
@@ -1033,7 +1033,7 @@ std::string start_xquery_state(int state)
 namespace zorba {
 
 SCANNER_CLASS::SCANNER_CLASS(
-  DRIVER_CLASS* aDriver,
+  xquery_driver* aDriver,
   std::istream* i,
   std::ostream* o)
   :

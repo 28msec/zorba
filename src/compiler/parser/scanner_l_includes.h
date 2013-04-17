@@ -15,14 +15,15 @@
  */
 %{ /* _*_ C++ _*_ */
 
+#undef SCANNER_CLASS
+#undef PARSER_CLASS
+
 #ifdef XQUERY_SCANNER
 #define SCANNER_CLASS xquery_scanner
 #define PARSER_CLASS xquery_parser
-#define DRIVER_CLASS xquery_driver
 #else
 #define SCANNER_CLASS jsoniq_scanner
 #define PARSER_CLASS jsoniq_parser
-#define DRIVER_CLASS jsoniq_driver
 #endif
 
 #if defined (WIN32)
@@ -40,11 +41,7 @@
 #include <iostream>
 #include <string>
 
-#ifdef XQUERY_SCANNER
 #include "compiler/parser/xquery_driver.h"
-#else
-#include "compiler/parser/jsoniq_driver.h"
-#endif
 
 #include "util/xml_util.h"
 

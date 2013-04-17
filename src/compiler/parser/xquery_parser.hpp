@@ -127,7 +127,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 123 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/xquery_parser.y"
+#line 124 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;

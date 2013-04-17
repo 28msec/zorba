@@ -127,7 +127,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 123 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 124 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -506,7 +506,7 @@ namespace zorba {
     typedef token::yytokentype token_type;
 
     /// Build a parser object.
-    jsoniq_parser (jsoniq_driver& driver_yyarg);
+    jsoniq_parser (xquery_driver& driver_yyarg);
     virtual ~jsoniq_parser ();
 
     /// Parse.
@@ -672,7 +672,7 @@ namespace zorba {
     static const token_number_type yyundef_token_;
 
     /* User arguments.  */
-    jsoniq_driver& driver;
+    xquery_driver& driver;
   };
 
 } // zorba

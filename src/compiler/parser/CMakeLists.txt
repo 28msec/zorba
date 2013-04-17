@@ -19,7 +19,6 @@ SET(PARSER_SRCS
     ft_types.cpp
     symbol_table.cpp
     xquery_driver.cpp
-    jsoniq_driver.cpp
     query_loc.cpp
     xqdoc_comment.cpp
     parser_helpers.cpp

@@ -65,11 +65,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 #include "compiler/api/compilercb.h"
 #include "store/api/update_consts.h"
 
-#ifdef XQUERY_PARSER
 #include "compiler/parser/xquery_driver.h"
-#else
-#include "compiler/parser/jsoniq_driver.h"
-#endif
 
 #include "compiler/parser/parser_helpers.h"
 
@@ -92,6 +88,7 @@ using namespace zorba;
 **  driver.
 */
 %{
+
 #ifdef XQUERY_PARSER
 #include "compiler/parser/xquery_scanner.h"
 #else
@@ -99,6 +96,10 @@ using namespace zorba;
 #endif
 
 #undef yylex
-#define yylex driver.lexer->lex
+#ifdef XQUERY_PARSER
+#define yylex driver.getXqueryLexer()->lex
+#else
+#define yylex driver.getJsoniqLexer()->lex
+#endif
 
 %}
