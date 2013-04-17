@@ -3991,16 +3991,32 @@ XmlNode* AttributeNode::copyInternal(
 
   bool isListValue;
 
-  if (parent == rootParent &&
-      typeName != NULL &&
-      (typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_QNAME]) ||
-       typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_NOTATION])))
-  {
-    throw XQUERY_EXCEPTION(err::XQTY0086);
-  }
-
   if (copymode.theTypePreserve)
   {
+    if ((parent == rootParent || copymode.theNsPreserve == false) &&
+        typeName != NULL)
+    {
+      if (theTypedValue->isAtomic())
+      {
+        store::SchemaTypeCode typecode = theTypedValue->getTypeCode();
+
+        if (typecode == store::XS_QNAME || typecode == store::XS_NOTATION)
+          throw XQUERY_EXCEPTION(err::XQTY0086);
+      }
+      else
+      {
+        const std::vector<store::Item_t>& values = getValueVector().getItems();
+        csize numValues = values.size();
+        for (csize i = 0; i < numValues; ++i)
+        {
+          store::SchemaTypeCode typecode = values[i]->getTypeCode();
+
+          if (typecode == store::XS_QNAME || typecode == store::XS_NOTATION)
+            throw XQUERY_EXCEPTION(err::XQTY0086);
+        }
+      }
+    }
+
     typedValue = theTypedValue;
     isListValue = haveListValue();
   }
