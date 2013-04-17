@@ -2517,15 +2517,28 @@ XmlNode* ElementNode::copyInternal(
     }
     else // ! nsPreserve
     {
-      if (copymode.theTypePreserve)
+      if (copymode.theTypePreserve && haveTypedValue())
       {
-        store::Item* typeName = getType();
+        store::Item_t typedValue;
+        store::Iterator_t typedValues;
+        getTypedValue(typedValue, typedValues);
 
-        if (typeName != NULL &&
-            (typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_QNAME]) ||
-             typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_NOTATION])))
+        if (typedValue != NULL)
         {
-          throw XQUERY_EXCEPTION(err::XQTY0086);
+          store::SchemaTypeCode typecode = typedValue->getTypeCode();
+
+          if (typecode == store::XS_QNAME || typecode == store::XS_NOTATION)
+            throw XQUERY_EXCEPTION(err::XQTY0086);
+        }
+        else if (typedValues != NULL)
+        {
+          while (typedValues->next(typedValue))
+          {
+            store::SchemaTypeCode typecode = typedValue->getTypeCode();
+
+            if (typecode == store::XS_QNAME || typecode == store::XS_NOTATION)
+              throw XQUERY_EXCEPTION(err::XQTY0086);
+          }
         }
       }
 
