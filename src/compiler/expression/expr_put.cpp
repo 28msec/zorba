@@ -539,7 +539,7 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   os << " " << theFunctionItemInfo->theQName->getStringValue()
      << "#" << theFunctionItemInfo->theArity << " [\n";
 
-  for (ulong i = 0; i < theFunctionItemInfo->theScopedVarsValues.size(); i++)
+  for (csize i = 0; i < theFunctionItemInfo->theScopedVarsValues.size(); ++i)
   {
     os << indent << "using $"
        << theFunctionItemInfo->theScopedVarsNames[i]->getStringValue()
@@ -569,12 +569,6 @@ ostream& dynamic_function_invocation_expr::put(ostream& os) const
 
   for (csize i = 0; i < theArgs.size(); ++i)
     theArgs[i]->put(os);
-
-  if (theDotVar)
-  {
-    os << indent << "using $"; 
-    theDotVar->put(os);
-  }
 
   END_PUT();
 }

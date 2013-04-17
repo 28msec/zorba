@@ -20,11 +20,11 @@
 
   void DiagnosticHandler::error (const zorba::ZorbaException &ze) 
   {
-    if ( zorba::XQueryException const *xe = dynamic_cast<zorba::XQueryException const*>( &ze ) ) {
+    if (zorba::XQueryException const *xe = dynamic_cast<zorba::XQueryException const*>( &ze )) {
       const XQueryException xe2(xe);
       error(xe2); 
     }
-    if ( zorba::UserException const *ue = dynamic_cast<zorba::UserException const*>( &ze ) ) {
+    if (zorba::UserException const *ue = dynamic_cast<zorba::UserException const*>( &ze )) {
       const UserException ue2(ue);
       error(ue2); 
     }

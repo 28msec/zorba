@@ -37,6 +37,7 @@ map<string,libunittestfunc> libunittests;
  */
 void initializeTestList() 
 {
+  libunittests["ato"] = test_ato_;
   libunittests["base64"] = test_base64;
   libunittests["base64_streambuf"] = test_base64_streambuf;
 

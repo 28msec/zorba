@@ -53,7 +53,7 @@ declare function env:add-xquery-version-decl(
 
   let $v30 :=
     some $dep in $deps
-    satisfies $dep[contains(@value, "XQ30") or contains(@value, "XP30")]
+    satisfies $dep[contains(@value, "XQ30")]
 
   return
     if ($v30 and not(contains($test, "xquery version"))) then

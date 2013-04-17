@@ -102,7 +102,6 @@ void DynamicFnCallIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>*)this);
 
-  ar & theDotVarsCount;
   ar & theIsPartialApply;
 }
 
@@ -212,11 +211,7 @@ bool DynamicFnCallIterator::nextImpl(
 
     fnItem = static_cast<FunctionItem*>(targetItem.getp());
 
-    if ((!fnItem->needsContextItem() &&
-         theChildren.size() - 1 - theDotVarsCount != fnItem->getArity())
-        ||
-        (fnItem->needsContextItem()
-         && theChildren.size() - 1 != fnItem->getArity()))
+    if (theChildren.size() - 1 != fnItem->getArity())
     {
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
@@ -224,7 +219,7 @@ bool DynamicFnCallIterator::nextImpl(
 
     if (theIsPartialApply)
     {
-      for (csize i = 1, pos = 0; i < theChildren.size() - theDotVarsCount; ++i)
+      for (csize i = 1, pos = 0; i < theChildren.size(); ++i)
       {
         if (dynamic_cast<ArgumentPlaceholderIterator*>(theChildren[i].getp()) == NULL)
         {
@@ -276,11 +271,11 @@ bool DynamicFnCallIterator::nextImpl(
 #ifdef ZORBA_WITH_JSON
   else if (targetItem->isJSONObject() || targetItem->isJSONArray())
   {
-    if (theChildren.size() - theDotVarsCount > 2)
+    if (theChildren.size() > 2)
     {
       RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
     }
-    else if (theChildren.size() - theDotVarsCount == 2)
+    else if (theChildren.size() == 2)
     {
       isObjectNav = targetItem->isJSONObject();
       selectorError = false;
