@@ -42,21 +42,20 @@ $zorba = Zorba::getInstance($store);
 
 print "Running: Compile query string using JSONiq \n";
 
-$query = <<<'eoquery'
- let $sats:=jn:json-doc("@phpPath@/tests/satellites.json")('satellites') 
- return { 
-   'visible' : [ 
-      for $sat in jn:keys($sats) 
-      where $sats($sat)('visible') 
-      return $sat 
-   ], 
-   'invisible' : [ 
-      for $sat in jn:keys($sats) 
-      where not($sats($sat)('visible')) 
-      return $sat 
-   ] 
- } 
-eoquery;
+$query =  "";
+$query .= " let $sats:=jn:json-doc(\"@phpPath@/tests/satellites.json\")('satellites')  ";
+$query .= "  return { ";
+$query .= "    'visible' : [  ";
+$query .= "       for $sat in jn:keys($sats)  ";
+$query .= "       where $sats($sat)('visible')  ";
+$query .= "       return $sat  ";
+$query .= "    ],  ";
+$query .= "    'invisible' : [  ";
+$query .= "       for $sat in jn:keys($sats)  ";
+$query .= "       where not($sats($sat)('visible'))  ";
+$query .= "       return $sat  ";
+$query .= "    ]  ";
+$query .= "  } ";
 
 test($zorba, $query);
 print "Success\n";

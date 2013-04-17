@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+SET(rubyPathFiles ${CMAKE_BINARY_DIR}/swig/ruby)
 IF (MSVC_IDE)
   SET(rubyPath ${CMAKE_BINARY_DIR}/swig/ruby/@CMAKE_BUILD_TYPE@)
 ELSE (MSVC_IDE)
@@ -68,6 +69,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test11.rb ${CMAKE_CURRENT_BINARY_DIR}
 ADD_TEST("ruby_test11" ${RUBY_EXECUTABLE} test11.rb)
 SET_TESTS_PROPERTIES("ruby_test11" PROPERTIES PASS_REGULAR_EXPRESSION "Success")
 
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/satellites.json ${CMAKE_CURRENT_BINARY_DIR}/satellites.json COPYONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/satellites.json ${CMAKE_CURRENT_BINARY_DIR}/satellites.json COPYONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test12.rb ${CMAKE_CURRENT_BINARY_DIR}/test12.rb)
 ADD_TEST("ruby_test12" ${RUBY_EXECUTABLE} test12.rb)

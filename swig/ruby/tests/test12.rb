@@ -31,7 +31,7 @@ zorba = Zorba_api::Zorba.getInstance(store)
 
 print "Running: Compile query string using JSONiq \n"
 query = <<-eoquery
- let $sats := jn:json-doc("@rubyPath@/../tests/satellites.json")('satellites') 
+ let $sats := jn:json-doc("@rubyPathFiles@/tests/satellites.json")('satellites') 
  return { 
    'visible' : [ 
       for $sat in jn:keys($sats) 

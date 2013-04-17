@@ -142,9 +142,11 @@
   Item  ItemFactory::createInt (int aInt){
     return Item( theItemFactory->createInt (aInt));
   }
+#ifndef SWIGPHP // Seems that this kind of overloading is causing conflinct among some versions of SWIG/PHP
   Item  ItemFactory::createInteger (const std::string &aInteger){
     return Item( theItemFactory->createInteger (aInteger));
   }
+#endif /*  SWIGPHP   */
   Item  ItemFactory::createInteger (long long aInteger){
     return Item( theItemFactory->createInteger (aInteger));
   }
