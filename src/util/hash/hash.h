@@ -98,7 +98,7 @@ struct hash : std::unary_function<T,size_t> {
   size_t operator()( T ) const; // not defined
 };
 
-/** Specialization for \c char*. */
+/** Specialization for <code>char const*</code>. */
 template<> inline
 size_t hash<char const*>::operator()( char const *s ) const {
   return hash_c_str( s );
