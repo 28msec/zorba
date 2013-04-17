@@ -274,7 +274,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "||" { return token::CONCAT; }
 
 #ifdef JSONIQ_SCANNER
-"$$" { return token::DOLLAR; }
+"$$" { return token::DOLLAR_DOLLAR; }
 #endif
 
 

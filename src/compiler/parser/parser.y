@@ -258,7 +258,7 @@
 %token DIV                              "'div'"
 %token DOLLAR                           "'$'"
 #ifdef JSONIQ_PARSER
-%token DOLLAR_DOLLAR                    "'$$'"
+%token DOLLAR_DOLLAR                    "'$_'"
 #endif
 %token DOT                              "'.'"
 %token DOT_DOT                          "'..'"

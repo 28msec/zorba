@@ -3992,7 +3992,7 @@ YY_RULE_SETUP
 case 23:
 YY_RULE_SETUP
 #line 368 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_scanner.l"
-{ return token::DOLLAR; }
+{ return token::DOLLAR_DOLLAR; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
