@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #line 2 "jsoniq_scanner.yy.cpp"
 
 #line 4 "jsoniq_scanner.yy.cpp"

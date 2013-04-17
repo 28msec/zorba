@@ -60,7 +60,7 @@
   int Item::getIntValue () const
   { return theItem.getIntValue(); }
 
-  double 	Item::getDoubleValue () const
+  double  Item::getDoubleValue () const
   { return theItem.getDoubleValue(); }
 
   long long Item::getLongValue () const
@@ -89,7 +89,7 @@
   bool Item::getNodeName (Item &aNodeName) const
   { return theItem.getNodeName( aNodeName.theItem ); }
 
-  Item 	Item::getParent () const
+  Item  Item::getParent () const
   { return theItem.getParent(); }
 
   std::string Item::getPrefix () const
