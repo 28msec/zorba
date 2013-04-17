@@ -230,7 +230,8 @@ size_type decode( istream &from, ostream &to, int options ) {
       gcount = from.gcount();
     }
     if ( gcount ) {
-      size_type const decoded = decode( from_buf, static_cast<base64::size_type>(gcount), to_buf, options );
+      size_type const decoded =
+        decode( from_buf, static_cast<size_type>( gcount ), to_buf, options );
       to.write( to_buf, decoded );
       total_decoded += decoded;
     } else
@@ -253,9 +254,14 @@ size_type decode( istream &from, vector<char> *to, int options ) {
     }
     if ( gcount ) {
       vector<char>::size_type const orig_size = to->size();
-      to->resize( orig_size + decoded_size( static_cast<base64::size_type>(gcount) ) );
+      to->resize(
+        orig_size + decoded_size( static_cast<size_type>( gcount ) )
+      );
       size_type const decoded =
-        decode( from_buf, static_cast<base64::size_type>(gcount), &(*to)[ total_decoded ], options );
+        decode(
+          from_buf, static_cast<size_type>( gcount ), &(*to)[ total_decoded ],
+          options
+        );
       to->resize( orig_size + decoded );
       total_decoded += decoded;
     } else
@@ -319,7 +325,8 @@ size_type encode( istream &from, ostream &to ) {
     char from_buf[ 1024 * 3 ], to_buf[ 1024 * 4 ];
     from.read( from_buf, sizeof from_buf );
     if ( streamsize const gcount = from.gcount() ) {
-      size_type const encoded = encode( from_buf, static_cast<zorba::base64::size_type>(gcount), to_buf );
+      size_type const encoded =
+        encode( from_buf, static_cast<size_type>( gcount ), to_buf );
       to.write( to_buf, encoded );
       total_encoded += encoded;
     } else
@@ -335,8 +342,12 @@ size_type encode( istream &from, vector<char> *to ) {
     char from_buf[ 1024 * 3 ];
     from.read( from_buf, sizeof from_buf );
     if ( streamsize const gcount = from.gcount() ) {
-      to->resize( to->size() + encoded_size( static_cast<zorba::base64::size_type>(gcount) ) );
-      total_encoded += encode( from_buf, static_cast<zorba::base64::size_type>(gcount), &(*to)[ total_encoded ] );
+      to->resize(
+        to->size() + encoded_size( static_cast<size_type>( gcount ) )
+      );
+      total_encoded += encode(
+        from_buf, static_cast<size_type>( gcount ), &(*to)[ total_encoded ]
+      );
     } else
       break;
   }

@@ -79,7 +79,7 @@ static void print_exception( int no, char const *expr, int line,
 
 #define ASSERT_EXCEPTION( NO, EXPR ) \
   try { EXPR; assert_true( NO, #EXPR, __LINE__, false ); } \
-  catch ( ZorbaException const&) { } \
+  catch ( ZorbaException const& ) { } \
   catch ( ... ) { assert_true( NO, #EXPR, __LINE__, false ); }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@ static bool test_getline( char const *test ) {
   char buf[ 1024 ];
   iss.getline( buf, sizeof buf );
   if ( iss.gcount() ) {
-    string const s( buf, static_cast<string::size_type>(iss.gcount()) );
+    string const s( buf, static_cast<string::size_type>( iss.gcount() ) );
     return s == test;
   }
   return false;
@@ -108,7 +108,7 @@ static bool test_read( char const *test ) {
   char buf[ 1024 ];
   iss.read( buf, sizeof buf );
   if ( iss.gcount() ) {
-    string const s( buf, static_cast<string::size_type>(iss.gcount()) );
+    string const s( buf, static_cast<string::size_type>( iss.gcount() ) );
     return s == test;
   }
   return false;

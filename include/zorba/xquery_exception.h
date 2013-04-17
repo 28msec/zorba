@@ -295,7 +295,7 @@ public:
    * @return Returns \a true only if stack traces will be included.
    */
   static bool get_print_trace( std::ostream &o ) {
-    return !!static_cast<print_trace>( o.iword( get_ios_trace_index() ) );
+    return !!o.iword( get_ios_trace_index() );
   }
 
   /**
