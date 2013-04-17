@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-%include "std_string.i"
+
+%rename (IteratorImpl) swig::Iterator;
+
 %include ../zorba_api.i
+
 
 %runtime %{
 #ifdef WIN32

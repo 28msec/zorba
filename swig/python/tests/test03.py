@@ -27,7 +27,7 @@ def test(zorba):
     xquery = zorba.compileQuery("1 div 0", diagnosticHandler)
     print xquery.execute()
   except Exception, e:
-    print "Cought error: ", e
+    print "Caught error: ", e
   return
 
 
