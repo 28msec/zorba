@@ -47,13 +47,40 @@ ENDMACRO(COMPARE_BISON_VERSION)
 
 COMPARE_BISON_VERSION("${BISON_VERSION_FULL}" "2.4")
 
+
+MACRO(GENERATE_GRAMMAR_FILE PARSER_TYPE)
+  SET(TARGET_PATH "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+  SET_SOURCE_FILES_PROPERTIES(${TARGET_PATH}/${PARSER_TYPE}.y PROPERTIES GENERATED TRUE)
+  STRING(TOUPPER ${PARSER_TYPE} PARSER_DEFINE)
+  ADD_CUSTOM_COMMAND(
+      OUTPUT ${TARGET_PATH}/${PARSER_TYPE}.y
+      COMMAND "echo"
+      ARGS "-e" "\"%{\\n#define" "${PARSER_DEFINE}\\n%}\">${TARGET_PATH}/${PARSER_TYPE}.y"
+      COMMAND "cat"
+      ARGS "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser_y_includes.h" 
+            ">>"
+           "${TARGET_PATH}/${PARSER_TYPE}.y"
+      COMMAND ${CMAKE_CXX_COMPILER} 
+      ARGS "-xc++" "-P" "-D${PARSER_DEFINE}"
+           "-E" "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser.y"
+           ">>" "${TARGET_PATH}/${PARSER_TYPE}.y"
+      DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser.y" "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser_y_includes.h"
+    )
+  
+  BISON_FILE(${TARGET_PATH}/${PARSER_TYPE}.y)
+  LIST(APPEND PARSER_BUILD_SRCS ${TARGET_PATH}/${PARSER_TYPE}.cpp)
+ENDMACRO(GENERATE_GRAMMAR_FILE PARSER_TYPE)
+
 # Bison setup for the parser
 IF (GENERATE_BISON_FILES)
     SET(BISON_GENERATE_DEFINES TRUE)
-    BISON_FILE(compiler/parser/xquery_parser.y)
-    LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/xquery_parser.cpp)
-    BISON_FILE(compiler/parser/jsoniq_parser.y)
-    LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/jsoniq_parser.cpp)
+    IF(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+      FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+    ENDIF(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+    
+    GENERATE_GRAMMAR_FILE(xquery_parser)
+    GENERATE_GRAMMAR_FILE(jsoniq_parser)
+    
 ELSE (GENERATE_BISON_FILES)
     IF (BISON_EXECUTABLE)
         MESSAGE(STATUS "         GNU Bison's version " ${BISON_VERSION_FULL} " is less than required (2.4) -- the parser will not be regenerated")
@@ -85,13 +112,43 @@ ENDMACRO(COMPARE_FLEX_VERSION)
 
 COMPARE_FLEX_VERSION("${FLEX_VERSION_FULL}" "2.5.33")
 
+MACRO(GENERATE_FLEX_FILE SCANNER_TYPE)
+  SET(TARGET_PATH ${CMAKE_CURRENT_BINARY_DIR}/compiler/parser)  
+  SET_SOURCE_FILES_PROPERTIES(${TARGET_PATH}/${SCANNER_TYPE}.l PROPERTIES GENERATED TRUE)
+  STRING(TOUPPER ${SCANNER_TYPE} SCANNER_DEFINE)
+  
+  ADD_CUSTOM_COMMAND(
+      OUTPUT ${TARGET_PATH}/${SCANNER_TYPE}.l
+      COMMAND "echo"
+      ARGS "-e" "\"%{\\n#define" "${SCANNER_DEFINE}\\n%}\">${TARGET_PATH}/${SCANNER_TYPE}.l"
+      COMMAND "cat"
+      ARGS "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/scanner_l_includes.h" 
+            ">>"
+           "${TARGET_PATH}/${SCANNER_TYPE}.l"
+      COMMAND ${CMAKE_CXX_COMPILER} 
+      ARGS "-xc++" "-P" "-D${SCANNER_DEFINE}"
+           "-E" "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/scanner.l"
+           ">>" "${TARGET_PATH}/${SCANNER_TYPE}.l"
+      DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/scanner.l" "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/scanner_l_includes.h"
+    )
+    
+  FLEX_FILE(${TARGET_PATH}/${SCANNER_TYPE}.l)  
+  LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/${SCANNER_TYPE}.cpp)
+ENDMACRO(GENERATE_FLEX_FILE SCANNER_TYPE)
+
+
 # Flex setup for the scanner
 IF (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
+    IF(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+      FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+    ENDIF(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+              
     SET(FLEX_PREFIX_OUTPUTS TRUE)
-    FLEX_FILE(compiler/parser/xquery_scanner.l)
-    FLEX_FILE(compiler/parser/jsoniq_scanner.l)
     ADD_DEFINITIONS(-DFLEX_FILES_REGENERATED)
-    LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/xquery_scanner.cpp ${CMAKE_BINARY_DIR}/src/compiler/parser/jsoniq_scanner.cpp)
+    
+    GENERATE_FLEX_FILE(xquery_scanner)
+    GENERATE_FLEX_FILE(jsoniq_scanner)
+        
 ELSE (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
     IF (NOT ZORBA_HAVE_FLEXLEXER_H)
         MESSAGE(STATUS "         FlexLexer.h has not been found -- the lexer will not be regenerated")

@@ -18,26 +18,27 @@
 #define ZORBA_XQUERY_SCANNER_H
 
 // Flex expects the signature of yylex to be defined in the macro YY_DECL, and
- // the C++ parser expects it to be declared. We can factor both as follows.
+// the C++ parser expects it to be declared. We can factor both as follows.
 
-#ifndef YY_DECL
+#ifdef YY_DECL
+#undef YY_DECL
+#endif
 
-#define YY_DECL                                              \
+#define YY_DECL                                            \
   zorba::xquery_parser::token_type                         \
   zorba::xquery_scanner::lex(                              \
     zorba::xquery_parser::semantic_type* yylval,           \
     zorba::xquery_parser::location_type* yylloc            \
     )
-#endif
 
-#ifndef YY_USER_ACTION
-#define YY_USER_ACTION    YY_USER_ACTION_func(yylloc);
+#ifdef YY_USER_ACTION
+#undef YY_USER_ACTION
 #endif
+#define YY_USER_ACTION    YY_USER_ACTION_func(yylloc);
 
 #ifndef __FLEX_LEXER_H
 # undef yyFlexLexer
 # define yyFlexLexer ZorbaFlexLexer
-
 # if defined(ZORBA_HAVE_FLEXLEXER_H) && defined(FLEX_FILES_REGENERATED)
 #   include <FlexLexer.h>
 # else

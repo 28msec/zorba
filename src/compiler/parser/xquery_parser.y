@@ -3539,6 +3539,22 @@ AndExpr :
         }
     ;
 
+NotExpr :
+        ComparisonExpr
+        {
+          $$ = $1;
+        }
+     |  NOT NotExpr
+        {
+          $$ = new ComparisonExpr(
+              LOC(@$),
+              new ValueComp( LOC(@$), ParseConstants::op_val_not ),
+              $2,
+              NULL
+          );
+        }
+;
+
 // [50]
 ComparisonExpr :
         FTContainsExpr
