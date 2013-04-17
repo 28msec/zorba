@@ -34,10 +34,6 @@ declare namespace fots =
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
-(:declare option op:disable "f:trace";:)
-
 
 (:~
  : Create the text for an XQuery version declaration that must be added
@@ -60,8 +56,7 @@ declare function env:add-xquery-version-decl(
     satisfies $dep[contains(@value, "XQ30") or contains(@value, "XP30")]
 
   return
-    if ($v30 and not(contains($test, "xquery version")))
-    then
+    if ($v30 and not(contains($test, "xquery version"))) then
     {
       'xquery version "3.0";'
     }
@@ -142,8 +137,7 @@ declare %ann:nondeterministic function env:decl-namespaces(
   $test    as xs:string
 ) as xs:string?
 {
-  if (($env/fots:namespace, $envCase/fots:namespace))
-  then
+  if (($env/fots:namespace, $envCase/fots:namespace)) then
     string-join
     (
       for $ns in ($env/fots:namespace, $envCase/fots:namespace)
@@ -183,8 +177,7 @@ declare function env:decl-decimal-formats(
 ) as xs:string*
 {
   if (empty($decimal-formats))
-  then 
-    ()
+  then ()
   else
     for $tmp in $decimal-formats
     let $default := if ($tmp/@name)
@@ -370,7 +363,7 @@ declare function env:set-context-item(
 ) as xs:string?
 {
   if (exists($env/fots:source[@role = "."]))
-  then 
+  then
     string-join
     (
     (
@@ -464,7 +457,7 @@ declare %private function env:get-schema-import(
  : the XQXQ query id of TQ.
  :
  : @param $env The environment (local or non-local) that applies to the current
- :        test case 
+ :        test case
  : @param $envBaseURI The absolute pathname of the directory containing the
  :        file that defines the environment.
  : @return the strings for variable binding in XQXQ.
@@ -505,7 +498,7 @@ declare function env:set-variables(
                $param/@name,
                '"), ',
                $varValue,
-               ');') 
+               ');')
     )
     ,
     "&#xA;"
@@ -534,7 +527,7 @@ declare function env:resolver(
   return
     if (empty($modules) and empty($resources))
     then
-    { 
+    {
       ()
     }
     else

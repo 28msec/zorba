@@ -47,9 +47,6 @@ declare default element namespace
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
-declare option op:disable "f:trace";
 
 (:~
  : Loops through the test-sets, executes them and reports results.
@@ -77,6 +74,7 @@ declare %ann:sequential function reporting:run-and-report(
                                          (),
                                          fn:false(),
                                          $expectedFailuresPath,
+                                         fn:false(),
                                          'run-test-sets',
                                          fn:false());
 
@@ -134,7 +132,7 @@ declare %ann:sequential function reporting:W3C-reporting(
               "The 'FOTSZorbaManifest.xml' was not found.");
       }
       else ();
-      
+     
       variable $FOTSZorbaManifest := parse-xml(file:read-text(resolve-uri($FOTSZorbaManifestPath)));
 
       variable $CLIBaseURI := resolve-uri(util:parent-folder($FOTSZorbaManifestPath));
@@ -148,9 +146,9 @@ declare %ann:sequential function reporting:W3C-reporting(
               "'W3C_submission_template.xml' file was not found.");
       }
       else ();
-      
+     
       variable $W3CTemplate := parse-xml(file:read-text($W3CTemplatePath));
-      
+     
       (: add dependencies:)
      (insert nodes
       for $dependency in $FOTSZorbaManifest/fots:test-suite-result/fots:dependency
@@ -178,7 +176,7 @@ declare %ann:sequential function reporting:W3C-reporting(
         }
       </test-set>
       as last into $W3CTemplate/results:test-suite-result);
-       
+      
       $W3CTemplate
     }
   }
@@ -205,8 +203,7 @@ declare %ann:nondeterministic function reporting:wiki-report(
 try
 {
   {
-    variable $FOTSCatalog := doc(trace(resolve-uri($FOTSCatalogFilePath),
-                                "Path to FOTS catalog.xml set to: "));
+    variable $FOTSCatalog := doc(resolve-uri($FOTSCatalogFilePath));
 
     variable $catalogBaseURI := resolve-uri(util:parent-folder($FOTSCatalogFilePath));
 
@@ -256,7 +253,7 @@ try
     </fots:test-set>
    }
   </fots:report>
-  
+ 
   }
 }
 catch err:FODC0002
@@ -290,7 +287,7 @@ declare %ann:nondeterministic function reporting:generate-expected-failures(
       else ();
 
       variable $results := parse-xml(file:read-text($pathResults));
-     
+    
       {
         for $testSet in $results//fots:test-set
         let $countFailures := count($testSet//fots:test-case[@result ="fail"])

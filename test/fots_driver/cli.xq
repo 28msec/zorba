@@ -25,12 +25,8 @@ import module namespace d =
 import module namespace r =
   "http://www.zorba-xquery.com/fots-driver/reporting" at "reporting.xq";
 
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
-(:declare option op:disable "f:trace";:)
-
 (:~
- : Path to the FOTS catalog.xml file. If the path is relative, it will be 
+ : Path to the FOTS catalog.xml file. If the path is relative, it will be
  : resolved relative to the directory containing this cli.xq file.
  : By default it is assumed that the FOTS was imported using CMake (i.e. after
  : 'make fots-import' and 'make fots-activate-sets' were run).
@@ -56,13 +52,20 @@ declare variable $resultsFilePath as xs:string external := "";
 
 
 (:~
- : Path to the ExpectedFailures file.
+ : Path to the FOTSExpectedFailures.xml.
  :)
 declare variable $expectedFailuresPath as xs:string external :=
   "../../build/FOTSExpectedFailures.xml";
 
 
-(:~ 
+(:~
+ : Enable or disable CTest behaviour, meaning marking all known failures listed
+ : in FOTSExpectedFailures.xml as 'pass' instead of 'fail'.
+ :)
+declare variable $ctestMode as xs:string external := "false";
+
+
+(:~
  : The CLI command you want to run.
  :)
 declare variable $mode as xs:string external := "";
@@ -103,13 +106,13 @@ declare variable $exceptedTestSets as xs:string* := ();
 declare variable $testSetName as xs:string external := "";
 
 
-(:~ 
+(:~
  : Name of the test-case to process. Used only for the "run-test-case" command.
  :)
 declare variable $testCaseName as xs:string external := "";
 
 
-(:~ 
+(:~
  : A dependency used in the 'list-test-cases' and 'run-test-sets' commands to
  : filter the test-cases that will actually be listed/run. Only test-cases whose
  : applicable dependencies contain at least one dependency the matches this
@@ -204,7 +207,6 @@ declare function local:usage() as xs:string
     "zorba -f -q /path/to/cli.xq -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e mode:=run-and-report -o results_Zorba_XQ30.xml --indent --disable-http-resolution",
     "zorba -f -q /path/to/cli.xq -e mode:=report -e resultsFilePath:=results.xml -o results_Zorba_XQ30.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e mode:=generate-expected-failures -e resultsFilePath:=failures.xml -o ExpectedFailures.xml --indent",
     ""
     ), "&#xA;")
 };
@@ -289,13 +291,6 @@ return
 case "run-test-sets"
 return
 {
-  trace($testSetPrefixes, $testSetPrefixesMsg);
-  trace($testCasePrefixes, $testCasePrefixesMsg);
-  trace($dependency, "'dependency' set to:");
-  trace($assertions, "'assertions' set to: ");
-  trace($verbose, "'verbose' set to:");
-  trace($mode, "Cli command set to:");
-
   d:run-fots($fotsPath,
              $fotsZorbaManifestPath,
              local:tokenize($testSetPrefixes),
@@ -305,6 +300,7 @@ return
              $assertions,
              xs:boolean($verbose),
              $expectedFailuresPath,
+             xs:boolean($ctestMode),
              $mode,
              xs:boolean($usePlanSerializer))
 }
@@ -312,12 +308,6 @@ return
 case "run-test-set"
 return
 {
-  trace($testSetName, $testSetNameMsg);
-  trace($dependency, "'dependency' set to:");
-  trace($assertions, "'assertions' set to: ");
-  trace($verbose, "'verbose' set to:");
-  trace($mode, "Cli command set to:");
-
   d:run-test-set($fotsPath,
                  $fotsZorbaManifestPath,
                  $testSetName,
@@ -327,6 +317,7 @@ return
                  $assertions,
                  xs:boolean($verbose),
                  $expectedFailuresPath,
+                 xs:boolean($ctestMode),
                  $mode,
                  xs:boolean($usePlanSerializer))
 }
@@ -334,11 +325,6 @@ return
 case "run-test-case"
 return
 {
-  trace($testSetName, $testSetNameMsg);
-  trace($testCaseName, $testCaseNameMsg);
-  trace($verbose, "'verbose' set to:");
-  trace($mode, "Cli command set to:");
-
   d:run-fots($fotsPath,
              $fotsZorbaManifestPath,
              $testSetName,
@@ -348,6 +334,7 @@ return
              (),
              xs:boolean($verbose),
              $expectedFailuresPath,
+             xs:boolean($ctestMode),
              $mode,
              xs:boolean($usePlanSerializer))
 }
@@ -373,12 +360,6 @@ return
 {
   r:wiki-report($fotsPath,
                 $resultsFilePath)
-}
-
-case "generate-expected-failures"
-return
-{
-  r:generate-expected-failures($resultsFilePath)
 }
 
 default

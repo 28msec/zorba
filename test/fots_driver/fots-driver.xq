@@ -60,8 +60,7 @@ declare namespace ann =
  : Returns the names of all qualifying test-sets.
  :
  : A test-set qualifies if its name starts with one of the prefixes listed in
- : $testSetPrefixes. If $testSetPrefixes is the empty sequence, then all test-sets
- : qualify.
+ : $testSetPrefixes. Empty sequence means all test-sets qualify.
  :
  : @param $fotsPath path to the FOTS catalog file.
  : @param $testSetPrefixes name criteria for the test-sets
@@ -75,8 +74,7 @@ declare %ann:nondeterministic function driver:list-test-sets(
 {
   let $doc := doc(resolve-uri($fotsPath))
   return
-    if (empty($testSetPrefixes))
-    then
+    if (empty($testSetPrefixes)) then
       for $testSet in $doc/fots:catalog/fots:test-set
       return data($testSet/@name)
     else
@@ -129,8 +127,7 @@ declare %ann:nondeterministic function driver:list-test-cases(
   let $doc := doc(resolve-uri($fotsPath))
   let $baseUri:= resolve-uri(util:parent-folder($fotsPath))
   return
-    if (empty($testSetNames))
-    then
+    if (empty($testSetNames)) then
       for $testSet in $doc/fots:catalog/fots:test-set
       let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
       return driver:list-test-cases($testSetDoc, $dependency, $assert)
@@ -176,11 +173,10 @@ declare %private function driver:list-test-cases(
   else
   {
     for $testCase in $testSetDoc//fots:test-case
-
     where
       driver:matches-dependency(($testSetDoc/fots:test-set/fots:dependency,
                                  $testCase/fots:dependency),
-                                $dependency)
+                                 $dependency)
       and
       (empty($assert) or
        functx:value-intersect(driver:list-assertions($testCase), $assert))
@@ -200,10 +196,10 @@ declare %private function driver:matches-dependency(
   $filter       as xs:string
 ) as xs:boolean
 {
-  if ($filter eq '')
-  then
+  if ($filter eq '') then
     fn:true()
   else
+  {
     let $filter := tokenize($filter, '_')
     let $depValue := $filter[1]
     let $depSatisfied := if ($filter[2] eq 'true' or $filter[2] eq 'false')
@@ -216,6 +212,7 @@ declare %private function driver:matches-dependency(
         $dependencies[@value eq $depValue and empty(@satisfied)]
       else
         $dependencies[@value eq $depValue and @satisfied eq $depSatisfied]
+  }
 };
 
 
@@ -269,11 +266,26 @@ declare %ann:nondeterministic function driver:list-matching-test-cases(
 
 
 (:~
- : This function is just a thin wrapper over the driver:run() function. See
- : driver:run() for more info.
+ : This function is a wrapper over the private function driver:check-FOTS.
  :
- : Process a specified subset of all test-cases and report the outcome for
- : each such test-case.
+ : Processing a test-case results in one of the following outcomes described in
+ : http://dev.w3.org/2011/QT3-test-suite/guide/reporting.html:
+ :
+ : 'pass' The test-case was run and the assertion(s) was(were) satisfied.
+ : 'fail' The test-case was run and the assertion(s) was(were) satisfied.
+ : 'wrongError' The test-case was run; the expected results permitted an error
+ :              to be reported; the actual result was an error, but not with
+ :              the expected error code.
+ : 'n/a' The test-case was not run because it is not applicable to this
+ :        implementation (for example, because it depends on optional features)
+ : 'disputed' The test-case or its results, or the specification they rely on,
+ :            are the subject of an unresolved bug report (which should be
+ :            identified in the comment field).
+ : 'tooBig' The test-case was not run because it exceeds limits imposed by the
+ :          implementation or requires excessive resources.
+ : 'notRun' The test-case was not run for unspecified reasons (for example
+ :          an implementation might omit tests for features
+ :          that have not been implemented)
  :
  : The subset of test-cases to process is specified via the $exceptedTestSets,
  : $testSetPrefixes, $testCasePrefixes, $dependency, and assertions parameters.
@@ -305,6 +317,8 @@ declare %ann:nondeterministic function driver:list-matching-test-cases(
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about each processed test-case.
  : @param $expectedFailuresPath the path to the FOTSExpectedFailures.xml.
+ : @param $ctestMode true if the known failures are to be reported as 'pass'
+ :        instead of 'fail'.
  : @param $cliMode the cli command.
  : @param $usePlanSerializer if true the plan serializer is used.
  : @return an XML tree containing info about all the processed tests-cases
@@ -319,13 +333,14 @@ declare %ann:sequential function driver:run-fots(
   $assertions             as xs:string*,
   $verbose                as xs:boolean,
   $expectedFailuresPath   as xs:string,
+  $ctestMode              as xs:boolean,
   $cliMode                as xs:string,
   $usePlanSerializer      as xs:boolean
 ) as element(fots:test-cases)
 {
   trace($fotsPath, "Path to FOTS catalog.xml set to:");
   trace($expectedFailuresPath, "Path to FOTSExpectedFailures.xml set to:");
-  trace($zorbaManifestPath, "Path to FOTSZorbaManifest set to :");  
+  trace($zorbaManifestPath, "Path to FOTSZorbaManifest set to :"); 
   trace($usePlanSerializer, "'usePlanSerializer' set to:");
 
   try
@@ -364,7 +379,158 @@ declare %ann:sequential function driver:run-fots(
 
     let $testCaseNames :=
     {
-      if (empty($testCasePrefixes) and $dependency eq '' and empty($assertions)) then
+      if (empty($testCasePrefixes) and $dependency eq '' and empty($assertions))
+      then
+      {
+        ()
+      }
+      else
+      {
+        let $testCaseNames := driver:list-test-cases($fotsPath,
+                                                     $testSetNames,
+                                                     $dependency,
+                                                     $assertions)
+        return
+        if (empty($testCaseNames)) then
+        {
+          exit returning <fots:test-cases/>;
+          ()
+        }
+        else if (empty($testCasePrefixes)) then
+        {
+          $testCaseNames
+        }
+        else
+        {
+          for $name in $testCaseNames
+          where some $prefix in $testCasePrefixes satisfies starts-with($name, $prefix)
+          return $name
+        }
+      }
+    }
+
+    return driver:check-FOTS($FOTSCatalog,
+                             resolve-uri(util:parent-folder($fotsPath)),
+                             $zorbaManifest,
+                             $testSetNames,
+                             $testCaseNames,
+                             $expectedFailures,
+                             $ctestMode,
+                             $verbose,
+                             $cliMode,
+                             $usePlanSerializer)
+  }
+  catch err:FODC0002
+  {
+    error($err:code,
+          $err:description)
+  }
+};
+
+
+(:~
+ : Process a specified test set and report the outcome for each containing
+ : test case. This is a wrapper over driver:check-FOTS function.
+ :
+ : Processing a test-case results in one of the following outcomes described in
+ : http://dev.w3.org/2011/QT3-test-suite/guide/reporting.html:
+ :
+ : 'pass' The test-case was run and the assertion(s) was(were) satisfied.
+ : 'fail' The test-case was run and the assertion(s) was(were) satisfied.
+ : 'wrongError' The test-case was run; the expected results permitted an error
+ :              to be reported; the actual result was an error, but not with
+ :              the expected error code.
+ : 'n/a' The test-case was not run because it is not applicable to this
+ :        implementation (for example, because it depends on optional features)
+ : 'disputed' The test-case or its results, or the specification they rely on,
+ :            are the subject of an unresolved bug report (which should be
+ :            identified in the comment field).
+ : 'tooBig' The test-case was not run because it exceeds limits imposed by the
+ :          implementation or requires excessive resources.
+ : 'notRun' The test-case was not run for unspecified reasons (for example
+ :          an implementation might omit tests for features
+ :          that have not been implemented)
+ :
+ : The subset of test-cases to process is specified via the $exceptedTestSets,
+ : $testSetName, $exceptedTestCases, $testCaseName, $dependency,
+ : and $assertions parameters.
+ : A test-case will be processed only if it satisfies all of the following
+ : conditions:
+ : (a) it belongs to a test-set whose name is not among the ones listed in the
+ :     $exceptedTestSets parameter,
+ : (b) the test-case belongs to a test-set whose name is $testSetName,
+ : (c) the name of the test-case is $testCaseName.
+ : (d) $dependency is equal to the empty string or the dependencies applicable
+ :     to the test-case include a user-provided dependency.
+ : (e) $assertions is empty or the expected-result assertions of the test-case
+ :     include at least one of the assertions in $assertions.
+ :
+ : @param $fotsPath path to the FOTS catalog file.
+ : @param $zorbaManifestPath the path to the file that describes optional
+ :        features and implementation-defined items in Zorba.
+ : @param $testSetName exact name of the test-set.
+ : @param $exceptedTestSets names of test sets that should NOT be precessed.
+ : @param $testCasePrefixes prefixes to filter the test cases to process
+ :        (empty seq means no filtering).
+ : @param $dependency dependency used to filter test-cases.
+ :        (empty string means no filtering).
+ : @param $assertions set of expected-result assertions used to filter test-cases.
+ :        (empty sequence means no filtering).
+ : @param $verbose if true, the resulting XML tree will contain more details
+ :        about each processed test-case.
+ : @param $expectedFailuresPath the path to the FOTSExpectedFailures.xml.
+ : @param $ctestMode true if the known failures are to be reported as 'pass'
+ :        instead of 'fail'.
+ : @param $cliMode the cli command.
+ : @param $usePlanSerializer if true the plan serializer is used.
+ : @return an XML tree containing info about all the processed tests-cases
+ :)
+declare %ann:sequential function driver:run-test-set(
+  $fotsPath               as xs:string,
+  $zorbaManifestPath      as xs:string,
+  $testSetName            as xs:string*,
+  $exceptedTestSets       as xs:string*,
+  $testCasePrefixes       as xs:string*,
+  $dependency             as xs:string,
+  $assertions             as xs:string*,
+  $verbose                as xs:boolean,
+  $expectedFailuresPath   as xs:string,
+  $ctestMode              as xs:boolean,
+  $cliMode                as xs:string,
+  $usePlanSerializer      as xs:boolean
+) as element(fots:test-cases)
+{
+  trace($fotsPath, "Path to FOTS catalog.xml set to:");
+  trace($expectedFailuresPath, "Path to FOTSExpectedFailures.xml set to:");
+  trace($zorbaManifestPath, "Path to FOTSZorbaManifest set to :");
+  trace($usePlanSerializer, "'usePlanSerializer' set to:");
+ 
+  try
+  {
+    let $FOTSCatalog := doc(resolve-uri($fotsPath))
+    let $zorbaManifest := doc(resolve-uri($zorbaManifestPath))
+    let $expectedFailures := doc(resolve-uri($expectedFailuresPath))
+   
+    let $testSetNames :=
+    if(empty($testSetName)) then
+    {
+      if(empty($exceptedTestSets))
+      then ()
+      else for $testSet in $FOTSCatalog//fots:test-set
+           where empty(index-of($testSet/@name, $exceptedTestSets))
+           return xs:string($testSet/@name)
+    }
+    else
+    {
+      if(empty($exceptedTestSets))
+      then $testSetName
+      else functx:value-except($testSetName, $exceptedTestSets)
+    }
+
+    let $testCaseNames :=
+    {
+      if (empty($testCasePrefixes) and $dependency eq '' and empty($assertions))
+      then
       {
         ()
       }
@@ -399,145 +565,10 @@ declare %ann:sequential function driver:run-fots(
                              $testSetNames,
                              $testCaseNames,
                              $expectedFailures,
+                             $ctestMode,
                              $verbose,
                              $cliMode,
                              $usePlanSerializer)
-  }
-  catch err:FODC0002
-  {
-    error($err:code,
-          $err:description)
-  }
-};
-
-
-(:~
- : Process a specified test set and report the outcome for each containing
- : test case.
- :
- : Processing a test-case results in one of the following outcomes:
- : 1. Pass: the query was evaluated and its result matched the expected result.
- : 2. Fail: the query was evaluated and its result did not match the expected
- :    result.
- : 3. Non-applicable: the query was not evaluated because at least one of its
- :    applicable dependencies was violated.
- : 4. Not-run: the query was not evaluated because the name of the test-case
- :    appears in the $exceptedTestCases parameter.
- :
- : The subset of test-cases to process is specified via the $exceptedTestSets,
- : $testSetName, $exceptedTestCases, $testCaseName, $dependency,
- : and $assertions parameters.
- : A test-case will be processed only if it satisfies all of the following
- : conditions:
- : (a) it belongs to a test-set whose name is not among the ones listed in the
- :     $exceptedTestSets parameter,
- : (b) the test-case belongs to a test-set whose name is $testSetName,
- : (c) the name of the test-case is $testCaseName.
- : (d) $dependency is equal to the empty string or the dependencies applicable
- :     to the test-case include a user-provided dependency.
- : (e) $assertions is empty or the expected-result assertions of the test-case
- :     include at least one of the assertions in $assertions.
- :
- : @param $fotsPath path to the FOTS catalog file.
- : @param $zorbaManifestPath the path to the file that describes optional
- :        features and implementation-defined items in Zorba.
- : @param $testSetName exact name of the test-set.
- : @param $exceptedTestSets names of test sets that should NOT be precessed.
- : @param $testCasePrefixes prefixes to filter the test cases to process
- :        (empty seq means no filtering).
- : @param $dependency dependency used to filter test-cases.
- :        (empty string means no filtering).
- : @param $assertions set of expected-result assertions used to filter test-cases.
- :        (empty sequence means no filtering).
- : @param $verbose if true, the resulting XML tree will contain more details
- :        about each processed test-case.
- : @param $expectedFailuresPath the path to the FOTSExpectedFailures.xml.
- : @param $cliMode the cli command.
- : @param $usePlanSerializer if true the plan serializer is used.
- : @return an XML tree containing info about all the processed tests-cases
- :)
-declare %ann:sequential function driver:run-test-set(
-  $fotsPath               as xs:string,
-  $zorbaManifestPath      as xs:string,
-  $testSetName            as xs:string*,
-  $exceptedTestSets       as xs:string*,
-  $testCasePrefixes       as xs:string*,
-  $dependency             as xs:string,
-  $assertions             as xs:string*,
-  $verbose                as xs:boolean,
-  $expectedFailuresPath   as xs:string,
-  $cliMode                as xs:string,
-  $usePlanSerializer      as xs:boolean
-) as element(fots:test-cases)
-{
-  trace($fotsPath, "Path to FOTS catalog.xml set to:");
-  trace($expectedFailuresPath, "Path to FOTSExpectedFailures.xml set to:");
-  trace($zorbaManifestPath, "Path to FOTSZorbaManifest set to :");
-  trace($usePlanSerializer, "'usePlanSerializer' set to:");
-  
-  try
-  {
-    let $FOTSCatalog := doc(resolve-uri($fotsPath))
-    let $zorbaManifest := doc(resolve-uri($zorbaManifestPath))
-    let $expectedFailures := doc(resolve-uri($expectedFailuresPath))
-    
-    let $testSetNames :=
-    if(empty($testSetName))
-    then
-    {
-      if(empty($exceptedTestSets))
-      then ()
-      else for $testSet in $FOTSCatalog//fots:test-set
-           where empty(index-of($testSet/@name, $exceptedTestSets))
-           return xs:string($testSet/@name)
-    }
-    else
-    {
-      if(empty($exceptedTestSets))
-      then $testSetName
-      else functx:value-except($testSetName, $exceptedTestSets)
-    }
-
-    let $testCaseNames :=
-    {
-      if (empty($testCasePrefixes) and $dependency eq '' and empty($assertions)) then
-      {
-        ()
-      }
-      else
-      {
-        let $testCaseNames := driver:list-test-cases($fotsPath,
-                                                     $testSetNames,
-                                                     $dependency,
-                                                     $assertions)
-        return
-          if (empty($testCaseNames)) then
-          {
-            exit returning <fots:test-cases/>;
-            ()
-          }
-          else if (empty($testCasePrefixes)) then
-          {
-            $testCaseNames
-          }
-          else
-          {
-            for $name in $testCaseNames
-            where some $prefix in $testCasePrefixes satisfies starts-with($name, $prefix)
-            return $name
-          }
-      }
-    }
-
-    return driver:check-FOTS($FOTSCatalog,
-                           resolve-uri(util:parent-folder($fotsPath)),
-                           $zorbaManifest,
-                           $testSetNames,
-                           $testCaseNames,
-                           $expectedFailures,
-                           $verbose,
-                           $cliMode,
-                           $usePlanSerializer)
   }
   catch err:FODC0002
   {
@@ -560,12 +591,14 @@ declare %ann:sequential function driver:run-test-set(
  :     appears in $testCaseNames.
  :
  : @param $FOTSCatalog the root node of the FOTS catalog document.
- : @param $catalogBaseURI the URI of the directory containing the FOTS catalog file.
+ : @param $catalogBaseURI the URI of the directory containing the FOTS catalog.
  : @param $FOTSZorbaManifest the root node of the doc that describes optional
  :        features and implementation-defined items in Zorba.
  : @param $testSetNames names of the test-sets to run (empty seq means all)
  : @param $testCaseNames names of the test-cases to run (empty seq means all)
  : @param $expectedFailures the root node of the ExpectedFailures.xml file.
+ : @param $ctestMode true if the known failures are to be reported as 'pass'
+ :        instead of 'fail'.
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about each processed test-case.
  : @param $cliMode the cli command.
@@ -579,6 +612,7 @@ declare %private %ann:sequential function driver:check-FOTS(
   $testSetNames       as xs:string*,
   $testCaseNames      as xs:string*,
   $expectedFailures   as document-node()?,
+  $ctestMode          as xs:boolean,
   $verbose            as xs:boolean,
   $cliMode            as xs:string,
   $usePlanSerializer  as xs:boolean
@@ -594,16 +628,17 @@ declare %private %ann:sequential function driver:check-FOTS(
   let $testSetURI := resolve-uri($testSet/@file, $catalogBaseURI)
   let $tsDoc := doc($testSetURI)
   return
-    driver:check-test-set($FOTSCatalog/fots:catalog/fots:environment,
-                          $catalogBaseURI,
-                          $FOTSZorbaManifest,
-                          $tsDoc,
-                          $testSetURI,
-                          $expectedFailures/failures/TestSet[@name eq $testSetName],
-                          $testCaseNames,
-                          $verbose,
-                          $cliMode,
-                          $usePlanSerializer)
+  driver:check-test-set($FOTSCatalog/fots:catalog/fots:environment,
+                        $catalogBaseURI,
+                        $FOTSZorbaManifest,
+                        $tsDoc,
+                        $testSetURI,
+                        $expectedFailures/failures/TestSet[@name eq $testSetName],
+                        $ctestMode,
+                        $testCaseNames,
+                        $verbose,
+                        $cliMode,
+                        $usePlanSerializer)
   }</fots:test-cases>
 };
 
@@ -619,6 +654,8 @@ declare %private %ann:sequential function driver:check-FOTS(
  : @param $tsBaseURI the URI of the directory that contains the file of the
  :        associated test-set.
  : @param $expFailuresTS the 'TestSet' element from FOTSExpectedFailures.xml.
+ : @param $ctestMode true if the known failures are to be reported as 'pass'
+ :        instead of 'fail'.
  : @param $testCaseNames names of the test-cases to run (empty seq means all).
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about the test-case.
@@ -633,56 +670,60 @@ declare %private %ann:sequential function driver:check-test-set(
   $tsDoc                as document-node(),
   $tsBaseURI            as xs:anyURI,
   $expFailuresTS        as element(TestSet)?,
+  $ctestMode            as xs:boolean,
   $testCaseNames        as xs:string*,
   $verbose              as xs:boolean,
   $cliMode              as xs:string,
   $usePlanSerializer    as xs:boolean
 ) as element(fots:test-set)
-{ 
-  let $testSetEnvironments := $tsDoc/fots:test-set//fots:environment/@name
-  let $tsDepMet := env:check-dependencies($tsDoc/fots:test-set/fots:dependency,
-                                          $FOTSZorbaManifest)
-  let $tsName := $tsDoc/fots:test-set/@name
-  return
-  <fots:test-set name="{$tsName}">{
+{
+let $testSetEnvironments := $tsDoc/fots:test-set//fots:environment/@name
+let $tsDepMet := env:check-dependencies($tsDoc/fots:test-set/fots:dependency,
+                                        $FOTSZorbaManifest)
+let $tsName := $tsDoc/fots:test-set/@name
+return
+<fots:test-set name="{$tsName}">
+{
   for $testCase in $tsDoc/fots:test-set/fots:test-case
   where empty($testCaseNames) or $testCaseNames[. eq $testCase/@name]
   return
-    driver:check-test-case($expFailuresTS/Test[@name = $testCase/@name],
-    
-                           $testCase,
-                           
-                           $tsName,
-                           
-                           $tsBaseURI,
-                           
-                           $tsDepMet,
-                           
-                           $tsDoc/fots:test-set/fots:dependency,
-                           
-                           $FOTSZorbaManifest,
-                           
-                           if(empty($testCase/fots:environment/@ref))
-                           then ()
-                           else if (exists($catalogEnvironments/following-sibling::*[@name eq $testCase/fots:environment/@ref]))
-                           then $catalogEnvironments/following-sibling::*[@name eq $testCase/fots:environment/@ref]
-                           else $tsDoc/fots:test-set/fots:environment[@name eq $testCase/fots:environment/@ref],
-                           
-                           if(empty($testCase/fots:environment/@ref))
-                           then ()
-                           else if (exists($catalogEnvironments/following-sibling::*[@name eq $testCase/fots:environment/@ref]))
-                           then $catalogBaseURI
-                           else $tsBaseURI,
-                           
-                           exists(index-of(('fn-id', 'fn-idref', 'app-FunctxFunctx'), $tsName)),
-                           
-                           $verbose,
-                           
-                           $cliMode,
-                           
-                           $usePlanSerializer)
+  driver:check-test-case($expFailuresTS/Test[@name = $testCase/@name],
+                        
+                         $ctestMode,
+                        
+                         $testCase,
+                        
+                         $tsName,
+                        
+                         $tsBaseURI,
+                        
+                         $tsDepMet,
+                        
+                         $tsDoc/fots:test-set/fots:dependency,
+                        
+                         $FOTSZorbaManifest,
+                        
+                         if(empty($testCase/fots:environment/@ref))
+                         then ()
+                         else if (exists($catalogEnvironments/following-sibling::*[@name eq $testCase/fots:environment/@ref]))
+                         then $catalogEnvironments/following-sibling::*[@name eq $testCase/fots:environment/@ref]
+                         else $tsDoc/fots:test-set/fots:environment[@name eq $testCase/fots:environment/@ref],
+                        
+                         if(empty($testCase/fots:environment/@ref))
+                         then ()
+                         else if (exists($catalogEnvironments/following-sibling::*[@name eq $testCase/fots:environment/@ref]))
+                         then $catalogBaseURI
+                         else $tsBaseURI,
+                        
+                         exists(index-of(('fn-id', 'fn-idref', 'app-FunctxFunctx'), $tsName)),
+                        
+                         $verbose,
+                        
+                         $cliMode,
+                        
+                         $usePlanSerializer)
   }
-  </fots:test-set>
+</fots:test-set>
 };
 
 (:~
@@ -690,6 +731,8 @@ declare %private %ann:sequential function driver:check-test-set(
  :
  : @param $expFailuresTC the 'Test' element from FOTSExpectedFailures.xml
  :        for the parent test-set.
+ : @param $ctestMode true if the known failures are to be reported as 'pass'
+ :        instead of 'fail'.
  : @param $testCase the test-case to run.
  : @param $tsName the name of the parent test-set.
  : @param $tsBaseURI the URI of the directory that contains the file of the
@@ -715,6 +758,7 @@ declare %private %ann:sequential function driver:check-test-set(
  :)
 declare %ann:sequential function driver:check-test-case(
   $expFailureTC         as element(Test)?,
+  $ctestMode            as xs:boolean,
   $testCase             as element(fots:test-case),
   $tsName               as xs:string,
   $tsBaseURI            as xs:anyURI,
@@ -732,19 +776,9 @@ declare %ann:sequential function driver:check-test-case(
   let $tcDepMet := env:check-dependencies($testCase/fots:dependency,
                                           $FOTSZorbaManifest)
   return
-  if (exists($expFailureTC[@notRun="true"]))
-  then
+  if (exists($expFailureTC[@notRun="true"])) then
   {
-(:  
-  concat("Test case was not run because it is marked as EXPECTED_FOTS_FAILURE ",
-         $status,
-         " in test/fots/CMakeLists.txt.",
-         " For details please check out https://bugs.launchpad.net/zorba/+bug/",
-         $bugNo)
-:)
-
-    if($expFailureTC/@finalStatus = "pass")
-    then
+    if($ctestMode or $expFailureTC/@finalStatus = "pass") then
       feedback:pass($testCase,
                     (),
                     (),
@@ -753,22 +787,11 @@ declare %ann:sequential function driver:check-test-case(
                            "For details please check out https://bugs.launchpad.net/zorba/+bug/",
                            $expFailureTC/@bug))
     else
-      feedback:fail($testCase,
-                    (),
-                    '',
-                    $tsName,
-                    (),
-                    xs:dayTimeDuration("PT0S"),
-                    $verbose,
-                    fn:false(),
-                    (),
-                    concat("Test case was not run because it is marked as",
-                           " EXPECTED_FOTS_FAILURE CRASH in test/fots/CMakeLists.txt.",
-                           "For details please check out https://bugs.launchpad.net/zorba/+bug/",
-                           $expFailureTC/@bug))
+      feedback:too-big($testCase,
+                      concat("For details please check out https://bugs.launchpad.net/zorba/+bug/",
+                             $expFailureTC/@bug))
   }
-  else if (exists($tsDepMet) or exists($tcDepMet))
-  then
+  else if (exists($tsDepMet) or exists($tcDepMet)) then
   {
     feedback:not-applicable($testCase,
                             string-join(($tsDepMet, $tcDepMet), ''))
@@ -784,6 +807,7 @@ declare %ann:sequential function driver:check-test-case(
                          $tsBaseURI,
                          $verbose,
                          $expFailureTC,
+                         $ctestMode,
                          $cliMode,
                          $mayNeedDTDValidation,
                          $usePlanSerializer)
@@ -809,6 +833,8 @@ declare %ann:sequential function driver:check-test-case(
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about the test-case.
  : @param $expFailureTC the 'Test' element from the ExpectedFailures.xml file.
+ : @param $ctestMode true if the known failures are to be reported as 'pass'
+ :        instead of 'fail'.
  : @param $cliMode the cli command.
  : @param $mayNeedDTDValidation true if the test-case may need DTD validation
  :        for the document bound as context item.
@@ -824,14 +850,15 @@ declare %private %ann:sequential function driver:run-test-case(
   $testSetBaseURI       as xs:anyURI,
   $verbose              as xs:boolean,
   $expFailureTC         as element(Test)?,
+  $ctestMode            as xs:boolean,
   $cliMode              as xs:string,
   $mayNeedDTDValidation as xs:boolean,
   $usePlanSerializer    as xs:boolean
 ) as element(fots:test-case)?
 {
 (:TODO Cover the "(:%VARDECL%:)"when there are tests in FOTS that use it:)
-  try
-  {
+try
+{
   {
     variable $trace := concat("processing test case : ", $case/@name,
                               " in test set : ", $testSetName);
@@ -894,35 +921,49 @@ declare %private %ann:sequential function driver:run-test-case(
     variable $startDateTime := datetime:current-dateTime();
 
     variable $result := execute:xqxq-invoke($xqxqQuery,
-                                           $case,
-                                           $verbose,
-                                           $testSetBaseURI,
-                                           $usePlanSerializer);
+                                            $case,
+                                            $verbose,
+                                            $testSetBaseURI,
+                                            $usePlanSerializer);
 
     variable $duration := (datetime:current-dateTime() - $startDateTime);
-    
+   
     variable $prerequisitesError as xs:string? := env:check-prerequisites($case, $env);
 
-    if (feedback:check-pass($result, $queryName, $testSetName, $expFailureTC))
-    then
+    if (feedback:check-pass($result, $queryName, $testSetName, $expFailureTC)) then
       feedback:pass($case,
                     $result,
                     $xqxqQuery,
                     $env,
                     $duration,
                     $verbose,
-                    exists($expFailureTC))
-    (: 
+                    exists($expFailureTC),
+                    (),
+                    ())
+    (:
       If the test case did not pass, we check to see if the failure is caused
       by a environment that requires setting of a COLLATION or COLLECTION.
       There are over 130 test cases that are using an environment that requires
       setting a COLLATION or COLLECTION but they still PASS even if this setting
       is not done. That is why we first run the test case.
      :)
-    else if(exists($prerequisitesError))
-    then
+    else if(exists($prerequisitesError)) then
       feedback:not-run($case, $prerequisitesError)
-    else
+    else if($expFailureTC/@finalStatus = "pass") then
+      feedback:disputed($case,
+                        concat("For details please see https://www.w3.org/Bugs/Public/show_bug.cgi?id=",
+                               $expFailureTC/@bug))
+    else if($ctestMode) then
+      feedback:pass($case,
+                $result,
+                $xqxqQuery,
+                $env,
+                $duration,
+                $verbose,
+                exists($expFailureTC),
+                (),
+                'Test case marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt')
+     else
       feedback:fail($case,
                     $result,
                     $xqxqQuery,
@@ -934,24 +975,24 @@ declare %private %ann:sequential function driver:run-test-case(
                     (),
                     ())
   }
-  }
-  catch *
-  {
-    feedback:fail($case,
-                  eval:error((),
-                             $case/fots:result/*,
-                             $err:code,
-                             $err:description,
-                             $testSetBaseURI),
-                  "fots-driver.xq:driver:test catch",
-                  $testSetName,
-                  $env,
-                  xs:dayTimeDuration("PT0S"),
-                  $verbose,
-                  exists($expFailureTC),
-                  (),
-                  ())
-  }
+}
+catch *
+{
+  feedback:fail($case,
+                eval:error((),
+                           $case/fots:result/*,
+                           $err:code,
+                           $err:description,
+                           $testSetBaseURI),
+                "fots-driver.xq:driver:test catch",
+                $testSetName,
+                $env,
+                xs:dayTimeDuration("PT0S"),
+                $verbose,
+                exists($expFailureTC),
+                (),
+                ())
+}
 };
 
 
@@ -995,12 +1036,12 @@ declare %private function driver:create-XQXQ-query(
     (
     "",
     "import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';",
-    
-    if ($needsDTDValidation) 
-    then ("import module namespace zorba-xml = 'http://www.zorba-xquery.com/modules/xml#2.1';",
-          "import schema namespace opt       = 'http://www.zorba-xquery.com/modules/xml-options';")
+   
+    if ($needsDTDValidation) then
+      ("import module namespace zorba-xml = 'http://www.zorba-xquery.com/modules/xml#2.1';",
+       "import schema namespace opt       = 'http://www.zorba-xquery.com/modules/xml-options';")
     else (),
-    
+   
     if (exists($resolver))
     then "declare namespace resolver = 'http://www.zorba-xquery.com/modules/xqxq/url-resolver';"
     else (),

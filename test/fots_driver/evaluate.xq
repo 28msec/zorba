@@ -49,9 +49,6 @@ declare namespace fots =
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
-(:declare option op:disable "f:trace";:)
 
 (:~
  : Checks if the result matches the assertions.
@@ -291,10 +288,10 @@ declare %private %ann:sequential function eval:assert(
   $expResult as element()
 ) as xs:string?
 {
-  try 
+  try
   {
   {
-    variable $queryText := 
+    variable $queryText :=
       concat("xquery version '3.0';",
              "declare variable $result external; ",
              xs:string($expResult));
@@ -306,7 +303,7 @@ declare %private %ann:sequential function eval:assert(
                                                    $result);
 
     variable $queryResult := xqxq:evaluate($queryKey);
-  
+ 
    if ($queryResult)
    then ()
    else concat("Assertion ", $expResult, " failed.")
@@ -408,7 +405,7 @@ declare %private %ann:sequential function eval:assert-eq(
                   else $expResult,
                   ")"));
     variable  $queryKey := xqxq:prepare-main-module($queryText);
-   
+  
     xqxq:bind-variable($queryKey,
                       xs:QName('x'),
                       $result);
@@ -525,7 +522,7 @@ declare %private %ann:sequential function eval:assert-serialization-error(
   $result    as item()*,
   $expResult as element(),
   $baseURI   as xs:anyURI
-  
+ 
 ) as xs:string?
 {
   try {
