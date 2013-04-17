@@ -115,9 +115,9 @@ class XQueryException : public ZorbaException
  private:
   XQueryException();
  public:
-  virtual unsigned int 	getColumnBegin () const;
-  virtual unsigned int 	getLineBegin () const;
-  virtual std::string 	getQueryURI () const;
+  virtual unsigned int  getColumnBegin () const;
+  virtual unsigned int  getLineBegin () const;
+  virtual std::string   getQueryURI () const;
 };
 
 /* vim:set et sw=2 ts=2: */

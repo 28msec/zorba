@@ -1,4 +1,4 @@
-# Copyright 2006-2011 The FLWOR Foundation.
+# Copyright 2006-2012 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,38 +12,41 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-sys.path.insert(0, '@pythonPath@')
-import zorba_api
+require '@rubyPath@/zorba_api'
 
-class MyDiagnosticHandler(zorba_api.DiagnosticHandler): 
-  def error(self, *args):
-    print "Error args: ", args
+def test(zorba, query)
+  begin
+    xquery = zorba.compileQuery(query)
+    print xquery.execute()
+    print "Success"
+  rescue => e
+    print "Caught error: " + e.message
+  ensure
+    xquery.destroy()
+  end
+end
 
-def test(zorba):
-  #Read and write result
-  print 'Executing: compilerHints.xq'
-  f = open('compilerHints.xq', 'r')
-  lines = f.read()
-  f.close()
-  diagnosticHandler = MyDiagnosticHandler()
-  compilerHints = zorba_api.CompilerHints()
-  compilerHints.setOptimizationLevel(1)
-  xquery = zorba.compileQuery(lines, compilerHints, diagnosticHandler)
-  
-  result = xquery.execute()
-  print result
-  return
+store = Zorba_api::InMemoryStore.getInstance()
+zorba = Zorba_api::Zorba.getInstance(store)
 
+print "Running: Compile query string using JSONiq \n"
+query = <<-eoquery
+ let $sats := jn:json-doc("@rubyPathFiles@/tests/satellites.json")('satellites') 
+ return { 
+   'visible' : [ 
+      for $sat in jn:keys($sats) 
+      where $sats($sat)('visible') 
+      return $sat 
+   ], 
+   'invisible' : [ 
+      for $sat in jn:keys($sats) 
+      where not($sats($sat)('visible')) 
+      return $sat 
+   ] 
+ } 
+eoquery
 
-store = zorba_api.InMemoryStore_getInstance()
-zorba = zorba_api.Zorba_getInstance(store)
-
-print "Running: CompileQuery string + Dignostinc handler + CompilerHint - with optimization 1"
-test(zorba)
-print "Success"
-
+test(zorba, query)
 
 zorba.shutdown()
-zorba_api.InMemoryStore_shutdown(store)
-
+Zorba_api::InMemoryStore.shutdown(store)

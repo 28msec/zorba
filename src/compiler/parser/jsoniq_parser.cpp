@@ -30,6 +30,7 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+#include "stdafx.h"
 // Take the name prefix into account.
 #define yylex   zorbalex
 

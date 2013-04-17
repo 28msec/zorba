@@ -1,6 +1,6 @@
 <?
 /*
- * Copyright 2006-2012 The FLWOR Foundation.
+ * Copyright 2006-2013 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,32 +15,43 @@
  * limitations under the License.
  */
 
-require '@phpPath@/Zorba/zorba_api_wrapper.php';
+require 'zorba_api_wrapper.php';
 
-class MyDiagnosticHandler(DiagnosticHandler handler) {
-  funtion error(self, *args) {
-    print "Error args: ", args;
+class MyDiagnosticHandler extends DiagnosticHandler {
+  public function error($args) {
+    print "Error caught in DiagnosticHandler: " . $args->getDescription() . "\n";
   }
 }
 
 function test(Zorba $aZorba)
 {
-  diagnosticHandler = MyDiagnosticHandler()
+  $diagnosticHandler = new MyDiagnosticHandler();
   try {
-    xquery = zorba.compileQuery("1 div 0", diagnosticHandler);
-    print xquery.execute()
-  } catch (Exception e) {
-    print "Caught error: ";
+    $itemFactory = $aZorba->getItemFactory();
+    print "Creating JSON Item null:  ". $itemFactory->createJSONNull()->serialize() . "\n";
+    print "Creating JSON Item number:  ". $itemFactory->createJSONNumber("5")->serialize() . "\n";
+    $sv = new StringVector(4);
+    $sv->set(0, "Hello");
+    $sv->set(1, "Zorba");
+    $sv->set(2, "Hello");
+    $sv->set(3, "Zorba");
+    print "Creating JSON Item array:  ". $itemFactory->createJSONArray($sv)->serialize() . "\n";
+    print "Success";
+  } catch (ZorbaException $e) {
+    print "Caught unexpected Zorba error: " . $e->getDescription() . "\n" ;
+    exit();
+  } catch (Exception $e) {
+    print "Caught error: " . $e . "\n";
+    exit();
   }
-  return
+  return;
 }
 
 $store = InMemoryStore::getInstance();
 $zorba = Zorba::getInstance($store);
 
-print "Running: Compile query string using Diagnostic Handler"
+print "Running: Compile query string using Diagnostic Handler\n";
 test($zorba);
-print "Success";
 
 $zorba->shutdown();
 InMemoryStore::shutdown($store);
