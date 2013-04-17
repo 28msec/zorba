@@ -358,19 +358,12 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
       newArgs.push_back((*ite)->clone(udf, subst));
     }
     
-    expr* newDotVar = NULL;
-    if (e->theDotVar)
-    {
-      newDotVar = e->theDotVar->clone(udf, subst);
-    }
-
     newExpr = theCCB->theEM->
     create_dynamic_function_invocation_expr(theSctx,
                                             udf,
                                             theLoc,
                                             e->theExpr->clone(udf, subst),
-                                            newArgs,
-                                            newDotVar);
+                                            newArgs);
     break;
   }
   case argument_placeholder_expr_kind:
@@ -389,7 +382,6 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                               e->theFunctionItemInfo->theFunction,
                               e->theFunctionItemInfo->theArity,
                               e->is_inline(),
-                              e->needs_context_item(),
                               e->is_coercion());
 
     std::vector<expr*>::const_iterator varIter = 
