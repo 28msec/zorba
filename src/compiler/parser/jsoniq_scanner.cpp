@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #line 2 "jsoniq_scanner.yy.cpp"
 
-//#line 4 "jsoniq_scanner.yy.cpp"
+#line 4 "jsoniq_scanner.yy.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -6257,7 +6257,7 @@ int yyFlexLexer::LexerInput( char* buf, int max_size )
 	if ( yyin->bad() )
 		return -1;
 	else
-		return static_cast<int>(yyin->gcount());
+		return yyin->gcount();
 #endif
 }
 

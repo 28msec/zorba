@@ -208,12 +208,12 @@ namespace zorba {
               if (*++yyp != '\\')
                 goto do_not_strip_quotes;
               /* Fall through.  */
-            case '"':
-              return yyr;
             default:
               yyr += *yyp;
               break;
 
+            case '"':
+              return yyr;
             }
       do_not_strip_quotes: ;
       }
@@ -248,13 +248,11 @@ namespace zorba {
   {
     YYUSE (yylocationp);
     YYUSE (yyvaluep);
-    /*  useless
     switch (yytype)
       {
          default:
 	  break;
       }
-    */
   }
 
 
