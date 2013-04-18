@@ -226,7 +226,16 @@ XQueryErrorCode XQST0111( "XQST0111" );
 XQueryErrorCode XQST0114( "XQST0114" );
 
 
+XQueryErrorCode XQST0120( "XQST0120" );
+
+
 XQueryErrorCode XQST0123( "XQST0123" );
+
+
+XQueryErrorCode XQST0126( "XQST0126" );
+
+
+XQueryErrorCode XQST0128( "XQST0128" );
 
 
 XQueryErrorCode XPDY0002( "XPDY0002" );

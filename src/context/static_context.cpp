@@ -3524,12 +3524,57 @@ void static_context::bind_option(
   store::Item* qname2 = option.theName.getp();
 
   zstring lNamespace = qname2->getNamespace();
+  zstring lLocalName = qname2->getLocalName();
 
+  // If option namespace is the XQuery namespace.
+  if ( lNamespace == XQUERY_NS)
+  {
+    store::Item_t lFeatureName =
+        parse_and_expand_qname(value, XQUERY_NS, loc);
+    zstring lFeatureNamespace = lFeatureName->getNamespace();
+    zstring lFeatureLocalName = lFeatureName->getLocalName();
+    if (lFeatureNamespace != XQUERY_NS)
+    {
+      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(value));
+    }
+    if (lLocalName == "require-feature")
+    {
+      if (lFeatureLocalName == "static-typing")
+      {
+        RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS(value));
+      }
+      if (lFeatureLocalName == "all-optional-features")
+      {
+        RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS("static-typing"));
+      }
+      if (lFeatureLocalName == "all-extensions")
+      {
+        RAISE_ERROR(err::XQST0126, loc, ERROR_PARAMS(value));
+      }
+      if (not(lFeatureLocalName == "schema-aware" ||
+              lFeatureLocalName == "module" ||
+              lFeatureLocalName == "higher-order-function"))
+      {
+        RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(value));
+      }
+    } else if (lLocalName == "prohibit-feature")
+    {
+      if (lFeatureLocalName == "schema-aware" ||
+          lFeatureLocalName == "module" ||
+          lFeatureLocalName == "higher-order-function")
+      {
+        RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS(value));
+      }
+      if (lFeatureLocalName == "all-optional-features")
+      {
+        RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("schema-aware, higher-order-function, module"));
+      }
+    }
+  }
+  
   // If option namespace starts with zorba options namespace
   if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 )
   {
-    zstring lLocalName = qname2->getLocalName();
-
     if (lNamespace == ZORBA_OPTION_FEATURE_NS &&
         (lLocalName == "enable" || lLocalName == "disable"))
     {
