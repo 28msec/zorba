@@ -20,6 +20,7 @@
 #include <vector>
 
 #include <zorba/config.h>
+#include "util/stl_util.h"
 #include "util/unordered_map.h"
 
 #include "diagnostics/assert.h"
@@ -208,36 +209,11 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  class ConstCharStarHash
-  {
-  public:
-    typedef size_t result_type;
-    size_t operator()(const char* a) const
-    {
-      size_t hash = 5381;
-      int c;
-
-      while ((c = *a++))
-        hash = ((hash << 5) + hash) + c;
-
-      return hash;
-    }
-  };
-
-  class ConstCharStarComparator
-  {
-  public:
-    bool operator()(const char* a, const char* b) const
-    {
-      return strcmp(a, b) == 0;
-    }
-  };
-
   typedef std::unordered_map<
     const char*,
     csize,
-    ConstCharStarHash,
-    ConstCharStarComparator> Keys;
+    ztd::hash<char const*>,
+    ztd::equal_to<char const*> > Keys;
 
   typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
