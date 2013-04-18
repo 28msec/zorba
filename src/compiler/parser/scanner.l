@@ -16,9 +16,15 @@
 
   /*______________________________________________________________________
    *                                                                      *
-   *  Scanner options                                                     *
+   *  Attention: do not #include any files in scanner.l. Use the          *
+   *  scanner_l_includes.h file.                                          *
    *______________________________________________________________________*/
 
+
+  /*______________________________________________________________________
+   *                                                                      *
+   *  Scanner options                                                     *
+   *______________________________________________________________________*/
 
 %option noyywrap
 %option batch
@@ -33,8 +39,8 @@
 #else
 %option prefix="ZorbaJSONiq"
 %option outfile="jsoniq_scanner.yy.cpp"
-
 #endif
+
 
   /*_____________________________________________________________________
    |
@@ -199,6 +205,10 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    |  JSONiq C++ style comments
    |______________________________________________________________________*/
 
+#ifdef JSONIQ_SCANNER
+C_SinglelineComment                 "//"[^\n]*"\n"
+C_MultilineComment                  "/*"([^*]|("*"+[^*/]))*("*"+)"/"
+#endif
 
 
   /*______________________________________________________________________
@@ -465,6 +475,12 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "structured-item" { return token::STRUCTURED_ITEM; }
 "array" {  return token::ARRAY; }
 "object" {  return token::OBJECT; }
+
+  /* new JSONiq grammar -- C++ style comments */
+#ifdef JSONIQ_SCANNER
+{C_SinglelineComment}    { /* eat up comments */ }
+{C_MultilineComment}     { /* eat up comments */ }
+#endif    
 
 
     /*______________________________________________________________________
