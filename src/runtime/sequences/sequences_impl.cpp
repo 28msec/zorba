@@ -485,9 +485,10 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   startPosDouble = startPosItem->getDoubleValue();
 
   //If starting position is set to +INF return empty sequence
-  if (startPosDouble.isPosInf())
+  if (startPosDouble.isPosInf() || startPosDouble.isNaN())
     goto done;
 
+  //Removed startpos - 1, since if a -INF is present it overflows it to a positive number
   startPos =
     static_cast<xs_long>(startPosDouble.round().getNumber());
 
@@ -511,7 +512,7 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   if (startPos < 1)
   {
     if (theChildren.size() >= 3)
-      state->theRemaining += startPos;
+      state->theRemaining += startPos - 1;
 
     startPos = 0;
   }
