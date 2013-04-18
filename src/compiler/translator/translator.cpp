@@ -3851,6 +3851,8 @@ void* begin_visit(const VFO_DeclList& v)
     bind_fn(f, numParams, loc);
   }
 
+  theSctx->check_xquery_feature_options(loc);
+
   return no_state;
 }
 

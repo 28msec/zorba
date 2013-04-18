@@ -3505,6 +3505,102 @@ void static_context::get_collations(std::vector<std::string>& collations) const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::check_xquery_feature_options(const QueryLoc& loc)
+{
+  if (theOptionMap == NULL)
+  {
+    return;
+  }
+  store::Item_t lRequireFeatureQName =
+      parse_and_expand_qname("require-feature", XQUERY_NS, loc);
+  store::Item_t lProhibitFeatureQName =
+      parse_and_expand_qname("prohibit-feature", XQUERY_NS, loc);
+
+  zstring lRequiredFeatureList;
+  zstring lProhibitedFeatureList;
+
+  OptionMap::iterator lIt = theOptionMap->find(lRequireFeatureQName.getp());
+  if (lIt != theOptionMap->end())
+  {
+    lRequiredFeatureList = lIt.getValue().theValue;
+  }
+  lIt = theOptionMap->find(lProhibitFeatureQName.getp());
+  if (lIt != theOptionMap->end())
+  {
+    lProhibitedFeatureList = lIt.getValue().theValue;
+  }
+  
+  std::cout << "lRequiredFeatureList: " << lRequiredFeatureList << std::endl;
+  std::cout << "lProhibitedFeatureList: " << lProhibitedFeatureList << std::endl;
+  
+  vector<zstring> lProhibitedFeatures;
+  size_t lPositionLeft = 0;
+  size_t lPositionRight = lProhibitedFeatureList.find(" ", lPositionLeft);
+  while (lPositionRight != zstring::npos)
+  {
+    zstring lFeature = lProhibitedFeatureList.substr(
+        lPositionLeft,
+        lPositionRight - lPositionLeft);
+    store::Item_t lFeatureQName = parse_and_expand_qname(
+        lFeature,
+        XQUERY_NS,
+        loc);
+    if (lFeatureQName->getNamespace() == XQUERY_NS)
+    {
+      lProhibitedFeatures.push_back(lFeatureQName->getLocalName());
+    }
+    lPositionLeft = lPositionRight + 1;
+    lPositionRight = lProhibitedFeatureList.find(" ", lPositionLeft);
+  }
+  
+  vector<zstring> lRequiredFeatures;
+  lPositionRight = lRequiredFeatureList.find(" ", lPositionLeft);
+  while (lPositionRight != zstring::npos)
+  {
+    zstring lFeature = lRequiredFeatureList.substr(
+        lPositionLeft,
+        lPositionRight - lPositionLeft);
+    store::Item_t lFeatureQName = parse_and_expand_qname(
+        lFeature,
+        XQUERY_NS,
+        loc);
+    if (lFeatureQName->getNamespace() != XQUERY_NS)
+    {
+      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
+    }
+    lRequiredFeatures.push_back(lFeatureQName->getLocalName());
+    lPositionLeft = lPositionRight + 1;
+    lPositionRight = lRequiredFeatureList.find(" ", lPositionLeft);
+  }
+  
+  if (std::find(lRequiredFeatures.begin(),
+                lRequiredFeatures.end(),
+                "static-typing") != lRequiredFeatures.end())
+  {
+    RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS("static-typing"));
+  }
+  if (std::find(lProhibitedFeatures.begin(),
+                lProhibitedFeatures.end(),
+                "schema-aware") != lProhibitedFeatures.end())
+  {
+    RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("schema-aware"));
+  }
+  if (std::find(lProhibitedFeatures.begin(),
+                lProhibitedFeatures.end(),
+                "higher-order-function") != lProhibitedFeatures.end())
+  {
+    RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("higher-order-function"));
+  }
+  if (std::find(lProhibitedFeatures.begin(),
+                lProhibitedFeatures.end(),
+                "module") != lProhibitedFeatures.end())
+  {
+    RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("module"));
+  }
+}
 
 /***************************************************************************//**
 
@@ -3563,7 +3659,8 @@ void static_context::bind_option(
       }
       if (not(lFeatureLocalName == "schema-aware" ||
               lFeatureLocalName == "module" ||
-              lFeatureLocalName == "higher-order-function"))
+              lFeatureLocalName == "higher-order-function" ||
+              lFeatureLocalName == "static-typing"))
       {
         RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(value));
       }
@@ -3602,7 +3699,7 @@ void static_context::bind_option(
     if (lIt != theOptionMap->end())
     {
       std::ostringstream lOss;
-      lOss << lIt.getValue().theValue << ";" << option.theValue;
+      lOss << lIt.getValue().theValue << " " << option.theValue;
       option.theValue = lOss.str();
     }
   }
