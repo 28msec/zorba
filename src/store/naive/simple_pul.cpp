@@ -3587,11 +3587,6 @@ void CollectionPul::applyUpdates()
     // Compute the after-delta for each incrementally maintained index.
     computeIndexAfterDeltas();
   }
-  catch (const std::exception& e) 
-  {
-    //std::cerr << "Exception thrown during pul::applyUpdates: " << e.what() << std::endl;
-    throw;
-  }
   catch (...)
   {
     //std::cerr << "Exception thrown during pul::applyUpdates " << std::endl;

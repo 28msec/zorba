@@ -87,7 +87,7 @@ IF (Java_JAVAC_EXECUTABLE)
     INCLUDE (UseJava)
     SET(CMAKE_JAVA_INCLUDE_PATH  ${CMAKE_JAVA_INCLUDE_PATH} ${ZORBA_JAVA_JAR} "${CMAKE_CURRENT_BINARY_DIR}/tck/xqjapi.jar") # JAVA_SWIG_FILES is predefined in Java binding
     ADD_JAR(zorba_xqj ${XQJ_SWIG_FILES})
-    ADD_DEPENDENCIES(zorba_xqj lib_zorba_java_api)
+    ADD_DEPENDENCIES(zorba_xqj zorba_api_java)
     SET_TARGET_PROPERTIES (zorba_xqj PROPERTIES FOLDER "APIs" OUTPUT_NAME "zorba_xqj" PROJECT_LABEL "XQJ")
   ELSE (${RESULT} GREATER -1)
     IF (WIN32)
@@ -100,7 +100,7 @@ IF (Java_JAVAC_EXECUTABLE)
     MESSAGE(STATUS "XQJ CLASSPATH " ${XQJ_CLASSPATH})
     ADD_LIBRARY(XQJ dummy.c)
     SET_TARGET_PROPERTIES (XQJ PROPERTIES FOLDER "APIs" OUTPUT_NAME "zorba_xqj" PROJECT_LABEL "XQJ")
-    ADD_DEPENDENCIES(XQJ lib_zorba_java_api)
+    ADD_DEPENDENCIES(XQJ zorba_api_java)
     ADD_CUSTOM_COMMAND(TARGET XQJ
                      POST_BUILD
                      COMMAND cmake -E echo "Compiling XQJ files..."

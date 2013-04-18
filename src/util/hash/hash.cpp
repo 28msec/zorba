@@ -31,15 +31,15 @@ namespace ztd {
 ///////////////////////////////////////////////////////////////////////////////
 
 size_t hash_bytes( void const *p, size_t len, size_t result ) {
-  unsigned char const *c = reinterpret_cast<unsigned char const*>( p );
-  unsigned char const *const end = c + len;
+  unsigned char const *u = reinterpret_cast<unsigned char const*>( p );
+  unsigned char const *const end = u + len;
 #ifdef ZORBA_HASH_FN_FNV_1a
   //
   // FNV-1a (Fowler/Noll/Vo) hashing algorithm.
   //
-  while ( c < end ) {
+  while ( u < end ) {
     result *= Hash_Prime;
-    result ^= *c++;
+    result ^= *u++;
   }
 #endif /* ZORBA_HASH_FN_FNV_1a */
 #ifdef ZORBA_HASH_FN_PJW
@@ -61,8 +61,32 @@ size_t hash_bytes( void const *p, size_t len, size_t result ) {
   static size_t const OneEighth     = BitsInSizeT / 8;
   static size_t const HighBits      = ~( (size_t)(~0ul) >> OneEighth );
 
-  while ( c < end ) {
-    result = (result << OneEighth) + *c++;
+  while ( u < end ) {
+    result = (result << OneEighth) + *u++;
+    if ( size_t temp = result & HighBits )
+      result = (result ^ (temp >> ThreeFourths)) & ~HighBits;
+  }
+#endif /* ZORBA_HASH_FN_PJW */
+  return result;
+}
+
+size_t hash_c_str( char const *s, size_t result ) {
+  unsigned char const *u = reinterpret_cast<unsigned char const*>( s );
+#ifdef ZORBA_HASH_FN_FNV_1a
+  while ( *u ) {
+    result *= Hash_Prime;
+    result ^= *u++;
+  }
+#endif /* ZORBA_HASH_FN_FNV_1a */
+#ifdef ZORBA_HASH_FN_PJW
+  static size_t const BitsInSizeT   = sizeof( size_t ) *
+                                      numeric_limits<unsigned char>::digits;
+  static size_t const ThreeFourths  = BitsInSizeT * 3 / 4;
+  static size_t const OneEighth     = BitsInSizeT / 8;
+  static size_t const HighBits      = ~( (size_t)(~0ul) >> OneEighth );
+
+  while ( *u ) {
+    result = (result << OneEighth) + *u++;
     if ( size_t temp = result & HighBits )
       result = (result ^ (temp >> ThreeFourths)) & ~HighBits;
   }

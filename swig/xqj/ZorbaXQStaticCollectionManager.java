@@ -68,7 +68,7 @@ public class ZorbaXQStaticCollectionManager {
 
   /** \brief This function creates the collection with the given name.
    * 
-   * @param aName	The name of the collection to create.
+   * @param aName The name of the collection to create.
    * @throw XQException- if a collection with the given name already exists.
    */
     public void createCollection(XQItem aName ) throws XQException {
@@ -78,7 +78,7 @@ public class ZorbaXQStaticCollectionManager {
 
   /** \brief This function removes the collection with the given name.
    * 
-   * @param aName	- The name of the collection to delete.
+   * @param aName - The name of the collection to delete.
    * @throw XQException - if the collection does not exist.
    */
     public void deleteCollection(XQItem aName ) throws XQException {
@@ -88,7 +88,7 @@ public class ZorbaXQStaticCollectionManager {
 
   /** \brief Returns a instance of the Collection class which can be used to modify and retrieve the contents of the collection identified by the given name.
    * 
-   * @param aName	- The name of the collection to retrieve.
+   * @param aName - The name of the collection to retrieve.
    * @return ZorbaXQCollection - The collection if available.
    * @throw XQException - if the collection does not exist.
    */
