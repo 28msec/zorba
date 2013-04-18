@@ -1589,7 +1589,7 @@ expr* wrap_in_coercion(
 
     var_expr* argVar = create_temp_var(loc, var_expr::arg_var);
     argVar->set_param_pos(i);
-    argVar->set_type(paramType);
+    //argVar->set_type(paramType);
     argVars.push_back(argVar);
 
     expr* arg = CREATE(wrapper)(theRootSctx, theUDF, loc, argVar);
