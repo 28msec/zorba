@@ -577,6 +577,15 @@ next:
     //
     ascii::replace_all( *icu_re, "\\p{Is", 5, "\\p{In", 5 );
     ascii::replace_all( *icu_re, "\\P{Is", 5, "\\P{In", 5 );
+
+    //
+    // Apparently, ICU doesn't recognize PrivateUse, so change it to Co.
+    //
+    // Note that the "16" and "6" below are correct since "\\" represents a
+    // single '\'.
+    //
+    ascii::replace_all( *icu_re, "\\p{InPrivateUse}", 16, "\\p{Co}", 6 );
+    ascii::replace_all( *icu_re, "\\P{InPrivateUse}", 16, "\\P{Co}", 6 );
   } // q_flag
 
 #ifdef DEBUG_CONVERT_REGEX
