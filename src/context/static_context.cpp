@@ -3545,7 +3545,17 @@ void static_context::bind_option(
       }
       if (lFeatureLocalName == "all-optional-features")
       {
-        RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS("static-typing"));
+        store::Item_t lProhibitFeatureQName =
+            parse_and_expand_qname("prohibit-feature", XQUERY_NS, loc);
+        OptionMap::iterator lIt = theOptionMap->find(lProhibitFeatureQName.getp());
+        if (lIt == theOptionMap->end())
+        {
+          RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS("static-typing"));
+        }
+        if (lIt.getValue().theValue.find("static-typing") == zstring::npos)
+        {
+          RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS("static-typing"));
+        }
       }
       if (lFeatureLocalName == "all-extensions")
       {
@@ -3567,8 +3577,33 @@ void static_context::bind_option(
       }
       if (lFeatureLocalName == "all-optional-features")
       {
-        RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("schema-aware, higher-order-function, module"));
+        store::Item_t lRequireFeatureQName =
+            parse_and_expand_qname("require-feature", XQUERY_NS, loc);
+        OptionMap::iterator lIt = theOptionMap->find(lRequireFeatureQName.getp());
+        if (lIt == theOptionMap->end())
+        {
+          RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("schema-aware, higher-order-function, module"));
+        }
+        bool isSchemaAwareRequired =
+            lIt.getValue().theValue.find("schema-aware") != zstring::npos;
+        bool isHigherOrderFunctionRequired =
+            lIt.getValue().theValue.find("higher-order-function") != zstring::npos;
+        bool isModuleRequired =
+            lIt.getValue().theValue.find("module") != zstring::npos;
+        if (!(isSchemaAwareRequired &&
+              isHigherOrderFunctionRequired &&
+              isModuleRequired))
+        {
+          RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("schema-aware, higher-order-function, module"));
+        }
       }
+    }
+    OptionMap::iterator lIt = theOptionMap->find(qname2);
+    if (lIt != theOptionMap->end())
+    {
+      std::ostringstream lOss;
+      lOss << lIt.getValue().theValue << ";" << option.theValue;
+      option.theValue = lOss.str();
     }
   }
   
