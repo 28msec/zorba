@@ -579,7 +579,7 @@ next:
     ascii::replace_all( *icu_re, "\\P{Is", 5, "\\P{In", 5 );
 
     //
-    // Apparently, ICU doesn't recognize PrivateUse, so change it to Co.
+    // Apparently, ICU doesn't recognize InPrivateUse, so change it to Co.
     //
     // Note that the "16" and "6" below are correct since "\\" represents a
     // single '\'.
