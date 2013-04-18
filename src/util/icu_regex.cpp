@@ -118,6 +118,8 @@ inline bool is_non_capturing_begin( zstring const &s,
   return ztd::peek_behind( s, &i ) == '?' && ztd::peek_behind( s, &i ) == '(';
 }
 
+//#define DEBUG_CONVERT_REGEX
+
 #define IS_CHAR_RANGE_BEGIN (in_char_class && is_char_range_begin( xq_re, i ))
 #define PEEK_C              ztd::peek( xq_re, i )
 
@@ -142,6 +144,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   int  in_char_class = 0;               // within [...]
   int  in_char_range = 0;               // within a-b within [...]
   int  is_first_char = 1;               // to check ^ placement
+  bool put_close_bracket = false;       // put another ] for char class
 
   bool in_backref = false;              // '\'[1-9][0-9]*
   unsigned backref_no = 0;              // 1-based
@@ -422,6 +425,13 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( in_char_class && !in_char_range ) {
             char const next_c = PEEK_C;
             if ( next_c == '[' ) {
+              if ( put_close_bracket ) {
+                //
+                // See the comment below for the '[' case.
+                //
+                *icu_re += ']';
+                put_close_bracket = false;
+              }
               //
               // ICU uses "--" to indicate range subtraction, e.g.,
               // XQuery [A-Z-[OI]] becomes ICU [A-Z--[OI]].
@@ -449,7 +459,24 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           else {
             if ( in_char_class && prev_c_cooked != '-' )
               goto unescaped_char;
-            ++in_char_class;
+            if ( !in_char_class++ && PEEK_C == '^' ) {
+              //
+              // XML Schema Part 2 F.1 [16]: For any positive character group
+              // or negative character group G, and any character class
+              // expression C, G-C is a valid character class subtraction,
+              // identifying the set of all characters in C(G) that are not
+              // also in C(C).
+              //
+              // Hence, in XQuery, [^abcd-[xy]] means "all characters except
+              // abcdxy", i.e., the ^ has a higher precedence than -.
+              //
+              // However, in ICU, the reverse is true.  To make ICU behave like
+              // XQuery, we have to wrap the negative character group in [],
+              // i.e., [[^abcd]-[xy]].
+              //
+              *icu_re += '[';
+              put_close_bracket = true;
+            }
             is_first_char = 2;
           }
           break;
@@ -464,6 +491,8 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           else {
             if ( !in_char_class )
               goto unbalanced_char;
+            if ( put_close_bracket )
+              *icu_re += ']';
             --in_char_class;
             in_char_range = 0;
           }
@@ -549,6 +578,11 @@ next:
     ascii::replace_all( *icu_re, "\\p{Is", 5, "\\p{In", 5 );
     ascii::replace_all( *icu_re, "\\P{Is", 5, "\\P{In", 5 );
   } // q_flag
+
+#ifdef DEBUG_CONVERT_REGEX
+  cout << "XQ : " << xq_re   << endl;
+  cout << "ICU: " << *icu_re << endl;
+#endif /* DEBUG_CONVERT_REGEX */
   return;
 
 not_single_char_esc:

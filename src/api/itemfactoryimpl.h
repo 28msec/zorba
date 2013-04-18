@@ -139,6 +139,14 @@ namespace zorba {
       createDateTime( const String& aDateTimeValue );
 
       virtual Item
+      createDateTimeStamp(short aYear, short aMonth, short aDay,
+                     short aHour, short aMinute, double aSecond,
+                     short aTimezone_hours);
+
+      virtual Item
+      createDateTimeStamp( const String& aDateTimeStampValue );
+
+      virtual Item
       createDouble ( double aValue );
 
       virtual Item
