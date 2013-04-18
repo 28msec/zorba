@@ -134,7 +134,7 @@ EXPECTED_FOTS_FAILURE (DISPUTED prod-AxisStep cbcl-childAxis-001 21620)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-AxisStep Axes115 21620)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-OrderByClause orderBy20 21619)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-OrderByClause orderBy21 21619)
-
+EXPECTED_FOTS_FAILURE (DISPUTED misc-CombinedErrorCodes XQST0085 21730)
 
 # Next three possibly unique to old RQ machine, but they need to be
 # marked for the RQ to pass.
@@ -253,7 +253,6 @@ EXPECTED_FOTS_FAILURE (fn-unparsed-text-lines fn-unparsed-text-lines-052 1123835
 EXPECTED_FOTS_FAILURE (fn-unparsed-text-lines fn-unparsed-text-lines-053 0)
 EXPECTED_FOTS_FAILURE (fn-unparsed-text-lines fn-unparsed-text-lines-054 0)
 EXPECTED_FOTS_FAILURE (math-acos math-acos-003 0)
-EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes XQST0085 0)
 EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes XQST0093a 0)
 EXPECTED_FOTS_FAILURE (misc-Serialization K2-Serialization-1 0)
 EXPECTED_FOTS_FAILURE (misc-Serialization K2-Serialization-2 0)
