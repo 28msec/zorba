@@ -153,8 +153,8 @@ IntegerLiteral        [0-9]+
    |
    |  String literal definitions
    |______________________________________________________________________*/
-NonQuotAnd                      [^""&]
-NonAposAnd                      [^''&]
+NonQuotAnd                      [^&{Quot}]
+NonAposAnd                      [^&{Apos}]
 #ifdef XQUERY_SCANNER
 StringLiteral                   ({Quote}({EscapeQuot}|{Ref}|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|{Ref}|{NonAposAnd})*{Apos})
 #else
