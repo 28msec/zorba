@@ -3514,14 +3514,14 @@ void static_context::check_xquery_feature_options(const QueryLoc& loc)
   {
     return;
   }
+  // Looking up feature options.
+  zstring lRequiredFeatureList;
+  zstring lProhibitedFeatureList;
+
   store::Item_t lRequireFeatureQName =
       parse_and_expand_qname("require-feature", XQUERY_NS, loc);
   store::Item_t lProhibitFeatureQName =
       parse_and_expand_qname("prohibit-feature", XQUERY_NS, loc);
-
-  zstring lRequiredFeatureList;
-  zstring lProhibitedFeatureList;
-
   OptionMap::iterator lIt = theOptionMap->find(lRequireFeatureQName.getp());
   if (lIt != theOptionMap->end())
   {
@@ -3532,32 +3532,11 @@ void static_context::check_xquery_feature_options(const QueryLoc& loc)
   {
     lProhibitedFeatureList = lIt.getValue().theValue;
   }
-  
-  std::cout << "lRequiredFeatureList: " << lRequiredFeatureList << std::endl;
-  std::cout << "lProhibitedFeatureList: " << lProhibitedFeatureList << std::endl;
-  
-  vector<zstring> lProhibitedFeatures;
-  size_t lPositionLeft = 0;
-  size_t lPositionRight = lProhibitedFeatureList.find(" ", lPositionLeft);
-  while (lPositionRight != zstring::npos)
-  {
-    zstring lFeature = lProhibitedFeatureList.substr(
-        lPositionLeft,
-        lPositionRight - lPositionLeft);
-    store::Item_t lFeatureQName = parse_and_expand_qname(
-        lFeature,
-        XQUERY_NS,
-        loc);
-    if (lFeatureQName->getNamespace() == XQUERY_NS)
-    {
-      lProhibitedFeatures.push_back(lFeatureQName->getLocalName());
-    }
-    lPositionLeft = lPositionRight + 1;
-    lPositionRight = lProhibitedFeatureList.find(" ", lPositionLeft);
-  }
-  
+
+  // Constructing feature vectors.
   vector<zstring> lRequiredFeatures;
-  lPositionRight = lRequiredFeatureList.find(" ", lPositionLeft);
+  size_t lPositionLeft = 0;
+  size_t lPositionRight = lRequiredFeatureList.find(" ", lPositionLeft);
   while (lPositionRight != zstring::npos)
   {
     zstring lFeature = lRequiredFeatureList.substr(
@@ -3575,30 +3554,166 @@ void static_context::check_xquery_feature_options(const QueryLoc& loc)
     lPositionLeft = lPositionRight + 1;
     lPositionRight = lRequiredFeatureList.find(" ", lPositionLeft);
   }
+  if (!lRequiredFeatureList.empty())
+  {
+    zstring lFeature = lRequiredFeatureList.substr(lPositionLeft);
+    store::Item_t lFeatureQName = parse_and_expand_qname(
+        lFeature,
+        XQUERY_NS,
+        loc);
+    if (lFeatureQName->getNamespace() != XQUERY_NS)
+    {
+      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
+    }
+    lRequiredFeatures.push_back(lFeatureQName->getLocalName());
+  }
+
+  vector<zstring> lProhibitedFeatures;
+  lPositionLeft = 0;
+  lPositionRight = lProhibitedFeatureList.find(" ", lPositionLeft);
+  while (lPositionRight != zstring::npos)
+  {
+    zstring lFeature = lProhibitedFeatureList.substr(
+        lPositionLeft,
+        lPositionRight - lPositionLeft);
+    store::Item_t lFeatureQName = parse_and_expand_qname(
+        lFeature,
+        XQUERY_NS,
+        loc);
+    if (lFeatureQName->getNamespace() == XQUERY_NS)
+    {
+      lProhibitedFeatures.push_back(lFeatureQName->getLocalName());
+    }
+    lPositionLeft = lPositionRight + 1;
+    lPositionRight = lProhibitedFeatureList.find(" ", lPositionLeft);
+  }
+  if (!lProhibitedFeatureList.empty())
+  {
+    zstring lFeature = lProhibitedFeatureList.substr(lPositionLeft);
+    store::Item_t lFeatureQName = parse_and_expand_qname(
+        lFeature,
+        XQUERY_NS,
+        loc);
+    if (lFeatureQName->getNamespace() == XQUERY_NS)
+    {
+      lProhibitedFeatures.push_back(lFeatureQName->getLocalName());
+    }
+  }
   
-  if (std::find(lRequiredFeatures.begin(),
-                lRequiredFeatures.end(),
-                "static-typing") != lRequiredFeatures.end())
+  // Going through feature flags.
+  bool lStaticTypingRequired = false;
+  bool lModuleRequired = false;
+  bool lHOFRequired = false;
+  bool lSchemaAwareRequired = false;
+  bool lAllExtensionsRequired = false;
+  bool lAllOptionalFeaturesRequired = false;
+  for (vector<zstring>::iterator it = lRequiredFeatures.begin();
+       it != lRequiredFeatures.end();
+       ++it)
+  {
+    std::cout << "lRequiredFeature: " << *it << std::endl;
+    if (*it == "static-typing")
+    {
+        lStaticTypingRequired = true;
+    } else if (*it == "module")
+    {
+        lModuleRequired = true;
+    } else if (*it == "higher-order-function")
+    {
+        lHOFRequired = true;
+    } else if (*it == "schema-aware")
+    {
+        lSchemaAwareRequired = true;
+    } else if (*it == "all-extensions")
+    {
+        lAllExtensionsRequired = true;
+    } else if (*it == "all-optional-features")
+    {
+        lAllOptionalFeaturesRequired = true;
+    } else
+    {
+        RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(*it));
+    }
+  }
+  
+  bool lStaticTypingProhibited = false;
+  bool lModuleProhibited = false;
+  bool lHOFProhibited = false;
+  bool lSchemaAwareProhibited = false;
+  bool lAllExtensionsProhibited = false;
+  bool lAllOptionalFeaturesProhibited = false;
+  for (vector<zstring>::iterator it = lProhibitedFeatures.begin();
+       it != lProhibitedFeatures.end();
+       ++it)
+  {
+    std::cout << "lProhibitedFeature: " << *it << std::endl;
+    if (*it == "static-typing")
+    {
+        lStaticTypingProhibited = true;
+    } else if (*it == "module")
+    {
+        lModuleProhibited = true;
+    } else if (*it == "higher-order-function")
+    {
+        lHOFProhibited = true;
+    } else if (*it == "schema-aware")
+    {
+        lSchemaAwareProhibited = true;
+    } else if (*it == "all-extensions")
+    {
+        lAllExtensionsProhibited = true;
+    } else if (*it == "all-optional-features")
+    {
+        lAllOptionalFeaturesProhibited = true;
+    }
+  }
+  // static-typing is not supported.
+  if (lStaticTypingRequired)
   {
     RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS("static-typing"));
   }
-  if (std::find(lProhibitedFeatures.begin(),
-                lProhibitedFeatures.end(),
-                "schema-aware") != lProhibitedFeatures.end())
+  // It is not possible to require all extensions.
+  if (lAllExtensionsRequired)
+  {
+    RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS("all-extensions"));
+  }
+  // All optional features can only be required if static-typing is prohibited.
+  if (lAllOptionalFeaturesRequired)
+  {
+    if (!lStaticTypingProhibited)
+    {
+      RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS("static-typing"));
+    }
+  }
+  // Supported features cannot be prohibited.
+  if (lSchemaAwareProhibited)
   {
     RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("schema-aware"));
   }
-  if (std::find(lProhibitedFeatures.begin(),
-                lProhibitedFeatures.end(),
-                "higher-order-function") != lProhibitedFeatures.end())
+  if (lHOFProhibited)
   {
     RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("higher-order-function"));
   }
-  if (std::find(lProhibitedFeatures.begin(),
-                lProhibitedFeatures.end(),
-                "module") != lProhibitedFeatures.end())
+  if (lModuleProhibited)
   {
     RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("module"));
+  }
+  // All optional features can only be prohibited if all three that are supported
+  // are required.
+  if (lAllOptionalFeaturesProhibited)
+  {
+    if (!lModuleRequired)
+    {
+      RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("module"));
+    }
+    if (!lHOFRequired)
+    {
+      RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("higher-order-function"));
+    }
+    if (!lSchemaAwareRequired)
+    {
+      RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("schema-aware"));
+    }
   }
 }
 
@@ -3625,76 +3740,6 @@ void static_context::bind_option(
   // If option namespace is the XQuery namespace.
   if ( lNamespace == XQUERY_NS)
   {
-    store::Item_t lFeatureName =
-        parse_and_expand_qname(value, XQUERY_NS, loc);
-    zstring lFeatureNamespace = lFeatureName->getNamespace();
-    zstring lFeatureLocalName = lFeatureName->getLocalName();
-    if (lFeatureNamespace != XQUERY_NS)
-    {
-      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(value));
-    }
-    if (lLocalName == "require-feature")
-    {
-      if (lFeatureLocalName == "static-typing")
-      {
-        RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS(value));
-      }
-      if (lFeatureLocalName == "all-optional-features")
-      {
-        store::Item_t lProhibitFeatureQName =
-            parse_and_expand_qname("prohibit-feature", XQUERY_NS, loc);
-        OptionMap::iterator lIt = theOptionMap->find(lProhibitFeatureQName.getp());
-        if (lIt == theOptionMap->end())
-        {
-          RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS("static-typing"));
-        }
-        if (lIt.getValue().theValue.find("static-typing") == zstring::npos)
-        {
-          RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS("static-typing"));
-        }
-      }
-      if (lFeatureLocalName == "all-extensions")
-      {
-        RAISE_ERROR(err::XQST0126, loc, ERROR_PARAMS(value));
-      }
-      if (not(lFeatureLocalName == "schema-aware" ||
-              lFeatureLocalName == "module" ||
-              lFeatureLocalName == "higher-order-function" ||
-              lFeatureLocalName == "static-typing"))
-      {
-        RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(value));
-      }
-    } else if (lLocalName == "prohibit-feature")
-    {
-      if (lFeatureLocalName == "schema-aware" ||
-          lFeatureLocalName == "module" ||
-          lFeatureLocalName == "higher-order-function")
-      {
-        RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS(value));
-      }
-      if (lFeatureLocalName == "all-optional-features")
-      {
-        store::Item_t lRequireFeatureQName =
-            parse_and_expand_qname("require-feature", XQUERY_NS, loc);
-        OptionMap::iterator lIt = theOptionMap->find(lRequireFeatureQName.getp());
-        if (lIt == theOptionMap->end())
-        {
-          RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("schema-aware, higher-order-function, module"));
-        }
-        bool isSchemaAwareRequired =
-            lIt.getValue().theValue.find("schema-aware") != zstring::npos;
-        bool isHigherOrderFunctionRequired =
-            lIt.getValue().theValue.find("higher-order-function") != zstring::npos;
-        bool isModuleRequired =
-            lIt.getValue().theValue.find("module") != zstring::npos;
-        if (!(isSchemaAwareRequired &&
-              isHigherOrderFunctionRequired &&
-              isModuleRequired))
-        {
-          RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS("schema-aware, higher-order-function, module"));
-        }
-      }
-    }
     OptionMap::iterator lIt = theOptionMap->find(qname2);
     if (lIt != theOptionMap->end())
     {
