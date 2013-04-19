@@ -57,12 +57,20 @@ using namespace std;
 #define bs_i "\\p{L}_:"                 /* \i equivalent contents */
 #define bs_W "\\p{P}\\p{Z}\\p{C}"       /* \W equivalent contents */
 
+/**
+ * Decremements an integer, but no lower that a certain limit (usually zero).
+ *
+ * @tparam IntegralType The integral type.
+ * @param i A pointer to the integer to decrement.
+ * @param limit The limit not to go lower than.
+ * @return Returns \c true only when the limit has been reached for the first
+ * time.
+ */
 template<typename IntegralType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value,
-                        void>::type
+                        bool>::type
 dec_limit( IntegralType *i, IntegralType limit = 0 ) {
-  if ( *i > limit )
-    --*i;
+  return *i > limit && --*i == limit;
 }
 
 static unsigned digits( long n ) {
@@ -108,13 +116,21 @@ static icu_flags_type convert_xquery_flags( char const *xq_flags ) {
   return icu_flags;
 }
 
+/**
+ * Checks whether the given iterator is positioned at the first character in a
+ * character range, e.g, the 'a' in "[a-z]" (assuming we're already within a
+ * character class [...]).
+ *
+ * @param s The string on which \a i is iterating.
+ * @param i The iterator marking the position of the character to check.
+ */
 inline bool is_char_range_begin( zstring const &s,
-                                 zstring::const_iterator i ) {
+  /* intentionally not const& */ zstring::const_iterator i ) {
   return ztd::peek( s, &i ) == '-' && ztd::peek( s, &i ) != '[';
 }
 
 inline bool is_non_capturing_begin( zstring const &s,
-                                    zstring::const_iterator i ) {
+  /* intentionally not const& */    zstring::const_iterator i ) {
   return ztd::peek_behind( s, &i ) == '?' && ztd::peek_behind( s, &i ) == '(';
 }
 
@@ -138,6 +154,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   char c_cooked;                        // current cooked XQuery char
   char prev_c_cooked = 0;               // previous c_cooked
   char char_range_begin_cooked = 0;     // the 'a' in [a-b]
+  bool char_range_possible = true;      // handles case like [a-h-o-z]
 
   bool got_backslash = false;
   int  got_quantifier = 0;
@@ -437,11 +454,15 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
               // XQuery [A-Z-[OI]] becomes ICU [A-Z--[OI]].
               //
               *icu_re += '-';
-            } else if ( prev_c_cooked != '[' && next_c != ']' ) {
+            } else if ( char_range_possible &&
+                        prev_c_cooked != '[' && next_c != ']' ) {
               //
               // The '-' is neither the first or last character within a
               // character range (i.e., a literal '-') so therefore it's
-              // indicating a character range.
+              // indicating a character range -- except if we just completed a
+              // character range.  For example, in "[a-h-o-z]", there are two
+              // ranges: a-h and o-z.  The '-' between the 'h' and the 'o' is a
+              // literal '-' and NOT a range h-o.
               //
               char_range_begin_cooked = prev_c_cooked;
               in_char_range = 2;
@@ -536,7 +557,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
     *icu_re += c;
 
 next:
-    dec_limit( &in_char_range );
+    char_range_possible = !dec_limit( &in_char_range );
     dec_limit( &got_quantifier );
     dec_limit( &is_first_char );
     prev_c_cooked = c_cooked;
