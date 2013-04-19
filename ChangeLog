@@ -76,6 +76,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #866874 (regex "range subtraction" not supported for ICU)
   * Fixed bug in computing the static type of an allowing-empty FOR variable.
   * Fixed bug #1099648 and #1088886 (XML parsing failures on Red Hat)
+  * Fixed bug #1131985 (\p{IsPrivateUse} in regex may not be working)
   * Fixed bug #1099535  (xml:parse endless loop)
   * Fixed bug in optimizing fn:count over general-index probes
   * Fixed bug #866958  (Parsing error not explicit enough)

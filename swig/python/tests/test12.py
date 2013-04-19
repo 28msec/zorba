@@ -1,4 +1,4 @@
-# Copyright 2006-2011 The FLWOR Foundation.
+# Copyright 2006-2013 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,34 +16,36 @@ import sys
 sys.path.insert(0, '@pythonPath@')
 import zorba_api
 
-class MyDiagnosticHandler(zorba_api.DiagnosticHandler): 
-  def error(self, *args):
-    print "Error args: ", args
-
 def test(zorba):
-  #Read and write result
-  print 'Executing: compilerHints.xq'
-  f = open('compilerHints.xq', 'r')
-  lines = f.read()
-  f.close()
-  diagnosticHandler = MyDiagnosticHandler()
-  compilerHints = zorba_api.CompilerHints()
-  compilerHints.setOptimizationLevel(1)
-  xquery = zorba.compileQuery(lines, compilerHints, diagnosticHandler)
-  
-  result = xquery.execute()
-  print result
-  return
+  try:
+    query = (
+              " let $sats := jn:json-doc('@pythonPath@/tests/satellites.json')('satellites') "
+              " return { "
+              "   'visible' : [ "
+              "      for $sat in jn:keys($sats) "
+              "      where $sats($sat)('visible') "
+              "      return $sat "
+              "   ], "
+              "   'invisible' : [ "
+              "      for $sat in jn:keys($sats) "
+              "      where not($sats($sat)('visible')) "
+              "      return $sat "
+              "   ] "
+              " } " )
 
+    xquery = zorba.compileQuery(query)
+    print xquery.execute()
+    print "Success"
+  except Exception, e:
+    print "Caught error: ", e
+  return
 
 store = zorba_api.InMemoryStore_getInstance()
 zorba = zorba_api.Zorba_getInstance(store)
 
-print "Running: CompileQuery string + Dignostinc handler + CompilerHint - with optimization 1"
+print "Running: Compile query string using JSONiq"
 test(zorba)
-print "Success"
 
 
 zorba.shutdown()
 zorba_api.InMemoryStore_shutdown(store)
-

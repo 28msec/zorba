@@ -1506,16 +1506,21 @@ expr* normalize_fo_arg(
     }
     else if (paramType->type_kind() == XQType::FUNCTION_TYPE_KIND)
     {
-      // function coercion
-      argExpr = wrap_in_coercion(paramType, argExpr, loc);
+      xqtref_t argType = argExpr->get_return_type();
 
-      xqtref_t cardType = tm->create_any_item_type(paramType->get_quantifier());
+      if (!TypeOps::is_subtype(tm, *argType, *paramType, loc))
+      {
+        // function coercion
+        argExpr = wrap_in_coercion(paramType, argExpr, loc);
 
-      argExpr = wrap_in_type_match(argExpr,
-                                   cardType,
-                                   loc,
-                                   TREAT_FUNC_PARAM,
-                                   func->getName());
+        xqtref_t cardType = tm->create_any_item_type(paramType->get_quantifier());
+
+        argExpr = wrap_in_type_match(argExpr,
+                                     cardType,
+                                     loc,
+                                     TREAT_FUNC_PARAM,
+                                     func->getName());
+      }
     }
     else
     {

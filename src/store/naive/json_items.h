@@ -83,6 +83,14 @@ public:
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
+  long compare(const store::Item* i, long tz = 0, const XQPCollator* c = 0) const
+  {
+    if (i->getTypeCode() == store::JS_NULL)
+      return 0;
+    else
+      return -1;
+  }
+
   bool getEBV() const { return false; }
 };
 

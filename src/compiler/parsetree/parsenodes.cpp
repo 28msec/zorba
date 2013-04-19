@@ -5879,6 +5879,8 @@ JSONObjectLookup::JSONObjectLookup(
 
 JSONObjectLookup::~JSONObjectLookup()
 {
+  delete theObjectExpr;
+  delete theSelectorExpr;
 }
 
 

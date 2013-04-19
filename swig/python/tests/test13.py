@@ -1,4 +1,4 @@
-# Copyright 2006-2011 The FLWOR Foundation.
+# Copyright 2006-2013 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,35 +16,28 @@ import sys
 sys.path.insert(0, '@pythonPath@')
 import zorba_api
 
-class MyDiagnosticHandler(zorba_api.DiagnosticHandler): 
-  def error(self, *args):
-    print "Error args: ", args
-
 def test(zorba):
-  #Read and write result
-  print 'Executing: compilerHints.xq'
-  f = open('compilerHints.xq', 'r')
-  lines = f.read()
-  f.close()
-  diagnosticHandler = MyDiagnosticHandler()
-  compilerHints = zorba_api.CompilerHints()
-  compilerHints.setLibModule(True)
-  compilerHints.setOptimizationLevel(0)
-  xquery = zorba.compileQuery(lines, compilerHints, diagnosticHandler)
-  
-  result = xquery.execute()
-  print result
+  try:
+    itemFactory = zorba.getItemFactory()
+    print "Creating JSON Item null:  ", itemFactory.createJSONNull().serialize()
+    print "Creating JSON Item null:  ", itemFactory.createJSONNumber("5").serialize()
+    sv = zorba_api.StringVector(4)
+    sv[0]="Hello"
+    sv[1]="Zorba"
+    sv[2]="Hello"
+    sv[3]="Zorba"
+    print "Creating JSON Item null:  ", itemFactory.createJSONArray(sv).serialize()
+    print "Success"
+  except Exception, e:
+    print "Caught error: ", e
   return
-
 
 store = zorba_api.InMemoryStore_getInstance()
 zorba = zorba_api.Zorba_getInstance(store)
 
-print "Running: CompileQuery string + Dignostinc handler + CompilerHint - with optimization 0 - setLibModule(True)"
+print "Running: Creating JSON objects using the API"
 test(zorba)
-print "Success"
 
 
 zorba.shutdown()
 zorba_api.InMemoryStore_shutdown(store)
-

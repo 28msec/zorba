@@ -39,7 +39,6 @@
 #include "compiler/api/compilercb.h"
 
 #include "compiler/parser/xquery_driver.h"
-#include "compiler/parser/jsoniq_driver.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_print_xqdoc_visitor.h"
@@ -225,15 +224,15 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
   
   bool lXQueryMode = getLanguageMode(xquery_stream);
 
-  if (!lXQueryMode)
+  if (lXQueryMode)
   {
-    jsoniq_driver lDriver(&*theCompilerCB);
+    xquery_driver lDriver(&*theCompilerCB, xquery_driver::XQUERY_GRAMMAR);
     lDriver.parse_stream(xquery_stream, aFileName);
     node =  lDriver.get_expr();
   }
   else
   {
-    xquery_driver lDriver(&*theCompilerCB);
+    xquery_driver lDriver(&*theCompilerCB, xquery_driver::JSONIQ_GRAMMAR);
     lDriver.parse_stream(xquery_stream, aFileName);
     node =  lDriver.get_expr();
   }

@@ -19,7 +19,7 @@
 
 
 # Change this to publish updated FOTS archives
-SET (FOTS_ARCHIVE "FOTS_090413.tgz")
+SET (FOTS_ARCHIVE "FOTS_180413.tgz")
 
 # Change this to modify which elements in FOTS driver results are output
 # as CDATA
@@ -82,6 +82,7 @@ FOREACH (_testset ${_testsets})
     "-e mode:=run-test-set -e testSetName:=${_testset} "
     "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
     "-e verbose:=true "
+    "-e ctestMode:=true "
     "-e usePlanSerializer:=true "
     "--disable-http-resolution --indent "
     "-z \"cdata-section-elements=${FOTS_CDATA_ELEMENTS}\")\n"
@@ -110,6 +111,7 @@ FOREACH (_testset ${_testsets})
       "-e testSetName:=${_testset} -e testCaseName:=${_testcase} "
       "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
       "-e verbose:=true "
+      "-e ctestMode:=true "
       "-e usePlanSerializer:=true "
       "--disable-http-resolution --indent "
       "-z \"cdata-section-elements=${FOTS_CDATA_ELEMENTS}\")\n"

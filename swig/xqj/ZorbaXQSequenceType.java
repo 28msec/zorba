@@ -44,12 +44,12 @@ public class ZorbaXQSequenceType implements javax.xml.xquery.XQSequenceType {
    * 
    * One of:
    * 
-   * Description	Value
-   * Zero or one	OCC_ZERO_OR_ONE
-   * Exactly one	OCC_EXACTLY_ONE
-   * Zero or more	OCC_ZERO_OR_MORE
-   * One or more	OCC_ONE_OR_MORE
-   * Empty	      OCC_EMPTY
+   * Description  Value
+   * Zero or one  OCC_ZERO_OR_ONE
+   * Exactly one  OCC_EXACTLY_ONE
+   * Zero or more OCC_ZERO_OR_MORE
+   * One or more  OCC_ONE_OR_MORE
+   * Empty        OCC_EMPTY
    * 
    * @return int indicating the occurrence indicator
    */
