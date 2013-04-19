@@ -17,7 +17,7 @@ xquery version "3.0";
 :)
 
 (:~
- : This module provides string related functions.
+ : This module provides string related and URI related functions.
  :
  : @author Matthias Brantner
  : @project XDM/atomic
@@ -123,6 +123,15 @@ declare function uri:parse(
  : @param $uri the URI JSONiq object
  :
  : @return the URI as xs:string
+ :
+ : @error zerr:ZURI0001 if opaque part is specified in conjuntion with
+ : host/port/path/user-info/query.
+ :
+ : @error zerr:ZURI0002 if opaque part is present but no scheme is present at the
+ : same time.
+ :
+ : @error zerr:ZURI0003 if a path component for an absolute URI doesn't start with
+ : "/".
  :
  :)
 declare function uri:serialize(

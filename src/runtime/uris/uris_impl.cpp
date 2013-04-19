@@ -34,6 +34,20 @@
 
 #include "zorbatypes/URI.h"
 
+#define SCHEME_NAME      "scheme"
+#define OPAQUE_PART_NAME "opaque-part"
+#define AUTHORITY_NAME   "authority"
+#define USER_INFO_NAME   "user-info"
+#define HOST_NAME        "host"
+#define PORT_NAME        "port"
+#define PATH_NAME        "path"
+#define QUERY_NAME       "query"
+#define FRAGMENT_NAME    "fragment"
+
+#define ZURI0001_MSG "cannot specify opaque-part in conjunction with host/port/path/user-info/query"
+#define ZURI0002_MSG "scheme required when specifying opaque-part"
+#define ZURI0003_MSG "path component of absolute URI must begin with /"
+
 using namespace std;
 
 namespace zorba {
@@ -127,7 +141,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lStrHolder = uri.get_scheme();
   if(lStrHolder.str() != "")
   {
-    lZKey = zorba::zstring("scheme");
+    lZKey = zorba::zstring(SCHEME_NAME);
     lZVal = uri.get_scheme();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
@@ -138,7 +152,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lStrHolder = uri.get_opaque_part();
   if(lStrHolder.str() != "")
   {
-    lZKey = zorba::zstring("opaque-part");
+    lZKey = zorba::zstring(OPAQUE_PART_NAME);
     lZVal = uri.get_opaque_part();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
@@ -149,7 +163,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lStrHolder = uri.get_encoded_reg_based_authority();
   if(lStrHolder.str() != "")
   {
-    lZKey = zorba::zstring("authority");
+    lZKey = zorba::zstring(AUTHORITY_NAME);
     lZVal = uri.get_encoded_reg_based_authority();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
@@ -160,7 +174,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lStrHolder = uri.get_encoded_user_info();
   if(lStrHolder.str() != "")
   {
-    lZKey = zorba::zstring("user-info");
+    lZKey = zorba::zstring(USER_INFO_NAME);
     lZVal = uri.get_encoded_user_info();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
@@ -171,7 +185,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lStrHolder = uri.get_host();
   if(lStrHolder.str() != "")
   {
-    lZKey = zorba::zstring("host");
+    lZKey = zorba::zstring(HOST_NAME);
     lZVal = uri.get_host();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
@@ -183,7 +197,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lStrHolder = zstring(lCharHost);
   if(uri.get_port() != 0)
   {
-    lZKey = zorba::zstring("port");
+    lZKey = zorba::zstring(PORT_NAME);
     lPort = uri.get_port();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createInt(lValue, lPort);
@@ -194,7 +208,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lStrHolder = uri.get_encoded_path();
   if(lStrHolder.str() != "")
   {
-    lZKey = zorba::zstring("path");
+    lZKey = zorba::zstring(PATH_NAME);
     lZVal = uri.get_encoded_path();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
@@ -205,7 +219,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lStrHolder = uri.get_encoded_query();
   if(lStrHolder.str() != "")
   {
-    lZKey = zorba::zstring("query");
+    lZKey = zorba::zstring(QUERY_NAME);
     lZVal = uri.get_encoded_query();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
@@ -216,7 +230,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lStrHolder = uri.get_encoded_fragment();
   if(lStrHolder.str() != "")
   {
-    lZKey = zorba::zstring("fragment");
+    lZKey = zorba::zstring(FRAGMENT_NAME);
     lZVal = uri.get_encoded_fragment();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
@@ -241,12 +255,14 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   store::Iterator_t lKeys;
   URI               uri = URI();
   int               lIntPort = 0;
+  bool              lHasSchemeField, lHasOpaqueField, lHasNotOpaqueField;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lItemURI, theChildren[0].getp(), planState);
 
+  lHasSchemeField = lHasOpaqueField = lHasNotOpaqueField = false;
   if(lItemURI->isJSONObject()) {
     lKeys = lItemURI->getObjectKeys();
     if(!lKeys.isNull()){
@@ -254,30 +270,67 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       while(lKeys->next(lItemKey)){
         lStrKey = lItemKey->getStringValue();
         lStrValue = lItemURI->getObjectValue(lItemKey)->getStringValue();
-        if(lStrKey == "scheme" && lStrValue != ""){
+        if(lStrKey == SCHEME_NAME && !lStrValue.empty()){
           uri.set_scheme(lStrValue);
-        } else if(lStrKey == "opaque-part" && lStrValue != ""){
+          lHasSchemeField = true;
+        } else if(lStrKey == OPAQUE_PART_NAME && !lStrValue.empty()){
           uri.set_opaque_part(lStrValue);
-        } else if(lStrKey == "authority" && lStrValue != ""){
+          lHasOpaqueField = true;
+        } else if(lStrKey == AUTHORITY_NAME && !lStrValue.empty()){
           uri.set_reg_based_authority(lStrValue);
-        } else if(lStrKey == "user-info" && lStrValue != ""){
+          lHasNotOpaqueField = true;
+        } else if(lStrKey == USER_INFO_NAME && !lStrValue.empty()){
           uri.set_user_info(lStrValue);
-        } else if(lStrKey == "host" && lStrValue != ""){
+          lHasNotOpaqueField = true;
+        } else if(lStrKey == HOST_NAME && !lStrValue.empty()){
           uri.set_host(lStrValue);
-        } else if(lStrKey == "port"){
+          lHasNotOpaqueField = true;
+        } else if(lStrKey == PORT_NAME){
           sscanf(lStrValue.str().c_str(), "%d", &lIntPort);
           if(lIntPort != 0){
             uri.set_port(lIntPort);
+            lHasNotOpaqueField = true;
           }
-        } else if(lStrKey == "path" && lStrValue != ""){
+        } else if(lStrKey == PATH_NAME && !lStrValue.empty()){
           uri.set_path(lStrValue);
-        } else if(lStrKey == "query" && lStrValue != ""){
+          lHasNotOpaqueField = true;
+        } else if(lStrKey == QUERY_NAME && !lStrValue.empty()){
           uri.set_query(lStrValue);
-        } else if(lStrKey == "fragment" && lStrValue != ""){
+          lHasNotOpaqueField = true;
+        } else if(lStrKey == FRAGMENT_NAME && !lStrValue.empty()){
           uri.set_fragment(lStrValue);
         }
       }
       lKeys->close();
+    }
+  }
+
+  // check for errors
+  if(lHasOpaqueField && lHasNotOpaqueField)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZURI0001_OPAQUE_WITH_OTHERS,
+      ERROR_PARAMS( ZURI0001_MSG ),
+      ERROR_LOC( loc )
+    );
+  }
+  if(lHasOpaqueField && !lHasSchemeField)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZURI0002_SCHEME_REQUIRED_FOR_OPAQUE,
+      ERROR_PARAMS( ZURI0002_MSG ),
+      ERROR_LOC( loc )
+    );
+  }
+  if(lHasSchemeField && !uri.get_encoded_path().empty())
+  {
+    if(uri.get_encoded_path().substr(0,1) != "/")
+    {
+      throw XQUERY_EXCEPTION(
+        zerr::ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI,
+        ERROR_PARAMS( ZURI0003_MSG ),
+        ERROR_LOC( loc )
+      );
     }
   }
   
