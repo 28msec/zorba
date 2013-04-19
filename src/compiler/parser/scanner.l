@@ -201,11 +201,12 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
   /*______________________________________________________________________
    |
-   |  JSONiq C++ style comments
+   |  JSONiq C++ style comments. Commented out for the time being, until a 
+   |  final decision is taken.
    |______________________________________________________________________*/
 #ifdef JSONIQ_SCANNER
-C_SinglelineComment                 "//"[^\n]*"\n"
-C_MultilineComment                  "/*"([^*]|("*"+[^*/]))*("*"+)"/"
+  // C_SinglelineComment                 "//"[^\n]*"\n"
+  // C_MultilineComment                  "/*"([^*]|("*"+[^*/]))*("*"+)"/"
 #endif
 
   /*______________________________________________________________________
@@ -475,8 +476,8 @@ C_MultilineComment                  "/*"([^*]|("*"+[^*/]))*("*"+)"/"
 
   /* new JSONiq grammar -- C++ style comments */
 #ifdef JSONIQ_SCANNER
-{C_SinglelineComment}    { /* eat up comments */ }
-{C_MultilineComment}     { /* eat up comments */ }
+  // {C_SinglelineComment}    { /* eat up comments */ }
+  // {C_MultilineComment}     { /* eat up comments */ }
 #endif    
 
 
