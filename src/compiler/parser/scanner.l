@@ -153,8 +153,9 @@ IntegerLiteral        [0-9]+
    |
    |  String literal definitions
    |______________________________________________________________________*/
-NonQuotAnd                      [^&{Quot}]
-NonAposAnd                      [^&{Apos}]
+NonQuotAnd                      [^&\x22]
+NonAposAnd                      [^&\x27]
+
 #ifdef XQUERY_SCANNER
 StringLiteral                   ({Quote}({EscapeQuot}|{Ref}|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|{Ref}|{NonAposAnd})*{Apos})
 #else
@@ -168,7 +169,6 @@ UnterminatedStringLiteral       ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*)|({Apos
 #else
 UnterminatedStringLiteral       (\"({PredefinedCharRef}|{JsoniqCharRef}|[^\"\\])*)|("'"({PredefinedEntityRef}|{JsoniqCharRef}|[^'\\])*)
 #endif
-
 
   /*_____________________________________________________________________
    |
@@ -199,17 +199,14 @@ NonGreaterThenChar									[\x09\x0A\x0D\x20-\x3D\x3F-\xFD]
 NonSqBraNonGTChar				            [\x09\x0A\x0D\x20-\x3D\x3F-\x5C\x5E-\xFD]
 CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]"{NonGreaterThenChar})*"]"*
 
-
   /*______________________________________________________________________
    |
    |  JSONiq C++ style comments
    |______________________________________________________________________*/
-
 #ifdef JSONIQ_SCANNER
 C_SinglelineComment                 "//"[^\n]*"\n"
 C_MultilineComment                  "/*"([^*]|("*"+[^*/]))*("*"+)"/"
 #endif
-
 
   /*______________________________________________________________________
    |
