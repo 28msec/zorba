@@ -3611,7 +3611,6 @@ void static_context::check_xquery_feature_options(const QueryLoc& loc)
        it != lRequiredFeatures.end();
        ++it)
   {
-    std::cout << "lRequiredFeature: " << *it << std::endl;
     if (*it == "static-typing")
     {
         lStaticTypingRequired = true;
@@ -3646,7 +3645,6 @@ void static_context::check_xquery_feature_options(const QueryLoc& loc)
        it != lProhibitedFeatures.end();
        ++it)
   {
-    std::cout << "lProhibitedFeature: " << *it << std::endl;
     if (*it == "static-typing")
     {
         lStaticTypingProhibited = true;
