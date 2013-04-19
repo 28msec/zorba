@@ -70,12 +70,12 @@ namespace zorba {
       virtual const std::string getFilePath() const = 0;
       virtual const std::string getFileUri() const = 0;
 
-      virtual bool isDirectory() const = 0;
-      virtual bool isFile() const = 0;
+      virtual bool isDirectory( bool follow_symlinks = true ) const = 0;
+      virtual bool isFile( bool follow_symlinks = true ) const = 0;
       virtual bool isLink() const = 0;
-      virtual bool isVolume() const = 0;
-      virtual bool isInvalid() const = 0;
-      virtual bool exists() const = 0;
+      virtual bool isVolume( bool follow_symlinks = true ) const = 0;
+      virtual bool isInvalid() const = 0; // deprecated
+      virtual bool exists( bool follow_symlinks = true ) const = 0;
 
       virtual void remove() = 0;
       virtual bool create() = 0;
