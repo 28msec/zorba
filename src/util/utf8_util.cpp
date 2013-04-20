@@ -47,7 +47,10 @@ size_type byte_pos( storage_type const *s, size_type char_pos ) {
   for ( ; char_pos > 0; --char_pos ) {
     if ( !*p )
       return npos;
-    p += char_length( *p );
+    if ( size_type const len = char_length( *p ) )
+      p += len;
+    else
+      return npos;
   }
   return p - s;
 }
@@ -61,7 +64,10 @@ size_type byte_pos( storage_type const *s, size_type s_size,
   for ( ; char_pos > 0; --char_pos ) {
     if ( p >= end )
       return npos;
-    p += char_length( *p );
+    if ( size_type const len = char_length( *p ) )
+      p += len;
+    else
+      return npos;
   }
   return p - s;
 }
@@ -92,14 +98,19 @@ size_type char_length( storage_type start ) {
 size_type char_pos( storage_type const *s, storage_type const *p ) {
   size_type pos = 0;
   while ( s < p ) {
-    s += char_length( *s );
-    ++pos;
+    if ( size_type const len = char_length( *s ) ) {
+      s += len;
+      ++pos;
+    } else
+      return npos;
   }
   return pos;
 }
 
-size_type encode( unicode::code_point c, storage_type **ps ) {
-  unsigned const n = c & 0xFFFFFFFF;
+size_type encode( unicode::code_point cp, storage_type **ps ) {
+  if ( !unicode::is_valid( cp ) )
+    return 0;
+  unsigned const n = cp & 0xFFFFFFFF;
   storage_type *&p = *ps, *const p0 = p;
   if ( n < 0x80 ) {
     // 0xxxxxxx
@@ -139,12 +150,15 @@ size_type encode( unicode::code_point c, storage_type **ps ) {
 }
 
 size_type length( storage_type const *s ) {
-  size_type len = 0;
+  size_type total_len = 0;
   while ( *s ) {
-    s += char_length( *s );
-    ++len;
+    if ( size_type const len = char_length( *s ) ) {
+      s += len;
+      ++total_len;
+    } else
+      return 0;
   }
-  return len;
+  return total_len;
 }
 
 storage_type* itou( unsigned long long n, storage_type *buf,
@@ -177,12 +191,15 @@ storage_type* itou( unsigned long long n, storage_type *buf,
 }
 
 size_type length( storage_type const *begin, storage_type const *end ) {
-  size_type len = 0;
+  size_type total_len = 0;
   while ( begin < end && *begin ) {
-    begin += char_length( *begin );
-    ++len;
+    if ( size_type const len = char_length( *begin ) ) {
+      begin += len;
+      ++total_len;
+    } else
+      return 0;
   }
-  return len;
+  return total_len;
 }
 
 size_type read( istream &i, storage_type **ps ) {
@@ -191,14 +208,16 @@ size_type read( istream &i, storage_type **ps ) {
     return npos;
   storage_type *&p = *ps;
   *p++ = c;
-  size_type const len = char_length( c );
-  for ( size_type n = 1; n < len; ++n ) {
-    c = i.get();
-    if ( !i.good() || !is_continuation_byte( c ) )
-      return npos;
-    *p++ = c;
+  if ( size_type const len = char_length( c ) ) {
+    for ( size_type n = 1; n < len; ++n ) {
+      c = i.get();
+      if ( !i.good() || !is_continuation_byte( c ) )
+        return npos;
+      *p++ = c;
+    }
+    return len;
   }
-  return len;
+  return npos;
 }
 
 #ifndef ZORBA_NO_ICU

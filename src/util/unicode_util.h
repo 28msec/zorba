@@ -130,6 +130,11 @@ typedef zstring string;
 
 ////////// constants //////////////////////////////////////////////////////////
 
+/**
+ * An invalid code-point.
+ */
+code_point const invalid = static_cast<code_point>( -1 );
+
 //
 // Various '1' digits.
 //

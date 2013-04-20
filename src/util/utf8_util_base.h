@@ -17,11 +17,14 @@
 #ifndef ZORBA_UTF8_UTIL_BASE_H
 #define ZORBA_UTF8_UTIL_BASE_H
 
+// standard
 #include <cstddef>
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
 
+// local
+#include "string_util.h"
 #include "unicode_util.h"
 
 namespace zorba {
@@ -59,7 +62,8 @@ size_type const npos = static_cast<size_type>( -1 );
  *
  * @param s A null-terminated UTF-8 encoded C string.
  * @param char_pos The character position.
- * @return Returns the corresponding byte position.
+ * @return Returns the corresponding byte position or \c npos if \a s contains
+ * an invalid UTF-8 byte.
  */
 size_type byte_pos( storage_type const *s, size_type char_pos );
 
@@ -69,8 +73,8 @@ size_type byte_pos( storage_type const *s, size_type char_pos );
  * @param s A UTF-8 encoded C string.
  * @param s_size The size of \a s in bytes.
  * @param char_pos The character position.
- * @return Returns the corresponding byte position or \c npos if the result >=
- * \a s_size.
+ * @return Returns the corresponding byte position or \c npos if the result
+ * &gt;= \a s_size or \a s contains an invalid UTF-8 byte.
  */
 size_type byte_pos( storage_type const *s, size_type s_size,
                     size_type char_pos );
@@ -80,7 +84,8 @@ size_type byte_pos( storage_type const *s, size_type s_size,
  *
  * @param s A UTF-8 encoded C string.
  * @param p A pointer to somewhere within \a s.
- * @return Returns said offset.
+ * @return Returns said offset or \c npos if \a s contains an invalid UTF-8
+ * byte.
  */
 size_type char_pos( storage_type const *s, storage_type const *p );
 
@@ -89,7 +94,8 @@ size_type char_pos( storage_type const *s, storage_type const *p );
  *
  * @param s A UTF-8 encoded C string.
  * @param byte_pos The byte position.
- * @return Returns the corresponding character position.
+ * @return Returns said position or \c npos if \a s contains an invalid UTF-8
+ * byte.
  */
 inline size_type char_pos( storage_type const *s, size_type byte_pos ) {
   return byte_pos != npos ? char_pos( s, s + byte_pos ) : npos;
@@ -100,36 +106,42 @@ inline size_type char_pos( storage_type const *s, size_type byte_pos ) {
 /**
  * Encodes a Unicode character into a UTF-8 byte sequence.
  *
- * @param c The Unicode code-point to encode.
+ * @param cp The Unicode code-point to encode.
  * @param ps A pointer to a pointer to what will be the first byte of a UTF-8
  * byte sequence.  The pointer is advanced to one byte past the newly encoded
  * character.
- * @return Returns the number of bytes required to encode the character.
+ * @return Returns the number of bytes required to encode \a cp or 0 if \a cp
+ * is invalid.
  */
-size_type encode( unicode::code_point c, storage_type **ps );
+size_type encode( unicode::code_point cp, storage_type **ps );
 
 /**
  * Encodes a Unicode character into a UTF-8 byte sequence.
  *
- * @param c The Unicode code-point to encode.
+ * @param cp The Unicode code-point to encode.
  * @param p A pointer to what will be the first byte of a UTF-8 byte sequence.
- * @return Returns the number of bytes required to encode the character.
+ * @return Returns the number of bytes required to encode \a cp or 0 if \a cp
+ * is invalid.
  */
-inline size_type encode( unicode::code_point c, storage_type *p ) {
-  return encode( c, &p );
+inline size_type encode( unicode::code_point cp, storage_type *p ) {
+  return encode( cp, &p );
 }
 
 /**
  * Encodes a Unicode character into a UTF-8 byte sequence and appends it to the
  * given string.
  *
- * @param c The Unicode code-point to encode.
+ * @param cp The Unicode code-point to encode.
  * @param out The string to append to.
+ * @return Returns the number of bytes required to encode \a cp or 0 if \a cp
+ * is invalid.
  */
 template<class StringType> inline
-void encode( unicode::code_point c, StringType *out ) {
+size_type encode( unicode::code_point cp, StringType *out ) {
   encoded_char_type ec;
-  out->append( ec, encode( c, ec ) );
+  size_type const len = encode( cp, ec );
+  out->append( ec, len );
+  return len;
 }
 
 /**
@@ -140,7 +152,8 @@ void encode( unicode::code_point c, StringType *out ) {
  * @param i An iterator pointing to the first byte of a UTF-8 byte sequence
  * comprising a Unicode character.  The iterator is advanced by the number of
  * bytes comprising the UTF-8 byte sequence.
- * @return Returns the Unicode code-point of the next character.
+ * @return Returns the Unicode code-point of the next character or
+ * <code>unicode::invalid</code>.
  */
 template<class OctetIterator>
 unicode::code_point next_char( OctetIterator &i );
@@ -150,7 +163,8 @@ unicode::code_point next_char( OctetIterator &i );
  *
  * @param p A pointer to the first byte of a UTF-8 byte sequence comprising a
  * Unicode character.
- * @return Returns the Unicode code-point of the next character.
+ * @return Returns the Unicode code-point of the next character or
+ * <code>unicode::invalid</code>.
  */
 inline unicode::code_point decode( storage_type const *p ) {
   return next_char( p );
@@ -164,7 +178,8 @@ inline unicode::code_point decode( storage_type const *p ) {
  * @param i An iterator pointing to somewhere within a UTF-8 string.  It is
  * repositioned to the first byte of the UTF-8 byte sequence comprising e
  * previous character.
- * @return Returns the Unicode code-point of previous character.
+ * @return Returns the Unicode code-point of previous character or
+ * <code>unicode::invalid</code>.
  */
 template<class OctetIterator>
 unicode::code_point prev_char( OctetIterator &i );
@@ -174,8 +189,8 @@ unicode::code_point prev_char( OctetIterator &i );
  *
  * @param i The istream to read from.
  * @param ps A pointer to a pointer to what will be the first byte of a UTF-8
- * byte sequence.  The pointer is advanced to one byte past the newly read
- * character.
+ * byte sequence.  The pointer is advanced to one byte beyond all the bytes
+ * compsiring the newly read UTF-8 character.
  * @return Returns the number of bytes comprising the UTF-8 character (which
  * equals the number of bytes read) or \c npos if either EOF was reached or the
  * bytes read are an invalid UTF-8 byte sequence.
@@ -202,7 +217,7 @@ inline size_type read( std::istream &i, storage_type *p ) {
  *
  * @param s A pointer to the first byte of a UTF-8 string.
  * @param char_pos The index of the desired character (not byte).
- * @return Returns said character.
+ * @return Returns said character or <code>unicode::invalid</code>.
  */
 inline unicode::code_point char_at( storage_type const *s,
                                     size_type char_pos ) {
@@ -216,7 +231,7 @@ inline unicode::code_point char_at( storage_type const *s,
  * @param s A pointer to the first byte of a UTF-8 string.
  * @param s_size The size of \a s in bytes.
  * @param char_pos The index of the desired character (not byte).
- * @return Returns said character.
+ * @return Returns said character or <code>unicode::invalid</code>.
  * @throws std::out_of_range if \a char_pos >= \a s_size.
  */
 inline unicode::code_point char_at( storage_type const *s, size_type s_size,
@@ -245,7 +260,7 @@ size_type char_length( storage_type start );
  * string.
  *
  * @param s A pointer to the first byte of a NULL-terminated UTF-8 string.
- * @return Returns said number of characters.
+ * @return Returns said number of characters or 0 if any byte is invalid.
  */
 size_type length( storage_type const *s );
 
@@ -256,7 +271,7 @@ size_type length( storage_type const *s );
  * a Unicode character.
  * @param end A pointer to one past the last byte of the same UTF-8 byte
  * sequence.
- * @return Returns said number of characters.
+ * @return Returns said number of characters or 0 if any byte is invalid.
  */
 size_type length( storage_type const *begin, storage_type const *end );
 
@@ -265,10 +280,14 @@ size_type length( storage_type const *begin, storage_type const *end );
  *
  * @tparam StringType The string type.
  * @param s The string.
- * @return Returns said number of characters.
+ * @return Returns said number of characters or 0 if any byte is invalid.
  */
-template<class StringType>
-inline size_type length( StringType const &s ) {
+template<class StringType> inline
+typename std::enable_if<
+  ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
+  size_type
+>::type
+length( StringType const &s ) {
   return length( s.c_str() );
 }
 

@@ -778,7 +778,7 @@ StringType& left_pad( StringType *s, typename StringType::size_type width,
   u_type u( *s );
   u_size_type const u_size( u.size() );
   if ( u_size < width )
-    u.insert( static_cast<size_type>( 0 ), width - u_size, cp );
+    u.insert( static_cast<u_size_type>( 0 ), width - u_size, cp );
   return *s;
 }
 
