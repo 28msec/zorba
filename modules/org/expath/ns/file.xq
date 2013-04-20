@@ -227,7 +227,7 @@ declare %an:nondeterministic %an:sequential function file:delete(
   $path as xs:string
 ) as empty-sequence()
 {
-  if (file:exists($path)) then
+  if (file:exists($path,false())) then
     if (not(file:is-symlink($path)) and file:is-directory($path)) then
       file:delete-directory-impl($path)
     else
@@ -276,13 +276,26 @@ declare %private %an:nondeterministic %an:sequential function file:delete-direct
  : Tests if a path/URI is already used in the file system.
  :
  : @param $path The path/URI to test.
+ : @param $follow-symlinks if <code>true</code>, follows symbolic links.
+ : @return true if <code>$path</code> points to an existing file system item.
+ :)
+declare %an:nondeterministic function file:exists(
+  $path as xs:string, $follow-symlinks as xs:boolean
+) as xs:boolean external;
+
+(:~
+ : Tests if a path/URI is already used in the file system.
+ :
+ : @param $path The path/URI to test.
  : @return true if <code>$path</code> points to an existing file system item;
- : for symbolic links, retuns true if the symbolic link itself exists and not
- : whether the linked-to item exists.
+ : for symbolic links, retuns true if the linked-to item exists.
  :)
 declare %an:nondeterministic function file:exists(
   $path as xs:string
-) as xs:boolean external;
+) as xs:boolean
+{
+  file:exists($path,true())
+};
 
 (:~
  : Tests if a path/URI points to a directory. On Unix-based systems, the root
