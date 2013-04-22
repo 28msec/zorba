@@ -133,6 +133,21 @@ class ZORBA_DLL_PUBLIC DynamicContext
                Item& aItem,
                Iterator_t& aIterator) const = 0;
 
+    /** \brief Returns the type of an external variable. 
+   *
+   * The named external variable may be located in the main query or in any
+   * modules imported directly or indirectly by the query.
+   *
+   * @param aNamespace the namespace URI of the variable's expanded QName
+   * @param aLocalname the local name of the variable's expanded QName
+   * @param outType a String representing the type of
+   *  the external variable.
+   * @return true if the variable has been retrieved successfully, false otherwise.
+   * @throw ZorbaException if an error occured.
+   */
+  virtual bool
+  getVariableType(const String& aNamespace, const String& aLocalname, String& outType) = 0;
+
   /** \brief Defines the context item.
    *
    * @param aItem the Item that is used as value for the context item.

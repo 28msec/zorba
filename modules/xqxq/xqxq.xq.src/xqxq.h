@@ -645,6 +645,26 @@ protected:
     getURLResolver(size_t i) const { return theUrlResolvers.size() < i? NULL : theUrlResolvers[i]; }
   };
 };
+
+/*******************************************************************************
+
+********************************************************************************/
+class VariableTypeFunction : public XQXQFunction
+{
+public:
+  VariableTypeFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+
+  virtual ~VariableTypeFunction() {}
+
+  virtual zorba::String
+  getLocalName() const {return "variable-type"; }
+
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
+
 }/*xqxq namespace*/}/*zorba namespace*/
 
 

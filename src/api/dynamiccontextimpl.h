@@ -90,6 +90,12 @@ public:
       Item& outItem,
       Iterator_t& outIterator) const;
 
+  virtual bool 
+  getVariableType(
+      const String& inNamespace, 
+      const String& inLocalname, 
+      String& outType);
+
   virtual bool
   setVariable(
       const String& inVarName,

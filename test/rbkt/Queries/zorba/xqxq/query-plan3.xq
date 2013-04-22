@@ -26,3 +26,4 @@ variable $queryID := xqxq:prepare-main-module
 variable $query-plan := xqxq:query-plan($queryID); 
 variable $queryID2 := xqxq:load-from-query-plan($query-plan, resolver:url-resolver#2, mapper:uri-mapper#2);
 xqxq:evaluate ($queryID2)
+
