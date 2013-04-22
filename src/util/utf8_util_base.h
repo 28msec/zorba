@@ -39,6 +39,8 @@ typedef char storage_type;
 
 /**
  * A type that can hold all the bytes of the largest encoded UTF-8 character.
+ * Note that this is NOT a C string: it is NOT null-terminated (since the first
+ * byte of a UTF-8 byte sequence encodes the number of bytes in the sequence).
  */
 typedef storage_type encoded_char_type[6];
 
@@ -54,6 +56,25 @@ typedef std::size_t size_type;
  * input or (b) "not found" as a result.
  */
 size_type const npos = static_cast<size_type>( -1 );
+
+////////// Exceptions /////////////////////////////////////////////////////////
+
+/**
+ * An %invalid_byte is-an invalid_argument for reporting invalid UTF-8 bytes.
+ */
+class invalid_byte : public std::invalid_argument {
+public:
+  invalid_byte( storage_type byte );
+  ~invalid_byte() throw();
+
+  storage_type byte() const throw() {
+    return byte_;
+  }
+
+private:
+  static std::string make_what( storage_type byte );
+  storage_type byte_;
+};
 
 ////////// Byte/Char position conversion //////////////////////////////////////
 
@@ -71,12 +92,12 @@ size_type byte_pos( storage_type const *s, size_type char_pos );
  * Converts a character position into a byte position.
  *
  * @param s A UTF-8 encoded C string.
- * @param s_size The size of \a s in bytes.
+ * @param s_len The length of \a s in bytes.
  * @param char_pos The character position.
  * @return Returns the corresponding byte position or \c npos if the result
- * &gt;= \a s_size or \a s contains an invalid UTF-8 byte.
+ * &gt;= \a s_len or \a s contains an invalid UTF-8 byte.
  */
-size_type byte_pos( storage_type const *s, size_type s_size,
+size_type byte_pos( storage_type const *s, size_type s_len,
                     size_type char_pos );
 
 /**
@@ -190,10 +211,11 @@ unicode::code_point prev_char( OctetIterator &i );
  * @param i The istream to read from.
  * @param ps A pointer to a pointer to what will be the first byte of a UTF-8
  * byte sequence.  The pointer is advanced to one byte beyond all the bytes
- * compsiring the newly read UTF-8 character.
+ * comprising the newly read UTF-8 character.  All bytes read from the stream
+ * (valid or not) are written to the buffer.
  * @return Returns the number of bytes comprising the UTF-8 character (which
- * equals the number of bytes read) or \c npos if either EOF was reached or the
- * bytes read are an invalid UTF-8 byte sequence.
+ * equals the number of bytes read) or 0 if EOF was reached.
+ * @throws invalid_byte if an invalid UTF-8 byte is encountered.
  */
 size_type read( std::istream &i, storage_type **ps );
 
@@ -202,9 +224,10 @@ size_type read( std::istream &i, storage_type **ps );
  *
  * @param i The istream to read from.
  * @param p A pointer to what will be the first byte of a UTF-8 byte sequence.
+ * All bytes read from the stream (valid or not) are written to the buffer.
  * @return Returns the number of bytes comprising the UTF-8 character (which
- * equals the number of bytes read) or \c npos if either EOF was reached or the
- * bytes read are an invalid UTF-8 byte sequence.
+ * equals the number of bytes read) or 0 if EOF was reached.
+ * @throws invalid_byte if an invalid UTF-8 byte is encountered.
  */
 inline size_type read( std::istream &i, storage_type *p ) {
   return read( i, &p );
@@ -217,7 +240,8 @@ inline size_type read( std::istream &i, storage_type *p ) {
  *
  * @param s A pointer to the first byte of a UTF-8 string.
  * @param char_pos The index of the desired character (not byte).
- * @return Returns said character or <code>unicode::invalid</code>.
+ * @return Returns said character.
+ * @throws invalid_byte if an invalid UTF-8 byte is encountered.
  */
 inline unicode::code_point char_at( storage_type const *s,
                                     size_type char_pos ) {
@@ -229,14 +253,15 @@ inline unicode::code_point char_at( storage_type const *s,
  * Gets the Unicode character at the given position.
  *
  * @param s A pointer to the first byte of a UTF-8 string.
- * @param s_size The size of \a s in bytes.
+ * @param s_len The length of \a s in bytes.
  * @param char_pos The index of the desired character (not byte).
- * @return Returns said character or <code>unicode::invalid</code>.
- * @throws std::out_of_range if \a char_pos >= \a s_size.
+ * @return Returns said character.
+ * @throws invalid_byte if an invalid UTF-8 byte is encountered.
+ * @throws std::out_of_range if \a char_pos >= \a s_len.
  */
-inline unicode::code_point char_at( storage_type const *s, size_type s_size,
+inline unicode::code_point char_at( storage_type const *s, size_type s_len,
                                     size_type char_pos ) {
-  size_type const b = byte_pos( s, s_size, char_pos );
+  size_type const b = byte_pos( s, s_len, char_pos );
   if ( b == npos )
     throw std::out_of_range( "char_at" );
   storage_type const *s2 = s + b;
@@ -250,8 +275,8 @@ inline unicode::code_point char_at( storage_type const *s, size_type s_size,
  *
  * @param start The start byte of a UTF-8 byte sequence comprising a Unicode
  * character.
- * @return Returns a number in the range [1,6] if \a start is valid or 0 if
- * \a start is invalid.
+ * @return Returns a number in the range [1,6].
+ * @throws invalid_byte if an invalid UTF-8 byte is encountered.
  */
 size_type char_length( storage_type start );
 
@@ -260,7 +285,8 @@ size_type char_length( storage_type start );
  * string.
  *
  * @param s A pointer to the first byte of a NULL-terminated UTF-8 string.
- * @return Returns said number of characters or 0 if any byte is invalid.
+ * @return Returns said number of characters.
+ * @throws invalid_byte if an invalid UTF-8 byte is encountered.
  */
 size_type length( storage_type const *s );
 
@@ -271,7 +297,8 @@ size_type length( storage_type const *s );
  * a Unicode character.
  * @param end A pointer to one past the last byte of the same UTF-8 byte
  * sequence.
- * @return Returns said number of characters or 0 if any byte is invalid.
+ * @return Returns said number of characters.
+ * @throws invalid_byte if an invalid UTF-8 byte is encountered.
  */
 size_type length( storage_type const *begin, storage_type const *end );
 
@@ -347,11 +374,11 @@ storage_type const* validate( storage_type const *s );
  * Checks an entire UTF-8 string for validity.
  *
  * @param s The UTF-8 string to validate.
- * @param s_size The number of bytes (not characters) to check.
+ * @param s_len The number of bytes (not characters) to check.
  * @return Returns \c nullptr if the string is valid or a pointer to the first
  * invalid byte if invalid.
  */
-storage_type const* validate( storage_type const *s, size_type s_size );
+storage_type const* validate( storage_type const *s, size_type s_len );
 
 ////////// iterator ///////////////////////////////////////////////////////////
 
