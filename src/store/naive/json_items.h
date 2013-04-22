@@ -22,6 +22,7 @@
 #include <zorba/config.h>
 #include "util/stl_util.h"
 #include "util/unordered_map.h"
+#include "util/hash/hash.h"
 
 #include "diagnostics/assert.h"
 
@@ -32,7 +33,6 @@
 #include "collection_tree_info.h"
 #include "simple_collection.h"
 #include "structured_item.h"
-
 
 namespace zorba
 {
