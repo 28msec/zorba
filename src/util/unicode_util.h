@@ -131,6 +131,11 @@ typedef zstring string;
 ////////// constants //////////////////////////////////////////////////////////
 
 /**
+ * Byte Order Mark (BOM).
+ */
+code_point const BOM = 0xFEFF;
+
+/**
  * An invalid code-point.
  */
 code_point const invalid = static_cast<code_point>( -1 );
