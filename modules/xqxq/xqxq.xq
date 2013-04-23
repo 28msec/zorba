@@ -24,8 +24,6 @@ xquery version "3.0";
  : @project Zorba/Programming Languages/XQuery
  :)
 module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';
-import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
-import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
@@ -286,67 +284,6 @@ declare %an:sequential function xqxq:bind-context-item($query-key as xs:anyURI,
  :)
 declare %an:sequential function xqxq:bind-variable($query-key as xs:anyURI,
   $var as xs:QName, $value as item()*) as empty-sequence() external ;
-
-(:~
- : This function uses a string value to bind the value of an external variable
- : by trying to cast the string to the corresponding type defined in the query.
- : Currently the types supported for automatic casting are: xs:string*, xs:integer*, 
- : xs:int*, xs:long*, xs:short*, xs:decimal*, xs:double*, xs:float*, xs:date*, 
- : xs:time*, xs:dateTime*, object()*, array()*, document-node()* and element()*.
- : If the variable doesn't have a defined type xs:string is assumed.
- : 
- : NOTE: if the user wants to set the variable using an item() the use of
- : xqxq:bind-variable is suggested.   
- :
- : @param $query-key the identifier for a compiled query
- : @param $name the name of the external variable to bind
- : @param $value the sequence of strings to which the external variable $name
- :  should be casted and set
- :
- : @return the function has side effects and returns the empty
- :   sequence.
- :
- : @error xqxq:NoQueryMatch if no query with the given identifier
- :   was prepared.
- : @error xqxq:UndeclaredVariable if the given variable is not declared
- :   in the query.
- :)
-declare %an:sequential function xqxq:bind-cast-variable($query-key as xs:anyURI, $var-name as 
-  xs:QName, $value as xs:string*) as empty-sequence()
-{
-  variable $type := xqxq:variable-type($query-key, $var-name);
-  variable $unquanttype := fn:replace($type, "[*,?,+]$", "");
-  let $casted-value :=
-    if (fn:contains($unquanttype, "object")) then
-      for $val in $value return jn:parse-json($val)    
-    else if (fn:contains($unquanttype, "array")) then
-      for $val in $value return jn:parse-json($val)
-    else if (fn:contains($unquanttype, "document-node")) then
-      for $val in $value return fn:parse-xml($val)  
-    else if (fn:contains($unquanttype, "element")) then
-      for $val in $value return parse-xml:parse($val,
-        <opt:options>
-          <opt:parse-external-parsed-entity/>
-        </opt:options>)
-    else                                    
-      if ($unquanttype eq "xs:anyType")
-        then $value
-        else xqxq:caster($unquanttype, $value)                  
-  return xqxq:bind-variable($query-key, $var-name, $casted-value)
-};
-      
-declare %private %an:sequential function xqxq:caster($unquanttype as xs:string, 
-  $value as xs:string*) as item()*
-{
-  variable $caster := xqxq:prepare-main-module(
-  fn:concat("declare variable $val as xs:string* external; ",
-            "for $v in $val return $v cast as ",
-            $unquanttype));
-  xqxq:bind-variable($caster, xs:QName("val"), $value);
-  variable $casted := xqxq:evaluate($caster);
-  xqxq:delete-query($caster);
-  $casted
-};    
 
 (:~
  : Evaluates the given prepared query and returns the result
