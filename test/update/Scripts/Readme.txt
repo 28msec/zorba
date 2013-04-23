@@ -22,7 +22,7 @@ To generate a report for submitting to the W3C be sure to use at least Xerces 3.
     ZORBA_TEST_W3C_TO_SUBMIT_RESULTS=ON
     ZORBA_WITH_JSON=OFF
 
-Update the import_w3c_update_testsuite.sh by removing lines 136-138.
+Update the import_w3c_update_testsuite.sh by removing lines 139-143.
 
 1.  Import XQUTS.
 
