@@ -1966,20 +1966,20 @@ static void readDocument(
 
   StreamReleaser lStreamReleaser = lStreamResource->getStreamReleaser();
   std::unique_ptr<std::istream, StreamReleaser> lStream(lStreamResource->getStream(), lStreamReleaser);
-  
-  lStreamResource->setStreamReleaser(nullptr);  
+
+  lStreamResource->setStreamReleaser(nullptr);
 
   //Check for bom utf-8 and remove the bom definition and 
   char peek = lStream.get()->peek();
-  if (peek == 'ï' )
+  if (peek == '\0xEF' )
   {
     lStream.get()->get();
     peek = lStream.get()->peek();
-    if ( peek == '»' )
+    if ( peek == '\0xBB' )
     {
      lStream.get()->get();
       peek = lStream.get()->peek();
-      if ( peek == '¿' )
+      if ( peek == '\0xBF' )
       {
         lStream.get()->get();
       }
@@ -1993,18 +1993,29 @@ static void readDocument(
       lStream.get()->unget();
     }
   }
-  //check for bom of utf-16 and change encoding if no othe rencoding was specified
-  else if (peek == 'ÿ')
+  //check for bom of utf-16 little-endian order and change encoding if no other encoding was specified
+  else if (peek == '\0xFF')
   {
     lStream.get()->get();
     peek = lStream.get()->peek();
-    if ( peek == 'þ' )
+    if ( peek == '\0xFE' )
     {
         aEncoding = "UTF-16";
     }
     lStream.get()->unget();
   }
-  
+  //check for bom of utf-16 big-endian order and change encoding if no other encoding was specified
+  else if (peek == '\0xFE')
+  {
+    lStream.get()->get();
+    peek = lStream.get()->peek();
+    if ( peek == '\0xFF' )
+    {
+        aEncoding = "UTF-16";
+    }
+    lStream.get()->unget();
+  }
+
   //check if encoding is needed
   if (transcode::is_necessary(aEncoding.c_str()))
   {
@@ -2016,7 +2027,7 @@ static void readDocument(
     *lStream.release(),
     lStream.get_deleter()
     );
-  
+
   if (oResult.isNull())
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
@@ -2046,7 +2057,7 @@ bool FnUnparsedTextIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
   uriItem->getStringValue2(uriString);
   readDocument(uriString, encodingString, theSctx, planState, loc, result);
-  
+
   STACK_PUSH(true, state);
 
   STACK_END(state);
@@ -2056,7 +2067,7 @@ bool FnUnparsedTextIterator::nextImpl(store::Item_t& result, PlanState& planStat
 /*******************************************************************************
   14.8.7 fn:unparsed-text-available
 ********************************************************************************/
-   
+
 bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t unparsedText;
@@ -2067,7 +2078,7 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-    
+
   if (!consumeNext(uriItem, theChildren[0].getp(), planState))
   {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, false), state);
@@ -2093,7 +2104,7 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, !(unparsedText.isNull()) ), state);
-    
+
   STACK_END(state);
 }
 
@@ -2137,7 +2148,7 @@ getline_no_endlines( std::basic_istream<CharType,TraitsType> &is, rstring<Rep> &
       c = sb->sgetc();
       if (!c)
       {
-        ++extracted;      
+        ++extracted;
         sb->sbumpc();
         c = sb->sgetc();
       }
@@ -2151,7 +2162,7 @@ getline_no_endlines( std::basic_istream<CharType,TraitsType> &is, rstring<Rep> &
         c = sb->sgetc();
         if (!c)
         {
-          ++extracted;      
+          ++extracted;
           sb->sbumpc();
           c = sb->sgetc();
         }
@@ -2212,14 +2223,14 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   {
     STACK_PUSH(false, state);
   }
-  
+
   if (theChildren.size() == 2)
   {
     consumeNext(encodingItem, theChildren[1].getp(), planState);
     encodingItem->getStringValue2(encodingString);
     isFixedEncoding = true;
   }
-  
+
   //Normalize input to handle filesystem paths, etc.
   uriItem->getStringValue2(uriString);
 
@@ -2238,7 +2249,7 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
 
   if (lUri->get_encoded_fragment() != "")
   {
-    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));    
+    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));
   }
 
   lUri.reset(new zorba::URI(theSctx->get_base_uri()));
@@ -2256,7 +2267,7 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
 
   if (state->theStreamResource == NULL)
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));
-  
+
   lStreamReleaser = state->theStreamResource->getStreamReleaser();
   state->theStream = new std::unique_ptr<std::istream, StreamReleaser> (state->theStreamResource->getStream(), lStreamReleaser);
   state->theStreamResource->setStreamReleaser(nullptr);
@@ -2264,15 +2275,15 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   //Check for bom utf-8 and remove the bom definition and 
   //change encoding to UTF-8 if no other encoding is specified
   peek = state->theStream->get()->peek();
-  if (peek == 'ï' )
+  if (peek == '\0xEF' )
   {
     state->theStream->get()->get();
     peek = state->theStream->get()->peek();
-    if ( peek == '»' )
+    if ( peek == '\0xBB' )
     {
       state->theStream->get()->get();
       peek = state->theStream->get()->peek();
-      if ( peek == '¿' )
+      if ( peek == '\0xBF' )
       {
         state->theStream->get()->get();
       }
@@ -2286,12 +2297,24 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
       state->theStream->get()->unget();
     }
   }
-  //check for bom of utf-16 and change encoding if no othe rencoding was specified
-  else if (peek == 'ÿ')
+  //check for bom of utf-16 little-endian order and change encoding if no other encoding was specified
+  else if (peek == '\0xFF')
   {
     state->theStream->get()->get();
     peek = state->theStream->get()->peek();
-    if ( peek == 'þ' )
+    if ( peek == '\0xFE' )
+    {
+      if (!isFixedEncoding)
+        encodingString = "UTF-16";
+    }
+    state->theStream->get()->unget();
+  }
+  //check for bom of utf-16 big-endian order and change encoding if no other encoding was specified
+  else if (peek == '\0xFE')
+  {
+    state->theStream->get()->get();
+    peek = state->theStream->get()->peek();
+    if ( peek == '\0xFF' )
     {
       if (!isFixedEncoding)
         encodingString = "UTF-16";
