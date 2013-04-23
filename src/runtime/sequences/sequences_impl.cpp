@@ -2112,17 +2112,6 @@ static void readDocument(
     }
     lStream.get()->unget();
   }
-  //check for bom of utf-16 big-endian order and change encoding if no other encoding was specified
-  else if (peek == '\0xFE')
-  {
-    lStream.get()->get();
-    peek = lStream.get()->peek();
-    if ( peek == '\0xFF' )
-    {
-        aEncoding = "UTF-16";
-    }
-    lStream.get()->unget();
-  }
 
   //check if encoding is needed
   if (transcode::is_necessary(aEncoding.c_str()))
@@ -2411,18 +2400,6 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
     state->theStream->get()->get();
     peek = state->theStream->get()->peek();
     if ( peek == '\0xFE' )
-    {
-      if (!isFixedEncoding)
-        encodingString = "UTF-16";
-    }
-    state->theStream->get()->unget();
-  }
-  //check for bom of utf-16 big-endian order and change encoding if no other encoding was specified
-  else if (peek == '\0xFE')
-  {
-    state->theStream->get()->get();
-    peek = state->theStream->get()->peek();
-    if ( peek == '\0xFF' )
     {
       if (!isFixedEncoding)
         encodingString = "UTF-16";
