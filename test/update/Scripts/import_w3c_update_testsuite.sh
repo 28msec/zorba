@@ -135,7 +135,7 @@ string-join (
                     if ($error/text() eq "*"
                         (:mark this test as ExpectedFailure because it fails
                           when using a Xerces version older than 3.1.1 :)
-                       or $tc/@name = "revalidate-valtrans-ins-003"
+                       or $tc/@name = "valtrans-ins-003"
                        )
                       then "" else "http://www.w3.org/2005/xqt-errors:",
                     $error/text())
