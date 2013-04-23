@@ -1011,8 +1011,6 @@ public:
       const zstring& option,
       const QueryLoc& loc);
 
-  void check_xquery_feature_options(const QueryLoc& loc);
-
   bool lookup_option(const store::Item* qname, zstring& option) const;
 
   bool is_feature_set(feature::kind k) const { return (theFeatures & k) != 0; }
