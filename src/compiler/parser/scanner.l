@@ -16,9 +16,15 @@
 
   /*______________________________________________________________________
    *                                                                      *
-   *  Scanner options                                                     *
+   *  Attention: do not #include any files in scanner.l. Use the          *
+   *  scanner_l_includes.h file.                                          *
    *______________________________________________________________________*/
 
+
+  /*______________________________________________________________________
+   *                                                                      *
+   *  Scanner options                                                     *
+   *______________________________________________________________________*/
 
 %option noyywrap
 %option batch
@@ -33,8 +39,8 @@
 #else
 %option prefix="ZorbaJSONiq"
 %option outfile="jsoniq_scanner.yy.cpp"
-
 #endif
+
 
   /*_____________________________________________________________________
    |
@@ -147,8 +153,9 @@ IntegerLiteral        [0-9]+
    |
    |  String literal definitions
    |______________________________________________________________________*/
-NonQuotAnd                      [^""&]
-NonAposAnd                      [^''&]
+NonQuotAnd                      [^&\x22]
+NonAposAnd                      [^&\x27]
+
 #ifdef XQUERY_SCANNER
 StringLiteral                   ({Quote}({EscapeQuot}|{Ref}|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|{Ref}|{NonAposAnd})*{Apos})
 #else
@@ -162,7 +169,6 @@ UnterminatedStringLiteral       ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*)|({Apos
 #else
 UnterminatedStringLiteral       (\"({PredefinedCharRef}|{JsoniqCharRef}|[^\"\\])*)|("'"({PredefinedEntityRef}|{JsoniqCharRef}|[^'\\])*)
 #endif
-
 
   /*_____________________________________________________________________
    |
@@ -193,13 +199,15 @@ NonGreaterThenChar									[\x09\x0A\x0D\x20-\x3D\x3F-\xFD]
 NonSqBraNonGTChar				            [\x09\x0A\x0D\x20-\x3D\x3F-\x5C\x5E-\xFD]
 CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]"{NonGreaterThenChar})*"]"*
 
-
   /*______________________________________________________________________
    |
-   |  JSONiq C++ style comments
+   |  JSONiq C++ style comments. Commented out for the time being, until a 
+   |  final decision is taken.
    |______________________________________________________________________*/
-
-
+#ifdef JSONIQ_SCANNER
+  // C_SinglelineComment                 "//"[^\n]*"\n"
+  // C_MultilineComment                  "/*"([^*]|("*"+[^*/]))*("*"+)"/"
+#endif
 
   /*______________________________________________________________________
    |
@@ -465,6 +473,12 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "structured-item" { return token::STRUCTURED_ITEM; }
 "array" {  return token::ARRAY; }
 "object" {  return token::OBJECT; }
+
+  /* new JSONiq grammar -- C++ style comments */
+#ifdef JSONIQ_SCANNER
+  // {C_SinglelineComment}    { /* eat up comments */ }
+  // {C_MultilineComment}     { /* eat up comments */ }
+#endif    
 
 
     /*______________________________________________________________________
