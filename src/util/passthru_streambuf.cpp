@@ -26,7 +26,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 passthru_streambuf::passthru_streambuf( char const*, streambuf *orig ) :
-  proxy_streambuf( orig )
+  internal::proxy_streambuf( orig )
 {
   if ( !orig )
     throw invalid_argument( "null streambuf" );
@@ -85,7 +85,7 @@ passthru_streambuf::int_type passthru_streambuf::overflow( int_type c ) {
 
 passthru_streambuf::int_type passthru_streambuf::pbackfail( int_type c ) {
   return  traits_type::eq_int_type( c, traits_type::eof() ) ?
-          c : proxy_buf_->sputbackc( traits_type::to_char_type( c ) );
+          c : original()->sputbackc( traits_type::to_char_type( c ) );
 }
 
 passthru_streambuf::int_type passthru_streambuf::uflow() {

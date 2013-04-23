@@ -14,6 +14,7 @@
 
 SET(UNIT_TEST_SRCS
   instantiate_string.cpp
+  test_ato_.cpp
   test_base64.cpp
   test_base64_streambuf.cpp
   test_hashmaps.cpp

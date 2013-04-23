@@ -216,6 +216,7 @@ public:
 
   ////////// math functions ///////////////////////////////////////////////////
 
+  FloatImpl abs() const;
   FloatImpl acos() const;
   FloatImpl acosh() const;
   FloatImpl asin() const;
@@ -797,6 +798,11 @@ inline bool operator>=( double d, FloatImpl<F> const &f ) {
 }
 
 ////////// math functions /////////////////////////////////////////////////////
+
+template<typename F>
+inline FloatImpl<F> FloatImpl<F>::abs() const {
+  return FloatImpl<F>( std::fabs( value_ ) );
+}
 
 template<typename F>
 inline FloatImpl<F> FloatImpl<F>::acosh() const {

@@ -207,7 +207,7 @@ bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
     if (!theInput->next(result))
       return false;
 
-    if (!result->isAtomic())
+    if (result->isNode())
       throw XQUERY_EXCEPTION(err::XPTY0018);
 
     return true;
@@ -216,7 +216,7 @@ bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
   if (!theInput->next(result))
     return false;
 
-  if (result->isAtomic())
+  if (!result->isNode())
   {
     if (theNodeMode)
       throw XQUERY_EXCEPTION(err::XPTY0018);
@@ -236,7 +236,7 @@ bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
       if (!theInput->next(result))
         return false;
 
-      if (result->isAtomic())
+      if (!result->isNode())
         throw XQUERY_EXCEPTION(err::XPTY0018);
     }
   }
@@ -404,7 +404,7 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
     if (!theInput->next(result))
       return false;
 
-    if (!result->isAtomic())
+    if (result->isNode())
       throw XQUERY_EXCEPTION(err::XPTY0018);
 
     return true;
@@ -417,7 +417,7 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
       if (!theInput->next(result))
         break;
 
-      if (result->isAtomic() || result->isFunction())
+      if (!result->isNode())
       {
         if (theNodeMode)
           throw XQUERY_EXCEPTION(err::XPTY0018);

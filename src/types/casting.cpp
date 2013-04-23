@@ -49,13 +49,6 @@
 namespace zorba
 {
 
-void castToUserDefinedAtomicType(
-    store::Item_t& result,
-    const store::Item_t& aItem,
-    const XQType* aSourceType,
-    const XQType* aTargetType,
-    const QueryLoc& loc);
-
 
 #define ATOMIC_TYPE(type) \
   GENV_TYPESYSTEM.create_atomic_type(store::XS_##type, TypeConstants::QUANT_ONE)
@@ -2277,10 +2270,8 @@ bool GenericCast::castToSimple(
       return true;
     }
   }
-  else
+  else if (targetType->type_kind() == XQType::USER_DEFINED_KIND)
   {
-    ZORBA_ASSERT(targetType->type_kind() == XQType::USER_DEFINED_KIND);
-
 #ifndef ZORBA_NO_XMLSCHEMA
     tm->initializeSchema();
 
@@ -2304,7 +2295,7 @@ bool GenericCast::castToSimple(
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(*sourceType, ZED(NoCastTo_34o), *targetType));
       }
-
+      // to do: must validate before returning
       return schema->parseUserListTypes(textValue, targetType, resultList, loc);
     }
     else
@@ -2322,13 +2313,7 @@ bool GenericCast::castToSimple(
 
           if (success)
           {
-            /*
-            zstring textValue = item->getStringValue();
-            store::Item_t tmp;
-
-            resultList.clear();
-            if (schema->parseUserUnionTypes(textValue, targetType, resultList, loc))
-            */
+            // to do: must validate before returning
             return true;
           }
         }
@@ -2347,6 +2332,8 @@ bool GenericCast::castToSimple(
     } // union
 #endif // ZORBA_NO_XMLSCHEMA
   } // list or union
+  else
+    ZORBA_ASSERT(false); // simple types should be only atomic or user defined
 }
 
 

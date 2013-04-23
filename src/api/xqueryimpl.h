@@ -45,6 +45,7 @@ class ResultIteratorImpl;
 class dynamic_context;
 class CompilerCB;
 class StaticCollectionManagerSetImpl;
+class ModuleInfo;
 
 
 /*******************************************************************************
@@ -400,6 +401,8 @@ protected:
   void notifyAllWarnings() const;
 
   bool isBoundVariable(const String& aNamespace, const String& aLocalname) const;
+
+  void parse(std::istream& aQuery, ModuleInfo_t& aResult);
 };
 
 

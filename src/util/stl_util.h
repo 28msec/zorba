@@ -93,6 +93,28 @@ protected:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Copy of std::equal_to in this namespace so we can specialize it below.
+ */
+template<typename T>
+struct equal_to : std::binary_function<T,T,bool> {
+  bool operator()( T const &a, T const &b ) const {
+    return a == b;
+  }
+};
+
+/**
+ * Specialization of std::equal_to for C strings.
+ */
+template<>
+struct equal_to<char const*> :
+  std::binary_function<char const*,char const*,bool>
+{
+  bool operator()( char const *s1, char const *s2 ) const {
+    return std::strcmp( s1, s2 ) == 0;
+  }
+};
+
+/**
  * Implementation of SGI's %identity extension.
  * See: http://www.sgi.com/tech/stl/identity.html
  */
