@@ -48,6 +48,49 @@ static bool assert_true( int no, char const *expr, int line, bool result ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static void test_calc_week_in_month() {
+  struct test_type {
+    unsigned mday, mon, year;
+    time::calendar::type cal;
+    int expected;
+  };
+  static test_type const test[] = {
+    /*  1 */ {  1, time::jan, 2013, calendar::ISO, 1 },
+    /*  2 */ {  2, time::jan, 2013, calendar::ISO, 1 },
+    /*  3 */ {  3, time::jan, 2013, calendar::ISO, 1 },
+    /*  4 */ {  4, time::jan, 2013, calendar::ISO, 1 },
+    /*  5 */ {  5, time::jan, 2013, calendar::ISO, 1 },
+    /*  6 */ {  6, time::jan, 2013, calendar::ISO, 1 },
+    /*  7 */ {  7, time::jan, 2013, calendar::ISO, 2 },
+    /*  8 */ {  1, time::jan, 2005, calendar::ISO, 5 },
+    /*  9 */ {  2, time::jan, 2005, calendar::ISO, 5 },
+    /* 10 */ {  3, time::jan, 2005, calendar::ISO, 1 },
+    /* 11 */ { 31, time::dec, 2005, calendar::ISO, 5 },
+    /* 12 */ {  1, time::jan, 2007, calendar::ISO, 1 },
+    /* 13 */ { 30, time::dec, 2007, calendar::ISO, 4 },
+    /* 14 */ { 31, time::dec, 2007, calendar::ISO, 1 },
+    /* 15 */ {  1, time::jan, 2008, calendar::ISO, 1 },
+    /* 16 */ { 28, time::dec, 2008, calendar::ISO, 4 },
+    /* 17 */ { 29, time::dec, 2008, calendar::ISO, 5 },
+    /* 18 */ { 30, time::dec, 2008, calendar::ISO, 5 },
+    /* 19 */ { 31, time::dec, 2008, calendar::ISO, 5 },
+    /* 20 */ { 31, time::dec, 2009, calendar::ISO, 5 },
+    /* 21 */ {  1, time::jan, 2010, calendar::ISO, 5 },
+    /* 22 */ {  2, time::jan, 2010, calendar::ISO, 5 },
+    /* 23 */ {  3, time::jan, 2010, calendar::ISO, 5 },
+    /* 24 */ {  4, time::jan, 2010, calendar::ISO, 1 },
+
+    { 0, 0, 0, calendar::unknown, 0 }
+  };
+
+  test_no = 0;
+  for ( test_type const *t = test; t->mday; ++t ) {
+    int w = calendar::calc_week_in_month( t->mday, t->mon, t->year, t->cal );
+    ++test_no;
+    ASSERT_TRUE( test_no, w == t->expected );
+  }
+}
+
 static void test_calc_week_in_year() {
   struct test_type {
     unsigned mday, mon, year;
@@ -93,10 +136,11 @@ static void test_calc_week_in_year() {
     { 0, 0, 0, calendar::unknown, 0 }
   };
 
+  test_no = 0;
   for ( test_type const *t = test; t->mday; ++t ) {
     int w = calendar::calc_week_in_year( t->mday, t->mon, t->year, t->cal );
     ++test_no;
-    ASSERT_TRUE( test_no,  w == t->expected );
+    ASSERT_TRUE( test_no, w == t->expected );
   }
 }
 
@@ -107,6 +151,7 @@ namespace UnitTests {
 
 int test_time( int, char*[] ) {
 
+  test_calc_week_in_month();
   test_calc_week_in_year();
 
   cout << failures << " test(s) failed\n";
