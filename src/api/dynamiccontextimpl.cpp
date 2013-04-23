@@ -189,27 +189,30 @@ VarInfo* DynamicContextImpl::get_var_info(
 bool DynamicContextImpl::getVariableType(
     const String& inNamespace,
     const String& inLocalname,
-    String& outType)
+    Item& outType)
 {
   ZORBA_DCTX_TRY
   {
     checkNoIterators();
 
-    const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
-    const zstring& localName = Unmarshaller::getInternalString(inLocalname);
+    zstring nameSpace = Unmarshaller::getInternalString(inNamespace);
+    zstring& localName = Unmarshaller::getInternalString(inLocalname);
 
     VarInfo* var = NULL;
 
     try
     {
       var = get_var_info(nameSpace, localName);
-      
       const XQType* varType = var->getType();
-
+      zstring varTypeString;
       if (!varType)
-        outType = "xs:anyType";
+        varTypeString = "xs:anyType";
       else
-        outType = varType->toSchemaString();
+        varTypeString = varType->toSchemaString();
+      
+      store::Item_t type;
+      GENV_ITEMFACTORY->createString(type, varTypeString);
+      outType = type;
     }
     catch (ZorbaException const& e)
     {

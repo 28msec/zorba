@@ -348,7 +348,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
   virtual bool
   isBoundContextItem() const = 0;
 
-  /** \brief Returns the type of an external variable. 
+  /** \brief Returns the type of an external variable as a string Item. 
    *
    * The named external variable may be located in the main query or in any
    * modules imported directly or indirectly by the query.
@@ -361,7 +361,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @throw ZorbaException if an error occured.
    */
   virtual bool
-  getVariableType(const String& aNamespace, const String& aLocalname, String& outType) = 0;
+  getVariableType(const String& aNamespace, const String& aLocalname, Item& outType) = 0;
 
 protected:
   /** \brief Destructor

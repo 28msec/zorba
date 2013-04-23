@@ -998,7 +998,7 @@ zorba::ItemSequence_t VariableTypeFunction::evaluate(
 
   zorba::DynamicContext* lCtx = lQuery->getDynamicContext();
   zorba::String lNS = lVarQName.getNamespace(), lLocal = lVarQName.getLocalName();
-  zorba::String lType;
+  Item lType;
   try
   {
     if(!lCtx->getVariableType(lNS, lLocal, lType))
@@ -1014,7 +1014,7 @@ zorba::ItemSequence_t VariableTypeFunction::evaluate(
       XQXQFunction::throwError("UndeclaredVariable", ze.what());  
     throw; // should not happen
   }
-  return ItemSequence_t(new SingletonItemSequence(XQXQModule::getItemFactory()->createString(lType)));
+  return ItemSequence_t(new SingletonItemSequence(lType));
 }
 
  
