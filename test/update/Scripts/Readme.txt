@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-To generate a report for submitting to the W3C:
+
+To generate a report for submitting to the W3C be sure to use at least Xerces 3.1.1
 
 0. For submitting reports to W3C one should compile Zorba with:
     ZORBA_WITH_BIG_INTEGER=ON
@@ -20,6 +21,8 @@ To generate a report for submitting to the W3C:
     ZORBA_TEST_XQUERYX=ON
     ZORBA_TEST_W3C_TO_SUBMIT_RESULTS=ON
     ZORBA_WITH_JSON=OFF
+
+Update the import_w3c_update_testsuite.sh by removing lines 139-143.
 
 1.  Import XQUTS.
 
