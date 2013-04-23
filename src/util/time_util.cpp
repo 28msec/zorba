@@ -112,13 +112,20 @@ int calc_week_in_month( unsigned mday, unsigned mon, unsigned year, type cal ) {
   int mon1_wday = time::calc_wday( 1, mon, year );
 
   switch ( cal ) {
+    case AD:
+      return (mon1_wday + mday - 1) / 7 + 1;
     case ISO: {
       //
-      // From https://www.w3.org/Bugs/Public/show_bug.cgi?id=21370#c3
+      // From https://www.w3.org/Bugs/Public/show_bug.cgi?id=21370#c6
       //
-      //    [T]he ISO 8601 definitions are augmented by a specification that
-      //    each week begins on a Monday and is associated with the month that
-      //    contains that week's Thursday.
+      //    When the 'w' component is used, the convention to be adopted is
+      //    that each Monday-to-Sunday week is considered to fall within a
+      //    particular month if its Thursday occurs in that month; the weeks
+      //    that fall in a particular month under this definition are numbered
+      //    starting from 1. Thus, for example, 29 January 2013 falls in week 5
+      //    because the Thursday of the relevant week (31 January 2013) is the
+      //    fifth Thursday in January, and 1 February 2013 is also in week 5
+      //    for the same reason.
       //
       mon1_wday = convert_wday_to( mon1_wday, cal );
       int week = (mday + mon1_wday - 2) / 7 + 1;
