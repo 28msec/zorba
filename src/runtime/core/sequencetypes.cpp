@@ -813,16 +813,16 @@ bool EitherNodesOrAtomicsIterator::nextImpl(
 
   if (CONSUME(result, 0))
   {
-    state->atomics = result->isAtomic();
+    state->atomics = !result->isNode();
 
     STACK_PUSH(true, state);
 
     while (CONSUME(result, 0))
     {
-      if (state->atomics != result->isAtomic())
+      if (state->atomics == result->isNode())
         throw XQUERY_EXCEPTION(err::XPTY0018, ERROR_LOC(loc));
 
-      STACK_PUSH (true, state);
+      STACK_PUSH(true, state);
     }
   }
 

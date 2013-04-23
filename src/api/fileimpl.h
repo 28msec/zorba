@@ -63,12 +63,12 @@ public: // public methods
   const std::string getFilePath() const;
   const std::string getFileUri() const;
 
-  bool isDirectory() const;
-  bool isFile() const;
+  bool isDirectory( bool follow_symlinks = true ) const;
+  bool isFile( bool follow_symlinks = true ) const;
   bool isLink() const;
-  bool isVolume() const;
-  bool isInvalid() const;
-  bool exists() const;
+  bool isVolume( bool follow_symlinks = true ) const;
+  bool isInvalid() const;               // deprecated
+  bool exists( bool follow_symlinks = true ) const;
 
   void remove();
   bool create();

@@ -60,7 +60,15 @@ SimpleTempSeq::SimpleTempSeq(std::vector<store::Item_t>& items)
 ********************************************************************************/
 SimpleTempSeq::SimpleTempSeq(const store::Iterator_t& iter)
 {
-  init(iter);
+  try
+  {
+    init(iter);
+  }
+  catch (...)
+  {
+    clear();
+    throw;
+  }
 }
 
 

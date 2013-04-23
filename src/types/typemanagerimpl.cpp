@@ -401,6 +401,18 @@ xqtref_t TypeManagerImpl::create_named_type(
   {
     return create_untyped_type();
   }
+  else if (qname->equals(RTM.XS_IDREFS_QNAME.getp()))
+  {
+    return RTM.XS_IDREFS_TYPE;
+  }
+  else if (qname->equals(RTM.XS_NMTOKENS_QNAME.getp()))
+  {
+    return RTM.XS_NMTOKENS_TYPE;
+  }
+  else if (qname->equals(RTM.XS_ENTITIES_QNAME.getp()))
+  {
+    return RTM.XS_ENTITIES_TYPE;
+  }
   else
   {
     // Try to resolve the type name as a builtin atomic type

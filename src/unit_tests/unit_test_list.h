@@ -28,6 +28,7 @@ namespace UnitTests {
 
   int runDebuggerProtocolTest(int argc, char* argv[]);
 
+  int test_ato_( int, char*[] );
   int test_base64( int, char*[] );
   int test_base64_streambuf( int, char*[] );
   int test_hashmaps( int argc, char* argv[] );
