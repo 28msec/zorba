@@ -692,12 +692,47 @@ declare variable $err:XQST0114 as xs:QName := fn:QName($err:NS, "err:XQST0114");
 
 (:~
  :
+ : It is a static error if a feature required by require-feature is not
+ : supported by the implementation.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0120 as xs:QName := fn:QName($err:NS, "err:XQST0120");
+
+(:~
+ :
  : It is a static error if the name of a feature in require-feature is not
  : recognized by the implementation.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0123 as xs:QName := fn:QName($err:NS, "err:XQST0123");
+
+(:~
+ :
+ : It is a static error if all-extensions appears in a require-feature option declaration.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0126 as xs:QName := fn:QName($err:NS, "err:XQST0126");
+
+(:~
+ :
+ : It is a static error if a given feature is both required and prohibited, directly or indirectly, in a module.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0127 as xs:QName := fn:QName($err:NS, "err:XQST0127");
+
+(:~
+ :
+ : It is a static error if a feature name that an implementation supports appears
+ : in a prohibit-feature option declaration, and the implementation is unable to
+ : disable the feature.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0128 as xs:QName := fn:QName($err:NS, "err:XQST0128");
 
 (:~
  :

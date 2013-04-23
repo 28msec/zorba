@@ -830,15 +830,46 @@
       </comment>
       <value>"$1": duplicate decimal format property</value>
     </diagnostic>
-
+    
+    <diagnostic code="XQST0120">
+      <comment>
+        It is a static error if a feature required by require-feature is not
+        supported by the implementation.
+      </comment>
+      <value>"$1": feature not supported</value>
+    </diagnostic>
+    
     <diagnostic code="XQST0123">
       <comment>
-       It is a static error if the name of a feature in require-feature is not
-       recognized by the implementation.
+        It is a static error if the name of a feature in require-feature is not
+        recognized by the implementation.
       </comment>
       <value>$1</value>
     </diagnostic>
-
+    
+    <diagnostic code="XQST0126">
+      <comment>
+        It is a static error if all-extensions appears in a require-feature option declaration.
+      </comment>
+      <value>impossible to require all extension features</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0127">
+      <comment>
+        It is a static error if a given feature is both required and prohibited, directly or indirectly, in a module.
+      </comment>
+      <value>$1 : impossible to require and prohibit at the same time</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0128">
+      <comment>
+        It is a static error if a feature name that an implementation supports appears
+        in a prohibit-feature option declaration, and the implementation is unable to
+        disable the feature.
+      </comment>
+      <value>"$1": unable to disable a supported feature</value>
+    </diagnostic>
+    
     <diagnostic code="XPDY0002">
       <comment>
        It is a dynamic error if evaluation of an expression relies on some part
