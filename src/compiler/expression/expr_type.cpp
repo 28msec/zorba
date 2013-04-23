@@ -31,6 +31,7 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
+#include "compiler/expression/function_item_expr.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -259,6 +260,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     case var_expr::catch_var: // TODO
     case var_expr::arg_var:
     case var_expr::eval_var:
+    case var_expr::hof_var:
     {
       break;
     }
@@ -625,14 +627,45 @@ void expr::compute_return_type(bool deep, bool* modified)
   }
 
   case dynamic_function_invocation_expr_kind:
+  {    
+    dynamic_function_invocation_expr* e =
+    static_cast<dynamic_function_invocation_expr*>(this);
+
+    xqtref_t fiType = e->theExpr->get_return_type();
+    if (fiType->type_kind() == XQType::FUNCTION_TYPE_KIND)
+    {
+      const FunctionXQType* funcType = static_cast<const FunctionXQType*>(fiType.getp());
+      newType = funcType->get_return_type();
+    }
+    else
+    {
+      newType = rtm.ITEM_TYPE_STAR;
+    }
+    break;
+  }
+
+  case argument_placeholder_expr_kind:
   {
-    theType = rtm.ITEM_TYPE_STAR; // TODO
+    theType = rtm.ITEM_TYPE_STAR;
     return;
   }
 
   case function_item_expr_kind:
   {
     theType = rtm.ANY_FUNCTION_TYPE_ONE;
+
+    function_item_expr* fiExpr = static_cast<function_item_expr*>(this);
+
+    if (fiExpr->get_function() != NULL)
+    {
+      const xqtref_t& retType = fiExpr->get_function()->getSignature().returnType();
+      std::vector<xqtref_t> paramTypes;
+
+      for (csize i = 0; i < fiExpr->get_function()->getSignature().paramCount(); ++i)
+        paramTypes.push_back(fiExpr->get_function()->getSignature()[i]);
+
+      theType = new FunctionXQType(&rtm, paramTypes, retType, TypeConstants::QUANT_ONE);
+    }
     return;
   }
 
@@ -958,6 +991,7 @@ self:
     }
 
     if (testNodeName != NULL &&
+        nodeTest->getWildKind() == match_no_wild &&
         inNodeName != NULL &&
         !inNodeName->equals(testNodeName))
     {
@@ -974,6 +1008,7 @@ self:
     case store::StoreConsts::textNode:
     case store::StoreConsts::piNode:
     case store::StoreConsts::commentNode:
+    case store::StoreConsts::namespaceNode:
       return create_axis_step_type(tm, inNodeKind, testNodeName, inQuant, false);
 
     case store::StoreConsts::anyNode:
@@ -989,6 +1024,7 @@ self:
       case store::StoreConsts::textNode:
       case store::StoreConsts::piNode:
       case store::StoreConsts::commentNode:
+      case store::StoreConsts::namespaceNode:
         return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, false);
 
       default:

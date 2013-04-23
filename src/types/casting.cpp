@@ -49,13 +49,6 @@
 namespace zorba
 {
 
-void castToUserDefinedAtomicType(
-    store::Item_t& result,
-    const store::Item_t& aItem,
-    const XQType* aSourceType,
-    const XQType* aTargetType,
-    const QueryLoc& loc);
-
 
 #define ATOMIC_TYPE(type) \
   GENV_TYPESYSTEM.create_atomic_type(store::XS_##type, TypeConstants::QUANT_ONE)
@@ -182,6 +175,67 @@ void throwFORG0001Exception(const zstring& str, const ErrorInfo& info)
   }                                           
 }
 
+void throwFODT0001Exception(const zstring& str, const ErrorInfo& info)
+{
+  if (info.theTargetType)
+  {
+    RAISE_ERROR(err::FODT0001, info.theLoc,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 str,
+                 info.theSourceType->toSchemaString(),
+                 info.theTargetType->toSchemaString()));
+  }
+  else
+  {
+    TypeManager& tm = GENV_TYPESYSTEM;
+
+    xqtref_t sourceType =
+    tm.create_builtin_atomic_type(info.theSourceTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    xqtref_t targetType =
+    tm.create_builtin_atomic_type(info.theTargetTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    RAISE_ERROR(err::FODT0001, info.theLoc,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 str,
+                 sourceType->toSchemaString(),
+                 targetType->toSchemaString()));
+  }
+}
+
+
+void throwFODT0002Exception(const zstring& str, const ErrorInfo& info)
+{
+  if (info.theTargetType)
+  {
+    RAISE_ERROR(err::FODT0002, info.theLoc,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 str,
+                 info.theSourceType->toSchemaString(),
+                 info.theTargetType->toSchemaString()));
+  }
+  else
+  {
+    TypeManager& tm = GENV_TYPESYSTEM;
+
+    xqtref_t sourceType =
+    tm.create_builtin_atomic_type(info.theSourceTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    xqtref_t targetType =
+    tm.create_builtin_atomic_type(info.theTargetTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    RAISE_ERROR(err::FODT0002, info.theLoc,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
+                 str,
+                 sourceType->toSchemaString(),
+                 targetType->toSchemaString()));
+  }
+}
+
 
 /*******************************************************************************
   Identity casting functions: target type is the same as the source one, so no
@@ -224,6 +278,7 @@ SAME_S_AND_T(QN)
 SAME_S_AND_T(NOT)
 SAME_S_AND_T(NUL)
 SAME_S_AND_T(uint)
+SAME_S_AND_T(dTSt)
 
 #undef SAME_S_AND_T
 
@@ -334,149 +389,180 @@ T1_TO_T2(str, uint)
 T1_TO_T2(str, dur)
 {
   Duration d;
-  int err;
 
-  if (0 == (err = Duration::parseDuration(strval.c_str(), strval.size(), d)))
-  {
+  int err = Duration::parseDuration(strval.c_str(), strval.size(), d);
+
+  if (err == 0)
     aFactory->createDuration(result, &d);
-    return;
-  }
-
-  throwFORG0001Exception(strval, errInfo);
+  else if (err == 2)
+    throwFODT0002Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, yMD)
 {
   Duration d;
-  int err;
 
-  if (0 == (err = Duration::parseYearMonthDuration(strval.c_str(), strval.size(), d)))
-  {
+  int err = Duration::parseYearMonthDuration(strval.c_str(), strval.size(), d);
+
+  if (err == 0)
     aFactory->createYearMonthDuration(result, &d);
-    return;
-  }
-
-  throwFORG0001Exception(strval, errInfo);
+  else if (err == 2)
+    throwFODT0002Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, dTD)
 {
   Duration d;
-  int err;
 
-  if (0 == (err = Duration::parseDayTimeDuration(strval.c_str(), strval.size(), d)))
-  {
+  int err = Duration::parseDayTimeDuration(strval.c_str(), strval.size(), d);
+
+  if (err == 0)
     aFactory->createDayTimeDuration(result, &d);
-    return;
-  }
-
-  throwFORG0001Exception(strval, errInfo);
+  else if (err == 2)
+    throwFODT0002Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, dT)
 {
   xs_dateTime dt;
-  if (0 == DateTime::parseDateTime(strval.c_str(), strval.size(), dt))
-  {
-    aFactory->createDateTime(result, &dt);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseDateTime(strval.c_str(), strval.size(), dt);
+
+  if (err == 0)
+    aFactory->createDateTime(result, &dt);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
+T1_TO_T2(str, dTSt)
+{
+  xs_dateTime dt;
+
+  int err = DateTime::parseDateTime(strval.c_str(), strval.size(), dt);
+
+  if (err == 0 && dt.hasTimezone())
+    aFactory->createDateTimeStamp(result, &dt);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
+}
+  
+  
 T1_TO_T2(str, tim)
 {
   xs_time t;
-  if (0 == DateTime::parseTime(strval.c_str(), strval.size(), t))
-  {
-    aFactory->createTime(result, &t);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseTime(strval.c_str(), strval.size(), t);
+
+  if (err == 0)
+    aFactory->createTime(result, &t);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, dat)
 {
   xs_date d;
-  if (0 == DateTime::parseDate(strval.c_str(), strval.size(), d))
-  {
-    aFactory->createDate(result, &d);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseDate(strval.c_str(), strval.size(), d);
+
+  if (err == 0)
+    aFactory->createDate(result, &d);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, gYM)
 {
   xs_gYearMonth ym;
-  if (0 == DateTime::parseGYearMonth(strval.c_str(), strval.size(), ym))
-  {
-    aFactory->createGYearMonth(result, &ym);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseGYearMonth(strval.c_str(), strval.size(), ym);
+
+  if (err == 0)
+    aFactory->createGYearMonth(result, &ym);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, gYr)
 {
   xs_gYear y;
-  if (0 == DateTime::parseGYear(strval.c_str(), strval.size(), y))
-  {
-    aFactory->createGYear(result, &y);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseGYear(strval.c_str(), strval.size(), y);
+
+  if (err == 0)
+    aFactory->createGYear(result, &y);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, gMD)
 {
   xs_gMonthDay md;
-  if (0 == DateTime::parseGMonthDay(strval.c_str(), strval.size(), md))
-  {
-    aFactory->createGMonthDay(result, &md);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseGMonthDay(strval.c_str(), strval.size(), md);
+
+  if (err == 0)
+    aFactory->createGMonthDay(result, &md);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, gDay)
 {
   xs_gDay d;
-  if (0 == DateTime::parseGDay(strval.c_str(), strval.size(), d))
-  {
-    aFactory->createGDay(result, &d);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseGDay(strval.c_str(), strval.size(), d);
+
+  if (err == 0)
+    aFactory->createGDay(result, &d);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
 T1_TO_T2(str, gMon)
 {
   xs_gMonth m;
-  if (0 == DateTime::parseGMonth(strval.c_str(), strval.size(), m))
-  {
-    aFactory->createGMonth(result, &m);
-    return;
-  }
 
-  throwFORG0001Exception(strval, errInfo);
+  int err = DateTime::parseGMonth(strval.c_str(), strval.size(), m);
+
+  if (err == 0)
+    aFactory->createGMonth(result, &m);
+  else if (err == 2)
+    throwFODT0001Exception(strval, errInfo);
+  else
+    throwFORG0001Exception(strval, errInfo);
 }
 
 
@@ -725,6 +811,14 @@ T1_TO_T2(uA, dT)
 }
 
 
+T1_TO_T2(uA, dTSt)
+{
+  zstring strval2;
+  aItem->getStringValue2(strval2);
+  str_dTSt(result, aItem, strval2, aFactory, nsCtx, errInfo);
+}
+  
+  
 T1_TO_T2(uA, tim)
 {
   zstring strval2;
@@ -1191,6 +1285,19 @@ T1_TO_T2(dat, dT)
 }
 
 
+T1_TO_T2(dT, dTSt)
+{
+  xs_dateTime dt = aItem->getDateTimeValue(); //.createWithNewFacet(DateTime::DATETIME_FACET, dt);
+  if (dt.hasTimezone() )
+  {
+    aFactory->createDateTimeStamp(result, &dt);
+    return;
+  }
+
+  throwFORG0001Exception(dt.toString(), errInfo);
+}
+  
+  
 T1_TO_T2(dat, gYM)
 {
   DateTime dt;
@@ -1369,15 +1476,11 @@ T1_TO_T2(b64, hxB)
 {
   size_t s;
   const char* c = aItem->getBase64BinaryValue(s);
-  Base64 tmp;
+  xs_base64Binary tmp;
   if (aItem->isEncoded())
-  {
-    Base64::parseString(c, s, tmp);
-  }
+    xs_base64Binary::parseString(c, s, tmp);
   else
-  {
-    Base64::encode((const unsigned char*)c, s, tmp);
-  }
+    xs_base64Binary::encode(c, s, tmp);
   aFactory->createHexBinary(result, xs_hexBinary(tmp));
 }
 
@@ -1398,8 +1501,14 @@ T1_TO_T2(hxB, str)
 
 T1_TO_T2(hxB, b64)
 {
-  aFactory->
-  createBase64Binary(result, xs_base64Binary(aItem->getHexBinaryValue()));
+  size_t s;
+  char const *const c = aItem->getHexBinaryValue(s);
+  xs_hexBinary tmp;
+  if (aItem->isEncoded())
+    xs_hexBinary::parseString(c, s, tmp);
+  else
+    xs_hexBinary::encode(c, s, tmp);
+  aFactory->createBase64Binary(result, xs_base64Binary(tmp));
 }
 
 
@@ -1883,7 +1992,7 @@ void int_down(
 
 /*******************************************************************************
   For each builtin atomic type T, this array maps the typecode of T to an
-  index to be used in addessing theCastingMatrix.
+  index to be used in addessing theCastMatrix.
 ********************************************************************************/
 const int GenericCast::theMapping[store::XS_LAST] =
 {
@@ -1932,14 +2041,15 @@ const int GenericCast::theMapping[store::XS_LAST] =
   20,  // 42 XS_ANY_URI
   21,  // 43 XS_QNAME
   22,  // 44 XS_NOTATION
-  23   // 45 JS_NULL
+  23,  // 45 JS_NULL
+  25,  // 46 XS_DATETIME_STAMP
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[25] =
+const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[26] =
 {
 /*uA*/    0,
 /*str*/   str_down,
@@ -1965,144 +2075,150 @@ const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[25] =
 /*QN*/    0,
 /*NOT*/   0,
 /*uint*/  int_down,
-/*null*/  0
+/*null*/  0,
+/*dtSt*/  0,
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-const GenericCast::CastFunc GenericCast::theCastMatrix[25][25] =
+const GenericCast::CastFunc GenericCast::theCastMatrix[26][26] =
 {
 // uA        str        flt       dbl         dec        int       dur       yMD
 // dTD       dT         tim       dat         gYM        gYr       gMD       gDay 
 // gMon      bool       b64       hxB         aURI       QN        NOT       uint
-// null
+// null      dTSt
 
 {&uA_uA,    &uA_str,   &uA_flt,  &uA_dbl ,   &uA_dec ,  &uA_int,   &uA_dur,  &uA_yMD,
  &uA_dTD,   &uA_dT,    &uA_tim,  &uA_dat,    &uA_gYM ,  &uA_gYr ,  &uA_gMD,  &uA_gDay,
- &uA_gMon, &uA_bool,   &uA_b64,  &uA_hxB,    &uA_aURI,  0,         0,        &uA_uint,
- 0}, // uA
+ &uA_gMon,  &uA_bool,  &uA_b64,  &uA_hxB,    &uA_aURI,  0,         0,        &uA_uint,
+ 0,         &uA_dTSt}, // uA
 
 {&str_uA,   &str_str,  &str_flt,  &str_dbl,  &str_dec,  &str_int,  &str_dur, &str_yMD,
  &str_dTD,  &str_dT,   &str_tim,  &str_dat,  &str_gYM,  &str_gYr,  &str_gMD, &str_gDay,
  &str_gMon, &str_bool, &str_b64,  &str_hxB,  &str_aURI, &str_QN,   &str_NOT, &str_uint,
- 0}, // str
+ 0,         &str_dTSt}, // str
 
 {&flt_uA,   &flt_str,  &flt_flt,  &flt_dbl,  &flt_dec,  &flt_int,  0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,
  0,         &flt_bool, 0,         0,         0,         0,         0,        &flt_uint,
- 0}, // flt
+ 0,         0}, // flt
 
 {&dbl_uA,   &dbl_str,  &dbl_flt,  &dbl_dbl,  &dbl_dec,  &dbl_int,  0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,  
  0,         &dbl_bool, 0,         0,         0,         0,         0,        &dbl_uint,
- 0}, // dbl
+ 0,         0}, // dbl
 
 {&dec_uA,   &dec_str,  &dec_flt,  &dec_dbl,  &dec_dec,  &dec_int,  0,        0,
  0,         0,         0,         0,         0,         0,         0,        0, 
  0,         &dec_bool, 0,         0,         0,         0,         0,        &dec_uint,
- 0}, // dec
+ 0,         0}, // dec
 
 {&int_uA,   &int_str,  &int_flt,  &int_dbl,  &int_dec,  &int_int,  0,        0, 
  0,         0,         0,         0,         0,         0,         0,        0, 
  0,         &int_bool, 0,         0,         0,         0,         0,        &int_uint,
- 0}, // int
+ 0,         0}, // int
 
 {&dur_uA,   &dur_str,  0,         0,         0,         0,         &dur_dur, &dur_yMD,
  &dur_dTD,  0,         0,         0,         0,         0,         0,        0, 
  0,         0,         0,         0,         0,         0,         0,        0,
- 0}, // dur
+ 0,         0}, // dur
 
 {&yMD_uA,   &yMD_str,  0,         0,         0,         0,         &yMD_dur, &yMD_yMD,
  &yMD_dTD,  0,         0,         0,         0,         0,         0,        0, 
  0,         0,         0,         0,         0,         0,         0,        0,
- 0}, // yMD
+ 0,         0}, // yMD
 
 {&dTD_uA,   &dTD_str,  0,         0,         0,         0,         &dTD_dur, &dTD_yMD,
  &dTD_dTD,  0,         0,         0,         0,         0,         0,        0,  
  0,         0,         0,         0,         0,         0,         0,        0,
- 0}, // dTD
+ 0,         0}, // dTD
 
 {&dT_uA,    &dT_str,   0,         0,         0,         0,         0,        0,
  0,         &dT_dT,    &dT_tim,   &dT_dat,   &dT_gYM,   &dT_gYr,   &dT_gMD,  &dT_gDay,
  &dT_gMon,  0,         0,         0,         0,         0,         0,        0,
- 0}, // dT
+ 0,         &dT_dTSt}, // dT
 
 {&tim_uA,   &tim_str,  0,         0,         0,         0,         0,        0,
  0,         0,         &tim_tim,  0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,
- 0}, // tim
+ 0,         0}, // tim
 
 {&dat_uA,   &dat_str,  0,         0,         0,         0,         0,        0,
  0,         &dat_dT,   0,         &dat_dat,  &dat_gYM,  &dat_gYr,  &dat_gMD, &dat_gDay,
  &dat_gMon, 0,         0,         0,         0,         0,         0,        0,
- 0}, // dat
+ 0,         0}, // dat
 
 {&gYM_uA,   &gYM_str,  0,         0,         0,         0,         0,        0, 
  0,         0,         0,         0,         &gYM_gYM,  0,         0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,
- 0}, // gYM
+ 0,         0}, // gYM
 
 {&gYr_uA,   &gYr_str,  0,         0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         &gYr_gYr,  0,        0,  
  0,         0,         0,         0,         0,         0,         0,        0,
- 0}, // gYr
+ 0,         0}, // gYr
 
 {&gMD_uA,   &gMD_str,  0,         0,         0,         0,         0,        0, 
  0,         0,         0,         0,         0,         0,         &gMD_gMD, 0,
  0,         0,         0,         0,         0,         0,         0,        0,
- 0}, // gMD
+ 0,         0}, // gMD
 
 {&gDay_uA,  &gDay_str, 0,         0,         0,         0,         0,        0, 
  0,         0,         0,         0,         0,         0,         0,        &gDay_gDay,
  0,         0,         0,         0,         0,         0,         0,        0,
- 0}, // gDay
+ 0,         0}, // gDay
 
 {&gMon_uA,  &gMon_str, 0,         0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,  
  &gMon_gMon,0,         0,         0,         0,         0,         0,        0,
- 0}, // gMon
+ 0,         0}, // gMon
 
 {&bool_uA,  &bool_str, &bool_flt, &bool_dbl, &bool_dec, &bool_int, 0,        0, 
  0,         0,         0,         0,         0,         0,         0,        0,  
  0,         &bool_bool,0,         0,         0,         0,         0,        &bool_uint,
- 0}, // bool
+ 0,         0}, // bool
 
 {&b64_uA,   &b64_str,  0,         0,         0,         0,         0,        0, 
  0,         0,         0,         0,         0,         0,         0,        0,
  0,         0,         &b64_b64,  &b64_hxB,  0,         0,         0,        0,
- 0}, // b64
+ 0,         0}, // b64
 
 {&hxB_uA,   &hxB_str,  0,         0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,
  0,         0,         &hxB_b64,  &hxB_hxB,  0,         0,         0,        0,
- 0}, // hxB
+ 0,         0}, // hxB
 
 {&aURI_uA,  &aURI_str, 0,         0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,  
  0,         0,         0,         0,         &aURI_aURI,0,         0,        0,
- 0}, // aURI
+ 0,         0}, // aURI
 
 {&QN_uA,    &QN_str,   0,         0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         &QN_QN,    0,        0,
- 0}, // QN
+ 0,         0}, // QN
 
 {&NOT_uA,   &NOT_str,  0,         0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         0,         &NOT_NOT, 0,
- 0}, // NOT
+ 0,         0}, // NOT
 
 {&uint_uA,  &uint_str, &uint_flt, &uint_dbl, &uint_dec, &uint_int, 0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,
  0,         &uint_bool,0,         0,         0,         0,         0,        &uint_uint,
- 0},
+ 0,         0},
 
 {0,         &NUL_str,  0,         0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,  
  0,         0,         0,         0,         0,         0,         0,        0,
- &NUL_NUL} // NUL
+ &NUL_NUL,  0}, // Nul
+
+{&dT_uA,    &dT_str,   0,         0,         0,         0,         0,        0,
+ 0,         &dT_dTSt,    &dT_tim,   &dT_dat,   &dT_gYM,   &dT_gYr,   &dT_gMD,  &dT_gDay,
+ &dT_gMon,  0,         0,         0,         0,         0,         0,        0,
+ 0,         &dTSt_dTSt}, // dTS
 };
 
 
@@ -2154,10 +2270,8 @@ bool GenericCast::castToSimple(
       return true;
     }
   }
-  else
+  else if (targetType->type_kind() == XQType::USER_DEFINED_KIND)
   {
-    ZORBA_ASSERT(targetType->type_kind() == XQType::USER_DEFINED_KIND);
-
 #ifndef ZORBA_NO_XMLSCHEMA
     tm->initializeSchema();
 
@@ -2181,7 +2295,7 @@ bool GenericCast::castToSimple(
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(*sourceType, ZED(NoCastTo_34o), *targetType));
       }
-
+      // to do: must validate before returning
       return schema->parseUserListTypes(textValue, targetType, resultList, loc);
     }
     else
@@ -2199,13 +2313,7 @@ bool GenericCast::castToSimple(
 
           if (success)
           {
-            /*
-            zstring textValue = item->getStringValue();
-            store::Item_t tmp;
-
-            resultList.clear();
-            if (schema->parseUserUnionTypes(textValue, targetType, resultList, loc))
-            */
+            // to do: must validate before returning
             return true;
           }
         }
@@ -2224,6 +2332,8 @@ bool GenericCast::castToSimple(
     } // union
 #endif // ZORBA_NO_XMLSCHEMA
   } // list or union
+  else
+    ZORBA_ASSERT(false); // simple types should be only atomic or user defined
 }
 
 

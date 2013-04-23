@@ -22,6 +22,8 @@
 
 #include "common/shared_types.h"
 
+#include "runtime/hof/function_item.h"
+
 // TODO remove the next three includes
 #include "api/unmarshaller.h"
 #include "context/static_context.h"
@@ -38,10 +40,10 @@ class StaticContextImpl;
   thePlan:
   --------
   The runtime plan for the function body. This is created during 
-  UDFunctionCallIterator::openImpl(), if it has not not been created already 
-  (during the openImpl() method of another UDFunctionCallIterator on the same
-  udf). A pointer to this plan is also stored in the udf obj itself, and that's
-  how we know if it has been created already or not.
+  UDFunctionCallIterator::openImpl(), if it has not been created already (during
+  the openImpl() method of another UDFunctionCallIterator on the same udf). A
+  pointer to this plan is also stored in the udf obj itself, and that's how we
+  know if it has been created already or not.
 
   thePlanState:
   -------------
@@ -105,7 +107,11 @@ public:
 
   ~UDFunctionCallIteratorState();
 
-  void open(PlanState& planState, user_function* udf);
+  void open(
+      PlanState& planState,
+      user_function* udf,
+      bool theIsDynamic,
+      store::ItemHandle<FunctionItem>& theFunctionItem);
 
   void reset(PlanState& planState);
 };
@@ -118,16 +124,25 @@ public:
 
   theIsDynamic:
   -------------
+  True if this is a UDFunctionCallIterator that is allocated on the fly during
+  DynamicFnCallIterator::nextImpl().
+
+
+  theFunctionItem:
+  ----------------
 
 ********************************************************************************/
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
                                                        UDFunctionCallIteratorState> 
 {
+  friend class PrinterVisitor;
+
   typedef std::vector<LetVarIter_t> ArgVarRefs;
 
 protected:
-  user_function  * theUDF;
-  bool             theIsDynamic;
+  user_function                 * theUDF;
+  bool                            theIsDynamic;
+  store::ItemHandle<FunctionItem> theFunctionItem;
 
 public:
   SERIALIZABLE_CLASS(UDFunctionCallIterator);
@@ -140,16 +155,18 @@ public:
 
 public:
   UDFunctionCallIterator(
-        static_context* sctx,
-        const QueryLoc& loc, 
-        std::vector<PlanIter_t>& args, 
-        const user_function* aUDF);
+      static_context* sctx,
+      const QueryLoc& loc, 
+      std::vector<PlanIter_t>& args, 
+      const user_function* aUDF);
 
-  ~UDFunctionCallIterator() {}
-    
+  virtual ~UDFunctionCallIterator();
+
   bool isUpdating() const;
 
   void setDynamic() { theIsDynamic = true; }
+
+  void setFunctionItem(const FunctionItem* fnItem) { theFunctionItem = fnItem; }
 
   bool isCached() const;
 

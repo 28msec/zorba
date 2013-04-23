@@ -92,9 +92,10 @@
 #include "runtime/debug/debug_iterator.h"
 #endif
 #include "runtime/eval/eval.h"
-#include "runtime/function_item/function_item.h"
-#include "runtime/function_item/function_item_iter.h"
-#include "runtime/function_item/dynamic_fncall_iterator.h"
+#include "runtime/hof/function_item.h"
+#include "runtime/hof/function_item_iter.h"
+#include "runtime/hof/fn_hof_functions.h"
+#include "runtime/hof/dynamic_fncall_iterator.h"
 #include "runtime/misc/materialize.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
@@ -466,29 +467,77 @@ bool begin_visit(function_item_expr& v)
 void end_visit(function_item_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  store::Item_t lQName = v.get_qname();
-  store::Item_t lFItem;
 
-  bool isInline = (lQName == 0);
+  FunctionItemInfo* fnInfo = v.get_dynamic_fn_info();
+  fnInfo->theCCB = theCCB;
+  fnInfo->theLoc = qloc;
 
-  if (!isInline)
   {
-    // literal function item
-    lFItem = new FunctionItem(theCCB, sctx, &v);
-  }
-  else
-  {
-    // inline function
-    std::vector<PlanIter_t> lVariableValues;
-    size_t lSize = v.get_vars().size();
-    for (size_t i = 0; i < lSize; ++i)
-    {
-      lVariableValues.push_back(pop_itstack());
+    for (csize i = 0; i < v.get_subst_vars().size(); ++i)
+    {      
+      if (!v.get_is_global_var()[i])     
+        fnInfo->theScopedVarsIterators.push_back(pop_itstack());
+      else if (fnInfo->theScopedVarsValues[i] != NULL)
+        pop_itstack();
     }
-    lFItem = new FunctionItem(theCCB, sctx, &v, lVariableValues);
+
+    std::reverse(fnInfo->theScopedVarsIterators.begin(),
+                 fnInfo->theScopedVarsIterators.end());
   }
 
-  push_itstack(new SingletonIterator (sctx, qloc, lFItem));
+
+  // This portion is similar to the eval iterator
+  { 
+    csize curChild = -1;
+    csize numOuterVars = fnInfo->theScopedVarsNames.size();
+    for (csize i = 0; i < numOuterVars; ++i)
+    {
+      if (!fnInfo->theIsGlobalVar[i])
+      {
+        ++curChild;
+
+        if (fnInfo->theSubstVarsValues[i] != NULL &&
+            fnInfo->theSubstVarsValues[i]->get_unique_id() == 0)
+        {
+          fnInfo->theSubstVarsValues[i]->set_var_info(NULL);
+          fnInfo->theSubstVarsValues[i]->set_unique_id(theNextDynamicVarId++);
+        }
+
+        fnInfo->theVarId[i] = fnInfo->theSubstVarsValues[i]->get_unique_id();
+      }
+      else
+      {
+        static_context* outerSctx = fnInfo->theClosureSctx;
+
+        VarInfo* outerGlobalVar = outerSctx->lookup_var(fnInfo->theScopedVarsNames[i]);
+
+        ulong outerGlobalVarId = 0;
+
+        if (outerGlobalVar)
+        {
+          outerGlobalVarId = outerGlobalVar->getId();
+        }
+        else
+        {
+          for (csize j=0; j<fnInfo->theSubstVarsValues.size(); j++)
+          {
+            if (fnInfo->theSubstVarsValues[j]->get_name()->equals(fnInfo->theScopedVarsNames[i].getp()))
+              outerGlobalVarId = fnInfo->theSubstVarsValues[j]->get_unique_id();
+          }
+        }
+
+        if (fnInfo->theSubstVarsValues[i] != NULL &&
+            fnInfo->theSubstVarsValues[i]->get_unique_id() == 0)
+        {
+          fnInfo->theSubstVarsValues[i]->set_unique_id(outerGlobalVarId);
+        }
+
+        fnInfo->theVarId[i] = outerGlobalVarId;
+      }
+    } // for
+  }
+
+  push_itstack(new FunctionItemIterator(sctx, qloc, fnInfo));
 }
 
 
@@ -505,20 +554,43 @@ void end_visit(dynamic_function_invocation_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  ulong numArgs = (ulong)v.get_args().size() + 1;
+  csize numArgs = v.get_args().size() + 1;
 
-  std::vector<PlanIter_t> argIters(numArgs);
-
-  for (size_t i = 1; i < numArgs; ++i)
+  std::vector<PlanIter_t> argIters;
+  
+  bool isPartialApply = false;
+  
+  for (csize i = 0; i < numArgs-1; ++i)
   {
-    argIters[i] = pop_itstack();
+    if (v.get_args()[i]->get_expr_kind() == argument_placeholder_expr_kind)
+      isPartialApply = true;
+
+    argIters.push_back(pop_itstack());
   }
 
-  argIters[0] = pop_itstack();
+  argIters.push_back(pop_itstack());
 
-  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters));
+  std::reverse(argIters.begin(), argIters.end());
+
+  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, isPartialApply));
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool begin_visit(argument_placeholder_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(argument_placeholder_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t it = new ArgumentPlaceholderIterator(sctx, qloc);
+  push_itstack(it);
+}
 
 /***************************************************************************//**
 
@@ -836,6 +908,7 @@ void general_var_codegen(const var_expr& var)
 
   case var_expr::arg_var:
   {
+    ZORBA_ASSERT(arg_var_iter_map != NULL);
     PlanIter_t iter = base_var_codegen(var, *arg_var_iter_map);
     push_itstack(iter);
     break;
@@ -856,6 +929,7 @@ void general_var_codegen(const var_expr& var)
   }
 
   case var_expr::prolog_var:
+  case var_expr::hof_var:
   {
     push_itstack(new CtxVarIterator(sctx,
                                     qloc,
@@ -2389,8 +2463,8 @@ void end_visit(fo_expr& v)
 
   if (v.is_sequential())
   {
-    ulong numArgs = v.num_args();
-    for (ulong i = 0; i < numArgs; ++i)
+    csize numArgs = v.num_args();
+    for (csize i = 0; i < numArgs; ++i)
     {
       if (v.get_arg(i)->is_sequential())
       {
@@ -3712,6 +3786,7 @@ PlanIter_t codegen(
     hash64map<std::vector<LetVarIter_t> *>* arg_var_map)
 {
   plan_visitor c(ccb, nextDynamicVarId, arg_var_map);
+
   root->accept(c);
   PlanIter_t result = c.result();
 

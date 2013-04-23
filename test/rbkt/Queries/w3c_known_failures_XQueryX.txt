@@ -11,6 +11,7 @@ test/rbkt/w3c_testsuite/XQueryX/SchemaValidation/ValidateExpression/validateexpr
 test/rbkt/w3c_testsuite/XQueryX/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-7
 test/rbkt/w3c_testsuite/XQueryX/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-8
 test/rbkt/w3c_testsuite/XQueryX/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-10
+test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-044
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-009
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-008
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-021
@@ -24,6 +25,8 @@ test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-904
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-024
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-017
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-914
+test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-915
+test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-916
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-049
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-018
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-047
@@ -34,6 +37,8 @@ test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-029
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-031
 test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-030
 test/rbkt/w3c_testsuite/XQueryX/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
+test/rbkt/w3c_testsuite/XQueryX/exprSeqTypes/SeqExprCast/K2-SeqExprCast-231
+test/rbkt/w3c_testsuite/XQueryX/exprSeqTypes/SeqExprCast/K2-SeqExprCast-232
 test/rbkt/w3c_testsuite/XQueryX/Construct/DirectConElem/DirectConElemWhitespace/K2-DirectConElemWhitespace-25
 test/rbkt/w3c_testsuite/XQueryX/Construct/DirectConElem/DirectConElemContent/K2-DirectConElemContent-27
 test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/K2-MatchesFunc-5
@@ -54,6 +59,8 @@ test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/FoldRight/fold-right-003
 test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/FoldRight/fold-right-002
 test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/FoldRight/fold-right-001
 test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/FoldRight/fold-right-005
+test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/FoldRight/fold-right-006
+test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/FoldRight/fold-right-007
 test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/MapPairs/map-pairs-008
 test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/MapPairs/map-pairs-006
 test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/MapPairs/map-pairs-001

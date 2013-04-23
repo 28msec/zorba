@@ -233,6 +233,8 @@ public:
 
   virtual ~JSONObjectNamesIterator();
 
+public:
+  bool count(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -406,6 +408,8 @@ public:
 
   virtual ~JSONArrayMembersIterator();
 
+public:
+  bool count(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -513,22 +517,35 @@ public:
  * 
  * Author: 
  */
-class JSONItemAccessorIterator : public BinaryBaseIterator<JSONItemAccessorIterator, PlanIteratorState>
+class JSONItemAccessorIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theIterator; //
+
+  JSONItemAccessorIteratorState();
+
+  ~JSONItemAccessorIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONItemAccessorIterator : public NaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONItemAccessorIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONItemAccessorIterator,
-    BinaryBaseIterator<JSONItemAccessorIterator, PlanIteratorState>);
+    NaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONItemAccessorIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    PlanIter_t& child1, PlanIter_t& child2)
+    std::vector<PlanIter_t>& children)
     : 
-    BinaryBaseIterator<JSONItemAccessorIterator, PlanIteratorState>(sctx, loc, child1, child2)
+    NaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>(sctx, loc, children)
   {}
 
   virtual ~JSONItemAccessorIterator();

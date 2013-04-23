@@ -22,7 +22,7 @@ MESSAGE(STATUS "Adding tests for CTest")
 SET (_results_dir "${CMAKE_CURRENT_BINARY_DIR}/../QueryResults")
 
 FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS
-  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.xq")
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.xq" "*.jq")
 IF(ZORBA_TEST_XQUERYX)
   FILE(GLOB_RECURSE TESTFILES_XQX FOLLOW_SYMLINKS
     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS "*.xqx")
@@ -245,6 +245,14 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
   EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/NamespaceURIForPrefixFunc/K2-NamespaceURIForPrefixFunc-2 872732)
 
+  # HoF incorrect results. Bug report is here -- https://www.w3.org/Bugs/Public/show_bug.cgi?id=12661
+  EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/FoldRight/fold-right-006 12661)
+  EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/FoldRight/fold-right-007 12661)
+
+  # Incorrect expected error in HoF tests. W3C bug report -- https://www.w3.org/Bugs/Public/show_bug.cgi?id=12637
+  EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-915 12637)
+  EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Expressions/HigherOrder/hof-916 12637)  
+
   IF (NOT ZORBA_WITH_BIG_INTEGER)
     # These test will never pass without big integers beause the integers used
     # in the queries exceed a 63-bit signed integer.
@@ -273,6 +281,15 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes013 3355019)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes014 3355019)
     EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/StaticTyping/STPathExpr/STSteps/STAxes/ST-Axes015 3355019)
+
+    # HoF incorrect results. Bug report is here -- https://www.w3.org/Bugs/Public/show_bug.cgi?id=12661
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/FoldRight/fold-right-006 12661)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/Functions/HigherOrder/FoldRight/fold-right-007 12661)
+
+    # Incorrect expected error in HoF tests. W3C bug report -- https://www.w3.org/Bugs/Public/show_bug.cgi?id=12637
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-915 12637)
+    EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQueryX/Expressions/HigherOrder/hof-916 12637)  
+
   ENDIF (ZORBA_TEST_XQUERYX)
 
 ENDIF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
@@ -531,8 +548,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
-EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_3_0 867035)
-
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xmlid/valid-ncname 1010728)
@@ -569,3 +584,12 @@ ENDIF(ZORBA_NO_ICU)
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 923686)
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
+
+
+# JSONiq C++-style comments are not yet decided upon, the grammar
+# rules are comment out, so these tests are expected to fail.
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_01.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_02.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_03.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_04.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_05.jq 0)

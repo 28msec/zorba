@@ -118,8 +118,8 @@ private:
 
   unsigned short              theScriptingKind;
 
-  expr*                      theBodyExpr;
-  std::vector<var_expr*>     theArgVars;
+  expr*                       theBodyExpr;
+  std::vector<var_expr*>      theArgVars;
 
   std::vector<unsigned char>  theIgnoresSortedNodes;
   std::vector<unsigned char>  theIgnoresDuplicateNodes;
@@ -174,6 +174,8 @@ public:
   expr* getBody() const;
 
   void setScriptingKind(unsigned short k);
+
+  csize numArgs() const { return theArgVars.size(); }
 
   void setArgVars(std::vector<var_expr*>& args);
 

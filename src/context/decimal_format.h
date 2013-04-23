@@ -17,59 +17,51 @@
 #ifndef ZORBA_DECIMAL_FORMAT_H
 #define ZORBA_DECIMAL_FORMAT_H
 
+#include <utility>                      /* for pair */
+#include <map>
 #include <vector>
 
 #include "common/shared_types.h"
-
+#include "store/api/item.h"
+#include "util/unordered_map.h"
+#include "zorbaserialization/class_serializer.h"
 #include "zorbatypes/zstring.h"
 
-#include "zorbaserialization/class_serializer.h"
+///////////////////////////////////////////////////////////////////////////////
 
-#include "store/api/item.h"
+namespace zorba {
 
-
-namespace zorba
-{
-
-class DecimalFormat : public SimpleRCObject
-{
+class DecimalFormat : public SimpleRCObject {
 public:
-  typedef std::vector<std::pair<zstring,zstring> > param_vector_type;
+  typedef zstring name_type;
+  typedef zstring value_type;
 
-protected:
-  bool              theIsDefault;
-  store::Item_t     theName;
-  param_vector_type theParams;
+  typedef std::vector< std::pair<name_type,value_type> > ctor_properties_type;
+  typedef std::map<name_type,value_type> properties_type;
 
 public:
   SERIALIZABLE_CLASS(DecimalFormat)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(DecimalFormat, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-protected:
-  // Returns true if the given property represents characters used in a
-  // picture string. These properties are decimal-separator-sign,
-  // grouping-separator, percent-sign, per-mille-sign, zero-digit,
-  // digit-sign, and pattern-separator-sign.
-  static bool isPictureStringProperty(zstring propertyName);
+  void serialize( serialization::Archiver& );
 
 public:
-  DecimalFormat(
-        bool isDefault,
-        const store::Item_t& qname,
-        const param_vector_type& params);
+  DecimalFormat( bool is_default, store::Item_t const &qname,
+                 ctor_properties_type const &properties, QueryLoc const &loc );
 
-  bool isDefault() const { return theIsDefault; }
+  store::Item const* getName() const { return qname_.getp(); }
+  properties_type const& getProperties() const { return properties_; }
+  bool isDefault() const { return is_default_; }
 
-  const store::Item* getName() const { return theName.getp(); }
-
-  const param_vector_type* getParamVector() const { return &theParams; }
-
-  bool validate(const QueryLoc& loc) const;
+private:
+  bool            is_default_;
+  store::Item_t   qname_;
+  properties_type properties_;
 };
 
 
 typedef rchandle<DecimalFormat> DecimalFormat_t;
+
+///////////////////////////////////////////////////////////////////////////////
 
 } /* namespace zorba */
 #endif /* ZORBA_DECIMAL_FORMAT_H */

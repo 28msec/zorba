@@ -110,7 +110,8 @@ enum match_test_t
   match_xs_attr_test,
   match_pi_test,
   match_comment_test,
-  match_text_test
+  match_text_test,
+  match_namespace_test
 };
 
 std::string toString(match_test_t a);

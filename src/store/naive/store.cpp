@@ -215,6 +215,7 @@ void Store::initTypeNames()
   theSchemaTypeNames[store::XS_ENTITY] = theQNamePool->insert(ns, "xs", "ENTITY");
 
   theSchemaTypeNames[store::XS_DATETIME] = theQNamePool->insert(ns, "xs", "dateTime");
+  theSchemaTypeNames[store::XS_DATETIME_STAMP] = theQNamePool->insert(ns, "xs", "dateTimeStamp");
   theSchemaTypeNames[store::XS_DATE] = theQNamePool->insert(ns, "xs", "date");
   theSchemaTypeNames[store::XS_TIME] = theQNamePool->insert(ns, "xs", "time");
   theSchemaTypeNames[store::XS_GYEAR_MONTH] = theQNamePool->insert(ns, "xs", "gYearMonth");
@@ -249,7 +250,7 @@ void Store::initTypeNames()
   theSchemaTypeNames[store::XS_HEXBINARY] = theQNamePool->insert(ns, "xs", "hexBinary");
   theSchemaTypeNames[store::XS_BOOLEAN] = theQNamePool->insert(ns, "xs", "boolean");
 
-  for (ulong i = 0; i < store::XS_LAST; ++i)
+  for (csize i = 0; i < store::XS_LAST; ++i)
   {
     theSchemaTypeCodes[theSchemaTypeNames[i].getp()] = 
     static_cast<store::SchemaTypeCode>(i);

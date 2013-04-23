@@ -184,7 +184,7 @@ bool CurrentDateTime::nextImpl( store::Item_t& result,
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  GENV_ITEMFACTORY->createDateTime(
+  GENV_ITEMFACTORY->createDateTimeStamp(
     result,
     static_cast<short>( tm.tm_year + TM_YEAR_BASE ),
     static_cast<short>( tm.tm_mon + 1 ),

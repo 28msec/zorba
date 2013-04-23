@@ -403,6 +403,13 @@ doctest2:
 
     return true;
   }
+  case match_namespace_test:
+  {
+    if (node->getNodeKind() != store::StoreConsts::namespaceNode)
+      return false;
+
+    return true;
+  }
   case match_anykind_test:
   {
     return true;

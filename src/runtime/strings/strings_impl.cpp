@@ -172,7 +172,7 @@ bool StringToCodepointsIterator::nextImpl(
       }
       state->theResult.clear();
       state->theResult.push_back( utf8::next_char( p ) );
-      
+
       GENV_ITEMFACTORY->createInteger(
         result,
         Integer(state->theResult[0])
@@ -329,19 +329,30 @@ bool ConcatStrIterator::nextImpl(
 
   for(; iter != end;  ++iter )
   {
-    if (consumeNext(lItem, *iter, planState))
+    try
     {
-      lResStream << lItem->getStringValue();
-
       if (consumeNext(lItem, *iter, planState))
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( NoSeqForConcat ) ),
-          ERROR_LOC( loc )
-        );
+        lResStream << lItem->getStringValue();
+
+        if (consumeNext(lItem, *iter, planState))
+        {
+          throw XQUERY_EXCEPTION(
+            err::XPTY0004,
+            ERROR_PARAMS( ZED( NoSeqForConcat ) ),
+            ERROR_LOC( loc )
+          );
+        }
       }
     }
+    catch (ZorbaException const& e)
+    {
+      if (e.diagnostic() == err::FOTY0013)
+        throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS(e.what()), ERROR_LOC( loc ));
+      else
+        throw;
+    }
+
   }
 
   tmp = lResStream.str();
@@ -1889,7 +1900,7 @@ static void addGroupElement(store::Item_t &parent,
       break;
     }
 #ifndef ZORBA_NO_ICU
-    match_startg = rx.get_match_start(i+1);
+    match_startg = rx.get_group_start(i+1);
     if((match_startg < 0) && (gparent < 0))
       continue;
 #else
@@ -1909,7 +1920,7 @@ static void addGroupElement(store::Item_t &parent,
       GENV_ITEMFACTORY->createTextNode(non_group_text_item, parent.getp(), non_group_str);
     }
 #ifndef ZORBA_NO_ICU
-    match_endg = rx.get_match_end(i+1);
+    match_endg = rx.get_group_end(i+1);
 #else
     match_endg = temp_endg;
 #endif
@@ -2112,17 +2123,16 @@ bool FnAnalyzeStringIterator::nextImpl(
 
     unicode::regex    rx;
     rx.compile(lib_pattern, flags.c_str());
-    int   nr_pattern_groups = rx.get_pattern_group_count();
+    int   nr_pattern_groups = rx.get_group_count();
     std::vector<int>    group_parent;
     computePatternGroupsParents(xquery_pattern, group_parent);
 
     //see if regex can match empty strings
     bool   reachedEnd = false;
     rx.set_string("", 0);
-    if (rx.find_next_match(&reachedEnd))
+    if (rx.next_match(&reachedEnd))
     {
       throw XQUERY_EXCEPTION(err::FORX0003, ERROR_PARAMS(lib_pattern));
-
     }
 
     store::Item_t null_parent;
@@ -2176,13 +2186,13 @@ bool FnAnalyzeStringIterator::nextImpl(
       int    match_end1 = 0;
       unsigned int    match_end1_bytes = 0;
       reachedEnd = false;
-      while(rx.find_next_match(&reachedEnd))
+      while(rx.next_match(&reachedEnd))
       {
         int    match_start2;
         int    match_end2;
 #ifndef ZORBA_NO_ICU
-        match_start2 = rx.get_match_start();
-        match_end2 = rx.get_match_end();
+        match_start2 = rx.get_group_start();
+        match_end2 = rx.get_group_end();
 #else
         rx.get_match_start_end_bytes(0, &match_start2, &match_end2);
 #endif

@@ -20,7 +20,9 @@
 #include <vector>
 
 #include <zorba/config.h>
+#include "util/stl_util.h"
 #include "util/unordered_map.h"
+#include "util/hash/hash.h"
 
 #include "diagnostics/assert.h"
 
@@ -31,7 +33,6 @@
 #include "collection_tree_info.h"
 #include "simple_collection.h"
 #include "structured_item.h"
-
 
 namespace zorba
 {
@@ -81,6 +82,14 @@ public:
       const XQPCollator* collation = 0) const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+
+  long compare(const store::Item* i, long tz = 0, const XQPCollator* c = 0) const
+  {
+    if (i->getTypeCode() == store::JS_NULL)
+      return 0;
+    else
+      return -1;
+  }
 
   bool getEBV() const { return false; }
 };
@@ -200,36 +209,12 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  class ConstCharStarHash
-  {
-  public:
-    typedef size_t result_type;
-    size_t operator()(const char* a) const
-    {
-      size_t hash = 5381;
-      int c;
-
-      while ((c = *a++))
-        hash = ((hash << 5) + hash) + c;
-
-      return hash;
-    }
-  };
-
-  class ConstCharStarComparator
-  {
-  public:
-    bool operator()(const char* a, const char* b) const
-    {
-      return strcmp(a, b) == 0;
-    }
-  };
-
   typedef std::unordered_map<
     const char*,
     csize,
-    ConstCharStarHash,
-    ConstCharStarComparator> Keys;
+    ztd::hash<char const*>,
+    ztd::equal_to<char const*> > Keys;
+
   typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
   class KeyIterator : public store::Iterator
@@ -266,21 +251,23 @@ public:
   size_t alloc_size() const;
   size_t dynamic_size() const;
 
-  virtual store::Iterator_t getObjectKeys() const;
+  store::Iterator_t getObjectKeys() const;
 
-  virtual store::Item_t getObjectValue(const store::Item_t& aKey) const;
+  store::Item_t getObjectValue(const store::Item_t& aKey) const;
 
-  virtual store::Item* copy(
+  xs_integer getNumObjectPairs() const;
+
+  store::Item* copy(
       store::Item* parent,
       const store::CopyMode& copymode) const;
 
-  virtual zstring getStringValue() const;
+  zstring getStringValue() const;
 
-  virtual void getStringValue2(zstring& val) const;
+  void getStringValue2(zstring& val) const;
 
-  virtual void appendStringValue(zstring& buf) const;
+  void appendStringValue(zstring& buf) const;
 
-  virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
   zstring show() const;
 
@@ -406,6 +393,11 @@ private:
 public:
   SimpleJSONArray()
   {}
+
+  SimpleJSONArray(size_t aReservedSize)
+  {
+    theContent.reserve(aReservedSize);
+  }
 
   virtual ~SimpleJSONArray();
 

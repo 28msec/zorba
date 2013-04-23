@@ -320,7 +320,6 @@ main(int argc, char** argv)
         zorba::Item lDisable = engine->getItemFactory()->
         createQName("http://www.zorba-xquery.com/options/features", "", "disable");
 
-        lContext->declareOption(lEnable, "hof");
         lContext->declareOption(lDisable, "scripting");
 #if 1
         if (path.find("Val") != std::string::npos)

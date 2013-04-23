@@ -185,6 +185,11 @@ ostream& var_expr::put(ostream& os) const
     put_qname(get_name(), os);
   }
 
+  if (get_kind() == prolog_var || get_kind() == hof_var)
+  {
+    os << " uniqueId=" << theUniqueId;
+  }
+
 #if VERBOSE
   if (theDeclaredType != NULL)
   {
@@ -502,7 +507,7 @@ ostream& if_expr::put(ostream& os) const
 ostream& fo_expr::put(ostream& os) const
 {
   const store::Item* qname = theFunction->getName();
-  BEGIN_PUT_MSG( qname->getStringValue() << "/" << num_args() );
+  BEGIN_PUT_MSG( qname->getStringValue() << "#" << num_args() );
   csize numArgs = num_args();
 
   for (csize i = 0; i < numArgs; ++i)
@@ -528,20 +533,31 @@ ostream& ftcontains_expr::put( ostream &os ) const
 
 std::ostream& function_item_expr::put(std::ostream& os) const
 {
-  os << indent << "funtion_item_expr " << expr_addr(this) << inc_indent;
+  os << indent << "funtion_item_expr " << expr_addr(this) << 
+    " fiInfo" << expr_addr(theFunctionItemInfo.getp()) << inc_indent;
 
-  if (theQName != NULL)
+  os << " " << theFunctionItemInfo->theQName->getStringValue()
+     << "#" << theFunctionItemInfo->theArity << " [\n";
+
+  for (csize i = 0; i < theFunctionItemInfo->theScopedVarsValues.size(); ++i)
   {
-    os << " " << theQName->getStringValue() << "/" << theArity;
-    os << dec_indent << endl;
-    return os;
+    os << indent << "using $"
+       << theFunctionItemInfo->theScopedVarsNames[i]->getStringValue()
+       << expr_addr(theFunctionItemInfo->theSubstVarsValues[i])
+       << (theFunctionItemInfo->theIsGlobalVar[i] ? " global=1" : "") << " := [";
+    os << endl << inc_indent;
+
+    if (theFunctionItemInfo->theScopedVarsValues[i])
+      theFunctionItemInfo->theScopedVarsValues[i]->put(os);
+
+    os << dec_indent << indent << "]" << endl;
   }
-  else
-  {
-    os << " inline udf (" << theFunction.getp() << ") [\n";
-    reinterpret_cast<const user_function*>(theFunction.getp())->getBody()->put(os);
-    END_PUT();
-  }
+
+  if (theFunctionItemInfo->theFunction != NULL &&
+      static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody() != NULL)
+    static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody()->put(os);
+
+  END_PUT();
 }
 
 
@@ -555,6 +571,14 @@ ostream& dynamic_function_invocation_expr::put(ostream& os) const
     theArgs[i]->put(os);
 
   END_PUT();
+}
+
+
+ostream& argument_placeholder_expr::put(ostream& os) const
+{
+  BEGIN_PUT_NO_EOL( argument_placeholder_expr );
+  os << "? ]\n";
+  return os;
 }
 
 
@@ -745,7 +769,7 @@ ostream& const_expr::put(ostream& os) const
 
   if (theValue->isFunction())
   {
-    os << "functrion item [ " << theValue->show() << " ]";
+    os << "function item [ " << theValue->show() << " ]";
   }
   else
   {
@@ -811,7 +835,8 @@ ostream& attr_expr::put(ostream& os) const
   BEGIN_PUT(attr_expr);
 
   theQNameExpr->put(os);
-  theValueExpr->put(os);
+  if (theValueExpr)
+    theValueExpr->put(os);
 
   END_PUT();
 }

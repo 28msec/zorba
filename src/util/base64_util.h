@@ -18,13 +18,13 @@
 #ifndef ZORBA_BASE64_UTIL_H
 #define ZORBA_BASE64_UTIL_H
 
-#include <algorithm>
 #include <iostream>
 #include <stdexcept>
 #include <sys/types.h>                  /* for size_t */
 #include <vector>
 
 #include "cxx_util.h"
+#include "stream_util.h"
 
 namespace zorba {
 namespace base64 {
@@ -67,19 +67,6 @@ private:
 };
 
 ////////// Decoding ///////////////////////////////////////////////////////////
-
-/**
- * \internal
- * Reads from the given istream until \a n non-whitespace characters are read
- * or until EOF is encountered.
- *
- * @param is The istream to read from.
- * @param buf A pointer to the start of a buffer to read into.
- * @param n The number of non-whitespace characters to read.
- * @return Returns the number of non-whitespace characters read.
- */
-std::streamsize read_without_whitespace( std::istream &is, char *buf,
-                                         std::streamsize n );
 
 /**
  * Calculates the number of bytes required to decode \a n Base64-encoded bytes.
@@ -147,14 +134,14 @@ size_type decode( char const *from, size_type from_len, std::vector<char> *to,
 template<class ToStringType>
 size_type decode( char const *from, size_type from_len, ToStringType *to,
                   int options = dopt_none ) {
-  size_type total_decoded = 0;
+  size_type decoded = 0;
   if ( from_len ) {
     typename ToStringType::size_type const orig_size = to->size();
     to->resize( orig_size + decoded_size( from_len ) );
-    total_decoded = decode( from, from_len, &to->at( orig_size ), options );
-    to->resize( orig_size + total_decoded );
+    decoded = decode( from, from_len, &to->at( orig_size ), options );
+    to->resize( orig_size + decoded );
   }
-  return total_decoded;
+  return decoded;
 }
 
 /**
@@ -164,8 +151,6 @@ size_type decode( char const *from, size_type from_len, ToStringType *to,
  * @param from The istream to read from until EOF is reached.
  * @param to The ostream to write the decoded bytes to.
  * @param options The options to use.
- * 4 otherwise an exception is thrown; if \a false, missing trailing bytes are
- * assumed to be padding.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
  * set and the number of Base64 bytes decoded is not a multiple of 4.
@@ -183,8 +168,6 @@ size_type decode( std::istream &from, std::ostream &to,
  * @param from The istream to read from until EOF is reached.
  * @param to The string to append the decoded bytes to.
  * @param options The options to use.
- * 4 otherwise an exception is thrown; if \a false, missing trailing bytes are
- * assumed to be padding.
  * @return Returns the number of decoded bytes.
  * @throws invalid_argument if \a options does not have the \c dopt_any_len bit
  * set and the number of Base64 bytes decoded is not a multiple of 4.
@@ -194,11 +177,12 @@ size_type decode( std::istream &from, std::ostream &to,
 template<class ToStringType>
 size_type decode( std::istream &from, ToStringType *to,
                   int options = dopt_none ) {
+  bool const ignore_ws = !!(options & dopt_ignore_ws);
   size_type total_decoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 4 ], to_buf[ 1024 * 3 ];
     std::streamsize gcount;
-    if ( options & dopt_ignore_ws )
+    if ( ignore_ws )
       gcount = read_without_whitespace( from, from_buf, sizeof from_buf );
     else {
       from.read( from_buf, sizeof from_buf );
@@ -295,14 +279,14 @@ size_type encode( char const *from, size_type from_len, std::vector<char> *to );
  */
 template<class ToStringType>
 size_type encode( char const *from, size_type from_len, ToStringType *to ) {
-  size_type total_encoded = 0;
+  size_type encoded = 0;
   if ( from_len ) {
     typename ToStringType::size_type const orig_size = to->size();
     to->resize( orig_size + encoded_size( from_len ) );
-    total_encoded = encode( from, from_len, &to->at( orig_size ) );
-    to->resize( orig_size + total_encoded );
+    encoded = encode( from, from_len, &to->at( orig_size ) );
+    to->resize( orig_size + encoded );
   }
-  return total_encoded;
+  return encoded;
 }
 
 /**
@@ -342,7 +326,7 @@ size_type encode( std::istream &from, ToStringType *to ) {
  * vector&lt;char;&gt;.
  *
  * @param from The istream to read from until EOF is reached.
- * @param to The string to append the encoded bytes to.
+ * @param to The vector to append the encoded bytes to.
  * @param Returns the number of encoded bytes.
  */
 size_type encode( std::istream &from, std::vector<char> *to );
