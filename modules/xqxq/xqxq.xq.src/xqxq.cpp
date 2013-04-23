@@ -461,8 +461,9 @@ zorba::ItemSequence_t PrepareMainModuleFunction::evaluate(
   String lQueryString = getOneStringArgument(aArgs, 0); 
     
   XQuery_t lQuery;
-    
+
   StaticContext_t ltempSctx = lZorba->createStaticContext();
+  ltempSctx->setBaseURI(aSctx->getBaseURI());
 
   std::auto_ptr<XQXQURLResolver> lResolver;
   std::auto_ptr<XQXQURIMapper> lMapper;
@@ -930,7 +931,7 @@ zorba::ItemSequence_t VariableValueFunction::evaluate(
 
   zorba::DynamicContext* lCtx = lQuery->getDynamicContext();
   zorba::String lNS = lVarQName.getNamespace(), lLocal = lVarQName.getLocalName();
-
+  
   try
   {
     lIsBoundVariable = lCtx->isBoundExternalVariable(lNS, lLocal);

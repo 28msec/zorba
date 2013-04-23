@@ -793,7 +793,6 @@ bool ExtFunctionCallIterator::nextImpl(
 
       // The planState.theQuery maybe null, e.g. in the case of constant-folding
       // of global variable expressions
-
       StaticContextImpl theSctxWrapper(theModuleSctx,
                                        (planState.theQuery == NULL?
                                         NULL :
@@ -803,9 +802,13 @@ bool ExtFunctionCallIterator::nextImpl(
                                         planState.theGlobalDynCtx,
                                         theModuleSctx);
 
+      if (lNonePureFct->getURI() == "http://www.zorba-xquery.com/modules/xqxq")
+        theSctxWrapper.setBaseURI(theSctx->get_base_uri().c_str());
+
       state->theResult = lNonePureFct->evaluate(state->m_extArgs,
                                                 &theSctxWrapper,
                                                 &theDctxWrapper);
+      
       if(state->theResult.get() != NULL)
         state->theResultIter = state->theResult->getIterator();
     } // if (!theFunction->isContextual())
