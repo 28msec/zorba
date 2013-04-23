@@ -1036,7 +1036,7 @@ protected:
       const zstring& value,
       const char* default_ns,
       const QueryLoc& loc) const;
-  
+
   void set_feature(feature::kind k) { theFeatures |= k; }
 
   void unset_feature(feature::kind k) { theFeatures &= ~k; }

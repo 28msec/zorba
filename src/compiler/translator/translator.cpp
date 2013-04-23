@@ -11913,21 +11913,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   TypeManager* tm = sourceExpr->get_type_manager();
   xqtref_t srcType = sourceExpr->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *srcType, *theRTM.EMPTY_TYPE) &&
-      numArgs > 1)
-  {
-    // If the source expression is the empty sequence and there is more than
-    // one parameter, we should still consider it a dynamic invocation.
-    fc->set_allowing_empty(true);
-
-    expr* dynFuncInvocation =
-    CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
-                                        flworVarExpr,
-                                        arguments);
-
-    flworExpr->set_return_expr(dynFuncInvocation);
-  }
-  else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR))
   {
     if (numArgs > 1)
     {
