@@ -355,6 +355,16 @@ store::Item_t FragmentXmlLoader::loadXml(
 
     FragmentXmlLoader::endDocument(theFragmentStream->ctxt->userData); // this would not be called otherwise
   }
+  catch( std::exception const &e )
+  {
+    theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR,
+                                      ERROR_PARAMS( e.what() )));
+
+    abortload();
+    thePathStack.clear();
+    return NULL;
+  }
   catch (...)
   {
     // catch-TODO: "throw 0" and "catch(...)" are being used here as "flow
@@ -861,8 +871,19 @@ store::Item_t DtdXmlLoader::loadXml(
       return NULL;
     }
   }
+  catch( std::exception const &e )
+  {
+    theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR, ERROR_PARAMS( e.what() )));
+
+    abortload();
+    return NULL;
+  }
   catch(...)
   {
+    theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
+
     abortload();
     thePathStack.clear();
     return NULL;
@@ -1082,7 +1103,7 @@ void DtdXmlLoader::startDocument(void * ctx)
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
-  catch (std::exception const &e)
+  catch( std::exception const &e )
   {
     loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
@@ -1172,7 +1193,7 @@ void DtdXmlLoader::endDocument(void * ctx)
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
-  catch (std::exception const &e)
+  catch( std::exception const &e )
   {
     loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
@@ -1474,7 +1495,7 @@ void DtdXmlLoader::startElement(
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
-  catch (std::exception const &e)
+  catch( std::exception const &e )
   {
     loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
@@ -1614,7 +1635,7 @@ void  DtdXmlLoader::endElement(
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
-  catch (std::exception const &e)
+  catch( std::exception const &e )
   {
     loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
@@ -1673,7 +1694,7 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
-  catch (std::exception const &e)
+  catch( std::exception const &e )
   {
     loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
@@ -1734,7 +1755,7 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
-  catch (std::exception const &e)
+  catch( std::exception const &e )
   {
     loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
@@ -1792,7 +1813,7 @@ void DtdXmlLoader::processingInstruction(
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
-  catch (std::exception const &e)
+  catch( std::exception const &e )
   {
     loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(
@@ -1843,7 +1864,7 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
   {
     loader.theXQueryDiagnostics->add_error( e );
   }
-  catch (std::exception const &e)
+  catch( std::exception const &e )
   {
     loader.theXQueryDiagnostics->add_error(
       NEW_ZORBA_EXCEPTION(

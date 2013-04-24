@@ -465,7 +465,7 @@ store::Item_t FastXmlLoader::loadXml(
     if (numChars < 0)
     {
       theXQueryDiagnostics->
-      add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
 
       abortload();
       return NULL;
@@ -473,8 +473,20 @@ store::Item_t FastXmlLoader::loadXml(
 
     xmlParseChunk(ctxt, theBuffer, 0, 1);
   }
+  catch( std::exception const &e )
+  {
+    theXQueryDiagnostics->
+        add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR,
+                                      ERROR_PARAMS( e.what() )));
+
+    abortload();
+    return NULL;
+  }
   catch(...)
   {
+    theXQueryDiagnostics->
+      add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
+
     abortload();
     return NULL; // catch-TODO: "throw;" here?
   }
