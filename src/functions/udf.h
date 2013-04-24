@@ -118,7 +118,7 @@ private:
 
   unsigned short              theScriptingKind;
 
-  expr*                       theBodyExpr;
+  expr                      * theBodyExpr;
   std::vector<var_expr*>      theArgVars;
 
   std::vector<unsigned char>  theIgnoresSortedNodes;
@@ -201,7 +201,7 @@ public:
 
   void optimize();
 
-  PlanIter_t getPlan(uint32_t& planStateSize);
+  PlanIter_t getPlan(uint32_t& planStateSize, ulong nextVarId);
 
   void invalidatePlan();
 

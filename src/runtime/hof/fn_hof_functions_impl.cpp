@@ -119,9 +119,8 @@ bool FunctionLookupIterator::nextImpl(
       factory->createQName(ctxItemName, "", "", static_context::DOT_VAR_NAME);
 
       var_expr* ve = ccb->theEM->
-      create_var_expr(impSctx, NULL, loc, var_expr::prolog_var, ctxItemName);
+      create_var_expr(impSctx, NULL, loc, var_expr::local_var, ctxItemName);
 
-      ve->set_external(true);
       ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM);
 
       impSctx->bind_var(ve, loc);
@@ -135,9 +134,8 @@ bool FunctionLookupIterator::nextImpl(
       factory->createQName(ctxPosName, "", "", static_context::DOT_POS_VAR_NAME);
 
       var_expr* ve = ccb->theEM->
-      create_var_expr(impSctx, NULL, loc, var_expr::prolog_var, ctxPosName);
+      create_var_expr(impSctx, NULL, loc, var_expr::local_var, ctxPosName);
 
-      ve->set_external(true);
       ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION);
 
       impSctx->bind_var(ve, loc);
@@ -151,9 +149,8 @@ bool FunctionLookupIterator::nextImpl(
       factory->createQName(ctxSizeName, "", "", static_context::DOT_SIZE_VAR_NAME);
 
       var_expr* ve = ccb->theEM->
-      create_var_expr(impSctx, NULL, loc, var_expr::prolog_var, ctxSizeName);
+      create_var_expr(impSctx, NULL, loc, var_expr::local_var, ctxSizeName);
 
-      ve->set_external(true);
       ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE);
 
       impSctx->bind_var(ve, loc);
@@ -164,12 +161,19 @@ bool FunctionLookupIterator::nextImpl(
     expr* fiExpr = 
     Translator::translate_literal_function(qname, arity, ccb, impSctx, loc);
     
-    FunctionItemInfo_t dynFnInfo =
+    FunctionItemInfo_t fiInfo =
     static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
 
-    dynFnInfo->theCCB = ccb;
+    fiInfo->theCCB = ccb;
 
-    result = new FunctionItem(dynFnInfo, fiDctx.release());
+    if (fiInfo->numInScopeVars() > 0)
+    {
+      result = new FunctionItem(fiInfo, fiDctx.release());
+    }
+    else
+    {
+      result = new FunctionItem(fiInfo, NULL);
+    }
   }
   catch (const ZorbaException& e)
   {

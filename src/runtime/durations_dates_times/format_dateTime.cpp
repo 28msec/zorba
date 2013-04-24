@@ -561,6 +561,19 @@ static void append_weekday( unsigned mday, unsigned mon, unsigned year,
   }
 }
 
+static void append_week_in_month( unsigned mday, unsigned mon, unsigned year,
+                                  modifier const &mod, zstring *dest ) {
+  int week = time::calendar::calc_week_in_month( mday, mon, year, mod.cal );
+  if ( week == -1 ) {
+    week = time::calendar::calc_week_in_month( mday, mon, year, calendar::ISO );
+    ostringstream oss;
+    // TODO: localize "Calendar"
+    oss << "[Calendar: " << calendar::string_of[ calendar::ISO ] << ']';
+    *dest += oss.str();
+  }
+  append_number( week, mod, dest );
+}
+
 static void append_week_in_year( unsigned mday, unsigned mon, unsigned year,
                                  modifier const &mod, zstring *dest ) {
   int week = time::calendar::calc_week_in_year( mday, mon, year, mod.cal );
@@ -1265,7 +1278,10 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           );
           break;
         case 'w':
-          append_number( dateTime.getWeekInMonth(), mod, &result_str );
+          append_week_in_month(
+            dateTime.getDay(), dateTime.getMonth() - 1, dateTime.getYear(),
+            mod, &result_str
+          );
           break;
         case 'Y':
           append_year( std::abs( dateTime.getYear() ), mod, &result_str );

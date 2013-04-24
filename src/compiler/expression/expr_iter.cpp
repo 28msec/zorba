@@ -704,8 +704,8 @@ nextclause:
 
     EXPR_ITER_BEGIN();
 
-    theArgsIter = fiExpr->theFunctionItemInfo->theScopedVarsValues.begin();
-    theArgsEnd = fiExpr->theFunctionItemInfo->theScopedVarsValues.end();
+    theArgsIter = fiExpr->theFunctionItemInfo->theInScopeVarValues.begin();
+    theArgsEnd = fiExpr->theFunctionItemInfo->theInScopeVarValues.end();
 
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {

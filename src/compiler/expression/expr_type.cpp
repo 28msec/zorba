@@ -260,7 +260,6 @@ void expr::compute_return_type(bool deep, bool* modified)
     case var_expr::catch_var: // TODO
     case var_expr::arg_var:
     case var_expr::eval_var:
-    case var_expr::hof_var:
     {
       break;
     }
