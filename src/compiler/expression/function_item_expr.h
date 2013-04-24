@@ -29,7 +29,7 @@
 namespace zorba {
 
 /*******************************************************************************
-  [133]     ArgumentPlaceholder      ::=      "?"
+  ArgumentPlaceholder ::= "?"
 ********************************************************************************/
 class argument_placeholder_expr : public expr
 {
@@ -115,6 +115,10 @@ public:
 
   InlineFunction ::= "function" "(" ParamList? ")" ("as" SequenceType)? EnclosedExpr
 
+  theFunctionItemInfo:
+  --------------------
+  See class definition in src/runtime/hof/function_item.h
+
 ********************************************************************************/
 class function_item_expr: public expr
 {
@@ -149,25 +153,16 @@ protected:
 public:
   FunctionItemInfo* get_dynamic_fn_info() { return theFunctionItemInfo; }
 
-  void add_variable(
-      expr* var,
-      var_expr* substVar,
-      const store::Item_t& name,
-      int isGlobal);
+  void add_variable(expr* var, var_expr* substVar);
 
-  const std::vector<var_expr*>& get_subst_vars() const
+  const std::vector<var_expr*>& get_in_scope_vars() const
   {
-    return theFunctionItemInfo->theSubstVarsValues;
+    return theFunctionItemInfo->theInScopeVars;
   }
 
-  const std::vector<store::Item_t>& get_scoped_vars_names() const
+  const std::vector<store::Item_t>& get_in_scope_var_names() const
   {
-    return theFunctionItemInfo->theScopedVarsNames;
-  }
-
-  const std::vector<int>& get_is_global_var() const
-  {
-    return theFunctionItemInfo->theIsGlobalVar;
+    return theFunctionItemInfo->theInScopeVarNames;
   }
 
   void set_function(user_function* udf, csize arity);
@@ -189,8 +184,6 @@ public:
   std::ostream& put(std::ostream& os) const;
   
 public:
-  // Given a location, will create an inline function name string such 
-  // as "inline function(loc)"
   static store::Item_t create_inline_fname(const QueryLoc& loc);
 };
 

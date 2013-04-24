@@ -1431,23 +1431,10 @@ int DateTime::getDayOfYear(int year, int month, int day)
 }
 
 
-int DateTime::getWeekInMonth(int year, int month, int day)
-{
-  int const wday = time::calc_wday( 1, month - 1, year );
-  return ((day + wday - 2) / 7) + (wday < 5 ? 1 : 0);
-}
-
-
 int DateTime::getDayOfYear() const
 {
   return getDayOfYear(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
 }
 
-
-int DateTime::getWeekInMonth() const
-{
-  return getWeekInMonth(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
-}
-
-} // namespace xqp
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

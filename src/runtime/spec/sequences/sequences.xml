@@ -421,6 +421,7 @@
     <zorba:member type="xs_long" name="theRemaining"
                   defaultValue="0" brief=""/>
     <zorba:member type="bool" name="theIsChildReset" defaultValue="false"/>
+    
 
   </zorba:state>
 
