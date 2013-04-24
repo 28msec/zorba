@@ -364,7 +364,7 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
       while (lInstream->good())
       {
         lInstream->read(buf, 1024);
-        lDocString.append(buf, lInstream->gcount());
+        lDocString.append(buf, static_cast<zstring::size_type>(lInstream->gcount()));
       }
     }
     else
@@ -385,7 +385,7 @@ bool FnZorbaCanonicalizeIterator::nextImpl(store::Item_t& result, PlanState& pla
     xmlFree(lResult);
     xmlFreeDoc(lDoc);
   }
-  catch ( std::exception const& e)
+  catch ( std::exception const& )
   {
       zstring lErrorMsg;
       lErrorMsg = "\"" + lDocString + "\"";

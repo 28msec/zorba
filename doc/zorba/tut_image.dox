@@ -1,0 +1,222 @@
+/**
+\page image_processing_tutorial  Image Processing with Zorba
+
+\section image_proc Image Representation And Formats
+
+\subsection images Images
+
+Images are passed to the functions of the imaging library as xs:base64Binary types and 
+any function returning an image will return it as xs:base64Binary type. For example, 
+images read by the Zorba file module are already returned as xs:base64Binary and are 
+ready to be used. Also,  images written to disk using the file module will be ordinary 
+binary data if one passes \c binary as serialization option.
+
+
+\subsection image_formats Image Formats
+
+Currently, the imaging library supports the following popular image formats: GIF, JPEG, TIFF, PNG and SVG.
+If any other format is needed, please contact us and we will see if it is possible to support the format.
+
+\subsection functions Functions
+
+All functions provided by the image library are functional and will either return the right value 
+or raise an error. The library additionally offers interfaces with schema types in the function 
+signatures (\c basicschema.xq, \c manipulationschema.xq, \c paintschema.xq, \c animationschema.xq) which can
+be used to directly validate certain types (e.g. color strings).
+
+
+\subsection colors Colors
+
+Colors are represented as strings in the same way they are used in html. A leading '#' character 
+with 6 hexadecimal numbers following for red, green and blue values.
+
+Examples are: 
+- Black: #000000
+- Red: #FF00000
+- Green: #00FF00
+- Blue: #0000FF
+
+\subsection modules Modules
+
+Zorba provides the following four modules for image processing:
+
+- <a href="/html/modules/zorba/image/basic">http://www.zorba-xquery.com/modules/image/basic</a> which is concerned with accessing basic image attributes, creating new images and converting their format.
+- <a href="/html/modules/zorba/image/manipulation">http://www.zorba-xquery.com/modules/image/manipulation</a> which is concerned with image manipulations like zooming, special effects etc.
+- <a href="/html/modules/zorba/image/paint">http://www.zorba-xquery.com/modules/image/paint</a> which is concerned with drawing different geometrical shapes and text to images.
+- <a href="/html/modules/zorba/image/manipulation">http://www.zorba-xquery.com/modules/image/animation</a> which is concerned with creating animated GIF images.
+
+This tutorial contains a small example for each of the modules.
+
+
+\section basic_imaging_functions Basic Imaging Functions
+
+\subsection creating_an_image Creating An Image
+
+In this example, we create a new image and return the width and type (image format) of the newly created image.
+
+\code
+import module namespace basic = "http://www.zorba-xquery.com/modules/image/basic";
+
+let $new-image as xs:base64Binary := basic:create(xs:unsignedInt(100), xs:unsignedInt(100), "GIF")
+let $width := basic:width($new-image)
+let $format := basic:type($new-image)
+return ($width, $format)
+\endcode
+
+
+\subsection explanation Explanation
+
+In line 3 \c $new-image is assigned the result of the basic:create command, so \c $new-image contains 
+the xs:base64Binary representation of a plain white GIF image.
+
+In line 4 we use the basic:width command with new-image as argument to get the width of the image 
+and in line 5 the basic:type function to get the format which are both passed back in line 6.
+
+\subsection expected_output Expected Output
+
+\code
+<?xml version="1.0" encoding="UTF-8"?>
+100 GIF
+\endcode
+
+\subsection accessing_efix_information Accessing Exif Information
+
+This example shows how to access the Exif information in JPEG images (also possible with TIFF images).
+
+\code
+import module namespace http = "http://expath.org/ns/http-client";
+import module namespace basic = "http://www.zorba-xquery.com/modules/image/basic";
+declare namespace h = "http://expath.org/ns/http-client";
+
+(: Get image from web :)
+let $req := <h:request method="GET" 
+			   href="http://www.zorba-xquery.com/tutorials/tutorialimages/exif.jpg"
+               auth-method="Basic"
+               send-authorization="true"
+               username="zorba"
+               password="blub"></h:request>
+let $res := http:read($req, ())[2]
+(: Using Image Library to extract exif tag :)
+return basic:exif($res, "DateTimeOriginal")
+\endcode
+
+\subsection explanation2 Explanation
+
+Lines 6 and 7 use the Zorba http library to get an image from the web.
+Then, in line 9 we pass the image to the \c basic:exif function requesting the value of the \c DateTimeOriginal tag, which we return.
+
+\subsection expected_output2 Expected Output
+\code
+<?xml version="1.0" encoding="UTF-8"?>
+2007-03-15T20:12:46+02:00
+\endcode
+
+\section manipulatin_images Manipulating Images
+
+In this example, we first download an image from the web using Zorba's http client and then 
+apply a charcoal effect to that image returning the charcoaled image.
+
+\code
+import module namespace http = "http://expath.org/ns/http-client";
+import module namespace manipulation = "http://www.zorba-xquery.com/modules/image/manipulation";
+declare namespace h = "http://expath.org/ns/http-client";
+
+(: Get image from web :)
+let $req := <h:request method="GET" href="http://www.zorba-xquery.com/http-client/download.png" auth-method="Basic" send-authorization="true" username="zorba" password="blub" ></h:request>
+let $res := http:read($req, ())[2]
+(: Using Image Library to manipulate image :)
+let $manipulated-image := manipulation:charcoal($res, 2.0, 3.0)
+return $manipulated-image
+\endcode
+
+\subsection explanation3 Explanation
+
+Lines 6 and 7 use the Zorba http client to retrieve an image from the web.
+Then, in line 9, we assign \c $manipulated-image a manipulated version of the 
+image by passing the fetched image to the \c manipulation:charcoal function 
+that takes the image, performs the charcoal effect on it returns a charcoaled 
+version of the image.
+
+\subsection expected_output3 Expected Output
+
+\image html tutorialimages/charcoaled.gif
+
+\section painting_images Painting Images
+
+In this example, we create a new blank image and then paint a circle and a rectangle on it before returning it.
+
+\code
+import module namespace basic = "http://www.zorba-xquery.com/modules/image/basic";
+import module namespace paint = "http://www.zorba-xquery.com/modules/image/paint";
+
+let $blank-image := basic:create(xs:unsignedInt(150), xs:unsignedInt(150), "PNG")
+let $image-circle := paint:draw-circle($blank-image, 75, 75, 50, "#00FF00", "#0000FF", 2, true())
+let $image-circle-and-rectangle := paint:draw-rectangle($image-circle, 25, 25, 75, 75, "#FF00FF", "#5F08AA", 1, true())
+return $image-circle-and-rectangle
+\endcode
+
+\subsection explanation4 Explanation
+
+In line 4 a blank image with PNG format is created (like in the first example of this tutorial).
+Then in line 5 we pass the blank image to the \c paint:draw-circle method which returns a version 
+of the blank image with a circle on it.
+In line 6 we pass the image which already has a circle on it to the \c paint:draw-rectangle function 
+which returns an additional rectangle painted on it.
+
+\subsection expected_output4 Expected Output
+
+\image html tutorialimages/painted.png
+
+\section creating_animated_gifs Creating Animated GIFS
+
+In this example, we create two blank images, paint a line on each, and use them to create an animated gif.
+
+\code
+import module namespace basic = "http://www.zorba-xquery.com/modules/image/basic";
+import module namespace paint = "http://www.zorba-xquery.com/modules/image/paint";
+import module namespace anim = "http://www.zorba-xquery.com/modules/image/animation";
+
+let $blank-image := basic:create(xs:unsignedInt(100), xs:unsignedInt(100), "GIF")
+let $first-image := paint:draw-line($blank-image, 50, 25, 50, 75, (), (), true())
+let $second-image := paint:draw-line($blank-image, 25, 50, 75, 50, (), (), true())
+return anim:create-animated-gif(($first-image, $second-image), xs:unsignedInt(15), xs:unsignedInt(0))
+\endcode
+
+\subsection explanation5 Explanation
+
+In lines 6 and 7, we create 2 images each containing a line painted on them.
+Then, in line 8, we return the output of anim:create-animated-gif (which is a GIF image) 
+for which we pass the images from lines 6 and seven as arguments. The function composes 
+them to an animated GIF image.
+
+\subsection expected_output5 Expected Output
+
+\image html tutorialimages/animated.gif
+
+\section putting_it_all_thogether Putting it all together: A More Extensive Example
+
+In this example, we will create an image displaying a scrolling text using different techniques from the examples above.
+
+\code
+import module namespace basic = "http://www.zorba-xquery.com/modules/image/basic";
+import module namespace paint = "http://www.zorba-xquery.com/modules/image/paint";
+import module namespace anim = "http://www.zorba-xquery.com/modules/image/animation";
+
+let $blank-image := basic:create(xs:unsignedInt(100), xs:unsignedInt(100), "GIF")
+let $i1 := paint:draw-text($blank-image, "Zorba Rocks", -10, 40, "Arial", (), "#FF0000")
+let $i2 := paint:draw-text($blank-image, "Zorba Rocks", 20, 40, "Arial", (), "#FF0000")
+let $i3 := paint:draw-text($blank-image, "Zorba Rocks", 40, 40, "Arial", (), "#FF0000")
+let $i4 := paint:draw-text($blank-image, "Zorba Rocks", 60, 40, "Arial", (), "#FF0000")  
+let $i5 := paint:draw-text($blank-image, "Zorba Rocks", 80, 40, "Arial", (), "#FF0000")  
+let $i6 := paint:draw-text($blank-image, "Zorba Rocks", 100, 40, "Arial", (), "#FF0000")  
+let $i7 := paint:draw-text($blank-image, "Zorba Rocks", 20, 40, "Arial", (), "#FF0000")  
+let $i8 := paint:draw-text($blank-image, "Zorba Rocks", 120, 40, "Arial", (), "#FF0000")
+return anim:create-morphed-gif(($i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8), xs:unsignedInt(2), xs:unsignedInt(0), xs:unsignedInt(4))
+\endcode
+
+\subsection expected_output6 Expected Output
+
+\image html tutorialimages/extended.gif
+
+
+*/
