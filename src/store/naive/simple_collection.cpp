@@ -271,7 +271,8 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
     }
     else
     {
-      theTrees.insert(theTrees.begin() + pos, item);
+      zorba::checked_vector<store::Item_t>::size_type sPos = static_cast<zorba::checked_vector<store::Item_t>::size_type>(pos);
+      theTrees.insert(theTrees.begin() + sPos, item);
 
       structuredItem->attachToCollection(this, createTreeId(), position);
     }
@@ -586,7 +587,7 @@ SimpleCollection::CollectionIter::CollectionIter(
   :
   theCollection(collection),
   theHaveLock(false),
-  theSkip(to_xs_unsignedLong(skip))
+  theSkip(static_cast<zorba::csize>(to_xs_unsignedLong(skip)))
 {
 }
 

@@ -518,7 +518,8 @@ void ProbeValueHashIndexIterator::reset()
     }
     else
     {
-      theIte += to_xs_long(theSkip);
+      std::vector<store::Item_t>::size_type toSum = static_cast<std::vector<store::Item_t>::size_type>(to_xs_long(theSkip));
+      theIte += toSum;
     }
   }
 }

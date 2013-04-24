@@ -172,9 +172,11 @@ storage_type* itou( unsigned long long n, storage_type *buf,
   do {
     unsigned long long const n_prev = n;
     n /= 10;
-    unsigned const digit = n_prev - n * 10;
-    if ( !utf8_size[ digit ] )          // didn't cache previously: cache now
-      utf8_size[ digit ] = encode( zero + digit, utf8_digit[ digit ] );
+    unsigned long long const digit = n_prev - n * 10;
+    if ( !utf8_size[ digit ] ) {        // didn't cache previously: cache now
+      unicode::code_point const cp = static_cast<unicode::code_point>( digit );
+      utf8_size[ digit ] = encode( zero + cp, utf8_digit[ digit ] );
+    }
     //
     // Copy the UTF-8 bytes into buf backwards so when we reverse the entire
     // buffer later (to reverse the digit order to put them the right way
