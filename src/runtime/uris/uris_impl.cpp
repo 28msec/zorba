@@ -44,10 +44,6 @@
 #define QUERY_NAME       "query"
 #define FRAGMENT_NAME    "fragment"
 
-#define ZURI0001_MSG "cannot specify opaque-part in conjunction with host/port/path/user-info/query"
-#define ZURI0002_MSG "scheme required when specifying opaque-part"
-#define ZURI0003_MSG "path component of absolute URI must begin with /"
-
 using namespace std;
 
 namespace zorba {
@@ -251,7 +247,7 @@ bool
 SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     lItemURI, lItemKey;
-  zorba::zstring    lStrValue, lStrKey, lStrRes;
+  zorba::zstring    lStrValue, lStrKey, lStrRes, lErrNoOpaque;
   store::Iterator_t lKeys;
   URI               uri = URI();
   int               lIntPort = 0;
@@ -279,24 +275,30 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         } else if(lStrKey == AUTHORITY_NAME && !lStrValue.empty()){
           uri.set_reg_based_authority(lStrValue);
           lHasNotOpaqueField = true;
+          lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
         } else if(lStrKey == USER_INFO_NAME && !lStrValue.empty()){
           uri.set_user_info(lStrValue);
           lHasNotOpaqueField = true;
+          lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
         } else if(lStrKey == HOST_NAME && !lStrValue.empty()){
           uri.set_host(lStrValue);
           lHasNotOpaqueField = true;
+          lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
         } else if(lStrKey == PORT_NAME){
           sscanf(lStrValue.str().c_str(), "%d", &lIntPort);
           if(lIntPort != 0){
             uri.set_port(lIntPort);
             lHasNotOpaqueField = true;
+            lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
           }
         } else if(lStrKey == PATH_NAME && !lStrValue.empty()){
           uri.set_path(lStrValue);
           lHasNotOpaqueField = true;
+          lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
         } else if(lStrKey == QUERY_NAME && !lStrValue.empty()){
           uri.set_query(lStrValue);
           lHasNotOpaqueField = true;
+          lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
         } else if(lStrKey == FRAGMENT_NAME && !lStrValue.empty()){
           uri.set_fragment(lStrValue);
         }
@@ -310,7 +312,7 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     throw XQUERY_EXCEPTION(
       zerr::ZURI0001_OPAQUE_WITH_OTHERS,
-      ERROR_PARAMS( ZURI0001_MSG ),
+//      ERROR_PARAMS( ),
       ERROR_LOC( loc )
     );
   }
@@ -318,20 +320,17 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     throw XQUERY_EXCEPTION(
       zerr::ZURI0002_SCHEME_REQUIRED_FOR_OPAQUE,
-      ERROR_PARAMS( ZURI0002_MSG ),
+//      ERROR_PARAMS( ),
       ERROR_LOC( loc )
     );
   }
-  if(lHasSchemeField && !uri.get_encoded_path().empty())
+  if(lHasSchemeField && !uri.get_encoded_path().empty() && (uri.get_encoded_path().substr(0,1) != "/"))
   {
-    if(uri.get_encoded_path().substr(0,1) != "/")
-    {
-      throw XQUERY_EXCEPTION(
-        zerr::ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI,
-        ERROR_PARAMS( ZURI0003_MSG ),
-        ERROR_LOC( loc )
-      );
-    }
+    throw XQUERY_EXCEPTION(
+      zerr::ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI,
+//      ERROR_PARAMS( uri.get_encoded_path() ),
+      ERROR_LOC( loc )
+    );
   }
   
   lStrRes = zorba::zstring(uri.toString());
@@ -339,5 +338,6 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   STACK_END (state);
 }
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
