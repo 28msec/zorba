@@ -472,69 +472,31 @@ void end_visit(function_item_expr& v)
   fnInfo->theCCB = theCCB;
   fnInfo->theLoc = qloc;
 
+  csize numOuterVars = v.get_in_scope_vars().size();
+
+  for (csize i = 0; i < numOuterVars; ++i)
+  {      
+    fnInfo->theInScopeVarIterators.push_back(pop_itstack());
+  }
+  
+  std::reverse(fnInfo->theInScopeVarIterators.begin(),
+               fnInfo->theInScopeVarIterators.end());
+
+  
+  for (csize i = 0; i < numOuterVars; ++i)
   {
-    for (csize i = 0; i < v.get_subst_vars().size(); ++i)
-    {      
-      if (!v.get_is_global_var()[i])     
-        fnInfo->theScopedVarsIterators.push_back(pop_itstack());
-      else if (fnInfo->theScopedVarsValues[i] != NULL)
-        pop_itstack();
+    fnInfo->theInScopeVars[i]->set_var_info(NULL);
+
+    if (fnInfo->theInScopeVars[i]->get_unique_id() != 0)
+    {
+      ZORBA_ASSERT(fnInfo->theInScopeVars[i]->get_unique_id() == i+1);
+    }
+    else
+    {
+      fnInfo->theInScopeVars[i]->set_unique_id(i+1);
     }
 
-    std::reverse(fnInfo->theScopedVarsIterators.begin(),
-                 fnInfo->theScopedVarsIterators.end());
-  }
-
-
-  // This portion is similar to the eval iterator
-  { 
-    csize curChild = -1;
-    csize numOuterVars = fnInfo->theScopedVarsNames.size();
-    for (csize i = 0; i < numOuterVars; ++i)
-    {
-      if (!fnInfo->theIsGlobalVar[i])
-      {
-        ++curChild;
-
-        if (fnInfo->theSubstVarsValues[i] != NULL &&
-            fnInfo->theSubstVarsValues[i]->get_unique_id() == 0)
-        {
-          fnInfo->theSubstVarsValues[i]->set_var_info(NULL);
-          fnInfo->theSubstVarsValues[i]->set_unique_id(theNextDynamicVarId++);
-        }
-
-        fnInfo->theVarId[i] = fnInfo->theSubstVarsValues[i]->get_unique_id();
-      }
-      else
-      {
-        static_context* outerSctx = fnInfo->theClosureSctx;
-
-        VarInfo* outerGlobalVar = outerSctx->lookup_var(fnInfo->theScopedVarsNames[i]);
-
-        ulong outerGlobalVarId = 0;
-
-        if (outerGlobalVar)
-        {
-          outerGlobalVarId = outerGlobalVar->getId();
-        }
-        else
-        {
-          for (csize j=0; j<fnInfo->theSubstVarsValues.size(); j++)
-          {
-            if (fnInfo->theSubstVarsValues[j]->get_name()->equals(fnInfo->theScopedVarsNames[i].getp()))
-              outerGlobalVarId = fnInfo->theSubstVarsValues[j]->get_unique_id();
-          }
-        }
-
-        if (fnInfo->theSubstVarsValues[i] != NULL &&
-            fnInfo->theSubstVarsValues[i]->get_unique_id() == 0)
-        {
-          fnInfo->theSubstVarsValues[i]->set_unique_id(outerGlobalVarId);
-        }
-
-        fnInfo->theVarId[i] = outerGlobalVarId;
-      }
-    } // for
+    fnInfo->theInScopeVarIds[i] = fnInfo->theInScopeVars[i]->get_unique_id();
   }
 
   push_itstack(new FunctionItemIterator(sctx, qloc, fnInfo));
@@ -929,7 +891,6 @@ void general_var_codegen(const var_expr& var)
   }
 
   case var_expr::prolog_var:
-  case var_expr::hof_var:
   {
     push_itstack(new CtxVarIterator(sctx,
                                     qloc,
