@@ -580,6 +580,114 @@ bool BasicItemFactory::createDateTime(
 }
 
 
+bool BasicItemFactory::createDateTimeStamp(store::Item_t& result, const xs_dateTime* value)
+{
+  if( value->hasTimezone() )
+  {
+    result = new DateTimeItem(store::XS_DATETIME_STAMP, value);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+  
+  
+bool BasicItemFactory::createDateTimeStamp(
+                                      store::Item_t& result,
+                                      const xs_date* date,
+                                      const xs_time* time)
+{
+  std::auto_ptr<DateTimeItem> dtin(new DateTimeItem(store::XS_DATETIME_STAMP));
+  int err = DateTime::createDateTime(date, time, dtin->theValue);
+  if (err == 0 && time->hasTimezone())
+  {
+    result = dtin.get();
+    dtin.release();
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+  
+  
+bool BasicItemFactory::createDateTimeStamp(
+                                      store::Item_t& result,
+                                      short   year ,
+                                      short   month,
+                                      short   day,
+                                      short   hour,
+                                      short   minute,
+                                      double  second,
+                                      short   timeZone_hours)
+{
+  DateTime dt;
+  TimeZone tz(timeZone_hours);
+    
+  if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
+  {
+    result = new DateTimeItem(store::XS_DATETIME_STAMP, &dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+  
+  
+bool BasicItemFactory::createDateTimeStamp(
+                                      store::Item_t& result,
+                                      const char* str,
+                                      ulong strlen)
+{
+  DateTime dt;
+    
+  if (DateTime::parseDateTime(str, strlen, dt) == 0 && dt.hasTimezone())
+  {
+    result = new DateTimeItem(store::XS_DATETIME_STAMP, &dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+  
+  
+bool BasicItemFactory::createDateTimeStamp(
+                                      store::Item_t& result,
+                                      const store::Item_t& date,
+                                      const store::Item_t& time)
+{
+  if ( time.isNull() )
+  {
+    throw XQUERY_EXCEPTION(err::FORG0001);
+  }
+  else if (date.isNull() || time.isNull())
+  {
+    result = NULL;
+    return false;
+  }
+  else
+  {
+    const xs_date& d = date->getDateValue();
+    const xs_time& t = time->getTimeValue();
+    if (! createDateTimeStamp( result, &d, &t))
+      throw XQUERY_EXCEPTION(err::FORG0008, ERROR_PARAMS(d, t));
+      
+    return true;
+  }
+}
+  
+  
 bool BasicItemFactory::createDate(store::Item_t& result, const xs_date* value)
 {
   result = new DateTimeItem(store::XS_DATE, value);
@@ -1022,7 +1130,7 @@ bool BasicItemFactory::createDayTimeDuration(
 
 bool BasicItemFactory::createBase64Binary(
     store::Item_t& result,
-    xs_base64Binary value)
+    xs_base64Binary const &value)
 {
   const std::vector<char>& data = value.getData();
   result = new Base64BinaryItem(store::XS_BASE64BINARY,
@@ -1077,9 +1185,22 @@ bool BasicItemFactory::createStreamableBase64Binary(
 }
 
 
-bool BasicItemFactory::createHexBinary(store::Item_t& result,  xs_hexBinary value)
+bool BasicItemFactory::createHexBinary(store::Item_t& result,
+                                       xs_hexBinary const &value)
 {
-  result = new HexBinaryItem(store::XS_HEXBINARY, value);
+  std::vector<char> const &data = value.getData();
+  result = new HexBinaryItem(
+    store::XS_HEXBINARY, data.empty() ? 0 : &data[0], data.size(), true
+  );
+  return true;
+}
+
+
+bool BasicItemFactory::createHexBinary( store::Item_t& result,
+                                        char const *data, size_t size,
+                                        bool encoded )
+{
+  result = new HexBinaryItem(store::XS_HEXBINARY, data, size, encoded);
   return true;
 }
 
@@ -1193,6 +1314,7 @@ bool BasicItemFactory::createDocumentNode(
   of this method must provide the value for these two properties, which are
   needed to implement the getTypedValue() method.
 ********************************************************************************/
+#if 0
 bool BasicItemFactory::createElementNode(
     store::Item_t&              result,
     store::Item*                parent,
@@ -1245,7 +1367,7 @@ bool BasicItemFactory::createElementNode(
   result = n;
   return n != NULL;
 }
-
+#endif
 
 /*******************************************************************************
   Create a new element node N and place it as the last child of a given parent
@@ -1300,11 +1422,11 @@ bool BasicItemFactory::createElementNode(
   XmlTree* xmlTree = NULL;
   ElementNode* n = NULL;
 
-  if ( typeName == NULL )
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0014_INVALID_ARGUMENT,
-      ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
-    );
+  if (typeName == NULL)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+    ERROR_PARAMS("null", ZED(NotAllowedForTypeName)));
+  }
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||
@@ -2001,6 +2123,32 @@ bool BasicItemFactory::createCommentNode(
 /*******************************************************************************
 
 ********************************************************************************/
+bool BasicItemFactory::createNamespaceNode(
+    store::Item_t& result,
+    zstring&       prefix,
+    zstring&       uri)
+{
+  XmlTree* xmlTree = GET_NODE_FACTORY().createXmlTree();
+  NamespaceNode* n;
+
+  try
+  {
+    n = GET_NODE_FACTORY().createNamespaceNode(xmlTree, prefix, uri);
+  }
+  catch (...)
+  {
+    delete xmlTree;
+    throw;
+  }
+
+  result = n;
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 store::PUL* BasicItemFactory::createPendingUpdateList()
 {
   return new PULImpl();
@@ -2130,7 +2278,7 @@ bool BasicItemFactory::createJSONNumber(
       return createDouble(result, d);
     }
   }
-  catch (std::exception& e)
+  catch (std::exception const&)
   {
     return false;
   }
@@ -2145,13 +2293,13 @@ bool BasicItemFactory::createJSONArray(
     const std::vector<store::Iterator_t>& sources,
     const std::vector<store::CopyMode>& copyModes)
 {
-  result = new json::SimpleJSONArray();
+  csize numSources = sources.size();
+
+  result = new json::SimpleJSONArray(numSources);
 
   json::JSONArray* array = static_cast<json::JSONArray*>(result.getp());
 
   store::Item_t item;
-
-  csize numSources = sources.size();
   for (csize i = 0; i < numSources; ++i)
   {
     store::Iterator* source = sources[i].getp();
@@ -2159,7 +2307,7 @@ bool BasicItemFactory::createJSONArray(
 
     while (source->next(item))
     {
-      if (copymode.theDoCopy && (item->isNode() || item->isJSONItem()))
+      if (copymode.theDoCopy && (item->isStructuredItem()))
         item = item->copy(NULL, copymode);
       
       array->push_back(item);
@@ -2206,12 +2354,8 @@ bool BasicItemFactory::createJSONArray(
 
   json::JSONArray* array = static_cast<json::JSONArray*>(result.getp());
 
-  std::vector<store::Item_t>::const_iterator ite = items.begin();
-  std::vector<store::Item_t>::const_iterator end = items.end();
-  for (; ite != end; ++ite)
-  {
-    array->push_back(*ite);
-  }
+  array->push_back(items);
+
   return true;
 }
 

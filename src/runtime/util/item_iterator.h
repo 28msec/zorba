@@ -39,6 +39,10 @@ public:
   virtual bool next(store::Item_t&);
   virtual void reset();
   virtual void close();
+#ifndef NDEBUG
+  // toString() debugging method.
+  virtual std::string toString() const;
+#endif      
 };
 
 } // namespace zorba

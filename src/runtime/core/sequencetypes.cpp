@@ -249,7 +249,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       targetType = static_cast<const AtomicXQType*>(theCastType.getp())->get_type_code();
 
-      GenericCast::castToBuiltinAtomic(result, item, targetType, NULL, loc);
+      GenericCast::castToBuiltinAtomic(result, item, targetType, &theNsCtx, loc);
 
       STACK_PUSH(true, state);
     }
@@ -598,7 +598,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(result, theChild.getp(), planState))
   {
-    if (theQuantifier == TypeConstants::QUANT_PLUS || 
+    if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
     {
       raiseError("empty-sequence()");
@@ -813,16 +813,16 @@ bool EitherNodesOrAtomicsIterator::nextImpl(
 
   if (CONSUME(result, 0))
   {
-    state->atomics = result->isAtomic();
+    state->atomics = !result->isNode();
 
     STACK_PUSH(true, state);
 
     while (CONSUME(result, 0))
     {
-      if (state->atomics != result->isAtomic())
+      if (state->atomics == result->isNode())
         throw XQUERY_EXCEPTION(err::XPTY0018, ERROR_LOC(loc));
 
-      STACK_PUSH (true, state);
+      STACK_PUSH(true, state);
     }
   }
 

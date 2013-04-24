@@ -216,6 +216,7 @@ public:
 
   ////////// math functions ///////////////////////////////////////////////////
 
+  FloatImpl abs() const;
   FloatImpl acos() const;
   FloatImpl acosh() const;
   FloatImpl asin() const;
@@ -255,6 +256,8 @@ public:
   int compare( FloatImpl<FloatType2> const &f ) const;
 
   uint32_t hash() const;
+
+  bool is_xs_int() const;
 
   bool isNaN() const;
   bool isFinite() const;
@@ -797,6 +800,11 @@ inline bool operator>=( double d, FloatImpl<F> const &f ) {
 ////////// math functions /////////////////////////////////////////////////////
 
 template<typename F>
+inline FloatImpl<F> FloatImpl<F>::abs() const {
+  return FloatImpl<F>( std::fabs( value_ ) );
+}
+
+template<typename F>
 inline FloatImpl<F> FloatImpl<F>::acosh() const {
   // formula from www.mathworks.com
   return FloatImpl<F>(
@@ -932,6 +940,11 @@ inline int FloatImpl<F>::compare( FloatImpl<G> const &f ) const {
 template<typename F>
 inline uint32_t FloatImpl<F>::hash() const {
   return static_cast<uint32_t>( value_ );
+}
+
+template<typename F>
+inline bool FloatImpl<F>::is_xs_int() const {
+  return ZORBA_IN_RANGE( value_, xs_int );
 }
 
 template<typename F>

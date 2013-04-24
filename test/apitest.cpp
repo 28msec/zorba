@@ -117,6 +117,12 @@ int _tmain(int argc, _TCHAR* argv[])
     chints.for_serialization_only = true;
   }
 
+  // default is false
+  if (lProp->libModule())
+  {
+    chints.lib_module = true;
+  }
+
   // output file (either a file or the standard out if no file is specified)
   auto_ptr<ostream> outputFile (lProp->resultFile ().empty ()
                                 ? NULL : new ofstream (lProp->resultFile().c_str()));
@@ -127,15 +133,12 @@ int _tmain(int argc, _TCHAR* argv[])
   // input file (either from a file or given as parameter)
   auto_ptr<istream> qfile;
   filesystem_path path;
-  bool  is_xqueryx = false;
 
   if (! lProp->inlineQuery()) 
   {
     path = lProp->queryFile ();
     path.resolve_relative ();
     std::string fname = path.get_path ();
-    if(fname.substr(fname.length()-4) == ".xqx")
-      is_xqueryx = true;
     qfile.reset (new ifstream (fname.c_str ()));
     if (!qfile->good() || qfile->eof()) 
     {
@@ -168,6 +171,8 @@ int _tmain(int argc, _TCHAR* argv[])
   // start processing
   Zorba* zengine = Zorba::getInstance(store);
 
+  zorba::StaticContext_t staticContext = zengine->createStaticContext();
+
   // start parsing the query
   XQuery_t query = zengine->createQuery ();
 
@@ -180,19 +185,83 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 #endif
 
-  if (! lProp->inlineQuery()) {
+  if (! lProp->inlineQuery())
+  {
     query->setFileName(path.get_path());
+  }
+
+  if (lProp->jsoniqParser())
+  {
+    staticContext->setJSONiqVersion(zorba::jsoniq_version_1_0);
   }
 
   try 
   {
-    query->compile(*qfile, chints);
+    query->compile(*qfile, staticContext, chints);
   }
   catch (ZorbaException& e)
   {
     // no need to close because the object is not valid
     cerr << "Compilation error: " << e << endl;
     return 1;
+  }
+
+  if (lProp->testPlanSerialization())
+  {
+    try
+    {
+      std::string binary_path;
+      if (lProp->inlineQuery())
+        binary_path = path.get_path() + ".plan";
+      else
+        binary_path = "./temp.plan";
+
+      std::ofstream fbinary(binary_path.c_str(), std::ios_base::binary);
+      if (!query->saveExecutionPlan(fbinary, ZORBA_USE_BINARY_ARCHIVE))
+      {
+        printf("save execution plan FAILED\n");
+        return 0x0badc0de;
+      }
+      fbinary.close();
+      printf("saved execution plan at: %s\n", binary_path.c_str());
+    }
+    catch(zorba::ZorbaException &err)
+    {
+      std::cout << err << std::endl;
+      return -1;
+    }
+
+    // Now load back the plan
+    try
+    {
+      std::string binary_path;
+      if (lProp->inlineQuery())
+        binary_path = path.get_path() + ".plan";
+      else
+        binary_path = "./temp.plan";
+      query = zengine->createQuery();
+      std::ifstream ifbinary(binary_path.c_str(), std::ios_base::binary);
+      if(!ifbinary.is_open())
+      {
+        std::cout << "cannot open plan " << binary_path << std::endl;
+        return 15;
+      }
+
+      bool load_ret = query->loadExecutionPlan(ifbinary);
+
+      if (!load_ret)
+      {
+        std::cout << "cannot load plan " << binary_path << std::endl;
+        return 16;
+      }
+
+      printf("load execution plan: %s\n", binary_path.c_str());
+    }
+    catch(zorba::ZorbaException &err)
+    {
+      std::cout << err << std::endl;
+      return -1;
+    }
   }
 
   // set external variables
@@ -215,7 +284,7 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   int return_code = 0;
-  if (! lProp->compileOnly()) 
+  if (! lProp->compileOnly() && ! lProp->libModule())
   {
     // output the result (either using xml serialization or using show)
 
@@ -225,7 +294,6 @@ int _tmain(int argc, _TCHAR* argv[])
       {
         Zorba_SerializerOptions opts = Zorba_SerializerOptions::SerializerOptionsFromStringParams(lProp->getSerializerParameters());
         query->execute(*resultFile, &opts);
-        // *resultFile << query;
       }
       else if (lProp->iterPlanTest())
       {
@@ -259,7 +327,9 @@ int _tmain(int argc, _TCHAR* argv[])
     }
   }
 
-  query->close();
+  staticContext->removeReference();  // force destruction
+  staticContext = NULL;
+  query->close();  
   zengine->shutdown();
   zorba::StoreManager::shutdownStore(store);
   return return_code;

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@
 
 #include "store/api/iterator.h"
 #include "common/shared_types.h"
+#include "runtime/base/plan_iterator.h"
 
 namespace zorba {
 
@@ -28,7 +29,7 @@ class PlanState;
   to the store. The wrapper wraps the plan iterator in order to provide a
   simpler interface that the store can use.
 
-  The wrapper does not allocate a new state block, but it points to the same 
+  The wrapper does not allocate a new state block, but it points to the same
   block that contains the state of the wrapped plan iterator.
 ********************************************************************************/
 class PlanIteratorWrapper : public store::Iterator
@@ -46,10 +47,67 @@ public:
 
   bool next(store::Item_t&);
 
-  void reset() {}
+  void reset();
 
   void close() {}
+
+#ifndef NDEBUG
+  virtual std::string toString() const;
+#endif
 };
+
+/*******************************************************************************
+
+********************************************************************************/
+class PlanStateIteratorWrapper : public PlanIterator
+{
+protected:
+  PlanIterator            * theIterator;          // only one of these is used
+  const store::Iterator_t   theStoreIterator; 
+  
+  PlanState               * theStateBlock;
+  uint32_t                  theOffset;
+
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(PlanStoreIteratorWrapper);
+
+  PlanStateIteratorWrapper(zorba::serialization::Archiver& ar);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  PlanStateIteratorWrapper(PlanIterator* iterator, PlanState& planState, uint32_t offset);
+  
+  PlanStateIteratorWrapper(const store::Iterator_t& iterator);
+
+  virtual ~PlanStateIteratorWrapper();
+
+  virtual void accept(PlanIterVisitor& v) const;
+
+  virtual void open();
+  
+  // both arguments will be ignored, and the class members equivalents will be used instead
+  virtual void open(PlanState& planState, uint32_t& offset); 
+
+  virtual bool produceNext(store::Item_t& result, PlanState& planState) const;
+
+  virtual bool next(store::Item_t&);
+
+  virtual void reset() const;
+
+  virtual void reset(PlanState& planState) const;
+
+  virtual void close(PlanState& planState) {}
+
+  virtual uint32_t getStateSize() const { return 0; }
+
+  virtual uint32_t getStateSizeOfSubtree() const { return 0; }
+
+#ifndef NDEBUG
+  virtual std::string toString() const;
+#endif
+};
+
 
 } /* namespace zorba */
 #endif

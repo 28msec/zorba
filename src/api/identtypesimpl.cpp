@@ -19,7 +19,8 @@
 
 namespace zorba {
   
-char const *const IdentTypes::kind_string_of[] = {
+char const *const IdentTypes::kind_string_of[] = 
+{
   "NAMED",
   "element",
   "attribute",
@@ -27,6 +28,7 @@ char const *const IdentTypes::kind_string_of[] = {
   "processing-instruction",
   "text",
   "comment",
+  "namespace-node",
   "node",
   "item",
   "empty-sequence",
@@ -36,7 +38,9 @@ char const *const IdentTypes::kind_string_of[] = {
   0
 };
 
-char const *const IdentTypes::quantifier_string_of[] = {
+
+char const *const IdentTypes::quantifier_string_of[] = 
+{
   "",
   "?",
   "+",
@@ -48,11 +52,13 @@ char const *const IdentTypes::quantifier_string_of[] = {
 
 namespace std {
 
-ostream& operator<<(ostream& o, const zorba::IdentTypes::kind_t ik) {
+ostream& operator<<(ostream& o, const zorba::IdentTypes::kind_t ik) 
+{
   return o << zorba::IdentTypes::kind_string_of[ik];
 }
 
-ostream& operator<<(ostream& o, const zorba::IdentTypes::quantifier_t iq) {
+ostream& operator<<(ostream& o, const zorba::IdentTypes::quantifier_t iq) 
+{
   return o << zorba::IdentTypes::quantifier_string_of[iq];
 }
 

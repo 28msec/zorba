@@ -182,7 +182,7 @@ void SimpleLazyTempSeq::purgeUpTo(xs_integer position)
   ZORBA_ASSERT(pos - thePurgedUpTo <= theItems.size());
 
   std::vector<store::Item*>::iterator ite = theItems.begin();
-  std::vector<store::Item*>::iterator end = theItems.begin() + (pos - thePurgedUpTo);
+  std::vector<store::Item*>::iterator end = theItems.begin() + static_cast<std::vector<store::Item*>::size_type>(pos - thePurgedUpTo);
   for (; ite != end; ++ite)
   {
     (*ite)->removeReference();
@@ -221,7 +221,8 @@ void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
 
   if (theItems.size() >= numItemsToBuffer)
   {
-    result = theItems[pos - thePurgedUpTo - 1];
+    std::vector<store::Item*>::size_type sPos = static_cast<std::vector<store::Item*>::size_type>(pos - thePurgedUpTo - 1);
+    result = theItems[sPos];
   }
   else 
   {
@@ -307,6 +308,27 @@ SimpleLazyTempSeqIter::SimpleLazyTempSeqIter()
   theEndPos(0)
 {
 }
+
+
+/*******************************************************************************
+********************************************************************************/
+#ifndef NDEBUG
+std::string SimpleLazyTempSeq::toString() const
+{
+  std::stringstream result;
+  
+  result << "{";
+  for (unsigned int i=0; i < theItems.size(); i++)
+  {
+    if (i != 0)
+      result << " , ";
+    result << theItems[i]->show();
+  }
+  result << "}";
+  
+  return result.str();
+}
+#endif
 
 
 /*******************************************************************************
@@ -445,6 +467,7 @@ void SimpleLazyTempSeqIter::close()
 {
 }
 
-  } // namespace store
+
+} // namespace simplestore
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -16,7 +16,6 @@
 #include "stdafx.h"
 
 #include "compiler/rewriter/tools/expr_tools.h"
-#include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/path_expr.h"
@@ -38,9 +37,9 @@ namespace zorba
 namespace expr_tools
 {
 
-static void add_wincond_vars(const flwor_wincond*, ulong&, VarIdMap&, IdVarMap*);
+static void add_wincond_vars(const flwor_wincond*, csize&, VarIdMap&, IdVarMap*);
 
-static void add_var(var_expr*, ulong&, VarIdMap&, IdVarMap*);
+static void add_var(var_expr*, csize&, VarIdMap&, IdVarMap*);
 
 static void remove_wincond_vars(const flwor_wincond*, const VarIdMap&, DynamicBitset&);
 
@@ -718,18 +717,19 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
 
 
 /*******************************************************************************
-  Let FLWOR(e) be the set of flwor exprs within the expr tree rooted at expr e.
-  Let FV(e) be the set of variables defined in any of the flwor exprs in 
-  FLWOR(e). This method assigns a prefix id to each variable in FV(e) and
-  stores the mapping between var_expr and prefix id in "varidmap" and the
-  reverse mapping in "idvapmap". It also returns the number of vars in FV(e).
+  Let VDE(e) be the set of variable-defining exprs (i.e., flwor, trycatch, or 
+  vardecl exprs) within the expr tree rooted at expr e. Let V(e) be the set of
+  variables defined in any of the exprs in VDE(e). This method assigns a prefix
+  id to each variable in V(e) and stores the mapping between var_expr and prefix
+  id in "varidmap" and the reverse mapping in "idvapmap". It also returns the
+  number of vars in V(e).
 
-  Given 2 vars v1 and v2 in FV(e), their prefix ids allows to check if v1 is
+  Given 2 vars v1 and v2 in V(e), their prefix ids allows to check if v1 is
   defined before v2: v1 is defined before v2 iff id(v1) < id(v2).
 ********************************************************************************/
 void index_flwor_vars(
     const expr* e,
-    ulong& numVars,
+    csize& numVars,
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {
@@ -738,32 +738,28 @@ void index_flwor_vars(
   {
     const flwor_expr* flwor = static_cast<const flwor_expr *>(e);
 
-    for (flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
-         i != flwor->clause_end();
-         ++i)
+    flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
+    flwor_expr::clause_list_t::const_iterator end = flwor->clause_end();
+    for (; i != end; ++i)
     {
       const flwor_clause* c = *i;
 
-      if (c->get_kind() == flwor_clause::for_clause)
+      switch (c->get_kind())
       {
-        const for_clause* fc = static_cast<const for_clause *>(c);
-
-        add_var(fc->get_var(), numVars, varidmap, idvarmap);
-        add_var(fc->get_pos_var(), numVars, varidmap, idvarmap);
-        add_var(fc->get_score_var(), numVars, varidmap, idvarmap);
-
-        index_flwor_vars(fc->get_expr(), numVars, varidmap, idvarmap);
-      }
-      else if (c->get_kind() == flwor_clause::let_clause)
+      case flwor_clause::for_clause:
+      case flwor_clause::let_clause:
       {
-        const let_clause* lc = static_cast<const let_clause *>(c);
+        const forlet_clause* flc = static_cast<const forlet_clause *>(c);
 
-        add_var(lc->get_var(), numVars, varidmap, idvarmap);
-        add_var(lc->get_score_var(), numVars, varidmap, idvarmap);
+        add_var(flc->get_var(), numVars, varidmap, idvarmap);
+        add_var(flc->get_pos_var(), numVars, varidmap, idvarmap);
+        add_var(flc->get_score_var(), numVars, varidmap, idvarmap);
 
-        index_flwor_vars(lc->get_expr(), numVars, varidmap, idvarmap);
+        index_flwor_vars(flc->get_expr(), numVars, varidmap, idvarmap);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::window_clause)
+      case flwor_clause::window_clause:
       {
         const window_clause* wc = static_cast<const window_clause *>(c);
 
@@ -779,40 +775,57 @@ void index_flwor_vars(
 
         if (stopCond != NULL)
           add_wincond_vars(stopCond, numVars, varidmap, idvarmap);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::groupby_clause)
+      case flwor_clause::groupby_clause:
       {
         const groupby_clause* gc = static_cast<const groupby_clause *>(c);
 
         const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
+        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
         csize numGroupVars = gvars.size();
+        csize numNonGroupVars = ngvars.size();
+
+        for (csize i = 0; i < numGroupVars; ++i)
+        {
+          index_flwor_vars(gvars[i].first, numVars, varidmap, idvarmap);
+        }
+
+        for (csize i = 0; i < numNonGroupVars; ++i)
+        {
+          index_flwor_vars(ngvars[i].first, numVars, varidmap, idvarmap);
+        }
 
         for (csize i = 0; i < numGroupVars; ++i)
         {
           add_var(gvars[i].second, numVars, varidmap, idvarmap);
         }
-
-        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-        csize numNonGroupVars = ngvars.size();
-
+        
         for (csize i = 0; i < numNonGroupVars; ++i)
         {
           add_var(ngvars[i].second, numVars, varidmap, idvarmap);
         }
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::count_clause)
+      case flwor_clause::count_clause:
       {
         const count_clause* cc = static_cast<const count_clause *>(c);
 
         add_var(cc->get_var(), numVars, varidmap, idvarmap);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::where_clause)
+      case flwor_clause::where_clause:
       {
         const where_clause* wc = static_cast<const where_clause *>(c);
 
         index_flwor_vars(wc->get_expr(), numVars, varidmap, idvarmap);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::order_clause)
+      case flwor_clause::orderby_clause:
       {
         const orderby_clause* obc = static_cast<const orderby_clause *>(c);
         csize numExprs = obc->num_columns();
@@ -820,6 +833,17 @@ void index_flwor_vars(
         {
           index_flwor_vars(obc->get_column_expr(i), numVars, varidmap, idvarmap);
         }
+
+        break;
+      }
+      case flwor_clause::materialize_clause:
+      {
+        break;
+      }
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
       }
     }
 
@@ -838,7 +862,7 @@ void index_flwor_vars(
       const catch_clause* clause = (*trycatch)[i];
 
       catch_clause::var_map_t& trycatchVars =
-        const_cast<catch_clause*>(clause)->get_vars();
+      const_cast<catch_clause*>(clause)->get_vars();
 
       catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
       catch_clause::var_map_t::const_iterator end = trycatchVars.end();
@@ -850,6 +874,14 @@ void index_flwor_vars(
 
       index_flwor_vars(trycatch->get_catch_expr(i), numVars, varidmap, idvarmap);
     }
+  }
+  else if (e->get_expr_kind() == var_decl_expr_kind)
+  {
+    const var_decl_expr* vdecl = static_cast<const var_decl_expr*>(e);
+    add_var(vdecl->get_var_expr(), numVars, varidmap, idvarmap);
+
+    if (vdecl->get_init_expr())
+      index_flwor_vars(vdecl->get_init_expr(), numVars, varidmap, idvarmap);
   }
   else
   {
@@ -872,7 +904,7 @@ void index_flwor_vars(
 ********************************************************************************/
 static void add_wincond_vars(
     const flwor_wincond* cond,
-    ulong& numVars,
+    csize& numVars,
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {
@@ -898,13 +930,13 @@ static void add_wincond_vars(
 ********************************************************************************/
 static void add_var(
     var_expr* v,
-    ulong& numVars,
+    csize& numVars,
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {
   if (v != NULL)
   {
-    varidmap[v] = numVars++;
+    varidmap[v] = ++numVars;
     if (idvarmap)
       idvarmap->push_back(v);
   }
@@ -913,9 +945,9 @@ static void add_var(
 
 /*******************************************************************************
   For each expr E in the expr tree rooted at "e", this method computes the set
-  of variables that belong to FV(e) and are referenced by E. Let V(E) be this
+  of variables that belong to V(e) and are referenced by E. Let V(E) be this
   set. V(E) is implemented as a bitset ("freeset") whose size is equal to the
-  size of FV(e) and whose i-th bit is on iff the var with prefix id i belongs
+  size of V(e) and whose i-th bit is on iff the var with prefix id i belongs
   to V(E). The mapping between E and V(E) is stored in "freevarMap".
 ********************************************************************************/
 void build_expr_to_vars_map(
@@ -926,7 +958,7 @@ void build_expr_to_vars_map(
 {
   if (e->get_expr_kind() == var_expr_kind)
   {
-    set_bit(static_cast<var_expr *>(e), varmap, freeset, true);
+    set_bit(static_cast<var_expr*>(e), varmap, freeset, true);
     freevarMap[e] = freeset;
     return;
   }
@@ -955,28 +987,26 @@ void build_expr_to_vars_map(
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
-    for(flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
-        i != flwor->clause_end();
-        ++i)
+    for (flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
+         i != flwor->clause_end();
+         ++i)
     {
       const flwor_clause* c = *i;
 
-      if (c->get_kind() == flwor_clause::for_clause)
+      switch (c->get_kind())
       {
-        const for_clause* fc = static_cast<const for_clause *>(c);
-
-        set_bit(fc->get_var(), varmap, freeset, false);
-        set_bit(fc->get_pos_var(), varmap, freeset, false);
-        set_bit(fc->get_score_var(), varmap, freeset, false);
-      }
-      else if (c->get_kind() == flwor_clause::let_clause)
+      case flwor_clause::for_clause:
+      case flwor_clause::let_clause:
       {
-        const let_clause* lc = static_cast<const let_clause *>(c);
+        const forlet_clause* flc = static_cast<const forlet_clause *>(c);
 
-        set_bit(lc->get_var(), varmap, freeset, false);
-        set_bit(lc->get_score_var(), varmap, freeset, false);
+        set_bit(flc->get_var(), varmap, freeset, false);
+        set_bit(flc->get_pos_var(), varmap, freeset, false);
+        set_bit(flc->get_score_var(), varmap, freeset, false);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::window_clause)
+      case flwor_clause::window_clause:
       {
         const window_clause* wc = static_cast<const window_clause *>(c);
 
@@ -990,8 +1020,10 @@ void build_expr_to_vars_map(
 
         if (stopCond != NULL)
           remove_wincond_vars(stopCond, varmap, freeset);
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::groupby_clause)
+      case flwor_clause::groupby_clause:
       {
         const groupby_clause* gc = static_cast<const groupby_clause *>(c);
 
@@ -1010,12 +1042,27 @@ void build_expr_to_vars_map(
         {
           set_bit(ngvars[i].second, varmap, freeset, false);
         }
+
+        break;
       }
-      else if (c->get_kind() == flwor_clause::count_clause)
+      case flwor_clause::count_clause:
       {
         const count_clause* cc = static_cast<const count_clause *>(c);
 
         set_bit(cc->get_var(), varmap, freeset, false);
+        
+        break;
+      }
+      case flwor_clause::where_clause:
+      case flwor_clause::orderby_clause:
+      case flwor_clause::materialize_clause:
+      {
+        break;
+      }
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
       }
     }
   }
@@ -1030,15 +1077,30 @@ void build_expr_to_vars_map(
       const catch_clause* clause = (*trycatch)[i];
 
       catch_clause::var_map_t& trycatchVars =
-        const_cast<catch_clause*>(clause)->get_vars();
+      const_cast<catch_clause*>(clause)->get_vars();
 
       catch_clause::var_map_t::const_iterator ite = trycatchVars.begin();
       catch_clause::var_map_t::const_iterator end = trycatchVars.end();
       for (; ite != end; ++ite)
       {
-        var_expr* trycatchVar = (*ite).second;
-        set_bit(trycatchVar, varmap, freeset, false);
+        var_expr* v = (*ite).second;
+        set_bit(v, varmap, freeset, false);
       }
+    }
+  }
+  else if (e->get_expr_kind() == block_expr_kind)
+  {
+    block_expr* block = static_cast<block_expr*>(e);
+
+    csize numArgs = block->size();
+
+    for (csize i = 0; i < numArgs; ++i)
+    {
+      if ((*block)[i]->get_expr_kind() != var_decl_expr_kind)
+        continue;
+
+      var_expr* v = static_cast<var_decl_expr*>((*block)[i])->get_var_expr();
+      set_bit(v, varmap, freeset, false);
     }
   }
 

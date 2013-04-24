@@ -163,6 +163,10 @@
         <value>function and variable annotations only available in XQuery 3.0 or later</value>
       </entry>
 
+      <entry key="CompNS">
+        <value>computed namespace constructors only available in XQuery 3.0 or later</value>
+      </entry>
+
       <entry key="Scripting">
         <value>scripting feature not available</value>
       </entry>
@@ -260,13 +264,12 @@
 
     <diagnostic code="XPTY0004">
       <comment>
-       It is a type error if, during the static analysis phase, an expression
-       is found to have a static type that is not appropriate for the context
-       in which the expression occurs, or during the dynamic evaluation phase,
-       the dynamic type of a value does not match a required type as specified
-       by the matching rules in 2.5.4 SequenceType Matching.
+        It is a type error if, during the static analysis phase, an expression
+        is found to have a static type that is not appropriate for the context
+        in which the expression occurs, or during the dynamic evaluation phase,
+        the dynamic type of a value does not match a required type as specified
+        by the matching rules in 2.5.4 SequenceType Matching.
       </comment>
-
       <value>$1</value>
 
       <entry key="NoReturnTypePromote_234">
@@ -287,10 +290,6 @@
 
       <entry key="NoTreatAs_23">
         <value>$2 can not be treated as type $3</value>
-      </entry>
-
-      <entry key="FormatNumber_2">
-        <value>first parameter to format-number() function is type $2 that is not allowed</value>
       </entry>
 
       <entry key="JSONIQ_SELECTOR">
@@ -368,6 +367,13 @@
        copy-namespaces mode is \c no-preserve.
       </comment>
       <value>typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve</value>
+    </diagnostic>
+    
+    <diagnostic code="XQTY0105">
+      <comment>
+        It is a type error if the content sequence in an element constructor contains a function item.
+      </comment>
+      <value>element constructor must not contain a function item</value>
     </diagnostic>
 
     <diagnostic code="XQST0009">
@@ -754,15 +760,29 @@
       <value>"$1": grouping variable not defined in the same flwor expression as the group-by clause</value>
     </diagnostic>
 
+    <diagnostic code="XQST0097">
+      <comment>
+        It is a static error for a decimal-format to specify a value that is
+        not valid for a given property.
+      </comment>
+      <value>"$1": illegal value for decimal format property "$2"${: 3}</value>
+      <entry key="MustBeChar">
+        <value>must be a single character</value>
+      </entry>
+      <entry key="MustBeZeroDigit">
+        <value>must be a digit (Unicode category Nd) and represent zero</value>
+      </entry>
+    </diagnostic>
+
     <diagnostic code="XQST0098">
       <comment>
-       It is a static error if, for any named or unnamed decimal format, the
-       properties representing characters used in a picture string do not each
-       have distinct values. These properties are decimal-separator-sign,
-       grouping-separator, percent-sign, per-mille-sign, zero-digit,
-       digit-sign, and pattern-separator-sign.
+        It is a static error if, for any named or unnamed decimal format, the
+        properties representing characters used in a picture string do not each
+        have distinct values. These properties are decimal-separator-sign,
+        grouping-separator, percent-sign, per-mille-sign, zero-digit,
+        digit-sign, and pattern-separator-sign.
       </comment>
-      <value>properties "$1" and "$2", representing characters used in picture string, do not have distinct values</value>
+      <value>"$1": value of properties "$1" and "$2" for characters used a in picture string is the same but must be distinct</value>
     </diagnostic>
 
     <diagnostic code="XQST0099">
@@ -803,6 +823,53 @@
       <value>$1</value>
     </diagnostic>
 
+    <diagnostic code="XQST0114">
+      <comment>
+        It is a static error for a decimal format declaration to define the
+        same property more than once.
+      </comment>
+      <value>"$1": duplicate decimal format property</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0120">
+      <comment>
+        It is a static error if a feature required by require-feature is not
+        supported by the implementation.
+      </comment>
+      <value>"$1": feature not supported</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0123">
+      <comment>
+        It is a static error if the name of a feature in require-feature is not
+        recognized by the implementation.
+      </comment>
+      <value>$1</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0126">
+      <comment>
+        It is a static error if all-extensions appears in a require-feature option declaration.
+      </comment>
+      <value>impossible to require all extension features</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0127">
+      <comment>
+        It is a static error if a given feature is both required and prohibited, directly or indirectly, in a module.
+      </comment>
+      <value>$1 : impossible to require and prohibit at the same time</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0128">
+      <comment>
+        It is a static error if a feature name that an implementation supports appears
+        in a prohibit-feature option declaration, and the implementation is unable to
+        disable the feature.
+      </comment>
+      <value>"$1": unable to disable a supported feature</value>
+    </diagnostic>
+    
     <diagnostic code="XPDY0002">
       <comment>
        It is a dynamic error if evaluation of an expression relies on some part
@@ -931,7 +998,19 @@
        QName (for example, because it contains a namespace prefix not found in
        statically known namespaces).
       </comment>
-      <value>${"1": }can not convert to expanded QName${: 2}</value>
+      <value>$1</value>
+
+      <entry key="NotCastToQName">
+        <value>$2: can not convert to xs:QName</value>
+      </entry>
+
+      <entry key="NoEmptyLocalname">
+        <value>can not convert empty local name to xs:QName</value>
+      </entry>
+
+      <entry key="NameSapceConstructor">
+        <value>$2: cannot cast prefix to xs:NCName</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQDY0084">
@@ -974,6 +1053,20 @@
       <value>"$1": invalid node-name</value>
     </diagnostic>
 
+    <diagnostic code="XQDY0101">
+      <comment>
+       Invalid prefix and/or uri in computed namespace constructor
+      </comment>
+      <value>Invalid prefix and/or uri in computed namespace constructor: prefix = $1, namespace URI = $2.</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0102">
+      <comment>
+      In an element constructor, if two or more namespace bindings in the in-scope bindings would have the same prefix, then an error is raised if they have different URIs; if they would have the same prefix and URI, duplicate bindings are ignored.
+      </comment>
+      <value>"$1": uri causes namespace binding conflict: prefix $2 already bound to $3</value>
+    </diagnostic>
+
     <diagnostic code="XTDE1310">
       <comment>
        It is a non-recoverable dynamic error if the picture string does not
@@ -982,21 +1075,60 @@
       <value>"$1": picture string does not satisfy format-number() function rules</value>
     </diagnostic>
 
-    <diagnostic code="XTDE1340">
+    <diagnostic code="FOFD1340">
       <comment>
-       It is a non-recoverable dynamic error if the syntax of the picture is
-       incorrect.
+        It is a non-recoverable dynamic error if the syntax of the picture is
+        incorrect.
       </comment>
-      <value>"$1": invalid picture string for date/time</value>
+      <value>"$1": invalid picture string for date/time${: 2}</value>
+      <entry key="BadComponent_3">
+        <value>'$3': invalid component specifier</value>
+      </entry>
+      <entry key="Bad2ndModifier_3">
+        <value>'$3': invalid second presentation modifier</value>
+      </entry>
+      <entry key="Bad2ndModifierHere_3">
+        <value>'$3': valid second presentation modifier invalid here</value>
+      </entry>
+      <entry key="BadWidthModifier">
+        <value>invalid width modifier</value>
+      </entry>
+      <entry key="DigitNotSameFamily_34">
+        <value>"$3": digit not from same digit family as $4</value>
+      </entry>
+      <entry key="Dup2ndModifier_3">
+        <value>"$3": duplicate second presentation modifier</value>
+      </entry>
+      <entry key="MultipleComponent_3">
+        <value>'$3': multiple component specifiers between []</value>
+      </entry>
+      <entry key="MustBeOneMandatoryDigit">
+        <value>there must be at least one mandatory-digit-sign</value>
+      </entry>
+      <entry key="NoComponent">
+        <value>component specifier expected between []</value>
+      </entry>
+      <entry key="NoAdjacentGroupSep_3">
+        <value>"$3": grouping separator must not be adjacent to others</value>
+      </entry>
+      <entry key="NoGroupSepAtStart_3">
+        <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoGroupSepAtEnd_3">
+        <value>"$3": grouping separator illegal at end of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoOptDigitAfterMandatory">
+        <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
+      </entry>
     </diagnostic>
 
-    <diagnostic code="XTDE1350">
+    <diagnostic code="FOFD1350">
       <comment>
-       It is a non-recoverable dynamic error if a component specifier within the
-       picture refers to components that are not available in the given type of
-       \c $value.
+        It is a non-recoverable dynamic error if a component specifier within
+        the picture refers to components that are not available in the given
+        type of $value.
       </comment>
-      <value>component specifier not available</value>
+      <value>"$1": component specifier not available</value>
     </diagnostic>
 
     <!--////////// XQuery Full-Text Errors /////////////////////////////////-->
@@ -1233,23 +1365,74 @@
 
     <diagnostic code="FODF1310">
       <comment>
-       Invalid \c fn:format-number() picture string.
+        Invalid decimal/integer format picture string.
       </comment>
-      <value>"$1": invalid fn:format-number() picture string$2</value>
+      <value>"$1": invalid picture string for decimal/integer${: 2}</value>
+      <entry key="NoOptDigitAfterMandatory_3">
+        <value>'$3': optional-digit-sign in integer part of sub-picture may not follow a member of the decimal-digit-family</value>
+      </entry>
+      <entry key="NoMandatoryDigitAfterOpt_3">
+        <value>'$3': member of decimal-digit-family in fractional part of a sub-picture may not follow an optional-digit-sign</value>
+      </entry>
+      <entry key="BadCharacter_3">
+        <value>'$3': invalid character</value>
+      </entry>
+      <entry key="BadFormatModifier_3">
+        <value>'$3': invalid format modifier</value>
+      </entry>
+      <entry key="BadFormatModifierHere_3">
+        <value>'$3': valid format modifier invalid here</value>
+      </entry>
+      <entry key="DigitNotSameFamily_34">
+        <value>"$3": digit not from same digit family as $4</value>
+      </entry>
+      <entry key="DupFormatModifier_3">
+        <value>"$3": duplicate format modifier</value>
+      </entry>
+      <entry key="EmptyFormat">
+        <value>empty primary format</value>
+      </entry>
+      <entry key="MultipleSign_3">
+        <value>"$3": multiple such signs are illegal</value>
+      </entry>
+      <entry key="MustHaveOptOrMandatoryDigit">
+        <value>sub-picture must contain at least one optional or mandatory digit</value>
+      </entry>
+      <entry key="NoActivePassiveActive">
+        <value>"$3": active character may not follow passive that follows active</value>
+      </entry>
+      <entry key="NoAdjacentGroupSep_3">
+        <value>"$3": grouping separator must not be adjacent to others</value>
+      </entry>
+      <entry key="NoDecimalGroupingAdjacent_34">
+        <value>decimal-separator-sign ('$3') and grouping-separator-sign ('$4') may not be adjacent</value>
+      </entry>
+      <entry key="NoGroupSepAtStart_3">
+        <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoGroupSepAtEnd_3">
+        <value>"$3": grouping separator illegal at end of decimal-digit-pattern</value>
+      </entry>
+      <entry key="NoOptDigitAfterMandatory">
+        <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
+      </entry>
+      <entry key="NoPercentPermille">
+        <value>sub-picture must not contain more than one percent-sign or per-mille-sign or one of each</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="FODT0001">
       <comment>
        Overflow/underflow in date/time operation.
       </comment>
-      <value>overflow/underflow in date/time operation</value>
+      <value>overflow/underflow in date/time operation${: 1}</value>
     </diagnostic>
 
     <diagnostic code="FODT0002">
       <comment>
        Overflow/underflow in duration operation.
       </comment>
-      <value>overflow/underflow in duration operation</value>
+      <value>overflow/underflow in duration operation${: 1}</value>
     </diagnostic>
 
     <diagnostic code="FODT0003">
@@ -1257,20 +1440,6 @@
        Invalid timezone value.
       </comment>
       <value>"$1": invalid timezone value (in seconds)</value>
-    </diagnostic>
-
-    <diagnostic code="FOFI0001">
-      <comment>
-       format-integer: Cannot cast $language to \c xs:language.
-      </comment>
-      <value>"$1": not castable to xs:language</value>
-    </diagnostic>
-
-    <diagnostic code="FOFI0002">
-      <comment>
-       format-integer: invalid parameter.
-      </comment>
-      <value>invalid argument in format-integer: $1</value>
     </diagnostic>
 
     <diagnostic code="FONS0004">
@@ -1289,53 +1458,41 @@
 
     <diagnostic code="FORG0001">
       <comment>
-       Invalid value for cast/constructor.
+        Invalid value for cast/constructor.
       </comment>
-
       <value>$1</value>
-
-      <entry key="NoCastTo_234">
-        <value>"$2": value of type $3 is not castable to type $4</value>
-      </entry>
-
-      <entry key="NoCastTo_234o">
-        <value>"$2": value is not castable to type $3${: 4}</value>
-      </entry>
-
-      <entry key="LocalNotNCName_2">
-        <value>"$2": local name in qname is not an xs:NCName</value>
-      </entry>
-
-      <entry key="PrefixNotNCName_2">
-        <value>"$2": prefix in qname is not an xs:NCName</value>
-      </entry>
-
-      <entry key="NameNotNCName_2">
-        <value>"$2": name is not an xs:NCName</value>
-      </entry>
-
-      <entry key="PrefixNotBound_2">
-        <value>"$2": prefix has no known namespace binding</value>
-      </entry>
-
-      <entry key="Base64BadChar_2">
-        <value>"$2": invalid Base64 character</value>
-      </entry>
-
-      <entry key="Base64Multiple4">
-        <value>Base64 data must be a multiple of 4 characters</value>
-      </entry>
-
-      <entry key="HexBinaryMustBeEven">
-        <value>HexBinary value must contain an even number of characters</value>
-      </entry>
-
       <entry key="BadHexDigit_2">
         <value>'$2': invalid hexedecimal digit</value>
       </entry>
-
+      <entry key="Base64BadChar_2">
+        <value>'$2': invalid Base64 character</value>
+      </entry>
+      <entry key="Base64Multiple4">
+        <value>Base64 data must be a multiple of 4 bytes</value>
+      </entry>
+      <entry key="HexBinaryMustBeEven">
+        <value>hexBinary value must contain an even number of bytes</value>
+      </entry>
+      <entry key="LocalNotNCName_2">
+        <value>"$2": local name in qname is not an xs:NCName</value>
+      </entry>
+      <entry key="NameNotNCName_2">
+        <value>"$2": name is not an xs:NCName</value>
+      </entry>
+      <entry key="NoCastTo_234">
+        <value>"$2": value of type $3 is not castable to type $4</value>
+      </entry>
+      <entry key="NoCastTo_234o">
+        <value>"$2": value is not castable to type $3${: 4}</value>
+      </entry>
       <entry key="NoTypeInCtx_2">
         <value>"$2": type no defined in current context</value>
+      </entry>
+      <entry key="PrefixNotBound_2">
+        <value>"$2": prefix has no known namespace binding</value>
+      </entry>
+      <entry key="PrefixNotNCName_2">
+        <value>"$2": prefix in qname is not an xs:NCName</value>
       </entry>
     </diagnostic>
 
@@ -1462,6 +1619,22 @@
        permitted XML characters or requested encoding not supported
       </comment>
       <value>"$1": can not decode resource retrieved</value>
+    </diagnostic>
+
+    <diagnostic code="FOFL0001">
+      <comment>
+       This error is raised if the fn:function-lookup returns a context-dependent function and the context-dependent function is then called.
+      </comment>
+
+      <value>dynamic call on context-dependent function item</value>
+    </diagnostic>
+
+    <diagnostic code="FOCZ0001">
+      <comment>
+       Invalid content passed to \c x:canonicalize().
+      </comment>
+
+      <value>invalid content passed to $1: $2</value>
     </diagnostic>
 
     <!--////////// XQuery Update Facility //////////////////////////////////-->
@@ -1694,7 +1867,7 @@
        affects an element node by introducing a new namespace binding that
        conflicts with one of its existing namespace bindings.
       </comment>
-      <value>"$1": qname causes namespace binding conflict: prefix $2 cannot be bound to both $3 and $4</value>
+      <value>"$1": uri causes namespace binding conflict: prefix $2 already bound to $3</value>
     </diagnostic>
 
     <diagnostic code="XUDY0024">
@@ -1702,7 +1875,7 @@
        It is a dynamic error if the effect of a set of updating expressions is
        to introduce conflicting namespace bindings into an element node.
       </comment>
-      <value>"$1": namespace binding conflicts with $2=$3</value>
+      <value>"$1": uri causes namespace binding conflict: prefix $2 already bound to $3</value>
     </diagnostic>
 
     <diagnostic code="XUDY0027">
@@ -1770,6 +1943,14 @@
        node or a namespace node.
       </comment>
       <value>"$1": can not serialize $2</value>
+
+      <entry key="AttributeNode">
+        <value>attribute node</value>
+      </entry>
+
+      <entry key="NamespaceNode">
+        <value>namespace node</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="SERE0003">
@@ -3051,7 +3232,7 @@
     <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
       <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
 
-      <value>object or array selection needs exactly one parameter</value>
+      <value>object or array selection needs zero or one parameter</value>
     </diagnostic>
 
     <diagnostic code="JNUP0019" if="defined(ZORBA_WITH_JSON)">
@@ -3074,6 +3255,11 @@
     <diagnostic code="JNTY0020" if="defined(ZORBA_WITH_JSON)">
       <comment>parser error for invalid option type</comment>
       <value>$1: invalid option type for option $2 (expected $3)</value>
+    </diagnostic>
+
+    <diagnostic code="JNTY0021" if="defined(ZORBA_WITH_JSON)">
+      <comment>array or object selector on heterogeneous sequence</comment>
+      <value>$1: invalid json-item() type (expected $2)</value>
     </diagnostic>
 
     <diagnostic code="JNDY0021" if="defined(ZORBA_WITH_JSON)">
@@ -3194,10 +3380,6 @@
       <value>attribute name</value>
     </entry>
 
-    <entry key="AttributeNode">
-      <value>attribute node</value>
-    </entry>
-
     <entry key="BackRef0Illegal" if="!defined(ZORBA_NO_ICU)">
       <value>"0": illegal backreference</value>
     </entry>
@@ -3220,6 +3402,10 @@
 
     <entry key="BadCharInBraces_3">
       <value>'$3': illegal character within { }</value>
+    </entry>
+
+    <entry key="BadEndCharInRange_34">
+      <value>'$3': invalid end character in range (less than '$4' start character)</value>
     </entry>
 
     <entry key="BadDecDigit_3">
@@ -3246,12 +3432,20 @@
       <value>invalid library module</value>
     </entry>
 
+    <entry key="BadPath">
+      <value>invalid path</value>
+    </entry>
+
+    <entry key="BadQuantifierHere_3" if="!defined(ZORBA_NO_ICU)">
+      <value>'$3': quantifier illegal here</value>
+    </entry>
+
     <entry key="BadRegexEscape_3" if="!defined(ZORBA_NO_ICU)">
       <value>"$3": illegal escape character</value>
     </entry>
 
-    <entry key="BadPath">
-      <value>invalid path</value>
+    <entry key="BadRegexParen_3" if="!defined(ZORBA_NO_ICU)">
+      <value>"$3": illegal character after "(?"</value>
     </entry>
 
     <entry key="BadStreamState">
@@ -3522,12 +3716,12 @@
       <value>can not compare for equality to type "$4"</value>
     </entry>
 
-    <entry key="NoDriveSpecification">
-      <value>missing drive specification</value>
+    <entry key="NoStrictCompareWithType_4">
+      <value>can not compare for strict inequality to type "$4"</value>
     </entry>
 
-    <entry key="NoEmptyLocalname">
-      <value>local-name can not be empty</value>
+    <entry key="NoDriveSpecification">
+      <value>missing drive specification</value>
     </entry>
 
     <entry key="NoEmptySeqAsBaseURI">
@@ -3626,6 +3820,10 @@
       <value>can not treat as "$4"</value>
     </entry>
 
+    <entry key="NotSingleCharEsc_3" if="!defined(ZORBA_NO_ICU)">
+      <value>"\\$3": multi-character and category escapes not permitted in character range</value>
+    </entry>
+
     <entry key="NoTypeInMainModule_4">
       <value>type of variable "$4" is not among the in-scope types of the main module</value>
     </entry>
@@ -3659,7 +3857,7 @@
     </entry>
 
     <entry key="NonClosedBackRef_3" if="!defined(ZORBA_NO_ICU)">
-      <value>'$$3': non-closed backreference</value>
+      <value>'\$$3': non-closed backreference</value>
     </entry>
 
     <entry key="NonFileThesaurusURI">
@@ -3671,7 +3869,7 @@
     </entry>
 
     <entry key="NonexistentBackRef_3" if="!defined(ZORBA_NO_ICU)">
-      <value>'$$3': non-existent backreference</value>
+      <value>'\$$3': non-existent backreference</value>
     </entry>
 
     <entry key="NotAllowedForTypeName">
@@ -4119,38 +4317,6 @@
       <value>error</value>
     </entry>
 
-    <entry key="format_integer_bad_picture_format">
-      <value>bad $picture format: $2</value>
-    </entry>
-
-    <entry key="format_integer_duplicated_optional_format_modifier">
-      <value>duplicated optional format modifier '$2'</value>
-    </entry>
-
-    <entry key="format_integer_optional_format_modifier_not_closed">
-      <value>bad optional format modifier ($2), cannot find closing ')' </value>
-    </entry>
-
-    <entry key="format_integer_picture_empty">
-      <value>$picture parameter should not be empty</value>
-    </entry>
-
-    <entry key="format_integer_unknown_optional_format_modifier_character">
-      <value>unknown optional format modifier character '$2'</value>
-    </entry>
-
-    <entry key="format_integer_value_1_10">
-      <value>$value ($2) should be between 1 and 10 for this formatting picture</value>
-    </entry>
-
-    <entry key="format_integer_value_1_20">
-      <value>$value ($2) should be between 1 and 20 for this formatting picture</value>
-    </entry>
-
-    <entry key="format_integer_value_gt_3000">
-      <value>$value ($2) should be less than 3000 for Roman representation</value>
-    </entry>
-
     <entry key="full-text dynamic error">
       <value>full-text dynamic error</value>
     </entry>
@@ -4265,30 +4431,6 @@
 
     <entry key="ParseFragmentDoctypeNotAllowedHere">
       <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
-    </entry>
-
-    <entry key="FormatNumberDuplicates">
-      <value>: a sub-picture must not contain more than one of the "$3" sign</value>
-    </entry>
-
-    <entry key="FormatNumberGroupingAdjacentToDecimal">
-      <value>: a sub-picture must not contain a grouping-separator-sign adjacent to a decimal-separator-sign</value>
-    </entry>
-
-    <entry key="FormatNumberIntegerPart">
-      <value>: the integer part of a sub-picture must not contain a member of the decimal-digit-family that is followed by an optional-digit-sign</value>
-    </entry>
-
-    <entry key="FormatNumberFractionalPart">
-      <value>: the fractional part of a sub-picture must not contain an optional-digit-sign that is followed by a member of the decimal-digit-family</value>
-    </entry>
-
-    <entry key="FormatNumberPercentPermille">
-      <value>: a sub-picture must not contain more than one percent-sign or per-mille-sign, and it must not contain one of each</value>
-    </entry>
-
-    <entry key="FormatNumberAtLeastOneOptionalOrDecimal">
-      <value>: a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family</value>
     </entry>
 
     <entry key="FUNCTION">
@@ -4652,6 +4794,10 @@
       <value>XML version expected</value>
     </entry>
 
+    <entry key="libxml_ERR_99"> <!-- XML_ERR_NS_URI -->
+      <value>xmlns$6?{:5}\: URI "$6?6:5": invalid URI</value>
+    </entry>
+
     <entry key="libxml_WAR_97"> <!-- XML_WAR_UNKNOWN_VERSION -->
       <value>"$5": unsupported XML version</value>
     </entry>
@@ -4916,6 +5062,10 @@
 
     <entry key="libxml_ERR_541"> <!-- XML_DTD_DUP_TOKEN -->
       <value>"$5": duplicate attribute enumeration value token</value>
+    </entry>
+
+    <entry key="UnrecognizedXQueryOption">
+      <value>"$2": unrecognized XQuery namespace option</value>
     </entry>
 
   </subvalues>

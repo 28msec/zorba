@@ -520,6 +520,7 @@ JSONEncodeForRoundtripIterator::encodeArray(
   return false;
 }
 
+
 bool
 JSONEncodeForRoundtripIterator::encodeAtomic(
   const store::Item_t& aValue,
@@ -527,9 +528,11 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
   JSONEncodeForRoundtripIteratorState* aState) const
 {
   store::SchemaTypeCode typeCode = aValue->getTypeCode();
-  switch (typeCode) {
+  switch (typeCode)
+  {
   case store::XS_DOUBLE:
   case store::XS_FLOAT:
+  {
     if (aValue->getBaseItem() == NULL
         && ! aValue->isNaN() && ! aValue->isPosOrNegInf())
     {
@@ -537,17 +540,20 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
       return false;
     }
     break;
+  }
   case store::XS_STRING:
   case store::XS_INTEGER:
   case store::XS_DECIMAL:
   case store::XS_BOOLEAN:
   case store::JS_NULL:
+  {
     if (aValue->getBaseItem() == NULL)
     {
       // nothing to change, aResult is not set, the caller needs to use aValue
       return false;
     }
     break;
+  }
   default:
     break;
   }
@@ -878,13 +884,11 @@ JSONParseIterator::nextImpl(
 /*******************************************************************************
   json:names($o as object()) as xs:string*
 ********************************************************************************/
-bool
-JSONObjectNamesIterator::nextImpl(
+bool JSONObjectNamesIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
   store::Item_t input;
-  store::Item_t key;
 
   JSONObjectNamesIteratorState* state;
   DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
@@ -894,13 +898,31 @@ JSONObjectNamesIterator::nextImpl(
   state->theNames = input->getObjectKeys();
   state->theNames->open();
 
-  while (state->theNames->next(key))
+  while (state->theNames->next(result))
   {
-    result = key;
     STACK_PUSH (true, state);
   }
   state->theNames = NULL;
 
+  STACK_END(state);
+}
+
+
+bool JSONObjectNamesIterator::count(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t obj;
+  xs_integer count;
+
+  JSONObjectNamesIteratorState* state;
+  DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
+
+  ZORBA_ASSERT(consumeNext(obj, theChild.getp(), planState));
+
+  count = obj->getNumObjectPairs();
+  
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
   STACK_END(state);
 }
 
@@ -977,7 +999,7 @@ JSONObjectProjectIterator::nextImpl(
     {
       value = obj->getObjectValue(key);
 
-      if (value->isNode() || value->isJSONItem())
+      if (value->isStructuredItem())
         value = value->copy(NULL, copymode);
 
       newValues.push_back(value);
@@ -1046,8 +1068,7 @@ JSONArrayMemberIterator::nextImpl(
 /*******************************************************************************
   json:members($a as array()) as item()*
 ********************************************************************************/
-bool
-JSONArrayMembersIterator::nextImpl(
+bool JSONArrayMembersIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -1070,6 +1091,22 @@ JSONArrayMembersIterator::nextImpl(
 }
 
 
+bool JSONArrayMembersIterator::count(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t array;
+
+  JSONArrayMembersIteratorState* state;
+  DEFAULT_STACK_INIT(JSONArrayMembersIteratorState, state, planState);
+
+  ZORBA_ASSERT(consumeNext(array, theChild.getp(), planState));
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, array->getArraySize()), state);
+  STACK_END(state);
+}
+
+
 /*******************************************************************************
   json:flatten($a as array()) as item()*
 
@@ -1085,8 +1122,7 @@ void JSONArrayFlattenIteratorState::reset(PlanState& planState)
 }
 
 
-bool
-JSONArrayFlattenIterator::nextImpl(
+bool JSONArrayFlattenIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -1145,52 +1181,68 @@ JSONItemAccessorIterator::nextImpl(
 
   const TypeManager* tm = theSctx->get_typemanager();
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  JSONItemAccessorIteratorState* state;
+  DEFAULT_STACK_INIT(JSONItemAccessorIteratorState, state, planState);
 
-  consumeNext(input, theChild0.getp(), planState);
-  consumeNext(selector, theChild1.getp(), planState);
+  consumeNext(input, theChildren[0].getp(), planState);
+  ZORBA_ASSERT(input->isJSONArray() || input->isJSONObject());
 
-  if (input->isJSONArray())
+  if (theChildren.size() == 2 &&
+      consumeNext(selector, theChildren[1].getp(), planState))
   {
-    store::SchemaTypeCode type = selector->getTypeCode();
-
-    if (!TypeOps::is_subtype(type, store::XS_INTEGER))
+    if (input->isJSONArray())
     {
-      xqtref_t type = tm->create_value_type(selector, loc);
+      store::SchemaTypeCode type = selector->getTypeCode();
 
-      RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
-                   type->toSchemaString(),
-                   GENV_TYPESYSTEM.INTEGER_TYPE_ONE->toSchemaString()));
+      if (!TypeOps::is_subtype(type, store::XS_INTEGER))
+      {
+        xqtref_t type = tm->create_value_type(selector, loc);
+
+        RAISE_ERROR(err::XPTY0004, loc, 
+        ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
+                     type->toSchemaString(),
+                     GENV_TYPESYSTEM.INTEGER_TYPE_ONE->toSchemaString()));
+      }
+
+      result = input->getArrayValue(selector->getIntegerValue());
     }
-
-    result = input->getArrayValue(selector->getIntegerValue());
-  }
-  else if (input->isJSONObject())
-  {
-    store::SchemaTypeCode type = selector->getTypeCode();
-
-    if (!TypeOps::is_subtype(type, store::XS_STRING) &&
-        !TypeOps::is_subtype(type, store::XS_UNTYPED_ATOMIC) &&
-        !TypeOps::is_subtype(type, store::XS_ANY_URI))
+    else if (input->isJSONObject())
     {
-      xqtref_t type = tm->create_value_type(selector, loc);
+      store::SchemaTypeCode type = selector->getTypeCode();
 
-      RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
-                   type->toSchemaString(),
-                   GENV_TYPESYSTEM.STRING_TYPE_ONE->toSchemaString()));
+      if (!TypeOps::is_subtype(type, store::XS_STRING) &&
+          !TypeOps::is_subtype(type, store::XS_UNTYPED_ATOMIC) &&
+          !TypeOps::is_subtype(type, store::XS_ANY_URI))
+      {
+        xqtref_t type = tm->create_value_type(selector, loc);
+
+        RAISE_ERROR(err::XPTY0004, loc, 
+        ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
+                     type->toSchemaString(),
+                     GENV_TYPESYSTEM.STRING_TYPE_ONE->toSchemaString()));
+      }
+
+      result = input->getObjectValue(selector);
     }
-
-    result = input->getObjectValue(selector);
+    STACK_PUSH(result != 0, state);
   }
   else
   {
-    ZORBA_ASSERT(false);
+    if (input->isJSONArray())
+    {
+      state->theIterator = input->getArrayValues();
+    }
+    else if (input->isJSONObject())
+    {
+      state->theIterator = input->getObjectKeys();
+    }
+    state->theIterator->open();
+    while (state->theIterator->next(result))
+    {
+      STACK_PUSH(true, state);
+    }
+    state->theIterator->close();
   }
-
-  STACK_PUSH(result != 0, state);
 
   STACK_END(state);
 }
@@ -1263,7 +1315,7 @@ bool JSONObjectInsertIterator::nextImpl(
                theSctx->preserve_ns(),
                theSctx->inherit_ns());
 
-  if (content->isNode() || content->isJSONItem())
+  if (content->isStructuredItem())
   {
     content = content->copy(NULL, copymode);
   }
@@ -1310,7 +1362,7 @@ bool JSONArrayInsertIterator::nextImpl(
 
   while (consumeNext(member, theChildren[2].getp(), planState))
   {
-    if (member->isNode() || member->isJSONItem())
+    if (member->isStructuredItem())
     {
       member = member->copy(NULL, copymode);
     }
@@ -1358,7 +1410,7 @@ bool JSONArrayAppendIterator::nextImpl(
 
   while (consumeNext(member, theChildren[1].getp(), planState))
   {
-    if (member->isNode() || member->isJSONItem())
+    if (member->isStructuredItem())
     {
       member = member->copy(NULL, copymode);
     }
@@ -1483,7 +1535,7 @@ bool JSONReplaceValueIterator::nextImpl(
   consumeNext(selector, theChildren[1].getp(), planState);
   consumeNext(newValue, theChildren[2].getp(), planState);
 
-  if (theCopyInput && (newValue->isNode() || newValue->isJSONItem()))
+  if (theCopyInput && (newValue->isStructuredItem()))
   {
     copymode.set(true, 
                  theSctx->construction_mode() == StaticContextConsts::cons_preserve,

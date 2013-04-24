@@ -201,6 +201,7 @@ private:
   column_type column_end_;
 
   friend bool operator==( location const&, location const& );
+  friend bool operator!=( location const&, location const& );
 
   // for plan serialization
   friend void serialization::operator&( serialization::Archiver&, location& );
@@ -224,9 +225,7 @@ bool operator==( location const &i, location const &j );
  * @param j The second location.
  * @return Returns \c true only if the two locations are not equal.
  */
-inline bool operator!=( location const &i, location const &j ) {
-  return !(i == j);
-}
+bool operator!=( location const &i, location const &j );
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -259,7 +258,7 @@ public:
    */
   template<typename T>
   parameters& operator,( T const &t ) {
-    params_.push_back( ztd::to_string( t ) );
+    add_param( ztd::to_string( t ) );
     return *this;
   }
 
@@ -330,6 +329,7 @@ public:
 private:
   params_type params_;
 
+  void add_param( value_type const& );
   value_type lookup_param( size_type i ) const;
   bool then_else( bool, value_type const&, value_type::size_type*,
                   value_type* ) const;

@@ -23,16 +23,57 @@
 
 #include "store/naive/shared_types.h"
 
+#include "runtime/hof/function_item.h"
+
+
 namespace zorba {
 
 /*******************************************************************************
+  ArgumentPlaceholder ::= "?"
+********************************************************************************/
+class argument_placeholder_expr : public expr
+{
+  friend class ExprIterator;
+  friend class expr;
+  friend class ExprManager;
 
-  [121] FilterExpr ::= PrimaryExpr (Predicate | DynamicFunctionInvocation)*
+protected:
+  argument_placeholder_expr(
+      CompilerCB* ccb,
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc)
+    :
+    expr(ccb, sctx, udf, loc, argument_placeholder_expr_kind)
+  {
+    compute_scripting_kind();
+  }
 
-  [164] DynamicFunctionInvocation ::= "(" (ExprSingle ("," ExprSingle)*)? ")"
+public:
+  void compute_scripting_kind();
 
-  theExpr : The input expr that produces a function item
-  theArgs : The arg exprs to pass to the function.
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream& os) const;
+};
+
+
+/*******************************************************************************
+
+  PostfixExpr ::= PrimaryExpr (Predicate | ArgumentList)*
+
+  ArgumentList ::= "(" (Argument ("," Argument)*)? ")"
+
+  Argument ::= ExprSingle
+
+  theExpr:
+  --------
+  The input expr that produces a function item
+
+  theArgs:
+  --------
+  The arg exprs to pass to the function.
+ 
 ********************************************************************************/
 class dynamic_function_invocation_expr : public expr
 {
@@ -57,7 +98,7 @@ public:
   const expr* get_function() const { return theExpr; }
 
   const std::vector<expr*>& get_args() const { return theArgs; }
-
+  
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
@@ -74,28 +115,10 @@ public:
 
   InlineFunction ::= "function" "(" ParamList? ")" ("as" SequenceType)? EnclosedExpr
 
-  theQName :
-  NULL in case of inline function. Otherwise, the qname of the named function
-  in the LiteralFunctionItem.
+  theFunctionItemInfo:
+  --------------------
+  See class definition in src/runtime/hof/function_item.h
 
-  theFunction :
-  This is always a pointer to a user_function obj. In case of an inline function
-  expr, it is an anonymous user_function obj that is created on-the-fly by the
-  translator to represent the body and signature of the inline function. In case
-  of LiteralFunctionItem where the named function is a UDF, it is the
-  user_function obj of that UDF. Finally, in case of LiteralFunctionItem where
-  the named function F is not a UDF, it is an anonymous user_function obj UF
-  that is created on-the-fly by the translator. The signature of UF is the same
-  as that of F, and its body simply invokes F. The reason why UF is built is to
-  unify the implemenation of dynamic function invocation.
-
-  theArity :
-  We need to store the arity also here because the function above doesn't know
-  about its arity in case it's a variadic function.
-
-  theScopedVariables :
-  Empty in the case of LiteralFunctionItem. Otherwise, the FLWOR vars that are
-  in scope at the place where the InlineFunction expr appears at.
 ********************************************************************************/
 class function_item_expr: public expr
 {
@@ -103,50 +126,65 @@ class function_item_expr: public expr
   friend class expr;
   friend class ExprManager;
 
-private:
-  store::Item_t       theQName;
-  function_t          theFunction;
-  uint32_t            theArity;
-  std::vector<expr*>  theScopedVariables;
-
-public:
-
+protected:
+  FunctionItemInfo_t  theFunctionItemInfo;
+  
 protected:
   function_item_expr(
       CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
-      const store::Item* aQName,
       function* f,
-      uint32_t aArity);
+      csize arity,
+      bool isInline,
+      bool isCoercion);
 
   function_item_expr(
       CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc);
-
+      const QueryLoc& loc,
+      bool isInline,
+      bool isCoercion);
+  
+  virtual ~function_item_expr();
+  
 public:
-  ~function_item_expr();
+  FunctionItemInfo* get_dynamic_fn_info() { return theFunctionItemInfo; }
 
-  void add_variable(expr* var);
+  void add_variable(expr* var, var_expr* substVar);
 
-  void set_function(user_function_t& udf);
+  const std::vector<var_expr*>& get_in_scope_vars() const
+  {
+    return theFunctionItemInfo->theInScopeVars;
+  }
 
-  user_function* get_function() const;
+  const std::vector<store::Item_t>& get_in_scope_var_names() const
+  {
+    return theFunctionItemInfo->theInScopeVarNames;
+  }
 
-  const store::Item_t& get_qname() const { return theQName; }
+  void set_function(user_function* udf, csize arity);
 
-  uint32_t get_arity() const { return theArity; }
+  function* get_function() const { return theFunctionItemInfo->theFunction; }
 
-  const std::vector<expr*>& get_vars() const;
+  const store::Item_t& get_qname() const { return theFunctionItemInfo->theQName; }
+
+  csize get_arity() const { return theFunctionItemInfo->theArity; }
+  
+  bool is_inline() const { return theFunctionItemInfo->theIsInline; }
+  
+  bool is_coercion() const { return theFunctionItemInfo->theIsCoercion; }
 
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream& os) const;
+  
+public:
+  static store::Item_t create_inline_fname(const QueryLoc& loc);
 };
 
 } //end of namespace

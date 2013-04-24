@@ -76,18 +76,16 @@ static XQPCollator* getCollator(
   store::Item_t temp;
 
   if (!PlanIterator::consumeNext(lCollationItem, iter, planState))
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( NoEmptySeqAsCollationParam ) ),
-      ERROR_LOC( loc )
-    );
+  {
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(NoEmptySeqAsCollationParam)));
+  }
 
   if (PlanIterator::consumeNext(temp, iter, planState))
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( NoSeqAsCollationParam ) ),
-      ERROR_LOC( loc )
-    );
+  {
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(NoSeqAsCollationParam)));
+  }
 
   return sctx->get_collator(lCollationItem->getStringValue().str(), loc);
 }
@@ -147,11 +145,9 @@ bool FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 bool
 FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lSequenceItem;
-  store::Item_t lCollationItem;
-  xqtref_t      lCollationItemType;
+  store::Item_t seqItem;
   store::Item_t searchItem;
-  TypeManager* typemgr = theSctx->get_typemanager();
+  TypeManager* tm = theSctx->get_typemanager();
   long timezone = 0;
   bool found;
 
@@ -163,26 +159,39 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 		RAISE_ERROR(err::FORG0006, loc, ERROR_PARAMS(ZED(EmptySeqNoSearchItem)));
   }
 
-  if ( theChildren.size() == 3 )
-    state->theCollator = getCollator(theSctx, loc,
-                                     planState, theChildren[2].getp());
+  if (theChildren.size() == 3)
+  {
+    state->theCollator = 
+    getCollator(theSctx, loc, planState, theChildren[2].getp());
+  }
 
-  while ( consumeNext(lSequenceItem, theChildren[0].getp(), planState))
+  while (consumeNext(seqItem, theChildren[0].getp(), planState))
   {
     // inc the position in the sequence; do it at the beginning of the loop
     // because index-of starts with one
     ++state->theCurrentPos;
 
-    searchItem = state->theSearchItem;
-
     try
     {
-      found = CompareIterator::valueEqual(loc,
-                                          lSequenceItem,
-                                          searchItem,
-                                          typemgr,
-                                          timezone,
-                                          state->theCollator);
+      if (theFastComp == 1)
+      {
+        found = seqItem->equals(state->theSearchItem, timezone, state->theCollator);
+      }
+      else if (theFastComp == 2)
+      {
+        found = state->theSearchItem->equals(seqItem, timezone, state->theCollator);
+      }
+      else
+      {
+        searchItem = state->theSearchItem;
+
+        found = CompareIterator::valueEqual(loc,
+                                            seqItem,
+                                            searchItem,
+                                            tm,
+                                            timezone,
+                                            state->theCollator);
+      }
     }
     catch (ZorbaException const& e)
     {
@@ -202,6 +211,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.1.4 fn:empty
@@ -463,27 +473,46 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   store::Item_t startPosItem;
   xs_long startPos;
   store::Item_t lengthItem;
+  xs_double startPosDouble; 
+  xs_double lengthDouble;
 
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
 
   state->theIsChildReset = false;
-
+  
   CONSUME(startPosItem, 1);
+  startPosDouble = startPosItem->getDoubleValue();
+
+  //If starting position is set to +INF return empty sequence
+  if (startPosDouble.isPosInf() || startPosDouble.isNaN())
+    goto done;
+
+  //Removed startpos - 1, since if a -INF is present it overflows it to a positive number
   startPos =
-  static_cast<xs_long>(startPosItem->getDoubleValue().round().getNumber()) - 1;
+    static_cast<xs_long>(startPosDouble.round().getNumber());
 
   if (theChildren.size() == 3)
   {
     CONSUME(lengthItem, 2);
-    state->theRemaining =
-    static_cast<xs_long>(lengthItem->getDoubleValue().round().getNumber());
+    lengthDouble = lengthItem->getDoubleValue();
+    if (lengthDouble.isPosInf())
+    {
+      //if startPos is -INF and length is +INF return empty sequence because -INF + INF = NaN
+      if (startPosDouble.isNegInf())
+        goto done;
+
+      state->theRemaining = 1;
+    }
+    else
+      state->theRemaining =
+        static_cast<xs_long>(lengthDouble.round().getNumber());
   }
 
-  if (startPos < 0)
+  if (startPos < 1)
   {
     if (theChildren.size() >= 3)
-      state->theRemaining += startPos;
+      state->theRemaining += startPos - 1;
 
     startPos = 0;
   }
@@ -493,13 +522,13 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
     goto done;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > 0; --startPos)
+  for (; startPos > 1; --startPos)
   {
     if (!CONSUME(result, 0))
       goto done;
   }
 
-  if (theChildren.size() < 3)
+  if (theChildren.size() < 3 || lengthDouble.isPosInf())
   {
     while (CONSUME(result, 0))
     {
@@ -511,7 +540,7 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
     while (state->theRemaining > 0 && CONSUME(result, 0))
     {
       state->theRemaining--;
-      
+
       STACK_PUSH(true, state);
     }
   }
@@ -882,6 +911,196 @@ static bool DeepEqualAttributes(
   return true;
 }
 
+static bool DeepEqualNodes(
+    const QueryLoc& loc,
+    static_context* sctx,
+    dynamic_context* dctx,
+    const store::Item_t& item1,
+    const store::Item_t& item2,
+    XQPCollator* collator)
+{
+  if (item1->getNodeKind() != item2->getNodeKind())
+    return false;
+
+  switch (item1->getNodeKind())
+  {
+    case store::StoreConsts::anyNode:
+      ZORBA_ASSERT(false);  // case not treated
+      break;
+
+    case store::StoreConsts::documentNode:
+    {
+      return DeepEqual(loc,
+                       sctx,
+                       dctx,
+                       item1->getChildren(),
+                       item2->getChildren(),
+                       collator,
+                       true,
+                       false);
+      break;
+    }
+    case store::StoreConsts::elementNode:
+    {
+      if (! item1->getNodeName()->equals(item2->getNodeName()))
+        return false;
+
+      TypeManager* tm = sctx->get_typemanager();
+
+      xqtref_t type1 = tm->create_value_type(item1.getp());
+      xqtref_t type2 = tm->create_value_type(item2.getp());
+
+      const NodeXQType* nodeType1 = static_cast<const NodeXQType *>(type1.getp());
+      const NodeXQType* nodeType2 = static_cast<const NodeXQType *>(type2.getp());
+
+      if ( nodeType1->get_content_type()->content_kind() != nodeType2->get_content_type()->content_kind() )
+        return false;
+
+      return (DeepEqualAttributes(loc,
+                                  sctx,
+                                  dctx,
+                                  item1->getAttributes(),
+                                  item2->getAttributes(),
+                                  collator)
+              &&
+              DeepEqual(loc,
+                        sctx,
+                        dctx,
+                        item1->getChildren(),
+                        item2->getChildren(),
+                        collator,
+                        true,
+                        true));
+      break;
+    }
+    case store::StoreConsts::attributeNode:
+    {
+      if (! item1->getNodeName()->equals(item2->getNodeName()))
+        return false;
+
+      store::Item_t tvalue1, tvalue2;
+      store::Iterator_t tvalue1Iter, tvalue2Iter;
+      item1->getTypedValue(tvalue1, tvalue1Iter);
+      item2->getTypedValue(tvalue2, tvalue2Iter);
+
+      if (tvalue1Iter == NULL && tvalue2Iter == NULL)
+        return DeepEqual(loc, sctx, dctx, tvalue1, tvalue2, collator);
+      else if (tvalue1Iter != NULL && tvalue2Iter != NULL)
+        return DeepEqual(loc, sctx, dctx, tvalue1Iter, tvalue2Iter, collator, false, false);
+      else
+        return false;
+
+      break;
+    }
+    case store::StoreConsts::textNode:
+    case store::StoreConsts::commentNode:
+    {
+      return (0 == utf8::compare(item1->getStringValue(),
+                                 item2->getStringValue(),
+                                 collator));
+      break;
+    }
+
+    case store::StoreConsts::piNode:
+    {
+      int lCmpRes = utf8::compare(item1->getNodeName()->getStringValue(),
+                                  item2->getNodeName()->getStringValue(),
+                                  collator);
+      if (0 != lCmpRes)
+        return false;
+
+      lCmpRes = utf8::compare(item1->getStringValue(),
+                              item2->getStringValue(),
+                              collator);
+
+      return (0 == lCmpRes);
+      break;
+    }
+
+    case store::StoreConsts::namespaceNode:
+    {
+      int lCmpRes = utf8::compare(item1->getNamespacePrefix(),
+                                  item2->getNamespacePrefix(),
+                                  collator);
+      if (0 != lCmpRes)
+        return false;
+
+      lCmpRes = utf8::compare(item1->getStringValue(),
+                              item2->getStringValue(),
+                              collator);
+
+      return (0 == lCmpRes);
+      break;
+    }
+  }
+  return true;
+}
+
+
+static bool DeepEqualObjects(
+    const QueryLoc& loc,
+    static_context* sctx,
+    dynamic_context* dctx,
+    const store::Item_t& item1,
+    const store::Item_t& item2,
+    XQPCollator* collator)
+{
+  assert(item1->isJSONObject());
+  assert(item2->isJSONObject());
+
+  if (item1->getNumObjectPairs() != item2->getNumObjectPairs())
+    return false;
+
+  store::Iterator_t lKeys = item1->getObjectKeys();
+  lKeys->open();
+
+  store::Item_t lKey, lValue1, lValue2;
+
+  while (lKeys->next(lKey))
+  {
+    lValue2 = item2->getObjectValue(lKey);
+    if (lValue2 == NULL) return false;
+
+    lValue1 = item1->getObjectValue(lKey);
+
+    if (!DeepEqual(loc, sctx, dctx, lValue1, lValue2, collator))
+      return false;
+  }
+
+  return true;
+}
+
+static bool DeepEqualArrays(
+    const QueryLoc& loc,
+    static_context* sctx,
+    dynamic_context* dctx,
+    const store::Item_t& item1,
+    const store::Item_t& item2,
+    XQPCollator* collator)
+{
+  assert(item1->isJSONArray());
+  assert(item2->isJSONArray());
+
+  if (item1->getArraySize() != item2->getArraySize())
+    return false;
+
+  store::Iterator_t lValues1 = item1->getArrayValues();
+  store::Iterator_t lValues2 = item2->getArrayValues();
+  lValues1->open();
+  lValues2->open();
+
+  store::Item_t lValue1, lValue2;
+
+  while (lValues1->next(lValue1) && lValues2->next(lValue2))
+  {
+    if (!DeepEqual(loc, sctx, dctx, lValue1, lValue2, collator))
+      return false;
+  }
+
+  return true;
+}
+
+
 static bool DeepEqual(
     const QueryLoc& loc,
     static_context* sctx,
@@ -899,7 +1118,16 @@ static bool DeepEqual(
   if (item1 == NULL || item2 == NULL)
     return false;
 
-  if (item1->isNode() != item2->isNode())
+  if (item1->isNode() != item2->isNode() ||
+      item1->isJSONObject() != item2->isJSONObject() ||
+      item1->isJSONArray() != item2->isJSONArray())
+    return false;
+
+
+  xqtref_t type1 = tm->create_value_type(item1.getp());
+  xqtref_t type2 = tm->create_value_type(item2.getp());
+
+  if ( type1->content_kind() != type2->content_kind() )
     return false;
 
   if (item1->isAtomic())
@@ -911,9 +1139,6 @@ static bool DeepEqual(
       collator = sctx->get_default_collator(QueryLoc::null);
 
     // check NaN
-    xqtref_t type1 = tm->create_value_type(item1.getp());
-    xqtref_t type2 = tm->create_value_type(item2.getp());
-
     if (((TypeOps::is_subtype(tm, *type1, *rtm.FLOAT_TYPE_ONE)
           &&
           item1->getFloatValue().isNaN())
@@ -944,99 +1169,24 @@ static bool DeepEqual(
   }
   else
   {
-    assert(item1->isNode());
-    assert(item2->isNode());
-
-    if (item1->getNodeKind() != item2->getNodeKind())
-      return false;
-
-    switch (item1->getNodeKind())
+    if (item1->isNode())
     {
-      case store::StoreConsts::anyNode:
-        ZORBA_ASSERT(false);  // case not treated
-        break;
-
-      case store::StoreConsts::documentNode:
-        return DeepEqual(loc,
-                         sctx,
-                         dctx,
-                         item1->getChildren(),
-                         item2->getChildren(),
-                         collator,
-                         true,
-                         false);
-        break;
-
-      case store::StoreConsts::elementNode:
-        if (! item1->getNodeName()->equals(item2->getNodeName()))
-          return false;
-
-        return (DeepEqualAttributes(loc,
-                                    sctx,
-                                    dctx,
-                                    item1->getAttributes(),
-                                    item2->getAttributes(),
-                                    collator)
-                &&
-                DeepEqual(loc,
-                          sctx,
-                          dctx,
-                          item1->getChildren(),
-                          item2->getChildren(),
-                          collator,
-                          true,
-                          true));
-        break;
-
-      case store::StoreConsts::attributeNode:
-      {
-        if (! item1->getNodeName()->equals(item2->getNodeName()))
-          return false;
-
-        store::Item_t tvalue1, tvalue2;
-        store::Iterator_t tvalue1Iter, tvalue2Iter;
-        item1->getTypedValue(tvalue1, tvalue1Iter);
-        item2->getTypedValue(tvalue2, tvalue2Iter);
-
-        if (tvalue1Iter == NULL && tvalue2Iter == NULL)
-          return DeepEqual(loc, sctx, dctx, tvalue1, tvalue2, collator);
-        else if (tvalue1Iter != NULL && tvalue2Iter != NULL)
-          return DeepEqual(loc, sctx, dctx, tvalue1Iter, tvalue2Iter, collator, false, false);
-        else
-          return false;
-
-        break;
-      }
-      case store::StoreConsts::textNode:     /* deliberate fall-through */
-      case store::StoreConsts::commentNode:
-      {
-        return (0 == utf8::compare(item1->getStringValue(),
-                                   item2->getStringValue(),
-                                   collator));
-        break;
-      }
-
-      case store::StoreConsts::piNode:
-      {
-        int lCmpRes = utf8::compare(item1->getNodeName()->getStringValue(),
-                                    item2->getNodeName()->getStringValue(),
-                                    collator);
-        if (0 != lCmpRes)
-          return false;
-
-        lCmpRes = utf8::compare(item1->getStringValue(),
-                                item2->getStringValue(),
-                                collator);
-
-        return (0 == lCmpRes);
-        break;
-      }
+      return DeepEqualNodes(loc, sctx, dctx, item1, item2, collator);
+    }
+    else if (item1->isJSONObject())
+    {
+      return DeepEqualObjects(loc, sctx, dctx, item1, item2, collator);
+    }
+    else
+    {
+      return DeepEqualArrays(loc, sctx, dctx, item1, item2, collator);
     }
 
     ZORBA_ASSERT(false);  // should never reach here
     return false;
   }
 }
+
 
 bool FnDeepEqualIterator::nextImpl(
     store::Item_t& result,
@@ -1205,26 +1355,22 @@ done:
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+
 /*******************************************************************************
   15.4.1 fn:count
 ********************************************************************************/
 bool FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lSequenceItem;
-  ulong lCount = 0;
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while (consumeNext(lSequenceItem, theChildren[0].getp(), planState))
-  {
-    ++lCount;
-  }
+  theChildren[0]->count(result, planState);
 
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(lCount)), state);
+  STACK_PUSH(!!result, state);
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.4.2 fn:avg
@@ -1719,28 +1865,31 @@ static void fillTime (
     zorbatm::get_walltime_elapsed(t0, t1);
 }
 
+
 static void loadDocument(
-  zstring const& aUri,
-  static_context* aSctx,
-  PlanState& aPlanState,
-  QueryLoc const& loc,
-  store::Item_t& oResult)
+    zstring const& aUri,
+    static_context* aSctx,
+    PlanState& aPlanState,
+    QueryLoc const& loc,
+    store::Item_t& oResult)
 {
   // Normalize input to handle filesystem paths, etc.
   zstring lNormUri;
   normalizeInputUri(aUri, aSctx, loc, &lNormUri);
 
   // See if this (normalized) URI is already loaded in the store.
-  try {
+  try 
+  {
     oResult = GENV_STORE.getDocument(lNormUri);
   }
-  catch (XQueryException& e) {
+  catch (XQueryException& e)
+  {
     set_source(e, loc);
     throw;
   }
-  if (oResult != NULL) {
+
+  if (oResult != NULL)
     return;
-  }
 
   // Prepare a LoadProperties for loading the stream into the store
   store::LoadProperties lLoadProperties;
@@ -1749,16 +1898,22 @@ static void loadDocument(
 
   // Resolve URI to a stream
   zstring lErrorMessage;
-  std::auto_ptr<internal::Resource> lResource = aSctx->resolve_uri
-      (lNormUri, internal::EntityData::DOCUMENT, lErrorMessage);
+
+  std::auto_ptr<internal::Resource> lResource =
+  aSctx->resolve_uri(lNormUri, internal::EntityData::DOCUMENT, lErrorMessage);
+
   internal::StreamResource* lStreamResource =
-      dynamic_cast<internal::StreamResource*>(lResource.get());
-  if (lStreamResource == NULL) {
+  dynamic_cast<internal::StreamResource*>(lResource.get());
+
+  if (lStreamResource == NULL)
+  {
     throw XQUERY_EXCEPTION
         (err::FODC0002, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
   }
+
   std::istream* lStream = lStreamResource->getStream();
-  if (lStream == NULL) {
+  if (lStream == NULL)
+  {
     throw XQUERY_EXCEPTION(err::FODC0002, ERROR_PARAMS( aUri ), ERROR_LOC(loc));
   }
 
@@ -1768,21 +1923,27 @@ static void loadDocument(
   zorbatm::cputime t0user;
   zorbatm::get_current_cputime (t0user);
   zorbatm::get_current_walltime(t0);
-  try {
+
+  try
+  {
     store::Store& lStore = GENV.getStore();
     zstring lBaseUri = aSctx->get_base_uri();
     oResult = lStore.loadDocument(lBaseUri, lNormUri, *lStream, lLoadProperties);
     fillTime(t0, t0user, aPlanState);
   }
-  catch (ZorbaException& e) {
+  catch (ZorbaException& e)
+  {
     e.set_diagnostic(err::FODC0002);
     set_source(e, loc);
     throw;
   }
-  if (oResult == NULL) {
+
+  if (oResult == NULL)
+  {
     throw XQUERY_EXCEPTION(err::FODC0002, ERROR_PARAMS( aUri ), ERROR_LOC(loc));
   }
 }
+
 
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1849,12 +2010,12 @@ bool FnEnvironmentVariableIterator::nextImpl(store::Item_t& result, PlanState& p
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(item, theChildren[0].getp(),planState);  
-  
+  consumeNext(item, theChildren[0].getp(),planState);
+
   item->getStringValue2(varname);
   result = planState.theLocalDynCtx->get_environment_variable(varname);
   STACK_PUSH(result!=NULL, state);
-    
+
   STACK_END(state);
 }
 
@@ -1866,7 +2027,7 @@ bool FnAvailableEnvironmentVariablesIterator::nextImpl(store::Item_t& result, Pl
   store::Iterator_t lIte;
   FnAvailableEnvironmentVariablesIteratorState* state;
   DEFAULT_STACK_INIT(FnAvailableEnvironmentVariablesIteratorState, state, planState);
-    
+
   state->theIterator = planState.theLocalDynCtx->available_environment_variables();
 
   state->theIterator->open();
@@ -1889,12 +2050,12 @@ void FnAvailableEnvironmentVariablesIteratorState::reset(PlanState& planState)
   PlanIteratorState::reset(planState);
   theIterator = 0;
 }
- 
+
 /*******************************************************************************
   14.8.5 fn:unparsed-text
 ********************************************************************************/
 /**
-  * Utility method for fn:unparsed-text() and fn:unparsed-text-available(). 
+  * Utility method for fn:unparsed-text() and fn:unparsed-text-available().
   */
 static void readDocument(
   zstring const& aUri,
@@ -1923,7 +2084,7 @@ static void readDocument(
 
   internal::StreamResource* lStreamResource =
     dynamic_cast<internal::StreamResource*>(lResource.get());
-    
+
   if (lStreamResource == NULL)
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
@@ -1931,7 +2092,7 @@ static void readDocument(
   StreamReleaser lStreamReleaser = lStreamResource->getStreamReleaser();
   std::unique_ptr<std::istream, StreamReleaser> lStream(lStreamResource->getStream(), lStreamReleaser);
 
-  lStreamResource->setStreamReleaser(nullptr);  
+  lStreamResource->setStreamReleaser(nullptr);
 
   //check if encoding is needed
   if (transcode::is_necessary(aEncoding.c_str()))
@@ -1987,7 +2148,7 @@ bool FnUnparsedTextIterator::nextImpl(store::Item_t& result, PlanState& planStat
 /*******************************************************************************
   14.8.7 fn:unparsed-text-available
 ********************************************************************************/
-   
+
 bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t unparsedText;
@@ -1998,7 +2159,7 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-    
+
   if (!consumeNext(uriItem, theChildren[0].getp(), planState))
   {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, false), state);
@@ -2016,13 +2177,13 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
   {
     readDocument(uriString, encodingString, theSctx, planState, loc, unparsedText);
   }
-  catch (XQueryException const& e)
+  catch (XQueryException const&)
   {
     unparsedText = NULL;
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, !(unparsedText.isNull()) ), state);
-    
+
   STACK_END(state);
 }
 
@@ -2057,13 +2218,13 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   {
     STACK_PUSH(false, state);
   }
-  
+
   if (theChildren.size() == 2)
   {
     consumeNext(encodingItem, theChildren[1].getp(), planState);
     encodingItem->getStringValue2(encodingString);
   }
-  
+
   //Normalize input to handle filesystem paths, etc.
   uriItem->getStringValue2(uriString);
   normalizeInputUri(uriString, theSctx, loc, &lNormUri);
@@ -2085,7 +2246,7 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
 
   if (state->theStreamResource == NULL)
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));
-  
+
   lStreamReleaser = state->theStreamResource->getStreamReleaser();
   state->theStream = new std::unique_ptr<std::istream, StreamReleaser> (state->theStreamResource->getStream(), lStreamReleaser);
   state->theStreamResource->setStreamReleaser(nullptr);

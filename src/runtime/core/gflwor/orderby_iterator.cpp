@@ -450,14 +450,14 @@ void OrderByIterator::bindOrderBy(
   StreamTuple& streamTuple = 
   iterState->theDataTable[iterState->theSortTable[iterState->theCurTuplePos].theDataPos];
 
-  ulong numForVarsRefs = (ulong)theOutputForVarsRefs.size();
-  for (ulong i = 0; i < numForVarsRefs; ++i)
+  csize numForVarsRefs = theOutputForVarsRefs.size();
+  for (csize i = 0; i < numForVarsRefs; ++i)
   {
     bindVariables(streamTuple.theItems[i], theOutputForVarsRefs[i], planState);
   }
 
-  ulong numLetVarsRefs = (ulong)theOutputLetVarsRefs.size();
-  for(ulong i = 0; i < numLetVarsRefs; ++i)
+  csize numLetVarsRefs = theOutputLetVarsRefs.size();
+  for(csize i = 0; i < numLetVarsRefs; ++i)
   {
     bindVariables(streamTuple.theSequences[i], theOutputLetVarsRefs[i], planState);
   }

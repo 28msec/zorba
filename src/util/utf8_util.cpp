@@ -15,6 +15,9 @@
  */
 #include "stdafx.h"
 
+#include <algorithm>
+#include <cstring>
+
 #ifndef ZORBA_NO_ICU
 #include <unicode/ustring.h>
 #endif /* ZORBA_NO_ICU */
@@ -142,6 +145,37 @@ size_type length( storage_type const *s ) {
     ++len;
   }
   return len;
+}
+
+storage_type* itou( unsigned long long n, storage_type *buf,
+                    unicode::code_point zero ) {
+  storage_type *s = buf;
+  encoded_char_type utf8_digit[10];     // cache of UTF-8 bytes for each digit
+  size_type utf8_size[10];              // number of UTF-8 bytes for each digit
+
+  std::fill( utf8_size, utf8_size + 10, 0 );
+  do {
+    unsigned long long const n_prev = n;
+    n /= 10;
+    unsigned long long const digit = n_prev - n * 10;
+    if ( !utf8_size[ digit ] ) {        // didn't cache previously: cache now
+      unicode::code_point const cp = static_cast<unicode::code_point>( digit );
+      utf8_size[ digit ] = encode( zero + cp, utf8_digit[ digit ] );
+    }
+    //
+    // Copy the UTF-8 bytes into buf backwards so when we reverse the entire
+    // buffer later (to reverse the digit order to put them the right way
+    // around), we can treat buf as a simple string and ignore multi-byte UTF-8
+    // character boundaries.
+    //
+    for ( size_type i = utf8_size[ digit ]; i; )
+      *s++ = utf8_digit[ digit ][ --i ];
+
+  } while ( n );
+
+  *s = '\0';
+  std::reverse( buf, s );
+  return buf;
 }
 
 size_type length( storage_type const *begin, storage_type const *end ) {

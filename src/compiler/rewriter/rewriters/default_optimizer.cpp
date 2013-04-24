@@ -19,11 +19,13 @@
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/rules/fold_rules.h"
 #include "compiler/rewriter/rules/index_matching_rule.h"
+#include "compiler/rewriter/rules/index_join_rule.h"
 #include "compiler/rewriter/rewriters/common_rewriter.h"
 #include "compiler/rewriter/rewriters/default_optimizer.h"
 #include "compiler/rewriter/tools/expr_tools.h"
+
 #include "compiler/xqddf/value_index.h"
-//#include "compiler/rewriter/tools/udf_graph.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "functions/udf.h"
@@ -32,7 +34,6 @@
 
 #include "context/static_context.h"
 
-//#include "store/api/store.h"
 
 
 namespace zorba
@@ -225,31 +226,12 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   // Index Joins
   if (Properties::instance()->inferJoins())
   {
-    IndexJoinRule rule;
     bool local_modified = false;
 
-    rCtx.theVarIdMap = new VarIdMap;
-    rCtx.theIdVarMap = new IdVarMap;
-    rCtx.theExprVarsMap = new ExprVarsMap;
-
-    ulong numVars = 0;
-    expr_tools::index_flwor_vars(rCtx.getRoot(),
-                                 numVars,
-                                 *rCtx.theVarIdMap,
-                                 rCtx.theIdVarMap);
+    IndexJoinRule rule(&rCtx);
 
     do
     {
-      assert(rCtx.theFlworStack.empty());
-
-      rCtx.theExprVarsMap->clear();
-
-      DynamicBitset freeset(numVars);
-      expr_tools::build_expr_to_vars_map(rCtx.getRoot(),
-                                         *rCtx.theVarIdMap,
-                                         freeset,
-                                         *rCtx.theExprVarsMap);
-
       local_modified = false;
 
       expr* e = rule.apply(rCtx, rCtx.getRoot(), local_modified);

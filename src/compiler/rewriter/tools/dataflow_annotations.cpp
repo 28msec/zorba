@@ -202,24 +202,17 @@ void DataflowAnnotationsComputer::compute(expr* e)
     break;
 
   case elem_expr_kind:
-    compute_elem_expr(static_cast<elem_expr *>(e));
-    break;
-
   case doc_expr_kind:
-    compute_doc_expr(static_cast<doc_expr *>(e));
-    break;
-
   case attr_expr_kind:
-    compute_attr_expr(static_cast<attr_expr *>(e));
-    break;
-
+  case namespace_expr_kind:
   case text_expr_kind:
-    compute_text_expr(static_cast<text_expr *>(e));
-    break;
-
   case pi_expr_kind:
-    compute_pi_expr(static_cast<pi_expr *>(e));
+  {
+    default_walk(e);
+    SORTED_NODES(e);
+    DISTINCT_NODES(e);
     break;
+  }
 
 #ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
@@ -233,6 +226,7 @@ void DataflowAnnotationsComputer::compute(expr* e)
 #endif
 
   case dynamic_function_invocation_expr_kind: // TODO
+  case argument_placeholder_expr_kind: // TODO
   case function_item_expr_kind: // TODO
   case delete_expr_kind:        // TODO
   case insert_expr_kind:        // TODO
@@ -407,7 +401,7 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
       {
         break;
       }
-      case flwor_clause::order_clause:
+      case flwor_clause::orderby_clause:
       case flwor_clause::groupby_clause:
       {
         return;
@@ -668,46 +662,6 @@ void DataflowAnnotationsComputer::compute_order_expr(order_expr* e)
 {
   default_walk(e);
   generic_compute(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_elem_expr(elem_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_doc_expr(doc_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_attr_expr(attr_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_text_expr(text_expr* e)
-{
- default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_pi_expr(pi_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
 }
 
 
@@ -1023,6 +977,7 @@ void SourceFinder::findNodeSourcesRec(
   }
 
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
   {
@@ -1148,6 +1103,11 @@ void SourceFinder::findNodeSourcesRec(
     // TODO: look for function_item_expr in the subtree to check if this assumption
     // is really true.
     break;
+  }
+
+  case argument_placeholder_expr_kind:
+  {
+    return;
   }
 
   case function_item_expr_kind:
@@ -1357,6 +1317,7 @@ void SourceFinder::findLocalNodeSources(
   }
 
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
   {

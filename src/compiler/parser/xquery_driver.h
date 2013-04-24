@@ -30,25 +30,22 @@ namespace zorba {
 class location;
 class parsenode;
 class CompilerCB;
-
-
-class ZorbaParserError
-{
-public:
-  std::string msg;
-  QueryLoc loc;
-  Error const &err_code;
-
-public:
-  ZorbaParserError(std::string _msg, Error const &code = err::XPST0003);
-  ZorbaParserError(std::string _msg, const location& aLoc, Error const &code = err::XPST0003);
-  ZorbaParserError(std::string _msg, const QueryLoc& aLoc, Error const &code = err::XPST0003);
-};
+class ZorbaParserError;
 
 
 // exported for unit testing only
 class ZORBA_DLL_PUBLIC xquery_driver
 {
+protected:
+  class xquery_scanner* xquery_lexer;
+  class jsoniq_scanner* jsoniq_lexer;
+  
+public:
+  enum GRAMMAR_TYPE { 
+    XQUERY_GRAMMAR,
+    JSONIQ_GRAMMAR
+  };
+   
 public:
   std::stringstream theDocComment;
   std::string theMainModuleDocComment;
@@ -58,9 +55,10 @@ public:
   rchandle<parsenode> expr_p;
   CompilerCB* theCompilerCB;
   ZorbaParserError* parserError;
-  class xquery_scanner* lexer;
-
-  xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize = 1024);
+  GRAMMAR_TYPE grammar_type;
+    
+public:  
+  xquery_driver(CompilerCB* aCompilerCB, GRAMMAR_TYPE a_grammar_type, uint32_t initial_heapsize = 1024);
 
   virtual ~xquery_driver();
 
@@ -73,6 +71,9 @@ public:
   void set_expr(parsenode* e_p);
 
   parsenode* get_expr() { return expr_p; }
+  
+  class xquery_scanner* getXqueryLexer() { return xquery_lexer; }
+  class jsoniq_scanner* getJsoniqLexer() { return jsoniq_lexer; }
 
   QueryLoc createQueryLoc(const location& aLoc) const;
 
@@ -85,10 +86,6 @@ public:
   ZorbaParserError* invalidCharRef(const char* _error_token, const location& loc);
   ZorbaParserError* parserErr(const std::string& _message, const location& loc, Error const &code = err::XPST0003);
   ZorbaParserError* parserErr(const std::string& _message, const QueryLoc& loc, Error const &code = err::XPST0003);
-
-public:
-  // transform a parser location into a QueryLoc
-  static QueryLoc createQueryLocStatic(const location& aLoc);
 };
 
 }	/* namespace zorba */

@@ -93,6 +93,28 @@ protected:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * Copy of std::equal_to in this namespace so we can specialize it below.
+ */
+template<typename T>
+struct equal_to : std::binary_function<T,T,bool> {
+  bool operator()( T const &a, T const &b ) const {
+    return a == b;
+  }
+};
+
+/**
+ * Specialization of std::equal_to for C strings.
+ */
+template<>
+struct equal_to<char const*> :
+  std::binary_function<char const*,char const*,bool>
+{
+  bool operator()( char const *s1, char const *s2 ) const {
+    return std::strcmp( s1, s2 ) == 0;
+  }
+};
+
+/**
  * Implementation of SGI's %identity extension.
  * See: http://www.sgi.com/tech/stl/identity.html
  */
@@ -279,6 +301,73 @@ inline char* new_strdup( char const *s ) {
 }
 
 /**
+ * Peeks one iteration ahead of the given iterator.
+ *
+ * @tparam ContainerType A type that has the nested types of \c const_iterator
+ * (which must at least be a forward iterator) and \c value_type.
+ * @param i A pointer to the iterator to peek one ahead of.  It is assumed not
+ * already to be at <code>c.end()</code>. It is incremented by 1.
+ * @return Returns the value at the next iteration or \c value_type() if none.
+ */
+template<class ContainerType> inline
+typename ContainerType::value_type
+peek( ContainerType const &c, typename ContainerType::const_iterator *i ) {
+  typedef typename ContainerType::value_type value_type;
+  typename ContainerType::const_iterator &j = *i;
+  return ++j != c.end() ? *j : value_type();
+}
+
+/**
+ * Peeks one iteration ahead of the given iterator.
+ *
+ * @tparam ContainerType A type that has the nested types of \c const_iterator
+ * (which must at least be a forward iterator) and \c value_type.
+ * @param i The iterator to peek one ahead of.  It is assumed not already to be
+ * at <code>c.end()</code>.
+ * @return Returns the value at the next iteration or \c value_type() if none.
+ */
+template<class ContainerType> inline
+typename ContainerType::value_type
+peek( ContainerType const &c, typename ContainerType::const_iterator i ) {
+  return peek( c, &i );
+}
+
+/**
+ * Peeks one iteration behind of the given iterator.
+ *
+ * @tparam ContainerType A type that has the nested types of \c const_iterator
+ * (which must at least be a bidirectional iterator) and \c value_type.
+ * @param i A pointer to the iterator to peek one behind.  It is decremented by
+ * 1.
+ * @return Returns the value at the previous iteration or \c value_type() if
+ * none.
+ */
+template<class ContainerType> inline
+typename ContainerType::value_type
+peek_behind( ContainerType const &c,
+             typename ContainerType::const_iterator *i ) {
+  typedef typename ContainerType::value_type value_type;
+  typename ContainerType::const_iterator &j = *i;
+  return j != c.begin() ? *--j : value_type();
+}
+
+/**
+ * Peeks one iteration behind of the given iterator.
+ *
+ * @tparam ContainerType A type that has the nested types of \c const_iterator
+ * (which must at least be a bidirectional iterator) and \c value_type.
+ * @param i The iterator to peek one behind.
+ * @return Returns the value at the previous iteration or \c value_type() if
+ * none.
+ */
+template<class ContainerType> inline
+typename ContainerType::value_type
+peek_behind( ContainerType const &c,
+             typename ContainerType::const_iterator i ) {
+  return peek_behind( c, &i );
+}
+
+/**
  * A less-verbose way to pop the first element from a sequence.
  */
 template<class SequenceType> inline
@@ -369,22 +458,29 @@ le0( IntType n ) {
 //
 
 template<typename N1,typename N2> inline
-typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
-                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+typename std::enable_if<(ZORBA_TR1_NS::is_signed<N1>::value ||
+                         ZORBA_TR1_NS::is_floating_point<N1>::value)
+                     && (ZORBA_TR1_NS::is_signed<N2>::value ||
+                         ZORBA_TR1_NS::is_floating_point<N2>::value),
+                        bool>::type
 ge_min( N1 n1, N2 ) {
   return n1 >= std::numeric_limits<N2>::min();
 }
 
 template<typename N1,typename N2> inline
-typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
-                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+typename std::enable_if<(ZORBA_TR1_NS::is_signed<N1>::value ||
+                         ZORBA_TR1_NS::is_floating_point<N1>::value)
+                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,
+                         bool>::type
 ge_min( N1 n1, N2 ) {
   return n1 >= 0;
 }
 
 template<typename N1,typename N2> inline
 typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
-                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+                     && (ZORBA_TR1_NS::is_signed<N2>::value ||
+                         ZORBA_TR1_NS::is_floating_point<N2>::value),
+                        bool>::type
 ge_min( N1, N2 ) {
   return true;
 }
@@ -397,22 +493,29 @@ ge_min( N1, N2 ) {
 }
 
 template<typename N1,typename N2> inline
-typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
-                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+typename std::enable_if<(ZORBA_TR1_NS::is_signed<N1>::value ||
+                         ZORBA_TR1_NS::is_floating_point<N1>::value)
+                     && (ZORBA_TR1_NS::is_signed<N2>::value ||
+                         ZORBA_TR1_NS::is_floating_point<N2>::value),
+                        bool>::type
 le_max( N1 n1, N2 ) {
   return n1 <= std::numeric_limits<N2>::max();
 }
 
 template<typename N1,typename N2> inline
-typename std::enable_if<ZORBA_TR1_NS::is_signed<N1>::value
-                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,bool>::type
+typename std::enable_if<(ZORBA_TR1_NS::is_signed<N1>::value ||
+                         ZORBA_TR1_NS::is_floating_point<N1>::value)
+                     && !!ZORBA_TR1_NS::is_unsigned<N2>::value,
+                        bool>::type
 le_max( N1 n1, N2 ) {
   return n1 <= 0 || static_cast<N2>( n1 ) <= std::numeric_limits<N2>::max();
 }
 
 template<typename N1,typename N2> inline
 typename std::enable_if<!!ZORBA_TR1_NS::is_unsigned<N1>::value
-                     && ZORBA_TR1_NS::is_signed<N2>::value,bool>::type
+                     && (ZORBA_TR1_NS::is_signed<N2>::value ||
+                         ZORBA_TR1_NS::is_floating_point<N2>::value),
+                        bool>::type
 le_max( N1 n1, N2 ) {
   return n1 <= static_cast<N1>( std::numeric_limits<N2>::max() );
 }

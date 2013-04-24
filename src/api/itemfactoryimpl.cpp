@@ -434,6 +434,29 @@ Item ItemFactoryImpl::createDateTime( const String& aDateTimeValue )
 }
 
 
+Item ItemFactoryImpl::createDateTimeStamp(short aYear, short aMonth, short aDay,
+                                  short aHour, short aMinute, double aSecond,
+                                  short aTimezone_hours)
+{
+  store::Item_t lItem;
+  theItemFactory->createDateTimeStamp(lItem, aYear, aMonth, aDay,
+                                 aHour, aMinute, aSecond, aTimezone_hours);
+
+  return &*lItem;
+}
+
+
+Item ItemFactoryImpl::createDateTimeStamp( const String& aDateTimeStampValue )
+{
+  zstring lString = Unmarshaller::getInternalString( aDateTimeStampValue );
+
+  store::Item_t lItem;
+  theItemFactory->createDateTimeStamp(lItem,  lString.c_str(), lString.size());
+
+  return &*lItem;
+}
+
+
 Item ItemFactoryImpl::createDouble ( double aValue )
 {
   store::Item_t lItem;
@@ -542,13 +565,11 @@ Item ItemFactoryImpl::createFloat ( float aValue )
 }
 
   
-Item ItemFactoryImpl::createHexBinary ( const char* aHexData, size_t aSize )
+Item ItemFactoryImpl::createHexBinary( const char* aHexData, size_t aSize,
+                                       bool aIsEncoded )
 {
   store::Item_t lItem;
-  xs_hexBinary n;
-  if (xs_hexBinary::parseString(aHexData, aSize, n))
-    theItemFactory->createHexBinary(lItem, n);
-
+  theItemFactory->createHexBinary(lItem, aHexData, aSize, aIsEncoded);
   return &*lItem;
 }
 

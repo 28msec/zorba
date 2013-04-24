@@ -7,6 +7,7 @@
 #include <zorba/external_module.h>
 #include <zorba/function.h>
 #include <zorba/dynamic_context.h>
+#include <zorba/serialization_callback.h>
 
 #define XQXQ_MODULE_NAMESPACE "http://www.zorba-xquery.com/modules/xqxq"
 
@@ -50,6 +51,52 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
+class XQXQURLResolver : public URLResolver
+{
+protected:
+  Item             theFunction;
+  StaticContext_t  theCtx;
+
+public:
+  XQXQURLResolver(Item& aFunction, StaticContext_t& aSctx)
+    :
+    URLResolver(),
+    theFunction(aFunction),
+    theCtx(aSctx)
+  {
+  }
+        
+  virtual ~XQXQURLResolver() { }
+      
+  virtual Resource* resolveURL(const String& url, EntityData const* entityData);
+};
+  
+
+class XQXQURIMapper : public URIMapper
+{
+protected:
+  Item            theFunction;
+  StaticContext_t theCtx;
+    
+public:
+  XQXQURIMapper(Item& aFunction, StaticContext_t& aSctx)
+    :
+    URIMapper(),
+    theFunction(aFunction),
+    theCtx(aSctx)
+  {
+  }
+    
+  virtual ~XQXQURIMapper(){ }
+    
+  virtual void mapURI(
+    const zorba::String aUri,
+    EntityData const* aEntityData,
+    std::vector<zorba::String>& oUris);
+};
 /*******************************************************************************
   Bag class for objects associated with a prepared query
 ********************************************************************************/
@@ -144,52 +191,6 @@ public:
   evaluate(const Arguments_t&,
            const zorba::StaticContext*,
            const zorba::DynamicContext*) const;
-  
-protected:
-  
-  class XQXQURLResolver : public URLResolver
-  {
-  protected:
-    Item             theFunction;
-    StaticContext_t  theCtx;
-
-  public:
-    XQXQURLResolver(Item& aFunction, StaticContext_t& aSctx)
-      :
-      URLResolver(),
-      theFunction(aFunction),
-      theCtx(aSctx)
-    {
-    }
-        
-    virtual ~XQXQURLResolver() { }
-      
-    virtual Resource* resolveURL(const String& url, EntityData const* entityData);
-  };
-  
-
-  class XQXQURIMapper : public URIMapper
-  {
-  protected:
-    Item            theFunction;
-    StaticContext_t theCtx;
-    
-  public:
-    XQXQURIMapper(Item& aFunction, StaticContext_t& aSctx)
-      :
-      URIMapper(),
-      theFunction(aFunction),
-      theCtx(aSctx)
-    {
-    }
-    
-    virtual ~XQXQURIMapper(){ }
-    
-    virtual void mapURI(
-      const zorba::String aUri,
-      EntityData const* aEntityData,
-      std::vector<zorba::String>& oUris);
-  };
 };
 
 
@@ -405,7 +406,7 @@ protected:
   protected:
     Iterator_t theIterator;
 
-    String theQueryID;
+    String     theQueryID;
 
   public:
     EvaluateIterator(Iterator_t& aIter, String aQueryID)
@@ -427,6 +428,8 @@ protected:
   };
 
   typedef zorba::SmartPtr<EvaluateIterator> EvaluateIterator_t;
+
+protected:
   EvaluateIterator_t theIter; 
 
 public:
@@ -528,8 +531,120 @@ public:
            const zorba::DynamicContext*) const;
 };
 
+  class VariableValueFunction : public XQXQFunction{
+    protected:
+      class ValueItemSequence : public ItemSequence
+      {
+        protected:
+          Iterator_t theIterator;
+
+        public:
+          ValueItemSequence(Iterator_t& aIter)
+            : theIterator(aIter)
+          {
+          }
+
+          virtual ~ValueItemSequence(){}
+
+          Iterator_t
+          getIterator() { return theIterator; }
+
+      };
+    public:
+      VariableValueFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+
+      virtual ~VariableValueFunction() {}
+
+      virtual zorba::String
+        getLocalName() const {return "variable-value"; }
+
+      virtual zorba::ItemSequence_t
+        evaluate(const Arguments_t&,
+                 const zorba::StaticContext*,
+                 const zorba::DynamicContext*) const;
+  };
+
+/*******************************************************************************
+
+********************************************************************************/
+class QueryPlanFunction : public XQXQFunction
+{
+public:
+  QueryPlanFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+
+  virtual ~QueryPlanFunction() {}
+
+  virtual zorba::String
+  getLocalName() const {return "query-plan"; }
+
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+  
+  virtual String getURI() const {
+    return theModule->getURI();
+  }
+  
+protected:
+  const XQXQModule* theModule;
+};
 
 
+/*******************************************************************************
+
+********************************************************************************/
+class LoadFromQueryPlanFunction : public XQXQFunction
+{
+public:
+  LoadFromQueryPlanFunction(const XQXQModule* aModule) : XQXQFunction(aModule) {}
+
+  virtual ~LoadFromQueryPlanFunction() {}
+
+  virtual zorba::String
+  getLocalName() const {return "load-from-query-plan"; }
+
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+  
+  virtual String getURI() const {
+    return theModule->getURI();
+  }
+  
+protected:
+  const XQXQModule* theModule;
+
+  class QueryPlanSerializationCallback : public zorba::SerializationCallback
+  {
+    std::vector<URIMapper*> theUriMappers;
+    std::vector<URLResolver*>theUrlResolvers;
+
+  public:
+    QueryPlanSerializationCallback()
+    {
+    }
+
+    virtual ~QueryPlanSerializationCallback() {}
+
+    void add_URIMapper(URIMapper* aMapper)
+    {
+      theUriMappers.push_back(aMapper);
+    }
+
+    void add_URLResolver(URLResolver* aResolver)
+    {
+      theUrlResolvers.push_back(aResolver);
+    }
+
+    virtual URIMapper*
+      getURIMapper(size_t  i ) const { return theUriMappers.size() < i? NULL : theUriMappers[i]; }
+
+    virtual URLResolver*
+    getURLResolver(size_t i) const { return theUrlResolvers.size() < i? NULL : theUrlResolvers[i]; }
+  };
+};
 }/*xqxq namespace*/}/*zorba namespace*/
 
 

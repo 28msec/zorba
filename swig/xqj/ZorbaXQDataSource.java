@@ -130,8 +130,8 @@ public class ZorbaXQDataSource implements javax.xml.xquery.XQDataSource {
    * 
    * Implementations that support user name and password must recognize the user name and password properties listed below. 
    * 
-   * user	the user name to use for creating a connection
-   * password	the password to use for creating a connection
+   * user the user name to use for creating a connection
+   * password the password to use for creating a connection
    * 
    * Any additional properties are implementation-defined.
    * 

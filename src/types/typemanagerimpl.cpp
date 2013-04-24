@@ -35,7 +35,7 @@
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 #include "compiler/parser/query_loc.h"
 
@@ -217,9 +217,9 @@ xqtref_t TypeManagerImpl::create_any_function_type(
 
 *******************************************************************************/
 xqtref_t TypeManagerImpl::create_function_type(
-        const std::vector<xqtref_t>& paramTypes,
-        const xqtref_t& returnType,
-        TypeConstants::quantifier_t quant) const
+    const std::vector<xqtref_t>& paramTypes,
+    const xqtref_t& returnType,
+    TypeConstants::quantifier_t quant) const
 {
   return new FunctionXQType(this, paramTypes, returnType, quant);
 }
@@ -401,6 +401,18 @@ xqtref_t TypeManagerImpl::create_named_type(
   {
     return create_untyped_type();
   }
+  else if (qname->equals(RTM.XS_IDREFS_QNAME.getp()))
+  {
+    return RTM.XS_IDREFS_TYPE;
+  }
+  else if (qname->equals(RTM.XS_NMTOKENS_QNAME.getp()))
+  {
+    return RTM.XS_NMTOKENS_TYPE;
+  }
+  else if (qname->equals(RTM.XS_ENTITIES_QNAME.getp()))
+  {
+    return RTM.XS_ENTITIES_TYPE;
+  }
   else
   {
     // Try to resolve the type name as a builtin atomic type
@@ -565,6 +577,7 @@ xqtref_t TypeManagerImpl::create_node_type(
 
   case store::StoreConsts::textNode:
   case store::StoreConsts::commentNode:
+  case store::StoreConsts::namespaceNode:
     return create_builtin_node_type(nodeKind, quant, true);
 
   case store::StoreConsts::piNode:
@@ -701,6 +714,23 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
     }
   }
 
+  case store::StoreConsts::namespaceNode:
+  {
+    switch(quantifier)
+    {
+    case TypeConstants::QUANT_ONE:
+    return GENV_TYPESYSTEM.NAMESPACE_TYPE_ONE;
+    case TypeConstants::QUANT_QUESTION:
+      return GENV_TYPESYSTEM.NAMESPACE_TYPE_QUESTION;
+    case TypeConstants::QUANT_STAR:
+      return GENV_TYPESYSTEM.NAMESPACE_TYPE_STAR;
+    case TypeConstants::QUANT_PLUS:
+      return GENV_TYPESYSTEM.NAMESPACE_TYPE_PLUS;
+    default:
+      ZORBA_ASSERT(false);
+    }
+  }
+
   default:
     ZORBA_ASSERT(false);
     return GENV_TYPESYSTEM.NONE_TYPE;
@@ -793,6 +823,10 @@ xqtref_t TypeManagerImpl::create_value_type(
     {
       return GENV_TYPESYSTEM.COMMENT_TYPE_ONE;
     }
+    case store::StoreConsts::namespaceNode:
+    {
+      return GENV_TYPESYSTEM.NAMESPACE_TYPE_ONE;
+    }
     default:
     {
       ZORBA_ASSERT(false);
@@ -809,16 +843,27 @@ xqtref_t TypeManagerImpl::create_value_type(
 
   else if (item->isFunction())
   {
-    const FunctionItem* lFItem = static_cast<const FunctionItem*>(item);
-    const signature& lSig = lFItem->getSignature();
-    const xqtref_t& lRetType = lSig.returnType();
-    std::vector<xqtref_t> lParamTypes;
-    for (uint32_t i = 0; i < lSig.paramCount(); ++i)
+    const FunctionItem* fitem = static_cast<const FunctionItem*>(item);
+    const signature& sig = fitem->getSignature();
+    const xqtref_t& retType = sig.returnType();
+    const xqtref_t& nonOptimizedRetType = sig.getNonOptimizedReturnType();
+    std::vector<xqtref_t> paramTypes;
+    
+    assert(fitem->getStartArity() <= sig.paramCount());
+    
+    for (csize i = 0; i < fitem->getStartArity(); ++i)
     {
-      lParamTypes.push_back(lSig[i]);
+      // In case some of the parameters of the function have been partially applied,
+      // the type of the function needs to be adjusted accordingly -- by skipping
+      // the corresponding signature parameter types.
+      if ( ! fitem->isArgumentApplied(i))
+        paramTypes.push_back(sig[i]);
     }
 
-    return new FunctionXQType(this, lParamTypes, lRetType, quant);
+    return new FunctionXQType(this,
+                              paramTypes,
+                              nonOptimizedRetType.getp() ? nonOptimizedRetType : retType,
+                              quant);
   }
 
   else
@@ -1160,6 +1205,9 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 
   case IdentTypes::COMMENT_TYPE:
     return create_builtin_node_type(store::StoreConsts::commentNode, q, false);
+
+  case IdentTypes::NAMESPACE_TYPE:
+    return create_builtin_node_type(store::StoreConsts::namespaceNode, q, false);
 
   case IdentTypes::ANY_NODE_TYPE:
     return create_builtin_node_type(store::StoreConsts::anyNode, q, false);

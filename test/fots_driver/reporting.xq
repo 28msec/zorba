@@ -47,12 +47,12 @@ declare default element namespace
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
+
 (:~
  : Loops through the test-sets, executes them and reports results.
  : @param $FOTSCatalogFilePath path to the FOTS catalog file.
  : @param $FOTSZorbaManifestPath path to the FOTS Zorba manifest file.
- : @param $exceptedTestCases lists of test cases that are not run( empty
- : sequence means all test cases will be run).
+ : @param $expectedFailuresPath the path to the FOTSExpectedFailures.xml.
  : @param $exceptedTestSets lists of test sets that are not run(empty sequence
  : means all test sets will be run).
  : @return a report of tests that were executed.
@@ -60,51 +60,30 @@ declare namespace ann =
 declare %ann:sequential function reporting:run-and-report(
   $FOTSCatalogFilePath    as xs:string,
   $FOTSZorbaManifestPath  as xs:string,
-  $exceptedTestCases      as xs:string*,
+  $expectedFailuresPath   as xs:string,
   $exceptedTestSets       as xs:string*
 ) as document-node()
 {
-  try
   {
-    {
-      variable $FOTSCatalog := doc(trace(resolve-uri($FOTSCatalogFilePath),
-                                  "Path to FOTS catalog.xml set to: "));
+    variable $results := driver:run-fots($FOTSCatalogFilePath,
+                                         $FOTSZorbaManifestPath,
+                                         (),
+                                         $exceptedTestSets,
+                                         (),
+                                         '',
+                                         (),
+                                         fn:false(),
+                                         $expectedFailuresPath,
+                                         fn:false(),
+                                         'run-test-sets',
+                                         fn:false());
 
-      variable $catalogBaseURI := resolve-uri(util:parent-folder($FOTSCatalogFilePath));
+    file:write("results.xml",
+               $results,
+               $util:writeXML);
 
-      variable $FOTSZorbaManifest := doc(trace(resolve-uri($FOTSZorbaManifestPath),
-                                        "Path to FOTSZorbaManifest set to:"));
-
-      variable $results := driver:run-fots($FOTSCatalogFilePath,
-                                           $FOTSZorbaManifestPath,
-                                           (),
-                                           $exceptedTestSets,
-                                           (),
-                                           $exceptedTestCases,
-                                           '',
-                                           (),
-                                           fn:false(),
-                                           '',
-                                           'run-test-sets');
-
-      file:write("results.xml",
-                 $results,
-                 $util:writeXML);
-
-      reporting:W3C-reporting($results,
-                              $FOTSZorbaManifestPath)
-    }
-  }
-  catch *
-  {
-    error($err:code,
-          $err:description,
-          concat("&#xA;Please make sure the passed 'fotsPath' points to the ",
-                 "exact location of the FOTS catalog.xml:&#xA;",
-                 resolve-uri($FOTSCatalogFilePath),
-                 "&#xA;and that the passed 'fotsZorbaManifestPath' points to",
-                 " a file in the same folder as cli.xq:&#xA;",
-                 resolve-uri($FOTSZorbaManifestPath)))
+    reporting:W3C-reporting($results,
+                            $FOTSZorbaManifestPath)
   }
 };
 
@@ -153,7 +132,7 @@ declare %ann:sequential function reporting:W3C-reporting(
               "The 'FOTSZorbaManifest.xml' was not found.");
       }
       else ();
-      
+     
       variable $FOTSZorbaManifest := parse-xml(file:read-text(resolve-uri($FOTSZorbaManifestPath)));
 
       variable $CLIBaseURI := resolve-uri(util:parent-folder($FOTSZorbaManifestPath));
@@ -167,10 +146,10 @@ declare %ann:sequential function reporting:W3C-reporting(
               "'W3C_submission_template.xml' file was not found.");
       }
       else ();
-      
+     
       variable $W3CTemplate := parse-xml(file:read-text($W3CTemplatePath));
-      
-      (: add dependecies:)
+     
+      (: add dependencies:)
      (insert nodes
       for $dependency in $FOTSZorbaManifest/fots:test-suite-result/fots:dependency
       return <dependency type="{$dependency/@type}"
@@ -180,7 +159,7 @@ declare %ann:sequential function reporting:W3C-reporting(
 
       (: add test set results:)
       insert nodes
-      for $testSet in $results/fots:test-cases/fots:test-set
+      for $testSet in $results/fots:test-set
       return
       <test-set name="{$testSet/@name}">
         {
@@ -197,11 +176,11 @@ declare %ann:sequential function reporting:W3C-reporting(
         }
       </test-set>
       as last into $W3CTemplate/results:test-suite-result);
-       
+      
       $W3CTemplate
     }
   }
-  catch *
+  catch err:FODC0002
   {
     error($err:code,
           $err:description,
@@ -212,142 +191,52 @@ declare %ann:sequential function reporting:W3C-reporting(
 
 (:~
  : Loops through the test-sets and creates statistics.
- : @param $FOTSCatalog  FOTS catalog file.
- : @param $failures the test reported by Zorba as failed.
- : @param $exceptedTestCases lists of test cases that are not run(empty string
- : means all tests will be run).
- : @param $exceptedTestSets lists of test sets that are not run(empty string
- : means all tests will be run).
- : @param $verbose is set to TRUE it will also output the actual failures.
+ : @param $failures Path to the results fo the FOTS.
  : @return a report of tests run.
  :)
-declare %ann:nondeterministic function reporting:do-reporting(
-  $FOTSCatalog        as document-node(),
-  $catalogBaseURI     as xs:anyURI,
-  $failures,
-  $exceptedTestCases  as xs:string*,
-  $exceptedTestSets   as xs:string*,
-  $verbose            as xs:boolean
+declare %ann:nondeterministic function reporting:wiki-report(
+  $resultsFilePath      as xs:string
 ) as element(fots:report)
 {
-  let $excepted := count($exceptedTestCases)
-  return
+try
+{
+  {
+    variable $results := parse-xml(file:read-text($resultsFilePath));
+
   <fots:report>
   {
-    let $totalNoTests := count($failures//fots:test-set//fots:test-case),
-        $totalPass := sum(for $testSet in $failures//fots:test-set
-                          return count($testSet//fots:test-case[@result ='pass'])),
-        $totalFail := sum(for $testSet in $failures//fots:test-set
-                          return count($testSet//fots:test-case[@result ='fail'])),
-        $totalNotApplicable := sum(for $testSet in $failures//fots:test-set
-                                   return count($testSet//fots:test-case[@result ='not applicable'])),
-        $totalNotRun := sum(for $testSet in $failures//fots:test-set
-                            return count($testSet//fots:test-case[@result ='notRun'])),
-        $executionTime := sum(for $testCase in $failures//fots:test-set//fots:test-case return xs:dayTimeDuration($testCase/@executionTime))
-    return
-    <fots:brief totalTests="{$totalNoTests}"
-                totalPass="{$totalPass}"
-                totalFail="{$totalFail}"
-                totalNotApplicable="{$totalNotApplicable}"
-                totalNotRun="{$totalNotRun}"
-                totalExecutionTime="{$executionTime}"/>
+    comment {(concat('total=',count($results//fots:test-set//fots:test-case)),
+             for $res in ('pass', 'fail', 'n/a', 'notRun', 'wrongError', 'disputed', 'tooBig')
+             return concat(" ", $res, "=", count($results//fots:test-set//fots:test-case[@result = $res])))}
   }
   {
-    for $testSetFile in $FOTSCatalog//fots:test-set
-    let $testSetURI := resolve-uri($testSetFile/@file,
-                                   $catalogBaseURI),
-        $testSetDoc := doc($testSetURI),
-        $testSetName := data($testSetDoc/fots:test-set/@name),
-        $totalNoTestCases := count($testSetDoc//fots:test-case),
-        $totalFailures := for $testCase in $failures//fots:test-set[@name = $testSetName]//fots:test-case[@result ="fail"]
-                          return $testCase,
-        $percent := round((1 - (count($totalFailures) div $totalNoTestCases))*100,2),
-        $executionTime := sum(for $testCase in $failures//fots:test-set[@name = $testSetName]//fots:test-case
-                              return xs:dayTimeDuration($testCase/@executionTime))
-    order by count($totalFailures) descending
+    for $ts in $results//fots:test-set
+    let $noTC := count($ts//fots:test-case)
+    let $totalFailures := $ts//fots:test-case[@result = "fail"]
+    let $percent := round((1 - (count($totalFailures) div $noTC))*100,2)
+    where count($totalFailures) gt 0
+    order by count($totalFailures) descending, $ts/@name
     return
-    <fots:test-set  name="{$testSetName}"
-                    executionTime="{$executionTime}"
+    <fots:test-set  name="{$ts/@name}"
                     noFailures="{count($totalFailures)}"
-                    noTestCases="{$totalNoTestCases}"
+                    noTestCases="{$noTC}"
                     percent="{$percent}"
-                  failedTestNames="{string-join(for $failure in $totalFailures
-                                                order by data($failure/@name)
-                                                return data($failure/@name)
-                                              ,",")}">
-   {if (not($verbose))
-    then $totalFailures
-    else ()}
+                    failedTestNames="{string-join(for $failure in $totalFailures
+                                                  order by data($failure/@name)
+                                                  return data($failure/@name)
+                                                  ,",")}">
     </fots:test-set>
    }
-   </fots:report>
-};
-
-(:~
- : Loops through the results and creates ExpectedFailures.xml.
- : @param $pathResults path to the FOTS results.
- : @return ExpectedFailures.xml.
- :)
-declare %ann:nondeterministic function reporting:generate-expected-failures(
-  $pathResults  as xs:string
-)
-{
-  try
-  {
-    {
-      if (not(file:is-file($pathResults)))
-      then
-      {
-        error($fots-err:errNA,
-              "The file results file was not found. Suggestion: use driver:run-fots to generate it.");
-      }
-      else ();
-
-      variable $results := parse-xml(file:read-text($pathResults));
-     
-      {
-        for $testSet in $results//fots:test-set
-        let $countFailures := count($testSet//fots:test-case[@result ="fail"])
-        let $testSetName := xs:string($testSet/@name)
-        where $countFailures gt xs:integer(0)
-        return
-        for $testCase in $testSet//fots:test-case[@result ="fail"]
-        return
-          concat('EXPECTED_FOTS_FAILURE (',
-                $testSetName,
-                ' ',
-                $testCase/@name,
-                ' 0)&#xA;')
-      }
-    }
-  }
-  catch *
-  {
-    error($err:code, $err:description)
-  }
-};
-
-declare function reporting:regressions(
-) as xs:string*
-{
-  let $old_report:=fn:parse-xml(file:read-text('/home/spungi/work/zorba/repo/fots-ctest/build/bin/report_04_Dec.xml'))
-  let $new_report:=fn:parse-xml(file:read-text('/home/spungi/work/zorba/repo/fots-ctest/build/bin/report_18_Dec.xml'))
+  </fots:report>
  
-  for $testSetOld in $old_report/*:report/*:test-set
-  let $testSetNew := $new_report/*:report/*:test-set[@name = data($testSetOld/@name)]
-  let $regression := if (exists($testSetNew))
-                     then xs:decimal(data($testSetOld/@noFailures)) - xs:decimal(data($testSetNew/@noFailures))
-                     else xs:decimal(0)
-  let $testsOld as xs:string* := tokenize(data($testSetOld/@failedTestNames),",")
-  let $testsNew as xs:string* := tokenize(data($testSetNew/@failedTestNames),",")
-  where $regression < xs:decimal(0)
-  order by $regression ascending
-  return
-    concat(data($testSetOld/@name),
-           " ",
-           $regression,
-           " ",
-           string-join((functx:value-except($testsNew, $testsOld)),","),
-           "&#xA;")
+  }
+}
+catch err:FODC0002
+{
+  error($err:code,
+        $err:description,
+        concat("&#xA;Please make sure the passed 'fotsPath' points to the ",
+               "exact location of the FOTS catalog.xml:&#xA;",
+               resolve-uri($resultsFilePath)))
+}
 };
-

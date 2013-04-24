@@ -53,6 +53,7 @@
 #include "store/api/iterator_factory.h"
 #include "store/api/temp_seq.h"
 
+
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
 
@@ -92,11 +93,12 @@ SERIALIZABLE_CLASS_VERSIONS(ExtFunctionCallIterator)
 ********************************************************************************/
 UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   :
+  theLocalDCtx(NULL),
+  theIsLocalDCtxOwner(true),
   thePlan(NULL),
   thePlanState(NULL),
-  thePlanStateSize(0),
-  theLocalDCtx(NULL),
   thePlanOpen(false),
+  thePlanStateSize(0),
   theCache(0)
 {
 }
@@ -113,7 +115,7 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
   if (thePlanState != NULL)
     delete thePlanState;
 
-  if (theLocalDCtx != NULL)
+  if (theLocalDCtx != NULL && theIsLocalDCtxOwner)
     delete theLocalDCtx;
 }
 
@@ -121,16 +123,36 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 /*******************************************************************************
   Called by the openImpl method of UDFunctionCallIterator.
 ********************************************************************************/
-void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
+void UDFunctionCallIteratorState::open(
+    PlanState& planState,
+    user_function* udf,
+    bool isDynamic,
+    store::ItemHandle<FunctionItem>& functionItem)
 {
-  thePlan = udf->getPlan(thePlanStateSize).getp();
+  // Must allocate new dctx because the udf may be a recursive udf with local
+  // block vars, all of which have the same dynamic-context id, but they are
+  // distinct vars.
 
-  thePlanStateSize = thePlan->getStateSizeOfSubtree();
+  if (isDynamic && functionItem->getDctx() != NULL)
+  {
+    thePlan = udf->getPlan(thePlanStateSize, functionItem->getMaxInScopeVarId()).getp();
 
-  // Must allocate new dctx, as child of the "current" dctx, because the udf
-  // may be a recursive udf with local block vars, all of which have the same
-  // dynamic-context id, but they are distinct vars.
-  theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
+    thePlanStateSize = thePlan->getStateSizeOfSubtree();
+
+    theLocalDCtx = functionItem->getDctx();
+
+    theIsLocalDCtxOwner = false;
+  }
+  else
+  {
+    thePlan = udf->getPlan(thePlanStateSize, 1).getp();
+
+    thePlanStateSize = thePlan->getStateSizeOfSubtree();
+
+    theLocalDCtx = new dynamic_context(planState.theGlobalDynCtx);
+
+    theIsLocalDCtxOwner = true;
+  }
 
   thePlanState = new PlanState(planState.theGlobalDynCtx,
                                theLocalDCtx,
@@ -175,6 +197,11 @@ UDFunctionCallIterator::UDFunctionCallIterator(
                    UDFunctionCallIteratorState>(sctx, loc, args), 
   theUDF(const_cast<user_function*>(aUDF)),
   theIsDynamic(false)
+{
+}
+
+
+UDFunctionCallIterator::~UDFunctionCallIterator()
 {
 }
 
@@ -341,7 +368,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   // Create the plan for the udf body (if not done already) and allocate
   // the plan state (but not the state block) and dynamic context.
-  state->open(planState, theUDF);
+  state->open(planState, theUDF, theIsDynamic, theFunctionItem);
 
   // if the results of the function should be cached (prereq: atomic in and out)
   // this functions stores an index in the dynamic context that contains
@@ -367,6 +394,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
     if (!argVarRefs.empty())
     {
+      if ((*argWrapsIte) == NULL)
       (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
 
       // Cannot do the arg bind here because the state->thePlan has not been
@@ -461,7 +489,8 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
           }
           else
           {
-            argWrapper = argWraps[i];
+            if (i < argWraps.size())
+              argWrapper = argWraps[i];
           }
 
           ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();

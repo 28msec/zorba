@@ -18,9 +18,11 @@
 #define ZORBA_DYNAMIC_CONTEXT_H
 
 #include <zorba/external_function_parameter.h>
+#include <zorba/time.h>
 
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/hashmap_itemp.h"
+#include "zorbautils/locale.h"
 
 #include "common/shared_types.h"
 
@@ -55,7 +57,7 @@ class dynamic_context
 
 public:
 
-  static enum ID_VARS 
+  static enum ID_VARS
   {
     IDVAR_CONTEXT_ITEM=1,
     IDVAR_CONTEXT_ITEM_POSITION,
@@ -105,7 +107,7 @@ protected:
     {
       no_val,
       ext_func_param, // params that can be used by ext. functions
-      ext_func_param_typed 
+      ext_func_param_typed
     } val_type_t;
 
     val_type_t    type;
@@ -121,7 +123,7 @@ protected:
 protected:
   dynamic_context            * theParent;
 
-  store::Item_t                theCurrentDateTime;
+  store::Item_t                theCurrentDateTimeStamp;
 
   long                         theTimezone;
 
@@ -137,6 +139,10 @@ protected:
 
   //MODIFY
   EnvVarMap                  * theEnvironmentVariables;
+
+  locale::iso639_1::type       theLang;
+  locale::iso3166_1::type      theCountry;
+  time::calendar::type         theCalendar;
 
 public:
   double                       theDocLoadingUserTime;
@@ -171,6 +177,28 @@ public:
 
   long get_implicit_timezone() const;
 
+  void set_locale( locale::iso639_1::type lang,
+                   locale::iso3166_1::type country ) {
+    theLang = lang;
+    theCountry = country;
+  }
+
+  void get_locale( locale::iso639_1::type *lang,
+                   locale::iso3166_1::type *country ) {
+    if ( lang )
+      *lang = theLang;
+    if ( country )
+      *country = theCountry;
+  }
+
+  void set_calendar( time::calendar::type calendar ) {
+    theCalendar = calendar;
+  }
+
+  time::calendar::type get_calendar() const {
+    return theCalendar;
+  }
+
   const std::vector<VarValue>& get_variables() const { return theVarValues; }
 
   void add_variable(ulong varid, store::Item_t& value);
@@ -186,13 +214,13 @@ public:
       store::Item_t& value);
 
   void set_variable(
-      ulong varid, 
+      ulong varid,
       const store::Item_t& varname,
       const QueryLoc& loc,
       store::Iterator_t& value);
 
   void unset_variable(
-      ulong varid, 
+      ulong varid,
       const store::Item_t& varname,
       const QueryLoc& loc);
 
@@ -245,6 +273,14 @@ public:
 
   ExternalFunctionParameter* getExternalFunctionParameter(
       const std::string& aName) const;
+  
+#ifndef NDEBUG
+  /**
+   * Prints debugging information regarding this dynamic context. Currently
+   * shows the list of declared variables.
+   */ 
+  std::string toString();
+#endif  
 
 protected:
   bool lookup_once(const std::string& key, dctx_value_t& val) const

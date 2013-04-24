@@ -60,7 +60,7 @@ CreateDirectoryFunction::evaluate(
   // actual mkdir
   try {
     lFile->mkdir(true);
-  } catch (ZorbaException& ze) {
+  } catch (ZorbaException const& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not create directory";
     raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
@@ -94,14 +94,14 @@ DeleteFileImplFunction::evaluate(
   File_t lFile = File::createFile(lFileStr.c_str());
 
   // precondition
-  if (!lFile->exists()) {
+  if (!lFile->exists( false )) {
     raiseFileError("FOFL0001", "A file or directory does not exist at this path", lFile->getFilePath());
   }
 
   // actual remove
   try {
     lFile->remove();
-  } catch (ZorbaException& ze) {
+  } catch (ZorbaException const& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not delete file";
     raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
@@ -111,7 +111,7 @@ DeleteFileImplFunction::evaluate(
   }
 
   // postcondition
-  if (lFile->exists()) {
+  if (lFile->exists( false )) {
     raiseFileError("FOFL9999", "The file at this path could not be deleted", lFile->getFilePath());
   }
 
@@ -153,7 +153,7 @@ ReadBinaryFunction::evaluate(
         *lInStream.release(), &FileModule::streamReleaser, true
       );
 
-  } catch (ZorbaException& ze) {
+  } catch (ZorbaException const& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not read file";
     raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
@@ -353,13 +353,11 @@ ExistsFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  bool   lFileExists = false;
-  String lFileStr = getFilePathString(aArgs, 0);
+  String const lFileStr = getFilePathString(aArgs, 0);
+  bool const lFollowSymlinks = getItem(aArgs, 1).getBooleanValue();
 
   File_t lFile = File::createFile(lFileStr.c_str());
-  if (lFile->exists()) {
-    lFileExists = true;
-  }
+  bool const lFileExists = lFile->exists(lFollowSymlinks);
 
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createBoolean(lFileExists)));
@@ -407,6 +405,30 @@ IsFileFunction::evaluate(
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->isFile()) {
+    lResult = true;
+  }
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lResult)));
+}
+
+//*****************************************************************************
+
+IsSymlinkFunction::IsSymlinkFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+IsSymlinkFunction::evaluate(
+  const ExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                 aSctxCtx,
+  const DynamicContext*                aDynCtx) const
+{
+  bool   lResult = false;
+  String lFileStr = getFilePathString(aArgs, 0);
+
+  File_t lFile = File::createFile(lFileStr.c_str());
+  if (lFile->isLink()) {
     lResult = true;
   }
   return ItemSequence_t(new SingletonItemSequence(
@@ -480,7 +502,7 @@ CopyFileImplFunction::evaluate(
     lInStream.close();
     lOutStream.close();
 
-  } catch (ZorbaException& ze) {
+  } catch (ZorbaException const& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not copy file";
     raiseFileError("FOFL9999", lSs.str(), lSrcFile->getFilePath());
@@ -517,7 +539,7 @@ ListFunction::evaluate(
   try {
     DirectoryIterator_t lIter = lFile->files();
     return ItemSequence_t(new IteratorBackedItemSequence(lIter, theModule->getItemFactory()));
-  } catch (ZorbaException& ze) {
+  } catch (ZorbaException const& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not list directory";
     raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
@@ -617,7 +639,7 @@ LastModifiedFunction::evaluate(
                                                   lT.tm_min, 
                                                   lT.tm_sec,
                                                   gmtOffset)));
-  } catch (ZorbaException& ze) {
+  } catch (ZorbaException const& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not retrieve the last modification timestamp of";
     raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
@@ -633,7 +655,7 @@ LastModifiedFunction::evaluate(
 int
 LastModifiedFunction::getGmtOffset()
 {
-  time_t t = time(0);
+  time_t t = ::time(0);
   struct tm* data;
   data = localtime(&t);
   data->tm_isdst = 0;
@@ -672,7 +694,7 @@ SizeFunction::evaluate(
   File::FileSize_t lFs = -1;
   try {
     lFs = lFile->getSize();
-  } catch (ZorbaException& ze) {
+  } catch (ZorbaException const& ze) {
     std::stringstream lSs;
     lSs << "An unknown error occured: " << ze.what() << "Can not retrieve the file size of";
     raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());

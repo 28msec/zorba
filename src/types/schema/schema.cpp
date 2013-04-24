@@ -929,14 +929,14 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
 
         xqtref_t baseXQType;
         XSTypeDefinition* baseTypeDef = xsTypeDef->getBaseType();
-        if (!baseTypeDef)
+        if (baseTypeDef)
         {
           baseXQType = createXQTypeFromTypeDefinition(tm, baseTypeDef);
         }
 
-        //cout << " creating UDT Simple Union Type: " <<
-        // qname->getLocalName()->c_str() << "@" <<
-        // qname->getNamespace()->c_str() << " of: ";
+        //std::cout << " creating UDT Simple Union Type: " <<
+        // qname->getLocalName() << "@" <<
+        // qname->getNamespace() << " of: ";
         std::vector<xqtref_t> unionItemTypes;
 
         for (csize i = 0; i < memberTypesDefList->size(); ++i)
@@ -947,7 +947,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
           xqtref_t itemXQType = createXQTypeFromTypeDefinition(tm, itemTypeDef);
 
           unionItemTypes.push_back(itemXQType);
-          //cout << " " << itemXQType->toString();
+          //std::cout << " " << itemXQType->toString();
 
           if (itemXQType->type_kind() == XQType::USER_DEFINED_KIND)
           {
@@ -955,7 +955,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
             addTypeToCache(itemXQType);
           }
         }
-        //cout << endl; cout.flush();
+        //std::cout << std::endl; std::cout.flush();
 
         xqtref_t xqType = new UserDefinedXQType(tm,
                                                 qname,
@@ -963,8 +963,8 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                 TypeConstants::QUANT_ONE,
                                                 unionItemTypes);
 
-        //cout << "   created UDT Union Type: " << xqType->toString() << endl;
-        //  cout.flush();
+        //std::cout << "   created UDT Union Type: " << xqType->toString() << std::endl;
+        //  std::cout.flush();
         addTypeToCache(xqType);
 
         result = xqType;
@@ -1274,7 +1274,18 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
   {
     result = GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE;
   }
-  // YearMonthDuration and DayTimeDuration are not in schema spec
+  else if ( XMLString::equals(XMLChArray("dayTimeDuration").get (), local) )
+  {
+    result = GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE;
+  }
+  else if ( XMLString::equals(XMLChArray("yearMonthDuration").get (), local) )
+  {
+    result = GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE;
+  }
+  else if ( XMLString::equals(XMLChArray("dateTimeStamp").get (), local) )
+  {
+    result = GENV_TYPESYSTEM.DATETIME_STAMP_TYPE_ONE;
+  }
   else
   {
     // type not covered
@@ -2074,7 +2085,7 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
        {
          theGrammarPool->serializeGrammars(&binmemoutputstream);
          binstr.assign((char*)binmemoutputstream.getRawBuffer(),
-                       binmemoutputstream.getSize());
+                        static_cast<zstring::size_type>(binmemoutputstream.getSize()) );
        }
        catch (...)
        {

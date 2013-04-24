@@ -233,6 +233,7 @@ private:
   typedef long int_cast_type;
 
   value_type value_;
+  static value_type const round_precision_limit;
 
   Decimal( value_type const &v ) : value_( v ) { }
 
@@ -254,6 +255,9 @@ private:
                                       value_type const &precision );
 
   static zstring toString( value_type const&,
+                           int precision = ZORBA_FLOAT_POINT_PRECISION );
+
+  static zstring toString( value_type const&, bool,
                            int precision = ZORBA_FLOAT_POINT_PRECISION );
 
   TEMPLATE_DECL(I) friend class IntegerImpl;
