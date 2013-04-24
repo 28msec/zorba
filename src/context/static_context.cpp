@@ -3505,7 +3505,6 @@ void static_context::get_collations(std::vector<std::string>& collations) const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -3524,12 +3523,23 @@ void static_context::bind_option(
   store::Item* qname2 = option.theName.getp();
 
   zstring lNamespace = qname2->getNamespace();
+  zstring lLocalName = qname2->getLocalName();
 
+  // If option namespace is the XQuery namespace.
+  if ( lNamespace == XQUERY_NS)
+  {
+    OptionMap::iterator lIt = theOptionMap->find(qname2);
+    if (lIt != theOptionMap->end())
+    {
+      std::ostringstream lOss;
+      lOss << lIt.getValue().theValue << " " << option.theValue;
+      option.theValue = lOss.str();
+    }
+  }
+  
   // If option namespace starts with zorba options namespace
   if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 )
   {
-    zstring lLocalName = qname2->getLocalName();
-
     if (lNamespace == ZORBA_OPTION_FEATURE_NS &&
         (lLocalName == "enable" || lLocalName == "disable"))
     {

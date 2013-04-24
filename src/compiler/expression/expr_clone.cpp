@@ -375,6 +375,23 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
   {
     const function_item_expr* e = static_cast<const function_item_expr*>(this);
 
+    csize numInScopeVars = e->theFunctionItemInfo->theInScopeVars.size();
+
+#if 0
+    std::vector<var_expr*> clonedInScopeVars(numInScopeVars);
+    
+    for (csize i = 0; i < numInScopeVars; ++i)
+    {
+      var_expr* var = e->theFunctionItemInfo->theInScopeVars[i];
+
+      clonedInScopeVars[i] = theCCB->theEM->create_var_expr(udf, var);
+
+      subst[var] = clonedVar;
+    }
+
+    user_function* fiudf = e->theFunctionItemInfo->theFunction;
+#endif
+
     function_item_expr* cloneExpr = theCCB->theEM->
     create_function_item_expr(theSctx,
                               udf,
@@ -384,25 +401,14 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                               e->is_inline(),
                               e->is_coercion());
 
-    std::vector<expr*>::const_iterator varIter = 
-    e->theFunctionItemInfo->theScopedVarsValues.begin();
-
-    std::vector<var_expr*>::const_iterator substVarIter = 
-    e->theFunctionItemInfo->theSubstVarsValues.begin();
-
-    std::vector<store::Item_t>::const_iterator nameIter = 
-    e->theFunctionItemInfo->theScopedVarsNames.begin();
-
-    std::vector<int>::const_iterator isGlobalIter =
-    e->theFunctionItemInfo->theIsGlobalVar.begin();
-
-    for (; varIter != e->theFunctionItemInfo->theScopedVarsValues.end();
-         ++varIter, ++substVarIter, ++nameIter, ++isGlobalIter)
+    for (csize i = 0; i < numInScopeVars; ++i)
     {
-      cloneExpr->add_variable((*varIter) ? (*varIter)->clone(udf, subst) : NULL,
-                              (*substVarIter) ? static_cast<var_expr*>((*substVarIter)->clone(udf, subst)) : NULL,
-                              *nameIter,
-                              *isGlobalIter);
+      var_expr* var = e->theFunctionItemInfo->theInScopeVars[i];
+
+      expr* clonedDomainExpr = 
+      e->theFunctionItemInfo->theInScopeVarValues[i]->clone(udf, subst);
+
+      cloneExpr->add_variable(clonedDomainExpr, var);
     }
 
     newExpr = cloneExpr;

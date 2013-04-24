@@ -25,8 +25,9 @@
 #include "annotations/annotations.h"
 #include "api/annotationimpl.h"
 
-namespace zorba 
-{
+namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
 
 bool FunctionImpl::isUpdating() const
 {
@@ -143,6 +144,18 @@ bool FunctionImpl::isBuiltin() const
   return static_cast<function*>(theFunction)->isBuiltin();
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
-} /* namespace zorba */
+Item ExternalFunction::getItem( Arguments_t const &args, unsigned pos ) const {
+  Iterator_t i = args[ pos ]->getIterator();
+  Item item;
+  i->open();
+  i->next( item );
+  i->close();
+  return item;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

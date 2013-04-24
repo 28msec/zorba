@@ -43,11 +43,13 @@ Bug Fixes/Other Changes:
   * Fixed bug #1123836 (overflows in date/time casts now return FODT0001 and
     in durations return FODT0002)
   * Fixed bug #1147518 (fn:round-half-to-even (at least 11 failures))
+  * Fixed bug #1167704 (Implement [w] for ISO calendars for format-date/time functions)
   * Fixed bug #1114228 (unrecognized options in the XQuery namespace now raise an error)
   * Fixed bug #1124273 (xqdoc crash because of annotation literals)
   * Fixed bug #1085408 (xs:date(): casting large year values)
   * Fixed bug #867027 (XQST0059 error messages inconsistent)
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
+  * Fixed bug #1131984 (apparently invalid regex in queries)
   * Fixed bug #1123163 (fn:format-integer failures)
   * Fixed bug in index join rule (no index join if inner clause has positional var).
   * Fixed bug in index join rule (copy var ids after cloning index domain expr).
@@ -71,6 +73,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1023168 (Non-single-char-escapes in regex character ranges not
     caught)
   * Throw XQST0048 for groupby clause, as specified by XQuery 3.0.
+  * Fixed bug #1064289 (file module cannot delete broken symbolic links)
   * Fixed bug in raising XQTY0086 (copying of namespace-sensitive values during
     node construction).
   * Fixed bug #866874 (regex "range subtraction" not supported for ICU)

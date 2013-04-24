@@ -272,7 +272,7 @@ declare %ann:nondeterministic function driver:list-matching-test-cases(
  : http://dev.w3.org/2011/QT3-test-suite/guide/reporting.html:
  :
  : 'pass' The test-case was run and the assertion(s) was(were) satisfied.
- : 'fail' The test-case was run and the assertion(s) was(were) satisfied.
+ : 'fail' The test-case was run and the assertion(s) was(were) not satisfied.
  : 'wrongError' The test-case was run; the expected results permitted an error
  :              to be reported; the actual result was an error, but not with
  :              the expected error code.
@@ -436,7 +436,7 @@ declare %ann:sequential function driver:run-fots(
  : http://dev.w3.org/2011/QT3-test-suite/guide/reporting.html:
  :
  : 'pass' The test-case was run and the assertion(s) was(were) satisfied.
- : 'fail' The test-case was run and the assertion(s) was(were) satisfied.
+ : 'fail' The test-case was run and the assertion(s) was(were) not satisfied.
  : 'wrongError' The test-case was run; the expected results permitted an error
  :              to be reported; the actual result was an error, but not with
  :              the expected error code.
@@ -948,9 +948,9 @@ try
       setting a COLLATION or COLLECTION but they still PASS even if this setting
       is not done. That is why we first run the test case.
      :)
-    else if(exists($prerequisitesError)) then
+    else if (exists($prerequisitesError)) then
       feedback:not-run($case, $prerequisitesError)
-    else if($expFailureTC/@finalStatus = "disputed") then
+    else if ($expFailureTC/@finalStatus = "disputed") then
       feedback:disputed($case,
                         concat("For details please see https://www.w3.org/Bugs/Public/show_bug.cgi?id=",
                                $expFailureTC/@bug))
