@@ -15,11 +15,12 @@
  */
 #include "stdafx.h"
 
-#include <sstream>
-#include <iterator>
-#include <stack>
-#include <map>
 #include <bitset>
+#include <iterator>
+#include <map>
+#include <sstream>
+#include <stack>
+#include <vector>
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
@@ -3856,7 +3857,206 @@ void* begin_visit(const VFO_DeclList& v)
     bind_fn(f, numParams, loc);
   }
 
+  check_xquery_feature_options(loc);
+
   return no_state;
+}
+
+store::Item_t parse_and_expand_qname(
+    const zstring& value,
+    const char* default_ns,
+    const QueryLoc& loc) const
+{
+  zstring lPrefix;
+  zstring lLocalName;
+
+  zstring::size_type n = value.rfind(':');
+
+  if ( n == zstring::npos )
+  {
+    lLocalName = value;
+  }
+  else
+  {
+    lPrefix = value.substr( 0, n );
+    lLocalName = value.substr( n+1 );
+  }
+  store::Item_t lQName;
+  theSctx->expand_qname( lQName, default_ns, lPrefix, lLocalName, loc );
+
+  return lQName;
+}
+
+void parse_feature_list(
+    const zstring& anOptionName,
+    std::map<zstring, bool>* aFeatures,
+    bool aRequired,
+    const QueryLoc& loc)
+{
+  // Looking up feature options.
+  zstring lFeatureList;
+  store::Item_t lFeatureQName = parse_and_expand_qname(
+      anOptionName,
+      static_context::XQUERY_NS,
+      loc);
+  theSctx->lookup_option(lFeatureQName, lFeatureList);
+  
+  if (aFeatures == NULL || lFeatureList.empty())
+  {
+    return;
+  }
+  size_t lPositionLeft = 0;
+  size_t lPositionRight = lFeatureList.find(" ", lPositionLeft);
+  bool lLastTime = lPositionRight == zstring::npos;
+  while (lPositionRight != zstring::npos || lLastTime)
+  {
+    zstring lFeature = lFeatureList.substr(
+        lPositionLeft,
+        lPositionRight - lPositionLeft);
+    store::Item_t lFeatureQName = parse_and_expand_qname(
+        lFeature,
+        static_context::XQUERY_NS,
+        loc);
+    // Requiring a non-recognized feature.
+    if (aRequired && lFeatureQName->getNamespace() != static_context::XQUERY_NS)
+    {
+      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
+    }
+    zstring lFeatureName = lFeatureQName->getLocalName();
+    if (aRequired && !is_recognized_feature(lFeatureName))
+    {
+      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
+    }
+
+    // Only adding to the feature matrix if recognized.
+    if (is_recognized_feature(lFeatureName))
+    {
+      // Error in case of conflicting flags.
+       std::map<zstring, bool>::iterator lIt = aFeatures->find(lFeatureName);
+      if (lIt != aFeatures->end() && lIt->second != aRequired)
+      {
+        RAISE_ERROR(err::XQST0127, loc, ERROR_PARAMS(lFeature));
+      }
+      (*aFeatures)[lFeatureName] = aRequired;
+    }
+    if (lLastTime)
+    {
+      break;
+    }
+    lPositionLeft = lPositionRight + 1;
+    lPositionRight = lFeatureList.find(" ", lPositionLeft);
+    if (lPositionRight == zstring::npos)
+    {
+      lLastTime = true;
+    }
+  }
+}
+
+bool is_recognized_feature(const zstring& aFeatureName)
+{
+  return aFeatureName == "static-typing" ||
+         aFeatureName == "module" ||
+         aFeatureName == "higher-order-function" ||
+         aFeatureName == "schema-aware" ||
+         aFeatureName == "all-extensions" ||
+         aFeatureName == "all-optional-features";
+}
+
+bool is_required_feature(
+    const std::map<zstring, bool>& aFeatureMatrix,
+    const zstring& aFeatureName
+)
+{
+  std::map<zstring, bool>::const_iterator lIt =
+    aFeatureMatrix.find(aFeatureName);
+  if (lIt == aFeatureMatrix.end())
+  {
+    return false;
+  }
+  return lIt->second;
+}
+
+bool is_prohibited_feature(
+    const std::map<zstring, bool>& aFeatureMatrix,
+    const zstring& aFeatureName
+)
+{
+  std::map<zstring, bool>::const_iterator lIt =
+    aFeatureMatrix.find(aFeatureName);
+  if (lIt == aFeatureMatrix.end())
+  {
+    return false;
+  }
+  return !lIt->second;
+}
+
+void check_xquery_feature_options(const QueryLoc& loc)
+{
+  // Constructing feature vectors.
+  std::map<zstring, bool> lFeatures;
+  parse_feature_list("require-feature", &lFeatures, true, loc);
+  parse_feature_list("prohibit-feature", &lFeatures, false, loc);
+  
+  std::vector<zstring> lSupportedFeatures;
+  lSupportedFeatures.push_back("module");
+  lSupportedFeatures.push_back("higher-order-function");
+  lSupportedFeatures.push_back("schema-aware");
+  std::vector<zstring> lNonSupportedFeatures;
+  lNonSupportedFeatures.push_back("static-typing");
+  
+  // Non supported features cannot be required.
+  for (std::vector<zstring>::iterator lIt = lNonSupportedFeatures.begin();
+       lIt != lNonSupportedFeatures.end();
+       ++lIt)
+  {
+    if (is_required_feature(lFeatures, *lIt))
+    {
+      RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS(*lIt));
+    }
+  }
+  // It is not possible to require all extensions.
+  if (is_required_feature(lFeatures, "all-extensions"))
+  {
+    RAISE_ERROR(err::XQST0126, loc, ERROR_PARAMS("all-extensions"));
+  }
+  // All optional features can only be required if all unsupported features are
+  // prohibited.
+  if (is_required_feature(lFeatures, "all-optional-features"))
+  {
+    for (std::vector<zstring>::iterator lIt = lNonSupportedFeatures.begin();
+         lIt != lNonSupportedFeatures.end();
+         ++lIt)
+    {
+      if (!is_prohibited_feature(lFeatures, *lIt))
+      {
+        RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS(*lIt));
+      }
+    }
+  }
+  // Supported features cannot be prohibited.
+  for (std::vector<zstring>::iterator lIt = lSupportedFeatures.begin();
+       lIt != lSupportedFeatures.end();
+       ++lIt)
+  {
+    if (is_prohibited_feature(lFeatures, *lIt))
+    {
+      RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS(*lIt));
+    }
+  }
+  // All optional features can only be prohibited if all supported features
+  // are required.
+  if (is_prohibited_feature(lFeatures, "all-optional-features"))
+  {
+    for (std::vector<zstring>::iterator lIt = lSupportedFeatures.begin();
+         lIt != lSupportedFeatures.end();
+         ++lIt)
+    {
+      if (!is_required_feature(lFeatures, *lIt))
+      {
+        RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS(*lIt));
+      }
+    }
+  }
 }
 
 
