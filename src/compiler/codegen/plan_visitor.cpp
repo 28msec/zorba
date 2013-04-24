@@ -829,7 +829,6 @@ void general_var_codegen(const var_expr& var)
     // Create a var ref iter in the output of C.
     varIter = create_var_iter(var, isForVar, singleItemLetVar);
 
-
     clauseVarMap->theVarRebinds[varPos]->theOutputVarRefs.push_back(varIter);
 
     if (clauseVarMap->theIsGeneral || flworExpr->is_sequential())
@@ -1280,14 +1279,14 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
     const groupby_clause::rebind_list_t& grouping_vars = gbc->get_grouping_vars();
     const groupby_clause::rebind_list_t& nongrouping_vars = gbc->get_nongrouping_vars();
 
-    for (unsigned i = 0; i < grouping_vars.size(); ++i)
+    for (csize i = 0; i < grouping_vars.size(); ++i)
     {
       VarRebind_t varRebind = new VarRebind;
       clauseVarMap->theVarExprs.push_back(grouping_vars[i].second);
       clauseVarMap->theVarRebinds.push_back(varRebind);
     }
 
-    for (unsigned i = 0; i < nongrouping_vars.size(); ++i)
+    for (csize i = 0; i < nongrouping_vars.size(); ++i)
     {
       VarRebind_t varRebind = new VarRebind;
       clauseVarMap->theVarExprs.push_back(nongrouping_vars[i].second);
@@ -1477,20 +1476,21 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 {
 #define PREV_ITER gflwor_codegen(flworExpr, currentClause - 1)
 
-  const QueryLoc& qloc = flworExpr.get_loc();
-
   static_context* sctx = flworExpr.get_sctx();
 
   if (currentClause < 0)
   {
-    return new flwor::TupleSourceIterator(sctx, qloc);
+    return new flwor::TupleSourceIterator(sctx, flworExpr.get_loc());
   }
 
   const flwor_clause& c = *(flworExpr.get_clause(currentClause));
 
+  const QueryLoc& qloc = c.get_loc();
+
   FlworClauseVarMap_t clauseVarMap;
 
-  if (c.get_kind() != flwor_clause::where_clause)
+  if (c.get_kind() != flwor_clause::where_clause &&
+      c.get_kind() != flwor_clause::window_clause)
   {
     ZORBA_ASSERT(!theClauseStack.empty());
     csize stackSize = theClauseStack.size();
@@ -1586,9 +1586,42 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
     const window_clause* wc = static_cast<const window_clause *>(&c);
 
     var_expr* var = wc->get_var();
-    PlanIter_t domainIter = pop_itstack();
+    xqtref_t varType = var->get_type();
+
+    PlanIter_t treatIter;
+
+    if (varType != NULL)
+    {
+      RootTypeManager& rtm = GENV_TYPESYSTEM;
+      TypeManager* tm = sctx->get_typemanager();
+      xqtref_t domainType = wc->get_expr()->get_return_type();
+
+      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *varType, qloc) &&
+          !TypeOps::is_subtype(tm, *domainType, *varType, qloc))
+      {
+        general_var_codegen(*var);
+
+        PlanIter_t winVarIter = pop_itstack();
+
+        treatIter = new TreatIterator(sctx, qloc, winVarIter,
+                                      varType,
+                                      true,
+                                      TREAT_TYPE_MATCH,
+                                      NULL);
+      }
+    }
+
+    ZORBA_ASSERT(!theClauseStack.empty());
+    csize stackSize = theClauseStack.size();
+
+    clauseVarMap = theClauseStack[stackSize-1];
+    theClauseStack.resize(stackSize - 1);
+
+    ZORBA_ASSERT(clauseVarMap->theClause == &c);
 
     std::vector<PlanIter_t>& varRefs = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
+
+    PlanIter_t domainIter = pop_itstack();
 
     std::auto_ptr<flwor::StartClause> start_clause;
     std::auto_ptr<flwor::EndClause> end_clause;
@@ -1619,16 +1652,22 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
       start_clause.reset(new flwor::StartClause(pop_itstack(), wvars));
     }
 
-    return new flwor::WindowIterator(sctx,
-                                     var->get_loc(),
-                                     wc->get_winkind() == tumbling_window ? flwor::WindowIterator::TUMBLING : flwor::WindowIterator::SLIDING,
-                                     PREV_ITER,
-                                     domainIter,
-                                     var->get_name(),
-                                     varRefs,
-                                     *start_clause,
-                                     *end_clause,
-                                     wc->lazyEval());
+    PlanIter_t winIter =
+    new flwor::WindowIterator(sctx,
+                              var->get_loc(),
+                              (wc->get_winkind() == tumbling_window ?
+                               flwor::WindowIterator::TUMBLING :
+                               flwor::WindowIterator::SLIDING),
+                              PREV_ITER,
+                              domainIter,
+                              treatIter,
+                              var->get_name(),
+                              varRefs,
+                              *start_clause,
+                              *end_clause,
+                              wc->lazyEval());
+
+    return winIter;
   }
 
   //

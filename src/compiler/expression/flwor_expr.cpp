@@ -93,6 +93,7 @@ void forletwin_clause::set_var(var_expr* v)
   {
     theVarExpr->set_flwor_clause(this);
 
+#if 0
     if (theKind == window_clause && theVarExpr->get_type() != NULL)
     {
       RootTypeManager& rtm = GENV_TYPESYSTEM;
@@ -115,6 +116,7 @@ void forletwin_clause::set_var(var_expr* v)
                           TREAT_TYPE_MATCH);
       }
     }
+#endif
   }
 }
 
@@ -304,6 +306,7 @@ window_clause::window_clause(
   if (winKind == tumbling_window)
     theLazyEval = true;
 
+#if 0
   if (varExpr != NULL && sctx != NULL)
   {
     RootTypeManager& rtm = GENV_TYPESYSTEM;
@@ -330,6 +333,7 @@ window_clause::window_clause(
       }
     }
   }
+#endif
 }
 
 

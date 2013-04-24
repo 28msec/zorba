@@ -12459,53 +12459,36 @@ void generate_inline_function(
                     SIMPLE_EXPR,
                     theCCB);
 
+  // Parameters, if any, have been translated into LET vars in a flwor expr.
+  // The UDF body, which in genral references these LET vars, must become the
+  // return expr of this flwor, and then, the flwor itself becomes the effective
+  // body of the udf.
   if (flwor != NULL)
   {
     flwor->set_return_expr(body);
 
     body = flwor;
 
-    // Parameters and inscope vars have been wrapped into a flwor expression (see
-    // begin_visit). We need to add these to the udf obj so that they will bound
-    // at runtime. We must do this here (before we optimize the inline function
-    // body, because optimization may remove clauses from the flwor expr
     for (csize i = 0; i < flwor->num_clauses(); ++i)
     {
-      flwor_clause* lClause = flwor->get_clause(i);
-      let_clause* letClause = dynamic_cast<let_clause*>(lClause);
-      ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
-      var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
+      let_clause* lc = static_cast<let_clause*>(flwor->get_clause(i));
+      var_expr* argVar = static_cast<var_expr*>(lc->get_expr());
+
+      // When the inline function item is (dynamically) invoked, the invoker can
+      // pass values of any type. So, contrary to static function calls, the code
+      // for arg-value type checking must be placed in the body of the udf itself,
+      // instead of the caller.
+      argVar->set_type(theRTM.ITEM_TYPE_STAR);
+      lc->set_expr(normalize_fo_arg(i, lc->get_expr(), udf.getp(), loc));
+
       argVars.push_back(argVar);
-      
-      // Since the inline function items can be created in one place but then 
-      // invoked in many other places, it is not possible to perform function
-      // call normalization. Instead the domain expressions of arg vars is 
-      // wrapped in type matches.
-      letClause->set_expr(normalize_fo_arg(i,
-                                           letClause->get_expr(),
-                                           udf.getp(),
-                                           loc));
     }
   }
-
-  /* TODO: optimizing the HoF here is a very bad idea. This code can be safely removed
-           anyways because the UDF optimization should take care of it.
-  if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
-  {
-    RewriterContext rCtx(theCCB,
-                         body,
-                         NULL,
-                         "Inline function",
-                         (theSctx->ordering_mode() == StaticContextConsts::ordered));
-    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
-    body = rCtx.getRoot();
-  }
-  */
 
   udf->setBody(body);
   udf->setScriptingKind(body->get_scripting_detail());
   udf->setArgVars(argVars);
-  udf->setOptimized(true); // hof ????
+  udf->setOptimized(true); // TODO: this should not be set here HOF ????
 
   // Get the function_item_expr and set its function to the udf created above.
   function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(theNodeStack.top());
@@ -12516,6 +12499,7 @@ void generate_inline_function(
     theCCB->theConfig.translate_cb(udf->getBody(),
                                    udf->getName()->getStringValue().c_str());
 }
+
 
 /*******************************************************************************
    FilterExpr ::= FilterExpr
