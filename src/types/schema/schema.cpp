@@ -594,8 +594,8 @@ xqtref_t Schema::createXQTypeFromElementName(
   }
 
   xqtref_t res = createXQTypeFromTypeDefinition(typeManager, typeDef);
-  TRACE("res:" << res->get_qname()->getLocalName() << " @ " <<
-        res->get_qname()->getNamespace());
+  TRACE("res:" << res->getQName()->getLocalName() << " @ " <<
+        res->getQName()->getNamespace());
 
   return res;
 }
@@ -1747,19 +1747,20 @@ bool Schema::parseUserAtomicTypes(
       {
         // textValue must be in the form of URI:LOCAL
         size_t colonIndex = textValue.find_first_of(":");
-        zstring prefix = textValue.substr(0, colonIndex).str();
+        zstring prefix = (colonIndex == (size_t)-1 ? zstring("") : textValue.substr(0, colonIndex).str());
         zstring local = textValue.substr(colonIndex+1, textValue.size()).str();
         zstring uri;
 
         if (nsCtx != NULL && nsCtx->findBinding(prefix, uri))
         {
-          XMLChArray xchTextValue(uri.append(":").append(local).str());         
+          //std::cout << "parseUAT: uri:'" << uri << "'  local:'" << local << "'\n"; std::cout.flush();
+          XMLChArray xchTextValue(uri.append(":").append(local).str());
           xsiTypeDV->validate(xchTextValue.get());
         }
         else
         {
-          RAISE_ERROR(err::FORG0001, loc,
-          ERROR_PARAMS(ZED(FORG0001_PrefixNotBound_2), prefix));
+          RAISE_ERROR(err::XQDY0027, loc,
+          ERROR_PARAMS(ZED(XQDY0027_PrefixNotBound), prefix));
         }
       }
       else
@@ -1779,8 +1780,8 @@ bool Schema::parseUserAtomicTypes(
     zstring msg;
     transcode(idve.getMessage(), msg);
 
-    RAISE_ERROR(err::FORG0001, loc,
-    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o),
+    RAISE_ERROR(err::XQDY0027, loc,
+    ERROR_PARAMS(ZED(XQDY0027_InvalidValue),
                  textValue,
                  targetType->toSchemaString(),
                  msg));
@@ -1814,8 +1815,8 @@ bool Schema::parseUserAtomicTypes(
   {
     store::Item_t tTypeQName = udXQType->getQName();
 
-    //TRACE("factory '" << baseItem->getStringValue() << "' type "
-    //      << tTypeQName->getStringValue() << "  base:" << baseType->toString());
+    TRACE("factory '" << baseItem->getStringValue() << "' type "
+          << tTypeQName->getStringValue() << "  base:" << baseType->toString());
 
     return GENV_ITEMFACTORY->
            createUserTypedAtomicItem(result, baseItem, tTypeQName);
