@@ -87,7 +87,7 @@ size_type byte_pos( storage_type const *s, size_type s_len,
 }
 
 size_type char_length( storage_type start ) {
-  static char const length_table[] = {
+  static char const table[] = {
     /*      0 1 2 3 4 5 6 7 8 9 A B C D E F */
     /* 0 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     /* 1 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -106,7 +106,7 @@ size_type char_length( storage_type start ) {
     /* E */ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
     /* F */ 4,4,4,4,4,4,4,4,5,5,5,5,6,6,0,0
   };
-  if ( size_type const c_len = length_table[ static_cast<unsigned>( start ) ] )
+  if ( size_type const c_len = table[ static_cast<unsigned char>( start ) ] )
     return c_len;
   throw invalid_byte( start );
 }
