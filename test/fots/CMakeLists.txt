@@ -134,6 +134,7 @@ EXPECTED_FOTS_FAILURE (DISPUTED prod-AxisStep Axes115 21620)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-OrderByClause orderBy20 21619)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-OrderByClause orderBy21 21619)
 EXPECTED_FOTS_FAILURE (DISPUTED misc-CombinedErrorCodes XQST0085 21730)
+EXPECTED_FOTS_FAILURE (DISPUTED prod-VarDefaultValue extvardef-006b 21832)
 
 # Next three possibly unique to old RQ machine, but they need to be
 # marked for the RQ to pass.
@@ -411,8 +412,6 @@ EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-105 0)
 EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-106 0)
 EXPECTED_FOTS_FAILURE (prod-VarDecl.external K2-ExternalVariablesWithout-18 0)
 EXPECTED_FOTS_FAILURE (prod-VarDecl.external K2-ExternalVariablesWith-22 0)
-EXPECTED_FOTS_FAILURE (prod-VarDefaultValue extvardef-003a 0)
-EXPECTED_FOTS_FAILURE (prod-VarDefaultValue extvardef-006b 0)
 EXPECTED_FOTS_FAILURE (prod-VarDefaultValue extvardef-016a 0)
 EXPECTED_FOTS_FAILURE (prod-VarDefaultValue extvardef-016b 0)
 EXPECTED_FOTS_FAILURE (prod-VersionDecl VersionDecl-v1-processor-and-v3-query 0)
