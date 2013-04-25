@@ -196,7 +196,9 @@ store::Item_t FragmentXmlLoader::loadXml(
       if (theFragmentStream->ctxt == NULL)
       {
         theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( XMLParserInitFailed ) )));
-        throw 0; // the argument to throw is not used by the catch clause
+        abortload();
+        thePathStack.clear();
+        return NULL;
       }
 
       // Apply parser options
@@ -210,7 +212,9 @@ store::Item_t FragmentXmlLoader::loadXml(
       if (input == NULL)
       {
         theXQueryDiagnostics->add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( XMLParserInitFailed ) )));
-        throw 0; // the argument to throw is not used by the catch clause
+        abortload();
+        thePathStack.clear();
+        return NULL;
       }
 
       // Initialize the parser input (only filename and the pointer to the current char)
@@ -253,7 +257,9 @@ store::Item_t FragmentXmlLoader::loadXml(
               NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( BadXMLNoOpeningTag ))) :
               NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( BadXMLNoOpeningTag ), theDocUri))
             );
-        throw 0; // the argument to throw is not used by the catch clause
+        abortload();
+        thePathStack.clear();
+        return NULL;
       }
       
       // parse the DOCTYPE declaration, if any
@@ -281,7 +287,9 @@ store::Item_t FragmentXmlLoader::loadXml(
               NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( ParseFragmentDoctypeNotAllowedHere ))) :
               NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( ParseFragmentDoctypeNotAllowedHere ), theDocUri))
             );
-            throw 0; // the argument to throw is not used by the catch clause
+            abortload();
+            thePathStack.clear();
+            return NULL;
           }
           else // theLoadProperties.getErrorOnDoctype() == true
           {
@@ -289,7 +297,9 @@ store::Item_t FragmentXmlLoader::loadXml(
               NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( ParseFragmentDoctypeNotAllowed ))) :
               NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( ParseFragmentDoctypeNotAllowed ), theDocUri))
             );
-            throw 0; // the argument to throw is not used by the catch clause
+            abortload();
+            thePathStack.clear();
+            return NULL;
           }
         }
       }
@@ -332,7 +342,9 @@ store::Item_t FragmentXmlLoader::loadXml(
       }
 
       if ( ! theXQueryDiagnostics->errors().empty())
-        throw 0; // the argument to throw is not used by the catch clause
+        abortload();
+        thePathStack.clear();
+        return NULL;
     }
 
     // this happens when there are tags that have not been closed
@@ -344,7 +356,9 @@ store::Item_t FragmentXmlLoader::loadXml(
           NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( BadXMLDocument_2o ))) :
           NEW_ZORBA_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR, ERROR_PARAMS( ZED( BadXMLDocument_2o ), theDocUri))
         );
-      throw 0;
+      abortload();
+      thePathStack.clear();
+      return NULL;
     }
     
     // this happens when the input is an empty string
@@ -367,12 +381,12 @@ store::Item_t FragmentXmlLoader::loadXml(
   }
   catch (...)
   {
-    // catch-TODO: "throw 0" and "catch(...)" are being used here as "flow
-    // control" -- not an appropriate use of C++ exceptions.  The catch here
-    // will silently swallow all other exceptions as well -- not good.
+    theXQueryDiagnostics->
+      add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
+
     abortload();
     thePathStack.clear();
-    return NULL;
+    throw;
   }
 
   // The doc may be well formed, but it may have other kinds of errors, e.g., unresolved ns prefixes.

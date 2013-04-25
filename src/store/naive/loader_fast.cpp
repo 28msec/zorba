@@ -488,7 +488,7 @@ store::Item_t FastXmlLoader::loadXml(
       add_error(NEW_ZORBA_EXCEPTION(zerr::ZSTR0020_LOADER_IO_ERROR));
 
     abortload();
-    return NULL; // catch-TODO: "throw;" here?
+    throw;
   }
 
   bool ok = ctxt->wellFormed != 0;
