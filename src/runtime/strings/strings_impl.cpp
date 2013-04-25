@@ -1805,9 +1805,12 @@ static void copyUtf8Chars(const char *&sin,
   {
     while(utf8start < utf8end)
     {
-      clen = utf8::char_length(*sin);
-      if(clen == 0)
+      try {
+        clen = utf8::char_length(*sin);
+      }
+      catch ( utf8::invalid_byte const& ) {
         clen = 1;
+      }
       out.append(sin, clen);
       utf8start++;
       bytestart += clen;
@@ -2152,9 +2155,15 @@ bool FnAnalyzeStringIterator::nextImpl(
             maxbytes = streambuf_read;
           for (reducebytes=1;reducebytes<=maxbytes;reducebytes++)
           {
-            utf8::size_type clen = utf8::char_length(streambuf.ptr[streambuf_read-reducebytes]);
-            if((clen > 1) && (clen > reducebytes))
-              break;
+            try {
+              utf8::size_type clen =
+                utf8::char_length(streambuf.ptr[streambuf_read-reducebytes]);
+              if((clen > 1) && (clen > reducebytes))
+                break;
+            }
+            catch ( utf8::invalid_byte const& ) {
+              // do nothing?
+            }
           }
           if(reducebytes == (maxbytes+1))
             reducebytes = 0;
