@@ -2081,16 +2081,9 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
        BinMemOutputStream binmemoutputstream;
        zstring binstr;
 
-       try
-       {
-         theGrammarPool->serializeGrammars(&binmemoutputstream);
-         binstr.assign((char*)binmemoutputstream.getRawBuffer(),
-                        static_cast<zstring::size_type>(binmemoutputstream.getSize()) );
-       }
-       catch (...)
-       {
-        // catch-TODO: should all exceptions really be ignored here?
-       }
+       theGrammarPool->serializeGrammars(&binmemoutputstream);
+       binstr.assign((char*)binmemoutputstream.getRawBuffer(),
+                      static_cast<zstring::size_type>(binmemoutputstream.getSize()) );
 
        ar & binstr;
      }
