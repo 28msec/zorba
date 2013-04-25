@@ -2102,7 +2102,7 @@ void Schema::serialize(::zorba::serialization::Archiver& ar)
        {
          theGrammarPool->serializeGrammars(&binmemoutputstream);
          binstr.assign((char*)binmemoutputstream.getRawBuffer(),
-                       binmemoutputstream.getSize());
+                        static_cast<zstring::size_type>(binmemoutputstream.getSize()) );
        }
        catch (...)
        {

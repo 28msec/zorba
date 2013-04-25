@@ -39,10 +39,12 @@ Optimizations:
 
 Bug Fixes/Other Changes:
   * Fixed bug #1102997 (Swapping referenced nodes)
+  * Fixed bug #1169908 (Zorba hangs with invalid utf-8 input)
   * Fixed bug #1111487 (Swapping nodes that are in collections)
   * Fixed bug #1123836 (overflows in date/time casts now return FODT0001 and
     in durations return FODT0002)
   * Fixed bug #1147518 (fn:round-half-to-even (at least 11 failures))
+  * Fixed bug #1167704 (Implement [w] for ISO calendars for format-date/time functions)
   * Fixed bug #1114228 (unrecognized options in the XQuery namespace now raise an error)
   * Fixed bug #1124273 (xqdoc crash because of annotation literals)
   * Fixed bug #1085408 (xs:date(): casting large year values)
@@ -55,6 +57,7 @@ Bug Fixes/Other Changes:
   * Fixed bug in index join rule (no index join if inner clause has positional var).
   * Fixed bug in index join rule (copy var ids after cloning index domain expr).
   * Fixed bug #1131988 (re00732 fails)
+  * Fixed bug in handling the type declaration of a window variable.
   * Fixed bug #1131990 (re00737 fails)
   * Fixed bug #1123162 (FOTS: formatting dates and times failures)
   * Added missing wrapper expressions around some variable references.
@@ -96,6 +99,7 @@ Bug Fixes/Other Changes:
   * Raise XQST0046, if needed, from namespace declaration attribute inside
     direct element constructor.
   * Fixed bug #1023362 (xsi:type attribute ignored during validation)
+  * Fixed bug #1082740 (support for INF and -INF values in fn:subsequence function).  
 
 
 version 2.8

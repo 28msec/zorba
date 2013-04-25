@@ -140,17 +140,13 @@ void function_item_expr::compute_scripting_kind()
 }
 
 
-void function_item_expr::add_variable(
-    expr* var,
-    var_expr* substVar,
-    const store::Item_t& name,
-    int isGlobal)
+void function_item_expr::add_variable(expr* var, var_expr* substVar)
 {
-  theFunctionItemInfo->add_variable(var, substVar, name, isGlobal);
+  theFunctionItemInfo->add_variable(var, substVar);
 }
 
 
-  void function_item_expr::set_function(user_function* udf, csize arity)
+void function_item_expr::set_function(user_function* udf, csize arity)
 {
   theFunctionItemInfo->theFunction = udf;
   theFunctionItemInfo->theArity = arity;
@@ -163,9 +159,7 @@ store::Item_t function_item_expr::create_inline_fname(const QueryLoc& loc)
 {
   store::Item_t name;
   std::stringstream ss;
-  ss << "inline function(";
-  ss << loc;
-  ss << ")";
+  ss << "inline-function(" << loc << ")";
   GENV_ITEMFACTORY->createQName(name, "", "", ss.str());
   return name;
 }

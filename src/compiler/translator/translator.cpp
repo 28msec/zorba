@@ -15,11 +15,12 @@
  */
 #include "stdafx.h"
 
-#include <sstream>
-#include <iterator>
-#include <stack>
-#include <map>
 #include <bitset>
+#include <iterator>
+#include <map>
+#include <sstream>
+#include <stack>
+#include <vector>
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
@@ -1519,6 +1520,7 @@ expr* normalize_fo_arg(
 
         xqtref_t cardType = tm->create_any_item_type(paramType->get_quantifier());
 
+        // hof ????
         argExpr = wrap_in_type_match(argExpr,
                                      cardType,
                                      loc,
@@ -1544,8 +1546,10 @@ expr* normalize_fo_arg(
  The coersion expr is a flwor that looks like this:
 
   for $fi in argExpr
-  return function($p1 as t1, ... $pn as tn) { $fi(p1, ..., pn) }
+  return function($p1 as t1, ... $pn as tn) as rt { $fi(p1, ..., pn) }
 
+  where t1, ..., tn are the param types of the target function type and rt is
+  the return type of .the target function type.
 ********************************************************************************/
 expr* wrap_in_coercion(
     xqtref_t targetType,
@@ -1559,19 +1563,21 @@ expr* wrap_in_coercion(
 
   push_scope();
 
+  // for $fi in argExpr
   flwor_expr* coersionFlwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
   for_clause* fiClause = wrap_in_forclause(argExpr, NULL);
   var_expr* fiVar = fiClause->get_var();
   coersionFlwor->add_clause(fiClause);
 
+  // Create the inline-function expr and make it the return expr of the flwor
   function_item_expr* inlineFuncExpr = 
   CREATE(function_item)(theRootSctx, theUDF, loc, true, true);
 
   coersionFlwor->set_return_expr(inlineFuncExpr);
 
-  var_expr* fiSubstVar = bind_var(loc, fiVar->get_name(), var_expr::hof_var);
+  var_expr* fiSubstVar = bind_var(loc, fiVar->get_name(), var_expr::local_var);
 
-  inlineFuncExpr->add_variable(fiVar, fiSubstVar, fiVar->get_name(), 0);
+  inlineFuncExpr->add_variable(fiVar, fiSubstVar);
 
   // Create the inline udf obj.
   user_function_t inlineUDF = 
@@ -1587,13 +1593,12 @@ expr* wrap_in_coercion(
   std::vector<expr*> arguments;    // Arguments to the dynamic function call
   csize numParams = funcType->get_number_params();
 
-  for(csize i = 0; i < numParams; ++i)
+  for (csize i = 0; i < numParams; ++i)
   {
     xqtref_t paramType = funcType->operator[](i);
 
     var_expr* argVar = create_temp_var(loc, var_expr::arg_var);
     argVar->set_param_pos(i);
-    argVar->set_type(paramType);
     argVars.push_back(argVar);
 
     expr* arg = CREATE(wrapper)(theRootSctx, theUDF, loc, argVar);
@@ -1609,6 +1614,7 @@ expr* wrap_in_coercion(
                                                       fiSubstVar),
                                       arguments);
 
+  // What if return type is function(...) hof ????
   if (returnType->isBuiltinAtomicAny())
   {
     body = wrap_in_type_promotion(body, returnType, PROMOTE_TYPE_PROMOTION);
@@ -3860,7 +3866,206 @@ void* begin_visit(const VFO_DeclList& v)
     bind_fn(f, numParams, loc);
   }
 
+  check_xquery_feature_options(loc);
+
   return no_state;
+}
+
+store::Item_t parse_and_expand_qname(
+    const zstring& value,
+    const char* default_ns,
+    const QueryLoc& loc) const
+{
+  zstring lPrefix;
+  zstring lLocalName;
+
+  zstring::size_type n = value.rfind(':');
+
+  if ( n == zstring::npos )
+  {
+    lLocalName = value;
+  }
+  else
+  {
+    lPrefix = value.substr( 0, n );
+    lLocalName = value.substr( n+1 );
+  }
+  store::Item_t lQName;
+  theSctx->expand_qname( lQName, default_ns, lPrefix, lLocalName, loc );
+
+  return lQName;
+}
+
+void parse_feature_list(
+    const zstring& anOptionName,
+    std::map<zstring, bool>* aFeatures,
+    bool aRequired,
+    const QueryLoc& loc)
+{
+  // Looking up feature options.
+  zstring lFeatureList;
+  store::Item_t lFeatureQName = parse_and_expand_qname(
+      anOptionName,
+      static_context::XQUERY_NS,
+      loc);
+  theSctx->lookup_option(lFeatureQName, lFeatureList);
+  
+  if (aFeatures == NULL || lFeatureList.empty())
+  {
+    return;
+  }
+  size_t lPositionLeft = 0;
+  size_t lPositionRight = lFeatureList.find(" ", lPositionLeft);
+  bool lLastTime = lPositionRight == zstring::npos;
+  while (lPositionRight != zstring::npos || lLastTime)
+  {
+    zstring lFeature = lFeatureList.substr(
+        lPositionLeft,
+        lPositionRight - lPositionLeft);
+    store::Item_t lFeatureQName = parse_and_expand_qname(
+        lFeature,
+        static_context::XQUERY_NS,
+        loc);
+    // Requiring a non-recognized feature.
+    if (aRequired && lFeatureQName->getNamespace() != static_context::XQUERY_NS)
+    {
+      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
+    }
+    zstring lFeatureName = lFeatureQName->getLocalName();
+    if (aRequired && !is_recognized_feature(lFeatureName))
+    {
+      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
+    }
+
+    // Only adding to the feature matrix if recognized.
+    if (is_recognized_feature(lFeatureName))
+    {
+      // Error in case of conflicting flags.
+       std::map<zstring, bool>::iterator lIt = aFeatures->find(lFeatureName);
+      if (lIt != aFeatures->end() && lIt->second != aRequired)
+      {
+        RAISE_ERROR(err::XQST0127, loc, ERROR_PARAMS(lFeature));
+      }
+      (*aFeatures)[lFeatureName] = aRequired;
+    }
+    if (lLastTime)
+    {
+      break;
+    }
+    lPositionLeft = lPositionRight + 1;
+    lPositionRight = lFeatureList.find(" ", lPositionLeft);
+    if (lPositionRight == zstring::npos)
+    {
+      lLastTime = true;
+    }
+  }
+}
+
+bool is_recognized_feature(const zstring& aFeatureName)
+{
+  return aFeatureName == "static-typing" ||
+         aFeatureName == "module" ||
+         aFeatureName == "higher-order-function" ||
+         aFeatureName == "schema-aware" ||
+         aFeatureName == "all-extensions" ||
+         aFeatureName == "all-optional-features";
+}
+
+bool is_required_feature(
+    const std::map<zstring, bool>& aFeatureMatrix,
+    const zstring& aFeatureName
+)
+{
+  std::map<zstring, bool>::const_iterator lIt =
+    aFeatureMatrix.find(aFeatureName);
+  if (lIt == aFeatureMatrix.end())
+  {
+    return false;
+  }
+  return lIt->second;
+}
+
+bool is_prohibited_feature(
+    const std::map<zstring, bool>& aFeatureMatrix,
+    const zstring& aFeatureName
+)
+{
+  std::map<zstring, bool>::const_iterator lIt =
+    aFeatureMatrix.find(aFeatureName);
+  if (lIt == aFeatureMatrix.end())
+  {
+    return false;
+  }
+  return !lIt->second;
+}
+
+void check_xquery_feature_options(const QueryLoc& loc)
+{
+  // Constructing feature vectors.
+  std::map<zstring, bool> lFeatures;
+  parse_feature_list("require-feature", &lFeatures, true, loc);
+  parse_feature_list("prohibit-feature", &lFeatures, false, loc);
+  
+  std::vector<zstring> lSupportedFeatures;
+  lSupportedFeatures.push_back("module");
+  lSupportedFeatures.push_back("higher-order-function");
+  lSupportedFeatures.push_back("schema-aware");
+  std::vector<zstring> lNonSupportedFeatures;
+  lNonSupportedFeatures.push_back("static-typing");
+  
+  // Non supported features cannot be required.
+  for (std::vector<zstring>::iterator lIt = lNonSupportedFeatures.begin();
+       lIt != lNonSupportedFeatures.end();
+       ++lIt)
+  {
+    if (is_required_feature(lFeatures, *lIt))
+    {
+      RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS(*lIt));
+    }
+  }
+  // It is not possible to require all extensions.
+  if (is_required_feature(lFeatures, "all-extensions"))
+  {
+    RAISE_ERROR(err::XQST0126, loc, ERROR_PARAMS("all-extensions"));
+  }
+  // All optional features can only be required if all unsupported features are
+  // prohibited.
+  if (is_required_feature(lFeatures, "all-optional-features"))
+  {
+    for (std::vector<zstring>::iterator lIt = lNonSupportedFeatures.begin();
+         lIt != lNonSupportedFeatures.end();
+         ++lIt)
+    {
+      if (!is_prohibited_feature(lFeatures, *lIt))
+      {
+        RAISE_ERROR(err::XQST0120, loc, ERROR_PARAMS(*lIt));
+      }
+    }
+  }
+  // Supported features cannot be prohibited.
+  for (std::vector<zstring>::iterator lIt = lSupportedFeatures.begin();
+       lIt != lSupportedFeatures.end();
+       ++lIt)
+  {
+    if (is_prohibited_feature(lFeatures, *lIt))
+    {
+      RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS(*lIt));
+    }
+  }
+  // All optional features can only be prohibited if all supported features
+  // are required.
+  if (is_prohibited_feature(lFeatures, "all-optional-features"))
+  {
+    for (std::vector<zstring>::iterator lIt = lSupportedFeatures.begin();
+         lIt != lSupportedFeatures.end();
+         ++lIt)
+    {
+      if (!is_required_feature(lFeatures, *lIt))
+      {
+        RAISE_ERROR(err::XQST0128, loc, ERROR_PARAMS(*lIt));
+      }
+    }
+  }
 }
 
 
@@ -4040,8 +4245,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     // Wrap the UDF body to the type-related expr that enforce the declared
     // return type.
-    returnType = udf->getSignature().returnType();
-
     if (returnType->isBuiltinAtomicAny())
     {
       body = wrap_in_type_promotion(body,
@@ -10944,8 +11147,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  The function will process a FunctionDecl to handle all the special function
-  cases. 
+
 ********************************************************************************/
 expr* generate_fncall(
     const QName* qname,
@@ -11259,6 +11461,7 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_FUNCTION_LOOKUP_2:
   {
+    // hof ???? What if focus is not defined ?
     arguments.push_back(DOT_REF);
     arguments.push_back(DOT_POS_REF);
     arguments.push_back(DOT_SIZE_REF);
@@ -11699,6 +11902,7 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   expr* sourceExpr = pop_nodestack();
   ZORBA_ASSERT(sourceExpr != 0);
 
+  // special case: partial function invocation
   if (v.normalizeArgs() && sourceExpr->get_expr_kind() == function_item_expr_kind)
   {
     function_item_expr* fiExpr = static_cast<function_item_expr*>(sourceExpr);
@@ -11718,7 +11922,6 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
 
   expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
 
-#ifdef ZORBA_WITH_JSON
   TypeManager* tm = sourceExpr->get_type_manager();
   xqtref_t srcType = sourceExpr->get_return_type();
 
@@ -11760,7 +11963,6 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     flworExpr->set_return_expr(accessorExpr);
   }
   else
-#endif
   {
     // This is needed to make sure that the flwor is not thrown away by the optimizer
     // when the FunctionItem expression is an empty sequence.
@@ -11872,9 +12074,7 @@ expr* generate_literal_function(
 
     if (f->isBuiltin() &&
         fn_ns != static_context::W3C_FN_NS &&
-#ifdef ZORBA_WITH_JSON
         fn_ns != static_context::JSONIQ_FN_NS &&
-#endif
         fn_ns != XQUERY_MATH_FN_NS &&
         fn_ns != theModuleNamespace)
     {
@@ -11912,37 +12112,59 @@ expr* generate_literal_function(
       {
       case FunctionConsts::FN_POSITION_0:
       {
-        expr* posVar = NULL;
-        if (lookup_var(getDotPosVarName(), loc, false))
-          posVar = DOT_POS_REF;
+        var_expr* posVar = lookup_var(getDotPosVarName(), loc, false);
 
-        push_scope();
+        if (posVar && posVar->get_kind() != var_expr::prolog_var)
+        {
+          expr* posVarRef = DOT_POS_REF;
 
-        var_expr* substVar = bind_var(loc, getDotPosVarName(), var_expr::hof_var);
+          push_scope();
 
-        fiExpr->add_variable(posVar, substVar, substVar->get_name(), false);
+          var_expr* substVar = bind_var(loc, getDotPosVarName(), var_expr::local_var);
 
-        body = generate_fn_body(f, foArgs, loc);
+          // Must set the id of the substVar if we are coming here from a
+          // FunctionLookupIterator.
+          substVar->set_unique_id(posVar->get_unique_id());
 
-        pop_scope();
+          fiExpr->add_variable(posVarRef, substVar);
+
+          body = generate_fn_body(f, foArgs, loc);
+
+          pop_scope();
+        }
+        else
+        {
+          body = generate_fn_body(f, foArgs, loc);
+        }
 
         break;
       }
       case FunctionConsts::FN_LAST_0:
       {
-        expr* sizeVar = NULL;
-        if (lookup_var(getLastIdxVarName(), loc, false))
-          sizeVar = DOT_SIZE_REF;
+        var_expr* sizeVar = lookup_var(getLastIdxVarName(), loc, false);
 
-        push_scope();
+        if (sizeVar && sizeVar->get_kind() != var_expr::prolog_var)
+        {
+          expr* sizeVarRef = DOT_SIZE_REF;
 
-        var_expr* substVar = bind_var(loc, getLastIdxVarName(), var_expr::hof_var);
+          push_scope();
 
-        fiExpr->add_variable(sizeVar, substVar, substVar->get_name(), false);
+          var_expr* substVar = bind_var(loc, getLastIdxVarName(), var_expr::local_var);
 
-        body = generate_fn_body(f, foArgs, loc);
+          // Must set the id of the substVar if we are coming here from a
+          // FunctionLookupIterator.
+          substVar->set_unique_id(sizeVar->get_unique_id());
 
-        pop_scope();
+          fiExpr->add_variable(sizeVarRef, substVar);
+
+          body = generate_fn_body(f, foArgs, loc);
+
+          pop_scope();
+        }
+        else
+        {
+          body = generate_fn_body(f, foArgs, loc);
+        }
 
         break;
       }
@@ -11967,79 +12189,93 @@ expr* generate_literal_function(
       case FunctionConsts::FN_ID_1:
       case FunctionConsts::FN_ELEMENT_WITH_ID_1:
       {
-        expr* dotVarRef = NULL;
         var_expr* dotVar = lookup_var(getDotVarName(), loc, false);
 
-        if (dotVar)
-          dotVarRef = DOT_REF;
+        if (dotVar && dotVar->get_kind() != var_expr::prolog_var)
+        {
+          expr* dotVarRef = DOT_REF;
 
-        push_scope();
+          push_scope();
 
-        var_expr* substVar = bind_var(loc, getDotVarName(), var_expr::hof_var);
+          var_expr* substVar = bind_var(loc, getDotVarName(), var_expr::local_var);
 
-        if (dotVar)
+          // Must set the id of the substVar if we are coming here from a
+          // FunctionLookupIterator.
           substVar->set_unique_id(dotVar->get_unique_id());
 
-        fiExpr->add_variable(dotVarRef, substVar, substVar->get_name(), false);
+          fiExpr->add_variable(dotVarRef, substVar);
 
-        body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(f, foArgs, loc);
 
-        pop_scope();
+          pop_scope();
+        }
+        else
+        {
+          body = generate_fn_body(f, foArgs, loc);
+        }
 
         break;
       }
       case FunctionConsts::FN_FUNCTION_LOOKUP_2:
       {
-        expr* ctxItemVRef = NULL;
-        expr* ctxPosVRef = NULL;
-        expr* ctxSizeVRef = NULL;
+        bool varAdded = false;
 
         var_expr* ctxItemVar = lookup_var(getDotVarName(), loc, false);
         var_expr* ctxPosVar = lookup_var(getDotPosVarName(), loc, false);
         var_expr* ctxSizeVar = lookup_var(getLastIdxVarName(), loc, false);
 
-        if (ctxItemVar)
-          ctxItemVRef = DOT_REF;
+        if (ctxItemVar && ctxItemVar->get_kind() != var_expr::prolog_var)
+        {
+          expr* ctxVRef = DOT_REF;
 
-        if (ctxPosVar)
-          ctxPosVRef = DOT_POS_REF;
+          push_scope();
+          varAdded = true;
 
-        if (ctxSizeVar)
-          ctxSizeVRef = DOT_SIZE_REF;
+          var_expr* substVar = bind_var(loc, getDotVarName(), var_expr::local_var);
 
-        push_scope();
+          substVar->set_unique_id(ctxItemVar->get_unique_id());
 
-        var_expr* substItemVar = bind_var(loc, getDotVarName(), var_expr::hof_var);
-        var_expr* substPosVar = bind_var(loc, getDotPosVarName(), var_expr::hof_var);
-        var_expr* substSizeVar = bind_var(loc, getLastIdxVarName(), var_expr::hof_var);
+          fiExpr->add_variable(ctxVRef, substVar);
+        }
 
-        if (ctxItemVar)
-          substItemVar->set_unique_id(ctxItemVar->get_unique_id());
+        if (ctxPosVar && ctxPosVar->get_kind() != var_expr::prolog_var)
+        {
+          expr* ctxVRef = DOT_POS_REF;
 
-        if (ctxPosVar)
-          substPosVar->set_unique_id(ctxPosVar->get_unique_id());
+          if (!varAdded)
+          {
+            push_scope();
+            varAdded = true;
+          }
 
-        if (ctxSizeVar)
-          substSizeVar->set_unique_id(ctxSizeVar->get_unique_id());
+          var_expr* substVar = bind_var(loc, getDotPosVarName(), var_expr::local_var);
 
-        fiExpr->add_variable(ctxItemVRef,
-                             substItemVar,
-                             substItemVar->get_name(),
-                             ctxItemVar->get_kind() == var_expr::prolog_var ? 1 : 0);
+          substVar->set_unique_id(ctxPosVar->get_unique_id());
 
-        fiExpr->add_variable(ctxPosVRef,
-                             substPosVar,
-                             substPosVar->get_name(),
-                             ctxPosVar->get_kind() == var_expr::prolog_var ? 1 : 0);
+          fiExpr->add_variable(ctxVRef, substVar);
+        }
 
-        fiExpr->add_variable(ctxSizeVRef,
-                             substSizeVar,
-                             substSizeVar->get_name(),
-                             ctxSizeVar->get_kind() == var_expr::prolog_var ? 1 : 0);
+        if (ctxSizeVar && ctxSizeVar->get_kind() != var_expr::prolog_var)
+        {
+          expr* ctxVRef = DOT_SIZE_REF;
+
+          if (!varAdded)
+          {
+            push_scope();
+            varAdded = true;
+          }
+
+          var_expr* substVar = bind_var(loc, getLastIdxVarName(), var_expr::local_var);
+
+          substVar->set_unique_id(ctxSizeVar->get_unique_id());
+
+          fiExpr->add_variable(ctxVRef, substVar);
+        }
 
         body = generate_fn_body(f, foArgs, loc);
 
-        pop_scope();
+        if (varAdded)
+          pop_scope();
 
         break;
       }
@@ -12052,7 +12288,7 @@ expr* generate_literal_function(
 
       udf->setArgVars(udfArgs);
       udf->setBody(body);
-      udf->setOptimized(true); // TODO: this should not be set here
+      udf->setOptimized(true); // hof ????
     } // if builtin function
     else
     {
@@ -12094,9 +12330,9 @@ void* begin_visit(const InlineFunction& v)
   // Handle function parameters. Translation of the params, if any, results to
   // a flwor expr with one let binding for each function parameter:
   //
-  // let $x1 as T1 := _x1
+  // let $x1 := _x1
   // .....
-  // let $xN as TN := _xN
+  // let $xN := _xN
   //
   // where each _xi is an arg var.
   rchandle<ParamList> params = v.getParamList();
@@ -12119,35 +12355,24 @@ void* begin_visit(const InlineFunction& v)
     var_expr* varExpr = (*ite)->getVar();
     var_expr::var_kind kind = varExpr->get_kind();
 
-    if (kind == var_expr::local_var)
-    {
+    if (kind == var_expr::prolog_var)
       continue;
-    }
-
-    store::Item_t qname = varExpr->get_name();
 
     var_expr* subst_var;
-    if (kind != var_expr::prolog_var)
-    {
-      try 
-      {
-        subst_var = bind_var(loc, qname, var_expr::hof_var);
-      }
-      catch(XQueryException& e)
-      {
-        if (e.diagnostic() == err::XQST0049)
-          continue;
-        else
-          throw;
-      }
 
-      fiExpr->add_variable(varExpr, subst_var, varExpr->get_name(), 0);
-    }
-    else
+    try 
     {
-      subst_var = varExpr;
-      fiExpr->add_variable(NULL, subst_var, varExpr->get_name(), 1);
+      subst_var = bind_var(loc, varExpr->get_name(), var_expr::local_var);
     }
+    catch(XQueryException& e)
+    {
+      if (e.diagnostic() == err::XQST0049)
+        continue;
+      else
+        throw;
+    }
+
+    fiExpr->add_variable(varExpr, subst_var);
   }
 
   if (flwor->num_clauses() > 0)
@@ -12199,7 +12424,7 @@ void end_visit(const InlineFunction& v, void* aState)
     }
   }
 
-  create_inline_function(body, flwor, paramTypes, returnType, loc);
+  generate_inline_function(body, flwor, paramTypes, returnType, loc);
 
   // pop the scope.
   pop_scope();
@@ -12209,7 +12434,7 @@ void end_visit(const InlineFunction& v, void* aState)
 /*******************************************************************************
 
 ********************************************************************************/
-void create_inline_function(
+void generate_inline_function(
     expr* body,
     flwor_expr* flwor,
     const std::vector<xqtref_t>& paramTypes,
@@ -12218,7 +12443,7 @@ void create_inline_function(
 {
   std::vector<var_expr*> argVars;
 
-  // Wrap the body in appropriate type op.
+  // Wrap the body in appropriate type op. hof ????
   if (returnType->isBuiltinAtomicAny())
   {
     body = wrap_in_type_promotion(body, returnType, PROMOTE_TYPE_PROMOTION);
@@ -12238,63 +12463,47 @@ void create_inline_function(
                     SIMPLE_EXPR,
                     theCCB);
 
+  // Parameters, if any, have been translated into LET vars in a flwor expr.
+  // The UDF body, which in genral references these LET vars, must become the
+  // return expr of this flwor, and then, the flwor itself becomes the effective
+  // body of the udf.
   if (flwor != NULL)
   {
     flwor->set_return_expr(body);
 
     body = flwor;
 
-    // Parameters and inscope vars have been wrapped into a flwor expression (see
-    // begin_visit). We need to add these to the udf obj so that they will bound
-    // at runtime. We must do this here (before we optimize the inline function
-    // body, because optimization may remove clauses from the flwor expr
     for (csize i = 0; i < flwor->num_clauses(); ++i)
     {
-      flwor_clause* lClause = flwor->get_clause(i);
-      let_clause* letClause = dynamic_cast<let_clause*>(lClause);
-      ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
-      var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
+      let_clause* lc = static_cast<let_clause*>(flwor->get_clause(i));
+      var_expr* argVar = static_cast<var_expr*>(lc->get_expr());
+
+      // When the inline function item is (dynamically) invoked, the invoker can
+      // pass values of any type. So, contrary to static function calls, the code
+      // for arg-value type checking must be placed in the body of the udf itself,
+      // instead of the caller.
+      argVar->set_type(theRTM.ITEM_TYPE_STAR);
+      lc->set_expr(normalize_fo_arg(i, lc->get_expr(), udf.getp(), loc));
+
       argVars.push_back(argVar);
-      
-      // Since the inline function items can be created in one place but then 
-      // invoked in many other places, it is not possible to perform function
-      // call normalization. Instead the domain expressions of arg vars is 
-      // wrapped in type matches.
-      letClause->set_expr(normalize_fo_arg(i,
-                                           letClause->get_expr(),
-                                           udf.getp(),
-                                           loc));
     }
   }
-
-  /* TODO: optimizing the HoF here is a very bad idea. This code can be safely removed
-           anyways because the UDF optimization should take care of it.
-  if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
-  {
-    RewriterContext rCtx(theCCB,
-                         body,
-                         NULL,
-                         "Inline function",
-                         (theSctx->ordering_mode() == StaticContextConsts::ordered));
-    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
-    body = rCtx.getRoot();
-  }
-  */
 
   udf->setBody(body);
   udf->setScriptingKind(body->get_scripting_detail());
   udf->setArgVars(argVars);
-  udf->setOptimized(true); // TODO: this should not be set here
+  udf->setOptimized(true); // TODO: this should not be set here HOF ????
 
   // Get the function_item_expr and set its function to the udf created above.
   function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(theNodeStack.top());
   assert(fiExpr != NULL);
   fiExpr->set_function(udf, udf->numArgs());
 
-  if (theCCB->theConfig.translate_cb != NULL && theCCB->theConfig.optimize_cb == NULL)
+  if (theCCB->theConfig.translate_cb != NULL)
     theCCB->theConfig.translate_cb(udf->getBody(),
                                    udf->getName()->getStringValue().c_str());
 }
+
 
 /*******************************************************************************
    FilterExpr ::= FilterExpr
@@ -12361,11 +12570,6 @@ void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
 void* begin_visit(const JSONArrayConstructor& v)
 {
   TRACE_VISIT();
-
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
-
   return no_state;
 }
 
@@ -12373,7 +12577,6 @@ void end_visit(const JSONArrayConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-#ifdef ZORBA_WITH_JSON
   expr* contentExpr = NULL;
 
   if (v.get_expr() != NULL)
@@ -12381,8 +12584,7 @@ void end_visit(const JSONArrayConstructor& v, void* /*visit_state*/)
     contentExpr = pop_nodestack();
   }
 
-  push_nodestack(theExprManager->create_json_array_expr(theRootSctx, theUDF, loc, contentExpr));
-#endif
+  push_nodestack(CREATE(json_array)(theRootSctx, theUDF, loc, contentExpr));
 }
 
 
@@ -12396,9 +12598,6 @@ void end_visit(const JSONArrayConstructor& v, void* /*visit_state*/)
 void* begin_visit(const JSONObjectConstructor& v)
 {
   TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
   return no_state;
 }
 
@@ -12406,7 +12605,6 @@ void end_visit(const JSONObjectConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-#ifdef ZORBA_WITH_JSON
   expr* contentExpr = NULL;
 
   if (v.get_expr() != NULL)
@@ -12430,7 +12628,6 @@ void end_visit(const JSONObjectConstructor& v, void* /*visit_state*/)
                                  v.get_accumulate());
 
   push_nodestack(jo);
-#endif
 }
 
 
@@ -12442,9 +12639,6 @@ void end_visit(const JSONObjectConstructor& v, void* /*visit_state*/)
 void* begin_visit(const JSONDirectObjectConstructor& v)
 {
   TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
   return no_state;
 }
 
@@ -12452,7 +12646,6 @@ void end_visit(const JSONDirectObjectConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-#ifdef ZORBA_WITH_JSON
   csize numPairs = v.numPairs();
   std::vector<expr*> names(numPairs);
   std::vector<expr*> values(numPairs);
@@ -12467,7 +12660,6 @@ void end_visit(const JSONDirectObjectConstructor& v, void* /*visit_state*/)
   create_json_direct_object_expr(theRootSctx, theUDF, loc, names, values);
 
   push_nodestack(jo);
-#endif
 }
 
 
@@ -12500,11 +12692,6 @@ void end_visit(const JSONPairList& v, void* /*visit_state*/)
 void* begin_visit(const JSONPairConstructor& v)
 {
   TRACE_VISIT ();
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#else
-#endif
-
   return no_state;
 }
 
@@ -12512,7 +12699,6 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-#ifdef ZORBA_WITH_JSON
   expr* nameExpr = pop_nodestack();
   expr* valueExpr = pop_nodestack();
 
@@ -12533,7 +12719,6 @@ void end_visit(const JSONPairConstructor& v, void* /*visit_state*/)
 
   push_nodestack(valueExpr);
   push_nodestack(nameExpr);
-#endif
 }
 
 
@@ -12936,7 +13121,7 @@ void end_visit(const DirElemContent& v, void* /*visit_state*/)
 void begin_check_boundary_whitespace()
 {
   if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space)
-{
+  {
     theIsWSBoundaryStack.push(true);
     thePossibleWSContentStack.push(0);
   }
@@ -12963,7 +13148,8 @@ void check_boundary_whitespace(const DirElemContent& v)
     {
       thePossibleWSContentStack.push(0);
       theIsWSBoundaryStack.push(true);
-      if (lPrev != 0) {
+      if (lPrev != 0)
+      {
         lPrev->setIsStripped(true);
       }
     }
@@ -12975,18 +13161,23 @@ void check_boundary_whitespace(const DirElemContent& v)
     else
     {
       bool lCouldBe = false;
-      if (lPrevIsBoundary) {
+      if (lPrevIsBoundary)
+      {
         zstring content = v.get_elem_content().str();
         utf8::trim_whitespace(content);
 
         // Filtering out of whitespaces
-        if (content.empty()) {
+        if (content.empty())
+        {
           lCouldBe = true;
         }
       }
-      if (lCouldBe) {
+      if (lCouldBe)
+      {
         thePossibleWSContentStack.push(&v);
-      } else {
+      }
+      else
+      {
         thePossibleWSContentStack.push(0);
       }
       theIsWSBoundaryStack.push(false);
@@ -12994,15 +13185,17 @@ void check_boundary_whitespace(const DirElemContent& v)
   }
 }
 
-/**
- * Deletes the entries in theIsWSBoundaryStack and thePossibleWSContentStack. If thePossibleWSContentStack
- * contains an item, this item is boundary whitespace because end of content is a boundary.
- */
+
+/*******************************************************************************
+  Deletes the entries in theIsWSBoundaryStack and thePossibleWSContentStack. If
+  thePossibleWSContentStack contains an item, this item is boundary whitespace
+  because end of content is a boundary.
+********************************************************************************/
 void end_check_boundary_whitespace()
 {
   if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space)
   {
-    const DirElemContent* lPrev = translator_ns::pop_stack (thePossibleWSContentStack);
+    const DirElemContent* lPrev = translator_ns::pop_stack(thePossibleWSContentStack);
     if (lPrev != 0)
     {
       lPrev->setIsStripped(true);
@@ -13067,8 +13260,7 @@ void attr_content_list(const QueryLoc& loc, void* /*visit_state*/)
   }
   else if (args.size() > 1)
   {
-    fo_expr* expr_list = theExprManager->
-    create_fo_expr(theRootSctx, theUDF, loc, op_concatenate, args);
+    fo_expr* expr_list = CREATE(fo)(theRootSctx, theUDF, loc, op_concatenate, args);
 
     normalize_fo(expr_list);
 
@@ -13205,7 +13397,7 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
         curRef++;
     }
 
-    expr* lConstExpr = theExprManager->create_const_expr(theRootSctx, theUDF, loc, content);
+    expr* lConstExpr = CREATE(const)(theRootSctx, theUDF, loc, content);
     push_nodestack(lConstExpr);
     break;
   }
@@ -13214,8 +13406,8 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
     // we always create a text node here because if we are in an attribute, we atomice
     // the text node into its string value
     zstring content("{");
-    expr* lConstExpr = theExprManager->create_const_expr(theRootSctx, theUDF, loc, content);
-    push_nodestack ( lConstExpr );
+    expr* lConstExpr = CREATE(const)(theRootSctx, theUDF, loc, content);
+    push_nodestack (lConstExpr);
     break;
   }
   case ParseConstants::cont_escape_rbrace:
@@ -13224,7 +13416,7 @@ void end_visit(const CommonContent& v, void* /*visit_state*/)
     // the text node into its string value
     zstring content("}");
     expr* lConstExpr = CREATE(const)(theRootSctx, theUDF, loc, content);
-    push_nodestack ( lConstExpr );
+    push_nodestack (lConstExpr);
     break;
   }
   case ParseConstants::cont_expr:
@@ -13279,10 +13471,10 @@ void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
   if (target_upper == "XML")
     RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_PiTarget)));
 
-  expr* target = theExprManager->create_const_expr(theRootSctx, theUDF, loc, target_str);
-  expr* content = theExprManager->create_const_expr(theRootSctx, theUDF, loc, v.get_pi_content().str());
+  expr* target = CREATE(const)(theRootSctx, theUDF, loc, target_str);
+  expr* content = CREATE(const)(theRootSctx, theUDF, loc, v.get_pi_content().str());
 
-  push_nodestack(theExprManager->create_pi_expr(theRootSctx, theUDF, loc, target,  content));
+  push_nodestack(CREATE(pi)(theRootSctx, theUDF, loc, target,  content));
 }
 
 
@@ -13684,18 +13876,13 @@ void end_visit(const ItemType& v, void* /*visit_state*/)
 void* begin_visit(const StructuredItemType& v)
 {
   TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
   return no_state;
 }
 
 void end_visit(const StructuredItemType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-#ifdef ZORBA_WITH_JSON
   theTypeStack.push(GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE);
-#endif
 }
 
 
@@ -13714,16 +13901,13 @@ void end_visit(const StructuredItemType& v, void* /*visit_state*/)
 void* begin_visit(const JSON_Test& v)
 {
   TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
   return no_state;
 }
 
 void end_visit(const JSON_Test& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-#ifdef ZORBA_WITH_JSON
+
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   switch (v.get_kind())
@@ -13747,7 +13931,6 @@ void end_visit(const JSON_Test& v, void* /*visit_state*/)
   default:
     ZORBA_ASSERT(false);
   }
-#endif /* ZORBA_WITH_JSON */
 }
 
 
@@ -14268,6 +14451,7 @@ void end_visit(const AnyFunctionTest& v, void* /*visit_state*/)
   theTypeStack.push(GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_STAR);
 }
 
+
 void* begin_visit(const TypeList& v)
 {
   TRACE_VISIT ();
@@ -14279,11 +14463,13 @@ void end_visit(const TypeList& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 }
 
+
 void* begin_visit(const TypedFunctionTest& v)
 {
   TRACE_VISIT();
   return no_state;
 }
+
 
 void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
 {
@@ -14339,9 +14525,6 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
 void* begin_visit(const JSONObjectInsertExpr& v)
 {
   TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
   return no_state;
 }
 
@@ -14350,7 +14533,6 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-#ifdef ZORBA_WITH_JSON
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   expr* targetExpr = pop_nodestack();
@@ -14379,7 +14561,6 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
                              args);
 
   push_nodestack(updExpr);
-#endif
 }
 
 
@@ -14390,9 +14571,6 @@ void end_visit(const JSONObjectInsertExpr& v, void* /*visit_state*/)
 void* begin_visit(const JSONArrayInsertExpr& v)
 {
   TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
   return no_state;
 }
 
@@ -14401,7 +14579,6 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-#ifdef ZORBA_WITH_JSON
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   expr* posExpr = pop_nodestack();
@@ -14432,7 +14609,6 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
   normalize_fo(updExpr);
 
   push_nodestack(updExpr);
-#endif
 }
 
 
@@ -14442,9 +14618,6 @@ void end_visit(const JSONArrayInsertExpr& v, void* /*visit_state*/)
 void* begin_visit(const JSONArrayAppendExpr& v)
 {
   TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
   return no_state;
 }
 
@@ -14453,7 +14626,6 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-#ifdef ZORBA_WITH_JSON
   expr* targetExpr = pop_nodestack();
   expr* contentExpr = pop_nodestack();
 
@@ -14473,7 +14645,6 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
   normalize_fo(updExpr);
 
   push_nodestack(updExpr);
-#endif
 }
 
 
@@ -14493,9 +14664,6 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
 void* begin_visit(const JSONDeleteExpr& v)
 {
   TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
   return no_state;
 }
 
@@ -14504,7 +14672,6 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-#ifdef ZORBA_WITH_JSON
   expr* selExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
 
@@ -14527,7 +14694,6 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
                  selExpr);
 
   push_nodestack(updExpr);
-#endif
 }
 
 
@@ -14537,9 +14703,6 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 void* begin_visit(const JSONReplaceExpr& v)
 {
   TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
   return no_state;
 }
 
@@ -14548,7 +14711,6 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-#ifdef ZORBA_WITH_JSON
   expr* valueExpr = pop_nodestack();
   expr* selExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
@@ -14578,7 +14740,6 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
                  args);
 
   push_nodestack(updExpr);
-#endif
 }
 
 
