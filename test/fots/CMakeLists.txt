@@ -139,7 +139,6 @@ EXPECTED_FOTS_FAILURE (DISPUTED misc-CombinedErrorCodes XQST0085 21730)
 # marked for the RQ to pass.
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
-EXPECTED_FOTS_FAILURE (prod-CastExpr CastAsNamespaceSensitiveType-10 0)
 
 # This test passes on the old and new RQ machines, but fails for Sorin.
 #EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
