@@ -12,17 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+To generate a report for submitting to the W3C:
 
-To generate a report for submitting to the W3C be sure to use at least Xerces 3.1.1
-
-0. For submitting reports to W3C one should compile Zorba with:
+0. For submitting reports to W3C one should compile Zorba with
     ZORBA_WITH_BIG_INTEGER=ON
     ZORBA_XQUERYX=ON
     ZORBA_TEST_XQUERYX=ON
     ZORBA_TEST_W3C_TO_SUBMIT_RESULTS=ON
     ZORBA_WITH_JSON=OFF
-
-Update the import_w3c_update_testsuite.sh by removing lines 136, 139 and 140.
+   And make sure you are using at least Xerces version 3.1.1.
 
 1.  Import XQUTS.
 
@@ -65,5 +63,3 @@ In order to generate the HTML versions of the reports (XQUTSReport.html and XQUT
 7.  Modify /tmp/XQUTS_1_0_1/ReportingResults/Results.xml by adding a result node for every report you copied at step 5.
 
 8.  From /tmp/XQUTS_1_0_1/ReportingResults/ run 'ant -buildfile Build.xml' in order to generate XQUTSReport.html and XQUTSReportSimple.html
-
-

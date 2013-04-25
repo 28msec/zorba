@@ -101,7 +101,7 @@ string-join (
   for $src in //source return concat ("%src ", $src/@ID, " ", $src/@FileName),
 
   for $tc in //test-case
-  return
+  return 
   (
     concat("case=", $tc/@FilePath, $tc/@name),
 
@@ -132,13 +132,9 @@ string-join (
 
       for $error in $state/expected-error
       return concat("Error: ",
-                    if ($error/text() eq "*"
-                       or ($tc/@name = "revalidate-valtrans-ins-003")
-                       )
+                    if ($error/text() eq "*")
                       then "" else "http://www.w3.org/2005/xqt-errors:",
-                    if($tc/@name = "revalidate-valtrans-ins-003")
-                    then ""
-                    else $error/text())
+                    $error/text())
     ),
 
     "end"
