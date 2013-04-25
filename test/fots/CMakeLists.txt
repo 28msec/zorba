@@ -58,7 +58,6 @@ IF (NOT _fotsscript STREQUAL "")
   ENDIF (EXISTS "${_fotsscript}")
 ENDIF (NOT _fotsscript STREQUAL "")
 
-
 # Customized macro for FOTS tests
 MACRO (expected_fots_failure)
   PARSE_ARGUMENTS (EFF "" "" "SLOW;CRASH;DISPUTED" ${ARGN})
@@ -97,6 +96,7 @@ MACRO (expected_fots_failure)
   SET_PROPERTY (GLOBAL APPEND PROPERTY "_FOTS_${test_set}_CASES_"
     ${test_case} ${bugid} "${_notrun}" "${_finalStatus}" "${_disputed}")
 ENDMACRO (expected_fots_failure)
+
 
 ##
 ## Place all known failing FOTS tests here!
@@ -140,7 +140,6 @@ EXPECTED_FOTS_FAILURE (DISPUTED prod-VarDefaultValue extvardef-006b 21832)
 # marked for the RQ to pass.
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
-EXPECTED_FOTS_FAILURE (prod-CastExpr CastAsNamespaceSensitiveType-10 0)
 
 # This test passes on the old and new RQ machines, but fails for Sorin.
 #EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
@@ -220,10 +219,6 @@ EXPECTED_FOTS_FAILURE (fn-serialize serialize-xml-007a 0)
 EXPECTED_FOTS_FAILURE (fn-serialize serialize-xml-008 0)
 EXPECTED_FOTS_FAILURE (fn-string-length fn-string-length-22 0)
 EXPECTED_FOTS_FAILURE (fn-string-length fn-string-length-24 0)
-EXPECTED_FOTS_FAILURE (fn-subsequence cbcl-subsequence-004 0)
-EXPECTED_FOTS_FAILURE (fn-subsequence cbcl-subsequence-017 0)
-EXPECTED_FOTS_FAILURE (fn-subsequence cbcl-subsequence-018 0)
-EXPECTED_FOTS_FAILURE (fn-subsequence cbcl-subsequence-024 0)
 EXPECTED_FOTS_FAILURE (fn-tokenize fn-tokenize-31 0)
 EXPECTED_FOTS_FAILURE (fn-tokenize fn-tokenize-32 0)
 EXPECTED_FOTS_FAILURE (fn-unparsed-text fn-unparsed-text-037 0)
@@ -417,7 +412,6 @@ EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-105 0)
 EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-106 0)
 EXPECTED_FOTS_FAILURE (prod-VarDecl.external K2-ExternalVariablesWithout-18 0)
 EXPECTED_FOTS_FAILURE (prod-VarDecl.external K2-ExternalVariablesWith-22 0)
-EXPECTED_FOTS_FAILURE (prod-VarDefaultValue extvardef-003a 0)
 EXPECTED_FOTS_FAILURE (prod-VarDefaultValue extvardef-016a 0)
 EXPECTED_FOTS_FAILURE (prod-VarDefaultValue extvardef-016b 0)
 EXPECTED_FOTS_FAILURE (prod-VersionDecl VersionDecl-v1-processor-and-v3-query 0)

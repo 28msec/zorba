@@ -49,10 +49,10 @@ static void parse( parse_type parse_what, zstring const &buf,
     ::memset( tm, 0, sizeof( *tm ) );
     time::parse( buf, fmt, lang, country, tm, &set_fields );
 
-    bool       set_mday = set_fields & time::set_mday;
-    bool       set_mon  = set_fields & time::set_mon;
-    bool const set_yday = set_fields & time::set_yday;
-    bool const set_year = set_fields & time::set_year;
+    bool       set_mday = !!(set_fields & time::set_mday);
+    bool       set_mon  = !!(set_fields & time::set_mon);
+    bool const set_yday = !!(set_fields & time::set_yday);
+    bool const set_year = !!(set_fields & time::set_year);
 
     if ( set_yday && set_year && (!set_mday || !set_mon) ) {
       //

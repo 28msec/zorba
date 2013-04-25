@@ -182,7 +182,8 @@ size_type decode( std::istream &from, ToStringType *to,
       gcount = from.gcount();
     }
     if ( gcount ) {
-      size_type const decoded = decode( from_buf, gcount, to_buf, options );
+      size_type const decoded =
+        decode( from_buf, static_cast<size_type>( gcount ), to_buf, options );
       to->append( to_buf, decoded );
       total_decoded += decoded;
     } else
@@ -301,7 +302,8 @@ size_type encode( std::istream &from, ToStringType *to ) {
     char from_buf[ 1024 * 2 ], to_buf[ 1024 ];
     from.read( from_buf, sizeof from_buf );
     if ( std::streamsize const gcount = from.gcount() ) {
-      size_type const encoded = encode( from_buf, gcount, to_buf );
+      size_type const encoded =
+        encode( from_buf, static_cast<size_type>( gcount ), to_buf );
       to->append( to_buf, encoded );
       total_encoded += encoded;
     } else

@@ -73,23 +73,26 @@ back_iri_insert_iterator<StringType>::operator=( value_type c ) {
 
 template<class OctetIterator>
 unicode::code_point next_char( OctetIterator &i ) {
-  unicode::code_point c = *i & 0xFFu;   // prevents sign-extension
-  if ( c < 0x80 )                       // special-case ASCII
+  unicode::code_point cp = *i & 0xFFu;  // prevents sign-extension
+  if ( cp < 0x80 )                      // special-case ASCII
     ++i;
   else {
-    size_type const len = char_length( c );
+    size_type const len = char_length( cp );
     unsigned m = (0x7F >> len) & 0x1F;  // mask
-    c = unicode::code_point( 0 );
+    cp = unicode::code_point( 0 );
     switch ( len ) {
-      case 6: c |= ((*i & m   ) << 30); ++i; m = 0x3F;
-      case 5: c |= ((*i & m   ) << 24); ++i; m = 0x3F;
-      case 4: c |= ((*i & m   ) << 18); ++i; m = 0x3F;
-      case 3: c |= ((*i & m   ) << 12); ++i; m = 0x3F;
-      case 2: c |= ((*i & m   ) <<  6); ++i;
-              c |=  (*i & 0x3F)       ; ++i;
+      case 6: cp |= ((*i & m   ) << 30); ++i; m = 0x3F;
+      case 5: cp |= ((*i & m   ) << 24); ++i; m = 0x3F;
+      case 4: cp |= ((*i & m   ) << 18); ++i; m = 0x3F;
+      case 3: cp |= ((*i & m   ) << 12); ++i; m = 0x3F;
+      case 2: cp |= ((*i & m   ) <<  6); ++i;
+              cp |=  (*i & 0x3F)       ; ++i;
+              break;
+      default:
+        cp = unicode::invalid;
     }
   }
-  return c;
+  return cp;
 }
 
 template<class OctetIterator>

@@ -473,27 +473,46 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   store::Item_t startPosItem;
   xs_long startPos;
   store::Item_t lengthItem;
+  xs_double startPosDouble; 
+  xs_double lengthDouble;
 
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
 
   state->theIsChildReset = false;
-
+  
   CONSUME(startPosItem, 1);
+  startPosDouble = startPosItem->getDoubleValue();
+
+  //If starting position is set to +INF return empty sequence
+  if (startPosDouble.isPosInf() || startPosDouble.isNaN())
+    goto done;
+
+  //Removed startpos - 1, since if a -INF is present it overflows it to a positive number
   startPos =
-  static_cast<xs_long>(startPosItem->getDoubleValue().round().getNumber()) - 1;
+    static_cast<xs_long>(startPosDouble.round().getNumber());
 
   if (theChildren.size() == 3)
   {
     CONSUME(lengthItem, 2);
-    state->theRemaining =
-    static_cast<xs_long>(lengthItem->getDoubleValue().round().getNumber());
+    lengthDouble = lengthItem->getDoubleValue();
+    if (lengthDouble.isPosInf())
+    {
+      //if startPos is -INF and length is +INF return empty sequence because -INF + INF = NaN
+      if (startPosDouble.isNegInf())
+        goto done;
+
+      state->theRemaining = 1;
+    }
+    else
+      state->theRemaining =
+        static_cast<xs_long>(lengthDouble.round().getNumber());
   }
 
-  if (startPos < 0)
+  if (startPos < 1)
   {
     if (theChildren.size() >= 3)
-      state->theRemaining += startPos;
+      state->theRemaining += startPos - 1;
 
     startPos = 0;
   }
@@ -503,13 +522,13 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
     goto done;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > 0; --startPos)
+  for (; startPos > 1; --startPos)
   {
     if (!CONSUME(result, 0))
       goto done;
   }
 
-  if (theChildren.size() < 3)
+  if (theChildren.size() < 3 || lengthDouble.isPosInf())
   {
     while (CONSUME(result, 0))
     {
@@ -1347,7 +1366,7 @@ bool FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   theChildren[0]->count(result, planState);
 
-  STACK_PUSH(result, state);
+  STACK_PUSH(!!result, state);
 
   STACK_END(state);
 }
@@ -2158,7 +2177,7 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
   {
     readDocument(uriString, encodingString, theSctx, planState, loc, unparsedText);
   }
-  catch (XQueryException const& e)
+  catch (XQueryException const&)
   {
     unparsedText = NULL;
   }

@@ -226,11 +226,13 @@ bool icu_streambuf::to_utf8( char const **from, char const *from_end,
   return true;
 }
 
+#ifndef WIN32
 #ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
 # pragma GCC diagnostic pop
 #else
 # pragma GCC diagnostic warning "-Warray-bounds"
 #endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+#endif /* WIN32 */
 
 icu_streambuf::int_type icu_streambuf::underflow() {
 #ifdef ZORBA_DEBUG_ICU_STREAMBUF
@@ -275,8 +277,8 @@ streamsize icu_streambuf::xsgetn( char_type *to, streamsize size ) {
   if ( streamsize const gsize = egptr() - gptr() ) {
     // must first get any chars in g_.utf8_char_
     streamsize const n = min( gsize, size );
-    traits_type::copy( to, gptr(), n );
-    gbump( n );
+    traits_type::copy( to, gptr(), static_cast<size_t>( n ) );
+    gbump( static_cast<int>( n ) );
     to += n;
     size -= n, return_size += n;
   }
