@@ -995,16 +995,16 @@ zorba::ItemSequence_t VariableTypeFunction::evaluate(
   XQuery_t lQuery = getQuery(aDctx, lQueryID);
 
   Item lVarQName = XQXQFunction::getItemArgument(aArgs, 1);
-
-  zorba::DynamicContext* lCtx = lQuery->getDynamicContext();
-  zorba::String lNS = lVarQName.getNamespace(), lLocal = lVarQName.getLocalName();
+  zorba::StaticContext* lSctx = const_cast<StaticContext*>(lQuery->getStaticContext());
+  
   Item lType;
   try
   {
-    if(!lCtx->getVariablePrimeType(lNS, lLocal, lType))
+    lType = lSctx->getVariablePrimeType(lVarQName);
+    if(lType.isNull())
     {
       std::ostringstream lMsg;
-      lMsg << lLocal << ": variable not bound";
+      lMsg << lVarQName.getLocalName() << ": variable not bound";
       XQXQFunction::throwError("UndeclaredVariable", lMsg.str());  
     }
   }

@@ -1769,5 +1769,48 @@ StaticContextImpl::clearBaseURI()
   }
 }
 
+Item 
+StaticContextImpl::getVariablePrimeType(
+    const Item& aQName)
+{
+  ZORBA_TRY
+  {
+    store::Item_t type;
+
+    store::Item_t lQname = Unmarshaller::getInternalItem(aQName);
+    VarInfo* var = NULL;
+
+    try
+    {
+      var = theCtx->lookup_var(lQname);
+      if (!var)
+        return NULL;
+      const XQType* varType = var->getType();
+      zstring varTypeString;
+      if (!varType)
+        varTypeString = "xs:anyType";
+      else
+        varTypeString = varType->toSchemaString();
+      
+      GENV_ITEMFACTORY->createQName(type, lQname->getNamespace(), zstring(), varTypeString);
+    }
+    catch (ZorbaException const& e)
+    {
+      // Normally, we should be throwing an exception if the variable has not
+      // been declared inside the xquery program, but this cases many failures
+      // with the w3c XQTS.
+      if (e.diagnostic() == err::XPST0008)
+      {
+        return NULL;
+      }
+      throw;
+    }
+    return type;
+  }
+  ZORBA_CATCH
+  return NULL;
+}
+
+
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

@@ -332,6 +332,9 @@ protected:
 public:
   virtual void
   clearBaseURI();
+  
+  virtual Item 
+  getVariablePrimeType(const Item& aQname);
 
 };
 

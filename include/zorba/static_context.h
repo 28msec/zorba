@@ -813,6 +813,18 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
    */
   virtual bool
   setDefaultFunctionNamespaces( const std::vector<String>& aURIs ) = 0;
+
+  /** \brief Returns the type of an external variable as a QName. 
+   *
+   * The named external variable may be located in the main query or in any
+   * modules imported directly or indirectly by the query.
+   *
+   * @param the variable's QName
+   * @return the QName of the variable type if it has been retrieved successfully, a NULL Item otherwise.
+   * @throw ZorbaException if an error occured.
+   */
+  virtual Item
+  getVariablePrimeType(const Item& aQName) = 0;
 };
 
 } /* namespace zorba */
