@@ -58,7 +58,6 @@ IF (NOT _fotsscript STREQUAL "")
   ENDIF (EXISTS "${_fotsscript}")
 ENDIF (NOT _fotsscript STREQUAL "")
 
-
 # Customized macro for FOTS tests
 MACRO (expected_fots_failure)
   PARSE_ARGUMENTS (EFF "" "" "SLOW;CRASH;DISPUTED" ${ARGN})
@@ -97,6 +96,7 @@ MACRO (expected_fots_failure)
   SET_PROPERTY (GLOBAL APPEND PROPERTY "_FOTS_${test_set}_CASES_"
     ${test_case} ${bugid} "${_notrun}" "${_finalStatus}" "${_disputed}")
 ENDMACRO (expected_fots_failure)
+
 
 ##
 ## Place all known failing FOTS tests here!
