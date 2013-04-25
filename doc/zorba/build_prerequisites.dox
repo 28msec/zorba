@@ -45,7 +45,9 @@ explicitly disable them in order to build without these libraries.
     (http://xerces.apache.org/xerces-c/). This package is required to
     enable XML schema support. This feature is enabled by default. In
     order to disable XML schema support, you need to provide the CMake
-    configuration parameter \c ZORBA_NO_XMLSCHEMA=ON.
+    configuration parameter \c ZORBA_NO_XMLSCHEMA=ON. Note that the Zorba
+    team tests with Xerces-C 3.1.1. Xerces-C 2.8.0 in particular is known
+    to cause a few bugs with schema handling.
 
 - ICU4C 3.6 or later (http://www.icu-project.org/). This package is
   required to enable Unicode support as well as some other

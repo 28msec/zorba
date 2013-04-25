@@ -39,6 +39,7 @@ Optimizations:
 
 Bug Fixes/Other Changes:
   * Fixed bug #1102997 (Swapping referenced nodes)
+  * Fixed bug #1169908 (Zorba hangs with invalid utf-8 input)
   * Fixed bug #1111487 (Swapping nodes that are in collections)
   * Fixed bug #1123836 (overflows in date/time casts now return FODT0001 and
     in durations return FODT0002)

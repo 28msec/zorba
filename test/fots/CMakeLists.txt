@@ -58,7 +58,6 @@ IF (NOT _fotsscript STREQUAL "")
   ENDIF (EXISTS "${_fotsscript}")
 ENDIF (NOT _fotsscript STREQUAL "")
 
-
 # Customized macro for FOTS tests
 MACRO (expected_fots_failure)
   PARSE_ARGUMENTS (EFF "" "" "SLOW;CRASH;DISPUTED" ${ARGN})
@@ -97,6 +96,7 @@ MACRO (expected_fots_failure)
   SET_PROPERTY (GLOBAL APPEND PROPERTY "_FOTS_${test_set}_CASES_"
     ${test_case} ${bugid} "${_notrun}" "${_finalStatus}" "${_disputed}")
 ENDMACRO (expected_fots_failure)
+
 
 ##
 ## Place all known failing FOTS tests here!
@@ -139,7 +139,6 @@ EXPECTED_FOTS_FAILURE (DISPUTED misc-CombinedErrorCodes XQST0085 21730)
 # marked for the RQ to pass.
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
-EXPECTED_FOTS_FAILURE (prod-CastExpr CastAsNamespaceSensitiveType-10 0)
 
 # This test passes on the old and new RQ machines, but fails for Sorin.
 #EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)

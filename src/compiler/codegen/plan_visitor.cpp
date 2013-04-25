@@ -1603,9 +1603,20 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
         PlanIter_t winVarIter = pop_itstack();
 
-        treatIter = new TreatIterator(sctx, qloc, winVarIter,
+        bool checkPrime = true;
+
+        xqtref_t varPType = TypeOps::prime_type(tm, *varType);
+        xqtref_t domainPType = TypeOps::prime_type(tm, *domainType);
+
+        if (TypeOps::is_subtype(tm, *domainPType, *varPType, qloc))
+        {
+          checkPrime = false;
+        }
+
+        treatIter = new TreatIterator(sctx, qloc,
+                                      winVarIter,
                                       varType,
-                                      true,
+                                      checkPrime,
                                       TREAT_TYPE_MATCH,
                                       NULL);
       }
