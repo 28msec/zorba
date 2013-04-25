@@ -24,6 +24,7 @@
 #endif /* ZORBA_NO_ICU */
 
 // local
+#include "ascii_util.h"
 #include "cxx_util.h"
 #include "utf8_util.h"
 
@@ -55,7 +56,9 @@ invalid_byte::~invalid_byte() throw() {
 }
 
 string invalid_byte::make_what( storage_type byte ) {
-  return BUILD_STRING( '\'', byte, "': invalid UTF-8 byte" );
+  return BUILD_STRING(
+    '\'', ascii::printable_char( byte ), "': invalid UTF-8 byte"
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
