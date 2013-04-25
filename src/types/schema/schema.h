@@ -115,25 +115,25 @@ public:
         const store::Item* qname,
         store::Item_t& result);
 
-  void getTypeInfoFromGlobalElementDecl(
+  void getInfoFromGlobalElementDecl(
         const store::Item* qname,
         store::Item_t& typeName,
         bool& nillable,
         const QueryLoc& loc);
 
-  xqtref_t getTypeInfoFromGlobalElementDecl(
+  xqtref_t createXQTypeFromGlobalElementDecl(
         const TypeManager* typeManager,
         const store::Item* qname,
         const bool raiseErrors,
         bool& nillable,
         const QueryLoc& loc);
 
-  void getTypeInfoFromGlobalAttributeDecl(
+  void getInfoFromGlobalAttributeDecl(
         const store::Item* qname,
         store::Item_t& typeName,
         const QueryLoc& loc);
 
-  xqtref_t getTypeInfoFromGlobalAttributeDecl(
+  xqtref_t createXQTypeFromGlobalAttributeDecl(
         const TypeManager* typeManager,
         const store::Item* qname,
         const bool riseErrors,

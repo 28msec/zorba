@@ -896,7 +896,7 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
   bool nillable;
 
   xqtref_t contentType =
-  m_schema->getTypeInfoFromGlobalElementDecl(this, elemName, true, nillable, loc);
+  m_schema->createXQTypeFromGlobalElementDecl(this, elemName, true, nillable, loc);
 
   return create_node_type(store::StoreConsts::elementNode,
                           elemName,
@@ -922,7 +922,7 @@ void TypeManagerImpl::get_schema_element_typeinfo(
     ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
   }
 
-  m_schema->getTypeInfoFromGlobalElementDecl(elemName, typeName, nillable, loc);
+  m_schema->getInfoFromGlobalElementDecl(elemName, typeName, nillable, loc);
 }
 
 
@@ -944,7 +944,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
   }
 
   xqtref_t contentType =
-  m_schema->getTypeInfoFromGlobalAttributeDecl(this, attrName, true, loc);
+  m_schema->createXQTypeFromGlobalAttributeDecl(this, attrName, true, loc);
 
   return create_node_type(store::StoreConsts::attributeNode,
                           attrName,
@@ -970,7 +970,7 @@ void TypeManagerImpl::get_schema_attribute_typeinfo(
     ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), attrName->getStringValue()));
   }
 
-  m_schema->getTypeInfoFromGlobalAttributeDecl(attrName, typeName, loc);
+  m_schema->getInfoFromGlobalAttributeDecl(attrName, typeName, loc);
 }
 
 

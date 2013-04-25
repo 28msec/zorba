@@ -524,7 +524,7 @@ void Schema::registerXSD(
   of the associated schema type and whether the element can be nillable.
   Raise an error if no global element declaration is found for the given name.
 *******************************************************************************/
-void Schema::getTypeInfoFromGlobalElementDecl(
+void Schema::getInfoFromGlobalElementDecl(
     const store::Item* qname,
     store::Item_t& typeName,
     bool& nillable,
@@ -558,7 +558,7 @@ void Schema::getTypeInfoFromGlobalElementDecl(
   Raise an error if the raiseErrors param is true and no global element
   declaration is found for the given name.
 *******************************************************************************/
-xqtref_t Schema::getTypeInfoFromGlobalElementDecl(
+xqtref_t Schema::createXQTypeFromGlobalElementDecl(
     const TypeManager* typeManager,
     const store::Item* qname,
     const bool raiseErrors,
@@ -597,7 +597,7 @@ xqtref_t Schema::getTypeInfoFromGlobalElementDecl(
   name of the associated schema type. Raise an error if no global attribute
   declaration is found for the given name.
 *******************************************************************************/
-void Schema::getTypeInfoFromGlobalAttributeDecl(
+void Schema::getInfoFromGlobalAttributeDecl(
     const store::Item* qname,
     store::Item_t& typeName,
     const QueryLoc& loc)
@@ -624,7 +624,7 @@ void Schema::getTypeInfoFromGlobalAttributeDecl(
   Returns an XQType for a global schema attribute definition if defined,
   otherwise NULL
 *******************************************************************************/
-xqtref_t Schema::getTypeInfoFromGlobalAttributeDecl(
+xqtref_t Schema::createXQTypeFromGlobalAttributeDecl(
     const TypeManager* typeManager,
     const store::Item* qname,
     const bool raiseErrors,

@@ -137,16 +137,16 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
         store::Item_t typeName;
         if (ntype.get_node_kind() == store::StoreConsts::elementNode)
         {
-          schema->getTypeInfoFromGlobalElementDecl(ntype.get_node_name(),
-                                                   typeName,
-                                                   nillable,
-                                                   QueryLoc::null);
+          schema->getInfoFromGlobalElementDecl(ntype.get_node_name(),
+                                               typeName,
+                                               nillable,
+                                               QueryLoc::null);
         }
         else
         {
-          schema->getTypeInfoFromGlobalAttributeDecl(ntype.get_node_name(),
-                                                     typeName,
-                                                     QueryLoc::null);
+          schema->getInfoFromGlobalAttributeDecl(ntype.get_node_name(),
+                                                 typeName,
+                                                 QueryLoc::null);
         }
       }
       catch (ZorbaException& e)
