@@ -491,6 +491,7 @@ extern entry const dict_en[] = {
   { "ZWST0005", "\"$1\": function caching not possible; $2" },
   { "ZWST0006", "\"$1\": function caching might not give the intended result because the function is declared as $2" },
   { "ZWST0007", "\"$1\":$2,$3: loader parsing warning${: 4}" },
+  { "ZWST0008", "\"$1\": has been deprecated; use \"$2\" instead" },
   { "ZXQD0001", "\"$1\": prefix not declared when calling function \"$2\" from $3" },
   { "ZXQD0002", "\"$1\": $2" },
   { "ZXQD0003", "inconsistent options to the parse-xml() function: $1" },
