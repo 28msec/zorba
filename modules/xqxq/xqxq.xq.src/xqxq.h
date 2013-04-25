@@ -578,7 +578,7 @@ public:
   virtual ~VariableTypeFunction() {}
 
   virtual zorba::String
-  getLocalName() const {return "variable-type"; }
+  getLocalName() const {return "variable-type-name"; }
 
   virtual zorba::ItemSequence_t
   evaluate(const Arguments_t&,

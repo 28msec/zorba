@@ -85,7 +85,7 @@ XQXQModule::getExternalFunction(const zorba::String& localName)
     {
       lFunc = new VariableValueFunction(this);
     }
-    else if (localName == "variable-type")
+    else if (localName == "variable-type-name")
     {
       lFunc = new VariableTypeFunction(this);
     }
@@ -1001,7 +1001,7 @@ zorba::ItemSequence_t VariableTypeFunction::evaluate(
   Item lType;
   try
   {
-    if(!lCtx->getVariableType(lNS, lLocal, lType))
+    if(!lCtx->getVariablePrimeType(lNS, lLocal, lType))
     {
       std::ostringstream lMsg;
       lMsg << lLocal << ": variable not bound";

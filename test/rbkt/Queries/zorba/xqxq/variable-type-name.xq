@@ -6,8 +6,8 @@ variable $queryID3 := xqxq:prepare-main-module('declare variable $ext as xs:date
 variable $queryID4 := xqxq:prepare-main-module('declare variable $ext as object() external; $ext');
 variable $queryID5 := xqxq:prepare-main-module('declare variable $ext as element() external; $ext');
 
-xqxq:variable-type($queryID, xs:QName('ext')),
-xqxq:variable-type($queryID2, xs:QName('ext')),
-xqxq:variable-type($queryID3, xs:QName('ext')),
-xqxq:variable-type($queryID4, xs:QName('ext')),
-xqxq:variable-type($queryID5, xs:QName('ext'))
+xqxq:variable-type-name($queryID, xs:QName('ext')),
+xqxq:variable-type-name($queryID2, xs:QName('ext')),
+xqxq:variable-type-name($queryID3, xs:QName('ext')),
+xqxq:variable-type-name($queryID4, xs:QName('ext')),
+xqxq:variable-type-name($queryID5, xs:QName('ext'))

@@ -400,8 +400,8 @@ declare function xqxq:variable-value($query-key as xs:anyURI, $var-name as
  :   in the query.
  : @error xqxq:UnboundVariable if the given variable doesn't have a value.
  :)
-declare function xqxq:variable-type($query-key as xs:anyURI, $var-name as 
-  xs:QName) as xs:string external;                               
+declare function xqxq:variable-type-name($query-key as xs:anyURI, $var-name as 
+  xs:QName) as xs:QName external;                               
 (:~
  : Returns the compiled query identified by the given query-key 
  : as binary data.

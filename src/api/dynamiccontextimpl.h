@@ -176,7 +176,7 @@ public:
   isBoundContextItem() const;
 
   virtual bool 
-  getVariableType(const String& inNamespace, const String& inLocalname, Item& outType);
+  getVariablePrimeType(const String& inNamespace, const String& inLocalname, Item& outType);
 
 protected:
   void checkNoIterators() const;

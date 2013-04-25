@@ -186,7 +186,7 @@ VarInfo* DynamicContextImpl::get_var_info(
 /****************************************************************************//**
 
 ********************************************************************************/
-bool DynamicContextImpl::getVariableType(
+bool DynamicContextImpl::getVariablePrimeType(
     const String& inNamespace,
     const String& inLocalname,
     Item& outType)
@@ -195,7 +195,7 @@ bool DynamicContextImpl::getVariableType(
   {
     checkNoIterators();
 
-    zstring nameSpace = Unmarshaller::getInternalString(inNamespace);
+    zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
     zstring& localName = Unmarshaller::getInternalString(inLocalname);
 
     VarInfo* var = NULL;
@@ -211,7 +211,7 @@ bool DynamicContextImpl::getVariableType(
         varTypeString = varType->toSchemaString();
       
       store::Item_t type;
-      GENV_ITEMFACTORY->createString(type, varTypeString);
+      GENV_ITEMFACTORY->createQName(type, nameSpace, zstring(), varTypeString);
       outType = type;
     }
     catch (ZorbaException const& e)
