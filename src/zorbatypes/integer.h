@@ -18,30 +18,21 @@
 #ifndef ZORBA_INTEGER_H
 #define ZORBA_INTEGER_H
 
+// standard
 #include <cmath>
 #include <limits>
 
+// Zorba
 #include <zorba/config.h>
-
 #include "common/common.h"
 #include "util/stl_util.h"
 
+// local
+#include "integer_macros.h"
 #include "m_apm.h"
 #include "schema_types_base.h"
 #include "zorbatypes_decl.h"
 #include "zstring.h"
-
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(I)   /* nothing */
-# define INTEGER_IMPL(I)    IntegerImpl
-# define TEMPLATE_TYPENAME  /* nothing */
-#else
-# define TEMPLATE_DECL(I)   template<typename I> /* spacer */
-# define INTEGER_IMPL(I)    IntegerImpl<I> /* spacer */
-# define TEMPLATE_TYPENAME  typename
-#endif /* ZORBA_WITH_BIG_INTEGER */
-#define INTEGER_IMPL_LL   INTEGER_IMPL(long long)
-#define INTEGER_IMPL_ULL  INTEGER_IMPL(unsigned long long)
 
 namespace zorba {
 
@@ -55,6 +46,16 @@ namespace serialization
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+namespace xq_int {
+  enum type {
+    integer,
+    negative,     // < 0
+    nonPositive,  // <= 0
+    nonNegative,  // >= 0, i.e., unsigned
+    positive      // > 0
+  };
+}
 
 TEMPLATE_DECL(IntType)
 class IntegerImpl 
@@ -539,35 +540,57 @@ private:
 typedef INTEGER_IMPL_LL Integer;
 typedef INTEGER_IMPL_ULL UInteger;
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+// TODO
+#else
+template<typename ValueType,typename ArgType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<ValueType>::value &&
+                        ZORBA_TR1_NS::is_signed<ArgType>::value,
+                        ArgType>::type
+assert_nonnegative( ArgType n ) {
+  if ( n < 0 )
+    throw std::range_error( BUILD_STRING( n, ": negative value" ) );
+  return n;
+}
+
+template<typename ValueType,typename ArgType> inline
+typename std::enable_if<!(ZORBA_TR1_NS::is_unsigned<ValueType>::value &&
+                          ZORBA_TR1_NS::is_signed<ArgType>::value),
+                          ArgType>::type
+assert_nonnegative( ArgType n ) {
+  return n;
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 ////////// constructors ///////////////////////////////////////////////////////
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( char c ) :
-  value_( static_cast<long>( c ) )
+  value_( static_cast<long>( assert_nonnegative<I>( c ) ) )
 {
 }
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( signed char c ) :
-  value_( static_cast<long>( c ) )
+  value_( static_cast<long>( assert_nonnegative<I>( c ) ) )
 {
 }
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( short n ) :
-  value_( static_cast<long>( n ) )
+  value_( static_cast<long>( assert_nonnegative<I>( n ) ) )
 {
 }
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( int n ) :
-  value_( static_cast<long>( n ) )
+  value_( static_cast<long>( assert_nonnegative<I>( n ) ) )
 {
 }
 
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I)::IntegerImpl( long n ) :
-  value_( n )
+  value_( assert_nonnegative<I>( n ) )
 {
 }
 
@@ -624,7 +647,7 @@ inline INTEGER_IMPL(I)::IntegerImpl( float n ) :
 #ifdef ZORBA_WITH_BIG_INTEGER
   value_( static_cast<double>( n ) )
 #else
-  value_( static_cast<value_type>( n ) )
+  value_( static_cast<value_type>( assert_nonnegative<I>( n ) ) )
 #endif /* ZORBA_WITH_BIG_INTEGER */
 {
 }
@@ -634,7 +657,7 @@ inline INTEGER_IMPL(I)::IntegerImpl( double n ) :
 #ifdef ZORBA_WITH_BIG_INTEGER
   value_( n )
 #else
-  value_( static_cast<value_type>( n ) )
+  value_( static_cast<value_type>( assert_nonnegative<I>( n ) ) )
 #endif /* ZORBA_WITH_BIG_INTEGER */
 {
 }
@@ -647,7 +670,7 @@ inline INTEGER_IMPL(I)::IntegerImpl( char const *s ) {
 TEMPLATE_DECL(I)
 TEMPLATE_DECL(J)
 inline INTEGER_IMPL(I)::IntegerImpl( INTEGER_IMPL(J) const &i ) :
-  value_( i.value_ )
+  value_( assert_nonnegative<I>( i.value_ ) )
 {
 }
 
@@ -1155,10 +1178,8 @@ inline std::ostream& operator<<( std::ostream &os, INTEGER_IMPL(I) const &i ) {
 
 } // namespace zorba
 
-#undef TEMPLATE_DECL
-#undef INTEGER_IMPL
-#undef INTEGER_IMPL_LL
-#undef INTEGER_IMPL_ULL
+#define ZORBA_UNDEFINE_INTEGER_MACROS
+#include "integer_macros.h"
 
 #endif // ZORBA_INTEGER_H
 /*

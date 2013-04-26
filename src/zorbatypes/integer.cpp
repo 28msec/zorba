@@ -16,38 +16,32 @@
 
 #include "stdafx.h"
 
+// standard
 #include <cerrno>
 #include <cstdlib>
 
+// Zorba
 #include <zorba/internal/unique_ptr.h>
 #include "util/cxx_util.h"
 #include "util/string_util.h"
 
-#include "integer.h"
+// local
 #include "decimal.h"
 #include "floatimpl.h"
+#include "integer.h"
+#include "integer_macros.h"
 #include "numconversions.h"
-
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(T) /* nothing */
-# define INTEGER_IMPL(T)  IntegerImpl
-#else
-# define TEMPLATE_DECL(T) template<typename T> /* spacer */
-# define INTEGER_IMPL(T)  IntegerImpl<T> /* spacer */
-#endif /* ZORBA_WITH_BIG_INTEGER */
-#define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
-#define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
 
 using namespace std;
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-unsigned long long MaxUIntegerValue = ~0ull >> 1;
+z_uint_type const MaxUIntegerValue = ~0ull >> 1;
 
-inline bool is_too_big( long long ) {
+inline bool is_too_big( z_int_type ) {
   return false;
 }
 
-inline bool is_too_big( unsigned long long n ) {
+inline bool is_too_big( z_uint_type n ) {
   return n > MaxUIntegerValue;
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
@@ -63,7 +57,7 @@ void INTEGER_IMPL(I)::parse( char const *s ) {
 #else
   value_type const temp( ztd::aton<value_type>( s ) );
   if ( is_too_big( temp ) )
-    throw std::invalid_argument(
+    throw std::range_error(
       BUILD_STRING( '"', temp, "\": unsigned integer too big" )
     );
   value_ = temp;
@@ -449,8 +443,8 @@ INTEGER_IMPL(T) const& INTEGER_IMPL(T)::zero() {
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-template class IntegerImpl<long long>;
-template class IntegerImpl<unsigned long long>;
+template class IntegerImpl<z_int_type>;
+template class IntegerImpl<z_uint_type>;
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 } // namespace zorba
