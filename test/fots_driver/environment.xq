@@ -490,7 +490,7 @@ declare function env:set-variables(
                            ends-with($select, "'") and
                            exists($file))
                        then  concat('"', resolve-uri($file, $envBaseURI), '"')
-                       else $select
+                       else concat("(", $select, ")")
       let $varName := $param/@name
       where (exists($select) and exists($param[@declared eq "true"]))
       return
