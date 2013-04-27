@@ -582,7 +582,6 @@ ENDIF(ZORBA_NO_ICU)
 
 # external variable default expected failures
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
-EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 923686)
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
 
 
