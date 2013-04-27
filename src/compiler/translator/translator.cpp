@@ -2600,6 +2600,9 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
 
   assert(theAssignedVars.size() == 1);
 
+  // Handle declarations (or their absence) of the focus vars
+  bool keepFocusDecls = true;
+
   if (theModulesInfo->theHaveDotItemDecl)
   {
     expr* initExpr = CREATE(const)(theRootSctx, theUDF, loc, xs_integer(1));
@@ -2615,6 +2618,14 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
     // An appliaction has set a type for the context item via the c++ api.
     theModulesInfo->addDotItemType(theSctx->get_context_item_type());
   }
+  else
+  {
+    keepFocusDecls = false;
+
+    theModulesInfo->theInitExprs.erase(theModulesInfo->theInitExprs.begin());
+    theModulesInfo->theInitExprs.erase(theModulesInfo->theInitExprs.begin());
+    theModulesInfo->theInitExprs.erase(theModulesInfo->theInitExprs.begin());
+  }
 
   // Create exprs for the prolog vars and add them to theModulesInfo->theInitExprs
   std::vector<GlobalBinding>::iterator ite = thePrologVars.begin();
@@ -2624,7 +2635,8 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
     declare_var(*ite, theModulesInfo->theInitExprs);
   }
 
-  enforceDotItemTypes(loc);
+  if (keepFocusDecls)
+    enforceDotItemTypes(loc);
 
   // Put everything together under a single root expr.
   expr* preloadedInitExpr = static_cast<static_context*>(theSctx->get_parent())->
