@@ -193,32 +193,7 @@ do { if (state) throw XQUERY_EXCEPTION(err); state = true; } while (0)
 
 #define CTX_TM theSctx->get_typemanager()
 
-
-/*******************************************************************************
-  Internal names for certain implicit vars
-********************************************************************************/
-#define DOT_VARNAME getDotVarName()
-#define DOT_POS_VARNAME getDotPosVarName()
-#define LAST_IDX_VARNAME getLastIdxVarName()
-
-#define DOT_REF                                             \
-  theExprManager->create_wrapper_expr(theRootSctx,          \
-                                      theUDF,               \
-                                      loc,                  \
-                                      lookup_ctx_var(DOT_VARNAME, loc))
-
-#define DOT_POS_REF                                         \
-  theExprManager->create_wrapper_expr(theRootSctx,          \
-                                      theUDF,               \
-                                      loc,                  \
-                                      lookup_ctx_var(DOT_POS_VARNAME, loc))
-
-#define DOT_SIZE_REF                                         \
-  theExprManager->create_wrapper_expr(theRootSctx,          \
-                                      theUDF,               \
-                                      loc,                  \
-                                      lookup_ctx_var(LAST_IDX_VARNAME, loc))
-
+ 
 namespace translator_ns
 {
 
@@ -266,45 +241,125 @@ struct NodeSortInfo
   There is only one ModulesInfo instance per compilation. It is created on the
   stack by the translate() method.
 
-  theCCB        : The control block for the whole query.
-                  (see compiler/api/compilercb.h).
+  theCCB:
+  -------
+  The control block for the whole query. (see compiler/api/compilercb.h).
 
-  mod_ns_map    : Maps resolved module location uris to target namespaces.
-                  Used to skip compilation of a module that has been compiled
-                  already (for example this is the case when 2 imported modules
-                  both import a common module). It is also used to make sure
-                  that a location uri does not appear in two module import
-                  statements with different target namespaces.
+  mod_ns_map:
+  -----------
+  Maps resolved module location uris to target namespaces. Used to skip
+  compilation of a module that has been compiled already (for example this is
+  the case when 2 imported modules both import a common module). It is also
+  used to make sure that a location uri does not appear in two module import
+  statements with different target namespaces.
 
-  mod_sctx_map  : Maps resolved module location uris to sctx objs containing
-                  the var and udf declarations that are exported by the
-                  modules corresponding to the location uris.
+  mod_sctx_map:
+  -------------
+  Maps resolved module location uris to sctx objs containing the var and udf
+  declarations that are exported by the modules corresponding to the location
+  uris.
 
-  theInitExprs  : Contains the initializing expr for each prolog var in each
-                  module participating in the compilation (see method
-                  wrap_in_globalvar_assigh())
+  theInitExprs:
+  -------------
+  Contains the exprs for declaring and initializing (if an initializer expr was
+  provided) each prolog var in each module participating in the compilation.
+  Expressions are appended into this vector at the end of the translation of each
+  module. Then, at the end of the translation of the main module, all these
+  exprs are placed inside a top-level block expr, together with the body expr
+  of the main module.
 
-  globalSctx    : A single static_context which contains ALL function and
-                  variable declarations from ALL imported modules. This is
-                  used to catch conflicting definitions.
+  theDotItemVar:
+  --------------
+
+  theDotPosVar:
+  -------------
+
+  theDotSizeVar:
+  --------------
+
+  theDotItemTypes:
+  ----------------
+
+  theHaveDotItemDecl:
+  -----------------------
+  Initially false. It is set to true if any of the participating modules has
+  an explicit context item declaration. In that case, initializer exprs must
+  be added in theInitExprs to initialize the context position and size vars
+  to 1.
+
+  theDotItemInitExpr:
+  -------------------
+  The position, within theInitExprs of the intilizer expr (if any) for the
+  context item.
+
+  theGlobalSctx:
+  --------------
+  A single static_context which contains ALL function and variable declarations
+  from ALL imported modules. This is used to catch conflicting definitions.
 
 ********************************************************************************/
 class ModulesInfo
 {
 public:
   CompilerCB                        * theCCB;
+
   hashmap<zstring, static_context_t>  mod_sctx_map;
+
   hashmap<zstring, zstring>           mod_ns_map;
-  checked_vector<expr*>              theInitExprs;
-  std::auto_ptr<static_context>       globalSctx;
+
+  std::vector<expr*>                  theInitExprs;
+
+  var_expr                          * theDotItemVar;
+  var_expr                          * theDotPosVar;
+  var_expr                          * theDotSizeVar;
+
+  std::vector<xqtref_t>               theDotItemTypes;
+
+  bool                                theHaveDotItemDecl;
+
+  csize                               theDotItemInitExpr;
+
+  static_context_t                    theGlobalSctx;
 
 public:
   ModulesInfo(CompilerCB* topCompilerCB)
     :
     theCCB(topCompilerCB),
-    globalSctx(static_cast<static_context *>
-               (topCompilerCB->theRootSctx->get_parent())->create_child_context())
+    theHaveDotItemDecl(false),
+    theDotItemInitExpr(0)
   {
+    theGlobalSctx = topCompilerCB->theRootSctx->get_parent()->create_child_context();
+  }
+
+  var_decl_expr* getDotPosDecl() const
+  {
+    ZORBA_ASSERT(theInitExprs[1]->get_expr_kind() == var_decl_expr_kind);
+
+    var_decl_expr* e = static_cast<var_decl_expr*>(theInitExprs[1]);
+
+    assert(e->get_var_expr()->get_name()->getLocalName() ==
+           static_context::DOT_POS_VAR_NAME);
+
+    return e;
+  }
+
+
+  var_decl_expr* getDotSizeDecl() const
+  {
+    ZORBA_ASSERT(theInitExprs[2]->get_expr_kind() == var_decl_expr_kind);
+
+    var_decl_expr* e = static_cast<var_decl_expr*>(theInitExprs[2]);
+
+    assert(e->get_var_expr()->get_name()->getLocalName() ==
+           static_context::DOT_SIZE_VAR_NAME);
+
+    return e;
+  }
+
+
+  void addDotItemType(const xqtref_t& type)
+  {
+    theDotItemTypes.push_back(type);
   }
 };
 
@@ -431,10 +486,10 @@ public:
   thePrologVars vector contains one entry for each var V declared in the prolog
   of this module. The entry maps the var_expr for V to the expr E that initializes
   V (E is NULL for vars without init expr). At the end of each module translation,
-  the method wrap_in_globalvar_assign() creates appropriate initialization exprs
-  for each var in thePrologVars and registers them in theModulesInfo->theInitExprs,
-  so that they will be incorporated in the whole query plan at the end of the
-  translation of the root module.
+  the method declare_var() creates appropriate initialization exprs for each var
+  in thePrologVars and registers them in theModulesInfo->theInitExprs, so that
+  they will be incorporated in the whole query plan at the end of the translation
+  of the main module.
 
   thePrologGraph :
   ----------------
@@ -480,7 +535,6 @@ public:
 
   theAssignedVars :
   -------------------
-
   Local or global variables which are currently in-scope and for which (a)
   an assignment statement has been encountered, and (b) the block expr that
   declares the var has not been exited yet. This is used to determine the
@@ -603,7 +657,7 @@ protected:
 
   user_function                        * theUDF;
 
-  std::list<GlobalBinding>               thePrologVars;
+  std::vector<GlobalBinding>             thePrologVars;
 
   PrologGraph                            thePrologGraph;
   PrologGraphVertex                      theCurrentPrologVFDecl;
@@ -653,15 +707,15 @@ protected:
   std::stack<bool>                       theIsWSBoundaryStack;
   std::stack<const DirElemContent*>      thePossibleWSContentStack;
 
-  function                           * op_concatenate;
+  function                             * op_concatenate;
 
-  rchandle<QName>                      theDotVarName;
-  rchandle<QName>                      theDotPosVarName;
-  rchandle<QName>                      theLastIdxVarName;
+  store::Item_t                          theDotItemVarName;
+  store::Item_t                          theDotPosVarName;
+  store::Item_t                          theDotSizeVarName;
 
-  std::vector<pragma*>                theScopedPragmas;
+  std::vector<pragma*>                   theScopedPragmas;
 
-  StaticContextConsts::xquery_version_t theMaxLibModuleVersion;
+  StaticContextConsts::xquery_version_t  theMaxLibModuleVersion;
 
 public:
 
@@ -711,10 +765,14 @@ TranslatorImpl(
 
   if (rootTranslator == NULL)
   {
-    QueryLoc loc;
-    theDotVarName = new QName(loc, static_context::DOT_VAR_NAME);
-    theDotPosVarName = new QName(loc, static_context::DOT_POS_VAR_NAME);
-    theLastIdxVarName = new QName(loc, static_context::DOT_SIZE_VAR_NAME);
+    GENV_ITEMFACTORY->
+    createQName(theDotItemVarName, "", "", static_context::DOT_VAR_NAME);
+
+    GENV_ITEMFACTORY->
+    createQName(theDotPosVarName, "", "", static_context::DOT_POS_VAR_NAME);
+
+    GENV_ITEMFACTORY->
+    createQName(theDotSizeVarName, "", "", static_context::DOT_SIZE_VAR_NAME);
 
     theRootTranslator = this;
   }
@@ -730,20 +788,20 @@ TranslatorImpl(
 }
 
 
-const QName* getDotVarName() const
+const store::Item_t& getDotItemVarName() const
 {
-  return theRootTranslator->theDotVarName;
+  return theRootTranslator->theDotItemVarName;
 }
 
 
-const QName* getDotPosVarName() const
+const store::Item_t& getDotPosVarName() const
 {
   return theRootTranslator->theDotPosVarName;
 }
 
-const QName* getLastIdxVarName() const
+const store::Item_t& getDotSizeVarName() const
 {
-  return theRootTranslator->theLastIdxVarName;
+  return theRootTranslator->theDotSizeVarName;
 }
 
 
@@ -1119,12 +1177,11 @@ void expand_no_default_qname(
 ********************************************************************************/
 var_expr* create_var(
     const QueryLoc& loc,
-    store::Item* qname,
+    const store::Item_t& qname,
     var_expr::var_kind kind,
     xqtref_t type = NULL)
 {
-  var_expr* e = theExprManager->
-  create_var_expr(theRootSctx, theUDF, loc, kind, qname);
+  var_expr* e = CREATE(var)(theRootSctx, theUDF, loc, kind, qname.getp());
 
   if (kind == var_expr::pos_var ||
       kind == var_expr::count_var ||
@@ -1192,7 +1249,7 @@ void bind_var(var_expr* e, static_context* sctx)
 ********************************************************************************/
 var_expr* bind_var(
     const QueryLoc& loc,
-    store::Item* qname,
+    const store::Item_t& qname,
     var_expr::var_kind kind,
     xqtref_t type = NULL)
 {
@@ -1223,19 +1280,16 @@ var_expr* bind_var(
 /*******************************************************************************
   Lookup a context variable, i.e., the var (if any) representing the context
   item, or the context position, or the context size. The variable is identified
-  by its lexical qname (DOT_VARNAME, or DOT_POS_VARNAME, or LAST_IDX_VARNAME).
+  by its qname.
 
   Search starts from the "current" sctx and moves upwards the ancestor path
   until the first instance (if any) of the variable is found.
 
   If var is not found, the method raises appropriate error.
 ********************************************************************************/
-var_expr* lookup_ctx_var(const QName* qname, const QueryLoc& loc)
+var_expr* lookup_ctx_var(const store::Item_t& qname, const QueryLoc& loc)
 {
-  store::Item_t qnameItem;
-  expand_no_default_qname(qnameItem, qname, loc);
-
-  VarInfo* var = theSctx->lookup_var(qnameItem.getp());
+  VarInfo* var = theSctx->lookup_var(qname.getp());
 
   if (var == NULL)
   {
@@ -1246,7 +1300,7 @@ var_expr* lookup_ctx_var(const QName* qname, const QueryLoc& loc)
     }
     else
     {
-      zstring varName = static_context::var_name(qnameItem);
+      zstring varName = static_context::var_name(qname);
       RAISE_ERROR(err::XPDY0002, loc, 
       ERROR_PARAMS(ZED(XPDY0002_ContextUndeclared_2), varName));
     }
@@ -1333,7 +1387,7 @@ void bind_fn(
 {
   theSctx->bind_fn(f, nargs, loc);
 
-  theModulesInfo->globalSctx->bind_fn(f, nargs, loc);
+  theModulesInfo->theGlobalSctx->bind_fn(f, nargs, loc);
 
   if (export_sctx != NULL)
   {
@@ -1777,20 +1831,6 @@ forlet_clause* wrap_in_letclause(expr* e, var_expr* lv)
 
 
 /*******************************************************************************
-  Create a var_expr for a LET var with the given qname and add that var to the
-  local sctx obj. Then, create a LET clause for this new var_expr, with the given
-  expr "e" as its defining expression.
-********************************************************************************/
-forlet_clause* wrap_in_letclause(
-    expr* e,
-    const QueryLoc& loc,
-    const QName* qname)
-{
-  return wrap_in_letclause(e, bind_var(loc, qname, var_expr::let_var));
-}
-
-
-/*******************************************************************************
   Create a var_expr for a new internal LET var and then create a LET clause for
   this new var_expr, with the given expr "e" as its defining expression. NOTE:
   the internal var is not registered in the sctx.
@@ -1814,24 +1854,6 @@ forlet_clause* wrap_in_forclause(expr* e, var_expr* fv, var_expr* pv)
   }
 
   return theExprManager->create_for_clause(theRootSctx, e->get_loc(), fv, e, pv);
-}
-
-
-/*******************************************************************************
-  Create var_exprs for a FOR var with the given qname and its associated POS
-  var, whose qname is also given. Then add those vars to the local sctx obj.
-  Then, create a FOR clause for these new var_exprs, with the given expr as the
-  defining expression of the FOR var.
-********************************************************************************/
-forlet_clause* wrap_in_forclause(
-    expr* expr,
-    const QueryLoc& loc,
-    const QName* fv_qname,
-    const QName* pv_qname)
-{
-  return wrap_in_forclause(expr,
-                           bind_var(loc, fv_qname, var_expr::for_var),
-                           bind_var(loc, pv_qname, var_expr::pos_var));
 }
 
 
@@ -1918,15 +1940,16 @@ flwor_expr* wrap_expr_in_flwor(
 
     normalize_fo(countExpr);
 
-    forlet_clause* lcLast = wrap_in_letclause(countExpr, loc, LAST_IDX_VARNAME);
+    var_expr* dotItemVar = bind_var(loc, getDotItemVarName(), var_expr::for_var);
+    var_expr* dotPosVar = bind_var(loc, getDotPosVarName(), var_expr::pos_var);
+    var_expr* dotSizeVar = bind_var(loc, getDotSizeVarName(), var_expr::let_var);
+
+    forlet_clause* lcLast = wrap_in_letclause(countExpr, dotSizeVar);
 
     // Iterate over the input seq
     varWrapper = CREATE(wrapper)(theRootSctx, theUDF, loc, lcInputVar);
 
-    for_clause* fcDot = wrap_in_forclause(varWrapper,
-                                          loc,
-                                          DOT_VARNAME,
-                                          DOT_POS_VARNAME);
+    for_clause* fcDot = wrap_in_forclause(varWrapper, dotItemVar, dotPosVar);
     flworExpr->add_clause(lcInputSeq);
     flworExpr->add_clause(lcLast);
     flworExpr->add_clause(fcDot);
@@ -1934,10 +1957,12 @@ flwor_expr* wrap_expr_in_flwor(
   else
   {
     // Iterate over the input seq
-    for_clause* fcDot = wrap_in_forclause(inputExpr,
-                                          loc,
-                                          DOT_VARNAME,
-                                          DOT_POS_VARNAME);
+
+    var_expr* dotItemVar = bind_var(loc, getDotItemVarName(), var_expr::for_var);
+    var_expr* dotPosVar = bind_var(loc, getDotPosVarName(), var_expr::pos_var);
+
+    for_clause* fcDot = wrap_in_forclause(inputExpr, dotItemVar, dotPosVar);
+
     flworExpr->add_clause(fcDot);
   }
 
@@ -2143,156 +2168,6 @@ void collect_flwor_vars (
 
 
 /*******************************************************************************
-  Create declaration/initialization exprs for a prolog or block-local variable.
-
-  The following 4 cases are considered:
-  1. non-extrernal var with init expr,
-  2. external var with init expr,
-  3. non-extrernal var without init expr,
-  4. external var without init expr,
-
-  The corresponding expr created here (and added to stmts) are:
-
-  1. var_decl_expr(varExpr, initExpr)
-
-  2. var_decl_expr(varExpr, initExpr)
-
-     In this case, the var_decl_expr will be a NOOP if a value has been assigned
-     to the external var via the c++ api. If so, this value overrides the
-     initializing expr in the prolog.
-
-  3. var_decl_expr(varExpr)
-
-  4. var_decl_expr(varExpr)
-
-     In this case, the variable must be initialized via the c++ api before the
-     query is executed, and it is this external intialization that will declare
-     the var, ie, add an entry for the var in the dynamic ctx. Nevertheless, we
-     need to generate the var_decl_expr because it is when this expr is
-     encounered during codegen that an id will be assigned to the var (and
-     stored in the var_expr). This id is needed in order to register the var
-     in the dyn ctx.
-
-  If the var declaration includes a type declaration, then the following expr
-  is also created and added to stmts:
-
-  treat(ctxvar-get(varName), type)
-
-********************************************************************************/
-void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
-{
-  function* varGet = BUILTIN_FUNC(OP_VAR_GET_1);
-
-  expr* initExpr = b.theExpr;
-  var_expr* varExpr = b.theVar;
-
-  const QueryLoc& loc = varExpr->get_loc();
-
-  xqtref_t varType = varExpr->get_type();
-
-  if (varType == NULL &&
-      varExpr->get_name()->getLocalName() == static_context::DOT_VAR_NAME)
-  {
-    varType = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
-  }
-
-  if (initExpr != NULL && varType != NULL && !b.is_extern())
-  {
-    initExpr = theExprManager->
-    create_treat_expr(theRootSctx,
-                      theUDF,
-                      loc,
-                      initExpr,
-                      varType,
-                      TREAT_TYPE_MATCH);
-  }
-
-  expr* declExpr = theExprManager->
-  create_var_decl_expr(theRootSctx, theUDF, loc, varExpr, initExpr);
-
-  stmts.push_back(declExpr);
-
-  // check type for vars that are external
-  if (varType != NULL && b.is_extern())
-  {
-    expr* getExpr = theExprManager->
-    create_fo_expr(theRootSctx, theUDF, loc, varGet, varExpr);
-
-    expr* treatExpr = theExprManager->
-    create_treat_expr(theRootSctx,
-                      theUDF,
-                      loc,
-                      getExpr,
-                      varType,
-                      TREAT_TYPE_MATCH);
-
-    stmts.push_back(treatExpr);
-  }
-}
-
-
-/*******************************************************************************
-  Create declaration/initialization exprs for each prolog variable of this
-  module and put these exprs in theModulesInfo->theInitExprs. Then create a
-  sequential expr with its children being all the init exprs in
-  theModulesInfo->theInitExprs plus the given expr "e" as its last child.
-
-  The method is called at the end of the translation of each module. The returned
-  expr is the result of the module translation. For the root module, the given
-  "program" expr is the result of translating the MainModule Program. For non-root
-  modules, "program" is an empty fn:concatenate() expr.
-********************************************************************************/
-expr* wrap_in_globalvar_assign(expr* program)
-{
-  assert(theAssignedVars.size() == 1);
-
-  for (std::list<GlobalBinding>::iterator i = thePrologVars.begin();
-       i != thePrologVars.end();
-       ++i)
-  {
-    declare_var(*i, theModulesInfo->theInitExprs);
-  }
-
-  expr* preloadedInitExpr = static_cast<static_context*>(theSctx->get_parent())->
-                             get_query_expr();
-
-  if (!theModulesInfo->theInitExprs.empty() || preloadedInitExpr != NULL)
-  {
-    std::vector<expr*> args;
-    args.reserve(2 + theModulesInfo->theInitExprs.size());
-
-    if (preloadedInitExpr)
-      args.push_back(preloadedInitExpr);
-
-    args.insert(args.end(),
-                theModulesInfo->theInitExprs.begin(),
-                theModulesInfo->theInitExprs.end());
-
-    if (!inLibraryModule())
-    {
-      args.push_back(program);
-    }
-
-    block_expr* res = theExprManager->
-    create_block_expr(theRootSctx,
-                      theUDF,
-                      program->get_loc(),
-                      theCCB->theIsEval,
-                      args,
-                      &theAssignedVars[0]);
-
-    assert(theAssignedVars[0].empty());
-
-    return res;
-  }
-  else
-  {
-    return program;
-  }
-}
-
-
-/*******************************************************************************
   Imports a given schema
 ********************************************************************************/
 void* import_schema(
@@ -2486,6 +2361,91 @@ expr* wrap_in_validate_expr_strict(
 }
 
 
+/*******************************************************************************
+  Create declaration/initialization exprs for a prolog or block-local variable.
+
+  The following 4 cases are considered:
+  1. non-extrernal var with init expr,
+  2. external var with init expr,
+  3. non-extrernal var without init expr,
+  4. external var without init expr,
+
+  The corresponding expr created here (and added to stmts) are:
+
+  1. var_decl_expr(varExpr, initExpr)
+
+  2. var_decl_expr(varExpr, initExpr)
+
+     In this case, the var_decl_expr will be a NOOP if a value has been assigned
+     to the external var via the c++ api. If so, this value overrides the
+     initializing expr in the prolog.
+
+  3. var_decl_expr(varExpr)
+
+  4. var_decl_expr(varExpr)
+
+     In this case, the variable must be initialized via the c++ api before the
+     query is executed, and it is this external intialization that will declare
+     the var, ie, add an entry for the var in the dynamic ctx. Nevertheless, we
+     need to generate the var_decl_expr because it is when this expr is
+     encounered during codegen that an id will be assigned to the var (and
+     stored in the var_expr). This id is needed in order to register the var
+     in the dyn ctx.
+
+  If the var declaration includes a type declaration, then the following expr
+  is also created and added to stmts:
+
+  treat(ctxvar-get(varName), type)
+
+********************************************************************************/
+void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
+{
+  function* varGet = BUILTIN_FUNC(OP_VAR_GET_1);
+
+  expr* initExpr = b.theExpr;
+  var_expr* varExpr = b.theVar;
+
+  const QueryLoc& loc = varExpr->get_loc();
+
+  if (varExpr == theModulesInfo->theDotItemVar)
+  {
+    if (initExpr != NULL)
+    {
+      expr* setExpr = CREATE(var_set)(theRootSctx, theUDF, loc, varExpr, initExpr);
+
+      stmts.push_back(setExpr);
+
+      theModulesInfo->theDotItemInitExpr = stmts.size() - 1;
+    }
+
+    return;
+  }
+
+  xqtref_t varType = varExpr->get_type();
+
+  if (initExpr != NULL && varType != NULL && !b.is_extern())
+  {
+    initExpr = CREATE(treat)(theRootSctx, theUDF, loc,
+                             initExpr, varType, TREAT_TYPE_MATCH);
+  }
+
+  expr* declExpr = CREATE(var_decl)(theRootSctx, theUDF, loc, varExpr, initExpr);
+
+  stmts.push_back(declExpr);
+
+  // check type for vars that are external
+  if (varType != NULL && b.is_extern())
+  {
+    expr* getExpr = CREATE(fo)(theRootSctx, theUDF, loc, varGet, varExpr);
+
+    expr* treatExpr = CREATE(treat)(theRootSctx, theUDF, loc,
+                                    getExpr, varType, TREAT_TYPE_MATCH);
+
+    stmts.push_back(treatExpr);
+  }
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Module, VersionDecl, MainModule, LibraryModule, ModuleDecl                 //
@@ -2510,10 +2470,12 @@ void* begin_visit(const VersionDecl& v)
   {
     theSctx->set_language_kind(StaticContextConsts::language_kind_jsoniq);
     std::string versionStr = v.get_version().str();
+
     if (versionStr == "1.0")
       theSctx->set_jsoniq_version(StaticContextConsts::jsoniq_version_1_0);
     else
       theSctx->set_jsoniq_version(StaticContextConsts::jsoniq_version_unknown);
+
     return no_state;
   }
 
@@ -2539,8 +2501,7 @@ void* begin_visit(const VersionDecl& v)
     version = StaticContextConsts::xquery_version_unknown;
   }
 
-  if (theMaxLibModuleVersion != StaticContextConsts::xquery_version_unknown
-      &&
+  if (theMaxLibModuleVersion != StaticContextConsts::xquery_version_unknown &&
       version > theMaxLibModuleVersion)
   {
     zstring maxversion;
@@ -2581,20 +2542,19 @@ void* begin_visit(const MainModule& v)
 
   theAssignedVars.resize(theAssignedVars.size() + 1);
 
-  // Make sure that the context item is always in-scope inside the main module.
-  // However, do not create a ver_decl expr for it, because this will create a
-  // treat_as expr as well, so the ctx item will always appear as being used,
-  // and as a result it will always have to be set.
+  // Make sure that the focus vars are always in-scope inside the main module.
+  // Also create ver_decl exprs for them (but without any initializers and
+  // type checks yet) and place them at the begininning of theModulesInfo->theInitExprs.
   var_expr* var1 = bind_var(loc,
-                            DOT_VARNAME,
+                            getDotItemVarName(),
                             var_expr::prolog_var,
                             theSctx->get_context_item_type());
   var_expr* var2 = bind_var(loc,
-                            DOT_POS_VARNAME,
+                            getDotPosVarName(),
                             var_expr::prolog_var,
                             theRTM.INTEGER_TYPE_ONE);
   var_expr* var3 = bind_var(loc,
-                            LAST_IDX_VARNAME,
+                            getDotSizeVarName(),
                             var_expr::prolog_var,
                             theRTM.INTEGER_TYPE_ONE);
 
@@ -2606,11 +2566,25 @@ void* begin_visit(const MainModule& v)
   var2->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION);
   var3->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE);
 
-  //GlobalBinding b(var, NULL, true);
-  //declare_var(b, theModulesInfo->theInitExprs);
+  ZORBA_ASSERT(theModulesInfo->theInitExprs.empty());
+
+  expr* decl1Expr = CREATE(var_decl)(theRootSctx, theUDF, loc, var1, NULL);
+  expr* decl2Expr = CREATE(var_decl)(theRootSctx, theUDF, loc, var2, NULL);
+  expr* decl3Expr = CREATE(var_decl)(theRootSctx, theUDF, loc, var3, NULL);
+
+  theModulesInfo->theInitExprs.push_back(decl1Expr);
+  theModulesInfo->theInitExprs.push_back(decl2Expr);
+  theModulesInfo->theInitExprs.push_back(decl3Expr);
+
+  // Store the focus vars in theModulesInfo, so that lib modules can find them
+  // and bind them in their own root static context as well.
+  theModulesInfo->theDotItemVar = var1;
+  theModulesInfo->theDotPosVar = var2;
+  theModulesInfo->theDotSizeVar = var3;
 
   return no_state;
 }
+
 
 void end_visit(const MainModule& v, void* /*visit_state*/)
 {
@@ -2620,30 +2594,101 @@ void end_visit(const MainModule& v, void* /*visit_state*/)
 
   assert(theCCB->theIsEval || !program->is_updating());
 
-  // If an appliaction set a type for the context item via the c++ api, then
-  // create a full declaration for it in order to enforce that type.
-  if (!theHaveContextItemDecl &&
-      theRTM.ITEM_TYPE_ONE != theSctx->get_context_item_type())
-  {
-    var_expr* var = lookup_ctx_var(DOT_VARNAME, loc);
-    var->set_external(true);
-    GlobalBinding b(var, NULL, true);
-    declare_var(b, theModulesInfo->theInitExprs);
-  }
-
-  // the main module debug iterator has no location otherwise
-  // this would take precedence over a child debug iterator
-  // starting in the same line
+  // the main module debug iterator has no location otherwise this would take
+  // precedence over a child debug iterator starting in the same line
   wrap_in_debugger_expr(program, program->get_loc(), true);
 
-  program = wrap_in_globalvar_assign(program);
+  assert(theAssignedVars.size() == 1);
+
+  if (theModulesInfo->theHaveDotItemDecl)
+  {
+    expr* initExpr = CREATE(const)(theRootSctx, theUDF, loc, xs_integer(1));
+
+    var_decl_expr* dotPosDecl = theModulesInfo->getDotPosDecl();
+    var_decl_expr* dotSizeDecl = theModulesInfo->getDotSizeDecl();
+
+    dotPosDecl->set_expr(initExpr);
+    dotSizeDecl->set_expr(initExpr);
+  }
+  else if (theRTM.ITEM_TYPE_ONE != theSctx->get_context_item_type())
+  {
+    // An appliaction has set a type for the context item via the c++ api.
+    theModulesInfo->addDotItemType(theSctx->get_context_item_type());
+  }
+
+  // Create exprs for the prolog vars and add them to theModulesInfo->theInitExprs
+  std::vector<GlobalBinding>::iterator ite = thePrologVars.begin();
+  std::vector<GlobalBinding>::iterator end = thePrologVars.end();
+  for (; ite != end; ++ite)
+  {
+    declare_var(*ite, theModulesInfo->theInitExprs);
+  }
+
+  enforceDotItemTypes(loc);
+
+  // Put everything together under a single root expr.
+  expr* preloadedInitExpr = static_cast<static_context*>(theSctx->get_parent())->
+                             get_query_expr();
+
+  if (!theModulesInfo->theInitExprs.empty() || preloadedInitExpr != NULL)
+  {
+    std::vector<expr*> args;
+    args.reserve(2 + theModulesInfo->theInitExprs.size());
+
+    if (preloadedInitExpr)
+      args.push_back(preloadedInitExpr);
+
+    args.insert(args.end(),
+                theModulesInfo->theInitExprs.begin(),
+                theModulesInfo->theInitExprs.end());
+
+    args.push_back(program);
+
+    program = CREATE(block)(theRootSctx, theUDF, program->get_loc(),
+                            theCCB->theIsEval,
+                            args,
+                            &theAssignedVars[0]);
+
+    assert(theAssignedVars[0].empty());
+  }
 
   push_nodestack(program);
 
   theAssignedVars.pop_back();
 
+  // "export" the program, if this is a load-prolog query.
   if (theModulesInfo->theCCB->isLoadPrologQuery())
     theSctx->set_query_expr(program);
+}
+
+
+void enforceDotItemTypes(const QueryLoc& loc)
+{
+  std::vector<expr*>::iterator ite;
+
+  if (theModulesInfo->theDotItemInitExpr > 0)
+    ite = theModulesInfo->theInitExprs.begin() + theModulesInfo->theDotItemInitExpr;
+  else
+    ite = theModulesInfo->theInitExprs.begin();
+
+  ++ite;
+
+  csize numTypes = theModulesInfo->theDotItemTypes.size();
+
+  for (csize  i = 0; i < numTypes; ++ i)
+  {
+    function* varGet = BUILTIN_FUNC(OP_VAR_GET_1);
+
+    expr* getExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                               varGet, theModulesInfo->theDotItemVar);
+
+    expr* treatExpr = CREATE(treat)(theRootSctx, theUDF, loc,
+                                    getExpr,
+                                    theModulesInfo->theDotItemTypes[i],
+                                    TREAT_TYPE_MATCH);
+
+    ite = theModulesInfo->theInitExprs.insert(ite, treatExpr);
+  }
 }
 
 
@@ -2656,6 +2701,10 @@ void* begin_visit(const LibraryModule& v)
 
   theAssignedVars.resize(theAssignedVars.size() + 1);
 
+  bind_var(theModulesInfo->theDotItemVar, theRootSctx);
+  bind_var(theModulesInfo->theDotPosVar, theRootSctx);
+  bind_var(theModulesInfo->theDotSizeVar, theRootSctx);
+
   return no_state;
 }
 
@@ -2663,15 +2712,20 @@ void end_visit(const LibraryModule& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* program = wrap_in_globalvar_assign(create_empty_seq(loc));
+ assert(theAssignedVars.size() == 1);
+
+  // Create exprs for the prolog vars and add them to theModulesInfo->theInitExprs
+  std::vector<GlobalBinding>::iterator ite = thePrologVars.begin();
+  std::vector<GlobalBinding>::iterator end = thePrologVars.end();
+  for (; ite != end; ++ite)
+  {
+    declare_var(*ite, theModulesInfo->theInitExprs);
+  }
 
   theAssignedVars.pop_back();
 
-  // Note: There is no real reason to put the expr returned by
-  // wrap_in_globalvar_assign() in theNodeStack. The only reason is for the
-  // translate_aux() function to be able to pick that expr from the stack in
-  // order to print it.
-  push_nodestack(program);
+  // Note: Push a NULL to the node stack so that translate_aux() will work properly
+  push_nodestack(NULL);
 }
 
 
@@ -2696,19 +2750,15 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
 
   if (static_context::is_reserved_module(theModuleNamespace))
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE,
-      ERROR_PARAMS( theModuleNamespace ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+    ERROR_PARAMS(theModuleNamespace));
   }
 
   if (theModulePrefix == "xml" || theModulePrefix == "xmlns")
-    throw XQUERY_EXCEPTION(
-      err::XQST0070,
-      ERROR_PARAMS( theModulePrefix, ZED( NoRebindPrefix ) ),
-      ERROR_LOC( loc )
-    );
+  {
+    RAISE_ERROR(err::XQST0070, loc,
+    ERROR_PARAMS(theModulePrefix, ZED(NoRebindPrefix)));
+  }
 
   theSctx->bind_ns(theModulePrefix, theModuleNamespace, loc);
 
@@ -3223,7 +3273,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   }
   else
   {
-    for (ulong i = 0; i < atlist->size(); ++i)
+    for (csize i = 0; i < atlist->size(); ++i)
     {
       compURIs.push_back(theSctx->resolve_relative_uri((*atlist)[i]).str());
     }
@@ -3294,18 +3344,16 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // rather than using compURI directly, because we want the version
       // fragment to be passed to the mappers.
       zstring lErrorMessage;
-      std::auto_ptr<internal::Resource> lResource;
-      internal::StreamResource* lStreamResource = NULL;
+      std::auto_ptr<internal::Resource> resource;
+      internal::StreamResource* streamResource = NULL;
 
       try
       {
-        lResource =
-        theSctx->resolve_uri(compModVer.versioned_uri(),
-                             internal::EntityData::MODULE,
-                             lErrorMessage);
+        resource = theSctx->resolve_uri(compModVer.versioned_uri(),
+                                         internal::EntityData::MODULE,
+                                         lErrorMessage);
 
-        lStreamResource =
-        dynamic_cast<internal::StreamResource*> (lResource.get());
+        streamResource = dynamic_cast<internal::StreamResource*>(resource.get());
       }
       catch (ZorbaException& e)
       {
@@ -3313,21 +3361,16 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         throw;
       }
 
-      if (lStreamResource != NULL)
+      if (streamResource != NULL)
       {
-        modfile = lStreamResource->getStream();
-        compURL = lStreamResource->getStreamUrl();
+        modfile = streamResource->getStream();
+        compURL = streamResource->getStreamUrl();
       }
       else
       {
-        throw XQUERY_EXCEPTION(
-          err::XQST0059,
-          ERROR_PARAMS(
-            ZED( XQST0059_SpecificationMessage ),
-            targetNS, compURI, lErrorMessage
-          ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XQST0059, loc,
+        ERROR_PARAMS(ZED(XQST0059_SpecificationMessage),
+                     targetNS, compURI, lErrorMessage));
       }
 
       // Get the parent of the query root sctx. This is the user-specified sctx
@@ -3469,7 +3512,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
     // Merge the exported sctx of the imported module into the sctx of the
     // current module. Note: We catch duplicate functions / vars in
-    // theModulesInfo->globalSctx. We can safely ignore the return value.
+    // theModulesInfo->theGlobalSctx. We can safely ignore the return value.
     // We might even be able to assert() here (not sure though).
     theSctx->import_module(importedSctx, loc);
 
@@ -3566,7 +3609,6 @@ void* begin_visit(const VFO_DeclList& v)
       continue;
     }
 
-#if 1
     const GlobalVarDecl* var_decl = it->dyn_cast<GlobalVarDecl>().getp();
 
     if (var_decl != NULL &&
@@ -3645,7 +3687,7 @@ void* begin_visit(const VFO_DeclList& v)
 
       // Make sure that there is no other prolog var with the same name in any of
       // modules translated so far.
-      bind_var(ve, theModulesInfo->globalSctx.get());
+      bind_var(ve, theModulesInfo->theGlobalSctx);
 
       // If this is a library module, register the var in the exported sctx as well.
       if (export_sctx != NULL)
@@ -3653,7 +3695,6 @@ void* begin_visit(const VFO_DeclList& v)
 
       continue;
     }
-#endif
 
     const FunctionDecl* func_decl = it->dyn_cast<FunctionDecl>().getp();
 
@@ -3867,133 +3908,14 @@ void* begin_visit(const VFO_DeclList& v)
   return no_state;
 }
 
-store::Item_t parse_and_expand_qname(
-    const zstring& value,
-    const char* default_ns,
-    const QueryLoc& loc) const
+
+void end_visit(const VFO_DeclList& v, void* /*visit_state*/)
 {
-  zstring lPrefix;
-  zstring lLocalName;
+  TRACE_VISIT_OUT();
 
-  zstring::size_type n = value.rfind(':');
-
-  if ( n == zstring::npos )
-  {
-    lLocalName = value;
-  }
-  else
-  {
-    lPrefix = value.substr( 0, n );
-    lLocalName = value.substr( n+1 );
-  }
-  store::Item_t lQName;
-  theSctx->expand_qname( lQName, default_ns, lPrefix, lLocalName, loc );
-
-  return lQName;
+  thePrologGraph.reorder_globals(thePrologVars);
 }
 
-void parse_feature_list(
-    const zstring& anOptionName,
-    std::map<zstring, bool>* aFeatures,
-    bool aRequired,
-    const QueryLoc& loc)
-{
-  // Looking up feature options.
-  zstring lFeatureList;
-  store::Item_t lFeatureQName = parse_and_expand_qname(
-      anOptionName,
-      static_context::XQUERY_NS,
-      loc);
-  theSctx->lookup_option(lFeatureQName, lFeatureList);
-  
-  if (aFeatures == NULL || lFeatureList.empty())
-  {
-    return;
-  }
-  size_t lPositionLeft = 0;
-  size_t lPositionRight = lFeatureList.find(" ", lPositionLeft);
-  bool lLastTime = lPositionRight == zstring::npos;
-  while (lPositionRight != zstring::npos || lLastTime)
-  {
-    zstring lFeature = lFeatureList.substr(
-        lPositionLeft,
-        lPositionRight - lPositionLeft);
-    store::Item_t lFeatureQName = parse_and_expand_qname(
-        lFeature,
-        static_context::XQUERY_NS,
-        loc);
-    // Requiring a non-recognized feature.
-    if (aRequired && lFeatureQName->getNamespace() != static_context::XQUERY_NS)
-    {
-      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
-    }
-    zstring lFeatureName = lFeatureQName->getLocalName();
-    if (aRequired && !is_recognized_feature(lFeatureName))
-    {
-      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
-    }
-
-    // Only adding to the feature matrix if recognized.
-    if (is_recognized_feature(lFeatureName))
-    {
-      // Error in case of conflicting flags.
-       std::map<zstring, bool>::iterator lIt = aFeatures->find(lFeatureName);
-      if (lIt != aFeatures->end() && lIt->second != aRequired)
-      {
-        RAISE_ERROR(err::XQST0127, loc, ERROR_PARAMS(lFeature));
-      }
-      (*aFeatures)[lFeatureName] = aRequired;
-    }
-    if (lLastTime)
-    {
-      break;
-    }
-    lPositionLeft = lPositionRight + 1;
-    lPositionRight = lFeatureList.find(" ", lPositionLeft);
-    if (lPositionRight == zstring::npos)
-    {
-      lLastTime = true;
-    }
-  }
-}
-
-bool is_recognized_feature(const zstring& aFeatureName)
-{
-  return aFeatureName == "static-typing" ||
-         aFeatureName == "module" ||
-         aFeatureName == "higher-order-function" ||
-         aFeatureName == "schema-aware" ||
-         aFeatureName == "all-extensions" ||
-         aFeatureName == "all-optional-features";
-}
-
-bool is_required_feature(
-    const std::map<zstring, bool>& aFeatureMatrix,
-    const zstring& aFeatureName
-)
-{
-  std::map<zstring, bool>::const_iterator lIt =
-    aFeatureMatrix.find(aFeatureName);
-  if (lIt == aFeatureMatrix.end())
-  {
-    return false;
-  }
-  return lIt->second;
-}
-
-bool is_prohibited_feature(
-    const std::map<zstring, bool>& aFeatureMatrix,
-    const zstring& aFeatureName
-)
-{
-  std::map<zstring, bool>::const_iterator lIt =
-    aFeatureMatrix.find(aFeatureName);
-  if (lIt == aFeatureMatrix.end())
-  {
-    return false;
-  }
-  return !lIt->second;
-}
 
 void check_xquery_feature_options(const QueryLoc& loc)
 {
@@ -4065,11 +3987,134 @@ void check_xquery_feature_options(const QueryLoc& loc)
 }
 
 
-void end_visit(const VFO_DeclList& v, void* /*visit_state*/)
+void parse_feature_list(
+    const zstring& anOptionName,
+    std::map<zstring, bool>* aFeatures,
+    bool aRequired,
+    const QueryLoc& loc)
 {
-  TRACE_VISIT_OUT();
+  // Looking up feature options.
+  zstring lFeatureList;
+  store::Item_t lFeatureQName = parse_and_expand_qname(
+      anOptionName,
+      static_context::XQUERY_NS,
+      loc);
+  theSctx->lookup_option(lFeatureQName, lFeatureList);
+  
+  if (aFeatures == NULL || lFeatureList.empty())
+  {
+    return;
+  }
+  size_t lPositionLeft = 0;
+  size_t lPositionRight = lFeatureList.find(" ", lPositionLeft);
+  bool lLastTime = lPositionRight == zstring::npos;
+  while (lPositionRight != zstring::npos || lLastTime)
+  {
+    zstring lFeature = lFeatureList.substr(
+        lPositionLeft,
+        lPositionRight - lPositionLeft);
+    store::Item_t lFeatureQName = parse_and_expand_qname(
+        lFeature,
+        static_context::XQUERY_NS,
+        loc);
+    // Requiring a non-recognized feature.
+    if (aRequired && lFeatureQName->getNamespace() != static_context::XQUERY_NS)
+    {
+      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
+    }
+    zstring lFeatureName = lFeatureQName->getLocalName();
+    if (aRequired && !is_recognized_feature(lFeatureName))
+    {
+      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
+    }
 
-  thePrologGraph.reorder_globals(thePrologVars);
+    // Only adding to the feature matrix if recognized.
+    if (is_recognized_feature(lFeatureName))
+    {
+      // Error in case of conflicting flags.
+       std::map<zstring, bool>::iterator lIt = aFeatures->find(lFeatureName);
+      if (lIt != aFeatures->end() && lIt->second != aRequired)
+      {
+        RAISE_ERROR(err::XQST0127, loc, ERROR_PARAMS(lFeature));
+      }
+      (*aFeatures)[lFeatureName] = aRequired;
+    }
+    if (lLastTime)
+    {
+      break;
+    }
+    lPositionLeft = lPositionRight + 1;
+    lPositionRight = lFeatureList.find(" ", lPositionLeft);
+    if (lPositionRight == zstring::npos)
+    {
+      lLastTime = true;
+    }
+  }
+}
+
+
+store::Item_t parse_and_expand_qname(
+    const zstring& value,
+    const char* default_ns,
+    const QueryLoc& loc) const
+{
+  zstring lPrefix;
+  zstring lLocalName;
+
+  zstring::size_type n = value.rfind(':');
+
+  if ( n == zstring::npos )
+  {
+    lLocalName = value;
+  }
+  else
+  {
+    lPrefix = value.substr( 0, n );
+    lLocalName = value.substr( n+1 );
+  }
+  store::Item_t lQName;
+  theSctx->expand_qname( lQName, default_ns, lPrefix, lLocalName, loc );
+
+  return lQName;
+}
+
+
+bool is_recognized_feature(const zstring& aFeatureName)
+{
+  return aFeatureName == "static-typing" ||
+         aFeatureName == "module" ||
+         aFeatureName == "higher-order-function" ||
+         aFeatureName == "schema-aware" ||
+         aFeatureName == "all-extensions" ||
+         aFeatureName == "all-optional-features";
+}
+
+
+bool is_required_feature(
+    const std::map<zstring, bool>& aFeatureMatrix,
+    const zstring& aFeatureName)
+{
+  std::map<zstring, bool>::const_iterator lIt =
+    aFeatureMatrix.find(aFeatureName);
+  if (lIt == aFeatureMatrix.end())
+  {
+    return false;
+  }
+  return lIt->second;
+}
+
+
+bool is_prohibited_feature(
+    const std::map<zstring, bool>& aFeatureMatrix,
+    const zstring& aFeatureName)
+{
+  std::map<zstring, bool>::const_iterator lIt =
+    aFeatureMatrix.find(aFeatureName);
+  if (lIt == aFeatureMatrix.end())
+  {
+    return false;
+  }
+  return !lIt->second;
 }
 
 
@@ -4358,6 +4403,77 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
+  ContextItemDecl ::= "declare" "context" "item" ("as" ItemType)?
+                      ((":=" VarValue) |
+                      ("external" (":=" VarDefaultValue)?))
+********************************************************************************/
+void* begin_visit(const CtxItemDecl& v)
+{
+  TRACE_VISIT();
+
+  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
+    RAISE_ERROR(err::XPST0003, loc,
+    ERROR_PARAMS(ZED(XPST0003_XQueryVersionAtLeast30_2), theSctx->xquery_version()));
+
+  if (theHaveContextItemDecl)
+  {
+    RAISE_ERROR_NO_PARAMS(err::XQST0099, loc);
+  }
+
+  if (v.get_expr() != NULL && inLibraryModule())
+  {
+    RAISE_ERROR_NO_PARAMS(err::XQST0113, loc);
+  }
+
+  theHaveContextItemDecl = true;
+  theModulesInfo->theHaveDotItemDecl = true;
+
+  if (!inLibraryModule())
+  {
+    var_expr* var = theModulesInfo->theDotItemVar;
+
+    thePrologGraph.addVarVertex(var);
+    theCurrentPrologVFDecl = PrologGraphVertex(var);
+  }
+
+  return no_state;
+}
+
+void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  xqtref_t type;
+
+  if (v.get_type() != NULL)
+  {
+    type = pop_tstack();
+
+    theSctx->set_context_item_type(type, loc);
+
+    theModulesInfo->addDotItemType(type);
+  }
+  else
+  {
+    theModulesInfo->addDotItemType(theSctx->get_context_item_type());
+  }
+
+  if (!inLibraryModule())
+  {
+    theCurrentPrologVFDecl.setNull();
+
+    expr* initExpr = (v.get_expr() ? pop_nodestack() : NULL);
+
+    var_expr* var = theModulesInfo->theDotItemVar;
+
+    var->set_external(v.is_external());
+
+    thePrologVars.push_back(GlobalBinding(var, initExpr, true));
+  }
+}
+
+
+/*******************************************************************************
 
   Global declarations:
   --------------------
@@ -4439,7 +4555,7 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
 
     // Make sure that there is no other prolog var with the same name in any of
     // modules translated so far.
-    bind_var(ve, theModulesInfo->globalSctx.get());
+    bind_var(ve, theModulesInfo->theGlobalSctx);
 
     // If this is a library module, register the var in the exported sctx as well.
     if (export_sctx != NULL)
@@ -4481,7 +4597,7 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
 #endif
 
   // The ve and its associated intExpr will be put into var_decl_expr that
-  // will creaated by the wrap_in_globalvar_assign() method when it is called
+  // will creaated by the declare_prolog_var() method when it is called
   // at the end of the translation of each module.
   thePrologVars.push_back(GlobalBinding(ve, initExpr, v.is_extern()));
 }
@@ -4577,66 +4693,6 @@ void* begin_visit(const AnnotationLiteralListParsenode& v)
 void end_visit(const AnnotationLiteralListParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-}
-
-
-
-/*******************************************************************************
-  ContextItemDecl ::= "declare" "context" "item" ("as" ItemType)?
-                      ((":=" VarValue) |
-                      ("external" (":=" VarDefaultValue)?))
-********************************************************************************/
-void* begin_visit(const CtxItemDecl& v)
-{
-  TRACE_VISIT();
-
-  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
-    RAISE_ERROR(err::XPST0003, loc,
-    ERROR_PARAMS(ZED(XPST0003_XQueryVersionAtLeast30_2), theSctx->xquery_version()));
-
-  theHaveContextItemDecl = true;
-
-  return no_state;
-}
-
-void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-  expr* initExpr = NULL;
-  if (v.get_expr() != NULL)
-    initExpr = pop_nodestack();
-
-  xqtref_t type;
-
-  if (v.get_type() != NULL)
-  {
-    type = pop_tstack();
-    theSctx->set_context_item_type(type, loc);
-  }
-  else
-  {
-    type = theSctx->get_context_item_type();
-    assert(type != NULL);
-  }
-
-  var_expr* var = NULL;
-
-  if (inLibraryModule())
-  {
-    var = bind_var(loc, DOT_VARNAME, var_expr::prolog_var, type);
-  }
-  else
-  {
-    var = lookup_ctx_var(DOT_VARNAME, loc);
-    assert(var);
-  }
-
-  var->set_external(v.is_external());
-  var->set_type(type);
-
-  GlobalBinding b(var, initExpr, true);
-  declare_var(b, theModulesInfo->theInitExprs);
 }
 
 
@@ -5035,10 +5091,10 @@ void* begin_visit(const IndexKeyList& v)
 
   push_scope();
 
-  index->setDomainVariable(bind_var(loc, DOT_VARNAME, var_expr::for_var));
+  index->setDomainVariable(bind_var(loc, getDotItemVarName(), var_expr::for_var));
 
   index->setDomainPositionVariable(bind_var(loc,
-                                            DOT_POS_VARNAME,
+                                            getDotPosVarName(),
                                             var_expr::pos_var));
 
   return no_state;
@@ -5431,18 +5487,12 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
     // let $x := dc:collection(xs:QName("org:employees"))
     //   return
-    var_expr* varExpr = bind_var(loc,
-                                  varItem,
-                                  var_expr::let_var,
-                                  NULL);
+    var_expr* varExpr = bind_var(loc, varItem, var_expr::let_var, NULL);
 
     let_clause* letClause = theExprManager->
     create_let_clause(theRootSctx, loc, varExpr, collExpr);
 
-    flwor_expr* flworExpr = theExprManager->
-    create_flwor_expr(theRootSctx, theUDF, loc, false);
-
-
+    flwor_expr* flworExpr = CREATE(flwor)(theRootSctx, theUDF, loc, false);
 
     flworExpr->add_clause(letClause);
     // flworExpr->set_return_expr( andExpr ); done in end_visit
@@ -5653,8 +5703,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     var_expr* fromVarExpr = bind_var(loc, fromVarQName, var_expr::for_var, NULL);
 
     // for $x in dc:collection(xs:QName("org:transactions"))
-    evFlworExpr->add_clause(wrap_in_forclause(fromCollExpr,
-                                              fromVarExpr, NULL));
+    evFlworExpr->add_clause(wrap_in_forclause(fromCollExpr, fromVarExpr, NULL));
 
 
     push_nodestack(someFlworExpr);
@@ -9540,7 +9589,7 @@ void* begin_visit(const PathExpr& v)
   // In cases 2, 3, and 4 create a new empty relpath_expr
   if (pe_type != ParseConstants::path_leading_lone_slash)
   {
-    pathExpr = theExprManager->create_relpath_expr(theRootSctx, theUDF, loc);
+    pathExpr = CREATE(relpath)(theRootSctx, theUDF, loc);
   }
 
   // If path expr starts with / or // (cases 1, 2, or 3), create an expr
@@ -9554,13 +9603,13 @@ void* begin_visit(const PathExpr& v)
 
   if (pe_type != ParseConstants::path_relative)
   {
-    relpath_expr* ctx_path_expr = theExprManager->create_relpath_expr(theRootSctx, theUDF, loc);
+    relpath_expr* ctx_path_expr = CREATE(relpath)(theRootSctx, theUDF, loc);
 
-    expr* sourceExpr = theExprManager->create_treat_expr(theRootSctx, theUDF,
-                                       loc,
-                                       DOT_REF,
-                                       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-                                       TREAT_PATH_DOT);
+    expr* sourceExpr = CREATE(treat)(theRootSctx, theUDF,
+                                     loc,
+                                     dotRef(loc),
+                                     GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+                                     TREAT_PATH_DOT);
 
     ctx_path_expr->add_back(sourceExpr);
 
@@ -9682,11 +9731,10 @@ void* begin_visit(const RelativePathExpr& v)
     // then the input expr to the this path expr is "treat . as node()"
     if (axisStep != NULL)
     {
-      expr* sourceExpr = theExprManager->create_treat_expr(theRootSctx, theUDF,
-                                         loc,
-                                         DOT_REF,
-                                         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-                                         TREAT_PATH_DOT);
+      expr* sourceExpr = CREATE(treat)(theRootSctx, theUDF, loc,
+                                       dotRef(loc),
+                                       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+                                       TREAT_PATH_DOT);
       pathExpr->add_back(sourceExpr);
 
       if (axisStep->get_predicate_list() == NULL)
@@ -9763,7 +9811,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
 
       if (stepExpr->get_expr_kind() == wrapper_expr_kind)
       {
-        var_expr* dotVar = lookup_var(DOT_VARNAME, loc, false);
+        var_expr* dotVar = lookup_var(getDotItemVarName(), loc, false);
         if (static_cast<wrapper_expr*>(stepExpr)->get_input() == dotVar)
           errKind = TREAT_PATH_DOT;
       }
@@ -10533,13 +10581,13 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
                      theUDF,
                      loc,
                      BUILTIN_FUNC(OP_VALUE_EQUAL_2),
-                     lookup_ctx_var(DOT_POS_VARNAME, loc),
+                     lookup_ctx_var(getDotPosVarName(), loc),
                      predvar);
 
       normalize_fo(eqExpr);
 
-      expr* retExpr = theExprManager->
-      create_if_expr(theRootSctx, theUDF, loc, eqExpr, DOT_REF, create_empty_seq(loc));
+      expr* retExpr =
+      CREATE(if)(theRootSctx, theUDF, loc, eqExpr, dotRef(loc), create_empty_seq(loc));
 
       flworExpr->set_return_expr(retExpr);
 
@@ -10590,18 +10638,18 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
                  theUDF,
                  loc,
                  BUILTIN_FUNC(OP_VALUE_EQUAL_2),
-                 lookup_ctx_var(DOT_POS_VARNAME, loc),
+                 lookup_ctx_var(getDotPosVarName(), loc),
                  predvar);
 
   normalize_fo(eqExpr);
 
-  expr* thenExpr = theExprManager->
-  create_if_expr(theRootSctx, theUDF, loc, eqExpr, DOT_REF, create_empty_seq(loc));
+  expr* thenExpr =
+  CREATE(if)(theRootSctx, theUDF, loc, eqExpr, dotRef(loc), create_empty_seq(loc));
 
   // Else, return $dot if the the value of the pred expr is true, otherwise
   // return the empty seq.
-  expr* elseExpr = theExprManager->
-  create_if_expr(theRootSctx, theUDF, loc, predvar, DOT_REF, create_empty_seq(loc));
+  expr* elseExpr =
+  CREATE(if)(theRootSctx, theUDF, loc, predvar, dotRef(loc), create_empty_seq(loc));
 
   // The outer if
   expr* ifExpr = theExprManager->
@@ -10741,7 +10789,9 @@ void end_visit(const BooleanLiteral& v, void* /*visit_state*/)
         theRootSctx, theUDF, loc, v.get_boolval()));
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 void* begin_visit(const NullLiteral& v)
 {
@@ -10759,6 +10809,7 @@ void end_visit(const NullLiteral& v, void* /*visit_state*/)
       theExprManager->create_const_expr(
         theRootSctx, theUDF, loc, lNull));
 }
+
 
 /*******************************************************************************
    StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
@@ -10807,6 +10858,7 @@ void end_visit(const StringConcatExpr& v, void* /* visit_state */)
                                  concat_args);
   push_nodestack(concat);
 }
+
 
 /*******************************************************************************
   VarRef ::= "$" VarName
@@ -10910,9 +10962,92 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
     }
   }
 
-  push_nodestack(theExprManager->create_wrapper_expr(theRootSctx, theUDF,
-                                                     loc,
-                                                     ve));
+  push_nodestack(CREATE(wrapper)(theRootSctx, theUDF, loc, ve));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr* dotRef(const QueryLoc& loc)
+{
+  var_expr* dotVar = lookup_ctx_var(getDotItemVarName(), loc);
+
+  if (dotVar->get_kind() == var_expr::prolog_var)
+  {
+    if (!theCurrentPrologVFDecl.isNull())
+    {
+      thePrologGraph.addEdge(theCurrentPrologVFDecl, dotVar);
+    }
+  }
+
+  return CREATE(wrapper)(theRootSctx, theUDF, loc, dotVar);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr* dotPosRef(const QueryLoc& loc)
+{
+  var_expr* posVar = lookup_ctx_var(getDotPosVarName(), loc);
+
+  if (posVar->get_kind() == var_expr::prolog_var)
+  {
+    if (!theCurrentPrologVFDecl.isNull())
+    {
+      thePrologGraph.addEdge(theCurrentPrologVFDecl, posVar);
+    }
+  }
+
+  return CREATE(wrapper)(theRootSctx, theUDF, loc, posVar);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr* dotSizeRef(const QueryLoc& loc)
+{
+  var_expr* sizeVar = lookup_ctx_var(getDotSizeVarName(), loc);
+
+  if (sizeVar->get_kind() == var_expr::prolog_var)
+  {
+    if (!theCurrentPrologVFDecl.isNull())
+    {
+      thePrologGraph.addEdge(theCurrentPrologVFDecl, sizeVar);
+    }
+  }
+
+  return CREATE(wrapper)(theRootSctx, theUDF, loc, sizeVar);
+}
+
+
+
+/*******************************************************************************
+  ContextItemExpr ::= "."
+********************************************************************************/
+void* begin_visit(const ContextItemExpr& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
+
+  if (ve->get_kind() == var_expr::prolog_var)
+  {
+    if (!theCurrentPrologVFDecl.isNull())
+    {
+      thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
+    }
+  }
+
+  push_nodestack(CREATE(wrapper)(theRootSctx, theUDF, loc, ve));
 }
 
 
@@ -10943,23 +11078,6 @@ void end_visit(const ParenthesizedExpr& v, void* /*visit_state*/)
     fo_expr* lSeq = create_empty_seq(loc);
     push_nodestack(lSeq);
   }
-}
-
-
-/*******************************************************************************
-  ContextItemExpr ::= "."
-********************************************************************************/
-void* begin_visit(const ContextItemExpr& v)
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-  push_nodestack(DOT_REF);
 }
 
 
@@ -11447,20 +11565,20 @@ expr* generate_fn_body(
   {
   case FunctionConsts::FN_POSITION_0:
   {
-    resultExpr = lookup_ctx_var(DOT_POS_VARNAME, loc);
+    resultExpr = lookup_ctx_var(getDotPosVarName(), loc);
     break;
   }
   case FunctionConsts::FN_LAST_0:
   {
-    resultExpr = lookup_ctx_var(LAST_IDX_VARNAME, loc);
+    resultExpr = lookup_ctx_var(getDotSizeVarName(), loc);
     break;
   }
   case FunctionConsts::FN_FUNCTION_LOOKUP_2:
   {
     // hof ???? What if focus is not defined ?
-    arguments.push_back(DOT_REF);
-    arguments.push_back(DOT_POS_REF);
-    arguments.push_back(DOT_SIZE_REF);
+    arguments.push_back(dotRef(loc));
+    arguments.push_back(dotPosRef(loc));
+    arguments.push_back(dotSizeRef(loc));
     f = BUILTIN_FUNC(OP_ZORBA_FUNCTION_LOOKUP_5);
     break;
   }
@@ -11480,39 +11598,39 @@ expr* generate_fn_body(
   case FunctionConsts::FN_HAS_CHILDREN_0:
   case FunctionConsts::FN_PATH_0:
   {
-    arguments.push_back(DOT_REF);
+    arguments.push_back(dotRef(loc));
     f = theSctx->lookup_fn(f->getName(), 1, loc);
     break;
   }
   case FunctionConsts::FN_NUMBER_0:
   {
-    arguments.push_back(DOT_REF);
+    arguments.push_back(dotRef(loc));
     f = theSctx->lookup_fn(f->getName(), 1, loc);
     return generate_fn_body(f, arguments, loc);
     break;
   }
   case FunctionConsts::FN_LANG_1:
   {
-    arguments.push_back(DOT_REF);
+    arguments.push_back(dotRef(loc));
     f = BUILTIN_FUNC(FN_LANG_2);
     break;
   }
   case FunctionConsts::FN_IDREF_1:
   {
-    arguments.push_back(DOT_REF);
+    arguments.push_back(dotRef(loc));
     f = BUILTIN_FUNC(FN_IDREF_2);
     break;
   }
   case FunctionConsts::FN_ID_1:
   {
-    arguments.push_back(DOT_REF);
+    arguments.push_back(dotRef(loc));
     f = BUILTIN_FUNC(FN_ID_2);
     resultExpr = generate_fn_body(f, arguments, loc);
     break;
   }
   case FunctionConsts::FN_ELEMENT_WITH_ID_1:
   {
-    arguments.push_back(DOT_REF);
+    arguments.push_back(dotRef(loc));
     f = BUILTIN_FUNC(FN_ELEMENT_WITH_ID_2);
     resultExpr = generate_fn_body(f, arguments, loc);
     break;
@@ -12112,7 +12230,7 @@ expr* generate_literal_function(
 
         if (posVar && posVar->get_kind() != var_expr::prolog_var)
         {
-          expr* posVarRef = DOT_POS_REF;
+          expr* posVarRef = dotPosRef(loc);
 
           push_scope();
 
@@ -12137,15 +12255,15 @@ expr* generate_literal_function(
       }
       case FunctionConsts::FN_LAST_0:
       {
-        var_expr* sizeVar = lookup_var(getLastIdxVarName(), loc, false);
+        var_expr* sizeVar = lookup_var(getDotSizeVarName(), loc, false);
 
         if (sizeVar && sizeVar->get_kind() != var_expr::prolog_var)
         {
-          expr* sizeVarRef = DOT_SIZE_REF;
+          expr* sizeVarRef = dotSizeRef(loc);
 
           push_scope();
 
-          var_expr* substVar = bind_var(loc, getLastIdxVarName(), var_expr::local_var);
+          var_expr* substVar = bind_var(loc, getDotSizeVarName(), var_expr::local_var);
 
           // Must set the id of the substVar if we are coming here from a
           // FunctionLookupIterator.
@@ -12185,15 +12303,15 @@ expr* generate_literal_function(
       case FunctionConsts::FN_ID_1:
       case FunctionConsts::FN_ELEMENT_WITH_ID_1:
       {
-        var_expr* dotVar = lookup_var(getDotVarName(), loc, false);
+        var_expr* dotVar = lookup_var(getDotItemVarName(), loc, false);
 
         if (dotVar && dotVar->get_kind() != var_expr::prolog_var)
         {
-          expr* dotVarRef = DOT_REF;
+          expr* dotVarRef = dotRef(loc);
 
           push_scope();
 
-          var_expr* substVar = bind_var(loc, getDotVarName(), var_expr::local_var);
+          var_expr* substVar = bind_var(loc, getDotItemVarName(), var_expr::local_var);
 
           // Must set the id of the substVar if we are coming here from a
           // FunctionLookupIterator.
@@ -12216,18 +12334,18 @@ expr* generate_literal_function(
       {
         bool varAdded = false;
 
-        var_expr* ctxItemVar = lookup_var(getDotVarName(), loc, false);
+        var_expr* ctxItemVar = lookup_var(getDotItemVarName(), loc, false);
         var_expr* ctxPosVar = lookup_var(getDotPosVarName(), loc, false);
-        var_expr* ctxSizeVar = lookup_var(getLastIdxVarName(), loc, false);
+        var_expr* ctxSizeVar = lookup_var(getDotSizeVarName(), loc, false);
 
         if (ctxItemVar && ctxItemVar->get_kind() != var_expr::prolog_var)
         {
-          expr* ctxVRef = DOT_REF;
+          expr* ctxVRef = dotRef(loc);
 
           push_scope();
           varAdded = true;
 
-          var_expr* substVar = bind_var(loc, getDotVarName(), var_expr::local_var);
+          var_expr* substVar = bind_var(loc, getDotItemVarName(), var_expr::local_var);
 
           substVar->set_unique_id(ctxItemVar->get_unique_id());
 
@@ -12236,7 +12354,7 @@ expr* generate_literal_function(
 
         if (ctxPosVar && ctxPosVar->get_kind() != var_expr::prolog_var)
         {
-          expr* ctxVRef = DOT_POS_REF;
+          expr* ctxVRef = dotPosRef(loc);
 
           if (!varAdded)
           {
@@ -12253,7 +12371,7 @@ expr* generate_literal_function(
 
         if (ctxSizeVar && ctxSizeVar->get_kind() != var_expr::prolog_var)
         {
-          expr* ctxVRef = DOT_SIZE_REF;
+          expr* ctxVRef = dotSizeRef(loc);
 
           if (!varAdded)
           {
@@ -12261,7 +12379,7 @@ expr* generate_literal_function(
             varAdded = true;
           }
 
-          var_expr* substVar = bind_var(loc, getLastIdxVarName(), var_expr::local_var);
+          var_expr* substVar = bind_var(loc, getDotSizeVarName(), var_expr::local_var);
 
           substVar->set_unique_id(ctxSizeVar->get_unique_id());
 
@@ -15827,7 +15945,7 @@ expr* translate_aux(
   expr* result = t->result();
 
   CompilerCB* ccb = minfo->theCCB;
-  if (ccb->theConfig.translate_cb != NULL)
+  if (result && ccb->theConfig.translate_cb != NULL)
     ccb->theConfig.translate_cb(&*result, "XQuery program");
 
   return result;

@@ -683,6 +683,15 @@ declare variable $err:XQST0111 as xs:QName := fn:QName($err:NS, "err:XQST0111");
 
 (:~
  :
+ : Specifying a VarValue or VarDefaultValue for a context item declaration
+ : in a library module is a static error.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0113 as xs:QName := fn:QName($err:NS, "err:XQST0113");
+
+(:~
+ :
  : It is a static error for a decimal format declaration to define the
  : same property more than once.
  : 
@@ -813,6 +822,16 @@ declare variable $err:XQDY0041 as xs:QName := fn:QName($err:NS, "err:XQDY0041");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQDY0044 as xs:QName := fn:QName($err:NS, "err:XQDY0044");
+
+(:~
+ :
+ : It is a dynamic error if a cycle is encountered in the definition of a
+ : module's dynamic context components, for example because of a cycle in
+ : variable declarations.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0054 as xs:QName := fn:QName($err:NS, "err:XQDY0054");
 
 (:~
  :

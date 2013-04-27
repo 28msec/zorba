@@ -823,6 +823,14 @@
       <value>$1</value>
     </diagnostic>
 
+    <diagnostic code="XQST0113">
+      <comment>
+       Specifying a VarValue or VarDefaultValue for a context item declaration
+       in a library module is a static error.
+      </comment>
+      <value>context item declaration with initializing expression not allowed in library module</value>
+    </diagnostic>
+
     <diagnostic code="XQST0114">
       <comment>
         It is a static error for a decimal format declaration to define the
@@ -962,6 +970,15 @@
          <code>http://www.w3.org/XML/1998/namespace</code>.
       </comment>
       <value>"$1": invalid attibute node-name</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0054">
+      <comment>
+      It is a dynamic error if a cycle is encountered in the definition of a
+      module's dynamic context components, for example because of a cycle in
+      variable declarations.
+      </comment>
+      <value>${"1": }variable must not depend on itself</value>
     </diagnostic>
 
     <diagnostic code="XQDY0061">

@@ -223,6 +223,9 @@ XQueryErrorCode XQST0106( "XQST0106" );
 XQueryErrorCode XQST0111( "XQST0111" );
 
 
+XQueryErrorCode XQST0113( "XQST0113" );
+
+
 XQueryErrorCode XQST0114( "XQST0114" );
 
 
@@ -260,6 +263,9 @@ XQueryErrorCode XQDY0041( "XQDY0041" );
 
 
 XQueryErrorCode XQDY0044( "XQDY0044" );
+
+
+XQueryErrorCode XQDY0054( "XQDY0054" );
 
 
 XQueryErrorCode XQDY0061( "XQDY0061" );
