@@ -25,19 +25,19 @@ namespace zorba
   /* numerics */
   class Decimal;
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-  class IntegerImpl;
-  typedef IntegerImpl Integer;
-  typedef IntegerImpl UInteger;
-#else
-  template<typename T> class IntegerImpl;
-  typedef IntegerImpl<long long> Integer;
-  typedef IntegerImpl<unsigned long long> UInteger;
-#endif /* ZORBA_WITH_BIG_INTEGER */
-
-  template<typename T> class FloatImpl;
+  template<typename F> class FloatImpl;
   typedef FloatImpl<double> Double;
   typedef FloatImpl<float>  Float;
+
+  template<class C> class IntegerImpl;
+  class integer_check;
+  class nonPositive_check;
+  class nonNegative_check;
+  class positive_check;
+  typedef IntegerImpl<integer_check> Integer;
+  typedef IntegerImpl<nonPositive_check> NonPositiveInteger;
+  typedef IntegerImpl<nonNegative_check> NonNegativeInteger;
+  typedef IntegerImpl<positive_check> PositiveInteger;
 
   /* datetime */
   class DateTime;

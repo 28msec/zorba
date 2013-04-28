@@ -30,16 +30,6 @@
 #include "zorbaserialization/serialize_zorba_types.h"
 #include "zorbaserialization/serialize_template_types.h"
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(T) /* nothing */
-# define INTEGER_IMPL(I)  IntegerImpl
-#else
-# define TEMPLATE_DECL(T) template<typename T> /* spacer */
-# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
-#endif /* ZORBA_WITH_BIG_INTEGER */
-#define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
-#define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
-
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace zorba {
@@ -158,19 +148,23 @@ FloatImpl<FloatType>::FloatImpl( Decimal const &d ) {
 }
 
 template<typename FloatType>
-TEMPLATE_DECL(IntType)
-FloatImpl<FloatType>::FloatImpl( INTEGER_IMPL(IntType) const &i ) {
+template<class C>
+FloatImpl<FloatType>::FloatImpl( IntegerImpl<C> const &i ) {
   zstring const temp( i.toString() );
   parse( temp.c_str() );
 }
 
-#ifndef ZORBA_WITH_BIG_INTEGER
-template FloatImpl<float>::FloatImpl( INTEGER_IMPL_LL const& );
-template FloatImpl<float>::FloatImpl( INTEGER_IMPL_ULL const& );
+template FloatImpl<float>::FloatImpl( Integer const& );
+template FloatImpl<float>::FloatImpl( NegativeInteger const& );
+template FloatImpl<float>::FloatImpl( NonNegativeInteger const& );
+template FloatImpl<float>::FloatImpl( NonPositiveInteger const& );
+template FloatImpl<float>::FloatImpl( PositiveInteger const& );
 
-template FloatImpl<double>::FloatImpl( INTEGER_IMPL_LL const& );
-template FloatImpl<double>::FloatImpl( INTEGER_IMPL_ULL const& );
-#endif /* ZORBA_WITH_BIG_INTEGER */
+template FloatImpl<double>::FloatImpl( Integer const& );
+template FloatImpl<double>::FloatImpl( NegativeInteger const& );
+template FloatImpl<double>::FloatImpl( NonNegativeInteger const& );
+template FloatImpl<double>::FloatImpl( NonPositiveInteger const& );
+template FloatImpl<double>::FloatImpl( PositiveInteger const& );
 
 ////////// assignment operators ///////////////////////////////////////////////
 
@@ -182,27 +176,29 @@ FloatImpl<FloatType>& FloatImpl<FloatType>::operator=( Decimal const &d ) {
 }
 
 template<typename FloatType>
-TEMPLATE_DECL(IntType)
+template<class C>
 FloatImpl<FloatType>&
-FloatImpl<FloatType>::operator=( INTEGER_IMPL(IntType) const &i ) {
+FloatImpl<FloatType>::operator=( IntegerImpl<C> const &i ) {
   zstring const temp( i.toString() );
   parse( temp.c_str() );
   return *this;
 }
 
-#ifndef ZORBA_WITH_BIG_INTEGER
-template
-FloatImpl<float>& FloatImpl<float>::operator=( INTEGER_IMPL_LL const& );
+#define INSTANTIATE(F,I) \
+  template FloatImpl<F>& FloatImpl<F>::operator=( I const& )
 
-template
-FloatImpl<float>& FloatImpl<float>::operator=( INTEGER_IMPL_ULL const& );
+INSTANTIATE(float,Integer);
+INSTANTIATE(float,NegativeInteger);
+INSTANTIATE(float,NonNegativeInteger);
+INSTANTIATE(float,NonPositiveInteger);
+INSTANTIATE(float,PositiveInteger);
 
-template
-FloatImpl<double>& FloatImpl<double>::operator=( INTEGER_IMPL_LL const& );
-
-template
-FloatImpl<double>& FloatImpl<double>::operator=( INTEGER_IMPL_ULL const& );
-#endif /* ZORBA_WITH_BIG_INTEGER */
+INSTANTIATE(double,Integer);
+INSTANTIATE(double,NegativeInteger);
+INSTANTIATE(double,NonNegativeInteger);
+INSTANTIATE(double,NonPositiveInteger);
+INSTANTIATE(double,PositiveInteger);
+#undef INSTANTIATE
 
 ////////// math functions /////////////////////////////////////////////////////
 

@@ -29,37 +29,27 @@
 #include "decimal.h"
 #include "floatimpl.h"
 #include "integer.h"
-#include "integer_macros.h"
 #include "numconversions.h"
 
 using namespace std;
-
-#ifndef ZORBA_WITH_BIG_INTEGER
-z_uint_type const MaxUIntegerValue = ~0ull >> 1;
-
-inline bool is_too_big( z_int_type ) {
-  return false;
-}
-
-inline bool is_too_big( z_uint_type n ) {
-  return n > MaxUIntegerValue;
-}
-#endif /* ZORBA_WITH_BIG_INTEGER */
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-TEMPLATE_DECL(I)
-void INTEGER_IMPL(I)::parse( char const *s ) {
+template<class C>
+void IntegerImpl<C>::parse( char const *s ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   Decimal::parse( s, &value_, Decimal::parse_integer );
+  // TODO: check value?
 #else
   value_type const temp( ztd::aton<value_type>( s ) );
+#if 0
   if ( is_too_big( temp ) )
     throw std::range_error(
       BUILD_STRING( '"', temp, "\": unsigned integer too big" )
     );
+#endif
   value_ = temp;
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
@@ -67,14 +57,15 @@ void INTEGER_IMPL(I)::parse( char const *s ) {
 ////////// constructors ///////////////////////////////////////////////////////
 
 #ifdef ZORBA_WITH_BIG_INTEGER
-IntegerImpl::IntegerImpl( long long n ) {
+template<class C>
+IntegerImpl<C>::IntegerImpl( long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
 }
 
 #if ZORBA_SIZEOF_INT == ZORBA_SIZEOF_LONG
-TEMPLATE_DECL(T)
-INTEGER_IMPL(T)::IntegerImpl( unsigned int n ) {
+template<class C>
+IntegerImpl<C>::IntegerImpl( unsigned int n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
 }
@@ -91,20 +82,20 @@ IntegerImpl::IntegerImpl( unsigned long long n ) {
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-TEMPLATE_DECL(T)
-INTEGER_IMPL(T)::IntegerImpl( Decimal const &d ) {
+template<class C>
+IntegerImpl<C>::IntegerImpl( Decimal const &d ) {
   value_ = ftoi( d.value_ );
 }
 
-TEMPLATE_DECL(T)
-INTEGER_IMPL(T)::IntegerImpl( Double const &d ) {
+template<class C>
+IntegerImpl<C>::IntegerImpl( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "not finite" );
   value_ = ftoi( d.getNumber() );
 }
 
-TEMPLATE_DECL(T)
-INTEGER_IMPL(T)::IntegerImpl( Float const &f ) {
+template<class C>
+IntegerImpl<C>::IntegerImpl( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "not finite" );
   value_ = ftoi( f.getNumber() );
@@ -132,22 +123,22 @@ IntegerImpl& IntegerImpl::operator=( unsigned long long n ) {
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-TEMPLATE_DECL(T)
-INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( Decimal const &d ) {
+template<class C>
+IntegerImpl<C>& IntegerImpl<C>::operator=( Decimal const &d ) {
   value_ = ftoi( d.value_ );
   return *this;
 }
 
-TEMPLATE_DECL(T)
-INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( Double const &d ) {
+template<class C>
+IntegerImpl<C>& IntegerImpl<C>::operator=( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "not finite" );
   value_ = ftoi( d.getNumber() );
   return *this;
 }
 
-TEMPLATE_DECL(T)
-INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( Float const &f ) {
+template<class C>
+IntegerImpl<C>& IntegerImpl<C>::operator=( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "not finite" );
   value_ = ftoi( f.getNumber() );
@@ -159,14 +150,17 @@ INTEGER_IMPL(T)& INTEGER_IMPL(T)::operator=( Float const &f ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
 # define ZORBA_INSTANTIATE(OP) /* nothing */
 #else
-# define ZORBA_INSTANTIATE(OP)                                            \
-  template Decimal operator OP( INTEGER_IMPL_LL const&, Decimal const& ); \
-  template Decimal operator OP( INTEGER_IMPL_ULL const&, Decimal const& );
+# define ZORBA_INSTANTIATE(OP)                                                \
+  template Decimal operator OP( Integer const&, Decimal const& );             \
+  template Decimal operator OP( NegativeInteger const&, Decimal const& );     \
+  template Decimal operator OP( NonNegativeInteger const&, Decimal const& );  \
+  template Decimal operator OP( NonPositiveInteger const&, Decimal const& );  \
+  template Decimal operator OP( PositiveInteger const&, Decimal const& );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 #define ZORBA_INTEGER_OP(OP)                                          \
-  TEMPLATE_DECL(T)                                                    \
-  Decimal operator OP( INTEGER_IMPL(T) const &i, Decimal const &d ) { \
+  template<class C>                                                    \
+  Decimal operator OP( IntegerImpl<C> const &i, Decimal const &d ) { \
     return i.itod() OP d.value_;                                      \
   }                                                                   \
   ZORBA_INSTANTIATE(OP)
@@ -260,14 +254,14 @@ ZORBA_INTEGER_OP(unsigned long long)
 
 ////////// relational operators ///////////////////////////////////////////////
 
-TEMPLATE_DECL(T)
-bool operator==( INTEGER_IMPL(T) const &i, Decimal const &d ) {
+template<class C>
+bool operator==( IntegerImpl<C> const &i, Decimal const &d ) {
   return d.is_xs_integer() && i.itod() == d.value_;
 }
 
 #define ZORBA_INTEGER_OP(OP)                                        \
-  TEMPLATE_DECL(T)                                                  \
-  bool operator OP( INTEGER_IMPL(T) const &i, Decimal const &d ) {  \
+  template<class C>                                                  \
+  bool operator OP( IntegerImpl<C> const &i, Decimal const &d ) {  \
     return i.itod() OP d.value_;                                    \
   }
 
@@ -312,9 +306,12 @@ ZORBA_INTEGER_OP(>=,unsigned long long)
 
 #else /* ZORBA_WITH_BIG_INTEGER */
 
-#define ZORBA_INSTANTIATE(OP)                                           \
-  template bool operator OP( INTEGER_IMPL_LL const&, Decimal const& );  \
-  template bool operator OP( INTEGER_IMPL_ULL const&, Decimal const& )
+#define ZORBA_INSTANTIATE(OP)                                             \
+  template bool operator OP( Integer const&, Decimal const& );            \
+  template bool operator OP( NegativeInteger const&, Decimal const& );    \
+  template bool operator OP( NonNegativeInteger const&, Decimal const& ); \
+  template bool operator OP( NonPositiveInteger const&, Decimal const& ); \
+  template bool operator OP( PositiveInteger const&, Decimal const& )
 
 ZORBA_INSTANTIATE(==);
 ZORBA_INSTANTIATE(!=);
@@ -328,8 +325,8 @@ ZORBA_INSTANTIATE(>=);
 
 ////////// math functions /////////////////////////////////////////////////////
 
-TEMPLATE_DECL(T)
-Double INTEGER_IMPL(T)::pow( INTEGER_IMPL(T) const &power ) const {
+template<class C>
+Double IntegerImpl<C>::pow( IntegerImpl<C> const &power ) const {
 #ifdef ZORBA_WITH_BIG_INTEGER
   value_type const result( value_.pow( power.value_, 15 ) );
   char buf[300];
@@ -343,30 +340,30 @@ Double INTEGER_IMPL(T)::pow( INTEGER_IMPL(T) const &power ) const {
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
-TEMPLATE_DECL(T)
-INTEGER_IMPL(T) INTEGER_IMPL(T)::round( IntegerImpl const &precision ) const {
+template<class C>
+IntegerImpl<C> IntegerImpl<C>::round( IntegerImpl<C> const &precision ) const {
   return IntegerImpl( Decimal::round2( itod(), precision.itod() ) );
 }
 
-TEMPLATE_DECL(T)
-INTEGER_IMPL(T)
-INTEGER_IMPL(T)::roundHalfToEven( IntegerImpl const &precision ) const {
+template<class C>
+IntegerImpl<C>
+IntegerImpl<C>::roundHalfToEven( IntegerImpl const &precision ) const {
   return IntegerImpl( Decimal::roundHalfToEven2( itod(), precision.itod() ) );
 }
 
 ////////// miscellaneous //////////////////////////////////////////////////////
 
 #ifndef ZORBA_WITH_BIG_INTEGER
-TEMPLATE_DECL(T)
-typename INTEGER_IMPL(T)::value_type INTEGER_IMPL(T)::ftoi( MAPM const &d ) {
+template<class C>
+typename IntegerImpl<C>::value_type IntegerImpl<C>::ftoi( MAPM const &d ) {
   MAPM const temp( d.sign() >= 0 ? d.floor() : d.ceil() );
   unique_ptr<char[]> const buf( new char[ temp.exponent() + 3 ] );
   temp.toIntegerString( buf.get() );
   return ztd::aton<value_type>( buf.get() );
 }
 
-TEMPLATE_DECL(T)
-MAPM INTEGER_IMPL(T)::itod() const {
+template<class C>
+MAPM IntegerImpl<C>::itod() const {
   if ( is_cxx_long() )
     return static_cast<long>( value_ );
   ascii::itoa_buf_type buf;
@@ -416,14 +413,8 @@ bool IntegerImpl::is_xs_unsignedShort() const {
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-TEMPLATE_DECL(T)
-INTEGER_IMPL(T) const& INTEGER_IMPL(T)::one() {
-  static INTEGER_IMPL(T) const i(1);
-  return i;
-}
-
-TEMPLATE_DECL(T)
-zstring INTEGER_IMPL(T)::toString() const {
+template<class C>
+zstring IntegerImpl<C>::toString() const {
 #ifdef ZORBA_WITH_BIG_INTEGER
   unique_ptr<char[]> const buf( new char[ value_.exponent() + 3 ] );
   value_.toIntegerString( buf.get() );
@@ -434,18 +425,43 @@ zstring INTEGER_IMPL(T)::toString() const {
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
-TEMPLATE_DECL(T)
-INTEGER_IMPL(T) const& INTEGER_IMPL(T)::zero() {
-  static INTEGER_IMPL(T) const i(0);
+///////////////////////////////////////////////////////////////////////////////
+
+// instantiate integer types
+template class IntegerImpl<integer_check>;
+template class IntegerImpl<negative_check>;
+template class IntegerImpl<nonNegative_check>;
+template class IntegerImpl<nonPositive_check>;
+template class IntegerImpl<positive_check>;
+
+///////////////////////////////////////////////////////////////////////////////
+
+template<class I>
+I const& integer_const<I>::zero() {
+  static I const i(0);
+  return i;
+}
+
+template<class I>
+I const& integer_const<I>::one() {
+  static I const i(1);
+  return i;
+}
+
+template class integer_const<Integer>;
+template class integer_const<NonNegativeInteger>;
+
+NonPositiveInteger const& integer_const<NonPositiveInteger>::zero() {
+  static NonPositiveInteger const i(0);
+  return i;
+}
+
+PositiveInteger const& integer_const<PositiveInteger>::one() {
+  static PositiveInteger const i(1);
   return i;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifndef ZORBA_WITH_BIG_INTEGER
-template class IntegerImpl<z_int_type>;
-template class IntegerImpl<z_uint_type>;
-#endif /* ZORBA_WITH_BIG_INTEGER */
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

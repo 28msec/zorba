@@ -26,16 +26,6 @@
 #include "integer.h"
 #include "numconversions.h"
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(T) /* nothing */
-# define INTEGER_IMPL(I)  IntegerImpl
-#else
-# define TEMPLATE_DECL(T) template<typename T> /* spacer */
-# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
-#endif /* ZORBA_WITH_BIG_INTEGER */
-#define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
-#define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
-
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -224,14 +214,15 @@ Decimal::Decimal( Float const &f ) {
   value_ = f.getNumber();
 }
 
-TEMPLATE_DECL(I)
-Decimal::Decimal( INTEGER_IMPL(I) const &i ) :
-    value_( i.itod() ) {
+template<class C>
+Decimal::Decimal( IntegerImpl<C> const &i ) : value_( i.itod() ) {
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal::Decimal( INTEGER_IMPL_LL const& );
-template Decimal::Decimal( INTEGER_IMPL_ULL const& );
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+template Decimal::Decimal( Integer const& );
+template Decimal::Decimal( NegativeInteger const& );
+template Decimal::Decimal( NonNegativeInteger const& );
+template Decimal::Decimal( NonPositiveInteger const& );
+template Decimal::Decimal( PositiveInteger const& );
 
 ////////// assignment operators ///////////////////////////////////////////////
 
@@ -247,15 +238,17 @@ Decimal& Decimal::operator=( unsigned long long n ) {
   return *this;
 }
 
-TEMPLATE_DECL(I)
-Decimal& Decimal::operator=( INTEGER_IMPL(I) const &i ) {
+template<class C>
+Decimal& Decimal::operator=( IntegerImpl<C> const &i ) {
   value_ = i.itod();
   return *this;
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal& Decimal::operator=( INTEGER_IMPL_LL const& );
-template Decimal& Decimal::operator=( INTEGER_IMPL_ULL const& );
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+template Decimal& Decimal::operator=( Integer const& );
+template Decimal& Decimal::operator=( NegativeInteger const& );
+template Decimal& Decimal::operator=( NonNegativeInteger const& );
+template Decimal& Decimal::operator=( NonPositiveInteger const& );
+template Decimal& Decimal::operator=( PositiveInteger const& );
 
 Decimal& Decimal::operator=( Double const &d ) {
   if ( !d.isFinite() )
@@ -276,14 +269,17 @@ Decimal& Decimal::operator=( Float const &f ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
 # define ZORBA_INSTANTIATE(OP) /* nothing */
 #else
-# define ZORBA_INSTANTIATE(OP)                                            \
-  template Decimal operator OP( Decimal const&, INTEGER_IMPL_LL const& ); \
-  template Decimal operator OP( Decimal const&, INTEGER_IMPL_ULL const& )
+# define ZORBA_INSTANTIATE(OP)                                                \
+  template Decimal operator OP( Decimal const&, Integer const& );             \
+  template Decimal operator OP( Decimal const&, NegativeInteger const& );     \
+  template Decimal operator OP( Decimal const&, NonNegativeInteger const& );  \
+  template Decimal operator OP( Decimal const&, NonPositiveInteger const& );  \
+  template Decimal operator OP( Decimal const&, PositiveInteger const& )
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 #define ZORBA_DECIMAL_OP(OP)                                          \
-  TEMPLATE_DECL(I)                                                    \
-  Decimal operator OP( Decimal const &d, INTEGER_IMPL(I) const &i ) { \
+  template<class C>                                                   \
+  Decimal operator OP( Decimal const &d, IntegerImpl<C> const &i ) {  \
     return d.value_ OP i.itod();                                      \
   }                                                                   \
   ZORBA_INSTANTIATE(OP)
@@ -301,16 +297,19 @@ ZORBA_DECIMAL_OP(%);
 #ifdef ZORBA_WITH_BIG_INTEGER
 # define ZORBA_INSTANTIATE(OP) /* nothing */
 #else
-# define ZORBA_INSTANTIATE(OP)                                          \
-  template bool operator OP( Decimal const&, INTEGER_IMPL_LL const& );  \
-  template bool operator OP( Decimal const&, INTEGER_IMPL_ULL const& )
+# define ZORBA_INSTANTIATE(OP)                                            \
+  template bool operator OP( Decimal const&, Integer const& );            \
+  template bool operator OP( Decimal const&, NegativeInteger const& );    \
+  template bool operator OP( Decimal const&, NonNegativeInteger const& ); \
+  template bool operator OP( Decimal const&, NonPositiveInteger const& ); \
+  template bool operator OP( Decimal const&, PositiveInteger const& )
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-#define ZORBA_DECIMAL_OP(OP)                                        \
-  TEMPLATE_DECL(I)                                                  \
-  bool operator OP( Decimal const &d, INTEGER_IMPL(I) const &i ) {  \
-    return d.value_ OP i.itod();                                    \
-  }                                                                 \
+#define ZORBA_DECIMAL_OP(OP)                                      \
+  template<class C>                                               \
+  bool operator OP( Decimal const &d, IntegerImpl<C> const &i ) { \
+    return d.value_ OP i.itod();                                  \
+  }                                                               \
   ZORBA_INSTANTIATE(OP)
 
 ZORBA_DECIMAL_OP(==);
@@ -325,17 +324,19 @@ ZORBA_DECIMAL_OP(>=);
 ////////// math functions /////////////////////////////////////////////////////
 
 Decimal Decimal::round() const {
-  return round( INTEGER_IMPL_LL::zero() );
+  return round( Integer::zero() );
 }
 
-TEMPLATE_DECL(I)
-Decimal Decimal::round( INTEGER_IMPL(I) const &precision ) const {
+template<class C>
+Decimal Decimal::round( IntegerImpl<C> const &precision ) const {
   return round2( value_, precision.itod() );
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal Decimal::round( INTEGER_IMPL_LL const& ) const;
-template Decimal Decimal::round( INTEGER_IMPL_ULL const& ) const;
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+template Decimal Decimal::round( Integer const& ) const;
+template Decimal Decimal::round( NegativeInteger const& ) const;
+template Decimal Decimal::round( NonNegativeInteger const& ) const;
+template Decimal Decimal::round( NonPositiveInteger const& ) const;
+template Decimal Decimal::round( PositiveInteger const& ) const;
 
 Decimal::value_type Decimal::round2( value_type const &v,
                                      value_type const &precision ) {
@@ -352,14 +353,16 @@ Decimal::value_type Decimal::round2( value_type const &v,
   return result;
 }
 
-TEMPLATE_DECL(I)
-Decimal Decimal::roundHalfToEven( INTEGER_IMPL(I) const &precision ) const {
+template<class C>
+Decimal Decimal::roundHalfToEven( IntegerImpl<C> const &precision ) const {
   return roundHalfToEven2( value_, precision.itod() );
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_LL const& ) const;
-template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_ULL const& ) const;
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+template Decimal Decimal::roundHalfToEven( Integer const& ) const;
+template Decimal Decimal::roundHalfToEven( NegativeInteger const& ) const;
+template Decimal Decimal::roundHalfToEven( NonNegativeInteger const& ) const;
+template Decimal Decimal::roundHalfToEven( NonPositiveInteger const& ) const;
+template Decimal Decimal::roundHalfToEven( PositiveInteger const& ) const;
 
 Decimal::value_type Decimal::roundHalfToEven2( value_type const &v,
                                                value_type const &precision ) {

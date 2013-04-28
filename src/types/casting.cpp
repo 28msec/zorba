@@ -1658,8 +1658,15 @@ T1_TO_T2(dbl, uint)
 
 T1_TO_T2(dec, uint)
 {
-  xs_nonNegativeInteger const n(aItem->getDecimalValue());
-  aFactory->createNonNegativeInteger(result, n);
+  try
+  {
+    xs_nonNegativeInteger const n(aItem->getDecimalValue());
+    aFactory->createNonNegativeInteger(result, n);
+  }
+  catch ( const std::exception& ) 
+  {
+    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+  }
 }
 
 
@@ -1974,11 +1981,15 @@ void int_down(
   }
   case store::XS_POSITIVE_INTEGER:
   {
-    xs_positiveInteger const i = aItem->getUnsignedIntegerValue();
-    if (i.sign() > 0)
+    try
     {
-      factory->createPositiveInteger(result, i);
+      xs_positiveInteger const n = aItem->getUnsignedIntegerValue();
+      factory->createPositiveInteger(result, n);
       return;
+    }
+    catch ( std::exception const& )
+    {
+      // ignore
     }
     break;
   }

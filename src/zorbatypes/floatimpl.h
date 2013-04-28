@@ -29,14 +29,6 @@
 #include "schema_types.h"
 #include "zorbatypes_decl.h"
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(I) /* nothing */
-# define INTEGER_IMPL(I)  IntegerImpl
-#else
-# define TEMPLATE_DECL(I) template<typename I> /* spacer */
-# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
-#endif /* ZORBA_WITH_BIG_INTEGER */
-
 namespace zorba {
 
 template<typename FloatType>
@@ -71,8 +63,8 @@ public:
   explicit FloatImpl( double n );
   explicit FloatImpl( Decimal const &d );
 
-  TEMPLATE_DECL(IntType)
-  explicit FloatImpl( INTEGER_IMPL(IntType) const &i );
+  template<class C>
+  explicit FloatImpl( IntegerImpl<C> const &i );
 
   /**
    * Constructs a %FloatImpl from a C string.
@@ -126,8 +118,8 @@ public:
   FloatImpl& operator=( char const *s );
   FloatImpl& operator=( Decimal const &d );
 
-  TEMPLATE_DECL(I)
-  FloatImpl& operator=( INTEGER_IMPL(I) const &i );
+  template<class C>
+  FloatImpl& operator=( IntegerImpl<C> const &i );
 
   ////////// arithmetic operators /////////////////////////////////////////////
 
@@ -305,7 +297,7 @@ private:
   void parse( char const* );
   bool parse_etc( char const* );
 
-  TEMPLATE_DECL(I) friend class IntegerImpl;
+  template<class C> friend class IntegerImpl;
   friend class Decimal;
 
   friend class FloatImpl<float>;
@@ -1000,9 +992,6 @@ inline std::ostream& operator<<( std::ostream &os, FloatImpl<F> const &f ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-
-#undef TEMPLATE_DECL
-#undef INTEGER_IMPL
 
 #endif // ZORBA_FLOATIMPL_H
 /*
