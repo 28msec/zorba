@@ -6756,9 +6756,13 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
       pop_scope();
       break;
     }
+    case flwor_clause::count_clause:
+    {
+      pop_scope();
+      break;
+    }
     case flwor_clause::orderby_clause:
     case flwor_clause::where_clause:
-    case flwor_clause::count_clause:
     {
       break;
     }
@@ -7755,6 +7759,8 @@ void* begin_visit(const CountClause& v)
 void end_visit(const CountClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
+
+  push_scope();
 
   var_expr* varExpr = bind_var(loc, v.get_varname(), var_expr::count_var, NULL);
 
