@@ -21,8 +21,11 @@
 // Zorba
 #include "common/common.h"
 #include "util/string_util.h"
-#include "zorbatypes/integer.h"
-#include "zorbatypes/numconversions.h"
+
+// local
+#include "floatimpl.h"
+#include "integer.h"
+#include "numconversions.h"
 
 namespace zorba {
 

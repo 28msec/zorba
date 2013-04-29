@@ -23,7 +23,6 @@
 #include "datetime.h"
 #include "decimal.h"
 #include "duration.h"
-#include "floatimpl.h"
 #include "numeric_types.h"
 #include "schema_types_base.h"
 

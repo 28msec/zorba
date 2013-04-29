@@ -23,6 +23,7 @@
 #include "util/ascii_util.h"
 
 #include "decimal.h"
+#include "floatimpl.h"
 #include "integer.h"
 #include "numconversions.h"
 
