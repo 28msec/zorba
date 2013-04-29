@@ -34,6 +34,7 @@
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/casting.h"
+#include "zorbatypes/integer.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -623,7 +624,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
     PlanState& planState) const
 {
   store::IndexCondition_t cond;
-  xs_integer skip = xs_integer::zero();
+  xs_integer skip( numeric_consts<xs_integer>::zero() );
 
   try
   {
@@ -641,8 +642,8 @@ bool ProbeIndexPointValueIterator::nextImpl(
         store::Item_t skipItem;
         ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
         skip = skipItem->getIntegerValue();
-        if (skip < xs_integer::zero())
-          skip = xs_integer::zero();
+        if (skip < numeric_consts<xs_integer>::zero())
+          skip = numeric_consts<xs_integer>::zero();
       }
 
       state->theIterator->init(cond, skip);
@@ -687,8 +688,8 @@ bool ProbeIndexPointValueIterator::count(
         store::Item_t skipItem;
         ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
         skip = skipItem->getIntegerValue();
-        if (skip < xs_integer::zero())
-          skip = xs_integer::zero();
+        if (skip < numeric_consts<xs_integer>::zero())
+          skip = numeric_consts<xs_integer>::zero();
       }
 
       state->theIterator->init(cond, skip);
@@ -1071,7 +1072,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     PlanState& planState) const
 {
   store::IndexCondition_t cond;
-  xs_integer skip = xs_integer::zero();
+  xs_integer skip( numeric_consts<xs_integer>::zero() );
 
   try
   {
@@ -1087,8 +1088,8 @@ bool ProbeIndexRangeValueIterator::nextImpl(
       store::Item_t skipItem;
       ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
       skip = skipItem->getIntegerValue();
-      if (skip < xs_integer::zero())
-        skip = xs_integer::zero();
+      if (skip < numeric_consts<xs_integer>::zero())
+        skip = numeric_consts<xs_integer>::zero();
     }
 
     state->theIterator->init(cond, skip);
@@ -1114,7 +1115,7 @@ bool ProbeIndexRangeValueIterator::count(
     PlanState& planState) const
 {
   store::IndexCondition_t cond;
-  xs_integer skip = xs_integer::zero();
+  xs_integer skip( numeric_consts<xs_integer>::zero() );
 
   try
   {
@@ -1130,8 +1131,8 @@ bool ProbeIndexRangeValueIterator::count(
       store::Item_t skipItem;
       ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
       skip = skipItem->getIntegerValue();
-      if (skip < xs_integer::zero())
-        skip = xs_integer::zero();
+      if (skip < numeric_consts<xs_integer>::zero())
+        skip = numeric_consts<xs_integer>::zero();
     }
 
     state->theIterator->init(cond, skip);

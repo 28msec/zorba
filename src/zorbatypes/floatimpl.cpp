@@ -204,7 +204,8 @@ INSTANTIATE(double,PositiveInteger);
 
 template<typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::acos() const {
-  if ( *this < neg_one() || *this > one() )
+  if ( *this < numeric_consts<FloatImpl>::neg_one() ||
+       *this > numeric_consts<FloatImpl>::one() )
     return nan();
   return FloatImpl<FloatType>(
     isNegZero() ? -std::acos( value_ ): std::acos( value_ )
@@ -213,7 +214,8 @@ FloatImpl<FloatType> FloatImpl<FloatType>::acos() const {
 
 template<typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::asin() const {
-  if ( *this < neg_one() || *this > one() )
+  if ( *this < numeric_consts<FloatImpl>::neg_one() ||
+       *this > numeric_consts<FloatImpl>::one() )
     return nan();
   return FloatImpl<FloatType>( std::asin( value_ ) );
 }
@@ -244,11 +246,12 @@ void FloatImpl<float>::modf( FloatImpl<float> &out_fraction,
 
 template<typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::round() const {
-  return round( Integer::zero() );
+  return round( numeric_consts<xs_integer>::zero() );
 }
 
 template<typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::round( Integer const &precision ) const {
+FloatImpl<FloatType>
+FloatImpl<FloatType>::round( Integer const &precision ) const {
   FloatImpl result;
   if ( isFinite() && !isZero() ) {
     MAPM m(
@@ -329,20 +332,8 @@ FloatImpl<FloatType> const& FloatImpl<FloatType>::neg_inf() {
 }
 
 template<typename FloatType>
-FloatImpl<FloatType> const& FloatImpl<FloatType>::neg_one() {
-  static FloatImpl<FloatType> const value( -1 );
-  return value;
-}
-
-template<typename FloatType>
 FloatImpl<FloatType> const& FloatImpl<FloatType>::neg_zero() {
   static FloatImpl<FloatType> const value( -0.0 );
-  return value;
-}
-
-template<typename FloatType>
-FloatImpl<FloatType> const& FloatImpl<FloatType>::one() {
-  static FloatImpl<FloatType> const value( 1 );
   return value;
 }
 
@@ -465,12 +456,6 @@ zstring FloatImpl<FloatType>::toString( bool no_scientific_format ) const {
     Decimal::reduce( buf );
     return buf;
   }
-}
-
-template<typename FloatType>
-FloatImpl<FloatType> const& FloatImpl<FloatType>::zero() {
-  static FloatImpl<FloatType> const value( 0 );
-  return value;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

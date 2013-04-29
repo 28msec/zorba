@@ -18,10 +18,10 @@
 #define ZORBA_TYPES_DURATION_H
 
 #include <zorba/config.h>
-#include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/schema_types.h"
+#include "zorbatypes_decl.h"
 
 #include "util/ascii_util.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba
 {
@@ -175,9 +175,9 @@ public:
 
   Duration* operator-(const Duration& d) const;
 
-  Duration* operator*(const xs_double& value) const;
+  Duration* operator*(const Double& value) const;
 
-  Duration* operator/(const xs_double& value) const;
+  Duration* operator/(const Double& value) const;
 
   Decimal operator/(const Duration& d) const;
 
@@ -195,13 +195,13 @@ public:
 
   virtual long getMinutes() const;
 
-  virtual xs_decimal getSeconds() const;
+  virtual Decimal getSeconds() const;
 
   virtual long getFractionalSeconds() const;
 
   virtual long getIntSeconds() const;
 
-  xs_double getTotalSeconds() const;
+  Double getTotalSeconds() const;
 
   long getTotalMilliseconds() const;
 

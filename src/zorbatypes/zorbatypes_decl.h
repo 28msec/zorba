@@ -19,26 +19,10 @@
 #define ZORBA_ZORBATYPES_DECL_H
 
 #include <zorba/config.h>
+#include "numeric_types.h"
 
 namespace zorba 
 {
-  /* numerics */
-  class Decimal;
-
-  template<typename F> class FloatImpl;
-  typedef FloatImpl<double> Double;
-  typedef FloatImpl<float>  Float;
-
-  template<class C> class IntegerImpl;
-  class integer_check;
-  class nonPositive_check;
-  class nonNegative_check;
-  class positive_check;
-  typedef IntegerImpl<integer_check> Integer;
-  typedef IntegerImpl<nonPositive_check> NonPositiveInteger;
-  typedef IntegerImpl<nonNegative_check> NonNegativeInteger;
-  typedef IntegerImpl<positive_check> PositiveInteger;
-
   /* datetime */
   class DateTime;
   class Duration;

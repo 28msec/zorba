@@ -15,10 +15,13 @@
  */
 #include "stdafx.h"
 
+// standard
 #include <stdexcept>
 
+// Zorba
 #include "common/common.h"
 #include "util/string_util.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 namespace zorba {

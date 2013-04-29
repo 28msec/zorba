@@ -215,9 +215,6 @@ public:
 
   zstring toString( int precision = ZORBA_FLOAT_POINT_PRECISION ) const;
 
-  static Decimal const& one();
-  static Decimal const& zero();
-
   /////////////////////////////////////////////////////////////////////////////
 
 private:

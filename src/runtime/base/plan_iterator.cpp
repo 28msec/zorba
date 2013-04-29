@@ -15,18 +15,14 @@
  */
 #include "stdafx.h"
 
-#include "context/static_context.h"
-
 #include "compiler/api/compilercb.h"
-
+#include "context/static_context.h"
 #include "runtime/base/plan_iterator.h"
-
 #include "runtime/util/flowctl_exception.h"
-
-#include "system/globalenv.h"
-
-#include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "system/globalenv.h"
+#include "zorbatypes/integer.h"
 
 
 namespace zorba

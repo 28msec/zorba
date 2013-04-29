@@ -324,7 +324,7 @@ ZORBA_DECIMAL_OP(>=);
 ////////// math functions /////////////////////////////////////////////////////
 
 Decimal Decimal::round() const {
-  return round( Integer::zero() );
+  return round( numeric_consts<xs_integer>::zero() );
 }
 
 template<class C>
@@ -428,11 +428,6 @@ uint32_t Decimal::hash( value_type const &value ) {
   return static_cast<uint32_t>( n );
 }
 
-Decimal const& Decimal::one() {
-  static Decimal d(1);
-  return d;
-}
-
 zstring Decimal::toString( value_type const &value, int precision ) {
   return toString(value, false, precision);
 }
@@ -465,11 +460,6 @@ zstring Decimal::toString( value_type const &value, bool minusZero, int precisio
   if ( precision < ZORBA_FLOAT_POINT_PRECISION )
     reduce( buf );
   return buf;
-}
-
-Decimal const& Decimal::zero() {
-  static Decimal d(0);
-  return d;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

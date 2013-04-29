@@ -34,6 +34,7 @@
 #include "util/stream_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_string.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 using namespace std;

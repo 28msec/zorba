@@ -15,22 +15,23 @@
  */
 
 #include "stdafx.h"
-#include "expr_manager.h"
 
-#include "mem_manager.h"
+#include "zorbatypes/integer.h"
 
 #include "expr.h"
-#include "ftnode.h"
-#include "var_expr.h"
+#include "expr_manager.h"
 #include "flwor_expr.h"
 #include "fo_expr.h"
 #include "ft_expr.h"
+#include "ftnode.h"
 #include "function_item_expr.h"
+#include "json_exprs.h"
+#include "mem_manager.h"
 #include "path_expr.h"
+#include "pragma.h"
 #include "script_exprs.h"
 #include "update_exprs.h"
-#include "json_exprs.h"
-#include "pragma.h"
+#include "var_expr.h"
 
 namespace zorba
 {

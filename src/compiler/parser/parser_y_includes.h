@@ -60,14 +60,13 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 #pragma warning(disable: 4786)
 #endif
 
-#include "compiler/parsetree/parsenodes.h"
-#include "compiler/parser/parse_constants.h"
 #include "compiler/api/compilercb.h"
-#include "store/api/update_consts.h"
-
-#include "compiler/parser/xquery_driver.h"
-
+#include "compiler/parser/parse_constants.h"
 #include "compiler/parser/parser_helpers.h"
+#include "compiler/parser/xquery_driver.h"
+#include "compiler/parsetree/parsenodes.h"
+#include "store/api/update_consts.h"
+#include "zorbatypes/integer.h"
 
 #define SYMTAB( n ) driver.symtab.get( (off_t)n )
 #define SYMTAB_PUT( s ) driver.symtab.put( s )

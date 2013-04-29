@@ -262,10 +262,7 @@ public:
   bool isNegZero() const;
   bool isInteger() const;
 
-  static FloatImpl const& zero();
   static FloatImpl const& neg_zero();
-  static FloatImpl const& one();
-  static FloatImpl const& neg_one();
   static FloatImpl const& nan();
   static FloatImpl const& pos_inf();
   static FloatImpl const& neg_inf();

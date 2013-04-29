@@ -26,9 +26,11 @@
 #include <zorba/config.h>
 #include "common/common.h"
 #include "util/stl_util.h"
+#include "util/string_util.h"
 
 // local
 #include "m_apm.h"
+#include "numeric_types.h"
 #include "schema_types_base.h"
 #include "zorbatypes_decl.h"
 #include "zstring.h"
@@ -52,6 +54,9 @@ struct integer_check {
   static ValueType check_value( ValueType n ) {
     return n;
   }
+  static MAPM const& check_value( MAPM const &n ) {
+    return n;
+  }
 };
 
 struct negative_check {
@@ -61,6 +66,13 @@ struct negative_check {
       throw std::range_error( BUILD_STRING( n, ": not < 0" ) );
     return n;
   }
+#if 0
+  static MAPM const& check_value( MAPM const &n ) {
+    if ( !(n.sign() < 0) )
+      throw std::range_error( BUILD_STRING( n, ": not < 0" ) );
+    return n;
+  }
+#endif
 };
 
 struct nonPositive_check {
@@ -70,6 +82,13 @@ struct nonPositive_check {
       throw std::range_error( BUILD_STRING( n, ": not <= 0" ) );
     return n;
   }
+#if 0
+  static MAPM const& check_value( MAPM const &n ) {
+    if ( !(n.sign() <= 0) )
+      throw std::range_error( BUILD_STRING( n, ": not <= 0" ) );
+    return n;
+  }
+#endif
 };
 
 struct nonNegative_check {
@@ -79,6 +98,13 @@ struct nonNegative_check {
       throw std::range_error( BUILD_STRING( n, ": not >= 0" ) );
     return n;
   }
+#if 0
+  static MAPM const& check_value( MAPM const &n ) {
+    if ( !(n.sign() >= 0) )
+      throw std::range_error( BUILD_STRING( n, ": not >= 0" ) );
+    return n;
+  }
+#endif
 };
 
 struct positive_check {
@@ -88,6 +114,13 @@ struct positive_check {
       throw std::range_error( BUILD_STRING( n, ": not > 0" ) );
     return n;
   }
+#if 0
+  static MAPM const& check_value( MAPM const &n ) {
+    if ( !(n.sign() > 0) )
+      throw std::range_error( BUILD_STRING( n, ": not > 0" ) );
+    return n;
+  }
+#endif
 };
 
 template<class CheckType>
@@ -498,8 +531,6 @@ public:
   zstring toString() const;
   value_type& value();
   value_type const& value() const;
-  static IntegerImpl const& one();
-  static IntegerImpl const& zero();
 
   /////////////////////////////////////////////////////////////////////////////
 
@@ -572,26 +603,6 @@ typedef IntegerImpl<negative_check>     NegativeInteger;
 typedef IntegerImpl<nonNegative_check>  NonNegativeInteger;
 typedef IntegerImpl<nonPositive_check>  NonPositiveInteger;
 typedef IntegerImpl<positive_check>     PositiveInteger;
-
-template<class IntegerType>
-struct integer_const {
-  static IntegerType const& zero();
-  static IntegerType const& one();
-};
-
-template<>
-struct integer_const<NegativeInteger> {
-};
-
-template<>
-struct integer_const<NonPositiveInteger> {
-  static NonPositiveInteger const& zero();
-};
-
-template<>
-struct integer_const<PositiveInteger> {
-  static PositiveInteger const& one();
-};
 
 ////////// constructors ///////////////////////////////////////////////////////
 
@@ -707,11 +718,11 @@ inline IntegerImpl<C>::IntegerImpl( IntegerImpl<D> const &i ) :
 
 ////////// assignment operators ///////////////////////////////////////////////
 
-#define ZORBA_ASSIGN_OP(T)                                \
-  template<class C> inline                     \
-  IntegerImpl<C>& IntegerImpl<C>::operator=( T n ) {  \
-    value_ = static_cast<int_cast_type>( n );             \
-    return *this;                                         \
+#define ZORBA_ASSIGN_OP(T)                                      \
+  template<class C> inline                                      \
+  IntegerImpl<C>& IntegerImpl<C>::operator=( T n ) {            \
+    value_ = static_cast<int_cast_type>( C::check_value( n ) ); \
+    return *this;                                               \
   }
 
 ZORBA_ASSIGN_OP(char)

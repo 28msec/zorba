@@ -59,7 +59,7 @@ public:
    * @return Iterator
    */
   virtual Iterator_t getIterator(
-      const xs_integer& aSkip = xs_integer::zero(),
+      const xs_integer& aSkip = numeric_consts<xs_integer>::zero(),
       const zstring& aStart = "") = 0;
 
   /**

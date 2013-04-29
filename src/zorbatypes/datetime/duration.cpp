@@ -19,11 +19,12 @@
 #include <memory>
 #include <string>
 
-#include "zorbautils/hashfun.h"
-#include "zorbatypes/duration.h"
-#include "zorbatypes/datetime/parse.h"
-#include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/datetime/parse.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
+#include "zorbautils/hashfun.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 
@@ -597,7 +598,8 @@ long Duration::getIntSeconds() const
 
 xs_double Duration::getTotalSeconds() const
 {
-  return (is_negative ? xs_double::neg_one() : xs_double::one())
+  return (is_negative ?
+      numeric_consts<xs_double>::neg_one() : numeric_consts<xs_double>::one())
       * ((((((((xs_double(data[YEAR_DATA]) * 12
       + xs_double(data[MONTH_DATA])) * 30)
       + xs_double(data[DAY_DATA])) * 24)

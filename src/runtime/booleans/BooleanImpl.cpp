@@ -20,6 +20,7 @@
 
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/integer.h"
 
 #include "system/globalenv.h"
 

@@ -436,32 +436,5 @@ template class IntegerImpl<positive_check>;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-template<class I>
-I const& integer_const<I>::zero() {
-  static I const i(0);
-  return i;
-}
-
-template<class I>
-I const& integer_const<I>::one() {
-  static I const i(1);
-  return i;
-}
-
-template class integer_const<Integer>;
-template class integer_const<NonNegativeInteger>;
-
-NonPositiveInteger const& integer_const<NonPositiveInteger>::zero() {
-  static NonPositiveInteger const i(0);
-  return i;
-}
-
-PositiveInteger const& integer_const<PositiveInteger>::one() {
-  static PositiveInteger const i(1);
-  return i;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -15,6 +15,7 @@
  */
 #include "stdafx.h"
 
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 #include "compiler/parser/symbol_table.h"

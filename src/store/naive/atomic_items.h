@@ -40,6 +40,7 @@
 
 #include "zorbatypes/schema_types.h"
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/integer.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "ordpath.h"

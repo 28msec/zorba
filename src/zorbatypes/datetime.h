@@ -20,11 +20,10 @@
 #include <iostream>
 
 #include <zorba/config.h>
-#include "zorbatypes/timezone.h"
-#include "zorbatypes/duration.h"
-
 #include "util/ascii_util.h"
 
+#include "timezone.h"
+#include "duration.h"
 
 namespace zorba
 {
@@ -301,7 +300,7 @@ public:
       
   int getMinutes() const;
       
-  xs_decimal getSeconds() const;
+  Decimal getSeconds() const;
   
   int getIntSeconds() const;
   

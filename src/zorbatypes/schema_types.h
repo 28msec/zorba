@@ -18,10 +18,13 @@
 #ifndef ZORBA_SCHEMA_TYPES_H
 #define ZORBA_SCHEMA_TYPES_H
 
+// local
 #include "binary.h"
+#include "datetime.h"
 #include "decimal.h"
+#include "duration.h"
 #include "floatimpl.h"
-#include "integer.h"
+#include "numeric_types.h"
 #include "schema_types_base.h"
 
 namespace zorba {

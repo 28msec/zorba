@@ -90,6 +90,7 @@
 
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbatypes/integer.h"
 #include "zorbamisc/ns_consts.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
@@ -11553,8 +11554,8 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_HEAD_1:
   {
-    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer::one()));
-    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer::one()));
+    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one()));
+    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one()));
 
     function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
 
