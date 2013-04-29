@@ -10939,7 +10939,12 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
       for (; ite != end; ++ite)
       {
         if ((*ite).second == var_ns)
-          RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+        {
+          if (theSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
+            RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+          else
+            RAISE_ERROR(err::XQDY0054, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
       }
     }
 
@@ -11349,7 +11354,12 @@ expr* generate_fncall(
       for (; ite != end; ++ite)
       {
         if ((*ite).second == fn_ns)
-          RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+        {
+          if (theSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
+            RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+          else
+            RAISE_ERROR(err::XQDY0054, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
       }
     }
     
