@@ -37,20 +37,27 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+ostream& operator<<( ostream &o, MAPM const &m ) {
+  unique_ptr<char[]> const buf( new char[ m.exponent() + 3 ] );
+  m.toIntegerString( buf.get() );
+  return o << buf.get();
+}
+
+#ifdef ZORBA_WITH_BIG_INTEGER
+void integer_check::throw_range_error( MAPM const &n, char const *op ) {
+  throw range_error( BUILD_STRING( n, ": not ", op, " 0" ) );
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
+///////////////////////////////////////////////////////////////////////////////
+
 template<class C>
 void IntegerImpl<C>::parse( char const *s ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   Decimal::parse( s, &value_, Decimal::parse_integer );
-  // TODO: check value?
+  C::checK_value( value_ );
 #else
-  value_type const temp( ztd::aton<value_type>( s ) );
-#if 0
-  if ( is_too_big( temp ) )
-    throw std::range_error(
-      BUILD_STRING( '"', temp, "\": unsigned integer too big" )
-    );
-#endif
-  value_ = temp;
+  value_ = ztd::aton<value_type>( s );
 #endif /* ZORBA_WITH_BIG_INTEGER */
 }
 
@@ -416,9 +423,9 @@ bool IntegerImpl::is_xs_unsignedShort() const {
 template<class C>
 zstring IntegerImpl<C>::toString() const {
 #ifdef ZORBA_WITH_BIG_INTEGER
-  unique_ptr<char[]> const buf( new char[ value_.exponent() + 3 ] );
-  value_.toIntegerString( buf.get() );
-  return buf.get();
+  ostringstream oss;
+  oss << value_;
+  return oss.str();
 #else
   ascii::itoa_buf_type buf;
   return ascii::itoa( value_, buf );

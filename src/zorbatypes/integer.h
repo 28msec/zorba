@@ -21,6 +21,7 @@
 // standard
 #include <cmath>
 #include <limits>
+#include <sstream>
 
 // Zorba
 #include <zorba/config.h>
@@ -49,78 +50,86 @@ namespace serialization {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+std::ostream& operator<<( std::ostream&, MAPM const& );
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 struct integer_check {
   template<typename ValueType>
   static ValueType check_value( ValueType n ) {
     return n;
   }
+#ifdef ZORBA_WITH_BIG_INTEGER
   static MAPM const& check_value( MAPM const &n ) {
     return n;
   }
+protected:
+  static void throw_range_error( MAPM const &n, char const *op );
+#endif /* ZORBA_WITH_BIG_INTEGER */
 };
 
-struct negative_check {
-  template<typename ValueType>
-  static ValueType check_value( ValueType n ) {
-    if ( !ztd::lt0( n ) )
-      throw std::range_error( BUILD_STRING( n, ": not < 0" ) );
-    return n;
-  }
-#if 0
-  static MAPM const& check_value( MAPM const &n ) {
-    if ( !(n.sign() < 0) )
-      throw std::range_error( BUILD_STRING( n, ": not < 0" ) );
-    return n;
-  }
-#endif
-};
-
-struct nonPositive_check {
+struct nonPositive_check : integer_check {
   template<typename ValueType>
   static ValueType check_value( ValueType n ) {
     if ( !ztd::le0( n ) )
       throw std::range_error( BUILD_STRING( n, ": not <= 0" ) );
     return n;
   }
-#if 0
+#ifdef ZORBA_WITH_BIG_INTEGER
   static MAPM const& check_value( MAPM const &n ) {
     if ( !(n.sign() <= 0) )
-      throw std::range_error( BUILD_STRING( n, ": not <= 0" ) );
+      throw_range_error( n, "<=" );
     return n;
   }
-#endif
+#endif /* ZORBA_WITH_BIG_INTEGER */
 };
 
-struct nonNegative_check {
+struct negative_check : nonPositive_check {
+  template<typename ValueType>
+  static ValueType check_value( ValueType n ) {
+    if ( !ztd::lt0( n ) )
+      throw std::range_error( BUILD_STRING( n, ": not < 0" ) );
+    return n;
+  }
+#ifdef ZORBA_WITH_BIG_INTEGER
+  static MAPM const& check_value( MAPM const &n ) {
+    if ( !(n.sign() < 0) )
+      throw_range_error( n, "<" );
+    return n;
+  }
+#endif /* ZORBA_WITH_BIG_INTEGER */
+};
+
+struct nonNegative_check : integer_check {
   template<typename ValueType>
   static ValueType check_value( ValueType n ) {
     if ( !ztd::ge0( n ) )
       throw std::range_error( BUILD_STRING( n, ": not >= 0" ) );
     return n;
   }
-#if 0
+#ifdef ZORBA_WITH_BIG_INTEGER
   static MAPM const& check_value( MAPM const &n ) {
     if ( !(n.sign() >= 0) )
-      throw std::range_error( BUILD_STRING( n, ": not >= 0" ) );
+      throw_range_error( n, ">=" );
     return n;
   }
-#endif
+#endif /* ZORBA_WITH_BIG_INTEGER */
 };
 
-struct positive_check {
+struct positive_check : nonNegative_check {
   template<typename ValueType>
   static ValueType check_value( ValueType n ) {
     if ( !ztd::gt0( n ) )
       throw std::range_error( BUILD_STRING( n, ": not > 0" ) );
     return n;
   }
-#if 0
+#ifdef ZORBA_WITH_BIG_INTEGER
   static MAPM const& check_value( MAPM const &n ) {
     if ( !(n.sign() > 0) )
-      throw std::range_error( BUILD_STRING( n, ": not > 0" ) );
+      throw_range_error( n, ">" );
     return n;
   }
-#endif
+#endif /* ZORBA_WITH_BIG_INTEGER */
 };
 
 template<class CheckType>
