@@ -62,4 +62,5 @@
 
 \section tutorials Tutorials
   - \ref web_crawler_tutorial
+  - \ref image_processing_tutorial
 */

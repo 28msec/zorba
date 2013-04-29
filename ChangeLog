@@ -39,6 +39,7 @@ Optimizations:
 
 Bug Fixes/Other Changes:
   * Fixed bug #1102997 (Swapping referenced nodes)
+  * Fixed bug #1169908 (Zorba hangs with invalid utf-8 input)
   * Fixed bug #1111487 (Swapping nodes that are in collections)
   * Fixed bug #1123836 (overflows in date/time casts now return FODT0001 and
     in durations return FODT0002)
@@ -54,6 +55,7 @@ Bug Fixes/Other Changes:
   * Fixed bug in index join rule (no index join if inner clause has positional var).
   * Fixed bug in index join rule (copy var ids after cloning index domain expr).
   * Fixed bug #1131988 (re00732 fails)
+  * Fixed bug in handling the type declaration of a window variable.
   * Fixed bug #1131990 (re00737 fails)
   * Fixed bug #1123162 (FOTS: formatting dates and times failures)
   * Added missing wrapper expressions around some variable references.

@@ -1,0 +1,12 @@
+
+module namespace db28 = "http://28.io/collections";
+
+import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+declare %an:mutable %an:unordered %an:mutable-nodes collection db28:foo;
+
+declare %an:manual %an:value-range index db28:foo__id_
+on nodes dml:collection(xs:QName("db28:foo"))
+by .("_id") as Q{http://www.w3.org/2001/XMLSchema}string;

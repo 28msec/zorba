@@ -190,9 +190,13 @@ int serializer::emitter::emit_expanded_string(
   {
 
     // the input string is UTF-8
-    int char_length = utf8::char_length(*chars);
-    if (char_length == 0)
+    int char_length;
+    try {
+      char_length = utf8::char_length(*chars);
+    }
+    catch ( utf8::invalid_byte const& ) {
       char_length = 1;
+    }
 
     if (char_length > chars_end - chars)
       return chars_end - chars;

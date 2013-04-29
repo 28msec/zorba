@@ -1208,7 +1208,7 @@ XQDOC_NO_BEGIN_TAG (CollectionDecl)
 
 void end_visit(const CollectionDecl& n, void*)
 {
-  if ((!theOptions & xqdoc_component_collections))
+  if (!(theOptions & xqdoc_component_collections))
     return;
 
   store::Item_t lCollectionQName, lNameQName, lTypeQName;

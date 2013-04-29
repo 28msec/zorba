@@ -113,7 +113,7 @@ bool Base64DecodeIterator::nextImpl(
         while (lTranscoder.good())
         {
           lTranscoder.read(buf, 1024);
-          lTranscodedString.append(buf, lTranscoder.gcount());
+          lTranscodedString.append(buf, static_cast<zstring::size_type>(lTranscoder.gcount()));
         }
         GENV_ITEMFACTORY->createString(result, lTranscodedString);
       }

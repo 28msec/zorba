@@ -317,7 +317,7 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
           ostringstream oss;
           if ( pic.primary.type == picture::ROMAN )
             oss << uppercase;
-          oss << roman( n );
+          oss << roman( static_cast<unsigned>( n ) );
           *dest += oss.str();
         }
         catch ( range_error const& ) {
