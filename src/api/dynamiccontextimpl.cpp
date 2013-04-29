@@ -27,6 +27,7 @@
 #include "types/typemanager.h"
 #include "types/root_typemanager.h"
 #include "types/schema/validate.h"
+#include "zorbatypes/integer.h"
 
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
@@ -395,7 +396,28 @@ bool DynamicContextImpl::setVariable(
 bool DynamicContextImpl::setContextItem(const Item& inValue)
 {
   String varName = Unmarshaller::newString(static_context::DOT_VAR_NAME);
-  return setVariable(varName, inValue);
+  bool res = setVariable(varName, inValue);
+
+  store::Item_t one;
+
+  if (!theCtx->is_set_variable(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION))
+  {
+    GENV_ITEMFACTORY->createInteger(one, xs_integer(1));
+
+    varName = Unmarshaller::newString(static_context::DOT_POS_VAR_NAME);
+    setVariable(varName, Item(one));
+  }
+
+  if (!theCtx->is_set_variable(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE))
+  {
+    if (!one)
+      GENV_ITEMFACTORY->createInteger(one, xs_integer(1));
+
+    varName = Unmarshaller::newString(static_context::DOT_SIZE_VAR_NAME);
+    setVariable(varName, Item(one));
+  }
+
+  return res;
 }
 
 
