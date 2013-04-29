@@ -30,7 +30,7 @@ as xs:string?
  :`
  : @return The empty-sequence is returned.
  :)
-declare %fn:private %ann:sequential function http:set-header-impl(
+declare %private %ann:sequential function http:set-header-impl(
     $name as xs:string,
     $value as xs:string)
 as xs:string? { 
