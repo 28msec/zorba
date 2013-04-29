@@ -1,5 +1,5 @@
 
-declare %fn:private function local:serialize-request-as-xml()
+declare %private function local:serialize-request-as-xml()
 {
   ()
 };
