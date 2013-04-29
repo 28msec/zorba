@@ -418,14 +418,14 @@ void AnnotationList::checkConflictingDeclarations(
     // detect duplicate annotations (if we "know" them)
     if (id != AnnotationInternal::zann_end && lCurrAnn.test(id))
     {
-      if (declKind == func_decl)
+      if (declKind == var_decl)
       {
-        RAISE_ERROR(err::XQST0106, loc,
-        ERROR_PARAMS(ZED(XQST0106_Duplicate), qname->getStringValue()));
+        RAISE_ERROR(err::XQST0116, loc,
+        ERROR_PARAMS(ZED(XQST0116_Duplicate), qname->getStringValue()));
       }
       else
       {
-        RAISE_ERROR(err::XQST0116, loc,
+        RAISE_ERROR(err::XQST0106, loc,
         ERROR_PARAMS(ZED(XQST0106_Duplicate), qname->getStringValue()));
       }
     }
@@ -457,14 +457,14 @@ void AnnotationList::checkConflictingDeclarations(
         }
       }
 
-      if (declKind == func_decl)
+      if (declKind == var_decl)
       {
-        RAISE_ERROR(err::XQST0106, loc,
-        ERROR_PARAMS(ZED(XQST0106_Conflicting), lProblems.str()));
+        RAISE_ERROR(err::XQST0116, loc,
+        ERROR_PARAMS(ZED(XQST0116_Conflicting), lProblems.str()));
       }
       else
       {
-        RAISE_ERROR(err::XQST0116, loc,
+        RAISE_ERROR(err::XQST0106, loc,
         ERROR_PARAMS(ZED(XQST0106_Conflicting), lProblems.str()));
       }
     }
