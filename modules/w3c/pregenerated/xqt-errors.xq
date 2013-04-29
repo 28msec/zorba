@@ -701,6 +701,16 @@ declare variable $err:XQST0114 as xs:QName := fn:QName($err:NS, "err:XQST0114");
 
 (:~
  :
+ : It is a static error if a variable declaration contains both a %private
+ : and a %public annotation, more than one %private annotation, or more
+ : than one %public annotation.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0116 as xs:QName := fn:QName($err:NS, "err:XQST0116");
+
+(:~
+ :
  : It is a static error if a feature required by require-feature is not
  : supported by the implementation.
  : 

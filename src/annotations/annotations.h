@@ -139,6 +139,15 @@ public:
 class AnnotationList : public SimpleRCObject
 {
 public:
+  enum DeclarationKind
+  {
+    func_decl,
+    var_decl,
+    index_decl,
+    collection_decl
+  };
+
+public:
   typedef AnnotationInternal::RuleBitSet RuleBitSet;
 
   typedef AnnotationInternal::AnnotationId AnnotationId;
@@ -172,7 +181,7 @@ public:
       const store::Item_t& qname,
       const std::vector<const_expr*>& literals);
 
-  void checkConflictingDeclarations(const QueryLoc& loc) const;
+  void checkConflictingDeclarations(DeclarationKind k, const QueryLoc& loc) const;
 };
 
 

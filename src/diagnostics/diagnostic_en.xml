@@ -806,13 +806,16 @@
        function's annotations contain more than one annotation named \c
        deterministic or \c nondeterministic.
       </comment>
-      <entry key="THE_SAME">
-        <value>the same</value>
+
+      <value>$1</value>
+
+      <entry key="Duplicate">
+        <value>$2: annotation appears more than once in declaration</value>
       </entry>
-      <entry key="CONFLICTING">
-        <value>conflicting</value>
+
+      <entry key="Conflicting">
+        <value>$2 and $3: conflicting annotations in declaration</value>
       </entry>
-      <value>$1: multiple annotations with $2 names</value>
     </diagnostic>
 
     <diagnostic code="XQST0111">
@@ -839,6 +842,23 @@
       <value>"$1": duplicate decimal format property</value>
     </diagnostic>
     
+    <diagnostic code="XQST0116">
+      <comment>
+      It is a static error if a variable declaration contains both a %private
+      and a %public annotation, more than one %private annotation, or more
+      than one %public annotation.
+      </comment>
+      <value>$1</value>
+
+      <entry key="Duplicate">
+        <value>$2: annotation appears more than once in declaration</value>
+      </entry>
+
+      <entry key="Conflicting">
+        <value>$2 and $3: conflicting annotations in declaration</value>
+      </entry>
+    </diagnostic>
+
     <diagnostic code="XQST0120">
       <comment>
         It is a static error if a feature required by require-feature is not

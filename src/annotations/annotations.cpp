@@ -60,12 +60,12 @@ void AnnotationInternal::createBuiltIn()
   //
   // W3C annotations
   //
-  GENV_ITEMFACTORY->createQName(qname, static_context::W3C_FN_NS, "fn", "public");
+  GENV_ITEMFACTORY->createQName(qname, static_context::XQUERY_NS, "", "public");
   id = fn_public;
   theAnnotId2NameMap[id] = qname;
   theAnnotName2IdMap.insert(qname, id);
 
-  GENV_ITEMFACTORY->createQName(qname, static_context::W3C_FN_NS, "fn", "private");
+  GENV_ITEMFACTORY->createQName(qname, static_context::XQUERY_NS, "", "private");
   id = fn_private;
   theAnnotId2NameMap[id] = qname;
   theAnnotName2IdMap.insert(qname, id);
@@ -396,9 +396,11 @@ void AnnotationList::push_back(
 
 
 /*******************************************************************************
-  Called from translator::end_visit(const AnnotationListParsenode& v, void*)
+  Called from translator to detect duplicates and conflicting declarations
 ********************************************************************************/
-void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
+void AnnotationList::checkConflictingDeclarations(
+    DeclarationKind declKind,
+    const QueryLoc& loc) const
 {
   // make sure we don't have more annotations then max 64 bit
   assert(AnnotationInternal::zann_end < 64);
@@ -416,8 +418,16 @@ void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
     // detect duplicate annotations (if we "know" them)
     if (id != AnnotationInternal::zann_end && lCurrAnn.test(id))
     {
-      RAISE_ERROR(err::XQST0106, loc,
-      ERROR_PARAMS(qname->getStringValue(), ZED(XQST0106_THE_SAME)));
+      if (declKind == func_decl)
+      {
+        RAISE_ERROR(err::XQST0106, loc,
+        ERROR_PARAMS(ZED(XQST0106_Duplicate), qname->getStringValue()));
+      }
+      else
+      {
+        RAISE_ERROR(err::XQST0116, loc,
+        ERROR_PARAMS(ZED(XQST0106_Duplicate), qname->getStringValue()));
+      }
     }
 
     lCurrAnn.set(id);
@@ -447,8 +457,16 @@ void AnnotationList::checkConflictingDeclarations(const QueryLoc& loc) const
         }
       }
 
-      RAISE_ERROR(err::XQST0106, loc,
-      ERROR_PARAMS(lProblems.str(), ZED(XQST0106_CONFLICTING)));
+      if (declKind == func_decl)
+      {
+        RAISE_ERROR(err::XQST0106, loc,
+        ERROR_PARAMS(lProblems.str(), ZED(XQST0106_CONFLICTING)));
+      }
+      else
+      {
+        RAISE_ERROR(err::XQST0116, loc,
+        ERROR_PARAMS(lProblems.str(), ZED(XQST0106_CONFLICTING)));
+      }
     }
   }
 }
