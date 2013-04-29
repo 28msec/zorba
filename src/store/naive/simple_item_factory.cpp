@@ -2278,7 +2278,7 @@ bool BasicItemFactory::createJSONNumber(
       return createDouble(result, d);
     }
   }
-  catch (std::exception& e)
+  catch (std::exception const&)
   {
     return false;
   }
