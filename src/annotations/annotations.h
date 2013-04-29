@@ -38,7 +38,20 @@ typedef rchandle<AnnotationList> AnnotationList_t;
 class const_expr;
 
 /*******************************************************************************
-  Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
+  theAnnotName2IdMap:
+  -------------------
+  Maps annotation qnames to internal annotation ids
+
+  theAnnotId2NameMap:
+  -------------------
+  The reverse of theAnnotName2IdMap
+
+  theRuleSet:
+  -----------
+  A vector containing all the rules for conflicting annotations. Each rule is
+  specified as a set of annotation: if 2 or more annotations in the set appear
+  together in a declaration, then a conflict exists. Each set of annotations
+  is implemented as a bitset indexed by annotation id.
 ********************************************************************************/
 class AnnotationInternal : public SimpleRCObject
 {

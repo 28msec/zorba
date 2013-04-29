@@ -814,7 +814,7 @@
       </entry>
 
       <entry key="Conflicting">
-        <value>$2 and $3: conflicting annotations in declaration</value>
+        <value>$2: conflicting annotations in declaration</value>
       </entry>
     </diagnostic>
 
@@ -855,7 +855,7 @@
       </entry>
 
       <entry key="Conflicting">
-        <value>$2 and $3: conflicting annotations in declaration</value>
+        <value>$2: conflicting annotations in declaration</value>
       </entry>
     </diagnostic>
 

@@ -441,7 +441,7 @@ void AnnotationList::checkConflictingDeclarations(
   {
     const RuleBitSet& lCurrSet = *ite;
 
-    if ((lCurrAnn & lCurrSet).count() >  1)
+    if ((lCurrAnn & lCurrSet).count() > 1)
     {
       // build error string to return set of conflicting annotations
       std::ostringstream lProblems;
@@ -460,12 +460,12 @@ void AnnotationList::checkConflictingDeclarations(
       if (declKind == func_decl)
       {
         RAISE_ERROR(err::XQST0106, loc,
-        ERROR_PARAMS(lProblems.str(), ZED(XQST0106_CONFLICTING)));
+        ERROR_PARAMS(ZED(XQST0106_Conflicting), lProblems.str()));
       }
       else
       {
         RAISE_ERROR(err::XQST0116, loc,
-        ERROR_PARAMS(lProblems.str(), ZED(XQST0106_CONFLICTING)));
+        ERROR_PARAMS(ZED(XQST0106_Conflicting), lProblems.str()));
       }
     }
   }
