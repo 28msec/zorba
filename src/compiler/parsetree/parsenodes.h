@@ -32,6 +32,7 @@
 
 #include "store/api/item.h"
 
+#include "zorbatypes/decimal.h"
 #include "zorbatypes/floatimpl.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/schema_types.h"
