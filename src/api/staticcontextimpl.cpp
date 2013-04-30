@@ -1788,7 +1788,10 @@ StaticContextImpl::getVariablePrimeType(
       const XQType* varType = var->getType();
       zstring varTypeString;
       if (!varType)
-        varTypeString = "xs:anyType";
+      {
+        xqtref_t lAnyType = theCtx->get_typemanager()->create_any_type();
+        varTypeString =  lAnyType->toSchemaString();
+      }
       else
         varTypeString = varType->toSchemaString();
       
