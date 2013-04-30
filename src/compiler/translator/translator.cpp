@@ -8840,7 +8840,7 @@ void end_visit(const RangeExpr& v, void* /*visit_state*/)
   expr* e1 = pop_nodestack();
   expr* e2 = pop_nodestack();
 
-  fo_expr* e = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_TO_2), e2, e1);
+  fo_expr* e = CREATE(fo)(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_TO_2), e2, e1);
 
   normalize_fo(e);
 
