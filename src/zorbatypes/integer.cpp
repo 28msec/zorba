@@ -57,10 +57,10 @@ template<class C>
 void IntegerImpl<C>::parse( char const *s ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   Decimal::parse( s, &value_, Decimal::parse_integer );
-  C::check_value( value_ );
 #else
   value_ = ztd::aton<value_type>( s );
 #endif /* ZORBA_WITH_BIG_INTEGER */
+  C::check_value( value_ );
 }
 
 ////////// constructors ///////////////////////////////////////////////////////
@@ -70,6 +70,7 @@ template<class C>
 IntegerImpl<C>::IntegerImpl( long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  C::check_value( value_ );
 }
 
 #if ZORBA_SIZEOF_INT == ZORBA_SIZEOF_LONG
@@ -77,6 +78,7 @@ template<class C>
 IntegerImpl<C>::IntegerImpl( unsigned int n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  C::check_value( value_ );
 }
 #endif /* ZORBA_SIZEOF_INT == ZORBA_SIZEOF_LONG */
 
@@ -84,32 +86,34 @@ template<class C>
 IntegerImpl<C>::IntegerImpl( unsigned long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  C::check_value( value_ );
 }
 
 template<class C>
 IntegerImpl<C>::IntegerImpl( unsigned long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  C::check_value( value_ );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 template<class C>
 IntegerImpl<C>::IntegerImpl( Decimal const &d ) {
-  value_ = ftoi( d.value_ );
+  value_ = C::check_value( ftoi( d.value_ ) );
 }
 
 template<class C>
 IntegerImpl<C>::IntegerImpl( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = ftoi( d.getNumber() );
+  value_ = C::check_value( ftoi( d.getNumber() ) );
 }
 
 template<class C>
 IntegerImpl<C>::IntegerImpl( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = ftoi( f.getNumber() );
+  value_ = C::check_value( ftoi( f.getNumber() ) );
 }
 
 ////////// assignment operators ///////////////////////////////////////////////
@@ -119,6 +123,7 @@ template<class C>
 IntegerImpl<C>& IntegerImpl<C>::operator=( long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  C::check_value( value_ );
   return *this;
 }
 
@@ -126,6 +131,7 @@ template<class C>
 IntegerImpl<C>& IntegerImpl<C>::operator=( unsigned long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  C::check_value( value_ );
   return *this;
 }
 
@@ -133,13 +139,14 @@ template<class C>
 IntegerImpl<C>& IntegerImpl<C>::operator=( unsigned long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
+  C::check_value( value_ );
   return *this;
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 template<class C>
 IntegerImpl<C>& IntegerImpl<C>::operator=( Decimal const &d ) {
-  value_ = ftoi( d.value_ );
+  value_ = C::check_value( ftoi( d.value_ ) );
   return *this;
 }
 
@@ -147,7 +154,7 @@ template<class C>
 IntegerImpl<C>& IntegerImpl<C>::operator=( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = ftoi( d.getNumber() );
+  value_ = C::check_value( ftoi( d.getNumber() ) );
   return *this;
 }
 
@@ -155,7 +162,7 @@ template<class C>
 IntegerImpl<C>& IntegerImpl<C>::operator=( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = ftoi( f.getNumber() );
+  value_ = C::check_value( ftoi( f.getNumber() ) );
   return *this;
 }
 
@@ -255,7 +262,7 @@ ZORBA_INTEGER_OP(unsigned long long)
   IntegerImpl<C>& IntegerImpl<C>::operator OP( T n ) {  \
     ascii::itoa_buf_type buf;                           \
     value_type const temp( ascii::itoa( n, buf ) );     \
-    value_ OP temp;                                     \
+    C::check_value( value_ OP temp );                   \
     return *this;                                       \
   }
 
@@ -278,7 +285,7 @@ ZORBA_INTEGER_OP(%=,unsigned long long)
   IntegerImpl<C>& IntegerImpl<C>::operator/=( T n ) { \
     ascii::itoa_buf_type buf;                         \
     value_type const temp( ascii::itoa( n, buf ) );   \
-    value_ = ftoi( value_ / temp );                   \
+    C::check_value( value_ = ftoi( value_ / temp ) ); \
     return *this;                                     \
   }
 
@@ -419,6 +426,16 @@ MAPM IntegerImpl<C>::itod() const {
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 #ifdef ZORBA_WITH_BIG_INTEGER
+
+static MAPM xs_byte_min( "-128" );
+static MAPM xs_byte_max( "127" );
+static MAPM xs_short_min( "-32768" );
+static MAPM xs_short_max( "32767" );
+static MAPM xs_unsignedByte_max( "256" );
+static MAPM xs_unsignedInt_max( "4294967295" );
+static MAPM xs_unsignedLong_max( "18446744073709551615" );
+static MAPM xs_unsignedShort_max( "65536" );
+
 template<class C>
 size_t IntegerImpl<C>::alloc_size() const {
   return value_.significant_digits();
@@ -431,39 +448,31 @@ uint32_t IntegerImpl<C>::hash() const {
 
 template<class C>
 bool IntegerImpl<C>::is_xs_byte() const {
-  static MAPM xs_byte_min( "-128" );
-  static MAPM xs_byte_max( "127" );
   return value_ >= xs_byte_min && value_ <= xs_byte_max;
 }
 
 template<class C>
 bool IntegerImpl<C>::is_xs_short() const {
-  static MAPM xs_short_min( "-32768" );
-  static MAPM xs_short_max( "32767" );
   return value_ >= xs_short_min && value_ <= xs_short_max;
 }
 
 template<class C>
 bool IntegerImpl<C>::is_xs_unsignedByte() const {
-  static MAPM xs_unsignedByte_max( "256" );
   return value_.sign() >= 0 && value_ <= xs_unsignedByte_max;
 }
 
 template<class C>
 bool IntegerImpl<C>::is_xs_unsignedInt() const {
-  static MAPM xs_unsignedInt_max( "4294967295" );
   return value_.sign() >= 0 && value_ <= xs_unsignedInt_max;
 }
 
 template<class C>
 bool IntegerImpl<C>::is_xs_unsignedLong() const {
-  static MAPM xs_unsignedLong_max( "18446744073709551615" );
   return value_.sign() >= 0 && value_ <= xs_unsignedLong_max;
 }
 
 template<class C>
 bool IntegerImpl<C>::is_xs_unsignedShort() const {
-  static MAPM xs_unsignedShort_max( "65536" );
   return value_.sign() >= 0 && value_ <= xs_unsignedShort_max;
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
