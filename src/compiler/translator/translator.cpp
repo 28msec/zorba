@@ -3668,8 +3668,13 @@ void* begin_visit(const VFO_DeclList& v)
 
         if (theAnnotations)
         {
+          theAnnotations->
+          checkConflictingDeclarations(AnnotationList::var_decl, loc);
+
           if (ZANN_CONTAINS(fn_private))
+          {
             ve->set_private(true);
+          }
 
           if (ZANN_CONTAINS(zann_assignable))
           {
@@ -3725,6 +3730,9 @@ void* begin_visit(const VFO_DeclList& v)
       }
 
       annotations->accept(*this);
+
+      theAnnotations->
+      checkConflictingDeclarations(AnnotationList::func_decl, loc);
     }
 
     const QueryLoc& loc = func_decl->get_location();
@@ -4639,9 +4647,6 @@ void* begin_visit(const AnnotationListParsenode& v)
 void end_visit(const AnnotationListParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-
-  // detect duplicates and conflicting declarations
-  theAnnotations->checkConflictingDeclarations(loc);
 }
 
 
@@ -4658,12 +4663,21 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 
   //bool recognised = false;
 
+  zstring default_ns = (v.get_qname()->is_eqname() ?
+                        v.get_qname()->get_namespace() :
+                        static_context::XQUERY_NS);
+
   store::Item_t expandedQName;
-  expand_function_qname(expandedQName, v.get_qname(), loc);
+  theSctx->expand_qname(expandedQName,
+                        default_ns,
+                        v.get_qname()->get_prefix(),
+                        v.get_qname()->get_localname(),
+                        loc);
 
   zstring annotNS = expandedQName->getNamespace();
 
-  if (annotNS == static_context::W3C_XML_NS ||
+  if (annotNS == static_context::XQUERY_NS ||
+      annotNS == static_context::W3C_XML_NS ||
       annotNS == XML_SCHEMA_NS ||
       annotNS == XSI_NS ||
       annotNS == static_context::W3C_FN_NS ||
@@ -4808,6 +4822,9 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   {
     theAnnotations = new AnnotationList();
   }
+
+  theAnnotations->
+  checkConflictingDeclarations(AnnotationList::collection_decl, loc);
 
   // compute (redundant) enum values and assign
   // default annotations if no annotation for a group
@@ -4962,6 +4979,9 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if (theAnnotations)
   {
+    theAnnotations->
+    checkConflictingDeclarations(AnnotationList::index_decl, loc);
+
     if (ZANN_CONTAINS(zann_general_equality) ||
         ZANN_CONTAINS(zann_general_range))
     {
@@ -6351,6 +6371,9 @@ void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
 
   if (theAnnotations)
   {
+    theAnnotations->
+    checkConflictingDeclarations(AnnotationList::var_decl, loc);
+
     if (ZANN_CONTAINS(zann_assignable))
     {
       ve->set_mutable(true);
@@ -10919,7 +10942,12 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
       for (; ite != end; ++ite)
       {
         if ((*ite).second == var_ns)
-          RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+        {
+          if (theSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
+            RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+          else
+            RAISE_ERROR(err::XQDY0054, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
       }
     }
 
@@ -11329,7 +11357,12 @@ expr* generate_fncall(
       for (; ite != end; ++ite)
       {
         if ((*ite).second == fn_ns)
-          RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+        {
+          if (theSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
+            RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+          else
+            RAISE_ERROR(err::XQDY0054, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
       }
     }
     
