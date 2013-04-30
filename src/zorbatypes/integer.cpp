@@ -368,23 +368,6 @@ ZORBA_INTEGER_OP(> ,unsigned long long)
 ZORBA_INTEGER_OP(>=,unsigned long long)
 #undef ZORBA_INSTANTIATE
 
-#else /* ZORBA_WITH_BIG_INTEGER */
-
-#define ZORBA_INSTANTIATE(OP)                                             \
-  template bool operator OP( Integer const&, Decimal const& );            \
-  template bool operator OP( NegativeInteger const&, Decimal const& );    \
-  template bool operator OP( NonNegativeInteger const&, Decimal const& ); \
-  template bool operator OP( NonPositiveInteger const&, Decimal const& ); \
-  template bool operator OP( PositiveInteger const&, Decimal const& )
-
-ZORBA_INSTANTIATE(==);
-ZORBA_INSTANTIATE(!=);
-ZORBA_INSTANTIATE(< );
-ZORBA_INSTANTIATE(<=);
-ZORBA_INSTANTIATE(> );
-ZORBA_INSTANTIATE(>=);
-#undef ZORBA_INSTANTIATE
-
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 ////////// math functions /////////////////////////////////////////////////////
