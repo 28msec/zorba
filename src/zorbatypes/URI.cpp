@@ -1279,7 +1279,7 @@ void URI::resolve(const URI* base_uri)
       base_uri->get_path(path);
 
       zstring::size_type last_slash = path.rfind("/");
-      if ( last_slash != zstring::npos )
+      if ( last_slash != zstring::npos && (last_slash != 0) )
         thePath = path.substr(0, last_slash+1);
       else 
         thePath = path;
@@ -1287,7 +1287,8 @@ void URI::resolve(const URI* base_uri)
       set_state(Path);
     }
 
-    if ( (! is_set(QueryString)) ) 
+    if ( !is_set(QueryString) && base_uri->is_set(QueryString) &&
+         !base_uri->get_encoded_query().empty() )
     {
         base_uri->get_query(theQueryString);
 
