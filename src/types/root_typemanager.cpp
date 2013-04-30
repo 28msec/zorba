@@ -386,18 +386,21 @@ RootTypeManager::RootTypeManager()
 #undef ATOMIC_TYPE_DEFN
 
   XS_NMTOKENS_TYPE = new UserDefinedXQType(this,
+                                           false,
                                            XS_NMTOKENS_QNAME,
                                            NULL,
                                            NMTOKEN_TYPE_ONE.getp(),
                                            true);
 
   XS_ENTITIES_TYPE = new UserDefinedXQType(this,
+                                           false,
                                            XS_ENTITIES_QNAME,
                                            NULL,
                                            ENTITY_TYPE_ONE.getp(),
                                            true);
 
   XS_IDREFS_TYPE = new UserDefinedXQType(this,
+                                         false,
                                          XS_IDREFS_QNAME,
                                          NULL,
                                          IDREF_TYPE_ONE.getp(),

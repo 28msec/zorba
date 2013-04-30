@@ -84,7 +84,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   store::Item_t item;
   TypeConstants::quantifier_t quant;
   bool res = false;
-
+  store::Item_t temp;
   const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
