@@ -608,7 +608,21 @@ int runUriTest(int argc, char* argv[])
       "",
       "",
       "localhost/Ãƒâ€¦ngstrÃƒÂ¶m/b/c" // path notation
-    }
+    },
+    {
+      "file:///test.xml",
+      "#id",
+      "file:///test.xml#id",
+      "file",
+      0,
+      "id",
+      "",
+      "",
+      "/test.xml",
+      "",
+      "",
+      "/test.xml"
+  }
   }; // URITestEntry tests[]
 
 
