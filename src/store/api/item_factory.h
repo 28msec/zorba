@@ -416,7 +416,7 @@ public:
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#dateTime]
-   * @param value string representation of the value
+   * @param str string representation of the value
    */
   virtual bool createDateTime(Item_t& result, const char* str, ulong strlen) = 0;
 
@@ -460,7 +460,7 @@ public:
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
-   * @param value string representation of the value
+   * @param str string representation of the value
    */
   virtual bool createDateTimeStamp(Item_t& result, const char* str, ulong strlen) = 0;
 

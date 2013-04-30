@@ -473,27 +473,46 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   store::Item_t startPosItem;
   xs_long startPos;
   store::Item_t lengthItem;
+  xs_double startPosDouble; 
+  xs_double lengthDouble;
 
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
 
   state->theIsChildReset = false;
-
+  
   CONSUME(startPosItem, 1);
+  startPosDouble = startPosItem->getDoubleValue();
+
+  //If starting position is set to +INF return empty sequence
+  if (startPosDouble.isPosInf() || startPosDouble.isNaN())
+    goto done;
+
+  //Removed startpos - 1, since if a -INF is present it overflows it to a positive number
   startPos =
-  static_cast<xs_long>(startPosItem->getDoubleValue().round().getNumber()) - 1;
+    static_cast<xs_long>(startPosDouble.round().getNumber());
 
   if (theChildren.size() == 3)
   {
     CONSUME(lengthItem, 2);
-    state->theRemaining =
-    static_cast<xs_long>(lengthItem->getDoubleValue().round().getNumber());
+    lengthDouble = lengthItem->getDoubleValue();
+    if (lengthDouble.isPosInf())
+    {
+      //if startPos is -INF and length is +INF return empty sequence because -INF + INF = NaN
+      if (startPosDouble.isNegInf())
+        goto done;
+
+      state->theRemaining = 1;
+    }
+    else
+      state->theRemaining =
+        static_cast<xs_long>(lengthDouble.round().getNumber());
   }
 
-  if (startPos < 0)
+  if (startPos < 1)
   {
     if (theChildren.size() >= 3)
-      state->theRemaining += startPos;
+      state->theRemaining += startPos - 1;
 
     startPos = 0;
   }
@@ -503,13 +522,13 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
     goto done;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > 0; --startPos)
+  for (; startPos > 1; --startPos)
   {
     if (!CONSUME(result, 0))
       goto done;
   }
 
-  if (theChildren.size() < 3)
+  if (theChildren.size() < 3 || lengthDouble.isPosInf())
   {
     while (CONSUME(result, 0))
     {
@@ -926,6 +945,17 @@ static bool DeepEqualNodes(
       if (! item1->getNodeName()->equals(item2->getNodeName()))
         return false;
 
+      TypeManager* tm = sctx->get_typemanager();
+
+      xqtref_t type1 = tm->create_value_type(item1.getp());
+      xqtref_t type2 = tm->create_value_type(item2.getp());
+
+      const NodeXQType* nodeType1 = static_cast<const NodeXQType *>(type1.getp());
+      const NodeXQType* nodeType2 = static_cast<const NodeXQType *>(type2.getp());
+
+      if ( nodeType1->get_content_type()->content_kind() != nodeType2->get_content_type()->content_kind() )
+        return false;
+
       return (DeepEqualAttributes(loc,
                                   sctx,
                                   dctx,
@@ -1093,6 +1123,13 @@ static bool DeepEqual(
       item1->isJSONArray() != item2->isJSONArray())
     return false;
 
+
+  xqtref_t type1 = tm->create_value_type(item1.getp());
+  xqtref_t type2 = tm->create_value_type(item2.getp());
+
+  if ( type1->content_kind() != type2->content_kind() )
+    return false;
+
   if (item1->isAtomic())
   {
     assert(item2->isAtomic());
@@ -1102,9 +1139,6 @@ static bool DeepEqual(
       collator = sctx->get_default_collator(QueryLoc::null);
 
     // check NaN
-    xqtref_t type1 = tm->create_value_type(item1.getp());
-    xqtref_t type2 = tm->create_value_type(item2.getp());
-
     if (((TypeOps::is_subtype(tm, *type1, *rtm.FLOAT_TYPE_ONE)
           &&
           item1->getFloatValue().isNaN())
@@ -1332,7 +1366,7 @@ bool FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   theChildren[0]->count(result, planState);
 
-  STACK_PUSH(result, state);
+  STACK_PUSH(!!result, state);
 
   STACK_END(state);
 }
@@ -1831,28 +1865,31 @@ static void fillTime (
     zorbatm::get_walltime_elapsed(t0, t1);
 }
 
+
 static void loadDocument(
-  zstring const& aUri,
-  static_context* aSctx,
-  PlanState& aPlanState,
-  QueryLoc const& loc,
-  store::Item_t& oResult)
+    zstring const& aUri,
+    static_context* aSctx,
+    PlanState& aPlanState,
+    QueryLoc const& loc,
+    store::Item_t& oResult)
 {
   // Normalize input to handle filesystem paths, etc.
   zstring lNormUri;
   normalizeInputUri(aUri, aSctx, loc, &lNormUri);
 
   // See if this (normalized) URI is already loaded in the store.
-  try {
+  try 
+  {
     oResult = GENV_STORE.getDocument(lNormUri);
   }
-  catch (XQueryException& e) {
+  catch (XQueryException& e)
+  {
     set_source(e, loc);
     throw;
   }
-  if (oResult != NULL) {
+
+  if (oResult != NULL)
     return;
-  }
 
   // Prepare a LoadProperties for loading the stream into the store
   store::LoadProperties lLoadProperties;
@@ -1861,16 +1898,22 @@ static void loadDocument(
 
   // Resolve URI to a stream
   zstring lErrorMessage;
-  std::auto_ptr<internal::Resource> lResource = aSctx->resolve_uri
-      (lNormUri, internal::EntityData::DOCUMENT, lErrorMessage);
+
+  std::auto_ptr<internal::Resource> lResource =
+  aSctx->resolve_uri(lNormUri, internal::EntityData::DOCUMENT, lErrorMessage);
+
   internal::StreamResource* lStreamResource =
-      dynamic_cast<internal::StreamResource*>(lResource.get());
-  if (lStreamResource == NULL) {
+  dynamic_cast<internal::StreamResource*>(lResource.get());
+
+  if (lStreamResource == NULL)
+  {
     throw XQUERY_EXCEPTION
         (err::FODC0002, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
   }
+
   std::istream* lStream = lStreamResource->getStream();
-  if (lStream == NULL) {
+  if (lStream == NULL)
+  {
     throw XQUERY_EXCEPTION(err::FODC0002, ERROR_PARAMS( aUri ), ERROR_LOC(loc));
   }
 
@@ -1880,21 +1923,27 @@ static void loadDocument(
   zorbatm::cputime t0user;
   zorbatm::get_current_cputime (t0user);
   zorbatm::get_current_walltime(t0);
-  try {
+
+  try
+  {
     store::Store& lStore = GENV.getStore();
     zstring lBaseUri = aSctx->get_base_uri();
     oResult = lStore.loadDocument(lBaseUri, lNormUri, *lStream, lLoadProperties);
     fillTime(t0, t0user, aPlanState);
   }
-  catch (ZorbaException& e) {
+  catch (ZorbaException& e)
+  {
     e.set_diagnostic(err::FODC0002);
     set_source(e, loc);
     throw;
   }
-  if (oResult == NULL) {
+
+  if (oResult == NULL)
+  {
     throw XQUERY_EXCEPTION(err::FODC0002, ERROR_PARAMS( aUri ), ERROR_LOC(loc));
   }
 }
+
 
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -2128,7 +2177,7 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
   {
     readDocument(uriString, encodingString, theSctx, planState, loc, unparsedText);
   }
-  catch (XQueryException const& e)
+  catch (XQueryException const&)
   {
     unparsedText = NULL;
   }

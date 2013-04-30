@@ -28,7 +28,7 @@ declare function local:gen-group-spec($group as element()?) as xs:string*
 declare function local:group-path($group-spec as xs:string*) as xs:string
 {
 let $name := string-join($group-spec ! upper-case(.), "_")
-let $path := $name || "_PATH"
+let $path := $name || "_"
 return
   'const char* '
     || $path || "[]"

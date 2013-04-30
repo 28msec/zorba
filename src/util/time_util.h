@@ -80,10 +80,6 @@ struct ztm : tm {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-/**
- * XQuery 3.0 F&O: 9.8.4.3: The calendars listed below were known to be in use
- * during the last hundred years.
- */
 namespace calendar {
   extern char const* const string_of[];
 
@@ -99,7 +95,20 @@ namespace calendar {
   }
 
   /**
-   * Calculates the week number for the given date and calendar.
+   * Calculates the week number of the month for the given date and calendar.
+   *
+   * @param mday The month day [1-31].
+   * @param mon The month [0-11].
+   * @param year The year.
+   * @param cal The calendar.
+   * @return Returns the week [1-5] or -1 if it is unknown how to perform the
+   * calculation for \a cal.
+   */
+  int calc_week_in_month( unsigned mday, unsigned mon, unsigned year,
+                          type cal );
+
+  /**
+   * Calculates the week number of the year for the given date and calendar.
    *
    * @param mday The month day [1-31].
    * @param mon The month [0-11].
@@ -167,7 +176,7 @@ namespace calendar {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Month (<code>mod</code>) values as used by the \c tm structure.
+ * Month (<code>mon</code>) values as used by the \c tm structure.
  */
 enum month {
   jan = 0,

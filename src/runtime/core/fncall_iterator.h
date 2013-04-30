@@ -37,13 +37,20 @@ class StaticContextImpl;
 
 
 /*******************************************************************************
+
+  theLocalDCtx:
+  -------------
+  The dynamic context for this udf call. It is where the values of the udf's
+  local block-variables are stored.  It is created during 
+  UDFunctionCallIterator::openImpl().
+
   thePlan:
   --------
   The runtime plan for the function body. This is created during 
-  UDFunctionCallIterator::openImpl(), if it has not not been created already 
-  (during the openImpl() method of another UDFunctionCallIterator on the same
-  udf). A pointer to this plan is also stored in the udf obj itself, and that's
-  how we know if it has been created already or not.
+  UDFunctionCallIterator::openImpl(), if it has not been created already (during
+  the openImpl() method of another UDFunctionCallIterator on the same udf). A
+  pointer to this plan is also stored in the udf obj itself, and that's how we
+  know if it has been created already or not.
 
   thePlanState:
   -------------
@@ -52,19 +59,13 @@ class StaticContextImpl;
   initialized the 1st time that UDFunctionCallIterator::nextImpl() is called 
   (at that time open() is invoked on thePlan).
 
-  thePlanStateSize:
-  -----------------
-  The size of the plan state block.
-
-  theLocalDCtx:
-  -------------
-  The dynamic context for this udf call. It is where the values of the udf's
-  local block-variables are stored.  It is created during 
-  UDFunctionCallIterator::openImpl(),
-
   thePlanOpen:
   ------------
   Whether thePlan has been opened already or not.
+
+  thePlanStateSize:
+  -----------------
+  The size of the plan state block.
 
   theArgWrappers:
   ---------------
@@ -94,11 +95,12 @@ class StaticContextImpl;
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
 public:
+  dynamic_context                * theLocalDCtx;
+  bool                             theIsLocalDCtxOwner;
   PlanIter_t                       thePlan;
   PlanState                      * thePlanState;
-  uint32_t                         thePlanStateSize;
-  dynamic_context                * theLocalDCtx;
   bool                             thePlanOpen;
+  uint32_t                         thePlanStateSize;
   std::vector<store::Iterator_t>   theArgWrappers;
   store::Index                   * theCache;
   std::vector<store::TempSeq_t>    theArgValues;
@@ -118,12 +120,18 @@ public:
 
 
 /*******************************************************************************
+
   theUDF: 
   -------
   Pointer to the udf object.
 
   theIsDynamic:
   -------------
+  True if this is a UDFunctionCallIterator that is allocated on the fly during
+  DynamicFnCallIterator::nextImpl().
+
+  theFunctionItem:
+  ----------------
 
 ********************************************************************************/
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
@@ -153,6 +161,8 @@ public:
       const QueryLoc& loc, 
       std::vector<PlanIter_t>& args, 
       const user_function* aUDF);
+
+  virtual ~UDFunctionCallIterator();
 
   bool isUpdating() const;
 

@@ -51,3 +51,8 @@ test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-WhereExpr001
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-01
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFunctions/ST-Data001
+test/rbkt/zorba/jsoniq/comment_01.jq
+test/rbkt/zorba/jsoniq/comment_02.jq
+test/rbkt/zorba/jsoniq/comment_03.jq
+test/rbkt/zorba/jsoniq/comment_04.jq
+test/rbkt/zorba/jsoniq/comment_05.jq

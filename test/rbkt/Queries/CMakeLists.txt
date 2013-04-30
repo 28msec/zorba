@@ -582,5 +582,13 @@ ENDIF(ZORBA_NO_ICU)
 
 # external variable default expected failures
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
-EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 923686)
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
+
+
+# JSONiq C++-style comments are not yet decided upon, the grammar
+# rules are comment out, so these tests are expected to fail.
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_01.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_02.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_03.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_04.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_05.jq 0)

@@ -264,13 +264,12 @@
 
     <diagnostic code="XPTY0004">
       <comment>
-       It is a type error if, during the static analysis phase, an expression
-       is found to have a static type that is not appropriate for the context
-       in which the expression occurs, or during the dynamic evaluation phase,
-       the dynamic type of a value does not match a required type as specified
-       by the matching rules in 2.5.4 SequenceType Matching.
+        It is a type error if, during the static analysis phase, an expression
+        is found to have a static type that is not appropriate for the context
+        in which the expression occurs, or during the dynamic evaluation phase,
+        the dynamic type of a value does not match a required type as specified
+        by the matching rules in 2.5.4 SequenceType Matching.
       </comment>
-
       <value>$1</value>
 
       <entry key="NoReturnTypePromote_234">
@@ -291,10 +290,6 @@
 
       <entry key="NoTreatAs_23">
         <value>$2 can not be treated as type $3</value>
-      </entry>
-
-      <entry key="FormatNumber_2">
-        <value>first parameter to format-number() function is type $2 that is not allowed</value>
       </entry>
 
       <entry key="JSONIQ_SELECTOR">
@@ -765,15 +760,29 @@
       <value>"$1": grouping variable not defined in the same flwor expression as the group-by clause</value>
     </diagnostic>
 
+    <diagnostic code="XQST0097">
+      <comment>
+        It is a static error for a decimal-format to specify a value that is
+        not valid for a given property.
+      </comment>
+      <value>"$1": illegal value for decimal format property "$2"${: 3}</value>
+      <entry key="MustBeChar">
+        <value>must be a single character</value>
+      </entry>
+      <entry key="MustBeZeroDigit">
+        <value>must be a digit (Unicode category Nd) and represent zero</value>
+      </entry>
+    </diagnostic>
+
     <diagnostic code="XQST0098">
       <comment>
-       It is a static error if, for any named or unnamed decimal format, the
-       properties representing characters used in a picture string do not each
-       have distinct values. These properties are decimal-separator-sign,
-       grouping-separator, percent-sign, per-mille-sign, zero-digit,
-       digit-sign, and pattern-separator-sign.
+        It is a static error if, for any named or unnamed decimal format, the
+        properties representing characters used in a picture string do not each
+        have distinct values. These properties are decimal-separator-sign,
+        grouping-separator, percent-sign, per-mille-sign, zero-digit,
+        digit-sign, and pattern-separator-sign.
       </comment>
-      <value>properties "$1" and "$2", representing characters used in picture string, do not have distinct values</value>
+      <value>"$1": value of properties "$1" and "$2" for characters used a in picture string is the same but must be distinct</value>
     </diagnostic>
 
     <diagnostic code="XQST0099">
@@ -797,13 +806,16 @@
        function's annotations contain more than one annotation named \c
        deterministic or \c nondeterministic.
       </comment>
-      <entry key="THE_SAME">
-        <value>the same</value>
+
+      <value>$1</value>
+
+      <entry key="Duplicate">
+        <value>$2: annotation appears more than once in declaration</value>
       </entry>
-      <entry key="CONFLICTING">
-        <value>conflicting</value>
+
+      <entry key="Conflicting">
+        <value>$2: conflicting annotations in declaration</value>
       </entry>
-      <value>$1: multiple annotations with $2 names</value>
     </diagnostic>
 
     <diagnostic code="XQST0111">
@@ -814,13 +826,78 @@
       <value>$1</value>
     </diagnostic>
 
+    <diagnostic code="XQST0113">
+      <comment>
+       Specifying a VarValue or VarDefaultValue for a context item declaration
+       in a library module is a static error.
+      </comment>
+      <value>context item declaration with initializing expression not allowed in library module</value>
+    </diagnostic>
+
+    <diagnostic code="XQST0114">
+      <comment>
+        It is a static error for a decimal format declaration to define the
+        same property more than once.
+      </comment>
+      <value>"$1": duplicate decimal format property</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0116">
+      <comment>
+      It is a static error if a variable declaration contains both a %private
+      and a %public annotation, more than one %private annotation, or more
+      than one %public annotation.
+      </comment>
+      <value>$1</value>
+
+      <entry key="Duplicate">
+        <value>$2: annotation appears more than once in declaration</value>
+      </entry>
+
+      <entry key="Conflicting">
+        <value>$2: conflicting annotations in declaration</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="XQST0120">
+      <comment>
+        It is a static error if a feature required by require-feature is not
+        supported by the implementation.
+      </comment>
+      <value>"$1": feature not supported</value>
+    </diagnostic>
+    
     <diagnostic code="XQST0123">
       <comment>
-       It is a static error if the name of a feature in require-feature is not recognized by the implementation.
+        It is a static error if the name of a feature in require-feature is not
+        recognized by the implementation.
       </comment>
       <value>$1</value>
     </diagnostic>
-
+    
+    <diagnostic code="XQST0126">
+      <comment>
+        It is a static error if all-extensions appears in a require-feature option declaration.
+      </comment>
+      <value>impossible to require all extension features</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0127">
+      <comment>
+        It is a static error if a given feature is both required and prohibited, directly or indirectly, in a module.
+      </comment>
+      <value>$1 : impossible to require and prohibit at the same time</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0128">
+      <comment>
+        It is a static error if a feature name that an implementation supports appears
+        in a prohibit-feature option declaration, and the implementation is unable to
+        disable the feature.
+      </comment>
+      <value>"$1": unable to disable a supported feature</value>
+    </diagnostic>
+    
     <diagnostic code="XPDY0002">
       <comment>
        It is a dynamic error if evaluation of an expression relies on some part
@@ -913,6 +990,15 @@
          <code>http://www.w3.org/XML/1998/namespace</code>.
       </comment>
       <value>"$1": invalid attibute node-name</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0054">
+      <comment>
+      It is a dynamic error if a cycle is encountered in the definition of a
+      module's dynamic context components, for example because of a cycle in
+      variable declarations.
+      </comment>
+      <value>${"1": }variable must not depend on itself</value>
     </diagnostic>
 
     <diagnostic code="XQDY0061">
@@ -1319,6 +1405,12 @@
         Invalid decimal/integer format picture string.
       </comment>
       <value>"$1": invalid picture string for decimal/integer${: 2}</value>
+      <entry key="NoOptDigitAfterMandatory_3">
+        <value>'$3': optional-digit-sign in integer part of sub-picture may not follow a member of the decimal-digit-family</value>
+      </entry>
+      <entry key="NoMandatoryDigitAfterOpt_3">
+        <value>'$3': member of decimal-digit-family in fractional part of a sub-picture may not follow an optional-digit-sign</value>
+      </entry>
       <entry key="BadCharacter_3">
         <value>'$3': invalid character</value>
       </entry>
@@ -1337,8 +1429,20 @@
       <entry key="EmptyFormat">
         <value>empty primary format</value>
       </entry>
+      <entry key="MultipleSign_3">
+        <value>"$3": multiple such signs are illegal</value>
+      </entry>
+      <entry key="MustHaveOptOrMandatoryDigit">
+        <value>sub-picture must contain at least one optional or mandatory digit</value>
+      </entry>
+      <entry key="NoActivePassiveActive">
+        <value>"$3": active character may not follow passive that follows active</value>
+      </entry>
       <entry key="NoAdjacentGroupSep_3">
         <value>"$3": grouping separator must not be adjacent to others</value>
+      </entry>
+      <entry key="NoDecimalGroupingAdjacent_34">
+        <value>decimal-separator-sign ('$3') and grouping-separator-sign ('$4') may not be adjacent</value>
       </entry>
       <entry key="NoGroupSepAtStart_3">
         <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
@@ -1348,6 +1452,9 @@
       </entry>
       <entry key="NoOptDigitAfterMandatory">
         <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
+      </entry>
+      <entry key="NoPercentPermille">
+        <value>sub-picture must not contain more than one percent-sign or per-mille-sign or one of each</value>
       </entry>
     </diagnostic>
 
@@ -4363,30 +4470,6 @@
       <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
     </entry>
 
-    <entry key="FormatNumberDuplicates">
-      <value>: a sub-picture must not contain more than one of the "$3" sign</value>
-    </entry>
-
-    <entry key="FormatNumberGroupingAdjacentToDecimal">
-      <value>: a sub-picture must not contain a grouping-separator-sign adjacent to a decimal-separator-sign</value>
-    </entry>
-
-    <entry key="FormatNumberIntegerPart">
-      <value>: the integer part of a sub-picture must not contain a member of the decimal-digit-family that is followed by an optional-digit-sign</value>
-    </entry>
-
-    <entry key="FormatNumberFractionalPart">
-      <value>: the fractional part of a sub-picture must not contain an optional-digit-sign that is followed by a member of the decimal-digit-family</value>
-    </entry>
-
-    <entry key="FormatNumberPercentPermille">
-      <value>: a sub-picture must not contain more than one percent-sign or per-mille-sign, and it must not contain one of each</value>
-    </entry>
-
-    <entry key="FormatNumberAtLeastOneOptionalOrDecimal">
-      <value>: a sub-picture must contain at least one character that is an optional-digit-sign or a member of the decimal-digit-family</value>
-    </entry>
-
     <entry key="FUNCTION">
       <value>function</value>
     </entry>
@@ -4746,6 +4829,10 @@
 
     <entry key="libxml_ERR_96"> <!-- XML_ERR_VERSION_MISSING -->
       <value>XML version expected</value>
+    </entry>
+
+    <entry key="libxml_ERR_99"> <!-- XML_ERR_NS_URI -->
+      <value>xmlns$6?{:5}\: URI "$6?6:5": invalid URI</value>
     </entry>
 
     <entry key="libxml_WAR_97"> <!-- XML_WAR_UNKNOWN_VERSION -->

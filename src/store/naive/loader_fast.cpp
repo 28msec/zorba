@@ -100,7 +100,7 @@ XmlLoader::~XmlLoader()
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlLoader::error(void *ctx, xmlErrorPtr error)
+void XmlLoader::error(void* ctx, xmlErrorPtr error)
 {
   if ( error->level == XML_ERR_NONE )
     return;
@@ -117,8 +117,11 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
   zstring error_int1_8;
   char const *const error_message_9 = error->message ? error->message : "";
 
-  if ( error->int1 ) {                  // assume valid only if > 0
-    switch ( error->code ) {
+  if ( error->int1 ) 
+  {
+    // assume valid only if > 0
+    switch ( error->code )
+    {
       case XML_ERR_ENTITY_CHAR_ERROR:
       case XML_ERR_INVALID_CHAR:
       case XML_ERR_SEPARATOR_REQUIRED:
@@ -144,7 +147,8 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
   } // if
 
   XmlLoader *const loader = static_cast<XmlLoader*>( ctx );
-  switch ( error->level ) {
+  switch ( error->level )
+  {
     case XML_ERR_ERROR:
     case XML_ERR_FATAL: {
       XQueryException *const xe = NEW_XQUERY_EXCEPTION(

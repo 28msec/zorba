@@ -485,7 +485,7 @@ Duration::Duration(
   data[DAY_DATA] = std::abs(days);
   data[HOUR_DATA] = std::abs(hours);
   data[MINUTE_DATA] = std::abs(minutes);
-  data[SECONDS_DATA] = std::floor(seconds);
+  data[SECONDS_DATA] = static_cast<long>(std::floor(seconds));
   data[FRACSECONDS_DATA] = round(frac(seconds) * FRAC_SECONDS_UPPER_LIMIT);
 
   normalize();
@@ -511,7 +511,7 @@ Duration::Duration(
   data[DAY_DATA] = std::abs(days);
   data[HOUR_DATA] = std::abs(hours);
   data[MINUTE_DATA] = std::abs(minutes);
-  data[SECONDS_DATA] = std::floor(seconds);
+  data[SECONDS_DATA] = static_cast<long>(std::floor(seconds));
   data[FRACSECONDS_DATA] = round(frac(seconds) * FRAC_SECONDS_UPPER_LIMIT);
 
   normalize();
@@ -695,7 +695,7 @@ Duration* Duration::operator+(const Duration& d) const
     {
       double sum = double(data[i] + (right_operand_sign? -1 : 1) * d.data[i]) / FRAC_SECONDS_UPPER_LIMIT;
       result->data[FRACSECONDS_DATA] = round(frac(sum)*FRAC_SECONDS_UPPER_LIMIT);
-      carry = std::floor(sum);
+      carry = static_cast<long>(std::floor(sum));
     }
     else
     {
@@ -817,7 +817,9 @@ Duration* Duration::operator/(const xs_double& value) const
 
 
 Decimal Duration::operator/(const Duration& d) const
-{
+{ 
+  if (d.isZero())
+    XQUERY_EXCEPTION(err::FOAR0001);    
   return Decimal( getTotalSeconds() ) / Decimal( d.getTotalSeconds() );
 }
 

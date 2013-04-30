@@ -298,7 +298,7 @@ void append_codepoints( InputIterator i, InputIterator j, StringType *s ) {
  * @tparam ContainerType The type of STL container to put the codepoint values.
  * @param s The string to get the codepoints for.
  * @param c A pointer to the container to put the codepoint values.  The
- * containers contents are overwritten.
+ * container's contents are appended to.
  */
 template<class StringType,class ContainerType> inline
 void to_codepoints( StringType const &s, ContainerType *c ) {
@@ -314,11 +314,14 @@ void to_codepoints( StringType const &s, ContainerType *c ) {
  * ("Number, Decimal Digit") category.
  */
 typedef storage_type itou_buf_type[
-  (sizeof( encoded_char_type ) - 1 /* subtract null */) * 20 + 1 /* add null */
+  sizeof( encoded_char_type )
+  * 20  // maximum number of digits in a 64-bit unsigned long
+  + 1   // null
 ];
 
 /**
- * Converts an <code>unsigned long long</code> to a UTF-8 encoded string.
+ * Converts an <code>unsigned long long</code> to a null-terminated UTF-8
+ * encoded string.
  *
  * @param n The <code>unsigned long long</code> to convert.
  * @param buf The buffer for the result.  The caller must ensure it's of
@@ -778,7 +781,7 @@ StringType& left_pad( StringType *s, typename StringType::size_type width,
   u_type u( *s );
   u_size_type const u_size( u.size() );
   if ( u_size < width )
-    u.insert( static_cast<size_type>( 0 ), width - u_size, cp );
+    u.insert( static_cast<u_size_type>( 0 ), width - u_size, cp );
   return *s;
 }
 

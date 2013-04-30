@@ -120,7 +120,21 @@ PlanIter_t fn_function_lookup_3_0::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new FunctionLookupIterator(sctx, loc, argv, ccb);
+  ZORBA_ASSERT(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t op_zorba_function_lookup_3_0::codegen(
+  CompilerCB* ccb,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FunctionLookupIterator(sctx, loc, argv);
 }
 
 

@@ -3892,7 +3892,7 @@ void StreamableBase64BinaryItem::materialize() const
     {
       return;
     }
-    s->theValue.reserve(len);
+    s->theValue.reserve(static_cast<std::vector<char>::size_type>(len));
     char buf[1024];
     while (lStream.good())
     {
@@ -3908,7 +3908,7 @@ void StreamableBase64BinaryItem::materialize() const
       lStream.read(buf, 4048);
       if (lStream.gcount() > 0)
       {
-        s->theValue.reserve(s->theValue.size() + lStream.gcount());
+        s->theValue.reserve(static_cast<std::vector<char>::size_type>(s->theValue.size() + lStream.gcount()));
         s->theValue.insert(s->theValue.end(), buf, buf + lStream.gcount());
       }
     }

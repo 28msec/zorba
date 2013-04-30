@@ -717,6 +717,9 @@ static_context::static_context()
   theAllWarningsErrors(false),
   theFeatures(0)
 {
+#if 0
+  std::cout << "Allocating SCTX : " << this << std::endl;
+#endif
 }
 
 
@@ -767,6 +770,11 @@ static_context::static_context(static_context* parent)
   // easy to set and unset them
   theFeatures(parent->theFeatures)
 {
+#if 0
+  std::cout << "Allocating SCTX : " << this << " under parent SCTX : "
+            << parent << std::endl;
+#endif
+
   if (theParent != NULL)
     RCHelper::addReference(theParent);
 }
@@ -826,6 +834,10 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 static_context::~static_context()
 {
+#if 0
+  std::cout << "Deallocating SCTX : " << this << std::endl;
+#endif
+
   if (theExternalModulesMap)
   {
     ExternalModuleMap::iterator ite = theExternalModulesMap->begin();
@@ -1499,10 +1511,12 @@ void static_context::compute_base_uri()
     if (found)
     {
       URI base(entityUri);
-      URI resolvedURI(base, userBaseUri);
-      theBaseUriInfo->theBaseUri = resolvedURI.toString();
-      theBaseUriInfo->theHaveBaseUri = true;
-      return;
+      if (base.is_absolute()) {
+        URI resolvedURI(base, userBaseUri);
+        theBaseUriInfo->theBaseUri = resolvedURI.toString();
+        theBaseUriInfo->theHaveBaseUri = true;
+        return;
+      }
     }
 
     URI base(get_implementation_baseuri());
@@ -3491,7 +3505,6 @@ void static_context::get_collations(std::vector<std::string>& collations) const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -3510,12 +3523,23 @@ void static_context::bind_option(
   store::Item* qname2 = option.theName.getp();
 
   zstring lNamespace = qname2->getNamespace();
+  zstring lLocalName = qname2->getLocalName();
 
+  // If option namespace is the XQuery namespace.
+  if ( lNamespace == XQUERY_NS)
+  {
+    OptionMap::iterator lIt = theOptionMap->find(qname2);
+    if (lIt != theOptionMap->end())
+    {
+      std::ostringstream lOss;
+      lOss << lIt.getValue().theValue << " " << option.theValue;
+      option.theValue = lOss.str();
+    }
+  }
+  
   // If option namespace starts with zorba options namespace
   if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 )
   {
-    zstring lLocalName = qname2->getLocalName();
-
     if (lNamespace == ZORBA_OPTION_FEATURE_NS &&
         (lLocalName == "enable" || lLocalName == "disable"))
     {

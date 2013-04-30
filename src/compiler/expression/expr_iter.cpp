@@ -704,12 +704,14 @@ nextclause:
 
     EXPR_ITER_BEGIN();
 
-    theArgsIter = fiExpr->theFunctionItemInfo->theScopedVarsValues.begin();
-    theArgsEnd = fiExpr->theFunctionItemInfo->theScopedVarsValues.end();
+    theArgsIter = fiExpr->theFunctionItemInfo->theInScopeVarValues.begin();
+    theArgsEnd = fiExpr->theFunctionItemInfo->theInScopeVarValues.end();
+
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {
-      if ( ! *theArgsIter) // TODO: the vars values for prolog variables is null, so they have to be skipped, or the optimizer will trip and fall off. Maybe null vars values need not be remembered
+      if ( ! *theArgsIter) 
         continue;
+
       EXPR_ITER_NEXT(*theArgsIter);
     }
 
@@ -733,9 +735,6 @@ nextclause:
       EXPR_ITER_NEXT(*theArgsIter);
     }
     
-    if (dfiExpr->theDotVar)
-      EXPR_ITER_NEXT(dfiExpr->theDotVar);
-
     EXPR_ITER_END();
     return;
   }

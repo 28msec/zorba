@@ -248,16 +248,19 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor_clause::rebind_list_t::iterator ite = gc->beginNonGroupVars();
       flwor_clause::rebind_list_t::iterator end = gc->endNonGroupVars();
 
-      for(; ite != end; ++ite)
+      while(ite != end)
       {
         var_expr* var = ite->second;
         int uses = expr_tools::count_variable_uses(theFlwor, var, 1, NULL);
 
         if (uses == 0 && !ite->first->isNonDiscardable())
         {
-          gc->removeNonGroupingVar(ite);
-          --ite;
+          ite = gc->removeNonGroupingVar(ite);
           end = gc->endNonGroupVars();
+        }
+        else
+        {
+          ++ite;
         }
       }
 
@@ -1679,10 +1682,14 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
           }
         }
       }
-      else if (c->get_kind() == flwor_clause::for_clause &&
-               static_cast<for_clause*>(c)->get_pos_var() == NULL)
+      else if (c->get_kind() == flwor_clause::for_clause)
       {
-        expr* domainExpr = static_cast<for_clause*>(c)->get_expr()->skip_wrappers();
+        for_clause* fc = static_cast<for_clause*>(c);
+
+        bool hasPosVar = (fc->get_pos_var() != NULL);
+        bool isOuter = (fc->is_allowing_empty());
+
+        expr* domainExpr = fc->get_expr()->skip_wrappers();
 
         if (domainExpr->get_expr_kind() == flwor_expr_kind &&
             !domainExpr->is_sequential())
@@ -1696,13 +1703,25 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
             flwor_clause* nestedClause = nestedFlwor->get_clause(j);
             flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
             
-            if (nestedClauseKind != flwor_clause::let_clause &&
-                nestedClauseKind != flwor_clause::for_clause &&
-                nestedClauseKind != flwor_clause::where_clause)
+            if (nestedClauseKind == flwor_clause::let_clause)
+              continue;
+
+            if (nestedClauseKind == flwor_clause::for_clause ||
+                nestedClauseKind == flwor_clause::where_clause)
             {
-              merge = false;
-              break;
+              if (isOuter || hasPosVar)
+              {
+                merge = false;
+                break;
+              }
+              else
+              {
+                continue;
+              }
             }
+
+            merge = false;
+            break;
           }
         }
       }

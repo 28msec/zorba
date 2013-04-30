@@ -30,7 +30,7 @@ namespace zorba {
  * A %passthru_streambuf is-a std::streambuf that simply passes through
  * characters unchanged.
  */
-class passthru_streambuf : public proxy_streambuf {
+class passthru_streambuf : public internal::proxy_streambuf {
 public:
 #ifdef WIN32
   // These typedefs are needed (but shouldn't be) when using MSVC++.
