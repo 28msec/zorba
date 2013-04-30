@@ -60,9 +60,6 @@
 #include "zorbautils/hashset_node_itemh.h"
 #include "zorbautils/hashset_atomic_itemh.h"
 
-
-#include <zorba/internal/proxy.h>
-
 namespace zorbatm = zorba::time;
 
 using namespace std;
@@ -2060,165 +2057,9 @@ void FnAvailableEnvironmentVariablesIteratorState::reset(PlanState& planState)
 /**
   * Utility method for fn:unparsed-text() and fn:unparsed-text-available().
   */
-
-typedef internal::ztd::proxy<std::istream> proxy_istream;
-typedef internal::ztd::proxy<std::istream> proxy_stream;
-
-class BufferedStream : public std::istream
-{
-private:
-  char* buff;
-  size_t buff_mark;
-  size_t buff_size;
-
-  class OffsetStreamBuf : public std::streambuf
-  {
-  private:
-    size_t buff_mark;
-
-  public:
-    OffsetStreamBuf(std::streambuf& stream, size_t mark) : std::streambuf(stream), buff_mark(mark) {}
-    OffsetStreamBuf(char* buff, std::streambuf& stream) : std::streambuf(stream) {}
-    ~OffsetStreamBuf() {  }
-
-    virtual std::streampos pubseekoff(streamoff off, ios_base::seekdir way,
-                      ios_base::openmode which = ios_base::in | ios_base::out)
-    {
-      return std::streambuf::pubseekoff(off + buff_mark, way, which);
-    }
-
-  };
-
-public:
-  BufferedStream(std::istream& a) : std::istream(a.rdbuf()), buff_size(3), buff_mark(0) { buff = new char[buff_size]; }
-  BufferedStream(std::istream& a, size_t buffsize) : std::istream(a.rdbuf()), buff_size(buffsize), buff_mark(0) { buff = new char[buff_size]; }
-  ~BufferedStream() { delete buff; }
-  
-  const void setMark(size_t s)
-  {
-    buff_mark = s;
-  }
-
-  void reset()
-  {
-    int const index =  ios_base::xalloc();
-    void *&pword = this->pword( index );
-    if ( !pword )
-    {
-      std::stringstream merge;
-      merge << buff << this;
-      std::streambuf *const temp = new internal::proxy_streambuf(merge.rdbuf());
-      this->std::istream::rdbuf(temp);
-      pword = temp;
-      this->register_callback( internal::stream_callback, index);
-    }
-  }
-
-  long read(char* pBuffer, size_t bufLen)
-  {
-    if (bufLen > buff_size)
-      this->std::istream::read(pBuffer, bufLen);
-    else
-    {
-      this->std::istream::read(buff, bufLen);
-      std::strcpy(pBuffer, buff);
-    }
-    return this->gcount();
-  }
-
-  std::streambuf* rdbuf()
-  {
-    OffsetStreamBuf* a = new OffsetStreamBuf(*this->std::istream::rdbuf(), buff_mark);
-    return (std::streambuf*)a;
-  }
-};
-
-class BufferedIStream : public std::istream {
-  private:
-    char* buff;
-    int buff_mark;
-    size_t buff_size;
-
-    void attach_streambuf()
-    {
-      int const index = ios_base::xalloc();
-      void *&pword = this->pword( index );
-      if (!pword)
-      {
-        std::streambuf *const buf =
-          new OffsetStreamBuf(this->std::istream::rdbuf(), buff_mark);
-        this->std::istream::rdbuf(buf);
-        pword = buf;
-        this->register_callback( internal::stream_callback, index);
-      }
-    }
-
-    class OffsetStreamBuf : public internal::proxy_streambuf
-    {
-
-    private:
-      int buff_mark;
-
-    public:
-      OffsetStreamBuf(std::streambuf* stream, int mark) : internal::proxy_streambuf(stream), buff_mark(mark) {}
-      ~OffsetStreamBuf() {  }
-
-      virtual std::streampos pubseekoff(streamoff off, ios_base::seekdir way,
-        ios_base::openmode which = ios_base::in | ios_base::out)
-      {
-        return std::streambuf::pubseekoff(off + buff_mark, way, which);
-      }
-
-    }; 
-
-  public: 
-    BufferedIStream(std::istream *orig) : 
-      std::istream(orig->rdbuf()), 
-      buff_size(3) 
-    {
-      buff = new char[buff_size];
-    }
-    
-    BufferedIStream(std::istream *orig, size_t bufferSize) : 
-      std::istream(orig->rdbuf()), 
-      buff_size(bufferSize)
-    {
-      buff = new char[buff_size];
-    }
-    
-    ~BufferedIStream() { delete buff; }
-
-    void mark() 
-    { 
-      //set the current position of the stream as mark
-      buff_mark = tellg(); 
-      //attach a wrapper to the streambuff of the istream
-      //to make the mark be the beginning of the stream
-      attach_streambuf();
-    } 
-
-    virtual std::streamsize buffered_read(char* pBuffer, size_t bufLen)
-    {
-      if (bufLen > buff_size)
-        this->std::istream::read(pBuffer, bufLen);
-      else 
-      {
-        this->std::istream::read(pBuffer, bufLen);
-        memcpy(buff, pBuffer, bufLen);
-      }
-      return gcount();
-    }
-
-    //Currently works only for seekable streams
-    void reset()
-    {
-
-    }
-}; 
-
 static void readDocument(
   zstring const& aUri,
-  zstring& aEncoding,
+  zstring const& aEncoding,
   static_context* aSctx,
   PlanState& aPlanState,
   QueryLoc const& loc,
@@ -2226,14 +2067,7 @@ static void readDocument(
 {
   //Normalize input to handle filesystem paths, etc.
   zstring lNormUri;
-  try
-  {
-    normalizeInputUri(aUri, aSctx, loc, &lNormUri);
-  }
-  catch (...)
-  {
-    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc)); 
-  }
+  normalizeInputUri(aUri, aSctx, loc, &lNormUri);
 
   //Check for a fragment identifier
   //Create a zorba::URI for validating if it contains a fragment  
@@ -2241,10 +2075,6 @@ static void readDocument(
   if (lUri->get_encoded_fragment() != "")
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));    
-  }
-  if (!transcode::is_supported(aEncoding.c_str()))
-  {
-    throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri), ERROR_LOC(loc));
   }
 
   //Resolve URI to stream
@@ -2259,45 +2089,27 @@ static void readDocument(
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
   }
-
   StreamReleaser lStreamReleaser = lStreamResource->getStreamReleaser();
-  std::unique_ptr<BufferedIStream, StreamReleaser> lBufferedIStream(new BufferedIStream(lStreamResource->getStream()), lStreamReleaser);
+  std::unique_ptr<std::istream, StreamReleaser> lStream(lStreamResource->getStream(), lStreamReleaser);
+
   lStreamResource->setStreamReleaser(nullptr);
 
-  if (lStreamResource->isStreamSeekable())
-  {
-    char lBOM[3];
-    char lUTF8BOM[3] = { 239, 187, 191 };
-    char lUTF16BOMBE[2] = { 254, 255 };
-    char lUTF16BOMLE[2] = { 255, 254 };
-    lBufferedIStream->buffered_read(lBOM, 3);
-    if ( std::strcmp(lBOM, lUTF8BOM) == 0)
-    {
-      lBufferedIStream->mark();
-    }
-    else if ( (lUTF16BOMBE[0] == lBOM[0] && lUTF16BOMBE[1] == lBOM[1]) ||
-      (lUTF16BOMLE[0] == lBOM[0] && lUTF16BOMLE[1] == lBOM[1]))
-    {
-      aEncoding = "UTF-16";
-    }
-    else
-    {
-      lBufferedIStream->reset();
-    }
-  }
   //check if encoding is needed
   if (transcode::is_necessary(aEncoding.c_str()))
   {
-    transcode::attach(*lBufferedIStream.get(), aEncoding.c_str());
+    if (!transcode::is_supported(aEncoding.c_str()))
+    {
+      throw XQUERY_EXCEPTION(err::FOUT1190, ERROR_PARAMS(aUri), ERROR_LOC(loc));
+    }
+    transcode::attach(*lStream.get(), aEncoding.c_str());
   }
-
   //creates stream item
   GENV_ITEMFACTORY->createStreamableString(
     oResult,
-    *lBufferedIStream.release(),
-    lBufferedIStream.get_deleter()
+    *lStream.release(),
+    lStream.get_deleter()
     );
-  
+
   if (oResult.isNull())
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));
@@ -2327,7 +2139,6 @@ bool FnUnparsedTextIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
   uriItem->getStringValue2(uriString);
   readDocument(uriString, encodingString, theSctx, planState, loc, result);
-
   STACK_PUSH(true, state);
 
   STACK_END(state);
@@ -2368,8 +2179,6 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
   }
   catch (XQueryException const&)
   {
-    if (e.diagnostic() == err::XPST0001)
-        throw e;
     unparsedText = NULL;
   }
 
@@ -2381,107 +2190,11 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
 /*******************************************************************************
   14.8.6 fn:unparsed-text-lines
 ********************************************************************************/
-
-template<typename CharType,class TraitsType,class Rep>
-std::basic_istream<CharType,TraitsType>&
-getline_no_endlines( std::basic_istream<CharType,TraitsType> &is, rstring<Rep> &s) {
-  typedef std::basic_istream<CharType,TraitsType> istream_type;
-  typedef typename istream_type::int_type int_type;
-  typedef std::basic_streambuf<CharType,TraitsType> streambuf_type;
-  typedef rstring<Rep> string_type;
-  typedef typename string_type::size_type size_type;
-
-  std::ios_base::iostate err = std::ios_base::iostate( std::ios_base::goodbit );
-  size_type extracted = 0;
-  int_type const idelim1 = TraitsType::to_int_type( '\r' );
-  int_type const idelim2 = TraitsType::to_int_type( '\n' );
-  int_type const eof = TraitsType::eof();
-  std::string check ="";
-  s.clear();
-  try {
-    streambuf_type *const sb = is.rdbuf();
-    int_type c = sb->sgetc();
-
-    while ( !TraitsType::eq_int_type( c, eof ) &&
-            ( !TraitsType::eq_int_type( c, idelim1 ) &&
-              !TraitsType::eq_int_type( c, idelim2 ) ) ) {
-      s += TraitsType::to_char_type( c );
-      check += TraitsType::to_char_type( c );
-      ++extracted;
-      c = sb->snextc();
-    }
-    if ( TraitsType::eq_int_type( c, eof ) )
-      err |= std::ios_base::eofbit;
-    else if ( TraitsType::eq_int_type (c, idelim1) ) {
-      ++extracted;      
-      sb->sbumpc();
-      c = sb->sgetc();
-      if (!c)
-      {
-        ++extracted;
-        sb->sbumpc();
-        c = sb->sgetc();
-      }
-      if ( TraitsType::eq_int_type( c, eof ))
-      {
-        err |= std::ios_base::eofbit;
-      }
-      if ( TraitsType::eq_int_type( c, idelim2 ) ) {
-        ++extracted;
-        sb->sbumpc();
-        c = sb->sgetc();
-        if (!c)
-        {
-          ++extracted;
-          sb->sbumpc();
-          c = sb->sgetc();
-        }
-        if ( TraitsType::eq_int_type( c, eof ))
-        {
-          err |= std::ios_base::eofbit;
-        }
-      }
-    }
-    else if ( TraitsType::eq_int_type( c, idelim2 ) ) {
-      ++extracted;
-      sb->sbumpc();
-      c = sb->sgetc();
-      if ( TraitsType::eq_int_type( c, eof ))
-      {
-        err |= std::ios_base::eofbit;
-      }
-    } else
-      err |= std::ios_base::failbit;
-  }
-  catch ( ... ) {
-    is.setstate( std::ios_base::badbit );
-  }
-  if ( !extracted )
-    err |= std::ios_base::failbit;
-  if ( err )
-    is.setstate( err );
-  return is;
-}
-
 FnUnparsedTextLinesIteratorState::~FnUnparsedTextLinesIteratorState()
 {
   delete theStream;
   theStream = 0;
   theStreamResource = 0;
-}
-
-template<typename charT, class Traits> inline
-void attach( std::basic_istream<charT, Traits>& ios, size_t buff_size = 3)
-{
-  int const index = ios_base::xalloc();
-  void *&pword = ios.pword( index );
-  if (!pword)
-  {
-    std::istream *const buf = new BufferedStream(ios, buff_size);
-    ios.rdbuf( ios.rdbuf() );
-    pword = buf;
-    ios.register_callback( internal::stream_callback, index);
-  }
 }
 
 bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -2497,8 +2210,6 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   std::auto_ptr<internal::Resource> lResource;
   StreamReleaser lStreamReleaser;
   std::auto_ptr<zorba::URI> lUri;
-  char peek;
-  bool isFixedEncoding = false;
 
   FnUnparsedTextLinesIteratorState* state;
   DEFAULT_STACK_INIT(FnUnparsedTextLinesIteratorState, state, planState);
@@ -2512,28 +2223,18 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   {
     consumeNext(encodingItem, theChildren[1].getp(), planState);
     encodingItem->getStringValue2(encodingString);
-    isFixedEncoding = true;
   }
 
   //Normalize input to handle filesystem paths, etc.
   uriItem->getStringValue2(uriString);
-
-  try
-  {
-    normalizeInputUri(uriString, theSctx, loc, &lNormUri);
-  }
-  catch (...)
-  {
-    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc)); 
-  }
+  normalizeInputUri(uriString, theSctx, loc, &lNormUri);
 
   //Check for a fragment identifier
   //Create a zorba::URI for validating if it contains a fragment  
   lUri.reset(new zorba::URI(lNormUri));
-
   if (lUri->get_encoded_fragment() != "")
   {
-    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));    
   }
 
   //Resolve URI to stream
@@ -2547,11 +2248,10 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(uriString), ERROR_LOC(loc));
 
   lStreamReleaser = state->theStreamResource->getStreamReleaser();
-  state->theStream = new std::unique_ptr<std::istream, StreamReleaser> ( state->theStreamResource->getStream(), lStreamReleaser);
+  state->theStream = new std::unique_ptr<std::istream, StreamReleaser> (state->theStreamResource->getStream(), lStreamReleaser);
   state->theStreamResource->setStreamReleaser(nullptr);
 
-  //Check for bom utf-8 and remove the bom definition and 
-  //change encoding to UTF-8 if no other encoding is specified
+  //check if encoding is needed
   if (transcode::is_necessary(encodingString.c_str()))
   {
     if (!transcode::is_supported(encodingString.c_str()))
@@ -2560,10 +2260,10 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
     }
     transcode::attach(*state->theStream->get(), encodingString.c_str());
   }
-  
+
   while (state->theStream->get()->good())
   {
-    getline_no_endlines(*state->theStream->get(), streamLine); 
+    getline(*state->theStream->get(), streamLine);
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, streamLine), state);
   }
 

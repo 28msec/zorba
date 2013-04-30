@@ -248,7 +248,6 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   state->theTypedValueIter = 0; // TODO remove???
 
- done:
   STACK_END(state);
 }
 
