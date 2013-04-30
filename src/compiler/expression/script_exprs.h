@@ -219,6 +219,8 @@ public:
 
   expr* get_expr() const { return theExpr; }
 
+  void set_expr(expr* e);
+
   void compute_scripting_kind();
 
   void accept(expr_visitor&);

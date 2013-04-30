@@ -576,7 +576,7 @@ protected:
 
   std::ostream                          * theTraceStream;
 
-  expr*                                  theQueryExpr;
+  expr                                  * theQueryExpr;
 
   std::string                             theModuleNamespace;
 

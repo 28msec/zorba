@@ -1,5 +1,5 @@
 
-declare %fn:public function local:public()
+declare %public function local:public()
 {
   1
 };
