@@ -1805,7 +1805,7 @@ StaticContextImpl::getVariablePrimeType(
       }
       throw;
     }
-    return type;
+    return type.getp();
   }
   ZORBA_CATCH
   return NULL;
