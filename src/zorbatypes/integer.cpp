@@ -45,7 +45,9 @@ ostream& operator<<( ostream &o, MAPM const &m ) {
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 void integer_check::throw_range_error( MAPM const &n, char const *op ) {
-  throw range_error( BUILD_STRING( n, ": not ", op, " 0" ) );
+  ostringstream oss;
+  oss << n;
+  throw range_error( BUILD_STRING( oss.str(), ": not ", op, " 0" ) );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
@@ -55,7 +57,7 @@ template<class C>
 void IntegerImpl<C>::parse( char const *s ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   Decimal::parse( s, &value_, Decimal::parse_integer );
-  C::checK_value( value_ );
+  C::check_value( value_ );
 #else
   value_ = ztd::aton<value_type>( s );
 #endif /* ZORBA_WITH_BIG_INTEGER */
@@ -78,12 +80,14 @@ IntegerImpl<C>::IntegerImpl( unsigned int n ) {
 }
 #endif /* ZORBA_SIZEOF_INT == ZORBA_SIZEOF_LONG */
 
-IntegerImpl::IntegerImpl( unsigned long n ) {
+template<class C>
+IntegerImpl<C>::IntegerImpl( unsigned long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
 }
 
-IntegerImpl::IntegerImpl( unsigned long long n ) {
+template<class C>
+IntegerImpl<C>::IntegerImpl( unsigned long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
 }
@@ -111,19 +115,22 @@ IntegerImpl<C>::IntegerImpl( Float const &f ) {
 ////////// assignment operators ///////////////////////////////////////////////
 
 #ifdef ZORBA_WITH_BIG_INTEGER
-IntegerImpl& IntegerImpl::operator=( long long n ) {
+template<class C>
+IntegerImpl<C>& IntegerImpl<C>::operator=( long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
   return *this;
 }
 
-IntegerImpl& IntegerImpl::operator=( unsigned long n ) {
+template<class C>
+IntegerImpl<C>& IntegerImpl<C>::operator=( unsigned long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
   return *this;
 }
 
-IntegerImpl& IntegerImpl::operator=( unsigned long long n ) {
+template<class C>
+IntegerImpl<C>& IntegerImpl<C>::operator=( unsigned long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
   return *this;
@@ -154,23 +161,19 @@ IntegerImpl<C>& IntegerImpl<C>::operator=( Float const &f ) {
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define ZORBA_INSTANTIATE(OP) /* nothing */
-#else
-# define ZORBA_INSTANTIATE(OP)                                                \
-  template Decimal operator OP( Integer const&, Decimal const& );             \
-  template Decimal operator OP( NegativeInteger const&, Decimal const& );     \
-  template Decimal operator OP( NonNegativeInteger const&, Decimal const& );  \
-  template Decimal operator OP( NonPositiveInteger const&, Decimal const& );  \
-  template Decimal operator OP( PositiveInteger const&, Decimal const& );
-#endif /* ZORBA_WITH_BIG_INTEGER */
+#define ZORBA_INSTANTIATE(OP,I) \
+  template Decimal operator OP( I const&, Decimal const& );
 
 #define ZORBA_INTEGER_OP(OP)                                          \
-  template<class C>                                                    \
-  Decimal operator OP( IntegerImpl<C> const &i, Decimal const &d ) { \
+  template<class C>                                                   \
+  Decimal operator OP( IntegerImpl<C> const &i, Decimal const &d ) {  \
     return i.itod() OP d.value_;                                      \
   }                                                                   \
-  ZORBA_INSTANTIATE(OP)
+  ZORBA_INSTANTIATE( OP, Integer );                                   \
+  ZORBA_INSTANTIATE( OP, NegativeInteger );                           \
+  ZORBA_INSTANTIATE( OP, NonNegativeInteger );                        \
+  ZORBA_INSTANTIATE( OP, NonPositiveInteger );                        \
+  ZORBA_INSTANTIATE( OP, PositiveInteger );
 
 ZORBA_INTEGER_OP(+)
 ZORBA_INTEGER_OP(-)
@@ -182,15 +185,26 @@ ZORBA_INTEGER_OP(%)
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 
-#define ZORBA_INTEGER_OP(OP,T)                                            \
-  IntegerImpl operator OP( IntegerImpl const &i, T n ) {                  \
-    ascii::itoa_buf_type buf;                                             \
-    return i.value_ OP IntegerImpl::value_type( ascii::itoa( n, buf ) );  \
-  }                                                                       \
-  IntegerImpl operator OP( T n, IntegerImpl const &i ) {                  \
-    ascii::itoa_buf_type buf;                                             \
-    return IntegerImpl::value_type( ascii::itoa( n, buf ) ) OP i.value_;  \
-  }
+#define ZORBA_INSTANTIATE(OP,I,T)         \
+  template I operator OP( I const&, T );  \
+  template I operator OP( T, I const& )
+
+#define ZORBA_INTEGER_OP(OP,T)                                  \
+  template<class C>                                             \
+  IntegerImpl<C> operator OP( IntegerImpl<C> const &i, T n ) {  \
+    ascii::itoa_buf_type buf;                                   \
+    return i.value_ OP MAPM( ascii::itoa( n, buf ) );           \
+  }                                                             \
+  template<class C>                                             \
+  IntegerImpl<C> operator OP( T n, IntegerImpl<C> const &i ) {  \
+    ascii::itoa_buf_type buf;                                   \
+    return MAPM( ascii::itoa( n, buf ) ) OP i.value_;           \
+  }                                                             \
+  ZORBA_INSTANTIATE( OP, Integer, T );                          \
+  ZORBA_INSTANTIATE( OP, NegativeInteger, T );                  \
+  ZORBA_INSTANTIATE( OP, NonNegativeInteger, T );               \
+  ZORBA_INSTANTIATE( OP, NonPositiveInteger, T );               \
+  ZORBA_INSTANTIATE( OP, PositiveInteger, T );
 
 ZORBA_INTEGER_OP(+,long long)
 ZORBA_INTEGER_OP(-,long long)
@@ -204,31 +218,45 @@ ZORBA_INTEGER_OP(+,unsigned long long)
 ZORBA_INTEGER_OP(-,unsigned long long)
 ZORBA_INTEGER_OP(*,unsigned long long)
 ZORBA_INTEGER_OP(%,unsigned long long)
+#undef ZORBA_INSTANTIATE
 #undef ZORBA_INTEGER_OP
 
-#define ZORBA_INTEGER_OP(T)                                       \
-  IntegerImpl operator/( IntegerImpl const &i, T n ) {            \
-    ascii::itoa_buf_type buf;                                     \
-    IntegerImpl::value_type const temp( ascii::itoa( n, buf ) );  \
-    return IntegerImpl::ftoi( i.value_ / temp );                  \
-  }                                                               \
-  IntegerImpl operator/( T n, IntegerImpl const &i ) {            \
-    ascii::itoa_buf_type buf;                                     \
-    IntegerImpl::value_type const temp( ascii::itoa( n, buf ) );  \
-    return IntegerImpl::ftoi( temp / i.value_ );                  \
-  }
+#define ZORBA_INSTANTIATE( I, T )       \
+  template I operator/( I const&, T );  \
+  template I operator/( T, I const& )
+
+#define ZORBA_INTEGER_OP(T)                                   \
+  template<class C>                                           \
+  IntegerImpl<C> operator/( IntegerImpl<C> const &i, T n ) {  \
+    ascii::itoa_buf_type buf;                                 \
+    MAPM const temp( ascii::itoa( n, buf ) );                 \
+    return IntegerImpl<C>::ftoi( i.value_ / temp );           \
+  }                                                           \
+  template<class C>                                           \
+  IntegerImpl<C> operator/( T n, IntegerImpl<C> const &i ) {  \
+    ascii::itoa_buf_type buf;                                 \
+    MAPM const temp( ascii::itoa( n, buf ) );                 \
+    return IntegerImpl<C>::ftoi( temp / i.value_ );           \
+  }                                                           \
+  ZORBA_INSTANTIATE( Integer, T );                            \
+  ZORBA_INSTANTIATE( NegativeInteger, T );                    \
+  ZORBA_INSTANTIATE( NonNegativeInteger, T );                 \
+  ZORBA_INSTANTIATE( NonPositiveInteger, T );                 \
+  ZORBA_INSTANTIATE( PositiveInteger, T );                    \
 
 ZORBA_INTEGER_OP(long long)
 ZORBA_INTEGER_OP(unsigned long)
 ZORBA_INTEGER_OP(unsigned long long)
+#undef ZORBA_INSTANTIATE
 #undef ZORBA_INTEGER_OP
 
-#define ZORBA_INTEGER_OP(OP,T)                      \
-  IntegerImpl& IntegerImpl::operator OP( T n ) {    \
-    ascii::itoa_buf_type buf;                       \
-    value_type const temp( ascii::itoa( n, buf ) ); \
-    value_ OP temp;                                 \
-    return *this;                                   \
+#define ZORBA_INTEGER_OP(OP,T)                          \
+  template<class C>                                     \
+  IntegerImpl<C>& IntegerImpl<C>::operator OP( T n ) {  \
+    ascii::itoa_buf_type buf;                           \
+    value_type const temp( ascii::itoa( n, buf ) );     \
+    value_ OP temp;                                     \
+    return *this;                                       \
   }
 
 ZORBA_INTEGER_OP(+=,long long)
@@ -246,11 +274,12 @@ ZORBA_INTEGER_OP(%=,unsigned long long)
 #undef ZORBA_INTEGER_OP
 
 #define ZORBA_INTEGER_OP(T) \
-  IntegerImpl& IntegerImpl::operator/=( T n ) {     \
-    ascii::itoa_buf_type buf;                       \
-    value_type const temp( ascii::itoa( n, buf ) ); \
-    value_ = ftoi( value_ / temp );                 \
-    return *this;                                   \
+  template<class C>                                   \
+  IntegerImpl<C>& IntegerImpl<C>::operator/=( T n ) { \
+    ascii::itoa_buf_type buf;                         \
+    value_type const temp( ascii::itoa( n, buf ) );   \
+    value_ = ftoi( value_ / temp );                   \
+    return *this;                                     \
   }
 
 ZORBA_INTEGER_OP(long long)
@@ -261,36 +290,63 @@ ZORBA_INTEGER_OP(unsigned long long)
 
 ////////// relational operators ///////////////////////////////////////////////
 
+#define ZORBA_INSTANTIATE(OP,I) \
+  template bool operator OP( I const&, Decimal const& )
+
 template<class C>
 bool operator==( IntegerImpl<C> const &i, Decimal const &d ) {
   return d.is_xs_integer() && i.itod() == d.value_;
 }
 
-#define ZORBA_INTEGER_OP(OP)                                        \
-  template<class C>                                                  \
-  bool operator OP( IntegerImpl<C> const &i, Decimal const &d ) {  \
-    return i.itod() OP d.value_;                                    \
-  }
+ZORBA_INSTANTIATE( ==, Integer );
+ZORBA_INSTANTIATE( ==, NegativeInteger );
+ZORBA_INSTANTIATE( ==, NonNegativeInteger );
+ZORBA_INSTANTIATE( ==, NonPositiveInteger );
+ZORBA_INSTANTIATE( ==, PositiveInteger );
+
+#define ZORBA_INTEGER_OP(OP)                                      \
+  template<class C>                                               \
+  bool operator OP( IntegerImpl<C> const &i, Decimal const &d ) { \
+    return i.itod() OP d.value_;                                  \
+  }                                                               \
+  ZORBA_INSTANTIATE( OP, Integer );                               \
+  ZORBA_INSTANTIATE( OP, NegativeInteger );                       \
+  ZORBA_INSTANTIATE( OP, NonNegativeInteger );                    \
+  ZORBA_INSTANTIATE( OP, NonPositiveInteger );                    \
+  ZORBA_INSTANTIATE( OP, PositiveInteger );
 
 ZORBA_INTEGER_OP(!=)
 ZORBA_INTEGER_OP(< )
 ZORBA_INTEGER_OP(<=)
 ZORBA_INTEGER_OP(> )
 ZORBA_INTEGER_OP(>=)
+#undef ZORBA_INSTANTIATE
 #undef ZORBA_INTEGER_OP
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 
+#define ZORBA_INSTANTIATE(OP,I,T)           \
+  template bool operator OP( I const&, T ); \
+  template bool operator OP( T, I const& )
+
 #define ZORBA_INTEGER_OP(OP,T) \
-  bool operator OP( IntegerImpl const &i, T n ) {                         \
-    ascii::itoa_buf_type buf;                                             \
-    return i.value_ OP IntegerImpl::value_type( ascii::itoa( n, buf ) );  \
-  }                                                                       \
-                                                                          \
-  bool operator OP( T n, IntegerImpl const &i ) {                         \
-    ascii::itoa_buf_type buf;                                             \
-    return IntegerImpl::value_type( ascii::itoa( n, buf ) ) OP i.value_;  \
-  }
+  template<class C>                                   \
+  bool operator OP( IntegerImpl<C> const &i, T n ) {  \
+    ascii::itoa_buf_type buf;                         \
+    return i.value_ OP MAPM( ascii::itoa( n, buf ) ); \
+  }                                                   \
+                                                      \
+  template<class C>                                   \
+  bool operator OP( T n, IntegerImpl<C> const &i ) {  \
+    ascii::itoa_buf_type buf;                         \
+    return MAPM( ascii::itoa( n, buf ) ) OP i.value_; \
+  }                                                   \
+                                                      \
+  ZORBA_INSTANTIATE( OP, Integer, T );                \
+  ZORBA_INSTANTIATE( OP, NegativeInteger, T );        \
+  ZORBA_INSTANTIATE( OP, NonNegativeInteger, T );     \
+  ZORBA_INSTANTIATE( OP, NonPositiveInteger, T );     \
+  ZORBA_INSTANTIATE( OP, PositiveInteger, T );
 
 ZORBA_INTEGER_OP(==,long long)
 ZORBA_INTEGER_OP(!=,long long)
@@ -310,6 +366,7 @@ ZORBA_INTEGER_OP(< ,unsigned long long)
 ZORBA_INTEGER_OP(<=,unsigned long long)
 ZORBA_INTEGER_OP(> ,unsigned long long)
 ZORBA_INTEGER_OP(>=,unsigned long long)
+#undef ZORBA_INSTANTIATE
 
 #else /* ZORBA_WITH_BIG_INTEGER */
 
@@ -379,42 +436,50 @@ MAPM IntegerImpl<C>::itod() const {
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 #ifdef ZORBA_WITH_BIG_INTEGER
-size_t IntegerImpl::alloc_size() const {
+template<class C>
+size_t IntegerImpl<C>::alloc_size() const {
   return value_.significant_digits();
 }
 
-uint32_t IntegerImpl::hash() const {
+template<class C>
+uint32_t IntegerImpl<C>::hash() const {
   return Decimal::hash( value_ );
 }
 
-bool IntegerImpl::is_xs_byte() const {
+template<class C>
+bool IntegerImpl<C>::is_xs_byte() const {
   static MAPM xs_byte_min( "-128" );
   static MAPM xs_byte_max( "127" );
   return value_ >= xs_byte_min && value_ <= xs_byte_max;
 }
 
-bool IntegerImpl::is_xs_short() const {
+template<class C>
+bool IntegerImpl<C>::is_xs_short() const {
   static MAPM xs_short_min( "-32768" );
   static MAPM xs_short_max( "32767" );
   return value_ >= xs_short_min && value_ <= xs_short_max;
 }
 
-bool IntegerImpl::is_xs_unsignedByte() const {
+template<class C>
+bool IntegerImpl<C>::is_xs_unsignedByte() const {
   static MAPM xs_unsignedByte_max( "256" );
   return value_.sign() >= 0 && value_ <= xs_unsignedByte_max;
 }
 
-bool IntegerImpl::is_xs_unsignedInt() const {
+template<class C>
+bool IntegerImpl<C>::is_xs_unsignedInt() const {
   static MAPM xs_unsignedInt_max( "4294967295" );
   return value_.sign() >= 0 && value_ <= xs_unsignedInt_max;
 }
 
-bool IntegerImpl::is_xs_unsignedLong() const {
+template<class C>
+bool IntegerImpl<C>::is_xs_unsignedLong() const {
   static MAPM xs_unsignedLong_max( "18446744073709551615" );
   return value_.sign() >= 0 && value_ <= xs_unsignedLong_max;
 }
 
-bool IntegerImpl::is_xs_unsignedShort() const {
+template<class C>
+bool IntegerImpl<C>::is_xs_unsignedShort() const {
   static MAPM xs_unsignedShort_max( "65536" );
   return value_.sign() >= 0 && value_ <= xs_unsignedShort_max;
 }

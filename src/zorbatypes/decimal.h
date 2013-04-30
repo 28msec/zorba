@@ -243,8 +243,10 @@ private:
   static value_type roundHalfToEven2( value_type const &v,
                                       value_type const &precision );
 
-  static zstring toString( value_type const&,
-                           int precision = ZORBA_FLOAT_POINT_PRECISION );
+  static zstring toString( value_type const &value,
+                           int precision = ZORBA_FLOAT_POINT_PRECISION ) {
+    return toString( value, false, precision );
+  }
 
   static zstring toString( value_type const&, bool,
                            int precision = ZORBA_FLOAT_POINT_PRECISION );

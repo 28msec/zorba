@@ -169,7 +169,6 @@ void Decimal::reduce( char *s ) {
   }
 }
 
-
 ////////// constructors ///////////////////////////////////////////////////////
 
 Decimal::Decimal( long long n ) {
@@ -219,6 +218,7 @@ template<class C>
 Decimal::Decimal( IntegerImpl<C> const &i ) : value_( i.itod() ) {
 }
 
+// instantiate Decimal-from-Integer constructors
 template Decimal::Decimal( Integer const& );
 template Decimal::Decimal( NegativeInteger const& );
 template Decimal::Decimal( NonNegativeInteger const& );
@@ -267,23 +267,19 @@ Decimal& Decimal::operator=( Float const &f ) {
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define ZORBA_INSTANTIATE(OP) /* nothing */
-#else
-# define ZORBA_INSTANTIATE(OP)                                                \
-  template Decimal operator OP( Decimal const&, Integer const& );             \
-  template Decimal operator OP( Decimal const&, NegativeInteger const& );     \
-  template Decimal operator OP( Decimal const&, NonNegativeInteger const& );  \
-  template Decimal operator OP( Decimal const&, NonPositiveInteger const& );  \
-  template Decimal operator OP( Decimal const&, PositiveInteger const& )
-#endif /* ZORBA_WITH_BIG_INTEGER */
+#define ZORBA_INSTANTIATE(OP,I) \
+  template Decimal operator OP( Decimal const&, I const& )
 
 #define ZORBA_DECIMAL_OP(OP)                                          \
-  template<class C>                                                   \
+  template<class C> inline                                            \
   Decimal operator OP( Decimal const &d, IntegerImpl<C> const &i ) {  \
     return d.value_ OP i.itod();                                      \
   }                                                                   \
-  ZORBA_INSTANTIATE(OP)
+  ZORBA_INSTANTIATE(OP,Integer);                                      \
+  ZORBA_INSTANTIATE(OP,NegativeInteger);                              \
+  ZORBA_INSTANTIATE(OP,NonNegativeInteger);                           \
+  ZORBA_INSTANTIATE(OP,NonPositiveInteger);                           \
+  ZORBA_INSTANTIATE(OP,PositiveInteger);
 
 ZORBA_DECIMAL_OP(+);
 ZORBA_DECIMAL_OP(-);
@@ -295,23 +291,19 @@ ZORBA_DECIMAL_OP(%);
 
 ////////// relational operators ///////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define ZORBA_INSTANTIATE(OP) /* nothing */
-#else
-# define ZORBA_INSTANTIATE(OP)                                            \
-  template bool operator OP( Decimal const&, Integer const& );            \
-  template bool operator OP( Decimal const&, NegativeInteger const& );    \
-  template bool operator OP( Decimal const&, NonNegativeInteger const& ); \
-  template bool operator OP( Decimal const&, NonPositiveInteger const& ); \
-  template bool operator OP( Decimal const&, PositiveInteger const& )
-#endif /* ZORBA_WITH_BIG_INTEGER */
+#define ZORBA_INSTANTIATE(OP,I) \
+  template bool operator OP( Decimal const&, I const& )
 
 #define ZORBA_DECIMAL_OP(OP)                                      \
-  template<class C>                                               \
+  template<class C> inline                                        \
   bool operator OP( Decimal const &d, IntegerImpl<C> const &i ) { \
     return d.value_ OP i.itod();                                  \
   }                                                               \
-  ZORBA_INSTANTIATE(OP)
+  ZORBA_INSTANTIATE( OP, Integer );                               \
+  ZORBA_INSTANTIATE( OP, NegativeInteger );                       \
+  ZORBA_INSTANTIATE( OP, NonNegativeInteger );                    \
+  ZORBA_INSTANTIATE( OP, NonPositiveInteger );                    \
+  ZORBA_INSTANTIATE( OP, PositiveInteger );
 
 ZORBA_DECIMAL_OP(==);
 ZORBA_DECIMAL_OP(!=);
@@ -429,16 +421,15 @@ uint32_t Decimal::hash( value_type const &value ) {
   return static_cast<uint32_t>( n );
 }
 
-zstring Decimal::toString( value_type const &value, int precision ) {
-  return toString(value, false, precision);
-}
-
-zstring Decimal::toString( value_type const &value, bool minusZero, int precision ) {
+zstring Decimal::toString( value_type const &value, bool minusZero,
+                           int precision ) {
   char buf[ 1024 ];
 
-  if ( minusZero )
-  {
-    buf[0] = '-';
+  if ( minusZero ) {
+    if ( value.sign() < 0 )
+      buf[0] = '-';
+    else
+      minusZero = false;
   }
 
   value.toFixPtString( buf + minusZero, precision );
