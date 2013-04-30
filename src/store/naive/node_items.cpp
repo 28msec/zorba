@@ -763,30 +763,19 @@ bool XmlNode::disconnect(csize& pos)
   if (theParent == NULL)
     return false;
 
-  try
+  if (getNodeKind() == store::StoreConsts::attributeNode)
   {
-    if (getNodeKind() == store::StoreConsts::attributeNode)
-    {
-      csize numAttrs = theParent->numAttrs();
-      pos = theParent->removeAttr(this);
-      ZORBA_FATAL(pos <= numAttrs, "");
-      return (pos < numAttrs);
-    }
-    else
-    {
-      csize numChildren = theParent->numChildren();
-      pos = theParent->removeChild(this);
-      ZORBA_FATAL(pos <= numChildren, "");
-      return (pos < numChildren);
-    }
+    csize numAttrs = theParent->numAttrs();
+    pos = theParent->removeAttr(this);
+    ZORBA_FATAL(pos <= numAttrs, "");
+    return (pos < numAttrs);
   }
-  catch (std::exception const &e)
+  else
   {
-    ZORBA_FATAL(false, e.what());
-  }
-  catch (...)
-  {
-    ZORBA_FATAL(false, "Unexpected exception");
+    csize numChildren = theParent->numChildren();
+    pos = theParent->removeChild(this);
+    ZORBA_FATAL(pos <= numChildren, "");
+    return (pos < numChildren);
   }
 }
 
@@ -861,21 +850,10 @@ void XmlNode::swap(Item* anotherItem)
 ********************************************************************************/
 void XmlNode::destroy(bool removeType)
 {
-  try
-  {
-    csize pos;
-    disconnect(pos);
+  csize pos;
+  disconnect(pos);
 
-    destroyInternal(removeType);
-  }
-  catch (std::exception const &e)
-  {
-    ZORBA_FATAL(false, e.what());
-  }
-  catch (...)
-  {
-    ZORBA_FATAL(false, "Unexpected exception");
-  }
+  destroyInternal(removeType);
 }
 
 

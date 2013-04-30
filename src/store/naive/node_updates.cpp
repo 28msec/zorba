@@ -328,204 +328,193 @@ void XmlNode::attach(InternalNode* parent, csize pos)
 ********************************************************************************/
 void XmlNode::detach()
 {
-  try
+  ZORBA_ASSERT(theParent != NULL);
+
+  ulong refcount = 0;
+
+  XmlTree* oldTree = getTree();
+  XmlTree* newTree = GET_STORE().getNodeFactory().createXmlTree();
+  newTree->setRoot(this);
+
+  if (oldTree->getRoot() == this)
+    oldTree->setRoot(NULL);
+
+  store::StoreConsts::NodeKind nodeKind = getNodeKind();
+
+  // ???? What we do here is not really thread-safe. For example, consider the
+  // following scenario: Let T1 be "this" thread and T2 be another thread that
+  // has an rchandle, rc2, on N. Right after T1 acquires the rclock on the old
+  // tree, T2 tries to make a copy of rc2; as a result, T2 will block on the
+  // old tree rclock. When T1 releases the old rclock, the old tree may be
+  // destroyed already, so T2 will be trying to acquire a deallocated lock.
+  // Even if the old tree is there, T2 will increment the ref counter of the
+  // new tree while holding the lock of the old tree. In fact, the setTree()
+  // method istself is not safe (if T2 tries to copy rc2 after T1 has returned
+  // from setTree(), then things are ok).
+  SYNC_CODE(oldTree->getRCLock()->acquire());
+  SYNC_CODE(newTree->getRCLock()->acquire());
+
+  refcount += theRefCount;
+
+  switch (nodeKind)
   {
-    ZORBA_ASSERT(theParent != NULL);
+  case store::StoreConsts::attributeNode:
+  {
+    setTree(newTree);
+    theParent->removeAttr(this);
+    theParent = NULL;
+    break;
+  }
+  case store::StoreConsts::piNode:
+  case store::StoreConsts::commentNode:
+  {
+    setTree(newTree);
+    theParent->removeChild(this);
+    theParent = NULL;
+    break;
+  }
+  case store::StoreConsts::textNode:
+  {
+    setTree(newTree);
 
-    ulong refcount = 0;
+    reinterpret_cast<TextNode*>(this)->revertToTextContent();
 
-    XmlTree* oldTree = getTree();
-    XmlTree* newTree = GET_STORE().getNodeFactory().createXmlTree();
-    newTree->setRoot(this);
+    theParent->removeChild(this);
+    theParent = NULL;
+    break;
+  }
+  case store::StoreConsts::elementNode:
+  {
+    ElementNode* rootNode = reinterpret_cast<ElementNode*>(this);
 
-    if (oldTree->getRoot() == this)
-      oldTree->setRoot(NULL);
-
-    store::StoreConsts::NodeKind nodeKind = getNodeKind();
-
-    // ???? What we do here is not really thread-safe. For example, consider the
-    // following scenario: Let T1 be "this" thread and T2 be another thread that
-    // has an rchandle, rc2, on N. Right after T1 acquires the rclock on the old
-    // tree, T2 tries to make a copy of rc2; as a result, T2 will block on the
-    // old tree rclock. When T1 releases the old rclock, the old tree may be
-    // destroyed already, so T2 will be trying to acquire a deallocated lock. 
-    // Even if the old tree is there, T2 will increment the ref counter of the
-    // new tree while holding the lock of the old tree. In fact, the setTree()
-    // method istself is not safe (if T2 tries to copy rc2 after T1 has returned
-    // from setTree(), then things are ok).
-    SYNC_CODE(oldTree->getRCLock()->acquire());
-    SYNC_CODE(newTree->getRCLock()->acquire());
-
-    refcount += theRefCount;
-
-    switch (nodeKind)
+    // If the baseUri property of N is inherited from its ancestors, make a
+    // local copy of it, before disconnecting N from its parent.
+    bool localBaseUri;
+    zstring baseUri;
+    getBaseURIInternal(baseUri, localBaseUri);
+    if (!localBaseUri && !baseUri.empty())
     {
-    case store::StoreConsts::attributeNode:
-    {
-      setTree(newTree);
-      theParent->removeAttr(this);
-      theParent = NULL;
-      break;
+      zstring dummyUri;
+      rootNode->addBaseUriProperty(baseUri, dummyUri);
     }
-    case store::StoreConsts::piNode:
-    case store::StoreConsts::commentNode:
-    {
-      setTree(newTree);
-      theParent->removeChild(this);
-      theParent = NULL;
-      break;
-    }
-    case store::StoreConsts::textNode:
-    {
-      setTree(newTree);
 
-      reinterpret_cast<TextNode*>(this)->revertToTextContent();
+    // For each node in the nodes stack, we must save the nsCtx of its
+    // parent node in the parentNsCtxs stack, because the nsCtx of the
+    // parent may change during the while loop below.
+    std::stack<XmlNode*> nodes;
+    std::stack<NsBindingsContext*> parentNsCtxs;
 
-      theParent->removeChild(this);
-      theParent = NULL;
-      break;
-    }
-    case store::StoreConsts::elementNode:
+    nodes.push(this);
+    parentNsCtxs.push(rootNode->theParent->getNsContext());
+
+    while (!nodes.empty())
     {
-      ElementNode* rootNode = reinterpret_cast<ElementNode*>(this);
+      XmlNode* node = nodes.top();
+      nodes.pop();
 
-      // If the baseUri property of N is inherited from its ancestors, make a
-      // local copy of it, before disconnecting N from its parent.
-      bool localBaseUri;
-      zstring baseUri;
-      getBaseURIInternal(baseUri, localBaseUri);
-      if (!localBaseUri && !baseUri.empty())
+      if (node->getNodeKind() == store::StoreConsts::elementNode)
       {
-        zstring dummyUri;
-        rootNode->addBaseUriProperty(baseUri, dummyUri);
-      }
+        ElementNode* elemNode = reinterpret_cast<ElementNode*>(node);
 
-      // For each node in the nodes stack, we must save the nsCtx of its
-      // parent node in the parentNsCtxs stack, because the nsCtx of the
-      // parent may change during the while loop below.
-      std::stack<XmlNode*> nodes;
-      std::stack<NsBindingsContext*> parentNsCtxs;
+        node->setTree(newTree);
 
-      nodes.push(this);
-      parentNsCtxs.push(rootNode->theParent->getNsContext());
+        // Preserve the namespace bindings of the current node
+        NsBindingsContext* nsContext = elemNode->getNsContext();
+        NsBindingsContext* parentNsContext = parentNsCtxs.top();
+        parentNsCtxs.pop();
 
-      while (!nodes.empty())
-      {
-        XmlNode* node = nodes.top();
-        nodes.pop();
-
-        if (node->getNodeKind() == store::StoreConsts::elementNode)
+        // If the current node is N, or a node in NT that does not inherit ns
+        // bindings directly from its parent (but may inherit from some other
+        // ancestor).
+        if (elemNode == rootNode ||
+            nsContext == NULL ||
+            (elemNode->haveLocalBindings() &&
+             nsContext->getParent() != parentNsContext) ||
+            nsContext != parentNsContext)
         {
-          ElementNode* elemNode = reinterpret_cast<ElementNode*>(node);
-
-          node->setTree(newTree);
-
-          // Preserve the namespace bindings of the current node
-          NsBindingsContext* nsContext = elemNode->getNsContext();
-          NsBindingsContext* parentNsContext = parentNsCtxs.top();
-          parentNsCtxs.pop();
-
-          // If the current node is N, or a node in NT that does not inherit ns
-          // bindings directly from its parent (but may inherit from some other
-          // ancestor).
-          if (elemNode == rootNode ||
-              nsContext == NULL ||
-              (elemNode->haveLocalBindings() &&
-               nsContext->getParent() != parentNsContext) ||
-              nsContext != parentNsContext)
+          if (nsContext != NULL)
           {
-            if (nsContext != NULL)
+            std::auto_ptr<NsBindingsContext> ctx(new NsBindingsContext());
+            elemNode->getNamespaceBindings(ctx->getBindings());
+
+            if (!ctx->empty())
             {
-              std::auto_ptr<NsBindingsContext> ctx(new NsBindingsContext());
-              elemNode->getNamespaceBindings(ctx->getBindings());
-            
-              if (!ctx->empty())
-              {
-                elemNode->theNsContext = ctx.release();
-                elemNode->theFlags |= HaveLocalBindings;
-              }
+              elemNode->theNsContext = ctx.release();
+              elemNode->theFlags |= HaveLocalBindings;
             }
           }
-
-          // Else the current node is not N and it inherits ns bindings directly
-          // from its parent.
-          else
-          {
-            elemNode->setNsContext(elemNode->theParent->getNsContext());
-          }
-
-          // Detach the attributes of the current node
-          InternalNode::iterator ite = elemNode->attrsBegin();
-          InternalNode::iterator end = elemNode->attrsEnd();
-          
-          for (; ite != end; ++ite)
-          {
-            AttributeNode* attrNode = static_cast<AttributeNode*>(*ite);
-            refcount += attrNode->theRefCount;
-            attrNode->setTree(newTree);
-          }
-
-          // Detach the children of the current node
-          ite = elemNode->childrenBegin();
-          end = elemNode->childrenEnd();
-
-          for (; ite != end; ++ite)
-          {
-            XmlNode* child = (*ite);
-            refcount += child->theRefCount;
-
-            nodes.push(child);
-
-            if (child->getNodeKind() == store::StoreConsts::elementNode)
-              parentNsCtxs.push(nsContext);
-          }
         }
+
+        // Else the current node is not N and it inherits ns bindings directly
+        // from its parent.
         else
         {
-          node->setTree(newTree);
+          elemNode->setNsContext(elemNode->theParent->getNsContext());
         }
-      } // done traversing tree
 
-      theParent->removeChild(this);
-      theParent = NULL;
+        // Detach the attributes of the current node
+        InternalNode::iterator ite = elemNode->attrsBegin();
+        InternalNode::iterator end = elemNode->attrsEnd();
 
-      break;
-    }
-    default:
-    {
-      ZORBA_ASSERT(false);
-    }
-    }
+        for (; ite != end; ++ite)
+        {
+          AttributeNode* attrNode = static_cast<AttributeNode*>(*ite);
+          refcount += attrNode->theRefCount;
+          attrNode->setTree(newTree);
+        }
 
-    newTree->getRefCount() += refcount;
-    if (newTree->getRefCount() == 0)
-    {
-      SYNC_CODE(newTree->getRCLock()->release());
-      newTree->free();
-    }
-    else
-    {
-      SYNC_CODE(newTree->getRCLock()->release());
-    }
+        // Detach the children of the current node
+        ite = elemNode->childrenBegin();
+        end = elemNode->childrenEnd();
 
-    oldTree->getRefCount() -= refcount;
-    if (oldTree->getRefCount() == 0)
-    {
-      SYNC_CODE(oldTree->getRCLock()->release());
-      oldTree->free();
-    }
-    else
-    {
-      SYNC_CODE(oldTree->getRCLock()->release());
-    }
+        for (; ite != end; ++ite)
+        {
+          XmlNode* child = (*ite);
+          refcount += child->theRefCount;
+
+          nodes.push(child);
+
+          if (child->getNodeKind() == store::StoreConsts::elementNode)
+            parentNsCtxs.push(nsContext);
+        }
+      }
+      else
+      {
+        node->setTree(newTree);
+      }
+    } // done traversing tree
+
+    theParent->removeChild(this);
+    theParent = NULL;
+
+    break;
   }
-  catch (std::exception const &e)
+  default:
   {
-    ZORBA_FATAL(false, e.what());
+    ZORBA_ASSERT(false);
   }
-  catch(...)
+  }
+
+  newTree->getRefCount() += refcount;
+  if (newTree->getRefCount() == 0)
   {
-    ZORBA_FATAL(0, "Unexpected exception");
+    SYNC_CODE(newTree->getRCLock()->release());
+    newTree->free();
+  }
+  else
+  {
+    SYNC_CODE(newTree->getRCLock()->release());
+  }
+
+  oldTree->getRefCount() -= refcount;
+  if (oldTree->getRefCount() == 0)
+  {
+    SYNC_CODE(oldTree->getRCLock()->release());
+    oldTree->free();
+  }
+  else
+  {
+    SYNC_CODE(oldTree->getRCLock()->release());
   }
 }
 
