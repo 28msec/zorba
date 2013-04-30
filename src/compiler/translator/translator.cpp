@@ -88,10 +88,12 @@
 #include "types/typemanagerimpl.h"
 #include "types/schema/schema.h"
 
-#include "zorbatypes/URI.h"
-#include "zorbatypes/numconversions.h"
-#include "zorbatypes/integer.h"
 #include "zorbamisc/ns_consts.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
+#include "zorbatypes/URI.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"

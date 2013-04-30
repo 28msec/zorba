@@ -31,6 +31,7 @@
 
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/datetime/parse.h"
+#include "zorbatypes/decimal.h"
 #include "zorbatypes/duration.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/timezone.h"

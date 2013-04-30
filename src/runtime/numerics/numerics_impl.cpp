@@ -22,6 +22,7 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "zorbatypes/decimal.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/zorbatypes_decl.h"
 

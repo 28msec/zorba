@@ -22,6 +22,7 @@
 #include <zorbatypes/timezone.h>
 
 #include "zorbatypes/datetime/parse.h"
+#include "zorbatypes/decimal.h"
 
 #include "zorbautils/hashfun.h"
 

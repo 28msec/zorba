@@ -20,12 +20,13 @@
 #include <vector>
 #include <sstream>
 
-#include <zorbautils/fatal.h>
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 
-#include <zorbatypes/URI.h>
-#include <zorbamisc/ns_consts.h>
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/URI.h"
+#include "zorbamisc/ns_consts.h"
+#include "zorbautils/fatal.h"
 
 // For timing
 #include <zorba/util/time.h>

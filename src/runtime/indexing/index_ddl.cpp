@@ -34,6 +34,7 @@
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/casting.h"
+#include "zorbatypes/decimal.h"
 #include "zorbatypes/integer.h"
 
 #include "context/static_context.h"

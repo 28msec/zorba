@@ -25,6 +25,7 @@
 
 #include "api/itemfactoryimpl.h"
 
+#include "zorbatypes/decimal.h"
 #include "zorbatypes/floatimpl.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/schema_types.h"

@@ -39,6 +39,7 @@
 #endif /* ZORBA_NO_FULL_TEXT */
 
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/decimal.h"
 #include "zorbatypes/floatimpl.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/schema_types.h"

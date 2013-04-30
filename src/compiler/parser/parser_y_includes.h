@@ -66,6 +66,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "store/api/update_consts.h"
+#include "zorbatypes/decimal.h"
 #include "zorbatypes/integer.h"
 
 #define SYMTAB( n ) driver.symtab.get( (off_t)n )
