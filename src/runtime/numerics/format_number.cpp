@@ -376,7 +376,7 @@ static void parse_subpicture( picture::sub_picture *sub_pic,
   bool just_got_decimal_separator = false;
   bool just_got_grouping_separator = false;
 
-  int grouping_interval = 0;              // used only for integer part
+  utf8::size_type grouping_interval = 0;  // used only for integer part
   int grouping_separators = 0;
 
   utf8::size_type decimal_separator_pos = utf8::npos;
