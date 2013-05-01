@@ -80,9 +80,9 @@ ZORBA_ADD_TEST(bin/zorba5 zorbacmd -q -f blub.xq)
 ZORBA_SET_TEST_PROPERTY(bin/zorba5 PASS_REGULAR_EXPRESSION ".*No queries submitted.*")
 
 IF (UNIX)
-  CONFIGURE_FILE ("${CMAKE_CURRENT_SOURCE_DIR}/test/shebang.xq.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/shebang.xq" @ONLY)
-  ADD_TEST (bin/shebang "${CMAKE_CURRENT_BINARY_DIR}/shebang.xq")
+  ADD_TEST (NAME bin/shebang
+    COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/test/shebang.xq"
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
   SET_TESTS_PROPERTIES (bin/shebang PROPERTIES PASS_REGULAR_EXPRESSION "shebang success")
 ENDIF (UNIX)
 
