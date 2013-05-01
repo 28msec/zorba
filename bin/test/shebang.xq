@@ -1,2 +1,2 @@
-#!@ZORBA_EXE@
+#!bin/zorba
 "shebang success"
