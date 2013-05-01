@@ -64,8 +64,8 @@ public:
   explicit Decimal( float n );
   explicit Decimal( double n );
 
-  template<class C>
-  explicit Decimal( IntegerImpl<C> const &i );
+  template<class T>
+  explicit Decimal( IntegerImpl<T> const &i );
 
   /**
    * Constructs a %Decimal from a C string.
@@ -125,8 +125,8 @@ public:
   Decimal& operator=( Double const &d );
   Decimal& operator=( Float const &f );
 
-  template<class C>
-  Decimal& operator=( IntegerImpl<C> const &i );
+  template<class T>
+  Decimal& operator=( IntegerImpl<T> const &i );
 
   ////////// arithmetic operators /////////////////////////////////////////////
 
@@ -137,11 +137,11 @@ public:
   friend Decimal operator%( Decimal const&, Decimal const& );
 
 #define ZORBA_DECIMAL_OP(OP)                                            \
-  template<class C>                                                     \
-  friend Decimal operator OP( Decimal const&, IntegerImpl<C> const& );  \
+  template<class T>                                                     \
+  friend Decimal operator OP( Decimal const&, IntegerImpl<T> const& );  \
                                                                         \
-  template<class C>                                                     \
-  friend Decimal operator OP( IntegerImpl<C> const&, Decimal const& )
+  template<class T>                                                     \
+  friend Decimal operator OP( IntegerImpl<T> const&, Decimal const& )
 
   ZORBA_DECIMAL_OP(+);
   ZORBA_DECIMAL_OP(-);
@@ -157,7 +157,7 @@ public:
   Decimal& operator%=( Decimal const& );
 
 #define ZORBA_DECIMAL_OP(OP) \
-  template<class C> Decimal& operator OP( IntegerImpl<C> const& )
+  template<class T> Decimal& operator OP( IntegerImpl<T> const& )
 
   ZORBA_DECIMAL_OP(+=);
   ZORBA_DECIMAL_OP(-=);
@@ -172,10 +172,10 @@ public:
 
 #define ZORBA_DECIMAL_OP(OP)                                        \
   friend bool operator OP( Decimal const&, Decimal const& );        \
-  template<class C>                                                 \
-  friend bool operator OP( Decimal const&, IntegerImpl<C> const& ); \
-  template<class C>                                                 \
-  friend bool operator OP( IntegerImpl<C> const&, Decimal const& )
+  template<class T>                                                 \
+  friend bool operator OP( Decimal const&, IntegerImpl<T> const& ); \
+  template<class T>                                                 \
+  friend bool operator OP( IntegerImpl<T> const&, Decimal const& )
 
   ZORBA_DECIMAL_OP(==);
   ZORBA_DECIMAL_OP(!=);
@@ -193,11 +193,11 @@ public:
   Decimal floor() const;
   Decimal round() const;
 
-  template<class C>
-  Decimal round( IntegerImpl<C> const &precision ) const;
+  template<class T>
+  Decimal round( IntegerImpl<T> const &precision ) const;
 
-  template<class C>
-  Decimal roundHalfToEven( IntegerImpl<C> const &precision ) const;
+  template<class T>
+  Decimal roundHalfToEven( IntegerImpl<T> const &precision ) const;
 
   Decimal sqrt() const;
 
@@ -251,7 +251,7 @@ private:
   static zstring toString( value_type const&, bool,
                            int precision = ZORBA_FLOAT_POINT_PRECISION );
 
-  template<class C> friend class IntegerImpl;
+  template<class T> friend class IntegerImpl;
   template<typename F> friend class FloatImpl;
 
   friend xs_long to_xs_long( Decimal const& );

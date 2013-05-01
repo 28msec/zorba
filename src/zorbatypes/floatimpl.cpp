@@ -148,8 +148,8 @@ FloatImpl<FloatType>::FloatImpl( Decimal const &d ) {
 }
 
 template<typename FloatType>
-template<class C>
-FloatImpl<FloatType>::FloatImpl( IntegerImpl<C> const &i ) {
+template<class T>
+FloatImpl<FloatType>::FloatImpl( IntegerImpl<T> const &i ) {
   zstring const temp( i.toString() );
   parse( temp.c_str() );
 }
@@ -176,29 +176,29 @@ FloatImpl<FloatType>& FloatImpl<FloatType>::operator=( Decimal const &d ) {
 }
 
 template<typename FloatType>
-template<class C>
+template<class T>
 FloatImpl<FloatType>&
-FloatImpl<FloatType>::operator=( IntegerImpl<C> const &i ) {
+FloatImpl<FloatType>::operator=( IntegerImpl<T> const &i ) {
   zstring const temp( i.toString() );
   parse( temp.c_str() );
   return *this;
 }
 
-#define INSTANTIATE(F,I) \
+#define ZORBA_INSTANTIATE(F,I) \
   template FloatImpl<F>& FloatImpl<F>::operator=( I const& )
 
-INSTANTIATE(float,Integer);
-INSTANTIATE(float,NegativeInteger);
-INSTANTIATE(float,NonNegativeInteger);
-INSTANTIATE(float,NonPositiveInteger);
-INSTANTIATE(float,PositiveInteger);
+ZORBA_INSTANTIATE(float,Integer);
+ZORBA_INSTANTIATE(float,NegativeInteger);
+ZORBA_INSTANTIATE(float,NonNegativeInteger);
+ZORBA_INSTANTIATE(float,NonPositiveInteger);
+ZORBA_INSTANTIATE(float,PositiveInteger);
 
-INSTANTIATE(double,Integer);
-INSTANTIATE(double,NegativeInteger);
-INSTANTIATE(double,NonNegativeInteger);
-INSTANTIATE(double,NonPositiveInteger);
-INSTANTIATE(double,PositiveInteger);
-#undef INSTANTIATE
+ZORBA_INSTANTIATE(double,Integer);
+ZORBA_INSTANTIATE(double,NegativeInteger);
+ZORBA_INSTANTIATE(double,NonNegativeInteger);
+ZORBA_INSTANTIATE(double,NonPositiveInteger);
+ZORBA_INSTANTIATE(double,PositiveInteger);
+#undef ZORBA_INSTANTIATE
 
 ////////// math functions /////////////////////////////////////////////////////
 

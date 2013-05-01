@@ -28,7 +28,7 @@ class nonNegative_traits;
 class nonPositive_traits;
 class positive_traits;
 
-template<class C> class IntegerImpl;
+template<class T> class IntegerImpl;
 typedef IntegerImpl<integer_traits>     Integer;
 typedef IntegerImpl<negative_traits>    NegativeInteger;
 typedef IntegerImpl<nonNegative_traits> NonNegativeInteger;

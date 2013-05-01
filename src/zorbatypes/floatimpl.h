@@ -63,8 +63,8 @@ public:
   explicit FloatImpl( double n );
   explicit FloatImpl( Decimal const &d );
 
-  template<class C>
-  explicit FloatImpl( IntegerImpl<C> const &i );
+  template<class T>
+  explicit FloatImpl( IntegerImpl<T> const &i );
 
   /**
    * Constructs a %FloatImpl from a C string.
@@ -118,8 +118,8 @@ public:
   FloatImpl& operator=( char const *s );
   FloatImpl& operator=( Decimal const &d );
 
-  template<class C>
-  FloatImpl& operator=( IntegerImpl<C> const &i );
+  template<class T>
+  FloatImpl& operator=( IntegerImpl<T> const &i );
 
   ////////// arithmetic operators /////////////////////////////////////////////
 
@@ -294,7 +294,7 @@ private:
   void parse( char const* );
   bool parse_etc( char const* );
 
-  template<class C> friend class IntegerImpl;
+  template<class T> friend class IntegerImpl;
   friend class Decimal;
 
   friend class FloatImpl<float>;

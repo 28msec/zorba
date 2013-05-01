@@ -214,8 +214,8 @@ Decimal::Decimal( Float const &f ) {
   value_ = f.getNumber();
 }
 
-template<class C>
-Decimal::Decimal( IntegerImpl<C> const &i ) : value_( i.itod() ) {
+template<class T>
+Decimal::Decimal( IntegerImpl<T> const &i ) : value_( i.itod() ) {
 }
 
 // instantiate Decimal-from-Integer constructors
@@ -239,8 +239,8 @@ Decimal& Decimal::operator=( unsigned long long n ) {
   return *this;
 }
 
-template<class C>
-Decimal& Decimal::operator=( IntegerImpl<C> const &i ) {
+template<class T>
+Decimal& Decimal::operator=( IntegerImpl<T> const &i ) {
   value_ = i.itod();
   return *this;
 }
@@ -271,8 +271,8 @@ Decimal& Decimal::operator=( Float const &f ) {
   template Decimal operator OP( Decimal const&, I const& )
 
 #define ZORBA_DECIMAL_OP(OP)                                          \
-  template<class C> inline                                            \
-  Decimal operator OP( Decimal const &d, IntegerImpl<C> const &i ) {  \
+  template<class T> inline                                            \
+  Decimal operator OP( Decimal const &d, IntegerImpl<T> const &i ) {  \
     return d.value_ OP i.itod();                                      \
   }                                                                   \
   ZORBA_INSTANTIATE(OP,Integer);                                      \
@@ -295,8 +295,8 @@ ZORBA_DECIMAL_OP(%);
   template bool operator OP( Decimal const&, I const& )
 
 #define ZORBA_DECIMAL_OP(OP)                                      \
-  template<class C> inline                                        \
-  bool operator OP( Decimal const &d, IntegerImpl<C> const &i ) { \
+  template<class T> inline                                        \
+  bool operator OP( Decimal const &d, IntegerImpl<T> const &i ) { \
     return d.value_ OP i.itod();                                  \
   }                                                               \
   ZORBA_INSTANTIATE( OP, Integer );                               \
@@ -320,8 +320,8 @@ Decimal Decimal::round() const {
   return round( numeric_consts<xs_integer>::zero() );
 }
 
-template<class C>
-Decimal Decimal::round( IntegerImpl<C> const &precision ) const {
+template<class T>
+Decimal Decimal::round( IntegerImpl<T> const &precision ) const {
   return round2( value_, precision.itod() );
 }
 
@@ -346,8 +346,8 @@ Decimal::value_type Decimal::round2( value_type const &v,
   return result;
 }
 
-template<class C>
-Decimal Decimal::roundHalfToEven( IntegerImpl<C> const &precision ) const {
+template<class T>
+Decimal Decimal::roundHalfToEven( IntegerImpl<T> const &precision ) const {
   return roundHalfToEven2( value_, precision.itod() );
 }
 
