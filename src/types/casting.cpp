@@ -1696,12 +1696,22 @@ void str_down(
   {
   case store::XS_NORMALIZED_STRING:
   {
-    if (GenericCast::instance()->castableToNormalizedString(strval))
+    char ch;
+    zstring::size_type sz = strval.size();
+
+    for (zstring::size_type i = 0; i < sz; ++i)
     {
-      factory->createNormalizedString(result, strval);
-      return;
+      ch = strval[i];
+      // do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9)
+      // characters
+      if (ch == '\r' || ch == '\n' || ch == '\t')
+      {
+        strval[i] = ' ';
+      }
     }
-    break;
+    
+    factory->createNormalizedString(result, strval);
+    return;
   }
   case store::XS_TOKEN:
   {
@@ -2683,32 +2693,6 @@ bool GenericCast::castableToNCName(const zstring& str)
         (cp != '.') && (cp != '-') && (cp != '_') &&
         !XQCharType::isCombiningChar(cp) && !XQCharType::isExtender(cp))
       return false;
-  }
-
-  return true;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool GenericCast::castableToNormalizedString(const zstring& str)
-{
-  char ch;
-  zstring::size_type  sz = str.size();
-
-  if (sz == 0)
-    return true;
-
-  for (zstring::size_type i = 0; i < sz; ++i)
-  {
-    ch = str[i];
-    // do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9)
-    // characters
-    if (ch == '\r' || ch == '\n' || ch == '\t')
-    {
-      return false;
-    }
   }
 
   return true;
