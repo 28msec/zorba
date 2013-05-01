@@ -92,29 +92,6 @@ void forletwin_clause::set_var(var_expr* v)
   if (theVarExpr != NULL)
   {
     theVarExpr->set_flwor_clause(this);
-
-    if (theKind == window_clause && theVarExpr->get_type() != NULL)
-    {
-      RootTypeManager& rtm = GENV_TYPESYSTEM;
-      TypeManager* tm = theVarExpr->get_type_manager();
-
-      const QueryLoc& loc = theVarExpr->get_loc();
-
-      xqtref_t varType = theVarExpr->get_type();
-      xqtref_t domainType = theDomainExpr->get_return_type();
-
-      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *varType, loc) &&
-          !TypeOps::is_subtype(tm, *domainType, *varType, loc))
-      {
-        theDomainExpr = theCCB->theEM->
-        create_treat_expr(theDomainExpr->get_sctx(),
-                          theDomainExpr->get_udf(),
-                          theDomainExpr->get_loc(),
-                          theDomainExpr,
-                          varType,
-                          TREAT_TYPE_MATCH);
-      }
-    }
   }
 }
 
@@ -166,7 +143,21 @@ forlet_clause::forlet_clause(
       if (!TypeOps::is_equal(tm, *rtm.ITEM_TYPE_STAR, *declaredType, loc))
       {
         if (kind == flwor_clause::for_clause)
-          declaredType = tm->create_type(*declaredType, domainType->get_quantifier());
+        {
+          TypeConstants::quantifier_t domQuant = domainType->get_quantifier();
+          TypeConstants::quantifier_t declQuant = declaredType->get_quantifier();
+
+          if (theAllowingEmpty &&
+              (declQuant == TypeConstants::QUANT_ONE ||
+               declQuant == TypeConstants::QUANT_PLUS))
+          {
+            declaredType = tm->create_type(*declaredType, TypeConstants::QUANT_PLUS);
+          }
+          else
+          {
+            declaredType = tm->create_type(*declaredType, domQuant);
+          }
+        }
 
         if (!TypeOps::is_subtype(tm, *domainType, *declaredType, loc))
         {
@@ -303,33 +294,6 @@ window_clause::window_clause(
 
   if (winKind == tumbling_window)
     theLazyEval = true;
-
-  if (varExpr != NULL && sctx != NULL)
-  {
-    RootTypeManager& rtm = GENV_TYPESYSTEM;
-    TypeManager* tm = sctx->get_typemanager();
-
-    xqtref_t varType = varExpr->get_type();
-
-    if (varType != NULL)
-    {
-      xqtref_t domainType = domainExpr->get_return_type();
-
-      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *varType, loc) &&
-          !TypeOps::is_subtype(tm, *domainType, *varType, loc))
-      {
-        domainExpr = theCCB->theEM->
-        create_treat_expr(sctx,
-                          domainExpr->get_udf(),
-                          loc,
-                          domainExpr,
-                          varType,
-                          TREAT_TYPE_MATCH);
-
-        set_expr(domainExpr);
-      }
-    }
-  }
 }
 
 

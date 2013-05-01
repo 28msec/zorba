@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <iostream>
+#include <sstream>
 
 #include "common/common.h"
 
@@ -39,11 +40,13 @@
 
 #include "zorbautils/string_util.h"
 
+#include "util/ascii_util.h"
+#include "util/oseparator.h"
 #include "util/regex.h"
-#include "util/utf8_util.h"
-#include "util/utf8_string.h"
 #include "util/string_util.h"
 #include "util/uri_util.h"
+#include "util/utf8_string.h"
+#include "util/utf8_util.h"
 #include "util/xml_util.h"
 
 
@@ -137,49 +140,32 @@ bool StringToCodepointsIterator::nextImpl(
     {
       utf8::encoded_char_type ec;
       memset( ec, 0, sizeof( ec ) );
-      utf8::storage_type *p;
-      p = ec;
 
-      if ( utf8::read( *state->theStream, ec ) == utf8::npos )
-      {
-        if ( state->theStream->eof() )
+      try {
+        if ( !utf8::read( *state->theStream, ec ) ) {
+          if ( !state->theStream->eof() && !state->theStream->good() )
+            throw XQUERY_EXCEPTION(
+              zerr::ZOSE0003_STREAM_READ_FAILURE, ERROR_LOC( loc )
+            );
           break;
-        if ( state->theStream->good() ) {
-          //
-          // If read() failed but the stream state is good, it means that an
-          // invalid byte was encountered.
-          //
-          char buf[ 6 /* bytes at most */ * 5 /* chars per byte */ ], *b = buf;
-          bool first = true;
-          for ( ; *p; ++p ) {
-            if ( first )
-              first = false;
-            else
-              *b++ = ',';
-            ::strcpy( b, "0x" );          b += 2;
-            ::sprintf( b, "%0hhX", *p );  b += 2;
-          }
-          throw XQUERY_EXCEPTION(
-            zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
-            ERROR_PARAMS( buf ),
-            ERROR_LOC( loc )
-          );
-        } else {
-          throw XQUERY_EXCEPTION(
-            zerr::ZOSE0003_STREAM_READ_FAILURE, ERROR_LOC( loc )
-          );
         }
       }
-      state->theResult.clear();
-      state->theResult.push_back( utf8::next_char( p ) );
-
+      catch ( utf8::invalid_byte const& ) {
+        ostringstream oss;
+        oseparator comma( ',' );
+        for ( utf8::storage_type const *c = ec; *c; ++c )
+          oss << comma << ascii::printable_char( *c );
+        throw XQUERY_EXCEPTION(
+          zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
+          ERROR_PARAMS( oss.str() ),
+          ERROR_LOC( loc )
+        );
+      }
       GENV_ITEMFACTORY->createInteger(
-        result,
-        Integer(state->theResult[0])
+        result, xs_integer( utf8::decode( ec ) )
       );
-
-      STACK_PUSH(true, state );
-      state->theIterator = state->theIterator + 1;
+      STACK_PUSH( true, state );
+      ++(state->theIterator);
     }
   }
   else if (!inputStr.empty())
@@ -190,7 +176,7 @@ bool StringToCodepointsIterator::nextImpl(
     {
       GENV_ITEMFACTORY->createInteger(
         result,
-        Integer(state->theResult[state->theIterator])
+        xs_integer(state->theResult[state->theIterator])
       );
 
       STACK_PUSH(true, state );
@@ -263,7 +249,7 @@ bool CompareStrIterator::nextImpl(
 
       res = (res < 0 ? -1 : (res > 0 ? 1 : 0));
 
-      GENV_ITEMFACTORY->createInteger(result, Integer(res));
+      GENV_ITEMFACTORY->createInteger(result, xs_integer(res));
 
       STACK_PUSH(true, state);
     }
@@ -758,13 +744,11 @@ bool StringLengthIterator::nextImpl(
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
     item->getStringValue2(strval);
-
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(utf8::length(strval))),
-               state);
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, xs_integer(utf8::length(strval))), state);
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::zero()),
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, xs_integer::zero()),
                state);
   }
   STACK_END(state);
@@ -1821,9 +1805,12 @@ static void copyUtf8Chars(const char *&sin,
   {
     while(utf8start < utf8end)
     {
-      clen = utf8::char_length(*sin);
-      if(clen == 0)
+      try {
+        clen = utf8::char_length(*sin);
+      }
+      catch ( utf8::invalid_byte const& ) {
         clen = 1;
+      }
       out.append(sin, clen);
       utf8start++;
       bytestart += clen;
@@ -2168,9 +2155,15 @@ bool FnAnalyzeStringIterator::nextImpl(
             maxbytes = streambuf_read;
           for (reducebytes=1;reducebytes<=maxbytes;reducebytes++)
           {
-            utf8::size_type clen = utf8::char_length(streambuf.ptr[streambuf_read-reducebytes]);
-            if((clen > 1) && (clen > reducebytes))
-              break;
+            try {
+              utf8::size_type clen =
+                utf8::char_length(streambuf.ptr[streambuf_read-reducebytes]);
+              if((clen > 1) && (clen > reducebytes))
+                break;
+            }
+            catch ( utf8::invalid_byte const& ) {
+              // do nothing?
+            }
           }
           if(reducebytes == (maxbytes+1))
             reducebytes = 0;
@@ -2350,6 +2343,7 @@ bool StringSplitIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
+  bool read;
   store::Item_t item;
   size_t lNewPos = 0;
   zstring lToken;
@@ -2381,11 +2375,24 @@ bool StringSplitIterator::nextImpl(
     while ( !state->theIStream->eof() )
     {
       utf8::encoded_char_type ec;
-      memset( ec, '\0' , sizeof(ec) );
-      utf8::storage_type *p;
-      p = ec;
+      memset( ec, 0 , sizeof(ec) );
 
-      if ( utf8::read( *state->theIStream, ec ) != utf8::npos )
+      try {
+        read = !!utf8::read( *state->theIStream, ec );
+      }
+      catch ( utf8::invalid_byte const& ) {
+        ostringstream oss;
+        oseparator comma( ',' );
+        for ( utf8::storage_type const *c = ec; *c; ++c )
+          oss << comma << ascii::printable_char( *c );
+        throw XQUERY_EXCEPTION(
+          zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
+          ERROR_PARAMS( oss.str() ),
+          ERROR_LOC( loc )
+        );
+      }
+
+      if ( read )
       {
         if (state->theSeparator.compare(lNewPos, 1, ec) == 0)
         {
@@ -2407,24 +2414,10 @@ bool StringSplitIterator::nextImpl(
       }
       else
       {
-        if (state->theIStream->good())
-        {
-          char buf[ 6 /* bytes at most */ * 5 /* chars per byte */ ], *b = buf;
-          bool first = true;
-          for ( ; *p; ++p ) {
-            if ( first )
-              first = false;
-            else
-              *b++ = ',';
-            ::strcpy( b, "0x" );          b += 2;
-            ::sprintf( b, "%0hhX", *p );  b += 2;
-          }
+        if ( !state->theIStream->eof() && !state->theIStream->good() )
           throw XQUERY_EXCEPTION(
-            zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
-            ERROR_PARAMS( buf ),
-            ERROR_LOC( loc )
+            zerr::ZOSE0003_STREAM_READ_FAILURE, ERROR_LOC( loc )
           );
-        }
         if (!lToken.empty())
         {
           GENV_ITEMFACTORY->createString(result, lToken);
@@ -2432,7 +2425,7 @@ bool StringSplitIterator::nextImpl(
         }
         break;
       }
-    }
+    } // while
   }
   else
   {

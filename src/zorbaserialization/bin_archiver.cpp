@@ -972,7 +972,7 @@ void BinArchiver::read_string(zstring& str)
 ********************************************************************************/
 void BinArchiver::read_binary_string(zstring& str)
 {
-  csize size = read_uint64();
+  csize size = static_cast<csize>(read_uint64());
 
   if (theBitfill != 8)
   {
@@ -1334,7 +1334,7 @@ void BinArchiver::read_next_simple_temp_field_impl(TypeCode type, void* obj)
   }
   case TYPE_BOOL:
   {
-    *static_cast<bool*>(obj) = read_bit();
+    *static_cast<bool*>(obj) = !!read_bit();
     break;
   }
   case TYPE_ZSTRING:
