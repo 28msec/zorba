@@ -32,8 +32,6 @@ http:/
  http://www.example.com/dir/file 
  http://www.msb.de 
  http://www.msb.de/lib/helpers 
- file:d:/a/b/c 
- file://localhostd:/a/b/c 
  file://localhost/Ãƒâ€¦ngstrÃƒÂ¶m/b/c 
  file:opaque-uri-part#frag 
  file:text-file.txt 

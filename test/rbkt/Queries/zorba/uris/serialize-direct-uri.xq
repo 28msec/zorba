@@ -189,17 +189,17 @@ let $xml-uri-test := { "uri-test" :
    },
    {
      "scheme" : "file",
-     "path" : "d:/a/b/c"
-   },
-   {
-     "scheme" : "file",
-     "host" : "localhost",
-     "path" : "d:/a/b/c"
-   },
-   {
-     "scheme" : "file",
      "host" : "localhost",
      "path" : "/Ãƒâ€¦ngstrÃƒÂ¶m/b/c"
+   },
+   {
+     "scheme" : "file",
+     "opaque-part" : "opaque-uri-part",
+     "fragment" : "frag"
+   },
+   {
+     "scheme" : "file",
+     "opaque-part" : "text-file.txt"
    }
  ]
 }

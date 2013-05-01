@@ -1260,6 +1260,8 @@ void URI::resolve(const URI* base_uri)
     return;
   }
 
+  std::cout << "uri::resolve() -- uri: " << base_uri->get_scheme() << ":" << base_uri->get_encoded_path() << " "
+            << base_uri->get_encoded_query() << " " << base_uri->get_encoded_fragment() << std::endl;
   if ( base_uri == 0 && toString().empty() ) 
   {
     throw XQUERY_EXCEPTION(
@@ -1324,7 +1326,7 @@ void URI::resolve(const URI* base_uri)
       set_state(Path);
     }
 
-    if ( (! is_set(QueryString)) ) 
+    if ( base_uri->is_set(QueryString) && !is_set(QueryString) )
     {
         base_uri->get_query(theQueryString);
 
