@@ -17,9 +17,9 @@ xquery version "3.0";
 :)
 
 (:~
- : This module provides string related and URI related functions.
+ : This module provides functions for processing URIs and URLs.
  :
- : @author Matthias Brantner
+ : @author Matthias Brantner, Luis Rodriguez Gonzalez
  : @project XDM/atomic
  :
  :)
