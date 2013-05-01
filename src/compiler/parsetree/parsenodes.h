@@ -5741,6 +5741,7 @@ protected:
   zstring       thePrefix;
   zstring       theLocalName;
   bool          theIsEQName;
+  bool          theIsNCName;
 
 public:
   QName(const QueryLoc&, const zstring& qname, bool isEQName = false);
@@ -5754,7 +5755,9 @@ public:
   const zstring& get_namespace() const { return theNamespace; }
 
   bool is_eqname() const { return theIsEQName; }
-
+  
+  bool is_ncname() const { return theIsNCName; }
+  
   bool operator==(const QName& other) const;
 
   void accept(parsenode_visitor&) const;

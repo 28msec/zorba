@@ -4741,25 +4741,25 @@ QName::QName(
   :
   exprnode(loc),
   theQName(qname),
-  theIsEQName(isEQName)
+  theNamespace(""),
+  thePrefix(""),  
+  theIsEQName(isEQName),
+  theIsNCName(false)
 {
   zstring::size_type n = qname.rfind(':');
 
   if (n == zstring::npos)
   {
-    theNamespace = "";
-    thePrefix = "";
     theLocalName = qname;
+    theIsNCName = true;
   }
   else if (theIsEQName)
   {
     theNamespace = qname.substr(0, n);
-    thePrefix = "";
     theLocalName = qname.substr(n+1);
   }
   else
   {
-    theNamespace = "";
     thePrefix = qname.substr(0, n);
     theLocalName = qname.substr(n+1);
   }
