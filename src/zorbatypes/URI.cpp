@@ -1274,16 +1274,9 @@ void URI::resolve(const URI* base_uri)
 
     if (base_uri->is_set(Path)) 
     {
-      // I think this is a bug in xerces because it doesn't remove the last segment
       zstring path;
       base_uri->get_path(path);
-
-      zstring::size_type last_slash = path.rfind("/");
-      if ( last_slash != zstring::npos && (last_slash != 0) )
-        thePath = path.substr(0, last_slash+1);
-      else 
-        thePath = path;
-
+      thePath = path;
       set_state(Path);
     }
 
