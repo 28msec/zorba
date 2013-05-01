@@ -500,12 +500,6 @@ public:
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
 
-  virtual store::Item_t getNilled() const 
-  {
-    assert(!isConnectorNode());
-    return 0; 
-  }
-
   virtual bool isId() const 
   {
     assert(!isConnectorNode());
@@ -1072,7 +1066,7 @@ public:
 
   void appendStringValue(zstring& buf) const;
 
-  store::Item_t getNilled() const;
+  bool getNilled() const;
 
   store::Iterator_t getAttributes() const;
 

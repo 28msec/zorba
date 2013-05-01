@@ -35,13 +35,13 @@ bool StaticContext::addNamespace(const std::string& aPrefix, const std::string& 
 bool StaticContext::containsFunction(const std::string &aFnNameUri, const std::string &aFnNameLocal, int arity) const 
   { return theStaticContext->containsFunction(aFnNameUri, aFnNameLocal, arity); }
 
-StaticContext	StaticContext::createChildContext() const
+StaticContext StaticContext::createChildContext() const
   { return StaticContext(theStaticContext->createChildContext()); }
   
-void 	StaticContext::declareOption (const Item &aQName, const std::string &aOptionVal)
+void  StaticContext::declareOption (const Item &aQName, const std::string &aOptionVal)
   { return theStaticContext->declareOption(aQName.theItem, aOptionVal); }
 
-void 	StaticContext::disableFunction (const Item &aQName, int arity)
+void  StaticContext::disableFunction (const Item &aQName, int arity)
   { theStaticContext->disableFunction( aQName.theItem, arity); }
 
 std::string StaticContext::getBaseURI () const
@@ -65,7 +65,7 @@ ZorbaConstants::ConstructionMode StaticContext::getConstructionMode()
       result = ZorbaConstants::PRESERVE_CONSTRUCTION;
     }
     return result;
-  }		
+  }  
 
 ZorbaConstants::PreserveMode StaticContext::getCopyNamespacesModePreserve()
   { 

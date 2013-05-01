@@ -170,6 +170,10 @@ public:
    */
   virtual bool
   isContextual() const = 0;
+
+protected:
+  Item
+  getItem( Arguments_t const &args, unsigned pos ) const;
 };
 
 

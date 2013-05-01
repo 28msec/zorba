@@ -49,9 +49,6 @@ declare namespace fots =
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
-(:declare option op:disable "f:trace";:)
 
 (:~
  : Checks if the result matches the assertions.
@@ -291,10 +288,10 @@ declare %private %ann:sequential function eval:assert(
   $expResult as element()
 ) as xs:string?
 {
-  try 
+  try
   {
   {
-    variable $queryText := 
+    variable $queryText :=
       concat("xquery version '3.0';",
              "declare variable $result external; ",
              xs:string($expResult));
@@ -306,7 +303,7 @@ declare %private %ann:sequential function eval:assert(
                                                    $result);
 
     variable $queryResult := xqxq:evaluate($queryKey);
-  
+ 
    if ($queryResult)
    then ()
    else concat("Assertion ", $expResult, " failed.")
@@ -408,7 +405,7 @@ declare %private %ann:sequential function eval:assert-eq(
                   else $expResult,
                   ")"));
     variable  $queryKey := xqxq:prepare-main-module($queryText);
-   
+  
     xqxq:bind-variable($queryKey,
                       xs:QName('x'),
                       $result);
@@ -525,7 +522,7 @@ declare %private %ann:sequential function eval:assert-serialization-error(
   $result    as item()*,
   $expResult as element(),
   $baseURI   as xs:anyURI
-  
+ 
 ) as xs:string?
 {
   try {
@@ -551,19 +548,19 @@ declare %private function eval:serialization-matches(
 ) as xs:string?
 {
   try {
-  let $serResult    := fn:serialize($result, $util:serParamXml)
-  let $serExpResult := fn:serialize($expResult, $util:serParamXml)
-  let $matchesFlags := data($expResult/@flags)
+  let $serResult := fn:serialize($result)
+  let $regex := fn:string($expResult)
+  let $flags := data($expResult/@flags)
   return
-    if (exists($matchesFlags))
+    if (exists($flags))
     then
-      if (matches($serResult, $serExpResult, $matchesFlags))
+      if (matches($serResult, $regex, $flags))
       then ()
       else concat("'serialization-matches' returned: result does not match expected result with flags '",
-                  $matchesFlags,
+                  $flags,
                   "'.")
     else
-      if (matches($serResult, $serExpResult))
+      if (matches($serResult, $regex))
       then ()
       else "'serialization-matches' returned: result does not match expected result."
   } catch * {

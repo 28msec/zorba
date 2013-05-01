@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+%rename (IteratorImpl) Iterator;
+
 %begin %{
 #include <iostream>
 
@@ -36,8 +39,13 @@ TSRMLS_FETCH();
 %{
 #include "zend_exceptions.h"
 %}
+
+TSRMLS_FETCH();
+
 %include ../zorba_api.i
+
 %{
+
 #define SWIG_exception(code, msg) { mt_zend_throw_exception(0, msg, code TSRMLS_CC); }
 
 ZEND_API zval * mt_zend_throw_exception(zend_class_entry *exception_ce, const char *message, long code TSRMLS_DC);

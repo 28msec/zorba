@@ -81,14 +81,14 @@ IF(FLEX_EXECUTABLE)
       ARGS -E copy_if_different
          "${FLEX_INCLUDE_DIR}/FlexLexer.h"
          "${FLEXLEXERH}")
-    SET(OUTFILE "${CMAKE_CURRENT_BINARY_DIR}/${PATH}/${PREFIX}.cpp")
+    SET(OUTFILE "${PATH}/${PREFIX}.cpp")
     ADD_CUSTOM_COMMAND(
       OUTPUT "${OUTFILE}"
       COMMAND "${FLEX_EXECUTABLE}"
-      ARGS -t --debug "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}"
+      ARGS -t --debug "${FILENAME}"
       # flex's --outfile doesn't seem to work right, so redirect stdout
           > "${OUTFILE}"
-      DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}"
+      DEPENDS "${FILENAME}"
          "${FLEXLEXERH}")
     SET_SOURCE_FILES_PROPERTIES("${OUTFILE}" PROPERTIES GENERATED TRUE)
   ENDMACRO(FLEX_FILE)

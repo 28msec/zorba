@@ -99,11 +99,12 @@ static bool compare_unicode_ni(const char *str1, const char *str2, int len)
 }
 static utf8::size_type myutf8len(const char *source)
 {
-  utf8::size_type  len = utf8::char_length(*source);
-  if(!len)
+  try {
+    return utf8::char_length(*source);
+  }
+  catch ( utf8::invalid_byte const& ) {
     return 1;
-  else
-    return len;
+  }
 }
 ////////////////////////////////////
 ////Regular expression parsing and building of the tree

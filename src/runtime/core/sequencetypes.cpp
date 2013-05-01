@@ -84,7 +84,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   store::Item_t item;
   TypeConstants::quantifier_t quant;
   bool res = false;
-
+  store::Item_t temp;
   const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
@@ -813,16 +813,16 @@ bool EitherNodesOrAtomicsIterator::nextImpl(
 
   if (CONSUME(result, 0))
   {
-    state->atomics = result->isAtomic();
+    state->atomics = !result->isNode();
 
     STACK_PUSH(true, state);
 
     while (CONSUME(result, 0))
     {
-      if (state->atomics != result->isAtomic())
+      if (state->atomics == result->isNode())
         throw XQUERY_EXCEPTION(err::XPTY0018, ERROR_LOC(loc));
 
-      STACK_PUSH (true, state);
+      STACK_PUSH(true, state);
     }
   }
 

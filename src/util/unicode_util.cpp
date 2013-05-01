@@ -2261,11 +2261,16 @@ bool strip_diacritics( string const &in, string *out ) {
 }
 
 bool to_char( char const *in, char_type *out ) {
-  UErrorCode status = U_ZERO_ERROR;
-  u_strFromUTF8WithSub(
-    out, 1, nullptr, in, utf8::char_length( *in ), SubChar, nullptr, &status
-  );
-  return U_SUCCESS( status ) == TRUE;
+  try {
+    UErrorCode status = U_ZERO_ERROR;
+    u_strFromUTF8WithSub(
+      out, 1, nullptr, in, utf8::char_length( *in ), SubChar, nullptr, &status
+    );
+    return U_SUCCESS( status ) == TRUE;
+  }
+  catch ( utf8::invalid_byte const& ) {
+    return false;
+  }
 }
 
 #endif /* ZORBA_NO_ICU */

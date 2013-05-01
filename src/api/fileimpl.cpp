@@ -139,24 +139,26 @@ FileImpl::getFileUri() const
 }
 
 bool
-FileImpl::isDirectory() const
+FileImpl::isDirectory( bool follow_symlinks ) const
 {
   bool lResult = false;
 
   ZORBA_TRY
-    lResult = theInternalFile->is_directory() || theInternalFile->is_volume() || theInternalFile->is_root();
+    lResult = theInternalFile->is_directory( follow_symlinks )
+           || theInternalFile->is_volume( follow_symlinks )
+           || theInternalFile->is_root();
   ZORBA_CATCH
 
   return lResult;
 }
 
 bool
-FileImpl::isFile() const
+FileImpl::isFile( bool follow_symlinks ) const
 {
   bool lResult = false;
 
   ZORBA_TRY
-    lResult = theInternalFile->is_file() || theInternalFile->is_link();
+    lResult = theInternalFile->is_file( follow_symlinks ) || theInternalFile->is_link();
   ZORBA_CATCH
 
   return lResult;
@@ -175,12 +177,12 @@ FileImpl::isLink() const
 }
 
 bool
-FileImpl::isVolume() const
+FileImpl::isVolume( bool follow_symlinks ) const
 {
   bool lResult = false;
 
   ZORBA_TRY
-    lResult = theInternalFile->is_volume();
+    lResult = theInternalFile->is_volume( follow_symlinks );
   ZORBA_CATCH
 
   return lResult;
@@ -199,12 +201,12 @@ FileImpl::isInvalid() const
 }
 
 bool
-FileImpl::exists() const
+FileImpl::exists( bool follow_symlinks ) const
 {
   bool lResult = false;
 
   ZORBA_TRY
-    lResult = theInternalFile->exists();
+    lResult = theInternalFile->exists( follow_symlinks );
   ZORBA_CATCH
 
   return lResult;
