@@ -247,7 +247,7 @@ bool
 SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     lItemURI, lItemKey;
-  zorba::zstring    lStrValue, lStrKey, lStrRes, lErrNoOpaque;
+  zorba::zstring    lStrValue, lStrKey, lStrRes;
   store::Iterator_t lKeys;
   URI               uri = URI();
   int               lIntPort = 0;
@@ -275,30 +275,24 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         } else if(lStrKey == AUTHORITY_NAME && !lStrValue.empty()){
           uri.set_reg_based_authority(lStrValue);
           lHasNotOpaqueField = true;
-          lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
         } else if(lStrKey == USER_INFO_NAME && !lStrValue.empty()){
           uri.set_user_info(lStrValue);
           lHasNotOpaqueField = true;
-          lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
         } else if(lStrKey == HOST_NAME && !lStrValue.empty()){
           uri.set_host(lStrValue);
           lHasNotOpaqueField = true;
-          lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
         } else if(lStrKey == PORT_NAME){
           sscanf(lStrValue.str().c_str(), "%d", &lIntPort);
           if(lIntPort != 0){
             uri.set_port(lIntPort);
             lHasNotOpaqueField = true;
-            lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
           }
         } else if(lStrKey == PATH_NAME && !lStrValue.empty()){
           uri.set_path(lStrValue);
           lHasNotOpaqueField = true;
-          lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
         } else if(lStrKey == QUERY_NAME && !lStrValue.empty()){
           uri.set_query(lStrValue);
           lHasNotOpaqueField = true;
-          lErrNoOpaque += (lErrNoOpaque.empty())?lStrValue:" and "+lStrValue;
         } else if(lStrKey == FRAGMENT_NAME && !lStrValue.empty()){
           uri.set_fragment(lStrValue);
         }
