@@ -653,7 +653,7 @@ int runUriTest(int argc, char* argv[])
       "",
       "opaq:opaque-uri-part#frag",
       "opaq:opaque-uri-part#frag",
-      "opaq:",
+      "opaq",
       0,
       "frag",
       "",
@@ -668,7 +668,7 @@ int runUriTest(int argc, char* argv[])
       "opaq:opaque-uri-part",
       "#frag",
       "opaq:opaque-uri-part#frag",
-      "opaq:",
+      "opaq",
       0,
       "frag",
       "",
@@ -683,7 +683,7 @@ int runUriTest(int argc, char* argv[])
       "",
       "opaq:text-file.txt",
       "opaq:text-file.txt",
-      "opaq:",
+      "opaq",
       0,
       "",
       "",
@@ -693,6 +693,36 @@ int runUriTest(int argc, char* argv[])
       "",
       "text-file.txt",
       "text-file.txt"
+    },
+    {
+      "",
+      "ftp:///a/b/c/file.txt",
+      "ftp:///a/b/c/file.txt",
+      "ftp",
+      0,
+      "",
+      "",
+      "",
+      "/a/b/c/file.txt",
+      "",
+      "",
+      "/a/b/c/file.txt",
+      ""
+    },
+    {
+      "",
+      "gopher:///base_dir/file.txt",
+      "gopher:///base_dir/file.txt",
+      "gopher",
+      0,
+      "",
+      "",
+      "",
+      "/base_dir/file.txt",
+      "",
+      "",
+      "/base_dir/file.txt",
+      ""
     }
   }; // URITestEntry tests[]
 

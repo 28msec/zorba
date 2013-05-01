@@ -122,9 +122,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t              lItemURI, lName, lValue;
   std::vector<store::Item_t> lNames;
   std::vector<store::Item_t> lValues;
-  zorba::zstring             lStrURI, lStrHolder, lZKey, lZVal;
-  char                       lCharHost[11];
-  int                        lPort;
+  zorba::zstring             lStrURI, lZKey, lZVal;
   PlanIteratorState* state;
   URI uri;
   
@@ -134,100 +132,89 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lItemURI->getStringValue2(lStrURI);
   uri = URI(lStrURI);
 
-  lStrHolder = uri.get_scheme();
-  if(lStrHolder.str() != "")
+  lZVal = uri.get_scheme();
+  if(!lZVal.empty())
   {
     lZKey = zorba::zstring(SCHEME_NAME);
-    lZVal = uri.get_scheme();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
     lNames.push_back(lName);
     lValues.push_back(lValue);
   }
 
-  lStrHolder = uri.get_opaque_part();
-  if(lStrHolder.str() != "")
+  lZVal = uri.get_opaque_part();
+  if(!lZVal.empty())
   {
     lZKey = zorba::zstring(OPAQUE_PART_NAME);
-    lZVal = uri.get_opaque_part();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
     lNames.push_back(lName);
     lValues.push_back(lValue);
   }
 
-  lStrHolder = uri.get_encoded_reg_based_authority();
-  if(lStrHolder.str() != "")
+  lZVal = uri.get_encoded_reg_based_authority();
+  if(!lZVal.empty())
   {
     lZKey = zorba::zstring(AUTHORITY_NAME);
-    lZVal = uri.get_encoded_reg_based_authority();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
     lNames.push_back(lName);
     lValues.push_back(lValue);
   }
 
-  lStrHolder = uri.get_encoded_user_info();
-  if(lStrHolder.str() != "")
+  lZVal = uri.get_encoded_user_info();
+  if(!lZVal.empty())
   {
     lZKey = zorba::zstring(USER_INFO_NAME);
-    lZVal = uri.get_encoded_user_info();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
     lNames.push_back(lName);
     lValues.push_back(lValue);
   }
   
-  lStrHolder = uri.get_host();
-  if(lStrHolder.str() != "")
+  lZVal = uri.get_host();
+  if(!lZVal.empty())
   {
     lZKey = zorba::zstring(HOST_NAME);
-    lZVal = uri.get_host();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
     lNames.push_back(lName);
     lValues.push_back(lValue);
   }
   
-  sprintf(lCharHost,"%d", uri.get_port());
-  lStrHolder = zstring(lCharHost);
   if(uri.get_port() != 0)
   {
     lZKey = zorba::zstring(PORT_NAME);
-    lPort = uri.get_port();
     GENV_ITEMFACTORY->createString(lName, lZKey);
-    GENV_ITEMFACTORY->createInt(lValue, lPort);
+    GENV_ITEMFACTORY->createInt(lValue, uri.get_port());
     lNames.push_back(lName);
     lValues.push_back(lValue);
   }
   
-  lStrHolder = uri.get_encoded_path();
-  if(lStrHolder.str() != "")
+  lZVal = uri.get_encoded_path();
+  if(!lZVal.empty())
   {
     lZKey = zorba::zstring(PATH_NAME);
-    lZVal = uri.get_encoded_path();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
     lNames.push_back(lName);
     lValues.push_back(lValue);
   }
   
-  lStrHolder = uri.get_encoded_query();
-  if(lStrHolder.str() != "")
+  lZVal = uri.get_encoded_query();
+  if(!lZVal.empty())
   {
     lZKey = zorba::zstring(QUERY_NAME);
-    lZVal = uri.get_encoded_query();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
     lNames.push_back(lName);
     lValues.push_back(lValue);
   }
   
-  lStrHolder = uri.get_encoded_fragment();
-  if(lStrHolder.str() != "")
+  lZVal = uri.get_encoded_fragment();
+  if(!lZVal.empty())
   {
     lZKey = zorba::zstring(FRAGMENT_NAME);
-    lZVal = uri.get_encoded_fragment();
     GENV_ITEMFACTORY->createString(lName, lZKey);
     GENV_ITEMFACTORY->createString(lValue, lZVal);
     lNames.push_back(lName);
@@ -306,7 +293,6 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     throw XQUERY_EXCEPTION(
       zerr::ZURI0001_OPAQUE_WITH_OTHERS,
-//      ERROR_PARAMS( ),
       ERROR_LOC( loc )
     );
   }
@@ -314,7 +300,6 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     throw XQUERY_EXCEPTION(
       zerr::ZURI0002_SCHEME_REQUIRED_FOR_OPAQUE,
-//      ERROR_PARAMS( ),
       ERROR_LOC( loc )
     );
   }
@@ -322,7 +307,6 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     throw XQUERY_EXCEPTION(
       zerr::ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI,
-//      ERROR_PARAMS( uri.get_encoded_path() ),
       ERROR_LOC( loc )
     );
   }
