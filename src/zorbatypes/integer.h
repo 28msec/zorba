@@ -38,7 +38,7 @@
 
 namespace zorba {
 
-template<class CheckType>
+template<class TraitsType>
 class IntegerImpl;
 
 namespace serialization {
@@ -52,7 +52,9 @@ namespace serialization {
 
 std::ostream& operator<<( std::ostream&, MAPM const& );
 
-struct integer_check {
+struct integer_traits {
+  static int const default_value = 0;
+
   template<typename ValueType>
   static ValueType check_value( ValueType n ) {
     return n;
@@ -64,7 +66,7 @@ protected:
   static void throw_range_error( MAPM const &n, char const *op );
 };
 
-struct nonPositive_check : integer_check {
+struct nonPositive_traits : integer_traits {
   template<typename ValueType>
   static ValueType check_value( ValueType n ) {
     if ( !ztd::le0( n ) )
@@ -78,7 +80,9 @@ struct nonPositive_check : integer_check {
   }
 };
 
-struct negative_check : nonPositive_check {
+struct negative_traits : nonPositive_traits {
+  static int const default_value = -1;
+
   template<typename ValueType>
   static ValueType check_value( ValueType n ) {
     if ( !ztd::lt0( n ) )
@@ -92,7 +96,7 @@ struct negative_check : nonPositive_check {
   }
 };
 
-struct nonNegative_check : integer_check {
+struct nonNegative_traits : integer_traits {
   template<typename ValueType>
   static ValueType check_value( ValueType n ) {
     if ( !ztd::ge0( n ) )
@@ -106,7 +110,9 @@ struct nonNegative_check : integer_check {
   }
 };
 
-struct positive_check : nonNegative_check {
+struct positive_traits : nonNegative_traits {
+  static int const default_value = 1;
+
   template<typename ValueType>
   static ValueType check_value( ValueType n ) {
     if ( !ztd::gt0( n ) )
@@ -120,7 +126,7 @@ struct positive_check : nonNegative_check {
   }
 };
 
-template<class CheckType>
+template<class TraitsType>
 class IntegerImpl {
 public:
 #ifdef ZORBA_WITH_BIG_INTEGER
@@ -128,14 +134,14 @@ public:
 #else
   typedef long long value_type;
 #endif /* ZORBA_WITH_BIG_INTEGER */
-  typedef CheckType check_type;
+  typedef TraitsType traits_type;
 
   ////////// constructors /////////////////////////////////////////////////////
 
   explicit IntegerImpl( char c );
   explicit IntegerImpl( signed char c );
   explicit IntegerImpl( short n );
-  explicit IntegerImpl( int n = 0 );
+  explicit IntegerImpl( int n = traits_type::default_value );
   explicit IntegerImpl( long n );
   explicit IntegerImpl( long long n );
   explicit IntegerImpl( unsigned char c );
@@ -176,27 +182,27 @@ public:
   explicit IntegerImpl( Float const &f );
 
   /**
-   * Constructs from another %IntegerImpl even if its \c CheckType is
+   * Constructs from another %IntegerImpl even if its \c TraitsType is
    * different.  (This subsumes the conventional copy constructor.)
    *
-   * @tparam CheckType2 The tag type of \a i.
+   * @tparam TraitsType2 The traits type of \a i.
    * @param i The %IntegerImpl to copy from.
    */
-  template<class CheckType2>
-  IntegerImpl( IntegerImpl<CheckType2> const &i );
+  template<class TraitsType2>
+  IntegerImpl( IntegerImpl<TraitsType2> const &i );
 
   ////////// assignment operators /////////////////////////////////////////////
 
   /**
-   * Assign from an %IntegerImpl even if its \c CheckType is different.
+   * Assign from an %IntegerImpl even if its \c TraitsType is different.
    * (This subsumes the conventional assignment operator.)
    *
-   * @tparam CheckType2 The tag type of \a i.
+   * @tparam TraitsType2 The traits type of \a i.
    * @param i The %IntegerImpl to assign from.
    * @return Returns \c *this.
    */
-  template<class CheckType2>
-  IntegerImpl& operator=( IntegerImpl<CheckType2> const &i );
+  template<class TraitsType2>
+  IntegerImpl& operator=( IntegerImpl<TraitsType2> const &i );
 
   IntegerImpl& operator=( char c );
   IntegerImpl& operator=( signed char c );
@@ -587,11 +593,11 @@ private:
   void serialization::operator&( serialization::Archiver&, IntegerImpl<C>& );
 };
 
-typedef IntegerImpl<integer_check>      Integer;
-typedef IntegerImpl<negative_check>     NegativeInteger;
-typedef IntegerImpl<nonNegative_check>  NonNegativeInteger;
-typedef IntegerImpl<nonPositive_check>  NonPositiveInteger;
-typedef IntegerImpl<positive_check>     PositiveInteger;
+typedef IntegerImpl<integer_traits>     Integer;
+typedef IntegerImpl<negative_traits>    NegativeInteger;
+typedef IntegerImpl<nonNegative_traits> NonNegativeInteger;
+typedef IntegerImpl<nonPositive_traits> NonPositiveInteger;
+typedef IntegerImpl<positive_traits>    PositiveInteger;
 
 ////////// constructors ///////////////////////////////////////////////////////
 

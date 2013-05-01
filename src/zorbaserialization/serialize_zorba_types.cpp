@@ -90,9 +90,10 @@ void operator&(serialization::Archiver& ar, IntegerImpl<C>& obj)
 }
 
 #define INSTANTIATE_INTEGER(I) \
-  template void operator&<I::check_type>(serialization::Archiver&, I&)
+  template void operator&<I::traits_type>(serialization::Archiver&, I&)
 
 INSTANTIATE_INTEGER( Integer );
+INSTANTIATE_INTEGER( NegativeInteger );
 INSTANTIATE_INTEGER( NonNegativeInteger );
 INSTANTIATE_INTEGER( NonPositiveInteger );
 INSTANTIATE_INTEGER( PositiveInteger );

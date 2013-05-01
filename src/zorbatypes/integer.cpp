@@ -44,7 +44,7 @@ ostream& operator<<( ostream &o, MAPM const &m ) {
 }
 
 #ifdef ZORBA_WITH_BIG_INTEGER
-void integer_check::throw_range_error( MAPM const &n, char const *op ) {
+void integer_traits::throw_range_error( MAPM const &n, char const *op ) {
   ostringstream oss;
   oss << n;
   throw range_error( BUILD_STRING( oss.str(), ": not ", op, " 0" ) );
@@ -492,11 +492,11 @@ zstring IntegerImpl<C>::toString() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 // instantiate integer types
-template class IntegerImpl<integer_check>;
-template class IntegerImpl<negative_check>;
-template class IntegerImpl<nonNegative_check>;
-template class IntegerImpl<nonPositive_check>;
-template class IntegerImpl<positive_check>;
+template class IntegerImpl<integer_traits>;
+template class IntegerImpl<negative_traits>;
+template class IntegerImpl<nonNegative_traits>;
+template class IntegerImpl<nonPositive_traits>;
+template class IntegerImpl<positive_traits>;
 
 ///////////////////////////////////////////////////////////////////////////////
 

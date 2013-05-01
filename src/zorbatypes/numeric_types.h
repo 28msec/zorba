@@ -22,18 +22,18 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class integer_check;
-class negative_check;
-class nonNegative_check;
-class nonPositive_check;
-class positive_check;
+class integer_traits;
+class negative_traits;
+class nonNegative_traits;
+class nonPositive_traits;
+class positive_traits;
 
 template<class C> class IntegerImpl;
-typedef IntegerImpl<integer_check>      Integer;
-typedef IntegerImpl<negative_check>     NegativeInteger;
-typedef IntegerImpl<nonNegative_check>  NonNegativeInteger;
-typedef IntegerImpl<nonPositive_check>  NonPositiveInteger;
-typedef IntegerImpl<positive_check>     PositiveInteger;
+typedef IntegerImpl<integer_traits>     Integer;
+typedef IntegerImpl<negative_traits>    NegativeInteger;
+typedef IntegerImpl<nonNegative_traits> NonNegativeInteger;
+typedef IntegerImpl<nonPositive_traits> NonPositiveInteger;
+typedef IntegerImpl<positive_traits>    PositiveInteger;
 
 class Decimal;
 
