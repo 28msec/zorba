@@ -77,7 +77,14 @@ ZORBA_ADD_TEST(bin/zorba4 zorbacmd --context-item=${CMAKE_CURRENT_SOURCE_DIR}/te
 ZORBA_SET_TEST_PROPERTY(bin/zorba4 PASS_REGULAR_EXPRESSION "(.*<child>child1</child>)*")
 
 ZORBA_ADD_TEST(bin/zorba5 zorbacmd -q -f blub.xq)
-ZORBA_SET_TEST_PROPERTY(bin/zorba5 PASS_REGULAR_EXPRESSION ".*Extra arguments found on command line.*")
+ZORBA_SET_TEST_PROPERTY(bin/zorba5 PASS_REGULAR_EXPRESSION ".*No queries submitted.*")
+
+IF (UNIX)
+  CONFIGURE_FILE ("${CMAKE_CURRENT_SOURCE_DIR}/test/shebang.xq.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/shebang.xq" @ONLY)
+  ADD_TEST (bin/shebang "${CMAKE_CURRENT_BINARY_DIR}/shebang.xq")
+  SET_TESTS_PROPERTIES (bin/shebang PROPERTIES PASS_REGULAR_EXPRESSION "shebang success")
+ENDIF (UNIX)
 
 # test the compile-only option of the command line tool which is used for semantic checking in eclipse
 ZORBA_ADD_TEST(bin/zorba_compilechk1 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l)
