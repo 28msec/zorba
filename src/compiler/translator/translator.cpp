@@ -8843,7 +8843,7 @@ void end_visit(const RangeExpr& v, void* /*visit_state*/)
   expr* e1 = pop_nodestack();
   expr* e2 = pop_nodestack();
 
-  fo_expr* e = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_TO_2), e2, e1);
+  fo_expr* e = CREATE(fo)(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_TO_2), e2, e1);
 
   normalize_fo(e);
 
@@ -14301,13 +14301,15 @@ void* begin_visit(const SchemaElementTest& v)
 
   if (axisExpr != NULL)
   {
+    bool nillable;
     store::Item_t typeQNameItem;
-    CTX_TM->get_schema_element_typename(elemQNameItem, typeQNameItem, loc);
+    CTX_TM->get_schema_element_typeinfo(elemQNameItem, typeQNameItem, nillable, loc);
 
     match_expr* match = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
     match->setTestKind(match_xs_elem_test);
     match->setQName(elemQNameItem);
     match->setTypeName(typeQNameItem);
+    match->setNilledAllowed(nillable);
 
     axisExpr->setTest(match);
   }
@@ -14425,7 +14427,7 @@ void* begin_visit(const SchemaAttributeTest& v)
   if (axisExpr != NULL)
   {
     store::Item_t typeQNameItem;
-    CTX_TM->get_schema_attribute_typename(attrQNameItem, typeQNameItem, loc);
+    CTX_TM->get_schema_attribute_typeinfo(attrQNameItem, typeQNameItem, loc);
 
     match_expr* match = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
     match->setTestKind(match_xs_attr_test);
