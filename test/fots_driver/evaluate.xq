@@ -548,19 +548,19 @@ declare %private function eval:serialization-matches(
 ) as xs:string?
 {
   try {
-  let $serResult    := fn:serialize($result, $util:serParamXml)
-  let $serExpResult := fn:serialize($expResult, $util:serParamXml)
-  let $matchesFlags := data($expResult/@flags)
+  let $serResult := fn:serialize($result)
+  let $regex := fn:string($expResult)
+  let $flags := data($expResult/@flags)
   return
-    if (exists($matchesFlags))
+    if (exists($flags))
     then
-      if (matches($serResult, $serExpResult, $matchesFlags))
+      if (matches($serResult, $regex, $flags))
       then ()
       else concat("'serialization-matches' returned: result does not match expected result with flags '",
-                  $matchesFlags,
+                  $flags,
                   "'.")
     else
-      if (matches($serResult, $serExpResult))
+      if (matches($serResult, $regex))
       then ()
       else "'serialization-matches' returned: result does not match expected result."
   } catch * {

@@ -1398,6 +1398,9 @@ ZorbaWarningCode ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED( "ZWST0006" );
 ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING( "ZWST0007" );
 
 
+ZorbaWarningCode ZWST0008_DEPRECATED( "ZWST0008" );
+
+
 } // namespace zwarn
 
 } // namespace zorba

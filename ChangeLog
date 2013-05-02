@@ -94,6 +94,7 @@ Bug Fixes/Other Changes:
   * Fixed bug in computing the static type of a self-axis path step.
   * Fixed bug #867068: (Incorrect usage of XQDY0027)
   * Fixed bug: jsoniq constructor should not be const-folded
+  * Fixed bug #866958 (Parsing error not explicit enough)
   * Fixed bug #1152834 (bug in computing the scripting kind of array and object
     constructor exprs)
   * Fixed bug #1125444 (input group-by exprs were not treated by index-flwor_vars()
@@ -101,6 +102,7 @@ Bug Fixes/Other Changes:
   * Raise XQST0046, if needed, from namespace declaration attribute inside
     direct element constructor.
   * Fixed bug #1023362 (xsi:type attribute ignored during validation)
+  * Fixed bug #1025564 (Deprecate -f argument to zorbacmd)
   * Fixed bug #1082740 (support for INF and -INF values in fn:subsequence function).  
 
 
