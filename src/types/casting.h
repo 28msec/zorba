@@ -74,6 +74,7 @@ public:
         store::Item_t& result,
         store::Item_t& item,
         const XQType* targetType,
+        const namespace_context* nsCtx,
         const TypeManager* tm,
         const QueryLoc& loc);
 
@@ -81,6 +82,7 @@ public:
         store::Item_t& result,
         store::Item_t& item,
         store::SchemaTypeCode targetType,
+        const namespace_context* nsCtx,
         const TypeManager* tm,
         const QueryLoc& loc);
 

@@ -10,6 +10,7 @@
   <dependency type="feature" value="schemaValidation" satisfied="true"/>
   <dependency type="feature" value="staticTyping" satisfied="false"/>
   <dependency type="feature" value="xpath-1.0-compatibility" satisfied="true"/>       <!-- Is this correct? -->
+  <dependency type="feature" value="infoset-dtd" satisfied="true"/>
 
   <!-- We are not interested in running XPath test cases, we only run XQuery test cases -->
   <dependency type="spec" value="XP10+" satisfied="false"/>
