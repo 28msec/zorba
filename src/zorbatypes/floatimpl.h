@@ -261,6 +261,7 @@ public:
   bool isPosZero() const;
   bool isNegZero() const;
   bool isInteger() const;
+  int sign() const;
 
   static FloatImpl const& neg_zero();
   static FloatImpl const& nan();
@@ -272,7 +273,6 @@ public:
   }
 
   zstring toIntegerString() const;
-
   zstring toString( bool no_scientific_mode = false ) const;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -975,9 +975,14 @@ inline bool FloatImpl<F>::isInteger() const {
   return isFinite() && ::floor( value_ ) == value_;
 }
 
-template <typename F>
+template<typename F>
 inline bool FloatImpl<F>::isZero() const {
   return value_ == 0;
+}
+
+template<typename F>
+inline int FloatImpl<F>::sign() const {
+  return value_ > 0 ? 1 : value_ < 0 ? -1 : 0;
 }
 
 template<typename F>
