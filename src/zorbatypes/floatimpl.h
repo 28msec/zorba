@@ -403,7 +403,7 @@ inline FloatImpl<F>::FloatImpl( char const *s ) {
 
 template<typename F> template<typename G>
 inline FloatImpl<F>::FloatImpl( FloatImpl<G> const &f ) :
-  value_( static_cast<F>( f.value_ ) ), precision_( f.precision_ )
+  value_( static_cast<F>( f.value_ ) ), precision_( max_precision() )
 {
 }
 
@@ -418,7 +418,6 @@ inline FloatImpl<F>::FloatImpl( value_type v, precision_type p ) :
 template<typename F> template<typename G>
 inline FloatImpl<F>& FloatImpl<F>::operator=( FloatImpl<G> const &f ) {
   value_ = static_cast<F>( f.value_ );
-  precision_ = f.precision_;
   return *this;
 }
 
