@@ -1260,8 +1260,6 @@ void URI::resolve(const URI* base_uri)
     return;
   }
 
-  std::cout << "uri::resolve() -- uri: " << base_uri->get_scheme() << ":" << base_uri->get_encoded_path() << " "
-            << base_uri->get_encoded_query() << " " << base_uri->get_encoded_fragment() << std::endl;
   if ( base_uri == 0 && toString().empty() ) 
   {
     throw XQUERY_EXCEPTION(
