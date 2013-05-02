@@ -157,7 +157,7 @@ EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
 
 # This test passes on the old and new RQ machines, but fails for Sorin.
 #EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
-
+EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog002 0)
 EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog010 0)
 EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog011 0)
 EXPECTED_FOTS_FAILURE (fn-available-environment-variables fn-available-environment-variables-011 0)
