@@ -168,6 +168,7 @@ private:
   TypeConstants::quantifier_t theQuantifier;
   PromoteErrorKind            theErrorKind;
   store::Item_t								theQName; 
+  namespace_context           theNsCtx;
 
 public:
   SERIALIZABLE_CLASS(PromoteIterator);
