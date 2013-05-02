@@ -634,17 +634,9 @@ void URI::initialize(const zstring& uri, bool have_base)
 
   if(is_set(Scheme) && (lTrimmedURI.compare(lIndex, 1, "/") != 0))
   {
-    // assume it is an opaque uri
-    if(lFragmentIdx == zstring::npos)
-    {
-      set_opaque_part(lTrimmedURI.substr(lIndex, lTrimmedURILength - lIndex));
-    }
-    else
-    {
-      set_opaque_part(lTrimmedURI.substr(lIndex, lFragmentIdx - lIndex));
-      set_fragment(lTrimmedURI.substr(lFragmentIdx+1, lTrimmedURILength - lFragmentIdx - 1));
-    }
-    lIndex = lTrimmedURILength;
+    // This is an opaque URI. Set that state here; initializePath() will
+    // actually set the value.
+    set_state(OpaquePart);
   }
   /**
    * Authority
@@ -934,18 +926,12 @@ void URI::initializePath(const zstring& uri)
   ulong lEnd = (ulong)lCodepoints.size();
   uint32_t lCp = 0;
 
-  if (uri.empty())
-  {
-    thePath = uri;
-    set_state(Path);
-    return;
-  }
+  bool lIsOpaque = is_set(OpaquePart);
 
-  // path - everything up to query string or fragment
+  // path - everything up to query string (if not opaque) or fragment
   if ( lStart < lEnd )
   {
-    // RFC 2732 only allows '[' and ']' to appear in the opaque part.
-    if ( ! is_set(Scheme) || lCodepoints[lStart] == '/')
+    if ( ! is_set(Scheme) || lIsOpaque || lCodepoints[lStart] == '/')
     {
       // Scan path.
       // abs_path = "/"  path_segments
@@ -953,7 +939,7 @@ void URI::initializePath(const zstring& uri)
       while ( lIndex < lEnd )
       {
         lCp = lCodepoints[lIndex];
-        if ( lCp == '?' || lCp == '#' )
+        if ( ( lCp == '?' && !lIsOpaque ) || lCp == '#' )
           break;
 
         if ( lCp == '%' )
@@ -1020,12 +1006,20 @@ void URI::initializePath(const zstring& uri)
   } // lStart < lEnd
 
 
-  thePath.clear();
-  utf8::append_codepoints(lCodepoints.begin() + lStart,
-                          lCodepoints.begin() + lIndex,
-                          &thePath);
-
-  set_state(Path);
+  // lCodepoints now contains all the processed stuff; put it in the right place
+  if (lIsOpaque) {
+    theOpaquePart.clear();
+    utf8::append_codepoints(lCodepoints.begin() + lStart,
+                            lCodepoints.begin() + lIndex,
+                            &theOpaquePart);
+  }
+  else {
+    thePath.clear();
+    utf8::append_codepoints(lCodepoints.begin() + lStart,
+                            lCodepoints.begin() + lIndex,
+                            &thePath);
+    set_state(Path);
+  }
 
   // query - starts with ? and up to fragment or end
   if ( lCp == '?' )
