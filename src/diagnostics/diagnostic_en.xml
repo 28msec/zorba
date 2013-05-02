@@ -806,13 +806,16 @@
        function's annotations contain more than one annotation named \c
        deterministic or \c nondeterministic.
       </comment>
-      <entry key="THE_SAME">
-        <value>the same</value>
+
+      <value>$1</value>
+
+      <entry key="Duplicate">
+        <value>$2: annotation appears more than once in declaration</value>
       </entry>
-      <entry key="CONFLICTING">
-        <value>conflicting</value>
+
+      <entry key="Conflicting">
+        <value>$2: conflicting annotations in declaration</value>
       </entry>
-      <value>$1: multiple annotations with $2 names</value>
     </diagnostic>
 
     <diagnostic code="XQST0111">
@@ -823,6 +826,14 @@
       <value>$1</value>
     </diagnostic>
 
+    <diagnostic code="XQST0113">
+      <comment>
+       Specifying a VarValue or VarDefaultValue for a context item declaration
+       in a library module is a static error.
+      </comment>
+      <value>context item declaration with initializing expression not allowed in library module</value>
+    </diagnostic>
+
     <diagnostic code="XQST0114">
       <comment>
         It is a static error for a decimal format declaration to define the
@@ -831,6 +842,23 @@
       <value>"$1": duplicate decimal format property</value>
     </diagnostic>
     
+    <diagnostic code="XQST0116">
+      <comment>
+      It is a static error if a variable declaration contains both a %private
+      and a %public annotation, more than one %private annotation, or more
+      than one %public annotation.
+      </comment>
+      <value>$1</value>
+
+      <entry key="Duplicate">
+        <value>$2: annotation appears more than once in declaration</value>
+      </entry>
+
+      <entry key="Conflicting">
+        <value>$2: conflicting annotations in declaration</value>
+      </entry>
+    </diagnostic>
+
     <diagnostic code="XQST0120">
       <comment>
         It is a static error if a feature required by require-feature is not
@@ -962,6 +990,15 @@
          <code>http://www.w3.org/XML/1998/namespace</code>.
       </comment>
       <value>"$1": invalid attibute node-name</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0054">
+      <comment>
+      It is a dynamic error if a cycle is encountered in the definition of a
+      module's dynamic context components, for example because of a cycle in
+      variable declarations.
+      </comment>
+      <value>${"1": }variable must not depend on itself</value>
     </diagnostic>
 
     <diagnostic code="XQDY0061">
@@ -3348,6 +3385,10 @@
 
     <diagnostic code="ZWST0007" name="LOADER_PARSING_WARNING">
       <value>"$1":$2,$3: loader parsing warning${: 4}</value>
+    </diagnostic>
+
+    <diagnostic code="ZWST0008" name="DEPRECATED">
+      <value>"$1": has been deprecated; use "$2" instead</value>
     </diagnostic>
 
   </namespace>

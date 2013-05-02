@@ -15,7 +15,7 @@ declare %private function ann:private-func()
   1
 };
 
-declare %fn:private function ann:private-fn-ns-func()
+declare %private function ann:private-fn-ns-func()
 {
   1
 };
@@ -25,7 +25,7 @@ declare %public function ann:public-func()
   1
 };
 
-declare %fn:public function ann:public-fn-ns-func()
+declare %public function ann:public-fn-ns-func()
 {
   1
 };

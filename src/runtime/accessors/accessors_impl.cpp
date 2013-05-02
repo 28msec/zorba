@@ -105,8 +105,15 @@ bool NilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (inNode->isNode())
     {
-      result = inNode->getNilled();
-      STACK_PUSH(result != NULL, state);
+      if (inNode->getNodeKind() == store::StoreConsts::elementNode)
+      {
+        GENV_ITEMFACTORY->createBoolean(result, inNode->getNilled());
+        STACK_PUSH(true, state);
+      }
+      else
+      {
+        STACK_PUSH(false, state);
+      }
     }
     else
     {
@@ -240,6 +247,7 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   state->theTypedValueIter = 0; // TODO remove???
+
   STACK_END(state);
 }
 

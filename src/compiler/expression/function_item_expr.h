@@ -95,7 +95,7 @@ protected:
       const std::vector<expr*>& args);
 
 public:
-  const expr* get_function() const { return theExpr; }
+  expr* get_function() const { return theExpr; }
 
   const std::vector<expr*>& get_args() const { return theArgs; }
   

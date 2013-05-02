@@ -84,7 +84,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   store::Item_t item;
   TypeConstants::quantifier_t quant;
   bool res = false;
-
+  store::Item_t temp;
   const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
@@ -377,7 +377,8 @@ PromoteIterator::PromoteIterator(
   :
   UnaryBaseIterator<PromoteIterator, PlanIteratorState>(sctx, loc, child),
   theErrorKind(err),
-  theQName(qname)
+  theQName(qname),
+  theNsCtx(theSctx)
 {
   thePromoteType = TypeOps::prime_type(sctx->get_typemanager(), *promoteType);
   theQuantifier = promoteType->get_quantifier(); 
@@ -398,6 +399,8 @@ void PromoteIterator::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
   SERIALIZE_ENUM(PromoteErrorKind, theErrorKind);
   ar & theQName;
+
+  theNsCtx.setStaticContext(theSctx);
 }
 
 
@@ -428,7 +431,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     }
 
     // catch exceptions to add/change the error location
-    if (! GenericCast::promote(result, item, thePromoteType, tm, loc))
+    if (! GenericCast::promote(result, item, thePromoteType, &theNsCtx, tm, loc))
     {
       zstring valueType = tm->create_value_type(item)->toSchemaString();
       raiseError(valueType);
@@ -440,7 +443,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     do
     {
-      if (! GenericCast::promote(result, item, thePromoteType, tm, loc))
+      if (! GenericCast::promote(result, item, thePromoteType, &theNsCtx, tm, loc))
       {
         zstring valueType = tm->create_value_type(item)->toSchemaString();
         raiseError(valueType);

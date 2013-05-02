@@ -223,7 +223,13 @@ XQueryErrorCode XQST0106( "XQST0106" );
 XQueryErrorCode XQST0111( "XQST0111" );
 
 
+XQueryErrorCode XQST0113( "XQST0113" );
+
+
 XQueryErrorCode XQST0114( "XQST0114" );
+
+
+XQueryErrorCode XQST0116( "XQST0116" );
 
 
 XQueryErrorCode XQST0120( "XQST0120" );
@@ -260,6 +266,9 @@ XQueryErrorCode XQDY0041( "XQDY0041" );
 
 
 XQueryErrorCode XQDY0044( "XQDY0044" );
+
+
+XQueryErrorCode XQDY0054( "XQDY0054" );
 
 
 XQueryErrorCode XQDY0061( "XQDY0061" );
@@ -1387,6 +1396,9 @@ ZorbaWarningCode ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED( "ZWST0006" );
 
 
 ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING( "ZWST0007" );
+
+
+ZorbaWarningCode ZWST0008_DEPRECATED( "ZWST0008" );
 
 
 } // namespace zwarn

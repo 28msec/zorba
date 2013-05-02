@@ -143,7 +143,21 @@ forlet_clause::forlet_clause(
       if (!TypeOps::is_equal(tm, *rtm.ITEM_TYPE_STAR, *declaredType, loc))
       {
         if (kind == flwor_clause::for_clause)
-          declaredType = tm->create_type(*declaredType, domainType->get_quantifier());
+        {
+          TypeConstants::quantifier_t domQuant = domainType->get_quantifier();
+          TypeConstants::quantifier_t declQuant = declaredType->get_quantifier();
+
+          if (theAllowingEmpty &&
+              (declQuant == TypeConstants::QUANT_ONE ||
+               declQuant == TypeConstants::QUANT_PLUS))
+          {
+            declaredType = tm->create_type(*declaredType, TypeConstants::QUANT_PLUS);
+          }
+          else
+          {
+            declaredType = tm->create_type(*declaredType, domQuant);
+          }
+        }
 
         if (!TypeOps::is_subtype(tm, *domainType, *declaredType, loc))
         {

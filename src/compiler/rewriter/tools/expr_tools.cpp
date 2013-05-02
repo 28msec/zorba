@@ -22,6 +22,7 @@
 #include "compiler/expression/script_exprs.h"
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
+#include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/api/compilercb.h"
 
@@ -363,6 +364,33 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
       }
 
       return false;
+    }
+
+    return true;
+  }
+
+  case dynamic_function_invocation_expr_kind:
+  {
+    const dynamic_function_invocation_expr* qe =
+    static_cast<const dynamic_function_invocation_expr*>(query);
+
+    const dynamic_function_invocation_expr* ve =
+    static_cast<const dynamic_function_invocation_expr*>(view);
+
+    if (!match_exact(qe->get_function(), ve->get_function(), subst))
+      return false;
+
+    if (qe->get_args().size() != ve->get_args().size())
+      return false;
+
+    std::vector<expr*>::const_iterator qite = qe->get_args().begin();
+    std::vector<expr*>::const_iterator qend = qe->get_args().end();
+    std::vector<expr*>::const_iterator vite = ve->get_args().begin();
+
+    for (; qite != qend; ++qite, ++vite)
+    { 
+      if (!match_exact(*qite, *vite, subst))
+        return false;
     }
 
     return true;
