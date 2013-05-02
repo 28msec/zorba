@@ -910,6 +910,14 @@ T1_TO_T2(uA, aURI)
 }
 
 
+T1_TO_T2(uA, QN)
+{
+  zstring strval2;
+  aItem->getStringValue2(strval2);
+  str_QN(result, aItem, strval2, aFactory, nsCtx, errInfo);
+}
+
+
 T1_TO_T2(flt, uA)
 {
   zstring strval2;
@@ -1725,11 +1733,43 @@ void str_down(
   }
   case store::XS_TOKEN:
   {
-    if (GenericCast::instance()->castableToToken(strval))
+    char ch;
+    zstring::size_type sz = strval.size();
+
+    ascii::trim_whitespace(strval);
+
+    bool spaceSeen = false;
+
+    for (zstring::size_type i = 0; i < sz; ++i)
     {
-      factory->createToken(result, strval);
-      return;
+      ch = strval[i];
+
+      if (ch == '\r' || ch == '\n' || ch == '\t')
+      {
+        strval[i] = ' ';
+        ch = ' ';
+      }
+
+      if (ch == ' ')
+      {
+        if (spaceSeen)
+        {
+          strval.erase(i, 1);
+          --i;
+          --sz;
+        }
+
+        spaceSeen = true;
+      }
+      else
+      {
+        spaceSeen = false;
+      }
     }
+
+    factory->createToken(result, strval);
+    return;
+
     break;
   }
   case store::XS_LANGUAGE:
@@ -2116,7 +2156,7 @@ const GenericCast::CastFunc GenericCast::theCastMatrix[26][26] =
 
 {&uA_uA,    &uA_str,   &uA_flt,  &uA_dbl ,   &uA_dec ,  &uA_int,   &uA_dur,  &uA_yMD,
  &uA_dTD,   &uA_dT,    &uA_tim,  &uA_dat,    &uA_gYM ,  &uA_gYr ,  &uA_gMD,  &uA_gDay,
- &uA_gMon,  &uA_bool,  &uA_b64,  &uA_hxB,    &uA_aURI,  0,         0,        &uA_uint,
+ &uA_gMon,  &uA_bool,  &uA_b64,  &uA_hxB,    &uA_aURI,  &uA_QN,    0,        &uA_uint,
  0,         &uA_dTSt}, // uA
 
 {&str_uA,   &str_str,  &str_flt,  &str_dbl,  &str_dec,  &str_int,  &str_dur, &str_yMD,
@@ -2730,8 +2770,6 @@ bool GenericCast::castableToToken(const zstring& str)
   {
     ch = str[i];
 
-    // do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9)
-    // characters */
     if (ch == '\r' || ch == '\n' || ch == '\t')
     {
       return false;
@@ -3020,6 +3058,7 @@ bool GenericCast::promote(
     store::Item_t& result,
     store::Item_t& item,
     const XQType* targetType,
+    const namespace_context* nsCtx,
     const TypeManager* tm,
     const QueryLoc& loc)
 {
@@ -3033,6 +3072,7 @@ bool GenericCast::promote(
     return promote(result, 
                    item,
                    static_cast<const AtomicXQType*>(targetType)->get_type_code(),
+                   nsCtx,
                    tm,
                    loc);
   }
@@ -3052,7 +3092,7 @@ bool GenericCast::promote(
   if (TypeOps::is_equal(tm, *itemType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) &&
       ! TypeOps::is_equal(tm, *TypeOps::prime_type(tm, *targetType), *rtm.QNAME_TYPE_ONE))
   {
-    return castToAtomic(result, item, targetType, tm, NULL, loc);
+    return castToAtomic(result, item, targetType, tm, nsCtx, loc);
   }
 
     // Decimal/Float --> xs:double
@@ -3101,6 +3141,7 @@ bool GenericCast::promote(
     store::Item_t& result,
     store::Item_t& item,
     store::SchemaTypeCode targetType,
+    const namespace_context* nsCtx,
     const TypeManager* tm,
     const QueryLoc& loc)
 {
