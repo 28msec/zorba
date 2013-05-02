@@ -32,42 +32,42 @@ declare option ver:module-version "1.0";
 (:~
  : Constant for the "scheme" part of a URI object.
  :)
-declare variable $uri:SCHEME := "scheme";
+declare variable $uri:scheme := "scheme";
 
 (:~
  : Constant for the "authority" part of a URI object.
  :)
-declare variable $uri:AUTHORITY := "authority";
+declare variable $uri:authority := "authority";
 
 (:~
  : Constant for the "user-info" part of a URI object.
  :)
-declare variable $uri:USER-INFO := "user-info";
+declare variable $uri:user-info := "user-info";
 
 (:~
  : Constant for the "host" part of a URI object.
  :)
-declare variable $uri:HOST := "host";
+declare variable $uri:host := "host";
 
 (:~
  : Constant for the "port" part of a URI object.
  :)
-declare variable $uri:PORT := "port";
+declare variable $uri:port := "port";
 
 (:~
  : Constant for the "path" part of a URI object.
  :)
-declare variable $uri:PATH := "path";
+declare variable $uri:path := "path";
 
 (:~
  : Constant for the "query" part of a URI object.
  :)
-declare variable $uri:QUERY := "query";
+declare variable $uri:query := "query";
 
 (:~
  : Constant for the "fragment" part of a URI object.
  :)
-declare variable $uri:FRAGMENT := "fragment";
+declare variable $uri:fragment := "fragment";
 
 (:~
  : Constant for the "opaque-part" part of a URI object.
@@ -78,7 +78,7 @@ declare variable $uri:FRAGMENT := "fragment";
  : If this is set in a URI object, $uri:SCHEME must also be specified
  : (ie, it must be an absolute URI).
  :)
-declare variable $uri:OPAQUE-PART := "opaque-part";
+declare variable $uri:opaque-part := "opaque-part";
 
 
 (:~
@@ -167,6 +167,15 @@ declare function uri:decode(
  :
  : @return the URI JSONiq object
  :
+ : Example: Assume that you have this xquery code: 
+ : import module namespace uri = "http://www.zorba-xquery.com/modules/uri";
+ : 
+ : let my-uri := "http://www.my.project.com/a/b/c?user=john;pass=1234#profile"
+ : return uri:parse(my-uri)
+ :
+ : The output of this code would be this JSON object:
+ : { "squeme" : "http", "host" : "www.my.project.com", "path" : "/a/b/c",
+ :   "query" : "user=john;pass=123", "fragment" : "profile" }
  :)
 declare function uri:parse(
   $uri as xs:string) as object() external;

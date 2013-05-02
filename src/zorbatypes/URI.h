@@ -49,7 +49,6 @@ public:
 
   static long scanHexSequence(const char* addr, long idx, long end, long& counter);
 
-protected:
   enum States 
   {
     Scheme             = 1,
@@ -63,6 +62,7 @@ protected:
     OpaquePart         = 256
   };
 
+protected:
   // keep track whether particular components of a uri are defined or undefined
   mutable uint32_t theState;
 
@@ -162,6 +162,8 @@ public:
 
   void clear_opaque_part();
 
+  bool is_set(uint32_t s) const { return ((theState & s) > 0); }
+
 protected:
   void build_full_text() const;
 
@@ -192,8 +194,6 @@ protected:
   void relativize(const URI* base_uri);
 
   void set_state(uint32_t s) const { theState |= s; }
-
-  bool is_set(uint32_t s) const { return ((theState & s) > 0); }
 
   void unset_state(uint32_t s) const { theState &= ~s; }
 
