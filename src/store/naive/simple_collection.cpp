@@ -93,7 +93,7 @@ store::Iterator_t SimpleCollection::getIterator(
     const zstring& startRef)
 {
   store::Item_t startNode;
-  xs_integer startPos = numeric_consts<xs_integer>::zero();
+  xs_integer startPos;
 
   if (startRef.size() != 0 &&
       (!GET_STORE().getNodeByReference(startNode, startRef) ||

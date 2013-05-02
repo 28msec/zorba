@@ -303,7 +303,7 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //item type is subtype of INTEGER
     else if(TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
     {
-      if(precision_integer < numeric_consts<xs_integer>::zero())
+      if(precision_integer.sign() < 0)
         GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().round(precision_integer));
     }
 

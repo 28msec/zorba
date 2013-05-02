@@ -1326,7 +1326,7 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
     // validate timezone value (-14 .. +14 H)
     if (d->getYears() != 0 || d->getMonths() != 0 ||
         d->getDays() != 0 ||
-        d->getSeconds() != numeric_consts<xs_integer>::zero() ||
+        d->getSeconds().sign() != 0 ||
         d->getHours()*3600 + d->getMinutes()*60 > 14*3600 ||
         d->getHours()*3600 + d->getMinutes()*60 < -14*3600)
       throw InvalidTimezoneException( d->getHours()*3600 + d->getMinutes()*60 );

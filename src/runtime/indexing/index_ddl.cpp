@@ -643,7 +643,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
         store::Item_t skipItem;
         ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
         skip = skipItem->getIntegerValue();
-        if (skip < numeric_consts<xs_integer>::zero())
+        if (skip.sign() < 0)
           skip = numeric_consts<xs_integer>::zero();
       }
 
@@ -689,7 +689,7 @@ bool ProbeIndexPointValueIterator::count(
         store::Item_t skipItem;
         ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
         skip = skipItem->getIntegerValue();
-        if (skip < numeric_consts<xs_integer>::zero())
+        if (skip.sign() < 0)
           skip = numeric_consts<xs_integer>::zero();
       }
 
@@ -1089,7 +1089,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
       store::Item_t skipItem;
       ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
       skip = skipItem->getIntegerValue();
-      if (skip < numeric_consts<xs_integer>::zero())
+      if (skip.sign() < 0)
         skip = numeric_consts<xs_integer>::zero();
     }
 
@@ -1132,7 +1132,7 @@ bool ProbeIndexRangeValueIterator::count(
       store::Item_t skipItem;
       ZORBA_ASSERT(consumeNext(skipItem, theChildren[1], planState));
       skip = skipItem->getIntegerValue();
-      if (skip < numeric_consts<xs_integer>::zero())
+      if (skip.sign() < 0)
         skip = numeric_consts<xs_integer>::zero();
     }
 

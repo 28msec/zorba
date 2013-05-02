@@ -307,7 +307,7 @@ bool ZorbaCollectionIterator::nextImpl(
     lSkip = lSkipItem->getIntegerValue(); 
 
     // negative skip is not allowed
-    if (lSkip < numeric_consts<xs_integer>::zero())
+    if (lSkip.sign() < 0)
     {
       lSkip = numeric_consts<xs_integer>::zero();
     }
@@ -383,9 +383,8 @@ bool ZorbaCollectionIterator::count(store::Item_t& result, PlanState& planState)
     consumeNext(skipItem, theChildren[1].getp(), planState);
     xs_integer skip( skipItem->getIntegerValue() );
 
-    count -= (skip <= numeric_consts<xs_integer>::zero() ? numeric_consts<xs_integer>::zero() : skip);
-
-    count = (count < numeric_consts<xs_integer>::zero() ? numeric_consts<xs_integer>::zero() : count);
+    count -= (skip.sign() <= 0 ? numeric_consts<xs_integer>::zero() : skip);
+    count = (count.sign() < 0 ? numeric_consts<xs_integer>::zero() : count);
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
