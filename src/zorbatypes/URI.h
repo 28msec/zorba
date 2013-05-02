@@ -85,7 +85,7 @@ protected:
   zstring          theOpaquePart;
 
   // true if the constructed URI is valid
-  bool             valid;
+  bool             theValidate;
 
 public:
   URI(const zstring& uri, bool validate = true);
@@ -203,7 +203,9 @@ protected:
 
 inline bool URI::is_valid() const
 {
-  return valid;
+  // If we requested validation originally, and successfully passed the
+  // initialize step - we're valid!
+  return theValidate;
 }
 
 

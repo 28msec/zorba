@@ -474,7 +474,7 @@ URI::URI(const zstring& uri, bool validate)
   : 
   theState(0),
   thePort(0),
-  valid(validate)
+  theValidate(validate)
 {
   initialize(uri);
 
@@ -489,7 +489,7 @@ URI::URI(const URI& base_uri, const zstring& uri, bool validate)
   :
   theState(0),
   thePort(0),
-  valid(validate)
+  theValidate(validate)
 {
   initialize(uri, true);
   resolve(&base_uri);
@@ -503,7 +503,7 @@ URI::URI(const URI& full_uri, const URI& base_uri)
    :
   theState(0),
   thePort(0),
-  valid(false)
+  theValidate(false)
 {
   initialize(full_uri.toString(), false);
   relativize(&base_uri);
@@ -526,7 +526,7 @@ URI::URI()
   :
   theState(0),
   thePort(0),
-  valid(true)
+  theValidate(true)
 {
 }
 
@@ -553,7 +553,7 @@ void URI::initialize(const URI& to_copy)
   thePath              = to_copy.thePath;
   theQueryString       = to_copy.theQueryString;
   theFragment          = to_copy.theFragment;
-  valid                = to_copy.valid;
+  theValidate          = to_copy.theValidate;
 }
 
 
@@ -616,7 +616,7 @@ void URI::initialize(const zstring& uri, bool have_base)
       (lColonIdx > lFragmentIdx && lFragmentIdx != zstring::npos)) 
   {
     // A standalone base is a valid URI
-    if (valid &&
+    if (theValidate &&
         (lColonIdx == 0 || (!have_base && lFragmentIdx != zstring::npos)) &&
         lTrimmedURILength > 0)
     {
@@ -699,19 +699,16 @@ void URI::initialize(const zstring& uri, bool have_base)
         set_host(zstring());
       }
     }
-    // do not allow constructs like: file:D:/myFile or http:myFile
   }
-  else if (ZSTREQ(theScheme, "file") ||
-           ZSTREQ(theScheme, "http") ||
-           ZSTREQ(theScheme, "https")) 
+  // do not allow constructs like: file:D:/myFile or http:myFile
+  else if (theValidate && (ZSTREQ(theScheme, "file") ||
+                           ZSTREQ(theScheme, "http") ||
+                           ZSTREQ(theScheme, "https") ) )
   {
-    if (valid)
-    {
-      throw XQUERY_EXCEPTION(
-        err::XQST0046,
-        ERROR_PARAMS( lTrimmedURI, ZED( BadURISyntaxForScheme_3 ), theScheme )
-      );
-     }
+    throw XQUERY_EXCEPTION(
+          err::XQST0046,
+          ERROR_PARAMS( lTrimmedURI, ZED( BadURISyntaxForScheme_3 ), theScheme )
+          );
   }
 
   // stop, if we're done here
@@ -734,7 +731,7 @@ void URI::initializeScheme(const zstring& uri)
 {
   zstring::size_type lSchemeSeparatorIdx = uri.find_first_of(":/?#", 0,4 );
   
-  if ( valid && lSchemeSeparatorIdx == zstring::npos ) 
+  if ( theValidate && lSchemeSeparatorIdx == zstring::npos )
   {
     throw XQUERY_EXCEPTION(
       err::XQST0046, ERROR_PARAMS( uri, ZED( NoURIScheme ) )
@@ -966,7 +963,7 @@ void URI::initializePath(const zstring& uri)
             ERROR_PARAMS(uri, ZED(XQST0046_BadHexDigit_3), lHex2));
           }
         }
-        else if (!is_unreserved_char(lCp) && !is_path_character(lCp) && valid)
+        else if (theValidate && !is_unreserved_char(lCp) && !is_path_character(lCp))
         {
           throw XQUERY_EXCEPTION(err::XQST0046,
           ERROR_PARAMS(uri, ZED(BadUnicodeChar_3), lCp));
@@ -993,7 +990,7 @@ void URI::initializePath(const zstring& uri)
         {
           // TODO check errors
         }
-        else if (!is_reservered_or_unreserved_char(lCp) && valid)
+        else if (!is_reservered_or_unreserved_char(lCp) && theValidate)
         {
           throw XQUERY_EXCEPTION(
             err::XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar_3 ), lCp )
