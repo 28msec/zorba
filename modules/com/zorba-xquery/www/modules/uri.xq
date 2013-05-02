@@ -30,6 +30,52 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 
 (:~
+ : Constant for the "scheme" part of a URI object.
+ :)
+declare variable $uri:SCHEME := "scheme";
+
+(:~
+ : Constant for the "authority" part of a URI object.
+ :)
+declare variable $uri:AUTHORITY := "authority";
+
+(:~
+ : Constant for the "user-info" part of a URI object.
+ :)
+declare variable $uri:USER-INFO := "user-info";
+
+(:~
+ : Constant for the "host" part of a URI object.
+ :)
+declare variable $uri:HOST := "host";
+
+(:~
+ : Constant for the "port" part of a URI object.
+ :)
+declare variable $uri:PORT := "port";
+
+(:~
+ : Constant for the "path" part of a URI object.
+ :)
+declare variable $uri:PATH := "path";
+
+(:~
+ : Constant for the "query" part of a URI object.
+ :)
+declare variable $uri:QUERY := "query";
+
+(:~
+ : Constant for the "fragment" part of a URI object.
+ :)
+declare variable $uri:FRAGMENT := "fragment";
+
+(:~
+ : Constant for the "opaque-part" part of a URI object.
+ :)
+declare variable $uri:OPAQUE-PART := "opaque-part";
+
+
+(:~
  : Percent-decodes (aka URL decoding) the given string.
  :
  : All percent encoded octets will be translated into their
@@ -124,7 +170,7 @@ declare function uri:parse(
  :
  : @return the URI as xs:string
  :
- : @error zerr:ZURI0001 if opaque part is specified in conjuntion with
+ : @error zerr:ZURI0001 if opaque part is specified in conjunction with
  : host/port/path/user-info/query.
  :
  : @error zerr:ZURI0002 if opaque part is present but no scheme is present at the
