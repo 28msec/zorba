@@ -83,8 +83,8 @@ void operator&(Archiver& ar, const XQType*& obj)
 
 ********************************************************************************/
 
-template<class C>
-void operator&(serialization::Archiver& ar, IntegerImpl<C>& obj)
+template<class T>
+void operator&(serialization::Archiver& ar, IntegerImpl<T>& obj)
 {
   ar & obj.value();
 }
