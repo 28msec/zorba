@@ -117,8 +117,6 @@ EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
 
 #"disputed" tests. These test are run but marked as 'pass' by FOTS driver.
 #All these entries should have a *valid* opened bug number from W3C bugzilla.
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport qischema040 21339)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport qischema040a 21339)
 EXPECTED_FOTS_FAILURE (DISPUTED fn-format-integer format-integer-044 21448)
 EXPECTED_FOTS_FAILURE (DISPUTED fn-format-date format-date-en152 21558)
 EXPECTED_FOTS_FAILURE (DISPUTED fn-format-dateTime format-dateTime-en152 21558)
@@ -328,6 +326,8 @@ EXPECTED_FOTS_FAILURE (prod-OrderByClause orderBy59 0)
 EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature require-higher-order-function-5-s 1171860)
 EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature require-higher-order-function-10-s 1171860)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema031 0)
+EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema040 1175741)
+EXPECTED_FOTS_FAILURE (prod-SchemaImport qischema040a 1175741)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport substitution-001 0)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport substitution-002 0)
 EXPECTED_FOTS_FAILURE (prod-SchemaImport substitution-003 0)
