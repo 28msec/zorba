@@ -71,6 +71,12 @@ declare variable $uri:FRAGMENT := "fragment";
 
 (:~
  : Constant for the "opaque-part" part of a URI object.
+ :
+ : If this is set in a URI object, then none of $uri:PATH, $uri:HOST,
+ : $uri:PORT, $uri:USER-INFO, or : $uri:QUERY may be specified.
+ :
+ : If this is set in a URI object, $uri:SCHEME must also be specified
+ : (ie, it must be an absolute URI).
  :)
 declare variable $uri:OPAQUE-PART := "opaque-part";
 
@@ -153,7 +159,9 @@ declare function uri:decode(
   $charset as xs:string) as xs:string external;
   
 (:~
- : Parses the URI passed as xs:string into a uri JSONiq object.
+ : Parses the URI passed as xs:string into a URI JSON object. The object 
+ : will contain only members with field names declared as constants in
+ : this module.
  :
  : @param $uri the URI as string to parse
  :
@@ -164,7 +172,9 @@ declare function uri:parse(
   $uri as xs:string) as object() external;
   
 (:~
- : Serialize the URI passed as JSONiq object into a URI represented as xs:string.
+ : Serialize the URI passed as JSON object into a URI represented as xs:string.
+ : The object should only contain members with field names declared as
+ : constants in this module.
  :
  : @param $uri the URI JSONiq object
  :
