@@ -1746,9 +1746,8 @@ bool Schema::parseUserAtomicTypes(
       }
 
       // workaround for validating xs:NOTATION with Xerces
-      if (theTypeManager != NULL
-          &&
-          udXQType->isSubTypeOf(theTypeManager, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE))
+      if (theTypeManager != NULL &&
+          udXQType->isSubTypeOf(theTypeManager, *GENV_TYPESYSTEM.NOTATION_TYPE_STAR))
       {
         // textValue must be in the form of URI:LOCAL
         size_t colonIndex = textValue.find_first_of(":");
