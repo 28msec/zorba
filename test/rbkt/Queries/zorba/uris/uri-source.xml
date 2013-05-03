@@ -42,4 +42,5 @@
   <uri-element>file:text-file.txt</uri-element>
   <uri-element>file:bar?</uri-element>
   <uri-element>file:bar?#frag</uri-element>
+  <uri-element>http://foo.com/bc?</uri-element>
 </uri-test>

@@ -41,3 +41,4 @@ http:/
  file:text-file.txt
  file:bar?
  file:bar?#frag
+ http://foo.com/bc?
