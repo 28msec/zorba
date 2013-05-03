@@ -159,50 +159,45 @@ declare function uri:decode(
   $charset as xs:string) as xs:string external;
   
 (:~
- : Parses the URI passed as xs:string into a URI JSON object. The object 
- : will contain only members with field names declared as constants in
+ : Parses the URI passed as string. The returned object 
+ : contains only members with field names declared as constants in
  : this module.
  :
- : @param $uri the URI as string to parse
- :
- : @return the URI JSONiq object
- :
- : Example: Assume that you have this xquery code: 
- : import module namespace uri = "http://www.zorba-xquery.com/modules/uri";
- : 
+ : For example,
+ : <code>
  : let my-uri := "http://www.my.project.com/a/b/c?user=john;pass=1234#profile"
  : return uri:parse(my-uri)
+ : </code>
  :
- : The output of this code would be this JSON object:
+ : returns
  : <code>
  : { "squeme" : "http", "host" : "www.my.project.com", "path" : "/a/b/c",
  :   "query" : "user=john;pass=123", "fragment" : "profile" }
  : </code>
  : 
+ : @param $uri the URI to parse
+ :
+ : @return the JSON object
+ :
  : @error err:XQST0046 if the URI is textually invalid
  :)
 declare function uri:parse(
   $uri as xs:string) as object() external;
   
 (:~
- : Serialize the URI passed as JSON object into a URI represented as xs:string.
- : The object should only contain members with field names declared as
- : constants in this module.
+ : Serialize the URI passed as object into a string.
  :
- : @param $uri the URI JSONiq object
+ : @param $uri the object representing the URI
  :
- : @return the URI as xs:string
+ : @return the URI as string
  :
  : @error zerr:ZURI0001 if opaque part is specified in conjunction with
  : host/port/path/user-info/query.
  :
- : @error zerr:ZURI0002 if opaque part is present but no scheme is present at the
- : same time.
+ : @error zerr:ZURI0002 if opaque part is present but no scheme is present.
  :
- : @error zerr:ZURI0003 if a path component for an absolute URI doesn't start with
- : "/".
- :
+ : @error zerr:ZURI0003 if a path component for an absolute URI
+ : doesn't start with "/".
  :)
 declare function uri:serialize(
   $uri as object()) as xs:string external;
-
