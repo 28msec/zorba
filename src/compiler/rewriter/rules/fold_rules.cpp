@@ -47,6 +47,8 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#include "zorbatypes/integer.h"
+
 #include <iterator>
 
 namespace zorba {

@@ -31,6 +31,7 @@
 #include "runtime/base/narybase.h"
 #include "runtime/base/narybase.h"
 #include "runtime/core/path_iterators.h"
+#include "zorbatypes/integer.h"
 
 
 namespace zorba {

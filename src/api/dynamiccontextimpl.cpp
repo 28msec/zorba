@@ -27,6 +27,7 @@
 #include "types/typemanager.h"
 #include "types/root_typemanager.h"
 #include "types/schema/validate.h"
+#include "zorbatypes/integer.h"
 
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"

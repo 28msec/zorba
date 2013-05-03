@@ -29,14 +29,15 @@
 #include <time.h>
 #endif
 
-#include "zorbautils/hashfun.h"
-#include <zorbatypes/datetime.h>
-#include <zorbatypes/duration.h>
-#include <zorbatypes/timezone.h>
-#include <zorbatypes/zorbatypes_decl.h>
-#include <zorbatypes/zstring.h>
-
+#include "zorbatypes/datetime.h"
 #include "zorbatypes/datetime/parse.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/timezone.h"
+#include "zorbatypes/zorbatypes_decl.h"
+#include "zorbatypes/zstring.h"
+#include "zorbautils/hashfun.h"
 
 #include "util/ascii_util.h"
 #include "util/time_util.h"
@@ -1325,7 +1326,7 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
     // validate timezone value (-14 .. +14 H)
     if (d->getYears() != 0 || d->getMonths() != 0 ||
         d->getDays() != 0 ||
-        d->getSeconds() != Integer::zero() ||
+        d->getSeconds().sign() != 0 ||
         d->getHours()*3600 + d->getMinutes()*60 > 14*3600 ||
         d->getHours()*3600 + d->getMinutes()*60 < -14*3600)
       throw InvalidTimezoneException( d->getHours()*3600 + d->getMinutes()*60 );

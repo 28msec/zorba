@@ -29,6 +29,7 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenode_visitor.h"
+#include "zorbatypes/integer.h"
 
 #include <iostream>
 #include <sstream>
