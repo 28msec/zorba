@@ -1615,9 +1615,10 @@ void URI::build_path_notation() const
 
   if(is_set(OpaquePart))
   {
-    lToTokenize = theOpaquePart.str();
+    thePathNotation = theOpaquePart.str();
+    return;
   }
-  else
+
   if (is_set(Host)) 
   {
     lToTokenize = theHost.str();
@@ -1627,7 +1628,7 @@ void URI::build_path_notation() const
     lToTokenize = theRegBasedAuthority.str();
   }
 
-  std::string::size_type lastPos = 
+  std::string::size_type lastPos =
       lToTokenize.find_last_not_of(".", lToTokenize.length());
 
   std::string::size_type pos = lToTokenize.find_last_of(".", lastPos);
