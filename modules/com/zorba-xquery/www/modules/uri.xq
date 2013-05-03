@@ -174,8 +174,10 @@ declare function uri:decode(
  : return uri:parse(my-uri)
  :
  : The output of this code would be this JSON object:
+ : <code>
  : { "squeme" : "http", "host" : "www.my.project.com", "path" : "/a/b/c",
  :   "query" : "user=john;pass=123", "fragment" : "profile" }
+ : </code>
  : 
  : @error err:XQST0046 if the URI is textually invalid
  :)
