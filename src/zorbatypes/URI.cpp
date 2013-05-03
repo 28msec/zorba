@@ -936,11 +936,20 @@ void URI::initializePath(const zstring& uri)
       while ( lIndex < lEnd )
       {
         lCp = lCodepoints[lIndex];
-        if ( ( lCp == '?' && !lIsOpaque ) || lCp == '#' )
+        if (lCp == '?') {
+          if ( ! lIsOpaque) {
+            // Query string starting if not opaque
+            break;
+          }
+          // If it is an opaque URI, ? is fine
+        }
+        else if (lCp == '#' ) {
+          // Fragment starting
           break;
-
-        if ( lCp == '%' )
+        }
+        else if ( lCp == '%' )
         {
+          // Percent-decoding check
           if ( lIndex + 2 >= lEnd )
           {
             throw XQUERY_EXCEPTION(err::XQST0046,

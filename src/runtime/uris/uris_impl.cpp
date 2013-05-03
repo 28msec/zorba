@@ -202,7 +202,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
   
   lZVal = uri.get_encoded_query();
-  if(uri.is_set(64)) // URI::QueryString == 64
+  if(uri.is_set(URI::QueryString))
   {
     lZKey = zorba::zstring(QUERY_NAME);
     GENV_ITEMFACTORY->createString(lName, lZKey);
