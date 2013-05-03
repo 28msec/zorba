@@ -39,3 +39,5 @@ http:/
  file://localhost/Ãƒâ€¦ngstrÃƒÂ¶m/b/c
  file:opaque-uri-part#frag
  file:text-file.txt
+ file:bar?
+ file:bar?#frag
