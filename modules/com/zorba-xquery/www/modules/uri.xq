@@ -176,6 +176,8 @@ declare function uri:decode(
  : The output of this code would be this JSON object:
  : { "squeme" : "http", "host" : "www.my.project.com", "path" : "/a/b/c",
  :   "query" : "user=john;pass=123", "fragment" : "profile" }
+ : 
+ : @error err:XQST0046 if the URI is textually invalid
  :)
 declare function uri:parse(
   $uri as xs:string) as object() external;
